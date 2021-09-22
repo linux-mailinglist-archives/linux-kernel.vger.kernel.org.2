@@ -2,138 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6835B413EE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 03:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F16413EEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 03:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhIVBRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 21:17:04 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9751 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbhIVBRD (ORCPT
+        id S232005AbhIVBSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 21:18:54 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38220 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230469AbhIVBSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 21:17:03 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDgLR2d55zWLbr;
-        Wed, 22 Sep 2021 09:14:23 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 22 Sep 2021 09:15:29 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 22 Sep 2021 09:15:28 +0800
-Subject: Re: [PATCH] blktrace: Fix uaf in blk_trace access after removing by
- sysfs
-To:     <axboe@kernel.dk>, <rostedt@goodmis.org>, <mingo@redhat.com>,
-        <acme@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>
-References: <20210910092120.182270-1-chengzhihao1@huawei.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f6c5d72e-fccd-f568-3f28-b50b4e687d84@huawei.com>
-Date:   Wed, 22 Sep 2021 09:15:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 21 Sep 2021 21:18:53 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LLH4dt009558
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:17:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=33BZOTeb3sp01FGLAUq4mrxu/MD0AjIl5uIt8QTyQvw=;
+ b=dOpb0NfH7yo+aMkR/AXHYkG+Wz1dwqhvCNqaKMXq3rqxLZ9iWsLz2Ij/yAMBsND8zakw
+ R9wEl/1OH6Utz+iOjJnuzzb96GqpXkivTCsa6Nzt9uRRf67gtYqU3ZlYntuP1xdgOmfY
+ 5pnjehxayHJzqPPTVcFpFjUG0fxiSgCX+/w= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b7q62h9uh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:17:24 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 21 Sep 2021 18:17:23 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 948C212E38414; Tue, 21 Sep 2021 18:17:21 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kernel-team@fb.com>, <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Lucian Grijincu <lucian@fb.com>
+Subject: [PATCH] perf/core: fix userpage->time_enabled of inactive events
+Date:   Tue, 21 Sep 2021 18:17:15 -0700
+Message-ID: <20210922011715.4154119-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210910092120.182270-1-chengzhihao1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: U4zLyooFPl5nnwJL16vK7NAv90EmTLHx
+X-Proofpoint-GUID: U4zLyooFPl5nnwJL16vK7NAv90EmTLHx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-21_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
+ clxscore=1015 mlxlogscore=999 phishscore=0 bulkscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109220006
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2021/9/10 17:21, Zhihao Cheng Ð´µÀ:
-friendly ping
-> There is an use-after-free problem triggered by following process:
->
->        P1(sda)				P2(sdb)
-> 			echo 0 > /sys/block/sdb/trace/enable
-> 			  blk_trace_remove_queue
-> 			    synchronize_rcu
-> 			    blk_trace_free
-> 			      relay_close
-> rcu_read_lock
-> __blk_add_trace
->    trace_note_tsk
->    (Iterate running_trace_list)
-> 			        relay_close_buf
-> 				  relay_destroy_buf
-> 				    kfree(buf)
->      trace_note(sdb's bt)
->        relay_reserve
->          buf->offset <- nullptr deference (use-after-free) !!!
-> rcu_read_unlock
->
-> [  502.714379] BUG: kernel NULL pointer dereference, address:
-> 0000000000000010
-> [  502.715260] #PF: supervisor read access in kernel mode
-> [  502.715903] #PF: error_code(0x0000) - not-present page
-> [  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
-> [  502.717252] Oops: 0000 [#1] SMP
-> [  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
-> [  502.732872] Call Trace:
-> [  502.733193]  __blk_add_trace.cold+0x137/0x1a3
-> [  502.733734]  blk_add_trace_rq+0x7b/0xd0
-> [  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
-> [  502.734755]  blk_mq_start_request+0xde/0x1b0
-> [  502.735287]  scsi_queue_rq+0x528/0x1140
-> ...
-> [  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
-> [  502.747501]  sg_ioctl+0x466/0x1100
->
-> Reproduce method:
->    ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
->    ioctl(/dev/sda, BLKTRACESTART)
->    ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
->    ioctl(/dev/sdb, BLKTRACESTART)
->
->    echo 0 > /sys/block/sdb/trace/enable &
->    // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
->
->    ioctl$SG_IO(/dev/sda, SG_IO, ...)
->    // Enters trace_note_tsk() after blk_trace_free() returned
->    // Use mdelay in rcu region rather than msleep(which may schedule out)
->
-> Don't remove blk_trace by sysfs when blk_trace is at Blktrace_running
-> state, just like function __blk_trace_remove() does. The state change
-> process and blk_trace_remove_queue() are protected and by mutex lock
-> 'q->debugfs_mutex', so the sequence of stopping blk_trace first and
-> then removing it will be ensured.
->
-> Fixes: c71a896154119f ("blktrace: add ftrace plugin")
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> ---
->   kernel/trace/blktrace.c | 13 +++++++++++--
->   1 file changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-> index c221e4c3f625..7fe29bb9746f 100644
-> --- a/kernel/trace/blktrace.c
-> +++ b/kernel/trace/blktrace.c
-> @@ -1821,8 +1821,17 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
->   		}
->   		if (value)
->   			ret = blk_trace_setup_queue(q, bdev);
-> -		else
-> -			ret = blk_trace_remove_queue(q);
-> +		else {
-> +			/*
-> +			 * Don't remove blk_trace under running state, in
-> +			 * case triggering use-after-free in function
-> +			 * __blk_add_trace().
-> +			 */
-> +			if (bt->trace_state != Blktrace_running)
-> +				ret = blk_trace_remove_queue(q);
-> +			else
-> +				ret = -EBUSY;
-> +		}
->   		goto out_unlock_bdev;
->   	}
->   
+Users of rdpmc rely on the mmapped user page to calculate accurate
+time_enabled. Currently, userpage->time_enabled is only updated when the
+event is added to the pmu. As a result, inactive event (due to counter
+multiplexing) does not have accurate userpage->time_enabled. This can
+be reproduced with something like:
 
+   /* open 20 task perf_event "cycles", to create multiplexing */
+
+   fd =3D perf_event_open();  /* open task perf_event "cycles" */
+   userpage =3D mmap(fd);     /* use mmap and rdmpc */
+
+   while (true) {
+     time_enabled_mmap =3D xxx; /* use logic in perf_event_mmap_page */
+     time_enabled_read =3D read(fd).time_enabled;
+     if (time_enabled_mmap > time_enabled_read)
+         BUG();
+   }
+
+Fix this by updating userpage for inactive events in ctx_sched_in.
+
+Reported-and-tested-by: Lucian Grijincu <lucian@fb.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ include/linux/perf_event.h |  4 +++-
+ kernel/events/core.c       | 26 ++++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 2d510ad750edc..4aa52f7a48c16 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -683,7 +683,9 @@ struct perf_event {
+ 	/*
+ 	 * timestamp shadows the actual context timing but it can
+ 	 * be safely used in NMI interrupt context. It reflects the
+-	 * context time as it was when the event was last scheduled in.
++	 * context time as it was when the event was last scheduled in,
++	 * or when ctx_sched_in failed to schedule the event because we
++	 * run out of PMC.
+ 	 *
+ 	 * ctx_time already accounts for ctx->timestamp. Therefore to
+ 	 * compute ctx_time for a sample, simply add perf_clock().
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 1cb1f9b8392e2..549ce22df7bc7 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3766,6 +3766,15 @@ ctx_flexible_sched_in(struct perf_event_context *c=
+tx,
+ 			   merge_sched_in, &can_add_hw);
+ }
+=20
++static inline void
++perf_event_update_inactive_userpage(struct perf_event *event,
++				    struct perf_event_context *ctx)
++{
++	perf_event_update_time(event);
++	perf_set_shadow_time(event, ctx);
++	perf_event_update_userpage(event);
++}
++
+ static void
+ ctx_sched_in(struct perf_event_context *ctx,
+ 	     struct perf_cpu_context *cpuctx,
+@@ -3807,6 +3816,23 @@ ctx_sched_in(struct perf_event_context *ctx,
+ 	/* Then walk through the lower prio flexible groups */
+ 	if (is_active & EVENT_FLEXIBLE)
+ 		ctx_flexible_sched_in(ctx, cpuctx);
++
++	/*
++	 * Update userpage for inactive events. This is needed for accurate
++	 * time_enabled.
++	 */
++	if (unlikely(ctx->rotate_necessary)) {
++		struct perf_event *event;
++
++		perf_event_groups_for_each(event, &ctx->pinned_groups) {
++			if (event->state =3D=3D PERF_EVENT_STATE_INACTIVE)
++				perf_event_update_inactive_userpage(event, ctx);
++		}
++		perf_event_groups_for_each(event, &ctx->flexible_groups) {
++			if (event->state =3D=3D PERF_EVENT_STATE_INACTIVE)
++				perf_event_update_inactive_userpage(event, ctx);
++		}
++	}
+ }
+=20
+ static void cpu_ctx_sched_in(struct perf_cpu_context *cpuctx,
+--=20
+2.30.2
 
