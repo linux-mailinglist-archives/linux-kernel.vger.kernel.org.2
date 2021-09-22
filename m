@@ -2,101 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A54B414D55
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78AC414D5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236469AbhIVPtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:49:09 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:43775 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhIVPtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:49:08 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MvJwN-1mkSvg0FEX-00rGex; Wed, 22 Sep 2021 17:47:37 +0200
-Received: by mail-wr1-f43.google.com with SMTP id q26so8173619wrc.7;
-        Wed, 22 Sep 2021 08:47:36 -0700 (PDT)
-X-Gm-Message-State: AOAM531bwveLPqAiWdlf6fuMmEfjud2cxzFZgP4gWkILVIl5csCZptg4
-        I/Sylbh6ZD7J7jRn1Fg9/mOzW1ooC0vfpyE7epw=
-X-Google-Smtp-Source: ABdhPJxB6TJlgu1o3FLWomlpGuf9FbFSkPg8W1963ZV6qmS8zbuKAuZX7xZ4UTGLotnbbpRUNol21y/AFJHlcpA0/ew=
-X-Received: by 2002:a5d:6c6f:: with SMTP id r15mr300802wrz.428.1632325656698;
- Wed, 22 Sep 2021 08:47:36 -0700 (PDT)
+        id S236449AbhIVPv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:51:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231712AbhIVPv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 11:51:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C150A610A1;
+        Wed, 22 Sep 2021 15:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632325798;
+        bh=bG1NBP4It5lN9mNWkYcfkuu4qZacuaz/60AX2jQWjTE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TV1auz9/KtJeMADAOSvuTYcU86ONLBAOf4bCIG+FrDqf+V0OwtMCNCI9EuC5H2YXj
+         F6nT5TT8m6996iV82s1CbteoS28EBcfjvlSybGHeMCqG98FPss7hlxTPRCzsEZhCQR
+         oK2iY4Nh3BMi1YCg3Zgjp2buFbfep00ijEqiR/6M1oAMT6RYpWW09P9/MJORjpx329
+         HELvPOF8qBCPKtBs42oMP8TAIg6e+2vw3oHh/X547tbB2/eCavNCPoIkwq/hluA+f+
+         n3DdjY0HiXhmZKyzDxAuSpuLpCuJr0iJtXSv/3X8mE15MVOT9F86f1FpMRJ6v++l35
+         eawiKOZUCmahA==
+Date:   Wed, 22 Sep 2021 08:49:50 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Emma Anholt <emma@anholt.net>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Openrisc <openrisc@lists.librecores.org>
+Subject: Re: [PATCH v3 1/6] drm/vc4: select PM (openrisc)
+Message-ID: <YUtQnml8FO8BC7sM@archlinux-ax161>
+References: <20210819135931.895976-1-maxime@cerno.tech>
+ <20210819135931.895976-2-maxime@cerno.tech>
+ <8a5cdcf5-33ed-398f-243a-b8889fd754e3@infradead.org>
+ <20210922084156.xqru5fdjkarbkyew@gilmour>
 MIME-Version: 1.0
-References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
-In-Reply-To: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 22 Sep 2021 17:47:20 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
-Message-ID: <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
-Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:D320V8nbizMexIsreqyaNEfawUV75M+EGuv3g1eNZa4qn4Gj/Rd
- 9Uias6asfUC7z4DmcY1P9AjeFam/hr2dsrHABvW5U3IkO532fKQdBycJJ9VVIGvfvImoTe2
- u/Hhq+/m45WmRuIIEF4UqFOPulfmjO+gmWOkwS9My/BxlEiaCxNUMjmkGgCjqE7lPFeh2W9
- HFNOBAvUdfk3xAC609Bug==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TaM9WpEECRc=:Uty0OEb+PzWhfhq2H/A64C
- RQaV6GEPSN2evGY0ZS+a+fPsF0AsSUChOgySw+QQjWpezAFS2qnAR4ihld8YI6VRGbT9gaEVC
- +D7gk230ZuBP9Co29k0iOIrUtuxWldQtfnfnO85s+PXZ4NrMERd6lskY3uv1854NWgzJNR9Ic
- ARwQaGhhWgea1pjImc/A2SS2CCZz5hRqslu1+wtRUL4O11ZdbIVzCIDU0a90FsUEBeV3nHtz0
- JgpHqGQCJcgmxAa5YTqqI3eAXfABnZam211/0bpkylh+4EznZ6CDYYNg5W8rGVGPYcRDN6uOI
- Adje7sn5yuuAxYT3RoiAFe6ZJ20aWH+OxiBUDL0JTvnxjQRBcm91fbQY7osUnL+NB9QFb+WY2
- ODdHNqg5gSxTnIHI3AFIBFtpiSl4ryzCfVnD3RGLkBcbfd1oqsGwkNqMwoTCyvM3B3BIJL6V0
- YTJKu/7EwDFWMcFwF4Pr/taPu3CHENWDOvnCy6gAv02qBibVgb2FH7BLqajvkDHWBgSWHbK8C
- an2JIFgprEAgVIKJlKX8Gxhqi7ufS75RSeeJX5st0OzLiBDR5Yqaqf06/lrSj8hP0Wzoo1tfV
- q6fIvQ55QnwhaU7HDAlg6kV2hMTjSMQyJe26Lsv29ISB6MuE9dcxiYFLCXts2ZuNfWm+5GWKb
- n27zAk/P5WU3S0XRF/fB6zXF4SC4CmuwxyG16vZAxWdNFvvqInKMBOC0MuKYAuQ5qdwudISgc
- M4LsbonUqsPPqNpe7Y5Uzha1zLsd+gII5rlvSExvHF2jGVoR9Wa6HVOV7UQa5XKUx8VIpMn5x
- GS+6H1L6ADEEbyIWbvTKnBe+Dq6A07JLyui7Gxt/zhHhAzy1fwLD4lioOssZKvyc6cftLunBE
- +TYGzQsEF17Xh2M66IZQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922084156.xqru5fdjkarbkyew@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 6:23 AM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
+On Wed, Sep 22, 2021 at 10:41:56AM +0200, Maxime Ripard wrote:
+> Hi Randy,
+> 
+> On Sun, Sep 19, 2021 at 09:40:44AM -0700, Randy Dunlap wrote:
+> > On 8/19/21 6:59 AM, Maxime Ripard wrote:
+> > > We already depend on runtime PM to get the power domains and clocks for
+> > > most of the devices supported by the vc4 driver, so let's just select it
+> > > to make sure it's there, and remove the ifdef.
+> > > 
+> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > > ---
+> > >   drivers/gpu/drm/vc4/Kconfig    | 1 +
+> > >   drivers/gpu/drm/vc4/vc4_hdmi.c | 2 --
+> > >   2 files changed, 1 insertion(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/gpu/drm/vc4/Kconfig b/drivers/gpu/drm/vc4/Kconfig
+> > > index 118e8a426b1a..f774ab340863 100644
+> > > --- a/drivers/gpu/drm/vc4/Kconfig
+> > > +++ b/drivers/gpu/drm/vc4/Kconfig
+> > > @@ -9,6 +9,7 @@ config DRM_VC4
+> > >   	select DRM_KMS_CMA_HELPER
+> > >   	select DRM_GEM_CMA_HELPER
+> > >   	select DRM_PANEL_BRIDGE
+> > > +	select PM
+> > >   	select SND_PCM
+> > >   	select SND_PCM_ELD
+> > >   	select SND_SOC_GENERIC_DMAENGINE_PCM
+> > > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> > > index c2876731ee2d..602203b2d8e1 100644
+> > > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> > > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> > > @@ -2107,7 +2107,6 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
+> > >   	return 0;
+> > >   }
+> > > -#ifdef CONFIG_PM
+> > >   static int vc4_hdmi_runtime_suspend(struct device *dev)
+> > >   {
+> > >   	struct vc4_hdmi *vc4_hdmi = dev_get_drvdata(dev);
+> > > @@ -2128,7 +2127,6 @@ static int vc4_hdmi_runtime_resume(struct device *dev)
+> > >   	return 0;
+> > >   }
+> > > -#endif
+> > >   static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+> > >   {
+> > > 
+> > 
+> > Hi,
+> > 
+> > FYI.
+> > 
+> > This still causes a build error on arch/openrisc/ since it does not support
+> > CONFIG_PM (it does not source "kernel/power/Kconfig" like some other arches do):
+> > 
+> > ./arch/riscv/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/x86/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/nds32/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/sh/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/arc/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/arm64/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/xtensa/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/sparc/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/arm/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/mips/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/powerpc/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/um/Kconfig:source "kernel/power/Kconfig"
+> > ./arch/ia64/Kconfig:source "kernel/power/Kconfig"
+> > 
+> > so with
+> > CONFIG_DRM_VC4=y
+> > # CONFIG_DRM_VC4_HDMI_CEC is not set
+> > 
+> > I still see
+> > ../drivers/gpu/drm/vc4/vc4_hdmi.c:2139:12: warning: 'vc4_hdmi_runtime_suspend' defined but not used [-Wunused-function]
+> >  2139 | static int vc4_hdmi_runtime_suspend(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> With what version did you get that build error? -rc2 shouldn't have it
+> anymore since the runtime_pm hooks introduction got reverted.
 
-> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> index d84381ce82b5..7d7aab1d1d64 100644
-> --- a/drivers/pci/of.c
-> +++ b/drivers/pci/of.c
-> @@ -564,12 +564,14 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
->
->                 switch (resource_type(res)) {
->                 case IORESOURCE_IO:
-> +#ifdef PCI_IOBASE
->                         err = devm_pci_remap_iospace(dev, res, iobase);
->                         if (err) {
->                                 dev_warn(dev, "error %d: failed to map resource %pR\n",
->                                          err, res);
->                                 resource_list_destroy_entry(win);
->                         }
-> +#endif
->                         break;
+-next still contains these patches as Stephen effectively reverted the
+changes in Linus' tree when merging in the drm-misc-fixes tree:
 
-I wonder if we should have a different symbol controlling this than PCI_IOBASE,
-because we are somewhat overloading the semantics here. There are a couple
-of ways that I/O space can be handled
+https://lore.kernel.org/r/20210920090729.19458953@canb.auug.org.au/
 
-a) inb()/outb() are custom instructions, as on x86, PCI_IOBASE is not defined
-b) there is no I/O space, as on s390, PCI_IOBASE is not defined
-c) PCI_IOBASE points to a virtual address used for dynamic mapping of I/O
-    space, as on ARM
-d) PCI_IOBASE is NULL, and the port number corresponds to the virtual
-   address (some older architectures)
-
-I'm not completely sure where your platform fits in here, it sounds like you
-address them using a machine specific physical address as the base in
-inb() plus the port number as an offset, is that correct?
-
-       Arnd
+Cheers,
+Nathan
