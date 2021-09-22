@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50488413E91
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7182F413E9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhIVARN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 20:17:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58822 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231690AbhIVARM (ORCPT
+        id S231225AbhIVA0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 20:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhIVAZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 20:17:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632269742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v3dL4FvidqqtKSFv5hVIotnqO/OfCmL/sS6Sby/WQIs=;
-        b=CZ/aL0rCDJBhXDRSKx4VxrujaRBnuqr5rvcO/ti1I61SPhwS2CpjaYi86y1orm4oFP50O7
-        gzXUCUDlxf/TD+d/2imM8+/TB8zYSB96DHcek8dCJwbXJ8nANawL6AEIKXYgLddL+CcNy3
-        8W+6aG2fnc8obKDhb+jdTzvdAjVyy4Y=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-ONJ07cn3MXirapUpLuMJ8w-1; Tue, 21 Sep 2021 20:15:41 -0400
-X-MC-Unique: ONJ07cn3MXirapUpLuMJ8w-1
-Received: by mail-qt1-f198.google.com with SMTP id b15-20020a05622a020f00b0029e28300d94so4795906qtx.16
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:15:41 -0700 (PDT)
+        Tue, 21 Sep 2021 20:25:59 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734ECC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:24:30 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id a3so1826806oid.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=Hf6Vp80+wIn/KQ49ssxtpe6J0FEpDcx3iJaae+hOiS4=;
+        b=MR5A5PaM8kTVWrRY5xBSFlPjfMBjW6eAbL3P9GdXpswPZNYKj9wqCll697/9rVEhBv
+         7Xf9idcgBtPmWxERSix4BsI/dZMRCGek9p+/PixgZeSNTSFzaUI4tN1ohK5r1MV7STc/
+         Hq4I5Ej4ROOJBGi3UK3DHEhzOPQXAS+NbK6ig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v3dL4FvidqqtKSFv5hVIotnqO/OfCmL/sS6Sby/WQIs=;
-        b=V8ZerXjSQvxfsw4rSksAbqUE6ChvKJ8DyEuCzynRyT4we9WdLqxLijXSZMM7ApA2rs
-         AOeip/5KbXg0hnAjdQZYmc8nnCVeM2Ac50MWSQujYDUTXwhxXajikL+Qi+kEaPisuFDC
-         ginvVqS3YukWF9HSbZ0XR9q8xoYVfmR/y4M8faB8zUv29nPYZsVT+gR/9/fFH8KkJwP8
-         9V0ozYrg9qSgqZK8biT95I0TQkf2M6arOFOhk5mRhUQinIg1GgBJM+YLBzEoFdah5dgw
-         osnR28Ulf99dkKfEPjKY/JjIWmimCyAh0WsyIlgtFaKQDDEP4Ed9sBxpXnnpXYSI+kAY
-         3PeA==
-X-Gm-Message-State: AOAM5324NsNnvh3SwNohcn9DfjeB09ZT/eQSkpOU+HCGeyeUohvZDkrc
-        WmaI70PKmPuv0sDYcPQ7CM89se3vB2E9lrR7PwoM8uzVb3ZxmzU3N3n/qOPqK022XJqHBtf/XYQ
-        KkF/+sKr2qE1BkfmKA2P+AtwK
-X-Received: by 2002:a37:a143:: with SMTP id k64mr14021056qke.402.1632269741382;
-        Tue, 21 Sep 2021 17:15:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4RxlQB8E8BS90k1fJDSDyVTsE2hzh5oRAeAS8+vPCaPq6hkolGLn8GzLe3tKjXieOAyuipg==
-X-Received: by 2002:a37:a143:: with SMTP id k64mr14021046qke.402.1632269741160;
-        Tue, 21 Sep 2021 17:15:41 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id x4sm483761qkx.62.2021.09.21.17.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 17:15:40 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 17:15:37 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Vito Caputo <vcaputo@pengaru.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>, peterz@infradead.org,
-        luto@kernel.org, jannh@google.com,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: CONFIG_ORC_UNWINDER=y breaks get_wchan()?
-Message-ID: <20210922001537.4ktg3r2ky3b3r6yp@treble>
-References: <20210921193249.el476vlhg5k6lfcq@shells.gnugeneration.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=Hf6Vp80+wIn/KQ49ssxtpe6J0FEpDcx3iJaae+hOiS4=;
+        b=l2jeNA+Nms93lQ+6Up43s963QFApC+9a4QhBYWvaNbH7kQhJg6iOKsUHvQ+lzP6U25
+         527lKPlqdGVolGsCQJnUCOJmsKbVFRStRPP/Ypeh+UG24JMWdbz7ov8icv7wUZfTO50z
+         tcKsiTTo17NCcgQSM5C8G1aOqCR0iciRa8zaFTmQleEJ8kRJlb/OE9eoQN9uYMfbDlhg
+         2wnsYie51WmkBCQLvj96lkmVncJXEGKNY5edIbHqSju05hUc9rmeo4wwbh7urGd9EPNH
+         j5ChYHG7wyVRg8IiqYfAl0PqFuGpjX+d+33XtGIFhUILFltkVERUsnRLaTndq/MfYFf2
+         KsTg==
+X-Gm-Message-State: AOAM530sFxpVrEHSPC7S55McjwYSLnRweLNmwgO1wGJ+OpfWNF/NuXFv
+        DXyJOs43SZqkJGuePFWcHK+Ezh3ouU8vPjoKXUJdR+xae+E=
+X-Google-Smtp-Source: ABdhPJy+7x+o01xSRcYL1tP3gc/HLpDYlxHmu9rG3Eq6t1GkJCp7L77UDYrdDQYJ9J3mh6xNGheKnMg3238u+Tv1eHE=
+X-Received: by 2002:aca:3110:: with SMTP id x16mr5889098oix.64.1632270269763;
+ Tue, 21 Sep 2021 17:24:29 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 21 Sep 2021 17:24:29 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210921193249.el476vlhg5k6lfcq@shells.gnugeneration.com>
+In-Reply-To: <20210921110556.v6.1.I2351df94f18d5d8debc22d4d100f36fac560409a@changeid>
+References: <20210921110556.v6.1.I2351df94f18d5d8debc22d4d100f36fac560409a@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 21 Sep 2021 17:24:29 -0700
+Message-ID: <CAE-0n53A6VOqnCakvHJ+AwiHcZRnkZ+XAhCgXOZce53SDr-B6g@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] drm/bridge: parade-ps8640: Use regmap APIs
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>
+Cc:     dianders@chromium.org, Sam Ravnborg <sam@ravnborg.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 12:32:49PM -0700, Vito Caputo wrote:
-> Is this an oversight of the ORC_UNWINDER implementation?  It's
-> arguably a regression to completely break wchans for tools like `ps -o
-> wchan` and `top`, or my window manager and its separate monitoring
-> utility.  Presumably there are other tools out there sampling wchans
-> for monitoring as well, there's also an internal use of get_chan() in
-> kernel/sched/fair.c for sleep profiling.
-> 
-> I've occasionally seen when monitoring at a high sample rate (60hz) on
-> something churny like a parallel kernel or systemd build, there's a
-> spurious non-zero sample coming out of /proc/[pid]/wchan containing a
-> hexadecimal address like 0xffffa9ebc181bcf8.  This all smells broken,
-> is get_wchan() occasionally spitting out random junk here kallsyms
-> can't resolve, because get_chan() is completely ignorant of
-> ORC_UNWINDER's effects?
+Quoting Philip Chen (2021-09-21 11:06:16)
+> Replace the direct i2c access (i2c_smbus_* functions) with regmap APIs,
+> which will simplify the future update on ps8640 driver.
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: Philip Chen <philipchen@chromium.org>
+> ---
 
-Hi Vito,
-
-Thanks for reporting this.  Does this patch fix your issue?
-
-  https://lkml.kernel.org/r/20210831083625.59554-1-zhengqi.arch@bytedance.com
-
-Though, considering wchan has been silently broken for four years, I do
-wonder what the impact would be if we were to just continue to show "0"
-(and change frame pointers to do the same).
-
-The kernel is much more cautious than it used to be about exposing this
-type of thing.  Can you elaborate on your use case?
-
-If we do keep it, we might want to require CAP_SYS_ADMIN anyway, for
-similar reasons as 
-
-  f8a00cef1720 ("proc: restrict kernel stack dumps to root")
-
-... since presumably proc_pid_wchan()'s use of '%ps' can result in an
-actual address getting printed if the unwind gets confused, thanks to
-__sprint_symbol()'s backup option if kallsyms_lookup_buildid() doesn't
-find a name.
-
-Though, instead of requiring CAP_SYS_ADMIN, maybe we can just fix
-__sprint_symbol() to not expose addresses?
-
-Or is there some other reason for needing CAP_SYS_ADMIN?  Jann?
-
--- 
-Josh
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
