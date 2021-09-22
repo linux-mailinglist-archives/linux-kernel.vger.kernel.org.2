@@ -2,96 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C53F415046
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D9441504A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237152AbhIVS66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:58:58 -0400
-Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:56794 "EHLO
-        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230407AbhIVS65 (ORCPT
+        id S237162AbhIVTAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:00:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20359 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230407AbhIVTAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:58:57 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id D0D76D29CA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 19:57:25 +0100 (IST)
-Received: (qmail 24727 invoked from network); 22 Sep 2021 18:57:25 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Sep 2021 18:57:25 -0000
-Date:   Wed, 22 Sep 2021 19:57:24 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
- nr_running
-Message-ID: <20210922185724.GD3959@techsingularity.net>
-References: <20210920142614.4891-3-mgorman@techsingularity.net>
- <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
- <20210921103621.GM3959@techsingularity.net>
- <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
- <20210922132002.GX3959@techsingularity.net>
- <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
- <20210922150457.GA3959@techsingularity.net>
- <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
- <20210922173853.GB3959@techsingularity.net>
- <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+        Wed, 22 Sep 2021 15:00:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632337124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ofPcTS/frwqtKKjQDjZ8KF5U88MhOUDV+L9va2W8ZM=;
+        b=cbb5moN7q4785lp4ti/jfNkgcAw9VTrMzyr8Aa0iK+SLHOu1wDmRk7ITt5OxiFmSLc7h7O
+        UW6PbE4Cwvr1I1+pI/tyIUEmhcPmrzvZOKA6rnfe2DiBQ3IrkqX77H5YvkZkU1bcsP6/mu
+        DS3PqOdy4GBD4HJp7JWzPHFFoWFjJo0=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-LI7AWH2RPmm97VmBqRE9zA-1; Wed, 22 Sep 2021 14:58:42 -0400
+X-MC-Unique: LI7AWH2RPmm97VmBqRE9zA-1
+Received: by mail-qv1-f69.google.com with SMTP id p12-20020ad4496c000000b0037a535cb8b2so13438220qvy.15
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:58:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4ofPcTS/frwqtKKjQDjZ8KF5U88MhOUDV+L9va2W8ZM=;
+        b=ByerSr/KA40Yyn/hX+6RFGbpeOpBAX+ouncmbLGoSjRxvdHmfa1m8dYb5agE9icA2/
+         4ECH9ncv4w17O3gjx9JsOotDFZjdOZR2VcD3Haq5yOPdihrBPi1NtqC5c4No+CC4QyhD
+         2gX/nOdmNf4239HWhu8lk58pht+F3JjDCLys5tXwmOfar2OkdR1CqI+3QU049sIEIK8r
+         NUAbja6J1CgwkSa8Z22tZ4XUp3ftJTHj8FC+EdnHp5gzlyyXrVFXRAI9EHpzSnZ3an1i
+         dPaZy9EtwzNnzpO4SGRBklzO0Z/HMSh6B0IVJ3KGi5UCZxB6fE5YgkUbJ708WAzy2b+K
+         zl+Q==
+X-Gm-Message-State: AOAM533f3M/82L02lGTMnvedl2lfPklRNatDf2JfrJQ6CdrSPmazOxh2
+        z8OS7GlDSAzNFblmkhGTWplfAGdD5MALg78YN94hK8TPSvE/zesmy2FT9UfrvZZ2j3bwMIXkTIh
+        Gi+DKzA+IfGshucIp57lHssGp
+X-Received: by 2002:a05:6214:44f:: with SMTP id cc15mr652425qvb.6.1632337122267;
+        Wed, 22 Sep 2021 11:58:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwdziVJ7/s9bivZNO1Y6zqgwQrqh8ywi/LR/XDhj5zKc+Q4un+WmnGk28QCYMLRSTQt7VpsIA==
+X-Received: by 2002:a05:6214:44f:: with SMTP id cc15mr652399qvb.6.1632337122015;
+        Wed, 22 Sep 2021 11:58:42 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id c16sm1579816qkk.113.2021.09.22.11.58.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 11:58:41 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 14:58:39 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+Subject: Re: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
+Message-ID: <YUt833H6eaYFyHXD@t490s>
+References: <20210922175156.130228-1-peterx@redhat.com>
+ <6bbb8e29-9e21-dfbe-d23d-61de7e3cc6db@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <6bbb8e29-9e21-dfbe-d23d-61de7e3cc6db@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 08:22:43PM +0200, Vincent Guittot wrote:
-> > > > > In
-> > > > > your case, you want hackbench threads to not preempt each others
-> > > > > because they tries to use same resources so it's probably better to
-> > > > > let the current one to move forward but that's not a universal policy.
-> > > > >
-> > > >
-> > > > No, but have you a better suggestion? hackbench might be stupid but it's
-> > > > an example of where a workload can excessively preempt itself. While
-> > > > overloading an entire machine is stupid, it could also potentially occurs
-> > > > for applications running within a constrained cpumask.
-> > >
-> > > But this is property that is specific to each application. Some can
-> > > have a lot of running threads but few wakes up which have to preempt
-> > > current threads quickly but others just want the opposite
-> > > So because it is a application specific property we should define it
-> > > this way instead of trying to guess
-> >
-> > I'm not seeing an alternative suggestion that could be turned into
-> > an implementation. The current value for sched_wakeup_granularity
-> > was set 12 years ago was exposed for tuning which is no longer
-> > the case. The intent was to allow some dynamic adjustment between
-> > sysctl_sched_wakeup_granularity and sysctl_sched_latency to reduce
-> > over-scheduling in the worst case without disabling preemption entirely
-> > (which the first version did).
-> >
-> > Should we just ignore this problem and hope it goes away or just let
-> > people keep poking silly values into debugfs via tuned?
+On Wed, Sep 22, 2021 at 08:21:40PM +0200, David Hildenbrand wrote:
+> On 22.09.21 19:51, Peter Xu wrote:
+> > We forbid merging thps for uffd-wp enabled regions, by breaking the khugepaged
+> > scanning right after we detected a uffd-wp armed pte (either present, or swap).
+> > 
+> > It works, but it's less efficient, because those ptes only exist for VM_UFFD_WP
+> > enabled VMAs.  Checking against the vma flag would be more efficient, and good
+> > enough.  To be explicit, we could still be able to merge some thps for
+> > VM_UFFD_WP regions before this patch as long as they have zero uffd-wp armed
+> > ptes, however that's not a major target for thp collapse anyways.
+> > 
 > 
-> We should certainly not add a bandaid because people will continue to
-> poke silly value at the end. And increasing
-> sysctl_sched_wakeup_granularity based on the number of running threads
-> is not the right solution. According to the description of your
-> problem that the current task doesn't get enough time to move forward,
-> sysctl_sched_min_granularity should be part of the solution. Something
-> like below will ensure that current got a chance to move forward
+> Hm, are we sure there are no users that could benefit from the current
+> handling?
 > 
+> I'm thinking about long-term uffd-wp users that effectively end up wp-ing on
+> only a small fraction of a gigantic vma, or always wp complete blocks in a
+> certain granularity in the range of THP.
 
-That's a very interesting idea! I've queued it up for further testing
-and as a comparison to the bandaid.
+Yes, that's a good question.
+
+> 
+> Databases come to mind ...
+
+One thing to mention is that this patch didn't forbid thp being used within a
+uffd-wp-ed range.  E.g., we still allow thp exist, we can uffd-wp a thp and
+it'll split only until when the thp is written.
+
+While what this patch does is it stops khugepaged from proactively merging
+those small pages into thps as long as VM_UFFD_WP|VM_UFFD_MINOR is set.  It may
+still affect some user, but it's not a complete disable on thp.
+
+> 
+> In the past, I played with the idea of using uffd-wp to protect access to
+> logically unplugged memory regions part of virtio-mem devices in QEMU --
+> which would exactly do something as described above. But I'll most probably
+> be using ordinary uffd once any users that might read such logically
+> unplugged memory have been "fixed".
+
+Yes, even if you'd like to keep using uffd-wp that sounds like a very
+reasonable scenario.
+
+> 
+> The change itself looks sane to me AFAIKT.
+
+So one major motivation of this patch of mine is to prepare for shmem, because
+the old commit obviously only covered anonymous.
+
+But after a 2nd thought, I just noticed shmem shouldn't have a problem with
+khugepaged merging at all!
+
+The thing is, when khugepaged is merging a shmem thp, unlike anonymous, it'll
+not merge the ptes into a pmd, but it'll simply zap the ptes.  It means all
+uffd-wp tracking information won't be lost even if merging happened, those info
+will still be kept inside pgtables using (the upcoming) pte markers.
+
+When faulted, we'll just do small page mappings while it won't stop the shmem
+thp from being mapped hugely in other mm, afaict.
+
+With that in mind, indeed I see this patch less necessary to be merged; so for
+sparsely wr-protected vmas like virtio-mem we can still keep some of the ranges
+mergeable, that sounds a good thing to keep it as-is.
+
+NACK myself for now: let's not lose that good property of both thp+uffd-wp so
+easily, and I'll think more of it.
+
+(To Axel: my question to minor mode handling thp still stands, I think..)
+
+Thanks,
 
 -- 
-Mel Gorman
-SUSE Labs
+Peter Xu
+
