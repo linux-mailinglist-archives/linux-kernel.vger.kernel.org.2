@@ -2,138 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C344146D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C77414717
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235381AbhIVKoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:44:10 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:47196 "EHLO inva020.nxp.com"
+        id S235266AbhIVK6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235388AbhIVKn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:43:58 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EFF621A140C;
-        Wed, 22 Sep 2021 12:42:26 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8D53A1A23F5;
-        Wed, 22 Sep 2021 12:42:26 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 2A6F2183ACDC;
-        Wed, 22 Sep 2021 18:42:24 +0800 (+08)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
-        UNGLinuxDriver@microchip.com, vinicius.gomes@intel.com,
-        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
-        jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, kuba@kernel.org,
-        xiaoliang.yang_1@nxp.com, po.liu@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, f.fainelli@gmail.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, claudiu.manoil@nxp.com
-Subject: [PATCH v4 net-next 8/8] net: dsa: felix: use vcap policer to set flow meter for psfp
-Date:   Wed, 22 Sep 2021 18:52:02 +0800
-Message-Id: <20210922105202.12134-9-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210922105202.12134-1-xiaoliang.yang_1@nxp.com>
-References: <20210922105202.12134-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S235123AbhIVK6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:58:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A3CA60ED7;
+        Wed, 22 Sep 2021 10:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632308193;
+        bh=AU3eAVQ3E4tohBMshWxiOAyUqFg6wmmF2TEuQwxk1K4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uWaFnuBdoPKXKXfJE6p9k4asTcMuvae5MoYmInpwI5sELfZf0ouMwAJyXZ5c/cUr1
+         ztE9MezqTEsMJQHIyorJLO/OaEkyJacWUZgOjbK6mM2NGoW46/+ZE48//2aCkOtXdi
+         43OJEe/UrXcFIU23mgKcBW5TqVNlLUQOwcTKjegWwKdfIa3cs5ka5YzBBpcNzNuazK
+         i+KxODgWFB0ePNaPOYrTmk7vzStZJLjKjx3XMqqgaXFK+K2jPjXNiBgoxD0Hp/YxJ2
+         yhIsKYMhSvFG4kRhOWHuVDVD0YHSYaUfmvyaXMvdlpi16gg6601S+2t3ORX+sXKg7+
+         OXPK/8V7j2x2Q==
+Received: by pali.im (Postfix)
+        id 0F95E79F; Wed, 22 Sep 2021 12:56:31 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [RESEND PATCH v5 0/6] serial: mvebu-uart: Support for higher baudrates
+Date:   Wed, 22 Sep 2021 12:54:27 +0200
+Message-Id: <20210922105433.11744-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add police action to set flow meter table which is defined
-in IEEE802.1Qci. Flow metering is two rates two buckets and three color
-marker to policing the frames, we only enable one rate one bucket in
-this patch.
+Per Greg's request I'm resending this patch series, please review it:
+https://lore.kernel.org/linux-serial/YUmMli6LA%2F7Ew3hD@kroah.com/
 
-Flow metering shares a same policer pool with VCAP policers, so the PSFP
-policer calls ocelot_vcap_policer_add() and ocelot_vcap_policer_del() to
-set flow meter police.
+This patch series add support for baudrates higher than 230400 on
+Marvell Armada 37xx boards.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
----
- drivers/net/dsa/ocelot/felix_vsc9959.c | 32 +++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+Pali Rohár (6):
+  math64: New DIV_U64_ROUND_CLOSEST helper
+  serial: mvebu-uart: implement UART clock driver for configuring UART
+    base clock
+  dt-bindings: mvebu-uart: document DT bindings for
+    marvell,armada-3700-uart-clock
+  dt-bindings: mvebu-uart: update information about UART clock
+  arm64: dts: marvell: armada-37xx: add device node for UART clock and
+    use it
+  serial: mvebu-uart: implement support for baudrates higher than 230400
 
-diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-index 1418d2a66bd6..1118101d0ee8 100644
---- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-+++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-@@ -1343,6 +1343,7 @@ static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
- 
- #define VSC9959_PSFP_SFID_MAX			175
- #define VSC9959_PSFP_GATE_ID_MAX		183
-+#define VSC9959_PSFP_POLICER_BASE		63
- #define VSC9959_PSFP_POLICER_MAX		383
- #define VSC9959_PSFP_GATE_LIST_NUM		4
- #define VSC9959_PSFP_GATE_CYCLETIME_MIN		5000
-@@ -1854,7 +1855,10 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 	struct felix_stream stream = {0};
- 	struct felix_stream_gate *sgi;
- 	struct ocelot_psfp_list *psfp;
-+	struct ocelot_policer pol;
- 	int ret, i, size;
-+	u64 rate, burst;
-+	u32 index;
- 
- 	psfp = &ocelot->psfp;
- 
-@@ -1873,13 +1877,33 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 			ret = vsc9959_psfp_sgi_table_add(ocelot, sgi);
- 			if (ret) {
- 				kfree(sgi);
--				return ret;
-+				goto err;
- 			}
- 			sfi.sg_valid = 1;
- 			sfi.sgid = sgi->index;
- 			kfree(sgi);
- 			break;
- 		case FLOW_ACTION_POLICE:
-+			index = a->police.index + VSC9959_PSFP_POLICER_BASE;
-+			if (index > VSC9959_PSFP_POLICER_MAX) {
-+				ret = -EINVAL;
-+				goto err;
-+			}
-+
-+			rate = a->police.rate_bytes_ps;
-+			burst = rate * PSCHED_NS2TICKS(a->police.burst);
-+			pol = (struct ocelot_policer) {
-+				.burst = div_u64(burst, PSCHED_TICKS_PER_SEC),
-+				.rate = div_u64(rate, 1000) * 8,
-+			};
-+			ret = ocelot_vcap_policer_add(ocelot, index, &pol);
-+			if (ret)
-+				goto err;
-+
-+			sfi.fm_valid = 1;
-+			sfi.fmid = index;
-+			sfi.maxsdu = a->police.mtu;
-+			break;
- 		default:
- 			return -EOPNOTSUPP;
- 		}
-@@ -1916,6 +1940,9 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 	if (sfi.sg_valid)
- 		vsc9959_psfp_sgi_table_del(ocelot, sfi.sgid);
- 
-+	if (sfi.fm_valid)
-+		ocelot_vcap_policer_del(ocelot, sfi.fmid);
-+
- 	return ret;
- }
- 
-@@ -1939,6 +1966,9 @@ static int vsc9959_psfp_filter_del(struct ocelot *ocelot,
- 	if (sfi->sg_valid)
- 		vsc9959_psfp_sgi_table_del(ocelot, sfi->sgid);
- 
-+	if (sfi->fm_valid)
-+		ocelot_vcap_policer_del(ocelot, sfi->fmid);
-+
- 	vsc9959_psfp_sfi_table_del(ocelot, stream->sfid);
- 
- 	stream->sfid_valid = 0;
+ .../bindings/clock/armada3700-uart-clock.yaml |  57 ++
+ .../devicetree/bindings/serial/mvebu-uart.txt |   9 +-
+ .../arm64/boot/dts/marvell/armada-3720-db.dts |   4 +
+ .../dts/marvell/armada-3720-espressobin.dtsi  |   4 +
+ .../dts/marvell/armada-3720-turris-mox.dts    |   4 +
+ .../boot/dts/marvell/armada-3720-uDPU.dts     |   4 +
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  15 +-
+ drivers/tty/serial/Kconfig                    |   1 +
+ drivers/tty/serial/mvebu-uart.c               | 592 +++++++++++++++++-
+ include/linux/math64.h                        |  13 +
+ 10 files changed, 682 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
+
 -- 
-2.17.1
+2.20.1
 
