@@ -2,115 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD17414E1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7765B414E18
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236619AbhIVQaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhIVQax (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:30:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF66BC061574;
-        Wed, 22 Sep 2021 09:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/bg8mgxozFDsyBXWUCU4D/OveolCgwjbJqJNs7JQP/U=; b=fq8uuURZmuYEV+T6V8jh+sIKRT
-        ZPzQVWXPFcxfKLNNntZnKahM60EK4OJCJX7/OIPx+S7y6wlL+0b4O9wI+JW6X3Jr513UYtFrsn+Fy
-        R3VTvKuiy5tgk+kxvsN//YdoIv7wNdbl2PA+kny53pQWUVcgy7tNqtbWGgS6/PpZug+SsenI476B2
-        Dua80cSWa5zukDcLCwIe7rWL+KCSoDtZUSR7RtrWwkEVx8XWSDjo4r3hg6Tdx4J+ssS6uiKH+++JT
-        j79U87wYVCuKdYEVrNNE00xcHl2s1cz7cGFkmnc4fCx+B51ahjr5qElcjLn0CJ1jhfkSSM+Lw00VP
-        jOC5Y8kw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT54h-004wPq-HM; Wed, 22 Sep 2021 16:26:52 +0000
-Date:   Wed, 22 Sep 2021 17:26:23 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YUtZL0e2eBIQpLPE@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YUtPvGm2RztJdSf1@moria.home.lan>
+        id S236612AbhIVQ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:29:07 -0400
+Received: from mail-dm6nam08on2042.outbound.protection.outlook.com ([40.107.102.42]:4608
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229671AbhIVQ3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 12:29:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TnLXTaGDSeGDhedyfGrPBskm3131jvlqF/uNrTwP81aYmM6VLQ0Lzt7+4OgS/KqL0Kx8AOzNun8Fv7v6fLzB6nPLUPz/s9JJXvzByemNhYoQ0d+h9cKvnorg9dG/6TZfOFb/pvSydlARvPxeNHITH0hpkcVrTvnXSvp0R7m6wIFuWzwIY0Em3YTxRuev8IprQtlQZ7U+/+Dw0pAKjc623Hw2Wvb2QVhpgxZ6UDp7IP+XoT4sZrCeGj+lTuleLjnepx9fH1I4s44/kIFFIxaaQfqTLkGBXcg/RJGXAHbDgmhv35U4555P8w5Aat8jvhuArqnftvh+lMQiqAlKRRmvCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=ZEupYmMCKXYocHTObK9CcGUNExxzh4kfHXYpUnpWCaM=;
+ b=gQGaWqvmrdC1RhABliJHp5er3EG2jllmM23onR30BswGivCwu1pH5OZHIlKRTEjbb4lXVSPv9Qg0Li/Hlvnsh1S1CvWfmMhNKuCIH0Ux9sKFmIgvANT3pvrJGaJNR3JuSOczcSjdN4u+nPG516v4GhFHr1JOWVKLCGwZvTsEZe0VlGvkDTnT/VVPf2o5EaQvwr29m6efeVYP1y9KOU5zn1SFLSbw+bxaLAzqHIgxMej5YzvCIF3YOFgT8kVA1Zkh0Nw6kRwcX31hF3ia08p+v3J9SfOgKtOIFTC0GzUBbNmexsV/FTsgp47uIXVofjo5hvV1BfoZ+gYCS7wIMsujdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZEupYmMCKXYocHTObK9CcGUNExxzh4kfHXYpUnpWCaM=;
+ b=Nvo/Dsew13AkUeEEz7SCedfIjZGqnth+A+H4wVVKZ3JMj/lj3wQkKIOEnhi5fNMH2tZfx6iZmFim6SYtttHxt9EtHIGno+zBg7lJWLjFbAIf9D/5JfYdq/iuqqd/HOXt/EhgCKs7hiPsF6gzYibKiyD+4PoAQdtyy5j8cnyLZOo=
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6)
+ by BL1PR12MB5141.namprd12.prod.outlook.com (2603:10b6:208:309::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
+ 2021 16:27:34 +0000
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::7140:d1a:e4:a16a]) by BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::7140:d1a:e4:a16a%8]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
+ 16:27:34 +0000
+From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        "Joshi, Mukul" <Mukul.Joshi@amd.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+CC:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "Ghannam, Yazen" <Yazen.Ghannam@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+Subject: RE: [PATCHv2 1/2] x86/MCE/AMD: Export smca_get_bank_type symbol
+Thread-Topic: [PATCHv2 1/2] x86/MCE/AMD: Export smca_get_bank_type symbol
+Thread-Index: AQHXqEUSdjNpA2ICZkm9W3JF6J6Jqquv+uwAgABRe8A=
+Date:   Wed, 22 Sep 2021 16:27:34 +0000
+Message-ID: <BL1PR12MB51444DA94F2DE3D12BBF31D1F7A29@BL1PR12MB5144.namprd12.prod.outlook.com>
+References: <20210511152538.148084-2-nchatrad@amd.com>
+ <20210913021311.12896-1-mukul.joshi@amd.com> <YUsUpkvP8zpz8yRz@zn.tnic>
+In-Reply-To: <YUsUpkvP8zpz8yRz@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2021-09-22T16:27:31Z;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP 2.0;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=13e84167-75b0-4fb3-a0e2-e85529697ec5;
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=1
+authentication-results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f034f20c-9d6b-435d-75ef-08d97de5e1fa
+x-ms-traffictypediagnostic: BL1PR12MB5141:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL1PR12MB5141B78B13E138AB8E1FE184F7A29@BL1PR12MB5141.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VMSnc6613HKxaIUWdtHD7sQqYdbC2Q9fpqVx+XBzOGAJbEL3232q3dPOqKpT968FCrAbeOgCN0RMbb22K/FnheThZ0IHffbG7CIjNscQOhTfxI9sbBAPmOIIU58ptVZEffazw34NfNka0azSjDP45Z8fvVxhJjprD4RpqAoaRuuW9aSynUsybmIj7hqTmpgXjBwB1ehrtd/m5QhOreVmj1k48EqurT+5PSU29OluGIT+hg39byAVRb3FZIctIQJWc5XdctCM6P9miCuga0WkszwyYxNgk6i/dbmPqYPP08ibGZKORTlNcIYTzWYNSV2hQjcT57XqN0dSfAO3fTu2A+34zHgShuSeOi1K/4CkcHPI7QWsgVBRbmBdP3kdJtmvqV7giRdW0ifQcYfOuvUzqp4wILAzhLNYgdnwXa+63Q5xerDCZrZLEgE6ytqOLlRSC32O01FnEsoI5nhc8w4y7mPyq/LY4beIFQdSRzQfH7ouKi1KzFYQ4izjmRT//wkXgRtgTk2O0sRmkqOdYKsGCNNngcqM5ziCH041Lss0+wa5aXJRtxujVCCBLkxvz2eaJBtBO4XNFpO9MYdV2HIX7lG3OZr/LBgV57B3bwSBCYUvXKJtNBY8trdcS1WlD9dO+1Lmam0Zaasvmb5vzhhr4E0IFczOPt9jFCykjenq9+IGv0kdNUqCMycW5aKU6HNNlNOirqazB6WeP+Pouw5ssEgBCIPPARoaYP3EgH47ZSv3qpetNmBkcX3qRauXvB+otPTPK7+lzxmDomGCnTJBP7hFovFE5RBR7FIlSWvRqCY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5144.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(53546011)(66446008)(76116006)(8936002)(5660300002)(26005)(64756008)(2906002)(83380400001)(54906003)(33656002)(4326008)(8676002)(110136005)(86362001)(316002)(9686003)(6506007)(7696005)(186003)(71200400001)(966005)(508600001)(55016002)(66556008)(66476007)(122000001)(38100700002)(45080400002)(38070700005)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?K9Eal3a+3riLG0Lb8ak6YAfFjakQFAC0QMGXZvhGTJYq0AHmBVL1NV81Ef+P?=
+ =?us-ascii?Q?MHMUj0opTmjNDJGB2nEoIm3r5H5uD6jPt/yCRpsHSWJ3p5R2VsS3C3YKLl6O?=
+ =?us-ascii?Q?JBMUUY52/lfJVMnRm72jfqDVmcR5Rp+F4aByRShMwp0Lih1bsZtoUbObugLn?=
+ =?us-ascii?Q?dwDTX3e57LfaXX4D2PYqOcutH9JWlo9icKfyF6+pZnQu0QYN9Yxlib0vvGx4?=
+ =?us-ascii?Q?K3gIgQn2BypVRQPlHCHKyAttVHpdKaaSElQx308yI+pn8w2SSXvhF/9aZJr3?=
+ =?us-ascii?Q?lEnu806tJLwzGaMaBfm2STblFOlIVSB9SMqjLx3VjsP7qH1Okf4WHtHZPT8B?=
+ =?us-ascii?Q?J/mWLDqun6FXJiTGtnggkZ3nmmK8xlRy9TWWq00Cmv3U4SKPiIQZ3pDFZrwA?=
+ =?us-ascii?Q?Am3VcMvfy/ofH1sx1H6KZAslLNaVsdTNkWocr/pZEAuTzM3du0U6unLrmBhn?=
+ =?us-ascii?Q?4qDufnJ0fQyubg67x6oKPO8is8ReHKtB631+iq5/JNY8+O6A9xdxz9kj0vmb?=
+ =?us-ascii?Q?N8UiCEHDNPQBkFBFNHaHYDgLAD4WGkdT28nAes/7Y+/RSkiYzFT3DXp4iDpL?=
+ =?us-ascii?Q?mECK8yyfUgLD0f0FX+NJ5Ifyt3CPxCpm9nzQEEySnScBG1fqohxL1CBqiKSX?=
+ =?us-ascii?Q?2gOECXQepsYB5DSs1YfsYod5CfbpVpPshQIevgXHhfi8qopfSCRjiHVImGnw?=
+ =?us-ascii?Q?I7gDibLCCnWwY0b5tcZw3R1AmLTBBUfCgXS1H1w0quodjvPk7/8T2ORZEdSq?=
+ =?us-ascii?Q?5zSaMwWsaD2Im67+NEyK6xIKBsX/kTtWVHQBXrQfwjJrXTgNR7jCp7xEcM1e?=
+ =?us-ascii?Q?f/ejYaGb1VCTUinJ8HEUFWTF/rzVhGhmruAOJLs9g7RlK9wkL1Pt9Q/RHxt1?=
+ =?us-ascii?Q?Uuok8a2VMYik592nciQTb5BEpi+BZSrOwHmNC/qJLmY/oScL7C9q9/WM0aXT?=
+ =?us-ascii?Q?jDf9jfrOdcJwK5DGTWFLezPOnO91r6xN/4JpbaBRicS/zr3P+whhbMpqTFGN?=
+ =?us-ascii?Q?8sfPvRxWRsK7DsVK4Itx3TdRJ5l5tFTngzh0C+l6hsy+TbtCCIIKdjz2r5xK?=
+ =?us-ascii?Q?gm/H7jS6wepNdJu9YhSBWWeViCvNVi9zzJjMZVZEjnsbw8KWHrlnprz07S6O?=
+ =?us-ascii?Q?bXMIQ3Ucts8qt0Nkl0Vc4GywFB7uwcFZeyG8lpzGvv1y3WskyBQl8tc/lGJO?=
+ =?us-ascii?Q?y0QKyrwzFE9iXfVjNK2jBdZLLR0VHzez/fOx/2xUVGcggkFVyNBQdVruIyWW?=
+ =?us-ascii?Q?iMCafSjUKyCuJhO7Ctkrp9peUUp7MqjdNq1c4plg1IAkfla8e4IYp30KkNsq?=
+ =?us-ascii?Q?vbY8zXbPny3qxQlHPXGG3KsD?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUtPvGm2RztJdSf1@moria.home.lan>
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5144.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f034f20c-9d6b-435d-75ef-08d97de5e1fa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 16:27:34.0572
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +4GdWOqvmE93h9IwKvqvH1kzO9L+QkrHTjjoWVf9OlWbYkIkPW+NFSYEUHgxBlaeXBpOGka4pSyAvQMVX/2/kg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 11:46:04AM -0400, Kent Overstreet wrote:
-> On Wed, Sep 22, 2021 at 11:08:58AM -0400, Johannes Weiner wrote:
-> > On Tue, Sep 21, 2021 at 05:22:54PM -0400, Kent Overstreet wrote:
-> > >  - it's become apparent that there haven't been any real objections to the code
-> > >    that was queued up for 5.15. There _are_ very real discussions and points of
-> > >    contention still to be decided and resolved for the work beyond file backed
-> > >    pages, but those discussions were what derailed the more modest, and more
-> > >    badly needed, work that affects everyone in filesystem land
-> > 
-> > Unfortunately, I think this is a result of me wanting to discuss a way
-> > forward rather than a way back.
-> > 
-> > To clarify: I do very much object to the code as currently queued up,
-> > and not just to a vague future direction.
-> > 
-> > The patches add and convert a lot of complicated code to provision for
-> > a future we do not agree on. The indirections it adds, and the hybrid
-> > state it leaves the tree in, make it directly more difficult to work
-> > with and understand the MM code base. Stuff that isn't needed for
-> > exposing folios to the filesystems.
-> > 
-> > As Willy has repeatedly expressed a take-it-or-leave-it attitude in
-> > response to my feedback, I'm not excited about merging this now and
-> > potentially leaving quite a bit of cleanup work to others if the
-> > downstream discussion don't go to his liking.
+[Public]
 
-We're at a take-it-or-leave-it point for this pull request.  The time
-for discussion was *MONTHS* ago.
+> -----Original Message-----
+> From: amd-gfx <amd-gfx-bounces@lists.freedesktop.org> On Behalf Of
+> Borislav Petkov
+> Sent: Wednesday, September 22, 2021 7:34 AM
+> To: Joshi, Mukul <Mukul.Joshi@amd.com>; Alex Deucher
+> <alexdeucher@gmail.com>
+> Cc: linux-edac@vger.kernel.org; x86@kernel.org; linux-
+> kernel@vger.kernel.org; mingo@redhat.com; mchehab@kernel.org;
+> Ghannam, Yazen <Yazen.Ghannam@amd.com>; amd-
+> gfx@lists.freedesktop.org
+> Subject: Re: [PATCHv2 1/2] x86/MCE/AMD: Export smca_get_bank_type
+> symbol
+>=20
+> On Sun, Sep 12, 2021 at 10:13:10PM -0400, Mukul Joshi wrote:
+> > Export smca_get_bank_type for use in the AMD GPU driver to determine
+> > MCA bank while handling correctable and uncorrectable errors in GPU
+> > UMC.
+> >
+> > v1->v2:
+> > - Drop the function is_smca_umc_v2().
+> > - Drop the patch to introduce a new MCE priority (MCE_PRIO_ACEL)
+> >   for GPU/accelarator cards.
+>=20
+> Patch changelog information goes...
+>=20
+> >
+> > Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
+> > ---
+>=20
+> ... under this line so that it gets automatically removed by git when app=
+lying
+> the patch.
+>=20
+> Alex, how do you wanna handle this?
+>=20
+> Want me to ACK this and you can carry it through your tree along with the
+> second patch?
 
-> > Here is the roughly annotated pull request:
-> 
-> Thanks for breaking this out, Johannes.
-> 
-> So: mm/filemap.c and mm/page-writeback.c - I disagree about folios not really
-> being needed there. Those files really belong more in fs/ than mm/, and the code
-> in those files needs folios the most - especially filemap.c, a lot of those
-> algorithms have to change from block based to extent based, making the analogy
-> with filesystems.
-> 
-> I think it makes sense to drop the mm/lru stuff, as well as the mm/memcg,
-> mm/migrate and mm/workingset and mm/swap stuff that you object to - that is, the
-> code paths that are for both file + anonymous pages, unless Matthew has
-> technical reasons why that would break the rest of the patch set.
+That would be great.  Thanks!
 
-Conceptually, it breaks the patch set.  Anywhere that we convert back
-from a folio to a page, the guarantee of folios is weakened (and
-possibly violated).  I don't think it makes sense from a practical point
-of view either; it's re-adding compound_head() calls that just don't
-need to be there.
+Alex
 
-> That discussion can still happen... and there's still the potential to get a lot
-> more done if we're breaking open struct page and coming up with new types. I got
-> Matthew on board with what you wanted, re: using the slab allocator for larger
-> allocations
-
-Wait, no, you didn't.  I think it's a terrible idea.  It's just completely
-orthogonal to this patch set, so I don't want to talk about it.
+>=20
+> --
+> Regards/Gruss,
+>     Boris.
+>=20
+> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpeo
+> ple.kernel.org%2Ftglx%2Fnotes-about-
+> netiquette&amp;data=3D04%7C01%7Calexander.deucher%40amd.com%7C12b
+> cf4eeffad4e2533b508d97dca1cf4%7C3dd8961fe4884e608e11a82d994e183d%
+> 7C0%7C0%7C637679129761221057%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi
+> MC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C200
+> 0&amp;sdata=3DtK9aK%2FHf5RimF%2FenuTGeJSFFmRuk86Q%2BqY9Jt23gKMQ
+> %3D&amp;reserved=3D0
