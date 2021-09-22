@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C0F414E5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D76414E5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbhIVQth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35120 "EHLO mail.kernel.org"
+        id S229467AbhIVQva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:51:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:51582 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhIVQtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:49:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F83260F70;
-        Wed, 22 Sep 2021 16:48:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632329285;
-        bh=MGOe/IwygVJTQbD5FRKLLK+SjQ/qKk4Dwur+p1E8dlk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=e3I+D9SbhUyzg6QpOYUoWJY01GEMxcJp52caZaIedt+OVejdQ5GzKwzmTIGSVYKO5
-         E9m19/XkCOW2HbhPO+LjLNsiX76UbpdryPV1tCyQyUZPpDwNlDeTmdZj6ijm242/AR
-         /9mjPwM87TawsD0VTJ+OMXiHdUoLqS6wFbAB26qugpoZI31PhMpsFzffmLviE3Ifc0
-         uF4Pq2SH8SZqU0YgrPpN3NC7LTkrLvcKirv5SAnXTAHIP+U5a1N87qvNWpTOmTaFE8
-         Y2T6MA//XlIaKu2t6bpJWNcN+Vvxyfh0epMI0HvfBHADT7sX07h43/kBbVr9y2rLnt
-         fINAdcjq+XIgg==
-Date:   Wed, 22 Sep 2021 11:48:03 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: aardvark: Implement re-issuing config requests on
- CRS response
-Message-ID: <20210922164803.GA203171@bhelgaas>
+        id S231925AbhIVQv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 12:51:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13595113E;
+        Wed, 22 Sep 2021 09:49:58 -0700 (PDT)
+Received: from [10.57.50.100] (unknown [10.57.50.100])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C86E83F719;
+        Wed, 22 Sep 2021 09:49:56 -0700 (PDT)
+Subject: Re: [PATCH 3/3] perf tests: Improve temp file cleanup in
+ test_arm_coresight.sh
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     acme@kernel.org, leo.yan@linaro.com,
+        linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210921131009.390810-1-james.clark@arm.com>
+ <20210921131009.390810-3-james.clark@arm.com>
+ <20210922110012.GA400258@leoy-ThinkPad-X240s>
+ <5a1c5eab-d9b7-5623-2d7d-c6b1921b3628@arm.com>
+ <20210922140832.GB400258@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <85c593b5-5348-8e9a-b9e4-bc4d31ffc785@arm.com>
+Date:   Wed, 22 Sep 2021 17:49:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210922101736.v6qur3qnarccdoqe@pali>
+In-Reply-To: <20210922140832.GB400258@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 12:17:36PM +0200, Pali Rohár wrote:
-> On Thursday 16 September 2021 09:32:57 Bjorn Helgaas wrote:
-> > On Wed, Sep 15, 2021 at 12:55:53PM +0200, Pali Rohár wrote:
-> > ...
 
-> > > I'm not sure how "legal" it is if userspace / setpci changes some of
-> > > these bits. At least on a hardware with a real Root Port device it
-> > > should be fully transparent. As hardware handles this re-issue and
-> > > kernel then would see (reissued) response.
-> > 
-> > If setpci changes bits like these, all bets are off.  We can't tell
-> > what happened, so we can't rely on any configuration Linux did.  I
-> > think we really should taint the kernel when this happens.
+
+On 22/09/2021 15:08, Leo Yan wrote:
+> Hi James,
 > 
-> For testing purposes, setpci is still a very good tool.
-
-Yes, absolutely!
-
-> > > Test case: Initialize device, then unbind it from sysfs, reset it (hot
-> > > reset or warm reset) and then rescan / reinit it again. Here device is
-> > > permitted to send CRS response.
-> > > 
-> > > We know that more PCIe cards are buggy and sometimes firmware on cards
-> > > crashes or resets card logic. Which may put card into initialization
-> > > state when it is again permitted to send CRS response.
-> > 
-> > Yep.  That's a buggy device and normally we would work around it with
-> > a quirk.  This particular kind of bug would be hard to work around,
-> > but a host bridge driver doesn't seem like the right place to do it
-> > because we'd have to do it in *every* such driver.
+> On Wed, Sep 22, 2021 at 02:40:54PM +0100, James Clark wrote:
 > 
-> This described firmware crashing & card reset logic I saw in more wifi
-> cards. Sometimes even wifi drivers itself detects that card does not
-> respond and do some its own internal card reset (e.g. iwldvm on laptop).
-> So it very common situation.
+> [...]
 > 
-> But I have not seen that these cards on laptop issue CRS response. Maybe
-> because their firmware or PCIe logic bootup too fast (so there is a very
-> little window for CRS response) or because CRS response sent to OS did
-> not cause any issue.
-
-After a reset, we normally delay 100ms *before* issuing the first
-config request to the device, e.g., [1].  I expect that in most cases
-the device has completed its initialization in that 100ms and it never
-responds with CRS status.
-
-> So no particular workaround is needed for above described scenario.
+>>>>  cleanup_files()
+>>>>  {
+>>>>  	rm -f ${perfdata}
+>>>>  	rm -f ${file}
+>>>> +	rm -f "${perfdata}.old"
+>>>> +	trap - exit term int
+>>>> +	kill -2 $$
+>>>
+>>> Here it always sends signal SIGINT to current PID with $$, another
+>>> choice is to send signal based on the incoming signal type, like below:
+>>>
+>>>   [[ "$1" = "int" ]] || kill -SIGINT $$
+>>>   [[ "$1" = "term" ]] || kill -SIGTERM $$
+>>
+>> Yes I thought that this might be an issue, but I tested it in a few different
+>> scenarios. Especially when running it under the normal ./perf test command and
+>> it didn't seem to cause an issue whether it passed or failed. So I'm not sure
+>> if it's worth changing or not. Maybe it is in case it gets copy pasted into
+>> another shell test?
 > 
+> I think it's not very necessary to send signal again with command
+> "kill -2 $$" at here.
 > 
-> But anyway, in case that in future there would be need for disabling CRS
-> feature in kernel (e.g. for doing some workaround for endpoint or
-> extended pcie switch) then this re-issuing of config request on CRS
-> response in pci-aardvark.c would be needed to have similar behavior like
-> real HW hen CRS is disabled.
+> "kill -2 $$" sends the signal to the shell process itself rather than
+> propagating signal to its parent process.  And the up level's script
+> should can detect an error with the returned exit code.
+> 
+> So below change should be sufficient?
+> 
+> cleanup_files()
+> {
+> 	rm -f ${perfdata}
+> 	rm -f ${file}
+> +       rm -f "${perfdata}.old"
+> +       exit $glb_err
+> }
+> 
+> Sorry if I miss anything at here and cause noise.
 
-To be pedantic, there's no such thing as "disabling CRS".  CRS is a
-required feature with no enable/disable bit.  There is only "enabling
-or disabling CRS *Software Visibility*".
+The problem with not re-sending the sigint is that if you want to run the
+script in a bash while loop like:
 
-The config read of Vendor ID after a reset should be done by the PCI
-core, not a device driver.  If we disable CRS SV, the only outcomes of
-that read are:
+  while ! tests/shell/test_arm_coresight.sh; do echo loop; done
 
-  1) Valid Vendor ID data, or
+Then it's impossible to exit with Ctrl-C and delete the temp files at the
+same time. It exits if we don't trap sigint like it is at the moment, but
+then it leaves the temporary files. This change is so we can have both
+behaviours of Ctrl-C in a loop and keep the cleanup working.
 
-  2) Failed transaction, typically reported as 0xffff data (and, I
-     expect, an Unsupported Request or similar error logged)
 
-In either case there may have been zero or more retries on PCIe.  The
-PCI core needs to handle the failure case sensibly even though it has
-no idea whether the read has been retried.
-
-> And I like the idea if driver is "feature complete" and prepared also
-> for other _valid_ code paths. This is just my opinion.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pci.c?id=v5.14#n4651
+> 
+> Thanks,
+> Leo
+> 
