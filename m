@@ -2,117 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D9041514B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BD541514F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237534AbhIVUVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:21:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41396 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237309AbhIVUVF (ORCPT
+        id S237507AbhIVUXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237395AbhIVUXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:21:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632341975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/HcjgPehk1OEseGbNZ/ELG+DEQeorkyBbrpqwUI1U0c=;
-        b=UTNzT3o8VbQJBcHCQBATZsGqKex3b1ZCktj+jXeSoup5+Fl6MwHbt5W34az7sID08VcL5S
-        mov6aT7ne0SlIor8Ga1XE/QH9Tch/zlyImws4ouEg6iIQA6m3PKs1DTkH9Q8LRR5a1mcF9
-        WVla60QkXI0yDIqnXKmlb1ZFyJWhfoc=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-156-e3X8xds5MC-TFBGiim8QDg-1; Wed, 22 Sep 2021 16:19:33 -0400
-X-MC-Unique: e3X8xds5MC-TFBGiim8QDg-1
-Received: by mail-qv1-f72.google.com with SMTP id ci14-20020a056214054e00b0037a75ff56f9so13241934qvb.23
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:19:33 -0700 (PDT)
+        Wed, 22 Sep 2021 16:23:12 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83940C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:21:41 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id m3so16992814lfu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0+xhlLd4huTRJupVTgnduPJLYoAg28pRoAPZdUIDHYE=;
+        b=KB4oJUW1zrMvaDw9J/F7wkiDHhTBjRs3+VPOv8q74he+/KK7vTzgQp9ym5f7epRhXJ
+         e7fCj6TrmlzX40U5DT3gk4252HT9vjMH/PiV6TwTsi3sbJJ+mC5g1IxME1+AVhlAwyPO
+         rDEF0KjrxrDuYv++ZlVCIwd6iolgz093Tk1vA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/HcjgPehk1OEseGbNZ/ELG+DEQeorkyBbrpqwUI1U0c=;
-        b=sNdfxEOOYjUKqUv3rtqZ33F7biJ7/1mvDGwpFlnMiPKgntHIabWCRj3DCeFU/yR3pR
-         0dGLLJ+H9h1dp+UxRPd/KoKJPzT5NHpivd/xUrU7pfJEN0BAWDBjjNSzPVp5682Ie3J2
-         sys9BKMBe0fEPEgPV5w0nj1QAEeGLSN5G5/1JubkIy/CVyDveqqi9XhVcyZGubIOT3Tc
-         ZYn9U4GBb5CRa9JsNL4qEgN2pGPFEiscurpXVoQqPs+JFQ5QFgTmfZJVe/LxpNJi4vhZ
-         rlEKCzXxYotChHzwlwtd/gBBPaNJH79gpvglfl1mlqUyLsdTL+NiMJ4coeoDNCEQI8zZ
-         m99g==
-X-Gm-Message-State: AOAM533Tsbpqal7tMPiSs3I3Msh22MOCdxfLY1De0VKuu9/XE5UqXEF1
-        x5X/3HaXfNynV/vB/Cj05g3UNue08kSrJnkWmq9Gt1nYj46aE9QmsZDhqkzBKk74iGwcw3HPGM9
-        l5vK7dvJ5GpxLPGfKAhYToTEg
-X-Received: by 2002:a37:a095:: with SMTP id j143mr1213695qke.277.1632341973350;
-        Wed, 22 Sep 2021 13:19:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXs5QgS7oSP8cFafh2iA6W41xyOYbvOAY3XursXzZ7dQhjchXZpxBj/jVvsV7Lbcv71nfoIQ==
-X-Received: by 2002:a37:a095:: with SMTP id j143mr1213677qke.277.1632341973117;
-        Wed, 22 Sep 2021 13:19:33 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id b14sm1350929qkl.81.2021.09.22.13.19.32
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0+xhlLd4huTRJupVTgnduPJLYoAg28pRoAPZdUIDHYE=;
+        b=7ULu3Q+rCsWmLjWukui10HxqWzxvEouCTxGU9Au3Dldo9dkfJ2I/g+ZFKWAZ3kCTRW
+         lkZ7QJQvrukC3u7m7f9tNZFXfa4FMPb/pOJSB8P3A67O81qyCv4PSSGBOXsD5unKNNuS
+         6C9GKZVZHBad65JhPyMHYXxAFiDGAT3KSApXIlTUxn2s7ZBFnvZskK8/y+AMme9mgy8k
+         WJRlNfaP2KrxHFujxH+Lowgl0hgMctdsCJalV1YSji5RiRMUIQs3gV/ExvxdtfYMR/Qx
+         ekOUmEwMsZ+zfUxNUSYH4HiEiJfg3a2A4GMPKSgrnnliiZXOPGpLvpLyp/Ur/cj36U5m
+         qJIg==
+X-Gm-Message-State: AOAM533zZTW5wfqeJPo0BZZERy+pzY6nRRqtTChYlwTlYPZeB0GEqGPN
+        OtuhHD7mU5qGEVqbLxeMqGIIcl7GG0koavbKxs8=
+X-Google-Smtp-Source: ABdhPJw7eX4THfW3GXyncrl9J2lUYPV40BlUF3sJ5evRLTGzKttRSLZobw0bQ/vtUJFYqovr1K8D7Q==
+X-Received: by 2002:a2e:9e03:: with SMTP id e3mr1235374ljk.278.1632342099570;
+        Wed, 22 Sep 2021 13:21:39 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id r3sm257760lfc.114.2021.09.22.13.21.37
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 13:19:32 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [RFC PATCH] locking/rwsem: Add upgrade_read()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>
-References: <20210922193657.29461-1-longman@redhat.com>
- <YUuMv6fA+TpqH3wb@hirez.programming.kicks-ass.net>
-Message-ID: <000af44f-6f24-5a2d-8700-452469b3d6b3@redhat.com>
-Date:   Wed, 22 Sep 2021 16:19:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 22 Sep 2021 13:21:38 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id y28so16768301lfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:21:37 -0700 (PDT)
+X-Received: by 2002:a05:651c:1250:: with SMTP id h16mr1340109ljh.68.1632342097278;
+ Wed, 22 Sep 2021 13:21:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YUuMv6fA+TpqH3wb@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <YTu9HIu+wWWvZLxp@moria.home.lan> <YUfvK3h8w+MmirDF@casper.infradead.org>
+ <YUo20TzAlqz8Tceg@cmpxchg.org> <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan> <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org> <YUtPvGm2RztJdSf1@moria.home.lan>
+ <YUtZL0e2eBIQpLPE@casper.infradead.org> <A8B68BA5-E90E-4AFF-A14A-211BBC4CDECE@fb.com>
+ <YUuJ4xHxG9dQadda@casper.infradead.org>
+In-Reply-To: <YUuJ4xHxG9dQadda@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 22 Sep 2021 13:21:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh=vOmaE-BTHNjTTkw+vjx=P3Pa-TFPZngEOR-39fZhPg@mail.gmail.com>
+Message-ID: <CAHk-=wh=vOmaE-BTHNjTTkw+vjx=P3Pa-TFPZngEOR-39fZhPg@mail.gmail.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Chris Mason <clm@fb.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 4:06 PM, Peter Zijlstra wrote:
-> On Wed, Sep 22, 2021 at 03:36:57PM -0400, Waiman Long wrote:
->> Currently there are about 12 instances in the kernel where an up_read()
->> is immediately followed by a down_write() of the same lock. For example,
->>
->>    drivers/tty/n_tty.c:		up_read(&tty->termios_rwsem);
->>    drivers/tty/n_tty.c-		down_write(&tty->termios_rwsem);
-> And TTY is a high performance issue, that requires hacks like this?
-I won't call it a hack. I consider it a better documentation what the 
-real intention is.
+On Wed, Sep 22, 2021 at 12:56 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
->> Since we have already provided a downgrade_write() function, we may as
->> well provide an upgrade_read() function to make the code easier to read
->> and the intention clearer.
->>
->> If the current task is the only reader, the upgrade can be done by a
->> single atomic operation. If not, the upgrade will have to be done by a
->> separate up_read() call followed by a down_write(). In the former case,
->> the handoff bit is not considered and the waiter will have to wait a
->> bit longer to acquire the lock.
->>
->> The new upgrade_read() function returns a value of 0 for safe upgrade
->> where rwsem protected data won't change. Otherwise a value of 1 is
->> returned to indicate unsafe upgrade where rwsem protected data may
->> change during the upgrade process.
-> Yuck...
->
-> Is there any workload where this is a massive win? I'm thinking that
-> either the lock is contended and you get the unsafe option which is the
-> same as today, or the lock isn't contended and you would've gotten
-> fast-paths and you barely safe anything anyway.
->
-> Also, -ENODATA
->
-Yes, the best case saving is just just an atomic op.
+> The continued silence from Linus is really driving me to despair.
 
-This is just a RFC. I can look for workloads that can benefit from using 
-this.
+No need to despair. The silence isn't some "deep" thing.
 
-Cheers,
-Longman
+What  happened is literally that I wasn't 100% happy with the naming,
+but didn't hate the patches, and still don't.
 
+But when there is still active discussion about them during the merge
+window, I'm just not going to merge them.
+
+The silence literally is just due to that - not participating in the
+discussion for the simple reason that I had no hugely strong opinions
+on my side - but also simply because there is no way I'd merge this
+for 5.15 simply exactly _because_ of this discussion.
+
+Normally I get to clean up my inbox the week after the merge window,
+but the -Werror things kept my attention for one extra week, and so my
+mailbox has been a disaster area as a result. So only today does my
+inbox start to look reasonable again after the merge window (not
+because of the extra email during the merge window, but simply because
+the merge window causes me to ignore non-pull emails, and then I need
+to go back and check the other stuff afterwards).
+
+So I'm not particularly unhappy with the patchset. I understand where
+it is coming from, I have no huge technical disagreement with it
+personally.
+
+That said, I'm not hugely _enthused_ about the mm side of it either,
+which is why I also wouldn't just override the discussion and say
+"that's it, I'm merging it". I basically wanted to see if it led
+somewhere.
+
+I'm not convinced it led anywhere, but that didn't really change
+things for me, except for the "yeah, I'm not merging something core
+like this while it's under active discussion" part.
+
+           Linus
