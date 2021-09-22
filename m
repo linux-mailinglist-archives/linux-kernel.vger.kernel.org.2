@@ -2,112 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B304148A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EE9414879
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235371AbhIVMTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:19:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50072 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230171AbhIVMTx (ORCPT
+        id S235907AbhIVMKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:10:21 -0400
+Received: from mout-p-201.mailbox.org ([80.241.56.171]:39922 "EHLO
+        mout-p-201.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235860AbhIVMKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:19:53 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18MATFER000821;
-        Wed, 22 Sep 2021 08:17:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=uMYhEeygqZi5Bwzzgs/wBmN00eG/+HzNUrlxCC/8yFU=;
- b=cX4dEBT0AnGfQi+DA2vdBY+rslRm8IDqYg9dtCProkPlYuM0wOCgOvJzzML94RbcWEZ5
- luPQcAypAzwbBpfIGxqlsdx7eZV+mPbuhbtmJVqx5fVeGyff7JKiHQkgKAChR95asQh2
- cJEehcHzNbW/NkiXo6hCsO6wQv6qBu/Io6tVRm1P5w410j+ZR2MdxyAN4qirxHk5HRNI
- DvNsSt4W0vjzPdvZRkjGLtlIoHwxDoG6f3r//IT0uEFuOxhP+A+vOBdxiPZUhixHJ+5/
- p8Aj7r3KYtbuYVCBl5vvw7tGF9j4ZUZh1caI5LxKWD6rrsvhf33k96moE3iDf54HxvDK yA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b82seaceb-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Sep 2021 08:17:57 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18MBvrRg018051;
-        Wed, 22 Sep 2021 12:06:48 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3b7q6npdp9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Sep 2021 12:06:48 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18MC1wok61079918
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Sep 2021 12:01:58 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A26CC5205A;
-        Wed, 22 Sep 2021 12:06:45 +0000 (GMT)
-Received: from localhost (unknown [9.43.116.92])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3B47C5204F;
-        Wed, 22 Sep 2021 12:06:45 +0000 (GMT)
-Date:   Wed, 22 Sep 2021 17:36:44 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH] powerpc/code-patching: Return error on patch_branch()
- out-of-range failure
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <4940b03de220d1dfe2c6b47a41e60925497ce125.1630657331.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <4940b03de220d1dfe2c6b47a41e60925497ce125.1630657331.git.christophe.leroy@csgroup.eu>
+        Wed, 22 Sep 2021 08:10:20 -0400
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4HDxsX11lFzQlZ1;
+        Wed, 22 Sep 2021 14:08:48 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Subject: Re: [PATCH v2 1/2] mwifiex: Use non-posted PCI write when setting TX
+ ring write pointer
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>, stable@vger.kernel.org
+References: <20210914114813.15404-1-verdre@v0yd.nl>
+ <20210914114813.15404-2-verdre@v0yd.nl> <YUsQ3jU1RuThUYn8@smile.fi.intel.com>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+Message-ID: <9293504f-f70d-61ac-b221-dd466f01b5df@v0yd.nl>
+Date:   Wed, 22 Sep 2021 14:08:39 +0200
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-23-gcdc62b30
- (https://github.com/astroidmail/astroid)
-Message-Id: <1632312365.br7s4l3kzi.naveen@linux.ibm.com>
+In-Reply-To: <YUsQ3jU1RuThUYn8@smile.fi.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: q2cbP6JIy7G3VzrP8OqV0bT7VbWPnbun
-X-Proofpoint-GUID: q2cbP6JIy7G3VzrP8OqV0bT7VbWPnbun
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-22_04,2021-09-22_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- adultscore=0 clxscore=1011 malwarescore=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109200000 definitions=main-2109220086
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: A27113CD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy wrote:
-> Do not silentely ignore a failure of create_branch() in
-> patch_branch(). Return -ERANGE.
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/lib/code-patching.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+On 9/22/21 1:17 PM, Andy Shevchenko wrote:
+> On Tue, Sep 14, 2021 at 01:48:12PM +0200, Jonas Dreßler wrote:
+>> On the 88W8897 card it's very important the TX ring write pointer is
+>> updated correctly to its new value before setting the TX ready
+>> interrupt, otherwise the firmware appears to crash (probably because
+>> it's trying to DMA-read from the wrong place). The issue is present in
+>> the latest firmware version 15.68.19.p21 of the pcie+usb card.
+> 
+> Please, be consistent in the commit message(s) and the code (esp. if the term
+> comes from a specification).
+> 
+> Here, PCIe (same in the code, at least that I have noticed, but should be done
+> everywhere).
+> 
+>> Since PCI uses "posted writes" when writing to a register, it's not
+>> guaranteed that a write will happen immediately. That means the pointer
+>> might be outdated when setting the TX ready interrupt, leading to
+>> firmware crashes especially when ASPM L1 and L1 substates are enabled
+>> (because of the higher link latency, the write will probably take
+>> longer).
+>>
+>> So fix those firmware crashes by always using a non-posted write for
+>> this specific register write. We do that by simply reading back the
+>> register after writing it, just as a few other PCI drivers do.
+>>
+>> This fixes a bug where during rx/tx traffic and with ASPM L1 substates
+> 
+> Ditto. TX/RX.
+> 
+>> enabled (the enabled substates are platform dependent), the firmware
+>> crashes and eventually a command timeout appears in the logs.
+> 
+> Should it have a Fixes tag?
+> 
 
-Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Don't think so, there's the infamous 
+(https://bugzilla.kernel.org/show_bug.cgi?id=109681) Bugzilla bug it 
+fixes though, I'll mention that in v3.
 
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+> 
+> ...
+> 
+>> -		/* Write the TX ring write pointer in to reg->tx_wrptr */
+>> -		if (mwifiex_write_reg(adapter, reg->tx_wrptr,
+>> -				      card->txbd_wrptr | rx_val)) {
+>> +		/* Write the TX ring write pointer in to reg->tx_wrptr.
+>> +		 * The firmware (latest version 15.68.19.p21) of the 88W8897
+>> +		 * pcie+usb card seems to crash when getting the TX ready
+>> +		 * interrupt but the TX ring write pointer points to an outdated
+>> +		 * address, so it's important we do a non-posted write here to
+>> +		 * force the completion of the write.
+>> +		 */
+>> +		if (mwifiex_write_reg_np(adapter, reg->tx_wrptr,
+>> +				        card->txbd_wrptr | rx_val)) {
+> 
+>>   			mwifiex_dbg(adapter, ERROR,
+>>   				    "SEND DATA: failed to write reg->tx_wrptr\n");
+>>   			ret = -1;
+> 
+> I'm not sure how this is not a dead code.
+> 
+> On top of that, I would rather to call old function and explicitly put the
+> dummy read after it
+> 
+> 		/* Write the TX ring write pointer in to reg->tx_wrptr */
+> 		if (mwifiex_write_reg(adapter, reg->tx_wrptr,
+> 				      card->txbd_wrptr | rx_val)) {
+> 			...eliminate dead code in the following patch(es)...
+> 		}
+> 
+> +		/* The firmware (latest version 15.68.19.p21) of the 88W8897
+> +		 * pcie+usb card seems to crash when getting the TX ready
+> +		 * interrupt but the TX ring write pointer points to an outdated
+> +		 * address, so it's important we do a non-posted write here to
+> +		 * force the completion of the write.
+> +		 */
+> 		mwifiex_read_reg(...);
+> 
+> Now, since I found the dummy read function to be present, perhaps you need to
+> dive more into the code and understand why it exists.
+> 
 
->=20
-> diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-pat=
-ching.c
-> index f9a3019e37b4..0bc9cc0416b8 100644
-> --- a/arch/powerpc/lib/code-patching.c
-> +++ b/arch/powerpc/lib/code-patching.c
-> @@ -202,7 +202,9 @@ int patch_branch(u32 *addr, unsigned long target, int=
- flags)
->  {
->  	struct ppc_inst instr;
-> =20
-> -	create_branch(&instr, addr, target, flags);
-> +	if (create_branch(&instr, addr, target, flags))
-> +		return -ERANGE;
-> +
->  	return patch_instruction(addr, instr);
->  }
-> =20
-> --=20
-> 2.25.0
->=20
->=20
+Interesting, I haven't noticed that mwifiex_write_reg() always returns 
+0. So are you suggesting to remove that return value and get rid of all 
+the "if (mwifiex_write_reg()) {}" checks in a separate commit?
+
+As for why the dummy read/write functions exist, I have no idea. Looking 
+at git history it seems they were always there (only change is that 
+mwifiex_read_reg() started to handle read errors with commit 
+af05148392f50490c662dccee6c502d9fcba33e2). My bet would be that they 
+were created to be consistent with sdio.c which is the oldest supported 
+bus type in mwifiex.
