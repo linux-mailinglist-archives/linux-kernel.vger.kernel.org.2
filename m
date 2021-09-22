@@ -2,304 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF2F415339
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DF9415341
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238245AbhIVWPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        id S238256AbhIVWTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232149AbhIVWPX (ORCPT
+        with ESMTP id S232149AbhIVWTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:15:23 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498CFC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:13:52 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id x7so1613056edd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:13:52 -0700 (PDT)
+        Wed, 22 Sep 2021 18:19:50 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B27CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:18:19 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso5725342ota.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:18:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uiyd5emhTLLsGWjHfRfiee/EFk982GLkYo1Jk79nKU8=;
-        b=gR/nAeubBx9PM3vHJpsKTJ7k7DgKk/eVd7+bWb3SziBMax7o9WamCAe9FXtWBr13tg
-         7ajTu1kiiwGuh/pi4LTnT2T198ChWhaHFYIzGh+5xPq4bnSDx1qdIBnHfUylhNeVDFuW
-         UgduwTYAX4h9DVK2AbAAMhsDo1TnGWEH0OjK48h0OyYEeqIURJQvM3AO5K2agtM8eyQv
-         NejMefxCVPv9L2giq3i23WBxuHQAvWhEmCAYn7mb5lXPHFdSw2nQfZEArqjYA/5AxPIf
-         D9AqKUEOVrAt8s1tsE6naZIOs58JzVx8EBrEHpgV0wK69gPPUqA5Rk6eUcwY/z98tyjh
-         ZLJQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rBQLrqQ+KVrMj7fI2R/owDobCXRWVkWx/vRkv7LGFv0=;
+        b=AFhy04WiYMhTL2ya7NSlhkdl4XJYIDnrrjCxOnvCwBFEUxoSxxtonPBPLvy1yVWZ4b
+         wOOGsFDKesuntaE1ScrL6JyGr4mDgf/BR2lQYDKBYU7vbDkHsSqll0Ml6O56xSHchHRL
+         uU9YhzW/rGle7VmlurGCb0yCwxA/ZU4sY6GppoayQ0hFLKuSNWziWmCxMxfRVSml4Iah
+         hPt1AaGN/cd402CSMyiLyHeOplWn7e0ikkJDNcZHuI0Bc464TrULAWmCqXXDLuKZFFv/
+         mj/lXQR8NYR6gxvYJDVX03DMFVjY2wGb8d8Qs4ZD+7nOQpHV7IHS4SKW6T4Wy6Zltld1
+         OqEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uiyd5emhTLLsGWjHfRfiee/EFk982GLkYo1Jk79nKU8=;
-        b=OlyE4SYbl+B4DoRuTjONS18PHruScSI2Ob3oXJ2oor7Y8X7I7W6OLzrCRTk1vYtgEu
-         1mYYNvqHrDTIqbo+rcv8FNCe2XVVPAk9vpcxzkhMSQqXisLqkVxK7WJwQD9YzrIWZv6V
-         c6YPZU7qxdmksxOOpu4hBjECAbpm8ZtGMxOifyxBNIh2XL6vsfx6wbsIU2EV1y2vwFvy
-         YnqsLKcK3Tf22yI1PIgVl45rAb21hVXTJ9lz86SYdSp6phVvO1mQD2tUD8AXFDxqDiVT
-         bkR2+isyos/VyrrlhnAKbBDzGCx7L1KDJWm36FIitZcd80Aldfw6es0vn0fJnShzUEYb
-         LghQ==
-X-Gm-Message-State: AOAM533xBqMfH0qmaDtzgLGm5uxhUq3KsY/TNWkpdfpItHkul3DKV9CM
-        +PS+NQ9v1keMuHN/FRnA2FY=
-X-Google-Smtp-Source: ABdhPJwRvCDcaG5O75HW/RbZdU83E/DClU5uyiZLoiR77EeMXFgKryZuE9duZmdf6vt9vByBmX8kcg==
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr1692850ejb.108.1632348830802;
-        Wed, 22 Sep 2021 15:13:50 -0700 (PDT)
-Received: from tom-desktop.station (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
-        by smtp.gmail.com with ESMTPSA id di4sm1956155edb.34.2021.09.22.15.13.49
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rBQLrqQ+KVrMj7fI2R/owDobCXRWVkWx/vRkv7LGFv0=;
+        b=gLVP0bDn2Ch4rspebKqA6vYacPktGF20sZNaoACnGAZkc0SBy+eMXDpQWELYV3bo9Z
+         8Z5D9hJrxPD5GYlaC5ZKzH7u2ygNxjYU8JnWS50XXcoRPrfhqD/6m4nXHK6gfd/kv2R3
+         KElPloDPsxcyZJIZwCTBXzI8vsenz8SsxO1BTzp5V2AwNxmoT6yq+1YtwiQMGZMRFNMh
+         x3/aoyWJ6sTbsmfpkcQYW6mPgmFE7v/muwWUYiNxwkzBXHQz+GBf0P4NsZCSuL0BsreL
+         TxdD+rsTeEus/R6bH52IneBhnl6Eqmm2m4Ne9Om1VvvZBGKUxQpYHWN0c+5DMekTW25e
+         vaSA==
+X-Gm-Message-State: AOAM533bH7KyYCuydry6vLKfvnybxj5ydGAuUJYG39x3P2n32lmVJWD1
+        Y6lkCIaMj8tdSlFHtqOGYSaoSA==
+X-Google-Smtp-Source: ABdhPJy+4BXIDvwRt9LTmAgaXrtG7A3sWrl0VnQlfW9eRWJs9w89u7AZX7jEgp95UZrOL/CJwQMmzA==
+X-Received: by 2002:a05:6830:40ca:: with SMTP id h10mr1317634otu.187.1632349098826;
+        Wed, 22 Sep 2021 15:18:18 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r23sm784159otu.54.2021.09.22.15.18.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 15:13:50 -0700 (PDT)
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: vt6655: Replace camel case variable name
-Date:   Thu, 23 Sep 2021 00:13:40 +0200
-Message-Id: <20210922221346.586346-1-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 22 Sep 2021 15:18:18 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 17:18:16 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Robert Marko <robimarko@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Kathiravan T <kathirav@codeaurora.org>, agross@kernel.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
+Message-ID: <YUurqDL/S15RziCQ@builder.lan>
+References: <20210902214708.1776690-1-robimarko@gmail.com>
+ <YUf3aKn78+41Cb/G@builder.lan>
+ <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
+ <632a7d28c23a8497d35ea009bfe89883@codeaurora.org>
+ <CAOX2RU5+jeXiqz8oss8Sd-BWa059uAv5xu=7nx_YF4RYpG2S6w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOX2RU5+jeXiqz8oss8Sd-BWa059uAv5xu=7nx_YF4RYpG2S6w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Work in progress: replace camel case variables
+On Wed 22 Sep 15:23 CDT 2021, Robert Marko wrote:
 
-byPreambleType -> by_preamble_type
+> On Tue, 21 Sept 2021 at 08:24, Kathiravan T <kathirav@codeaurora.org> wrote:
+> >
+> > On 2021-09-20 14:55, Robert Marko wrote:
+> > > On Mon, 20 Sept 2021 at 04:52, Bjorn Andersson
+> > > <bjorn.andersson@linaro.org> wrote:
+> > >>
+> > >> On Thu 02 Sep 16:47 CDT 2021, Robert Marko wrote:
+> > >>
+> > >> > IPQ8074 uses SMEM like other modern QCA SoC-s, so since its already
+> > >> > supported by the kernel add the required DT nodes.
+> > >> >
+> > >> > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> > >>
+> > >> Thanks for your patch Robert.
+> > >>
+> > >> > ---
+> > >> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 28 +++++++++++++++++++++++++++
+> > >> >  1 file changed, 28 insertions(+)
+> > >> >
+> > >> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > >> > index a620ac0d0b19..83e9243046aa 100644
+> > >> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > >> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > >> > @@ -82,6 +82,29 @@ scm {
+> > >> >               };
+> > >> >       };
+> > >> >
+> > >> > +     reserved-memory {
+> > >> > +             #address-cells = <2>;
+> > >> > +             #size-cells = <2>;
+> > >> > +             ranges;
+> > >> > +
+> > >> > +             smem_region: memory@4ab00000 {
+> > >> > +                     no-map;
+> > >> > +                     reg = <0x0 0x4ab00000 0x0 0x00100000>;
+> > >> > +             };
+> > >> > +     };
+> > >> > +
+> > >> > +     tcsr_mutex: hwlock {
+> > >> > +             compatible = "qcom,tcsr-mutex";
+> > >> > +             syscon = <&tcsr_mutex_regs 0 0x80>;
+> > >>
+> > >> Since it's not okay to have a lone "syscon" and I didn't think it was
+> > >> worth coming up with a binding for the TCSR mutex "syscon" I rewrote
+> > >> the
+> > >> binding a while back. As such qcom,tcsr-mutex should now live in /soc
+> > >> directly.
+> > >>
+> > >> So can you please respin accordingly?
+> > >
+> > > Sure, can you just confirm that the:
+> > > reg = <0x01905000 0x8000>;
+> > >
+> > > Is the whole TCSR range as I don't have docs?
+> >
+> > Robert,
+> >
+> > TCSR_MUTEX block starts from 0x01905000 and has size 0x20000 (128KB)
+> 
+> Thanks, Kathiravan,
+> TSCR mutex with MMIO reg under it works, but there is some weird probe
+> ordering issue.
+> 
+> For whatever reason, SMEM will get probed only after MTD does and this
+> will cause issues
+> if SMEM parser is used as it will return -EPROBE_DEFER but the MTD
+> core does not really
+> handle it correctly and causes the device to reboot after failed parsing.
+> 
+> Now, I have no idea why does this variant which uses MMIO regmap probe
+> so much later?
+> 
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
- drivers/staging/vt6655/baseband.c    |  2 +-
- drivers/staging/vt6655/device.h      |  2 +-
- drivers/staging/vt6655/device_main.c |  8 ++---
- drivers/staging/vt6655/rxtx.c        | 50 ++++++++++++++--------------
- 4 files changed, 31 insertions(+), 31 deletions(-)
+Mani, do you have any input related to the probe deferral of the SMEM
+partition parser, because SMEM not yet probed?
 
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index 20f1a839ba50..9bd1ff36f9af 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -1764,7 +1764,7 @@ void vnt_get_phy_field(struct vnt_private *priv, u32 frame_length,
- 	u32 count = 0;
- 	u32 tmp;
- 	int ext_bit;
--	u8 preamble_type = priv->byPreambleType;
-+	u8 preamble_type = priv->by_preamble_type;
- 
- 	bit_count = frame_length * 8;
- 	ext_bit = false;
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index 3045b2c19362..2b50cf4e2406 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -203,7 +203,7 @@ struct vnt_private {
- 	unsigned char byMinChannel;
- 	unsigned char byMaxChannel;
- 
--	unsigned char byPreambleType;
-+	unsigned char by_preamble_type;
- 	unsigned char byShortPreamble;
- 
- 	unsigned short wCurrentRate;
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index 910a689c574b..cae666ed548f 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -177,11 +177,11 @@ device_set_options(struct vnt_private *priv)
- 	priv->byPacketType = priv->byBBType;
- 	priv->byAutoFBCtrl = AUTO_FB_0;
- 	priv->bUpdateBBVGA = true;
--	priv->byPreambleType = 0;
-+	priv->by_preamble_type = 0;
- 
- 	pr_debug(" byShortRetryLimit= %d\n", (int)priv->byShortRetryLimit);
- 	pr_debug(" byLongRetryLimit= %d\n", (int)priv->byLongRetryLimit);
--	pr_debug(" byPreambleType= %d\n", (int)priv->byPreambleType);
-+	pr_debug(" by_preamble_type= %d\n", (int)priv->by_preamble_type);
- 	pr_debug(" byShortPreamble= %d\n", (int)priv->byShortPreamble);
- 	pr_debug(" byBBType= %d\n", (int)priv->byBBType);
- }
-@@ -1423,11 +1423,11 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
- 
- 	if (changed & BSS_CHANGED_ERP_PREAMBLE) {
- 		if (conf->use_short_preamble) {
--			priv->byPreambleType = true;
- 			MACvEnableBarkerPreambleMd(priv->port_off_set);
-+			priv->by_preamble_type = true;
- 		} else {
--			priv->byPreambleType = false;
- 			MACvDisableBarkerPreambleMd(priv->port_off_set);
-+			priv->by_preamble_type = false;
- 		}
- 	}
- 
-diff --git a/drivers/staging/vt6655/rxtx.c b/drivers/staging/vt6655/rxtx.c
-index 109339d801c1..05068c81070d 100644
---- a/drivers/staging/vt6655/rxtx.c
-+++ b/drivers/staging/vt6655/rxtx.c
-@@ -142,7 +142,7 @@ s_uFillDataHead(
- 
- static __le16 vnt_time_stamp_off(struct vnt_private *priv, u16 rate)
- {
--	return cpu_to_le16(wTimeStampOff[priv->byPreambleType % 2]
-+	return cpu_to_le16(wTimeStampOff[priv->by_preamble_type % 2]
- 							[rate % MAX_RATE]);
- }
- 
-@@ -163,7 +163,7 @@ s_uGetTxRsvTime(
- {
- 	unsigned int uDataTime, uAckTime;
- 
--	uDataTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, cbFrameLength, wRate);
-+	uDataTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, cbFrameLength, wRate);
- 
- 	if (!bNeedAck)
- 		return uDataTime;
-@@ -172,7 +172,7 @@ s_uGetTxRsvTime(
- 	 * CCK mode  - 11b
- 	 * OFDM mode - 11g 2.4G & 11a 5G
- 	 */
--	uAckTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14,
-+	uAckTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, 14,
- 				     byPktType == PK_TYPE_11B ?
- 				     pDevice->byTopCCKBasicRate :
- 				     pDevice->byTopOFDMBasicRate);
-@@ -200,22 +200,22 @@ static __le16 get_rtscts_time(struct vnt_private *priv,
- 	unsigned int ack_time = 0;
- 	unsigned int data_time = 0;
- 
--	data_time = bb_get_frame_time(priv->byPreambleType, pkt_type, frame_length, current_rate);
-+	data_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, frame_length, current_rate);
- 	if (rts_rsvtype == 0) { /* RTSTxRrvTime_bb */
--		rts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 20, priv->byTopCCKBasicRate);
--		ack_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopCCKBasicRate);
-+		rts_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 20, priv->byTopCCKBasicRate);
-+		ack_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 14, priv->byTopCCKBasicRate);
- 		cts_time = ack_time;
- 	} else if (rts_rsvtype == 1) { /* RTSTxRrvTime_ba, only in 2.4GHZ */
--		rts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 20, priv->byTopCCKBasicRate);
--		cts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopCCKBasicRate);
--		ack_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopOFDMBasicRate);
-+		rts_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 20, priv->byTopCCKBasicRate);
-+		cts_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 14, priv->byTopCCKBasicRate);
-+		ack_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 14, priv->byTopOFDMBasicRate);
- 	} else if (rts_rsvtype == 2) { /* RTSTxRrvTime_aa */
--		rts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 20, priv->byTopOFDMBasicRate);
--		ack_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopOFDMBasicRate);
-+		rts_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 20, priv->byTopOFDMBasicRate);
-+		ack_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 14, priv->byTopOFDMBasicRate);
- 		cts_time = ack_time;
- 	} else if (rts_rsvtype == 3) { /* CTSTxRrvTime_ba, only in 2.4GHZ */
--		cts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopCCKBasicRate);
--		ack_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopOFDMBasicRate);
-+		cts_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 14, priv->byTopCCKBasicRate);
-+		ack_time = bb_get_frame_time(priv->by_preamble_type, pkt_type, 14, priv->byTopOFDMBasicRate);
- 		rrv_time = cts_time + ack_time + data_time + 2 * priv->uSIFS;
- 		return cpu_to_le16((u16)rrv_time);
- 	}
-@@ -255,7 +255,7 @@ s_uGetDataDuration(
- 	switch (byDurType) {
- 	case DATADUR_B:    /* DATADUR_B */
- 		if (bNeedAck) {
--			uAckTime = bb_get_frame_time(pDevice->byPreambleType,
-+			uAckTime = bb_get_frame_time(pDevice->by_preamble_type,
- 						     byPktType, 14,
- 						     pDevice->byTopCCKBasicRate);
- 		}
-@@ -273,7 +273,7 @@ s_uGetDataDuration(
- 
- 	case DATADUR_A:    /* DATADUR_A */
- 		if (bNeedAck) {
--			uAckTime = bb_get_frame_time(pDevice->byPreambleType,
-+			uAckTime = bb_get_frame_time(pDevice->by_preamble_type,
- 						     byPktType, 14,
- 						     pDevice->byTopOFDMBasicRate);
- 		}
-@@ -292,7 +292,7 @@ s_uGetDataDuration(
- 	case DATADUR_A_F0:    /* DATADUR_A_F0 */
- 	case DATADUR_A_F1:    /* DATADUR_A_F1 */
- 		if (bNeedAck) {
--			uAckTime = bb_get_frame_time(pDevice->byPreambleType,
-+			uAckTime = bb_get_frame_time(pDevice->by_preamble_type,
- 						     byPktType, 14,
- 						     pDevice->byTopOFDMBasicRate);
- 		}
-@@ -344,17 +344,17 @@ s_uGetRTSCTSDuration(
- 
- 	switch (byDurType) {
- 	case RTSDUR_BB:    /* RTSDuration_bb */
--		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopCCKBasicRate);
-+		uCTSTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, 14, pDevice->byTopCCKBasicRate);
- 		uDurTime = uCTSTime + 2 * pDevice->uSIFS + s_uGetTxRsvTime(pDevice, byPktType, cbFrameLength, wRate, bNeedAck);
- 		break;
- 
- 	case RTSDUR_BA:    /* RTSDuration_ba */
--		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopCCKBasicRate);
-+		uCTSTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, 14, pDevice->byTopCCKBasicRate);
- 		uDurTime = uCTSTime + 2 * pDevice->uSIFS + s_uGetTxRsvTime(pDevice, byPktType, cbFrameLength, wRate, bNeedAck);
- 		break;
- 
- 	case RTSDUR_AA:    /* RTSDuration_aa */
--		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopOFDMBasicRate);
-+		uCTSTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, 14, pDevice->byTopOFDMBasicRate);
- 		uDurTime = uCTSTime + 2 * pDevice->uSIFS + s_uGetTxRsvTime(pDevice, byPktType, cbFrameLength, wRate, bNeedAck);
- 		break;
- 
-@@ -363,7 +363,7 @@ s_uGetRTSCTSDuration(
- 		break;
- 
- 	case RTSDUR_BA_F0: /* RTSDuration_ba_f0 */
--		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopCCKBasicRate);
-+		uCTSTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, 14, pDevice->byTopCCKBasicRate);
- 		if ((byFBOption == AUTO_FB_0) && (wRate >= RATE_18M) && (wRate <= RATE_54M))
- 			uDurTime = uCTSTime + 2 * pDevice->uSIFS + s_uGetTxRsvTime(pDevice, byPktType, cbFrameLength, wFB_Opt0[FB_RATE0][wRate - RATE_18M], bNeedAck);
- 		else if ((byFBOption == AUTO_FB_1) && (wRate >= RATE_18M) && (wRate <= RATE_54M))
-@@ -372,7 +372,7 @@ s_uGetRTSCTSDuration(
- 		break;
- 
- 	case RTSDUR_AA_F0: /* RTSDuration_aa_f0 */
--		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopOFDMBasicRate);
-+		uCTSTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, 14, pDevice->byTopOFDMBasicRate);
- 		if ((byFBOption == AUTO_FB_0) && (wRate >= RATE_18M) && (wRate <= RATE_54M))
- 			uDurTime = uCTSTime + 2 * pDevice->uSIFS + s_uGetTxRsvTime(pDevice, byPktType, cbFrameLength, wFB_Opt0[FB_RATE0][wRate - RATE_18M], bNeedAck);
- 		else if ((byFBOption == AUTO_FB_1) && (wRate >= RATE_18M) && (wRate <= RATE_54M))
-@@ -381,7 +381,7 @@ s_uGetRTSCTSDuration(
- 		break;
- 
- 	case RTSDUR_BA_F1: /* RTSDuration_ba_f1 */
--		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopCCKBasicRate);
-+		uCTSTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, 14, pDevice->byTopCCKBasicRate);
- 		if ((byFBOption == AUTO_FB_0) && (wRate >= RATE_18M) && (wRate <= RATE_54M))
- 			uDurTime = uCTSTime + 2 * pDevice->uSIFS + s_uGetTxRsvTime(pDevice, byPktType, cbFrameLength, wFB_Opt0[FB_RATE1][wRate - RATE_18M], bNeedAck);
- 		else if ((byFBOption == AUTO_FB_1) && (wRate >= RATE_18M) && (wRate <= RATE_54M))
-@@ -390,7 +390,7 @@ s_uGetRTSCTSDuration(
- 		break;
- 
- 	case RTSDUR_AA_F1: /* RTSDuration_aa_f1 */
--		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopOFDMBasicRate);
-+		uCTSTime = bb_get_frame_time(pDevice->by_preamble_type, byPktType, 14, pDevice->byTopOFDMBasicRate);
- 		if ((byFBOption == AUTO_FB_0) && (wRate >= RATE_18M) && (wRate <= RATE_54M))
- 			uDurTime = uCTSTime + 2 * pDevice->uSIFS + s_uGetTxRsvTime(pDevice, byPktType, cbFrameLength, wFB_Opt0[FB_RATE1][wRate - RATE_18M], bNeedAck);
- 		else if ((byFBOption == AUTO_FB_1) && (wRate >= RATE_18M) && (wRate <= RATE_54M))
-@@ -1289,9 +1289,9 @@ int vnt_generate_fifo_header(struct vnt_private *priv, u32 dma_idx,
- 		tx_buffer_head->fifo_ctl |= cpu_to_le16(FIFOCTL_LRETRY);
- 
- 	if (tx_rate->flags & IEEE80211_TX_RC_USE_SHORT_PREAMBLE)
--		priv->byPreambleType = PREAMBLE_SHORT;
-+		priv->by_preamble_type = PREAMBLE_SHORT;
- 	else
--		priv->byPreambleType = PREAMBLE_LONG;
-+		priv->by_preamble_type = PREAMBLE_LONG;
- 
- 	if (tx_rate->flags & IEEE80211_TX_RC_USE_RTS_CTS)
- 		tx_buffer_head->fifo_ctl |= cpu_to_le16(FIFOCTL_RTS);
--- 
-2.25.1
-
+Thanks,
+Bjorn
