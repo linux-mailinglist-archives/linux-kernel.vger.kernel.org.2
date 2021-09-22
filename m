@@ -2,145 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3BA41502B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7EA41503D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237141AbhIVSxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:53:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23501 "EHLO
+        id S237143AbhIVS5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:57:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39781 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229732AbhIVSxO (ORCPT
+        by vger.kernel.org with ESMTP id S235203AbhIVS5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:53:14 -0400
+        Wed, 22 Sep 2021 14:57:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632336703;
+        s=mimecast20190719; t=1632336942;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=IuYQbTDXUzoYKskDvC5YNv/UqQcx/FSLsqP8ByecJHg=;
-        b=hDuVVNQie83EW9vmxLbft7YKnmEXpLbusHTrQdcEtFHc/VLNvbur8Sw032ht2Dr3htDL9C
-        IHVuP6s4I6+kFMYlmFt+TYxqe7j3YssdGK9AcWPQUGa53mKO8AdP2VAd+wtPdHhTwTfbIs
-        5UwYsQ5glOmUTiKI/BdX87cudEPEEBg=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-CAykba1SNICC0cNCrrVoow-1; Wed, 22 Sep 2021 14:51:42 -0400
-X-MC-Unique: CAykba1SNICC0cNCrrVoow-1
-Received: by mail-qk1-f199.google.com with SMTP id bi14-20020a05620a318e00b00432f0915dd6so12372189qkb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:51:42 -0700 (PDT)
+        bh=5cjz37tnSj3P18g8I99+DqVwuBzNML5WhZ/C6tpw5rE=;
+        b=fpT0XLePJx8SCMMtf3To7WZ0du9JvyHcl2J5e09ZYKvcukQTXATikmKzH7RpABA45AATOx
+        JVhMQg0Ww/pOHcbLJ/e0JPzuf/hNn8apL/Xq+wrdNj1BVUWjvkbAwvkFcHlYyk3lVAvJUb
+        Gsk3Q8MXTPPUI+Lr5024uU2LgxCtwK4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-lowVyX-_NNSBPh9qnLLEHw-1; Wed, 22 Sep 2021 14:55:41 -0400
+X-MC-Unique: lowVyX-_NNSBPh9qnLLEHw-1
+Received: by mail-wr1-f72.google.com with SMTP id h5-20020a5d6885000000b0015e21e37523so3018538wru.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:55:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IuYQbTDXUzoYKskDvC5YNv/UqQcx/FSLsqP8ByecJHg=;
-        b=kbK18jFLvhQ9mKB7I6FW1j3whM27O0g9ChT7yMACJvF0GqDczYmCrhm8ECHDi9nh8N
-         SQeAA2tLau24XVWkbuCBoJrTNSiXRebGKZ061xBIdF0SUkeQ01a1YJ0X1DfxFPe8Atxv
-         pjWd/JHUrIa1qEyv9ymh1ydKQC5e8GeqcgOA1rVCIPPMGAnV3fMIBGxOXJ6SuYMji3+a
-         DjU9+GZ0QoZKEQW9MJnfHE9IOgK67G15NzSsklK0sUu0E9ngw0OFo3fTkfzL2wwBboiy
-         oyjAoZgD7rkvOwdsaIFVbprGUrkNh0ONkVMLR1PJyK2JTPW7idjfm/Bmvlp4vHbKaS3u
-         Jc8g==
-X-Gm-Message-State: AOAM533HTKKL3N57GIvYeW3HZ2yXN4C+lEUtmnGgP6DDMYeV2dzXOLbe
-        oNEPHoht+7N6czlc/o/gxHGUwOOhpowxdAl5TTuIUWTv573ZP8Wqerf+26xQQe8P092SM91x2pn
-        JTcWaBrXkhBlucegjgIaPLtQe
-X-Received: by 2002:a37:9d82:: with SMTP id g124mr819496qke.237.1632336701648;
-        Wed, 22 Sep 2021 11:51:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw59/JWKD3GNdZH8LP3SV/xf1grrpAWNCMgx5+10bLfKRg0+cBO04sge8t+ikOnStmA04MQ+g==
-X-Received: by 2002:a37:9d82:: with SMTP id g124mr819467qke.237.1632336701349;
-        Wed, 22 Sep 2021 11:51:41 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id d17sm2004733qte.0.2021.09.22.11.51.39
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5cjz37tnSj3P18g8I99+DqVwuBzNML5WhZ/C6tpw5rE=;
+        b=M0VMPhdtjLFSF8be/aG2Mv0UlQN0owhiZEaQDnEOaYMG8Jxj/pCMkvaXD2Qe+P48Zz
+         Kcu9ThQ0hM7QsAJNkj4FCWyYPiNceh3rIrAVLR0+bBPYFu2uRoPjDzyLZA0cL/P3pyDT
+         3L5A5tdI4y2XumVpq2O6AQmr84cXoZ2aQvoODYsfrVYE1TPSRpz/4Br7+IlsAjJEF6v8
+         lI1quFhmqYaMfxRCFuzYDCwjXQpRp/Il4E8aXrD6egdYXxPy9ga0tiATHfoQf4paEk9Q
+         XIZ2ONdCr2Np3GWLtKI5esBlboxLWjtIxl4PY6fwUeUtMf4rNq+Y3+viGQqfiuM96D1T
+         NvXg==
+X-Gm-Message-State: AOAM531hcta9AtmmvqAhDq/Dr99hASXCDGC7lEqsUPsjdINMmZG3Se06
+        hCYJPcVvgVMasbh6G2iyZcw/lbMS5JDM0pZQ1MWUhHjUGxRZDGMN5QzPmp5eJXd4hkkQ1b6EjIW
+        t3mIW8xCPSMC1fSAPKdjFWeP6
+X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr638743wml.6.1632336939853;
+        Wed, 22 Sep 2021 11:55:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzx++mJlJo8Ud6dJxeU6+JTLQqLX2UZep4XZkQy1hlkTcc2qcI/o0h1c08tRRLAfmQXFgwqFA==
+X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr638703wml.6.1632336939658;
+        Wed, 22 Sep 2021 11:55:39 -0700 (PDT)
+Received: from work-vm (cpc109011-salf6-2-0-cust1562.10-2.cable.virginm.net. [82.29.118.27])
+        by smtp.gmail.com with ESMTPSA id y6sm3004554wrp.46.2021.09.22.11.55.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 11:51:40 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 11:51:37 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Wed, 22 Sep 2021 11:55:39 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 19:55:36 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
         Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC PATCH] x86, vmlinux.lds: Add debug option to force all data
- sections aligned
-Message-ID: <20210922185137.ivdp4yoalv4qdbe2@treble>
-References: <1627456900-42743-1-git-send-email-feng.tang@intel.com>
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 21/45] KVM: SVM: Make AVIC backing, VMSA and
+ VMCB memory allocation SNP safe
+Message-ID: <YUt8KOiwTwwa6xZK@work-vm>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-22-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1627456900-42743-1-git-send-email-feng.tang@intel.com>
+In-Reply-To: <20210820155918.7518-22-brijesh.singh@amd.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 03:21:40PM +0800, Feng Tang wrote:
-> 0day has reported many strange performance changes (regression or
-> improvement), in which there was no obvious relation between the culprit
-> commit and the benchmark at the first look, and it causes people to doubt
-> the test itself is wrong.
+* Brijesh Singh (brijesh.singh@amd.com) wrote:
+> Implement a workaround for an SNP erratum where the CPU will incorrectly
+> signal an RMP violation #PF if a hugepage (2mb or 1gb) collides with the
+> RMP entry of a VMCB, VMSA or AVIC backing page.
 > 
-> Upon further check, many of these cases are caused by the change to the
-> alignment of kernel text or data, as whole text/data of kernel are linked
-> together, change in one domain can affect alignments of other domains.
+> When SEV-SNP is globally enabled, the CPU marks the VMCB, VMSA, and AVIC
+> backing   pages as "in-use" in the RMP after a successful VMRUN.  This is
+> done for _all_ VMs, not just SNP-Active VMs.
+
+Can you explain what 'globally enabled' means?
+
+Or more specifically, can we trip this bug on public hardware that has
+the SNP enabled in the bios, but no SNP init in the host OS?
+
+Dave
+
+> If the hypervisor accesses an in-use page through a writable translation,
+> the CPU will throw an RMP violation #PF.  On early SNP hardware, if an
+> in-use page is 2mb aligned and software accesses any part of the associated
+> 2mb region with a hupage, the CPU will incorrectly treat the entire 2mb
+> region as in-use and signal a spurious RMP violation #PF.
 > 
-> To help to quickly identify if the strange performance change is caused
-> by _data_ alignment. add a debug option to force the data sections from
-> all .o files aligned on THREAD_SIZE, so that change in one domain won't
-> affect other modules' data alignment.
+> The recommended is to not use the hugepage for the VMCB, VMSA or
+> AVIC backing page. Add a generic allocator that will ensure that the page
+> returns is not hugepage (2mb or 1gb) and is safe to be used when SEV-SNP
+> is enabled.
 > 
-> We have used this option to check some strange kernel changes [1][2][3],
-> and those performance changes were gone after enabling it, which proved
-> they are data alignment related.
-> 
-> Similarly, there is another kernel debug option to check text alignment
-> related performance changes: CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B,  
-> which forces all function's start address to be 64 bytes alinged.
-> 
-> This option depends on CONFIG_DYNAMIC_DEBUG==n, as '__dyndbg' subsection
-> of .data has a hard requirement of ALIGN(8), shown in the 'vmlinux.lds':
-> 
-> "
-> . = ALIGN(8); __start___dyndbg = .; KEEP(*(__dyndbg)) __stop___dyndbg = .;
-> "
-> 
-> It contains all pointers to 'struct _ddebug', and dynamic_debug_init()
-> will "pointer++" to loop accessing these pointers, which will be broken
-> with this option enabled.
-> 
-> [1]. https://lore.kernel.org/lkml/20200205123216.GO12867@shao2-debian/
-> [2]. https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
-> [3]. https://lore.kernel.org/lkml/20201112140625.GA21612@xsang-OptiPlex-9020/
-> 
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
+> Co-developed-by: Marc Orr <marcorr@google.com>
+> Signed-off-by: Marc Orr <marcorr@google.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 > ---
->  arch/x86/Kconfig.debug        | 13 +++++++++++++
->  arch/x86/kernel/vmlinux.lds.S |  7 ++++++-
->  2 files changed, 19 insertions(+), 1 deletion(-)
-
-Hi Feng,
-
-Thanks for the interesting LPC presentation about alignment-related
-performance issues (which mentioned this patch).
- 
-  https://linuxplumbersconf.org/event/11/contributions/895/
-
-I wonder if we can look at enabling some kind of data section alignment
-unconditionally instead of just making it a debug option.  Have you done
-any performance and binary size comparisons?
-
-On a similar vein I think we should re-explore permanently enabling
-cacheline-sized function alignment i.e. making something like
-CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B the default.  Ingo did some
-research on that a while back:
-
-   https://lkml.kernel.org/r/20150519213820.GA31688@gmail.com
-
-At the time, the main reported drawback of -falign-functions=64 was that
-even small functions got aligned.  But now I think that can be mitigated
-with some new options like -flimit-function-alignment and/or
--falign-functions=64,X (for some carefully-chosen value of X).
-
+>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>  arch/x86/include/asm/kvm_host.h    |  1 +
+>  arch/x86/kvm/lapic.c               |  5 ++++-
+>  arch/x86/kvm/svm/sev.c             | 35 ++++++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c             | 16 ++++++++++++--
+>  arch/x86/kvm/svm/svm.h             |  1 +
+>  6 files changed, 56 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index a12a4987154e..36a9c23a4b27 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -122,6 +122,7 @@ KVM_X86_OP_NULL(enable_direct_tlbflush)
+>  KVM_X86_OP_NULL(migrate_timers)
+>  KVM_X86_OP(msr_filter_changed)
+>  KVM_X86_OP_NULL(complete_emulated_msr)
+> +KVM_X86_OP(alloc_apic_backing_page)
+>  
+>  #undef KVM_X86_OP
+>  #undef KVM_X86_OP_NULL
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 974cbfb1eefe..5ad6255ff5d5 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1453,6 +1453,7 @@ struct kvm_x86_ops {
+>  	int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
+>  
+>  	void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
+> +	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
+>  };
+>  
+>  struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index ba5a27879f1d..05b45747b20b 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2457,7 +2457,10 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
+>  
+>  	vcpu->arch.apic = apic;
+>  
+> -	apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+> +	if (kvm_x86_ops.alloc_apic_backing_page)
+> +		apic->regs = static_call(kvm_x86_alloc_apic_backing_page)(vcpu);
+> +	else
+> +		apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+>  	if (!apic->regs) {
+>  		printk(KERN_ERR "malloc apic regs error for vcpu %x\n",
+>  		       vcpu->vcpu_id);
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 1644da5fc93f..8771b878193f 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -2703,3 +2703,38 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+>  		break;
+>  	}
+>  }
+> +
+> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
+> +{
+> +	unsigned long pfn;
+> +	struct page *p;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> +
+> +	/*
+> +	 * Allocate an SNP safe page to workaround the SNP erratum where
+> +	 * the CPU will incorrectly signal an RMP violation  #PF if a
+> +	 * hugepage (2mb or 1gb) collides with the RMP entry of VMCB, VMSA
+> +	 * or AVIC backing page. The recommeded workaround is to not use the
+> +	 * hugepage.
+> +	 *
+> +	 * Allocate one extra page, use a page which is not 2mb aligned
+> +	 * and free the other.
+> +	 */
+> +	p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
+> +	if (!p)
+> +		return NULL;
+> +
+> +	split_page(p, 1);
+> +
+> +	pfn = page_to_pfn(p);
+> +	if (IS_ALIGNED(__pfn_to_phys(pfn), PMD_SIZE)) {
+> +		pfn++;
+> +		__free_page(p);
+> +	} else {
+> +		__free_page(pfn_to_page(pfn + 1));
+> +	}
+> +
+> +	return pfn_to_page(pfn);
+> +}
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 25773bf72158..058eea8353c9 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1368,7 +1368,7 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>  	svm = to_svm(vcpu);
+>  
+>  	err = -ENOMEM;
+> -	vmcb01_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> +	vmcb01_page = snp_safe_alloc_page(vcpu);
+>  	if (!vmcb01_page)
+>  		goto out;
+>  
+> @@ -1377,7 +1377,7 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>  		 * SEV-ES guests require a separate VMSA page used to contain
+>  		 * the encrypted register state of the guest.
+>  		 */
+> -		vmsa_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> +		vmsa_page = snp_safe_alloc_page(vcpu);
+>  		if (!vmsa_page)
+>  			goto error_free_vmcb_page;
+>  
+> @@ -4539,6 +4539,16 @@ static int svm_vm_init(struct kvm *kvm)
+>  	return 0;
+>  }
+>  
+> +static void *svm_alloc_apic_backing_page(struct kvm_vcpu *vcpu)
+> +{
+> +	struct page *page = snp_safe_alloc_page(vcpu);
+> +
+> +	if (!page)
+> +		return NULL;
+> +
+> +	return page_address(page);
+> +}
+> +
+>  static struct kvm_x86_ops svm_x86_ops __initdata = {
+>  	.hardware_unsetup = svm_hardware_teardown,
+>  	.hardware_enable = svm_hardware_enable,
+> @@ -4667,6 +4677,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>  	.complete_emulated_msr = svm_complete_emulated_msr,
+>  
+>  	.vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
+> +
+> +	.alloc_apic_backing_page = svm_alloc_apic_backing_page,
+>  };
+>  
+>  static struct kvm_x86_init_ops svm_init_ops __initdata = {
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index d1f1512a4b47..e40800e9c998 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -575,6 +575,7 @@ void sev_es_create_vcpu(struct vcpu_svm *svm);
+>  void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
+>  void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu);
+>  void sev_es_unmap_ghcb(struct vcpu_svm *svm);
+> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
+>  
+>  /* vmenter.S */
+>  
+> -- 
+> 2.17.1
+> 
+> 
 -- 
-Josh
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
