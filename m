@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7915414A0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61954414A0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhIVNEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
+        id S231449AbhIVNEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhIVNEG (ORCPT
+        with ESMTP id S229885AbhIVNEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:04:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB419C061574;
-        Wed, 22 Sep 2021 06:02:36 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 15:02:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632315753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h80mGahjWAPAQCwA1UEeNw0vIPRf5vV9P1wK+v0qIF4=;
-        b=nlSPxJn5EL0FCUhl1E+4vZO2DXsHZT6LTX+M5xPUG11+7ICfgOiP9//Z3NIJK9RWuV+fVz
-        Zead/ZCyoLMA2YW6kCibflDUZ+YhBoUpPMEFWxNNtrM2eKDL49IvYU236dOGhK8Q01jl+F
-        BbTmOeEeO1RVhb8ZzYvDEfOR15Q7fAs/tnsbseypRhb8ccLndqpasxqZwMsNTAu73t7dLP
-        CqbUv56ihCRnlYFCqPeY35jW5gzmgjTSm2EaPzOnxzE08QXp+zciNpoW0ZD2dIdaIogZf0
-        vv+eVNbhyZoMr1ifnJ5TFahFYV62Y0tSmUJRS90Rj3UUoSko71J6X6XXcIawvg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632315753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h80mGahjWAPAQCwA1UEeNw0vIPRf5vV9P1wK+v0qIF4=;
-        b=zN6Rqxt1YMi5qIJBlwqj5QSghKz+ZowFfgLur6kgKBMLUFuQhzw21oNBJ6jZnhVPOT7fhx
-        GkGntCws2WChlpCQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
-Message-ID: <20210922130232.vm7rgkdszfhejf34@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-4-valentin.schneider@arm.com>
- <874kae6n3g.ffs@tglx>
- <87pmt163al.ffs@tglx>
- <20210921234518.GB100318@lothringen>
- <20210922063208.ltf7sdou4tr5yrnc@linutronix.de>
- <20210922111012.GA106513@lothringen>
- <20210922112731.dvauvxlhx5suc7qd@linutronix.de>
- <20210922113820.GC106513@lothringen>
+        Wed, 22 Sep 2021 09:04:31 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4690C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:03:01 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id 72so9212849qkk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=labbott.name; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc:from
+         :subject:content-transfer-encoding;
+        bh=Mzti7OcQhNV5Y7jNBpCwNPoM5QFEKkHFwpOXiZ924fc=;
+        b=kXJ70SnnTkMcZ3kA/YBszIZENe7dzrkdheh0c8M5ORy+56Hu38qdXncuv0FI9RAejb
+         XQ0TWhSZbJEv0LBsxPk4s9yUfk8FtZYLYb/CllmXeqpKaBYJNoDi5zwTrcWKrI82+P2j
+         6MOI1FXElrpMc1sxkqKdScJkUoPSIY3uDhToA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:from:subject:content-transfer-encoding;
+        bh=Mzti7OcQhNV5Y7jNBpCwNPoM5QFEKkHFwpOXiZ924fc=;
+        b=zs9ixzV2fzVax9ULrl/+apSAovvvXU1vZsxQC2mMK3Br2kwMDMZ78inG93y1wByboD
+         uNnmaYY/t9f9d4+psqwDlcm0hwVuSyT6tCytOxOT3bAmTFE1kgdhwx+GUUZGFPZSunWH
+         RjhEAjaSL7VhvGp2c2nZP+kjPv7dKY4xLDAsk0MzaFOCVXh3PZ90kZdo4MJOprK0PMPN
+         v4pQ9cD16zWrqpdqN7toYomNeTgplw9ipd7//CZtoxHGFqNCUxIBZJrNTXe4IFC06DUb
+         /41ncOfkc2EEpBG+XsQ3bif5G9pGn7c5u62kSGR3pPHNveJstAknXjmj8ep9rkEkSUBP
+         etkQ==
+X-Gm-Message-State: AOAM533myr75G2HKe4AMcpOGRR/68UoWMMK32fd/W+UNlSxB7fW1nPUg
+        qsP9gy4Z83fBhS8E0+R946boXNSlzF+WqA==
+X-Google-Smtp-Source: ABdhPJyLiBDotfHrhGzTOmGecvtOi21xcOHtpAybjkI6xzcfTjZ2UDI0x8MRc8PbCu1YM4sMiybqcQ==
+X-Received: by 2002:a05:620a:5b7:: with SMTP id q23mr17001937qkq.59.1632315780497;
+        Wed, 22 Sep 2021 06:03:00 -0700 (PDT)
+Received: from [192.168.1.168] (pool-74-109-246-95.pitbpa.fios.verizon.net. [74.109.246.95])
+        by smtp.gmail.com with ESMTPSA id a9sm1693583qko.27.2021.09.22.06.02.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 06:03:00 -0700 (PDT)
+Message-ID: <d9b328d6-7e99-f0ba-2376-72829c28cff4@labbott.name>
+Date:   Wed, 22 Sep 2021 09:02:59 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210922113820.GC106513@lothringen>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Content-Language: en-US
+To:     ksummit@lists.linux.dev,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ksummit-discuss@lists.linuxfoundation.org" 
+        <ksummit-discuss@lists.linuxfoundation.org>
+Cc:     "tab-elections@lists.linuxfoundation.org" 
+        <tab-elections@lists.linuxfoundation.org>
+From:   Laura Abbott <laura@labbott.name>
+Subject: Reminder: Technical Advisory Board elections end September 23rd 16:00
+ GMT-4 (US/Eastern)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-22 13:38:20 [+0200], Frederic Weisbecker wrote:
-> > The part with rcutree.use_softirq=0 on RT does not make it any better,
-> > right?
-> 
-> The rcuc kthread disables softirqs before calling rcu_core(), so it behaves
-> pretty much the same as a softirq. Or am I missing something?
+Hi,
 
-Oh, no you don't.
+Thank you everyone who has voted so far in the 2021 Technical Advisory
+Board elections. Voting will run through September 23rd 16:00 GMT-4
+(US/Eastern).
 
-> > So you rely on some implicit behaviour which breaks with RT such as:
-> > 
-> >                               CPU 0
-> >            -----------------------------------------------
-> >            RANDOM TASK-A                      RANDOM TASK-B
-> >            ------                             -----------
-> >            int *X = &per_cpu(CPUX, 0)         int *X = &per_cpu(CPUX, 0)
-> >            int A, B;                          
-> > 					      spin_lock(&D);
-> >            spin_lock(&C);
-> > 	   				      WRITE_ONCE(*X, 0);
-> >            A = READ_ONCE(*X);
-> >                                               WRITE_ONCE(*X, 1);
-> >            B = READ_ONCE(*X);
-> > 
-> > while spinlock C and D are just random locks not related to CPUX but it
-> > just happens that they are held at that time. So for !RT you guarantee
-> > that A == B while it is not the case on RT.
-> 
-> Not sure which spinlocks you are referring to here. Also most RCU spinlocks
-> are raw.
+If you cannot find your ballot in your e-mail, please e-mail
+tab-elections@lists.linuxfoundation.org.
 
-I was bringing an example where you also could rely on implicit locking
-provided by spin_lock() which breaks on RT.
+If you thought you should have gotten a ballot but did not see one
+please fill out the CIVS opt-in form
+https://civs1.civs.us/cgi-bin/opt_in.pl
+and e-mail tab-elections@lists.linuxfoundation.org
 
-Sebastian
+If you did not yet request a ballot but are eligible under the following
+criteria please contact tab-elections@lists.linuxfoundation.org
+
+There exist three kernel commits in a mainline or stable released
+kernel that both
+- Have a commit date in the year 2020 or 2021
+- Contain an e-mail address in one of the following tags or merged
+tags (e.g. Reviewed-and-tested-by)
+-- Signed-off-by
+-- Tested-by
+-- Reported-by
+-- Reviewed-by
+-- Acked-by
+
+If you have any other feedback, please e-mail
+tab-elections@lists.linuxfoundation.org
+
+Thanks,
+Laura
