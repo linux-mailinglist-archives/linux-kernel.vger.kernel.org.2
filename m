@@ -2,108 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05841414158
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E3441415E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhIVFvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:51:35 -0400
-Received: from fanzine.igalia.com ([178.60.130.6]:52489 "EHLO
-        fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhIVFve (ORCPT
+        id S232387AbhIVFzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231908AbhIVFzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:51:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
-        h=MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=yXcPbo8Zymmfv4sqpIjMg8iY0k2cKSJFduh1ALnwUzE=;
-        b=CzZlYoYi2y0wJlB9EBXlMdOEnoWGLhQ2uUP5XqNK5VC7HnSsrGzsCmigKxKwbUY5XFahMFu0JLyRJjV7ldHr6pBj3TV1F4WG5Fq9SIygSajbRmJkDyOcqsxCexJNx5+ojVXVNR9rpSri9EGYWSN3f59ZJs3RlpkOaGKbJyQb8zKAhowo/mc6cOxAnhn5Bcwmw5eQ5jYDga2kgBWHNdU6wHBSHuLayG6ssESp/XJmFHxvzUcyPr4TbaPboDcgFYlwsE++6XebLUqPyaFpipRpCXRzoRHe9R855snJFGnBBvVuEJvEGO5RnRG8vL4/33+NF9OcZ0oSdTam+EVfsJhzEw==;
-Received: from 101.red-88-4-142.dynamicip.rima-tde.net ([88.4.142.101] helo=[192.168.2.252])
-        by fanzine.igalia.com with esmtpsa 
-        (Cipher TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim)
-        id 1mSv8l-0003Ma-JN; Wed, 22 Sep 2021 07:49:55 +0200
-Message-ID: <259e8411270f663352829e8df9af627d6fba4d1b.camel@igalia.com>
-Subject: Re: [PATCH 0/6] ipack: ipoctal: fix info leak and other bugs
-From:   Samuel Iglesias =?ISO-8859-1?Q?Gons=E1lvez?= 
-        <siglesias@igalia.com>
-To:     Johan Hovold <johan@kernel.org>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     industrypack-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 22 Sep 2021 07:49:45 +0200
-In-Reply-To: <20210917114622.5412-1-johan@kernel.org>
-References: <20210917114622.5412-1-johan@kernel.org>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-zl7qek+jvUMhi9k9cYqT"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Wed, 22 Sep 2021 01:55:09 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183BAC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 22:53:40 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id bx4so5482698edb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 22:53:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Y/nCOhN8AZjYpM2uGvc8B5Khq82DwNNrPlQBsEzJzFY=;
+        b=PeKgN4831mVJIXwE3He5AswTg4qyZcTnnwHLqv+PYunrZRJgnJBX1A5tNi6JJzQozb
+         cif7d8djlZPD98KD7PXiD5zbVlWLmxPC67D6PB8wKrRlyksWO44IAPh10kC3DB5py1As
+         zEywYCw0De64eNo08OtYWWICcslIUFgRmOO3SBPBdR+9o8LhntnZaIdnAJooJf8M3IQ5
+         yMFGvh8/s6NicfZ/O7pvZJV/QX4v58zLos3hAcXJ9BHEc5Ry+YDghDLYjUFplWxgCwxc
+         zq96h28mwMGZnC8mYdLnFdqIU52f0kT5dvnOYClQuXfIRaHq5orxg4bvxIVC7yuva4Uz
+         rd6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Y/nCOhN8AZjYpM2uGvc8B5Khq82DwNNrPlQBsEzJzFY=;
+        b=JW+Gl45xFF4D1e8EZjxvUjCoGpunDa1dnPkE2fqr8sN5rz/lgOKKUxsrjht/miLZfh
+         XXEXmqxsSwg8269RxfyQ8+oBqbgZdm1hvfILZ6hQa4N+6HmQ16Bp+1MXS0rmTADv/pGg
+         RPBsFKa6j3MzLisSikYhBlfFTWxX+2X4/I/uHZOIjDo3dKnEdZKA+r0DUPLeBhOoROyY
+         aoxwVireEwwGzkCa92uF5518cQWE0Z0YxdnzjVFwKvtik/d6huY85oqsneTgyOCsNUSo
+         sQra+GrbImOZMqYkzpbQejstRRA5YRFb6CAHTtjTnMYRZEtFzXmOYNit5/yhSNawcqPg
+         8UkQ==
+X-Gm-Message-State: AOAM5329DPeCPa4yDda8zaOZbncd9JX7eX6CBMZAvS2pCSPz2CqCrcpJ
+        o3GAqoQcpipkB4sc8quNsNa5ZzCLDk+ctNnOkdvqsQ==
+X-Google-Smtp-Source: ABdhPJxXDbclNfZmtzFC4b2AL0bdzwETCGmrVAIVZlEvnC8qF8ZXJYtnnU+PzbNdbOEjiq3ccmeeDGxhYQGVykximG0=
+X-Received: by 2002:a17:907:6004:: with SMTP id fs4mr872899ejc.567.1632290018492;
+ Tue, 21 Sep 2021 22:53:38 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210921124904.823196756@linuxfoundation.org>
+In-Reply-To: <20210921124904.823196756@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 22 Sep 2021 11:23:27 +0530
+Message-ID: <CA+G9fYvS1k+zO4CH3n0xyafU_mpi8JepVGrGjzt70TrSgnoEmQ@mail.gmail.com>
+Subject: Re: [PATCH 4.14 000/216] 4.14.247-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 21 Sept 2021 at 18:19, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.247 release.
+> There are 216 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 23 Sep 2021 12:48:34 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.247-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
---=-zl7qek+jvUMhi9k9cYqT
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Hi Johan,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks for the patch series!
+## Build
+* kernel: 4.14.247-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.14.y
+* git commit: 21da330aa6db14f0db6c57090f438542d6ff023f
+* git describe: v4.14.246-217-g21da330aa6db
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.246-217-g21da330aa6db
 
-Patch series is,
+## No regressions (compared to v4.14.246-218-g7c9c2ff5fef0)
 
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+## No fixes (compared to v4.14.246-218-g7c9c2ff5fef0)
 
-Greg, Would you mind picking this patch series through your char-misc
-tree?
+## Test result summary
+total: 64153, pass: 50362, fail: 654, skip: 11213, xfail: 1924
 
-Thanks!
+## Build Summary
+* arm: 129 total, 129 passed, 0 failed
+* arm64: 34 total, 34 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 18 total, 18 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 18 total, 18 passed, 0 failed
 
-Sam
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
-On Fri, 2021-09-17 at 13:46 +0200, Johan Hovold wrote:
-> This series fixes a stack info leak and a number of other bugs all
-> found
-> through inspection. Included is also a related cleanup.
->=20
-> Note that the series has only been compile tested.
->=20
-> Johan
->=20
->=20
-> Johan Hovold (6):
-> =C2=A0 ipack: ipoctal: fix stack information leak
-> =C2=A0 ipack: ipoctal: fix tty registration race
-> =C2=A0 ipack: ipoctal: fix tty-registration error handling
-> =C2=A0 ipack: ipoctal: fix missing allocation-failure check
-> =C2=A0 ipack: ipoctal: fix module reference leak
-> =C2=A0 ipack: ipoctal: rename tty-driver pointer
->=20
-> =C2=A0drivers/ipack/devices/ipoctal.c | 101 +++++++++++++++++++++--------=
----
-> =C2=A01 file changed, 66 insertions(+), 35 deletions(-)
->=20
-
-
---=-zl7qek+jvUMhi9k9cYqT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEQP+ZAvaXWkfuKXiEf/S6MvF9w0MFAmFKw/kACgkQf/S6MvF9
-w0O60RAAg+oSvmEdmbF25U/ZcccJoEuf3JpkRTHkQpTXBEFYn45Ps1J40PkuAr59
-1TA8oWTJtBVUvbiToNdRfLOVPhL1JoeeJBzFhaC/Rj3YQ0NtZMrsmstvin66Nh4B
-qvuR3nIgmAB+qtvYw7xyNXbCRBddCbUDDJHSnjkBcsA7G11vj9scKiD1akNVO47r
-m3KxWwk2b4Zjg8iYFsWbK+PHOnN9At9M8JGMOZw+pancGIeFrdVuutQRlP4d6FJs
-x0UGR8A4qMtQfVkYltxGKOchg1VloP0V1W5O6TaTwHSGRLpXoGr5uzAoD5e7R8FA
-1R0uMZgN19E7c+oN0TiqK7Jw++loUxe3JBWe6u7KtrtC7uHf/2oPlVei2gbG21lg
-P7TgBIjz82nKn/f6EkKvFnHzTQvDUShD5hAfYJArpa+dZJVB8/Pd2ogV+0EhO4e7
-+R+ZJNcYUFrZuShg6HXJR/UVzw5ErgtkrpON+DRH7jBI9F8T7wnjuyvYdcsnqqQB
-djTr4nanBeTbzQrTwt51Y2qf2LV+bteGi2XGWb3xVXUNV+lrBZR4TJLg0t4RNDgI
-jsi+47pSNTXfUN1rSLQtuK7N5EDHB1nz43Qqs/n0mLTgxIohaKcySRD/+7hv8qAz
-fwNoFCPRjtl351KlBxGmu7e29mX0ds31g2497WPsjUzw+J2VySE=
-=EGCx
------END PGP SIGNATURE-----
-
---=-zl7qek+jvUMhi9k9cYqT--
-
+--
+Linaro LKFT
+https://lkft.linaro.org
