@@ -2,124 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47234414114
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68430414116
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhIVFLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:11:19 -0400
-Received: from n169-112.mail.139.com ([120.232.169.112]:11131 "EHLO
-        n169-112.mail.139.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbhIVFLS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:11:18 -0400
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM:                                                                                        
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.255.10] (unknown[113.108.77.67])
-        by rmsmtp-lg-appmail-25-12028 (RichMail) with SMTP id 2efc614aba962a2-69a39;
-        Wed, 22 Sep 2021 13:09:44 +0800 (CST)
-X-RM-TRANSID: 2efc614aba962a2-69a39
-Message-ID: <4ccc5c89-eb13-5e91-9283-c94f755a9c17@139.com>
-Date:   Wed, 22 Sep 2021 13:09:43 +0800
+        id S232024AbhIVFLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:11:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231791AbhIVFLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:11:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57354611C6;
+        Wed, 22 Sep 2021 05:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632287412;
+        bh=JQnSd+cAl/5+FLE07eY8U96T+jHtRzYG7q1o4fBOIJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gMCwmEPoJPOG4ufOwf/BJcbKXCiZInwpgES0ZC1Pi9y5xzRRSmExagGv2mKdEuBh2
+         oHxliWpSvrfYLfUlnuZlkXUMDVwU/f+wymo2V/Bv0AC2C4g+sFRqLnDbut3vv3O0Au
+         SZSONNC2r2ihTIdJjVH8Ejo9yfIXtV8NqTuCFUwoMQlx0Bj3vaUudHZqxwb0tDUqxN
+         Hby+eTUMZB3dyHJ8vB8JaaHjBl4tKAdtHuA/f8zLxKv2pD2DVe/rTIMrBx0nk2JLZb
+         U3c+5PfudDJHJTcxSFNm+bNvEFILBBk5j+Amw1T9ipZfB2CtKWQMy4N8iNgC79LJmx
+         A/vI2ns3MXfwQ==
+Date:   Wed, 22 Sep 2021 13:10:07 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>, Wei Xu <xuwei5@hisilicon.com>
+Subject: Re: [PATCH 1/2] arm64: dts: freescale: fix arm,sp805 compatible
+ string
+Message-ID: <20210922051006.GC13480@dragon>
+References: <20210826123529.737398-1-michael@walle.cc>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v2] ovl: fix null pointer when filesystem doesn't support
- direct IO
-To:     Huang Jianan <huangjianan@oppo.com>, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        chao@kernel.org
-Cc:     guoweichao@oppo.com, yh@oppo.com, zhangshiming@oppo.com,
-        guanyuwei@oppo.com, jnhuang95@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cgxu519@mykernel.net
-References: <20210918121346.12084-1-huangjianan@oppo.com>
- <20210922034700.15666-1-huangjianan@oppo.com>
-From:   Chengguang Xu <cgxu519@139.com>
-In-Reply-To: <20210922034700.15666-1-huangjianan@oppo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826123529.737398-1-michael@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/9/22 11:47, Huang Jianan 写道:
-> At present, overlayfs provides overlayfs inode to users. Overlayfs
-> inode provides ovl_aops with noop_direct_IO to avoid open failure
-> with O_DIRECT. But some compressed filesystems, such as erofs and
-> squashfs, don't support direct_IO.
->
-> Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
-> will read file through this way. This will cause overlayfs to access
-> a non-existent direct_IO function and cause panic due to null pointer:
->
-> Kernel panic - not syncing: CFI failure (target: 0x0)
-> CPU: 6 PID: 247 Comm: loop0
-> Call Trace:
->   panic+0x188/0x45c
->   __cfi_slowpath+0x0/0x254
->   __cfi_slowpath+0x200/0x254
->   generic_file_read_iter+0x14c/0x150
->   vfs_iocb_iter_read+0xac/0x164
->   ovl_read_iter+0x13c/0x2fc
->   lo_rw_aio+0x2bc/0x458
->   loop_queue_work+0x4a4/0xbc0
->   kthread_worker_fn+0xf8/0x1d0
->   loop_kthread_worker_fn+0x24/0x38
->   kthread+0x29c/0x310
->   ret_from_fork+0x10/0x30
->
-> The filesystem may only support direct_IO for some file types. For
-> example, erofs supports direct_IO for uncompressed files. So reset
-> f_mapping->a_ops to NULL when the file doesn't support direct_IO to
-> fix this problem.
->
-> Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs")
-> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> ---
-> Change since v1:
->   - Return error to user rather than fall back to buffered io. (Chengguang Xu)
->
->   fs/overlayfs/file.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> index d081faa55e83..38118d3b46f8 100644
-> --- a/fs/overlayfs/file.c
-> +++ b/fs/overlayfs/file.c
-> @@ -157,6 +157,10 @@ static int ovl_open(struct inode *inode, struct file *file)
->   	if (IS_ERR(realfile))
->   		return PTR_ERR(realfile);
->   
-> +	if ((f->f_flags & O_DIRECT) && (!realfile->f_mapping->a_ops ||
-> +		!realfile->f_mapping->a_ops->direct_IO))
-> +		file->f_mapping->a_ops = NULL;
+On Thu, Aug 26, 2021 at 02:35:28PM +0200, Michael Walle wrote:
+> According to Documentation/devicetree/bindings/watchdog/arm,sp805.yaml
+> the compatible is:
+>   compatible = "arm,sp805", "arm,primecell";
+> 
+> The current compatible string doesn't exist at all. Fix it.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-
-There are many other functions in a_ops and also address_space struct 
-will be shared
-
-between files which belong to same inode. Although overlayfs currently 
-only defines
-
-->direct_IO in a_ops, it will be extended in the future. (like 
-containerized sycnfs [1])
-
-
-It seems the simplest solution is directly return error to upper layer.
-
-
-Thanks,
-
-Chengguang
-
-
-[1] https://www.spinics.net/lists/linux-unionfs/msg08569.html
-
-
-
-> +
->   	file->private_data = realfile;
->   
->   	return 0;
-
+Applied, thanks!
