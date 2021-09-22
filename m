@@ -2,116 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B58441525C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C316415265
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237829AbhIVVHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+        id S237874AbhIVVJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237812AbhIVVH3 (ORCPT
+        with ESMTP id S237759AbhIVVJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:07:29 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D43CC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:05:59 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id b15so16787691lfe.7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:05:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/PcqjgcRCkyIpO5H00bhPWTTbPCMNXWR4nKgirdi3Io=;
-        b=xEkq7SUZRewChVZqWhm4cS96l8pPzSSEz+ScgQL56dgjn10FcSw+jLPv0OY9bYezIP
-         CYphaUGJXn/snvtDU3KSfg579Nb5Qlk3NtUo6CuASAlclCh3ui7cA33wRO6foyyQk9sK
-         Mw3x0Ft59CKVBwMroO3W4lugA/tv5mEWbElbrHB+wIwMc5ZNjOZSS8KT6h+Zon+cf4qv
-         JmEltnmffmbEBqUsebTV11v0B5U1mVwBUj3sW1gLZspQ54hm7TrP9j1QPJEblcLAhwI2
-         nEggNK9m8gYxewjcBCYSYCHLIhl9iSTZmO6vl1lqR1Tl54TSO4jEGxDT96zBALyLtnLS
-         Hi0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/PcqjgcRCkyIpO5H00bhPWTTbPCMNXWR4nKgirdi3Io=;
-        b=NTs9t2M41Z3J9heUxu+EC0+NZp+EHhwjJEhTwSmvw71ByOeourwqaffDgDeLjwntr9
-         taoLuWMzA6yK7Pl8tErc26TyMamWXkbptKdfhCg0ROk/RPrZTIOv3fS+j3KQksy+Rrzc
-         GwTPK/bSOGF5J3tRgePPYI7ocEgDgWXZHOGfOWzqZlcOXp+0DOp4Sx0ym8ghmigYAHG2
-         ojhZ0NQ1HgZeRHsH4pSp2zUMsVGY6U3LzLJtl2Fcwu4QhIcp8N26NCtJ5Sd6u1DX4cUy
-         rbIu9RY6b8Iq9nbq+PMT4ga+TIgucb6PO/o28P6JALZeXOx0syMoBU0pTk38s263jcd3
-         CkRg==
-X-Gm-Message-State: AOAM533BJbyBP1vTG0tvUyM1rCd7FBeCYuOJ737CPDqC3M/1lxcNjmxZ
-        LJ2Wbkjxzo4YpzfVQhWaM7U5Ow==
-X-Google-Smtp-Source: ABdhPJxFaBhI/uy8npc3Dtax2q52q/CAXrrCmDjvazERLjrealUJSj+rQLNB+0RcTEMnHlaiKFjmmA==
-X-Received: by 2002:a05:6512:5c2:: with SMTP id o2mr917110lfo.207.1632344757440;
-        Wed, 22 Sep 2021 14:05:57 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id bi33sm370467ljb.89.2021.09.22.14.05.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 14:05:56 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 60F2A10304D; Thu, 23 Sep 2021 00:05:58 +0300 (+03)
-Date:   Thu, 23 Sep 2021 00:05:58 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
+        Wed, 22 Sep 2021 17:09:06 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522E2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AUrxzWHUDiIkVe0pCul4am+eYMocI+xR3IVu4etN2ik=; b=cI/HH1n9IHnS59Vwg4T3USPEJy
+        yqf8pBFHwg5vfUgTgEbWExme4EnKhpOAMEInsYDmvANFsP+4IFDpZy8B/KKofwXXSYwJNFosQIUKK
+        Sq4v1oBqKCyYTjDAPP70tg2LZi0Ykv/MjflLLrp98W7O7cvK98g6kUOZnM7Tz8rmGSdSx7I6xhelB
+        oArJi2a4PuonEOFbhGyovGkihF/0RPvq/uDaJm3WxcEWJ/xo/gu3Q1jr62MEc2B3P1DuIGer9jrH/
+        7iX/qmRLNvBaOG8girQUCSEhXtJ3Mtqwu8xEdFEGb5Ok2+ia36YjIMITMl6al/VCXvrv/a6wgd+QV
+        cG1qUw7Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT9Sc-0054ul-PD; Wed, 22 Sep 2021 21:07:23 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3E7FD9811F0; Wed, 22 Sep 2021 23:07:22 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 23:07:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 5/8] x86/sme: Replace occurrences of sme_active() with
- cc_platform_has()
-Message-ID: <20210922210558.itofvu3725dap5xx@box.shutemov.name>
-References: <77df37e1-0496-aed5-fd1d-302180f1edeb@amd.com>
- <YUoao0LlqQ6+uBrq@zn.tnic>
- <20210921212059.wwlytlmxoft4cdth@box.shutemov.name>
- <YUpONYwM4dQXAOJr@zn.tnic>
- <20210921213401.i2pzaotgjvn4efgg@box.shutemov.name>
- <00f52bf8-cbc6-3721-f40e-2f51744751b0@amd.com>
- <20210921215830.vqxd75r4eyau6cxy@box.shutemov.name>
- <01891f59-7ec3-cf62-a8fc-79f79ca76587@amd.com>
- <20210922143015.vvxvh6ec73lffvkf@box.shutemov.name>
- <YUuJZ2qOgbdpfk6N@zn.tnic>
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Message-ID: <20210922210722.GV4323@worktop.programming.kicks-ass.net>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-5-fenghua.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUuJZ2qOgbdpfk6N@zn.tnic>
+In-Reply-To: <20210920192349.2602141-5-fenghua.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 09:52:07PM +0200, Borislav Petkov wrote:
-> On Wed, Sep 22, 2021 at 05:30:15PM +0300, Kirill A. Shutemov wrote:
-> > Not fine, but waiting to blowup with random build environment change.
-> 
-> Why is it not fine?
-> 
-> Are you suspecting that the compiler might generate something else and
-> not a rip-relative access?
+On Mon, Sep 20, 2021 at 07:23:45PM +0000, Fenghua Yu wrote:
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index a58800973aed..a25d738ae839 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -61,6 +61,7 @@
+>  #include <asm/insn.h>
+>  #include <asm/insn-eval.h>
+>  #include <asm/vdso.h>
+> +#include <asm/iommu.h>
+>  
+>  #ifdef CONFIG_X86_64
+>  #include <asm/x86_init.h>
+> @@ -526,6 +527,14 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
+>  	return GP_CANONICAL;
+>  }
+>  
+> +static bool fixup_pasid_exception(void)
+> +{
+> +	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
+> +		return false;
+> +
+> +	return __fixup_pasid_exception();
+> +}
+> +
+>  #define GPFSTR "general protection fault"
+>  
+>  DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+> @@ -538,6 +547,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+>  
+>  	cond_local_irq_enable(regs);
+>  
+> +	if (user_mode(regs) && fixup_pasid_exception())
+> +		goto exit;
+> +
+>  	if (static_cpu_has(X86_FEATURE_UMIP)) {
+>  		if (user_mode(regs) && fixup_umip_exception(regs))
+>  			goto exit;
 
-Yes. We had it before for __supported_pte_mask and other users of
-fixup_pointer().
-
-See for instance 4a09f0210c8b ("x86/boot/64/clang: Use fixup_pointer() to
-access '__supported_pte_mask'")
-
-Unless we find other way to guarantee RIP-relative access, we must use
-fixup_pointer() to access any global variables.
-
--- 
- Kirill A. Shutemov
+So you're eating any random #GP that might or might not be PASID
+related. And all that witout a comment... Enlighten?
