@@ -2,321 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA4C414E2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52030414E31
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236648AbhIVQfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:35:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:51400 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236618AbhIVQfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:35:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0028F113E;
-        Wed, 22 Sep 2021 09:33:43 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 388DC3F719;
-        Wed, 22 Sep 2021 09:33:41 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 17:33:36 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Jia He <justin.he@arm.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>
-Cc:     Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to
- acpi_os_map_memory()"
-Message-ID: <20210922163336.GA24633@lpieralisi>
-References: <20210910122820.26886-1-justin.he@arm.com>
- <20210910143223.6705-1-justin.he@arm.com>
+        id S236655AbhIVQgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236597AbhIVQgK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 12:36:10 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6D9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:34:40 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso4272146otc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m6J+OkKKPxNvNc7nO5L1z2FUZYCyj9JJhrvRz003S+U=;
+        b=KTSra+1iGuvxVBVCe4ILUIzFlth9B3j2n/GFGQNJo5DLFuOAYLrvj2AoM8h+VbX+am
+         8qoH0YApr7O78kvVJZonmSel+O+s8fKvDu9BDDQ95gsIGEh+ydOuMdAU/LEU1nUg5tn8
+         QBKKa6Kbmwc5fKraW3iX+ugFWEvK/2+ulRlTa6tMD8U6PoCVY1T/ZMMbTAZebfD5J8Vd
+         tEKEnwY4xS4OC5IPMBbPSFv7ogkPSotRCfQKauaaBc+krBS30Vna93d2v+Z3XizrPHq8
+         TBYXGUAJwxF25cVtFPHVagzTLCTTereQBGkkX9PTzfHVbAtJoLOYml4d7HBHbhupjRK9
+         RMYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m6J+OkKKPxNvNc7nO5L1z2FUZYCyj9JJhrvRz003S+U=;
+        b=BYHbkr+/5LzlRM+7OUPvCU6SLXzaO92dorrdUVycRSzS+6QGE8S+ooVpo04ROpoPYS
+         +73dToHnzymalQpheexNXIUSEBJaWPgpjZktTHtf47/SUMvUakYFrsaAI1gqc2evOmuq
+         De8nRHtmgDtOF9Ihz6AqylSd+CVIkuUzhopjg7KQZiwxB4XkCNhvCtcBl/ZkckXqWh+r
+         rLj7hcIgSa068g+Oq2btsHQHt4VN0YqeU9/p3ikKTX5ZlbumoIrINU/qQXh2rHfUtgz1
+         PYng1QSbsxSO9iQ+DSMX1cE9qdIzKcwn0nIz490bzXJfFBKOqeoPsCE8tRLp1aAEWALP
+         sW4Q==
+X-Gm-Message-State: AOAM5324rGv7PNxRvMecQ2YT5kf7LV5S/um4Q80fl9XVV2cvE1NlIIdO
+        Lbg/u5gpAldBnE3bOq2ItjvWrnHrnTivZBF/DLBuqQ==
+X-Google-Smtp-Source: ABdhPJwhH7ylfTFdHidq/NqGlpYM4yEq3gBUTpINtkcIIlkXLJpstb8WONddtQTzkXGYvk8zLQv/27rXDflTivw601M=
+X-Received: by 2002:a05:6830:2b27:: with SMTP id l39mr20125otv.25.1632328479385;
+ Wed, 22 Sep 2021 09:34:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910143223.6705-1-justin.he@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210914164727.3007031-1-pgonda@google.com> <20210914164727.3007031-5-pgonda@google.com>
+ <CAA03e5EtxED=9C8tL8hwstHBMbj6nzDwA87yMfK9kk5BUTqF2w@mail.gmail.com> <CAMkAt6oBHLPcXvaeAtHp+Tmt5BKwNDZd-jvDf2+BY=_2-=VJ-Q@mail.gmail.com>
+In-Reply-To: <CAMkAt6oBHLPcXvaeAtHp+Tmt5BKwNDZd-jvDf2+BY=_2-=VJ-Q@mail.gmail.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Wed, 22 Sep 2021 09:34:28 -0700
+Message-ID: <CAA03e5Gj7QzDD=7XY5KpmThHdS=0K6WTcmZxfA0S3PTbdo9wqg@mail.gmail.com>
+Subject: Re: [PATCH 4/4 V8] selftest: KVM: Add intra host migration tests
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 10:32:23PM +0800, Jia He wrote:
-> This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> 
-> After this commit, a boot panic is alway hit on an Ampere EMAG server
-> with call trace as follows:
->  Internal error: synchronous external abort: 96000410 [#1] SMP
->  Modules linked in:
->  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
->  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
->  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [...snip...]
->  Call trace:
->   acpi_ex_system_memory_space_handler+0x26c/0x2c8
->   acpi_ev_address_space_dispatch+0x228/0x2c4
->   acpi_ex_access_region+0x114/0x268
->   acpi_ex_field_datum_io+0x128/0x1b8
->   acpi_ex_extract_from_field+0x14c/0x2ac
->   acpi_ex_read_data_from_field+0x190/0x1b8
->   acpi_ex_resolve_node_to_value+0x1ec/0x288
->   acpi_ex_resolve_to_value+0x250/0x274
->   acpi_ds_evaluate_name_path+0xac/0x124
->   acpi_ds_exec_end_op+0x90/0x410
->   acpi_ps_parse_loop+0x4ac/0x5d8
->   acpi_ps_parse_aml+0xe0/0x2c8
->   acpi_ps_execute_method+0x19c/0x1ac
->   acpi_ns_evaluate+0x1f8/0x26c
->   acpi_ns_init_one_device+0x104/0x140
->   acpi_ns_walk_namespace+0x158/0x1d0
->   acpi_ns_initialize_devices+0x194/0x218
->   acpi_initialize_objects+0x48/0x50
->   acpi_init+0xe0/0x498
-> 
-> As mentioned by Lorenzo:
->   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
->   eMAG does not like at all and I'd need to understand why. It looks
->   like the issue happen in SystemMemory Opregion handler."
-> 
-> Hence just revert it before everything is clear.
-> 
-> Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Hanjun Guo <guohanjun@huawei.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Cc: Harb Abdulhamid <harb@amperecomputing.com>
-> 
-> Signed-off-by: Jia He <justin.he@arm.com>
+On Tue, Sep 21, 2021 at 7:20 AM Peter Gonda <pgonda@google.com> wrote:
+>
+> On Wed, Sep 15, 2021 at 11:28 AM Marc Orr <marcorr@google.com> wrote:
+> >
+> > On Tue, Sep 14, 2021 at 9:47 AM Peter Gonda <pgonda@google.com> wrote:
+> > >
+> > > Adds testcases for intra host migration for SEV and SEV-ES. Also adds
+> > > locking test to confirm no deadlock exists.
+> > >
+> > > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > > Reviewed-by: Marc Orr <marcorr@google.com>
+> > > Cc: Marc Orr <marcorr@google.com>
+> > > Cc: Sean Christopherson <seanjc@google.com>
+> > > Cc: David Rientjes <rientjes@google.com>
+> > > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > > Cc: kvm@vger.kernel.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > > ---
+> > >  tools/testing/selftests/kvm/Makefile          |   1 +
+> > >  .../selftests/kvm/x86_64/sev_vm_tests.c       | 203 ++++++++++++++++++
+> > >  2 files changed, 204 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > > index c103873531e0..44fd3566fb51 100644
+> > > --- a/tools/testing/selftests/kvm/Makefile
+> > > +++ b/tools/testing/selftests/kvm/Makefile
+> > > @@ -72,6 +72,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
+> > >  TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
+> > >  TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
+> > >  TEST_GEN_PROGS_x86_64 += x86_64/vmx_pi_mmio_test
+> > > +TEST_GEN_PROGS_x86_64 += x86_64/sev_vm_tests
+> > >  TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+> > >  TEST_GEN_PROGS_x86_64 += demand_paging_test
+> > >  TEST_GEN_PROGS_x86_64 += dirty_log_test
+> > > diff --git a/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > > new file mode 100644
+> > > index 000000000000..ec3bbc96e73a
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > > @@ -0,0 +1,203 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +#include <linux/kvm.h>
+> > > +#include <linux/psp-sev.h>
+> > > +#include <stdio.h>
+> > > +#include <sys/ioctl.h>
+> > > +#include <stdlib.h>
+> > > +#include <errno.h>
+> > > +#include <pthread.h>
+> > > +
+> > > +#include "test_util.h"
+> > > +#include "kvm_util.h"
+> > > +#include "processor.h"
+> > > +#include "svm_util.h"
+> > > +#include "kselftest.h"
+> > > +#include "../lib/kvm_util_internal.h"
+> > > +
+> > > +#define SEV_POLICY_ES 0b100
+> > > +
+> > > +#define NR_MIGRATE_TEST_VCPUS 4
+> > > +#define NR_MIGRATE_TEST_VMS 3
+> > > +#define NR_LOCK_TESTING_THREADS 3
+> > > +#define NR_LOCK_TESTING_ITERATIONS 10000
+> > > +
+> > > +static void sev_ioctl(int vm_fd, int cmd_id, void *data)
+> > > +{
+> > > +       struct kvm_sev_cmd cmd = {
+> > > +               .id = cmd_id,
+> > > +               .data = (uint64_t)data,
+> > > +               .sev_fd = open_sev_dev_path_or_exit(),
+> > > +       };
+> > > +       int ret;
+> > > +
+> > > +       ret = ioctl(vm_fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
+> > > +       TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
+> > > +                   "%d failed: return code: %d, errno: %d, fw error: %d",
+> > > +                   cmd_id, ret, errno, cmd.error);
+> > > +}
+> > > +
+> > > +static struct kvm_vm *sev_vm_create(bool es)
+> > > +{
+> > > +       struct kvm_vm *vm;
+> > > +       struct kvm_sev_launch_start start = { 0 };
+> > > +       int i;
+> > > +
+> > > +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > > +       sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
+> > > +       for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
+> > > +               vm_vcpu_add(vm, i);
+> > > +       if (es)
+> > > +               start.policy |= SEV_POLICY_ES;
+> > > +       sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
+> > > +       if (es)
+> > > +               sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
+> > > +       return vm;
+> > > +}
+> >
+> > I should've suggested this in my original review. But is it worth
+> > moving `sev_vm_create()` and `sev_ioctl()` into the broader selftests
+> > library, so others can leverage this function to write selftests?
+>
+> This function isn't fully complete. It doesn't get to launch_finish,
+> i.e. it only goes far enough for copyless migration ioctls to work. I
+> think this would be a good expansion but could happen in follow up
+> series, thoughts?
 
-Rewrote the commit log, please take the patch below and repost
-it as a v3.
+SGTM. Let's leave it here for now then.
 
-It would still be great if Ampere can help us understand why
-the NormalNC attributes trigger a sync abort on the opregion
-before merging it.
+>
+> >
+> > > +
+> > > +static struct kvm_vm *__vm_create(void)
+> > > +{
+> > > +       struct kvm_vm *vm;
+> > > +       int i;
+> > > +
+> > > +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > > +       for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
+> > > +               vm_vcpu_add(vm, i);
+> > > +
+> > > +       return vm;
+> > > +}
+> > > +
+> > > +static int __sev_migrate_from(int dst_fd, int src_fd)
+> > > +{
+> > > +       struct kvm_enable_cap cap = {
+> > > +               .cap = KVM_CAP_VM_MIGRATE_PROTECTED_VM_FROM,
+> > > +               .args = { src_fd }
+> > > +       };
+> > > +
+> > > +       return ioctl(dst_fd, KVM_ENABLE_CAP, &cap);
+> > > +}
+> > > +
+> > > +
+> > > +static void sev_migrate_from(int dst_fd, int src_fd)
+> > > +{
+> > > +       int ret;
+> > > +
+> > > +       ret = __sev_migrate_from(dst_fd, src_fd);
+> > > +       TEST_ASSERT(!ret, "Migration failed, ret: %d, errno: %d\n", ret, errno);
+> > > +}
+> > > +
+> > > +static void test_sev_migrate_from(bool es)
+> > > +{
+> > > +       struct kvm_vm *src_vm;
+> > > +       struct kvm_vm *dst_vms[NR_MIGRATE_TEST_VMS];
+> > > +       int i;
+> > > +
+> > > +       src_vm = sev_vm_create(es);
+> > > +       for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
+> > > +               dst_vms[i] = __vm_create();
+> > > +
+> > > +       /* Initial migration from the src to the first dst. */
+> > > +       sev_migrate_from(dst_vms[0]->fd, src_vm->fd);
+> > > +
+> > > +       for (i = 1; i < NR_MIGRATE_TEST_VMS; i++)
+> > > +               sev_migrate_from(dst_vms[i]->fd, dst_vms[i - 1]->fd);
+> > > +
+> > > +       /* Migrate the guest back to the original VM. */
+> > > +       sev_migrate_from(src_vm->fd, dst_vms[NR_MIGRATE_TEST_VMS - 1]->fd);
+> > > +
+> > > +       kvm_vm_free(src_vm);
+> > > +       for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
+> > > +               kvm_vm_free(dst_vms[i]);
+> > > +}
+> > > +
+> > > +struct locking_thread_input {
+> > > +       struct kvm_vm *vm;
+> > > +       int source_fds[NR_LOCK_TESTING_THREADS];
+> > > +};
+> > > +
+> > > +static void *locking_test_thread(void *arg)
+> > > +{
+> > > +       int i, j;
+> > > +       struct locking_thread_input *input = (struct locking_test_thread *)arg;
+> > > +
+> > > +       for (i = 0; i < NR_LOCK_TESTING_ITERATIONS; ++i) {
+> > > +               j = i % NR_LOCK_TESTING_THREADS;
+> > > +               __sev_migrate_from(input->vm->fd, input->source_fds[j]);
+> > > +       }
+> > > +
+> > > +       return NULL;
+> > > +}
+> > > +
+> > > +static void test_sev_migrate_locking(void)
+> > > +{
+> > > +       struct locking_thread_input input[NR_LOCK_TESTING_THREADS];
+> > > +       pthread_t pt[NR_LOCK_TESTING_THREADS];
+> > > +       int i;
+> > > +
+> > > +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i) {
+> > > +               input[i].vm = sev_vm_create(/* es= */ false);
+> > > +               input[0].source_fds[i] = input[i].vm->fd;
+> > > +       }
+> > > +       for (i = 1; i < NR_LOCK_TESTING_THREADS; ++i)
+> > > +               memcpy(input[i].source_fds, input[0].source_fds,
+> > > +                      sizeof(input[i].source_fds));
+> > > +
+> > > +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i)
+> > > +               pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
+> > > +
+> > > +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i)
+> > > +               pthread_join(pt[i], NULL);
+> > > +}
+> > > +
+> > > +static void test_sev_migrate_parameters(void)
+> > > +{
+> > > +       struct kvm_vm *sev_vm, *sev_es_vm, *vm_no_vcpu, *vm_no_sev,
+> > > +               *sev_es_vm_no_vmsa;
+> > > +       int ret;
+> > > +
+> > > +       sev_vm = sev_vm_create(/* es= */ false);
+> > > +       sev_es_vm = sev_vm_create(/* es= */ true);
+> > > +       vm_no_vcpu = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > > +       vm_no_sev = __vm_create();
+> > > +       sev_es_vm_no_vmsa = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > > +       sev_ioctl(sev_es_vm_no_vmsa->fd, KVM_SEV_ES_INIT, NULL);
+> > > +       vm_vcpu_add(sev_es_vm_no_vmsa, 1);
+> > > +
+> > > +
+> > > +       ret = __sev_migrate_from(sev_vm->fd, sev_es_vm->fd);
+> > > +       TEST_ASSERT(
+> > > +               ret == -1 && errno == EINVAL,
+> > > +               "Should not be able migrate to SEV enabled VM. ret: %d, errno: %d\n",
+> > > +               ret, errno);
+> > > +
+> > > +       ret = __sev_migrate_from(sev_es_vm->fd, sev_vm->fd);
+> > > +       TEST_ASSERT(
+> > > +               ret == -1 && errno == EINVAL,
+> > > +               "Should not be able migrate to SEV-ES enabled VM. ret: %d, errno: %d\n",
+> > > +               ret, errno);
+> > > +
+> > > +       ret = __sev_migrate_from(vm_no_vcpu->fd, sev_es_vm->fd);
+> > > +       TEST_ASSERT(
+> > > +               ret == -1 && errno == EINVAL,
+> > > +               "SEV-ES migrations require same number of vCPUS. ret: %d, errno: %d\n",
+> > > +               ret, errno);
+> >
+> > How do we know that this failed because `vm_no_vcpu` has no vCPUs or
+> > because it's not a SEV-ES VM?
+>
+> Actually with V8 we only migrate to none SEV(-ES)? enabled guests.
 
--- >8 --
-Subject: [PATCH] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+I think my point is that the test case should be written to treat the
+underlying KVM code as a black box. Without looking at the KVM code,
+the test case should be setup to be accepted perfectly by KVM and then
+mutated in a minimal way to trigger the intended failure case.
 
-This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+Here, we've defined `vm_no_vcpu`, which as far as I can tell is: (1)
+not a SEV VM, (2) not a SEV-ES VM, (3) has no vCPUs. Based on the
+error message in the TEST_ASSERT, the intention here is to verify that
+a migration that would otherwise works, fails because the target has a
+different number of vCPUs than the source. Therefore, I think
+`vm_no_vcpu` should be defined as a SEV-ES VM, so that the test case
+is setup such that it would've otherwise passed if `vm_no_vcpu` had
+the correct number of vCPUs added.
 
-The memory semantics added in commit 437b38c51162 causes SystemMemory
-Operation region, whose address range is not described in the EFI memory
-map to be mapped as NormalNC memory on arm64 platforms (through
-acpi_os_map_memory() in acpi_ex_system_memory_space_handler()).
+>
+> >
+> > > +
+> > > +       ret = __sev_migrate_from(vm_no_vcpu->fd, sev_es_vm_no_vmsa->fd);
+> > > +       TEST_ASSERT(
+> > > +               ret == -1 && errno == EINVAL,
+> > > +               "SEV-ES migrations require UPDATE_VMSA. ret %d, errno: %d\n",
+> > > +               ret, errno);
+> >
+> > Same question. How do we know why this failed? `sev_es_vm_no_vmsa` did
+> > not have any vCPUs added. Would it be cleaner to add an additional
+> > param to `sev_vm_create()` to skip calling UPDATE_VMSA? Then,
+> > `sev_es_vm_no_vmsa` can be created from `sev_vm_create()` and it's
+> > obvious to the read that the VMs are identical except for this aspect.
+> >
+> > > +
+> > > +       ret = __sev_migrate_from(vm_no_vcpu->fd, vm_no_sev->fd);
+> > > +       TEST_ASSERT(ret == -1 && errno == EINVAL,
+> > > +                   "Migrations require SEV enabled. ret %d, errno: %d\n", ret,
+> > > +                   errno);
+> >
+> > `vm_no_sev` has vCPUs. Therefore, how do we know why this failed --
+> > (a) differing vCPU counts or (b) no SEV?
+>
+> Ditto we require dst to be none SEV enabled.
 
-This triggers the following abort on an ARM64 Ampere eMAG machine,
-because presumably the physical address range area backing the Opregion
-does not support NormalNC memory attributes driven on the bus.
+Understood. But I think the test should treat KVM as a black box.
+Therefore, I think in this test case, `vm_no_vcpu` should be defined
+to have the same number of vCPUs as `vm_no_sev`.
 
- Internal error: synchronous external abort: 96000410 [#1] SMP
- Modules linked in:
- CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
- Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
- pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[...snip...]
- Call trace:
-  acpi_ex_system_memory_space_handler+0x26c/0x2c8
-  acpi_ev_address_space_dispatch+0x228/0x2c4
-  acpi_ex_access_region+0x114/0x268
-  acpi_ex_field_datum_io+0x128/0x1b8
-  acpi_ex_extract_from_field+0x14c/0x2ac
-  acpi_ex_read_data_from_field+0x190/0x1b8
-  acpi_ex_resolve_node_to_value+0x1ec/0x288
-  acpi_ex_resolve_to_value+0x250/0x274
-  acpi_ds_evaluate_name_path+0xac/0x124
-  acpi_ds_exec_end_op+0x90/0x410
-  acpi_ps_parse_loop+0x4ac/0x5d8
-  acpi_ps_parse_aml+0xe0/0x2c8
-  acpi_ps_execute_method+0x19c/0x1ac
-  acpi_ns_evaluate+0x1f8/0x26c
-  acpi_ns_init_one_device+0x104/0x140
-  acpi_ns_walk_namespace+0x158/0x1d0
-  acpi_ns_initialize_devices+0x194/0x218
-  acpi_initialize_objects+0x48/0x50
-  acpi_init+0xe0/0x498
-
-If the Opregion address range is not present in the EFI memory map there
-is no way for us to determine the memory attributes to use to map it -
-defaulting to NormalNC does not work (and it is not correct on a memory
-region that may have read side-effects) and therefore commit
-437b38c51162 should be reverted, which means reverting back to the
-original behavior whereby address ranges that are mapped using
-acpi_os_map_memory() default to the safe devicenGnRnE attributes on
-ARM64 if the mapped address range is not defined in the EFI memory map.
-
-Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
-Signed-off-by: Jia He <justin.he@arm.com>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Harb Abdulhamid <harb@amperecomputing.com>
----
- arch/arm64/include/asm/acpi.h |  3 ---
- arch/arm64/kernel/acpi.c      | 19 +++----------------
- drivers/acpi/osl.c            | 23 +++++++----------------
- include/acpi/acpi_io.h        |  8 --------
- 4 files changed, 10 insertions(+), 43 deletions(-)
-
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index 7535dc7cc5aa..bd68e1b7f29f 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -50,9 +50,6 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
- void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
- #define acpi_os_ioremap acpi_os_ioremap
- 
--void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
--#define acpi_os_memmap acpi_os_memmap
--
- typedef u64 phys_cpuid_t;
- #define PHYS_CPUID_INVALID INVALID_HWID
- 
-diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-index 1c9c2f7a1c04..f3851724fe35 100644
---- a/arch/arm64/kernel/acpi.c
-+++ b/arch/arm64/kernel/acpi.c
-@@ -273,8 +273,7 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
- 	return __pgprot(PROT_DEVICE_nGnRnE);
- }
- 
--static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
--				       acpi_size size, bool memory)
-+void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- {
- 	efi_memory_desc_t *md, *region = NULL;
- 	pgprot_t prot;
-@@ -300,11 +299,9 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
- 	 * It is fine for AML to remap regions that are not represented in the
- 	 * EFI memory map at all, as it only describes normal memory, and MMIO
- 	 * regions that require a virtual mapping to make them accessible to
--	 * the EFI runtime services. Determine the region default
--	 * attributes by checking the requested memory semantics.
-+	 * the EFI runtime services.
- 	 */
--	prot = memory ? __pgprot(PROT_NORMAL_NC) :
--			__pgprot(PROT_DEVICE_nGnRnE);
-+	prot = __pgprot(PROT_DEVICE_nGnRnE);
- 	if (region) {
- 		switch (region->type) {
- 		case EFI_LOADER_CODE:
-@@ -364,16 +361,6 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
- 	return __ioremap(phys, size, prot);
- }
- 
--void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
--{
--	return __acpi_os_ioremap(phys, size, false);
--}
--
--void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
--{
--	return __acpi_os_ioremap(phys, size, true);
--}
--
- /*
-  * Claim Synchronous External Aborts as a firmware first notification.
-  *
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index a43f1521efe6..45c5c0e45e33 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -284,8 +284,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
- #define should_use_kmap(pfn)   page_is_ram(pfn)
- #endif
- 
--static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
--			      bool memory)
-+static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
- {
- 	unsigned long pfn;
- 
-@@ -295,8 +294,7 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
- 			return NULL;
- 		return (void __iomem __force *)kmap(pfn_to_page(pfn));
- 	} else
--		return memory ? acpi_os_memmap(pg_off, pg_sz) :
--				acpi_os_ioremap(pg_off, pg_sz);
-+		return acpi_os_ioremap(pg_off, pg_sz);
- }
- 
- static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-@@ -311,10 +309,9 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
- }
- 
- /**
-- * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
-+ * acpi_os_map_iomem - Get a virtual address for a given physical address range.
-  * @phys: Start of the physical address range to map.
-  * @size: Size of the physical address range to map.
-- * @memory: true if remapping memory, false if IO
-  *
-  * Look up the given physical address range in the list of existing ACPI memory
-  * mappings.  If found, get a reference to it and return a pointer to it (its
-@@ -324,8 +321,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-  * During early init (when acpi_permanent_mmap has not been set yet) this
-  * routine simply calls __acpi_map_table() to get the job done.
-  */
--static void __iomem __ref
--*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
-+void __iomem __ref
-+*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
- {
- 	struct acpi_ioremap *map;
- 	void __iomem *virt;
-@@ -356,7 +353,7 @@ static void __iomem __ref
- 
- 	pg_off = round_down(phys, PAGE_SIZE);
- 	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
--	virt = acpi_map(phys, size, memory);
-+	virt = acpi_map(phys, size);
- 	if (!virt) {
- 		mutex_unlock(&acpi_ioremap_lock);
- 		kfree(map);
-@@ -375,17 +372,11 @@ static void __iomem __ref
- 	mutex_unlock(&acpi_ioremap_lock);
- 	return map->virt + (phys - map->phys);
- }
--
--void __iomem *__ref
--acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
--{
--	return __acpi_os_map_iomem(phys, size, false);
--}
- EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
- 
- void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
- {
--	return (void *)__acpi_os_map_iomem(phys, size, true);
-+	return (void *)acpi_os_map_iomem(phys, size);
- }
- EXPORT_SYMBOL_GPL(acpi_os_map_memory);
- 
-diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
-index a0212e67d6f4..027faa8883aa 100644
---- a/include/acpi/acpi_io.h
-+++ b/include/acpi/acpi_io.h
-@@ -14,14 +14,6 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
- }
- #endif
- 
--#ifndef acpi_os_memmap
--static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
--					    acpi_size size)
--{
--	return ioremap_cache(phys, size);
--}
--#endif
--
- extern bool acpi_permanent_mmap;
- 
- void __iomem __ref
--- 
-2.31.0
+>
+> >
+> > > +}
+> > > +
+> > > +int main(int argc, char *argv[])
+> > > +{
+> > > +       test_sev_migrate_from(/* es= */ false);
+> > > +       test_sev_migrate_from(/* es= */ true);
+> > > +       test_sev_migrate_locking();
+> > > +       test_sev_migrate_parameters();
+> > > +       return 0;
+> > > +}
+> > > --
+> > > 2.33.0.309.g3052b89438-goog
+> > >
