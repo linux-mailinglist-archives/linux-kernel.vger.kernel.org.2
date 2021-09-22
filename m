@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6B1414FB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170D6414FBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237042AbhIVSSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:18:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24225 "EHLO
+        id S236996AbhIVSXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:23:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30305 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236988AbhIVSSj (ORCPT
+        by vger.kernel.org with ESMTP id S236973AbhIVSXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:18:39 -0400
+        Wed, 22 Sep 2021 14:23:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632334628;
+        s=mimecast20190719; t=1632334903;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=X1RNdzwECzWOd3skE6jAuBuPxRlUo2QTTfIOpVKuePE=;
-        b=WSPnp3CYXp9BTi/ZepKJI21bN/dyQNIQkgOZ85sjE7g/6PTNXhMQRgMzh4zA7P4deplmHg
-        O2qwov0XiM/5K5WpATfoeBsJ9WM7QwFzTneq4tUW3GFxqUSv4lQmd0Wur+KynI4ks4Ju7k
-        +AYElgJX629NC1yDCYnGrWZ25ECeTz0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-FOgTYFJrP_2ZNYBL5IXygA-1; Wed, 22 Sep 2021 14:17:07 -0400
-X-MC-Unique: FOgTYFJrP_2ZNYBL5IXygA-1
-Received: by mail-ed1-f70.google.com with SMTP id 2-20020a508e02000000b003d871759f5dso4052370edw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:17:07 -0700 (PDT)
+        bh=HxWqvwn1W60zGEVdo9pDaah3Bkr4kJeRG9VF7vjOA+0=;
+        b=BJFJ7Hnfa0slVb4xA+5GeoPFcn+AGPnBwU/s/XCfbl56BfYxcnwh7Fgbs9oL0HauND8uin
+        JKMRp0Tf3uZ5dLaSQJPhGe3vCNVq271QxFoY0csvF+wdmOXsK6E5scvVQTSLEtIVK+HgI1
+        jyBd4BPi8JVKB4blJZK6lLo8xG4bQNk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-npbwF4-qNCaUlloGoHkdZw-1; Wed, 22 Sep 2021 14:21:42 -0400
+X-MC-Unique: npbwF4-qNCaUlloGoHkdZw-1
+Received: by mail-wr1-f72.google.com with SMTP id v1-20020adfc401000000b0015e11f71e65so2971751wrf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:21:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X1RNdzwECzWOd3skE6jAuBuPxRlUo2QTTfIOpVKuePE=;
-        b=Q3VJWMuiMXoMZkXv2Sz0/u4W/xFMDiB4DRMhrOJTyXj72uzKmUOuzzZUbRL3O3Fvhs
-         fmwFwaUDkQ8yTq/VCjACaaF72kRNoTq/9yUYY6cTlfO7dLHmezw0q8AUyO5qIfDWZPez
-         k1t/axLPanIdAJPmm7WolwIqIltJUb4ofxb7focGyY9rqex7/BqALmxv5BqNmVXCAd+v
-         FgRW0+EmKzcESraMGXJMG0XjqOwcAxGBaSXj7DxaeYmxN3aqpTXNokrZrGGobiCw5IKu
-         7KZQ8WUv5l/Yx1nuvbMU6idvZGDs4gx3Yjx8yj5cuXlEOoGwgTCoWKd8uosfwOoc2lUN
-         ih0A==
-X-Gm-Message-State: AOAM533LHTsKQnXZ8N2VQyfO2OTRq5J7oR7EEjqZWd7VDlWtEIQJMGl4
-        or6Bwc6N89UgifNo9+jSSkZyu3tJm6s/OeFCWnGXjh38uTnIqIM8yNrjLEx/h5k2w6Q6aHL3/UI
-        aiCo2UE9+tHTwNk2VHtADtei0
-X-Received: by 2002:a17:906:3854:: with SMTP id w20mr558550ejc.537.1632334626250;
-        Wed, 22 Sep 2021 11:17:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy16BuPQRa+6D5Hn397FwBp1Z/87NfPihYAA2nSbTOPhV+4HrB5uje403kIuyAR9tJ2Kna6xw==
-X-Received: by 2002:a17:906:3854:: with SMTP id w20mr558525ejc.537.1632334625991;
-        Wed, 22 Sep 2021 11:17:05 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r2sm1555167edo.59.2021.09.22.11.17.02
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=HxWqvwn1W60zGEVdo9pDaah3Bkr4kJeRG9VF7vjOA+0=;
+        b=bTWepEFkQ9UfsuQjZClCWijdDNEvaotYO6kuThvec5vXUeSuhfNzxHL8dhlNo6DXNC
+         Aj4IHQF29Bbk19n7huq8KEgPnAVy89UorZXRmHAV94psZUd0O9vk4RyAUXPsQMKQ5nXa
+         rVlz6fgvzvfGhJpwY1aEQX9kp0WBP29icKzGVHdESwyMhnfAXe2AtNsEMbX4nsuXciV2
+         7g6pCnzNX6j4YxPav33iPlsnao5NDPiOTj8SwE02rBW2oeqrh3mHAMzzAbMuz3Bj3snW
+         0YHgg9KlhwWvfQ68KWKVAa2+Tl1BEYsxPTWboTc4J07l+BiywV+qKLRw/yCDVcL1UVF2
+         WWxQ==
+X-Gm-Message-State: AOAM532LdREXA36PDgH+fDMVIqnt9vWaot7AjsA9UYTGgRaLURgQ3kyN
+        naGmJPjqVZSWWp8BTyzOrv67t5gSlZBISRPmYiwExGPwmM7yDQxZ64VnTw+uYRlWyfqPhfpQZf4
+        ac+1JUutAVUaklPa9U885u85b
+X-Received: by 2002:adf:a2c4:: with SMTP id t4mr480805wra.258.1632334901606;
+        Wed, 22 Sep 2021 11:21:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqZUcKBGyxg7Q7AiGxVq/7ww3aUAcI8z15wqMjB9dBOckRdHvxLQFjM28R9kkO/82pI55VNA==
+X-Received: by 2002:adf:a2c4:: with SMTP id t4mr480793wra.258.1632334901361;
+        Wed, 22 Sep 2021 11:21:41 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64dd.dip0.t-ipconnect.de. [91.12.100.221])
+        by smtp.gmail.com with ESMTPSA id g131sm2717348wme.22.2021.09.22.11.21.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 11:17:05 -0700 (PDT)
-Subject: Re: [PATCH v3 0/7] KVM: few more SMM fixes
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20210913140954.165665-1-mlevitsk@redhat.com>
- <22916f0c-2e3a-1fd6-905e-5d647c15c45b@redhat.com>
- <YUtBqsiur6uFWh3o@google.com>
- <427038b4-a856-826c-e9f4-01678d33ab83@redhat.com>
- <YUtRSK8SwMfEZ2ca@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a7343926-b0a1-db2a-c78d-fe2f708ce5c0@redhat.com>
-Date:   Wed, 22 Sep 2021 20:17:02 +0200
+        Wed, 22 Sep 2021 11:21:40 -0700 (PDT)
+To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+References: <20210922175156.130228-1-peterx@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
+Message-ID: <6bbb8e29-9e21-dfbe-d23d-61de7e3cc6db@redhat.com>
+Date:   Wed, 22 Sep 2021 20:21:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YUtRSK8SwMfEZ2ca@google.com>
+In-Reply-To: <20210922175156.130228-1-peterx@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,56 +76,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/21 17:52, Sean Christopherson wrote:
-> On Wed, Sep 22, 2021, Paolo Bonzini wrote:
->> On 22/09/21 16:46, Sean Christopherson wrote:
->>> On Wed, Sep 22, 2021, Paolo Bonzini wrote:
->>>> On 13/09/21 16:09, Maxim Levitsky wrote:
->>>>>      KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
->>>
->>> ...
->>>> Queued, thanks.  However, I'm keeping patch 1 for 5.16 only.
->>>
->>> I'm pretty sure the above patch is wrong, emulation_required can simply be
->>> cleared on emulated VM-Exit.
->>
->> Are you sure?
+On 22.09.21 19:51, Peter Xu wrote:
+> We forbid merging thps for uffd-wp enabled regions, by breaking the khugepaged
+> scanning right after we detected a uffd-wp armed pte (either present, or swap).
 > 
-> Pretty sure, but not 100% sure :-)
+> It works, but it's less efficient, because those ptes only exist for VM_UFFD_WP
+> enabled VMAs.  Checking against the vma flag would be more efficient, and good
+> enough.  To be explicit, we could still be able to merge some thps for
+> VM_UFFD_WP regions before this patch as long as they have zero uffd-wp armed
+> ptes, however that's not a major target for thp collapse anyways.
 > 
->> I think you can at least set the host segment fields to a data segment that
->> requires emulation.  For example the DPL of the host DS is hardcoded to zero,
->> but the RPL comes from the selector field and the DS selector is not
->> validated.
-> 
-> HOST_DS_SEL is validated:
-> 
->    In the selector field for each of CS, SS, DS, ES, FS, GS and TR, the RPL
->    (bits 1:0) and the TI flag (bit 2) must be 0.
 
-Ah, I think that's a bug in the manual.  In "27.5.2 Loading Host Segment 
-and Descriptor-Table Registers" the reference to 26.3.1.2 should be 
-26.2.3 ("Checks on Host Segment and Descriptor-Table Registers").  That 
-one does cover all segment registers.  Hmm, who do we ask now about 
-fixing Intel manuals?
+Hm, are we sure there are no users that could benefit from the current 
+handling?
 
-So yeah, a WARN_ON_ONCE might be in order.  But I don't feel super safe 
-making it false when it is possible to make KVM do something that is at 
-least sensible.
+I'm thinking about long-term uffd-wp users that effectively end up 
+wp-ing on only a small fraction of a gigantic vma, or always wp complete 
+blocks in a certain granularity in the range of THP.
 
-Paolo
+Databases come to mind ...
 
->> Therefore a subsequent vmentry could fail the access rights tests of 26.3.1.2
->> Checks on Guest Segment Registers:
+In the past, I played with the idea of using uffd-wp to protect access 
+to logically unplugged memory regions part of virtio-mem devices in QEMU 
+-- which would exactly do something as described above. But I'll most 
+probably be using ordinary uffd once any users that might read such 
+logically unplugged memory have been "fixed".
+
+The change itself looks sane to me AFAIKT.
+
+> This mostly reverts commit e1e267c7928fe387e5e1cffeafb0de2d0473663a, but
+> instead we do the same check at vma level, so it's not a bugfix.
 > 
-> Yes, but this path is loading host state on VM-Exit.
+> This also paves the way for file-backed uffd-wp support, as the VM_UFFD_WP flag
+> will work for file-backed too.
 > 
->> DS, ES, FS, GS. The DPL cannot be less than the RPL in the selector field if
->> (1) the “unrestricted guest” VM-execution control is 0; (2) the register is
->> usable; and (3) the Type in the access-rights field is in the range 0 – 11
->> (data segment or non-conforming code segment).
->>
->> Paolo
->>
+> After this patch, the error for khugepaged for these regions will switch from
+> SCAN_PTE_UFFD_WP to SCAN_VMA_CHECK.
 > 
+> Since uffd minor mode should not allow thp as well, do the same thing for minor
+> mode to stop early on trying to collapse pages in khugepaged.
+> 
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Axel Rasmussen <axelrasmussen@google.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Nadav Amit <nadav.amit@gmail.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+> 
+> Axel: as I asked in the other thread, please help check whether minor mode will
+> work properly with shmem thp enabled.  If not, I feel like this patch could be
+> part of that effort at last, but it's also possible that I missed something.
+> 
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>   include/trace/events/huge_memory.h |  1 -
+>   mm/khugepaged.c                    | 26 +++-----------------------
+>   2 files changed, 3 insertions(+), 24 deletions(-)
+> 
+> diff --git a/include/trace/events/huge_memory.h b/include/trace/events/huge_memory.h
+> index 4fdb14a81108..53532f5925c3 100644
+> --- a/include/trace/events/huge_memory.h
+> +++ b/include/trace/events/huge_memory.h
+> @@ -15,7 +15,6 @@
+>   	EM( SCAN_EXCEED_SWAP_PTE,	"exceed_swap_pte")		\
+>   	EM( SCAN_EXCEED_SHARED_PTE,	"exceed_shared_pte")		\
+>   	EM( SCAN_PTE_NON_PRESENT,	"pte_non_present")		\
+> -	EM( SCAN_PTE_UFFD_WP,		"pte_uffd_wp")			\
+>   	EM( SCAN_PAGE_RO,		"no_writable_page")		\
+>   	EM( SCAN_LACK_REFERENCED_PAGE,	"lack_referenced_page")		\
+>   	EM( SCAN_PAGE_NULL,		"page_null")			\
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 045cc579f724..3afe66d48db0 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -31,7 +31,6 @@ enum scan_result {
+>   	SCAN_EXCEED_SWAP_PTE,
+>   	SCAN_EXCEED_SHARED_PTE,
+>   	SCAN_PTE_NON_PRESENT,
+> -	SCAN_PTE_UFFD_WP,
+>   	SCAN_PAGE_RO,
+>   	SCAN_LACK_REFERENCED_PAGE,
+>   	SCAN_PAGE_NULL,
+> @@ -467,6 +466,9 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
+>   		return false;
+>   	if (vma_is_temporary_stack(vma))
+>   		return false;
+> +	/* Don't allow thp merging for wp/minor enabled uffd regions */
+> +	if (userfaultfd_wp(vma) || userfaultfd_minor(vma))
+> +		return false;
+>   	return !(vm_flags & VM_NO_KHUGEPAGED);
+>   }
+>   
+> @@ -1246,15 +1248,6 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+>   		pte_t pteval = *_pte;
+>   		if (is_swap_pte(pteval)) {
+>   			if (++unmapped <= khugepaged_max_ptes_swap) {
+> -				/*
+> -				 * Always be strict with uffd-wp
+> -				 * enabled swap entries.  Please see
+> -				 * comment below for pte_uffd_wp().
+> -				 */
+> -				if (pte_swp_uffd_wp(pteval)) {
+> -					result = SCAN_PTE_UFFD_WP;
+> -					goto out_unmap;
+> -				}
+>   				continue;
+>   			} else {
+>   				result = SCAN_EXCEED_SWAP_PTE;
+> @@ -1270,19 +1263,6 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+>   				goto out_unmap;
+>   			}
+>   		}
+> -		if (pte_uffd_wp(pteval)) {
+> -			/*
+> -			 * Don't collapse the page if any of the small
+> -			 * PTEs are armed with uffd write protection.
+> -			 * Here we can also mark the new huge pmd as
+> -			 * write protected if any of the small ones is
+> -			 * marked but that could bring unknown
+> -			 * userfault messages that falls outside of
+> -			 * the registered range.  So, just be simple.
+> -			 */
+> -			result = SCAN_PTE_UFFD_WP;
+> -			goto out_unmap;
+> -		}
+>   		if (pte_write(pteval))
+>   			writable = true;
+>   
+> 
+
+
+-- 
+Thanks,
+
+David / dhildenb
 
