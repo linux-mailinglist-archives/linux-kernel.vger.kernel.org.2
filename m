@@ -2,237 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5047C4145BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838384145BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234620AbhIVKFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
+        id S234675AbhIVKGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234496AbhIVKFf (ORCPT
+        with ESMTP id S234496AbhIVKGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:05:35 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652D4C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:04:05 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id 72so7670710qkk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:04:05 -0700 (PDT)
+        Wed, 22 Sep 2021 06:06:00 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4E6C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:04:31 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so1856924pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:04:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d+JmR4YUGtp0GTRuEl3U6ZfEXJALH18uLwdK0NgyeVE=;
-        b=KYUSmxxaqbZPE5OpaENFTFgr8Ql7Scuj0j3ARIvMJguNGOIbQEn9qkw2FUS+WxfETN
-         VDDw6HoqEcyQP1OpKXV78tHBaNu992dSy4doxL3egXkUD1yu/Ls1qHXgRFY7LVcIasQ4
-         2/cgud5RFPBKTVbaXpd80R5YkzOX2dJ7Ct7qc4oKS2V9f+GSswzWkzMayYFSG5hZ5mbK
-         sgG/MmCwMd3a6Ea/ZckdNHCnE4/gP0F5PvZbBapeFooQnal98w3L334KYEke1C4Evkt7
-         9QWhoCZonhQexXQ4DENfUOaWU7wof8vLzspQ9l8BcGuuD95wwO7V80MWSRqZv6HYykPh
-         u11Q==
+        d=heitbaum.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8kPH4HQkMAc0LLPHmwkdBBdxuv43if6F7MJFbKxzWKQ=;
+        b=SccsmM6YBplEEDPGy4q98ObAHtwV8bntql34ItU3AoPY1KDY1I1ktRGkKE349VCiva
+         72fK3Vpi5bbgW9Rj0VW0Fm9toaeEP5lb3XM+eTTC+Ov7rbrL1cCgmOP0OVTfGvXWvmGl
+         /uwhiuTieRur/pnrWuEmtcPzxK1gQscu1E/9k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d+JmR4YUGtp0GTRuEl3U6ZfEXJALH18uLwdK0NgyeVE=;
-        b=YwIdSqo/qmX8KaaTzNht65P7uBlWIzxsz5pvdm1rPhyy3Yg8vP0ydOnDDic90Um17m
-         vwQEOa160BvverW3VVg4Q0zs//55Ky2iPPHfDrGp0YsHfDoc65qZ0exG/STjYM+oBEkp
-         cUIcmpHNEQPFvZp24vZZfe7SpT+xNoXL4bDLo2bqzyVjUrvKMDNUOD8aYZKgiFCD2wup
-         dNkzZ5vP9tvY+b5t2tmlWjX6O3IY+4LdQ6BqWXmE5sf+MoI9KCk6Yi7BSG1eR4v4yNkd
-         psuaIkfn/+4q25GEojvxq9jLB0v8U9g9BxxrRUXOXtsetz/L0zyW5aPdwBJ2afCTXSy8
-         BvGg==
-X-Gm-Message-State: AOAM532qTMtW3ZsG4j+c8NK2kjdEJuKpvhQ3HdtEqtz1t3DLGR2cZzsS
-        M4xOCW2Cs5rsprDicLv44tt6Mi71S6aiXrHqvGRaCA==
-X-Google-Smtp-Source: ABdhPJxHL/OxcUTjONxWPPtCbBRvtbVUi/lomIZky1cW+lg87kGWpt3iR0EoSj1hI2Me7w1cmMEXY+JNenGKbOn81UI=
-X-Received: by 2002:a25:7146:: with SMTP id m67mr43747209ybc.353.1632305044479;
- Wed, 22 Sep 2021 03:04:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8kPH4HQkMAc0LLPHmwkdBBdxuv43if6F7MJFbKxzWKQ=;
+        b=lKOkc/CY9TgEty3K80+hpue/Hhor8e9XxUG5fff3hFwIHF0ZtsbVRx2rA+kJ3HplaT
+         KpXWDkTCHpuGq2AWc1ZYUa9l5+MGg+rNd8//2ISNrtRYaq2kPejOrQ+ecuqI/LjgePXD
+         6aH8UNdIHIAEmqbMUOQvOWTmeMbtGvoaKSKbkC3TgjGycZxAGnmhkEsinuJqwl2OzgDh
+         6yIqmU0U4GB1CoTOn/t5wn4lLvrX1zfZpdpw/OSrelZbXpBWqxBmcBVxoGMPI6wXE8g3
+         7PYD2PzQNh1QB18Z2J+AHeRL3Xy8dm/ByNESm718OBrFaCIRllzoVuKH3za03dZE208V
+         lVFQ==
+X-Gm-Message-State: AOAM531CbcmoYxSEaa0LEM5isMHzzqnmgwWHKi3XCMRyu6K2m8BiNH3W
+        ioJ5sw+lXRJ5oQdq9x9L+Pbf9Q==
+X-Google-Smtp-Source: ABdhPJwY0lqWIYEs1Uk4eb8NsIqvypMRF6wbzK3uAZNcm6e9OwvcrMLZV+7CgAvJokoU1SPc1PF51A==
+X-Received: by 2002:a17:90a:bd18:: with SMTP id y24mr10442050pjr.83.1632305070575;
+        Wed, 22 Sep 2021 03:04:30 -0700 (PDT)
+Received: from af2e84e6259e (194-193-55-226.tpgi.com.au. [194.193.55.226])
+        by smtp.gmail.com with ESMTPSA id d14sm2033598pfq.61.2021.09.22.03.04.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 Sep 2021 03:04:29 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 20:04:22 +1000
+From:   Rudi Heitbaum <rudi@heitbaum.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.14 000/168] 5.14.7-rc1 review
+Message-ID: <20210922100417.GA360932@af2e84e6259e>
+References: <20210920163921.633181900@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com> <20210824164801.28896-3-lakshmi.sowjanya.d@intel.com>
-In-Reply-To: <20210824164801.28896-3-lakshmi.sowjanya.d@intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 22 Sep 2021 12:03:53 +0200
-Message-ID: <CAMpxmJWeZP-f-3BoWwX7PkWNZySn5RP=rc4cVyLEwYmSb6if+w@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 02/20] gpio: Add GPIO polling interface to GPIO lib
-To:     lakshmi.sowjanya.d@intel.com
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, mgross@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        tamal.saha@intel.com, bala.senthil@intel.com,
-        Kent Gibson <warthog618@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
->
-> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
->
-> Some Intel Timed I/O devices do not implement IRQ functionality. Augment
-> read() interface to allow polling.
->
-> Add two GPIO device methods: setup_poll() and poll():
-> - setup_poll() configures the GPIO interface e.g. capture rising edges
-> - poll() checks for events on the interface
->
-> To implement polling, the driver must implement the two functions above
-> and should either leave to_irq() method NULL or return irq 0.
->
-> setup_poll() should configure the hardware to 'listen' for input events.
->
-> poll() driver implementation must return the realtime timestamp
-> corresponding to the event and -EAGAIN if no data is available.
->
-> Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
-> Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
-> Signed-off-by: Tamal Saha <tamal.saha@intel.com>
-> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> ---
+On Mon, Sep 20, 2021 at 06:42:18PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.7 release.
+> There are 168 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.7-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
 
-Interesting. So the idea is to allow user-space to read line events as
-if they were generated by interrupts handled in the kernel. While this
-whole series has a long way to go and this patch looks wrong to me in
-several places at first glance, I find the idea interesting. Cc'ing
-Kent who's the author of most of this code - Kent: what do you think?
+Run tested on:
+- Tiger Lake x86_64
+- Radxa ROCK Pi N10 (rk3399pro)
 
-Bart
+In addition build tested on:
+- Allwinner H3
+- Allwinner H6
+- NXP iMX6
+- NXP iMX8
+- Qualcomm Dragonboard
+- Rockchip RK3288
+- Rockchip RK3328
+- Samsung Exynos
 
->  drivers/gpio/gpiolib-cdev.c | 28 ++++++++++++++++++++++++++--
->  include/linux/gpio/driver.h | 19 +++++++++++++++++++
->  2 files changed, 45 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index c7b5446d01fd..4741bf34750b 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -1227,13 +1227,34 @@ static ssize_t linereq_read(struct file *file,
->                             loff_t *f_ps)
-
-Why would you do this in linereq_read()? Userspace ends up in
-linereq_poll() when it calls poll().
-
->  {
->         struct linereq *lr = file->private_data;
-> +       struct gpioevent_poll_data poll_data;
->         struct gpio_v2_line_event le;
->         ssize_t bytes_read = 0;
-> -       int ret;
-> +       int ret, offset;
->
->         if (count < sizeof(le))
->                 return -EINVAL;
->
-> +       /* Without an IRQ, we can only poll */
-> +       offset = gpio_chip_hwgpio(lr->gdev->descs);
-> +       if (lr->lines[offset].irq == 0) {
-> +               struct gpio_v2_line_event *event;
-> +
-> +               if (!(file->f_flags & O_NONBLOCK))
-> +                       return -ENODEV;
-> +
-> +               ret = lr->gdev->chip->do_poll(lr->gdev->chip, offset,
-> +                                             lr->lines[offset].eflags, &poll_data);
-
-What if the driver doesn't implement do_poll()?
-
-> +               if (ret)
-> +                       return ret;
-> +               event = kzalloc(sizeof(*event), GFP_KERNEL);
-> +               event->timestamp_ns = poll_data.timestamp;
-> +               event->id = poll_data.id;
-> +               if (copy_to_user(buf, (void *)&event, sizeof(event)))
-> +                       return -EFAULT;
-> +               return sizeof(event);
-> +       }
-> +
->         do {
->                 spin_lock(&lr->wait.lock);
->                 if (kfifo_is_empty(&lr->events)) {
-> @@ -1314,6 +1335,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
->  {
->         struct gpio_v2_line_request ulr;
->         struct gpio_v2_line_config *lc;
-> +       unsigned int file_flags;
->         struct linereq *lr;
->         struct file *file;
->         u64 flags;
-> @@ -1411,6 +1433,8 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
->                                 goto out_free_linereq;
->                 }
->
-> +               file_flags = O_RDONLY | O_CLOEXEC;
-> +
->                 blocking_notifier_call_chain(&desc->gdev->notifier,
->                                              GPIO_V2_LINE_CHANGED_REQUESTED, desc);
->
-> @@ -1425,7 +1449,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
->         }
->
->         file = anon_inode_getfile("gpio-line", &line_fileops, lr,
-> -                                 O_RDONLY | O_CLOEXEC);
-> +                                 file_flags);
->         if (IS_ERR(file)) {
->                 ret = PTR_ERR(file);
->                 goto out_put_unused_fd;
-> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-> index 3a268781fcec..f5b971ad40bc 100644
-> --- a/include/linux/gpio/driver.h
-> +++ b/include/linux/gpio/driver.h
-> @@ -17,6 +17,7 @@ struct device_node;
->  struct seq_file;
->  struct gpio_device;
->  struct module;
-> +struct gpioevent_poll_data;
->  enum gpiod_flags;
->  enum gpio_lookup_flags;
->
-> @@ -304,6 +305,11 @@ struct gpio_irq_chip {
->   * @add_pin_ranges: optional routine to initialize pin ranges, to be used when
->   *     requires special mapping of the pins that provides GPIO functionality.
->   *     It is called after adding GPIO chip and before adding IRQ chip.
-> + * @setup_poll: optional routine for devices that don't support interrupts.
-> + *     Takes flags argument as in/out parameter, where caller requests
-> + *     event flags and driver returns accepted flags.
-> + * @do_poll: optional routine for devices that don't support interrupts.
-> + *     Returns event specification in data parameter.
->   * @base: identifies the first GPIO number handled by this chip;
->   *     or, if negative during registration, requests dynamic ID allocation.
->   *     DEPRECATION: providing anything non-negative and nailing the base
-> @@ -396,6 +402,14 @@ struct gpio_chip {
->
->         int                     (*add_pin_ranges)(struct gpio_chip *gc);
->
-> +       int                     (*setup_poll)(struct gpio_chip *chip,
-> +                                             unsigned int offset,
-> +                                             u32 *eflags);
-
-Does anyone even call this?
-
-> +
-> +       int                     (*do_poll)(struct gpio_chip *chip,
-> +                                          unsigned int offset, u32 eflags,
-> +                                          struct gpioevent_poll_data *data);
-> +
->         int                     base;
->         u16                     ngpio;
->         const char              *const *names;
-> @@ -471,6 +485,11 @@ struct gpio_chip {
->  #endif /* CONFIG_OF_GPIO */
->  };
->
-> +struct gpioevent_poll_data {
-> +       __u64 timestamp;
-> +       __u32 id;
-> +};
-> +
->  extern const char *gpiochip_is_requested(struct gpio_chip *gc,
->                         unsigned int offset);
->
-> --
-> 2.17.1
->
-
-This patch doesn't look good - or even tested - but as I said - the
-idea itself sounds reasonable in general.
-
-Bart
+Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
+-- 
+Rudi
