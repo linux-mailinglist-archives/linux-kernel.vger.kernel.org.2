@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4375E4153CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE924153D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238421AbhIVXUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 19:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbhIVXT5 (ORCPT
+        id S238439AbhIVXVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:21:05 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:60502 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231259AbhIVXVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 19:19:57 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BB9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:18:26 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id 2so4515691qtw.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=AMmc2S9EwrQHTB819xMq3/OnJbyotUeYMqzS5bfmA5w=;
-        b=RyJALmgNRSWoqvMs9gV5fDXpRptPIFyZbRI3cNPRX5QO4NQhyHjrnsUVYHO73CFMsH
-         ZSi5qRIoAJHxg+56mwwThpwRuzgo8IFptaJ212yqWkJyM6Sx4KihlyB+O7tFJbGsiwc1
-         5ItAnp1rHaG6p/tBAfqdIfEvqcFekqeaPPbGz0FwgF+6tw5LB0NiOMPEe+cgbz0TLvRC
-         PzgLkZtXmR5KxfV/fObEyCOhjOGXBPi8du4i+4Ebj4xy1+2/050llqA6lJ9VhAytn1nk
-         OM8G+/MwCAm6QuTKNxfKBsxLzRFpAZBUr+050Vn9nCUIyrd0j8N5pFsaDR74mMTtXTQE
-         E0mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=AMmc2S9EwrQHTB819xMq3/OnJbyotUeYMqzS5bfmA5w=;
-        b=AbzsrwAFsSoNowUCw9VRTzUxZA3UVfch6X0o7OCX3XcAHHuzpvDxRSiLC5fEmxqFHu
-         AkAAys47z0HNMgUMF5EKgzfmXSjuybX1NKOEulNvMtaEFxJwz/MJCAg58CcE77KVy0Kl
-         LeAgf+dXRknFwulTQJxDW2HN4i81K4+32RWwDhWOVH6Rkze+cGK2gPFpr/tOxH35+Gar
-         xyGwIdIu5J5FC4cg7/7h6C4w/0k5DKF36udquMO+9lAr3p2kjZt5/eA3yCT8Ka8WkyaK
-         9RGB2PQlrhj1YJDI3isGxVUXr1BuB09a8Wy9yew7iYArmDsx6L5WgwY8ccAgZKaxviw3
-         rVgA==
-X-Gm-Message-State: AOAM532CUkp4L1KGlW+Qr97ZgytRkcimCKjYuyDeUQIceXBaifhgXQiA
-        4Tcfw1oONAmeImf9+haRPMiHTw==
-X-Google-Smtp-Source: ABdhPJzMrxos1y2f6+UtwI3iVasX7ubloEvN0kUUt5KvFEvCfhuOzzR6wW2XkMfQ+ariaREXFhtZlw==
-X-Received: by 2002:ac8:720f:: with SMTP id a15mr2011057qtp.84.1632352705855;
-        Wed, 22 Sep 2021 16:18:25 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y23sm2969068qkj.128.2021.09.22.16.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 16:18:24 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 16:18:09 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Peter Xu <peterx@redhat.com>
-cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
-In-Reply-To: <YUueOUfoamxOvEyO@t490s>
-Message-ID: <24224366-293a-879-95db-f69abcb0cb70@google.com>
-References: <20210922175156.130228-1-peterx@redhat.com> <CAJHvVch3g_UY-akMdu0O9413iCb1H83DLhR1Am8WnfUyV=s1=g@mail.gmail.com> <YUueOUfoamxOvEyO@t490s>
+        Wed, 22 Sep 2021 19:21:04 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 32273E52;
+        Thu, 23 Sep 2021 01:19:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632352772;
+        bh=lirq6R1zilU8AH/ITqGiM3d1OMtteL95cTbYnXKaqJ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jEJ2khWXsYpOfWVDgNgPUyMJ05r0aPjPLP8ScOFN0EjH9xBVdAzabLz1IOgPt+eub
+         Bs521dGOj1sLg+Uas50hOHExvx3xL3zu4UFs3s+WqDQEyJeu8NZEF9yVSZRYlTrkua
+         x77yV54rQmWCTzmHfw1zXrsq16B9y1O/YdACPSKI=
+Date:   Thu, 23 Sep 2021 02:19:30 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: dw-hdmi-cec: Make use of the helper function
+ devm_add_action_or_reset()
+Message-ID: <YUu6AukldZ482TDf@pendragon.ideasonboard.com>
+References: <20210922125909.215-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210922125909.215-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021, Peter Xu wrote:
+Hi Cai,
+
+Thank you for the patch.
+
+On Wed, Sep 22, 2021 at 08:59:08PM +0800, Cai Huoqing wrote:
+> The helper function devm_add_action_or_reset() will internally
+> call devm_add_action(), and if devm_add_action() fails then it will
+> execute the action mentioned and return the error code. So
+> use devm_add_action_or_reset() instead of devm_add_action()
+> to simplify the error handling, reduce the code.
 > 
-> Not installing pmd means uffd-minor can still trap any further faults just like
-> before, afaiu.
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> There's a very trivial detail that the pmd missing case will have a very slight
-> code path change when the next page fault happens: in __handle_mm_fault() we'll
-> first try to go into create_huge_pmd() once, however since shmem didn't provide
-> huge_fault(), we'll go the VM_FAULT_FALLBACK path, and things will go like
-> before when faulting on a small pte.  The next UFFDIO_CONTINUE will allocate
-> that missing pmd again, however it'll install a 4K page only.
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+> index 70ab4fbdc23e..c8f44bcb298a 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+> @@ -265,11 +265,9 @@ static int dw_hdmi_cec_probe(struct platform_device *pdev)
+>  	/* override the module pointer */
+>  	cec->adap->owner = THIS_MODULE;
+>  
+> -	ret = devm_add_action(&pdev->dev, dw_hdmi_cec_del, cec);
+> -	if (ret) {
+> -		cec_delete_adapter(cec->adap);
+> +	ret = devm_add_action_or_reset(&pdev->dev, dw_hdmi_cec_del, cec);
+> +	if (ret)
+>  		return ret;
+> -	}
+>  
+>  	ret = devm_request_threaded_irq(&pdev->dev, cec->irq,
+>  					dw_hdmi_cec_hardirq,
 
-I think you're mistaken there.
+-- 
+Regards,
 
-I can't tell you much about ->huge_fault(), something introduced for
-DAX I believe; but shmem has managed pmd mappings without it, since
-before ->huge_fault() was ever added.
-
-Look for the call to do_set_pmd() in finish_fault(): I think you'll
-find that is the way shmem's huge pmds get in.
-
-Earlier in the thread you suggested "shmem_getpage() only returns
-small pages": but it can very well return PageTransCompound pages,
-head or tail, which arrive at this do_set_pmd().
-
-Hugh
+Laurent Pinchart
