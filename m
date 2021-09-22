@@ -2,266 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0F84150DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9F04150D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237318AbhIVUBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237241AbhIVUA5 (ORCPT
+        id S237283AbhIVT7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:59:14 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:40855 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230384AbhIVT7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:00:57 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA580C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:59:26 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id b20so16723729lfv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kirSNZC3LGy8tRHg461vHsiEZgK8q2yo81KgBYR6tws=;
-        b=ba4bNRMHOxY32D9ZN9dQDNgJT71yLqjg/+0RUSgkWVpajglt+dKQGEEpaKwBBmESLN
-         miUObi6XdAuFACtag9FJ0cBaldL5tqrqwlgMW0TAz31buc1rVycT98BxM/nmOfg732+h
-         TN85r2m9jX7ycrzRu6KsS7zMbDSU2Dn9gjenVYGvB6vez+Z76d5ZVonj5r2I0TnA0JpU
-         NIsLogUgN3fmJ7gTSeg5kRnA3zpAdRD6VCvvDhAK6fhnHBJK8OglhAR7/zfSOV5PXm8r
-         XmmGoDCUxE3SO6QYJcKVMo+wztxOHHj0Ij6PHfMtWl1t0L3W1i1v4masunP7cKQk/BNK
-         Do2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kirSNZC3LGy8tRHg461vHsiEZgK8q2yo81KgBYR6tws=;
-        b=l98VWksWhf7F98WJ36P4T4DkPiNZ2eQNPYJRo1sAtL/DB6XA2eS3QUdoDFm9VizbrJ
-         KxQ4vHvklKSmGZqBNNGqgMXb010g3ZHS/XfcFwMK4GiRDkb+4VeYJFeckqD/ZAUU00MC
-         6wxTxZXIvBlO/CYj8Bagih24gAKvX58zhpGElFr4rLrI+HujPd1PVfgrXXjsROvz/Dn4
-         P+ahUxqfxRivpJw6/jiMmIfrZXAHBNhuI21b8a35hV5NyA937W0tWKZMhRl2Jk8eUZ6C
-         jC1M5G7vuwNGMPcvGlhEQzA+P4MaE2JmkNXq2VsyQvTs0vUQtxngmqFMd436SE7GPEKT
-         1CAQ==
-X-Gm-Message-State: AOAM5335pSh7OPeumDnOkyAWQcEj0swiWCkHlxQ5zz/rwRDG2UDzbzJW
-        paB4GW6/RAB3D5BcbDr6R2AYAQ==
-X-Google-Smtp-Source: ABdhPJxwNgF40iMJefxXhynJvy5AV9N1NOqW/96Vd00nTZb31ykmYwEL3ugOkneFCjTy1uihb5sgUw==
-X-Received: by 2002:a2e:85cb:: with SMTP id h11mr1190045ljj.111.1632340765201;
-        Wed, 22 Sep 2021 12:59:25 -0700 (PDT)
-Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id j18sm251514lfg.65.2021.09.22.12.59.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 12:59:24 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 3/3 v2] clocksource/drivers/fttmr010: Just count down
-Date:   Wed, 22 Sep 2021 21:56:56 +0200
-Message-Id: <20210922195656.1822268-3-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210922195656.1822268-1-linus.walleij@linaro.org>
-References: <20210922195656.1822268-1-linus.walleij@linaro.org>
+        Wed, 22 Sep 2021 15:59:11 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MQeIA-1mGZb33T8A-00Ni6h; Wed, 22 Sep 2021 21:57:39 +0200
+Received: by mail-wr1-f45.google.com with SMTP id q11so10280436wrr.9;
+        Wed, 22 Sep 2021 12:57:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531Y9aCt+iljtF5koULIBOWD6fCTweUghWfw1tHxu19nfhUOPuuM
+        rrDL5y5LigSlvYvy0XqXFmGhU6UCFS1p1T3UDew=
+X-Google-Smtp-Source: ABdhPJwgGZ9USpTQcbjF1tGcTxsBwqBG1jppN6hfyIkZHEanRUZjCnfn1k1S8QsRU2t3uS2PlP2EINDKZA9arVayJqE=
+X-Received: by 2002:adf:f481:: with SMTP id l1mr780247wro.411.1632340659471;
+ Wed, 22 Sep 2021 12:57:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
+ <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+ <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+ <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com> <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
+In-Reply-To: <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 22 Sep 2021 21:57:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
+Message-ID: <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Vmowgu0XWiJ4bAK8Io1z9vQonQ3WT9BpZHzLYActjCAmG7dhpOg
+ 5aLXJq2etKcO2+UOZ8HjCDfi5t9QBfK67S4KHeELZjM/vf/7UrNs8GUMA+ZCKShQhDeUNAC
+ hhAHGLbE0Oa5nYJyXcuvpnxGHOQ/a3C7XSyDborNrwRwp0cQaImVLPxNzqKc888xNGXRTGp
+ yKEsUaJtmw7gnaM36cb7Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TfSwbDUQHuc=:2I1Fe8O0sZmCDYL90fPwe1
+ QvBoE7xYGXVmj8KKCYB1FvgS0jY/WiVi9m1R+lBbZJ+lmLCHDlTFiMNwdQKEzSlxSGGMKcr5a
+ F7wq3UsZNBFWSTSiBvAjbWwyp8rpffI3prhBSDv0Tjs1h5vtvZADmSuLpPJISYb+6p6gWjkex
+ MVCPAMvvaOmXAD+gU1fvfICXSwa7FBxyG/XyRjUK7Wj9B198edOR/tPlRR/QDywsL9GEw1kv0
+ pYApY1yA3MuElXMziS+XyAMw9iIXF/R69DC+0LYsTYVH/xkTw9Ce81TJuknrGCsvvwA9NcsPc
+ JhH2Ao+XNoJErZGLrUasUwDFhc4fcvXthj/evWD06CiVCYWiI0yKzkTWydKX6oU4h4K46sfxA
+ T360SgsAySzzO+aWj2Q8HBYByiHA6n/Kz63ey2a/+6EmdpyeJHO58kMVFxk70mbSPyP2WdLtF
+ gea+6VP1Kw9ziBSMAVX/4xqqp9Fn5cPFCLm7bWIT43UfgUKv+HV8t0UJ6H3GZhEZT9jKrit8M
+ T2EKMb6Xl20Xk0twV267MIUpcSnnmtlI1vMOCUUjFQhL2v267ksF4wbr1uKSMEVVxOe2m3V70
+ hCLvSOcy3X/AzqJIaEbJ3lnwnFt5mFHQn002dy9t33qSPqKWPxYF21cGvSYQg+BsRkB9bDO68
+ GblwCtdD7OedSwHNRcp7nS5rQvVEolgygOzw1Juh2Jm6YmU6+gW3yq0P0ceEok1FXVBxbeSOU
+ iRH6CTBuz6aKphmEYp7kRw/IdisPjrrDEhU+Ag==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All timers can handled just counting down so what about just
-doing that instead of special-casing the counting down mode.
+On Wed, Sep 22, 2021 at 8:40 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> On Wed, Sep 22, 2021 at 8:07 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Wed, Sep 22, 2021 at 7:42 PM Sergio Paracuellos
+> > Ok, thank you for the detailed explanation.
+> >
+> > I suppose you can use the generic infrastructure in asm-generic/io.h
+> > if you "#define PCI_IOBASE mips_io_port_base". In this case, you
+> > should have an architecture specific implementation of
+> > pci_remap_iospace() that assigns mips_io_port_base.
+>
+> No, that is what I tried originally defining PCI_IOBASE as
+> _AC(0xa0000000, UL) [0] which is the same as KSEG1 [1] that ends in
+> 'mips_io_port_base'.
 
-This has the upside that overflow cannot occur so we can
-remove some handling of that interrupt as well.
+Defining it as KSEG1 would be problematic because that means that
+the Linux-visible port numbers are offset from the bus-visible ones.
 
-Cc: Cédric Le Goater <clg@kaod.org>
-Cc: Joel Stanley <joel@jms.id.au>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v1->v2:
-- New patch.
----
- drivers/clocksource/timer-fttmr010.c | 97 +++++-----------------------
- 1 file changed, 16 insertions(+), 81 deletions(-)
+You really want PCI_IOBASE to point to the address of port 0.
 
-diff --git a/drivers/clocksource/timer-fttmr010.c b/drivers/clocksource/timer-fttmr010.c
-index 5af8ea388cc4..f72ec84884e2 100644
---- a/drivers/clocksource/timer-fttmr010.c
-+++ b/drivers/clocksource/timer-fttmr010.c
-@@ -119,21 +119,11 @@ static inline struct fttmr010 *to_fttmr010(struct clock_event_device *evt)
- 	return container_of(evt, struct fttmr010, clkevt);
- }
- 
--static unsigned long fttmr010_read_current_timer_up(void)
--{
--	return readl(local_fttmr->base + TIMER2_COUNT);
--}
--
- static unsigned long fttmr010_read_current_timer_down(void)
- {
- 	return ~readl(local_fttmr->base + TIMER2_COUNT);
- }
- 
--static u64 notrace fttmr010_read_sched_clock_up(void)
--{
--	return fttmr010_read_current_timer_up();
--}
--
- static u64 notrace fttmr010_read_sched_clock_down(void)
- {
- 	return fttmr010_read_current_timer_down();
-@@ -148,17 +138,7 @@ static int fttmr010_timer_set_next_event(unsigned long cycles,
- 	/* Stop */
- 	fttmr010->timer_shutdown(evt);
- 
--	if (fttmr010->is_aspeed) {
--		/*
--		 * ASPEED Timer Controller will load TIMER1_LOAD register
--		 * into TIMER1_COUNT register when the timer is re-enabled.
--		 */
--		writel(cycles, fttmr010->base + TIMER1_LOAD);
--	} else {
--		/* Setup the match register forward in time */
--		cr = readl(fttmr010->base + TIMER1_COUNT);
--		writel(cr + cycles, fttmr010->base + TIMER1_MATCH1);
--	}
-+	writel(cycles, fttmr010->base + TIMER1_LOAD);
- 
- 	/* Start */
- 	cr = readl(fttmr010->base + TIMER_CR);
-@@ -194,24 +174,11 @@ static int fttmr010_timer_shutdown(struct clock_event_device *evt)
- static int fttmr010_timer_set_oneshot(struct clock_event_device *evt)
- {
- 	struct fttmr010 *fttmr010 = to_fttmr010(evt);
--	u32 cr;
- 
- 	/* Stop */
- 	fttmr010->timer_shutdown(evt);
--
--	/* Setup counter start from 0 or ~0 */
- 	writel(0, fttmr010->base + TIMER1_COUNT);
--	if (fttmr010->is_aspeed) {
--		writel(~0, fttmr010->base + TIMER1_LOAD);
--	} else {
--		writel(0, fttmr010->base + TIMER1_LOAD);
--
--		/* Enable interrupt */
--		cr = readl(fttmr010->base + TIMER_INTR_MASK);
--		cr &= ~(TIMER_1_INT_OVERFLOW | TIMER_1_INT_MATCH2);
--		cr |= TIMER_1_INT_MATCH1;
--		writel(cr, fttmr010->base + TIMER_INTR_MASK);
--	}
-+	writel(~0, fttmr010->base + TIMER1_LOAD);
- 
- 	return 0;
- }
-@@ -226,19 +193,7 @@ static int fttmr010_timer_set_periodic(struct clock_event_device *evt)
- 	fttmr010->timer_shutdown(evt);
- 
- 	/* Setup timer to fire at 1/HZ intervals. */
--	if (fttmr010->is_aspeed) {
--		writel(period, fttmr010->base + TIMER1_LOAD);
--	} else {
--		cr = 0xffffffff - (period - 1);
--		writel(cr, fttmr010->base + TIMER1_COUNT);
--		writel(cr, fttmr010->base + TIMER1_LOAD);
--
--		/* Enable interrupt on overflow */
--		cr = readl(fttmr010->base + TIMER_INTR_MASK);
--		cr &= ~(TIMER_1_INT_MATCH1 | TIMER_1_INT_MATCH2);
--		cr |= TIMER_1_INT_OVERFLOW;
--		writel(cr, fttmr010->base + TIMER_INTR_MASK);
--	}
-+	writel(period, fttmr010->base + TIMER1_LOAD);
- 
- 	/* Start the timer */
- 	cr = readl(fttmr010->base + TIMER_CR);
-@@ -268,7 +223,7 @@ static irqreturn_t fttmr010_timer_interrupt(int irq, void *dev_id)
- 	}
- 
- 	val = readl(fttmr010->base + TIMER_INTR_STATE);
--	if (val & (TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW))
-+	if (val & TIMER_1_INT_MATCH1)
- 		evt->event_handler(evt);
- 	else
- 		/* Spurious IRQ */
-@@ -284,9 +239,8 @@ static irqreturn_t ast2600_timer_interrupt(int irq, void *dev_id)
- 	u32 val;
- 
- 	val = readl(fttmr010->base + TIMER_INTR_STATE);
--	if (val & (TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW)) {
--		writel(TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW,
--		       fttmr010->base + TIMER_INTR_STATE);
-+	if (val & TIMER_1_INT_MATCH1) {
-+		writel(TIMER_1_INT_MATCH1, fttmr010->base + TIMER_INTR_STATE);
- 		evt->event_handler(evt);
- 	} else {
- 		/* Just clear any spurious IRQs from the block */
-@@ -360,15 +314,10 @@ static int __init fttmr010_common_init(struct device_node *np,
- 		writel(0, fttmr010->base + TIMER_INTR_STATE);
- 	}
- 
--	/*
--	 * Enable timer 1 count up, timer 2 count up, except on Aspeed,
--	 * where everything just counts down.
--	 */
- 	if (is_aspeed)
- 		val = TIMER_2_CR_ASPEED_ENABLE;
- 	else {
--		val = TIMER_2_CR_ENABLE | TIMER_1_CR_UPDOWN |
--			TIMER_2_CR_UPDOWN;
-+		val = TIMER_2_CR_ENABLE;
- 	}
- 	writel(val, fttmr010->base + TIMER_CR);
- 
-@@ -381,23 +330,13 @@ static int __init fttmr010_common_init(struct device_node *np,
- 	writel(0, fttmr010->base + TIMER2_MATCH1);
- 	writel(0, fttmr010->base + TIMER2_MATCH2);
- 
--	if (fttmr010->is_aspeed) {
--		writel(~0, fttmr010->base + TIMER2_LOAD);
--		clocksource_mmio_init(fttmr010->base + TIMER2_COUNT,
--				      "FTTMR010-TIMER2",
--				      fttmr010->tick_rate,
--				      300, 32, clocksource_mmio_readl_down);
--		sched_clock_register(fttmr010_read_sched_clock_down, 32,
--				     fttmr010->tick_rate);
--	} else {
--		writel(0, fttmr010->base + TIMER2_LOAD);
--		clocksource_mmio_init(fttmr010->base + TIMER2_COUNT,
--				      "FTTMR010-TIMER2",
--				      fttmr010->tick_rate,
--				      300, 32, clocksource_mmio_readl_up);
--		sched_clock_register(fttmr010_read_sched_clock_up, 32,
--				     fttmr010->tick_rate);
--	}
-+	writel(~0, fttmr010->base + TIMER2_LOAD);
-+	clocksource_mmio_init(fttmr010->base + TIMER2_COUNT,
-+			      "FTTMR010-TIMER2",
-+			      fttmr010->tick_rate,
-+			      300, 32, clocksource_mmio_readl_down);
-+	sched_clock_register(fttmr010_read_sched_clock_down, 32,
-+			     fttmr010->tick_rate);
- 
- 	/*
- 	 * Setup clockevent timer (interrupt-driven) on timer 1.
-@@ -441,12 +380,8 @@ static int __init fttmr010_common_init(struct device_node *np,
- 
- #ifdef CONFIG_ARM
- 	/* Also use this timer for delays */
--	if (fttmr010->is_aspeed)
--		fttmr010->delay_timer.read_current_timer =
--			fttmr010_read_current_timer_down;
--	else
--		fttmr010->delay_timer.read_current_timer =
--			fttmr010_read_current_timer_up;
-+	fttmr010->delay_timer.read_current_timer =
-+		fttmr010_read_current_timer_down;
- 	fttmr010->delay_timer.freq = fttmr010->tick_rate;
- 	register_current_timer_delay(&fttmr010->delay_timer);
- #endif
--- 
-2.31.1
+> > pci_remap_iospace() was originally meant as an architecture
+> > specific helper, but it moved into generic code after all architectures
+> > had the same requirements. If MIPS has different requirements,
+> > then it should not be shared.
+>
+> I see. So, if it can not be shared, would defining 'pci_remap_iospace'
+> as 'weak' acceptable? Doing in this way I guess I can redefine the
+> symbol for mips to have the same I currently have but without the
+> ifdef in the core APIs...
 
+I would hope to kill off the __weak functions, and prefer using an #ifdef
+around the generic implementation. One way to do it is to define
+a macro with the same name, such as
+
+#define pci_remap_iospace pci_remap_iospace
+
+and then use #ifdef around the C function to see if that's arleady defined.
+
+> >
+> > I don't yet understand how you deal with having multiple PCIe
+> > host bridge devices if they have distinct I/O port ranges.
+> > Without remapping to dynamic virtual addresses, does
+> > that mean that every MMIO register between the first and
+> > last PCIe bridge also shows up in /dev/ioport? Or do you
+> > only support port I/O on the first PCIe host bridge?
+>
+> For example, this board is using all available three pci ports [2] and I get:
+>
+> root@gnubee:~# cat /proc/ioports
+> 1e160000-1e16ffff : pcie@1e140000
+>   1e160000-1e160fff : PCI Bus 0000:01
+>     1e160000-1e16000f : 0000:01:00.0
+>       1e160000-1e16000f : ahci
+>     1e160010-1e160017 : 0000:01:00.0
+>       1e160010-1e160017 : ahci
+>     1e160018-1e16001f : 0000:01:00.0
+>       1e160018-1e16001f : ahci
+>     1e160020-1e160023 : 0000:01:00.0
+>       1e160020-1e160023 : ahci
+>     1e160024-1e160027 : 0000:01:00.0
+>       1e160024-1e160027 : ahci
+>   1e161000-1e161fff : PCI Bus 0000:02
+>     1e161000-1e16100f : 0000:02:00.0
+>       1e161000-1e16100f : ahci
+>     1e161010-1e161017 : 0000:02:00.0
+>       1e161010-1e161017 : ahci
+>     1e161018-1e16101f : 0000:02:00.0
+>       1e161018-1e16101f : ahci
+>     1e161020-1e161023 : 0000:02:00.0
+>       1e161020-1e161023 : ahci
+>     1e161024-1e161027 : 0000:02:00.0
+>       1e161024-1e161027 : ahci
+>   1e162000-1e162fff : PCI Bus 0000:03
+>     1e162000-1e16200f : 0000:03:00.0
+>       1e162000-1e16200f : ahci
+>     1e162010-1e162017 : 0000:03:00.0
+>       1e162010-1e162017 : ahci
+>     1e162018-1e16201f : 0000:03:00.0
+>       1e162018-1e16201f : ahci
+>     1e162020-1e162023 : 0000:03:00.0
+>       1e162020-1e162023 : ahci
+>     1e162024-1e162027 : 0000:03:00.0
+>       1e162024-1e162027 : ahci
+
+Ah ok, so there are I/O ports that are at least
+visible (may or may not be accessed by the driver).
+
+I only see one host bridge here though, and it has a single
+I/O port range, so maybe all three ports are inside of
+a single PCI domain?
+
+Having high numbers for the I/O ports is definitely a
+problem as I mentioned. Anything that tries to access
+PC-style legacy devices on the low port numbers
+will now directly go on the bus accessing MMIO
+registers that it shouldn't, either causing a CPU exception
+or (worse) undefined behavior from random register
+accesses.
+
+       Arnd
