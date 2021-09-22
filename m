@@ -2,115 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6405B414D77
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD33414D79
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236508AbhIVPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236486AbhIVPy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:54:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8627061090;
-        Wed, 22 Sep 2021 15:52:55 +0000 (UTC)
-Date:   Wed, 22 Sep 2021 17:52:53 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [RFC] Expose request_module via syscall
-Message-ID: <20210922155253.nj5dorsyv7loduws@wittgenstein>
-References: <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
- <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
- <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
- <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
- <CALCETrWA1TBvbknH1Jzt=newTd4sHzNFm0RPuRxazjuRQRsR7w@mail.gmail.com>
- <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de>
- <YUi95tFDWS7oceYP@bombadil.infradead.org>
- <CALCETrX9keVFxEZYUkKr7_dWb9Ubo9q4E2aTY_ZOWGSHyRph8g@mail.gmail.com>
- <20210922122523.72ypzg4pm2x6nkod@wittgenstein>
- <59e230b3-0e85-42ff-84a8-6b30ad0719d8@www.fastmail.com>
+        id S236531AbhIVPyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:54:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37778 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236486AbhIVPye (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 11:54:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632325983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QNIWP0d0RzgTdX2p+hapRwTwiak0Hv/aQlwyrA7gHog=;
+        b=Us6CdL0XydSomy+j++XZtnYVrrujDP2Pcvmuv+C6XMclDkWMX8KmVUWFvcYb7dAaYfNqbQ
+        3g5eHFYNk4GFs90a5Uj2gaOZgu440hKSTQYyHlnEy74UNZT/EkWrU7lzMlzRUgAYPryqb5
+        dS+DKbjAXAhI3g3Guq5GrxLp6KhJIVA=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-mWqSpcnIOO6hYmOgd5ASuQ-1; Wed, 22 Sep 2021 11:53:00 -0400
+X-MC-Unique: mWqSpcnIOO6hYmOgd5ASuQ-1
+Received: by mail-qt1-f200.google.com with SMTP id r11-20020ac86d2b000000b002a688ea1f4bso9890817qtu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:53:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=QNIWP0d0RzgTdX2p+hapRwTwiak0Hv/aQlwyrA7gHog=;
+        b=0i186jBM5ZECvs6+XuoA5avv1hWBpUL9OVMdsAU8DAb6mD9gR9EP4q9zFR0jNoFsht
+         yNZNyWQbhKgyw20A3BarF9h3QgWJoBSSJUtnmcIxaHDJ8vG0NT2bXAb7eIGdpOnvEAts
+         cFJRqFcVfeuUTLL+0Oh/zAf1ATumYKIaygAfveeCRopkzRuZjfazGsR2m2UubCbhOJDr
+         UgtaR+PrmAxa0gM4Wzj7RCoUUhIbj6uwbVIRTDjiKCZvSSsSDNLE0A0muMaZmY4b7vzB
+         PT6yDOHYJ00ASLgMgOo7zNouCcQx9C8oSvOB6PjBxcYr3R+oj1rn5pz5NLElemonMDVI
+         CxpA==
+X-Gm-Message-State: AOAM531LwnvL+ijP0ug4u/fEH2juSsIYj59FOWrOHuuEVSHup/kfvYnR
+        /T+92MB4UUT8ZNdKx0RXFZrwPf4T6SXDwmjsdLEcauCg2cauVSlaqYKI+TyzGb/S6gGH1aWjUb5
+        ywKBjALleWEq78ctZkKxE+H2p
+X-Received: by 2002:a05:6214:12ec:: with SMTP id w12mr553008qvv.48.1632325980018;
+        Wed, 22 Sep 2021 08:53:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlAIybjuGUN4ANXueEhN4IL/DlV0u82GnLUemzbSu3zv0XuFRCyPP4TmZELnmsssaTJlYZWA==
+X-Received: by 2002:a05:6214:12ec:: with SMTP id w12mr552984qvv.48.1632325979726;
+        Wed, 22 Sep 2021 08:52:59 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id v24sm2034776qkv.11.2021.09.22.08.52.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 08:52:59 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] locking/ww-mutex: Fix uninitialized use of ret in
+ test_aa()
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        "kernelci.org bot" <bot@kernelci.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20210922145822.3935141-1-nathan@kernel.org>
+Message-ID: <27e08098-83b6-2238-59c1-3b38cd042a31@redhat.com>
+Date:   Wed, 22 Sep 2021 11:52:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <59e230b3-0e85-42ff-84a8-6b30ad0719d8@www.fastmail.com>
+In-Reply-To: <20210922145822.3935141-1-nathan@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 08:34:23AM -0700, Andy Lutomirski wrote:
-> On Wed, Sep 22, 2021, at 5:25 AM, Christian Brauner wrote:
-> > On Mon, Sep 20, 2021 at 11:36:47AM -0700, Andy Lutomirski wrote:
-> >> On Mon, Sep 20, 2021 at 11:16 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >> >
-> >> > On Mon, Sep 20, 2021 at 04:51:19PM +0200, Thomas Weißschuh wrote:
-> >> 
-> >> > > > Do you mean it literally invokes /sbin/modprobe?  If so, hooking this
-> >> > > > at /sbin/modprobe and calling out to the container manager seems like
-> >> > > > a decent solution.
-> >> > >
-> >> > > Yes it does. Thanks for the idea, I'll see how this works out.
-> >> >
-> >> > Would documentation guiding you in that way have helped? If so
-> >> > I welcome a patch that does just that.
-> >> 
-> >> If someone wants to make this classy, we should probably have the
-> >> container counterpart of a standardized paravirt interface.  There
-> >> should be a way for a container to, in a runtime-agnostic way, issue
-> >> requests to its manager, and requesting a module by (name, Linux
-> >> kernel version for which that name makes sense) seems like an
-> >> excellent use of such an interface.
-> >
-> > I always thought of this in two ways we currently do this:
-> >
-> > 1. Caller transparent container manager requests.
-> >    This is the seccomp notifier where we transparently handle syscalls
-> >    including intercepting init_module() where we parse out the module to
-> >    be loaded from the syscall args of the container and if it is
-> >    allow-listed load it for the container otherwise continue the syscall
-> >    letting it fail or failing directly through seccomp return value.
-> 
-> Specific problems here include aliases and dependencies.  My modules.alias file, for example, has:
-> 
-> alias net-pf-16-proto-16-family-wireguard wireguard
-> 
-> If I do modprobe net-pf-16-proto-16-family-wireguard, modprobe parses some files in /lib/modules/`uname -r` and issues init_module() asking for 'wireguard'.  So hooking init_module() is at the wrong layer -- for that to work, the container's /sbin/modprobe needs to already have figured out that the desired module is wireguard and have a .ko for it.
+On 9/22/21 10:58 AM, Nathan Chancellor wrote:
+> Clang warns:
+>
+> kernel/locking/test-ww_mutex.c:138:7: error: variable 'ret' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+>                  if (!ww_mutex_trylock(&mutex, &ctx)) {
+>                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> kernel/locking/test-ww_mutex.c:172:9: note: uninitialized use occurs here
+>          return ret;
+>                 ^~~
+> kernel/locking/test-ww_mutex.c:138:3: note: remove the 'if' if its condition is always false
+>                  if (!ww_mutex_trylock(&mutex, &ctx)) {
+>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> kernel/locking/test-ww_mutex.c:125:9: note: initialize the variable 'ret' to silence this warning
+>          int ret;
+>                 ^
+>                  = 0
+> 1 error generated.
+>
+> Assign !ww_mutex_trylock(...) to ret so that it is always initialized.
+>
+> Fixes: 12235da8c80a ("kernel/locking: Add context to ww_mutex_trylock()")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1463
+> Reported-by: "kernelci.org bot" <bot@kernelci.org>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>   kernel/locking/test-ww_mutex.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+> index d63ac411f367..353004155d65 100644
+> --- a/kernel/locking/test-ww_mutex.c
+> +++ b/kernel/locking/test-ww_mutex.c
+> @@ -135,7 +135,8 @@ static int test_aa(bool trylock)
+>   			goto out;
+>   		}
+>   	} else {
+> -		if (!ww_mutex_trylock(&mutex, &ctx)) {
+> +		ret = !ww_mutex_trylock(&mutex, &ctx);
+> +		if (ret) {
+>   			pr_err("%s: initial trylock failed!\n", __func__);
+>   			goto out;
+>   		}
+>
+> base-commit: 12235da8c80a1f9909008e4ca6036d5772b81192
 
-You can't use the container's .ko module. For this you would need to
-trust the image that the container wants you to load. The container
-manager should always load a host module.
+I was a bit confused by this patch at the beginning and then realized 
+that it was supposed to be applied on top of the tip true, not the 
+current mainline kernel.
 
-> 
-> >
-> > 2. A process in the container explicitly calling out to the container
-> >    manager.
-> >    One example how this happens is systemd-nspawn via dbus messages
-> >    between systemd in the container and systemd outside the container to
-> >    e.g. allocate a new terminal in the container (kinda insecure but
-> >    that's another issue) or other stuff.
-> >
-> > So what was your idea: would it be like a device file that could be
-> > exposed to the container where it writes requestes to the container
-> > manager? What would be the advantage to just standardizing a socket
-> > protocol which is what we do for example (it doesn't do module loading
-> > of course as we handle that differently):
-> 
-> My idea is standardizing *something*.  I think it would be nice if, for example, distros could ship a /sbin/modprobe that would do the right thing inside any compliant container runtime as well as when running outside a container.
-> 
-> I suppose container managers could also bind-mount over /sbin/modprobe, but that's more intrusive.
+Anyway, it looks good to me
 
-I don't see this is a big issue because that is fairly trivial.
-I think we never want to trust the container's modules.
-What probably should be happening is that the manager exposes a list of
-modules the container can request in some form. We have precedence for
-doing something like this.
-So now modprobe and similar tools can be made aware that if they are in
-a container they should request that module from the container manager
-be it via a socket request or something else.
-Nesting will be a bit funny but can probably be made to work by just
-bind-mounting the outermost socket into the container or relaying the
-request.
+Acked-by: Waiman Long <longman@redhat.com>
+
