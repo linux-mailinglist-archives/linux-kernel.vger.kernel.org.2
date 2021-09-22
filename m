@@ -2,164 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76726414AB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADC9414AD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhIVNlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:41:06 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:45220 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230512AbhIVNlF (ORCPT
+        id S232478AbhIVNmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:42:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55686 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233186AbhIVNl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:41:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1632317974;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 22 Sep 2021 09:41:56 -0400
+Date:   Wed, 22 Sep 2021 13:40:24 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632318025;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4goRYAj1C/OYhVef3+5ksvuHtwgPhezRweIBkwvA5VM=;
-        b=S53CO5ZKfpu77Qve0OLCWooVoK0nUE3DpAWUKCdz+iiqVniMqureSS8UUYaMumcffizD3B
-        dgggxNy381bpSz5KNYZwYIaMZVCXI1gwNekw8muILGFey5pBeo3dLjqMY8LLyK+tfqeG2z
-        cb2AimH1f3oPQSzusLrgf5rp2Ze8p2E=
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur01lp2051.outbound.protection.outlook.com [104.47.2.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-30-RRgzrCCYPhSqar_GqGZnBA-1; Wed, 22 Sep 2021 15:39:33 +0200
-X-MC-Unique: RRgzrCCYPhSqar_GqGZnBA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SNGmlk27vKUmqC/jVwhRnZmM4TwujWR9bDExLO5GGzxC3LQek3qMd/AxVHYXHMqoKTp6Ea+5tJ8K7V+8Hriv90+2/oxncg3fIEDv574EcCPtON4v5C3dy1RIVNKdIdjWmqc288iuhp8ErMIiEDRUxZ2iLfQFem56d5gr8a7xlNYa0RrIqfEGaJJ/7aVtz3n7dO71MC2K5qjw/hm8SBAoh+vqtory6MBLT+h+VLM7jfsR4N5J4oB90pWvHari7TPtbL5/gVaXKVCFh03V3O17Zo3nI9jqASkM2/Oql/ux3pfm8Y1gwDeozL2jAlKQdH2e/VjyzMnMKRdNftxcTWcm0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=4goRYAj1C/OYhVef3+5ksvuHtwgPhezRweIBkwvA5VM=;
- b=RYqeIeuXmYeznoTnWXdqzThGnfzslLoJvnBy4QzpmER/FDroyO+v7vtMpWHDWTeqzVlnlUBAzgPEhSCkrVY9QGgTjtSpdOv9BmUTVE+qKC/6Su5HeLJSMddiP4v7iASmkG/Md5SeNENqtpiJXvkGp/H/UA8EMno+1s3hURhWuv4pK2oWFe3MwzmZZc6NzuWFqpPTz6w7tRujOAMXj6mhO5K7/wQKziF23UkFDbCd/5SdR8BloDQwUmdGBHIidcK8+1Q1+TG4Sndoxl6oQZ5qfovpZ9wPs77ziv3SiKrh+NI4mErkcrQoDO515W/KVKjHZEmckeblpoOIKpqOFOeJYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR04MB7039.eurprd04.prod.outlook.com (2603:10a6:800:12b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
- 2021 13:39:30 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 13:39:30 +0000
-Subject: Re: [PATCH 2/3] xen/privcmd: fix error handling in mmap-resource
- processing
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Juergen Gross <jgross@suse.com>
-References: <0f0db6fa-2604-9a0d-1138-0063b5a39a87@suse.com>
- <aa6d6a67-6889-338a-a910-51e889f792d5@suse.com>
- <c0c84258-c2ee-f58c-ae9a-5f8bdd75f0db@oracle.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <1374b8da-1076-63fb-bc54-5be9f1ae94d4@suse.com>
-Date:   Wed, 22 Sep 2021 15:39:29 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <c0c84258-c2ee-f58c-ae9a-5f8bdd75f0db@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR3PR09CA0001.eurprd09.prod.outlook.com
- (2603:10a6:102:b7::6) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        bh=/GBvGXwHHmyrLLvUkrwcJlCs+5JVkJHte1Em2KD2hbk=;
+        b=vOz1Q0gkJkkCxpBiqBAAeVLz8WhZprAHP0u9jrE+t4LlTr3moCy3yCaHcSB4zJj/FdJmGt
+        pfUJeyNH3i+L2nvYUF7DEBJtxtC1I4AcS1TYKodsuHnmy30nZepMz9Bcve3s86xyI8kl/I
+        0NnZESpBA5ByCX5G4j9xKfpcYOXkQ+VRVA+lqizczuUShvPbYC8gkJAE2hqw/ngV9frCYc
+        0Sxg7DUW4Q+zIdlXncbH2MGrT3kgEjnZUP4bqzU2BwYcf0acQsNOdI26e7MN0PqatLM3JK
+        8sCG7J1OuHsKsr08CLPmYS1RCYukPbIYzTIuEm4TDgN96tjLKx+ElQGw7aIkVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632318025;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/GBvGXwHHmyrLLvUkrwcJlCs+5JVkJHte1Em2KD2hbk=;
+        b=eVDbQFfB8xevx+DK/TLPdLsl28AGExeYyv4hfnEt5f6zBYUr+/CnjLsBl3LLa6S8HfEve8
+        9Hc6rvEm+2KdVCCA==
+From:   "irqchip-bot for Geert Uytterhoeven" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-fixes] irqchip/renesas-rza1: Use semicolons
+ instead of commas
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ulrich Hecht <uli+renesas@fpond.eu>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: =?utf-8?q?=3Cb1710bb6ea5faa7a7fe74404adb0beb951e0bf8c=2E16316?=
+ =?utf-8?q?99160=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
+References: =?utf-8?q?=3Cb1710bb6ea5faa7a7fe74404adb0beb951e0bf8c=2E163169?=
+ =?utf-8?q?9160=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
 MIME-Version: 1.0
-Received: from [10.156.60.236] (37.24.206.209) by PR3PR09CA0001.eurprd09.prod.outlook.com (2603:10a6:102:b7::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 13:39:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dc48c9ae-95b2-4e4b-271b-08d97dce6755
-X-MS-TrafficTypeDiagnostic: VI1PR04MB7039:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB7039BE7D471D883F0B069215B3A29@VI1PR04MB7039.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +7N89F4Ko2eT3NhJlBGL5y2iaQ2uR/bgjBvyOK918Rd06/66CH9iWz4NAJvKFtcgr3oXPZPC2/YmPl9Y3Gf1v4bXO6JiG9sry7qqfWay+5Q5NHumo5rBzrb9xi6Hlrv951gBT3tm3S/VLE+ztrAn563H16DFubxoV1BdGGVae7qjGgy42vzQdcafoFCk3SXqUQulJ/AQTrJ/SfAjL8aM7FZwiHUHABPWb+i9Sx6iQmCuSUHh1RAnOY55PTn5r1LvjePxIZyxXRDISGtosY8S67Bsxjg7/fDTrcI9l01E1DPIo0Nn3N8F1bbqqsIqT1W6Xm0awTzDPUVah1DRFBVy6M5nY/JeSYWpgmX92ktjkq+3tjWdHPpI8mOBc4C4TgQcqnzGukqeNQly6ruPyJDIqUPuvYH/snQXP4Yf1mEqOLuQQBPgr6jTk80aRRQjyxZ+eJJJxJWryErcxrKN5bv0drh2FvERXt/m9evCcXjKjSi7w3EUrEoUhvfzs99+zZOR5pHR1Mx27XHDLQUs9SkZoc+uttP/yhqI9JpQAryhqjgpy5jaQDka+sNVxfo4u//3A9avFfOMmQLvtJE/yh+0MeVcDiegCyISCa3q+cm02ssVXi6VD+pbOumjvrvShCtLlzZwXqVGFxT2hUnA63EA7iTTY1jB5aS/oUHV1UW/VAd9D6LKxeVXVuZMv7x1qLNeObq3f4opukwCj5qqNvomay74PkhhKqtrh+hR1UF5z0Y=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(66476007)(66556008)(38100700002)(4326008)(66946007)(83380400001)(31696002)(316002)(5660300002)(54906003)(53546011)(107886003)(31686004)(2906002)(86362001)(16576012)(186003)(6486002)(8676002)(2616005)(956004)(6916009)(8936002)(36756003)(508600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NXpZcmY5dWZRZEVkY3cxaWFlSWxpd2FaNkh0NE52MjdXQzZlaFF5Tmk1cDRM?=
- =?utf-8?B?NDAvUTZ6NGhYZS9YV2lQS2pvTjVGWWJVWFMrb0tjRENQQlh1VUd6YWgrbmwz?=
- =?utf-8?B?c0JZcXg0citQYW1Lc3BwclgxVXZVd1REZWFsVHovK2h3M3ppMi9BR2dVUTZt?=
- =?utf-8?B?YU9RNDVzWktGRFMxcGZMMjZxWVZwdVVId1JCVEw2ZjJNclhDUE5wemlubzEw?=
- =?utf-8?B?RnVZTEZVdTUwMERyQU9mMFl1bG13VjNINCtSUmprVlhJdDNSdVpTVGRtVndw?=
- =?utf-8?B?aU40V3Nrc2traUVEVGR6dENnV085WnBIWVl1aC9nOWlUOU1XR1ZKNXduMFdW?=
- =?utf-8?B?N1ZRRTVadGEyblFEMG5mdTZRYzh0SkdJL3RYSk5KeVNoMXhzUHNnTXFGVTFZ?=
- =?utf-8?B?TFRoZjEzK3ZPTWdMUWFxcmUyTzBITDFTSlp5c2ZTVC9tRVZYMHIvQlgwMkx3?=
- =?utf-8?B?NUtzQTJWMzEyMmtCTUUva1RuYlNXSG45cWszR1V5OEIzQ3prV204ZFhOTEJQ?=
- =?utf-8?B?bWlEMWVNQkVaem84WGtHVEtndjBhWDZPK3VFNXBTc0MzZkdhTnVsaUdFdndS?=
- =?utf-8?B?aUUxUnBXUGRTa1V5M1JnbmZoQUdPLzFIaGpYSjNVSGJpS0pNODRLbjNMUEpk?=
- =?utf-8?B?UDV6elp3WGFKTE52SURVT2xoMGRFWU9PWkp0azRYSDdWUjRuVXlFYUJZTlFs?=
- =?utf-8?B?d0E0RzFjcXUrSDFRckN4SGRlKzlXWkNrZUZtWEJPdlZ6SWxvVzk3OFlhVkVN?=
- =?utf-8?B?SzFLRUJUY28yR2cvdlY0L3lSRElqSWZuMGdqSlBVUTN6MUdtU0NyTmgrSmw5?=
- =?utf-8?B?Ui8zTmhzU3hrcVlxOEw0ZS83SmZMZWw4WGJWRW55Y2tGd0dXWFY5VCtMbmpK?=
- =?utf-8?B?MXVzZ0tZcEZURjZkWFhtOUZYVHJDVEhiWWZNUlpYZE5JRCtabmFaa00yblZ5?=
- =?utf-8?B?V0NVQmdIN3hSUmJUaDRLSC94RTlMcFNxeDVpWFV3RFNtZmp2RXhsVFZYeUJx?=
- =?utf-8?B?akVRSSsrS3BpdWowK2NXeFBlcmFFUmFTS1RlaGM1ekNEZXNsVDJ2ZWxIRnM5?=
- =?utf-8?B?aVNZNWxFbkNhQXpnTXlSSzRjazBkL3NIQVAwUUdkWFFZaUI1bENIb21DTkxX?=
- =?utf-8?B?ZGRaV0hLREpPU0xPYmtiRjBlaEtFTTlPRjJtY0Z1cXFHSEJWcHFLZzZyUmZ2?=
- =?utf-8?B?cTFJQndJbmNzQTlUTmFCQTZYVTlZVnJlYVdXNzRINWZPdjdJSVBlT3lmbXZN?=
- =?utf-8?B?eE42bW1mVzJ1MVJGdkNCSmd2ZFhUUnc5d2NKTHdYeWcwRFNCQ0xVenJaQkIv?=
- =?utf-8?B?OWw1aXhWVUdCSHRXekh4UHJKMENreVRqUlpEd1R3MVdKbGxPM2ZYdXpFaEZK?=
- =?utf-8?B?djJPU2dNZ1AvUDVBVVhWR3I0UTE0NGVvWmpGNDRTaHJpSG9jV1E3UGNmdmdt?=
- =?utf-8?B?clpVTlU4RnFpUC9BVSt3UkhobzFkK01RUFBFOVhNRXFqR01Nc3FoeFNWdkl1?=
- =?utf-8?B?dktGWGpKS01abFN0QXc3ZVZ5NWR5ck8xYm40MEE5ZlR0dmExb3RMVUU2WFRt?=
- =?utf-8?B?WDVOcFB5cDdVdzdSTDN2N2dxV1dqdnlhOGVYazNqR2VwYjkrZmZiZGRzS3BF?=
- =?utf-8?B?ZndEMnVRYUJjT1V4UGQrME4rd2ppZXlvQjk3aVJCVWxiUS9remdRMDJ0V0hM?=
- =?utf-8?B?ejhlZis1NjBUWG5jT1hFMjFhSHp0SXhNT0luSkJHdzNZTXlLc2h2RklIaFdX?=
- =?utf-8?Q?ndu5HqEnxOyzRixjLNhnodr1+MJkYeq+EbQm1aZ?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc48c9ae-95b2-4e4b-271b-08d97dce6755
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 13:39:30.1343
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VVxl4hIccXeUj0uZ5RptOOBqE1jl9EMKz2Ejxf/yZtYltdG5VGzD0kQF4Kdx3Ihn59eiKSVC6LuwRyhuy/korg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7039
+Message-ID: <163231802401.25758.1119841944882855224.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.2021 15:29, Boris Ostrovsky wrote:
-> On 9/22/21 6:17 AM, Jan Beulich wrote:
->> @@ -817,7 +818,7 @@ static long privcmd_ioctl_mmap_resource(
->>  			unsigned int i;
->>  
->>  			for (i = 0; i < num; i++) {
->> -				rc = pfns[i];
->> +				rc = errs[i];
->>  				if (rc < 0)
->>  					break;
-> 
-> 
-> Can the assignment be moved inside the 'if' statement?
+The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-I wouldn't mind, albeit it's not the purpose of this change. Plus
-generally, when I do such elsewhere, I'm frequently told to better
-leave things as separate statements. IOW I'm a little surprised by
-the request.
+Commit-ID:     3ce8c70ecedb4e1f1d36301afb0281be40390f13
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/3ce8c70ecedb4e1f1d36301afb0281be40390f13
+Author:        Geert Uytterhoeven <geert+renesas@glider.be>
+AuthorDate:    Wed, 15 Sep 2021 11:47:30 +02:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Wed, 22 Sep 2021 14:37:59 +01:00
 
-> I am also not sure I understand why we need error array at all. Don't we always look at the first error only? In fact, AFAICS this is the only place where we look at the value.
+irqchip/renesas-rza1: Use semicolons instead of commas
 
-Well, to look at the first error we need to scan the array to find
-one. Indeed we bail from here in once we've found a slot which has
-failed.
+This code works, but it is cleaner to use semicolons at the end of
+statements instead of commas.
 
-I guess what you're trying to say is that there's room for
-improvement. In which case I might agree, but would want to point
-out that doing so would mean removing flexibility from the
-underlying function(s) (which may or may not be fine depending on
-what existing and future requirements there are). And that would
-be for another day, if at all.
+Extracted from a big anonymous patch by Julia Lawall
+<julia.lawall@inria.fr>.
 
-Jan
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/b1710bb6ea5faa7a7fe74404adb0beb951e0bf8c.1631699160.git.geert+renesas@glider.be
+---
+ drivers/irqchip/irq-renesas-rza1.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/irqchip/irq-renesas-rza1.c b/drivers/irqchip/irq-renesas-rza1.c
+index b0d46ac..72c06e8 100644
+--- a/drivers/irqchip/irq-renesas-rza1.c
++++ b/drivers/irqchip/irq-renesas-rza1.c
+@@ -223,12 +223,12 @@ static int rza1_irqc_probe(struct platform_device *pdev)
+ 		goto out_put_node;
+ 	}
+ 
+-	priv->chip.name = "rza1-irqc",
+-	priv->chip.irq_mask = irq_chip_mask_parent,
+-	priv->chip.irq_unmask = irq_chip_unmask_parent,
+-	priv->chip.irq_eoi = rza1_irqc_eoi,
+-	priv->chip.irq_retrigger = irq_chip_retrigger_hierarchy,
+-	priv->chip.irq_set_type = rza1_irqc_set_type,
++	priv->chip.name = "rza1-irqc";
++	priv->chip.irq_mask = irq_chip_mask_parent;
++	priv->chip.irq_unmask = irq_chip_unmask_parent;
++	priv->chip.irq_eoi = rza1_irqc_eoi;
++	priv->chip.irq_retrigger = irq_chip_retrigger_hierarchy;
++	priv->chip.irq_set_type = rza1_irqc_set_type;
+ 	priv->chip.flags = IRQCHIP_MASK_ON_SUSPEND | IRQCHIP_SKIP_SET_WAKE;
+ 
+ 	priv->irq_domain = irq_domain_add_hierarchy(parent, 0, IRQC_NUM_IRQ,
