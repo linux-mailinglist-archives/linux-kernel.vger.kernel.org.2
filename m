@@ -2,204 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F784153AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384624153AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238362AbhIVW7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
+        id S238375AbhIVXA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238293AbhIVW7f (ORCPT
+        with ESMTP id S238364AbhIVXA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:59:35 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55EDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:58:04 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id v24so16141107eda.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:58:04 -0700 (PDT)
+        Wed, 22 Sep 2021 19:00:56 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94221C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:59:25 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id y197so5564784iof.11
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:59:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7qKKaxgyZYKUv97cqhGMgy3ckC4rldlc0ziA/fAv6X4=;
-        b=d57UhQ//WiApkc3biwtSFFEKu+qXD4CDLqBDm8ok2tzFNK2rc9bzksuiJ9NHX0Kt1N
-         /fiONtjZotoIt8ABeu5hQC9t3PNPqGVVW82+S/DgRjf1XWx7fzYRQOYOUrD8hQv7OJLh
-         5zqvDZo/EkezDqaYaaaXKYpvyoxhv2wmSU+K/ifpoNtOLEBb/FsxUdVdV7wF5vZHq0Je
-         i0PfgdYAAJ1Dl8iuMExDpsje8fpjeVCQTkerid8FZVElSxTHTS763s6r2GvSgXfDemT8
-         QDaAfvluRcElYT2IicnVikVco6obcv9UQi3IkduzZa3mUaP9paYvjBizaPM4mc9I4HIh
-         J6gA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1pqGlaeTi7J15oAmFBMcDMPPmFmeEf7zfAbebDrPl/s=;
+        b=MRYTHsccewbb3d4zqHwXXdEQ9gJeP/w9TbjygW246JnXhIu3haJmwhHY36GaMlXHun
+         w+OudQ6FNF4FC4anwDSDdDnnIG95TlRU/UafK4AuzzgoAZm0JQwQB70WnFIAP2nxQ5ZZ
+         4SgllZda6UofFCsikq/3FQ+xgwSoe99QI+VOqKpVNLjCN8nhJSR4qtwZfTaFnm474HAj
+         JGeHy7OsTk3fMPGgskcwDehPbgh7g75M92SHIN92vhxQ3PMyPBehdHbwLHe/bryUEwPG
+         UpCviIpJAWtXt8Q5s77bUvnGP9XoJcDJZOQNeaL6l9jTeePLYvIMdxkf6DSejEwYUeOP
+         37Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7qKKaxgyZYKUv97cqhGMgy3ckC4rldlc0ziA/fAv6X4=;
-        b=tLgRn1hPY92cs9TCQ2Gh/jqKnK523O2iKYwba6QcKT8mEEsLCLrwi4Fw0vWMcpMXp9
-         3xa29IvoMdgX6nkQMcXuUhXNF9nUkC046UbTkBi2l7mZRWMA0NAEWFuV3Faoo/NIydn6
-         EusfWG/jxiYyNHT4x7p+ymHjZQTgxfCzFJoVppMvWluUiYxj3poNrA/DbOEC6ly4vYls
-         LG05IqGNV7coR+Eu2t7720fyH1sg2PCobWG0w8xZjKfbBSSXOCOiyatnIL/iN+OOcwGF
-         YVQ0Ws3HsMYu6lqVxnUoxKHL9mrB2s1FlSjCi06ILppQkFllOhtS/Zw3O9yYwnHDoiVb
-         3R3Q==
-X-Gm-Message-State: AOAM533VmNTNR91cfMn9eeqd3A0KtiE40cgogykxiCrALeI/raIz26Pp
-        Y57zJAs3SajKsD7X2CrZKec=
-X-Google-Smtp-Source: ABdhPJz8NcB/dc1lkN1jmVZ+U+cNMn0bqep6CFfnjDV0LahZAg7/PReLqHwcKc5KQWK1TWkRnvyP4w==
-X-Received: by 2002:a50:e0c7:: with SMTP id j7mr1978008edl.245.1632351483456;
-        Wed, 22 Sep 2021 15:58:03 -0700 (PDT)
-Received: from tom-desktop.station (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
-        by smtp.gmail.com with ESMTPSA id ml12sm1736678ejb.29.2021.09.22.15.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 15:58:03 -0700 (PDT)
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: vt6655: Replace camel case variable name
-Date:   Thu, 23 Sep 2021 00:57:52 +0200
-Message-Id: <20210922225756.694409-1-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1pqGlaeTi7J15oAmFBMcDMPPmFmeEf7zfAbebDrPl/s=;
+        b=mc79agpy2sBjQkJ8E4krfoAnq27BFx1RG9qtqDeQinviVQcJF+kZCzUPCen3SUzp7x
+         5A8SsALujuxByIt9sdOVoTdlbRJINkv7RadDLE3AJgRQN7IP7faOGhpDqiXa4HJTMWHu
+         R0+TySt5XSubdAgTMr8jQe832z8Y1UAU9XQhV/blIG6JFUNA+W2hXDaGxO9DGN39FVWn
+         kz2rvcCl4HckpWaPzhqXWhS2/JcDzP53UqcH4y1PXk/qIN+LAbXFMLJF8pl5OvSkMCg+
+         zx4fBvs9lnli0go5nprvCI5HXD4Dz0/w25j4JK8w0Aek+CjWva2c4GsE9X5bndYoHovm
+         TEqg==
+X-Gm-Message-State: AOAM530s1pspnroLgXSDLHF7PdfI4rPiwoh3xHHI6DCZTeOKxY2vUQTQ
+        rJC8qHy36qO2Hl7Rcb9yWcTbPA7C7SalVDQKMAMUXA==
+X-Google-Smtp-Source: ABdhPJzyjNZvscMgFOYtdkguz4v/LcpUwFymfOfQDg9/qcs0gFxDMyCitkVXlLtetOMwLNSMbaDhrNj8WLIkU0uIrjA=
+X-Received: by 2002:a05:6602:3403:: with SMTP id n3mr1236381ioz.35.1632351564722;
+ Wed, 22 Sep 2021 15:59:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210921181349.199780-1-irogers@google.com> <YUudR8ST7qGYdFQE@krava>
+In-Reply-To: <YUudR8ST7qGYdFQE@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 22 Sep 2021 15:59:11 -0700
+Message-ID: <CAP-5=fVWGT0=0k0eG0c-6wEGod=49SVsumJRN2=SxmgOo5A4dw@mail.gmail.com>
+Subject: Re: [PATCH v2] perf evlist: Remove group option.
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Work in progress: replace camel case variables
+On Wed, Sep 22, 2021 at 2:17 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Tue, Sep 21, 2021 at 11:13:49AM -0700, Ian Rogers wrote:
+>
+> SNIP
+>
+> > diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+> > index 8feef3a05af7..9cd79513eebb 100644
+> > --- a/tools/perf/util/python.c
+> > +++ b/tools/perf/util/python.c
+> > @@ -1109,14 +1109,6 @@ static PyObject *pyrf_evlist__open(struct pyrf_evlist *pevlist,
+> >                                  PyObject *args, PyObject *kwargs)
+> >  {
+> >       struct evlist *evlist = &pevlist->evlist;
+> > -     int group = 0;
+> > -     static char *kwlist[] = { "group", NULL };
+> > -
+> > -     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOii", kwlist, &group))
+> > -             return NULL;
+> > -
+> > -     if (group)
+> > -             evlist__set_leader(evlist);
+> >
+> >       if (evlist__open(evlist) < 0) {
+> >               PyErr_SetFromErrno(PyExc_OSError);
+> > diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+> > index bff669b615ee..9e694db7c7ee 100644
+> > --- a/tools/perf/util/record.c
+> > +++ b/tools/perf/util/record.c
+> > @@ -99,13 +99,6 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
+> >       bool use_comm_exec;
+> >       bool sample_id = opts->sample_id;
+> >
+> > -     /*
+> > -      * Set the evsel leader links before we configure attributes,
+> > -      * since some might depend on this info.
+> > -      */
+> > -     if (opts->group)
+> > -             evlist__set_leader(evlist);
+> > -
+>
+> I don't mind erasing that, but just curious if you're going
+> to add something which would clash with this? it does not
+> look too complex for the code.. but still, let's remove it
+> if it's in 'legacy mode' for this long ;-)
 
-ldBmThreshold -> ld_bm_threshold
+I've nothing conflicting but I came across old tutorials describing it
+and I suspect usage of it is likely broken - in particular mixing
+--group with -e {}.
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
- drivers/staging/vt6655/baseband.c    | 48 ++++++++++++++--------------
- drivers/staging/vt6655/device.h      |  2 +-
- drivers/staging/vt6655/device_main.c |  2 +-
- 3 files changed, 26 insertions(+), 26 deletions(-)
+Thanks,
+Ian
 
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index cf7f292f1c8d..9eb0ae86d362 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -2021,10 +2021,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		priv->abyBBVGA[1] = 0x0A;
- 		priv->abyBBVGA[2] = 0x0;
- 		priv->abyBBVGA[3] = 0x0;
--		priv->ldBmThreshold[0] = -70;
--		priv->ldBmThreshold[1] = -50;
--		priv->ldBmThreshold[2] = 0;
--		priv->ldBmThreshold[3] = 0;
-+		priv->ld_bm_threshold[0] = -70;
-+		priv->ld_bm_threshold[1] = -50;
-+		priv->ld_bm_threshold[2] = 0;
-+		priv->ld_bm_threshold[3] = 0;
- 	} else if ((by_rf_type == RF_AIROHA) || (by_rf_type == RF_AL2230S)) {
- 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_AIROHA2230; ii++)
- 			result &= bb_write_embedded(priv,
-@@ -2039,10 +2039,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		priv->abyBBVGA[1] = 0x10;
- 		priv->abyBBVGA[2] = 0x0;
- 		priv->abyBBVGA[3] = 0x0;
--		priv->ldBmThreshold[0] = -70;
--		priv->ldBmThreshold[1] = -48;
--		priv->ldBmThreshold[2] = 0;
--		priv->ldBmThreshold[3] = 0;
-+		priv->ld_bm_threshold[0] = -70;
-+		priv->ld_bm_threshold[1] = -48;
-+		priv->ld_bm_threshold[2] = 0;
-+		priv->ld_bm_threshold[3] = 0;
- 	} else if (by_rf_type == RF_UW2451) {
- 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_UW2451; ii++)
- 			result &= bb_write_embedded(priv,
-@@ -2061,10 +2061,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		priv->abyBBVGA[1] = 0x0A;
- 		priv->abyBBVGA[2] = 0x0;
- 		priv->abyBBVGA[3] = 0x0;
--		priv->ldBmThreshold[0] = -60;
--		priv->ldBmThreshold[1] = -50;
--		priv->ldBmThreshold[2] = 0;
--		priv->ldBmThreshold[3] = 0;
-+		priv->ld_bm_threshold[0] = -60;
-+		priv->ld_bm_threshold[1] = -50;
-+		priv->ld_bm_threshold[2] = 0;
-+		priv->ld_bm_threshold[3] = 0;
- 	} else if (by_rf_type == RF_UW2452) {
- 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_UW2451; ii++)
- 			result &= bb_write_embedded(priv,
-@@ -2107,10 +2107,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		priv->abyBBVGA[1] = 0x0A;
- 		priv->abyBBVGA[2] = 0x0;
- 		priv->abyBBVGA[3] = 0x0;
--		priv->ldBmThreshold[0] = -60;
--		priv->ldBmThreshold[1] = -50;
--		priv->ldBmThreshold[2] = 0;
--		priv->ldBmThreshold[3] = 0;
-+		priv->ld_bm_threshold[0] = -60;
-+		priv->ld_bm_threshold[1] = -50;
-+		priv->ld_bm_threshold[2] = 0;
-+		priv->ld_bm_threshold[3] = 0;
- 		/* }} RobertYu */
- 
- 	} else if (by_rf_type == RF_VT3226) {
-@@ -2127,10 +2127,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		priv->abyBBVGA[1] = 0x10;
- 		priv->abyBBVGA[2] = 0x0;
- 		priv->abyBBVGA[3] = 0x0;
--		priv->ldBmThreshold[0] = -70;
--		priv->ldBmThreshold[1] = -48;
--		priv->ldBmThreshold[2] = 0;
--		priv->ldBmThreshold[3] = 0;
-+		priv->ld_bm_threshold[0] = -70;
-+		priv->ld_bm_threshold[1] = -48;
-+		priv->ld_bm_threshold[2] = 0;
-+		priv->ld_bm_threshold[3] = 0;
- 		/* Fix VT3226 DFC system timing issue */
- 		MACvSetRFLE_LatchBase(iobase);
- 		/* {{ RobertYu: 20050104 */
-@@ -2161,10 +2161,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		priv->abyBBVGA[1] = 0x10;
- 		priv->abyBBVGA[2] = 0x0;
- 		priv->abyBBVGA[3] = 0x0;
--		priv->ldBmThreshold[0] = -70;
--		priv->ldBmThreshold[1] = -48;
--		priv->ldBmThreshold[2] = 0;
--		priv->ldBmThreshold[3] = 0;
-+		priv->ld_bm_threshold[0] = -70;
-+		priv->ld_bm_threshold[1] = -48;
-+		priv->ld_bm_threshold[2] = 0;
-+		priv->ld_bm_threshold[3] = 0;
- 		/* }} RobertYu */
- 	} else {
- 		/* No VGA Table now */
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index 08c011074193..7ee0ba57f9da 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -253,7 +253,7 @@ struct vnt_private {
- 	unsigned char byBBVGANew;
- 	unsigned char byBBVGACurrent;
- 	unsigned char abyBBVGA[BB_VGA_LEVEL];
--	long                    ldBmThreshold[BB_VGA_LEVEL];
-+	long                    ld_bm_threshold[BB_VGA_LEVEL];
- 
- 	unsigned char byBBPreEDRSSI;
- 	unsigned char byBBPreEDIndex;
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index e88ba1319cfb..511cee39545a 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -986,7 +986,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 	RFvRSSITodBm(priv, (u8)priv->uCurrRSSI, &dbm);
- 
- 	for (i = 0; i < BB_VGA_LEVEL; i++) {
--		if (dbm < priv->ldBmThreshold[i]) {
-+		if (dbm < priv->ld_bm_threshold[i]) {
- 			priv->byBBVGANew = priv->abyBBVGA[i];
- 			break;
- 		}
--- 
-2.25.1
-
+> thanks,
+> jirka
+>
+>
+> >       if (evlist->core.cpus->map[0] < 0)
+> >               opts->no_inherit = true;
+> >
+> > diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+> > index 68f471d9a88b..d71dee9ce41c 100644
+> > --- a/tools/perf/util/record.h
+> > +++ b/tools/perf/util/record.h
+> > @@ -13,7 +13,6 @@ struct option;
+> >
+> >  struct record_opts {
+> >       struct target target;
+> > -     bool          group;
+> >       bool          inherit_stat;
+> >       bool          no_buffering;
+> >       bool          no_inherit;
+> > --
+> > 2.33.0.464.g1972c5931b-goog
+> >
+>
