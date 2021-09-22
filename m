@@ -2,94 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C055F41414E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0601E41414A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbhIVFmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:42:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24425 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231908AbhIVFmk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:42:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632289271;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=bJXkEkfWdDJCAURztjziNenOw4qGpHyUiriN1i4JZCM=;
-        b=IbAQw6jmj+9UGjYcXn8BKRGNidZ9Y5ZK/jk+yr+CPMLystNaI4jTlbwQew66vigXREYdPM
-        7q83BRhNbdczAiDVyjRzDl0K9pzyv4qvFTyvwrkwhMvWzxZwqYPjiNLhducYmghd5iJN1H
-        KL5FHYTSwNHbAeg5/uX2dUsnfbVtbgc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-c52lzspQNBKNg9iKaAsteQ-1; Wed, 22 Sep 2021 01:41:08 -0400
-X-MC-Unique: c52lzspQNBKNg9iKaAsteQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76646BBEE0;
-        Wed, 22 Sep 2021 05:41:07 +0000 (UTC)
-Received: from treble.redhat.com (unknown [10.22.33.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F9E56B544;
-        Wed, 22 Sep 2021 05:41:05 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] x86/crypto/sm4: Fix frame pointer stack corruption
-Date:   Tue, 21 Sep 2021 22:40:26 -0700
-Message-Id: <2010f60571abe6fe53d89189ab6da7e641cb027b.1632289099.git.jpoimboe@redhat.com>
+        id S232187AbhIVFle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:41:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:43188 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231908AbhIVFld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:41:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B341811B3;
+        Tue, 21 Sep 2021 22:40:03 -0700 (PDT)
+Received: from [10.163.73.113] (unknown [10.163.73.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B7FC3F40C;
+        Tue, 21 Sep 2021 22:39:59 -0700 (PDT)
+Subject: Re: [PATCH v2 01/17] coresight: trbe: Fix incorrect access of the
+ sink specific data
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
+        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
+        leo.yan@linaro.org, mike.leach@linaro.org,
+        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-2-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <93a52488-708a-828d-5c4e-38cd4ab42ebc@arm.com>
+Date:   Wed, 22 Sep 2021 11:11:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210921134121.2423546-2-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sm4_aesni_avx_crypt8() sets up the frame pointer (which includes pushing
-RBP) before doing a conditional sibling call to sm4_aesni_avx_crypt4(),
-which sets up an additional frame pointer.  Things will not go well when
-sm4_aesni_avx_crypt4() pops only the innermost single frame pointer and
-then tries to return to the outermost frame pointer.
 
-Sibling calls need to occur with an empty stack frame.  Do the
-conditional sibling call *before* setting up the stack pointer.
 
-This fixes the following warning:
+On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
+> The TRBE driver wrongly treats the aux private data as the TRBE driver
+> specific buffer for a given perf handle, while it is the ETM PMU's
+> event specific data. Fix this by correcting the instance to use
+> appropriate helper.
+> 
+> Fixes: 3fbf7f011f242 ("coresight: sink: Add TRBE driver")
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-  arch/x86/crypto/sm4-aesni-avx-asm_64.o: warning: objtool: sm4_aesni_avx_crypt8()+0x8: sibling call from callable instruction with modified stack frame
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Fixes: a7ee22ee1445 ("crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- arch/x86/crypto/sm4-aesni-avx-asm_64.S | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/crypto/sm4-aesni-avx-asm_64.S b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-index fa2c3f50aecb..18d2f5199194 100644
---- a/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-+++ b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-@@ -367,10 +367,11 @@ SYM_FUNC_START(sm4_aesni_avx_crypt8)
- 	 *	%rdx: src (1..8 blocks)
- 	 *	%rcx: num blocks (1..8)
- 	 */
--	FRAME_BEGIN
--
- 	cmpq $5, %rcx;
- 	jb sm4_aesni_avx_crypt4;
-+
-+	FRAME_BEGIN
-+
- 	vmovdqu (0 * 16)(%rdx), RA0;
- 	vmovdqu (1 * 16)(%rdx), RA1;
- 	vmovdqu (2 * 16)(%rdx), RA2;
--- 
-2.31.1
-
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index d4c57aed05e5..e3d73751d568 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -363,7 +363,7 @@ static unsigned long __trbe_normal_offset(struct perf_output_handle *handle)
+>  
+>  static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
+>  {
+> -	struct trbe_buf *buf = perf_get_aux(handle);
+> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>  	u64 limit = __trbe_normal_offset(handle);
+>  	u64 head = PERF_IDX2OFF(handle->head, buf);
+>  
+> 
