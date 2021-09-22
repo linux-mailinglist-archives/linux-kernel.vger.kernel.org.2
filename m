@@ -2,77 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2B8414FD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33019414FD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbhIVS0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        id S237048AbhIVS1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237021AbhIVS0u (ORCPT
+        with ESMTP id S236973AbhIVS1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:26:50 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BC6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:25:19 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id r1so3585577qta.12
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:25:19 -0700 (PDT)
+        Wed, 22 Sep 2021 14:27:31 -0400
+Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A907CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:26:00 -0700 (PDT)
+Received: by mail-ed1-x54a.google.com with SMTP id m20-20020aa7c2d4000000b003d1add00b8aso4165782edp.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:26:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=DFfC8uZYlFBWW1UWZ2UiC/X/t9KDJzyVw9sPCj3Xpck=;
-        b=E8N9/SnsC6+JfA3xYPMbpZMq4zU9zRRBdWJUZTXJAdPHCm4CtE//CWUuOeCVS+VyxU
-         jfbwidWQLerh5mg4Tn7WBVLXc9HEhwAvAGkQ8pBGm6EG/JA0giFvBYAnEydnDdqIyHz6
-         DLAV8ig+s1zAS6OatRPew+oD7rkJh8LHXAqxhKuOpy/iTSKToX0hCRH6Xm40O687ogVp
-         gNIfAIkgNZVxzKgMddI+9TWPnHX/j2Ew/e1YVvW2uEn17tu1KdVVLC+bQZY0tNItqTzr
-         G48mBHGJzhfO/sW8fwJlZY7QPX9fZ6gw1QxI2RC+OWo2ieN5Qv5wXKE0oqr4/+PGM62P
-         gPzA==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=hROscUrgx82P/DRIV1g6rbQ4KwPphWmoM+tTMU2qK8E=;
+        b=tT1s4L2x6/uDOqLYSEh3Cmnj+ZHPMdfbAxewhCnCi7iihLKnXqzVTxuJICz31WdiO4
+         CdpeOB1ExJfMITOZW+iEJZbkMbCHW5pwhHM1gu8pb3c3YAWVfIbWvD4Py0P1+wAykada
+         NhKdgQHNGCk2ptgfOfgqFKOdDNE12fY8Cc+LRyOvL/nnb9MEnqI1HjqYMbagGowokSND
+         veZavqCog8HDfcRtxdEFAiDHcsY6AKF4WJCx+yz8ub9gnl3VsTL8v01NRVYBokYMidC8
+         RiSH1FuNAoQFULz/cYNIHqj0a8JEyN3Vd8aVF4v4MPXbobsm84Z3v4yVvTAkiLxdVyaL
+         gzGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=DFfC8uZYlFBWW1UWZ2UiC/X/t9KDJzyVw9sPCj3Xpck=;
-        b=w5f+R2SxOqBM93cvSbwcpvAYQZf9nONgiPykHGqJ5wFXBu7T00Q/0OqxOpq6nzGs5h
-         KKQuoj5mN6sRDhzCT94z3JJIHJUPboMqZ6f12dK+EnNTNt1jnjm4wAC/7IVrzrmm2P2v
-         GKBmdpFEoEhoIZ/MfcmcNrTYHhCToH9EoYrhZqJkfwa5qAg6GxnDb2yuUV0PoEjm2nqb
-         M5utK7L4f0kroVjgSa2sCovIpZXXLbH507shpEMaE4KwWZ4kw//vUgoTC56egma1MPIj
-         XYilE8PTyJ5cxhE9XwhOHsl1vHsWy2ji9N4lwGMLEB32vA2AI4qXwTxhbN9WhDFWy+Ef
-         Yj4w==
-X-Gm-Message-State: AOAM532oGZPS8ZAUKv8L2u4KUVE38nql4Otyhf8TATo7IeAD3BT25yIU
-        yE2x5etAkRxtd1hrr/URtOy4YFVwIMVwFoFNebs=
-X-Google-Smtp-Source: ABdhPJxpuBZ9MOAhUHP6CwY2XBffSmoBxsaHYjCd04Uvyzwz0jN0AkqzMaj3XYQkj/KZBFMVNlsO8zpzeZYsjQ0kqFM=
-X-Received: by 2002:ac8:1e93:: with SMTP id c19mr686398qtm.55.1632335119027;
- Wed, 22 Sep 2021 11:25:19 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: bfkabiruwahid@gmail.com
-Sender: wbook84@gmail.com
-Received: by 2002:ac8:a86:0:0:0:0:0 with HTTP; Wed, 22 Sep 2021 11:25:18 -0700 (PDT)
-From:   MR KABIRU WAHID <bfkabiruwahid@gmail.com>
-Date:   Wed, 22 Sep 2021 11:25:18 -0700
-X-Google-Sender-Auth: tRF_NOE-dZ4XPyyHhi281lYIGpU
-Message-ID: <CA+zrZqYxXtQySwG5qLPQbFwMcJ_7Cr+hD8AuJ=G8rTvNchdRRw@mail.gmail.com>
-Subject: REPLY ME IMMEDIATELY
-To:     undisclosed-recipients:;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=hROscUrgx82P/DRIV1g6rbQ4KwPphWmoM+tTMU2qK8E=;
+        b=makUDVTU6r5pKx7PZw0ToIOz4i7UAS0hod/iJ4X7fL3d1w12aWOzsL4AsOpObBWw8R
+         rnIyWLtFJYbiZV8JOCBisgmnwRlzafoDPO/lYDtfcN08zTn3+r/dEQL8/oQNQXOelBPX
+         MoQVWZso4qhKRE7hBcFk8I4Cu0C+jVa88stZlnOOi2NdHvuNMwlEnGm1sEOm8AVAwv13
+         nroRQ2gfnOu8dCN2rgS2vqSclWOZdbJrWi3U9gdZVrPe5vDtZl4Ni5bQH45qRhvSlXPC
+         XIEI6x9+C1Rx6r/uruPNOhWKDwl5oiLZg5wZ1CJUuRSIN5TVxx0qLHpPC+oHxdpCqPiH
+         71fg==
+X-Gm-Message-State: AOAM533T0jwYHGtwhewImRJaRJDt+4kVuSsEeIqIaEwAXGo5f7xVeD8A
+        2nTp+1a9Ig3hwLGQmMqA/gqlw8mTGw==
+X-Google-Smtp-Source: ABdhPJy953tfY9ijLr1x+Rwh6kZsYSkYidCYFHPT0Ea43m43CeZ5zIGy0NE+O0TI7KqGRAQSDbBMtY29Og==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:d1cb:58a8:28e2:c853])
+ (user=elver job=sendgmr) by 2002:a17:906:6c94:: with SMTP id
+ s20mr722795ejr.152.1632335159064; Wed, 22 Sep 2021 11:25:59 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 20:25:41 +0200
+Message-Id: <20210922182541.1372400-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH] kfence: test: use kunit_skip() to skip tests
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, David Gow <davidgow@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sir, I know this email might come to you as a surprise coming
-from one you haven=E2=80=99t meant before. I am Mr.Kabiru Wahid, a bank
-manager with ADB BANK and a personal banker to Mr. Salla Khatif an
-Egyptian who happened to be a Food supply contractor attached to the
-former Afghanistan government before they were overthrown by the
-Taliban government.Mr.Salla Khatif have a deposit of huge sum with our
-bank but passed away with all his family on the 16th of May 2017
-trying to escape from Kandahar Afghanistan.
+Use the new kunit_skip() to skip tests if requirements were not met. It
+makes it easier to see in KUnit's summary if there were skipped tests.
 
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ mm/kfence/kfence_test.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-The said sum can be used for an investment if you are interested, all
-details relating to the funds are in my position, I will present you
-as his Next-of-Kin because there is none, and will furnish you with
-more details upon your response to this email:kabiruwahidy47@gmail.com
-Regards,
-Mr.Kabiru Wahid.
+diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
+index f1690cf54199..695030c1fff8 100644
+--- a/mm/kfence/kfence_test.c
++++ b/mm/kfence/kfence_test.c
+@@ -32,6 +32,11 @@
+ #define arch_kfence_test_address(addr) (addr)
+ #endif
+ 
++#define KFENCE_TEST_REQUIRES(test, cond) do {			\
++	if (!(cond))						\
++		kunit_skip((test), "Test requires: " #cond);	\
++} while (0)
++
+ /* Report as observed from console. */
+ static struct {
+ 	spinlock_t lock;
+@@ -555,8 +560,7 @@ static void test_init_on_free(struct kunit *test)
+ 	};
+ 	int i;
+ 
+-	if (!IS_ENABLED(CONFIG_INIT_ON_FREE_DEFAULT_ON))
+-		return;
++	KFENCE_TEST_REQUIRES(test, IS_ENABLED(CONFIG_INIT_ON_FREE_DEFAULT_ON));
+ 	/* Assume it hasn't been disabled on command line. */
+ 
+ 	setup_test_cache(test, size, 0, NULL);
+@@ -603,10 +607,8 @@ static void test_gfpzero(struct kunit *test)
+ 	char *buf1, *buf2;
+ 	int i;
+ 
+-	if (CONFIG_KFENCE_SAMPLE_INTERVAL > 100) {
+-		kunit_warn(test, "skipping ... would take too long\n");
+-		return;
+-	}
++	/* Skip if we think it'd take too long. */
++	KFENCE_TEST_REQUIRES(test, CONFIG_KFENCE_SAMPLE_INTERVAL <= 100);
+ 
+ 	setup_test_cache(test, size, 0, NULL);
+ 	buf1 = test_alloc(test, size, GFP_KERNEL, ALLOCATE_ANY);
+-- 
+2.33.0.464.g1972c5931b-goog
+
