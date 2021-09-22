@@ -2,110 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA05E41434F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFC0414351
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbhIVINE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233532AbhIVIND (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:13:03 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918FEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:11:33 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id i23so4310453wrb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wxHTAEsI7Nk3iPURnvztUqIFLbdCaS8kxfRLaXFpIzk=;
-        b=bfg6hrQ4CjFf3qWQZk05aiAU0SKwDjTnGVr5mmD58yypuw2lHFVQdfzHvRlnvwkmzX
-         /FufyeEw+ShF3lBaIvdD61+iZomA9+EA1DtEdqrZThfFPlyIUvl8oJXkZH2vZH/Z7YmX
-         8hBljxI7NZBefkCWG9+pAJgbTVXrXqBw70xC/eGdLlG1XQ3nFFKgBnnEsjv6W8GVfOIT
-         fVHJ9K4G9BNc7b1q4jrPrAH9vbUjOm7rtDOLQLpgFjAjXzejkKQFJvJ0NGksttyXBOMZ
-         UY+2LoTXk0snXiGB9Vk4TtZNlT5Pfhx6F4OhVWd7zw0I6qdDslAxs9qqCVAS9aLtOuNk
-         EOmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wxHTAEsI7Nk3iPURnvztUqIFLbdCaS8kxfRLaXFpIzk=;
-        b=QcKEavRfuK6hGTkzs9XVL+YmKO1nCvGAEet9T6APjS+da1KMUMGns47iqi1oVQ0mZj
-         CoG3IAZLMYuSIEIc8ySXfkmyvOnwRBtqaguyY9UZpwGEw5W3tHHY77OZwjN5JLLRGCR/
-         NzRIoWZHSNYBGaX3/0XRnoAsCivIrJZTWsGbc0QO73tyh3cACW1HoEzXyKM/YCmsMWEl
-         r5Fg7cOd9vQMy9KfFQw8hqg9AkEasKNPqJZF6upUsP7ysWgoAQzmQXm1uLDP4QQ3//sy
-         6VPXfWPgweQuMOhdBKdFCW+MaxBokkvX8IibYffsooaEslTCTrY3Rygxle6+bF5RQJmC
-         aiWw==
-X-Gm-Message-State: AOAM5325s+UXFJwgFJIVCTVspn7fADHFVaJrRTClJWGh/wDlRHOpJEbe
-        vSpbhF893etovrFsEMPJT6I=
-X-Google-Smtp-Source: ABdhPJzzflJ6y5fsEmusSNKQISqiUc/JclUu6xfNP0IJZ06m+Vg1SrDTtpO577Ikb4qShOViKHDcrQ==
-X-Received: by 2002:a5d:460a:: with SMTP id t10mr41194518wrq.145.1632298292228;
-        Wed, 22 Sep 2021 01:11:32 -0700 (PDT)
-Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
-        by smtp.gmail.com with ESMTPSA id a25sm5072161wmj.34.2021.09.22.01.11.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 01:11:31 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 09:11:25 +0100
-From:   Melissa Wen <melissa.srw@gmail.com>
-To:     Melissa Wen <mwen@igalia.com>
-Cc:     Cai Huoqing <caihuoqing@baidu.com>, Emma Anholt <emma@anholt.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/v3d: Make use of the helper function
- devm_platform_ioremap_resource_byname()
-Message-ID: <20210922081125.qc4eaaxyfi6rjunr@smtp.gmail.com>
-References: <20210901112941.31320-1-caihuoqing@baidu.com>
- <20210920083134.hajvw6kpvfg3qitn@mail.igalia.com>
+        id S233683AbhIVINL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:13:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:44702 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233699AbhIVINJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 04:13:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB52011B3;
+        Wed, 22 Sep 2021 01:11:39 -0700 (PDT)
+Received: from [10.57.95.67] (unknown [10.57.95.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB4F93F719;
+        Wed, 22 Sep 2021 01:11:37 -0700 (PDT)
+Subject: Re: [PATCH v2 10/17] arm64: Enable workaround for TRBE overwrite in
+ FILL mode
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
+        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
+        leo.yan@linaro.org, mike.leach@linaro.org,
+        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-11-suzuki.poulose@arm.com>
+ <8b23470b-da5c-c624-dc98-d30ab7c1be5d@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <4bc00aff-0562-bafd-b31a-d7f9af6651fa@arm.com>
+Date:   Wed, 22 Sep 2021 09:11:36 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920083134.hajvw6kpvfg3qitn@mail.igalia.com>
+In-Reply-To: <8b23470b-da5c-c624-dc98-d30ab7c1be5d@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/20, Melissa Wen wrote:
-> On 09/01, Cai Huoqing wrote:
-> > Use the devm_platform_ioremap_resource_byname() helper instead of
-> > calling platform_get_resource_byname() and devm_ioremap_resource()
-> > separately
-> > 
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> > ---
-> >  drivers/gpu/drm/v3d/v3d_drv.c | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/v3d/v3d_drv.c b/drivers/gpu/drm/v3d/v3d_drv.c
-> > index 9403c3b36aca..c1deab2cf38d 100644
-> > --- a/drivers/gpu/drm/v3d/v3d_drv.c
-> > +++ b/drivers/gpu/drm/v3d/v3d_drv.c
-> > @@ -206,10 +206,7 @@ MODULE_DEVICE_TABLE(of, v3d_of_match);
-> >  static int
-> >  map_regs(struct v3d_dev *v3d, void __iomem **regs, const char *name)
-> >  {
-> > -	struct resource *res =
-> > -		platform_get_resource_byname(v3d_to_pdev(v3d), IORESOURCE_MEM, name);
-> > -
-> > -	*regs = devm_ioremap_resource(v3d->drm.dev, res);
-> > +	*regs = devm_platform_ioremap_resource_byname(v3d_to_pdev(v3d), name);
-> >  	return PTR_ERR_OR_ZERO(*regs);
-> >  }
-> lgtm.
+On 22/09/2021 08:23, Anshuman Khandual wrote:
 > 
-> Reviewed-by: Melissa Wen <mwen@igalia.com>
+> 
+> On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
+>> Now that we have the work around implmented in the TRBE
+>> driver, add the Kconfig entries and document the errata.
+>>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   Documentation/arm64/silicon-errata.rst |  4 +++
+>>   arch/arm64/Kconfig                     | 39 ++++++++++++++++++++++++++
+>>   2 files changed, 43 insertions(+)
+>>
+>> diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
+>> index d410a47ffa57..2f99229d993c 100644
+>> --- a/Documentation/arm64/silicon-errata.rst
+>> +++ b/Documentation/arm64/silicon-errata.rst
+>> @@ -92,12 +92,16 @@ stable kernels.
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | Cortex-A77      | #1508412        | ARM64_ERRATUM_1508412       |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>> +| ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
+>> ++----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | Neoverse-N1     | #1188873,1418040| ARM64_ERRATUM_1418040       |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | Neoverse-N1     | #1349291        | N/A                         |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | Neoverse-N1     | #1542419        | ARM64_ERRATUM_1542419       |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>> +| ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
+>> ++----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | MMU-500         | #841119,826419  | N/A                         |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>> index 077f2ec4eeb2..eac4030322df 100644
+>> --- a/arch/arm64/Kconfig
+>> +++ b/arch/arm64/Kconfig
+>> @@ -666,6 +666,45 @@ config ARM64_ERRATUM_1508412
+>>   
+>>   	  If unsure, say Y.
+>>   
+>> +config ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>> +	bool
+>> +
+>> +config ARM64_ERRATUM_2119858
+>> +	bool "Cortex-A710: 2119858: workaround TRBE overwriting trace data in FILL mode"
+>> +	default y
+>> +	depends on CORESIGHT_TRBE
+>> +	select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>> +	help
+>> +	  This option adds the workaround for ARM Cortex-A710 erratum 2119858.
+>> +
+>> +	  Affected Cortex-A710 cores could overwrite upto 3 cache lines of trace
+>> +	  data at the base of the buffer (ponited by TRBASER_EL1) in FILL mode in
+>> +	  the event of a WRAP event.
+>> +
+>> +	  Work around the issue by always making sure we move the TRBPTR_EL1 by
+>> +	  256bytes before enabling the buffer and filling the first 256bytes of
+>> +	  the buffer with ETM ignore packets upon disabling.
+>> +
+>> +	  If unsure, say Y.
+>> +
+>> +config ARM64_ERRATUM_2139208
+>> +	bool "Neoverse-N2: 2139208: workaround TRBE overwriting trace data in FILL mode"
+>> +	default y
+>> +	depends on CORESIGHT_TRBE
+>> +	select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>> +	help
+>> +	  This option adds the workaround for ARM Neoverse-N2 erratum 2139208.
+>> +
+>> +	  Affected Neoverse-N2 cores could overwrite upto 3 cache lines of trace
+>> +	  data at the base of the buffer (ponited by TRBASER_EL1) in FILL mode in
+> 
+> s/ponited/pointed
+> 
+>> +	  the event of a WRAP event.
+>> +
+>> +	  Work around the issue by always making sure we move the TRBPTR_EL1 by
+>> +	  256bytes before enabling the buffer and filling the first 256bytes of
+>> +	  the buffer with ETM ignore packets upon disabling.
+>> +
+>> +	  If unsure, say Y.
+>> +
+>>   config CAVIUM_ERRATUM_22375
+>>   	bool "Cavium erratum 22375, 24313"
+>>   	default y
+>>
+> 
+> The real errata problem description for both these erratums are exactly
+> the same. Rather a more generalized description should be included for
+> the ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE, which abstracts out the
+> problem and a corresponding solution that is implemented in the driver.
+> This should also help us reduce current redundancy.
+> 
 
-and applied to drm-misc-next.
+The issue is what a user wants to see. A user who wants to configure the
+kernel specifically for a given CPU (think embedded systems), they would
+want to hand pick the errata for the particular CPU. So, moving the help
+text to an implicitly selected Kconfig symbol. I would rather keep this
+as it is to keep it user friendly. This doesn't affect the code size
+anyways.
 
-Thanks,
+The other option is to remove all the CPU specific Kconfig symbols and
+update the "title" to reflect both the CPU/erratum numbers.
 
-Melissa
-> >  
-> > -- 
-> > 2.25.1
-> > 
-
-
+Kind regards
+Suzuki
