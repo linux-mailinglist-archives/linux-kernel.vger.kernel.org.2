@@ -2,53 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68430414116
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B6741412D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhIVFLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:11:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49362 "EHLO mail.kernel.org"
+        id S232094AbhIVFT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:19:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231791AbhIVFLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:11:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57354611C6;
-        Wed, 22 Sep 2021 05:10:11 +0000 (UTC)
+        id S231901AbhIVFTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:19:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D92610A1;
+        Wed, 22 Sep 2021 05:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632287412;
-        bh=JQnSd+cAl/5+FLE07eY8U96T+jHtRzYG7q1o4fBOIJQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gMCwmEPoJPOG4ufOwf/BJcbKXCiZInwpgES0ZC1Pi9y5xzRRSmExagGv2mKdEuBh2
-         oHxliWpSvrfYLfUlnuZlkXUMDVwU/f+wymo2V/Bv0AC2C4g+sFRqLnDbut3vv3O0Au
-         SZSONNC2r2ihTIdJjVH8Ejo9yfIXtV8NqTuCFUwoMQlx0Bj3vaUudHZqxwb0tDUqxN
-         Hby+eTUMZB3dyHJ8vB8JaaHjBl4tKAdtHuA/f8zLxKv2pD2DVe/rTIMrBx0nk2JLZb
-         U3c+5PfudDJHJTcxSFNm+bNvEFILBBk5j+Amw1T9ipZfB2CtKWQMy4N8iNgC79LJmx
-         A/vI2ns3MXfwQ==
-Date:   Wed, 22 Sep 2021 13:10:07 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>, Wei Xu <xuwei5@hisilicon.com>
-Subject: Re: [PATCH 1/2] arm64: dts: freescale: fix arm,sp805 compatible
- string
-Message-ID: <20210922051006.GC13480@dragon>
-References: <20210826123529.737398-1-michael@walle.cc>
+        s=k20201202; t=1632287876;
+        bh=ds1qCLLEuGabOz1HUFOYzp9guoYj5j+uwCXOBzR2m9w=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=DClyx36BX/OOPtUePak882HjjOXz7eLKXMXAZzwLjIVOzjCKhWf33Zx0oiJX0fafI
+         7vmxnwJbEguc65bJKbU8fq5AVNKhyrKqXYxEORPXyFSYBHu+akklyVwDUBAFuKXqlU
+         Xz5gwfvmwFBQIe+UN3Rt8hyus+XTNzvPkxx+j+uQBxBnU+pahueN3D2L7TI1ZsaVOK
+         G12L8Ct3jUCKudCL2ZfMxWlm1DAgglPYN+tK2Lj0DRWbwz6j0ywbs/ENQlvBFh6NsN
+         tyOznLEzWmUOckNcOaRHwM/bscxR+PBcPm5zFHyVGFhaSAHum2DSVl0OhaETqE1oLp
+         Eocjw+6dkAiCg==
+Message-ID: <e0dff2e1bb7db0ededfa5a66826225e1358ed77f.camel@kernel.org>
+Subject: Re: [PATCH v5 1/7] x86/sgx: Provide indication of life-cycle of EPC
+ pages
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+Cc:     "Zhang, Cathy" <cathy.zhang@intel.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 22 Sep 2021 08:17:53 +0300
+In-Reply-To: <4c7351bcd03b4161b78a7dc01c795b43@intel.com>
+References: <20210827195543.1667168-1-tony.luck@intel.com>
+         <20210917213836.175138-1-tony.luck@intel.com>
+         <20210917213836.175138-2-tony.luck@intel.com>
+         <bba7e537fd9197a92358640ebb0aef365984cebc.camel@kernel.org>
+         <4c7351bcd03b4161b78a7dc01c795b43@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826123529.737398-1-michael@walle.cc>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 02:35:28PM +0200, Michael Walle wrote:
-> According to Documentation/devicetree/bindings/watchdog/arm,sp805.yaml
-> the compatible is:
->   compatible = "arm,sp805", "arm,primecell";
-> 
-> The current compatible string doesn't exist at all. Fix it.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+On Tue, 2021-09-21 at 21:34 +0000, Luck, Tony wrote:
+> > > Since there are multiple uses of the "owner" field with different typ=
+es
+> > > change the sgx_epc_page structure to define an anonymous union with
+> > > each of the uses explicitly called out.
+> >=20
+> > But it's still always a pointer.
+> >=20
+> > And not only that, but two alternative fields in that union have *exact=
+ly* the
+> > same type, so it's kind of artifically representing the problem more co=
+mplex
+> > than it really is.
+>=20
+> Bother! I seem to have jumbled some old bits of v4 into this series.
+>=20
+> I agree that we just want "void *owner; here.  I even made the changes.
+> Then managed to lose them while updating.
+>=20
+> I'll find the bits I lost and re-merge them in.
+>=20
+> -Tony
 
-Applied, thanks!
+Yeah, ok, cool, thank you. Just reporting what I was observing :-)
+
+/Jarkko
+
