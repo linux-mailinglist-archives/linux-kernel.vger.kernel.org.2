@@ -2,173 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C20D4151B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721F241520D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237791AbhIVU4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbhIVU4Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:56:16 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B985BC061574;
-        Wed, 22 Sep 2021 13:54:45 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id b15so16663451lfe.7;
-        Wed, 22 Sep 2021 13:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3cZeXwR2k4hTcaH9mMdu8oiulnnc0/J5L3qGGtoXYkE=;
-        b=VOX/1XqOVC0VuQxpTcgYxzURn2nBP/v5n9cHk5GMCHvurDdQ01yW8/eJiRqLD6Ywh5
-         NMcyrqu9AmxXvcZ+ldCDbJGl1P0N+yk7IAUujRdexxJgXOd3giyPU4OQX3eACta8/ATD
-         qcDMjQ1TZ/X6hpfLApbH/XjoZif4Whl7GSo90xHM7t4V1fRyyLWrV1/hj7/fJ/iIgCV3
-         Ij4IkB/jdGyI+fZ84GPTFKNeKZLre3M/Nc8xBwSF9h5mJLKLrpoV6EI8nQy7miD4Tze4
-         PitFWhftCmSCpylPet2EtuX/ebuUxdS/cUm37Y+AT6Es7N5RjRhwMwRoKUTxsWPxyDGh
-         qMCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3cZeXwR2k4hTcaH9mMdu8oiulnnc0/J5L3qGGtoXYkE=;
-        b=oLGtR0ecnO411nr/v+Ag6g7nQVjYTpYUXNSHd1swckLU4hHwP4CHhs1+EgF6D7hVsS
-         JHIfwhdOOi9NY8pq69tnW+qIE4IAbBHMwrDlXO5jx3byJPLBkdu28pS37eINm3thywEK
-         PEoTlEZPI9/Wned56BKdwKtjmYl37piBMMkzxM/UZiT9LrQx/j94/+o0kZfe346UDuJf
-         e4xYI1Pl+ppnzN1M9Wp7qqheuVLlWtHPtu7HRuboo2Lm6lKi50kLN+FwcnmX1h/EhkCM
-         eG5lfqe1VHJh3XelQ3e3K+6h7Yfiz+jaYZfd5gCkdAxVvgWCKkcZRZfFUtU9WVk9QntA
-         VE+A==
-X-Gm-Message-State: AOAM533JF68sazKBHhRwpkHkeKYuTMQwhzR3qwIFS5Z0ulBdfosrEwSO
-        vAZDG/WPVx12RDoz4W8LMQE=
-X-Google-Smtp-Source: ABdhPJzFVQnTTYL1T8QNgYqC6+HYZ4LqvglqVxbOzzAWLXdF28v4QpsMsXlM+ycKlVC2jQYjif6Y0A==
-X-Received: by 2002:a2e:5443:: with SMTP id y3mr1401240ljd.482.1632344084132;
-        Wed, 22 Sep 2021 13:54:44 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id e24sm261883lfs.212.2021.09.22.13.54.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 13:54:43 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sameer Pujar <spujar@nvidia.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] ASoC: tegra: Constify static snd_soc_dai_ops structs
-Date:   Wed, 22 Sep 2021 22:54:38 +0200
-Message-Id: <20210922205438.34519-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        id S237967AbhIVU5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:57:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237850AbhIVU4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 16:56:49 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B018B611C4;
+        Wed, 22 Sep 2021 20:55:18 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mT9Gu-00CP8z-Mg; Wed, 22 Sep 2021 21:55:16 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>,
+        Robin Murphy <Robin.Murphy@arm.com>, kernel-team@android.com
+Subject: [PATCH v4 00/10] PCI: Add support for Apple M1
+Date:   Wed, 22 Sep 2021 21:54:48 +0100
+Message-Id: <20210922205458.358517-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com, kettenis@openbsd.org, sven@svenpeter.dev, marcan@marcan.st, Robin.Murphy@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of these is to assign their address to the ops field in
-the snd_soc_dai_driver struct, which is a pointer to const. Make them
-const to allow the compiler to put them in read-only memory.
+This is v4 of the series adding PCIe support for the M1 SoC. Not a lot
+has changed this time around, and most of what I was saying in [1] is
+still valid.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- sound/soc/tegra/tegra210_adx.c   | 4 ++--
- sound/soc/tegra/tegra210_amx.c   | 4 ++--
- sound/soc/tegra/tegra210_mixer.c | 4 ++--
- sound/soc/tegra/tegra210_mvc.c   | 2 +-
- sound/soc/tegra/tegra210_sfc.c   | 4 ++--
- 5 files changed, 9 insertions(+), 9 deletions(-)
+The most important change is that the driver now probes for the number
+of RID-SID mapping registers instead of assuming 64 entries. The rest
+is a bunch of limited cleanups and minor fixes.
 
-diff --git a/sound/soc/tegra/tegra210_adx.c b/sound/soc/tegra/tegra210_adx.c
-index 78d660447bb1..d7c7849c2f92 100644
---- a/sound/soc/tegra/tegra210_adx.c
-+++ b/sound/soc/tegra/tegra210_adx.c
-@@ -206,12 +206,12 @@ static int tegra210_adx_put_byte_map(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
- 
--static struct snd_soc_dai_ops tegra210_adx_in_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_adx_in_dai_ops = {
- 	.hw_params	= tegra210_adx_in_hw_params,
- 	.startup	= tegra210_adx_startup,
- };
- 
--static struct snd_soc_dai_ops tegra210_adx_out_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_adx_out_dai_ops = {
- 	.hw_params	= tegra210_adx_out_hw_params,
- };
- 
-diff --git a/sound/soc/tegra/tegra210_amx.c b/sound/soc/tegra/tegra210_amx.c
-index 83176e1663ab..af9bddfc3120 100644
---- a/sound/soc/tegra/tegra210_amx.c
-+++ b/sound/soc/tegra/tegra210_amx.c
-@@ -241,12 +241,12 @@ static int tegra210_amx_put_byte_map(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
- 
--static struct snd_soc_dai_ops tegra210_amx_out_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_amx_out_dai_ops = {
- 	.hw_params	= tegra210_amx_out_hw_params,
- 	.startup	= tegra210_amx_startup,
- };
- 
--static struct snd_soc_dai_ops tegra210_amx_in_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_amx_in_dai_ops = {
- 	.hw_params	= tegra210_amx_in_hw_params,
- };
- 
-diff --git a/sound/soc/tegra/tegra210_mixer.c b/sound/soc/tegra/tegra210_mixer.c
-index 53fcd8f6605a..55e61776c565 100644
---- a/sound/soc/tegra/tegra210_mixer.c
-+++ b/sound/soc/tegra/tegra210_mixer.c
-@@ -283,11 +283,11 @@ static int tegra210_mixer_out_hw_params(struct snd_pcm_substream *substream,
- 					    dai->id - TEGRA210_MIXER_RX_MAX);
- }
- 
--static struct snd_soc_dai_ops tegra210_mixer_out_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_mixer_out_dai_ops = {
- 	.hw_params	= tegra210_mixer_out_hw_params,
- };
- 
--static struct snd_soc_dai_ops tegra210_mixer_in_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_mixer_in_dai_ops = {
- 	.hw_params	= tegra210_mixer_in_hw_params,
- };
- 
-diff --git a/sound/soc/tegra/tegra210_mvc.c b/sound/soc/tegra/tegra210_mvc.c
-index 3646ce9b0fd1..7b9c7006e419 100644
---- a/sound/soc/tegra/tegra210_mvc.c
-+++ b/sound/soc/tegra/tegra210_mvc.c
-@@ -387,7 +387,7 @@ static int tegra210_mvc_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_dai_ops tegra210_mvc_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_mvc_dai_ops = {
- 	.hw_params	= tegra210_mvc_hw_params,
- };
- 
-diff --git a/sound/soc/tegra/tegra210_sfc.c b/sound/soc/tegra/tegra210_sfc.c
-index 260dca6f6d25..dc477ee1b82c 100644
---- a/sound/soc/tegra/tegra210_sfc.c
-+++ b/sound/soc/tegra/tegra210_sfc.c
-@@ -3287,12 +3287,12 @@ static int tegra210_sfc_put_control(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
- 
--static struct snd_soc_dai_ops tegra210_sfc_in_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_sfc_in_dai_ops = {
- 	.hw_params	= tegra210_sfc_in_hw_params,
- 	.startup	= tegra210_sfc_startup,
- };
- 
--static struct snd_soc_dai_ops tegra210_sfc_out_dai_ops = {
-+static const struct snd_soc_dai_ops tegra210_sfc_out_dai_ops = {
- 	.hw_params	= tegra210_sfc_out_hw_params,
- };
- 
+This should now be in a state that makes it mergeable, although I
+expect that some of the clock bits may have to be adapted (I haven't
+followed the recent developments on that front).
+
+As always, comments welcome.
+
+[1] https://lore.kernel.org/r/20210913182550.264165-1-maz@kernel.org
+
+Alyssa Rosenzweig (2):
+  PCI: apple: Add initial hardware bring-up
+  PCI: apple: Set up reference clocks when probing
+
+Marc Zyngier (8):
+  irqdomain: Make of_phandle_args_to_fwspec generally available
+  of/irq: Allow matching of an interrupt-map local to an interrupt
+    controller
+  PCI: of: Allow matching of an interrupt-map local to a PCI device
+  PCI: apple: Add INTx and per-port interrupt support
+  arm64: apple: t8103: Add root port interrupt routing
+  PCI: apple: Implement MSI support
+  iommu/dart: Exclude MSI doorbell from PCIe device IOVA range
+  PCI: apple: Configure RID to SID mapper on device addition
+
+ MAINTAINERS                          |   7 +
+ arch/arm64/boot/dts/apple/t8103.dtsi |  33 +-
+ drivers/iommu/apple-dart.c           |  27 +
+ drivers/of/irq.c                     |  17 +-
+ drivers/pci/controller/Kconfig       |  17 +
+ drivers/pci/controller/Makefile      |   1 +
+ drivers/pci/controller/pcie-apple.c  | 826 +++++++++++++++++++++++++++
+ drivers/pci/of.c                     |  10 +-
+ include/linux/irqdomain.h            |   4 +
+ kernel/irq/irqdomain.c               |   6 +-
+ 10 files changed, 935 insertions(+), 13 deletions(-)
+ create mode 100644 drivers/pci/controller/pcie-apple.c
+
 -- 
-2.33.0
+2.30.2
 
