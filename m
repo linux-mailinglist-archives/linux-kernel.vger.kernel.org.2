@@ -2,112 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB16414E34
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DF0414E3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236661AbhIVQhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        id S236651AbhIVQlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234140AbhIVQhQ (ORCPT
+        with ESMTP id S236586AbhIVQlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:37:16 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF98C061574;
-        Wed, 22 Sep 2021 09:35:46 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id t8so8719858wrq.4;
-        Wed, 22 Sep 2021 09:35:46 -0700 (PDT)
+        Wed, 22 Sep 2021 12:41:00 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF86EC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:39:29 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id u6-20020ad449a6000000b003798010ad14so12938469qvx.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:39:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XdQgCWF+HbG2xPtwVWVByVbos5CxGYFvNsMZE3cxEp8=;
-        b=JlrBGgWRjSNrAFP2UtKXrI5eKubObLSYQAXO9P1SFT661XJ0iXdB6D2OSKjk4o2BqK
-         YnKVQavDm81Er7abThInPnhii2sd+fKmz4ReYpp+Hq4BZH4YzFsofaoZmd560yhWRsya
-         xgZsW3wqrjwQ2iqf8kzkUMloY/u0Qxnm0uAhjE8R6zWizV6nEDAMjVAO078OktsG0X6n
-         XSxw/eAZRj09tSUBKtFJHNVHCrjvCA6ooACft9G+tePoP2+1F0sdoN+q4K71GVNgdanc
-         stBkDvSOcU8CnUFaPPFP5Cu9B+gCgCfFRlj9zmOsm0kN/j1iA031nRwnjCqIsVbldlKb
-         s8ww==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=7/iG3SA02r1f60QR6SCCZYUVHBWkS+SuM1mbU3JpT68=;
+        b=KoUB2StG9c+YM8RcINzTvM1NepgTmSE2dbP62dqS4qE7aGKsSfDmT+DA0/PkUW0jM0
+         SCBnxfFMjUAJsV4Jg1O25r4jJ6bjlcmPbczCs4LQP5YySXbrxWGItZg9WvVvmubDwYfW
+         gJJLgjIT00iIvwo0U573dXCqBkhQjz5ciuxDAyOzIm+i6x8cxfp40CddeatBv35CpQ/S
+         In2mhmmmlRETvrsh6s3FSJcmmfByeiNdbzJCYwyaOfy8ISwLMsJTwM2bU7EmJr0Ro1z0
+         cv+8+4ayeNXo52WsMgljNUwzWIt0dMxfYrq52G9yATg44vIPK9XcdTBWvc70ZLEapiwl
+         3tLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XdQgCWF+HbG2xPtwVWVByVbos5CxGYFvNsMZE3cxEp8=;
-        b=DBIBKtKcCAr+BN77RWaWiDzAEcjhHoLHG0AeLvLX2WWCxyxerdH85nurH7JAVLB5MH
-         1q/fCJ+LGy/O1qaE6Gfo782OUuwvWCYIvekXvv4HnFUYu7B9ir3SCwMsZKkYJyLTvpRS
-         Y1AH4Rl3moA8lJ9zQibQsBdcIbVBVRrVoXJTP1IJrqTT3daBbp1kh/B6Ydg0KlGt+Twg
-         FJE3mhgSz6SZP8/4/1k70SwZ3RhzSrblo3Jmeh85fOyCv9WhDqfXdGinpESaRfjHo28D
-         ROvYayxny3uybnnHCbqqgynk+7vmg5KZOT0+CnmXAxgLwPjWqv0/zy0tXReGSmsgJb9o
-         +Usg==
-X-Gm-Message-State: AOAM530lK5RLc+gUvkJPEnYmavv1PTDEcvCl1My/KlWIUBoIgr+SZg//
-        Jm967X+UNPgfKDBQRVwbj0rp2jlQXg==
-X-Google-Smtp-Source: ABdhPJwVxjQpNqvuAwLwUaVV8QWAF0/MVmZ7ssPoivZ0DMahLg1fiWqMHLnVwcAMUFpfKJhOcE3iYA==
-X-Received: by 2002:adf:d084:: with SMTP id y4mr585418wrh.249.1632328544941;
-        Wed, 22 Sep 2021 09:35:44 -0700 (PDT)
-Received: from ?IPv6:2a02:810b:f40:4200:c404:3070:bbbd:746b? ([2a02:810b:f40:4200:c404:3070:bbbd:746b])
-        by smtp.gmail.com with ESMTPSA id y11sm3261447wrg.18.2021.09.22.09.35.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 09:35:44 -0700 (PDT)
-Subject: Re: [PATCH][next] drm/rockchip: Remove redundant assignment of
- pointer connector
-To:     Colin King <colin.king@canonical.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210922112416.182134-1-colin.king@canonical.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <27c79f7a-8e4c-fad8-c6cf-a89793f2e3c6@gmail.com>
-Date:   Wed, 22 Sep 2021 18:35:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210922112416.182134-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=7/iG3SA02r1f60QR6SCCZYUVHBWkS+SuM1mbU3JpT68=;
+        b=1bYlnnTrZ52o/XqUM3HyOly1YgOnXgBALN/ZEeqGl+rnNel14zrHfcV/v+RdPf6E6+
+         YB9sEXccVgb6kw73S4aN0CvPw9GixxFj5y9cM+5NfRCuNcSGR+NYJskCtA6vSP37KQBu
+         Lwn22uVNguVT/7vWY+VyUhBcEDDApzxqyCvIpwXNLdmJpgufy3jRioVBXnDNOruboNTU
+         vsySfLcbpJSj4MtQKbtvsviYtuPg3auUojwUI2NW9pgNBFxRyOI1xooojmgTMEWoG144
+         iydAbe6sqAXdYV9BFbLpy6UR5FwldGXPYtGx3cVJEpzC62Vj6CgRjK6oprXWrzgHQo4m
+         NdFQ==
+X-Gm-Message-State: AOAM532SfDUIuwpmyXlAflMPWSYoIP0zSh7wO7Pv81Ze5Y59QFa5clq0
+        D5aX4tc+beW8yrDUtw+DELDqj9W46yg4Cg==
+X-Google-Smtp-Source: ABdhPJwC3PqjAmzkBqprnS2BY+WEZFwDOYJrLYk4n2FB9Y9p4Ifm2V20Ed/pxSa8v04MRO3XoZGSKQY4ILjdWQ==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:5ad1:21fa:bca6:a843])
+ (user=dlatypov job=sendgmr) by 2002:a25:1b08:: with SMTP id
+ b8mr113845ybb.24.1632328768925; Wed, 22 Sep 2021 09:39:28 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 09:39:21 -0700
+Message-Id: <20210922163921.2462565-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH v2] kunit: tool: better handling of quasi-bool args (--json, --raw_output)
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
-Am 22.09.21 um 13:24 schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The pointer connector is being assigned a value that is never
-> read, it is being updated immediately afterwards. The assignment
-> is redundant and can be removed.
+Problem:
 
-The pointer to the connector is used in rockchip_rgb_fini for 
-drm_connector_cleanup.
-It's pretty much the same for the encoder, btw.
+What does this do?
+$ kunit.py run --json
+Well, it runs all the tests and prints test results out as JSON.
 
-Regards,
+And next is
+$ kunit.py run my-test-suite --json
+This runs just `my-test-suite` and prints results out as JSON.
 
-Alex
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/gpu/drm/rockchip/rockchip_rgb.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_rgb.c b/drivers/gpu/drm/rockchip/rockchip_rgb.c
-> index 09be9678f2bd..18fb84068a64 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_rgb.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_rgb.c
-> @@ -150,7 +150,6 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
->   	if (ret)
->   		goto err_free_encoder;
->   
-> -	connector = &rgb->connector;
->   	connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
->   	if (IS_ERR(connector)) {
->   		DRM_DEV_ERROR(drm_dev->dev,
-> 
+But what about?
+$ kunit.py run --json my-test-suite
+This runs all the tests and stores the json results in a "my-test-suite"
+file.
+
+Why:
+--json, and now --raw_output are actually string flags. They just have a
+default value. --json in particular takes the name of an output file.
+
+It was intended that you'd do
+$ kunit.py run --json=my_output_file my-test-suite
+if you ever wanted to specify the value.
+
+Workaround:
+It doesn't seem like there's a way to make
+https://docs.python.org/3/library/argparse.html only accept arg values
+after a '='.
+
+I believe that `--json` should "just work" regardless of where it is.
+So this patch automatically rewrites a bare `--json` to `--json=stdout`.
+
+That makes the examples above work the same way.
+Add a regression test that can catch this for --raw_output.
+
+Fixes: 6a499c9c42d0 ("kunit: tool: make --raw_output support only showing kunit output")
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Tested-by: David Gow <davidgow@google.com>
+---
+v1 -> v2: fix mypy error by converting mapped argv to a list.
+---
+ tools/testing/kunit/kunit.py           | 24 ++++++++++++++++++++++--
+ tools/testing/kunit/kunit_tool_test.py |  8 ++++++++
+ 2 files changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index 5a931456e718..ac35c61f65f5 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -16,7 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
+ 
+ from collections import namedtuple
+ from enum import Enum, auto
+-from typing import Iterable
++from typing import Iterable, Sequence
+ 
+ import kunit_config
+ import kunit_json
+@@ -186,6 +186,26 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 				exec_result.elapsed_time))
+ 	return parse_result
+ 
++# Problem:
++# $ kunit.py run --json
++# works as one would expect and prints the parsed test results as JSON.
++# $ kunit.py run --json suite_name
++# would *not* pass suite_name as the filter_glob and print as json.
++# argparse will consider it to be another way of writing
++# $ kunit.py run --json=suite_name
++# i.e. it would run all tests, and dump the json to a `suite_name` file.
++# So we hackily automatically rewrite --json => --json=stdout
++pseudo_bool_flag_defaults = {
++		'--json': 'stdout',
++		'--raw_output': 'kunit',
++}
++def massage_argv(argv: Sequence[str]) -> Sequence[str]:
++	def massage_arg(arg: str) -> str:
++		if arg not in pseudo_bool_flag_defaults:
++			return arg
++		return  f'{arg}={pseudo_bool_flag_defaults[arg]}'
++	return list(map(massage_arg, argv))
++
+ def add_common_opts(parser) -> None:
+ 	parser.add_argument('--build_dir',
+ 			    help='As in the make command, it specifies the build '
+@@ -303,7 +323,7 @@ def main(argv, linux=None):
+ 				  help='Specifies the file to read results from.',
+ 				  type=str, nargs='?', metavar='input_file')
+ 
+-	cli_args = parser.parse_args(argv)
++	cli_args = parser.parse_args(massage_argv(argv))
+ 
+ 	if get_kernel_root_path():
+ 		os.chdir(get_kernel_root_path())
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 619c4554cbff..1edcc8373b4e 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -408,6 +408,14 @@ class KUnitMainTest(unittest.TestCase):
+ 			self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+ 			self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+ 
++	def test_run_raw_output_does_not_take_positional_args(self):
++		# --raw_output is a string flag, but we don't want it to consume
++		# any positional arguments, only ones after an '='
++		self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
++		kunit.main(['run', '--raw_output', 'filter_glob'], self.linux_source_mock)
++		self.linux_source_mock.run_kernel.assert_called_once_with(
++			args=None, build_dir='.kunit', filter_glob='filter_glob', timeout=300)
++
+ 	def test_exec_timeout(self):
+ 		timeout = 3453
+ 		kunit.main(['exec', '--timeout', str(timeout)], self.linux_source_mock)
+
+base-commit: 4c17ca27923c16fd73bbb9ad033c7d749c3bcfcc
+-- 
+2.33.0.464.g1972c5931b-goog
 
