@@ -2,239 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF06414FBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6BE414FC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237029AbhIVSY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
+        id S237043AbhIVSYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236973AbhIVSYZ (ORCPT
+        with ESMTP id S236973AbhIVSYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:24:25 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121FBC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:22:55 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id d207so13298620qkg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:22:55 -0700 (PDT)
+        Wed, 22 Sep 2021 14:24:45 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8F9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:23:15 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i25so15712268lfg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:23:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eltljisKCMoPGIKmO0hGRHj57MDUQIDS35Vhb3w01jI=;
-        b=joDkyWxucYTKljQkiS9DPgrT78MIAiSHrAUg/kTGDPEqZ4ZkuH5XxF+YaD/JcngIbp
-         WcL0NPbSD6wdVk1KQWFmiebUOeRNi/udYS0AjAhT+RhXGuAab+0cdx3CuuftDAhrR6uQ
-         MvuSB2lcc+2opf93hRmyLK7pA7IYeAFV1PLzgbP8c3d0er+893IkKs3VPIlFquw2h/lx
-         ghNK7vyKv3N0kWwObmy+nxr3X9E9FUk7hrkd8Tpmhb7b+OAeJBsDAj4egjrWDCo4JPyH
-         ymWnZztVerewFAI7z2wzyfQ6q0LS43kt+YgqBCVxQzR/mK5i4G5PqhDo2UqH1HJtGJYB
-         OC0A==
+        bh=hGfIZI8WhvSFu5gKg6P7iX3egFZDenq/izFO/fb2gbc=;
+        b=m60s3WJsGDXghsgkm8B1eoblT1PIJCcs65uylCEREykJ8thyuwT11Ppe5GhtejDxHy
+         FRjqy7RgMJf5XlLdXFm6fX6N+/cnnYk9ueyhJnV71dhV/b+qDje78hTZ3ft2QBtiJOb3
+         LRmzxKs7wxgYTxDsj38Sg2MZsTrwaPSP7hbud13kK/uRO7et1KnGA8lPxQm9i4mIav0i
+         7xLi99Lbev9noZwo3i6s3nE+F9Vc2TaeEbX76EYORn72DVICZRpwCCfMKSo6judVPVBx
+         BpSC8ePQ91txxFDAsBnNP5tAf7eVSgWVviO2lk0T6LBlcN3SczLQRFkkgmZWW09c8iDc
+         n3Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eltljisKCMoPGIKmO0hGRHj57MDUQIDS35Vhb3w01jI=;
-        b=MXe8RvfF2p4Twzhqw7Ft07Ju/TL0etEIIw5LQzVCI5/dnSvE4TSeswt32zfgVHL6aC
-         4LKb+oRwSVJDQBsWgo29gVcqpSCLt27le8RHoyUJ1S5I7yXsFDKgp4gzFeH7rXfIctEO
-         KyznUJrG+6zXc/dC32EyhKGyJJKTtFnfMn+QNIsz4k4cHeHDAlpv/Bc8iyHcFnBas9rA
-         2+p2Mev9CmH/NY1BW3mQFvwIqIdKNe57IDPdgMcNOnAPucK29XXYkk0STuMIdgh3zcH1
-         LXk6tdeHD9SMarxeb1u86Kd+4xIM8ght5RyHPOCZbv5I9jr7J0uAcvNipZ5haokBzIR3
-         HIVw==
-X-Gm-Message-State: AOAM533w5vZ8II9Q25nfURS2kROep9jW1mcwlEk0vKTrog7sZN1s+t/L
-        RZoMgE5gyQliOTxBH94qYif5JKMKVNQCtUII4num7Q==
-X-Google-Smtp-Source: ABdhPJz9PL1sK8PIQoxWIdAFwDZg4Xa42glDku7g02opgSpic30z9q6cAc9oRD+CROphtr3l+3nsUOrmoPgTIUwW5mQ=
-X-Received: by 2002:a25:9001:: with SMTP id s1mr622262ybl.191.1632334974079;
- Wed, 22 Sep 2021 11:22:54 -0700 (PDT)
+        bh=hGfIZI8WhvSFu5gKg6P7iX3egFZDenq/izFO/fb2gbc=;
+        b=VquynJDvTKu6O2ZH2OjrBEBITFrgH+bYvHrrCvZ+9XL8HGnJsyh3i29XFt/0Qnrbo2
+         ThQSYR0RwrsfM71ko0eTs4CILB7t3ZUbZAxdFro8PVTlPrnB0KMvWlRJJLrv7r/27nkk
+         3MkyjfGfYN0t0o8AnbTWXApsOUrFE7gAVFHRn0nOyJM6VedBC8rPZ2BbvM/TWHmWDnVj
+         0HfrgmoAt0c23/RUlA2sOWigf0T0R6Dx4/xpOpcvHGdrG5MjZGJVJTU4UylW5Fh04ZqF
+         7EN0LtApjnP/f/rXjBGYVwPE4Jd7G8Q7HNhpKfYfxLf/vA6Pp9Stwu5DrdZyAKb1/FBa
+         Re1Q==
+X-Gm-Message-State: AOAM532fyFZ+Ic0oWFZ9TsaYaweW0nVvfb+0KcvojTvsoBUVauWv5NTu
+        sFIgNSJl4r2ymguLzRrMi4KakexormRADXqbZj19v7ASMDM=
+X-Google-Smtp-Source: ABdhPJzwmkLhB1UyuuD+4i+kJD4hU3R7CHg3+DNiRTwGfmH05zDEOWp/QaW47rG6KodEKfdif5ZyTlYa5TM6PMTc8U0=
+X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr371646lfg.550.1632334992982;
+ Wed, 22 Sep 2021 11:23:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920142614.4891-1-mgorman@techsingularity.net>
- <20210920142614.4891-3-mgorman@techsingularity.net> <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
- <20210921103621.GM3959@techsingularity.net> <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
- <20210922132002.GX3959@techsingularity.net> <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
- <20210922150457.GA3959@techsingularity.net> <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
- <20210922173853.GB3959@techsingularity.net>
-In-Reply-To: <20210922173853.GB3959@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 22 Sep 2021 20:22:43 +0200
-Message-ID: <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to nr_running
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210908130922.118265849@linutronix.de> <20210908132525.794334915@linutronix.de>
+ <CADYN=9K1BdyupzcDAbyk2JTio1A98J9tsBS_LeOH4=GVG=7FqQ@mail.gmail.com> <YUoX/lVugPnd/ZiK@google.com>
+In-Reply-To: <YUoX/lVugPnd/ZiK@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 22 Sep 2021 11:23:01 -0700
+Message-ID: <CAKwvOd==W5BXp0-8kYJmd8LBvfOo5i9qvyJr43csQoxQd08row@mail.gmail.com>
+Subject: Re: [patch V3 15/20] x86/fpu/signal: Change return type of
+ copy_fpregs_to_sigframe() helpers to boolean
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sept 2021 at 19:38, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Wed, Sep 22, 2021 at 06:00:56PM +0200, Vincent Guittot wrote:
-> > On Wed, 22 Sept 2021 at 17:04, Mel Gorman <mgorman@techsingularity.net> wrote:
-> > >
-> > > On Wed, Sep 22, 2021 at 04:15:27PM +0200, Vincent Guittot wrote:
-> > > > > ---8<---
-> > > > > sched/fair: Scale wakeup granularity relative to nr_running
-> > > > >
-> > > > > Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs") moved
-> > > > > the kernel.sched_wakeup_granularity_ns sysctl under debugfs.  One of the
-> > > > > reasons why this sysctl may be used may be for "optimising for throughput",
-> > > > > particularly when overloaded. The tool TuneD sometimes alters this for two
-> > > > > profiles e.g. "mssql" and "throughput-performance". At least version 2.9
-> > > > > does but it changed in master where it also will poke at debugfs instead.
-> > > > >
-> > > > > Internal parameters like sysctl_sched_wakeup_granularity are scaled
-> > > > > based on the number of CPUs due to sysctl_sched_tunable_scaling. For
-> > > > > simplicity, the timing figures in this changelog are based on
-> > > > > SCHED_TUNABLESCALING_NONE.
-> > > >
-> > > > This is a bit misleading because the platform that you used to
-> > > > highlight the problem has a 7ms sysctl_sched_wakeup_granularity. which
-> > > > is far more than your tick which should be 1ms
-> > > >
-> > >
-> > > Tick on the test machines is 4ms (HZ=250).
-> > >
-> > > The reason I used SCHED_TUNABLESCALING_NONE for the changelog is that
-> > > the exact values depend on the number of CPUs so values are not even
-> > > the same across the range of machines I'm using. sysctl_sched_latency,
-> > > sysctl_sched_min_granularity sysctl_sched_wakeup_granularity are all
-> > > scaled but the ratios remain constant.
-> >
-> > My point was mainly that sysctl_sched_wakeup_granularity is above the
-> > tick period
-> >
->
-> Ok. sysctl_sched_wakeup_granularity is not related to the tick but I'm
-> probably missing something else.
->
-> > > > Also do you want to take into account only tasks in this cfs and its
-> > > > children or on all cfs on this rq ?
-> > > >
-> > >
-> > > Only this cfq I think to limit overhead.
-> > >
-> > > > > +                       return sysctl_sched_wakeup_granularity;
-> > > > > +
-> > > > > +               return sysctl_sched_latency;
-> > > > > +       }
-> > > > > +
-> > > > > +       /* GENTLE_FAIR_SLEEPER has two overloaded thresholds. */
-> > > > > +       nr_running = cfs_rq->nr_running;
-> > > > > +       threshold = sched_nr_disable_gran >> 1;
-> > > > > +
-> > > > > +       /* No overload. */
-> > > > > +       if (nr_running <= threshold)
-> >
-> > The comment was originally for this
-> > nr_running does not reflect the number of task running on the cpu and
-> > the associated overload state
-> >
-> > If you put 2 hackbench in their own cgroup, nr_running will be 2 but
-> > you will have twice more runnable threads
-> >
->
-> Ok, that's understood. FWIW, I had switched to h_nr_running already.
->
-> > > > > +
-> > > > > +       /* Light overload. */
-> > > > > +       if (nr_running <= sched_nr_disable_gran)
-> > > > > +               return sysctl_sched_latency >> 1;
-> > > > > +
-> > > > > +       /* Heavy overload. */
-> > > > > +       return sysctl_sched_latency;
-> > > >
-> > > > Why should a thread without any relationship with the curr,  not
-> > > > preempt it because there are already a lot of running threads?
-> > >
-> > > Preemption is not free, without any knowledge of what the thread is
-> > > doing, we cannot determine if an inappropriate amount of CPU time is
-> > > being spent dequeueing/enqueuing tasks.
-> >
-> > That's exactly my point. The heuristic above doesn't give any clue if
-> > the thread should or not preempt the current one. Most of the time
-> > there is no relation with the number of the running threads but it is
-> > define by the workload itself and its level of interactivity
-> >
->
-> Right albeit it ignores the possibility that there are multiple workloads
-> overloading the machine wasting even more time preempting.  Whether that
-> is due to a bad application, a bad configuration or a bad actor is anyones
-> guess. I've seen applications with multiple worker threads which generally
-> behaved ok, except when they didn't and too many worker threads were
-> spawned due to a spike in server load. I'm not
->
-> > >
-> > > > In
-> > > > your case, you want hackbench threads to not preempt each others
-> > > > because they tries to use same resources so it's probably better to
-> > > > let the current one to move forward but that's not a universal policy.
-> > > >
-> > >
-> > > No, but have you a better suggestion? hackbench might be stupid but it's
-> > > an example of where a workload can excessively preempt itself. While
-> > > overloading an entire machine is stupid, it could also potentially occurs
-> > > for applications running within a constrained cpumask.
-> >
-> > But this is property that is specific to each application. Some can
-> > have a lot of running threads but few wakes up which have to preempt
-> > current threads quickly but others just want the opposite
-> > So because it is a application specific property we should define it
-> > this way instead of trying to guess
->
-> I'm not seeing an alternative suggestion that could be turned into
-> an implementation. The current value for sched_wakeup_granularity
-> was set 12 years ago was exposed for tuning which is no longer
-> the case. The intent was to allow some dynamic adjustment between
-> sysctl_sched_wakeup_granularity and sysctl_sched_latency to reduce
-> over-scheduling in the worst case without disabling preemption entirely
-> (which the first version did).
->
-> Should we just ignore this problem and hope it goes away or just let
-> people keep poking silly values into debugfs via tuned?
++ Andrew (sorry, I messed up your address on the previous message)
 
-We should certainly not add a bandaid because people will continue to
-poke silly value at the end. And increasing
-sysctl_sched_wakeup_granularity based on the number of running threads
-is not the right solution. According to the description of your
-problem that the current task doesn't get enough time to move forward,
-sysctl_sched_min_granularity should be part of the solution. Something
-like below will ensure that current got a chance to move forward
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9bf540f04c2d..39d4e4827d3d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7102,6 +7102,7 @@ static void check_preempt_wakeup(struct rq *rq,
-struct task_struct *p, int wake_
-        int scale = cfs_rq->nr_running >= sched_nr_latency;
-        int next_buddy_marked = 0;
-        int cse_is_idle, pse_is_idle;
-+       unsigned long delta_exec;
-
-        if (unlikely(se == pse))
-                return;
-@@ -7161,6 +7162,13 @@ static void check_preempt_wakeup(struct rq *rq,
-struct task_struct *p, int wake_
-                return;
-
-        update_curr(cfs_rq_of(se));
-+       delta_exec = se->sum_exec_runtime - se->prev_sum_exec_runtime;
-+       /*
-+        * Ensure that current got a chance to move forward
-+        */
-+       if (delta_exec < sysctl_sched_min_granularity)
-+               return;
-+
-        if (wakeup_preempt_entity(se, pse) == 1) {
-                /*
-                 * Bias pick_next to pick the sched entity that is
+On Tue, Sep 21, 2021 at 10:36 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Tue, Sep 21, 2021 at 12:58:34PM +0200, Anders Roxell wrote:
+> > On Wed, 8 Sept 2021 at 15:30, Thomas Gleixner <tglx@linutronix.de> wrote:
+> > >
+> > > Now that copy_fpregs_to_sigframe() returns boolean the individual return
+> > > codes in the related helper functions do not make sense anymore. Change
+> > > them to return boolean success/fail.
+> > >
+> > > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> >
+> > When I build and boot (qemu_x86_64) a defconfig kernel on from todays
+> > next tag next-20210921 I see the following segmentation fault
+> >
+> > 2021-09-21T10:11:45 <6>[    1.622922] mount (89) used greatest stack
+> > depth: 14384 bytes left
+> > 2021-09-21T10:11:45 <6>[    1.664760] EXT4-fs (sda): re-mounted. Opts:
+> > (null). Quota mode: none.
+> > 2021-09-21T10:11:45 <6>[    1.691041] mkdir (92) used greatest stack
+> > depth: 14312 bytes left
+> > 2021-09-21T10:11:45 <6>[    1.713201] mount (93) used greatest stack
+> > depth: 13720 bytes left
+> > 2021-09-21T10:11:46 Starting syslogd: /etc/init.d/rcS: line 12:   101
+> > Segmentation fault      $i start
+> >
+> >
+> > I did a bisection and found this as the faulty patch [1]. When I
+> > revert this patch I can't see the issue.
+> >
+> > We noticed that function 'save_xstate_epilog()' changes the polarity
+> > of its return code for one of the return statements, and for its only
+> > caller. but not for the other return statement.
+> >
+> > I tried this patch and I couldn't see the segmentation fault.
+> >
+> > diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+> > index 445c57c9c539..61eeebc04427 100644
+> > --- a/arch/x86/kernel/fpu/signal.c
+> > +++ b/arch/x86/kernel/fpu/signal.c
+> > @@ -104,7 +104,7 @@ static inline int save_xstate_epilog(void __user
+> > *buf, int ia32_frame)
+> >         err = __copy_to_user(&x->i387.sw_reserved, sw_bytes, sizeof(*sw_bytes));
+> >
+> >         if (!use_xsave())
+> > -               return err;
+> > +               return !err;
+> >
+> >         err |= __put_user(FP_XSTATE_MAGIC2,
+> >                           (__u32 __user *)(buf + fpu_user_xstate_size));
+>
+> Thank for the report.  Our CI watching tip has also been super red over
+> the past day or so; all boot failures.
+>
+> Andrew Cooper reported this diff to me on IRC; I tested out the above
+> and it fixes the boot failure for us.
+>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1461
+>
+> Our CI used -cpu Nehalem for qemu since KVM isn't exposed to the bots on
+> github actions, FWIW.
+> https://github.com/ClangBuiltLinux/boot-utils/blob/2edbca214f9a4cabd3f138ea029015d6cf52d110/boot-qemu.sh#L278-L288
+>
+> >
+> >
+> >
+> > Cheers,
+> > Anders
+> > [1] http://ix.io/3zxf
+> >
+> > > ---
+> > >  arch/x86/kernel/fpu/signal.c |   17 +++++++++--------
+> > >  1 file changed, 9 insertions(+), 8 deletions(-)
+> > >
+> > > --- a/arch/x86/kernel/fpu/signal.c
+> > > +++ b/arch/x86/kernel/fpu/signal.c
+> > > @@ -65,7 +65,7 @@ static inline int check_xstate_in_sigfra
+> > >  /*
+> > >   * Signal frame handlers.
+> > >   */
+> > > -static inline int save_fsave_header(struct task_struct *tsk, void __user *buf)
+> > > +static inline bool save_fsave_header(struct task_struct *tsk, void __user *buf)
+> > >  {
+> > >         if (use_fxsr()) {
+> > >                 struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
+> > > @@ -82,18 +82,19 @@ static inline int save_fsave_header(stru
+> > >                 if (__copy_to_user(buf, &env, sizeof(env)) ||
+> > >                     __put_user(xsave->i387.swd, &fp->status) ||
+> > >                     __put_user(X86_FXSR_MAGIC, &fp->magic))
+> > > -                       return -1;
+> > > +                       return false;
+> > >         } else {
+> > >                 struct fregs_state __user *fp = buf;
+> > >                 u32 swd;
+> > > +
+> > >                 if (__get_user(swd, &fp->swd) || __put_user(swd, &fp->status))
+> > > -                       return -1;
+> > > +                       return false;
+> > >         }
+> > >
+> > > -       return 0;
+> > > +       return true;
+> > >  }
+> > >
+> > > -static inline int save_xstate_epilog(void __user *buf, int ia32_frame)
+> > > +static inline bool save_xstate_epilog(void __user *buf, int ia32_frame)
+> > >  {
+> > >         struct xregs_state __user *x = buf;
+> > >         struct _fpx_sw_bytes *sw_bytes;
+> > > @@ -131,7 +132,7 @@ static inline int save_xstate_epilog(voi
+> > >
+> > >         err |= __put_user(xfeatures, (__u32 __user *)&x->header.xfeatures);
+> > >
+> > > -       return err;
+> > > +       return !err;
+> > >  }
+> > >
+> > >  static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
+> > > @@ -219,10 +220,10 @@ bool copy_fpstate_to_sigframe(void __use
+> > >         }
+> > >
+> > >         /* Save the fsave header for the 32-bit frames. */
+> > > -       if ((ia32_fxstate || !use_fxsr()) && save_fsave_header(tsk, buf))
+> > > +       if ((ia32_fxstate || !use_fxsr()) && !save_fsave_header(tsk, buf))
+> > >                 return false;
+> > >
+> > > -       if (use_fxsr() && save_xstate_epilog(buf_fx, ia32_fxstate))
+> > > +       if (use_fxsr() && !save_xstate_epilog(buf_fx, ia32_fxstate))
+> > >                 return false;
+> > >
+> > >         return true;
+> > >
 
 
->
-> --
-> Mel Gorman
-> SUSE Labs
+
+-- 
+Thanks,
+~Nick Desaulniers
