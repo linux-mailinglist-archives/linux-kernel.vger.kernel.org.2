@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DB34147B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031E74147BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235622AbhIVLYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235151AbhIVLYE (ORCPT
+        id S235657AbhIVLZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:25:52 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:41896
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235439AbhIVLZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:24:04 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1036EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 04:22:35 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id dj4so8583874edb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 04:22:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=XR0Wxz9ik5C8GMiV5GMLLKkxqWzAR3YfuMukOFBYFHg=;
-        b=ITHDr4rldDvt2ew8lWEgIZUjsHouW5X/FOBQlJZ2QJkywCaWG1uF+wL/Y/yH5ONVTJ
-         iVZo6YiTuYa3k/7ShfbdMsyh5lYsrik/OurAX4otVVYrDhP3vRILw0Y1ihYMg/CN9S8o
-         GJqEd0wtXgclGoxfIV0aDAntVFS3TK1dz08sWsPX78ntZ2YtZ2E1hnN7m3WKFcnGrV+f
-         SZzPht/2NE8WhKP3c6FHP2xARdSNnqvQetJr2AhAvU5zYspMMJJBevT6dNRGgkaEmKRp
-         gX6tigrMmKCrZO8uJLfBfamvl3x/VkDvhoeEJoAxlqNvULCztCo9iFbnHiFJIKgOo9rP
-         uGxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=XR0Wxz9ik5C8GMiV5GMLLKkxqWzAR3YfuMukOFBYFHg=;
-        b=gdBDHCktjwDyVTixPXJym/a3GyhUT7ABf2T8oZx09T/+0vRC5UFzNzLVBaldXp5aRn
-         G77OVkPP+x5dgNAKD0Zpu10x2/uyIPX8CYMMIWojhGjgcj5HDpgGgXcsFWnbpCTVHo8s
-         pWQ/ZihDtS0hL5fYuymxcsd0MwuFqViJudvnE4FSN3zSqvCu5ULoEh9YaByFu4flR9Vq
-         oL62ZfJT3rrkeVGGVrpRU71dekxAxUqPZGbtpJqDAqbPCtdIlNm2sVKDikiP1UAb05HF
-         +AEWGo1+5yJkYh6Ha2bTHS/tjCESRnME2OrCXsLBNfEkmHGZC/ULb/69L+aBYFcnn6yb
-         gyQg==
-X-Gm-Message-State: AOAM533TOh7l3Ir4cNfJNU+CnJvdhd+Bh1O7rfiELGgxZtGayHw26FVU
-        7ztG3gf8gKUw/XWIqWjc8kitUjS2RHcTxktI994=
-X-Google-Smtp-Source: ABdhPJxbDODb/uAfNH5YFsx7ig/4x4EVU+A8S+8nHqQEVt3OkXPaY+5Fjw0HWtsyS6YR2XQrRLID2ck9j5RcO5BjfJE=
-X-Received: by 2002:a17:906:3383:: with SMTP id v3mr42248107eja.213.1632309753670;
- Wed, 22 Sep 2021 04:22:33 -0700 (PDT)
+        Wed, 22 Sep 2021 07:25:50 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 8EC1C4015E;
+        Wed, 22 Sep 2021 11:24:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632309856;
+        bh=jPiivGMCA0vYpmru2UiRTorDKmvF0y0XmHoBEgYPsvQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=KJUyde2+TnzqFPXbbGunQw+OLCxj1A1Rkqd798wGAdaZD5z94siUroSYJbHTyEK81
+         DR+F9sQ9R5GjyjsjVX1sac8kpOt5oAjNkmH9STDWXE2mimYQQaHeGDUduvR2GOdNyP
+         NXXh6hg9xQ9yrTtEiExlBed3M6d92XwUhRTfHOKUqSkZgeW8JDzfqLQYTwFRPToz3S
+         K/Gk+bJJjvO+X7McFfGCVqMELivjQRUFZt3GpsnNVOL/V8Y4E9q3kH3AWdpc/ovHEF
+         /YeepV7gfW7WoCKbzgbWp+F6f1FtoCvepWSAMqVq1UTM6Oz2CES0eXtFsTpdum7rtJ
+         5+TtwFAd7G8mA==
+From:   Colin King <colin.king@canonical.com>
+To:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/rockchip: Remove redundant assignment of pointer connector
+Date:   Wed, 22 Sep 2021 12:24:16 +0100
+Message-Id: <20210922112416.182134-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Sender: halimamusajammeh@gmail.com
-Received: by 2002:a17:906:6547:0:0:0:0 with HTTP; Wed, 22 Sep 2021 04:22:33
- -0700 (PDT)
-From:   "Mrs.Rhoda Mohammed" <rhodamohammed01@gmail.com>
-Date:   Wed, 22 Sep 2021 13:22:33 +0200
-X-Google-Sender-Auth: a8VTraYbHlhiP5B8YRro0o_ra0s
-Message-ID: <CAHGBthK=eA+3iOrzzXrb=zFs2C1ezEc4o9YNXsq+D0wbRVboig@mail.gmail.com>
-Subject: From Mrs.Rhoda Ahmmed H.Mohammed/ READ AND ANSWER
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ahmmed H. Mohammed .Please reply me to my personal email address(
-rhodamohammed02@gmail.com  ) for more  details
+From: Colin Ian King <colin.king@canonical.com>
 
-Hello Dear,I am Mrs. Rhoda  Ahmmed Mohammed, the Wife of late Chief
-Ahmmed H.Mohammed, a native of Mende district in the northern of
-Sierra Leone, before the death of my late Husband, He was appointed as
-the Director of Sierra Leone mining cooperation (S.L.M.C) Freetown,
-According to my husband, this huge money was accrued from mining
-cooperation, diamonds and Gold sales overdrafts and minor sales, I am
-for a Serious Investor that will help me my late Family wanted to kill
-me and collect the Deposit Certificate and Agreement Certificate from
-me but I run away from my country with the Documents, I want a God
-fearing, honest and trustworthy person thatb will help me receive this
-money in your Bank Account and Invest the money in your country or any
-country of your it is ver urgent, I will give you the full details as
-soon as you get back to me through my personal email addreSs
-rhodamohammed2@gmail.com )Mrs. Rhoda Ahmmed H. Mohammed .
+The pointer connector is being assigned a value that is never
+read, it is being updated immediately afterwards. The assignment
+is redundant and can be removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/rockchip/rockchip_rgb.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_rgb.c b/drivers/gpu/drm/rockchip/rockchip_rgb.c
+index 09be9678f2bd..18fb84068a64 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_rgb.c
++++ b/drivers/gpu/drm/rockchip/rockchip_rgb.c
+@@ -150,7 +150,6 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
+ 	if (ret)
+ 		goto err_free_encoder;
+ 
+-	connector = &rgb->connector;
+ 	connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
+ 	if (IS_ERR(connector)) {
+ 		DRM_DEV_ERROR(drm_dev->dev,
+-- 
+2.32.0
+
