@@ -2,88 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907764150BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDD84150BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237264AbhIVTxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhIVTxu (ORCPT
+        id S237261AbhIVTx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:53:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22239 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237262AbhIVTxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:53:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA40CC061574;
-        Wed, 22 Sep 2021 12:52:19 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0efa00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fa00:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A15F91EC051F;
-        Wed, 22 Sep 2021 21:52:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632340332;
+        Wed, 22 Sep 2021 15:53:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632340341;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fzo+PEl8pAwSY958R9AIE6gnLhJ3Zcu0FqnZgS+Q1TY=;
-        b=TrWHyvCovp1xYBCa06xEBb39RTKWLWn8eifuyhcdUuW5I5UUvkqPldeIi88B6DgpVlgBYI
-        ASWuqiS9Bh001r8tMMkQ2eLdFI7a2WxUys56vjsCLc9p/oWDFK43yZPwrWhsKpt67ttN8/
-        oJCfsdDzqB/NRk5+DSVx+/KMmYpDSb0=
-Date:   Wed, 22 Sep 2021 21:52:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 5/8] x86/sme: Replace occurrences of sme_active() with
- cc_platform_has()
-Message-ID: <YUuJZ2qOgbdpfk6N@zn.tnic>
-References: <20210920192341.maue7db4lcbdn46x@box.shutemov.name>
- <77df37e1-0496-aed5-fd1d-302180f1edeb@amd.com>
- <YUoao0LlqQ6+uBrq@zn.tnic>
- <20210921212059.wwlytlmxoft4cdth@box.shutemov.name>
- <YUpONYwM4dQXAOJr@zn.tnic>
- <20210921213401.i2pzaotgjvn4efgg@box.shutemov.name>
- <00f52bf8-cbc6-3721-f40e-2f51744751b0@amd.com>
- <20210921215830.vqxd75r4eyau6cxy@box.shutemov.name>
- <01891f59-7ec3-cf62-a8fc-79f79ca76587@amd.com>
- <20210922143015.vvxvh6ec73lffvkf@box.shutemov.name>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xKJgefLdWJy0dp9TYiGmtdcSy+WA2ewqvdcD0wX0UjM=;
+        b=GfCwVW7gBe6f2cLwBpZlazaSDDefEFmdU9kFIjM7dG0iZlLtFFFeDqfReWio1q1tG1kud5
+        F7vRt3S+vzf7Z9WdCYqNuemWu4b7uCP9PLmhShH/j2o+ijZkmOtkZwMbyUtR9ERImjsqOw
+        iXeJayXt6bpyZZyKoSVaBs/Sp8DBcIg=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-G5zSQINEPkmGkcBBXwUKkQ-1; Wed, 22 Sep 2021 15:52:20 -0400
+X-MC-Unique: G5zSQINEPkmGkcBBXwUKkQ-1
+Received: by mail-qt1-f200.google.com with SMTP id z16-20020ac86b90000000b0029eec160182so11006789qts.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:52:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=xKJgefLdWJy0dp9TYiGmtdcSy+WA2ewqvdcD0wX0UjM=;
+        b=cccklwJ+K+YDPX4KjAGYpeaD5qZ5gH3C+s/1jUT6j2DqDljKU0z6C/L5yOcqFFSaJl
+         Zyqw7vcGN11fox9QAi+wEKL6R7Ig5sGiRf3rRuJy2XPSL/v+LZw74c6DaiUW8ftiL/9t
+         s10rcSwspZaleHPMI5ow14z9ydmz6WXXHMuC+IqM1tBO0jciVoFZXCGG3jQca6LeP2JF
+         DGYutGjX3jrh/WfJpzG2WSUEwkOduP1bMUs6Vk8pwFca0EVjzv4pYklnNfNEcoGn/qc3
+         p19at1YukLGbIRJvEvtH5AqWcyJxSLi5aQeIK7me4c16/Hfosb0/vGPIP94nUVVHve4+
+         zrFQ==
+X-Gm-Message-State: AOAM5339Wh0KDTxgSss0DRI8FocycfJjDfDlb2C7jb569v9nyHafGgoQ
+        llYSB2sR3cDaOqiFZUD1cPvvk0464pG8GvBAa9dWge8IeWwlC/bQDGj8rg6UN69hWySCyH6mjjN
+        2Uu//80aAuUjd0tCTp280/z8I
+X-Received: by 2002:a37:a8c1:: with SMTP id r184mr1063024qke.389.1632340340190;
+        Wed, 22 Sep 2021 12:52:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvWXlOT4CAVdD5eoMa4qYxPLr98GVG+fY6djJAvqKhRJ80pZbxe74g2EjlcdKhL3xmrArIxw==
+X-Received: by 2002:a37:a8c1:: with SMTP id r184mr1062990qke.389.1632340339926;
+        Wed, 22 Sep 2021 12:52:19 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id 188sm2533277qkm.21.2021.09.22.12.52.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 12:52:19 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v15 3/6] locking/qspinlock: Introduce CNA into the slow
+ path of qspinlock
+To:     Davidlohr Bueso <dave@stgolabs.net>,
+        Alex Kogan <alex.kogan@oracle.com>
+Cc:     linux@armlinux.org.uk, peterz@infradead.org, mingo@redhat.com,
+        will.deacon@arm.com, arnd@arndb.de, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        guohanjun@huawei.com, jglauber@marvell.com,
+        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com
+References: <20210514200743.3026725-1-alex.kogan@oracle.com>
+ <20210514200743.3026725-4-alex.kogan@oracle.com>
+ <20210922192528.ob22pu54oeqsoeno@offworld>
+Message-ID: <8e743acb-ec75-ea03-493a-d57154ab8fed@redhat.com>
+Date:   Wed, 22 Sep 2021 15:52:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210922143015.vvxvh6ec73lffvkf@box.shutemov.name>
+In-Reply-To: <20210922192528.ob22pu54oeqsoeno@offworld>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 05:30:15PM +0300, Kirill A. Shutemov wrote:
-> Not fine, but waiting to blowup with random build environment change.
+On 9/22/21 3:25 PM, Davidlohr Bueso wrote:
+> On Fri, 14 May 2021, Alex Kogan wrote:
+>
+>> diff --git a/Documentation/admin-guide/kernel-parameters.txt 
+>> b/Documentation/admin-guide/kernel-parameters.txt
+>> index a816935d23d4..94d35507560c 100644
+>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>> @@ -3515,6 +3515,16 @@
+>>             NUMA balancing.
+>>             Allowed values are enable and disable
+>>
+>> +    numa_spinlock=    [NUMA, PV_OPS] Select the NUMA-aware variant
+>> +            of spinlock. The options are:
+>> +            auto - Enable this variant if running on a multi-node
+>> +            machine in native environment.
+>> +            on  - Unconditionally enable this variant.
+>
+> Is there any reason why the user would explicitly pass the on option
+> when the auto thing already does the multi-node check? Perhaps strange
+> numa topologies? Otherwise I would say it's not needed and the fewer
+> options we give the user for low level locking the better.
 
-Why is it not fine?
+I asked Alex to put in a command line option because we may want to 
+disable it on a multi-socket server if we want to.
 
-Are you suspecting that the compiler might generate something else and
-not a rip-relative access?
 
--- 
-Regards/Gruss,
-    Boris.
+>
+>> +            off - Unconditionally disable this variant.
+>> +
+>> +            Not specifying this option is equivalent to
+>> +            numa_spinlock=auto.
+>> +
+>>     numa_zonelist_order= [KNL, BOOT] Select zonelist order for NUMA.
+>>             'node', 'default' can be specified
+>>             This can be set from sysctl after boot.
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index 0045e1b44190..819c3dad8afc 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -1564,6 +1564,26 @@ config NUMA
+>>
+>>       Otherwise, you should say N.
+>>
+>> +config NUMA_AWARE_SPINLOCKS
+>> +    bool "Numa-aware spinlocks"
+>> +    depends on NUMA
+>> +    depends on QUEUED_SPINLOCKS
+>> +    depends on 64BIT
+>> +    # For now, we depend on PARAVIRT_SPINLOCKS to make the patching 
+>> work.
+>> +    # This is awkward, but hopefully would be resolved once 
+>> static_call()
+>> +    # is available.
+>> +    depends on PARAVIRT_SPINLOCKS
+>
+> We now have static_call() - see 9183c3f9ed7.
+I agree that it is now time to look at using the static call for 
+slowpath switching.
+>
+>
+>> +    default y
+>> +    help
+>> +      Introduce NUMA (Non Uniform Memory Access) awareness into
+>> +      the slow path of spinlocks.
+>> +
+>> +      In this variant of qspinlock, the kernel will try to keep the 
+>> lock
+>> +      on the same node, thus reducing the number of remote cache 
+>> misses,
+>> +      while trading some of the short term fairness for better 
+>> performance.
+>> +
+>> +      Say N if you want absolute first come first serve fairness.
+>
+> This would also need a depends on !PREEMPT_RT, no? Raw spinlocks 
+> really want
+> the determinism. 
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Agreed
+
+Cheers,
+Longman
+
