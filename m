@@ -2,65 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77604147C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C664147CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbhIVLaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbhIVL36 (ORCPT
+        id S235717AbhIVLaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:30:13 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:54537 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235699AbhIVLaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:29:58 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25D5C061574;
-        Wed, 22 Sep 2021 04:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=D7ZSl4YWEnGCJruUgFbe6upY9ZIlVKrfq0rf1wn9qT4=; b=bpBVu4IjgGl0Zdm/lkC2DT5zDD
-        IhqLDeZhP/xM0SbN4iNNX7YYqL9GuSxmrTDAaLhFK27VashqlEnQ2VXBC0Lfp0Wvvl/sXmsnb+ugw
-        hfyQjy61RtFfG2mwcw3i/dWbKC1UkAxey2W/3bolaSXZjkN3F9ND/B0R3rV6TCUDUV62Y4g2HW8jf
-        Ul15D8IR+ZtAwEcVkNEQgKADdTCzvPqIUtyKaJLv1idSFLkeq5yAWbHuG0u/dsKc3qkHDieX7c50o
-        UjFf2lfi2EK8du47kNWIO40f3sGcSmrix9/myZOWr7pqXuTWFlttdRQHMn7gt6+ROw3vY9bP5njv3
-        YAM+81pA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT0QE-004yj0-Li; Wed, 22 Sep 2021 11:28:18 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 493529816EA; Wed, 22 Sep 2021 13:28:17 +0200 (CEST)
-Date:   Wed, 22 Sep 2021 13:28:17 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        akpm@linux-foundation.org, frederic@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        tglx@linutronix.de, cl@linux.com, juri.lelli@redhat.com,
-        mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com,
-        mgorman@suse.de, ppandit@redhat.com, williams@redhat.com,
-        bigeasy@linutronix.de, anna-maria@linutronix.de,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH 0/6] mm: Remote LRU per-cpu pagevec cache/per-cpu page
- list drain support
-Message-ID: <20210922112817.GO4323@worktop.programming.kicks-ass.net>
-References: <20210921161323.607817-1-nsaenzju@redhat.com>
- <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
+        Wed, 22 Sep 2021 07:30:12 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7F7775C010F;
+        Wed, 22 Sep 2021 07:28:41 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 22 Sep 2021 07:28:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=+Hn0TV5u1dvl16s+cyQXRPGsOus
+        MPyZzM+2/BnVtTus=; b=vHIRL1EACm6MHCVW9KKU47/Qyt2QoMOlnb01OFLzHo4
+        7klzgrk1z4vzhgvMeeZcn3ya8YuuFt9/D8mCiJ+2Ev15u16tcnEjACkroiCBRfcm
+        iV094cSxOUo8AZrekjQbUOULVmQE4re8rNJDYgbkoDqZA9YvTxWuRnKCrdraJoZ1
+        NkyGJ+vWZiA08OKIz7GLun0hraLlQo1gmjSVGKd93dSVH/IhO9WQvYck3GOIZ0Xq
+        uB06Fa27L6KBs4KVP2wGgl4XMKhoCh0SzecFjtEqNtmsCf/eyNA1dCMdn8msJZtJ
+        tIXlnwDw+9B0ZN2uDtkhzccdeQkOzNMFZTOpTM8pMrw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+Hn0TV
+        5u1dvl16s+cyQXRPGsOusMPyZzM+2/BnVtTus=; b=bNxJO8nMTyG+NTDVvpZPwo
+        p9EipXpn2bAqJ8Jfjp1JaAhzUCqlfrgFSzZfVxJTY8aE2FYIjr94FuBnsqCvaQiH
+        3DU5vsXVDXO8U1vFEWIeyKnefs0sCWt+tuiW/T+eZ6VhVyWYgKYLs8solrYP7Y5C
+        L4aKyc4N5B0T50Hk93M5zWFa7no3/8pn+qd72CMfFI3Ge0+WKgYDryvRAbbkXGO0
+        yOdj0WaACgZzyZED8MFHGlN5IIlwLWaMuJBir1MNNa7u6vHlYI4qcJinAvMZ4UQ/
+        YRNlMxQl5fM0ec9mti0/5rs/vv4pQxWy/cTnZyMGupsjnv1yHWcSo6/hpvmhjaUg
+        ==
+X-ME-Sender: <xms:aBNLYczHO81LD0xFxh6vw9QYv34BclqEuGO_pJlOZhcWxX0Ll7rciA>
+    <xme:aBNLYQR2-3d9CGto7vqLde3z2fxhfnfx9OMEBDqXhhQbUOfAdqE6Z7GLmmZgutfYe
+    vC4boLsqbhs2Ff0GMA>
+X-ME-Received: <xmr:aBNLYeUvKT2psrAdI2RA09CrqHEUouUEzCuOiitE6MscLghxQwiQA4cfTwN39b3ouFeNXEwpBFEzEC6waLJwCyhGG3pCDOtWUV5g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeijedgfeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepveeigfdtfeegteetgfejhfeiuddvtdefhffftddthfevveejjeegtdethfeh
+    teeknecuffhomhgrihhnpegtohguvghthhhinhhkrdgtohdruhhkpdhunhhhrdgvughune
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihi
+    mhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:aBNLYaiOkA0qdIkv2ipxqURKVt7pltdstkb9krtshchD_ixpn612YQ>
+    <xmx:aBNLYeBx2xXmK8oSyqvXZHTAfBrVZ6rLYPjcA9RM_lKwTUag0j9r7Q>
+    <xmx:aBNLYbJYJTKyQZ7Ttw6DR6v870uR4SCUwgQyLCKuo7C7B8BeNb7d-A>
+    <xmx:aRNLYQ24mkffD9I4QSuewbzJBg0jqGMkdVDYEJChVn2oMc7b9f2YZg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Sep 2021 07:28:40 -0400 (EDT)
+Date:   Wed, 22 Sep 2021 13:28:37 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Regression with mainline kernel on rpi4
+Message-ID: <20210922112837.asxuf5vyen2rwu7u@gilmour>
+References: <20210904091050.g5axxctgelciihjn@gilmour>
+ <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
+ <20210920144730.d7oabqfbx7pmyyfb@gilmour>
+ <20210920154333.vunyxeshdb7jt5ka@gilmour>
+ <20210920155350.h6624mt65vwg72p2@gilmour>
+ <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
+ <20210920171042.oq3ndp3ox4xv5odh@gilmour>
+ <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
+ <20210922095725.dk4vk42zb3kh7y6s@gilmour>
+ <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bnjqga3jhevjrvlf"
 Content-Disposition: inline
-In-Reply-To: <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
+In-Reply-To: <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 07:59:51PM +0200, Vlastimil Babka wrote:
 
-> These days the pcplist protection is done by local_lock, which solved
-> the RT concerns. Probably a stupid/infeasible idea, but maybe what you
-> want to achieve could be more generally solved at the local_lock level?
-> That on NOHZ_FULL CPUs, local_locks could have this mode where they
-> could synchronize with remote cpus?
+--bnjqga3jhevjrvlf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-local_lock and spinlock have different rules, local_lock for example can
-never cause an irq inversion, unlike a spinlock.
+On Wed, Sep 22, 2021 at 11:10:34AM +0100, Sudip Mukherjee wrote:
+> On Wed, Sep 22, 2021 at 10:57 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > On Mon, Sep 20, 2021 at 06:21:42PM +0100, Sudip Mukherjee wrote:
+> > > On Mon, Sep 20, 2021 at 6:10 PM Maxime Ripard <maxime@cerno.tech> wro=
+te:
+> > > >
+> > > > On Mon, Sep 20, 2021 at 05:35:00PM +0100, Sudip Mukherjee wrote:
+> > > > > On Mon, Sep 20, 2021 at 4:53 PM Maxime Ripard <maxime@cerno.tech>=
+ wrote:
+> > > > > >
+> > > > > > On Mon, Sep 20, 2021 at 05:43:33PM +0200, Maxime Ripard wrote:
+> > > > > > > On Mon, Sep 20, 2021 at 04:47:31PM +0200, Maxime Ripard wrote:
+> > > > > > > > On Sat, Sep 04, 2021 at 10:40:29AM +0100, Sudip Mukherjee w=
+rote:
+> > > > > > > > > Hi Maxime,
+> > > > > > > > >
+> > > > > > > > > On Sat, Sep 4, 2021 at 10:10 AM Maxime Ripard <maxime@cer=
+no.tech> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Fri, Sep 03, 2021 at 09:09:50PM +0100, Sudip Mukherj=
+ee wrote:
+> > > > > > > > > > > Hi Maxime,
+> > > > > > > > > > >
+> > > > > > > > > > > On Fri, Sep 3, 2021 at 5:03 PM Maxime Ripard <maxime@=
+cerno.tech> wrote:
+> > > > > > > > > > > >
+> > > > > > > > > > > > Hi Sudip,
+> > > > > > > > > > > >
+> > > > > > > > > > > > On Thu, Sep 02, 2021 at 10:08:19AM +0100, Sudip Muk=
+herjee wrote:
+> > > > > > > > > > > > > Hi All,
+> > > > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > <snip>
+> > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > You can see the complete dmesg at
+> > > > > > > > > > > > > https://openqa.qa.codethink.co.uk/tests/76#step/d=
+mesg/8
+> > > > > > > > > > > >
+> > > > > > > > > > > > What test were you running?
+> > > > > > > > > > >
+> > > > > > > > > > > Nothing particular, its just a boot test that we do e=
+very night after
+> > > > > > > > > > > pulling from torvalds/linux.git
+> > > > > > > > > >
+> > > > > > > > > > What are you booting to then?
+> > > > > > > > >
+> > > > > > > > > I am not sure I understood the question.
+> > > > > > > > > Its an Ubuntu image. The desktop environment is gnome. An=
+d as
+> > > > > > > > > mentioned earlier, we use the HEAD of linus tree every ni=
+ght to boot
+> > > > > > > > > the rpi4 and test that we can login via desktop environme=
+nt and that
+> > > > > > > > > there is no regression in dmesg.
+> > > > > > > >
+> > > > > > > > Looking at the CI, this isn't from a RPi but from qemu?
+> > > > >
+> > > > > No, this is from rpi4 board (4GB), not qemu. The CI is a little
+> > > > > complicated here, lava boots the board with the new kernel and wi=
+ll
+> > > > > then trigger the openQA job. openQA will then connect to the board
+> > > > > using vnc to test the desktop. This is the last link that I sent =
+to
+> > > > > Linus when he asked for it.
+> > > > > https://lava.qa.codethink.co.uk/scheduler/job/164#L1356
+> > > > >
+> > > > > And this is the lava job for today -
+> > > > > https://lava.qa.codethink.co.uk/scheduler/job/173
+> > > >
+> > > > Is it connected to a monitor then?
+> > >
+> > > Missed replying to this one earlier. I have a hdmi lilliput monitor
+> > > connected to it.
+> > >
+> > > >
+> > > > > > > >
+> > > > > > > > What defconfig are you using? How did you generate the Ubun=
+tu image?
+> > > > > > > > Through debootstrap? Any additional package?
+> > > > >
+> > > > > Its the default ubuntu config. I can send you the config if you w=
+ant.
+> > > >
+> > > > Yes, please.
+> > >
+> > > Attached.
+> > > My build script will copy this config as .config,  do olddefconfig
+> > > and then build.
+> >
+> > I still can't reproduce it.
+> >
+> > What other customisations did you do to that image? It looks like
+> > there's some customs scripts in there (test-mainline.sh), what are they
+> > doing?
+>=20
+> That test script is triggering the openqa job, but its running only
+> after lava is able to login. The trace is appearing before the login
+> prompt even, so test_mainline.sh should not matter here.
+> The only customization done to the default ubuntu image is the initrd.
+> Can you please try with the initrd from
+> https://elisa-builder-00.iol.unh.edu/kernel/mainline/rpi4/initrd.gz..
+> I will check with another board also.
+
+Still works fine (and it required some mangling of the kernel command line).
+
+If we summarize:
+
+  - You initially just dumped a panic and a link to your QA, without any
+    more context:
+
+  - Then stating that you're not doing any test, really;
+
+  - Well, except for booting Ubuntu, but no other modification
+
+  - But you're not booting the standard image
+
+  - And with a custom initrd
+
+  - And that QA link states that you're booting from QEMU, but you're
+    not.
+
+Please provide a full documentation on what you're doing to generate
+that image, from scratch, in order to get that panic you reported
+previously.
+
+I've spent an entire day trying to make sense of what you're doing
+exactly to get into that situation. I have other things to work on and I
+don't plan on figuring out any random CI system.
+
+Maxime
+
+--bnjqga3jhevjrvlf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUsTZQAKCRDj7w1vZxhR
+xYJaAQCtbNXddM4GAVBxBiM+0JtCLNgmjcuh1y+SwS2uLQHcjQEA5EUTM65DmXiy
+HYjenCs+EkXD6mgKoGj6LeWWAbfpfgQ=
+=IubQ
+-----END PGP SIGNATURE-----
+
+--bnjqga3jhevjrvlf--
