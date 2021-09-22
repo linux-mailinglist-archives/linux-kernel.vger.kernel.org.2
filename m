@@ -2,200 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD4C41438D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3409B41436B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhIVITA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:19:00 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:14784 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233470AbhIVISx (ORCPT
+        id S233605AbhIVIR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233595AbhIVIR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:18:53 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18M7sdQ0099805;
-        Wed, 22 Sep 2021 15:54:39 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 22 Sep
- 2021 16:14:57 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [v7 11/11] iio: adc: aspeed: Get and set trimming data.
-Date:   Wed, 22 Sep 2021 16:15:20 +0800
-Message-ID: <20210922081520.30580-12-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210922081520.30580-1-billy_tsai@aspeedtech.com>
-References: <20210922081520.30580-1-billy_tsai@aspeedtech.com>
+        Wed, 22 Sep 2021 04:17:26 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C01C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:15:56 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mSxPy-0004LS-OD; Wed, 22 Sep 2021 10:15:50 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mSxPx-0003Il-Cp; Wed, 22 Sep 2021 10:15:49 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mSxPx-0004zO-Bo; Wed, 22 Sep 2021 10:15:49 +0200
+Date:   Wed, 22 Sep 2021 10:15:49 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-doc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v2] clk: expand clk_ignore_unused mechanism to keep only
+ a few clks on
+Message-ID: <20210922081549.kit3lsek7lh6w6ji@pengutronix.de>
+References: <20210819121403.337833-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18M7sdQ0099805
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s34zflirz6cxjcg5"
+Content-Disposition: inline
+In-Reply-To: <20210819121403.337833-1-u.kleine-koenig@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ADC controller has a trimming register for fine-tune the reference
-voltage. The trimming value comes from the OTP register which will be
-written during chip production. This patch will read this OTP value and
-configure it to the ADC register when the ADC controller probes and using
-dts property "aspeed,trim-data-valid" to determine whether to execute this
-flow.
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/iio/adc/aspeed_adc.c | 71 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+--s34zflirz6cxjcg5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index e22c59f6c3d0..c7e15c0c1951 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -25,6 +25,8 @@
- #include <linux/spinlock.h>
- #include <linux/types.h>
- #include <linux/bitfield.h>
-+#include <linux/regmap.h>
-+#include <linux/mfd/syscon.h>
- 
- #include <linux/iio/iio.h>
- #include <linux/iio/driver.h>
-@@ -80,6 +82,11 @@
-  */
- #define ASPEED_ADC_DEF_SAMPLING_RATE	65000
- 
-+struct aspeed_adc_trim_locate {
-+	const unsigned int offset;
-+	const unsigned int field;
-+};
-+
- struct aspeed_adc_model_data {
- 	const char *model_name;
- 	unsigned int min_sampling_rate;	// Hz
-@@ -90,6 +97,7 @@ struct aspeed_adc_model_data {
- 	bool bat_sense_sup;
- 	u8 scaler_bit_width;
- 	unsigned int num_channels;
-+	const struct aspeed_adc_trim_locate *trim_locate;
- };
- 
- struct adc_gain {
-@@ -165,6 +173,44 @@ static const struct iio_chan_spec aspeed_adc_iio_bat_channels[] = {
- 	ASPEED_BAT_CHAN(7, 0x1E),
- };
- 
-+static int aspeed_adc_set_trim_data(struct iio_dev *indio_dev)
-+{
-+	struct device_node *syscon;
-+	struct regmap *scu;
-+	u32 scu_otp, trimming_val;
-+	struct aspeed_adc_data *data = iio_priv(indio_dev);
-+
-+	syscon = of_find_node_by_name(NULL, "syscon");
-+	if (syscon == NULL) {
-+		dev_warn(data->dev, "Couldn't find syscon node\n");
-+		return -EOPNOTSUPP;
-+	}
-+	scu = syscon_node_to_regmap(syscon);
-+	if (IS_ERR(scu)) {
-+		dev_warn(data->dev, "Failed to get syscon regmap\n");
-+		return -EOPNOTSUPP;
-+	}
-+	if (data->model_data->trim_locate) {
-+		if (regmap_read(scu, data->model_data->trim_locate->offset,
-+				&scu_otp)) {
-+			dev_warn(data->dev,
-+				 "Failed to get adc trimming data\n");
-+			trimming_val = 0x8;
-+		} else {
-+			trimming_val =
-+				((scu_otp) &
-+				 (data->model_data->trim_locate->field)) >>
-+				__ffs(data->model_data->trim_locate->field);
-+		}
-+		dev_dbg(data->dev,
-+			"trimming val = %d, offset = %08x, fields = %08x\n",
-+			trimming_val, data->model_data->trim_locate->offset,
-+			data->model_data->trim_locate->field);
-+		writel(trimming_val, data->base + ASPEED_REG_COMPENSATION_TRIM);
-+	}
-+	return 0;
-+}
-+
- static int aspeed_adc_compensation(struct iio_dev *indio_dev)
- {
- 	struct aspeed_adc_data *data = iio_priv(indio_dev);
-@@ -514,6 +560,13 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	if (of_find_property(data->dev->of_node, "aspeed,trim-data-valid",
-+			     NULL)) {
-+		ret = aspeed_adc_set_trim_data(indio_dev);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (of_find_property(data->dev->of_node, "aspeed,battery-sensing",
- 			     NULL)) {
- 		if (data->model_data->bat_sense_sup) {
-@@ -590,6 +643,21 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static const struct aspeed_adc_trim_locate ast2500_adc_trim = {
-+	.offset = 0x154,
-+	.field = GENMASK(31, 28),
-+};
-+
-+static const struct aspeed_adc_trim_locate ast2600_adc0_trim = {
-+	.offset = 0x5d0,
-+	.field = GENMASK(3, 0),
-+};
-+
-+static const struct aspeed_adc_trim_locate ast2600_adc1_trim = {
-+	.offset = 0x5d0,
-+	.field = GENMASK(7, 4),
-+};
-+
- static const struct aspeed_adc_model_data ast2400_model_data = {
- 	.model_name = "ast2400-adc",
- 	.vref_fixed_mv = 2500,
-@@ -609,6 +677,7 @@ static const struct aspeed_adc_model_data ast2500_model_data = {
- 	.need_prescaler = true,
- 	.scaler_bit_width = 10,
- 	.num_channels = 16,
-+	.trim_locate = &ast2500_adc_trim,
- };
- 
- static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
-@@ -619,6 +688,7 @@ static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
- 	.bat_sense_sup = true,
- 	.scaler_bit_width = 16,
- 	.num_channels = 8,
-+	.trim_locate = &ast2600_adc0_trim,
- };
- 
- static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
-@@ -629,6 +699,7 @@ static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
- 	.bat_sense_sup = true,
- 	.scaler_bit_width = 16,
- 	.num_channels = 8,
-+	.trim_locate = &ast2600_adc1_trim,
- };
- 
- static const struct of_device_id aspeed_adc_matches[] = {
--- 
-2.25.1
+Hello,
 
+On Thu, Aug 19, 2021 at 02:14:03PM +0200, Uwe Kleine-K=F6nig wrote:
+> Allow to pass an integer n that results in only keeping n unused clocks
+> enabled.
+>=20
+> This helps to debug the problem if you only know that clk_ignore_unused
+> helps but you have no clue yet which clock is the culprit.
+>=20
+> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+I consider this patch really helpful, it helped me to debug a clk issue
+without having to recompile the kernel for each bisection step.
+
+On #kernelnewbies I got some positive feedback for it (1629304050 < j_ey>
+ukleinek: nice clk_ignore_unused patch, I added a pr_err there recently
+to print the clocks that were being disabled).
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--s34zflirz6cxjcg5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFK5jIACgkQwfwUeK3K
+7AmWkgf+OQ5olI3IcVW3vwjRRsrEmQwZZ1Ilbn01AT2WFD6UWAOcVtdum/Jdlld6
+R9Ib02OtzJTN415x4FZGQtignm13aAUgwONe7BEW3vroacDL7lX8O9l3VaSxbfi9
+EkXTWR24KW+HOKYivj5B6eLG4sboBfKfwYakMwlapH6T1Mkm6XsfPH+v1Kuo+f8Z
+iPrgfGbQyFhpoy6IOlnhLZaT6UtYERYZeb2F+gHogJtc6E7ct3lu6ZdO7AP1ZDgw
+Y9fQU4fKgkUNTgK7fx4WI37kQRfoRNfgoYef6Jnqgwn9CXx4vjFSzrz6yHL4n2ye
+phJ7tHaFEIyKle92crPC5CyhA5IVvQ==
+=O65D
+-----END PGP SIGNATURE-----
+
+--s34zflirz6cxjcg5--
