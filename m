@@ -2,195 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1FC414EBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419AD414EBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236724AbhIVRGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:06:11 -0400
-Received: from mail-dm6nam08on2057.outbound.protection.outlook.com ([40.107.102.57]:22880
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236537AbhIVRGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:06:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XHHNhp/9Rj8O2OYjLl53wjLqeJudYSDjmBCYpu6zrl52nErJqgvH0X+TEQxGjGaooKYnu8AzdBC/j2MpJTvE2f8iDQhikQUuhv62NO57Nv6PQDMwY5AngQKsU4bPTUGv/U36HeZ4nGJHftQFaqwBuBIcxr4JSQO430xB/QRe5p+TeizNLv5Xew39KT9ya3iGmfmIeWnyXlSeVqI/aGyJuZT2rRRJSTDzLLwRymqqwkLDOgIPtXPAhyGLftaEyV9Qzt9xw71N0DZq3cjhuDsSlrnFYnUivmNK4XEL+PjC4Pq8Eggfh3gDvPZsxAkIjmcpuTTyYBoV+IuQorWpzZAU5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=HwWQTiLgXXMe4EmdsE9DecheSGn7Hhk3UxZXa4Vjs3s=;
- b=JI9xnIHL67vh+0M4Ou7WS3cEY21JBlW3zkl1NIrRxaNH4O2Jf1gX5n/0UFGFgwaJluCHrmtQkN4QB3Ag3DvpF3N2SHEc6XSZeEuqXv7h1FPgc1yAjfHaHOJdvLB837b7DOKE7IP24tGdAkCzxquYi2z0fefJyD4TuKEeqwsz6aqACQyoZxc+DT2KoIkSJGo7SEdEnZF4yUtQMZa+1WtAMxB2KT8WseJA2UzLJ7hOpvFUzRx34ELI60AGyTj8WGxpNeXAVCKobmqTTzWFhZ0+I7ZAYyCYl6EmfvP4P9fXU+8wnLgyZW49ayfqQkZCm2hgBgYY5itZ4xN+CpcpWM+32A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HwWQTiLgXXMe4EmdsE9DecheSGn7Hhk3UxZXa4Vjs3s=;
- b=p/oyJnNPW4fFvzpuLZMGhRcpK/meQocZPlGTwvTbT4bKiJjO0cwCDkW7xF24bfK19sjqj6daPtxAo2UVeP69nEM/j9w8JIL6j7qDXEtCEVkbdv+fApH6+0HWWjtVqfUidEqQ8FBDFDjqfP/4XHFldYYtT+lUICSJDR9aDswl6Igw6Yrq7X6bgO5YIsuc5Nny6/T0rVE6AHxRSYIbzlSw6Sa/ac70ihH+kvkrWlHG29qqFckrPk+gymNcT8O7nFHpjgXqJGyR9TVWLpYSlqEgh6i5dJ/9Vk9yQhndh6d3lcHLdaD4pOocsa7xU5fH+VlCgAgI1qWeuTzg4Db3LgUpJQ==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5256.namprd12.prod.outlook.com (2603:10b6:208:319::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
- 2021 17:04:38 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 17:04:37 +0000
-Date:   Wed, 22 Sep 2021 14:04:36 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>
-Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
-Message-ID: <20210922170436.GX327412@nvidia.com>
-References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
-X-ClientProxiedBy: BL1P223CA0010.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:2c4::15) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S236763AbhIVRGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236744AbhIVRGU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 13:06:20 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9853C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:04:50 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso4404182otc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Faf2cZB5lcF2TiJPWF7UxSxoJCWTK7cTaP6BQu5ESS0=;
+        b=ZPNR/ydjFjqI+i3u1egXlTfOYWVGgBleJHSiS1o570GSXhBrXOAYmq0mljdGxuNjYR
+         xoaxXILq1FyG1qOVyP5aHjFoSxTxize5/AB2al671bdgFnycJPga8DVLuaFRgwKagJAB
+         bHWTLiiDixaXIhkPAYEMc4zg1U8vvqn0TYre4YkVkVLOiTqPiogNhbRmIMzBZ6q5q/mH
+         YSxMEpw5Jefexpgofcsry73AKEELlLKMRScQ7dUi//r33UqZ/dvDLQ6xybxD8AJXF03e
+         wB72lGDxLIZNUjOnUA73CNaLh/9V0Oj2n3BJqZap9y5NdVvDFTDW3kbldbxNNkyKRYcS
+         toRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Faf2cZB5lcF2TiJPWF7UxSxoJCWTK7cTaP6BQu5ESS0=;
+        b=x/qLgLWpvlYrDycNKI6cl+GVVw9vuK9QP53XQ3PITK0HIBVPhtG0YnD4YuMkCCVaeI
+         6pNIwhzNUP9GU06elFkmx0P5u2Pig2AgULVS5nHq3Lg+3OguIaVZmkPn7bLfd623b07m
+         kDQoxDYUhl43aC02F49BvztVsZ1jUaEAh8vWUdsJphHmwQ6B233TqUvSZHaNQ2UTdOQ0
+         IuKVTF0b9GgR/hCeFTsgL0/6g6ddt6RwQPzmHtKtW1t2Yy/d97zznj/ogJL64DivnD7f
+         cUiDiSbMX6DX5QLG7Kv77RYSy5sdlMmwLQTOq90wrO+SwiO7JJlUfwJzk5htL14GGSUB
+         QEbQ==
+X-Gm-Message-State: AOAM533kLrlU3d0JxXRB7i+cQRxh5Ent8ol8fkN7ulNNvibYAEI+q6bh
+        M6j4c3V7F3vVx4yBgXZLN2HfUoDmc46rHxUeI1ywdg==
+X-Google-Smtp-Source: ABdhPJyFiFMfWpN7SkApE2lavr8hRwM703aiEC/g/es7bQqbv028dZy1agRe8RjlOvx8IcAwTRRtNWixWqFDgaFFWJ8=
+X-Received: by 2002:a05:6830:2b27:: with SMTP id l39mr163964otv.25.1632330290007;
+ Wed, 22 Sep 2021 10:04:50 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1P223CA0010.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:2c4::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 17:04:37 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mT5fg-0042S3-6K; Wed, 22 Sep 2021 14:04:36 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 872ed5e0-d824-4115-3ed8-08d97deb0f0c
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5256:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52566062D648427B48312712C2A29@BL1PR12MB5256.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TuXeS/73a/N2mPuKcEiLFbBZDzVEsvWawdSaJ5picgoHwjMmG6l4e0If+WU+Ou6dXi/1DXX4N5IJjvpEt7rU8RSlt0eVoViMlLUpw9tWJWv7sUQ+J1f1nS8hksAmrWPb7eqlP3uzyjXpEDD8mJ4eIeVy4PxWM+Ln1Cf+VgwYi2+Uw118XBURYmeg+iNvDa7COjVkb+eWal+avHO5at0VaYSxmAN0fN/ux8kMJreBuBTiRFhRRtORJTFlIwMLl3aMyOWgU4XQryCR6POlvTlNMklM1tcuJWhWFVT273J2Eig99W35fyz/Z23VWftFZWiVz3kbm0E1if4Pn0qp9I5AZJcu497hmPTasvs2KFz3S1mzY0aN4RPqElxgny5ryjnRaHeKTWVrTZZy2WzdPi4S/nX/aTkb//Ic+neE3NUTpneWRAetiZomxn+QOsrjAzzCk7EzE2xJ4ba66BCoQiJqY9DPwmrvI0LmPqxVC/IMZERgcEwEACjkfFFk8IqUayzxg/445Xfzhy+g84twaQaNJ/w1WQhGIMQVHH/LAE66BlPY4JeJr3itHaf4dn3keG7tTN9Cqg+PCMeMtalqKWx0ZXxLi2UZQP81wdP561x3OTsfxxMV2I7t06autSTKYZkrvmLz2G/4q4qJTAJTuL9/PyqhWVRYsBURWkrCF6BgVe4bLjqjjApYrWGHYC3AUeJZgU9VZddl72UHBZLAY5mdxmHJc1oVzrt8KrmMPdD/Z2xWJSnUNmtCNIbiA5uE7pFYOHzsNZZDe0hoIZuspSOicQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(8936002)(8676002)(83380400001)(508600001)(86362001)(54906003)(36756003)(4326008)(66476007)(9746002)(9786002)(66556008)(1076003)(26005)(186003)(426003)(5660300002)(2906002)(2616005)(7416002)(66946007)(6916009)(33656002)(316002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5aL6IjgeSTqLu3WX/NibVJoHkilW2JL2xYukOb9a3e6P6ihYx7pqqGwl1QCY?=
- =?us-ascii?Q?nEr8E36yoya8pgc+IYGBDV2U0grEAEIEqWmhdqF7t4TRMPDgU0UTcqpjSkRO?=
- =?us-ascii?Q?XZZ0kI9hH6ElWh23zVFJY5+GtWiex86UKr93xiHq0yoPUbuLIKm6pyFwczvu?=
- =?us-ascii?Q?A77KJ4FhPeKVMR7gpxHB1NCmyF2d/6zIlsj6DrKK4D3Rv0EismB6WIjw0KNh?=
- =?us-ascii?Q?/L/JgEPMqfp6URm3HIA+/NNc4H2T5nbuTW3oH7ztYxaaNBDmfmkU7k41EIVX?=
- =?us-ascii?Q?2qCVxD62d2gBZT+n9kVWDSagaq1R+WCMThylUqN0sn3b5KFsScEKGMuUoxlz?=
- =?us-ascii?Q?qKmRFg4YBMbczG1hVVDDiPL8QqZhTDAsO7SdZjcLfk3P8dDm+ATKB3Qpa6oB?=
- =?us-ascii?Q?WwDpSBmKDuV2mfaGV+y8sA+mGMslouOMNO5TPS00EuEcEsN5z7a2TOSaXGFg?=
- =?us-ascii?Q?e6TjI2KAaz3DdZEZzdmzbr0uMVxwitOa/Ch0AWSSwrwXwhb8F9oOkBb+uttu?=
- =?us-ascii?Q?2xZgs7FoNPLp0oTyiYBL0ISIGANGAdYMn25SybFnuNPNvSRu7WkQFD/+Yguu?=
- =?us-ascii?Q?Q+llCqHSRozc+QLznZhCrhFmKioGBhmm5B/EnCvWdS5tBdEQebcp/0yXZ+Sq?=
- =?us-ascii?Q?Ta1Y+9xGdEMtFssHCVMe9Je0nSznokVAu1Qt59WA5FHoIKUZbuOzdpqLXJSr?=
- =?us-ascii?Q?Tytdn4W8nGtsexo0HYo4yVtUjc0oP1msN5WnZ08HIG4+viWrmz4GHyFiXrNi?=
- =?us-ascii?Q?NBNjOYi0st6Tw2WkYzjAVZxs5qvKBNPl8RSPn2kJnsIKfbbjufCaF2t+f9e0?=
- =?us-ascii?Q?oMSXVmkYCOAD4kBFWms6zDQXb3jKjg7VTADYVBFTXr6i7UNbrwBejw0k7a2K?=
- =?us-ascii?Q?57LV5tB1DULXDv4jwJPDryM+vvWdAGcXAxpagnPJPIPI8lRC0+EHFaGHY8zn?=
- =?us-ascii?Q?Kj4VllqMX1hhXxjGON79XVRisYII4jMCTiewcwKkvOQbnVv3/oe+/0D3FZ87?=
- =?us-ascii?Q?LSnEWOjuEqGB1KRpdpGxWmEi/K4ZcUrC+2yxjWdk/prEUPfPi7wnlyGEsgfc?=
- =?us-ascii?Q?I7cVY58A8df/SGth7jgGC+XfbIPj1Y8mZ9ShnzddiSBss2guf55A7o8uvLsF?=
- =?us-ascii?Q?4gApm2uW8O9+0DNm9HYZlrqrC/eijXFU4Tbc2eNGTbo4bO/BhEPjNe4UdBqj?=
- =?us-ascii?Q?1IW+RReOSolglYhAUgSe5wIgFW911IiTqeFdeUH/UHaNybRSNoj3b3iky/ry?=
- =?us-ascii?Q?Vr9I4uIJY3v30GOCNenCg9omNHvc7W62GNBVlslthPFlQtexz7jyLIkJDLRU?=
- =?us-ascii?Q?Uz/wZ6qYP5WBFaeC43UEyIbH?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 872ed5e0-d824-4115-3ed8-08d97deb0f0c
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 17:04:37.7124
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PNrHlD5BupxTOv1atVoSfPfkUc7544KhcP1fiyUWIRIRxCi3vEit6wdaxoeLaTjn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5256
+References: <20210914164727.3007031-1-pgonda@google.com> <20210914164727.3007031-5-pgonda@google.com>
+In-Reply-To: <20210914164727.3007031-5-pgonda@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Wed, 22 Sep 2021 10:04:38 -0700
+Message-ID: <CAA03e5HJTkL8xbiV8iWgBXgz5LHg2YPJYVpRn6R8GFWXQLGkKA@mail.gmail.com>
+Subject: Re: [PATCH 4/4 V8] selftest: KVM: Add intra host migration tests
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 01:29:34PM -0700, Jacob Pan wrote:
-> Hi Joerg/Jason/Christoph et all,
-> 
-> The current in-kernel supervisor PASID support is based on the SVM/SVA
-> machinery in sva-lib. Kernel SVA is achieved by extending a special flag
-> to indicate the binding of the device and a page table should be performed
-> on init_mm instead of the mm of the current process.Page requests and other
-> differences between user and kernel SVA are handled as special cases.
-> 
-> This unrestricted binding with the kernel page table is being challenged
-> for security and the convention that in-kernel DMA must be compatible with
-> DMA APIs.
-> (https://lore.kernel.org/linux-iommu/20210511194726.GP1002214@nvidia.com/)
-> There is also the lack of IOTLB synchronization upon kernel page table updates.
-> 
-> This patchset is trying to address these concerns by having an explicit DMA
-> API compatible model while continue to support in-kernel use of DMA requests
-> with PASID. Specifically, the following DMA-IOMMU APIs are introduced:
-> 
-> int iommu_dma_pasid_enable/disable(struct device *dev,
-> 				   struct iommu_domain **domain,
-> 				   enum iommu_dma_pasid_mode mode);
-> int iommu_map/unmap_kva(struct iommu_domain *domain,
-> 			void *cpu_addr,size_t size, int prot);
+On Tue, Sep 14, 2021 at 9:47 AM Peter Gonda <pgonda@google.com> wrote:
+>
+> Adds testcases for intra host migration for SEV and SEV-ES. Also adds
+> locking test to confirm no deadlock exists.
+>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Reviewed-by: Marc Orr <marcorr@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   1 +
+>  .../selftests/kvm/x86_64/sev_vm_tests.c       | 203 ++++++++++++++++++
+>  2 files changed, 204 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+>
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index c103873531e0..44fd3566fb51 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -72,6 +72,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/vmx_pi_mmio_test
+> +TEST_GEN_PROGS_x86_64 += x86_64/sev_vm_tests
+>  TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+>  TEST_GEN_PROGS_x86_64 += demand_paging_test
+>  TEST_GEN_PROGS_x86_64 += dirty_log_test
+> diff --git a/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> new file mode 100644
+> index 000000000000..ec3bbc96e73a
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> @@ -0,0 +1,203 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include <linux/kvm.h>
+> +#include <linux/psp-sev.h>
+> +#include <stdio.h>
+> +#include <sys/ioctl.h>
+> +#include <stdlib.h>
+> +#include <errno.h>
+> +#include <pthread.h>
+> +
+> +#include "test_util.h"
+> +#include "kvm_util.h"
+> +#include "processor.h"
+> +#include "svm_util.h"
+> +#include "kselftest.h"
+> +#include "../lib/kvm_util_internal.h"
+> +
+> +#define SEV_POLICY_ES 0b100
+> +
+> +#define NR_MIGRATE_TEST_VCPUS 4
+> +#define NR_MIGRATE_TEST_VMS 3
+> +#define NR_LOCK_TESTING_THREADS 3
+> +#define NR_LOCK_TESTING_ITERATIONS 10000
+> +
+> +static void sev_ioctl(int vm_fd, int cmd_id, void *data)
+> +{
+> +       struct kvm_sev_cmd cmd = {
+> +               .id = cmd_id,
+> +               .data = (uint64_t)data,
+> +               .sev_fd = open_sev_dev_path_or_exit(),
+> +       };
+> +       int ret;
+> +
+> +       ret = ioctl(vm_fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
+> +       TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
+> +                   "%d failed: return code: %d, errno: %d, fw error: %d",
+> +                   cmd_id, ret, errno, cmd.error);
+> +}
+> +
+> +static struct kvm_vm *sev_vm_create(bool es)
+> +{
+> +       struct kvm_vm *vm;
+> +       struct kvm_sev_launch_start start = { 0 };
+> +       int i;
+> +
+> +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> +       sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
+> +       for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
+> +               vm_vcpu_add(vm, i);
+> +       if (es)
+> +               start.policy |= SEV_POLICY_ES;
+> +       sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
+> +       if (es)
+> +               sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
+> +       return vm;
+> +}
+> +
+> +static struct kvm_vm *__vm_create(void)
+> +{
+> +       struct kvm_vm *vm;
+> +       int i;
+> +
+> +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> +       for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
+> +               vm_vcpu_add(vm, i);
+> +
+> +       return vm;
+> +}
+> +
+> +static int __sev_migrate_from(int dst_fd, int src_fd)
+> +{
+> +       struct kvm_enable_cap cap = {
+> +               .cap = KVM_CAP_VM_MIGRATE_PROTECTED_VM_FROM,
+> +               .args = { src_fd }
+> +       };
+> +
+> +       return ioctl(dst_fd, KVM_ENABLE_CAP, &cap);
+> +}
+> +
+> +
+> +static void sev_migrate_from(int dst_fd, int src_fd)
+> +{
+> +       int ret;
+> +
+> +       ret = __sev_migrate_from(dst_fd, src_fd);
+> +       TEST_ASSERT(!ret, "Migration failed, ret: %d, errno: %d\n", ret, errno);
+> +}
+> +
+> +static void test_sev_migrate_from(bool es)
+> +{
+> +       struct kvm_vm *src_vm;
+> +       struct kvm_vm *dst_vms[NR_MIGRATE_TEST_VMS];
+> +       int i;
+> +
+> +       src_vm = sev_vm_create(es);
+> +       for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
+> +               dst_vms[i] = __vm_create();
+> +
+> +       /* Initial migration from the src to the first dst. */
+> +       sev_migrate_from(dst_vms[0]->fd, src_vm->fd);
+> +
+> +       for (i = 1; i < NR_MIGRATE_TEST_VMS; i++)
+> +               sev_migrate_from(dst_vms[i]->fd, dst_vms[i - 1]->fd);
+> +
+> +       /* Migrate the guest back to the original VM. */
+> +       sev_migrate_from(src_vm->fd, dst_vms[NR_MIGRATE_TEST_VMS - 1]->fd);
+> +
+> +       kvm_vm_free(src_vm);
+> +       for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
+> +               kvm_vm_free(dst_vms[i]);
+> +}
+> +
+> +struct locking_thread_input {
+> +       struct kvm_vm *vm;
+> +       int source_fds[NR_LOCK_TESTING_THREADS];
+> +};
+> +
+> +static void *locking_test_thread(void *arg)
+> +{
+> +       int i, j;
+> +       struct locking_thread_input *input = (struct locking_test_thread *)arg;
+> +
+> +       for (i = 0; i < NR_LOCK_TESTING_ITERATIONS; ++i) {
+> +               j = i % NR_LOCK_TESTING_THREADS;
+> +               __sev_migrate_from(input->vm->fd, input->source_fds[j]);
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+> +static void test_sev_migrate_locking(void)
+> +{
+> +       struct locking_thread_input input[NR_LOCK_TESTING_THREADS];
+> +       pthread_t pt[NR_LOCK_TESTING_THREADS];
+> +       int i;
+> +
+> +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i) {
+> +               input[i].vm = sev_vm_create(/* es= */ false);
+> +               input[0].source_fds[i] = input[i].vm->fd;
+> +       }
+> +       for (i = 1; i < NR_LOCK_TESTING_THREADS; ++i)
+> +               memcpy(input[i].source_fds, input[0].source_fds,
+> +                      sizeof(input[i].source_fds));
+> +
+> +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i)
+> +               pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
+> +
+> +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i)
+> +               pthread_join(pt[i], NULL);
+> +}
+> +
+> +static void test_sev_migrate_parameters(void)
+> +{
+> +       struct kvm_vm *sev_vm, *sev_es_vm, *vm_no_vcpu, *vm_no_sev,
+> +               *sev_es_vm_no_vmsa;
+> +       int ret;
+> +
+> +       sev_vm = sev_vm_create(/* es= */ false);
+> +       sev_es_vm = sev_vm_create(/* es= */ true);
+> +       vm_no_vcpu = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> +       vm_no_sev = __vm_create();
+> +       sev_es_vm_no_vmsa = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> +       sev_ioctl(sev_es_vm_no_vmsa->fd, KVM_SEV_ES_INIT, NULL);
+> +       vm_vcpu_add(sev_es_vm_no_vmsa, 1);
+> +
+> +
+> +       ret = __sev_migrate_from(sev_vm->fd, sev_es_vm->fd);
+> +       TEST_ASSERT(
+> +               ret == -1 && errno == EINVAL,
+> +               "Should not be able migrate to SEV enabled VM. ret: %d, errno: %d\n",
+> +               ret, errno);
+> +
+> +       ret = __sev_migrate_from(sev_es_vm->fd, sev_vm->fd);
+> +       TEST_ASSERT(
+> +               ret == -1 && errno == EINVAL,
+> +               "Should not be able migrate to SEV-ES enabled VM. ret: %d, errno: %d\n",
+> +               ret, errno);
+> +
+> +       ret = __sev_migrate_from(vm_no_vcpu->fd, sev_es_vm->fd);
+> +       TEST_ASSERT(
+> +               ret == -1 && errno == EINVAL,
+> +               "SEV-ES migrations require same number of vCPUS. ret: %d, errno: %d\n",
+> +               ret, errno);
+> +
+> +       ret = __sev_migrate_from(vm_no_vcpu->fd, sev_es_vm_no_vmsa->fd);
+> +       TEST_ASSERT(
+> +               ret == -1 && errno == EINVAL,
+> +               "SEV-ES migrations require UPDATE_VMSA. ret %d, errno: %d\n",
+> +               ret, errno);
+> +
+> +       ret = __sev_migrate_from(vm_no_vcpu->fd, vm_no_sev->fd);
+> +       TEST_ASSERT(ret == -1 && errno == EINVAL,
+> +                   "Migrations require SEV enabled. ret %d, errno: %d\n", ret,
+> +                   errno);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +       test_sev_migrate_from(/* es= */ false);
+> +       test_sev_migrate_from(/* es= */ true);
+> +       test_sev_migrate_locking();
+> +       test_sev_migrate_parameters();
+> +       return 0;
+> +}
+> --
+> 2.33.0.309.g3052b89438-goog
+>
 
-I'm not convinced this is going in the right direction..
-
-You should create/find a 'struct device' for the PASID and use the
-normal DMA API, not try to create a parallel DMA API under the iommu
-framework.
-
-Again, there should no driver in Linux doing DMA without going through
-the normal DMA API.
-
-> The following three addressing modes are supported with example API usages
-> by device drivers.
-> 
-> 1. Physical address (bypass) mode. Similar to DMA direct where trusted devices
-> can DMA pass through IOMMU on a per PASID basis.
-> Example:
-> 	pasid = iommu_dma_pasid_enable(dev, NULL, IOMMU_DMA_PASID_BYPASS);
-> 	/* Use the returning PASID and PA for work submission */
-
-And why should this even be a choice given to drivers?
-
-Drivers do not get to self declare their "trustiness" - this is only
-set by the admin.
-
-PASID tagged DMA is no different than any other DMA and needs to
-follow the global admin set IOMMU modes - without any driver knob to
-change behaviors.
-
-The API design should look more like this:
-
-   u32 hw_pasid;
-   struct device *pasid_dev = iommu_get_pasid_device_handle(pci_device, &hw_pasid);
-   dma_addr_t addr = dma_map_XX(pasid_dev, buf, size)
-
-   'tell HW to do DMA'(hw_pasid, addr, size)
-
-   dma_unmap_XX(pasid_dev, addr, size);
-
-If there is any performance tunable around how the IO page table is
-consutrcted then the IOMMU layer will handle it transparently from
-global config, just as it does for every other DMA out there.
-
-> 1. Lack of IOTLB synchronization, kernel direct map alias can be updated as a
-> result of module loading/eBPF load. Adding kernel mmu notifier?
-
-I'm deeply skeptical we should even have "KSVA" and would want to see
-a lot of performance justification to introduce something like
-this.
-
-Given that basically only valloc memory could truely benefit from it,
-I don't expect to see much win, especially when balanced with
-burdening all valloc users with an IO page table synchronization.
-
-Certainly it should not be part of a patch series fixing kPASID
-support for basic DMA, and still doesn't excuse skpping the DMA API -
-that is still mandatory for portability to support cache flushing.
-
-Jason
+Reviewed-by: Marc Orr <marcorr@google.com>
