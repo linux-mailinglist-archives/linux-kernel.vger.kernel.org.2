@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5920C414CFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7062F414D04
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236432AbhIVPaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhIVPaI (ORCPT
+        id S236438AbhIVPb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:31:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53650 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236400AbhIVPb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:30:08 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D0AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:28:38 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id m21so2999095pgu.13
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kp0DKxYvjStU9lLWJtLQliS/mXlIIBkYQTnbdZfBCzE=;
-        b=D5TUqu83Rbx8goxjtEUmUrqUWsvsTOIx2eW7pCLs3HhFTKoq8sjupa1Mo/TqMWyPCM
-         YBCATZaRsjXgWQjzPDoDN+e0qHNzLINwjO4LaDBqM+Vmug1fKMb43OsBMIwvq4t+9TY2
-         GE1l7w8qrpmu3fQCjV1A52r8N6XWz3BbE0Z1TN7neq12Z12RgAwQxyI6LFQVysYe2HvE
-         aV99P+vNQqUfFkZ7DHvM7/nnhwW7ploLm7LP2ZHtHzmCZeYCwIYVXH2ZtV8X63Vkd0nP
-         1mqfyNEtpJ1grBCSkHFaGKY7VF3AOD/c6scYRq9u1h5++KbMz6bj9qGXd8KzKBgt18Xy
-         b9iQ==
+        Wed, 22 Sep 2021 11:31:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632324628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d3JsLpxzQ+uhSu3TGOCWtptCmz4xP0JT6j/hot5bD5w=;
+        b=BwD2cZWvnbp6icZN7rR1YOW2VoSQvSJks460NA1mERvpBB2Lxdjc0Cs69Ap8PpOqVozPdK
+        +BwRDIbu31o6pwYCfzb6gRB150ai8nbuUl0Ts4WEgN3E1WVPeETkq4t3/+ZdPchRDun8PG
+        n8IMX8Dtj/JMJUbD7PT9SDxmU3JVF7U=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-hiFa0IYlPCOXniSbBzZzRQ-1; Wed, 22 Sep 2021 11:30:27 -0400
+X-MC-Unique: hiFa0IYlPCOXniSbBzZzRQ-1
+Received: by mail-ed1-f69.google.com with SMTP id n5-20020a05640206c500b003cf53f7cef2so3476933edy.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:30:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=kp0DKxYvjStU9lLWJtLQliS/mXlIIBkYQTnbdZfBCzE=;
-        b=kzpsHs8MIwsYVJ+RM0wruUGDkCybC1AbOAcr0fKEkGkqPVi6Pmnr2ICPHn40amJe+m
-         bEnQFM7Boz3T2OC7Xs4LEqvpZSBDmGZ41tIKr+XZ0C5o42238F5nGmf267ZXWN5KwaSB
-         wIJ5DemGJ5mVW8jyhkVK4MnwTVqYG2JW8CNJCVmFQZT4Yp90aZIWyzlVr3FKfgtyNBbX
-         AbT+6Mh+lnXFn24Pjh5rDGupjhihaVtRqCyXOrG4WfvEJ46i1KP+f6qPyhOQTW1Hz5+2
-         gOB+JttxK5Hk7ntOzMmrwYfjVQr809tN1/xVsmnlZj4r8w8MEJSTKV76gcYy79wXP7I4
-         dDVg==
-X-Gm-Message-State: AOAM532brAiAlyyh9OUVmvAd5OsQ324rzX9as3fLaYvV344eD/Yl7bN+
-        bkuYgcB93BQIqH9kbaLAddA=
-X-Google-Smtp-Source: ABdhPJwzBOGmnpoUbHW+VZBWNC4IQ7EVl0xzVd2oXnxyijuXxiB3uZqcUW9/9PFrZ1mrsGCdoxxwjA==
-X-Received: by 2002:a63:3d8c:: with SMTP id k134mr208828pga.394.1632324517574;
-        Wed, 22 Sep 2021 08:28:37 -0700 (PDT)
-Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:9ca8:a7b7:b32f:a7fb])
-        by smtp.gmail.com with ESMTPSA id b17sm3178446pgl.61.2021.09.22.08.28.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 08:28:37 -0700 (PDT)
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: [PATCH] mm: do not acquire zone lock in is_free_buddy_page()
-Date:   Wed, 22 Sep 2021 08:28:33 -0700
-Message-Id: <20210922152833.4023972-1-eric.dumazet@gmail.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+        bh=d3JsLpxzQ+uhSu3TGOCWtptCmz4xP0JT6j/hot5bD5w=;
+        b=UtGeMDLSierxEj9xziUSad/a3px6qtLK6dOZxwfiQBkBc/koCS8jcxV20NXHU8+imy
+         EINQxXeM8JhWQfspvyGaTYavuPRrRjZHh8YGdlDVzsu9TAmzwZUeM8berPHULDs4bFq3
+         As3Uuk8cNUdIq0xCybBb8NCpbHIMPRHKqEPO1K7duXxm6U06pPXJZVuZGNu2zAJv+8Lw
+         ybHY5Gpiu+j/2x+z9smeCCFLTrp7D6jtEp6wL8lANrQAt+apjQHgJ9WYyPBYqQ4+5+jM
+         hzLZMCzjl0P4D5l2zr14hklE1XRZ0/E6yMJh8B3zMFZiU4HUofqXg5Tx1vsDtr87K28U
+         D/NQ==
+X-Gm-Message-State: AOAM531NyiJvxq4TQAkRI47cw0ps9DlRuZ4Flj/rB6wEvGsBZn2kxNAT
+        XLrsACVXOuy/B18kLHQiMHlFvwePBSz/FLRIjkaXD8GYr2Hf0+6IM0JtZYwxXo/8ZktCKY6R9i2
+        /5e3daEADu8PsmbctAC5tIfWvuQeBSmYyT/1Q+2nDaE4+T2EOvno6xdmdWtfR57QXApqPjI4zLh
+        De
+X-Received: by 2002:a50:c31c:: with SMTP id a28mr216103edb.384.1632324626023;
+        Wed, 22 Sep 2021 08:30:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw02+/MQdKVUxCJnsyoBcCJU+R107o2lVynj8H1Ua46GB1mUTBMgqeB9rChSSQAr9JrISxe/g==
+X-Received: by 2002:a50:c31c:: with SMTP id a28mr216042edb.384.1632324625725;
+        Wed, 22 Sep 2021 08:30:25 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n13sm1186280ejk.97.2021.09.22.08.30.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 08:30:25 -0700 (PDT)
+Subject: Re: [PATCH] kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
+To:     Fares Mehanna <faresx@amazon.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210915133951.22389-1-faresx@amazon.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3932c56b-a12a-904d-b727-1dad2b1d35b1@redhat.com>
+Date:   Wed, 22 Sep 2021 17:30:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210915133951.22389-1-faresx@amazon.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+On 15/09/21 15:39, Fares Mehanna wrote:
+> Intel PMU MSRs is in msrs_to_save_all[], so add AMD PMU MSRs to have a
+> consistent behavior between Intel and AMD when using KVM_GET_MSRS,
+> KVM_SET_MSRS or KVM_GET_MSR_INDEX_LIST.
+> 
+> We have to add legacy and new MSRs to handle guests running without
+> X86_FEATURE_PERFCTR_CORE.
+> 
+> Signed-off-by: Fares Mehanna <faresx@amazon.de>
+> ---
+>   arch/x86/kvm/x86.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 28ef14155726..14bc21fb698c 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1332,6 +1332,13 @@ static const u32 msrs_to_save_all[] = {
+>   	MSR_ARCH_PERFMON_EVENTSEL0 + 12, MSR_ARCH_PERFMON_EVENTSEL0 + 13,
+>   	MSR_ARCH_PERFMON_EVENTSEL0 + 14, MSR_ARCH_PERFMON_EVENTSEL0 + 15,
+>   	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
+> +
+> +	MSR_K7_EVNTSEL0, MSR_K7_EVNTSEL1, MSR_K7_EVNTSEL2, MSR_K7_EVNTSEL3,
+> +	MSR_K7_PERFCTR0, MSR_K7_PERFCTR1, MSR_K7_PERFCTR2, MSR_K7_PERFCTR3,
+> +	MSR_F15H_PERF_CTL0, MSR_F15H_PERF_CTL1, MSR_F15H_PERF_CTL2,
+> +	MSR_F15H_PERF_CTL3, MSR_F15H_PERF_CTL4, MSR_F15H_PERF_CTL5,
+> +	MSR_F15H_PERF_CTR0, MSR_F15H_PERF_CTR1, MSR_F15H_PERF_CTR2,
+> +	MSR_F15H_PERF_CTR3, MSR_F15H_PERF_CTR4, MSR_F15H_PERF_CTR5,
+>   };
+>   
+>   static u32 msrs_to_save[ARRAY_SIZE(msrs_to_save_all)];
+> 
 
-Grabbing zone lock in is_free_buddy_page() gives a wrong sense of safety,
-and has potential performance implications when zone is experiencing
-lock contention.
+Queued, thanks.
 
-In any case, if a caller needs a stable result, it should grab zone
-lock before calling this function.
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Hugh Dickins <hughd@google.com>
----
- mm/page_alloc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e115e21524739341d409b28379942241ed403060..cd8a72372b047e55c4cde80fe6b7a428d7721027 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -9354,21 +9354,21 @@ void __offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
- }
- #endif
- 
-+/*
-+ * This function returns a stable result only if called under zone lock.
-+ */
- bool is_free_buddy_page(struct page *page)
- {
--	struct zone *zone = page_zone(page);
- 	unsigned long pfn = page_to_pfn(page);
--	unsigned long flags;
- 	unsigned int order;
- 
--	spin_lock_irqsave(&zone->lock, flags);
- 	for (order = 0; order < MAX_ORDER; order++) {
- 		struct page *page_head = page - (pfn & ((1 << order) - 1));
- 
--		if (PageBuddy(page_head) && buddy_order(page_head) >= order)
-+		if (PageBuddy(page_head) &&
-+		    buddy_order_unsafe(page_head) >= order)
- 			break;
- 	}
--	spin_unlock_irqrestore(&zone->lock, flags);
- 
- 	return order < MAX_ORDER;
- }
--- 
-2.33.0.464.g1972c5931b-goog
+Paolo
 
