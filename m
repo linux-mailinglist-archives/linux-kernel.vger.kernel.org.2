@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D7441527D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD35A415283
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237868AbhIVVPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237804AbhIVVPK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:15:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A75C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T9aqR6ds6fZf+ziFJLavcqledvnXK6/xbqEb0NC2lrs=; b=NEYoGGh5giSDV/HksndZuN4zNa
-        Po/LERjVXKQBI/dJr5ysIGCq242l11aKwDhMB7GKASgYDOgLnDvSdCKaRxeI0ft4RrXffTd+/RwXl
-        50lCYZ6ZQ0cyLk2RzjNvGlMpctJDH3X4GnbnwFUibxYtcpmLoT/9sqiAZIiIOjJfWXdCmIzOBpi/H
-        ddPPFCHfgniaDI0aAxkpJA1VbjN9maJhz0J539MwAkWEBPqNZIv80TDr0Oab7wW+uZ/D2R82pXzad
-        9EjGnwQRIr6VfgnL4W5v1c9Pd8+K6mOzxhX6C4sAkOy2HmVu3xoW0LbMAnvNn/OoNjNrpREPJZm87
-        IkD577VQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT9Ws-0059St-Hm; Wed, 22 Sep 2021 21:12:15 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 91BCC9811F0; Wed, 22 Sep 2021 23:11:45 +0200 (CEST)
-Date:   Wed, 22 Sep 2021 23:11:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Message-ID: <20210922211145.GF5106@worktop.programming.kicks-ass.net>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
- <20210922210722.GV4323@worktop.programming.kicks-ass.net>
+        id S237953AbhIVVQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:16:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237820AbhIVVQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 17:16:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B97611CA;
+        Wed, 22 Sep 2021 21:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632345302;
+        bh=p2kf8f9SneDcF5cbddfOin1pAOfAoaUXJFS9kC9C3RY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bwUiztR0HsputfFsZxeMu/pQezk4drxXmTvr/3WfsPockfj60nlyScjJ9nWdo5z1I
+         Rs+ykRZIXW9MoO/wTLJuREfe7sf/57xjJBXRYUM7GjGF2dS4pXH6hAMkSG/IkTDHt9
+         61QGdTTnMkyhP6XAAKkdxKmAInAkQN1LQjiTNZZsQqYIgY9WcHl5UtzE+de1Z8p+dU
+         lmYlvXp7oFXZlHU40/jmzV1S+gfW8Oz/AUahWoCsB0g3nVyakT061ujLlZzCRRyKY/
+         zrxcIB7fhsQdmSYAG66gt/AeiRp44y0ARk08r5j+3ykpqQoHZojKdPhYNW1RnXZQt2
+         FgCQpgZQm4Z5g==
+Received: by mail-ed1-f53.google.com with SMTP id eg28so15351880edb.1;
+        Wed, 22 Sep 2021 14:15:01 -0700 (PDT)
+X-Gm-Message-State: AOAM532hE1AqSrRPwTMmAMKfjpdHH4hagCmjk1I8fMl2o1sk1ej5/9PC
+        Xt4SxV3eFJhB84B7tMJngDUjrhPzz50/j5yFQw==
+X-Google-Smtp-Source: ABdhPJxrpLWQHpAgZoTQC8bgND1fLrIs/KgZqALZ/fVCHcWTBnba7fvpklnQazlOWx41I7YqFT9oJqTjd14BRcus5GY=
+X-Received: by 2002:a17:906:7145:: with SMTP id z5mr1367273ejj.363.1632345300554;
+ Wed, 22 Sep 2021 14:15:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922210722.GV4323@worktop.programming.kicks-ass.net>
+References: <20210922205458.358517-1-maz@kernel.org> <20210922205458.358517-5-maz@kernel.org>
+ <86507f22-d824-4f7c-ba94-d3105c5206c2@www.fastmail.com>
+In-Reply-To: <86507f22-d824-4f7c-ba94-d3105c5206c2@www.fastmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 22 Sep 2021 16:14:49 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKL2fb+PObe_Soopf2JDFbaQZyu-k_CQrQTGU4tONQvUA@mail.gmail.com>
+Message-ID: <CAL_JsqKL2fb+PObe_Soopf2JDFbaQZyu-k_CQrQTGU4tONQvUA@mail.gmail.com>
+Subject: Re: [PATCH v4 04/10] PCI: apple: Add initial hardware bring-up
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 11:07:22PM +0200, Peter Zijlstra wrote:
-> On Mon, Sep 20, 2021 at 07:23:45PM +0000, Fenghua Yu wrote:
-> > diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> > index a58800973aed..a25d738ae839 100644
-> > --- a/arch/x86/kernel/traps.c
-> > +++ b/arch/x86/kernel/traps.c
-> > @@ -61,6 +61,7 @@
-> >  #include <asm/insn.h>
-> >  #include <asm/insn-eval.h>
-> >  #include <asm/vdso.h>
-> > +#include <asm/iommu.h>
-> >  
-> >  #ifdef CONFIG_X86_64
-> >  #include <asm/x86_init.h>
-> > @@ -526,6 +527,14 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
-> >  	return GP_CANONICAL;
-> >  }
-> >  
-> > +static bool fixup_pasid_exception(void)
-> > +{
-> > +	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
-> > +		return false;
+On Wed, Sep 22, 2021 at 4:08 PM Sven Peter <sven@svenpeter.dev> wrote:
+>
+> Hi,
+>
+>
+> On Wed, Sep 22, 2021, at 22:54, Marc Zyngier wrote:
+> > From: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> >
+> [...]
 > > +
-> > +	return __fixup_pasid_exception();
-> > +}
-
-That is, shouldn't the above at the very least decode the instruction
-causing the #GP and check it's this ENQCMD thing?
-
-> >  #define GPFSTR "general protection fault"
-> >  
-> >  DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
-> > @@ -538,6 +547,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
-> >  
-> >  	cond_local_irq_enable(regs);
-> >  
-> > +	if (user_mode(regs) && fixup_pasid_exception())
-> > +		goto exit;
+> > +     /* Use the first reg entry to work out the port index */
+> > +     port->idx = idx >> 11;
+> > +     port->pcie = pcie;
+> > +     port->np = np;
 > > +
-> >  	if (static_cpu_has(X86_FEATURE_UMIP)) {
-> >  		if (user_mode(regs) && fixup_umip_exception(regs))
-> >  			goto exit;
-> 
-> So you're eating any random #GP that might or might not be PASID
-> related. And all that witout a comment... Enlighten?
+> > +     port->base = devm_platform_ioremap_resource(platform, port->idx + 2);
+> > +     if (IS_ERR(port->base))
+> > +             return -ENODEV;
+
+Don't change error codes.
+
+> > +
+> > +     rmw_set(PORT_APPCLK_EN, port + PORT_APPCLK);
+>
+> I think this should be
+>
+>     rmw_set(PORT_APPCLK_EN, port->base + PORT_APPCLK);
+
+Or just removed if this was tested and worked.
+
+Rob
