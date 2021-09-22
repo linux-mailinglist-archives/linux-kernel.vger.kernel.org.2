@@ -2,135 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9F1414733
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11E04147A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbhIVLEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:04:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:47162 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234760AbhIVLEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:04:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4EAD11B3;
-        Wed, 22 Sep 2021 04:02:38 -0700 (PDT)
-Received: from [10.163.73.113] (unknown [10.163.73.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 410913F719;
-        Wed, 22 Sep 2021 04:02:35 -0700 (PDT)
-Subject: Re: [PATCH v2 17/17] arm64: Advertise TRBE erratum workaround for
- write to out-of-range address
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
-        leo.yan@linaro.org, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-18-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <ed452d52-83bc-2e1f-db75-00865ef97ba5@arm.com>
-Date:   Wed, 22 Sep 2021 16:33:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210921134121.2423546-18-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235434AbhIVLSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235793AbhIVLRo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 07:17:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0677C0617A8;
+        Wed, 22 Sep 2021 04:14:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=JcZ5QAxn15NhEcpAEQ8Jw/2enl+cx8LbV4bsPqWrHz4=; b=du84JBwYWdmRUNXNvUDJXSx7+B
+        Pswq88E6gViiq6G+MSZMgISnFuvCdXYWLcUP0JIJfxW6k2SmRH7IDMKEP7ICA6B2aDux5XknsDKCt
+        GMQDRq9uMeVq1ERHGuKYC/NwGTVa4O+7WMzLzj4sbdttI/ksw2gT9HIMiZS9OvzNGZTrsJ+xaYXaX
+        f2qeoKJGZpz3HNEa0IEwdEsLBfhu90GLJE1V+Bcky5P9YoBixylq7TQSUbe9893+6MH3OfCz7LG0E
+        0mxgmASm9f9R5Bnzex/sO4m0fv+MaA1JZ97uZB9GfgOLvC4m+/sBXBEau6IymG7ka2VWOFKZ4Z0NG
+        /vx+NwuA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT09o-004irK-0n; Wed, 22 Sep 2021 11:11:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B78DA300DD8;
+        Wed, 22 Sep 2021 13:11:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 751342024E452; Wed, 22 Sep 2021 13:11:18 +0200 (CEST)
+Message-ID: <20210922110506.703075504@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 22 Sep 2021 13:05:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org
+Subject: [RFC][PATCH 0/7] sched,rcu,context_tracking,livepatch: Improve livepatch task transitions for idle and NOHZ_FULL cpus
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+Compile tested only, please consider carefully, esp. the last few patches that
+concern context_tracking and nohz_full.
 
-On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
-> Add Kconfig entries for the errata workarounds for TRBE writing
-> to an out-of-range address.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-
-> ---
->  Documentation/arm64/silicon-errata.rst |  4 +++
->  arch/arm64/Kconfig                     | 39 ++++++++++++++++++++++++++
->  2 files changed, 43 insertions(+)
-> 
-> diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
-> index 569a92411dcd..5342e895fb60 100644
-> --- a/Documentation/arm64/silicon-errata.rst
-> +++ b/Documentation/arm64/silicon-errata.rst
-> @@ -96,6 +96,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-A710     | #2054223        | ARM64_ERRATUM_2054223       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Cortex-A710     | #2224489        | ARM64_ERRATUM_2224489       |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N1     | #1188873,1418040| ARM64_ERRATUM_1418040       |
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N1     | #1349291        | N/A                         |
-> @@ -106,6 +108,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N2     | #2067961        | ARM64_ERRATUM_2067961       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Neoverse-N2     | #2253138        | ARM64_ERRATUM_2253138       |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | MMU-500         | #841119,826419  | N/A                         |
->  +----------------+-----------------+-----------------+-----------------------------+
->  +----------------+-----------------+-----------------+-----------------------------+
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 0764774e12bb..611ae02aabbd 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -736,6 +736,45 @@ config ARM64_ERRATUM_2067961
->  
->  	  If unsure, say Y.
->  
-> +config ARM64_WORKAROUND_TRBE_WRITE_OUT_OF_RANGE
-> +	bool
-> +
-> +config ARM64_ERRATUM_2253138
-> +	bool "Neoverse-N2: 2253138: workaround TRBE writing to address out-of-range"
-> +	depends on CORESIGHT_TRBE
-> +	default y
-> +	select ARM64_WORKAROUND_TRBE_WRITE_OUT_OF_RANGE
-> +	help
-> +	  This option adds the workaround for ARM Neoverse-N2 erratum 2253138.
-> +
-> +	  Affected Neoverse-N2 cores might write to an out-of-range address, not reserved
-> +	  for TRBE. Under some conditions, the TRBE might generate a write to the next
-> +	  virtually addressed page following the last page of the TRBE address space
-> +	  (i.e, the TRBLIMITR_EL1.LIMIT), instead of wrapping around to the base.
-> +
-> +	  We work around this in the driver by, always making sure that there is a
-> +	  page beyond the TRBLIMITR_EL1.LIMIT, within the space allowed for the TRBE.
-> +
-> +	  If unsure, say Y.
-> +
-> +config ARM64_ERRATUM_2224489
-> +	bool "Cortex-A710: 2224489: workaround TRBE writing to address out-of-range"
-> +	depends on CORESIGHT_TRBE
-> +	default y
-> +	select ARM64_WORKAROUND_TRBE_WRITE_OUT_OF_RANGE
-> +	help
-> +	  This option adds the workaround for ARM Cortex-A710 erratum 2224489.
-> +
-> +	  Affected Cortex-A710 cores might write to an out-of-range address, not reserved
-> +	  for TRBE. Under some conditions, the TRBE might generate a write to the next
-> +	  virtually addressed page following the last page of the TRBE address space
-> +	  (i.e, the TRBLIMITR_EL1.LIMIT), instead of wrapping around to the base.
-> +
-> +	  We work around this in the driver by, always making sure that there is a
-> +	  page beyond the TRBLIMITR_EL1.LIMIT, within the space allowed for the TRBE.
-> +
-> +	  If unsure, say Y.
-> +
->  config CAVIUM_ERRATUM_22375
->  	bool "Cavium erratum 22375, 24313"
->  	default y
-> 
