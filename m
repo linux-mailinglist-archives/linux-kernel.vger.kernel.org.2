@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144C1414DFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2078B414DB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236641AbhIVQVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236634AbhIVQVG (ORCPT
+        id S236503AbhIVQGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:06:46 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:43880
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231764AbhIVQGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:21:06 -0400
-X-Greylist: delayed 1361 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Sep 2021 09:19:36 PDT
-Received: from lounge.grep.be (lounge.grep.be [IPv6:2a01:4f8:200:91e8::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C173C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:19:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=uter.be;
-        s=2021.lounge; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=vX6Qu+emXOBeX55x21xlP5yK5xuZNhWOHbJG5PTxsow=; b=dXaiMB7WWoz7Zu09KijKcG32EI
-        lhOXgJPMh3ProOjEwiW4/7buxU03QPvqXH40kT5kMxKFBQDHotzs10cUIJaE8AUBDiGff3jw17bkA
-        uQRRJcUNymBuDycw8begbgGE3pYl9x0P6sfUBufEbuyKuRITWt1bng+7y0y4SmFY9jXdPnvwUCZbs
-        a0J9KO1HWoqJhZOB6WQXmtZo/zE280weWx7kNi/36CP5QAPdonVU6IJ0gOTp1o2ZWL9j7sYZUeUAU
-        W8ZSa4AhBEu5VQkPY8mgxuFcgB4r4Cjn3hXgrYJrpIChOhu+sB64WrzRyDtI2mylC5WotcPzIhYcN
-        358GTTTQ==;
-Received: from 197-101-72-171.ip.broadband.is ([197.101.72.171] helo=pc181009)
-        by lounge.grep.be with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <w@uter.be>)
-        id 1mT4bu-00Cfvr-R2; Wed, 22 Sep 2021 17:56:38 +0200
-Received: from wouter by pc181009 with local (Exim 4.95-RC2)
-        (envelope-from <w@uter.be>)
-        id 1mT4bg-0003l5-0I;
-        Wed, 22 Sep 2021 17:56:24 +0200
-Date:   Wed, 22 Sep 2021 17:56:23 +0200
-From:   Wouter Verhelst <w@uter.be>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     "yukuai (C)" <yukuai3@huawei.com>, josef@toxicpanda.com,
-        axboe@kernel.dk, hch@infradead.org, linux-block@vger.kernel.org,
-        nbd@other.debian.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [patch v8 3/7] nbd: check sock index in nbd_read_stat()
-Message-ID: <YUtSJ/bfKZ9QJUaY@pc181009.grep.be>
-References: <20210916093350.1410403-1-yukuai3@huawei.com>
- <20210916093350.1410403-4-yukuai3@huawei.com>
- <7e2913ca-1089-9ab7-cfdb-5e8837d36034@huawei.com>
- <YUr1v8zylPOFFXTO@T590>
+        Wed, 22 Sep 2021 12:06:45 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D8BE9402DF
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:05:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632326714;
+        bh=am6HvhYMUQG0l4YQDLjqW15GPRKaMpXA2sBsBZSwSw8=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=BSKFbjKQJu2MGLI2h5Lc5HSvbmoyHWs7vsNhZc+55vnCUaknkiRodo+IRwrfr4iw0
+         2voceXrgKFCbAPDFiwURdf1mtTV453NwO7Wprc8QiV2Zr7Jl22YhYMTgvYyPQT539u
+         Pqd1UtwlatksZT3nbPWZXcUVBppuJZpIEsubkDyQjU57a95IF6EFizSv2kIYSwSPkH
+         PC9wqHWz27lQD/WF/tCYBBHhBDKp6EcEqMgr6yacH0lpM36fYHONC+FUv4FehquCSb
+         fb1Isx8xxVZqmZOekmmoo7o/62zgb2N0QDXYCWUK9YbgM8OYDL2SaFcVwJUgsefpEe
+         P7GOD1dpQ9ygQ==
+Received: by mail-ed1-f70.google.com with SMTP id o18-20020a056402439200b003d2b11eb0a9so3535653edc.23
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:05:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=am6HvhYMUQG0l4YQDLjqW15GPRKaMpXA2sBsBZSwSw8=;
+        b=V6/6xQybzHLtiio/JGNjz/EYof6x/sCosazb4O5TPhTBaCOmWLlA7CkIsvHuT2+kT4
+         D7oMsrp5JHRRZlkCHRC2NBsAySdYlCWZn741HsiHGdpFmvi/02ChY53lymn2tp38R/7P
+         OzhhXIfUciwXDY4jy/TvUKwzKjcuYjUuIeWhyfSC/2Jv9kRizdmJn8WSGM5obApGpMMJ
+         nIUo3XEHZYfQfxwh6vbbkgDic07KE+QVS66KPqmbN+gxHfYMdjgbpFnycwm1F6OOuK5R
+         uZ/dyja9pePbxGzo/T3R8PU4crDdUSH5+OlChd86SR10lHGftq0WoreyaKxtWedvksxm
+         A9qw==
+X-Gm-Message-State: AOAM531JSaDisembl3QqDYqHfPLbXDUVLj6guJ8N5rnYqluDRMhw17aZ
+        bY1Z0VsBch+8fYViYUrhv+cBLYYtywr4FVYKCx0F5BUCuK9glrDGCtlsMV80u0oNV/qwZRlKd86
+        lK+LHpx83fvITq1lu/MYvVbqcFMLrSMgJPy1ACI49cA==
+X-Received: by 2002:a17:906:718e:: with SMTP id h14mr302542ejk.365.1632326713300;
+        Wed, 22 Sep 2021 09:05:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8bDWBvCoh+uqmD+95itTH1Ems+DKgL3XEMXBSbfrZ0KQf/4dDkPPwClcn682BfTFNhzCFcw==
+X-Received: by 2002:a17:906:718e:: with SMTP id h14mr302524ejk.365.1632326713104;
+        Wed, 22 Sep 2021 09:05:13 -0700 (PDT)
+Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id l7sm1511135edb.26.2021.09.22.09.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 09:05:12 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v2 1/2] powerpc/powermac: add missing g5_phy_disable_cpu1() declaration
+Date:   Wed, 22 Sep 2021 18:04:35 +0200
+Message-Id: <20210922160436.130931-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUr1v8zylPOFFXTO@T590>
-X-Speed: Gates' Law: Every 18 months, the speed of software halves.
-Organization: none
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 05:22:07PM +0800, Ming Lei wrote:
-> On Sun, Sep 19, 2021 at 06:34:28PM +0800, yukuai (C) wrote:
-> > On 2021/09/16 17:33, Yu Kuai wrote:
-> > > The sock that clent send request in nbd_send_cmd() and receive reply
-> > > in nbd_read_stat() should be the same.
-> > > 
-> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > > ---
-> > >   drivers/block/nbd.c | 4 ++++
-> > >   1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> > > index 614c6ab2b8fe..c724a5bd7fa4 100644
-> > > --- a/drivers/block/nbd.c
-> > > +++ b/drivers/block/nbd.c
-> > > @@ -746,6 +746,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
-> > >   		ret = -ENOENT;
-> > >   		goto out;
-> > >   	}
-> > > +	if (cmd->index != index) {
-> > > +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d from different sock %d (expected %d)",
-> > > +			tag, index, cmd->index);
-> > > +	}
-> > >   	if (cmd->cmd_cookie != nbd_handle_to_cookie(handle)) {
-> > >   		dev_err(disk_to_dev(nbd->disk), "Double reply on req %p, cmd_cookie %u, handle cookie %u\n",
-> > >   			req, cmd->cmd_cookie, nbd_handle_to_cookie(handle));
-> > > 
-> > 
-> > Hi, Ming
-> > 
-> > Any suggestions about this patch?
-> 
-> I think this one relies on nbd protocol between server and client, and
-> does the protocol require both request and reply xmitted via same
-> socket?
+g5_phy_disable_cpu1() is used outside of platforms/powermac/feature.c,
+so it should have a declaration to fix W=1 warning:
 
-As Eric already answered: yes, the request and reply are specified such
-that they must be transmitted over the same socket.
+  arch/powerpc/platforms/powermac/feature.c:1533:6:
+    error: no previous prototype for ‘g5_phy_disable_cpu1’ [-Werror=missing-prototypes]
 
-For more details, you can find the protocol specification at
-https://github.com/NetworkBlockDevice/nbd/blob/master/doc/proto.md
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Please note that the protocol defined there has some options that are
-not currently supported by the Linux nbd implementation -- specifically
-the "structured reply" message format (and all that requires it) is not
-implemented (yet?).
+---
 
+Changes since v1:
+1. Drop declaration in powermac/smp.c
+---
+ arch/powerpc/include/asm/pmac_feature.h | 4 ++++
+ arch/powerpc/platforms/powermac/smp.c   | 2 --
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/pmac_feature.h b/arch/powerpc/include/asm/pmac_feature.h
+index e08e829261b6..7703e5bf1203 100644
+--- a/arch/powerpc/include/asm/pmac_feature.h
++++ b/arch/powerpc/include/asm/pmac_feature.h
+@@ -143,6 +143,10 @@
+  */
+ struct device_node;
+ 
++#ifdef CONFIG_PPC64
++void g5_phy_disable_cpu1(void);
++#endif /* CONFIG_PPC64 */
++
+ static inline long pmac_call_feature(int selector, struct device_node* node,
+ 					long param, long value)
+ {
+diff --git a/arch/powerpc/platforms/powermac/smp.c b/arch/powerpc/platforms/powermac/smp.c
+index 3256a316e884..5d0626f432d5 100644
+--- a/arch/powerpc/platforms/powermac/smp.c
++++ b/arch/powerpc/platforms/powermac/smp.c
+@@ -875,8 +875,6 @@ static int smp_core99_cpu_online(unsigned int cpu)
+ 
+ static void __init smp_core99_bringup_done(void)
+ {
+-	extern void g5_phy_disable_cpu1(void);
+-
+ 	/* Close i2c bus if it was used for tb sync */
+ 	if (pmac_tb_clock_chip_host)
+ 		pmac_i2c_close(pmac_tb_clock_chip_host);
 -- 
-     w@uter.{be,co.za}
-wouter@{grep.be,fosdem.org,debian.org}
+2.30.2
+
