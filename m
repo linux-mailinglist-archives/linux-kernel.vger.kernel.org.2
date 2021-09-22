@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2CD4150F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D100415127
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237343AbhIVUGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:06:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237272AbhIVUGT (ORCPT
+        id S237826AbhIVUKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237392AbhIVUKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:06:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632341089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wfmAQj1eLnqe1D78zRkvZrSAGszWVxZZuAA8OYkxiNY=;
-        b=gpOHgeX8IrkaaMI432z+oJYfW4MR9J1TM25ll6nBqvFCDF/HfXgk5LklfqAeGFAeZ0Xv7y
-        9J8thm6+WHBuGBx+3vrohoUAIOMjam6iYlQvimJNerrMshuTd5+Tai2pCdgDGQk/fyQxbc
-        KzOsw1tRKnQE9Mcwfs+2afPmk4GJ+Dg=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-SQZYKtxgMN6S5BcUpBFZZw-1; Wed, 22 Sep 2021 16:04:48 -0400
-X-MC-Unique: SQZYKtxgMN6S5BcUpBFZZw-1
-Received: by mail-qk1-f200.google.com with SMTP id m10-20020a05620a290a00b004334bcdf1f4so13041637qkp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:04:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wfmAQj1eLnqe1D78zRkvZrSAGszWVxZZuAA8OYkxiNY=;
-        b=VUVxT9WTzhc34JOzIfg8KBK5fWOLjAlF+Tp2eGX/e4gxloUu/u8QhupPnJo6b0FYVr
-         Y/q0oqWNKtSdN6I1fZCt41vUBUYV0Nhrfi/iiS0kIN4RUmoDTbSUkGZCdRags/eG2mnj
-         WFkTecQYCNTHdt8MHzrF3MmuvFU1SAcll8bVe7008zvRqTjO0eMoUGpmIzhpThLY+SHP
-         hJxqFh0u1gynj/dFHE8zJVKHzlkAtHGXJkl6KaZzTO1dASNcLkS1ar7AjaIy8/Fuc41/
-         3Yx5EhjUaEV6tbTzkzJTa9YZJwtHGovzrktwJFZ/4K4KLKCQhyyS8dzvBAHCnzU9VRX+
-         sbow==
-X-Gm-Message-State: AOAM5330kvxxrP/6L2iOE6OBDFOrOMD1YaGD8rW6+UKGOmXZFndv4+Xs
-        3ifGfCfK4nrNxxgQsJXz8IGzWy+pYosI0GjrnPu3mu040qbBVfFuXLNtCIqjd24uAejF7B1cCAP
-        +NE0d2oXO1dtbaL0KNGvfPzCa
-X-Received: by 2002:a37:6147:: with SMTP id v68mr1233940qkb.154.1632341087684;
-        Wed, 22 Sep 2021 13:04:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx59BS+mKq7RFbazbYa4OejIGX9idyrFiC7plgv0UVXb4KSxkno+8Th2LDmkABtJdcfJe2OTg==
-X-Received: by 2002:a37:6147:: with SMTP id v68mr1233831qkb.154.1632341086602;
-        Wed, 22 Sep 2021 13:04:46 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id n13sm2533690qke.100.2021.09.22.13.04.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 13:04:46 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 16:04:44 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
-Message-ID: <YUuMXCFbj1mmOKec@t490s>
-References: <20210922175156.130228-1-peterx@redhat.com>
- <6bbb8e29-9e21-dfbe-d23d-61de7e3cc6db@redhat.com>
- <YUt833H6eaYFyHXD@t490s>
- <CAHbLzkq7kTdEC6ADJRAxXBEOYhsjR8E9uiEFCYFmtA5cD5fMhA@mail.gmail.com>
+        Wed, 22 Sep 2021 16:10:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F0CC0613B8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XBp4hdZqr8VwVUiwZYI8VPyo8z+fiJiv3xnzJAIXtMI=; b=WhqfKq0qyg8JBuFBDDCziAiUwn
+        8EqDuloKUsT9epAgfAJavWYQO/nTArXhKXb3Y2VOyXoHhqnxmHejZLq+I5CT6aOxH8/N/V+uc1oI9
+        aZz2OSWyGPjHl6u6Gq2BDwO0sLVw+nm4lpaLqo1bf1T9N5yfXEK6iTXFCHGmcDH4QYxhMCrNVRdWk
+        ybnZK5z6f6xQcuacr4mXN3eOE4UIC/8fwug4GiT8esgBYLxwHLSz08ZR1xX7CP6rBR7uwdTqWVxux
+        yn9yPOcQzGEeR7Os+mXSG8MtKjlMkUwM1CM4zomDYzhUz3psn3QHfihSU4/wbYLAN7GE8r9VmG0Xk
+        uJQz35Xg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT8Vc-0054La-CJ; Wed, 22 Sep 2021 20:06:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 049E63001CD;
+        Wed, 22 Sep 2021 22:06:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DD0F82133B1A0; Wed, 22 Sep 2021 22:06:23 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 22:06:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [RFC PATCH] locking/rwsem: Add upgrade_read()
+Message-ID: <YUuMv6fA+TpqH3wb@hirez.programming.kicks-ass.net>
+References: <20210922193657.29461-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHbLzkq7kTdEC6ADJRAxXBEOYhsjR8E9uiEFCYFmtA5cD5fMhA@mail.gmail.com>
+In-Reply-To: <20210922193657.29461-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 12:29:35PM -0700, Yang Shi wrote:
-> khugepqged does remove the pgtables. Please check out
-> retract_page_tables(). The pmd will be cleared and the ptes will be
-> freed otherwise the collapsed THP won't get PMD mapped by later
-> access.
+On Wed, Sep 22, 2021 at 03:36:57PM -0400, Waiman Long wrote:
+> Currently there are about 12 instances in the kernel where an up_read()
+> is immediately followed by a down_write() of the same lock. For example,
+> 
+>   drivers/tty/n_tty.c:		up_read(&tty->termios_rwsem);
+>   drivers/tty/n_tty.c-		down_write(&tty->termios_rwsem);
 
-Indeed.
+And TTY is a high performance issue, that requires hacks like this?
 
-I should probably still properly disable khugepaged for at least VM_SHARED &&
-VM_UFFD_WP, then I'd keep the anonymous && minor mode behavior untouched.
+> Since we have already provided a downgrade_write() function, we may as
+> well provide an upgrade_read() function to make the code easier to read
+> and the intention clearer.
+> 
+> If the current task is the only reader, the upgrade can be done by a
+> single atomic operation. If not, the upgrade will have to be done by a
+> separate up_read() call followed by a down_write(). In the former case,
+> the handoff bit is not considered and the waiter will have to wait a
+> bit longer to acquire the lock.
+> 
+> The new upgrade_read() function returns a value of 0 for safe upgrade
+> where rwsem protected data won't change. Otherwise a value of 1 is
+> returned to indicate unsafe upgrade where rwsem protected data may
+> change during the upgrade process.
 
-The other problem is even if current mm/vma doesn't have UFFD_WP registered,
-some other mm/vma could have UFFD_WP enabled there that mapped the same file.
-Checking that up within retract_page_tables() on all VMAs seems to be a bit too
-late.
+Yuck...
 
-Checking it early may not trivially work too - I can walk the vma interval tree
-at the entry of khugepaged_scan_file(), making sure no vma has UFFD_WP set.
-However I don't see how it'll stop some of the vma from having UFFD_WP
-registered later after that point but before retract_page_tables().
+Is there any workload where this is a massive win? I'm thinking that
+either the lock is contended and you get the unsafe option which is the
+same as today, or the lock isn't contended and you would've gotten
+fast-paths and you barely safe anything anyway.
 
-I'll need to think about it, but thanks for the input, Yang.  That's a very
-important point.
-
--- 
-Peter Xu
-
+Also, -ENODATA
