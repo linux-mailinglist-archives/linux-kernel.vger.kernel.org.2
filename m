@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A083841459F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1524E4145AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234603AbhIVJ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:58:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:45970 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234413AbhIVJ6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:58:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7246A11B3;
-        Wed, 22 Sep 2021 02:57:17 -0700 (PDT)
-Received: from [10.163.73.113] (unknown [10.163.73.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3F0D3F719;
-        Wed, 22 Sep 2021 02:57:13 -0700 (PDT)
-Subject: Re: [PATCH v2 14/17] coresight: trbe: Make sure we have enough space
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
-        leo.yan@linaro.org, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-15-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <60e75e7b-4a04-03d4-c861-88dd5fadef99@arm.com>
-Date:   Wed, 22 Sep 2021 15:28:21 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234608AbhIVKBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234233AbhIVKBF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:01:05 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095E4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:59:36 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id t8so5148608wri.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:59:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:subject:to:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=wVE4R8C/cgi96odywCvgg2C5/wXSs+GANvotR7N/uR8=;
+        b=vIPxreyzdq2HXWtttAy9AphQhkLfK4uZFOBtQWVuzCvfaQaGlSrWfzT6n9N5Pu1YSP
+         Zd7a3y3A3IGxmjlzxIkCpCeIsw7Eq2kpQg0CM1Krp8AgDBTqUiw/OOZHxxjsfBXm45eD
+         Z+8Rfo5CrZawF+BOlX+NfapdsAaLj0Oe1ia7qEIttA25RdJzWdG3KBcfsqExfqTlQwv4
+         iJ/MRD9a2Cydy0LF6BqUeb4De6ZYucwR8khVHCo2vaOpzSERlEr6499w836Fzxg9YV0v
+         Z2P65RxpYuC5rQTq993ssJ0nu7MsFJde5XE4XUrQ7eo75Nhihh4ApWLz1DxRN3J1q2ko
+         Nliw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:subject:to:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=wVE4R8C/cgi96odywCvgg2C5/wXSs+GANvotR7N/uR8=;
+        b=kOAW7lIitjeypmfxSSSUtoAUI9mJZTFiInT0RQq+CQB0FYMNEIIujZgAFCUyxVOm54
+         2BHP3ZXDehoyAWNmR9nFdI7mwmUeywKcr5GhfmMK3SLvDVR9bOumpB3Z11bIyqwJpbn6
+         JMz8ddMfgDsAVx0UbwFRsSHr751qXC+LUkkUFEifM9j93bNxdphYL3eKDY0/tCQWYejv
+         0aO6F7J2Xg12fuxdzUR4q+bTxkXPtZ3jU2DlK724PQ4dOQJwwDBDUVauY5E7G9wZsRaa
+         KR8G1y3L5LlZFnKlfsx+BWZaDiKi+Wbk9TqnF4jTuTpNpDu/LxXRlqzf5gaN2zxn2OvS
+         +QMQ==
+X-Gm-Message-State: AOAM5306c+IGCv8K29yTd/5Ue7ViJoy/ey6m5Xugiis7G7V8gH+11NDm
+        9fUZwK5PklH9hyK8clTL3sl8hg==
+X-Google-Smtp-Source: ABdhPJz19tnF6GcYxfblJoxm65IbrNZux22yI1JyMaQb0d5aKNU5H+vy7Ql/aGtLMcNCedy86Mv2Ig==
+X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr7114787wmq.185.1632304774391;
+        Wed, 22 Sep 2021 02:59:34 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:4f54:2a4:2d47:4592? ([2a01:e34:ed2f:f020:4f54:2a4:2d47:4592])
+        by smtp.googlemail.com with ESMTPSA id s2sm1631915wrn.77.2021.09.22.02.59.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 02:59:33 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [RFD] Remove the userspace governor and the cooling device set state
+ sysfs entry
+To:     Zhang Rui <rui.zhang@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>
+Message-ID: <d46b5007-428b-5f31-52d9-a964cc60ad92@linaro.org>
+Date:   Wed, 22 Sep 2021 11:59:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210921134121.2423546-15-suzuki.poulose@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi,
 
-On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
-> The TRBE driver makes sure that there is enough space for a meaningful
-> run, otherwise pads the given space and restarts the offset calculation
-> once. But there is no guarantee that we may find space or hit "no space".
+the userspace governor is sending temperature when polling is active and
+trip point crossed events. Nothing else.
 
-So what happens currently when it neither finds the required minimum buffer
-space for a meaningful run nor does it hit the "no space" scenario ?
+In the other side, the cooling device have their cooling device
+set_cur_state read-writable all the time.
 
-> Make sure that we repeat the step until, either :
->   - We have the minimum space
->    OR
->   - There is NO space at all.
-> 
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index 3373f4e2183b..02f9e00e2091 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -451,10 +451,14 @@ static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
->  	 * If the head is too close to the limit and we don't
->  	 * have space for a meaningful run, we rather pad it
->  	 * and start fresh.
-> +	 *
-> +	 * We might have to do this more than once to make sure
-> +	 * we have enough required space.
+The thermal framework is wrongly used by userspace as a power capping
+framework by acting on the cooling device opaque state. This one then
+competes with the in-kernel governor decision.
 
-OR no space at all, as explained in the commit message.
-Hence this comment needs an update.
+As the new netlink thermal notification is able to provide the same
+information than the userspace governor.
 
->  	 */
-> -	if (limit && ((limit - head) < trbe_min_trace_buf_size(handle))) {
-> +	while (limit && ((limit - head) < trbe_min_trace_buf_size(handle))) {
->  		trbe_pad_buf(handle, limit - head);
->  		limit = __trbe_normal_offset(handle);
-> +		head = PERF_IDX2OFF(handle->head, buf);
+I propose to remove the userspace governor and the cur_state entry in
+the sysfs exported file.
 
-Should the loop be bound with a retry limit as well ?
+The DTPM framework is the right framework to do power capping and
+moreover it deals with the aggregation via the dev pm qos.
 
->  	}
->  	return limit;
->  }
-> 
+Does it make sense ?
+
+  -- Daniel
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
