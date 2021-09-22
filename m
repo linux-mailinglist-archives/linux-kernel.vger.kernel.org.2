@@ -2,66 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC3A414110
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47234414114
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhIVFJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:09:20 -0400
-Received: from verein.lst.de ([213.95.11.211]:58677 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231775AbhIVFJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:09:19 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2FB4667373; Wed, 22 Sep 2021 07:07:46 +0200 (CEST)
-Date:   Wed, 22 Sep 2021 07:07:46 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Liu Yi L <yi.l.liu@intel.com>,
-        alex.williamson@redhat.com, hch@lst.de, jasowang@redhat.com,
-        joro@8bytes.org, jean-philippe@linaro.org, kevin.tian@intel.com,
-        parav@mellanox.com, lkml@metux.net, pbonzini@redhat.com,
-        lushenming@huawei.com, eric.auger@redhat.com, corbet@lwn.net,
-        ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, david@gibson.dropbear.id.au,
-        nicolinc@nvidia.com
-Subject: Re: [RFC 04/20] iommu: Add iommu_device_get_info interface
-Message-ID: <20210922050746.GA12921@lst.de>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com> <20210919063848.1476776-5-yi.l.liu@intel.com> <20210921161930.GP327412@nvidia.com> <a8a72eba-bae3-9f42-f79c-c5646e425255@linux.intel.com>
+        id S232016AbhIVFLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:11:19 -0400
+Received: from n169-112.mail.139.com ([120.232.169.112]:11131 "EHLO
+        n169-112.mail.139.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231888AbhIVFLS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:11:18 -0400
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM:                                                                                        
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.255.10] (unknown[113.108.77.67])
+        by rmsmtp-lg-appmail-25-12028 (RichMail) with SMTP id 2efc614aba962a2-69a39;
+        Wed, 22 Sep 2021 13:09:44 +0800 (CST)
+X-RM-TRANSID: 2efc614aba962a2-69a39
+Message-ID: <4ccc5c89-eb13-5e91-9283-c94f755a9c17@139.com>
+Date:   Wed, 22 Sep 2021 13:09:43 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8a72eba-bae3-9f42-f79c-c5646e425255@linux.intel.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v2] ovl: fix null pointer when filesystem doesn't support
+ direct IO
+To:     Huang Jianan <huangjianan@oppo.com>, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        chao@kernel.org
+Cc:     guoweichao@oppo.com, yh@oppo.com, zhangshiming@oppo.com,
+        guanyuwei@oppo.com, jnhuang95@gmail.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cgxu519@mykernel.net
+References: <20210918121346.12084-1-huangjianan@oppo.com>
+ <20210922034700.15666-1-huangjianan@oppo.com>
+From:   Chengguang Xu <cgxu519@139.com>
+In-Reply-To: <20210922034700.15666-1-huangjianan@oppo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:31:47AM +0800, Lu Baolu wrote:
-> Hi Jason,
+在 2021/9/22 11:47, Huang Jianan 写道:
+> At present, overlayfs provides overlayfs inode to users. Overlayfs
+> inode provides ovl_aops with noop_direct_IO to avoid open failure
+> with O_DIRECT. But some compressed filesystems, such as erofs and
+> squashfs, don't support direct_IO.
 >
-> On 9/22/21 12:19 AM, Jason Gunthorpe wrote:
->> On Sun, Sep 19, 2021 at 02:38:32PM +0800, Liu Yi L wrote:
->>> From: Lu Baolu <baolu.lu@linux.intel.com>
->>>
->>> This provides an interface for upper layers to get the per-device iommu
->>> attributes.
->>>
->>>      int iommu_device_get_info(struct device *dev,
->>>                                enum iommu_devattr attr, void *data);
->>
->> Can't we use properly typed ops and functions here instead of a void
->> *data?
->>
->> get_snoop()
->> get_page_size()
->> get_addr_width()
+> Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
+> will read file through this way. This will cause overlayfs to access
+> a non-existent direct_IO function and cause panic due to null pointer:
 >
-> Yeah! Above are more friendly to the upper layer callers.
+> Kernel panic - not syncing: CFI failure (target: 0x0)
+> CPU: 6 PID: 247 Comm: loop0
+> Call Trace:
+>   panic+0x188/0x45c
+>   __cfi_slowpath+0x0/0x254
+>   __cfi_slowpath+0x200/0x254
+>   generic_file_read_iter+0x14c/0x150
+>   vfs_iocb_iter_read+0xac/0x164
+>   ovl_read_iter+0x13c/0x2fc
+>   lo_rw_aio+0x2bc/0x458
+>   loop_queue_work+0x4a4/0xbc0
+>   kthread_worker_fn+0xf8/0x1d0
+>   loop_kthread_worker_fn+0x24/0x38
+>   kthread+0x29c/0x310
+>   ret_from_fork+0x10/0x30
+>
+> The filesystem may only support direct_IO for some file types. For
+> example, erofs supports direct_IO for uncompressed files. So reset
+> f_mapping->a_ops to NULL when the file doesn't support direct_IO to
+> fix this problem.
+>
+> Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs")
+> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> ---
+> Change since v1:
+>   - Return error to user rather than fall back to buffered io. (Chengguang Xu)
+>
+>   fs/overlayfs/file.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+> index d081faa55e83..38118d3b46f8 100644
+> --- a/fs/overlayfs/file.c
+> +++ b/fs/overlayfs/file.c
+> @@ -157,6 +157,10 @@ static int ovl_open(struct inode *inode, struct file *file)
+>   	if (IS_ERR(realfile))
+>   		return PTR_ERR(realfile);
+>   
+> +	if ((f->f_flags & O_DIRECT) && (!realfile->f_mapping->a_ops ||
+> +		!realfile->f_mapping->a_ops->direct_IO))
+> +		file->f_mapping->a_ops = NULL;
 
-The other option would be a struct with all the attributes.  Still
-type safe, but not as many methods.  It'll require a little boilerplate
-in the callers, though.
+
+There are many other functions in a_ops and also address_space struct 
+will be shared
+
+between files which belong to same inode. Although overlayfs currently 
+only defines
+
+->direct_IO in a_ops, it will be extended in the future. (like 
+containerized sycnfs [1])
+
+
+It seems the simplest solution is directly return error to upper layer.
+
+
+Thanks,
+
+Chengguang
+
+
+[1] https://www.spinics.net/lists/linux-unionfs/msg08569.html
+
+
+
+> +
+>   	file->private_data = realfile;
+>   
+>   	return 0;
+
