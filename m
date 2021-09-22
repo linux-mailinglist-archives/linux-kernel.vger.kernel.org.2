@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701D541405A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 06:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D912741405B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 06:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhIVETk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 00:19:40 -0400
-Received: from mail-bn1nam07on2048.outbound.protection.outlook.com ([40.107.212.48]:9863
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        id S231482AbhIVETn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 00:19:43 -0400
+Received: from mail-co1nam11on2076.outbound.protection.outlook.com ([40.107.220.76]:63328
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229495AbhIVETi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 00:19:38 -0400
+        id S229495AbhIVETl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 00:19:41 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SV+kamLt6pHWetF70PXdwda4g5+vDq+0qDGYdXdLeYJA3mB1PmNkkY4ThqIJTBNc8hH+h00EzuaV6PrlPP8Y6IgrUX7lKlqQGahOjeSp6rMVpON2/gjfmL8IxNJalsysTpqjG/PpIiILlZifnLCKh6XVCcCBuZjcxg5PE/JDxaXE9RcjNow9XB9m6JaW7anVhpjgXh95pdJuZsbMZxLQoJnhOTOqypz8fd7NNYV/Y1c3tShXoFTiiHmbw3x+yzHBzHrksBcjKbt0xfmYMXbntLPDAGOeOe2A6CV5ZyfHbbwEugyi86RfR/ZkvoUL7DbpEKIF/nnJQd3TZgno7a9NNw==
+ b=BZ1f50D7Z8SNFn3BQbF/kcuEXAuzchww8nu1wC4si02qqaFtv5vHFI1EcGff0iMop5bBqrg2LN0Bu23HvVOTnkEDgpF4CMI9VDG5dnz6/wjiEpFB03tGb1xUDOTgcxqGN93z9IkvE2pRzWEUxuSjaJbvneVCxxRSzf8zkjbrm3FD5XzindeUTVaAxET4BgYnPy6xKt8MKjLjJcIAtbvl3GZ4ZPJLqq9gt7WwVpJ7UV8TZRqesdWl1Hdhvs1xHZg28bVKVz+JBlQBK+ay2izwy7JdI+3Jl9Q6slERvQ+7+h2+KYb31BjhpG3x9NGpWf+PBpK2q75vR3tPTS+mlRyXGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=s5R00q9ddpO3OeyaNirZwbNdVyX1OPP7qci4QDPMAtU=;
- b=mtYYM/DaDp0YJCzws83rqwaNqUY+kgjEWedw5ggk9P5oOkv/jobRinVoCPfx6ukAWo1mfDKN1kO/0jQfvw+e2jFTI9Is0DQm0xnqZjSwtj9QLqjV1LS3CdiAO20CoWgnS2rZsY0hvdQsdgvpl1OicPgnIDEUTaa2mRA4munQ4Q9AtXapKAO73sBdNIWxJu1x9papb1VKsv6+4u3zRb4GlZY+7IGWaoycENGR0fzup8FoY+3ULciKFvYUxLB9vVF7S15jOOArUR7z3WM9sz/0FjFMfuWY2vWpCJJFSB5PLzhvtsf8XQHWTamQ4pd0NkVDb7x+AD7RmkPl5AphqfJG3Q==
+ bh=Xtwuq+Q9u+B/2e+C7AkO0NL3vEY1c4KM7CbuBb29cfs=;
+ b=E8ose+9iaSN49NjB1jRQZtSrxIEPl0gS2WZCbtXrJH+uu61g//9FHV5MaEg680AKeNvzFZd8fSJKEAsy+BJe5mde5m+NXnaEZ8YSFv0nqybnA3I3RYVH1zDuVupCiVmu4tIgfhJAE+CEuFkYt+gh9ffpZFsKO+nltxPbq7hSjaq5GwLY+dSV5N5O7x6jU67xeaepccEd0UiWseJH8I2G9S5uCDFhWAcWIJJNXXpUSPhb/+rbdki+qmqa8q3ScjrvbalLxqgipSepXojub4weejvsWv5ukfnF92ET9nDaEi3B3ggLUvfq5BD7UmZdCbYaOqEr1NCAzKfWvyXHnlBmjg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ 216.228.112.36) smtp.rcpttodomain=soleen.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s5R00q9ddpO3OeyaNirZwbNdVyX1OPP7qci4QDPMAtU=;
- b=XF/qoq9yQvDuK7uk4VUgKCfWlM/XiYAG4FWgFBtPRXa1VeyfGw/fvgndq5v+dPfCPmZOkKYJvahrYV+7AMKCr1LLES8WVBChHa81S/lI/FoCFsV6e+JkKndFNAekTYLEMfMEVg5jzlzyIbzdzQAH11Pr20/e9NIEx1g05MbzMyp/J9KG/qnEOyyKJ1wXp/JlDm2I6xicCO2klomtefJLX7Jn0UZEmsq5P+zFo13x6CNW4qwWkdw6h86VWUaf+RE2nqqD8+YktzN8Os25prZkzhH7e4L/G//dSdgcCAE5s1JlSx/jofVgJrNHUZHkBJVEq27T432qrSkpWXybHmkiKA==
-Received: from MWHPR1701CA0014.namprd17.prod.outlook.com
- (2603:10b6:301:14::24) by CY4PR12MB1592.namprd12.prod.outlook.com
- (2603:10b6:910:d::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
- 2021 04:18:07 +0000
-Received: from CO1NAM11FT024.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:14:cafe::92) by MWHPR1701CA0014.outlook.office365.com
- (2603:10b6:301:14::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Wed, 22 Sep 2021 04:18:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+ bh=Xtwuq+Q9u+B/2e+C7AkO0NL3vEY1c4KM7CbuBb29cfs=;
+ b=hCDxEAFRsJpQGSBa4MLrJLwH2sFC5/2aZxMgmfN/iyrVuL1HOdcoIX/QKWnpX1DUJGcIjj+NzFY8MtJotdxyuJbElDVYgjsRC2N1eWcfpoJ49xDbS4o92H9jmLZcuRk5m/NVl+j0AIgHGKnqfsCbRh9HlaOEN06H0tD8eUbxMhD8NqG0PhBUd6xSi3AeeCoGyKQaH3eVP4Ux9zRNL4FolkZx7DljQSdNT9IHd/lsnXU5tV7G7JU9M07f7HTf9hLMiNhph/Pauhkr3zkcxSHLHu6NknAvmN+GH+S9rmzn3XNqbSUutg6ias2RuQAiNk/FK7veMzLw9yNhbI5RpbGEfg==
+Received: from BN9PR03CA0488.namprd03.prod.outlook.com (2603:10b6:408:130::13)
+ by MN2PR12MB3901.namprd12.prod.outlook.com (2603:10b6:208:16c::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
+ 2021 04:18:09 +0000
+Received: from BN8NAM11FT034.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:130:cafe::c3) by BN9PR03CA0488.outlook.office365.com
+ (2603:10b6:408:130::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16 via Frontend
+ Transport; Wed, 22 Sep 2021 04:18:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; soleen.com; dkim=none (message not signed)
+ header.d=none;soleen.com; dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- CO1NAM11FT024.mail.protection.outlook.com (10.13.174.162) with Microsoft SMTP
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ BN8NAM11FT034.mail.protection.outlook.com (10.13.176.139) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 04:18:06 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
- 2021 04:18:06 +0000
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
- 2021 04:18:05 +0000
+ 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 04:18:09 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
+ 2021 04:18:08 +0000
 Received: from sandstorm.attlocal.net (172.20.187.6) by mail.nvidia.com
  (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 21 Sep 2021 21:18:05 -0700
+ Transport; Tue, 21 Sep 2021 21:18:08 -0700
 From:   John Hubbard <jhubbard@nvidia.com>
 To:     <o451686892@gmail.com>
 CC:     <akpm@linux-foundation.org>, <almasrymina@google.com>,
@@ -66,66 +63,147 @@ CC:     <akpm@linux-foundation.org>, <almasrymina@google.com>,
         <weixugc@google.com>, <willy@infradead.org>,
         <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
         <ziy@nvidia.com>
-Subject: [PATCH 0/1] mm/migrate: de-duplicate migrate_reason strings
-Date:   Tue, 21 Sep 2021 21:17:54 -0700
-Message-ID: <20210922041755.141817-1-jhubbard@nvidia.com>
+Subject: [PATCH 1/1] mm/migrate: de-duplicate migrate_reason strings
+Date:   Tue, 21 Sep 2021 21:17:55 -0700
+Message-ID: <20210922041755.141817-2-jhubbard@nvidia.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210922041755.141817-1-jhubbard@nvidia.com>
+References: <20210922041755.141817-1-jhubbard@nvidia.com>
 MIME-Version: 1.0
 X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 281ca7ca-1828-4be3-35f3-08d97d7ffaaa
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1592:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB15920D3FB28769192ABC7EBFA8A29@CY4PR12MB1592.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 34fa18d5-eee9-4133-5631-08d97d7ffc37
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3901:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3901E03236741806A1B9A20FA8A29@MN2PR12MB3901.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e4knDBQ6sD/oMibGxmn7mzfrfxlAB0lEclB7qYiUMolMxTWQA4avwA1lZv9XX70UZ3rHyQarqCmhC0hEW2xFRrNB9nVm695UfELZmi5phhamcdreAMVO5oDOkgisEHlqB5L5RO1ZTkuzj5QD5KVsw9J2F06tJJXqndJYoprxK1/4vr1ityUMEuGgaQQ0xdGYw8itVMFf+LVYym/HQY4kXrMsM4w8VBP/lbYg6zq6i62uWWFL5vzzMQ3Dns68ZCXV9SY6Qf2IBXKqwzaB28bt4WgtFGSHO1guyVEQCJkeonijUnkrvivIIEVzfXfJ2qLoFG5mZCJuCRnAoUcotLFbGwKdr/QDM3/DPlFu+0cE5o+fGqPtW8fbZ2qmItJGRYOv9sgxU/4ZIi7IuA9EcahULaVnI7IXt2DpUaXYXQJi25Md/mwqm05x5DgI1wq6C9gpG7JcEPA4plR4Pn9zx8CuDKDK9cYKbZNtsa1BpjjyDZEazogmIvjpxf9kUAvN6VjaWEUhG4m1m6n6pGUBinLz16QjY2FiIOGQHjq409i++omBjJcZDAoBHzGWBj0gXhIXyvStupHYaZuhBifCmkDE1Wb22xyMg70tqZxG4/p5/v3+9PK55Xi8sIgMBnmMpPqCForUgglsLJHAdz9MKet4k6hq7DGA+XfRixCaNd18YHh01gDR7KA12+ApraTbuEduxJEyN7twGCwHR9w9J9U+UpP3BAQhrpLC891l1Ba7fBjMHlwGf6Fm7AasZ2z6bZWw+BG2xWWuh3sLjVxnRy5EVHOqnaqKt+oE/8imnaKVmXo=
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid04.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(36860700001)(336012)(1076003)(47076005)(2616005)(4326008)(8936002)(83380400001)(26005)(36756003)(6916009)(8676002)(2906002)(6666004)(82310400003)(54906003)(5660300002)(426003)(356005)(86362001)(316002)(186003)(107886003)(966005)(7416002)(508600001)(7636003)(70586007)(70206006)(36906005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 9nPnDEp94VuvgpyDTdI8Iog/AJrWc1PPLzmMY/zdjWB58OmdXOi4kSw1R1wIKBhtKVECszMDCm8By8PTdIm0c2oPoWH2Te6fcPk4Ev4X1Xk99w9FnYmVS0mFNiD+9R3HoSgGDju3SHHS7rgRYZKAkJ+AUidAbr3wCAsvG/4VWM6Zsl2rb1bXoYOWKVht3kZ7HawOjeFxMu0txVASbh48POzzH6t47C0gXW3Q0UToiFRJ2HK3S+HYyZ7A0e13DzgXw2Qi0+tlbFqyJCvQWYIYkjVxDlMawYnLh4BzdNFDOlTwBWp5yMXoacH3CmfvL0ftwU3aE0rGTypWHNo1Z7x93fEE/hYq6kPi/gBqVTEWiAlSTAAAmnruJQmHFy0ZzYJbVjRaUNHks/7C8lh8cIbOWBIsVuapaTIFA8L6crL9fhVYWHVSfGFlSamaqupqHugU/uMXvLDk+WTI3YjhZe2/39qOKPFXj89k/t+H0yAt2VAU6HYPYLWNWumVBxqLquqEwtXB+LtesN9I6vOfN1zhSfq68S0VNU9xzvp6j5dW9ycWUebp9dhfkHD7NDA1wU77xiUGmGY9g9UFvdQsri3MhnplgG4neSI24qQiJcZ7K7OBJcywICL3jo4USmZ7ybQoAdZu9UmCah22BsCegI7B1Fzz3RD2HZacuj9HpCJvQt7Ru0RglFAiTlY+gFozH0PGEXSMte/jxKSs/VAhKj6Ugg==
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(36756003)(1076003)(70586007)(7636003)(70206006)(356005)(83380400001)(508600001)(2616005)(36906005)(5660300002)(86362001)(7416002)(4326008)(107886003)(336012)(54906003)(47076005)(426003)(6916009)(186003)(2906002)(6666004)(316002)(82310400003)(8676002)(8936002)(26005)(36860700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 04:18:06.8334
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 04:18:09.3780
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 281ca7ca-1828-4be3-35f3-08d97d7ffaaa
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34fa18d5-eee9-4133-5631-08d97d7ffc37
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT024.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT034.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1592
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3901
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is a follow-up that avoids the need for a BUILD_BUG_ON().
+In order to remove the need to manually keep three different files in
+synch, provide a common definition of the mapping between enum
+migrate_reason, and the associated strings for each enum item.
 
-Pre-requisite: today's linux.git, plus Weizhao Ouyang's series v2, here:
+1. Use the tracing system's mapping of enums to strings, by redefining
+and reusing the MIGRATE_REASON and supporting macros, and using that to
+populate the string array in mm/debug.c.
 
-https://lore.kernel.org/all/20210921064553.293905-1-o451686892@gmail.com/
-
-Testing: I've done some cross-compile testing with various .config's, and
-a short LTP test run. However, I have not yet attempted to verify the
-actual reason strings during debugging.
-
-I also noticed that migrate_mode is correctly passed around as an enum,
-but migrate_reason is inaccurately passed around as an int. Not sure if
-I'll follow up on that, as there is precious little (none, actually?)
-type safety assistance from the compiler in discerning between an int
-and an enum, so not much value in fixing it up.
+2. Move enum migrate_reason to migrate_mode.h. This is not strictly
+necessary for this patch, but migrate mode and migrate reason go
+together, so this will slightly clarify things.
 
 Cc: Weizhao Ouyang <o451686892@gmail.com>
 Cc: "Huang, Ying" <ying.huang@intel.com>
-
-John Hubbard (1):
-  mm/migrate: de-duplicate migrate_reason strings
-
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
  include/linux/migrate.h      | 19 +------------------
  include/linux/migrate_mode.h | 13 +++++++++++++
  mm/debug.c                   | 20 +++++++++++---------
  3 files changed, 25 insertions(+), 27 deletions(-)
 
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index c8077e936691..3d154fe03c96 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -19,24 +19,7 @@ struct migration_target_control;
+  */
+ #define MIGRATEPAGE_SUCCESS		0
+ 
+-/*
+- * Keep sync with:
+- * - macro MIGRATE_REASON in include/trace/events/migrate.h
+- * - migrate_reason_names[MR_TYPES] in mm/debug.c
+- */
+-enum migrate_reason {
+-	MR_COMPACTION,
+-	MR_MEMORY_FAILURE,
+-	MR_MEMORY_HOTPLUG,
+-	MR_SYSCALL,		/* also applies to cpusets */
+-	MR_MEMPOLICY_MBIND,
+-	MR_NUMA_MISPLACED,
+-	MR_CONTIG_RANGE,
+-	MR_LONGTERM_PIN,
+-	MR_DEMOTION,
+-	MR_TYPES
+-};
+-
++/* Defined in mm/debug.c: */
+ extern const char *migrate_reason_names[MR_TYPES];
+ 
+ #ifdef CONFIG_MIGRATION
+diff --git a/include/linux/migrate_mode.h b/include/linux/migrate_mode.h
+index 883c99249033..f37cc03f9369 100644
+--- a/include/linux/migrate_mode.h
++++ b/include/linux/migrate_mode.h
+@@ -19,4 +19,17 @@ enum migrate_mode {
+ 	MIGRATE_SYNC_NO_COPY,
+ };
+ 
++enum migrate_reason {
++	MR_COMPACTION,
++	MR_MEMORY_FAILURE,
++	MR_MEMORY_HOTPLUG,
++	MR_SYSCALL,		/* also applies to cpusets */
++	MR_MEMPOLICY_MBIND,
++	MR_NUMA_MISPLACED,
++	MR_CONTIG_RANGE,
++	MR_LONGTERM_PIN,
++	MR_DEMOTION,
++	MR_TYPES
++};
++
+ #endif		/* MIGRATE_MODE_H_INCLUDED */
+diff --git a/mm/debug.c b/mm/debug.c
+index fae0f81ad831..4333b6784a20 100644
+--- a/mm/debug.c
++++ b/mm/debug.c
+@@ -16,17 +16,19 @@
+ #include <linux/ctype.h>
+ 
+ #include "internal.h"
++#include <trace/events/migrate.h>
++
++/*
++ * Define EM() and EMe() so that MIGRATE_REASON from trace/events/migrate.h can
++ * be used to populate migrate_reason_names[].
++ */
++#undef EM
++#undef EMe
++#define EM(a, b)	b,
++#define EMe(a, b)	b
+ 
+ const char *migrate_reason_names[MR_TYPES] = {
+-	"compaction",
+-	"memory_failure",
+-	"memory_hotplug",
+-	"syscall_or_cpuset",
+-	"mempolicy_mbind",
+-	"numa_misplaced",
+-	"contig_range",
+-	"longterm_pin",
+-	"demotion",
++	MIGRATE_REASON
+ };
+ 
+ const struct trace_print_flags pageflag_names[] = {
 -- 
 2.33.0
 
