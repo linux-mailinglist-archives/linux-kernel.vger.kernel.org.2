@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096FD414237
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD3E414234
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhIVG6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:58:51 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:44608 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhIVG6u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:58:50 -0400
-Received: by mail-wr1-f41.google.com with SMTP id d6so3600725wrc.11;
-        Tue, 21 Sep 2021 23:57:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Yh0iKTCDgYFSJb9XyCYVMvV6OqeBY6bHXPRIYvm+yjg=;
-        b=DHH8MnWsS94RMlIvrvzGevuRA74xSZaO1WgIJJ1BFnisOIcsikf1Szzl6AZiWdJM1a
-         n1kfTgyJZgldeKPTU18jcUMayQ9Edw45WsOJxo4gh6EG70o03w5tfDPYFBkVju8jR82w
-         HbASvX0B0wcFaDB8GmwwTyptXGrRjz6QuEGG4K9wn2zC3mdWj/ICyOgu8M8MUEEGi2VK
-         mBkguP2xEfhuLvgo8xiwxIB4Ae+F9ldX1HFBboyDoa6AfZ4uOC8J4ZOfrKFes6hk98zB
-         G/Q2/SsNUhmA4hvrZHe3teIi2TySa2B1B83FVL8GrsKQQGfmIaWuWHtPf5xadWPDQidw
-         ir5w==
-X-Gm-Message-State: AOAM5303zMuX53Hi8W3HTweAJYJokh529+snaHq9CbO4VDQvjMdTKZ5c
-        PN7pKzVkzzEGGxoXLXhlmL4aNZlPjU8=
-X-Google-Smtp-Source: ABdhPJyttFxWYlul8CE2uWk9E3jp4KZqp4CxVqDLXA0aqJyIInsfN9Mr2HtAfGCdR5CEcLvoYpEVSg==
-X-Received: by 2002:a7b:cd0f:: with SMTP id f15mr8629589wmj.173.1632293839620;
-        Tue, 21 Sep 2021 23:57:19 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id i67sm1164807wmi.41.2021.09.21.23.57.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 23:57:19 -0700 (PDT)
-Message-ID: <1fd9ed1a-edd2-a154-da1c-022a89b2c722@kernel.org>
-Date:   Wed, 22 Sep 2021 08:57:17 +0200
+        id S232958AbhIVG6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:58:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:43882 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232799AbhIVG57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 02:57:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B8A6113E;
+        Tue, 21 Sep 2021 23:56:29 -0700 (PDT)
+Received: from [10.163.73.113] (unknown [10.163.73.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0421A3F40C;
+        Tue, 21 Sep 2021 23:56:24 -0700 (PDT)
+Subject: Re: [PATCH v2 07/17] arm64: Add Neoverse-N2, Cortex-A710 CPU part
+ definition
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
+        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
+        leo.yan@linaro.org, mike.leach@linaro.org,
+        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-8-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <378f0d4d-138c-3a79-582a-79849175deb5@arm.com>
+Date:   Wed, 22 Sep 2021 12:27:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 16/16] tty: drop tty_flip_buffer_push
+In-Reply-To: <20210921134121.2423546-8-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210914091134.17426-1-jslaby@suse.cz>
- <20210914091415.17918-1-jslaby@suse.cz>
- <20210914091415.17918-9-jslaby@suse.cz>
- <YUMWaCpT4s8dQKiy@hovoldconsulting.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <YUMWaCpT4s8dQKiy@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16. 09. 21, 12:03, Johan Hovold wrote:
-> On Tue, Sep 14, 2021 at 11:14:15AM +0200, Jiri Slaby wrote:
->> Since commit a9c3f68f3cd8d (tty: Fix low_latency BUG) in 2014,
->> tty_flip_buffer_push() is only a wrapper to tty_schedule_flip(). All
->> users were converted, so remove tty_flip_buffer_push() completely.
+
+
+On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
+> Add the CPU Partnumbers for the new Arm designs.
 > 
-> Did you consider inlining tty_flip_buffer_push() or unexporting
-> tty_schedule_flip() instead?
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Yes -- I see no reason for two functions doing the very same thing. It's 
-only confusing.
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-> The name tty_flip_buffer_push() is arguable more descriptive since the
-> work may already be running and is also less tied to the implementation.
+> ---
+>  arch/arm64/include/asm/cputype.h | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> The ratio of drivers using tty_flip_buffer_push() over
-> tty_schedule_flip() is also something like 186 to 15 so that would
-> amount to a lot less churn too.
-
-OK, I can do either way. I chose this path as tty_schedule_flip was a 
-wrapper to tty_flip_buffer_push. In any case, I wouldn't take the number 
-of changed drivers as a measure. But if it makes more sense for people 
-regarding the naming, I will "flip" the two flips.
-
-> Also, can you please start adding cover letters to your series to
-> provide an overview of what it is you're trying to accomplish?
-
-I am not a fan of cover letters as they are not Cced to people who are 
-Cced in separate patches. So what would you like to see in the letter? 
-This series are just a random cleanup and IMO there is not much more to 
-be said except what is in their commit logs.
-
-thanks,
--- 
-js
-suse labs
+> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
+> index 6231e1f0abe7..19b8441aa8f2 100644
+> --- a/arch/arm64/include/asm/cputype.h
+> +++ b/arch/arm64/include/asm/cputype.h
+> @@ -73,6 +73,8 @@
+>  #define ARM_CPU_PART_CORTEX_A76		0xD0B
+>  #define ARM_CPU_PART_NEOVERSE_N1	0xD0C
+>  #define ARM_CPU_PART_CORTEX_A77		0xD0D
+> +#define ARM_CPU_PART_CORTEX_A710	0xD47
+> +#define ARM_CPU_PART_NEOVERSE_N2	0xD49
+>  
+>  #define APM_CPU_PART_POTENZA		0x000
+>  
+> @@ -113,6 +115,8 @@
+>  #define MIDR_CORTEX_A76	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A76)
+>  #define MIDR_NEOVERSE_N1 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N1)
+>  #define MIDR_CORTEX_A77	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A77)
+> +#define MIDR_CORTEX_A710 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A710)
+> +#define MIDR_NEOVERSE_N2 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N2)
+>  #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
+>  #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
+>  #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
+> 
