@@ -2,155 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9824415441
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB5A415442
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238607AbhIVXyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 19:54:00 -0400
-Received: from mail-bn8nam11on2057.outbound.protection.outlook.com ([40.107.236.57]:7425
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230412AbhIVXxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 19:53:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JNDYd+c77vVZ9GXwDv1iRJx4shH9P/pdp6VTBAQAK7M6vMQsrloLT/bcpcjzeU5l8gZ2ekmSUpNVXiZRt1jUVNVaaBzlNBkjir+kB260NFZIjAxcGg99ctDpC/toaD7XRjFXgv2FwMGmYVYH52ks2i2N2PxwbBqlHum9B60djSUEnNRqNaqCgZv0lYX6SV+lO/5rB/sGb7Lfs5jUAM+Z3PECLx7GK15lKSjDF5/wqsuCFu8/XwdjLDPQiG0rstomjMAo3Jrld7UnA04var1ZIfHodLssEXeCXCoTSVbZpx9iRxaII96pMKh+D0iyysSoyd0OrWrKV437zwAccp9qSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=atJ18C3ejINjt6KryKzxDGMlgHXd1wicRB6JioNkDAE=;
- b=UKNvNMN/0QdkHHGRXbCACuS8qjBM+tga6x6lDuPza7qXT00qXhv4S3t22M6bg6W51bRtyz4/CRbiPmyde0jRxDLyIz4gYmYzK+mdPO43nonDa3qhc9UGTJGb/kPl2zGFVSzGp++K1PYF+NmUjIIDoLxJ4f613cmPPUvXPmAy+npxKoA3oUCWMBqphpRQI39Iezd+RGANEs7NTozh//uoJANXS6+Hwf9ycQ6iMm5D0+5dON7lJsOSoXYaGrcNGBEvy3oJPhwRPuDzLSY3PVzLiEgrYOZcfFvAHKl4xvH9oM5WV6SHObQwc/Hswb6XSTV9afL4ZQoVlBUz1Nf7Cq6cQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=atJ18C3ejINjt6KryKzxDGMlgHXd1wicRB6JioNkDAE=;
- b=mpfKxlD0CqWgaec24XPVE+NdHNH9zu1yUmeySlqCw8wVfMMa1nhw1Z3rRBMH5jCoV4KpNWG5lad6thkLzNDXStgPUkGQpNUz7tmsJqd7GYVNLx9xyYbf/FMsKuG5IC4AUEjXC5z14agpo9OzAYJHOwLOGHJGUBs827o+J1Bu2RFog5sn6jOkAeliA/0z/nE6ovFxQh2TCNLYjqZaj/1GhlDRTSyy8IpGJxaVokTso34arLzocYy88xBdu4TTuekiTKsEnp5L9f5MSLdY5vq9lLklwsgzvnwg4h9w3eE5gbuvSn3hgaw9r5nkRXp6DyjO1QOIYLo+vAtZ0JEPxDzDlA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5174.namprd12.prod.outlook.com (2603:10b6:208:31c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
- 2021 23:52:09 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 23:52:09 +0000
-Date:   Wed, 22 Sep 2021 20:52:08 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
-Message-ID: <20210922235208.GC964074@nvidia.com>
-References: <20210919063848.1476776-4-yi.l.liu@intel.com>
- <20210921160108.GO327412@nvidia.com>
- <BN9PR11MB5433D4590BA725C79196E0248CA19@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922005337.GC327412@nvidia.com>
- <BN9PR11MB54338D108AF5A87614717EF98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922122252.GG327412@nvidia.com>
- <20210922141036.5cd46b2b.alex.williamson@redhat.com>
- <BN9PR11MB543366158EA87572902EFF5E8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922164506.66976218.alex.williamson@redhat.com>
- <BL1PR11MB5429B107D90E3CDE21139CE98CA29@BL1PR11MB5429.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BL1PR11MB5429B107D90E3CDE21139CE98CA29@BL1PR11MB5429.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL0PR05CA0020.namprd05.prod.outlook.com
- (2603:10b6:208:91::30) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S238591AbhIVXyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230412AbhIVXyN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 19:54:13 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51F7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:52:42 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id q14so4686505ils.5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=/oaUPZNu78Mtn0od8873S9rsmSItTVGj8iF52jAOkLQ=;
+        b=QD79GbfZ3ZzXyK6ZfAwYA7hlE9UV53UWTfjXRojbfePP5Fnl5Iay7izzoPD+h36+8K
+         joJqvJ1C+8DqdnYHJAypzoKaPMWEv1Mm1AQDONFtbYtr9kAKWMfGFYDMtG2xjPwxyO1d
+         wZcmXGMh0SXWCYhihHsvr+mY1t5PySegb/9OFxpq+0HhCsbEfrNwaFcRuV/W5R0TBS0v
+         b6VtRsCNjDzflTEWX926Lq/PmZP6IndHFGyrz9kwWjOLYmwkLWzLSc+ApCjw9bkM4FWR
+         xwO/EtrxTUZ9uxXOYiKlTKsre/hLNcYbpZRCl7AryMaGCYdSXv8+Ipr+hC565gzRBG5m
+         LvYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=/oaUPZNu78Mtn0od8873S9rsmSItTVGj8iF52jAOkLQ=;
+        b=kTu6O2XClfBc7QSHkPARon0REvzAQTuJCVo6bUePClQuUbdXwon2Yvi9KOM4XpMkU7
+         dI4aJA2wM03hq0NyZWl2lwxPBP4aRu1Tr8u1NfMHgbpy1qBwGB+lz6YFSk3dOOwqCra4
+         iBPK5+2mqP4yIHrpxKboqTPEhlIJTsCcWjd9+M8EiGq9TE2xIVeAV2fFfWfYj+bGhJzC
+         ukxRS90sziDnraPHT+ysnCf4twv88VP7RTgcz4UBOpeQZ2zAJW65y9qUy3zfUTNuadjJ
+         dY1ZAh6+ORg/Wajs1gCOMqnlvYYbX6iwniC6ndiaNishbrTc53Ia7M+jtsUXfLbxNOHk
+         3I4Q==
+X-Gm-Message-State: AOAM532uMsux8ZIp98CFi67FIWUXpEHB9yuyFCMcsdKMLjv6FtZBCAH6
+        sy6KTTPUQjOOB6Ce7v2E/46dM97dsWTYre7YPHg=
+X-Google-Smtp-Source: ABdhPJxhHX9AwMC3uqSls4e35wFseNsNsv+giCrSHCxXll1Uk4phxrhc2Ab0Un74Kk1VD6rJfKvt9e0aPj+Nc4tb0VI=
+X-Received: by 2002:a05:6e02:1bed:: with SMTP id y13mr1244949ilv.249.1632354762259;
+ Wed, 22 Sep 2021 16:52:42 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR05CA0020.namprd05.prod.outlook.com (2603:10b6:208:91::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.7 via Frontend Transport; Wed, 22 Sep 2021 23:52:08 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mTC24-004BpB-1C; Wed, 22 Sep 2021 20:52:08 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 04beffb8-217e-4103-5023-08d97e23fd4e
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5174:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5174E85F4C5DE0A0C0D19F11C2A29@BL1PR12MB5174.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rn191CBPE6VDowXpqt3SqrsrVRAm5cZu5RfAwhBUGYYP6CaQIxnhp265nlB7KPk1FKUXCLIIN1MyXJ+FM4F+54tVWOiqayAjqLZIeFyeqSQwRJ4hlwiHA5XGJMrJmwZhQD763UPftsB7/ZTnyWYa7sGKD29q0jLkKgoSWntFaaM1NOuNDzDy+iCbFzeyGdH5tl1ndqo+QrSUBDat1L31H+JfL1DodNOiRRN9r5vhaj7xI1JkjaSxLcdTCm1GbtBmtPHoXvm/YQIq34YjnuMgEtQ/7ayQctaOfe6GcEd1iSlcFprUjdaUFC75prWQMBQiWTuuIaGZtq+o5aKw52qx8snhHAl/iyCoZVhASpuGCY8EhiibwFDp3sVU3Da+puCxn971qiLZu6WBTwMjZF8yk5UEORBkOlO0cPdNYGQGc/EY9Rv23nMy41U/ZyrdR6ltQmrl7DvnTK+XFUIUFNfqr59DkF/+VH4+yFPNww4lry0J6ZrgLNW23kCXrA9Sj41LnKicUgRLzX4ZWYLHL8PiVTMUFusYwjmXezn4V8RCsqnMU08rgrbkzzUWxJ57IbqKWQ0C7xeLFgM2MirWU4EZDAfEAKoAKbLV46kqztDlWE7nIivL+evSDndrHpFswbsExGmbwFrRekrfXTcOOL2jyhOskpy9vtV7QJwBWKzfglbkwkSicJeZLnXKIxeZzS16
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(8676002)(86362001)(2906002)(4744005)(66556008)(8936002)(186003)(5660300002)(26005)(2616005)(316002)(7416002)(6916009)(426003)(54906003)(36756003)(9786002)(9746002)(33656002)(66946007)(1076003)(107886003)(38100700002)(508600001)(4326008)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5J9KnmbvaN/a13q3pKoojadrgpMAQ9ZsmlzMnFIDTXVJ4BufjJV0hKn9YH5w?=
- =?us-ascii?Q?Rh98Nq/SLsbgKWNImKDvMP5PJtWTCT2oSOM7sMvU6WTpQ8ODhgTS+t9Ry7kn?=
- =?us-ascii?Q?KdS5ly9vHJonQuGjJKSERjsRMUabFPv/qnxsKS03do2y44uGXdLhXB5BY+3a?=
- =?us-ascii?Q?wzPajnt3NrBYRHjHF2QeHl8GhWatGghzDZJ5MAj8hYHYwk9bE9B+GiQ2HSt7?=
- =?us-ascii?Q?CJXDP1mUvPHV44RUQPl4NTZLWgbz97WaXcroDZe2n1EhqyMU3JRz6i98lKiU?=
- =?us-ascii?Q?xQQoafva9sGtcowk1sJjp3I7VB9KJbh0XdQih1ckmLddyzMfRyt4+73G8KkQ?=
- =?us-ascii?Q?bCfnFQRfp6vhZg0cQaAHtfoUlS/ECQgF8vxViq+gBymcbzsfwZt8uZCbZhAz?=
- =?us-ascii?Q?Ut2dY4E0gz7rMIBti3GvtV1F2bSrZn6vThUafEF4d57ja86r+5g41tjQA1H/?=
- =?us-ascii?Q?acb2LGhYwgK8AAay/6Dgg+PZo/VYCfqu/6iz6nhQro9pIOZGT+cCFoPSNyIa?=
- =?us-ascii?Q?4x79HxTMNk1bEOJQ3Yki6VjpnOfslrmUrY+svm5JLSZ19URgXlygr8KrfVWu?=
- =?us-ascii?Q?vPTPiDQGuzQMIM/nOpe5AefsvxI9oRtdKR6cFKoLBHgBhHr/IPz8SOqXN7pd?=
- =?us-ascii?Q?7pW07aQdgLiZPGrFlirx/HIhNYVoY2ieP6EmwLyb/cjqwDJzZSQWgulXVWs/?=
- =?us-ascii?Q?o/v2n+My+vrHT2TH1BzljCA9WLsycju7/pEn22+fqDETBUtPOMZNzojBUzet?=
- =?us-ascii?Q?0uDR5QpduvStbly2fEueymMxf+q9sRwuzPDNscAEYJleI6JLx/Wlo296fZzd?=
- =?us-ascii?Q?+8b8iqyVH4W6t/eh4qohu168r30PM4M0gI4E6+GCgXDq+79zb1AoJjAF0ohG?=
- =?us-ascii?Q?+qQvycVkoblO5imevKkPjx/ltRoNQ+DKRGSZ8SZeowxpitdh5X0GnPudNbk4?=
- =?us-ascii?Q?MIUbpdC9rhrNEkDEUi5hJmIkRfEG7hChVSMa97bDLln82zN2eaG+hi6i3Mny?=
- =?us-ascii?Q?Z7tvXEfEmiUGzUDMPxQAA1sgewkQgTglA17KQlt8T40j9pudqPy0THh8J9Hw?=
- =?us-ascii?Q?mIhPQBoehaUBEFEGwCORgVGSExVF2bZC1/WTvcgMmdrGSbyBCV7KpbPqJ/A7?=
- =?us-ascii?Q?yznRR8vcs/CqL+gAUUgJrH0oCHxUAcwfadLlDU3tCJ8cMRLVbEK8brFhFf2b?=
- =?us-ascii?Q?/tjKeofPAndnDliQmNGkKuE9w5kuG5foCLiTfKoEl3Qcx+lgKYam3z9NfUDY?=
- =?us-ascii?Q?LfQUUCwefy4V+tRYNQHe/HE8ORu2Q6lhkGPln4fGT9RHpDgOr7W+YaQ44hNU?=
- =?us-ascii?Q?RGjsXbNhFxTOpIptJJu35Jiq?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04beffb8-217e-4103-5023-08d97e23fd4e
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 23:52:09.1037
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9Z49L+KopVcoPyfdWhzv1yEJfNwUmtshlEOSSicq2sdnoGMjSkcNEp9Fah7w0wIa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5174
+Sender: mcdonnalouise@gmail.com
+Received: by 2002:a4f:26d2:0:0:0:0:0 with HTTP; Wed, 22 Sep 2021 16:52:41
+ -0700 (PDT)
+From:   Jackie Fowler <jackiefowler597@gmail.com>
+Date:   Wed, 22 Sep 2021 23:52:41 +0000
+X-Google-Sender-Auth: B2vkvxCG4CocVr-Qn1MEwXeBX0A
+Message-ID: <CAPVGnmUsy8f_HNgp_2HweN5oZagc-gndReeDG9PvPADoWJ1VSg@mail.gmail.com>
+Subject: Good Day My beloved,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 11:45:33PM +0000, Tian, Kevin wrote:
-> > From: Alex Williamson <alex.williamson@redhat.com>
+Hello,
 
-> btw I realized another related piece regarding to the new layout that
-> Jason suggested, which have sys device node include a link to the vfio
-> devnode:
-> 
-> 	/sys/bus/pci/devices/DDDD:BB:DD.F/vfio/vfioX/dev
-> 
-> This for sure requires specific vfio driver support to get the link
-> established.
-
-It doesn't. Just set the parent device of the vfio_device's struct
-device to the physical struct device that vfio is already tracking -
-ie the struct device providing the IOMMU. The driver core takes care
-of everything else.
-
-Jason
+   I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs.Fowler.Jackie,a widow and citizen of
+Canada. I am suffering from a long time brain tumor, It has defiled
+all forms of medical treatment, and right now I have about a few
+months to leave, according to medical experts. The situation has
+gotten complicated recently with my inability to hear proper, am
+communicating with you with the help of the chief nurse herein the
+hospital, from all indication my conditions is really deteriorating
+and it is quite obvious that, according to my doctors they have
+advised me that I may not live too long, Because this illness has
+gotten to a very bad stage. I plead that you will not expose or betray
+this trust and confidence that I am about to repose on you for the
+mutual benefit of the orphans and the less privilege. I have some
+funds I inherited from my late husband, the sum of ($ 12,500,000.00
+Dollars).Having known my condition, I decided to donate this fund to
+you believing that you will utilize it the way i am going to instruct
+herein. I need you to assist me and reclaim this money and use it for
+Charity works, for orphanages and gives justice and help to the poor,
+needy and widows says The Lord." Jeremiah 22:15-16.=E2=80=9C and also build
+schools for less privilege that will be named after my late husband if
+possible and to promote the word of God and the effort that the house
+of God is maintained. I do not want a situation where this money will
+be used in an ungodly manner. That's why I'm taking this decision. I'm
+not afraid of death, so I know where I'm going. I accept this decision
+because I do not have any child who will inherit this money after I
+die. Please I want your sincerely and urgent answer to know if you
+will be able to execute this project for the glory of God, and I will
+give you more information on how the fund will be transferred to your
+bank account. May the grace, peace, love and the truth in the Word of
+God be with you and all those that you love and care for.
+I'm waiting for your immediate reply.
+Best Regard's .
+Mrs.Fowler.Jackie.
+Writting From the hospital.
+May God Bless you,
