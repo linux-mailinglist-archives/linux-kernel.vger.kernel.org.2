@@ -2,141 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550B8414C95
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813AF414C9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236279AbhIVPAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236304AbhIVPA3 (ORCPT
+        id S236327AbhIVPCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:02:25 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:43871 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236303AbhIVPCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:00:29 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37116C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:58:59 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id w19so2900779pfn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:58:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4BWFRlURH0zCIzDJvPF7W8LOo55K5uYFem7UNOAo2W4=;
-        b=P3j9Vr5KoI1hGqte/zzUiZq9ueEus3vwpVyhweN4PzPXBSF6gJEpN2JysyuxyUbH+c
-         hTJRqQQQz5xcbLGhfs+ofgEvrmkd+XZJNiSkM/9N5q7QpzX/OJceRjXeT7U0s5FlAvuN
-         NuYhM+bBKIDbrGfD31uEdiue5ZFcIR+SK9Jxr/HUJU2u0W1gILQ9TaYreehyonGdh3bs
-         3xX6zro4/xGqGj/WqpOHRxJ/jUgjWdtKB8FTFDKZ/OC5UmJHVBiBJx/n3Ges4rEpkyGx
-         Hb6J/vje2oXUtI8tWq0Z1zDTTm5T3sdxP3kl0qSKzbP4uuzuneyIDU2PQ1JfdvkNmVPl
-         pkkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4BWFRlURH0zCIzDJvPF7W8LOo55K5uYFem7UNOAo2W4=;
-        b=xS0MJpSTfrRSmqtRuQ67y+HlBT/w4dxzCWvzIIqliLi/aNtt5aJ4Riwk2eafDbLyJF
-         tIIJ9a/kzancV5dJAxwMWu8wsIHXSKg87bnKzfRLRaz1xJz/5LHUIc1Merpvra2Haleu
-         Qc78h0irSSeSKYan+3df1UU2MnpvSI7YBnOCRXlo9TrOpq6wUkZGBCTp/fV8jH2JYkKr
-         BTgUBZxqiXdMByzr11gC6vSR181gqg0VURuhzhEV5w/NBAkrzteJ8ol9EuluXIxBBZNl
-         YMmBg5Gml8Ju0r3C1EdmS2SkqpDgwtUsnVzT/2aIdiLOyYfxArbEcxhfp56YVrq7fs0b
-         L8yA==
-X-Gm-Message-State: AOAM533DX0tpZQWTChnNQQ9FKQfZZepKynwaAxTpYUJ7RNuG701uXAnR
-        AGJ13OFJroTIo3+2vc7VqdZ7fA==
-X-Google-Smtp-Source: ABdhPJwdYeOPs+9n16+HPBDRZMNwU3ntjxP7QSgPHZIuMryueYJCypE73VnvJPFH3zw0ebvOvgxc0Q==
-X-Received: by 2002:a63:f959:: with SMTP id q25mr64757pgk.79.1632322738517;
-        Wed, 22 Sep 2021 07:58:58 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i27sm2830809pfq.184.2021.09.22.07.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 07:58:57 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 14:58:53 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Hao Xiang <hao.xiang@linux.alibaba.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chenyi.qiang@intel.com,
-        shannon.zhao@linux.alibaba.com
-Subject: Re: [PATCH] KVM: VMX: Check if bus lock vmexit was preempted
-Message-ID: <YUtEraihPxsytaJc@google.com>
-References: <1631964600-73707-1-git-send-email-hao.xiang@linux.alibaba.com>
- <87b411c3-da75-e074-91a4-a73891f9f5f8@redhat.com>
- <57597778-836c-7bac-7f1d-bcdae0cd6ac4@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <57597778-836c-7bac-7f1d-bcdae0cd6ac4@intel.com>
+        Wed, 22 Sep 2021 11:02:23 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 87124580ACF;
+        Wed, 22 Sep 2021 11:00:53 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Wed, 22 Sep 2021 11:00:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=hfJGbhpQSJZLILbIIAyLZ6CJq6Tq
+        NG5zUILLNAc/iKY=; b=SB501QdNOkqUVa4lGU0E3RCAlGzm2baEyrBGgNR+wUpf
+        lX9wJpOjCVfVYb/MYsH2f3SiyB+1hJMTTHpcDuHs5Fw3GOby1lLf/3Hfxi7dyJVq
+        3yHfA097XlODrojoaQHT9GHfP3uU4lTONusxyXlwvK+LTl2AhOy35OKRVyh/f7Cq
+        a21Pkj9TMMxdojqNPl7RUBF6eTnWSdaRO889YZ1W/s6gNN2me9Ze5PAPy+5xBBNJ
+        du0UsAbYK72ZrqJ/khFC/H33WXvhX6d0lProcRLiP/PtKYJglMDaMzRXjYTUx+8D
+        IJ+LBTYo89RQfX++JYI03Qrm7CUb2oxh40sRXv7rJQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=hfJGbh
+        pQSJZLILbIIAyLZ6CJq6TqNG5zUILLNAc/iKY=; b=MgXmBN/x0cmOjqA0oeR+zK
+        Czm7sCxBo3muXxCDjI0j7Wks3RlUghpPzlQCTUbsvZEnn9dUDgnzYNFTzHEnHnQA
+        p1FY6mG4GinWwQmjobxcuejeZqPlNP7foVt7zuXl1r1b4C9RCx9bTe5DGkfX6Nex
+        yHomm/E350P3hjgDzn5Qk3Gb1wDDJTvtUGcG08bIP2mBq+6DKBawU49ZqNH8Gblz
+        +1cqCc7qyW2wxoJgn749w7xGK19jnG/TxQx46nbETk2e7jJuvlTFhVaoUQelewEl
+        zmkaDy6uxmcxU3GWGJJvrbdn0FJbjiy3R9oxV+FNFvexLjHhKKg4Oe/Tk0mE4iXQ
+        ==
+X-ME-Sender: <xms:I0VLYVRliXKijmALhRWv_ktFhksh1M8KS2wY4mgc8e5VKQWl2oVNvw>
+    <xme:I0VLYey4777DO29fNiAZzOTbkI0zEAyytqgOEOz3IwK55AV-GFJA0RdjQwcByA93F
+    hzhReWupo_IgotOzQM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeijedgkedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdfuvhgv
+    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
+    htthgvrhhnpeehjefgtddtfeelfeetjeeifeduueehleektdegtdejheeiteeuleehuefh
+    geehgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:I0VLYa0cJsU9J0FMSJHKrhwPXd8TUqy0qEweejSjQCY7xf-FX4sseQ>
+    <xmx:I0VLYdAPXemT349Yav2fXzmJVO7WJfxdi0kqnhLIN3kHZ2DSJFxFvg>
+    <xmx:I0VLYehf2Chz3h_D8JRi7AloNLuhB_Xz0tdNY9LFCBZZ83aMlTnBlA>
+    <xmx:JUVLYZPEFUIVgcdYpzYoXrwHmHRqU8pW6ZnZydxf7z_e7yxc5ZgA8A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id AE18751C0060; Wed, 22 Sep 2021 11:00:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1302-gc62ab821ef-fm-20210921.001-gc62ab821
+Mime-Version: 1.0
+Message-Id: <d8024591-0142-442e-98e9-0c92a7679768@www.fastmail.com>
+In-Reply-To: <YUniTtc/DwGYPD+c@kuha.fi.intel.com>
+References: <20210918120934.28252-1-sven@svenpeter.dev>
+ <20210918120934.28252-9-sven@svenpeter.dev>
+ <YUniTtc/DwGYPD+c@kuha.fi.intel.com>
+Date:   Wed, 22 Sep 2021 17:00:31 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Heikki Krogerus" <heikki.krogerus@linux.intel.com>
+Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Hector Martin" <marcan@marcan.st>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "Alexander Graf" <graf@amazon.com>,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
+Subject: =?UTF-8?Q?Re:_[RFT_PATCH_8/9]_usb:_typec:_tipd:_Switch_power_state_to_S0?=
+ =?UTF-8?Q?_for_Apple_variant?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021, Xiaoyao Li wrote:
-> On 9/22/2021 6:02 PM, Paolo Bonzini wrote:
-> > On 18/09/21 13:30, Hao Xiang wrote:
-> > > exit_reason.bus_lock_detected is not only set when bus lock VM exit
-> > > was preempted, in fact, this bit is always set if bus locks are
-> > > detected no matter what the exit_reason.basic is.
-> > > 
-> > > So the bus_lock_vmexit handling in vmx_handle_exit should be duplicated
-> > > when exit_reason.basic is EXIT_REASON_BUS_LOCK(74). We can avoid it by
-> > > checking if bus lock vmexit was preempted in vmx_handle_exit.
-> > 
-> > I don't understand, does this mean that bus_lock_detected=1 if
-> > basic=EXIT_REASON_BUS_LOCK?  If so, can we instead replace the contents
-> > of handle_bus_lock_vmexit with
-> > 
-> >      /* Do nothing and let vmx_handle_exit exit to userspace.  */
-> >      WARN_ON(!to_vmx(vcpu)->exit_reason.bus_lock_detected);
-> >      return 0;
-> > 
-> > ?
-> > 
-> > That would be doable only if this is architectural behavior and not a
-> > processor erratum, of course.
-> 
-> EXIT_REASON.bus_lock_detected may or may not be set when exit reason ==
-> EXIT_REASON_BUS_LOCK. Intel will update ISE or SDM to state it.
-> 
-> Maybe we can do below in handle_bus_lock_vmexit handler:
-> 
-> 	if (!to_vmx(vcpu)->exit_reason.bus_lock_detected)
-> 		to_vmx(vcpu)->exit_reason.bus_lock_detected = 1;
-> 
-> But is manually changing the hardware reported value for software purpose a
-> good thing?
 
-In this case, I'd say yes.  Hardware having non-deterministic behavior is the not
-good thing, KVM would simply be correctly the not-technically-an-erratum erratum.
 
-Set it unconditionally and then handle everything in common path.  This has the
-added advantage of having only one site that deals with KVM_RUN_X86_BUS_LOCK.
+On Tue, Sep 21, 2021, at 15:46, Heikki Krogerus wrote:
+> On Sat, Sep 18, 2021 at 02:09:33PM +0200, Sven Peter wrote:
+>> The Apple CD321x comes up in a low-power state after boot. Usually, the
+>> bootloader will already power it up to S0 but let's do it here as well
+>> in case that didn't happen.
+>> 
+>> Suggested-by: Stan Skowronek <stan@corellium.com>
+>> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+>> ---
+>>  drivers/usb/typec/tipd/core.c     | 44 +++++++++++++++++++++++++++++++
+>>  drivers/usb/typec/tipd/tps6598x.h |  6 +++++
+>>  2 files changed, 50 insertions(+)
+>> 
+>> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+>> index e96b17fe6af6..26807c050662 100644
+>> --- a/drivers/usb/typec/tipd/core.c
+>> +++ b/drivers/usb/typec/tipd/core.c
+>> @@ -30,6 +30,7 @@
+>>  #define TPS_REG_INT_MASK2		0x17
+>>  #define TPS_REG_INT_CLEAR1		0x18
+>>  #define TPS_REG_INT_CLEAR2		0x19
+>> +#define TPS_REG_SYSTEM_POWER_STATE	0x20
+>>  #define TPS_REG_STATUS			0x1a
+>>  #define TPS_REG_SYSTEM_CONF		0x28
+>>  #define TPS_REG_CTRL_CONF		0x29
+>> @@ -84,6 +85,8 @@ struct tps6598x_hw {
+>>  	unsigned int irq_data_status_update;
+>>  	unsigned int irq_plug_event;
+>>  	void (*irq_trace)(u64 event1, u64 event2);
+>> +
+>> +	bool supports_spss;
+>>  };
+[...]
+>>  static int devm_tps6598_psy_register(struct tps6598x *tps)
+>>  {
+>>  	struct power_supply_config psy_cfg = {};
+>> @@ -648,6 +685,11 @@ static int tps6598x_probe(struct i2c_client *client)
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> +	/* Switch Apple chips to the correct system power state */
+>> +	ret = cd321x_switch_power_state(tps, TPS_SYSTEM_POWER_STATE_S0);
+>> +	if (ret)
+>> +		return ret;
+>
+> If you call this from the same quirk where you set the mask for your
+> board, you don't need that supports_spss flag at all, right?
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 33f92febe3ce..aa9372452e49 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5561,9 +5561,9 @@ static int handle_encls(struct kvm_vcpu *vcpu)
+Yup, that one will also disappear then.
 
- static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
- {
--       vcpu->run->exit_reason = KVM_EXIT_X86_BUS_LOCK;
--       vcpu->run->flags |= KVM_RUN_X86_BUS_LOCK;
--       return 0;
-+       /* The dedicated flag may or may not be set by hardware.  /facepalm. */
-+       vcpu->exit_reason.bus_lock_detected = true;
-+       return 1;
- }
+Thanks,
 
- /*
-@@ -6050,9 +6050,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
-        int ret = __vmx_handle_exit(vcpu, exit_fastpath);
-
-        /*
--        * Even when current exit reason is handled by KVM internally, we
--        * still need to exit to user space when bus lock detected to inform
--        * that there is a bus lock in guest.
-+        * Exit to user space when bus lock detected to inform that there is a
-+        * bus lock in guest.
-         */
-        if (to_vmx(vcpu)->exit_reason.bus_lock_detected) {
-                if (ret > 0)
+Sven
