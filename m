@@ -2,439 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB9D414298
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F7F41429C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhIVHZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 03:25:15 -0400
-Received: from mail-dm6nam08on2041.outbound.protection.outlook.com ([40.107.102.41]:5089
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229697AbhIVHZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:25:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jl9X8Crfvhphca513xiw5+d+vrhCcAF+ZE+KAr69wVN0FtxeTcWzRr1KeoGBOzmNn2fggWNzqqhQG7RICGLTug56Mq1wD4TwYE0yZRQb+pwkwQEZSQZ4Kgewe3bkvbmMOeBhbqbGhLxL88H4qrjHFPvEI/seY/uT2FzRNS+ZdsjFS0eYcKyyjNFLoutTqCmWAQaRdgKiFEAz9CVGzwxIXqFYr6Dl4XWKVSJ5b7Z56N7JUULIIyohXxYa8FT53iSngYqMlrrqiSjbz1av2UgEmLUlCTz2XGXXcvx/vbFeJdkmid2lW79LDb5d3kfl6PzL69wpqIn3FTK4WaedcwjvqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=T8RfFE96V/ukkSdBBf9/zU1uVdOofsSC339oAEg8qPA=;
- b=KlShpnxMrRpjE9Tmerj8uSW19zPmkZiFaXylzumLKV6R6nYJAMJngdUKcVHNsy/K/JSTRxXQXmJalEeW/9PuUjV10NrxhQ0nHuxklINITT6BP05s46TQHvj/qqD1ZUsyzrOQqQp+l4hgDyPxm8LZopC74D6XTeiGVBxQXhlthBnPZ3YtHRKVORsX4glGp/C9ruOI9SOEiydIvXylo9lwnW8vUh+G6oKvhy29lnzb5rbcKFgUtGqsV3eDHcl+LKa5DA/F7z4fZsJO8mcd5j0iB6hgqkwEi/33Xjn3V6C7eUimz1ACbtZBUJaVNByo0bQXLq/cqLclV5eKqmQUEKG4vQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T8RfFE96V/ukkSdBBf9/zU1uVdOofsSC339oAEg8qPA=;
- b=CpoujzNNa7HDhSaREjhdCQzqgtzpoDP3CDQYgrVO4ncDWGtnZSOCj3Lw+jU4ZQXmdfPN1mkpvrmenfNiT/VYEc3Sn/LVFpo58KUI8M9RbaT73GcXICRr0QkHX/5mBD/s88ijwz0dn+6+HaJRziWZhH6GmdLET2MiZu3a8Jlt00wJWMu8XKVE3OIjYk1RcuI8PoV3C6WnrHnnz93nyTrr2VXWXJWIks5fTma+54augt4NJTAOJ+waokjchsOObH8cOdOEpFsBXlPPs7YKNiflK3AnhsAefh54PtI8y1xJ0lITR0XWBDAAMX8crZ/a7XUcUXfN+60MWiBsE3XEVjVh1g==
-Received: from DM6PR13CA0016.namprd13.prod.outlook.com (2603:10b6:5:bc::29) by
- MW3PR12MB4428.namprd12.prod.outlook.com (2603:10b6:303:57::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4523.14; Wed, 22 Sep 2021 07:23:41 +0000
-Received: from DM6NAM11FT038.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:bc:cafe::73) by DM6PR13CA0016.outlook.office365.com
- (2603:10b6:5:bc::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Wed, 22 Sep 2021 07:23:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- DM6NAM11FT038.mail.protection.outlook.com (10.13.173.137) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 07:23:41 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
- 2021 07:23:40 +0000
-Received: from [172.27.11.12] (172.20.187.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
- 2021 07:23:37 +0000
-Message-ID: <6241b491-2957-e80a-6ba5-c1f2138d84e0@nvidia.com>
-Date:   Wed, 22 Sep 2021 10:23:36 +0300
+        id S233280AbhIVHZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhIVHZm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 03:25:42 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7EC3C061574;
+        Wed, 22 Sep 2021 00:24:12 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id q26so3851814wrc.7;
+        Wed, 22 Sep 2021 00:24:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ULwoOoLedOT4q7QVhiTfuMRJL+g42ZvtZLso5l9rgRY=;
+        b=mUlp7aX+AbdUf8t/iQV/vo+r+mLJL7e/qWLY5UNFxABQv07ML9RXYBeZJycroCNdrR
+         nYqG8tfJNFkuYOKW7WlHBnUezqqFkQm6K2/RL7B5j6WkSLS2dd9haJUPR7b68uFYvD7l
+         cf6CwkVU6sbzGdkiCGVfWCxXT+7Y7vrvJn2egaqCe8EZh/dIzwW49U7MAhoDlLDyFEa9
+         /Ei39y5F+UyjybB7Q9cpWd2Q6+0d9cb91L8CA8CmHMZjy9/vqoaBmYtJC/p07wHjP9YF
+         RYRsfAr2TTDhFqYCSbgbhUy4e7sfreV6a3CbA8FMQAjssbh8X1sBd2QpADRdQJk6wxdf
+         kdsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ULwoOoLedOT4q7QVhiTfuMRJL+g42ZvtZLso5l9rgRY=;
+        b=155DDb5nrqNj8KINtGqgJKJ0+f/OhHj4MrDstaaiEPfQgpEvqj/Oj9fiAhGgcBhM6q
+         xgNngNPfn3ytPpMq9uQ1uG/5gZNKytRjLl/qJz/StPzFNwgKdRT9xmNQBWRxkN1xtuH9
+         OkfQTVgD1ERLXOYazLi0fdV2j54bHKNdZatkskMjb9woTxkh2Ihf6hGhd/RImvDCRk1k
+         BHxm4cHqzHQdfBYmZX+zkMdBqe3sDkgUgIOA0XW3VbVZgHcUoLe+KsANNGGz132v22A0
+         JImTnABKF9M61iYxyIlGlv6zHiVymeKgCyiLcTI835vkAsvd3K9cN1cUFJGecpwFaWSG
+         cPpQ==
+X-Gm-Message-State: AOAM531lyuTCiCWte8jlj0s+fCVq0hFHSYwO4Gv7xgcYBQyAhnQs2sR1
+        /3+uyYPpLY6PxX4QW2VCkcRxSsRAXHy0
+X-Google-Smtp-Source: ABdhPJy7HsSVUaQeuyvJ6ZcmsmbeD912UQv/jB8HzcSjxN589QnfzOcYK9boFdHVuTUAqmqTwGDiZw==
+X-Received: by 2002:adf:a745:: with SMTP id e5mr28910852wrd.406.1632295451096;
+        Wed, 22 Sep 2021 00:24:11 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.252.100])
+        by smtp.gmail.com with ESMTPSA id s10sm1309856wrg.42.2021.09.22.00.24.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 00:24:10 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 10:24:08 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>, apw@canonical.com,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, dwaipayanray1@gmail.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        mm-commits@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+        linux-doc@vger.kernel.org
+Subject: Re: function prototype element ordering
+Message-ID: <YUraGKetS+Tgc7y9@localhost.localdomain>
+References: <20210909200948.090d4e213ca34b5ad1325a7e@linux-foundation.org>
+ <20210910031046.G76dQvPhV%akpm@linux-foundation.org>
+ <CAHk-=wgfbSyW6QYd5rmhSHRoOQ=ZvV+jLn1U8U4nBDgBuaOAjQ@mail.gmail.com>
+ <202109211630.2D00627@keescook>
+ <af3c775a1515f97c8dbe6a6651bd6e4b6986e8cd.camel@perches.com>
+ <202109211757.F38DF644@keescook>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101
- Thunderbird/93.0
-Subject: Re: [PATCH net-next v6] net/mlx5e: Add extack msgs related to TC for
- better debug
-Content-Language: en-US
-To:     Abhiram R N <abhiramrn@gmail.com>
-CC:     <arn@redhat.com>, <hakhande@redhat.com>, <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <e91b2692-2f1c-5712-1e37-db7def52cb9a@nvidia.com>
- <20210922063007.123136-1-abhiramrn@gmail.com>
-From:   Roi Dayan <roid@nvidia.com>
-In-Reply-To: <20210922063007.123136-1-abhiramrn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3ba02db-ba2f-4e3b-0607-08d97d99e72f
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4428:
-X-Microsoft-Antispam-PRVS: <MW3PR12MB442850F9641C055CFA57DB33B8A29@MW3PR12MB4428.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vF5IFJr8HlmVweyd9pZljr3qAhKrHQ3jvwGGXEXds1TwMoaotGDowimQGvUNFuLNnuzQ0nnmfyEC+rMGSAMuORqX2tQDOp4M/cR+0Qtt9Jdl05hn1AKgFKMKVaXNL+6d7N6l7nyNS3cs7Y+xovPMazh5zhAtgtienWMDGsX051qTbT0IJBa8D2KqyZJMKt2fvUdeymagMnhGSVIbfhKMjzXh3FAqR0A3vdmRdV3dpipHonwyh41KPoxpouzUIx3H3fids6cCv38jN/EstHDMnSBOQLGkqyImAZ2yROtIvKxyHQKN9LLWjgBT4SPKJb50x8EC00VwI++gHOhrdb0/mOU5VhV2bdyUVGtZMmYFMto6QAp2AtowPlE10uOtmRFuytk4kv7vIubsntHmnenQ0n2DjJKZ9FTYWP6mI4YciMaveF6Bs+2XgR6nImnrs4pH3LPW25Qql+Jqh4aVAyipSgqWw578xXAEMNzG0cOVpralnoYOQrJIji2tbUMJwr0lg/rJEvi/l8VgLUpwsqlo8ubIgqG05+RNoloRensPXBicIDgn4wZHen7YPhr6pCUK02TCRkkT+U8qDGfQ2GZgVAWSGB8buPNQuwM3O/AObWUaNJuwbAr18+yMINHotguW6+G2ax0ENb89D17o5FgPrM+VKuYWmpvs3dDBpT7mPIA7hL0lxhlOmH2XJhypPbfh49+jZf/Z3saZV49OAf+glVh7isWJ2xKS/sdwk4Jw2cNofQRS7AjEfzrSuYNxqDw1mBdvsc3UtneOU54yy/o34Q==
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(31696002)(36756003)(83380400001)(508600001)(16576012)(316002)(2616005)(30864003)(86362001)(5660300002)(6916009)(2906002)(36906005)(426003)(36860700001)(54906003)(26005)(70586007)(70206006)(31686004)(7636003)(356005)(16526019)(186003)(336012)(47076005)(82310400003)(8676002)(8936002)(4326008)(53546011)(43740500002)(309714004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 07:23:41.0573
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3ba02db-ba2f-4e3b-0607-08d97d99e72f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT038.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4428
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202109211757.F38DF644@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021-09-22 9:30 AM, Abhiram R N wrote:
-> As multiple places EOPNOTSUPP and EINVAL is returned from driver
-> it becomes difficult to understand the reason only with error code.
-> With the netlink extack message exact reason will be known and will
-> aid in debugging.
+On Tue, Sep 21, 2021 at 07:25:53PM -0700, Kees Cook wrote:
+> On Tue, Sep 21, 2021 at 04:45:44PM -0700, Joe Perches wrote:
+> > On Tue, 2021-09-21 at 16:37 -0700, Kees Cook wrote:
+> > > On Fri, Sep 10, 2021 at 10:23:48AM -0700, Linus Torvalds wrote:
+> > > > On Thu, Sep 9, 2021 at 8:10 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > > > 
+> > > > > +__alloc_size(1)
+> > > > >  extern void *vmalloc(unsigned long size);
+> > > > [...]
+> > > > 
+> > > > All of these are added in the wrong place - inconsistent with the very
+> > > > compiler documentation the patches add.
+> > > > 
+> > > > The function attributes are generally added _after_ the function,
+> > > > although admittedly we've been quite confused here before.
+> > > > 
+> > > > But the very compiler documentation you point to in the patch that
+> > > > adds these macros gives that as the examples both for gcc and clang:
+> > > > 
+> > > > + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alloc_005fsize-function-attribute
+> > > > + * clang: https://clang.llvm.org/docs/AttributeReference.html#alloc-size
+> > > > 
+> > > > and honestly I think that is the preferred format because this is
+> > > > about the *function*, not about the return type.
+> > > > 
+> > > > Do both placements work? Yes.
+> > > 
+> > > I'm cleaning this up now, and have discovered that the reason for the
+> > > before-function placement is consistency with static inlines. If I do this:
+> > > 
+> > > static __always_inline void * kmalloc(size_t size, gfp_t flags) __alloc_size(1)
+> > > {
+> > > 	...
+> > > }
+> > > 
+> > > GCC is very angry:
+> > > 
+> > > ./include/linux/slab.h:519:1: error: attributes should be specified before the declarator in a function definition
+> > >   519 | static __always_inline void *kmalloc_large(size_t size, gfp_t flags) __alloc_size(1)
+> > >       | ^~~~~~
+> > > 
+> > > It's happy if I treat it as a "return type attribute" in the ordering,
+> > > though:
+> > > 
+> > > static __always_inline void * __alloc_size(1) kmalloc(size_t size, gfp_t flags)
+> > > 
+> > > I'll do that unless you have a preference for somewhere else...
+> > 
+> > _please_ put it before the return type on a separate line.
+> > 
+> > [__attributes]
+> > [static inline const] <return type> function(<args...>)
 > 
-> Signed-off-by: Abhiram R N <abhiramrn@gmail.com>
-> ---
-> V5->V6: Removed changelog from commit msg
-> V4->V5: Addressed comments (Rephrasing of msgs)
-> V3->V4: Rebased net-next (Fixed the merge conflicts in net-next branch)
-> V2->V3: Addressed comments (Rephrasing of msgs)
-> V1->V2: Addressed comments (Removed redundant msgs, rephrasing of msgs)
+> Somehow Linus wasn't in CC. :P
 > 
->   .../net/ethernet/mellanox/mlx5/core/en_tc.c   | 106 +++++++++++++-----
->   1 file changed, 76 insertions(+), 30 deletions(-)
+> Linus, what do you want here? I keep getting conflicting (or
+> uncompilable) advice. I'm also trying to prepare a patch for
+> Documentation/process/coding-style.rst ...
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> index ba8164792016..0fda231c07cd 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> @@ -1896,8 +1896,10 @@ static int parse_tunnel_attr(struct mlx5e_priv *priv,
->   	bool needs_mapping, sets_mapping;
->   	int err;
->   
-> -	if (!mlx5e_is_eswitch_flow(flow))
-> +	if (!mlx5e_is_eswitch_flow(flow)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Match on tunnel is not supported");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	needs_mapping = !!flow->attr->chain;
->   	sets_mapping = flow_requires_tunnel_mapping(flow->attr->chain, f);
-> @@ -2269,8 +2271,10 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
->   		addr_type = match.key->addr_type;
->   
->   		/* the HW doesn't support frag first/later */
-> -		if (match.mask->flags & FLOW_DIS_FIRST_FRAG)
-> +		if (match.mask->flags & FLOW_DIS_FIRST_FRAG) {
-> +			NL_SET_ERR_MSG_MOD(extack, "Match on frag first/later is not supported");
->   			return -EOPNOTSUPP;
-> +		}
->   
->   		if (match.mask->flags & FLOW_DIS_IS_FRAGMENT) {
->   			MLX5_SET(fte_match_set_lyr_2_4, headers_c, frag, 1);
-> @@ -2437,8 +2441,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
->   		switch (ip_proto) {
->   		case IPPROTO_ICMP:
->   			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
-> -			      MLX5_FLEX_PROTO_ICMP))
-> +			      MLX5_FLEX_PROTO_ICMP)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "Match on Flex protocols for ICMP is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   			MLX5_SET(fte_match_set_misc3, misc_c_3, icmp_type,
->   				 match.mask->type);
->   			MLX5_SET(fte_match_set_misc3, misc_v_3, icmp_type,
-> @@ -2450,8 +2457,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
->   			break;
->   		case IPPROTO_ICMPV6:
->   			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
-> -			      MLX5_FLEX_PROTO_ICMPV6))
-> +			      MLX5_FLEX_PROTO_ICMPV6)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "Match on Flex protocols for ICMPV6 is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   			MLX5_SET(fte_match_set_misc3, misc_c_3, icmpv6_type,
->   				 match.mask->type);
->   			MLX5_SET(fte_match_set_misc3, misc_v_3, icmpv6_type,
-> @@ -2557,15 +2567,19 @@ static int pedit_header_offsets[] = {
->   #define pedit_header(_ph, _htype) ((void *)(_ph) + pedit_header_offsets[_htype])
->   
->   static int set_pedit_val(u8 hdr_type, u32 mask, u32 val, u32 offset,
-> -			 struct pedit_headers_action *hdrs)
-> +			 struct pedit_headers_action *hdrs,
-> +			 struct netlink_ext_ack *extack)
->   {
->   	u32 *curr_pmask, *curr_pval;
->   
->   	curr_pmask = (u32 *)(pedit_header(&hdrs->masks, hdr_type) + offset);
->   	curr_pval  = (u32 *)(pedit_header(&hdrs->vals, hdr_type) + offset);
->   
-> -	if (*curr_pmask & mask)  /* disallow acting twice on the same location */
-> +	if (*curr_pmask & mask) { /* disallow acting twice on the same location */
-> +		NL_SET_ERR_MSG_MOD(extack,
-> +				   "curr_pmask and new mask same. Acting twice on same location");
->   		goto out_err;
-> +	}
->   
->   	*curr_pmask |= mask;
->   	*curr_pval  |= (val & mask);
-> @@ -2898,7 +2912,7 @@ parse_pedit_to_modify_hdr(struct mlx5e_priv *priv,
->   	val = act->mangle.val;
->   	offset = act->mangle.offset;
->   
-> -	err = set_pedit_val(htype, ~mask, val, offset, &hdrs[cmd]);
-> +	err = set_pedit_val(htype, ~mask, val, offset, &hdrs[cmd], extack);
->   	if (err)
->   		goto out_err;
->   
-> @@ -2918,8 +2932,10 @@ parse_pedit_to_reformat(struct mlx5e_priv *priv,
->   	u32 mask, val, offset;
->   	u32 *p;
->   
-> -	if (act->id != FLOW_ACTION_MANGLE)
-> +	if (act->id != FLOW_ACTION_MANGLE) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Unsupported action id");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	if (act->mangle.htype != FLOW_ACT_MANGLE_HDR_TYPE_ETH) {
->   		NL_SET_ERR_MSG_MOD(extack, "Only Ethernet modification is supported");
-> @@ -3368,12 +3384,16 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
->   	u32 action = 0;
->   	int err, i;
->   
-> -	if (!flow_action_has_entries(flow_action))
-> +	if (!flow_action_has_entries(flow_action)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow action doesn't have any entries");
->   		return -EINVAL;
-> +	}
->   
->   	if (!flow_action_hw_stats_check(flow_action, extack,
-> -					FLOW_ACTION_HW_STATS_DELAYED_BIT))
-> +					FLOW_ACTION_HW_STATS_DELAYED_BIT)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow action HW stats type is not supported");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	nic_attr = attr->nic_attr;
->   	nic_attr->flow_tag = MLX5_FS_DEFAULT_FLOW_TAG;
-> @@ -3462,7 +3482,8 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
->   			flow_flag_set(flow, CT);
->   			break;
->   		default:
-> -			NL_SET_ERR_MSG_MOD(extack, "The offload action is not supported");
-> +			NL_SET_ERR_MSG_MOD(extack,
-> +					   "The offload action is not supported in NIC action");
->   			return -EOPNOTSUPP;
->   		}
->   	}
-> @@ -3517,19 +3538,25 @@ static bool is_merged_eswitch_vfs(struct mlx5e_priv *priv,
->   static int parse_tc_vlan_action(struct mlx5e_priv *priv,
->   				const struct flow_action_entry *act,
->   				struct mlx5_esw_flow_attr *attr,
-> -				u32 *action)
-> +				u32 *action,
-> +				struct netlink_ext_ack *extack)
->   {
->   	u8 vlan_idx = attr->total_vlan;
->   
-> -	if (vlan_idx >= MLX5_FS_VLAN_DEPTH)
-> +	if (vlan_idx >= MLX5_FS_VLAN_DEPTH) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Total vlans used is greater than supported");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	switch (act->id) {
->   	case FLOW_ACTION_VLAN_POP:
->   		if (vlan_idx) {
->   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev,
-> -								 MLX5_FS_VLAN_DEPTH))
-> +								 MLX5_FS_VLAN_DEPTH)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "vlan pop action is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   
->   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_POP_2;
->   		} else {
-> @@ -3545,20 +3572,27 @@ static int parse_tc_vlan_action(struct mlx5e_priv *priv,
->   
->   		if (vlan_idx) {
->   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev,
-> -								 MLX5_FS_VLAN_DEPTH))
-> +								 MLX5_FS_VLAN_DEPTH)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "vlan push action is not supported for vlan depth > 1");
->   				return -EOPNOTSUPP;
-> +			}
->   
->   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_PUSH_2;
->   		} else {
->   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev, 1) &&
->   			    (act->vlan.proto != htons(ETH_P_8021Q) ||
-> -			     act->vlan.prio))
-> +			     act->vlan.prio)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "vlan push action is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   
->   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_PUSH;
->   		}
->   		break;
->   	default:
-> +		NL_SET_ERR_MSG_MOD(extack, "Unexpected action id for VLAN");
->   		return -EINVAL;
->   	}
->   
-> @@ -3592,7 +3626,8 @@ static struct net_device *get_fdb_out_dev(struct net_device *uplink_dev,
->   static int add_vlan_push_action(struct mlx5e_priv *priv,
->   				struct mlx5_flow_attr *attr,
->   				struct net_device **out_dev,
-> -				u32 *action)
-> +				u32 *action,
-> +				struct netlink_ext_ack *extack)
->   {
->   	struct net_device *vlan_dev = *out_dev;
->   	struct flow_action_entry vlan_act = {
-> @@ -3603,7 +3638,7 @@ static int add_vlan_push_action(struct mlx5e_priv *priv,
->   	};
->   	int err;
->   
-> -	err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action);
-> +	err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action, extack);
->   	if (err)
->   		return err;
->   
-> @@ -3614,14 +3649,15 @@ static int add_vlan_push_action(struct mlx5e_priv *priv,
->   		return -ENODEV;
->   
->   	if (is_vlan_dev(*out_dev))
-> -		err = add_vlan_push_action(priv, attr, out_dev, action);
-> +		err = add_vlan_push_action(priv, attr, out_dev, action, extack);
->   
->   	return err;
->   }
->   
->   static int add_vlan_pop_action(struct mlx5e_priv *priv,
->   			       struct mlx5_flow_attr *attr,
-> -			       u32 *action)
-> +			       u32 *action,
-> +			       struct netlink_ext_ack *extack)
->   {
->   	struct flow_action_entry vlan_act = {
->   		.id = FLOW_ACTION_VLAN_POP,
-> @@ -3631,7 +3667,7 @@ static int add_vlan_pop_action(struct mlx5e_priv *priv,
->   	nest_level = attr->parse_attr->filter_dev->lower_level -
->   						priv->netdev->lower_level;
->   	while (nest_level--) {
-> -		err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action);
-> +		err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action, extack);
->   		if (err)
->   			return err;
->   	}
-> @@ -3753,12 +3789,16 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   	int err, i, if_count = 0;
->   	bool mpls_push = false;
->   
-> -	if (!flow_action_has_entries(flow_action))
-> +	if (!flow_action_has_entries(flow_action)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow action doesn't have any entries");
->   		return -EINVAL;
-> +	}
->   
->   	if (!flow_action_hw_stats_check(flow_action, extack,
-> -					FLOW_ACTION_HW_STATS_DELAYED_BIT))
-> +					FLOW_ACTION_HW_STATS_DELAYED_BIT)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow action HW stats type is not supported");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	esw_attr = attr->esw_attr;
->   	parse_attr = attr->parse_attr;
-> @@ -3902,14 +3942,14 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   				if (is_vlan_dev(out_dev)) {
->   					err = add_vlan_push_action(priv, attr,
->   								   &out_dev,
-> -								   &action);
-> +								   &action, extack);
->   					if (err)
->   						return err;
->   				}
->   
->   				if (is_vlan_dev(parse_attr->filter_dev)) {
->   					err = add_vlan_pop_action(priv, attr,
-> -								  &action);
-> +								  &action, extack);
->   					if (err)
->   						return err;
->   				}
-> @@ -3955,10 +3995,13 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   			break;
->   		case FLOW_ACTION_TUNNEL_ENCAP:
->   			info = act->tunnel;
-> -			if (info)
-> +			if (info) {
->   				encap = true;
-> -			else
-> +			} else {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "Zero tunnel attributes is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   
->   			break;
->   		case FLOW_ACTION_VLAN_PUSH:
-> @@ -3972,7 +4015,7 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   							      act, parse_attr, hdrs,
->   							      &action, extack);
->   			} else {
-> -				err = parse_tc_vlan_action(priv, act, esw_attr, &action);
-> +				err = parse_tc_vlan_action(priv, act, esw_attr, &action, extack);
->   			}
->   			if (err)
->   				return err;
-> @@ -4025,7 +4068,8 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   			flow_flag_set(flow, SAMPLE);
->   			break;
->   		default:
-> -			NL_SET_ERR_MSG_MOD(extack, "The offload action is not supported");
-> +			NL_SET_ERR_MSG_MOD(extack,
-> +					   "The offload action is not supported in FDB action");
->   			return -EOPNOTSUPP;
->   		}
->   	}
-> @@ -4733,8 +4777,10 @@ static int scan_tc_matchall_fdb_actions(struct mlx5e_priv *priv,
->   		return -EOPNOTSUPP;
->   	}
->   
-> -	if (!flow_action_basic_hw_stats_check(flow_action, extack))
-> +	if (!flow_action_basic_hw_stats_check(flow_action, extack)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow action HW stats type is not supported");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	flow_action_for_each(i, act, flow_action) {
->   		switch (act->id) {
+> Looking through what was written before[1] and through examples in the
+> source tree, I find the following categories:
 > 
+> 1- storage class: static extern inline __always_inline
+> 2- storage class attributes/hints/???: __init __cold
+> 3- return type: void *
+> 4- return type attributes: __must_check __noreturn __assume_aligned(n)
+> 5- function attributes: __attribute_const__ __malloc
+> 6- function argument attributes: __printf(n, m) __alloc_size(n)
+> 
+> Everyone seems to basically agree on:
+> 
+> [storage class] [return type] [return type attributes] [name]([arg1type] [arg1name], ...)
+> 
+> There is a lot of disagreement over where 5 and 6 should fit in above. And
+> there is a lot of confusion over 4 (mixed between before and after the
+> function name) and 2 (see below).
+> 
+> What's currently blocking me is that 6 cannot go after the function
+> (for definitions) because it angers GCC (see quoted bit above), but 5
+> can (e.g. __attribute_const__).
+> 
+> Another inconsistency seems to be 2 (mainly section markings like
+> __init). Sometimes it's after the storage class and sometimes after the
+> return type, but it certainly feels more like a storage class than a
+> return type attribute:
+> 
+> $ git grep 'static __init int' | wc -l
+> 349
+> $ git grep 'static int __init' | wc -l
+> 8402
+> 
+> But it's clearly positioned like a return type attribute in most of the
+> tree. What's correct?
+> 
+> Regardless, given the constraints above, it seems like what Linus may
+> want is (on "one line", though it will get wrapped in pathological cases
+> like kmem_cache_alloc_node_trace):
+> 
+> [storage class] [storage class attributes] [return type] [return type attributes] [function argument attributes] [name]([arg1type] [arg1name], ...) [function attributes]
+> 
+> Joe appears to want (on two lines):
+> 
+> [storage class attributes] [function attributes] [function argument attributes]
+> [storage class] [return type] [return type attributes] [name]([arg1type] [arg1name], ...)
+> 
+> I would just like to have an arrangement that won't get NAKed by
+> someone. ;) And I'm willing to document it. :)
 
-thanks
+Attributes should be on their own line, they can be quite lengthy.
 
-Reviewed-by: Roi Dayan <roid@nvidia.com>
+	__attribute__((...))
+	[static] [inline] T f(A1 arg1, ...)
+	{
+		...
+	}
+
+There will be even more attributes in the future, both added by
+compilers and developers (const, pure, WUR), so let's make "prototype lane"
+for them.
+
+Same for structures:
+
+	__attribute__((packed))
+	struct S {
+	};
+
+Kernel practice of hiding attributes under defines (__ro_after_init)
+breaks ctags which parses the last identifier before semicolon as object
+name. Naturally, it is ctags bug, but placing attributes before
+declaration will autmatically unbreak such cases.
