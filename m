@@ -2,69 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CE4414177
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E195541417E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbhIVGE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:04:27 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:36166 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231908AbhIVGE0 (ORCPT
+        id S232505AbhIVGGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231908AbhIVGGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:04:26 -0400
-X-UUID: 2d782b43a5f4428d84e324231b85b436-20210922
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=b7TgjdaX90/kAMrw3hlB4boxdIs0VONZSRH+hU5Jk6c=;
-        b=l1j2ZcdGx/96BEIjtoj5Fw62k9jzPBlK2XC0CmoeLaYoAXEE2yyDH0NPJP1An7F6jMZlfODanh/077ULVt1UB++cryvTph7jfuM/sKng7tEUAhYVlkBrBk9P0qEoyATbyLguIWzSjXprs849OcaQtmAWtE0W8bTF08iTuDsdVAg=;
-X-UUID: 2d782b43a5f4428d84e324231b85b436-20210922
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 485543766; Wed, 22 Sep 2021 14:02:55 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Wed, 22 Sep 2021 14:02:54 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 22 Sep 2021 14:02:53 +0800
-Message-ID: <1942744399e4817f778f43528b22b82b1d422b4a.camel@mediatek.com>
-Subject: Re: [PATCH] PCI: mediatek-gen3: Disable DVFSRC voltage request
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Wed, 22 Sep 2021 02:06:14 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616FFC061574;
+        Tue, 21 Sep 2021 23:04:45 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id w17so3273128wrv.10;
+        Tue, 21 Sep 2021 23:04:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=E8PWpzGE4nXx9yLcpibeowYfrua7uZ6eTJJKaxClepM=;
+        b=S1fWqCKTc+U3XKV5MShwR46eahJQSdbw+NMA8XAWaqVGE4gxmVvz/ieJJpTPvygGB+
+         NNN5aTQCiy5LkLq8A9yKOgrmXJlT3dt1rY51hmAS9BwwbIGAmyUshJArA5LNHHbEqGG6
+         vpMogiWPbwy7kMJ/XJta/8xaIXkqvkd5SlmkQmn852FfcsPb1bj9sfRgfVakG8YEmd28
+         OhxgMrpK7MglhTkJqlaS3vCa5Vn4cXfJ2pmqYfjihzGZEeYcM92zU/EhXXMCPetBA/kc
+         9yQ+S8F6dX/34PidSe5ZanAPHXbo5xw4HI+KcwnVlFAYllBy+RA01+pglKkhtXw0Ejzm
+         ssMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=E8PWpzGE4nXx9yLcpibeowYfrua7uZ6eTJJKaxClepM=;
+        b=uX8MH3NvH6BKFjlNF7jVnzAIW86aq0+Qhwds7asLOaEd0knm1TlZ5uk2kOsPSdvaVB
+         HiOPy/QHduUmDeyt+4xWLvF5ahfpXYnF7nphozPj4mh+VUsxtaccVq6PsHjYOYuiDD53
+         3WsknmnP6eJAmj3dNJa0lRyeDXlNJBn7dhkXjV3bR+vz8QXmdNL5a5YP+zM9Ymo7/6iA
+         vRVesDix/xk5Lazee1Vt3/gaIMvV7eKPzvH/yUb4tnFBeSk5dEIezQEvtd2cC9te0Ao2
+         SB/9mF9EPPmXFvtal1InKGW8qFEP9DZjRHYm8nUiESakq6/heRmjD438Sxdlt1VXb6pa
+         m2OA==
+X-Gm-Message-State: AOAM531viWYQCs6zI5S/LJX86Za4hYxFjppWckv5IAEeIB1GoV3XBfDb
+        aKB9Uv3UjD3Y7I5XfDBlGQY=
+X-Google-Smtp-Source: ABdhPJy/Oa9kivCqfNjj4Wo8JUjtuGYaGVP7hcDPKnWoCziHCeeoiDjTZzPckMOtTD3xk6YWepI41Q==
+X-Received: by 2002:adf:a745:: with SMTP id e5mr28523356wrd.406.1632290683592;
+        Tue, 21 Sep 2021 23:04:43 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id o1sm1071032wru.91.2021.09.21.23.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 23:04:43 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 08:04:39 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     linux-crypto@vger.kernel.org, Ash Logan <ash@heyquark.com>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.ne@posteo.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
         Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Wilczyski" <kw@linux.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-CC:     Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <qizhong.cheng@mediatek.com>, <Ryan-JH.Yu@mediatek.com>
-Date:   Wed, 22 Sep 2021 14:02:55 +0800
-In-Reply-To: <53b79201135690800f3c97d861af9567b6f2a40d.camel@mediatek.com>
-References: <20210819125939.21253-1-jianjun.wang@mediatek.com>
-         <YR8go1l0Xnvvqn5E@google.com>
-         <53b79201135690800f3c97d861af9567b6f2a40d.camel@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/4] crypto: nintendo-aes - add a new AES driver
+Message-ID: <YUrHdxY4EyanC9KR@Red>
+References: <20210921213930.10366-1-linkmauve@linkmauve.fr>
+ <20210921213930.10366-2-linkmauve@linkmauve.fr>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210921213930.10366-2-linkmauve@linkmauve.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmpvcm4sIExvcmVuem8sDQoNCkp1c3QgZ2VudGxlIHBpbmcgZm9yIHRoaXMgcGF0Y2gsIHBs
-ZWFzZSBraW5kbHkgbGV0IG1lIGtub3cgeW91cg0KY29tbWVudHMgYWJvdXQgdGhpcyBwYXRjaC4N
-Cg0KVGhhbmtzLg0KDQpPbiBUaHUsIDIwMjEtMDktMDIgYXQgMTA6MjcgKzA4MDAsIEppYW5qdW4g
-V2FuZyB3cm90ZToNCj4gSGkgTWFpbnRhaW5lcnMsDQo+IA0KPiBKdXN0IGdlbnRsZSBwaW5nIGZv
-ciB0aGlzIHBhdGNoLCBpZiB0aGVyZSBpcyBhbnl0aGluZyBJIG5lZWQgdG8NCj4gbW9kaWZ5LA0K
-PiBwbGVhc2Uga2luZGx5IGxldCBtZSBrbm93Lg0KPiANCj4gVGhhbmtzLg0KPiANCj4gT24gRnJp
-LCAyMDIxLTA4LTIwIGF0IDExOjI1ICswODAwLCBUenVuZy1CaSBTaGloIHdyb3RlOg0KPiA+IE9u
-IFRodSwgQXVnIDE5LCAyMDIxIGF0IDA4OjU5OjM5UE0gKzA4MDAsIEppYW5qdW4gV2FuZyB3cm90
-ZToNCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEppYW5qdW4gV2FuZyA8amlhbmp1bi53YW5nQG1lZGlh
-dGVrLmNvbT4NCj4gPiANCj4gPiBSZXZpZXdlZC1ieTogVHp1bmctQmkgU2hpaCA8dHp1bmdiaUBn
-b29nbGUuY29tPg0K
+Le Tue, Sep 21, 2021 at 11:39:27PM +0200, Emmanuel Gil Peyrot a écrit :
+> This engine implements AES in CBC mode, using 128-bit keys only.  It is
+> present on both the Wii and the Wii U, and is apparently identical in
+> both consoles.
+> 
+> The hardware is capable of firing an interrupt when the operation is
+> done, but this driver currently uses a busy loop, I’m not too sure
+> whether it would be preferable to switch, nor how to achieve that.
+> 
+> It also supports a mode where no operation is done, and thus could be
+> used as a DMA copy engine, but I don’t know how to expose that to the
+> kernel or whether it would even be useful.
+> 
+> In my testing, on a Wii U, this driver reaches 80.7 MiB/s, while the
+> aes-generic driver only reaches 30.9 MiB/s, so it is a quite welcome
+> speedup.
+> 
+> This driver was written based on reversed documentation, see:
+> https://wiibrew.org/wiki/Hardware/AES
+> 
+> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> Tested-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>  # on Wii U
 
+[...]
+
+> +static int
+> +do_crypt(const void *src, void *dst, u32 len, u32 flags)
+> +{
+> +	u32 blocks = ((len >> 4) - 1) & AES_CTRL_BLOCK;
+> +	u32 status;
+> +	u32 counter = OP_TIMEOUT;
+> +	u32 i;
+> +
+> +	/* Flush out all of src, we can’t know whether any of it is in cache */
+> +	for (i = 0; i < len; i += 32)
+> +		__asm__("dcbf 0, %0" : : "r" (src + i));
+> +	__asm__("sync" : : : "memory");
+> +
+> +	/* Set the addresses for DMA */
+> +	iowrite32be(virt_to_phys((void *)src), base + AES_SRC);
+> +	iowrite32be(virt_to_phys(dst), base + AES_DEST);
+
+Hello
+
+Since you do DMA operation, I think you should use the DMA-API and call dma_map_xxx()
+This will prevent the use of __asm__ and virt_to_phys().
+
+Regards
