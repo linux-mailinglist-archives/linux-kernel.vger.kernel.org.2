@@ -2,182 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721D9414030
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 05:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9C7414036
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 05:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhIVDvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 23:51:52 -0400
-Received: from mail-bn7nam10on2089.outbound.protection.outlook.com ([40.107.92.89]:6913
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230054AbhIVDvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 23:51:51 -0400
+        id S231397AbhIVD5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 23:57:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48803 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230054AbhIVD5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 23:57:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="223155691"
+X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
+   d="scan'208";a="223155691"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 20:56:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
+   d="scan'208";a="518445328"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga001.jf.intel.com with ESMTP; 21 Sep 2021 20:56:02 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 21 Sep 2021 20:56:01 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Tue, 21 Sep 2021 20:56:01 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Tue, 21 Sep 2021 20:55:08 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bjMv1YebY3xg2t8n70gFMepes4HM2P3aPFgMPaU9VYXqqEUZMk3ACH74XcWRnre/PI8zb3xD/6F0lnKG7CrJVnMrW6GLNhEVaM+IDQzomU0L0Yd8jvqrx7PZ5+7KjxUL34EjH7cjH8f6h+JOsbbjtUDfK4LV9RdTrzZoIWJ4FZo0ESdj0edbkj+PbBRMW1dv6rgJiB9nmh1FlofqdnC8BkAkokkdzQ1jYvlkGtgK6uAW/GoaGPKv8Dijlv12xbCrsSo7du7ocqYJeRtfNVO/+XWJpWP81Py8sFZst0pvxQCJyX0ccMvac5rIF9w1LpnWNaJcxHrf/vH4kCMYDtGa0g==
+ b=LiJy7BRbCEJFT1Oc8+FsfAjm0EcAbZQcDNpbjNH3kRIkzjfRqYD2FH+HJAF2pOaNVoG28DqtHa5WyI6Sec6rWPnlRVMM2nS9Cse3as9CUO6cCB2NuaaszKrSJrCtXZNw1i07Pz/T+UY323Qbpa9oNiVhM5Kqkwrsy416RQtg/X7Xa2LPI3SqTquDGR/ctxZAOzQeNWjBr7ocRVVbWdNEe90Ddx1+0NDc8nsE0DLpnDhMO5GSd13bqEhC9DthODg4e/9w9HvLQw6ycTuJfgVZ8GUwmC2ts8m/6lQYtJYX91MySiblLecvMlNBfL3dUpeePRh5swmrNZCf05W6DMQjiA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=+b2LBAzQjTzsWZU2MNThnhHpTBVWzvgGZtvIlI7GlYQ=;
- b=FW4iFkiRNbsGm64gqN6RYdWhBRF16QTwxAmI+2NoKh5ajpAdknkeM1N+3Noiw8skKvfOLdkRNDaZmapH309KiL1QzRUSOTw0lHT7aBDAny4AP2Qf5eJ7kFQuq+ZJnLnnA+K9PV0ZO0aXuMl9iy2DKuJwb+GEg8ugixPFsGmA9obsnsfXMb0khVfS8u+m3hUlwJ28YIeXrfZs4t9ExWPpwrRuyLpwJRfBlTlkClcORcw8lRed0I1vMpbKLryOxhRiYwzovF/lXFbdPcf/cmXArl9IshiGCALa99b9Cyw1c5O5rMG8h22/jgQlI0I7tWFMUhSWI03kUvJEOpyokndyJA==
+ bh=A4t8iRKRW8/OHk7MmD3wk2A4qGgO0tiS1PTTxaXQuBU=;
+ b=GBqJc8MVNYQKtUQCvRQGBFAhzEIxJzrPtumhmO1lq9WLhuS5htxszP38GoskUQfWRArRmvq1fVL0u9gntT5tdGXFkuWD6q4jWTmQnO6Ti9kqTBkm2tshE28ZqKD+ZRWUwmrnnHULdhWujoKnMd6kw+moKazzrWLHciqpdbbhWlLrmO4+hvSHXsWdZI+2botIa+H8cc2/vPunJ65bP/W2g/IzEHy0RfRwUlqbb/oe/KtEbA0xxLEUIia4Mwvbtgy5HCSEjJN+9VQlrcVQKNDzfsBaTPmaep1RF+YNjKfvMeDWSZpfJE5B7IgotgK1KbTacdpSI9ZdZyGzEqtiHForYA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+b2LBAzQjTzsWZU2MNThnhHpTBVWzvgGZtvIlI7GlYQ=;
- b=TsGQLL9zJahsEqbxTiRLvuKqV/7LsyYD6zX4Kc6IBqB42DQei7uuT8Y6tca1fwO8/U8jEW9Y7B0fKAOTJG57b/3y3jKOMwfyqmSYePdm1+nV2DDFGQGoEVa4mb9tGekId8qhHAW1SVfGbkXnYTYsVw6OUH8X6xyaWIrWONspPBs=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BY5PR12MB4177.namprd12.prod.outlook.com (2603:10b6:a03:201::14)
- by BYAPR12MB2775.namprd12.prod.outlook.com (2603:10b6:a03:6b::20) with
+ bh=A4t8iRKRW8/OHk7MmD3wk2A4qGgO0tiS1PTTxaXQuBU=;
+ b=aH1IpnowKvmaEq+DH2l70VY1W/cehHnbjp/n9L3I7OQNnMww7ACzxBWQWV/3mJN4BeEhl1XxfGNhqSna6MGkmmY7cPiPsBtCm/NiCiKa5W2bEgUZIVe8x+CL2ZlSeuPPKYPGj75t1f4wRdPsjPf/fIymc7ZdoKdX49wQZRIAKuE=
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
+ by BN6PR11MB3889.namprd11.prod.outlook.com (2603:10b6:405:81::29) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.18; Wed, 22 Sep
- 2021 03:50:15 +0000
-Received: from BY5PR12MB4177.namprd12.prod.outlook.com
- ([fe80::b99c:d841:a12b:6f95]) by BY5PR12MB4177.namprd12.prod.outlook.com
- ([fe80::b99c:d841:a12b:6f95%6]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 03:50:15 +0000
-Message-ID: <a20fc6ba-14fa-e9b9-de69-54b9eaf20e73@amd.com>
-Date:   Tue, 21 Sep 2021 20:50:13 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] x86/ACPI/State: Optimize C3 entry on AMD CPUs
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Wed, 22 Sep
+ 2021 03:53:52 +0000
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ddb7:fa7f:2cc:45df]) by BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ddb7:fa7f:2cc:45df%8]) with mapi id 15.20.4523.018; Wed, 22 Sep 2021
+ 03:53:52 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>
+CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: RE: [RFC 14/20] iommu/iommufd: Add iommufd_device_[de]attach_ioasid()
+Thread-Topic: [RFC 14/20] iommu/iommufd: Add
+ iommufd_device_[de]attach_ioasid()
+Thread-Index: AQHXrSGezXWDqkj89kuFN1ZDWKFxuauuy0yAgACiHzA=
+Date:   Wed, 22 Sep 2021 03:53:52 +0000
+Message-ID: <BN9PR11MB54339FF0B126A917BF14B44E8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-15-yi.l.liu@intel.com>
+ <20210921180203.GY327412@nvidia.com>
+In-Reply-To: <20210921180203.GY327412@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Deepak Sharma <deepak.sharma@amd.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-References: <20210819004305.20203-1-deepak.sharma@amd.com>
- <CAJZ5v0jWX=H=aZ25PzHdH05bRJvtYbGHfyTgH_68k4kfYkZc5A@mail.gmail.com>
- <951c4f8f-30ee-77d3-afb7-46e45c84213d@amd.com>
- <CAJZ5v0ic+0MKDbebrxnyxr=rRJbqP4LmB4g1fVVAVJWh98e=MA@mail.gmail.com>
-From:   "Sharma, Deepak" <deesharm@amd.com>
-In-Reply-To: <CAJZ5v0ic+0MKDbebrxnyxr=rRJbqP4LmB4g1fVVAVJWh98e=MA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR07CA0070.namprd07.prod.outlook.com
- (2603:10b6:a03:60::47) To BY5PR12MB4177.namprd12.prod.outlook.com
- (2603:10b6:a03:201::14)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4feb2ebb-8559-4e07-1699-08d97d7c97bf
+x-ms-traffictypediagnostic: BN6PR11MB3889:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN6PR11MB3889F7A6C4E01B5F5B202C368CA29@BN6PR11MB3889.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 88lM2XT1PY8U+42QEaz1uqtrCPWwZrHSD1Nrf0iCDTg14oRA2SNlol1PJ4LJ7tod1JUJsbGSMgcrnBZcG5pBngA46Na8CIcvH2r6cBHn/Bhrs0lxTFT1FAPYPAVroRrmLdy5AY22OkT/d8agd6QkEI7ygn/EukzNOOmkiOA8Wk2fkYZnBXrvDl78utkot0A2gnv+kk1cLBqg1+/9zl4fshXFk0tFpBHUhKA4Pe1Qc74t/O2gnJsqwaey7vLhSMoRWUq/q1cxMM7o1Rge/Xengh+8e/yf/WQWiaUM88vfqEyQMNM6T6pTQYJKtnWG/Ll1vhlzoz675/RSsUPAtLx1YX5tb7/MFPZuTRGXqEdIcBP/qFBp9hNIdLtH84WxhIOxjDohPsYM6LafEM2e1uTwExEGDMQyUypqM9bB4WIJZSEZ4va2JjDI8HFNDWnHuOhx80THkvfPMOFPzJYwfJtBjcjcCmDZj3+5pOkjga+2LCd3ll//dEZqj95/bZs0yddHYAQ0Lq+M8pJP7iPk+C8iB1TycSnC3qpidZmZ1WqpCT8XxTadYq7av2+prs0U763rmrTFzVHBBwcSvP0CxjBlfQ3bGwtAdhKrHuyZ23/cEFeXZOd7dJCj5yVPIVwzjcfa9pn1JLawkJb+U2gzuoEk2gtQP8yjmKFl+9QAsbG81sY1uIWiLdq720nCR0u2tKGZOH6Oy0xRbiTXdvuKET34+Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(186003)(33656002)(38100700002)(55016002)(71200400001)(9686003)(122000001)(38070700005)(64756008)(8676002)(8936002)(508600001)(7416002)(2906002)(6636002)(4326008)(66556008)(66476007)(76116006)(66946007)(5660300002)(6506007)(86362001)(66446008)(26005)(52536014)(7696005)(316002)(110136005)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9FoAh84PXM3peQ6b3oEmfbLDBDOqDrZ5kuKM0m+4nAHtQAjan16qmao7jx1K?=
+ =?us-ascii?Q?/2i3E8BUq2kHKvnpEluolM6nzAWImSjVfVTdNl9UWjbjE6C8DHsyNZZ1Gc+5?=
+ =?us-ascii?Q?JPW+NPgBFP6QeEmiX/hAAUCZeTMeTUlIFQpjjoOw0Hgj6v9DLW0ZiJeRHIHd?=
+ =?us-ascii?Q?JNMflk9WmoUOdj1cCRsneqYfYOlQrNip0fh6QBocFFR9uJZqHtZug87c1H0b?=
+ =?us-ascii?Q?Vtb/tIPFbiPB0wW0+4Z3OjqgKdC8wcI5XkxEhR269aLVv2/2dH0r1UF9R7QV?=
+ =?us-ascii?Q?Ja0TIOjW4RiwycdiW38GagsFIVUQTkkBdPPXVPs1BhwqVxg8bcRzXJDS6S/m?=
+ =?us-ascii?Q?RmoL7U5p2p1814W3hdqdyFWwYKXqQ37LQu+v+7t5ZYPySVYFb7//z9n2cOqP?=
+ =?us-ascii?Q?1tS8+J5sSI4saMbDOfWBUeWXBxHzOOfaACrXekOxERgQai2RDap2aEqKorxS?=
+ =?us-ascii?Q?1xAit4q/4oJI/6Dx0pZ4bEim7uuDsMiLSvOhjDvNKJNjJ+r03o6cO4L+aD04?=
+ =?us-ascii?Q?GDvt5K/X2E0+ZGqXFyPs2/tgJf3ioFvvoDZsxo4iF9bQTxzXQnss3lnp1LjA?=
+ =?us-ascii?Q?11PBmIZYcFr99a2EBBNoUFwmS3DCtjmcVv8RHfFZ3Gglne9TSudDjhZckxE6?=
+ =?us-ascii?Q?3m2tPNiSQmtTrF4QudozrG+K9BQij5wh4dSeoLtTTroqqC0EigHcbx1WuYjU?=
+ =?us-ascii?Q?PqGdeM6uO2d00FBsMKtBn7mTV9n+A3lNsBs8fQM6W9JGelpbN0fv6KJ1n7/U?=
+ =?us-ascii?Q?ee3WuCCGKj1Uu3YQ747+XHsjcfmbmrJdoDFI84zSq+/mx6ZcOS8nIvGoSacs?=
+ =?us-ascii?Q?uvpvX/78g/PAhjJ63it+u0s5UcJtd1wlNEN5zTNr2ZQGlOh4ykxkd5OmXXBP?=
+ =?us-ascii?Q?q4bG+FWfrh0qEr7dDEzvYoc+ywmyy5knBO5zKn/RsOzLuAVauzUf2HCE+eQW?=
+ =?us-ascii?Q?99dvHHHt5XiRV4T3XFePQi8+hWXRQi/DxS8l7tJWHzchi5MagrjK12FDXfh6?=
+ =?us-ascii?Q?sDRldgVO6/hUFDypE2unIK+jn10o6RvOMCs+3+yaUOsOsjvyL/gDUpXErDZ9?=
+ =?us-ascii?Q?8T2Mm5TipYfXVO0I0e2kGD6ASOKCa9QQ8CCAAVJHwxe+BkiO4YMcW2Rx6tcN?=
+ =?us-ascii?Q?oODZ+nbwbHBjB3ii626CNxUgU6nFviwVNu6zkAx4AX8xRhCdlnbyLFNX1Sez?=
+ =?us-ascii?Q?chRU8jsAHqliPxkaPgHtKHBlEwEFJBbD33s6hskcv9actK+1WhxHb1wKbTyP?=
+ =?us-ascii?Q?aO6im2tDf+AdcVsZIpQJmTcHjyyWYQRoPqC+wuZS0W/E3eTsQ7SfhZ5bbL51?=
+ =?us-ascii?Q?fbl72nQUnzUcqNRAdUzW5z9Y?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from [172.31.21.22] (165.204.53.104) by BYAPR07CA0070.namprd07.prod.outlook.com (2603:10b6:a03:60::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 03:50:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 753a3182-4ccc-4cc2-a6a3-08d97d7c15e0
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2775:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB2775331C2F6AEFCCA4E7BC88E9A29@BYAPR12MB2775.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BokOdLcr1KwZElWXx4WOzntQX/MBRLi0LNtxaoanwPIbTw6Y9acwhUTR5qp7C+v3qQpefCIzJZqydtQyFLGNh6i/Jz0TDIPg65zblPJGNV8Ppeb/jYXa6Aw7TTEcYVSwH2lSchB5hQgLLK/rOz161cDg7YTqS+UeoRzqbgaXM5XQPfg8GyZhkHlD8JlQLA7ek0lsMlYbV5eFsVeEp0GeESRtuk7NU/Q8vDBoUHujgIrljzODaY64XvmCvEOsh2s+Nxyl0gPP0Cdq0JgqI7Gk/WHguVLAc8SyzFmJDGRNAOoJBgKOGFbWe1os4/t9B8BHRtimPGIt8l+IV4BbwTsT0ULSIFEGwjm9BqAaWg5Fd7IvHJPDudO7mudv664eo8QBNthh2XEamUnJSN5zRt8aN8GS3fn0XyDH30L8bnYXM/xtnhvwEgcQUqEUobBuLUbjPmk89EqRAu4sE9rkpFHHTlmPVOlX1xwMumo9XftJ3lApE1KIArzK1ZQ2/EMxKxGBRBfcORcSvzmo3QJgcCiRslu5v9no7+S5gZCM2DVgv7tYzmz641w+i1JMA3mjWcdZnktVY62Ja7Whna/+iz4HDJkTHJCOpD18yhqgwmhSpLs9iTiwWNmCwp2nnPQLONr3Z+06ibxfvqDiBaYYaxs1DzeXW7ag+vz3H3FKdsxdd9rz2lMrfZOOPFtlDv+wuClh5BbgUbxwgKMCDO59NHto954FZnI9l3R88fN9Xo//isQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4177.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(36756003)(316002)(66556008)(16576012)(4326008)(956004)(26005)(186003)(2616005)(38100700002)(8936002)(31696002)(5660300002)(2906002)(6916009)(8676002)(7416002)(53546011)(31686004)(6486002)(54906003)(66946007)(508600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dEhtZ0hEdDE1Y2ZBWVdkT2pTazEveHByNUJmVXpZekhYaVZyVEtCdVYxV3pz?=
- =?utf-8?B?TVF6ZC9RdUp3S016eXRFRHNzU2l2TTBXNHdhNXhFMFBmZW1Bd3JaTElNalhI?=
- =?utf-8?B?RVhlRkZtdHhTTHk5b0FYcHN4ekxBTzZILzR5L1hmaGRpZlZMVG04Z0huRkNF?=
- =?utf-8?B?NCtUV1A5VWtyemFoMlgxZU1yTVNlNkU5MXRiNmNoemNjT3VyN2NBRTN6U2VR?=
- =?utf-8?B?NC9mOHI0ai9vQUNUY1FhK0VacGxDTGVvOS9vRjUyQUR0U3hpR1UrVjVJSDI4?=
- =?utf-8?B?bzdUa0JNck9BY2hpaDBBYW16RU1zc3lFaXlXNThsOW83RUVXdjVsQ0svUjg2?=
- =?utf-8?B?WmJyTSthR3lHYmdCdmZQUnBZdlcrdXZCZXNEU2hjbWZvUHV5Z0xLc29iUFhm?=
- =?utf-8?B?WFlFdk90SC9Beko4MGcrSFZwSVViczdxUkwrekpmaVpmbnJsaHVFaXFia054?=
- =?utf-8?B?UEJJYWRUREpCUXlrNW9tZ1MwUEpxYk5jUVVrN21rUFZIQzFNZ0k4WVpyaTVp?=
- =?utf-8?B?MWVZR2twdFpmVEtFckdjVHdGTEpqb2FXbkgvcFpJcFRQYjVLdnNRVkhDVyt0?=
- =?utf-8?B?V2N5RW5Qa3pLd3BHT1cxdDRtNzhKRzI0b2Y5MGFISkJTdkxscHVjYjJxTERG?=
- =?utf-8?B?ajVSMktubTE3MmVwUFhKM2pJOWJLNi8vTE9BVDRPZEdPVVM0bXhZUDRZRU1X?=
- =?utf-8?B?N2VUem8zS0tIKzluNXl0RWVWNUhvbGg3VEZwYlh1QTJ6QnhVcGYweWtSVWgy?=
- =?utf-8?B?c0V3aUo4RjlCSVlTeC9vVHhoQjhQWGtaSXNZeC82eEdheDI0Y1J6dEprNjgz?=
- =?utf-8?B?Y2pOcno4aE4xbk9qazBPSEV0OXFyd0VFZGo1YlpIaW40K3ZUL1BBVnVNN2F6?=
- =?utf-8?B?Y1lQTmxaQzJIQ0RGcGNIamxhbytCTkowald3ZUI1Y3I4RzRtbFpocnpqZksr?=
- =?utf-8?B?SXo0ZzhKaDlPZDU4VnBnWmFzbEx2WjR3emQxQUdyaExQWE41YTMyWmlaNEdD?=
- =?utf-8?B?bVk2dVYrQ0hqRnJMckxScjVuajh0emVxZDg5Tk16M0dWT0dVOWFHOXFyeE5W?=
- =?utf-8?B?NDFSM2h4QmhFL3g2VklyRFVpdzNmUFpuMDZsREt4QUpLY2FIOWV6WGsyWjV1?=
- =?utf-8?B?VjR2emNlMEtMR25nUnc5WFJqUmlvVktMSDFPUWVCb2NVcE5xWW92WHE5K2Rr?=
- =?utf-8?B?V2EvdHc1S01kZlRtYmZqT0JKaDFiSktnOUFycjNrVkJmTmI1UDZkZ3hVcnBQ?=
- =?utf-8?B?TUNVbGozdldwNURld3ZWU3A2SEVIdUZFUXZQYndjSGdpK3Niamk5dThNNXRT?=
- =?utf-8?B?RTlIRkQwd3ZubWV3UUh2MG16M3FoZ2FxTmdiTlVNM2VIeEY4eFptRmgzQVdV?=
- =?utf-8?B?T2xFbGpwWDc1dWVOcU82bG8wNWJ1bGdwRFdSejBpQTg5K3hIVVp0dnJFU0s4?=
- =?utf-8?B?Skh2cXFVVUU3QkVuSE54U2lSdHZGVGh5TFJ0azZlTmZ4VDFCS1hlZlBuYWVB?=
- =?utf-8?B?RTVFMzNqN1NGMFVTeDNkdEFJSDFnM05ERVlVZ0FQMFNFVjMzVGplbGMvc1oy?=
- =?utf-8?B?djJjYy9QZ1BHemEwMTFubUVad3VLMFRkVkt2UmkyRnUzUzVHZ3FMenlzV280?=
- =?utf-8?B?RDdxZDRQcTNSa0M0Q2JsYjNxbUkvY0h4NmhOSDNmazk4azVsNlJiM05aS1hz?=
- =?utf-8?B?NlhGbnVka0JtSXhmS3cvWHFYZ3o4Mng4NXl2dnpuYm4zOUZvZkRJWHRLWWpY?=
- =?utf-8?Q?mpautK3AqvP4Pq82rYhfjLSzpNdST5w3kN7i/Vi?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 753a3182-4ccc-4cc2-a6a3-08d97d7c15e0
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4177.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 03:50:15.3862
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4feb2ebb-8559-4e07-1699-08d97d7c97bf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 03:53:52.3461
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t06ouw+hBQervS7O76OG+Wi9n6pDhDBMVSA4PiSslludwV2kE61SNCkz0QtfNpAvu9SQ8Q4ixYkqC7SDDOWKmQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2775
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wZ2WI1g1ahDW5zLfq4JmkzAAUVMvhxf0IraRSt9o0mfmQlHaddDlLnrLmipOoWRmNmiNHULrCgZ4/rC9jBdDJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB3889
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Wednesday, September 22, 2021 2:02 AM
+>=20
+> > +static int ioas_check_device_compatibility(struct iommufd_ioas *ioas,
+> > +					   struct device *dev)
+> > +{
+> > +	bool snoop =3D false;
+> > +	u32 addr_width;
+> > +	int ret;
+> > +
+> > +	/*
+> > +	 * currently we only support I/O page table with iommu enforce-
+> snoop
+> > +	 * format. Attaching a device which doesn't support this format in it=
+s
+> > +	 * upstreaming iommu is rejected.
+> > +	 */
+> > +	ret =3D iommu_device_get_info(dev,
+> IOMMU_DEV_INFO_FORCE_SNOOP, &snoop);
+> > +	if (ret || !snoop)
+> > +		return -EINVAL;
+> > +
+> > +	ret =3D iommu_device_get_info(dev,
+> IOMMU_DEV_INFO_ADDR_WIDTH, &addr_width);
+> > +	if (ret || addr_width < ioas->addr_width)
+> > +		return -EINVAL;
+> > +
+> > +	/* TODO: also need to check permitted iova ranges and pgsize
+> bitmap */
+> > +
+> > +	return 0;
+> > +}
+>=20
+> This seems kind of weird..
+>=20
+> I expect the iommufd to hold a SW copy of the IO page table and each
+> time a new domain is to be created it should push the SW copy into the
+> domain. If the domain cannot support it then the domain driver should
+> naturally fail a request.
+>=20
+> When the user changes the IO page table the SW copy is updated then
+> all of the domains are updated too - again if any domain cannot
+> support the change then it fails and the change is rolled back.
+>=20
+> It seems like this is a side effect of roughly hacking in the vfio
+> code?
 
-On 9/1/2021 5:45 AM, Rafael J. Wysocki wrote:
-> On Wed, Sep 1, 2021 at 4:14 AM Deepak Sharma <deesharm@amd.com> wrote:
->>
->> On 8/25/21 11:07 AM, Rafael J. Wysocki wrote:
->>> On Thu, Aug 19, 2021 at 2:43 AM Deepak Sharma <deepak.sharma@amd.com> wrote:
->>>> AMD CPU which support C3 shares cache. Its not necessary to flush the
->>>> caches in software before entering C3. This will cause performance drop
->>>> for the cores which share some caches. ARB_DIS is not used with current
->>>> AMD C state implementation. So set related flags correctly.
->>>>
->>>> Signed-off-by: Deepak Sharma <deepak.sharma@amd.com>
->>> Applied as 5.15 material under the edited subject "x86: ACPI: cstate:
->>> Optimize C3 entry on AMD CPUs", thanks!
->> I might need to send subsequent patch for this. Can you please point me
->> to git and branch where this has been merged.
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+Actually this was one open we closed in previous design proposal, but
+looks you have a different thought now.
 
-Still I am not able to see this patch merged on linux-next branch.
+vfio maintains one ioas per container. Devices in the container
+can be attached to different domains (e.g. due to snoop format). Every
+time when the ioas is updated, every attached domain is updated
+in accordance.=20
 
-Thanks,
+You recommended one-ioas-one-domain model instead, i.e. any device=20
+with a format incompatible with the one currently used in ioas has to=20
+be attached to a new ioas, even if the two ioas's have the same mapping.
+This leads to compatibility check at attaching time.
 
-Deepak
+Now you want returning back to the vfio model?
 
->>>> ---
->>>>    arch/x86/kernel/acpi/cstate.c | 15 +++++++++++++++
->>>>    1 file changed, 15 insertions(+)
->>>>
->>>> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
->>>> index 7de599eba7f0..62a5986d625a 100644
->>>> --- a/arch/x86/kernel/acpi/cstate.c
->>>> +++ b/arch/x86/kernel/acpi/cstate.c
->>>> @@ -79,6 +79,21 @@ void acpi_processor_power_init_bm_check(struct acpi_processor_flags *flags,
->>>>                    */
->>>>                   flags->bm_control = 0;
->>>>           }
->>>> +       if (c->x86_vendor == X86_VENDOR_AMD) {
->>>> +               /*
->>>> +                * For all AMD CPUs that support C3, caches should not be
->>>> +                * flushed by software while entering C3 type state. Set
->>>> +                * bm->check to 1 so that kernel doesn't need to execute
->>>> +                * cache flush operation.
->>>> +                */
->>>> +               flags->bm_check = 1;
->>>> +               /*
->>>> +                * In current AMD C state implementation ARB_DIS is no longer
->>>> +                * used. So set bm_control to zero to indicate ARB_DIS is not
->>>> +                * required while entering C3 type state.
->>>> +                */
->>>> +               flags->bm_control = 0;
->>>> +       }
->>>>    }
->>>>    EXPORT_SYMBOL(acpi_processor_power_init_bm_check);
->>>>
->>>> --
->>>> 2.25.1
->>>>
+>=20
+> > +	/*
+> > +	 * Each ioas is backed by an iommu domain, which is allocated
+> > +	 * when the ioas is attached for the first time and then shared
+> > +	 * by following devices.
+> > +	 */
+> > +	if (list_empty(&ioas->device_list)) {
+>=20
+> Seems strange, what if the devices are forced to have different
+> domains? We don't want to model that in the SW layer..
+
+this is due to above background
+
+>=20
+> > +	/* Install the I/O page table to the iommu for this device */
+> > +	ret =3D iommu_attach_device(domain, idev->dev);
+> > +	if (ret)
+> > +		goto out_domain;
+>=20
+> This is where things start to get confusing when you talk about PASID
+> as the above call needs to be some PASID centric API.
+
+yes, for pasid new api (e.g. iommu_attach_device_pasid()) will be added.
+
+but here we only talk about physical device, and iommu_attach_device()
+is only for physical device.
+
+>=20
+> > @@ -27,6 +28,16 @@ struct iommufd_device *
+> >  iommufd_bind_device(int fd, struct device *dev, u64 dev_cookie);
+> >  void iommufd_unbind_device(struct iommufd_device *idev);
+> >
+> > +int iommufd_device_attach_ioasid(struct iommufd_device *idev, int
+> ioasid);
+> > +void iommufd_device_detach_ioasid(struct iommufd_device *idev, int
+> ioasid);
+> > +
+> > +static inline int
+> > +__pci_iommufd_device_attach_ioasid(struct pci_dev *pdev,
+> > +				   struct iommufd_device *idev, int ioasid)
+> > +{
+> > +	return iommufd_device_attach_ioasid(idev, ioasid);
+> > +}
+>=20
+> If think sis taking in the iommfd_device then there isn't a logical
+> place to signal the PCIness
+
+can you elaborate?
+
+>=20
+> But, I think the API should at least have a kdoc that this is
+> capturing the entire device and specify that for PCI this means all
+> TLPs with the RID.
+>=20
+
+yes, this should be documented.
