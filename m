@@ -2,109 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783F9414EB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AB4414EBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237013AbhIVREn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
+        id S236740AbhIVRGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236920AbhIVRE1 (ORCPT
+        with ESMTP id S236689AbhIVRGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:04:27 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AB3C061762;
-        Wed, 22 Sep 2021 10:02:57 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id y1so2164200plk.10;
-        Wed, 22 Sep 2021 10:02:57 -0700 (PDT)
+        Wed, 22 Sep 2021 13:06:10 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3FCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:04:40 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id i13so3506682ilm.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ETleUGqj8okouLW+8qnjHS0760cK4CL53iB0k0eC4GY=;
-        b=Dprf5xWzJ9KPg3xS9vOEKpHkriRgiOvViVnv+zMjKPVwOOHn/yR8y46EtYYp7I9I5M
-         Oq1jwvqUycvK3kiLKpf7irjLxhFTMv6SGPTemN267XAbndpFW26qcceDD96wh5SDh6+U
-         ulqQaZa8Qk70xIKqjwqE1T1szjjLlpocojYL80kArIwdq5/FztXBcgue95ol7l9EMeNv
-         t4vlkA9t584fPr40FAPsET5xSvH5drMkr3wmBjesZCsH3GWihYW+AD93HAxBAZTmqI/7
-         zENWeqZReuG/Qcdy/QWhTh4hbz7RzNrIKdictFBn+Fmkk+FnAP9iF31VK0pbt4+Zyiwk
-         efHQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6Ux03cG5hBPJ9MQ2bUemW8lwVWLAct1mE8axUh1mK6k=;
+        b=Z6U/J9MOXmwaNV+2zF5ntuLypdkphil3PjK5ro65TRqO89DHh8u1ndKkc8KqLah1rV
+         v99nt+Du+gWUFK0sn9LyHdJiRBylTtBEBq6YeeXbLq4yaXDOUH1CLuZeqNoiFSjbnB4I
+         mr8TRJoZ+L1Jol1L2QB1qQqlkv1/Y6CoiYPjicVRS3m8qBWdhjEIR2WJzya1A39m1blW
+         ++icpE8GBziVH0LzlbpOdDup4TVgTz8adYh6IxwQ88C2YONiBD0QLxo4ZQalU17Bx4bd
+         30O6XguWTD14tRIKez+dPQyOOihhIiUVm6bue5FEKlUHLcoaHDlzdgqHoaZ3bFGlD5mo
+         EDEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ETleUGqj8okouLW+8qnjHS0760cK4CL53iB0k0eC4GY=;
-        b=FQQhCm2I03IT4zZZ0CFas7H/z7Zud2CwD3RPXIaVBIfiguUk5RweJ4/y2XDeOElTDS
-         g7GnSJf9cRgbpTUFK3y6kkttHQ2cQ8rJ2oKzhjuNVjtE/5GF6i797l8S+GBn8BR1YldR
-         VpQ3R2FOXfX2/waySqSM9q3MKNmOYwYHDFnyGq6gMrO0a6zC+s1zwzpdd6GB78gJGh4E
-         +nq2/SEZGk8z9DRKaTpSj1QubR4ydRX4ZV3JhcS1W7dppFAv8zb/cNgkDXe2uZAfW20G
-         ZloupyvD+e0afPgKFe4VUu5IN+3nLa1Emrg5E65n10FRz6yGFClvBKp1K6DS/5Ic4cMu
-         JvKQ==
-X-Gm-Message-State: AOAM533qrKWpejU4wzCOpFZRSiswzloKLq2ep2bwJHmSNFtcXAB/Y/vi
-        i0cnXIb2uCpB0/MXYxd2D9m/K53wQ4c=
-X-Google-Smtp-Source: ABdhPJxIRGttokXOiwMnk+mLwRFxpSFSzxwc6uPdqvzruvSa4OJ01GDEtk166KRDrXZ4Yhp7boYjbg==
-X-Received: by 2002:a17:90a:de0b:: with SMTP id m11mr78704pjv.90.1632330176614;
-        Wed, 22 Sep 2021 10:02:56 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x128sm3061885pfd.203.2021.09.22.10.02.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 10:02:56 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Alex Sverdlin <alexander.sverdlin@nokia.com>,
-        kernel test robot <lkp@intel.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT)
-Subject: [PATCH stable 4.9 v2 4/4] ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE
-Date:   Wed, 22 Sep 2021 10:02:46 -0700
-Message-Id: <20210922170246.190499-5-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210922170246.190499-1-f.fainelli@gmail.com>
-References: <20210922170246.190499-1-f.fainelli@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6Ux03cG5hBPJ9MQ2bUemW8lwVWLAct1mE8axUh1mK6k=;
+        b=dfYB+ntDS9KNtjecITk3UGfdcL2THhWKuq6lw6Pl5nNNfIS3gUNlIJFkqcqEJ0Khg4
+         dSviM9gv0IemeiW6ZHS121KqhWtJiZcQXHugEA/Y7WkEoFsWTIBHHMGzSwQ6MLt71DU7
+         sZsCIZ5vhXI7zc88Sl421PixQlOvicr4Q5A0Stu5vbwEG6u75Zd3Ebnu38h1tl5yzyOg
+         r4csBkOrxSwUv9bp2plTrqO4hW9DGQlz1YLdZ3f5DdoKeWNXAg6OoKJYqDi8XrNDPMUa
+         30tbaxfHNyMNtv7YpIP4WbXlw6C6pIsIOvborAeLHk/as0l1+Fg1kiSwPIWPEi7MYJ2P
+         iHIg==
+X-Gm-Message-State: AOAM5302SA+BAzZ9XQTTsSP07y/kOK7gEvbLfJnG+VvWJtgImYrA0Qve
+        SQE+I5BxhI/evgJmri6VEkMNrtXjT9tQl4pW9AYsJn1xGnx+LQ==
+X-Google-Smtp-Source: ABdhPJz+KAJcw9lPLpGejjDEw4hAk3C/8Z8dhpkjFErjgU4n2XhzvH7ncUcXbpu1TUH9G56ERqUMbzU2TyTdwYMDTlQ=
+X-Received: by 2002:a92:db0b:: with SMTP id b11mr48933iln.275.1632330279236;
+ Wed, 22 Sep 2021 10:04:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210921163323.944352-1-axelrasmussen@google.com>
+ <YUoaDr2wsW8wtk5Z@t490s> <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
+ <YUowr6phZU4v7dds@t490s> <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
+ <YUp438W5p5VHL1Ch@t490s>
+In-Reply-To: <YUp438W5p5VHL1Ch@t490s>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 22 Sep 2021 10:04:03 -0700
+Message-ID: <CAJHvVciZc0mpcw8OSPk71YsVzCTajY+ikymcD3+zBJKsZynYkg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+Thanks for discussing the design Peter. I have some ideas which might
+make for a nicer v2; I'll massage the code a bit and see what I can
+come up with.
 
-commit 6fa630bf473827aee48cbf0efbbdf6f03134e890 upstream
+On Tue, Sep 21, 2021 at 5:29 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Tue, Sep 21, 2021 at 01:31:12PM -0700, Axel Rasmussen wrote:
+> > Ah, it has to do with us asserting the list of expected ioctls. The
+> > kernel changes the list of ioctls it reports in response to a
+> > UFFDIO_REGISTER, depending on the particular kind of vma being
+> > registered, **as well as what mode(s) it is being registered with**.
+> >
+> > So for example, consider the hugetlb_shared test. When registering,
+> > the kernel might set the UFFDIO_CONTINUE bit or not, depending on
+> > whether we registered with the MINOR mode bit set in particular.
+>
+> I can understand your point, but the "capability set" of the kernel is still
+> the same.  In this case we should have UFFDIO_CONTINUE capability for
+> hugetlb_shared test globally, as long as the kernel supports it, irrelevant of
+> what test case we're going to have.
+>
+> Then in the test, if we don't register with MINOR mode, IMHO we should just
+> mask out the expected_ioctls with UFFDIO_CONTINUE because it does not make
+> sense to request UFFDIO_CONTINUE if we will never use it in the test.
 
-FTRACE_ADDR is only defined when CONFIG_DYNAMIC_FTRACE is defined, the
-latter is even stronger requirement than CONFIG_FUNCTION_TRACER (which is
-enough for MCOUNT_ADDR).
+Right, this is how it was before. I didn't love how the base set
+included everything, and then each test is responsible for removing
+the things it isn't testing. It seems reversed: why not just have each
+test compute the set of things it *is* testing?
 
-Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
+>
+> In other words, having a "uffd_features" global variable and having it changing
+> all the time during tests is odd to me, but I agree it's not a big deal. :)
 
-Fixes: 1f12fb25c5c5d22f ("ARM: 9079/1: ftrace: Add MODULE_PLTS support")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm/kernel/module-plts.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+100% agree with this. From my perspective this is tech debt since:
 
-diff --git a/arch/arm/kernel/module-plts.c b/arch/arm/kernel/module-plts.c
-index 6804a145be11..ed0e09cc735f 100644
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -24,7 +24,7 @@
- #endif
- 
- static const u32 fixed_plts[] = {
--#ifdef CONFIG_FUNCTION_TRACER
-+#ifdef CONFIG_DYNAMIC_FTRACE
- 	FTRACE_ADDR,
- 	MCOUNT_ADDR,
- #endif
--- 
-2.25.1
+8ba6e86408 userfaultfd/selftests: reinitialize test context in each test
 
+It used to be that we just had one global context (variables like
+uffd, count_verify, area_src, area_dst, etc). But this had the problem
+where some previous test can mutate the context, breaking or affecting
+following tests. After 8ba6e86408, we clear and reinitialize all these
+variables for each test, but they're still global. I think it would be
+cleaner if these instead were in a struct, which each test initialized
+and then destroyed within its own scope. If we were to do such a
+refactor, I would put uffd_features in that struct too - it should be
+private to a test, since it's a property we get from the uffd.
+
+But, I wasn't sure it was worth the churn to do something like this.
+
+>
+> --
+> Peter Xu
+>
