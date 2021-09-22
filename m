@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D2F414BAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E357A414BAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236264AbhIVOUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:20:04 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:34642 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233513AbhIVOT7 (ORCPT
+        id S234563AbhIVOUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235848AbhIVOT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Sep 2021 10:19:59 -0400
-Received: by mail-vs1-f53.google.com with SMTP id u8so3157659vsp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:18:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4PAUUUtUWlJzST2fG7TdOWPNu1FCJMhkGhRnMRQX8Oc=;
-        b=GbHvSmqHVnm9+/nv6aq9BKoYemnBZqdl1xtHzESrgp8VYskmqDqnZ1olzwEzq+VSL3
-         zSH/kzMc7RSJ9vIQUBavqTxHpAXLx9V5kjVcQnwMwkzLntX30LqzSA/PtJg//vrjOqwZ
-         36p9AOfeCZfCG94S3Z/5UcaCtq2oKXZUlT1kewT7dOBF/oP0OFalAlZ4zsdh20ddj3fv
-         Smw/dnxlGs1xXpn1cMlBS0pOLb+ajGah1kiTYXWJRWjcuWqnfZtbRyU2mDRLhrGY7gr6
-         pd3iGkTua8a8/t4Od6b7DIEMds2mfznEXjdespEHVGrkNMR0zxsp0eUVRCOoaRO2Rgru
-         fKvg==
-X-Gm-Message-State: AOAM530+wrN7OZYmrLCCwbjiyDVW5EckMn/rdc34ZCyFw8GO+Qs6KYH+
-        CWOi2kKlkiteXZ9S2dSYtHgT4ixlyEcL5zG7F2E=
-X-Google-Smtp-Source: ABdhPJz5A6+t/+J2P2icovoL2g+OWJpt4lZNgsemjl/kVjg7/1o8O6j2TksYmHj2qEDi5s1cVbmsKe1vWCZU194fgps=
-X-Received: by 2002:a67:f147:: with SMTP id t7mr20253515vsm.41.1632320309397;
- Wed, 22 Sep 2021 07:18:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210921215218.89844-1-michael.christie@oracle.com> <20210921215218.89844-3-michael.christie@oracle.com>
-In-Reply-To: <20210921215218.89844-3-michael.christie@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 22 Sep 2021 16:18:18 +0200
-Message-ID: <CAMuHMdWeToGusZvg+7x_iwa9vCk3Y7ByDADw70JVZ5AZoVdR0g@mail.gmail.com>
-Subject: Re: [PATCH V2 2/9] fork: pass worker_flags to copy_thread
-To:     Mike Christie <michael.christie@oracle.com>
-Cc:     hdanton@sina.com, Christoph Hellwig <hch@infradead.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397C9C06175F;
+        Wed, 22 Sep 2021 07:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=4n0VEAk/fGGueYQaeOGAUpveXsFvYVIDnzHQ9qCNW9U=;
+        t=1632320309; x=1633529909; b=a0hM+uAb75K04Nh8ozlYd9fS01wL6yIcUBJGsFFdRR8ZTLW
+        +jc5aHCNf1hfCW5xTmc8aWx8bBRhtAD1V8UsdJ5xKTzAaRH90Sf4qTsD76pFG9GvJuwLnDjxZm0wl
+        Nm15LY0ovczgfNzaqVNhQx0meaN2uDrt0I/KMh7K2IsOTOnUjppxJJBsgJmsuQ6ivH8lrzb42yWeQ
+        SoSJmIo52vjIBvG1LDyFRWWFXKUnkrnyXeK4ETa7KZ2FKhot4pNzWBZN/eyiZpfVK2MAlF45G01t1
+        tC1ov9UKdeGfcIMBYYm1gXRF6b9Xre1HNLsVggD7C8EqAietDkImGpCbBo5pcVfg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95-RC2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mT34r-00AKDL-QG;
+        Wed, 22 Sep 2021 16:18:25 +0200
+Message-ID: <168ff8423d33cae53097f63d5e7386c439b3a82d.camel@sipsolutions.net>
+Subject: Re: [PATCH] mac80211_hwsim: fix incorrect type in initializer
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Ramon Fontes <ramonreisfontes@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Cc:     kvalo@codeaurora.org, davem@davemloft.net
+Date:   Wed, 22 Sep 2021 16:18:24 +0200
+In-Reply-To: <20210922141617.189660-1-ramonreisfontes@gmail.com>
+References: <20210922141617.189660-1-ramonreisfontes@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:55 PM Mike Christie
-<michael.christie@oracle.com> wrote:
-> We need to break up PF_IO_WORKER into the parts that are used for
-> scheduling and signal handling and the part that tells copy_thread to
-> treat it as a special type of thread during setup. This patch passes the
-> worker_flags to copy_thread, so in the next patch we can add new worker
-> flags that function can see.
->
-> Signed-off-by: Mike Christie <michael.christie@oracle.com>
+On Wed, 2021-09-22 at 11:16 -0300, Ramon Fontes wrote:
+> This issue was raised by patchwork at:
+> https://patchwork.kernel.org/project/linux-wireless/patch/20210906175350.13461-1-ramonreisfontes@gmail.com/
 
->  arch/m68k/kernel/process.c       | 2 +-
+That wasn't patchwork that was the robot, but ... I don't think I've
+even applied that patch, so pleaes resend it with the correction
+included.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+johannes
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
