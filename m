@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBB3414A04
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78747414A09
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhIVNDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:03:35 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:16292 "EHLO mx1.tq-group.com"
+        id S230092AbhIVNDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:03:42 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:16302 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229765AbhIVNDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:03:34 -0400
+        id S230189AbhIVNDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 09:03:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1632315725; x=1663851725;
+  t=1632315727; x=1663851727;
   h=from:to:cc:subject:date:message-id;
-  bh=PqxTd4Dl9iY4lGq+Yt6hJ/nCvl9+hu34HCcKs1aNf8U=;
-  b=C9o2tXBj7olPvVZZ0Kr5spSWl76AAE8BUWO2NTZGuhNr4JKqdNbXABXl
-   jDabsvcBsVJsm0psyE0xb/4YWLS65ENMcpaaaiXMgu27uWMXohj4lU4Be
-   SXWEmbh+hGIQM9nIrs0Xb2oPAiZv/oEvfDjYHbud7Bav1ReVjtWc0QEol
-   vxw/fyIesnK6A/Poa9coRwuKZIsExsgjLoa1bfyFGeoMofWR4mQwtnE6N
-   BzOj579jbryk5N6zvY/ddQYY0MzkXj7BlYCW+xKPZAHfAjQMcn0insUCf
-   gkMcb5rhRuyVTakQiuEZxnVOlA3s3HASUzSDqh9isaUQrinlwXXy0xWJU
-   g==;
+  bh=fgR1P7fMypMDV82haLdAlKXE1MzNIjyTj4mRCbMNxWc=;
+  b=bqShPqpdWEugmmdOg5rxvhyEpr+q0JjQftqvazREaa/HnGncHK0S8a6L
+   4XH5YvI9+N+a1dJQknNzCLaiFD/US3UXjb40v9I0C+zonW58xLmzCbxu5
+   pBQUYGKRd2D2ciPJMRy0mFqq0xAR6HB949CpgEXCdDrGiqvzT+4OmCVQ2
+   Puu7fYDN6XMa7iIX/Q5Kt0L3MTGQyipFDdppGAKw+KQR+2zoByvYrwtDW
+   OK8aKUDg9l20A9FYPewkqTeFCNDCIFlVc8kwLltyBpNyA6RwpyDlvXV5r
+   mULbbbL6c5Bgrs6XmvB1/YXtDJIorXZbofJddsVNbWR+50m4Qgn7bfbqr
+   w==;
 X-IronPort-AV: E=Sophos;i="5.85,314,1624312800"; 
-   d="scan'208";a="19650006"
+   d="scan'208";a="19650010"
 Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 22 Sep 2021 15:01:38 +0200
+  by mx1-pgp.tq-group.com with ESMTP; 22 Sep 2021 15:01:39 +0200
 Received: from mx1.tq-group.com ([192.168.6.7])
   by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 22 Sep 2021 15:01:39 +0200
+  Wed, 22 Sep 2021 15:01:40 +0200
 X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 22 Sep 2021 15:01:39 +0200
+        by tq-pgp-pr1.tq-net.de on Wed, 22 Sep 2021 15:01:40 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1632315699; x=1663851699;
+  t=1632315700; x=1663851700;
   h=from:to:cc:subject:date:message-id;
-  bh=PqxTd4Dl9iY4lGq+Yt6hJ/nCvl9+hu34HCcKs1aNf8U=;
-  b=kE5qtGBfBGfYh6xZH4txsizSQ2w37E71u8hAnyzm4j3DWmGyFrOS9MeC
-   KoX1UO04WVA6ZEjqMXyT+OKroLi7+5/KKBUQ2ZCCoWHrXDe1Z2EQJR9S6
-   rEGbAD60sTK7d6suwDGBz97H0SheOyimlg/LZAXCYJmoMpR5Qi+qhjpk4
-   Acbi5Vcjra6U46bHcDDcDGz/ASQ3Sm71RKVHP2fhoBsN/GULhVn8P7dtd
-   auliG1hh3E5r5VuYR3ZJ3Av1oM72ieRMttnCaBSYrgdtn+w3xNmrbmW2T
-   Gi29oQ5zm2xFyf4X+lPVetK3Qb0IxKbWGZSKhCKXilNXkB046n8l8LbF2
+  bh=fgR1P7fMypMDV82haLdAlKXE1MzNIjyTj4mRCbMNxWc=;
+  b=k4BwJ4k+aEXJGrO3OYzJsI27FQIzyE19zQtV4IeRHcZiYaNXx8OfQIT5
+   1LynqcPzqgWsI9kSJ6TYikO5TC1tlCVGy3NzApa6xkgbbfIB8FVmPdgBh
+   Bc0tFgmo62QTdHT93WWADInwVe8gkxZDMgq2EHezVCEhMK1B84yo7gCq+
+   rwgjRbR2fY4253bAMFHLEF181zR/i4FC1feGZWKrHWWMNM0JLUSZk06tz
+   K/4vVakds80y0GugTzrwI8JEAX5lmkZt3a1CHFcZKONhtmzq+eedpn75m
+   k7YKRq++oM7pix06eVG3ClwIvae0HfuptD1JwuIcowgZuLhZx/gVhpgNK
    g==;
 X-IronPort-AV: E=Sophos;i="5.85,314,1624312800"; 
-   d="scan'208";a="19649854"
+   d="scan'208";a="19649855"
 Received: from vtuxmail01.tq-net.de ([10.115.0.20])
   by mx1.tq-group.com with ESMTP; 22 Sep 2021 15:01:02 +0200
 Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id A1776280070;
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id CACFA280075;
         Wed, 22 Sep 2021 15:01:01 +0200 (CEST)
 From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 To:     Shawn Guo <shawnguo@kernel.org>,
@@ -61,137 +61,105 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2 1/3] ARM: dts: imx7-tqma7/mba7: correct spelling of "TQ-Systems"
-Date:   Wed, 22 Sep 2021 15:00:52 +0200
-Message-Id: <941f977a8f98a26a4f14fd2c8caf5374a67e9345.1632314390.git.matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH v2 2/3] ARM: dts: imx7-tqma7: add SPI-NOR flash
+Date:   Wed, 22 Sep 2021 15:00:53 +0200
+Message-Id: <11e30a17b8798800207b773b7793003d70d30420.1632314390.git.matthias.schiffer@ew.tq-group.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <941f977a8f98a26a4f14fd2c8caf5374a67e9345.1632314390.git.matthias.schiffer@ew.tq-group.com>
+References: <941f977a8f98a26a4f14fd2c8caf5374a67e9345.1632314390.git.matthias.schiffer@ew.tq-group.com>
+In-Reply-To: <941f977a8f98a26a4f14fd2c8caf5374a67e9345.1632314390.git.matthias.schiffer@ew.tq-group.com>
+References: <941f977a8f98a26a4f14fd2c8caf5374a67e9345.1632314390.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"TQ-Systems" is written with a dash.
+The SPI-NOR flash on the SoM was missing from the device tree.
+
+The TQMa7 as a designated QSPI_RESET# pin, however depending on the
+hardware configuration the pin may be unconnected, or be used for a
+different purpose. With this in mind, we mux the pin as a pullup and
+define an input hog for it, but keep it a separate pin group, so that it
+is easy for dependent Device Trees to modify the configuration.
 
 Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
 
-v2: new patch
+v2: - Add input hog for reset pin and move to separate pin group,
+      explain in commit message.
+    - Update flash node for modern "partitions" specification
 
 
- arch/arm/boot/dts/imx7-mba7.dtsi   | 4 ++--
- arch/arm/boot/dts/imx7-tqma7.dtsi  | 4 ++--
- arch/arm/boot/dts/imx7d-mba7.dts   | 6 +++---
- arch/arm/boot/dts/imx7d-tqma7.dtsi | 4 ++--
- arch/arm/boot/dts/imx7s-mba7.dts   | 6 +++---
- arch/arm/boot/dts/imx7s-tqma7.dtsi | 4 ++--
- 6 files changed, 14 insertions(+), 14 deletions(-)
+ arch/arm/boot/dts/imx7-tqma7.dtsi | 43 +++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx7-mba7.dtsi b/arch/arm/boot/dts/imx7-mba7.dtsi
-index 5e6bef230dc7..0212962b2189 100644
---- a/arch/arm/boot/dts/imx7-mba7.dtsi
-+++ b/arch/arm/boot/dts/imx7-mba7.dtsi
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0 OR X11
- /*
-- * Device Tree Include file for TQ Systems MBa7 carrier board.
-+ * Device Tree Include file for TQ-Systems MBa7 carrier board.
-  *
-- * Copyright (C) 2016 TQ Systems GmbH
-+ * Copyright (C) 2016 TQ-Systems GmbH
-  * Author: Markus Niebel <Markus.Niebel@tq-group.com>
-  * Copyright (C) 2019 Bruno Thomsen <bruno.thomsen@gmail.com>
-  *
 diff --git a/arch/arm/boot/dts/imx7-tqma7.dtsi b/arch/arm/boot/dts/imx7-tqma7.dtsi
-index 8773344b54aa..065e1668e280 100644
+index 065e1668e280..fe42b0a46831 100644
 --- a/arch/arm/boot/dts/imx7-tqma7.dtsi
 +++ b/arch/arm/boot/dts/imx7-tqma7.dtsi
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0 OR X11
- /*
-- * Device Tree Include file for TQ Systems TQMa7x boards with full mounted PCB.
-+ * Device Tree Include file for TQ-Systems TQMa7x boards with full mounted PCB.
-  *
-- * Copyright (C) 2016 TQ Systems GmbH
-+ * Copyright (C) 2016 TQ-Systems GmbH
-  * Author: Markus Niebel <Markus.Niebel@tq-group.com>
-  * Copyright (C) 2019 Bruno Thomsen <bruno.thomsen@gmail.com>
-  */
-diff --git a/arch/arm/boot/dts/imx7d-mba7.dts b/arch/arm/boot/dts/imx7d-mba7.dts
-index 36ef6a3cdb0b..32bf9fa9d00e 100644
---- a/arch/arm/boot/dts/imx7d-mba7.dts
-+++ b/arch/arm/boot/dts/imx7d-mba7.dts
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0 OR X11
- /*
-- * Device Tree Source for TQ Systems TQMa7D board on MBa7 carrier board.
-+ * Device Tree Source for TQ-Systems TQMa7D board on MBa7 carrier board.
-  *
-- * Copyright (C) 2016 TQ Systems GmbH
-+ * Copyright (C) 2016 TQ-Systems GmbH
-  * Author: Markus Niebel <Markus.Niebel@tq-group.com>
-  * Copyright (C) 2019 Bruno Thomsen <bruno.thomsen@gmail.com>
-  */
-@@ -13,7 +13,7 @@
- #include "imx7-mba7.dtsi"
- 
- / {
--	model = "TQ Systems TQMa7D board on MBa7 carrier board";
-+	model = "TQ-Systems TQMa7D board on MBa7 carrier board";
- 	compatible = "tq,imx7d-mba7", "tq,imx7d-tqma7", "fsl,imx7d";
+@@ -19,6 +19,16 @@
+ 	cpu-supply = <&sw1a_reg>;
  };
  
-diff --git a/arch/arm/boot/dts/imx7d-tqma7.dtsi b/arch/arm/boot/dts/imx7d-tqma7.dtsi
-index 598aed1ffd99..3ee2017c1ab3 100644
---- a/arch/arm/boot/dts/imx7d-tqma7.dtsi
-+++ b/arch/arm/boot/dts/imx7d-tqma7.dtsi
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0 OR X11
- /*
-- * Device Tree Include file for TQ Systems TQMa7D board with NXP i.MX7Dual SoC.
-+ * Device Tree Include file for TQ-Systems TQMa7D board with NXP i.MX7Dual SoC.
-  *
-- * Copyright (C) 2016 TQ Systems GmbH
-+ * Copyright (C) 2016 TQ-Systems GmbH
-  * Author: Markus Niebel <Markus.Niebel@tq-group.com>
-  * Copyright (C) 2019 Bruno Thomsen <bruno.thomsen@gmail.com>
-  */
-diff --git a/arch/arm/boot/dts/imx7s-mba7.dts b/arch/arm/boot/dts/imx7s-mba7.dts
-index d7d3f530f843..8e4cf589c92c 100644
---- a/arch/arm/boot/dts/imx7s-mba7.dts
-+++ b/arch/arm/boot/dts/imx7s-mba7.dts
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0 OR X11
- /*
-- * Device Tree Source for TQ Systems TQMa7S board on MBa7 carrier board.
-+ * Device Tree Source for TQ-Systems TQMa7S board on MBa7 carrier board.
-  *
-- * Copyright (C) 2016 TQ Systems GmbH
-+ * Copyright (C) 2016 TQ-Systems GmbH
-  * Author: Markus Niebel <Markus.Niebel@tq-group.com>
-  * Copyright (C) 2019 Bruno Thomsen <bruno.thomsen@gmail.com>
-  */
-@@ -13,6 +13,6 @@
- #include "imx7-mba7.dtsi"
++&gpio2 {
++	/* Configured as pullup by QSPI pin group */
++	qspi-reset-hog {
++		gpio-hog;
++		gpios = <4 GPIO_ACTIVE_LOW>;
++		input;
++		line-name = "qspi-reset";
++	};
++};
++
+ &i2c1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c1>;
+@@ -160,6 +170,25 @@
+ 		>;
+ 	};
  
- / {
--	model = "TQ Systems TQMa7S board on MBa7 carrier board";
-+	model = "TQ-Systems TQMa7S board on MBa7 carrier board";
- 	compatible = "tq,imx7s-mba7", "tq,imx7s-tqma7", "fsl,imx7s";
++	pinctrl_qspi: qspigrp {
++		fsl,pins = <
++			MX7D_PAD_EPDC_DATA00__QSPI_A_DATA0	0x5A
++			MX7D_PAD_EPDC_DATA01__QSPI_A_DATA1	0x5A
++			MX7D_PAD_EPDC_DATA02__QSPI_A_DATA2	0x5A
++			MX7D_PAD_EPDC_DATA03__QSPI_A_DATA3	0x5A
++			MX7D_PAD_EPDC_DATA05__QSPI_A_SCLK	0x11
++			MX7D_PAD_EPDC_DATA06__QSPI_A_SS0_B	0x54
++			MX7D_PAD_EPDC_DATA07__QSPI_A_SS1_B	0x54
++		>;
++	};
++
++	pinctrl_qspi_reset: qspi_resetgrp {
++		fsl,pins = <
++			/* #QSPI_RESET */
++			MX7D_PAD_EPDC_DATA04__GPIO2_IO4		0x52
++		>;
++	};
++
+ 	pinctrl_usdhc3: usdhc3grp {
+ 		fsl,pins = <
+ 			MX7D_PAD_SD3_CMD__SD3_CMD		0x59
+@@ -217,6 +246,20 @@
+ 	};
  };
-diff --git a/arch/arm/boot/dts/imx7s-tqma7.dtsi b/arch/arm/boot/dts/imx7s-tqma7.dtsi
-index 5f5433eb7dd7..7a190fdb2d30 100644
---- a/arch/arm/boot/dts/imx7s-tqma7.dtsi
-+++ b/arch/arm/boot/dts/imx7s-tqma7.dtsi
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0 OR X11
- /*
-- * Device Tree Include file for TQ Systems TQMa7S board with NXP i.MX7Solo SoC.
-+ * Device Tree Include file for TQ-Systems TQMa7S board with NXP i.MX7Solo SoC.
-  *
-- * Copyright (C) 2016 TQ Systems GmbH
-+ * Copyright (C) 2016 TQ-Systems GmbH
-  * Author: Markus Niebel <Markus.Niebel@tq-group.com>
-  * Copyright (C) 2019 Bruno Thomsen <bruno.thomsen@gmail.com>
-  */
+ 
++&qspi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_qspi &pinctrl_qspi_reset>;
++	status = "okay";
++
++	flash0: flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <29000000>;
++		spi-rx-bus-width = <4>;
++		spi-tx-bus-width = <4>;
++	};
++};
++
+ &sdma {
+ 	status = "okay";
+ };
 -- 
 2.17.1
 
