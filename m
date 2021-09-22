@@ -2,266 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC10414C87
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C866414CAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236331AbhIVO66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235014AbhIVO64 (ORCPT
+        id S236343AbhIVPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:06:31 -0400
+Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:35663 "EHLO
+        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236304AbhIVPGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:58:56 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361BFC061574;
-        Wed, 22 Sep 2021 07:57:26 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id w29so7659557wra.8;
-        Wed, 22 Sep 2021 07:57:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BrU/KsrCEnifMc+fy3DgWiIyWg8Bqog2sCDUUAiwOq4=;
-        b=pFK/z94pbsqPKqXftTspz6cdl9kTpye5aG9h63sOO5OCVqKp0oAj5WjkRnN6oErpzp
-         Zvb/gHO6hrShuU/n6NFhj2Bq+XubYYw3/Xwy+IF5YfehWGN238+FlAxJQcSRk+qvaJcX
-         uDLQEXVKrcm3/TnQGNhmZp7hk2pO52aiVxIOs3jFsy9A6RwEJaQycuSuxIPV0lo/tpO1
-         yNG3RaTVAxPn8xnv5N9eeVRJUI5uYnVPjN0AMnPGXIL39wFl3aJ5gENyCJgMQv5K/9Yr
-         theFALwkEnNf2Axwg8zkhuPykBTZuTzCxbX+YHVOMlmfCWtoGOIZVWH5e7A2KjzON0qk
-         JEfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BrU/KsrCEnifMc+fy3DgWiIyWg8Bqog2sCDUUAiwOq4=;
-        b=ni5tA4i0EgS7VFRakZ9zrPhzRZo96GonIFp+/RnWmCKGqUiNqDTpH58qJTgryEZGJt
-         ig5sMn4ku+jSHaH4n0flo9JeH8mpXWKrli4TJqQs/8Dc7qIOeLfEuVCzRqINS4/sT9+d
-         IPCIhVNccDs8yjzX8V0nZUBvzltEuuY11K3mT/G1D3KZiOX+NVzEXyzwCd/Jl8KGwdt7
-         r0H1JOx/7XyCt3x99zs8HTCILSQD7RWVgrlFUZbcuFNoUBrDKBs5Etvr0KRH80g6bNYw
-         cDDuwriXjuJl6WhVpqU8HZQeN2270cKawTjIQt4VK+Fyr5IMrKZea1cDl7NliUhQAFIi
-         xBUg==
-X-Gm-Message-State: AOAM531C4uLMn3IGcFYK9H2/kzEHfMNpiIl6ZHkz5djRCmyuh/l0uwHb
-        ga1kBG88jX4QLXGinIDUA6DG9JPiSI39SeZRvUE=
-X-Google-Smtp-Source: ABdhPJwuUrAfr0zttIsQhsaA7GxT4cjOgCwVQnnFYRFomGp8ouc6Lm6m5E4rJ+r2I7Aip0AsqQ7bIS2fSuqhJ0m50Hw=
-X-Received: by 2002:a1c:2b04:: with SMTP id r4mr10845312wmr.168.1632322644676;
- Wed, 22 Sep 2021 07:57:24 -0700 (PDT)
+        Wed, 22 Sep 2021 11:06:30 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id 2B878FAC22
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:04:59 +0100 (IST)
+Received: (qmail 8728 invoked from network); 22 Sep 2021 15:04:59 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Sep 2021 15:04:59 -0000
+Date:   Wed, 22 Sep 2021 16:04:57 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+Message-ID: <20210922150457.GA3959@techsingularity.net>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+ <20210920142614.4891-3-mgorman@techsingularity.net>
+ <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+ <20210921103621.GM3959@techsingularity.net>
+ <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+ <20210922132002.GX3959@techsingularity.net>
+ <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210903184806.1680887-1-robdclark@gmail.com> <20210903184806.1680887-5-robdclark@gmail.com>
- <101628ea-23c9-4bc0-5abc-a5b71b0fccc1@amd.com> <CAF6AEGt+jiJLaTDVnnVrZm-766OhPfj9wESJxP-FrX3S_c67gQ@mail.gmail.com>
- <d8f43401-c673-b9ce-d5ca-090fec2cb4c3@amd.com> <CAF6AEGsnN8sEeXuefB--pDApXeWYR2RVss=jUnz0ORh68SBP1A@mail.gmail.com>
- <ff396c19-c6ed-5f25-32df-c404bc8ea661@amd.com>
-In-Reply-To: <ff396c19-c6ed-5f25-32df-c404bc8ea661@amd.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 22 Sep 2021 08:01:56 -0700
-Message-ID: <CAF6AEGupLaG2GuSvY0qerWD7sB6JAzDgyx_XP2eHYqy+Of5f0w@mail.gmail.com>
-Subject: Re: [PATCH v3 4/9] drm/scheduler: Add fence deadline support
-To:     Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Steven Price <steven.price@arm.com>,
-        Melissa Wen <mwen@igalia.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 7:31 AM Andrey Grodzovsky
-<andrey.grodzovsky@amd.com> wrote:
->
->
-> On 2021-09-21 11:32 p.m., Rob Clark wrote:
-> > On Tue, Sep 21, 2021 at 7:18 PM Andrey Grodzovsky
-> > <andrey.grodzovsky@amd.com> wrote:
-> >>
-> >> On 2021-09-21 4:47 p.m., Rob Clark wrote:
-> >>> On Tue, Sep 21, 2021 at 1:09 PM Andrey Grodzovsky
-> >>> <andrey.grodzovsky@amd.com> wrote:
-> >>>> On 2021-09-03 2:47 p.m., Rob Clark wrote:
-> >>>>
-> >>>>> From: Rob Clark <robdclark@chromium.org>
-> >>>>>
-> >>>>> As the finished fence is the one that is exposed to userspace, and
-> >>>>> therefore the one that other operations, like atomic update, would
-> >>>>> block on, we need to propagate the deadline from from the finished
-> >>>>> fence to the actual hw fence.
-> >>>>>
-> >>>>> v2: Split into drm_sched_fence_set_parent() (ckoenig)
-> >>>>>
-> >>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> >>>>> ---
-> >>>>>     drivers/gpu/drm/scheduler/sched_fence.c | 34 +++++++++++++++++++++++++
-> >>>>>     drivers/gpu/drm/scheduler/sched_main.c  |  2 +-
-> >>>>>     include/drm/gpu_scheduler.h             |  8 ++++++
-> >>>>>     3 files changed, 43 insertions(+), 1 deletion(-)
-> >>>>>
-> >>>>> diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
-> >>>>> index bcea035cf4c6..4fc41a71d1c7 100644
-> >>>>> --- a/drivers/gpu/drm/scheduler/sched_fence.c
-> >>>>> +++ b/drivers/gpu/drm/scheduler/sched_fence.c
-> >>>>> @@ -128,6 +128,30 @@ static void drm_sched_fence_release_finished(struct dma_fence *f)
-> >>>>>         dma_fence_put(&fence->scheduled);
-> >>>>>     }
-> >>>>>
-> >>>>> +static void drm_sched_fence_set_deadline_finished(struct dma_fence *f,
-> >>>>> +                                               ktime_t deadline)
-> >>>>> +{
-> >>>>> +     struct drm_sched_fence *fence = to_drm_sched_fence(f);
-> >>>>> +     unsigned long flags;
-> >>>>> +
-> >>>>> +     spin_lock_irqsave(&fence->lock, flags);
-> >>>>> +
-> >>>>> +     /* If we already have an earlier deadline, keep it: */
-> >>>>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags) &&
-> >>>>> +         ktime_before(fence->deadline, deadline)) {
-> >>>>> +             spin_unlock_irqrestore(&fence->lock, flags);
-> >>>>> +             return;
-> >>>>> +     }
-> >>>>> +
-> >>>>> +     fence->deadline = deadline;
-> >>>>> +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags);
-> >>>>> +
-> >>>>> +     spin_unlock_irqrestore(&fence->lock, flags);
-> >>>>> +
-> >>>>> +     if (fence->parent)
-> >>>>> +             dma_fence_set_deadline(fence->parent, deadline);
-> >>>>> +}
-> >>>>> +
-> >>>>>     static const struct dma_fence_ops drm_sched_fence_ops_scheduled = {
-> >>>>>         .get_driver_name = drm_sched_fence_get_driver_name,
-> >>>>>         .get_timeline_name = drm_sched_fence_get_timeline_name,
-> >>>>> @@ -138,6 +162,7 @@ static const struct dma_fence_ops drm_sched_fence_ops_finished = {
-> >>>>>         .get_driver_name = drm_sched_fence_get_driver_name,
-> >>>>>         .get_timeline_name = drm_sched_fence_get_timeline_name,
-> >>>>>         .release = drm_sched_fence_release_finished,
-> >>>>> +     .set_deadline = drm_sched_fence_set_deadline_finished,
-> >>>>>     };
-> >>>>>
-> >>>>>     struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
-> >>>>> @@ -152,6 +177,15 @@ struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
-> >>>>>     }
-> >>>>>     EXPORT_SYMBOL(to_drm_sched_fence);
-> >>>>>
-> >>>>> +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
-> >>>>> +                             struct dma_fence *fence)
-> >>>>> +{
-> >>>>> +     s_fence->parent = dma_fence_get(fence);
-> >>>>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
-> >>>>> +                  &s_fence->finished.flags))
-> >>>>> +             dma_fence_set_deadline(fence, s_fence->deadline);
-> >>>> I believe above you should pass be s_fence->finished to
-> >>>> dma_fence_set_deadline
-> >>>> instead it fence which is the HW fence itself.
-> >>> Hmm, unless this has changed recently with some patches I don't have,
-> >>> s_fence->parent is the one signalled by hw, so it is the one we want
-> >>> to set the deadline on
-> >>>
-> >>> BR,
-> >>> -R
-> >>
-> >> No it didn't change. But then when exactly will
-> >> drm_sched_fence_set_deadline_finished
-> >> execute such that fence->parent != NULL ? In other words, I am not clear
-> >> how propagation
-> >> happens otherwise - if dma_fence_set_deadline is called with the HW
-> >> fence then the assumption
-> >> here is that driver provided driver specific
-> >> dma_fence_ops.dma_fence_set_deadline callback executes
-> >> but I was under impression that drm_sched_fence_set_deadline_finished is
-> >> the one that propagates
-> >> the deadline to the HW fence's callback and for it to execute
-> >> dma_fence_set_deadline needs to be called
-> >> with s_fence->finished.
-> > Assuming I didn't screw up drm/msm conversion to scheduler,
-> > &s_fence->finished is the one that will be returned to userspace.. and
-> > later passed back to kernel for atomic commit (or to the compositor).
-> > So it is the one that fence->set_deadline() will be called on.  But
-> > s_fence->parent is the actual hw fence that needs to know about the
-> > deadline.  Depending on whether or not the job has been written into
-> > hw ringbuffer or not, there are two cases:
+On Wed, Sep 22, 2021 at 04:15:27PM +0200, Vincent Guittot wrote:
+> > ---8<---
+> > sched/fair: Scale wakeup granularity relative to nr_running
 > >
-> > 1) not scheduled yet, s_fence will store the deadline and propagate it
-> > later once s_fence->parent is known
->
->
-> And by later you mean the call to drm_sched_fence_set_parent
-> after HW fence is returned  ? If yes I think i get it now.
-
-Yup :-)
-
-BR,
--R
-
-> Andrey
->
->
-> > 2) already scheduled, in which case s_fence->finished.set_deadline
-> > will propagate it directly to the real fence
+> > Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs") moved
+> > the kernel.sched_wakeup_granularity_ns sysctl under debugfs.  One of the
+> > reasons why this sysctl may be used may be for "optimising for throughput",
+> > particularly when overloaded. The tool TuneD sometimes alters this for two
+> > profiles e.g. "mssql" and "throughput-performance". At least version 2.9
+> > does but it changed in master where it also will poke at debugfs instead.
 > >
-> > BR,
-> > -R
+> > Internal parameters like sysctl_sched_wakeup_granularity are scaled
+> > based on the number of CPUs due to sysctl_sched_tunable_scaling. For
+> > simplicity, the timing figures in this changelog are based on
+> > SCHED_TUNABLESCALING_NONE.
+> 
+> This is a bit misleading because the platform that you used to
+> highlight the problem has a 7ms sysctl_sched_wakeup_granularity. which
+> is far more than your tick which should be 1ms
+> 
+
+Tick on the test machines is 4ms (HZ=250).
+
+The reason I used SCHED_TUNABLESCALING_NONE for the changelog is that
+the exact values depend on the number of CPUs so values are not even
+the same across the range of machines I'm using. sysctl_sched_latency,
+sysctl_sched_min_granularity sysctl_sched_wakeup_granularity are all
+scaled but the ratios remain constant.
+
+> > <SNIP>
+> >  static int
+> > -wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se);
+> > +wakeup_preempt_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr,
+> > +                                               struct sched_entity *se);
 > >
-> >> Andrey
-> >>
-> >>
-> >>
-> >>>> Andrey
-> >>>>
-> >>>>
-> >>>>> +}
-> >>>>> +
-> >>>>>     struct drm_sched_fence *drm_sched_fence_alloc(struct drm_sched_entity *entity,
-> >>>>>                                               void *owner)
-> >>>>>     {
-> >>>>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
-> >>>>> index 595e47ff7d06..27bf0ac0625f 100644
-> >>>>> --- a/drivers/gpu/drm/scheduler/sched_main.c
-> >>>>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
-> >>>>> @@ -978,7 +978,7 @@ static int drm_sched_main(void *param)
-> >>>>>                 drm_sched_fence_scheduled(s_fence);
-> >>>>>
-> >>>>>                 if (!IS_ERR_OR_NULL(fence)) {
-> >>>>> -                     s_fence->parent = dma_fence_get(fence);
-> >>>>> +                     drm_sched_fence_set_parent(s_fence, fence);
-> >>>>>                         r = dma_fence_add_callback(fence, &sched_job->cb,
-> >>>>>                                                    drm_sched_job_done_cb);
-> >>>>>                         if (r == -ENOENT)
-> >>>>> diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
-> >>>>> index 7f77a455722c..158ddd662469 100644
-> >>>>> --- a/include/drm/gpu_scheduler.h
-> >>>>> +++ b/include/drm/gpu_scheduler.h
-> >>>>> @@ -238,6 +238,12 @@ struct drm_sched_fence {
-> >>>>>              */
-> >>>>>         struct dma_fence                finished;
-> >>>>>
-> >>>>> +     /**
-> >>>>> +      * @deadline: deadline set on &drm_sched_fence.finished which
-> >>>>> +      * potentially needs to be propagated to &drm_sched_fence.parent
-> >>>>> +      */
-> >>>>> +     ktime_t                         deadline;
-> >>>>> +
-> >>>>>             /**
-> >>>>>              * @parent: the fence returned by &drm_sched_backend_ops.run_job
-> >>>>>              * when scheduling the job on hardware. We signal the
-> >>>>> @@ -505,6 +511,8 @@ void drm_sched_entity_set_priority(struct drm_sched_entity *entity,
-> >>>>>                                    enum drm_sched_priority priority);
-> >>>>>     bool drm_sched_entity_is_ready(struct drm_sched_entity *entity);
-> >>>>>
-> >>>>> +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
-> >>>>> +                             struct dma_fence *fence);
-> >>>>>     struct drm_sched_fence *drm_sched_fence_alloc(
-> >>>>>         struct drm_sched_entity *s_entity, void *owner);
-> >>>>>     void drm_sched_fence_init(struct drm_sched_fence *fence,
+> >  /*
+> >   * Pick the next process, keeping these things in mind, in this order:
+> > @@ -4550,16 +4562,16 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+> >                                 second = curr;
+> >                 }
+> >
+> > -               if (second && wakeup_preempt_entity(second, left) < 1)
+> > +               if (second && wakeup_preempt_entity(NULL, second, left) < 1)
+> 
+> Why not applying the same policy here ? the tick can also prevent
+> current task to move forward
+> 
+
+Because it was less clear if it was necessary and what the consequences
+would be if the skip buddy ran or the next buddy failed to run because
+preempt failed, how does it interact with yield_to etc.
+
+I ended up concluding that they should be separate patches and keep this
+patch to one topic.
+
+
+> >                         se = second;
+> >         }
+> >
+> > -       if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
+> > +       if (cfs_rq->next && wakeup_preempt_entity(NULL, cfs_rq->next, left) < 1) {
+> >                 /*
+> >                  * Someone really wants this to run. If it's not unfair, run it.
+> >                  */
+> >                 se = cfs_rq->next;
+> > -       } else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
+> > +       } else if (cfs_rq->last && wakeup_preempt_entity(NULL, cfs_rq->last, left) < 1) {
+> >                 /*
+> >                  * Prefer last buddy, try to return the CPU to a preempted task.
+> >                  */
+> > @@ -7044,9 +7056,42 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+> >  }
+> >  #endif /* CONFIG_SMP */
+> >
+> > -static unsigned long wakeup_gran(struct sched_entity *se)
+> > +static unsigned long
+> > +select_wakeup_gran(struct cfs_rq *cfs_rq)
+> > +{
+> > +       unsigned int nr_running, threshold;
+> > +
+> > +       if (!cfs_rq || !sched_feat(SCALE_WAKEUP_GRAN))
+> > +               return sysctl_sched_wakeup_granularity;
+> > +
+> > +       /* !GENTLE_FAIR_SLEEPERS has one overload threshold. */
+> > +       if (!sched_feat(GENTLE_FAIR_SLEEPERS)) {
+> > +               if (cfs_rq->nr_running <= sched_nr_disable_gran)
+> 
+> cfs_rq->nr_running reflects the number of sched entities in the cfs
+> but not the number of running tasks which reflected in h_nr_running
+> 
+
+Then check_preempt_wakeup may also have the same problem as it uses
+nr_running.
+
+> Also do you want to take into account only tasks in this cfs and its
+> children or on all cfs on this rq ?
+> 
+
+Only this cfq I think to limit overhead.
+
+> > +                       return sysctl_sched_wakeup_granularity;
+> > +
+> > +               return sysctl_sched_latency;
+> > +       }
+> > +
+> > +       /* GENTLE_FAIR_SLEEPER has two overloaded thresholds. */
+> > +       nr_running = cfs_rq->nr_running;
+> > +       threshold = sched_nr_disable_gran >> 1;
+> > +
+> > +       /* No overload. */
+> > +       if (nr_running <= threshold)
+> > +               return sysctl_sched_wakeup_granularity;
+> 
+> TBH I don't like these "no overload", "light overload" ...  They don't
+> have any real meaning apart from that it might work for your platform
+> and your hackbench test.
+
+They are, at best, a proxy measure for overload but the alternative is
+scanning a bunch of runqueues similar to what is required when detecting
+if a domain is fully busy or overloaded.
+
+> We already had have people complaining that small cfs task does not
+> preempt fast enough curr task as an example
+> 
+
+Is there a specific test case that demonstrates this?
+
+> There is no explanation why these values are the correct ones and not
+> but are just some random heuristic results and we are trying to remove
+> platform heuristic and to not add new
+> 
+
+They are a heuristic yes, but I'm trying to remove the motivation for
+users trying to tune sysctl_sched_wakeup_granularity to stupid values
+because as it stands, tuned will happily poke into debugfs despite the
+fact they are meant for debugging only and the values are of dubious merit.
+
+> > +
+> > +       /* Light overload. */
+> > +       if (nr_running <= sched_nr_disable_gran)
+> > +               return sysctl_sched_latency >> 1;
+> > +
+> > +       /* Heavy overload. */
+> > +       return sysctl_sched_latency;
+> 
+> Why should a thread without any relationship with the curr,  not
+> preempt it because there are already a lot of running threads?
+
+Preemption is not free, without any knowledge of what the thread is
+doing, we cannot determine if an inappropriate amount of CPU time is
+being spent dequeueing/enqueuing tasks.
+
+> In
+> your case, you want hackbench threads to not preempt each others
+> because they tries to use same resources so it's probably better to
+> let the current one to move forward but that's not a universal policy.
+> 
+
+No, but have you a better suggestion? hackbench might be stupid but it's
+an example of where a workload can excessively preempt itself. While
+overloading an entire machine is stupid, it could also potentially occurs
+for applications running within a constrained cpumask.
+
+> side question: Have you try to change the nice priority which also
+> impact whether a thread can preempt curr ?
+> 
+
+No, I have not tried. I guess one would be constructed with cyclictest
+-S running hackbench in the background and measuring if it makes a
+difference to the amount of jitter cyclictest experiences but I'm not
+sure if that would cover the case you are concerned with.
+
+> > +}
+> > +
+> > +static unsigned long
+> > +wakeup_gran(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> >  {
+> > -       unsigned long gran = sysctl_sched_wakeup_granularity;
+> > +       unsigned long gran = select_wakeup_gran(cfs_rq);
+> >
+> >         /*
+> >          * Since its curr running now, convert the gran from real-time
+> > @@ -7079,14 +7124,15 @@ static unsigned long wakeup_gran(struct sched_entity *se)
+> >   *
+> >   */
+> >  static int
+> > -wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
+> > +wakeup_preempt_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr,
+> > +                                               struct sched_entity *se)
+> >  {
+> >         s64 gran, vdiff = curr->vruntime - se->vruntime;
+> >
+> >         if (vdiff <= 0)
+> >                 return -1;
+> >
+> > -       gran = wakeup_gran(se);
+> > +       gran = wakeup_gran(cfs_rq, se);
+> >         if (vdiff > gran)
+> >                 return 1;
+> >
+> > @@ -7191,7 +7237,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+> >                 return;
+> >
+> >         update_curr(cfs_rq_of(se));
+> > -       if (wakeup_preempt_entity(se, pse) == 1) {
+> > +       if (wakeup_preempt_entity(cfs_rq, se, pse) == 1) {
+> 
+> like for update_curr above, cfs_rq can be wrong because se could have changed
+> 
+
+Crap, that was a stupid mistake based on earlier review. I'll fix it.
+
+-- 
+Mel Gorman
+SUSE Labs
