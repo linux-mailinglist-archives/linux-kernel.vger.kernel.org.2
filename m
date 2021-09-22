@@ -2,180 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC194152F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD9D4152FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238171AbhIVVkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
+        id S238192AbhIVVlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238014AbhIVVkl (ORCPT
+        with ESMTP id S238136AbhIVVln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:40:41 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8858FC061574;
-        Wed, 22 Sep 2021 14:39:11 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 50B80F1;
-        Wed, 22 Sep 2021 23:39:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1632346748;
-        bh=DYpZ0OCw7FAJ4SrDNVOo9epk3NBl7KQwpzUgBBSG0+o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wc8pIUa9/RM+NRjw7384XZo2Z5joQDgLbIPbcFqpzgbSDxUg3pxpuilNehK7z7uoH
-         XCrJQp7eczM83fFKuiBuW6ZChyfpatmRVNa1xcCwMpcqXfYmmPsZK97bCgiRIYdX92
-         ADF1zt4olSXB2jLRtfoM3GK8y/jfZRI324bD1/d0=
-Date:   Thu, 23 Sep 2021 00:39:06 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/5] drm: rcar-du: Add r8a779a0 device support
-Message-ID: <YUuievQoU7yDPfzF@pendragon.ideasonboard.com>
-References: <20210901234907.1608896-1-kieran.bingham@ideasonboard.com>
- <20210901234907.1608896-6-kieran.bingham@ideasonboard.com>
+        Wed, 22 Sep 2021 17:41:43 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281D9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:40:13 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id ee50so15398169edb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7yUAunh6/B1SSbZrz9wmLc4dr4D+i+n+StWnT5gfwxI=;
+        b=8AMS1OWfH+m8OlWLakX39s9CFCl10Wb1+IQBBz1G9wBBbUxcQTDmbczC0bJ7SlHarh
+         +n8UXbfSyXblRygBYIp/CcSdPPol63rkMONHJCSNkEpnSvN0Cu6oJ5E/pfbKoybDOJkB
+         XzR4PfS/1H0KsVW7mn8xQ+aYfbVJW4RvXIA3AyE4ghg8Bl2CFkyVpTv3K+Aqrh/b4qvL
+         Au15lRofpVsQAWeASOv8XxyuW4fTOfqw/PvXmR2n8YoWsNOnfk0i6Sg4Wuw0UDlT1WEI
+         j1LABZbQhoy04as9QqXfnX6c0v6o6qwGlgAtQGSu3tvPtZE7P4qWv+VHh7Ei873MmqTq
+         317A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7yUAunh6/B1SSbZrz9wmLc4dr4D+i+n+StWnT5gfwxI=;
+        b=rhefpYUAOOovuv8blvpg4k6Xn+IMhyzV96q/1+ROAY1KmCEJiX4PE8EUps/1KwR0hT
+         lZyMmMtI/hi76HErNSgNM7KZW6chXG8kaRBJEFs6Mug7QsJD3pMKQFpPcEZF1FB+PKTy
+         rR+j8gL6cZkzOif1YzCXyxlsuan3THGHbTQqbISZ/Vzggl2kL6WRFDa6Wqj5gkAgS/BK
+         87uepiqe2VnkNizbTLZczr1PYEQzqGDDqq7lvB94Oa7WbZV959H9B7ca0aWv0zommrpZ
+         2hsyV4ZNpXct/R5qgTBNqjPAGb+8EVdKUvMljof1TvF1ahvpLnflXH7uHXFSttx/qPVm
+         rtmg==
+X-Gm-Message-State: AOAM531sZTo8pYITTtluMeyfz4yLdRkH5tISfYFIbpn6byVaYP/yAy61
+        4wTpCkZi2987Pbj36v4FJUcLrApKfVvNd5Gc+wQN
+X-Google-Smtp-Source: ABdhPJw9Jd3adL5gvFPfg8v5tsZxNf8e5DGyBzypEea1X9T7NzGxvH9h8cT+f4Q44+P9M1hCL5QNgsXcobRxjmKV284=
+X-Received: by 2002:a50:cf48:: with SMTP id d8mr1708015edk.293.1632346811617;
+ Wed, 22 Sep 2021 14:40:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210901234907.1608896-6-kieran.bingham@ideasonboard.com>
+References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
+ <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
+ <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com> <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com>
+In-Reply-To: <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 22 Sep 2021 17:40:00 -0400
+Message-ID: <CAHC9VhSZp1-Qi7ApoQHauaFXDgoNaFTwFEieEFFuBtdPqAtXQg@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+On Wed, Sep 22, 2021 at 5:10 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, Sep 22, 2021 at 1:55 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Make the regular security_locked_down() function do that, and add a
+> >
+> >     if (WARN_ON_ONCE(!in_task()))
+> >         return -EPERM;
+> >
+> > so that any bad cases get flagged and refuse to continue.
+>
+> Actually, no, I take that back.
+>
+> It's not the "!in_task()" case that is the problem. That's just the symptom.
+>
+> The real problem is that we clearly have some lock-down rule that
+> seems to care about credentials and who it is that does the lockdown
+> query. That seems to be the real issue here. Doing lockdown checks
+> from interrupts should be fine.
 
-Thank you for the patch.
+The basic idea, or problem from a LSM point of view, is that in some
+cases you have a user task which is doing the lockdown access check
+and in others you have the kernel itself; the creds parameter to
+security_locked_down() hook was intended to be used to indicate if it
+was a user task (param == current_cred()) or the kernel (param ==
+NULL).  There was a discussion about using two different hooks/funcs,
+e.g. security_locked_down() and security_locked_down_kern(), instead
+of the creds parameter, but there were more votes for the param
+variant.
 
-On Thu, Sep 02, 2021 at 12:49:07AM +0100, Kieran Bingham wrote:
-> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> Extend the rcar_du_device_info structure and rcar_du_output enum to
-> support DSI outputs and utilise these additions to provide support for
-> the R8A779A0 V3U platform.
-> 
-> While the DIDSR register field is now named "DSI/CSI-2-TX-IF0 Dot Clock
-> Select" the existing define LVDS0 is used, and is directly compatible
-> from other DU variants.
-> 
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> ---
-> 
-> I can add a macro named DIDSR_LDCS_DSI0 duplicating DIDSR_LDCS_LVDS0 if
-> it's deemed better.
+As I type this I'm trying to muster something other than indifference
+towards this patch, but the reality is I just want to be done with it.
+If you'll merge a revision of this patch that does away with the cred
+parameter and goes with the two hooks I'm not going to argue against
+it.
 
-I think I'd like that a bit better if you don't mind. I'd name the macro
-DIDSR_LDCS_DSI though, as there's a single option (you can't pick one
-DSI encoder or the other as the clock source, it's DSI0 for DU0 and DSI1
-for DU1).
-
-> 
-> v2:
->  - No longer requires a direct interface with the DSI encoder
->  - Use correct field naming (LDCS)
->  - Remove per-crtc clock feature.
-> 
->  drivers/gpu/drm/rcar-du/rcar_du_crtc.h  |  2 ++
->  drivers/gpu/drm/rcar-du/rcar_du_drv.c   | 20 ++++++++++++++++++++
->  drivers/gpu/drm/rcar-du/rcar_du_drv.h   |  2 ++
->  drivers/gpu/drm/rcar-du/rcar_du_group.c |  2 ++
->  4 files changed, 26 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_crtc.h b/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
-> index 440e6b4fbb58..26e79b74898c 100644
-> --- a/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
-> +++ b/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
-> @@ -96,6 +96,8 @@ struct rcar_du_crtc_state {
->  enum rcar_du_output {
->  	RCAR_DU_OUTPUT_DPAD0,
->  	RCAR_DU_OUTPUT_DPAD1,
-> +	RCAR_DU_OUTPUT_DSI0,
-> +	RCAR_DU_OUTPUT_DSI1,
->  	RCAR_DU_OUTPUT_HDMI0,
->  	RCAR_DU_OUTPUT_HDMI1,
->  	RCAR_DU_OUTPUT_LVDS0,
-> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.c b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-> index 8a094d5b9c77..8b4c8851b6bc 100644
-> --- a/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-> +++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-> @@ -489,6 +489,25 @@ static const struct rcar_du_device_info rcar_du_r8a7799x_info = {
->  	.lvds_clk_mask =  BIT(1) | BIT(0),
->  };
->  
-> +static const struct rcar_du_device_info rcar_du_r8a779a0_info = {
-> +	.gen = 3,
-> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
-> +		  | RCAR_DU_FEATURE_VSP1_SOURCE,
-> +	.channels_mask = BIT(1) | BIT(0),
-> +	.routes = {
-> +		/* R8A779A0 has two MIPI DSI outputs. */
-> +		[RCAR_DU_OUTPUT_DSI0] = {
-> +			.possible_crtcs = BIT(0),
-> +			.port = 0,
-> +		},
-> +		[RCAR_DU_OUTPUT_DSI1] = {
-> +			.possible_crtcs = BIT(1),
-> +			.port = 1,
-> +		},
-> +	},
-> +	.dsi_clk_mask =  BIT(1) | BIT(0),
-> +};
-> +
->  static const struct of_device_id rcar_du_of_table[] = {
->  	{ .compatible = "renesas,du-r8a7742", .data = &rcar_du_r8a7790_info },
->  	{ .compatible = "renesas,du-r8a7743", .data = &rzg1_du_r8a7743_info },
-> @@ -513,6 +532,7 @@ static const struct of_device_id rcar_du_of_table[] = {
->  	{ .compatible = "renesas,du-r8a77980", .data = &rcar_du_r8a77970_info },
->  	{ .compatible = "renesas,du-r8a77990", .data = &rcar_du_r8a7799x_info },
->  	{ .compatible = "renesas,du-r8a77995", .data = &rcar_du_r8a7799x_info },
-> +	{ .compatible = "renesas,du-r8a779a0", .data = &rcar_du_r8a779a0_info },
-
-While this looks good, the DT bindings need a v3, so I can't include
-this series in a pull request just yet :-( Could you please group the DT
-bindings and driver patches in a single series for v3 ?
-
->  	{ }
->  };
->  
-> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.h b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-> index 5fe9152454ff..cf98d43d72d0 100644
-> --- a/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-> +++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-> @@ -57,6 +57,7 @@ struct rcar_du_output_routing {
->   * @routes: array of CRTC to output routes, indexed by output (RCAR_DU_OUTPUT_*)
->   * @num_lvds: number of internal LVDS encoders
->   * @dpll_mask: bit mask of DU channels equipped with a DPLL
-> + * @dsi_clk_mask: bitmask of channels that can use the DSI clock as dot clock
->   * @lvds_clk_mask: bitmask of channels that can use the LVDS clock as dot clock
->   */
->  struct rcar_du_device_info {
-> @@ -67,6 +68,7 @@ struct rcar_du_device_info {
->  	struct rcar_du_output_routing routes[RCAR_DU_OUTPUT_MAX];
->  	unsigned int num_lvds;
->  	unsigned int dpll_mask;
-> +	unsigned int dsi_clk_mask;
->  	unsigned int lvds_clk_mask;
->  };
->  
-> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_group.c b/drivers/gpu/drm/rcar-du/rcar_du_group.c
-> index a984eef265d2..27c912bab76e 100644
-> --- a/drivers/gpu/drm/rcar-du/rcar_du_group.c
-> +++ b/drivers/gpu/drm/rcar-du/rcar_du_group.c
-> @@ -124,6 +124,8 @@ static void rcar_du_group_setup_didsr(struct rcar_du_group *rgrp)
->  		if (rcdu->info->lvds_clk_mask & BIT(rcrtc->index))
->  			didsr |= DIDSR_LDCS_LVDS0(i)
->  			      |  DIDSR_PDCS_CLK(i, 0);
-> +		else if (rcdu->info->dsi_clk_mask & BIT(rcrtc->index))
-> +			didsr |= DIDSR_LDCS_LVDS0(i);
->  		else
->  			didsr |= DIDSR_LDCS_DCLKIN(i)
->  			      |  DIDSR_PDCS_CLK(i, 0);
+During the review of the latest draft of this patch I half-jokingly
+said it was cursed, perhaps it's time to honestly consider it cursed.
 
 -- 
-Regards,
-
-Laurent Pinchart
+paul moore
+www.paul-moore.com
