@@ -2,138 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27058414B78
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9298414B7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236002AbhIVONu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:13:50 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33814
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233513AbhIVONs (ORCPT
+        id S235284AbhIVOOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:14:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29755 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236021AbhIVOOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:13:48 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 007CB3F302
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:12:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632319937;
-        bh=1MyjqmNhxVLX0Wufgh2lr5w4a4DBCWtXfhO1i67wwOg=;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=eGKcXmt+UmBN/fiWfI3D01Ya4GFC28k+tp3WzB/b+nV8eSryIdDkaq74yrmNxP/W6
-         ZL0wz3v3LV0P8c16nWHEnGgQMZwNkBoyXj2lFoFjmUi4ks1RpLZPE5gvbejxBXWLaS
-         c6gSBlCtWse66wiDvrgLvYwRrcq9P/hLfE8RmPRuPuw3p2e84nRZMlIPoweDEp+pyi
-         0a5aTtyHG96S5vPfrBd0/RhcX5jXuEHsa7XF11wHy7pcKDO5meVilHrJAhrg2x6pfX
-         GyhUJhj1IPmyA4nU57LB23xa6xQhJxFTMjqx3Y6IAVArV13tEZ0cyW2jq/HtLKBp1Y
-         A3aJYtHBlYlBg==
-Received: by mail-ed1-f71.google.com with SMTP id z6-20020a50cd06000000b003d2c2e38f1fso3267627edi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:12:16 -0700 (PDT)
+        Wed, 22 Sep 2021 10:14:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632319964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rZMdBUFCcEro44m/VYQjrdo8tgcAaj3vpqrRJk30Xe4=;
+        b=AfPwWbF8yLhbvlx4DgIh/0v6SBEVJG8wr1TRBpKZz9hAUT7+td02E7C1DbrWdaQwPNMfLq
+        YkYJORZmIpKPKtsTaskMCRnc2MC9vhPV3HIa79JkkQtPf5vgmxfDI2ZlD/1+Q6X+N1Andl
+        7cCs11/Uek2WDmmT8VDNq2zCYNr75Mo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-UoQwqvx6MQi9oxLTL1MwcQ-1; Wed, 22 Sep 2021 10:12:43 -0400
+X-MC-Unique: UoQwqvx6MQi9oxLTL1MwcQ-1
+Received: by mail-ed1-f69.google.com with SMTP id n5-20020a05640206c500b003cf53f7cef2so3214576edy.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:12:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=1MyjqmNhxVLX0Wufgh2lr5w4a4DBCWtXfhO1i67wwOg=;
-        b=0NJQImr7k4tHdIr0rssDCXQvXghzyaMjB54Nojh1sUGVbUfZju+8hUj5lJ4N0L7n0M
-         NkN0Q9eHSBUn/eR+XRCtAUQ986+QfZdDyosGI6SX48hF3rFi6MMiAzhad867Nxa6jCP7
-         nPu8cyi4f+7QeF5Bd+7WTEE881mEsfVanJqGkox0h1TPFqPQ3mmO0HvkHGWPI/eUpQNl
-         tU4PF2Pqnw5WBoPQhI1IBCs97BKF1KJPmuGOfmhE31I5AaAJ/bttFPa38FC5KaxUdDzw
-         KQMRWcyqx5gvXGJYsPLVcp2eE12OZTqzECL0SvvvOc2hQZTbvHnQ7mMAsjmr0L6m8a0/
-         tHgA==
-X-Gm-Message-State: AOAM533FJH97J/fDUMk9rNxHOsynCaAZzZrRN7GzdxjxHC+GeVKhAAUn
-        B+zbOwgHIc3KyIr1GF4C20Ff9MNcHgPy7UMr4drbrXAJiumsul9EPqcctnwe5qOlX88ZJmjFkDk
-        E7ox2JS+KJFyV/o3R2QU1hK2vfl6rWOyRChdIlEU8Yg==
-X-Received: by 2002:a17:906:9452:: with SMTP id z18mr41241567ejx.25.1632319935033;
-        Wed, 22 Sep 2021 07:12:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLJOGVcmp4cOqCkF2TmMYwWKyogj1WUZOHnXr8vCsNJVqDjhbsu8od+4HSV9f8jRwxTRDePA==
-X-Received: by 2002:a17:906:9452:: with SMTP id z18mr41241545ejx.25.1632319934825;
-        Wed, 22 Sep 2021 07:12:14 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id bw25sm1150757ejb.20.2021.09.22.07.12.13
+        bh=rZMdBUFCcEro44m/VYQjrdo8tgcAaj3vpqrRJk30Xe4=;
+        b=aH+Aqe/KM2uDKbcBB/rlBRgt2bcjifIc0DK8IenzORmu7YTcHCQ9YSYiu3NmAEdvoJ
+         vnKfdfLghTUFee+BGlR5vq9bMwZ3pOB0fsziNhmvZIB6MZIMnOcHJdKYEjxLUXe6T6L2
+         AP9j14l+wBfrz2nei4n+N4OL9vRcfnuWe4Fgbk/zKq2b29NX+D0PiL82rHXdP1YSc+qo
+         f9V8NvjJf7JjQA8FaA5Yj47OVGG6nojFRXxblmX/HkLlQOPt+GUYCSma6unC8XVjrJtI
+         gcBk7m5BB/rw+95XriVXHn/HWhZP7P3u7GxMUGrWjXB2oUvymJK1/8nn2uEOBC1UGhdI
+         IcVQ==
+X-Gm-Message-State: AOAM532wIWW5HRgjYKLFMU+W5LyOfkh1JYLtfnUCxuDdagr3DMI/r/SI
+        wkyWHOnfdN0FpopHxR8MNBZ3XjG8WcwGRktgkrLzpZkJUwhtrsCY+4h11ljzY2h+ojGTnMajruf
+        94T0/AZJk5x7mgVKDn8QJjBu4
+X-Received: by 2002:a17:906:b183:: with SMTP id w3mr41217081ejy.394.1632319961904;
+        Wed, 22 Sep 2021 07:12:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDM/LAO92AMI8uC+ZsdL5tg3HWsAwfnbY471GXtr9Lv9ROvDMZHXi9azcQssuJ/zXZcmQ7Nw==
+X-Received: by 2002:a17:906:b183:: with SMTP id w3mr41217031ejy.394.1632319961680;
+        Wed, 22 Sep 2021 07:12:41 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n23sm393858edw.75.2021.09.22.07.12.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 07:12:14 -0700 (PDT)
-Subject: Re: [RESEND PATCH 2/2] powerpc/powermac: constify device_node in
- of_irq_parse_oldworld()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Wed, 22 Sep 2021 07:12:41 -0700 (PDT)
+Subject: Re: [PATCH 0/5] KVM: rseq: Fix and a test for a KVM+rseq bug
+To:     Sean Christopherson <seanjc@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210922084415.18269-1-krzysztof.kozlowski@canonical.com>
- <20210922084415.18269-2-krzysztof.kozlowski@canonical.com>
- <a33f0978-b617-6a07-7240-ec011f894680@csgroup.eu>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <2ccf5861-257f-42cc-395f-4d1f053f6035@canonical.com>
-Date:   Wed, 22 Sep 2021 16:12:13 +0200
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+References: <20210818001210.4073390-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <430684f9-1b35-b6f1-f243-6298e892bc7a@redhat.com>
+Date:   Wed, 22 Sep 2021 16:12:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <a33f0978-b617-6a07-7240-ec011f894680@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210818001210.4073390-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2021 15:55, Christophe Leroy wrote:
+On 18/08/21 02:12, Sean Christopherson wrote:
+> Patch 1 fixes a KVM+rseq bug where KVM's handling of TIF_NOTIFY_RESUME,
+> e.g. for task migration, clears the flag without informing rseq and leads
+> to stale data in userspace's rseq struct.
+> 
+> Patch 2 is a cleanup to try and make future bugs less likely.  It's also
+> a baby step towards moving and renaming tracehook_notify_resume() since
+> it has nothing to do with tracing.  It kills me to not do the move/rename
+> as part of this series, but having a dedicated series/discussion seems
+> more appropriate given the sheer number of architectures that call
+> tracehook_notify_resume() and the lack of an obvious home for the code.
+> 
+> Patch 3 is a fix/cleanup to stop overriding x86's unistd_{32,64}.h when
+> the include path (intentionally) omits tools' uapi headers.  KVM's
+> selftests do exactly that so that they can pick up the uapi headers from
+> the installed kernel headers, and still use various tools/ headers that
+> mirror kernel code, e.g. linux/types.h.  This allows the new test in
+> patch 4 to reference __NR_rseq without having to manually define it.
+> 
+> Patch 4 is a regression test for the KVM+rseq bug.
+> 
+> Patch 5 is a cleanup made possible by patch 3.
 > 
 > 
-> Le 22/09/2021 à 10:44, Krzysztof Kozlowski a écrit :
->> The of_irq_parse_oldworld() does not modify passed device_node so make
->> it a pointer to const for safety.
+> Sean Christopherson (5):
+>    KVM: rseq: Update rseq when processing NOTIFY_RESUME on xfer to KVM
+>      guest
+>    entry: rseq: Call rseq_handle_notify_resume() in
+>      tracehook_notify_resume()
+>    tools: Move x86 syscall number fallbacks to .../uapi/
+>    KVM: selftests: Add a test for KVM_RUN+rseq to detect task migration
+>      bugs
+>    KVM: selftests: Remove __NR_userfaultfd syscall fallback
 > 
-> AFAIKS this patch is unrelated to previous one so you should send them 
-> out separately instead of sending as a series.
-
-The relation it's a series of bugfixes. Although they can be applied
-independently, having a series is actually very useful - you run "b4 am"
-on one message ID and get everything. The same with patchwork, if you
-use that one.
-
+>   arch/arm/kernel/signal.c                      |   1 -
+>   arch/arm64/kernel/signal.c                    |   1 -
+>   arch/csky/kernel/signal.c                     |   4 +-
+>   arch/mips/kernel/signal.c                     |   4 +-
+>   arch/powerpc/kernel/signal.c                  |   4 +-
+>   arch/s390/kernel/signal.c                     |   1 -
+>   include/linux/tracehook.h                     |   2 +
+>   kernel/entry/common.c                         |   4 +-
+>   kernel/rseq.c                                 |   4 +-
+>   .../x86/include/{ => uapi}/asm/unistd_32.h    |   0
+>   .../x86/include/{ => uapi}/asm/unistd_64.h    |   3 -
+>   tools/testing/selftests/kvm/.gitignore        |   1 +
+>   tools/testing/selftests/kvm/Makefile          |   3 +
+>   tools/testing/selftests/kvm/rseq_test.c       | 131 ++++++++++++++++++
+>   14 files changed, 143 insertions(+), 20 deletions(-)
+>   rename tools/arch/x86/include/{ => uapi}/asm/unistd_32.h (100%)
+>   rename tools/arch/x86/include/{ => uapi}/asm/unistd_64.h (83%)
+>   create mode 100644 tools/testing/selftests/kvm/rseq_test.c
 > 
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>   arch/powerpc/platforms/powermac/pic.c | 2 +-
->>   include/linux/of_irq.h                | 4 ++--
->>   2 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/powerpc/platforms/powermac/pic.c b/arch/powerpc/platforms/powermac/pic.c
->> index 4921bccf0376..af5ca1f41bb1 100644
->> --- a/arch/powerpc/platforms/powermac/pic.c
->> +++ b/arch/powerpc/platforms/powermac/pic.c
->> @@ -384,7 +384,7 @@ static void __init pmac_pic_probe_oldstyle(void)
->>   #endif
->>   }
->>   
->> -int of_irq_parse_oldworld(struct device_node *device, int index,
->> +int of_irq_parse_oldworld(const struct device_node *device, int index,
->>   			struct of_phandle_args *out_irq)
->>   {
->>   	const u32 *ints = NULL;
->> diff --git a/include/linux/of_irq.h b/include/linux/of_irq.h
->> index aaf219bd0354..6074fdf51f0c 100644
->> --- a/include/linux/of_irq.h
->> +++ b/include/linux/of_irq.h
->> @@ -20,12 +20,12 @@ typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *);
->>   #if defined(CONFIG_PPC32) && defined(CONFIG_PPC_PMAC)
->>   extern unsigned int of_irq_workarounds;
->>   extern struct device_node *of_irq_dflt_pic;
->> -extern int of_irq_parse_oldworld(struct device_node *device, int index,
->> +extern int of_irq_parse_oldworld(const struct device_node *device, int index,
->>   			       struct of_phandle_args *out_irq);
-> 
-> Please remove 'extern' which is useless for prototypes.
 
-OK
+Queued v3, thanks.  I'll send it in a separate pull request to Linus 
+since it touches stuff outside my usual turf.
 
+Thanks,
 
-Best regards,
-Krzysztof
+Paolo
+
