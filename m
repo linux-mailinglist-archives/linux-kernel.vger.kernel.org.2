@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDB3415144
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA13415149
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237488AbhIVURG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
+        id S237511AbhIVUUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237309AbhIVURE (ORCPT
+        with ESMTP id S237309AbhIVUUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:17:04 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C849C061574;
-        Wed, 22 Sep 2021 13:15:34 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id 138so13781638qko.10;
-        Wed, 22 Sep 2021 13:15:34 -0700 (PDT)
+        Wed, 22 Sep 2021 16:20:00 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5685CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:18:30 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id t8so10630347wri.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:18:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vZeUWnpc+YxmSN19tmVWnrlRKoVK8UiPdHoDGapAoiY=;
-        b=TtkjId9bTJ9XX2hqkS8nkulFkBBTW3xYnl0xwKu377KBgf7bWaNckoCGRf0h7IVqXL
-         97xCGmdR/chwTLca1AWCW05W8ovwDlbl3sKq7AQflpziPjCxMS6oICYHjHfWLGt/q/wy
-         v8gONvVFg8HoOLw7ttP3w8PtwU8wb0i1AMouJk6epoF3eqZAxxi4b62UqL5DjO9wrDro
-         pqT7uTYviI+2I0pcxudrxGCvMwZd0vHmee4dnKSeQcVhm97sDufbYarEhzyKW+XpUsMP
-         Y9JM88iv6DPbqfr/a0AbTfi5OsfN/XLmQaaUPS4LXDVFKEF6ml1T8uVzRhzqSjJ+275y
-         ytlw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QCvTvkJUQlqkrEgBfGXbFyfCutXgnQcemIuNKLehIWY=;
+        b=nkyrvfcPPhzu6NsTLf6nC9ipcld/bGYA1rhaaKHiAyGOenjoYmGFDHOuo06uhvXXg+
+         hNm3/sc5CqXW/twKbz8vc8z2+TUagU/m/lervdQJy3iacEH8Ddq8dCarwq+V3mnpZu0a
+         QU86UoRcEeqZuZbyU2bh3lmF3YQFGzpZKY5uSHIC+S6uzQeJtUq/tjh7q18ahUkRucOz
+         nPieQdBC8QWykUaAOKTzUMqM7J083M4O/2kQDBKGnsIlxotVzFrB5Z4ND3PAUsM9NJQY
+         dPxmvaZk+rpAu5LrAdUgqQnZ5bv0YlKCSi9GlRLw+TWQJFXM4Ts9osta/7S5idxr1pBL
+         39JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vZeUWnpc+YxmSN19tmVWnrlRKoVK8UiPdHoDGapAoiY=;
-        b=poBWH7SmtcR8HggMw4hsrLNBwZ8MPtgHG7K0WDl754cUY7mRolB+gtdrL3MC7IsXtz
-         sAB8TQB7kfcplrHigT1atLMUzHvPo0gc2OkNUhhB0wceyTw5e8aB6qD+k1+dYv5UCY0s
-         AAq2GEU/yBQbwoFqCQugOpyvAaDHchtUp0EIBBZ2fRdKKRlaoo4pgK+C1QX8D56mTAzU
-         ZIcz21DPJflNVfFJby6PtRyAJh7DixvI02b3/WcAVxGKnT5DO9qAyxXqmY7GDJV5rWKP
-         on3dQ0G+lLwLU63x62KsV3m957HbJDoTWAZuqhgSTOtEPsUqRKBZKKLDPfb+fqVEa09h
-         qbUQ==
-X-Gm-Message-State: AOAM530vOFQaGfF8l24UDb+VIfXlkQND4vDHE3xG5YTgzkOFa9X8hyKq
-        F2fyd6rIdA0RZPD0ZWgkSQ==
-X-Google-Smtp-Source: ABdhPJw7Y2MQUvRUjamAp187vgwZkraxlv2ZILXdG0AMyKft43uAxxEFW0hrTZXVlxCEQAoZouWUrA==
-X-Received: by 2002:a37:f616:: with SMTP id y22mr1233777qkj.520.1632341733694;
-        Wed, 22 Sep 2021 13:15:33 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id t8sm2528013qkt.117.2021.09.22.13.15.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QCvTvkJUQlqkrEgBfGXbFyfCutXgnQcemIuNKLehIWY=;
+        b=411gPc9kN2lX0B8qfKIejBc1jx8kCkS/TGyYUqpwRosOCF8OxrlN7802WTgfWWgFPH
+         jHKn5u5XMnJKvFb+RaI7AhMukLVtW9/VmIVVCtOBQ9F9p2ff0Ie3eiH9FZStdNDhb1lB
+         7pWxapR/OIiViFdPGM+yS0eOWwCAUOfMZ9Vs/FSIifzGA119KF5HSyh0HbdjBTHZG1wl
+         vHZoaVGhlXySl6smPNG/YvxLfa2WhtKHZT0P6/RV0MaIHx/GnjUph9Cgvn5poqWFf9U0
+         ks1YhFbXvel9ki7EbJFWMBoprbna+BPSn5K/HPn5e4TOXsmI3Wls9jB0jC1Cyqgl+xwS
+         Ydyw==
+X-Gm-Message-State: AOAM531edeol0wI5IPQCqFxxIyn+x9UZOlzYt6cMuIyJURJyKzSLGk0m
+        rrJGSGh0e2ViKBNzbBq6Ug==
+X-Google-Smtp-Source: ABdhPJypIchsBJzI6Lxf0kWAKhQx89UYepmgXRdZtW4mKvLSeVWLGLRt3qS3redFXcNxxjVK0n+NTA==
+X-Received: by 2002:adf:e684:: with SMTP id r4mr931057wrm.229.1632341908964;
+        Wed, 22 Sep 2021 13:18:28 -0700 (PDT)
+Received: from alex-ThinkPad-E480.. (ip5b434083.dynamic.kabel-deutschland.de. [91.67.64.131])
+        by smtp.googlemail.com with ESMTPSA id v8sm3147188wrt.12.2021.09.22.13.18.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 13:15:32 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 16:15:28 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Chris Mason <clm@fb.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YUuO4D8nzEDJa6uH@moria.home.lan>
-References: <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YUtPvGm2RztJdSf1@moria.home.lan>
- <YUtZL0e2eBIQpLPE@casper.infradead.org>
- <A8B68BA5-E90E-4AFF-A14A-211BBC4CDECE@fb.com>
- <YUuJ4xHxG9dQadda@casper.infradead.org>
+        Wed, 22 Sep 2021 13:18:28 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: [PATCH] drm/rockchip: rgb: make connector a pointer in struct rockchip_rgb
+Date:   Wed, 22 Sep 2021 22:17:58 +0200
+Message-Id: <20210922201758.7204-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUuJ4xHxG9dQadda@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 08:54:11PM +0100, Matthew Wilcox wrote:
-> That's the nature of a pull request.  It's binary -- either it's pulled or
-> it's rejected.  Well, except that Linus has opted for silence, leaving
-> me in limbo.  I have no idea what he's thinking.  I don't know if he
-> agrees with Johannes.  I don't know what needs to change for Linus to
-> like this series enough to pull it (either now or in the 5.16 merge
-> window).  And that makes me frustrated.  This is over a year of work
-> from me and others, and it's being held up over concerns which seem to
-> me to be entirely insubstantial (the name "folio"?  really?  and even
-> my change to use "pageset" was met with silence from Linus.)
+As reported at [1] Coverity complains about an used value.
 
-People bikeshed the naming when they're uncomfortable with what's being proposed
-and have nothing substantive to say, and people are uncomfortable with what's
-being proposed when there's clear disagreement between major stakeholders who
-aren't working with each other.
+Let's make drm_connector a pointer in struct rockchip_rgb and "remove
+redundant assignment of pointer connector".
 
-And the utterly ridiculous part of this whole fiasco is that you and Johannes
-have a LOT of common ground regarding the larger picture of what we do with the
-struct page mess, but you two keep digging in your heels purely because you're
-convinced that you can't work with each other so you need to either route around
-each other or be as forceful as possible to get what you want. You're convinced
-you're not listenig to each other, but even that isn't true because when I pass
-ideas back and forth between you and they come from "not Matthew" or "not
-Johannes" you both listen and incorporate them just fine.
+[1] https://lkml.org/lkml/2021/9/22/432
 
-We can't have a process where major stakeholders are trying to actively sabotage
-each other's efforts, which is pretty close to where we're at now. You two just
-need to learn to work with each other.
+Fixes: 2e87bf389e13 ("drm/rockchip: add DRM_BRIDGE_ATTACH_NO_CONNECTOR flag to drm_bridge_attach")
+Addresses-Coverity: ("Unused value")
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+---
+ drivers/gpu/drm/rockchip/rockchip_rgb.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_rgb.c b/drivers/gpu/drm/rockchip/rockchip_rgb.c
+index 09be9678f2bd..fe932c26c3e0 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_rgb.c
++++ b/drivers/gpu/drm/rockchip/rockchip_rgb.c
+@@ -28,7 +28,7 @@ struct rockchip_rgb {
+ 	struct drm_device *drm_dev;
+ 	struct drm_bridge *bridge;
+ 	struct drm_encoder encoder;
+-	struct drm_connector connector;
++	struct drm_connector *connector;
+ 	int output_mode;
+ };
+ 
+@@ -82,7 +82,6 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
+ 	int ret = 0, child_count = 0;
+ 	struct drm_panel *panel;
+ 	struct drm_bridge *bridge;
+-	struct drm_connector *connector;
+ 
+ 	rgb = devm_kzalloc(dev, sizeof(*rgb), GFP_KERNEL);
+ 	if (!rgb)
+@@ -150,17 +149,16 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
+ 	if (ret)
+ 		goto err_free_encoder;
+ 
+-	connector = &rgb->connector;
+-	connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
+-	if (IS_ERR(connector)) {
++	rgb->connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
++	if (IS_ERR(rgb->connector)) {
+ 		DRM_DEV_ERROR(drm_dev->dev,
+ 			      "failed to initialize bridge connector: %pe\n",
+-			      connector);
+-		ret = PTR_ERR(connector);
++			      rgb->connector);
++		ret = PTR_ERR(rgb->connector);
+ 		goto err_free_encoder;
+ 	}
+ 
+-	ret = drm_connector_attach_encoder(connector, encoder);
++	ret = drm_connector_attach_encoder(rgb->connector, encoder);
+ 	if (ret < 0) {
+ 		DRM_DEV_ERROR(drm_dev->dev,
+ 			      "failed to attach encoder: %d\n", ret);
+@@ -170,7 +168,7 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
+ 	return rgb;
+ 
+ err_free_connector:
+-	drm_connector_cleanup(connector);
++	drm_connector_cleanup(rgb->connector);
+ err_free_encoder:
+ 	drm_encoder_cleanup(encoder);
+ 	return ERR_PTR(ret);
+@@ -180,7 +178,7 @@ EXPORT_SYMBOL_GPL(rockchip_rgb_init);
+ void rockchip_rgb_fini(struct rockchip_rgb *rgb)
+ {
+ 	drm_panel_bridge_remove(rgb->bridge);
+-	drm_connector_cleanup(&rgb->connector);
++	drm_connector_cleanup(rgb->connector);
+ 	drm_encoder_cleanup(&rgb->encoder);
+ }
+ EXPORT_SYMBOL_GPL(rockchip_rgb_fini);
+-- 
+2.30.2
+
