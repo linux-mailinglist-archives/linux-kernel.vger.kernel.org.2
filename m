@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC49414887
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5478A41488A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbhIVMNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:13:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:27782 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234294AbhIVMNj (ORCPT
+        id S235548AbhIVMOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:14:42 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:56588
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234294AbhIVMOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:13:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632312729;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+xSsbPHQKOwQ9OmkdFU3DkicOwCTWlOdhjf2gURoAqY=;
-        b=V4ff0nUziyLfsQXpJLSde+aek8abOUV752cn60U9eHBLzLGEucxCZteyqNKoE98mmSz/Tf
-        xx3vzilWKBMOVOT0ZHclzRyFQAQ0Yeyib6OrdWgeuVHM4peTwK9bxD5FX5KH+hCnhWRJz6
-        p8SzqUhM6UIbqRTelkvv93MGiaM5amM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-wM_WK9WsNt-yQlVxCkaXgg-1; Wed, 22 Sep 2021 08:12:06 -0400
-X-MC-Unique: wM_WK9WsNt-yQlVxCkaXgg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 22 Sep 2021 08:14:40 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7EE5E101F000;
-        Wed, 22 Sep 2021 12:12:04 +0000 (UTC)
-Received: from redhat.com (ovpn-115-8.phx2.redhat.com [10.3.115.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A18E12D4A;
-        Wed, 22 Sep 2021 12:12:03 +0000 (UTC)
-Date:   Wed, 22 Sep 2021 07:12:01 -0500
-From:   Eric Blake <eblake@redhat.com>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     "yukuai (C)" <yukuai3@huawei.com>, josef@toxicpanda.com,
-        axboe@kernel.dk, hch@infradead.org, linux-block@vger.kernel.org,
-        nbd@other.debian.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [patch v8 3/7] nbd: check sock index in nbd_read_stat()
-Message-ID: <20210922121201.neskyaenjh64wmyb@redhat.com>
-References: <20210916093350.1410403-1-yukuai3@huawei.com>
- <20210916093350.1410403-4-yukuai3@huawei.com>
- <7e2913ca-1089-9ab7-cfdb-5e8837d36034@huawei.com>
- <YUr1v8zylPOFFXTO@T590>
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5C4CA4025C
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632312789;
+        bh=hP2w8Q1bmRd7QsbJSWuw/qEx96Jo8lROQWYodGYqF1k=;
+        h=To:Cc:From:Subject:Message-ID:Date:MIME-Version:Content-Type;
+        b=qluV3r/7/EaNV5Yb/Re6wvjqVdMCjzZA9he+7erkmkxiVLUZdQ3UNBo8HZDHXiQsM
+         mcM7FCxKI+01+fgUYLuWiMJDDIrpwALrw0t4Tgnj5V0lRMeIe9LJYOzYfDmU4pd275
+         SwqMetA6rao+Gd9v2JFdl/WGH40jvDaUJ6wKPMh9Zx0LPB7cjlSg7gEHngIaadqzVS
+         k5WygabJa5Fj1ZVN5dGVf3x4iskkwlLjDJq7evP9Q9VfkJ2KgxQv8IMkYIbhrzN9U+
+         y9xbflMRnMgbYdtCEH+GaHeYkMMjm1dP9Y/p6bCZDTy26Yh/XgI50RRGDDhcSUF9JY
+         ppBoa8aVX78lg==
+Received: by mail-wr1-f69.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so2027700wrh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:13:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=hP2w8Q1bmRd7QsbJSWuw/qEx96Jo8lROQWYodGYqF1k=;
+        b=pMmR3H08lA630vcKn9FFltYE8O/OnDhqs9R4kHrPInN+GuyfLnXx6j1oRvzzmJ7cdP
+         ReJgxts+IvvCHX670AkS9TKXAr+gmNg4vAGB31w2XNs/CSskJ/VE8ubGKAUjUhAb6TvC
+         GkDoGAt7/K1mCIk/bJ4flIqVcSpEZbDcwHNvJM48YHquFC64bTA7t3X2flydFjnmcuco
+         074hBC2krXIOhGNi89WuZ/BjXXlQpA5dDBmb9QNBMUodIW4LDfs7PHJuFVbg3lDUYERV
+         aiJhikJfM220iVya/n99W9BtdOgCkm8YO6jnjeiFATLvTFznxUSsiHjGyiAZrivTJqnB
+         jjVA==
+X-Gm-Message-State: AOAM530hayQiumrA9ubvdIdpXDx8RaOfyAJ4cpLt2ovsbRo6e8GACZ0x
+        fjGTU3FFbt3VSB2cW1TRmIIdpeAQRPUPCL2mfEBkivvNF+8e36USlRagJtgXPi7WhU8Fw08u8gi
+        TeE48kNpwP9jHh+bKmjASZtHr8do1Nwiy2cwZgc5q6Q==
+X-Received: by 2002:a7b:ce06:: with SMTP id m6mr10228309wmc.85.1632312788942;
+        Wed, 22 Sep 2021 05:13:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6RcbWQVWI9dXldtPewpPa4PrqTW+ts4ENjpUypUVVACFIqnLduFSWsT10CZrGiuDO42igJw==
+X-Received: by 2002:a7b:ce06:: with SMTP id m6mr10228285wmc.85.1632312788799;
+        Wed, 22 Sep 2021 05:13:08 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id b188sm1890703wmd.39.2021.09.22.05.13.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 05:13:08 -0700 (PDT)
+To:     linux-nfc@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        aur-general@lists.archlinux.org, devel@lists.fedoraproject.org,
+        packaging@lists.opensuse.org
+Cc:     Mark Greer <mgreer@animalcreek.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Cody P Schafer <dev@codyps.com>,
+        Dave Olsthoorn <daveo@fedoraproject.org>,
+        Dirk Mueller <dmueller@suse.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [neard] neard release v0.17
+Message-ID: <f3701543-8ee0-fefa-c57d-590832a1f951@canonical.com>
+Date:   Wed, 22 Sep 2021 14:13:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUr1v8zylPOFFXTO@T590>
-User-Agent: NeoMutt/20210205-772-2b4c52
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 05:22:07PM +0800, Ming Lei wrote:
-> 
-> I think this one relies on nbd protocol between server and client, and
-> does the protocol require both request and reply xmitted via same
-> socket?
+Hi all,
 
-Yes, a reply must be transmitted on the same socket as the request
-came over.  This is because independent sockets are not required to
-use distinct 64-bit handles, and there is no way for a server to tell
-if independent clients are related to one another; sending a reply on
-the wrong socket is thus not guaranteed to reach the intended client.
-Thus, a compliant server will never send a reply over a different
-socket than the original request, and if a client ever gets a reply
-with a handle it was not expecting, then the server is buggy or
-malicious.
+v0.17
+=====
+After quiet period, the neard user-space counterpart of Linux kernel NFC
+stack, gets a new release - v0.17.
 
--- 
-Eric Blake, Principal Software Engineer
-Red Hat, Inc.           +1-919-301-3266
-Virtualization:  qemu.org | libvirt.org
+The release includes several fixes (including potential security fixes)
+and improvements, plus few new features.
 
+Source code release:
+https://git.kernel.org/pub/scm/network/nfc/neard.git/tag/?h=v0.17
+https://git.kernel.org/pub/scm/network/nfc/neard.git/snapshot/neard-0.17.tar.gz
+
+Few notes on new names and maintainers
+======================================
+The neard package was previously maintained Samuel Ortiz and Marcel
+Holtmann, which were also main contributors. Last years Mark Greer was
+looking after neard. I joined in 2021, both as a maintainer of Linux
+kernel NFC stack and the neard.
+
+The project development still happens via linux-nfc mailing list but
+also got a second home on GitHub:
+https://github.com/linux-nfc/neard
+
+Under GitHub I set up also Continuous Integration:
+https://github.com/linux-nfc/neard/actions
+
+Feel free join and hack via both channels.
+
+Best regards,
+Krzysztof
