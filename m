@@ -2,95 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AA44142D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1B74142E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbhIVHn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 03:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45916 "EHLO
+        id S233361AbhIVHve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbhIVHn4 (ORCPT
+        with ESMTP id S233283AbhIVHvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:43:56 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A334BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 00:42:26 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id t8so4111527wri.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 00:42:26 -0700 (PDT)
+        Wed, 22 Sep 2021 03:51:32 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CFAC061574;
+        Wed, 22 Sep 2021 00:50:03 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id r2so1784265pgl.10;
+        Wed, 22 Sep 2021 00:50:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=d55eamAySqf8b3clxNZoYmb1gYK8E1S3WLes7WqiIfs=;
-        b=En1Lrh7mJNVgVfiySVL3wAibVB+mnm4S6GcLAluUemGC1iyQv+uSCHQEaTfHVObjy8
-         XKOJ+SSfS5C8/i1rSH2QC4BBMkqkTQdNa2QXwdqkiMPCv9EyXNF3YE4Sl+gKkIvkobvv
-         hM+xBoJ6LP8jak9c+k7JBFdT2syJ00EnZ3UtZw42KWWR1W27AiX5A8RSLzMT+M/Nvvjp
-         t05X7P5wZmqhW3z+Byx/KoWs+YkCoYSQepiyQirmaBx9sGaSwagFKHkwqw4flL/V+U9H
-         jIr3FdUZSoMSvceDmnAoOvmt9le3rU1Jqu+jp0bCSGo+7PqOvs2MjD4peYfi2JvnnBzs
-         e2+g==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TuwMBP3lxjZDIIIkKMBUehWeZnhQg+0jQoxtba7Hh9I=;
+        b=hXvMvZ6eOBZgNmCdzYTcl+fJpAXjGcrpcqPyIpdNC4uEmypCDQLvizzSoJZi9hCCbp
+         PRW5QSi3xfeqR27vOD8R6M2uaD3gmmXA5LzvgJFa0qCdJKbosCxZSKk62Q1u2H9VMkd3
+         +XmrZ7YO7V26K/V45nvINrCp606jItpb6SbEDGt2fj5i5HeFOQRGp8dwKzAe2T+OH7k4
+         6+wtTwy/7o1ebrYGmFnTPc9vst6Asxlw+iRan5z761Y9yUe5es40AbGMCKJebGR2hPMc
+         eK3lJmhF0rnqkL/Q3yonydEjxnTcY1N05xt5DPLg26CA/YYExkkETH7Zv/ku1X5Xrt9S
+         iPig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=d55eamAySqf8b3clxNZoYmb1gYK8E1S3WLes7WqiIfs=;
-        b=IuhoWQcDdTwDMZJDbAfm7yLezaxHAkyh3vHRdT2feXbXmzW5FBc5ElcznJCZHiP87+
-         zlhvPdbdJPoz1RQxiM9+ermSQO0WFdfEeAThVoxvDZWEgC1NMm54sxys3nAkWXaPdYgO
-         oA+5snVZX6BngmYGQPr8Gk6Yt1ZRic5jCEccbwFdYEw0Z1kA3Ua6XO/3hw5cJ7SFckaV
-         EHPC2yds/Y8EgS7Y6hKczTI7IcqYGepjJ9OG+nRsggpuk1tMgE8cCET+vRjhmP47IkPH
-         +SRyIw+cXfOZxwXsR7hGP3OwDxSw04Eke/QKDQ/y3QNpuTe4ylbAIzAVO5BMSMHk2HCf
-         2tHw==
-X-Gm-Message-State: AOAM533vEvZG9vlPG98s05sElOtc1Ud1sI741lSq5vUSBeWsfJFJSWc6
-        pV3lBoxfTMmWvIETd6r7Fk968w==
-X-Google-Smtp-Source: ABdhPJwGkzewC3Vv9V1KSEEwR05eeenEIB8MnobkkJ+f5yCBcI7TqKeLe7zyybS4E80mygjrwaogpw==
-X-Received: by 2002:a05:6000:1186:: with SMTP id g6mr40525701wrx.126.1632296545202;
-        Wed, 22 Sep 2021 00:42:25 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id b207sm1129023wmb.29.2021.09.22.00.42.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 00:42:24 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 08:42:23 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     min.li.xe@renesas.com
-Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] ptp: clockmatrix: use rsmu driver to access i2c/spi
- bus
-Message-ID: <YUreX2Mzif7o0C1n@google.com>
-References: <1632251697-1928-1-git-send-email-min.li.xe@renesas.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TuwMBP3lxjZDIIIkKMBUehWeZnhQg+0jQoxtba7Hh9I=;
+        b=j+IBKcEwPe0uh4Nnks+tppJ+6C34I3SEsB7Yh7fkjVwN/9r3BS/JzrsPejdWpLBsKe
+         1hlLf3HRjKaGAd5eKY0hE9UlZBbcGMO41j/w3yIt6oUk7ZpvP1OZvEvT3+I8hviEIgy+
+         2HMhChqfMIuWW2muwc8SvgFpzygo8Qwi9qcXK6VypudCDUEIsxiISyVEtnj3T7vTFrYy
+         ropL+6n+oBbRU6qiwnCG8tVVZPUGx+ELdyzT/+22E8I+7flupO8Nu1BHkHyXFpswLx6t
+         f2+lgO2Jc/yBq1wxI1UQY+q4nbsCJkCp6D9UcRa2IyiSqE58Hr7ifvcRuGGxGRaJsgZM
+         E2sA==
+X-Gm-Message-State: AOAM530CQjYZnunYzsZJ53WfKj4r+h2NZq8vieqhBRIJwaaXor+up3JW
+        3xJo53m00Oigrkxl/ox2FYTulmkIc8Q=
+X-Google-Smtp-Source: ABdhPJzpBPdqWkBZslTDJ4YwznbRa3wkyEY3vk9O0PqfEos3Nwntzh+fraHr3XZl3fmaUznxxKludw==
+X-Received: by 2002:a62:1a09:0:b0:435:61bd:2d09 with SMTP id a9-20020a621a09000000b0043561bd2d09mr34578837pfa.71.1632297001840;
+        Wed, 22 Sep 2021 00:50:01 -0700 (PDT)
+Received: from [172.30.1.2] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id f127sm1387197pfa.25.2021.09.22.00.49.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 00:50:01 -0700 (PDT)
+Subject: Re: [PATCH v2 2/4] PM / devfreq: Add devm_devfreq_add_governor()
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210920172249.28206-1-digetx@gmail.com>
+ <20210920172249.28206-3-digetx@gmail.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <780208e2-911c-87a0-f97c-0147c6f11c5d@gmail.com>
+Date:   Wed, 22 Sep 2021 16:49:58 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210920172249.28206-3-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1632251697-1928-1-git-send-email-min.li.xe@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021, min.li.xe@renesas.com wrote:
-
-> From: Min Li <min.li.xe@renesas.com>
+On 21. 9. 21. 오전 2:22, Dmitry Osipenko wrote:
+> Add resource-managed variant of devfreq_add_governor().
 > 
-> rsmu (Renesas Synchronization Management Unit ) driver is located in
-> drivers/mfd and responsible for creating multiple devices including
-> clockmatrix phc, which will then use the exposed regmap and mutex
-> handle to access i2c/spi bus.
-> 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  drivers/ptp/idt8a340_reg.h       | 783 ---------------------------------------
->  drivers/ptp/ptp_clockmatrix.c    | 769 ++++++++++++++++++++------------------
->  drivers/ptp/ptp_clockmatrix.h    | 117 +-----
+>   drivers/devfreq/devfreq.c  | 26 ++++++++++++++++++++++++++
+>   drivers/devfreq/governor.h |  3 +++
+>   2 files changed, 29 insertions(+)
+> 
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index 85faa7a5c7d1..4579eefb8fe7 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -1301,6 +1301,32 @@ int devfreq_add_governor(struct devfreq_governor *governor)
+>   }
+>   EXPORT_SYMBOL(devfreq_add_governor);
+>   
+> +static void devm_devfreq_remove_governor(void *governor)
+> +{
+> +	WARN_ON(devfreq_remove_governor(governor));
+> +}
+> +
+> +/**
+> + * devm_devfreq_add_governor() - Add devfreq governor
+> + * @dev:	device which adds devfreq governor
+> + * @governor:	the devfreq governor to be added
+> + *
+> + * This is a resource-managed variant of devfreq_add_governor().
+> + */
+> +int devm_devfreq_add_governor(struct device *dev,
+> +			      struct devfreq_governor *governor)
+> +{
+> +	int err;
+> +
+> +	err = devfreq_add_governor(governor);
+> +	if (err)
+> +		return err;
+> +
+> +	return devm_add_action_or_reset(dev, devm_devfreq_remove_governor,
+> +					governor);
+> +}
+> +EXPORT_SYMBOL(devm_devfreq_add_governor);
+> +
+>   /**
+>    * devfreq_remove_governor() - Remove devfreq feature from a device.
+>    * @governor:	the devfreq governor to be removed
+> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
+> index 2d69a0ce6291..002a7d67e39d 100644
+> --- a/drivers/devfreq/governor.h
+> +++ b/drivers/devfreq/governor.h
+> @@ -84,6 +84,9 @@ void devfreq_update_interval(struct devfreq *devfreq, unsigned int *delay);
+>   int devfreq_add_governor(struct devfreq_governor *governor);
+>   int devfreq_remove_governor(struct devfreq_governor *governor);
+>   
+> +int devm_devfreq_add_governor(struct device *dev,
+> +			      struct devfreq_governor *governor);
+> +
+>   int devfreq_update_status(struct devfreq *devfreq, unsigned long freq);
+>   int devfreq_update_target(struct devfreq *devfreq, unsigned long freq);
+>   
+> 
 
->  include/linux/mfd/idt8a340_reg.h |  31 +-
-
-Acked-by: Lee Jones <lee.jones@linaro.org>
-
->  4 files changed, 460 insertions(+), 1240 deletions(-)
->  delete mode 100644 drivers/ptp/idt8a340_reg.h
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
