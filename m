@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE29241524C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C99415252
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237942AbhIVVCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:02:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58593 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238084AbhIVVCh (ORCPT
+        id S237787AbhIVVFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237739AbhIVVFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:02:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632344466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EkcI36nWkyMmdwAV3luppztFyqzSlOhfIH0Z+Rmy1YE=;
-        b=VT3NmozO3j94IEhNrMP6NpdTUsUs50wyjakj69R7DrWM4lwOHrUk/1SHAMhO17RDI48GZX
-        fAOwAZFc80iQaPxKd10TiJnASdpdwO0Z8GA5INZ3vsVPcPz8SqKRIa6aFneJ/U9NR1f/zT
-        LVSr6v0JakIXNAcK3jJp+uNwY2+JNy4=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-rkdQvcDKO-m6A9GxnUnJFg-1; Wed, 22 Sep 2021 17:01:05 -0400
-X-MC-Unique: rkdQvcDKO-m6A9GxnUnJFg-1
-Received: by mail-oi1-f199.google.com with SMTP id e186-20020acab5c3000000b00273804e72c8so2528054oif.11
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:01:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=EkcI36nWkyMmdwAV3luppztFyqzSlOhfIH0Z+Rmy1YE=;
-        b=FWl+hsZI2CvGHtSf7/Fs1QpvYZ8E9TLLBDzKuoDpqTc+N8vxzD/qhMkFeH/xF0Vfti
-         o2LO85s1QiQRcqLSfLYN0KuJwBio5xVjF9qRflJuQAGDCnrewVrTeBdoqa4GkM+tYaPA
-         N9Ujv6k9CPoLZOurh+UX79pEfNYmdgfTuO9Q2ADFD3kbKLfsA83SkmLWVhqiKibDi6LP
-         S8dOr5D31p9EX8g7b80zxQNXXV2a+UZa0llI+i6TqQmj6NjnJ1hC2h1q1BJmvqho48XX
-         SAY3+A1y8uv76MXCLPi39ExlhgNfKphqOh21Q/JJHAJFaJoPbBwcvRV0DrnQRnBm5qOE
-         ULNw==
-X-Gm-Message-State: AOAM531IEHi6KtqjnZ5hrtqW4ZsoFvIBf01KitS018gm4lruYk0AbsX7
-        gjhIyCcn3lr7wpfNiV0Eu367kEjtKICV9x8hPu2lh8/5uKaCxnpCUwDbCj+Cr1S8DeY7558SrKr
-        5SRkPRROkoHGkpsIaFhqMOH1p
-X-Received: by 2002:a9d:72db:: with SMTP id d27mr1019238otk.279.1632344464367;
-        Wed, 22 Sep 2021 14:01:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy1foDmaxSBss0gFC+IJcIZIQhSoVK6YGjP2/EeJFqHN5DuMyQV2c7d4zQ3lhJ0DoWQZHDvuQ==
-X-Received: by 2002:a9d:72db:: with SMTP id d27mr1019192otk.279.1632344464096;
-        Wed, 22 Sep 2021 14:01:04 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id v4sm696691ott.72.2021.09.22.14.01.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 14:01:03 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 15:01:01 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Liu Yi L <yi.l.liu@intel.com>, hch@lst.de, jasowang@redhat.com,
-        joro@8bytes.org, jean-philippe@linaro.org, kevin.tian@intel.com,
-        parav@mellanox.com, lkml@metux.net, pbonzini@redhat.com,
-        lushenming@huawei.com, eric.auger@redhat.com, corbet@lwn.net,
-        ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        david@gibson.dropbear.id.au, nicolinc@nvidia.com
-Subject: Re: [RFC 08/20] vfio/pci: Add VFIO_DEVICE_BIND_IOMMUFD
-Message-ID: <20210922150101.5548eb6f.alex.williamson@redhat.com>
-In-Reply-To: <20210921172939.GU327412@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
-        <20210919063848.1476776-9-yi.l.liu@intel.com>
-        <20210921172939.GU327412@nvidia.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Wed, 22 Sep 2021 17:05:36 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C512AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:04:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/BsW4+kiX1t3eRyjco/t1BsfDHbZ3KbRhyDVWS+Vt7I=; b=ql0xsTOqfRkR2KMVRyT4j9GQnH
+        xBbRjyKytCZUSUJ+9HKAZMqdSGbSfRC9O5UDt/L3Jp1Vhn6snjiEwO5KsILa51CaoOwysWfK+EUPv
+        h3FZ/tSwtYWgkt/zUKRmVCfDu7f5880ZDl3/dYYvGq5BJi1Jq3GjjuegL2u199vbn+3gCBfgX3RxG
+        hwPs2GQpD15j/fEfI9MYn86gD/5u4aothiVCyqd9WEHPv2vW/BCK6/ur9LSLm1bJ3jGREeuWsi4Tt
+        iXkLkTNMLP0Gu1vYRXLBlCcAnC2SUtLDbi/f11t+XqQwiyNgy/b6XF8oZux90f6FmRQHN2MkpAynG
+        RQ4XwaZg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT9P7-0054sN-5g; Wed, 22 Sep 2021 21:03:47 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C3C3D9811F0; Wed, 22 Sep 2021 23:03:43 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 23:03:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 7/8] tools/objtool: Check for use of the ENQCMD
+ instruction in the kernel
+Message-ID: <20210922210343.GU4323@worktop.programming.kicks-ass.net>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-8-fenghua.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920192349.2602141-8-fenghua.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021 14:29:39 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Mon, Sep 20, 2021 at 07:23:48PM +0000, Fenghua Yu wrote:
 
-> On Sun, Sep 19, 2021 at 02:38:36PM +0800, Liu Yi L wrote:
-> > +struct vfio_device_iommu_bind_data {
-> > +	__u32	argsz;
-> > +	__u32	flags;
-> > +	__s32	iommu_fd;
-> > +	__u64	dev_cookie;  
-> 
-> Missing explicit padding
-> 
-> Always use __aligned_u64 in uapi headers, fix all the patches.
 
-We don't need padding or explicit alignment if we just swap the order
-of iommu_fd and dev_cookie.  Thanks,
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> index e5947fbb9e7a..91d13521d9d6 100644
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -3133,6 +3133,21 @@ static int validate_reachable_instructions(struct objtool_file *file)
+>  	return 0;
+>  }
+>  
+> +static int validate_enqcmd(struct objtool_file *file)
+> +{
+> +	struct instruction *insn;
+> +
+> +	for_each_insn(file, insn) {
+> +		if (insn->type == INSN_ENQCMD) {
+> +			WARN_FUNC("enqcmd instruction", insn->sec,
+> +				  insn->offset);
+> +			return 1;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  int check(struct objtool_file *file)
+>  {
+>  	int ret, warnings = 0;
+> @@ -3147,6 +3162,11 @@ int check(struct objtool_file *file)
+>  	if (list_empty(&file->insn_list))
+>  		goto out;
+>  
+> +	ret = validate_enqcmd(file);
+> +	if (ret < 0)
+> +		goto out;
+> +	warnings += ret;
+> +
+>  	if (vmlinux && !validate_dup) {
+>  		ret = validate_vmlinux_functions(file);
+>  		if (ret < 0)
 
-Alex
+Since you're making it a fatal error, before doing much of anything
+else, you might at well fail decode and keep it all in the x86/decode.c
+file, no need to spread this 'knowledge' any further.
 
+There's no actual state associated with it, you just want to avoid the
+instruction being present.
+
+Much simpler patch too.
