@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902E6414FC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1D7414FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237057AbhIVSZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
+        id S237035AbhIVSZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237053AbhIVSZL (ORCPT
+        with ESMTP id S236988AbhIVSZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:25:11 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E61BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:23:41 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id m3so15644241lfu.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:23:41 -0700 (PDT)
+        Wed, 22 Sep 2021 14:25:03 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78160C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:23:32 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id q11so9561721wrr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:23:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YLXLTgVBlIsYGUnptVEmh5wmzNsWwAg5srFOANEsOjk=;
-        b=BACF8CJscB+sTIFEZP8umRgC50ndWOAyAGfzm8SVDb+M7yhh1iuf4PiTO9E8ga42yF
-         s6UGwMPJSebCCFGL4KFJ0G+2LtXZMqdn3pvHU1ZY+udIJV3CLTpXm43byp2fSF7pFOjM
-         17KgNVwZdr3cZLasbHyYPyzpqF9WlW/wi5I4U=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qudQ8Ujb+FGGFne2komMi8WzYnU4RAUakYphzaE96bY=;
+        b=QE19C+Dn+djjyRETcEN5AJWmN2jiAIfzLEUIuQQY/Px8sg/b6JrRDIpeLsVL7SZySU
+         iO9RT9c7ryW3H8X1lCEVqZ42SZmRKHVfRfTwxb6eYBJzwIn7Wlu4M1W/lY+RCCLLh8is
+         tCydnZSVrzfDlDskSaEp12SQpMPhbOozXyEALDUosgCIVNQECv+AiAcB400sXGKLGC9Z
+         Ic48EFSLuJswNy/TDQF3lf8B9vdFDc99EhP8AKFJXEjCTcwgwl/IQ72ULrPOKuQMCVWa
+         syWFVvPAnVaYkWbwIHFg28cBBbLsldhZOo0j+ZkY9ZFYzyEO/KZQ+oiTKhGnFTpvUuuh
+         xZRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YLXLTgVBlIsYGUnptVEmh5wmzNsWwAg5srFOANEsOjk=;
-        b=zVzbgvBrC+EFHhf4iyh9+hr2Nkj01cgLQ0X20k+bht3ccLKA1KY36T77v4crvtdrU1
-         KKMOwa2sISA5J5MG5hNHCWH2CWAQuDaUJaCkLuvmmw2TAvxJsLzQXt2F61tdaspFrhLm
-         OpnqY3Uohnwh3/62VhBorq9cRyktqE7+6Hwl1WQLGKZgMTxl0aphrnB1QfW5pPb31hTk
-         XZoQcJQ1O0TL9m0h10MyRg80tjph5hyO7TxNrAWaDCcx0pyxPsnsPQo5sNySEaF0q1H4
-         P07az+VQO2Trw73tWXMDTYnLyRj8x8fDrdovFofqBUH72sTxRTSoTJd5zLsT/OhS3lDX
-         /ubw==
-X-Gm-Message-State: AOAM5329fDRcRJT6bZOxB6h1HbOYxhcP3aN6BYwlvp4ZfQrHxRyY6p4j
-        IJe+0g+kIIJIm6NxBiaGqGold/c4wRuwaGz6Ar0=
-X-Google-Smtp-Source: ABdhPJygJBPk4fgkE3GIhRtWxXg2tFM0ifSdzyY6WBC27pEeKDzax3tidlvDa0tM0yJc38pU9sS9LQ==
-X-Received: by 2002:a05:6512:c2a:: with SMTP id z42mr374197lfu.664.1632335019393;
-        Wed, 22 Sep 2021 11:23:39 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id l26sm234596lfh.247.2021.09.22.11.23.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 11:23:38 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id y28so15435687lfb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:23:38 -0700 (PDT)
-X-Received: by 2002:a2e:bc1e:: with SMTP id b30mr705404ljf.191.1632335018277;
- Wed, 22 Sep 2021 11:23:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qudQ8Ujb+FGGFne2komMi8WzYnU4RAUakYphzaE96bY=;
+        b=eUIMqTJeqwdezwoo4AZi991+vik1oGlUC9u+we6Tw+WiRtR7FwUB8szV/Merp51pGk
+         5G30L0L6GAc85e9wV7bbEd42sgpp7X/OmEljLal24bG5z+OH3rgZDSwW42WDvDkKWvOp
+         ww4jNKJ6krtwU3izxQwDsdz5nFPUGVTCwIxjF3iZzIkdl7/AW6o9UnZAUhMRnnQJC4zn
+         cgtPQyVxduhGYkxsEcdUgMaBZdc8MrE5u5b/MRtPZeqQuWTRGyG4OXXoD+aNPCXLOKn+
+         IBiEo1q8bxP5rx/15E9eKvwYL2LiKtKaxZZkzcVQczNgXmRQ+agSCp0f9tut6DQg4r3j
+         CthA==
+X-Gm-Message-State: AOAM531HrMa8qbJWPQaj/+VdE2UaHNXlMO0ODjE0lyQyYfhIVRMM7W9/
+        300U4Ils6PHnd5BYR17VgJf01qNOYEahsQ==
+X-Google-Smtp-Source: ABdhPJw4TehYfj0AHji3ZcZVkTH9ozQ7rIxgbzxflIgqNqqR7zdqfvGDg9Fnh/7ahdxcFFTu97PdaQ==
+X-Received: by 2002:a1c:1c7:: with SMTP id 190mr488859wmb.158.1632335011076;
+        Wed, 22 Sep 2021 11:23:31 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id 61sm3006299wrl.94.2021.09.22.11.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 11:23:30 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 19:23:29 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: sprd: Add SPI device ID table
+Message-ID: <YUt0oRV5u6+bd02T@google.com>
+References: <20210922150812.27516-1-broonie@kernel.org>
+ <20210922161614.GC4183@sirena.org.uk>
 MIME-Version: 1.0
-References: <20210903160302.yh42vpkuob45dbpb@gilmour> <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
- <20210904091050.g5axxctgelciihjn@gilmour> <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
- <20210920144730.d7oabqfbx7pmyyfb@gilmour> <20210920154333.vunyxeshdb7jt5ka@gilmour>
- <20210920155350.h6624mt65vwg72p2@gilmour> <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
- <20210920171042.oq3ndp3ox4xv5odh@gilmour> <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
- <20210922095725.dk4vk42zb3kh7y6s@gilmour> <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
- <CAHk-=wi=8Wp31FSyOH5A8KY+7f3dSuP62zUpvTtyvENm1Hh7xA@mail.gmail.com> <CADVatmNZB6yjS6zXqUcY4xsUTyX3pa6VysB6RmT1CGV5LXer6g@mail.gmail.com>
-In-Reply-To: <CADVatmNZB6yjS6zXqUcY4xsUTyX3pa6VysB6RmT1CGV5LXer6g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 22 Sep 2021 11:23:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com>
-Message-ID: <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com>
-Subject: Re: Regression with mainline kernel on rpi4
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>, Emma Anholt <emma@anholt.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210922161614.GC4183@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:02 AM Sudip Mukherjee
-<sudipm.mukherjee@gmail.com> wrote:
->
->
-> Attached is a complete dmesg and also the decoded trace.
-> This is done on 4357f03d6611 ("Merge tag 'pm-5.15-rc2' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm")
+On Wed, 22 Sep 2021, Mark Brown wrote:
 
-drivers/gpu/drm/vc4/vc4_hdmi.c:1214 is
+> On Wed, Sep 22, 2021 at 04:08:12PM +0100, Mark Brown wrote:
+> > Currently autoloading for SPI devices does not use the DT ID table, it uses
+> > SPI modalises. Supporting OF modalises is going to be difficult if not
+> > impractical, an attempt was made but has been reverted, so ensure that
+> > module autoloading works for this driver by adding a SPI device ID table.
+> 
+> Hang on, there's a typo and I found a bunch more MFDs that need updates
+> - I'll resend as part of a bigger series.
 
-        tmp = (u64)(mode->clock * 1000) * n;
+Fine.  Dropped.
 
-in vc4_hdmi_set_n_cts(), which has apparently been inlined from
-vc4_hdmi_audio_prepare() in vc4_hdmi.c:1398.
-
-So it looks like 'mode' is some offset off a NULL pointer.
-
-Which looks not impossible:
-
-  1207          struct drm_connector *connector = &vc4_hdmi->connector;
-  1208          struct drm_crtc *crtc = connector->state->crtc;
-  1209          const struct drm_display_mode *mode =
-&crtc->state->adjusted_mode;
-
-looks like crtc->state perhaps might be NULL.
-
-Although it's entirely possible that it's 'crtc' itself that is NULL
-or one of the earlier indirection accesses.
-
-The exact line information from the debug info is very useful and
-mostly correct, but at the same time should always be taken with a
-small pinch of salt.
-
-Compiler optimizations means that code gets munged and moved around,
-and since this is the first access to 'mode', I would not be surprised
-if some of the calculations and accesses to get 'mode' might be moved
-around to it.
-
-               Linus
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
