@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDCE413EA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4584C413EB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhIVAfI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Sep 2021 20:35:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19994 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhIVAfH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 20:35:07 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDfLY4lwFzbmfs;
-        Wed, 22 Sep 2021 08:29:25 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 22 Sep 2021 08:33:20 +0800
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 22 Sep 2021 08:33:19 +0800
-Received: from dggpeml100016.china.huawei.com ([7.185.36.216]) by
- dggpeml100016.china.huawei.com ([7.185.36.216]) with mapi id 15.01.2308.008;
- Wed, 22 Sep 2021 08:33:19 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "andraprs@amazon.com" <andraprs@amazon.com>,
-        "lexnv@amazon.com" <lexnv@amazon.com>,
-        "alcioa@amazon.com" <alcioa@amazon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "kamal@canonical.com" <kamal@canonical.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "sgarzare@redhat.com" <sgarzare@redhat.com>,
-        "stefanha@redhat.com" <stefanha@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "ne-devel-upstream@amazon.com" <ne-devel-upstream@amazon.com>
-Subject: RE: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
- functionality
-Thread-Topic: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
- functionality
-Thread-Index: AQHXrvrbICRRDj4Na0elarumsuHBnquuFHuAgAEe7eA=
-Date:   Wed, 22 Sep 2021 00:33:19 +0000
-Message-ID: <511306b230ed4347a4ba3a2f4d5d4e64@huawei.com>
-References: <20210921151039.1502-1-longpeng2@huawei.com>
- <20210921151039.1502-4-longpeng2@huawei.com> <YUn4WTDbU72tcyNY@kroah.com>
-In-Reply-To: <YUn4WTDbU72tcyNY@kroah.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.148.223]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229934AbhIVAri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 20:47:38 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53272 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229480AbhIVArh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 20:47:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=SsDk/XrP1AwPSiOD71NDEDCySTD+v4MTOEa9mTcxVkA=; b=wzcVZDrvuFZ9HHKwDn+nJtKT8m
+        7A0yhl//EQd0moVGdM+TM1Yf2QudwgBtq7zuNsoMtkO7l+Syh3zeQbiQ+JVNHMUgAF+UboXxiJ//l
+        HeDzAvzk+Lv/6WmclCH1d60nfClokjYNFXRyo7hEuYVIlEvjv9CTollsaTSPrK5ARiMQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mSqOU-007hwP-WB; Wed, 22 Sep 2021 02:45:51 +0200
+Date:   Wed, 22 Sep 2021 02:45:50 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+Message-ID: <YUp8vu1zUzBTz6WP@lunn.ch>
+References: <YUoFFXtWFAhLvIoH@kroah.com>
+ <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+ <YUocuMM4/VKzNMXq@lunn.ch>
+ <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
+ <YUo3kD9jgx6eNadX@lunn.ch>
+ <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
+ <YUpIgTqyrDRXMUyC@lunn.ch>
+ <CAGETcx_50KQuj0L+MCcf2Se8kpFfZwJBKP0juh_T7w+ZCs2p+g@mail.gmail.com>
+ <YUpW9LIcrcok8rBa@lunn.ch>
+ <CAGETcx_CNyKU-tXT+1_089MpVHQaBoNiZs6K__MrRXzWSi6P8g@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx_CNyKU-tXT+1_089MpVHQaBoNiZs6K__MrRXzWSi6P8g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Wait, what's the difference between a real fix vs a long term fix? To
+> me those are the same.
 
+Maybe the long term fix is you follow the phandle to the actual
+resources, see it is present, and allow the probe? That brings you in
+line with how things actually work with devices probing against
+resources.
 
-> -----Original Message-----
-> From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> Sent: Tuesday, September 21, 2021 11:21 PM
-> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
-> <longpeng2@huawei.com>
-> Cc: andraprs@amazon.com; lexnv@amazon.com; alcioa@amazon.com;
-> linux-kernel@vger.kernel.org; Gonglei (Arei) <arei.gonglei@huawei.com>;
-> kamal@canonical.com; pbonzini@redhat.com; sgarzare@redhat.com;
-> stefanha@redhat.com; vkuznets@redhat.com; ne-devel-upstream@amazon.com
-> Subject: Re: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
-> functionality
-> 
-> On Tue, Sep 21, 2021 at 11:10:38PM +0800, Longpeng(Mike) wrote:
-> > Add test framework for the misc functionality.
-> 
-> What is "the misc functionality"?
-> 
+I don't know how much work that is, since there is no uniform API to
+follow a phandle to a resource. I think each phandle type has its own
+helper. For an interrupt phandle you need to use of_irq_get(), for a
+gpio phandle maybe of_get_named_gpio_flags(), for a reset phandle
+__of_reset_control_get(), etc.
 
-The functionalities provided in the ne_misc_dev.c
+Because this does not sounds too simple, maybe you can find something
+simpler which is a real fix for now, good enough that it will get
+merged, and then you can implement this phandle following for the long
+term fix?
 
-> >
-> > Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-> > ---
-> >  drivers/virt/nitro_enclaves/Kconfig        |  8 ++++++++
-> >  drivers/virt/nitro_enclaves/ne_misc_dev.c  | 27
-> +++++++++++++++++++++++++++
-> >  drivers/virt/nitro_enclaves/ne_misc_test.c | 17 +++++++++++++++++
-> >  3 files changed, 52 insertions(+)
-> >  create mode 100644 drivers/virt/nitro_enclaves/ne_misc_test.c
-> 
-> What changed from v1?
-> 
-
-The unit tests are new added in v2, described in the cover letter.
-
-> thanks,
-> 
-> greg k-h
+	 Andrew
