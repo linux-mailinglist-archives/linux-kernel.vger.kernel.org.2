@@ -2,307 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE1E4153A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5ACF41539A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238441AbhIVW45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:56:57 -0400
-Received: from mga01.intel.com ([192.55.52.88]:10398 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238370AbhIVW4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:56:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="246164388"
-X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
-   d="scan'208";a="246164388"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 15:54:52 -0700
-X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
-   d="scan'208";a="653457371"
-Received: from mnamagi-mobl1.gar.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.34.84])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 15:54:52 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 08/10] x86/sev-es: Use insn_decode_mmio() for MMIO implementation
-Date:   Wed, 22 Sep 2021 15:52:37 -0700
-Message-Id: <20210922225239.3501262-9-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210922225239.3501262-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210922225239.3501262-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S238354AbhIVWxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:53:38 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:57640 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238337AbhIVWxh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 18:53:37 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210922225205epoutp03018d282b6fdb1ef996df1a1d5c8897f8~nRrM4wd333037730377epoutp03m
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 22:52:05 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210922225205epoutp03018d282b6fdb1ef996df1a1d5c8897f8~nRrM4wd333037730377epoutp03m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1632351125;
+        bh=Gh9ArGRcDLBD5Vv+WKc6+2Sx2cljk/6qDR3Kz117EWk=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=aW7MbB22lbM1FmNpVTPw1WV4BQ23y9pzCbfsSB2S3FOyTvvHlh9ZU4ax0ovS0FGRI
+         RdC2NEEhDNFYj6wPZuoN6rn6b4xNa0maezC/qx0q+iqj/6uOGtADbBp0zEpPqUeXLE
+         O5JRPBJaHDTzQBD9CnCrylGeE0qyyAwFIN9cMOQ4=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210922225205epcas1p15f1b542718c96e331f2294d902a31c99~nRrMrMvcG0031400314epcas1p1B;
+        Wed, 22 Sep 2021 22:52:05 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.38.235]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4HFD7j1bGpz4x9Pt; Wed, 22 Sep
+        2021 22:52:01 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CF.52.13888.193BB416; Thu, 23 Sep 2021 07:52:01 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210922225159epcas1p196913877d1f451a7361bebe3fb56ea8d~nRrHqqg-p0834008340epcas1p1B;
+        Wed, 22 Sep 2021 22:51:59 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210922225159epsmtrp25e46de7cfa63ea9cf3977728396be665~nRrHpB94T2945129451epsmtrp2o;
+        Wed, 22 Sep 2021 22:51:59 +0000 (GMT)
+X-AuditID: b6c32a39-227ff70000003640-90-614bb3917824
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DD.57.08750.F83BB416; Thu, 23 Sep 2021 07:51:59 +0900 (KST)
+Received: from [10.113.113.235] (unknown [10.113.113.235]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210922225159epsmtip20b8ce522240af5e4b87f6e868ad21986~nRrHcEIDy3130231302epsmtip2P;
+        Wed, 22 Sep 2021 22:51:59 +0000 (GMT)
+Subject: Re: [PATCH] mmc: dw_mmc: Dont wait for DRTO on Write RSP error
+To:     =?UTF-8?Q?Christian_L=c3=b6hle?= <CLoehle@hyperstone.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jaehoon Chung <jh80.chung@samsung.com>
+Message-ID: <5212d8d7-7e77-b874-8f85-7948c03b5748@samsung.com>
+Date:   Thu, 23 Sep 2021 07:52:38 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com>
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHKsWRmVeSWpSXmKPExsWy7bCmru7Ezd6JBke7OCxm3/a3uLxrDpvF
+        kf/9jBbH14Y7sHicWfeA0ePOtT1sHp83yQUwR2XbZKQmpqQWKaTmJeenZOal2yp5B8c7x5ua
+        GRjqGlpamCsp5CXmptoqufgE6Lpl5gDtUlIoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUW
+        pOQUmBboFSfmFpfmpevlpZZYGRoYGJkCFSZkZ/yckVfQy1uxZ9obxgbG+VxdjJwcEgImEg8O
+        dzJ2MXJxCAnsYJTY2/KVBcL5xCjx4dMrJgjnM6PEpj07mGFaVnS8YwSxhQR2MUrs6+aAKHrP
+        KLHs3j4mkISwgLvEjO6PYN0iAu8YJWZf/cMOkmAT0JHY/u04WBGvgJ3Em5PbwGwWAVWJKQcW
+        g20QFYiU+HtyFytEjaDEyZlPWEBsTqD6Za1zwTYzC4hL3HoynwnClpdo3jqbGWSZhMA1dok9
+        z6axQJzqIjG1p4EJwhaWeHV8CzuELSXx+d1eNgi7WmJX8xmo5g5GiVvbmqAajCX2L50MZHMA
+        bdCUWL9LHyKsKLHzN8wRfBLvvvawgpRICPBKdLQJQZSoSFx6/ZIJZtXdJ/9ZIWwPibdtt1kh
+        oTWRUeLT6u9MExgVZiH5cxaS32Yh+W0WwhULGFlWMYqlFhTnpqcWGxaYwqM7OT93EyM4IWpZ
+        7mCc/vaD3iFGJg7GQ4wSHMxKIryfb3glCvGmJFZWpRblxxeV5qQWH2I0BYb8RGYp0eR8YErO
+        K4k3NLE0MDEzMjaxMDQzVBLnPfbaMlFIID2xJDU7NbUgtQimj4mDU6qByfrZmuoMO3FtQ47W
+        B09/SB79O3+KwalVITzhPcXfbibwfnXODZqfs9zjhP+vpMJNq7+JCXLoegbGPT7EoC9t3z/d
+        c0mUukvpqmDXV/vmLvkTmyEc2lG262I12yH9U280mC+Kz323skFk47ZlrSvWr3CUzY1meLFd
+        ZYv89aOvd3Fo8t+sUf1tIHfOXYC5dekRFv81v7WtvEM5f077een9TUUN4bsFsx5ZrM0pslGW
+        Psw085+Nw9RLAYV8mUsS1PwXCC7zmDN5u8qP0sUMa1MmZk/YvtZtxxbv4kmuWi2SV8R3nlpf
+        JRzOIJVqnLfWN8V6WbeaHE///NQpbCIW/z+nHClO3ijdyXVhue3p+av0lViKMxINtZiLihMB
+        gWvT4hEEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrALMWRmVeSWpSXmKPExsWy7bCSvG7/Zu9Eg02bdSxm3/a3uLxrDpvF
+        kf/9jBbH14Y7sHicWfeA0ePOtT1sHp83yQUwR3HZpKTmZJalFunbJXBl/JyRV9DLW7Fn2hvG
+        Bsb5XF2MnBwSAiYSKzreMXYxcnEICexglHj3r4sZIiEl8fnpVLYuRg4gW1ji8OFiiJq3jBJf
+        H35lB6kRFnCXmNH9kQkkISLwjlHi8Kl3TBBVExkl5nxaxAZSxSagI7H923EmEJtXwE7izclt
+        YDaLgKrElAOLwbaJCkRKNJ3YygZRIyhxcuYTFhCbE6h+WetcRhCbWUBd4s+8S8wQtrjErSfz
+        mSBseYnmrbOZJzAKzkLSPgtJyywkLbOQtCxgZFnFKJlaUJybnltsWGCUl1quV5yYW1yal66X
+        nJ+7iREc6FpaOxj3rPqgd4iRiYPxEKMEB7OSCO/nG16JQrwpiZVVqUX58UWlOanFhxilOViU
+        xHkvdJ2MFxJITyxJzU5NLUgtgskycXBKNTBNfr2Y4RvbjibV55ZrYx8nPdDzyJRa/ipePXPh
+        Jj3e8nTrunSPRzc9k26wm+syL+5acuSd5DmDo/LdWXJszvs8bPz3vHWQtJuckPgt2MZlc0sR
+        2/vjy6vftb8+Zv0+U7n+eW7diYceGudfvWv/E/sy8J1cx5cKnlit4ynJT1rcre5/bsuvb1ic
+        XarJVjt7god1DB+brOPBzL1WIUGGa2rL9391332v6e6f0MifZsWczLqWm8/PWBd4blGllFt7
+        o/26kqlKKqxzKt9f3Gkipt1upcvW9Ppf0VXuOzOFH2a/snl4+F5qyKJ5cb9nM09deqNIb+Zk
+        1pM72cL1OD6WbSur462trI8xfPT8Qk/UBSWW4oxEQy3mouJEAL2pqgLjAgAA
+X-CMS-MailID: 20210922225159epcas1p196913877d1f451a7361bebe3fb56ea8d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210916055929epcas1p2b5cc839886e68a2f2cec17200a2b6d83
+References: <CGME20210916055929epcas1p2b5cc839886e68a2f2cec17200a2b6d83@epcas1p2.samsung.com>
+        <af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Hi Chritstian,
 
-Switch SEV implementation to insn_decode_mmio(). The helper is going
-to be used by TDX too.
+On 9/16/21 2:59 PM, Christian Löhle wrote:
+> Only wait for DRTO on reads, otherwise the driver hangs.
+> 
+> The driver prevents sending CMD12 on response errors like CRCs.
+> According to the comment this is because some cards have problems
+> with this during the UHS tuning sequence.
+> Unfortunately this workaround currently also applies for any command
+> with data.
+> On reads this will set the drto timer which then triggers after a while.
+> On writes this will not set any timer and the tasklet will not be
+> scheduled again.
+> I cannot attest for the UHS workarounds need, but even if so, it should
+> at most apply to reads.
+> I have observed many hangs when CMD25 response contained a CRC error.
+> This patch fixes this without touching the actual UHS tuning workaround.
 
-No functional changes. It is only build-tested.
+Sorry for reply too late. I'm checking your patch on my target. 
+I will share the result.
 
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
+Best Regards,
+Jaehoon Chung
 
-Changes since v5:
- * None
-
-Changes since v4:
- * None
-
-Changes since v3:
- * None
-
-Changes since v2:
- * None
-
- arch/x86/kernel/sev.c | 171 ++++++++++--------------------------------
- 1 file changed, 40 insertions(+), 131 deletions(-)
-
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 53a6837d354b..e2f1ae006114 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -807,22 +807,6 @@ static void __init vc_early_forward_exception(struct es_em_ctxt *ctxt)
- 	do_early_exception(ctxt->regs, trapnr);
- }
- 
--static long *vc_insn_get_reg(struct es_em_ctxt *ctxt)
--{
--	long *reg_array;
--	int offset;
--
--	reg_array = (long *)ctxt->regs;
--	offset    = insn_get_modrm_reg_off(&ctxt->insn, ctxt->regs);
--
--	if (offset < 0)
--		return NULL;
--
--	offset /= sizeof(long);
--
--	return reg_array + offset;
--}
--
- static long *vc_insn_get_rm(struct es_em_ctxt *ctxt)
- {
- 	long *reg_array;
-@@ -870,76 +854,6 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 	return sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, exit_info_1, exit_info_2);
- }
- 
--static enum es_result vc_handle_mmio_twobyte_ops(struct ghcb *ghcb,
--						 struct es_em_ctxt *ctxt)
--{
--	struct insn *insn = &ctxt->insn;
--	unsigned int bytes = 0;
--	enum es_result ret;
--	int sign_byte;
--	long *reg_data;
--
--	switch (insn->opcode.bytes[1]) {
--		/* MMIO Read w/ zero-extension */
--	case 0xb6:
--		bytes = 1;
--		fallthrough;
--	case 0xb7:
--		if (!bytes)
--			bytes = 2;
--
--		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
--		if (ret)
--			break;
--
--		/* Zero extend based on operand size */
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
--		memset(reg_data, 0, insn->opnd_bytes);
--
--		memcpy(reg_data, ghcb->shared_buffer, bytes);
--		break;
--
--		/* MMIO Read w/ sign-extension */
--	case 0xbe:
--		bytes = 1;
--		fallthrough;
--	case 0xbf:
--		if (!bytes)
--			bytes = 2;
--
--		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
--		if (ret)
--			break;
--
--		/* Sign extend based on operand size */
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
--		if (bytes == 1) {
--			u8 *val = (u8 *)ghcb->shared_buffer;
--
--			sign_byte = (*val & 0x80) ? 0xff : 0x00;
--		} else {
--			u16 *val = (u16 *)ghcb->shared_buffer;
--
--			sign_byte = (*val & 0x8000) ? 0xff : 0x00;
--		}
--		memset(reg_data, sign_byte, insn->opnd_bytes);
--
--		memcpy(reg_data, ghcb->shared_buffer, bytes);
--		break;
--
--	default:
--		ret = ES_UNSUPPORTED;
--	}
--
--	return ret;
--}
--
- /*
-  * The MOVS instruction has two memory operands, which raises the
-  * problem that it is not known whether the access to the source or the
-@@ -1007,83 +921,78 @@ static enum es_result vc_handle_mmio_movs(struct es_em_ctxt *ctxt,
- 		return ES_RETRY;
- }
- 
--static enum es_result vc_handle_mmio(struct ghcb *ghcb,
--				     struct es_em_ctxt *ctxt)
-+static enum es_result vc_handle_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
- {
- 	struct insn *insn = &ctxt->insn;
- 	unsigned int bytes = 0;
-+	enum mmio_type mmio;
- 	enum es_result ret;
-+	u8 sign_byte;
- 	long *reg_data;
- 
--	switch (insn->opcode.bytes[0]) {
--	/* MMIO Write */
--	case 0x88:
--		bytes = 1;
--		fallthrough;
--	case 0x89:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
-+	mmio = insn_decode_mmio(insn, &bytes);
-+	if (mmio == MMIO_DECODE_FAILED)
-+		return ES_DECODE_FAILED;
- 
--		reg_data = vc_insn_get_reg(ctxt);
-+	if (mmio != MMIO_WRITE_IMM && mmio != MMIO_MOVS) {
-+		reg_data = insn_get_modrm_reg_ptr(insn, ctxt->regs);
- 		if (!reg_data)
- 			return ES_DECODE_FAILED;
-+	}
- 
-+	switch (mmio) {
-+	case MMIO_WRITE:
- 		memcpy(ghcb->shared_buffer, reg_data, bytes);
--
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, false);
- 		break;
--
--	case 0xc6:
--		bytes = 1;
--		fallthrough;
--	case 0xc7:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
--
-+	case MMIO_WRITE_IMM:
- 		memcpy(ghcb->shared_buffer, insn->immediate1.bytes, bytes);
--
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, false);
- 		break;
--
--		/* MMIO Read */
--	case 0x8a:
--		bytes = 1;
--		fallthrough;
--	case 0x8b:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
--
-+	case MMIO_READ:
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
- 		if (ret)
- 			break;
- 
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
- 		/* Zero-extend for 32-bit operation */
- 		if (bytes == 4)
- 			*reg_data = 0;
- 
- 		memcpy(reg_data, ghcb->shared_buffer, bytes);
- 		break;
-+	case MMIO_READ_ZERO_EXTEND:
-+		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
-+		if (ret)
-+			break;
-+
-+		memset(reg_data, 0, insn->opnd_bytes);
-+		memcpy(reg_data, ghcb->shared_buffer, bytes);
-+		break;
-+	case MMIO_READ_SIGN_EXTEND:
-+		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
-+		if (ret)
-+			break;
- 
--		/* MOVS instruction */
--	case 0xa4:
--		bytes = 1;
--		fallthrough;
--	case 0xa5:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
-+		if (bytes == 1) {
-+			u8 *val = (u8 *)ghcb->shared_buffer;
- 
--		ret = vc_handle_mmio_movs(ctxt, bytes);
-+			sign_byte = (*val & 0x80) ? 0xff : 0x00;
-+		} else {
-+			u16 *val = (u16 *)ghcb->shared_buffer;
-+
-+			sign_byte = (*val & 0x8000) ? 0xff : 0x00;
-+		}
-+
-+		/* Sign extend based on operand size */
-+		memset(reg_data, sign_byte, insn->opnd_bytes);
-+		memcpy(reg_data, ghcb->shared_buffer, bytes);
- 		break;
--		/* Two-Byte Opcodes */
--	case 0x0f:
--		ret = vc_handle_mmio_twobyte_ops(ghcb, ctxt);
-+	case MMIO_MOVS:
-+		ret = vc_handle_mmio_movs(ctxt, bytes);
- 		break;
- 	default:
- 		ret = ES_UNSUPPORTED;
-+		break;
- 	}
- 
- 	return ret;
--- 
-2.25.1
+> 
+> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+> ---
+>  drivers/mmc/host/dw_mmc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+> index 6578cc64ae9e..22cf13dc799b 100644
+> --- a/drivers/mmc/host/dw_mmc.c
+> +++ b/drivers/mmc/host/dw_mmc.c
+> @@ -2081,7 +2081,8 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+>  				 * delayed. Allowing the transfer to take place
+>  				 * avoids races and keeps things simple.
+>  				 */
+> -				if (err != -ETIMEDOUT) {
+> +				if (err != -ETIMEDOUT &&
+> +				    host->dir_status == DW_MCI_RECV_STATUS) {
+>  					state = STATE_SENDING_DATA;
+>  					continue;
+>  				}
+> 
 
