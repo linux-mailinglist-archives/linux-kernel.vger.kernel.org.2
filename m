@@ -2,125 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F488413E75
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426ED413E78
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbhIVAJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 20:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbhIVAJD (ORCPT
+        id S231676AbhIVAO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 20:14:58 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:52974 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231482AbhIVAO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 20:09:03 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42940C06139D
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:06:19 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id u22-20020a05620a455600b004333191e844so5519806qkp.14
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=4BBDHyzTmFJD2PGtjmXQGbVqPzRCZc8ppu5cY3KZ5Y8=;
-        b=i1hLF6bC7QippVnwD+QfcurzwPql0DTYdtvpNMOXEcTNGevY7UnIQHp4F8TFxhWOcC
-         y5khcTlTsxcY03DM6I7OGwJdsNRusHePnZs48VJgz9iDl9BCd/WdBAHgBd08BkVlEctl
-         qgkp34acvdJvQRinIA310i906+1pI4VRGGbTHUSEWOTyISF582eEBN0uohWrXglJ4Vha
-         UiRiAJR9+rHm1hSoN64l3MLHm8i51hrtd5lKdh0LN16chuzJEtOj6NO2pvuQiZZnchZT
-         2+/Nzn1kX3D5dvOeb3mhXnOtnZBTLnXfaqpsFhvkCaK7qjG4cSZxh2Y/t71DvQNuI5L1
-         pIfA==
+        Tue, 21 Sep 2021 20:14:57 -0400
+Received: by mail-io1-f71.google.com with SMTP id n6-20020a056602340600b005d56a34dea8so1040361ioz.19
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:13:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=4BBDHyzTmFJD2PGtjmXQGbVqPzRCZc8ppu5cY3KZ5Y8=;
-        b=yLFbM1wAfcWUQgZx0Td5Mc2/UaQAGr++5k19yu4Tv5hjKsVKFbTkxKmo2016VWes4q
-         HIv0EWg//rGynXkU3Yjp97xlXyBkm4Ur0PFXJP7eBbahiwOP78KllcOsf0ujIAPgNGgP
-         6K2S+A69knFywBgTgfoGKQKYwAZtSoTgVvtI84s5YVzECWg06gKBYWiIex3qybP5ygvK
-         1UT6bTRwxteqA51wbGzN59Cjr9D5de/ksWj//L+6dvcIysVbgbkitYcicRbAmYs+kjPy
-         GlNfXyc9Lo8BHIhQ4SWeOz51GHUyeHnQLPHvAelyvStB+/QDo1xX09j+V1+ni3snbjeO
-         POAA==
-X-Gm-Message-State: AOAM531xbBVjoH90zGSdjDKg8IEGBou66diOyN2HYDGA6RNQz59e3Vym
-        DpgPMm1/Xdra5nzM1u7Ph8Fmv8sLYAY=
-X-Google-Smtp-Source: ABdhPJzV8/bAA+bVdBd7d54Vy+1c6C23hub/FF/gkHwdARHRitfqPelJ1Pr98qSi4K4qg/f1+Xhzcbcxu/4=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:b022:92d6:d37b:686c])
- (user=seanjc job=sendgmr) by 2002:ad4:466a:: with SMTP id z10mr32596974qvv.47.1632269178759;
- Tue, 21 Sep 2021 17:06:18 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 21 Sep 2021 17:05:33 -0700
-In-Reply-To: <20210922000533.713300-1-seanjc@google.com>
-Message-Id: <20210922000533.713300-17-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210922000533.713300-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v3 16/16] perf: Drop guest callback (un)register stubs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=xTrUY2uA7AiKnyXvK/CrMXSVvhh4URRQOLghViNT4h0=;
+        b=dQ9SFlRFtUGq2h+cLD+LTsXcR2r61752bhSPFzJ7tSWE8ByHHQY68F50QkwfdkQ7xU
+         afVfUdOtx1xtWkh9LQ23izgVqOobXkQh6xEo0BxtiAVHdadx3PzpB5x74f+Ms0JeTlWp
+         ZOqsTiijSRy1Vrxg/cMTqQvVbeFQjbZMUQRUuw4dTzKOiiWPrTDhJ3jQijT53Khkg37E
+         BIg/ap6wOOXzr92e3YiD5ZqnHDelDQ6tWJofy18ma7SfMBPpWVyGxrEFwbKbD+iJ+vcV
+         WZk2hokYs2bYKP8kxMTNWQLu32oomxG9mDuG+hmGRVIZ6zyOkghl3Dd8B8BBigbMfMG2
+         l3kg==
+X-Gm-Message-State: AOAM532iD7IoR8Cc4v94NX+20AQNe2jTrln0sgDlM4tl03ubl7jnyHJX
+        OZbymy7wrKtJeGIwm6+Ei+tAa0reFTiyjpmX4mmqvS0NQIzA
+X-Google-Smtp-Source: ABdhPJyhYVQd+eTR5J4ZGA6HbK2Oc0fZ6PYdwyP0wRslcK+1bMXY+IU6se6h42t/BLv/dbgVdhhmfgJF7RAzhu4QyGT0ceblWyRH
+MIME-Version: 1.0
+X-Received: by 2002:a02:cd17:: with SMTP id g23mr2342168jaq.29.1632269608554;
+ Tue, 21 Sep 2021 17:13:28 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 17:13:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003216d705cc8a62d6@google.com>
+Subject: [syzbot] INFO: rcu detected stall in sys_recvmmsg
+From:   syzbot <syzbot+3360da629681aa0d22fe@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, christian.brauner@ubuntu.com, davem@davemloft.net,
+        dkadashev@gmail.com, kuba@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.linux.dev, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
+        viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop perf's stubs for (un)registering guest callbacks now that KVM
-registration of callbacks is hidden behind GUEST_PERF_EVENTS=y.  The only
-other user is x86 XEN_PV, and x86 unconditionally selects PERF_EVENTS.
+Hello,
 
-No functional change intended.
+syzbot found the following issue on:
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+HEAD commit:    1f77990c4b79 Add linux-next specific files for 20210920
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1383891d300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ab1346371f2e6884
+dashboard link: https://syzkaller.appspot.com/bug?extid=3360da629681aa0d22fe
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1625f1ab300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17eb1b3b300000
+
+The issue was bisected to:
+
+commit 020250f31c4c75ac7687a673e29c00786582a5f4
+Author: Dmitry Kadashev <dkadashev@gmail.com>
+Date:   Thu Jul 8 06:34:43 2021 +0000
+
+    namei: make do_linkat() take struct filename
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f5ef77300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f5ef77300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f5ef77300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3360da629681aa0d22fe@syzkaller.appspotmail.com
+Fixes: 020250f31c4c ("namei: make do_linkat() take struct filename")
+
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	0-...!: (10499 ticks this GP) idle=0af/1/0x4000000000000000 softirq=10678/10678 fqs=1 
+	(t=10500 jiffies g=13089 q=109)
+rcu: rcu_preempt kthread starved for 10497 jiffies! g13089 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=1
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:28696 pid:   14 ppid:     2 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:4955 [inline]
+ __schedule+0x940/0x26f0 kernel/sched/core.c:6236
+ schedule+0xd3/0x270 kernel/sched/core.c:6315
+ schedule_timeout+0x14a/0x2a0 kernel/time/timer.c:1881
+ rcu_gp_fqs_loop+0x186/0x810 kernel/rcu/tree.c:1955
+ rcu_gp_kthread+0x1de/0x320 kernel/rcu/tree.c:2128
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+rcu: Stack dump where RCU GP kthread last ran:
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 8510 Comm: syz-executor827 Not tainted 5.15.0-rc2-next-20210920-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:84 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:102 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:128 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:159 [inline]
+RIP: 0010:check_region_inline mm/kasan/generic.c:180 [inline]
+RIP: 0010:kasan_check_range+0xc8/0x180 mm/kasan/generic.c:189
+Code: 38 00 74 ed 48 8d 50 08 eb 09 48 83 c0 01 48 39 d0 74 7a 80 38 00 74 f2 48 89 c2 b8 01 00 00 00 48 85 d2 75 56 5b 5d 41 5c c3 <48> 85 d2 74 5e 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 50 80 38 00
+RSP: 0018:ffffc9000cd676c8 EFLAGS: 00000283
+RAX: ffffed100e9a110e RBX: ffffed100e9a110f RCX: ffffffff88ea062a
+RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffff888074d08870
+RBP: ffffed100e9a110e R08: 0000000000000001 R09: ffff888074d08877
+R10: ffffed100e9a110e R11: 0000000000000000 R12: ffff888074d08000
+R13: ffff888074d08000 R14: ffff888074d08088 R15: ffff888074d08000
+FS:  0000555556d8e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000180 CR3: 0000000068909000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ test_and_clear_bit include/asm-generic/bitops/instrumented-atomic.h:83 [inline]
+ mptcp_release_cb+0x14a/0x210 net/mptcp/protocol.c:3016
+ release_sock+0xb4/0x1b0 net/core/sock.c:3204
+ mptcp_wait_data net/mptcp/protocol.c:1770 [inline]
+ mptcp_recvmsg+0xfd1/0x27b0 net/mptcp/protocol.c:2080
+ inet6_recvmsg+0x11b/0x5e0 net/ipv6/af_inet6.c:659
+ sock_recvmsg_nosec net/socket.c:944 [inline]
+ ____sys_recvmsg+0x527/0x600 net/socket.c:2626
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2670
+ do_recvmmsg+0x24d/0x6d0 net/socket.c:2764
+ __sys_recvmmsg net/socket.c:2843 [inline]
+ __do_sys_recvmmsg net/socket.c:2866 [inline]
+ __se_sys_recvmmsg net/socket.c:2859 [inline]
+ __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2859
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fc200d2dc39
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc5758e5a8 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fc200d2dc39
+RDX: 0000000000000002 RSI: 00000000200017c0 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000f0b5ff
+R10: 0000000000000100 R11: 0000000000000246 R12: 0000000000000003
+R13: 00007ffc5758e5d0 R14: 00007ffc5758e5c0 R15: 0000000000000003
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.444 msecs
+NMI backtrace for cpu 0
+CPU: 0 PID: 8509 Comm: syz-executor827 Not tainted 5.15.0-rc2-next-20210920-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_dump_cpu_stacks+0x25e/0x3f0 kernel/rcu/tree_stall.h:343
+ print_cpu_stall kernel/rcu/tree_stall.h:627 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:711 [inline]
+ rcu_pending kernel/rcu/tree.c:3878 [inline]
+ rcu_sched_clock_irq.cold+0x9d/0x746 kernel/rcu/tree.c:2597
+ update_process_times+0x16d/0x200 kernel/time/timer.c:1785
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
+ tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1428
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:lock_release+0x3f1/0x720 kernel/locking/lockdep.c:5633
+Code: 7e 83 f8 01 0f 85 8d 01 00 00 9c 58 f6 c4 02 0f 85 78 01 00 00 48 f7 04 24 00 02 00 00 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c5 48 c7 45 00 00 00 00 00 c7 45 08 00 00 00 00 48 8b 84 24
+RSP: 0018:ffffc9000cde7660 EFLAGS: 00000206
+RAX: dffffc0000000000 RBX: 70dbee1ebc366ab9 RCX: ffffc9000cde76b0
+RDX: 1ffff11003a0bc2b RSI: 0000000000000201 RDI: 0000000000000000
+RBP: 1ffff920019bcece R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000443 R12: 0000000000000001
+R13: 0000000000000002 R14: ffff88801d05e160 R15: ffff88801d05d700
+ __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:174 [inline]
+ _raw_spin_unlock_bh+0x12/0x30 kernel/locking/spinlock.c:210
+ spin_unlock_bh include/linux/spinlock.h:413 [inline]
+ unlock_sock_fast include/net/sock.h:1644 [inline]
+ unlock_sock_fast include/net/sock.h:1636 [inline]
+ mptcp_subflow_cleanup_rbuf net/mptcp/protocol.c:468 [inline]
+ mptcp_cleanup_rbuf net/mptcp/protocol.c:499 [inline]
+ mptcp_recvmsg+0xb8b/0x27b0 net/mptcp/protocol.c:2027
+ inet6_recvmsg+0x11b/0x5e0 net/ipv6/af_inet6.c:659
+ sock_recvmsg_nosec net/socket.c:944 [inline]
+ ____sys_recvmsg+0x527/0x600 net/socket.c:2626
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2670
+ do_recvmmsg+0x24d/0x6d0 net/socket.c:2764
+ __sys_recvmmsg net/socket.c:2843 [inline]
+ __do_sys_recvmmsg net/socket.c:2866 [inline]
+ __se_sys_recvmmsg net/socket.c:2859 [inline]
+ __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2859
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fc200d2dc39
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc5758e5a8 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fc200d2dc39
+RDX: 0000000000000002 RSI: 00000000200017c0 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000f0b5ff
+R10: 0000000000000100 R11: 0000000000000246 R12: 0000000000000003
+R13: 00007ffc5758e5d0 R14: 00007ffc5758e5c0 R15: 0000000000000003
+----------------
+Code disassembly (best guess):
+   0:	38 00                	cmp    %al,(%rax)
+   2:	74 ed                	je     0xfffffff1
+   4:	48 8d 50 08          	lea    0x8(%rax),%rdx
+   8:	eb 09                	jmp    0x13
+   a:	48 83 c0 01          	add    $0x1,%rax
+   e:	48 39 d0             	cmp    %rdx,%rax
+  11:	74 7a                	je     0x8d
+  13:	80 38 00             	cmpb   $0x0,(%rax)
+  16:	74 f2                	je     0xa
+  18:	48 89 c2             	mov    %rax,%rdx
+  1b:	b8 01 00 00 00       	mov    $0x1,%eax
+  20:	48 85 d2             	test   %rdx,%rdx
+  23:	75 56                	jne    0x7b
+  25:	5b                   	pop    %rbx
+  26:	5d                   	pop    %rbp
+  27:	41 5c                	pop    %r12
+  29:	c3                   	retq
+* 2a:	48 85 d2             	test   %rdx,%rdx <-- trapping instruction
+  2d:	74 5e                	je     0x8d
+  2f:	48 01 ea             	add    %rbp,%rdx
+  32:	eb 09                	jmp    0x3d
+  34:	48 83 c0 01          	add    $0x1,%rax
+  38:	48 39 d0             	cmp    %rdx,%rax
+  3b:	74 50                	je     0x8d
+  3d:	80 38 00             	cmpb   $0x0,(%rax)
+
+
 ---
- include/linux/perf_event.h | 5 -----
- 1 file changed, 5 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index d582dfeb4e20..20327d1046bb 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1505,11 +1505,6 @@ perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)	{ }
- static inline void
- perf_bp_event(struct perf_event *event, void *data)			{ }
- 
--static inline void perf_register_guest_info_callbacks
--(struct perf_guest_info_callbacks *cbs)					{ }
--static inline void perf_unregister_guest_info_callbacks
--(struct perf_guest_info_callbacks *cbs)					{ }
--
- static inline void perf_event_mmap(struct vm_area_struct *vma)		{ }
- 
- typedef int (perf_ksymbol_get_name_f)(char *name, int name_len, void *data);
--- 
-2.33.0.464.g1972c5931b-goog
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
