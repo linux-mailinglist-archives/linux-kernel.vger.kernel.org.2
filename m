@@ -2,137 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0CD4149A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8FE4149A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236076AbhIVMvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:51:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236040AbhIVMvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:51:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58B2C610A0;
-        Wed, 22 Sep 2021 12:50:08 +0000 (UTC)
-Date:   Wed, 22 Sep 2021 14:50:06 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Mike Christie <michael.christie@oracle.com>, hch@infradead.org
-Cc:     hdanton@sina.com, stefanha@redhat.com, jasowang@redhat.com,
-        mst@redhat.com, sgarzare@redhat.com,
-        virtualization@lists.linux-foundation.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 5/9] fork: add helper to clone a process
-Message-ID: <20210922125006.3i2k26durdwghgto@wittgenstein>
-References: <20210921215218.89844-1-michael.christie@oracle.com>
- <20210921215218.89844-6-michael.christie@oracle.com>
+        id S236125AbhIVMwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236101AbhIVMwP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 08:52:15 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C22C061574;
+        Wed, 22 Sep 2021 05:50:45 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4HDynv2hbMzQk9R;
+        Wed, 22 Sep 2021 14:50:43 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+References: <20210830123704.221494-1-verdre@v0yd.nl>
+ <20210830123704.221494-2-verdre@v0yd.nl>
+ <CA+ASDXPKZ0i5Bi11Q=qqppY8OCgw=7m0dnPn0s+y+GAvvQodog@mail.gmail.com>
+ <CAHp75VdR4VC+Ojy9NjAtewAaPAgowq-3rffrr3uAdOeiN8gN-A@mail.gmail.com>
+ <CA+ASDXNGR2=sQ+w1LkMiY_UCfaYgQ5tcu2pbBn46R2asv83sSQ@mail.gmail.com>
+ <YS/rn8b0O3FPBbtm@google.com> <0ce93e7c-b041-d322-90cd-40ff5e0e8ef0@v0yd.nl>
+ <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+Message-ID: <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl>
+Date:   Wed, 22 Sep 2021 14:50:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210921215218.89844-6-michael.christie@oracle.com>
+In-Reply-To: <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5C450188F
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 04:52:14PM -0500, Mike Christie wrote:
-> The vhost layer has similar requirements as io_uring where its worker
-> threads need to access the userspace thread's memory, want to inherit the
-> parents's cgroups and namespaces, and be checked against the parent's
-> RLIMITs. Right now, the vhost layer uses the kthread API which has
-> kthread_use_mm for mem access, and those threads can use
-> cgroup_attach_task_all for v1 cgroups, but there are no helpers for the
-> other items.
+On 9/20/21 7:48 PM, Brian Norris wrote:
+> On Sat, Sep 18, 2021 at 12:37 AM Jonas Dreßler <verdre@v0yd.nl> wrote:
+>> Thanks for the pointer to that commit Brian, it turns out this is
+>> actually the change that causes the "Firmware wakeup failed" issues that
+>> I'm trying to fix with the second patch here.
 > 
-> This adds a helper to clone a process so we can inherit everything we
-> want in one call. It's a more generic version of create_io_thread which
-> will be used by the vhost layer and io_uring in later patches in this set.
+> Huh. That's interesting, although I guess it makes some sense given
+> your theory of "dropped writes". FWIW, this strategy (post a single
+> write, then wait for wakeup) is the same used by some other
+> chips/drivers too (e.g., ath10k/pci), although in those cases card
+> wakeup is much much faster. But if the bus was dropping writes
+> somehow, those strategies would fail too.
 > 
-> Signed-off-by: Mike Christie <michael.christie@oracle.com>
-> ---
+>> Also my approach is a lot messier than just reverting
+>> 062e008a6e83e7c4da7df0a9c6aefdbc849e2bb3 and also appears to be blocking
+>> even longer...
+> 
+> For the record, in case you're talking about my data ("blocking even
+> longer"): I was only testing patch 1. Patch 2 isn't really relevant to
+> my particular systems (Rockchip RK3399 + Marvell 8997/PCIe), because
+> (a) I'm pretty sure my system isn't "dropping" any reads or writes
+> (b) all my delay is in the read-back; the Rockchip PCIe bus is waiting
+> indefinitely for the card to wake up, instead of timing out and
+> reporting all-1's like many x86 systems appear to do (I've tested
+> this).
+> 
+> So, the 6ms delay is entirely sitting in the ioread32(), not a delay loop.
+> 
+> I haven't yet tried your version 2 (which avoids the blocking read to
+> wake up; good!), but it sounds like in theory it could solve your
+> problem while avoiding 6ms delays for me. I intend to test your v2
+> this week.
+> 
 
-Looks good to me.
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+With "blocking even longer" I meant that (on my system) the delay-loop 
+blocks even longer than waking up the card via mwifiex_read_reg() (both 
+are in the orders of milliseconds). And given that in certain cases the 
+card wakeup (or a write getting through to the card, I have no idea) can 
+take extremely long, I'd feel more confident going with the 
+mwifiex_read_reg() method to wake up the card.
 
-Christoph, does this match what you had in mind too?
+Anyway, you know what's even weirder with all this: I've been testing 
+the first commit of patch v2 (so just the single read-back instead of 
+the big hammer) together with 062e008a6e83e7c4da7df0a9c6aefdbc849e2bb3 
+reverted for a good week now and haven't seen any wakeup failure yet. 
+Otoh I'm fairly sure the big hammer with reading back every write wasn't 
+enough to fix the wakeup failures, otherwise I wouldn't even have 
+started working on the second commit.
 
->  include/linux/sched/task.h |  6 ++++-
->  kernel/fork.c              | 48 ++++++++++++++++++++++++++++++++++++++
->  2 files changed, 53 insertions(+), 1 deletion(-)
+So that would mean there's a difference between writing and then reading 
+back vs only reading to wake up the card: Only the latter fixes the 
+wakeup failures.
+
+>> Does anyone have an idea what could be the reason for the posted write
+>> not going through, or could that also be a potential firmware bug in the
+>> chip?
 > 
-> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-> index e165cc67fd3c..ba0499b6627c 100644
-> --- a/include/linux/sched/task.h
-> +++ b/include/linux/sched/task.h
-> @@ -87,7 +87,11 @@ extern void exit_files(struct task_struct *);
->  extern void exit_itimers(struct signal_struct *);
->  
->  extern pid_t kernel_clone(struct kernel_clone_args *kargs);
-> -struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node);
-> +struct task_struct *create_io_thread(int (*fn)(void *i), void *arg, int node);
-> +struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
-> +				  unsigned long clone_flags, u32 worker_flags);
-> +__printf(2, 3)
-> +void kernel_worker_start(struct task_struct *tsk, const char namefmt[], ...);
->  struct task_struct *fork_idle(int);
->  struct mm_struct *copy_init_mm(void);
->  extern pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 98264cf1d6a6..3f3fcabffa5f 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2540,6 +2540,54 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
->  	return copy_process(NULL, 0, node, &args);
->  }
->  
-> +/**
-> + * kernel_worker - create a copy of a process to be used by the kernel
-> + * @fn: thread stack
-> + * @arg: data to be passed to fn
-> + * @node: numa node to allocate task from
-> + * @clone_flags: CLONE flags
-> + * @worker_flags: KERN_WORKER flags
-> + *
-> + * This returns a created task, or an error pointer. The returned task is
-> + * inactive, and the caller must fire it up through kernel_worker_start(). If
-> + * this is an PF_IO_WORKER all singals but KILL and STOP are blocked.
-> + */
-> +struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
-> +				  unsigned long clone_flags, u32 worker_flags)
-> +{
-> +	struct kernel_clone_args args = {
-> +		.flags		= ((lower_32_bits(clone_flags) | CLONE_VM |
-> +				   CLONE_UNTRACED) & ~CSIGNAL),
-> +		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
-> +		.stack		= (unsigned long)fn,
-> +		.stack_size	= (unsigned long)arg,
-> +		.worker_flags	= KERN_WORKER_USER | worker_flags,
-> +	};
-> +
-> +	return copy_process(NULL, 0, node, &args);
-> +}
-> +EXPORT_SYMBOL_GPL(kernel_worker);
-> +
-> +/**
-> + * kernel_worker_start - Start a task created with kernel_worker
-> + * @tsk: task to wake up
-> + * @namefmt: printf-style format string for the thread name
-> + * @arg: arguments for @namefmt
-> + */
-> +void kernel_worker_start(struct task_struct *tsk, const char namefmt[], ...)
-> +{
-> +	char name[TASK_COMM_LEN];
-> +	va_list args;
-> +
-> +	va_start(args, namefmt);
-> +	vsnprintf(name, sizeof(name), namefmt, args);
-> +	set_task_comm(tsk, name);
-> +	va_end(args);
-> +
-> +	wake_up_new_task(tsk);
-> +}
-> +EXPORT_SYMBOL_GPL(kernel_worker_start);
-> +
->  /*
->   *  Ok, this is the main fork-routine.
->   *
-> -- 
-> 2.25.1
+> I have no clue about that. That does sound downright horrible, but so
+> are many things when dealing with this family of hardware/firmware.
+> I'm not sure how to prove out whether this is a host bus problem, or
+> an endpoint/firmware problem, other than perhaps trying the same
+> module/firmware on another system, if that's possible.
 > 
+> Anyway, to reiterate: I'm not fundamentally opposed to v2 (pending a
+> test run here), even if it is a bit ugly and perhaps not 100%
+> understood.
+> 
+
+I'm not 100% sure about all this yet, I think I'm gonna try to confirm 
+my older findings once again now and then we'll see. FTR, would you be 
+fine with using the mwifiex_read_reg() method to wake up the card and 
+somehow quirking your system to use write_reg()?
+
+> Brian
+> 
+
