@@ -2,178 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51636414F4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458D4414F57
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236920AbhIVRk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:40:28 -0400
-Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:46900 "EHLO
-        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236886AbhIVRk0 (ORCPT
+        id S236929AbhIVRnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236781AbhIVRnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:40:26 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id 001EDBEDAA
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 18:38:54 +0100 (IST)
-Received: (qmail 21999 invoked from network); 22 Sep 2021 17:38:54 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Sep 2021 17:38:54 -0000
-Date:   Wed, 22 Sep 2021 18:38:53 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
- nr_running
-Message-ID: <20210922173853.GB3959@techsingularity.net>
-References: <20210920142614.4891-1-mgorman@techsingularity.net>
- <20210920142614.4891-3-mgorman@techsingularity.net>
- <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
- <20210921103621.GM3959@techsingularity.net>
- <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
- <20210922132002.GX3959@techsingularity.net>
- <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
- <20210922150457.GA3959@techsingularity.net>
- <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+        Wed, 22 Sep 2021 13:43:49 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50928C061574;
+        Wed, 22 Sep 2021 10:42:18 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id u8so3851970vsp.1;
+        Wed, 22 Sep 2021 10:42:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i2/5vU8okCommsTVep4U8g3zmRtYGj4z1dqrBTnZYKM=;
+        b=k4Db82ziafPM+lBnAm8x403uzHXRieH784TaSW+HWkfU1/m73XvJT/4Ju4iH+/9AYy
+         qhItsf3xKDVAdoSe03Zo4GcACIz76UOOKM/ewbf9v3V2ZbJuDJ7jcgaYcSM4rqy5Vmc/
+         xcimu96gz6twv1vSaXxcoMFAfMKFZ8RYNMAGcrkyA8xmuNiVzuUSHThy/eXwDTXCXpXy
+         1vbHqz4QuU1n92Tfqspy/ra2EOtKQBbN0KeSa+I5j7JPM8+OlotXcZ04sbN+atVcm+b8
+         aGtlo9evKIWpYQss1ypxKc/GdxmC9RUfbCC4VgmioL9DQa5jHLl0WEDm5wx0YFltP3kD
+         cGcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i2/5vU8okCommsTVep4U8g3zmRtYGj4z1dqrBTnZYKM=;
+        b=AKw4ajdR3IHQSGaV9Y8pkGHauZiXU58UcBDu8pWFty7TL1cSx9UsUqhHdebJzUXbAi
+         N28qUm+9Y9gWq0xEbVm6/JFaO2HAhcniKl5cxa6lOEXvSNtyS4C98VCvaVVyDRH/BI4V
+         e++NdvRDgLBRAYY9MSUAWmks9vU9cv2Atkuj9N86PVHeQr8bYo3AmhtpZhzsikKzc0Ej
+         bayBHwC4hUoUCU8B9QnvGDpVT09eGUmajlxPKZ1mXNCbDjzs48r+i74HA8WddkME5cw/
+         0w1wvZy0Xp2KmVnm0SZhSOfvXy6dJKz4d2K8Qz4WtVfdUKRwh9gh+VMd9BfNJXMGwoHU
+         pqUQ==
+X-Gm-Message-State: AOAM530zlQmz9Bv/zQF+Bc1f2RJnwrhD6tOHtG6hCfDiaL7Tz5s4YC2i
+        LwaO4l8qQMWChLXzm3wSGARt3dEGDu9zOFXk31M=
+X-Google-Smtp-Source: ABdhPJyaivZW6j74z3cSzPRtOsWARdibu4oASTZaqOFdznpmvxF3THVCojbU4d46EccKkqiRkq6Q6b0a2toNIbm0Vag=
+X-Received: by 2002:a05:6102:3005:: with SMTP id s5mr607253vsa.48.1632332537186;
+ Wed, 22 Sep 2021 10:42:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com> <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+In-Reply-To: <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Wed, 22 Sep 2021 19:42:06 +0200
+Message-ID: <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 06:00:56PM +0200, Vincent Guittot wrote:
-> On Wed, 22 Sept 2021 at 17:04, Mel Gorman <mgorman@techsingularity.net> wrote:
+Hi Arnd,
+
+Thanks for reviewing this.
+
+On Wed, Sep 22, 2021 at 5:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Wed, Sep 22, 2021 at 6:23 AM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+>
+> > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> > index d84381ce82b5..7d7aab1d1d64 100644
+> > --- a/drivers/pci/of.c
+> > +++ b/drivers/pci/of.c
+> > @@ -564,12 +564,14 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
 > >
-> > On Wed, Sep 22, 2021 at 04:15:27PM +0200, Vincent Guittot wrote:
-> > > > ---8<---
-> > > > sched/fair: Scale wakeup granularity relative to nr_running
-> > > >
-> > > > Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs") moved
-> > > > the kernel.sched_wakeup_granularity_ns sysctl under debugfs.  One of the
-> > > > reasons why this sysctl may be used may be for "optimising for throughput",
-> > > > particularly when overloaded. The tool TuneD sometimes alters this for two
-> > > > profiles e.g. "mssql" and "throughput-performance". At least version 2.9
-> > > > does but it changed in master where it also will poke at debugfs instead.
-> > > >
-> > > > Internal parameters like sysctl_sched_wakeup_granularity are scaled
-> > > > based on the number of CPUs due to sysctl_sched_tunable_scaling. For
-> > > > simplicity, the timing figures in this changelog are based on
-> > > > SCHED_TUNABLESCALING_NONE.
-> > >
-> > > This is a bit misleading because the platform that you used to
-> > > highlight the problem has a 7ms sysctl_sched_wakeup_granularity. which
-> > > is far more than your tick which should be 1ms
-> > >
-> >
-> > Tick on the test machines is 4ms (HZ=250).
-> >
-> > The reason I used SCHED_TUNABLESCALING_NONE for the changelog is that
-> > the exact values depend on the number of CPUs so values are not even
-> > the same across the range of machines I'm using. sysctl_sched_latency,
-> > sysctl_sched_min_granularity sysctl_sched_wakeup_granularity are all
-> > scaled but the ratios remain constant.
-> 
-> My point was mainly that sysctl_sched_wakeup_granularity is above the
-> tick period
-> 
+> >                 switch (resource_type(res)) {
+> >                 case IORESOURCE_IO:
+> > +#ifdef PCI_IOBASE
+> >                         err = devm_pci_remap_iospace(dev, res, iobase);
+> >                         if (err) {
+> >                                 dev_warn(dev, "error %d: failed to map resource %pR\n",
+> >                                          err, res);
+> >                                 resource_list_destroy_entry(win);
+> >                         }
+> > +#endif
+> >                         break;
+>
+> I wonder if we should have a different symbol controlling this than PCI_IOBASE,
+> because we are somewhat overloading the semantics here. There are a couple
+> of ways that I/O space can be handled
+>
+> a) inb()/outb() are custom instructions, as on x86, PCI_IOBASE is not defined
+> b) there is no I/O space, as on s390, PCI_IOBASE is not defined
+> c) PCI_IOBASE points to a virtual address used for dynamic mapping of I/O
+>     space, as on ARM
+> d) PCI_IOBASE is NULL, and the port number corresponds to the virtual
+>    address (some older architectures)
+>
+> I'm not completely sure where your platform fits in here, it sounds like you
+> address them using a machine specific physical address as the base in
+> inb() plus the port number as an offset, is that correct?
 
-Ok. sysctl_sched_wakeup_granularity is not related to the tick but I'm
-probably missing something else.
+I guess none of the above options? I will try to explain this as per
+my understanding.
 
-> > > Also do you want to take into account only tasks in this cfs and its
-> > > children or on all cfs on this rq ?
-> > >
-> >
-> > Only this cfq I think to limit overhead.
-> >
-> > > > +                       return sysctl_sched_wakeup_granularity;
-> > > > +
-> > > > +               return sysctl_sched_latency;
-> > > > +       }
-> > > > +
-> > > > +       /* GENTLE_FAIR_SLEEPER has two overloaded thresholds. */
-> > > > +       nr_running = cfs_rq->nr_running;
-> > > > +       threshold = sched_nr_disable_gran >> 1;
-> > > > +
-> > > > +       /* No overload. */
-> > > > +       if (nr_running <= threshold)
-> 
-> The comment was originally for this
-> nr_running does not reflect the number of task running on the cpu and
-> the associated overload state
-> 
-> If you put 2 hackbench in their own cgroup, nr_running will be 2 but
-> you will have twice more runnable threads
-> 
+[+cc Thomas Bogendoerfer as mips maintainer and with better knowledge
+of mips platforms than me]
 
-Ok, that's understood. FWIW, I had switched to h_nr_running already.
+On MIPS I/O ports are memory mapped, so we access them using normal
+load/store instructions.
+Mips 'plat_mem_setup()' function does a 'set_io_port_base(KSEG1)'.
+There, variable 'mips_io_port_base'
+is set then using this address which is a virtual address to which all
+ports are being mapped.
+KSEG1 addresses are uncached and are not translated by the MMU. This
+KSEG1 range is directly mapped in physical space starting with address
+0x0.
+Because of this reason, defining PCI_IOBASE as KSEG1 won't work since,
+at the end 'pci_parse_request_of_pci_ranges' tries to remap to a fixed
+virtual address (PCI_IOBASE). This can't work for KSEG1 addresses.
+What happens if I try to do that is that I get bad addresses at pci
+enumeration for IO resources. Mips ralink mt7621 SoC (which is the one
+I am using and trying to mainline the driver from staging) have I/O at
+address 0x1e160000. So instead of getting this address for pcie IO
+BARS I get a range from 0x0000 to 0xffff since 'pci_adress_to_pio' in
+that case got that range 0x0-0xffff which is wrong. To have this
+working this way we would need to put PCI_IOBASE somewhere into KSEG2
+which will result in creating TLB entries for IO addresses, which most
+of the time isn't needed on MIPS because of access via KSEG1. Instead
+of that, what happens when I avoid defining PCI_IOBASE and set
+IO_SPACE_LIMIT  (See [0] and [1] commits already added to staging tree
+which was part of this patch series for context of what works with
+this patch together) all works properly. There have also been some
+patches accepted in the past which avoid this
+'pci_parse_request_of_pci_ranges' call since it is not working for
+most pci legacy drivers of arch/mips for ralinks platform [2].
 
-> > > > +
-> > > > +       /* Light overload. */
-> > > > +       if (nr_running <= sched_nr_disable_gran)
-> > > > +               return sysctl_sched_latency >> 1;
-> > > > +
-> > > > +       /* Heavy overload. */
-> > > > +       return sysctl_sched_latency;
-> > >
-> > > Why should a thread without any relationship with the curr,  not
-> > > preempt it because there are already a lot of running threads?
-> >
-> > Preemption is not free, without any knowledge of what the thread is
-> > doing, we cannot determine if an inappropriate amount of CPU time is
-> > being spent dequeueing/enqueuing tasks.
-> 
-> That's exactly my point. The heuristic above doesn't give any clue if
-> the thread should or not preempt the current one. Most of the time
-> there is no relation with the number of the running threads but it is
-> define by the workload itself and its level of interactivity
-> 
+So I am not sure what should be the correct approach to properly make
+this work (this one works for me and I cannot see others better) but I
+will be happy to try whatever you propose for me to do.
 
-Right albeit it ignores the possibility that there are multiple workloads
-overloading the machine wasting even more time preempting.  Whether that
-is due to a bad application, a bad configuration or a bad actor is anyones
-guess. I've seen applications with multiple worker threads which generally
-behaved ok, except when they didn't and too many worker threads were
-spawned due to a spike in server load. I'm not 
+Thanks in advance for your time.
 
-> >
-> > > In
-> > > your case, you want hackbench threads to not preempt each others
-> > > because they tries to use same resources so it's probably better to
-> > > let the current one to move forward but that's not a universal policy.
-> > >
-> >
-> > No, but have you a better suggestion? hackbench might be stupid but it's
-> > an example of where a workload can excessively preempt itself. While
-> > overloading an entire machine is stupid, it could also potentially occurs
-> > for applications running within a constrained cpumask.
-> 
-> But this is property that is specific to each application. Some can
-> have a lot of running threads but few wakes up which have to preempt
-> current threads quickly but others just want the opposite
-> So because it is a application specific property we should define it
-> this way instead of trying to guess
+Best regards,
+    Sergio Paracuellos
 
-I'm not seeing an alternative suggestion that could be turned into
-an implementation. The current value for sched_wakeup_granularity
-was set 12 years ago was exposed for tuning which is no longer
-the case. The intent was to allow some dynamic adjustment between
-sysctl_sched_wakeup_granularity and sysctl_sched_latency to reduce
-over-scheduling in the worst case without disabling preemption entirely
-(which the first version did).
+[0]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=159697474db41732ef3b6c2e8d9395f09d1f659e
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=50fb34eca2944fd67493717c9fbda125336f1655
+[2]: https://www.spinics.net/lists/stable-commits/msg197972.html
 
-Should we just ignore this problem and hope it goes away or just let
-people keep poking silly values into debugfs via tuned?
 
--- 
-Mel Gorman
-SUSE Labs
+>
+>        Arnd
