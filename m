@@ -2,117 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4022414339
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF17414341
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbhIVIIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:08:05 -0400
-Received: from n169-112.mail.139.com ([120.232.169.112]:32207 "EHLO
-        n169-112.mail.139.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhIVIID (ORCPT
+        id S233443AbhIVILK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:11:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38932 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233349AbhIVILI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:08:03 -0400
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM:                                                                                        
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.255.10] (unknown[113.108.77.67])
-        by rmsmtp-lg-appmail-19-12022 (RichMail) with SMTP id 2ef6614ae401290-6d069;
-        Wed, 22 Sep 2021 16:06:26 +0800 (CST)
-X-RM-TRANSID: 2ef6614ae401290-6d069
-Message-ID: <e42a183f-274c-425f-2012-3ff0003e1fcb@139.com>
-Date:   Wed, 22 Sep 2021 16:06:25 +0800
+        Wed, 22 Sep 2021 04:11:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E70F422156;
+        Wed, 22 Sep 2021 08:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632298177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1NPG4O+Jngi0bELwMcPJpHyS/p8bC72T2cOWGd3btpQ=;
+        b=OxBaCGcDkobLlCSjXiT4d+DQHNDsxDAW9k/FQXYjAv+rr/+v/70PgCEjQUCWNrVvXqVn4f
+        yYUQG3OCMI0MP+zzyhjdsPe0KyXOnfFHoa8j9RU2bAmQ33K9DWad10aOqHCf3AvuBp727J
+        IocZeQsX1HEUCBQGnOXD9ODJXMiPbwE=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 9F1CFA3B8D;
+        Wed, 22 Sep 2021 08:09:37 +0000 (UTC)
+Date:   Wed, 22 Sep 2021 10:09:37 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vishnu Rangayyan <vishnu.rangayyan@apple.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fs: fix for core dumping of a process getting oom-killed
+Message-ID: <YUrkwbQ9d6vvh0Ta@dhcp22.suse.cz>
+References: <9aec4002-754c-ca6d-7caf-9de6e8c31dd7@apple.com>
+ <YUm7LLqwrXygzKll@dhcp22.suse.cz>
+ <216745b1-2d4c-8707-2403-07117e6b3bca@apple.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v3] ovl: fix null pointer when filesystem doesn't support
- direct IO
-To:     Huang Jianan <huangjianan@oppo.com>, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        chao@kernel.org
-Cc:     guoweichao@oppo.com, yh@oppo.com, zhangshiming@oppo.com,
-        guanyuwei@oppo.com, jnhuang95@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <9ef909de-1854-b4be-d272-2b4cda52329f@oppo.com>
- <20210922072326.3538-1-huangjianan@oppo.com>
-From:   Chengguang Xu <cgxu519@139.com>
-In-Reply-To: <20210922072326.3538-1-huangjianan@oppo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <216745b1-2d4c-8707-2403-07117e6b3bca@apple.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/9/22 15:23, Huang Jianan 写道:
-> From: Huang Jianan <huangjianan@oppo.com>
->
-> At present, overlayfs provides overlayfs inode to users. Overlayfs
-> inode provides ovl_aops with noop_direct_IO to avoid open failure
-> with O_DIRECT. But some compressed filesystems, such as erofs and
-> squashfs, don't support direct_IO.
->
-> Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
-> will read file through this way. This will cause overlayfs to access
-> a non-existent direct_IO function and cause panic due to null pointer:
+On Tue 21-09-21 20:12:08, Vishnu Rangayyan wrote:
+> 
+> 
+> On 9/21/21 5:59 AM, Michal Hocko wrote:
+[...]
+> > Why
+> > is fsync helping at all? Why do we need a new sysctl to address the
+> > problem and how does it help to prevent the memcg OOM. Also why is this
+> > a problem in the first place.
+> The simple intent is to allow the core dumping to succeed in low memory
+> situations where the dump_emit doesn't tip over the thing and trigger the
+> oom-killer. This change avoids only that particular issue.
 
-I just looked around the code more closely, in open_with_fake_path(),
+How does it avoid that?
 
-do_dentry_open() has already checked O_DIRECT open flag and 
-a_ops->direct_IO of underlying real address_space.
+> Agree, its not the actual problem at all. If the core dumping fails, that
+> sometimes prevents or delays looking into the actual issue.
+> The sysctl was to allow disabling this behavior or to fine tune for special
+> cases such as limited memory environments.
 
-Am I missing something?
+Please note that any sysctl is an userspace API that has to be
+maintained effectivelly for ever so there should be a very good reason
+and a strong justification to add one. I do not see that to be case
+here.
 
-
-Thanks,
-
-Chengguang
-
-
->
-> Kernel panic - not syncing: CFI failure (target: 0x0)
-> CPU: 6 PID: 247 Comm: loop0
-> Call Trace:
->   panic+0x188/0x45c
->   __cfi_slowpath+0x0/0x254
->   __cfi_slowpath+0x200/0x254
->   generic_file_read_iter+0x14c/0x150
->   vfs_iocb_iter_read+0xac/0x164
->   ovl_read_iter+0x13c/0x2fc
->   lo_rw_aio+0x2bc/0x458
->   loop_queue_work+0x4a4/0xbc0
->   kthread_worker_fn+0xf8/0x1d0
->   loop_kthread_worker_fn+0x24/0x38
->   kthread+0x29c/0x310
->   ret_from_fork+0x10/0x30
->
-> The filesystem may only support direct_IO for some file types. For
-> example, erofs supports direct_IO for uncompressed files. So return
-> -EINVAL when the file doesn't support direct_IO to fix this problem.
->
-> Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs")
-> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> ---
-> change since v2:
->   - Return error in ovl_open directly. (Chengguang Xu)
->
-> Change since v1:
->   - Return error to user rather than fall back to buffered io. (Chengguang Xu)
->
->   fs/overlayfs/file.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> index d081faa55e83..a0c99ea35daf 100644
-> --- a/fs/overlayfs/file.c
-> +++ b/fs/overlayfs/file.c
-> @@ -157,6 +157,10 @@ static int ovl_open(struct inode *inode, struct file *file)
->   	if (IS_ERR(realfile))
->   		return PTR_ERR(realfile);
->   
-> +	if ((f->f_flags & O_DIRECT) && (!realfile->f_mapping->a_ops ||
-> +		!realfile->f_mapping->a_ops->direct_IO))
-> +		return -EINVAL;
-> +
->   	file->private_data = realfile;
->   
->   	return 0;
-
+-- 
+Michal Hocko
+SUSE Labs
