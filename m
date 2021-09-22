@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122914153FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA38941540E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhIVXlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 19:41:42 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:33010 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhIVXll (ORCPT
+        id S238496AbhIVXpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230455AbhIVXp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 19:41:41 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0FF24E52;
-        Thu, 23 Sep 2021 01:40:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1632354009;
-        bh=gJac9EwI/a236I+4gT7/6CxMN/VTnbwyibB6JDZnL5k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IH7gGoI1HkWPYu+ZzvtXd6P6WKWdHjwKBqPOasrNkpBFgZ37PWGr89J0owK0RhhGS
-         C0n6dHTLcqySJLeppWwOTW5Q8F+FsxMA9IkfyIXRUIHgAy/KjKsQ4OndXuWY9a0VwU
-         unPRjNs2CxMfTC1cb2AFPYZkj0D10Hwe5SNtGaLg=
-Date:   Thu, 23 Sep 2021 02:40:07 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: falcon-cpu: Add DSI display
- output
-Message-ID: <YUu+14+9DnQZM7SE@pendragon.ideasonboard.com>
-References: <20210901235330.1611086-1-kieran.bingham@ideasonboard.com>
- <20210901235330.1611086-4-kieran.bingham@ideasonboard.com>
- <CAMuHMdU5WzvdfeSqEESt0r7_7XX0Mc9jRNGCBHLtt_JCMCWZyw@mail.gmail.com>
+        Wed, 22 Sep 2021 19:45:29 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54671C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:43:56 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id m3so18971233lfu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e9k72VTW22NLqhNCFibUNzlVRlOLQo+ivDkN/xGzIL0=;
+        b=iAQ5fOkNypbYTDMHDwefmxHPG3BnavaFtPjdsc6K5IFf8v4Aa05F1WOz/dqXf9D5eN
+         VU9v9NDhqobgAH7LoBpnsbaNZxLD7pRX/kq2DnHdo1fZh5AcIdAV8GkZH4839jcnx9EZ
+         W1YcQ3jdEj1KMiYH+mn3Qra281xA8lW3Id9vs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e9k72VTW22NLqhNCFibUNzlVRlOLQo+ivDkN/xGzIL0=;
+        b=4XaYzVg3GgKFIsaGUGW+WHLetpcZ4wvBL8T+l/M0GE1u/GGzQF5+P/BDkkHP13QJSh
+         4SSy7j74LPqrcL5QOO1oF3sgKLxe++OorAYv3GFnDKiGheO1cyRtzeFQYzVfB+jdaras
+         CFoGZ1mwMQAFtHidcFyj+T8LchLmqS05zEh/FPR+1Lr58FZfggMvq5dMncpjBn7Hghhz
+         i/iN0kNRSq7Uzxu6mNOx9Lae/Cs1SLBfNDEUI800zfD46gnZL0TOlaNXH+rCmO9NHQZB
+         /IxMdTBAHOhMJ8WVngVvd+Ah6cmoE2EaR5l+/HHZBKmeLlAqgLYe6q0+nmVLEeKKR5UK
+         rHaw==
+X-Gm-Message-State: AOAM530APaRiFNTe5lAiX0PxkJziYJkb5GwVy6kn1MbxIEm5rFKAeOMz
+        HGJzCfRoq5moqh+LM92vs2gvWSCq6qM73arWwxM=
+X-Google-Smtp-Source: ABdhPJzMTHhvk0w+7PA/EsHn77tESR+xblRq8EwrY5TqBFTJznY7URRmLn+XxHWSyxCHqbUIkNcbmA==
+X-Received: by 2002:a2e:6f1b:: with SMTP id k27mr2054847ljc.117.1632354234203;
+        Wed, 22 Sep 2021 16:43:54 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id u13sm290749lft.132.2021.09.22.16.43.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 16:43:53 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id u8so18242208lff.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:43:53 -0700 (PDT)
+X-Received: by 2002:a05:6512:984:: with SMTP id w4mr268356lft.141.1632354233111;
+ Wed, 22 Sep 2021 16:43:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdU5WzvdfeSqEESt0r7_7XX0Mc9jRNGCBHLtt_JCMCWZyw@mail.gmail.com>
+References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
+ <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
+ <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
+ <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com> <CAHC9VhSZp1-Qi7ApoQHauaFXDgoNaFTwFEieEFFuBtdPqAtXQg@mail.gmail.com>
+In-Reply-To: <CAHC9VhSZp1-Qi7ApoQHauaFXDgoNaFTwFEieEFFuBtdPqAtXQg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 22 Sep 2021 16:43:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whoExoB6xGD0as0kpfwr38B=W7GRkO2NXWDRW-tmQS6Qw@mail.gmail.com>
+Message-ID: <CAHk-=whoExoB6xGD0as0kpfwr38B=W7GRkO2NXWDRW-tmQS6Qw@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 22, 2021 at 2:40 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> The basic idea, or problem from a LSM point of view, is that in some
+> cases you have a user task which is doing the lockdown access check
+> and in others you have the kernel itself
 
-On Tue, Sep 21, 2021 at 05:59:24PM +0200, Geert Uytterhoeven wrote:
-> On Thu, Sep 2, 2021 at 1:53 AM Kieran Bingham wrote:
-> > From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> >
-> > Provide the display output using the sn65dsi86 MIPI DSI bridge.
-> >
-> > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> Thanks for your patch!
-> 
-> > --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
-> > +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
-> > @@ -66,6 +66,15 @@ memory@700000000 {
-> >                 reg = <0x7 0x00000000 0x0 0x80000000>;
-> >         };
-> >
-> > +       reg_1p2v: regulator-1p2v {
-> > +               compatible = "regulator-fixed";
-> > +               regulator-name = "fixed-1.2V";
-> > +               regulator-min-microvolt = <1800000>;
-> > +               regulator-max-microvolt = <1800000>;
-> > +               regulator-boot-on;
-> > +               regulator-always-on;
-> > +       };
-> > +
-> >         reg_1p8v: regulator-1p8v {
-> >                 compatible = "regulator-fixed";
-> >                 regulator-name = "fixed-1.8V";
-> > @@ -83,6 +92,46 @@ reg_3p3v: regulator-3p3v {
-> >                 regulator-boot-on;
-> >                 regulator-always-on;
-> >         };
-> > +
-> > +       mini-dp-con {
-> > +               compatible = "dp-connector";
-> > +               label = "CN5";
-> > +               type = "mini";
-> > +
-> > +               port {
-> > +                       mini_dp_con_in: endpoint {
-> > +                               remote-endpoint = <&sn65dsi86_out>;
-> > +                       };
-> > +               };
-> > +       };
-> > +
-> > +       sn65dsi86_refclk: sn65dsi86-refclk {
-> > +               compatible = "fixed-clock";
-> > +               #clock-cells = <0>;
-> > +               clock-frequency = <38400000>;
-> > +       };
-> > +};
-> > +
-> > +&dsi0 {
-> > +       status = "okay";
-> > +
-> > +       clocks = <&cpg CPG_MOD 415>,
-> > +                <&cpg CPG_CORE R8A779A0_CLK_DSI>,
-> > +                <&extal_clk>;
-> > +       clock-names = "fck", "dsi", "extal";
-> 
-> Ah, that's where the third clock was hiding ;-)
-> 
-> Is this hardwired to extal, or board-specific?
-> In case of the former, I think it should be moved to the .dtsi.
+I don't understand. In that case, it would be a boolean for "kernel vs user".
 
-I think this is actually incorrect. The clock name, according to the
-bindings, is "pll", and it's documented as a 16.66MHz PLL reference
-clock. It comes from the CPG, but I'm not sure which clock it actually
-is.
+But that's not what it is. It literally seems to care about _which_
+user, and looks at cred_sid().
 
--- 
-Regards,
+This is what makes no sense to me. If it's about lockdown,. then the
+user is immaterial. Either it's locked down, or it's not.
 
-Laurent Pinchart
+Yeah, yeah, clearly that isn't how it works. Something is very rotten
+in the state of lockdown. But that rottenness shouldn't then be
+exposed as a horrible interface.
+
+Why has selinux allowed the SID to be an issue for SECCLASS_LOCKDOWN at all?
+
+And why is selinux foceing it's very odd and arguably completely
+misguided "lockdown" logic onto the security layer?
+
+Yes, using "current_sid()" in selinux_lockdown() is clearly wrong,
+since it's not sensible in an interrupt, but lockdown questions are.
+
+But why isn't that just considered a selinux bug, and that
+
+        u32 sid = current_sid();
+
+just replaced with something silly like
+
+        // lockdown is lockdown, user labeling isn't relevant
+        u32 sid = SECINITSID_UNLABELED;
+
+and solve that issue that way? Just say that lockdown cannot depend on
+who is asking for it.
+
+         Linus
