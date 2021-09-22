@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7288B414A75
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B2A414A78
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbhIVNYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:24:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46622 "EHLO mail.kernel.org"
+        id S232206AbhIVNZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:25:01 -0400
+Received: from mga05.intel.com ([192.55.52.43]:53085 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230413AbhIVNYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:24:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A880760FC1;
-        Wed, 22 Sep 2021 13:22:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632316969;
-        bh=RMLmKC2ffOq6sR/gzS529nDFxhd9wlS77MVexpDzG6E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lkWzjNglpdHkDPCl+AybxJ57pkPgALNx9aV/Fy7QfdVVqQdxl3S9IifKmtR6bzPUm
-         sX0M6EVDQzdO/i1jX/kIjYrSlMhO3q2UFV3UOH5i56st5JIMfJ2fBmD9YzmUFV6qxO
-         ci39RgUEQ5V/AsXiKRYf1m6ECWmF6BSrN+cGtMMq7atGke9nHXLXmAeIz/xL2gWY7V
-         3bMA6Hc74s/osrSr5a2NocRFZq6W5fp9wNJrkzLeS6kpvj+Ag2GurH/Nzd3ddQPqV0
-         YNDFc+U1kLBFE75PKv4+2Wy5cE1s0/n2YI5SsKYoRpR1X9ziVH0w++LaLJHHhKrBTG
-         CyN3i7ALKNH7A==
-Date:   Wed, 22 Sep 2021 06:22:46 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Manish Chopra <manishc@marvell.com>,
-        M Chetan Kumar <m.chetan.kumar@intel.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1] devlink: Make devlink_register to be void
-Message-ID: <20210922062246.26e38305@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <311a6c7e74ad612474446890a12c9d310b9507ed.1632300324.git.leonro@nvidia.com>
-References: <311a6c7e74ad612474446890a12c9d310b9507ed.1632300324.git.leonro@nvidia.com>
+        id S231919AbhIVNZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 09:25:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="309143215"
+X-IronPort-AV: E=Sophos;i="5.85,314,1624345200"; 
+   d="scan'208";a="309143215"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 06:23:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,314,1624345200"; 
+   d="scan'208";a="484570010"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by orsmga008.jf.intel.com with ESMTP; 22 Sep 2021 06:23:29 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 22 Sep 2021 06:23:29 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 22 Sep 2021 06:23:28 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
+ Wed, 22 Sep 2021 06:23:28 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Yazen Ghannam <yazen.ghannam@amd.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/4] x86/mce: Get rid of msr_ops
+Thread-Topic: [PATCH 3/4] x86/mce: Get rid of msr_ops
+Thread-Index: AQHXq7JaRGlGvEV5GEmaz9UoRNBQZqusXfOAgAC0BICAA2NsgIAAEp8A
+Date:   Wed, 22 Sep 2021 13:23:28 +0000
+Message-ID: <2B1FFC77-A740-41AE-BF8C-FB238B9DF7F5@intel.com>
+References: <YUsesVeZ8PPC5iV5@zn.tnic>
+In-Reply-To: <YUsesVeZ8PPC5iV5@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E272DB04D6085B48BA39057EA111156F@intel.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 11:58:03 +0300 Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> devlink_register() can't fail and always returns success, but all drivers
-> are obligated to check returned status anyway. This adds a lot of boilerplate
-> code to handle impossible flow.
-> 
-> Make devlink_register() void and simplify the drivers that use that
-> API call.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+TG9va3MgbmljZS4gSSBkb27igJl0IHRoaW5rIHlvdSBuZWVkIHRob3NlIOKAnGJyZWFrO+KAnSBh
+ZnRlciBlYWNoIOKAnHJldHVybiDigKY74oCdDQoNClNlbnQgZnJvbSBteSBpUGhvbmUNCg0KPiBP
+biBTZXAgMjIsIDIwMjEsIGF0IDA1OjE4LCBCb3Jpc2xhdiBQZXRrb3YgPGJwQGFsaWVuOC5kZT4g
+d3JvdGU6DQo+IA0KPiDvu79PbiBNb24sIFNlcCAyMCwgMjAyMSBhdCAxMDozMjoxMUFNICswMjAw
+LCBCb3Jpc2xhdiBQZXRrb3Ygd3JvdGU6DQo+PiBidXQgcGxlYXNlIGRvbid0IG1ha2UgbWUgYWRk
+IG1vcmUgaGVscGVyIGZ1bmN0aW9ucy4gVGhvc2UgTVNSIGRlZmluZXMNCj4+IGFscmVhZHkgaGF2
+ZSAiU01DQSIgYW5kICJJQTMyIiBpbiB0aGVpciBuYW1lcyBzbyB0aGF0IHNob3VsZCBiZSBhIGdv
+b2QNCj4+IGVub3VnaCBkaWZmZXJlbnRpYXRpb24sIEknZCBzYXkuDQo+IA0KPiBJIGp1c3QgaGFk
+IGEgYmV0dGVyIGlkZWEgLSBpdCBpcyBjb21wYWN0IGJ1dCByZWd1bGFyIGFuZCBvbmUgY2FuIHNl
+ZSBhdA0KPiBhIHF1aWNrIGdsYW5jZSB3aGljaCBibG9jayBpcyBmb3Igd2hpY2ggc2V0IG9mIE1T
+UnM6DQo+IA0KPiB1MzIgbWNhX21zcl9yZWcoaW50IGJhbmssIGVudW0gbWNhX21zciByZWcpDQo+
+IHsNCj4gICAgICAgIGlmIChtY2VfZmxhZ3Muc21jYSkgew0KPiAgICAgICAgICAgICAgICBzd2l0
+Y2ggKHJlZykgew0KPiAgICAgICAgICAgICAgICBjYXNlIE1DQV9DVEw6ICAgIHJldHVybiBNU1Jf
+QU1ENjRfU01DQV9NQ3hfQ1RMKGJhbmspOyAgICBicmVhazsNCj4gICAgICAgICAgICAgICAgY2Fz
+ZSBNQ0FfQUREUjogICByZXR1cm4gTVNSX0FNRDY0X1NNQ0FfTUN4X0FERFIoYmFuayk7ICAgYnJl
+YWs7DQo+ICAgICAgICAgICAgICAgIGNhc2UgTUNBX01JU0M6ICAgcmV0dXJuIE1TUl9BTUQ2NF9T
+TUNBX01DeF9NSVNDKGJhbmspOyAgIGJyZWFrOw0KPiAgICAgICAgICAgICAgICBjYXNlIE1DQV9T
+VEFUVVM6IHJldHVybiBNU1JfQU1ENjRfU01DQV9NQ3hfU1RBVFVTKGJhbmspOyBicmVhazsNCj4g
+ICAgICAgICAgICAgICAgZGVmYXVsdDogZ290byBvdXQ7IGJyZWFrOw0KPiAgICAgICAgICAgICAg
+ICB9DQo+ICAgICAgICB9DQo+IA0KPiAgICAgICAgc3dpdGNoIChyZWcpIHsNCj4gICAgICAgIGNh
+c2UgTUNBX0NUTDogICAgcmV0dXJuIE1TUl9JQTMyX01DeF9DVEwoYmFuayk7ICAgIGJyZWFrOw0K
+PiAgICAgICAgY2FzZSBNQ0FfQUREUjogICByZXR1cm4gTVNSX0lBMzJfTUN4X0FERFIoYmFuayk7
+ICAgYnJlYWs7DQo+ICAgICAgICBjYXNlIE1DQV9NSVNDOiAgIHJldHVybiBNU1JfSUEzMl9NQ3hf
+TUlTQyhiYW5rKTsgICBicmVhazsNCj4gICAgICAgIGNhc2UgTUNBX1NUQVRVUzogcmV0dXJuIE1T
+Ul9JQTMyX01DeF9TVEFUVVMoYmFuayk7IGJyZWFrOw0KPiAgICAgICAgZGVmYXVsdDogZ290byBv
+dXQ7IGJyZWFrOw0KPiAgICAgICAgfQ0KPiANCj4gb3V0Og0KPiAgICAgICAgV0FSTl9PTl9PTkNF
+KDEpOw0KPiAgICAgICAgcmV0dXJuIDA7DQo+IH0NCj4gDQo+IC0tIA0KPiBSZWdhcmRzL0dydXNz
+LA0KPiAgICBCb3Jpcy4NCj4gDQo+IGh0dHBzOi8vcGVvcGxlLmtlcm5lbC5vcmcvdGdseC9ub3Rl
+cy1hYm91dC1uZXRpcXVldHRlDQo=
