@@ -2,71 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EE14153FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122914153FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbhIVXlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 19:41:05 -0400
-Received: from mga11.intel.com ([192.55.52.93]:11615 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238463AbhIVXlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 19:41:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="220527748"
-X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
-   d="scan'208";a="220527748"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 16:39:33 -0700
-X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
-   d="scan'208";a="550468234"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 16:39:33 -0700
-Date:   Wed, 22 Sep 2021 23:39:26 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Message-ID: <YUu+rtaRT7JR8uHd@otcwcpicx3.sc.intel.com>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
- <20210922210722.GV4323@worktop.programming.kicks-ass.net>
+        id S231259AbhIVXlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:41:42 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33010 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhIVXll (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 19:41:41 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0FF24E52;
+        Thu, 23 Sep 2021 01:40:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632354009;
+        bh=gJac9EwI/a236I+4gT7/6CxMN/VTnbwyibB6JDZnL5k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IH7gGoI1HkWPYu+ZzvtXd6P6WKWdHjwKBqPOasrNkpBFgZ37PWGr89J0owK0RhhGS
+         C0n6dHTLcqySJLeppWwOTW5Q8F+FsxMA9IkfyIXRUIHgAy/KjKsQ4OndXuWY9a0VwU
+         unPRjNs2CxMfTC1cb2AFPYZkj0D10Hwe5SNtGaLg=
+Date:   Thu, 23 Sep 2021 02:40:07 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: falcon-cpu: Add DSI display
+ output
+Message-ID: <YUu+14+9DnQZM7SE@pendragon.ideasonboard.com>
+References: <20210901235330.1611086-1-kieran.bingham@ideasonboard.com>
+ <20210901235330.1611086-4-kieran.bingham@ideasonboard.com>
+ <CAMuHMdU5WzvdfeSqEESt0r7_7XX0Mc9jRNGCBHLtt_JCMCWZyw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210922210722.GV4323@worktop.programming.kicks-ass.net>
+In-Reply-To: <CAMuHMdU5WzvdfeSqEESt0r7_7XX0Mc9jRNGCBHLtt_JCMCWZyw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Peter,
+Hello,
 
-On Wed, Sep 22, 2021 at 11:07:22PM +0200, Peter Zijlstra wrote:
-> On Mon, Sep 20, 2021 at 07:23:45PM +0000, Fenghua Yu wrote:
-> >  
-> > +	if (user_mode(regs) && fixup_pasid_exception())
-> > +		goto exit;
-> > +
-> >  	if (static_cpu_has(X86_FEATURE_UMIP)) {
-> >  		if (user_mode(regs) && fixup_umip_exception(regs))
-> >  			goto exit;
+On Tue, Sep 21, 2021 at 05:59:24PM +0200, Geert Uytterhoeven wrote:
+> On Thu, Sep 2, 2021 at 1:53 AM Kieran Bingham wrote:
+> > From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> >
+> > Provide the display output using the sn65dsi86 MIPI DSI bridge.
+> >
+> > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 > 
-> So you're eating any random #GP that might or might not be PASID
-> related. And all that witout a comment... Enlighten?
+> Thanks for your patch!
+> 
+> > --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+> > @@ -66,6 +66,15 @@ memory@700000000 {
+> >                 reg = <0x7 0x00000000 0x0 0x80000000>;
+> >         };
+> >
+> > +       reg_1p2v: regulator-1p2v {
+> > +               compatible = "regulator-fixed";
+> > +               regulator-name = "fixed-1.2V";
+> > +               regulator-min-microvolt = <1800000>;
+> > +               regulator-max-microvolt = <1800000>;
+> > +               regulator-boot-on;
+> > +               regulator-always-on;
+> > +       };
+> > +
+> >         reg_1p8v: regulator-1p8v {
+> >                 compatible = "regulator-fixed";
+> >                 regulator-name = "fixed-1.8V";
+> > @@ -83,6 +92,46 @@ reg_3p3v: regulator-3p3v {
+> >                 regulator-boot-on;
+> >                 regulator-always-on;
+> >         };
+> > +
+> > +       mini-dp-con {
+> > +               compatible = "dp-connector";
+> > +               label = "CN5";
+> > +               type = "mini";
+> > +
+> > +               port {
+> > +                       mini_dp_con_in: endpoint {
+> > +                               remote-endpoint = <&sn65dsi86_out>;
+> > +                       };
+> > +               };
+> > +       };
+> > +
+> > +       sn65dsi86_refclk: sn65dsi86-refclk {
+> > +               compatible = "fixed-clock";
+> > +               #clock-cells = <0>;
+> > +               clock-frequency = <38400000>;
+> > +       };
+> > +};
+> > +
+> > +&dsi0 {
+> > +       status = "okay";
+> > +
+> > +       clocks = <&cpg CPG_MOD 415>,
+> > +                <&cpg CPG_CORE R8A779A0_CLK_DSI>,
+> > +                <&extal_clk>;
+> > +       clock-names = "fck", "dsi", "extal";
+> 
+> Ah, that's where the third clock was hiding ;-)
+> 
+> Is this hardwired to extal, or board-specific?
+> In case of the former, I think it should be moved to the .dtsi.
 
-I will add a comment here.
+I think this is actually incorrect. The clock name, according to the
+bindings, is "pll", and it's documented as a 16.66MHz PLL reference
+clock. It comes from the CPG, but I'm not sure which clock it actually
+is.
 
-Thanks.
+-- 
+Regards,
 
--Fenghua
+Laurent Pinchart
