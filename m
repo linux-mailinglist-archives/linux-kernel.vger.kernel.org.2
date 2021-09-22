@@ -2,148 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB674146C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410CE4146DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235319AbhIVKmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:42:14 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37972 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235310AbhIVKll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:41:41 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6A3FC201E0;
-        Wed, 22 Sep 2021 10:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632307210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ouO2eiBz7AarOubtUS2HbX5UCqDKCApeMp/QJiTLvY=;
-        b=3NMEjBkMvtW+A2X7Xc7hHTQD/hluqwZwy4jjOPlg20LPPsNteIS2Kq7m6QZzHet7gmEO/w
-        uFEvDnxAbN7rEbFKJ4X8T0WpT4uQ4tY/Al07oqF8lpwJ5V5diHeHLfDdMk8d+bizIDuqlF
-        NS990yzPuDBxCvBAFe1ru8Z0JZxtS2E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632307210;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ouO2eiBz7AarOubtUS2HbX5UCqDKCApeMp/QJiTLvY=;
-        b=4LgCBbV7tZaZYbDqVSHM92uCu2gu2SmcsFEMjOkGtu/RC2hIujoghoWSPbj2dn+a2uok7S
-        Hoj9AvFbLC1gA7CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B89613D69;
-        Wed, 22 Sep 2021 10:40:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7SFsEQoIS2FFXQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 22 Sep 2021 10:40:10 +0000
-Message-ID: <f16867ee-9a79-c7ff-5e30-4fedf2bdb209@suse.cz>
-Date:   Wed, 22 Sep 2021 12:40:09 +0200
+        id S235470AbhIVKoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:44:23 -0400
+Received: from mga12.intel.com ([192.55.52.136]:52938 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235403AbhIVKmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:42:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203059424"
+X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
+   d="scan'208";a="203059424"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 03:40:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
+   d="scan'208";a="613368772"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 22 Sep 2021 03:40:31 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 22 Sep 2021 13:40:30 +0300
+Date:   Wed, 22 Sep 2021 13:40:30 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Rajaram R <rajaram.officemail@gmail.com>
+Cc:     Badhri Jagan Sridharan <badhri@google.com>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Benson Leung <bleung@google.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "bleung@chromium.org" <bleung@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
+Message-ID: <YUsIHvNcEfX6dzZG@kuha.fi.intel.com>
+References: <20210902213500.3795948-1-pmalani@chromium.org>
+ <20210902213500.3795948-3-pmalani@chromium.org>
+ <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
+ <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <YUB16up3JDwi3HfI@kuha.fi.intel.com>
+ <YULwz8NsoA3+vrhA@google.com>
+ <YUMbGp0aemx1HCHv@kuha.fi.intel.com>
+ <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <CAPTae5Kxmp0L35KnkYaHARrBmysX9wkMYZhGhJsu6tX4bcHuAA@mail.gmail.com>
+ <CAOiXhaLpe7gHw6c8pCZDNeOC31WfxFum5G1RNiEbEG2Fn=6oeQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 1/3] mm/smaps: Fix shmem pte hole swap calculation
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210917164756.8586-1-peterx@redhat.com>
- <20210917164756.8586-2-peterx@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20210917164756.8586-2-peterx@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOiXhaLpe7gHw6c8pCZDNeOC31WfxFum5G1RNiEbEG2Fn=6oeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/21 18:47, Peter Xu wrote:
-> The shmem swap calculation on the privately writable mappings are using wrong
-> parameters as spotted by Vlastimil.  Fix them.  That's introduced in commit
-> 48131e03ca4e, when rework shmem_swap_usage to shmem_partial_swap_usage.
-> 
-> Test program:
-> 
-> ==================
-> 
-> void main(void)
-> {
->     char *buffer, *p;
->     int i, fd;
-> 
->     fd = memfd_create("test", 0);
->     assert(fd > 0);
-> 
->     /* isize==2M*3, fill in pages, swap them out */
->     ftruncate(fd, SIZE_2M * 3);
->     buffer = mmap(NULL, SIZE_2M * 3, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
->     assert(buffer);
->     for (i = 0, p = buffer; i < SIZE_2M * 3 / 4096; i++) {
->         *p = 1;
->         p += 4096;
->     }
->     madvise(buffer, SIZE_2M * 3, MADV_PAGEOUT);
->     munmap(buffer, SIZE_2M * 3);
-> 
->     /*
->      * Remap with private+writtable mappings on partial of the inode (<= 2M*3),
->      * while the size must also be >= 2M*2 to make sure there's a none pmd so
->      * smaps_pte_hole will be triggered.
->      */
->     buffer = mmap(NULL, SIZE_2M * 2, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
->     printf("pid=%d, buffer=%p\n", getpid(), buffer);
-> 
->     /* Check /proc/$PID/smap_rollup, should see 4MB swap */
->     sleep(1000000);
-> }
-> ==================
-> 
-> Before the patch, smaps_rollup shows <4MB swap and the number will be random
-> depending on the alignment of the buffer of mmap() allocated.  After this
-> patch, it'll show 4MB.
-> 
-> Fixes: 48131e03ca4e ("mm, proc: reduce cost of /proc/pid/smaps for unpopulated shmem mappings")
+Hi Rajaram,
 
-Thanks, too bad I didn't spot it when sending that patch :)
+I'm sorry for the late reply.
 
-> Reported-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  fs/proc/task_mmu.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+On Mon, Sep 20, 2021 at 06:50:22PM +0530, Rajaram R wrote:
+> On Fri, Sep 17, 2021 at 6:25 AM Badhri Jagan Sridharan
+> <badhri@google.com> wrote:
+> >
+> > On Thu, Sep 16, 2021 at 7:12 AM Adam Thomson
+> > <Adam.Thomson.Opensource@diasemi.com> wrote:
+> > >
+> > > On 16 September 2021 11:23, Heikki Krogerus wrote:
+> > >
+> > > > > Thanks for providing the clarification. So you're proposing a port-psy and a
+> > > > > port-partner-psy that are connected to each other (one supplying the other).
+> > > > > If PD is not present, those two will exist per port and partner, and there
+> > > > > will be information about Type-C current (and possibly BC 1.2 and other
+> > > > > methods?)
+> > > >
+> > > > Yes, exactly.
 > 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index cf25be3e0321..2197f669e17b 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -478,9 +478,11 @@ static int smaps_pte_hole(unsigned long addr, unsigned long end,
->  			  __always_unused int depth, struct mm_walk *walk)
->  {
->  	struct mem_size_stats *mss = walk->private;
-> +	struct vm_area_struct *vma = walk->vma;
->  
-> -	mss->swap += shmem_partial_swap_usage(
-> -			walk->vma->vm_file->f_mapping, addr, end);
-> +	mss->swap += shmem_partial_swap_usage(walk->vma->vm_file->f_mapping,
-> +					      linear_page_index(vma, addr),
-> +					      linear_page_index(vma, end));
->  
->  	return 0;
->  }
 > 
+>  As Benson mentioned PDOs contain more than power details like USB
+> Suspend indicator etc or Type-C only devices as Badhri mentioned here
+> may not integrate well with PSY class.  Additionally, it is also
+> important to consider cable properties here for power as they also
+> have a role to play in the power limits and necessitates change of
+> existing PDOs or power limits. ( Type-C Monitor charging a computing
+> system does not have captive cables)
+> 
+> Given too many possibilities, would an approach similar to
+> gadgetfs/configfs or cpu scaling say like "type-configfs" or "typec
+> scaling" ABI framework that allows USB=C port management under one
+> path /sys/class/typec that allows:
+> 
+> - Provision to manage USB-C port power (  Power supply class should
+> still represent power contract established, as remaining
+> characteristics are nested with functional aspects and relevant on a
+> power contract failure )
+> + dynamically change Rp ( Rp(default) is required to enter USB suspend)
+> + Set PDO Policy ( PPS, Fixed, etc)
+> + Give back power
+> + Expose complete PDO ( As we do for VDOs)
+> + Change USB Suspend flag
+> 
+> - Provision for extended messages
+> + Provides additional details regarding ports like Get Status etc.
+> This shall allow us to take system level decisions.
+> 
+> - Provision to manage USB-C modes
+> + Provision to enter modes as provided by interface standards like UCSI
+> 
+> With this user tools like Chrome OS "typecd" be able to use a single
+> class and its ABIs to manage USB-C port power and mode. Kindly correct
+> me if I am missing something here.
 
+So I agree that we should have secondary interface to the USB Type-C
+ports, cables and partners, and I think the secondary interface should
+be "usbpdfs", something similar to usbfs, that you can use to tap into
+the protocol layer of the PD stack.
+
+We have to interpret things especially with UCSI, since we can't even
+communicate raw VDOs with UCSI, but it will still not be a huge
+problem.
+
+I'm quite certain that we should be able to solve a lot of the control
+related problems that we now have (so basically lack of control) with
+it, but more importantly we would then not need to figure out what is
+the correct way to represent every single thing in sysfs in order to
+utilise it.
+
+I would imagine this could then at least ideally be the only interface
+that also the typecd would need to deal with.
+
+thanks,
+
+-- 
+heikki
