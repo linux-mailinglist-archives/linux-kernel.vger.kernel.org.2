@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233284152AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBDE4152A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238159AbhIVVWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
+        id S238107AbhIVVWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238124AbhIVVWR (ORCPT
+        with ESMTP id S238117AbhIVVWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Sep 2021 17:22:17 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF93C06179A
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:20:35 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id z8-20020a056214040800b00380dea65c01so14964787qvx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:20:35 -0700 (PDT)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95523C061574;
+        Wed, 22 Sep 2021 14:20:41 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id q11so10871290wrr.9;
+        Wed, 22 Sep 2021 14:20:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=DdQUoFRq3sEN1JUX2L/SFL8llDgMarKIfKvV6PGdcNM=;
-        b=O4Jy/Ogp/dp680P+CqoX4JCGL8Rm0rGOz/twbZ/PLzUe02DaJhI6ICFOXvxErzAlCR
-         R/6GWvxQWHUp4U82Sbykjn+7zGYogeWjiJH57Tz5GYyhl4BaU3gnE0KX4RZ1ByJ27yqg
-         KTK0XWu52VN94NN7WJMD4a8uLuEHckFb+t7BiGo8d059NOrbw5rRI5YKbg6UpJuWAX0f
-         KyDfEv0HbMTkpH+v0W7BkmEXnM+sHr00HrsEXiG+T1dkghKtmEUIHgclR7QTZECK9RYv
-         KDfvaFRH9VIp7PuY6/qEtmyBI8lw0oBxSEVcK020VEV0hlzUWIDty29cqkknxinkLOjm
-         m+vQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=CsEV1+cmn95PxWDVCkkcklf6Fg+sq2sl8U8wO+GKv78=;
+        b=qN0/EA/eVvLzwaa2M0ReXbQzxdWnMoDiUxF80IfjLD5DrIiK0Tv2STvYwePlMv70Qf
+         xyc1/icFZdmN6uNiK7axTctOlPIDxNURvW/zDihTs4EEf0Zy4VjoWaq/nVTjuOPJtQQd
+         0ZMO2ZYEKP6kMn6yUGWcYggIkygywYNh8lD+ageXkCj8i/5jyhNJ4WyiWx3XW99vqXOv
+         LCUykxhrD4HXJ6+tN/CXuV9xWk5G8p3Ti68L67QPZaWqEMXFFDaXc8+bVuiAibp8Lg1Y
+         uSLAOaPK9X8Irxlwn6RGneeFJLaYDs5jeI5X3l2bw3jI/J/xqbeuEXno8PQtgFgHkfRO
+         oaoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=DdQUoFRq3sEN1JUX2L/SFL8llDgMarKIfKvV6PGdcNM=;
-        b=Nrh8gjcx5F/0qXtTmBA+53s7w8z9OnG/WJr7oJxjbnzTizVqRGdninsMWFq+9LR6yw
-         A6fAdmrFbWZ4go/p6S5swXrRAcVBd7W54Nxs1KTLUS7e/K0TcG/N5mbnwdvJVPBA0su/
-         PT9L9wVhixFeBVB19fjezv9E5WRfCamv9dB/KAK1hClOt7fHVWlEnu+3/wSdRYnQz3dA
-         BNeQK7Dez4qWL53ztpAWtz0NMAh+QmDEOzDVtBgAAniE1NZ2BFVoIZx/fUik7+cQq9vJ
-         o76JHjVR+XsOYFYW/1NfB/m3BwerIu6H8X1fQ3RSxSt4IxSul0MvHjGjM0uEAzOxKilo
-         fBmA==
-X-Gm-Message-State: AOAM5321Wj9V+Nn1CELwlWA7TiFqjs6NSJJYAtxGXdYUZ2XhBetErdrh
-        RJ5dIX/LUr4FkQayG3nPUydMyoXd1d7u
-X-Google-Smtp-Source: ABdhPJwvhV9ZFc+lkU9LSeXeQy7XtePcMyA7QjfbSu604kbhOmlA4DCMROswouYhlH/9UtbhAyY8Pz95qvWc
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d3ff:e8f7:11f4:c738])
- (user=irogers job=sendgmr) by 2002:a25:c183:: with SMTP id
- r125mr1134144ybf.37.1632345634702; Wed, 22 Sep 2021 14:20:34 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 14:20:31 -0700
-Message-Id: <20210922212031.485950-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH] perf kmem: Improve man page for record options
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=CsEV1+cmn95PxWDVCkkcklf6Fg+sq2sl8U8wO+GKv78=;
+        b=sYOGrAnqTiftKbxnRtwXK5HQccEx2WSoXyH9mWQSPifsrIOWQDvHSEKdkbYpR6q+No
+         AW+DJhvT/MEiqFdSq4jHgNiiP6RyJ1oHX/3X0b4zXQOHPrf8qGsWEfR8xUaEIf9IAOWe
+         ZZwRD2ivhSfG7sXwQhjT1q+odM0+ld5rPtInfULvNMF3aD3kRyprV9YPJc36nkWYX2M3
+         3h6P1D9LbyGc+Ag/SkvGsi7NgX8GmY1BvtZvFFMl6IKhuga7DEWQz7uK0m/++auKeFTe
+         O7exoKL2Cr81cyOBinnJGure7R40KTDDTRbqFmOTw/3ilLV5dGB339RqVA2yuUHgpT9k
+         vz8Q==
+X-Gm-Message-State: AOAM532Gxe+29zVu9CURYltvpKaeDGsWYhFJvCbrHLUePs3LaB0T2GTl
+        ZnLX707n7HOZJsZ/Kuwm8KCoMcYrZkI=
+X-Google-Smtp-Source: ABdhPJxmHsPEPhjTikq0HLDexoFcCIvBSp1JWPm3GPSh6bFsKcFxAYpuY316gaWZfXQBn3oVib2X4w==
+X-Received: by 2002:a7b:c217:: with SMTP id x23mr1089179wmi.192.1632345640228;
+        Wed, 22 Sep 2021 14:20:40 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p200300c78f4e0670a283da159592dc58.dip0.t-ipconnect.de. [2003:c7:8f4e:670:a283:da15:9592:dc58])
+        by smtp.gmail.com with ESMTPSA id t23sm3451263wrb.71.2021.09.22.14.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 14:20:39 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 23:20:37 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] usb: usb-skeleton: Update min() to min_t()
+Message-ID: <20210922212037.GA8110@matrix-ESPRIMO-P710>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since:
-https://lore.kernel.org/lkml/20200708183919.4141023-1-irogers@google.com/
-The output option works for 'perf kmem', however, it must appear after
-'record'. This is different to 'stat' where '-i' for the input must
-appear before. Try to capture this complication in the man page.
+This patch fixes the checkpatch.pl warning:
+WARNING: min() should probably be min_t(size_t, count, MAX_TRANSFER)
++	size_t writesize = min(count, (size_t)MAX_TRANSFER);
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- tools/perf/Documentation/perf-kmem.txt | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+V2 -> V3: Added change history missed in V2
+V1 -> V2: Added subsystem and driver to subject line
 
-diff --git a/tools/perf/Documentation/perf-kmem.txt b/tools/perf/Documentation/perf-kmem.txt
-index 85b8ac695c87..f378ac59353d 100644
---- a/tools/perf/Documentation/perf-kmem.txt
-+++ b/tools/perf/Documentation/perf-kmem.txt
-@@ -8,22 +8,25 @@ perf-kmem - Tool to trace/measure kernel memory properties
- SYNOPSIS
- --------
- [verse]
--'perf kmem' {record|stat} [<options>]
-+'perf kmem' [<options>] {record|stat}
+ drivers/usb/usb-skeleton.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
+index 2dc58766273a..d87deee3e26e 100644
+--- a/drivers/usb/usb-skeleton.c
++++ b/drivers/usb/usb-skeleton.c
+@@ -363,7 +363,7 @@ static ssize_t skel_write(struct file *file, const char *user_buffer,
+ 	int retval = 0;
+ 	struct urb *urb = NULL;
+ 	char *buf = NULL;
+-	size_t writesize = min(count, (size_t)MAX_TRANSFER);
++	size_t writesize = min_t(size_t, count, MAX_TRANSFER);
  
- DESCRIPTION
- -----------
- There are two variants of perf kmem:
+ 	dev = file->private_data;
  
--  'perf kmem record <command>' to record the kmem events
--  of an arbitrary workload.
-+  'perf kmem [<options>] record [<perf-record-options>] <command>' to
-+  record the kmem events of an arbitrary workload. Additional 'perf
-+  record' options may be specified after record, such as '-o' to
-+  change the output file name.
- 
--  'perf kmem stat' to report kernel memory statistics.
-+  'perf kmem [<options>] stat' to report kernel memory statistics.
- 
- OPTIONS
- -------
- -i <file>::
- --input=<file>::
--	Select the input file (default: perf.data unless stdin is a fifo)
-+	For stat, select the input file (default: perf.data unless stdin is a
-+	fifo)
- 
- -f::
- --force::
 -- 
-2.33.0.464.g1972c5931b-goog
+2.25.1
 
