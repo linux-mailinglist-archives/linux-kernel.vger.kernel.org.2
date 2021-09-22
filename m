@@ -2,129 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF71E414C97
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550B8414C95
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236381AbhIVPAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:00:39 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34731 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236358AbhIVPAa (ORCPT
+        id S236279AbhIVPAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236304AbhIVPA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:00:30 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 78D27580ACD;
-        Wed, 22 Sep 2021 10:59:00 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Wed, 22 Sep 2021 10:59:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=96uf9r25tZ+rFVz9V65UgKSRRvB6
-        6XWK+SRSHb8lQSk=; b=dM/eRfLC5EeA1t7ZAsvBwAMXhbNjk+sdAJ44AteH1K/S
-        P8QO5pqDsg6APWqtmvPxC4878fS3Mx1WSOcqxWVuzqUm9XMAj9LISH15QXaefT7Z
-        LOH1fV4KqVCkMQpWlfHGJp8b+yxjWhJrCjC6/iTNp+Ayv+QBCAxWKOERGW0cbqkl
-        Et/8CFIwp2n67TPNR/KiytC0TK1NNELKKh8OTE2nsxyRgDrbSbJusGvCsxwYKg74
-        PZuztb2NZc9yc74xl3itjxS2wksqVOgEZs2sGXyOxE25CcJ7x8hhMK+6Z8M8TppV
-        2gRuMGR58fp2H5APsmDE7fT7HY39QXgvKB4CkFfI+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=96uf9r
-        25tZ+rFVz9V65UgKSRRvB66XWK+SRSHb8lQSk=; b=ue+jY6JHa6mZuqFqj9Ulcw
-        YH837GSuvfztVVEpOWYzSNKeCRWUdC8QtACDU97K6kuZDL0n8wdVJKsUpWdRxvEw
-        6VOS0LwNbgw3n3p6FlVUj0cGkRrP/1Bu1hc8yYA2FELRWdpXB/ktRRumYhVuwdHI
-        PhIc7Z+XEbnPd9TrYoLHY4w2/wQSRIB8hxeV/Z04QTKMWZZccKM+raLEXMOVxif6
-        6/uVb5V6Yza+mSLCVsGWbF/wrTl7uA2t+qqA/AO91aQHWlpKv4V+c2B5/06LQGRu
-        wqxe2dacvw9+eKdKev1huYPg7x17/0+vmV7w3bDq5oO79wZWUbsU1+yXWXq+UCOQ
-        ==
-X-ME-Sender: <xms:tERLYcLWa4_z6ugJbh74K8O517615PHB2CNc7L_V8JAnhA9Qs_QjEQ>
-    <xme:tERLYcLYqnJ5n_zZCsXnyq1mcNuW9ZuBJ4LC9cl0ZrmlLck9IcgxtWhCyNSdsXdGq
-    ZX8T6U47_Y20StB6C4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeijedgkedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
-    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:tERLYcvutFd_fCl9I85ItB2vIkDSjJp851c5V3BtPBlT2CStOQwpVw>
-    <xmx:tERLYZZ6m1gUrtE2PvEy3-VejkqQYGz0k0QnQSsc5iZGH8--AcAmyQ>
-    <xmx:tERLYTa64bzHfkDlJve4qetm87EZtH-841g1NibGOR_6oAjCcoEq7g>
-    <xmx:tERLYdlsfJ_ebpUFT-IfX29c1DcD0bW9__qpm5qBnYDUXQjT0YrRBA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4AB2A51C0060; Wed, 22 Sep 2021 10:59:00 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1302-gc62ab821ef-fm-20210921.001-gc62ab821
-Mime-Version: 1.0
-Message-Id: <1fac9efc-f24c-4912-8c26-b959574e6b4e@www.fastmail.com>
-In-Reply-To: <YUngxBX8CSJK4nw8@kuha.fi.intel.com>
-References: <20210918120934.28252-1-sven@svenpeter.dev>
- <20210918120934.28252-7-sven@svenpeter.dev>
- <YUngxBX8CSJK4nw8@kuha.fi.intel.com>
-Date:   Wed, 22 Sep 2021 16:58:39 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Heikki Krogerus" <heikki.krogerus@linux.intel.com>
-Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Hector Martin" <marcan@marcan.st>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Stan Skowronek" <stan@corellium.com>,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        "Alexander Graf" <graf@amazon.com>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
-Subject: Re: [RFT PATCH 6/9] usb: typec: tipd: Setup IntMask explicitly
-Content-Type: text/plain
+        Wed, 22 Sep 2021 11:00:29 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37116C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:58:59 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id w19so2900779pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4BWFRlURH0zCIzDJvPF7W8LOo55K5uYFem7UNOAo2W4=;
+        b=P3j9Vr5KoI1hGqte/zzUiZq9ueEus3vwpVyhweN4PzPXBSF6gJEpN2JysyuxyUbH+c
+         hTJRqQQQz5xcbLGhfs+ofgEvrmkd+XZJNiSkM/9N5q7QpzX/OJceRjXeT7U0s5FlAvuN
+         NuYhM+bBKIDbrGfD31uEdiue5ZFcIR+SK9Jxr/HUJU2u0W1gILQ9TaYreehyonGdh3bs
+         3xX6zro4/xGqGj/WqpOHRxJ/jUgjWdtKB8FTFDKZ/OC5UmJHVBiBJx/n3Ges4rEpkyGx
+         Hb6J/vje2oXUtI8tWq0Z1zDTTm5T3sdxP3kl0qSKzbP4uuzuneyIDU2PQ1JfdvkNmVPl
+         pkkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4BWFRlURH0zCIzDJvPF7W8LOo55K5uYFem7UNOAo2W4=;
+        b=xS0MJpSTfrRSmqtRuQ67y+HlBT/w4dxzCWvzIIqliLi/aNtt5aJ4Riwk2eafDbLyJF
+         tIIJ9a/kzancV5dJAxwMWu8wsIHXSKg87bnKzfRLRaz1xJz/5LHUIc1Merpvra2Haleu
+         Qc78h0irSSeSKYan+3df1UU2MnpvSI7YBnOCRXlo9TrOpq6wUkZGBCTp/fV8jH2JYkKr
+         BTgUBZxqiXdMByzr11gC6vSR181gqg0VURuhzhEV5w/NBAkrzteJ8ol9EuluXIxBBZNl
+         YMmBg5Gml8Ju0r3C1EdmS2SkqpDgwtUsnVzT/2aIdiLOyYfxArbEcxhfp56YVrq7fs0b
+         L8yA==
+X-Gm-Message-State: AOAM533DX0tpZQWTChnNQQ9FKQfZZepKynwaAxTpYUJ7RNuG701uXAnR
+        AGJ13OFJroTIo3+2vc7VqdZ7fA==
+X-Google-Smtp-Source: ABdhPJwdYeOPs+9n16+HPBDRZMNwU3ntjxP7QSgPHZIuMryueYJCypE73VnvJPFH3zw0ebvOvgxc0Q==
+X-Received: by 2002:a63:f959:: with SMTP id q25mr64757pgk.79.1632322738517;
+        Wed, 22 Sep 2021 07:58:58 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id i27sm2830809pfq.184.2021.09.22.07.58.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 07:58:57 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 14:58:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Hao Xiang <hao.xiang@linux.alibaba.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chenyi.qiang@intel.com,
+        shannon.zhao@linux.alibaba.com
+Subject: Re: [PATCH] KVM: VMX: Check if bus lock vmexit was preempted
+Message-ID: <YUtEraihPxsytaJc@google.com>
+References: <1631964600-73707-1-git-send-email-hao.xiang@linux.alibaba.com>
+ <87b411c3-da75-e074-91a4-a73891f9f5f8@redhat.com>
+ <57597778-836c-7bac-7f1d-bcdae0cd6ac4@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <57597778-836c-7bac-7f1d-bcdae0cd6ac4@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 22, 2021, Xiaoyao Li wrote:
+> On 9/22/2021 6:02 PM, Paolo Bonzini wrote:
+> > On 18/09/21 13:30, Hao Xiang wrote:
+> > > exit_reason.bus_lock_detected is not only set when bus lock VM exit
+> > > was preempted, in fact, this bit is always set if bus locks are
+> > > detected no matter what the exit_reason.basic is.
+> > > 
+> > > So the bus_lock_vmexit handling in vmx_handle_exit should be duplicated
+> > > when exit_reason.basic is EXIT_REASON_BUS_LOCK(74). We can avoid it by
+> > > checking if bus lock vmexit was preempted in vmx_handle_exit.
+> > 
+> > I don't understand, does this mean that bus_lock_detected=1 if
+> > basic=EXIT_REASON_BUS_LOCK?  If so, can we instead replace the contents
+> > of handle_bus_lock_vmexit with
+> > 
+> >      /* Do nothing and let vmx_handle_exit exit to userspace.  */
+> >      WARN_ON(!to_vmx(vcpu)->exit_reason.bus_lock_detected);
+> >      return 0;
+> > 
+> > ?
+> > 
+> > That would be doable only if this is architectural behavior and not a
+> > processor erratum, of course.
+> 
+> EXIT_REASON.bus_lock_detected may or may not be set when exit reason ==
+> EXIT_REASON_BUS_LOCK. Intel will update ISE or SDM to state it.
+> 
+> Maybe we can do below in handle_bus_lock_vmexit handler:
+> 
+> 	if (!to_vmx(vcpu)->exit_reason.bus_lock_detected)
+> 		to_vmx(vcpu)->exit_reason.bus_lock_detected = 1;
+> 
+> But is manually changing the hardware reported value for software purpose a
+> good thing?
 
+In this case, I'd say yes.  Hardware having non-deterministic behavior is the not
+good thing, KVM would simply be correctly the not-technically-an-erratum erratum.
 
-On Tue, Sep 21, 2021, at 15:40, Heikki Krogerus wrote:
-> On Sat, Sep 18, 2021 at 02:09:31PM +0200, Sven Peter wrote:
->> Right now the code relies on the bootloader to set up the interrupt mask
->> correctly. This usually works but let's make sure to do it explicitly to
->> guarantee it will always work.
->> 
->> Signed-off-by: Sven Peter <sven@svenpeter.dev>
->> ---
->>  drivers/usb/typec/tipd/core.c | 18 ++++++++++++++++++
->>  1 file changed, 18 insertions(+)
->> 
->> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
->> index d191e7435018..2058e8cca631 100644
->> --- a/drivers/usb/typec/tipd/core.c
->> +++ b/drivers/usb/typec/tipd/core.c
->> @@ -728,6 +728,24 @@ static int tps6598x_probe(struct i2c_client *client)
->>  			dev_err(&client->dev, "failed to register partner\n");
->>  	}
->>  
->> +	if (tps->hw->use_int1) {
->> +		ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
->> +					tps->hw->irq_power_status_update |
->> +					tps->hw->irq_data_status_update |
->> +					tps->hw->irq_plug_event);
->> +		if (ret)
->> +			goto err_role_put;
->> +	}
->> +
->> +	if (tps->hw->use_int2) {
->> +		ret = tps6598x_write64(tps, TPS_REG_INT_MASK2,
->> +					tps->hw->irq_power_status_update |
->> +					tps->hw->irq_data_status_update |
->> +					tps->hw->irq_plug_event);
->> +		if (ret)
->> +			goto err_role_put;
->> +	}
->
-> You should first only set the mask on your board. We can then see if
-> it's something that should be done on other boards as well later.
->
+Set it unconditionally and then handle everything in common path.  This has the
+added advantage of having only one site that deals with KVM_RUN_X86_BUS_LOCK.
 
-Make sense, I'll only call this when the cd321x variant is probed then.
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 33f92febe3ce..aa9372452e49 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -5561,9 +5561,9 @@ static int handle_encls(struct kvm_vcpu *vcpu)
 
+ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
+ {
+-       vcpu->run->exit_reason = KVM_EXIT_X86_BUS_LOCK;
+-       vcpu->run->flags |= KVM_RUN_X86_BUS_LOCK;
+-       return 0;
++       /* The dedicated flag may or may not be set by hardware.  /facepalm. */
++       vcpu->exit_reason.bus_lock_detected = true;
++       return 1;
+ }
 
-Sven
+ /*
+@@ -6050,9 +6050,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+        int ret = __vmx_handle_exit(vcpu, exit_fastpath);
+
+        /*
+-        * Even when current exit reason is handled by KVM internally, we
+-        * still need to exit to user space when bus lock detected to inform
+-        * that there is a bus lock in guest.
++        * Exit to user space when bus lock detected to inform that there is a
++        * bus lock in guest.
+         */
+        if (to_vmx(vcpu)->exit_reason.bus_lock_detected) {
+                if (ret > 0)
