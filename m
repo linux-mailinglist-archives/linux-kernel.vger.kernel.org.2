@@ -2,174 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5238C4153E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADA64153E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238453AbhIVX2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 19:28:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52446 "EHLO mail.kernel.org"
+        id S238457AbhIVXcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:32:22 -0400
+Received: from mga02.intel.com ([134.134.136.20]:49788 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231259AbhIVX2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 19:28:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FDEB6103C;
-        Wed, 22 Sep 2021 23:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632353222;
-        bh=B9wUq++BfpPdROLkDQ1ay+9OI8ABDBjLRzCN62l1Wa4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EFftjTbTT2QhB+RPyDX19kkr1eiNw15aoE2mHCvDroxRiaG+B03YAitAC5ggnqek+
-         7JivKA16Q52AlmRdQ4vs7AsDG9ZGWr/NeO6l6I2gByNTqgeSWXk7rkIZEKLgaHRzar
-         3Dr15PqqX22yajEXJ2G4dW6xZcRZ3HHKVA7H0iC1vwYVFQaCwoyMXywx3KTy2Sxd/Y
-         a8AYv49zG9mnmp2lRmBNDVxA0Hmv9GaQ/G6YOBkpEWuD2By6fKZyfZhenx1i79Xzxc
-         eZmM0JOb1c5Tnuc2qEc0spLs71+Jl3emWB2LC1ZdjSky1bhT1cVAk+SLE0RP8RX7r+
-         RJAQopNTghzfA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2D52C5C1613; Wed, 22 Sep 2021 16:27:02 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 16:27:02 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     syzbot <syzbot+a10a3d280be23be45d04@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING: ODEBUG bug in blk_mq_hw_sysfs_release
-Message-ID: <20210922232702.GE880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <000000000000bd3a8005cc78ce14@google.com>
- <87mto4gqxk.ffs@tglx>
+        id S231259AbhIVXcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 19:32:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="210964164"
+X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
+   d="scan'208";a="210964164"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 16:30:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
+   d="scan'208";a="513203130"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Sep 2021 16:30:49 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 22 Sep 2021 16:30:49 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 22 Sep 2021 16:30:48 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Wed, 22 Sep 2021 16:30:48 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Wed, 22 Sep 2021 16:30:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YzqMqNke3AmDrALik0AYQVO+WPqrS1tRdXaFOZQLRKp9FL9os/64THkX/x9cv7TjDG+YKN5GC5CCRbOcYJHRUSYrhwBVd7/83Op+b/Dv7Zk6zjbgfj8tSB7svOvZpTgMSHW0VEfqOkBZpCaSOk9g1tJRg/RBmtDDeRIT0BDIPSVd/+sHmJrDiToBfzu/s9Y65zYRURQ8mOCC88+AguwE1LeXpVuje2kjcQx2guQkJzYh+WMDkN07dDInc5cqW9A0G2Gfvolse2TfBZWGanvF46AGbEfDL8vYPKQ37UAIYrruq+YXZUb24NGijda5vyNsIlpBF8dqQ/eh/Ypa3LKn1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=y2d1Z07W6qojtVctFHCG6wrhUUJTlMXFyHTIQlNgE/0=;
+ b=kNh569G0CBFCj9WpfIydhcRv+Q4fAXP2a0Mzl+dq18MKB77B0T7XTLyTwhdCKIUHkUn2/Yblefm28vQjWOeGCAKAz6vlz9HsceOydTs6wRnGjmXmjQA8/DnujVJJ5jsR0SjyK70XoUARMrtJ7aeVSDKdtFfhuLxXyyf5csFlOrJMuVGoyPpy+MitM0WmbSCEIky9cqnV9Vu0cS5ordSqmub0j7cKHXfv4GExwxp9Nz6X5b91EZRksDW0SJHuPPsOFZxLlTtpkHXPauyYnoYj8H/MzhBn+D9DPF1iWqiDK+lLFGSws+q6gRuXkgqNDuP289Kpi1/7KyPN4C/Y+AGbng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y2d1Z07W6qojtVctFHCG6wrhUUJTlMXFyHTIQlNgE/0=;
+ b=d1CFAVi6qbWn2S3pWEbTvl+wCt8Pvxh7oV6uF7ADFcMiBk0hLwpfePwlE1lFgXMguEONu8pWIMzNLyoWbkzZM3BZcdaxeJl3Ma1n7RsiVZSqIpAH924jhRzrpTeK27is50u51FtQ37MNI8VwMtac4vde9lI8hWgEc7gLPw8j4FA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
+Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
+ by BN9PR11MB5290.namprd11.prod.outlook.com (2603:10b6:408:137::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
+ 2021 23:30:47 +0000
+Received: from BN0PR11MB5744.namprd11.prod.outlook.com
+ ([fe80::d47c:525:2aef:f6a]) by BN0PR11MB5744.namprd11.prod.outlook.com
+ ([fe80::d47c:525:2aef:f6a%3]) with mapi id 15.20.4544.015; Wed, 22 Sep 2021
+ 23:30:47 +0000
+Subject: Re: [PATCH v5 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>
+CC:     <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>
+References: <20210914030422.377601-1-jarkko@kernel.org>
+ <20210914030422.377601-2-jarkko@kernel.org>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <f45245ba-41b8-62ae-38b5-64725a214bad@intel.com>
+Date:   Wed, 22 Sep 2021 16:30:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+In-Reply-To: <20210914030422.377601-2-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR18CA0035.namprd18.prod.outlook.com
+ (2603:10b6:320:31::21) To BN0PR11MB5744.namprd11.prod.outlook.com
+ (2603:10b6:408:166::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mto4gqxk.ffs@tglx>
+Received: from [192.168.1.221] (71.238.111.198) by MWHPR18CA0035.namprd18.prod.outlook.com (2603:10b6:320:31::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 23:30:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 17273513-da3c-4752-06ed-08d97e210167
+X-MS-TrafficTypeDiagnostic: BN9PR11MB5290:
+X-Microsoft-Antispam-PRVS: <BN9PR11MB5290B687E45B6F940165BBD9F8A29@BN9PR11MB5290.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7w4AQQ5KzV2haTRINbYJRB/Z9E/Y7VqdinoANfCdPm4ure2bZbFTYAQYd1TQRAGOQOUiyiSGsUdMjPbUfiqOL5/uxPVXX1DyMHKC2lbRnXD9yI1R1pFT6NwxtaLfh768BNN88T63DXq+VimjknqmuB4cTr2LByJjIC1CYufoOIAee2wu1GbahYyKndEN3xPCoVgJ3Lq25pUquJJFF8yYlgeCFgXRKJKxNtIVk5pieIOh0NQWkXypYQjKpQRfshdYPDOREObIQekfV2Na7t2qGcbtLBLwXXKpjPbLvLLmB3I5HV0hpS2f1s2FihSoic7sYWRYieXiS7kN4Dl7jQJuwvfwNOao9kwqDGsiIYLQnsMChgVO6wvhgFURdWezvqpto3tjj/WMskCrzkqfy6x6qtcc/3kB+bThQeoCLoKyl49o4ShCQs5lWK7KSD9382unIbZvTgX/sq2l7hvXBYHDQzqRpLqV+RnFx0815DzaAfbu3DMqfWd1Ox9iVXtAVpmuE2k6LaufHbPEZ2Yg5lSLykS2FK8kStfeIsdThYqJU8bX9jrZojVp+5M+Wejr6H0oAMcpP5vp/KYkabO8ymdfeay6hEvr5jEfyK8osaZDI8nX/0pig57WOb4SIQgsRNZZZw6vzWbwWTnPD70opPdXNVOE06aoWZ28tRk1cKOteCkE/KxXnhv7btKf/UJr900inDBiTF6WD92iRk4XK+CHQKYJ4bx509S+VdRKuY88e2ShiWBKTnuyXONAda3VqH+Hga2uZlWzAM2d/ju+rKzV+3QBDiIAGxaf/3ZmsFgwPJU73O3HB7GfXTaXPgiScd0+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(966005)(38100700002)(8676002)(8936002)(508600001)(36756003)(2906002)(6666004)(31686004)(53546011)(2616005)(31696002)(7416002)(956004)(316002)(4326008)(6486002)(186003)(44832011)(110136005)(66946007)(16576012)(66476007)(5660300002)(66556008)(26005)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TjRvTk9oQmV1d0hzWFhVQjJ5akRFU01PRUhCenRvaXp3QlYrTVh5L1B6YS95?=
+ =?utf-8?B?TkcvWlArNHcrVEx3RUx5ekxKYnFlNnZwREtKRmpkMDcvTlY1cFJYbjQ0NVlD?=
+ =?utf-8?B?RG40dU5tdGZ3cmZmaTUzaEgxajJkK09iRld0ckxISGUyYmNFYUlzL3dNUWN5?=
+ =?utf-8?B?UXJnTE5rTWVSQ01NL3lSQUlKeFFFdFpkb1BjSTBBZjNtc2R0aHBSRjRtcE9L?=
+ =?utf-8?B?UXhoZUJSbUNKdjBMSlhTTkw0b00wVzhadHFrdVdYZlBDaEdxRUNjUEZQZXlX?=
+ =?utf-8?B?TVhFenVCaEdTUFZXa1UvRE5qU1JpUGZnYno1MXlxQ0xBS0duVTFRRnVPQ0dh?=
+ =?utf-8?B?Z2MwdlAyK0ZmTzFPTlptdkZZWkx4Qjh0SVdIblJOaDRvNDdzYW5wcHpzTmRh?=
+ =?utf-8?B?dmQ3YVhqeU9yTXBLRERwUkttNEtmS3I2YlJTYnU1a0l1cDd5enU2bm9sTWUv?=
+ =?utf-8?B?RHpzM0paUzNoSWE4ajhsbWhmbkVMZVNkeG5WODRZMDVwM2E5V3RCcU1TbFla?=
+ =?utf-8?B?RmpQWmJMTmFOUzQrREdjZ0l5K0Rvc0xiallDT2cwcE0xRWVtU3BiZnNraENw?=
+ =?utf-8?B?U2plWjFSakNoQ011cE54RC8rVkUrWlRHN2FRY2RJUlhwT1ZhbXh2RWxETHdL?=
+ =?utf-8?B?WDR3Q0tISGR1NHVPelpxVDlOS2hpQy9YLzM0RElRb3IreG80SDJScEd3dGd2?=
+ =?utf-8?B?Rk5iODhwSHJjbVFrOEUwRVBjRFBUOUxybFM0WVpxVDM5WnFMZ1hJbTBMNFlC?=
+ =?utf-8?B?QW0zYlVzaTJtYjMrNUJBQU5vZnRyZFhsc2JaOUU2Qld4alN0K0k2SWFYNWtZ?=
+ =?utf-8?B?VTVOMU5rSXNzZDg2dnJLaEZqby9SVmRoUE5ZQkF5YVZ3NEJ2Nnk3RVl0U3Bq?=
+ =?utf-8?B?N2s1dWxtTHVKY0RYcXg5ZjJ5VHYra3p4MGhONGR5dGtrQTU1cndIMXcyUzBZ?=
+ =?utf-8?B?TDJGUys3K0kzbU5WUGhUZnBscHhvN0FWK3NLanhyZ09pWWJvMDJZQ3I1Nklp?=
+ =?utf-8?B?RXRzOThBVStoOGZDN3AzS0dmQXd2NS85bkZlTDdMdWE4RE9obHdVL2ZEa0kr?=
+ =?utf-8?B?dkFJRjFrdjU3QU0rK3FGQ0RLYjAvMG9tdkhJMUI0ZGNUaDZiQXcvL2dGL1FH?=
+ =?utf-8?B?RldnbFgvd3lnaXFMS21YZ2l5bndncGFMT3RIV3hSQkFUSzNWZUJjTkl0eHBs?=
+ =?utf-8?B?V25HcW5wcys2NkJNNVlUbDVYSm1zdWdsczgyWkJ4MmlNY29MTktxRWIwQlFD?=
+ =?utf-8?B?UWJTTGJDcVB0OFBSc1BMS1hiYjU1WU5KTk1Ra3ZsQUIwdmx4R3BZdk1hdEQr?=
+ =?utf-8?B?Y2NFSWgrcFN4UkEzK3RBMXBQbTJKQ3NpSFQ1eTZJZWVjWmdpcThGUjh5M00r?=
+ =?utf-8?B?MnhHQXhDMGtheWdhdVYxeTVyVXVwTHNuMmZiNEZIUmREMFRHWGxRek5RdVZM?=
+ =?utf-8?B?MDhFV3ZKSXBuWE9UWWpFTkdpbnJDeHo4WTVQUnFjajFvV0lVS0p4RmNkL2FL?=
+ =?utf-8?B?ZkF4Vit2eHhmQlhkMlRkbXF2RThkblIvM2dDVUJ0ZzNDMHZOanFlTzNYQzYr?=
+ =?utf-8?B?aDJqMzgwYXpvVS9KWHBGeDhFMi94eThrUU1aSTBRdVlSUzRIbmhpdU40M1V3?=
+ =?utf-8?B?MS93WVRERVVQblhpRG1Nc1FBWHR6aWptZkVyT2E0U08wZTdUR1V2QVZqbGtO?=
+ =?utf-8?B?Z2ZJNHRaMlZJWEpiaUJuUit2WTNaMVFubnVJdWZ3VWJObEsrc0Z0V0ovSERU?=
+ =?utf-8?Q?cKU546mK8RibQb31C5VXb1mBshkEv0D1/E1Gq1b?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17273513-da3c-4752-06ed-08d97e210167
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 23:30:47.3818
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M59lJPndoeOGpykHWMiq0plhhds/7iX4d0mE1N2K9YSK5VCSiyzgWeJElkaztlAdHJaMMWV7VznuCrZ5YZMbzVaxOize7OhrnW2K2CzJOOI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5290
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 12:56:39AM +0200, Thomas Gleixner wrote:
-> On Mon, Sep 20 2021 at 20:15, syzbot wrote:
+Hi Jarkko,
+
+On 9/13/2021 8:04 PM, Jarkko Sakkinen wrote:
+> The amount of SGX memory on the system is determined by the BIOS and it
+> varies wildly between systems.  It can be from dozens of MB's on desktops
+> or VM's, up to many GB's on servers.  Just like for regular memory, it is
+> sometimes useful to know the amount of usable SGX memory in the system.
 > 
-> Cc+: paulmck
+> Add an attribute for the amount of SGX memory in bytes to each NUMA
+> node. The path is /sys/devices/system/node/node[0-9]*/sgx/memory_size.
 > 
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    85c698863c15 net/ipv4/tcp_minisocks.c: remove superfluous ..
-> > git tree:       net-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=13d9d3e7300000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=a10a3d280be23be45d04
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11bd98f7300000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+a10a3d280be23be45d04@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
-> > ODEBUG: assert_init not available (active state 0) object type: timer_list hint: 0x0
-> > WARNING: CPU: 0 PID: 3816 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-> > Modules linked in:
-> > CPU: 0 PID: 3816 Comm: syz-executor.0 Not tainted 5.15.0-rc1-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-> > Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd c0 39 e4 89 4c 89 ee 48 c7 c7 c0 2d e4 89 e8 ef e3 14 05 <0f> 0b 83 05 35 09 91 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-> > RSP: 0018:ffffc9000a6770f0 EFLAGS: 00010282
-> > RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000000000
-> > RDX: ffff88805b3db900 RSI: ffffffff815dbd88 RDI: fffff520014cee10
-> > RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-> > R10: ffffffff815d5b2e R11: 0000000000000000 R12: ffffffff898de180
-> > R13: ffffffff89e43440 R14: ffffffff8164bae0 R15: 1ffff920014cee29
-> > FS:  00007fee66b3a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f362471f3a0 CR3: 00000000272af000 CR4: 00000000001506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  debug_object_assert_init lib/debugobjects.c:895 [inline]
-> >  debug_object_assert_init+0x1f4/0x2e0 lib/debugobjects.c:866
-> >  debug_timer_assert_init kernel/time/timer.c:739 [inline]
-> >  debug_assert_init kernel/time/timer.c:784 [inline]
-> >  try_to_del_timer_sync+0x6d/0x110 kernel/time/timer.c:1229
-> >  del_timer_sync+0x138/0x1b0 kernel/time/timer.c:1382
-> >  cleanup_srcu_struct+0x14c/0x2f0 kernel/rcu/srcutree.c:379
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 > 
-> So cleanup_srcu_struct() tries to delete a timer which was never initialized....
+> ---
+> v5: A new patch based on the discussion at
+>      https://lore.kernel.org/linux-sgx/3a7cab4115b4f902f3509ad8652e616b91703e1d.camel@kernel.org/T/#t
+> ---
+>   Documentation/x86/sgx.rst      | 14 ++++++
+>   arch/x86/kernel/cpu/sgx/main.c | 90 ++++++++++++++++++++++++++++++++++
+>   arch/x86/kernel/cpu/sgx/sgx.h  |  2 +
+>   3 files changed, 106 insertions(+)
+> 
 
-That does not sound like a way to keep a kernel running...
 
-For dynamically allocated srcu_struct structures, what is supposed to
-happen is that init_srcu_struct() is invoked at some point before the
-first use.  Then init_srcu_struct() invokes init_srcu_struct_fields()
-which invokes init_srcu_struct_nodes() which initializes that timer.
-Unless the memory allocations in init_srcu_struct_fields() failed,
-in which case init_srcu_struct() should have handed you back a -ENOMEM.
+...
 
-OK, there is a call to init_srcu_struct() in blk_mq_alloc_hctx().
-It does ignore the init_srcu_struct() return value, so maybe a
-WARN_ON_ONCE(init_srcu_struct(hctx->srcu)) would be good.
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index a6e313f1a82d..c43b5a0120c1 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -717,6 +717,7 @@ static bool __init sgx_page_cache_init(void)
+>   		}
+>   
+>   		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
+> +		sgx_numa_nodes[nid].size += size;
+>   
+>   		sgx_nr_epc_sections++;
+>   	}
 
-The ->srcu field is declared as follows:
+The above memory seems to be uninitialized at the time it is incremented.
 
-	struct srcu_struct	srcu[];
+I tried this out on a system that reports the following:
 
-The blk_mq_hw_ctx_size() function adjusts the size.  All of this is
-controlled by a BLK_MQ_F_BLOCKING flag.  If this flag were to change,
-clearly bad things could happen.  The places where it is set look to me
-to be initialization time, but it might be good to have someone familiar
-with this code double-check this.  Or have a separate bit that records
-the state of BLK_MQ_F_BLOCKING at blk_mq_alloc_hctx() time and complain
-bitterly if there was a change at blk_mq_hw_sysfs_release() time.
+$ dmesg | grep EPC
+[    7.252838] sgx: EPC section 0x1000c00000-0x107f7fffff
+[    7.256921] sgx: EPC section 0x2000c00000-0x207fffffff
 
-Other thoughts?
+It shows unexpectedly large values:
+$ cat /sys/devices/system/node/node*/sgx/memory_size
+12421486739271732874
+16308428754864105707
 
-							Thanx, Paul
+System reported sane values after adding this fixup:
 
-> >  blk_mq_hw_sysfs_release+0x147/0x190 block/blk-mq-sysfs.c:40
-> >  kobject_cleanup lib/kobject.c:705 [inline]
-> >  kobject_release lib/kobject.c:736 [inline]
-> >  kref_put include/linux/kref.h:65 [inline]
-> >  kobject_put+0x1c8/0x540 lib/kobject.c:753
-> >  blk_mq_release+0x259/0x430 block/blk-mq.c:3094
-> >  blk_release_queue+0x2a7/0x4a0 block/blk-sysfs.c:823
-> >  kobject_cleanup lib/kobject.c:705 [inline]
-> >  kobject_release lib/kobject.c:736 [inline]
-> >  kref_put include/linux/kref.h:65 [inline]
-> >  kobject_put+0x1c8/0x540 lib/kobject.c:753
-> >  __blk_mq_alloc_disk+0x12e/0x160 block/blk-mq.c:3142
-> >  nbd_dev_add+0x3be/0xb90 drivers/block/nbd.c:1716
-> >  nbd_genl_connect+0x11f3/0x1930 drivers/block/nbd.c:1884
-> >  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
-> >  genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
-> >  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
-> >  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
-> >  genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
-> >  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-> >  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
-> >  netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
-> >  sock_sendmsg_nosec net/socket.c:704 [inline]
-> >  sock_sendmsg+0xcf/0x120 net/socket.c:724
-> >  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
-> >  ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
-> >  __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x7fee673e4739
-> > Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007fee66b3a188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> > RAX: ffffffffffffffda RBX: 00007fee674e9038 RCX: 00007fee673e4739
-> > RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000007
-> > RBP: 00007fee6743ecc4 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 00007fee674e9038
-> > R13: 00007ffe3695106f R14: 00007fee66b3a300 R15: 0000000000022000
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > syzbot can test patches for this issue, for details see:
-> > https://goo.gl/tpsmEJ#testing-patches
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 3380390cc052..d73bbfbfc05d 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -621,7 +621,7 @@ static bool __init sgx_page_cache_init(void)
+  	int nid;
+  	int i;
+
+-	sgx_numa_nodes = kmalloc_array(num_possible_nodes(), 
+sizeof(*sgx_numa_nodes), GFP_KERNEL);
++	sgx_numa_nodes = kcalloc(num_possible_nodes(), 
+sizeof(*sgx_numa_nodes), GFP_KERNEL);
+  	if (!sgx_numa_nodes)
+  		return false;
+
+
+After fixup:
+$ cat /sys/devices/system/node/node*/sgx/memory_size
+2126512128
+2134900736
+
+
+Reinette
