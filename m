@@ -2,109 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E19414AA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76726414AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhIVNjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:39:07 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:47407 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230512AbhIVNjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:39:05 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HDzqx2Yttz9sSc;
-        Wed, 22 Sep 2021 15:37:33 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zfoYlC92YagZ; Wed, 22 Sep 2021 15:37:33 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HDzqx1ck8z9sSS;
-        Wed, 22 Sep 2021 15:37:33 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 22C1E8B775;
-        Wed, 22 Sep 2021 15:37:33 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 5nqDyEowOTTE; Wed, 22 Sep 2021 15:37:33 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EC4A98B763;
-        Wed, 22 Sep 2021 15:37:32 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18MDbN9V1129358
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Wed, 22 Sep 2021 15:37:23 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18MDbM631129357;
-        Wed, 22 Sep 2021 15:37:22 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] powerpc/breakpoint: Cleanup
-Date:   Wed, 22 Sep 2021 15:37:18 +0200
-Message-Id: <6184b08088312a7d787d450eb902584e4ae77f7a.1632317816.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+        id S232366AbhIVNlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:41:06 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:45220 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230512AbhIVNlF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 09:41:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1632317974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4goRYAj1C/OYhVef3+5ksvuHtwgPhezRweIBkwvA5VM=;
+        b=S53CO5ZKfpu77Qve0OLCWooVoK0nUE3DpAWUKCdz+iiqVniMqureSS8UUYaMumcffizD3B
+        dgggxNy381bpSz5KNYZwYIaMZVCXI1gwNekw8muILGFey5pBeo3dLjqMY8LLyK+tfqeG2z
+        cb2AimH1f3oPQSzusLrgf5rp2Ze8p2E=
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur01lp2051.outbound.protection.outlook.com [104.47.2.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-30-RRgzrCCYPhSqar_GqGZnBA-1; Wed, 22 Sep 2021 15:39:33 +0200
+X-MC-Unique: RRgzrCCYPhSqar_GqGZnBA-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SNGmlk27vKUmqC/jVwhRnZmM4TwujWR9bDExLO5GGzxC3LQek3qMd/AxVHYXHMqoKTp6Ea+5tJ8K7V+8Hriv90+2/oxncg3fIEDv574EcCPtON4v5C3dy1RIVNKdIdjWmqc288iuhp8ErMIiEDRUxZ2iLfQFem56d5gr8a7xlNYa0RrIqfEGaJJ/7aVtz3n7dO71MC2K5qjw/hm8SBAoh+vqtory6MBLT+h+VLM7jfsR4N5J4oB90pWvHari7TPtbL5/gVaXKVCFh03V3O17Zo3nI9jqASkM2/Oql/ux3pfm8Y1gwDeozL2jAlKQdH2e/VjyzMnMKRdNftxcTWcm0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=4goRYAj1C/OYhVef3+5ksvuHtwgPhezRweIBkwvA5VM=;
+ b=RYqeIeuXmYeznoTnWXdqzThGnfzslLoJvnBy4QzpmER/FDroyO+v7vtMpWHDWTeqzVlnlUBAzgPEhSCkrVY9QGgTjtSpdOv9BmUTVE+qKC/6Su5HeLJSMddiP4v7iASmkG/Md5SeNENqtpiJXvkGp/H/UA8EMno+1s3hURhWuv4pK2oWFe3MwzmZZc6NzuWFqpPTz6w7tRujOAMXj6mhO5K7/wQKziF23UkFDbCd/5SdR8BloDQwUmdGBHIidcK8+1Q1+TG4Sndoxl6oQZ5qfovpZ9wPs77ziv3SiKrh+NI4mErkcrQoDO515W/KVKjHZEmckeblpoOIKpqOFOeJYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB7039.eurprd04.prod.outlook.com (2603:10a6:800:12b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
+ 2021 13:39:30 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
+ 13:39:30 +0000
+Subject: Re: [PATCH 2/3] xen/privcmd: fix error handling in mmap-resource
+ processing
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Juergen Gross <jgross@suse.com>
+References: <0f0db6fa-2604-9a0d-1138-0063b5a39a87@suse.com>
+ <aa6d6a67-6889-338a-a910-51e889f792d5@suse.com>
+ <c0c84258-c2ee-f58c-ae9a-5f8bdd75f0db@oracle.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <1374b8da-1076-63fb-bc54-5be9f1ae94d4@suse.com>
+Date:   Wed, 22 Sep 2021 15:39:29 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <c0c84258-c2ee-f58c-ae9a-5f8bdd75f0db@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3PR09CA0001.eurprd09.prod.outlook.com
+ (2603:10a6:102:b7::6) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [10.156.60.236] (37.24.206.209) by PR3PR09CA0001.eurprd09.prod.outlook.com (2603:10a6:102:b7::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 13:39:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dc48c9ae-95b2-4e4b-271b-08d97dce6755
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7039:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB7039BE7D471D883F0B069215B3A29@VI1PR04MB7039.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +7N89F4Ko2eT3NhJlBGL5y2iaQ2uR/bgjBvyOK918Rd06/66CH9iWz4NAJvKFtcgr3oXPZPC2/YmPl9Y3Gf1v4bXO6JiG9sry7qqfWay+5Q5NHumo5rBzrb9xi6Hlrv951gBT3tm3S/VLE+ztrAn563H16DFubxoV1BdGGVae7qjGgy42vzQdcafoFCk3SXqUQulJ/AQTrJ/SfAjL8aM7FZwiHUHABPWb+i9Sx6iQmCuSUHh1RAnOY55PTn5r1LvjePxIZyxXRDISGtosY8S67Bsxjg7/fDTrcI9l01E1DPIo0Nn3N8F1bbqqsIqT1W6Xm0awTzDPUVah1DRFBVy6M5nY/JeSYWpgmX92ktjkq+3tjWdHPpI8mOBc4C4TgQcqnzGukqeNQly6ruPyJDIqUPuvYH/snQXP4Yf1mEqOLuQQBPgr6jTk80aRRQjyxZ+eJJJxJWryErcxrKN5bv0drh2FvERXt/m9evCcXjKjSi7w3EUrEoUhvfzs99+zZOR5pHR1Mx27XHDLQUs9SkZoc+uttP/yhqI9JpQAryhqjgpy5jaQDka+sNVxfo4u//3A9avFfOMmQLvtJE/yh+0MeVcDiegCyISCa3q+cm02ssVXi6VD+pbOumjvrvShCtLlzZwXqVGFxT2hUnA63EA7iTTY1jB5aS/oUHV1UW/VAd9D6LKxeVXVuZMv7x1qLNeObq3f4opukwCj5qqNvomay74PkhhKqtrh+hR1UF5z0Y=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(66476007)(66556008)(38100700002)(4326008)(66946007)(83380400001)(31696002)(316002)(5660300002)(54906003)(53546011)(107886003)(31686004)(2906002)(86362001)(16576012)(186003)(6486002)(8676002)(2616005)(956004)(6916009)(8936002)(36756003)(508600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NXpZcmY5dWZRZEVkY3cxaWFlSWxpd2FaNkh0NE52MjdXQzZlaFF5Tmk1cDRM?=
+ =?utf-8?B?NDAvUTZ6NGhYZS9YV2lQS2pvTjVGWWJVWFMrb0tjRENQQlh1VUd6YWgrbmwz?=
+ =?utf-8?B?c0JZcXg0citQYW1Lc3BwclgxVXZVd1REZWFsVHovK2h3M3ppMi9BR2dVUTZt?=
+ =?utf-8?B?YU9RNDVzWktGRFMxcGZMMjZxWVZwdVVId1JCVEw2ZjJNclhDUE5wemlubzEw?=
+ =?utf-8?B?RnVZTEZVdTUwMERyQU9mMFl1bG13VjNINCtSUmprVlhJdDNSdVpTVGRtVndw?=
+ =?utf-8?B?aU40V3Nrc2traUVEVGR6dENnV085WnBIWVl1aC9nOWlUOU1XR1ZKNXduMFdW?=
+ =?utf-8?B?N1ZRRTVadGEyblFEMG5mdTZRYzh0SkdJL3RYSk5KeVNoMXhzUHNnTXFGVTFZ?=
+ =?utf-8?B?TFRoZjEzK3ZPTWdMUWFxcmUyTzBITDFTSlp5c2ZTVC9tRVZYMHIvQlgwMkx3?=
+ =?utf-8?B?NUtzQTJWMzEyMmtCTUUva1RuYlNXSG45cWszR1V5OEIzQ3prV204ZFhOTEJQ?=
+ =?utf-8?B?bWlEMWVNQkVaem84WGtHVEtndjBhWDZPK3VFNXBTc0MzZkdhTnVsaUdFdndS?=
+ =?utf-8?B?aUUxUnBXUGRTa1V5M1JnbmZoQUdPLzFIaGpYSjNVSGJpS0pNODRLbjNMUEpk?=
+ =?utf-8?B?UDV6elp3WGFKTE52SURVT2xoMGRFWU9PWkp0azRYSDdWUjRuVXlFYUJZTlFs?=
+ =?utf-8?B?d0E0RzFjcXUrSDFRckN4SGRlKzlXWkNrZUZtWEJPdlZ6SWxvVzk3OFlhVkVN?=
+ =?utf-8?B?SzFLRUJUY28yR2cvdlY0L3lSRElqSWZuMGdqSlBVUTN6MUdtU0NyTmgrSmw5?=
+ =?utf-8?B?Ui8zTmhzU3hrcVlxOEw0ZS83SmZMZWw4WGJWRW55Y2tGd0dXWFY5VCtMbmpK?=
+ =?utf-8?B?MXVzZ0tZcEZURjZkWFhtOUZYVHJDVEhiWWZNUlpYZE5JRCtabmFaa00yblZ5?=
+ =?utf-8?B?V0NVQmdIN3hSUmJUaDRLSC94RTlMcFNxeDVpWFV3RFNtZmp2RXhsVFZYeUJx?=
+ =?utf-8?B?akVRSSsrS3BpdWowK2NXeFBlcmFFUmFTS1RlaGM1ekNEZXNsVDJ2ZWxIRnM5?=
+ =?utf-8?B?aVNZNWxFbkNhQXpnTXlSSzRjazBkL3NIQVAwUUdkWFFZaUI1bENIb21DTkxX?=
+ =?utf-8?B?ZGRaV0hLREpPU0xPYmtiRjBlaEtFTTlPRjJtY0Z1cXFHSEJWcHFLZzZyUmZ2?=
+ =?utf-8?B?cTFJQndJbmNzQTlUTmFCQTZYVTlZVnJlYVdXNzRINWZPdjdJSVBlT3lmbXZN?=
+ =?utf-8?B?eE42bW1mVzJ1MVJGdkNCSmd2ZFhUUnc5d2NKTHdYeWcwRFNCQ0xVenJaQkIv?=
+ =?utf-8?B?OWw1aXhWVUdCSHRXekh4UHJKMENreVRqUlpEd1R3MVdKbGxPM2ZYdXpFaEZK?=
+ =?utf-8?B?djJPU2dNZ1AvUDVBVVhWR3I0UTE0NGVvWmpGNDRTaHJpSG9jV1E3UGNmdmdt?=
+ =?utf-8?B?clpVTlU4RnFpUC9BVSt3UkhobzFkK01RUFBFOVhNRXFqR01Nc3FoeFNWdkl1?=
+ =?utf-8?B?dktGWGpKS01abFN0QXc3ZVZ5NWR5ck8xYm40MEE5ZlR0dmExb3RMVUU2WFRt?=
+ =?utf-8?B?WDVOcFB5cDdVdzdSTDN2N2dxV1dqdnlhOGVYazNqR2VwYjkrZmZiZGRzS3BF?=
+ =?utf-8?B?ZndEMnVRYUJjT1V4UGQrME4rd2ppZXlvQjk3aVJCVWxiUS9remdRMDJ0V0hM?=
+ =?utf-8?B?ejhlZis1NjBUWG5jT1hFMjFhSHp0SXhNT0luSkJHdzNZTXlLc2h2RklIaFdX?=
+ =?utf-8?Q?ndu5HqEnxOyzRixjLNhnodr1+MJkYeq+EbQm1aZ?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc48c9ae-95b2-4e4b-271b-08d97dce6755
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 13:39:30.1343
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VVxl4hIccXeUj0uZ5RptOOBqE1jl9EMKz2Ejxf/yZtYltdG5VGzD0kQF4Kdx3Ihn59eiKSVC6LuwRyhuy/korg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cache_op_size() does exactly the same as l1_dcache_bytes().
+On 22.09.2021 15:29, Boris Ostrovsky wrote:
+> On 9/22/21 6:17 AM, Jan Beulich wrote:
+>> @@ -817,7 +818,7 @@ static long privcmd_ioctl_mmap_resource(
+>>  			unsigned int i;
+>>  
+>>  			for (i = 0; i < num; i++) {
+>> -				rc = pfns[i];
+>> +				rc = errs[i];
+>>  				if (rc < 0)
+>>  					break;
+> 
+> 
+> Can the assignment be moved inside the 'if' statement?
 
-Remove it.
+I wouldn't mind, albeit it's not the purpose of this change. Plus
+generally, when I do such elsewhere, I'm frequently told to better
+leave things as separate statements. IOW I'm a little surprised by
+the request.
 
-MSR_64BIT already exists, no need to enclode the check
-around #ifdef __powerpc64__
+> I am also not sure I understand why we need error array at all. Don't we always look at the first error only? In fact, AFAICS this is the only place where we look at the value.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/hw_breakpoint_constraints.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+Well, to look at the first error we need to scan the array to find
+one. Indeed we bail from here in once we've found a slot which has
+failed.
 
-diff --git a/arch/powerpc/kernel/hw_breakpoint_constraints.c b/arch/powerpc/kernel/hw_breakpoint_constraints.c
-index 675d1f66ab72..42b967e3d85c 100644
---- a/arch/powerpc/kernel/hw_breakpoint_constraints.c
-+++ b/arch/powerpc/kernel/hw_breakpoint_constraints.c
-@@ -127,15 +127,6 @@ bool wp_check_constraints(struct pt_regs *regs, struct ppc_inst instr,
- 	return false;
- }
- 
--static int cache_op_size(void)
--{
--#ifdef __powerpc64__
--	return ppc64_caches.l1d.block_size;
--#else
--	return L1_CACHE_BYTES;
--#endif
--}
--
- void wp_get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
- 			 int *type, int *size, unsigned long *ea)
- {
-@@ -147,14 +138,14 @@ void wp_get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
- 	analyse_instr(&op, regs, *instr);
- 	*type = GETTYPE(op.type);
- 	*ea = op.ea;
--#ifdef __powerpc64__
-+
- 	if (!(regs->msr & MSR_64BIT))
- 		*ea &= 0xffffffffUL;
--#endif
-+
- 
- 	*size = GETSIZE(op.type);
- 	if (*type == CACHEOP) {
--		*size = cache_op_size();
-+		*size = l1_dcache_bytes();
- 		*ea &= ~(*size - 1);
- 	} else if (*type == LOAD_VMX || *type == STORE_VMX) {
- 		*ea &= ~(*size - 1);
--- 
-2.31.1
+I guess what you're trying to say is that there's room for
+improvement. In which case I might agree, but would want to point
+out that doing so would mean removing flexibility from the
+underlying function(s) (which may or may not be fine depending on
+what existing and future requirements there are). And that would
+be for another day, if at all.
+
+Jan
 
