@@ -2,153 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A946414EDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9A5414EE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236907AbhIVRLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:11:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23738 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236840AbhIVRKy (ORCPT
+        id S236733AbhIVRUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236701AbhIVRUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:10:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632330563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQsej0EuCL2beLZAb1gxjyy0OhJfKtFa7H9euSdki+w=;
-        b=KGGY/25bJPYLsK+sXDzgT4q+vDcxgUyHLOHELBcClcH9oanypt+dlzwGi9KtAKF4RnpNUs
-        JHN3jOhyvnS9bl9/P6oxY+3xWczonaHY3YdWNtPePWupmvAcywsWhfoNaIr5F5t1MmjkdN
-        8eSs4xMrY6a6zK1aXUgWYElfeLqgoK0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-LNokeKBaN3iaxMNmJKsS3g-1; Wed, 22 Sep 2021 13:09:22 -0400
-X-MC-Unique: LNokeKBaN3iaxMNmJKsS3g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D266E79EDC;
-        Wed, 22 Sep 2021 17:09:20 +0000 (UTC)
-Received: from thinkpad.redhat.com (unknown [10.39.192.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 50BFA652A1;
-        Wed, 22 Sep 2021 17:09:18 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alexander Potapenko <glider@google.com>,
-        linux-crypto@vger.kernel.org, Dmitriy Vyukov <dvyukov@google.com>,
-        rusty@rustcorp.com.au, amit@kernel.org, akong@redhat.com,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Matt Mackall <mpm@selenic.com>,
-        virtualization@lists.linux-foundation.org,
-        Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH 4/4] hwrng: virtio - always add a pending request
-Date:   Wed, 22 Sep 2021 19:09:03 +0200
-Message-Id: <20210922170903.577801-5-lvivier@redhat.com>
-In-Reply-To: <20210922170903.577801-1-lvivier@redhat.com>
-References: <20210922170903.577801-1-lvivier@redhat.com>
+        Wed, 22 Sep 2021 13:20:12 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7BAC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:18:41 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id t4so12003319qkb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EWo8F4iMKGCzt0JCBmge44bMfpMpPwLBF9OMRtIl8y8=;
+        b=p/+wDw11RlZWpfho0e5YV0S1/tQmJuip2B7eqzld0dYbzGxZaZG8Ewgxvvv8b3AgbE
+         x+g6buLS/9roEkrbid4JrpAb0ZJ7ZeiVPikr5A7kzOowIHr/oEUI2ZBn2+Il8Fm+XWYI
+         tDdOpFf0TP+HKzCyBhW7WQ83fAPSuGVrlAOp66g3GJaL5KGZDnt6i5trDDf0En/nCIx4
+         X4/5JnjaYSepsFjH8Dm0BHZd92QtlxiSFMISEuS9MB8VZqXll5xurQfl8d4aBP+wP3EV
+         dNt70gVksLo4Nd8fhNwOKUZwZi7Ssj8rpntGGilX5c9GLeW0lFhhqzMiXdocnVkpAlxV
+         ewKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EWo8F4iMKGCzt0JCBmge44bMfpMpPwLBF9OMRtIl8y8=;
+        b=C9HVWfvTTt+wbuq7PlJSDchtfckmiJUKIVJEFKg0YfaBrSRisEjHvnROxWKfhvVGM0
+         VdNX5qJrV6Ic+kkInB68oL7MRAsv0XAU+xVzkyTeZyB9SEro1nqeCvQ8NFNNvZQ5Cdgz
+         9uvzygqXK7K8v83xjdz5X8NDhRkJIircsNQPR3reRSeeLWD1rfH8MX+UK7wD4RygtI5i
+         EVyt0JSQIEf6We1W4C25dYXbqCbqQNcjasYX7uJpd/y2eb/7WTouF0UxluO+w74w1yVm
+         yC/lRXS0uz2ze+n9t1p4X4tLp0ilFsn+U+X4frd0XcKMyngsQyk1hiFtGAhfCc7sJePf
+         aX5w==
+X-Gm-Message-State: AOAM532e7FxpjNGq+rWygosqb/SQCUabDolxoP0gtSWhAxaKnQetNL0s
+        +kD9+KlSJXLyODUmIrTZliPxYsNRm/qHzBo46rM=
+X-Google-Smtp-Source: ABdhPJzlfq8I2QBrdt48ZPqvX3rxr+GBeAL9/hTHw44apmlx4D9fJoUmXPEH+rkai1mY2lcBZT5SA0RBRfBPyHPupHs=
+X-Received: by 2002:a25:520a:: with SMTP id g10mr292692ybb.117.1632331120807;
+ Wed, 22 Sep 2021 10:18:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20210904091050.g5axxctgelciihjn@gilmour> <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
+ <20210920144730.d7oabqfbx7pmyyfb@gilmour> <20210920154333.vunyxeshdb7jt5ka@gilmour>
+ <20210920155350.h6624mt65vwg72p2@gilmour> <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
+ <20210920171042.oq3ndp3ox4xv5odh@gilmour> <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
+ <20210922095725.dk4vk42zb3kh7y6s@gilmour> <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
+ <20210922112837.asxuf5vyen2rwu7u@gilmour>
+In-Reply-To: <20210922112837.asxuf5vyen2rwu7u@gilmour>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Wed, 22 Sep 2021 18:18:05 +0100
+Message-ID: <CADVatmOM-EAXbfp11ZwEHtv2fyuGVoWMXW_f2ZfwTv2wX91eFQ@mail.gmail.com>
+Subject: Re: Regression with mainline kernel on rpi4
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we ensure we have already some data available by enqueuing
-again the buffer once data are exhausted, we can return what we
-have without waiting for the device answer.
+On Wed, Sep 22, 2021 at 12:28 PM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Wed, Sep 22, 2021 at 11:10:34AM +0100, Sudip Mukherjee wrote:
+> > On Wed, Sep 22, 2021 at 10:57 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> > >
 
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
----
- drivers/char/hw_random/virtio-rng.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+<snip>
 
-diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
-index 8ba97cf4ca8f..0b3c9b643495 100644
---- a/drivers/char/hw_random/virtio-rng.c
-+++ b/drivers/char/hw_random/virtio-rng.c
-@@ -20,7 +20,6 @@ struct virtrng_info {
- 	struct virtqueue *vq;
- 	char name[25];
- 	int index;
--	bool busy;
- 	bool hwrng_register_done;
- 	bool hwrng_removed;
- 	/* data transfer */
-@@ -44,16 +43,16 @@ static void random_recv_done(struct virtqueue *vq)
- 		return;
- 
- 	vi->data_idx = 0;
--	vi->busy = false;
- 
- 	complete(&vi->have_data);
- }
- 
--/* The host will fill any buffer we give it with sweet, sweet randomness. */
--static void register_buffer(struct virtrng_info *vi)
-+static void request_entropy(struct virtrng_info *vi)
- {
- 	struct scatterlist sg;
- 
-+	reinit_completion(&vi->have_data);
-+
- 	sg_init_one(&sg, vi->data, sizeof(vi->data));
- 
- 	/* There should always be room for one buffer. */
-@@ -69,6 +68,8 @@ static unsigned int copy_data(struct virtrng_info *vi, void *buf,
- 	memcpy(buf, vi->data + vi->data_idx, size);
- 	vi->data_idx += size;
- 	vi->data_avail -= size;
-+	if (vi->data_avail == 0)
-+		request_entropy(vi);
- 	return size;
- }
- 
-@@ -98,13 +99,7 @@ static int virtio_read(struct hwrng *rng, void *buf, size_t size, bool wait)
- 	 * so either size is 0 or data_avail is 0
- 	 */
- 	while (size != 0) {
--		/* data_avail is 0 */
--		if (!vi->busy) {
--			/* no pending request, ask for more */
--			vi->busy = true;
--			reinit_completion(&vi->have_data);
--			register_buffer(vi);
--		}
-+		/* data_avail is 0 but a request is pending */
- 		ret = wait_for_completion_killable(&vi->have_data);
- 		if (ret < 0)
- 			return ret;
-@@ -126,8 +121,7 @@ static void virtio_cleanup(struct hwrng *rng)
- {
- 	struct virtrng_info *vi = (struct virtrng_info *)rng->priv;
- 
--	if (vi->busy)
--		complete(&vi->have_data);
-+	complete(&vi->have_data);
- }
- 
- static int probe_common(struct virtio_device *vdev)
-@@ -163,6 +157,9 @@ static int probe_common(struct virtio_device *vdev)
- 		goto err_find;
- 	}
- 
-+	/* we always have a pending entropy request */
-+	request_entropy(vi);
-+
- 	return 0;
- 
- err_find:
-@@ -181,7 +178,6 @@ static void remove_common(struct virtio_device *vdev)
- 	vi->data_idx = 0;
- 	complete(&vi->have_data);
- 	vdev->config->reset(vdev);
--	vi->busy = false;
- 	if (vi->hwrng_register_done)
- 		hwrng_unregister(&vi->hwrng);
- 	vdev->config->del_vqs(vdev);
+>
+> Still works fine (and it required some mangling of the kernel command line).
+>
+> If we summarize:
+>
+>   - You initially just dumped a panic and a link to your QA, without any
+>     more context:
+
+The SHA was also given, and I didn't know what else you would need.
+The openQA link was given to show the dmesg.
+
+>
+>   - Then stating that you're not doing any test, really;
+
+Yes, and I still say that, its just a boot test.
+
+>
+>   - Well, except for booting Ubuntu, but no other modification
+>
+>   - But you're not booting the standard image
+>
+>   - And with a custom initrd
+
+yes, something which has always worked in boot-testing LTS kernel or
+mainline kernel.
+
+>
+>   - And that QA link states that you're booting from QEMU, but you're
+>     not.
+
+I only found that the "WORKER_CLASS" has the name "qemu_rpi4", that is
+a name which I choose to give as that worker laptop is connected to
+rpi4 and also running qemu tests. If you want I can change the name of
+the WORKER_CLASS. :)
+iiuc, dmesg shows if its booting in a qemu or on a real hardware.
+
+>
+> Please provide a full documentation on what you're doing to generate
+> that image, from scratch, in order to get that panic you reported
+> previously.
+
+I have now ordered another rpi4 board and will create the image from
+scratch and give you the steps.
+
+>
+> I've spent an entire day trying to make sense of what you're doing
+> exactly to get into that situation. I have other things to work on and I
+> don't plan on figuring out any random CI system.
+
+I am not really sure why you are trying to figure out a random CI
+system. I can reproduce the problem in our setup everytime I test with
+that reverted commit and I have already said I am happy to test with a
+debug patch or anything else.
+
+
 -- 
-2.31.1
-
+Regards
+Sudip
