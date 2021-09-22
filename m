@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BBA4148F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBC041492B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236012AbhIVMeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:34:20 -0400
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:36783 "EHLO
-        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235834AbhIVMeT (ORCPT
+        id S235576AbhIVMme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:42:34 -0400
+Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:53428 "EHLO
+        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236023AbhIVMmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:34:19 -0400
-Received: by mail-vk1-f171.google.com with SMTP id t186so1077273vkd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:32:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R/nhv1c3kfB+8GUpcbKdwWWl/t1iJqUbmVf63u/XqWY=;
-        b=fHP/xYtCuLN+tA4vsSqFwHgav0TX/QXdNOER72wqr7opICZ7U+h/04Hwwm9+qPjn4V
-         IiLQmotEf6J8eLofy5i9ynsyyKshWE12W9pNVpuxOsOupUEcTCJzsp+LhJClH41P+ssD
-         6cCXdWPtNkFy+VteHdO8wOSTt7lRPA0rRP+ElGE9FpEHsICyrGkqOnoUIJAFyX2N4ldK
-         j3P6VB+voU1kK/cU0MO+MSbT08aWleReGkbU2VxDcnwJq6K8UvoQRgIHr1qrOf/08RO7
-         d8kKJ/ujM9CH6ZShLrGBWvNw58iWLSzHaXvcFKiK60rv3ERyTl3Moq1rffhmPxbx53KJ
-         KtIw==
-X-Gm-Message-State: AOAM532mkMecTdXOGV8cjlOnhNlBFUjmoQWa8PtIQ6XBQvni+DJo+9hG
-        +MwWh+yOOiU3xwV5syDSbyTapmLsLnxTPoteyF0=
-X-Google-Smtp-Source: ABdhPJxth2FYG46f0S5OWGAuSsEkUNQOSjbi8d7mL7ridoO4xhKND97RZqrl1VQPIyKGRp4zN7o8NWtJxjo0/BMvl6c=
-X-Received: by 2002:a1f:5e14:: with SMTP id s20mr23127866vkb.7.1632313969468;
- Wed, 22 Sep 2021 05:32:49 -0700 (PDT)
+        Wed, 22 Sep 2021 08:42:33 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Sep 2021 08:42:32 EDT
+Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
+        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 580D91008CBC0;
+        Wed, 22 Sep 2021 20:33:52 +0800 (CST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 428A3200B574E;
+        Wed, 22 Sep 2021 20:33:52 +0800 (CST)
+X-Virus-Scanned: amavisd-new at 
+Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
+        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gJlAHgw_BhhY; Wed, 22 Sep 2021 20:33:52 +0800 (CST)
+Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
+        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 750692008D5E6;
+        Wed, 22 Sep 2021 20:33:44 +0800 (CST)
+From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
+To:     mike.marciniszyn@cornelisnetworks.com,
+        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>
+Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+Date:   Wed, 22 Sep 2021 20:33:41 +0800
+Message-Id: <20210922123341.601450-1-qtxuning1999@sjtu.edu.cn>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210921215218.89844-1-michael.christie@oracle.com> <20210921215218.89844-4-michael.christie@oracle.com>
-In-Reply-To: <20210921215218.89844-4-michael.christie@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 22 Sep 2021 14:32:37 +0200
-Message-ID: <CAMuHMdXhtq-6vcU_1qYfT_ChPGsnhLAA_yZwPz7ERJgxJERK7Q@mail.gmail.com>
-Subject: Re: [PATCH V2 3/9] fork: move PF_IO_WORKER's kernel frame setup to
- new flag
-To:     Mike Christie <michael.christie@oracle.com>
-Cc:     hdanton@sina.com, Christoph Hellwig <hch@infradead.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+Pointers should be printed with %p or %px rather than
+cast to (unsigned long long) and printed with %llx.
+Change %llx to %p to print the pointer.
 
-On Tue, Sep 21, 2021 at 11:55 PM Mike Christie
-<michael.christie@oracle.com> wrote:
-> The vhost worker threads need the same frame setup as io_uring's worker
-> threads, but handle signals differently and do not need the same
-> scheduling behavior. This patch separate's the frame setup parts of
-> PF_IO_WORKER into a kernel_clone_args flag, KERN_WORKER_USER.
->
-> Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+---
+ drivers/infiniband/hw/hfi1/ipoib_tx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for your patch!
-
-> --- a/arch/m68k/kernel/process.c
-> +++ b/arch/m68k/kernel/process.c
-> @@ -157,7 +157,8 @@ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
->          */
->         p->thread.fs = get_fs().seg;
->
-> -       if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
-> +       if (unlikely(p->flags & (PF_KTHREAD) ||
-> +                    worker_flags & KERN_WORKER_USER)) {
-
-I guess it wouldn't hurt to add parentheses to improve
-readability:
-
-    if (unlikely((p->flags & (PF_KTHREAD)) ||
-                 (worker_flags & KERN_WORKER_USER))) {
-
->                 /* kernel thread */
->                 memset(frame, 0, sizeof(struct fork_frame));
->                 frame->regs.sr = PS_S;
-
-With the above fixed, for m68k:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+index e74ddbe4658..7381f352311 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+@@ -876,13 +876,13 @@ void hfi1_ipoib_tx_timeout(struct net_device *dev, unsigned int q)
+ 	struct hfi1_ipoib_txq *txq = &priv->txqs[q];
+ 	u64 completed = atomic64_read(&txq->complete_txreqs);
+ 
+-	dd_dev_info(priv->dd, "timeout txq %llx q %u stopped %u stops %d no_desc %d ring_full %d\n",
++	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d no_desc %d ring_full %d\n",
+ 		    (unsigned long long)txq, q,
+ 		    __netif_subqueue_stopped(dev, txq->q_idx),
+ 		    atomic_read(&txq->stops),
+ 		    atomic_read(&txq->no_desc),
+ 		    atomic_read(&txq->ring_full));
+-	dd_dev_info(priv->dd, "sde %llx engine %u\n",
++	dd_dev_info(priv->dd, "sde %p engine %u\n",
+ 		    (unsigned long long)txq->sde,
+ 		    txq->sde ? txq->sde->this_idx : 0);
+ 	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.33.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
