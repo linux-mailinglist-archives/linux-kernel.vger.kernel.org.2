@@ -2,164 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19FB41402A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 05:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721D9414030
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 05:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhIVDsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 23:48:47 -0400
-Received: from mail-eopbgr1300049.outbound.protection.outlook.com ([40.107.130.49]:47115
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        id S231356AbhIVDvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 23:51:52 -0400
+Received: from mail-bn7nam10on2089.outbound.protection.outlook.com ([40.107.92.89]:6913
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230054AbhIVDsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 23:48:40 -0400
+        id S230054AbhIVDvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 23:51:51 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GUaoG8Hea6CBkMkTSX6GphI3va0Doz508du1zJGDQyM+jDkVruCT1Ug2qrdTeenU4Wa9RzsmFCSrQ74BQHHE0X8JNR0I/Ir/j9JDkt/CMSXEIGE1uium3rk84S7ppZqagboWmRn8Q0mrd1mGnK+jCe7Nri+sI9waGEN/N+j03Rh8J1fsUrrH8BMXutmLkd2CeOfB9oEIKg4wB23i7g1ZLtCOwC97NSr84sq8no4sit8k4wtNjDZ3G7hRNZ70ChSM9HA/dGa9nrfJgDLMIXPuooGHuyqPVx9f4PnNJrbxM0WCjSsvoF6bz+iE/GMCA/gLpQbqzDUd+ZYBzQWWSJtrMA==
+ b=bjMv1YebY3xg2t8n70gFMepes4HM2P3aPFgMPaU9VYXqqEUZMk3ACH74XcWRnre/PI8zb3xD/6F0lnKG7CrJVnMrW6GLNhEVaM+IDQzomU0L0Yd8jvqrx7PZ5+7KjxUL34EjH7cjH8f6h+JOsbbjtUDfK4LV9RdTrzZoIWJ4FZo0ESdj0edbkj+PbBRMW1dv6rgJiB9nmh1FlofqdnC8BkAkokkdzQ1jYvlkGtgK6uAW/GoaGPKv8Dijlv12xbCrsSo7du7ocqYJeRtfNVO/+XWJpWP81Py8sFZst0pvxQCJyX0ccMvac5rIF9w1LpnWNaJcxHrf/vH4kCMYDtGa0g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=GIcLCkXvyIaoPuUx0+Wz1u+EGyqsRSlkWNfhUEyprxk=;
- b=W0oVHV8knJOClbu9sqKgxxRi6FnYVKclcngq/NZrcHrAUkjxG+pAXr0/exlNXTbANm4hFRH/oGjGWrADCQpkkPOWMznP1mQV1+fApk2uBCqHjgsVW+9R3F0JS4iRIHe2WuZix6K1R1R1XcRBUPtXFFL0KdtOxoD2HvQ5/mgfb/NtVDDmc/CM0IcPMHAl8mEuOsnxkveRkUl3QpKeJMsL04FiS884HA0qJUNRQf8zaojuMuG5j464vsPke7wrvp9PATH5927zrLhZLJYFmIpnIaSKKI82myUWcykGvaYDsZHN4oRY7q5IClFXnp5SUrAZ6qcOAyIhQwtosaqYfsXuJg==
+ bh=+b2LBAzQjTzsWZU2MNThnhHpTBVWzvgGZtvIlI7GlYQ=;
+ b=FW4iFkiRNbsGm64gqN6RYdWhBRF16QTwxAmI+2NoKh5ajpAdknkeM1N+3Noiw8skKvfOLdkRNDaZmapH309KiL1QzRUSOTw0lHT7aBDAny4AP2Qf5eJ7kFQuq+ZJnLnnA+K9PV0ZO0aXuMl9iy2DKuJwb+GEg8ugixPFsGmA9obsnsfXMb0khVfS8u+m3hUlwJ28YIeXrfZs4t9ExWPpwrRuyLpwJRfBlTlkClcORcw8lRed0I1vMpbKLryOxhRiYwzovF/lXFbdPcf/cmXArl9IshiGCALa99b9Cyw1c5O5rMG8h22/jgQlI0I7tWFMUhSWI03kUvJEOpyokndyJA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GIcLCkXvyIaoPuUx0+Wz1u+EGyqsRSlkWNfhUEyprxk=;
- b=PEMMMXdWOcp0IC9J4azPN8JoI9L/O+zPAHwo/croxPoCwp7DQ/FidJnwXOg9hyHTkP/uTRYRN+yx8WHCNo4Qcf7JyPMwS9URYlE6aa3zhX1Zjv5TIcPvnGZuw5Fwong7XVS53YnEmYi7/zZX+eKle3Z1jBzkYmTNLHVUxT/9lUo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB4460.apcprd02.prod.outlook.com (2603:1096:0:e::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4523.14; Wed, 22 Sep 2021 03:47:08 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::5919:768f:2950:9504]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::5919:768f:2950:9504%4]) with mapi id 15.20.4523.018; Wed, 22 Sep 2021
- 03:47:08 +0000
-From:   Huang Jianan <huangjianan@oppo.com>
-To:     linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org
-Cc:     huangjianan@oppo.com, guoweichao@oppo.com, yh@oppo.com,
-        zhangshiming@oppo.com, guanyuwei@oppo.com, jnhuang95@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2] ovl: fix null pointer when filesystem doesn't support direct IO
-Date:   Wed, 22 Sep 2021 11:47:00 +0800
-Message-Id: <20210922034700.15666-1-huangjianan@oppo.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210918121346.12084-1-huangjianan@oppo.com>
-References: <20210918121346.12084-1-huangjianan@oppo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR03CA0045.apcprd03.prod.outlook.com
- (2603:1096:202:17::15) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+ bh=+b2LBAzQjTzsWZU2MNThnhHpTBVWzvgGZtvIlI7GlYQ=;
+ b=TsGQLL9zJahsEqbxTiRLvuKqV/7LsyYD6zX4Kc6IBqB42DQei7uuT8Y6tca1fwO8/U8jEW9Y7B0fKAOTJG57b/3y3jKOMwfyqmSYePdm1+nV2DDFGQGoEVa4mb9tGekId8qhHAW1SVfGbkXnYTYsVw6OUH8X6xyaWIrWONspPBs=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BY5PR12MB4177.namprd12.prod.outlook.com (2603:10b6:a03:201::14)
+ by BYAPR12MB2775.namprd12.prod.outlook.com (2603:10b6:a03:6b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.18; Wed, 22 Sep
+ 2021 03:50:15 +0000
+Received: from BY5PR12MB4177.namprd12.prod.outlook.com
+ ([fe80::b99c:d841:a12b:6f95]) by BY5PR12MB4177.namprd12.prod.outlook.com
+ ([fe80::b99c:d841:a12b:6f95%6]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
+ 03:50:15 +0000
+Message-ID: <a20fc6ba-14fa-e9b9-de69-54b9eaf20e73@amd.com>
+Date:   Tue, 21 Sep 2021 20:50:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] x86/ACPI/State: Optimize C3 entry on AMD CPUs
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Deepak Sharma <deepak.sharma@amd.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+References: <20210819004305.20203-1-deepak.sharma@amd.com>
+ <CAJZ5v0jWX=H=aZ25PzHdH05bRJvtYbGHfyTgH_68k4kfYkZc5A@mail.gmail.com>
+ <951c4f8f-30ee-77d3-afb7-46e45c84213d@amd.com>
+ <CAJZ5v0ic+0MKDbebrxnyxr=rRJbqP4LmB4g1fVVAVJWh98e=MA@mail.gmail.com>
+From:   "Sharma, Deepak" <deesharm@amd.com>
+In-Reply-To: <CAJZ5v0ic+0MKDbebrxnyxr=rRJbqP4LmB4g1fVVAVJWh98e=MA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR07CA0070.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::47) To BY5PR12MB4177.namprd12.prod.outlook.com
+ (2603:10b6:a03:201::14)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from PC80253450.adc.com (58.252.5.73) by HK2PR03CA0045.apcprd03.prod.outlook.com (2603:1096:202:17::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.6 via Frontend Transport; Wed, 22 Sep 2021 03:47:07 +0000
+Received: from [172.31.21.22] (165.204.53.104) by BYAPR07CA0070.namprd07.prod.outlook.com (2603:10b6:a03:60::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 03:50:14 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bd31b02f-8f00-4746-0223-08d97d7ba6f0
-X-MS-TrafficTypeDiagnostic: SG2PR02MB4460:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Office365-Filtering-Correlation-Id: 753a3182-4ccc-4cc2-a6a3-08d97d7c15e0
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2775:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB44605163D987DA0A0521BD54C3A29@SG2PR02MB4460.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <BYAPR12MB2775331C2F6AEFCCA4E7BC88E9A29@BYAPR12MB2775.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /DQxltW13XODKP7qgWxcPbmLbaIoQQtDwuci0xpV/rIiw3BEhXX4FJt8ChqrEQUBRA8654JAjxP7jPrUsMYVMiGi+MM3HGzpqdAJ4dS8BX1toSS++1T9YK9tvXDiReLmkx5rtINYT0ftC0WNubHuPEYfj+X0TdSrfUXxcxh/HtSBTEwkgpRyUbKj3dShze3UZN9/tsPTAQ9nkoKA5wFQe9tQOnPwfN6CZIg8yM71yix06EuzLqXHtRKLAPhOPOI3BgCvq0DTc+CMNA5uQi9OEAzOP0UldpCg1i4yXVYGk+IbUbkA3XmzbXgrllYCXWVB7vhSgTof335A0dfoExgCtElAXT4IgU07ZFiz37/eiSz4bvhgGP7orQBjJgiwkW+4NokxK9e96Ss26s4jgAujoxwFY+ixKfImiI0k1Ugmip780nHor6MBlGg1lXZHyu2dLfc8aZJOPy3g6GTwjeWJ111u3J7qZ8DN9GJ41SuwVwcluQLMuHYii4M2W4YivDnQPbHVmQTZ4hWIVFuBgAVrvmvRUtjUatqOMuNCSn3qqpZbQKjUDiUFMT6jt72GymgobY/rWQROvPxtUflf2nQLRIftUKWyk9zENEn+T4k9PL6vhtisIewAd5RextoPXxcQy0bhfKRnWDzKLbcMh46EEoTCZLV0yqBgLgRMe7wZ3NZuwznAO3X/8+wz6n8QXhhLsXX5JvXjZ5H10kMTsGxvP+ad7uA7HuxqTPokBgHsq1U=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(5660300002)(1076003)(2616005)(8676002)(8936002)(956004)(2906002)(4326008)(316002)(83380400001)(6512007)(508600001)(6486002)(26005)(38350700002)(6506007)(38100700002)(186003)(86362001)(6666004)(52116002)(66946007)(66556008)(66476007)(11606007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: BokOdLcr1KwZElWXx4WOzntQX/MBRLi0LNtxaoanwPIbTw6Y9acwhUTR5qp7C+v3qQpefCIzJZqydtQyFLGNh6i/Jz0TDIPg65zblPJGNV8Ppeb/jYXa6Aw7TTEcYVSwH2lSchB5hQgLLK/rOz161cDg7YTqS+UeoRzqbgaXM5XQPfg8GyZhkHlD8JlQLA7ek0lsMlYbV5eFsVeEp0GeESRtuk7NU/Q8vDBoUHujgIrljzODaY64XvmCvEOsh2s+Nxyl0gPP0Cdq0JgqI7Gk/WHguVLAc8SyzFmJDGRNAOoJBgKOGFbWe1os4/t9B8BHRtimPGIt8l+IV4BbwTsT0ULSIFEGwjm9BqAaWg5Fd7IvHJPDudO7mudv664eo8QBNthh2XEamUnJSN5zRt8aN8GS3fn0XyDH30L8bnYXM/xtnhvwEgcQUqEUobBuLUbjPmk89EqRAu4sE9rkpFHHTlmPVOlX1xwMumo9XftJ3lApE1KIArzK1ZQ2/EMxKxGBRBfcORcSvzmo3QJgcCiRslu5v9no7+S5gZCM2DVgv7tYzmz641w+i1JMA3mjWcdZnktVY62Ja7Whna/+iz4HDJkTHJCOpD18yhqgwmhSpLs9iTiwWNmCwp2nnPQLONr3Z+06ibxfvqDiBaYYaxs1DzeXW7ag+vz3H3FKdsxdd9rz2lMrfZOOPFtlDv+wuClh5BbgUbxwgKMCDO59NHto954FZnI9l3R88fN9Xo//isQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4177.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(36756003)(316002)(66556008)(16576012)(4326008)(956004)(26005)(186003)(2616005)(38100700002)(8936002)(31696002)(5660300002)(2906002)(6916009)(8676002)(7416002)(53546011)(31686004)(6486002)(54906003)(66946007)(508600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kZV5haAifoTA+l1fasOAeY7zSmd5+/hxuab5J01qxAjYoyipQcGUtRDg5Xat?=
- =?us-ascii?Q?knnhKtlty8k5nSMAiKIe3a9WeH9hMfpWRhYrGePuvcuH9UC3OkEKlZW4dxFq?=
- =?us-ascii?Q?h+mkUTsH1q/n9ExUGtCgCfFvusveG7GiY76FFB8k+aSeBIYRwBYX8jxK4Zxo?=
- =?us-ascii?Q?41VNx9CrkNaUnIXPRD40+PTLHuB8XlNK3dcY1ckWQf3jkpkRmXssPjqgbPiB?=
- =?us-ascii?Q?fVukjHfUAl3P4OV0AdMR7FfROD8fHsi08fC7zR2pEJTP4LbkZJI/4jAKFtUi?=
- =?us-ascii?Q?aqshRs2qAXqce5bfKr29ThuqcFUYXgfG9uQ6V8+U4QUbstMrV7w9ghvFv0lT?=
- =?us-ascii?Q?Ea35tPj6PoFMdxP4LcRlOjw3xYQKhinDjU2h9/Gf3FqDpk77QvUK+ejg1P4+?=
- =?us-ascii?Q?WmobMCoNM6zxByBotHpeVCaiQH+nu10tPN5yrirj/gByhTSc8S1kB3vA8lFG?=
- =?us-ascii?Q?tVWDdCj626ZHQzhTIEM5jdJyNLA0GsMLRUuQ6WCHL1N6FBlZawxS0+N1ibNj?=
- =?us-ascii?Q?Zpz8KZ500Iwit8MN1YGhS8c93ZAeE3T0M//HyDa+wd2+Ab+KdmD1qXWWYKTz?=
- =?us-ascii?Q?raG6BoPvIxonnBtDYeBz0qevfrAo9khEmSg2HsNeBKodXOyotCDIYsqQo6n2?=
- =?us-ascii?Q?H6uxJV7JLBSE/B/0FUBccyKDNt5pgekjEUBUBC+mtrnqx+3tSrvnAJAD91ZL?=
- =?us-ascii?Q?/vA9JxSvYgOBXKVuOFY2Y6Sdvzg3NxbRDSUwdOT97rTeIOYrifeNMcwJn5em?=
- =?us-ascii?Q?7+k8Z/7X16C36E/eUNK8SRxcy3FG7nm7l1lA8t4O9JvezyLJoZfmykEmbhGC?=
- =?us-ascii?Q?GydTjmPhN8z40mSl6XZo4WBIbEeNVXR+PZS+qwH5GFUTeQC5YjNMR3T7hCg9?=
- =?us-ascii?Q?Z/2xCd1vZ34tlQ1psRC/uevAOuWP6Wmiet1PbIks6RPbuB3GMx4vXo4Sg25p?=
- =?us-ascii?Q?7SJMbWDn+YV18B0hleRE3M6oNNhCzLJx5XXTDaFsFeUgXzXoBB6qWUMEHjZM?=
- =?us-ascii?Q?5a979es8Zg2zh+D43AjBoKBfiqG2EHxVDb92euqRcK1EyE3XV0/Znvy+Bw4m?=
- =?us-ascii?Q?MSKVXxTDAkI0OrYAM3Euk6eJHug7Qbh1DNF3yisfF1wRO16U3fkCF5htmvCC?=
- =?us-ascii?Q?2VGlHCIIdEMSeoCAI4XWbmHb2VpizqaCM/0ttSptIWekR/CgAsGJzr4nJPco?=
- =?us-ascii?Q?eZux3BH55qeq7cuQsrLGM3exeyg6Z7BeG5HtAYgwzb+V2+UjvPrf/UCy0gTR?=
- =?us-ascii?Q?ZVtIC6JW+7IAb9ZAV19slS1j+TsB8ZByFcOZ6dtYKqRtqlrmtrTXB/Fu7pK1?=
- =?us-ascii?Q?1ObVS8fSL4hcFa29LEo+INCp?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd31b02f-8f00-4746-0223-08d97d7ba6f0
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dEhtZ0hEdDE1Y2ZBWVdkT2pTazEveHByNUJmVXpZekhYaVZyVEtCdVYxV3pz?=
+ =?utf-8?B?TVF6ZC9RdUp3S016eXRFRHNzU2l2TTBXNHdhNXhFMFBmZW1Bd3JaTElNalhI?=
+ =?utf-8?B?RVhlRkZtdHhTTHk5b0FYcHN4ekxBTzZILzR5L1hmaGRpZlZMVG04Z0huRkNF?=
+ =?utf-8?B?NCtUV1A5VWtyemFoMlgxZU1yTVNlNkU5MXRiNmNoemNjT3VyN2NBRTN6U2VR?=
+ =?utf-8?B?NC9mOHI0ai9vQUNUY1FhK0VacGxDTGVvOS9vRjUyQUR0U3hpR1UrVjVJSDI4?=
+ =?utf-8?B?bzdUa0JNck9BY2hpaDBBYW16RU1zc3lFaXlXNThsOW83RUVXdjVsQ0svUjg2?=
+ =?utf-8?B?WmJyTSthR3lHYmdCdmZQUnBZdlcrdXZCZXNEU2hjbWZvUHV5Z0xLc29iUFhm?=
+ =?utf-8?B?WFlFdk90SC9Beko4MGcrSFZwSVViczdxUkwrekpmaVpmbnJsaHVFaXFia054?=
+ =?utf-8?B?UEJJYWRUREpCUXlrNW9tZ1MwUEpxYk5jUVVrN21rUFZIQzFNZ0k4WVpyaTVp?=
+ =?utf-8?B?MWVZR2twdFpmVEtFckdjVHdGTEpqb2FXbkgvcFpJcFRQYjVLdnNRVkhDVyt0?=
+ =?utf-8?B?V2N5RW5Qa3pLd3BHT1cxdDRtNzhKRzI0b2Y5MGFISkJTdkxscHVjYjJxTERG?=
+ =?utf-8?B?ajVSMktubTE3MmVwUFhKM2pJOWJLNi8vTE9BVDRPZEdPVVM0bXhZUDRZRU1X?=
+ =?utf-8?B?N2VUem8zS0tIKzluNXl0RWVWNUhvbGg3VEZwYlh1QTJ6QnhVcGYweWtSVWgy?=
+ =?utf-8?B?c0V3aUo4RjlCSVlTeC9vVHhoQjhQWGtaSXNZeC82eEdheDI0Y1J6dEprNjgz?=
+ =?utf-8?B?Y2pOcno4aE4xbk9qazBPSEV0OXFyd0VFZGo1YlpIaW40K3ZUL1BBVnVNN2F6?=
+ =?utf-8?B?Y1lQTmxaQzJIQ0RGcGNIamxhbytCTkowald3ZUI1Y3I4RzRtbFpocnpqZksr?=
+ =?utf-8?B?SXo0ZzhKaDlPZDU4VnBnWmFzbEx2WjR3emQxQUdyaExQWE41YTMyWmlaNEdD?=
+ =?utf-8?B?bVk2dVYrQ0hqRnJMckxScjVuajh0emVxZDg5Tk16M0dWT0dVOWFHOXFyeE5W?=
+ =?utf-8?B?NDFSM2h4QmhFL3g2VklyRFVpdzNmUFpuMDZsREt4QUpLY2FIOWV6WGsyWjV1?=
+ =?utf-8?B?VjR2emNlMEtMR25nUnc5WFJqUmlvVktMSDFPUWVCb2NVcE5xWW92WHE5K2Rr?=
+ =?utf-8?B?V2EvdHc1S01kZlRtYmZqT0JKaDFiSktnOUFycjNrVkJmTmI1UDZkZ3hVcnBQ?=
+ =?utf-8?B?TUNVbGozdldwNURld3ZWU3A2SEVIdUZFUXZQYndjSGdpK3Niamk5dThNNXRT?=
+ =?utf-8?B?RTlIRkQwd3ZubWV3UUh2MG16M3FoZ2FxTmdiTlVNM2VIeEY4eFptRmgzQVdV?=
+ =?utf-8?B?T2xFbGpwWDc1dWVOcU82bG8wNWJ1bGdwRFdSejBpQTg5K3hIVVp0dnJFU0s4?=
+ =?utf-8?B?Skh2cXFVVUU3QkVuSE54U2lSdHZGVGh5TFJ0azZlTmZ4VDFCS1hlZlBuYWVB?=
+ =?utf-8?B?RTVFMzNqN1NGMFVTeDNkdEFJSDFnM05ERVlVZ0FQMFNFVjMzVGplbGMvc1oy?=
+ =?utf-8?B?djJjYy9QZ1BHemEwMTFubUVad3VLMFRkVkt2UmkyRnUzUzVHZ3FMenlzV280?=
+ =?utf-8?B?RDdxZDRQcTNSa0M0Q2JsYjNxbUkvY0h4NmhOSDNmazk4azVsNlJiM05aS1hz?=
+ =?utf-8?B?NlhGbnVka0JtSXhmS3cvWHFYZ3o4Mng4NXl2dnpuYm4zOUZvZkRJWHRLWWpY?=
+ =?utf-8?Q?mpautK3AqvP4Pq82rYhfjLSzpNdST5w3kN7i/Vi?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 753a3182-4ccc-4cc2-a6a3-08d97d7c15e0
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4177.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 03:47:08.6681
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 03:50:15.3862
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QvgmgnnAUkfuHleGFSpOaSFa7SJAS4Fh623E4Zmy62pPLESgqOlgUp5MUnLYMxSEp+rh7ClaznYS2eDW4bcXXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB4460
+X-MS-Exchange-CrossTenant-UserPrincipalName: t06ouw+hBQervS7O76OG+Wi9n6pDhDBMVSA4PiSslludwV2kE61SNCkz0QtfNpAvu9SQ8Q4ixYkqC7SDDOWKmQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2775
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At present, overlayfs provides overlayfs inode to users. Overlayfs
-inode provides ovl_aops with noop_direct_IO to avoid open failure
-with O_DIRECT. But some compressed filesystems, such as erofs and
-squashfs, don't support direct_IO.
+Hi Rafael,
 
-Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
-will read file through this way. This will cause overlayfs to access
-a non-existent direct_IO function and cause panic due to null pointer:
+On 9/1/2021 5:45 AM, Rafael J. Wysocki wrote:
+> On Wed, Sep 1, 2021 at 4:14 AM Deepak Sharma <deesharm@amd.com> wrote:
+>>
+>> On 8/25/21 11:07 AM, Rafael J. Wysocki wrote:
+>>> On Thu, Aug 19, 2021 at 2:43 AM Deepak Sharma <deepak.sharma@amd.com> wrote:
+>>>> AMD CPU which support C3 shares cache. Its not necessary to flush the
+>>>> caches in software before entering C3. This will cause performance drop
+>>>> for the cores which share some caches. ARB_DIS is not used with current
+>>>> AMD C state implementation. So set related flags correctly.
+>>>>
+>>>> Signed-off-by: Deepak Sharma <deepak.sharma@amd.com>
+>>> Applied as 5.15 material under the edited subject "x86: ACPI: cstate:
+>>> Optimize C3 entry on AMD CPUs", thanks!
+>> I might need to send subsequent patch for this. Can you please point me
+>> to git and branch where this has been merged.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
 
-Kernel panic - not syncing: CFI failure (target: 0x0)
-CPU: 6 PID: 247 Comm: loop0
-Call Trace:
- panic+0x188/0x45c
- __cfi_slowpath+0x0/0x254
- __cfi_slowpath+0x200/0x254
- generic_file_read_iter+0x14c/0x150
- vfs_iocb_iter_read+0xac/0x164
- ovl_read_iter+0x13c/0x2fc
- lo_rw_aio+0x2bc/0x458
- loop_queue_work+0x4a4/0xbc0
- kthread_worker_fn+0xf8/0x1d0
- loop_kthread_worker_fn+0x24/0x38
- kthread+0x29c/0x310
- ret_from_fork+0x10/0x30
+Still I am not able to see this patch merged on linux-next branch.
 
-The filesystem may only support direct_IO for some file types. For
-example, erofs supports direct_IO for uncompressed files. So reset
-f_mapping->a_ops to NULL when the file doesn't support direct_IO to
-fix this problem.
+Thanks,
 
-Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs")
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
----
-Change since v1:
- - Return error to user rather than fall back to buffered io. (Chengguang Xu)
+Deepak
 
- fs/overlayfs/file.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index d081faa55e83..38118d3b46f8 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -157,6 +157,10 @@ static int ovl_open(struct inode *inode, struct file *file)
- 	if (IS_ERR(realfile))
- 		return PTR_ERR(realfile);
- 
-+	if ((f->f_flags & O_DIRECT) && (!realfile->f_mapping->a_ops ||
-+		!realfile->f_mapping->a_ops->direct_IO))
-+		file->f_mapping->a_ops = NULL;
-+
- 	file->private_data = realfile;
- 
- 	return 0;
--- 
-2.25.1
-
+>>>> ---
+>>>>    arch/x86/kernel/acpi/cstate.c | 15 +++++++++++++++
+>>>>    1 file changed, 15 insertions(+)
+>>>>
+>>>> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
+>>>> index 7de599eba7f0..62a5986d625a 100644
+>>>> --- a/arch/x86/kernel/acpi/cstate.c
+>>>> +++ b/arch/x86/kernel/acpi/cstate.c
+>>>> @@ -79,6 +79,21 @@ void acpi_processor_power_init_bm_check(struct acpi_processor_flags *flags,
+>>>>                    */
+>>>>                   flags->bm_control = 0;
+>>>>           }
+>>>> +       if (c->x86_vendor == X86_VENDOR_AMD) {
+>>>> +               /*
+>>>> +                * For all AMD CPUs that support C3, caches should not be
+>>>> +                * flushed by software while entering C3 type state. Set
+>>>> +                * bm->check to 1 so that kernel doesn't need to execute
+>>>> +                * cache flush operation.
+>>>> +                */
+>>>> +               flags->bm_check = 1;
+>>>> +               /*
+>>>> +                * In current AMD C state implementation ARB_DIS is no longer
+>>>> +                * used. So set bm_control to zero to indicate ARB_DIS is not
+>>>> +                * required while entering C3 type state.
+>>>> +                */
+>>>> +               flags->bm_control = 0;
+>>>> +       }
+>>>>    }
+>>>>    EXPORT_SYMBOL(acpi_processor_power_init_bm_check);
+>>>>
+>>>> --
+>>>> 2.25.1
+>>>>
