@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF256413FC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC73413FC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhIVCuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 22:50:39 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19995 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhIVCui (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 22:50:38 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDjLv341nzbmbj;
-        Wed, 22 Sep 2021 10:44:55 +0800 (CST)
-Received: from kwepemm600005.china.huawei.com (7.193.23.191) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 22 Sep 2021 10:49:06 +0800
-Received: from DESKTOP-R64PNO0.china.huawei.com (10.67.102.35) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 22 Sep 2021 10:49:06 +0800
-From:   JinHui GUO <guojinhui@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <guojinhui@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <peterz@infradead.org>, <pmladek@suse.com>,
-        <valentin.schneider@arm.com>
-Subject: Re: [PATCH] [RFC] watchdog/softlockup: Fix softlockup_stop_all() hungtask bug
-Date:   Wed, 22 Sep 2021 10:49:05 +0800
-Message-ID: <20210922024905.1488-1-guojinhui@huawei.com>
-X-Mailer: git-send-email 2.32.0.windows.2
-In-Reply-To: <20210916124413.89735fd447667b627552df55@linux-foundation.org>
-References: <20210916124413.89735fd447667b627552df55@linux-foundation.org>
+        id S229814AbhIVCup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 22:50:45 -0400
+Received: from out0.migadu.com ([94.23.1.103]:26640 "EHLO out0.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230229AbhIVCun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 22:50:43 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.102.35]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1632278953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SP3h9uvIfQUYyLgWGd0dYYt1XTjq02DEM9WtTipdzus=;
+        b=AIgWb197+pb8H0WDkh0Ks1zqTEX0Fox34J3FV6wKYbPo589pBxczqyIavGAS8hGqdBOwSp
+        hNMbPkCN2nQqIu6PcjWxaD5aeWH9N9lseQNYH3DxWMBjb4MV3/paql8a6SIgyuIcwAw+Jb
+        RaL710wMrAu4kEQKdjI/G7YrdEQM1ZU=
+Date:   Wed, 22 Sep 2021 02:49:13 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   yajun.deng@linux.dev
+Message-ID: <b821ee0489f71a90a74c1d905c4fa530@linux.dev>
+Subject: Re: [PATCH linux-next v2] arm64: PCI: Introduce
+ pcibios_free_irq() helper function
+To:     "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210921154731.GA2756@lpieralisi>
+References: <20210921154731.GA2756@lpieralisi>
+ <20210826060406.12571-1-yajun.deng@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> x86_64 allnoconfig:
-
-> ld: arch/x86/kernel/cpu/cacheinfo.o: in function `populate_cache_leaves':
-> cacheinfo.c:(.text+0xa27): undefined reference to `cpu_llc_shared_map'
-> ld: cacheinfo.c:(.text+0xa49): undefined reference to `cpu_llc_shared_map'
-
-> Because the new for_each_cpu() now references `mask' and some code isn't
-> able to handle that change.  There are probably other instances of this
-> across all our architectures and configs.
-
-There is another bug in file arch/x86/include/asm/smp.h. The per-cpu value
-cpu_llc_shared_map is defined in file arch/x86/kernel/smpboot.c. But the
-file arch/x86/kernel/smpboot.c would not be compiled while CONFIG_SMP is
-not defined.
-
-declared in file arch/x86/include/asm/smp.h:
-DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_llc_shared_map);
-
-defined in file arch/x86/kernel/smpboot.c:
-DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_llc_shared_map);
-
-the stack:
-cpu_llc_shared_map
-cpu_llc_shared_mask
-__cache_amd_cpumap_setup
-__cache_cpumap_setup
-populate_cache_leaves
-
-CONFIG_SMP in makefile arch/x86/kernel/Makefile:
-obj-$(CONFIG_SMP)               += smpboot.o
-
-cpu_llc_shared_mask is just used in arch/x86/kernel/cpu/cacheinfo.c by for_each_cpu
-while CONFIG_SMP is not defined:
-./arch/x86/kernel/cpu/cacheinfo.c:889:          for_each_cpu(i, cpu_llc_shared_mask(cpu)) {
-./arch/x86/kernel/cpu/cacheinfo.c:894:                  for_each_cpu(sibling, cpu_llc_shared_mask(cpu)) {
-./arch/x86/include/asm/smp.h:22:static inline struct cpumask *cpu_llc_shared_mask(int cpu)
-
-It can be fixed just as follow:
-
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h1
-index 630ff08532be..f5d3ca5696b3 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -21,7 +21,12 @@ DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
-
- static inline struct cpumask *cpu_llc_shared_mask(int cpu)
- {
-+#ifdef CONFIG_SMP
-        return per_cpu(cpu_llc_shared_map, cpu);
-+#else
-+ /* cpu_llc_shared_map is not defined while !CONFIG_SMP */
-+ return cpu_all_mask;
-+#endif
- }
-
- DECLARE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_cpu_to_apicid);
+September 21, 2021 11:47 PM, "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.c=
+om> wrote:=0A=0A> On Thu, Aug 26, 2021 at 02:04:06PM +0800, Yajun Deng wr=
+ote:=0A> =0A>> pcibios_alloc_irq() will be called in pci_device_probe(), =
+but there=0A>> hasn't pcibios_free_irq() in arm64 architecture correspond=
+ it.=0A>> pcibios_free_irq() is an empty weak function in drivers/pci/pci=
+-driver.c.=0A> =0A> "pcibios_alloc_irq() is a weak function called to all=
+ocate IRQs for=0A> a device in pci_device_probe(); arm64 implements it wi=
+th=0A> ACPI specific code to enable IRQs for a device.=0A> =0A> When a de=
+vice is removed (pci_device_remove()) the pcibios_free_irq()=0A> counterp=
+art is called.=0A> =0A> Current arm64 code does not implement a pcibios_f=
+ree_irq() function,=0A> and therefore, the weak empty stub is executed, w=
+hich means that the=0A> IRQ for a device are not properly disabled when a=
+ device is removed.=0A> =0A> Add an arm64 pcibios_free_irq() to undo the =
+actions carried out in=0A> pcibios_alloc_irq()."=0A> =0A> This is a stub =
+commit log. Then you need to describe the bug you=0A> are fixing (if any,=
+ or it is just code inspection ?)=0A> =0AIt is just code inspection.=0A>>=
+ So add pcibios_free_irq() for correspond it. This will be called=0A>> in=
+ pci_device_remove().=0A>> =0A>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=0A>> v2: remove the change in pcibios_alloc_irq(), =
+and modify the commit log.=0A>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=0A> =0A> Don't add versioning in the commit log, it=
+ does not belong here.=0A> =0A> I don't think we should send this to stab=
+le kernels straight away,=0A> it is best to make sure we are not triggeri=
+ng any regressions first.=0A> =0A> Lorenzo=0A> =0A>> Signed-off-by: Yajun=
+ Deng <yajun.deng@linux.dev>=0A>> ---=0A>> arch/arm64/kernel/pci.c | 7 ++=
++++++=0A>> 1 file changed, 7 insertions(+)=0A>> =0A>> diff --git a/arch/a=
+rm64/kernel/pci.c b/arch/arm64/kernel/pci.c=0A>> index 2276689b5411..6ffd=
+92126f65 100644=0A>> --- a/arch/arm64/kernel/pci.c=0A>> +++ b/arch/arm64/=
+kernel/pci.c=0A>> @@ -29,6 +29,13 @@ int pcibios_alloc_irq(struct pci_dev=
+ *dev)=0A>> =0A>> return 0;=0A>> }=0A>> +=0A>> +void pcibios_free_irq(str=
+uct pci_dev *dev)=0A>> +{=0A>> + if (!acpi_disabled)=0A>> + acpi_pci_irq_=
+disable(dev);=0A>> +}=0A>> +=0A>> #endif=0A>> =0A>> /*=0A>> --=0A>> 2.32.=
+0
