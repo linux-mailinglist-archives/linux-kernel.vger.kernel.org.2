@@ -2,87 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A0741506E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F69B415070
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237177AbhIVTY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:24:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59376 "EHLO mail.kernel.org"
+        id S237188AbhIVT0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:26:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233678AbhIVTY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:24:27 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61F6561038;
-        Wed, 22 Sep 2021 19:22:53 +0000 (UTC)
-Date:   Wed, 22 Sep 2021 15:22:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Collingbourne <pcc@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Colin Ian King <colin.king@canonical.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Evgenii Stepanov <eugenis@google.com>
-Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
-Message-ID: <20210922152250.4e7c869a@gandalf.local.home>
-In-Reply-To: <29f1822d-e4cd-eedb-bea8-619db1d56335@redhat.com>
-References: <20210922061809.736124-1-pcc@google.com>
-        <29f1822d-e4cd-eedb-bea8-619db1d56335@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233678AbhIVT0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 15:26:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F1BA60FE8;
+        Wed, 22 Sep 2021 19:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632338688;
+        bh=PJO7tzJ/Irs+TFM64SrlIqLdQjdFxHkXls5kKgEVSIc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LtYoVq14WFCNxsfE6ITFzc+2u0p/141TSsD6W8YVRcd/Fih8iQU/yibo51TZ9iVxT
+         +TGp4HaBALxxOvgKJ1nJVQjdGkB7unTU35aCk384ReTJD5CALbaCBFIxCh77jyN/9M
+         +cCBNzSc+H4HeAdfQSd4e/lNQn/h+0UcodaVveCWq6LmvK7GvNhHvPrxVj5QHL7IB7
+         1lpPpcLmACaX4woMcsi16Cfx8w0V3q+Wj2kCZXOKp7wT1moXu8CNNW08Z/+l7HgW4C
+         gD6miofbFwT0gKTuEilECU5QIFhvwRmrQyWDV3Buxi5RzejQTxKw8T76md43ZrrBtx
+         WYCNBN5KZuckA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1D7905C0A54; Wed, 22 Sep 2021 12:24:48 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 12:24:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Guillaume Morin <guillaume@morinfr.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: call_rcu data race patch
+Message-ID: <20210922192448.GB880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210917191555.GA2198@bender.morinfr.org>
+ <20210917211148.GU4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210917213404.GA14271@bender.morinfr.org>
+ <20210917220700.GV4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918003933.GA25868@bender.morinfr.org>
+ <20210918040035.GX4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918070836.GA19555@bender.morinfr.org>
+ <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210920160540.GA31426@bender.morinfr.org>
+ <20210922191406.GA31531@bender.morinfr.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922191406.GA31531@bender.morinfr.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 19:46:47 +0200
-David Hildenbrand <david@redhat.com> wrote:
-
-> > All signals except SIGKILL and SIGSTOP are masked for the interval
-> > between the prctl() and the next syscall in order to prevent handlers
-> > for intervening asynchronous signals from issuing syscalls that may
-> > cause uaccesses from the wrong syscall to be logged.  
+On Wed, Sep 22, 2021 at 09:14:07PM +0200, Guillaume Morin wrote:
+> On 20 Sep 18:05, Guillaume Morin wrote:
+> > On 19 Sep  9:35, Paul E. McKenney wrote:
+> > > How is the testing of the patches going?  (I am guessing nothing yet
+> > > based on the failure times, but who knows?)
+> > 
+> > Nothing yet. I think we'll have a better idea by wednesday.
 > 
-> Stupid question: can this be exploited from user space to effectively 
-> disable SIGKILL for a long time ... and do we care?
+> I am little afraid of jinxing it :) but so far so good. I have the a
+> patched kernel running on a few machines (including my most "reliable
+> crasher") and they've been stable so far.
+> 
+> It's definitely too early to declare victory though. I will keep you
+> posted.
 
-I first misread it too, but then caught my mistake reading it a second
-time. It says "except SIGKILL". So no, it does not disable SIGKILL.
+Here is hoping!  ;-)
 
--- Steve
+							Thanx, Paul
