@@ -2,101 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38BA41544C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E7F41544A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238637AbhIVX5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 19:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
+        id S238627AbhIVX5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238631AbhIVX5t (ORCPT
+        with ESMTP id S238505AbhIVX5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 19:57:49 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A306C061574;
-        Wed, 22 Sep 2021 16:56:18 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id k24so4485853pgh.8;
-        Wed, 22 Sep 2021 16:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8GeJbL+pJAm/EEcPNSUQ0H815jUQQBV0JAJ1k+wFbAw=;
-        b=fLwby+9MqsGywGa75uLqPn+OZKy4r7MyL627jF1XB3vUoaI/hSyMfF6iec25aAb8Vi
-         l1eppt6OERCN/xJhOG7UXw6PrbKKKeaVVYMXWl5C03nBaNRqmoPOMo/Nt5qPIR3cGYEt
-         VRKoTxglziaAyjz826FLwr/VhXkBWysbz4rU79LREHLhYDRqrqSP7jjDXVZFJvdy4jWd
-         CWZg5zDUKYaBpeeM8zobANjahoY7xJdf1Z2bhEhfFlhDvTQ0s4zcrsA2IT2j7V9gElIL
-         amIy9LqTMt3EuXbvmkFZHfDh+e45AEOvoNcX3mqfrhbaB/uE/JNtDkHbXTmuR31o01R6
-         Zjzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8GeJbL+pJAm/EEcPNSUQ0H815jUQQBV0JAJ1k+wFbAw=;
-        b=1YeOrXbOd1XjdYSt4daG1qpZZVZvbCyxAtTaCpW2HzxvnRjVLnWQCEYRMgmI8p89cx
-         ov9s8Wb1jRjVLeXOXbc98kk49r99yO1cpSlLj/+xUOrC/yzGlDbPihl52XWL1vzhgqvK
-         o/IqCbWfxavqzAUfGKVBLnr2VK5YmegAmCwl7XyJbUf+uJdyA2y/cS0cZdY5pOs4Q/2r
-         bWEPBkeROPhM039wknnCJG752XYUa2BKBa0z+e3vcE5kV+eK4S+4ZS8lT2C0Hh3pPYuV
-         1C9nZDZ9P6abfoXzcSWyML6rY1iCcKKqS1DqSS/W9Y1rW/wlfYNQ/1HUP6o3PtjOcp94
-         c5bg==
-X-Gm-Message-State: AOAM533d7Ywofx8payBmrk9Uv7sw3ay/uRRLA8N3kPn84SzuIIqJ7y9Y
-        PSwZQYktrgzbdeqU7G5hy6U=
-X-Google-Smtp-Source: ABdhPJy0RcjDGsoi5EgJ+AtjgaucjarMi7aKc30L/g+lbRhenYwQWd7f22F1aFJtBKpNLClesolNhg==
-X-Received: by 2002:a63:d002:: with SMTP id z2mr1480578pgf.234.1632354977727;
-        Wed, 22 Sep 2021 16:56:17 -0700 (PDT)
-Received: from ilya-fury.hpicorp.net ([2602:61:734d:a400::b87])
-        by smtp.gmail.com with ESMTPSA id qe17sm3332445pjb.39.2021.09.22.16.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 16:56:17 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: [PATCH net] net: ethernet: mtk_eth_soc: avoid creating duplicate offload entries
-Date:   Wed, 22 Sep 2021 16:55:48 -0700
-Message-Id: <20210922235548.26300-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 22 Sep 2021 19:57:34 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFFEC061574;
+        Wed, 22 Sep 2021 16:56:03 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 12089E52;
+        Thu, 23 Sep 2021 01:56:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632354962;
+        bh=xt5a5frTZ4VAbHQhcId47xRLhbugeZ/AH58yn8Mv6WI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ATlK6e8eiFcYih2LQ4zAt7/OpHq+sg+QloUakcdgqNcZ/K+mDJdUwq/4MB5VZb9ou
+         6FgW1Houaap1QzJE9nbvhFrG5cTx51D4OWFvQu1n0ga6l/uw+6lllDtkol18liubBU
+         v6fhHan+4Gtya6+VUZzrVF97bwtW5zozhYFiYLDM=
+Date:   Thu, 23 Sep 2021 02:56:00 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Geert Uytterhoeven <geert@glider.be>,
+        linux-renesas-soc@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: falcon-cpu: Add DSI display
+ output
+Message-ID: <YUvCkA57x1VncKAV@pendragon.ideasonboard.com>
+References: <20210901235330.1611086-1-kieran.bingham@ideasonboard.com>
+ <20210901235330.1611086-4-kieran.bingham@ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210901235330.1611086-4-kieran.bingham@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+Hi Kieran,
 
-Sometimes multiple CLS_REPLACE calls are issued for the same connection.
-rhashtable_insert_fast does not check for these duplicates, so multiple
-hardware flow entries can be created.
-Fix this by checking for an existing entry early
+Thank you for the patch.
 
-Fixes: 502e84e2382d ("net: ethernet: mtk_eth_soc: add flow offloading support")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
----
- drivers/net/ethernet/mediatek/mtk_ppe_offload.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Thu, Sep 02, 2021 at 12:53:30AM +0100, Kieran Bingham wrote:
+> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> Provide the display output using the sn65dsi86 MIPI DSI bridge.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> ---
+>  .../boot/dts/renesas/r8a779a0-falcon-cpu.dtsi | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+> index a0a1a1da0d87..5530bb82de6b 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+> @@ -66,6 +66,15 @@ memory@700000000 {
+>  		reg = <0x7 0x00000000 0x0 0x80000000>;
+>  	};
+>  
+> +	reg_1p2v: regulator-1p2v {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "fixed-1.2V";
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-index b5f68f66d42a..7bb1f20002b5 100644
---- a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-+++ b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
-@@ -186,6 +186,9 @@ mtk_flow_offload_replace(struct mtk_eth *eth, struct flow_cls_offload *f)
- 	int hash;
- 	int i;
- 
-+	if (rhashtable_lookup(&eth->flow_table, &f->cookie, mtk_flow_ht_params))
-+		return -EEXIST;
-+
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_META)) {
- 		struct flow_match_meta match;
- 
+1.8V is a weird voltage for a 1.2V regulator :-)
+
+> +		regulator-boot-on;
+> +		regulator-always-on;
+> +	};
+> +
+>  	reg_1p8v: regulator-1p8v {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "fixed-1.8V";
+> @@ -83,6 +92,46 @@ reg_3p3v: regulator-3p3v {
+>  		regulator-boot-on;
+>  		regulator-always-on;
+>  	};
+> +
+> +	mini-dp-con {
+> +		compatible = "dp-connector";
+> +		label = "CN5";
+> +		type = "mini";
+> +
+> +		port {
+> +			mini_dp_con_in: endpoint {
+> +				remote-endpoint = <&sn65dsi86_out>;
+> +			};
+> +		};
+> +	};
+> +
+> +	sn65dsi86_refclk: sn65dsi86-refclk {
+
+I'd name the node x6-clk after the components on the board (or clk-x6).
+The label can stay the same, up to you.
+
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <38400000>;
+> +	};
+> +};
+> +
+> +&dsi0 {
+> +	status = "okay";
+> +
+> +	clocks = <&cpg CPG_MOD 415>,
+> +		 <&cpg CPG_CORE R8A779A0_CLK_DSI>,
+> +		 <&extal_clk>;
+> +	clock-names = "fck", "dsi", "extal";
+
+As discussed separately, this should go to r8a79a0.dtsi, and the last
+clock should be named "pll".
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +
+> +	ports {
+> +		port@1 {
+> +			endpoint {
+> +				remote-endpoint = <&sn65dsi86_in>;
+> +				data-lanes = <1 2 3 4>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&du {
+> +	status = "okay";
+>  };
+>  
+>  &extal_clk {
+> @@ -114,6 +163,41 @@ &i2c1 {
+>  
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+> +
+> +	sn65dsi86@2c {
+> +		compatible = "ti,sn65dsi86";
+> +		reg = <0x2c>;
+> +
+> +		clocks = <&sn65dsi86_refclk>;
+> +		clock-names = "refclk";
+> +
+> +		interrupt-parent = <&gpio1>;
+> +		interrupts = <24 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +		vccio-supply = <&reg_1p8v>;
+> +		vpll-supply = <&reg_1p8v>;
+> +		vcca-supply = <&reg_1p2v>;
+> +		vcc-supply = <&reg_1p2v>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				sn65dsi86_in: endpoint {
+> +					remote-endpoint = <&dsi0_out>;
+> +				};
+> +			};
+> +
+> +			port@1 {
+> +				reg = <1>;
+> +				sn65dsi86_out: endpoint {
+> +					remote-endpoint = <&mini_dp_con_in>;
+> +				};
+> +			};
+> +		};
+> +	};
+>  };
+>  
+>  &i2c6 {
+
 -- 
-2.33.0
+Regards,
 
+Laurent Pinchart
