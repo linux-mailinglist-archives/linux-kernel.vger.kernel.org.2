@@ -2,103 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08CB41531E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A924415323
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238216AbhIVWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237834AbhIVWA3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:00:29 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D67C061574;
-        Wed, 22 Sep 2021 14:58:59 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso3413779pjb.3;
-        Wed, 22 Sep 2021 14:58:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rMBeU/71xEPqn3ZCfK2c1H6EFmFZ1vtxEagd/NgluDo=;
-        b=nJaJX1L1Jc9ae4su39y8VecCuh+/vHKtQhHDFIEl/e/OHm5irOXp0pW/1pjT8n7vZ6
-         gO7FOn4jlZEDWeHDtm5aUFzfUPviM7bObmILAY1RGRrAgqP1tZDD0ClK8wkhsyM8fBpL
-         rV0xtol3/Cz9KGWMevriO5Joh36NTEFcwYfnp4BMeoi8cnMQYTvPj55Th6HF4gS8J0T+
-         CG7Lb/wdVlLkLrnf7thPDtIOgtG0eUlAwPzYWkLstFpO+sm5nMpDoRWymzL5vQ6gLWcJ
-         xk0EvEPUJwrIqZgxQye9gIwR3fPw3P3/JRqHgpQ5dh9P7ZN3vOaL2Hnp2WCaIfkXQwzl
-         eF+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rMBeU/71xEPqn3ZCfK2c1H6EFmFZ1vtxEagd/NgluDo=;
-        b=dzzpcXHrin2q5tUfdghsGMTzhp+CuKePhE1loqfq1dK1wKsPg7Dhz76UTxHD6ScUpK
-         LcSN5Rvrvhk4U4iFrVNvSqpUyCD2RrflH+mFlqMMLv1RUd6IWir94LcI5/zLvdG5UsAh
-         9y3WazKiq5ou50VbCt/gJNY2iB1iDe/gOmK9ZFOuW/JJ5OhbcPs19b2YkD3Qaf7z1gUK
-         KRMuYr8Vl8ByVu7uPqE1RglubHg5uSnlFCZlx01hX7aCmI0W1Wk93+PeYfwHPuJYKQ8J
-         BSGpdv+AHy0OF5JjxWwZYIITb+kzyFzbinFR+qIMwfxB5RJmlEKZ8//cA9nUHCOhJG7D
-         RuGw==
-X-Gm-Message-State: AOAM5338lSS3iwGV1rE7xt5xlSwqynscijmLWhwxaUOq5LXNeTRyuS1o
-        TVmC9588NrxDVp9ZSBd3I5vjyaXu4yI=
-X-Google-Smtp-Source: ABdhPJzpAheJ6Ku5Z/vFaZMTZsvnC1yk9Gkgs3akEYvrhjtlQLoDpKkSnHu+7wcqZgAsjL0fMArFAA==
-X-Received: by 2002:a17:902:e04d:b0:13a:70c9:11b8 with SMTP id x13-20020a170902e04d00b0013a70c911b8mr1164001plx.82.1632347938124;
-        Wed, 22 Sep 2021 14:58:58 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x10sm6516891pjv.57.2021.09.22.14.58.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 14:58:57 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT)
-Subject: [PATCH stable 5.4] ARM: Qualify enabling of swiotlb_init()
-Date:   Wed, 22 Sep 2021 14:58:51 -0700
-Message-Id: <20210922215851.312769-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S238232AbhIVWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:01:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232149AbhIVWBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 18:01:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDE7D60FA0;
+        Wed, 22 Sep 2021 21:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632347972;
+        bh=ngjmm4cmMiMIEt95rrv698WM+E37o6Vz7k4Cz4Cp860=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=WRahBnhh2n5TtOHLfkI2yKoMFBFM6uv28SVms/qst3AmMm7Xxb6n1r+BgKIryPtWW
+         49nFZ3LsP4KsyXIjtXSFeaX+EVzUnSZroxam9q4uoJ6WBhKspYNgdiFuQsGcM+M/87
+         2yBIG+UO9twSZhNisZM+bepJYB//HhYK3Lzcc5WMKFCppJQ4s5EPH0hrB0QnHcZUOL
+         N3up/PKxaas5DDt25escY15N1HgYShl2M/99oPZgYKnsk6LHZgFzSeeWCYlz+f1Bt+
+         vdjXllmIFpz/7MTwUFOdxM9IqYrk2JrHz+m9aBbCjmYWBmqGjEO/39s/qRqlhrzKYp
+         eVpS5ZJsssdUQ==
+Date:   Wed, 22 Sep 2021 16:59:30 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
+Message-ID: <20210922215930.GA231505@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d5bba9a6a1067989c3291fa2929528578812334.1632305919.git.leonro@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit fcf044891c84e38fc90eb736b818781bccf94e38 upstream
+On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> 
+> The PCI core uses the VF index internally, often called the vf_id,
+> during the setup of the VF, eg pci_iov_add_virtfn().
+> 
+> This index is needed for device drivers that implement live migration
+> for their internal operations that configure/control their VFs.
+>
+> Specifically, mlx5_vfio_pci driver that is introduced in coming patches
+> from this series needs it and not the bus/device/function which is
+> exposed today.
+> 
+> Add pci_iov_vf_id() which computes the vf_id by reversing the math that
+> was used to create the bus/device/function.
+> 
+> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 
-We do not need a SWIOTLB unless we have DRAM that is addressable beyond
-the arm_dma_limit. Compare max_pfn with arm_dma_pfn_limit to determine
-whether we do need a SWIOTLB to be initialized.
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Fixes: ad3c7b18c5b3 ("arm: use swiotlb for bounce buffering on LPAE configs")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
----
- arch/arm/mm/init.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
+same thing as pci_iov_vf_id() by iterating through VFs until it finds
+one with a matching devfn (although it *doesn't* check for a matching
+bus number, which seems like a bug).
 
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 0804a6af4a3b..5a3641b5ec2c 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -469,7 +469,11 @@ static void __init free_highpages(void)
- void __init mem_init(void)
- {
- #ifdef CONFIG_ARM_LPAE
--	swiotlb_init(1);
-+	if (swiotlb_force == SWIOTLB_FORCE ||
-+	    max_pfn > arm_dma_pfn_limit)
-+		swiotlb_init(1);
-+	else
-+		swiotlb_force = SWIOTLB_NO_FORCE;
- #endif
- 
- 	set_max_mapnr(pfn_to_page(max_pfn) - mem_map);
--- 
-2.25.1
+Maybe that should use pci_iov_vf_id()?
+
+> ---
+>  drivers/pci/iov.c   | 14 ++++++++++++++
+>  include/linux/pci.h |  7 ++++++-
+>  2 files changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> index dafdc652fcd0..e7751fa3fe0b 100644
+> --- a/drivers/pci/iov.c
+> +++ b/drivers/pci/iov.c
+> @@ -33,6 +33,20 @@ int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id)
+>  }
+>  EXPORT_SYMBOL_GPL(pci_iov_virtfn_devfn);
+>  
+> +int pci_iov_vf_id(struct pci_dev *dev)
+> +{
+> +	struct pci_dev *pf;
+> +
+> +	if (!dev->is_virtfn)
+> +		return -EINVAL;
+> +
+> +	pf = pci_physfn(dev);
+> +	return (((dev->bus->number << 8) + dev->devfn) -
+> +		((pf->bus->number << 8) + pf->devfn + pf->sriov->offset)) /
+> +	       pf->sriov->stride;
+> +}
+> +EXPORT_SYMBOL_GPL(pci_iov_vf_id);
+> +
+>  /*
+>   * Per SR-IOV spec sec 3.3.10 and 3.3.11, First VF Offset and VF Stride may
+>   * change when NumVFs changes.
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index cd8aa6fce204..4d6c73506e18 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -2153,7 +2153,7 @@ void __iomem *pci_ioremap_wc_bar(struct pci_dev *pdev, int bar);
+>  #ifdef CONFIG_PCI_IOV
+>  int pci_iov_virtfn_bus(struct pci_dev *dev, int id);
+>  int pci_iov_virtfn_devfn(struct pci_dev *dev, int id);
+> -
+> +int pci_iov_vf_id(struct pci_dev *dev);
+>  int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn);
+>  void pci_disable_sriov(struct pci_dev *dev);
+>  
+> @@ -2181,6 +2181,11 @@ static inline int pci_iov_virtfn_devfn(struct pci_dev *dev, int id)
+>  {
+>  	return -ENOSYS;
+>  }
+> +static inline int pci_iov_vf_id(struct pci_dev *dev)
+> +{
+> +	return -ENOSYS;
+> +}
+> +
+
+Drop the blank line to match the surrounding stubs.
+
+>  static inline int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn)
+>  { return -ENODEV; }
 
