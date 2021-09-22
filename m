@@ -2,203 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F2A415318
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08CB41531E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238200AbhIVV4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:56:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55303 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238177AbhIVV4q (ORCPT
+        id S238216AbhIVWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237834AbhIVWA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:56:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632347715;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EqS74/naZJE5TFiYTVoASdxvH6bMfJJ7gf6aZytwa8E=;
-        b=fOcb+AyR4lfukS1E79gsJxdN2f2MGbsnXK12g1ns4NSAUS65HXn2szX2w/F0p1ureyla8W
-        Vkw6gsCUfZIGXT4lKIDcsDaOXnDv9uuEIrxQRgFmbC7JLWn1jNQZosoqQs9CjFmFQ9VJsK
-        DUKP7fGsh7zrY5jnDdQ5Mm2fRYtmx1E=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-oukwyRY2NaeioVrcFIC_-Q-1; Wed, 22 Sep 2021 17:55:14 -0400
-X-MC-Unique: oukwyRY2NaeioVrcFIC_-Q-1
-Received: by mail-wr1-f70.google.com with SMTP id r7-20020a5d6947000000b0015e0f68a63bso3377491wrw.22
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:55:14 -0700 (PDT)
+        Wed, 22 Sep 2021 18:00:29 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D67C061574;
+        Wed, 22 Sep 2021 14:58:59 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso3413779pjb.3;
+        Wed, 22 Sep 2021 14:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rMBeU/71xEPqn3ZCfK2c1H6EFmFZ1vtxEagd/NgluDo=;
+        b=nJaJX1L1Jc9ae4su39y8VecCuh+/vHKtQhHDFIEl/e/OHm5irOXp0pW/1pjT8n7vZ6
+         gO7FOn4jlZEDWeHDtm5aUFzfUPviM7bObmILAY1RGRrAgqP1tZDD0ClK8wkhsyM8fBpL
+         rV0xtol3/Cz9KGWMevriO5Joh36NTEFcwYfnp4BMeoi8cnMQYTvPj55Th6HF4gS8J0T+
+         CG7Lb/wdVlLkLrnf7thPDtIOgtG0eUlAwPzYWkLstFpO+sm5nMpDoRWymzL5vQ6gLWcJ
+         xk0EvEPUJwrIqZgxQye9gIwR3fPw3P3/JRqHgpQ5dh9P7ZN3vOaL2Hnp2WCaIfkXQwzl
+         eF+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EqS74/naZJE5TFiYTVoASdxvH6bMfJJ7gf6aZytwa8E=;
-        b=jsF/d9rDdpWjfWSo3M5edTh3mqb+JTFFarh8RfUK9UjbwL/HVvmHfhZ0TqpVRdJCBl
-         IVHNrt4BtcuTSIJKQlxsRFmb9LXPhoBatWWAn5iE2nZOdXqDmFw4CAmPceyHAy6v1W0R
-         u//C1T1i4+27H4EbN47tdx35GU8P5EJI+nLO/+nMY2d7uywv0K26FkSF0nb89/Fpz1iA
-         H/tj8bOBi61PfrFozBgONf0eaKXVfsGLUPx6IjCg5y0RjnWoXWKzFT8T8m5eFdXRPrTu
-         i1uelVdFwobfs9UHGoL40GWyLkijGtlT4Tcb472xCmxo+nN2xobkt9A0PDIEi3s5yrVX
-         qTLQ==
-X-Gm-Message-State: AOAM5303+9VVvAlJ+ht4SiSinELGJ2wuabuF1gZ0LKlik4X32COsa1R+
-        FfICSVHytp66J0Ufmd0lr7jNf+gW7ekczws9f5a2KzEXkKvWr+MevB36mrR30WPOb3yMrQ3ykoQ
-        SczlmS5ESF+IsX/EsS2cynmHw
-X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr1129281wml.167.1632347713149;
-        Wed, 22 Sep 2021 14:55:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVCyOa1n0vvgmvEeAypXrQOVKWHUlZSyrtCl4h3iBY0nCmoSj6j0xWQ0v4gqILM3CSE2nzWg==
-X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr1129262wml.167.1632347712965;
-        Wed, 22 Sep 2021 14:55:12 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id o12sm2825631wms.15.2021.09.22.14.55.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rMBeU/71xEPqn3ZCfK2c1H6EFmFZ1vtxEagd/NgluDo=;
+        b=dzzpcXHrin2q5tUfdghsGMTzhp+CuKePhE1loqfq1dK1wKsPg7Dhz76UTxHD6ScUpK
+         LcSN5Rvrvhk4U4iFrVNvSqpUyCD2RrflH+mFlqMMLv1RUd6IWir94LcI5/zLvdG5UsAh
+         9y3WazKiq5ou50VbCt/gJNY2iB1iDe/gOmK9ZFOuW/JJ5OhbcPs19b2YkD3Qaf7z1gUK
+         KRMuYr8Vl8ByVu7uPqE1RglubHg5uSnlFCZlx01hX7aCmI0W1Wk93+PeYfwHPuJYKQ8J
+         BSGpdv+AHy0OF5JjxWwZYIITb+kzyFzbinFR+qIMwfxB5RJmlEKZ8//cA9nUHCOhJG7D
+         RuGw==
+X-Gm-Message-State: AOAM5338lSS3iwGV1rE7xt5xlSwqynscijmLWhwxaUOq5LXNeTRyuS1o
+        TVmC9588NrxDVp9ZSBd3I5vjyaXu4yI=
+X-Google-Smtp-Source: ABdhPJzpAheJ6Ku5Z/vFaZMTZsvnC1yk9Gkgs3akEYvrhjtlQLoDpKkSnHu+7wcqZgAsjL0fMArFAA==
+X-Received: by 2002:a17:902:e04d:b0:13a:70c9:11b8 with SMTP id x13-20020a170902e04d00b0013a70c911b8mr1164001plx.82.1632347938124;
+        Wed, 22 Sep 2021 14:58:58 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x10sm6516891pjv.57.2021.09.22.14.58.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 14:55:12 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 23:55:10 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>, eranian@google.com
-Subject: Re: [RFC PATCH 0/5] Start aligning perf test with kunit style
-Message-ID: <YUumPj7Oa1HvVGW/@krava>
-References: <20210922081959.390059-1-irogers@google.com>
+        Wed, 22 Sep 2021 14:58:57 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT)
+Subject: [PATCH stable 5.4] ARM: Qualify enabling of swiotlb_init()
+Date:   Wed, 22 Sep 2021 14:58:51 -0700
+Message-Id: <20210922215851.312769-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922081959.390059-1-irogers@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 01:19:53AM -0700, Ian Rogers wrote:
-> Perf test uses its own structs and code layout that differs from kunit
-> that was more recently introduced to the kernel. Besides consistency,
-> it is hoped that moving in the direction of kunit style will enable
-> reuse of infrastructure like test output formatting for continuous
-> testing systems. For example:
-> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
-> 
-> The motivation for this restructuring comes from wanting to be able to
-> tag tests with a size:
-> https://lore.kernel.org/linux-perf-users/CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
-> To have more exhaustive and slower running tests.  This isn't
-> something kunit currently supports, nor is the execution of python and
-> shell tests, but it seems sensible to work on an approach with kunit
-> rather to invent a new wheel inside of perf.
-> 
-> These initial patches are just refactoring the main test suite
-> definitions to be in a more kunit style. Kunit isn't depended upon, it
-> is hoped that this can be done in later patches for the sake of
-> consistency.
+commit fcf044891c84e38fc90eb736b818781bccf94e38 upstream
 
-seems good.. how far away from kunit is the code now?
+We do not need a SWIOTLB unless we have DRAM that is addressable beyond
+the arm_dma_limit. Compare max_pfn with arm_dma_pfn_limit to determine
+whether we do need a SWIOTLB to be initialized.
 
-> 
-> v1. Built/tested on x86.
-> 
-> Ian Rogers (5):
->   perf test: Use macro for "suite" declarations
->   perf test: Use macro for "suite" definitions
->   perf test: Make each test/suite its own struct.
->   perf test: Move each test suite struct to its test
->   perf test: Rename struct test to test_suite
-> 
->  tools/perf/arch/arm/include/arch-tests.h      |   2 +-
->  tools/perf/arch/arm/tests/arch-tests.c        |  21 +-
->  tools/perf/arch/arm/tests/vectors-page.c      |   2 +-
->  tools/perf/arch/arm64/include/arch-tests.h    |   2 +-
->  tools/perf/arch/arm64/tests/arch-tests.c      |  15 +-
->  tools/perf/arch/powerpc/include/arch-tests.h  |   2 +-
->  tools/perf/arch/powerpc/tests/arch-tests.c    |  15 +-
+Fixes: ad3c7b18c5b3 ("arm: use swiotlb for bounce buffering on LPAE configs")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+---
+ arch/arm/mm/init.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-I can run/test this on ppc/arm if you don't have any
-
-jirka
-
->  tools/perf/arch/x86/include/arch-tests.h      |  14 +-
->  tools/perf/arch/x86/tests/arch-tests.c        |  47 +-
->  tools/perf/arch/x86/tests/bp-modify.c         |   2 +-
->  tools/perf/arch/x86/tests/insn-x86.c          |   2 +-
->  tools/perf/arch/x86/tests/intel-cqm.c         |   2 +-
->  .../x86/tests/intel-pt-pkt-decoder-test.c     |   2 +-
->  tools/perf/arch/x86/tests/rdpmc.c             |   2 +-
->  tools/perf/arch/x86/tests/sample-parsing.c    |   2 +-
->  tools/perf/tests/api-io.c                     |   6 +-
->  tools/perf/tests/attr.c                       |   4 +-
->  tools/perf/tests/backward-ring-buffer.c       |   4 +-
->  tools/perf/tests/bitmap.c                     |   4 +-
->  tools/perf/tests/bp_account.c                 |  10 +-
->  tools/perf/tests/bp_signal.c                  |   8 +-
->  tools/perf/tests/bp_signal_overflow.c         |   8 +-
->  tools/perf/tests/bpf.c                        |  22 +-
->  tools/perf/tests/builtin-test.c               | 441 ++++--------------
->  tools/perf/tests/clang.c                      |  18 +-
->  tools/perf/tests/code-reading.c               |   4 +-
->  tools/perf/tests/cpumap.c                     |  10 +-
->  tools/perf/tests/demangle-java-test.c         |   4 +-
->  tools/perf/tests/demangle-ocaml-test.c        |   4 +-
->  tools/perf/tests/dlfilter-test.c              |   4 +-
->  tools/perf/tests/dso-data.c                   |  10 +-
->  tools/perf/tests/dwarf-unwind.c               |   2 +-
->  tools/perf/tests/event-times.c                |   4 +-
->  tools/perf/tests/event_update.c               |   4 +-
->  tools/perf/tests/evsel-roundtrip-name.c       |   4 +-
->  tools/perf/tests/evsel-tp-sched.c             |   4 +-
->  tools/perf/tests/expand-cgroup.c              |   6 +-
->  tools/perf/tests/expr.c                       |   4 +-
->  tools/perf/tests/fdarray.c                    |   7 +-
->  tools/perf/tests/genelf.c                     |   6 +-
->  tools/perf/tests/hists_cumulate.c             |   4 +-
->  tools/perf/tests/hists_filter.c               |   4 +-
->  tools/perf/tests/hists_link.c                 |   4 +-
->  tools/perf/tests/hists_output.c               |   4 +-
->  tools/perf/tests/is_printable_array.c         |   4 +-
->  tools/perf/tests/keep-tracking.c              |   4 +-
->  tools/perf/tests/kmod-path.c                  |   4 +-
->  tools/perf/tests/llvm.c                       |  22 +-
->  tools/perf/tests/maps.c                       |   4 +-
->  tools/perf/tests/mem.c                        |   4 +-
->  tools/perf/tests/mem2node.c                   |   4 +-
->  tools/perf/tests/mmap-basic.c                 |   4 +-
->  tools/perf/tests/mmap-thread-lookup.c         |   4 +-
->  tools/perf/tests/openat-syscall-all-cpus.c    |   5 +-
->  tools/perf/tests/openat-syscall-tp-fields.c   |   4 +-
->  tools/perf/tests/openat-syscall.c             |   5 +-
->  tools/perf/tests/parse-events.c               |   4 +-
->  tools/perf/tests/parse-metric.c               |   4 +-
->  tools/perf/tests/parse-no-sample-id-all.c     |   4 +-
->  tools/perf/tests/pe-file-parsing.c            |   6 +-
->  tools/perf/tests/perf-hooks.c                 |   4 +-
->  tools/perf/tests/perf-record.c                |   4 +-
->  tools/perf/tests/perf-time-to-tsc.c           |  10 +-
->  tools/perf/tests/pfm.c                        |  16 +-
->  tools/perf/tests/pmu-events.c                 |  19 +-
->  tools/perf/tests/pmu.c                        |   4 +-
->  tools/perf/tests/python-use.c                 |   4 +-
->  tools/perf/tests/sample-parsing.c             |   4 +-
->  tools/perf/tests/sdt.c                        |   6 +-
->  tools/perf/tests/stat.c                       |  10 +-
->  tools/perf/tests/sw-clock.c                   |   4 +-
->  tools/perf/tests/switch-tracking.c            |   4 +-
->  tools/perf/tests/task-exit.c                  |   4 +-
->  tools/perf/tests/tests.h                      | 179 ++++---
->  tools/perf/tests/thread-map.c                 |  10 +-
->  tools/perf/tests/thread-maps-share.c          |   4 +-
->  tools/perf/tests/time-utils-test.c            |   4 +-
->  tools/perf/tests/topology.c                   |   4 +-
->  tools/perf/tests/unit_number__scnprintf.c     |   4 +-
->  tools/perf/tests/vmlinux-kallsyms.c           |   5 +-
->  tools/perf/tests/wp.c                         |  22 +-
->  81 files changed, 543 insertions(+), 618 deletions(-)
-> 
-> -- 
-> 2.33.0.464.g1972c5931b-goog
-> 
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 0804a6af4a3b..5a3641b5ec2c 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -469,7 +469,11 @@ static void __init free_highpages(void)
+ void __init mem_init(void)
+ {
+ #ifdef CONFIG_ARM_LPAE
+-	swiotlb_init(1);
++	if (swiotlb_force == SWIOTLB_FORCE ||
++	    max_pfn > arm_dma_pfn_limit)
++		swiotlb_init(1);
++	else
++		swiotlb_force = SWIOTLB_NO_FORCE;
+ #endif
+ 
+ 	set_max_mapnr(pfn_to_page(max_pfn) - mem_map);
+-- 
+2.25.1
 
