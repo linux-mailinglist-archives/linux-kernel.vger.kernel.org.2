@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7ACB4141FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57CD4141FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbhIVGha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:37:30 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48576 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbhIVGh3 (ORCPT
+        id S232801AbhIVGjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:39:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51194 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232718AbhIVGjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:37:29 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 3838720088;
-        Wed, 22 Sep 2021 06:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632292559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gfr/hCvClxRucXRWXVi9j4H3NbdWGDnOwvguA7u39Ow=;
-        b=HtSIpnf9pQm4aZX/3TDQ/7hMoIMCyuZdaSVXu6WSN0LnlHXIChmNEp2elztJUQ6NcIoqXt
-        /dgyrxtNMvwXJ5+MP+CtIUHVwc82v3o28GlFAfRqRTd1V1xOqSH1jC2kKV9rb2HYNU5IvZ
-        ZobXXuLmL1vsePCzWgQHidLiT/OYkWs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632292559;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gfr/hCvClxRucXRWXVi9j4H3NbdWGDnOwvguA7u39Ow=;
-        b=2fmclXILXteY+PXRkmIXPwujIpqkWWlQ7qC4T0X+JAkKlyKFYPRRULwfaRpOcfJG7Wi+LW
-        baCqRnZN766XacAw==
-Received: from localhost.localdomain (unknown [10.100.208.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 08C34A3B81;
-        Wed, 22 Sep 2021 06:35:58 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     linux@armlinux.org.uk
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Wed, 22 Sep 2021 02:39:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632292700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z3XTCa1nu8hCtlYTFFK2GZognBOtLDAkX/kYxcYF1XA=;
+        b=DYR/cNYjYXx0ukC/9ghCQ44fMKmGf4EmHP54m3+KELovum0qTcLDOKnDi2hEmzViIjpX21
+        HFCodzhVpFmWdtnp2MqpEKrqs+nsEDUdBfT0UZ1NTDzcQYTF6Z0iLqI24GuG2QTaEKtuwN
+        cs3HIsVqwqgI4DMQTgjKzqTbIRJXDu4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-CFq32KV0My62Ze-qr0UW3A-1; Wed, 22 Sep 2021 02:38:18 -0400
+X-MC-Unique: CFq32KV0My62Ze-qr0UW3A-1
+Received: by mail-wr1-f70.google.com with SMTP id z2-20020a5d4c82000000b0015b140e0562so1175755wrs.7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 23:38:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z3XTCa1nu8hCtlYTFFK2GZognBOtLDAkX/kYxcYF1XA=;
+        b=xJvhw8XZ13EJTaFP+McxJ8i8Y6SH80OI6WkI7k5wriQTViOx1hVTHot1Abf6k7luRZ
+         Wiw8tKwhOrTc7qPomEKvuGt+sqldXbU4YLWycQdfP2F2KQRLqx1Exq1D2sf9VGGA97aQ
+         g52wg95KiZJY9aW3TEIxR8/RETNryhvYhVztx2sqRaVMq8zJdC6c8NfJLgigmyX00tHb
+         Y6xwS2uO5kJzPyorzc9q+vjAfHPK2bNZcENoI+0OTNU27of/XxroFslU5wBf1T5x5rEY
+         S9Y8GoKJ3hjA5x+CQ2xTpLIXuqRTDXIET+atKODNXD9fHXjbOkEmdi7qbX8ElCxr3qaA
+         LWHQ==
+X-Gm-Message-State: AOAM533IxPjfwjvMGwBSBfQae17ABZksdbVcIvLZ9a7zFMFAOPzlvDRN
+        TCCdv5rBuQXk8jMjt/6siPjKv02VT5twh9DTxZ3sFcWJ0gueY153eqxd7XLFETMTRZ0ieM1N/Jx
+        g1H2fcCs7Id5+ELQw0LzMLxOx
+X-Received: by 2002:a05:600c:21c8:: with SMTP id x8mr8614019wmj.163.1632292697325;
+        Tue, 21 Sep 2021 23:38:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywCmZIrNrFYOLYwz4uLurAI8KkuEnxjxQSJf2bjooMgzy2h0qoOTiWQbU4UgbH2lcfc2iQrA==
+X-Received: by 2002:a05:600c:21c8:: with SMTP id x8mr8613976wmj.163.1632292697089;
+        Tue, 21 Sep 2021 23:38:17 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j21sm1162153wrd.48.2021.09.21.23.38.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 23:38:16 -0700 (PDT)
+Subject: Re: [PATCH v3 11/16] KVM: x86: More precisely identify NMI from guest
+ when handling PMI
+To:     Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v2] MAINTAINERS: ARM/VT8500, remove defunct e-mail
-Date:   Wed, 22 Sep 2021 08:35:58 +0200
-Message-Id: <20210922063558.26417-1-jslaby@suse.cz>
-X-Mailer: git-send-email 2.33.0
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+References: <20210922000533.713300-1-seanjc@google.com>
+ <20210922000533.713300-12-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d444303f-7ee5-7ddc-8eae-64d1e6d4862a@redhat.com>
+Date:   Wed, 22 Sep 2021 08:38:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210922000533.713300-12-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux@prisktech.co.nz is defunct:
-4.1.2 <linux@prisktech.co.nz>: Recipient address rejected: Domain not found
+On 22/09/21 02:05, Sean Christopherson wrote:
+> Note, this also doesn't completely prevent false positives if perf
+> somehow ends up calling into KVM, e.g. an NMI can arrive in host after
+> KVM sets its flag.
 
-Remove it from MAINTAINERS and make thus the ARM/VT8500 entry an orphan.
+s/calling into KVM/being called from KVM/ ?
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
----
-[v2]
-- switch also Maintained -> Orphan
+Not sure about what you meant though.  The code is nice, so
 
- MAINTAINERS | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aafc58437abd..08ed07f745f0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2821,9 +2821,8 @@ F:	arch/arm/mach-pxa/include/mach/vpac270.h
- F:	arch/arm/mach-pxa/vpac270.c
- 
- ARM/VT8500 ARM ARCHITECTURE
--M:	Tony Prisk <linux@prisktech.co.nz>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
--S:	Maintained
-+S:	Orphan
- F:	Documentation/devicetree/bindings/i2c/i2c-wmt.txt
- F:	arch/arm/mach-vt8500/
- F:	drivers/clocksource/timer-vt8500.c
--- 
-2.33.0
+Paolo
 
