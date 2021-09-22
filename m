@@ -2,159 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23E441537B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B01B415379
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238342AbhIVWbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
+        id S238321AbhIVWbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238236AbhIVWbv (ORCPT
+        with ESMTP id S238297AbhIVWbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:31:51 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AE6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:30:20 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id m11so5555490ioo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:30:20 -0700 (PDT)
+        Wed, 22 Sep 2021 18:31:45 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D03C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:30:14 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id y89so5152178ede.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:30:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZVmQQIFn/AGiG5dhWv6Igf7NGcQ53Z5OL98C9qRWHKg=;
-        b=JP1y2Rel5ayOpQ1MHdxi2P0JuzTzGjrDWiOHJw6RnGpgetZIjkudo5xs+TCZAyg8Q0
-         8jsq6SgQn62e28sJRzegap15Pnl3Db1UV7hYg7klWkFxjtlx4yoKU/qihIGuRE0yI9bG
-         PZ0ZE+rOjgz+qC1mbLna3jW5oNOcvcfTRUPVJUQ+7ZL0KOsE5QLdwShlPYXbedcJHJ8/
-         pG87g7s04hpigyN1r/Y6BvO9HGaKBcJWy0Tqm65d4GRcXPOlT2IBey9pgQfckb9B2TGG
-         e4pnvpNAkPLg/TYHAorbMUd477HGoctYswpc0YsJlT8Rv3X9nhKdJ8X8S03mKupCV61e
-         RuSA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wXC6LYNz8AXWFQhSRKFE1AFMEvwwQlC/Sl6fleL8KZ0=;
+        b=VufFyAV64PL+EgdP7RsUCgsqFby83tF5bKUW6pTBCKNx75SDzIHMXbgxfbi3tAs1+G
+         xs0QSgTSWQW9pvrQ0sw2l+khhcnPlhBONlqeZGWFllU7Y4/udbbOGJ81kYwXxfQeRZzd
+         hSrlMJDzdg5yKqY6rdJ4Rgausk2rVwNLyGrY4UmZagKamFs7hd75shFFY9s1RR85qANd
+         XOFOpYuYA76Py8vxyin9r5VBPZMDSn9i01WYU8uPU8iEWKI5nnGxyHImO79gxFF7wNkc
+         qra4GgrPAoSQME/AQy1OEAqCrsDpCIkbOidz6MUGZquzNGpfc8M6PIWneoN22saqVlLY
+         eWlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZVmQQIFn/AGiG5dhWv6Igf7NGcQ53Z5OL98C9qRWHKg=;
-        b=Cz31eAzuUMIyGd3rW4g7dziaiA9I30bIKlVEOcjHxNd7oEFVSu8q2BmbGPrCdwGhBg
-         ylMtIqtnp2SjCddeZWhXAUnn2kfgZFlHVisWSUOPEsMVSehVZbSuTChOBoVqPlTCPZwM
-         x+ZBWqntMi502eqhmYv4PcKqBK88XWpLePm7+sukE2wtBDTlq/uOtE7twxgS/sWthe6+
-         /7y+oFZtnuQL20BWFa+Ra6P6Ge0SiJa6+pHUG9BRq8Wiq2Dmj3gvMMdtJqdAMjmoQTWY
-         BjdGYpjhanh7ic7t5iVeyYf08fQZavA91HnaJC62YT1E8KN8V1Y+EC+zqiYI6dc5IyAk
-         HdqQ==
-X-Gm-Message-State: AOAM531I3iT5kQbRWLS1IoMQyzthV7AxK2gAz4/7unEIPV2tSAm2ORX2
-        kqQbxf8va3IqcWwgSCpVnBozE8ihTzP0uA6saZMSiw==
-X-Google-Smtp-Source: ABdhPJxKU5KnplQiK3wJ89dgP2Z6r6YkDM6wqIouxA5E+GzMS6P4D6NNbrETbSLxCx5gPHjIjiIP6whaMvYs6GgW/z0=
-X-Received: by 2002:a5d:950d:: with SMTP id d13mr1142651iom.138.1632349819768;
- Wed, 22 Sep 2021 15:30:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wXC6LYNz8AXWFQhSRKFE1AFMEvwwQlC/Sl6fleL8KZ0=;
+        b=QJXzFmJQ1ygY0o/sNBXHp1mrucx/eLTkrXWpUN2GNEUV5suTsZggoaGX/9r9fJ+/ie
+         hfUz8IetwTKcFh4+H87XgxVqdJ9W0Z8AuC0IAPGB+zSlMEjf1h3d+EyOj630Y2hjo+zf
+         lwe/8R2SdrCMdV0VBN1n8L7diHLGgqKLfnyOKZE1dkd9gYBh2NOeEp/DjnRS7zxmZ013
+         B83Qo5q4Ek/dzamtc1aAoSMHJfc9swzj24aXi2rmdyrVJy/PjL6AOvaTrh7vBjzQZcmR
+         aLhMLfITLo4m5D29sYzMUN/TKmmbaO2Nw+MTUtUdqDJotvbVEnpTv847922yy8ihI6qf
+         qiCg==
+X-Gm-Message-State: AOAM531aTh4jcoKzGOA2mpJbRbaCftn3hhHrjIFcIeesjiHKkfb9emxM
+        MOesyawkW7Rm7cXdQQ9piSc=
+X-Google-Smtp-Source: ABdhPJzhiC2AkZX1mfE7TokL3YKEtXilW/4kMcPB6yZUx7y7CiyT7oAGRKlBjg8rD+3SSxcfc0I+2w==
+X-Received: by 2002:a17:907:9604:: with SMTP id gb4mr1727777ejc.142.1632349813602;
+        Wed, 22 Sep 2021 15:30:13 -0700 (PDT)
+Received: from tom-desktop.station (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
+        by smtp.gmail.com with ESMTPSA id b38sm1913069edf.46.2021.09.22.15.30.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 15:30:13 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Edmundo Carmona Antoranz <eantoranz@gmail.com>,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: vt6655: Replace camel case variable name
+Date:   Thu, 23 Sep 2021 00:29:45 +0200
+Message-Id: <20210922222959.614321-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210921163323.944352-1-axelrasmussen@google.com>
- <YUoaDr2wsW8wtk5Z@t490s> <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
- <YUowr6phZU4v7dds@t490s> <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
- <YUp438W5p5VHL1Ch@t490s> <CAJHvVciZc0mpcw8OSPk71YsVzCTajY+ikymcD3+zBJKsZynYkg@mail.gmail.com>
- <YUtoyNic4Jxfv9f7@t490s> <CAJHvVcg6PRCK_JcYEhRqq2vPyypnc+ySOtLhtFf5GrcQjimsJQ@mail.gmail.com>
- <YUulep3+YADkwlUu@t490s>
-In-Reply-To: <YUulep3+YADkwlUu@t490s>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 22 Sep 2021 15:29:42 -0700
-Message-ID: <CAJHvVcijQdS_hfUnasz7BhhQeiHmNu=C5j8xfX=uWsfVO9-+Eg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        James Houghton <jthoughton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 2:52 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Wed, Sep 22, 2021 at 01:54:53PM -0700, Axel Rasmussen wrote:
-> > On Wed, Sep 22, 2021 at 10:33 AM Peter Xu <peterx@redhat.com> wrote:
-> > >
-> > > Hello, Axel,
-> > >
-> > > On Wed, Sep 22, 2021 at 10:04:03AM -0700, Axel Rasmussen wrote:
-> > > > Thanks for discussing the design Peter. I have some ideas which might
-> > > > make for a nicer v2; I'll massage the code a bit and see what I can
-> > > > come up with.
-> > >
-> > > Sure thing.  Note again that as I don't have a strong opinion on that, feel
-> > > free to keep it.  However if you provide v2, I'll read.
-> > >
-> > > [off-topic below]
-> > >
-> > > Another thing I probably have forgot but need your confirmation is, when you
-> > > worked on uffd minor mode, did you explicitly disable thp, or is it allowed?
-> >
-> > I gave a more detailed answer in the other thread, but: currently it
-> > is allowed, but this was a bug / oversight on my part. :) THP collapse
-> > can break the guarantees minor fault registration is trying to
-> > provide.
->
-> I've replied there:
->
-> https://lore.kernel.org/linux-mm/YUueOUfoamxOvEyO@t490s/
->
-> We can try to keep the discussion unified there regarding this.
->
-> > But there's another scenario: what if the collapse happened well
-> > before registration happened?
->
-> Maybe yes, but my understanding of the current uffd-minor scenario tells me
-> that this is fine too.  Meanwhile I actually have another idea regarding minor
-> mode, please continue reading.
->
-> Firstly, let me try to re-cap on how minor mode is used in your production
-> systems: I believe there should have two processes A and B, if A is the main
-> process, B could be the migration process.  B migrates pages in the background,
-> while A so far should have been stopped and never ran.  When we want to start
-> A, we should register A with uffd-minor upon the whole range (note: I think so
-> far A does not have any pgtable mapped within uffd-minor range).  Then any page
-> access of A should kick B and asking "whether it is the latest page", if yes
-> then UFFDIO_CONTINUE, if no then B modifies the page, plus UFFDIO_CONTINUE
-> afterwards.  Am I right above?
->
-> So if that's the case, then A should have no page table at all.
->
-> Then, is that a problem if the shmem file that A maps contains huge thps?  I
-> think no - because UFFDIO_CONTINUE will only install small pages.
->
-> Let me know if I'm understanding it right above; I'll be happy to be corrected.
+Work in progress: replace camel case variables
 
-Right, except that our use case is even more similar to QEMU: the code
-doing UFFDIO_CONTINUE / demand paging, and the code running the vCPUs,
-are in the same process (same mm) - just different threads.
+byLocalID -> by_local_id
 
->
-> Actually besides this scenario, I'm also thinking of another scenario of using
-> minor fault in a single process - that's mostly what QEMU is doing right now,
-> as QEMU has the vcpu threads and migration thread sharing a single mm/pgtable.
-> So I think it'll be great to have a new madvise(MADV_ZAP) which will tear down
-> all the file-backed memory pgtables of a specific range.  I think it'll suite
-> perfectly for the minor fault use case, and it can be used for other things
-> too.  Let me know what you think about this idea, and whether that'll help in
-> your case too (e.g., if you worry a current process A mapped huge shmem thp
-> somewhere, we can use madvise(MADV_ZAP) to drop it).
+Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+---
+ drivers/staging/vt6655/baseband.c    | 2 +-
+ drivers/staging/vt6655/card.c        | 2 +-
+ drivers/staging/vt6655/channel.c     | 2 +-
+ drivers/staging/vt6655/device.h      | 2 +-
+ drivers/staging/vt6655/device_main.c | 6 +++---
+ drivers/staging/vt6655/dpc.c         | 2 +-
+ drivers/staging/vt6655/key.c         | 2 +-
+ drivers/staging/vt6655/mac.c         | 4 ++--
+ drivers/staging/vt6655/mac.h         | 2 +-
+ drivers/staging/vt6655/rxtx.c        | 2 +-
+ 10 files changed, 13 insertions(+), 13 deletions(-)
 
-Yes, this would be convenient for our implementation too. :) There are
-workarounds if the feature doesn't exist, but it would be nice to
-have. It's also useful for memory poisoning, I think, if the host
-decides some page(s) are "bad" and wants to intercept any future guest
-accesses to those page(s).
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index 9bd1ff36f9af..ff596bdcee8d 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -1994,7 +1994,7 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 	int        ii;
+ 	void __iomem *iobase = priv->port_off_set;
+ 	unsigned char by_rf_type = priv->byRFType;
+-	unsigned char by_local_id = priv->byLocalID;
++	unsigned char by_local_id = priv->by_local_id;
+ 
+ 	if (by_rf_type == RF_RFMD2959) {
+ 		if (by_local_id <= REV_ID_VT3253_A1) {
+diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
+index e048216ef6c7..9bec1cd036be 100644
+--- a/drivers/staging/vt6655/card.c
++++ b/drivers/staging/vt6655/card.c
+@@ -427,7 +427,7 @@ void CARDbRadioPowerOff(struct vnt_private *priv)
+ 
+ 	MACvRegBitsOff(priv->port_off_set, MAC_REG_HOSTCR, HOSTCR_RXON);
+ 
+-	bb_set_deep_sleep(priv, priv->byLocalID);
++	bb_set_deep_sleep(priv, priv->by_local_id);
+ 
+ 	priv->bRadioOff = true;
+ 	pr_debug("chester power off\n");
+diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
+index 8f2ea280d4c1..50cb4fb7e742 100644
+--- a/drivers/staging/vt6655/channel.c
++++ b/drivers/staging/vt6655/channel.c
+@@ -193,7 +193,7 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
+ 
+ 	bb_software_reset(priv);
+ 
+-	if (priv->byLocalID > REV_ID_VT3253_B1) {
++	if (priv->by_local_id > REV_ID_VT3253_B1) {
+ 		unsigned long flags;
+ 
+ 		spin_lock_irqsave(&priv->lock, flags);
+diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
+index 2b50cf4e2406..3d8e28c45287 100644
+--- a/drivers/staging/vt6655/device.h
++++ b/drivers/staging/vt6655/device.h
+@@ -154,7 +154,7 @@ struct vnt_private {
+ 	u32                         rx_bytes;
+ 
+ 	/* Version control */
+-	unsigned char byLocalID;
++	unsigned char by_local_id;
+ 	unsigned char byRFType;
+ 
+ 	unsigned char byMaxPwrLevel;
+diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
+index cae666ed548f..1b214546bf65 100644
+--- a/drivers/staging/vt6655/device_main.c
++++ b/drivers/staging/vt6655/device_main.c
+@@ -219,7 +219,7 @@ static void device_init_registers(struct vnt_private *priv)
+ 	MACvInitialize(priv);
+ 
+ 	/* Get Local ID */
+-	VNSvInPortB(priv->port_off_set + MAC_REG_LOCALID, &priv->byLocalID);
++	VNSvInPortB(priv->port_off_set + MAC_REG_LOCALID, &priv->by_local_id);
+ 
+ 	spin_lock_irqsave(&priv->lock, flags);
+ 
+@@ -331,7 +331,7 @@ static void device_init_registers(struct vnt_private *priv)
+ 					   (unsigned char)(ii + EEP_OFS_OFDMA_PWR_dBm));
+ 	}
+ 
+-	if (priv->byLocalID > REV_ID_VT3253_B1) {
++	if (priv->by_local_id > REV_ID_VT3253_B1) {
+ 		MACvSelectPage1(priv->port_off_set);
+ 
+ 		VNSvOutPortB(priv->port_off_set + MAC_REG_MSRCTL + 1,
+@@ -398,7 +398,7 @@ static void device_init_registers(struct vnt_private *priv)
+ 	/* reset Rx pointer */
+ 	CARDvSafeResetTx(priv);
+ 
+-	if (priv->byLocalID <= REV_ID_VT3253_A1)
++	if (priv->by_local_id <= REV_ID_VT3253_A1)
+ 		MACvRegBitsOn(priv->port_off_set, MAC_REG_RCR, RCR_WPAERR);
+ 
+ 	/* Turn On Rx DMA */
+diff --git a/drivers/staging/vt6655/dpc.c b/drivers/staging/vt6655/dpc.c
+index 2d06cecc0307..7f63335ed2d3 100644
+--- a/drivers/staging/vt6655/dpc.c
++++ b/drivers/staging/vt6655/dpc.c
+@@ -100,7 +100,7 @@ static bool vnt_rx_data(struct vnt_private *priv, struct sk_buff *skb,
+ 	rx_status.rate_idx = rate_idx;
+ 
+ 	if (ieee80211_has_protected(fc)) {
+-		if (priv->byLocalID > REV_ID_VT3253_A1)
++		if (priv->by_local_id > REV_ID_VT3253_A1)
+ 			rx_status.flag |= RX_FLAG_DECRYPTED;
+ 
+ 		/* Drop packet */
+diff --git a/drivers/staging/vt6655/key.c b/drivers/staging/vt6655/key.c
+index 20881cf2f394..2c1410155095 100644
+--- a/drivers/staging/vt6655/key.c
++++ b/drivers/staging/vt6655/key.c
+@@ -81,7 +81,7 @@ static int vnt_set_keymode(struct ieee80211_hw *hw, u8 *mac_addr,
+ 	}
+ 
+ 	MACvSetKeyEntry(priv, key_mode, entry, key_inx,
+-			bssid, (u32 *)key->key, priv->byLocalID);
++			bssid, (u32 *)key->key, priv->by_local_id);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/staging/vt6655/mac.c b/drivers/staging/vt6655/mac.c
+index fd30a9646fa5..e7e286b67259 100644
+--- a/drivers/staging/vt6655/mac.c
++++ b/drivers/staging/vt6655/mac.c
+@@ -763,14 +763,14 @@ bool MACbPSWakeup(struct vnt_private *priv)
+ void MACvSetKeyEntry(struct vnt_private *priv, unsigned short wKeyCtl,
+ 		     unsigned int uEntryIdx, unsigned int uKeyIdx,
+ 		     unsigned char *pbyAddr, u32 *pdwKey,
+-		     unsigned char byLocalID)
++		     unsigned char by_local_id)
+ {
+ 	void __iomem *io_base = priv->port_off_set;
+ 	unsigned short offset;
+ 	u32 data;
+ 	int     ii;
+ 
+-	if (byLocalID <= 1)
++	if (by_local_id <= 1)
+ 		return;
+ 
+ 	offset = MISCFIFO_KEYETRY0;
+diff --git a/drivers/staging/vt6655/mac.h b/drivers/staging/vt6655/mac.h
+index 9797eddaea01..9e7c50a74814 100644
+--- a/drivers/staging/vt6655/mac.h
++++ b/drivers/staging/vt6655/mac.h
+@@ -921,7 +921,7 @@ bool MACbPSWakeup(struct vnt_private *priv);
+ void MACvSetKeyEntry(struct vnt_private *priv, unsigned short wKeyCtl,
+ 		     unsigned int uEntryIdx, unsigned int uKeyIdx,
+ 		     unsigned char *pbyAddr, u32 *pdwKey,
+-		     unsigned char byLocalID);
++		     unsigned char by_local_id);
+ void MACvDisableKeyEntry(struct vnt_private *priv, unsigned int uEntryIdx);
+ 
+ #endif /* __MAC_H__ */
+diff --git a/drivers/staging/vt6655/rxtx.c b/drivers/staging/vt6655/rxtx.c
+index 05068c81070d..2bb83b9dec5e 100644
+--- a/drivers/staging/vt6655/rxtx.c
++++ b/drivers/staging/vt6655/rxtx.c
+@@ -1012,7 +1012,7 @@ s_cbFillTxBufHead(struct vnt_private *pDevice, unsigned char byPktType,
+ 
+ 		cbFrameSize += info->control.hw_key->icv_len;
+ 
+-		if (pDevice->byLocalID > REV_ID_VT3253_A1) {
++		if (pDevice->by_local_id > REV_ID_VT3253_A1) {
+ 			/* MAC Header should be padding 0 to DW alignment. */
+ 			uPadding = 4 - (ieee80211_get_hdrlen_from_skb(skb) % 4);
+ 			uPadding %= 4;
+-- 
+2.25.1
 
->
-> > I *think* the existing code deals with THPs correctly in that case, but then
-> > again I don't think our selftest really covers this case, and it's not
-> > something I've tested in production either (to work around the other bug, we
-> > currently MADV_NOHUGEPAGE the area until after VM demand paging completes,
-> > and the UFFD registration is removed), so I am not super confident this is
-> > the case.
->
-> In all cases, enhancing the test program will always be welcomed.
->
-> Thanks,
->
-> --
-> Peter Xu
->
