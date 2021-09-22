@@ -2,121 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0E641445D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0643F414452
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234210AbhIVJAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:00:45 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19996 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234007AbhIVJAi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:00:38 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDsYr1y28zbmcT;
-        Wed, 22 Sep 2021 16:54:56 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 22 Sep 2021 16:59:07 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 22 Sep 2021 16:59:07 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH] sched: Make cookie functions static
-Date:   Wed, 22 Sep 2021 16:57:35 +0800
-Message-ID: <20210922085735.52812-1-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.33.0
+        id S234048AbhIVI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:59:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233741AbhIVI7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 04:59:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CB9B61360;
+        Wed, 22 Sep 2021 08:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632301084;
+        bh=gBqvV0EENIIM+NYF7MVdZ8Ay41tw5OWArMEE1eebWks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FuhDgsMieGf5uJSQ7FacVPy/TzDXJ9tFdxHipJKkfQvUXrFAUAPt7jYPtuVIZarY/
+         VIkVA6jK39EjXrqxJWxteDSmpDoU3XlhoJGeDh40ez0/ecL9MuKqhQ0+BJBmQvFezf
+         E8EhE/szt4+eLJ2i5C2NAgjk9eL7zf0Ihv4Wbh+Q=
+Date:   Wed, 22 Sep 2021 10:58:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 079/122] net: phylink: add suspend/resume support
+Message-ID: <YUrwGs6H0eNmaJTE@kroah.com>
+References: <20210920163915.757887582@linuxfoundation.org>
+ <20210920163918.373775935@linuxfoundation.org>
+ <20210921212837.GA29170@duo.ucw.cz>
+ <YUpPmRPczcLveKj4@shell.armlinux.org.uk>
+ <20210921214528.GA30221@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921214528.GA30221@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make cookie functions static as these are no longer invoked directly
-by other code.
+On Tue, Sep 21, 2021 at 11:45:28PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > > > Joakim Zhang reports that Wake-on-Lan with the stmmac ethernet driver broke
+> > > > when moving the incorrect handling of mac link state out of mac_config().
+> > > > This reason this breaks is because the stmmac's WoL is handled by the MAC
+> > > > rather than the PHY, and phylink doesn't cater for that scenario.
+> > > > 
+> > > > This patch adds the necessary phylink code to handle suspend/resume events
+> > > > according to whether the MAC still needs a valid link or not. This is the
+> > > > barest minimum for this support.
+> > > 
+> > > This adds functions that end up being unused in 5.10. AFAICT we do not
+> > > need this in 5.10.
+> > 
+> > It needs to be backported to any kernel that also has
+> > "net: stmmac: fix MAC not working when system resume back with WoL active"
+> > backported to. From what I can tell, the fixes line in that commit
+> > refers to a commit (46f69ded988d) in v5.7-rc1.
+> > 
+> > If "net: stmmac: fix MAC not working when system resume back with WoL
+> > active" is not being backported to 5.10, then there is no need to
+> > backport this patch.
+> 
+> Agreed.
+> 
+> > As I'm not being copied on the stmmac commit, I've no idea which kernels
+> > this patch should be backported to.
+> 
+> AFAICT "net: stmmac: fix MAC not working when..." is not queued for
+> 5.10.68-rc1 or 5.14.7-rc1.
 
-No functional change intended.
+I can easily do that, thanks!
 
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
----
- kernel/sched/core_sched.c | 9 +++++----
- kernel/sched/sched.h      | 5 -----
- 2 files changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
-index 9a80e9a474c0..48ac72696012 100644
---- a/kernel/sched/core_sched.c
-+++ b/kernel/sched/core_sched.c
-@@ -11,7 +11,7 @@ struct sched_core_cookie {
- 	refcount_t refcnt;
- };
- 
--unsigned long sched_core_alloc_cookie(void)
-+static unsigned long sched_core_alloc_cookie(void)
- {
- 	struct sched_core_cookie *ck = kmalloc(sizeof(*ck), GFP_KERNEL);
- 	if (!ck)
-@@ -23,7 +23,7 @@ unsigned long sched_core_alloc_cookie(void)
- 	return (unsigned long)ck;
- }
- 
--void sched_core_put_cookie(unsigned long cookie)
-+static void sched_core_put_cookie(unsigned long cookie)
- {
- 	struct sched_core_cookie *ptr = (void *)cookie;
- 
-@@ -33,7 +33,7 @@ void sched_core_put_cookie(unsigned long cookie)
- 	}
- }
- 
--unsigned long sched_core_get_cookie(unsigned long cookie)
-+static unsigned long sched_core_get_cookie(unsigned long cookie)
- {
- 	struct sched_core_cookie *ptr = (void *)cookie;
- 
-@@ -53,7 +53,8 @@ unsigned long sched_core_get_cookie(unsigned long cookie)
-  *
-  * Returns: the old cookie
-  */
--unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie)
-+static unsigned long sched_core_update_cookie(struct task_struct *p,
-+					      unsigned long cookie)
- {
- 	unsigned long old_cookie;
- 	struct rq_flags rf;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index cae475ff28b5..a09d11d41e4c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1260,11 +1260,6 @@ extern void sched_core_dequeue(struct rq *rq, struct task_struct *p);
- extern void sched_core_get(void);
- extern void sched_core_put(void);
- 
--extern unsigned long sched_core_alloc_cookie(void);
--extern void sched_core_put_cookie(unsigned long cookie);
--extern unsigned long sched_core_get_cookie(unsigned long cookie);
--extern unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie);
--
- #else /* !CONFIG_SCHED_CORE */
- 
- static inline bool sched_core_enabled(struct rq *rq)
--- 
-2.33.0
-
+greg k-h
