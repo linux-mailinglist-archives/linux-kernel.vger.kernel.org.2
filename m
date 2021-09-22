@@ -2,252 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55338415418
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C65B415414
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238532AbhIVXsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 19:48:21 -0400
-Received: from mga09.intel.com ([134.134.136.24]:6302 "EHLO mga09.intel.com"
+        id S238528AbhIVXrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:47:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:55404 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230412AbhIVXsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 19:48:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="223759493"
-X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
-   d="scan'208";a="223759493"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 16:46:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
-   d="scan'208";a="435622324"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga006.jf.intel.com with ESMTP; 22 Sep 2021 16:46:39 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 22 Sep 2021 16:46:39 -0700
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 22 Sep 2021 16:46:38 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Wed, 22 Sep 2021 16:46:38 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.49) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Wed, 22 Sep 2021 16:46:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gPkvpAc+5UrZQoXSL2sLGgHow36V5D0sjGMUOkRtjcKsSMYMzatmadSo9hKGZqI2DycVCHxlUyKraYv3MOllMOAsMHzNRfOo1phkijBexlU+gFDEOCpb9XCvcfKaZqS7MtkBJoUSiS2Hn8z6/XXneueRmNgU9s93k6hZ9wTmNXzlXao0RutKeZKQMIWy80pPVjKvxPRqz6Zp+NynqRVWuMopPhvvdcV1jwUH+E9HDtEEUsc+/w031yxfHLub6E925f5IRhvjQUggJkHzwX0CWUsvgwWMX121b5J4f6bS4PeCk49ZPW9UoHqdiE6QgeLvT4DQEzxGfzfzWcluFkknGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=osmHD2jPBC1MaLmYBm+c67rk/xQNqAeagiXfqg6mmqU=;
- b=M4VIRnSbG+bT5Itu85x8UcfrwZ/fFpMpMDZRAGkXGNmmsCF4V7mR0HmC4vVuOmljSGCtR25+T1dsfejJvc2MWzVLrHFnn7FrspN/JrZGPIw1x8ukfW9ByLVn88gP8d/kMiw1UPIY6zJO9QD38jk8zxNgt9dV7rZEI4ACXYDUaDABlOhZXTJtqKbQ92472J/UqULBTUcF71KOTg6kQcBEquLHIh090hynviCC/Eeb7Kf42iJBPizBRQOCnhMf40yb/Ufr+c4l3A49LYmaFUT2KAtsYDDcWDvun/j4z0s3Fds8B5A6nSbDOAlN+FUpet9GTcT3PvRW3SvTkhNvWBB9wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=osmHD2jPBC1MaLmYBm+c67rk/xQNqAeagiXfqg6mmqU=;
- b=eDzYs9xHU1zjsrNsSQkRgFE8plRO0xuzwDP80cJHNY1bMq5QJKJxKWTCNSi8vGTvG6s/OiZra50V6EE5TpTto/SROd10c/ZtQGQusFdexR6g1BI8kkAMw4iZwns+qMsNNAG3bGqIbMLXCUYrNR1IPzjXXO3WE005hCMGcm4oaDo=
-Received: from BL1PR11MB5429.namprd11.prod.outlook.com (2603:10b6:208:30b::13)
- by BL0PR11MB3012.namprd11.prod.outlook.com (2603:10b6:208:79::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Wed, 22 Sep
- 2021 23:45:33 +0000
-Received: from BL1PR11MB5429.namprd11.prod.outlook.com
- ([fe80::8160:3227:5fe4:c494]) by BL1PR11MB5429.namprd11.prod.outlook.com
- ([fe80::8160:3227:5fe4:c494%3]) with mapi id 15.20.4544.014; Wed, 22 Sep 2021
- 23:45:33 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: RE: [RFC 03/20] vfio: Add vfio_[un]register_device()
-Thread-Topic: [RFC 03/20] vfio: Add vfio_[un]register_device()
-Thread-Index: AQHXrSFwNP3/pIcrZ0iM9X/cSoy0lKuuqYQAgAB3MFCAAB2WgIAAjDNwgAA0YACAAIKvAIAAJpDggAAEmwCAAA5k4A==
-Date:   Wed, 22 Sep 2021 23:45:33 +0000
-Message-ID: <BL1PR11MB5429B107D90E3CDE21139CE98CA29@BL1PR11MB5429.namprd11.prod.outlook.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
-        <20210919063848.1476776-4-yi.l.liu@intel.com>
-        <20210921160108.GO327412@nvidia.com>
-        <BN9PR11MB5433D4590BA725C79196E0248CA19@BN9PR11MB5433.namprd11.prod.outlook.com>
-        <20210922005337.GC327412@nvidia.com>
-        <BN9PR11MB54338D108AF5A87614717EF98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-        <20210922122252.GG327412@nvidia.com>
-        <20210922141036.5cd46b2b.alex.williamson@redhat.com>
-        <BN9PR11MB543366158EA87572902EFF5E8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922164506.66976218.alex.williamson@redhat.com>
-In-Reply-To: <20210922164506.66976218.alex.williamson@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 23c23023-6e36-45e1-421a-08d97e231188
-x-ms-traffictypediagnostic: BL0PR11MB3012:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BL0PR11MB301276D380926A03413861CD8CA29@BL0PR11MB3012.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OAeF3lCIPUYux2NKdWe/mW/NA0bmqA5fopCI7Z0GGgrtgWcnYocT3KthZJQg30GVd6M3CMUZBVI1XTQVGwpxIZpMtKS0G2JfLlQWTdHS0XZBr/gTJrstijXqhgUr2cK7NS0oV/xf1tcDDumTbUjxVHr2lB4lM3symS6T6AZ6R0Y7/g5dTUbD6G3T/agH4NtgfzZZ4pflK4Zdn9eljmIVmCJFVCkQWiaxV4kvw5ABfLdUr1Zc9ZMow1mYl6pg3zSWPrgt/PxUrn5YNIlwt6zY37VmqjgTScUR3MtSCWb8Wpw8l9X9jdP2CqE/ahwCSp5VOeh5yQiC9tdWgEXtfG2KX66mII6NTnngS6aH9RztxbuBafWlQYbpTZi/YqedY+d9fvaGg2BpAScxfIi0024oRKV48SUKSiMbrrU8d7XtScumUajXWP4BkPmvY7rHTLaM8aoLUk6+HFstGfhNYOnPTyaUKv185FVgXg5O6/C+sLjdd80F6+scvPG8pTbWjWzcSYZZoxrCzpacrPGAeOIhnmAHjqJTe4s2H30SO3F0mQIEXna2ljHKxMI3/qwBdqA0U/LWDvyzxjjXFpJMvaLklag9TCDXESWjfa38Ixm9+2KYHiMt7pyW5cK+a4WzDZb7XE/UH9YDFfoyGD0/Xf/6NxQ+ztdyE87w8jmEj5WR2IAkj0nJkHb+HXCP0xSbc4HQUCoD8zbzpnBDZYkqf056fg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5429.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(6506007)(66476007)(76116006)(66556008)(64756008)(54906003)(66446008)(66946007)(55016002)(52536014)(8936002)(6916009)(8676002)(4326008)(38070700005)(2906002)(26005)(186003)(508600001)(71200400001)(38100700002)(122000001)(33656002)(5660300002)(7696005)(7416002)(83380400001)(86362001)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VGgCCvw8mZ/AYOC/9QO3pv7IlGAfWbXDlYcxYTq6Bp93NhpL29Pdz8HJHlpP?=
- =?us-ascii?Q?Xb89rxSzNFnmLWgrB6IYXUjoqUgtv7Ba/+FMiqpXDxq5JYVBUGriHOBhAwvO?=
- =?us-ascii?Q?DhtFq6KPu9DLjz850MTXW1u55h/RL/FisNOj/vB+IF3JiNecdMv24hkgRaJv?=
- =?us-ascii?Q?qzXa8Jzd2MhH0OtthUNeE/8+IaB0rVaDitOzCjemZeJFXK0dCoNdu2M12/B/?=
- =?us-ascii?Q?dK9JjAnS2ZDi3WMwTaAC1cEtPynNCg067zGInx0+N6WR1l2/uQPSFIgQozjq?=
- =?us-ascii?Q?4+V8I/S9pqZJQ29yr41QBujWWU6XIOxkMEI6KlpgW9nqtn70PmlPfz9NiWUj?=
- =?us-ascii?Q?XEFvPRRd2cipAEgNZ45IxLFGQoEyzANFO8vsO8WPxMe4W3rDoWd8kiVrmvEq?=
- =?us-ascii?Q?Uy3zlHCZx/6PZgKasWm7p0xG0w75dxG605GtPS7vxEkJ6IhN5BE6buzF2GTn?=
- =?us-ascii?Q?yZcYhncv6sr/UEofrnGCRo7mL2EbuRtxJDZIYtk/99Oxy3/FBZKvsAYPxdgk?=
- =?us-ascii?Q?3BYs+Hh+rm9R2B4FBCW4kZSwpuGD/gSPj/d7NBsx/IMSTWxfipRGPZZcnaLA?=
- =?us-ascii?Q?bcNW/qjSGoxJwfrLwqBP3pD2MibBgVGTyEXIe1p5IJKzUwHKQ9ePaehwHgXH?=
- =?us-ascii?Q?wsiiWV1aRlEWa/OrmChOFBhqYaURDka4O1JHYxIbbv9+nK/cyqNfUJXlWHM0?=
- =?us-ascii?Q?03YY1Jfwe0OPuaWLH1nc5PCyIv0bk+8ZbrgOQL7XZekz4XuUKwV15scZrEjc?=
- =?us-ascii?Q?hde8g31YnhfxDzBV8szMrSDNgQmoY2RlqLN3BCdgujQEY/x1WFp4xD6v7iWx?=
- =?us-ascii?Q?CjcbZP8DzOoupy73o/TuEgDCVYHN3gL4A3AypnXKcz5+uvEhzTK8ntQgGCOf?=
- =?us-ascii?Q?o90DfbHL8QTTUdXlXk6d2JYqhJvbBgUXgvq/cxNU2Ao6+MvHKGuepS/3JZZ0?=
- =?us-ascii?Q?V2+cjqwO2MIota9N5uIZpJi3ilMzsWqfyN0Gil4mfYufdvfLZmwanEFxNE2f?=
- =?us-ascii?Q?eBAf8JzonJV0HKi1S2bDyjNkHruIsy3U+Ppnm1MUkM4aIBHv7FCLrhFBviSP?=
- =?us-ascii?Q?ixVjGQZGP4VS4ULmFWAT5uoU7xmFasGouz2cyWYvzdsRXXSolqbiQ5dYD/Vx?=
- =?us-ascii?Q?u59RO8CRAms4OfSzmRz8TnnT11HtsBCHQeD0yNJuSnWiRgqffntMkSun2kUh?=
- =?us-ascii?Q?Q4s5SMlaUM68Hdyr98MqgrdWHFyRf2CoTO/kvPkvY+EHa73I8mJfY/d3BLOd?=
- =?us-ascii?Q?98fWz9MJ2GxiRlJBkrUswCo5+hgoeihgRB4VMTT3GIsoDped7wMIeUzbxex/?=
- =?us-ascii?Q?mmca7wEprfim9f3HXMDHG0G9?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230496AbhIVXrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 19:47:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DB01113E;
+        Wed, 22 Sep 2021 16:45:40 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4B3F3F719;
+        Wed, 22 Sep 2021 16:45:39 -0700 (PDT)
+Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to
+ acpi_os_map_memory()"
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Jia He <justin.he@arm.com>, Will Deacon <will@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Harb Abdulhamid <harb@amperecomputing.com>
+References: <20210910122820.26886-1-justin.he@arm.com>
+ <20210910143223.6705-1-justin.he@arm.com>
+ <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
+ <20210916160827.GA4525@lpieralisi> <20210920170055.GA13861@lpieralisi>
+ <CAJZ5v0iee2j=NoPFpNstEZYJXWvFYfv22hK7QeH6+kdP6+MhLw@mail.gmail.com>
+ <20210921100512.GA28390@lpieralisi>
+ <CAMj1kXFz=bsm+Jx-iWB17tYNfi+twSh-uSZfnoDnUf2CMXYodw@mail.gmail.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <17c50214-f5ed-3af8-92f5-398aab534853@arm.com>
+Date:   Wed, 22 Sep 2021 18:45:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5429.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23c23023-6e36-45e1-421a-08d97e231188
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 23:45:33.0224
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: f3Lom9n6tc6sku1WO55nksdmshU3arLW6qihFlp0SC1J3dGb7E72CrwWpCwc3LedmauL4A5lMQ52ky8bCorkzw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR11MB3012
-X-OriginatorOrg: intel.com
+In-Reply-To: <CAMj1kXFz=bsm+Jx-iWB17tYNfi+twSh-uSZfnoDnUf2CMXYodw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Alex Williamson <alex.williamson@redhat.com>
-> Sent: Thursday, September 23, 2021 6:45 AM
->=20
-> On Wed, 22 Sep 2021 22:34:42 +0000
-> "Tian, Kevin" <kevin.tian@intel.com> wrote:
->=20
-> > > From: Alex Williamson <alex.williamson@redhat.com>
-> > > Sent: Thursday, September 23, 2021 4:11 AM
-> > >
-> > > On Wed, 22 Sep 2021 09:22:52 -0300
-> > > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >
-> > > > On Wed, Sep 22, 2021 at 09:23:34AM +0000, Tian, Kevin wrote:
-> > > >
-> > > > > > Providing an ioctl to bind to a normal VFIO container or group =
-might
-> > > > > > allow a reasonable fallback in userspace..
-> > > > >
-> > > > > I didn't get this point though. An error in binding already allow=
-s the
-> > > > > user to fall back to the group path. Why do we need introduce
-> another
-> > > > > ioctl to explicitly bind to container via the nongroup interface?
-> > > >
-> > > > New userspace still needs a fallback path if it hits the 'try and
-> > > > fail'. Keeping the device FD open and just using a different ioctl =
-to
-> > > > bind to a container/group FD, which new userspace can then obtain a=
-s
-> a
-> > > > fallback, might be OK.
-> > > >
-> > > > Hard to see without going through the qemu parts, so maybe just kee=
-p
-> > > > it in mind
-> > >
-> > > If we assume that the container/group/device interface is essentially
-> > > deprecated once we have iommufd, it doesn't make a lot of sense to me
-> > > to tack on a container/device interface just so userspace can avoid
-> > > reverting to the fully legacy interface.
-> > >
-> > > But why would we create vfio device interface files at all if they
-> > > can't work?  I'm not really on board with creating a try-and-fail
-> > > interface for a mechanism that cannot work for a given device.  The
-> > > existence of the device interface should indicate that it's supported=
-.
-> > > Thanks,
-> > >
-> >
-> > Now it's a try-and-fail model even for devices which support iommufd.
-> > Per Jason's suggestion, a device is always opened with a parked fops
-> > which supports only bind. Binding serves as the contract for handling
-> > exclusive ownership on a device and switching to normal fops if
-> > succeed. So the user has to try-and-fail in case multiple threads attem=
-pt
-> > to open a same device. Device which doesn't support iommufd is not
-> > different, except binding request 100% fails (due to missing .bind_iomm=
-ufd
-> > in kernel driver).
->=20
-> That's a rather important difference.  I don't really see how that's
-> comparable to the mutually exclusive nature of the legacy vs device
+Hi,
 
-I didn't get the 'comparable' part. Can you elaborate?
+On 9/22/21 6:11 AM, Ard Biesheuvel wrote:
+> On Tue, 21 Sept 2021 at 12:05, Lorenzo Pieralisi
+> <lorenzo.pieralisi@arm.com> wrote:
+>>
+>> On Mon, Sep 20, 2021 at 07:32:56PM +0200, Rafael J. Wysocki wrote:
+>>> On Mon, Sep 20, 2021 at 7:03 PM Lorenzo Pieralisi
+>>> <lorenzo.pieralisi@arm.com> wrote:
+>>>>
+>>>> On Thu, Sep 16, 2021 at 05:08:27PM +0100, Lorenzo Pieralisi wrote:
+>>>>> On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
+>>>>>> On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he@arm.com> wrote:
+>>>>>>>
+>>>>>>> This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+>>>>>>>
+>>>>>>> After this commit, a boot panic is alway hit on an Ampere EMAG server
+>>>>>>> with call trace as follows:
+>>>>>>>   Internal error: synchronous external abort: 96000410 [#1] SMP
+>>>>>>>   Modules linked in:
+>>>>>>>   CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+>>>>>>>   Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+>>>>>>>   pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>>>>>>> [...snip...]
+>>>>>>>   Call trace:
+>>>>>>>    acpi_ex_system_memory_space_handler+0x26c/0x2c8
+>>>>>>>    acpi_ev_address_space_dispatch+0x228/0x2c4
+>>>>>>>    acpi_ex_access_region+0x114/0x268
+>>>>>>>    acpi_ex_field_datum_io+0x128/0x1b8
+>>>>>>>    acpi_ex_extract_from_field+0x14c/0x2ac
+>>>>>>>    acpi_ex_read_data_from_field+0x190/0x1b8
+>>>>>>>    acpi_ex_resolve_node_to_value+0x1ec/0x288
+>>>>>>>    acpi_ex_resolve_to_value+0x250/0x274
+>>>>>>>    acpi_ds_evaluate_name_path+0xac/0x124
+>>>>>>>    acpi_ds_exec_end_op+0x90/0x410
+>>>>>>>    acpi_ps_parse_loop+0x4ac/0x5d8
+>>>>>>>    acpi_ps_parse_aml+0xe0/0x2c8
+>>>>>>>    acpi_ps_execute_method+0x19c/0x1ac
+>>>>>>>    acpi_ns_evaluate+0x1f8/0x26c
+>>>>>>>    acpi_ns_init_one_device+0x104/0x140
+>>>>>>>    acpi_ns_walk_namespace+0x158/0x1d0
+>>>>>>>    acpi_ns_initialize_devices+0x194/0x218
+>>>>>>>    acpi_initialize_objects+0x48/0x50
+>>>>>>>    acpi_init+0xe0/0x498
+>>>>>>>
+>>>>>>> As mentioned by Lorenzo:
+>>>>>>>    "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+>>>>>>>    eMAG does not like at all and I'd need to understand why. It looks
+>>>>>>>    like the issue happen in SystemMemory Opregion handler."
+>>>>>>>
+>>>>>>> Hence just revert it before everything is clear.
+>>>>>>>
+>>>>>>
+>>>>>> Can we try to find the root cause first? -rc1 is not even out yet, and
+>>>>>> reverting it now means we can not resubmit it until the next merge
+>>>>>> window.
+>>>>>
+>>>>> I am waiting to debug this on an eMAG but I noticed something that
+>>>>> I wanted to bring up.
+>>>>>
+>>>>> SystemMemory Operation region handler - ie
+>>>>>
+>>>>> acpi_ex_system_memory_space_handler()
+>>>>>
+>>>>> maps the Operation Region (that AFAICS is MMIO, it is _not_ memory)
+>>>>> with acpi_os_map_memory() and I believe that's what is causing this
+>>>>> bug.
+>>>>>
+>>>>> On the other hand, acpi_os_map_generic_address(), to handle spaceid
+>>>>> ACPI_ADR_SPACE_SYSTEM_MEMORY, uses acpi_os_map_iomem() that is more
+>>>>> in line with my expectations.
+>>>>
+>>>> Hi Rafael,
+>>>>
+>>>> I wanted to ask please if you have any insights on why
+>>>>
+>>>> (1) acpi_ex_system_memory_space_handler()
+>>>> (2) acpi_os_map_generic_address()
+>>>>
+>>>> Use two different calls to map memory for the _same_ address space ID
+>>>> (SystemMemory).
+>>>>
+>>>> (3) acpi_os_map_memory()
+>>>> vs
+>>>> (4) acpi_os_map_iomem()
+>>>
+>>> I don't really have a good answer here.
+>>>
+>>> On x86 this doesn't really matter and that's where
+>>> acpi_ex_system_memory_space_handler() was first introduced.  It is not
+>>> only used for IOMEM (there are SystemMemory operation regions in RAM),
+>>> but since it may be in IOMEM, it should assume so.
+>>>
+>>>> I am struggling to understand why (1) uses (3) ("memory semantics") when
+>>>> (2) uses (4) - it is actually unclear how the distinction between
+>>>> the two mapping APIs is to be drawn and on what basis one should
+>>>> choose which one to use.
+>>>>
+>>>> I am still waiting to grab some HW to debug this report but the issue
+>>>> here is that we are mapping an OpRegion SystemMemory with (3) in the
+>>>> memory space handler and given the patch we are reverting we end up
+>>>> mapping the operation region with normal non-cacheable memory attributes
+>>>> that probably the physical address range behind the OpRegion does not
+>>>> support.
+>>>
+>>> If that is the case, there needs to be a mechanism to decide what kind
+>>> of mapping to use for SystemMemory operation regions based on the type
+>>> of physical memory the address range in question is located in.
+>>
+>> Thank you Rafael. The mechanism we are currently relying on is the EFI
+>> memory map but if the Opregion address is not described there then we
+>> are left with a default choice to make (theoretically I may also parse
+>> all _CRS in the namespace to find whether a resource include the
+>> Opregion and I may infer attributes from the _CRS resource entry).
+>>
+> 
+> I'm not sure that would help, as I would expected the memory described
+> by _CRS to be mostly mutually exclusive from memory used by OpRegions.
+> 
+>> Maybe we should update the ACPI specs to enforce it; with current
+>> firmware the idea of using the OS expected *usage* of memory (ie
+>> memory vs IO) described by the mapping function prototype can't work
+>> as this revert shows (even though it would be better if I manage
+>> to find what the precise issue is).
+>>
+>> We can't map something with specific attributes if we don't know
+>> whether the physical address space backing the region supports it.
+>>
+> 
+> We don't have a a safe default in either direction, so I agree this is
+> a hole in the specs.
 
-> interface.  We're not going to present a vfio device interface for SW
-> mdevs that can't participate in iommufd, right?  Thanks,
->=20
+I just debugged down to this patch because of boot failures with the 
+rpi4. Then I found this thread.
 
-Did you see any problem if exposing sw mdev now? Following above
-explanation the try-and-fail model should still work...
 
-btw I realized another related piece regarding to the new layout that
-Jason suggested, which have sys device node include a link to the vfio
-devnode:
+I had always assumed that SystemIO was x86/PIO, and SystemMemory was 
+defined as MMIO but on arm we would have to determine if the memory 
+region was described in the uefi memory map as actual system ram, and if 
+not assume device memory. I was looking at tweaking acpi_map() to check 
+that similar to what is happening on !arm64.
 
-	/sys/bus/pci/devices/DDDD:BB:DD.F/vfio/vfioX/dev
+Gotta run, but throwing that out there since it seems a possible fix 
+without creating a new OpregionType to differentiate actual memory vs MMIO.
 
-This for sure requires specific vfio driver support to get the link establi=
-shed.
-if we only do it for vfio-pci in the start, then for other devices which do=
-n't
-support iommufd there is no way for the user to identify the corresponding
-vfio devnode even it's still exposed. Then try-and-fail model may not even
-been reached for those devices.
 
-Thanks
-Kevin
+
+
+> 
+>> I am left with little choice: I assume the best thing I could do
+>> to fix the original bug is to use ioremap_* in acpi_data_show()
+>> instead of acpi_os_map/unmap_memory() to map that memory with
+>> specific attributes (for BERT error regions, they must be RAM
+>> so, _hopefully_, we know it can be mapped with eg normal memory
+>> mappings).
+>>
+>> Thoughts ?
+>>
+> 
+> One thing I just realized is that the EFI memory map is not a complete
+> solution to begin with, as it may not cover hot/coldplugged memory
+> regions that are only described via ACPI.
+> 
+> Did you make any progress with the eMAG?
+> 
+
