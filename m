@@ -2,118 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8626F414CCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AB8414CD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236404AbhIVPRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236304AbhIVPRS (ORCPT
+        id S236409AbhIVPR4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Sep 2021 11:17:56 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:56421 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233737AbhIVPRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:17:18 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D49C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:15:48 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id s20so3856698ioa.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=SUFlIgkF97LliXUlJb/5UYv8rypWABdjmrEwhMUl3f0=;
-        b=uX2F8zHrzXKQl6pQhFIFZIDJz1njgUJghfXzdm/WO4M+wRGvJEa/6vga8wDPzXm6YM
-         nxFbW6eD9w0uensRtXFDY6a+EMujRuGrs/MIEi1VqQRm+xF7NpkR3wItQ4jn/jTJU+8P
-         91qT+UkOs83TWgJdnxr12rKFtsQKH1RXeYGdzGjuHI3yelzTEtnAYgf5JuhyR57k7QjH
-         03RRqXMqVdFYds4wK5ISU8pWziZ4r95//7xHwsrn2ki/0tH9RUeqCvNMYgUpnoU4bkcT
-         6spoMet5tlJzYAz3rWekUp0Rfo0dNUh8NS8bzjFuxJMLs+6BGyhiofIVlYF0+yHblNk0
-         GN0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SUFlIgkF97LliXUlJb/5UYv8rypWABdjmrEwhMUl3f0=;
-        b=Q3SazjHRUil87EgGIJhqScMTFHdxWrUr4ezgAqWezxvpTJ8NiL0a2hXw0m9trr2R4j
-         gzY2ynvO4/nJ4I041aTPZqpo1eG38to127JRS+DvPIoY/HrpAkpHNG1TJp3YGS8WdmYu
-         ZlCllLZndw530uSAWOIeRuyq22HzILpBTZftx/DERQqyxAk/bFN/S+Y015YtTIkQ3aUX
-         bMXvFpQnv/wFiFcdaKC7eJHGTvAzN9lk3HRTzfHDt5UAsdSXnGk6IsWsF+xHxqHGBW0/
-         NjxHS/pVH39tul+Sgt4dweRmxqwutq0TBdKB3KQ1KsI20JrrbUJd7Vncwl0gv6z5M8pk
-         ALTg==
-X-Gm-Message-State: AOAM533Nt/WP3zAeWNB1WfqSuR2/tqczBSpYptb9mBJrpnLH4N7oXxIf
-        aJ6yowKrCk8daGZuiF+3rMAdjw==
-X-Google-Smtp-Source: ABdhPJxPX7caP6ZoDNZKXdHXDn97sVpv2Jh7Xuz7w6ET4m37RfPtwclpL1tJnUZj6ns0sm4V3IBCPQ==
-X-Received: by 2002:a6b:6b08:: with SMTP id g8mr92580ioc.199.1632323747923;
-        Wed, 22 Sep 2021 08:15:47 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id b12sm1142541ilv.46.2021.09.22.08.15.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 08:15:47 -0700 (PDT)
-Subject: Re: [syzbot] INFO: rcu detected stall in sys_recvmmsg
-To:     Paolo Abeni <pabeni@redhat.com>,
-        syzbot <syzbot+3360da629681aa0d22fe@syzkaller.appspotmail.com>,
-        christian.brauner@ubuntu.com, davem@davemloft.net,
-        dkadashev@gmail.com, kuba@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        mptcp@lists.linux.dev, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        viro@zeniv.linux.org.uk
-References: <0000000000003216d705cc8a62d6@google.com>
- <89d72aca4e30335a03322612cf164420be11d8eb.camel@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <16c414f0-8399-e945-825e-fe8ac1be4e08@kernel.dk>
-Date:   Wed, 22 Sep 2021 09:15:46 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 22 Sep 2021 11:17:54 -0400
+Received: (Authenticated sender: gregory.clement@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id B80F9E0006;
+        Wed, 22 Sep 2021 15:16:22 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH v5 5/6] arm64: dts: marvell: armada-37xx: add
+ device node for UART clock and use it
+In-Reply-To: <20210922105433.11744-6-pali@kernel.org>
+References: <20210922105433.11744-1-pali@kernel.org>
+ <20210922105433.11744-6-pali@kernel.org>
+Date:   Wed, 22 Sep 2021 17:16:22 +0200
+Message-ID: <87o88k63p5.fsf@BL-laptop>
 MIME-Version: 1.0
-In-Reply-To: <89d72aca4e30335a03322612cf164420be11d8eb.camel@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 9:13 AM, Paolo Abeni wrote:
-> On Tue, 2021-09-21 at 17:13 -0700, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    1f77990c4b79 Add linux-next specific files for 20210920
->> git tree:       linux-next
->> console output: https://syzkaller.appspot.com/x/log.txt?x=1383891d300000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=ab1346371f2e6884
->> dashboard link: https://syzkaller.appspot.com/bug?extid=3360da629681aa0d22fe
->> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1625f1ab300000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17eb1b3b300000
->>
->> The issue was bisected to:
->>
->> commit 020250f31c4c75ac7687a673e29c00786582a5f4
->> Author: Dmitry Kadashev <dkadashev@gmail.com>
->> Date:   Thu Jul 8 06:34:43 2021 +0000
->>
->>     namei: make do_linkat() take struct filename
->>
->> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f5ef77300000
->> final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f5ef77300000
->> console output: https://syzkaller.appspot.com/x/log.txt?x=13f5ef77300000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+3360da629681aa0d22fe@syzkaller.appspotmail.com
->> Fixes: 020250f31c4c ("namei: make do_linkat() take struct filename")
-> 
-> I'm unsure why the bisection points to this commit. This looks like an
-> MPTCP specific issue, due to bad handling of MSG_WAITALL recvmsg()
-> flag.
+Hello Pali,
 
-This seems to happen quite often, and I'm guessing it's mostly likely
-due to the test being run not always triggering the issue. Hence you end
-up with git bisection results that go off into the weeds.
+> This change defines DT node for UART clock "marvell,armada-3700-uart-clock"
+> and use this UART clock as a base clock for all UART devices.
+
+Sorry to not have pointed this earlier but I found something a little
+unusual, see below:
+
+>
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> ---
+>  arch/arm64/boot/dts/marvell/armada-3720-db.dts    |  4 ++++
+>  .../boot/dts/marvell/armada-3720-espressobin.dtsi |  4 ++++
+>  .../boot/dts/marvell/armada-3720-turris-mox.dts   |  4 ++++
+>  arch/arm64/boot/dts/marvell/armada-3720-uDPU.dts  |  4 ++++
+>  arch/arm64/boot/dts/marvell/armada-37xx.dtsi      | 15 +++++++++++++--
+>  5 files changed, 29 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-db.dts b/arch/arm64/boot/dts/marvell/armada-3720-db.dts
+> index 3e5789f37206..accf014a6a1e 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-db.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-db.dts
+> @@ -191,6 +191,10 @@
+>  	};
+>  };
+>  
+> +&uartclk {
+> +	status = "okay";
+
+I found unusual to have to enable the clock at device tree level.
+Usually the clock driver is always loaded and then the clock is really
+enabled or disabled through the clock framework.
+
+[...]
+
+> diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> index 9acc5d2b5a00..5bc61c9615f5 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> @@ -132,10 +132,21 @@
+>  				reg = <0x11500 0x40>;
+>  			};
+>  
+> +			uartclk: uartclk@12000 {
+> +				compatible = "marvell,armada-3700-uart-clock";
+> +				reg = <0x12010 0x4>, <0x12210 0x4>;
+> +				clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>,
+> +					<&tbg 3>, <&xtalclk>;
+> +				clock-names = "TBG-A-P", "TBG-B-P", "TBG-A-S",
+> +					"TBG-B-S", "xtal";
+> +				#clock-cells = <1>;
+
+I think you could remove the following line and thanks to this there
+won't be any change in the dts of the board:
+> +				status = "disabled";
+> +			};
+> +
+
+Gregory
+
+
+>  			uart0: serial@12000 {
+>  				compatible = "marvell,armada-3700-uart";
+>  				reg = <0x12000 0x18>;
+> -				clocks = <&xtalclk>;
+> +				clocks = <&uartclk 0>;
+>  				interrupts =
+>  				<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+>  				<GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> @@ -147,7 +158,7 @@
+>  			uart1: serial@12200 {
+>  				compatible = "marvell,armada-3700-uart-ext";
+>  				reg = <0x12200 0x30>;
+> -				clocks = <&xtalclk>;
+> +				clocks = <&uartclk 1>;
+>  				interrupts =
+>  				<GIC_SPI 30 IRQ_TYPE_EDGE_RISING>,
+>  				<GIC_SPI 31 IRQ_TYPE_EDGE_RISING>;
+> -- 
+> 2.20.1
+>
 
 -- 
-Jens Axboe
-
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
