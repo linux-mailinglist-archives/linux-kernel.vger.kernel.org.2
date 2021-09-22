@@ -2,140 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB604147AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB464147AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbhIVLTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:19:33 -0400
-Received: from mga18.intel.com ([134.134.136.126]:65341 "EHLO mga18.intel.com"
+        id S235511AbhIVLVR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Sep 2021 07:21:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:55531 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230171AbhIVLTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:19:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="210649436"
+        id S230171AbhIVLVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 07:21:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203065012"
 X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
-   d="scan'208";a="210649436"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 04:18:00 -0700
+   d="scan'208";a="203065012"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 04:19:46 -0700
 X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
-   d="scan'208";a="474522094"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 04:17:53 -0700
-Received: from andy by smile with local (Exim 4.95-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mT0G6-004ANk-OB;
-        Wed, 22 Sep 2021 14:17:50 +0300
-Date:   Wed, 22 Sep 2021 14:17:50 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mwifiex: Use non-posted PCI write when setting TX
- ring write pointer
-Message-ID: <YUsQ3jU1RuThUYn8@smile.fi.intel.com>
-References: <20210914114813.15404-1-verdre@v0yd.nl>
- <20210914114813.15404-2-verdre@v0yd.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210914114813.15404-2-verdre@v0yd.nl>
+   d="scan'208";a="557422965"
+Received: from vidyaram-mobl1.gar.corp.intel.com (HELO localhost) ([10.251.218.73])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 04:19:39 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>, apw@canonical.com,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, dwaipayanray1@gmail.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        mm-commits@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+        linux-doc@vger.kernel.org
+Subject: Re: function prototype element ordering
+In-Reply-To: <YUraGKetS+Tgc7y9@localhost.localdomain>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210909200948.090d4e213ca34b5ad1325a7e@linux-foundation.org> <20210910031046.G76dQvPhV%akpm@linux-foundation.org> <CAHk-=wgfbSyW6QYd5rmhSHRoOQ=ZvV+jLn1U8U4nBDgBuaOAjQ@mail.gmail.com> <202109211630.2D00627@keescook> <af3c775a1515f97c8dbe6a6651bd6e4b6986e8cd.camel@perches.com> <202109211757.F38DF644@keescook> <YUraGKetS+Tgc7y9@localhost.localdomain>
+Date:   Wed, 22 Sep 2021 14:19:28 +0300
+Message-ID: <874kacn9hb.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 01:48:12PM +0200, Jonas Dre�ler wrote:
-> On the 88W8897 card it's very important the TX ring write pointer is
-> updated correctly to its new value before setting the TX ready
-> interrupt, otherwise the firmware appears to crash (probably because
-> it's trying to DMA-read from the wrong place). The issue is present in
-> the latest firmware version 15.68.19.p21 of the pcie+usb card.
+On Wed, 22 Sep 2021, Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> On Tue, Sep 21, 2021 at 07:25:53PM -0700, Kees Cook wrote:
+>> On Tue, Sep 21, 2021 at 04:45:44PM -0700, Joe Perches wrote:
+>> > On Tue, 2021-09-21 at 16:37 -0700, Kees Cook wrote:
+>> > > On Fri, Sep 10, 2021 at 10:23:48AM -0700, Linus Torvalds wrote:
+>> > > > On Thu, Sep 9, 2021 at 8:10 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>> > > > > 
+>> > > > > +__alloc_size(1)
+>> > > > >  extern void *vmalloc(unsigned long size);
+>> > > > [...]
+>> > > > 
+>> > > > All of these are added in the wrong place - inconsistent with the very
+>> > > > compiler documentation the patches add.
+>> > > > 
+>> > > > The function attributes are generally added _after_ the function,
+>> > > > although admittedly we've been quite confused here before.
+>> > > > 
+>> > > > But the very compiler documentation you point to in the patch that
+>> > > > adds these macros gives that as the examples both for gcc and clang:
+>> > > > 
+>> > > > + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alloc_005fsize-function-attribute
+>> > > > + * clang: https://clang.llvm.org/docs/AttributeReference.html#alloc-size
+>> > > > 
+>> > > > and honestly I think that is the preferred format because this is
+>> > > > about the *function*, not about the return type.
+>> > > > 
+>> > > > Do both placements work? Yes.
+>> > > 
+>> > > I'm cleaning this up now, and have discovered that the reason for the
+>> > > before-function placement is consistency with static inlines. If I do this:
+>> > > 
+>> > > static __always_inline void * kmalloc(size_t size, gfp_t flags) __alloc_size(1)
+>> > > {
+>> > > 	...
+>> > > }
+>> > > 
+>> > > GCC is very angry:
+>> > > 
+>> > > ./include/linux/slab.h:519:1: error: attributes should be specified before the declarator in a function definition
+>> > >   519 | static __always_inline void *kmalloc_large(size_t size, gfp_t flags) __alloc_size(1)
+>> > >       | ^~~~~~
+>> > > 
+>> > > It's happy if I treat it as a "return type attribute" in the ordering,
+>> > > though:
+>> > > 
+>> > > static __always_inline void * __alloc_size(1) kmalloc(size_t size, gfp_t flags)
+>> > > 
+>> > > I'll do that unless you have a preference for somewhere else...
+>> > 
+>> > _please_ put it before the return type on a separate line.
+>> > 
+>> > [__attributes]
+>> > [static inline const] <return type> function(<args...>)
+>> 
+>> Somehow Linus wasn't in CC. :P
+>> 
+>> Linus, what do you want here? I keep getting conflicting (or
+>> uncompilable) advice. I'm also trying to prepare a patch for
+>> Documentation/process/coding-style.rst ...
+>> 
+>> Looking through what was written before[1] and through examples in the
+>> source tree, I find the following categories:
+>> 
+>> 1- storage class: static extern inline __always_inline
+>> 2- storage class attributes/hints/???: __init __cold
+>> 3- return type: void *
+>> 4- return type attributes: __must_check __noreturn __assume_aligned(n)
+>> 5- function attributes: __attribute_const__ __malloc
+>> 6- function argument attributes: __printf(n, m) __alloc_size(n)
+>> 
+>> Everyone seems to basically agree on:
+>> 
+>> [storage class] [return type] [return type attributes] [name]([arg1type] [arg1name], ...)
+>> 
+>> There is a lot of disagreement over where 5 and 6 should fit in above. And
+>> there is a lot of confusion over 4 (mixed between before and after the
+>> function name) and 2 (see below).
+>> 
+>> What's currently blocking me is that 6 cannot go after the function
+>> (for definitions) because it angers GCC (see quoted bit above), but 5
+>> can (e.g. __attribute_const__).
+>> 
+>> Another inconsistency seems to be 2 (mainly section markings like
+>> __init). Sometimes it's after the storage class and sometimes after the
+>> return type, but it certainly feels more like a storage class than a
+>> return type attribute:
+>> 
+>> $ git grep 'static __init int' | wc -l
+>> 349
+>> $ git grep 'static int __init' | wc -l
+>> 8402
+>> 
+>> But it's clearly positioned like a return type attribute in most of the
+>> tree. What's correct?
+>> 
+>> Regardless, given the constraints above, it seems like what Linus may
+>> want is (on "one line", though it will get wrapped in pathological cases
+>> like kmem_cache_alloc_node_trace):
+>> 
+>> [storage class] [storage class attributes] [return type] [return type attributes] [function argument attributes] [name]([arg1type] [arg1name], ...) [function attributes]
+>> 
+>> Joe appears to want (on two lines):
+>> 
+>> [storage class attributes] [function attributes] [function argument attributes]
+>> [storage class] [return type] [return type attributes] [name]([arg1type] [arg1name], ...)
+>> 
+>> I would just like to have an arrangement that won't get NAKed by
+>> someone. ;) And I'm willing to document it. :)
+>
+> Attributes should be on their own line, they can be quite lengthy.
+>
+> 	__attribute__((...))
+> 	[static] [inline] T f(A1 arg1, ...)
+> 	{
+> 		...
+> 	}
+>
+> There will be even more attributes in the future, both added by
+> compilers and developers (const, pure, WUR), so let's make "prototype lane"
+> for them.
+>
+> Same for structures:
+>
+> 	__attribute__((packed))
+> 	struct S {
+> 	};
+>
+> Kernel practice of hiding attributes under defines (__ro_after_init)
+> breaks ctags which parses the last identifier before semicolon as object
+> name. Naturally, it is ctags bug, but placing attributes before
+> declaration will autmatically unbreak such cases.
 
-Please, be consistent in the commit message(s) and the code (esp. if the term
-comes from a specification).
+git grep seems to suggest __packed is preferred over
+__attribute__((packed)), and at the end of the struct declaration
+instead of at front:
 
-Here, PCIe (same in the code, at least that I have noticed, but should be done
-everywhere).
+	struct S {
+		/* ... */
+        } __packed;
 
-> Since PCI uses "posted writes" when writing to a register, it's not
-> guaranteed that a write will happen immediately. That means the pointer
-> might be outdated when setting the TX ready interrupt, leading to
-> firmware crashes especially when ASPM L1 and L1 substates are enabled
-> (because of the higher link latency, the write will probably take
-> longer).
-> 
-> So fix those firmware crashes by always using a non-posted write for
-> this specific register write. We do that by simply reading back the
-> register after writing it, just as a few other PCI drivers do.
-> 
-> This fixes a bug where during rx/tx traffic and with ASPM L1 substates
+And GNU Global handles this just fine. ;)
 
-Ditto. TX/RX.
 
-> enabled (the enabled substates are platform dependent), the firmware
-> crashes and eventually a command timeout appears in the logs.
-
-Should it have a Fixes tag?
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jonas Dre�ler <verdre@v0yd.nl>
-
-...
-
-> -		/* Write the TX ring write pointer in to reg->tx_wrptr */
-> -		if (mwifiex_write_reg(adapter, reg->tx_wrptr,
-> -				      card->txbd_wrptr | rx_val)) {
-> +		/* Write the TX ring write pointer in to reg->tx_wrptr.
-> +		 * The firmware (latest version 15.68.19.p21) of the 88W8897
-> +		 * pcie+usb card seems to crash when getting the TX ready
-> +		 * interrupt but the TX ring write pointer points to an outdated
-> +		 * address, so it's important we do a non-posted write here to
-> +		 * force the completion of the write.
-> +		 */
-> +		if (mwifiex_write_reg_np(adapter, reg->tx_wrptr,
-> +				        card->txbd_wrptr | rx_val)) {
-
->  			mwifiex_dbg(adapter, ERROR,
->  				    "SEND DATA: failed to write reg->tx_wrptr\n");
->  			ret = -1;
-
-I'm not sure how this is not a dead code.
-
-On top of that, I would rather to call old function and explicitly put the
-dummy read after it.
-
-		/* Write the TX ring write pointer in to reg->tx_wrptr */
-		if (mwifiex_write_reg(adapter, reg->tx_wrptr,
-				      card->txbd_wrptr | rx_val)) {
-			...eliminate dead code in the following patch(es)...
-		}
-
-+		/* The firmware (latest version 15.68.19.p21) of the 88W8897
-+		 * pcie+usb card seems to crash when getting the TX ready
-+		 * interrupt but the TX ring write pointer points to an outdated
-+		 * address, so it's important we do a non-posted write here to
-+		 * force the completion of the write.
-+		 */
-		mwifiex_read_reg(...);
-
-Now, since I found the dummy read function to be present, perhaps you need to
-dive more into the code and understand why it exists.
+BR,
+Jani.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jani Nikula, Intel Open Source Graphics Center
