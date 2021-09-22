@@ -2,105 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA902414669
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71A4414677
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235162AbhIVKeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:34:03 -0400
-Received: from mga05.intel.com ([192.55.52.43]:41410 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234760AbhIVKd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:33:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="309117992"
-X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
-   d="scan'208";a="309117992"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 03:32:26 -0700
-X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
-   d="scan'208";a="550197430"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.29.182]) ([10.255.29.182])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 03:32:24 -0700
-Subject: Re: [PATCH] KVM: VMX: Check if bus lock vmexit was preempted
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Hao Xiang <hao.xiang@linux.alibaba.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, chenyi.qiang@intel.com,
-        shannon.zhao@linux.alibaba.com,
-        Sean Christopherson <seanjc@google.com>
-References: <1631964600-73707-1-git-send-email-hao.xiang@linux.alibaba.com>
- <87b411c3-da75-e074-91a4-a73891f9f5f8@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <57597778-836c-7bac-7f1d-bcdae0cd6ac4@intel.com>
-Date:   Wed, 22 Sep 2021 18:32:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S234845AbhIVKec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:34:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32723 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234760AbhIVKeb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:34:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632306781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eSL0RGR02+ETLFprPy9AGNzZ8i/AOq/enLbPN5MAacg=;
+        b=d4mmpWrH/sxp+QE8QZ+rDz1MUSpM3v48kFEvoGIQYlEJZ0Tu9N0+KF/LYdn8oCan92sY7h
+        1aL9Pr9xxkaXCXLeNJy5KMzuazIj4e1gJ+oUr49IoBZ24BLuBOc0IDQQk/ASyBKi/PQNiG
+        biYNYw1E8wCyXmqNbQju7riAFtm4sus=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-efuKscDAPeijZ3sTRtsgwA-1; Wed, 22 Sep 2021 06:32:59 -0400
+X-MC-Unique: efuKscDAPeijZ3sTRtsgwA-1
+Received: by mail-wr1-f69.google.com with SMTP id z2-20020a5d4c82000000b0015b140e0562so1745785wrs.7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:32:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=eSL0RGR02+ETLFprPy9AGNzZ8i/AOq/enLbPN5MAacg=;
+        b=6/3rlKwPUGjzPh+wj0grTUB5Fmy6V1V6Yb4ncuuzfKbRaFho7npUn8xW/PYMfm3Q9V
+         YsrgFVGddrTYFTw6E5YuNzxFbWZ0OAjYkXeymDeO0zqXuqtXwiQ57f4zXzsCb3EphsQg
+         dgiTz2u0lABl5aL1EGQUAdtyO+ckln9jb9Ji47LtOmJf0s3qtlh/KMWwQdnjNgccg9IX
+         8f6f8eFTSXs7k4SOn4F/UxIgf4fc6xa1N2vRt34+Tjtb9thvDXWXMXLPFcZ1bHACZWEO
+         lS9YS/RCnWvQxQJAb7drawjd2ohDjYwltYCnjPYBubPOuPqbmRAcDVWuBOhjen0sGtW+
+         Ifdg==
+X-Gm-Message-State: AOAM531pQxBYALBH/U1R1QZfo1JK3zpDw6MQ4Ug9RKXwVXuR+JfgGsi4
+        qDaXJo6SVMb1TMI4guUdJRJj5vNhMquMPFrI9EVIqQgPJV1pQkL7K1ZJTC7vlvYGy70p+f4tuaR
+        yL94/+BwycAJ8Cgi14/i+4zwC
+X-Received: by 2002:a5d:404b:: with SMTP id w11mr40359295wrp.437.1632306778480;
+        Wed, 22 Sep 2021 03:32:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCNKW1oFUoHevtzLoWvSCH7OLS39ZQzOJ4rhBh7tlsl9vJfben8sgiyRTsICuwBK7jRIBY2g==
+X-Received: by 2002:a5d:404b:: with SMTP id w11mr40359269wrp.437.1632306778237;
+        Wed, 22 Sep 2021 03:32:58 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-102-46.dyn.eolo.it. [146.241.102.46])
+        by smtp.gmail.com with ESMTPSA id y197sm6589927wmc.18.2021.09.22.03.32.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 03:32:57 -0700 (PDT)
+Message-ID: <7de92627f85522bf5640defe16eee6c8825f5c55.camel@redhat.com>
+Subject: Re: [syzbot] WARNING in mptcp_sendmsg_frag
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     syzbot <syzbot+263a248eec3e875baa7b@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.linux.dev, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Date:   Wed, 22 Sep 2021 12:32:56 +0200
+In-Reply-To: <00000000000015991c05cc43a736@google.com>
+References: <00000000000015991c05cc43a736@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <87b411c3-da75-e074-91a4-a73891f9f5f8@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/2021 6:02 PM, Paolo Bonzini wrote:
-> On 18/09/21 13:30, Hao Xiang wrote:
->> exit_reason.bus_lock_detected is not only set when bus lock VM exit
->> was preempted, in fact, this bit is always set if bus locks are
->> detected no matter what the exit_reason.basic is.
->>
->> So the bus_lock_vmexit handling in vmx_handle_exit should be duplicated
->> when exit_reason.basic is EXIT_REASON_BUS_LOCK(74). We can avoid it by
->> checking if bus lock vmexit was preempted in vmx_handle_exit.
+On Sat, 2021-09-18 at 04:50 -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> I don't understand, does this mean that bus_lock_detected=1 if 
-> basic=EXIT_REASON_BUS_LOCK?  If so, can we instead replace the contents 
-> of handle_bus_lock_vmexit with
+> HEAD commit:    02319bf15acf net: dsa: bcm_sf2: Fix array overrun in bcm_s..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=170f9e27300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
+> dashboard link: https://syzkaller.appspot.com/bug?extid=263a248eec3e875baa7b
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1507cd8d300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=174c8017300000
 > 
->      /* Do nothing and let vmx_handle_exit exit to userspace.  */
->      WARN_ON(!to_vmx(vcpu)->exit_reason.bus_lock_detected);
->      return 0;
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+263a248eec3e875baa7b@syzkaller.appspotmail.com
 > 
-> ?
-> 
-> That would be doable only if this is architectural behavior and not a 
-> processor erratum, of course.
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 7032 at net/mptcp/protocol.c:1366 mptcp_sendmsg_frag+0x1362/0x1bc0 net/mptcp/protocol.c:1366
+> Modules linked in:
+> CPU: 1 PID: 7032 Comm: syz-executor845 Not tainted 5.15.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:mptcp_sendmsg_frag+0x1362/0x1bc0 net/mptcp/protocol.c:1366
+> Code: ff 4c 8b 74 24 50 48 8b 5c 24 58 e9 0f fb ff ff e8 83 40 8b f8 4c 89 e7 45 31 ed e8 88 57 2e fe e9 81 f4 ff ff e8 6e 40 8b f8 <0f> 0b 41 bd ea ff ff ff e9 6f f4 ff ff 4c 89 e7 e8 b9 89 d2 f8 e9
+> RSP: 0018:ffffc90003acf830 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff888072918000 RSI: ffffffff88eacb72 RDI: 0000000000000003
+> RBP: ffff88807a182580 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff88eac1a7 R11: 0000000000000000 R12: ffff88801a08a000
+> R13: 0000000000000000 R14: ffff888018cb9b80 R15: ffff88801b4f2340
+> FS:  000055555723b300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000380 CR3: 000000007bebe000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  __mptcp_push_pending+0x1fb/0x6b0 net/mptcp/protocol.c:1547
+>  mptcp_sendmsg+0xc29/0x1bc0 net/mptcp/protocol.c:1748
+>  inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:643
+>  sock_sendmsg_nosec net/socket.c:704 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:724
+>  sock_write_iter+0x2a0/0x3e0 net/socket.c:1057
+>  call_write_iter include/linux/fs.h:2163 [inline]
+>  new_sync_write+0x40b/0x640 fs/read_write.c:507
+>  vfs_write+0x7cf/0xae0 fs/read_write.c:594
+>  ksys_write+0x1ee/0x250 fs/read_write.c:647
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f40ee3c4fb9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffd96b7a0f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f40ee3c4fb9
+> RDX: 00000000000e7b78 RSI: 0000000020000000 RDI: 0000000000000003
+> RBP: 0000000000000000 R08: 0000000000f0b5ff R09: 0000000000f0b5ff
+> R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000012096
+> R13: 00007ffd96b7a120 R14: 00007ffd96b7a110 R15: 00007ffd96b7a104
 
-EXIT_REASON.bus_lock_detected may or may not be set when exit reason == 
-EXIT_REASON_BUS_LOCK. Intel will update ISE or SDM to state it.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Maybe we can do below in handle_bus_lock_vmexit handler:
+The debug code helped a bit. It looks like we have singed/unsigned
+comparisons issue
 
-	if (!to_vmx(vcpu)->exit_reason.bus_lock_detected)
-		to_vmx(vcpu)->exit_reason.bus_lock_detected = 1;
+Tentative patch, plus debug code
+---
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index 2602f1386160..c38506c5ea05 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -1316,7 +1316,7 @@ static int mptcp_sendmsg_frag(struct sock *sk, struct sock *ssk,
+ 			goto alloc_skb;
+ 		}
+ 
+-		must_collapse = (info->size_goal - skb->len > 0) &&
++		must_collapse = (info->size_goal > skb->len) &&
+ 				(skb_shinfo(skb)->nr_frags < sysctl_max_skb_frags);
+ 		if (must_collapse) {
+ 			size_bias = skb->len;
+@@ -1325,7 +1325,7 @@ static int mptcp_sendmsg_frag(struct sock *sk, struct sock *ssk,
+ 	}
+ 
+ alloc_skb:
+-	if (!must_collapse && !ssk->sk_tx_skb_cache &&
++	if (!must_collapse &&
+ 	    !mptcp_alloc_tx_skb(sk, ssk, info->data_lock_held))
+ 		return 0;
+ 
+@@ -1363,6 +1363,10 @@ static int mptcp_sendmsg_frag(struct sock *sk, struct sock *ssk,
+ 	}
+ 
+ 	mpext = skb_ext_find(tail, SKB_EXT_MPTCP);
++	if (!mpext)
++		pr_warn("must_collapse=%d old skb=%p:%d avail_size=%d:%d state=%d",
++			must_collapse, skb, skb ? skb->len:0, info->size_goal, avail_size,
++			ssk->sk_state);
+ 	if (WARN_ON_ONCE(!mpext)) {
+ 		/* should never reach here, stream corrupted */
+ 		return -EINVAL;
 
-But is manually changing the hardware reported value for software 
-purpose a good thing?
 
 
-> Thanks,
-> 
-> Paolo
-> 
->> Signed-off-by: Hao Xiang <hao.xiang@linux.alibaba.com>
->> ---
->>   arch/x86/kvm/vmx/vmx.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 0c2c0d5..5ddf1df 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -6054,7 +6054,8 @@ static int vmx_handle_exit(struct kvm_vcpu 
->> *vcpu, fastpath_t exit_fastpath)
->>        * still need to exit to user space when bus lock detected to 
->> inform
->>        * that there is a bus lock in guest.
->>        */
->> -    if (to_vmx(vcpu)->exit_reason.bus_lock_detected) {
->> +    if (to_vmx(vcpu)->exit_reason.bus_lock_detected &&
->> +            to_vmx(vcpu)->exit_reason.basic != EXIT_REASON_BUS_LOCK) {
->>           if (ret > 0)
->>               vcpu->run->exit_reason = KVM_EXIT_X86_BUS_LOCK;
->>
-> 
 
