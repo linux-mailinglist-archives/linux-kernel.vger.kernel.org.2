@@ -2,62 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C69841458C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA0F41458A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhIVJxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:53:25 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37285 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234233AbhIVJxX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:53:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UpDev3j_1632304305;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UpDev3j_1632304305)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 22 Sep 2021 17:51:52 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH] erofs: fix misbehavior of unsupported chunk format check
-Date:   Wed, 22 Sep 2021 17:51:41 +0800
-Message-Id: <20210922095141.233938-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
+        id S234552AbhIVJwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:52:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:45890 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234308AbhIVJwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 05:52:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6734A11B3;
+        Wed, 22 Sep 2021 02:50:47 -0700 (PDT)
+Received: from [10.163.73.113] (unknown [10.163.73.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A90C3F719;
+        Wed, 22 Sep 2021 02:50:43 -0700 (PDT)
+Subject: Re: [PATCH v2 13/17] coresight: trbe: Add a helper to determine the
+ minimum buffer size
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
+        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
+        leo.yan@linaro.org, mike.leach@linaro.org,
+        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-14-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <586a307e-a51d-d176-b9f9-fc730278317e@arm.com>
+Date:   Wed, 22 Sep 2021 15:21:49 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210921134121.2423546-14-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unsupported chunk format should be checked with
-"if (vi->chunkformat & ~EROFS_CHUNK_FORMAT_ALL)"
 
-Found when checking with 4k-byte blockmap (although currently mkfs
-uses inode chunk indexes format by default.)
 
-Fixes: c5aa903a59db ("erofs: support reading chunk-based uncompressed files")
-Cc: Liu Bo <bo.liu@linux.alibaba.com>
-Cc: Chao Yu <chao@kernel.org>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
- fs/erofs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
+> For the TRBE to operate, we need a minimum space available to collect
+> meaningful trace session. This is currently a few bytes, but we may need
+> to extend this for working around errata. So, abstract this into a helper
+> function.
+> 
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 797d978f9fa7..3373f4e2183b 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -277,6 +277,11 @@ trbe_handle_to_cpudata(struct perf_output_handle *handle)
+>  	return buf->cpudata;
+>  }
+>  
+> +static u64 trbe_min_trace_buf_size(struct perf_output_handle *handle)
+> +{
+> +	return TRBE_TRACE_MIN_BUF_SIZE;
+> +}
 
-diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-index 31ac3a7..a552399 100644
---- a/fs/erofs/inode.c
-+++ b/fs/erofs/inode.c
-@@ -176,7 +176,7 @@ static struct page *erofs_read_inode(struct inode *inode,
- 	}
- 
- 	if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
--		if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_ALL)) {
-+		if (vi->chunkformat & ~EROFS_CHUNK_FORMAT_ALL) {
- 			erofs_err(inode->i_sb,
- 				  "unsupported chunk format %x of nid %llu",
- 				  vi->chunkformat, vi->nid);
--- 
-1.8.3.1
+Assuming that struct perf_output_handle could provide all the
+required support for a variable minimum trace buffer length.
 
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+
+> +
+>  /*
+>   * TRBE Limit Calculation
+>   *
+> @@ -447,7 +452,7 @@ static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
+>  	 * have space for a meaningful run, we rather pad it
+>  	 * and start fresh.
+>  	 */
+> -	if (limit && (limit - head < TRBE_TRACE_MIN_BUF_SIZE)) {
+> +	if (limit && ((limit - head) < trbe_min_trace_buf_size(handle))) {
+>  		trbe_pad_buf(handle, limit - head);
+>  		limit = __trbe_normal_offset(handle);
+>  	}
+> 
