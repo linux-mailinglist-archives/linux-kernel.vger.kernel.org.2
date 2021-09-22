@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8D2414DCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17D9414DD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236582AbhIVQMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:12:38 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:40933 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236506AbhIVQMh (ORCPT
+        id S236588AbhIVQN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236506AbhIVQN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:12:37 -0400
-Received: by mail-il1-f197.google.com with SMTP id x5-20020a92b005000000b00257796f4efbso2486476ilh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:11:07 -0700 (PDT)
+        Wed, 22 Sep 2021 12:13:56 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726F7C061574;
+        Wed, 22 Sep 2021 09:12:26 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so2680425pjb.4;
+        Wed, 22 Sep 2021 09:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZINFEPPh5tg9DcuNidDp1iGsjEhXUfCCil0bzDOEJ+A=;
+        b=Bsql6hS/N+ovN75mrNVkPa428mUsRoN6xdFG3tmvlK2WZPnGno+Bbg5Whs6NzJZbq8
+         L03Xh1/RJMaWg7ulP4XR5GToMa1z8gaWh9KdjVncLaF11zzGgIG0mzZpDqlaqfpvw819
+         2gnLm8weaKGzwoBJat1IiRb9KDbB+P+/IPjRcWW64NoCl0otFek4BVHPCj3rsLcXIwU4
+         FJMxRyX2W7/v0ActDNgd00u/sRWYREEN7taJQ4rMIIiFrazFQzA6NAkvkhzOcxYqeTyF
+         CHsRPxPI220ZJKkpI2+FlVOixD2mjGKQWpv1gq7dggYCKhRiw7zoGD73IwTfe1PXaYGh
+         YwAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=UmA5fLnL3GwryS2xj+yPX5YOnEleOA06k1MW7m7x+TQ=;
-        b=dEUY+WlLDuyGddefgJOJ/D+LaZWF71QsiFLe6k191D2aM9falZ7j1nihxKpIaumXMY
-         UsjwxV25sz0+PLp4U1EP85QwKwQ4c6NMXvK5QMZAVlr+5bOYUR3izPNHCQwqv4JUz7Tz
-         DzU4rmqYGUYyNvr19q1wbiiYSeLcmLgCA5JRSqmAGMLnPCdEij3cHZGdXN/HNtj5M6Wv
-         SzJaInDQ2uZG0pPT6jPJz9w7FAMgXENNzmfMOCkSOkC/mrLe7TC/sPD5wo+xSxk6BOBE
-         sLdLw3D3szQUpX3yU49BaitJ1S92tPiWEZOkiUfA/EiuBLKRxCH82pxd+/W6zZwr3vt2
-         /qhA==
-X-Gm-Message-State: AOAM533SV4YCEQWp86HCaovmA/xT5ZVDsBEdBnqeJp0735dzdu8ns0ZG
-        6RPHPT42hwFRt/E3Na2k5pEZE0FAu4TBXanXheolNtoipoOu
-X-Google-Smtp-Source: ABdhPJxk7hBdI+nl+8MGWPeeiUS55BURR8MW1W0ABkOhmmB6xfRPaH4Zg21gdAytWslsTLtv90L4YtBUY3Dpl8CGzWDD5CQx3GH8
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZINFEPPh5tg9DcuNidDp1iGsjEhXUfCCil0bzDOEJ+A=;
+        b=QZVGFJ3cpPoKLbrBlB0ZNtHO7LGKTf952UxBHpKywibjLfHl+ZmIYk4isjadu4aws6
+         MLGpjdeU7dp+OSP1/JzoKa+G6lUNWM+TEXdnBc4SBsncEFsnWqoBP9le+/ir/KNzN6B7
+         7NWcKDzugidb7lI9ANOx4IP3Bj4xG1G71RRZ1UHdt5zmXXbUieXL5NlK/qLuQ63f35N3
+         nA9whAUcw+uekCloWX4/EZ4ts2aPpGs0FPyXPxzbgzxIKBxfi3LjKtlbP/QgO81MoMb7
+         hwwcoYmS5fW8DhC5KGsCFzfPQ6oA0bLrLxmsvihMLVllBHFLl00O2hmdPxwUu+G11AEK
+         b/8g==
+X-Gm-Message-State: AOAM5307/T3yLZ/ZVlDLbR8W+PnWEcOM2TDpeaJNo5delYeikA8DzQAl
+        A6LGK/phO45RrGQy7dt+4R0=
+X-Google-Smtp-Source: ABdhPJzDmGgeDok7iSg/MA/CENANSQczlBxbqQwxO576Ge3GXyi9Mc/pOxPVv3DEGTmZWfiyvSNQhg==
+X-Received: by 2002:a17:902:8ec5:b0:13a:2789:cbb0 with SMTP id x5-20020a1709028ec500b0013a2789cbb0mr80225plo.60.1632327145920;
+        Wed, 22 Sep 2021 09:12:25 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id l11sm6188421pjg.22.2021.09.22.09.12.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 09:12:25 -0700 (PDT)
+Subject: Re: [PATCH stable 5.10 3/3] ARM: 9079/1: ftrace: Add MODULE_PLTS
+ support
+To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>
+References: <20210922023947.59636-1-f.fainelli@gmail.com>
+ <20210922023947.59636-4-f.fainelli@gmail.com>
+ <d374a9ae-2dd0-3b11-d5f8-211ef3a6f991@nokia.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <8acd5f74-7dcb-d563-310d-01e1bd066065@gmail.com>
+Date:   Wed, 22 Sep 2021 09:12:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:d86:: with SMTP id i6mr378919ilj.28.1632327067566;
- Wed, 22 Sep 2021 09:11:07 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 09:11:07 -0700
-In-Reply-To: <000000000000e692c905bbe9192c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000050d0d05cc97c35f@google.com>
-Subject: Re: [syzbot] general protection fault in nbd_disconnect_and_put
-From:   syzbot <syzbot+db0c9917f71539bc4ad1@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, cs.temp3@bpchargemaster.com, hdanton@sina.com,
-        josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mail@anirudhrb.com, nbd@other.debian.org, nsd-public@police.gov.hk,
-        stephen.s.brennan@oracle.com, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d374a9ae-2dd0-3b11-d5f8-211ef3a6f991@nokia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi Alex,
 
-commit 794ebcea865bff47231de89269e9d542121ab7be
-Author: Stephen Brennan <stephen.s.brennan@oracle.com>
-Date:   Wed Sep 1 17:51:42 2021 +0000
+On 9/21/21 11:53 PM, Alexander Sverdlin wrote:
+> Hello Florian,
+> 
+> On 22/09/2021 04:39, Florian Fainelli wrote:
+>> From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+>>
+>> commit 79f32b221b18c15a98507b101ef4beb52444cc6f upstream
+>>
+>> Teach ftrace_make_call() and ftrace_make_nop() about PLTs.
+>> Teach PLT code about FTRACE and all its callbacks.
+> 
+> sorry for inconvenience, but I'd propose to add 6fa630bf473827ae
+> "ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE"
+> to all series on this topic, because of the below chunk which might
+> lead to build issues on some exotic configurations.
+> 
+> Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
 
-    namei: Standardize callers of filename_lookup()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1163691d300000
-start commit:   acd3d2859453 Merge tag 'fixes-v5.13' of git://git.kernel.o..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f04bb30bd3c55050
-dashboard link: https://syzkaller.appspot.com/bug?extid=db0c9917f71539bc4ad1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13f63543d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122c8ef1d00000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: namei: Standardize callers of filename_lookup()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Good point, missed that one, I will add it to the stable submission and
+resend, thanks!
+-- 
+Florian
