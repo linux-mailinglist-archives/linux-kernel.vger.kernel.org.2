@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEDD4152BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233284152AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238036AbhIVV2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:28:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236476AbhIVV2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:28:19 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C89860F6D;
-        Wed, 22 Sep 2021 21:26:49 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mT9em-00CPSk-6Q; Wed, 22 Sep 2021 22:19:56 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-Subject: [PATCH v2 16/16] arm64: Add handling of CNTVCTSS traps
-Date:   Wed, 22 Sep 2021 22:19:41 +0100
-Message-Id: <20210922211941.2756270-17-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210922211941.2756270-1-maz@kernel.org>
-References: <20210922211941.2756270-1-maz@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, oupton@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S238159AbhIVVWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238124AbhIVVWR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 17:22:17 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF93C06179A
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:20:35 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id z8-20020a056214040800b00380dea65c01so14964787qvx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:20:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=DdQUoFRq3sEN1JUX2L/SFL8llDgMarKIfKvV6PGdcNM=;
+        b=O4Jy/Ogp/dp680P+CqoX4JCGL8Rm0rGOz/twbZ/PLzUe02DaJhI6ICFOXvxErzAlCR
+         R/6GWvxQWHUp4U82Sbykjn+7zGYogeWjiJH57Tz5GYyhl4BaU3gnE0KX4RZ1ByJ27yqg
+         KTK0XWu52VN94NN7WJMD4a8uLuEHckFb+t7BiGo8d059NOrbw5rRI5YKbg6UpJuWAX0f
+         KyDfEv0HbMTkpH+v0W7BkmEXnM+sHr00HrsEXiG+T1dkghKtmEUIHgclR7QTZECK9RYv
+         KDfvaFRH9VIp7PuY6/qEtmyBI8lw0oBxSEVcK020VEV0hlzUWIDty29cqkknxinkLOjm
+         m+vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=DdQUoFRq3sEN1JUX2L/SFL8llDgMarKIfKvV6PGdcNM=;
+        b=Nrh8gjcx5F/0qXtTmBA+53s7w8z9OnG/WJr7oJxjbnzTizVqRGdninsMWFq+9LR6yw
+         A6fAdmrFbWZ4go/p6S5swXrRAcVBd7W54Nxs1KTLUS7e/K0TcG/N5mbnwdvJVPBA0su/
+         PT9L9wVhixFeBVB19fjezv9E5WRfCamv9dB/KAK1hClOt7fHVWlEnu+3/wSdRYnQz3dA
+         BNeQK7Dez4qWL53ztpAWtz0NMAh+QmDEOzDVtBgAAniE1NZ2BFVoIZx/fUik7+cQq9vJ
+         o76JHjVR+XsOYFYW/1NfB/m3BwerIu6H8X1fQ3RSxSt4IxSul0MvHjGjM0uEAzOxKilo
+         fBmA==
+X-Gm-Message-State: AOAM5321Wj9V+Nn1CELwlWA7TiFqjs6NSJJYAtxGXdYUZ2XhBetErdrh
+        RJ5dIX/LUr4FkQayG3nPUydMyoXd1d7u
+X-Google-Smtp-Source: ABdhPJwvhV9ZFc+lkU9LSeXeQy7XtePcMyA7QjfbSu604kbhOmlA4DCMROswouYhlH/9UtbhAyY8Pz95qvWc
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d3ff:e8f7:11f4:c738])
+ (user=irogers job=sendgmr) by 2002:a25:c183:: with SMTP id
+ r125mr1134144ybf.37.1632345634702; Wed, 22 Sep 2021 14:20:34 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 14:20:31 -0700
+Message-Id: <20210922212031.485950-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH] perf kmem: Improve man page for record options
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since CNTVCTSS obey the same control bits as CNTVCT, add the necessary
-decoding to the hook table. Note that there is no known user of
-this at the moment.
+Since:
+https://lore.kernel.org/lkml/20200708183919.4141023-1-irogers@google.com/
+The output option works for 'perf kmem', however, it must appear after
+'record'. This is different to 'stat' where '-i' for the input must
+appear before. Try to capture this complication in the man page.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- arch/arm64/include/asm/esr.h |  6 ++++++
- arch/arm64/kernel/traps.c    | 11 +++++++++++
- 2 files changed, 17 insertions(+)
+ tools/perf/Documentation/perf-kmem.txt | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
-index 29f97eb3dad4..a305ce256090 100644
---- a/arch/arm64/include/asm/esr.h
-+++ b/arch/arm64/include/asm/esr.h
-@@ -227,6 +227,9 @@
- #define ESR_ELx_SYS64_ISS_SYS_CNTVCT	(ESR_ELx_SYS64_ISS_SYS_VAL(3, 3, 2, 14, 0) | \
- 					 ESR_ELx_SYS64_ISS_DIR_READ)
+diff --git a/tools/perf/Documentation/perf-kmem.txt b/tools/perf/Documentation/perf-kmem.txt
+index 85b8ac695c87..f378ac59353d 100644
+--- a/tools/perf/Documentation/perf-kmem.txt
++++ b/tools/perf/Documentation/perf-kmem.txt
+@@ -8,22 +8,25 @@ perf-kmem - Tool to trace/measure kernel memory properties
+ SYNOPSIS
+ --------
+ [verse]
+-'perf kmem' {record|stat} [<options>]
++'perf kmem' [<options>] {record|stat}
  
-+#define ESR_ELx_SYS64_ISS_SYS_CNTVCTSS	(ESR_ELx_SYS64_ISS_SYS_VAL(3, 3, 6, 14, 0) | \
-+					 ESR_ELx_SYS64_ISS_DIR_READ)
-+
- #define ESR_ELx_SYS64_ISS_SYS_CNTFRQ	(ESR_ELx_SYS64_ISS_SYS_VAL(3, 3, 0, 14, 0) | \
- 					 ESR_ELx_SYS64_ISS_DIR_READ)
+ DESCRIPTION
+ -----------
+ There are two variants of perf kmem:
  
-@@ -317,6 +320,9 @@
- #define ESR_ELx_CP15_64_ISS_SYS_CNTVCT	(ESR_ELx_CP15_64_ISS_SYS_VAL(1, 14) | \
- 					 ESR_ELx_CP15_64_ISS_DIR_READ)
+-  'perf kmem record <command>' to record the kmem events
+-  of an arbitrary workload.
++  'perf kmem [<options>] record [<perf-record-options>] <command>' to
++  record the kmem events of an arbitrary workload. Additional 'perf
++  record' options may be specified after record, such as '-o' to
++  change the output file name.
  
-+#define ESR_ELx_CP15_64_ISS_SYS_CNTVCTSS (ESR_ELx_CP15_64_ISS_SYS_VAL(9, 14) | \
-+					 ESR_ELx_CP15_64_ISS_DIR_READ)
-+
- #define ESR_ELx_CP15_32_ISS_SYS_CNTFRQ	(ESR_ELx_CP15_32_ISS_SYS_VAL(0, 0, 14, 0) |\
- 					 ESR_ELx_CP15_32_ISS_DIR_READ)
+-  'perf kmem stat' to report kernel memory statistics.
++  'perf kmem [<options>] stat' to report kernel memory statistics.
  
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index b03e383d944a..16710ca55fbb 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -653,6 +653,12 @@ static const struct sys64_hook sys64_hooks[] = {
- 		.esr_val = ESR_ELx_SYS64_ISS_SYS_CNTVCT,
- 		.handler = cntvct_read_handler,
- 	},
-+	{
-+		/* Trap read access to CNTVCTSS_EL0 */
-+		.esr_mask = ESR_ELx_SYS64_ISS_SYS_OP_MASK,
-+		.esr_val = ESR_ELx_SYS64_ISS_SYS_CNTVCTSS,
-+		.handler = cntvct_read_handler,
-+	},
- 	{
- 		/* Trap read access to CNTFRQ_EL0 */
- 		.esr_mask = ESR_ELx_SYS64_ISS_SYS_OP_MASK,
-@@ -729,6 +735,11 @@ static const struct sys64_hook cp15_64_hooks[] = {
- 		.esr_val = ESR_ELx_CP15_64_ISS_SYS_CNTVCT,
- 		.handler = compat_cntvct_read_handler,
- 	},
-+	{
-+		.esr_mask = ESR_ELx_CP15_64_ISS_SYS_MASK,
-+		.esr_val = ESR_ELx_CP15_64_ISS_SYS_CNTVCTSS,
-+		.handler = compat_cntvct_read_handler,
-+	},
- 	{},
- };
+ OPTIONS
+ -------
+ -i <file>::
+ --input=<file>::
+-	Select the input file (default: perf.data unless stdin is a fifo)
++	For stat, select the input file (default: perf.data unless stdin is a
++	fifo)
  
+ -f::
+ --force::
 -- 
-2.30.2
+2.33.0.464.g1972c5931b-goog
 
