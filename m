@@ -2,327 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6294E414490
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED53D4144D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbhIVJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:11:50 -0400
-Received: from www.zeus03.de ([194.117.254.33]:57754 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234213AbhIVJLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:11:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=Q/E5HWUmu+RDmzsswiF97DacOM9
-        WRlDT/kTgGWFyvdk=; b=IuEyTJhBi4iBTd/MhfAVGYyqFYo6ixoAZdxt96jMbhQ
-        YbSkrdlMNR89BmnASdbzHbokoybiWDurQ/YNkbfCy7nfKSDAPql9VRFsrY52vAfi
-        n5V7FK2GmynYhHY0jjDFLs3GDklC4xdg6u8eyeQXI8mAxVaqUgLzhO6sSn6sXlOU
-        =
-Received: (qmail 3171267 invoked from network); 22 Sep 2021 11:10:16 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2021 11:10:16 +0200
-X-UD-Smtp-Session: l3s3148p1@y5zr4ZHMWqcgAwDPXwr6APB8KsyQBt5d
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Duc Nguyen <duc.nguyen.ub@renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [RFC PATCH] memory: renesas-rpc-if: Correct QSPI data transfer in Manual mode
-Date:   Wed, 22 Sep 2021 11:10:06 +0200
-Message-Id: <20210922091007.5516-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.30.2
+        id S234362AbhIVJNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234183AbhIVJN2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 05:13:28 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EEFC061574;
+        Wed, 22 Sep 2021 02:11:58 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id y8so2173948pfa.7;
+        Wed, 22 Sep 2021 02:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/H8JM7coTsTy8XjFA3lC9gYA0UOGgAXPd+2isahauao=;
+        b=HLfzScsMUNlMK27qLlQSMLyfFJnzi9FRK1BoI4XnD5EpQ+Emg5A4BoboFCRpkw9Wu6
+         GFb3+8rXr2IGnlWuakYdqs9ifweiLD482y5Wh/4vszZ6EN6rVvdHADhIS0epD+NYEwE5
+         VB3SD6O3yCZSWZdAQCSzUgeh9GEYZHrRP38yqiZ/LsmaVLYrV1ZitsdcCx3+crTPbW9/
+         9mXffiGZFQNCc55bpPPcSbV2jXSe4V84W3wfzbuiENLTLgOwILeOqvzupRWDDtAqWlqQ
+         in3ruqZ1NB/EXth8tYXBxPyqcm5ojD+7vypxzfXWxb2UNl54PRTzzCGscW5qzbRsDJ3Z
+         eHvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/H8JM7coTsTy8XjFA3lC9gYA0UOGgAXPd+2isahauao=;
+        b=ysHT+h8YcOganZvY7oupZk0G4qES1kZzq3lSahUTuK0aPrS9fkG4NRfJaIIcilT/wG
+         Whft4LxiOKlSKPmjT2w2q8ShZGBV8BAdBK0Uazgn9yrskUKnbWi8DuU3E47BPImC5zXK
+         RDdyDRDdMw9XLkyg54GHuwnEduv2YxmlSEIMUim/8vsdeHrJhDbc/fpXCBGcP1QDfc1D
+         5sFXHFRvfbtO424r7loxI2H8gpotj3VwihD8rwvy82a0UZQI3jEPKtklmwxgsZt++LDf
+         0jm0J9dibCkTYZh6mcIBmAqZflLn6YzJA9QR4zEmrkVgIIt+LcPFxeslBBAHsygzzid+
+         2GEQ==
+X-Gm-Message-State: AOAM532emL9gO+Cku1nZ15WfGHRoYD56JwtoEM65KehuMOKbDZrGZY3H
+        Lz8CKpHQqGZqjRmgflYgPc4=
+X-Google-Smtp-Source: ABdhPJyJbGKl9PSSC+E0xge37GY2XBRLrgMN4EpM3vgbuVyw3BCwFcQ0wzvDDavBtUv/zMLPJv3aow==
+X-Received: by 2002:a65:6554:: with SMTP id a20mr32010143pgw.107.1632301918483;
+        Wed, 22 Sep 2021 02:11:58 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id h15sm1755742pfo.54.2021.09.22.02.11.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 02:11:58 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 09:11:53 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        John Garry <john.garry@huawei.com>,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [RFC v2 PATCH] mm, sl[au]b: Introduce lockless cache
+Message-ID: <20210922091153.GA80396@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
+ <YUkErK1vVZMht4s8@casper.infradead.org>
+ <20210921154239.GA5092@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <YUoFfrQBmOdPEKpJ@casper.infradead.org>
+ <20210922083228.GA79355@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922083228.GA79355@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes 2 problems:
-[1] The output warning logs and data loss when performing
-mount/umount then remount the device with jffs2 format.
-[2] The access width of SMWDR[0:1]/SMRDR[0:1] register is wrong.
+> @@ -491,13 +492,13 @@ void kmem_cache_free_cached(struct kmem_cache *s, void *p)
+>         cache = get_cpu_ptr(s->cache);
+>         if (cache->size < KMEM_LOCKLESS_CACHE_QUEUE_SIZE) {
+>                 cache->queue[cache->size++] = p;
+> -               put_cpu_ptr(s->cache);
+> -               return ;
+> +       } else {
+> +               kmem_cache_free_bulk(s,
+> +                               KMEM_LOCKLESS_CACHE_BATCHCOUNT,
+> +                               cache->queue - KMEM_LOCKLESS_CACHE_BATCHCOUNT);
+> +               cache->size -= KMEM_LOCKLESS_CACHE_BATCHCOUNT;
+>         }
+>         put_cpu_ptr(s->cache);
+> -
+> -       /* Is there better way to do this? */
+> -       kmem_cache_free(s, p);
+>  }
+>  EXPORT_SYMBOL(kmem_cache_free_cached);
 
-This is the sample warning logs when performing mount/umount then
-remount the device with jffs2 format:
-jffs2: jffs2_scan_inode_node(): CRC failed on node at 0x031c51d4:
-Read 0x00034e00, calculated 0xadb272a7
+Sent you a wrong code.
 
-The reason for issue [1] is that the writing data seems to
-get messed up.
-Data is only completed when the number of bytes is divisible by 4.
-If you only have 3 bytes of data left to write, 1 garbage byte
-is inserted after the end of the write stream.
-If you only have 2 bytes of data left to write, 2 bytes of '00'
-are added into the write stream.
-If you only have 1 byte of data left to write, 2 bytes of '00'
-are added into the write stream. 1 garbage byte is inserted after
-the end of the write stream.
+Above was buggy code from some hours ago 
+because of cache->queue - KMEM_LOCKLESS_CACHE_BATCHCOUNT.
 
-To solve problem [1], data must be written continuously in serial
-and the write stream ends when data is out.
+So that is now:
 
-Following HW manual 62.2.15, access to SMWDR0 register should be
-in the same size as the transfer size specified in the SPIDE[3:0]
-bits in the manual mode enable setting register (SMENR).
-Be sure to access from address 0.
-
-So, in 16-bit transfer (SPIDE[3:0]=b'1100), SMWDR0 should be
-accessed by 16-bit width.
-Similar to SMWDR1, SMDDR0/1 registers.
-In current code, SMWDR0 register is accessed by regmap_write()
-that only set up to do 32-bit width.
-
-To solve problem [2], data must be written 16-bit or 8-bit when
-transferring 1-byte or 2-byte.
-
-Signed-off-by: Duc Nguyen <duc.nguyen.ub@renesas.com>
-[wsa: refactored to use regmap only via reg_read/reg_write]
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
-
-Hi,
-
-I could reproduce the issue by a simple:
-
-  $ echo "Hello" > /dev/mtd10
-
-The original BSP patch fixed the issue but mixed regmap-acces with
-ioread/iowrite accesses. So, I refactored it to use custom regmap
-accessors. This keeps the code more readable IMO. With this patch, my
-custom test cases work as well as the JFFS2 remount mentioned in the
-commit message. Tested on a Renesas Condor board (R-Car V3M) and a
-Falcon board (R-Car V3U). I send this as RFC because this is my first
-patch for the RPC code and hope for feedback. The BSP team has been
-contacted as well for comments and testing. Nonetheless, this addresses
-a serious issue which has caused broken boards because of writing to
-unintended locations. So, I'd like to see this discussed and applied
-soon if possible.
-
-Thanks everyone,
-
-   Wolfram
-
-
- drivers/memory/renesas-rpc-if.c | 113 ++++++++++++++++++++++----------
- include/memory/renesas-rpc-if.h |   1 +
- 2 files changed, 79 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index 45eed659b0c6..77a011d5ff8c 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -160,10 +160,62 @@ static const struct regmap_access_table rpcif_volatile_table = {
- 	.n_yes_ranges	= ARRAY_SIZE(rpcif_volatile_ranges),
- };
- 
-+
-+/*
-+ * Custom accessor functions to ensure SMRDR0 and SMWDR0 are always accessed
-+ * with proper width. Requires SMENR_SPIDE to be correctly set before!
-+ */
-+static int rpcif_reg_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	struct rpcif *rpc = context;
-+
-+	if (reg == RPCIF_SMRDR0 || reg == RPCIF_SMWDR0) {
-+		u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
-+
-+		if (spide == 0x8) {
-+			*val = readb(rpc->base + reg);
-+			return 0;
-+		} else if (spide == 0xC) {
-+			*val = readw(rpc->base + reg);
-+			return 0;
-+		} else if (spide != 0xF) {
-+			return -EILSEQ;
-+		}
-+	}
-+
-+	*val = readl(rpc->base + reg);
-+	return 0;
-+
-+}
-+
-+static int rpcif_reg_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct rpcif *rpc = context;
-+
-+	if (reg == RPCIF_SMRDR0 || reg == RPCIF_SMWDR0) {
-+		u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
-+
-+		if (spide == 0x8) {
-+			writeb(val, rpc->base + reg);
-+			return 0;
-+		} else if (spide == 0xC) {
-+			writew(val, rpc->base + reg);
-+			return 0;
-+		} else if (spide != 0xF) {
-+			return -EILSEQ;
-+		}
-+	}
-+
-+	writel(val, rpc->base + reg);
-+	return 0;
-+}
-+
- static const struct regmap_config rpcif_regmap_config = {
- 	.reg_bits	= 32,
- 	.val_bits	= 32,
- 	.reg_stride	= 4,
-+	.reg_read	= rpcif_reg_read,
-+	.reg_write	= rpcif_reg_write,
- 	.fast_io	= true,
- 	.max_register	= RPCIF_PHYINT,
- 	.volatile_table	= &rpcif_volatile_table,
-@@ -173,17 +225,15 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
- {
- 	struct platform_device *pdev = to_platform_device(dev);
- 	struct resource *res;
--	void __iomem *base;
- 
- 	rpc->dev = dev;
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
--	base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(base))
--		return PTR_ERR(base);
-+	rpc->base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(rpc->base))
-+		return PTR_ERR(rpc->base);
- 
--	rpc->regmap = devm_regmap_init_mmio(&pdev->dev, base,
--					    &rpcif_regmap_config);
-+	rpc->regmap = devm_regmap_init(&pdev->dev, NULL, rpc, &rpcif_regmap_config);
- 	if (IS_ERR(rpc->regmap)) {
- 		dev_err(&pdev->dev,
- 			"failed to init regmap for rpcif, error %ld\n",
-@@ -354,20 +404,16 @@ void rpcif_prepare(struct rpcif *rpc, const struct rpcif_op *op, u64 *offs,
- 			nbytes = op->data.nbytes;
- 		rpc->xferlen = nbytes;
- 
--		rpc->enable |= RPCIF_SMENR_SPIDE(rpcif_bits_set(rpc, nbytes)) |
--			RPCIF_SMENR_SPIDB(rpcif_bit_size(op->data.buswidth));
-+		rpc->enable |= RPCIF_SMENR_SPIDB(rpcif_bit_size(op->data.buswidth));
- 	}
- }
- EXPORT_SYMBOL(rpcif_prepare);
- 
- int rpcif_manual_xfer(struct rpcif *rpc)
- {
--	u32 smenr, smcr, pos = 0, max = 4;
-+	u32 smenr, smcr, pos = 0, max = rpc->bus_size == 2 ? 8 : 4;
- 	int ret = 0;
- 
--	if (rpc->bus_size == 2)
--		max = 8;
--
- 	pm_runtime_get_sync(rpc->dev);
- 
- 	regmap_update_bits(rpc->regmap, RPCIF_PHYCNT,
-@@ -378,37 +424,36 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 	regmap_write(rpc->regmap, RPCIF_SMOPR, rpc->option);
- 	regmap_write(rpc->regmap, RPCIF_SMDMCR, rpc->dummy);
- 	regmap_write(rpc->regmap, RPCIF_SMDRENR, rpc->ddr);
-+	regmap_write(rpc->regmap, RPCIF_SMADR, rpc->smadr);
- 	smenr = rpc->enable;
- 
- 	switch (rpc->dir) {
- 	case RPCIF_DATA_OUT:
- 		while (pos < rpc->xferlen) {
--			u32 nbytes = rpc->xferlen - pos;
--			u32 data[2];
-+			u32 bytes_left = rpc->xferlen - pos;
-+			u32 nbytes, data[2];
- 
- 			smcr = rpc->smcr | RPCIF_SMCR_SPIE;
--			if (nbytes > max) {
--				nbytes = max;
-+
-+			/* nbytes may only be 1, 2, 4, or 8 */
-+			nbytes = bytes_left >= max ? max : (1 << ilog2(bytes_left));
-+			if (bytes_left > nbytes)
- 				smcr |= RPCIF_SMCR_SSLKP;
--			}
-+
-+			smenr |= RPCIF_SMENR_SPIDE(rpcif_bits_set(rpc, nbytes));
-+			regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
- 
- 			memcpy(data, rpc->buffer + pos, nbytes);
--			if (nbytes > 4) {
-+			if (nbytes == 8) {
- 				regmap_write(rpc->regmap, RPCIF_SMWDR1,
- 					     data[0]);
- 				regmap_write(rpc->regmap, RPCIF_SMWDR0,
- 					     data[1]);
--			} else if (nbytes > 2) {
-+			} else {
- 				regmap_write(rpc->regmap, RPCIF_SMWDR0,
- 					     data[0]);
--			} else	{
--				regmap_write(rpc->regmap, RPCIF_SMWDR0,
--					     data[0] << 16);
- 			}
- 
--			regmap_write(rpc->regmap, RPCIF_SMADR,
--				     rpc->smadr + pos);
--			regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
- 			regmap_write(rpc->regmap, RPCIF_SMCR, smcr);
- 			ret = wait_msg_xfer_end(rpc);
- 			if (ret)
-@@ -448,14 +493,16 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 			break;
- 		}
- 		while (pos < rpc->xferlen) {
--			u32 nbytes = rpc->xferlen - pos;
--			u32 data[2];
-+			u32 bytes_left = rpc->xferlen - pos;
-+			u32 nbytes, data[2];
- 
--			if (nbytes > max)
--				nbytes = max;
-+			/* nbytes may only be 1, 2, 4, or 8 */
-+			nbytes = bytes_left >= max ? max : (1 << ilog2(bytes_left));
- 
- 			regmap_write(rpc->regmap, RPCIF_SMADR,
- 				     rpc->smadr + pos);
-+			smenr &= ~RPCIF_SMENR_SPIDE(0xF);
-+			smenr |= RPCIF_SMENR_SPIDE(rpcif_bits_set(rpc, nbytes));
- 			regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
- 			regmap_write(rpc->regmap, RPCIF_SMCR,
- 				     rpc->smcr | RPCIF_SMCR_SPIE);
-@@ -463,18 +510,14 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 			if (ret)
- 				goto err_out;
- 
--			if (nbytes > 4) {
-+			if (nbytes == 8) {
- 				regmap_read(rpc->regmap, RPCIF_SMRDR1,
- 					    &data[0]);
- 				regmap_read(rpc->regmap, RPCIF_SMRDR0,
- 					    &data[1]);
--			} else if (nbytes > 2) {
--				regmap_read(rpc->regmap, RPCIF_SMRDR0,
--					    &data[0]);
--			} else	{
-+			} else {
- 				regmap_read(rpc->regmap, RPCIF_SMRDR0,
- 					    &data[0]);
--				data[0] >>= 16;
- 			}
- 			memcpy(rpc->buffer + pos, data, nbytes);
- 
-diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
-index e3e770f76f34..77c694a19149 100644
---- a/include/memory/renesas-rpc-if.h
-+++ b/include/memory/renesas-rpc-if.h
-@@ -59,6 +59,7 @@ struct rpcif_op {
- 
- struct rpcif {
- 	struct device *dev;
-+	void __iomem *base;
- 	void __iomem *dirmap;
- 	struct regmap *regmap;
- 	struct reset_control *rstc;
--- 
-2.30.2
-
+	cache = get_cpu_ptr(s->cache);
+	if (cache->size < KMEM_LOCKLESS_CACHE_QUEUE_SIZE) {
+		cache->queue[cache->size++] = p;
+	} else {
+		kmem_cache_free_bulk(s,
+				KMEM_LOCKLESS_CACHE_BATCHCOUNT,
+				cache->queue + KMEM_LOCKLESS_CACHE_QUEUE_SIZE
+				- KMEM_LOCKLESS_CACHE_BATCHCOUNT);
+		cache->size -= KMEM_LOCKLESS_CACHE_BATCHCOUNT;
+	}
+	put_cpu_ptr(s->cache);
