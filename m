@@ -2,152 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395C94148BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901724148BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235699AbhIVMYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:24:30 -0400
-Received: from mail-mw2nam08on2049.outbound.protection.outlook.com ([40.107.101.49]:52481
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230171AbhIVMY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:24:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MyAS5Fxy8+hD7LsPi1dvk+C8V2TZZQsTu8lnUGPISJCVvXtDwhYVwLvGQ+EORtjRBy8uyZYoTo4MsG5mbjwFkv6IHn/r7ZeeS/ZA6p/V53Lu464D/YYJuu0I8kXqzjv2oM7IY3NcE3+drdEs1qI+eh488LtdoZBqn88aOC6LJCs6a3+6INAWJ41nNG3qCdaeRtmmX+dHq4DtipBy02dlDVbnEWRQocWod0Ef1ZEyPjCuy1pFo8SCO2d7sQHHQwKDuea/tKX64nLqfb1czZ7dzCItx0V3UciKrSxzpDZDnL2fdzY5KDkZDNeJ09dJbv0meCHDD+yq5g/KlJXDOBYAPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=lYzki48wx2iuBzOT50H2iWx5Cucz3DBPxqWT1Vzr4a4=;
- b=PactEUEy+Rq5gla2a1flSk4R7gwYyzoPmTuhqiqBU0Vh3L2chOfK6aYDpzTvaIVtlwd+aA/XrdYcSeq5GQ4SiYEL+bN67VU/BOEBU/73TFwbAZsO+QFrXPoZFk2pXTf9grmsteojempp5aPx7mJpXkYItJNrvvf+R+iloBSSsOPGTXuidivupXdn4aNjlu8myHc1XDEYRO+GBTh+sn7VFJ1G7AQW2LC742TLC7sWDZBh/JkIGD8Hk2G0IvzTH891RbVSf8KDsw2n3vHZCgI15mWn/AJbipFmn56ePp2HaZayAadltqHbXmO1AuxDGOxmaiVlrSgWhb3fVYEI998sgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lYzki48wx2iuBzOT50H2iWx5Cucz3DBPxqWT1Vzr4a4=;
- b=CFHAoG09PLdL7B7CjUKeUlvvJFFdU/qtrMaGh5WtPWdma9kM/bU4R5W6XWZwii8oJF4zFb56MSaJtyeoXFb+qV9PqSs93JFDVIB9CyxDkcGCg57gPYFOXwcGgHVDNOO54xYNzywSRnGNAkClM672p2/2hgQ2ZD1v303d1NCULvIAeHDEsDuH3llJf1PkuDQIyPheVrAA60fD+Z2EjDH8+la2wom1JPAbu15TvtT54vDxlujo6HvB28lUDIEMf6DahIflsvfzZb9yq1h88x8eKOAskGxSIladtsSZmrNXfiJwD7cVurZ9jEg+mDWvybG+/Vb/IAjzgzUbtzGXZomNYA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5109.namprd12.prod.outlook.com (2603:10b6:208:309::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Wed, 22 Sep
- 2021 12:22:53 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 12:22:53 +0000
-Date:   Wed, 22 Sep 2021 09:22:52 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
-Message-ID: <20210922122252.GG327412@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-4-yi.l.liu@intel.com>
- <20210921160108.GO327412@nvidia.com>
- <BN9PR11MB5433D4590BA725C79196E0248CA19@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922005337.GC327412@nvidia.com>
- <BN9PR11MB54338D108AF5A87614717EF98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB54338D108AF5A87614717EF98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL0PR02CA0065.namprd02.prod.outlook.com
- (2603:10b6:207:3d::42) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S235750AbhIVMZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhIVMZX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 08:25:23 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CFDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:23:53 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id ee50so8987233edb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:23:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ryX8AVufL6sz0AeHFj2KeRQZPKI9g5rPyfUzoZrRzF8=;
+        b=nMc9ftKDoxJV9zv9FfrApb2UzaTFmVXtHAnTJMZ5GsEnMdgI6cq8C6Dyrw81wtYySr
+         BxJFrnyP1Ha56zlIEcr/KcPvU5RCo6gJ6vVJrGFGQZHH8pP1NCYsKr+0LPZuAojDdaHC
+         q48Cpt2RMZ3jGycgVkbg0mAWKVKIIOkxxGdR2fVvUkBRfJ3v7HYLitoiqKC2XR+Xf524
+         ZPfKCb+jUJWoCgMRtXDmUgkRU57h7x6sHftQsxm6oIXtemgX/CqmK0uB++p903MM9Dmx
+         t1586Rc0SgEgo63fiM2cIQAoD48WQQXzxQt62sT8WvRo+7Z/gOoUZPq07ABWZx7yZx15
+         bRlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ryX8AVufL6sz0AeHFj2KeRQZPKI9g5rPyfUzoZrRzF8=;
+        b=jY0WN6AhQKXBrR7tpnzX0jq7bHyuve1w/juUYdclyssAhAKZnt/d4EGT9v/xnYFcDL
+         uoefZUK4dRpT4CIZaqXiOWMWq4ZoF8PdJ7ZSRPx5jXCnNk4495QlQwCNAd051bK3vvVm
+         57c3WFbtIMtTRElRMWIKG06DzjOH/nQpXR6vp/WhWaN9nYF4mxlgzSUl1bfz+Ra7zECF
+         wfSZTxFmJC75PD//WBqdk9Pgj3IpM3ja21sbnWXuO59joCopCqBd0NHfgE/N1PC9fooh
+         2uMxSoUdORh8qWK4WToYGvVNWJ8oQNkbQM+wh3bZjOZ8ZlCcbQoDuq6gj2l134A9zENG
+         TH0Q==
+X-Gm-Message-State: AOAM531P66QPXASjbF+2l3ewaAxFGGAz7H865qNFLx2MOR9uu5H04tao
+        hKAPu813hdGXVq7y+QMBa2VxO3D/w3bI5w==
+X-Google-Smtp-Source: ABdhPJxOhYEi3K8yP/ynTuUD76lhk0uPXuqWwtAQh2+Pu5PrUqNNdUiEYjD+KA4ccs6Yj+gQX0cerQ==
+X-Received: by 2002:a05:6402:1d04:: with SMTP id dg4mr41309039edb.183.1632313431810;
+        Wed, 22 Sep 2021 05:23:51 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id m12sm876810edr.24.2021.09.22.05.23.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 05:23:51 -0700 (PDT)
+Subject: Re: [PATCH 1/6] dt-bindings: nvmem: add cell-type to nvmem cells
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org,
+        =?UTF-8?Q?Jan_L=c3=bcbbe?= <jlu@pengutronix.de>
+Cc:     devicetree@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org
+References: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
+ <20210908100257.17833-2-qiangqing.zhang@nxp.com>
+ <6d91d833-08cc-7ce2-4fe5-3d843a8b31ae@pengutronix.de>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <181c4037-3c34-0f71-6bb7-a9c11b173064@linaro.org>
+Date:   Wed, 22 Sep 2021 13:23:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0065.namprd02.prod.outlook.com (2603:10b6:207:3d::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 22 Sep 2021 12:22:52 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mT1H2-003wZQ-1O; Wed, 22 Sep 2021 09:22:52 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8d184113-680e-4156-1628-08d97dc3b343
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5109:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5109AD799934D18C3BFA88B9C2A29@BL1PR12MB5109.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Jf8kcE+apnvGJ9xnTK6u0O1vbTa0SJGWnOdEZMKUcAVe0az427GNxsBkh0d7gmMM+fIvn/b8hDvMj6RZmXmx4aQZBULrsjZLCvorABmg1LSaUJ0W97gaJ1pOejxOOLP3IeDIBkjpApjAO/T7MuCCKPEifNCVZMORH64jSyugXndMZn8FzPhCo1e/U5ztQwJN6plImh8XaQBf/v+CjTSDZMYF8yk1VuNNc3apb+kgBw+SBnFFa3wC1rQHJV9XyNeEZU8wpSgBpeDOYfOfnliRJJIGRquchDpnJIATe/D0ZcXtCdYjepBGcO9ZkvY++B5/h05oFTq171MQAZUI4D0pj8iMgEojNGjSfUmg1OhX2StgdN5iXl2S9QPSfsMbDtgayeuMWcJRybKUhjCLg9OEZ0p2wwnyhtkFP9y9GmdqKZ7ittvB50LnSwYdK8J07++0Tmu/CWB8Oe+sxs+UyLIzAoxZ4h2ldxRz/sZNlfwCZ9ybLHVc0u8q9wW+mH9xLUwVdU22y1i8mLw1tGbGzRBw105q9iCD7GMEfA0ZgpjgoeCpa+uYbLBkPXMZcvgM7q7tKhnDl/nrMmhMJ+2d8KIgnsvAavTXyUsm2qMZcd5VoQiQv/Im1CC0fq16haCGIiMovlGJGBbRZxRDt6c30Vet0fI6vqeOuqaJC54avJSBdt0iIYmJHEIVP16GIMn/gbkN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(8676002)(4326008)(107886003)(5660300002)(66476007)(508600001)(8936002)(54906003)(7416002)(2616005)(36756003)(186003)(66946007)(316002)(86362001)(426003)(26005)(1076003)(38100700002)(6916009)(4744005)(33656002)(9786002)(9746002)(2906002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8Wu0DG9CYNdXiD+XGXbEYiSYxAUu8zT/1FMT5w7/0vVHY+Rg1h5Od3t8QvyB?=
- =?us-ascii?Q?Ev+DmL+ExDsUyMAB4BB1O9SJfIw26LLGylBdRLNW2QhlLLN3nPiSD74Sl4Iw?=
- =?us-ascii?Q?V4kDewI67YjhV7WnC8af1+zDgmTXBQLdnwMOzslZ8y3R4HR50Nt/+U5o+lSm?=
- =?us-ascii?Q?gLH7p9J37w9zRS5tcdNW6+jbMS6rVzkbdBYLDfcAFogQe5b2ZVjwHLud+IPQ?=
- =?us-ascii?Q?fDkRTTw47TTnVjbJ6bJJMaGbjloND6+i27KQsmRJQfQ2zCJn1bkHLKC8QPeY?=
- =?us-ascii?Q?R/Cv7A4uFPWftrPCzGOvckWpIq33aJSlCoG2UNTSkhRDlJFk/OgcUyTO+V0U?=
- =?us-ascii?Q?GxuoKf+vk/b9nxp3XYtEepOUbXKOSyRyjeNx7G/q8WDPZ21cQlhTT/Ydud+A?=
- =?us-ascii?Q?tHyYvVJqdwgyeaHG2mw9NEm/AUOFPeWynaRDhtTVU60QFVo8YK7pFya43DLb?=
- =?us-ascii?Q?O/keEsNWGaBTs9yBmJxacvhV0DGKJBuwjFNcExw1JSj2qu5Z3AGigg/NO6ie?=
- =?us-ascii?Q?WD1VcGpSsE+Acllp/TUMYDQyl4wQ99A/hnQ5jApRpXo6NhrSYPjgEPZwEiKo?=
- =?us-ascii?Q?X9G0/cV+0sfsalrriHIkc2KRamLf2nkY3KQz0bfCnlc4OzsJ3rMgGuT3eIcH?=
- =?us-ascii?Q?wXZsZIyliTP9pENLDcn0bRvS7n2nre2F8ojuhZdFiD60iAas1VRnjSJhyw8f?=
- =?us-ascii?Q?sB6HcGX9WMQE/EcQY0GEQld/41GgswLM3u7qsAov6dYK9ul05xj3FupE5Dd9?=
- =?us-ascii?Q?7RuBDmJkKdDJ+dREOtoMV9L5cFwYkO1QSHAUDokdt2hR2GVmciWdHtjaMnmZ?=
- =?us-ascii?Q?hDwXd4TfCyRvQ6wuP3t/bCraI3KHkqRO3bU7Yq13YBAOin4P9mIfESLYp+a4?=
- =?us-ascii?Q?Mb2qurfu1MlXL9tVM8pe8I3TXZithn1L5NxiG2+eUmbIfBhz1Q2wmqWMVZKL?=
- =?us-ascii?Q?9SYUxiNTcE+J3aTJsPk0sUWWKGbc6mfhcB9fGg/Z/5xZVjC0oFCCqqVAjmrD?=
- =?us-ascii?Q?7KJi4mVnZ1/VzOSN+J1bu0p0ni6BWvJf/9LYZnFqQXU6OkHA4/VafKD1IiDQ?=
- =?us-ascii?Q?MvEy7yTc+I8F0n9XNyOpNLUdQsSbP49cvsKhMz7gqOy2zJGCrqAaRjyFcfZ2?=
- =?us-ascii?Q?M/Fn5ZI1rYROIWlTI8SgqiAfs8Mul6CvF5uphr7jITpzbJVwkL19t11pQDw9?=
- =?us-ascii?Q?ChQbINgZcGQFdWselCvInsC+iEwdhZJ/N/dVzuQ01yW7nyY3+Y2ATujq0BVW?=
- =?us-ascii?Q?soGHBhPtTIIXfH7pp+6X5zD0N5buEyPl6xBlU2Be5c4iJ/hb8o10ktOb49Ix?=
- =?us-ascii?Q?0XfHSWGS9aKwpORvXmkpO5TS?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d184113-680e-4156-1628-08d97dc3b343
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 12:22:53.2902
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YCNyBtkcbbDJWdEtP0QJMs4m86Y4jgaXaEs/lEIZ7hRTN3Ty22FKg4UsCqYdANgx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5109
+In-Reply-To: <6d91d833-08cc-7ce2-4fe5-3d843a8b31ae@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 09:23:34AM +0000, Tian, Kevin wrote:
 
-> > Providing an ioctl to bind to a normal VFIO container or group might
-> > allow a reasonable fallback in userspace..
+
+On 22/09/2021 12:34, Ahmad Fatoum wrote:
+> Hi,
 > 
-> I didn't get this point though. An error in binding already allows the
-> user to fall back to the group path. Why do we need introduce another
-> ioctl to explicitly bind to container via the nongroup interface? 
+> On 08.09.21 12:02, Joakim Zhang wrote:
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> Some of the nvmem providers encode data for certain type of nvmem cell,
+>> example mac-address is stored in ascii or with delimiter or in reverse order.
+>>
+>> This is much specific to vendor, so having a cell-type would allow nvmem
+>> provider drivers to post-process this before using it.
+> 
+> I don't agree with this assessment. Users of the OCOTP so far
+> used this specific encoding. Bootloaders decode the OCOTP this way, but this
+> encoding isn't really an inherent attribute of the OCOTP. A new NXP SoC
+> with a different OTP IP will likely use the same format. Users may even
+> use the same format on an EEPROM to populate a second off-SoC interface, .. etc.
+> 
 
-New userspace still needs a fallback path if it hits the 'try and
-fail'. Keeping the device FD open and just using a different ioctl to
-bind to a container/group FD, which new userspace can then obtain as a
-fallback, might be OK.
+That is okay.
 
-Hard to see without going through the qemu parts, so maybe just keep
-it in mind
+> I'd thus prefer to not make this specific to the OCOTP as all:
+> 
+>    * #define NVMEM_CELL_ENCODING_MAC_ADDRESS_IMX	/* ... */
+> 
+>    * cell-type = <NVMEM_CELL_ENCODING_MAC_ADDRESS_IMX>;
+> 
 
-Jason
+No, this is not okay, cell-type is just representing what is the cell 
+type in a generic way, and its not intended to have any encoding 
+information.
+
+Encoding information should be derived from the provider specific 
+bindings. If we start adding this info in generic binding we will endup 
+with a mess.
+And this has been discussed in various instances.
+
+>    * and then the decoder is placed into some generic location, e.g.
+>     drivers/nvmem/encodings.c for Linux
+
+This is fine, we could have a library to do these post-processing, but 
+only if we have enough users. For now its better to keep it within 
+provider drivers till we have more consumers of these functions.
+
+
+--srini
+> 
+> That way, we can reuse this and future encodings across nvmem providers.
+> It's also more extendable: e.g. big endian fields on EEPROMs. Just stick
+> the cell-type in, document it in the binding and drivers supporting it
+> will interpret bytes appropriately.
+> 
+> It's still a good idea to record the type as well as the encoding,
+> e.g. split the 32 bit encoding constant into two 16-bit values.
+> One is an enum of possible types (unknown, mac_address, IP address ... etc.)
+> and one is an enum of the available encodings.
+> 
+> What do you think?
+> 
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+>> ---
+>>   Documentation/devicetree/bindings/nvmem/nvmem.yaml | 11 +++++++++++
+>>   include/dt-bindings/nvmem/nvmem.h                  |  8 ++++++++
+>>   2 files changed, 19 insertions(+)
+>>   create mode 100644 include/dt-bindings/nvmem/nvmem.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+>> index b8dc3d2b6e92..8cf6c7e72b0a 100644
+>> --- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+>> +++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+>> @@ -60,6 +60,11 @@ patternProperties:
+>>               - minimum: 1
+>>                 description:
+>>                   Size in bit within the address range specified by reg.
+>> +      cell-type:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        maxItems: 1
+>> +        description:
+>> +          Type of nvmem, Use defines in dt-bindings/nvmem/nvmem.h.
+>>   
+>>       required:
+>>         - reg
+>> @@ -69,6 +74,7 @@ additionalProperties: true
+>>   examples:
+>>     - |
+>>         #include <dt-bindings/gpio/gpio.h>
+>> +      #include <dt-bindings/nvmem/nvmem.h>
+>>   
+>>         qfprom: eeprom@700000 {
+>>             #address-cells = <1>;
+>> @@ -98,6 +104,11 @@ examples:
+>>                 reg = <0xc 0x1>;
+>>                 bits = <2 3>;
+>>             };
+>> +
+>> +          mac_addr: mac-addr@90{
+>> +              reg = <0x90 0x6>;
+>> +              cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
+>> +          };
+>>         };
+>>   
+>>   ...
+>> diff --git a/include/dt-bindings/nvmem/nvmem.h b/include/dt-bindings/nvmem/nvmem.h
+>> new file mode 100644
+>> index 000000000000..eed0478f6bfd
+>> --- /dev/null
+>> +++ b/include/dt-bindings/nvmem/nvmem.h
+>> @@ -0,0 +1,8 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef __DT_NVMMEM_H
+>> +#define __DT_NVMMEM_H
+>> +
+>> +#define NVMEM_CELL_TYPE_UNKNOWN		0
+>> +#define NVMEM_CELL_TYPE_MAC_ADDRESS	1
+>> +
+>> +#endif /* __DT_NVMMEM_H */
+>>
+> 
+> 
