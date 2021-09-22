@@ -2,170 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1296C41422F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7383B414231
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhIVGy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:54:28 -0400
-Received: from mail-eopbgr50097.outbound.protection.outlook.com ([40.107.5.97]:57248
+        id S233017AbhIVGzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:55:17 -0400
+Received: from mail-eopbgr50117.outbound.protection.outlook.com ([40.107.5.117]:31394
         "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232835AbhIVGy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:54:26 -0400
+        id S232835AbhIVGzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 02:55:16 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pi8kqsV8vgiPOovSFQhFS3c+DCOGKxI8C0q/0CB8Mr4MiKKWg7UBrqqGdDev2i9/pcMa7Q0btWWYOPw7QohVsLTOEK6qgwfaP5y1FNHqdtm1kduodTR+X8Y3I2vFYjddWnLnsf2gt9cMuKewxUh0aU5EzGy5VCxD+lwXlvBbfFnmUv/Zwt/d3wAQ3A8hb2pOTDoNjLThfa9hAT+to4w2dZoEt5E4XFTAULi7qugRyGao30j7/wzE2mRYUolgQ4sfWlf23qe6QObejlS3y+2j7TY3BASrnb9I8eo137BPEv9Irf6ki051iWcEb0ZPp7AvLgQ3T59+X8VrknAQRpYi4Q==
+ b=LY6QQMfpCn6MAzhpyF2MFOcBmPV1nE0nchtrF+6DjAkJh8NUsvyx2tdCiqI8MXQHTYd9CRIzXVRUK0071BHtkLTvGK1CLcBSxnWdWZACpmvwLAmrg1smLh2oo2IU2iYrVWDMfYiKjcC/hFOpauM/jPrAhPwN11d2xSzaFUNUXlhJlEmoegaPcO1uNmOdNT1J+jVqTadylK8yDIFUMg/7SqlCMrlywsyPZH9YGACJAuOKVs6Hf/cwgDPlEuBArZbElPLudKb9mpG/LBXBsICpHL5a56KLr1fYbwlJZTU2Y6cw1Ecgske9HwOtc1p63HLn73R9OEFBFVP4RXvb6vO/tw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=RGi9EfyjeBCBEYFKMJoB1HqDxSgwuv+m1pokPM0W7p8=;
- b=eSlSZAmk4d2l0Fak95tp7CiSOCHdZgxQPzQzJMqA21kQhXA9jxpQr9Ctg3ezw7CZB+Kcn2FXAKZ71ybQXnE6oWv+SSxQAGqrWmpScnSFumuBuwdTNHZBnnV10q+1w1xWqc38aQVGk96Cyg+UZNrq/tuv2t7Jn/CzXMrHgRZF/O3oAvqsZiQ+dquUgUrZqvOhvgvPSBPU4BJMDC+gn5iga9pKyKD5eOzmqTLM5VUZ6el1wOfqKWIvftihWkbwQnnEQm/i2xEZ1XCJO1Asfz0M9+ktvvIvMTu75QYw3WNFI5URkaxEq0CzT3lastp9WrzhUyX1bATbvlYxP5JpiUB+AQ==
+ bh=yRiDd2ep5TavunwtYTo3STxP1A1NQwSMl6+b+hrOuhA=;
+ b=Eqf3kWWzinqZuel7bQOb/ZI8bf/I5TWdalPj3ouQOk+5GZYxXdRepOO6tyIzvPrmcJPiV/+pRfQi0wtylIT/JyJa0bbFMmJhs5/VoTO8ejq+ljcZ+UOBxY8dCCwNDMDcuWuUA1thB5vPMOLO8hjYCm8SmOLJCkob7ksxPynb0D0IAj1GyQ2l+QEdt0QHXuCTY7t+H3LknefIKOeUI/Hwqh9wslFcxJXKvSyF/sMJRr9TByJ8tOIHXydIm+QfzmhzH69F/pXvQD/cnFh4hbmSufPd9c83lORO+gNF2oAjt108hVmzLPjaRA06qbi1RaoppVHJ3rkO/nEr1qOu66kRMQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=opensynergy.com; dmarc=pass action=none
- header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
- s=selector1;
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RGi9EfyjeBCBEYFKMJoB1HqDxSgwuv+m1pokPM0W7p8=;
- b=W+AIsLaZAMHNBNhxxrgJHj+5E8W1GYuEq1r1bc2TdcbBnL6o7W9xp6VWk+nrSQsybQO1/kA/e+5mv39PPXs/ZfkN+ht8rUieqEEjcmZd2R4IImF8lZ/M0jg3NegniLxm3AsK1093a3F1TEwA0DA0gIdmdJzfqPM0BwLMogH+AG4=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=opensynergy.com;
-From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-To:     jbhayana@google.com, jic23@kernel.org
-Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
-        andriy.tryshnivskyy@opensynergy.com
-Subject: [PATCH 1/1] iio/scmi: Add reading "raw" attribute.
-Date:   Wed, 22 Sep 2021 09:52:35 +0300
-Message-Id: <20210922065235.12891-2-andriy.tryshnivskyy@opensynergy.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210922065235.12891-1-andriy.tryshnivskyy@opensynergy.com>
-References: <20210922065235.12891-1-andriy.tryshnivskyy@opensynergy.com>
-Content-Type: text/plain
-X-ClientProxiedBy: PR3P191CA0035.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:102:55::10) To AM6PR04MB6359.eurprd04.prod.outlook.com
- (2603:10a6:20b:fc::16)
+ bh=yRiDd2ep5TavunwtYTo3STxP1A1NQwSMl6+b+hrOuhA=;
+ b=bkinCCFMjNeRS/y4DeDchdIPlvJ5pzBJ+7zboPrXQm2bHTjNYZfFNHAdMJ6VJSgP0yAFk/V2MbvoZ1VrxwbHjCJkew25egBPQ2bA+LRKVooNZuNIUi1EiRw1XAm8Vl0SYgUY/sic+UR+Dup/i0q3Kp4Q0Cbcpp942dHyhw9r+dQ=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nokia.com;
+Received: from VI1PR07MB4542.eurprd07.prod.outlook.com (2603:10a6:803:6a::21)
+ by VI1PR07MB6512.eurprd07.prod.outlook.com (2603:10a6:800:179::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.7; Wed, 22 Sep
+ 2021 06:53:44 +0000
+Received: from VI1PR07MB4542.eurprd07.prod.outlook.com
+ ([fe80::bd06:69c3:98cf:327c]) by VI1PR07MB4542.eurprd07.prod.outlook.com
+ ([fe80::bd06:69c3:98cf:327c%5]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
+ 06:53:44 +0000
+Subject: Re: [PATCH stable 5.10 3/3] ARM: 9079/1: ftrace: Add MODULE_PLTS
+ support
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>
+References: <20210922023947.59636-1-f.fainelli@gmail.com>
+ <20210922023947.59636-4-f.fainelli@gmail.com>
+From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <d374a9ae-2dd0-3b11-d5f8-211ef3a6f991@nokia.com>
+Date:   Wed, 22 Sep 2021 08:53:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210922023947.59636-4-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3P195CA0019.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:102:b6::24) To VI1PR07MB4542.eurprd07.prod.outlook.com
+ (2603:10a6:803:6a::21)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.167) by PR3P195CA0019.EURP195.PROD.OUTLOOK.COM (2603:10a6:102:b6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 06:53:41 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1700d95c-0975-4ea4-686b-08d97d959a29
-X-MS-TrafficTypeDiagnostic: AM7PR04MB6949:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB6949973D69256DF5DFB70783E6A29@AM7PR04MB6949.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:826;
+X-MS-Office365-Filtering-Correlation-Id: bcfcbcd4-1fef-40ca-00eb-08d97d95b854
+X-MS-TrafficTypeDiagnostic: VI1PR07MB6512:
+X-Microsoft-Antispam-PRVS: <VI1PR07MB6512885BC3C151E34E84082C88A29@VI1PR07MB6512.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:428;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: woZsqDr4jQBxb88bY6skC6c3sMnYnRlM14fn0rVAP/TxHd3lD1i2ze1rYqahYyS7n71xHMF6SQ0JpFGlAYdOiJcaPhfjXyV/J5adr/zcld+7e2bnLzomYhZQ62KXw08Y2of//ShUlnvxIV+t3osKwBcV0HqhmnVZd05/cZZpuxg5LT9DTg9tX/a+fQnOwKUCLfvHiJtEWNc1WR8Dd7m4MdOIHGq1bLrtig79CmKoG7JiL/HyhH7iD0cJIwXySkLOs9EuPkC1PStbmkJp7Aq5O8nyvrS8gKZsyLQ/LaVfOf7jKtuzoHThaH9UAaCBB+/xbNHV+zUrtYD8SXyiDQ4vELkV63GQRhynZZLHrEqpJ9LNTSfshoLimkxW/XkSOsmsYNBrCVysuo8aaErUl1n9XQjzSCX2cfbYfFkVki5KxtiGp6GnzOV3IrokszwfAqqXBqrx+rkyWffzxrJEIKNqxD5j22K0871x8OYVx83qN6Me6sHk1c2kg2d5ejLyEFMQvOydHABHoJD9/HzYi9GE9STH4z7zmWDhd9JiRHdH6PpwbWTOxDfHTgZbBQNA4ZmCovT+1vnZjZX9GiXoJvlSK+/Y3l5bEEJktoxRcLjzY5wFHZQvPUA9WsWVjeTSIRMqrDD1/nbmMgc/D5nYgjDBU52PXOLyny2NXr7+aCIjaBZEoyN1d0+J3i+gsetUJNsKGopOWLFZun90Ar+BSuSp3Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(346002)(136003)(39830400003)(38100700002)(86362001)(1076003)(107886003)(44832011)(2906002)(5660300002)(8676002)(36756003)(2616005)(38350700002)(8936002)(66946007)(55236004)(26005)(508600001)(186003)(66556008)(42186006)(83380400001)(316002)(66476007)(4326008)(52116002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: x7/3yve1HLqPTJjMsmyVtH8yLDTasREskwP+aTMttR0naClc5rA7oqO9OO96MXSgIh5Xnyr2Nn9o2fJnabGOZA3f7a3bTa5ehtRErkzqArWwVzANuqYvHHhE6P6Rzq5BLOYMtTAGm/U3Da59Lsh1Dpdyag9QC0gjKJI/uc9LD2djXFINow2Ew1KRsFQqhU+3j28nXbVzoZktxNYj4u7lOr2BEe15lRihK+Rcft8rfSyPzfq8YasrYMA1HhOC7LEleXHeyJp6n38qoskkCeu5ynIAfWmfbBGBaXISky5FrOqMqY5399LVbeo/rMFuEtxKqL9nypMoEmgv4jnuJ+BFyBtC1AMK+Gt0SD7ODeEJ2IkyNXhi3YaA7jH+jlx0c5sLLLSoNczGmflPMFMKuIxNpoc7TLkSTjW9SpxlQPzKo8pcJ0dMo/pqDYR1G80ZvWth1D3AA6qP2VoLodyMeMQlygROrCmZOjsQFlU2xKH424oBaz2umekZCTJ5cnBCJqoKEIzqnU8yylYeG37XwxfubL+D/ggGpV5cxMVhZVo/L0J7wpkbGBGFvSQTIXVwun8554BV8tRZGjhpxqBFSSNOeZd/a367lITuWGn+QGF55vsYp91iDV2HQJAyDl3J7S0CF6D6gyQN6TMXjR/T5WF9UVLQkZHbkSNcgC449RRXhlwJdS1SSDK4rhxNBP6La3Vh4C+tXccRpKgxg7G/FgAoN8UPl/BIc8mebu09Jd+NwwXDDT9OtsCqVhl7sOgpq07/xnUZ62Yq9dcRTn+RM8IZFgT2huj19+s3OpzafIL99OBmsGooEsKX6ZjwPGWFuLjN0UL+DiJpoKWS3PM8EbKeW/sZZojul+S04GVP5hwuWPc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR07MB4542.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(44832011)(508600001)(2906002)(4326008)(86362001)(31696002)(316002)(36756003)(5660300002)(6666004)(7416002)(6512007)(52116002)(53546011)(38350700002)(38100700002)(6506007)(31686004)(8936002)(26005)(8676002)(966005)(956004)(66946007)(186003)(66476007)(66556008)(6486002)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6Qlqa7jKuf+3urEQbzliH5LYqOBAPYQhgCMrxhlXC1i7cta8EZZnLakamvYj?=
- =?us-ascii?Q?F8dSkLHuT5cro7Kw79mKHtl2u5vphjLpoaoL0fJaGjQOJxNb3FrM4ynAZF/1?=
- =?us-ascii?Q?jgqmHH5nJ0xmvFe9rhhk08oDvfzGVjsL4VGo3+gL3bVXeHia2qyjKPvETY83?=
- =?us-ascii?Q?AOQfiuw85H4mj36IM2LhVfQnIyNWStSzAahbaQg8OzOfdNw5NVnfcTh6xdu/?=
- =?us-ascii?Q?ZFO3hg3jXnXiHLPhs5vALOsbEZZdMtbSmEKPggtDOkks5lnrpO6LpgQDS9DY?=
- =?us-ascii?Q?qOuGGPiijbc3JzqHz++LfaysTnmrs98do4XDkR7Wy9WS9ISEyeLds7dhmS+K?=
- =?us-ascii?Q?NRg+duuu4MRqzRG34y5+o3vLZwDQaia0eGfO6xAFSWAV07To3nqGTu5kDhxX?=
- =?us-ascii?Q?zGAvNIIr3q+F+Ywv49U2WoUebcQ4qpOq5EC+X/3y3F53EwRdUkKV71JXZZx9?=
- =?us-ascii?Q?UtM5xL9Gg8QLln8pamf709432HKWhmH/7ECwd51mI/mIxxM8dM7qQQdpTeU7?=
- =?us-ascii?Q?fQIwttsmT0PdeugxE9T2NMwg0KXTk93OiITVpssu3W9LxqMRV0oBx1Hxp8ZL?=
- =?us-ascii?Q?bTQKxFkwtGY18gTAYnGKlbL5PKDgFvLK3D7reQH6/WwiBhTpVp7fOs6R/0sP?=
- =?us-ascii?Q?RXSkNIKTiLAIAjsQt3on+UQyk3jsdsClnbTT+exlG16vByNL7Ronz/FPeMYz?=
- =?us-ascii?Q?pbFlhfkttJywVGknRyRm2UyHSgtreKjHWAOODo/5QtRwE0H9TexaZaxkbARV?=
- =?us-ascii?Q?zm3sLg/DS42oWw/NZFYP4sXeqN+BM5RShCnsMRIZKe2e+pydwTGoKYift2BD?=
- =?us-ascii?Q?7l4ZA0ZiSOU3vegp7t5rsG5nTlGH2CRk8MJol7CiZNBPE3xqvdzX8mGAijJc?=
- =?us-ascii?Q?ts5w8czYb6ETZOjl1gJMwdBW/8aQcET7801yeXIbEidVEUmHcZxyVLHHwE/w?=
- =?us-ascii?Q?2E+Wjwv6ScUp0LvN06zxCcjSQcoRa+eLsS9t+yjIP+KFLjWlhyAYtItj7/0V?=
- =?us-ascii?Q?OVWMaN6Y6cCgZmNwc3wrKwxtmtKH4oqEp/gH0jntjo4E3A3tUUphym2pIefw?=
- =?us-ascii?Q?52zrNcmE1jWPs3nP2tElKg/H5Vdke4vlaABzyZgoul5uYeH+byntO7nQd/s0?=
- =?us-ascii?Q?ppiLoh4Bre4Ob/UM0xG5G8K0yQG4heLgn+SqMvMgwe969zxC+kIgkwAKxx3Y?=
- =?us-ascii?Q?uOGaoc7QLciHGTj2cSgdktaEOMzojOoRWC/VQtU2LGFKGILuqwa7kgYw7zoz?=
- =?us-ascii?Q?Z5gD2OU3YQRNBF6/LHN0U8CBS0NxufowPUOxVODfjWtjN6Ih3EijTQHn6WZf?=
- =?us-ascii?Q?cYPuqd9p2H8krqLLcLzQZyB/?=
-X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1700d95c-0975-4ea4-686b-08d97d959a29
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXhuU2U2RzljVVdSck1ZV0JaSHVvSDkraXdFUXAzWnVXdk9ITDJIdVlaczE4?=
+ =?utf-8?B?K2pMRkNUbXZkUDdHdUQ4ekxJaDhlUUZzVFVMVkVLcDZOSE1kdGxNVkZ1cmkr?=
+ =?utf-8?B?WnB0Z3JFdkhwSm5TeFdaK0VaOEVYZFlvTzV5ZkczUnQ0QW13WHdaL2c2TkNB?=
+ =?utf-8?B?TWZaMDFxd2E2NkhVbVNIZ3VwMDZDRFZlL1IzZzRqZFBubWNNSDhlMXJsV3Az?=
+ =?utf-8?B?RlA1bVdoakhqTXF1bUtoOUlLZHZJQ1d2bFo1cHJNamRtVjVCbHZHZnNLaE5R?=
+ =?utf-8?B?WDBVaU12d2xhbnQ0Slp3b3B5WUx5cDgveXM4TUFtcGtaTlhwY0ZlMVRRY1p4?=
+ =?utf-8?B?T1FZY0dKNlFCM0hxa1pwMVpyalFzdEpPcjlFeXZZSXVhSGlUT2dLTklzU2F0?=
+ =?utf-8?B?RmFjWmJXT0JtMzczMVBjUFhzelovT1M3dThiQWpwRFhsZnljY0Fuajh5c2N5?=
+ =?utf-8?B?RThDMFQ3M24zYjRkYlhGOFBjRmU1eit1bEU2Q3FQYlE5UGExUHZkZDI4Q2xY?=
+ =?utf-8?B?MEk1K0o3cjRNZGw0bU1BUHJJZklzaWl0cGxuTHkxWmZmNTRUTUQ4bitmMjJn?=
+ =?utf-8?B?WmM3S29DVGFVYU4yS2pOUDFrVndBVFZPZEU0c21IMEVBU1Q5TzlaMlUwVTMy?=
+ =?utf-8?B?NlYrb0NQM1BWem9DWmU0MG04dTBaUWJPckdlY294bHBqaTBJOEZOcXcyQ2xM?=
+ =?utf-8?B?MG5iaVFaQS85aEhTSmpaZjFZazJkSUFNam5mNitxczROTlowdXZrNHJrV1ZY?=
+ =?utf-8?B?SUpmaVlIMmRSaENlSzF1blFjY2E5Uk9SYmJIcGxvQVR3UUVnTGZ4bzU2R04x?=
+ =?utf-8?B?emhXQ3dhcCt6M29EcVlqQU1IY1g3ZGVxWDFuWUFxQ2xydXBlcHowakFLVTVT?=
+ =?utf-8?B?SkFRWkIyTng5V0s5UVI1OWEvbER3emN2SUg4SnE3bXZ6TkllcGNUYk9ETXZN?=
+ =?utf-8?B?WEttbHF3T2tsTjdNa1F1bUUxWnFEQVdyVUdUMXdSMHdEeVVHUWovMFpibXo1?=
+ =?utf-8?B?ckxmQ2VtWENJd29leFlGUGZkSGZkS3AxZzN1N0FMc1ZDTnNYK2FLOU9YTEZj?=
+ =?utf-8?B?RXBhRHVBNW0zRmV1bmJmMmJLTnNhcXVSYnYvbHRMWjM0QU9RWUFlZDE1cHFt?=
+ =?utf-8?B?WERSNmZVNmFjRUJKa0NvTVlkSGpqVEt6cFV1UW5RbGxWa2hENDV5cHo2S3l5?=
+ =?utf-8?B?NEludzFIOUlVS0NhY1dlajQ2V2VUdHVJUWYzYUVzNDNqcU5NWWZWcjRDQWtL?=
+ =?utf-8?B?cDAwOXZXNXNjMkphSXRqZEE3WDFKRGZERTcyMFhwQnhCQm1jdlpQOS90Tk1L?=
+ =?utf-8?B?K3U4Q3V6TVcyS3FPT0RSTmZBZldQVjY0MUM5RXl6TUhJL0NLUHY4b2tjQWtY?=
+ =?utf-8?B?cjBHRFMzKzdMTzU0VjViWmJvVEtTS3QzbjRKWERYOHhpRUQ0Nm81UjQwcWFP?=
+ =?utf-8?B?aC9LMnJVbzFsY1VydkIyZlY1K1hpZmFzNzRoKy8vU3ZlZklPWFV3Tlh0TTFa?=
+ =?utf-8?B?ank3ZmY2VVpvencyTjkveGNSa3dxUmpqTFhpUTlBVTl6c0hXWkhsNDlLempx?=
+ =?utf-8?B?UXB3N0psTnY0aVIwdlVTWTBKSmtjamRCWWJVdlQ3T01VSHh0MXFScEdxRHgz?=
+ =?utf-8?B?NVh0VW9iNHhoSE1CZ255S3BKTWkwRnVUQ3Y1dnZDM3YzOWUrTys1NFVFcUdz?=
+ =?utf-8?B?bkgxWUpRUlF2anFCOGp4RFM5Z0tHT3FTWVdCZm5ZWis0K3c5Y2Z1Y043M1BT?=
+ =?utf-8?Q?6FUIN51MbIFz+cQeZYqn6m+ZBzNfTyUt6wjWdyx?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bcfcbcd4-1fef-40ca-00eb-08d97d95b854
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR07MB4542.eurprd07.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 06:52:54.1478
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 06:53:44.6877
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4nIatudCNwtukGFbEG6/nzvxL5Iug3OPmIke7ihmnWg0Rfe5dNWEuRvyWnduGgAl4zWlpOux1JF8w+BDPpwIhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6949
+X-MS-Exchange-CrossTenant-UserPrincipalName: hIMOQ2Wlen5s0gMYSObx7aDkfZNjEFdL5x9mRzoiO8Ga+gmklOH+b8V9K7iJbkYPfAYpC4xLCvtIyd6eHnd7S8/reEcSl4D6NWpcMuIuMQo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR07MB6512
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
-reading "raw" attribute in scmi_iio_read_raw.
+Hello Florian,
 
-Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
----
- drivers/iio/common/scmi_sensors/scmi_iio.c | 38 +++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+On 22/09/2021 04:39, Florian Fainelli wrote:
+> From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+> 
+> commit 79f32b221b18c15a98507b101ef4beb52444cc6f upstream
+> 
+> Teach ftrace_make_call() and ftrace_make_nop() about PLTs.
+> Teach PLT code about FTRACE and all its callbacks.
 
-diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
-index 7cf2bf282cef..b88780a25796 100644
---- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-+++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-@@ -286,6 +286,9 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
- 	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
- 	s8 scale;
- 	int ret;
-+	int err;
-+	u32 sensor_config;
-+	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
- 
- 	switch (mask) {
- 	case IIO_CHAN_INFO_SCALE:
-@@ -300,6 +303,38 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
- 	case IIO_CHAN_INFO_SAMP_FREQ:
- 		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
- 		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-+	case IIO_CHAN_INFO_RAW:
-+		sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-+					   SCMI_SENS_CFG_SENSOR_ENABLE);
-+		err = sensor->handle->sensor_ops->config_set(
-+			sensor->handle, sensor->sensor_info->id, sensor_config);
-+		if (err)
-+			dev_err(&iio_dev->dev,
-+				"Error in enabling sensor %s err %d",
-+				sensor->sensor_info->name, err);
-+
-+		err = sensor->handle->sensor_ops->reading_get_timestamped(
-+			sensor->handle, sensor->sensor_info->id,
-+			sensor->sensor_info->num_axis,
-+			(struct scmi_sensor_reading *)&readings);
-+		if (err) {
-+			dev_err(&iio_dev->dev,
-+				"Error in reading raw attribute for sensor %s err %d",
-+				sensor->sensor_info->name, err);
-+			return err;
-+		}
-+
-+		sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-+					   SCMI_SENS_CFG_SENSOR_DISABLE);
-+		err = sensor->handle->sensor_ops->config_set(
-+			sensor->handle, sensor->sensor_info->id, sensor_config);
-+		if (err)
-+			dev_err(&iio_dev->dev,
-+				"Error in enabling sensor %s err %d",
-+				sensor->sensor_info->name, err);
-+		/* Use 32-bit value, since practically there is no need in 64 bits */
-+		*val = (u32)readings[ch->scan_index].value;
-+		return IIO_VAL_INT;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -381,7 +416,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
- 	iio_chan->type = type;
- 	iio_chan->modified = 1;
- 	iio_chan->channel2 = mod;
--	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
-+	iio_chan->info_mask_separate =
-+		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
- 	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
- 	iio_chan->info_mask_shared_by_type_available =
- 		BIT(IIO_CHAN_INFO_SAMP_FREQ);
+sorry for inconvenience, but I'd propose to add 6fa630bf473827ae
+"ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE"
+to all series on this topic, because of the below chunk which might
+lead to build issues on some exotic configurations.
+
+Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
+
+> --- a/arch/arm/kernel/module-plts.c
+> +++ b/arch/arm/kernel/module-plts.c
+> @@ -20,19 +21,52 @@
+>  						    (PLT_ENT_STRIDE - 8))
+>  #endif
+>  
+> +static const u32 fixed_plts[] = {
+> +#ifdef CONFIG_FUNCTION_TRACER
+> +	FTRACE_ADDR,
+> +	MCOUNT_ADDR,
+> +#endif
+> +};
+> +
+>  static bool in_init(const struct module *mod, unsigned long loc)
+>  {
+>  	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
+
 -- 
-2.17.1
-
+Best regards,
+Alexander Sverdlin.
