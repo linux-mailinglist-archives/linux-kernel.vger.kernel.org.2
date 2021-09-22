@@ -2,115 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4D14147C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77604147C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235673AbhIVL3o convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Sep 2021 07:29:44 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:54689 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbhIVL3n (ORCPT
+        id S235686AbhIVLaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235422AbhIVL36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:29:43 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mf0Ru-1n3yru1oWQ-00gY3D; Wed, 22 Sep 2021 13:28:12 +0200
-Received: by mail-wr1-f48.google.com with SMTP id t8so5778316wrq.4;
-        Wed, 22 Sep 2021 04:28:12 -0700 (PDT)
-X-Gm-Message-State: AOAM5331qTdk/wBgbOmEdQ2DwA/D/XUOXqQkyfwtcoka3Obj6KA8mdFG
-        rE7Z52jJJseEXexGUnAa/ykL37DWvBcr9dC1jCQ=
-X-Google-Smtp-Source: ABdhPJzt4kksrUoZmyMjHfZ1cfXQn9J73x/e0ELvJ0CKV2Dc5dZsaGo4r7nOa+BZFW/ZNbjTdCnfWEpWCsmso267J14=
-X-Received: by 2002:adf:f481:: with SMTP id l1mr10127682wro.411.1632310091979;
- Wed, 22 Sep 2021 04:28:11 -0700 (PDT)
+        Wed, 22 Sep 2021 07:29:58 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25D5C061574;
+        Wed, 22 Sep 2021 04:28:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D7ZSl4YWEnGCJruUgFbe6upY9ZIlVKrfq0rf1wn9qT4=; b=bpBVu4IjgGl0Zdm/lkC2DT5zDD
+        IhqLDeZhP/xM0SbN4iNNX7YYqL9GuSxmrTDAaLhFK27VashqlEnQ2VXBC0Lfp0Wvvl/sXmsnb+ugw
+        hfyQjy61RtFfG2mwcw3i/dWbKC1UkAxey2W/3bolaSXZjkN3F9ND/B0R3rV6TCUDUV62Y4g2HW8jf
+        Ul15D8IR+ZtAwEcVkNEQgKADdTCzvPqIUtyKaJLv1idSFLkeq5yAWbHuG0u/dsKc3qkHDieX7c50o
+        UjFf2lfi2EK8du47kNWIO40f3sGcSmrix9/myZOWr7pqXuTWFlttdRQHMn7gt6+ROw3vY9bP5njv3
+        YAM+81pA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT0QE-004yj0-Li; Wed, 22 Sep 2021 11:28:18 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 493529816EA; Wed, 22 Sep 2021 13:28:17 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 13:28:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        akpm@linux-foundation.org, frederic@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        tglx@linutronix.de, cl@linux.com, juri.lelli@redhat.com,
+        mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com,
+        mgorman@suse.de, ppandit@redhat.com, williams@redhat.com,
+        bigeasy@linutronix.de, anna-maria@linutronix.de,
+        linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH 0/6] mm: Remote LRU per-cpu pagevec cache/per-cpu page
+ list drain support
+Message-ID: <20210922112817.GO4323@worktop.programming.kicks-ass.net>
+References: <20210921161323.607817-1-nsaenzju@redhat.com>
+ <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
 MIME-Version: 1.0
-References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
- <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
- <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com> <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
- <9db8c79a-f704-84ce-360b-84335f926a48@collabora.com>
-In-Reply-To: <9db8c79a-f704-84ce-360b-84335f926a48@collabora.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 22 Sep 2021 13:27:55 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0w4EOsSUThTAxrARPSyt+CGJTV4V4eeNmDNdG2Qrbq9w@mail.gmail.com>
-Message-ID: <CAK8P3a0w4EOsSUThTAxrARPSyt+CGJTV4V4eeNmDNdG2Qrbq9w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
- 64-bit time_t
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@opensource.wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:oKhwyJ++5qnKLB6p9FS+cu930Y5F9WXu9M133KWxH5o4nnddAFw
- rGKInGG6tM1zE9NKRl6acRsqMXT1EFfuorv4PVM7fcyePALDt6Hlh2eiitcR88zqOVIQ8CG
- vpTcA7RcCwACytMxhm7KGVASJBFZ50NYE+1A0UqfnK/BtXOLXdlqg4nFFdONyH7GIEaczYL
- xab4rcZ3XqXs9ciJng+PA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lKpsXYQVrnU=:Oz8wML5xCK4WnlSzkb4BHx
- 3ZfPvaFlfHHqDD5X5HtTH9ZnCCnYIu9k+eeAS4W1xV3orN43eCL4qzW89bYUeWRXY+UKg8vMp
- IITMKNbzZWlp3m/QLx1jnnx7nw9mSVIXCfWpWQ4gW/VWQ9c2x/1KOLDhID5RarbgTfSpIjofP
- hVplTfNSymacFvho43p74m+lu2UoeI9mYt6aoOhCG93I9D/DWTON4GgdFQN1Wka3r8Pf22U/x
- LSwTS+w05WEYazzZ88D2ylWBEzLMQ1JY0hMKK5BvwQTYbcWxpLYzs+RNMkXDSg/xSm6U9VyBS
- bPUGiAp7NP+o5fNofOIZ6E/4oaqlN14iyV1VW8uCtziqqSb34qOwn1cdqa7SciqBpsQv8Krbn
- ElPWabW8i4t40T8Sf8nl1O+i+uQ75UDJ0DlYrps4zoK79YTtEsT3QgadhhFCHZKlAMNZ2Hvw9
- ZlUhQvKOXubqDy9OwuG4qirK6ujPL0FyZguXeKlBjwDAbQRbpwx6LxJASeh9hZyB3j6socMHe
- NsPU4l97HAJ2Jv54V0i1Tg9LfQsKbQcUQThi90eMT89PCfeItICpYJFrPJY1pF/8+SsH4frsy
- ynjuAlOo92I03/dqwjkrF/KaOk4L4Zyfjf3mZXGr8t+fbg26iHHVPpvOnacGodUd21GxmQsJU
- lfY2NL7cgRV4Uq0lWgtXGkt3/WRGpV0VQxiXerNw3xMXnfKxXtM9Y9aeq9qm1F3l3BFOoIHT2
- z2JzcYmy8JQrCFqLEKDImCjmbOUUz4PC8RLOgT9JvcLmjK9qaQeEAMCH+MxMHjzmKSm2qn8l3
- lk2fBWG8+llYK+YK8fAtHBEVzBAwDVKp/MdeZ+6q8MnyIediOHp4GBHBLH+kmdAZJzLBEHCHE
- eLpE+ojuF9n5rMxr2VFQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 1:06 AM André Almeida <andrealmeid@collabora.com> wrote:
-> Às 05:08 de 21/09/21, Arnd Bergmann escreveu:
-> > On Tue, Sep 21, 2021 at 12:47 AM André Almeida
-> > <andrealmeid@collabora.com> wrote:
-> >>
-> >> #if defined(__i386__) || __TIMESIZE == 32
-> >> # define NR_gettime64 __NR_clock_gettime64
-> >> #else
-> >> # define NR_gettime64 __NR_clock_gettime
-> >> #endif
-> >>
-> >> struct timespec64 {
-> >>         long long tv_sec;       /* seconds */
-> >>         long long tv_nsec;      /* nanoseconds */
-> >> };
-> >>
-> >> int gettime64(clock_t clockid, struct timespec64 *tv)
-> >> {
-> >>         return syscall(NR_gettime64, clockid, tv);
-> >> }
-> >>
-> >> Then we can just use &timeout at __NR_futex_time64 for 32bit arch and at
-> >> __NR_futex for 64bit arch.
-> >
-> > This is still broken when you disable CONFIG_COMPAT_32BIT_TIME,
-> > which disables all system calls that take time32 arguments.
-> >
->
-> Oh, I think my point was confusing then. My suggestion was to use only
-> the futex entry points that accepts time64, and to always use
-> clock_gettime that uses time64, for all platforms. Then it will work if
-> we disable CONFIG_COMPAT_32BIT_TIME.
+On Tue, Sep 21, 2021 at 07:59:51PM +0200, Vlastimil Babka wrote:
 
-Yes, that would be ok. It does require using at least linux-5.1, but we
-perf is already sort-of tied to the kernel version.
+> These days the pcplist protection is done by local_lock, which solved
+> the RT concerns. Probably a stupid/infeasible idea, but maybe what you
+> want to achieve could be more generally solved at the local_lock level?
+> That on NOHZ_FULL CPUs, local_locks could have this mode where they
+> could synchronize with remote cpus?
 
-        Arnd
+local_lock and spinlock have different rules, local_lock for example can
+never cause an irq inversion, unlike a spinlock.
