@@ -2,135 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A767415155
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D06415158
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237619AbhIVUY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:24:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56635 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237381AbhIVUY4 (ORCPT
+        id S237637AbhIVUZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233460AbhIVUZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:24:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632342205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YVbeoTaMblrjpDgFDVGvCcjBz8Qir6DmYn1S2zIAe9c=;
-        b=WdT/M2t/R124jM9CMyYPyIsz//XRJloFuBj/XhsTxrwn1szlQj/veOBNx5wn9bvNSXmjUR
-        kIfZC1JMA5ia6qRwJBCOe6hfFvAozbdhLySzLuUAOI+nyaK0bkL/o2pgcpllcmX4fyjOLd
-        1+oEAi3FE9Ake3ClP43Jz8jae494M7k=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-0_OK4HZXNku3TNvn61lA3w-1; Wed, 22 Sep 2021 16:23:24 -0400
-X-MC-Unique: 0_OK4HZXNku3TNvn61lA3w-1
-Received: by mail-qt1-f199.google.com with SMTP id 7-20020ac85907000000b002a5391eff67so11593793qty.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:23:24 -0700 (PDT)
+        Wed, 22 Sep 2021 16:25:04 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E72C061574;
+        Wed, 22 Sep 2021 13:23:34 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id c20so4047882qtb.2;
+        Wed, 22 Sep 2021 13:23:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tuP0Z9/IKWNDlCkHNfLhchAqddONVQf+DBqSBzYLQwo=;
+        b=fqEbUcQxkB3WtgyTGMDM4atSbsf+kBhx9C2Y3qC5CuZQ+nSJe96KS5jvVja/neJOlX
+         gnt39zjp2fI4JfjqpeVdubftUzhGS41DG9H8DUBk7Sq3G/SUeU3NTHpAAlpWhXh1wiXl
+         4V+G37IC6tOgXfwSO+tP4yPBeguRbQLdiBPAZu1et6njOxv4bj4rAn7E2wa4/3bBZYV/
+         618ME9oShAfy9md6q9TIWl2KLoFqenVNWu9s/Z8gRLN8ykSe7YF+G65jKyup7UqThjMz
+         zb5kAzdShjqKlKkKkZyt4RwANSn8z+OT0xNSFgJb0BY3OdE/3L1D2ZYztKbXsYE9p79u
+         NcuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YVbeoTaMblrjpDgFDVGvCcjBz8Qir6DmYn1S2zIAe9c=;
-        b=AUsj7nZ1v/4MWkhnEFG92R6Xd/UvVID6QY/UbAQ5bqfvLmMGzuTWhQeIgsa19zFM1p
-         J/AaTE+N9WZX6LS6mTHKQkPMn2aZ01cQQXeDL6oFru8JGeEJu9Aq3jmHayr17YFLqBvN
-         u8TOyMmL8P6Xfn22FJ49+4x47XwWTwg265b5JLij5mCHWylR1z7DJbIPtr45RR2VP9rL
-         3h7s9nGmxITLzbrYiHjqwiV2tpQppeso4Eugqu3yhP+3z4I1J6bjccwo/ozIOPquGAWB
-         xLE0ZLa3j0j4rB/y+26E3La2t4KObjOvmzCmMuLc65UkhsPQ4PpD6Qvdile51aHYpfPX
-         NUQQ==
-X-Gm-Message-State: AOAM530OKPH6R3oJvoG3Kgv/gf6Rvd/hFTu11BlrzuAm8gO3IFYEYAOC
-        g3mXP48A23DyKYqG7mgijm5qZyG71HcvWVBKQO8U+TpJXGEGQNdLtY8e3z1/yzm2pBDiGJ9Z6Dh
-        XLnPv+den2jMvOHcz2XSZJvoB
-X-Received: by 2002:ac8:1e93:: with SMTP id c19mr1313224qtm.60.1632342203844;
-        Wed, 22 Sep 2021 13:23:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcOXxTuN0eQjzkMusH8rj1CjLqI2bazEFBAGq+lK7mxZ3BQ0khzrCDQUBODpcRcwUbqrb7wA==
-X-Received: by 2002:ac8:1e93:: with SMTP id c19mr1313193qtm.60.1632342203556;
-        Wed, 22 Sep 2021 13:23:23 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id d9sm2565059qko.111.2021.09.22.13.23.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 13:23:23 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 16:23:21 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
-Message-ID: <YUuQuRwKj66lBwMv@t490s>
-References: <20210922175156.130228-1-peterx@redhat.com>
- <6bbb8e29-9e21-dfbe-d23d-61de7e3cc6db@redhat.com>
- <YUt833H6eaYFyHXD@t490s>
- <CAHbLzkq7kTdEC6ADJRAxXBEOYhsjR8E9uiEFCYFmtA5cD5fMhA@mail.gmail.com>
- <YUuMXCFbj1mmOKec@t490s>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tuP0Z9/IKWNDlCkHNfLhchAqddONVQf+DBqSBzYLQwo=;
+        b=p9uw5jsL2kc+2+8BimRPpJ3c0wPDTDWFNd9CpMKI0cxgK6JeAVv2CICVV2L5/iTgNr
+         bOS+giwq7uypoz1OrZgHPA+422SYbm6rTNKiD/gFhNuPLRBlYxtYx3wvobzaEyyUuxjJ
+         4Bz/VlAgKiHzcxjZBukJwLqEtWwgIFl1q04JbzT36tdcXfPM48nvvnKkFDG5BVCrdD1l
+         xcOmKtxb7N5XXGCdAC4cq3s1ExQjMwSXyDkOJJAcZA+zgq20CLLprg2imA12LUEUXHfE
+         ZC0LUlot1ZxcEzB1lr5bXa5IowYezylurMczH2IL3lssfrPiMZmL0UhQYPYGcNBvsADf
+         Iaag==
+X-Gm-Message-State: AOAM532ZrHWYiGB1TrKabj+KPQuJYlgOX1KzE1Nnaab2i6Wq8YYKVcyu
+        U2ig/v0CeDErAR+mmVBMjLurkI7IDYQJlKAZQO0=
+X-Google-Smtp-Source: ABdhPJypw3BzTxDq/yJX9w0aSJqC0rKUqetMW3sG1RNDeOg1qM2ErzRe1pNBkpEtzxwPrsZooRaWqUkT3kMQpLhHey0=
+X-Received: by 2002:a05:622a:180c:: with SMTP id t12mr1259090qtc.304.1632342213236;
+ Wed, 22 Sep 2021 13:23:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YUuMXCFbj1mmOKec@t490s>
+References: <20210902214708.1776690-1-robimarko@gmail.com> <YUf3aKn78+41Cb/G@builder.lan>
+ <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com> <632a7d28c23a8497d35ea009bfe89883@codeaurora.org>
+In-Reply-To: <632a7d28c23a8497d35ea009bfe89883@codeaurora.org>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Wed, 22 Sep 2021 22:23:22 +0200
+Message-ID: <CAOX2RU5+jeXiqz8oss8Sd-BWa059uAv5xu=7nx_YF4RYpG2S6w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
+To:     Kathiravan T <kathirav@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>, agross@kernel.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 04:04:44PM -0400, Peter Xu wrote:
-> On Wed, Sep 22, 2021 at 12:29:35PM -0700, Yang Shi wrote:
-> > khugepqged does remove the pgtables. Please check out
-> > retract_page_tables(). The pmd will be cleared and the ptes will be
-> > freed otherwise the collapsed THP won't get PMD mapped by later
-> > access.
-> 
-> Indeed.
-> 
-> I should probably still properly disable khugepaged for at least VM_SHARED &&
-> VM_UFFD_WP, then I'd keep the anonymous && minor mode behavior untouched.
-> 
-> The other problem is even if current mm/vma doesn't have UFFD_WP registered,
-> some other mm/vma could have UFFD_WP enabled there that mapped the same file.
-> Checking that up within retract_page_tables() on all VMAs seems to be a bit too
-> late.
-> 
-> Checking it early may not trivially work too - I can walk the vma interval tree
-> at the entry of khugepaged_scan_file(), making sure no vma has UFFD_WP set.
-> However I don't see how it'll stop some of the vma from having UFFD_WP
-> registered later after that point but before retract_page_tables().
-> 
-> I'll need to think about it, but thanks for the input, Yang.  That's a very
-> important point.
+On Tue, 21 Sept 2021 at 08:24, Kathiravan T <kathirav@codeaurora.org> wrote:
+>
+> On 2021-09-20 14:55, Robert Marko wrote:
+> > On Mon, 20 Sept 2021 at 04:52, Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> >>
+> >> On Thu 02 Sep 16:47 CDT 2021, Robert Marko wrote:
+> >>
+> >> > IPQ8074 uses SMEM like other modern QCA SoC-s, so since its already
+> >> > supported by the kernel add the required DT nodes.
+> >> >
+> >> > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> >>
+> >> Thanks for your patch Robert.
+> >>
+> >> > ---
+> >> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 28 +++++++++++++++++++++++++++
+> >> >  1 file changed, 28 insertions(+)
+> >> >
+> >> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> >> > index a620ac0d0b19..83e9243046aa 100644
+> >> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> >> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> >> > @@ -82,6 +82,29 @@ scm {
+> >> >               };
+> >> >       };
+> >> >
+> >> > +     reserved-memory {
+> >> > +             #address-cells = <2>;
+> >> > +             #size-cells = <2>;
+> >> > +             ranges;
+> >> > +
+> >> > +             smem_region: memory@4ab00000 {
+> >> > +                     no-map;
+> >> > +                     reg = <0x0 0x4ab00000 0x0 0x00100000>;
+> >> > +             };
+> >> > +     };
+> >> > +
+> >> > +     tcsr_mutex: hwlock {
+> >> > +             compatible = "qcom,tcsr-mutex";
+> >> > +             syscon = <&tcsr_mutex_regs 0 0x80>;
+> >>
+> >> Since it's not okay to have a lone "syscon" and I didn't think it was
+> >> worth coming up with a binding for the TCSR mutex "syscon" I rewrote
+> >> the
+> >> binding a while back. As such qcom,tcsr-mutex should now live in /soc
+> >> directly.
+> >>
+> >> So can you please respin accordingly?
+> >
+> > Sure, can you just confirm that the:
+> > reg = <0x01905000 0x8000>;
+> >
+> > Is the whole TCSR range as I don't have docs?
+>
+> Robert,
+>
+> TCSR_MUTEX block starts from 0x01905000 and has size 0x20000 (128KB)
 
-Perhaps I need something like this:
+Thanks, Kathiravan,
+TSCR mutex with MMIO reg under it works, but there is some weird probe
+ordering issue.
 
----8<---
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc579f724..c63e957336d1 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1583,6 +1583,15 @@ static void retract_page_tables(struct address_space *mapping, pgoff_t pgoff)
-                pmd = mm_find_pmd(mm, addr);
-                if (!pmd)
-                        continue;
-+               /*
-+                * When a vma is registered with uffd-wp, we can't recycle the
-+                * pmd pgtable because there can be pte markers installed.
-+                * Skip it only, so the rest mm/vma can still have the same
-+                * file mapped hugely, however it'll always mapped in small
-+                * page size for uffd-wp registered ranges.
-+                */
-+               if (userfaultfd_wp(vma))
-+                       continue;
-                /*
-                 * We need exclusive mmap_lock to retract page table.
-                 *
----8<---
+For whatever reason, SMEM will get probed only after MTD does and this
+will cause issues
+if SMEM parser is used as it will return -EPROBE_DEFER but the MTD
+core does not really
+handle it correctly and causes the device to reboot after failed parsing.
 
-I won't post a v2 because then that patch will be shmem-only and uffd-wp-only.
-I'll keep it with the upcoming series I'm going to post to support shmem.
+Now, I have no idea why does this variant which uses MMIO regmap probe
+so much later?
 
-Thanks,
+Regards,
+Robert
 
--- 
-Peter Xu
 
+>
+> Thanks,
+> Kathiravan T.
+>
+> >
+> > Regards,
+> > Robert
+> >>
+> >> Thanks,
+> >> Bjorn
+> >>
+> >> > +             #hwlock-cells = <1>;
+> >> > +     };
+> >> > +
+> >> > +     smem {
+> >> > +             compatible = "qcom,smem";
+> >> > +             memory-region = <&smem_region>;
+> >> > +             hwlocks = <&tcsr_mutex 0>;
+> >> > +     };
+> >> > +
+> >> >       soc: soc {
+> >> >               #address-cells = <0x1>;
+> >> >               #size-cells = <0x1>;
+> >> > @@ -293,6 +316,11 @@ gcc: gcc@1800000 {
+> >> >                       #reset-cells = <0x1>;
+> >> >               };
+> >> >
+> >> > +             tcsr_mutex_regs: syscon@1905000 {
+> >> > +                     compatible = "syscon";
+> >> > +                     reg = <0x01905000 0x8000>;
+> >> > +             };
+> >> > +
+> >> >               sdhc_1: sdhci@7824900 {
+> >> >                       compatible = "qcom,sdhci-msm-v4";
+> >> >                       reg = <0x7824900 0x500>, <0x7824000 0x800>;
+> >> > --
+> >> > 2.31.1
+> >> >
+>
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member of Code Aurora Forum, hosted by The Linux Foundation
