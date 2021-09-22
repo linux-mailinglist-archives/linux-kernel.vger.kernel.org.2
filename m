@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51A1414500
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666F5414503
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbhIVJXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:23:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55872 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234281AbhIVJXo (ORCPT
+        id S234240AbhIVJYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233969AbhIVJYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:23:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632302534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F3Q68iPY2i1vTKFIBJAwvjKbsdFYrmn07/rm3Ve2c6E=;
-        b=LDV35lMtZfDZpsUuKk41QOHqjkmam4W7YfKPl1xRMS4+Sl/rx0BQo71wkD2MwBmuiR0W4R
-        oGk642Gt8D6ya6kLs8c2u4v1LitO+NTnaE5kOdJ89LQf8H2lRhnOv/KAzjhzeSxA5l3Tck
-        iBzMdymuva3knTTGPCPbxVrXVMoQsio=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-j1dwDayBO225cQshvljKnw-1; Wed, 22 Sep 2021 05:22:09 -0400
-X-MC-Unique: j1dwDayBO225cQshvljKnw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07D1B1006B10;
-        Wed, 22 Sep 2021 09:22:08 +0000 (UTC)
-Received: from T590 (ovpn-8-35.pek2.redhat.com [10.72.8.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5C39D385;
-        Wed, 22 Sep 2021 09:21:56 +0000 (UTC)
-Date:   Wed, 22 Sep 2021 17:22:07 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, hch@infradead.org,
-        linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [patch v8 3/7] nbd: check sock index in nbd_read_stat()
-Message-ID: <YUr1v8zylPOFFXTO@T590>
-References: <20210916093350.1410403-1-yukuai3@huawei.com>
- <20210916093350.1410403-4-yukuai3@huawei.com>
- <7e2913ca-1089-9ab7-cfdb-5e8837d36034@huawei.com>
+        Wed, 22 Sep 2021 05:24:07 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1B3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:22:37 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id t4so7179157qkb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UPEYIPraZWFoPIQr727Ikg0kM4AavXg3AzBEv7db2eg=;
+        b=YU29OBBdOuzdjfqiIbJ5gDgbs+UqJ0WpKdUZeygq4yI0a656jlukavNosRIUrIA3U7
+         Sez0+XdPIKPyISUA+X6M/xOHrjJXQ7OF8fiiLis61GnYfCplrDEmS6Vk63tOLjYa2CCZ
+         +QnzdasIy0bqQxg3R63DKO688gtzR3ROB6r+zmqX2mr9oR8viluhCH4gJ1MmEIXeW3uP
+         AP1/bH8WlhzVLPcsrdWgNJ3h+v7kKOOhvki9Zbxgit6+T+4lRF6JGQf3pypljo6Pbe8D
+         J86ZuJ6Kg302mlZuyU5/W1as4IYyX4WDQmyWGeHkwSoEJe3VGCXHrJ2hWl3UYS8TQY3G
+         j5OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UPEYIPraZWFoPIQr727Ikg0kM4AavXg3AzBEv7db2eg=;
+        b=RQDBT6qCQwwVwAq/rx6/x0WAUuyf2xD3LMwp5VhNfJ06y/egqLqQzZ1uf2xmns34LO
+         A9nwP5c7XaJQ9zsDelGsXpuQgcbhVssDJ9l5+nEtFHY3dhhWSHVqiOhpxVYOwgyJX2gg
+         u+r+lv9Ea+H6uqGm4cdtXlZNVMkUyivHMmVuYxw2KpjINStsbdI/q5aJPf1AR5fD7oJz
+         3UmfqgRmbFinaXhymnGps9fxq+Rs9ns1+YRLyzbvQjS0c8CsFJpM95x3s2SmdrNTOThj
+         FtMCCfL7LsvsQ5hHmHW59qmFFD1YMDe6wekc2x78OAqffrTxBPQ2mKDU10RbVHVasx3+
+         rmDg==
+X-Gm-Message-State: AOAM532FOb+r3zSyM0/3CsSakC9dRPHqfyCEeLRXiyOt+mhBHZP+9Grr
+        SSdL/feolioUMm8Xcg6h6TkWCPAK0xLsAUvn0P9www==
+X-Google-Smtp-Source: ABdhPJzJc+xR26CWASPeBTE2lyk9uRF7h8fSa0EqTXh37F/q4/w8e9DMqA4K0pQhxs00hUewDedjrjRorXA+OhOR2Yo=
+X-Received: by 2002:a25:32c4:: with SMTP id y187mr36194925yby.157.1632302557010;
+ Wed, 22 Sep 2021 02:22:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e2913ca-1089-9ab7-cfdb-5e8837d36034@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <1631791177-27229-1-git-send-email-hayashi.kunihiko@socionext.com>
+In-Reply-To: <1631791177-27229-1-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 22 Sep 2021 11:22:26 +0200
+Message-ID: <CAMpxmJXQGbB2Lg6hfFUOqRj=Q__tAvhNXDNX-a8ewviTpjVNoA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] gpio: uniphier: Misc fixes
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 06:34:28PM +0800, yukuai (C) wrote:
-> On 2021/09/16 17:33, Yu Kuai wrote:
-> > The sock that clent send request in nbd_send_cmd() and receive reply
-> > in nbd_read_stat() should be the same.
-> > 
-> > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > ---
-> >   drivers/block/nbd.c | 4 ++++
-> >   1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> > index 614c6ab2b8fe..c724a5bd7fa4 100644
-> > --- a/drivers/block/nbd.c
-> > +++ b/drivers/block/nbd.c
-> > @@ -746,6 +746,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
-> >   		ret = -ENOENT;
-> >   		goto out;
-> >   	}
-> > +	if (cmd->index != index) {
-> > +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d from different sock %d (expected %d)",
-> > +			tag, index, cmd->index);
-> > +	}
-> >   	if (cmd->cmd_cookie != nbd_handle_to_cookie(handle)) {
-> >   		dev_err(disk_to_dev(nbd->disk), "Double reply on req %p, cmd_cookie %u, handle cookie %u\n",
-> >   			req, cmd->cmd_cookie, nbd_handle_to_cookie(handle));
-> > 
-> 
-> Hi, Ming
-> 
-> Any suggestions about this patch?
+On Thu, Sep 16, 2021 at 1:19 PM Kunihiko Hayashi
+<hayashi.kunihiko@socionext.com> wrote:
+>
+> This patch series includes fixes and changes for UniPhier GPIO driver.
+>
+> Patch 1 is to remove the return value of each function according to
+> the return type of irq_chip callback functions.
+>
+> Patch 2 is to replace direct access to IRQ hardware number with
+> helper functions.
+>
+> Patch 3 is to replace direct access to private data from IRQ data
+> with helper functions.
+>
+> Kunihiko Hayashi (3):
+>   gpio: uniphier: Fix void functions to remove return value
+>   gpio: uniphier: Use helper function to get IRQ hardware number
+>   gpio: uniphier: Use helper functions to get private data from IRQ data
+>
+>  drivers/gpio/gpio-uniphier.c | 22 ++++++++++++----------
+>  1 file changed, 12 insertions(+), 10 deletions(-)
+>
+> --
+> 2.7.4
+>
 
-I think this one relies on nbd protocol between server and client, and
-does the protocol require both request and reply xmitted via same
-socket?
+All three applied. Thanks!
 
-
-Thanks,
-Ming
-
+Bartosz
