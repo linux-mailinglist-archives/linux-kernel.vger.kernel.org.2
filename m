@@ -2,134 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E76414ECC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA12C414ECD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236735AbhIVRJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:09:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57828 "EHLO
+        id S236766AbhIVRKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:10:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59909 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236676AbhIVRJy (ORCPT
+        by vger.kernel.org with ESMTP id S236676AbhIVRKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:09:54 -0400
+        Wed, 22 Sep 2021 13:10:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632330503;
+        s=mimecast20190719; t=1632330554;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vWqUMA4PsVlJ2pPT1/p24HsUIkcdO8iEjqhCU7s0cfo=;
-        b=Wrz4nNLoEQOh28uxObgAxBPXU0+dZAdtSlT0JeCPuuZDFo3wBMXtnX69kOjrn91QLpoIeA
-        MBlyet3Bo6CNOlq6XBJDXqsQY0fc+/5NT0Mk2Bc7cSPCPKtyU1e0uQFY/LqSaesC3Q1Mgd
-        aOLJZwaNBV4mw+c2yD7F3T+VrWu6gm8=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-sPe74zuNN2ut-SWlU0rlig-1; Wed, 22 Sep 2021 13:08:22 -0400
-X-MC-Unique: sPe74zuNN2ut-SWlU0rlig-1
-Received: by mail-wr1-f70.google.com with SMTP id v15-20020adff68f000000b0015df51efa18so2749810wrp.16
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:08:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=vWqUMA4PsVlJ2pPT1/p24HsUIkcdO8iEjqhCU7s0cfo=;
-        b=Nyvpqrdmhcf1VgGFEVXIuZO1kH+ynNuQAeQBOfJ8nmTpcJnT5oFNveTPPGZ5zh4AEt
-         UjcQsgPcCQtgyBNpXp/CYHilysQqXm95JMSGl8efaAQzL98X432hOl4fXefCBMxElgS3
-         LzOduGxg88ofz0Virhwu60izlkZebQusjnNybKjn3uzuvdv7zZZWDLZo6Lqoh68tF8qw
-         ncaT0qw67Q3tUngu3OEVAIbjIiMPx1MJNfxYX1/WAti3N/Z7VXIbLzJF/zkC8NH7F+4O
-         SVNdY4b9nRQf3Y0Hy8Mn/0lcsQdj4Viza7hK1n/YoI1jmOJmEm2zurECtDdISwIm2MHL
-         36Ig==
-X-Gm-Message-State: AOAM533yWVjXjJYRRVaiFHy0RAATS4F0Sj2SdFojXYuSJ0yukmugT0gR
-        I86V7nVPFblfyYSy7g6iLKDnVP25jXaSn0/6BH5HOMDu9eZfdq7jPp7+aKb7QRhsmUea+MUQ6IC
-        kyiRDQfynaXqEZPRzT5UI7XEX
-X-Received: by 2002:a5d:6545:: with SMTP id z5mr67132wrv.90.1632330499528;
-        Wed, 22 Sep 2021 10:08:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzEoCMdETBf0ZFsulv49iZD/disD0Q/Hgy56XYmufPeu3oyo6LTtFACq/qEWxa6hE3xyuys2Q==
-X-Received: by 2002:a5d:6545:: with SMTP id z5mr67076wrv.90.1632330499184;
-        Wed, 22 Sep 2021 10:08:19 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-102-46.dyn.eolo.it. [146.241.102.46])
-        by smtp.gmail.com with ESMTPSA id g22sm6079241wmp.39.2021.09.22.10.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 10:08:18 -0700 (PDT)
-Message-ID: <4e6db6e09ed2baa536f2badf2798daf3591bbd5a.camel@redhat.com>
-Subject: Re: [syzbot] possible deadlock in mptcp_close
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+1dd53f7a89b299d59eaf@syzkaller.appspotmail.com>,
-        davem@davemloft.net, edumazet@google.com, fw@strlen.de,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        mptcp@lists.linux.dev, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Wed, 22 Sep 2021 19:07:56 +0200
-In-Reply-To: <87zgs4habc.ffs@tglx>
-References: <0000000000005183b005cc74779a@google.com> <87zgs4habc.ffs@tglx>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SHrxHOUJFC7SXjO6oPt56HM9d80tm/abAg5EY0FI59M=;
+        b=MCTvOO8xYoPzYUwfALlViZ4okVlsuJnAbZTaRZn+hu+Sr+YVIyfznOgLCuCyk9kofxSRsu
+        BBHRJlRpbDiuB27VzAQJhd9zAr7ShyYW9U+wDs3Ig43ftIuFWeVGfWZFQBFH+Uaav6wPYL
+        V6epK2EfocTnu+2voV0/Kld2FStfIyU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-bqVte1b5PcW-zOzon214Pw-1; Wed, 22 Sep 2021 13:09:11 -0400
+X-MC-Unique: bqVte1b5PcW-zOzon214Pw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93E261023F4D;
+        Wed, 22 Sep 2021 17:09:08 +0000 (UTC)
+Received: from thinkpad.redhat.com (unknown [10.39.192.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F001E970E0;
+        Wed, 22 Sep 2021 17:09:04 +0000 (UTC)
+From:   Laurent Vivier <lvivier@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexander Potapenko <glider@google.com>,
+        linux-crypto@vger.kernel.org, Dmitriy Vyukov <dvyukov@google.com>,
+        rusty@rustcorp.com.au, amit@kernel.org, akong@redhat.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Matt Mackall <mpm@selenic.com>,
+        virtualization@lists.linux-foundation.org,
+        Laurent Vivier <lvivier@redhat.com>
+Subject: [PATCH 0/4] hwrng: virtio - add an internal buffer
+Date:   Wed, 22 Sep 2021 19:08:59 +0200
+Message-Id: <20210922170903.577801-1-lvivier@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-22 at 17:57 +0200, Thomas Gleixner wrote:
-> On Mon, Sep 20 2021 at 15:04, syzbot wrote:
-> > The issue was bisected to:
-> > 
-> > commit 2dcb96bacce36021c2f3eaae0cef607b5bb71ede
-> > Author: Thomas Gleixner <tglx@linutronix.de>
-> > Date:   Sat Sep 18 12:42:35 2021 +0000
-> > 
-> >     net: core: Correct the sock::sk_lock.owned lockdep annotations
-> 
-> Shooting the messenger...
-> 
-> > MPTCP: kernel_bind error, err=-98
-> > ============================================
-> > WARNING: possible recursive locking detected
-> > 5.15.0-rc1-syzkaller #0 Not tainted
-> > --------------------------------------------
-> > syz-executor998/6520 is trying to acquire lock:
-> > ffff8880795718a0 (k-sk_lock-AF_INET){+.+.}-{0:0}, at: mptcp_close+0x267/0x7b0 net/mptcp/protocol.c:2738
-> > 
-> > but task is already holding lock:
-> > ffff8880787c8c60 (k-sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1612 [inline]
-> > ffff8880787c8c60 (k-sk_lock-AF_INET){+.+.}-{0:0}, at: mptcp_close+0x23/0x7b0 net/mptcp/protocol.c:2720
-> 
-> So this is a lock nesting issue and looking at the stack trace this
-> comes from:
-> 
-> >  lock_sock_fast+0x36/0x100 net/core/sock.c:3229
-> 
-> which does not support lockdep nesting. So from a lockdep POV this is
-> recursive locking the same lock class. And it's the case I was worried
-> about that lockdep testing never takes the slow path. The original
-> lockdep annotation would have produced exactly the same splat in the
-> slow path case.
-> 
-> So it's not a new problem. It's just visible by moving the lockdep
-> annotations to a place where they actually can detect issues which were
-> not reported before.
-> 
-> See also https://lore.kernel.org/lkml/874kacu248.ffs@tglx/
-> 
-> There are two ways to address this mptcp one:
-> 
->   1) Teach lock_sock_fast() about lock nesting
-> 
->   2) Use lock_sock_nested() in mptcp_close() as that should not be
->      really a hotpath. See patch below.
-
-Thank you for looking into this! I agree this specific case is not
-fastpath, so definitely the proposed patch LGTM.
-
-I fear there could be other similar cases in the MPTCP code, in more
-time critical paths, and perhaps there are other relevant use-case, so
-I'd like to experiment too with a lock_sock_fast_nested() variant - if
-I find enough coffee ;)
-
-Thanks,
-
-Paolo
+hwrng core uses two buffers that can be mixed in the virtio-rng queue.=0D
+=0D
+This series fixes the problem by adding an internal buffer in virtio-rng.=0D
+=0D
+Once the internal buffer is added, we can fix two other problems:=0D
+=0D
+- to be able to release the driver without waiting the device releases the=
+=0D
+  buffer=0D
+=0D
+- actually returns some data when wait=3D0 as we can have some already=0D
+  available data=0D
+=0D
+It also tries to improve the performance by always having a buffer in=0D
+the queue of the device.=0D
+=0D
+Laurent Vivier (4):=0D
+  hwrng: virtio - add an internal buffer=0D
+  hwrng: virtio - don't wait on cleanup=0D
+  hwrng: virtio - don't waste entropy=0D
+  hwrng: virtio - always add a pending request=0D
+=0D
+ drivers/char/hw_random/virtio-rng.c | 84 +++++++++++++++++++++--------=0D
+ 1 file changed, 63 insertions(+), 21 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
 
