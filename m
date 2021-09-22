@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C56414329
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B81414327
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbhIVIBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:01:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34546 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233394AbhIVIBK (ORCPT
+        id S233642AbhIVIBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:01:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37400 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233397AbhIVIBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Sep 2021 04:01:10 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C5A2B1FCA1;
-        Wed, 22 Sep 2021 07:59:38 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0E566221E8;
+        Wed, 22 Sep 2021 07:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632297578; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=XshP/bWtOUXN+bdR2fSY2t4cSl+4ai60bPafAzhx2L0=;
-        b=uRFyBBOpu9a9dtr2sTYEVbtGmrYBZiTpVLZVKSLgRCQK1rScvS8wdD2ZYWOPUcfVtvAKkQ
-        eHj4z/jv5N8CBCrSSClrQ6H0AH5wboRAE76QuGiQFYyM3WuQsCcl4cxfg436lINVAOMIn7
-        K2SxftcdOyxoDVDIyh+gknfU384BPcY=
+        t=1632297579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fJ1vAHBSNPildf/4eP8o3NwX+hnWlE0EtKlIafdDkFQ=;
+        b=YrBlItJ5Ek9BgnEf29+PO4KcXFA0UQ8fkGLWVRHd41dXlsuIokZdTy9XzSkPXwnhZyrCG1
+        PiHNvO4SdXsulvnf7hKwPJ8D85c1dt30xV609EaNFc4gIcdpeYqYN9Xa/FfCD5IWxivz9O
+        xSC05nrFf1DhaYr39Wqc0CCmjRhMiTk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632297578;
+        s=susede2_ed25519; t=1632297579;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=XshP/bWtOUXN+bdR2fSY2t4cSl+4ai60bPafAzhx2L0=;
-        b=8DbI4HgysLiMRc85U+aRJM7qcvdBottrD+Tf+8UnPj6CRSmxexuQJUrTCWh5FFXX00vh8H
-        IxGswof9N+S2AqAQ==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fJ1vAHBSNPildf/4eP8o3NwX+hnWlE0EtKlIafdDkFQ=;
+        b=7ZtSksxnSJ7tQ0K3VmCf2DJbyMVtLnYofkg3JhS8rAUkjR0N6qCZ2MBC3XPHVVdKNjHFDn
+        xMxVgvm3OWZLsHDA==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9AA62A3B8B;
+        by relay2.suse.de (Postfix) with ESMTPS id CE2A8A3B8D;
         Wed, 22 Sep 2021 07:59:38 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 1/7] mxser: restore baud rate if its setting fails
-Date:   Wed, 22 Sep 2021 09:59:32 +0200
-Message-Id: <20210922075938.31390-1-jslaby@suse.cz>
+Subject: [PATCH 2/7] mxser: simplify condition in mxser_receive_chars_new
+Date:   Wed, 22 Sep 2021 09:59:33 +0200
+Message-Id: <20210922075938.31390-2-jslaby@suse.cz>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210922075938.31390-1-jslaby@suse.cz>
+References: <20210922075938.31390-1-jslaby@suse.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a user tries to set a too high rate, it fails due to check in
-mxser_set_baud(). But the high rate remains set in termios, so the user
-might think everything went smooth. Restore the baud rate from the
-old_termios if this happens, so that user knows nothing was changed in
-fact.
-
-It used to behave the correct way many years ago, but somehow the
-restoration vanished with commit 1c45607ad3eb (Char: mxser, remove it)
--- the commit removed mxser's older clone.
+mxser_receive_chars_old() is used whenever MOXA_MUST_LSR_RERR is set in
+status no matter the HW ID (the last 'if'). So there is no need for
+another check of MOXA_MUST_LSR_RERR _with_ hwid == MOXA_MUST_MU860_HWID
+(the third 'if').  Hence remove this subcase. That allows us to check
+status on a single line with both UART_LSR_BRK_ERROR_BITS (from the
+second 'if') and MOXA_MUST_LSR_RERR (the last 'if').
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/tty/mxser.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 1216f3985e18..b9cc41782ce1 100644
+index b9cc41782ce1..f907de56e08b 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -559,14 +559,20 @@ static void mxser_handle_cts(struct tty_struct *tty, struct mxser_port *info,
-  * This routine is called to set the UART divisor registers to match
-  * the specified baud rate for a serial port.
-  */
--static void mxser_change_speed(struct tty_struct *tty)
-+static void mxser_change_speed(struct tty_struct *tty, struct ktermios *old_termios)
- {
- 	struct mxser_port *info = tty->driver_data;
- 	unsigned cflag, cval, fcr;
+@@ -1550,11 +1550,7 @@ static bool mxser_receive_chars_new(struct tty_struct *tty,
  
- 	cflag = tty->termios.c_cflag;
+ 	if (hwid == MOXA_OTHER_UART)
+ 		return false;
+-	if (status & UART_LSR_BRK_ERROR_BITS)
+-		return false;
+-	if (hwid == MOXA_MUST_MU860_HWID && (status & MOXA_MUST_LSR_RERR))
+-		return false;
+-	if (status & MOXA_MUST_LSR_RERR)
++	if (status & (UART_LSR_BRK_ERROR_BITS | MOXA_MUST_LSR_RERR))
+ 		return false;
  
--	mxser_set_baud(tty, tty_get_baud_rate(tty));
-+	if (mxser_set_baud(tty, tty_get_baud_rate(tty))) {
-+		/* Use previous rate on a failure */
-+		if (old_termios) {
-+			speed_t baud = tty_termios_baud_rate(old_termios);
-+			tty_encode_baud_rate(tty, baud, baud);
-+		}
-+	}
- 
- 	/* byte size and parity */
- 	switch (cflag & CSIZE) {
-@@ -791,7 +797,7 @@ static int mxser_activate(struct tty_port *port, struct tty_struct *tty)
- 	/*
- 	 * and set the speed of the serial port
- 	 */
--	mxser_change_speed(tty);
-+	mxser_change_speed(tty, NULL);
- 	spin_unlock_irqrestore(&info->slock, flags);
- 
- 	return 0;
-@@ -1119,7 +1125,7 @@ static int mxser_set_serial_info(struct tty_struct *tty,
- 	if (tty_port_initialized(port)) {
- 		if (old_speed != (port->flags & ASYNC_SPD_MASK)) {
- 			spin_lock_irqsave(&info->slock, sl_flags);
--			mxser_change_speed(tty);
-+			mxser_change_speed(tty, NULL);
- 			spin_unlock_irqrestore(&info->slock, sl_flags);
- 		}
- 	} else {
-@@ -1425,7 +1431,7 @@ static void mxser_set_termios(struct tty_struct *tty, struct ktermios *old_termi
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&info->slock, flags);
--	mxser_change_speed(tty);
-+	mxser_change_speed(tty, old_termios);
- 	spin_unlock_irqrestore(&info->slock, flags);
- 
- 	if ((old_termios->c_cflag & CRTSCTS) && !C_CRTSCTS(tty)) {
+ 	gdl = inb(port->ioaddr + MOXA_MUST_GDL_REGISTER);
 -- 
 2.33.0
 
