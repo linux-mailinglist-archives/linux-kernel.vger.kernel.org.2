@@ -2,136 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDE441434E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA05E41434F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbhIVIMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:12:42 -0400
-Received: from outbound-smtp61.blacknight.com ([46.22.136.249]:47745 "EHLO
-        outbound-smtp61.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233532AbhIVIMh (ORCPT
+        id S233658AbhIVINE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233532AbhIVIND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:12:37 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp61.blacknight.com (Postfix) with ESMTPS id 5D368FBD84
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:11:07 +0100 (IST)
-Received: (qmail 29350 invoked from network); 22 Sep 2021 08:11:07 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Sep 2021 08:11:07 -0000
-Date:   Wed, 22 Sep 2021 09:11:04 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm/vmscan: Throttle reclaim and compaction when too
- may pages are isolated
-Message-ID: <20210922081104.GV3959@techsingularity.net>
-References: <20210920085436.20939-1-mgorman@techsingularity.net>
- <20210920085436.20939-3-mgorman@techsingularity.net>
- <CAHbLzkoSzvC=hEOZa5xc98oJKss4tz3Ja7qU8_iQUMLgWsEQWg@mail.gmail.com>
+        Wed, 22 Sep 2021 04:13:03 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918FEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:11:33 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id i23so4310453wrb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wxHTAEsI7Nk3iPURnvztUqIFLbdCaS8kxfRLaXFpIzk=;
+        b=bfg6hrQ4CjFf3qWQZk05aiAU0SKwDjTnGVr5mmD58yypuw2lHFVQdfzHvRlnvwkmzX
+         /FufyeEw+ShF3lBaIvdD61+iZomA9+EA1DtEdqrZThfFPlyIUvl8oJXkZH2vZH/Z7YmX
+         8hBljxI7NZBefkCWG9+pAJgbTVXrXqBw70xC/eGdLlG1XQ3nFFKgBnnEsjv6W8GVfOIT
+         fVHJ9K4G9BNc7b1q4jrPrAH9vbUjOm7rtDOLQLpgFjAjXzejkKQFJvJ0NGksttyXBOMZ
+         UY+2LoTXk0snXiGB9Vk4TtZNlT5Pfhx6F4OhVWd7zw0I6qdDslAxs9qqCVAS9aLtOuNk
+         EOmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wxHTAEsI7Nk3iPURnvztUqIFLbdCaS8kxfRLaXFpIzk=;
+        b=QcKEavRfuK6hGTkzs9XVL+YmKO1nCvGAEet9T6APjS+da1KMUMGns47iqi1oVQ0mZj
+         CoG3IAZLMYuSIEIc8ySXfkmyvOnwRBtqaguyY9UZpwGEw5W3tHHY77OZwjN5JLLRGCR/
+         NzRIoWZHSNYBGaX3/0XRnoAsCivIrJZTWsGbc0QO73tyh3cACW1HoEzXyKM/YCmsMWEl
+         r5Fg7cOd9vQMy9KfFQw8hqg9AkEasKNPqJZF6upUsP7ysWgoAQzmQXm1uLDP4QQ3//sy
+         6VPXfWPgweQuMOhdBKdFCW+MaxBokkvX8IibYffsooaEslTCTrY3Rygxle6+bF5RQJmC
+         aiWw==
+X-Gm-Message-State: AOAM5325s+UXFJwgFJIVCTVspn7fADHFVaJrRTClJWGh/wDlRHOpJEbe
+        vSpbhF893etovrFsEMPJT6I=
+X-Google-Smtp-Source: ABdhPJzzflJ6y5fsEmusSNKQISqiUc/JclUu6xfNP0IJZ06m+Vg1SrDTtpO577Ikb4qShOViKHDcrQ==
+X-Received: by 2002:a5d:460a:: with SMTP id t10mr41194518wrq.145.1632298292228;
+        Wed, 22 Sep 2021 01:11:32 -0700 (PDT)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id a25sm5072161wmj.34.2021.09.22.01.11.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 01:11:31 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 09:11:25 +0100
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Melissa Wen <mwen@igalia.com>
+Cc:     Cai Huoqing <caihuoqing@baidu.com>, Emma Anholt <emma@anholt.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/v3d: Make use of the helper function
+ devm_platform_ioremap_resource_byname()
+Message-ID: <20210922081125.qc4eaaxyfi6rjunr@smtp.gmail.com>
+References: <20210901112941.31320-1-caihuoqing@baidu.com>
+ <20210920083134.hajvw6kpvfg3qitn@mail.igalia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHbLzkoSzvC=hEOZa5xc98oJKss4tz3Ja7qU8_iQUMLgWsEQWg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210920083134.hajvw6kpvfg3qitn@mail.igalia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:45:19AM -0700, Yang Shi wrote:
-> On Mon, Sep 20, 2021 at 1:55 AM Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > Page reclaim throttles on congestion if too many parallel reclaim instances
-> > have isolated too many pages. This makes no sense, excessive parallelisation
-> > has nothing to do with writeback or congestion.
-> >
-> > This patch creates an additional workqueue to sleep on when too many
-> > pages are isolated. The throttled tasks are woken when the number
-> > of isolated pages is reduced or a timeout occurs. There may be
-> > some false positive wakeups for GFP_NOIO/GFP_NOFS callers but
-> > the tasks will throttle again if necessary.
-> >
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+On 09/20, Melissa Wen wrote:
+> On 09/01, Cai Huoqing wrote:
+> > Use the devm_platform_ioremap_resource_byname() helper instead of
+> > calling platform_get_resource_byname() and devm_ioremap_resource()
+> > separately
+> > 
+> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 > > ---
-> >  include/linux/mmzone.h        |  4 +++-
-> >  include/trace/events/vmscan.h |  4 +++-
-> >  mm/compaction.c               |  2 +-
-> >  mm/internal.h                 |  2 ++
-> >  mm/page_alloc.c               |  6 +++++-
-> >  mm/vmscan.c                   | 22 ++++++++++++++++------
-> >  6 files changed, 30 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > index ef0a63ebd21d..ca65d6a64bdd 100644
-> > --- a/include/linux/mmzone.h
-> > +++ b/include/linux/mmzone.h
-> > @@ -275,6 +275,8 @@ enum lru_list {
-> >
-> >  enum vmscan_throttle_state {
-> >         VMSCAN_THROTTLE_WRITEBACK,
-> > +       VMSCAN_THROTTLE_ISOLATED,
-> > +       NR_VMSCAN_THROTTLE,
-> >  };
-> >
-> >  #define for_each_lru(lru) for (lru = 0; lru < NR_LRU_LISTS; lru++)
-> > @@ -846,7 +848,7 @@ typedef struct pglist_data {
-> >         int node_id;
-> >         wait_queue_head_t kswapd_wait;
-> >         wait_queue_head_t pfmemalloc_wait;
-> > -       wait_queue_head_t reclaim_wait; /* wq for throttling reclaim */
-> > +       wait_queue_head_t reclaim_wait[NR_VMSCAN_THROTTLE];
-> >         atomic_t nr_reclaim_throttled;  /* nr of throtted tasks */
-> >         unsigned long nr_reclaim_start; /* nr pages written while throttled
-> >                                          * when throttling started. */
-> > diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
-> > index c317f9fe0d17..d4905bd9e9c4 100644
-> > --- a/include/trace/events/vmscan.h
-> > +++ b/include/trace/events/vmscan.h
-> > @@ -28,10 +28,12 @@
-> >                 ) : "RECLAIM_WB_NONE"
-> >
-> >  #define _VMSCAN_THROTTLE_WRITEBACK     (1 << VMSCAN_THROTTLE_WRITEBACK)
-> > +#define _VMSCAN_THROTTLE_ISOLATED      (1 << VMSCAN_THROTTLE_ISOLATED)
-> >
-> >  #define show_throttle_flags(flags)                                             \
-> >         (flags) ? __print_flags(flags, "|",                                     \
-> > -               {_VMSCAN_THROTTLE_WRITEBACK,    "VMSCAN_THROTTLE_WRITEBACK"}    \
-> > +               {_VMSCAN_THROTTLE_WRITEBACK,    "VMSCAN_THROTTLE_WRITEBACK"},   \
-> > +               {_VMSCAN_THROTTLE_ISOLATED,     "VMSCAN_THROTTLE_ISOLATED"}     \
-> >                 ) : "VMSCAN_THROTTLE_NONE"
-> >
-> >
-> > diff --git a/mm/compaction.c b/mm/compaction.c
-> > index bfc93da1c2c7..221c9c10ad7e 100644
-> > --- a/mm/compaction.c
-> > +++ b/mm/compaction.c
-> > @@ -822,7 +822,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
-> >                 if (cc->mode == MIGRATE_ASYNC)
-> >                         return -EAGAIN;
-> >
-> > -               congestion_wait(BLK_RW_ASYNC, HZ/10);
-> > +               reclaim_throttle(pgdat, VMSCAN_THROTTLE_ISOLATED, HZ/10);
+> >  drivers/gpu/drm/v3d/v3d_drv.c | 5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/v3d/v3d_drv.c b/drivers/gpu/drm/v3d/v3d_drv.c
+> > index 9403c3b36aca..c1deab2cf38d 100644
+> > --- a/drivers/gpu/drm/v3d/v3d_drv.c
+> > +++ b/drivers/gpu/drm/v3d/v3d_drv.c
+> > @@ -206,10 +206,7 @@ MODULE_DEVICE_TABLE(of, v3d_of_match);
+> >  static int
+> >  map_regs(struct v3d_dev *v3d, void __iomem **regs, const char *name)
+> >  {
+> > -	struct resource *res =
+> > -		platform_get_resource_byname(v3d_to_pdev(v3d), IORESOURCE_MEM, name);
+> > -
+> > -	*regs = devm_ioremap_resource(v3d->drm.dev, res);
+> > +	*regs = devm_platform_ioremap_resource_byname(v3d_to_pdev(v3d), name);
+> >  	return PTR_ERR_OR_ZERO(*regs);
+> >  }
+> lgtm.
 > 
-> It seems waking up tasks is missed in compaction's
-> too_many_isolated(). There are two too_many_isolated(), one is for
-> compaction, the other is for reclaimer. I saw the waking up code was
-> added to the reclaimer's in the below. Or the compaction one is left
-> out intentionally?
-> 
+> Reviewed-by: Melissa Wen <mwen@igalia.com>
 
-Compaction one was left out accidentally, I'll fix it. Thanks.
+and applied to drm-misc-next.
 
--- 
-Mel Gorman
-SUSE Labs
+Thanks,
+
+Melissa
+> >  
+> > -- 
+> > 2.25.1
+> > 
+
+
