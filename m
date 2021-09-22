@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ECE414A18
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093EF414A1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhIVNGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhIVNGN (ORCPT
+        id S231265AbhIVNGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:06:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37510 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhIVNGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:06:13 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B847C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:04:43 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id w17so6502970wrv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=R31ccu0TqMlPUtNKv5VmcQXqknWHvbIakXTHd3Nf1E8=;
-        b=tA4DSQblSR3RKPn+ISUdkVPmzNZzjCbkoIjpxxxIyLTpzAFYgN8HabuOWo/KW+q8km
-         3BA/dG5HxKUerkwzoo3VTYqDPy2eM52AxioKrQAQoNuFGj/cqeR8uVwLgxR0dwygdocK
-         0jjXFbCHxeeWhsZbgvAsFNdq/ikb8CBv4h1vSrVe4FnBVVFpFZppQkdelru3RUCc763/
-         DLEktcOKr21OeD+Oj3nT2y3dx16lx8jz2YtLD3c39SaKHrjB955/lcFwgx1nxt9Y0r+v
-         fkNTOy1So7xX3pstdfp6zv+tOCNrkr64EKAZXq5LTmfgAE1Pgbl4n5lTcQ16QsGADTO4
-         /UPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=R31ccu0TqMlPUtNKv5VmcQXqknWHvbIakXTHd3Nf1E8=;
-        b=UHW+LJEDkCo5r74CRPyDZvgnnOqkrQjGNEO/J0y/Cu6BwcvJs+qTObsSHJUr/V5e9h
-         lS9f2VT4zPNBxIvDGuDHiVOyWeCc1093zdXUz6+k7QLI0v9beUZZpumicYGwNEFH8is4
-         xGo94VnVWE9KWTND2RdXwAiSLKeNbgOvVh/Fq9c7+mBMknU398TIJrpK+sVrqg4HORUK
-         8nrMzNN06Fge03otneSKopDl08NPUf62eAs8ftajVJq7L/VQWLbhu2D5vdjlugcLaujR
-         OfpAYDTr7KEfvrqlaQWUe9XVxrxAzbu6IHJoGs5eTWl+oBRCXozttYNQlErNPqVFzVvE
-         Kwpg==
-X-Gm-Message-State: AOAM533moufAKoXFaAR7Wr0Ln2UhknROyZOt4bwapt4//SsHZMFnZtJ9
-        GwQfABPo6m8LnG1LzhwUUySnDw==
-X-Google-Smtp-Source: ABdhPJx7nfxx48lTrlx0zSN6H1eWSFs448sEbZ0sH9EwWy9Cd3ht3NXMzXIEC1MB940/lPxUw1wAgQ==
-X-Received: by 2002:a1c:f606:: with SMTP id w6mr10495911wmc.42.1632315882125;
-        Wed, 22 Sep 2021 06:04:42 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id q3sm860236wmc.25.2021.09.22.06.04.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 06:04:41 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 14:04:39 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Luka Kovacic <luka.kovacic@sartura.hr>, linux-doc@vger.kernel.org,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        geert+renesas@glider.be, Max.Merchel@tq-group.com,
-        linux@rempel-privat.de, daniel@0x0f.com, shawnguo@kernel.org,
-        sam@ravnborg.org, arnd@arndb.de, krzysztof.kozlowski@canonical.com,
-        pavo.banicevic@sartura.hr, corbet@lwn.net, pavel@ucw.cz,
-        robh+dt@kernel.org, linux@roeck-us.net, jdelvare@suse.com,
-        goran.medic@sartura.hr, luka.perkov@sartura.hr,
-        robert.marko@sartura.hr
-Subject: Re: [PATCH v9 2/7] drivers: mfd: Add a driver for IEI WT61P803
- PUZZLE MCU
-Message-ID: <YUsp58sJATzVHrzn@google.com>
-References: <20210824124438.14519-1-luka.kovacic@sartura.hr>
- <20210824124438.14519-3-luka.kovacic@sartura.hr>
- <YUsLfZrnX2hq4FGV@google.com>
- <YUsWjUWBwW8OYBAr@kroah.com>
+        Wed, 22 Sep 2021 09:06:35 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 209F0222B1;
+        Wed, 22 Sep 2021 13:05:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632315904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iteCz5RdAnYGOBGKoprBfbkeyuB3CB4m0Pf4yg6ab4s=;
+        b=Ua46vGTGgLwJhqwEpWv/jfECXBPzT7a3BDUAmU/a14/B5QucSb2KvQdJQIz3D6g3/sl8Rq
+        NQfC++VEWCnw5CZ8taO/7AgULGVx3QxcMx8fYSrmgk/aKAycXI0nrDiMUn4vLGA9Od93yE
+        V+W3fDnrdMtE4byedPaW8XGUJaDoOgk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632315904;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iteCz5RdAnYGOBGKoprBfbkeyuB3CB4m0Pf4yg6ab4s=;
+        b=ElsFrnE9itQzJDjBkqpfRGGO48TwHcd5nyrgW112u2pzHiOuiDmtfYHRZhq+bS8YFJUaBc
+        83afqOEapHpWoOBA==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EA422A3B8D;
+        Wed, 22 Sep 2021 13:05:03 +0000 (UTC)
+Date:   Wed, 22 Sep 2021 15:05:03 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        pmladek@suse.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org
+Subject: Re: [RFC][PATCH 5/7] sched,livepatch: Use wake_up_if_idle()
+In-Reply-To: <20210922110836.185239814@infradead.org>
+Message-ID: <alpine.LSU.2.21.2109221458230.442@pobox.suse.cz>
+References: <20210922110506.703075504@infradead.org> <20210922110836.185239814@infradead.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YUsWjUWBwW8OYBAr@kroah.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021, Greg KH wrote:
+> @@ -405,8 +405,10 @@ void klp_try_complete_transition(void)
+>  	for_each_possible_cpu(cpu) {
+>  		task = idle_task(cpu);
+>  		if (cpu_online(cpu)) {
+> -			if (!klp_try_switch_task(task))
+> -				complete = false;
+> +			int ret = klp_try_switch_task(task);
+> +			if (ret == -EBUSY)
+> +				wake_up_if_idle(cpu);
+> +			complete = !ret;
 
-> On Wed, Sep 22, 2021 at 11:54:53AM +0100, Lee Jones wrote:
-> > Greg,
-> > 
-> > Would you be kind enough to take a look at the SYS imp. please?
-> 
-> /me hands Lee some extra characters...
+This is broken. You can basically change "complete" only to false (when it 
+applies). This could leave some tasks in the old patching state.
 
-Fingers faster than brain!
+Anyway, I like the patch set a lot. It moves our infrastructure to a 
+proper (I hope so) API and it removes few quirks we have along the way. 
+I'll play with it some more.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks
+
+Miroslav
