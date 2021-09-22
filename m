@@ -2,111 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCCB414F2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FAC414F32
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236797AbhIVRek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:34:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45767 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236753AbhIVReb (ORCPT
+        id S236856AbhIVRg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236701AbhIVRg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:34:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632331981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MZ4chEPGfSUbQ0+WB80DpWY3pUb3ySacIIiH07OzzAA=;
-        b=M7IB6PCnAqwaU1XXmmi2xx9F9fk2w9V8021o14jQPv+UbIF8Sjloj+kgQRBCj4zFGU5LlV
-        Nd4rthDeJ77f8jwdbGX+HUQ/K+CoSHqsfTOLb9ENu8ns9V0xN21Cz/03VsByTtjHQj2YJu
-        AFblJ/g80Re3JxvpGHkvymTpdf9IxV0=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-381-KS6YxbhpM9KDtZ3N8WwqiA-1; Wed, 22 Sep 2021 13:32:59 -0400
-X-MC-Unique: KS6YxbhpM9KDtZ3N8WwqiA-1
-Received: by mail-qv1-f72.google.com with SMTP id u6-20020ad449a6000000b003798010ad14so13406723qvx.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:32:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MZ4chEPGfSUbQ0+WB80DpWY3pUb3ySacIIiH07OzzAA=;
-        b=0O+YpI8Z7dEvEg4N+hClhd/LogoXnlDZJEUaprHiLNBb+5dW8utDTk1KsVegOBri0G
-         fzM6vEX+QkdNRkbobV1Oxbp3pVzclekae7URnVk6FqLW49H5n+C1kfrMGKsPVCaggu9o
-         8P0YpaxpesSXRXgEBr1a0Dqirhne5O3wO9JCCTKwNLSK+EKYhzrfooYQHixzAfSjTfa8
-         gohkQnErF/kpYjArro5ZnmkApm+ctnagd/b3Zsg5sJStxjdiOhZunO+qKgS59THoO/w6
-         yhGeYtqFtwu4c0SxOBDNF8ErFKGaFSgV4t4y+D01ra1l1GGRSYRJ1j3OXPsfIgWACopk
-         9rHw==
-X-Gm-Message-State: AOAM530/A3KMk0Ccxp228NSFlfL6vJPznnUbj639ml5LTNE/WZBjjJX6
-        UYdACVl+6/vZheIk8jg7IyH+gSCwJnaIF4FUGX9+8S1tVtUwOZLrJ0QvAv/6hLd9pVPNKvJr9g4
-        hu8nie3mI4SWKFHqEanhV91Qy
-X-Received: by 2002:a37:a394:: with SMTP id m142mr441170qke.62.1632331979231;
-        Wed, 22 Sep 2021 10:32:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxW3s8uMYgBcSDjxDYcpMGPxHXsr8QBkq7aoss9LqopmKZ+usF6kGL5uVjE8LbpBJf8Uk26UQ==
-X-Received: by 2002:a37:a394:: with SMTP id m142mr441144qke.62.1632331978972;
-        Wed, 22 Sep 2021 10:32:58 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id j26sm1821108qtr.53.2021.09.22.10.32.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 10:32:57 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 13:32:56 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
-Message-ID: <YUtoyNic4Jxfv9f7@t490s>
-References: <20210921163323.944352-1-axelrasmussen@google.com>
- <YUoaDr2wsW8wtk5Z@t490s>
- <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
- <YUowr6phZU4v7dds@t490s>
- <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
- <YUp438W5p5VHL1Ch@t490s>
- <CAJHvVciZc0mpcw8OSPk71YsVzCTajY+ikymcD3+zBJKsZynYkg@mail.gmail.com>
+        Wed, 22 Sep 2021 13:36:27 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D91EC061574;
+        Wed, 22 Sep 2021 10:34:57 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BFEEBF1;
+        Wed, 22 Sep 2021 19:34:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632332094;
+        bh=O6sbbi36Pm+/8ofyWQZUEHe9NGyHjUCEbwOHVWPE0/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MmQsdErZ87lbA+qTVKjKmx7vfRx926YJWNb9Q6pS4EpwjSIfmOtfMtGfFf52rArGR
+         wPtJ60hufF8hX+2cPxHi8xNy5jD834Bdq1oiedpWqxhxJ4thStarvPMbu55mh8hPDL
+         CeV7Ya3HNA4emKTI8R7ouNpcL3WclULK+3jhsb90=
+Date:   Wed, 22 Sep 2021 20:34:51 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] drm: rcar-du: Split CRTC IRQ and Clock features
+Message-ID: <YUtpO5jkkIzJ6cFo@pendragon.ideasonboard.com>
+References: <20210901234907.1608896-1-kieran.bingham@ideasonboard.com>
+ <20210901234907.1608896-5-kieran.bingham@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJHvVciZc0mpcw8OSPk71YsVzCTajY+ikymcD3+zBJKsZynYkg@mail.gmail.com>
+In-Reply-To: <20210901234907.1608896-5-kieran.bingham@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Axel,
+Hi Kieran,
 
-On Wed, Sep 22, 2021 at 10:04:03AM -0700, Axel Rasmussen wrote:
-> Thanks for discussing the design Peter. I have some ideas which might
-> make for a nicer v2; I'll massage the code a bit and see what I can
-> come up with.
+Thank you for the patch.
 
-Sure thing.  Note again that as I don't have a strong opinion on that, feel
-free to keep it.  However if you provide v2, I'll read.
+On Thu, Sep 02, 2021 at 12:49:06AM +0100, Kieran Bingham wrote:
+> Not all platforms require both per-crtc IRQ and per-crtc clock
+> management. In preparation for suppporting such platforms, split the
+> feature macro to be able to specify both features independently.
+> 
+> The other features are incremented accordingly, to keep the two crtc
+> features adjacent.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-[off-topic below]
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Another thing I probably have forgot but need your confirmation is, when you
-worked on uffd minor mode, did you explicitly disable thp, or is it allowed?
-
-When I'm reworking the uffd-wp series, I noticed that commit e1e267c7928f
-("khugepaged: skip collapse if uffd-wp detected", 2020-04-07) was actually
-awkward and not efficient, as we can simply lookup the vma flags for detecting
-uffd-wp enablement.  I'm preparing a patch for it to do it by checking vmas
-(and that patch will also pave the way for file-backed).
-
-Then I noticed we need similar thing for minor mode?
-
-I think the answer is yes, but I didn't see any code that explicitly handled
-thp for minor mode, do you remember?
-
-To be explicit, what if in mcontinue_atomic_pte() we get a shmem_getpage() call
-with a thp returned?  Will minor mode break?
-
-I plan to post the khugepaged patch soon and I plan to cover minor mode too
-there, but I'm not sure whether that's enough, as the thp can be there from the
-1st day I think, but I could have missed something.
+> ---
+> v2:
+>  - New patch
+> 
+>  drivers/gpu/drm/rcar-du/rcar_du_crtc.c |  4 +--
+>  drivers/gpu/drm/rcar-du/rcar_du_drv.c  | 48 +++++++++++++++++---------
+>  drivers/gpu/drm/rcar-du/rcar_du_drv.h  |  9 ++---
+>  3 files changed, 39 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_crtc.c b/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
+> index a0f837e8243a..5672830ca184 100644
+> --- a/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
+> +++ b/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
+> @@ -1206,7 +1206,7 @@ int rcar_du_crtc_create(struct rcar_du_group *rgrp, unsigned int swindex,
+>  	int ret;
+>  
+>  	/* Get the CRTC clock and the optional external clock. */
+> -	if (rcar_du_has(rcdu, RCAR_DU_FEATURE_CRTC_IRQ_CLOCK)) {
+> +	if (rcar_du_has(rcdu, RCAR_DU_FEATURE_CRTC_CLOCK)) {
+>  		sprintf(clk_name, "du.%u", hwindex);
+>  		name = clk_name;
+>  	} else {
+> @@ -1272,7 +1272,7 @@ int rcar_du_crtc_create(struct rcar_du_group *rgrp, unsigned int swindex,
+>  	drm_crtc_helper_add(crtc, &crtc_helper_funcs);
+>  
+>  	/* Register the interrupt handler. */
+> -	if (rcar_du_has(rcdu, RCAR_DU_FEATURE_CRTC_IRQ_CLOCK)) {
+> +	if (rcar_du_has(rcdu, RCAR_DU_FEATURE_CRTC_IRQ)) {
+>  		/* The IRQ's are associated with the CRTC (sw)index. */
+>  		irq = platform_get_irq(pdev, swindex);
+>  		irqflags = 0;
+> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.c b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
+> index 4ac26d08ebb4..8a094d5b9c77 100644
+> --- a/drivers/gpu/drm/rcar-du/rcar_du_drv.c
+> +++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
+> @@ -36,7 +36,8 @@
+>  
+>  static const struct rcar_du_device_info rzg1_du_r8a7743_info = {
+>  	.gen = 2,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+>  	.channels_mask = BIT(1) | BIT(0),
+> @@ -58,7 +59,8 @@ static const struct rcar_du_device_info rzg1_du_r8a7743_info = {
+>  
+>  static const struct rcar_du_device_info rzg1_du_r8a7745_info = {
+>  	.gen = 2,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+>  	.channels_mask = BIT(1) | BIT(0),
+> @@ -79,7 +81,8 @@ static const struct rcar_du_device_info rzg1_du_r8a7745_info = {
+>  
+>  static const struct rcar_du_device_info rzg1_du_r8a77470_info = {
+>  	.gen = 2,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+>  	.channels_mask = BIT(1) | BIT(0),
+> @@ -105,7 +108,8 @@ static const struct rcar_du_device_info rzg1_du_r8a77470_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a774a1_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+> @@ -134,7 +138,8 @@ static const struct rcar_du_device_info rcar_du_r8a774a1_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a774b1_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+> @@ -163,7 +168,8 @@ static const struct rcar_du_device_info rcar_du_r8a774b1_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a774c0_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE,
+>  	.channels_mask = BIT(1) | BIT(0),
+>  	.routes = {
+> @@ -189,7 +195,8 @@ static const struct rcar_du_device_info rcar_du_r8a774c0_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a774e1_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+> @@ -239,7 +246,8 @@ static const struct rcar_du_device_info rcar_du_r8a7779_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a7790_info = {
+>  	.gen = 2,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+>  	.quirks = RCAR_DU_QUIRK_ALIGN_128B,
+> @@ -269,7 +277,8 @@ static const struct rcar_du_device_info rcar_du_r8a7790_info = {
+>  /* M2-W (r8a7791) and M2-N (r8a7793) are identical */
+>  static const struct rcar_du_device_info rcar_du_r8a7791_info = {
+>  	.gen = 2,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+>  	.channels_mask = BIT(1) | BIT(0),
+> @@ -292,7 +301,8 @@ static const struct rcar_du_device_info rcar_du_r8a7791_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a7792_info = {
+>  	.gen = 2,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+>  	.channels_mask = BIT(1) | BIT(0),
+> @@ -311,7 +321,8 @@ static const struct rcar_du_device_info rcar_du_r8a7792_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a7794_info = {
+>  	.gen = 2,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+>  	.channels_mask = BIT(1) | BIT(0),
+> @@ -333,7 +344,8 @@ static const struct rcar_du_device_info rcar_du_r8a7794_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a7795_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+> @@ -366,7 +378,8 @@ static const struct rcar_du_device_info rcar_du_r8a7795_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a7796_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+> @@ -395,7 +408,8 @@ static const struct rcar_du_device_info rcar_du_r8a7796_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a77965_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+> @@ -424,7 +438,8 @@ static const struct rcar_du_device_info rcar_du_r8a77965_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a77970_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE
+>  		  | RCAR_DU_FEATURE_INTERLACED
+>  		  | RCAR_DU_FEATURE_TVM_SYNC,
+> @@ -448,7 +463,8 @@ static const struct rcar_du_device_info rcar_du_r8a77970_info = {
+>  
+>  static const struct rcar_du_device_info rcar_du_r8a7799x_info = {
+>  	.gen = 3,
+> -	.features = RCAR_DU_FEATURE_CRTC_IRQ_CLOCK
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_CRTC_CLOCK
+>  		  | RCAR_DU_FEATURE_VSP1_SOURCE,
+>  	.channels_mask = BIT(1) | BIT(0),
+>  	.routes = {
+> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.h b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
+> index 02ca2d0e1b55..5fe9152454ff 100644
+> --- a/drivers/gpu/drm/rcar-du/rcar_du_drv.h
+> +++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
+> @@ -26,10 +26,11 @@ struct drm_bridge;
+>  struct drm_property;
+>  struct rcar_du_device;
+>  
+> -#define RCAR_DU_FEATURE_CRTC_IRQ_CLOCK	BIT(0)	/* Per-CRTC IRQ and clock */
+> -#define RCAR_DU_FEATURE_VSP1_SOURCE	BIT(1)	/* Has inputs from VSP1 */
+> -#define RCAR_DU_FEATURE_INTERLACED	BIT(2)	/* HW supports interlaced */
+> -#define RCAR_DU_FEATURE_TVM_SYNC	BIT(3)	/* Has TV switch/sync modes */
+> +#define RCAR_DU_FEATURE_CRTC_IRQ	BIT(0)	/* Per-CRTC IRQ */
+> +#define RCAR_DU_FEATURE_CRTC_CLOCK	BIT(1)	/* Per-CRTC clock */
+> +#define RCAR_DU_FEATURE_VSP1_SOURCE	BIT(2)	/* Has inputs from VSP1 */
+> +#define RCAR_DU_FEATURE_INTERLACED	BIT(3)	/* HW supports interlaced */
+> +#define RCAR_DU_FEATURE_TVM_SYNC	BIT(4)	/* Has TV switch/sync modes */
+>  
+>  #define RCAR_DU_QUIRK_ALIGN_128B	BIT(0)	/* Align pitches to 128 bytes */
+>  
 
 -- 
-Peter Xu
+Regards,
 
+Laurent Pinchart
