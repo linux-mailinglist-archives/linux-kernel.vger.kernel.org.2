@@ -2,97 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C604140FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2814140FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhIVFCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhIVFCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:02:12 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E881EC061574;
-        Tue, 21 Sep 2021 22:00:42 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id t18so3201070wrb.0;
-        Tue, 21 Sep 2021 22:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uLV1H8lOUqllhWhMWtTAgHCu5bS8aT/YHsgKcThPqTo=;
-        b=hc7YsC+KdwME/FdU9dBYKerpWNTd36HebU7kzGoHCb+v9NITrk4VBHlGJvNybmu2NV
-         HgE8Mf/5sNZF40dlkEq1WNn/bQXmZaQ8GE+1DwvvCVLJN6Vh4+EwzVF+uVaAAsUXh78F
-         +pek75WzITpMDasRDOWC9VZaEw1ofuCHUhYEVjWY4njIvlhTUnaqp0U2KDfhyiZMigEv
-         rMY4ocfnD3d5grfgbOERKJpYe/SqoefgRwTF20fZm8JLp9nRpXXylHeJ3C+9xf4GOj1D
-         6ABRyEjeu4AMiIT4p+dO4FzrU1DmYLHV33Ja4mYGzE93h2w4nLKFlkx9+l4NX/i6TFl1
-         FWdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uLV1H8lOUqllhWhMWtTAgHCu5bS8aT/YHsgKcThPqTo=;
-        b=hQnGceXScVSpM1M7fcljWBrK++TNvsCC9z7VRip+7XazOFk/IPZ4zI5YASa4mB3Qmw
-         YC1Ibo818Zt5MzYCeas2kzll5xF0PQyjuqcP+TyzfZegxqMZ+/t44DVPl9MmDQLfZkys
-         AYKxjZb8IXE4ux+FnGI0U8xO2K4R3rlFAeggKyix0dycnSPyzWb7yIo3sLESY08hp0hl
-         IsCFKVWLChPom/SbEbA+zjlGUuxLBZ26F35iafL61VT2aZxPAYlJgpruaIoykxOaXZ1Q
-         ZMitWCnvSqz4bM8KrsDVXgmtXccnRu1PZZI2+11etBUfIAjmS8leASoAAknk6ljagVSC
-         EYXg==
-X-Gm-Message-State: AOAM5330AXt0WrQ4B0WC5HhVQL+SOKSKH84xh+0Y2Tn86gh0RPXq29rT
-        NrD5BeQRmZELXeVTsmQZgJUuvqk3CDw=
-X-Google-Smtp-Source: ABdhPJydVjWKiS4HM+M6BTpD6DBcjrGFUBfUfGlobfx9VO3CWDAwnpe828DpeeusVa6m6HrEob5EuA==
-X-Received: by 2002:a5d:64e2:: with SMTP id g2mr36130452wri.20.1632286841330;
-        Tue, 21 Sep 2021 22:00:41 -0700 (PDT)
-Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
-        by smtp.gmail.com with ESMTPSA id b187sm4811625wmd.33.2021.09.21.22.00.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Sep 2021 22:00:40 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, john@phrozen.org,
-        devicetree@vger.kernel.org, tsbogend@alpha.franken.de,
-        bhelgaas@google.com, matthias.bgg@gmail.com,
-        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
-        linux-staging@lists.linux.dev, neil@brown.name,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] MAINTAINERS: add myself as maintainer of the MT7621 PCI controller driver
-Date:   Wed, 22 Sep 2021 07:00:35 +0200
-Message-Id: <20210922050035.18162-4-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210922050035.18162-1-sergio.paracuellos@gmail.com>
-References: <20210922050035.18162-1-sergio.paracuellos@gmail.com>
+        id S231807AbhIVFDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:03:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:40174 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229495AbhIVFDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:03:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632286931; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=kofefq07SMrDrIpqbf4y54OJ1V5EfeWqTQBdyaltoTw=; b=us6d92ila1k/JcB56bHe4NGGD7itQ157EMqn78w5TrTJs8zYBVkef/5l5Wk//8C1HbaOhgsz
+ quS06chxxC2XHKh1BsUwNcyKSoHPDl116BURuUtEUR0oKx9CWcbwMtFvetd3/n4Afh1vDPTs
+ 7e+WCcWBiP0xhc/Ef6JwfTaPZKc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 614ab8ce65c3cc8c63c234fc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 22 Sep 2021 05:02:06
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 011A2C43460; Wed, 22 Sep 2021 05:02:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from PILLAIR1 (unknown [103.155.223.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E07BC4338F;
+        Wed, 22 Sep 2021 05:01:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6E07BC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   <pillair@codeaurora.org>
+To:     "'Rob Herring'" <robh@kernel.org>,
+        "'Stephen Boyd'" <swboyd@chromium.org>
+Cc:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
+        <p.zabel@pengutronix.de>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sibis@codeaurora.org>, <mpubbise@codeaurora.org>,
+        <kuabhs@chromium.org>, "'Rakesh Pillai'" <pillair@qti.qualcomm.com>
+References: <1631811353-503-1-git-send-email-pillair@codeaurora.org> <1631811353-503-2-git-send-email-pillair@codeaurora.org> <CAE-0n52t_1GGsFfDnrnwTx7j8RFdFLqZ2EGQY84D3UMbTeG69g@mail.gmail.com> <YUpqqezV3NYCihdE@robh.at.kernel.org>
+In-Reply-To: <YUpqqezV3NYCihdE@robh.at.kernel.org>
+Subject: RE: [PATCH v3 1/3] dt-bindings: remoteproc: qcom: adsp: Convert binding to YAML
+Date:   Wed, 22 Sep 2021 10:31:55 +0530
+Message-ID: <000201d7af6e$fb22bc60$f1683520$@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHMNEBDEmK8+OU0e0UN4gvXCrx/ZwFrFW9GAbyvhYMDGyRt3auUXdKg
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as maintainer of the PCie Controlller driver for
-MT7621 SoCs.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index eeb4c70b3d5b..a7f0cbad7ac5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11842,6 +11842,12 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/i2c/i2c-mt7621.txt
- F:	drivers/i2c/busses/i2c-mt7621.c
- 
-+MEDIATEK MT7621 PCI CONTROLLER DRIVER
-+M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-+F:	drivers/pci/controller/pci-mt7621.c
-+
- MEDIATEK MT7621 PHY PCI DRIVER
- M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
- S:	Maintained
--- 
-2.25.1
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Wednesday, September 22, 2021 4:59 AM
+> To: Stephen Boyd <swboyd@chromium.org>
+> Cc: Rakesh Pillai <pillair@codeaurora.org>; agross@kernel.org;
+> bjorn.andersson@linaro.org; mathieu.poirier@linaro.org; ohad@wizery.com;
+> p.zabel@pengutronix.de; linux-arm-msm@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> sibis@codeaurora.org; mpubbise@codeaurora.org; kuabhs@chromium.org;
+> Rakesh Pillai <pillair@qti.qualcomm.com>
+> Subject: Re: [PATCH v3 1/3] dt-bindings: remoteproc: qcom: adsp: Convert
+> binding to YAML
+> 
+> On Thu, Sep 16, 2021 at 11:24:10PM -0700, Stephen Boyd wrote:
+> > Quoting Rakesh Pillai (2021-09-16 09:55:51)
+> > > diff --git
+> > > a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-
+> v56.yaml
+> > > b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-
+> v56.yaml
+> > > new file mode 100644
+> > > index 0000000..051da43
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-
+> v56.
+> > > +++ yaml
+> > > @@ -0,0 +1,267 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > > +---
+> > > +$id:
+> > > +http://devicetree.org/schemas/remoteproc/qcom,hexagon-v56.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Qualcomm Hexagon v56 Peripheral Image Loader
+> > > +
+> > > +maintainers:
+> > > +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > +
+> > > +description:
+> > > +  This document defines the binding for a component that loads and
+> > > +boots firmware
+> > > +  on the Qualcomm Technology Inc. Hexagon v56 core.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - qcom,qcs404-cdsp-pil
+> > > +      - qcom,sdm845-adsp-pil
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +    description:
+> > > +      The base address and size of the qdsp6ss register
+> > > +
+> > > +  interrupts-extended:
+> > > +    minItems: 5
+> > > +    items:
+> > > +      - description: Watchdog interrupt
+> > > +      - description: Fatal interrupt
+> > > +      - description: Ready interrupt
+> > > +      - description: Handover interrupt
+> > > +      - description: Stop acknowledge interrupt
+> > > +
+> > > +  interrupt-names:
+> > > +    minItems: 5
+> > > +    items:
+> > > +      - const: wdog
+> > > +      - const: fatal
+> > > +      - const: ready
+> > > +      - const: handover
+> > > +      - const: stop-ack
+> > > +
+> > > +  clocks:
+> > > +    minItems: 7
+> > > +    maxItems: 8
+> > > +    description:
+> > > +      List of phandles and clock specifier pairs for the Hexagon,
+> > > +      per clock-names below.
+> > > +
+> > > +  clock-names:
+> > > +    minItems: 7
+> > > +    maxItems: 8
+> > > +
+> > > +  power-domains:
+> > > +    minItems: 1
+> > > +    items:
+> > > +      - description: CX power domain
+> > > +
+> > > +  resets:
+> > > +    minItems: 1
+> > > +    maxItems: 2
+> > > +    description:
+> > > +      reference to the list of resets for the Hexagon.
+> > > +
+> > > +  reset-names:
+> > > +    minItems: 1
+> > > +    maxItems: 2
+> > > +
+> > > +  memory-region:
+> > > +    maxItems: 1
+> > > +    description: Reference to the reserved-memory for the Hexagon
+> > > + core
+> > > +
+> > > +  qcom,halt-regs:
+> > > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > > +    description:
+> > > +      Phandle reference to a syscon representing TCSR followed by the
+> > > +      three offsets within syscon for q6, modem and nc halt
+registers.
+> > > +
+> > > +  qcom,smem-states:
+> > > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > > +    description: States used by the AP to signal the Hexagon core
+> > > +    items:
+> > > +      - description: Stop the modem
+> > > +
+> > > +  qcom,smem-state-names:
+> > > +    $ref: /schemas/types.yaml#/definitions/string-array
+> > > +    description: The names of the state bits used for SMP2P output
+> > > +    items:
+> > > +      - const: stop
+> > > +
+> > > +  glink-edge:
+> > > +    type: object
+> > > +    description:
+> > > +      Qualcomm G-Link subnode which represents communication edge,
+> channels
+> > > +      and devices related to the ADSP.
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - interrupts-extended
+> > > +  - interrupt-names
+> > > +  - clocks
+> > > +  - clock-names
+> > > +  - power-domains
+> > > +  - qcom,halt-regs
+> > > +  - memory-region
+> > > +  - qcom,smem-states
+> > > +  - qcom,smem-state-names
+> >
+> > Is there some way to make sure that 'resets' and 'reset-names' is
+> > present when the compatible that defines them is used and not required
+> > otherwise?
+> 
+> Yes, plenty of examples of that.
+> 
+> >
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +allOf:
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            enum:
+> > > +              - qcom,sdm845-adsp-pil
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          items:
+> > > +            - description: XO clock
+> > > +            - description: SWAY clock
+> > > +            - description: LPASS AHBS AON clock
+> > > +            - description: LPASS AHBM AON clock
+> > > +            - description: QDSP6SS XO clock
+> > > +            - description: QDSP6SS SLEEP clock
+> > > +            - description: QDSP6SS CORE clock
+> > > +        clock-names:
+> > > +          items:
+> > > +            - const: xo
+> > > +            - const: sway_cbcr
+> > > +            - const: lpass_ahbs_aon_cbcr
+> > > +            - const: lpass_ahbm_aon_cbcr
+> > > +            - const: qdsp6ss_xo
+> > > +            - const: qdsp6ss_sleep
+> > > +            - const: qdsp6ss_core
+> > > +
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            enum:
+> > > +              - qcom,qcs404-cdsp-pil
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          items:
+> > > +            - description: XO clock
+> > > +            - description: SWAY clock
+> > > +            - description: TBU clock
+> > > +            - description: BIMC clock
+> > > +            - description: AHB AON clock
+> > > +            - description: Q6SS SLAVE clock
+> > > +            - description: Q6SS MASTER clock
+> > > +            - description: Q6 AXIM clock
+> > > +        clock-names:
+> > > +          items:
+> > > +            - const: xo
+> > > +            - const: sway
+> > > +            - const: tbu
+> > > +            - const: bimc
+> > > +            - const: ahb_aon
+> > > +            - const: q6ss_slave
+> > > +            - const: q6ss_master
+> > > +            - const: q6_axim
+> > > +
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            enum:
+> > > +              - qcom,sc7280-wpss-pil
+> >
+> > This should be documented above in the compatible list?
+> >
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          items:
+> > > +            - description: GCC WPSS AHB BDG Master clock
+> > > +            - description: GCC WPSS AHB clock
+> > > +            - description: GCC WPSS RSCP clock
+> > > +        clock-names:
+> > > +          items:
+> > > +            - const: gcc_wpss_ahb_bdg_mst_clk
+> > > +            - const: gcc_wpss_ahb_clk
+> > > +            - const: gcc_wpss_rscp_clk
+> >
+> > Is the 'gcc_wpss' prefix important? It would be shorter if it wasn't
+> > there.
+> 
+> Yes, and adding this new platform should be a separate patch.
+> 
+> Rob
+
+Hi Rob,
+
+I have posted v4 for this patch series, where the dt-bindings for wpss has
+been moved to a separate file.
+Can you please review v4 ?
+
+Thanks,
+Rakesh Pillai
+
 
