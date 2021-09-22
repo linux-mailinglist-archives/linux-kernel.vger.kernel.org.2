@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF39414430
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E4E41445A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbhIVIu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:50:26 -0400
-Received: from muru.com ([72.249.23.125]:36030 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234344AbhIVIuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:50:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 940E380F0;
-        Wed, 22 Sep 2021 08:48:58 +0000 (UTC)
-Date:   Wed, 22 Sep 2021 11:48:29 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-Message-ID: <YUrt3fGQVIwmvuOv@atomide.com>
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com>
- <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
- <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
- <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
- <YUmOGFUFONR/ynfW@atomide.com>
- <34b4c7a7-155c-5f06-c5c7-54489a59bce1@fi.rohmeurope.com>
+        id S234069AbhIVJAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:00:10 -0400
+Received: from host.78.145.23.62.rev.coltfrance.com ([62.23.145.78]:53156 "EHLO
+        proxy.6wind.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234051AbhIVJAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 05:00:09 -0400
+X-Greylist: delayed 497 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Sep 2021 05:00:09 EDT
+Received: from bretzel (unknown [10.16.0.57])
+        by proxy.6wind.com (Postfix) with ESMTPS id DDE37B43C9F;
+        Wed, 22 Sep 2021 10:50:20 +0200 (CEST)
+Received: from dichtel by bretzel with local (Exim 4.92)
+        (envelope-from <dichtel@6wind.com>)
+        id 1mSxxM-0003X5-RP; Wed, 22 Sep 2021 10:50:20 +0200
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+To:     steffen.klassert@secunet.com,
+        syzbot+3d9866419b4aa8f985d6@syzkaller.appspotmail.com
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        netdev@vger.kernel.org, Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Subject: [PATCH ipsec] xfrm: fix rcu lock in xfrm_notify_userpolicy()
+Date:   Wed, 22 Sep 2021 10:50:06 +0200
+Message-Id: <20210922085006.13570-1-nicolas.dichtel@6wind.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <0000000000003533d205cc8a624b@google.com>
+References: <0000000000003533d205cc8a624b@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <34b4c7a7-155c-5f06-c5c7-54489a59bce1@fi.rohmeurope.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Vaittinen, Matti <Matti.Vaittinen@fi.rohmeurope.com> [210922 08:45]:
-> Hi Tony & All,
-> 
-> 
-> On 9/21/21 10:47, Tony Lindgren wrote:
-> > * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
-> > 
-> > It also allows leaving out the udelay for dra7 iva reset. Care to try
-> > this and see if it helps?
-> 
-> Thanks Tony. I applied your patch on top of v5.15-rc1 and my BBB booted 
-> up successfully. I didn't give it more than few attempts though. Do you 
-> think that could merged as a fix to mainline?
-> 
-> If so - feel free to add a
-> Tested-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+As stated in the comment above xfrm_nlmsg_multicast(), rcu read lock must
+be held before calling this function.
 
-OK great, good to hear! And thanks for testing :) Yeah I'll post a proper
-fix for mainline. But one thing to consider though..
+Reported-by: syzbot+3d9866419b4aa8f985d6@syzkaller.appspotmail.com
+Fixes: 703b94b93c19 ("xfrm: notify default policy on update")
+Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+---
+ net/xfrm/xfrm_user.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-I'm wondering if we should always wait for the rstctrl bit to go down
-before we even attempt to check the rststs bit if a rststs registe
-exists.
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index 0eba0c27c665..3a3cb09eec12 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -1967,6 +1967,7 @@ static int xfrm_notify_userpolicy(struct net *net)
+ 	int len = NLMSG_ALIGN(sizeof(*up));
+ 	struct nlmsghdr *nlh;
+ 	struct sk_buff *skb;
++	int err;
+ 
+ 	skb = nlmsg_new(len, GFP_ATOMIC);
+ 	if (skb == NULL)
+@@ -1988,7 +1989,11 @@ static int xfrm_notify_userpolicy(struct net *net)
+ 
+ 	nlmsg_end(skb, nlh);
+ 
+-	return xfrm_nlmsg_multicast(net, skb, 0, XFRMNLGRP_POLICY);
++	rcu_read_lock();
++	err = xfrm_nlmsg_multicast(net, skb, 0, XFRMNLGRP_POLICY);
++	rcu_read_unlock();
++
++	return err;
+ }
+ 
+ static int xfrm_set_default(struct sk_buff *skb, struct nlmsghdr *nlh,
+-- 
+2.33.0
 
-Regards,
-
-Tony
