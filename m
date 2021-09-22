@@ -2,66 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9B3413FC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF256413FC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhIVCrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 22:47:14 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:55594 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhIVCrN (ORCPT
+        id S230003AbhIVCuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 22:50:39 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19995 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhIVCui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 22:47:13 -0400
-Date:   Tue, 21 Sep 2021 22:45:41 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>, j-core@j-core.org
-Subject: Re: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
-Message-ID: <20210922024537.GA27465@brightrain.aerifal.cx>
-References: <20210627220544.8757-1-rdunlap@infradead.org>
- <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
- <f63694aa-85b3-0238-5228-eb35a52bf360@physik.fu-berlin.de>
- <CAFr9PXn5S_3mpJBF0bNo+S1US=Z5s89rbO-OhhqGk=zqPGWXoQ@mail.gmail.com>
- <20210912015740.GJ13220@brightrain.aerifal.cx>
- <5aa5301e-9b01-4e96-e185-13c2d4d7b675@physik.fu-berlin.de>
+        Tue, 21 Sep 2021 22:50:38 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDjLv341nzbmbj;
+        Wed, 22 Sep 2021 10:44:55 +0800 (CST)
+Received: from kwepemm600005.china.huawei.com (7.193.23.191) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 10:49:06 +0800
+Received: from DESKTOP-R64PNO0.china.huawei.com (10.67.102.35) by
+ kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 10:49:06 +0800
+From:   JinHui GUO <guojinhui@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <guojinhui@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <peterz@infradead.org>, <pmladek@suse.com>,
+        <valentin.schneider@arm.com>
+Subject: Re: [PATCH] [RFC] watchdog/softlockup: Fix softlockup_stop_all() hungtask bug
+Date:   Wed, 22 Sep 2021 10:49:05 +0800
+Message-ID: <20210922024905.1488-1-guojinhui@huawei.com>
+X-Mailer: git-send-email 2.32.0.windows.2
+In-Reply-To: <20210916124413.89735fd447667b627552df55@linux-foundation.org>
+References: <20210916124413.89735fd447667b627552df55@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5aa5301e-9b01-4e96-e185-13c2d4d7b675@physik.fu-berlin.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.102.35]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 12:36:38PM +0200, John Paul Adrian Glaubitz wrote:
-> Hi Rich!
-> 
-> On 9/12/21 03:57, Rich Felker wrote:
-> > Hi. I see there's a situation that needs my attention here. I will
-> > plan to review and merge anything important/blocking that doesn't have
-> > problems this week.
-> 
-> I'm glad to here that you're still active. I will try to help assembling
-> the list of patches. I won't be able to test them though as I'm not at
-> home so I'm unable to reset the machine in case it crashes due to a bad
-> kernel patch. So, basically, I just have one shot free.
+> x86_64 allnoconfig:
 
-I didn't get through that yet, but I have rebased the patches that
-were pending in for-next onto v5.15-rc1 (no conflicts) and
-smoke-tested that a sh4 build runs in my qemu environment. linux-next
-pulled them 27 hours ago and hasn't complained yet either.
+> ld: arch/x86/kernel/cpu/cacheinfo.o: in function `populate_cache_leaves':
+> cacheinfo.c:(.text+0xa27): undefined reference to `cpu_llc_shared_map'
+> ld: cacheinfo.c:(.text+0xa49): undefined reference to `cpu_llc_shared_map'
 
-I started going through the list/patch backlog, but didn't make it
-nearly as far as I'd like yet. If you have even a vague list of what's
-important (warnings breaking the build, unapplied changes blocking
-removal of cruft from other parts of the kernel and making people
-unhappy with us, etc.) that would be really helpful.
+> Because the new for_each_cpu() now references `mask' and some code isn't
+> able to handle that change.  There are probably other instances of this
+> across all our architectures and configs.
 
-I'll follow up again soon.
+There is another bug in file arch/x86/include/asm/smp.h. The per-cpu value
+cpu_llc_shared_map is defined in file arch/x86/kernel/smpboot.c. But the
+file arch/x86/kernel/smpboot.c would not be compiled while CONFIG_SMP is
+not defined.
 
-Rich
+declared in file arch/x86/include/asm/smp.h:
+DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_llc_shared_map);
+
+defined in file arch/x86/kernel/smpboot.c:
+DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_llc_shared_map);
+
+the stack:
+cpu_llc_shared_map
+cpu_llc_shared_mask
+__cache_amd_cpumap_setup
+__cache_cpumap_setup
+populate_cache_leaves
+
+CONFIG_SMP in makefile arch/x86/kernel/Makefile:
+obj-$(CONFIG_SMP)               += smpboot.o
+
+cpu_llc_shared_mask is just used in arch/x86/kernel/cpu/cacheinfo.c by for_each_cpu
+while CONFIG_SMP is not defined:
+./arch/x86/kernel/cpu/cacheinfo.c:889:          for_each_cpu(i, cpu_llc_shared_mask(cpu)) {
+./arch/x86/kernel/cpu/cacheinfo.c:894:                  for_each_cpu(sibling, cpu_llc_shared_mask(cpu)) {
+./arch/x86/include/asm/smp.h:22:static inline struct cpumask *cpu_llc_shared_mask(int cpu)
+
+It can be fixed just as follow:
+
+diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h1
+index 630ff08532be..f5d3ca5696b3 100644
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -21,7 +21,12 @@ DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
+
+ static inline struct cpumask *cpu_llc_shared_mask(int cpu)
+ {
++#ifdef CONFIG_SMP
+        return per_cpu(cpu_llc_shared_map, cpu);
++#else
++ /* cpu_llc_shared_map is not defined while !CONFIG_SMP */
++ return cpu_all_mask;
++#endif
+ }
+
+ DECLARE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_cpu_to_apicid);
