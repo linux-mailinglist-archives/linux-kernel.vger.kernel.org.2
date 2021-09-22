@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DD8414E47
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B153D414E4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbhIVQpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:45:35 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:38442 "EHLO mail.skyhub.de"
+        id S234140AbhIVQrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:47:04 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:50984 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhIVQpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:45:34 -0400
-Received: from zn.tnic (p200300ec2f0efa00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fa00:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6C0821EC051E;
-        Wed, 22 Sep 2021 18:43:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632329038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=gtI3K23I3DhUzNiqPHLOEAfHrx+nTcEGqXkTAZ9qlCU=;
-        b=B78ccUbaTflJwSlp4crJv5l0xPOE0KEqw94W2kirQHTVZFGv3UN/IjnwkD4oraE9V/DVLt
-        GaS1VJP2KkdG0htPx+7Vfx8V20x9GgNfs9zRr0ge+GZxjzQof8kLPV3kNhQ3FPRtuCowcW
-        Lp5GQA9UIZk/+moBWADlWYbCaBg5CQs=
-Date:   Wed, 22 Sep 2021 18:43:52 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     "Joshi, Mukul" <Mukul.Joshi@amd.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "Ghannam, Yazen" <Yazen.Ghannam@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: Re: [PATCHv2 1/2] x86/MCE/AMD: Export smca_get_bank_type symbol
-Message-ID: <YUtdSO8QZWiPeYwr@zn.tnic>
-References: <20210511152538.148084-2-nchatrad@amd.com>
- <20210913021311.12896-1-mukul.joshi@amd.com>
- <YUsUpkvP8zpz8yRz@zn.tnic>
- <BL1PR12MB51444DA94F2DE3D12BBF31D1F7A29@BL1PR12MB5144.namprd12.prod.outlook.com>
+        id S229467AbhIVQrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 12:47:03 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mT5N7-0001Oz-HF; Wed, 22 Sep 2021 18:45:25 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Colin King <colin.king@canonical.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, Alex Bee <knaerzche@gmail.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm/rockchip: Remove redundant assignment of pointer connector
+Date:   Wed, 22 Sep 2021 18:45:24 +0200
+Message-ID: <22365175.EbdSka62eY@diego>
+In-Reply-To: <27c79f7a-8e4c-fad8-c6cf-a89793f2e3c6@gmail.com>
+References: <20210922112416.182134-1-colin.king@canonical.com> <27c79f7a-8e4c-fad8-c6cf-a89793f2e3c6@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <BL1PR12MB51444DA94F2DE3D12BBF31D1F7A29@BL1PR12MB5144.namprd12.prod.outlook.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 04:27:34PM +0000, Deucher, Alexander wrote:
-> > On Sun, Sep 12, 2021 at 10:13:10PM -0400, Mukul Joshi wrote:
-> > > Export smca_get_bank_type for use in the AMD GPU driver to determine
-> > > MCA bank while handling correctable and uncorrectable errors in GPU
-> > > UMC.
-> > >
-> > > v1->v2:
-> > > - Drop the function is_smca_umc_v2().
-> > > - Drop the patch to introduce a new MCE priority (MCE_PRIO_ACEL)
-> > >   for GPU/accelarator cards.
+Hi Alex,
+
+Am Mittwoch, 22. September 2021, 18:35:38 CEST schrieb Alex Bee:
+> Hi Colin,
+> Am 22.09.21 um 13:24 schrieb Colin King:
+> > From: Colin Ian King <colin.king@canonical.com>
 > > 
-> > Patch changelog information goes...
-> > 
-> > >
-> > > Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
-> > > ---
-> > 
-> > ... under this line so that it gets automatically removed by git when applying
-> > the patch.
-> > 
-> > Alex, how do you wanna handle this?
-> > 
-> > Want me to ACK this and you can carry it through your tree along with the
-> > second patch?
+> > The pointer connector is being assigned a value that is never
+> > read, it is being updated immediately afterwards. The assignment
+> > is redundant and can be removed.
 > 
-> That would be great.  Thanks!
+> The pointer to the connector is used in rockchip_rgb_fini for 
+> drm_connector_cleanup.
+> It's pretty much the same for the encoder, btw.
 
-Ok, with the above changelog removed:
+I think the issue is more the two lines
 
-Acked-by: Borislav Petkov <bp@suse.de>
+	connector = &rgb->connector;
+ 	connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
 
-Thx.
+hence the connector = &rgb->connector being overwritten immediately after
 
--- 
-Regards/Gruss,
-    Boris.
+Now that I look at it again, the whole approach looks strange.
+drm_bridge_connector_init() creates the connector structure and
+returns a pointer to it.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+So the first line below sets the connector pointer to point to the
+&rgb->connector element and the second line then set a completely
+different address into it.
+
+So the connector element in rockchip_lvds and rockchip_rgb should actually
+become a pointer itself to hold the connector element returned from
+drm_bridge_connector_init() .
+
+
+Heiko
+
+> 
+> Regards,
+> 
+> Alex
+> > 
+> > Addresses-Coverity: ("Unused value")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >   drivers/gpu/drm/rockchip/rockchip_rgb.c | 1 -
+> >   1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/rockchip/rockchip_rgb.c b/drivers/gpu/drm/rockchip/rockchip_rgb.c
+> > index 09be9678f2bd..18fb84068a64 100644
+> > --- a/drivers/gpu/drm/rockchip/rockchip_rgb.c
+> > +++ b/drivers/gpu/drm/rockchip/rockchip_rgb.c
+> > @@ -150,7 +150,6 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
+> >   	if (ret)
+> >   		goto err_free_encoder;
+> >   
+> > -	connector = &rgb->connector;
+> >   	connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
+> >   	if (IS_ERR(connector)) {
+> >   		DRM_DEV_ERROR(drm_dev->dev,
+> > 
+> 
+> 
+
+
+
+
