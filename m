@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A094149BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8984D4149C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbhIVMyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:54:52 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54348 "EHLO vps0.lunn.ch"
+        id S236163AbhIVMzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:55:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:48624 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236001AbhIVMym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:54:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ZWdV3Ywl5E2tBReyRKkp3nub36ib8xsMWJxoWC+tqZM=; b=EFXR3GlnMnGHIw2VtBsFrp4XLU
-        5ZmpUW7Pwnd7V9z7BtVI69IYgbLKkBa6YZlMCO7gwM/msu3eBMkA6D41LWrWhJ8CTUtZbu05jLBzF
-        wZNctlNM1G4dtdIURdc7QizcwaF+yTZLSOARQwfIhJGz8+sZ5pgpyDnZ0Fwt0UrZRNTg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mT1k9-007mXu-9X; Wed, 22 Sep 2021 14:52:57 +0200
-Date:   Wed, 22 Sep 2021 14:52:57 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for
- FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
-Message-ID: <YUsnKX1pYc9K8f95@lunn.ch>
-References: <YUocuMM4/VKzNMXq@lunn.ch>
- <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
- <YUo3kD9jgx6eNadX@lunn.ch>
- <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
- <YUpIgTqyrDRXMUyC@lunn.ch>
- <CAGETcx_50KQuj0L+MCcf2Se8kpFfZwJBKP0juh_T7w+ZCs2p+g@mail.gmail.com>
- <YUpW9LIcrcok8rBa@lunn.ch>
- <CAGETcx_CNyKU-tXT+1_089MpVHQaBoNiZs6K__MrRXzWSi6P8g@mail.gmail.com>
- <YUp8vu1zUzBTz6WP@lunn.ch>
- <CAGETcx9YPZ3nSF7ghjiaALa_DMJXqkR45-VL5SA+xT_jd7V+zQ@mail.gmail.com>
+        id S236045AbhIVMz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 08:55:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7138F11B3;
+        Wed, 22 Sep 2021 05:53:59 -0700 (PDT)
+Received: from [10.57.50.100] (unknown [10.57.50.100])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FA1C3F40C;
+        Wed, 22 Sep 2021 05:53:58 -0700 (PDT)
+Subject: Re: [PATCH] coresight: Don't immediately close events that are run on
+ invalid CPU/sink combos
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        mathieu.poirier@linaro.org, coresight@lists.linaro.org
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210921130231.386095-1-james.clark@arm.com>
+ <ff78b350-f899-0515-ef54-16a3e89ae9d2@arm.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <859c5009-a050-2832-7e1b-e88c5d2acd12@arm.com>
+Date:   Wed, 22 Sep 2021 13:53:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx9YPZ3nSF7ghjiaALa_DMJXqkR45-VL5SA+xT_jd7V+zQ@mail.gmail.com>
+In-Reply-To: <ff78b350-f899-0515-ef54-16a3e89ae9d2@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> That goes back to Rafael's reply (and I agree):
-> 
-> "Also if the probe has already started, it may still return
-> -EPROBE_DEFER at any time in theory, so as a rule the dependency is
-> actually known to be satisfied when the probe has successfully
-> completed."
-> 
-> So waiting for the probe to finish is the right behavior/intentional
-> for fw_devlink.
 
-But differs to how things actually work in the driver model. The
-driver model does not care if a driver has finished probing, you can
-use a resource as soon as it is registered. Hence this whole
-problem/discussion.
 
-	Andrew
+On 22/09/2021 10:24, Suzuki K Poulose wrote:
+> On 21/09/2021 14:02, James Clark wrote:
+[...]
+>> -    event->hw.state = 0;
+>> -
+>>       /* Finally enable the tracer */
+>>       if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
+>>           goto fail_disable_path;
+>>   +out:
+>> +    /* Tell the perf core the event is alive */
+>> +    event->hw.state = 0;
+>>       /* Save the event_data for this ETM */
+>>       ctxt->event_data = event_data;
+>> -out:
+>>       return;
+> 
+> Hi James,
+> 
+> I think this problematic. The "out" label is reached from the "failed"
+> path. So, we would reset the STOPPED state. I think we should simply
+> return when we reach the "fail" label.
+> 
+> Please could you resend this patch with the changes.
+> 
+> Kind regards
+> Suzuki
+> 
+
+Oops yes I missed that, I've resubmitted. It probably would have just about
+worked because from my testing it seems like the event isn't re-enabled
+if perf_aux_output_end() is called from start regardless of the STOPPED/RUNNING
+state.
+
+Thanks
+James
