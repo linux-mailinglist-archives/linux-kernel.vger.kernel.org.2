@@ -2,294 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD3141537C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA7F415383
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238334AbhIVWcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238236AbhIVWcR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:32:17 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6868BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:30:47 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id m11so5556866ioo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=juNC+Yh0gIrBUb6L+xNkRsDJBnFyF6UYb7kNcoCnKGM=;
-        b=NfqpceEaWmmHup5aFezQKm9k2U9cUf3eIA0++9NLgmZrNKzRgNSryISlUj5iDhPb20
-         LV0KTolyFlBorK3r5zGiVOkHL98pQxilnPewHILwmnS6maAy2PA5afjbUeVrmRABouql
-         DYryji4RsSu94V5GdaDs///FYOgeUFT3//BZVAik2kaeh30cLH1hFX4m0XnwWnwbU4XK
-         SRDHMG26jgP8e5j0PdVFgpDnAzdnKqTcC0ZCQN97ztKQ0Kds5ukWRy1CXtkCWYQbdfRh
-         zBWnfi7TzaiD1Uvw0PJnqCczvKqF8JuBNx+0wIihbMWhJMftCxxd6CbSIJiQ0hL0MikC
-         5vyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=juNC+Yh0gIrBUb6L+xNkRsDJBnFyF6UYb7kNcoCnKGM=;
-        b=S7x41xwLF/Jf4z/TazXqcbj90OiCroDNu6Gd+VgA6S55vDSnhbYcAEObMupr2OCZXx
-         ZhHkeNqByWaP1CHHJYe6XAqAM5/vhfLsC2CcU63RnJy4RIndtx2wHtQc2wAVIBE5fB4e
-         CAkAhOTZuvBVKBurKbW5g+qujD6DcQBoOmJxOsz/eYndk5CrIYs/oAYsGJy77qdjwCna
-         WeWrbUKSGiQOCWRbf7AwdNlnccLT23yEEwx9W0x6iW5uSxEFZQ3B6ErWxfL+kvuEjMYr
-         kZktAeS0rasiaQOlBvLkoZ5a/yN1A9YN/t1ckkSxYnAE2ewZn1VSt9G66YCmTxX7aYxV
-         aD8Q==
-X-Gm-Message-State: AOAM532M65vaZLQgExF4hB2RDJAkHCnmBBqM2BbEtl1H6ay9chjaAr5U
-        30chKbPNYcgdJaSHhDsOoHQMFEdQ/XIoTEG88twjBg==
-X-Google-Smtp-Source: ABdhPJzuV52YtxZhuXpXSkrYLJ/qVhpiQKRXog76B7iQrZ8gzwj1xbG9KAGnpMoASe7YA+XtmD46ObD3Q89COrDCf38=
-X-Received: by 2002:a6b:5913:: with SMTP id n19mr1096556iob.91.1632349846464;
- Wed, 22 Sep 2021 15:30:46 -0700 (PDT)
+        id S238300AbhIVWgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:36:17 -0400
+Received: from mga18.intel.com ([134.134.136.126]:15792 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhIVWgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 18:36:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="210796382"
+X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
+   d="scan'208";a="210796382"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 15:34:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
+   d="scan'208";a="474861602"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Sep 2021 15:34:44 -0700
+Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 22 Sep 2021 15:34:44 -0700
+Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
+ fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 22 Sep 2021 15:34:44 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Wed, 22 Sep 2021 15:34:44 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Wed, 22 Sep 2021 15:34:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QkvLIfHPrQmkBU+NibtZDINwqllSn3/ktets2ysS7JNTxPoDORm1aRwAk4/WhcKzdJPFDKnM98dBPZN7M4vxijZa015ZQjEcyA1fz7ntSX6rrMsOChbEAlzFiIWrt2tcL9koBVfYg7Snh2bqZB9MIXjaH3A9pbjCcBq5/MAF/ghTvOOCGLV2Dkczh14iSbgndwYzXsqBF8sF1G9rKn/BjN2UFbEcFn8Zxr6C2Fje0vEKMu8I7lEnAw8WD3urJnurGoq1Kk1aFIsoVrVLKOAImspO+XxR5JJWTH5VcuIAyYMGDO9NN+ejUgqQ9QxU9RIC6hAVjqVeXOcOKlybSifIIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=w/75khrrynZ5IBbgDAOesqE9d1ME4zTDkoRBF8ZUuLs=;
+ b=U/0ZcQVlqNajt04of2ftOBq+LunjM+P9rbMHzciQClNdDlWc4swN3LQOMGnGdPuG5S9Y25wahLFAvsKkY9OnMowFZCCqkfNCf/b8Van83A3iz9Eqr3sTjgFe6JPlphGk8eI5IsxP7uc6BiYib8sJbiHNk9pN8x/bAOqfTRy3+lRsiTwaoZWkjSFieQJivm5IG8N+EASxMHWP+fPd5SbkY3hW0CDFDcJjlw9uTWepdgkj8R2d0TEU+qZG8KthlH4GfFzjCJoP+fxSVtSy91yvpvR/ib1do3oeVCdEm8vra598Q/cypXO3ZUGsdVvxxmiM8k25dbTKBaI37ISyhKuDSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w/75khrrynZ5IBbgDAOesqE9d1ME4zTDkoRBF8ZUuLs=;
+ b=VbBZZJEIIXXFvHTO7aiJ/mEGelQd/eBwnrVbMX+E9BhnwnOYbSJWfA1t5x2D9l3p/VZEXGpRk9szZ0SIMY3xDvrMwwFECS6Edc1n8/OhempYmsnogiiM6Y3Se3684g4GebGpsT8ScdOjLjhsvV43cLUmGvWN9wEKaCN9CcXP82o=
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
+ by BN6PR11MB1537.namprd11.prod.outlook.com (2603:10b6:405:c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.17; Wed, 22 Sep
+ 2021 22:34:42 +0000
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ddb7:fa7f:2cc:45df]) by BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ddb7:fa7f:2cc:45df%8]) with mapi id 15.20.4544.014; Wed, 22 Sep 2021
+ 22:34:42 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     "Liu, Yi L" <yi.l.liu@intel.com>, "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: RE: [RFC 03/20] vfio: Add vfio_[un]register_device()
+Thread-Topic: [RFC 03/20] vfio: Add vfio_[un]register_device()
+Thread-Index: AQHXrSFwNP3/pIcrZ0iM9X/cSoy0lKuuqYQAgAB3MFCAAB2WgIAAjDNwgAA0YACAAIKvAIAAJpDg
+Date:   Wed, 22 Sep 2021 22:34:42 +0000
+Message-ID: <BN9PR11MB543366158EA87572902EFF5E8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+        <20210919063848.1476776-4-yi.l.liu@intel.com>
+        <20210921160108.GO327412@nvidia.com>
+        <BN9PR11MB5433D4590BA725C79196E0248CA19@BN9PR11MB5433.namprd11.prod.outlook.com>
+        <20210922005337.GC327412@nvidia.com>
+        <BN9PR11MB54338D108AF5A87614717EF98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+        <20210922122252.GG327412@nvidia.com>
+ <20210922141036.5cd46b2b.alex.williamson@redhat.com>
+In-Reply-To: <20210922141036.5cd46b2b.alex.williamson@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ec6faf97-c456-40c7-0cdc-08d97e192bf0
+x-ms-traffictypediagnostic: BN6PR11MB1537:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN6PR11MB15372D87C97DE809014BB6118CA29@BN6PR11MB1537.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vPsUzWgKvA0O1fOZrz5J6/xaPPY6pi3aTJuq/3W3eM4xch4RbFV11uX+mcQ7uJIUTd8ubb05r5KbRk1ZYCWKdGCtciCQUMj9RWIimItP31zKI8+pvQ3ZG1yIrhCUm74tvSRDcnymkm5bdUj3IyzaHWKV+OT84PNvY8wneBVV+nGnqZbu/SSUcjXL3j0x9raKrXyzFclN5BKcCiLpmOj0hvryQY/IPYRlXxOkPBk2pK62L1oeQWLwMzdSTWwN0UNa6T7KziantRYkPZcQtJBiU1pK4kSb+TOtQC4hN2vBYeM/9wYILLSmwydyFEk1t0rHqjjwUeF3HK5NyxAtF8LBaSlBJ8XwykZA9tBKnB1lQET2bM/vwn2428w4g2zY+d5rkNtYbxtHyaPP7OgJfASlcxYVJQ4AK9idE5J5H2ZdU2l7k+dHl0IXnw7xWIqnu71mGwXSO2X4BHqVX7bjXb5UfJHcW2cBxxFFNMP5AdF3Kqs8Nj67tB4WJh+dZKc9oWkTE2X05mWUwckuwRURMGY3zGVM5enXA0yP//tw86ENcScwaM8ETy4B7ghFSBoQDWmRv55mHWd5rnD8IB1KgO45+Vvdcyuu+C2sRV9yjtj9IaGtm/5iXZsvo/bs2k6lv0L/BX1hUZHh82nqGTLkO8ZpNr+ucCpvqKsR+S7AGuU/6uTKOW8+slXrvRj822u5wHO4qWKJmY6OFsJq2rkrDLBYqg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(7416002)(76116006)(26005)(8936002)(122000001)(186003)(7696005)(33656002)(4326008)(508600001)(38070700005)(9686003)(316002)(6506007)(66446008)(66476007)(64756008)(86362001)(66556008)(38100700002)(55016002)(8676002)(110136005)(52536014)(5660300002)(66946007)(71200400001)(54906003)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?RsaHJw3uLolBUtUj4Fd9MAnpcxnOkK9qREJL/E/F/3JeJ9OGNZQeshldR/Mx?=
+ =?us-ascii?Q?QZ332jvnDq8elS7YusR6c8iHvjbYQYSdl448F4JSXZz0tdAdF5IhY2PkIKuY?=
+ =?us-ascii?Q?blYyjWpD0rrtLpQWseym8D5Mu79WMc0t7KGf7u+0BbwAk66XEVeNwHBGsTyP?=
+ =?us-ascii?Q?UjlTdpDZRUCAJNhJ+/cMcKn9NeSgbSeQf6dGC9WIILHadXdxemUjlZ6QscYT?=
+ =?us-ascii?Q?yN8g5IT3iH0/EmIXonpaXZvd1RrBXS71ho3hLezxfMrOxf8v07NY4WndSRMK?=
+ =?us-ascii?Q?++QCQxC8EA8T1BaSNUUv4v+i4NV3MNcSegCrqH0YzbM9Q4/KsYyETEfc3ts+?=
+ =?us-ascii?Q?H2j1ovub0HMR4bYJkE9uElqOLv7T9kgJBZLETkqkCtf6ukhFSIwefW7dTuYN?=
+ =?us-ascii?Q?eJi01PM2EqJun8NS/NHj4Q7txcKgaSxMwCIyLcRmUVCAhK2qAsZDBy2YVZQ/?=
+ =?us-ascii?Q?mLwqowvQvrgQT8iOiBfX/xoOd0zYBCkuAxBmygrQdEi9KBHjTPm5UfzAMpVG?=
+ =?us-ascii?Q?efgJ4FpL3c3hEtCHoeYWV5/FHrEiFo+aHTt0QsZ4kqyzr7pBJ3fPML4tfe/h?=
+ =?us-ascii?Q?Bz09RIar2XMd040k5TEsuXdBQfsZW+k6JMjX0ydocxVITZ+OskvI5XE9o2aX?=
+ =?us-ascii?Q?Zjfedak2mn01GPItjfRR3btCf0aB0EthowRIsjHFA00GB7yDROsTzwSq4vEC?=
+ =?us-ascii?Q?n9MzTFaqHq9LaCPBIn+i3soGmUA6ayFw3r4OzqGCPjsgeamLqeFZCs0oc0zM?=
+ =?us-ascii?Q?t6VlUJZTP8V2R3x1kmnRMwrGfxNqjJWSI03Pcnen/280QDeZTpcbnOyPQ9Bo?=
+ =?us-ascii?Q?y1hbbXVP/NmnoY4/jlBhTgLVQrWQho3T2bKGTMgnqDMr0+cyoF5PlpR5H5gO?=
+ =?us-ascii?Q?QL9MmmYIAM23OrCpf/tV7rDqIxeReC6gtW9pPhAka6W3zfybJhB4nJj/5vud?=
+ =?us-ascii?Q?TQODLSnw37nFBrUOy9VOTLOP/QSEIg9ZkdlmTMZwkzN5XFf4y9O4sCtGv57h?=
+ =?us-ascii?Q?XV38tAoGmbKzJUuTn2LSBm7ANxEUaCjnw+uRJElKx7xQk1R+va6UgbPESPq/?=
+ =?us-ascii?Q?cEpFUL5coBSxCiDyeOG58PQ153dgY04IADu0600Y4QJDulQi0jMQ4Pt/DoIW?=
+ =?us-ascii?Q?1e0R+I1du9QWBHguDoPrHoRpIQxuWLqiT1mHTgDEzqSNBz2EH2faEPe50qmH?=
+ =?us-ascii?Q?aGVe91oPrOehtheo5RUK3L9yfPehBTI4gd4bdOD+UUuDGRhVenJ+i066uw4a?=
+ =?us-ascii?Q?J5CRavRI69k7bnDXdJlpmisdnc/fq0BKQK7URraWblRpRqYCCrk06pvKQs3w?=
+ =?us-ascii?Q?7aUkiakAWhoWjaXu0ZoRTzUq?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210922061809.736124-1-pcc@google.com> <CACT4Y+b=2L7CSYBxzO906b17ryU0H9anJEacnvP-WbAYLC4T1A@mail.gmail.com>
-In-Reply-To: <CACT4Y+b=2L7CSYBxzO906b17ryU0H9anJEacnvP-WbAYLC4T1A@mail.gmail.com>
-From:   Peter Collingbourne <pcc@google.com>
-Date:   Wed, 22 Sep 2021 15:30:35 -0700
-Message-ID: <CAMn1gO6kqoQ1V7qySSGK7UoND_najvBrW0-EWe8FcrMJ+SArFQ@mail.gmail.com>
-Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Colin Ian King <colin.king@canonical.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        David Hildenbrand <david@redhat.com>,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Evgenii Stepanov <eugenis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec6faf97-c456-40c7-0cdc-08d97e192bf0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 22:34:42.4238
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6dOSzTg2AJQ1SV3lMf0Ib/3pJVcwipJyuPExwrqs55h//77gun8ZfP+r3w2UwedTpWtOjwczQd9jO+hF8oMHRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1537
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 6:45 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Wed, 22 Sept 2021 at 08:18, Peter Collingbourne <pcc@google.com> wrote:
+> From: Alex Williamson <alex.williamson@redhat.com>
+> Sent: Thursday, September 23, 2021 4:11 AM
+>=20
+> On Wed, 22 Sep 2021 09:22:52 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
+>=20
+> > On Wed, Sep 22, 2021 at 09:23:34AM +0000, Tian, Kevin wrote:
 > >
-> > This patch introduces a kernel feature known as uaccess logging.
-> > With uaccess logging, the userspace program passes the address and size
-> > of a so-called uaccess buffer to the kernel via a prctl(). The prctl()
-> > is a request for the kernel to log any uaccesses made during the next
-> > syscall to the uaccess buffer. When the next syscall returns, the address
-> > one past the end of the logged uaccess buffer entries is written to the
-> > location specified by the third argument to the prctl(). In this way,
-> > the userspace program may enumerate the uaccesses logged to the access
-> > buffer to determine which accesses occurred.
+> > > > Providing an ioctl to bind to a normal VFIO container or group migh=
+t
+> > > > allow a reasonable fallback in userspace..
+> > >
+> > > I didn't get this point though. An error in binding already allows th=
+e
+> > > user to fall back to the group path. Why do we need introduce another
+> > > ioctl to explicitly bind to container via the nongroup interface?
 > >
-> > Uaccess logging has several use cases focused around bug detection
-> > tools:
+> > New userspace still needs a fallback path if it hits the 'try and
+> > fail'. Keeping the device FD open and just using a different ioctl to
+> > bind to a container/group FD, which new userspace can then obtain as a
+> > fallback, might be OK.
 > >
-> > 1) Userspace memory safety tools such as ASan, MSan, HWASan and tools
-> >    making use of the ARM Memory Tagging Extension (MTE) need to monitor
-> >    all memory accesses in a program so that they can detect memory
-> >    errors. For accesses made purely in userspace, this is achieved
-> >    via compiler instrumentation, or for MTE, via direct hardware
-> >    support. However, accesses made by the kernel on behalf of the
-> >    user program via syscalls (i.e. uaccesses) are invisible to these
-> >    tools. With MTE there is some level of error detection possible in
-> >    the kernel (in synchronous mode, bad accesses generally result in
-> >    returning -EFAULT from the syscall), but by the time we get back to
-> >    userspace we've lost the information about the address and size of the
-> >    failed access, which makes it harder to produce a useful error report.
-> >
-> >    With the current versions of the sanitizers, we address this by
-> >    interposing the libc syscall stubs with a wrapper that checks the
-> >    memory based on what we believe the uaccesses will be. However, this
-> >    creates a maintenance burden: each syscall must be annotated with
-> >    its uaccesses in order to be recognized by the sanitizer, and these
-> >    annotations must be continuously updated as the kernel changes. This
-> >    is especially burdensome for syscalls such as ioctl(2) which have a
-> >    large surface area of possible uaccesses.
-> >
-> > 2) Verifying the validity of kernel accesses. This can be achieved in
-> >    conjunction with the userspace memory safety tools mentioned in (1).
-> >    Even a sanitizer whose syscall wrappers have complete knowledge of
-> >    the kernel's intended API may vary from the kernel's actual uaccesses
-> >    due to kernel bugs. A sanitizer with knowledge of the kernel's actual
-> >    uaccesses may produce more accurate error reports that reveal such
-> >    bugs.
-> >
-> >    An example of such a bug, which was found by an earlier version of this
-> >    patch together with a prototype client of the API in HWASan, was fixed
-> >    by commit d0efb16294d1 ("net: don't unconditionally copy_from_user
-> >    a struct ifreq for socket ioctls"). Although this bug turned out to
-> >    relatively harmless, it was a bug nonetheless and it's always possible
-> >    that more serious bugs of this sort may be introduced in the future.
-> >
-> > 3) Kernel fuzzing. We may use the list of reported kernel accesses to
-> >    guide a kernel fuzzing tool such as syzkaller (so that it knows which
-> >    parts of user memory to fuzz), as an alternative to providing the tool
-> >    with a list of syscalls and their uaccesses (which again thanks to
-> >    (2) may not be accurate).
-> >
-> > All signals except SIGKILL and SIGSTOP are masked for the interval
-> > between the prctl() and the next syscall in order to prevent handlers
-> > for intervening asynchronous signals from issuing syscalls that may
-> > cause uaccesses from the wrong syscall to be logged.
-> >
-> > The format of a uaccess buffer entry is defined as follows:
-> >
-> > struct access_buffer_entry {
-> >   u64 addr, size, flags;
-> > };
-> >
-> > The meaning of addr and size should be obvious. On arm64, tag bits
-> > are preserved in the addr field. The current meaning of the flags
-> > field is that bit 0 indicates whether the access was a read (clear)
-> > or a write (set). The meaning of all other flag bits is reserved.
-> > All fields are of type u64 in order to avoid compat concerns.
-> >
-> > Here is an example of a code snippet that will enumerate the accesses
-> > performed by a uname(2) syscall:
-> >
-> > struct access_buffer_entry entries[64];
-> > uint64_t entries_end64 = (uint64_t)&entries;
-> > struct utsname un;
-> > prctl(PR_LOG_UACCESS, entries, sizeof(entries), &entries_end64, 0);
-> > uname(&un);
-> > struct access_buffer_entry *entries_end = (struct uaccess_buffer_entry *)entries_end64;
-> > for (struct acccess_buffer_entry *i = entries; i != entries_end; ++i) {
-> >   printf("%s at 0x%lu size 0x%lx\n",
-> >          entries[i].flags & UACCESS_BUFFER_FLAG_WRITE ? "WRITE" : "READ",
-> >          (unsigned long)entries[i].addr, (unsigned long)entries[i].size);
-> > }
-> >
-> > Uaccess buffers are a "best-effort" mechanism for logging uaccesses. Of
-> > course, not all of the accesses may fit in the buffer, but aside from
-> > that, there are syscalls such as async I/O that are currently missed due
-> > to the uaccesses occurring on a different kernel task (this is analogous
-> > to how async I/O accesses are exempt from userspace MTE checks). We
-> > view this as acceptable, as the access buffer can be sized sufficiently
-> > large to handle syscalls that make a reasonable number of uaccesses,
-> > and syscalls that use a different task for uaccesses are rare. In
-> > many cases, the sanitizer does not need to see every memory access,
-> > so it's fine if we miss the odd uaccess here and there. Even for those
-> > sanitizers that do need to see every memory access it still represents
-> > a much lower maintenance burden if we just have to handle the unusual
-> > syscalls specially.
-> >
-> > Because we don't have a common kernel entry/exit code path that is used
-> > on all architectures, uaccess logging is only implemented for arm64 and
-> > architectures that use CONFIG_GENERIC_ENTRY, i.e. x86 and s390.
-> >
-> > One downside of this ABI is that it involves making two syscalls per
-> > "real" syscall, which can harm performance. One possible way to avoid
-> > this may be to have the prctl() register the uaccess buffer location
-> > once at thread startup and use the same location for all syscalls in
-> > the thread. However, because the program may be making syscalls very
-> > early, before TLS is available, this may not always work. Furthermore,
-> > because of the same asynchronous signal concerns that prompted temporarily
-> > masking signals after the prctl(), the syscall stub would need to be made
-> > reentrant, and it is unclear whether this is feasible without manually
-> > masking asynchronous signals using rt_sigprocmask(2) while reading the
-> > uaccess buffer, defeating the purpose of avoiding the extra syscall.
-> >
-> > One idea that we considered involved using the stack pointer address as
-> > a unique identifier for the syscall, but this currently would need to be
-> > arch-specific as we currently do not appear to have an arch-generic way
-> > of retrieving the stack pointer; the userspace side would also need some
-> > arch-specific code for this to work. It's also possible that a longjmp()
-> > past the signal handler would make the stack pointer address not unique
-> > enough for this purpose.
-> >
-> > On the other hand, by allocating the uaccess log on the stack and blocking
-> > asynchronous signals for the interval between the prctl() and the "real"
-> > syscall, we can avoid any reentrancy and TLS concerns.
-> >
-> > Another way to avoid the overhead may be to use an architecture-specific
-> > calling convention to pass the address of the uaccess buffer to the kernel
-> > at syscall time in registers currently unused for syscall arguments. For
-> > example, one arm64-specific scheme that was used in a previous iteration
-> > of the patch was:
-> >
-> > - Bit 0 of the immediate argument to the SVC instruction must be set.
-> > - Register X6 contains the address of the access buffer.
-> > - Register X7 contains the size of the access buffer in bytes.
-> > - On return, X6 will contain the address of the memory location following
-> >   any access buffer entries written by the kernel.
-> >
-> > However, this would need to be implemented separately for each
-> > architecture (and some of them don't have enough registers anyway),
-> > whereas the prctl() is (at least in theory) architecture-generic.
-> >
-> > We also evaluated implementing this on top of the existing tracepoint
-> > facility, but concluded that it is not suitable for this purpose:
-> >
-> > - Tracepoints have a per-task granularity at best, whereas we really want
-> >   to trace per-syscall. This is so that we can exclude syscalls that
-> >   should not be traced, such as syscalls that make up part of the
-> >   sanitizer implementation (to avoid infinite recursion when e.g. printing
-> >   an error report).
-> >
-> > - Tracing would need to be synchronous in order to produce useful
-> >   stack traces. For example this could be achieved using the new SIGTRAP
-> >   on perf events mechanism. However, this would require logging each
-> >   access to the stack (in the form of a sigcontext) and this is more
-> >   likely to overflow the stack due to being much larger than a uaccess
-> >   buffer entry as well as being unbounded, in contrast to the bounded
-> >   buffer size passed to prctl(). An approach based on signal handlers is
-> >   also likely to fall foul of the asynchronous signal issues mentioned
-> >   previously, together with needing sigreturn to be handled specially
-> >   (because it copies a sigcontext from userspace) otherwise we could
-> >   never return from the signal handler. Furthermore, arguments to the
-> >   trace events are not available to SIGTRAP. (This on its own wouldn't
-> >   be insurmountable though -- we could add the arguments as fields
-> >   to siginfo.)
-> >
-> > - The API in https://www.kernel.org/doc/Documentation/trace/ftrace.txt
-> >   -- e.g. trace_pipe_raw gives access to the internal ring buffer, but
-> >   I don't think it's useable because it's per-CPU and not per-task.
-> >
-> > - Tracepoints can be used by eBPF programs, but eBPF programs may
-> >   only be loaded as root, among other potential headaches.
->
-> Hi Peter,
->
-> Is this intended to be used with real syscall only? I think for
-> sanitizers we want to use this with libc syscall wrappers and more
-> complex libc functions as well. Signal blocking assumes that there
-> will be 1 and only 1 real syscall. I wonder if this can create
-> problems with libc functions, in particular, if a libc function does
-> >1 syscall, no syscalls, variable number of syscalls.
+> > Hard to see without going through the qemu parts, so maybe just keep
+> > it in mind
+>=20
+> If we assume that the container/group/device interface is essentially
+> deprecated once we have iommufd, it doesn't make a lot of sense to me
+> to tack on a container/device interface just so userspace can avoid
+> reverting to the fully legacy interface.
+>=20
+> But why would we create vfio device interface files at all if they
+> can't work?  I'm not really on board with creating a try-and-fail
+> interface for a mechanism that cannot work for a given device.  The
+> existence of the device interface should indicate that it's supported.
+> Thanks,
+>=20
 
-Yes, the intent is that this will only be used from the code that
-executes the "real" syscall. Otherwise, as you point out, there's the
-possibility of the libc function executing a different number of
-syscalls, especially if symbol interposition comes into the picture.
+Now it's a try-and-fail model even for devices which support iommufd.
+Per Jason's suggestion, a device is always opened with a parked fops
+which supports only bind. Binding serves as the contract for handling
+exclusive ownership on a device and switching to normal fops if
+succeed. So the user has to try-and-fail in case multiple threads attempt=20
+to open a same device. Device which doesn't support iommufd is not
+different, except binding request 100% fails (due to missing .bind_iommufd
+in kernel driver).
 
-Peter
+Thanks
+Kevin
