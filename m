@@ -2,168 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D9A414295
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB9D414298
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhIVHZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 03:25:11 -0400
-Received: from mail-eopbgr1300048.outbound.protection.outlook.com ([40.107.130.48]:43328
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        id S233276AbhIVHZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:25:15 -0400
+Received: from mail-dm6nam08on2041.outbound.protection.outlook.com ([40.107.102.41]:5089
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229697AbhIVHZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:25:10 -0400
+        id S229697AbhIVHZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 03:25:13 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lwFfBU5M2B4dmgNAdrDq7BQ1CtM2AA9mHSORJzQxyX1wRRwKmxdbkMhJOdTiLYT9WycxJ0M88va8/jaxt1mo+sNEK/7o/sNohZjRXFPt1P2rlydAMa0s5R8UHX8ljwnCw6fRBcaRd8R/GSybR9fnBLhO0cq54jcC9iaDJqKyuQVS1wgK4+S9lS6NvgULbPR+5ZMpN/QvYlaRZMY/gEZF1jtC35HzwRKHPaqycRro0evC3P9FXRQF+Bjjl/EEKn8HbhM59brZs3uqp+1+JNqMtMjpRezau8sIjVxr8I38yrI0e5XEbOoCjhys6OBkgDJ2gXYQGNz4r8rx2r0qdSx+xQ==
+ b=Jl9X8Crfvhphca513xiw5+d+vrhCcAF+ZE+KAr69wVN0FtxeTcWzRr1KeoGBOzmNn2fggWNzqqhQG7RICGLTug56Mq1wD4TwYE0yZRQb+pwkwQEZSQZ4Kgewe3bkvbmMOeBhbqbGhLxL88H4qrjHFPvEI/seY/uT2FzRNS+ZdsjFS0eYcKyyjNFLoutTqCmWAQaRdgKiFEAz9CVGzwxIXqFYr6Dl4XWKVSJ5b7Z56N7JUULIIyohXxYa8FT53iSngYqMlrrqiSjbz1av2UgEmLUlCTz2XGXXcvx/vbFeJdkmid2lW79LDb5d3kfl6PzL69wpqIn3FTK4WaedcwjvqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=/RjoVQIL/KHm77pyZUI65vI7YhUBjaVIs6yN5QWlL28=;
- b=O2E09gknUtdv/dNIEsroOPQ4U0BNy0Jg0cJ2U+Fqu5PI27La3SGZwAucv7FBuJsqJAzcqRkVT5FzW3KYMgLSBbEFc2Jo6Hgv6W0yDB7dWksozG0YG+l4w5/+Op2JKml7dRp7fkqQHHTpZJ3Gygm3JGuRejx5vvFb1RMil2uIf9FBsua/cNi5fkp1YGg+7kMoyFPKWKWMTIJMRr/O1vI5VRLVUog5FJLyIq+NR45/Et1/XoIcmp1EekVWKigwnQKu5sqD0s25n/iiGN2E6jiGtMQqHGIPNP80Bir2GGWUFZp+fcBCcdGDwwXbubunwHl2t3Pzay40zRolBov5y0xn9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ bh=T8RfFE96V/ukkSdBBf9/zU1uVdOofsSC339oAEg8qPA=;
+ b=KlShpnxMrRpjE9Tmerj8uSW19zPmkZiFaXylzumLKV6R6nYJAMJngdUKcVHNsy/K/JSTRxXQXmJalEeW/9PuUjV10NrxhQ0nHuxklINITT6BP05s46TQHvj/qqD1ZUsyzrOQqQp+l4hgDyPxm8LZopC74D6XTeiGVBxQXhlthBnPZ3YtHRKVORsX4glGp/C9ruOI9SOEiydIvXylo9lwnW8vUh+G6oKvhy29lnzb5rbcKFgUtGqsV3eDHcl+LKa5DA/F7z4fZsJO8mcd5j0iB6hgqkwEi/33Xjn3V6C7eUimz1ACbtZBUJaVNByo0bQXLq/cqLclV5eKqmQUEKG4vQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/RjoVQIL/KHm77pyZUI65vI7YhUBjaVIs6yN5QWlL28=;
- b=CIoTqJJX7kNRmVG7+fnRqK+AhQ73q9lZe5F7pVPABtDjdLj4ip2iVF2RVD5s/zZeqWHAFyDmHJfFofQcwfqvMfUD/3oASFjcjPKaTkZAXoKtmWO8DVK6F/9zCZexlWX8vodcgfFm9Hqm0obyrx8cohR/9T0uTFozNjiEVY1mWvQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB2557.apcprd02.prod.outlook.com (2603:1096:3:26::22) with Microsoft
+ bh=T8RfFE96V/ukkSdBBf9/zU1uVdOofsSC339oAEg8qPA=;
+ b=CpoujzNNa7HDhSaREjhdCQzqgtzpoDP3CDQYgrVO4ncDWGtnZSOCj3Lw+jU4ZQXmdfPN1mkpvrmenfNiT/VYEc3Sn/LVFpo58KUI8M9RbaT73GcXICRr0QkHX/5mBD/s88ijwz0dn+6+HaJRziWZhH6GmdLET2MiZu3a8Jlt00wJWMu8XKVE3OIjYk1RcuI8PoV3C6WnrHnnz93nyTrr2VXWXJWIks5fTma+54augt4NJTAOJ+waokjchsOObH8cOdOEpFsBXlPPs7YKNiflK3AnhsAefh54PtI8y1xJ0lITR0XWBDAAMX8crZ/a7XUcUXfN+60MWiBsE3XEVjVh1g==
+Received: from DM6PR13CA0016.namprd13.prod.outlook.com (2603:10b6:5:bc::29) by
+ MW3PR12MB4428.namprd12.prod.outlook.com (2603:10b6:303:57::15) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4523.15; Wed, 22 Sep 2021 07:23:37 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::5919:768f:2950:9504]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::5919:768f:2950:9504%4]) with mapi id 15.20.4523.018; Wed, 22 Sep 2021
- 07:23:37 +0000
-From:   Huang Jianan <huangjianan@oppo.com>
-To:     linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org
-Cc:     huangjianan@oppo.com, guoweichao@oppo.com, yh@oppo.com,
-        zhangshiming@oppo.com, guanyuwei@oppo.com, jnhuang95@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3] ovl: fix null pointer when filesystem doesn't support direct IO
-Date:   Wed, 22 Sep 2021 15:23:26 +0800
-Message-Id: <20210922072326.3538-1-huangjianan@oppo.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <9ef909de-1854-b4be-d272-2b4cda52329f@oppo.com>
-References: <9ef909de-1854-b4be-d272-2b4cda52329f@oppo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0146.apcprd02.prod.outlook.com
- (2603:1096:202:16::30) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+ 15.20.4523.14; Wed, 22 Sep 2021 07:23:41 +0000
+Received: from DM6NAM11FT038.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:bc:cafe::73) by DM6PR13CA0016.outlook.office365.com
+ (2603:10b6:5:bc::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
+ Transport; Wed, 22 Sep 2021 07:23:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ DM6NAM11FT038.mail.protection.outlook.com (10.13.173.137) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 07:23:41 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
+ 2021 07:23:40 +0000
+Received: from [172.27.11.12] (172.20.187.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
+ 2021 07:23:37 +0000
+Message-ID: <6241b491-2957-e80a-6ba5-c1f2138d84e0@nvidia.com>
+Date:   Wed, 22 Sep 2021 10:23:36 +0300
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from PC80253450.adc.com (58.252.5.73) by HK2PR02CA0146.apcprd02.prod.outlook.com (2603:1096:202:16::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 07:23:35 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101
+ Thunderbird/93.0
+Subject: Re: [PATCH net-next v6] net/mlx5e: Add extack msgs related to TC for
+ better debug
+Content-Language: en-US
+To:     Abhiram R N <abhiramrn@gmail.com>
+CC:     <arn@redhat.com>, <hakhande@redhat.com>, <saeedm@nvidia.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <e91b2692-2f1c-5712-1e37-db7def52cb9a@nvidia.com>
+ <20210922063007.123136-1-abhiramrn@gmail.com>
+From:   Roi Dayan <roid@nvidia.com>
+In-Reply-To: <20210922063007.123136-1-abhiramrn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d439daf3-7223-4f2c-a145-08d97d99e4a3
-X-MS-TrafficTypeDiagnostic: SG2PR02MB2557:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB2557170B3FDC677A042A90E9C3A29@SG2PR02MB2557.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Office365-Filtering-Correlation-Id: f3ba02db-ba2f-4e3b-0607-08d97d99e72f
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4428:
+X-Microsoft-Antispam-PRVS: <MW3PR12MB442850F9641C055CFA57DB33B8A29@MW3PR12MB4428.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vCcwEIfX4pbkTQZnHncNL64tMUnvJPzmSjedZsLcGxt63ojRlbYP3edaPAdcyTbCsp8rOlgK5Jy0s9red3xqRQAw7fDIMqGwjO2hwWLSTmJgLS1rr8TSVpSEpSWnNCPbhwBqPE9NkvrvdinrQJ7+W1uRFkT9ji7JZyS/+cBYjJWoBktb4OYxR7H+TLgZKVjtn7xbOAnj9fqSHaNoN/U2enI9Ux8DEu969caiYUAmGdqN6w8qpWfab3twxTdypbKB/U0kUmBWHOvaPYL0L7pgZ0i4glChqGOXO5jUyn59UzAXGYAplz7fgRtL28Qr2DZeXRyM2EFmgZcdH8kHggNtSeQxrCd6N5j97Mo0u96fSxCohXZWxqirZ2kDAoyFoHiXw8EmmsdySrSB8L0PjPDZX6KiP3mTpoiAwoxrMzLNFiCr6H9Vd0M53bXFYdtXJg965sDdDa2k2EbiVLohH1u91lESYcODtwlIdE4nLXyiD5Sy8qDqOnkLvQFIML/jO0WsF+BY10YxNowFv0qLmHwvU+UOvLSv5uWWpyxXeQyuizzGSStgAnDls2SW5p9H5YOSL8jksZfGscu0jvaigcDuGtTqH5NGDC8rxTKVg3+chclbsV3c71JQ1ZsM/C7E4g5uRmu0lgxs6G/8a9Ubc3/oKuZxmfwzgQjRk5Xl8YcsyJqMA7++hyJBk6BVyHr1oZWD5P0uxIXWWvYNYUGS155XMHvJ2hsKnpBa5hbYOhYHZ48=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(6666004)(1076003)(956004)(36756003)(66946007)(2616005)(66556008)(66476007)(5660300002)(186003)(26005)(83380400001)(316002)(52116002)(38350700002)(508600001)(38100700002)(6506007)(4326008)(2906002)(8936002)(8676002)(86362001)(6512007)(11606007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iXQ4bFTYkjCwI+dXVstAsmHh72l+dYfvzV3mZqhsAee/yz1tLe9M9HsHikAj?=
- =?us-ascii?Q?ISF0GMCuNUXeEXav/S4ksBV74hk6JmnhrWx/Z0uraM8vIsCQD1O1XMn4KRrm?=
- =?us-ascii?Q?QyEqDvlALLh4pFZj4+eQzfkaYSTlNlYB6mtKJvvsiFOMl2s1pmbjZwogExkP?=
- =?us-ascii?Q?2I85NAaI58oMl4SfX7i2rZTDMUVRr2cYm/fQBeVTZku+hwI8kaQVTlZTUTlS?=
- =?us-ascii?Q?Ip0fWdS7wVeMq9EvYaEQyOCFFHkUNVS/BtfEG737AzfeZCRnJVC6dKPB/D/w?=
- =?us-ascii?Q?Zam7C+qprCo4otgLHqPDHuznLYbpvFKjM1Iqn61dF+QhQkYyl27WKTmHOYh9?=
- =?us-ascii?Q?8/4Zl69G2W8d7lQjMmNh7ynbcjb4b1Vjpst4VaEv8sYH7DRNn8vsxKi4wfXB?=
- =?us-ascii?Q?CBfVPSLbY7d11w+I4zYxJs7bwVm8/76fzC7ptb/r2zdL3d/IlL41OcTeTT7M?=
- =?us-ascii?Q?a6T6Z4YA+jmo0FtTQHD698mGvYou4gu5YRyjxm0JvitAOJZjUiVrzeTwfMDU?=
- =?us-ascii?Q?/HyXG7RPZSl6YP1UGXA/BrvZoisY+Y9e8fPGk+0BFG45D/zJyIz8d8tvk2ZD?=
- =?us-ascii?Q?07ZVO9thvS9/pPaFj4cnoI9qJLkOR4GBPncp4YerPdfZdRoYyDEL4tyxE6Hj?=
- =?us-ascii?Q?8m/kklwwh17aWllQjmjFIPVFXoqOlUNiMQfVCNdo2dNx/fqC4t3HHBXeX3X9?=
- =?us-ascii?Q?5AOKiwL/2FyeRzzcjV5Nh26hdNSQZT1WDSnoV+ClQEKxsu5fBXWhSOpvr1iH?=
- =?us-ascii?Q?kAaAiak4YsAkI9gU46IWLVTHIzAGMOHD23B7YQwokQnJhFHsgh7QcTnytf5R?=
- =?us-ascii?Q?esy6M2HyOAA44ZTxEhg4nXl/F9HHrqsL5WUkWs8xxp2huOgyog/2Wjxz3cvw?=
- =?us-ascii?Q?3illzdTwQlepu2+WI3ePL4UhA8K402g6sSjbiFIof3rsThpuhu7tPUrfbah1?=
- =?us-ascii?Q?EiRQT7vx9mSbF3nf49K4FyZ7aJEC2SbVanfvvk3RZPw2Jtcoosr7IhoFIQrf?=
- =?us-ascii?Q?SdecGq8seQaywyZb+zoDmY/JDL5N2CqAJwHs/egEKyusbzrBUs2cMQiTAiYu?=
- =?us-ascii?Q?gEUW+v9Jjwt/mCAtWo+/En7Wx32jCmOe3b94xX3HnQb+iadSwaApm/xIEAqk?=
- =?us-ascii?Q?DW+09UyOxM4Sv+1J0LbFa8HuX4a6oF4KaAFrZIPYc+Y+NJ5t7o8mU90VwJ85?=
- =?us-ascii?Q?VZAwYCs+D4Ga/QbnZr2AhTaV4jtJOSUm0pBHb3NLeWoHuGcbr7wauXxCfSey?=
- =?us-ascii?Q?960FPqoSfad4zPGPjf+qXLB77DGwHzNwd5PsPZAon0UiIqvdAxQkAPRo5W3D?=
- =?us-ascii?Q?A834S4j/8VzWWbnVVBUxstQS?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d439daf3-7223-4f2c-a145-08d97d99e4a3
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 07:23:37.0851
+X-Microsoft-Antispam-Message-Info: vF5IFJr8HlmVweyd9pZljr3qAhKrHQ3jvwGGXEXds1TwMoaotGDowimQGvUNFuLNnuzQ0nnmfyEC+rMGSAMuORqX2tQDOp4M/cR+0Qtt9Jdl05hn1AKgFKMKVaXNL+6d7N6l7nyNS3cs7Y+xovPMazh5zhAtgtienWMDGsX051qTbT0IJBa8D2KqyZJMKt2fvUdeymagMnhGSVIbfhKMjzXh3FAqR0A3vdmRdV3dpipHonwyh41KPoxpouzUIx3H3fids6cCv38jN/EstHDMnSBOQLGkqyImAZ2yROtIvKxyHQKN9LLWjgBT4SPKJb50x8EC00VwI++gHOhrdb0/mOU5VhV2bdyUVGtZMmYFMto6QAp2AtowPlE10uOtmRFuytk4kv7vIubsntHmnenQ0n2DjJKZ9FTYWP6mI4YciMaveF6Bs+2XgR6nImnrs4pH3LPW25Qql+Jqh4aVAyipSgqWw578xXAEMNzG0cOVpralnoYOQrJIji2tbUMJwr0lg/rJEvi/l8VgLUpwsqlo8ubIgqG05+RNoloRensPXBicIDgn4wZHen7YPhr6pCUK02TCRkkT+U8qDGfQ2GZgVAWSGB8buPNQuwM3O/AObWUaNJuwbAr18+yMINHotguW6+G2ax0ENb89D17o5FgPrM+VKuYWmpvs3dDBpT7mPIA7hL0lxhlOmH2XJhypPbfh49+jZf/Z3saZV49OAf+glVh7isWJ2xKS/sdwk4Jw2cNofQRS7AjEfzrSuYNxqDw1mBdvsc3UtneOU54yy/o34Q==
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(31696002)(36756003)(83380400001)(508600001)(16576012)(316002)(2616005)(30864003)(86362001)(5660300002)(6916009)(2906002)(36906005)(426003)(36860700001)(54906003)(26005)(70586007)(70206006)(31686004)(7636003)(356005)(16526019)(186003)(336012)(47076005)(82310400003)(8676002)(8936002)(4326008)(53546011)(43740500002)(309714004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 07:23:41.0573
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vwXT1CwxAoqvCARp3mJEd2X7omgo1g5UU9NwAB1kH4jknjSu3at8z68oty9NwzLAlzz4EQ4bkTqyomAiyENUhA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2557
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3ba02db-ba2f-4e3b-0607-08d97d99e72f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT038.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4428
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Jianan <huangjianan@oppo.com>
 
-At present, overlayfs provides overlayfs inode to users. Overlayfs
-inode provides ovl_aops with noop_direct_IO to avoid open failure
-with O_DIRECT. But some compressed filesystems, such as erofs and
-squashfs, don't support direct_IO.
 
-Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
-will read file through this way. This will cause overlayfs to access
-a non-existent direct_IO function and cause panic due to null pointer:
+On 2021-09-22 9:30 AM, Abhiram R N wrote:
+> As multiple places EOPNOTSUPP and EINVAL is returned from driver
+> it becomes difficult to understand the reason only with error code.
+> With the netlink extack message exact reason will be known and will
+> aid in debugging.
+> 
+> Signed-off-by: Abhiram R N <abhiramrn@gmail.com>
+> ---
+> V5->V6: Removed changelog from commit msg
+> V4->V5: Addressed comments (Rephrasing of msgs)
+> V3->V4: Rebased net-next (Fixed the merge conflicts in net-next branch)
+> V2->V3: Addressed comments (Rephrasing of msgs)
+> V1->V2: Addressed comments (Removed redundant msgs, rephrasing of msgs)
+> 
+>   .../net/ethernet/mellanox/mlx5/core/en_tc.c   | 106 +++++++++++++-----
+>   1 file changed, 76 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> index ba8164792016..0fda231c07cd 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> @@ -1896,8 +1896,10 @@ static int parse_tunnel_attr(struct mlx5e_priv *priv,
+>   	bool needs_mapping, sets_mapping;
+>   	int err;
+>   
+> -	if (!mlx5e_is_eswitch_flow(flow))
+> +	if (!mlx5e_is_eswitch_flow(flow)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Match on tunnel is not supported");
+>   		return -EOPNOTSUPP;
+> +	}
+>   
+>   	needs_mapping = !!flow->attr->chain;
+>   	sets_mapping = flow_requires_tunnel_mapping(flow->attr->chain, f);
+> @@ -2269,8 +2271,10 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
+>   		addr_type = match.key->addr_type;
+>   
+>   		/* the HW doesn't support frag first/later */
+> -		if (match.mask->flags & FLOW_DIS_FIRST_FRAG)
+> +		if (match.mask->flags & FLOW_DIS_FIRST_FRAG) {
+> +			NL_SET_ERR_MSG_MOD(extack, "Match on frag first/later is not supported");
+>   			return -EOPNOTSUPP;
+> +		}
+>   
+>   		if (match.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+>   			MLX5_SET(fte_match_set_lyr_2_4, headers_c, frag, 1);
+> @@ -2437,8 +2441,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
+>   		switch (ip_proto) {
+>   		case IPPROTO_ICMP:
+>   			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
+> -			      MLX5_FLEX_PROTO_ICMP))
+> +			      MLX5_FLEX_PROTO_ICMP)) {
+> +				NL_SET_ERR_MSG_MOD(extack,
+> +						   "Match on Flex protocols for ICMP is not supported");
+>   				return -EOPNOTSUPP;
+> +			}
+>   			MLX5_SET(fte_match_set_misc3, misc_c_3, icmp_type,
+>   				 match.mask->type);
+>   			MLX5_SET(fte_match_set_misc3, misc_v_3, icmp_type,
+> @@ -2450,8 +2457,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
+>   			break;
+>   		case IPPROTO_ICMPV6:
+>   			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
+> -			      MLX5_FLEX_PROTO_ICMPV6))
+> +			      MLX5_FLEX_PROTO_ICMPV6)) {
+> +				NL_SET_ERR_MSG_MOD(extack,
+> +						   "Match on Flex protocols for ICMPV6 is not supported");
+>   				return -EOPNOTSUPP;
+> +			}
+>   			MLX5_SET(fte_match_set_misc3, misc_c_3, icmpv6_type,
+>   				 match.mask->type);
+>   			MLX5_SET(fte_match_set_misc3, misc_v_3, icmpv6_type,
+> @@ -2557,15 +2567,19 @@ static int pedit_header_offsets[] = {
+>   #define pedit_header(_ph, _htype) ((void *)(_ph) + pedit_header_offsets[_htype])
+>   
+>   static int set_pedit_val(u8 hdr_type, u32 mask, u32 val, u32 offset,
+> -			 struct pedit_headers_action *hdrs)
+> +			 struct pedit_headers_action *hdrs,
+> +			 struct netlink_ext_ack *extack)
+>   {
+>   	u32 *curr_pmask, *curr_pval;
+>   
+>   	curr_pmask = (u32 *)(pedit_header(&hdrs->masks, hdr_type) + offset);
+>   	curr_pval  = (u32 *)(pedit_header(&hdrs->vals, hdr_type) + offset);
+>   
+> -	if (*curr_pmask & mask)  /* disallow acting twice on the same location */
+> +	if (*curr_pmask & mask) { /* disallow acting twice on the same location */
+> +		NL_SET_ERR_MSG_MOD(extack,
+> +				   "curr_pmask and new mask same. Acting twice on same location");
+>   		goto out_err;
+> +	}
+>   
+>   	*curr_pmask |= mask;
+>   	*curr_pval  |= (val & mask);
+> @@ -2898,7 +2912,7 @@ parse_pedit_to_modify_hdr(struct mlx5e_priv *priv,
+>   	val = act->mangle.val;
+>   	offset = act->mangle.offset;
+>   
+> -	err = set_pedit_val(htype, ~mask, val, offset, &hdrs[cmd]);
+> +	err = set_pedit_val(htype, ~mask, val, offset, &hdrs[cmd], extack);
+>   	if (err)
+>   		goto out_err;
+>   
+> @@ -2918,8 +2932,10 @@ parse_pedit_to_reformat(struct mlx5e_priv *priv,
+>   	u32 mask, val, offset;
+>   	u32 *p;
+>   
+> -	if (act->id != FLOW_ACTION_MANGLE)
+> +	if (act->id != FLOW_ACTION_MANGLE) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Unsupported action id");
+>   		return -EOPNOTSUPP;
+> +	}
+>   
+>   	if (act->mangle.htype != FLOW_ACT_MANGLE_HDR_TYPE_ETH) {
+>   		NL_SET_ERR_MSG_MOD(extack, "Only Ethernet modification is supported");
+> @@ -3368,12 +3384,16 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
+>   	u32 action = 0;
+>   	int err, i;
+>   
+> -	if (!flow_action_has_entries(flow_action))
+> +	if (!flow_action_has_entries(flow_action)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Flow action doesn't have any entries");
+>   		return -EINVAL;
+> +	}
+>   
+>   	if (!flow_action_hw_stats_check(flow_action, extack,
+> -					FLOW_ACTION_HW_STATS_DELAYED_BIT))
+> +					FLOW_ACTION_HW_STATS_DELAYED_BIT)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Flow action HW stats type is not supported");
+>   		return -EOPNOTSUPP;
+> +	}
+>   
+>   	nic_attr = attr->nic_attr;
+>   	nic_attr->flow_tag = MLX5_FS_DEFAULT_FLOW_TAG;
+> @@ -3462,7 +3482,8 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
+>   			flow_flag_set(flow, CT);
+>   			break;
+>   		default:
+> -			NL_SET_ERR_MSG_MOD(extack, "The offload action is not supported");
+> +			NL_SET_ERR_MSG_MOD(extack,
+> +					   "The offload action is not supported in NIC action");
+>   			return -EOPNOTSUPP;
+>   		}
+>   	}
+> @@ -3517,19 +3538,25 @@ static bool is_merged_eswitch_vfs(struct mlx5e_priv *priv,
+>   static int parse_tc_vlan_action(struct mlx5e_priv *priv,
+>   				const struct flow_action_entry *act,
+>   				struct mlx5_esw_flow_attr *attr,
+> -				u32 *action)
+> +				u32 *action,
+> +				struct netlink_ext_ack *extack)
+>   {
+>   	u8 vlan_idx = attr->total_vlan;
+>   
+> -	if (vlan_idx >= MLX5_FS_VLAN_DEPTH)
+> +	if (vlan_idx >= MLX5_FS_VLAN_DEPTH) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Total vlans used is greater than supported");
+>   		return -EOPNOTSUPP;
+> +	}
+>   
+>   	switch (act->id) {
+>   	case FLOW_ACTION_VLAN_POP:
+>   		if (vlan_idx) {
+>   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev,
+> -								 MLX5_FS_VLAN_DEPTH))
+> +								 MLX5_FS_VLAN_DEPTH)) {
+> +				NL_SET_ERR_MSG_MOD(extack,
+> +						   "vlan pop action is not supported");
+>   				return -EOPNOTSUPP;
+> +			}
+>   
+>   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_POP_2;
+>   		} else {
+> @@ -3545,20 +3572,27 @@ static int parse_tc_vlan_action(struct mlx5e_priv *priv,
+>   
+>   		if (vlan_idx) {
+>   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev,
+> -								 MLX5_FS_VLAN_DEPTH))
+> +								 MLX5_FS_VLAN_DEPTH)) {
+> +				NL_SET_ERR_MSG_MOD(extack,
+> +						   "vlan push action is not supported for vlan depth > 1");
+>   				return -EOPNOTSUPP;
+> +			}
+>   
+>   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_PUSH_2;
+>   		} else {
+>   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev, 1) &&
+>   			    (act->vlan.proto != htons(ETH_P_8021Q) ||
+> -			     act->vlan.prio))
+> +			     act->vlan.prio)) {
+> +				NL_SET_ERR_MSG_MOD(extack,
+> +						   "vlan push action is not supported");
+>   				return -EOPNOTSUPP;
+> +			}
+>   
+>   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_PUSH;
+>   		}
+>   		break;
+>   	default:
+> +		NL_SET_ERR_MSG_MOD(extack, "Unexpected action id for VLAN");
+>   		return -EINVAL;
+>   	}
+>   
+> @@ -3592,7 +3626,8 @@ static struct net_device *get_fdb_out_dev(struct net_device *uplink_dev,
+>   static int add_vlan_push_action(struct mlx5e_priv *priv,
+>   				struct mlx5_flow_attr *attr,
+>   				struct net_device **out_dev,
+> -				u32 *action)
+> +				u32 *action,
+> +				struct netlink_ext_ack *extack)
+>   {
+>   	struct net_device *vlan_dev = *out_dev;
+>   	struct flow_action_entry vlan_act = {
+> @@ -3603,7 +3638,7 @@ static int add_vlan_push_action(struct mlx5e_priv *priv,
+>   	};
+>   	int err;
+>   
+> -	err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action);
+> +	err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action, extack);
+>   	if (err)
+>   		return err;
+>   
+> @@ -3614,14 +3649,15 @@ static int add_vlan_push_action(struct mlx5e_priv *priv,
+>   		return -ENODEV;
+>   
+>   	if (is_vlan_dev(*out_dev))
+> -		err = add_vlan_push_action(priv, attr, out_dev, action);
+> +		err = add_vlan_push_action(priv, attr, out_dev, action, extack);
+>   
+>   	return err;
+>   }
+>   
+>   static int add_vlan_pop_action(struct mlx5e_priv *priv,
+>   			       struct mlx5_flow_attr *attr,
+> -			       u32 *action)
+> +			       u32 *action,
+> +			       struct netlink_ext_ack *extack)
+>   {
+>   	struct flow_action_entry vlan_act = {
+>   		.id = FLOW_ACTION_VLAN_POP,
+> @@ -3631,7 +3667,7 @@ static int add_vlan_pop_action(struct mlx5e_priv *priv,
+>   	nest_level = attr->parse_attr->filter_dev->lower_level -
+>   						priv->netdev->lower_level;
+>   	while (nest_level--) {
+> -		err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action);
+> +		err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action, extack);
+>   		if (err)
+>   			return err;
+>   	}
+> @@ -3753,12 +3789,16 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
+>   	int err, i, if_count = 0;
+>   	bool mpls_push = false;
+>   
+> -	if (!flow_action_has_entries(flow_action))
+> +	if (!flow_action_has_entries(flow_action)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Flow action doesn't have any entries");
+>   		return -EINVAL;
+> +	}
+>   
+>   	if (!flow_action_hw_stats_check(flow_action, extack,
+> -					FLOW_ACTION_HW_STATS_DELAYED_BIT))
+> +					FLOW_ACTION_HW_STATS_DELAYED_BIT)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Flow action HW stats type is not supported");
+>   		return -EOPNOTSUPP;
+> +	}
+>   
+>   	esw_attr = attr->esw_attr;
+>   	parse_attr = attr->parse_attr;
+> @@ -3902,14 +3942,14 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
+>   				if (is_vlan_dev(out_dev)) {
+>   					err = add_vlan_push_action(priv, attr,
+>   								   &out_dev,
+> -								   &action);
+> +								   &action, extack);
+>   					if (err)
+>   						return err;
+>   				}
+>   
+>   				if (is_vlan_dev(parse_attr->filter_dev)) {
+>   					err = add_vlan_pop_action(priv, attr,
+> -								  &action);
+> +								  &action, extack);
+>   					if (err)
+>   						return err;
+>   				}
+> @@ -3955,10 +3995,13 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
+>   			break;
+>   		case FLOW_ACTION_TUNNEL_ENCAP:
+>   			info = act->tunnel;
+> -			if (info)
+> +			if (info) {
+>   				encap = true;
+> -			else
+> +			} else {
+> +				NL_SET_ERR_MSG_MOD(extack,
+> +						   "Zero tunnel attributes is not supported");
+>   				return -EOPNOTSUPP;
+> +			}
+>   
+>   			break;
+>   		case FLOW_ACTION_VLAN_PUSH:
+> @@ -3972,7 +4015,7 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
+>   							      act, parse_attr, hdrs,
+>   							      &action, extack);
+>   			} else {
+> -				err = parse_tc_vlan_action(priv, act, esw_attr, &action);
+> +				err = parse_tc_vlan_action(priv, act, esw_attr, &action, extack);
+>   			}
+>   			if (err)
+>   				return err;
+> @@ -4025,7 +4068,8 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
+>   			flow_flag_set(flow, SAMPLE);
+>   			break;
+>   		default:
+> -			NL_SET_ERR_MSG_MOD(extack, "The offload action is not supported");
+> +			NL_SET_ERR_MSG_MOD(extack,
+> +					   "The offload action is not supported in FDB action");
+>   			return -EOPNOTSUPP;
+>   		}
+>   	}
+> @@ -4733,8 +4777,10 @@ static int scan_tc_matchall_fdb_actions(struct mlx5e_priv *priv,
+>   		return -EOPNOTSUPP;
+>   	}
+>   
+> -	if (!flow_action_basic_hw_stats_check(flow_action, extack))
+> +	if (!flow_action_basic_hw_stats_check(flow_action, extack)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Flow action HW stats type is not supported");
+>   		return -EOPNOTSUPP;
+> +	}
+>   
+>   	flow_action_for_each(i, act, flow_action) {
+>   		switch (act->id) {
+> 
 
-Kernel panic - not syncing: CFI failure (target: 0x0)
-CPU: 6 PID: 247 Comm: loop0
-Call Trace:
- panic+0x188/0x45c
- __cfi_slowpath+0x0/0x254
- __cfi_slowpath+0x200/0x254
- generic_file_read_iter+0x14c/0x150
- vfs_iocb_iter_read+0xac/0x164
- ovl_read_iter+0x13c/0x2fc
- lo_rw_aio+0x2bc/0x458
- loop_queue_work+0x4a4/0xbc0
- kthread_worker_fn+0xf8/0x1d0
- loop_kthread_worker_fn+0x24/0x38
- kthread+0x29c/0x310
- ret_from_fork+0x10/0x30
+thanks
 
-The filesystem may only support direct_IO for some file types. For
-example, erofs supports direct_IO for uncompressed files. So return
--EINVAL when the file doesn't support direct_IO to fix this problem.
-
-Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs")
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
----
-change since v2:
- - Return error in ovl_open directly. (Chengguang Xu)
-
-Change since v1:
- - Return error to user rather than fall back to buffered io. (Chengguang Xu)
-
- fs/overlayfs/file.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index d081faa55e83..a0c99ea35daf 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -157,6 +157,10 @@ static int ovl_open(struct inode *inode, struct file *file)
- 	if (IS_ERR(realfile))
- 		return PTR_ERR(realfile);
- 
-+	if ((f->f_flags & O_DIRECT) && (!realfile->f_mapping->a_ops ||
-+		!realfile->f_mapping->a_ops->direct_IO))
-+		return -EINVAL;
-+
- 	file->private_data = realfile;
- 
- 	return 0;
--- 
-2.25.1
-
+Reviewed-by: Roi Dayan <roid@nvidia.com>
