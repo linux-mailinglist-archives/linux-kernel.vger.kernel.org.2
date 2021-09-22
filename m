@@ -2,244 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A344142D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2DD4142D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhIVHkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 03:40:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:44374 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233059AbhIVHkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:40:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 225D6113E;
-        Wed, 22 Sep 2021 00:38:52 -0700 (PDT)
-Received: from [10.163.73.113] (unknown [10.163.73.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C2793F40C;
-        Wed, 22 Sep 2021 00:38:47 -0700 (PDT)
-Subject: Re: [PATCH v2 11/17] arm64: errata: Add workaround for TSB flush
- failures
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
-        leo.yan@linaro.org, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-12-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <d4223300-e50a-b1f2-19e7-0ecf844a81c4@arm.com>
-Date:   Wed, 22 Sep 2021 13:09:52 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233308AbhIVHmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:42:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42712 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233230AbhIVHmq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 03:42:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632296476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4FwUnLWRxBbFGXqrWK0WVzYlF4ZD1jUKaBikzITPlQE=;
+        b=EQSDpL485IsR3Dxnaws4/jmcwRjuAJEhx8y8UdEuNPchSIVe4Se5bqmspgUkwup3G183GQ
+        20wUPRccJzTM4SvqiOPFYdto06JYhfyrAMYmP5VfiS7QqUPiTfXhYo1mnBvXovTFYymNsT
+        8MaWLi4yP5/rtQcQg6n3rKqrkyUV9SE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-zu8FYZzINlGasHnmf74PMg-1; Wed, 22 Sep 2021 03:41:15 -0400
+X-MC-Unique: zu8FYZzINlGasHnmf74PMg-1
+Received: by mail-ed1-f69.google.com with SMTP id e7-20020a50d4c7000000b003d871ecccd8so1986446edj.18
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 00:41:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4FwUnLWRxBbFGXqrWK0WVzYlF4ZD1jUKaBikzITPlQE=;
+        b=2JLahiZcGvyhNRz83hX7z0L5CmXszmgLbjJG+j/tBKwBUbCdSHv99XDPiWvInMxPip
+         qGLMSCcTsPuO42Q3J8tUabYDDa5vUpKZbVlpJBbC4Tl4f+G520sssbzUnwmFJy65uyaB
+         VZHSNnCWUv0edMOaFCD0cfCx8w+pYrakktNfsEV/EfIUhs7D9C7i8lVgmm7wcnM7bxXu
+         /ytZrIq1tjrTiZfsEh2amsI2VhnP4ychEFfK7+YVNyhtOJFxG/gLuOLF2FOMRA+ofWMl
+         Hr12LyWveNuAcrNo70tU2nSKtKRSg1Yusz7YHjl+EKz15uyplL7lEpdE1QGFZonFkRpM
+         1Fgw==
+X-Gm-Message-State: AOAM530XfUCX365q6sEdJUAOJCFH3fF8OyWc0/Ap1jFd5ZoHnHkjXgQg
+        ZhFUGv0hguaBDUIGOB7Mprrfs8GX9ztrq/O83Txl//2r1ZvsnCayAJk/DnwYSxW7GtAuCuViJXj
+        lDVT6wBbyvKgy4G7elJrdWLpFzofGj8w+3+EdFCDSPQ2e9DakXAMLpt8xby1L+3al0VNGiDH4Hc
+        9B
+X-Received: by 2002:a05:6402:319a:: with SMTP id di26mr40876780edb.84.1632296474155;
+        Wed, 22 Sep 2021 00:41:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzyDEBgD+rpfIilbzK6lXOJWrkiDbxO9FAIi9c8hMpfth1/eCUhnpGKo4zS/VIS9j2MT2qk3Q==
+X-Received: by 2002:a05:6402:319a:: with SMTP id di26mr40876756edb.84.1632296473936;
+        Wed, 22 Sep 2021 00:41:13 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o15sm640446ejj.10.2021.09.22.00.41.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 00:41:13 -0700 (PDT)
+Subject: Re: [PATCH 2/2] KVM: x86: Identify vCPU0 by its vcpu_idx instead of
+ walking vCPUs array
+To:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210910183220.2397812-1-seanjc@google.com>
+ <20210910183220.2397812-3-seanjc@google.com>
+ <87czpd2bsi.fsf@vitty.brq.redhat.com> <YUihS9CcTh9m53J6@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c12a4ef0-5b20-a81a-26bd-7d29c59ece8d@redhat.com>
+Date:   Wed, 22 Sep 2021 09:41:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210921134121.2423546-12-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YUihS9CcTh9m53J6@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
-> Arm Neoverse-N2 (#2067961) and Cortex-A710 (#2054223) suffers
-> from errata, where a TSB (trace synchronization barrier)
-> fails to flush the trace data completely, when executed from
-> a trace prohibited region. In Linux we always execute it
-> after we have moved the PE to trace prohibited region. So,
-> we can apply the workaround everytime a TSB is executed.
-
-s/everytime/every time
-
+On 20/09/21 16:57, Sean Christopherson wrote:
+> On Mon, Sep 13, 2021, Vitaly Kuznetsov wrote:
+>> Sean Christopherson <seanjc@google.com> writes:
+>>
+>>> Use vcpu_idx to identify vCPU0 when updating HyperV's TSC page, which is
+>>> shared by all vCPUs and "owned" by vCPU0 (because vCPU0 is the only vCPU
+>>> that's guaranteed to exist).  Using kvm_get_vcpu() to find vCPU works,
+>>> but it's a rather odd and suboptimal method to check the index of a given
+>>> vCPU.
+>>>
+>>> No functional change intended.
+>>>
+>>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+>>> ---
+>>>   arch/x86/kvm/x86.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>> index 86539c1686fa..6ab851df08d1 100644
+>>> --- a/arch/x86/kvm/x86.c
+>>> +++ b/arch/x86/kvm/x86.c
+>>> @@ -2969,7 +2969,7 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+>>>   				       offsetof(struct compat_vcpu_info, time));
+>>>   	if (vcpu->xen.vcpu_time_info_set)
+>>>   		kvm_setup_pvclock_page(v, &vcpu->xen.vcpu_time_info_cache, 0);
+>>> -	if (v == kvm_get_vcpu(v->kvm, 0))
+>>> +	if (!v->vcpu_idx)
+>>>   		kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
+>>>   	return 0;
+>>>   }
+>>
+>> " ... instead of walking vCPUs array" in the Subject line is a bit
+>> confusing because kvm_get_vcpu() doesn't actually walk anything, it just
+>> returns 'kvm->vcpus[i]' after checking that we actually have that many
+>> vCPUs. The patch itself is OK, so
 > 
-> The work around is to issue two TSB consecutively.
+> Argh, yes, I have a feeling I wrote the changelog after digging into the history
+> of kvm_get_vcpu().
 > 
-> NOTE: This errata is defined as LOCAL_CPU_ERRATUM, implying
-> that a late CPU could be blocked from booting if it is the
-> first CPU that requires the workaround. This is because we
-> do not allow setting a cpu_hwcaps after the SMP boot. The
-> other alternative is to use "this_cpu_has_cap()" instead
-> of the faster system wide check, which may be a bit of an
-> overhead, given we may have to do this in nvhe KVM host
-> before a guest entry.
+> Paolo, can you tweak the shortlog to:
 > 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes since v1:
->  - Switch to cpus_have_final_cap()
->  - Document the requirements on TSB.
-> ---
->  Documentation/arm64/silicon-errata.rst |  4 ++++
->  arch/arm64/Kconfig                     | 31 ++++++++++++++++++++++++++
->  arch/arm64/include/asm/barrier.h       | 16 ++++++++++++-
->  arch/arm64/kernel/cpu_errata.c         | 19 ++++++++++++++++
->  arch/arm64/tools/cpucaps               |  1 +
->  5 files changed, 70 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
-> index 2f99229d993c..569a92411dcd 100644
-> --- a/Documentation/arm64/silicon-errata.rst
-> +++ b/Documentation/arm64/silicon-errata.rst
-> @@ -94,6 +94,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Cortex-A710     | #2054223        | ARM64_ERRATUM_2054223       |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N1     | #1188873,1418040| ARM64_ERRATUM_1418040       |
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N1     | #1349291        | N/A                         |
-> @@ -102,6 +104,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Neoverse-N2     | #2067961        | ARM64_ERRATUM_2067961       |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | MMU-500         | #841119,826419  | N/A                         |
->  +----------------+-----------------+-----------------+-----------------------------+
->  +----------------+-----------------+-----------------+-----------------------------+
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index eac4030322df..0764774e12bb 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -705,6 +705,37 @@ config ARM64_ERRATUM_2139208
->  
->  	  If unsure, say Y.
->  
-> +config ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-> +	bool
-> +
-> +config ARM64_ERRATUM_2054223
-> +	bool "Cortex-A710: 2054223: workaround TSB instruction failing to flush trace"
-> +	default y
-> +	help
-> +	  Enable workaround for ARM Cortex-A710 erratum 2054223
-> +
-> +	  Affected cores may fail to flush the trace data on a TSB instruction, when
-> +	  the PE is in trace prohibited state. This will cause losing a few bytes
-> +	  of the trace cached.
-> +
-> +	  Workaround is to issue two TSB consecutively on affected cores.
-> +
-> +	  If unsure, say Y.
-> +
-> +config ARM64_ERRATUM_2067961
-> +	bool "Neoverse-N2: 2067961: workaround TSB instruction failing to flush trace"
-> +	default y
-> +	help
-> +	  Enable workaround for ARM Neoverse-N2 erratum 2067961
-> +
-> +	  Affected cores may fail to flush the trace data on a TSB instruction, when
-> +	  the PE is in trace prohibited state. This will cause losing a few bytes
-> +	  of the trace cached.
-> +
-> +	  Workaround is to issue two TSB consecutively on affected cores.
-
-Like I had mentioned in the previous patch, these descriptions here could
-be just factored out inside ARM64_WORKAROUND_TSB_FLUSH_FAILURE instead.
-
-> +
-> +	  If unsure, say Y.
-> +
->  config CAVIUM_ERRATUM_22375
->  	bool "Cavium erratum 22375, 24313"
->  	default y
-> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
-> index 451e11e5fd23..1c5a00598458 100644
-> --- a/arch/arm64/include/asm/barrier.h
-> +++ b/arch/arm64/include/asm/barrier.h
-> @@ -23,7 +23,7 @@
->  #define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
->  
->  #define psb_csync()	asm volatile("hint #17" : : : "memory")
-> -#define tsb_csync()	asm volatile("hint #18" : : : "memory")
-> +#define __tsb_csync()	asm volatile("hint #18" : : : "memory")
->  #define csdb()		asm volatile("hint #20" : : : "memory")
->  
->  #ifdef CONFIG_ARM64_PSEUDO_NMI
-> @@ -46,6 +46,20 @@
->  #define dma_rmb()	dmb(oshld)
->  #define dma_wmb()	dmb(oshst)
->  
-> +
-> +#define tsb_csync()								\
-> +	do {									\
-> +		/*								\
-> +		 * CPUs affected by Arm Erratum 2054223 or 2067961 needs	\
-> +		 * another TSB to ensure the trace is flushed. The barriers	\
-> +		 * don't have to be strictly back to back, as long as the	\
-> +		 * CPU is in trace prohibited state.				\
-> +		 */								\
-> +		if (cpus_have_final_cap(ARM64_WORKAROUND_TSB_FLUSH_FAILURE))	\
-> +			__tsb_csync();						\
-> +		__tsb_csync();							\
-> +	} while (0)
-> +
->  /*
->   * Generate a mask for array_index__nospec() that is ~0UL when 0 <= idx < sz
->   * and 0 otherwise.
-> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-> index ccd757373f36..bdbeac75ead6 100644
-> --- a/arch/arm64/kernel/cpu_errata.c
-> +++ b/arch/arm64/kernel/cpu_errata.c
-> @@ -352,6 +352,18 @@ static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
->  };
->  #endif	/* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
->  
-> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-> +static const struct midr_range tsb_flush_fail_cpus[] = {
-> +#ifdef CONFIG_ARM64_ERRATUM_2067961
-> +	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
-> +#endif
-> +#ifdef CONFIG_ARM64_ERRATUM_2054223
-> +	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
-> +#endif
-> +	{},
-> +};
-> +#endif	/* CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
-> +
->  const struct arm64_cpu_capabilities arm64_errata[] = {
->  #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
->  	{
-> @@ -558,6 +570,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
->  		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
->  		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
->  	},
-> +#endif
-> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
-> +	{
-> +		.desc = "ARM erratum 2067961 or 2054223",
-> +		.capability = ARM64_WORKAROUND_TSB_FLUSH_FAILURE,
-> +		ERRATA_MIDR_RANGE_LIST(tsb_flush_fail_cpus),
-> +	},
->  #endif
->  	{
->  	}
-> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-> index 1ccb92165bd8..2102e15af43d 100644
-> --- a/arch/arm64/tools/cpucaps
-> +++ b/arch/arm64/tools/cpucaps
-> @@ -54,6 +54,7 @@ WORKAROUND_1463225
->  WORKAROUND_1508412
->  WORKAROUND_1542419
->  WORKAROUND_TRBE_OVERWRITE_FILL_MODE
-> +WORKAROUND_TSB_FLUSH_FAILURE
->  WORKAROUND_CAVIUM_23154
->  WORKAROUND_CAVIUM_27456
->  WORKAROUND_CAVIUM_30115
+>    KVM: x86: Identify vCPU0 by its vcpu_idx instead of its vCPUs array entry
 > 
 
-This adds all the required bits of these erratas in a single patch,
-where as the previous work around had split all the required pieces
-into multiple patches. Could we instead follow the same standard in
-both the places ?
+Done and queued.  Patch 1 required some further s390 changes.
+
+Paolo
+
