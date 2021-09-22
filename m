@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B1B413F6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46F2413F77
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbhIVCad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 22:30:33 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:52889 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhIVCac (ORCPT
+        id S229820AbhIVCbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 22:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhIVCba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 22:30:32 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UpB2F3U_1632277730;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UpB2F3U_1632277730)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 22 Sep 2021 10:28:51 +0800
-Subject: Re: [linux-next:master 3857/7963]
- arch/x86/crypto/sm4-aesni-avx-asm_64.o: warning: objtool:
- sm4_aesni_avx_crypt8()+0x8: sibling call from callable instruction with
- modified stack frame
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-References: <202108160330.T1EbbpCi-lkp@intel.com>
- <CAK8P3a3qhfxUC-7y-_q35-tNrs2L93htjuVzSukqZO0hDhOAuw@mail.gmail.com>
- <20210920175656.cjvrr4wn7a3k6tnx@treble>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <6d49d3ba-ae5d-cd57-d1fb-d9df5b859cbe@linux.alibaba.com>
-Date:   Wed, 22 Sep 2021 10:28:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tue, 21 Sep 2021 22:31:30 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BA2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 19:30:01 -0700 (PDT)
+Subject: Re: [PATCH v3] mdacon: fix redefinition of 'scr_memsetw'
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1632277798;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qSuSnPieUDaOVO6CRq2eMJxdMYKzQp0LFeT47UvdBaA=;
+        b=bHOv9kgYfeLnP/9rouj9kS6ktFMQL8roXXTHoqAVWT8PlGlga2p4uA2PV796StdYlsPOR7
+        D39DF/4vYaox2QojALbrTzzmrnAC2aO5c4rSZamixdfSpx6eRfLcLhhtNbhDVg1ap1eoV/
+        WkQNE0CxswZ8qv34f5nkyPsXNTTDoNk=
+To:     dri-devel@lists.freedesktop.org
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+References: <20210915011354.2669416-1-liu.yun@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Jackie Liu <liu.yun@linux.dev>
+Message-ID: <73758b4e-50ba-05d1-aa30-1384ee6d1421@linux.dev>
+Date:   Wed, 22 Sep 2021 10:29:52 +0800
 MIME-Version: 1.0
-In-Reply-To: <20210920175656.cjvrr4wn7a3k6tnx@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210915011354.2669416-1-liu.yun@linux.dev>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: liu.yun@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ping, would anyone take this patch?
 
-
-On 9/21/21 1:56 AM, Josh Poimboeuf wrote:
-> From: Josh Poimboeuf <jpoimboe@redhat.com>
-> Subject: [PATCH] x86/crypto/sm4: Fix frame pointer stack corruption
+ÔÚ 2021/9/15 ÉÏÎç9:13, Jackie Liu Ð´µÀ:
+> From: Jackie Liu <liuyun01@kylinos.cn>
 > 
-> sm4_aesni_avx_crypt8() sets up the frame pointer (which includes pushing
-> RBP) before doing a conditional sibling call to sm4_aesni_avx_crypt4(),
-> which sets up an additional frame pointer.  Things will not go well when
-> sm4_aesni_avx_crypt4() pops only the innermost single frame pointer and
-> then tries to return to the outermost frame pointer.
+> CONFIG_VGA_CONSOLE=n and CONFIG_MDA_CONSOLE=n will cause vt_buffer.h not
+> include <asm/vga.h>.
 > 
-> Sibling calls need to occur with an empty stack frame.  Do the
-> conditional sibling call *before* setting up the stack pointer.
+> But if we set CONFIG_MDA_CONSOLE=m, mdacon.c include <linux/vt_buffer.h>
+> is in front of include <asm/vga.h>. VT_BUF_HAVE_MEMSETW is not defined,
+> so vt_buffer.h will define a scr_memsetw, after that, vga.h also define
+> a scr_memsetw, so the repeated definition of scr_memsetw appears, builds
+> error.
 > 
-> This fixes the following warning:
+> We only need to make vt_buffer.h also contain vga.h when
+> CONFIG_MDA_CONSOLE=m. This problem can be fixed.
 > 
->    arch/x86/crypto/sm4-aesni-avx-asm_64.o: warning: objtool: sm4_aesni_avx_crypt8()+0x8: sibling call from callable instruction with modified stack frame
+> BTW, mdacon.c no need to include vga.h forcibly, let vt_buffer.h do it.
 > 
-> Fixes: a7ee22ee1445 ("crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-
-Thanks for your fix.
-
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-
-Thanks.
-
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Fixes: ac036f9570a2 ("vga: optimise console scrolling")
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
 > ---
->   arch/x86/crypto/sm4-aesni-avx-asm_64.S | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
+>   drivers/video/console/mdacon.c | 1 -
+>   include/linux/vt_buffer.h      | 2 +-
+>   2 files changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/crypto/sm4-aesni-avx-asm_64.S b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-> index fa2c3f50aecb..a50df13de222 100644
-> --- a/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-> +++ b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-> @@ -367,10 +367,12 @@ SYM_FUNC_START(sm4_aesni_avx_crypt8)
->   	 *	%rdx: src (1..8 blocks)
->   	 *	%rcx: num blocks (1..8)
->   	 */
-> -	FRAME_BEGIN
+> diff --git a/drivers/video/console/mdacon.c b/drivers/video/console/mdacon.c
+> index ef29b321967f..5898d01bc492 100644
+> --- a/drivers/video/console/mdacon.c
+> +++ b/drivers/video/console/mdacon.c
+> @@ -42,7 +42,6 @@
+>   #include <linux/init.h>
 >   
->   	cmpq $5, %rcx;
->   	jb sm4_aesni_avx_crypt4;
-> +
-> +	FRAME_BEGIN
-> +
->   	vmovdqu (0 * 16)(%rdx), RA0;
->   	vmovdqu (1 * 16)(%rdx), RA1;
->   	vmovdqu (2 * 16)(%rdx), RA2;
+>   #include <asm/io.h>
+> -#include <asm/vga.h>
+>   
+>   static DEFINE_SPINLOCK(mda_lock);
+>   
+> diff --git a/include/linux/vt_buffer.h b/include/linux/vt_buffer.h
+> index 848db1b1569f..3a79cc27a33b 100644
+> --- a/include/linux/vt_buffer.h
+> +++ b/include/linux/vt_buffer.h
+> @@ -16,7 +16,7 @@
+>   
+>   #include <linux/string.h>
+>   
+> -#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_MDA_CONSOLE)
+> +#if defined(CONFIG_VGA_CONSOLE) || IS_ENABLED(CONFIG_MDA_CONSOLE)
+>   #include <asm/vga.h>
+>   #endif
+>   
 > 
