@@ -2,132 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E704152F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC194152F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238160AbhIVVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S238171AbhIVVkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238014AbhIVVj7 (ORCPT
+        with ESMTP id S238014AbhIVVkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:39:59 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359D7C061574;
-        Wed, 22 Sep 2021 14:38:29 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id 194so14620644qkj.11;
-        Wed, 22 Sep 2021 14:38:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SyV2g5p70F83n1ov3tdAnjFS5uqWP0e/z7OmVWJ4YF0=;
-        b=YLph8sggXPL2HO8cbP21P7mEISpUU/+t5OMfhTcTkCO77moRFs0NWN03iL93RNBw43
-         Z4dz2A4SHW0fh2j7YwvQDcal2u8ITQpHJmCykR+kg6+RiOPo4//4ERENWI6tlUNiV+GO
-         vgDVkdtw347M4i4IM4hEiG1/qV3kzni5GKkqc3IfHT9ApgE+6hNo5njdRSVhjCW6tBH4
-         8KHEjAjVTxNSya2pktlFk05Yxdn7YO/Kk/o3K5whITdekyzN0FbsbcPkbK70SkNoTceE
-         f9Ok8o/yXsECSeInNtLkDh0xkMZ5sclAUYr8oKShcGvXZmAoqgV0OgV+JsOW5GExGDR0
-         ZHAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SyV2g5p70F83n1ov3tdAnjFS5uqWP0e/z7OmVWJ4YF0=;
-        b=GGkbNMThJotaXSWo+vWQdp9iJ4jWdipSzBncTnBwIlrPa4BIwAyuRGyF1EwsdYxNxf
-         Gcn9FkvNUH5I4qHT2yf02b3jpkOwn2UPgcX4YH8Npsf4Eo/qptJ/81bnH/kWauoO2AqC
-         uCNH/OtjTk6iJZZ7RtD6BVMNhOxLIJ67Tc0ZmFDHCyMHiiJkcvlQ5RkfbWCXb4ss/h6X
-         q8xeXpF/jlJLgULAXnGjnEB9m327IeprdnQiiGKFKs2yinUfOXmSR/Ngy+/F9RE+TO2l
-         PrLT/+ZuTYocWalHqcFu4+EvSF4hgesLeN0p57S0HMAq+cA5LOaHvsSCmwtIw8F/v58I
-         hppg==
-X-Gm-Message-State: AOAM532PhiMY4SW4wqyHRe1MI44GMxzhGR8r0aPCd+XHTR6Do6KvbEt3
-        QI7UPtnZrnAKmsW/50oAMtNG5Q8nRjDpxPOTduQ=
-X-Google-Smtp-Source: ABdhPJxThtwWJQZf+8T0KS8tQIVhRt0ddybxUdQ8e2uttYAC0sPXi/ZoM1kXstfhp/efqz0UU76Wr5wGzfc60hFScYM=
-X-Received: by 2002:a25:47c4:: with SMTP id u187mr1644370yba.225.1632346708354;
- Wed, 22 Sep 2021 14:38:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210922070748.21614-1-falakreyaz@gmail.com> <ef0f23d0-456a-70b0-1ef9-2615a5528278@iogearbox.net>
-In-Reply-To: <ef0f23d0-456a-70b0-1ef9-2615a5528278@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 22 Sep 2021 14:38:17 -0700
-Message-ID: <CAEf4Bza6Bsee1i_ypbDogG5MsVFGW9pnatxHCn9PycW9eP2Gkw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Use sysconf to simplify libbpf_num_possible_cpus
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Muhammad Falak R Wani <falakreyaz@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Wed, 22 Sep 2021 17:40:41 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8858FC061574;
+        Wed, 22 Sep 2021 14:39:11 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 50B80F1;
+        Wed, 22 Sep 2021 23:39:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632346748;
+        bh=DYpZ0OCw7FAJ4SrDNVOo9epk3NBl7KQwpzUgBBSG0+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wc8pIUa9/RM+NRjw7384XZo2Z5joQDgLbIPbcFqpzgbSDxUg3pxpuilNehK7z7uoH
+         XCrJQp7eczM83fFKuiBuW6ZChyfpatmRVNa1xcCwMpcqXfYmmPsZK97bCgiRIYdX92
+         ADF1zt4olSXB2jLRtfoM3GK8y/jfZRI324bD1/d0=
+Date:   Thu, 23 Sep 2021 00:39:06 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
         open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2 5/5] drm: rcar-du: Add r8a779a0 device support
+Message-ID: <YUuievQoU7yDPfzF@pendragon.ideasonboard.com>
+References: <20210901234907.1608896-1-kieran.bingham@ideasonboard.com>
+ <20210901234907.1608896-6-kieran.bingham@ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210901234907.1608896-6-kieran.bingham@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 2:22 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 9/22/21 9:07 AM, Muhammad Falak R Wani wrote:
-> > Simplify libbpf_num_possible_cpus by using sysconf(_SC_NPROCESSORS_CONF)
-> > instead of parsing a file.
-> > This patch is a part ([0]) of libbpf-1.0 milestone.
-> >
-> > [0] Closes: https://github.com/libbpf/libbpf/issues/383
-> >
-> > Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
-> > ---
-> >   tools/lib/bpf/libbpf.c | 17 ++++-------------
-> >   1 file changed, 4 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index ef5db34bf913..f1c0abe5b58d 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -10898,25 +10898,16 @@ int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz)
-> >
-> >   int libbpf_num_possible_cpus(void)
-> >   {
-> > -     static const char *fcpu = "/sys/devices/system/cpu/possible";
-> >       static int cpus;
-> > -     int err, n, i, tmp_cpus;
-> > -     bool *mask;
-> > +     int tmp_cpus;
-> >
-> >       tmp_cpus = READ_ONCE(cpus);
-> >       if (tmp_cpus > 0)
-> >               return tmp_cpus;
-> >
-> > -     err = parse_cpu_mask_file(fcpu, &mask, &n);
-> > -     if (err)
-> > -             return libbpf_err(err);
-> > -
-> > -     tmp_cpus = 0;
-> > -     for (i = 0; i < n; i++) {
-> > -             if (mask[i])
-> > -                     tmp_cpus++;
-> > -     }
-> > -     free(mask);
-> > +     tmp_cpus = sysconf(_SC_NPROCESSORS_CONF);
-> > +     if (tmp_cpus < 1)
-> > +             return libbpf_err(-EINVAL);
->
-> This approach is unfortunately broken, see also commit e00c7b216f34 ("bpf: fix
-> multiple issues in selftest suite and samples") for more details:
+Hi Kieran,
 
-Oh, that predates me. Thanks, Daniel!
+Thank you for the patch.
 
-Sorry, Muhammad, seems like current implementation is there for a
-reason and will have to stay. Thanks a lot for working on this,
-though. Hopefully you can help with other issues, though.
+On Thu, Sep 02, 2021 at 12:49:07AM +0100, Kieran Bingham wrote:
+> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> Extend the rcar_du_device_info structure and rcar_du_output enum to
+> support DSI outputs and utilise these additions to provide support for
+> the R8A779A0 V3U platform.
+> 
+> While the DIDSR register field is now named "DSI/CSI-2-TX-IF0 Dot Clock
+> Select" the existing define LVDS0 is used, and is directly compatible
+> from other DU variants.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> ---
+> 
+> I can add a macro named DIDSR_LDCS_DSI0 duplicating DIDSR_LDCS_LVDS0 if
+> it's deemed better.
 
-[...]
+I think I'd like that a bit better if you don't mind. I'd name the macro
+DIDSR_LDCS_DSI though, as there's a single option (you can't pick one
+DSI encoder or the other as the clock source, it's DSI0 for DU0 and DSI1
+for DU1).
 
->
-> Thanks,
-> Daniel
->
-> >       WRITE_ONCE(cpus, tmp_cpus);
-> >       return tmp_cpus;
-> >
->
+> 
+> v2:
+>  - No longer requires a direct interface with the DSI encoder
+>  - Use correct field naming (LDCS)
+>  - Remove per-crtc clock feature.
+> 
+>  drivers/gpu/drm/rcar-du/rcar_du_crtc.h  |  2 ++
+>  drivers/gpu/drm/rcar-du/rcar_du_drv.c   | 20 ++++++++++++++++++++
+>  drivers/gpu/drm/rcar-du/rcar_du_drv.h   |  2 ++
+>  drivers/gpu/drm/rcar-du/rcar_du_group.c |  2 ++
+>  4 files changed, 26 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_crtc.h b/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
+> index 440e6b4fbb58..26e79b74898c 100644
+> --- a/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
+> +++ b/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
+> @@ -96,6 +96,8 @@ struct rcar_du_crtc_state {
+>  enum rcar_du_output {
+>  	RCAR_DU_OUTPUT_DPAD0,
+>  	RCAR_DU_OUTPUT_DPAD1,
+> +	RCAR_DU_OUTPUT_DSI0,
+> +	RCAR_DU_OUTPUT_DSI1,
+>  	RCAR_DU_OUTPUT_HDMI0,
+>  	RCAR_DU_OUTPUT_HDMI1,
+>  	RCAR_DU_OUTPUT_LVDS0,
+> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.c b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
+> index 8a094d5b9c77..8b4c8851b6bc 100644
+> --- a/drivers/gpu/drm/rcar-du/rcar_du_drv.c
+> +++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
+> @@ -489,6 +489,25 @@ static const struct rcar_du_device_info rcar_du_r8a7799x_info = {
+>  	.lvds_clk_mask =  BIT(1) | BIT(0),
+>  };
+>  
+> +static const struct rcar_du_device_info rcar_du_r8a779a0_info = {
+> +	.gen = 3,
+> +	.features = RCAR_DU_FEATURE_CRTC_IRQ
+> +		  | RCAR_DU_FEATURE_VSP1_SOURCE,
+> +	.channels_mask = BIT(1) | BIT(0),
+> +	.routes = {
+> +		/* R8A779A0 has two MIPI DSI outputs. */
+> +		[RCAR_DU_OUTPUT_DSI0] = {
+> +			.possible_crtcs = BIT(0),
+> +			.port = 0,
+> +		},
+> +		[RCAR_DU_OUTPUT_DSI1] = {
+> +			.possible_crtcs = BIT(1),
+> +			.port = 1,
+> +		},
+> +	},
+> +	.dsi_clk_mask =  BIT(1) | BIT(0),
+> +};
+> +
+>  static const struct of_device_id rcar_du_of_table[] = {
+>  	{ .compatible = "renesas,du-r8a7742", .data = &rcar_du_r8a7790_info },
+>  	{ .compatible = "renesas,du-r8a7743", .data = &rzg1_du_r8a7743_info },
+> @@ -513,6 +532,7 @@ static const struct of_device_id rcar_du_of_table[] = {
+>  	{ .compatible = "renesas,du-r8a77980", .data = &rcar_du_r8a77970_info },
+>  	{ .compatible = "renesas,du-r8a77990", .data = &rcar_du_r8a7799x_info },
+>  	{ .compatible = "renesas,du-r8a77995", .data = &rcar_du_r8a7799x_info },
+> +	{ .compatible = "renesas,du-r8a779a0", .data = &rcar_du_r8a779a0_info },
+
+While this looks good, the DT bindings need a v3, so I can't include
+this series in a pull request just yet :-( Could you please group the DT
+bindings and driver patches in a single series for v3 ?
+
+>  	{ }
+>  };
+>  
+> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.h b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
+> index 5fe9152454ff..cf98d43d72d0 100644
+> --- a/drivers/gpu/drm/rcar-du/rcar_du_drv.h
+> +++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
+> @@ -57,6 +57,7 @@ struct rcar_du_output_routing {
+>   * @routes: array of CRTC to output routes, indexed by output (RCAR_DU_OUTPUT_*)
+>   * @num_lvds: number of internal LVDS encoders
+>   * @dpll_mask: bit mask of DU channels equipped with a DPLL
+> + * @dsi_clk_mask: bitmask of channels that can use the DSI clock as dot clock
+>   * @lvds_clk_mask: bitmask of channels that can use the LVDS clock as dot clock
+>   */
+>  struct rcar_du_device_info {
+> @@ -67,6 +68,7 @@ struct rcar_du_device_info {
+>  	struct rcar_du_output_routing routes[RCAR_DU_OUTPUT_MAX];
+>  	unsigned int num_lvds;
+>  	unsigned int dpll_mask;
+> +	unsigned int dsi_clk_mask;
+>  	unsigned int lvds_clk_mask;
+>  };
+>  
+> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_group.c b/drivers/gpu/drm/rcar-du/rcar_du_group.c
+> index a984eef265d2..27c912bab76e 100644
+> --- a/drivers/gpu/drm/rcar-du/rcar_du_group.c
+> +++ b/drivers/gpu/drm/rcar-du/rcar_du_group.c
+> @@ -124,6 +124,8 @@ static void rcar_du_group_setup_didsr(struct rcar_du_group *rgrp)
+>  		if (rcdu->info->lvds_clk_mask & BIT(rcrtc->index))
+>  			didsr |= DIDSR_LDCS_LVDS0(i)
+>  			      |  DIDSR_PDCS_CLK(i, 0);
+> +		else if (rcdu->info->dsi_clk_mask & BIT(rcrtc->index))
+> +			didsr |= DIDSR_LDCS_LVDS0(i);
+>  		else
+>  			didsr |= DIDSR_LDCS_DCLKIN(i)
+>  			      |  DIDSR_PDCS_CLK(i, 0);
+
+-- 
+Regards,
+
+Laurent Pinchart
