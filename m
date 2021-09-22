@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5C4414B54
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB57414B56
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbhIVOFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:05:03 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37544 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232989AbhIVOFB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:05:01 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-13-uoiUTMwGNhufnesDAn2asA-1; Wed, 22 Sep 2021 15:03:28 +0100
-X-MC-Unique: uoiUTMwGNhufnesDAn2asA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Wed, 22 Sep 2021 15:03:25 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Wed, 22 Sep 2021 15:03:25 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     =?utf-8?B?J0pvbmFzIERyZcOfbGVyJw==?= <verdre@v0yd.nl>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Tsuchiya Yuto <kitakar@gmail.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>,
-        "Heiner Kallweit" <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v2 1/2] mwifiex: Use non-posted PCI write when setting TX
- ring write pointer
-Thread-Topic: [PATCH v2 1/2] mwifiex: Use non-posted PCI write when setting TX
- ring write pointer
-Thread-Index: AQHXqV6M5O4Kbg53iUSKSfgcb2dqbquwGdzg
-Date:   Wed, 22 Sep 2021 14:03:25 +0000
-Message-ID: <8f65f41a807c46d496bf1b45816077e4@AcuMS.aculab.com>
-References: <20210914114813.15404-1-verdre@v0yd.nl>
- <20210914114813.15404-2-verdre@v0yd.nl>
-In-Reply-To: <20210914114813.15404-2-verdre@v0yd.nl>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S232989AbhIVOGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:06:04 -0400
+Received: from mout.gmx.net ([212.227.15.15]:54357 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232243AbhIVOGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 10:06:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632319443;
+        bh=QXxMnw7c3K8mqHEHkt346GWvYyLLAFsOS9FsO225YlY=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=kkYf/NdJ+bHR56JdFNrkWnVF3uwHGgj7SIw4we/LMuojiTs62CEjVgYn7ufLD9sOZ
+         Eg9TKDK9gldVNPKycqIfszdTKVVRYSHUbfSZgkqcPTTYWVRvWo9nJHwFC2PLGFNcFq
+         PoWSB/E5oHGt5It0xcwEcJVUdK2JtyNnhpxZUVmU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.221]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MY68d-1mNI581f7l-00YPZV; Wed, 22
+ Sep 2021 16:04:03 +0200
+Message-ID: <97ee06c66fe0d900e3e0c4145ef9d33457ab3c65.camel@gmx.de>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 22 Sep 2021 16:04:01 +0200
+In-Reply-To: <20210922132002.GX3959@techsingularity.net>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+         <20210920142614.4891-3-mgorman@techsingularity.net>
+         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+         <20210921103621.GM3959@techsingularity.net>
+         <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+         <20210922132002.GX3959@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NPu4D8EDfgxK0K29QwqVVbD1vYgUGgUdwF4OeFYDwOyeVD0DpUA
+ ZWHnw1zI6eU7fEIVpjtH56d9frAvSjoep2hocCUK1W05/xv7Hnh6YHuRQT3Z3yXR9h+dNl8
+ 4bIa9sziKU3x5/XRGuMQuXGhxSakOC71Kw5/J/VKHlFDfa7xQcdMjFoN8GtxokOte5si+n0
+ wXa1KwchmEAOnvJtEoOhQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nWdUyeGIOW0=:SnSXouPUVMPK8wsRbbYj5q
+ lknBnDrI5GZ1caCgwn2UIOd81+9i9Gh34DCKZIS7zoWWucV6fo+tTCeXHsqB/6QvXvphdkQoP
+ ThsZCcbicqS2eAJwl53rjv3pNZi9hFnpMmTvzB7e5IcU9hdWK67Ddps2JnP7HTEGs1sSecETY
+ gzzxSnlg3P6lYtgjEHTmlTyMuJlQLRgfjSOPmj4mW9DVwV3GXgyGDz/NWj6jqgMYe3vO+Yu+s
+ TmPPN8JQ2oyXPZ7K011h5Dm2hCw/htQr9XzhDh4kkrpJfft9xpXuwWhbe4lSopoMWoVliRONQ
+ HHCLIoHxqyBGYyemSYAaiYfw/vfZbNwshO2ghr2pz2XJdQ/1gIKXyb+gejFJ3+VDjTUIFR23F
+ RKtasJ7FAoUts+aRYGtbTeOgRuHeoLDOoM8qS4xmqzbO9eGKc5lQMQXcEXp/y0hMJT2z25cdC
+ 5MkX9g9pgFti7rHQXs+zQ6gpdFyffMVyzTDuOQ7Ud0Dui+2EVzTJVcW80FPiNu8Lm5n7t/sFg
+ rtTdJR+LoHGZAw/6dCM/YPx8hm5yYAi7qW2hWlgCfgeV6x78V1dpb7rO6kteR8p525ARtcoPx
+ sSZeN47EHdXY7JuhVOwwkEr3Vpx4kPlNmQFNsAWIn4KUyUMyM8vX5Yf7i/FEp4FNNNFB6bJL0
+ mUa99V9qqhNBhn1bqFuUmeiWw5svgb9a54P8+F4Xi3502zF8TJisNZQGX/rTmAkzbHT6zl/Kr
+ ZyHmFI625Icl8TgceMjnwrM0KErX68wSrD6XvsyJIuEj5UZO3SOCqXxd1AnsbjtfoAzSNGWkl
+ 7dX1JjARI1qGxVoBAPHyWEYK6pMIJJEcw4pTrOkVzC0OOBhLAxI5oBqx/Y6SCDsLvD0KnOEFF
+ 89btoe6j4D4ph2L8e6ivjnS3Cunir1s2227UVci3YTmy4mUWWi1rFtSAEwxuhnlq/cWkQejYp
+ w4K3b1LZ8GfEbIoSorvhLdIPbURuT+LzTV32F0na8XGwIZDjW2woV9JKVIryE4qYxdKv9ISwZ
+ +C3OeZ3jfQLhwVocq4kM23/s0RLTziMnCKIv9j8eJPeLtUx5DxTyXDRQ2MnSeuqEH1J8jwqht
+ WqRO5Dz61g3EQQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSm9uYXMgRHJlw59sZXINCj4gU2VudDogMTQgU2VwdGVtYmVyIDIwMjEgMTI6NDgNCj4g
-DQo+IE9uIHRoZSA4OFc4ODk3IGNhcmQgaXQncyB2ZXJ5IGltcG9ydGFudCB0aGUgVFggcmluZyB3
-cml0ZSBwb2ludGVyIGlzDQo+IHVwZGF0ZWQgY29ycmVjdGx5IHRvIGl0cyBuZXcgdmFsdWUgYmVm
-b3JlIHNldHRpbmcgdGhlIFRYIHJlYWR5DQo+IGludGVycnVwdCwgb3RoZXJ3aXNlIHRoZSBmaXJt
-d2FyZSBhcHBlYXJzIHRvIGNyYXNoIChwcm9iYWJseSBiZWNhdXNlDQo+IGl0J3MgdHJ5aW5nIHRv
-IERNQS1yZWFkIGZyb20gdGhlIHdyb25nIHBsYWNlKS4gVGhlIGlzc3VlIGlzIHByZXNlbnQgaW4N
-Cj4gdGhlIGxhdGVzdCBmaXJtd2FyZSB2ZXJzaW9uIDE1LjY4LjE5LnAyMSBvZiB0aGUgcGNpZSt1
-c2IgY2FyZC4NCj4gDQo+IFNpbmNlIFBDSSB1c2VzICJwb3N0ZWQgd3JpdGVzIiB3aGVuIHdyaXRp
-bmcgdG8gYSByZWdpc3RlciwgaXQncyBub3QNCj4gZ3VhcmFudGVlZCB0aGF0IGEgd3JpdGUgd2ls
-bCBoYXBwZW4gaW1tZWRpYXRlbHkuIFRoYXQgbWVhbnMgdGhlIHBvaW50ZXINCj4gbWlnaHQgYmUg
-b3V0ZGF0ZWQgd2hlbiBzZXR0aW5nIHRoZSBUWCByZWFkeSBpbnRlcnJ1cHQsIGxlYWRpbmcgdG8N
-Cj4gZmlybXdhcmUgY3Jhc2hlcyBlc3BlY2lhbGx5IHdoZW4gQVNQTSBMMSBhbmQgTDEgc3Vic3Rh
-dGVzIGFyZSBlbmFibGVkDQo+IChiZWNhdXNlIG9mIHRoZSBoaWdoZXIgbGluayBsYXRlbmN5LCB0
-aGUgd3JpdGUgd2lsbCBwcm9iYWJseSB0YWtlDQo+IGxvbmdlcikuDQo+IA0KPiBTbyBmaXggdGhv
-c2UgZmlybXdhcmUgY3Jhc2hlcyBieSBhbHdheXMgdXNpbmcgYSBub24tcG9zdGVkIHdyaXRlIGZv
-cg0KPiB0aGlzIHNwZWNpZmljIHJlZ2lzdGVyIHdyaXRlLiBXZSBkbyB0aGF0IGJ5IHNpbXBseSBy
-ZWFkaW5nIGJhY2sgdGhlDQo+IHJlZ2lzdGVyIGFmdGVyIHdyaXRpbmcgaXQsIGp1c3QgYXMgYSBm
-ZXcgb3RoZXIgUENJIGRyaXZlcnMgZG8uDQo+IA0KPiBUaGlzIGZpeGVzIGEgYnVnIHdoZXJlIGR1
-cmluZyByeC90eCB0cmFmZmljIGFuZCB3aXRoIEFTUE0gTDEgc3Vic3RhdGVzDQo+IGVuYWJsZWQg
-KHRoZSBlbmFibGVkIHN1YnN0YXRlcyBhcmUgcGxhdGZvcm0gZGVwZW5kZW50KSwgdGhlIGZpcm13
-YXJlDQo+IGNyYXNoZXMgYW5kIGV2ZW50dWFsbHkgYSBjb21tYW5kIHRpbWVvdXQgYXBwZWFycyBp
-biB0aGUgbG9ncy4NCg0KSSB0aGluayB5b3UgbmVlZCB0byBjaGFuZ2UgeW91ciB0ZXJtaW5vbG9n
-eS4NClBDSWUgZG9lcyBoYXZlIHNvbWUgbm9uLXBvc3RlZCB3cml0ZSB0cmFuc2FjdGlvbnMgLSBi
-dXQgSSBjYW4ndA0KcmVtZW1iZXIgd2hlbiB0aGV5IGFyZSB1c2VkLg0KDQpXaGF0IHlvdSBuZWVk
-IHRvIHNheSBpcyB0aGF0IHlvdSBhcmUgZmx1c2hpbmcgdGhlIFBDSWUgcG9zdGVkDQp3cml0ZXMg
-aW4gb3JkZXIgdG8gYXZvaWQgYSB0aW1pbmcgJ2lzc3VlJyBzZXR0aW5nIHRoZSBUWCByaW5nDQp3
-cml0ZSBwb2ludGVyLg0KDQpRdWl0ZSB3aGVyZSB0aGUgYnVnIGlzLCBhbmQgd2h5IHRoZSByZWFk
-LWJhY2sgYWN0dWFsbHkgZml4ZXMNCml0IGlzIGFub3RoZXIgbWF0dGVyLg0KDQpBIHR5cGljYWwg
-ZXRoZXJuZXQgdHJhbnNtaXQgbmVlZHMgdGhyZWUgdGhpbmdzIHdyaXR0ZW4NCmluIHRoZSBjb3Jy
-ZWN0IG9yZGVyIChhcyBzZWVuIGJ5IHRoZSBoYXJkd2FyZSk6DQoNCjEpIFRoZSB0cmFuc21pdCBm
-cmFtZSBkYXRhLg0KMikgVGhlIGRlc2NyaXB0b3IgcmluZyBlbnRyeSByZWZlcnJpbmcgdG8gdGhl
-IGZyYW1lLg0KMykgVGhlICdwcm9kJyBvZiB0aGUgTUFDIGVuZ2luZSB0byBwcm9jZXNzIHRoZSBm
-cmFtZS4NCg0KWW91IHNlZW1zIHRvIGFsc28gaGF2ZToNCjIuNSkgV3JpdGUgdGhlIFRYIHJpbmcg
-d3JpdGUgcG9pbnRlciB0byB0aGUgTUFDIGVuZ2luZS4NCg0KVGhlIHVwZGF0ZXMgb2YgKDEpIGFu
-ZCAoMikgYXJlIG5vcm1hbGx5IGhhbmRsZXMgYnkgRE1BIGNvaGVyZW50DQptZW1vcnkgb3IgY2Fj
-aGUgZmx1c2hlcyBkb25lIGJ5IHVzaW5nIHRoZSBETUEgQVBJcy4NCg0KSWYgdGhlIHdyaXRlcyBm
-b3IgKDIuNSkgYW5kICgzKSBhcmUgYm90aCB3cml0aW5nIHRvIHRoZQ0KUENJZSBjYXJkICh3aGlj
-aCBzZWVtcyBsaWtlbHkpIHRoZW4gdGhlIFBDSWUgc3BlYyB3aWxsDQpndWFyYW50ZWUgdGhhdCB0
-aGV5IGhhcHBlbiBpbiB0aGUgY29ycmVjdCBvcmRlci4NCg0KVGhpcyBtZWFucyB0aGF0IHRoZSBQ
-Q0llIHJlYWRiYWNrIG9mIHRoZSAoMi41KSB3cml0ZSBkb2Vzbid0DQpoYXZlIGFueSBlZmZlY3Qg
-b24gdGhlIG9yZGVyIG9mIHRoZSBidXMgY3ljbGVzIHNlZW4gYnkgdGhlIGNhcmQuDQpTbyBmbHVz
-aGluZyB0aGUgUENJZSB3cml0ZSBpc24ndCB3aGF0IGZpeGVzIHlvdXIgcHJvYmxlbS4NCg0KVGhl
-IHJlYWRiYWNrIGJldHdlZW4gKDIuNSkgYW5kICgzKSBkb2VzIGhhdmUgdHdvIGVmZmVjdHM6DQph
-KSBpdCBhZGRzIGEgc2hvcnQgZGVsYXkgYmV0d2VlbiB0aGUgdHdvIHdyaXRlcy4NCmIpIGl0IChw
-cm9iYWJseSkgZm9yY2VzIHRoZSBmaXJzdCB3cml0ZSB0byBieSBmbHVzaGVkIHRocm91Z2gNCiAg
-IGFueSBwb3N0ZWQtd3JpdGUgYnVmZmVycyBvbiB0aGUgY2FyZCBpdHNlbGYuDQoNCkl0IG1heSB3
-ZWxsIGJlIHRoYXQgdGhlIGNhcmQgaGFzIHNlcGFyYXRlIHBvc3RlZCB3cml0ZSBidWZmZXJzDQpm
-b3IgZGlmZmVyZW50IHBhcnRzIG9mIHRoZSBoYXJkd2FyZS4NCkluIHRoYXQgY2FzZSB0aGUgd3Jp
-dGUgKDMpIG1pZ2h0IGdldCBhY3Rpb25lZCBiZWZvcmUgdGhlIHdyaXRlICgyLjUpLg0KT1RPSCB5
-b3UnZCBleHBlY3QgdGhhdCB0byBvbmx5IGNhdXNlIHBhY2tldCB0cmFuc21pdCB0byBiZSBkZWxh
-eWVkLg0KDQpJZiB0aGUgd3JpdGUgKDIuNSkgZW5kcyB1cCBiZWluZyBub24tYXRvbWljIChpZSBh
-IDY0Yml0IHdyaXRlDQpjb252ZXJ0ZWQgdG8gbXVsdGlwbGUgOCBiaXQgd3JpdGVzIGludGVybmFs
-bHkpIHRoZW4geW91J2xsIGhpdA0KcHJvYmxlbXMgaWYgdGhlIG1hYyBlbmdpbmUgbG9va3MgYXQg
-dGhlIHJlZ2lzdGVyIHdoaWxlIGl0IGlzDQpiZWluZyBjaGFuZ2VkIGp1c3QgYWZ0ZXIgdHJhbnNt
-aXR0aW5nIHRoZSBwcmV2aW91cyBwYWNrZXQuDQooaWUgd2hlbiB0aGUgdHggc3RhcnRzIGJlZm9y
-ZSB3cml0ZSAoMykgYmVjYXVzZSB0aGUgdHggbG9naWMNCmlzIGFjdGl2ZS4pDQoNClRoZSBvdGhl
-ciBob3JyaWQgcG9zc2liaWxpdHkgaXMgdGhhdCB5b3UgaGF2ZSBhIHRydWx5IGJyb2tlbg0KUENJ
-ZSBzbGF2ZSB0aGF0IGNvcnJ1cHRzIGl0cyBwb3N0ZWQtd3JpdGUgYnVmZmVyIHdoZW4gYSBzZWNv
-bmQNCndyaXRlIGFycml2ZXMuDQpJZiB0aGF0IGlzIGFjdHVhbGx5IHRydWUgdGhlbiB5b3UgbWF5
-IG5lZWQgdG8gYWxzbyBhZGQgbG9ja3MNCnRvIGVuc3VyZSB0aGF0IG11bHRpcGxlIHRocmVhZHMg
-Y2Fubm90IGRvIHdyaXRlcyBhdCB0aGUgc2FtZSB0aW1lLg0KT3IgZG8gYWxsIChhbmQgSSBtZWFu
-IGFsbCkgYWNjZXNzZXMgZnJvbSBhIHNpbmdsZSB0aHJlYWQvY29udGV4dC4NCg0KVGhlIGxhdHRl
-ciBwcm9ibGVtIHJlbWluZHMgbWUgb2YgYSBQQ0kgY2FyZCB0aGF0IGdvdCB0ZXJyaWJseQ0KY29u
-ZnVzZWQgaWYgaXQgc2F3IGEgcmVhZCByZXF1ZXN0IGZyb20gYSAybmQgY3B1IHdoaWxlIGdlbmVy
-YXRpbmcNCidjeWNsZSByZXJ1bicgcmVzcG9uc2VzIHRvIGFuIGVhcmxpZXIgcmVhZCByZXF1ZXN0
-Lg0KDQpNb3N0IGNvZGUgdGhhdCBmbHVzaGVzIHBvc3RlZCB3cml0ZXMgb25seSBuZWVkcyB0byBk
-byBzbyBmb3INCndyaXRlcyB0aGF0IGRyb3AgbGV2ZWwtc2Vuc2l0aXZlIGludGVycnVwdCByZXF1
-ZXN0cy4NCkZhaWx1cmUgdG8gZmx1c2ggdGhvc2UgY2FuIGxlYWQgdG8gdW5leHBlY3RlZCBpbnRl
-cnJ1cHRzLg0KVGhhdCBwcm9ibGVtIGdvZXMgYmFjayB0byBWTUVidXMgc3Vub3MgKGFtb25nc3Qg
-b3RoZXJzKS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
-bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
-cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Wed, 2021-09-22 at 14:20 +0100, Mel Gorman wrote:
+> On Wed, Sep 22, 2021 at 07:22:20AM +0200, Mike Galbraith wrote:
+> >
+> > Watching 'while sleep 1; do clear;tail trace; done' with nothing but a
+> > kbuild running is like watching top.=C2=A0 There's enough stacking dur=
+ing
+> > routine use of my desktop box that it runs into the tick granularity
+> > wall pretty much continuously, so 'overload' may want redefining.
+> >
+>
+> Ok, that's pretty convincing. You didn't mention if there were
+> interactivity glitches but it's possible.
 
+No, I didn't notice a thing.  That's not surprising given the amount of
+scheduling going on.  The stack depth surprised me a bit though.
+
+X-2230    [005] d..5.  2162.123029: wakeup_gran: runnable:6 wakee:QXcbEven=
+tQueue:2695 CPU5
+X-2230    [005] d..5.  2162.123035: wakeup_gran: runnable:7 wakee:QXcbEven=
+tQueue:2656 CPU5
+X-2230    [005] d..5.  2162.123046: wakeup_gran: runnable:8 wakee:QXcbEven=
+tQueue:5876 CPU5
+X-2230    [005] d..5.  2162.123049: wakeup_gran: runnable:9 wakee:QXcbEven=
+tQueue:5355 CPU5
+X-2230    [005] d..5.  2162.123083: wakeup_gran: runnable:10 wakee:QXcbEve=
+ntQueue:2723 CPU5
+X-2230    [005] d..5.  2162.123097: wakeup_gran: runnable:11 wakee:QXcbEve=
+ntQueue:2630 CPU5
+X-2230    [005] d..5.  2162.123208: wakeup_gran: runnable:12 wakee:QXcbEve=
+ntQueue:2760 CPU5
+
+That CPU# on the end is task_cpu(). Lord knows why X wakes all those,
+but with no SD_BALANCE_WAKE, a busy box and all those having last lived
+on waker's CPU, the resulting construct.. probably doesn't very closely
+resemble what the programmer had in mind when threading.
+
+	-Mike
