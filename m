@@ -2,220 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3157415240
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E02415235
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237894AbhIVU7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:59:17 -0400
-Received: from aposti.net ([89.234.176.197]:47342 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237864AbhIVU7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:59:15 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-mips@vger.kernel.org, list@opendingux.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
-Date:   Wed, 22 Sep 2021 21:55:55 +0100
-Message-Id: <20210922205555.496871-7-paul@crapouillou.net>
-In-Reply-To: <20210922205555.496871-1-paul@crapouillou.net>
-References: <20210922205555.496871-1-paul@crapouillou.net>
+        id S237870AbhIVU6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238006AbhIVU6V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 16:58:21 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5721C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:56:18 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id u8so16649437lff.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=snAHFG5xCkeTvyFu2mD4X2wabo24gdMDn530482Xypw=;
+        b=cTEvG+kHc4uB7yEtKNHCaR8BVCBCKx/AXjDqWSalmiqES3V438gK0Wr3VHWEE7fFnC
+         jOfbPqcPi7D6EiPN9jh0bUTMxJJ/BARQh3eK1gAPGiAueMThy4Vjzgd2rqp5A+Q0ARos
+         cfJaQrPjgEZ85kDS8LVy0KAD7yWeCE+u5uE2s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=snAHFG5xCkeTvyFu2mD4X2wabo24gdMDn530482Xypw=;
+        b=d7gofuJXHUjmkwkImytUTerjmiG9ghPZLYHXrWoBKGGWx6QYqDRKNiPRAD/moqeBIR
+         XqijzY1QrYnGNJ09Wtf6vDci4/F35+UGKceWZerFcemLE1WFQEuctXEg2jHJCMAnVq5V
+         8pAbYGkyp6sNQ4av1Sw68oRcZM/vykfOrZT4eFEUYsfxQmJgN2LcBHkbQLcPToAxCabL
+         2rbVfikCSZ5ZwaTkOfBIyCRmmu1XTjHi3Q8+Bz5EGlYAuxVhaRPq6VgsEhYnDrsQr3Tm
+         cpTFcYa8Dt+PtnFIYyG40wWMIuaykMrYP99wdbGbNw91RtkDnFqoIHtwQ3KJRyVBGUZB
+         cAwQ==
+X-Gm-Message-State: AOAM530YuDcRh/u+3xCPYvC1hqv35CHCo7wpynLniWoOI5BlTEbsnOUQ
+        ELWEqX/JZ5T1t55MNohHoMD/+mwHMNaVBt8yc7k=
+X-Google-Smtp-Source: ABdhPJwxdiAUJEjmpC/++fixGz6apzgVvVP5JILCvYZuMYFSeYYRPLH6KPjHKwnRZTmgVOS9MTbd9g==
+X-Received: by 2002:a19:c151:: with SMTP id r78mr926270lff.133.1632344176626;
+        Wed, 22 Sep 2021 13:56:16 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id p16sm369060lji.75.2021.09.22.13.56.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 13:56:15 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id z24so17649318lfu.13
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:56:15 -0700 (PDT)
+X-Received: by 2002:a19:ae15:: with SMTP id f21mr922847lfc.402.1632344175487;
+ Wed, 22 Sep 2021 13:56:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
+ <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
+In-Reply-To: <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 22 Sep 2021 13:55:59 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
+Message-ID: <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attach a top-level bridge to each encoder, which will be used for
-negociating the bus format and flags.
+On Wed, Sep 22, 2021 at 10:57 AM Paul Moore <paul@paul-moore.com> wrote:
+>
+> I wanted to check in on this PR to see if you were planning on merging
+> it for v5.15-rcX, kicking it back for -next instead, or simply glaring
+> at it with quiet disgust?
 
-All the bridges are now attached with DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+Heh. I glanced at it with quiet disgust when it came in, and then it
+just got lost.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 92 +++++++++++++++++------
- 1 file changed, 70 insertions(+), 22 deletions(-)
+But now I'm looking at it again since you reminded me, and I don't
+understand why it has to be done in such an ugly manner.
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index a5e2880e07a1..a05a9fa6e115 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -21,6 +21,7 @@
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_bridge_connector.h>
- #include <drm/drm_color_mgmt.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_crtc_helper.h>
-@@ -108,6 +109,19 @@ struct ingenic_drm {
- 	struct drm_private_obj private_obj;
- };
- 
-+struct ingenic_drm_bridge {
-+	struct drm_encoder encoder;
-+	struct drm_bridge bridge, *next_bridge;
-+
-+	struct drm_bus_cfg bus_cfg;
-+};
-+
-+static inline struct ingenic_drm_bridge *
-+to_ingenic_drm_bridge(struct drm_encoder *encoder)
-+{
-+	return container_of(encoder, struct ingenic_drm_bridge, encoder);
-+}
-+
- static inline struct ingenic_drm_private_state *
- to_ingenic_drm_priv_state(struct drm_private_state *state)
- {
-@@ -668,11 +682,10 @@ static void ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
- {
- 	struct ingenic_drm *priv = drm_device_get_priv(encoder->dev);
- 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
--	struct drm_connector *conn = conn_state->connector;
--	struct drm_display_info *info = &conn->display_info;
-+	struct ingenic_drm_bridge *bridge = to_ingenic_drm_bridge(encoder);
- 	unsigned int cfg, rgbcfg = 0;
- 
--	priv->panel_is_sharp = info->bus_flags & DRM_BUS_FLAG_SHARP_SIGNALS;
-+	priv->panel_is_sharp = bridge->bus_cfg.flags & DRM_BUS_FLAG_SHARP_SIGNALS;
- 
- 	if (priv->panel_is_sharp) {
- 		cfg = JZ_LCD_CFG_MODE_SPECIAL_TFT_1 | JZ_LCD_CFG_REV_POLARITY;
-@@ -685,19 +698,19 @@ static void ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
- 		cfg |= JZ_LCD_CFG_HSYNC_ACTIVE_LOW;
- 	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
- 		cfg |= JZ_LCD_CFG_VSYNC_ACTIVE_LOW;
--	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
-+	if (bridge->bus_cfg.flags & DRM_BUS_FLAG_DE_LOW)
- 		cfg |= JZ_LCD_CFG_DE_ACTIVE_LOW;
--	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
-+	if (bridge->bus_cfg.flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
- 		cfg |= JZ_LCD_CFG_PCLK_FALLING_EDGE;
- 
- 	if (!priv->panel_is_sharp) {
--		if (conn->connector_type == DRM_MODE_CONNECTOR_TV) {
-+		if (conn_state->connector->connector_type == DRM_MODE_CONNECTOR_TV) {
- 			if (mode->flags & DRM_MODE_FLAG_INTERLACE)
- 				cfg |= JZ_LCD_CFG_MODE_TV_OUT_I;
- 			else
- 				cfg |= JZ_LCD_CFG_MODE_TV_OUT_P;
- 		} else {
--			switch (*info->bus_formats) {
-+			switch (bridge->bus_cfg.format) {
- 			case MEDIA_BUS_FMT_RGB565_1X16:
- 				cfg |= JZ_LCD_CFG_MODE_GENERIC_16BIT;
- 				break;
-@@ -723,20 +736,29 @@ static void ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
- 	regmap_write(priv->map, JZ_REG_LCD_RGBC, rgbcfg);
- }
- 
--static int ingenic_drm_encoder_atomic_check(struct drm_encoder *encoder,
--					    struct drm_crtc_state *crtc_state,
--					    struct drm_connector_state *conn_state)
-+static int ingenic_drm_bridge_attach(struct drm_bridge *bridge,
-+				     enum drm_bridge_attach_flags flags)
-+{
-+	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge->encoder);
-+
-+	return drm_bridge_attach(bridge->encoder, ib->next_bridge,
-+				 &ib->bridge, flags);
-+}
-+
-+static int ingenic_drm_bridge_atomic_check(struct drm_bridge *bridge,
-+					   struct drm_bridge_state *bridge_state,
-+					   struct drm_crtc_state *crtc_state,
-+					   struct drm_connector_state *conn_state)
- {
--	struct drm_display_info *info = &conn_state->connector->display_info;
- 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
-+	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge->encoder);
- 
--	if (info->num_bus_formats != 1)
--		return -EINVAL;
-+	ib->bus_cfg = bridge_state->output_bus_cfg;
- 
- 	if (conn_state->connector->connector_type == DRM_MODE_CONNECTOR_TV)
- 		return 0;
- 
--	switch (*info->bus_formats) {
-+	switch (bridge_state->output_bus_cfg.format) {
- 	case MEDIA_BUS_FMT_RGB888_3X8:
- 	case MEDIA_BUS_FMT_RGB888_3X8_DELTA:
- 		/*
-@@ -900,8 +922,16 @@ static const struct drm_crtc_helper_funcs ingenic_drm_crtc_helper_funcs = {
- };
- 
- static const struct drm_encoder_helper_funcs ingenic_drm_encoder_helper_funcs = {
--	.atomic_mode_set	= ingenic_drm_encoder_atomic_mode_set,
--	.atomic_check		= ingenic_drm_encoder_atomic_check,
-+	.atomic_mode_set        = ingenic_drm_encoder_atomic_mode_set,
-+};
-+
-+static const struct drm_bridge_funcs ingenic_drm_bridge_funcs = {
-+	.attach			= ingenic_drm_bridge_attach,
-+	.atomic_check		= ingenic_drm_bridge_atomic_check,
-+	.atomic_reset		= drm_atomic_helper_bridge_reset,
-+	.atomic_duplicate_state	= drm_atomic_helper_bridge_duplicate_state,
-+	.atomic_destroy_state	= drm_atomic_helper_bridge_destroy_state,
-+	.atomic_get_input_bus_fmts = drm_atomic_helper_bridge_propagate_bus_fmt,
- };
- 
- static const struct drm_mode_config_funcs ingenic_drm_mode_config_funcs = {
-@@ -976,7 +1006,9 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	struct drm_plane *primary;
- 	struct drm_bridge *bridge;
- 	struct drm_panel *panel;
-+	struct drm_connector *connector;
- 	struct drm_encoder *encoder;
-+	struct ingenic_drm_bridge *ib;
- 	struct drm_device *drm;
- 	void __iomem *base;
- 	long parent_rate;
-@@ -1154,20 +1186,36 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 			bridge = devm_drm_panel_bridge_add_typed(dev, panel,
- 								 DRM_MODE_CONNECTOR_DPI);
- 
--		encoder = drmm_plain_encoder_alloc(drm, NULL, DRM_MODE_ENCODER_DPI, NULL);
--		if (IS_ERR(encoder)) {
--			ret = PTR_ERR(encoder);
-+		ib = drmm_encoder_alloc(drm, struct ingenic_drm_bridge, encoder,
-+					NULL, DRM_MODE_ENCODER_DPI, NULL);
-+		if (IS_ERR(ib)) {
-+			ret = PTR_ERR(ib);
- 			dev_err(dev, "Failed to init encoder: %d\n", ret);
- 			return ret;
- 		}
- 
--		encoder->possible_crtcs = 1;
-+		encoder = &ib->encoder;
-+		encoder->possible_crtcs = drm_crtc_mask(&priv->crtc);
- 
- 		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
- 
--		ret = drm_bridge_attach(encoder, bridge, NULL, 0);
--		if (ret)
-+		ib->bridge.funcs = &ingenic_drm_bridge_funcs;
-+		ib->next_bridge = bridge;
-+
-+		ret = drm_bridge_attach(encoder, &ib->bridge, NULL,
-+					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-+		if (ret) {
-+			dev_err(dev, "Unable to attach bridge\n");
- 			return ret;
-+		}
-+
-+		connector = drm_bridge_connector_init(drm, encoder);
-+		if (IS_ERR(connector)) {
-+			dev_err(dev, "Unable to init connector\n");
-+			return PTR_ERR(connector);
-+		}
-+
-+		drm_connector_attach_encoder(connector, encoder);
- 	}
- 
- 	drm_for_each_encoder(encoder, drm) {
--- 
-2.33.0
+And I also don't think the thing makes a whit of sense in the first place.
 
+Honestly, that whole "lockdown depends on current creds" makes NO
+SENSE at all to me. The whole and only point about lockdown is that
+it's locked down. Not that "oh, root can do X". That's against the
+point.
+
+The whole and only point of lockdown was as a global thing. Now
+somebody seems to have noticed that they violated that basic rule, and
+that it's about permissions after all, and it's just a complete mess.
+
+But why the heck would a normal lockdown user have to care about this
+fundamental design mistake? Why should a normal lockdown user pass in
+a credential that doesn't make sense?
+
+Since 99% of all users DON'T want special rules, why isn't the normal
+security_locked_down() kept the way it is?
+
+Make the few special cases do special things, in other words.
+
+This is *literally* why we have all those wrapper functions in
+security/security.c - so that people can do sane interfaces and not
+call down to the raw hooks.
+
+(Yeah, yeah, a lot of them do nothing but pass it down, but others do
+other sanity stuff so that callers don't have to do pointless
+boilerplate)
+
+IOW, why is this changing all the normal users that *really* don't
+want it, and that really have absolutely no business looking up the
+current creds?
+
+Make the regular security_locked_down() function do that, and add a
+
+    if (WARN_ON_ONCE(!in_task()))
+        return -EPERM;
+
+so that any bad cases get flagged and refuse to continue.
+
+And then the couple of special users (whether due to interrupt context
+or whatever), could get their own wrapper function.
+
+Note how that would
+ (a) make the patch smaller
+ (b) not pollute normal users pointlessly
+ (c) actually be a kind of documentation too
+ (d) not make the default lockdown testing function be senseless
+
+because right now you have absolutely no explanation in the crazy
+cases, so y9ou have code like this:
+
+        lockdown = !!security_locked_down(NULL, LOCKDOWN_XMON_RW);
+
+in xmon_is_locked_down(), and it makes no sense to anybody. Why the
+NULL? What is going on?
+
+Yes, yes, I can tell why the NULL, and what is going on, because I
+read the commit message and it's in my context. But look at that line,
+and tell me that it makes sense as code to anybody who has paged out
+that context (or never had it in the first place).
+
+If it said "security_globally_locked_down()" maybe it would at least
+give a hint about what's going on.
+
+But the other side of the argument is that the *common* lockdown
+functions are insane too after the patch. In kernel/module.c, this
+line:
+
+        return security_locked_down(current_cred(), LOCKDOWN_MODULE_SIGNATURE);
+
+really screams "lockdown is fundamentally broken and mis-designed".
+
+Seriously. If lockdown needs "current creds" then lockdown is wrong.
+
+I was unhappy about lockdown from before, so maybe I'm more likely to
+just reject this kind of garbage, but this really looks completely
+broken to me.
+
+Hmm? This lockdown stuff is some ugly random code to begin with, I
+think the interfaces need to make SENSE. Passing in credentials
+fundamentally does not make sense to me.
+
+              Linus
