@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DFF4142A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5A34142B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbhIVH3N convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Sep 2021 03:29:13 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:59864 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhIVH3M (ORCPT
+        id S233304AbhIVHfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:35:13 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:21603 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233236AbhIVHfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:29:12 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id B913F608F449;
-        Wed, 22 Sep 2021 09:27:41 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id turHSlNKDIff; Wed, 22 Sep 2021 09:27:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 3C8E26171B1D;
-        Wed, 22 Sep 2021 09:27:41 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9YHVx8c-c2qj; Wed, 22 Sep 2021 09:27:41 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 14585608F449;
-        Wed, 22 Sep 2021 09:27:41 +0200 (CEST)
-Date:   Wed, 22 Sep 2021 09:27:40 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Boris Kolpackov <boris@codesynthesis.com>
-Cc:     masahiroy@kernel.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-kbuild@vger.kernel.org
-Message-ID: <1402570794.96583.1632295660867.JavaMail.zimbra@nod.at>
-In-Reply-To: <boris.20210922090732@codesynthesis.com>
-References: <20210920213957.1064-1-richard@nod.at> <20210920213957.1064-2-richard@nod.at> <boris.20210922090732@codesynthesis.com>
-Subject: Re: [PATCH 2/2] kconfig: Deny command substitution in string values
+        Wed, 22 Sep 2021 03:35:00 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 18M7CPKR096731;
+        Wed, 22 Sep 2021 15:12:25 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 22 Sep
+ 2021 15:32:43 +0800
+From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <openbmc@lists.ozlabs.org>
+CC:     <osk@google.com>, <yulei.sh@bytedance.com>
+Subject: [PATCH v6 0/4] arm: aspeed: Add UART routing support
+Date:   Wed, 22 Sep 2021 15:32:37 +0800
+Message-ID: <20210922073241.14119-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF92 (Linux)/8.8.12_GA_3809)
-Thread-Topic: kconfig: Deny command substitution in string values
-Thread-Index: eQeXXGSt2VJG458SXb4zuJcuohhEjw==
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 18M7CPKR096731
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Boris,
+Add UART routing driver and the device tree nodes.
 
------ Ursprüngliche Mail -----
-> Von: "Boris Kolpackov" <boris@codesynthesis.com>
-> An: "richard" <richard@nod.at>
-> CC: masahiroy@kernel.org, "linux-kernel" <linux-kernel@vger.kernel.org>, linux-kbuild@vger.kernel.org
-> Gesendet: Mittwoch, 22. September 2021 09:17:44
-> Betreff: Re: [PATCH 2/2] kconfig: Deny command substitution in string values
+v6:
+ - Fix another typo in YAML file
+ - Move sysfs description from bindings to ABI document
 
-> Richard Weinberger <richard@nod.at> writes:
-> 
->> The post processed .config file will get included in shell
->> and makefiles.
-> 
-> That depends on who you ask: a number of projects other than the
-> Linux kernel use kconfig for configuration and some of them do
-> neither of those. I also don't believe the Linux kernel sources
-> .config in shell (but I may be wrong).
+v5:
+ - Fix typo in YAML file to solve the compatible string not found error
 
-See below.
+v4:
+ - Convert aspeed-lpc bindings to YAML schema to resolve dependecy issues
 
-> 
->> So make sure that a string does not contain
->> symbols that allow command substitution.
->> If such a malformed string is found, return empty string
->> and report it.
-> 
-> So effectively it's now impossible to include ` or $ in kconfig
-> string values. Seems like a major, backwards-incompatible
-> restriction.
+v3:
+ - Add individual bindings in YAML
+ - Add support for AST24xx (AST25xx shares the same design)
+ - Add more explanation for the sysfs ABI
 
-Do you have a working example?
-Since the config is sourced in the scripts/setlocalversion it will
-not work correctly anyway.
+v2:
+ - Add dt-bindings
+ - Add ABI documents for the exported sysfs interface
+ - Revise driver implementation suggested by Joel
 
-> I think if this is really desired, then it should be re-done with
-> escaping (similar to ") rather than outright banning inconvenient
-> characters.
+Chia-Wei Wang (4):
+  dt-bindings: mfd: aspeed-lpc: Convert to YAML schema
+  dt-bindings: aspeed: Add UART routing controller
+  soc: aspeed: Add UART routing support
+  ARM: dts: aspeed: Add uart routing to device tree
 
-Escaping is not so easy since the very same content is included
-in shell scripts (sertlocalversion), in Makefiles and in C files.
-At least I didn't find find a good way to escape these characters
-such that all three programming environments will accept it.
+ .../testing/sysfs-driver-aspeed-uart-routing  |  27 +
+ .../devicetree/bindings/mfd/aspeed-lpc.txt    | 157 -----
+ .../devicetree/bindings/mfd/aspeed-lpc.yaml   | 191 ++++++
+ .../bindings/soc/aspeed/uart-routing.yaml     |  56 ++
+ arch/arm/boot/dts/aspeed-g4.dtsi              |   6 +
+ arch/arm/boot/dts/aspeed-g5.dtsi              |   6 +
+ arch/arm/boot/dts/aspeed-g6.dtsi              |   6 +
+ drivers/soc/aspeed/Kconfig                    |  10 +
+ drivers/soc/aspeed/Makefile                   |   9 +-
+ drivers/soc/aspeed/aspeed-uart-routing.c      | 603 ++++++++++++++++++
+ 10 files changed, 910 insertions(+), 161 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-aspeed-uart-routing
+ delete mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/aspeed/uart-routing.yaml
+ create mode 100644 drivers/soc/aspeed/aspeed-uart-routing.c
 
-Thanks,
-//richard
+-- 
+2.17.1
+
