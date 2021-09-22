@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6E0414C69
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5F1414C6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236287AbhIVOui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
+        id S236306AbhIVOvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236164AbhIVOuc (ORCPT
+        with ESMTP id S235464AbhIVOvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:50:32 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195F5C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:49:02 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id g14so2951617pfm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:49:02 -0700 (PDT)
+        Wed, 22 Sep 2021 10:51:40 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAD2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:50:10 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id co2so10793126edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:50:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=0sqc+8Rn23i9NIXRc3rzWglOlIsYoDOCKK+U0vVnVf8=;
-        b=i17P/LE0kBMgmTnemIWdlFQzqY0Hs2jbI6I1/q7BOVL5p2dtOUMx0v77u9KgBVc6Wn
-         aKV+BPEmJqQFBnpf2JgmIIqtssY8WUcJgn0PyaL+KfSiTDztZbnAplBfnqcfDhlXXfFn
-         BjrKCa5IqUkRjskJLByrIP0vUAdGBFoOpGk78YEBagXPKCi9T3kxBnFA97BcpKw7BZcR
-         bmLTSv6ivPklBCfoVzjL+iJjEelTUzY+vAJf7MF3MbJsLpnqXAXpI4Q3beusWaRqYBkI
-         4OoNyyAV9qr/c1FTp2tfQsv3gnSyBPHEnLObwapHJkjxKwND1CbJf6lm69JT2lSfnhHf
-         qYCA==
+        bh=TDrEpOj5z77SP2jdIw8cDIbvUad+t7NAXsCzDrXUEuo=;
+        b=Ew0C8IKjSewOIfs1ywupioINHT/n6wPGtq2fNW0XmEFgFckhAnNx18kVuxyeob5MSb
+         cG6vPdVQgy2y/2wCxrRgFAVzYfZgiGTRAFY3tcx6CIPvOZav9+pzr2A0g2V9jt2k0cSq
+         9HHpBz6+Sfe0bQsurN4lUeiDAbqyklaJsw449YG114/qp9WKYRH5zxvga2tXVvb3mBga
+         Cp+1KKZGvZQEC1wAnFvKoWVHGqnD2mGmydz+QUuPFHn2wQYUaZSi2A1opiUYI1VjnPGd
+         EZHj0i05y8g9gyXadz3X1/RTTTyBrx7N4tTAhBK9sP7DGVVpXSKcFO8kZKq7qkBWjYyo
+         S4Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0sqc+8Rn23i9NIXRc3rzWglOlIsYoDOCKK+U0vVnVf8=;
-        b=31wiLqphgAOpvN4m2GsbVbJy3jECUpRs+adOKiTsS3kpby7quwMRBSY7g7oMLM/87z
-         kSOUIGoHPkd+1PIIE1e+mty/SWNfHIYSPiKKyL5QQz/2+HBmk/0HxyLGC4ZmxSKw1BYd
-         GM0qtlRPnn4JfzuaGUAqzL08aB4vESDYmoAbe0CsoAZtJI44bFOhBLF6uhMy0zvdB9jM
-         VebCGbEQzXSb/dMq8uISbhp3oGudUw7jL6RZg8G9vyMB6sldvP9/L2gwKNLq9s0e4sz/
-         V0nXiX8ssBPgZ7H8esh32faiTkMydFVI3f+1xw/suKc7u3mifvNJBAE1cD7ufSdPV3ma
-         Di0g==
-X-Gm-Message-State: AOAM5312QxgaSqEJtro77BuIEhoJ3wiZY7hgckBCDNhOLB0JZxEYQxXY
-        C8t3r32QK6IVNqAg0/b8cJUv4w==
-X-Google-Smtp-Source: ABdhPJyY3Fv9QcnunPtvdtmn1QYeYqhfMcgkYKWmFqTAaf0DAX+dPQteKaq7uTqZ/uQmOkkrqsksfg==
-X-Received: by 2002:a62:5fc7:0:b0:438:9e3a:b8c0 with SMTP id t190-20020a625fc7000000b004389e3ab8c0mr22443pfb.74.1632322141372;
-        Wed, 22 Sep 2021 07:49:01 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x19sm3250084pgk.37.2021.09.22.07.49.00
+        bh=TDrEpOj5z77SP2jdIw8cDIbvUad+t7NAXsCzDrXUEuo=;
+        b=aziC9c+z2BAUz8Oy+1SjXRFZkfsQnO+pSu7KJF4r3pr+EHqmAYaVXAIMYr6gmdz+iK
+         SEWLKHkb9P1uuSPcq6nLwqrRfJTWFxbUgRD1GTlP/DZDj/MgrRVg8vEUip3wpDTKqo6e
+         DLCtS8rhB6yTqBAH6CPUlQnMDMt+d51U00sVVnpZIvZGKU5pp/JREgJnM4xroUOep0nM
+         Xy3971IfQKueRbkp2YDLNn71eeJm/34/ELv3BmgabJr+WGniyXSX7aO9UB21ar8avj10
+         XSv0lniO+mBC6vT4CTEkw5WkVjayWnpcnnXIlHlg/56LnrdjDnD5YYTRvSTJgeel7w82
+         X1eg==
+X-Gm-Message-State: AOAM532YEpfGUZAmPzMGsTyUrokQPUFdH8XKR9Mvz/RQRd7uql6m7IbU
+        AuZ88fgvF6wRV1Faw+XELrH3nkFWRg+M6g==
+X-Google-Smtp-Source: ABdhPJxMpjDOCwgilrcdezM3QInKUMDiNn1/siG8KtEO0JxOOJ9kWoOrqZ1UQupWEHroXThfagdnpQ==
+X-Received: by 2002:a5d:66c6:: with SMTP id k6mr11823034wrw.382.1632322167122;
+        Wed, 22 Sep 2021 07:49:27 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id z17sm2151265wml.24.2021.09.22.07.49.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 07:49:00 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 14:48:56 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH v3 08/16] perf: Force architectures to opt-in to guest
- callbacks
-Message-ID: <YUtCWOYJwCUYDYtW@google.com>
-References: <20210922000533.713300-1-seanjc@google.com>
- <20210922000533.713300-9-seanjc@google.com>
- <f2ad98e2-ddfb-c688-65af-7ecbd8bc3b3d@redhat.com>
+        Wed, 22 Sep 2021 07:49:26 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 15:49:05 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Liu Yi L <yi.l.liu@intel.com>
+Cc:     alex.williamson@redhat.com, jgg@nvidia.com, hch@lst.de,
+        jasowang@redhat.com, joro@8bytes.org, kevin.tian@intel.com,
+        parav@mellanox.com, lkml@metux.net, pbonzini@redhat.com,
+        lushenming@huawei.com, eric.auger@redhat.com, corbet@lwn.net,
+        ashok.raj@intel.com, yi.l.liu@linux.intel.com,
+        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
+        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
+        robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
+        david@gibson.dropbear.id.au, nicolinc@nvidia.com
+Subject: Re: [RFC 17/20] iommu/iommufd: Report iova range to userspace
+Message-ID: <YUtCYZI3oQcwKrUh@myrica>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-18-yi.l.liu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f2ad98e2-ddfb-c688-65af-7ecbd8bc3b3d@redhat.com>
+In-Reply-To: <20210919063848.1476776-18-yi.l.liu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021, Paolo Bonzini wrote:
-> On 22/09/21 02:05, Sean Christopherson wrote:
-> > @@ -1273,6 +1274,11 @@ static inline unsigned int perf_guest_handle_intel_pt_intr(void)
-> >   }
-> >   extern void perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs);
-> >   extern void perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs);
-> > +#else
-> > +static inline unsigned int perf_guest_state(void)		 { return 0; }
-> > +static inline unsigned long perf_guest_get_ip(void)		 { return 0; }
-> > +static inline unsigned int perf_guest_handle_intel_pt_intr(void) { return 0; }
-> > +#endif /* CONFIG_GUEST_PERF_EVENTS */
+On Sun, Sep 19, 2021 at 02:38:45PM +0800, Liu Yi L wrote:
+> [HACK. will fix in v2]
 > 
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> IOVA range is critical info for userspace to manage DMA for an I/O address
+> space. This patch reports the valid iova range info of a given device.
 > 
-> Having perf_guest_handle_intel_pt_intr in generic code is a bit off.  Of
-> course it has to be in the struct, but the wrapper might be placed in
-> arch/x86/include/asm/perf_event.h as well (applies to patch 7 as well).
+> Due to aforementioned hack, this info comes from the hacked vfio type1
+> driver. To follow the same format in vfio, we also introduce a cap chain
+> format in IOMMU_DEVICE_GET_INFO to carry the iova range info.
+[...]
+> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
+> index 49731be71213..f408ad3c8ade 100644
+> --- a/include/uapi/linux/iommu.h
+> +++ b/include/uapi/linux/iommu.h
+> @@ -68,6 +68,7 @@
+>   *		   +---------------+------------+
+>   *		   ...
+>   * @addr_width:    the address width of supported I/O address spaces.
+> + * @cap_offset:	   Offset within info struct of first cap
+>   *
+>   * Availability: after device is bound to iommufd
+>   */
+> @@ -77,9 +78,11 @@ struct iommu_device_info {
+>  #define IOMMU_DEVICE_INFO_ENFORCE_SNOOP	(1 << 0) /* IOMMU enforced snoop */
+>  #define IOMMU_DEVICE_INFO_PGSIZES	(1 << 1) /* supported page sizes */
+>  #define IOMMU_DEVICE_INFO_ADDR_WIDTH	(1 << 2) /* addr_wdith field valid */
+> +#define IOMMU_DEVICE_INFO_CAPS		(1 << 3) /* info supports cap chain */
+>  	__u64	dev_cookie;
+>  	__u64   pgsize_bitmap;
+>  	__u32	addr_width;
+> +	__u32   cap_offset;
 
-Yeah, I went with this option purely to keep everything bundled together.  I have
-no strong opinion.
+We can also add vendor-specific page table and PASID table properties as
+capabilities, otherwise we'll need giant unions in the iommu_device_info
+struct. That made me wonder whether pgsize and addr_width should also be
+separate capabilities for consistency, but this way might be good enough.
+There won't be many more generic capabilities. I have "output address
+width" and "PASID width", the rest is specific to Arm and SMMU table
+formats.
+
+Thanks,
+Jean
+
+>  };
+>  
+>  #define IOMMU_DEVICE_GET_INFO	_IO(IOMMU_TYPE, IOMMU_BASE + 1)
+> -- 
+> 2.25.1
+> 
