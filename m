@@ -2,190 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E257F4149E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3811D4149E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhIVM7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S230040AbhIVM7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhIVM7f (ORCPT
+        with ESMTP id S229731AbhIVM7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:59:35 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176A7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:58:05 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id b10so3169899ioq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:58:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gQmTeeI9SmVhpWXFHOOADd2pL7AYSuP57rY9o9YQggQ=;
-        b=Q2bgtXzBfU+xjTojiQA8LyZH3763j5d7nj2Ly2NI76so2njbQUvzg65LJZQ092Wy2Q
-         VvI66chJiA5mW8ZKmmQsPO97CZjGqDrKG310YyKphE5+k8Rdf9i4Om2P4W1G37yidir4
-         UFEJ9aE6eZt/J6i4DDK5xKr3M5sI2V6LnQNKCaaWmfub3P6A/645tcH2MhHLZ0kGIUSL
-         sncKoAU3GnfWsFwnJJ62SEtAdDfoxELXKNZtsRWqQg49LrjqyKg2k7w9qJMFrnVCEQTN
-         kde1kyQFr20CU5Io6gXvfdSeoUqtEjyT8PN7Iy/RJBBqwLwYAW/Kaek+V/Odkc9++H9g
-         h8+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gQmTeeI9SmVhpWXFHOOADd2pL7AYSuP57rY9o9YQggQ=;
-        b=IdWZT7GDJ38AqlRIlmsve1KqjJfl/W3hAEfDhSVduuOKr0JlRTGoYfdOVVi0dHIOoo
-         APqQ/DbJsVK/35GIfCMoa6z+WEdP+PQbBO8gbqS/ZUdptZQQ3coawHrIy78/FAYo2zse
-         Nv3GJ2bTMc2n4yldGvaCCCC4KkfSiWZ7TgSJ4iLPvpZ6aizV1JjjaZGc0W3kayC/itnQ
-         GfybzQa++59tjDsVElrMMt+ETZ5ojdqgznCFLSoi3UGsAAvZks6mU7GNXsrO5le/RGOp
-         DfmHOcDLl6eqGStXe/aD4nyXiOOTcUgDy48+N+H6No2AwQi7ZiB2M69qfrohXTcIpjH4
-         J2qQ==
-X-Gm-Message-State: AOAM531GEpl7rxNCeLMZ26m9U94Vi/inSIqGbX4t7wuGDMNSicivs3O7
-        vTqpjpJHP7nZUVU18cQLlhxVEA==
-X-Google-Smtp-Source: ABdhPJx2uF78lzrG6cPMKm0MQ8uI7yebjSSryN4YgHlkldLqtkdgq95l0JJCd72wzgvgPNAjZQOdOw==
-X-Received: by 2002:a05:6638:1389:: with SMTP id w9mr4665060jad.138.1632315484395;
-        Wed, 22 Sep 2021 05:58:04 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id y124sm996408iof.8.2021.09.22.05.58.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 05:58:04 -0700 (PDT)
-Subject: Re: [RFC v2 PATCH] mm, sl[au]b: Introduce lockless cache
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        John Garry <john.garry@huawei.com>,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org
-References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
- <ebea2af2-90d0-248f-8461-80f2e834dfea@kernel.dk>
- <20210922081906.GA78305@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <688e6750-87e9-fb44-ce40-943bad072e48@kernel.dk>
-Date:   Wed, 22 Sep 2021 06:58:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 22 Sep 2021 08:59:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51489C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:58:18 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mT1pI-0007Q2-Lw; Wed, 22 Sep 2021 14:58:16 +0200
+Subject: Re: [PATCH 1/6] dt-bindings: nvmem: add cell-type to nvmem cells
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org,
+        =?UTF-8?Q?Jan_L=c3=bcbbe?= <jlu@pengutronix.de>
+Cc:     devicetree@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org
+References: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
+ <20210908100257.17833-2-qiangqing.zhang@nxp.com>
+ <6d91d833-08cc-7ce2-4fe5-3d843a8b31ae@pengutronix.de>
+ <181c4037-3c34-0f71-6bb7-a9c11b173064@linaro.org>
+ <dbd1c20c-e3be-6c92-52a8-2ad76d0092d0@pengutronix.de>
+ <8fc0a5e2-18c0-fa81-3eed-a6d596361633@linaro.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <d580dd06-8bc8-91c9-262b-f6f276b033c2@pengutronix.de>
+Date:   Wed, 22 Sep 2021 14:58:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210922081906.GA78305@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+In-Reply-To: <8fc0a5e2-18c0-fa81-3eed-a6d596361633@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 2:19 AM, Hyeonggon Yoo wrote:
-> On Tue, Sep 21, 2021 at 09:37:40AM -0600, Jens Axboe wrote:
->>> @@ -424,6 +431,57 @@ kmem_cache_create(const char *name, unsigned int size, unsigned int align,
->>>  }
->>>  EXPORT_SYMBOL(kmem_cache_create);
->>>  
->>> +/**
->>> + * kmem_cache_alloc_cached - try to allocate from cache without lock
->>> + * @s: slab cache
->>> + * @flags: SLAB flags
->>> + *
->>> + * Try to allocate from cache without lock. If fails, fill the lockless cache
->>> + * using bulk alloc API
->>> + *
->>> + * Be sure that there's no race condition.
->>> + * Must create slab cache with SLAB_LOCKLESS_CACHE flag to use this function.
->>> + *
->>> + * Return: a pointer to free object on allocation success, NULL on failure.
->>> + */
->>> +void *kmem_cache_alloc_cached(struct kmem_cache *s, gfp_t gfpflags)
->>> +{
->>> +	struct kmem_lockless_cache *cache = this_cpu_ptr(s->cache);
->>> +
->>> +	BUG_ON(!(s->flags & SLAB_LOCKLESS_CACHE));
->>> +
->>> +	if (cache->size) /* fastpath without lock */
->>> +		return cache->queue[--cache->size];
->>> +
->>> +	/* slowpath */
->>> +	cache->size = kmem_cache_alloc_bulk(s, gfpflags,
->>> +			KMEM_LOCKLESS_CACHE_QUEUE_SIZE, cache->queue);
->>> +	if (cache->size)
->>> +		return cache->queue[--cache->size];
->>> +	else
->>> +		return NULL;
->>> +}
->>> +EXPORT_SYMBOL(kmem_cache_alloc_cached);
-> 
-> Hello Jens, I'm so happy that you gave comment.
-> 
->> What I implemented for IOPOLL doesn't need to care about interrupts,
->> hence preemption disable is enough. But we do need that, at least.
-> 
-> To be honest, that was my mistake. I was mistakenly using percpu API.
-> it's a shame :> Thank you for pointing that.
-> 
-> Fixed it in v3 (work in progress now)
+Hi Srini,
 
-Another thing to fix from there, just make it:
+On 22.09.21 14:49, Srinivas Kandagatla wrote:
+> 
+> 
+> On 22/09/2021 13:31, Ahmad Fatoum wrote:
+>>>>
+>>>> On 08.09.21 12:02, Joakim Zhang wrote:
+>>>>> From: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
+>>>>>
+>>>>> Some of the nvmem providers encode data for certain type of nvmem cell,
+>>>>> example mac-address is stored in ascii or with delimiter or in reverse order.
+>>>>>
+>>>>> This is much specific to vendor, so having a cell-type would allow nvmem
+>>>>> provider drivers to post-process this before using it.
+>>>> I don't agree with this assessment. Users of the OCOTP so far
+>>>> used this specific encoding. Bootloaders decode the OCOTP this way, but this
+>>>> encoding isn't really an inherent attribute of the OCOTP. A new NXP SoC
+>>>> with a different OTP IP will likely use the same format. Users may even
+>>>> use the same format on an EEPROM to populate a second off-SoC interface, .. etc.
+>>>>
+>>> That is okay.
+>> How would you go about using this same format on an EEPROM?
+> 
+> Am guessing that by the time there are more users for such formats, those post-processing functions should be converted into some library functions.
 
-if (cache->size)
-	return cached item
-return NULL;
-
-No need for an if/else with the return.
+User A wants to reverse bytes in MAC address. User B stores it in ASCII.
+Both use the exact same EEPROM. How could this ever work when the
+encoding decision is left to the EEPROM driver?
 
 > 
->> There are basically two types of use cases for this:
+> --srini
+> 
 >>
->> 1) Freeing can happen from interrupts
->> 2) Freeing cannot happen from interrupts
->>
+>>>> I'd thus prefer to not make this specific to the OCOTP as all:
+>>>>
+>>>>     * #define NVMEM_CELL_ENCODING_MAC_ADDRESS_IMX    /* ... */
 > 
-> I considered only case 2) when writing code. Well, To support 1),
-> I think there are two ways:
-> 
->  a) internally call kmem_cache_free when in_interrupt() is true
->  b) caller must disable interrupt when freeing
-> 
-> I think a) is okay, how do you think?
 
-If the API doesn't support freeing from interrupts, then I'd make that
-the rule. Caller should know better if that can happen, and then just
-use kmem_cache_free() if in a problematic context. That avoids polluting
-the fast path with that check. I'd still make it a WARN_ON_ONCE() as
-described and it can get removed later, hopefully.
-
-But note it's not just the freeing side that would be problematic. If
-you do support from-irq freeing, then the alloc side would need
-local_irq_save/restore() instead of just basic preempt protection. That
-would make it more expensive all around.
-
-> note that b) can be problematic with kmem_cache_free_bulk
-> as it says interrupts must be enabled.
-
-Not sure that's actually true, apart from being bitrot.
-
->> How does this work for preempt? You seem to assume that the function is
->> invoked with preempt disabled, but then it could only be used with
->> GFP_ATOMIC.
-> 
-> I wrote it just same prototype with kmem_cache_alloc, and the gfpflags
-> parameter is unnecessary as you said. Okay, let's remove it in v3.
-
-Please also run some actual comparitative benchmarks on this, with a
-real workload. You also need an internal user of this, a stand-alone
-feature isn't really useful. It needs someone using it, and the
-benchmarks would be based on that (or those) use cases.
-
-Another consideration - is it going to be OK to ignore slab pruning for
-this? Probably. But it needs to be thought about.
-
-In terms of API, not sure why these are separate functions. Creating the
-cache with SLAB_FOO should be enough, and then kmem_cache_alloc() tries
-the cache first. If nothing there, fallback to the regular path.
-Something like this would only be used for cases that have a high
-alloc+free rate, would seem like a shame to need two function calls for
-the case where you just want a piece of memory and the cache is empty.
 
 -- 
-Jens Axboe
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
