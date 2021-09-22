@@ -2,118 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E120E414345
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E196241434C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233571AbhIVIMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:12:36 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50442
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233349AbhIVIMb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:12:31 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 0854A3F337
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:10:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632298259;
-        bh=P8Qe07F/xjMQdNLxVav+Rfl78SB2e9oBWelI8/7HSJc=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=CsM4WOF81WV4yB0lm/EC63pq6fB0GK4NL8c4/F5T2//WbLnIeKe42j/bP2oUKxitz
-         mp++AyRgVe+N2l+uOArLWutgo28uA/ASj36UsuqtSCR04x2f1T7isAgNOMJWQqTnWA
-         hHd/GuvSPETJY1/RCKnDOWpkxc1QpD0rdvcaRPEb1GwulU+FTifRo1HEKbP7oUCsXb
-         p3RUIxB6z7fpCPQTs/3Sf6PS75AbjV/t3Y3F6hWjCbUXfab2Ksjbe6izEZS50oAPUd
-         /bbWz9RmziME4Vpy2yoOTK6wEg8J0hXIjYP+LeuyGlC910r6cm0paI/xa/bQqT6GTe
-         71ZFoYf/zeKJQ==
-Received: by mail-wr1-f72.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so1361622wrg.17
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:10:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P8Qe07F/xjMQdNLxVav+Rfl78SB2e9oBWelI8/7HSJc=;
-        b=Tw/7pwPWPP97wrKBcvEOSNaSmmLYSGXLnGFn4fVdlrF2toVrNhay0L4Q/9h9orA01p
-         zZ+/7xJ8xdF+naokDo5+6AMg58rxjuA641Cd/LJfMPxeAqI8NBYYdcg6DQNg95fL1uhk
-         o7EQvumjdzqwTvUaDQc6N3DnViTMOz32gwlUKquoq1KtjG4lE8vAjY3SNHWxUG8DBFcL
-         GO/B2hqqQ9IHcq/8BlN4iNhcYbJA9APc02ldlD9xOhrsC8tHxTYpLLo3s97wQJhSN5aX
-         2AnYycm/FvCzxd2Y/nZt53PjgUVPx7vKH1ua7LXX5FZJcYGeoXDUGYcqjVjTTQQ9j7e0
-         uTRg==
-X-Gm-Message-State: AOAM532uAtEBNKw9DOthS8e3cDb4lTm10wRLfqG4CXZ5SkHiSUEGkovT
-        pjobf/lWLaKpbSg0GiM8nGAeXlz3L8VVMrsX1cDMU9JCxjXyfysk7Cd4R7c+PAeVZ4e0LWahvOd
-        IfFVXpBizKAKceBU9PvNaf+D095HcgAxXIlxW0cc1eA==
-X-Received: by 2002:a05:600c:3b89:: with SMTP id n9mr9113904wms.186.1632298258647;
-        Wed, 22 Sep 2021 01:10:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzb3Ljj7oUI5lHEYQz4nwFDjBGGdyp2FKjKpmWPv5gSTXpVI7LSRlWIyJA3WG9xT/pBfVR0VA==
-X-Received: by 2002:a05:600c:3b89:: with SMTP id n9mr9113885wms.186.1632298258458;
-        Wed, 22 Sep 2021 01:10:58 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id d24sm1174219wmb.35.2021.09.22.01.10.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 01:10:58 -0700 (PDT)
-Subject: Re: [RESEND PATCH v2 1/4] mfd: sec-irq: Do not enforce (incorrect)
- interrupt trigger type
-To:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-References: <20210602110445.33536-1-krzysztof.kozlowski@canonical.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <7ac677f1-2928-21de-a226-449e72b1bd10@canonical.com>
-Date:   Wed, 22 Sep 2021 10:10:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233632AbhIVIMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:12:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233560AbhIVIMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 04:12:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5485D6124A;
+        Wed, 22 Sep 2021 08:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632298265;
+        bh=UBNjFh25k6qXSc/zlMo01Z2HQMpP5ic2GGxHR7Keo5E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BYQbSyNzcGZlQ/y+vImNhxaALZw2YyFr0zOY400vtAxRSvxMYAhRoF6touX2Z+bqt
+         pDd1myR4jH+XQXgkjLCtEplQc4AKIC0jG09/7kB9hjWrYg1rHc+kbOz+AHohPtx2yB
+         PpekP1pLihmt2YkwTzxmTWt+vAiS6e8Fd++Wr1S0=
+Date:   Wed, 22 Sep 2021 10:11:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] get_abi.pl: Check for missing symbols at the ABI
+ specs
+Message-ID: <YUrlFjotiFTYKXOV@kroah.com>
+References: <cover.1631957565.git.mchehab+huawei@kernel.org>
+ <YUoN2m/OYHVLPrSl@kroah.com>
+ <20210921201633.5e6128a0@coco.lan>
+ <YUrCjhEYGXWU6M13@kroah.com>
+ <YUrLqdCQyGaCc1XJ@kroah.com>
+ <20210922093609.34d7bbca@coco.lan>
 MIME-Version: 1.0
-In-Reply-To: <20210602110445.33536-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210922093609.34d7bbca@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/2021 13:04, Krzysztof Kozlowski wrote:
-> From: Krzysztof Kozlowski <krzk@kernel.org>
+On Wed, Sep 22, 2021 at 09:36:09AM +0200, Mauro Carvalho Chehab wrote:
+> Em Wed, 22 Sep 2021 08:22:33 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
 > 
-> Interrupt line can be configured on different hardware in different way,
-> even inverted.  Therefore driver should not enforce specific trigger
-> type - edge falling - but instead rely on Devicetree to configure it.
+> > On Wed, Sep 22, 2021 at 07:43:42AM +0200, Greg Kroah-Hartman wrote:
+> > > On Tue, Sep 21, 2021 at 08:16:33PM +0200, Mauro Carvalho Chehab wrote:
+> > > > Em Tue, 21 Sep 2021 18:52:42 +0200
+> > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> > > > 
+> > > > > On Sat, Sep 18, 2021 at 11:52:10AM +0200, Mauro Carvalho Chehab wrote:
+> > > > > > Hi Greg,
+> > > > > > 
+> > > > > > Add a new feature at get_abi.pl to optionally check for existing symbols
+> > > > > > under /sys that won't match a "What:" inside Documentation/ABI.
+> > > > > > 
+> > > > > > Such feature is very useful to detect missing documentation for ABI.
+> > > > > > 
+> > > > > > This series brings a major speedup, plus it fixes a few border cases when
+> > > > > > matching regexes that end with a ".*" or \d+.
+> > > > > > 
+> > > > > > patch 1 changes get_abi.pl logic to handle multiple What: lines, in
+> > > > > > order to make the script more robust;
+> > > > > > 
+> > > > > > patch 2 adds the basic logic. It runs really quicky (up to 2
+> > > > > > seconds), but it doesn't use sysfs softlinks.
+> > > > > > 
+> > > > > > Patch 3 adds support for parsing softlinks. It makes the script a
+> > > > > > lot slower, making it take a couple of minutes to process the entire
+> > > > > > sysfs files. It could be optimized in the future by using a graph,
+> > > > > > but, for now, let's keep it simple.
+> > > > > > 
+> > > > > > Patch 4 adds an optional parameter to allow filtering the results
+> > > > > > using a regex given by the user. When this parameter is used
+> > > > > > (which should be the normal usecase), it will only try to find softlinks
+> > > > > > if the sysfs node matches a regex.
+> > > > > > 
+> > > > > > Patch 5 improves the report by avoiding it to ignore What: that
+> > > > > > ends with a wildcard.
+> > > > > > 
+> > > > > > Patch 6 is a minor speedup.  On a Dell Precision 5820, after patch 6, 
+> > > > > > results are:
+> > > > > > 
+> > > > > > 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
+> > > > > > 
+> > > > > > 	real	2m35.563s
+> > > > > > 	user	2m34.346s
+> > > > > > 	sys	0m1.220s
+> > > > > > 	7595 undefined
+> > > > > > 	896 undefined_symbols
+> > > > > > 
+> > > > > > Patch 7 makes a *huge* speedup: it basically switches a linear O(n^3)
+> > > > > > search for links by a logic which handle symlinks using BFS. It
+> > > > > > also addresses a border case that was making 'msi-irqs/\d+' regex to
+> > > > > > be misparsed. 
+> > > > > > 
+> > > > > > After patch 7, it is 11 times faster:
+> > > > > > 
+> > > > > > 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
+> > > > > > 
+> > > > > > 	real	0m14.137s
+> > > > > > 	user	0m12.795s
+> > > > > > 	sys	0m1.348s
+> > > > > > 	7030 undefined
+> > > > > > 	794 undefined_symbols
+> > > > > > 
+> > > > > > (the difference on the number of undefined symbols are due to the fix for
+> > > > > > it to properly handle 'msi-irqs/\d+' regex)
+> > > > > > 
+> > > > > > -
+> > > > > > 
+> > > > > > While this series is independent from Documentation/ABI changes, it
+> > > > > > works best when applied from this tree, which also contain ABI fixes
+> > > > > > and a couple of additions of frequent missed symbols on my machine:
+> > > > > > 
+> > > > > >     https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_undefined_abi_v3  
+> > > > > 
+> > > > > I've taken all of these, but get_abi.pl seems to be stuck in an endless
+> > > > > loop or something.  I gave up and stopped it after 14 minutes.  It had
+> > > > > stopped printing out anything after finding all of the pci attributes
+> > > > > that are not documented :)
+> > > > 
+> > > > It is probably not an endless loop, just there are too many vars to
+> > > > check on your system, which could make it really slow.
+> > > 
+> > > Ah, yes, I ran it overnight and got the following:
+> > > 
+> > > $ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
+> > > 
+> > > real	29m39.503s
+> > > user	29m37.556s
+> > > sys	0m0.851s
+> > > 26669 undefined
+> > > 765 undefined_symbols
+> > > 
+> > > > The way the search algorithm works is that reduces the number of regex 
+> > > > expressions that will be checked for a given file entry at sysfs. It 
+> > > > does that by looking at the devnode name. For instance, when it checks for
+> > > > this file:
+> > > > 
+> > > > 	/sys/bus/pci/drivers/iosf_mbi_pci/bind
+> > > > 
+> > > > The logic will seek only the "What:" expressions that end with "bind".
+> > > > Currently, there are just two What expressions for it[1]:
+> > > > 
+> > > > 	What: /sys/bus/fsl\-mc/drivers/.*/bind
+> > > > 	What: /sys/bus/pci/drivers/.*/bind
+> > > > 
+> > > > It will then run an O(n²) algorithm to seek:
+> > > > 
+> > > > 		foreach my $a (@names) {
+> > > >                        foreach my $w (split /\xac/, $what) {
+> > > >                                if ($a =~ m#^$w$#) {
+> > > > 					exact = 1;
+> > > >                                         last;
+> > > >                                 }
+> > > > 			}
+> > > > 		}
+> > > > 
+> > > > Which runs quickly, when there are few regexs to seek. There are, 
+> > > > however, some What: expressions that end with a wildcard. Those are
+> > > > harder to process. Right now, they're all grouped together, which
+> > > > makes them slower. Most of the processing time are spent on those.
+> > > > 
+> > > > I'm working right now on some strategy to also speed up the search 
+> > > > for them. Once I get something better, I'll send a patch series.
+> > > > 
+> > > > --
+> > > > 
+> > > > [1] On a side note, there are currently some problems with the What:
+> > > >     definitions for bind/unbind, as:
+> > > > 
+> > > > 	- it doesn't match all PCI devices;
+> > > > 	- it doesn't match ACPI and other buses that also export
+> > > > 	  bind/unbind.
+> > > > 
+> > > > > 
+> > > > > Anything I can do to help debug this?
+> > > > >
+> > > > 
+> > > > There are two parameters that can help to identify the issue:
+> > > > 
+> > > > a) You can add a "--show-hints" parameter. This turns on some 
+> > > >    prints that may help to identify what the script is doing.
+> > > >    It is not really a debug option, but it helps to identify
+> > > >    when some regexes are failing.
+> > > > 
+> > > > b) You can limit the What expressions that will be parsed with:
+> > > > 	   --search-string <something>
+> > > > 
+> > > > You can combine both. For instance, if you want to make it
+> > > > a lot more verbose, you could run it as:
+> > > > 
+> > > > 	./scripts/get_abi.pl undefined --search-string /sys --show-hints
+> > > 
+> > > Let me run this and time stamp it to see where it is getting hung up on.
+> > > Give it another 30 minutes :)
+> > 
+> > Hm, that didn't make too much sense as to what it was stalled on.  I've
+> > attached the compressed file if you are curious.
 > 
-> The Samsung PMIC drivers are used only on Devicetree boards.
+> Hmm...
 > 
-> Additionally, the PMIC datasheets describe the interrupt line as active
-> low with a requirement of acknowledge from the CPU therefore the edge
-> falling is not correct.
+> 	[07:52:44] --> /sys/devices/pci0000:40/0000:40:01.3/0000:4a:00.1/iommu/amd-iommu/cap
+> 	[08:07:52] --> /sys/devices/pci0000:40/0000:40:01.1/0000:41:00.0/0000:42:05.0/iommu/amd-iommu/cap
 > 
-> Marek Szyprowski reports that together with DTS change (proper level in
-> DTS) it fixes RTC alarm failure that he observed from time to time on
-> TM2e board.
+> It sounds it took quite a while handling iommu cap, which sounds weird, as
+> it should be looking just 3 What expressions:
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> 	[07:43:06] What: /sys/class/iommu/.*/amd\-iommu/cap
+> 	[07:43:06] What: /sys/class/iommu/.*/intel\-iommu/cap
+> 	[07:43:06] What: /sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap
 > 
-> ---
-> 
-> Rebased on https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next
-> 
-> Changes since v1:
-> 1. Mention in commit msg that this fixes TM2e RTC alarm.
-> 2. Add Marek's tested-by.
-> ---
->  drivers/mfd/sec-irq.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> Maybe there was a memory starvation while running the script, causing
+> swaps. Still, it is weird that it would happen there, as the hashes
+> and arrays used at the script are all allocated before it starts the
+> search logic. Here, the allocation part takes ~2 seconds.
 
-Dear Lee,
+No memory starvation here, this thing is a beast:
+	$ free -h
+	               total        used        free      shared  buff/cache   available
+	Mem:           251Gi        36Gi        13Gi       402Mi       202Gi       212Gi
+	Swap:          4.0Gi       182Mi       3.8Gi
 
-This was already a resend. Any comments from your side?
+	$ nproc
+	64
 
-Best regards,
-Krzysztof
+
+> At least on my Dell Precision 5820 (12 cpu threads), the amount of memory it
+> uses is not huge:
+> 
+>     $ /usr/bin/time -v ./scripts/get_abi.pl undefined >/dev/null
+> 	Command being timed: "./scripts/get_abi.pl undefined"
+> 	User time (seconds): 12.68
+> 	System time (seconds): 1.29
+> 	Percent of CPU this job got: 99%
+> 	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:13.98
+> 	Average shared text size (kbytes): 0
+> 	Average unshared data size (kbytes): 0
+> 	Average stack size (kbytes): 0
+> 	Average total size (kbytes): 0
+> 	Maximum resident set size (kbytes): 212608
+> 	Average resident set size (kbytes): 0
+> 	Major (requiring I/O) page faults: 0
+> 	Minor (reclaiming a frame) page faults: 52003
+> 	Voluntary context switches: 1
+> 	Involuntary context switches: 56
+> 	Swaps: 0
+> 	File system inputs: 0
+> 	File system outputs: 0
+> 	Socket messages sent: 0
+> 	Socket messages received: 0
+> 	Signals delivered: 0
+> 	Page size (bytes): 4096
+> 	Exit status: 0
+> 
+> Unfortunately, I don't have any amd-based machine here, but I'll
+> try to run it later on a big arm server and see how it behaves.
+
+I'll run that and get back to you in 30 minutes :)
+
+thanks,
+
+greg k-h
