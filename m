@@ -2,54 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34AD414259
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36561414245
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbhIVHMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 03:12:15 -0400
-Received: from [185.61.187.140] ([185.61.187.140]:55702 "EHLO
-        server8.equinoxes.fr" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S232978AbhIVHMO (ORCPT
+        id S232987AbhIVHHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:07:32 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:46005 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233005AbhIVHHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:12:14 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by server8.equinoxes.fr (Postfix) with ESMTP id BC7B74A734F
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:09:50 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at server8.equinoxes.fr
-Received: from server8.equinoxes.fr ([127.0.0.1])
-        by localhost (server8.equinoxes.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id VpZ8bW5czSex for <linux-kernel@vger.kernel.org>;
-        Wed, 22 Sep 2021 09:09:50 +0200 (CEST)
-Received: by server8.equinoxes.fr (Postfix, from userid 5023)
-        id 051054A881B; Wed, 22 Sep 2021 09:05:50 +0200 (CEST)
-To:     linux-kernel@vger.kernel.org
-Subject: General Sales Enquiries
-Date:   Wed, 22 Sep 2021 09:05:49 +0200
-From:   Robert Bounds <robert.bounds@mailfence.com>
-Reply-To: purchasing@tamu-edu.com
-Message-ID: <af89586065981adcb8c71e0d24fd2b0f@choquenet.com>
+        Wed, 22 Sep 2021 03:07:31 -0400
+Received: (Authenticated sender: peter@casa-korsgaard.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 96B9E10000D;
+        Wed, 22 Sep 2021 07:05:59 +0000 (UTC)
+Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
+        (envelope-from <peter@korsgaard.com>)
+        id 1mSwKM-00089u-BY; Wed, 22 Sep 2021 09:05:58 +0200
+From:   Peter Korsgaard <peter@korsgaard.com>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2] MAINTAINERS: usb, update Peter Korsgaard's entries
+References: <20210922063008.25758-1-jslaby@suse.cz>
+Date:   Wed, 22 Sep 2021 09:05:58 +0200
+In-Reply-To: <20210922063008.25758-1-jslaby@suse.cz> (Jiri Slaby's message of
+        "Wed, 22 Sep 2021 08:30:08 +0200")
+Message-ID: <87r1dhqecp.fsf@dell.be.48ers.dk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir/Madam,
- We would like to request a quote for the below products:
+>>>>> "Jiri" == Jiri Slaby <jslaby@suse.cz> writes:
 
-UNITS                                DESCRIPTION
-5                                    Ubiquiti airFiber AF24HD - wireless bridge
-50                                   Seagate ST6000VXA01 Skyhawk 3.5 Hard Drive, 6TB, SATA 6Gb/s 
-50                                   Seagate ST4000VXA07 Skyhawk 3.5 Hard Drive, 4TB, SATA 6Gb/s 
-5                                    Microsoft 15" Multi-Touch Surface Book  3, Intel Core i7, 32 GB RAM - 1 TB SSD - En
+ > Peter's e-mail in MAINTAINERS is defunct:
+ > This is the qmail-send program at a.mx.sunsite.dk.
+ > <jacmet@sunsite.dk>:
+ >       Sorry, no mailbox here by that name. (#5.1.1)
 
-We would also need to know if they are all in stock and if not, please advise on when products will be available to ship to us.
-Payment per University Policy is net 30 days from date of invoice , payment terms should be clearly stated on your official quotation to know you accept our terms.
-Looking forward to hearing back from you.
-Cordially
-Robert Bounds - Director Of Purchasing
-Texas A&M University
-purchasing@tamu-edu.com
-robert.bounds@mailfence.com
-Tel/Fax:  (979) 272-5815
+ > Peter says:
+ > ** Ahh yes, it should be changed to peter@korsgaard.com.
 
+ > However he also says:
+ > ** I haven't had access to c67x00 hw for quite some years though, so maybe
+ > ** it should be marked Orphan instead?
+
+ > So change as he wishes.
+
+ > Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+ > Cc: Peter Korsgaard <peter@korsgaard.com>
+ > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+ > Cc: linux-usb@vger.kernel.org
+ > ---
+ > [v2]
+
+ > - Change the e-mail in DM9601 instead of dropping the old one.
+ > - Make C67X00 an orphan.
+
+Thanks!
+
+Acked-by: Peter Korsgaard <peter@korsgaard.com>
+
+
+
+ >  MAINTAINERS | 5 ++---
+ >  1 file changed, 2 insertions(+), 3 deletions(-)
+
+ > diff --git a/MAINTAINERS b/MAINTAINERS
+ > index 2b990794ec35..aafc58437abd 100644
+ > --- a/MAINTAINERS
+ > +++ b/MAINTAINERS
+ > @@ -19344,13 +19344,12 @@ S:	Maintained
+ >  F:	drivers/usb/misc/chaoskey.c
+ 
+ >  USB CYPRESS C67X00 DRIVER
+ > -M:	Peter Korsgaard <jacmet@sunsite.dk>
+ >  L:	linux-usb@vger.kernel.org
+ > -S:	Maintained
+ > +S:	Orphan
+ >  F:	drivers/usb/c67x00/
+ 
+ >  USB DAVICOM DM9601 DRIVER
+ > -M:	Peter Korsgaard <jacmet@sunsite.dk>
+ > +M:	Peter Korsgaard <peter@korsgaard.com>
+ >  L:	netdev@vger.kernel.org
+ >  S:	Maintained
+ >  W:	http://www.linux-usb.org/usbnet
+ > -- 
+ > 2.33.0
+
+
+-- 
+Bye, Peter Korsgaard
