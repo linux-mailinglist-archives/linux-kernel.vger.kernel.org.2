@@ -2,198 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B114143EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECAD4143F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbhIVIne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:43:34 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:45413 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233349AbhIVInb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:43:31 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 7EE655802A0;
-        Wed, 22 Sep 2021 04:42:00 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 22 Sep 2021 04:42:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=yoA2Ii3axXPN7X/c5B/JJ2aU3f5
-        xmDOavqnZKLWOwGI=; b=bD20vs5Eiv2VzwwdLP5aJY0qaNmLmsNoCiA4YNs3st8
-        5QN/ENVa1SUEPMTMXtETZC9a1TRmp4gQIiDscATsGeR/a0Mky7AnZXc0joYVNlO9
-        Q+8nFFZkzf/HUPw/LQv4SbmuFmNRoBzGHkhd6EGE7cq553pni5Zxsfe1qjDsx//m
-        M6fZD0SCaW600TggsuxlLbKxlVVuNUb7n7ASm32aWhY6CQlJyh883clvlU7gf32O
-        Ztj9Dz/pJXWcVzMWUeOid1vfyVa/lbCDKHvG8RHkvydFhkcknpl1G7z8o5z5+AdN
-        xquqL2BIYUlSk9jq18l+XsyaRZMuGiUbt00d4RFcPVg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=yoA2Ii
-        3axXPN7X/c5B/JJ2aU3f5xmDOavqnZKLWOwGI=; b=HxvbmiS7peC+aSJzBbjFTo
-        DwXG/2eAbUkdtT5pxS+gkiPHyUa95N9+uusXaK0JpIsftsHGuBoFGMCbmnKtmcfu
-        q5opv+zBUs9d3CD9Yw9AQ5hWznVogHWzptHTVH4GvVGWnc4pDLwCZL395BCIF3+6
-        cbk8iL66EML7W+oswJeZd39V0WRzLmCZJdhKozYUTdxnCP7NB7tTtAw1JkZcHiCB
-        OOOgYVAddUZaPgxANeb9fQyraSXFG1k+veKgVcZsi3X3WbtEIc/fwukHydBbwBD/
-        idWXmctPT90yjPX3S7T53AiCBmbjnTYsBYvu+WAJE90C73L20pIGysEzi5QcfoaA
-        ==
-X-ME-Sender: <xms:VuxKYcgL6aoCgh02rEx50Ih2s0vhbdIDcU1oIPLLpp0m60uNVmSQ2w>
-    <xme:VuxKYVDQJbqEXHvkC6blHIZG60uKUgOn1mJ6NcN2zMTWdugqQRS-jXt55-dVeYqef
-    g0i5_RHc1SXdxrD2H0>
-X-ME-Received: <xmr:VuxKYUHqYZyI0uZmF0gLQickQOpIJHAZ1gb5nARrqvro1wqognq9MelwR0SdLmS0EPCl9vD1Q4BW_RDgatyAPDTXM-EPz97O1-uD>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeijedgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:VuxKYdSP9iQZD-Fhv8Bu0i4OjGjk9Xt2QTArkcXrhTFPiyk1d6RV6w>
-    <xmx:VuxKYZx55-18gnF6uKnFtjvJ-UjWKxp_tRYknFRywR8eEHp8l-3G8Q>
-    <xmx:VuxKYb6LhydO-LNHGFxElJDCgsVL6qLDQmz4pOVtOTDLB0OFIAkoew>
-    <xmx:WOxKYSHddCiT4db0vBw-2gZu8R7cxNLPayrJMbzbvmYDF7fHOfJZHQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 22 Sep 2021 04:41:57 -0400 (EDT)
-Date:   Wed, 22 Sep 2021 10:41:56 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Emma Anholt <emma@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Openrisc <openrisc@lists.librecores.org>
-Subject: Re: [PATCH v3 1/6] drm/vc4: select PM (openrisc)
-Message-ID: <20210922084156.xqru5fdjkarbkyew@gilmour>
-References: <20210819135931.895976-1-maxime@cerno.tech>
- <20210819135931.895976-2-maxime@cerno.tech>
- <8a5cdcf5-33ed-398f-243a-b8889fd754e3@infradead.org>
+        id S233973AbhIVIpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:45:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233349AbhIVIpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 04:45:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BCE46128E;
+        Wed, 22 Sep 2021 08:43:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632300225;
+        bh=wIX4Nyvh3NhY3C+0A3fE0uyB9IBDeFSOm7OFmITz9tI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CM4M2XN10RksxBCCApODxtQ2IPRq2c/vxmCmZV3YOE/940DtSnIcLvyKBKPrf6h5S
+         WMGmmNVyRc3N743l6mHHMjdXZ1q5CFPbtTdR8a6nilWKjCj8QELFY3fFO8E7VDd/A4
+         hmThC2566Pbe7I0An0kwPdtYEjjw1ehdvW0+WyWY=
+Date:   Wed, 22 Sep 2021 10:43:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] get_abi.pl: Check for missing symbols at the ABI
+ specs
+Message-ID: <YUrsvgf3JXUPQ2Vo@kroah.com>
+References: <cover.1631957565.git.mchehab+huawei@kernel.org>
+ <YUoN2m/OYHVLPrSl@kroah.com>
+ <20210921201633.5e6128a0@coco.lan>
+ <YUrCjhEYGXWU6M13@kroah.com>
+ <YUrLqdCQyGaCc1XJ@kroah.com>
+ <20210922093609.34d7bbca@coco.lan>
+ <YUrlFjotiFTYKXOV@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5x75oq3heiuvzqmo"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a5cdcf5-33ed-398f-243a-b8889fd754e3@infradead.org>
+In-Reply-To: <YUrlFjotiFTYKXOV@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 22, 2021 at 10:11:02AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Sep 22, 2021 at 09:36:09AM +0200, Mauro Carvalho Chehab wrote:
+> > It sounds it took quite a while handling iommu cap, which sounds weird, as
+> > it should be looking just 3 What expressions:
+> > 
+> > 	[07:43:06] What: /sys/class/iommu/.*/amd\-iommu/cap
+> > 	[07:43:06] What: /sys/class/iommu/.*/intel\-iommu/cap
+> > 	[07:43:06] What: /sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap
+> > 
+> > Maybe there was a memory starvation while running the script, causing
+> > swaps. Still, it is weird that it would happen there, as the hashes
+> > and arrays used at the script are all allocated before it starts the
+> > search logic. Here, the allocation part takes ~2 seconds.
+> 
+> No memory starvation here, this thing is a beast:
+> 	$ free -h
+> 	               total        used        free      shared  buff/cache   available
+> 	Mem:           251Gi        36Gi        13Gi       402Mi       202Gi       212Gi
+> 	Swap:          4.0Gi       182Mi       3.8Gi
+> 
+> 	$ nproc
+> 	64
+> 
+> 
+> > At least on my Dell Precision 5820 (12 cpu threads), the amount of memory it
+> > uses is not huge:
+> > 
+> >     $ /usr/bin/time -v ./scripts/get_abi.pl undefined >/dev/null
+> > 	Command being timed: "./scripts/get_abi.pl undefined"
+> > 	User time (seconds): 12.68
+> > 	System time (seconds): 1.29
+> > 	Percent of CPU this job got: 99%
+> > 	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:13.98
+> > 	Average shared text size (kbytes): 0
+> > 	Average unshared data size (kbytes): 0
+> > 	Average stack size (kbytes): 0
+> > 	Average total size (kbytes): 0
+> > 	Maximum resident set size (kbytes): 212608
+> > 	Average resident set size (kbytes): 0
+> > 	Major (requiring I/O) page faults: 0
+> > 	Minor (reclaiming a frame) page faults: 52003
+> > 	Voluntary context switches: 1
+> > 	Involuntary context switches: 56
+> > 	Swaps: 0
+> > 	File system inputs: 0
+> > 	File system outputs: 0
+> > 	Socket messages sent: 0
+> > 	Socket messages received: 0
+> > 	Signals delivered: 0
+> > 	Page size (bytes): 4096
+> > 	Exit status: 0
+> > 
+> > Unfortunately, I don't have any amd-based machine here, but I'll
+> > try to run it later on a big arm server and see how it behaves.
+> 
+> I'll run that and get back to you in 30 minutes :)
 
---5x75oq3heiuvzqmo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+$ /usr/bin/time -v ./scripts/get_abi.pl undefined > /dev/null
+	Command being timed: "./scripts/get_abi.pl undefined"
+	User time (seconds): 1756.94
+	System time (seconds): 0.76
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 29:18.94
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 228116
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 55862
+	Voluntary context switches: 1
+	Involuntary context switches: 17205
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
 
-Hi Randy,
-
-On Sun, Sep 19, 2021 at 09:40:44AM -0700, Randy Dunlap wrote:
-> On 8/19/21 6:59 AM, Maxime Ripard wrote:
-> > We already depend on runtime PM to get the power domains and clocks for
-> > most of the devices supported by the vc4 driver, so let's just select it
-> > to make sure it's there, and remove the ifdef.
-> >=20
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > ---
-> >   drivers/gpu/drm/vc4/Kconfig    | 1 +
-> >   drivers/gpu/drm/vc4/vc4_hdmi.c | 2 --
-> >   2 files changed, 1 insertion(+), 2 deletions(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/vc4/Kconfig b/drivers/gpu/drm/vc4/Kconfig
-> > index 118e8a426b1a..f774ab340863 100644
-> > --- a/drivers/gpu/drm/vc4/Kconfig
-> > +++ b/drivers/gpu/drm/vc4/Kconfig
-> > @@ -9,6 +9,7 @@ config DRM_VC4
-> >   	select DRM_KMS_CMA_HELPER
-> >   	select DRM_GEM_CMA_HELPER
-> >   	select DRM_PANEL_BRIDGE
-> > +	select PM
-> >   	select SND_PCM
-> >   	select SND_PCM_ELD
-> >   	select SND_SOC_GENERIC_DMAENGINE_PCM
-> > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_h=
-dmi.c
-> > index c2876731ee2d..602203b2d8e1 100644
-> > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > @@ -2107,7 +2107,6 @@ static int vc5_hdmi_init_resources(struct vc4_hdm=
-i *vc4_hdmi)
-> >   	return 0;
-> >   }
-> > -#ifdef CONFIG_PM
-> >   static int vc4_hdmi_runtime_suspend(struct device *dev)
-> >   {
-> >   	struct vc4_hdmi *vc4_hdmi =3D dev_get_drvdata(dev);
-> > @@ -2128,7 +2127,6 @@ static int vc4_hdmi_runtime_resume(struct device =
-*dev)
-> >   	return 0;
-> >   }
-> > -#endif
-> >   static int vc4_hdmi_bind(struct device *dev, struct device *master, v=
-oid *data)
-> >   {
-> >=20
->=20
-> Hi,
->=20
-> FYI.
->=20
-> This still causes a build error on arch/openrisc/ since it does not suppo=
-rt
-> CONFIG_PM (it does not source "kernel/power/Kconfig" like some other arch=
-es do):
->=20
-> ./arch/riscv/Kconfig:source "kernel/power/Kconfig"
-> ./arch/x86/Kconfig:source "kernel/power/Kconfig"
-> ./arch/nds32/Kconfig:source "kernel/power/Kconfig"
-> ./arch/sh/Kconfig:source "kernel/power/Kconfig"
-> ./arch/arc/Kconfig:source "kernel/power/Kconfig"
-> ./arch/arm64/Kconfig:source "kernel/power/Kconfig"
-> ./arch/xtensa/Kconfig:source "kernel/power/Kconfig"
-> ./arch/sparc/Kconfig:source "kernel/power/Kconfig"
-> ./arch/arm/Kconfig:source "kernel/power/Kconfig"
-> ./arch/mips/Kconfig:source "kernel/power/Kconfig"
-> ./arch/powerpc/Kconfig:source "kernel/power/Kconfig"
-> ./arch/um/Kconfig:source "kernel/power/Kconfig"
-> ./arch/ia64/Kconfig:source "kernel/power/Kconfig"
->=20
-> so with
-> CONFIG_DRM_VC4=3Dy
-> # CONFIG_DRM_VC4_HDMI_CEC is not set
->=20
-> I still see
-> ../drivers/gpu/drm/vc4/vc4_hdmi.c:2139:12: warning: 'vc4_hdmi_runtime_sus=
-pend' defined but not used [-Wunused-function]
->  2139 | static int vc4_hdmi_runtime_suspend(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~~~~~~
-
-With what version did you get that build error? -rc2 shouldn't have it
-anymore since the runtime_pm hooks introduction got reverted.
-
-Maxime
-
---5x75oq3heiuvzqmo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUrsVAAKCRDj7w1vZxhR
-xcJDAP9CgeyoZOknS4cqvZ9EHhMJxZmRdv9kzQ1KIRH2UxvZqwD/e7AQfR48+Phw
-iC0PWsKBXpNQ9/dhgtzAPUq3pEeNOQE=
-=dGOO
------END PGP SIGNATURE-----
-
---5x75oq3heiuvzqmo--
