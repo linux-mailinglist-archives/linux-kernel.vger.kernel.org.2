@@ -2,159 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22604149DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E257F4149E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236149AbhIVM6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:58:38 -0400
-Received: from mail-bn8nam11on2080.outbound.protection.outlook.com ([40.107.236.80]:60341
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236045AbhIVM6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:58:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H5gMXsiqcBdovlyU4GyMzTOoSKohVNDyTeKs4ADQwx0iLfQAGS1buE89nNX1Jh8QkTbyMrc5XDzbyqlPqvjEcKPO9UGgs2WmiFIifCcWqBs06mksj/7LWQK+3UvMVstj2llZDeptRi1K2DAEp0z5fFJSzEOXeapk4/aUoHAz9L3u8Xc71hki+2TL5T9cSZquqx6xi2QYvqpQGUZoJdprT0TzgH1kGvpsB0nw1IeO1VToSztZ6+6aeZc59A62plnCAUITJhFh2z0NhONBHAt8B5kSHFikcegBfVFjeVtP7IfzuKfY2FBTe2WxRiwfUAXPvXGtj98o5915XT7VGKWy0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=QxzBAnASWK9yOEgtkrDvAo9kTQhYI2DeenD1/jI9nUs=;
- b=KHAPG+ht6kIUVDBHh6DmASlJN+Y+CvKDdKqceCKs5rJykXlX2Lu+Nei1b2e7RVt+61ypC3xlTaaxG4j/MzluqRno+q/r9ELoh5frdzakXSI6kpboz4Kbr1tXPiAyopC+9PDab0T5W2G4jIeFKMYSErYnBiJhLlhtZ3Vuvprcs/exwDzv08PgGQozTDlFjpmGUs9F4gbBKBdZQgWO7/APaSUPYEod/jTjTG2YtyqWPaHfQFlJjB813soElaZBWhb7DpC97ynGAXlj2n/jcIGkzRXVo/3riEDSaofX4+xQaPRwXbyrLvkaW7FNygBAlNA2O/+Sr+XnqGHe9+TazMaTuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QxzBAnASWK9yOEgtkrDvAo9kTQhYI2DeenD1/jI9nUs=;
- b=Z/4ai/RzKg21dxdiMMGxfnygpXVU+yXu83/fCtGnZOP7wigTXQ98ISWY/wzw/kWZvoTkzAv1UjV57Z/bttgmuVqa8mgoE2tzxPoNJEEDthCItZWjLhQT/Dg3f7O3h8eB5W20oc5Ex9yctA/YVx459qLR4Ly1ZRR5xqfsyv4cV6eooQewuBb87pQBIwYKXMxrQGv2+Z8xRTGDH8RpcKh5UIuyv0/OVSCO37UKR+TdaqDBHabm6jgjbIyvt7/oOfxGRlHedFVfsJ2oRdeayNUfhXrsf3nUsqktTPSMXoVgGHfTzbeiIKXu40lwyoE1ogns3FH9oF/hKcuxesHozDQzKw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5363.namprd12.prod.outlook.com (2603:10b6:208:317::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
- 2021 12:57:05 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 12:57:05 +0000
-Date:   Wed, 22 Sep 2021 09:57:04 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 14/20] iommu/iommufd: Add iommufd_device_[de]attach_ioasid()
-Message-ID: <20210922125704.GN327412@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-15-yi.l.liu@intel.com>
- <20210921180203.GY327412@nvidia.com>
- <BN9PR11MB54339FF0B126A917BF14B44E8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB54339FF0B126A917BF14B44E8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL0PR01CA0029.prod.exchangelabs.com (2603:10b6:208:71::42)
- To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+        id S229943AbhIVM7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhIVM7f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 08:59:35 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176A7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:58:05 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id b10so3169899ioq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:58:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gQmTeeI9SmVhpWXFHOOADd2pL7AYSuP57rY9o9YQggQ=;
+        b=Q2bgtXzBfU+xjTojiQA8LyZH3763j5d7nj2Ly2NI76so2njbQUvzg65LJZQ092Wy2Q
+         VvI66chJiA5mW8ZKmmQsPO97CZjGqDrKG310YyKphE5+k8Rdf9i4Om2P4W1G37yidir4
+         UFEJ9aE6eZt/J6i4DDK5xKr3M5sI2V6LnQNKCaaWmfub3P6A/645tcH2MhHLZ0kGIUSL
+         sncKoAU3GnfWsFwnJJ62SEtAdDfoxELXKNZtsRWqQg49LrjqyKg2k7w9qJMFrnVCEQTN
+         kde1kyQFr20CU5Io6gXvfdSeoUqtEjyT8PN7Iy/RJBBqwLwYAW/Kaek+V/Odkc9++H9g
+         h8+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gQmTeeI9SmVhpWXFHOOADd2pL7AYSuP57rY9o9YQggQ=;
+        b=IdWZT7GDJ38AqlRIlmsve1KqjJfl/W3hAEfDhSVduuOKr0JlRTGoYfdOVVi0dHIOoo
+         APqQ/DbJsVK/35GIfCMoa6z+WEdP+PQbBO8gbqS/ZUdptZQQ3coawHrIy78/FAYo2zse
+         Nv3GJ2bTMc2n4yldGvaCCCC4KkfSiWZ7TgSJ4iLPvpZ6aizV1JjjaZGc0W3kayC/itnQ
+         GfybzQa++59tjDsVElrMMt+ETZ5ojdqgznCFLSoi3UGsAAvZks6mU7GNXsrO5le/RGOp
+         DfmHOcDLl6eqGStXe/aD4nyXiOOTcUgDy48+N+H6No2AwQi7ZiB2M69qfrohXTcIpjH4
+         J2qQ==
+X-Gm-Message-State: AOAM531GEpl7rxNCeLMZ26m9U94Vi/inSIqGbX4t7wuGDMNSicivs3O7
+        vTqpjpJHP7nZUVU18cQLlhxVEA==
+X-Google-Smtp-Source: ABdhPJx2uF78lzrG6cPMKm0MQ8uI7yebjSSryN4YgHlkldLqtkdgq95l0JJCd72wzgvgPNAjZQOdOw==
+X-Received: by 2002:a05:6638:1389:: with SMTP id w9mr4665060jad.138.1632315484395;
+        Wed, 22 Sep 2021 05:58:04 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id y124sm996408iof.8.2021.09.22.05.58.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 05:58:04 -0700 (PDT)
+Subject: Re: [RFC v2 PATCH] mm, sl[au]b: Introduce lockless cache
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org
+References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
+ <ebea2af2-90d0-248f-8461-80f2e834dfea@kernel.dk>
+ <20210922081906.GA78305@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <688e6750-87e9-fb44-ce40-943bad072e48@kernel.dk>
+Date:   Wed, 22 Sep 2021 06:58:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR01CA0029.prod.exchangelabs.com (2603:10b6:208:71::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 12:57:05 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mT1o8-003xHq-Gp; Wed, 22 Sep 2021 09:57:04 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 05364708-7354-4c55-ceac-08d97dc87aa4
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5363:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5363CF7D6E2DF6AA253F111DC2A29@BL1PR12MB5363.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KSYn1M7uRXNahl1UYRoaM0kyXY1gccf6ZxqXsb/tuOxJxzXUKt8KTq4y/KprGyIh62pqJ9uuYgyAtlrOmE4RqGpqy4rRwu88ZKAq+DlF7Shgy9ABp0U3/8z6luOf0EvnPSxHH0My5kgyE7gZVSNay4qWRWg1tuQWoHE5hX9UzxRnwpsQGK8OlIkrMv9fc+WQ7vdc9QlUEUFyg/RNthGjMK01TGqPq5jcU7yX7lAUQuM9MZVTNPEe9yzjlmh0mQ7zC05scm+GCcMQ+GY4ldDEDo6V3eTyd49ELBOIIkXETq7uyvkk3Y5gsdMOmtilwJvu9kW++FKt76hVlpwjTUYocOgqN308pqrx3c+nnpJ94CCA0evUz58SwIe8P6rRIRtS7on0+WpE7ibwTRk9WToEbtIl34msKxLB//L5MB+xI3/o3TnNx72UTTDEHclOUYYEXz2H3Z4Wf27qDSzZBD5rDZfujrafxqDDJMWkRTTuNXQ5MwQOHNOK5Q2Dw9qOeSGYvPQMWh1yP8AeNhOcaQV+qQntztWT/wefyVZ5onAzttJALUyIEZq+u1F2HP6I69QMdd+owsX/snqwhOMG3AOf1ohbnodoHbXgfXLDZ7DPsbtdl3TV/CG9lwRzxC93ToxTJKGPY1mpdfJtKgPoNWKA9fCKwCSKBltGjQAgDdAkgRfIZzKoGAQHwMha7V9z+0ez
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(66556008)(33656002)(8936002)(66476007)(2906002)(186003)(6916009)(54906003)(2616005)(26005)(8676002)(316002)(107886003)(508600001)(1076003)(9786002)(9746002)(38100700002)(426003)(4744005)(36756003)(7416002)(5660300002)(86362001)(66946007)(4326008)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YGhtE4b0i5YpNKPJGEJLpLKRxfkQPO8rmV/t6XaHjR8CQ7KUKxE0hMG9D/ww?=
- =?us-ascii?Q?Lo/0RJBuqjhFpAe4JWHIYWwfZZgbn+/tVeJ7ZYwnp6ku21mwxXZNileMr8XK?=
- =?us-ascii?Q?9JBWLtU2PW9oueYJL18ILWuRCM0AbaYLa/colimdOUI+9kd7WIUojo7fUZWu?=
- =?us-ascii?Q?vZfO4sRTxJy0L8ruSMUDcoaizDOncU8BwgMMmGT/DJrDWTld8mb3qac3ZeAm?=
- =?us-ascii?Q?LJTss89QYy1yCNXZb9mQ+GNejHNPN2aoSbM9DtAmidpM2yEV0NMAFUc+E6yF?=
- =?us-ascii?Q?4JwNzXQrrETa2c0SfnnG5HvW9yWzV0VzzssSCq6ylEFxE3yrwrgOMESxsyA6?=
- =?us-ascii?Q?oEa3F8J8peRcdGBQgwR1AuaofeNVA3FWDXBHZBcAptB7h3E0Zq3SRMQpVjGu?=
- =?us-ascii?Q?9lXCZXaOnv5GOcaZNAASQHk1gAiKgW7tm/OZlIH7lBlByYysi8oot633bdj9?=
- =?us-ascii?Q?K168KadO7i+C5Np0h+fsYUkH5KQ9DobwB/yYaxxldZudMKKyrcBsZVDlfeg4?=
- =?us-ascii?Q?DhrK1l7XDpDKPBXG/fmuO9Uyc9MV1DsznXv7ZMv6q6CbHMguWtFm6G5jmbkP?=
- =?us-ascii?Q?L1HsWEylDURGoe9m/GBcBMXrof8w33Ig8KKQEZ/wMAt+kQU1Th02Rt3ibjl1?=
- =?us-ascii?Q?/Wx4/E11H4K55fdtMUW2EhHfv96L8yAXTqTKAo5bJcLkA4az2nOb948Pwby+?=
- =?us-ascii?Q?+7dCsYCqfQSxcFiYpXYCDuvnfLA1cX5f8UKMBQSRpXlbk4CLqP2gfoPG5+au?=
- =?us-ascii?Q?Ysdj5+2Ja9J4j5CpoRE2tJ8N8Vg4V/cBAU8sWJF412E1kU9+I/hNOHYjQyqN?=
- =?us-ascii?Q?9iK9o9B6VjK0cihAWrbGX6YlmPUuHpKru5xlyP6khge99Of9MDBuxkevHrlQ?=
- =?us-ascii?Q?8pSYxiNirvO/C+R5Fvw+ZyEONRq9bC/qokjs4EP8bRcf9U9kk/FdAq6GuHoF?=
- =?us-ascii?Q?lMI4WHgGXdXU6xXmIuUCQZOzc5WeG5wvq70CbrUcwOoOnlAJFGUKwjc/07a3?=
- =?us-ascii?Q?X0FYUz97KC6QVa+3pWz23NBEB2B3BrNnfbv4Y7sMvzcDY9Lu1cEIjxJqw1+V?=
- =?us-ascii?Q?XJC1EX/+QFB1es+eKKgRNOqF8N3y/WmYdbs/q8mFfyLNylY0v9jETOnHiG3/?=
- =?us-ascii?Q?QWXMRbD0Mh+Xu3SWRit97bIyftx/lKuzZVK6QOKPUB//vjGqpvXSAMZvmRqF?=
- =?us-ascii?Q?N7/nyyjVusvIIYKmQg+1+HovgeisAmtpqW/SaknaX5nFfud2vdbVQJJ4Xfma?=
- =?us-ascii?Q?v2i7ZAviAvtCPnnc8i7Mpgq+m+SBqcCZWfOorPsFLiOagOPFSBWu4WaWDB5T?=
- =?us-ascii?Q?qmnq9WpNFyplJWuTBq1oLRpf?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05364708-7354-4c55-ceac-08d97dc87aa4
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 12:57:05.6956
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YRwpr6fmHe+EhEpucJZxi8VMTd4JfaqFUm9U8y2WYS0+0bx74D6Lrncm20+yb8VP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5363
+In-Reply-To: <20210922081906.GA78305@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 03:53:52AM +0000, Tian, Kevin wrote:
-
-> Actually this was one open we closed in previous design proposal, but
-> looks you have a different thought now.
+On 9/22/21 2:19 AM, Hyeonggon Yoo wrote:
+> On Tue, Sep 21, 2021 at 09:37:40AM -0600, Jens Axboe wrote:
+>>> @@ -424,6 +431,57 @@ kmem_cache_create(const char *name, unsigned int size, unsigned int align,
+>>>  }
+>>>  EXPORT_SYMBOL(kmem_cache_create);
+>>>  
+>>> +/**
+>>> + * kmem_cache_alloc_cached - try to allocate from cache without lock
+>>> + * @s: slab cache
+>>> + * @flags: SLAB flags
+>>> + *
+>>> + * Try to allocate from cache without lock. If fails, fill the lockless cache
+>>> + * using bulk alloc API
+>>> + *
+>>> + * Be sure that there's no race condition.
+>>> + * Must create slab cache with SLAB_LOCKLESS_CACHE flag to use this function.
+>>> + *
+>>> + * Return: a pointer to free object on allocation success, NULL on failure.
+>>> + */
+>>> +void *kmem_cache_alloc_cached(struct kmem_cache *s, gfp_t gfpflags)
+>>> +{
+>>> +	struct kmem_lockless_cache *cache = this_cpu_ptr(s->cache);
+>>> +
+>>> +	BUG_ON(!(s->flags & SLAB_LOCKLESS_CACHE));
+>>> +
+>>> +	if (cache->size) /* fastpath without lock */
+>>> +		return cache->queue[--cache->size];
+>>> +
+>>> +	/* slowpath */
+>>> +	cache->size = kmem_cache_alloc_bulk(s, gfpflags,
+>>> +			KMEM_LOCKLESS_CACHE_QUEUE_SIZE, cache->queue);
+>>> +	if (cache->size)
+>>> +		return cache->queue[--cache->size];
+>>> +	else
+>>> +		return NULL;
+>>> +}
+>>> +EXPORT_SYMBOL(kmem_cache_alloc_cached);
 > 
-> vfio maintains one ioas per container. Devices in the container
-> can be attached to different domains (e.g. due to snoop format). Every
-> time when the ioas is updated, every attached domain is updated
-> in accordance. 
+> Hello Jens, I'm so happy that you gave comment.
 > 
-> You recommended one-ioas-one-domain model instead, i.e. any device 
-> with a format incompatible with the one currently used in ioas has to 
-> be attached to a new ioas, even if the two ioas's have the same mapping.
-> This leads to compatibility check at attaching time.
+>> What I implemented for IOPOLL doesn't need to care about interrupts,
+>> hence preemption disable is enough. But we do need that, at least.
 > 
-> Now you want returning back to the vfio model?
-
-Oh, I thought we circled back again.. If we are all OK with one ioas
-one domain then great.
-
-> > If think sis taking in the iommfd_device then there isn't a logical
-> > place to signal the PCIness
+> To be honest, that was my mistake. I was mistakenly using percpu API.
+> it's a shame :> Thank you for pointing that.
 > 
-> can you elaborate?
+> Fixed it in v3 (work in progress now)
 
-I mean just drop it and document it.
+Another thing to fix from there, just make it:
 
-Jason
+if (cache->size)
+	return cached item
+return NULL;
+
+No need for an if/else with the return.
+
+> 
+>> There are basically two types of use cases for this:
+>>
+>> 1) Freeing can happen from interrupts
+>> 2) Freeing cannot happen from interrupts
+>>
+> 
+> I considered only case 2) when writing code. Well, To support 1),
+> I think there are two ways:
+> 
+>  a) internally call kmem_cache_free when in_interrupt() is true
+>  b) caller must disable interrupt when freeing
+> 
+> I think a) is okay, how do you think?
+
+If the API doesn't support freeing from interrupts, then I'd make that
+the rule. Caller should know better if that can happen, and then just
+use kmem_cache_free() if in a problematic context. That avoids polluting
+the fast path with that check. I'd still make it a WARN_ON_ONCE() as
+described and it can get removed later, hopefully.
+
+But note it's not just the freeing side that would be problematic. If
+you do support from-irq freeing, then the alloc side would need
+local_irq_save/restore() instead of just basic preempt protection. That
+would make it more expensive all around.
+
+> note that b) can be problematic with kmem_cache_free_bulk
+> as it says interrupts must be enabled.
+
+Not sure that's actually true, apart from being bitrot.
+
+>> How does this work for preempt? You seem to assume that the function is
+>> invoked with preempt disabled, but then it could only be used with
+>> GFP_ATOMIC.
+> 
+> I wrote it just same prototype with kmem_cache_alloc, and the gfpflags
+> parameter is unnecessary as you said. Okay, let's remove it in v3.
+
+Please also run some actual comparitative benchmarks on this, with a
+real workload. You also need an internal user of this, a stand-alone
+feature isn't really useful. It needs someone using it, and the
+benchmarks would be based on that (or those) use cases.
+
+Another consideration - is it going to be OK to ignore slab pruning for
+this? Probably. But it needs to be thought about.
+
+In terms of API, not sure why these are separate functions. Creating the
+cache with SLAB_FOO should be enough, and then kmem_cache_alloc() tries
+the cache first. If nothing there, fallback to the regular path.
+Something like this would only be used for cases that have a high
+alloc+free rate, would seem like a shame to need two function calls for
+the case where you just want a piece of memory and the cache is empty.
+
+-- 
+Jens Axboe
+
