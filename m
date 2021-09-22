@@ -2,87 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4336D414CEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48661414CF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbhIVPZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:25:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236304AbhIVPZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:25:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51A62611EE;
-        Wed, 22 Sep 2021 15:23:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632324222;
-        bh=iQtZW7bI/BbYz50FbzeKEjP01m1V9pZsyCJK85pCxCk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Nq+UGdpuHjxkrO38TRVQ70c83KK9my+Fru9cYgbKriisyN2+PIHg1QjqDjs3BEmqk
-         xOWIBexO75Wtav7mMxavaKWhDofU3umydS4ArZVNQXsRGdQp48XaboFV87U9X5uQSZ
-         vPspefhIAEyirojJ/78FVJTGhIfBdRooGSoN+itn+ebpe4wgmK4/a0CfWz2QHVy1s5
-         lYxyQ501Vp8AVBeDG3WcMuLAxqfRoPLEiG8l2Fwb+UM5776TG8Hqq38lEnakAfcI2B
-         4SwmIM8SPJeYAG5/kGXzFkHjkuuE4NGojvrg8NQ8zQckQlgEOgOt67eJD7Nllcatny
-         Ndof6jlzjntsw==
-Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
- mount option
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Daeho Jeong <daeho43@gmail.com>,
-        Daeho Jeong <daehojeong@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210902172404.3517626-1-daeho43@gmail.com>
- <YTvmhVhLlBPeASHT@google.com>
- <9f4a2954-e8c9-abc5-5df4-a7cec53433a3@kernel.org>
- <YUkR84sklj0SgosC@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <6c592379-104d-8975-4385-9778f23cda56@kernel.org>
-Date:   Wed, 22 Sep 2021 23:23:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S236425AbhIVPZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232318AbhIVPZ5 (ORCPT
+        <rfc822;Linux-Kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 11:25:57 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A53C061574
+        for <Linux-Kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:24:27 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id k23so2355291pji.0
+        for <Linux-Kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=qoUCKun9GOqpNGoTy8WaehZ/oDjPVJ/YWHnCEdsLlKI=;
+        b=NCFHxJkJaSuc8ezfgccDGxy89T4yLV+mnMNf8zxTD2Vxzx53ifSv4bdZAUNQp3IZrg
+         JW9s4Q5ei2MKlMrNQl0FEzbPHA8+VeL5fuzup08ErGEJ0hKGilqBJ8jnncP85TaAPtJR
+         GZCb95Zz9M96jRusGMJZV8PQMyOxFu10+Y1yzgKG+fjyfwAmyDkL2K2Z74Eo63rpl1tk
+         tSuSpinobM7L/iZSDR2fRsoU84osWIm5qw469xUuZgwG2f4yw6riC6r1JyXHEX98DtRD
+         oVikUXc9ALSImcZvxmtHc79w+VE2CURQeXbaZLLLF9tNExduoK+Rx6GzyPgeUV8SMKM+
+         Dr9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=qoUCKun9GOqpNGoTy8WaehZ/oDjPVJ/YWHnCEdsLlKI=;
+        b=nbwc/P4mpdP+GC5QaUL3GYw25kJIk1YRJt100/oJsCjM/Mt6CI+/uSKKLaxt2DoNoB
+         VPGRiSgQK9KIvV/3zh2rbvvBUtWRDLBYeTTTxdKk4fj5ilP+RMfccTB1s1UCFIhfuXuP
+         gJCv7kBYud/EXBvkRu1xly0man2eu7LhrRYJ+HaqipVyjf7297RQ9Pwu7wO/JKEjcFyi
+         7HWTrsIVlYS7ZCx8GQ7GceFbm0YZElHOu20NONCSiIlskrJDOBcdeJN5Gr/MHMOjR8Qe
+         WY3ZcrSI+6pumHZDFRiAXg+GltMuhUZAyO0zShG7elDnZsyTWkTXmEHGiyTsh5BootTc
+         SVHQ==
+X-Gm-Message-State: AOAM530s781vTfUT9wYPI5r1Q5G63RrZYKyHKa0fRFfnHmcgHvPdRxfP
+        IQrlmnngmqO3qTJgJtyltXij1ju4tdp+6aO9onu67A32dCc=
+X-Google-Smtp-Source: ABdhPJyszb4zfnzJl8jwFZobnxQ6IYG2XWIbcTyos30ue2RhYKBhXAvSbUHtZRWqmnUnX++XiJPrk4HxIGJpfOZvAe0=
+X-Received: by 2002:a17:90a:191a:: with SMTP id 26mr35644pjg.79.1632324266800;
+ Wed, 22 Sep 2021 08:24:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YUkR84sklj0SgosC@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   cp <carlojpisani@gmail.com>
+Date:   Wed, 22 Sep 2021 17:24:30 +0200
+Message-ID: <CA+QBN9AoDRAGg=zkfa5B5DBYt-amTrnBkYz+RWoyS95xcjJ9EQ@mail.gmail.com>
+Subject: Linux PowerPC 4xx doesn't boot when linkaddr=0x0090.0000
+To:     Linux-Kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/21 6:57, Jaegeuk Kim wrote:
-> On 09/12, Chao Yu wrote:
->> On 2021/9/11 7:13, Jaegeuk Kim wrote:
->>> Wait. Why do we need to add so many options here? I was expecting to see
->>> performance difference when getting random segments or random blocks as
->>> an extreme case. I don't get the point why we need the middle of those cases.
->>
->> I guess we can simply the aging test procedure of filesystem by changing a bit
->> based on this patch.
-> 
-> My question was on "fragment:fixed_block".
+hi
+I am new to this list. Hope this is the right place to ask.
 
-This mode can be used for below filesystem aging scenario.
+I am working with a PPC405GP board, and as far as I understand, the
+support for ppc40x platforms like Acadia and Walnut were dropped with
+kernel 5.8.0, so this seems like a pretty straightforward question,
+but extensive experiments from kernel 4.11 to kernel 5.7.19 haven't
+shown a really clear, up-to-date answer.
 
-Fragmenting filesystem with specified pattern:
-1M chunk | 1M hole | 1M chunk | 1M hole | ...
+In k4.11 .. k5.7.19, when the kernel size is bigger than 8 MB, the
+final kernel doesn't boot but rather arch/powerpc/boot/main.c dies
+before the first message from the kernel shows up.
 
-e.g.
+Why?
 
-Before
-1. create/write 10 1M files: file0 file1 file2 ... file9
-2. remove file1 file3 file5 ... file9
+Digging deeper I see the relation between the kernel size and link_addr
 
-After
-mode=fragment:fixed_block
-fragment_chunk_size=1M
-fragment_hole_size=1M
-1. create/write one 10M file
+        # Round the size to next higher MB limit
+        round_size=$(((strip_size + 0xfffff) & 0xfff00000))
 
-Thanks,
+        round_size=0x$(printf "%x" $round_size)
+        link_addr=$(printf "%d" $link_address)
 
-> 
->>
->> See comments in below thread.
->>
->> https://lore.kernel.org/lkml/425daf77-8020-26ce-dc9f-019d9a881b78@kernel.org/
->>
->> Thanks,
+and this is where link_addr is involved
+
+        text_start="-Ttext $link_address"
+
+My kernels are compiled for cuboot, and the code that invokes "kentry"
+is entirely located in arch/powerpc/boot/main.c
+
+I instrumned that module, and this is what I see on the condole
+
+The following is the same kernel, compiled with the same .config, but
+with two link_addr values
+
+A) with link_addr=0x0080.0000
+image loaded from 0x00800000
+SP=0x03eb1b80
+kernel_size = 7411084 bytes
+copying 256 bytes from kernel-image at 0x0080f000 to elfheader
+elf_info.loadsize = 0x00700e68
+elf_info.memsize  = 0x0074234c
+allocating 7611212 bytes for the new kernel
+copying ...
+from = 0x0081f000
+to = 0x00000000
+size = 7343720
+flush_cache, 32Mbyte flushed
+cmdline: uboot bootargs overridden
+cmdline=[console=ttyS0,115200 root=/dev/sda2 rootfstype=ext2 rw
+init=/sbin/init ]
+Finalizing device tree... flat tree at 0xf23b80
+ft_addr=0xf23b80
+my tp1: success
+kernel booting ....
+(it boots)
+
+B) with link_addr=0x0080.0000
+image loaded from 0x00900000
+SP=0x03eb1b80
+kernel_size = 7411084
+copying 256 bytes from kernel-image at 0x0090f000 to elfheader
+elf_info.loadsize = 0x00700e68
+elf_info.memsize  = 0x0074234c
+allocating 7611212 bytes for the new kernel
+copying ...
+from = 0x0091f000
+to = 0x00000000
+size = 7343720
+flush_cache, 32Mbyte flushed
+cmdline: uboot bootargs overridden
+cmdline=[console=ttyS0,115200 root=/dev/sda2 rootfstype=ext2 rw
+init=/sbin/init ]
+Finalizing device tree... flat tree at 0x1023b80
+ft_addr=0x1023b80
+my tp2: success
+my tp3: success
+invalidate_cache 0x00000000+0x02000000
+my tp4: (point of no return)
+calling kentry()...
+kernel booting ....
+(it dies at this point, but without a debugger it's like watching
+something fall into a black hole)
+
+Any ideas?
+I am lost ...
+
+Carlo
