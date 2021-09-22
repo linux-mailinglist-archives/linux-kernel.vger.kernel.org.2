@@ -2,225 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C1F414146
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C055F41414E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhIVFgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhIVFgI (ORCPT
+        id S232259AbhIVFmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:42:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24425 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231908AbhIVFmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:36:08 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAB2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 22:34:39 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id c21so5515668edj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 22:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EyOvEnyX8R7VnSGP/KEqU0uiXq+VKulQ3XLiXib89/s=;
-        b=MeKk0NBuXEhwujHu67Xhu/O+OSNWkkIFb3XWbFvWjWYolIQ9ihJCb1K/YAzE0WpXhT
-         3uH5bJ0fpX/qQw/J5Z8P47owxpUuvojREOlfv5hiCqTcCeMdOqMxS6LzcFrEDd3JI7li
-         3dFYQaWDN40nnsg4cbNAKHl9WwuQZ75Mw8w7Bzen6VyRBKITtCDD709VK3rhPFHBKcvD
-         VJw6e1h9HiGONsUaG9kfyT3qhGipkb5cAfomet1hbDjRlxytMn6GFo15eTrYgG9LIFXF
-         Dw4KZYUODHNmft3nhKP6SyGACfObYQgfJ5/zCjYqtjPG4ZadzwqLDNJSgnURhocZDSf8
-         Nqog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EyOvEnyX8R7VnSGP/KEqU0uiXq+VKulQ3XLiXib89/s=;
-        b=jHcJDwkzkNqIIQzTf7i842NvLx+gt1S9SDNM5BPWO0U9eH82er0mRMTVEYuMKXp9TN
-         3i5n/fWVchld7ODC31JB7kJJfiuzR9UMk8pREfRHmeCRnSpJNzHRZvJ9QnxzPLo2KZLY
-         wbc2ZFqHPQyHyOBqQpQiptOGKOH5aqobmYnOf+3DqK+sMPlBxTTefeOMQbjPwqQ2YQSG
-         465y6qSgJ4AwFAB0zRpcMhIOYEj0F0Elvuqh/QJQo8iByT6Tg3d4/3Cx2exV3KY/shw8
-         vFIWufEsT00tdVrLu5hJBE/Xz/GB1bBde/CIYUnI2G+pJdGW+A9OrZ/JLgGTdYLfFF2Z
-         uvow==
-X-Gm-Message-State: AOAM532qyDTzBYJcCJMOyGrEnyyOt1LJN8egG1IOpJGuQQ+Cl2RUb4hY
-        MRGOMa90n83ZsGNwTRyo0+Fn05gdbqb+UbpfSFRAbAeYQ/M00Q==
-X-Google-Smtp-Source: ABdhPJz5uShPzNsj4RrbIsFqyQXbXQXGmA/b7yXdhd4Jf7ufCcixWx1TxmrAZWLZRNR/CkhVfh6IXx7Tb5SmG63digk=
-X-Received: by 2002:aa7:db4d:: with SMTP id n13mr40522663edt.398.1632288875050;
- Tue, 21 Sep 2021 22:34:35 -0700 (PDT)
+        Wed, 22 Sep 2021 01:42:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632289271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bJXkEkfWdDJCAURztjziNenOw4qGpHyUiriN1i4JZCM=;
+        b=IbAQw6jmj+9UGjYcXn8BKRGNidZ9Y5ZK/jk+yr+CPMLystNaI4jTlbwQew66vigXREYdPM
+        7q83BRhNbdczAiDVyjRzDl0K9pzyv4qvFTyvwrkwhMvWzxZwqYPjiNLhducYmghd5iJN1H
+        KL5FHYTSwNHbAeg5/uX2dUsnfbVtbgc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-c52lzspQNBKNg9iKaAsteQ-1; Wed, 22 Sep 2021 01:41:08 -0400
+X-MC-Unique: c52lzspQNBKNg9iKaAsteQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76646BBEE0;
+        Wed, 22 Sep 2021 05:41:07 +0000 (UTC)
+Received: from treble.redhat.com (unknown [10.22.33.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F9E56B544;
+        Wed, 22 Sep 2021 05:41:05 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-crypto@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] x86/crypto/sm4: Fix frame pointer stack corruption
+Date:   Tue, 21 Sep 2021 22:40:26 -0700
+Message-Id: <2010f60571abe6fe53d89189ab6da7e641cb027b.1632289099.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-References: <20210920163933.258815435@linuxfoundation.org>
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 22 Sep 2021 11:04:23 +0530
-Message-ID: <CA+G9fYso0DxyuSaQCVduZRBMcpHAOdWzCBryLBHtvRdpAPNu6A@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/293] 4.19.207-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sept 2021 at 22:35, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.207 release.
-> There are 293 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.207-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+sm4_aesni_avx_crypt8() sets up the frame pointer (which includes pushing
+RBP) before doing a conditional sibling call to sm4_aesni_avx_crypt4(),
+which sets up an additional frame pointer.  Things will not go well when
+sm4_aesni_avx_crypt4() pops only the innermost single frame pointer and
+then tries to return to the outermost frame pointer.
 
+Sibling calls need to occur with an empty stack frame.  Do the
+conditional sibling call *before* setting up the stack pointer.
 
-Results from Linaro's test farm.
-No regressions on arm64, arm, x86_64, and i386.
+This fixes the following warning:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+  arch/x86/crypto/sm4-aesni-avx-asm_64.o: warning: objtool: sm4_aesni_avx_crypt8()+0x8: sibling call from callable instruction with modified stack frame
 
-## Build
-* kernel: 4.19.207-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: 9a707376d65f32dd46cc29db2659bd600c431b5f
-* git describe: v4.19.206-294-g9a707376d65f
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19.206-294-g9a707376d65f
+Fixes: a7ee22ee1445 ("crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ arch/x86/crypto/sm4-aesni-avx-asm_64.S | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-## No regressions (compared to v4.19.206)
-
-## No fixes (compared to v4.19.206)
-
-## Test result summary
-total: 149708, pass: 120249, fail: 1145, skip: 24517, xfail: 3797
-
-## Build Summary
-* arm: 258 total, 258 passed, 0 failed
-* arm64: 74 total, 74 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 35 total, 35 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 82 total, 82 passed, 0 failed
-* s390: 24 total, 24 passed, 0 failed
-* sparc: 24 total, 24 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 42 total, 42 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
+diff --git a/arch/x86/crypto/sm4-aesni-avx-asm_64.S b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
+index fa2c3f50aecb..18d2f5199194 100644
+--- a/arch/x86/crypto/sm4-aesni-avx-asm_64.S
++++ b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
+@@ -367,10 +367,11 @@ SYM_FUNC_START(sm4_aesni_avx_crypt8)
+ 	 *	%rdx: src (1..8 blocks)
+ 	 *	%rcx: num blocks (1..8)
+ 	 */
+-	FRAME_BEGIN
+-
+ 	cmpq $5, %rcx;
+ 	jb sm4_aesni_avx_crypt4;
++
++	FRAME_BEGIN
++
+ 	vmovdqu (0 * 16)(%rdx), RA0;
+ 	vmovdqu (1 * 16)(%rdx), RA1;
+ 	vmovdqu (2 * 16)(%rdx), RA2;
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.31.1
+
