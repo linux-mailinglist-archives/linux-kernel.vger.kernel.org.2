@@ -2,93 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D0C41475D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4892F414743
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbhIVLNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235150AbhIVLNA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:13:00 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0730CC061756;
-        Wed, 22 Sep 2021 04:11:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=SvSU7b9tUT6uTyU/Zk7s1QnrnWFQeYoGhiD90JnN0AI=; b=rhWKGWYfFMCNhp1dvsllFtrh1N
-        S+aI1cE+elDNzQfKXNa+ARjqZS25FDrhF9jesyt3RccNywbsSzzNpmuQlaOdzKPDBo5gGJeBORcvU
-        6qny2upFscUK4pgGmVieGZnKwU9ICCQaNvV8m2aax2lrtG/meoSkebn5gVlap0BNsaGKjPcqkHtLB
-        q5AYEY+lhZTKfET6bbiYWXW5QtEougZlGlGE4Ci/0YeFpqNYvEIzR5/AE2aQLVhzWGQPHov9Ln517
-        dHS44HSMScmu1I17E5Kb28HnpXlEuxmInDUD8vOy+i+1skUR5rzgMxTBBWXz5WD3hpygR4zUvUgOj
-        JTwAOtrA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT09p-004yYY-0G; Wed, 22 Sep 2021 11:11:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3EE06300EC9;
-        Wed, 22 Sep 2021 13:11:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 94A52206A3E4F; Wed, 22 Sep 2021 13:11:18 +0200 (CEST)
-Message-ID: <20210922110836.304335737@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 22 Sep 2021 13:05:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
-        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org
-Subject: [RFC][PATCH 7/7] livepatch,context_tracking: Avoid disturbing NOHZ_FULL tasks
-References: <20210922110506.703075504@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S235374AbhIVLHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:07:22 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:34382 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234760AbhIVLHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 07:07:16 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5D4D71A5235;
+        Wed, 22 Sep 2021 13:05:45 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4FA551A261C;
+        Wed, 22 Sep 2021 13:05:45 +0200 (CEST)
+Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id F1ABA20298;
+        Wed, 22 Sep 2021 13:05:44 +0200 (CEST)
+From:   Diana Craciun <diana.craciun@oss.nxp.com>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Li Yang <leoyang.li@nxp.com>, linux-arm-kernel@lists.infradead.org,
+        Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: [PATCH v2 1/2] bus/fsl-mc: Add generic implementation for open/reset/close commands
+Date:   Wed, 22 Sep 2021 14:05:29 +0300
+Message-Id: <20210922110530.24736-1-diana.craciun@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a task is stuck in NOHZ_FULL usermode, we can simply mark the
-livepatch state complete.
+The open/reset/close commands format is similar for all objects.
+Currently there are multiple implementations for these commands
+scattered through various drivers. The code is cavsi-identical.
+Create a generic implementation for the open/reset/close commands.
+One of the consumer will be the VFIO driver which needs to
+be able to reset a device.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 ---
- kernel/livepatch/transition.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/bus/fsl-mc/Makefile         |   3 +-
+ drivers/bus/fsl-mc/fsl-mc-private.h |  39 +++++++++--
+ drivers/bus/fsl-mc/obj-api.c        | 103 ++++++++++++++++++++++++++++
+ include/linux/fsl/mc.h              |  14 ++++
+ 4 files changed, 154 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/bus/fsl-mc/obj-api.c
 
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -270,13 +270,24 @@ static int klp_check_task(struct task_st
- {
- 	int ret;
+diff --git a/drivers/bus/fsl-mc/Makefile b/drivers/bus/fsl-mc/Makefile
+index 4ae292a30e53..892946245527 100644
+--- a/drivers/bus/fsl-mc/Makefile
++++ b/drivers/bus/fsl-mc/Makefile
+@@ -15,7 +15,8 @@ mc-bus-driver-objs := fsl-mc-bus.o \
+ 		      dprc-driver.o \
+ 		      fsl-mc-allocator.o \
+ 		      fsl-mc-msi.o \
+-		      dpmcp.o
++		      dpmcp.o \
++		      obj-api.o
  
--	if (task_curr(task))
-+	if (task_curr(task)) {
-+		if (context_tracking_state_cpu(task_cpu(task)) == CONTEXT_USER) {
-+			/*
-+			 * If we observe the CPU being in USER context, they
-+			 * must issue an smp_mb() before doing much kernel
-+			 * space and as such will observe the patched state,
-+			 * mark it clean.
-+			 */
-+			goto complete;
-+		}
- 		return -EBUSY;
-+	}
+ # MC userspace support
+ obj-$(CONFIG_FSL_MC_UAPI_SUPPORT) += fsl-mc-uapi.o
+diff --git a/drivers/bus/fsl-mc/fsl-mc-private.h b/drivers/bus/fsl-mc/fsl-mc-private.h
+index 1958fa065360..b3520ea1b9f4 100644
+--- a/drivers/bus/fsl-mc/fsl-mc-private.h
++++ b/drivers/bus/fsl-mc/fsl-mc-private.h
+@@ -48,7 +48,6 @@ struct dpmng_rsp_get_version {
  
- 	ret = klp_check_stack(task, arg);
- 	if (ret)
- 		return ret;
+ /* DPMCP command IDs */
+ #define DPMCP_CMDID_CLOSE		DPMCP_CMD(0x800)
+-#define DPMCP_CMDID_OPEN		DPMCP_CMD(0x80b)
+ #define DPMCP_CMDID_RESET		DPMCP_CMD(0x005)
  
-+complete:
- 	clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
- 	task->patch_state = klp_target_state;
- 	return 0;
-
+ struct dpmcp_cmd_open {
+@@ -91,7 +90,6 @@ int dpmcp_reset(struct fsl_mc_io *mc_io,
+ 
+ /* DPRC command IDs */
+ #define DPRC_CMDID_CLOSE                        DPRC_CMD(0x800)
+-#define DPRC_CMDID_OPEN                         DPRC_CMD(0x805)
+ #define DPRC_CMDID_GET_API_VERSION              DPRC_CMD(0xa05)
+ 
+ #define DPRC_CMDID_GET_ATTR                     DPRC_CMD(0x004)
+@@ -453,7 +451,6 @@ int dprc_get_connection(struct fsl_mc_io *mc_io,
+ 
+ /* Command IDs */
+ #define DPBP_CMDID_CLOSE		DPBP_CMD(0x800)
+-#define DPBP_CMDID_OPEN			DPBP_CMD(0x804)
+ 
+ #define DPBP_CMDID_ENABLE		DPBP_CMD(0x002)
+ #define DPBP_CMDID_DISABLE		DPBP_CMD(0x003)
+@@ -492,7 +489,6 @@ struct dpbp_rsp_get_attributes {
+ 
+ /* Command IDs */
+ #define DPCON_CMDID_CLOSE			DPCON_CMD(0x800)
+-#define DPCON_CMDID_OPEN			DPCON_CMD(0x808)
+ 
+ #define DPCON_CMDID_ENABLE			DPCON_CMD(0x002)
+ #define DPCON_CMDID_DISABLE			DPCON_CMD(0x003)
+@@ -524,6 +520,41 @@ struct dpcon_cmd_set_notification {
+ 	__le64 user_ctx;
+ };
+ 
++/*
++ * Generic FSL MC API
++ */
++
++/* generic command versioning */
++#define OBJ_CMD_BASE_VERSION		1
++#define OBJ_CMD_ID_OFFSET		4
++
++#define OBJ_CMD(id)	(((id) << OBJ_CMD_ID_OFFSET) | OBJ_CMD_BASE_VERSION)
++
++/* open command codes */
++#define DPRTC_CMDID_OPEN		OBJ_CMD(0x810)
++#define DPNI_CMDID_OPEN		OBJ_CMD(0x801)
++#define DPSW_CMDID_OPEN		OBJ_CMD(0x802)
++#define DPIO_CMDID_OPEN		OBJ_CMD(0x803)
++#define DPBP_CMDID_OPEN		OBJ_CMD(0x804)
++#define DPRC_CMDID_OPEN		OBJ_CMD(0x805)
++#define DPDMUX_CMDID_OPEN		OBJ_CMD(0x806)
++#define DPCI_CMDID_OPEN		OBJ_CMD(0x807)
++#define DPCON_CMDID_OPEN		OBJ_CMD(0x808)
++#define DPSECI_CMDID_OPEN		OBJ_CMD(0x809)
++#define DPAIOP_CMDID_OPEN		OBJ_CMD(0x80a)
++#define DPMCP_CMDID_OPEN		OBJ_CMD(0x80b)
++#define DPMAC_CMDID_OPEN		OBJ_CMD(0x80c)
++#define DPDCEI_CMDID_OPEN		OBJ_CMD(0x80d)
++#define DPDMAI_CMDID_OPEN		OBJ_CMD(0x80e)
++#define DPDBG_CMDID_OPEN		OBJ_CMD(0x80f)
++
++/* Generic object command IDs */
++#define OBJ_CMDID_CLOSE		OBJ_CMD(0x800)
++#define OBJ_CMDID_RESET		OBJ_CMD(0x005)
++
++struct fsl_mc_obj_cmd_open {
++	__le32 obj_id;
++};
+ 
+ /**
+  * struct fsl_mc_resource_pool - Pool of MC resources of a given
+diff --git a/drivers/bus/fsl-mc/obj-api.c b/drivers/bus/fsl-mc/obj-api.c
+new file mode 100644
+index 000000000000..06c1dd84e38d
+--- /dev/null
++++ b/drivers/bus/fsl-mc/obj-api.c
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
++/*
++ * Copyright 2021 NXP
++ *
++ */
++#include <linux/kernel.h>
++#include <linux/fsl/mc.h>
++
++#include "fsl-mc-private.h"
++
++static int fsl_mc_get_open_cmd_id(const char *type)
++{
++	static const struct {
++		int cmd_id;
++		const char *type;
++	} dev_ids[] = {
++		{ DPRTC_CMDID_OPEN, "dprtc" },
++		{ DPRC_CMDID_OPEN, "dprc" },
++		{ DPNI_CMDID_OPEN, "dpni" },
++		{ DPIO_CMDID_OPEN, "dpio" },
++		{ DPSW_CMDID_OPEN, "dpsw" },
++		{ DPBP_CMDID_OPEN, "dpbp" },
++		{ DPCON_CMDID_OPEN, "dpcon" },
++		{ DPMCP_CMDID_OPEN, "dpmcp" },
++		{ DPMAC_CMDID_OPEN, "dpmac" },
++		{ DPSECI_CMDID_OPEN, "dpseci" },
++		{ DPDMUX_CMDID_OPEN, "dpdmux" },
++		{ DPDCEI_CMDID_OPEN, "dpdcei" },
++		{ DPAIOP_CMDID_OPEN, "dpaiop" },
++		{ DPCI_CMDID_OPEN, "dpci" },
++		{ DPDMAI_CMDID_OPEN, "dpdmai" },
++		{ DPDBG_CMDID_OPEN, "dpdbg" },
++		{ 0, NULL }
++	};
++	int i;
++
++	for (i = 0; dev_ids[i].type; i++)
++		if (!strcmp(dev_ids[i].type, type))
++			return dev_ids[i].cmd_id;
++
++	return -1;
++}
++
++int fsl_mc_obj_open(struct fsl_mc_io *mc_io,
++		    u32 cmd_flags,
++		    int obj_id,
++		    char *obj_type,
++		    u16 *token)
++{
++	struct fsl_mc_command cmd = { 0 };
++	struct fsl_mc_obj_cmd_open *cmd_params;
++	int err = 0;
++	int cmd_id = fsl_mc_get_open_cmd_id(obj_type);
++
++	if (cmd_id == -1)
++		return -ENODEV;
++
++	/* prepare command */
++	cmd.header = mc_encode_cmd_header(cmd_id, cmd_flags, 0);
++	cmd_params = (struct fsl_mc_obj_cmd_open *)cmd.params;
++	cmd_params->obj_id = cpu_to_le32(obj_id);
++
++	/* send command to mc*/
++	err = mc_send_command(mc_io, &cmd);
++	if (err)
++		return err;
++
++	/* retrieve response parameters */
++	*token = mc_cmd_hdr_read_token(&cmd);
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(fsl_mc_obj_open);
++
++int fsl_mc_obj_close(struct fsl_mc_io *mc_io,
++		     u32 cmd_flags,
++		     u16 token)
++{
++	struct fsl_mc_command cmd = { 0 };
++
++	/* prepare command */
++	cmd.header = mc_encode_cmd_header(OBJ_CMDID_CLOSE, cmd_flags,
++					  token);
++
++	/* send command to mc*/
++	return mc_send_command(mc_io, &cmd);
++}
++EXPORT_SYMBOL_GPL(fsl_mc_obj_close);
++
++int fsl_mc_obj_reset(struct fsl_mc_io *mc_io,
++		     u32 cmd_flags,
++		     u16 token)
++{
++	struct fsl_mc_command cmd = { 0 };
++
++	/* prepare command */
++	cmd.header = mc_encode_cmd_header(OBJ_CMDID_RESET, cmd_flags,
++					  token);
++
++	/* send command to mc*/
++	return mc_send_command(mc_io, &cmd);
++}
++EXPORT_SYMBOL_GPL(fsl_mc_obj_reset);
+diff --git a/include/linux/fsl/mc.h b/include/linux/fsl/mc.h
+index 30ece3ae6df7..e026f6c48b49 100644
+--- a/include/linux/fsl/mc.h
++++ b/include/linux/fsl/mc.h
+@@ -620,6 +620,20 @@ int dpcon_reset(struct fsl_mc_io *mc_io,
+ 		u32 cmd_flags,
+ 		u16 token);
+ 
++int fsl_mc_obj_open(struct fsl_mc_io *mc_io,
++		    u32 cmd_flags,
++		    int obj_id,
++		    char *obj_type,
++		    u16 *token);
++
++int fsl_mc_obj_close(struct fsl_mc_io *mc_io,
++		     u32 cmd_flags,
++		     u16 token);
++
++int fsl_mc_obj_reset(struct fsl_mc_io *mc_io,
++		     u32 cmd_flags,
++		     u16 token);
++
+ /**
+  * struct dpcon_attr - Structure representing DPCON attributes
+  * @id: DPCON object ID
+-- 
+2.17.1
 
