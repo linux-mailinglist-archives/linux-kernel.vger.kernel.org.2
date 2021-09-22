@@ -2,183 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1FA414DEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA65A414DEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbhIVQSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:18:46 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:40374 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236557AbhIVQSp (ORCPT
+        id S236616AbhIVQTO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Sep 2021 12:19:14 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:38220 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236523AbhIVQTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:18:45 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 1574282304;
-        Wed, 22 Sep 2021 19:17:14 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632327434;
-        bh=hY+vfq95riCX9pMhxP7mNgEHJVadtIj5d45qze3HwuA=;
-        h=Date:Subject:From:To:References:CC:In-Reply-To;
-        b=InNJDE55M2hFYoj3UfrP6JcuBsbIyBURWh5jWjfUJqwEGrsBKpVN/txgyG08OoOJR
-         J9nswDbenO9F/4hAES9l9wgm47dGjelzq6XfFlIbjlygS/EHiPBsSFEmRPXlR22HWZ
-         L+NrNE1tpN79m/s+smekQoVorwCxdKbQ+AQyfhWA=
-Received: from [192.168.211.195] (192.168.211.195) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 22 Sep 2021 19:17:13 +0300
-Message-ID: <a269be2f-4ab6-b1c6-790c-9d3052bf22cc@paragon-software.com>
-Date:   Wed, 22 Sep 2021 19:17:13 +0300
+        Wed, 22 Sep 2021 12:19:13 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 9A7306171B1D;
+        Wed, 22 Sep 2021 18:17:41 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id g_Xj6GkVOxov; Wed, 22 Sep 2021 18:17:41 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0FFDE6171AF5;
+        Wed, 22 Sep 2021 18:17:41 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Czl4Cj8z4wMN; Wed, 22 Sep 2021 18:17:40 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id DA4B860F6B83;
+        Wed, 22 Sep 2021 18:17:40 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 18:17:40 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     Boris Kolpackov <boris@codesynthesis.com>
+Cc:     masahiroy <masahiroy@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>
+Message-ID: <1942256037.97524.1632327460626.JavaMail.zimbra@nod.at>
+In-Reply-To: <boris.20210922165140@codesynthesis.com>
+References: <20210920213957.1064-1-richard@nod.at> <20210920213957.1064-2-richard@nod.at> <boris.20210922090732@codesynthesis.com> <1402570794.96583.1632295660867.JavaMail.zimbra@nod.at> <boris.20210922165140@codesynthesis.com>
+Subject: Re: [PATCH 2/2] kconfig: Deny command substitution in string values
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: [PATCH 1/5] fs/ntfs3: Move ni_lock_dir and ni_unlock into
- ntfs_create_inode
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-References: <2771ff62-e612-a8ed-4b93-5534c26aef9e@paragon-software.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-In-Reply-To: <2771ff62-e612-a8ed-4b93-5534c26aef9e@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.195]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF92 (Linux)/8.8.12_GA_3809)
+Thread-Topic: kconfig: Deny command substitution in string values
+Thread-Index: UN+UPErbzOHavDcXoin7FTqpapyswg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now ntfs3 locks mutex for smaller time.
+Boris,
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/inode.c | 17 ++++++++++++++---
- fs/ntfs3/namei.c | 20 --------------------
- 2 files changed, 14 insertions(+), 23 deletions(-)
+----- Ursprüngliche Mail -----
+> Von: "Boris Kolpackov" <boris@codesynthesis.com>
+> An: "richard" <richard@nod.at>
+> CC: "masahiroy" <masahiroy@kernel.org>, "linux-kernel" <linux-kernel@vger.kernel.org>, "linux-kbuild"
+> <linux-kbuild@vger.kernel.org>
+> Gesendet: Mittwoch, 22. September 2021 17:18:43
+> Betreff: Re: [PATCH 2/2] kconfig: Deny command substitution in string values
 
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index d583b71bec50..6fc99eebd1c1 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -1198,9 +1198,13 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 	struct REPARSE_DATA_BUFFER *rp = NULL;
- 	bool rp_inserted = false;
- 
-+	ni_lock_dir(dir_ni);
-+
- 	dir_root = indx_get_root(&dir_ni->dir, dir_ni, NULL, NULL);
--	if (!dir_root)
--		return ERR_PTR(-EINVAL);
-+	if (!dir_root) {
-+		err = -EINVAL;
-+		goto out1;
-+	}
- 
- 	if (S_ISDIR(mode)) {
- 		/* Use parent's directory attributes. */
-@@ -1549,6 +1553,9 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 	if (err)
- 		goto out6;
- 
-+	/* Unlock parent directory before ntfs_init_acl. */
-+	ni_unlock(dir_ni);
-+
- 	inode->i_generation = le16_to_cpu(rec->seq);
- 
- 	dir->i_mtime = dir->i_ctime = inode->i_atime;
-@@ -1605,8 +1612,10 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- out7:
- 
- 	/* Undo 'indx_insert_entry'. */
-+	ni_lock_dir(dir_ni);
- 	indx_delete_entry(&dir_ni->dir, dir_ni, new_de + 1,
- 			  le16_to_cpu(new_de->key_size), sbi);
-+	/* ni_unlock(dir_ni); will be called later. */
- out6:
- 	if (rp_inserted)
- 		ntfs_remove_reparse(sbi, IO_REPARSE_TAG_SYMLINK, &new_de->ref);
-@@ -1630,8 +1639,10 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 	kfree(rp);
- 
- out1:
--	if (err)
-+	if (err) {
-+		ni_unlock(dir_ni);
- 		return ERR_PTR(err);
-+	}
- 
- 	unlock_new_inode(inode);
- 
-diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
-index 1c475da4e19d..bc741213ad84 100644
---- a/fs/ntfs3/namei.c
-+++ b/fs/ntfs3/namei.c
-@@ -95,16 +95,11 @@ static struct dentry *ntfs_lookup(struct inode *dir, struct dentry *dentry,
- static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
- 		       struct dentry *dentry, umode_t mode, bool excl)
- {
--	struct ntfs_inode *ni = ntfs_i(dir);
- 	struct inode *inode;
- 
--	ni_lock_dir(ni);
--
- 	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFREG | mode,
- 				  0, NULL, 0, NULL);
- 
--	ni_unlock(ni);
--
- 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
- }
- 
-@@ -116,16 +111,11 @@ static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
- static int ntfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
- 		      struct dentry *dentry, umode_t mode, dev_t rdev)
- {
--	struct ntfs_inode *ni = ntfs_i(dir);
- 	struct inode *inode;
- 
--	ni_lock_dir(ni);
--
- 	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, mode, rdev,
- 				  NULL, 0, NULL);
- 
--	ni_unlock(ni);
--
- 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
- }
- 
-@@ -196,15 +186,10 @@ static int ntfs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- {
- 	u32 size = strlen(symname);
- 	struct inode *inode;
--	struct ntfs_inode *ni = ntfs_i(dir);
--
--	ni_lock_dir(ni);
- 
- 	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFLNK | 0777,
- 				  0, symname, size, NULL);
- 
--	ni_unlock(ni);
--
- 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
- }
- 
-@@ -215,15 +200,10 @@ static int ntfs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
- 		      struct dentry *dentry, umode_t mode)
- {
- 	struct inode *inode;
--	struct ntfs_inode *ni = ntfs_i(dir);
--
--	ni_lock_dir(ni);
- 
- 	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFDIR | mode,
- 				  0, NULL, 0, NULL);
- 
--	ni_unlock(ni);
--
- 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
- }
- 
--- 
-2.33.0
+> Richard Weinberger <richard@nod.at> writes:
+> 
+>> > So effectively it's now impossible to include ` or $ in kconfig
+>> > string values. Seems like a major, backwards-incompatible
+>> > restriction.
+>> 
+>> Do you have a working example?
+> 
+> You mean of a project that uses kconfig and that is capable of
+> handling string values with these characters? If so, then yes,
+> see for example, libbuild2-kconfig[1] which is a build system
+> module that implements kconfig-based configuration support for
+> build2. In particular, it exposes values from .config  as
+> buildfile variables but it doesn't do this by sourcing .config.
+> Instead it loads .config using the kconfig API and then sets
+> the corresponding buildfile variables programmatically.
 
+I had a config setting of Linux in mind. :-)
+
+> 
+>> Since the config is sourced in the scripts/setlocalversion it will
+>> not work correctly anyway.
+> 
+> The actual file being sources is include/config/auto.conf, not
+> .config, right?
+> 
+
+Yes. auto.conf is .config post processed.
+This is exactly where my mitigation takes place.
+ 
+>> > I think if this is really desired, then it should be re-done with
+>> > escaping (similar to ") rather than outright banning inconvenient
+>> > characters.
+>> 
+>> Escaping is not so easy since the very same content is included
+>> in shell scripts (sertlocalversion), in Makefiles and in C files.
+> 
+> Again, I don't think it's .config that gets included in C files but
+> rather include/generated/autoconf.h, right?
+> 
+
+Yes. But the key/values are taken as-is.
+
+Just add some odd characters to your .config, build the kernel and observe
+the breakage at different levels.
+Or something like CONFIG_DEFAULT_HOSTNAME="`touch owned`". ;-)
+
+>> At least I didn't find find a good way to escape these characters
+>> such that all three programming environments will accept it.
+> 
+> If my understanding is correct, then you are concerned with the
+> autoconf functionality: the auto.conf makefile and autoconf.h
+> header, and not the .config file itself. Perhaps it will be less
+> disruptive to do the escaping (or banning) at that level?
+
+My concern is that currently a .config file can contain hostile content
+that will get executed at build time.
+.config files are often blindly shared across untrusted developers.
+So I thought that mitigating this whole is worth it.
+
+> Specifically:
+> 
+> 1. If you do escaping at that level, then you can do it differently
+>   for auto.conf and autoconf.h. Though auto.conf still seems to be
+>   read by both make and shell.
+
+I need to think about that. Thanks for the pointer.
+
+Thanks,
+//richard
