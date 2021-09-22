@@ -2,150 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76033415386
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB70F415388
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238314AbhIVWho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhIVWhm (ORCPT
+        id S238315AbhIVWiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:38:51 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:44257 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229506AbhIVWis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:37:42 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851F2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:36:11 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id v24so15967917eda.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:36:11 -0700 (PDT)
+        Wed, 22 Sep 2021 18:38:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=djhccSj2zuwrw0KRuY/CdOVwYrmV8VfWXeYGdC/ylR0=;
-        b=jcvvN0d0O5zrrrD4YYBQUrEY+d76nIb7a1TjlJH+u0FpiYah61xgNl3Yc6cGCBsssz
-         pyuSC2CsZ2Ggb8/uI5Zn0aHQjIl9JBU0YMxy0mRLAS++LDmOL4ZzDCIdPqN0OH3ICyx5
-         M1fUIVd7u9xrbzQm0JAwyfNfznIMqTnyS35edlge69aLqRFIyj+Vxg0l1Rm85mGCbZVh
-         qfInvNWxZ+iHB3Cn4+HJqnwOXVcXxZQCfeezDrzLINZfmxVpCAAdP/tVadn7Y22T8QT5
-         IUblamnZn+6EgOK7WVAeB7GaVo+jbNImqn/9bEep+94hNqD+GYr/CkheIxGm1bxE71Yg
-         xgOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=djhccSj2zuwrw0KRuY/CdOVwYrmV8VfWXeYGdC/ylR0=;
-        b=EFV71KYD5cUHLipA/gM457mHA8wr3OQppnTzwUWgh8KrQDrIYY8VdChtJFI2yA5bXS
-         l8AL/iKtbLgzob41hLnK3LSvnAFN5UWOdzkAtftPREHb5A7jyfQAzftcy69gw2L2YFx9
-         KnNiErcNF07/48t2cyMeEkJRjdauzSuEVmSa35TKkbreGqaWEhoIPHknyvskH781rAyL
-         PbcaMNUaTfo982KEJ3jecgX6BwnfS8fD7pW6Q7Vs/IRfZUzl7uZFS/i1ZlXIWvbl6h0h
-         pdDyKirUq+8lLB1lTcwMBC2oM8AMc5ZxYK3SsWH5IFcLCO6eKDbXjTAxe/2pSeyP84Yc
-         beZw==
-X-Gm-Message-State: AOAM531TYYQKLeePzA1nj+KV70iXZ8p1DRjSQdYOJs2TLSXOSHBTkI2x
-        Fn8A6Jiapsz8Z9DmifkDgfI=
-X-Google-Smtp-Source: ABdhPJx1mlwGET+HoscEHH9+yYLOlxxQEmJ9zWYIV9Amj1AWFTU5y6QHU4Oe5jYb3UljXCfxLHGSjA==
-X-Received: by 2002:a50:bae6:: with SMTP id x93mr1987579ede.232.1632350170187;
-        Wed, 22 Sep 2021 15:36:10 -0700 (PDT)
-Received: from tom-desktop.station (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
-        by smtp.gmail.com with ESMTPSA id bj21sm1686168ejb.42.2021.09.22.15.36.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 15:36:09 -0700 (PDT)
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: vt6655: Replace camel case variable name
-Date:   Thu, 23 Sep 2021 00:35:59 +0200
-Message-Id: <20210922223605.639953-1-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.25.1
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1632350237; x=1663886237;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IUILjFnK96TJzDPo37VTYUqLcB78Wz8SZJQRvuttGYk=;
+  b=CL6vl4/KMT5hNYqfyyEmYROHFcREFHTglVo/VauNBxfulSz9XQ/n4R8S
+   KUsBFDoyVy/mWlMBYu9kIUUZpsBxBbCsRfCwu7FuHnVeiMsJCV6GflwoA
+   KKh7mtSAP4BLv/LCmqVILQ7uoov2hHja7i0BW01evxZhJ1jwcKbafdrb9
+   g=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 22 Sep 2021 15:37:17 -0700
+X-QCInternal: smtphost
+Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
+  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 15:37:17 -0700
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Wed, 22 Sep 2021 15:37:17 -0700
+From:   Elliot Berman <quic_eberman@quicinc.com>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+CC:     Elliot Berman <quic_eberman@quicinc.com>,
+        Prasad Sodagudi <quic_psodagud@quicinc.com>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH 1/1] firmware: smccc: Add tracepoints when SMCCC calls are made
+Date:   Wed, 22 Sep 2021 15:37:00 -0700
+Message-ID: <20210922223701.17521-1-quic_eberman@quicinc.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Work in progress: replace camel case variables
+Add trace events for SMCCC calls. These traces allow for convenient
+mechanism for kernel to log SMC/HVC instructions without requiring
+extracting traces from firmware. SMCCC spec currently [1] allows for 7
+argument registers and 4 result registers. The first argument should
+always be a function identifier, so use that to match the exit trace.
 
-bShortSlotTime -> b_short_slot_time
+[1]: ARM DEN 0028D (https://developer.arm.com/documentation/den0028/d/)
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/staging/vt6655/baseband.c    | 4 ++--
- drivers/staging/vt6655/card.c        | 2 +-
- drivers/staging/vt6655/device.h      | 2 +-
- drivers/staging/vt6655/device_main.c | 4 ++--
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/firmware/smccc/Kconfig            |  8 ++
+ drivers/firmware/smccc/Makefile           |  1 +
+ drivers/firmware/smccc/arm-smccc-traces.c | 14 ++++
+ include/linux/arm-smccc.h                 | 38 +++++++--
+ include/trace/events/arm_smccc.h          | 99 +++++++++++++++++++++++
+ 5 files changed, 154 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/firmware/smccc/arm-smccc-traces.c
+ create mode 100644 include/trace/events/arm_smccc.h
 
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index ff596bdcee8d..cf7f292f1c8d 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -2200,7 +2200,7 @@ bb_set_short_slot_time(struct vnt_private *priv)
+diff --git a/drivers/firmware/smccc/Kconfig b/drivers/firmware/smccc/Kconfig
+index 15e7466179a6..fb7d2da1558e 100644
+--- a/drivers/firmware/smccc/Kconfig
++++ b/drivers/firmware/smccc/Kconfig
+@@ -23,3 +23,11 @@ config ARM_SMCCC_SOC_ID
+ 	help
+ 	  Include support for the SoC bus on the ARM SMCCC firmware based
+ 	  platforms providing some sysfs information about the SoC variant.
++
++config TRACE_ARM_SMCCC
++	bool "Trace ARM SMCCC Calls"
++	depends on HAVE_ARM_SMCCC
++	depends on TRACEPOINTS
++	default y
++	help
++	  Enable trace events to log SMC and HVC service calls.
+diff --git a/drivers/firmware/smccc/Makefile b/drivers/firmware/smccc/Makefile
+index 40d19144a860..be50ae665040 100644
+--- a/drivers/firmware/smccc/Makefile
++++ b/drivers/firmware/smccc/Makefile
+@@ -2,3 +2,4 @@
+ #
+ obj-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)	+= smccc.o kvm_guest.o
+ obj-$(CONFIG_ARM_SMCCC_SOC_ID)	+= soc_id.o
++obj-$(CONFIG_TRACE_ARM_SMCCC) += arm-smccc-traces.o
+diff --git a/drivers/firmware/smccc/arm-smccc-traces.c b/drivers/firmware/smccc/arm-smccc-traces.c
+new file mode 100644
+index 000000000000..9c6282644c02
+--- /dev/null
++++ b/drivers/firmware/smccc/arm-smccc-traces.c
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * ARM SMCCC Trace points
++ *
++ * Copyright (C) 2021, The Linux Foundation. All rights reserved.
++ */
++
++#include <linux/export.h>
++
++#define CREATE_TRACE_POINTS
++#include <trace/events/arm_smccc.h>
++
++EXPORT_TRACEPOINT_SYMBOL_GPL(arm_smccc_start);
++EXPORT_TRACEPOINT_SYMBOL_GPL(arm_smccc_end);
+diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+index 7d1cabe15262..c214cebb1603 100644
+--- a/include/linux/arm-smccc.h
++++ b/include/linux/arm-smccc.h
+@@ -190,6 +190,7 @@
  
- 	bb_read_embedded(priv, 0x0A, &by_bb_rx_conf); /* CR10 */
+ #include <linux/linkage.h>
+ #include <linux/types.h>
++#include <trace/events/arm_smccc.h>
  
--	if (priv->bShortSlotTime)
-+	if (priv->b_short_slot_time)
- 		by_bb_rx_conf &= 0xDF; /* 1101 1111 */
- 	else
- 		by_bb_rx_conf |= 0x20; /* 0010 0000 */
-@@ -2223,7 +2223,7 @@ void bb_set_vga_gain_offset(struct vnt_private *priv, unsigned char by_data)
- 	/* patch for 3253B0 Baseband with Cardbus module */
- 	if (by_data == priv->abyBBVGA[0])
- 		by_bb_rx_conf |= 0x20; /* 0010 0000 */
--	else if (priv->bShortSlotTime)
-+	else if (priv->b_short_slot_time)
- 		by_bb_rx_conf &= 0xDF; /* 1101 1111 */
- 	else
- 		by_bb_rx_conf |= 0x20; /* 0010 0000 */
-diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
-index 9bec1cd036be..b562d09b1ba2 100644
---- a/drivers/staging/vt6655/card.c
-+++ b/drivers/staging/vt6655/card.c
-@@ -258,7 +258,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 		bb_write_embedded(priv, 0x88, 0x08);
- 		bySIFS = C_SIFS_BG;
+ enum arm_smccc_conduit {
+ 	SMCCC_CONDUIT_NONE,
+@@ -343,13 +344,25 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
+ 			unsigned long a5, unsigned long a6, unsigned long a7,
+ 			struct arm_smccc_res *res, struct arm_smccc_quirk *quirk);
  
--		if (priv->bShortSlotTime) {
-+		if (priv->b_short_slot_time) {
- 			bySlot = C_SLOT_SHORT;
- 			byDIFS = C_SIFS_BG + 2 * C_SLOT_SHORT;
- 		} else {
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index 3d8e28c45287..08c011074193 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -215,7 +215,7 @@ struct vnt_private {
+-#define arm_smccc_smc(...) __arm_smccc_smc(__VA_ARGS__, NULL)
++#define __arm_smccc(call, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, res, quirk) \
++	do { \
++		trace_arm_smccc_start(tracepoint_string(#call), \
++				(arg0), (arg1), (arg2), (arg3), (arg4), \
++				(arg5), (arg6), (arg7)); \
++		__arm_smccc_##call((arg0), (arg1), (arg2), (arg3), (arg4), (arg5), (arg6), (arg7),\
++				   (res), (quirk)); \
++		trace_arm_smccc_end(tracepoint_string(#call), (arg0), \
++				(res)->a0, (res)->a1, (res)->a2, (res)->a3); \
++	} while (0)
++
  
- 	bool bEncryptionEnable;
- 	bool bLongHeader;
--	bool bShortSlotTime;
-+	bool b_short_slot_time;
- 	bool bProtectMode;
- 	bool bNonERPPresent;
- 	bool bBarkerPreambleMd;
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index 1b214546bf65..e88ba1319cfb 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -1440,9 +1440,9 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
+-#define arm_smccc_smc_quirk(...) __arm_smccc_smc(__VA_ARGS__)
++#define arm_smccc_smc(...) __arm_smccc(smc, __VA_ARGS__, NULL)
  
- 	if (changed & BSS_CHANGED_ERP_SLOT) {
- 		if (conf->use_short_slot)
--			priv->bShortSlotTime = true;
-+			priv->b_short_slot_time = true;
- 		else
--			priv->bShortSlotTime = false;
-+			priv->b_short_slot_time = false;
+-#define arm_smccc_hvc(...) __arm_smccc_hvc(__VA_ARGS__, NULL)
++#define arm_smccc_smc_quirk(...) __arm_smccc(smc, __VA_ARGS__)
  
- 		CARDbSetPhyParameter(priv, priv->byBBType);
- 		bb_set_vga_gain_offset(priv, priv->abyBBVGA[0]);
+-#define arm_smccc_hvc_quirk(...) __arm_smccc_hvc(__VA_ARGS__)
++#define arm_smccc_hvc(...) __arm_smccc(hvc, __VA_ARGS__, NULL)
++
++#define arm_smccc_hvc_quirk(...) __arm_smccc(hvc, __VA_ARGS__)
+ 
+ /* SMCCC v1.1 implementation madness follows */
+ #ifdef CONFIG_ARM64
+@@ -450,22 +463,35 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
+ 	: smccc_sve_clobbers "memory"
+ #define __constraints(count)	___constraints(count)
+ 
++#define __trace_arg_0	((unsigned long)arg0)
++#define __trace_arg_1	__trace_arg_0, ((unsigned long)arg1)
++#define __trace_arg_2	__trace_arg_1, ((unsigned long)arg2)
++#define __trace_arg_3	__trace_arg_2, ((unsigned long)arg3)
++#define __trace_arg_4	__trace_arg_3, ((unsigned long)arg4)
++#define __trace_arg_5	__trace_arg_4, ((unsigned long)arg5)
++#define __trace_arg_6	__trace_arg_5, ((unsigned long)arg6)
++#define __trace_arg_7	__trace_arg_6, ((unsigned long)arg7)
++#define ___trace_args(count)	__trace_arg_##count
++#define __trace_args(count)	___trace_args(count)
++
+ /*
+  * We have an output list that is not necessarily used, and GCC feels
+  * entitled to optimise the whole sequence away. "volatile" is what
+  * makes it stick.
+  */
+-#define __arm_smccc_1_1(inst, ...)					\
++#define __arm_smccc_1_1(inst, a0, ...)					\
+ 	do {								\
+ 		register unsigned long r0 asm("r0");			\
+ 		register unsigned long r1 asm("r1");			\
+ 		register unsigned long r2 asm("r2");			\
+ 		register unsigned long r3 asm("r3"); 			\
+ 		__declare_args(__count_args(__VA_ARGS__), __VA_ARGS__);	\
++		trace_arm_smccc_start_vargs(tracepoint_string(inst), __trace_args(__count_args(a0, __VA_ARGS__))); \
+ 		asm volatile(SMCCC_SVE_CHECK				\
+ 			     inst "\n" :				\
+ 			     "=r" (r0), "=r" (r1), "=r" (r2), "=r" (r3)	\
+-			     __constraints(__count_args(__VA_ARGS__)));	\
++			     __constraints(__count_args(a0, __VA_ARGS__)));	\
++		trace_arm_smccc_end(tracepoint_string(inst), a0, r0, r1, r2, r3); \
+ 		if (___res)						\
+ 			*___res = (typeof(*___res)){r0, r1, r2, r3};	\
+ 	} while (0)
+diff --git a/include/trace/events/arm_smccc.h b/include/trace/events/arm_smccc.h
+new file mode 100644
+index 000000000000..533377d2d066
+--- /dev/null
++++ b/include/trace/events/arm_smccc.h
+@@ -0,0 +1,99 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#if IS_REACHABLE(CONFIG_TRACE_ARM_SMCCC) && !defined(__KVM_NVHE_HYPERVISOR__)
++
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM arm_smccc
++
++#if !defined(_TRACE_ARM_SMCCC_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_ARM_SMCCC_H
++
++
++#include <linux/tracepoint.h>
++
++TRACE_EVENT(arm_smccc_start,
++	TP_PROTO(const char *call, unsigned long a0, unsigned long a1, unsigned long a2,
++		unsigned long a3, unsigned long a4, unsigned long a5, unsigned long a6,
++		unsigned long a7),
++
++	TP_ARGS(call, a0, a1, a2, a3, a4, a5, a6, a7),
++
++	TP_STRUCT__entry(
++		__field(unsigned long, a0)
++		__field(unsigned long, a1)
++		__field(unsigned long, a2)
++		__field(unsigned long, a3)
++		__field(unsigned long, a4)
++		__field(unsigned long, a5)
++		__field(unsigned long, a6)
++		__field(unsigned long, a7)
++		__string(call, call)
++	),
++
++	TP_fast_assign(
++		__entry->a0 = a0;
++		__entry->a1 = a1;
++		__entry->a2 = a2;
++		__entry->a3 = a3;
++		__entry->a4 = a4;
++		__entry->a5 = a5;
++		__entry->a6 = a6;
++		__entry->a7 = a7;
++
++		__assign_str(call, call);
++	),
++
++	TP_printk("call=%s fn=%04x args={%0lx %0lx %0lx %0lx %0lx %0lx %0lx}",
++		__get_str(call), __entry->a0, __entry->a1, __entry->a2,
++		__entry->a3, __entry->a4, __entry->a5, __entry->a6, __entry->a7)
++);
++
++TRACE_EVENT(arm_smccc_end,
++	TP_PROTO(const char *call, unsigned long a0, unsigned long r0, unsigned long r1,
++		unsigned long r2, unsigned long r3),
++
++	TP_ARGS(call, a0, r0, r1, r2, r3),
++
++	TP_STRUCT__entry(
++		__field(unsigned long, a0)
++		__field(unsigned long, r0)
++		__field(unsigned long, r1)
++		__field(unsigned long, r2)
++		__field(unsigned long, r3)
++		__string(call, call)
++	),
++
++	TP_fast_assign(
++		__entry->a0 = a0;
++		__entry->r0 = r0;
++		__entry->r1 = r1;
++		__entry->r2 = r2;
++		__entry->r3 = r3;
++
++		__assign_str(call, call);
++	),
++
++	TP_printk("call=%s fn=%04x res={%0lx %0lx %0lx %0lx}",
++		__get_str(call), __entry->a0, __entry->r0, __entry->r1,
++		__entry->r2, __entry->r3)
++);
++
++#define _trace_arm_smccc_start(call, a0, a1, a2, a3, a4, a5, a6, a7, ...) \
++	trace_arm_smccc_start(call, a0, a1, a2, a3, a4, a5, a6, a7)
++
++#define trace_arm_smccc_start_vargs(call, ...) \
++	_trace_arm_smccc_start(call, __VA_ARGS__, 0, 0, 0, 0, 0, 0, 0, 0)
++
++#endif
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
++
++#else
++#define trace_arm_smccc_start(...)
++#define trace_arm_smccc_end(...)
++
++#define trace_arm_smccc_start_vargs(...)
++#endif
 -- 
-2.25.1
+2.33.0
 
