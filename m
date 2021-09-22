@@ -2,86 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741EF414C1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD55414C21
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbhIVOfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58950 "EHLO
+        id S236234AbhIVOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232720AbhIVOfW (ORCPT
+        with ESMTP id S232401AbhIVOh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:35:22 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26316C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:33:52 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id q11so7407252wrr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=opllyLt1DsNDxWpcLBlZnpo8Z6sAmoNdsENcPyHTzkA=;
-        b=yHF4k9WVv9ZGMahRDkO1TktUc7oOz1FD900V1TmAWw7ofc5AR2JjP51PYqSRHkrZ2V
-         Niq0LQYCqG5w88J1AmVyXDNgBqDF1+0TV8QIav4H/EgoCbJIJGIsyGGpqHPq49wfA4C1
-         95doEamy4O72xxpxINu5N+ydNgJgywFOqaP2Lud1lS4kRdIGI2mvIG5jJk2fP4DZXXXn
-         xg6QlsBdl3j41olZ7/BfH4lfQz9lgw0WMm7d/WTMhAbtZAxAfKt4y23UdMMiGlpF8WJ0
-         RoXR/MdmH2/Ye/QZCM7H8goJKFufsBf8kCZ1jsA58Nu8aqNEM5MXZiargYgSD2yeB3Kh
-         7JPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=opllyLt1DsNDxWpcLBlZnpo8Z6sAmoNdsENcPyHTzkA=;
-        b=IJ89LJBptWtKEtuvipCLDRksR5i7K9K4tHnbNgntWtuGBjA/7joxAaW6OWd/eDdK3N
-         lZckRVMKJ5gQfO4FZdhEOVp1T3DqjUTmjZRTi423QGEqNkJ4igT9S9V6nSHOkDZyBP3C
-         8G4d5K2p3nlurBaysYVzZgsrnlnuUu9u6ysw87Ia64lu9D3BFWonqmkefVJdxTya/3Yp
-         b3bo+p/1Qr2Hg3PrnGFoTdBh0UyP/5tM1RucSOlScinupDC0u8b80Z53wKDC1CqKtic1
-         0MMwdzm1wMskVLZi/3ObsAmPwQxlHFPxWwhhaCzOz9bq5LwrWRet7A4jVy4QSvtGyNff
-         dFkA==
-X-Gm-Message-State: AOAM5311gEMjGVXPOn3EPiGGRg8k1Gw5u6aga2Brjc+968t7G0N4UszV
-        XonNyY16Xc5UCXaJ3sOub3f7KTXxFd9fIQ==
-X-Google-Smtp-Source: ABdhPJybLroGWJi7+dD0SMDaWcpDCZfF3MDjRkjzaZxW8f5yM5o17axBP46QDzhLaOP2uEVwHTDgmg==
-X-Received: by 2002:a5d:4cc6:: with SMTP id c6mr41954042wrt.108.1632321230741;
-        Wed, 22 Sep 2021 07:33:50 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id c15sm2531572wrc.83.2021.09.22.07.33.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 07:33:50 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 15:33:48 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mfd: sprd: Add support for SC2730 PMIC
-Message-ID: <YUs+zOR5AtbtgL9F@google.com>
-References: <20210915091726.251031-1-zhang.lyra@gmail.com>
+        Wed, 22 Sep 2021 10:37:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA257C061574;
+        Wed, 22 Sep 2021 07:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nHng5tIdS7Xn6BCJwl7sOAs/mlZQxYRxlcr0Xa3zcFk=; b=d5KDb4Prr992RAw/GFY1RWSeTa
+        llNVgLQCmWqwpJ9JEciqBa+ARq9gF0XftN3ZJUTsyloNNDdiDQI3OmdDaH+X9My+XzMSAKGAn93uA
+        yFwR2zypqoMgSNIuQT/mQrimgrfO+u3iCfWnLdFQxvlHHlnQKZSYK32iUAJMj2m4FEE1e8U70pKY/
+        rhMKWOcvE8gsvY7MNVodijz20hqinhSIkM7wcTm1eD/wiaBmLJynw1nrkhh26aASYrmzVQZKPoVUq
+        zNxjjF5SNzpo5xTycszrPX3VUMZ+LBz1KIFNs43+aG+Wr8V/nH6cVbBEmfgpJeJDm66+oIVlqXenI
+        Drzp+MJw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT3Kj-004rzB-Gj; Wed, 22 Sep 2021 14:35:00 +0000
+Date:   Wed, 22 Sep 2021 15:34:49 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, tj@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH 4/4] block: cancel all throttled bios in
+ blk_cleanup_queue()
+Message-ID: <YUs/CcSKqNoIIXoW@infradead.org>
+References: <20210922125115.381752-1-yukuai3@huawei.com>
+ <20210922125115.381752-5-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210915091726.251031-1-zhang.lyra@gmail.com>
+In-Reply-To: <20210922125115.381752-5-yukuai3@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021, Chunyan Zhang wrote:
-
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Wed, Sep 22, 2021 at 08:51:15PM +0800, Yu Kuai wrote:
+> Throttled bios can't be issued after queue is dying in
+> blk_cleanup_queue(), thus it's better to cancel them immediately
+> rather than waiting for throttle is done.
 > 
-> SC2730 is a PMIC SoC integrated in UMS512.
-> 
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> ---
->  drivers/mfd/sprd-sc27xx-spi.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> For example, if user thread is throttled with low bps while is
+> issuing large io, and the device is deleted. The user thread will
+> wait for a long time for io to return.
 
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+blk_cleanup_queue is too late, this will need to go into del_gendisk
+and on top of my "tear down file system I/O in del_gendisk" series.
