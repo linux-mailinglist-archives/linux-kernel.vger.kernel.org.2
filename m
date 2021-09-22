@@ -2,110 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DCB4150D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DD44150C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237301AbhIVUAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhIVUAN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:00:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B7DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zR61vV1oybrOw3cyGY8F42IMCGnnL9DJ5uQe7oNLLZ0=; b=GWesiIwwuZoSo0GUVbwI/18JuB
-        ngeTKQ8CHD4cT/52SQoaWaKG8T4IaOdBMMSBtSTJ+HdCQnupJkjpvrcIbIowx6O4evWoP5kZ1vf0n
-        pU7Q6jlU8Ad6fdS+izfz+kE0wL9vYivvba9ivJX5hi7fFThSJpn2nUE7dSRmqBq//5clvj7KwQMaX
-        wVU3cnzm6GcFIXlNlh3Endf9lyA5qdjsJMYsL2KTLHC/vbIUmXZoHYyigpmGgcIa5i2lclgPEmXqv
-        4N/mJrlbpKz28z5TLpHpeuPL+b6QmNeN/cwCNtwPTvzy0ZyWzY2jjmwWzT56mtrJ5rQuC6h0R8jOo
-        3AlxbuVw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT8Ip-0055N5-3G; Wed, 22 Sep 2021 19:53:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B4EDF3001CD;
-        Wed, 22 Sep 2021 21:53:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 570E82D7CF34A; Wed, 22 Sep 2021 21:53:07 +0200 (CEST)
-Date:   Wed, 22 Sep 2021 21:53:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Colin Ian King <colin.king@canonical.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Evgenii Stepanov <eugenis@google.com>
-Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
-Message-ID: <YUuJo7IfS4x0iLfX@hirez.programming.kicks-ass.net>
-References: <20210922061809.736124-1-pcc@google.com>
- <29f1822d-e4cd-eedb-bea8-619db1d56335@redhat.com>
- <20210922152250.4e7c869a@gandalf.local.home>
+        id S237287AbhIVTzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:55:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235975AbhIVTzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 15:55:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 515AD61050;
+        Wed, 22 Sep 2021 19:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632340430;
+        bh=VII5+fZH888Mt498iOJoyPjMe70GGnKReQSGkvsggMM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QGyEmVPxS+Bt6haiWNy6QZuSsCPU0Sh3jujW9IrvdWFC6aVbo13/r/1tL8fjrKrGB
+         CFgwldsfjyDGSiK9ffkDXmVlKYjqj6auHxBWocW02VLt5gYmgVSlTFUD2IydsrBrPP
+         WBmUnbhrVz+irdc+u+NIDEjFaoIsujGmIKqrgrQ+gUJ76w/juK+QyLlP2owpasv5Nt
+         1y3ImM1crWQscQ4Rjp6pBCdvG5wAN7irWH9bvzvVjfXcaOsYwGPju4k3rAXBNtgGGv
+         8goSOH88T2SMmTJ47iY91ArB6RImAu6ujBxXbErRQ8l0RMGUs7OjbkQE1J+2kIphHX
+         NGjGqoGNf7XlA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1CCD25C0A54; Wed, 22 Sep 2021 12:53:50 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 12:53:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org
+Subject: Re: [RFC][PATCH 6/7] context_tracking: Provide SMP ordering using RCU
+Message-ID: <20210922195350.GC880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210922110506.703075504@infradead.org>
+ <20210922110836.244770922@infradead.org>
+ <20210922151721.GZ880162@paulmck-ThinkPad-P17-Gen-1>
+ <YUuFF8+H2PE9m4wy@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922152250.4e7c869a@gandalf.local.home>
+In-Reply-To: <YUuFF8+H2PE9m4wy@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 03:22:50PM -0400, Steven Rostedt wrote:
-> On Wed, 22 Sep 2021 19:46:47 +0200
-> David Hildenbrand <david@redhat.com> wrote:
-> 
-> > > All signals except SIGKILL and SIGSTOP are masked for the interval
-> > > between the prctl() and the next syscall in order to prevent handlers
-> > > for intervening asynchronous signals from issuing syscalls that may
-> > > cause uaccesses from the wrong syscall to be logged.  
+On Wed, Sep 22, 2021 at 09:33:43PM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 22, 2021 at 08:17:21AM -0700, Paul E. McKenney wrote:
+> > On Wed, Sep 22, 2021 at 01:05:12PM +0200, Peter Zijlstra wrote:
+> > > Use rcu_user_{enter,exit}() calls to provide SMP ordering on context
+> > > tracking state stores:
+> > > 
+> > > __context_tracking_exit()
+> > >   __this_cpu_write(context_tracking.state, CONTEXT_KERNEL)
+> > >   rcu_user_exit()
+> > >     rcu_eqs_exit()
+> > >       rcu_dynticks_eqs_eit()
+> > >         rcu_dynticks_inc()
+> > >           atomic_add_return() /* smp_mb */
+> > > 
+> > > __context_tracking_enter()
+> > >   rcu_user_enter()
+> > >     rcu_eqs_enter()
+> > >       rcu_dynticks_eqs_enter()
+> > >         rcu_dynticks_inc()
+> > > 	  atomic_add_return() /* smp_mb */
+> > >   __this_cpu_write(context_tracking.state, state)
+> > > 
+> > > This separates USER/KERNEL state with an smp_mb() on each side,
+> > > therefore, a user of context_tracking_state_cpu() can say the CPU must
+> > > pass through an smp_mb() before changing.
+> > > 
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > > 
-> > Stupid question: can this be exploited from user space to effectively 
-> > disable SIGKILL for a long time ... and do we care?
+> > For the transformation to negative errno return value and name change
+> > from an RCU perspective:
+> > 
+> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> I first misread it too, but then caught my mistake reading it a second
-> time. It says "except SIGKILL". So no, it does not disable SIGKILL.
+> Thanks!
+> 
+> > For the sampling of nohz_full userspace state:
+> > 
+> > Another approach is for the rcu_data structure's ->dynticks variable to
+> > use the lower two bits to differentiate between idle, nohz_full userspace
+> > and kernel.  In theory, inlining should make this zero cost for idle
+> > transition, and should allow you to safely sample nohz_full userspace
+> > state with a load and a couple of memory barriers instead of an IPI.
+> 
+> That's what I do now, it's like:
+> 
+>   <user code>
+> 
+>   state = KERNEL
+>   smp_mb()
+> 
+>   <kernel code>
+> 
+>   smp_mb()
+>   state = USER
+> 
+>   <user core>
+> 
+> vs
+> 
+>   <patch kernel code>
+>   smp_mb()
+>   if (state == USER)
+>     // then we're guaranteed any subsequent kernel code execution
+>     // will see the modified kernel code
+> 
+> more-or-less
 
-Disabling SIGINT might already be a giant nuisance. Letting through
-SIGSTOP but not SIGCONT seems awkward. Blocking SIGTRAP seems like a bad
-idea too. Blocking SIGBUS as delivered by #MC will be hillarious.
+OK.
+
+> > To make this work nicely, the low-order bits have to be 00 for kernel,
+> > and (say) 01 for idle and 10 for nohz_full userspace.  11 would be an
+> > error.
+> > 
+> > The trick would be for rcu_user_enter() and rcu_user_exit() to atomically
+> > increment ->dynticks by 2, for rcu_nmi_exit() to increment by 1 and
+> > rcu_nmi_enter() to increment by 3.  The state sampling would need to
+> > change accordingly.
+> > 
+> > Does this make sense, or am I missing something?
+> 
+> Why doesn't the proposed patch work? Also, ISTR sampling of remote
+> context state coming up before. And as is, it's a weird mix between
+> context_tracking and rcu.
+
+I wasn't saying that the patch doesn't work.  But doesn't it add an IPI?
+Or was I looking at it too early this morning?
+
+As to RCU's ->dynticks and context-tracking state, something about RCU
+being there first by many years.  ;-)  Plus, does context-tracking
+track idleness within the kernel?  RCU needs that as well.
+
+> AFAICT there is very little useful in context_tracking as is, but it's
+> also very weird to have to ask RCU about this. Is there any way to slice
+> this this code differently? Perhaps move some of the state RCU now keeps
+> into context_tracking ?
+> 
+> Anyway, lemme see if I get your proposal; lets say the counter starts at
+> 0 and is in kernel space.
+> 
+>  0x00(0) - kernel
+>  0x02(2) - user
+>  0x04(0) - kernel
+> 
+> So far so simple, then NMI on top of that goes:
+> 
+>  0x00(0) - kernel
+>  0x03(3) - kernel + nmi
+
+This would stay 0x00 because the NMI is interrupting kernel code.  The
+check of rcu_dynticks_curr_cpu_in_eqs() avoids this additional increment.
+
+>  0x04(0) - kernel
+
+And same here, still zero.
+
+>  0x06(2) - user
+
+And now 0x02.
+
+>  0x09(1) - user + nmi
+
+This would be 0x04, back in the kernel.  Which is the area of concern,
+because the amount to increment depends on the counter value, requiring
+an additional arithmetic operation on the from-idle fastpath.  Probably
+not visible even in microbenchmarks, but still a potential issue.
+
+>  0x0a(2) - user
+
+Now 0x06, back in nohz_full userspace.
+
+> Which then gives us:
+> 
+>  (0) := kernel
+>  (1) := nmi-from-user
+>  (2) := user
+>  (3) := nmi-from-kernel
+
+You need to know NMI as a separate state?
+
+> Which should work I suppose. But like I said above, I'd be happier if
+> this counter would live in context_tracking rather than RCU.
+
+This would be the first non-RCU user of the counter.  The various
+rcu_*_{enter,exit}() functions are still required, though, in order
+to handle things like deferred wakeups.  Plus RCU makes heavy use
+of that counter.  So it is not clear that moving the counter to the
+context-tracking subsystem really buys you anything.
+
+But it would be good to avoid maintaining duplicate information,
+that is assuming that the information really is duplicate...
+
+							Thanx, Paul
