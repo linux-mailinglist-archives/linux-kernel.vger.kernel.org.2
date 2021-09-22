@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0231A414132
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AF3414135
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhIVFYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:24:25 -0400
-Received: from mout.gmx.net ([212.227.17.22]:50589 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231896AbhIVFYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:24:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632288142;
-        bh=5hgh/U4SYPOaZ0UeQj+Ij9M+/6aYz1DP0O5BJh1rX0Q=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=R6DynJvbvk69c/KOnPOQ1K76JGiUhNY/wVKWfsbtz00PN4m0lZ62QkXR8UZOE8Ws2
-         YrEIf15BtBjQlW4EHinWXH+n/+FCQQjC3QofSEpoMb7fa+temJF1cKidOShHAAygNK
-         oVxqwXiSSTR6UZbpuJcSVZ2HySJjuBIUBqJbdIJk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.221]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MI5QF-1mgsor1dNH-00FDiW; Wed, 22
- Sep 2021 07:22:22 +0200
-Message-ID: <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
-Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
- nr_running
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 22 Sep 2021 07:22:20 +0200
-In-Reply-To: <20210921103621.GM3959@techsingularity.net>
-References: <20210920142614.4891-1-mgorman@techsingularity.net>
-         <20210920142614.4891-3-mgorman@techsingularity.net>
-         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
-         <20210921103621.GM3959@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S232119AbhIVF1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231896AbhIVF1W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:27:22 -0400
+Received: from forward106j.mail.yandex.net (forward106j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671FFC061574;
+        Tue, 21 Sep 2021 22:25:53 -0700 (PDT)
+Received: from myt6-43c1316fdabf.qloud-c.yandex.net (myt6-43c1316fdabf.qloud-c.yandex.net [IPv6:2a02:6b8:c12:370d:0:640:43c1:316f])
+        by forward106j.mail.yandex.net (Yandex) with ESMTP id 7BDD5136A87F;
+        Wed, 22 Sep 2021 08:25:48 +0300 (MSK)
+Received: from myt5-cceafa914410.qloud-c.yandex.net (myt5-cceafa914410.qloud-c.yandex.net [2a02:6b8:c12:3b23:0:640:ccea:fa91])
+        by myt6-43c1316fdabf.qloud-c.yandex.net (mxback/Yandex) with ESMTP id aeAFcq1fO2-PlD8hGMN;
+        Wed, 22 Sep 2021 08:25:48 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1632288348;
+        bh=T51rUNPVohQf+3lV1GDaVcNQ8Jynk/Br7M1fk9sxHeQ=;
+        h=Message-ID:Subject:To:From:In-Reply-To:Cc:References:Date;
+        b=kVVNjrWLABjth60iiq6/rI7wNDsrf8wtQE3jiJFWN9IFfl9wKMwY/ObWvd9xSbBI7
+         T0XiwT2WbKtYQXJBIIYi1w6iPJc2QTdnd9q/IdsspgQlv2oHDAdEDHPPIL2S5QcEuh
+         YAGM5Guw/vkXQCG9YolVo+ZNkJsCJ+Mwub7Rf47M=
+Authentication-Results: myt6-43c1316fdabf.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by myt5-cceafa914410.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id Me1tdhdSba-Pkxqs8sr;
+        Wed, 22 Sep 2021 08:25:46 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Date:   Wed, 22 Sep 2021 08:25:43 +0300
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Atish Patra <atish.patra@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vincent Chen <vincent.chen@sifive.com>
+Subject: Re: [v3 01/10] RISC-V: Remove the current perf implementation
+Message-ID: <20210922082543.71fc5619@redslave.neermore.group>
+In-Reply-To: <238571632287002@mail.yandex.ru>
+References: <20210910192757.2309100-1-atish.patra@wdc.com>
+        <20210910192757.2309100-2-atish.patra@wdc.com>
+        <238571632287002@mail.yandex.ru>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RNG5cLLtX2XEjwKA3501VUiYBjUdVAaf7VQilPiTF6v+IDYqZJw
- uzVPuWQxqRy69N2fnFrnksSyxxwfaazCaaCGQRF8YKO+0C/3Ei6o9KawA7qQuq9iiC4SoSt
- vXB+77WjwIYeTDjXipjo9jdc6ps2dUvKXhHIWIBiAaqwviPaWx87vpZ3Y3jg6vM91pZpFrn
- xetY9ImVOPX6kYBm6PPog==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uXySdueNrrM=:Q2X070B4E6uKRHJOymgvym
- UDpmvct952BkTFmPy03M9nIljiAEh/i7oKMzM3Vpr6U1yldcDVXCyH9yt+fIro+ToHFRJt8Ti
- 0qJwfKFKXS+BTPio+DhO8A6VQKLIKVGXIikMYSH8QkF0efJs/F+T521h1p8MDyq7pn0tSuGWu
- CjIqrQzVj1maEoDOvmUFDg/6aGJsYwfXRN4Na68eFe6Xo1f1FQpV/sjKes4rxsOCD32NogK10
- f4pvJ33f4EtP1ZBtQUdx7X+t8I/Rou3Csp0nJU3gSyPMqUiBJzMkQ77xBIfAodd4cZpWNRNAl
- EyLCce17KMJUJ48KEd2FPjr0OcvLHeHxjbevzcDW7VdOtEVLXwp0ItbJIk/1UaXtnkhtJL7kw
- tn1nQAdRECqD4k3bVaSgAv86QpKipjRm18MUbkfEwqMJ3zuqT5JXH0xfn7xq0CEb72ipjtxdD
- 4KH3kiB1/ad6FXQeDbB8bKKmyb6XF/K9ubpnLykqfF2NaU/FX9VCRueemgPeVx3svlcVKCI/s
- 8q6OAx5QZ1cXnUs27RSGrrO+JJcpu2J2skB7UJ4CccCZzlbmU1OBew9Jfd/AxWqLl80etP2EB
- bzFfsucdCqkhU0Q4/Iqc0tC3mMcSt2WNnWsYVuVFUz5DpLpSodgkapsHyaUX4O8bsqyr2spw5
- uH2Ib5vCUD8cMHJcSfCC+6eXklFASJbMhOWFq79wQCOxGYWV0batobwXi2p2zrGWrJSuQr27F
- VJrqv0aGi25LK7R6Bt/TlOt3AfoefkMtLTUzQ6JXE1PZjhjjMwP4/kFPtpfYV0KLBQE1tWAcf
- iRsiWUhfTu5Elnl4IOYJz17AEz63HZgSquQ9UdD2mU5dhv1h0XaY1xdDXBf6rlFP7cZQGgEGA
- +HZG46zYZ0frFpHbH2kD8Re5juPjVwd3EHZNqTDfk77ahJwGsCvg6wLItgz0bF0JpwDCKyOYU
- cj42BuXBorNxICCR2eH+b+514/deNjwHEdk0EMvixPrq9Q5ZNY8z+DstQydyGVM3BaxgSlATn
- 3oDcLYKtrKkD658DCQ1jXxnZ8dt4F4Huj2agIJd2lJw3MegzdD7/kVjHn0osVO5isnWRUzqVX
- dle9w8NwmPcWmY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-21 at 11:36 +0100, Mel Gorman wrote:
-> On Tue, Sep 21, 2021 at 05:52:32AM +0200, Mike Galbraith wrote:
->
->
-> > Preemption does rapidly run into diminishing return as load climbs for
-> > a lot of loads, but as you know, it's a rather sticky wicket because
-> > even when over-committed, preventing light control threads from slicin=
-g
-> > through (what can be a load's own work crew of) hogs can seriously
-> > injure performance.
-> >
->
-> Turning this into a classic Rob Peter To Pay Paul problem. We don't know
-> if there is a light control thread that needs to run or not that affects
-> overall performance. It all depends on whether that control thread needs
-> to make progress for the overall workload or whether there are a mix of
-> workloads resulting in overloading.
+On Wed, 22 Sep 2021 08:11:44 +0300
+nikita.shubin@maquefel.me wrote:
 
-WRT overload, and our good buddies Peter and Paul :) I added...
-	if (gran >=3D sysctl_sched_latency >> 1)
-		trace_printk("runnable:%d preempt disabled\n",cfs_rq->nr_running);
-...to watch, and met the below when I.. logged in.
+> Hello Atish.
+> =C2=A0
+> 10.09.2021, 22:28, "Atish Patra" <atish.patra@wdc.com>:
+>=20
+> > The current perf implementation in RISC-V is not very useful as it
+> > can not count any events other than cycle/instructions. Moreover,
+> > perf record can not be used or the events can not be started or
+> > stopped.
+> >=20
+> > Remove the implementation now for a better platform driver in future
+> > that will implement most of the missing functionality.
+> Your v3 version still breaks the build with CONFIG_BPF_SYSCALL
+> enabled:=20
+> kernel/events/core.c: In function 'bpf_overflow_handler':
+> kernel/events/core.c:9914:18: error: assignment to
+> 'bpf_user_pt_regs_t *' {aka 'struct user_regs_struct *'} from
+> incompatible pointer type 'struct pt_regs *'
+> [-Werror=3Dincompatible-pointer-types] 9914 | =C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0ctx.regs =3D
+> perf_arch_bpf_user_pt_regs(regs); | =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0^=20
 
-homer:..debug/tracing # tail -20 trace
-               X-2229    [002] d..5.    60.690322: wakeup_gran: runnable:9=
- preempt disabled
-               X-2229    [002] d..5.    60.690325: wakeup_gran: runnable:1=
-0 preempt disabled
-               X-2229    [002] d..5.    60.690330: wakeup_gran: runnable:1=
-1 preempt disabled
-               X-2229    [002] d..5.    60.690363: wakeup_gran: runnable:1=
-3 preempt disabled
-               X-2229    [002] d..5.    60.690377: wakeup_gran: runnable:1=
-4 preempt disabled
-               X-2229    [002] d..5.    60.690390: wakeup_gran: runnable:1=
-5 preempt disabled
-               X-2229    [002] d..5.    60.690404: wakeup_gran: runnable:1=
-6 preempt disabled
-               X-2229    [002] d..5.    60.690425: wakeup_gran: runnable:9=
- preempt disabled
-       ksmserver-2694    [003] d..3.    60.690432: wakeup_gran: runnable:6=
- preempt disabled
-       ksmserver-2694    [003] d..3.    60.690436: wakeup_gran: runnable:7=
- preempt disabled
-               X-2229    [002] d..5.    60.690451: wakeup_gran: runnable:6=
- preempt disabled
-               X-2229    [002] d..5.    60.690465: wakeup_gran: runnable:7=
- preempt disabled
-            kmix-2736    [000] d..3.    60.690491: wakeup_gran: runnable:6=
- preempt disabled
-               X-2229    [004] d..5.    92.889635: wakeup_gran: runnable:6=
- preempt disabled
-               X-2229    [004] d..5.    92.889675: wakeup_gran: runnable:6=
- preempt disabled
-               X-2229    [004] d..5.    92.889863: wakeup_gran: runnable:6=
- preempt disabled
-               X-2229    [004] d..5.    92.889944: wakeup_gran: runnable:6=
- preempt disabled
-               X-2229    [004] d..5.    92.889957: wakeup_gran: runnable:7=
- preempt disabled
-               X-2229    [004] d..5.    92.889968: wakeup_gran: runnable:8=
- preempt disabled
-  QXcbEventQueue-2740    [000] d..4.    92.890025: wakeup_gran: runnable:6=
- preempt disabled
-homer:..debug/tracing
+Sorry for the noise.
 
-Watching 'while sleep 1; do clear;tail trace; done' with nothing but a
-kbuild running is like watching top.  There's enough stacking during
-routine use of my desktop box that it runs into the tick granularity
-wall pretty much continuously, so 'overload' may want redefining.
+Everything complies fine - i mistaken and applied older version again.=20
 
-	-Mike
+> Yours,
+> Nikita Shubin.
+>=20
+
