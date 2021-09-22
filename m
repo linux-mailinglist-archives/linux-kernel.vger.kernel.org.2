@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AF3414135
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055E9414139
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbhIVF1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbhIVF1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:27:22 -0400
-Received: from forward106j.mail.yandex.net (forward106j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671FFC061574;
-        Tue, 21 Sep 2021 22:25:53 -0700 (PDT)
-Received: from myt6-43c1316fdabf.qloud-c.yandex.net (myt6-43c1316fdabf.qloud-c.yandex.net [IPv6:2a02:6b8:c12:370d:0:640:43c1:316f])
-        by forward106j.mail.yandex.net (Yandex) with ESMTP id 7BDD5136A87F;
-        Wed, 22 Sep 2021 08:25:48 +0300 (MSK)
-Received: from myt5-cceafa914410.qloud-c.yandex.net (myt5-cceafa914410.qloud-c.yandex.net [2a02:6b8:c12:3b23:0:640:ccea:fa91])
-        by myt6-43c1316fdabf.qloud-c.yandex.net (mxback/Yandex) with ESMTP id aeAFcq1fO2-PlD8hGMN;
-        Wed, 22 Sep 2021 08:25:48 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1632288348;
-        bh=T51rUNPVohQf+3lV1GDaVcNQ8Jynk/Br7M1fk9sxHeQ=;
-        h=Message-ID:Subject:To:From:In-Reply-To:Cc:References:Date;
-        b=kVVNjrWLABjth60iiq6/rI7wNDsrf8wtQE3jiJFWN9IFfl9wKMwY/ObWvd9xSbBI7
-         T0XiwT2WbKtYQXJBIIYi1w6iPJc2QTdnd9q/IdsspgQlv2oHDAdEDHPPIL2S5QcEuh
-         YAGM5Guw/vkXQCG9YolVo+ZNkJsCJ+Mwub7Rf47M=
-Authentication-Results: myt6-43c1316fdabf.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by myt5-cceafa914410.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id Me1tdhdSba-Pkxqs8sr;
-        Wed, 22 Sep 2021 08:25:46 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Date:   Wed, 22 Sep 2021 08:25:43 +0300
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-To:     Atish Patra <atish.patra@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vincent Chen <vincent.chen@sifive.com>
-Subject: Re: [v3 01/10] RISC-V: Remove the current perf implementation
-Message-ID: <20210922082543.71fc5619@redslave.neermore.group>
-In-Reply-To: <238571632287002@mail.yandex.ru>
-References: <20210910192757.2309100-1-atish.patra@wdc.com>
-        <20210910192757.2309100-2-atish.patra@wdc.com>
-        <238571632287002@mail.yandex.ru>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S232196AbhIVF3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:29:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231896AbhIVF3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:29:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AAE6112F;
+        Wed, 22 Sep 2021 05:28:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632288481;
+        bh=BPl0WzWMl37d2k/3uxnnOLpKXcWTjHJrAMlccHcUi5M=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=O3eF/e2/0vcG+/9vQrsuSFgUTFzVDba4jm4/FNqlLUicDRXpJqgLL7lvHyy15F9vW
+         DMhjanNmLTOAE6W5jpXpEkvu2a/TBx/aqaBX3pePBlkkcNwNHSzvy4B1hOW3jM0Hzi
+         3xi54CSK8rLYg9BdUsijZ/9Efmh9qE3MUU6AmdIiDI07RHiUVgfsAhcdkOb3e5aN6x
+         URvrhK8Uv7GLcEGg+Yf+gURtdLv62pSAnRL6IVlFEfzf/dN3BLm4/ZLrQtreldV9TC
+         nYn/MyxaE086qtfLfDao1tKwZkjbp4ucLP9npFh4LyF4//OOPg1IZtp6nI2PpNEpNf
+         XTF4CfJh4Fo/w==
+Message-ID: <931e05840165b8285acf8d13ded01fb233b6549c.camel@kernel.org>
+Subject: Re: [PATCH v5 1/7] x86/sgx: Provide indication of life-cycle of EPC
+ pages
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Cathy Zhang <cathy.zhang@intel.com>, linux-sgx@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 22 Sep 2021 08:27:58 +0300
+In-Reply-To: <057511a3-3bc8-f073-e0f8-7b14646f82fe@intel.com>
+References: <20210827195543.1667168-1-tony.luck@intel.com>
+         <20210917213836.175138-1-tony.luck@intel.com>
+         <20210917213836.175138-2-tony.luck@intel.com>
+         <bba7e537fd9197a92358640ebb0aef365984cebc.camel@kernel.org>
+         <057511a3-3bc8-f073-e0f8-7b14646f82fe@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 08:11:44 +0300
-nikita.shubin@maquefel.me wrote:
-
-> Hello Atish.
-> =C2=A0
-> 10.09.2021, 22:28, "Atish Patra" <atish.patra@wdc.com>:
->=20
-> > The current perf implementation in RISC-V is not very useful as it
-> > can not count any events other than cycle/instructions. Moreover,
-> > perf record can not be used or the events can not be started or
-> > stopped.
+On Tue, 2021-09-21 at 15:15 -0700, Dave Hansen wrote:
+> On 9/21/21 2:28 PM, Jarkko Sakkinen wrote:
+> > > Since there are multiple uses of the "owner" field with different typ=
+es
+> > > change the sgx_epc_page structure to define an anonymous union with
+> > > each of the uses explicitly called out.
+> > But it's still always a pointer.
 > >=20
-> > Remove the implementation now for a better platform driver in future
-> > that will implement most of the missing functionality.
-> Your v3 version still breaks the build with CONFIG_BPF_SYSCALL
-> enabled:=20
-> kernel/events/core.c: In function 'bpf_overflow_handler':
-> kernel/events/core.c:9914:18: error: assignment to
-> 'bpf_user_pt_regs_t *' {aka 'struct user_regs_struct *'} from
-> incompatible pointer type 'struct pt_regs *'
-> [-Werror=3Dincompatible-pointer-types] 9914 | =C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ctx.regs =3D
-> perf_arch_bpf_user_pt_regs(regs); | =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0^=20
-
-Sorry for the noise.
-
-Everything complies fine - i mistaken and applied older version again.=20
-
-> Yours,
-> Nikita Shubin.
+> > And not only that, but two alternative fields in that union have *exact=
+ly* the
+> > same type, so it's kind of artifically representing the problem more co=
+mplex
+> > than it really is.
+> >=20
+> > I'm not just getting, why all this complexity, and not a few casts inst=
+ead?
 >=20
+> I suggested this.  It makes the structure more self-describing because
+> it explicitly lists the possibles uses of the space in the structure.
+>=20
+> Maybe I stare at 'struct page' and its 4 unions too much and I'm
+> enamored by their shininess.  But, in the end, I prefer unions to casting=
+.
+
+Yeah, packing data into constrained space (as in the case of struct page) i=
+s
+the only application for, where you can speak of a quantitative decision, w=
+hen
+you pick union.
+
+/Jarkko
 
