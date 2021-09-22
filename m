@@ -2,178 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B24414F44
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51636414F4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236875AbhIVRjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236717AbhIVRju (ORCPT
+        id S236920AbhIVRk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:40:28 -0400
+Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:46900 "EHLO
+        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236886AbhIVRk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:39:50 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4676C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:38:19 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id u6-20020ad449a6000000b003798010ad14so13461025qvx.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=japLK4v+y51csmvOjxrH47VIcfpX7TCEfxL+NB9lmDQ=;
-        b=p6jihdXV53RCSA69SvSZ0e2ZdcETDueevrg9P5mFKL9TI9fKlSNB9BRzwPL8s69QHF
-         rLs9/Wsf/qkBb9NnID7WEBjxoROp4KDLxww9fOHd3GfATruc16Y5LBZkD6imv9t2dw/K
-         Zl/X50l3XN0ssHYmzxvrquHq2ZwJgfidfFL0io7u6UfNfG+SL9a7imcTezLKyMU2lolS
-         JaLFRAh3Rtmjbenjd4JAmwZw+KVYuyFteahaLQ6rMn9Mzjc+LM36m2G/SsVTZPXxA2qs
-         XJq/HMcAoR+cOhMUbHl1627wUThYHk9d4UwTawys/EtDTR9IVc16XDp5eqYQ+eihz++b
-         I/yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=japLK4v+y51csmvOjxrH47VIcfpX7TCEfxL+NB9lmDQ=;
-        b=KGjetPVB+sU69CtkxGuE7ckuTg/MomA6QM6zAlZOKuvh27knacXAI2jpyVRjIaRTdY
-         QK4SA0WORJ/yU/qtbRcTnCJc7S4UaFLjm2X+L4KFFddGbuY8yuSE9m+FuuptOE240ybP
-         gXNNlWMfaSAWzKvZc2H3UixAF8FVmK1haAlipI0v8e/EPIGP5oO2WIVZs3ru1N3k4sN/
-         vepECz1hqYQB6Uy3liBxtdXive+PDgFygosY7Rh1+zR5NJ39zz0QC4eZ+MwusmDbGEK7
-         u1fhPMdS10+sLYvo6SDoAW6x+lVfbVLDVklwlV8L38yYsnqzcDJTxWvMxSOvUuF+Kdtp
-         uqMA==
-X-Gm-Message-State: AOAM532UdKyF/ZYpfuNpeQA4nrl/y1EQzmPfRK7JzYRJ/L7bbCxj2xar
-        nj9JGl1jwKR1MlIHznrv3GQewlOPc9A6
-X-Google-Smtp-Source: ABdhPJw2ega6IXrM3Bpu4KXDyOOa83NrP07uabAGtb9V2euPA4It73cvZhoIhyK22YalQ7HSIYOsTd3o4czs
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d3ff:e8f7:11f4:c738])
- (user=irogers job=sendgmr) by 2002:a05:6214:13e9:: with SMTP id
- ch9mr282732qvb.65.1632332299113; Wed, 22 Sep 2021 10:38:19 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 10:38:12 -0700
-Message-Id: <20210922173812.456348-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2] perf test: Fix dwarf unwind for optimized builds.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 22 Sep 2021 13:40:26 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id 001EDBEDAA
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 18:38:54 +0100 (IST)
+Received: (qmail 21999 invoked from network); 22 Sep 2021 17:38:54 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Sep 2021 17:38:54 -0000
+Date:   Wed, 22 Sep 2021 18:38:53 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+Message-ID: <20210922173853.GB3959@techsingularity.net>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+ <20210920142614.4891-3-mgorman@techsingularity.net>
+ <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+ <20210921103621.GM3959@techsingularity.net>
+ <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+ <20210922132002.GX3959@techsingularity.net>
+ <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+ <20210922150457.GA3959@techsingularity.net>
+ <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To ensure the stack frames are on the stack tail calls optimizations
-need to be inhibited. If your compiler supports an attribute use it,
-otherwise use an asm volatile barrier.
+On Wed, Sep 22, 2021 at 06:00:56PM +0200, Vincent Guittot wrote:
+> On Wed, 22 Sept 2021 at 17:04, Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > On Wed, Sep 22, 2021 at 04:15:27PM +0200, Vincent Guittot wrote:
+> > > > ---8<---
+> > > > sched/fair: Scale wakeup granularity relative to nr_running
+> > > >
+> > > > Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs") moved
+> > > > the kernel.sched_wakeup_granularity_ns sysctl under debugfs.  One of the
+> > > > reasons why this sysctl may be used may be for "optimising for throughput",
+> > > > particularly when overloaded. The tool TuneD sometimes alters this for two
+> > > > profiles e.g. "mssql" and "throughput-performance". At least version 2.9
+> > > > does but it changed in master where it also will poke at debugfs instead.
+> > > >
+> > > > Internal parameters like sysctl_sched_wakeup_granularity are scaled
+> > > > based on the number of CPUs due to sysctl_sched_tunable_scaling. For
+> > > > simplicity, the timing figures in this changelog are based on
+> > > > SCHED_TUNABLESCALING_NONE.
+> > >
+> > > This is a bit misleading because the platform that you used to
+> > > highlight the problem has a 7ms sysctl_sched_wakeup_granularity. which
+> > > is far more than your tick which should be 1ms
+> > >
+> >
+> > Tick on the test machines is 4ms (HZ=250).
+> >
+> > The reason I used SCHED_TUNABLESCALING_NONE for the changelog is that
+> > the exact values depend on the number of CPUs so values are not even
+> > the same across the range of machines I'm using. sysctl_sched_latency,
+> > sysctl_sched_min_granularity sysctl_sched_wakeup_granularity are all
+> > scaled but the ratios remain constant.
+> 
+> My point was mainly that sysctl_sched_wakeup_granularity is above the
+> tick period
+> 
 
-The barrier fix was suggested here:
-https://lore.kernel.org/lkml/20201028081123.GT2628@hirez.programming.kicks-ass.net/
-Tested with an optimized clang build and by forcing the asm barrier
-route with an optimized clang build.
+Ok. sysctl_sched_wakeup_granularity is not related to the tick but I'm
+probably missing something else.
 
-A GCC bug tracking a proper disable_tail_calls is:
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97831
+> > > Also do you want to take into account only tasks in this cfs and its
+> > > children or on all cfs on this rq ?
+> > >
+> >
+> > Only this cfq I think to limit overhead.
+> >
+> > > > +                       return sysctl_sched_wakeup_granularity;
+> > > > +
+> > > > +               return sysctl_sched_latency;
+> > > > +       }
+> > > > +
+> > > > +       /* GENTLE_FAIR_SLEEPER has two overloaded thresholds. */
+> > > > +       nr_running = cfs_rq->nr_running;
+> > > > +       threshold = sched_nr_disable_gran >> 1;
+> > > > +
+> > > > +       /* No overload. */
+> > > > +       if (nr_running <= threshold)
+> 
+> The comment was originally for this
+> nr_running does not reflect the number of task running on the cpu and
+> the associated overload state
+> 
+> If you put 2 hackbench in their own cgroup, nr_running will be 2 but
+> you will have twice more runnable threads
+> 
 
-Fixes: 9ae1e990f1ab ("perf tools: Remove broken __no_tail_call
-       attribute")
+Ok, that's understood. FWIW, I had switched to h_nr_running already.
 
-v2. is a rebase. The original fix patch generated quite a lot of
-    discussion over the right place for the fix:
-https://lore.kernel.org/lkml/20201114000803.909530-1-irogers@google.com/
-    The patch reflects my preference of it being near the use, so that
-    future code cleanups don't break this somewhat special usage.
+> > > > +
+> > > > +       /* Light overload. */
+> > > > +       if (nr_running <= sched_nr_disable_gran)
+> > > > +               return sysctl_sched_latency >> 1;
+> > > > +
+> > > > +       /* Heavy overload. */
+> > > > +       return sysctl_sched_latency;
+> > >
+> > > Why should a thread without any relationship with the curr,  not
+> > > preempt it because there are already a lot of running threads?
+> >
+> > Preemption is not free, without any knowledge of what the thread is
+> > doing, we cannot determine if an inappropriate amount of CPU time is
+> > being spent dequeueing/enqueuing tasks.
+> 
+> That's exactly my point. The heuristic above doesn't give any clue if
+> the thread should or not preempt the current one. Most of the time
+> there is no relation with the number of the running threads but it is
+> define by the workload itself and its level of interactivity
+> 
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/dwarf-unwind.c | 39 +++++++++++++++++++++++++++------
- 1 file changed, 32 insertions(+), 7 deletions(-)
+Right albeit it ignores the possibility that there are multiple workloads
+overloading the machine wasting even more time preempting.  Whether that
+is due to a bad application, a bad configuration or a bad actor is anyones
+guess. I've seen applications with multiple worker threads which generally
+behaved ok, except when they didn't and too many worker threads were
+spawned due to a spike in server load. I'm not 
 
-diff --git a/tools/perf/tests/dwarf-unwind.c b/tools/perf/tests/dwarf-unwind.c
-index a288035eb362..c756284b3b13 100644
---- a/tools/perf/tests/dwarf-unwind.c
-+++ b/tools/perf/tests/dwarf-unwind.c
-@@ -20,6 +20,23 @@
- /* For bsearch. We try to unwind functions in shared object. */
- #include <stdlib.h>
- 
-+/*
-+ * The test will assert frames are on the stack but tail call optimizations lose
-+ * the frame of the caller. Clang can disable this optimization on a called
-+ * function but GCC currently (11/2020) lacks this attribute. The barrier is
-+ * used to inhibit tail calls in these cases.
-+ */
-+#ifdef __has_attribute
-+#if __has_attribute(disable_tail_calls)
-+#define NO_TAIL_CALL_ATTRIBUTE __attribute__((disable_tail_calls))
-+#define NO_TAIL_CALL_BARRIER
-+#endif
-+#endif
-+#ifndef NO_TAIL_CALL_ATTRIBUTE
-+#define NO_TAIL_CALL_ATTRIBUTE
-+#define NO_TAIL_CALL_BARRIER __asm__ __volatile__("" : : : "memory");
-+#endif
-+
- static int mmap_handler(struct perf_tool *tool __maybe_unused,
- 			union perf_event *event,
- 			struct perf_sample *sample,
-@@ -91,7 +108,7 @@ static int unwind_entry(struct unwind_entry *entry, void *arg)
- 	return strcmp((const char *) symbol, funcs[idx]);
- }
- 
--noinline int test_dwarf_unwind__thread(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__thread(struct thread *thread)
- {
- 	struct perf_sample sample;
- 	unsigned long cnt = 0;
-@@ -122,7 +139,7 @@ noinline int test_dwarf_unwind__thread(struct thread *thread)
- 
- static int global_unwind_retval = -INT_MAX;
- 
--noinline int test_dwarf_unwind__compare(void *p1, void *p2)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__compare(void *p1, void *p2)
- {
- 	/* Any possible value should be 'thread' */
- 	struct thread *thread = *(struct thread **)p1;
-@@ -141,7 +158,7 @@ noinline int test_dwarf_unwind__compare(void *p1, void *p2)
- 	return p1 - p2;
- }
- 
--noinline int test_dwarf_unwind__krava_3(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_3(struct thread *thread)
- {
- 	struct thread *array[2] = {thread, thread};
- 	void *fp = &bsearch;
-@@ -160,14 +177,22 @@ noinline int test_dwarf_unwind__krava_3(struct thread *thread)
- 	return global_unwind_retval;
- }
- 
--noinline int test_dwarf_unwind__krava_2(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_2(struct thread *thread)
- {
--	return test_dwarf_unwind__krava_3(thread);
-+	int ret;
-+
-+	ret =  test_dwarf_unwind__krava_3(thread);
-+	NO_TAIL_CALL_BARRIER;
-+	return ret;
- }
- 
--noinline int test_dwarf_unwind__krava_1(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_1(struct thread *thread)
- {
--	return test_dwarf_unwind__krava_2(thread);
-+	int ret;
-+
-+	ret =  test_dwarf_unwind__krava_2(thread);
-+	NO_TAIL_CALL_BARRIER;
-+	return ret;
- }
- 
- int test__dwarf_unwind(struct test *test __maybe_unused, int subtest __maybe_unused)
+> >
+> > > In
+> > > your case, you want hackbench threads to not preempt each others
+> > > because they tries to use same resources so it's probably better to
+> > > let the current one to move forward but that's not a universal policy.
+> > >
+> >
+> > No, but have you a better suggestion? hackbench might be stupid but it's
+> > an example of where a workload can excessively preempt itself. While
+> > overloading an entire machine is stupid, it could also potentially occurs
+> > for applications running within a constrained cpumask.
+> 
+> But this is property that is specific to each application. Some can
+> have a lot of running threads but few wakes up which have to preempt
+> current threads quickly but others just want the opposite
+> So because it is a application specific property we should define it
+> this way instead of trying to guess
+
+I'm not seeing an alternative suggestion that could be turned into
+an implementation. The current value for sched_wakeup_granularity
+was set 12 years ago was exposed for tuning which is no longer
+the case. The intent was to allow some dynamic adjustment between
+sysctl_sched_wakeup_granularity and sysctl_sched_latency to reduce
+over-scheduling in the worst case without disabling preemption entirely
+(which the first version did).
+
+Should we just ignore this problem and hope it goes away or just let
+people keep poking silly values into debugfs via tuned?
+
 -- 
-2.33.0.464.g1972c5931b-goog
-
+Mel Gorman
+SUSE Labs
