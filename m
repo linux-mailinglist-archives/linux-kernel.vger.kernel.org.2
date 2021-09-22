@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42BF414D75
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6405B414D77
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236499AbhIVPyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236323AbhIVPyP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:54:15 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30118C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:52:45 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 17so3126656pgp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:52:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Qoxd4fL0Eld7fb+Hk+Vjj7yaw+v+nFRAtpg8iAdaBaE=;
-        b=kNmGYzws0owsOXlLO9/3wRNXi/TTeIeLm1842DEE9RfWra6CYNFK7xDB2APkm7Yg3N
-         8wWnlUhPsTuKb+Rlh8z/Wa3AannY5UVRDV/sw7YucAOAFhAVufS2sLE9HeUh4wfuHZGb
-         7X3yLKQtF9GHJ8Fgb1g7LusNPr2NAyIyvUE5b9ZYR/LrTtttb60edvROuZtlxPeyTJPE
-         Ehz6F62ILhZK+TMELfKjotnDvkmONNPgM56xegGcKlmMFvbQo/hxrb+VUlWsy1Z/iXU6
-         SAqinHzAlucaD0FOkB7+KpY8nX53XHL64tXf2ZXDDBhH+5ZsWZ0xaqUsWGTQjaXTEKHU
-         qjYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Qoxd4fL0Eld7fb+Hk+Vjj7yaw+v+nFRAtpg8iAdaBaE=;
-        b=PtYTlowMTBk/G48O+iSkeFNG0p0DBU1BOZ7S7sPv64whaWYMi+AO1Kbs5WtOkTN4bm
-         Hz//PK0p94TKBMa60m4Zef96hkwdhiBEiimnJY8PQvCdwGBxP8c48xybRJUbcj3xDaHb
-         jghyRNnmXzXTS3abBG4TUJCAu3CNXMm6EOqVZacpn719gDa41heNR1uHOjCyY2PV0HKh
-         76SqAvyuOLUqakDH/9dLdb8fmcPgxyhaI9Dap+jJd9VlFqKmkjgehrjN9oyemD/MmrRa
-         Zv2gjBNeiFBzcDume4l2cVLavw39IX4P/Zy5HBVCF/GF9cl10vKLwk2MhN6hBqnVBeC4
-         OSrQ==
-X-Gm-Message-State: AOAM530ZFkWP1VNNAk082FLu/5wtNGQBqHWSw9oq1hCxlWh6QtRZY4kZ
-        3k7QzVQ+rLkWO/IqZwiCO/QpufiL4zDVRA==
-X-Google-Smtp-Source: ABdhPJyp4a0+4xkizT2QHY/shekgX2RvMyXGh1bTuBeXvT6HfR6fqpzNgsYUFK3EWtLqd+6oyxUo8g==
-X-Received: by 2002:a62:1e43:0:b0:447:cb0b:4c6e with SMTP id e64-20020a621e43000000b00447cb0b4c6emr80119pfe.1.1632325964496;
-        Wed, 22 Sep 2021 08:52:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j6sm2852801pfn.107.2021.09.22.08.52.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 08:52:43 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 15:52:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v3 0/7] KVM: few more SMM fixes
-Message-ID: <YUtRSK8SwMfEZ2ca@google.com>
-References: <20210913140954.165665-1-mlevitsk@redhat.com>
- <22916f0c-2e3a-1fd6-905e-5d647c15c45b@redhat.com>
- <YUtBqsiur6uFWh3o@google.com>
- <427038b4-a856-826c-e9f4-01678d33ab83@redhat.com>
+        id S236508AbhIVPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:54:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236486AbhIVPy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 11:54:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8627061090;
+        Wed, 22 Sep 2021 15:52:55 +0000 (UTC)
+Date:   Wed, 22 Sep 2021 17:52:53 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [RFC] Expose request_module via syscall
+Message-ID: <20210922155253.nj5dorsyv7loduws@wittgenstein>
+References: <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
+ <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
+ <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
+ <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
+ <CALCETrWA1TBvbknH1Jzt=newTd4sHzNFm0RPuRxazjuRQRsR7w@mail.gmail.com>
+ <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de>
+ <YUi95tFDWS7oceYP@bombadil.infradead.org>
+ <CALCETrX9keVFxEZYUkKr7_dWb9Ubo9q4E2aTY_ZOWGSHyRph8g@mail.gmail.com>
+ <20210922122523.72ypzg4pm2x6nkod@wittgenstein>
+ <59e230b3-0e85-42ff-84a8-6b30ad0719d8@www.fastmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <427038b4-a856-826c-e9f4-01678d33ab83@redhat.com>
+In-Reply-To: <59e230b3-0e85-42ff-84a8-6b30ad0719d8@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021, Paolo Bonzini wrote:
-> On 22/09/21 16:46, Sean Christopherson wrote:
-> > On Wed, Sep 22, 2021, Paolo Bonzini wrote:
-> > > On 13/09/21 16:09, Maxim Levitsky wrote:
-> > > >     KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
-> > 
-> > ...
-> > > Queued, thanks.  However, I'm keeping patch 1 for 5.16 only.
-> > 
-> > I'm pretty sure the above patch is wrong, emulation_required can simply be
-> > cleared on emulated VM-Exit.
+On Wed, Sep 22, 2021 at 08:34:23AM -0700, Andy Lutomirski wrote:
+> On Wed, Sep 22, 2021, at 5:25 AM, Christian Brauner wrote:
+> > On Mon, Sep 20, 2021 at 11:36:47AM -0700, Andy Lutomirski wrote:
+> >> On Mon, Sep 20, 2021 at 11:16 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >> >
+> >> > On Mon, Sep 20, 2021 at 04:51:19PM +0200, Thomas Weißschuh wrote:
+> >> 
+> >> > > > Do you mean it literally invokes /sbin/modprobe?  If so, hooking this
+> >> > > > at /sbin/modprobe and calling out to the container manager seems like
+> >> > > > a decent solution.
+> >> > >
+> >> > > Yes it does. Thanks for the idea, I'll see how this works out.
+> >> >
+> >> > Would documentation guiding you in that way have helped? If so
+> >> > I welcome a patch that does just that.
+> >> 
+> >> If someone wants to make this classy, we should probably have the
+> >> container counterpart of a standardized paravirt interface.  There
+> >> should be a way for a container to, in a runtime-agnostic way, issue
+> >> requests to its manager, and requesting a module by (name, Linux
+> >> kernel version for which that name makes sense) seems like an
+> >> excellent use of such an interface.
+> >
+> > I always thought of this in two ways we currently do this:
+> >
+> > 1. Caller transparent container manager requests.
+> >    This is the seccomp notifier where we transparently handle syscalls
+> >    including intercepting init_module() where we parse out the module to
+> >    be loaded from the syscall args of the container and if it is
+> >    allow-listed load it for the container otherwise continue the syscall
+> >    letting it fail or failing directly through seccomp return value.
 > 
-> Are you sure?
-
-Pretty sure, but not 100% sure :-)
-
-> I think you can at least set the host segment fields to a data segment that
-> requires emulation.  For example the DPL of the host DS is hardcoded to zero,
-> but the RPL comes from the selector field and the DS selector is not
-> validated.
-
-HOST_DS_SEL is validated:
-
-  In the selector field for each of CS, SS, DS, ES, FS, GS and TR, the RPL
-  (bits 1:0) and the TI flag (bit 2) must be 0.
-
-> Therefore a subsequent vmentry could fail the access rights tests of 26.3.1.2
-> Checks on Guest Segment Registers:
-
-Yes, but this path is loading host state on VM-Exit.
-
-> DS, ES, FS, GS. The DPL cannot be less than the RPL in the selector field if
-> (1) the “unrestricted guest” VM-execution control is 0; (2) the register is
-> usable; and (3) the Type in the access-rights field is in the range 0 – 11
-> (data segment or non-conforming code segment).
+> Specific problems here include aliases and dependencies.  My modules.alias file, for example, has:
 > 
-> Paolo
+> alias net-pf-16-proto-16-family-wireguard wireguard
 > 
+> If I do modprobe net-pf-16-proto-16-family-wireguard, modprobe parses some files in /lib/modules/`uname -r` and issues init_module() asking for 'wireguard'.  So hooking init_module() is at the wrong layer -- for that to work, the container's /sbin/modprobe needs to already have figured out that the desired module is wireguard and have a .ko for it.
+
+You can't use the container's .ko module. For this you would need to
+trust the image that the container wants you to load. The container
+manager should always load a host module.
+
+> 
+> >
+> > 2. A process in the container explicitly calling out to the container
+> >    manager.
+> >    One example how this happens is systemd-nspawn via dbus messages
+> >    between systemd in the container and systemd outside the container to
+> >    e.g. allocate a new terminal in the container (kinda insecure but
+> >    that's another issue) or other stuff.
+> >
+> > So what was your idea: would it be like a device file that could be
+> > exposed to the container where it writes requestes to the container
+> > manager? What would be the advantage to just standardizing a socket
+> > protocol which is what we do for example (it doesn't do module loading
+> > of course as we handle that differently):
+> 
+> My idea is standardizing *something*.  I think it would be nice if, for example, distros could ship a /sbin/modprobe that would do the right thing inside any compliant container runtime as well as when running outside a container.
+> 
+> I suppose container managers could also bind-mount over /sbin/modprobe, but that's more intrusive.
+
+I don't see this is a big issue because that is fairly trivial.
+I think we never want to trust the container's modules.
+What probably should be happening is that the manager exposes a list of
+modules the container can request in some form. We have precedence for
+doing something like this.
+So now modprobe and similar tools can be made aware that if they are in
+a container they should request that module from the container manager
+be it via a socket request or something else.
+Nesting will be a bit funny but can probably be made to work by just
+bind-mounting the outermost socket into the container or relaying the
+request.
