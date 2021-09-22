@@ -2,90 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B5441500E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF97C41500B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237126AbhIVSnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:43:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237039AbhIVSnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:43:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E11FA610D1;
-        Wed, 22 Sep 2021 18:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632336094;
-        bh=ePNZgkAh7yJD7xgSpgg9t9byItKmYv2zs2wtmnpehPo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BIQZrvBwhveYE5wvOiVznYTiMOqgBAyMxWNepeNCKyjxooDUrlqh8rMlnuZBAB8nt
-         CzE1QPqP7HB/yKglnfCrOAnzgypa3fKrS3eQ1a++u6JEenfb4CNafQ+OZgU2lFGoHl
-         Qb1X3xtadfQncqHcaQLv58JwePczCAbS/j6MQHS2jk7FM4lSxgl7tOqLAfWG8Bd6+W
-         5/He9wEuA3l9JjZzHqQ9duoWdPz3arw28mue9pnhZAjgIpJIsf8q6sgvsZyGLedGUn
-         jTtGDI4/9tzuiAtcVo1ZQLCHcJE01lUKHVkFl7mwFJa3OvlhkEGT5bp1AD3uH5tBC5
-         ZdIRxj6NbcslA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH] eeprom: 93xx46: Add SPI device ID table
-Date:   Wed, 22 Sep 2021 19:40:48 +0100
-Message-Id: <20210922184048.34770-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S237111AbhIVSmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhIVSmq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 14:42:46 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D4DC061574;
+        Wed, 22 Sep 2021 11:41:16 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id b20so15830776lfv.3;
+        Wed, 22 Sep 2021 11:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UgTnUajNxhQv1bSX+L1qSLXHcGp1ndN6rNMXC6wSsEI=;
+        b=CtVAn9D+YM9Vnvy+1+BtULuJyZyJKCEph3eYUCFDduRHUrzDP9b/YFQTpvFz6u5S+b
+         N8w7DARSL3InG4KhOdhx3S+qqr/korqSCYwetJyHPjo/1sUh4J0Kbvkc3tezaTH0rk3c
+         CQzyHWrE2LHsHBg5485CkijaXn2ephH29HozLQvw4odr6voMjEPSVc8NP7aNh7lpnxTJ
+         kODPEC+57jENJVuq6p0JJZaPw+941POgg5BM0BafdVas1RSzWwXFXZkfDMrIGIxqzxSt
+         ZKk7akk3TSOIatvY8LLd5fMdDtmjIyGpXG/emLwiGSF2VY2QRew2+TLI3g/+eT1TbfeU
+         qSIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UgTnUajNxhQv1bSX+L1qSLXHcGp1ndN6rNMXC6wSsEI=;
+        b=kqWWp+O5GryQWt8Aa47zW4dCNQLLoiHqETxgjNu4j8BR1DI5kKIebk9s7iI2LXjT7s
+         E4DROabeTS/e+9Y2t+UrE6I3chLrYe5H40gigpRYUJeSjrp8p49CM0cHPFzzqzhoaBgv
+         twGeLdOU4msX/R/wNMwaPIHD7PaOElScSBt8C+e0BV3nq0OmuOKZt3bZ3GdJqLiuylxq
+         lA7uZ5BI9gK2oOZLIpMeq+6KD3qbyFRPnnDye7fit0eY8jS8rdUr0d2CQaCgvyaPdcIe
+         yS78Jm7me/WnDMh+PT3UvLTyqdHvGbr91rd0wNj1bXeCfZBprJZiHMlJLtSL0msKP/jd
+         PcuQ==
+X-Gm-Message-State: AOAM531GJQGTSeEPCzXW6BCOCkFjPqMHZtKHp3SIDSl3yyOxZFoFc2wZ
+        lb2pAhnqRrPcZkqeXka+7xsXXeJLrSo=
+X-Google-Smtp-Source: ABdhPJwegIF5Vau8XaRZHRp5eAFJumV1Po63gcC4JGip15grFPwVzAVKh7wYhAzYSozAVaaILh2IAw==
+X-Received: by 2002:a05:6512:10cf:: with SMTP id k15mr375857lfg.617.1632336074338;
+        Wed, 22 Sep 2021 11:41:14 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id i10sm237802lfu.71.2021.09.22.11.41.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 11:41:13 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 21:41:12 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/5] fs/ntfs3: Refactoring lock in ntfs_init_acl
+Message-ID: <20210922184112.r7ljydxc3rb3xifm@kari-VirtualBox>
+References: <2771ff62-e612-a8ed-4b93-5534c26aef9e@paragon-software.com>
+ <ed6426f4-a579-86ce-a54f-ac356991a797@paragon-software.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1834; h=from:subject; bh=ePNZgkAh7yJD7xgSpgg9t9byItKmYv2zs2wtmnpehPo=; b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhS3ZhxGor71z3pVLgP3MnobWHbFFCJ1ObsHwGmLGY kFeziaqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUt2YQAKCRAk1otyXVSH0LUKB/ 9s9iiidbToJrzCGY9/QUR6Oay73GcYaLhCExD4JlYT2vWgTltOeaDYHM/QHpVrAzdfr/7AMqU0McNH u4tcK6xKAJQK+6hgUhZs7cOgrw1L6w3Zi0ZTofPJgBpuZPQjvMqgROnQxS766cgkTOu0l1MaG48irZ nd0INztJx++MP1i+TR1XDU/ffyO73idd3Nm9nhf6b6Bet3iykQ7mUkDXbvW3PPzSuId3rSdgr8t8i9 ACZrzsvHLLsBWGpMwnP8dtS05jKsn238PTm7AFlRw7/NmGO5xpMDiVV+RrYHF3BZeCC4hEjLcB+uH4 mFErFeWIwOR2IFi1BkCys1u8hClFXF
-X-Developer-Key: i=broonie@kernel.org; a=openpgp; fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed6426f4-a579-86ce-a54f-ac356991a797@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding a SPI device ID table.
+On Wed, Sep 22, 2021 at 07:20:49PM +0300, Konstantin Komarov wrote:
+> This is possible because of moving lock into ntfs_create_inode.
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/misc/eeprom/eeprom_93xx46.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Looks good.
 
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 29d8971ec558..660ee924f8b1 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -406,6 +406,23 @@ static const struct of_device_id eeprom_93xx46_of_table[] = {
- };
- MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
- 
-+static const struct spi_device_id eeprom_93xx46_spi_ids[] = {
-+	{ .name = "eeprom-93xx46",
-+	  .driver_data = (kernel_ulong_t)&at93c46_data, },
-+	{ .name = "at93c46",
-+	  .driver_data = (kernel_ulong_t)&at93c46_data, },
-+	{ .name = "at93c46d",
-+	  .driver_data = (kernel_ulong_t)&atmel_at93c46d_data, },
-+	{ .name = "at93c56",
-+	  .driver_data = (kernel_ulong_t)&at93c56_data, },
-+	{ .name = "at93c66",
-+	  .driver_data = (kernel_ulong_t)&at93c66_data, },
-+	{ .name = "93lc46b",
-+	  .driver_data = (kernel_ulong_t)&microchip_93lc46b_data, },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
-+
- static int eeprom_93xx46_probe_dt(struct spi_device *spi)
- {
- 	const struct of_device_id *of_id =
-@@ -555,6 +572,7 @@ static struct spi_driver eeprom_93xx46_driver = {
- 	},
- 	.probe		= eeprom_93xx46_probe,
- 	.remove		= eeprom_93xx46_remove,
-+	.id_table	= eeprom_93xx46_spi_ids,
- };
- 
- module_spi_driver(eeprom_93xx46_driver);
--- 
-2.20.1
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
 
+> ---
+>  fs/ntfs3/xattr.c | 55 ++++++++++++------------------------------------
+>  1 file changed, 14 insertions(+), 41 deletions(-)
+> 
+> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+> index 59ec5e61a239..83bbee277e12 100644
+> --- a/fs/ntfs3/xattr.c
+> +++ b/fs/ntfs3/xattr.c
+> @@ -693,54 +693,27 @@ int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>  	struct posix_acl *default_acl, *acl;
+>  	int err;
+>  
+> -	/*
+> -	 * TODO: Refactoring lock.
+> -	 * ni_lock(dir) ... -> posix_acl_create(dir,...) -> ntfs_get_acl -> ni_lock(dir)
+> -	 */
+> -	inode->i_default_acl = NULL;
+> -
+> -	default_acl = ntfs_get_acl_ex(mnt_userns, dir, ACL_TYPE_DEFAULT, 1);
+> -
+> -	if (!default_acl || default_acl == ERR_PTR(-EOPNOTSUPP)) {
+> -		inode->i_mode &= ~current_umask();
+> -		err = 0;
+> -		goto out;
+> -	}
+> -
+> -	if (IS_ERR(default_acl)) {
+> -		err = PTR_ERR(default_acl);
+> -		goto out;
+> -	}
+> -
+> -	acl = default_acl;
+> -	err = __posix_acl_create(&acl, GFP_NOFS, &inode->i_mode);
+> -	if (err < 0)
+> -		goto out1;
+> -	if (!err) {
+> -		posix_acl_release(acl);
+> -		acl = NULL;
+> -	}
+> -
+> -	if (!S_ISDIR(inode->i_mode)) {
+> -		posix_acl_release(default_acl);
+> -		default_acl = NULL;
+> -	}
+> +	err = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
+> +	if (err)
+> +		return err;
+>  
+> -	if (default_acl)
+> +	if (default_acl) {
+>  		err = ntfs_set_acl_ex(mnt_userns, inode, default_acl,
+>  				      ACL_TYPE_DEFAULT, 1);
+> +		posix_acl_release(default_acl);
+> +	} else {
+> +		inode->i_default_acl = NULL;
+> +	}
+>  
+>  	if (!acl)
+>  		inode->i_acl = NULL;
+> -	else if (!err)
+> -		err = ntfs_set_acl_ex(mnt_userns, inode, acl, ACL_TYPE_ACCESS,
+> -				      1);
+> -
+> -	posix_acl_release(acl);
+> -out1:
+> -	posix_acl_release(default_acl);
+> +	else {
+> +		if (!err)
+> +			err = ntfs_set_acl_ex(mnt_userns, inode, acl,
+> +					      ACL_TYPE_ACCESS, 1);
+> +		posix_acl_release(acl);
+> +	}
+>  
+> -out:
+>  	return err;
+>  }
+>  #endif
+> -- 
+> 2.33.0
+> 
+> 
+> 
