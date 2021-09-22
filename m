@@ -2,151 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250724153F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D0F4153FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 01:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238514AbhIVXgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 19:36:18 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:32954 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238464AbhIVXgR (ORCPT
+        id S238491AbhIVXhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 19:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238463AbhIVXhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 19:36:17 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5C5DFE52;
-        Thu, 23 Sep 2021 01:34:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1632353685;
-        bh=MIrVABDYWHCGJzB9/BmlbQLoUsEOutxAJ2L3tovFquI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uX2PgFISYiYkNDCrwsZWgsPcjsEv5FVRn1Mbn4otc7kLnG8yY1d3CbBlFPuWqVOIe
-         DrQ2qNMsr2zh7hbOULy1u2SSCbiQWufxfv4iqr2yGyY1gdD3fKpecHksLcUjEILluE
-         qCRyje+D9bjDQRzobVd/vv2p+ofhfNKUIzF7UVzk=
-Date:   Thu, 23 Sep 2021 02:34:44 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Geert Uytterhoeven <geert@glider.be>,
-        linux-renesas-soc@vger.kernel.org,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/3] arm64: dts: renesas: r8a779a0: Add DSI encoders
-Message-ID: <YUu9lKb0gdzk0ewN@pendragon.ideasonboard.com>
-References: <20210901235330.1611086-1-kieran.bingham@ideasonboard.com>
- <20210901235330.1611086-3-kieran.bingham@ideasonboard.com>
+        Wed, 22 Sep 2021 19:37:50 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CAEC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:36:20 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id q14so4652010ils.5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 16:36:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pqt30ORAt5NIIu5Ce0uJ1yGi0D7yTHJUmzoEu1HIAiE=;
+        b=gKWQdhsaqGb5vdiZUv6OWvX3KqOd9ZSgu8JRf3jvAdxlTcyiXRLXZ5W3/0mu9VxHlX
+         RygN12KVwsSu7gWGfFWj2v67Q+6XqhUrx+UNl38/gPltqS+Dcs82a5KeudcriuUgOn1f
+         fDPkcOsu0j0EJyrc0I/4kFD5yAaOK3AheX6B2q5PcJCYvek6PiNqxHz6md2Nqo+oHGVm
+         W2dHK/oXa52fxpSxOV6MozpEukqXzTFGlQ7SYLx/OAj4CiCQ1aJlqOXejA8FAWghvmYo
+         jo85j34T/UbMxAakKGUcyTTrFbanGumSqmVQN13oaSVRGnmPo5MC5Cdz9HvowjBC0hPu
+         D/pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pqt30ORAt5NIIu5Ce0uJ1yGi0D7yTHJUmzoEu1HIAiE=;
+        b=DdMHUNC2SGwaxDXmHBtbnvW0e6eoCiVPCSvd3QReLwEUbe7DrOuenylJcp0OF4gBmD
+         O+rcq1rs0YrHZQKqLERSI2NyyICqZkwTDKzlg7woaBmtnb9xXjV2pK+ym7yvJJfs8Yzc
+         3wBB59YxQDzRyHOUEgQjsIsyPfwesau9CgWeh4J0IP7KYQtnpS8Xli2wJDiXOZWBM7hC
+         Hwu53naEFt6qoDqKF63THp42NpCZPBY/yf14EB/iKTn9uyE9bHdeGwNfb93QMf/6PlyQ
+         3GWgyw1sF/kPlb9ZenOUI9pE8vTjH5yrFJFeda72Ug+YbCZbXiP+hdk6QThDWmSLKPo+
+         Twog==
+X-Gm-Message-State: AOAM532+28757z+KW+7JrZn5OX+fwS4eBAbvW4xrM6i28KWPwMDYssfj
+        3Nh3RBIYG6BKGqun7Nnjj5eP+F7p3YM/AGL12ke/VQ==
+X-Google-Smtp-Source: ABdhPJxPF7fGb4Z5nv5+eYbvH1T7bbz/qFsNeAa+T0eHPkiBm7SP4vpDdar8usEG7cqHsCAPfndi1lKHXBC1PcLNT2I=
+X-Received: by 2002:a92:440c:: with SMTP id r12mr1259497ila.174.1632353779271;
+ Wed, 22 Sep 2021 16:36:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210901235330.1611086-3-kieran.bingham@ideasonboard.com>
+References: <20210922081959.390059-1-irogers@google.com> <YUumPj7Oa1HvVGW/@krava>
+In-Reply-To: <YUumPj7Oa1HvVGW/@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 22 Sep 2021 16:36:05 -0700
+Message-ID: <CAP-5=fVd8zU-uHMg1KjyNPDv-_y-Q562PvPpoWSi1rS-KD0ezw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/5] Start aligning perf test with kunit style
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>, eranian@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+On Wed, Sep 22, 2021 at 2:55 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Sep 22, 2021 at 01:19:53AM -0700, Ian Rogers wrote:
+> > Perf test uses its own structs and code layout that differs from kunit
+> > that was more recently introduced to the kernel. Besides consistency,
+> > it is hoped that moving in the direction of kunit style will enable
+> > reuse of infrastructure like test output formatting for continuous
+> > testing systems. For example:
+> > https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
+> >
+> > The motivation for this restructuring comes from wanting to be able to
+> > tag tests with a size:
+> > https://lore.kernel.org/linux-perf-users/CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
+> > To have more exhaustive and slower running tests.  This isn't
+> > something kunit currently supports, nor is the execution of python and
+> > shell tests, but it seems sensible to work on an approach with kunit
+> > rather to invent a new wheel inside of perf.
+> >
+> > These initial patches are just refactoring the main test suite
+> > definitions to be in a more kunit style. Kunit isn't depended upon, it
+> > is hoped that this can be done in later patches for the sake of
+> > consistency.
+>
+> seems good.. how far away from kunit is the code now?
 
-Thank you for the patch.
+Thanks Jiri, It is a ways away from complete. I was thinking to follow up with:
+* Migrate the current sub-test approach to use kunit style test cases
+within a suite.
+* Combine what are currently independent test suites into one test
+suite with different test cases, for example stat.c contains stat,
+stat_config and stat_round tests.
 
-On Thu, Sep 02, 2021 at 12:53:29AM +0100, Kieran Bingham wrote:
-> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> Provide the two MIPI DSI encoders on the V3U and connect them to the DU
-> accordingly.
-> 
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Once this is done then to unify with kunit we need to work out a
+common pattern for skipping a test, etc. There's already a lot here
+and so I wanted to get an opinion before pushing along further.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> >
+> > v1. Built/tested on x86.
+> >
+> > Ian Rogers (5):
+> >   perf test: Use macro for "suite" declarations
+> >   perf test: Use macro for "suite" definitions
+> >   perf test: Make each test/suite its own struct.
+> >   perf test: Move each test suite struct to its test
+> >   perf test: Rename struct test to test_suite
+> >
+> >  tools/perf/arch/arm/include/arch-tests.h      |   2 +-
+> >  tools/perf/arch/arm/tests/arch-tests.c        |  21 +-
+> >  tools/perf/arch/arm/tests/vectors-page.c      |   2 +-
+> >  tools/perf/arch/arm64/include/arch-tests.h    |   2 +-
+> >  tools/perf/arch/arm64/tests/arch-tests.c      |  15 +-
+> >  tools/perf/arch/powerpc/include/arch-tests.h  |   2 +-
+> >  tools/perf/arch/powerpc/tests/arch-tests.c    |  15 +-
+>
+> I can run/test this on ppc/arm if you don't have any
 
-> 
-> ---
-> v2
->  - Fixup indentation
-> 
->  arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 60 +++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> index 3241f7e7c01e..1ce9884ea527 100644
-> --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> @@ -1161,12 +1161,72 @@ ports {
->  				port@0 {
->  					reg = <0>;
->  					du_out_dsi0: endpoint {
-> +						remote-endpoint = <&dsi0_in>;
->  					};
->  				};
->  
->  				port@1 {
->  					reg = <1>;
->  					du_out_dsi1: endpoint {
-> +						remote-endpoint = <&dsi1_in>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +
-> +		dsi0: dsi-encoder@fed80000 {
-> +			compatible = "renesas,r8a779a0-dsi-csi2-tx";
-> +			reg = <0 0xfed80000 0 0x10000>;
-> +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> +			clocks = <&cpg CPG_MOD 415>,
-> +				 <&cpg CPG_CORE R8A779A0_CLK_DSI>;
-> +			clock-names = "fck", "dsi";
-> +			resets = <&cpg 415>;
-> +			status = "disabled";
-> +
-> +			ports {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +
-> +				port@0 {
-> +					reg = <0>;
-> +					dsi0_in: endpoint {
-> +						remote-endpoint = <&du_out_dsi0>;
-> +					};
-> +				};
-> +
-> +				port@1 {
-> +					reg = <1>;
-> +					dsi0_out: endpoint {
-> +					};
-> +				};
-> +			};
-> +		};
-> +
-> +		dsi1: dsi-encoder@fed90000 {
-> +			compatible = "renesas,r8a779a0-dsi-csi2-tx";
-> +			reg = <0 0xfed90000 0 0x10000>;
-> +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> +			clocks = <&cpg CPG_MOD 416>,
-> +				 <&cpg CPG_CORE R8A779A0_CLK_DSI>;
-> +			clock-names = "fck", "dsi";
-> +			resets = <&cpg 416>;
-> +			status = "disabled";
-> +
-> +			ports {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +
-> +				port@0 {
-> +					reg = <0>;
-> +					dsi1_in: endpoint {
-> +						remote-endpoint = <&du_out_dsi1>;
-> +					};
-> +				};
-> +
-> +				port@1 {
-> +					reg = <1>;
-> +					dsi1_out: endpoint {
->  					};
->  				};
->  			};
+I have pretty easy access to ARM but lost access to PowerPC. If we're
+happy with the direction then I can test ARM and ask for help on
+PowerPC.
 
--- 
-Regards,
+Thanks,
+Ian
 
-Laurent Pinchart
+> jirka
+>
+> >  tools/perf/arch/x86/include/arch-tests.h      |  14 +-
+> >  tools/perf/arch/x86/tests/arch-tests.c        |  47 +-
+> >  tools/perf/arch/x86/tests/bp-modify.c         |   2 +-
+> >  tools/perf/arch/x86/tests/insn-x86.c          |   2 +-
+> >  tools/perf/arch/x86/tests/intel-cqm.c         |   2 +-
+> >  .../x86/tests/intel-pt-pkt-decoder-test.c     |   2 +-
+> >  tools/perf/arch/x86/tests/rdpmc.c             |   2 +-
+> >  tools/perf/arch/x86/tests/sample-parsing.c    |   2 +-
+> >  tools/perf/tests/api-io.c                     |   6 +-
+> >  tools/perf/tests/attr.c                       |   4 +-
+> >  tools/perf/tests/backward-ring-buffer.c       |   4 +-
+> >  tools/perf/tests/bitmap.c                     |   4 +-
+> >  tools/perf/tests/bp_account.c                 |  10 +-
+> >  tools/perf/tests/bp_signal.c                  |   8 +-
+> >  tools/perf/tests/bp_signal_overflow.c         |   8 +-
+> >  tools/perf/tests/bpf.c                        |  22 +-
+> >  tools/perf/tests/builtin-test.c               | 441 ++++--------------
+> >  tools/perf/tests/clang.c                      |  18 +-
+> >  tools/perf/tests/code-reading.c               |   4 +-
+> >  tools/perf/tests/cpumap.c                     |  10 +-
+> >  tools/perf/tests/demangle-java-test.c         |   4 +-
+> >  tools/perf/tests/demangle-ocaml-test.c        |   4 +-
+> >  tools/perf/tests/dlfilter-test.c              |   4 +-
+> >  tools/perf/tests/dso-data.c                   |  10 +-
+> >  tools/perf/tests/dwarf-unwind.c               |   2 +-
+> >  tools/perf/tests/event-times.c                |   4 +-
+> >  tools/perf/tests/event_update.c               |   4 +-
+> >  tools/perf/tests/evsel-roundtrip-name.c       |   4 +-
+> >  tools/perf/tests/evsel-tp-sched.c             |   4 +-
+> >  tools/perf/tests/expand-cgroup.c              |   6 +-
+> >  tools/perf/tests/expr.c                       |   4 +-
+> >  tools/perf/tests/fdarray.c                    |   7 +-
+> >  tools/perf/tests/genelf.c                     |   6 +-
+> >  tools/perf/tests/hists_cumulate.c             |   4 +-
+> >  tools/perf/tests/hists_filter.c               |   4 +-
+> >  tools/perf/tests/hists_link.c                 |   4 +-
+> >  tools/perf/tests/hists_output.c               |   4 +-
+> >  tools/perf/tests/is_printable_array.c         |   4 +-
+> >  tools/perf/tests/keep-tracking.c              |   4 +-
+> >  tools/perf/tests/kmod-path.c                  |   4 +-
+> >  tools/perf/tests/llvm.c                       |  22 +-
+> >  tools/perf/tests/maps.c                       |   4 +-
+> >  tools/perf/tests/mem.c                        |   4 +-
+> >  tools/perf/tests/mem2node.c                   |   4 +-
+> >  tools/perf/tests/mmap-basic.c                 |   4 +-
+> >  tools/perf/tests/mmap-thread-lookup.c         |   4 +-
+> >  tools/perf/tests/openat-syscall-all-cpus.c    |   5 +-
+> >  tools/perf/tests/openat-syscall-tp-fields.c   |   4 +-
+> >  tools/perf/tests/openat-syscall.c             |   5 +-
+> >  tools/perf/tests/parse-events.c               |   4 +-
+> >  tools/perf/tests/parse-metric.c               |   4 +-
+> >  tools/perf/tests/parse-no-sample-id-all.c     |   4 +-
+> >  tools/perf/tests/pe-file-parsing.c            |   6 +-
+> >  tools/perf/tests/perf-hooks.c                 |   4 +-
+> >  tools/perf/tests/perf-record.c                |   4 +-
+> >  tools/perf/tests/perf-time-to-tsc.c           |  10 +-
+> >  tools/perf/tests/pfm.c                        |  16 +-
+> >  tools/perf/tests/pmu-events.c                 |  19 +-
+> >  tools/perf/tests/pmu.c                        |   4 +-
+> >  tools/perf/tests/python-use.c                 |   4 +-
+> >  tools/perf/tests/sample-parsing.c             |   4 +-
+> >  tools/perf/tests/sdt.c                        |   6 +-
+> >  tools/perf/tests/stat.c                       |  10 +-
+> >  tools/perf/tests/sw-clock.c                   |   4 +-
+> >  tools/perf/tests/switch-tracking.c            |   4 +-
+> >  tools/perf/tests/task-exit.c                  |   4 +-
+> >  tools/perf/tests/tests.h                      | 179 ++++---
+> >  tools/perf/tests/thread-map.c                 |  10 +-
+> >  tools/perf/tests/thread-maps-share.c          |   4 +-
+> >  tools/perf/tests/time-utils-test.c            |   4 +-
+> >  tools/perf/tests/topology.c                   |   4 +-
+> >  tools/perf/tests/unit_number__scnprintf.c     |   4 +-
+> >  tools/perf/tests/vmlinux-kallsyms.c           |   5 +-
+> >  tools/perf/tests/wp.c                         |  22 +-
+> >  81 files changed, 543 insertions(+), 618 deletions(-)
+> >
+> > --
+> > 2.33.0.464.g1972c5931b-goog
+> >
+>
