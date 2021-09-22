@@ -2,111 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB57414B56
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4831C414B5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhIVOGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:06:04 -0400
-Received: from mout.gmx.net ([212.227.15.15]:54357 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232243AbhIVOGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:06:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632319443;
-        bh=QXxMnw7c3K8mqHEHkt346GWvYyLLAFsOS9FsO225YlY=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=kkYf/NdJ+bHR56JdFNrkWnVF3uwHGgj7SIw4we/LMuojiTs62CEjVgYn7ufLD9sOZ
-         Eg9TKDK9gldVNPKycqIfszdTKVVRYSHUbfSZgkqcPTTYWVRvWo9nJHwFC2PLGFNcFq
-         PoWSB/E5oHGt5It0xcwEcJVUdK2JtyNnhpxZUVmU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.221]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MY68d-1mNI581f7l-00YPZV; Wed, 22
- Sep 2021 16:04:03 +0200
-Message-ID: <97ee06c66fe0d900e3e0c4145ef9d33457ab3c65.camel@gmx.de>
-Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
- nr_running
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 22 Sep 2021 16:04:01 +0200
-In-Reply-To: <20210922132002.GX3959@techsingularity.net>
-References: <20210920142614.4891-1-mgorman@techsingularity.net>
-         <20210920142614.4891-3-mgorman@techsingularity.net>
-         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
-         <20210921103621.GM3959@techsingularity.net>
-         <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
-         <20210922132002.GX3959@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S234406AbhIVOIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232199AbhIVOIg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 10:08:36 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA69C061574;
+        Wed, 22 Sep 2021 07:07:06 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id t4so9779355qkb.9;
+        Wed, 22 Sep 2021 07:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2hKItWeebPyvylBL8MhOaSAfJQALDyW9ilZEFB/W+xU=;
+        b=blmzMx6EJ1rbChe1i/uQHRQ13/AqrH6a2GtpuvelPr6oIiceiAAfALrlcFUKScFTbT
+         mSwbYHgvrmah4aVKKS0uR4vw4MOMLFFTMw2YbBeEk1wpLXa5c+GleW97eXB7csZmwfT8
+         +jbmiUL1TjW+0rFmpYkATc72KH/h1qchY86WZ6AtmUq1oThBfDfu+Qr5gDXgwQSMw/jf
+         bWFbA9PlYIAqhHi9fvI+dZK7lRqVw22kIksRCPeUTx/kRqjTakBVMSTyMy5cUEEbdKsp
+         408KvaGCSSD+XNbNTXdV5bCImE9nzeaEf/D6TX4rSbTxSaHuEESJ9329Ykyet9jN3QoR
+         pqhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2hKItWeebPyvylBL8MhOaSAfJQALDyW9ilZEFB/W+xU=;
+        b=y7jidg3sOkt0XBt2sJb559PQbW32Ir1vJh4r5SWRGvsV+WudDTPdHNfL6UM5LsjGzE
+         WP3hY2Pp3Q931UiuaAAKQgpEu7kdedRmGpS157ieWIGzycAzssZ4dRbAdol9/t5bfZje
+         c0U5f5hgFoWruvzcUV9BVy/I4xJaXAffen4pPppQ0HKuEoZ2+45Eaz6TvYLgA1DRNLoZ
+         75XO5JambnYHwTGHEsrq9UxWzqOQfEBvNWmpK/41xyxVvLVRPv+Syq6ajVDyJUYs2cAA
+         dyootyYPi0neLO2TsMtLemNwpfKVVnlqT64h56ansf0ntMCDtDagmpdEaUXuMehL5N4L
+         8xPQ==
+X-Gm-Message-State: AOAM5304Gv5NhdbNS+Y0drdQ1w09lVDx74I3jJM6rDqxghvwSQ4QEMZQ
+        U+VqKmj2yZ7+19hQ2YwxQxcGIruaucXqVA==
+X-Google-Smtp-Source: ABdhPJyQ6X8aT1eM2s4JNtsLKXfhcv7G0+CU0oQ3KfLBQP5ez5SVPAVG37HnYbncw3dCEgPkc5hKHg==
+X-Received: by 2002:a37:a413:: with SMTP id n19mr21802060qke.461.1632319624940;
+        Wed, 22 Sep 2021 07:07:04 -0700 (PDT)
+Received: from localhost.localdomain ([170.84.227.206])
+        by smtp.gmail.com with ESMTPSA id e16sm1392519qtx.7.2021.09.22.07.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 07:07:04 -0700 (PDT)
+From:   Ramon Fontes <ramonreisfontes@gmail.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Cc:     johannes@sipsolutions.net, kvalo@codeaurora.org,
+        davem@davemloft.net, Ramon Fontes <ramonreisfontes@gmail.com>
+Subject: [PATCH] mac80211_hwsim: enable 6GHz channels
+Date:   Wed, 22 Sep 2021 11:06:56 -0300
+Message-Id: <20210922140656.184304-1-ramonreisfontes@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NPu4D8EDfgxK0K29QwqVVbD1vYgUGgUdwF4OeFYDwOyeVD0DpUA
- ZWHnw1zI6eU7fEIVpjtH56d9frAvSjoep2hocCUK1W05/xv7Hnh6YHuRQT3Z3yXR9h+dNl8
- 4bIa9sziKU3x5/XRGuMQuXGhxSakOC71Kw5/J/VKHlFDfa7xQcdMjFoN8GtxokOte5si+n0
- wXa1KwchmEAOnvJtEoOhQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nWdUyeGIOW0=:SnSXouPUVMPK8wsRbbYj5q
- lknBnDrI5GZ1caCgwn2UIOd81+9i9Gh34DCKZIS7zoWWucV6fo+tTCeXHsqB/6QvXvphdkQoP
- ThsZCcbicqS2eAJwl53rjv3pNZi9hFnpMmTvzB7e5IcU9hdWK67Ddps2JnP7HTEGs1sSecETY
- gzzxSnlg3P6lYtgjEHTmlTyMuJlQLRgfjSOPmj4mW9DVwV3GXgyGDz/NWj6jqgMYe3vO+Yu+s
- TmPPN8JQ2oyXPZ7K011h5Dm2hCw/htQr9XzhDh4kkrpJfft9xpXuwWhbe4lSopoMWoVliRONQ
- HHCLIoHxqyBGYyemSYAaiYfw/vfZbNwshO2ghr2pz2XJdQ/1gIKXyb+gejFJ3+VDjTUIFR23F
- RKtasJ7FAoUts+aRYGtbTeOgRuHeoLDOoM8qS4xmqzbO9eGKc5lQMQXcEXp/y0hMJT2z25cdC
- 5MkX9g9pgFti7rHQXs+zQ6gpdFyffMVyzTDuOQ7Ud0Dui+2EVzTJVcW80FPiNu8Lm5n7t/sFg
- rtTdJR+LoHGZAw/6dCM/YPx8hm5yYAi7qW2hWlgCfgeV6x78V1dpb7rO6kteR8p525ARtcoPx
- sSZeN47EHdXY7JuhVOwwkEr3Vpx4kPlNmQFNsAWIn4KUyUMyM8vX5Yf7i/FEp4FNNNFB6bJL0
- mUa99V9qqhNBhn1bqFuUmeiWw5svgb9a54P8+F4Xi3502zF8TJisNZQGX/rTmAkzbHT6zl/Kr
- ZyHmFI625Icl8TgceMjnwrM0KErX68wSrD6XvsyJIuEj5UZO3SOCqXxd1AnsbjtfoAzSNGWkl
- 7dX1JjARI1qGxVoBAPHyWEYK6pMIJJEcw4pTrOkVzC0OOBhLAxI5oBqx/Y6SCDsLvD0KnOEFF
- 89btoe6j4D4ph2L8e6ivjnS3Cunir1s2227UVci3YTmy4mUWWi1rFtSAEwxuhnlq/cWkQejYp
- w4K3b1LZ8GfEbIoSorvhLdIPbURuT+LzTV32F0na8XGwIZDjW2woV9JKVIryE4qYxdKv9ISwZ
- +C3OeZ3jfQLhwVocq4kM23/s0RLTziMnCKIv9j8eJPeLtUx5DxTyXDRQ2MnSeuqEH1J8jwqht
- WqRO5Dz61g3EQQ=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-22 at 14:20 +0100, Mel Gorman wrote:
-> On Wed, Sep 22, 2021 at 07:22:20AM +0200, Mike Galbraith wrote:
-> >
-> > Watching 'while sleep 1; do clear;tail trace; done' with nothing but a
-> > kbuild running is like watching top.=C2=A0 There's enough stacking dur=
-ing
-> > routine use of my desktop box that it runs into the tick granularity
-> > wall pretty much continuously, so 'overload' may want redefining.
-> >
->
-> Ok, that's pretty convincing. You didn't mention if there were
-> interactivity glitches but it's possible.
+This adds 6 GHz capabilities and reject HT/VHT
 
-No, I didn't notice a thing.  That's not surprising given the amount of
-scheduling going on.  The stack depth surprised me a bit though.
+Signed-off-by: Ramon Fontes <ramonreisfontes@gmail.com>
+---
+ drivers/net/wireless/mac80211_hwsim.c | 150 +++++++++++++++++++++++---
+ 1 file changed, 137 insertions(+), 13 deletions(-)
 
-X-2230    [005] d..5.  2162.123029: wakeup_gran: runnable:6 wakee:QXcbEven=
-tQueue:2695 CPU5
-X-2230    [005] d..5.  2162.123035: wakeup_gran: runnable:7 wakee:QXcbEven=
-tQueue:2656 CPU5
-X-2230    [005] d..5.  2162.123046: wakeup_gran: runnable:8 wakee:QXcbEven=
-tQueue:5876 CPU5
-X-2230    [005] d..5.  2162.123049: wakeup_gran: runnable:9 wakee:QXcbEven=
-tQueue:5355 CPU5
-X-2230    [005] d..5.  2162.123083: wakeup_gran: runnable:10 wakee:QXcbEve=
-ntQueue:2723 CPU5
-X-2230    [005] d..5.  2162.123097: wakeup_gran: runnable:11 wakee:QXcbEve=
-ntQueue:2630 CPU5
-X-2230    [005] d..5.  2162.123208: wakeup_gran: runnable:12 wakee:QXcbEve=
-ntQueue:2760 CPU5
+diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
+index ffa894f73..d36770db1 100644
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -2988,6 +2988,118 @@ static const struct ieee80211_sband_iftype_data he_capa_5ghz[] = {
+ #endif
+ };
+ 
++static const struct ieee80211_sband_iftype_data he_capa_6ghz[] = {
++	{
++		/* TODO: should we support other types, e.g., P2P?*/
++		.types_mask = BIT(NL80211_IFTYPE_STATION) |
++			      BIT(NL80211_IFTYPE_AP),
++		.he_6ghz_capa = {
++			.capa = IEEE80211_HE_6GHZ_CAP_MIN_MPDU_START |
++			        IEEE80211_HE_6GHZ_CAP_MAX_AMPDU_LEN_EXP |
++			        IEEE80211_HE_6GHZ_CAP_MAX_MPDU_LEN |
++			        IEEE80211_HE_6GHZ_CAP_TX_ANTPAT_CONS |
++			        IEEE80211_HE_6GHZ_CAP_RX_ANTPAT_CONS,
++		},
++		.he_cap = {
++			.has_he = true,
++			.he_cap_elem = {
++				.mac_cap_info[0] =
++					IEEE80211_HE_MAC_CAP0_HTC_HE,
++				.mac_cap_info[1] =
++					IEEE80211_HE_MAC_CAP1_TF_MAC_PAD_DUR_16US |
++					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
++				.mac_cap_info[2] =
++					IEEE80211_HE_MAC_CAP2_BSR |
++					IEEE80211_HE_MAC_CAP2_MU_CASCADING |
++					IEEE80211_HE_MAC_CAP2_ACK_EN,
++				.mac_cap_info[3] =
++					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
++					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_EXT_3,
++				.mac_cap_info[4] = IEEE80211_HE_MAC_CAP4_AMSDU_IN_AMPDU,
++				.phy_cap_info[0] =
++					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
++					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
++					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G,
++				.phy_cap_info[1] =
++					IEEE80211_HE_PHY_CAP1_PREAMBLE_PUNC_RX_MASK |
++					IEEE80211_HE_PHY_CAP1_DEVICE_CLASS_A |
++					IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD |
++					IEEE80211_HE_PHY_CAP1_MIDAMBLE_RX_TX_MAX_NSTS,
++				.phy_cap_info[2] =
++					IEEE80211_HE_PHY_CAP2_NDP_4x_LTF_AND_3_2US |
++					IEEE80211_HE_PHY_CAP2_STBC_TX_UNDER_80MHZ |
++					IEEE80211_HE_PHY_CAP2_STBC_RX_UNDER_80MHZ |
++					IEEE80211_HE_PHY_CAP2_UL_MU_FULL_MU_MIMO |
++					IEEE80211_HE_PHY_CAP2_UL_MU_PARTIAL_MU_MIMO,
++
++				/* Leave all the other PHY capability bytes
++				 * unset, as DCM, beam forming, RU and PPE
++				 * threshold information are not supported
++				 */
++			},
++			.he_mcs_nss_supp = {
++				.rx_mcs_80 = cpu_to_le16(0xfffa),
++				.tx_mcs_80 = cpu_to_le16(0xfffa),
++				.rx_mcs_160 = cpu_to_le16(0xfffa),
++				.tx_mcs_160 = cpu_to_le16(0xfffa),
++				.rx_mcs_80p80 = cpu_to_le16(0xfffa),
++				.tx_mcs_80p80 = cpu_to_le16(0xfffa),
++			},
++		},
++	},
++#ifdef CONFIG_MAC80211_MESH
++	{
++		/* TODO: should we support other types, e.g., IBSS?*/
++		.types_mask = BIT(NL80211_IFTYPE_MESH_POINT),
++		.he_6ghz_capa = {
++			.capa = IEEE80211_HE_6GHZ_CAP_MIN_MPDU_START |
++			        IEEE80211_HE_6GHZ_CAP_MAX_AMPDU_LEN_EXP |
++			        IEEE80211_HE_6GHZ_CAP_MAX_MPDU_LEN |
++			        IEEE80211_HE_6GHZ_CAP_TX_ANTPAT_CONS |
++			        IEEE80211_HE_6GHZ_CAP_RX_ANTPAT_CONS,
++		},
++		.he_cap = {
++			.has_he = true,
++			.he_cap_elem = {
++				.mac_cap_info[0] =
++					IEEE80211_HE_MAC_CAP0_HTC_HE,
++				.mac_cap_info[1] =
++					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
++				.mac_cap_info[2] =
++					IEEE80211_HE_MAC_CAP2_ACK_EN,
++				.mac_cap_info[3] =
++					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
++					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_EXT_3,
++				.mac_cap_info[4] = IEEE80211_HE_MAC_CAP4_AMSDU_IN_AMPDU,
++				.phy_cap_info[0] =
++					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
++					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
++					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G,
++				.phy_cap_info[1] =
++					IEEE80211_HE_PHY_CAP1_PREAMBLE_PUNC_RX_MASK |
++					IEEE80211_HE_PHY_CAP1_DEVICE_CLASS_A |
++					IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD |
++					IEEE80211_HE_PHY_CAP1_MIDAMBLE_RX_TX_MAX_NSTS,
++				.phy_cap_info[2] = 0,
++
++				/* Leave all the other PHY capability bytes
++				 * unset, as DCM, beam forming, RU and PPE
++				 * threshold information are not supported
++				 */
++			},
++			.he_mcs_nss_supp = {
++				.rx_mcs_80 = cpu_to_le16(0xfffa),
++				.tx_mcs_80 = cpu_to_le16(0xfffa),
++				.rx_mcs_160 = cpu_to_le16(0xfffa),
++				.tx_mcs_160 = cpu_to_le16(0xfffa),
++				.rx_mcs_80p80 = cpu_to_le16(0xfffa),
++				.tx_mcs_80p80 = cpu_to_le16(0xfffa),
++			},
++		},
++	},
++#endif
++};
++
+ static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
+ {
+ 	u16 n_iftype_data;
+@@ -3000,6 +3112,10 @@ static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
+ 		n_iftype_data = ARRAY_SIZE(he_capa_5ghz);
+ 		sband->iftype_data =
+ 			(struct ieee80211_sband_iftype_data *)he_capa_5ghz;
++	} else if (sband->band == NL80211_BAND_6GHZ) {
++		n_iftype_data = ARRAY_SIZE(he_capa_6ghz);
++		sband->iftype_data =
++			(struct ieee80211_sband_iftype_data *)he_capa_6ghz;
+ 	} else {
+ 		return;
+ 	}
+@@ -3290,6 +3406,12 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
+ 			sband->vht_cap.vht_mcs.tx_mcs_map =
+ 				sband->vht_cap.vht_mcs.rx_mcs_map;
+ 			break;
++		case NL80211_BAND_6GHZ:
++			sband->channels = data->channels_6ghz;
++			sband->n_channels = ARRAY_SIZE(hwsim_channels_6ghz);
++			sband->bitrates = data->rates + 4;
++			sband->n_bitrates = ARRAY_SIZE(hwsim_rates) - 4;
++			break;
+ 		case NL80211_BAND_S1GHZ:
+ 			memcpy(&sband->s1g_cap, &hwsim_s1g_cap,
+ 			       sizeof(sband->s1g_cap));
+@@ -3300,19 +3422,21 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
+ 			continue;
+ 		}
+ 
+-		sband->ht_cap.ht_supported = true;
+-		sband->ht_cap.cap = IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
+-				    IEEE80211_HT_CAP_GRN_FLD |
+-				    IEEE80211_HT_CAP_SGI_20 |
+-				    IEEE80211_HT_CAP_SGI_40 |
+-				    IEEE80211_HT_CAP_DSSSCCK40;
+-		sband->ht_cap.ampdu_factor = 0x3;
+-		sband->ht_cap.ampdu_density = 0x6;
+-		memset(&sband->ht_cap.mcs, 0,
+-		       sizeof(sband->ht_cap.mcs));
+-		sband->ht_cap.mcs.rx_mask[0] = 0xff;
+-		sband->ht_cap.mcs.rx_mask[1] = 0xff;
+-		sband->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
++		if (band != NL80211_BAND_6GHZ){
++			sband->ht_cap.ht_supported = true;
++			sband->ht_cap.cap = IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
++					    IEEE80211_HT_CAP_GRN_FLD |
++					    IEEE80211_HT_CAP_SGI_20 |
++					    IEEE80211_HT_CAP_SGI_40 |
++					    IEEE80211_HT_CAP_DSSSCCK40;
++			sband->ht_cap.ampdu_factor = 0x3;
++			sband->ht_cap.ampdu_density = 0x6;
++			memset(&sband->ht_cap.mcs, 0,
++			       sizeof(sband->ht_cap.mcs));
++			sband->ht_cap.mcs.rx_mask[0] = 0xff;
++			sband->ht_cap.mcs.rx_mask[1] = 0xff;
++			sband->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
++		}
+ 
+ 		mac80211_hwsim_he_capab(sband);
+ 
+-- 
+2.25.1
 
-That CPU# on the end is task_cpu(). Lord knows why X wakes all those,
-but with no SD_BALANCE_WAKE, a busy box and all those having last lived
-on waker's CPU, the resulting construct.. probably doesn't very closely
-resemble what the programmer had in mind when threading.
-
-	-Mike
