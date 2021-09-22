@@ -2,69 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7084151B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C20D4151B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237784AbhIVUzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:55:17 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:46970 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbhIVUzQ (ORCPT
+        id S237791AbhIVU4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233797AbhIVU4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:55:16 -0400
-Received: by mail-oi1-f171.google.com with SMTP id s69so6372796oie.13;
-        Wed, 22 Sep 2021 13:53:46 -0700 (PDT)
+        Wed, 22 Sep 2021 16:56:16 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B985BC061574;
+        Wed, 22 Sep 2021 13:54:45 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id b15so16663451lfe.7;
+        Wed, 22 Sep 2021 13:54:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3cZeXwR2k4hTcaH9mMdu8oiulnnc0/J5L3qGGtoXYkE=;
+        b=VOX/1XqOVC0VuQxpTcgYxzURn2nBP/v5n9cHk5GMCHvurDdQ01yW8/eJiRqLD6Ywh5
+         NMcyrqu9AmxXvcZ+ldCDbJGl1P0N+yk7IAUujRdexxJgXOd3giyPU4OQX3eACta8/ATD
+         qcDMjQ1TZ/X6hpfLApbH/XjoZif4Whl7GSo90xHM7t4V1fRyyLWrV1/hj7/fJ/iIgCV3
+         Ij4IkB/jdGyI+fZ84GPTFKNeKZLre3M/Nc8xBwSF9h5mJLKLrpoV6EI8nQy7miD4Tze4
+         PitFWhftCmSCpylPet2EtuX/ebuUxdS/cUm37Y+AT6Es7N5RjRhwMwRoKUTxsWPxyDGh
+         qMCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7UQgPbHiiI5fROteq8Hvll/XjdnlIJK9D0aOFIIzhqQ=;
-        b=t3WnURjeSCIuh/rkvI/L1RqKNy4BtXL50wSDruLx5jDk6Lsp0mlPUUQOV1Vcd3VIac
-         sm3EM+vDrbJZjKgCSUb/I3Q1vWrR74gIyIJWD1Pop7rw0TOHiSaWQNF3E7SZg/VC1rws
-         2NLE/8T1dwXRYQi52NImWDAbd1Gxh7OH1T1w71sh4DP0PBJD25/WU5I+4PMZi/T4z1gd
-         SbyNqrZM7HFTjOP3f0LTndUa2jR7ou30OJPk/vMUHuo1V+LkF8ugSbnyJRI33RU62afi
-         zo8EiicNymqxnHxtztD3qLUsHDmyRzfkwRrGouWlWHT9JMqaV5bCVb1rDhOIjRGGHnO7
-         bj3A==
-X-Gm-Message-State: AOAM5300fDxa8LDQSxdYygzIG5y8AtFsff5nVG/M5lfBG4DSzObW1ewJ
-        P/HMpOI98LU+ADXFGkod0Q==
-X-Google-Smtp-Source: ABdhPJwS6+PnDPVLGjmSDm2lajZEue3vo99r/gZh6GWIc5NC9a7fkexwjqMNrK2Fvx+5LHXUA+TFPw==
-X-Received: by 2002:a05:6808:aaa:: with SMTP id r10mr6338506oij.75.1632344026237;
-        Wed, 22 Sep 2021 13:53:46 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id y83sm780487oia.47.2021.09.22.13.53.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3cZeXwR2k4hTcaH9mMdu8oiulnnc0/J5L3qGGtoXYkE=;
+        b=oLGtR0ecnO411nr/v+Ag6g7nQVjYTpYUXNSHd1swckLU4hHwP4CHhs1+EgF6D7hVsS
+         JHIfwhdOOi9NY8pq69tnW+qIE4IAbBHMwrDlXO5jx3byJPLBkdu28pS37eINm3thywEK
+         PEoTlEZPI9/Wned56BKdwKtjmYl37piBMMkzxM/UZiT9LrQx/j94/+o0kZfe346UDuJf
+         e4xYI1Pl+ppnzN1M9Wp7qqheuVLlWtHPtu7HRuboo2Lm6lKi50kLN+FwcnmX1h/EhkCM
+         eG5lfqe1VHJh3XelQ3e3K+6h7Yfiz+jaYZfd5gCkdAxVvgWCKkcZRZfFUtU9WVk9QntA
+         VE+A==
+X-Gm-Message-State: AOAM533JF68sazKBHhRwpkHkeKYuTMQwhzR3qwIFS5Z0ulBdfosrEwSO
+        vAZDG/WPVx12RDoz4W8LMQE=
+X-Google-Smtp-Source: ABdhPJzFVQnTTYL1T8QNgYqC6+HYZ4LqvglqVxbOzzAWLXdF28v4QpsMsXlM+ycKlVC2jQYjif6Y0A==
+X-Received: by 2002:a2e:5443:: with SMTP id y3mr1401240ljd.482.1632344084132;
+        Wed, 22 Sep 2021 13:54:44 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id e24sm261883lfs.212.2021.09.22.13.54.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 13:53:45 -0700 (PDT)
-Received: (nullmailer pid 1275452 invoked by uid 1000);
-        Wed, 22 Sep 2021 20:53:44 -0000
-Date:   Wed, 22 Sep 2021 15:53:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,qusb2: Add compatible for
- QCM2290
-Message-ID: <YUuX2KBf7+6YFcVA@robh.at.kernel.org>
-References: <20210919031110.25064-1-shawn.guo@linaro.org>
- <20210919031110.25064-2-shawn.guo@linaro.org>
+        Wed, 22 Sep 2021 13:54:43 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sameer Pujar <spujar@nvidia.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] ASoC: tegra: Constify static snd_soc_dai_ops structs
+Date:   Wed, 22 Sep 2021 22:54:38 +0200
+Message-Id: <20210922205438.34519-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210919031110.25064-2-shawn.guo@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Sep 2021 11:11:09 +0800, Shawn Guo wrote:
-> Add compatible for QUSB2 PHY on QCM2290 platform.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+The only usage of these is to assign their address to the ops field in
+the snd_soc_dai_driver struct, which is a pointer to const. Make them
+const to allow the compiler to put them in read-only memory.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ sound/soc/tegra/tegra210_adx.c   | 4 ++--
+ sound/soc/tegra/tegra210_amx.c   | 4 ++--
+ sound/soc/tegra/tegra210_mixer.c | 4 ++--
+ sound/soc/tegra/tegra210_mvc.c   | 2 +-
+ sound/soc/tegra/tegra210_sfc.c   | 4 ++--
+ 5 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/tegra/tegra210_adx.c b/sound/soc/tegra/tegra210_adx.c
+index 78d660447bb1..d7c7849c2f92 100644
+--- a/sound/soc/tegra/tegra210_adx.c
++++ b/sound/soc/tegra/tegra210_adx.c
+@@ -206,12 +206,12 @@ static int tegra210_adx_put_byte_map(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
+-static struct snd_soc_dai_ops tegra210_adx_in_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_adx_in_dai_ops = {
+ 	.hw_params	= tegra210_adx_in_hw_params,
+ 	.startup	= tegra210_adx_startup,
+ };
+ 
+-static struct snd_soc_dai_ops tegra210_adx_out_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_adx_out_dai_ops = {
+ 	.hw_params	= tegra210_adx_out_hw_params,
+ };
+ 
+diff --git a/sound/soc/tegra/tegra210_amx.c b/sound/soc/tegra/tegra210_amx.c
+index 83176e1663ab..af9bddfc3120 100644
+--- a/sound/soc/tegra/tegra210_amx.c
++++ b/sound/soc/tegra/tegra210_amx.c
+@@ -241,12 +241,12 @@ static int tegra210_amx_put_byte_map(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
+-static struct snd_soc_dai_ops tegra210_amx_out_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_amx_out_dai_ops = {
+ 	.hw_params	= tegra210_amx_out_hw_params,
+ 	.startup	= tegra210_amx_startup,
+ };
+ 
+-static struct snd_soc_dai_ops tegra210_amx_in_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_amx_in_dai_ops = {
+ 	.hw_params	= tegra210_amx_in_hw_params,
+ };
+ 
+diff --git a/sound/soc/tegra/tegra210_mixer.c b/sound/soc/tegra/tegra210_mixer.c
+index 53fcd8f6605a..55e61776c565 100644
+--- a/sound/soc/tegra/tegra210_mixer.c
++++ b/sound/soc/tegra/tegra210_mixer.c
+@@ -283,11 +283,11 @@ static int tegra210_mixer_out_hw_params(struct snd_pcm_substream *substream,
+ 					    dai->id - TEGRA210_MIXER_RX_MAX);
+ }
+ 
+-static struct snd_soc_dai_ops tegra210_mixer_out_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_mixer_out_dai_ops = {
+ 	.hw_params	= tegra210_mixer_out_hw_params,
+ };
+ 
+-static struct snd_soc_dai_ops tegra210_mixer_in_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_mixer_in_dai_ops = {
+ 	.hw_params	= tegra210_mixer_in_hw_params,
+ };
+ 
+diff --git a/sound/soc/tegra/tegra210_mvc.c b/sound/soc/tegra/tegra210_mvc.c
+index 3646ce9b0fd1..7b9c7006e419 100644
+--- a/sound/soc/tegra/tegra210_mvc.c
++++ b/sound/soc/tegra/tegra210_mvc.c
+@@ -387,7 +387,7 @@ static int tegra210_mvc_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_dai_ops tegra210_mvc_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_mvc_dai_ops = {
+ 	.hw_params	= tegra210_mvc_hw_params,
+ };
+ 
+diff --git a/sound/soc/tegra/tegra210_sfc.c b/sound/soc/tegra/tegra210_sfc.c
+index 260dca6f6d25..dc477ee1b82c 100644
+--- a/sound/soc/tegra/tegra210_sfc.c
++++ b/sound/soc/tegra/tegra210_sfc.c
+@@ -3287,12 +3287,12 @@ static int tegra210_sfc_put_control(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
+-static struct snd_soc_dai_ops tegra210_sfc_in_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_sfc_in_dai_ops = {
+ 	.hw_params	= tegra210_sfc_in_hw_params,
+ 	.startup	= tegra210_sfc_startup,
+ };
+ 
+-static struct snd_soc_dai_ops tegra210_sfc_out_dai_ops = {
++static const struct snd_soc_dai_ops tegra210_sfc_out_dai_ops = {
+ 	.hw_params	= tegra210_sfc_out_hw_params,
+ };
+ 
+-- 
+2.33.0
+
