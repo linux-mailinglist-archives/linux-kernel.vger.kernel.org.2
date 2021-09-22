@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA0F41458A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B092D41458D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbhIVJwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:52:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:45890 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234308AbhIVJwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:52:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6734A11B3;
-        Wed, 22 Sep 2021 02:50:47 -0700 (PDT)
-Received: from [10.163.73.113] (unknown [10.163.73.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A90C3F719;
-        Wed, 22 Sep 2021 02:50:43 -0700 (PDT)
-Subject: Re: [PATCH v2 13/17] coresight: trbe: Add a helper to determine the
- minimum buffer size
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
-        leo.yan@linaro.org, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-14-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <586a307e-a51d-d176-b9f9-fc730278317e@arm.com>
-Date:   Wed, 22 Sep 2021 15:21:49 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234533AbhIVJxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:53:40 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9755 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234233AbhIVJxg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 05:53:36 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDtpS09vnzWMFp;
+        Wed, 22 Sep 2021 17:50:56 +0800 (CST)
+Received: from kwepemm600005.china.huawei.com (7.193.23.191) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 17:52:05 +0800
+Received: from DESKTOP-R64PNO0.china.huawei.com (10.67.102.35) by
+ kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 17:52:05 +0800
+From:   Jinhui Guo <guojinhui@huawei.com>
+To:     <akpm@linux-foundation.org>, <pmladek@suse.com>,
+        <peterz@infradead.org>, <valentin.schneider@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <guojinhui@huawei.com>
+Subject: [PATCH] watchdog/softlockup: Fix softlockup_stop_all() hungtask bug
+Date:   Wed, 22 Sep 2021 17:52:02 +0800
+Message-ID: <20210922095202.1655-1-guojinhui@huawei.com>
+X-Mailer: git-send-email 2.32.0.windows.2
 MIME-Version: 1.0
-In-Reply-To: <20210921134121.2423546-14-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.102.35]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If NR_CPUS equal to 1, it would trigger hungtask, it can be
+triggered by follow command:
+	echo 0 > /proc/sys/kernel/watchdog
+	echo 1 > /proc/sys/kernel/watchdog
+The hungtask stack:
+	__schedule
+	schedule
+	schedule_timeout
+	__wait_for_common
+	softlockup_stop_fn
+	lockup_detector_reconfigure
+	proc_watchdog_common
+	proc_watchdog
+	proc_sys_call_handler
+	vfs_write
+	ksys_write
+The watchdog_allowed_mask is completely cleared when the
+watchdog is disabled. But the macro for_each_cpu() assume
+all masks are "1" when macro NR_CPUS equal to 1. It makes
+watchdog_allowed_mask not work at all.
 
+Fixes: be45bf5395e0 ("watchdog/softlockup: Fix cpu_stop_queue_work() double-queue bug")
 
-On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
-> For the TRBE to operate, we need a minimum space available to collect
-> meaningful trace session. This is currently a few bytes, but we may need
-> to extend this for working around errata. So, abstract this into a helper
-> function.
-> 
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index 797d978f9fa7..3373f4e2183b 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -277,6 +277,11 @@ trbe_handle_to_cpudata(struct perf_output_handle *handle)
->  	return buf->cpudata;
->  }
->  
-> +static u64 trbe_min_trace_buf_size(struct perf_output_handle *handle)
-> +{
-> +	return TRBE_TRACE_MIN_BUF_SIZE;
-> +}
+Cc: Petr Mladek <pmladek@suse.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jinhui Guo <guojinhui@huawei.com>
+---
+ arch/x86/include/asm/smp.h | 5 +++++
+ include/linux/cpumask.h    | 5 +++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-Assuming that struct perf_output_handle could provide all the
-required support for a variable minimum trace buffer length.
+diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+index 630ff08532be..f5d3ca5696b3 100644
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -21,7 +21,12 @@ DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
+ 
+ static inline struct cpumask *cpu_llc_shared_mask(int cpu)
+ {
++#ifdef CONFIG_SMP
+ 	return per_cpu(cpu_llc_shared_map, cpu);
++#else
++	/* cpu_llc_shared_map is not defined while !CONFIG_SMP */
++	return cpu_all_mask;
++#endif
+ }
+ 
+ DECLARE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_cpu_to_apicid);
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index 5d4d07a9e1ed..1a35dbcc397d 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -175,10 +175,11 @@ static inline int cpumask_any_distribute(const struct cpumask *srcp)
+ 	return cpumask_first(srcp);
+ }
+ 
++/* It should check cpumask in some special case, such as watchdog */
+ #define for_each_cpu(cpu, mask)			\
+-	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
++	for ((cpu) = 0; (cpu) < 1 && test_bit(0, cpumask_bits(mask)); (cpu)++)
+ #define for_each_cpu_not(cpu, mask)		\
+-	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
++	for ((cpu) = 0; (cpu) < 1 && !test_bit(0, cpumask_bits(mask)); (cpu)++)
+ #define for_each_cpu_wrap(cpu, mask, start)	\
+ 	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask, (void)(start))
+ #define for_each_cpu_and(cpu, mask1, mask2)	\
+-- 
+2.12.3
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-
-> +
->  /*
->   * TRBE Limit Calculation
->   *
-> @@ -447,7 +452,7 @@ static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
->  	 * have space for a meaningful run, we rather pad it
->  	 * and start fresh.
->  	 */
-> -	if (limit && (limit - head < TRBE_TRACE_MIN_BUF_SIZE)) {
-> +	if (limit && ((limit - head) < trbe_min_trace_buf_size(handle))) {
->  		trbe_pad_buf(handle, limit - head);
->  		limit = __trbe_normal_offset(handle);
->  	}
-> 
