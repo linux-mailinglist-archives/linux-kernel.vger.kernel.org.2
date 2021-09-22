@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB55414EFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619CB414F10
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236834AbhIVR1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:27:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23974 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236744AbhIVR1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:27:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632331565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=25lGIVYtKt3kH1kWTNrr/qFisdmByWs8m8B7PEwB7yQ=;
-        b=abXgpKfHs2mXBli1SkJJRtQ4tSNB6ogaz7n/PGMMJx0gDUBzxhaGo9E7j89AmFokTi0ClL
-        mQWqxeE9ahZ0GfvrKJKDO0OjdzijYsdoNEfPEUgVKYM9KyAey9bBSWGnbizV2CO8zS2onq
-        Lj5jHFpi4ChOOKlJ/EhCR4fnF0hNZ0A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-QM5rgveEOg-MnWOc20chRg-1; Wed, 22 Sep 2021 13:26:02 -0400
-X-MC-Unique: QM5rgveEOg-MnWOc20chRg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E6DD814707;
-        Wed, 22 Sep 2021 17:26:00 +0000 (UTC)
-Received: from x2.localnet (unknown [10.22.9.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 169841972D;
-        Wed, 22 Sep 2021 17:25:31 +0000 (UTC)
-From:   Steve Grubb <sgrubb@redhat.com>
-To:     Eugene Syromiatnikov <esyr@redhat.com>,
-        Paul Cercueil <paul@crapouillou.net>
-Cc:     Cai Huoqing <caihuoqing@baidu.com>, linux-audit@redhat.com,
-        strace development discussions <strace-devel@lists.strace.io>,
-        linux-api@vger.kernel.org, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv@strace.io
-Subject: Re: [PATCH 1/2] net: Remove net/ipx.h and uapi/linux/ipx.h header files
-Date:   Wed, 22 Sep 2021 13:25:29 -0400
-Message-ID: <1710508.VLH7GnMWUR@x2>
-Organization: Red Hat
-In-Reply-To: <AZHUZQ.4E5G2GAEGJ0U@crapouillou.net>
-References: <20210813120803.101-1-caihuoqing@baidu.com> <20210902160840.GA2220@asgard.redhat.com> <AZHUZQ.4E5G2GAEGJ0U@crapouillou.net>
+        id S236861AbhIVR37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:29:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236781AbhIVR36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 13:29:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FB0B60F6E;
+        Wed, 22 Sep 2021 17:28:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632331707;
+        bh=qxovthTWLhunV065wb5c2FjpbJJiZfXE4TdmvsvSDMI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TQcu/pDhXL13HNpmyzQqZTcSJ2/6tD4xoWby1IDx6WkYy/HNINa13EjrrebrKg8UE
+         oLbnjsUYWbhTtTeq1wDfKapMrX5x8BLN0g99OM7YibV/gsG0xhk6Smi0cQGY8Xe0nn
+         Jo4Z7MbPAaLLSS7BiwRSQ/ZDI3kzhVJWycxSsRVk=
+Date:   Wed, 22 Sep 2021 19:28:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <YUtnuW22MH97p7+G@kroah.com>
+References: <cover.1631802162.git.yu.c.chen@intel.com>
+ <90d270c031401430445cb2c4ba1b9b0c265cf9d4.1631802163.git.yu.c.chen@intel.com>
+ <YUoBSRrAyaHOCNHb@kroah.com>
+ <20210922090442.GA16963@chenyu5-mobl1>
+ <YUry6tzScXMD007X@kroah.com>
+ <20210922163321.GA31068@chenyu5-mobl1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922163321.GA31068@chenyu5-mobl1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, September 22, 2021 1:01:58 PM EDT Paul Cercueil wrote:
-> >> IPX is marked obsolete for serveral years. so remove it and the
-> >> dependency in linux tree.
-> >> I'm sorry to not thinking about linux-audit and strace.
-> >> Might you remove the dependency or make the part of the code.
-> >> Many thanks.
+On Thu, Sep 23, 2021 at 12:33:21AM +0800, Chen Yu wrote:
+> On Wed, Sep 22, 2021 at 11:10:02AM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Sep 22, 2021 at 05:04:42PM +0800, Chen Yu wrote:
+> > > Hi Greg,
+> > > On Tue, Sep 21, 2021 at 05:59:05PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Fri, Sep 17, 2021 at 12:02:18AM +0800, Chen Yu wrote:
+> > > > > Introduce the pfru_update driver which can be used for Platform Firmware
+> > > > > Runtime code injection and driver update. The user is expected to provide
+> > > > > the update firmware in the form of capsule file, and pass it to the driver
+> > > > > via ioctl. Then the driver would hand this capsule file to the Platform
+> > > > > Firmware Runtime Update via the ACPI device _DSM method. At last the low
+> > > > > level Management Mode would do the firmware update.
+> > > > > 
+> > > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > > 
+> > > > Where is the userspace code that uses this ioctl and has tested it out
+> > > > to verify it works properly?  A link to that in the changelog would be
+> > > > great to have.
+> > > > 
+> > > The patch [5/5] is a self testing tool to test the whole feature. I'll send a
+> > > new version and Cc you too.
 > > 
-> > Unfortunately, that is not how UAPI works.  That change breaks
-> > building
-> > of the existing code;  one cannot change already released versions
-> > of either audit, strace, or any other userspace program that happens
-> > to unconditionally include <linux/ipx.h> without any fallback (like
-> > <netipx/ipx.h> provided by glibc).
-> 
-> Also, the <netipx/ipx.h> fallback is only provided by glibc (and maybe
-> uclibc?). With this patch, it is now impossible to compile even the
-> very latest version of "strace" with a musl toolchain.
+> > That tests it, but does not answer the question of who will actually use
+> > this.  What userspace tool needs this new api?
+> >
+> One end user is the cloud user.
 
-I've made support for ipx optional in audit user space a couple weeks back. 
-It's no longer a problem for us.
+What exactly do you mean by "cloud user"?
 
--Steve
+> Currently there is no dedicated userspace tool developed to use this
+> feature AFAIK.
+
+Wonderful, then it is not needed to be added to the kernel :)
+
+> It was expected that the end users
+> could refer to the self test tool to customize their tools. I'm not sure if
+> this is the proper way to propose the feature, may I have your suggestion on
+> this, should I create a separate git repository for this tool, or put it in
+> tools/selftestings as it is now?
+
+No, do not add this to the kernel unless you have a real need and user
+for this.
 
 
+> > > > > +static struct miscdevice pfru_misc_dev = {
+> > > > > +	.minor = MISC_DYNAMIC_MINOR,
+> > > > > +	.name = "pfru_update",
+> > > > > +	.nodename = "pfru/update",
+> > > > 
+> > > > Why is this in a subdirectory?  What requires this?  Why not just
+> > > > "pfru"?
+> > > > 
+> > > The pfru directory might be reused for pfru_telemetry device, whose driver
+> > > is in 4/5 patch, I'll Cc you with the whole patch set in next version.
+> > 
+> > "might be" is not a valid reason.  Why does this simple driver deserve a
+> > whole /dev/ subdirectory?
+> > 
+> There are pfru_update and pfru_telemetry in the patch, and there is plan to
+> add a pfru_prm device in the future, which stands for "Platform Runtime Mechanism".
+> I'll move them to /dev/ in next version.
+
+That is a very generic name for a very platform specific and arch
+specific interface.  As this is an ACPI interface, why not use that name
+prefix?
+
+thanks,
+
+greg k-h
