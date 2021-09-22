@@ -2,182 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70119414DE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35125414DC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236603AbhIVQQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:16:02 -0400
-Received: from esa2.mentor.iphmx.com ([68.232.141.98]:58872 "EHLO
-        esa2.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236590AbhIVQQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:16:01 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Sep 2021 12:15:58 EDT
-IronPort-SDR: 8UbnJGYKp9g00cfXnidR4XekML9AcaN1ikXoDPxI2aQNPOoTV25+1C1mpXUp410raLMJXgsIt8
- w8a/HmajNMuBBDJuYoG0ril5cWCdnSJ+Jlku2Eb8Qmcr9OUTFV5xaiE/3Fb/GGFRanKSsA1k3h
- nLUv51cpctMCSfQGfmJwvMakTCcHm8JGROPCi8HaD5FHVGqQiwNy8xakz6kkgbXfYw38kSMUMB
- FvedneDgXWpSHS8k3DqS8bAAfQZIAfDDehfqeX9H8B9QCw4FYZJock2nD6UJ9RFker5pCYg8e2
- 9HYEIwFf5lqfyr7uKO003n3F
-X-IronPort-AV: E=Sophos;i="5.85,314,1624348800"; 
-   d="scan'208";a="66169774"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa2.mentor.iphmx.com with ESMTP; 22 Sep 2021 08:07:17 -0800
-IronPort-SDR: TwrNP43X+qzAXREQFCLy/SGbiiUY1GzxlrBsCdu12I4vPOafw+HdxOo6U9v3SJrpthiMSoAY6i
- hJzGfLJNIlteK0lrzkaprszqmfSRArd2V7YcqrwpPx57nJ0fwNp1nB9ObXPTQQNXKBUFoHRYqI
- ZMbsvqtAiVAGVuyEUsyqoUsX95td5nNFjhAvo1ZwP7X4kOitS9c3sQex7bQ+HkF323QMlGB7bD
- dlhHSPEusa3Bfa8g+I1LOQvwNMI/+8RnxbcxonUhzGzvQ0a7HcFQcsiFoGI0wPtq7J9g8EzSt6
- WLA=
-From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To:     <linux-renesas-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-Subject: [PATCH] i2c: rcar: add SMBus block read support
-Date:   Wed, 22 Sep 2021 11:06:49 -0500
-Message-ID: <20210922160649.28449-1-andrew_gabbasov@mentor.com>
-X-Mailer: git-send-email 2.21.0
+        id S236560AbhIVQJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:09:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232357AbhIVQJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 12:09:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77EC361090;
+        Wed, 22 Sep 2021 16:07:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632326879;
+        bh=yctlIi1HkrolODiWaucLlNNuDJShRbGjTDeBFQoL+sQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FTjlHne/yiD8nTOLATvSGiGbB5StrT2948rLIcHyuE9np1uUUEFoiqlCBFXOechzg
+         IUQjs14cF6Wkte3RZIwukniCLCpi6agkYoB4q1FJevwdIsPnggI9V1DugAmO1MGDu6
+         ywXQAEoCMhw0FTxPsPsob8cvocfL74j1uBcap/Yu20S94miYrnXROrj0V0L0SURCTa
+         EMRvUESwBJBj0nY1K3PD/yiEc66jJ2KSNUNuXjpTqyd0051s0bJzbLOx7RD2Z3jsWm
+         P9SGCmdjeAMYgOqZnbykk4OEJhpdljIUOg4SP0v2HlUDZfl38KFWvIcI8ulHRrDdpk
+         SVFyH8Fb5o9FA==
+Received: by pali.im (Postfix)
+        id 09B5579F; Wed, 22 Sep 2021 18:07:56 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 18:07:56 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH v5 5/6] arm64: dts: marvell: armada-37xx: add
+ device node for UART clock and use it
+Message-ID: <20210922160756.flcllzfixsn7xjxt@pali>
+References: <20210922105433.11744-1-pali@kernel.org>
+ <20210922105433.11744-6-pali@kernel.org>
+ <87o88k63p5.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-06.mgc.mentorg.com (139.181.222.6) To
- svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87o88k63p5.fsf@BL-laptop>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The smbus block read is not currently supported for rcar i2c devices.
-This patchset adds the support to rcar i2c bus so that blocks of data
-can be read using SMbus block reads.(using i2c_smbus_read_block_data()
-function from the i2c-core-smbus.c).
+On Wednesday 22 September 2021 17:16:22 Gregory CLEMENT wrote:
+> Hello Pali,
+> 
+> > This change defines DT node for UART clock "marvell,armada-3700-uart-clock"
+> > and use this UART clock as a base clock for all UART devices.
+> 
+> Sorry to not have pointed this earlier but I found something a little
+> unusual, see below:
+> 
+> >
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > ---
+> >  arch/arm64/boot/dts/marvell/armada-3720-db.dts    |  4 ++++
+> >  .../boot/dts/marvell/armada-3720-espressobin.dtsi |  4 ++++
+> >  .../boot/dts/marvell/armada-3720-turris-mox.dts   |  4 ++++
+> >  arch/arm64/boot/dts/marvell/armada-3720-uDPU.dts  |  4 ++++
+> >  arch/arm64/boot/dts/marvell/armada-37xx.dtsi      | 15 +++++++++++++--
+> >  5 files changed, 29 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-db.dts b/arch/arm64/boot/dts/marvell/armada-3720-db.dts
+> > index 3e5789f37206..accf014a6a1e 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-3720-db.dts
+> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-db.dts
+> > @@ -191,6 +191,10 @@
+> >  	};
+> >  };
+> >  
+> > +&uartclk {
+> > +	status = "okay";
+> 
+> I found unusual to have to enable the clock at device tree level.
+> Usually the clock driver is always loaded and then the clock is really
+> enabled or disabled through the clock framework.
+> 
+> [...]
+> 
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > index 9acc5d2b5a00..5bc61c9615f5 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > @@ -132,10 +132,21 @@
+> >  				reg = <0x11500 0x40>;
+> >  			};
+> >  
+> > +			uartclk: uartclk@12000 {
+> > +				compatible = "marvell,armada-3700-uart-clock";
+> > +				reg = <0x12010 0x4>, <0x12210 0x4>;
+> > +				clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>,
+> > +					<&tbg 3>, <&xtalclk>;
+> > +				clock-names = "TBG-A-P", "TBG-B-P", "TBG-A-S",
+> > +					"TBG-B-S", "xtal";
+> > +				#clock-cells = <1>;
+> 
+> I think you could remove the following line and thanks to this there
+> won't be any change in the dts of the board:
+> > +				status = "disabled";
 
-Inspired by commit 8e8782c71595 ("i2c: imx: add SMBus block read support")
+After removing "status" from dtsi and then also from board bts files,
+UART is still working fine.
 
-This patch (adapted) was tested with v4.14, but due to lack of real
-hardware with SMBus block read operations support, using "simulation",
-that is manual analysis of data, read from plain I2C devices with
-SMBus block read request.
+So I will include this change into V6.
 
-Signed-off-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
----
- drivers/i2c/busses/i2c-rcar.c | 45 +++++++++++++++++++++++++++++++----
- 1 file changed, 41 insertions(+), 4 deletions(-)
+Is there anything else?
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index bff9913c37b8..a9fc2b3b6392 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -105,6 +105,7 @@
- #define ID_DONE		(1 << 2)
- #define ID_ARBLOST	(1 << 3)
- #define ID_NACK		(1 << 4)
-+#define ID_EPROTO	(1 << 5)
- /* persistent flags */
- #define ID_P_HOST_NOTIFY	BIT(28)
- #define ID_P_REP_AFTER_RD	BIT(29)
-@@ -412,6 +413,7 @@ static bool rcar_i2c_dma(struct rcar_i2c_priv *priv)
- 	struct device *dev = rcar_i2c_priv_to_dev(priv);
- 	struct i2c_msg *msg = priv->msg;
- 	bool read = msg->flags & I2C_M_RD;
-+	bool block_data = msg->flags & I2C_M_RECV_LEN;
- 	enum dma_data_direction dir = read ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
- 	struct dma_chan *chan = read ? priv->dma_rx : priv->dma_tx;
- 	struct dma_async_tx_descriptor *txdesc;
-@@ -429,9 +431,16 @@ static bool rcar_i2c_dma(struct rcar_i2c_priv *priv)
- 		/*
- 		 * The last two bytes needs to be fetched using PIO in
- 		 * order for the STOP phase to work.
-+		 *
-+		 * For SMBus block read the first byte was received using PIO.
- 		 */
--		buf = priv->msg->buf;
--		len = priv->msg->len - 2;
-+		if (block_data) {
-+			buf = priv->msg->buf + 1;
-+			len = priv->msg->len - 3;
-+		} else {
-+			buf = priv->msg->buf;
-+			len = priv->msg->len - 2;
-+		}
- 	} else {
- 		/*
- 		 * First byte in message was sent using PIO.
-@@ -530,6 +539,7 @@ static void rcar_i2c_irq_send(struct rcar_i2c_priv *priv, u32 msr)
- static void rcar_i2c_irq_recv(struct rcar_i2c_priv *priv, u32 msr)
- {
- 	struct i2c_msg *msg = priv->msg;
-+	bool block_data = msg->flags & I2C_M_RECV_LEN;
- 
- 	/* FIXME: sometimes, unknown interrupt happened. Do nothing */
- 	if (!(msr & MDR))
-@@ -538,8 +548,29 @@ static void rcar_i2c_irq_recv(struct rcar_i2c_priv *priv, u32 msr)
- 	if (msr & MAT) {
- 		/*
- 		 * Address transfer phase finished, but no data at this point.
--		 * Try to use DMA to receive data.
-+		 * Try to use DMA to receive data if it is not SMBus block
-+		 * data read.
- 		 */
-+		if (block_data)
-+			goto next_txn;
-+
-+		rcar_i2c_dma(priv);
-+	} else if (priv->pos == 0 && block_data) {
-+		/*
-+		 * First byte is the length of remaining packet
-+		 * in the SMBus block data read. Add it to
-+		 * msg->len.
-+		 */
-+		u8 data = rcar_i2c_read(priv, ICRXTX);
-+
-+		if (data == 0 || data > I2C_SMBUS_BLOCK_MAX) {
-+			priv->flags |= ID_DONE | ID_EPROTO;
-+			return;
-+		}
-+		msg->len += data;
-+		msg->buf[priv->pos] = data;
-+		priv->pos++;
-+		/* Still try to use DMA to receive the rest of data */
- 		rcar_i2c_dma(priv);
- 	} else if (priv->pos < msg->len) {
- 		/* get received data */
-@@ -557,6 +588,7 @@ static void rcar_i2c_irq_recv(struct rcar_i2c_priv *priv, u32 msr)
- 		}
- 	}
- 
-+next_txn:
- 	if (priv->pos == msg->len && !(priv->flags & ID_LAST_MSG))
- 		rcar_i2c_next_msg(priv);
- 	else
-@@ -855,6 +887,8 @@ static int rcar_i2c_master_xfer(struct i2c_adapter *adap,
- 		ret = -ENXIO;
- 	} else if (priv->flags & ID_ARBLOST) {
- 		ret = -EAGAIN;
-+	} else if (priv->flags & ID_EPROTO) {
-+		ret = -EPROTO;
- 	} else {
- 		ret = num - priv->msgs_left; /* The number of transfer */
- 	}
-@@ -917,6 +951,8 @@ static int rcar_i2c_master_xfer_atomic(struct i2c_adapter *adap,
- 		ret = -ENXIO;
- 	} else if (priv->flags & ID_ARBLOST) {
- 		ret = -EAGAIN;
-+	} else if (priv->flags & ID_EPROTO) {
-+		ret = -EPROTO;
- 	} else {
- 		ret = num - priv->msgs_left; /* The number of transfer */
- 	}
-@@ -983,7 +1019,8 @@ static u32 rcar_i2c_func(struct i2c_adapter *adap)
- 	 * I2C_M_IGNORE_NAK (automatically sends STOP after NAK)
- 	 */
- 	u32 func = I2C_FUNC_I2C | I2C_FUNC_SLAVE |
--		   (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK);
-+		   (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK) |
-+		   I2C_FUNC_SMBUS_READ_BLOCK_DATA;
- 
- 	if (priv->flags & ID_P_HOST_NOTIFY)
- 		func |= I2C_FUNC_SMBUS_HOST_NOTIFY;
--- 
-2.21.0
-
+> > +			};
+> > +
+> 
+> Gregory
+> 
+> 
+> >  			uart0: serial@12000 {
+> >  				compatible = "marvell,armada-3700-uart";
+> >  				reg = <0x12000 0x18>;
+> > -				clocks = <&xtalclk>;
+> > +				clocks = <&uartclk 0>;
+> >  				interrupts =
+> >  				<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+> >  				<GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> > @@ -147,7 +158,7 @@
+> >  			uart1: serial@12200 {
+> >  				compatible = "marvell,armada-3700-uart-ext";
+> >  				reg = <0x12200 0x30>;
+> > -				clocks = <&xtalclk>;
+> > +				clocks = <&uartclk 1>;
+> >  				interrupts =
+> >  				<GIC_SPI 30 IRQ_TYPE_EDGE_RISING>,
+> >  				<GIC_SPI 31 IRQ_TYPE_EDGE_RISING>;
+> > -- 
+> > 2.20.1
+> >
+> 
+> -- 
+> Gregory Clement, Bootlin
+> Embedded Linux and Kernel engineering
+> http://bootlin.com
