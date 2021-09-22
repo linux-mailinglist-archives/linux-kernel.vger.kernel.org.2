@@ -2,141 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653814146C4
+	by mail.lfdr.de (Postfix) with ESMTP id C35234146C5
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235466AbhIVKmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:42:00 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:32882 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235195AbhIVKlN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:41:13 -0400
-Received: from ert768.prtnl (ert768.prtnl [192.168.224.11])
-        by sparta.prtnl (Postfix) with ESMTP id 783F944A0252;
-        Wed, 22 Sep 2021 12:39:36 +0200 (CEST)
-From:   Roan van Dijk <roan@protonic.nl>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Roan van Dijk <roan@protonic.nl>
-Subject: [PATCH v3 4/4] iio: documentation: Document scd4x calibration use
-Date:   Wed, 22 Sep 2021 12:39:25 +0200
-Message-Id: <20210922103925.2742362-5-roan@protonic.nl>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210922103925.2742362-1-roan@protonic.nl>
-References: <20210922103925.2742362-1-roan@protonic.nl>
+        id S235173AbhIVKmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:42:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:46708 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235260AbhIVKl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:41:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAF1311B3;
+        Wed, 22 Sep 2021 03:39:56 -0700 (PDT)
+Received: from [10.57.95.67] (unknown [10.57.95.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F9063F719;
+        Wed, 22 Sep 2021 03:39:55 -0700 (PDT)
+Subject: Re: [RFC PATCH v4 01/39] KVM: arm64: Make lock_all_vcpus() available
+ to the rest of KVM
+To:     Alexandru Elisei <alexandru.elisei@arm.com>, maz@kernel.org,
+        james.morse@arm.com, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210825161815.266051-1-alexandru.elisei@arm.com>
+ <20210825161815.266051-2-alexandru.elisei@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <ed657df4-7242-2c77-cfaf-b0dc1eb5c210@arm.com>
+Date:   Wed, 22 Sep 2021 11:39:54 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210825161815.266051-2-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries from Documentation/ABI/testing/sysfs-bus-iio-scd30
-to Documentation/ABI/testing/sysfs-bus-iio. The attributes of the scd4x
-and scd30 are common.
+On 25/08/2021 17:17, Alexandru Elisei wrote:
+> The VGIC code uses the lock_all_vcpus() function to make sure no VCPUs are
+> run while it fiddles with the global VGIC state. Move the declaration of
+> lock_all_vcpus() and the corresponding unlock function into asm/kvm_host.h
+> where it can be reused by other parts of KVM/arm64 and rename the functions
+> to kvm_{lock,unlock}_all_vcpus() to make them more generic.
+> 
+> Because the scope of the code potentially using the functions has
+> increased, add a lockdep check that the kvm->lock is held by the caller.
+> Holding the lock is necessary because otherwise userspace would be able to
+> create new VCPUs and run them while the existing VCPUs are locked.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
 
-Remove Documentation/ABI/testing/sysfs-bus-iio-scd30.
 
-Signed-off-by: Roan van Dijk <roan@protonic.nl>
----
- Documentation/ABI/testing/sysfs-bus-iio       | 41 +++++++++++++++++++
- Documentation/ABI/testing/sysfs-bus-iio-scd30 | 34 ---------------
- 2 files changed, 41 insertions(+), 34 deletions(-)
- delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+LGTM,
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index 6ad47a67521c..07522b96d980 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -1957,3 +1957,44 @@ Description:
- 		Specify the percent for light sensor relative to the channel
- 		absolute value that a data field should change before an event
- 		is generated. Units are a percentage of the prior reading.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/calibration_auto_enable
-+Date:		June 2020
-+KernelVersion:	5.8
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Some sensors have the ability to apply auto calibration at
-+		runtime. For example, it may be necessary to compensate for
-+		contaminant build-up in a measurement chamber or optical
-+		element deterioration that would otherwise lead to sensor drift.
-+
-+		Writing 1 or 0 to this attribute will respectively activate or
-+		deactivate this auto calibration function.
-+
-+		Upon reading, the current status is returned.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value
-+Date:		June 2020
-+KernelVersion:	5.8
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Some sensors have the ability to apply a manual calibration using
-+		a known measurement value, perhaps obtained from an external
-+		reference device.
-+
-+		Writing a value to this function will force such a calibration
-+		change. For the scd30 the value should be from the range
-+		[400 1 2000].
-+
-+		Note for the scd30 that a valid value may only be obtained once
-+		it is has been written. Until then any read back of this value
-+		should be ignored. As for the scd4x an error will be returned
-+		immediately if the manual calibration has failed.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value_available
-+KernelVersion:  5.8
-+Contact:        linux-iio@vger.kernel.org
-+Description:
-+		Available range for the forced calibration value, expressed as:
-+
-+		- a range specified as "[min step max]"
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-scd30 b/Documentation/ABI/testing/sysfs-bus-iio-scd30
-deleted file mode 100644
-index b9712f390bec..000000000000
---- a/Documentation/ABI/testing/sysfs-bus-iio-scd30
-+++ /dev/null
-@@ -1,34 +0,0 @@
--What:		/sys/bus/iio/devices/iio:deviceX/calibration_auto_enable
--Date:		June 2020
--KernelVersion:	5.8
--Contact:	linux-iio@vger.kernel.org
--Description:
--		Contaminants build-up in the measurement chamber or optical
--		elements deterioration leads to sensor drift.
--
--		One can compensate for sensor drift by using automatic self
--		calibration procedure (asc).
--
--		Writing 1 or 0 to this attribute will respectively activate or
--		deactivate asc.
--
--		Upon reading current asc status is returned.
--
--What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value
--Date:		June 2020
--KernelVersion:	5.8
--Contact:	linux-iio@vger.kernel.org
--Description:
--		Contaminants build-up in the measurement chamber or optical
--		elements deterioration leads to sensor drift.
--
--		One can compensate for sensor drift by using forced
--		recalibration (frc). This is useful in case there's known
--		co2 reference available nearby the sensor.
--
--		Picking value from the range [400 1 2000] and writing it to the
--		sensor will set frc.
--
--		Upon reading current frc value is returned. Note that after
--		power cycling default value (i.e 400) is returned even though
--		internally sensor had recalibrated itself.
--- 
-2.30.2
-
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
