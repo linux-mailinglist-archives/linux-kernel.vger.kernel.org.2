@@ -2,106 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9F3414AD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E882B414ADD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233487AbhIVNmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:42:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55726 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233430AbhIVNl7 (ORCPT
+        id S233136AbhIVNmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233430AbhIVNmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:41:59 -0400
-Date:   Wed, 22 Sep 2021 13:40:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632318028;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PQnfWAdFxeCqB/CyI+ozuSwegZiIw355/m0e/cKjrO8=;
-        b=LmlNQfXLYrb4XRkMgRa25QccIzEEMovzLdSEShuqHvxvfAp/RletiRRfIM8X1OCAKUUCVk
-        5j/PBMevCFJHHLMATASOkS6PltiD/6PwZzXS7H/bxpmet5ekyf1qIwRcYwJ+jqFjcY6b70
-        dCkXeFjTDjXjtPWBhmOvobo2p2JvvCjy45d7uYC8sNGx/OqqG72BhMQuLkbWYxr0YHnSUn
-        eaaQYpcycXHz6ieNtIui4nOSmWVr/r+Mt6JZ9Dd++q3ZhaURa7GnMFjNxtQraVzvdYMJ/o
-        /DEMB75i+mlCmd7mQ0Ig3xQmdBXbrPPwvPxrHVsl1ruKeD/5ztZpsEKpYHWpPw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632318028;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PQnfWAdFxeCqB/CyI+ozuSwegZiIw355/m0e/cKjrO8=;
-        b=5pBjjERD3G//DKuIRJ9Is52KI8wwqMgEIpuD50njDnrAVuU6um3zLOLeLUht/CacIh9huc
-        bN+lUa1zBBaoxEDg==
-From:   "irqchip-bot for Bixuan Cui" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-fixes] irqdomain: Change the type of 'size' in
- __irq_domain_add() to be consistent
-Cc:     Bixuan Cui <cuibixuan@huawei.com>, Marc Zyngier <maz@kernel.org>,
-        tglx@linutronix.de
-In-Reply-To: <20210916025203.44841-1-cuibixuan@huawei.com>
-References: <20210916025203.44841-1-cuibixuan@huawei.com>
+        Wed, 22 Sep 2021 09:42:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43489C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:40:47 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mT2UI-0004uK-1E; Wed, 22 Sep 2021 15:40:38 +0200
+Subject: Re: [PATCH] arm64: dts: rockchip: move aliases to rk356x dtsi
+To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Liang Chen <cl@rock-chips.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Simon Xue <xxm@rock-chips.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20210917110528.24454-1-michael.riesch@wolfvision.net>
+ <2397289.mVTDCA6dLn@diego>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <ce3f2ece-4c30-ad01-fd51-8a3e46297234@pengutronix.de>
+Date:   Wed, 22 Sep 2021 15:40:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-ID: <163231802782.25758.1928034479951254695.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <2397289.mVTDCA6dLn@diego>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
+Hello Heiko,
 
-Commit-ID:     20c36ce2164f1774b487d443ece99b754bc6ad43
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/20c36ce2164f1774b487d443ece99b754bc6ad43
-Author:        Bixuan Cui <cuibixuan@huawei.com>
-AuthorDate:    Thu, 16 Sep 2021 10:52:03 +08:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Wed, 22 Sep 2021 14:29:32 +01:00
+On 17.09.21 14:01, Heiko Stübner wrote:
+> Hi Michael,
+> 
+> Am Freitag, 17. September 2021, 13:05:28 CEST schrieb Michael Riesch:
+>> In order to ensure deterministic probe order over different boards,
+>> move the aliases of on-SoC components to the corresponding dtsi
+>> files.
+> 
+> please read the git history on the other Rockchip SoCs. We just moved
+> the aliases on them _to_ the board-files, as requested by
+> arm-soc maintainers ;-)
 
-irqdomain: Change the type of 'size' in __irq_domain_add() to be consistent
+[Adding Arnd to CC]
 
-The 'size' is used in struct_size(domain, revmap, size) and its input
-parameter type is 'size_t'(unsigned int).
-Changing the size to 'unsigned int' to make the type consistent.
+For old boards, changing the aliases may introduce breakage that outweighs
+the benefit of having consistent numbering. This doesn't seem to apply here:
+rk3566.dtsi is a new device tree not yet in v5.15-rc2 and rk3568 is new in
+v5.14 and has only one board partially supported, so if we were to do this
+change we should do it now. Boards will still be free to override the aliases,
+but those that don't will have consistent numbering regardless of whether
+nodes are enabled, cards are detected or probe order.
 
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210916025203.44841-1-cuibixuan@huawei.com
----
- include/linux/irqdomain.h | 2 +-
- kernel/irq/irqdomain.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 23e4ee5..9ee238a 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -251,7 +251,7 @@ static inline struct fwnode_handle *irq_domain_alloc_fwnode(phys_addr_t *pa)
- }
- 
- void irq_domain_free_fwnode(struct fwnode_handle *fwnode);
--struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
-+struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, unsigned int size,
- 				    irq_hw_number_t hwirq_max, int direct_max,
- 				    const struct irq_domain_ops *ops,
- 				    void *host_data);
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 62be161..bfa289e 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -136,7 +136,7 @@ EXPORT_SYMBOL_GPL(irq_domain_free_fwnode);
-  * Allocates and initializes an irq_domain structure.
-  * Returns pointer to IRQ domain, or NULL on failure.
-  */
--struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
-+struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, unsigned int size,
- 				    irq_hw_number_t hwirq_max, int direct_max,
- 				    const struct irq_domain_ops *ops,
- 				    void *host_data)
+Cheers,
+Ahmad
+
+> 
+> 
+> Heiko
+> 
+> 
+>>
+>> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+>> ---
+>>  arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts | 6 ------
+>>  arch/arm64/boot/dts/rockchip/rk3566.dtsi           | 4 ++++
+>>  arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts   | 7 -------
+>>  arch/arm64/boot/dts/rockchip/rk3568.dtsi           | 5 +++++
+>>  arch/arm64/boot/dts/rockchip/rk356x.dtsi           | 2 ++
+>>  5 files changed, 11 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+>> index a244f7b87e38..156bbb8aa4c4 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+>> @@ -10,12 +10,6 @@
+>>  	model = "Pine64 RK3566 Quartz64-A Board";
+>>  	compatible = "pine64,quartz64-a", "rockchip,rk3566";
+>>  
+>> -	aliases {
+>> -		ethernet0 = &gmac1;
+>> -		mmc0 = &sdmmc0;
+>> -		mmc1 = &sdhci;
+>> -	};
+>> -
+>>  	chosen: chosen {
+>>  		stdout-path = "serial2:1500000n8";
+>>  	};
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3566.dtsi b/arch/arm64/boot/dts/rockchip/rk3566.dtsi
+>> index 3839eef5e4f7..c1b3841caa77 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3566.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3566.dtsi
+>> @@ -4,6 +4,10 @@
+>>  
+>>  / {
+>>  	compatible = "rockchip,rk3566";
+>> +
+>> +	aliases {
+>> +		ethernet0 = &gmac1;
+>> +	};
+>>  };
+>>  
+>>  &power {
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+>> index 184e2aa2416a..218f85af730c 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+>> @@ -13,13 +13,6 @@
+>>  	model = "Rockchip RK3568 EVB1 DDR4 V10 Board";
+>>  	compatible = "rockchip,rk3568-evb1-v10", "rockchip,rk3568";
+>>  
+>> -	aliases {
+>> -		ethernet0 = &gmac0;
+>> -		ethernet1 = &gmac1;
+>> -		mmc0 = &sdmmc0;
+>> -		mmc1 = &sdhci;
+>> -	};
+>> -
+>>  	chosen: chosen {
+>>  		stdout-path = "serial2:1500000n8";
+>>  	};
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+>> index 2fd313a295f8..dd0e800cf752 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+>> @@ -8,6 +8,11 @@
+>>  / {
+>>  	compatible = "rockchip,rk3568";
+>>  
+>> +	aliases {
+>> +		ethernet0 = &gmac0;
+>> +		ethernet1 = &gmac1;
+>> +	};
+>> +
+>>  	qos_pcie3x1: qos@fe190080 {
+>>  		compatible = "rockchip,rk3568-qos", "syscon";
+>>  		reg = <0x0 0xfe190080 0x0 0x20>;
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+>> index e42fbac6147b..bb0540d3008c 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+>> @@ -29,6 +29,8 @@
+>>  		i2c3 = &i2c3;
+>>  		i2c4 = &i2c4;
+>>  		i2c5 = &i2c5;
+>> +		mmc0 = &sdmmc0;
+>> +		mmc1 = &sdhci;
+>>  		serial0 = &uart0;
+>>  		serial1 = &uart1;
+>>  		serial2 = &uart2;
+>>
+> 
+> 
+> 
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
