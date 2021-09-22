@@ -2,139 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F0E414C13
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173C0414BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236296AbhIVOdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236278AbhIVOdj (ORCPT
+        id S236027AbhIVOcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:32:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32849 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232401AbhIVOcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:33:39 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218DAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:32:09 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id e15so12620780lfr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:32:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ayCGrHt4GWDBHksaWpDlFPsTDgmCQyv1ZQQyBUlWV+I=;
-        b=vKVQE5RUe8kMs0wun4XuDGO3eTujOGs2RwESdLhyIqK2JwxlqZrlSJy3MrsXJkRafX
-         gBAYy/nccugQKoUll1gn8VoFbzjQhjrLzptB1R76SapyouDJT5ZGJIWbG+FX4hwJyS6V
-         RHRd5aepSbIC42CmHtd5u+dR4xuEL++muo/z0NTk8BMGL92wAA2PmP9KOi2aYe71/Bfr
-         QklC4Nhk0K/0QbQiJZijepS1OZ+jtAxihfchh+jQ4jf5+4U17tQ1xXPBbmD5a5nhc0Gd
-         SVGSB9p7xAW0QvKqL518rFLXTD4w7KZA2wBif/Kp2RKz31Lh+5HyNQaqaSmkfOyisrNC
-         k+Nw==
+        Wed, 22 Sep 2021 10:32:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632321062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H9MFwjIYK3NzURsIL5ZeXXjauXt11emCz529o4qozFY=;
+        b=CNk7IbYe1HcgRaylWTk1jdMcyxSAC0Tydy80194TLLDbDoWvPbfLLrnYP+w6eZCznBrUZu
+        vy0TnABm09vKag+s/9geTaFnPn0Jd5cSNmdrH6RykvzKHWe82bi8XHUyUpMLfKv7L4IySX
+        Nn9H35NY8sdJlSif3o7Nzo2ris6pgNw=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-265-MApuHH1YNo2KttL6mh7pIw-1; Wed, 22 Sep 2021 10:30:56 -0400
+X-MC-Unique: MApuHH1YNo2KttL6mh7pIw-1
+Received: by mail-qt1-f197.google.com with SMTP id b15-20020a05622a020f00b0029e28300d94so8719268qtx.16
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:30:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ayCGrHt4GWDBHksaWpDlFPsTDgmCQyv1ZQQyBUlWV+I=;
-        b=Usf1vzGIsxZkNGxQbaQRZOZaMtT/un65XTyHMQj9HutuJkhruXMTEkJ1aprwkWDm0L
-         SUi9c1wnYffr7UdPrvsjqMcwQPK6tmz1HHL3S0vZCT0Vm4Zc+U/fpvQWaL+cwpQRhR45
-         za09VK52paBIrSqp3sBPQjE8yKwvWUz9QquX1tFHapvL52CfXHnJqKqZ9qtnUD41ZIzz
-         8YfCmULxwDUfnGtopURDJA6znEbpdF4ARmv4U+2Ha8oHtA3hAZUXq//MojMlG2+Q/vI8
-         iJkZK8qqt2BU/U/Tpwjhe6rD8I6Hq1HklxaD5RWp3gwSSKvdhg/Vyyggu9yTW8dApKpd
-         CcnA==
-X-Gm-Message-State: AOAM530BPn7zDmB79v0kKi6vWgP92+fQ6Dva53VWCDwINBm/YVPpe+bC
-        RoIzVzCU35/oZNU2bzm08G/5AQ==
-X-Google-Smtp-Source: ABdhPJz3SPlP/oK9QpFHL+xKtQ0nQUgNyOd556PIkN1KxMSQUqIwOiDbPwtupEbWOJByEgde/ChetQ==
-X-Received: by 2002:a05:651c:512:: with SMTP id o18mr35155713ljp.199.1632321016184;
-        Wed, 22 Sep 2021 07:30:16 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y9sm205960lfl.240.2021.09.22.07.30.15
+        bh=H9MFwjIYK3NzURsIL5ZeXXjauXt11emCz529o4qozFY=;
+        b=5+iq63JlhDzhh2v3z/poASjSnAfGRvv7QuMXoundVC7jyM6dBTY61s5yImkltsDpDA
+         qYobFlVJmNRMCWYV5ORkV+2EyzeNEr4pF/E3Z98AH1rQYGKccQhIqkLD/w2Ec8yM4/6W
+         i4rYYwSrgL02ocs2YwD6vZAU+kpKS+drNENCV8TcgTgOlgYw0z3Uz+SGnWtxPh3smGqH
+         lySHvN2396ComQayqlii49xbgdPwbK3vPKgfK3zCzW2SpNcDCejKs5UqlDjbxQEUdtXA
+         mcQwOYDDNE0w6/qujm6p7wHFyAynxsFA7Cd1chRhG1nRi3dhPyVmAT6OG4SEXvVBf+Qv
+         I4Jg==
+X-Gm-Message-State: AOAM531A4ys8s/0Sb3D5gaqlVOoF9lInhd/Ak6lW3xwqsLShoA1fn5w/
+        wZsh05Xq9GC1Cbt8S23BasJDk/i+KAROPdP8WPJLrVER8ss0imU2hJctJQscCHHLb4uUxopCwGz
+        tM8vYSMBuxUWaJB+UWruHDFvI
+X-Received: by 2002:ac8:1c6:: with SMTP id b6mr32958205qtg.221.1632321056079;
+        Wed, 22 Sep 2021 07:30:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyQAVBr6hBwwFSYKO7U1/khHUr5y9tSTMCIoPdoZ894eUZ+OrVYZ3xfOPFjOhJbFSSfttPIFg==
+X-Received: by 2002:ac8:1c6:: with SMTP id b6mr32958174qtg.221.1632321055765;
+        Wed, 22 Sep 2021 07:30:55 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id f83sm1917615qke.79.2021.09.22.07.30.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 07:30:15 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id E147C10304D; Wed, 22 Sep 2021 17:30:15 +0300 (+03)
-Date:   Wed, 22 Sep 2021 17:30:15 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Borislav Petkov <bp@alien8.de>, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, iommu@lists.linux-foundation.org,
-        kvm@vger.kernel.org, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 5/8] x86/sme: Replace occurrences of sme_active() with
- cc_platform_has()
-Message-ID: <20210922143015.vvxvh6ec73lffvkf@box.shutemov.name>
-References: <367624d43d35d61d5c97a8b289d9ddae223636e9.1631141919.git.thomas.lendacky@amd.com>
- <20210920192341.maue7db4lcbdn46x@box.shutemov.name>
- <77df37e1-0496-aed5-fd1d-302180f1edeb@amd.com>
- <YUoao0LlqQ6+uBrq@zn.tnic>
- <20210921212059.wwlytlmxoft4cdth@box.shutemov.name>
- <YUpONYwM4dQXAOJr@zn.tnic>
- <20210921213401.i2pzaotgjvn4efgg@box.shutemov.name>
- <00f52bf8-cbc6-3721-f40e-2f51744751b0@amd.com>
- <20210921215830.vqxd75r4eyau6cxy@box.shutemov.name>
- <01891f59-7ec3-cf62-a8fc-79f79ca76587@amd.com>
+        Wed, 22 Sep 2021 07:30:55 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 10:30:53 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] userfaultfd: fix a race between writeprotect and
+ exit_mmap()
+Message-ID: <YUs+HZOf6mnI6mm2@t490s>
+References: <20210921200247.25749-1-namit@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <01891f59-7ec3-cf62-a8fc-79f79ca76587@amd.com>
+In-Reply-To: <20210921200247.25749-1-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 08:40:43AM -0500, Tom Lendacky wrote:
-> On 9/21/21 4:58 PM, Kirill A. Shutemov wrote:
-> > On Tue, Sep 21, 2021 at 04:43:59PM -0500, Tom Lendacky wrote:
-> > > On 9/21/21 4:34 PM, Kirill A. Shutemov wrote:
-> > > > On Tue, Sep 21, 2021 at 11:27:17PM +0200, Borislav Petkov wrote:
-> > > > > On Wed, Sep 22, 2021 at 12:20:59AM +0300, Kirill A. Shutemov wrote:
-> > > > > > I still believe calling cc_platform_has() from __startup_64() is totally
-> > > > > > broken as it lacks proper wrapping while accessing global variables.
-> > > > > 
-> > > > > Well, one of the issues on the AMD side was using boot_cpu_data too
-> > > > > early and the Intel side uses it too. Can you replace those checks with
-> > > > > is_tdx_guest() or whatever was the helper's name which would check
-> > > > > whether the the kernel is running as a TDX guest, and see if that helps?
-> > > > 
-> > > > There's no need in Intel check this early. Only AMD need it. Maybe just
-> > > > opencode them?
-> > > 
-> > > Any way you can put a gzipped/bzipped copy of your vmlinux file somewhere I
-> > > can grab it from and take a look at it?
-> > 
-> > You can find broken vmlinux and bzImage here:
-> > 
-> > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fdrive.google.com%2Fdrive%2Ffolders%2F1n74vUQHOGebnF70Im32qLFY8iS3wvjIs%3Fusp%3Dsharing&amp;data=04%7C01%7Cthomas.lendacky%40amd.com%7C1c7adf380cbe4c1a6bb708d97d4af6ff%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637678583935705530%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=gA30x%2Bfu97tUx0p2UqI8HgjiL8bxDbK1GqgJBbUrUE4%3D&amp;reserved=0
-> > 
-> > Let me know when I can remove it.
+On Tue, Sep 21, 2021 at 01:02:47PM -0700, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
 > 
-> Looking at everything, it is all RIP relative addressing, so those
-> accesses should be fine.
+> A race is possible when a process exits, its VMAs are removed
+> by exit_mmap() and at the same time userfaultfd_writeprotect() is
+> called.
+> 
+> The race was detected by KASAN on a development kernel, but it appears
+> to be possible on vanilla kernels as well.
+> 
+> Use mmget_not_zero() to prevent the race as done in other userfaultfd
+> operations.
+> 
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: stable@vger.kernel.org
+> Fixes: 63b2d4174c4ad ("userfaultfd: wp: add the writeprotect API to userfaultfd ioctl")
+> Signed-off-by: Nadav Amit <namit@vmware.com>
 
-Not fine, but waiting to blowup with random build environment change.
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-> Your image has the intel_cc_platform_has()
-> function, does it work if you remove that call? Because I think it may be
-> the early call into that function which looks like it has instrumentation
-> that uses %gs in __sanitizer_cov_trace_pc and %gs is not setup properly
-> yet. And since boot_cpu_data.x86_vendor will likely be zero this early it
-> will match X86_VENDOR_INTEL and call into that function.
-
-Right removing call to intel_cc_platform_has() or moving it to
-cc_platform.c fixes the issue.
+Thanks!
 
 -- 
- Kirill A. Shutemov
+Peter Xu
+
