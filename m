@@ -2,251 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7F14149DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4654149DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236182AbhIVM5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236093AbhIVM46 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236035AbhIVM5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:57:01 -0400
+Received: from mail-dm3nam07on2048.outbound.protection.outlook.com ([40.107.95.48]:42593
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236001AbhIVM46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Sep 2021 08:56:58 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D99C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:55:28 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id c7so9382724qka.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 05:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Xl1LKKaIiXIR37FrSULq1gxTEDagbmid3RKiTF/dDZo=;
-        b=ucMCz1XsSXa4jVLaWDpBuCtPqr2LWu/82E7qUfIQGQLQeCEQIcLYCkmcvbIo8Vd12J
-         dXjOvKLpQWgJbZUowNSVw+g/l+EYxoiFv4BxA2HLgvKNh0cb2d/pZR7XVFuP0GvPKQWb
-         2bu4ISk5Nmcmm3pEAFHiHWXuBvrDrXoHf3Nt5t3uuMwYvTJ72kiYqe2YVOvf8mERrWLh
-         OGBnpgZ8P/K0+XcGVw0T66qA7G24cJW1MevbPf0KzDvcuo/ly5Rz7GHulb8+sz8Tzw9N
-         9hAeuF1/JBR6uokvd617IVMSUT8tGGjMAT8nRk8bEU44pAjHN70WhBc6b0gwPKAg6fVm
-         WJcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Xl1LKKaIiXIR37FrSULq1gxTEDagbmid3RKiTF/dDZo=;
-        b=NR4Xns2KpVpvJvi2UA6FPLsREJO9lJPvZXdDmsp4mDPENNlSc8fd3tM42r7otEdrJg
-         JIrbdtrn2xPy8e4IHKDCzhHY76/OI1sNwuamNnOX7/Mq8SGBkpAfPqezHPZAbwyEYWwG
-         O4rLiwXkcK1LWkdaQ2BmHxiQQkb8ZfIrBAqOyGSQAKicEw4NpyJ0R/emsfii6zsRlQ4a
-         iDAEnt1fh5SWSt5z9NHkvAyMk5F/XRfh3/tdK8iGtFZmurXoBgecXXwQOvddsZsnKpAF
-         c4xXWx41zzWgCzhppaoXMYUI9fqj3TG+u2/1HmzmRfgc0pl+6MS4NvF49RW/RvgVrLKi
-         SffQ==
-X-Gm-Message-State: AOAM531CZ/P9qJytZ08juUJZ7XWHJ6QdQgnTeIulZldA+otX9jxd3vGq
-        fKd7kDPyaZrLF6xoLhO0/gc28w==
-X-Google-Smtp-Source: ABdhPJwgt0W5YMkkw7w3IhC4ynEqGmVa7i1e+ILuzKPG99+rs1dt2aElAFlEbCssUzyHtm/Ulr/qbw==
-X-Received: by 2002:a05:620a:c53:: with SMTP id u19mr34147027qki.144.1632315327587;
-        Wed, 22 Sep 2021 05:55:27 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id h5sm1725958qke.1.2021.09.22.05.55.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 05:55:27 -0700 (PDT)
-Message-ID: <1a454107661fced1adfd8a76a20a819d75b882d4.camel@ndufresne.ca>
-Subject: Re: [PATCH v9 11/13] ARM64: dts: freescale: imx8q: add imx vpu
- codec entries
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
-Cc:     hverkuil-cisco@xs4all.nl, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, aisheng.dong@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Wed, 22 Sep 2021 08:55:25 -0400
-In-Reply-To: <620081ca2f6441de6307792dbb7797da148cf04c.1631521295.git.ming.qian@nxp.com>
-References: <cover.1631521295.git.ming.qian@nxp.com>
-         <620081ca2f6441de6307792dbb7797da148cf04c.1631521295.git.ming.qian@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
-MIME-Version: 1.0
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NgLsssc8iezayJ1pz7ce7iH8CcP1Pj5kvXvOupyq/0cH79in3080OVd0/8lX9R9WNp7gtp/I+pmhr3ILn2JpO+BGQIFgxQmWoKMAaltECfHS2KYiX4kk475AkQloTPA+ekdYqFl0vPtUNxhD9xhIXi28hAr1EeUxbc9/M0EDrCx2KHTkKq+bLeLCs/Hz00ApSEHbv2dMEGWMjd2Cw28n4vTpeSZV5n+yD9kMFEZD9Bgpp/0wt5AFlfv96liuzEq1V0/UG+NePv8LuSzCKPROwb72dqfNDmbys89mPPAlcz+TDhXjQ8O6Q8FuuSfkeSeGKKI0pWPrDIJEoLNmmJHXew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=swyX46AS4zjJUDJGgiepdvJhI/BdcF8/AmcAhZqUAho=;
+ b=nBHinf8jztj4PdIjaJXNOeFQxbarvvOpEpaQDQBMo1QyTzkYsxpya1m9LJTrM8MsfF9YtTcKLW4bDk2f6I+98seTiRvLEGTz0CvTLUVoV0l8mz6BltNtWGbm0CrJXeztz7XaPTSse6v5e0tk7nLKrg2AWb/rNV1PLZMUXJkeKHfJkTZccerQvHerYOV/dnHgSTZVoQspxPEU6Z6Jks/QX0giMKbXePyw/+9uia4hClZAUe36GsJ4VTvp5aTxN+SsZ7cA37JMyADRudMtgcF1XqLXh3ctova73c6j9X/4KAHRbtjYa9BvJJZhhepJhObzvEeIO6HdS58dgRjwYStb5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=swyX46AS4zjJUDJGgiepdvJhI/BdcF8/AmcAhZqUAho=;
+ b=ZvqInp487K6T9+N5KtFQYIUkv9/Rqq9y2WlymQf4ucciM0Zx/ow+Wq+xrD9wYz24xhpONslpFKzdLJfVfV4aOhxcIxKDwiT25v4BvTzLbWyQrK/TQtGnPSmdA+SjsMz41ZVfkb19ragIuseMiTOwHm/uxfH8r3MM6Oit1e8EynC2+u5ndpOZ7cpKuTsYFmivjahrj4tgwI0RSza4AYmo8AgnNu8bVW8Io6QlLVZhWXS127rYibUwSnxBQB56d94nfxxMnZAzrHZ3qUX/ppKAckbPp6IJEX+TrC4RbGGj5L80AYXDlGvW+NICTAdoYsEc0BXGUpftmEDFsL3ErqrpEA==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5125.namprd12.prod.outlook.com (2603:10b6:208:309::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
+ 2021 12:55:27 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
+ 12:55:26 +0000
+Date:   Wed, 22 Sep 2021 09:55:25 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 12/20] iommu/iommufd: Add IOMMU_CHECK_EXTENSION
+Message-ID: <20210922125525.GM327412@nvidia.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-13-yi.l.liu@intel.com>
+ <20210921174711.GX327412@nvidia.com>
+ <BN9PR11MB54334A552C3E606F4394EF298CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <BN9PR11MB54334A552C3E606F4394EF298CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+X-ClientProxiedBy: MN2PR03CA0027.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::32) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR03CA0027.namprd03.prod.outlook.com (2603:10b6:208:23a::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 12:55:26 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mT1mX-003xFq-Ma; Wed, 22 Sep 2021 09:55:25 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e0872a9-d248-4e8f-b42f-08d97dc83fb0
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5125:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51255E7AD6AB56D3F2FFC1ADC2A29@BL1PR12MB5125.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5HOTISk61gPj1nyOx/WRhNxi4Fwk7cjCY39RDaN9ITB6PCihnfnTWtpgUSiXK7NQZixQx0extfedAO0RRV4eo2KrstZtX7YqDUwDR7UVVKZ9xjkPQSkARVj/OVCSry5Wr4qXo4tNdGlJlkEOQL9ZSPuWTTbcRYJVYjTLgmMfG9t85GGnAPaJFrm2fjvMeu6AWE/QLSaYgWKkagNHQLLniFEnSqkhYz1lpuHLuWdewqN3BWMl07pHtQa2ZYwimzer4jRrJh545doy+iOG/nVN4yVJnw4JyyGY4oybdAYocJWyrOa6WVcI2ng9orJd+8Rz80oobVvsEVuiYY1QVSqkc7TajaGNdqRDvvPDn2Hbs6fcuDQ/MwY51R0yY61nXzJ/f9Jw1grMG6jc9CqIGRQLN95LzLNS12UkxN62fJTA01aZ135OjbrI47Og7LXkBDYoETeGnCX99RfeEFYy124lZ5zAbqGkrxH4zMMbMTmhJVxNmp5XrG7gpUd+fgoo8rSyxhQE/4G9pmuNx48YOOIeggfe6h4c634bsuMgWFocNcxUeWq3LUmzKhgomh+qSGAmrIKczAXQ/p3DXG40rJnAI3X/NatkY8acfp+enof8ji6ipbyqCCYrADfzTs+6szDEC0Cmg2g5/8XUtEPCRXj537PGnyQyJoPtprOxdJSoug4AHpjHBYy3nnTuimDDKzss
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(33656002)(107886003)(8676002)(8936002)(36756003)(186003)(5660300002)(1076003)(38100700002)(4326008)(508600001)(66946007)(66476007)(66556008)(2906002)(9746002)(426003)(7416002)(9786002)(26005)(316002)(86362001)(6916009)(54906003)(2616005)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K2NLbDh5ckpGMWZhbW1TSmFQUnR3cUMyWmt1Q1dXU2pJRXh1bW5haDBQK0NH?=
+ =?utf-8?B?NmpuWWN5aE10d3R0bk5FL2hURTg3cnRnN0dva3EzME4yeUdyWDRNV3lOQUlo?=
+ =?utf-8?B?amM5NjFtVXREZ1RyVlhTZHZlNHF6UjJGeHJ5NVVQMlBoSnNZMXIxS1ZwU215?=
+ =?utf-8?B?NVdlaUZJRnFmUmFHL09SejJpdC9JNkt5Q3owazl6NGg2RExMOVgxVzV0cjBS?=
+ =?utf-8?B?U3A2cHRDRW55MUxqTDdBZW00emFuQ09XZEdmdmx5NHVtWi8yR21EV2M4eGht?=
+ =?utf-8?B?RlRnOUgrbkpwMHlPajNzdHpBRkw5YzI5VlA0cjRKZ0lUQ1FpUmVUREx0SzNz?=
+ =?utf-8?B?WmpEeE1wMmxwcjJqcmltK2FDU2c2KzUxY0V5emxxWTBJL3FqcWhLMTFCVVFW?=
+ =?utf-8?B?WjUzTVRSdlZ3MU1FbGcrZTNtY0czaUVxa3dUUmxSK3REUHIvNWNCeXBzSmhW?=
+ =?utf-8?B?ZCsrT0hkL2RGRGZPUlNwMHFYNWZkQUhRc0VLOTdGcDZvTXpKRWozbjFJYzJ5?=
+ =?utf-8?B?dmhoT0tEYWVhdjhQRjd5QXNUSlBpdzgycDdZWTMrTk1ROG9vRjQrYlJLT01H?=
+ =?utf-8?B?L1NHMjBMZmxqbXQycXBYL3QyRWFuTW90ZWZma0d2ZE54anljRUQrNmRXUmlN?=
+ =?utf-8?B?WUloSWtQUHNHNUt5d05la2NJZDExQmJiU0lkcWZoc1VHc3hhdUdUUEM4aWtx?=
+ =?utf-8?B?amhpRjFjTFBxVWF2UlJ0ZHdOUTdJbmp4bTIzbzFVanRBWTdMUWhrRDAyd3p0?=
+ =?utf-8?B?YStKVjhWZlUwbjZkWDZJUEgyMWhtaU5GbEJ5YVpWV3Q3NEV0d0F4MmhvbXJ0?=
+ =?utf-8?B?Zm9HSGdiQmhZeTR2TEpjajBjbXQ0Ymt4eERwcFcwRVYyN0hBcE5oaXIvNnd2?=
+ =?utf-8?B?R1c4S3hOb0h3VVJkaHhvOFhYM2s4VlJjcjA3NWhXM3VuK1FORFdYa0liM3Rx?=
+ =?utf-8?B?bFNHcDIrZnFISldFMUFHMjhRVXFtaU9ubnZTNjdTQ1A4ZEQ0OFZTUVVxU1FI?=
+ =?utf-8?B?bms5dnlTdTc4c29CODZpUnlHckdhbzNCcmpTNUxpSkt4Tm9Jd0RTdzM5eWJr?=
+ =?utf-8?B?TXk1aTU2TFNjNldxOVlVSzl6NE5rNldJeHg0NisrVUc0aHJyTVYxa25WcU9K?=
+ =?utf-8?B?a3BCYk1ubk10b3Y4MHlFbUk5Uy94V0MrcmhCUUFLL3Rqak5iWUlxc1VNMW42?=
+ =?utf-8?B?MXNLVVJuT1lCT3NHQ0NWWEw2d1JoZEQvTkltZ2VsK3Q5YXZDcWxnTTUxUlZL?=
+ =?utf-8?B?bnd4RE1DdVNqUldYclRPQnM2MW5YMXZjWHRtTDMzVVhpRkt4MUtKRlNldFAv?=
+ =?utf-8?B?dHVieFVva2NEQnNSTDZRVVRRcFFXaFQ1RUxiQVBMUFEzU3ZINWd4T2o2aHFw?=
+ =?utf-8?B?ZFpzQ05wTkdGODNHYjVpZmFqdUw4TmpGVHBndDJnaGNnZ2FaaGI0MytDYkxu?=
+ =?utf-8?B?eWxvMThieCtGNStuclBDT1VIUDQxZ21nRlZGTmJxV1Bpa21tR05EUWNXc1BS?=
+ =?utf-8?B?Z3d3ckxjSUJzNlNFSmZnVnBMVWlBdlMxS0VTeTM5SUVONk1mM0dHQ3BZeDRV?=
+ =?utf-8?B?czBSZGxrZ0UzV2lneXpUck8wL1NseGJsU0x5TW9KVThReDJzMkZyR3ZSTWtI?=
+ =?utf-8?B?MzFZbFFkbzJGQ3F1eWt1QkpOeUkxRm5Ddlh5UjFWV2REM20ycTJIRS9LSkt5?=
+ =?utf-8?B?N2JTOFV3T3ROdG55azYrUTlmVUFKOFY1M0ZEUVZqLzdLNVNXN2ZrbWRtQWpn?=
+ =?utf-8?Q?+IGTg6MaXM7Txl1lMo5xfApZiBVhNsxYTHRhNz6?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e0872a9-d248-4e8f-b42f-08d97dc83fb0
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 12:55:26.8288
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z2IgttDwjzRz+tQfy+5H5zhJEDQLoBclG5Rm7KGx9PmpaWxnZvHANWToJckTR83Q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ming,
-
-Le lundi 13 septembre 2021 à 17:11 +0800, Ming Qian a écrit :
-> Add the Video Processing Unit node for IMX8Q SoC.
-
-Just to let you know that this patch no longer apply on 5.15-rc2. Please let us
-know which was your base.
-
+On Wed, Sep 22, 2021 at 03:41:50AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Wednesday, September 22, 2021 1:47 AM
+> > 
+> > On Sun, Sep 19, 2021 at 02:38:40PM +0800, Liu Yi L wrote:
+> > > As aforementioned, userspace should check extension for what formats
+> > > can be specified when allocating an IOASID. This patch adds such
+> > > interface for userspace. In this RFC, iommufd reports EXT_MAP_TYPE1V2
+> > > support and no no-snoop support yet.
+> > >
+> > > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> > >  drivers/iommu/iommufd/iommufd.c |  7 +++++++
+> > >  include/uapi/linux/iommu.h      | 27 +++++++++++++++++++++++++++
+> > >  2 files changed, 34 insertions(+)
+> > >
+> > > diff --git a/drivers/iommu/iommufd/iommufd.c
+> > b/drivers/iommu/iommufd/iommufd.c
+> > > index 4839f128b24a..e45d76359e34 100644
+> > > +++ b/drivers/iommu/iommufd/iommufd.c
+> > > @@ -306,6 +306,13 @@ static long iommufd_fops_unl_ioctl(struct file
+> > *filep,
+> > >  		return ret;
+> > >
+> > >  	switch (cmd) {
+> > > +	case IOMMU_CHECK_EXTENSION:
+> > > +		switch (arg) {
+> > > +		case EXT_MAP_TYPE1V2:
+> > > +			return 1;
+> > > +		default:
+> > > +			return 0;
+> > > +		}
+> > >  	case IOMMU_DEVICE_GET_INFO:
+> > >  		ret = iommufd_get_device_info(ictx, arg);
+> > >  		break;
+> > > diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
+> > > index 5cbd300eb0ee..49731be71213 100644
+> > > +++ b/include/uapi/linux/iommu.h
+> > > @@ -14,6 +14,33 @@
+> > >  #define IOMMU_TYPE	(';')
+> > >  #define IOMMU_BASE	100
+> > >
+> > > +/*
+> > > + * IOMMU_CHECK_EXTENSION - _IO(IOMMU_TYPE, IOMMU_BASE + 0)
+> > > + *
+> > > + * Check whether an uAPI extension is supported.
+> > > + *
+> > > + * It's unlikely that all planned capabilities in IOMMU fd will be ready
+> > > + * in one breath. User should check which uAPI extension is supported
+> > > + * according to its intended usage.
+> > > + *
+> > > + * A rough list of possible extensions may include:
+> > > + *
+> > > + *	- EXT_MAP_TYPE1V2 for vfio type1v2 map semantics;
+> > > + *	- EXT_DMA_NO_SNOOP for no-snoop DMA support;
+> > > + *	- EXT_MAP_NEWTYPE for an enhanced map semantics;
+> > > + *	- EXT_MULTIDEV_GROUP for 1:N iommu group;
+> > > + *	- EXT_IOASID_NESTING for what the name stands;
+> > > + *	- EXT_USER_PAGE_TABLE for user managed page table;
+> > > + *	- EXT_USER_PASID_TABLE for user managed PASID table;
+> > > + *	- EXT_DIRTY_TRACKING for tracking pages dirtied by DMA;
+> > > + *	- ...
+> > > + *
+> > > + * Return: 0 if not supported, 1 if supported.
+> > > + */
+> > > +#define EXT_MAP_TYPE1V2		1
+> > > +#define EXT_DMA_NO_SNOOP	2
+> > > +#define IOMMU_CHECK_EXTENSION	_IO(IOMMU_TYPE,
+> > IOMMU_BASE + 0)
+> > 
+> > I generally advocate for a 'try and fail' approach to discovering
+> > compatibility.
+> > 
+> > If that doesn't work for the userspace then a query to return a
+> > generic capability flag is the next best idea. Each flag should
+> > clearly define what 'try and fail' it is talking about
 > 
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
-> Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
-> ---
->  .../arm64/boot/dts/freescale/imx8-ss-vpu.dtsi | 72 +++++++++++++++++++
->  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts | 17 +++++
->  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    | 24 +++++++
->  3 files changed, 113 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
+> We don't have strong preference here. Just follow what vfio does
+> today. So Alex's opinion is appreciated here. 😊
+
+This is a uAPI design, it should follow the current mainstream
+thinking on how to build these things. There is a lot of old stuff in
+vfio that doesn't match the modern thinking. IMHO.
+
+> > TYPE1V2 seems like nonsense
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi b/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
-> new file mode 100644
-> index 000000000000..f2dde6d14ca3
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
-> @@ -0,0 +1,72 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright 2021 NXP
-> + *	Dong Aisheng <aisheng.dong@nxp.com>
-> + */
-> +
-> +vpu: vpu@2c000000 {
-> +	#address-cells = <1>;
-> +	#size-cells = <1>;
-> +	ranges = <0x2c000000 0x0 0x2c000000 0x2000000>;
-> +	reg = <0 0x2c000000 0 0x1000000>;
-> +	power-domains = <&pd IMX_SC_R_VPU>;
-> +	status = "disabled";
-> +
-> +	mu_m0: mailbox@2d000000 {
-> +		compatible = "fsl,imx6sx-mu";
-> +		reg = <0x2d000000 0x20000>;
-> +		interrupts = <GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>;
-> +		#mbox-cells = <2>;
-> +		power-domains = <&pd IMX_SC_R_VPU_MU_0>;
-> +		status = "okay";
-> +	};
-> +
-> +	mu1_m0: mailbox@2d020000 {
-> +		compatible = "fsl,imx6sx-mu";
-> +		reg = <0x2d020000 0x20000>;
-> +		interrupts = <GIC_SPI 470 IRQ_TYPE_LEVEL_HIGH>;
-> +		#mbox-cells = <2>;
-> +		power-domains = <&pd IMX_SC_R_VPU_MU_1>;
-> +		status = "okay";
-> +	};
-> +
-> +	mu2_m0: mailbox@2d040000 {
-> +		compatible = "fsl,imx6sx-mu";
-> +		reg = <0x2d040000 0x20000>;
-> +		interrupts = <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>;
-> +		#mbox-cells = <2>;
-> +		power-domains = <&pd IMX_SC_R_VPU_MU_2>;
-> +		status = "disabled";
-> +	};
-> +
-> +	vpu_core0: vpu_core@2d080000 {
-> +		reg = <0x2d080000 0x10000>;
-> +		compatible = "nxp,imx8q-vpu-decoder";
-> +		power-domains = <&pd IMX_SC_R_VPU_DEC_0>;
-> +		mbox-names = "tx0", "tx1", "rx";
-> +		mboxes = <&mu_m0 0 0>,
-> +			<&mu_m0 0 1>,
-> +			<&mu_m0 1 0>;
-> +		status = "disabled";
-> +	};
-> +	vpu_core1: vpu_core@2d090000 {
-> +		reg = <0x2d090000 0x10000>;
-> +		compatible = "nxp,imx8q-vpu-encoder";
-> +		power-domains = <&pd IMX_SC_R_VPU_ENC_0>;
-> +		mbox-names = "tx0", "tx1", "rx";
-> +		mboxes = <&mu1_m0 0 0>,
-> +			<&mu1_m0 0 1>,
-> +			<&mu1_m0 1 0>;
-> +		status = "disabled";
-> +	};
-> +	vpu_core2: vpu_core@2d0a0000 {
-> +		reg = <0x2d0a0000 0x10000>;
-> +		compatible = "nxp,imx8q-vpu-encoder";
-> +		power-domains = <&pd IMX_SC_R_VPU_ENC_1>;
-> +		mbox-names = "tx0", "tx1", "rx";
-> +		mboxes = <&mu2_m0 0 0>,
-> +			<&mu2_m0 0 1>,
-> +			<&mu2_m0 1 0>;
-> +		status = "disabled";
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> index 863232a47004..05495b60beb8 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> @@ -196,6 +196,23 @@ &usdhc2 {
->  	status = "okay";
->  };
->  
-> +&vpu {
-> +	compatible = "nxp,imx8qxp-vpu";
-> +	status = "okay";
-> +};
-> +
-> +&vpu_core0 {
-> +	reg = <0x2d040000 0x10000>;
-> +	memory-region = <&decoder_boot>, <&decoder_rpc>;
-> +	status = "okay";
-> +};
-> +
-> +&vpu_core1 {
-> +	reg = <0x2d050000 0x10000>;
-> +	memory-region = <&encoder_boot>, <&encoder_rpc>;
-> +	status = "okay";
-> +};
-> +
->  &iomuxc {
->  	pinctrl_fec1: fec1grp {
->  		fsl,pins = <
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> index 1e6b4995091e..6b421cfa5534 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> @@ -46,6 +46,9 @@ aliases {
->  		serial1 = &lpuart1;
->  		serial2 = &lpuart2;
->  		serial3 = &lpuart3;
-> +		vpu_core0 = &vpu_core0;
-> +		vpu_core1 = &vpu_core1;
-> +		vpu_core2 = &vpu_core2;
->  	};
->  
->  	cpus {
-> @@ -134,10 +137,30 @@ reserved-memory {
->  		#size-cells = <2>;
->  		ranges;
->  
-> +		decoder_boot: decoder-boot@84000000 {
-> +			reg = <0 0x84000000 0 0x2000000>;
-> +			no-map;
-> +		};
-> +
-> +		encoder_boot: encoder-boot@86000000 {
-> +			reg = <0 0x86000000 0 0x200000>;
-> +			no-map;
-> +		};
-> +
-> +		decoder_rpc: decoder-rpc@0x92000000 {
-> +			reg = <0 0x92000000 0 0x100000>;
-> +			no-map;
-> +		};
-> +
->  		dsp_reserved: dsp@92400000 {
->  			reg = <0 0x92400000 0 0x2000000>;
->  			no-map;
->  		};
-> +
-> +		encoder_rpc: encoder-rpc@0x94400000 {
-> +			reg = <0 0x94400000 0 0x700000>;
-> +			no-map;
-> +		};
->  	};
->  
->  	pmu {
-> @@ -258,6 +281,7 @@ map0 {
->  	};
->  
->  	/* sorted in register address */
-> +	#include "imx8-ss-vpu.dtsi"
->  	#include "imx8-ss-adma.dtsi"
->  	#include "imx8-ss-conn.dtsi"
->  	#include "imx8-ss-ddr.dtsi"
+> just in case other mapping protocols are introduced in the future
 
+Well, we should never, ever do that. Allowing PPC and evrything else
+to split in VFIO has created a compelte disaster in userspace. HW
+specific extensions should be modeled as extensions not a wholesale
+replacement of everything.
 
+I'd say this is part of the modern thinking on uAPI design.
+
+What I want to strive for is the basic API is usable with all HW - and
+is what something like DPDK can exclusively use.
+
+An extended API with HW specific facets exists for qemu to use to
+build a HW backed accelereated and featureful vIOMMU emulation.
+
+The needs of qmeu should not trump the requirement for a universal
+basic API.
+
+Eg if we can't figure out a basic API version of the PPC range issue
+then that should be punted to a PPC specific API.
+
+Jason
