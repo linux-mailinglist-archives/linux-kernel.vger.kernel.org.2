@@ -2,90 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88ED4414170
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E236414173
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhIVGCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:02:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231908AbhIVGCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:02:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11574611B0;
-        Wed, 22 Sep 2021 06:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632290468;
-        bh=k+FxRtvekpLiB0ACIVoYSK78GE/ER5x9/8OVydWJTvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yn42Ei1QQrtRo57JULwwLMWRtb+gCmRYfL1ha+NZ44nTL8sf5fk5H+NkCJCmmRj6o
-         ijlhhgOnoILIkTXQQwnWqIhrOUkuXFhHYw+5GRiiLhhTdp6/6yYc55Si0TmcXJ5i3c
-         kor86ZgOONpoNi1ifKVV8r1ZlaXy6wCSP+PVtFDQ=
-Date:   Wed, 22 Sep 2021 08:01:05 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] usb: usb-skeleton: Update min() to min_t()
-Message-ID: <YUrGoQsreezij1C9@kroah.com>
-References: <20210921205212.GA8669@matrix-ESPRIMO-P710>
+        id S232557AbhIVGDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231908AbhIVGDH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 02:03:07 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EADC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 23:01:37 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id bx4so5551640edb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 23:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3syTq4/tzib2rK7RtXh5Ih809sKUxv/VFh4jqrn6bPw=;
+        b=t133q1qIttr1oqi0+lGQF1VbjoN90XY0e/6wWGK4YnDfSjYHxUIaMq1OOJpAFhxmhk
+         HZ4l3RCaEqoOscfzclIGtf9Xh+6yDU0HZuAgMYfFVvzV9NVe5MMdPefwJ28r92b+vMbx
+         q+cTG6UvQBUTxNEVNbqQiF1/NWvkrcywFi+4lIuWFt2LaLLpGqurx00OMOx5YI2rVhHE
+         7romj6OD5DXLKQjHsqCKDd8VOdFZQAd6qM3zTsVHjYK641elxOOi80dRdZEMjQ60SFYN
+         g+wF2stIplUemRbEXkIH4ZRa/V23kj6SJRd3yvWW8w7m9kCWdGdI0VdzVnqqZnFYf++a
+         vbKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3syTq4/tzib2rK7RtXh5Ih809sKUxv/VFh4jqrn6bPw=;
+        b=O+NJw1Go1lH0gWbW4RtRns1qH4VaojIMQjA6gyxLwbdrcQt5SrJRhneJ5juT/33juY
+         8ReXHeX4HlhXy+BP+urqioh45u9Rpk6K/C/15po7PJaVtrO8/P0iPqUhHyC4Tqg8S+Ee
+         l123oklPG/cqK+cabF7jzt/CwqF3Xg8NZvzSyIu+wA4rHJIib/hikF9WtTWLEtlWNkX+
+         TDqsNOBlHV5QRvwWuIziTKZn/fF4aV08QKeZD9lYIa+B5JUvCChWNnGRcE7ZYfJFtV8H
+         gMthV4dWBe9wNjf0FW17Vl8EF8QeC8yCQ1ZYuRgx1TJjz1LRyuGGUY3nV17Yhm4jjX+M
+         nKlw==
+X-Gm-Message-State: AOAM533PMDOPmO9IG/laSTWqwudl9rScMmaL+fxv2zZpI/InS3vJm5cS
+        zzSTKcIk8p7N/VmJOj56Fk/IP8IToVGlyyycPlyvVBEHJwIiOA==
+X-Google-Smtp-Source: ABdhPJwvyS2lDI0AYf1Luaq2MnWWnNA0X0qAWgXLfF81S77yco4h7JewtZ2s1EjHG533Wbei6c6A87aAkqwndJWCnm4=
+X-Received: by 2002:aa7:db4d:: with SMTP id n13mr40623760edt.398.1632290496032;
+ Tue, 21 Sep 2021 23:01:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210921205212.GA8669@matrix-ESPRIMO-P710>
+References: <20210921124257.592357088@linuxfoundation.org>
+In-Reply-To: <20210921124257.592357088@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 22 Sep 2021 11:31:24 +0530
+Message-ID: <CA+G9fYsroqC5g2GaoUw+DKuLZZs6vyKS5cAzsv-qW_ULX_OT4Q@mail.gmail.com>
+Subject: Re: [PATCH 4.9 000/174] 4.9.283-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 10:52:12PM +0200, Philipp Hortmann wrote:
-> This patch fixes the checkpatch.pl warning:
-> WARNING: min() should probably be min_t(size_t, count, MAX_TRANSFER)
-> +	size_t writesize = min(count, (size_t)MAX_TRANSFER);
-> 
-> Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-> ---
->  drivers/usb/usb-skeleton.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
-> index 2dc58766273a..d87deee3e26e 100644
-> --- a/drivers/usb/usb-skeleton.c
-> +++ b/drivers/usb/usb-skeleton.c
-> @@ -363,7 +363,7 @@ static ssize_t skel_write(struct file *file, const char *user_buffer,
->  	int retval = 0;
->  	struct urb *urb = NULL;
->  	char *buf = NULL;
-> -	size_t writesize = min(count, (size_t)MAX_TRANSFER);
-> +	size_t writesize = min_t(size_t, count, MAX_TRANSFER);
->  
->  	dev = file->private_data;
->  
-> -- 
-> 2.25.1
-> 
+On Tue, 21 Sept 2021 at 18:19, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.283 release.
+> There are 174 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 23 Sep 2021 12:42:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.283-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi,
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+## Build
+* kernel: 4.9.283-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.9.y
+* git commit: 92ec5706360024e85585ba08e42b7350d6cd6c48
+* git describe: v4.9.282-175-g92ec57063600
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+82-175-g92ec57063600
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+## No regressions (compared to v4.9.282-166-gfc76dad660a3)
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+## No fixes (compared to v4.9.282-166-gfc76dad660a3)
 
-thanks,
+## Test result summary
+total: 64756, pass: 50432, fail: 535, skip: 11682, xfail: 2107
 
-greg k-h's patch email bot
+## Build Summary
+* arm: 129 total, 129 passed, 0 failed
+* arm64: 34 total, 34 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 18 total, 18 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 18 total, 18 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
