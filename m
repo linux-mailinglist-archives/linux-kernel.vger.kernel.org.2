@@ -2,107 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD9D4152FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82624152F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238192AbhIVVlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238136AbhIVVln (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:41:43 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281D9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:40:13 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id ee50so15398169edb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7yUAunh6/B1SSbZrz9wmLc4dr4D+i+n+StWnT5gfwxI=;
-        b=8AMS1OWfH+m8OlWLakX39s9CFCl10Wb1+IQBBz1G9wBBbUxcQTDmbczC0bJ7SlHarh
-         +n8UXbfSyXblRygBYIp/CcSdPPol63rkMONHJCSNkEpnSvN0Cu6oJ5E/pfbKoybDOJkB
-         XzR4PfS/1H0KsVW7mn8xQ+aYfbVJW4RvXIA3AyE4ghg8Bl2CFkyVpTv3K+Aqrh/b4qvL
-         Au15lRofpVsQAWeASOv8XxyuW4fTOfqw/PvXmR2n8YoWsNOnfk0i6Sg4Wuw0UDlT1WEI
-         j1LABZbQhoy04as9QqXfnX6c0v6o6qwGlgAtQGSu3tvPtZE7P4qWv+VHh7Ei873MmqTq
-         317A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7yUAunh6/B1SSbZrz9wmLc4dr4D+i+n+StWnT5gfwxI=;
-        b=rhefpYUAOOovuv8blvpg4k6Xn+IMhyzV96q/1+ROAY1KmCEJiX4PE8EUps/1KwR0hT
-         lZyMmMtI/hi76HErNSgNM7KZW6chXG8kaRBJEFs6Mug7QsJD3pMKQFpPcEZF1FB+PKTy
-         rR+j8gL6cZkzOif1YzCXyxlsuan3THGHbTQqbISZ/Vzggl2kL6WRFDa6Wqj5gkAgS/BK
-         87uepiqe2VnkNizbTLZczr1PYEQzqGDDqq7lvB94Oa7WbZV959H9B7ca0aWv0zommrpZ
-         2hsyV4ZNpXct/R5qgTBNqjPAGb+8EVdKUvMljof1TvF1ahvpLnflXH7uHXFSttx/qPVm
-         rtmg==
-X-Gm-Message-State: AOAM531sZTo8pYITTtluMeyfz4yLdRkH5tISfYFIbpn6byVaYP/yAy61
-        4wTpCkZi2987Pbj36v4FJUcLrApKfVvNd5Gc+wQN
-X-Google-Smtp-Source: ABdhPJw9Jd3adL5gvFPfg8v5tsZxNf8e5DGyBzypEea1X9T7NzGxvH9h8cT+f4Q44+P9M1hCL5QNgsXcobRxjmKV284=
-X-Received: by 2002:a50:cf48:: with SMTP id d8mr1708015edk.293.1632346811617;
- Wed, 22 Sep 2021 14:40:11 -0700 (PDT)
+        id S238187AbhIVVli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:41:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238014AbhIVVlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 17:41:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C673E611C6;
+        Wed, 22 Sep 2021 21:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632346806;
+        bh=kKspU6df3JFZlrUoGZBO3dnhk7nV8hFXBEK+CihxI/0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LCE4XjtYA/sYn9J6akNRl/fK+6PifpXKTX0TiAvNIVQnSF2cKKEUGgyKbL6ScDEBu
+         1JweOXMssljPNMeOyRw78vOLeGZrK/OIsKtA2ZEPq1yCcEsqqDD8AoX0nXEDuCWN63
+         d6DmFWOaQUuihInderH4/D2lSq7fc3Pvwnl7AWNtr6kS1NoWcSpLv/3O/2ekhgwWyW
+         lYm4UsNux6v/tC4kCM+cgVhmmkXjCX3daUHMDqb+bljPiN6Juw6z8c6pBwggBZh2g9
+         DzBoy5x+oJ4ituDZzpw4MdUzpAaXULy0IszxL22k+eHDmmwhZiLD52S5XHbvR36yt+
+         TUZsCVccODeog==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B857D60A6B;
+        Wed, 22 Sep 2021 21:40:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
- <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
- <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com> <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com>
-In-Reply-To: <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 22 Sep 2021 17:40:00 -0400
-Message-ID: <CAHC9VhSZp1-Qi7ApoQHauaFXDgoNaFTwFEieEFFuBtdPqAtXQg@mail.gmail.com>
-Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf: exempt CAP_BPF from checks against bpf_jit_limit
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163234680674.13903.12726490005358522005.git-patchwork-notify@kernel.org>
+Date:   Wed, 22 Sep 2021 21:40:06 +0000
+References: <20210922111153.19843-1-lmb@cloudflare.com>
+In-Reply-To: <20210922111153.19843-1-lmb@cloudflare.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, kernel-team@cloudflare.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 5:10 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, Sep 22, 2021 at 1:55 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Make the regular security_locked_down() function do that, and add a
-> >
-> >     if (WARN_ON_ONCE(!in_task()))
-> >         return -EPERM;
-> >
-> > so that any bad cases get flagged and refuse to continue.
->
-> Actually, no, I take that back.
->
-> It's not the "!in_task()" case that is the problem. That's just the symptom.
->
-> The real problem is that we clearly have some lock-down rule that
-> seems to care about credentials and who it is that does the lockdown
-> query. That seems to be the real issue here. Doing lockdown checks
-> from interrupts should be fine.
+Hello:
 
-The basic idea, or problem from a LSM point of view, is that in some
-cases you have a user task which is doing the lockdown access check
-and in others you have the kernel itself; the creds parameter to
-security_locked_down() hook was intended to be used to indicate if it
-was a user task (param == current_cred()) or the kernel (param ==
-NULL).  There was a discussion about using two different hooks/funcs,
-e.g. security_locked_down() and security_locked_down_kern(), instead
-of the creds parameter, but there were more votes for the param
-variant.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-As I type this I'm trying to muster something other than indifference
-towards this patch, but the reality is I just want to be done with it.
-If you'll merge a revision of this patch that does away with the cred
-parameter and goes with the two hooks I'm not going to argue against
-it.
+On Wed, 22 Sep 2021 12:11:52 +0100 you wrote:
+> When introducing CAP_BPF, bpf_jit_charge_modmem was not changed to
+> treat programs with CAP_BPF as privileged for the purpose of JIT
+> memory allocation. This means that a program without CAP_BPF can
+> block a program with CAP_BPF from loading a program.
+> 
+> Fix this by checking bpf_capable in bpf_jit_charge_modmem.
+> 
+> [...]
 
-During the review of the latest draft of this patch I half-jokingly
-said it was cursed, perhaps it's time to honestly consider it cursed.
+Here is the summary with links:
+  - [bpf] bpf: exempt CAP_BPF from checks against bpf_jit_limit
+    https://git.kernel.org/bpf/bpf/c/7c3a00911b3d
 
--- 
-paul moore
-www.paul-moore.com
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
