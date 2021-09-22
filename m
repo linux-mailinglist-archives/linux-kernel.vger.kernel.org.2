@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C294146EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4084146E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235063AbhIVKrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
+        id S235096AbhIVKpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234871AbhIVKqu (ORCPT
+        with ESMTP id S234825AbhIVKpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:46:50 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8999BC061756;
-        Wed, 22 Sep 2021 03:45:20 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v24so8272996eda.3;
-        Wed, 22 Sep 2021 03:45:20 -0700 (PDT)
+        Wed, 22 Sep 2021 06:45:23 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0EEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:43:53 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id o124so2458195vsc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:43:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Iv+aqhr6TwoBfc/MRkxFU8sk3GDAunF1Y+pLFpHKuDc=;
-        b=qjmt2THoagD6EXh+TaL3hH0ci9nb+1zCV6pAebFVqofsZqVeukArMheY6DMr5Phyx6
-         kfQGGYRCMg1FWWpdz4mrH3ZF1bEdQgQ50HRGvdvEDuSi3UbKAI83H+qchCG5J5+qcDv9
-         Sdfc21N6Xgcxm4VqoYejwga2DzQ7l+/Dm8wXhVFm5qBiG8Mto2aDH2sUT0QvBQ1xV8OO
-         w8mVEAfmvXkOD70pn3CqbNrv7FhQkrF3hsY/6gY99pxdAOiKl26UHUcM4cZn2nRogaiO
-         m43NTADA0Jst86ecEQeVPa9V8SziZCzXZb+QvKuDxmzeJh5G3+mSk4TlPV610nPCrYrd
-         dGIw==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qo78C9hpTaUZzshSE3JqG8ok1Cx6hErSNU/DUKP7eFk=;
+        b=oAitpk7+hwMaSzXiFoweF6+l6LfDs62vtoxg8zfF1Brb15BUTYk0A3vw7YvX0PqHzx
+         L4Y/1RMN6CUwiDmNgPLuzuz0kCe9a8KNFrR9e6uq0s/rAbH0FASu9fzwqqrYY6SNOxN2
+         o7W9NfSNODqb+axmlIUsYV9UlFO6bLMt+5v4s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Iv+aqhr6TwoBfc/MRkxFU8sk3GDAunF1Y+pLFpHKuDc=;
-        b=u8+Zb7LtWX2zNAOMDp0Lvsq0ymclbzPVY7/LEoe4hspp97TTowlgzSOEoyfSuy7XBp
-         dn88jVbXkGefrKRs/96WMfSxHwk6GUHOc+gquG8YtMkKyJM3RKtQYjaWObgXx58HjFa+
-         /F3lH3UqJuEYBs1HoLjH0RvSXR0OnLXB2zZdichm8JFFtUwI0VsSeh2/Ekxt3Ck3dl4d
-         vIRmcytJgRgiCXtwf18tdl/2cYwMrPdJJsB/YTlM5jU8DpMA1lD4h+5qSMd4SJAEOJ69
-         5Vum79JNa1ZeLQQIXQylZXto8FOlQqsOitmifd5IUVxT+MuxLIrOqCHdvCyFuCINflUe
-         U0hQ==
-X-Gm-Message-State: AOAM530D0/sNVo2R5DCDmkPT6x3n+JL5sMHYECgBPxMY63dfrHazP6oB
-        WOXshA1uuoAAaKfuEOrbkw==
-X-Google-Smtp-Source: ABdhPJzj/AQfGN60lBCLn+qgySa/N4l+FMMQkwlUu1OhUnv2YzCSyAY89M7fuFzI5HdjB1wBVBRpyQ==
-X-Received: by 2002:a17:907:2651:: with SMTP id ar17mr40811795ejc.15.1632307519076;
-        Wed, 22 Sep 2021 03:45:19 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.254.56])
-        by smtp.gmail.com with ESMTPSA id q9sm856559ejf.70.2021.09.22.03.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 03:45:18 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 13:45:16 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>, apw@canonical.com,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Dennis Zhou <dennis@kernel.org>, dwaipayanray1@gmail.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        mm-commits@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
-        linux-doc@vger.kernel.org
-Subject: Re: function prototype element ordering
-Message-ID: <YUsJPCHHc+T+Fqs2@localhost.localdomain>
-References: <20210909200948.090d4e213ca34b5ad1325a7e@linux-foundation.org>
- <20210910031046.G76dQvPhV%akpm@linux-foundation.org>
- <CAHk-=wgfbSyW6QYd5rmhSHRoOQ=ZvV+jLn1U8U4nBDgBuaOAjQ@mail.gmail.com>
- <202109211630.2D00627@keescook>
- <af3c775a1515f97c8dbe6a6651bd6e4b6986e8cd.camel@perches.com>
- <202109211757.F38DF644@keescook>
- <YUraGKetS+Tgc7y9@localhost.localdomain>
- <e231bce4942848400f4286a2d4178eeab6555989.camel@perches.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qo78C9hpTaUZzshSE3JqG8ok1Cx6hErSNU/DUKP7eFk=;
+        b=h3V6lV+xFW8iwXQXOk6iYVLQupRv7qHZd179KpfKln6OicAxnAbZacwFOehgAL1ZVg
+         /vHieOny80OS/GecR3MgAzRqjoj1xJRiw0qlAsYmQr4WVw3f6xICzzTmbtvAWQUx58L8
+         3gB41/RZHBI338BBEA8aeD/dSRdFFP4Emy0/FBiffTXlDw4TVSRwoZd8E1hTDLhWBOuD
+         FFjVuxE7BJ35Hj8IBUUJ3pxNCD43eLsPe+DrSXKLuFiCWlYdEjRBRyagRPNv4T9hvzJu
+         Ob17QUgmKZqe0OmEHcgzEOYaVZLN4GMHjMpvyLrvIQN6JBLYnOhmRbZ132lAE5tkr0ku
+         N5Gw==
+X-Gm-Message-State: AOAM531XKAWMzTQ18FdHEzTtdE89zdlli2esLulX3vZjk1UOd8RYp6i9
+        DTQZc9SGUZDNRureWfszLrydDHrLXI3cZoqg0G21lIL3u2A=
+X-Google-Smtp-Source: ABdhPJwPF6z5EYCd61rZYdUMIeZzdf+8Q0cyOmNAUaIoUh0BCayeTwfyb8i9gArK7fN+eXHN7cvjsRzmQx2wAsZ8Pbk=
+X-Received: by 2002:a67:c01b:: with SMTP id v27mr11715890vsi.45.1632307432766;
+ Wed, 22 Sep 2021 03:43:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e231bce4942848400f4286a2d4178eeab6555989.camel@perches.com>
+References: <20210717045627.1739959-1-daniel@0x0f.com> <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
+ <CAFr9PXmFHanrx4Frg3hQwo-RbAY-UXxC=FOAj++cshSHa99z3g@mail.gmail.com> <CAMpxmJUoG7qPhy2CxapCn1M=w_AssOQsEmyvXO18OpedM6hBjw@mail.gmail.com>
+In-Reply-To: <CAMpxmJUoG7qPhy2CxapCn1M=w_AssOQsEmyvXO18OpedM6hBjw@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Wed, 22 Sep 2021 19:46:01 +0900
+Message-ID: <CAFr9PXmCygArTf6njAwOz9b_j6J6vZvQXz3MHT=3gNZy6hU+5g@mail.gmail.com>
+Subject: Re: [PATCH 00/10] gpio: msc313: Add gpio support for ssd20xd
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Romain Perier <romain.perier@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 01:51:34AM -0700, Joe Perches wrote:
-> On Wed, 2021-09-22 at 10:24 +0300, Alexey Dobriyan wrote:
-> 
-> > Attributes should be on their own line, they can be quite lengthy.
-> > 
-> > 	__attribute__((...))
-> > 	[static] [inline] T f(A1 arg1, ...)
-> > 	{
-> > 		...
-> > 	}
-> > 
-> > There will be even more attributes in the future, both added by
-> > compilers and developers (const, pure, WUR), so let's make "prototype lane"
-> > for them.
-> > 
-> > Same for structures:
-> > 
-> > 	__attribute__((packed))
-> > 	struct S {
-> > 	};
-> 
-> Do you know if placing attributes like __packed/__aligned() before
-> definitions would work for all cases for structs/substructs/unions?
+Hi Bart,
 
-Somehow, it doesn't.
 
-But it works for members:
+On Wed, 22 Sept 2021 at 19:20, Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+> I only have a part of this series in my inbox and patchwork doesn't
+> have it at all - can you resend it with me in Cc?
 
-	struct S {
-       		__attribute__((aligned(16)))
-	        int a;
-	};
+Sure. I want to do some fixes to the DTS bits at the end of the series
+so I will send it as a v2. The gpio code parts will be unchanged.
+
+Cheers,
+
+Daniel
