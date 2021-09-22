@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4951A414195
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88FF414197
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbhIVGUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:20:01 -0400
-Received: from relay.sw.ru ([185.231.240.75]:43430 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232627AbhIVGT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:19:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=kKOaxfW8XB27athhg5MSO4zSrJCF13FJZud0x020yE8=; b=IHdKcPfUPcD6gzlte
-        oJgaZ+oyFAcfYtjMjvklvMzm5jQS4DtCDM0LlYM5w9D6naqxNoSSahSKPvMVS4juqoA91FoVEkznB
-        cDzBYB6U1kH2Qdy2Jm6UnAKEWVom8SxyCBNxI9wF++kxzdIFPCmmAxZTZY1o/Fj6aFsZSciLhCYL0
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mSvaI-002n84-BQ; Wed, 22 Sep 2021 09:18:22 +0300
-Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
- <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
- <20210919163126.431674722b8db218453dc18c@linux-foundation.org>
- <bb5616b0-faa6-e12a-102b-b9c402e27ec1@i-love.sakura.ne.jp>
- <c9d43874-138e-54a9-3222-a08c269eeeb5@virtuozzo.com>
- <20210921115523.8606cea0b2f0a5ca4e79cbd0@linux-foundation.org>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <9eb3d50d-9777-087d-eee8-36573f32cf14@virtuozzo.com>
-Date:   Wed, 22 Sep 2021 09:18:21 +0300
+        id S232606AbhIVGWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:22:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43913 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232367AbhIVGWa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 02:22:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632291660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xVSdF519TDjzg1QeVMPay1vdg0A7iFXE86QzhnlbYWM=;
+        b=CaO9mXodCBWdg/xBlvJXweasJVhTPxrH2znai5QB5Ei+mVCxgA3hnvJt4aUgao4f2y9mHc
+        UWV9H0rjLQoc/x5yQBLMoT6iFd4Pl332PlCe4gN/PTkn7qnS7e2ydEFTskVgtzMmHFpUJb
+        Pad3w+63vxZV6GheMnGIDnxJ6fdd+yo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-jAZC5QF1NES301r5PIqLzg-1; Wed, 22 Sep 2021 02:20:59 -0400
+X-MC-Unique: jAZC5QF1NES301r5PIqLzg-1
+Received: by mail-wr1-f72.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so1103151wrg.17
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 23:20:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xVSdF519TDjzg1QeVMPay1vdg0A7iFXE86QzhnlbYWM=;
+        b=tAcwm71W6QmlL8/J/CLecEkE4si4XE/6ZOjirUBbLcLaQNAXWSWo6HJaoPK81maCt9
+         odGmQJ++3xEQUlglXd+MflOWcbcwXKKyvmIp37buWSdStziDr/XIKJyxf+9FaYMU7CdV
+         VumBQ2JlbsLcyrr6wayniupAcG3kVbJ3UH2nhoXeKGQ5LLYHiKlwvBkGQUG9A72WOCOq
+         wnoPNt/LvzlMj59C6YrYEyUJxSgkmhkutQZ/6mP2C8c4ORHs/UupqcwL9DrV/VUi+mrb
+         InQzuyTtOmOHWayeupsvSRcNOTNPXF4B38LEW9isUdQADkmwscYEFRAcR+cWYq5YTGFg
+         vd4w==
+X-Gm-Message-State: AOAM530rMZs7m1GMnl6/VJUBRMZjT//XQ6biCVksrhoA76W7bi38uqHp
+        EWg+T5gaUrboBN8Mc4Vx/H9UON+LQgOwb2J2Sp9ES3VwipvOGza13ueEJrEyrdVddQNk4Ir/AFp
+        p0gXgLQglPEVXcoIHA5Kg+1kQ
+X-Received: by 2002:a1c:4d05:: with SMTP id o5mr8529195wmh.193.1632291657975;
+        Tue, 21 Sep 2021 23:20:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWamuC9/jAZ/67Hu2Cks4vmJvt1lGRL5+X81yLTOV7mAk+10ovLzkV1o2LD+Mr61lyumWy0A==
+X-Received: by 2002:a1c:4d05:: with SMTP id o5mr8529169wmh.193.1632291657753;
+        Tue, 21 Sep 2021 23:20:57 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id w1sm4890326wmc.19.2021.09.21.23.20.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 23:20:57 -0700 (PDT)
+Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
+ timespec64_to_ns()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>,
+        Juergen Gross <jgross@suse.com>
+References: <20210913131113.390368911@linuxfoundation.org>
+ <20210913131123.500712780@linuxfoundation.org>
+ <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
+ <874kak9moe.ffs@tglx> <YURQ4ZFDJ8E9MJZM@kroah.com> <87sfy38p1o.ffs@tglx>
+ <YUSyKQwdpfSTbQ4H@kroah.com> <87ee9n80gz.ffs@tglx>
+ <YUYJ8WeOzPVwj16y@kroah.com> <YUibLGZAVgqiyCUq@sashalap>
+ <YUowhlVfLiLWE8K/@sashalap> <87sfxx65dr.ffs@tglx>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7e3ca2fd-d634-68ee-c7f9-c4d112ddc4a6@redhat.com>
+Date:   Wed, 22 Sep 2021 08:20:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210921115523.8606cea0b2f0a5ca4e79cbd0@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <87sfxx65dr.ffs@tglx>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 9:55 PM, Andrew Morton wrote:
-> On Mon, 20 Sep 2021 13:59:35 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
+On 21/09/21 22:27, Thomas Gleixner wrote:
+>   3) Maintainer allows AUTOSEL, but anything picked from files/subsystems
+>      without a stable tag requires an explicit ACK from the maintainer
+>      for the backport.
 > 
->> On 9/20/21 4:22 AM, Tetsuo Handa wrote:
->>> On 2021/09/20 8:31, Andrew Morton wrote:
->>>> On Fri, 17 Sep 2021 11:06:49 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
->>>>
->>>>> Huge vmalloc allocation on heavy loaded node can lead to a global
->>>>> memory shortage. A task called vmalloc can have the worst badness
->>>>> and be chosen by OOM-killer, however received fatal signal and
->>>>> oom victim mark does not interrupt allocation cycle. Vmalloc will
->>>>> continue allocating pages over and over again, exacerbating the crisis
->>>>> and consuming the memory freed up by another killed tasks.
->>>>>
->>>>> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
->>>>> effective and avoid host panic.
->>>>>
->>>>> Unfortunately it is not 100% safe. Previous attempt to break vmalloc
->>>>> cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
->>>>> the current task is killed"") due to some vmalloc callers did not handled
->>>>> failures properly. Found issues was resolved, however, there may
->>>>> be other similar places.
->>>>
->>>> Well that was lame of us.
->>>>
->>>> I believe that at least one of the kernel testbots can utilize fault
->>>> injection.  If we were to wire up vmalloc (as we have done with slab
->>>> and pagealloc) then this will help to locate such buggy vmalloc callers.
->>
->> Andrew, could you please clarify how we can do it?
->> Do you mean we can use exsiting allocation fault injection infrastructure to trigger
->> such kind of issues? Unfortunately I found no ways to reach this goal.
->> It  allows to emulate single faults with small probability, however it is not enough,
->> we need to completely disable all vmalloc allocations. 
+>      Is new and I would be the first to opt-in:)
 > 
-> I don't see why there's a problem?  You're saying "there might still be
-> vmalloc() callers which don't correctly handle allocation failures",
-> yes?
+> My rationale for #3 is that even when being careful about stable tags,
+> it happens that one is missing. Occasionaly AUTOSEL finds one of those
+> in my subsystems which I appreciate.
 > 
-> I'm suggesting that we use fault injection to cause a small proportion
-> of vmalloc() calls to artificially fail, so such buggy callers will
-> eventually be found and fixed.  Why does such a scheme require that
-> *all* vmalloc() calls fail?
+> Does that make more sense now?
 
-Let me explain.
-1) it is not trivial to use current allocation fault injection to cause
-a small proportion of vmalloc() calls to artificially fail.
+I like this!
 
-vmalloc
- __vmalloc_node
-  __vmalloc_node_range
-   __vmalloc_area_node
-    vm_area_alloc_pages
- 
-vm_area_alloc_pages uses new __alloc_pages_bulk subsystem, requesting up to 100 pages in cycle.
-__alloc_pages_bulk() can be interrupted by allocation fault injection, however in this case
-vm_area_alloc_pages() will failback to old-style page allocation cycle.
-In general case it successfully finishes allocation and vmalloc itself will not fail.
+> Might be a bit overbroad as it also includes x86/kvm, x86/xen, x86/pci
+> which I'm not that involved with, but to make it simple for you, I just
+> volunteered the relevant maintainers (CCed) to participate in that
+> experiment. 
 
-To fail vmalloc we need to fail both alloc_pages_bulk_array_node() and alloc_pages_node() together.
+I would opt in to MANUALSEL too; so Sasha, feel free to do the same for 
+everything that I'm involved in by the MAINTAINERS file, or we can start 
+with x86/kvm via the generic x86 entries.
 
-2) if we failed single vmalloc it is not enough.
-I would remind, we want to emulate fatal signal reaction.
-However I afraid dying task can execute a quite complex rollback procedure.
-This rollback can call another vmalloc and last one will be failed
-again on fatal_signal_pending check.
+Thanks,
 
-To emulate this behavior in fault injection we need to disable all following
-vmalloc calls of our victim, pseudo-"dying" task.
+Paolo
 
-I doubt both these goals can be reached by current allocation fault injection subsystem,
-I do not understand how to configure it accordingly.
-
-Thank you,
-	Vasily Averin
