@@ -2,180 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33BB414F6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10430414F70
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236957AbhIVRxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:53:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44239 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233552AbhIVRxe (ORCPT
+        id S236965AbhIVRyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:54:18 -0400
+Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:48853 "EHLO
+        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236924AbhIVRyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:53:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632333123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vKKXIJLwy/fLR00ynbhI+6m3Ml8OSdkI8ATKMZTi12I=;
-        b=cyEm8IIJyzipPm1Xu1qi+ANJVUaqDYvj4k0+Bum3oxDxe9nH7Uzx9aqGXe2zwF3uHig+sF
-        uQIdyXaB9dI0CfaHRDaTtdAhbdqvTjO6HLrp/2FwcPI8G2rW3Pl4agUGm7YHZ+bfBEEBLp
-        Ot1+0HpGa4xe4s2R1+dAwK6OObPaGzs=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-TJyG7NkQOeOKjQLga2QY0A-1; Wed, 22 Sep 2021 13:52:02 -0400
-X-MC-Unique: TJyG7NkQOeOKjQLga2QY0A-1
-Received: by mail-qk1-f199.google.com with SMTP id p23-20020a05620a22f700b003d5ac11ac5cso11700311qki.15
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:52:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vKKXIJLwy/fLR00ynbhI+6m3Ml8OSdkI8ATKMZTi12I=;
-        b=gTfCGD+F3POwmMBpFqWyEz+zSxXbKMa23SJU4LxI0o3hBw+zKs6a0gtLFRxg8uXn5H
-         5hvHoz8KhH4VS4vHLsprNSLWJLhT+4WEFt83G4JDKIdxjN6zCIAMewRUYBdBTQjYScca
-         TfBFD7/zRbDl5v8ziJJ9mrVOUnS8Mx6ZFy4tsA8m4ZvCRypA9eG0mLFDUq3oFUvLQDf6
-         2zvSNK90ESAgUqnffK3jH/tBDYuUDgejTU17KrM+RnAlPPLLGjT1ZsEy2pMJDYPrAJVF
-         0uvsRpxmGgLaum/Gdk1SNebxWJqVRmDDE3A0tag7QBTZUWhO5jJIVi/jW6e8dAwJBpsS
-         I9UQ==
-X-Gm-Message-State: AOAM530gmMHISU0z+llN+gS62KLrSgxKpa52iGKnSGj2lDoREgWDoifa
-        9aFstj+WdV4ivSM5vslhujkL8prOCXJQzwhVnfVrOQHg850LiWTf5ZnbnDItF6u5dqOcp5FlM+i
-        IpgfG6ZQC2Md4ntyZgzYSZp857DOy2x7uN6wbusDf1jyEin9Unt1khoqUkVd2onHvBQAvMywrJw
-        ==
-X-Received: by 2002:aed:2794:: with SMTP id a20mr490818qtd.243.1632333120207;
-        Wed, 22 Sep 2021 10:52:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwdxDXZlgkBgU1qcW7DZdL7V4D2gO7rktK27Bs2jpfo95oSFVNULk2DyaNxUBOonyDhSFOKlQ==
-X-Received: by 2002:aed:2794:: with SMTP id a20mr490781qtd.243.1632333119878;
-        Wed, 22 Sep 2021 10:51:59 -0700 (PDT)
-Received: from t490s.redhat.com ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id r17sm1854075qtx.17.2021.09.22.10.51.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 10:51:59 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
-Date:   Wed, 22 Sep 2021 13:51:56 -0400
-Message-Id: <20210922175156.130228-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 22 Sep 2021 13:54:17 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 9EDFF1C4E24
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 18:52:46 +0100 (IST)
+Received: (qmail 19097 invoked from network); 22 Sep 2021 17:52:46 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Sep 2021 17:52:46 -0000
+Date:   Wed, 22 Sep 2021 18:52:44 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/5] Remove dependency on congestion_wait in mm/
+Message-ID: <20210922175244.GC3959@techsingularity.net>
+References: <20210920085436.20939-1-mgorman@techsingularity.net>
+ <20210921204621.GY2361455@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210921204621.GY2361455@dread.disaster.area>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We forbid merging thps for uffd-wp enabled regions, by breaking the khugepaged
-scanning right after we detected a uffd-wp armed pte (either present, or swap).
+On Wed, Sep 22, 2021 at 06:46:21AM +1000, Dave Chinner wrote:
+> On Mon, Sep 20, 2021 at 09:54:31AM +0100, Mel Gorman wrote:
+> > Cc list similar to "congestion_wait() and GFP_NOFAIL" as they're loosely
+> > related.
+> > 
+> > This is a prototype series that removes all calls to congestion_wait
+> > in mm/ and deletes wait_iff_congested. It's not a clever
+> > implementation but congestion_wait has been broken for a long time
+> > (https://lore.kernel.org/linux-mm/45d8b7a6-8548-65f5-cccf-9f451d4ae3d4@kernel.dk/).
+> > Even if it worked, it was never a great idea. While excessive
+> > dirty/writeback pages at the tail of the LRU is one possibility that
+> > reclaim may be slow, there is also the problem of too many pages being
+> > isolated and reclaim failing for other reasons (elevated references,
+> > too many pages isolated, excessive LRU contention etc).
+> > 
+> > This series replaces the reclaim conditions with event driven ones
+> > 
+> > o If there are too many dirty/writeback pages, sleep until a timeout
+> >   or enough pages get cleaned
+> > o If too many pages are isolated, sleep until enough isolated pages
+> >   are either reclaimed or put back on the LRU
+> > o If no progress is being made, let direct reclaim tasks sleep until
+> >   another task makes progress
+> > 
+> > This has been lightly tested only and the testing was useless as the
+> > relevant code was not executed. The workload configurations I had that
+> > used to trigger these corner cases no longer work (yey?) and I'll need
+> > to implement a new synthetic workload. If someone is aware of a realistic
+> > workload that forces reclaim activity to the point where reclaim stalls
+> > then kindly share the details.
+> 
+> Got a git tree pointer so I can pull it into a test kernel so I can
+> see what impact it has on behaviour before I try to make sense of
+> the code?
+> 
 
-It works, but it's less efficient, because those ptes only exist for VM_UFFD_WP
-enabled VMAs.  Checking against the vma flag would be more efficient, and good
-enough.  To be explicit, we could still be able to merge some thps for
-VM_UFFD_WP regions before this patch as long as they have zero uffd-wp armed
-ptes, however that's not a major target for thp collapse anyways.
+The current version I'm testing is at
 
-This mostly reverts commit e1e267c7928fe387e5e1cffeafb0de2d0473663a, but
-instead we do the same check at vma level, so it's not a bugfix.
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-reclaimcongest-v2r5
 
-This also paves the way for file-backed uffd-wp support, as the VM_UFFD_WP flag
-will work for file-backed too.
+Only one test has completed and I won't be able to analyse the results
+in detail for a few days but it's doing *something* for the workload that
+is hammering reclaim
 
-After this patch, the error for khugepaged for these regions will switch from
-SCAN_PTE_UFFD_WP to SCAN_VMA_CHECK.
+                  5.15.0-rc1  5.15.0-rc1
+                     vanillamm-reclaimcongest-v2r5
+Duration User       10891.30     9945.59
+Duration System      5673.78     2649.43
+Duration Elapsed     2402.85     2407.96
 
-Since uffd minor mode should not allow thp as well, do the same thing for minor
-mode to stop early on trying to collapse pages in khugepaged.
+System CPU usage dropped by a lot. Workload completes runs for a fixed
+duration so a difference in elapsed is not interesting
 
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Nadav Amit <nadav.amit@gmail.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
+Ops Direct pages scanned           518791317.00   219956338.00
+Ops Kswapd pages scanned           128555233.00   165439373.00
+Ops Kswapd pages reclaimed          87830801.00    72216420.00
+Ops Direct pages reclaimed          16114049.00    10408389.00
+Ops Kswapd efficiency %                   68.32          43.65
+Ops Kswapd velocity                    53501.15       68705.20
+Ops Direct efficiency %                    3.11           4.73
+Ops Direct velocity                   215906.66       91345.5
+Ops Percentage direct scans               80.14          57.07
+Ops Page writes by reclaim           4225921.00     2032865.00
 
-Axel: as I asked in the other thread, please help check whether minor mode will
-work properly with shmem thp enabled.  If not, I feel like this patch could be
-part of that effort at last, but it's also possible that I missed something.
+Large reductions in direct pages scanned. The rate kswapd scans is roughly
+the same (velocity) where as direct velocity is down (presumably because
+it's getting throttled). Pages written from reclaim context are about
+halved. Kswapd scan rates are increased slightly but probably because
+direct reclaimers throttled. Reclaim efficiency is low but that's expected
+given the workload is basically trying to make it as hard as possible
+for reclaim to make progress.
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- include/trace/events/huge_memory.h |  1 -
- mm/khugepaged.c                    | 26 +++-----------------------
- 2 files changed, 3 insertions(+), 24 deletions(-)
+Kswapd is only getting throttled on writeback and is being woken before
+the timeout of 100000
 
-diff --git a/include/trace/events/huge_memory.h b/include/trace/events/huge_memory.h
-index 4fdb14a81108..53532f5925c3 100644
---- a/include/trace/events/huge_memory.h
-+++ b/include/trace/events/huge_memory.h
-@@ -15,7 +15,6 @@
- 	EM( SCAN_EXCEED_SWAP_PTE,	"exceed_swap_pte")		\
- 	EM( SCAN_EXCEED_SHARED_PTE,	"exceed_shared_pte")		\
- 	EM( SCAN_PTE_NON_PRESENT,	"pte_non_present")		\
--	EM( SCAN_PTE_UFFD_WP,		"pte_uffd_wp")			\
- 	EM( SCAN_PAGE_RO,		"no_writable_page")		\
- 	EM( SCAN_LACK_REFERENCED_PAGE,	"lack_referenced_page")		\
- 	EM( SCAN_PAGE_NULL,		"page_null")			\
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc579f724..3afe66d48db0 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -31,7 +31,6 @@ enum scan_result {
- 	SCAN_EXCEED_SWAP_PTE,
- 	SCAN_EXCEED_SHARED_PTE,
- 	SCAN_PTE_NON_PRESENT,
--	SCAN_PTE_UFFD_WP,
- 	SCAN_PAGE_RO,
- 	SCAN_LACK_REFERENCED_PAGE,
- 	SCAN_PAGE_NULL,
-@@ -467,6 +466,9 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
- 		return false;
- 	if (vma_is_temporary_stack(vma))
- 		return false;
-+	/* Don't allow thp merging for wp/minor enabled uffd regions */
-+	if (userfaultfd_wp(vma) || userfaultfd_minor(vma))
-+		return false;
- 	return !(vm_flags & VM_NO_KHUGEPAGED);
- }
- 
-@@ -1246,15 +1248,6 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
- 		pte_t pteval = *_pte;
- 		if (is_swap_pte(pteval)) {
- 			if (++unmapped <= khugepaged_max_ptes_swap) {
--				/*
--				 * Always be strict with uffd-wp
--				 * enabled swap entries.  Please see
--				 * comment below for pte_uffd_wp().
--				 */
--				if (pte_swp_uffd_wp(pteval)) {
--					result = SCAN_PTE_UFFD_WP;
--					goto out_unmap;
--				}
- 				continue;
- 			} else {
- 				result = SCAN_EXCEED_SWAP_PTE;
-@@ -1270,19 +1263,6 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
- 				goto out_unmap;
- 			}
- 		}
--		if (pte_uffd_wp(pteval)) {
--			/*
--			 * Don't collapse the page if any of the small
--			 * PTEs are armed with uffd write protection.
--			 * Here we can also mark the new huge pmd as
--			 * write protected if any of the small ones is
--			 * marked but that could bring unknown
--			 * userfault messages that falls outside of
--			 * the registered range.  So, just be simple.
--			 */
--			result = SCAN_PTE_UFFD_WP;
--			goto out_unmap;
--		}
- 		if (pte_write(pteval))
- 			writable = true;
- 
+      1 usect_delayed=84000 reason=VMSCAN_THROTTLE_WRITEBACK
+      2 usect_delayed=20000 reason=VMSCAN_THROTTLE_WRITEBACK
+      6 usect_delayed=16000 reason=VMSCAN_THROTTLE_WRITEBACK
+     12 usect_delayed=12000 reason=VMSCAN_THROTTLE_WRITEBACK
+     17 usect_delayed=8000 reason=VMSCAN_THROTTLE_WRITEBACK
+    129 usect_delayed=4000 reason=VMSCAN_THROTTLE_WRITEBACK
+    205 usect_delayed=0 reason=VMSCAN_THROTTLE_WRITEBACK
+
+The number of throttle events for direct reclaimers were
+
+  16909 reason=VMSCAN_THROTTLE_ISOLATED
+  77844 reason=VMSCAN_THROTTLE_NOPROGRESS
+ 113415 reason=VMSCAN_THROTTLE_WRITEBACK
+
+For the throttle events, 33% of them were NOPROGRESS hitting the full
+timeout and 33% were WRITEBACK hitting the full timeout. If anything,
+that would suggest increasing the max timeout as presumably they woke up
+uselessly like Neil had suggested.
+
 -- 
-2.31.1
-
+Mel Gorman
+SUSE Labs
