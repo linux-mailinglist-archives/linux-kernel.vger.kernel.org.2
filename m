@@ -2,77 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF17414341
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14587414343
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhIVILK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:11:10 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38932 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233349AbhIVILI (ORCPT
+        id S233499AbhIVIMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233349AbhIVIMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:11:08 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E70F422156;
-        Wed, 22 Sep 2021 08:09:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632298177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1NPG4O+Jngi0bELwMcPJpHyS/p8bC72T2cOWGd3btpQ=;
-        b=OxBaCGcDkobLlCSjXiT4d+DQHNDsxDAW9k/FQXYjAv+rr/+v/70PgCEjQUCWNrVvXqVn4f
-        yYUQG3OCMI0MP+zzyhjdsPe0KyXOnfFHoa8j9RU2bAmQ33K9DWad10aOqHCf3AvuBp727J
-        IocZeQsX1HEUCBQGnOXD9ODJXMiPbwE=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9F1CFA3B8D;
-        Wed, 22 Sep 2021 08:09:37 +0000 (UTC)
-Date:   Wed, 22 Sep 2021 10:09:37 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vishnu Rangayyan <vishnu.rangayyan@apple.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] fs: fix for core dumping of a process getting oom-killed
-Message-ID: <YUrkwbQ9d6vvh0Ta@dhcp22.suse.cz>
-References: <9aec4002-754c-ca6d-7caf-9de6e8c31dd7@apple.com>
- <YUm7LLqwrXygzKll@dhcp22.suse.cz>
- <216745b1-2d4c-8707-2403-07117e6b3bca@apple.com>
+        Wed, 22 Sep 2021 04:12:02 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF439C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:10:32 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id t18so4419315wrb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sjfqFtjdJ7BBJE8A/g20sALymYT3IpdH2eEO6YWS1Ds=;
+        b=NNr9niA+rBKeMBi4aYpw3WOaB0s1c/Z+kBCqwKQ3VhAQqBU8VvqNqHRcw8dyFIhbll
+         hAUlZD7/S9i0b6btgaCsEwp1bmXYA6x8BpEif/8Y9WhBiGRmbqtVtTo/n+V+mCrg41In
+         HvvCul9Or1Kx07sjTLimYABtPLaV+xIYyyfNmAjYqH/P41OGQWbgnI7Qwctvl2uRH1Va
+         2Bzub4Uge2VG9mAwAklB4EVK8qnQTzPeYwyWVoZxQckjBv54trntvgB2QC8PLyOGv1Sx
+         xSyoHhlHQZ21hBTt35bBYxvv+oJQfldUXKWwdf5IA+0lCIGu92Sbeb95aVRsMXKdxWke
+         /w8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sjfqFtjdJ7BBJE8A/g20sALymYT3IpdH2eEO6YWS1Ds=;
+        b=aI6JDvhNoB1eqnCLDYLG29X07pxnrHjQ+u/EutUUYV+knr3w+Iwoz7Ru2NGeTvVTFl
+         r4oDDUofSsMvMMMjui3fhxR8q58m3IDXeT4cUQriXC1esIKQFOG8psUUsWK83QBLpXbB
+         TYt5dajxtJ/+rnbVgHU26lNReAWHlobBZU9zUxIf1LqXyPsnnLU0rT5mPVwEhPHdMIB+
+         aaC8pqWvb4QycQCB3Gt9gXaRHW9n/o5wY0mau0+sKdtZblIXD/qLJSAtG8MpRTzRH4ME
+         S8lb3WiPL3nui4Px9oYCggon9GgUJfNvHwX0JIe298OVSJvYPc06Fe0D5Zjvchy/lUcS
+         AyQg==
+X-Gm-Message-State: AOAM532rbH9M8kJma4D5amsp738XT/liKPf+tAbtnIw3Agq5x01TcAII
+        EUw3pIyC68IoodsUxrco0i0E4vqUSXFxlg==
+X-Google-Smtp-Source: ABdhPJxG6e+7AIuhMraVYfb7CeqUJw+ynj10bI0dkQNUJ6u4beKg1vJHhRjSB9PtKdYqRLY11TnjhA==
+X-Received: by 2002:a5d:5541:: with SMTP id g1mr41009909wrw.402.1632298231387;
+        Wed, 22 Sep 2021 01:10:31 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8ccc:47ef:19b:1063? ([2a01:e34:ed2f:f020:8ccc:47ef:19b:1063])
+        by smtp.googlemail.com with ESMTPSA id k18sm1375822wrh.68.2021.09.22.01.10.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 01:10:30 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
+To:     Alexandre Bailon <abailon@baylibre.com>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org
+References: <20210917072732.611140-1-abailon@baylibre.com>
+ <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
+ <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com>
+ <8a9e5f13-6253-2d0d-35a8-789090af4521@linaro.org>
+ <c395abad-598b-c06a-9252-c8e62c977188@baylibre.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <794e62ea-d867-3827-de5f-24ddc86c3524@linaro.org>
+Date:   Wed, 22 Sep 2021 10:10:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <216745b1-2d4c-8707-2403-07117e6b3bca@apple.com>
+In-Reply-To: <c395abad-598b-c06a-9252-c8e62c977188@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 21-09-21 20:12:08, Vishnu Rangayyan wrote:
+On 20/09/2021 15:12, Alexandre Bailon wrote:
 > 
-> 
-> On 9/21/21 5:59 AM, Michal Hocko wrote:
-[...]
-> > Why
-> > is fsync helping at all? Why do we need a new sysctl to address the
-> > problem and how does it help to prevent the memcg OOM. Also why is this
-> > a problem in the first place.
-> The simple intent is to allow the core dumping to succeed in low memory
-> situations where the dump_emit doesn't tip over the thing and trigger the
-> oom-killer. This change avoids only that particular issue.
+> On 9/17/21 4:03 PM, Daniel Lezcano wrote:
+>> On 17/09/2021 15:33, Alexandre Bailon wrote:
+>>> Hi Daniel,
+>>>
+>>> On 9/17/21 2:41 PM, Daniel Lezcano wrote:
+>>>> On 17/09/2021 09:27, Alexandre Bailon wrote:
+>>>>> This series add a virtual thermal sensor.
+>>>>> It could be used to get a temperature using some thermal sensors.
+>>>>> Currently, the supported operations are max, min and avg.
+>>>>> The virtual sensor could be easily extended to support others
+>>>>> operations.
+>>>>>
+>>>>> Note:
+>>>>> Currently, thermal drivers must explicitly register their sensors to
+>>>>> make them
+>>>>> available to the virtual sensor.
+>>>>> This doesn't seem a good solution to me and I think it would be
+>>>>> preferable to
+>>>>> update the framework to register the list of each available sensors.
+>>>> Why must the drivers do that ?
+>>> Because there are no central place where thermal sensor are registered.
+>>> The only other way I found was to update thermal_of.c,
+>>> to register the thermal sensors and make them available later to the
+>>> virtual thermal sensor.
+>>>
+>>> To work, the virtual thermal need to get the sensor_data the ops from
+>>> the thermal sensor.
+>>> And as far I know, this is only registered in thermal_of.c, in the
+>>> thermal zone data
+>>> but I can't access it directly from the virtual thermal sensor.
+>>>
+>>> How would you do it ?
+>> Via the phandles when registering the virtual sensor ?
+> As far I know, we can't get the ops or the sensor_data from the phandle
+> of a thermal sensor.
+> The closest solution I found so far would be to aggregate the thermal
+> zones instead of thermal sensors.
+> thermal_zone_device has the data needed and a thermal zone could be find
+> easily using its name.
 
-How does it avoid that?
+Yeah, the concept of the thermal zone and the sensor are very close.
 
-> Agree, its not the actual problem at all. If the core dumping fails, that
-> sometimes prevents or delays looking into the actual issue.
-> The sysctl was to allow disabling this behavior or to fine tune for special
-> cases such as limited memory environments.
+There is the function in thermal_core.h:
 
-Please note that any sysctl is an userspace API that has to be
-maintained effectivelly for ever so there should be a very good reason
-and a strong justification to add one. I do not see that to be case
-here.
+ -> for_each_thermal_zone()
+
+You should be able for each 'slave' sensor, do a lookup to find the
+corresponding thermal_zone_device_ops.
+
+> But, using a thermal_zone_device, I don't see how to handle module
+> unloading.
+
+I think try_module_get() / module_put() are adequate for this situation
+as it is done on an external module and we can not rely on the exported
+symbols.
+
 
 -- 
-Michal Hocko
-SUSE Labs
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
