@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655DF413F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9590413FA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhIVCmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 22:42:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230268AbhIVCmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 22:42:19 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BED2A61178;
-        Wed, 22 Sep 2021 02:40:49 +0000 (UTC)
-Date:   Tue, 21 Sep 2021 22:40:48 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jackie Liu <liu.yun@linux.dev>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, bristot@redhat.com
-Subject: Re: [PATCH] tracing: fix missing osnoise tracer on max_latency
-Message-ID: <20210921224048.4c5b414d@oasis.local.home>
-In-Reply-To: <650206a9-500d-2dcf-69d1-946c470dac25@linux.dev>
-References: <20210918051118.1096575-1-liu.yun@linux.dev>
-        <20210919120124.3e2b1b7b@rorschach.local.home>
-        <650206a9-500d-2dcf-69d1-946c470dac25@linux.dev>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230079AbhIVCnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 22:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhIVCnI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 22:43:08 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF61C061574;
+        Tue, 21 Sep 2021 19:41:39 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id f3-20020a17090a638300b00199097ddf1aso3481756pjj.0;
+        Tue, 21 Sep 2021 19:41:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eFHgXjDcWJ3G8g70ezF4SC+fF65z/HHpwkA2EEyQfG0=;
+        b=DrhaK3spo56LsKAmB7p2NdoJ+nTvOcilZysgruVMyMJyNW5UYBEJw9gb3071xTMwmc
+         moRaeNQI0duVPjdC9iGbI0yaasPv6s1zRNHNO1Ag4Fyj5VL6gMrnq3LZMvZEZENso6KD
+         nPQ/nlg+qD6Bwb+HCaM52IcxROnDAepZZpItK7T4fb6hmyaRBnboFrr2DAhypCi1smo/
+         kErm0Iobqut0SqfHL5Rcim3qnN7Tz7cj/6CCrjf9iJFqQU+5R+7zDdWnmTklxqXF/BLZ
+         /5mYflW83MJBBu6hJHybyz4MbBlrQB37IcCoOnXIcqHE8rnf2+o7QO3Ewi31L+YOdnGV
+         WXhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eFHgXjDcWJ3G8g70ezF4SC+fF65z/HHpwkA2EEyQfG0=;
+        b=FtBuy6G+Q3hTgZQuwPQlgRw2gNgcybv1STEnY7QF7+JLkMuzfWX/Ck4gmKKaeSnH+c
+         OjW76oLcrf7A2PJcmYI+vOSdV1Ng+EO7MzTd3CyokXkRB30sva3GJa1UWaXK/jNrXwg0
+         3uR2NyjeZD38OQvGT8GfrJ1F9grB2b1DWyrm29FJHXi5L6lDJZ0CE6lOEgWwsN3cN9uF
+         TFYENsSTXrtOqBEIzgP7BjClLdkXNg+3DL7ApJjcWBmjrnOPPdIDcHx00xaS0cM8Ht9P
+         8ZEDzRC/OtIiADE4VdLMeFgZU9KyZe58R9OUif+O1Z1SoLGr9ayni3Dc7nXA+CQS4/oy
+         7R4A==
+X-Gm-Message-State: AOAM532qZoKT5KU+1cBtjh/IybrGXhHjnWAxP/03rH1jz9LJVvY24nwP
+        bYIKOs149fisIcc3sH7YcFb0j5AIJB0=
+X-Google-Smtp-Source: ABdhPJxU7VJdpqnLKu5Ras/wIZXek+JgIDE92MjtspJ/2uNbYcgSdBmstfqkZOUkp+RcrBF/b4Yh8w==
+X-Received: by 2002:a17:90b:1c0b:: with SMTP id oc11mr8711721pjb.158.1632278498489;
+        Tue, 21 Sep 2021 19:41:38 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id u25sm440360pfh.9.2021.09.21.19.41.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 19:41:38 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT)
+Subject: [PATCH stable 4.14 0/3] ARM: ftrace MODULE_PLTS warning fixes
+Date:   Tue, 21 Sep 2021 19:41:25 -0700
+Message-Id: <20210922024128.59910-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 10:26:24 +0800
-Jackie Liu <liu.yun@linux.dev> wrote:
+This patch series is present in v5.14 and fixes warnings seen at insmod
+with FTRACE and MODULE_PLTS enabled on ARM/Linux.
 
-> >> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> >> index 7896d30d90f7..d7e3ed82fafd 100644
-> >> --- a/kernel/trace/trace.c
-> >> +++ b/kernel/trace/trace.c
-> >> @@ -1744,11 +1744,7 @@ void latency_fsnotify(struct trace_array *tr)
-> >>   	irq_work_queue(&tr->fsnotify_irqwork);
-> >>   }
-> >>   
-> >> -/*
-> >> - * (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)) && \
-> >> - *  defined(CONFIG_FSNOTIFY)
-> >> - */
-> >> -#else
-> >> +#else /* LATENCY_FS_NOTIFY  >>
-> >>   #define trace_create_maxlat_file(tr, d_tracer)				\
-> >>   	trace_create_file("tracing_max_latency", 0644, d_tracer,	\  
-> > 
-> > To clean this up even better, we should add here:
-> > 
-> > #elif defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER) \
-> > 	|| defined(CONFIG_OSNOISE_TRACER)  
-> 
-> This place should need to use LATENCY_FS_NOTIFY, because not only these
-> three Traces, we also need to pay attention to CONFIG_FSNOTIFY, at
-> least, we should not change the original meaning.
-> 
-> How about this:
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 7896d30d90f7..6a88d03c6d3b 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -1744,16 +1744,14 @@ void latency_fsnotify(struct trace_array *tr)
->          irq_work_queue(&tr->fsnotify_irqwork);
->   }
-> 
-> -/*
-> - * (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)) && \
-> - *  defined(CONFIG_FSNOTIFY)
-> - */
-> -#else
-> +#elif defined(LATENCY_FS_NOTIFY)
+Alex Sverdlin (3):
+  ARM: 9077/1: PLT: Move struct plt_entries definition to header
+  ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
+  ARM: 9079/1: ftrace: Add MODULE_PLTS support
 
-Um, but isn't the #if before the #else:
+ arch/arm/include/asm/ftrace.h |  3 +++
+ arch/arm/include/asm/insn.h   |  8 +++---
+ arch/arm/include/asm/module.h | 10 +++++++
+ arch/arm/kernel/ftrace.c      | 46 ++++++++++++++++++++++++++------
+ arch/arm/kernel/insn.c        | 19 +++++++-------
+ arch/arm/kernel/module-plts.c | 49 +++++++++++++++++++++++++++--------
+ 6 files changed, 103 insertions(+), 32 deletions(-)
 
-  #ifdef LATENCY_FS_NOTIFY
+-- 
+2.25.1
 
-?
-
-Then, here we have:
-
-
-#ifdef LATENCY_FS_NOTIFY
-
-[..]
-
-#elif defined(LATENCY_FS_NOTIFY)
-
-// this will never be called.
-
-That doesn't make any sense.
-
--- Steve
-
-> 
->   #define trace_create_maxlat_file(tr, d_tracer)                         \
->          trace_create_file("tracing_max_latency", 0644, d_tracer,        \
->                            &tr->max_latency, &tracing_max_lat_fops)
-> 
-> +#else
-> +#define trace_create_maxlat_file(tr, d_tracer)  do { } while (0)
->   #endif
-> 
->   #ifdef CONFIG_TRACER_MAX_TRACE
-> @@ -9473,9 +9471,7 @@ init_tracer_tracefs(struct trace_array *tr, struct 
-> dentry *d_tracer)
-> 
->          create_trace_options_dir(tr);
-> 
-> -#if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)
->          trace_create_maxlat_file(tr, d_tracer);
-> -#endif
-> 
->          if (ftrace_create_function_files(tr, d_tracer))
->                  MEM_FAIL(1, "Could not allocate function filter files");
-> 
-> 
-> ==
-> What do you think? If there is no problem, I will send V2.
-> 
