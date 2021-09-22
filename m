@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D82414335
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4022414339
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbhIVIHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhIVIHU (ORCPT
+        id S233523AbhIVIIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:08:05 -0400
+Received: from n169-112.mail.139.com ([120.232.169.112]:32207 "EHLO
+        n169-112.mail.139.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233336AbhIVIID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:07:20 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDA0C061574;
-        Wed, 22 Sep 2021 01:05:51 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id f129so1875358pgc.1;
-        Wed, 22 Sep 2021 01:05:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3vgj0hW3KSHhJ1FNGvvnjMW3NitG36aDXcJz/7heGcA=;
-        b=FAkBVWugynwfJI5lWaQvYEy5zoZ/PcwxIzBamJjPUP+b2SJ39zuwELnOxZD4mWY7qI
-         VL+NRFb28mlUzCzMNFU8j2NXe+OzTklHCFA1mSE3MXf4GK+Sx65lA1keQKFwGlsrg9tU
-         tRonpRLFulMJRQa9KRODt+Cp+UQlzyTtiUHLtMgCsrKSVqTJbk4CqpICjwqwgiMymCpa
-         zVNq1/Yg3KD7mrkYF4M7le9Q4d3Gn8986+7TMsBcQHgo7Q+GySY6qjBPrwQu5mqiJ3iI
-         EdQMGVC+gVV9oJFAEklO3sPTpktjuuiE5r4+kATExB81e4C/gPw5qi069u7USlKJNEiM
-         KluQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3vgj0hW3KSHhJ1FNGvvnjMW3NitG36aDXcJz/7heGcA=;
-        b=e8HNrhaTTjfcmwLQai4PLyHPYmWL+nJCRjvEgVrZJ69awBa+Cd/HIaZ16ej5bdrxmy
-         ly3TF8SlPPOii48+fffczdK8Gnak98BlFm2hiRRaO2XUaDvcXpsiVaakaf7iFgplaQc4
-         q8B1fYFPVFHMx+5YCxQ7/FzKJf609WeSJN9suyrrECibDsdZhXrl83SMiaLM3A5Q5usn
-         OK472jpHgMhFyd8Bu2SUIuG+zt63Zc7oV9xi94/2ocMZXMxDSYstR0LsSE16UyQfMXi5
-         NYfA33KqGkE1IjFxLDA8s0d6tnjC2pZTyZzSJ9VrJf3oiE8Iu6QmR8Ju+ygWXoEFsPmf
-         a1YQ==
-X-Gm-Message-State: AOAM532AsEo0jmffvcWWnQhAEiB2z/65MQJLkOSilnrdxzGAx1q9aSdV
-        mtEkO3Df2JcCGVUlBaU5WoQ=
-X-Google-Smtp-Source: ABdhPJwdylx2gAkFtmU9FHajYgZBLBBYYbPpvbp7sGfAL2p7//GTWekKTYSd4s/OpU5ahmIuNorN4g==
-X-Received: by 2002:a62:7b14:0:b0:447:c4c9:ce3f with SMTP id w20-20020a627b14000000b00447c4c9ce3fmr12556780pfc.15.1632297950610;
-        Wed, 22 Sep 2021 01:05:50 -0700 (PDT)
-Received: from [172.30.1.2] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id c23sm1599245pgb.74.2021.09.22.01.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 01:05:50 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] devfreq: exynos-ppmu: simplify parsing event-type
- from DT
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-References: <20210920071540.38337-1-krzysztof.kozlowski@canonical.com>
- <20210920071753.38560-2-krzysztof.kozlowski@canonical.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <35ad437f-7527-e9b1-4819-8f4faa765e26@gmail.com>
-Date:   Wed, 22 Sep 2021 17:05:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 22 Sep 2021 04:08:03 -0400
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM:                                                                                        
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.255.10] (unknown[113.108.77.67])
+        by rmsmtp-lg-appmail-19-12022 (RichMail) with SMTP id 2ef6614ae401290-6d069;
+        Wed, 22 Sep 2021 16:06:26 +0800 (CST)
+X-RM-TRANSID: 2ef6614ae401290-6d069
+Message-ID: <e42a183f-274c-425f-2012-3ff0003e1fcb@139.com>
+Date:   Wed, 22 Sep 2021 16:06:25 +0800
 MIME-Version: 1.0
-In-Reply-To: <20210920071753.38560-2-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3] ovl: fix null pointer when filesystem doesn't support
+ direct IO
+To:     Huang Jianan <huangjianan@oppo.com>, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        chao@kernel.org
+Cc:     guoweichao@oppo.com, yh@oppo.com, zhangshiming@oppo.com,
+        guanyuwei@oppo.com, jnhuang95@gmail.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <9ef909de-1854-b4be-d272-2b4cda52329f@oppo.com>
+ <20210922072326.3538-1-huangjianan@oppo.com>
+From:   Chengguang Xu <cgxu519@139.com>
+In-Reply-To: <20210922072326.3538-1-huangjianan@oppo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+在 2021/9/22 15:23, Huang Jianan 写道:
+> From: Huang Jianan <huangjianan@oppo.com>
+>
+> At present, overlayfs provides overlayfs inode to users. Overlayfs
+> inode provides ovl_aops with noop_direct_IO to avoid open failure
+> with O_DIRECT. But some compressed filesystems, such as erofs and
+> squashfs, don't support direct_IO.
+>
+> Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
+> will read file through this way. This will cause overlayfs to access
+> a non-existent direct_IO function and cause panic due to null pointer:
 
-On 21. 9. 20. 오후 4:17, Krzysztof Kozlowski wrote:
-> When parsing devicetree, the function of_get_devfreq_events(), for each
-> device child node, iterates over array of possible events "ppmu_events"
-> till it finds one matching by node name.  When match is found the
-> ppmu_events[i] points to element having both the name of the event and
-> the counters ID.
-> 
-> Each PPMU device child node might have an "event-name" property with the
-> name of the event, however due to the design of devfreq it must be the
-> same as the device node name.  If it is not the same, the devfreq client
-> won't be able to use it via devfreq_event_get_edev_by_phandle().
-> 
-> Since PPMU device child node name must be equal to the "event-name"
-> property (event-name == ppmu_events[i].name), there is no need to find
-> the counters ID by the "event-name".  Instead use ppmu_events[i].id
-> which must be equal to it.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+I just looked around the code more closely, in open_with_fake_path(),
+
+do_dentry_open() has already checked O_DIRECT open flag and 
+a_ops->direct_IO of underlying real address_space.
+
+Am I missing something?
+
+
+Thanks,
+
+Chengguang
+
+
+>
+> Kernel panic - not syncing: CFI failure (target: 0x0)
+> CPU: 6 PID: 247 Comm: loop0
+> Call Trace:
+>   panic+0x188/0x45c
+>   __cfi_slowpath+0x0/0x254
+>   __cfi_slowpath+0x200/0x254
+>   generic_file_read_iter+0x14c/0x150
+>   vfs_iocb_iter_read+0xac/0x164
+>   ovl_read_iter+0x13c/0x2fc
+>   lo_rw_aio+0x2bc/0x458
+>   loop_queue_work+0x4a4/0xbc0
+>   kthread_worker_fn+0xf8/0x1d0
+>   loop_kthread_worker_fn+0x24/0x38
+>   kthread+0x29c/0x310
+>   ret_from_fork+0x10/0x30
+>
+> The filesystem may only support direct_IO for some file types. For
+> example, erofs supports direct_IO for uncompressed files. So return
+> -EINVAL when the file doesn't support direct_IO to fix this problem.
+>
+> Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs")
+> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
 > ---
->   drivers/devfreq/event/exynos-ppmu.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/exynos-ppmu.c b/drivers/devfreq/event/exynos-ppmu.c
-> index 541bd13ab61d..9b849d781116 100644
-> --- a/drivers/devfreq/event/exynos-ppmu.c
-> +++ b/drivers/devfreq/event/exynos-ppmu.c
-> @@ -566,13 +566,10 @@ static int of_get_devfreq_events(struct device_node *np,
->   			 * use default if not.
->   			 */
->   			if (info->ppmu_type == EXYNOS_TYPE_PPMU_V2) {
-> -				int id;
->   				/* Not all registers take the same value for
->   				 * read+write data count.
->   				 */
-> -				id = __exynos_ppmu_find_ppmu_id(desc[j].name);
-> -
-> -				switch (id) {
-> +				switch (ppmu_events[i].id) {
->   				case PPMU_PMNCNT0:
->   				case PPMU_PMNCNT1:
->   				case PPMU_PMNCNT2:
-> 
+> change since v2:
+>   - Return error in ovl_open directly. (Chengguang Xu)
+>
+> Change since v1:
+>   - Return error to user rather than fall back to buffered io. (Chengguang Xu)
+>
+>   fs/overlayfs/file.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+> index d081faa55e83..a0c99ea35daf 100644
+> --- a/fs/overlayfs/file.c
+> +++ b/fs/overlayfs/file.c
+> @@ -157,6 +157,10 @@ static int ovl_open(struct inode *inode, struct file *file)
+>   	if (IS_ERR(realfile))
+>   		return PTR_ERR(realfile);
+>   
+> +	if ((f->f_flags & O_DIRECT) && (!realfile->f_mapping->a_ops ||
+> +		!realfile->f_mapping->a_ops->direct_IO))
+> +		return -EINVAL;
+> +
+>   	file->private_data = realfile;
+>   
+>   	return 0;
 
-Applied it. Thanks.
-
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
