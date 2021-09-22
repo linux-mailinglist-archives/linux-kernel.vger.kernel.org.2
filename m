@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC09414E61
+	by mail.lfdr.de (Postfix) with ESMTP id 8E304414E62
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhIVQwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33954 "EHLO
+        id S236702AbhIVQwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236680AbhIVQwg (ORCPT
+        with ESMTP id S236684AbhIVQwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:52:36 -0400
+        Wed, 22 Sep 2021 12:52:37 -0400
 Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B822C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:51:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B370C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:51:07 -0700 (PDT)
 Received: from zn.tnic (p200300ec2f0efa00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fa00:329c:23ff:fea6:a903])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CF93A1EC0545;
-        Wed, 22 Sep 2021 18:51:04 +0200 (CEST)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B30B11EC054F;
+        Wed, 22 Sep 2021 18:51:05 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
         t=1632329465;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CaIemHGFshtBcK+j0v3sBw3csRZ8k9zCHBEP7bhP+Io=;
-        b=JarX5NW+jYQ98yhGzOra1m3Hojs7w+IlYGaSQ8gKCjsMOM8zWSZGxe+qotaW7K6HCgLUjZ
-        OKChgXgxmm0mKv1ynoLYW9LnwRkHTF+b/ppaBNYL95PFE4t10aQ6f8VW1Ker7U3TG9Syn+
-        PQhcfz78psQ4PXz4X5oL6Sj1QIV9l1E=
+        bh=oyAI6xTRturKg9D0c/d78VTYCQwlYfO0ugGUZYiITJ8=;
+        b=QS8aPZKLMN/NkGG638Xr+39qbqL3pXQ3vElxMwfwNEVGpv/U6FyVnX2Z4uhOem+XTv/SDl
+        3fxNNsvAwsfgLT1WyjQL04ny8yDkcNSbt/zfZ6LErFNsweL4SKgFEoECaFJnOpWqVcl9eb
+        TTK7QDcOcQnKE0ddvh/iDfVjN4kwIRA=
 From:   Borislav Petkov <bp@alien8.de>
 To:     Tony Luck <tony.luck@intel.com>,
         Yazen Ghannam <Yazen.Ghannam@amd.com>
 Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 2/5] x86/mce: Get rid of machine_check_vector
-Date:   Wed, 22 Sep 2021 18:50:58 +0200
-Message-Id: <20210922165101.18951-3-bp@alien8.de>
+Subject: [PATCH v1 3/5] x86/mce: Get rid of msr_ops
+Date:   Wed, 22 Sep 2021 18:50:59 +0200
+Message-Id: <20210922165101.18951-4-bp@alien8.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210922165101.18951-1-bp@alien8.de>
 References: <20210922165101.18951-1-bp@alien8.de>
@@ -48,295 +48,284 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Borislav Petkov <bp@suse.de>
 
-Get rid of the indirect function pointer and use flags settings instead
-to steer execution.
-
-Now that it is not an indirect call any longer, drop the instrumentation
-annotation for objtool too.
+Avoid having indirect calls and use a normal function which returns the
+proper MSR address based on ->smca setting.
 
 No functional changes.
 
 Signed-off-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/include/asm/mce.h         | 10 ------
- arch/x86/kernel/cpu/mce/core.c     | 57 ++++++++++++++----------------
- arch/x86/kernel/cpu/mce/internal.h | 29 ++++++++++++---
- arch/x86/kernel/cpu/mce/p5.c       |  6 +---
- arch/x86/kernel/cpu/mce/winchip.c  |  6 +---
- 5 files changed, 53 insertions(+), 55 deletions(-)
+ arch/x86/kernel/cpu/mce/amd.c      | 10 ++--
+ arch/x86/kernel/cpu/mce/core.c     | 95 ++++++++++--------------------
+ arch/x86/kernel/cpu/mce/internal.h | 12 ++--
+ 3 files changed, 42 insertions(+), 75 deletions(-)
 
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index 258ef6d9955c..813b4f5b0dd6 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -215,16 +215,6 @@ static inline int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
- 					     u64 lapic_id) { return -EINVAL; }
- #endif
- 
--#ifdef CONFIG_X86_ANCIENT_MCE
--void intel_p5_mcheck_init(struct cpuinfo_x86 *c);
--void winchip_mcheck_init(struct cpuinfo_x86 *c);
--static inline void enable_p5_mce(void) { mce_p5_enabled = 1; }
--#else
--static inline void intel_p5_mcheck_init(struct cpuinfo_x86 *c) {}
--static inline void winchip_mcheck_init(struct cpuinfo_x86 *c) {}
--static inline void enable_p5_mce(void) {}
--#endif
--
- void mce_setup(struct mce *m);
- void mce_log(struct mce *m);
- DECLARE_PER_CPU(struct device *, mce_device);
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index aaede7ed9f77..7aff9a503d1c 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1328,6 +1328,15 @@ static void queue_task_work(struct mce *m, char *msg, void (*func)(struct callba
- 	task_work_add(current, &current->mce_kill_me, TWA_RESUME);
- }
- 
-+/* Handle unconfigured int18 (should never happen) */
-+static noinstr void unexpected_machine_check(struct pt_regs *regs)
-+{
-+	instrumentation_begin();
-+	pr_err("CPU#%d: Unexpected int18 (Machine Check)\n",
-+	       smp_processor_id());
-+	instrumentation_end();
-+}
-+
- /*
-  * The actual machine check handler. This only handles real
-  * exceptions when something got corrupted coming in through int 18.
-@@ -1348,36 +1357,43 @@ static void queue_task_work(struct mce *m, char *msg, void (*func)(struct callba
-  */
- noinstr void do_machine_check(struct pt_regs *regs)
+diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
+index 08831acc1d03..27cacf504663 100644
+--- a/arch/x86/kernel/cpu/mce/amd.c
++++ b/arch/x86/kernel/cpu/mce/amd.c
+@@ -526,7 +526,7 @@ static u32 get_block_address(u32 current_addr, u32 low, u32 high,
+ 	/* Fall back to method we used for older processors: */
+ 	switch (block) {
+ 	case 0:
+-		addr = msr_ops.misc(bank);
++		addr = mca_msr_reg(bank, MCA_MISC);
+ 		break;
+ 	case 1:
+ 		offset = ((low & MASK_BLKPTR_LO) >> 21);
+@@ -978,8 +978,8 @@ static void log_error_deferred(unsigned int bank)
  {
-+	int worst = 0, order, no_way_out, kill_current_task, lmce;
- 	DECLARE_BITMAP(valid_banks, MAX_NR_BANKS);
- 	DECLARE_BITMAP(toclear, MAX_NR_BANKS);
- 	struct mca_config *cfg = &mca_cfg;
- 	struct mce m, *final;
- 	char *msg = NULL;
--	int worst = 0;
-+
-+	if (unlikely(mce_flags.p5))
-+		return pentium_machine_check(regs);
-+	else if (unlikely(mce_flags.winchip))
-+		return winchip_machine_check(regs);
-+	else if (unlikely(!mca_cfg.initialized))
-+		return unexpected_machine_check(regs);
+ 	bool defrd;
  
- 	/*
- 	 * Establish sequential order between the CPUs entering the machine
- 	 * check handler.
- 	 */
--	int order = -1;
-+	order = -1;
+-	defrd = _log_error_bank(bank, msr_ops.status(bank),
+-					msr_ops.addr(bank), 0);
++	defrd = _log_error_bank(bank, mca_msr_reg(bank, MCA_STATUS),
++				mca_msr_reg(bank, MCA_ADDR), 0);
  
- 	/*
- 	 * If no_way_out gets set, there is no safe way to recover from this
- 	 * MCE.  If mca_cfg.tolerant is cranked up, we'll try anyway.
- 	 */
--	int no_way_out = 0;
-+	no_way_out = 0;
- 
- 	/*
- 	 * If kill_current_task is not set, there might be a way to recover from this
- 	 * error.
- 	 */
--	int kill_current_task = 0;
-+	kill_current_task = 0;
- 
- 	/*
- 	 * MCEs are always local on AMD. Same is determined by MCG_STATUS_LMCES
- 	 * on Intel.
- 	 */
--	int lmce = 1;
-+	lmce = 1;
- 
- 	this_cpu_inc(mce_exception_count);
- 
-@@ -1855,9 +1871,11 @@ static int __mcheck_cpu_ancient_init(struct cpuinfo_x86 *c)
- 	switch (c->x86_vendor) {
- 	case X86_VENDOR_INTEL:
- 		intel_p5_mcheck_init(c);
-+		mce_flags.p5 = 1;
- 		return 1;
- 	case X86_VENDOR_CENTAUR:
- 		winchip_mcheck_init(c);
-+		mce_flags.winchip = 1;
- 		return 1;
- 	default:
- 		return 0;
-@@ -2012,18 +2030,6 @@ bool filter_mce(struct mce *m)
- 	return false;
- }
- 
--/* Handle unconfigured int18 (should never happen) */
--static noinstr void unexpected_machine_check(struct pt_regs *regs)
--{
--	instrumentation_begin();
--	pr_err("CPU#%d: Unexpected int18 (Machine Check)\n",
--	       smp_processor_id());
--	instrumentation_end();
--}
--
--/* Call the installed machine check handler for this CPU setup. */
--void (*machine_check_vector)(struct pt_regs *) = unexpected_machine_check;
--
- static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
- {
- 	irqentry_state_t irq_state;
-@@ -2034,31 +2040,22 @@ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
- 	 * Only required when from kernel mode. See
- 	 * mce_check_crashing_cpu() for details.
- 	 */
--	if (machine_check_vector == do_machine_check &&
--	    mce_check_crashing_cpu())
-+	if (mca_cfg.initialized && mce_check_crashing_cpu())
+ 	if (!mce_flags.smca)
  		return;
+@@ -1009,7 +1009,7 @@ static void amd_deferred_error_interrupt(void)
  
- 	irq_state = irqentry_nmi_enter(regs);
--	/*
--	 * The call targets are marked noinstr, but objtool can't figure
--	 * that out because it's an indirect call. Annotate it.
--	 */
--	instrumentation_begin();
- 
--	machine_check_vector(regs);
-+	do_machine_check(regs);
- 
--	instrumentation_end();
- 	irqentry_nmi_exit(regs, irq_state);
- }
- 
- static __always_inline void exc_machine_check_user(struct pt_regs *regs)
+ static void log_error_thresholding(unsigned int bank, u64 misc)
  {
- 	irqentry_enter_from_user_mode(regs);
--	instrumentation_begin();
- 
--	machine_check_vector(regs);
-+	do_machine_check(regs);
- 
--	instrumentation_end();
- 	irqentry_exit_to_user_mode(regs);
+-	_log_error_bank(bank, msr_ops.status(bank), msr_ops.addr(bank), misc);
++	_log_error_bank(bank, mca_msr_reg(bank, MCA_STATUS), mca_msr_reg(bank, MCA_ADDR), misc);
  }
  
-@@ -2125,7 +2122,7 @@ void mcheck_cpu_init(struct cpuinfo_x86 *c)
- 		return;
+ static void log_and_reset_block(struct threshold_block *block)
+@@ -1397,7 +1397,7 @@ static int threshold_create_bank(struct threshold_bank **bp, unsigned int cpu,
+ 		}
  	}
  
--	machine_check_vector = do_machine_check;
-+	mca_cfg.initialized = 1;
+-	err = allocate_threshold_blocks(cpu, b, bank, 0, msr_ops.misc(bank));
++	err = allocate_threshold_blocks(cpu, b, bank, 0, mca_msr_reg(bank, MCA_MISC));
+ 	if (err)
+ 		goto out_kobj;
  
- 	__mcheck_cpu_init_early(c);
- 	__mcheck_cpu_init_generic();
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 7aff9a503d1c..8e766b2685d6 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -176,53 +176,27 @@ void mce_unregister_decode_chain(struct notifier_block *nb)
+ }
+ EXPORT_SYMBOL_GPL(mce_unregister_decode_chain);
+ 
+-static inline u32 ctl_reg(int bank)
++u32 mca_msr_reg(int bank, enum mca_msr reg)
+ {
+-	return MSR_IA32_MCx_CTL(bank);
+-}
+-
+-static inline u32 status_reg(int bank)
+-{
+-	return MSR_IA32_MCx_STATUS(bank);
+-}
+-
+-static inline u32 addr_reg(int bank)
+-{
+-	return MSR_IA32_MCx_ADDR(bank);
+-}
+-
+-static inline u32 misc_reg(int bank)
+-{
+-	return MSR_IA32_MCx_MISC(bank);
+-}
+-
+-static inline u32 smca_ctl_reg(int bank)
+-{
+-	return MSR_AMD64_SMCA_MCx_CTL(bank);
+-}
+-
+-static inline u32 smca_status_reg(int bank)
+-{
+-	return MSR_AMD64_SMCA_MCx_STATUS(bank);
+-}
++	if (mce_flags.smca) {
++		switch (reg) {
++		case MCA_CTL:	 return MSR_AMD64_SMCA_MCx_CTL(bank);
++		case MCA_ADDR:	 return MSR_AMD64_SMCA_MCx_ADDR(bank);
++		case MCA_MISC:	 return MSR_AMD64_SMCA_MCx_MISC(bank);
++		case MCA_STATUS: return MSR_AMD64_SMCA_MCx_STATUS(bank);
++		}
++	}
+ 
+-static inline u32 smca_addr_reg(int bank)
+-{
+-	return MSR_AMD64_SMCA_MCx_ADDR(bank);
+-}
++	switch (reg) {
++	case MCA_CTL:	 return MSR_IA32_MCx_CTL(bank);
++	case MCA_ADDR:	 return MSR_IA32_MCx_ADDR(bank);
++	case MCA_MISC:	 return MSR_IA32_MCx_MISC(bank);
++	case MCA_STATUS: return MSR_IA32_MCx_STATUS(bank);
++	}
+ 
+-static inline u32 smca_misc_reg(int bank)
+-{
+-	return MSR_AMD64_SMCA_MCx_MISC(bank);
++	return 0;
+ }
+ 
+-struct mca_msr_regs msr_ops = {
+-	.ctl	= ctl_reg,
+-	.status	= status_reg,
+-	.addr	= addr_reg,
+-	.misc	= misc_reg
+-};
+-
+ static void __print_mce(struct mce *m)
+ {
+ 	pr_emerg(HW_ERR "CPU %d: Machine Check%s: %Lx Bank %d: %016Lx\n",
+@@ -362,11 +336,11 @@ static int msr_to_offset(u32 msr)
+ 
+ 	if (msr == mca_cfg.rip_msr)
+ 		return offsetof(struct mce, ip);
+-	if (msr == msr_ops.status(bank))
++	if (msr == mca_msr_reg(bank, MCA_STATUS))
+ 		return offsetof(struct mce, status);
+-	if (msr == msr_ops.addr(bank))
++	if (msr == mca_msr_reg(bank, MCA_ADDR))
+ 		return offsetof(struct mce, addr);
+-	if (msr == msr_ops.misc(bank))
++	if (msr == mca_msr_reg(bank, MCA_MISC))
+ 		return offsetof(struct mce, misc);
+ 	if (msr == MSR_IA32_MCG_STATUS)
+ 		return offsetof(struct mce, mcgstatus);
+@@ -685,10 +659,10 @@ static struct notifier_block mce_default_nb = {
+ static void mce_read_aux(struct mce *m, int i)
+ {
+ 	if (m->status & MCI_STATUS_MISCV)
+-		m->misc = mce_rdmsrl(msr_ops.misc(i));
++		m->misc = mce_rdmsrl(mca_msr_reg(i, MCA_MISC));
+ 
+ 	if (m->status & MCI_STATUS_ADDRV) {
+-		m->addr = mce_rdmsrl(msr_ops.addr(i));
++		m->addr = mce_rdmsrl(mca_msr_reg(i, MCA_ADDR));
+ 
+ 		/*
+ 		 * Mask the reported address by the reported granularity.
+@@ -758,7 +732,7 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
+ 		m.bank = i;
+ 
+ 		barrier();
+-		m.status = mce_rdmsrl(msr_ops.status(i));
++		m.status = mce_rdmsrl(mca_msr_reg(i, MCA_STATUS));
+ 
+ 		/* If this entry is not valid, ignore it */
+ 		if (!(m.status & MCI_STATUS_VAL))
+@@ -826,7 +800,7 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
+ 		/*
+ 		 * Clear state for this bank.
+ 		 */
+-		mce_wrmsrl(msr_ops.status(i), 0);
++		mce_wrmsrl(mca_msr_reg(i, MCA_STATUS), 0);
+ 	}
+ 
+ 	/*
+@@ -851,7 +825,7 @@ static int mce_no_way_out(struct mce *m, char **msg, unsigned long *validp,
+ 	int i;
+ 
+ 	for (i = 0; i < this_cpu_read(mce_num_banks); i++) {
+-		m->status = mce_rdmsrl(msr_ops.status(i));
++		m->status = mce_rdmsrl(mca_msr_reg(i, MCA_STATUS));
+ 		if (!(m->status & MCI_STATUS_VAL))
+ 			continue;
+ 
+@@ -1144,7 +1118,7 @@ static void mce_clear_state(unsigned long *toclear)
+ 
+ 	for (i = 0; i < this_cpu_read(mce_num_banks); i++) {
+ 		if (test_bit(i, toclear))
+-			mce_wrmsrl(msr_ops.status(i), 0);
++			mce_wrmsrl(mca_msr_reg(i, MCA_STATUS), 0);
+ 	}
+ }
+ 
+@@ -1203,7 +1177,7 @@ static void __mc_scan_banks(struct mce *m, struct pt_regs *regs, struct mce *fin
+ 		m->addr = 0;
+ 		m->bank = i;
+ 
+-		m->status = mce_rdmsrl(msr_ops.status(i));
++		m->status = mce_rdmsrl(mca_msr_reg(i, MCA_STATUS));
+ 		if (!(m->status & MCI_STATUS_VAL))
+ 			continue;
+ 
+@@ -1708,8 +1682,8 @@ static void __mcheck_cpu_init_clear_banks(void)
+ 
+ 		if (!b->init)
+ 			continue;
+-		wrmsrl(msr_ops.ctl(i), b->ctl);
+-		wrmsrl(msr_ops.status(i), 0);
++		wrmsrl(mca_msr_reg(i, MCA_CTL), b->ctl);
++		wrmsrl(mca_msr_reg(i, MCA_STATUS), 0);
+ 	}
+ }
+ 
+@@ -1735,7 +1709,7 @@ static void __mcheck_cpu_check_banks(void)
+ 		if (!b->init)
+ 			continue;
+ 
+-		rdmsrl(msr_ops.ctl(i), msrval);
++		rdmsrl(mca_msr_reg(i, MCA_CTL), msrval);
+ 		b->init = !!msrval;
+ 	}
+ }
+@@ -1894,13 +1868,6 @@ static void __mcheck_cpu_init_early(struct cpuinfo_x86 *c)
+ 		mce_flags.succor	 = !!cpu_has(c, X86_FEATURE_SUCCOR);
+ 		mce_flags.smca		 = !!cpu_has(c, X86_FEATURE_SMCA);
+ 		mce_flags.amd_threshold	 = 1;
+-
+-		if (mce_flags.smca) {
+-			msr_ops.ctl	= smca_ctl_reg;
+-			msr_ops.status	= smca_status_reg;
+-			msr_ops.addr	= smca_addr_reg;
+-			msr_ops.misc	= smca_misc_reg;
+-		}
+ 	}
+ }
+ 
+@@ -2254,7 +2221,7 @@ static void mce_disable_error_reporting(void)
+ 		struct mce_bank *b = &mce_banks[i];
+ 
+ 		if (b->init)
+-			wrmsrl(msr_ops.ctl(i), 0);
++			wrmsrl(mca_msr_reg(i, MCA_CTL), 0);
+ 	}
+ 	return;
+ }
+@@ -2606,7 +2573,7 @@ static void mce_reenable_cpu(void)
+ 		struct mce_bank *b = &mce_banks[i];
+ 
+ 		if (b->init)
+-			wrmsrl(msr_ops.ctl(i), b->ctl);
++			wrmsrl(mca_msr_reg(i, MCA_CTL), b->ctl);
+ 	}
+ }
+ 
 diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
-index 09cb5ab9a81d..d71d6c5c3ef0 100644
+index d71d6c5c3ef0..1ad7b4bf5423 100644
 --- a/arch/x86/kernel/cpu/mce/internal.h
 +++ b/arch/x86/kernel/cpu/mce/internal.h
-@@ -8,9 +8,6 @@
- #include <linux/device.h>
- #include <asm/mce.h>
- 
--/* Pointer to the installed machine check handler for this CPU setup. */
--extern void (*machine_check_vector)(struct pt_regs *);
--
- enum severity_level {
- 	MCE_NO_SEVERITY,
- 	MCE_DEFERRED_SEVERITY,
-@@ -126,7 +123,9 @@ struct mca_config {
- 	      ser			: 1,
- 	      recovery			: 1,
- 	      bios_cmci_threshold	: 1,
--	      __reserved		: 59;
-+	      /* Proper #MC exception handler is set */
-+	      initialized		: 1,
-+	      __reserved		: 58;
- 
- 	s8 bootlog;
- 	int tolerant;
-@@ -162,7 +161,13 @@ struct mce_vendor_flags {
- 	/* AMD-style error thresholding banks present. */
- 	amd_threshold		: 1,
- 
--	__reserved_0		: 60;
-+	/* Pentium, family 5-style MCA */
-+	p5			: 1,
-+
-+	/* Centaur Winchip C6-style MCA */
-+	winchip			: 1,
-+
-+	__reserved_0		: 58;
- };
+@@ -172,14 +172,14 @@ struct mce_vendor_flags {
  
  extern struct mce_vendor_flags mce_flags;
-@@ -195,4 +200,18 @@ __visible bool ex_handler_wrmsr_fault(const struct exception_table_entry *fixup,
- 				      unsigned long error_code,
- 				      unsigned long fault_addr);
  
-+#ifdef CONFIG_X86_ANCIENT_MCE
-+void intel_p5_mcheck_init(struct cpuinfo_x86 *c);
-+void winchip_mcheck_init(struct cpuinfo_x86 *c);
-+noinstr void pentium_machine_check(struct pt_regs *regs);
-+noinstr void winchip_machine_check(struct pt_regs *regs);
-+static inline void enable_p5_mce(void) { mce_p5_enabled = 1; }
-+#else
-+static inline void intel_p5_mcheck_init(struct cpuinfo_x86 *c) {}
-+static inline void winchip_mcheck_init(struct cpuinfo_x86 *c) {}
-+static inline void enable_p5_mce(void) {}
-+static inline void pentium_machine_check(struct pt_regs *regs) {}
-+static inline void winchip_machine_check(struct pt_regs *regs) {}
-+#endif
-+
- #endif /* __X86_MCE_INTERNAL_H__ */
-diff --git a/arch/x86/kernel/cpu/mce/p5.c b/arch/x86/kernel/cpu/mce/p5.c
-index 19e90cae8e97..2272ad53fc33 100644
---- a/arch/x86/kernel/cpu/mce/p5.c
-+++ b/arch/x86/kernel/cpu/mce/p5.c
-@@ -21,7 +21,7 @@
- int mce_p5_enabled __read_mostly;
+-struct mca_msr_regs {
+-	u32 (*ctl)	(int bank);
+-	u32 (*status)	(int bank);
+-	u32 (*addr)	(int bank);
+-	u32 (*misc)	(int bank);
++enum mca_msr {
++	MCA_CTL,
++	MCA_STATUS,
++	MCA_ADDR,
++	MCA_MISC,
+ };
  
- /* Machine check handler for Pentium class Intel CPUs: */
--static noinstr void pentium_machine_check(struct pt_regs *regs)
-+noinstr void pentium_machine_check(struct pt_regs *regs)
- {
- 	u32 loaddr, hi, lotype;
+-extern struct mca_msr_regs msr_ops;
++u32 mca_msr_reg(int bank, enum mca_msr reg);
  
-@@ -54,10 +54,6 @@ void intel_p5_mcheck_init(struct cpuinfo_x86 *c)
- 	if (!cpu_has(c, X86_FEATURE_MCE))
- 		return;
- 
--	machine_check_vector = pentium_machine_check;
--	/* Make sure the vector pointer is visible before we enable MCEs: */
--	wmb();
--
- 	/* Read registers before enabling: */
- 	rdmsr(MSR_IA32_P5_MC_ADDR, l, h);
- 	rdmsr(MSR_IA32_P5_MC_TYPE, l, h);
-diff --git a/arch/x86/kernel/cpu/mce/winchip.c b/arch/x86/kernel/cpu/mce/winchip.c
-index 9c9f0abd2d7f..6c99f2941909 100644
---- a/arch/x86/kernel/cpu/mce/winchip.c
-+++ b/arch/x86/kernel/cpu/mce/winchip.c
-@@ -17,7 +17,7 @@
- #include "internal.h"
- 
- /* Machine check handler for WinChip C6: */
--static noinstr void winchip_machine_check(struct pt_regs *regs)
-+noinstr void winchip_machine_check(struct pt_regs *regs)
- {
- 	instrumentation_begin();
- 	pr_emerg("CPU0: Machine Check Exception.\n");
-@@ -30,10 +30,6 @@ void winchip_mcheck_init(struct cpuinfo_x86 *c)
- {
- 	u32 lo, hi;
- 
--	machine_check_vector = winchip_machine_check;
--	/* Make sure the vector pointer is visible before we enable MCEs: */
--	wmb();
--
- 	rdmsr(MSR_IDT_FCR1, lo, hi);
- 	lo |= (1<<2);	/* Enable EIERRINT (int 18 MCE) */
- 	lo &= ~(1<<4);	/* Enable MCE */
+ /* Decide whether to add MCE record to MCE event pool or filter it out. */
+ extern bool filter_mce(struct mce *m);
 -- 
 2.29.2
 
