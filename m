@@ -2,426 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2754142F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A444142FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233399AbhIVHz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 03:55:57 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:49876 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233342AbhIVHzz (ORCPT
+        id S233425AbhIVH5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233303AbhIVH5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:55:55 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18M6jOXm005837;
-        Wed, 22 Sep 2021 09:54:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=3vxZi4mFy6XkhIZ9zcGNRYsHShdsAcX48ITYfRbgjuQ=;
- b=V87FTO7bi680G0ptuqRJpmO5sIGXTYa3xROIuUYuEvaefK0NJ947tCVFAPcE9Yw4gTFg
- NIVqOVqcEeoXdMPe2CKvgAuxcAGdKVBsFm2Gy28d3ubespQuXEP0cKkClAkU+myl8Ik9
- s3jaCA6V9zyQOnD1t969n9+qnDsoRYcvDhpihjAIcZnozfeOA6NVWfIZ7WmnOyeoIBjE
- fayBd4IJHVHIfRCNWoIVsNKFFh4zqF6lCNh/KvJdRxHIFujZwLDDqvmYO/WBXvPaneUo
- YXcAIaX0IBkkbp/QA06ZiXTmek54f0jyDSF12V9Rce/C3j+a120c4AVK36LOkJqLrP+I LA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3b7q3hjfpy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Sep 2021 09:54:01 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7ADD310002A;
-        Wed, 22 Sep 2021 09:54:00 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 70F7D21E679;
-        Wed, 22 Sep 2021 09:54:00 +0200 (CEST)
-Received: from lmecxl0577.lme.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
- 2021 09:53:59 +0200
-Subject: Re: [PATCH 6/7] iio: adc: stm32-adc: add vrefint calibration support
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210908155452.25458-1-olivier.moysan@foss.st.com>
- <20210908155452.25458-7-olivier.moysan@foss.st.com>
- <20210911172834.401cf4c8@jic23-huawei>
- <865e35a2-47c1-336a-641a-365b7db8213a@foss.st.com>
- <20210918194149.546a5189@jic23-huawei>
-From:   Olivier MOYSAN <olivier.moysan@foss.st.com>
-Message-ID: <3284242f-b85f-3f96-c165-bf12325136c3@foss.st.com>
-Date:   Wed, 22 Sep 2021 09:53:58 +0200
+        Wed, 22 Sep 2021 03:57:11 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BF5C061574;
+        Wed, 22 Sep 2021 00:55:42 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so1615514pjb.5;
+        Wed, 22 Sep 2021 00:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=a4LVEfaLq327oC+OuEdH7ELI4IIn+exl8gSPSV42DbE=;
+        b=DWmJa+DLG5+58msZw2eol35HwBKnYSQ7t02TLOj6y7kQuax03g9P17nczPrnLMeZ7z
+         3sV0IwuR+61tJIjidNpyn2DIZkYiT8wnQLxkzgVir/0kRS+p3CPni+wg/rV+ywpzeydM
+         G6PgM3M9JIZENg/tHQAUiEO4hzKKj9XEmfOstaWucgBiOgOd4yL1vEJHRESuqkajqhHU
+         xXlTNa42T8o0Hvt334nWGwN64pd36MIqzhFPHlnN2GfOznadFxq047OjLsw2n4/gqCa+
+         iLGPuOD7esCH/C+3dxb6kF5Po1ylFMbEOwmPyIy+qdMEnHf3lUpH9fxWPTvQHlj95XWq
+         0McQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=a4LVEfaLq327oC+OuEdH7ELI4IIn+exl8gSPSV42DbE=;
+        b=cmLbtrJ7RUUvd/xxecI9zlxZZ07Qy9bpaHxsVsR/8Q5noCFAmn+rgj4pkO5MUkEdzZ
+         ypTnf3WbaiPSpjvXNLKAobfsN1q1BPSPoEaZ8oKwmGkY4mjgGpqd7qRm93RdCHMkyMe1
+         4MP1r/dKE3JmWlR5zV9iW8U37i4ll6p13h4PKhdGERCrFykllE4fHmD2Gn/wjppF/ZOG
+         IDKLlJaqFIsilclRivv6fcTYHJ2WL/QrfUzsHjvFA9Yy65tM6JiCffDuj++lzZ04vh4V
+         aBXou4AMmC9H8pNtaFJHPGHJEZRu5PPTGVpD0ILMQQC57IKFYXJ/wrB+tBAlrZpP/aqB
+         7ESg==
+X-Gm-Message-State: AOAM531zju8WB1Xl8vIEZUtl1t0OA7ZSJSXnYHGXyZ2mHvpNDrmIaEmc
+        WLipjcu2UUtPLpZs2SXSx+fwK2NLSnA=
+X-Google-Smtp-Source: ABdhPJxrg2xQum3vEzcdb8t6ZMjs25UcmhqVGJerQo4ZN/JiJ7Y3MAG2gCKgEruTaH5l6KhsofKj6w==
+X-Received: by 2002:a17:90a:d516:: with SMTP id t22mr9821382pju.208.1632297341658;
+        Wed, 22 Sep 2021 00:55:41 -0700 (PDT)
+Received: from [172.30.1.2] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id d3sm1438903pfn.156.2021.09.22.00.55.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 00:55:40 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] devfreq: exynos-ppmu: use node names with hyphens
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+References: <20210920071540.38337-1-krzysztof.kozlowski@canonical.com>
+ <20210920071753.38560-1-krzysztof.kozlowski@canonical.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <83206dd4-c779-1090-9394-2519d4747206@gmail.com>
+Date:   Wed, 22 Sep 2021 16:55:37 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210918194149.546a5189@jic23-huawei>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210920071753.38560-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-22_02,2021-09-20_01,2020-04-07_01
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+Hi Krzysztof,
 
-On 9/18/21 8:42 PM, Jonathan Cameron wrote:
-> On Wed, 15 Sep 2021 12:02:45 +0200
-> Olivier MOYSAN <olivier.moysan@foss.st.com> wrote:
+On 21. 9. 20. 오후 4:17, Krzysztof Kozlowski wrote:
+> Devicetree naming convention requires device node names to use hyphens
+> instead of underscore, so Exynos5422 devfreq event name
+> "ppmu-event3-dmc0_0" should be "ppmu-event3-dmc0-0".  Newly introduced
+> dtschema enforces this, however the driver still expects old name with
+> an underscore.
 > 
->> Hi Jonathan,
->>
->> On 9/11/21 6:28 PM, Jonathan Cameron wrote:
->>> On Wed, 8 Sep 2021 17:54:51 +0200
->>> Olivier Moysan <olivier.moysan@foss.st.com> wrote:
->>>    
->>>> Add support of vrefint calibration.
->>>> If a channel is labeled as vrefint, get vrefint calibration
->>>> from non volatile memory for this channel.
->>>> A conversion on vrefint channel allows to update scale
->>>> factor according to vrefint deviation, compared to vrefint
->>>> calibration value.
->>>
->>> As I mention inline, whilst technically the ABI doesn't demand it
->>> the expectation of much of userspace software is that _scale is
->>> pseudo constant - that is it doesn't tend to change very often and when
->>> it does it's normally because someone deliberately made it change.
->>> As such most software reads it just once.
->>>
->>> Normally we work around this by applying the maths in kernel and
->>> not exposing the scale at all. Is this something that could be done here?
->>>
->>> Jonathan
->>>    
->>>>
->>>> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
->>>> ---
->>>>    drivers/iio/adc/stm32-adc.c | 88 ++++++++++++++++++++++++++++++++++---
->>>>    1 file changed, 82 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
->>>> index ef3d2af98025..9e52a7de9b16 100644
->>>> --- a/drivers/iio/adc/stm32-adc.c
->>>> +++ b/drivers/iio/adc/stm32-adc.c
->>>> @@ -21,6 +21,7 @@
->>>>    #include <linux/io.h>
->>>>    #include <linux/iopoll.h>
->>>>    #include <linux/module.h>
->>>> +#include <linux/nvmem-consumer.h>
->>>>    #include <linux/platform_device.h>
->>>>    #include <linux/pm_runtime.h>
->>>>    #include <linux/of.h>
->>>> @@ -42,6 +43,7 @@
->>>>    #define STM32_ADC_TIMEOUT	(msecs_to_jiffies(STM32_ADC_TIMEOUT_US / 1000))
->>>>    #define STM32_ADC_HW_STOP_DELAY_MS	100
->>>>    #define STM32_ADC_CHAN_NONE		-1
->>>> +#define STM32_ADC_VREFINT_VOLTAGE	3300
->>>>    
->>>>    #define STM32_DMA_BUFFER_SIZE		PAGE_SIZE
->>>>    
->>>> @@ -79,6 +81,7 @@ enum stm32_adc_extsel {
->>>>    };
->>>>    
->>>>    enum stm32_adc_int_ch {
->>>> +	STM32_ADC_INT_CH_NONE = -1,
->>>>    	STM32_ADC_INT_CH_VDDCORE,
->>>>    	STM32_ADC_INT_CH_VREFINT,
->>>>    	STM32_ADC_INT_CH_VBAT,
->>>> @@ -137,6 +140,16 @@ struct stm32_adc_regs {
->>>>    	int shift;
->>>>    };
->>>>    
->>>> +/**
->>>> + * struct stm32_adc_vrefint - stm32 ADC internal reference voltage data
->>>> + * @vrefint_cal:	vrefint calibration value from nvmem
->>>> + * @vrefint_data:	vrefint actual value
->>>> + */
->>>> +struct stm32_adc_vrefint {
->>>> +	u32 vrefint_cal;
->>>> +	u32 vrefint_data;
->>>> +};
->>>> +
->>>>    /**
->>>>     * struct stm32_adc_regspec - stm32 registers definition
->>>>     * @dr:			data register offset
->>>> @@ -186,6 +199,7 @@ struct stm32_adc;
->>>>     * @unprepare:		optional unprepare routine (disable, power-down)
->>>>     * @irq_clear:		routine to clear irqs
->>>>     * @smp_cycles:		programmable sampling time (ADC clock cycles)
->>>> + * @ts_vrefint_ns:	vrefint minimum sampling time in ns
->>>>     */
->>>>    struct stm32_adc_cfg {
->>>>    	const struct stm32_adc_regspec	*regs;
->>>> @@ -199,6 +213,7 @@ struct stm32_adc_cfg {
->>>>    	void (*unprepare)(struct iio_dev *);
->>>>    	void (*irq_clear)(struct iio_dev *indio_dev, u32 msk);
->>>>    	const unsigned int *smp_cycles;
->>>> +	const unsigned int ts_vrefint_ns;
->>>>    };
->>>>    
->>>>    /**
->>>> @@ -223,6 +238,7 @@ struct stm32_adc_cfg {
->>>>     * @pcsel:		bitmask to preselect channels on some devices
->>>>     * @smpr_val:		sampling time settings (e.g. smpr1 / smpr2)
->>>>     * @cal:		optional calibration data on some devices
->>>> + * @vrefint:		internal reference voltage data
->>>>     * @chan_name:		channel name array
->>>>     * @num_diff:		number of differential channels
->>>>     * @int_ch:		internal channel indexes array
->>>> @@ -248,6 +264,7 @@ struct stm32_adc {
->>>>    	u32			pcsel;
->>>>    	u32			smpr_val[2];
->>>>    	struct stm32_adc_calib	cal;
->>>> +	struct stm32_adc_vrefint vrefint;
->>>>    	char			chan_name[STM32_ADC_CH_MAX][STM32_ADC_CH_SZ];
->>>>    	u32			num_diff;
->>>>    	int			int_ch[STM32_ADC_INT_CH_NB];
->>>> @@ -1331,15 +1348,35 @@ static int stm32_adc_read_raw(struct iio_dev *indio_dev,
->>>>    			ret = stm32_adc_single_conv(indio_dev, chan, val);
->>>>    		else
->>>>    			ret = -EINVAL;
->>>> +
->>>> +		/* If channel mask corresponds to vrefint, store data */
->>>> +		if (adc->int_ch[STM32_ADC_INT_CH_VREFINT] == chan->channel)
->>>> +			adc->vrefint.vrefint_data = *val;
->>>> +
->>>>    		iio_device_release_direct_mode(indio_dev);
->>>>    		return ret;
->>>>    
->>>>    	case IIO_CHAN_INFO_SCALE:
->>>>    		if (chan->differential) {
->>>> -			*val = adc->common->vref_mv * 2;
->>>> +			if (adc->vrefint.vrefint_data &&
->>>> +			    adc->vrefint.vrefint_cal) {
->>>> +				*val = STM32_ADC_VREFINT_VOLTAGE * 2 *
->>>> +				       adc->vrefint.vrefint_cal /
->>>> +				       adc->vrefint.vrefint_data;
->>>
->>> Ah.. Dynamic scale.  This is always awkward when it occurs.
->>> Given most / possibly all userspace software assumes a pseudo static scale
->>> (not data dependent) we normally hide this by doing the maths internal to the
->>> driver - sometimes meaning we need to present the particular channel as processed
->>> not raw.
->>>
->>> Is the expectation here that vrefint_data is actually very nearly constant? If
->>> so then what you have here may be fine as anyone not aware the scale might change
->>> will get very nearly the right value anyway.
->>>    
->>
->> The need here is to compare the measured value of vrefint with the
->> calibrated value saved in non volatile memory. The ratio between these
->> two values can be used as a correction factor for the acquisitions on
->> all other channels.
->>
->> The vrefint data is expected to be close to the saved vrefint
->> calibration value, and it should not vary strongly over time.
->> So, yes, we can indeed consider the scale as a pseudo constant. If the
->> scale is not updated, the deviation with actual value should remain
->> limited, as well.
+> Add new events for Exynos5422 while still accepting old name for
+> backwards compatibility.
 > 
-> Ok, so in that case we could probably get away with having it as you have
-> here, though for maximum precision we'd need userspace to occasionally check
-> the scale.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>   drivers/devfreq/event/exynos-ppmu.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
 > 
->>
->> You suggest above to hide scale tuning through processed channels.
->> If I follow this logic, when vrefint channel is available, all channels
->> should be defined as processed channels (excepted vrefint channel)
->> In this case no scale is exposed for these channels, and the vrefint
->> calibration ratio can be used to provide converted data directly.
->> Do you prefer this implementation ?
+> diff --git a/drivers/devfreq/event/exynos-ppmu.c b/drivers/devfreq/event/exynos-ppmu.c
+> index 17ed980d9099..541bd13ab61d 100644
+> --- a/drivers/devfreq/event/exynos-ppmu.c
+> +++ b/drivers/devfreq/event/exynos-ppmu.c
+> @@ -94,11 +94,16 @@ static struct __exynos_ppmu_events {
+>   	PPMU_EVENT(d1-general),
+>   	PPMU_EVENT(d1-rt),
+>   
+> -	/* For Exynos5422 SoC */
+> +	/* For Exynos5422 SoC, deprecated (backwards compatible) */
+>   	PPMU_EVENT(dmc0_0),
+>   	PPMU_EVENT(dmc0_1),
+>   	PPMU_EVENT(dmc1_0),
+>   	PPMU_EVENT(dmc1_1),
+> +	/* For Exynos5422 SoC */
+> +	PPMU_EVENT(dmc0-0),
+> +	PPMU_EVENT(dmc0-1),
+> +	PPMU_EVENT(dmc1-0),
+> +	PPMU_EVENT(dmc1-1),
+>   };
+>   
+>   static int __exynos_ppmu_find_ppmu_id(const char *edev_name)
 > 
->>
->> In this case I wonder how buffered data have to be managed. These data
->> are still provided as raw data, but the scale factor is not more
->> available to convert them. I guess that these data have to be converted
->> internally also, either in dma callback or irq handler.
->> Is this correct ?
-> 
-> This is one of the holes in what IIO does today.  Without meta data in the
-> buffer (which is hard to define in a clean fashion) it is hard to have
-> a compact representation of the data in the presence of dynamic scaling.
-> The vast majority of devices don't inherently support such scaling so
-> this is only occasionally a problem.
-> 
-> To support this at the moment you would indeed need to scale the data
-> before pushing it to the buffer which is obviously really ugly.
-> 
-> My gut feeling here is there are three possible approaches.
-> 
-> 1) Ignore the dynamic nature of the calibration and pretend it's static.
-> 2) Add an explicit 'calibration' sysfs attribute.
->     This is a fairly common model for other sensor types which don't do
->     dynamic calibration but instead require to you to start some special
->     calibration sequence.
->     As the calibration is not updated, except on explicit userspace action
->     we can assume that the scale is static unless userspace is aware of
->     the dynamic aspect.
-> 3) Add a userspace control to turn on dynamic calibration.  That makes it
->     opt in.  Everything will work reasonably well without it turned on
->     as we'll hopefully have a static estimate of scale which is good enough.
->     If aware software is using the device, it can enable this mode and
->     sample the scale as often as it wants to.
-> 
-> I slightly favour option 3.  What do you think?  If we ever figure out
-> the meta data question for buffered case then we can make that work on top
-> of this.
-> 
-> Jonathan
 
-This discussion made me revisit the calibration aspects in the ADC driver.
+Applied it. Thanks.
 
-We have three types of calibration in ADC:
-
-- Linear calibration: this calibration is not voltage or temperature 
-dependent. So, it can be done once at boot time, as this is done currently.
-
-- offset calibration: this calibration has a voltage and temperature 
-dependency. This calibration is currently done once at boot. But it 
-would be relevant to allow application to request a new offset 
-calibration, when supply or temperature change over time.
-Here the 'calibration' sysfs attribute you suggested in option 2, would 
-be convenient I think. I plan to submit this improvement in a separate 
-patch.
-
-- vref compensation: the vrefint channel offers a way to evaluate vref 
-deviation. Here I need to change a bit the logic. I think that putting 
-intelligence in the driver is not the best way at the end. This hides 
-voltage deviation information, where it could be useful to check if an 
-offset calibration is needed. Moreover we get a lack of consistency 
-between raw and buffered data.
-It looks that processed type is the good way to expose vrefint channel. 
-This allows to provide the actual vref voltage. And we can let the 
-application decide how to manage this information. (trigger offset 
-calibration / compensate raw data)
-I'm going to send a v2 serie with this change for vrefint support
-(plus the corrections for other comments)
-
-Regards
-Olivier
-
->>
->> Regards
->> Olivier
->>
->>>> +			} else {
->>>> +				*val = adc->common->vref_mv * 2;
->>>> +			}
->>>>    			*val2 = chan->scan_type.realbits;
->>>>    		} else {
->>>> -			*val = adc->common->vref_mv;
->>>> +			/* Use vrefint data if available */
->>>> +			if (adc->vrefint.vrefint_data &&
->>>> +			    adc->vrefint.vrefint_cal) {
->>>> +				*val = STM32_ADC_VREFINT_VOLTAGE *
->>>> +				       adc->vrefint.vrefint_cal /
->>>> +				       adc->vrefint.vrefint_data;
->>>> +			} else {
->>>> +				*val = adc->common->vref_mv;
->>>> +			}
->>>>    			*val2 = chan->scan_type.realbits;
->>>>    		}
->>>>    		return IIO_VAL_FRACTIONAL_LOG2;
->>>> @@ -1907,6 +1944,35 @@ static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
->>>>    	return scan_index;
->>>>    }
->>>>    
->>>> +static int stm32_adc_get_int_ch(struct iio_dev *indio_dev, const char *ch_name,
->>>> +				int chan)
->>>
->>> Naming would suggest to me that it would return a channel rather than setting it
->>> inside adc->int_ch[i]  Perhaps something like st32_adc_populate_int_ch() ?
->>>
->>>    
->>>> +{
->>>> +	struct stm32_adc *adc = iio_priv(indio_dev);
->>>> +	u16 vrefint;
->>>> +	int i, ret;
->>>> +
->>>> +	for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
->>>> +		if (!strncmp(stm32_adc_ic[i].name, ch_name, STM32_ADC_CH_SZ)) {
->>>> +			adc->int_ch[i] = chan;
->>>> +			/* If channel is vrefint get calibration data. */
->>>> +			if (stm32_adc_ic[i].idx == STM32_ADC_INT_CH_VREFINT) {
->>>
->>> I would reduce indentation by reversing the logic.
->>>
->>> 			if (stm32_adc_ic[i].idx != STM32_ADC_INT_CH_VREFINT)
->>> 				continue;
->>>
->>> 			ret =
->>>> +				ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
->>>> +				if (ret && ret != -ENOENT && ret != -EOPNOTSUPP) {
->>>> +					dev_err(&indio_dev->dev, "nvmem access error %d\n", ret);
->>>> +					return ret;
->>>> +				}
->>>> +				if (ret == -ENOENT)
->>>> +					dev_dbg(&indio_dev->dev,
->>>> +						"vrefint calibration not found\n");
->>>> +				else
->>>> +					adc->vrefint.vrefint_cal = vrefint;
->>>> +			}
->>>> +		}
->>>> +	}
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>>    static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
->>>>    				       struct stm32_adc *adc,
->>>>    				       struct iio_chan_spec *channels)
->>>> @@ -1938,10 +2004,9 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
->>>>    				return -EINVAL;
->>>>    			}
->>>>    			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
->>>> -			for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
->>>> -				if (!strncmp(stm32_adc_ic[i].name, name, STM32_ADC_CH_SZ))
->>>> -					adc->int_ch[i] = val;
->>>> -			}
->>>> +			ret = stm32_adc_get_int_ch(indio_dev, name, val);
->>>> +			if (ret)
->>>> +				goto err;
->>>>    		} else if (ret != -EINVAL) {
->>>>    			dev_err(&indio_dev->dev, "Invalid label %d\n", ret);
->>>>    			goto err;
->>>> @@ -2044,6 +2109,16 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
->>>>    		 */
->>>>    		of_property_read_u32_index(node, "st,min-sample-time-nsecs",
->>>>    					   i, &smp);
->>>> +
->>>> +		/*
->>>> +		 * For vrefint channel, ensure that the sampling time cannot
->>>> +		 * be lower than the one specified in the datasheet
->>>> +		 */
->>>> +		if (channels[i].channel == adc->int_ch[STM32_ADC_INT_CH_VREFINT] &&
->>>> +		    smp < adc->cfg->ts_vrefint_ns) {
->>>> +			smp = adc->cfg->ts_vrefint_ns;
->>>> +		}
->>>
->>> 		if (channels[i].channel == adc->int_ch[STM32_ADC_INT_CH_VREFINT])
->>> 			smp = max(smp, adc->cfg->ts_vrefint_ns);
->>>    
->>>> +
->>>>    		/* Prepare sampling time settings */
->>>>    		stm32_adc_smpr_init(adc, channels[i].channel, smp);
->>>>    	}
->>>> @@ -2350,6 +2425,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
->>>>    	.unprepare = stm32h7_adc_unprepare,
->>>>    	.smp_cycles = stm32h7_adc_smp_cycles,
->>>>    	.irq_clear = stm32h7_adc_irq_clear,
->>>> +	.ts_vrefint_ns = 4300,
->>>>    };
->>>>    
->>>>    static const struct of_device_id stm32_adc_of_match[] = {
->>>    
-> 
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
