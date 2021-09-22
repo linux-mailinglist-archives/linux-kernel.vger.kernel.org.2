@@ -2,207 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900F24145EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133314145CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234882AbhIVKPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234782AbhIVKNl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:13:41 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D72C061764;
-        Wed, 22 Sep 2021 03:12:07 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 3696C1F437F7
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
-Subject: [PATCH v5 08/10] media: hantro: Prepare for other G2 codecs
-Date:   Wed, 22 Sep 2021 12:11:44 +0200
-Message-Id: <20210922101146.13762-9-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210922101146.13762-1-andrzej.p@collabora.com>
-References: <20210922101146.13762-1-andrzej.p@collabora.com>
+        id S234702AbhIVKNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:13:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:46124 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234693AbhIVKNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:13:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA1FF11B3;
+        Wed, 22 Sep 2021 03:11:46 -0700 (PDT)
+Received: from [10.57.95.67] (unknown [10.57.95.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F34A3F719;
+        Wed, 22 Sep 2021 03:11:45 -0700 (PDT)
+Subject: Re: [RFC PATCH v4 00/39] KVM: arm64: Add Statistical Profiling
+ Extension (SPE) support
+To:     Alexandru Elisei <alexandru.elisei@arm.com>, maz@kernel.org,
+        james.morse@arm.com, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210825161815.266051-1-alexandru.elisei@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <963f68c8-b109-7ebb-751d-14ce46e3cdde@arm.com>
+Date:   Wed, 22 Sep 2021 11:11:44 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20210825161815.266051-1-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VeriSilicon Hantro G2 core supports other codecs besides hevc.
-Factor out some common code in preparation for vp9 support.
+On 25/08/2021 17:17, Alexandru Elisei wrote:
+> This is v4 of the SPE series posted at [1]. v2 can be found at [2], and the
+> original series at [3].
+> 
+> Statistical Profiling Extension (SPE) is an optional feature added in
+> ARMv8.2. It allows sampling at regular intervals of the operations executed
+> by the PE and storing a record of each operation in a memory buffer. A high
+> level overview of the extension is presented in an article on arm.com [4].
+> 
+> This is another complete rewrite of the series, and nothing is set in
+> stone. If you think of a better way to do things, please suggest it.
+> 
+> 
+> Features added
+> ==============
+> 
+> The rewrite enabled me to add support for several features not
+> present in the previous iteration:
+> 
+> - Support for heterogeneous systems, where only some of the CPUs support SPE.
+>    This is accomplished via the KVM_ARM_VCPU_SUPPORTED_CPUS VCPU ioctl.
+> 
+> - Support for VM migration with the KVM_ARM_VCPU_SPE_CTRL(KVM_ARM_VCPU_SPE_STOP)
+>    VCPU ioctl.
+> 
+> - The requirement for userspace to mlock() the guest memory has been removed,
+>    and now userspace can make changes to memory contents after the memory is
+>    mapped at stage 2.
+> 
+> - Better debugging of guest memory pinning by printing a warning when we
+>    get an unexpected read or write fault. This helped me catch several bugs
+>    during development, it has already proven very useful. Many thanks to
+>    James who suggested when reviewing v3.
+> 
+> 
+> Missing features
+> ================
+> 
+> I've tried to keep the series as small as possible to make it easier to review,
+> while implementing the core functionality needed for the SPE emulation. As such,
+> I've chosen to not implement several features:
+> 
+> - Host profiling a guest which has the SPE feature bit set (see open
+>    questions).
+> 
+> - No errata workarounds have been implemented yet, and there are quite a few of
+>    them for Neoverse N1 and Neoverse V1.
+> 
+> - Disabling CONFIG_NUMA_BALANCING is a hack to get KVM SPE to work and I am
+>    investigating other ways to get around automatic numa balancing, like
+>    requiring userspace to disable it via set_mempolicy(). I am also going to
+>    look at how VFIO gets around it. Suggestions welcome.
+> 
+> - There's plenty of room for optimization. Off the top of my head, using
+>    block mappings at stage 2, batch pinning of pages (similar to what VFIO
+>    does), optimize the way KVM keeps track of pinned pages (using a linked
+>    list triples the memory usage), context-switch the SPE registers on
+>    vcpu_load/vcpu_put on VHE if the host is not profiling, locking
+>    optimizations, etc, etc.
+> 
+> - ...and others. I'm sure I'm missing at least a few things which are
+>    important for someone.
+> 
+> 
+> Known issues
+> ============
+> 
+> This is an RFC, so keep in mind that almost definitely there will be scary
+> bugs. For example, below is a list of known issues which don't affect the
+> correctness of the emulation, and which I'm planning to fix in a future
+> iteration:
+> 
+> - With CONFIG_PROVE_LOCKING=y, lockdep complains about lock contention when
+>    the VCPU executes the dcache clean pending ops.
+> 
+> - With CONFIG_PROVE_LOCKING=y, KVM will hit a BUG at
+>    kvm_lock_all_vcpus()->mutex_trylock(&vcpu->mutex) with more than 48
+>    VCPUs.
+> 
+> This BUG statement can also be triggered with mainline. To reproduce it,
+> compile kvmtool from this branch [5] and follow the instruction in the
+> kvmtool commit message.
+> 
+> One workaround could be to stop trying to lock all VCPUs when locking a
+> memslot and document the fact that it is required that no VCPUs are run
+> before the ioctl completes, otherwise bad things might happen to the VM.
+> 
+> 
+> Open questions
+> ==============
+> 
+> 1. Implementing support for host profiling a guest with the SPE feature
+> means setting the profiling buffer owning regime to EL2. While that is in
+> effect,  PMBIDR_EL1.P will equal 1. This has two consequences: if the guest
+> probes SPE during this time, the driver will fail; and the guest will be
+> able to determine when it is profiled. I see two options here:
 
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- drivers/staging/media/hantro/Makefile         |  1 +
- drivers/staging/media/hantro/hantro.h         |  7 +++++
- drivers/staging/media/hantro/hantro_g2.c      | 27 ++++++++++++++++
- .../staging/media/hantro/hantro_g2_hevc_dec.c | 31 -------------------
- drivers/staging/media/hantro/hantro_g2_regs.h |  7 +++++
- drivers/staging/media/hantro/hantro_hw.h      |  2 ++
- 6 files changed, 44 insertions(+), 31 deletions(-)
- create mode 100644 drivers/staging/media/hantro/hantro_g2.c
+This doesn't mean the EL2 is owning the SPE. It only tells you that a
+higher level EL is owning the SPE. It could as well be EL3. (e.g, 
+MDCR_EL3.NSPB == 0 or 1). So I think this is architecturally correct,
+as long as we trap the guest access to other SPE registers and inject
+and UNDEF.
 
-diff --git a/drivers/staging/media/hantro/Makefile b/drivers/staging/media/hantro/Makefile
-index 90036831fec4..fe6d84871d07 100644
---- a/drivers/staging/media/hantro/Makefile
-+++ b/drivers/staging/media/hantro/Makefile
-@@ -12,6 +12,7 @@ hantro-vpu-y += \
- 		hantro_g1_mpeg2_dec.o \
- 		hantro_g2_hevc_dec.o \
- 		hantro_g1_vp8_dec.o \
-+		hantro_g2.o \
- 		rockchip_vpu2_hw_jpeg_enc.o \
- 		rockchip_vpu2_hw_h264_dec.o \
- 		rockchip_vpu2_hw_mpeg2_dec.o \
-diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
-index dd5e56765d4e..d91eb2b1c509 100644
---- a/drivers/staging/media/hantro/hantro.h
-+++ b/drivers/staging/media/hantro/hantro.h
-@@ -369,6 +369,13 @@ static inline void vdpu_write(struct hantro_dev *vpu, u32 val, u32 reg)
- 	writel(val, vpu->dec_base + reg);
- }
- 
-+static inline void hantro_write_addr(struct hantro_dev *vpu,
-+				     unsigned long offset,
-+				     dma_addr_t addr)
-+{
-+	vdpu_write(vpu, addr & 0xffffffff, offset);
-+}
-+
- static inline u32 vdpu_read(struct hantro_dev *vpu, u32 reg)
- {
- 	u32 val = readl(vpu->dec_base + reg);
-diff --git a/drivers/staging/media/hantro/hantro_g2.c b/drivers/staging/media/hantro/hantro_g2.c
-new file mode 100644
-index 000000000000..5f7bb27913de
---- /dev/null
-+++ b/drivers/staging/media/hantro/hantro_g2.c
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Hantro VPU codec driver
-+ *
-+ * Copyright (C) 2021 Collabora Ltd, Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-+ */
-+
-+#include "hantro_hw.h"
-+#include "hantro_g2_regs.h"
-+
-+void hantro_g2_check_idle(struct hantro_dev *vpu)
-+{
-+	int i;
-+
-+	for (i = 0; i < 3; i++) {
-+		u32 status;
-+
-+		/* Make sure the VPU is idle */
-+		status = vdpu_read(vpu, G2_REG_INTERRUPT);
-+		if (status & G2_REG_INTERRUPT_DEC_E) {
-+			dev_warn(vpu->dev, "device still running, aborting");
-+			status |= G2_REG_INTERRUPT_DEC_ABORT_E | G2_REG_INTERRUPT_DEC_IRQ_DIS;
-+			vdpu_write(vpu, status, G2_REG_INTERRUPT);
-+		}
-+	}
-+}
-+
-diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-index 340efb57fd18..226cecda9495 100644
---- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-@@ -8,20 +8,6 @@
- #include "hantro_hw.h"
- #include "hantro_g2_regs.h"
- 
--#define HEVC_DEC_MODE	0xC
--
--#define BUS_WIDTH_32		0
--#define BUS_WIDTH_64		1
--#define BUS_WIDTH_128		2
--#define BUS_WIDTH_256		3
--
--static inline void hantro_write_addr(struct hantro_dev *vpu,
--				     unsigned long offset,
--				     dma_addr_t addr)
--{
--	vdpu_write(vpu, addr & 0xffffffff, offset);
--}
--
- static void prepare_tile_info_buffer(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -516,23 +502,6 @@ static void set_buffers(struct hantro_ctx *ctx)
- 	hantro_write_addr(vpu, G2_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
- }
- 
--static void hantro_g2_check_idle(struct hantro_dev *vpu)
--{
--	int i;
--
--	for (i = 0; i < 3; i++) {
--		u32 status;
--
--		/* Make sure the VPU is idle */
--		status = vdpu_read(vpu, G2_REG_INTERRUPT);
--		if (status & G2_REG_INTERRUPT_DEC_E) {
--			dev_warn(vpu->dev, "device still running, aborting");
--			status |= G2_REG_INTERRUPT_DEC_ABORT_E | G2_REG_INTERRUPT_DEC_IRQ_DIS;
--			vdpu_write(vpu, status, G2_REG_INTERRUPT);
--		}
--	}
--}
--
- int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-diff --git a/drivers/staging/media/hantro/hantro_g2_regs.h b/drivers/staging/media/hantro/hantro_g2_regs.h
-index bb22fa921914..0ac0ba375e80 100644
---- a/drivers/staging/media/hantro/hantro_g2_regs.h
-+++ b/drivers/staging/media/hantro/hantro_g2_regs.h
-@@ -27,6 +27,13 @@
- #define G2_REG_INTERRUPT_DEC_IRQ_DIS	BIT(4)
- #define G2_REG_INTERRUPT_DEC_E		BIT(0)
- 
-+#define HEVC_DEC_MODE			0xc
-+
-+#define BUS_WIDTH_32			0
-+#define BUS_WIDTH_64			1
-+#define BUS_WIDTH_128			2
-+#define BUS_WIDTH_256			3
-+
- #define g2_strm_swap		G2_DEC_REG(2, 28, 0xf)
- #define g2_dirmv_swap		G2_DEC_REG(2, 20, 0xf)
- 
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index 4323e63dfbfc..42b3f3961f75 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -308,4 +308,6 @@ void hantro_vp8_dec_exit(struct hantro_ctx *ctx);
- void hantro_vp8_prob_update(struct hantro_ctx *ctx,
- 			    const struct v4l2_ctrl_vp8_frame *hdr);
- 
-+void hantro_g2_check_idle(struct hantro_dev *vpu);
-+
- #endif /* HANTRO_HW_H_ */
--- 
-2.17.1
 
+Thanks
+Suzuki
