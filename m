@@ -2,101 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C316415265
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42BE415263
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237874AbhIVVJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237759AbhIVVJG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:09:06 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522E2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:07:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AUrxzWHUDiIkVe0pCul4am+eYMocI+xR3IVu4etN2ik=; b=cI/HH1n9IHnS59Vwg4T3USPEJy
-        yqf8pBFHwg5vfUgTgEbWExme4EnKhpOAMEInsYDmvANFsP+4IFDpZy8B/KKofwXXSYwJNFosQIUKK
-        Sq4v1oBqKCyYTjDAPP70tg2LZi0Ykv/MjflLLrp98W7O7cvK98g6kUOZnM7Tz8rmGSdSx7I6xhelB
-        oArJi2a4PuonEOFbhGyovGkihF/0RPvq/uDaJm3WxcEWJ/xo/gu3Q1jr62MEc2B3P1DuIGer9jrH/
-        7iX/qmRLNvBaOG8girQUCSEhXtJ3Mtqwu8xEdFEGb5Ok2+ia36YjIMITMl6al/VCXvrv/a6wgd+QV
-        cG1qUw7Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT9Sc-0054ul-PD; Wed, 22 Sep 2021 21:07:23 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3E7FD9811F0; Wed, 22 Sep 2021 23:07:22 +0200 (CEST)
-Date:   Wed, 22 Sep 2021 23:07:22 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Message-ID: <20210922210722.GV4323@worktop.programming.kicks-ass.net>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
+        id S237848AbhIVVJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:09:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237759AbhIVVJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 17:09:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6176E61181;
+        Wed, 22 Sep 2021 21:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632344851;
+        bh=eXOu4o+FdOvYQrid4uHWIpYoP9Oa7kdMSkJBRAzCLHU=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=KrrP4ZbKbpX55zielSusOiQ2amnZFHotkrQlzxiYJMmLa1R2TmGk121wGGiBUnlk7
+         4wMVKG8srp/Rw+7+xtQ9bAHvL7usqNQt1j49medB0nsViPfSZzYGBxXuhEcKiUKtO+
+         8iPYVBS+JW9uUfQVZLv2zTykLGywumGao06c+mddGISdmWYYg7nC4cSuaA0WTXsM1Z
+         EPGTaV4jmau27UyLd36q1Hui5qgg1kKI1AyOdbTp7QeGF9VLg5f1rKkSCTsE8Uia1R
+         PcjBUqtIrFOYr4hQNG2BuR1maJQcv4jQtyuJhvnMoVOaFkxX9P7Ot5CDto8rsBU994
+         PQcer9ja4+4Dg==
+Date:   Wed, 22 Sep 2021 14:07:30 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Oleksandr Andrushchenko <andr2000@gmail.com>
+cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
+        sstabellini@kernel.org, jbeulich@suse.com,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
+Subject: Re: [PATCH 1/2] xen-pciback: allow compiling on other archs than
+ x86
+In-Reply-To: <20210922101422.2319240-1-andr2000@gmail.com>
+Message-ID: <alpine.DEB.2.21.2109221406560.17979@sstabellini-ThinkPad-T480s>
+References: <20210922101422.2319240-1-andr2000@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920192349.2602141-5-fenghua.yu@intel.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 07:23:45PM +0000, Fenghua Yu wrote:
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index a58800973aed..a25d738ae839 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -61,6 +61,7 @@
->  #include <asm/insn.h>
->  #include <asm/insn-eval.h>
->  #include <asm/vdso.h>
-> +#include <asm/iommu.h>
->  
->  #ifdef CONFIG_X86_64
->  #include <asm/x86_init.h>
-> @@ -526,6 +527,14 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
->  	return GP_CANONICAL;
+On Wed, 22 Sep 2021, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> 
+> Xen-pciback driver was designed to be built for x86 only. But it
+> can also be used by other architectures, e.g. Arm.
+> Re-structure the driver in a way that it can be built for other
+> platforms as well.
+> 
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
+
+This patch looks good to me but I would prefer if it came after the
+other patch, not before.
+
+
+> ---
+> Since v1:
+>  - Do not move pci_xen_initial_domain as it is x86 specific
+> ---
+>  arch/x86/include/asm/xen/pci.h     | 18 +------
+>  arch/x86/pci/xen.c                 | 74 +----------------------------
+>  drivers/xen/Kconfig                |  2 +-
+>  drivers/xen/pci.c                  | 75 ++++++++++++++++++++++++++++++
+>  drivers/xen/xen-pciback/pci_stub.c |  3 +-
+>  drivers/xen/xen-pciback/xenbus.c   |  2 +-
+>  include/xen/pci.h                  | 28 +++++++++++
+>  7 files changed, 109 insertions(+), 93 deletions(-)
+>  create mode 100644 include/xen/pci.h
+> 
+> diff --git a/arch/x86/include/asm/xen/pci.h b/arch/x86/include/asm/xen/pci.h
+> index 3506d8c598c1..2889f091f459 100644
+> --- a/arch/x86/include/asm/xen/pci.h
+> +++ b/arch/x86/include/asm/xen/pci.h
+> @@ -16,26 +16,10 @@ static inline int pci_xen_hvm_init(void)
+>  #endif
+>  #if defined(CONFIG_XEN_DOM0)
+>  int __init pci_xen_initial_domain(void);
+> -int xen_find_device_domain_owner(struct pci_dev *dev);
+> -int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
+> -int xen_unregister_device_domain_owner(struct pci_dev *dev);
+>  #else
+>  static inline int __init pci_xen_initial_domain(void)
+>  {
+> -	return -1;
+> -}
+> -static inline int xen_find_device_domain_owner(struct pci_dev *dev)
+> -{
+> -	return -1;
+> -}
+> -static inline int xen_register_device_domain_owner(struct pci_dev *dev,
+> -						   uint16_t domain)
+> -{
+> -	return -1;
+> -}
+> -static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
+> -{
+> -	return -1;
+> +       return -1;
 >  }
+>  #endif
 >  
-> +static bool fixup_pasid_exception(void)
-> +{
-> +	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
-> +		return false;
+> diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
+> index 3d41a09c2c14..4a45b0bf9ae4 100644
+> --- a/arch/x86/pci/xen.c
+> +++ b/arch/x86/pci/xen.c
+> @@ -23,6 +23,7 @@
+>  
+>  #include <xen/features.h>
+>  #include <xen/events.h>
+> +#include <xen/pci.h>
+>  #include <asm/xen/pci.h>
+>  #include <asm/xen/cpuid.h>
+>  #include <asm/apic.h>
+> @@ -583,77 +584,4 @@ int __init pci_xen_initial_domain(void)
+>  	}
+>  	return 0;
+>  }
+> -
+> -struct xen_device_domain_owner {
+> -	domid_t domain;
+> -	struct pci_dev *dev;
+> -	struct list_head list;
+> -};
+> -
+> -static DEFINE_SPINLOCK(dev_domain_list_spinlock);
+> -static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
+> -
+> -static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
+> -{
+> -	struct xen_device_domain_owner *owner;
+> -
+> -	list_for_each_entry(owner, &dev_domain_list, list) {
+> -		if (owner->dev == dev)
+> -			return owner;
+> -	}
+> -	return NULL;
+> -}
+> -
+> -int xen_find_device_domain_owner(struct pci_dev *dev)
+> -{
+> -	struct xen_device_domain_owner *owner;
+> -	int domain = -ENODEV;
+> -
+> -	spin_lock(&dev_domain_list_spinlock);
+> -	owner = find_device(dev);
+> -	if (owner)
+> -		domain = owner->domain;
+> -	spin_unlock(&dev_domain_list_spinlock);
+> -	return domain;
+> -}
+> -EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
+> -
+> -int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
+> -{
+> -	struct xen_device_domain_owner *owner;
+> -
+> -	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
+> -	if (!owner)
+> -		return -ENODEV;
+> -
+> -	spin_lock(&dev_domain_list_spinlock);
+> -	if (find_device(dev)) {
+> -		spin_unlock(&dev_domain_list_spinlock);
+> -		kfree(owner);
+> -		return -EEXIST;
+> -	}
+> -	owner->domain = domain;
+> -	owner->dev = dev;
+> -	list_add_tail(&owner->list, &dev_domain_list);
+> -	spin_unlock(&dev_domain_list_spinlock);
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
+> -
+> -int xen_unregister_device_domain_owner(struct pci_dev *dev)
+> -{
+> -	struct xen_device_domain_owner *owner;
+> -
+> -	spin_lock(&dev_domain_list_spinlock);
+> -	owner = find_device(dev);
+> -	if (!owner) {
+> -		spin_unlock(&dev_domain_list_spinlock);
+> -		return -ENODEV;
+> -	}
+> -	list_del(&owner->list);
+> -	spin_unlock(&dev_domain_list_spinlock);
+> -	kfree(owner);
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
+>  #endif
+> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+> index a37eb52fb401..057ddf61ef61 100644
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -182,7 +182,7 @@ config SWIOTLB_XEN
+>  
+>  config XEN_PCIDEV_BACKEND
+>  	tristate "Xen PCI-device backend driver"
+> -	depends on PCI && X86 && XEN
+> +	depends on PCI && XEN
+>  	depends on XEN_BACKEND
+>  	default m
+>  	help
+> diff --git a/drivers/xen/pci.c b/drivers/xen/pci.c
+> index 224df03ce42e..fc8c1249d49f 100644
+> --- a/drivers/xen/pci.c
+> +++ b/drivers/xen/pci.c
+> @@ -254,3 +254,78 @@ static int xen_mcfg_late(void)
+>  	return 0;
+>  }
+>  #endif
 > +
-> +	return __fixup_pasid_exception();
+> +#ifdef CONFIG_XEN_DOM0
+> +struct xen_device_domain_owner {
+> +	domid_t domain;
+> +	struct pci_dev *dev;
+> +	struct list_head list;
+> +};
+> +
+> +static DEFINE_SPINLOCK(dev_domain_list_spinlock);
+> +static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
+> +
+> +static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
+> +{
+> +	struct xen_device_domain_owner *owner;
+> +
+> +	list_for_each_entry(owner, &dev_domain_list, list) {
+> +		if (owner->dev == dev)
+> +			return owner;
+> +	}
+> +	return NULL;
 > +}
 > +
->  #define GPFSTR "general protection fault"
->  
->  DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
-> @@ -538,6 +547,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
->  
->  	cond_local_irq_enable(regs);
->  
-> +	if (user_mode(regs) && fixup_pasid_exception())
-> +		goto exit;
+> +int xen_find_device_domain_owner(struct pci_dev *dev)
+> +{
+> +	struct xen_device_domain_owner *owner;
+> +	int domain = -ENODEV;
 > +
->  	if (static_cpu_has(X86_FEATURE_UMIP)) {
->  		if (user_mode(regs) && fixup_umip_exception(regs))
->  			goto exit;
-
-So you're eating any random #GP that might or might not be PASID
-related. And all that witout a comment... Enlighten?
+> +	spin_lock(&dev_domain_list_spinlock);
+> +	owner = find_device(dev);
+> +	if (owner)
+> +		domain = owner->domain;
+> +	spin_unlock(&dev_domain_list_spinlock);
+> +	return domain;
+> +}
+> +EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
+> +
+> +int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
+> +{
+> +	struct xen_device_domain_owner *owner;
+> +
+> +	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
+> +	if (!owner)
+> +		return -ENODEV;
+> +
+> +	spin_lock(&dev_domain_list_spinlock);
+> +	if (find_device(dev)) {
+> +		spin_unlock(&dev_domain_list_spinlock);
+> +		kfree(owner);
+> +		return -EEXIST;
+> +	}
+> +	owner->domain = domain;
+> +	owner->dev = dev;
+> +	list_add_tail(&owner->list, &dev_domain_list);
+> +	spin_unlock(&dev_domain_list_spinlock);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
+> +
+> +int xen_unregister_device_domain_owner(struct pci_dev *dev)
+> +{
+> +	struct xen_device_domain_owner *owner;
+> +
+> +	spin_lock(&dev_domain_list_spinlock);
+> +	owner = find_device(dev);
+> +	if (!owner) {
+> +		spin_unlock(&dev_domain_list_spinlock);
+> +		return -ENODEV;
+> +	}
+> +	list_del(&owner->list);
+> +	spin_unlock(&dev_domain_list_spinlock);
+> +	kfree(owner);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
+> +#endif
+> diff --git a/drivers/xen/xen-pciback/pci_stub.c b/drivers/xen/xen-pciback/pci_stub.c
+> index f8e4faa96ad6..bba527620507 100644
+> --- a/drivers/xen/xen-pciback/pci_stub.c
+> +++ b/drivers/xen/xen-pciback/pci_stub.c
+> @@ -19,7 +19,8 @@
+>  #include <linux/sched.h>
+>  #include <linux/atomic.h>
+>  #include <xen/events.h>
+> -#include <asm/xen/pci.h>
+> +#include <xen/pci.h>
+> +#include <xen/xen.h>
+>  #include <asm/xen/hypervisor.h>
+>  #include <xen/interface/physdev.h>
+>  #include "pciback.h"
+> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
+> index c09c7ebd6968..da34ce85dc88 100644
+> --- a/drivers/xen/xen-pciback/xenbus.c
+> +++ b/drivers/xen/xen-pciback/xenbus.c
+> @@ -14,7 +14,7 @@
+>  #include <linux/workqueue.h>
+>  #include <xen/xenbus.h>
+>  #include <xen/events.h>
+> -#include <asm/xen/pci.h>
+> +#include <xen/pci.h>
+>  #include "pciback.h"
+>  
+>  #define INVALID_EVTCHN_IRQ  (-1)
+> diff --git a/include/xen/pci.h b/include/xen/pci.h
+> new file mode 100644
+> index 000000000000..b8337cf85fd1
+> --- /dev/null
+> +++ b/include/xen/pci.h
+> @@ -0,0 +1,28 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef __XEN_PCI_H__
+> +#define __XEN_PCI_H__
+> +
+> +#if defined(CONFIG_XEN_DOM0)
+> +int xen_find_device_domain_owner(struct pci_dev *dev);
+> +int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
+> +int xen_unregister_device_domain_owner(struct pci_dev *dev);
+> +#else
+> +static inline int xen_find_device_domain_owner(struct pci_dev *dev)
+> +{
+> +	return -1;
+> +}
+> +
+> +static inline int xen_register_device_domain_owner(struct pci_dev *dev,
+> +						   uint16_t domain)
+> +{
+> +	return -1;
+> +}
+> +
+> +static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
+> +{
+> +	return -1;
+> +}
+> +#endif
+> +
+> +#endif
+> -- 
+> 2.25.1
+> 
