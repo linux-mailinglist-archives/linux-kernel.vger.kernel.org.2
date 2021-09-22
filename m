@@ -2,100 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6BE413FC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20129413FCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhIVCxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 22:53:19 -0400
-Received: from out0.migadu.com ([94.23.1.103]:27659 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229909AbhIVCxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 22:53:17 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1632279107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QFo1JYYJw2ONRAZwKeFn7U/3j7Fl6ZYTm3LRZ0wPvF4=;
-        b=QB3FUXdG41HgT+WTz7+YSxpv1AoIwFa3PD4M/snAdvgtChNuWJlcoQxN2bfBjA5NEAtf45
-        whi3H0qaM4FPP7nWyWHpFc6SbDiyPX/sKL2ocLNJoTkqeVl6biPCmnSfLXRC+Y2l/de2eM
-        UNv9aEpA9sEkuPV865mgDe/jWuF3UR8=
-From:   Jackie Liu <liu.yun@linux.dev>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     bristot@redhat.com, linux-kernel@vger.kernel.org, liu.yun@linux.dev
-Subject: [PATCH v2] tracing: fix missing osnoise tracer on max_latency
-Date:   Wed, 22 Sep 2021 10:51:22 +0800
-Message-Id: <20210922025122.3268022-1-liu.yun@linux.dev>
+        id S230229AbhIVC6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 22:58:15 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33360 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229909AbhIVC6O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 22:58:14 -0400
+X-UUID: eec432d6d11c4749a3d7f6409deede68-20210922
+X-UUID: eec432d6d11c4749a3d7f6409deede68-20210922
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 64861940; Wed, 22 Sep 2021 10:56:42 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 22 Sep 2021 10:56:41 +0800
+Received: from localhost.localdomain (10.17.3.154) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Sep 2021 10:56:40 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <light.hsieh@mediatek.com>,
+        <biao.huang@mediatek.com>, <hongzhou.yang@mediatek.com>,
+        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH v13 0/5] Mediatek pinctrl patch on mt8195
+Date:   Wed, 22 Sep 2021 10:56:35 +0800
+Message-ID: <20210922025640.11600-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: liu.yun@linux.dev
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+This series includes 5 patches:
+1.add rsel define.
+2.change pull up/down description
+3.fix coding style
+4.support rsel feature for common ICs
+5.add rsel setting on MT8195
 
-The compiler warns when the data are actually unused:
+Changes in patch v13:
+1)change "-EOPNOTSUPP" to "-ENOTSUPP" in patch 4/5.
+2)fix description on 2/5.
 
-  kernel/trace/trace.c:1712:13: error: ‘trace_create_maxlat_file’ defined but not used [-Werror=unused-function]
-   1712 | static void trace_create_maxlat_file(struct trace_array *tr,
-        |             ^~~~~~~~~~~~~~~~~~~~~~~~
+Changes in patch v12:
+1)add "ack-by" on "rsel define" patch.
+2)add "change reason" in commit message and write a shema
+  on patch document patch 2/5.
+3)separate eint pm_ops fucntion support patch
+4)separate rsel patch, the common parts as patch 4/5 to support
+  common ICs. The mt8195 specific changes as patch 5/5.
+5)add fix coding style patch to fix Camel spelling to avoid checkpatch
+  warning in a following patch.
+6)remove unrelated changes in rsel patch.
+7)change ternary ops in resel patch
+8)add "rsel_is_unit" property on struct mtk_pinctrl, and itendify
+  "mediatek,rsel_resistance_in_si_unit" property in probe function.
+9)add explanation for "MTK_PULL_RSEL_TYPE" and "MTK_PULL_PU_PD_RSEL_TYPE".
+10) fix spell warning in rsel patch.
 
-[Why]
-CONFIG_HWLAT_TRACER=n, CONFIG_TRACER_MAX_TRACE=n, CONFIG_OSNOISE_TRACER=y
-gcc report warns.
+Changes in patch v11:
+1)add pm_ops fucntion support
+2)change pull up/down description
+3)add resistance value feature support.
 
-[How]
-Now trace_create_maxlat_file will only take effect when
-CONFIG_HWLAT_TRACER=y or CONFIG_TRACER_MAX_TRACE=y. In fact, after
-adding osnoise trace, it also needs to take effect.
+Changes in patch v10:
+1)fix PARENTHESIS_ALIGNMENT of mtk_pinconf_bias_set_rsel
+2)fix LONG_LINE warning in 615 in pinctrl-paris.c.
 
-Fixes: bce29ac9ce0b ("trace: Add osnoise tracer")
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
----
- kernel/trace/trace.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+Changes in patch v9:
+1)fix "mtk_pinconf_bias_set_rsel" build warning.
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 7896d30d90f7..bc677cd64224 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1744,16 +1744,15 @@ void latency_fsnotify(struct trace_array *tr)
- 	irq_work_queue(&tr->fsnotify_irqwork);
- }
- 
--/*
-- * (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)) && \
-- *  defined(CONFIG_FSNOTIFY)
-- */
--#else
-+#elif defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)	\
-+	|| defined(CONFIG_OSNOISE_TRACER)
- 
- #define trace_create_maxlat_file(tr, d_tracer)				\
- 	trace_create_file("tracing_max_latency", 0644, d_tracer,	\
- 			  &tr->max_latency, &tracing_max_lat_fops)
- 
-+#else
-+#define trace_create_maxlat_file(tr, d_tracer)	 do { } while (0)
- #endif
- 
- #ifdef CONFIG_TRACER_MAX_TRACE
-@@ -9473,9 +9472,7 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 
- 	create_trace_options_dir(tr);
- 
--#if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)
- 	trace_create_maxlat_file(tr, d_tracer);
--#endif
- 
- 	if (ftrace_create_function_files(tr, d_tracer))
- 		MEM_FAIL(1, "Could not allocate function filter files");
--- 
-2.25.1
+Changes in patch v8:
+1)add rsel define patch
+2)avoid  CamelCase
+3)add pinctrl rsel setting patch which is another resistance selection
+  solution for I2C on MT8195.
+
+Changes in patch v7:
+1)add version in patch and fix spelling mistakes.
+
+Changes in patch v6:
+1)add "pintcrl: mediatek" as prefix.
+
+Changes in patch v5:
+1)document and driver patch are apploed.
+2)change '-EOPNOTSUPP' to '-ENOTSUPP'
+
+Changes in patch v4:
+1)fix pinctrl-mt8195.yaml warning error.
+2)remove pinctrl device node patch which is based on "mt8195.dtsi".
+
+Changes in patch v3:
+1)change '^pins' to '-pins$'.
+2)change 'state_0_node_a' to 'gpio_pin' which is defined in dts.
+3)change 'state_0_node_b' to 'i2c0_pin' which is defined in dts.
+4)reorder this series patches. change pinctrl file and binding document
+together in one patch.
+
+There are no changes in v1 & v2.
+
+Zhiyong Tao (5):
+  dt-bindings: pinctrl: mt8195: add rsel define
+  dt-bindings: pinctrl: mt8195: change pull up/down description
+  pinctrl: mediatek: fix coding style
+  pinctrl: mediatek: support rsel feature
+  pinctrl: mediatek: add rsel setting on MT8195
+
+ .../bindings/pinctrl/pinctrl-mt8195.yaml      |  65 ++++-
+ drivers/pinctrl/mediatek/pinctrl-mt8195.c     | 133 ++++++++++
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  | 231 +++++++++++++++---
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  |  45 ++++
+ drivers/pinctrl/mediatek/pinctrl-paris.c      |  68 ++++--
+ include/dt-bindings/pinctrl/mt65xx.h          |   9 +
+ 6 files changed, 497 insertions(+), 54 deletions(-)
+
+--
+2.18.0
+
 
