@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C8741496D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2066941496E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236071AbhIVMsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:48:21 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:36449 "EHLO
+        id S236090AbhIVMsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:48:24 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:39582 "EHLO
         out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236035AbhIVMsS (ORCPT
+        by vger.kernel.org with ESMTP id S236042AbhIVMsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Sep 2021 08:48:18 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UpEJoj9_1632314798;
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UpEJoj9_1632314798;
 Received: from localhost.localdomain(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UpEJoj9_1632314798)
           by smtp.aliyun-inc.com(127.0.0.1);
           Wed, 22 Sep 2021 20:46:47 +0800
@@ -21,9 +21,9 @@ To:     wuzongyong@linux.alibaba.com, jasowang@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org, mst@redhat.com
 Cc:     wei.yang1@linux.alibaba.com
-Subject: [PATCH v3 4/7] vdpa: add new callback get_vq_num_min in vdpa_config_ops
-Date:   Wed, 22 Sep 2021 20:46:27 +0800
-Message-Id: <451ce3c272ebd5d532db1ed19c2ab53c4609f7ad.1632313398.git.wuzongyong@linux.alibaba.com>
+Subject: [PATCH v3 5/7] virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
+Date:   Wed, 22 Sep 2021 20:46:28 +0800
+Message-Id: <e971b011b9224a4da4fcab6e904fcee0b7393ac6.1632313398.git.wuzongyong@linux.alibaba.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1632313398.git.wuzongyong@linux.alibaba.com>
 References: <cover.1631621507.git.wuzongyong@linux.alibaba.com> <cover.1632313398.git.wuzongyong@linux.alibaba.com>
@@ -33,38 +33,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This callback is optional. For vdpa devices that not support to change
-virtqueue size, get_vq_num_min and get_vq_num_max will return the same
-value, so that users can choose a correct value for that device.
-
-Suggested-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 ---
- include/linux/vdpa.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/virtio/virtio_vdpa.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-index a896ee021e5f..30864848950b 100644
---- a/include/linux/vdpa.h
-+++ b/include/linux/vdpa.h
-@@ -171,6 +171,9 @@ struct vdpa_map_file {
-  * @get_vq_num_max:		Get the max size of virtqueue
-  *				@vdev: vdpa device
-  *				Returns u16: max size of virtqueue
-+ * @get_vq_num_min:		Get the min size of virtqueue (optional)
-+ *				@vdev: vdpa device
-+ *				Returns u16: min size of virtqueue
-  * @get_device_id:		Get virtio device id
-  *				@vdev: vdpa device
-  *				Returns u32: virtio device id
-@@ -266,6 +269,7 @@ struct vdpa_config_ops {
- 	void (*set_config_cb)(struct vdpa_device *vdev,
- 			      struct vdpa_callback *cb);
- 	u16 (*get_vq_num_max)(struct vdpa_device *vdev);
-+	u16 (*get_vq_num_min)(struct vdpa_device *vdev);
- 	u32 (*get_device_id)(struct vdpa_device *vdev);
- 	u32 (*get_vendor_id)(struct vdpa_device *vdev);
- 	u8 (*get_status)(struct vdpa_device *vdev);
+diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+index 72eaef2caeb1..8aa4ebe2a2a2 100644
+--- a/drivers/virtio/virtio_vdpa.c
++++ b/drivers/virtio/virtio_vdpa.c
+@@ -145,7 +145,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+ 	/* Assume split virtqueue, switch to packed if necessary */
+ 	struct vdpa_vq_state state = {0};
+ 	unsigned long flags;
+-	u32 align, num;
++	u32 align, max_num, min_num = 0;
++	bool may_reduce_num = true;
+ 	int err;
+ 
+ 	if (!name)
+@@ -163,22 +164,36 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+ 	if (!info)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	num = ops->get_vq_num_max(vdpa);
+-	if (num == 0) {
++	max_num = ops->get_vq_num_max(vdpa);
++	if (max_num == 0) {
+ 		err = -ENOENT;
+ 		goto error_new_virtqueue;
+ 	}
+ 
++	if (ops->get_vq_num_min)
++		min_num = ops->get_vq_num_min(vdpa);
++	if (min_num > max_num) {
++		err = -ENOENT;
++		goto error_new_virtqueue;
++	}
++
++	may_reduce_num = (max_num == min_num) ? false : true;
++
+ 	/* Create the vring */
+ 	align = ops->get_vq_align(vdpa);
+-	vq = vring_create_virtqueue(index, num, align, vdev,
+-				    true, true, ctx,
++	vq = vring_create_virtqueue(index, max_num, align, vdev,
++				    true, may_reduce_num, ctx,
+ 				    virtio_vdpa_notify, callback, name);
+ 	if (!vq) {
+ 		err = -ENOMEM;
+ 		goto error_new_virtqueue;
+ 	}
+ 
++	if (virtqueue_get_vring_size(vq) < min_num) {
++		err = -EINVAL;
++		goto err_vq;
++	}
++
+ 	/* Setup virtqueue callback */
+ 	cb.callback = virtio_vdpa_virtqueue_cb;
+ 	cb.private = info;
 -- 
 2.31.1
 
