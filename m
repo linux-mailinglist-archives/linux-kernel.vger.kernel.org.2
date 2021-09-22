@@ -2,213 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BAA414D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E47A414D11
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236573AbhIVPg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:36:58 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58316 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236478AbhIVPgr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:36:47 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18MEwxVD010644;
-        Wed, 22 Sep 2021 17:34:59 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=eWiZ+qIWck3FZln70Bqn5T8FOCd+msmgnu+lQOU02zE=;
- b=2d1OR9QYGHbO/eRHZJ3Whb+YI9M0YyCplS/VAKilY+yAog2hN8WBiWHHS2zl32gvqI/H
- 6doUtMhJ5JvACBx3BcEwkliRWG4QZ3aCAV03kZoaZD+jw+h48uv2JKLiTE18QHV9f5Y/
- TUlI6duZCIK/VxLRU6PLdX0zL7+FwjMcgitRzx9Uu66AcTvh4NvSSm8JemLYyyJ3JJvF
- sUtspvO7JUVgl5I+sNcbIBRwoR+eQ402GX4xBBNZQc4ZyHKBmTEHBG2NIfKQO+vzNsxm
- cf0D2efwyOZzqZI+JtpUbtC9OCrpx/SfJGVwC8w4+VJAh68Ur30nkg1Cj7VoocsSIwK+ IA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3b825p225u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Sep 2021 17:34:59 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B2FEE100034;
-        Wed, 22 Sep 2021 17:34:58 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AA5B924187A;
-        Wed, 22 Sep 2021 17:34:58 +0200 (CEST)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep 2021 17:34:58
- +0200
-From:   Olivier Moysan <olivier.moysan@foss.st.com>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH v2 7/7] iio: adc: stm32-adc: use generic binding for sample-time
-Date:   Wed, 22 Sep 2021 17:34:18 +0200
-Message-ID: <20210922153418.21033-8-olivier.moysan@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210922153418.21033-1-olivier.moysan@foss.st.com>
-References: <20210922153418.21033-1-olivier.moysan@foss.st.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-22_05,2021-09-22_01,2020-04-07_01
+        id S236450AbhIVPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:36:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236429AbhIVPgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 11:36:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 806EF61168;
+        Wed, 22 Sep 2021 15:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632324887;
+        bh=xFQo9lM17aSuzFSISevtYQSbPe53mGBV8+WNabxdSM4=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=CGYxEmVvdGglQjpPG2tO8ZpeKdFGhE7N2qSVJzoQRy3lFyu6dbPp5xYE203OosxuE
+         ktOOqgL7JPKq1dDHn3iwxcOIQqxZAZQfh70hsg3hNqdOvWmcr93YHNhFYWU1atmbym
+         XeJHSxkNtWib1xArlzV5AaGcUzusp7S/uAyzh3wPovBXyAq/ky++121J/g0pr7air3
+         YHhn56Cr5wspORIUL0vSEVqOzNIaisZ+jWgJ9pp08AgIFbQj9JnBQxJP9x2nNutKmA
+         04TOW1ZJ4WdkxZ6LD7IolJuHYl2SXRX70ROMUO0w/iCfmh88g4XUik/D4jgEnkuDvX
+         Hltj0KwYG2dng==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id A360627C0054;
+        Wed, 22 Sep 2021 11:34:45 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Wed, 22 Sep 2021 11:34:45 -0400
+X-ME-Sender: <xms:FU1LYaTFP7c6pAGmEJN5N0n4AC1og761pEMaqnPvnUzpUQLm3qIrHg>
+    <xme:FU1LYfya3gSKnbagApg98igoDY3ddoEr25OgWRHaKL4rw73ymvWei7M-6IxuqYBaf
+    CLlSZx61zOlvuoyzHk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeijedgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:FU1LYX29tnHH8uA2hTHMp4AeAMupr0QIjgLEimc3PPdUOaIhMGTlsg>
+    <xmx:FU1LYWBoLPNbmOHABj8xfaUvtNoRU_pOYt1jTvFnnafgc2LerzVefw>
+    <xmx:FU1LYTh1ciTnuARuvsfDCghLJ8aptmefQXcIKZT3rd8tX8ZFuDj5FQ>
+    <xmx:FU1LYQv2DMoBal2WfT1TuAzUthihFmNByU9_HS35IvvvlP1PCJuh3A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E87CF21E0062; Wed, 22 Sep 2021 11:34:44 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1302-gc62ab821ef-fm-20210921.001-gc62ab821
+Mime-Version: 1.0
+Message-Id: <59e230b3-0e85-42ff-84a8-6b30ad0719d8@www.fastmail.com>
+In-Reply-To: <20210922122523.72ypzg4pm2x6nkod@wittgenstein>
+References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
+ <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
+ <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
+ <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
+ <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
+ <CALCETrWA1TBvbknH1Jzt=newTd4sHzNFm0RPuRxazjuRQRsR7w@mail.gmail.com>
+ <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de>
+ <YUi95tFDWS7oceYP@bombadil.infradead.org>
+ <CALCETrX9keVFxEZYUkKr7_dWb9Ubo9q4E2aTY_ZOWGSHyRph8g@mail.gmail.com>
+ <20210922122523.72ypzg4pm2x6nkod@wittgenstein>
+Date:   Wed, 22 Sep 2021 08:34:23 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Christian Brauner" <christian.brauner@ubuntu.com>
+Cc:     "Luis Chamberlain" <mcgrof@kernel.org>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
+        "Linux API" <linux-api@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Jessica Yu" <jeyu@kernel.org>
+Subject: Re: [RFC] Expose request_module via syscall
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add st,min-sample-time-nsecs to channel generic binding.
-Sample time can be defined par channel node. If a channel
-is configured as differential, the same sample time applies
-for both inputs.
-Keep support of legacy st,min-sample-time-nsecs property
-for backward compatibility.
+On Wed, Sep 22, 2021, at 5:25 AM, Christian Brauner wrote:
+> On Mon, Sep 20, 2021 at 11:36:47AM -0700, Andy Lutomirski wrote:
+>> On Mon, Sep 20, 2021 at 11:16 AM Luis Chamberlain <mcgrof@kernel.org>=
+ wrote:
+>> >
+>> > On Mon, Sep 20, 2021 at 04:51:19PM +0200, Thomas Wei=C3=9Fschuh wro=
+te:
+>>=20
+>> > > > Do you mean it literally invokes /sbin/modprobe?  If so, hookin=
+g this
+>> > > > at /sbin/modprobe and calling out to the container manager seem=
+s like
+>> > > > a decent solution.
+>> > >
+>> > > Yes it does. Thanks for the idea, I'll see how this works out.
+>> >
+>> > Would documentation guiding you in that way have helped? If so
+>> > I welcome a patch that does just that.
+>>=20
+>> If someone wants to make this classy, we should probably have the
+>> container counterpart of a standardized paravirt interface.  There
+>> should be a way for a container to, in a runtime-agnostic way, issue
+>> requests to its manager, and requesting a module by (name, Linux
+>> kernel version for which that name makes sense) seems like an
+>> excellent use of such an interface.
+>
+> I always thought of this in two ways we currently do this:
+>
+> 1. Caller transparent container manager requests.
+>    This is the seccomp notifier where we transparently handle syscalls
+>    including intercepting init_module() where we parse out the module =
+to
+>    be loaded from the syscall args of the container and if it is
+>    allow-listed load it for the container otherwise continue the sysca=
+ll
+>    letting it fail or failing directly through seccomp return value.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
----
- drivers/iio/adc/stm32-adc.c | 70 +++++++++++++++++++++----------------
- 1 file changed, 39 insertions(+), 31 deletions(-)
+Specific problems here include aliases and dependencies.  My modules.ali=
+as file, for example, has:
 
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index c427e439bf4a..cfd11ff0cf36 100644
---- a/drivers/iio/adc/stm32-adc.c
-+++ b/drivers/iio/adc/stm32-adc.c
-@@ -1809,6 +1809,11 @@ static void stm32_adc_smpr_init(struct stm32_adc *adc, int channel, u32 smp_ns)
- 	u32 period_ns, shift = smpr->shift, mask = smpr->mask;
- 	unsigned int smp, r = smpr->reg;
- 
-+	/*
-+	 * For vrefint channel, ensure that the sampling time cannot
-+	 * be lower than the one specified in the datasheet
-+	 */
-+
- 	/* Determine sampling time (ADC clock cycles) */
- 	period_ns = NSEC_PER_SEC / adc->common->rate;
- 	for (smp = 0; smp <= STM32_ADC_MAX_SMP; smp++)
-@@ -1885,6 +1890,13 @@ static int stm32_adc_get_legacy_chan_count(struct iio_dev *indio_dev, struct stm
- 		num_channels += ret;
- 	}
- 
-+	/* Optional sample time is provided either for each, or all channels */
-+	ret = of_property_count_u32_elems(node, "st,min-sample-time-nsecs");
-+	if (ret > 1 && ret != num_channels) {
-+		dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs\n");
-+		return -EINVAL;
-+	}
-+
- 	return num_channels;
- }
- 
-@@ -1900,6 +1912,7 @@ static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
- 	int scan_index = 0, val, ret, i;
- 	struct property *prop;
- 	const __be32 *cur;
-+	u32 smp = 0;
- 
- 	if (num_diff) {
- 		ret = of_property_read_u32_array(node, "st,adc-diff-channels",
-@@ -1942,6 +1955,19 @@ static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
- 		scan_index++;
- 	}
- 
-+	for (i = 0; i < scan_index; i++) {
-+		/*
-+		 * Using of_property_read_u32_index(), smp value will only be
-+		 * modified if valid u32 value can be decoded. This allows to
-+		 * get either no value, 1 shared value for all indexes, or one
-+		 * value per channel.
-+		 */
-+		of_property_read_u32_index(node, "st,min-sample-time-nsecs", i, &smp);
-+
-+		/* Prepare sampling time settings */
-+		stm32_adc_smpr_init(adc, channels[i].channel, smp);
-+	}
-+
- 	return scan_index;
- }
- 
-@@ -2034,6 +2060,19 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
- 
- 		stm32_adc_chan_init_one(indio_dev, &channels[scan_index], val,
- 					vin[1], scan_index, differential);
-+
-+		ret = of_property_read_u32(child, "st,min-sample-time-nsecs", &val);
-+		/* st,min-sample-time-nsecs is optional */
-+		if (!ret) {
-+			stm32_adc_smpr_init(adc, channels[scan_index].channel, val);
-+			if (differential)
-+				stm32_adc_smpr_init(adc, vin[1], val);
-+		} else if (ret != -EINVAL) {
-+			dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs property %d\n",
-+				ret);
-+			goto err;
-+		}
-+
- 		scan_index++;
- 	}
- 
-@@ -2052,7 +2091,6 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
- 	const struct stm32_adc_info *adc_info = adc->cfg->adc_info;
- 	struct iio_chan_spec *channels;
- 	int scan_index = 0, num_channels = 0, ret, i;
--	u32 smp = 0;
- 	bool legacy = false;
- 
- 	for (i = 0; i < STM32_ADC_INT_CH_NB; i++)
-@@ -2080,13 +2118,6 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
- 		return -EINVAL;
- 	}
- 
--	/* Optional sample time is provided either for each, or all channels */
--	ret = of_property_count_u32_elems(node, "st,min-sample-time-nsecs");
--	if (ret > 1 && ret != num_channels) {
--		dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs\n");
--		return -EINVAL;
--	}
--
- 	if (timestamping)
- 		num_channels++;
- 
-@@ -2103,29 +2134,6 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
- 		return ret;
- 	scan_index = ret;
- 
--	for (i = 0; i < scan_index; i++) {
--		/*
--		 * Using of_property_read_u32_index(), smp value will only be
--		 * modified if valid u32 value can be decoded. This allows to
--		 * get either no value, 1 shared value for all indexes, or one
--		 * value per channel.
--		 */
--		of_property_read_u32_index(node, "st,min-sample-time-nsecs",
--					   i, &smp);
--
--		/*
--		 * For vrefint channel, ensure that the sampling time cannot
--		 * be lower than the one specified in the datasheet
--		 */
--		if (channels[i].channel == adc->int_ch[STM32_ADC_INT_CH_VREFINT] &&
--		    smp < adc->cfg->ts_vrefint_ns) {
--			smp = adc->cfg->ts_vrefint_ns;
--		}
--
--		/* Prepare sampling time settings */
--		stm32_adc_smpr_init(adc, channels[i].channel, smp);
--	}
--
- 	if (timestamping) {
- 		struct iio_chan_spec *timestamp = &channels[scan_index];
- 
--- 
-2.17.1
+alias net-pf-16-proto-16-family-wireguard wireguard
+
+If I do modprobe net-pf-16-proto-16-family-wireguard, modprobe parses so=
+me files in /lib/modules/`uname -r` and issues init_module() asking for =
+'wireguard'.  So hooking init_module() is at the wrong layer -- for that=
+ to work, the container's /sbin/modprobe needs to already have figured o=
+ut that the desired module is wireguard and have a .ko for it.
+
+>
+> 2. A process in the container explicitly calling out to the container
+>    manager.
+>    One example how this happens is systemd-nspawn via dbus messages
+>    between systemd in the container and systemd outside the container =
+to
+>    e.g. allocate a new terminal in the container (kinda insecure but
+>    that's another issue) or other stuff.
+>
+> So what was your idea: would it be like a device file that could be
+> exposed to the container where it writes requestes to the container
+> manager? What would be the advantage to just standardizing a socket
+> protocol which is what we do for example (it doesn't do module loading
+> of course as we handle that differently):
+
+My idea is standardizing *something*.  I think it would be nice if, for =
+example, distros could ship a /sbin/modprobe that would do the right thi=
+ng inside any compliant container runtime as well as when running outsid=
+e a container.
+
+I suppose container managers could also bind-mount over /sbin/modprobe, =
+but that's more intrusive.
 
