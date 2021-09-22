@@ -2,116 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33414147B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D07E4147B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235584AbhIVLV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:21:28 -0400
-Received: from mga01.intel.com ([192.55.52.88]:14308 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230171AbhIVLV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:21:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="246009773"
-X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
-   d="scan'208";a="246009773"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 04:19:51 -0700
-X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
-   d="scan'208";a="653237297"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 04:19:46 -0700
-Received: from andy by smile with local (Exim 4.95-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mT0Hv-004AOf-HS;
-        Wed, 22 Sep 2021 14:19:43 +0300
-Date:   Wed, 22 Sep 2021 14:19:43 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mwifiex: Try waking the firmware until we get an
- interrupt
-Message-ID: <YUsRT1rmtITJiJRh@smile.fi.intel.com>
-References: <20210914114813.15404-1-verdre@v0yd.nl>
- <20210914114813.15404-3-verdre@v0yd.nl>
+        id S235558AbhIVLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235151AbhIVLW6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 07:22:58 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690DFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 04:21:28 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id p4so8507611qki.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 04:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XBkQaLoJFY3Nt7OwoQ6/7lzhxTuoEyjysqz5W7urwSI=;
+        b=PlpkA6+3wsVQJU0jUmF5nNb/fwQsrdTvfonPn2SL6UVtcj1PjnfKqKn7v1DhHtuf2s
+         iitwrOiQhTfJOtWYRyjIHatzadgc/uu34c6YMNneSINqQuHT2NoDXdNyzU0wfqawf+Ny
+         b2Q8T8w1HWNHzGCn3h8Vq6gs8KcbSXTECnqQTOV8maQVxGNu2T+FwyqgxkAkbxfQK5Tb
+         rXUkD9VXDVy1Wc1/L40UwUXDR4uXFvHvQmOZpDaBBs/3NBuZU/gpQbEHe+0TR8vk20cG
+         hOeoD/5qJAVHtZrlyBxjyj0ZaILGTJ2WZzMmetIqwWsm/PmDs4HrTF+q3+KEmEwYYCoG
+         /Kog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XBkQaLoJFY3Nt7OwoQ6/7lzhxTuoEyjysqz5W7urwSI=;
+        b=R1V5Xgo7V8sfGdpDb4kAr7NTYs/rPF4JLC6Er4vDx7XUyGqzatLUXSYaMS33bPc6p/
+         Hvp+OjrIjYfep78PGVTRcS32gB6UuVPGHHTNcJ3F2jfwUeC2ZVGHv5zeQQHdjqOhYFnj
+         BGFWniYx95SL0js3o4Q3j3AVS8l5vkF28gWAbnNakQSufP+hSNwLxwers0YeWLtYvfsX
+         zcTj4cln9t/Bw8XkAf9ckIuGIQqFRCnkW/M9IjDBoxC/5GZfWWUPoGcTRyBp2EwRylcE
+         RfzAFcaM40xxEgInlX0yYxmpHnv9rP0+VKSFh7BuHNKkHUFEkWzXTy6ZiW0SBDqmqz7I
+         hB5Q==
+X-Gm-Message-State: AOAM533hWU6gxveFjYm9gb/Kg0XHBojsQsDdkQ8NynsbKCxW/tlNvYS0
+        vEc5Pepa+HYZ/Th92frD19fH0SNb5avGzWUPFL8=
+X-Google-Smtp-Source: ABdhPJxfOxoaqJ9qJtwPKJmRdP07b/eFIWne3Aru1UUuefVLCXuB27CA8ThyVovWBMbZpLUbMzIDsRfYFxcJnJRqzvU=
+X-Received: by 2002:a5b:ecb:: with SMTP id a11mr44209942ybs.434.1632309687464;
+ Wed, 22 Sep 2021 04:21:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210914114813.15404-3-verdre@v0yd.nl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <CACT4Y+YvovgRNC5EFhN_d=jApwSAsWcNj35=FCJf1k867vBqfw@mail.gmail.com>
+ <067b8eea-3c77-c1f0-8e68-b99e6bf0c033@leemhuis.info>
+In-Reply-To: <067b8eea-3c77-c1f0-8e68-b99e6bf0c033@leemhuis.info>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Wed, 22 Sep 2021 13:21:18 +0200
+Message-ID: <CAKXUXMxg-eywEYrR0oSAo14F7CmiYAT7VDxV71U4-Tv8E0LeVQ@mail.gmail.com>
+Subject: Re: finding regressions with syzkaller
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Paul Albertella <paul.albertella@codethink.co.uk>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, regressions@lists.linux.dev,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        automated-testing@yoctoproject.org,
+        Sasha Levin <sashalevin@google.com>,
+        Marco Elver <elver@google.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Mara Mihali <mihalimara22@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 01:48:13PM +0200, Jonas Dreßler wrote:
-> It seems that the firmware of the 88W8897 card sometimes ignores or
-> misses when we try to wake it up by writing to the firmware status
-> register. This leads to the firmware wakeup timeout expiring and the
-> driver resetting the card because we assume the firmware has hung up or
-> crashed (unfortunately that's not unlikely with this card).
-> 
-> Turns out that most of the time the firmware actually didn't hang up,
-> but simply "missed" our wakeup request and didn't send us an AWAKE
-> event.
-> 
-> Trying again to read the firmware status register after a short timeout
-> usually makes the firmware wake up as expected, so add a small retry
-> loop to mwifiex_pm_wakeup_card() that looks at the interrupt status to
-> check whether the card woke up.
-> 
-> The number of tries and timeout lengths for this were determined
-> experimentally: The firmware usually takes about 500 us to wake up
-> after we attempt to read the status register. In some cases where the
-> firmware is very busy (for example while doing a bluetooth scan) it
-> might even miss our requests for multiple milliseconds, which is why
-> after 15 tries the waiting time gets increased to 10 ms. The maximum
-> number of tries it took to wake the firmware when testing this was
-> around 20, so a maximum number of 50 tries should give us plenty of
-> safety margin.
-> 
-> A good reproducer for this issue is letting the firmware sleep and wake
-> up in very short intervals, for example by pinging a device on the
-> network every 0.1 seconds.
+On Wed, Aug 11, 2021 at 1:25 PM Thorsten Leemhuis <linux@leemhuis.info> wro=
+te:
+>
+> [CCing Lukas]
+>
+> Hi Dmitry!
+>
+> On 10.08.21 19:08, Dmitry Vyukov wrote:
+> > [...]
+> > The idea is to generate random test programs (as syzkaller does) and
+> > then execute them on 2 different kernels and compare results (so
+> > called "differential fuzzing"). This has the potential of finding not
+> > just various "crashes" but also logical bugs and regressions.
+>
+> Hmmm, interesting concept!
+>
+> > The major issue is various false positive differences caused by
+> > timings, non-determinism, accumulated state, intentional and
+> > semi-intentional changes (e.g. subtle API extensions), etc. We learnt
+> > how to deal with some of these to some degree, but feasibility is
+> > still an open question.
+>
+> Sounds complicated and like a lot of manual work.
+>
+> Do you have in mind that Linus and hence many other Kernel developers
+> afaics only care about regressions someone actually observed in a
+> practice? Like a software or script breaking due to a kernel-side change?
+>
+> To quote Linus from
+> https://lore.kernel.org/lkml/CA+55aFx3RswnjmCErk8QhCo0KrCvxZnuES3WALBR1Nk=
+PbUZ8qw@mail.gmail.com/
+>
+> ```The Linux "no regressions" rule is not about some theoretical
+> "the ABI changed". It's about actual observed regressions.
+>
+> So if we can improve the ABI without any user program or workflow
+> breaking, that's fine.```
+>
+> His stance on that afaik has not changed since then.
+>
+> Thus after ruling our all false positives syzkaller might find, there
+> will always be the follow-up question "well, does anything/anyone
+> actually care?". That might be hard to answer and requires yet more
+> manual work by some human. Maybe this working hours at least for now are
+> better spend in other areas.
+>
+> > Since this work is in very early stage, I only have very high-level que=
+stions:
+> >  - what do you think about feasibility/usefulness of this idea in gener=
+al?
+>
+> TBH I'm a bit sceptical due to the above factors. Don't get me wrong,
+> making syzkaller look out for regressions sounds great, but I wonder if
+> there are more pressing issues that are worth getting at first.
+>
+> Another aspect: CI testing already finds quite a few regressions, but
+> those that are harder to catch are afaics often in driver code. And you
+> often can't test that without the hardware, which makes me assume that
+> syzkaller wouldn't help here (or am I wrong?)
+>
+> >  - any suggestions on how to make the tool find more differences/bugs
+> > or how to make it more reliable?
+> >  - is there a list or pointers to some known past regressions that
+> > would be useful to find with such tool? (I've looked at the things
+> > reported on the regressions@ list, but it's mostly crashes/not
+> > booting, but that's what syzkaller can find already well)
+>
+> I first wanted to tell you "look up the reports I compiled in 2017 in
+> the LKML archives", but I guess the way better solution is: just grep
+> for "regression" in the commit log.
+>
+> >  - anybody else we should CC?
+>
+> I guess the people from the Elisa project might be interested in this,
+> that's why I CCed Lukas.
+>
 
-...
+Thanks, Thorsten. I do follow the syzkaller mailing list, so I have
+seen that email before, but I do appreciate your implicit
+acknowledgement here :)
 
-> +	do {
-> +		if (mwifiex_write_reg(adapter, reg->fw_status, FIRMWARE_READY_PCIE)) {
-> +			mwifiex_dbg(adapter, ERROR,
-> +				    "Writing fw_status register failed\n");
-> +			return -EIO;
-> +		}
-> +
-> +		n_tries++;
-> +
-> +		if (n_tries <= N_WAKEUP_TRIES_SHORT_INTERVAL)
-> +			usleep_range(400, 700);
-> +		else
-> +			msleep(10);
-> +	} while (n_tries <= N_WAKEUP_TRIES_SHORT_INTERVAL + N_WAKEUP_TRIES_LONG_INTERVAL &&
-> +		 READ_ONCE(adapter->int_status) == 0);
+... and Dmitry is back from vacation and I guess we will hear more
+today at the Testing and Fuzzing MC on this topic.
 
-Can't you use read_poll_timeout() twice instead of this custom approach?
+Further people/lists to CC are: Paul Albertella
+<paul.albertella@codethink.co.uk> (already CCed here)
 
-> +	mwifiex_dbg(adapter, EVENT,
-> +		    "event: Tried %d times until firmware woke up\n", n_tries);
+I am personally certainly interested and I think this work gives
+companies in the area of building trustable software and systems (see
+Paul's area of expertise) a good understanding how reliable and to
+which extent the statement "all Linux kernels are backwards
+compatible" really holds.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I unfortunately lost the Fuzzing Team (Jouni H=C3=B6gander, Jukka Kaartinen
+et al.) previously working with me, and I need to first get back some
+budget, build up a new team and hope that we can then also follow this
+idea and contribute here as well. (Fingers crossed that I can convince
+some others to give me money and work with me on this...)
 
+Looking forward to the presentation at the MC.
 
+Best regards,
+
+Lukas
