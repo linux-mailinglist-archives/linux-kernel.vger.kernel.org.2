@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851C3414C4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83BB414C4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236219AbhIVOq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
+        id S236250AbhIVOrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232720AbhIVOq2 (ORCPT
+        with ESMTP id S230356AbhIVOrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:46:28 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6ABDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:44:58 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id i23so7675322wrb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:44:58 -0700 (PDT)
+        Wed, 22 Sep 2021 10:47:12 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E61CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:45:42 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id t18so7732312wrb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:45:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/UqkiTbQCfJh5aABZrPoa9gs1Z/m7zmL0lEew+YjSOQ=;
-        b=seuC0u61i0x7pS7Xo8kiRlaehRAAefbeFxGUsduKdMNSkng4Qw7oOU1ze8bSXvpWAn
-         Pk2Y3pQS5EAtzqnKWQLSiCXZa8OiZcLKoBgtXoUnUfntOAVXh+Xyxlc4nz1S/L0+AUP9
-         x3kfBetezgTtoGRtgD3xIdrGs7CvQymxnqT3/wJize6rdjWyC4s0i46AlBCeJEX7hZ17
-         s+oxz+okN5w6OvSitqWQvrSiUrzL+X7yyo9vsDDL7JO6Ys0slU0d8LdcKrb/p+2vroQ0
-         4tew94R/Y2cvh6d1dGzHGABTMn5u7hWQFzKPkhWnacNek1z8kJ4A+NVXbd4buDj3N3u+
-         izyQ==
+        bh=vBtJFE+lofow65KkthlKBCy0zY8p2r2WeZxJ4tazkWI=;
+        b=XlWRxcZKczZ6MNWmAJ6uzfftNpBFTtj2u6tlchvACgOocDNUd5vnx3674guNB1p3iB
+         1rtvroB0yiiHcAULxT4Clmacv6TJT56G91i0b9DF70mZKUnst5czv6K8qr5plEEO8GaB
+         FNToCMwSpS0ds+dH0/pWnZNJc6BDYVYLH+yuJ+DmMIOevRKRm1wiz/xenEvA1YzK50F4
+         N7Y0WiQrGWq9Zsd7AqbzvEos0jU8+2hCkhQyDt1K6qxJnOOYEzCpd3IN7yCR5AQLOZRa
+         9gqoFktAiAVy+y/7Rd0neQkZR8xiWbSxg9fw/wOni8K+mTec8UHVvyFSkzIgmNp+Q+yX
+         Ckhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=/UqkiTbQCfJh5aABZrPoa9gs1Z/m7zmL0lEew+YjSOQ=;
-        b=cZFhJMyld+E/RAAtUloKHIvG08VjoYBiNC2auvb6Znhu5yEw2AfJvfTQmNyXV87H/3
-         f8/xqNODeL1XABqwqHX7mB47YTYK9IJD+1UPm0Uejr6CVEqWoEVCIaByg7z0uEIT2tU9
-         JS5LFLbhz5M2ipeAFcMrjuna03GboZOTdV2aiSzQ8rQTROoUNcct/MmM/KIofl7kQt59
-         QpbzsVxDHaFBgMRM4DuJiPi+DZFy6EodwfCSLoZFfiCDLDc4BpJt5zJbn2YT9zTiBD/A
-         /MjwFszMfOJFmhsrEhfUEASJgQ8qPI/fHSwaMFzms8kbad4svYigNfswHhHbYg7zQfB/
-         5M8w==
-X-Gm-Message-State: AOAM532NTqFQHFPJyPVgVkiTmbIJg5L9dKf7rF03GQTjgTSoG2pAieFF
-        L4cYdptUMzf0Od/Ee3F2NwKZREEo8WVDGA==
-X-Google-Smtp-Source: ABdhPJyWH1QP4/43lGXC2dLB3FM/736vIA3wf9mwa+WrXSFNRhitUbAd8IErf/T6mYfcvuZokEOIjQ==
-X-Received: by 2002:a5d:4d02:: with SMTP id z2mr43278757wrt.8.1632321897201;
-        Wed, 22 Sep 2021 07:44:57 -0700 (PDT)
+        bh=vBtJFE+lofow65KkthlKBCy0zY8p2r2WeZxJ4tazkWI=;
+        b=RATuJqfpkYWHQYU/LMJHkiXPiLNsJ+9aVNJ9Cd6Ib2SThjWiNoMBKSx0lzhD9p6PYh
+         xqvP5yNOhZtQUgCUfnt1AXnhbiBNwJEWPhgtOwOWYztEdxBgCjcU5CU5jlEzDynNYBh1
+         XyzAjRgodyVPdB+NfV3dk3BlccBERUwnok58vWsOBjyJWsjGc0KOD7VxZIj/UfA0CK4J
+         cSsNxWGlmocF8tlICbvE52RwuKMtYcSopGiCNmM8f5ZfbXXkR0qGRzmpsmntU8Xd0QCp
+         ndR/p0UOr5VBXOo9+FMezmJMUKcQGYAS81wiLpNaJycZBtQdT41wezMmcIUwywOal1dB
+         67cQ==
+X-Gm-Message-State: AOAM532MwFYpCKoSV689MpUg86j4IDiYCsJHAzHhY3RUa41pqJ8X1+tn
+        DJO6CXVm7Ae1ApsqMtj46SNjjw==
+X-Google-Smtp-Source: ABdhPJw8riDRCc+8hErOFvP4SgnMWnSaRjwppkdDu9v3Rwgwoehg8PNJNDJ3cM4zJ6telHppmPbZrA==
+X-Received: by 2002:a7b:c4c2:: with SMTP id g2mr11052165wmk.134.1632321939185;
+        Wed, 22 Sep 2021 07:45:39 -0700 (PDT)
 Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id w5sm2375705wra.87.2021.09.22.07.44.56
+        by smtp.gmail.com with ESMTPSA id d2sm2441774wrc.32.2021.09.22.07.45.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 07:44:56 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 15:44:54 +0100
+        Wed, 22 Sep 2021 07:45:38 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 15:45:36 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH] mfd: cros_ec: drop unneeded MODULE_ALIAS
-Message-ID: <YUtBZp4iA38846Pd@google.com>
-References: <20210916170534.138395-1-krzysztof.kozlowski@canonical.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v9 2/4] dt-bindings: mfd: logicvc: Add patternProperties
+ for the display
+Message-ID: <YUtBkOFeQWnteG5L@google.com>
+References: <20210914200539.732093-1-paul.kocialkowski@bootlin.com>
+ <20210914200539.732093-3-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210916170534.138395-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210914200539.732093-3-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021, Krzysztof Kozlowski wrote:
+On Tue, 14 Sep 2021, Paul Kocialkowski wrote:
 
-> The MODULE_DEVICE_TABLE already creates proper alias.  Having another
-> MODULE_ALIAS causes the alias to be duplicated:
+> The LogiCVC multi-function device has a display part which is now
+> described in its binding. Add a patternProperties match for it.
 > 
->   $ modinfo cros_ec_dev.ko
-> 
->   alias:          platform:cros-ec-dev
->   srcversion:     F84A69D2156719A4F717A76
->   alias:          platform:cros-ec-dev
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 > ---
->  drivers/mfd/cros_ec_dev.c | 1 -
->  1 file changed, 1 deletion(-)
+>  Documentation/devicetree/bindings/mfd/xylon,logicvc.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 
 Applied, thanks.
 
