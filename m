@@ -2,150 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504574143D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682C44143DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbhIVIeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbhIVIeE (ORCPT
+        id S233817AbhIVIgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:36:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28123 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233349AbhIVIg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:34:04 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED785C061574;
-        Wed, 22 Sep 2021 01:32:34 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id w11so1234202plz.13;
-        Wed, 22 Sep 2021 01:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1vngS2lLFpX3T2rXXyf0bdb29JPkoUdlNBskWHD774k=;
-        b=OxLvV2bRCQYkP9+l2Vlws5bL2v+cR5gRM7Z01D+2/5+LnXLYJK6CeI8mhHfLHPeMAS
-         UIFpcdXsFiAbqRNtxbxdaW7CE7CbS+cIlyV3YrXIK8QkH7uJtWpLgytBnN5hWYVSl/i3
-         TfZj5nRgu/h9EYjEj4WHb9MOYXvpq6lDudCL8FJ6hMmv9cYSX1rlNKyG9HoiWPwJmwPT
-         DIevCepsGiwzpJJ4l8cJNWuW5bcfV5P6zvWOZhT/zIjBf47x6PXN0wgJ5dpNM1YhkHo3
-         zTsIl6zNC+CMtW0uVrXEba5HGBjYH3zT4QfjrOzLOUig0Llzovl73gfliMeSpTVXPXdp
-         RrwA==
+        Wed, 22 Sep 2021 04:36:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632299699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=svaC5frr5Y1j2ok3e6TGBYwEyUBuVy40SZeCKDrTUZw=;
+        b=Wh5F9lCpm6qS6hRx9mTIEOGkCWL0SQw/xEU8/4R1XEMHDEQm1AFAxpx25JsTHsEwUb6wR3
+        q5TrLBd2BjqdzX8lYzDD1gGDHXnAows7L5a+sk1y+TeqzBNc7bGVh/SV43nqS7k0BsgYD3
+        4v/KVjI6JznfuYngtUuSx4XrcjQJuXA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-XVatnBauOeumZLRzgj9mFw-1; Wed, 22 Sep 2021 04:34:58 -0400
+X-MC-Unique: XVatnBauOeumZLRzgj9mFw-1
+Received: by mail-wr1-f71.google.com with SMTP id v15-20020adff68f000000b0015df51efa18so1422815wrp.16
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:34:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1vngS2lLFpX3T2rXXyf0bdb29JPkoUdlNBskWHD774k=;
-        b=S4m9o1tK3fW2Za1b6AHKBw4ie+DuJsSW/gk89r240wLn+hD+SMAau0+5cDT716m1os
-         PYWHJ6rHkmXXRxjsECg1abn9DnTojwrgk4gAAMm8wukV19EwxsglHJs4r/xVPngkQxTe
-         zU6n60hq3Tfqbc+dOA2eb+DkvHqtivOK+FfUVZmw7eX0m9R/lbDzriBc8EtSiKu8AJ57
-         XXaqak5A4u3xfi0bjiGMsXar4/xhcey1GgQOJs1XG3H6POMl1G/vB5F9z0nSa+lXmBl5
-         nVsHqOIRyxMdG9oq8Pnu5OG/2krBE16SiJpgpt07yyYXFFKOwlAfh1t+hwhqxbYfycyl
-         rn6w==
-X-Gm-Message-State: AOAM530XsiMuNw7LTcISwzhFugAqOx64x7LP5MS/ZLm/k95gLmXCmBdp
-        jzA4JrdMmzfWx/1AyIQtRMc=
-X-Google-Smtp-Source: ABdhPJw/BLSytIi3rtAX6V4TCQIMXbjagraOTa5pwNL7yhu5hVmfxY8eLMphBzyOFF80+jG2ykYaRA==
-X-Received: by 2002:a17:902:dcd5:b0:13d:97c6:c480 with SMTP id t21-20020a170902dcd500b0013d97c6c480mr21343565pll.70.1632299554488;
-        Wed, 22 Sep 2021 01:32:34 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
-        by smtp.gmail.com with ESMTPSA id k14sm1820644pgg.92.2021.09.22.01.32.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 01:32:34 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 08:32:28 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=svaC5frr5Y1j2ok3e6TGBYwEyUBuVy40SZeCKDrTUZw=;
+        b=CvYsa9cWQHal3CJl3Cdht3tkMrdAo/fD5IeROZ80wLx01pcSS4Anj95gMwJlHZ0Rio
+         BTO7DdhwLmiNfSuDlWEinNVHOrw2sqjcBqPOqcg+DH6mk4uaGQ4kQYQWHgdhRYB/KGy8
+         NE5oxyV4c3qVvhj5MbGz6NcBAWA1gdLnwmiwFsqNyi2uIZYbfHfnrE719m2GwlTBfo1V
+         RMiqxlgUvLkPzTjKhXPP575qw6hlqX8C5rtB9FSwvsik4igUnzerke+C7azB3MjugZDn
+         2dXezYrajrv9jaZRk3Gr1wkNdhb4nqexKRQZUntaTXquLpH2c0QjGEGrTK19WJoVzjrM
+         vbIw==
+X-Gm-Message-State: AOAM5324Yv+dUES+gtpfSC2Bf/u2zG3TZVHHlp5vwG8BX4VlmuXfeOFB
+        /DrMCu3rVuS0bDlmEyP5qLKyzMLMh95RJCpE3o5WlAtLNlGPImvsqPuG2YHJQF7P0O94jZ6VBcG
+        K5I5ylb0SGcqdz70zbQrbaZNH
+X-Received: by 2002:a5d:5241:: with SMTP id k1mr8792529wrc.227.1632299697388;
+        Wed, 22 Sep 2021 01:34:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxbVJ4dzB/vx3MdrtneE17zvVD/pt2Uv3PVLT5B48w60IgoAph1QLkJ0nxtjwF+V/kcbPNs1A==
+X-Received: by 2002:a5d:5241:: with SMTP id k1mr8792508wrc.227.1632299697175;
+        Wed, 22 Sep 2021 01:34:57 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64dd.dip0.t-ipconnect.de. [91.12.100.221])
+        by smtp.gmail.com with ESMTPSA id p5sm1658663wrd.25.2021.09.22.01.34.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 01:34:56 -0700 (PDT)
+Subject: Re: [PATCH v1] mm/vmalloc: fix exact allocations with an alignment >
+ 1
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ping Fang <pifang@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        John Garry <john.garry@huawei.com>,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC v2 PATCH] mm, sl[au]b: Introduce lockless cache
-Message-ID: <20210922083228.GA79355@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
- <YUkErK1vVZMht4s8@casper.infradead.org>
- <20210921154239.GA5092@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
- <YUoFfrQBmOdPEKpJ@casper.infradead.org>
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210908132727.16165-1-david@redhat.com>
+ <CA+KHdyWadbqZ=xVBv6uZwxpZSEndAAk_inK+0962VcntY+mnSA@mail.gmail.com>
+ <CA+KHdyUTQLwN0YASOX8XJoWCD_x1QwRmz81BGShCzb_8jZ93XQ@mail.gmail.com>
+ <ea75df96-f381-6949-5627-1382a370dc71@redhat.com>
+ <20210916193403.GA1940@pc638.lan>
+ <221e38c1-4b8a-8608-455a-6bde544adaf0@redhat.com>
+ <20210921221337.GA60191@pc638.lan>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <7f62d710-ca85-7d33-332a-25ff88b5452f@redhat.com>
+Date:   Wed, 22 Sep 2021 10:34:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUoFfrQBmOdPEKpJ@casper.infradead.org>
+In-Reply-To: <20210921221337.GA60191@pc638.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Matthew.
-There's good news.
-
-in v3 (work in progress now), I fixed some bugs (I hate kernel panics!)
-And for test, made NAPI use it. it works pretty well.
-
-On Tue, Sep 21, 2021 at 05:17:02PM +0100, Matthew Wilcox wrote:
-> On Tue, Sep 21, 2021 at 03:42:39PM +0000, Hyeonggon Yoo wrote:
-> > > > +	/* slowpath */
-> > > > +	cache->size = kmem_cache_alloc_bulk(s, gfpflags,
-> > > > +			KMEM_LOCKLESS_CACHE_QUEUE_SIZE, cache->queue);
-> > > 
-> > > Go back to the Bonwick paper and look at the magazine section again.
-> > > You have to allocate _half_ the size of the queue, otherwise you get
-> > > into pathological situations where you start to free and allocate
-> > > every time.
-> > 
-> > I want to ask you where idea of allocating 'half' the size of queue came from.
-> > the paper you sent does not work with single queue(magazine). Instead,
-> > it manages pool of magazines.
-> > 
-> > And after reading the paper, I see managing pool of magazine (where M is
-> > an boot parameter) is valid approach to reduce hitting slowpath.
+>> No, that's leaking implementation details to the caller. And no, increasing
+>> the range and eventually allocating something bigger (e.g., placing a huge
+>> page where it might not have been possible) is not acceptable for KASAN.
+>>
+>> If you're terribly unhappy with this patch,
+> Sorry to say but it simple does not make sense.
 > 
-> Bonwick uses two magazines per cpu; if both are empty, one is replaced
-> with a full one.  If both are full, one is replaced with an empty one.
-> Our slab implementation doesn't provide magazine allocation, but it does
-> provide bulk allocation.
-> So translating the Bonwick implementation to
-> our implementation, we need to bulk-allocate or bulk-free half of the
-> array at any time.
 
-Is there a reason that the number should be 'half'?
+Let's agree to disagree.
 
-what about something like this:
+find_vmap_lowest_match() is imprecise now and that's an issue for exact 
+allocations. We can either make it fully precise again (eventually 
+degrading allocation performance) or just special-case exact allocations 
+to fix the regression.
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 884d3311cd8e..f32736302d53 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -455,12 +455,13 @@ void *kmem_cache_alloc_cached(struct kmem_cache *s, gfp_t gfpflags)
-        }
+I decided to go the easy path and do the latter; I do agree that making 
+find_vmap_lowest_match() fully precise again might be preferred -- we 
+could have other allocations failing right now although there are still 
+suitable holes.
 
-        cache = get_cpu_ptr(s->cache);
--       if (cache->size) /* fastpath without lock */
-+       if (cache->size) /* fastpath without lock */
-                p = cache->queue[--cache->size];
-        else {
-                /* slowpath */
--               cache->size = kmem_cache_alloc_bulk(s, gfpflags,
--                               KMEM_LOCKLESS_CACHE_QUEUE_SIZE, cache->queue);
-+               cache->size += kmem_cache_alloc_bulk(s, gfpflags,
-+                               KMEM_LOCKLESS_CACHE_BATCHCOUNT,
-+                               cache->queue);
-                if (cache->size)
-                        p = cache->queue[--cache->size];
-                else
-@@ -491,13 +492,13 @@ void kmem_cache_free_cached(struct kmem_cache *s, void *p)
-        cache = get_cpu_ptr(s->cache);
-        if (cache->size < KMEM_LOCKLESS_CACHE_QUEUE_SIZE) {
-                cache->queue[cache->size++] = p;
--               put_cpu_ptr(s->cache);
--               return ;
-+       } else {
-+               kmem_cache_free_bulk(s,
-+                               KMEM_LOCKLESS_CACHE_BATCHCOUNT,
-+                               cache->queue - KMEM_LOCKLESS_CACHE_BATCHCOUNT);
-+               cache->size -= KMEM_LOCKLESS_CACHE_BATCHCOUNT;
-        }
-        put_cpu_ptr(s->cache);
--
--       /* Is there better way to do this? */
--       kmem_cache_free(s, p);
- }
- EXPORT_SYMBOL(kmem_cache_free_cached);
+I briefly thought about performing the search in 
+find_vmap_lowest_match() twice. First, start the search without an 
+extended range, and fallback to the extended range if that search fails. 
+Unfortunately, I think that still won't make the function completely 
+precise due to the way we might miss searching some suitable subtrees.
+
+>>
+>> please suggest something reasonable to fix exact allocations:
+>> a) Fixes the KASAN use case.
+>> b) Allows for automatic placement of huge pages for exact allocations.
+>> c) Doesn't leak implementation details into the caller.
+>>
+> I am looking at it.
+
+Thanks!
+
+-- 
+Thanks,
+
+David / dhildenb
+
