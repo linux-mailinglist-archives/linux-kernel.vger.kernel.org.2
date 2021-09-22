@@ -2,194 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E38415327
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3611F41532D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238240AbhIVWBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:01:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38789 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232149AbhIVWBr (ORCPT
+        id S237834AbhIVWHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232149AbhIVWH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:01:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632348016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MSufQgcqxvHFrHlhUjYOqfQRYT76lvHJVVdac9iuZ2k=;
-        b=Sh5o7wJ7AbH5KV7jPQi2ykzgjyr6apYwiDTmsI3VBzxuSGrvN3YdwBf6C3xPKhw6hCtyNq
-        jUUR1wKL26240JmS1of64EM5iZOoIRtW/wlciDDaHJ8DoS/FBPIMXfZXHwwFmdYQsm6bEu
-        dRmFzrZcmapOTAQFi1AHLqQ5rcyxyLg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-fW3d8VfgN7e4fqYqh4APKQ-1; Wed, 22 Sep 2021 18:00:15 -0400
-X-MC-Unique: fW3d8VfgN7e4fqYqh4APKQ-1
-Received: by mail-wr1-f72.google.com with SMTP id v1-20020adfc401000000b0015e11f71e65so3441549wrf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:00:15 -0700 (PDT)
+        Wed, 22 Sep 2021 18:07:29 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA81C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:05:59 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id b10so5450168ioq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:05:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5SYXvLn3SjXAQ4MAzIaVmGx80q5ADpEHvJGRZh2fwGQ=;
+        b=fIvXEv+vCCuCjlnflfXdH0G29UFJLzYXN4CfKvUbcEasTWFWDknqa1X58g4hv1kfH+
+         aVup6rXSb0sh1Q8Fi4tzcDj4TljFixmarljYO8NtO4rGTUJGVNwxw3MijT1wthB+GbOU
+         BVeDWCdfKd5PDrWg6KelnkiQ84/ANKLh93tu3AXzsxs8gyU4VfJMTInxsZ2Dwlf1jq43
+         0YsjmiviUbGgMWYd1sKGgQqUZQtqof4Vg7vVSWLWbltNwkxh5dHpuMqJSlXy/5mZXyBo
+         5ZqWW6gUqw+VBmuSKnMWS0wrcUTwKwC0WLc/iuVb+dbzXjTE/x5H1onsJxwDvkketsk7
+         RHdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MSufQgcqxvHFrHlhUjYOqfQRYT76lvHJVVdac9iuZ2k=;
-        b=OsB6jq+GRkz/F67Ai213vIJ8M8YTwpckLj+wNf5pk4P/HRVRAqZpmaj/PBD+SIZnk+
-         zKoz4byaO90WVVTUMfYO0ZLZCuwCc7kyD1FzAt14GjZQSZnM7J2ZJZUQVSPvuiP70WR/
-         +/x9gi9uzoHBglagE8r9yNxPSjq5EvjPLuihzB3pdBaUqEFVHGO2gQ3QWA1/KGUUleCw
-         ToRdy/u/gLtksEvH4yAEVGDQfYbzbdPv6k5CpMWsU4id1avcAdvEFC9dqqcnyf1c1aBB
-         //W2w/+XfoyeCqKI5JBXogvtrkqufIZAy8koi2+yVs9idch+ATfFHVeXRIYhmk1h1v3I
-         ZUvA==
-X-Gm-Message-State: AOAM531zQdzWOJWrmfvJRuzLdQ1L6vwAiNARGQZoY/QIuoYmX1TMcTM+
-        i4Y3cjctgFVk1ZS32UZDw43RHLz8IH7qM3NvZ/pzx/UOB11eUsydCF4rrjLesJkZ2C6rCRWcIZE
-        m9h9qT5smG/FMt2JcO2Ygmx+o
-X-Received: by 2002:a1c:7714:: with SMTP id t20mr12669543wmi.163.1632348014292;
-        Wed, 22 Sep 2021 15:00:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPLS4+2WcBvrD8GrV27JqERjbGfGscJjJMuEEgM2vk2AWcATO3CB7llcUIylvt1H9uYjy4wg==
-X-Received: by 2002:a1c:7714:: with SMTP id t20mr12669531wmi.163.1632348014097;
-        Wed, 22 Sep 2021 15:00:14 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id c7sm3462958wmq.13.2021.09.22.15.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 15:00:13 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 00:00:11 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2] perf test: Fix dwarf unwind for optimized builds.
-Message-ID: <YUuna3dv+mgkkzqj@krava>
-References: <20210922173812.456348-1-irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5SYXvLn3SjXAQ4MAzIaVmGx80q5ADpEHvJGRZh2fwGQ=;
+        b=62NgVBVgmukf7ZqaMIZ2/HxEJ4mF8gsP1i9Y4dqJBe8owGjWmNpZjBxfuIeQ91Ryje
+         Ejm3HALN3rv3JIKY0T/MNBS6lWnH4lPYKEDj8xJkOOe0smsrwKXzs2K6mX1eUvBJlzKU
+         ZQlBwoa2Aeh0HGb5QzLTV3YcozxNotMIFGTOXOymsPlsEuQsAYfpFNCriewCo6C/1/Kl
+         w0Ra79z7F6rZaLjsh2pR3L2aOiyXTVrNfWOW6OZbI2H1e4dMyOrE2e2uWYYFOMoF40Rp
+         dWNjxs0FgMmfs6NWs8eo6l7/rHICODiGoGenXjqHjoYAbnaxP9eQcYTKCQ/ThVT+7733
+         s4kQ==
+X-Gm-Message-State: AOAM530amcAXsHXUqkuM1v4PbE5sPhu8D7Xl3F6gWbZGMd4YIFHltoyv
+        Uo8lBjnA8RndB9pav0o0f6nJDeb0LzSyVu2Slh+xcA==
+X-Google-Smtp-Source: ABdhPJw1jzm4Ztt01wsrksRUqCwtTfxTOGoEOxhsCniLLcC1+2wPSZyuNP/18jrxFZ4lv80ghbbCdA+Jk+wHR+q8wiM=
+X-Received: by 2002:a6b:5f08:: with SMTP id t8mr1043653iob.71.1632348358124;
+ Wed, 22 Sep 2021 15:05:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922173812.456348-1-irogers@google.com>
+References: <20210922061809.736124-1-pcc@google.com> <29f1822d-e4cd-eedb-bea8-619db1d56335@redhat.com>
+ <20210922152250.4e7c869a@gandalf.local.home> <YUuJo7IfS4x0iLfX@hirez.programming.kicks-ass.net>
+In-Reply-To: <YUuJo7IfS4x0iLfX@hirez.programming.kicks-ass.net>
+From:   Peter Collingbourne <pcc@google.com>
+Date:   Wed, 22 Sep 2021 15:05:46 -0700
+Message-ID: <CAMn1gO7L=K7xRxi6yrkr+7BWZN_9UEprt=ywbvQ7M-0HVgf2ow@mail.gmail.com>
+Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Colin Ian King <colin.king@canonical.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Evgenii Stepanov <eugenis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:38:12AM -0700, Ian Rogers wrote:
-> To ensure the stack frames are on the stack tail calls optimizations
-> need to be inhibited. If your compiler supports an attribute use it,
-> otherwise use an asm volatile barrier.
-> 
-> The barrier fix was suggested here:
-> https://lore.kernel.org/lkml/20201028081123.GT2628@hirez.programming.kicks-ass.net/
-> Tested with an optimized clang build and by forcing the asm barrier
-> route with an optimized clang build.
-> 
-> A GCC bug tracking a proper disable_tail_calls is:
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97831
-> 
-> Fixes: 9ae1e990f1ab ("perf tools: Remove broken __no_tail_call
->        attribute")
-> 
-> v2. is a rebase. The original fix patch generated quite a lot of
->     discussion over the right place for the fix:
-> https://lore.kernel.org/lkml/20201114000803.909530-1-irogers@google.com/
->     The patch reflects my preference of it being near the use, so that
->     future code cleanups don't break this somewhat special usage.
+On Wed, Sep 22, 2021 at 12:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Sep 22, 2021 at 03:22:50PM -0400, Steven Rostedt wrote:
+> > On Wed, 22 Sep 2021 19:46:47 +0200
+> > David Hildenbrand <david@redhat.com> wrote:
+> >
+> > > > All signals except SIGKILL and SIGSTOP are masked for the interval
+> > > > between the prctl() and the next syscall in order to prevent handlers
+> > > > for intervening asynchronous signals from issuing syscalls that may
+> > > > cause uaccesses from the wrong syscall to be logged.
+> > >
+> > > Stupid question: can this be exploited from user space to effectively
+> > > disable SIGKILL for a long time ... and do we care?
+> >
+> > I first misread it too, but then caught my mistake reading it a second
+> > time. It says "except SIGKILL". So no, it does not disable SIGKILL.
+>
+> Disabling SIGINT might already be a giant nuisance. Letting through
+> SIGSTOP but not SIGCONT seems awkward. Blocking SIGTRAP seems like a bad
+> idea too. Blocking SIGBUS as delivered by #MC will be hillarious.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+I'm only blocking the signals that are already blockable from
+userspace via rt_sigprocmask (which prevents blocking SIGKILL and
+SIGSTOP, but allows blocking the others including SIGBUS, for which
+the man page states that the result is undefined if synchronously
+generated while blocked). So in terms of blocking signals I don't
+think this is exposing any new capabilities.
 
-thanks,
-jirka
+Per the sigaction man page, SIGKILL and SIGSTOP can't have userspace
+signal handlers, so we don't need to block them in order to prevent
+intervening asynchronous signal handlers (nor do we want to due to the
+DoS potential). I would need to double check the behavior but I
+believe that for SIGCONT continuing the process is separate from
+signal delivery and unaffected by blocking (see prepare_signal in
+kernel/signal.c) -- so the SIGCONT will make it continue and the
+handler if any would be called once the syscall returns after the
+automatic restoration of the signal mask.
 
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/tests/dwarf-unwind.c | 39 +++++++++++++++++++++++++++------
->  1 file changed, 32 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/perf/tests/dwarf-unwind.c b/tools/perf/tests/dwarf-unwind.c
-> index a288035eb362..c756284b3b13 100644
-> --- a/tools/perf/tests/dwarf-unwind.c
-> +++ b/tools/perf/tests/dwarf-unwind.c
-> @@ -20,6 +20,23 @@
->  /* For bsearch. We try to unwind functions in shared object. */
->  #include <stdlib.h>
->  
-> +/*
-> + * The test will assert frames are on the stack but tail call optimizations lose
-> + * the frame of the caller. Clang can disable this optimization on a called
-> + * function but GCC currently (11/2020) lacks this attribute. The barrier is
-> + * used to inhibit tail calls in these cases.
-> + */
-> +#ifdef __has_attribute
-> +#if __has_attribute(disable_tail_calls)
-> +#define NO_TAIL_CALL_ATTRIBUTE __attribute__((disable_tail_calls))
-> +#define NO_TAIL_CALL_BARRIER
-> +#endif
-> +#endif
-> +#ifndef NO_TAIL_CALL_ATTRIBUTE
-> +#define NO_TAIL_CALL_ATTRIBUTE
-> +#define NO_TAIL_CALL_BARRIER __asm__ __volatile__("" : : : "memory");
-> +#endif
-> +
->  static int mmap_handler(struct perf_tool *tool __maybe_unused,
->  			union perf_event *event,
->  			struct perf_sample *sample,
-> @@ -91,7 +108,7 @@ static int unwind_entry(struct unwind_entry *entry, void *arg)
->  	return strcmp((const char *) symbol, funcs[idx]);
->  }
->  
-> -noinline int test_dwarf_unwind__thread(struct thread *thread)
-> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__thread(struct thread *thread)
->  {
->  	struct perf_sample sample;
->  	unsigned long cnt = 0;
-> @@ -122,7 +139,7 @@ noinline int test_dwarf_unwind__thread(struct thread *thread)
->  
->  static int global_unwind_retval = -INT_MAX;
->  
-> -noinline int test_dwarf_unwind__compare(void *p1, void *p2)
-> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__compare(void *p1, void *p2)
->  {
->  	/* Any possible value should be 'thread' */
->  	struct thread *thread = *(struct thread **)p1;
-> @@ -141,7 +158,7 @@ noinline int test_dwarf_unwind__compare(void *p1, void *p2)
->  	return p1 - p2;
->  }
->  
-> -noinline int test_dwarf_unwind__krava_3(struct thread *thread)
-> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_3(struct thread *thread)
->  {
->  	struct thread *array[2] = {thread, thread};
->  	void *fp = &bsearch;
-> @@ -160,14 +177,22 @@ noinline int test_dwarf_unwind__krava_3(struct thread *thread)
->  	return global_unwind_retval;
->  }
->  
-> -noinline int test_dwarf_unwind__krava_2(struct thread *thread)
-> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_2(struct thread *thread)
->  {
-> -	return test_dwarf_unwind__krava_3(thread);
-> +	int ret;
-> +
-> +	ret =  test_dwarf_unwind__krava_3(thread);
-> +	NO_TAIL_CALL_BARRIER;
-> +	return ret;
->  }
->  
-> -noinline int test_dwarf_unwind__krava_1(struct thread *thread)
-> +NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_1(struct thread *thread)
->  {
-> -	return test_dwarf_unwind__krava_2(thread);
-> +	int ret;
-> +
-> +	ret =  test_dwarf_unwind__krava_2(thread);
-> +	NO_TAIL_CALL_BARRIER;
-> +	return ret;
->  }
->  
->  int test__dwarf_unwind(struct test *test __maybe_unused, int subtest __maybe_unused)
-> -- 
-> 2.33.0.464.g1972c5931b-goog
-> 
-
+Peter
