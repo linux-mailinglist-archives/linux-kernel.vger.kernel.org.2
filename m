@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9B9414721
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42373414725
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235311AbhIVK6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:58:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57098 "EHLO mail.kernel.org"
+        id S235307AbhIVK6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:58:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235245AbhIVK6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:58:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9201C61050;
-        Wed, 22 Sep 2021 10:56:34 +0000 (UTC)
+        id S235275AbhIVK6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:58:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9DA96109F;
+        Wed, 22 Sep 2021 10:56:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632308194;
-        bh=mDH2GCHWNM5isTwxDcPNqbsUHNnv4sybjDxlPu8Ps9A=;
+        s=k20201202; t=1632308195;
+        bh=Tj1KoLbRx36Cai5tD6gjvLCZPUH6QNJdzsfNne47jbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gUcCw7GnDQXqjBVmvA5bwo8O3sjmSQuYLhWC18XUKsjl03ewV8SYH9AScUKMDCswa
-         Uqmo+Y/qEP8irhdMO/etYcUrvpCnuwRaSjDmPUhuDcX4917lsk6kKP+pRi5GTX0qF4
-         i7yDhHZOVCHCh2g/aFirxhhm8ZcMAf+u4YDL4FFnG9HOHSoZbuGAPxsIbkBJrw+nU2
-         XxcMyMEAdPZJ3mL3J29zokY/cu1YC4c1VmN5DYW7dPUv7DNZBVVV9gp6uak3+5kNJF
-         UhRwpXTfdK5wUJBSlNvQeOsOMJa6WO8znOIDGUIiZG2e7Fvid7MU+L9qE1UBD7Tsjq
-         cMTWI/Xdd3+Dw==
+        b=jBM3mq93lkZvb/zHLwymyfLaUHJuyQqE1Dzyb08bcUON6PZ84QX/csvqcuwjuHHkG
+         CpBVAJ+llDj/ZrM5C3AqV1SZTNprR8ptodHyOCAhR868seKV1rDU/pz7F5SiOnRuZe
+         DXPXZancFyT+CvhSrE1kWLYyicnfM+3HXyESZEctI+pyIjVAQMGSXXdk5ULocqamrC
+         75SzRY5WgjNxva361VhLBRHMUxPNQa+JNlgOv2F8zEej1vFilHPNBTfu07hmvLam49
+         oIhjZFtV81/AObIg+vYthY8ETl+uTIfVurBoxKtlLwnGbYTbc9ZStL/H3lmCdql9I7
+         +OYR1YumXGt5Q==
 Received: by pali.im (Postfix)
-        id 532D679F; Wed, 22 Sep 2021 12:56:34 +0200 (CEST)
+        id 6747879F; Wed, 22 Sep 2021 12:56:35 +0200 (CEST)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -37,9 +37,9 @@ Cc:     Andrew Lunn <andrew@lunn.ch>,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [RESEND PATCH v5 3/6] dt-bindings: mvebu-uart: document DT bindings for marvell,armada-3700-uart-clock
-Date:   Wed, 22 Sep 2021 12:54:30 +0200
-Message-Id: <20210922105433.11744-4-pali@kernel.org>
+Subject: [RESEND PATCH v5 4/6] dt-bindings: mvebu-uart: update information about UART clock
+Date:   Wed, 22 Sep 2021 12:54:31 +0200
+Message-Id: <20210922105433.11744-5-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210922105433.11744-1-pali@kernel.org>
 References: <20210922105433.11744-1-pali@kernel.org>
@@ -50,78 +50,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds DT bindings documentation for device nodes with compatible
-string "marvell,armada-3700-uart-clock".
+Device "marvell,armada-3700-uart" should use
+"marvell,armada-3700-uart-clock" compatible clock.
 
 Signed-off-by: Pali Rohár <pali@kernel.org>
 ---
- .../bindings/clock/armada3700-uart-clock.yaml | 57 +++++++++++++++++++
- 1 file changed, 57 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
+ Documentation/devicetree/bindings/serial/mvebu-uart.txt | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
-new file mode 100644
-index 000000000000..5bdb23e0ba3e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/marvell,armada-3700-uart-clock#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+title: Marvell Armada 3720 UART clocks
-+
-+properties:
-+  compatible:
-+    const: marvell,armada-3700-uart-clock
-+
-+  reg:
-+    items:
-+      - description: UART Clock Control Register
-+      - description: UART 2 Baud Rate Divisor Register
-+
-+  clocks:
-+    description: |
-+      List of parent clocks suitable for UART from following set:
-+        "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal"
-+      UART clock can use one from this set and when more are provided
-+      then kernel would choose and configure the most suitable one.
-+      It is suggest to specify at least one TBG clock to achieve
-+      baudrates above 230400 and also to specify clock which bootloader
-+      used for UART (most probably xtal) for smooth boot log on UART.
-+
-+  clock-names:
-+    items:
-+      - const: TBG-A-P
-+      - const: TBG-B-P
-+      - const: TBG-A-S
-+      - const: TBG-B-S
-+      - const: xtal
-+    minItems: 1
-+    maxItems: 5
-+
-+  '#clock-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - '#clock-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    uartclk: uartclk@12000 {
-+      compatible = "marvell,armada-3700-uart-clock";
-+      reg = <0x12010 0x4>, <0x12210 0x4>;
-+      clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>, <&tbg 3>, <&xtalclk>;
-+      clock-names = "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal";
-+      #clock-cells = <1>;
-+    };
+diff --git a/Documentation/devicetree/bindings/serial/mvebu-uart.txt b/Documentation/devicetree/bindings/serial/mvebu-uart.txt
+index 2d0dbdf32d1d..a062bbca532c 100644
+--- a/Documentation/devicetree/bindings/serial/mvebu-uart.txt
++++ b/Documentation/devicetree/bindings/serial/mvebu-uart.txt
+@@ -14,7 +14,10 @@ Required properties:
+       is provided (possible only with the "marvell,armada-3700-uart"
+       compatible string for backward compatibility), it will only work
+       if the baudrate was initialized by the bootloader and no baudrate
+-      change will then be possible.
++      change will then be possible. When provided it should be UART1-clk
++      for standard variant of UART and UART2-clk for extended variant
++      of UART. TBG clock (with UART TBG divisors d1=d2=1) or xtal clock
++      should not be used and are supported only for backward compatibility.
+ - interrupts:
+     - Must contain three elements for the standard variant of the IP
+       (marvell,armada-3700-uart): "uart-sum", "uart-tx" and "uart-rx",
+@@ -34,7 +37,7 @@ Example:
+ 	uart0: serial@12000 {
+ 		compatible = "marvell,armada-3700-uart";
+ 		reg = <0x12000 0x18>;
+-		clocks = <&xtalclk>;
++		clocks = <&uartclk 0>;
+ 		interrupts =
+ 		<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+ 		<GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+@@ -45,7 +48,7 @@ Example:
+ 	uart1: serial@12200 {
+ 		compatible = "marvell,armada-3700-uart-ext";
+ 		reg = <0x12200 0x30>;
+-		clocks = <&xtalclk>;
++		clocks = <&uartclk 1>;
+ 		interrupts =
+ 		<GIC_SPI 30 IRQ_TYPE_EDGE_RISING>,
+ 		<GIC_SPI 31 IRQ_TYPE_EDGE_RISING>;
 -- 
 2.20.1
 
