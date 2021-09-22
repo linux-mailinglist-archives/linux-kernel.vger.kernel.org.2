@@ -2,120 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A5D414D90
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCF1414D97
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236489AbhIVP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
+        id S236542AbhIVP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236323AbhIVP6c (ORCPT
+        with ESMTP id S236523AbhIVP7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:58:32 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BC9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:57:02 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id r26so5142168oij.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0TAuSYSSwu/GJwA4DB4HqE/mrXxipFRUmjMtx5UU3rs=;
-        b=gUEgEvaooaC3Rqh2GLU31XmPoOzYuWuJ5Sskb5tB+AyYzFiBzKMOeflVscMCBcY1Fl
-         ju4OLLHyp3bwd30OyerZmpR+u0dUZRIu0Y34lwrr5Uh9kDnToaBe9A/XTbnmVA+LfoLF
-         LqkjgdBABCmepohEHtTWyqKYnA74b5OxF02h+k9pAbZzBJxBcdMUZ7NQFQ6EZx7T65S7
-         VrSnKx14kLZfB/kF7RKGE5AQwbFMAZwk3N2hJAx9UP60+eU+fewj7X0gw/thRMWpCtVc
-         C2YMi6+HOqMbcloLdcjFCpy3nbB/dPqIhULDDCVR8vLOw7dUzW4HV3167+SKn8I9pmfm
-         aVnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0TAuSYSSwu/GJwA4DB4HqE/mrXxipFRUmjMtx5UU3rs=;
-        b=Ny+mKDbgc+zTtCaM239aAAgAFClLqpQpAiliG5qhFVyIJponJJHdVVUbo2bTILRV0Q
-         7QqIKrIgFA4aQVkU5GoBgc2Mef5lmBDDv5fqOTR5FU09+EKQbw9MHW3QT9QdxQrrROF9
-         lV2/BH0INjQUAesirnYtd/zIa9bjSkQr5FdznkEY1OEVqUvLLr7KydYCJdFhEXSA+VoQ
-         2AclVOfuGrbneZ8pFx8RqZeeYHT2WxeNH6T0T97qYnTvs+yv9rtjlew44/08KOORo9Ff
-         O4iLaXOM/qFvGvlIqgTW4IlOVNGnZRtQec4qgGe9Dnq8NPQBs7s6NKI5/74akjxXqKba
-         nWDA==
-X-Gm-Message-State: AOAM530T9/B3uh7tv7gT0RfgHeIZ2yF54mYic9/+P8AJbqtg1jHI3Gq5
-        mrK8IwpQ8F7Hsnj6XyHKTHTH8w==
-X-Google-Smtp-Source: ABdhPJyB18sOla8PLG9hVwSLx4QL3NM8iJZfOnWgcu4HPxyrEyR7I/xU53vMEQ92DIrG/nMnOtESyg==
-X-Received: by 2002:aca:5cc3:: with SMTP id q186mr8558866oib.17.1632326222200;
-        Wed, 22 Sep 2021 08:57:02 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h17sm613189ooc.18.2021.09.22.08.57.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 08:57:01 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 08:57:43 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: qcom-qmp: Make use of the helper function
- devm_add_action_or_reset()
-Message-ID: <YUtSd7QxkSC0vPAa@ripper>
-References: <20210922130017.692-1-caihuoqing@baidu.com>
+        Wed, 22 Sep 2021 11:59:34 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D73EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:58:04 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0efa00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fa00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BB9641EC051E;
+        Wed, 22 Sep 2021 17:57:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632326278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ry9Z69LQArNbVtPmCuRDweOphdtc94L4dVIHpBekN7c=;
+        b=NCb5G93fgk04Z2kWoYDwBQTP8e5F9qd58TBdUrkNmhNrC8qdF/up7c028VJBvnwal9xUYX
+        Dv0ZbbDkFXiAgYsniyNqarrANQJUFV27++v1GQELTaOcVS5SiGraygAkQnkgP03prqJgCf
+        VbqJxEOAIpJPHVvZCmLnEFCJ2nW3U1I=
+Date:   Wed, 22 Sep 2021 17:57:52 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/4] x86/mce: Get rid of msr_ops
+Message-ID: <YUtSgEa8O5vyALSj@zn.tnic>
+References: <YUsesVeZ8PPC5iV5@zn.tnic>
+ <2B1FFC77-A740-41AE-BF8C-FB238B9DF7F5@intel.com>
+ <YUs1vu7lxevL1EpO@zn.tnic>
+ <f73c2f6790d6428393348869bc7c7e73@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210922130017.692-1-caihuoqing@baidu.com>
+In-Reply-To: <f73c2f6790d6428393348869bc7c7e73@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22 Sep 06:00 PDT 2021, Cai Huoqing wrote:
-
-> The helper function devm_add_action_or_reset() will internally
-> call devm_add_action(), and gif devm_add_action() fails then it will
-> execute the action mentioned and return the error code. So
-> use devm_add_action_or_reset() instead of devm_add_action()
-> to simplify the error handling, reduce the code.
+On Wed, Sep 22, 2021 at 03:22:01PM +0000, Luck, Tony wrote:
+> Also:
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp.c | 12 ++----------
->  1 file changed, 2 insertions(+), 10 deletions(-)
+> 	switch (enum) {
+> 	actions for every value of that enum
+> 	}
 > 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> index f14032170b1c..084e3d96264e 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> @@ -5154,11 +5154,7 @@ static int phy_pipe_clk_register(struct qcom_qmp *qmp, struct device_node *np)
->  	 * Roll a devm action because the clock provider is the child node, but
->  	 * the child node is not actually a device.
->  	 */
-> -	ret = devm_add_action(qmp->dev, phy_clk_release_provider, np);
-> -	if (ret)
-> -		phy_clk_release_provider(np);
-> -
-> -	return ret;
-> +	return devm_add_action_or_reset(qmp->dev, phy_clk_release_provider, np);
->  }
->  
->  /*
-> @@ -5350,11 +5346,7 @@ static int phy_dp_clks_register(struct qcom_qmp *qmp, struct qmp_phy *qphy,
->  	 * Roll a devm action because the clock provider is the child node, but
->  	 * the child node is not actually a device.
->  	 */
-> -	ret = devm_add_action(qmp->dev, phy_clk_release_provider, np);
-> -	if (ret)
-> -		phy_clk_release_provider(np);
-> -
-> -	return ret;
-> +	return devm_add_action_or_reset(qmp->dev, phy_clk_release_provider, np);
->  }
->  
->  static const struct phy_ops qcom_qmp_phy_gen_ops = {
-> -- 
-> 2.25.1
-> 
+> doesn't need a default: option
+
+Right, my thought was to catch silly stuff like this here:
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index b355ce737543..dfecf65e5407 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1714,6 +1714,7 @@ static void __mcheck_cpu_init_clear_banks(void)
+ 			continue;
+ 		wrmsrl(mca_msr_reg(i, MCA_CTL), b->ctl);
+ 		wrmsrl(mca_msr_reg(i, MCA_STATUS), 0);
++		wrmsrl(mca_msr_reg(i, 12), 0);
+ 	}
+ }
+ 
+
+but we already warn nicely there:
+
+[    0.146457] unchecked MSR access error: WRMSR to 0x0 (tried to write 0x0000000000000000) at rIP: 0xffffffff8103234b (__mcheck_cpu_init_clear_banks+0x6b/0xe0)
+[    0.147550] Call Trace:
+[    0.147836]  mcheck_cpu_init+0x16c/0x4a0
+[    0.148234]  identify_cpu+0x3fe/0x670
+[    0.148607]  identify_boot_cpu+0xc/0x94
+[    0.148995]  check_bugs+0x26/0xaef
+[    0.149353]  ? __get_locked_pte+0x14a/0x200
+[    0.149777]  start_kernel+0x602/0x621
+[    0.150153]  secondary_startup_64_no_verify+0xb0/0xbb
+
+and the mce_rd/wrmsrl() wrappers even panic.
+
+So default case gone.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
