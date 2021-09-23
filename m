@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5632A415DE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1B9415DED
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240781AbhIWMJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:09:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54679 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240713AbhIWMJk (ORCPT
+        id S240818AbhIWMK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240713AbhIWMKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:09:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632398889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wfX6IYx3+cjotqqgeU3GLgEgUJixfrJO00QEhWanizg=;
-        b=EqChbtiSxedZbLcGdvtAbgNOcGSPkY8qRIWz7Z0QFaAcKYOCM4pdtKQt29vqojoOGa2Htz
-        7EMMlViKfmc2GKnvBYRXXRRJ+YmBhzJUuUofYTIDcY5AiPdxCP3hPjTn0srBN3ofxsH9wH
-        TMGuoTPOnghpyyA4fDj/1c90GuPPqhc=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454-kaIgNQRXNEm7y1cMmWKwZA-1; Thu, 23 Sep 2021 08:08:07 -0400
-X-MC-Unique: kaIgNQRXNEm7y1cMmWKwZA-1
-Received: by mail-lf1-f72.google.com with SMTP id m2-20020ac24ac2000000b003f524eae63eso5909386lfp.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 05:08:07 -0700 (PDT)
+        Thu, 23 Sep 2021 08:10:55 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6DEC061574;
+        Thu, 23 Sep 2021 05:09:23 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id eg28so22961491edb.1;
+        Thu, 23 Sep 2021 05:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7FNpljz891PYGt4hpcoO6CG6SoftxC4uPB0i1upIek8=;
+        b=ibVmWXzu1aD8kMpJYIOpTRXb3me3E5LR6UwoOCsWvNvNnF+uIa9MOqneeVmeAC4jSy
+         u8iQVfjlyzy5Bot3fiB87O9Z8hYaLgKQhvn6dxxsD1CX47rf9hISIJ1FG2OVCo/6Fddc
+         GQT6KyMm8LlzTqPvHDJb/59hVBNw0N2ASXsnyaSoFmzWYtPUU1hx4/7/DI2JXhRNMvSQ
+         0OrJh/l7+rxuEIjnY2dM/JEf2FcdxhTKRphIayPivMRwr0GAv+egSx5bYbVEC6KgshFG
+         XtkJarqgWDuAL3T/xdct4cEYsTlbxSjQ6Ka0mjnnB4qpsH+kcIbaRzprqrzwNDLiPoEL
+         csrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=wfX6IYx3+cjotqqgeU3GLgEgUJixfrJO00QEhWanizg=;
-        b=fwHZ9Fm82wNF8HHRhrWVyMw/qAKPzB6hcXcHB2H0sCBx8Rb2ONZonb0ordv4DFzXQc
-         BekYLR6pE6Rn+vj2M7ZtqShOqZAa2FztAubpWsSa3BzwpJv4U9KPNIHBCkVBWpr1Eva5
-         5seYlFB/TRy80MSfl1gcaWK5BasWDwAoW0Uj2gaDQu85wCA/fU30VaQM0meuTmIDFhQS
-         fu8Tv0ZpELJ9sPXo5gP7stON6NEgn/nAKRAhYY5yqtg+Z3FOogFjia57kTT6/I8s5WVI
-         /sFoAvuzg0X0KN8bcLYnqLac7kHha5wQxV7ZNFrkyU3Rf5ZSiAy1K3a+v8oEXtpRnutn
-         qAyA==
-X-Gm-Message-State: AOAM532wsQljdPM09AcQ+VmYtetVZlOWjSQFT7tjg8E/NrKPk8J87t0V
-        SKXyBJ24QPtlFWXHF77b2Q1A6FW5oWlyOPn6BLpB9p82KuBDNZFEpB0OpPWgS3rdBT0xd8VgMU9
-        SI+oks5YWtzxDoXMVrEEdlcKH
-X-Received: by 2002:a2e:584:: with SMTP id 126mr491206ljf.126.1632398886326;
-        Thu, 23 Sep 2021 05:08:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvHZO4Tckj6DIt294JJG00bnWYHQJ7x4NbhTMU8P1fLHefb48FQBjkpuhOQ9xDF6sE59tRXg==
-X-Received: by 2002:a2e:584:: with SMTP id 126mr491169ljf.126.1632398886131;
-        Thu, 23 Sep 2021 05:08:06 -0700 (PDT)
-Received: from [192.168.42.238] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
-        by smtp.gmail.com with ESMTPSA id l9sm213486ljg.44.2021.09.23.05.08.04
+        bh=7FNpljz891PYGt4hpcoO6CG6SoftxC4uPB0i1upIek8=;
+        b=Irx1rxTq/qVuup12U29s5b4IEOn06p7wwOF0gFAxROS3eScmwEWAGjXYT/BqALwPxq
+         ohMTaUCtwMXZyTNsIYX1M93kK71NeGpxAvmGfXCm2Kbf+f6nRycXv/jTyjmUP+gfxeRX
+         g1wDz9/coI4Udzwh28DOuLh8c7zrOR6MU6CzzooMyobCxRijAioVXBfnaJaH//9byXhO
+         0WYfnLMLI0zNSbB55aFnLj9npaprZQX0taLQQHpsSXpb5w4sv9lbDzTYBu9qb2Yl7A40
+         EMn2AacmdfQ8krYtQuGvJj1CEAzfVwRRKHgMUmaC7KRP2o4VT0bCECuctlcQEuf70/al
+         simQ==
+X-Gm-Message-State: AOAM533CWNySewh2ppvgW3FvaUg5t2lmBeAXoSfD3rhSit6GmCOqtsq/
+        QABgwCTgKbI3KEAFoV0fTQo=
+X-Google-Smtp-Source: ABdhPJz+2RmFRrOTPX9HlyA2A1fEmvS7RoZtYawSlfMhJiIBX2b2m3juOof3jON/2RoPWBdfvvAyYg==
+X-Received: by 2002:a50:9d83:: with SMTP id w3mr5043356ede.305.1632398962313;
+        Thu, 23 Sep 2021 05:09:22 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.googlemail.com with ESMTPSA id ck10sm3353455edb.43.2021.09.23.05.09.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 05:08:05 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        hawk@kernel.org, ilias.apalodimas@linaro.org,
-        jonathan.lemon@gmail.com, alobakin@pm.me, willemb@google.com,
-        cong.wang@bytedance.com, pabeni@redhat.com, haokexin@gmail.com,
-        nogikh@google.com, elver@google.com, memxor@gmail.com,
-        edumazet@google.com, alexander.duyck@gmail.com, dsahern@gmail.com
-Subject: Re: [PATCH net-next 2/7] page_pool: support non-split page with
- PP_FLAG_PAGE_FRAG
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <20210922094131.15625-3-linyunsheng@huawei.com>
-Message-ID: <c85a4ecc-80bb-d78f-d72a-0f820fb02eb9@redhat.com>
-Date:   Thu, 23 Sep 2021 14:08:03 +0200
+        Thu, 23 Sep 2021 05:09:21 -0700 (PDT)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+References: <20210920125401.2389105-1-pbonzini@redhat.com>
+ <20210920125401.2389105-2-pbonzini@redhat.com>
+ <060cfbbaa2c7a1a0643584aa79e6d6f3ab7c8f64.camel@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a0a2a628-62c5-d620-7714-2c28e4429e71@redhat.com>
+Date:   Thu, 23 Sep 2021 14:08:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210922094131.15625-3-linyunsheng@huawei.com>
+In-Reply-To: <060cfbbaa2c7a1a0643584aa79e6d6f3ab7c8f64.camel@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -80,78 +72,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22/09/2021 11.41, Yunsheng Lin wrote:
-> Currently when PP_FLAG_PAGE_FRAG is set, the caller is not
-> expected to call page_pool_alloc_pages() directly because of
-> the PP_FLAG_PAGE_FRAG checking in __page_pool_put_page().
+On 21/09/21 21:44, Jarkko Sakkinen wrote:
+> "On bare-metal SGX, start of a power cycle zeros all of its reserved 
+> memory. This happens after every reboot, but in addition to that 
+> happens after waking up from any of the sleep states."
 > 
-> The patch removes the above checking to enable non-split page
-> support when PP_FLAG_PAGE_FRAG is set.
-> 
-> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->   net/core/page_pool.c | 12 +++++++-----
->   1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index a65bd7972e37..f7e71dcb6a2e 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -315,11 +315,14 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
->   
->   	/* Fast-path: Get a page from cache */
->   	page = __page_pool_get_cached(pool);
-> -	if (page)
-> -		return page;
->   
->   	/* Slow-path: cache empty, do real allocation */
-> -	page = __page_pool_alloc_pages_slow(pool, gfp);
-> +	if (!page)
-> +		page = __page_pool_alloc_pages_slow(pool, gfp);
-> +
-> +	if (likely(page))
-> +		page_pool_set_frag_count(page, 1);
-> +
+> I can speculate and imagine where this might useful, but no matter
+> how trivial or complex it is, this patch needs to nail a concrete
+> usage example. I'd presume you know well the exact changes needed for
+> QEMU, so from that knowledge it should be easy to write the
+> motivational part.
 
-I really don't like that you add one atomic_long_set operation per page 
-alloc call.
-This is a fast-path for XDP use-cases, which you are ignoring as you 
-drivers doesn't implement XDP.
+Assuming that it's obvious that QEMU knows how to reset a machine (which 
+includes writes to the ACPI reset register, or wakeup from sleep 
+states), the question of "why does userspace reuse vEPC" should be 
+answered by this paragraph:
 
-As I cannot ask you to run XDP benchmarks, I fortunately have some 
-page_pool specific microbenchmarks you can run instead.
+"One way to do this is to simply close and reopen the /dev/sgx_vepc file
+descriptor and re-mmap the virtual EPC.  However, this is problematic
+because it prevents sandboxing the userspace (for example forbidding
+open() after the guest starts, or running in a mount namespace that
+does not have access to /dev; both are doable with pre-opened file
+descriptors and/or SCM_RIGHTS file descriptor passing)."
 
-I will ask you to provide before and after results from running these 
-benchmarks [1] and [2].
+> Even to a Linux guest, since EPC should stil be represented in the
+> state that matches the hardware.  It'd be essentially a corrupted
+> state, even if there was measures to resist this. Windows guests
+> failing is essentially a side-effect of an issue, not an issue in the
+> Windows guests.
 
-  [1] 
-https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_simple.c
+Right, Linux is more liberal than it needs to be and ksgxd does the 
+EREMOVE itself at the beginning (__sgx_sanitize_pages).  Windows has 
+stronger expectations of what can and cannot happen before it boots, 
+which are entirely justified.
 
-  [2] 
-https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_cross_cpu.c
-
-How to use these module is documented here[3]:
-  [3] 
-https://prototype-kernel.readthedocs.io/en/latest/prototype-kernel/build-process.html
-
->   	return page;
->   }
->   EXPORT_SYMBOL(page_pool_alloc_pages);
-> @@ -428,8 +431,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->   		     unsigned int dma_sync_size, bool allow_direct)
->   {
->   	/* It is not the last user for the page frag case */
-> -	if (pool->p.flags & PP_FLAG_PAGE_FRAG &&
-> -	    page_pool_atomic_sub_frag_count_return(page, 1))
-> +	if (page_pool_atomic_sub_frag_count_return(page, 1))
->   		return NULL;
-
-This adds an atomic_long_read, even when PP_FLAG_PAGE_FRAG is not set.
-
->   
->   	/* This allocator is optimized for the XDP mode that uses
-> 
-
+Paolo
