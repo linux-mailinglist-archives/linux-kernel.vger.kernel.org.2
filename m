@@ -2,189 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B70415554
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C92415556
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238860AbhIWCDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 22:03:01 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:34381 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238822AbhIWCC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 22:02:59 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210923020127epoutp0461d3b90e5a5d847dcc2239c96d2b82c1~nUQiPJg1v0849208492epoutp04O
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:01:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210923020127epoutp0461d3b90e5a5d847dcc2239c96d2b82c1~nUQiPJg1v0849208492epoutp04O
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1632362487;
-        bh=htrpPC8RyjK4PpLp5m+xJVpuwzY4lLsGwaLErTEO478=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Gh767eFbUpPprUSDkEi6RPUUj1/G+ngui9k50LURVnamV2UuoW60Q14NrDTaktJBh
-         5gIXTp2YnhNUgjbV24kafpg1wB7nSYEbrQOrjP0R+JoEtT30YXvLy6JTGNWVBUmppq
-         DkVQfV+Ct+YE5wPwOUFICppV69jafHlck4w0nqfQ=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210923020126epcas1p1d74005ffae2176b488fc05c3f51e560b~nUQhRAeEj1706017060epcas1p1N;
-        Thu, 23 Sep 2021 02:01:26 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.38.237]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4HFJL43cXJz4x9Q0; Thu, 23 Sep
-        2021 02:01:16 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        47.D2.62504.AEFDB416; Thu, 23 Sep 2021 11:01:14 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210923020112epcas1p3552159d3e948679fc1f2ceaec1a3ab75~nUQUx7GL00794907949epcas1p3b;
-        Thu, 23 Sep 2021 02:01:12 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210923020112epsmtrp11e09141904c2fe342f713f0202762a7c~nUQUxIN1E2429924299epsmtrp1Q;
-        Thu, 23 Sep 2021 02:01:12 +0000 (GMT)
-X-AuditID: b6c32a38-79bff7000002f428-26-614bdfeace90
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        42.D6.08750.8EFDB416; Thu, 23 Sep 2021 11:01:12 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210923020112epsmtip26d1b8ad9375c4306ba47a5fe14a2a640~nUQUi184h1897118971epsmtip2_;
-        Thu, 23 Sep 2021 02:01:12 +0000 (GMT)
-Subject: Re: [PATCH v2 3/3] ARM: dts: exynos: align PPMU event node names
- with dtschema
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <a7a4e1d3-77a7-a48e-4cbf-36cb06435e9c@samsung.com>
-Date:   Thu, 23 Sep 2021 11:22:20 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S238881AbhIWCFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 22:05:21 -0400
+Received: from mail-dm3nam07on2127.outbound.protection.outlook.com ([40.107.95.127]:20832
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238820AbhIWCFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 22:05:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DDRrdgCUG1pzSuxwy1SEKpbqX2FzIfTEganCFjA69EQBtUrG5Symeqc2hQtz2ekmj9IYyNUebt5MpdRgigXaYzd4F2vCrQtvGfAFs4rN0iAHJjKzhY3PPFA4+V9lE0rHy1Ks693YzvPCBiT2zCHpp8nj8y34emvU/zSiLZzLlID9GxAeXUxeDciQcBwWDlbK1FDdNY9j1i8SoQO9Zc5UzgrEgHHWS1AaXSavMmsQ7hjQNaAoPaPOUvNfxx6Y6Z8u21tfQA6uZeXdiMSv7AV4twLK7PqUwjrPZqgUoVKRdjJWpyroMW9+8H5GfScPQmaBo13t+Qs7qDcN97jciwAelQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=h63k/CYwi/Sz1UeH1g7n+/QVRG/Us/ocGAh2VcgF8RQ=;
+ b=VbHUnkO0E4G0wfLhiE8E5RO2N3Hp1pzChT+9hiqpYnq6wZnx0XuwKcNSR6QZnJ/1/CpT4F5N10UUTiWbkBKl8dHG9ABANF0RZwKo/kHlhlwL5dU1yTrpCrriFaFXprCx9fPxTv8sUiJTbYFH50RZPDrMKrAa/KuIEgAHrbLpvhequwHtdnWMDxBPQut2DwU9uolUMb44ylU0QOugjWc5vvFDlVNf0SB/c0v9wYyLZ6KU/yGIbWhtMo/8L2hPKMDXz8t4S6RRBTAQ6YqDLMPlitP3d0vRoJdOKMSTJvN3O8BWaM7ymd8woG1Uz3UHqt7tmVsF7RyZR7AMSmgO1HJBRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=in-advantage.com; dmarc=pass action=none
+ header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h63k/CYwi/Sz1UeH1g7n+/QVRG/Us/ocGAh2VcgF8RQ=;
+ b=CTXqV7hDjxBvS/1iqvd5zFH1hDAU3TS+Fpd4FQGfcb5G4AHmkjxXW/Fo3bhK68hf33KCHo5yVXThdj0kG0l8oOc5ri+W45fcSOv528Yd9LX9Zy2gSP9u+Qm7qF8Cx9w0RjQYx1AvSBzbkczJ8OPXCNq0FIObOZUiy0NCZmL2LQU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=in-advantage.com;
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com (10.174.170.165) by
+ MWHPR10MB1934.namprd10.prod.outlook.com (10.175.55.150) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4523.17; Thu, 23 Sep 2021 02:03:47 +0000
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::bc3f:264a:a18d:cf93]) by MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::bc3f:264a:a18d:cf93%7]) with mapi id 15.20.4523.018; Thu, 23 Sep 2021
+ 02:03:46 +0000
+From:   Colin Foster <colin.foster@in-advantage.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH v1 net 0/1] net: mscc: ocelot: broadcast storm fixup
+Date:   Wed, 22 Sep 2021 19:03:37 -0700
+Message-Id: <20210923020338.1945812-1-colin.foster@in-advantage.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR04CA0375.namprd04.prod.outlook.com
+ (2603:10b6:303:81::20) To MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37)
 MIME-Version: 1.0
-In-Reply-To: <20210920071753.38560-3-krzysztof.kozlowski@canonical.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEJsWRmVeSWpSXmKPExsWy7bCmge6r+96JBu/WS1lsnLGe1WL+kXOs
-        Fhvf/mCyONv0ht1i0+NrrBaXd81hs/jce4TRYsb5fUwWa4/cZbe43biCzaJ17xF2i/anL5kd
-        eDxmNfSyeWxa1cnmsXlJvUffllWMHp83yQWwRmXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5ua
-        GRjqGlpamCsp5CXmptoqufgE6Lpl5gCdp6RQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUot
-        SMkpMC3QK07MLS7NS9fLSy2xMjQwMDIFKkzIzmje0cVWsF2w4sSex8wNjHt5uxg5OCQETCTm
-        /+TqYuTiEBLYwShx8ccfJgjnE6PE74P/WSGcz4wS91+uZexi5ATrmHZlMiNEYhejxKzz09kh
-        nPeMEvtaWplAqoQFIiU+zdkJlhARuMYkcWTBSbDBzAKTGCWO/F7OBlLFJqAlsf/FDTCbX0BR
-        4uqPx2A7eAXsJNqP3gSLswioSpz/MZEFxBYVCJM4ua0FqkZQ4uTMJ2BxTgF3ibkTH7KD2MwC
-        4hK3nsxngrDlJba/ncMMslhC4AiHxPx5n9ghnnCR2Lf1C5QtLPHq+BYoW0riZX8blF0tsfLk
-        ETaI5g5GiS37L7BCJIwl9i+dzAQKP2YBTYn1u/QhwooSO3/PZYRYzCfx7msPKySIeSU62oQg
-        SpQlLj+4ywRhS0osbu9km8CoNAvJO7OQvDALyQuzEJYtYGRZxSiWWlCcm55abFhgAo/v5Pzc
-        TYzgxKtlsYNx7tsPeocYmTgYDzFKcDArifB+vuGVKMSbklhZlVqUH19UmpNafIjRFBjAE5ml
-        RJPzgak/ryTe0MTSwMTMyNjEwtDMUEmc99hry0QhgfTEktTs1NSC1CKYPiYOTqkGJuc+iyup
-        v9u7f3cZ7GX5ycu3yP9R9BduvgzhQmVB+ynXl/4+MLlN8O+0V3YKvolJlvM1ZkeeUc9WPzHV
-        8rZFoHfJTskZxzUN1rkrKehP+/ImfqPsLvGm26Xilzomyfzm8mKQaJz88uCFObJnTwnUSu9e
-        vXtvbTrz3uuhMcu+VO7ym++bKXP/Q1nCqlch/TEiyk3tl287F1+q+SyqmR2udUlRt/hCxYvg
-        4pevivxP35Q/cktinhZfmYbLl7fcBW17NG1KJl7ZGqzxau9Ni5VBzBEsBu8O/li7ZcKxTbuW
-        Zsuym/7Ytf6aQtuXgk3ck8Kjn+smLZtf/mmP78cfMjPOyTwz/VXMJCC4oEuT+7nTayWW4oxE
-        Qy3mouJEABd8waJFBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsWy7bCSvO6L+96JBtOeqVhsnLGe1WL+kXOs
-        Fhvf/mCyONv0ht1i0+NrrBaXd81hs/jce4TRYsb5fUwWa4/cZbe43biCzaJ17xF2i/anL5kd
-        eDxmNfSyeWxa1cnmsXlJvUffllWMHp83yQWwRnHZpKTmZJalFunbJXBlNO/oYivYLlhxYs9j
-        5gbGvbxdjJwcEgImEtOuTGbsYuTiEBLYwShxfdM6VoiEpMS0i0eZuxg5gGxhicOHiyFq3jJK
-        XGx9wQhSIywQKbHkyCU2kISIwDUmiZ4ta5hBEswCUxglNl3XgOi4zigxb8dsdpAEm4CWxP4X
-        N9hAbH4BRYmrPx6DTeIVsJNoP3oTLM4ioCpx/sdEFhBbVCBMYueSx0wQNYISJ2c+AYtzCrhL
-        zJ34kB1imbrEn3mXoBaLS9x6Mp8JwpaX2P52DvMERuFZSNpnIWmZhaRlFpKWBYwsqxglUwuK
-        c9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxgiNQS2sH455VH/QOMTJxMB5ilOBgVhLh/XzDK1GI
-        NyWxsiq1KD++qDQntfgQozQHi5I474Wuk/FCAumJJanZqakFqUUwWSYOTqkGJnmei4ejpN9d
-        athbamKoKP/ELVGBf3Kkhh9/cKzmzMYlNlF2EfG3w46kqkupd7x9wnqk1/Ro2CvprDePWmpO
-        HeKeK2v0vUZspshlw7iFydkbD7PvL3nmzNpsc6ZVvn1r5dpOH6NNh9nan5/a7e8w4ebk0qYy
-        7wvn3N+7bDFev9+j/+ZvPeuvl26J+H79tSrTsGr+xQBeqykRZqsf67g/e+LgPyNFJ6UhSU0+
-        +HX4r59SU0y5Fi3aVfycIe3kqvq7mza2rYti/1c4Z3Vw/u6GfWtarz/dPf/DnAMMeT8UTS58
-        XN54LHf9c+71JtHv1s+/cyCuj+lXlfcUQVGT55anD+2Tut/bF3/ilcWR72d3rFdiKc5INNRi
-        LipOBABygoQfLwMAAA==
-X-CMS-MailID: 20210923020112epcas1p3552159d3e948679fc1f2ceaec1a3ab75
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210920071811epcas1p1729f8a9c04531be71e305cebda3b84bf
-References: <20210920071540.38337-1-krzysztof.kozlowski@canonical.com>
-        <CGME20210920071811epcas1p1729f8a9c04531be71e305cebda3b84bf@epcas1p1.samsung.com>
-        <20210920071753.38560-3-krzysztof.kozlowski@canonical.com>
+Received: from localhost.localdomain (67.185.175.147) by MW4PR04CA0375.namprd04.prod.outlook.com (2603:10b6:303:81::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Thu, 23 Sep 2021 02:03:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: abe42623-15f7-4504-a852-08d97e3660a7
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1934:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB193406EB98933DDF8EE5D526A4A39@MWHPR10MB1934.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OJByQGnRgGh9D8lejOPdDGtsRnnn/YMFeFygUfbjwiNDeTnHT8HtS3E5h8QnpgchUOS8FVybKKsKR1QyVOYPkMzk7yP8KTJkk4bEG0UZiGqovGxwIOOsG57q5Et6agpWa2enJS7pKYigveS4bRpXkmjDEUZII2gdH+SZ8gzox60uvo8sdi7ROCB0myNrMMN8phhscbTrKPID/+Ec4LlnV/rrjVg3iGb+BZlP+T/iWZhcXJBM5bZ7PXjketPXAcyPvGd7/j8VKhZjQaqlXEpM4T3kwJ+3s5QpihGn8OD+B/u/qdzWRanyhY30Ryod6NGyyT2ZQZ2q4jlY6sjtClIataFUReO+5I7BuMIJXhI7IWoGG7Bngnmv/OSDcU1gY0OWbQLZ2jGa8cozHIU7DOBAZNQz9crtn0YJfnIufsMLLwnzV8Ami5ts/mdpBgccLOSvot8pF5iWUgcbI6Tf3me3NtmpL4TQbXcbDPGslrnDoHI2srf7Lm9Pw7byKqhr9GG4e6yLxU9fHuM3KwZUuacZFupUWshmTP2SgpupCEH9zFrlM9j6hkCCKkgIcIHLpeD7q+oj0NIa6EnGwnQ5zYRbWKzTD78zIZl47dgjF27J+6ebMi6B+cJ4Aepk2GGuaYHWH2vdqM8eKXw7/wVX9rPVmpBTRYQBYSnlsGY8oJ8wI2gnM6bSp60iS4R90ifzvCTe+yHQsW7hkp5JFhZl0m8R7w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(39830400003)(396003)(136003)(8936002)(956004)(2616005)(6666004)(5660300002)(66556008)(66476007)(6506007)(44832011)(86362001)(8676002)(83380400001)(52116002)(4744005)(4326008)(36756003)(186003)(6486002)(66946007)(26005)(2906002)(54906003)(38100700002)(316002)(1076003)(6512007)(38350700002)(508600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KC8/wc8gaeWhgHfxhyRO2iaqaDOHIVXAZLwZjrSyZBat8XtWiVRa1We/Vz8E?=
+ =?us-ascii?Q?oRTCFQ4mlQbaeU9Arpx3F8190tF/QxeRlrAUVftereEO7lnZLwUDgcLHGWQt?=
+ =?us-ascii?Q?zdLv65BNVXN14+b7wyP0qrNl+fMxYBuEneFDISPdK8NezrYrYLlFjoxtsz01?=
+ =?us-ascii?Q?6I0ec4WvQhMBXAYhxD3WYLxg3ZmTXm3ZKa9GQO6MWms2diAjyD2825kzCdsv?=
+ =?us-ascii?Q?pyZu7vDSyotJ9PAaTART5n4DjojNozTXhfuNpntjIHh2J2uBVK8G/+6hgUKQ?=
+ =?us-ascii?Q?i61rTUEqFllw6gm8LEIXEfA9GxV5J7fannoAHplHBnVNEIz3EY6uhCIEFk5y?=
+ =?us-ascii?Q?3OvbTBkdMIRGDTlVoclDP/JwA3388l2iYmSi287ZdMNvoe5xJlKd2XfWb9rK?=
+ =?us-ascii?Q?51ABrxkazgIqqRlHCm/29OEL8/ir66uMW4uu0whXirBTo4OMbNFYHcR47Z2a?=
+ =?us-ascii?Q?e5b8iSu3900MOkzVnAHvUmqe64hTwwf8rJDWHPODiGWwrSsLI7RgJ6ao7qyS?=
+ =?us-ascii?Q?WpXCDyETknWPjuXgBh5gPIbybGk1ftC4Mb3TzikjWEEZ82UsNWSxxB4prNCz?=
+ =?us-ascii?Q?r8yxGXUwCf1NPvpypLZ68MJWP9RQzOt4lZx/hm+Xz6T7Urz5ZmA49NQnoKe0?=
+ =?us-ascii?Q?2umE7sGWwh3kNxeM5jKEiOGnFgswkF/eK7IFFSW8x72KFdo9b2azWrgzIo7H?=
+ =?us-ascii?Q?cGF6JVq7c9FpVQmKjmnq8Co7Ei2RRZhX5Ba84owx1t0gZGJH4Uy5eppWb54z?=
+ =?us-ascii?Q?oiqUF5hGRECcStuASGwknpcp5Alv2qzhezAbzC4jJ70STD3/LA9BbssJgjRs?=
+ =?us-ascii?Q?dpgrFFLagaf1FM7P0O6/ZEVFYzws/quI971HR8vza4+kVJd7MlFyJRa+2YPF?=
+ =?us-ascii?Q?TnKgibxLlXHc90lJRUM4C/LgdRwA+QX0MPqGKQ5FlQfoe3aHFYCNe3ol1JHu?=
+ =?us-ascii?Q?0BQfw1yccUaNZBbObFwNdA8fGHTIZUxv2eiXgoTj4Q+hTDM/rQSu9eBk8hQl?=
+ =?us-ascii?Q?h6sa01zkWYJJy/e3X2GZ/jqE1h+x2C9i06NDsSRQGBECtL9e9bFB/cbvH4yH?=
+ =?us-ascii?Q?L37LRaEEvkYyTK9kPOqKZxhBTrQjTSpnPHtUm4bF5ZvD0RxxCt6CgTfOK6JA?=
+ =?us-ascii?Q?I4roYO5m3Vfi3gIa7G1x2pr5FC9d2FB42PFrRwP+/WHK5qWHpQdeseAj+6Kz?=
+ =?us-ascii?Q?GWIVaa8a2ZmTCXJvsE/R5/TtT+jWvOmKvo5I4szqwgjGZma2hF2UlHNSmlMH?=
+ =?us-ascii?Q?OwWuGKhmVd10+UJsGYh4h4uBOGZMN8fV7kKUOyhsaxAb5VErDuWmY2Z/UKeC?=
+ =?us-ascii?Q?rrZIFSx6ZhUOT19qKAj43BLB?=
+X-OriginatorOrg: in-advantage.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: abe42623-15f7-4504-a852-08d97e3660a7
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 02:03:46.7188
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZnpdB5RneAAXISjBYj1s9zIEyQ7ySYL5Be399I9ffDO4e6LzZY25NMbpvFXGT8KYTMqFpC6+aybjOjR9bJfVYKtr+sUifsyFR6e9Eo+FXJg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1934
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Ocelot ports would still forward out ethernet broadcasts when they were
+in the LEARNING or BLOCKING state. This is due to the
+ocelot_get_bridge_fwd_mask, which would tell disabled ports to forward
+packets out all FORWARDING ports. Broadcast storms would insue.
 
-On 9/20/21 4:17 PM, Krzysztof Kozlowski wrote:
-> Use hyphen instead of underscore and align the PPMU event node name with
-> dtschema.  The event-name property must match the node name, by the
-> design of devfreq events and PPMU driver.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  arch/arm/boot/dts/exynos5420.dtsi | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
-> index e23e8ffb093f..b2f30bea96ce 100644
-> --- a/arch/arm/boot/dts/exynos5420.dtsi
-> +++ b/arch/arm/boot/dts/exynos5420.dtsi
-> @@ -302,8 +302,8 @@ ppmu_dmc0_0: ppmu@10d00000 {
->  			clocks = <&clock CLK_PCLK_PPMU_DREX0_0>;
->  			clock-names = "ppmu";
->  			events {
-> -				ppmu_event3_dmc0_0: ppmu-event3-dmc0_0 {
-> -					event-name = "ppmu-event3-dmc0_0";
-> +				ppmu_event3_dmc0_0: ppmu-event3-dmc0-0 {
-> +					event-name = "ppmu-event3-dmc0-0";
->  				};
->  			};
->  		};
-> @@ -314,8 +314,8 @@ ppmu_dmc0_1: ppmu@10d10000 {
->  			clocks = <&clock CLK_PCLK_PPMU_DREX0_1>;
->  			clock-names = "ppmu";
->  			events {
-> -				ppmu_event3_dmc0_1: ppmu-event3-dmc0_1 {
-> -					event-name = "ppmu-event3-dmc0_1";
-> +				ppmu_event3_dmc0_1: ppmu-event3-dmc0-1 {
-> +					event-name = "ppmu-event3-dmc0-1";
->  				};
->  			};
->  		};
-> @@ -326,8 +326,8 @@ ppmu_dmc1_0: ppmu@10d60000 {
->  			clocks = <&clock CLK_PCLK_PPMU_DREX1_0>;
->  			clock-names = "ppmu";
->  			events {
-> -				ppmu_event3_dmc1_0: ppmu-event3-dmc1_0 {
-> -					event-name = "ppmu-event3-dmc1_0";
-> +				ppmu_event3_dmc1_0: ppmu-event3-dmc1-0 {
-> +					event-name = "ppmu-event3-dmc1-0";
->  				};
->  			};
->  		};
-> @@ -338,8 +338,8 @@ ppmu_dmc1_1: ppmu@10d70000 {
->  			clocks = <&clock CLK_PCLK_PPMU_DREX1_1>;
->  			clock-names = "ppmu";
->  			events {
-> -				ppmu_event3_dmc1_1: ppmu-event3-dmc1_1 {
-> -					event-name = "ppmu-event3-dmc1_1";
-> +				ppmu_event3_dmc1_1: ppmu-event3-dmc1-1 {
-> +					event-name = "ppmu-event3-dmc1-1";
->  				};
->  			};
->  		};
-> 
+This patch restores the functionality of disabling forwarding for ports 
+that aren't in the FORWARDING state. No more broadcast storms.
 
-Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested and verified on an in-development driver, and Vladimir has done
+independent testing and verification on supported hardware.
+
+
+Vladimir Oltean (1):
+  net: mscc: ocelot: fix forwarding from BLOCKING ports remaining
+    enabled
+
+ drivers/net/ethernet/mscc/ocelot.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.25.1
+
