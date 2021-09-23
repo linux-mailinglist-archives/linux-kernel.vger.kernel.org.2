@@ -2,126 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75771416084
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3190B41608A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241560AbhIWOH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:07:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21908 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241567AbhIWOHX (ORCPT
+        id S241633AbhIWOHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:07:34 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55880 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241571AbhIWOH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:07:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632405951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 23 Sep 2021 10:07:27 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 539212028E;
+        Thu, 23 Sep 2021 14:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632405955; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=I61BRjMeqtBhdStSHIPW3/cYSD2YUvHTtLYDBjO5ZPg=;
-        b=EGQzi3wAjcIYzM9W2FsuXNEkBWa/hx/XyvSoGAuO02A01b6kwQDYJbQm6/Abcsxr5iGHK0
-        qc9VeU5Ajn8D6xfORNyV2Wux58RlqyAKp3TVqS6JPjbvK1B/QQlyJEHz9xcRIGMxq85Urc
-        ldgOaxbYPkAnjqnff1SDWhYiDU0G6vU=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-7oIQipXnNMCfIT7ZyIEFLw-1; Thu, 23 Sep 2021 10:05:50 -0400
-X-MC-Unique: 7oIQipXnNMCfIT7ZyIEFLw-1
-Received: by mail-wr1-f70.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so5237516wrt.9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:05:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I61BRjMeqtBhdStSHIPW3/cYSD2YUvHTtLYDBjO5ZPg=;
-        b=ULfw3BwWBuZNX3+AXkBa6fZu6OAyf5aFxQoZAhiHVbFpd64U76cedxv0rPRGMY0JIk
-         6KpIlwf7OcCsQrKF1AIe7G6xHgDISTORnH0ArivLvQbdId9B8ugZat5bd9qXZniozZTZ
-         /Yp3ap0Tv9Hn+YwHQx/67GsOnT/bl7yqVcP65jb9jCcDxbjZ7b2nn8XwK8stuIldyIzL
-         RMyjiY5NxwqblbTou1vCIDBtH9IuR1L3+GzO2GFtKzo1DCQ04Uef9FuxTKMQM9t9WGhI
-         WNDsofD69ECUjXWg+ne/HWfJfG4nc4C+M6ISyvfW7xF+dXWrn5cxub2C3VBXWzCMS3Dx
-         OaLg==
-X-Gm-Message-State: AOAM530sBfsqx460l5zWPrvv9vPa7K+WGCufILUQhTay9LZl28oamf73
-        3RvIYgRhlAj7r+QcZ+ys4MflO5k4/9q2pbb5LG9lJYZ1AjjBNQHaPZ4t4zO0JQ7BjpymOR5t1Z6
-        o0z4rHjy9LmfQJpvimPO4UreN
-X-Received: by 2002:a1c:f00a:: with SMTP id a10mr4627948wmb.112.1632405949070;
-        Thu, 23 Sep 2021 07:05:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBO+kcR3MMr9vXzqpgSTE2fqf1eRRmNCeq1QHKJ3qEXiRHRA8kfVeFeyBm7fUDExvf0mXVQQ==
-X-Received: by 2002:a1c:f00a:: with SMTP id a10mr4627927wmb.112.1632405948843;
-        Thu, 23 Sep 2021 07:05:48 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 25sm10735912wmo.9.2021.09.23.07.05.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 07:05:48 -0700 (PDT)
-Subject: Re: [PATCH 03/14] KVM: x86: nSVM: test eax for 4K alignment for GP
- errata workaround
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, Bandan Das <bsd@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Wei Huang <wei.huang2@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>
-References: <20210914154825.104886-1-mlevitsk@redhat.com>
- <20210914154825.104886-4-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <59d45b27-9191-4136-929a-a7826ac891d8@redhat.com>
-Date:   Thu, 23 Sep 2021 16:05:46 +0200
+        bh=OfqaEdiK4gjrAA60PKFlDfHHLNeDMBRrILyWc6i5XnU=;
+        b=Dizzq+EMM16+adE5r4UyJttEOvOUBrQFoKsP90AYyrhnqY+PPMvD5FnNfzJcAKekO6iTOo
+        +dzxW6pUaEtugDZhTzAErX7ewmP0NkiBeIvwb4LuBEs8JUhu0j/hDyn+bjqfb0UJtETGcp
+        oKWW9SHEUC35Bud51kF7E5F4b+/jlMQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D25413E6E;
+        Thu, 23 Sep 2021 14:05:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qTWpBcOJTGGiYgAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 14:05:55 +0000
+Subject: Re: [PATCH 3/9] xen/x86: make "earlyprintk=xen" work better for PVH
+ Dom0
+To:     Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <ecf17c7b-09a4-29a7-6951-1e0b0dda3c67@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <5d6f47fd-67e9-4095-7db2-4609ab3c820a@suse.com>
+Date:   Thu, 23 Sep 2021 16:05:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210914154825.104886-4-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <ecf17c7b-09a4-29a7-6951-1e0b0dda3c67@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="7Sn9KCmfryNgAdLGXxcEYApc3mfViOsla"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/21 17:48, Maxim Levitsky wrote:
-> GP SVM errata workaround made the #GP handler always emulate
-> the SVM instructions.
-> 
-> However these instructions #GP in case the operand is not 4K aligned,
-> but the workaround code didn't check this and we ended up
-> emulating these instructions anyway.
-> 
-> This is only an emulation accuracy check bug as there is no harm for
-> KVM to read/write unaligned vmcb images.
-> 
-> Fixes: 82a11e9c6fa2 ("KVM: SVM: Add emulation support for #GP triggered by SVM instructions")
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->   arch/x86/kvm/svm/svm.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index b2e710a3fff6..6645542df9bd 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2224,6 +2224,10 @@ static int gp_interception(struct kvm_vcpu *vcpu)
->   	if (error_code)
->   		goto reinject;
->   
-> +	/* All SVM instructions expect page aligned RAX */
-> +	if (svm->vmcb->save.rax & ~PAGE_MASK)
-> +		goto reinject;
-> +
->   	/* Decode the instruction for usage later */
->   	if (x86_decode_emulated_instruction(vcpu, 0, NULL, 0) != EMULATION_OK)
->   		goto reinject;
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7Sn9KCmfryNgAdLGXxcEYApc3mfViOsla
+Content-Type: multipart/mixed; boundary="lrYWW5MdoNS1FyvqW63Bx40DFIeBWCYI3";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <5d6f47fd-67e9-4095-7db2-4609ab3c820a@suse.com>
+Subject: Re: [PATCH 3/9] xen/x86: make "earlyprintk=xen" work better for PVH
+ Dom0
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <ecf17c7b-09a4-29a7-6951-1e0b0dda3c67@suse.com>
+In-Reply-To: <ecf17c7b-09a4-29a7-6951-1e0b0dda3c67@suse.com>
+
+--lrYWW5MdoNS1FyvqW63Bx40DFIeBWCYI3
+Content-Type: multipart/mixed;
+ boundary="------------BF192ED46C94EEA4CF27F1DB"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------BF192ED46C94EEA4CF27F1DB
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 07.09.21 12:09, Jan Beulich wrote:
+> The xen_hvm_early_write() path better wouldn't be taken in this case;
+> while port 0xE9 can be used, the hypercall path is quite a bit more
+> efficient. Put that first, as it may also work for DomU-s (see also
+> xen_raw_console_write()).
+>=20
+> While there also bail from the function when the first
+> domU_write_console() failed - later ones aren't going to succeed.
+>=20
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
 
-Queued, thanks.
+Juergen
 
-Paolo
+--------------BF192ED46C94EEA4CF27F1DB
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------BF192ED46C94EEA4CF27F1DB--
+
+--lrYWW5MdoNS1FyvqW63Bx40DFIeBWCYI3--
+
+--7Sn9KCmfryNgAdLGXxcEYApc3mfViOsla
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMicIFAwAAAAAACgkQsN6d1ii/Ey9h
+mQf8DI71q9ktz1P7PxBLbYY+ozb8GDucPgA525474ajhxRAup6NGg4M2Uq+SnYH1/tXYfDOAO+Q+
+AmF3D9YJxjqMal31LSR7S9RDiIf6TCFvk2Py5s6tW4XC1HlTkS2Yrn0WZTiwu98gqSPsjcllqElP
+PGPqwH0WjCr4wyv0M0+1D+vwtRZvUYRV/OcYBaCT0st0u6e0J6s6AS4EdSWKr0kiz+IpN+swffJu
+ZsowOdJKrL8VN3WmzahbgY7iF1x5iS1Tcyey2WR6tH5nVIPJjMVODbqCb0JiamrIs3zCzpynEgRa
+lqMBnnnKRuIkgIZolKmwNEfGQlRl3wLBEypbideAkg==
+=E+MT
+-----END PGP SIGNATURE-----
+
+--7Sn9KCmfryNgAdLGXxcEYApc3mfViOsla--
