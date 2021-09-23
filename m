@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322B1416658
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A914166E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243094AbhIWUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 16:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242982AbhIWUGj (ORCPT
+        id S243122AbhIWUuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 16:50:10 -0400
+Received: from 4.mo548.mail-out.ovh.net ([188.165.42.229]:53469 "EHLO
+        4.mo548.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhIWUuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 16:06:39 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BB4C061574;
-        Thu, 23 Sep 2021 13:05:08 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id F34BA7028; Thu, 23 Sep 2021 16:05:06 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org F34BA7028
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1632427506;
-        bh=RA7LytCbQ/iS3aTI2O+4kY53kpLk048y3sZRj3y3SoQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ccHyZQ5r/DLwz/dKwnM2ivzA9V2Hsx5GPruga9JZl9f4QhV2o2cMH0PgyswNnOD9J
-         GQYpWNgJxLhG9P3ttahx2s5WKehqjLvJjzOtlbDJOcpkho3kg1/KGAQdOiGD9nnrOV
-         AwmF8aXzV4ZkL8ML46hdJmCjPi3PtRg9uDnq2HPM=
-Date:   Thu, 23 Sep 2021 16:05:06 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, anna.schumaker@netapp.com,
-        trond.myklebust@hammerspace.com, chuck.lever@oracle.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] UNRPC: Return specific error code on kmalloc
- failure
-Message-ID: <20210923200506.GF18334@fieldses.org>
-References: <1631266404-29698-1-git-send-email-yang.lee@linux.alibaba.com>
+        Thu, 23 Sep 2021 16:50:09 -0400
+X-Greylist: delayed 2231 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Sep 2021 16:50:08 EDT
+Received: from mxplan5.mail.ovh.net (unknown [10.109.138.132])
+        by mo548.mail-out.ovh.net (Postfix) with ESMTPS id 5640620152;
+        Thu, 23 Sep 2021 20:11:24 +0000 (UTC)
+Received: from kaod.org (37.59.142.104) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Thu, 23 Sep
+ 2021 22:11:23 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-104R0057bf54811-d272-449e-8315-28873063832b,
+                    F074DE1CA8FA81A286F8DD829A03E539B0491988) smtp.auth=clg@kaod.org
+X-OVh-ClientIp: 82.64.250.170
+Message-ID: <f183c017-7a60-bce5-a440-7010ea3d90b8@kaod.org>
+Date:   Thu, 23 Sep 2021 22:11:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631266404-29698-1-git-send-email-yang.lee@linux.alibaba.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 1/3 v2] clocksource/drivers/fttmr010: Be stricter on IRQs
+Content-Language: en-US
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     <linux-kernel@vger.kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Guenter Roeck <linux@roeck-us.net>
+References: <20210922195656.1822268-1-linus.walleij@linaro.org>
+From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+In-Reply-To: <20210922195656.1822268-1-linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [37.59.142.104]
+X-ClientProxiedBy: DAG4EX1.mxp5.local (172.16.2.31) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: 24508be9-d98c-45a4-beaa-652b64acba55
+X-Ovh-Tracer-Id: 16099242770043538214
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeiledgudeghecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfhfhfgjtgfgihesthekredttdefjeenucfhrhhomhepveorughrihgtpgfnvggpifhorghtvghruceotghlgheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeeigedvffekgeeftedutddttdevudeihfegudffkeeitdekkeetkefhffelveelleenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheptghlgheskhgrohgurdhorhhgpdhrtghpthhtoheplhhinhhugiesrhhovggtkhdquhhsrdhnvght
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 05:33:24PM +0800, Yang Li wrote:
-> Although the callers of this function only care about whether the
-> return value is null or not, we should still give a rigorous
-> error code.
+Hello Linus,
 
-Eh, I'm not sure I understand why this is important but, OK,
-applying.--b.
+On 9/22/21 21:56, Linus Walleij wrote:
+> Make sure we check that the right interrupt occurred before
+> calling the event handler for timer 1. Report spurious IRQs
+> as IRQ_NONE.
+> 
+> Cc: Cédric Le Goater <clg@kaod.org>
+> Cc: Joel Stanley <joel@jms.id.au>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-> 
-> Smatch tool warning:
-> net/sunrpc/auth_gss/svcauth_gss.c:784 gss_write_verf() warn: returning
-> -1 instead of -ENOMEM is sloppy
-> 
-> No functional change, just more standardized.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  net/sunrpc/auth_gss/svcauth_gss.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
-> index 3e776e3..7dba6a9 100644
-> --- a/net/sunrpc/auth_gss/svcauth_gss.c
-> +++ b/net/sunrpc/auth_gss/svcauth_gss.c
-> @@ -781,7 +781,7 @@ static inline u32 round_up_to_quad(u32 i)
->  	svc_putnl(rqstp->rq_res.head, RPC_AUTH_GSS);
->  	xdr_seq = kmalloc(4, GFP_KERNEL);
->  	if (!xdr_seq)
-> -		return -1;
-> +		return -ENOMEM;
->  	*xdr_seq = htonl(seq);
->  
->  	iov.iov_base = xdr_seq;
-> -- 
-> 1.8.3.1
+I think we should start by dropping all the AST2600 code which
+is unused.
+
+Thanks,
+
+C.
