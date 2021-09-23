@@ -2,86 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D746415481
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0975415483
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238639AbhIWAQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 20:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        id S238651AbhIWARP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 20:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234042AbhIWAQR (ORCPT
+        with ESMTP id S234042AbhIWARO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 20:16:17 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917DDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:14:46 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id 134so5795902iou.12
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:14:46 -0700 (PDT)
+        Wed, 22 Sep 2021 20:17:14 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C38EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:15:44 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so473922pjw.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:15:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KdmefGt3bNlNy+/4h/zIr3+TEcrP0uqFHWCWgCsURrk=;
-        b=CIt0XlW2blkwRYijUlUZYH0jBndiw3PUQ11Et/fKLHMj3Lvek78rjzgpWTmVqS1erQ
-         af/jpIuRaIjHMTNykRxs8+68qF2wvZmRfL0XzdgeO9INSrzyXETgw+QOPvbRXlq4/4pr
-         s776LarrjWvV+FOlN11Jku9hH+K16NkqdfRYA=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MX45CYthlB2cgfjMAIOovhWIorSiEicvQ8dcX7fV3Ek=;
+        b=NMOdiVhPWCtXcDpo7CjaC/r2cAKV/gIqHRhI2FMjOwwf6l0meQYVHrPlB8G5Zfpw3c
+         6YN5QATjL2VY2SgpOs1fuCn9I8z1+uaRIP837A+NZny+r8Zl8G+TjqwjZ0GcIBBDs3Gu
+         H5NmI2sX8kfUdjlvpTsvcsZjNYbGQOtgY4RZpsEGgjCivQ+3Fh0fshwUO0d1rCT5tCY/
+         Qq7KJYDABIQrvOngoaMrxJKqN2ArH516VxnmB8Ws+l8Hezm0piX+eqWsRRQrtO1yeTJv
+         uHB3yKpIQ/SJOSIdO/TFI/slB2rIQBv9thKOqx5W/n67lQwTKmgF7y3/vShuGoocs8fr
+         GbIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KdmefGt3bNlNy+/4h/zIr3+TEcrP0uqFHWCWgCsURrk=;
-        b=m2znYuMR8APiMCx/GcGwfmCMzVZkyFBtRza5ySv7BvirLTNFW5gb91ha8TpMrQ0KEJ
-         rVS4rsAdxeyxd8oW6+HNkQf6JhLDw4YaZY/7MbEqcr7ysemhjFobEs2M0uOpfd4IxgWo
-         SZEVr7EgQgDsEX/LdLRyJOKg2AAYFM+8LRt3kfMt5tdBB7Yd8USJZpDfWDRb3qXgdP1o
-         k3ccl2SNxcM0BH0hT/61JombmWeMuy5H6I/hcgEfMsZ/HkOts4DGQ+iq+56vVteKsej9
-         IXibA2QrZa6QxdvAvkt0SweffTkUGRb5yv24LOCOjHOF/laJ6vGIBZ3PhAswN85orqyv
-         f7Ew==
-X-Gm-Message-State: AOAM5329qwKCX+/5vj5VQncfURvtpW+7qhMQbTDi9+8ITpzMYISAgnRb
-        Z7MVECxPj3gfoCmXN5TiItrPGQ==
-X-Google-Smtp-Source: ABdhPJxlL1X4qZmRxNozt+fWTK0Fm3LTnOwmLc7rgcjMW4pCPtqberO7aatizcBPwLWvZlKlRA0uIg==
-X-Received: by 2002:a5d:8183:: with SMTP id u3mr1432360ion.67.1632356084737;
-        Wed, 22 Sep 2021 17:14:44 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z6sm1695560iox.28.2021.09.22.17.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 17:14:44 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     mcgrof@kernel.org, jeyu@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] module: fix invalid ELF structure error to print error code
-Date:   Wed, 22 Sep 2021 18:14:42 -0600
-Message-Id: <20210923001442.58278-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MX45CYthlB2cgfjMAIOovhWIorSiEicvQ8dcX7fV3Ek=;
+        b=g8k8OV+1WlfBls0za4lwSAH33ODyiTYMo1PBOX2MOiMGmZTSlA/nooN2z/HlcU4Mgw
+         Ul6t44jBK89qsGPCjYXSFD91YSeENow7r4YZ+GD/pXFo7HsVW5+XqHWU96zv3Kg6q44k
+         mTRPEdRj39jRlFea4XmoKaUueMRjo5La3AtjEmUg14bIUYH1dM06psr0SVkd4pEq52Y3
+         oTvsQf74s1mdUporQ+xZPwv9YJd67lShpHkKXzwplAqmmsgQ0ujihdObCLU7plPGmPGA
+         NQPHo5oIro07GmGyJWOR4oso5n62h7HyBfpXiwDIL/hRsVSFO/mdXQYzoWsWAzOmeGa8
+         cUFw==
+X-Gm-Message-State: AOAM531AKSbsNa/aG8rgLYmGZZ5ldX4AI0Ynd3K7B+WNQj0D4BPtYrrh
+        uVYiQ1ieF4aS6Q//HetgRTvLh84ZKVg2wvQRTaA=
+X-Google-Smtp-Source: ABdhPJxmFpJy1YphXYGykKG+SKOWDHVsQRHgTiApDUe6N5vGV8IXL6+mA8tTV/iSbITkQV9GyzgpcPMm0vAkIDIcNAg=
+X-Received: by 2002:a17:90a:9292:: with SMTP id n18mr14425588pjo.120.1632356143343;
+ Wed, 22 Sep 2021 17:15:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+ <CACT4Y+bh1yaGLs5H3YTM6YLLtyWELvjWR7HcEk0pd9Nod9u4ZQ@mail.gmail.com>
+ <20210207141104.ikxbdxhoisgqaoio@box> <CACT4Y+YwUgksZBj4YpChqL8iac2us7mOkbVDLsib3Y+MVb31cw@mail.gmail.com>
+ <CAMe9rOog08O8xmhhXuJ6aTO+ctv8D2yw1_vu8XjQWwsfw707Mg@mail.gmail.com>
+ <MWHPR11MB00787E70E2E0316E5124741DD3A29@MWHPR11MB0078.namprd11.prod.outlook.com>
+ <CACT4Y+anEXw18nT47gxBTA7BEh3GUhqm6qb+PUdVPf6E4Fs6cg@mail.gmail.com> <CACT4Y+ZGFdmKYZvA4kvw3iTYLJWmnNp=GeL=0Dz2xyC0EpSuCw@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZGFdmKYZvA4kvw3iTYLJWmnNp=GeL=0Dz2xyC0EpSuCw@mail.gmail.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Wed, 22 Sep 2021 17:15:06 -0700
+Message-ID: <CAMe9rOp+_2LcMWcxxnJVH1CtQQT1Az1V2VW-dXA0_o0eM6iHdQ@mail.gmail.com>
+Subject: Re: [RFC 0/9] Linear Address Masking enabling
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "Zhang, Xiang1" <xiang1.zhang@intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Carlos O'Donell" <carlos@redhat.com>,
+        Marco Elver <elver@google.com>,
+        Taras Madan <tarasmadan@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When elf_validity_check() returns error, load_module() prints an
-error message without error code. It is hard to determine why the
-module ELF structure is invalid without this information. Fix the
-error message to print the error code.
+On Wed, Sep 22, 2021 at 1:03 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Wed, 22 Sept 2021 at 14:54, Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Wed, 22 Sept 2021 at 03:15, Zhang, Xiang1 <xiang1.zhang@intel.com> w=
+rote:
+> > >
+> > > There are already in llvm.org.
+> > > One of my old patch is https://reviews.llvm.org/D102472 which has bee=
+n committed by https://reviews.llvm.org/D102901  and https://reviews.llvm.o=
+rg/D109790
+> >
+> > Hi Xiang,
+> >
+> > Good sanitizer patches are upstream!
+> >
+> > Please help me to understand the status of other pieces (H.J. you
+> > probably talked about this yesterday, but I wasn't able to build a
+> > complete picture during the talk, I think it will be useful to have
+> > this in written form).
+> >
+> > 1. The presentation mentions "GCC: enable memory tagging with LAM in
+> > x86 codegen".
+> > What exactly is needed? Isn't LAM transparent for codegen? What's the
+> > status in gcc? Does a corresponding change need to be done in llvm?
+> >
+> > 2. "Enable LAM in binutils".
+> > This is already upstream in binutils 2.36, right?
+> >
+> > 3. The mentioned glibc patch:
+> > http://patchwork.ozlabs.org/project/glibc/patch/20210211173711.71736-1-=
+hjl.tools@gmail.com/
+> > Not upstream yet, targeting glibc 2.34.
+>
+> Do we need any support in other libc's, e.g. Android bionic?
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- kernel/module.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is my tagged address API proposal:
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 40ec9a030eec..a0d412d396d6 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3941,7 +3941,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
- 	 */
- 	err = elf_validity_check(info);
- 	if (err) {
--		pr_err("Module has invalid ELF structures\n");
-+		pr_err("Module has invalid ELF structures:errno(%ld)\n", err);
- 		goto free_copy;
- 	}
- 
--- 
-2.30.2
+https://sourceware.org/pipermail/libc-alpha/2021-August/130382.html
 
+> > 4. "Avoid pointer operations incompatible with LAM. memmove: mask out
+> > memory tags before comparing pointers".
+> > Is this upstream? Where is the patch? Are there other similar patches?
+> >
+> > As a side note, regarding the memmove change: do we really need it?
+> > Memory regions can overlap only if they come from the same
+> > allocation/base object. If they come from different allocations, they
+> > can't overlap (undefined behavior already).
+> >
+> > 5. Do we need any additional enabling changes in clang/llvm?
+> >
+> > 6. The kernel patches (this email thread) depend on the CET patches
+> > (for the interface part only). And the CET patches is this, right?
+> > https://lore.kernel.org/linux-doc/?q=3Dx86%2Fcet%2Fshstk
+> >
+> > 7. Do I miss anything else?
+> >
+> > H.J. please upload your slides here:
+> > https://linuxplumbersconf.org/event/11/contributions/1010/
+> > It would help with links and copy-pasting text.
+> >
+> > FTR here is the link to the Plumbers talk:
+> > https://youtu.be/zUw0ZVXCwoM?t=3D10456
+> >
+> > Thank you
+> >
+> >
+> > > BR
+> > > Xiang
+> > >
+> > > -----Original Message-----
+> > > From: H.J. Lu <hjl.tools@gmail.com>
+> > > Sent: Wednesday, September 22, 2021 1:16 AM
+> > > To: Dmitry Vyukov <dvyukov@google.com>
+> > > Cc: Kirill A. Shutemov <kirill@shutemov.name>; Kirill A. Shutemov <ki=
+rill.shutemov@linux.intel.com>; Dave Hansen <dave.hansen@linux.intel.com>; =
+Lutomirski, Andy <luto@kernel.org>; Peter Zijlstra <peterz@infradead.org>; =
+the arch/x86 maintainers <x86@kernel.org>; Andrey Ryabinin <aryabinin@virtu=
+ozzo.com>; Alexander Potapenko <glider@google.com>; Catalin Marinas <catali=
+n.marinas@arm.com>; Will Deacon <will@kernel.org>; Andi Kleen <ak@linux.int=
+el.com>; Linux-MM <linux-mm@kvack.org>; LKML <linux-kernel@vger.kernel.org>=
+; Carlos O'Donell <carlos@redhat.com>; Marco Elver <elver@google.com>; Tara=
+s Madan <tarasmadan@google.com>; Zhang, Xiang1 <xiang1.zhang@intel.com>
+> > > Subject: Re: [RFC 0/9] Linear Address Masking enabling
+> > >
+> > > On Tue, Sep 21, 2021 at 9:52 AM Dmitry Vyukov <dvyukov@google.com> wr=
+ote:
+> > > >
+> > > > On Sun, 7 Feb 2021 at 15:11, Kirill A. Shutemov <kirill@shutemov.na=
+me> wrote:
+> > > > >
+> > > > > On Sun, Feb 07, 2021 at 09:24:23AM +0100, Dmitry Vyukov wrote:
+> > > > > > On Fri, Feb 5, 2021 at 4:16 PM Kirill A. Shutemov
+> > > > > > <kirill.shutemov@linux.intel.com> wrote:
+> > > > > > >
+> > > > > > > Linear Address Masking[1] (LAM) modifies the checking that is
+> > > > > > > applied to 64-bit linear addresses, allowing software to use =
+of
+> > > > > > > the untranslated address bits for metadata.
+> > > > > > >
+> > > > > > > The patchset brings support for LAM for userspace addresses.
+> > > > > > >
+> > > > > > > The most sensitive part of enabling is change in tlb.c, where
+> > > > > > > CR3 flags get set. Please take a look that what I'm doing mak=
+es sense.
+> > > > > > >
+> > > > > > > The patchset is RFC quality and the code requires more testin=
+g
+> > > > > > > before it can be applied.
+> > > > > > >
+> > > > > > > The userspace API is not finalized yet. The patchset extends =
+API
+> > > > > > > used by
+> > > > > > > ARM64: PR_GET/SET_TAGGED_ADDR_CTRL. The API is adjusted to no=
+t
+> > > > > > > imply ARM
+> > > > > > > TBI: it now allows to request a number of bits of metadata
+> > > > > > > needed and report where these bits are located in the address=
+.
+> > > > > > >
+> > > > > > > There's an alternative proposal[2] for the API based on Intel
+> > > > > > > CET interface. Please let us know if you prefer one over anot=
+her.
+> > > > > > >
+> > > > > > > The feature competes for bits with 5-level paging: LAM_U48 ma=
+kes
+> > > > > > > it impossible to map anything about 47-bits. The patchset mad=
+e
+> > > > > > > these capability mutually exclusive: whatever used first wins=
+.
+> > > > > > > LAM_U57 can be combined with mappings above 47-bits.
+> > > > > > >
+> > > > > > > I include QEMU patch in case if somebody wants to play with t=
+he feature.
+> > > > > >
+> > > > > > Exciting! Do you plan to send the QEMU patch to QEMU?
+> > > > >
+> > > > > Sure. After more testing, once I'm sure it's conforming to the ha=
+rdware.
+> > > >
+> > > > A follow up after H.J.'s LPC talk:
+> > > > https://linuxplumbersconf.org/event/11/contributions/1010/
+> > > > (also +Carlos)
+> > > >
+> > > > As far as I understood, this kernel series depends on the Intel CET=
+ patches.
+> > > >
+> > > > Where are these compiler-rt patches that block gcc support?
+> > >
+> > > Hi Xiang,
+> > >
+> > > Please share your compiler-rt changes for LAM.
+> > >
+> > > --
+> > > H.J.
+
+
+
+--=20
+H.J.
