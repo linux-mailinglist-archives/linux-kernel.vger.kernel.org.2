@@ -2,169 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC8D416875
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F24241687C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243572AbhIWX0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 19:26:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51489 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235628AbhIWX0t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 19:26:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632439517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OWRAOD1kkJz6XiLKgu5hMtfHp+8QmnStWvfGHKzXlyc=;
-        b=Wr3SIZjYeKpBAdXEqHAKLFcdCA5WochYFrB/UjnnUoO1ZZVdx+ADJN7oxq9WTVoMswFOo2
-        WZEiup0qo8S+shpQWgeasK6fc3VNy/Wt/zpoAN+gFzcusoi34CAA5xcRDnWv4lzdaCWr1I
-        16/pLeCnGWzUHoz39KGjfgnAzffzSNs=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-3cV8sqWhM1SBJi_04eItKw-1; Thu, 23 Sep 2021 19:25:15 -0400
-X-MC-Unique: 3cV8sqWhM1SBJi_04eItKw-1
-Received: by mail-qk1-f198.google.com with SMTP id w17-20020ae9e511000000b00431497430b7so27194405qkf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:25:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OWRAOD1kkJz6XiLKgu5hMtfHp+8QmnStWvfGHKzXlyc=;
-        b=SxKIkMfBuov1tqbdcbcfLNBoPcleHCLt1M1/W0GygT1O2ITul+8FvnDUdMA61A9L5i
-         gRb9rKOMBGNnQ64bYwkrRES3qX518DIWNzVhcb07pMxy2+AsWVUCd+R9WsNyCGwmNekT
-         e84/mjjFoIeE55CKgc1SpBH+8myNqgrP95MIN8mDJVq0yVDiGbFZRnZ56Jrp6SUJvCO8
-         jFdtNE7/s5/d1I+SUveuhoVmxiB4ldM4Hw/kT2dOqa2KgnP3TJ5YQq/irwRHFGarxPDg
-         H2Mgg0P/ySyC8FB37ILQ06tx6onsqPbUX9wIWCkiTFrWp5cNeq1jGS0tMDSXoVFvVrsd
-         fvow==
-X-Gm-Message-State: AOAM531LUAzUQoBw0xM055RtN1YjxDIuxsdX89LNdgqCH+E8WzxUHHhS
-        S3NWRBYQDoqBaZn7u/4t/rjq8Kg+5pbRZ5lk5JXABJLTfNVa/ZfIFGCJUEP1vtxThT1g1a6pnxC
-        JbeQ+P5UucBAxoifCgDH9H1pC
-X-Received: by 2002:ac8:1090:: with SMTP id a16mr1290805qtj.297.1632439515393;
-        Thu, 23 Sep 2021 16:25:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy364R1AwTCp7sR65ye1IseTJYrbscmW58fi4R3hUU0BoOV0BwbaQiLicMBWVS9rIkTkrmN4A==
-X-Received: by 2002:ac8:1090:: with SMTP id a16mr1290769qtj.297.1632439515055;
-        Thu, 23 Sep 2021 16:25:15 -0700 (PDT)
-Received: from t490s.redhat.com ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id q192sm5170112qka.93.2021.09.23.16.25.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 16:25:14 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
-Subject: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with thp enabled
-Date:   Thu, 23 Sep 2021 19:25:12 -0400
-Message-Id: <20210923232512.210092-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        id S243579AbhIWX3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 19:29:04 -0400
+Received: from mail-dm3nam07on2076.outbound.protection.outlook.com ([40.107.95.76]:3425
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243400AbhIWX3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 19:29:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WLMjiEi3msgJV10LjbPW8kjtTcwJvuqjQE5UME86IeFw+521C/dDOOgaXVVOHGcwEmCbhJEkA19SLGTIZ2Iq7Ymau06mNCuUJ20FPDB5SUIjTfvZ6J3DjPlLg7p+Ov8Fac8bRAfwrsZzT7+nfVKkWJbe9++EDK8GtP3qk3jqYbeJ2iFXxApBDWFEDjsZVkIA5eRvWKK5rbovzZftmOaTPSLKX4dWuntIGXoKm/xHne435JT+NMw7e0OTx1QOLJKLphCwiD5cWSslx9lRJQc7/m5rPKRHPkscZYGCZs7UYsURKnJ+DDXUdfv11Rc/fJLzRT5dhaPHnxdtK/+yMW5fow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=4LlLYbDujPWf4/42kOZGjVXVz1dVcAJHWot6R9nCjEM=;
+ b=gjvhdXiUWp0iQGC3MP81FGB11Nc7D+dBTGrC0kO9+tFU2G4uzDBzPHvvjajaaBSgJfIp9e9wrzRmjdhH5B+dFHDwhfwmST/GJlTULN10GJpyjRxiD6fzDFYoTa63wcdjlLWoTVn48NVi2S7YfxpVS2lvN2F+ckMuuEWw7tPLwPTSd0Woov+/FAV7Dg/7JW6B1TkwnA0i+DAShYAuOMSNwvlx7eNTjsUoQ5AaqQgu8ZGquB/8pO833ilt/2qPil77DSo+7/we8QPmQvt9WmLjdX+J86tYYEeMZ/V9ZOMx5Q6l/8Rt1Fldsu/kYXfBGYXNr3+qx8d3x3ptusTGk5Q+ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4LlLYbDujPWf4/42kOZGjVXVz1dVcAJHWot6R9nCjEM=;
+ b=sFg+871bkEX8ngXBsjLEG2RREDBC/zX0rGZtM2NFjiMdW/H1pIDXU0ZjXsJs+DmkkRu68/HZZmkcXWJbEmgwA43q+zL0GJzmoyHxhIIVPleW7FFwIoznboG9cDsx4MN0Kph3fZkj2D0pUlMdufzGiwJi5l6307RSCeAIjOvZanmSdUz5eCyMrPIWFjjeF7cfGzTm83vsUgqfWZUSJeKWZI0gb4k85i0C2FhMgFIZh/YbPKdJeoYT2mh+WWTd5EBnKfw1CtCs8ucR4E5udq+953DXDT/zc9QgKQ/bEhJBRuICvwNur6hB/XESGoIuhYmAA7ldshVFyWoB+W8/b/nDUg==
+Received: from BN0PR04CA0003.namprd04.prod.outlook.com (2603:10b6:408:ee::8)
+ by BY5PR12MB4324.namprd12.prod.outlook.com (2603:10b6:a03:209::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Thu, 23 Sep
+ 2021 23:27:28 +0000
+Received: from BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:ee:cafe::f9) by BN0PR04CA0003.outlook.office365.com
+ (2603:10b6:408:ee::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend
+ Transport; Thu, 23 Sep 2021 23:27:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT018.mail.protection.outlook.com (10.13.176.89) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 23:27:28 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
+ 2021 23:27:27 +0000
+Received: from [10.26.49.14] (172.20.187.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
+ 2021 23:27:24 +0000
+Subject: Re: [PATCH v7 2/4] dmaengine: tegra: Add tegra gpcdma driver
+To:     Akhil R <akhilrajeev@nvidia.com>
+CC:     <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>,
+        <kyarlagadda@nvidia.com>, <ldewangan@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <p.zabel@pengutronix.de>, <rgumasta@nvidia.com>,
+        <thierry.reding@gmail.com>, <vkoul@kernel.org>,
+        Pavan Kunapuli <pkunapuli@nvidia.com>
+References: <1631887887-18967-1-git-send-email-akhilrajeev@nvidia.com>
+ <1632383484-23487-1-git-send-email-akhilrajeev@nvidia.com>
+ <1632383484-23487-3-git-send-email-akhilrajeev@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <f166f8f2-8106-c229-8b2d-f97c484dbdde@nvidia.com>
+Date:   Fri, 24 Sep 2021 00:27:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1632383484-23487-3-git-send-email-akhilrajeev@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: db136c2e-b466-4067-0f70-08d97ee9b583
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4324:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB432487A142CA1FF1FF2D9F7AD9A39@BY5PR12MB4324.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rBjRH62EF43upQu/uokc12m4ngm89pdkhv11Wlby5p4LY0OZmV4Ot2B93oMmjrn1oqGpefIed5Z1OTfhWLii3HZxhOXCUc1HJLDSXhHrW4m+qpAfnBbraQLOzizeLDTptvk8h9gI3syn4rZeEVp/fldBHhx5bj/g/vNcvD4y4nl5jO0cFhBlyPH8s3CWeov+SUsdJUsscBe6cfZ6j6wWQ0yVMCImV4PbLBgtXkHHnBwkHyfJsaPd4hqddz2V2Hj++ABlw5ESkhIrytS7aAci2jBqbcl6wW+Nqjl+JS7Hhb0p58lmm9mW5QqguQ1YDL/8UiU/MXexEoMOJh0l9dHFXnLzKACcN/PFdR3W2uVUQnmk6cGZBEq1JFzjB+ZZOOMfunK4IK82ixCV5SHOCiEHGdwmGL1zdvzYkkmkewL34eAlFIcIoBW+Du8xt4HsUBk5FMaxDR1qsiH42elnKrheVMpsm9o90e/WU6a/68ozFuIYaSD+2eAh079VRk2uP4gCwDtGUBusdPe71L38D7Pt3Wsz4sz5bZ8xCRIq4NRR3V5smeTTPcY8i4VJhRLkHpip+fNqMsF24h29lDdsbYyWpQWtAjLdUfCUsQ2TgR13+W7j9LZa8WCGrvWm5/SkXCv6mgcXBETwRxIi8MdLr0sL3EjVRnl6PHDU6RP7hwR8rbZcfqwKrUe9VWIQoMDkcbNSF9MFvyMsrmcQ2S+htNm2dt8FCGTxavfqmzecpJIxoGw=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(36756003)(107886003)(70586007)(53546011)(37006003)(316002)(16576012)(31696002)(356005)(336012)(83380400001)(36860700001)(82310400003)(426003)(47076005)(70206006)(6636002)(7636003)(31686004)(16526019)(186003)(508600001)(2616005)(86362001)(4326008)(8676002)(5660300002)(36906005)(8936002)(6862004)(54906003)(26005)(2906002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 23:27:28.5821
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: db136c2e-b466-4067-0f70-08d97ee9b583
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4324
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In RHEL's gating selftests we've encountered memory corruption in the uffd
-event test even with upstream kernel:
 
-        # ./userfaultfd anon 128 4
-        nr_pages: 32768, nr_pages_per_cpu: 32768
-        bounces: 3, mode: rnd racing read, userfaults: 6240 missing (6240) 14729 wp (14729)
-        bounces: 2, mode: racing read, userfaults: 1444 missing (1444) 28877 wp (28877)
-        bounces: 1, mode: rnd read, userfaults: 6055 missing (6055) 14699 wp (14699)
-        bounces: 0, mode: read, userfaults: 82 missing (82) 25196 wp (25196)
-        testing uffd-wp with pagemap (pgsize=4096): done
-        testing uffd-wp with pagemap (pgsize=2097152): done
-        testing events (fork, remap, remove): ERROR: nr 32427 memory corruption 0 1 (errno=0, line=963)
-        ERROR: faulting process failed (errno=0, line=1117)
 
-It can be easily reproduced when global thp enabled, which is the default for
-RHEL.
+On 23/09/2021 08:51, Akhil R wrote:
+> Adding GPC DMA controller driver for Tegra186 and Tegra194. The driver
+> supports dma transfers between memory to memory, IO peripheral to memory
+> and memory to IO peripheral.
+> 
+> Signed-off-by: Pavan Kunapuli <pkunapuli@nvidia.com>
+> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> ---
+>   drivers/dma/Kconfig            |   12 +
+>   drivers/dma/Makefile           |    1 +
+>   drivers/dma/tegra186-gpc-dma.c | 1354 ++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 1367 insertions(+)
+>   create mode 100644 drivers/dma/tegra186-gpc-dma.c
 
-It's also known as a side effect of commit 0db282ba2c12 ("selftest: use mmap
-instead of posix_memalign to allocate memory", 2021-07-23), which is imho right
-itself on using mmap() to make sure the addresses will be untagged even on arm.
+...
 
-The problem is, for each test we allocate buffers using two allocate_area()
-calls.  We assumed these two buffers won't affect each other, however they
-could, because mmap() could have found that the two buffers are near each other
-and having the same VMA flags, so they got merged into one VMA.
+> +static enum dma_status tegra_dma_tx_status(struct dma_chan *dc,
+> +					   dma_cookie_t cookie,
+> +					   struct dma_tx_state *txstate)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +	struct tegra_dma_desc *dma_desc = NULL;
+> +	struct virt_dma_desc *vd;
+> +	unsigned int residual;
+> +	enum dma_status ret;
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&tdc->lock, flags);
+> +
+> +	ret = dma_cookie_status(dc, cookie, txstate);
+> +	if (ret == DMA_COMPLETE) {
+> +		raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +		return ret;
+> +	}
+> +
+> +	vd = vchan_find_desc(&tdc->vc, cookie);
+> +	if (vd)
+> +		dma_desc = vd_to_tegra_dma_desc(vd);
 
-It won't be a big problem if thp is not enabled, but when thp is agressively
-enabled it means when initializing the src buffer it could accidentally setup
-part of the dest buffer too when there's a shared THP that overlaps the two
-regions.  Then some of the dest buffer won't be able to be trapped by
-userfaultfd missing mode, then it'll cause memory corruption as described.
+This first case implies that the transfer has not started yet and so the 
+residual is just dma_desc->bytes_requested.
 
-To fix it, do release_pages() after initializing the src buffer.
+> +	else if (tdc->dma_desc && tdc->dma_desc->vd.tx.cookie == cookie)
+> +		dma_desc = tdc->dma_desc;
+> +
+> +	if (dma_desc) {
+> +		residual =  dma_desc->bytes_requested -
+> +					(dma_desc->bytes_transferred %
+> +					dma_desc->bytes_requested);
+> +		dma_set_residue(txstate, residual);
+> +	} else {
+> +		dev_err(tdc2dev(tdc), "cookie %d is not found\n", cookie);
+> +	}
+> +
+> +	raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +	return ret;
+> +}
+> +
+> +static inline int get_bus_width(struct tegra_dma_channel *tdc,
+> +				enum dma_slave_buswidth slave_bw)
+> +{
+> +	switch (slave_bw) {
+> +	case DMA_SLAVE_BUSWIDTH_1_BYTE:
+> +		return TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_8;
+> +	case DMA_SLAVE_BUSWIDTH_2_BYTES:
+> +		return TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_16;
+> +	case DMA_SLAVE_BUSWIDTH_4_BYTES:
+> +		return TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_32;
+> +	default:
+> +		dev_err(tdc2dev(tdc), "given slave bus width is not supported\n");
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static inline int get_burst_size_by_len(int len)
+> +{
+> +	int ret;
+> +
+> +	/* Get burst size based on the first set bit */
+> +	switch (ffs(len)) {
+> +	case 0:
+> +	case 1:
+> +	case 2:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_1;
+> +		break;
+> +	case 3:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_2;
+> +		break;
+> +	case 4:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_4;
+> +		break;
+> +	case 5:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_8;
+> +		break;
+> +	default:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_16;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static inline int get_burst_size(struct tegra_dma_channel *tdc,
+> +				 u32 burst_size,
+> +				 enum dma_slave_buswidth slave_bw,
+> +				 int len)
+> +{
+> +	int burst_mmio_width, burst_byte, ret;
+> +
+> +	/*
+> +	 * burst_size from client is in terms of the bus_width.
+> +	 * convert that into words.
+> +	 */
+> +	burst_byte = burst_size * slave_bw;
+> +	burst_mmio_width = ffs(burst_byte / 4);
+> +
+> +	/* Get burst size based on the first set bit */
+> +	switch (burst_mmio_width) {
+> +	case 0:
+> +		ret = get_burst_size_by_len(len);
+> +		break;
+> +	case 1:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_1;
+> +		break;
+> +	case 2:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_2;
+> +		break;
+> +	case 3:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_4;
+> +		break;
+> +	case 4:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_8;
+> +		break;
+> +	default:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_16;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
 
-Since the previous two release_pages() calls are after uffd_test_ctx_clear()
-which will unmap all the buffers anyway (which is stronger than release pages;
-as unmap() also tear town pgtables), drop them as they shouldn't really be
-anything useful.
+Something seems a bit odd here in the sense that if burst_mmio_width == 
+0, we could still end up with a burst of 16? I am not sure I understand 
+this logic.
 
-We can mark the Fixes tag upon 0db282ba2c12 as it's reported to only happen
-there, however the real "Fixes" IMHO should be 8ba6e8640844, as before that
-commit we'll always do explicit release_pages() before registration of uffd,
-and 8ba6e8640844 changed that logic by adding extra unmap/map and we didn't
-release the pages at the right place.  Meanwhile I don't have a solid glue
-anyway on whether posix_memalign() could always avoid triggering this bug,
-hence it's safer to attach this fix to commit 8ba6e8640844.
+Jon
 
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Nadav Amit <nadav.amit@gmail.com>
-Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1994931
-Fixes: 8ba6e8640844 ("userfaultfd/selftests: reinitialize test context in each test")
-Reported-by: Li Wang <liwan@redhat.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- tools/testing/selftests/vm/userfaultfd.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 10ab56c2484a..60aa1a4fc69b 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -414,9 +414,6 @@ static void uffd_test_ctx_init_ext(uint64_t *features)
- 	uffd_test_ops->allocate_area((void **)&area_src);
- 	uffd_test_ops->allocate_area((void **)&area_dst);
- 
--	uffd_test_ops->release_pages(area_src);
--	uffd_test_ops->release_pages(area_dst);
--
- 	userfaultfd_open(features);
- 
- 	count_verify = malloc(nr_pages * sizeof(unsigned long long));
-@@ -437,6 +434,26 @@ static void uffd_test_ctx_init_ext(uint64_t *features)
- 		*(area_count(area_src, nr) + 1) = 1;
- 	}
- 
-+	/*
-+	 * After initialization of area_src, we must explicitly release pages
-+	 * for area_dst to make sure it's fully empty.  Otherwise we could have
-+	 * some area_dst pages be errornously initialized with zero pages,
-+	 * hence we could hit memory corruption later in the test.
-+	 *
-+	 * One example is when THP is globally enabled, above allocate_area()
-+	 * calls could have the two areas merged into a single VMA (as they
-+	 * will have the same VMA flags so they're mergeable).  When we
-+	 * initialize the area_src above, it's possible that some part of
-+	 * area_dst could have been faulted in via one huge THP that will be
-+	 * shared between area_src and area_dst.  It could cause some of the
-+	 * area_dst won't be trapped by missing userfaults.
-+	 *
-+	 * This release_pages() will guarantee even if that happened, we'll
-+	 * proactively split the thp and drop any accidentally initialized
-+	 * pages within area_dst.
-+	 */
-+	uffd_test_ops->release_pages(area_dst);
-+
- 	pipefd = malloc(sizeof(int) * nr_cpus * 2);
- 	if (!pipefd)
- 		err("pipefd");
 -- 
-2.31.1
-
+nvpublic
