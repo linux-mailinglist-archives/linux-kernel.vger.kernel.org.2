@@ -2,236 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EEA415E69
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92CA415E6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241010AbhIWMcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:32:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58762 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240787AbhIWMcQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:32:16 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E0E242235E;
-        Thu, 23 Sep 2021 12:30:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632400243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LhcIQcMVizxGvHBw/6VV2mKGKHrIYgyDJMe76PlbHdo=;
-        b=ocX8UxG9NxyMAuSYlp6hZ/vEpdGknBAUndqPdryiJUC+KAl0JjpDXnzpFQrnke18cHK1uW
-        uEL0gyhwtxyL/rS6l9UQwo01xGcvzcNWd4oJj6ee/L4vkjNfdcOT47nAEs4MpLLn642Yi/
-        aksD4x0o0RQTz6vumfunHYecFKiAo4k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEA6013C62;
-        Thu, 23 Sep 2021 12:30:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NvNjKXNzTGG3JwAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 12:30:43 +0000
-Subject: Re: [PATCH RFC 1/3] xen/privcmd: replace kcalloc() by kvcalloc() when
- allocating empty pages
-To:     Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <0f0db6fa-2604-9a0d-1138-0063b5a39a87@suse.com>
- <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <6e90efe0-4c0d-55d9-bff8-6da9b9614cd1@suse.com>
-Date:   Thu, 23 Sep 2021 14:30:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241045AbhIWMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:32:54 -0400
+Received: from mail-mw2nam12on2062.outbound.protection.outlook.com ([40.107.244.62]:38945
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240787AbhIWMcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 08:32:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IMd/H1V3iWFSmkVjkRB4ZdBa4L6x+uwjHBwkjeWEWh+frbwcOBe6NyLBigjo+7I29nQ99xuE85fZFNWjiNfFghnR6qdzHl+19KjEHLEqv7hwd88HZeOgjUdbgbpra0gXh2uuNyO4DW5pM6r2/GTL5cNWqul3uk+L+P8ZWuZqs/pMW8Tut0EHBfti7BfJH0sfUL+1fmpB/2pTbgx1b8LRLtgGRCEl9N87PtsDBJThdp6i4Ft03ylKViLexAgtNq8RGjDk0/woW8mZO9TiJnDG/v8vKpqQTQCCLp+lpsOwu4tyA1I/6Ht2FLh4w99kTK0zyTmhdJlQx9BDozgrb7vfQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=64yYZFfTw/PpT9iv8UbhperxLkjzQ9b0pK3AyJA7MZA=;
+ b=WeM2GVRaP7//GBdqn88hlKxQkoAtsDUpu/tnh6QY4XuZtMttKS8FWLkdG15AVEe+Of0fO3u0JXOIIlXr8naPuoCIGtLLDYXkQ4V7QtceBh9A5zoVAyidPdywnhmUfQR7MyzU+IN5nQBIEUh686NSu4nCDsPdZEQGiRqUdLJkTSQabr6WBqLxT6Z8K2dMqdfoF63Ys/uZ5WL2ezIck80UMA2+rYhiX7ADoSJss1WCPtr2YpafoV9ZBwPgpRwa67lbxvJ8bLO33AMFRY201uDuQrucun68eK5tunouti+Xio05O6G3Hf1srBqA3XUpZHA3+NqT47SBVN+dm0R4Rl6LuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=64yYZFfTw/PpT9iv8UbhperxLkjzQ9b0pK3AyJA7MZA=;
+ b=j8a5nNqBm6pFJxU4+JJ8kB88h3XAAgpGCD6YhRP7sA+ZO7xVnuWyzG64YfqGaRXga3BwI8Xu065W6+eywG8GMI47mQUhk4B8KCPFN3p3qtoJrr2BmQmo0n33pYRxD/ANLp0PsyViCQgjPmoxgRzQoG7roaoTBq2IW5OpToA+nff6ytCxQm0LM5Jkqrb6sn0MDCho9G+xFte9MQ/Fs7GtCuxsPXwJQYJ5X3rE7alMEB38rCv6FmdR1PRfLat2wtyzID/fFcj4AH5VWTK4RrYordZtbWjGLcrxBAb7c9FpxO4eT6eHR9ERD5eZYZ2jANfWBTcmK773tAOW9AtLUhV6ew==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5335.namprd12.prod.outlook.com (2603:10b6:208:317::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Thu, 23 Sep
+ 2021 12:31:19 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
+ 12:31:19 +0000
+Date:   Thu, 23 Sep 2021 09:31:18 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
+Message-ID: <20210923123118.GN964074@nvidia.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-12-yi.l.liu@intel.com>
+ <20210921174438.GW327412@nvidia.com>
+ <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922140911.GT327412@nvidia.com>
+ <BN9PR11MB5433A47FFA0A8C51643AA33C8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210923120653.GK964074@nvidia.com>
+ <BN9PR11MB543309C4D55D628278B95E008CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB543309C4D55D628278B95E008CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+X-ClientProxiedBy: BL1PR13CA0378.namprd13.prod.outlook.com
+ (2603:10b6:208:2c0::23) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="DReaxJbM2X5uf5LruUj9ZWLgctnRzIgmv"
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0378.namprd13.prod.outlook.com (2603:10b6:208:2c0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.7 via Frontend Transport; Thu, 23 Sep 2021 12:31:19 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mTNsk-004P9s-5s; Thu, 23 Sep 2021 09:31:18 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ff36600-b80f-40ae-ed2c-08d97e8e0ba1
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5335:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB533575FD45FE3C4513F8FC97C2A39@BL1PR12MB5335.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KcV4fifJFyqIx2fPGo1u8YEZiP1MboeD1H5vXd5O5AhHdky/MchuffsN7YpgWNdNUk8/9snyyKa7D6QmnBvSW8Mg/jmrjzwcToHjhj86PKkh/oKtHZKa8lVbaESDyeLoz+cF+iPsgQ4FrJwXFgeBJiOv/lsw2FThw9yjTKLpoYjeqZ3yskVbQBPLIjULC+whNrJCMbniovrPX7jqyqITr65ein/UhWLHDsqTmLgTMwm8qT6sy+WhlKwVqSvZZNbC4sfc4lqVJRKMAuH04k7xGFjnzx+XTaZkcohM50v/ojv8XyDSMaCUdWLegWMb2LXAsxgS49eG1ZfzhGJAtzitakbCxEp2natOH7uTkDli4pxG7SecidABhor8Ayfu5NaqjZQRZrciyy47aJgIMXOiwDPBtPdH/+9XOAC5t19QgAx83Xe8bTuIvKhjTgIuE9lnjwIGMXKyIGtnGljXHy4KjgKt6ufT8zFZHqmiIo9GGkr0nQL9Y58WBzdpFekQ1QfQ0dpFeSBaZo8RLbWuMZScJJaa6oCt4qaCLgY8tVhvwYSqjmy9gHzgTExeeyFAoRYDrQqD6XH2s2D8tgVeLXbVkFdihPSe3ZtOx9u0EvY4ip0ONwsHMnAbVKaILHuA5TES5HMFlKE044vQ9/SrxUbud8TKrJa63hRLGINT9Qq6MG1LwIWygvVTLyC9IDnhpejWyZLhEd3ZDw/gYNsrjmXsonHnWJbdXLZ2dx/FJ4srZrY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(8936002)(54906003)(66476007)(66556008)(9746002)(83380400001)(9786002)(66946007)(2616005)(38100700002)(5660300002)(6916009)(2906002)(107886003)(8676002)(86362001)(33656002)(4326008)(26005)(426003)(508600001)(186003)(1076003)(7416002)(36756003)(27376004)(84603001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Saoe1IS62l4WSBZhDMuSGyqnIcJKKoWh5wC7XlYOu1+znXfwLjgViHBUTv2o?=
+ =?us-ascii?Q?Dx58PzsIah8QsOzPxLyT+rahz5s3dRb4o83aeXzgQbhsB78o0qQz3G4oksps?=
+ =?us-ascii?Q?T6aaprP1XSIeiXNIxhs/ZpA0vFDLKQZU16Qxi3c+0XjrJKaP+DFNTyBtgMid?=
+ =?us-ascii?Q?UjPLATzmFM7/wZT4ENSS4EmOUC2IO+Jt92h6djiJaMUkPpBvjLHoV4xy0Eas?=
+ =?us-ascii?Q?VKAQuLfCLtXI8N3yB9WZ0coTWNPTfh2CItyhT4ZG6NgAkakthRUKgBu6X8MV?=
+ =?us-ascii?Q?bKPIOFJ8t8GgpwyzCbyISfMMlH7XKM0DmjNyNcLgr4WDsStTXdkh36uq+1E0?=
+ =?us-ascii?Q?t33O9GXLojD34AFZGffYr6uU7j/qY6f8O8WvdU+bK3RsAntYbll/c8tsBJDY?=
+ =?us-ascii?Q?CE/T8FR9SWyKZg51AlU6HdV+SWOLkDkqAHTumpJviUwAMI4ZITYDJtOg0rnt?=
+ =?us-ascii?Q?AxV5Hzk8HSnukWLJh2R0wFIZmib/TuGIMyienKIQSL7afr9nC7sMRuVqHksm?=
+ =?us-ascii?Q?l/gCXrZAClFeP2gC/gq0wRXfA7cVFlwwLTV0bozylXfSd1nQUJlAt7yJYAcO?=
+ =?us-ascii?Q?nEiOKdKugr7BSQfzStQoZo1qE9Ds/w24SBBqgp/YT2P68mGaTrCflTrhkSrn?=
+ =?us-ascii?Q?kq/JYJ1S37w5xFPmTxm8q4BWRf6gaTxdf7cl6SForkGs310Ov5ZxuHDhKW1n?=
+ =?us-ascii?Q?Awk3ZRtyshosjnD+DHVmrAetfhM9AG4RzPUmb8yZC4Nzc5CHmbXjUmehorNr?=
+ =?us-ascii?Q?Uyp1HcAxpA3A9hrUYRSNl7g8akaBf5E0FTzo71H1xTaWAy90lpaa2050eUfa?=
+ =?us-ascii?Q?q7QoyAiSgPSh6ADvZLfNn2yb4agqvJ2z/x/u4+jotWPr8+ci3HyxI7d5OvbZ?=
+ =?us-ascii?Q?Jx3wWhq0YfHE6vFk3r5ohic2Re2K3AXGjXTPO0UvlYL/jBnqluGezT536bMP?=
+ =?us-ascii?Q?7BSZV0Lt3YbhR0yAd54h1gufkEJFv9xA6XDgVsfIa4wZY1iFtstY6rADJ+C3?=
+ =?us-ascii?Q?Xxol1WALGs+c3zwOhbQ2+1rv8jPR6tYU2ooRpvKzC3J1af16qamLDL6zJRuZ?=
+ =?us-ascii?Q?2kAPjiwdTJ1mA+0jCJujOtSOJ+OqLMHLQim508jyXoo18BqJ3YMUYGr56Fkk?=
+ =?us-ascii?Q?ZLZS4CnH/hrwYhHvB5La4nWwlBFyiE3RTqI2w+l/UdC8n55eim1z3E/U2oRf?=
+ =?us-ascii?Q?M9l8ign3EaCI1lKhzn0VZDxAdWBepSq+TAhd6CjjQ+O3c3kdQ2T1K4Uk0yui?=
+ =?us-ascii?Q?Sgz6P+kCI5e/xHN9UtaQf45GW2BWe5FogiH3cFdwRNpTXqPtGPj++848i648?=
+ =?us-ascii?Q?1rELwrcYUXoj6DU67Lz+PTqd?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ff36600-b80f-40ae-ed2c-08d97e8e0ba1
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 12:31:19.6826
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d7CVSSkesEMhwWPW4UCufB84aRzCikea140O/jdUv+Unc9x/2rlykGWz+Gfk0HtH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5335
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DReaxJbM2X5uf5LruUj9ZWLgctnRzIgmv
-Content-Type: multipart/mixed; boundary="MY6l14mAjftPp6ROEXXWrrmnZRAeYFlKL";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- lkml <linux-kernel@vger.kernel.org>
-Message-ID: <6e90efe0-4c0d-55d9-bff8-6da9b9614cd1@suse.com>
-Subject: Re: [PATCH RFC 1/3] xen/privcmd: replace kcalloc() by kvcalloc() when
- allocating empty pages
-References: <0f0db6fa-2604-9a0d-1138-0063b5a39a87@suse.com>
- <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
-In-Reply-To: <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
+On Thu, Sep 23, 2021 at 12:22:23PM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Thursday, September 23, 2021 8:07 PM
+> > 
+> > On Thu, Sep 23, 2021 at 09:14:58AM +0000, Tian, Kevin wrote:
+> > 
+> > > currently the type is aimed to differentiate three usages:
+> > >
+> > > - kernel-managed I/O page table
+> > > - user-managed I/O page table
+> > > - shared I/O page table (e.g. with mm, or ept)
+> > 
+> > Creating a shared ios is something that should probably be a different
+> > command.
+> 
+> why? I didn't understand the criteria here...
 
---MY6l14mAjftPp6ROEXXWrrmnZRAeYFlKL
-Content-Type: multipart/mixed;
- boundary="------------7F2FB7307810C6841AC92D01"
-Content-Language: en-US
+I suspect the input args will be very different, no?
 
-This is a multi-part message in MIME format.
---------------7F2FB7307810C6841AC92D01
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> > > we can remove 'type', but is FORMAT_KENREL/USER/SHARED a good
+> > > indicator? their difference is not about format.
+> > 
+> > Format should be
+> > 
+> > FORMAT_KERNEL/FORMAT_INTEL_PTE_V1/FORMAT_INTEL_PTE_V2/etc
+> 
+> INTEL_PTE_V1/V2 are formats. Why is kernel-managed called a format?
 
-On 22.09.21 12:16, Jan Beulich wrote:
-> Osstest has been suffering test failures for a little while from order-=
-4
-> allocation failures, resulting from alloc_empty_pages() calling
-> kcalloc(). As there's no need for physically contiguous space here,
-> switch to kvcalloc().
->=20
-> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+So long as we are using structs we need to have values then the field
+isn't being used. FORMAT_KERNEL is a reasonable value to have when we
+are not creating a userspace page table.
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Alternatively a userspace page table could have a different API
 
-> ---
-> RFC: I cannot really test this, as alloc_empty_pages() only gets used i=
-n
->       the auto-translated case (i.e. on Arm or PVH Dom0, the latter of
->       which I'm not trusting enough yet to actually start playing with
->       guests).
->=20
-> There are quite a few more kcalloc() where it's not immediately clear
-> how large the element counts could possibly grow nor whether it would b=
-e
-> fine to replace them (i.e. physically contiguous space not required).
+> yes, the user can query the permitted range using DEVICE_GET_INFO.
+> But in the end if the user wants two separate regions, I'm afraid that 
+> the underlying iommu driver wants to know the exact info. iirc PPC
+> has one global system address space shared by all devices. It is possible
+> that the user may want to claim range-A and range-C, with range-B
+> in-between but claimed by another user. Then simply using one hint
+> range [A-lowend, C-highend] might not work.
 
-I don't think those are an issue. Per default the sizes seem to be well
-below a single page.
+I don't know, that sounds strange.. In any event hint is a hint, it
+can be ignored, the only information the kernel needs to extract is
+low/high bank?
 
-> I wasn't sure whether to Cc stable@ here; the issue certainly has been
-> present for quite some time. But it didn't look to cause issues until
-> recently.
+> yes PPC can use different format, but I didn't understand why it is 
+> related user-managed page table which further requires nesting. sound
+> disconnected topics here...
 
-I'd rather add it to stable. Its not as if the patch had a high
-complexity.
+It is just a way to feed through more information if we get stuck
+someday.
 
+> > ARM *does* need PASID! PASID is the label of the DMA on the PCI bus,
+> > and it MUST be exposed in that format to be programmed into the PCI
+> > device itself.
+> 
+> In the entire discussion in previous design RFC, I kept an impression that
+> ARM-equivalent PASID is called SSID. If we can use PASID as a general
+> term in iommufd context, definitely it's much better!
 
-Juergen
+SSID is inside the chip and part of the IOMMU. PASID is part of the
+PCI spec.
 
---------------7F2FB7307810C6841AC92D01
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+iommufd should keep these things distinct. 
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+If we are talking about a PCI TLP then the name to use is PASID.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+> > All of this should be able to support a userspace, like DPDK, creating
+> > a PASID on its own without any special VFIO drivers.
+> > 
+> > - Open iommufd
+> > - Attach the vfio device FD
+> > - Request a PASID device id
+> > - Create an ios against the pasid device id
+> > - Query the ios for the PCI PASID #
+> > - Program the HW to issue TLPs with the PASID
+> 
+> this all makes me very confused, and completely different from what
+> we agreed in previous v2 design proposal:
+>
+> - open iommufd
+> - create an ioas
+> - attach vfio device to ioasid, with vPASID info
+> 	* vfio converts vPASID to pPASID and then call iommufd_device_attach_ioasid()
+> 	* the latter then installs ioas to the IOMMU with RID/PASID
 
---------------7F2FB7307810C6841AC92D01--
+This was your flow for mdev's, I've always been talking about wanting
+to see this supported for all use cases, including physical PCI
+devices w/ PASID support.
 
---MY6l14mAjftPp6ROEXXWrrmnZRAeYFlKL--
+A normal vfio_pci userspace should be able to create PASIDs unrelated
+to the mdev stuff.
 
---DReaxJbM2X5uf5LruUj9ZWLgctnRzIgmv
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+> > AFAICT I think it is the former in the Intel scheme as the "vPASID" is
+> > really about presenting a consistent IOMMU handle to the guest across
+> > migration, it is not the value that shows up on the PCI bus.
+> 
+> It's the former. But vfio driver needs to maintain vPASID->pPASID
+> translation in the mediation path, since what guest programs is vPASID.
 
------BEGIN PGP SIGNATURE-----
+The pPASID definately is a PASID as it goes out on the PCIe wire
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMc3MFAwAAAAAACgkQsN6d1ii/Ey+0
-lQf9GKjiImongEdgd0ahwBbAun2YWu+HqadhVoJKBzKa2XkXfL5RictA7VuW5J1+2XZGQzoiT1YC
-VBTg5CeYvp1UoqVV2u7PcgXsfTcgMZc0VLt2pl8HpniFD34ToEFDooENtu/yxeAF557KK5gw+JQG
-3ArlHZoOI2e38WXhCTj+nG79GwCbyplgZPwPqlUhAZuYtwQXu9pu6jGKdO6zUCl02aN7D7P3Vu61
-ibkntBOMUorimlX5rtEF4Bryp4N8AnWI20MzFLq6FhvCH369RNfOMgz8os4hBbe2oiquQNCRpfb/
-OBfZMxihbvVPqtKcImChLF+6cYBFaiBweY53CO44QQ==
-=DEf8
------END PGP SIGNATURE-----
+Suggest you come up with a more general name for vPASID?
 
---DReaxJbM2X5uf5LruUj9ZWLgctnRzIgmv--
+Jason
