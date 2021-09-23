@@ -2,277 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0B8415B14
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4368415B1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240200AbhIWJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238217AbhIWJjT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:39:19 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B13C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:37:48 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id w29so15282988wra.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:37:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JgdO99Nh9eMU52WYnIvz3GvtR2odx+tT24+8KrDRTdc=;
-        b=0EvSq6OehNE6x6czWkNvhuABKoVLFfN8ekIQk+ZkjOb1trXo2Lk2tFLfRz2KmVZB31
-         t9n6Y0xyyfTcZHJEsEGqjtv39qu02BKdRkqM63LqEghGdU76dROsAsP5NIok+K3PBzAh
-         T3WVl6to5FdqsPEBHHUVYX4TLWsmSV0BUxFDStPHHFWRwONhXtXSDwXsSJI5uQi1rPgF
-         14+QYtbshDAYWCH7ZScEPB9fQ69qTSheQAq5j9M1WTf9LRgIol6TVmh0+sO9uCvjPMzM
-         Xvvu7Q/8N40N1UoqrW/WFMjzlkMl9Tp8vdP3tZJ0Yx3UbO2HLWi8CVqlJy5XkDHvobwc
-         tIvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JgdO99Nh9eMU52WYnIvz3GvtR2odx+tT24+8KrDRTdc=;
-        b=kUzcJTWHhuz1VCntlVzqiEIpRaEXEL7itbFghX8IJZBx7vMmlTg3wmKJp1FAMveDV6
-         Dgw8LwPjj/dzY3rwIzFThxtXbK6EGwcLm9duY5n5/DJw+y2P2J3jziTyNVjMAk9QfPd3
-         2v/e1C5EzRn7nVmJR2d8dwo8/TvtlUszlWKYPz6EPkpvFHDxZy5tAiFoPrmEpWgtAOTf
-         yexACnfQoc6/3SJYn0z+hM7dZ61SmfBwB3CLCGxRVcZAq1HThjJY6b+wX93+X37B9uTu
-         crkgrJwbY5dP2xQz5rkhMkb/6w99FSVm5jR6oxrXCt9cQRPS/MOAZborooMs549rU20W
-         nRKA==
-X-Gm-Message-State: AOAM532T+8ec9ywKfhxJSg2BLFeZI/Pcw8eK+Lfy0QfRJmKuXZaJ8C/O
-        sfPJYqIx0bhz3XVIv8F5UXyYTZXxchbQ6C1SZH8mnw==
-X-Google-Smtp-Source: ABdhPJxC3dTMAYzm0Ms3oPin268gD/8g64ClSDepf1A3FfmmPaB0BfAlRytVXsQa52z022lwKCQArCvyWLmS49VpLKA=
-X-Received: by 2002:a7b:cb04:: with SMTP id u4mr14799601wmj.176.1632389866537;
- Thu, 23 Sep 2021 02:37:46 -0700 (PDT)
+        id S240195AbhIWJkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:40:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238217AbhIWJkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:40:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F3B26121F;
+        Thu, 23 Sep 2021 09:38:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632389927;
+        bh=d58N7onB8KeEx4agVz+GvbDHkrznYzV8nRj9L2MqL0E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tiAXdAJ7enQ389Q76nQGOdetsK/JVjHd1rHVrbyLxaY19sn5zlRUaXr4BnC6+UQDu
+         xI2MSTmaqol2L1Q/UUUvs7qKj0tFE/e7XaJ8mulF8UXCZwu8k3VNSxsOmFoL9VbG04
+         JBrl+JJqJwzn3NF1GrS6NT751p52HVEvlkCcB+rdpdxHrgV1c2k6kG2Kd2Xx/UuJC9
+         /+P4wttc7fKaa4y8pwhYoMRn3qTrr3vDA6IDevJYZrhoNY/uQM/rpYd1yf0r9TR/MW
+         Nvk0oI0fla7C+tskDrYZjIHYDRtbMXyyzs4M2zGLHqbnQYAHDAgpXZm3GehBmcBk5Y
+         Kh/euxUxNm1LQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mTLBo-0000e0-KD; Thu, 23 Sep 2021 11:38:49 +0200
+Date:   Thu, 23 Sep 2021 11:38:48 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Slark Xiao <slark_xiao@163.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] USB:serial:option Add Foxconn T99W265
+Message-ID: <YUxLKCGd0Icl+Mbv@hovoldconsulting.com>
+References: <20210917110106.9852-1-slark_xiao@163.com>
+ <YUhVKrRJ8M2hKJil@hovoldconsulting.com>
+ <2992805f.bc9.17c0b33a78e.Coremail.slark_xiao@163.com>
 MIME-Version: 1.0
-References: <20210923072716.913826-1-guoren@kernel.org> <6d7b1668c1f562a5ef426bb2519f9784@mailhost.ics.forth.gr>
-In-Reply-To: <6d7b1668c1f562a5ef426bb2519f9784@mailhost.ics.forth.gr>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 23 Sep 2021 15:07:34 +0530
-Message-ID: <CAAhSdy0YDP3Nk8N9fnrKgS+3Rjt=5tLCh20upmUGK9SK67nNvg@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Add RISC-V svpbmt extension
-To:     Nick Kossifidis <mick@ics.forth.gr>
-Cc:     Guo Ren <guoren@kernel.org>, Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2992805f.bc9.17c0b33a78e.Coremail.slark_xiao@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 2:55 PM Nick Kossifidis <mick@ics.forth.gr> wrote:
->
-> Hello Guo,
->
-> =CE=A3=CF=84=CE=B9=CF=82 2021-09-23 10:27, guoren@kernel.org =CE=AD=CE=B3=
-=CF=81=CE=B1=CF=88=CE=B5:
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> index e534f6a7cfa1..1825cd8db0de 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -56,7 +56,9 @@ properties:
->       enum:
->         - riscv,sv32
->         - riscv,sv39
-> +      - riscv,sv39,svpbmt
->         - riscv,sv48
-> +      - riscv,sv48,svpbmt
->         - riscv,none
->
-> Isn't svpbmt orthogonal to the mmu type ? It's a functionality that can
-> be present on either sv39/48/57 so why not have another "svpbmt"
-> property directly on the cpu node ?
+[ Please configure your mail client to wrap lines at 72 columns or so. ]
 
-Actually, "mmu-type" would be a good place because it's page based
-memory attribute and paging can't exist without mmu translation mode.
+On Wed, Sep 22, 2021 at 09:51:47AM +0800, Slark Xiao wrote:
+> At 2021-09-20 17:32:26, "Johan Hovold" <johan@kernel.org> wrote:
+> >On Fri, Sep 17, 2021 at 07:01:06PM +0800, Slark Xiao wrote:
+> >> Adding support for Foxconn device T99W265 for enumeration with
+> >> PID 0xe0db.
+> >> 
+> >> usb-devices output for 0xe0db
+> >> T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 19 Spd=5000 MxCh= 0
+> >> D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
+> >> P:  Vendor=0489 ProdID=e0db Rev=05.04
+> >> S:  Manufacturer=Microsoft
+> >> S:  Product=Generic Mobile Broadband Adapter
+> >> S:  SerialNumber=6c50f452
+> >> C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
+> >> I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+> >> I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+> >> I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+> >> I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
+> >> I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+> >> 
+> >> if0/1: MBIM, if2:Diag, if3:GNSS, if4: Modem
+> >> 
+> >> Signed-off-by: Slark Xiao <slark_xiao@163.com>
 
-Also, "svpmbt" is indeed a CPU property so has to be feature individual
-CPU node. Hypothetically, a heterogeneous system is possible where
-some CPUs have "svpmbt" and some CPUs don't have "svpmbt". For
-example, a future FUxxx SoC might have a E-core and few S-cores
-where S-cores have Svpmbt whereas E-core does not have Svpmbt
-because it's an embedded core.
-
-Regards,
-Anup
-
->
-> > + * rv64 PTE format:
-> > + * | 63 | 62 61 | 60 54 | 53  10 | 9             8 | 7 | 6 | 5 | 4 |
-> > 3 | 2 | 1 | 0
-> > + *   N      MT     RSV    PFN      reserved for SW   D   A   G   U
-> > X   W   R   V
-> > + * [62:61] Memory Type definitions:
-> > + *  00 - PMA    Normal Cacheable, No change to implied PMA memory type
-> > + *  01 - NC     Non-cacheable, idempotent, weakly-ordered Main Memory
-> > + *  10 - IO     Non-cacheable, non-idempotent, strongly-ordered I/O
-> > memory
-> > + *  11 - Rsvd   Reserved for future standard use
-> > + */
-> > +#define _PAGE_MT_MASK                ((u64)0x3 << 61)
-> > +#define _PAGE_MT_PMA         ((u64)0x0 << 61)
-> > +#define _PAGE_MT_NC          ((u64)0x1 << 61)
-> > +#define _PAGE_MT_IO          ((u64)0x2 << 61)
-> > +
->
-> It'd be cleaner IMHO if you defined _PAGE_MT_MASK as (_PAGE_MT_PMA |
-> _PAGE_MT_NC | _PAGE_MT_IO), like other masks are defined (e.g.
-> _PAGE_CHG_MASK on the same file). I also suggest you use unsigned long
-> instead of u64 for consistency.
->
-> > +enum {
-> > +     MT_PMA,
-> > +     MT_NC,
-> > +     MT_IO,
-> > +     MT_MAX
-> > +};
-> > +
-> > +extern struct __riscv_svpbmt_struct {
-> > +     unsigned long mask;
-> > +     unsigned long mt[MT_MAX];
-> > +} __riscv_svpbmt;
-> > +
-> > +#define _PAGE_DMA_MASK               __riscv_svpbmt.mask
-> > +#define _PAGE_DMA_PMA                __riscv_svpbmt.mt[MT_PMA]
-> > +#define _PAGE_DMA_NC         __riscv_svpbmt.mt[MT_NC]
-> > +#define _PAGE_DMA_IO         __riscv_svpbmt.mt[MT_IO]
-> > +#else
-> > +#define _PAGE_DMA_MASK               0
-> > +#define _PAGE_DMA_PMA                0
-> > +#define _PAGE_DMA_NC         0
-> > +#define _PAGE_DMA_IO         0
-> > +#endif /* CONFIG_64BIT */
-> > +#endif /* __ASSEMBLY__ */
-> > +
-> >  #define _PAGE_SPECIAL   _PAGE_SOFT
-> >  #define _PAGE_TABLE     _PAGE_PRESENT
+> >> ---
+> >>  drivers/usb/serial/option.c | 2 ++
+> >>  1 file changed, 2 insertions(+)
+> >> 
+> >> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+> >> index 29c765cc8495..fde599fa2d73 100644
+> >> --- a/drivers/usb/serial/option.c
+> >> +++ b/drivers/usb/serial/option.c
+> >> @@ -2068,6 +2068,8 @@ static const struct usb_device_id option_ids[] = {
+> >>  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
+> >>  	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
+> >>  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
+> >> +	{ USB_DEVICE(0x0489, 0xe0db),						/* Foxconn T99W265 MBIM extension*/
+> >> +	  .driver_info = RSVD(0) | RSVD(1) | RSVD(3) },
 > >
->
-> This struct is not useful as part of enabling the standard Svpbmt
-> extension on Linux, we can set _PAGE_DMA_* macros directly on this patch
-> and introduce the struct approach later on, when we also define
-> alternative values for _PAGE_DMA_* flags. Also to someone reading the
-> code the struct doesn't make sense without some documentation on why
-> it's needed. Finally why the enum / array ? Why not just have different
-> fields on the struct ?
->
-> > diff --git a/arch/riscv/include/asm/pgtable.h
-> > b/arch/riscv/include/asm/pgtable.h
-> > index 39b550310ec6..d07ba586c866 100644
-> > --- a/arch/riscv/include/asm/pgtable.h
-> > +++ b/arch/riscv/include/asm/pgtable.h
-> > @@ -136,7 +136,8 @@
-> >                               | _PAGE_PRESENT \
-> >                               | _PAGE_ACCESSED \
-> >                               | _PAGE_DIRTY \
-> > -                             | _PAGE_GLOBAL)
-> > +                             | _PAGE_GLOBAL \
-> > +                             | _PAGE_DMA_PMA)
+> >If you use USB_DEVICE_INTERFACE_CLASS() instead you don't need to
+> >explicitly reserve the MBIM interfaces. 
 > >
->
-> That's a bit misleading, it's like marking the kernel pages as DMAable.
->
-> -/*
-> - * The RISC-V ISA doesn't yet specify how to query or modify PMAs, so
-> we can't
-> - * change the properties of memory regions.
-> - */
-> -#define _PAGE_IOREMAP _PAGE_KERNEL
-> +#define _PAGE_IOREMAP    ((_PAGE_KERNEL & ~_PAGE_DMA_MASK) |
-> _PAGE_DMA_IO)
-> +
-> +#define PAGE_IOREMAP        __pgprot(_PAGE_IOREMAP)
->
-> This isn't used anywhere.
->
-> @@ -490,6 +489,28 @@ static inline int ptep_clear_flush_young(struct
-> vm_area_struct *vma,
->       return ptep_test_and_clear_young(vma, address, ptep);
->   }
->
-> +#define pgprot_noncached pgprot_noncached
-> +static inline pgprot_t pgprot_noncached(pgprot_t _prot)
-> +{
-> +    unsigned long prot =3D pgprot_val(_prot);
-> +
-> +    prot &=3D ~_PAGE_DMA_MASK;
-> +    prot |=3D _PAGE_DMA_IO;
-> +
-> +    return __pgprot(prot);
-> +}
-> +
-> +#define pgprot_writecombine pgprot_writecombine
-> +static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
-> +{
-> +    unsigned long prot =3D pgprot_val(_prot);
-> +
-> +    prot &=3D ~_PAGE_DMA_MASK;
-> +    prot |=3D _PAGE_DMA_NC;
-> +
-> +    return __pgprot(prot);
-> +}
-> +
->
-> We also have the IO type, we should also define pgprot_device to also
-> ensure ordering, or else it'll fallback to pgprot_noncached, which in
-> our case won't work well due to RVWMO:
-> https://elixir.bootlin.com/linux/latest/source/include/linux/pgtable.h#L9=
-30
->
-> +void __init riscv_svpbmt(void)
-> +{
-> +#ifdef CONFIG_64BIT
-> +    struct device_node *node;
-> +    const char *str;
-> +
-> +    for_each_of_cpu_node(node) {
-> +        if (of_property_read_string(node, "mmu-type", &str)) {
-> +            continue;
-> +        }
-> +
-> +        if (!strncmp(str + 11, "svpbmt", 6)) {
-> +            __riscv_svpbmt.mask      =3D _PAGE_MT_MASK;
-> +            __riscv_svpbmt.mt[MT_PMA] =3D _PAGE_MT_PMA;
-> +            __riscv_svpbmt.mt[MT_NC]  =3D _PAGE_MT_NC;
-> +            __riscv_svpbmt.mt[MT_IO]  =3D _PAGE_MT_IO;
-> +            break;
-> +        }
-> +    }
-> +#endif
-> +}
->
-> You break; here the first time you find a cpu node with svpbmt enabled,
-> shouldn't we make sure that all used cpu nodes support svpbmt before
-> using the extension ?
->
-> Regards,
-> Nick
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >Also, why are you reserving the GNSS interface (e.g. unlike T77W968)?
+> 
+> I just want to keep same style as previous products. That would be
+> more coordinated, I think.
+
+I understand your point, but it's better to use a more specific matching
+rule were possible since it prevents driver core from even trying to
+bind the driver.
+
+Note that for T77W968 we couldn't do so since we needed to bind also to
+non-vendor-class interfaces.
+
+I'll just change this to USB_DEVICE_INTERFACE_CLASS() when applying.
+
+> And for GNSS port, it can't be supported with serial driver. It
+> doesn't like a  NMEA port which is using serial driver.
+> I checked it for T77W968(MBIM mode) and found settings as below:
+> if0/if1: MBIM, if2: Modem, if3:AT,  if4: NMEA, if5: Diag, if6: GNSS
+> GNSS is also reserved.
+
+Ah, thanks for explaining. I only saw that T77W968 had an NMEA port and
+thought it was the same one.
+
+Now applied with the change mentioned above.
+
+Johan
