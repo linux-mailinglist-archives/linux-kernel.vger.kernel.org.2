@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA85416193
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765F6416196
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241932AbhIWPAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:00:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:35990 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241928AbhIWPA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:00:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E301A113E;
-        Thu, 23 Sep 2021 07:58:54 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EEF463F718;
-        Thu, 23 Sep 2021 07:58:52 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, peter.hilber@opensynergy.com,
-        igor.skalkin@opensynergy.com, cristian.marussi@arm.com
-Subject: [PATCH v5 13/13] firmware: arm_scmi: Make smc support atomic sync commands replies
-Date:   Thu, 23 Sep 2021 15:58:02 +0100
-Message-Id: <20210923145802.50938-14-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210923145802.50938-1-cristian.marussi@arm.com>
-References: <20210923145802.50938-1-cristian.marussi@arm.com>
+        id S241961AbhIWPAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241867AbhIWPAp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:00:45 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D154C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:59:14 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d6800d149a76d0b562da3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6800:d149:a76d:b56:2da3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8EFEC1EC056A;
+        Thu, 23 Sep 2021 16:59:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632409148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=T/zbVuqZ1HlM/RdSdAFVocNiGHn+dqQu0D+Cgr2+0TY=;
+        b=fcMBC6ju6ENW9WoA1WUjXfPEd5eRH5ROjdyALMm5iqLvZmJ41bPYUV7LXb00Zjbtz7iVEg
+        ltBIIZ8KLvu3+6ZyvRgzJMfpQ+XpTan1UDqA05uGlaJGTwmW98U48L5OKWtCD+JQ7vmxsD
+        wEj6E6tA93ty97Bge2XQFhSp6dN19o0=
+Date:   Thu, 23 Sep 2021 16:59:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Marcus =?utf-8?Q?R=C3=BCckert?= <mrueckert@suse.com>
+Subject: Re: [PATCH] x86/umip: Downgrade warning messages to debug loglevel
+Message-ID: <YUyWNnzogxflFIwd@zn.tnic>
+References: <20210907200454.30458-1-bp@alien8.de>
+ <20210911011459.GA11980@ranerica-svr.sc.intel.com>
+ <YTx0+0pfyzHuX80L@zn.tnic>
+ <20210913213836.GA10627@ranerica-svr.sc.intel.com>
+ <YUDTCgEOZ3JOMSl7@zn.tnic>
+ <20210915113410.GA7130@ranerica-svr.sc.intel.com>
+ <YUIHPOmSQyZSkMaC@zn.tnic>
+ <20210916002735.GA9330@ranerica-svr.sc.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210916002735.GA9330@ranerica-svr.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable sync_cmds_atomic_replies in the SMC transport descriptor and remove
-SMC specific .poll_done callback support since polling is bypassed when
-sync_cmds_atomic_replies is set.
+On Wed, Sep 15, 2021 at 05:27:35PM -0700, Ricardo Neri wrote:
+> FWIW, Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-v4 --> v5
-- removed RFC tag
-- added comment on setting flag
-- remove smc_poll_done
----
- drivers/firmware/arm_scmi/smc.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Thx.
 
-diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-index 22c573458719..a338c696852d 100644
---- a/drivers/firmware/arm_scmi/smc.c
-+++ b/drivers/firmware/arm_scmi/smc.c
-@@ -225,14 +225,6 @@ static void smc_mark_txdone(struct scmi_chan_info *cinfo, int ret)
- 	smc_channel_lock_release(scmi_info);
- }
- 
--static bool
--smc_poll_done(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
--{
--	struct scmi_smc *scmi_info = cinfo->transport_info;
--
--	return shmem_poll_done(scmi_info->shmem, xfer);
--}
--
- static const struct scmi_transport_ops scmi_smc_ops = {
- 	.chan_available = smc_chan_available,
- 	.chan_setup = smc_chan_setup,
-@@ -240,7 +232,6 @@ static const struct scmi_transport_ops scmi_smc_ops = {
- 	.send_message = smc_send_message,
- 	.mark_txdone = smc_mark_txdone,
- 	.fetch_response = smc_fetch_response,
--	.poll_done = smc_poll_done,
- };
- 
- const struct scmi_desc scmi_smc_desc = {
-@@ -255,4 +246,13 @@ const struct scmi_desc scmi_smc_desc = {
- 	 */
- 	.atomic_capable = IS_ENABLED(CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE),
- 	.atomic_enabled = IS_ENABLED(CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE),
-+	/*
-+	 * Setting .sync_cmds_atomic_replies to true for SMC assumes that,
-+	 * once the SMC instruction has completed successfully, the issued
-+	 * SCMI command would have been already fully processed by the SCMI
-+	 * platform firmware and so any possible response value expected
-+	 * for the issued command will be immmediately ready to be fetched
-+	 * from the shared memory area.
-+	 */
-+	.sync_cmds_atomic_replies = true,
- };
+So this thing is not completely quiet:
+
+# dmesg -l err,warn,notice -x
+...
+kern  :notice: [   17.974749] random: dd: uninitialized urandom read (512 bytes read)
+kern  :notice: [   18.063596] random: dbus-daemon: uninitialized urandom read (12 bytes read)
+kern  :notice: [   18.065212] random: dbus-daemon: uninitialized urandom read (12 bytes read)
+kern  :notice: [   20.161303] random: crng init done
+kern  :warn  : [  144.505690] umip_printk: 403267 callbacks suppressed
+^^^^^^^^^^^^^^^^
+
+so at least it says that umip is being busy logging stuff and if one
+wants to see them, one can do:
+
+# dmesg -l err,warn,notice,debug -x
+kern  :notice: [   17.974749] random: dd: uninitialized urandom read (512 bytes read)
+kern  :notice: [   18.063596] random: dbus-daemon: uninitialized urandom read (12 bytes read)
+kern  :notice: [   18.065212] random: dbus-daemon: uninitialized urandom read (12 bytes read)
+kern  :notice: [   20.161303] random: crng init done
+kern  :debug : [   24.501738] umip: sidt[1882] ip:5570e245a083 sp:7ffdbe080390: SIDT instruction cannot be used by applications.
+kern  :debug : [   24.501743] umip: sidt[1882] ip:5570e245a083 sp:7ffdbe080390: For now, expensive software emulation returns the result.
+kern  :debug : [   24.502566] umip: sidt[1883] ip:55c63b5ff083 sp:7fffde333160: SIDT instruction cannot be used by applications.
+kern  :debug : [   24.502569] umip: sidt[1883] ip:55c63b5ff083 sp:7fffde333160: For now, expensive software emulation returns the result.
+kern  :debug : [   24.503259] umip: sidt[1884] ip:55e4bff9e083 sp:7ffecb324530: SIDT instruction cannot be used by applications.
+kern  :warn  : [  144.505690] umip_printk: 403267 callbacks suppressed
+kern  :debug : [  144.505692] umip: sidt[9170] ip:560d1457f083 sp:7fff1d5d9df0: SIDT instruction cannot be used by applications.
+kern  :debug : [  144.506484] umip: sidt[9170] ip:560d1457f083 sp:7fff1d5d9df0: For now, expensive software emulation returns the result.
+kern  :debug : [  144.507218] umip: sidt[9171] ip:556f4549c083 sp:7ffc146ab2a0: SIDT instruction cannot be used by applications.
+kern  :debug : [  144.507221] umip: sidt[9171] ip:556f4549c083 sp:7ffc146ab2a0: For now, expensive software emulation returns the result.
+kern  :debug : [  144.507951] umip: sidt[9172] ip:55662fdd8083 sp:7ffefcdbc0d0: SIDT instruction cannot be used by applications.
+
+ok, lemme queue it.
+
+Thx.
+
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
