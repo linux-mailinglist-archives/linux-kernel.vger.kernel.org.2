@@ -2,92 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F3C415F54
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C72415F56
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241230AbhIWNQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbhIWNQy (ORCPT
+        id S241186AbhIWNSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:18:25 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49304
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234006AbhIWNSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:16:54 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A2FC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:15:21 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id 2so6119408qtw.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:15:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/qBGTJ94J1mVUaKqjzNfrmv22QiJeX2c01+ZG5N5Dug=;
-        b=nIK/43rfkMS55xMT6HEck5klqGQaWuQAs5hQCn0cBILgOPXazmLQSduge3zd+fy0xm
-         ie+Yys8USJlUF7KPKscqJU5cEAPz4wIqws+OwGe5R4RN78Yp/813GM7br6Rr38n1D4mN
-         5Xbp6A6xRTIt+A6Ct9MnH2r782Ueh4Dbyu6XfGGXtoASC4KN6xRL6Gj6c1i7HQb2QrWZ
-         HWeCGTP4dVC4jDBkxjmvEtGqjflTU6xCvoqaQImsUOLj1UwPAMfQpTr3lSIQncJG8+52
-         HAIqMFQ3Ukbg2pq0TkuE4jbe2oCc1vOba5x0GshDMOVW9Q6mzPv74TYGgKlpe0AQ8V/g
-         3G9Q==
+        Thu, 23 Sep 2021 09:18:24 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D79E340198
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 13:16:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632403011;
+        bh=MKDfgpyx2DLaN+agqTgdGBhC7hPiB158s/GwrS6Ihlc=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=ZvGSd9mMmXrMflx0SKK+ZcNh4hzVFVNG02AWKpxAk7qAo40N+A41qCpjW0yiCoAYt
+         IPYSf7wtm0Bs3mvR+WDKC4z4L6RGPSRGy14LmoQjrrWbCk7RFYsKWJAWGdvUIFOGPq
+         lhacJiEGg0Pg8b//mvU9nSH24AAyAtM54Nz2iohHYmImntEX9VyERQpviXE3Q+cUIw
+         6k/BcbsBi5ZBo6qZZailSSdGI+Js8sovS2660avzPZhu1fx+Kc8mRlzG3mpV+AHAbg
+         b4owXuz/cqv9hUwaliEuO2NN/WLPC6cSl0yEMukaWgkyQMHi0rtkmplIXnBggc2vxZ
+         mx+zItvl5bh9Q==
+Received: by mail-ed1-f72.google.com with SMTP id m30-20020a50999e000000b003cdd7680c8cso6746837edb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:16:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/qBGTJ94J1mVUaKqjzNfrmv22QiJeX2c01+ZG5N5Dug=;
-        b=XNarebk4IecVSL3JhleER5jzop706ZZyckA7M7f969MVG8oBp0n+jPgsQdl/7pcMda
-         cx6Iv7tJQserrqYp0uypymaLrPZxSvpzUQsHDuzAP3y3jE1kE5x5nUPWrqbB+WIzjvXi
-         nUkBVGVlsiSCEzQr8lIxFFbY7041r+hewUkaYlYfF3ndQV67ZEh10PaS03FewFC/uQI8
-         IzYmRDpaA2fJoGYTEXT2zSxcQ4/g1NcaS52ArpHPOCP3LvFJJi1cxDKzAz+q/wfwiKbO
-         KYZB5D2Tcj6Q/YgTqSqMcwAtRgmWjPdC3mzr4hZAMOUTD7TAZNrYn/oH0qAADvLLlsqN
-         A/+Q==
-X-Gm-Message-State: AOAM533EEYdvdcKN2sOa2tnPN8Tt12suyHld4OoOSPmqINZCTRhErHwT
-        fM8J+Lj7aFVFUQ1/eg5EP5GBQA==
-X-Google-Smtp-Source: ABdhPJyN7vkSS1Pa+Tln15YulpLlFsVxYMb7d1gGthyuSGhnPwjOs1ySYLoiJSd9J//5qQ0tBPG7Sg==
-X-Received: by 2002:ac8:7d46:: with SMTP id h6mr4752542qtb.162.1632402920265;
-        Thu, 23 Sep 2021 06:15:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id y6sm579990qkj.26.2021.09.23.06.15.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 06:15:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mTOZK-004Ps6-NZ; Thu, 23 Sep 2021 10:15:18 -0300
-Date:   Thu, 23 Sep 2021 10:15:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Message-ID: <20210923131518.GW3544071@ziepe.ca>
-References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
- <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
- <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org>
- <CH0PR01MB71532C0E55A47C6910F47B79F2A39@CH0PR01MB7153.prod.exchangelabs.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MKDfgpyx2DLaN+agqTgdGBhC7hPiB158s/GwrS6Ihlc=;
+        b=6oZcA7WJN8Z+YgP0c4Cspzsrba0midBTN/UGKBAiMERJh6GHn5RBtJUcO/KmFkXNo7
+         9thrK/81xTKAQwyjQW9nR9Icarv1TblutnV9Ul2+QBhdtw/LVQCZtz98LtSwvNpL/iv/
+         Lkutx9J98NUbO4bta5pWXLIPOcBNK1Fy+iqcPdAKnsJu/v8xxo7VaAcAAXPp8/eEwKws
+         BNybAdGYRIPmD1Xxe4+ZSkVpnHfhvD40zqcjcGYGXnp83I9us9JETusRczx69099SiaO
+         H3ly4TkeEaFE6z2k+bL+pcXaqmbRJWs6bmXMkpcgb2xrBG9a2RhYw5BIWH2fsaypoTfr
+         2mXg==
+X-Gm-Message-State: AOAM532Pet2mq2rLcLONv1tb1iq6fzFB/bE/DiS1JCdbQQ9yjcz9dFRL
+        umD/159Ge1arB+GTfzE8C7XtERIHs78zTPQRfFdmFm0eSH3/XZLYxDrjaxkw3gr40J9TXtuH18r
+        G/Q8nppOPq9OogPAO069YRmFf6PsBUz1SckA0++lULzPUMR6C3qBEsAFFVw==
+X-Received: by 2002:a50:9d8e:: with SMTP id w14mr5339879ede.74.1632403011491;
+        Thu, 23 Sep 2021 06:16:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrgje9Xp2OF0gTt6J7JjXIzDOTnJlBJzaVdnqqamjZANbNh5L9aWHVmJ3gxN+QGK8XgB4V/GLiPs1Pgzoii4Q=
+X-Received: by 2002:a50:9d8e:: with SMTP id w14mr5339856ede.74.1632403011278;
+ Thu, 23 Sep 2021 06:16:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH0PR01MB71532C0E55A47C6910F47B79F2A39@CH0PR01MB7153.prod.exchangelabs.com>
+References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com>
+ <28072b8e-2c32-e67d-19d3-026913c0bc7f@codethink.co.uk> <CA+zEjCsPwGFng73OJShEc2g6wW1SOKwX7XYFqej_vkJKKUxL0A@mail.gmail.com>
+In-Reply-To: <CA+zEjCsPwGFng73OJShEc2g6wW1SOKwX7XYFqej_vkJKKUxL0A@mail.gmail.com>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Thu, 23 Sep 2021 15:16:40 +0200
+Message-ID: <CA+zEjCtfQwK04vGJxULrESkxk=Ko8GiE8jm4CexnJ9u6COTwrA@mail.gmail.com>
+Subject: Re: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:03:06AM +0000, Marciniszyn, Mike wrote:
-> > How about applying Guo's patch and adding a configuration option to the
-> > kernel for disabling pointer hashing for %p and related format specifiers?
-> > Pointer hashing is useful on production systems but not on development
-> > systems.
+On Tue, Sep 21, 2021 at 1:33 PM Alexandre Ghiti
+<alexandre.ghiti@canonical.com> wrote:
 >
-> The prints and traces are leave-behind and intended once in a distro
-> for field support.
+> On Tue, Sep 21, 2021 at 12:25 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+> >
+> > On 21/09/2021 06:33, Alexandre Ghiti wrote:
+> > > The SiFive Unmatched board uses the da9063 PMIC for reset: add a restart
+> > > notifier that will execute a small i2c sequence allowing to reset the
+> > > board.
+> > >
+> > > The original implementation comes from Marcus Comstedt and Anders Montonen
+> > > (https://forums.sifive.com/t/reboot-command/4721/28).
+> > >
+> > > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+> >
+> > I've got a couple of comments here, mainly is this the right place
+> > and has anyone other than you tested. I tried something similar on
+> > my Unmatched and it just turned the board off.
+>
+> Someone else in the thread I mention in the commit log tried it, but
+> more feedback are welcome :)
+>
+> For the Unmatched, this solution will be temporary, the best place
+> being openSBI which lacks i2c support for now.
+> But I think this can be used by other boards using this PMIC.
+>
+> >
+> > > ---
+> > >   drivers/mfd/da9063-core.c       | 25 +++++++++++++++++++++++++
+> > >   include/linux/mfd/da9063/core.h |  3 +++
+> > >   2 files changed, 28 insertions(+)
+> > >
+> > > diff --git a/drivers/mfd/da9063-core.c b/drivers/mfd/da9063-core.c
+> > > index df407c3afce3..c87b8d611f20 100644
+> > > --- a/drivers/mfd/da9063-core.c
+> > > +++ b/drivers/mfd/da9063-core.c
+> > > @@ -20,6 +20,7 @@
+> > >   #include <linux/mutex.h>
+> > >   #include <linux/mfd/core.h>
+> > >   #include <linux/regmap.h>
+> > > +#include <linux/reboot.h>
+> > >
+> > >   #include <linux/mfd/da9063/core.h>
+> > >   #include <linux/mfd/da9063/registers.h>
+> > > @@ -158,6 +159,18 @@ static int da9063_clear_fault_log(struct da9063 *da9063)
+> > >       return ret;
+> > >   }
+> > >
+> > > +static int da9063_restart_notify(struct notifier_block *this,
+> > > +                              unsigned long mode, void *cmd)
+> > > +{
+> > > +     struct da9063 *da9063 = container_of(this, struct da9063, restart_handler);
+> > > +
+> > > +     regmap_write(da9063->regmap, DA9063_REG_PAGE_CON, 0x00);
+> > > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_F, 0x04);
+> > > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_A, 0x68);
+> > > +
+> > > +     return NOTIFY_DONE;
+> > > +}
+> > > +
+> >
+> > Firstly, do you also need to force the AUTOBOOT (bit 3, CONTROL_C)
+> > to ensure the PMIC does restart.
+>
+> I tried this too and actually, it seems that the value is read from
+> OTP at reboot and as it is not set here, it has no effect.
+>
+> >
+> > >   int da9063_device_init(struct da9063 *da9063, unsigned int irq)
+> > >   {
+> > >       int ret;
+> > > @@ -197,6 +210,18 @@ int da9063_device_init(struct da9063 *da9063, unsigned int irq)
+> > >               }
+> > >       }
+> > >
+> > > +     da9063->restart_handler.notifier_call = da9063_restart_notify;
+> > > +     da9063->restart_handler.priority = 128;
+> > > +     ret = register_restart_handler(&da9063->restart_handler);
+> > > +     if (ret) {
+> > > +             dev_err(da9063->dev, "Failed to register restart handler\n");
+> > > +             return ret;
+> > > +     }
+> > > +
+> > > +     devm_add_action(da9063->dev,
+> > > +                     (void (*)(void *))unregister_restart_handler,
+> > > +                     &da9063->restart_handler);
+> >
+> > there's devm_register_reboot_notifier()
+>
+> Thanks for that!
 
-It doesn't matter, our security model is that drivers do not get to
-subvert the kASLR by unilaterally leaking memory layout information,
-so you have to get this fixed.
+Actually restart_notifier and reboot_notifier are not the same, see
+https://elixir.bootlin.com/linux/latest/source/kernel/reboot.c#L72.
+What we need here is restart_handler.
 
-Do not defeat the mechanisms to obscure kernel pointers in trace or
-print.
+Thanks anyway :)
 
-Jason
+Alex
+
+>
+> >
+> >
+> > > +
+> > >       return ret;
+> > >   }
+> > >
+> > > diff --git a/include/linux/mfd/da9063/core.h b/include/linux/mfd/da9063/core.h
+> > > index fa7a43f02f27..1b20c498e340 100644
+> > > --- a/include/linux/mfd/da9063/core.h
+> > > +++ b/include/linux/mfd/da9063/core.h
+> > > @@ -85,6 +85,9 @@ struct da9063 {
+> > >       int             chip_irq;
+> > >       unsigned int    irq_base;
+> > >       struct regmap_irq_chip_data *regmap_irq;
+> > > +
+> > > +     /* Restart */
+> > > +     struct notifier_block restart_handler;
+> > >   };
+> > >
+> > >   int da9063_device_init(struct da9063 *da9063, unsigned int irq);
+> >
+> > Note, the watchdog driver for the DA9063 also has a restart method
+> > although it also does not set the AUTOBOOT bit either.
+> >
+> > The best thing is to enable the watchdog driver, the SiFive release
+> > does not have either the core DA9063 or the watchdog driver for it
+> > enabled.
+>
+> It seems that for the restart implemented here to work, the AUTOBOOT
+> bit needs to be set in the OTP, which seems not to be the case with
+> the chip on this board: it's been discussed here
+> https://www.dialog-semiconductor.com/products/pmics?post_id=10052#tab-support_tab_content
+> (see the accepted answer).
+>
+> Thanks,
+>
+> Alex
+>
+> >
+> > --
+> > Ben Dooks                               http://www.codethink.co.uk/
+> > Senior Engineer                         Codethink - Providing Genius
+> >
+> > https://www.codethink.co.uk/privacy.html
