@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D6D41598E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9761E415997
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240000AbhIWHt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
+        id S239715AbhIWHvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239929AbhIWHss (ORCPT
+        with ESMTP id S233011AbhIWHv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:48:48 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6830AC0613E3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 00:47:06 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id d20-20020ac81194000000b002a53ffbd04dso15872489qtj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 00:47:06 -0700 (PDT)
+        Thu, 23 Sep 2021 03:51:29 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFE3C061756;
+        Thu, 23 Sep 2021 00:49:57 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id dj4so20424671edb.5;
+        Thu, 23 Sep 2021 00:49:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=pMaOfLt+vkRQx0RPjtfU4NwNaK63mYgla1MP1EllA8c=;
-        b=rHUFtH7+fh8D4nXJQx30emGYbrI/3qe6050g6PPZZPoA6l3zvxLSLjfKMKJNgugfIq
-         ZmkwYHUdx8FnjnyTxIe2M2cmo2O5UQ9rR4pQYPLLdj8JXdfVTta8F2d222y5xheWWqx4
-         fLY9znZVpFFHPRjW/QVYUf2uUfD92qtwnP0VoF3mk662kd7OIiA2sJi9h0Ckr/S9sgEC
-         Q79W2IWaorHUFJYKscFxVbcXcJeIbcgwNP1eswCfpylMczjZJjMbA4b8ZEU8hVaecD8Z
-         1BcOsi12mdXzySlarolIVADLIzIFwEHQVAan/U92/FphPBeIjaB9il5Mi49bQNZEMp7t
-         Tjlw==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RlhgwksuUm7dWwJH3Rb88cQWw5W+Xn4yAyWyU7jvE54=;
+        b=Ay9Rh+fTliF5ZQIByyU7Xrsxhp97ULNyfO7KxfkxXaUVD+uWWDRwCHid+EAA6mqs80
+         RodYmRCKORkwtceQ0Kx78YzgCarMJ/QWcsHNVhD2dy+gnskgpdeaQY+oq5b69bWibzmB
+         ziJ2hJ30te8zg3xkwOnm4hx8XNdmVAj6dnCO6bu8GhZA1XkvaqXuSE+tzqABWtsHo0ql
+         DlOaxG3Uj98xdj6TMg+mIaqHIlAEZj88FVGptt3xQhsrVVa8rX3J+FHyOM+x7DjL5JiX
+         WIKyppKzGchh70uUYamHDrJ7o6ygvUww4cXLnDVz9+233rrqTQVwpD52p8LKH3lfCj6G
+         1YFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=pMaOfLt+vkRQx0RPjtfU4NwNaK63mYgla1MP1EllA8c=;
-        b=NdtBzIzUUX83YtGZjCz4AdieFEKG1OZP4DdGC+NnDzYXYmSvkQUZb6cXF+UuKljFXn
-         ARixQo5EdPgU8LID4jU4FUlNtxF5NU7sk0NcRXG46JLdl3AFwHfH9s8h1/dR9QrnWLzX
-         qYrQxISUxG9tOY5wG8Sxo3al56DYD9zbNC/lxPOj4PCPGPgo5jU820RPOfdsJPXKBDtU
-         NGy7HldMWgCYycB9aqJ2oZtQVd/iApwYNgJt4dv8A5PThDvLC+5hzOxHIaZ1QHsKExEt
-         LHTRMt9MT22c+42etuapv2WwaUuvtKUEjenXxMacvNmQ02kqsRbTxAqY/secgru5sPGw
-         mytA==
-X-Gm-Message-State: AOAM530rxiBnr0vQ8WB5dtoI7ByDlqVzuSPOn/23jAnXuM8e5RMxAf6m
-        w120TpZUX7UEu68aaZiNk2rRKTrvTnJJ
-X-Google-Smtp-Source: ABdhPJyd9YRKKWvuoZrucIGYxZbbsdVke4KsPWjnifTKDkHc2R/7QWXr8n4ET10km/exXJKF3+n3GHxZWi7r
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d3ff:e8f7:11f4:c738])
- (user=irogers job=sendgmr) by 2002:a05:6902:1504:: with SMTP id
- q4mr3970375ybu.219.1632383225560; Thu, 23 Sep 2021 00:47:05 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 00:46:16 -0700
-In-Reply-To: <20210923074616.674826-1-irogers@google.com>
-Message-Id: <20210923074616.674826-14-irogers@google.com>
-Mime-Version: 1.0
-References: <20210923074616.674826-1-irogers@google.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v9 13/13] perf metric: Avoid events for an 'if' constant result
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
-        linux-perf-users@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RlhgwksuUm7dWwJH3Rb88cQWw5W+Xn4yAyWyU7jvE54=;
+        b=rd1tABzpjprG5plYijtQqSeT+2tHoiZAip1LSRouF4vu4z3HgyG0bIJZeg+PvgBW8e
+         LP95IPiWeS34Zb9tEk1l36o3PHuxeVYk8HffKv1DLYHdF2iaLs7WETMgEUH0towMIpfQ
+         K2WSuLD26ab2cBNp8jhx+F+h3ddeJexqzUFFG9J/uGo8tN6ci0yAt6VtMTZH9hVknWpX
+         JFcDv/uZmk+Y4krCoC1/hEcyg+Jk8twY1AYaY5Y6oa8lWCUEYx0inhlysTzdk3bk919Q
+         366vVYS6kp8bvj/2xfnrjvytCd8GOZWwa52KmAHMzmaCp+7goNqfPkKk0xz2QIik9BMi
+         27pQ==
+X-Gm-Message-State: AOAM532/vU7y2PgWY/a6/SrbuN1lYeyDicrZT4EnMDsRt1DvHAafj86a
+        EDM3MvPsOcXJGGKxwvIC/JdoeI6WucW0Oazum7Y=
+X-Google-Smtp-Source: ABdhPJxUZ2jSYNqD84zt5ylPGbyACX428FxSv/I4bXsNdNQVXXiV619+aQfuFev5Cjp/yLOmFOCumQ==
+X-Received: by 2002:a17:906:4fd6:: with SMTP id i22mr3507629ejw.92.1632383396175;
+        Thu, 23 Sep 2021 00:49:56 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3870:3080:ac6c:f9d1:39b4? ([2a04:241e:501:3870:3080:ac6c:f9d1:39b4])
+        by smtp.gmail.com with ESMTPSA id jl12sm2433435ejc.120.2021.09.23.00.49.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 00:49:55 -0700 (PDT)
+Subject: Re: [PATCH 00/19] tcp: Initial support for RFC5925 auth option
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1632240523.git.cdleonard@gmail.com>
+ <20210921161327.10b29c88@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <f84a32c9-ee7e-6e72-ccb2-69ac0210dc34@gmail.com>
+Date:   Thu, 23 Sep 2021 10:49:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210921161327.10b29c88@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For a metric like:
-  CONST if expr else CONST
+On 9/22/21 2:13 AM, Jakub Kicinski wrote:
+> On Tue, 21 Sep 2021 19:14:43 +0300 Leonard Crestez wrote:
+>> This is similar to TCP MD5 in functionality but it's sufficiently
+>> different that wire formats are incompatible. Compared to TCP-MD5 more
+>> algorithms are supported and multiple keys can be used on the same
+>> connection but there is still no negotiation mechanism.
+> 
+> Hopefully there will be some feedback / discussion, but even if
+> everyone acks this you'll need to fix all the transient build
+> failures, and kdoc warnings added - and repost.
+> git rebase --exec='make' and scripts/kernel-doc are your allies.
 
-if the values of CONST are identical then expr doesn't need evaluating,
-and events, in order to compute a result.
+Hello,
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/expr.c |  7 +++++++
- tools/perf/util/expr.y  | 10 ++++++++++
- 2 files changed, 17 insertions(+)
+I already went through several round of testing with git rebase 
+--exec='$test' but it seems I introduced a few new failures after 
+several rounds of squashing fixes. I'll need to check kernel-doc 
+comments for source files not referenced in documenation.
 
-diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-index 287989321d2a..f1d8411fce12 100644
---- a/tools/perf/tests/expr.c
-+++ b/tools/perf/tests/expr.c
-@@ -143,6 +143,13 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- 						  smt_on() ? "EVENT1" : "EVENT2",
- 						  (void **)&val_ptr));
- 
-+	/* The expression is a constant 1.0 without needing to evaluate EVENT1. */
-+	expr__ctx_clear(ctx);
-+	TEST_ASSERT_VAL("find ids",
-+			expr__find_ids("1.0 if EVENT1 > 100.0 else 1.0",
-+			NULL, ctx, 0) == 0);
-+	TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 0);
-+
- 	expr__ctx_free(ctx);
- 
- 	return 0;
-diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-index 5b878f044f22..ba7d3b667fcb 100644
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -142,6 +142,16 @@ if_expr: expr IF expr ELSE expr
- 		$$.ids = $1.ids;
- 		ids__free($3.ids);
- 		ids__free($5.ids);
-+	} else if ($1.val == $5.val) {
-+		/*
-+		 * LHS == RHS, so both are an identical constant. No need to
-+		 * evaluate any events.
-+		 */
-+		$$.val = $1.val;
-+		$$.ids = NULL;
-+		ids__free($1.ids);
-+		ids__free($3.ids);
-+		ids__free($5.ids);
- 	} else {
- 		/*
- 		 * Value is either the LHS or RHS and we need the IF expression
--- 
-2.33.0.464.g1972c5931b-goog
+Many of the patch splits were artificially created in order to ease 
+review, for example "signing packets" doesn't do anything without also 
+"hooking in the tcp stack". Some static functions will trigger warnings 
+because they're unused until the next patch, not clear what the 
+preferred solution would be here. I could remove the "static" marker 
+until the next patch or reverse the order and have the initial "tcp 
+integration" patches call crypto code that just returns an error and 
+fills-in a signature of zeros.
 
+A large amount of the code is just selftests and much of it is not 
+completely specific to TCP-AO. Maybe I could try to repost the parts 
+that verify handling of timewait corners and resets in a variant that 
+only handles "md5" and "unsigned"?
+
+I already tried posting my scapy implementation of TCP-AO and MD5 to 
+scapy upstream because it is not specific to linux .
+
+--
+Regards,
+Leonard
