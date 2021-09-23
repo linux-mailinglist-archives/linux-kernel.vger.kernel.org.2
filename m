@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625A641613F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD12416139
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241799AbhIWOlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:41:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:35350 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241753AbhIWOlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:41:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3EBE11FB;
-        Thu, 23 Sep 2021 07:39:37 -0700 (PDT)
-Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A9DFC3F718;
-        Thu, 23 Sep 2021 07:39:36 -0700 (PDT)
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     mathieu.poirier@linaro.org, linux-arm-kernel@lists.infradead.org
-Cc:     anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v4 5/5] coresight: trbe: Prohibit trace before disabling TRBE
-Date:   Thu, 23 Sep 2021 15:39:19 +0100
-Message-Id: <20210923143919.2944311-6-suzuki.poulose@arm.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210923143919.2944311-1-suzuki.poulose@arm.com>
-References: <20210923143919.2944311-1-suzuki.poulose@arm.com>
+        id S241762AbhIWOlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241743AbhIWOlG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:41:06 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D34C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:39:34 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id w1so6906372ilv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:39:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ipddjsuaxiI/286Gm4qQfceIdGUHDBcUdts4yKeCSH4=;
+        b=uHYx8lMBcD3fdcBCoAhrmnl4hqnthU6myTzNsuLBS41zx+AqXblbex40h1gs0amATB
+         ytAxAfRYGJCxEEEZ8nUjC7HLIt/MSp6hWb7eL7ZvBSAsyS+8sdNsc/t/jmDtUM+vkNpF
+         a4s00ie4KO9obs+cSOMmuycxJsi5I9ukm4x0BeZ193Yj/u7k5bXAdaucOC49J6yXR9Vs
+         RV7BB+tM0IITyprJH1F0M4vIhD0CboqhgrfYGnaDMNemQ+tE30lmGrJ4LDyMUVqT69qT
+         M1fiLKBUAbt4LnV7UMFOn//p4SEft0ZcO5NINwbZfiHnCUulSxpPSZtpg/naRBkJL91T
+         kunQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ipddjsuaxiI/286Gm4qQfceIdGUHDBcUdts4yKeCSH4=;
+        b=emHTcVDjcASiQSS5DEk6kpDCxK+OuFvn413PeBKvoAQZhWAhiVE4Cpu8+KH4nZ8zsU
+         K2a8/n2XIETe36CILqE6efiKhdc5YfUexK55h44e9tiMWGrWei3nh0I+wEJ2DulnATGX
+         y2cdc2uqqjkk9KzL1SljHyIeFlVbOvGKaasvItX3t4jgxT0NozKWi60TyAN4WsAerRF7
+         GunMnCx+Ah4l11XrENAI1r6EjIn/z/v1SV0bsgr4jZcd1vmedwV8MgYtPi2pnIs6Oydm
+         IIXLKUuy+J8YLnrB4KFcwAtxhXO2TjvbUHmaG/WzntINdJLgiUibleH9Shx0C0q/+7ad
+         Y9fw==
+X-Gm-Message-State: AOAM5331Dn48vZL1hnH4b+J+PEDU4Am8xWbEYaWm33jptipnxtuNYQJA
+        I1sF0AR4JZZgOLLD5oJMM4LP1A==
+X-Google-Smtp-Source: ABdhPJzsOYhSeJ2qNXh716/hXIZ2FZll7ocgoOGbyeZS58c5agnlM8KEzaSe+yFSmFDdRInBy5omkQ==
+X-Received: by 2002:a05:6e02:20e7:: with SMTP id q7mr3930805ilv.309.1632407973711;
+        Thu, 23 Sep 2021 07:39:33 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id d12sm2297274iow.16.2021.09.23.07.39.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 07:39:32 -0700 (PDT)
+Subject: Re: [RFC PATCH 00/13] x86 User Interrupts support
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ecf3cf2e-685d-afb9-1a5d-1382714cc60c@kernel.dk>
+Date:   Thu, 23 Sep 2021 08:39:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210913200132.3396598-1-sohil.mehta@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the TRBE generates an IRQ, we stop the TRBE, collect the trace
-and then reprogram the TRBE with the updated buffer pointers, whenever
-possible. We might also leave the TRBE disabled, if there is not
-enough space left in the buffer. However, we do not touch the ETE at
-all during all of this. This means the ETE is only disabled when
-the event is disabled later (via irq_work). This is incorrect, as the
-ETE trace is still ON without actually being captured and may be routed
-to the ATB (even if it is for a short duration).
+On 9/13/21 2:01 PM, Sohil Mehta wrote:
+> - Discuss potential use cases.
+> We are starting to look at actual usages and libraries (like libevent[2] and
+> liburing[3]) that can take advantage of this technology. Unfortunately, we
+> don't have much to share on this right now. We need some help from the
+> community to identify usages that can benefit from this. We would like to make
+> sure the proposed APIs work for the eventual consumers.
 
-So, we move the CPU into trace prohibited state always before disabling
-the TRBE, upon entering the IRQ handler. The state is restored if the
-TRBE is enabled back. Otherwise the trace remains prohibited.
+One use case for liburing/io_uring would be to use it instead of eventfd
+for notifications. I know some folks do use eventfd right now, though
+it's not that common. But if we had support for something like this,
+then you could use it to know when to reap events rather than sleep in
+the kernel. Or at least to be notified when new events have been posted
+to the cq ring.
 
-Since, the ETM/ETE driver now controls the TRFCR_EL1 per session, the
-tracing can be restored/enabled back when the event is rescheduled
-in.
-
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
----
- .../hwtracing/coresight/coresight-self-hosted-trace.h    | 4 +++-
- drivers/hwtracing/coresight/coresight-trbe.c             | 9 +++++++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-index 23f05df3f173..53840a2c41f2 100644
---- a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-+++ b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-@@ -21,11 +21,13 @@ static inline void write_trfcr(u64 val)
- 	isb();
- }
- 
--static inline void cpu_prohibit_trace(void)
-+static inline u64 cpu_prohibit_trace(void)
- {
- 	u64 trfcr = read_trfcr();
- 
- 	/* Prohibit tracing at EL0 & the kernel EL */
- 	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
-+	/* Return the original value of the TRFCR */
-+	return trfcr;
- }
- #endif /*  __CORESIGHT_SELF_HOSTED_TRACE_H */
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 4174300f1344..a53ee98f312f 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -16,6 +16,7 @@
- #define pr_fmt(fmt) DRVNAME ": " fmt
- 
- #include <asm/barrier.h>
-+#include "coresight-self-hosted-trace.h"
- #include "coresight-trbe.h"
- 
- #define PERF_IDX2OFF(idx, buf) ((idx) % ((buf)->nr_pages << PAGE_SHIFT))
-@@ -775,6 +776,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
- 	enum trbe_fault_action act;
- 	u64 status;
- 	bool truncated = false;
-+	u64 trfcr;
- 
- 	/* Reads to TRBSR_EL1 is fine when TRBE is active */
- 	status = read_sysreg_s(SYS_TRBSR_EL1);
-@@ -785,6 +787,8 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
- 	if (!is_trbe_irq(status))
- 		return IRQ_NONE;
- 
-+	/* Prohibit the CPU from tracing before we disable the TRBE */
-+	trfcr = cpu_prohibit_trace();
- 	/*
- 	 * Ensure the trace is visible to the CPUs and
- 	 * any external aborts have been resolved.
-@@ -816,9 +820,14 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
- 	/*
- 	 * If the buffer was truncated, ensure perf callbacks
- 	 * have completed, which will disable the event.
-+	 *
-+	 * Otherwise, restore the trace filter controls to
-+	 * allow the tracing.
- 	 */
- 	if (truncated)
- 		irq_work_run();
-+	else
-+		write_trfcr(trfcr);
- 
- 	return IRQ_HANDLED;
- }
 -- 
-2.24.1
+Jens Axboe
 
