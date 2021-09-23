@@ -2,159 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D87416842
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2423A416837
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243524AbhIWW6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:58:55 -0400
-Received: from smtp2.de.opalstack.com ([139.162.136.213]:48228 "EHLO
-        smtp2.de.opalstack.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236363AbhIWW6y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:58:54 -0400
-X-Greylist: delayed 334 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Sep 2021 18:58:54 EDT
-Received: from jason.localnet (host-37-191-188-128.lynet.no [37.191.188.128])
-        by smtp2.de.opalstack.com (Postfix) with ESMTPSA id A004E129C6B;
-        Thu, 23 Sep 2021 22:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=boddie.org.uk;
-        s=dkim; t=1632437506;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e4PZqbATcpFKvMSWvz2SaHStw0CXunL88V36uVDDWCY=;
-        b=OFTg1Ac2UZUlbgTsGydnHAY5uSE+xsua3v4Eu4kFF4WcjRbWYKciC02F+5A+g7dE2bNapz
-        Hao6cKqlHFp5+P6PBp3gBtnU8Bsnz0r48kzs6hX4DhqnbiPATRl3LslnOK09sxVH7NM5il
-        MaJLXl9igFrtG5dr0huIBpR37G8bPC0=
-From:   Paul Boddie <paul@boddie.org.uk>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
-Date:   Fri, 24 Sep 2021 00:51:39 +0200
-Message-ID: <4366739.KZ8Jxz7LyS@jason>
-In-Reply-To: <B7B431EC-BC73-4B39-A03C-003347D8C239@goldelico.com>
-References: <20210922205555.496871-1-paul@crapouillou.net> <IXJWZQ.BZQ2M7FHYVJM@crapouillou.net> <B7B431EC-BC73-4B39-A03C-003347D8C239@goldelico.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-0.28
+        id S243514AbhIWWym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236363AbhIWWyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 18:54:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D4EA61050;
+        Thu, 23 Sep 2021 22:53:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1632437589;
+        bh=C3SYeyDKvKpb/ztYsrD8obNOu9dSdXZY8PFIa55n+74=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KZ3gMZwg4rgJ9cLecymJdeyv6i54jC7zVxLOfjkazVUlux9mYsa73ABGN59P4idUi
+         vuuJ7LslTKcm3niLg6ci5tCI5QkH6FfZMbvf+dXZp6sZAMKa4FePEb/vV/DSlnR+t8
+         rrRhkFGxbVQbFrgWJXjxie+JOSrcd/pPdSnyGya8=
+Date:   Thu, 23 Sep 2021 15:53:08 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>,
+        Jesse Barnes <jsbarnes@google.com>
+Subject: Re: [PATCH v4] zram: Introduce an aged idle interface
+Message-Id: <20210923155308.9b522a77a02ee13b76e9e613@linux-foundation.org>
+In-Reply-To: <20210923130115.1344361-1-bgeffon@google.com>
+References: <20210917210640.214211-1-bgeffon@google.com>
+        <20210923130115.1344361-1-bgeffon@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 23 September 2021 22:23:28 CEST H. Nikolaus Schaller wrote:
+On Thu, 23 Sep 2021 06:01:15 -0700 Brian Geffon <bgeffon@google.com> wrote:
+
+> This change introduces an aged idle interface to the existing
+> idle sysfs file for zram.
 > 
-> > Am 23.09.2021 um 21:39 schrieb Paul Cercueil <paul@crapouillou.net>:
-> > 
-> > Start by wiring things properly, like in my previously linked DTS, and
-> > *test*. If it fails, tell us where it fails.
->
-> Well, I tell where drm_bridge_attach fails with
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR...
-
-I tried to piece together this entire discussion from the mailing list 
-archives, but there appear to be two approaches that "work", in that they 
-activate the LCD controller with the HDMI peripheral:
-
-1. Nikolaus's approach, which involves getting the Synopsys driver to create a 
-connector and then avoiding the call to drm_bridge_connector_init in the 
-Ingenic DRM driver.
-
-2. My approach, which just involves changing the Synopsys driver to set the 
-bridge type in dw_hdmi_probe like this:
-
-  hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
-
-Otherwise, I don't see how the bridge's (struct drm_bridge) type will be set. 
-And this causes drm_bridge_connector_init to fail because it tests the bridge 
-type.
-
-Now, I just reintroduced the HDMI connector to the device tree as follows:
-
-        hdmi_connector {
-                compatible = "hdmi-connector";
-                label = "hdmi";
-
-                type = "a";
-
-                port {
-                        hdmi_connector_in: endpoint {
-                                remote-endpoint = <&dw_hdmi_out>;
-                        };
-                };
-        };
-
-And then I added a second port to the HDMI peripheral node as follows:
-
-                port@1 {
-                        reg = <1>;
-                        dw_hdmi_out: endpoint {
-                                remote-endpoint = <&hdmi_connector_in>;
-                        };
-                };
-
-And I removed any of the above hacks. What I observe, apart from an inactive 
-LCD controller (and ingenic-drm driver), is the following in /sys/devices/
-platform/10180000.hdmi/:
-
-consumer:platform:13050000.lcdc0
-consumer:platform:hdmi_connector
-
-Maybe I don't understand the significance of "consumer" here, but the LCD 
-controller and the HDMI connector obviously have rather different roles. Then 
-again, the device tree is defining bidirectional relationships, so maybe this 
-is how they manifest themselves.
-
-> > Because your "it doesn't work" arguments have zero weight otherwise.
+> When CONFIG_ZRAM_MEMORY_TRACKING is enabled the idle file
+> now also accepts an integer argument. This integer is the
+> age (in seconds) of pages to mark as idle. The idle file
+> still supports 'all' as it always has. This new approach
+> allows for much more control over which pages get marked
+> as idle.
 > 
-> I hope I still can find it. So I can't promise anything.
-> We have had it complete in DTS and added code to parse it.
-> It may have been wiped out by cleaning up patch series during rebase.
+> @@ -291,22 +291,16 @@ static ssize_t mem_used_max_store(struct device *dev,
+>  	return len;
+>  }
+>  
+> -static ssize_t idle_store(struct device *dev,
+> -		struct device_attribute *attr, const char *buf, size_t len)
+> +/*
+> + * Mark all pages which are older than or equal to cutoff as IDLE.
+> + * Callers should hold the zram init lock in read mode
+> + **/
 
-I suppose the question is whether this is actually handled already. I would 
-have thought that either the DRM framework would be able to identify such 
-relationships in a generic way or that the Synopsys driver would need to do 
-so. This might actually be happening, given that the sysfs entries are there, 
-but I might also imagine that something extra would be required to set the 
-bridge type.
+A simple "*/" is conventional.
 
-I did start writing some code to look up a remote endpoint for the second 
-port, find the connector type, and then set it, but it was probably after 
-midnight on that occasion as well. Short-circuiting this little dance and 
-setting the bridge type indicated that this might ultimately be the right 
-approach, but it would probably also mean introducing a point of 
-specialisation to the Synopsys driver so that device-specific drivers can 
-define a function to set the connector type.
+> +static void mark_idle(struct zram *zram, ktime_t cutoff)
+>  {
+> -	struct zram *zram = dev_to_zram(dev);
+> +	int is_idle = 1;
+>  	unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
+>  	int index;
+>  
+> -	if (!sysfs_streq(buf, "all"))
+> -		return -EINVAL;
+> -
+> -	down_read(&zram->init_lock);
+> -	if (!init_done(zram)) {
+> -		up_read(&zram->init_lock);
+> -		return -EINVAL;
+> -	}
+> -
+>  	for (index = 0; index < nr_pages; index++) {
+>  		/*
+>  		 * Do not mark ZRAM_UNDER_WB slot as ZRAM_IDLE to close race.
+> @@ -314,14 +308,48 @@ static ssize_t idle_store(struct device *dev,
+>  		 */
+>  		zram_slot_lock(zram, index);
+>  		if (zram_allocated(zram, index) &&
+> -				!zram_test_flag(zram, index, ZRAM_UNDER_WB))
+> -			zram_set_flag(zram, index, ZRAM_IDLE);
+> +				!zram_test_flag(zram, index, ZRAM_UNDER_WB)) {
+> +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
+> +			is_idle = (!cutoff || ktime_after(cutoff, zram->table[index].ac_time));
+> +#endif
+> +			if (is_idle)
+> +				zram_set_flag(zram, index, ZRAM_IDLE);
+> +		}
+>  		zram_slot_unlock(zram, index);
+>  	}
+> +}
+>  
+> -	up_read(&zram->init_lock);
+> +static ssize_t idle_store(struct device *dev,
+> +		struct device_attribute *attr, const char *buf, size_t len)
+> +{
+> +	struct zram *zram = dev_to_zram(dev);
+> +	ktime_t cutoff_time = 0;
+> +	ssize_t rv = -EINVAL;
+>  
+> -	return len;
+> +	if (!sysfs_streq(buf, "all")) {
+> +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
+> +		u64 age_sec;
+> +		/* If it did not parse as 'all' try to treat it as an integer */
+> +		if (!kstrtoull(buf, 0, &age_sec))
+> +			cutoff_time = ktime_sub(ktime_get_boottime(),
+> +					ns_to_ktime(age_sec * NSEC_PER_SEC));
+> +		else
+> +#endif
+> +			goto out;
+> +	}
 
-Otherwise, I can't see the Synopsys driver working for devices like the 
-JZ4780, but then again, it seems that all the other devices seem to 
-incorporate the Synopsys functionality in a different way and do not need to 
-deal with connectors at all.
-
-> > If I can find some time this weekend I will test it myself.
-> 
-> You may be faster than me.
-
-So, when I wrote about approaches that "work", I can seemingly get the LCD 
-controller and HDMI peripheral registers set up to match a non-Linux 
-environment where I can demonstrate a functioning display, and yet I don't get 
-a valid signal in the Linux environment.
-
-Nikolaus can actually get HDMI output, but there may be other factors 
-introduced by the Linux environment that frustrate success for me, whereas my 
-non-Linux environment is much simpler and can reliably reproduce a successful 
-result.
-
-For me, running modetest yields plenty of information about encoders, 
-connectors (and the supported modes via the EDID, thanks to my HDMI-A hack), 
-CRTCs, and planes. But no framebuffers are reported.
-
-Paul
+The ifdef tricks are pretty ugly.  Can things be improved with IS_ENABLED()?
 
 
