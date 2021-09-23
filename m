@@ -2,332 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CC3415C89
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833F0415C8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240534AbhIWLKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240448AbhIWLKI (ORCPT
+        id S240484AbhIWLMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:12:33 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:22356 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240536AbhIWLM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:10:08 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296A0C061574;
-        Thu, 23 Sep 2021 04:08:37 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id p9so4007530uak.4;
-        Thu, 23 Sep 2021 04:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XQqpWVviKEj4WJe+MtD7lgXtITrOhqNTLUe13rfLXOw=;
-        b=ECLPrBifw/HRgH6y4VH2qefgVYqpODtpiNTq1cp71fncpAp2wGCOS3YY5dkRjB+IZT
-         cZO/zCnNKOlu/YZ9IOpVEcbsZcsIYbrDHEfrrv1Sk4TRn4y4Q2zCoxy6j7bJ0WJxGvor
-         ohS2ClaF0xfqU0sRjMf1kjGs/H2PUrnk+9ULBwjzrLQ6Ggf7Ul6wqhXeNc3XbBL1vsKo
-         pn53L81JeoM+YPcvkTWC4R2BZTU315xEpxtfCWrtuotX2rJytd9obWg1PKLubxq+utt3
-         dhpJbZRJs1BxCr2tLZn8qiSKTDAWmPeM5uguqpe0lP90TFyyLoViP9skuGCP2GLuCip4
-         lQgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XQqpWVviKEj4WJe+MtD7lgXtITrOhqNTLUe13rfLXOw=;
-        b=LUc3RTiIuteBPCmT0576VzM5lB7xi+cbubm6aI3JPF4TmpHmSBxhIKzJ0hxWDzSbQe
-         iRtVuUizkz+O5aeljIpEYKW/Kc4v2H7lZTIXyq4Q9MvRqoaumaulTyLpcNyaZYylNHBj
-         iaDJfRTr3WGOkAy7Oh0eNbpeS0UZ1H+Y8SMYHewTbaHWNvw6RUBqL/mLtVX3A8Ji+RrQ
-         ysyHBu5L157f6W+ilhsQ5XTsUbhjfWNLDmrLy+XGnlYmr/xmKB8cG9xIWXAvh9f8Uvah
-         IgB4fiyYaH0cP2B9ZOwN3kC+UlV60QOJRnS+IaYXjwhIl3J3QfOeGIu5rRnaXU/HO6sX
-         4qdQ==
-X-Gm-Message-State: AOAM530vOXTamwEgnRog120bl3YEhRgbwXeywuwmyH5Xpln0/Zf3tAxh
-        oAPOmLzy5DcWVCx8IgSMBbwTfXytyGnoRY7czanEb/rj1Bw=
-X-Google-Smtp-Source: ABdhPJyqVapu68wlw43ccuLek0Ly2cTPU8UlCMtIDIOP/6LzbIxN1lgSmbVGeBEUKIsIGwn1PWv4D+CvIVnzS4o2YvU=
-X-Received: by 2002:ab0:72cc:: with SMTP id g12mr3401808uap.98.1632395316177;
- Thu, 23 Sep 2021 04:08:36 -0700 (PDT)
+        Thu, 23 Sep 2021 07:12:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1632395457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5n8E4qDNOXyPRZiTn4zsnzmSBAjyQQDHUXlXehU+4/E=;
+        b=I1MlNhdguwdpR7/beWYOCX/SeWd4lee3+jyskoNnNYD/7sKAh1045Zb2QkvkqqQAwEIdDU
+        XaadVzncmFU//9kGcLkAtDnp8mJocUlklFty5tWLAO7Dvk4SGM+/qgQGkEkFS0EWbAUmY3
+        GLrK1COCvEzKlTYBH3EooTYDdRnr8Nc=
+Received: from EUR03-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur03lp2054.outbound.protection.outlook.com [104.47.10.54]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-13-_6HQlhhEODys7yKR7h9Evg-2; Thu, 23 Sep 2021 13:10:56 +0200
+X-MC-Unique: _6HQlhhEODys7yKR7h9Evg-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Aj2dgfk1cZqcAYpsJ3ql+31AmQTVIY40+Kt4ht+l1WKq54rZKOu6uGXPHZgXuiQw7WG+3G9kitx6FGRoo1Th5SbdEASxOAXgi4iVykdLqPuA+IlE9GV00+P4gSbQCNjdmtcIFB3b2I1mZzUx1NroamMvLyMvMJuV3nEL8MtMhIUGM1Y3vR9NXP1ScnVmEjGwj1AeHM9CYzWUPxb1kg7M1JQ0AJNbt+L1A+0j194QfBq8KC6Y0LH3BDhsMruCLlhNJ3nuFMJo54abtHv/ZIwXqMaAcO0sEWDZ1b1DonfUmIBzIwzjGJ95XeFBIXaKJYs5g//4hbCqZHgbHewdmNoUMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=5n8E4qDNOXyPRZiTn4zsnzmSBAjyQQDHUXlXehU+4/E=;
+ b=b0ANod3y0yT1cVjQcXawCokCazyeuvRwJY69aMvkSjugSjREOlVJIgabXtWI9f9cxEn4RNlI4oP5pqQq/XG3rixqNH4YVE8zZuzISGA5KrSJcBydUiIBMuwW1PIkYZ3cUOYdmXDIWvuHA55lee1vOMdlvwedXEN7khHoZnUq24i5I2lkfNSvX5aFq1Kg6uNbxPkAblFLi1Qfj16iK/vWDYDDPcxY2kFpHhLGxhEiTBl93wk8Si6J2OjGqQURlqHquz73gdDGOb/nipucoC81G/HHuGEpMOaRU0w5sPjN4FM6nejBbF0KsKMQyUCV9f18BRfR6zkvkMAzbRn75oYpGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB4383.eurprd04.prod.outlook.com (2603:10a6:803:6b::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Thu, 23 Sep
+ 2021 11:10:52 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4544.013; Thu, 23 Sep 2021
+ 11:10:51 +0000
+Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
+To:     Oleksandr Andrushchenko <andr2000@gmail.com>
+Cc:     boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
+        sstabellini@kernel.org,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20210923095345.185489-1-andr2000@gmail.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
+Date:   Thu, 23 Sep 2021 13:10:50 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <20210923095345.185489-1-andr2000@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0008.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:15::13) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
- <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
- <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
- <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
- <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
- <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
- <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
- <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
- <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com> <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Thu, 23 Sep 2021 13:08:24 +0200
-Message-ID: <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com>
-Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [10.156.60.236] (37.24.206.209) by FR0P281CA0008.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:15::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.7 via Frontend Transport; Thu, 23 Sep 2021 11:10:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 62403514-8f2a-4f56-2a16-08d97e82cdfb
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4383:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4383C01842F656D72C8890ABB3A39@VI1PR04MB4383.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sQPeRfzDZ0+qRqLtZTLy4yuM88tx9z5WtFdeqDKk3Sf6atduPIJXavj1N4iedtd37EQKcMZ2UdWQNUYQcrHixS+ZY+0kpZQ695htoIWUdiaDelcP+atjCjEu8tdecYnq6YWQWh7K5AMvtOmMgE7jKbb7aV7Xpn1bkzM1CByMukAJjomJcDXYvnuHgabcxht0qptM7sbVThpGsAPEu/KRlkzQv+9XF7vEADtg0F6k0iX8P8G1V1KJ+D//M57oxUBAANN5zMrzwEx7qEzC4R6DgGIaAhYMzK19asoL74+uwJHsWDQqVbh/SisGbxQty/Yhrj1ywDJbWFcr4ytgwHWvowtOv4hK2ZcU8i3YmVOHmsdN41d0GdV8nBKNH9+bpQcNuPRUdQATvruRvSHu1IJEKKSScdqAkxnCigfYRbQwW8b2To0TYh0JifMjGadkYlRdCHTVmjckxC692sTWY5Ye+tLYXTAkEbeU24V2WsUvVKwr+UBTK0XHUuzjtCIWfIVjOcduL8A+ZpzXg4hTjIcqiVctNv8fgmR+Y8fWgjH2I81hP3AcsUws8cN/98cB1ju+l7e3wsaYjz/7CErMldBdXpJ2c4w6pqAs1ITkQJUY5dWMfsU0Ng384bwNtsyL/B0gLeawdK1CfDTYmLSozv0zEd2daqf86E8PVMm5QsPQBhvJ7Yar9gprvt2krqZ/+kPvr9YBB7FYGhcrAej5Lv6PHgLUlEHbLOna4679YPZNv/Y=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66946007)(26005)(66556008)(956004)(186003)(8936002)(6916009)(6486002)(4326008)(316002)(86362001)(66476007)(2906002)(31696002)(2616005)(83380400001)(8676002)(53546011)(508600001)(31686004)(5660300002)(38100700002)(16576012)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d1FpMVFzRmx1ZjZrMk5aSGFHaXE1cVI1TkFybHkybEhSQ1gvRER5TlFMeDFM?=
+ =?utf-8?B?OFNzS3V0dUpYY3A1aURrTnRCRGpCZ3RsREJCN2d4UnM1NXFqTm1Ba3htTTZF?=
+ =?utf-8?B?MWh3cThGY21WOW9FRXFtdGM5aFZOQ0V0QUNEU0NwMzVFTVNraDY5MUtpaStS?=
+ =?utf-8?B?WmtLSHJJSUUyOW1PYTE2Wm8wa3JCTFlMR3dwRDlNd0tmVWpWTEUzZHVvNHdk?=
+ =?utf-8?B?VTRYNmloNUMrMCtkeUJrOFlRYkdLN3NFZFNGMGFzSDByZXkvYmNQeHZjdTlt?=
+ =?utf-8?B?WWF6UGlPSmhqVDl0TEZydEs0LzFrMlhzK25UWTdPU1NrQ0ZFZGU2RDh0MzRE?=
+ =?utf-8?B?L0REbXNJYVpIK2Rpd2RmcUF5cFJjdXlzV3VMbmRERGswTTlpMTZmYVRlR1VG?=
+ =?utf-8?B?TlpuYlI5N3N0TnNkOHc0RXhBRHlJeHBaa1BBMnhPWkRDV3JQcDM1VjNEc0pD?=
+ =?utf-8?B?Vk9DMFFLbncwVURiSSsrY3E2NGU5OUlqVUVSdnlpcnN4UHVRb2xlL3ZTYzJF?=
+ =?utf-8?B?cmFUTHNaeWZoeUZlbUxRejNCclV5Q0xVYVl0YjVPeFlGaTIxWUpqSnM5ZHlv?=
+ =?utf-8?B?R1YvSUhnazdKRWhvL0p6MGw1YnJmWHFnOWV4Z0pSU2pWYS9BZmlTWXdxWDBG?=
+ =?utf-8?B?Zm9uSldJQnRKWUlkKzd4TnhRaDhUd3dHWURwSUhrbkFqRlZZTXExdnRtNHhK?=
+ =?utf-8?B?NS96SVkyWXQ1R0NoWEd4OTRvcHIxME15QVMrZU1pNjJGZzd6dGJQQS9NNCsv?=
+ =?utf-8?B?a0hnYjJoejlWOC9oODlUaHJsUFQwRzhYMXpDdW9FQU9Ed3htejU5bUEwWFFE?=
+ =?utf-8?B?UDVkV1RmbXc0MFB0R3NkMC9ETXUyckxuQnFLSzRCUS9vc25rQi93UGp2aWtM?=
+ =?utf-8?B?NmJTSFRIcmNEWFVNQk11MGpvZUJ3MmxTWEVkZXdjVGxFMGFHQ3BubDJLVVRp?=
+ =?utf-8?B?VFNRV3NHNkdYVEtRcFN6MHVmcm5xWUtDM2dpaEVUZkt1Y0FRQnFxZ3QrZ3gw?=
+ =?utf-8?B?T25oMEZKckVwd2thYVV4TmpGS1FVc1FocXlTZ2pKbVNTNWRHYTRPL3Z0c0JE?=
+ =?utf-8?B?OXRLZVBlenZPaXRqT1U1VVAvUXROM1FJbFlpY2w4NjJTMkZWaTJ5K0J5R1ZZ?=
+ =?utf-8?B?bnptdktESitiSFBySnRUSDIxSHZCZDNnaEJqejRTYkdLWGcvWEVkOHFYa2Vm?=
+ =?utf-8?B?bGs4d3FTcTFNYWc4SGw4N1hwM1JOcWFBTlovOGMwYVhKTjNZOUd0b2F0STBq?=
+ =?utf-8?B?ZThxTSthVCsyYm5Ic3V4a0NuLzluYzVrTU8valROdFVMNEtPQWJVbkEvc3VQ?=
+ =?utf-8?B?RGs0YkN5UHRxaTRrSGNQS1gvMDl3S0tvZXFZM1RHU2xNMlpPSkpsdE9XU3Jr?=
+ =?utf-8?B?Nk9vQ0FtbjBPN2lxRjU3cjNwM1g4R2s1UHVMSWVaUU1uWW51T3dFK21rVitV?=
+ =?utf-8?B?RWpTTXFzUjRsMys3d285ZGlKYUJPd0t6bEx3OHk0bjR1SXVQRzg1RXRsWWJM?=
+ =?utf-8?B?VnByenhPTzAvVGxya3B2KzIxdUlvTTAvV3EzZUFFakQzcHc5NjI0UHVHMWRM?=
+ =?utf-8?B?aC9BV1VDSHFLT1F2ZG9pc2VmTXdhK2Q5YUl6a3Z4ZWV3cExWSld5Y2xuZUpZ?=
+ =?utf-8?B?V0tDSCtQSzhtYTE1SkZYbysvSk1uTW5MK1cwd28zKzlLTllGeGZGQmRPTG5R?=
+ =?utf-8?B?YTVzNmVWZFExM2VOUEFqVFk5RTRQSEsvMVVMaiszcVd1c1ByK01JcDhDUFBK?=
+ =?utf-8?Q?UAEjZSWeuc0TZR4mgFM1uV2jwzNGYfUYij+L3GG?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62403514-8f2a-4f56-2a16-08d97e82cdfb
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 11:10:51.6943
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CyaRxDGeAFY5Oe4Ia2MB52FhyYLYzc1Dk+zU6JaONFxqQaAagLYxLVjkkFbw6cB+XbUPE3SNML+eJEhr63STww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4383
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On 23.09.2021 11:53, Oleksandr Andrushchenko wrote:
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -180,10 +180,34 @@ config SWIOTLB_XEN
+>  	select DMA_OPS
+>  	select SWIOTLB
+>  
+> +config XEN_PCI_STUB
+> +	bool
+> +
+> +config XEN_PCIDEV_STUB
+> +	tristate "Xen PCI-device stub driver"
+> +	depends on PCI && !X86 && XEN
+> +	depends on XEN_BACKEND
+> +	select XEN_PCI_STUB
+> +	default m
+> +	help
+> +	  The PCI device stub driver provides limited version of the PCI
+> +	  device backend driver without para-virtualized support for guests.
+> +	  If you select this to be a module, you will need to make sure no
+> +	  other driver has bound to the device(s) you want to make visible to
+> +	  other guests.
+> +
+> +	  The "hide" parameter (only applicable if backend driver is compiled
+> +	  into the kernel) allows you to bind the PCI devices to this module
+> +	  from the default device drivers. The argument is the list of PCI BDFs:
+> +	  xen-pciback.hide=(03:00.0)(04:00.0)
+> +
+> +	  If in doubt, say m.
+> +
+>  config XEN_PCIDEV_BACKEND
+>  	tristate "Xen PCI-device backend driver"
+>  	depends on PCI && X86 && XEN
+>  	depends on XEN_BACKEND
+> +	select XEN_PCI_STUB
 
-On Thu, Sep 23, 2021 at 11:07 AM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> ()On Thu, Sep 23, 2021 at 8:36 AM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> > On Thu, Sep 23, 2021 at 7:51 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > I am not really understanding this yet (I think I need a bit of sleep
-> > > > time :)), but I will test this tomorrow and come back to you again
-> > > > with results.
-> > >
-> > > Both would let devices access the registers, but they are different
-> > > regarding the bus translations you have to program into the
-> > > host bridge, and how to access the hardcoded port numbers.
-> >
-> > I have tested this and I get initial invalidid BAR value errors on pci
-> > bus I/O enumeration an also bad addresses in /proc/ioports in the same
-> > way I got defining PCI_IOBASE as _AC(0xa0000000, UL):
-> >
-> > root@gnubee:~# cat /proc/ioports
-> > 00000000-0000ffff : pcie@1e140000
-> >   00000000-00000fff : PCI Bus 0000:01
-> >     00000000-0000000f : 0000:01:00.0
-> >       00000000-0000000f : ahci
-> >     00000010-00000017 : 0000:01:00.0
-> >       00000010-00000017 : ahci
-> >     00000018-0000001f : 0000:01:00.0
-> >       00000018-0000001f : ahci
->
-> Ok, These look good to me now.
+Does kconfig not at least warn about this? The selected item has a
+"depends on !X88" conflicting with the "depends on X86" here.
 
-This is the behaviour we already had with spaces.h [0] without any
-other change. See also comments of Thomas [1] about this being wrong
-which at the end are the motivation for this patch series.
+Jan
 
-> > mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x001e160000
-> > LOGIC PIO: PIO TO CPUADDR: ADDR: 0x1e160000 -  addr HW_START:
-> > 0x1e160000 + RANGE IO: 0x00000000
-
-Why is my RANGE IO start transformed here to 0x0? Should not be the
-one defined in dts 0x001e160000?
-
-> > OF: IO START returned by pci_address_to_pio: 0x0-0xffff
-> > mt7621-pci 1e140000.pcie: PCIE0 enabled
-> > mt7621-pci 1e140000.pcie: PCIE1 enabled
-> > mt7621-pci 1e140000.pcie: PCIE2 enabled
-> > mt7621-pci 1e140000.pcie: PCI coherence region base: 0x60000000,
-> > mask/settings: 0xf0000002
-> > mt7621-pci 1e140000.pcie: PCI host bridge to bus 0000:00
-> > pci_bus 0000:00: root bus resource [bus 00-ff]
-> > pci_bus 0000:00: root bus resource [mem 0x60000000-0x6fffffff]
-> > pci_bus 0000:00: root bus resource [io  0x0000-0xffff] (bus address
-> > [0x1e160000-0x1e16ffff])
-> >
-> > This other one (correct behaviour AFAICS) is what I get with this
-> > patch series setting IO_SPACE_LIMIT and ifdef to avoid the remapping:
-> >
-> > mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x001e160000
-> > OF: IO START returned by pci_address_to_pio: 0x1e160000-0x1e16ffff
->
-> While these look wrong, the output should be in the 0-0ffff range.
-> I suppose you have set an incorrect io_offset now.
-
-Well, here I am only using IO_SPACE_LIMIT set to 0x1fffffff and no
-PCI_IOBASE defined and skipping the remap with this patch, so the
-address listed in the dts range is returned as it is. Thus the range
-'0x1e160000-0x1e16ffff'.
-
->
-> > diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
-> > index 6f48649201c5..9a8ca258c68b 100644
-> > --- a/arch/mips/include/asm/pci.h
-> > +++ b/arch/mips/include/asm/pci.h
-> > @@ -20,6 +20,12 @@
-> >  #include <linux/list.h>
-> >  #include <linux/of.h>
-> >
-> > +#define pci_remap_iospace pci_remap_iospace
-> > +static inline int pci_remap_iospace(const struct resource *res,
-> > phys_addr_t phys_addr)
-> > +{
-> > +       return 0;
-> > +}
-> >
-> > And then in the PCI core code do something like this?
->
-> This is not sufficient: pci_remap_iospace() has to tell the architecture
-> code where the start of the I/O space is, which normally means
-> ioremapping it, and in your case would mean setting the
-> mips_io_port_base variable to phys_addr.
-
-Understood.
-
->
-> > But since this 'pci_remap_iospace' is already defined in
-> > 'include/linux/pci.h' and is not static at all the compiler complains
-> > about doing such a thing. What am I missing here?
->
-> I think you have to have another #ifdef around the declaration in
-> this case, or alternatively move the mips definition back to a .c
-> file and leave only the #define
-
-Ok, so the following changes:
-
-diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
-index 95b00017886c..ee0e0951b800 100644
---- a/arch/mips/pci/pci-generic.c
-+++ b/arch/mips/pci/pci-generic.c
-@@ -46,3 +46,9 @@ void pcibios_fixup_bus(struct pci_bus *bus)
- {
-        pci_read_bridge_bases(bus);
- }
-+
-+int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
-+{
-+       mips_io_port_base = phys_addr;
-+       return 0;
-+}
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index e578d34095e9..8db76c3a4f67 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4044,6 +4044,7 @@ unsigned long __weak
-pci_address_to_pio(phys_addr_t address)
-  * architectures that have memory mapped IO functions defined (and the
-  * PCI_IOBASE value defined) should call this function.
-  */
-+#ifndef pci_remap_iospace
- int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
- {
- #if defined(PCI_IOBASE) && defined(CONFIG_MMU)
-@@ -4067,6 +4068,7 @@ int pci_remap_iospace(const struct resource
-*res, phys_addr_t phys_addr)
- #endif
- }
- EXPORT_SYMBOL(pci_remap_iospace);
-+#endif
-
-diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
-index 6f48649201c5..ac89354af651 100644
---- a/arch/mips/include/asm/pci.h
-+++ b/arch/mips/include/asm/pci.h
-@@ -20,6 +20,8 @@
- #include <linux/list.h>
- #include <linux/of.h>
-
-+#define pci_remap_iospace pci_remap_iospace
-+
- #ifdef CONFIG_PCI_DRIVERS_LEGACY
-
-These changes got me to the same behaviour that this patch pretends
-without the ifdef on this patch. But, this behaviour is wrong
-according to your explanations since I got
-
-OF: IO START returned by pci_address_to_pio: 0x1e160000-0x1e16ffff
-
-and ioports using this range address and not lower 0x0-0xffff.
-
-So all of these changes seem to be invalid: this patch and the already
-added to staging-tree two ones: [2] and [3], right?
-
->
-> > > This is particularly important since we want the host bridge driver
-> > > to be portable. If you set up the mapping differently between e.g.
-> > > mt7621 and mt7623, they are not able to use the same driver
-> > > code for setting pci_host_bridge->io_offset and for programming
-> > > the inbound translation registers.
-> >
-> > mt7621 is only mips, mt7623 is arm based SoC. They cannot use the same
-> > driver at all. mt7620 or mt7628 which have drivers which are in
-> > 'arch/mips/pci' using legacy pci code would use and would be tried to
-> > be ported to share the driver with mt7621 but those are also only mips
-> > and the I/O addresses for all of them are similar and have I/O higher
-> > than 0xffff as mt7621 has.
->
-> That was my point: the driver should never care what the I/O addresses
-> are, so as long as it gets the addresses from DT and passes them into
-> generic kernel interfaces, it must do the right thing on both MIPS and ARM.
->
-> The mt7620/28/80/88 driver is obviously not portable because it does
-> not attempt to be a generic PCI host bridge driver.
-
-Currently, no. But if they were ideally moved to work in the same way
-mt7621 would be the same case. Mt7621 is device tree based PCI host
-bridge driver that uses pci core apis but is still mips since it has
-to properly set IO coherency units which is a mips thing...
-
->
-> > > > All I/O port addresses for ralink SoCs are in higher addresses than
-> > > > default IO_SPACE_LIMIT 0xFFFF, that's why we have to also change this
-> > > > limit together with this patch changes. Nothing to do with this, is an
-> > > > architectural thing of these SoCs.
-> > >
-> > > I don't understand. What I see above is that the host bridge
-> > > has the region 1e160000-1e16ffff registered, so presumably
-> > > 1e160000 is actually the start of the window into the host bridge.
-> > > If you set PCI_IOBASE to that location, the highest port number
-> > > would become 0x2027, which is under 0xffff.
-> >
-> > But 0x1e160000 is defined in the device tree as the I/O start address
-> > of the range and should not be hardcoded anywhere else since other
-> > ralink platforms don't use this address as PCI_IOBASE. And yes, 0x2027
-> > is the highest port number I get if I initially define PCI_IOBASE also
-> > as KSEG1 since at the end is the entry point for I/O in mips (see
-> > trace above).
-> >
-> > Thanks very much for your time and feedback.
->
-> 0x1e160000 should not be listed as the I/O start address, it should
-> be listed in the 'ranges' property as the MMIO address that the I/O
-> window translates into, with the actual port numbers (on the bus)
-> being in the low range.
->
-> I realize this is very confusing, but there are indeed at least three
-> address spaces that you must not confuse here:
->
-> a) I/O port numbers as programmed into BAR registers and
->     used in PCIe transactions, normally 0 through 0xffff on each
->     bus.
-> b) Linux I/O port numbers as seen from user space, in the range
->      from 0 to IO_SPACE_LIMIT, these correspond to the
->      bus addresses from a) if io_offset is zero, but could be
->      different with a non-zero value passed into
->      pci_add_resource_offset() when the region is probed.
->      The offset may be different on each pci host bridge.
-
-This "offset" is the pci address configured in device tree range,
-right? This seems the part is not doing properly in my case since all
-of these changes are needed to at the end got BAR's as
-
-pci 0000:02:00.0: BAR 4: assigned [io  0x1e161000-0x1e16100f]
-pci 0000:02:00.0: BAR 0: assigned [io  0x1e161010-0x1e161017]
-pci 0000:02:00.0: BAR 2: assigned [io  0x1e161018-0x1e16101f]
-pci 0000:02:00.0: BAR 1: assigned [io  0x1e161020-0x1e161023]
-pci 0000:02:00.0: BAR 3: assigned [io  0x1e161024-0x1e161027]
-
-which I understand is correct.
-
-> c) MMIO address used to access ports, offset by PCI_IOBASE
->     from the Linux port numbers in b).
->     No other registers should be visible between PCI_IOBASE
->     and PCI_IOBASE+IO_SPACE_LIMIT
-
-mips_io_port_base + offset, right? KSEG1 addresses for mips by default.
-
-Thanks for your patience, BTW :)).
-
-Best regards,
-    Sergio Paracuellos
-
->
->           Arnd
-
-[0]: https://elixir.bootlin.com/linux/v5.15-rc2/source/arch/mips/include/asm/mach-ralink/spaces.h
-[1]: https://lore.kernel.org/linux-mips/20210729100146.GA8648@alpha.franken.de/
-[2]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=159697474db41732ef3b6c2e8d9395f09d1f659e
-[3]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=50fb34eca2944fd67493717c9fbda125336f1655
