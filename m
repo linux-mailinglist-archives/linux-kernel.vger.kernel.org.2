@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC4F416777
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C6841677A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243311AbhIWV27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60648 "EHLO
+        id S243321AbhIWV3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243241AbhIWV2z (ORCPT
+        with ESMTP id S243306AbhIWV3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:28:55 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB71FC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:27:23 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso2632403oon.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:27:23 -0700 (PDT)
+        Thu, 23 Sep 2021 17:29:32 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C24C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:28:00 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id u18so30501183lfd.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:27:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=EUO9/yL8lYqvnNfVuNoJkSi+TEZqLFgHFGyYVZDmMP8=;
-        b=Nos61hEkqppzT+FjmU9ibuwTce1kgFehjjl2tqTbdkumPXwyQ2nIPAhrZDmyCenqsP
-         PvkxrIGuP6oQbhr1OKY+fJDfG2vlGN4oWWwdMweMMKYh1Lnj7Cnma7UVQQrjA3JZGzVL
-         nOqyfVMHmowyaEKnT6s96EKXidbcCygAiBkiM=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MBp78sUp/qq/D779imVL/Lbu9PeK78HM+BQnZD0lhMg=;
+        b=dLMhZj2ATeDg8EvJemQy9FgJwq6XJChaKvKVxiGKZkC2ahFw9Fj48hgwfEnHh8VTef
+         TPL7I+ezTKRF/ZnHsecdGreaLOpCu8Z4Iq2flgSFnWBx39Stm3/MizG30uwnXp10JvHU
+         Cc/GeNUwVTlu8iRXXc+jwCAQNtjjys3yKN9BNkFiPzxpZcscgwBVyk+wLxbsOCYd8tfd
+         zk8EWPQq9CWphTdO0mDwAtI5Lb/Z0wTSpWf2Q+xhaDytJQ1+SYAXty63wDD4enzYh5bu
+         IOvHcfpoXXdmzKzH/EIyw6evK8wMqMqHAZoc0BnAJXBxbNiptwN0J2NMw8fwVKCaXwyl
+         S9xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=EUO9/yL8lYqvnNfVuNoJkSi+TEZqLFgHFGyYVZDmMP8=;
-        b=Kl+SDmIANM3Q0r0dvyCzKk+GFOuZqlIlakbn4rNmWMdmocHCDZaRqkh8IAinXLOaHF
-         XqrOK//7XzwnRAjj5Q/onX/6uOYIuXgOinu+m8Aek3DECDIebGkz+QRltaetgPnYrKYk
-         KQVjQi6V/NTfVOgQBfv2SBTZ0N02GaixowQnhLa/EV+6YQlEPd4OgYKVKxBW3LYjmk4f
-         0JVIGOWMnE0kAKS8jZ15KOsDw2TdsXXBZ1uJgPEaIt01ojJV7rr78fSQ+4puzbIC8nQD
-         hmLhJQjNIjwV1jgFje/R/MVdtHw921O1kci/ZdNl7LNn8ScpCHmcfrhIXa5HcMcYOMix
-         GX5w==
-X-Gm-Message-State: AOAM533RwXfZBfj7quXP6RxRhAFinJCx5qPRsGPt2JxrEUrReZCoI+qx
-        ny/ATYGoCv/8//NtoeP5jN2Jthov3cpTGPWSxNyVWw==
-X-Google-Smtp-Source: ABdhPJzLg/c4iq6I9UelgivT+3scwJlKaWKfZU82sV6BahirlwQBeXwQ/FFuN2uWjDcBSEtDrrM79CQp0kpNvY/wl0Q=
-X-Received: by 2002:a4a:e214:: with SMTP id b20mr2757000oot.1.1632432443127;
- Thu, 23 Sep 2021 14:27:23 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 23 Sep 2021 14:27:22 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MBp78sUp/qq/D779imVL/Lbu9PeK78HM+BQnZD0lhMg=;
+        b=iuudWyMbeHKalj40t8kpiV91PAW1lyRwoX16nFXVs3wQubOTcbekDtvuRTUm6I2Tvs
+         UBoRojT3YkXZAZhTxfJ820VxRF9/kayzZL/pSPXqldrbAhJ3jJCyUanPWxqyDAXl9DER
+         tg0YdANeBmtQsFWp2jdL9sirKUMw7AtTfmpMke1jwfbsc2RylSPATDxk9V/KyNbe66LO
+         /OwKYyzrLDWWUgjzMcet/LaXTijeT07NIMYzm9ys5WxZ7AFAvUvKzjqJZE7wjom5/1JU
+         d6fWQ7ytKhY1WTlOlcMpoRdIYS0QEZtgqY76i/pJHD1a4zXJCayoO+JLQzLhp2ojdCj3
+         DPrA==
+X-Gm-Message-State: AOAM530eD/ZDHhsJrnz5nRxhxFPhhxkrjbGS89x1KoE0R1rjtfWaAq5b
+        2QWImpOTh9ZFhLDFhlKfcwvPm2EMUmjidb18n8bA8A==
+X-Google-Smtp-Source: ABdhPJxk9+92vir/6aKWvwZZqvrn3BXSHMFDTsYMgToDbdsDjjA4j0yBdIAENXKur/GrAjTKej3PrD+TXbGhxxaMH2M=
+X-Received: by 2002:a2e:89c9:: with SMTP id c9mr7430895ljk.288.1632432478448;
+ Thu, 23 Sep 2021 14:27:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
-References: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 23 Sep 2021 14:27:22 -0700
-Message-ID: <CAE-0n52LRpd2R5Heyk_2KeEPN7pCyQrHk0putL=rGiWfHiP=cg@mail.gmail.com>
-Subject: Re: [PATCH V10 0/8] Add QSPI and QUPv3 DT nodes for SC7280 SoC
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajesh Patil <rajpat@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, mka@chromium.org, dianders@chromium.org
+References: <20210922025640.11600-1-zhiyong.tao@mediatek.com>
+In-Reply-To: <20210922025640.11600-1-zhiyong.tao@mediatek.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Sep 2021 23:27:47 +0200
+Message-ID: <CACRpkdYASy3KMm4VXPrMyvVpONK78gwRn6kthK534pjWb5mhvA@mail.gmail.com>
+Subject: Re: [PATCH v13 0/5] Mediatek pinctrl patch on mt8195
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajesh Patil (2021-09-23 05:16:10)
-> Changes in V10:
->  - As per Stephen's comments, Removed <&qup_spiN_cs_gpio> in all spi ports.
->  - Added "&qupv3_id_1" in sc7280-idp.dtsi file  because EC and TPM
->    are using "qupv3_id_1" node.
+On Wed, Sep 22, 2021 at 4:56 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
 
-Thanks. Looks good now. It would be great if qcom maintainers can pick
-this up soon so we can have usable i2c/spi devices on sc7280.
+> This series includes 5 patches:
+> 1.add rsel define.
+> 2.change pull up/down description
+> 3.fix coding style
+> 4.support rsel feature for common ICs
+> 5.add rsel setting on MT8195
+
+It appears we have consensus so I have applied this patch set for v5.16!
+
+I had a problem with the bindings patch because the context changed because
+of another patch but I think I managed to fix ut up, please check the result!
+
+Thanks to you and Chen-Yu for working this patch set out in close cooperation.
+
+Yours,
+Linus Walleij
