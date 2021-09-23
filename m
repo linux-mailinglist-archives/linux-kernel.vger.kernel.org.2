@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C29416743
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247BC416747
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243218AbhIWVPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:15:34 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:34727 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243216AbhIWVPd (ORCPT
+        id S243254AbhIWVPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243316AbhIWVPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:15:33 -0400
-Received: by mail-ot1-f46.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so4705427otb.1;
-        Thu, 23 Sep 2021 14:14:01 -0700 (PDT)
+        Thu, 23 Sep 2021 17:15:47 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789AAC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:14:15 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id p29so31042828lfa.11
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WxXxNcv/6eNzAAN8fhaS7vrxJGE+bzvZ/0gEIXI7wcI=;
+        b=jHIfJLb3BXmF+5JxcPHSppPnmHldOagXEqQtdmYJ6UCEWoN+L4C7en6niQqKH4LjEj
+         WRljS8nwJabdImoaxR+jNi5fF2R/yzTGr8DkzPBq0kYDag8JUYcvaIj7e6x0Kaa7jsiX
+         yguO97P3arV/8jhtRSMu56XT2EaAcPXfvQiSpNmWC33jSmLRvUpGdQ+N1QWQstbFnrsD
+         3lmcz5jSNs8ed+cuMW+rT9Tx9I0ZaE2u1BkGhiCPwBJvhEwXufYboW5LIguU81PZYM0/
+         d8AqVkgogAvO4YzJOZjYdT9OOArON3+9wzJPA60WrrybIXQ4juypeK4Kj346wzMrLpm9
+         6VIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Kbi5k+hCR33pq4czUKvnN/c+ugsujAK/U/x8PpVPl7U=;
-        b=A/5lqOxgAaD2sj7GgdqSIn2xUzSlJiNWc00hvs34w6XEKf97PXwxCfxde1AgefPDo1
-         DAe1TxvZ6kZICYO073A3d5eIO+vHPEO+rVOYoGrW8CSnw6KBlq77rrMcAuOBG19Sen0l
-         b++vKORnJ7TwvJ9wLm4hNFs2hp8d6PEpgdMJkc+rJ4yo/sZTktFCZXtOhXIwyoGyu83S
-         TlzU49N3C8r69XILhFoKl4OmOAouBJrnFloCGmmdpVTDPtxuUyOpogG6A1PXgUQzEPDS
-         tWEdOytDyIggwNVze/bLj3aoec8MCHU5XPpgOw0GDlgKY2SG6cqRo62nrvoumqZGiKGt
-         WJow==
-X-Gm-Message-State: AOAM531QxvQsMvxMfmrFQobEPGf/Wpsh1Twrk77VLoFeEO4XkOLBu9jg
-        JpdGNr7T7xo0qmMRJSHx1g==
-X-Google-Smtp-Source: ABdhPJxXb/QuUT+++jtIgY8DPfRqXYYTHoW9BZH8sYazb9NZYS+R4C1Yy6GC7ZMW6x13wlN9i3PgCg==
-X-Received: by 2002:a05:6830:25d1:: with SMTP id d17mr725034otu.253.1632431641378;
-        Thu, 23 Sep 2021 14:14:01 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z18sm1671173oib.27.2021.09.23.14.14.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 14:14:00 -0700 (PDT)
-Received: (nullmailer pid 3534757 invoked by uid 1000);
-        Thu, 23 Sep 2021 21:14:00 -0000
-Date:   Thu, 23 Sep 2021 16:14:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Jiri Kosina <trivial@kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        linux-kernel@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 3/6] dt-bindings: hwmon: dps650ab: move to trivial devices
-Message-ID: <YUzuGDUhK9VS6QaK@robh.at.kernel.org>
-References: <20210920182114.339419-1-krzysztof.kozlowski@canonical.com>
- <20210920182114.339419-3-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WxXxNcv/6eNzAAN8fhaS7vrxJGE+bzvZ/0gEIXI7wcI=;
+        b=2+lA6DU+UdnBpzzp5MvfFJapYAqWUWYEUbuJkiQBCnIjHQGfwAEtb2+bVyaa6esobH
+         R8STY4xEHIqXijjOZ+oqxenw7Z655gVn2hy7Ep/58BZG2+tEV4sjlf0jSKWCbrg6sDiT
+         9E3Mpc69rcCkKnh+cBK9hrfc4sWQ2vgdoov7o6UhAPSF9R7utNuHcLeSNpSnmT2FzQUQ
+         aAlgBg4KFIXWNwnAj3K/ATEUs2H20gJG8v3WXQAz/jRtORMxTgU5zaIy4igdPNM9O9oc
+         yxYTFU4sbsu6hGqPmC7QAaSyn6de/zCpl06tBBAy9HBZtPGuWxFmYbb1uZBUY1KCFhNB
+         Cp2A==
+X-Gm-Message-State: AOAM533WdRHdcTF0P77zub53bzr9VCIgNR6lwRahJcf22ihojbclrbC3
+        4WKA9evtBaKZcH4Qkfn+M8seqCXPuu3ILewSiJYezw==
+X-Google-Smtp-Source: ABdhPJzbKGH3XuXNt657Q/JIhfFDaP9v7epYX50bsUVwc/TDc+/11OZkYy+zqblwdRJwbdcOVrHae5NCS20RcG5oIsw=
+X-Received: by 2002:a19:f249:: with SMTP id d9mr6450803lfk.229.1632431653837;
+ Thu, 23 Sep 2021 14:14:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920182114.339419-3-krzysztof.kozlowski@canonical.com>
+References: <20210923033224.29719-1-shawn.guo@linaro.org>
+In-Reply-To: <20210923033224.29719-1-shawn.guo@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Sep 2021 23:14:03 +0200
+Message-ID: <CACRpkdZpOunX2GHSmRkWuJoakE=Rsdey2KbbK5Xy8SV61NyUpA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] Add pinctrl driver for QCM2290
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, MSM <linux-arm-msm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 20:21:11 +0200, Krzysztof Kozlowski wrote:
-> The dps650ab bindings are trivial, so it can be integrated into trivial
-> devices bindings.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  Documentation/devicetree/bindings/hwmon/dps650ab.txt  | 11 -----------
->  .../devicetree/bindings/trivial-devices.yaml          |  2 ++
->  2 files changed, 2 insertions(+), 11 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/hwmon/dps650ab.txt
-> 
+On Thu, Sep 23, 2021 at 5:32 AM Shawn Guo <shawn.guo@linaro.org> wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> The series adds QCM2290 pinctrl driver and bindings.
+>
+> Changes for v3:
+> - Update function enum table in the bindings doc.
+
+v3 applied for v5.16!
+
+Thanks Shawn, good work as always.
+
+Yours,
+Linus Walleij
