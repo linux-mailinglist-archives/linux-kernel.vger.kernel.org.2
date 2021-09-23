@@ -2,106 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6269416379
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5528741637C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhIWQm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:42:27 -0400
-Received: from mga06.intel.com ([134.134.136.31]:64344 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233964AbhIWQmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:42:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="284901791"
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="284901791"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 09:40:52 -0700
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="551214763"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 09:40:51 -0700
-Date:   Thu, 23 Sep 2021 09:40:50 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/8] x86/mmu: Add mm-based PASID refcounting
-Message-ID: <YUyuEjlrcOeCp4qQ@agluck-desk2.amr.corp.intel.com>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-6-fenghua.yu@intel.com>
- <87y27nfjel.ffs@tglx>
+        id S242077AbhIWQmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:42:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34443 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234744AbhIWQmc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 12:42:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632415260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zP+bWc/dUYs2mSzQjaFxDbmITT9MtxhTtHRPh17NjHA=;
+        b=TPKDJjfuXIVRo5xU6AW7fuIajBJFi2faCg10z2m+v60OMBptEfjaDsQR2vTtNM7lfR9E7V
+        Zs2FYzQrB68XKVWBH+qj3iDIi8MATyxYov5xO0PqQqxi15ov7+qIJX67wmJRsAG3DBSzI1
+        yev4NtZXmH0iTTVKYkryxOXav/qbobQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-fRlILZotP5C0jC17iSc15g-1; Thu, 23 Sep 2021 12:40:59 -0400
+X-MC-Unique: fRlILZotP5C0jC17iSc15g-1
+Received: by mail-ed1-f71.google.com with SMTP id d1-20020a50f681000000b003d860fcf4ffso7259546edn.22
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:40:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zP+bWc/dUYs2mSzQjaFxDbmITT9MtxhTtHRPh17NjHA=;
+        b=30gMxQMuloOtncYjzyuxpFKRvNLT20zxCEbB+xDYi6sherrPkkASQLVCQb8L2aNnIX
+         xmuruJkMDB/NvRSUgMlfIB+pmrXceBVx2P6h5elzBp6dJaiB2WX38aIONZxkS+38/IWs
+         flobnLdmmWhJ0ImRr5x/oQ6qdYExRTsdDWyNb6QdqnUAa3tSjJu3Z3/lLh2xXhFHPNHG
+         0fb+xl//AuQCy9ARNdQpCe/0oLJthRij0eYmsU3n85x/FHO3vNW36m0eD4eyCdd27eHY
+         Acg3/BrLkHJ2NL7l8JOKlrTJCWPpi/IarCeaiZLnYaVqyzTVI81bYFufBteHaRBtYOta
+         Kesg==
+X-Gm-Message-State: AOAM530eqgYbCjoE7Rn5OY6iQVo5+Z8hmNb55abhkRa8y4gSN3Ik2L3E
+        A5rrSOx2pz/NDVz7dX8lSLFqN7a3oFq7W5N6fDpxbZFCuOsdEkzq26p42F5i+7PaPFneLz13WnG
+        +C0ZcX59sprjEAto7NTYZa/sy
+X-Received: by 2002:a17:906:2ed1:: with SMTP id s17mr6246847eji.261.1632415255515;
+        Thu, 23 Sep 2021 09:40:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzA3H1NEO39c84G7G9Gxn0iDSuQcLqjCEqbpf1IdiajRyX3HzH0gKAc7QxjqWRW/ttMCGcB5A==
+X-Received: by 2002:a17:906:2ed1:: with SMTP id s17mr6246826eji.261.1632415255330;
+        Thu, 23 Sep 2021 09:40:55 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id kx17sm3255053ejc.51.2021.09.23.09.40.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 09:40:54 -0700 (PDT)
+Subject: Re: [PATCH 06/14] KVM: x86: SVM: don't set VMLOAD/VMSAVE intercepts
+ on vCPU reset
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, Bandan Das <bsd@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>
+References: <20210914154825.104886-1-mlevitsk@redhat.com>
+ <20210914154825.104886-7-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7289d070-152b-aece-1302-33e5a461657c@redhat.com>
+Date:   Thu, 23 Sep 2021 18:40:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y27nfjel.ffs@tglx>
+In-Reply-To: <20210914154825.104886-7-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 04:36:50PM +0200, Thomas Gleixner wrote:
-> On Mon, Sep 20 2021 at 19:23, Fenghua Yu wrote:
-> >  
-> > +#ifdef CONFIG_INTEL_IOMMU_SVM
-> > +void pasid_put(struct task_struct *tsk, struct mm_struct *mm);
-> > +#else
-> > +static inline void pasid_put(struct task_struct *tsk, struct mm_struct *mm) { }
-> > +#endif
+On 14/09/21 17:48, Maxim Levitsky wrote:
+> commit adc2a23734ac ("KVM: nSVM: improve SYSENTER emulation on AMD"),
+> made init_vmcb set vmload/vmsave intercepts unconditionally,
+> and relied on svm_vcpu_after_set_cpuid to clear them when possible.
 > 
-> This code is again defining that PASID is entirely restricted to
-> INTEL. It's true, that no other vendor supports this, but PASID is
-> a non-vendor specific concept.
+> However init_vmcb is also called when the vCPU is reset, and it is
+> not followed by another call to svm_vcpu_after_set_cpuid because
+> the CPUID is already set.
 > 
-> Sticking this into INTEL code means that any other PASID implementation
-> has to rip it out again from INTEL code and make it a run time property.
+> This mistake makes the VMSAVE/VMLOAD intercept to be set when
+> it is not needed, and harms performance of the nested guest.
 > 
-> The refcounting issue should be the same for all PASID mechanisms which
-> attach PASID to a mm. What's INTEL specific about that?
+> Fixes: adc2a23734ac ("KVM: nSVM: improve SYSENTER emulation on AMD")
 > 
-> So can we pretty please do that correct right away?
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>   arch/x86/kvm/svm/svm.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 6645542df9bd..861ac9f74331 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1199,8 +1199,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
+>   	svm_set_intercept(svm, INTERCEPT_SHUTDOWN);
+>   	svm_set_intercept(svm, INTERCEPT_VMRUN);
+>   	svm_set_intercept(svm, INTERCEPT_VMMCALL);
+> -	svm_set_intercept(svm, INTERCEPT_VMLOAD);
+> -	svm_set_intercept(svm, INTERCEPT_VMSAVE);
+>   	svm_set_intercept(svm, INTERCEPT_STGI);
+>   	svm_set_intercept(svm, INTERCEPT_CLGI);
+>   	svm_set_intercept(svm, INTERCEPT_SKINIT);
+> @@ -1377,6 +1375,10 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>   	svm->guest_state_loaded = false;
+>   
+>   	svm_switch_vmcb(svm, &svm->vmcb01);
+> +
+> +	svm_set_intercept(svm, INTERCEPT_VMLOAD);
+> +	svm_set_intercept(svm, INTERCEPT_VMSAVE);
+> +
+>   	init_vmcb(vcpu);
+>   
+>   	svm_vcpu_init_msrpm(vcpu, svm->msrpm);
+> 
 
-It's a bit messy (surprise).
+This needs to be redone after the latest refactoring of svm_vcpu_reset. 
+  I'll send a patch myself.
 
-There are two reasons to hold a refcount on a PASID
+Paolo
 
-1) The process has done a bind on a device that uses PASIDs
-
-	This one isn't dependent on Intel.
-
-2) A task within a process is using ENQCMD (and thus holds
-   a reference on the PASID because IA32_PASID MSR for this
-   task has the PASID value loaded with the enable bit set).
-
-	This is (currently) Intel specific (until others
-	implement an ENQCMD-like feature to allow apps to
-	access PASID enabled devices without going through
-	the OS).
-
-Perhaps some better function naming might help?  E.g. have
-a task_pasid_put() function that handles the process exit
-case separatley from the device unbind case.
-
-void task_pasid_put(void)
-{
-	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
-		return;
-
-	if (current->has_valid_pasid) {
-		mutex_lock(&pasid_mutex);
-		iommu_sva_free_pasid(mm);
-		mutex_unlock(&pasid_mutex);
-	}
-}
-
--Tony
