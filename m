@@ -2,86 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4044B4158F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C754158E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239587AbhIWHVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234343AbhIWHVn (ORCPT
+        id S239560AbhIWHPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:15:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37218 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234343AbhIWHP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:21:43 -0400
-X-Greylist: delayed 387 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Sep 2021 00:20:12 PDT
-Received: from smtp01.aussiebb.com.au (smtp01.aussiebb.com.au [IPv6:2403:5800:3:25::1001])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31156C061574;
-        Thu, 23 Sep 2021 00:20:12 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by smtp01.aussiebb.com.au (Postfix) with ESMTP id 7F7CA100266;
-        Thu, 23 Sep 2021 17:13:40 +1000 (AEST)
-X-Virus-Scanned: Debian amavisd-new at smtp01.aussiebb.com.au
-Received: from smtp01.aussiebb.com.au ([127.0.0.1])
-        by localhost (smtp01.aussiebb.com.au [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id uORAQQHh4x1W; Thu, 23 Sep 2021 17:13:40 +1000 (AEST)
-Received: by smtp01.aussiebb.com.au (Postfix, from userid 116)
-        id 6D4D9100278; Thu, 23 Sep 2021 17:13:40 +1000 (AEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        smtp01.aussiebb.com.au
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=10.0 tests=RDNS_NONE,URIBL_BLOCKED
-        autolearn=disabled version=3.4.2
-Received: from mickey.themaw.net (unknown [100.72.131.210])
-        by smtp01.aussiebb.com.au (Postfix) with ESMTP id C556C100266;
-        Thu, 23 Sep 2021 17:13:39 +1000 (AEST)
-Subject: [PATCH] autofs: fix wait name hash calculation in autofs_wait()
-From:   Ian Kent <raven@themaw.net>
-To:     Al Viro <viro@ZenIV.linux.org.uk>,
-        autofs mailing list <autofs@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Date:   Thu, 23 Sep 2021 15:13:39 +0800
-Message-ID: <163238121836.315941.18066358755443618960.stgit@mickey.themaw.net>
-User-Agent: StGit/0.23
+        Thu, 23 Sep 2021 03:15:29 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C012920278;
+        Thu, 23 Sep 2021 07:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632381236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QY7WPyKmhlWy7yhhaiksEFQ2o0DzPZj/w9H1QqhuKSk=;
+        b=TCLmHYAUJbBa25xCbUStdXDCFQLpDhOEySKAa0C/wKkmvol8THH6kNOvtm4kXMH2E3J8+j
+        9AaGqDrqopZEGzTtsTCutCElnq2ezUVRgEgXXLLoMJDit+V7v9aOmo/N9RIQPX7fC9ld6r
+        lVSSHmNLSAsoYl4PZGAWTZG1dn0FGA0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632381236;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QY7WPyKmhlWy7yhhaiksEFQ2o0DzPZj/w9H1QqhuKSk=;
+        b=dUbcrPlGddRby7zrgkcuSNqKrOPPR66Anzv6Ad3RLQpBeQLL2CDO2cwrtPkPWXYrEfiH9u
+        eg7ZCDqHtS3Vz+Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 61C5C13DC4;
+        Thu, 23 Sep 2021 07:13:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id u+DLDTIpTGHcdAAAMHmgww
+        (envelope-from <colyli@suse.de>); Thu, 23 Sep 2021 07:13:54 +0000
+Subject: Re: Too large badblocks sysfs file (was: [PATCH v3 0/7] badblocks
+ improvement for multiple bad block ranges)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-raid@vger.kernel.org, nvdimm@lists.linux.dev,
+        antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        NeilBrown <neilb@suse.de>, Richard Fan <richard.fan@suse.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>, rafael@kernel.org
+References: <20210913163643.10233-1-colyli@suse.de>
+ <a0f7b021-4816-6785-a9a4-507464b55895@suse.de> <YUwZ95Z+L5M3aZ9V@kroah.com>
+ <e227eb59-fcda-8f3e-d305-b4c21f0f2ef2@suse.de> <YUwjAJXjFR9tbJiQ@kroah.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <0a9f7fd9-a587-0152-118f-c61fe563f97f@suse.de>
+Date:   Thu, 23 Sep 2021 15:13:52 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YUwjAJXjFR9tbJiQ@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a mistake in commit 2be7828c9fefc ("get rid of autofs_getpath()")
-that affects kernels from v5.13.0, basically missed because of me not
-fully testing the change for Al.
+On 9/23/21 2:47 PM, Greg Kroah-Hartman wrote:
+> On Thu, Sep 23, 2021 at 02:14:12PM +0800, Coly Li wrote:
+>> On 9/23/21 2:08 PM, Greg Kroah-Hartman wrote:
+>>> On Thu, Sep 23, 2021 at 01:59:28PM +0800, Coly Li wrote:
+>>>> Hi all the kernel gurus, and folks in mailing lists,
+>>>>
+>>>> This is a question about exporting 4KB+ text information via sysfs
+>>>> interface. I need advice on how to handle the problem.
+>> Hi Greg,
+>>
+>> This is the code in mainline kernel for quite long time.
+> {sigh}
+>
+> What tools rely on this?  If none, just don't add new stuff to the file
+> and work to create a new api instead.
 
-The problem is that the hash calculation for the wait name qstr hasn't
-been updated to account for the change to use dentry_path_raw(). This
-prevents the correct matching an existing wait resulting in multiple
-notifications being sent to the daemon for the same mount which must
-not occur.
+At least I know mdadm uses this sysfs interface for md raid component 
+disks monitoring. It has been in mdadm for around 5 years.
 
-The problem wasn't discovered earlier because it only occurs when
-multiple processes trigger a request for the same mount concurrently
-so it only shows up in more aggressive testing.
+Yes you are right, let it be for existing sysfs interface to avoid 
+breaking things.
 
-Fixes: 2be7828c9fefc ("get rid of autofs_getpath()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ian Kent <raven@themaw.net>
----
- fs/autofs/waitq.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>> Please do not do that.  Seriously, that is not what sysfs is for, and is
+>>> an abuse of it.
+>>>
+>>> sysfs is for "one value per file" and should never even get close to a
+>>> 4kb limit.  If it does, you are doing something really really wrong and
+>>> should just remove that sysfs file from the system and redesign your
+>>> api.
+>> I understand this. And what I addressed is the problem I need to fix.
+>>
+>> The code is there for almost 10 years, I just find it during my work on bad
+>> blocks API fixing.
+>>
+>>
+>>>> Recently I work on the bad blocks API (block/badblocks.c) improvement, there
+>>>> is a sysfs file to export the bad block ranges for me raid. E.g for a md
+>>>> raid1 device, file
+>>>>       /sys/block/md0/md/rd0/bad_blocks
+>>>> may contain the following text content,
+>>>>       64 32
+>>>>      128 8
+>>> Ick, again, that's not ok at all.  sysfs files should never have to be
+>>> parsed like this.
+>> I cannot agree more with you. What I am asking for was ---- how to fix it ?
+> Best solution, come up with a new api.
+>
+> Worst solution, you are stuck with the existing file and I can show you
+> the "way out" of dealing with files larger than 4kb in sysfs that a
+> number of other apis are being forced to do as they grow over time.
 
-diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
-index 16b5fca0626e..54c1f8b8b075 100644
---- a/fs/autofs/waitq.c
-+++ b/fs/autofs/waitq.c
-@@ -358,7 +358,7 @@ int autofs_wait(struct autofs_sb_info *sbi,
- 		qstr.len = strlen(p);
- 		offset = p - name;
- 	}
--	qstr.hash = full_name_hash(dentry, name, qstr.len);
-+	qstr.hash = full_name_hash(dentry, qstr.name, qstr.len);
- 
- 	if (mutex_lock_interruptible(&sbi->wq_mutex)) {
- 		kfree(name);
+Now I am sure you are very probably not willing to accept the patches, 
+even I know how to do that :-)
 
+>
+> But ideally, just drop ths api and make a new one please.
+
+OK, then I leave the existing things as what they are, avoid to make 
+them worse.
+
+Thanks for your response.
+
+Coly Li
 
