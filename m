@@ -2,115 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4368415B1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFA0415B24
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240195AbhIWJkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238217AbhIWJkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:40:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F3B26121F;
-        Thu, 23 Sep 2021 09:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632389927;
-        bh=d58N7onB8KeEx4agVz+GvbDHkrznYzV8nRj9L2MqL0E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tiAXdAJ7enQ389Q76nQGOdetsK/JVjHd1rHVrbyLxaY19sn5zlRUaXr4BnC6+UQDu
-         xI2MSTmaqol2L1Q/UUUvs7qKj0tFE/e7XaJ8mulF8UXCZwu8k3VNSxsOmFoL9VbG04
-         JBrl+JJqJwzn3NF1GrS6NT751p52HVEvlkCcB+rdpdxHrgV1c2k6kG2Kd2Xx/UuJC9
-         /+P4wttc7fKaa4y8pwhYoMRn3qTrr3vDA6IDevJYZrhoNY/uQM/rpYd1yf0r9TR/MW
-         Nvk0oI0fla7C+tskDrYZjIHYDRtbMXyyzs4M2zGLHqbnQYAHDAgpXZm3GehBmcBk5Y
-         Kh/euxUxNm1LQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mTLBo-0000e0-KD; Thu, 23 Sep 2021 11:38:49 +0200
-Date:   Thu, 23 Sep 2021 11:38:48 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] USB:serial:option Add Foxconn T99W265
-Message-ID: <YUxLKCGd0Icl+Mbv@hovoldconsulting.com>
-References: <20210917110106.9852-1-slark_xiao@163.com>
- <YUhVKrRJ8M2hKJil@hovoldconsulting.com>
- <2992805f.bc9.17c0b33a78e.Coremail.slark_xiao@163.com>
+        id S240211AbhIWJmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:42:05 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37430 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238217AbhIWJmD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:42:03 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 262DA22350;
+        Thu, 23 Sep 2021 09:40:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632390031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tdrkbcJaQpQrn/IHpFzCloC4zCeYqpehfTVZ0y9y7nI=;
+        b=qBSKyhMIBtgtRWHLLpJDhaoNwH4u+oB2PSxzsHER0pOc4q5wZw+k6iZri+p179O5dLioqW
+        HwyQLvCbp2KGSbI1s2TMd5qWxeuOO93lRnMXr88/k45KFl1Dcu+S5BLas6IFddp7163qLk
+        9TFpVYNTdRse6meyWLSH4iT0A0hKVX0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632390031;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tdrkbcJaQpQrn/IHpFzCloC4zCeYqpehfTVZ0y9y7nI=;
+        b=aZDce/tZEfKNoJsQXI6WrZNYLS9HtSRFb2Ci9DEHRZhTbHbKGfCo9OF0L/0tvHG1/boff6
+        GViBT5kbtk34PmAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BC7A13DCE;
+        Thu, 23 Sep 2021 09:40:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qaNfAo9LTGEiRQAAMHmgww
+        (envelope-from <hare@suse.de>); Thu, 23 Sep 2021 09:40:31 +0000
+Subject: Re: Too large badblocks sysfs file (was: [PATCH v3 0/7] badblocks
+ improvement for multiple bad block ranges)
+To:     Coly Li <colyli@suse.de>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
+        nvdimm@lists.linux.dev
+Cc:     antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
+        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>,
+        Richard Fan <richard.fan@suse.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael@kernel.org
+References: <20210913163643.10233-1-colyli@suse.de>
+ <a0f7b021-4816-6785-a9a4-507464b55895@suse.de>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <6bd61a93-6fb6-2bd5-c1a6-b782e87845a4@suse.de>
+Date:   Thu, 23 Sep 2021 11:40:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2992805f.bc9.17c0b33a78e.Coremail.slark_xiao@163.com>
+In-Reply-To: <a0f7b021-4816-6785-a9a4-507464b55895@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Please configure your mail client to wrap lines at 72 columns or so. ]
-
-On Wed, Sep 22, 2021 at 09:51:47AM +0800, Slark Xiao wrote:
-> At 2021-09-20 17:32:26, "Johan Hovold" <johan@kernel.org> wrote:
-> >On Fri, Sep 17, 2021 at 07:01:06PM +0800, Slark Xiao wrote:
-> >> Adding support for Foxconn device T99W265 for enumeration with
-> >> PID 0xe0db.
-> >> 
-> >> usb-devices output for 0xe0db
-> >> T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 19 Spd=5000 MxCh= 0
-> >> D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
-> >> P:  Vendor=0489 ProdID=e0db Rev=05.04
-> >> S:  Manufacturer=Microsoft
-> >> S:  Product=Generic Mobile Broadband Adapter
-> >> S:  SerialNumber=6c50f452
-> >> C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
-> >> I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-> >> I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-> >> I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-> >> I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-> >> I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-> >> 
-> >> if0/1: MBIM, if2:Diag, if3:GNSS, if4: Modem
-> >> 
-> >> Signed-off-by: Slark Xiao <slark_xiao@163.com>
-
-> >> ---
-> >>  drivers/usb/serial/option.c | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >> 
-> >> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-> >> index 29c765cc8495..fde599fa2d73 100644
-> >> --- a/drivers/usb/serial/option.c
-> >> +++ b/drivers/usb/serial/option.c
-> >> @@ -2068,6 +2068,8 @@ static const struct usb_device_id option_ids[] = {
-> >>  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
-> >>  	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
-> >>  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
-> >> +	{ USB_DEVICE(0x0489, 0xe0db),						/* Foxconn T99W265 MBIM extension*/
-> >> +	  .driver_info = RSVD(0) | RSVD(1) | RSVD(3) },
-> >
-> >If you use USB_DEVICE_INTERFACE_CLASS() instead you don't need to
-> >explicitly reserve the MBIM interfaces. 
-> >
-> >Also, why are you reserving the GNSS interface (e.g. unlike T77W968)?
+On 9/23/21 7:59 AM, Coly Li wrote:
+> Hi all the kernel gurus, and folks in mailing lists,
 > 
-> I just want to keep same style as previous products. That would be
-> more coordinated, I think.
+> This is a question about exporting 4KB+ text information via sysfs
+> interface. I need advice on how to handle the problem.
+> 
+> Recently I work on the bad blocks API (block/badblocks.c) improvement,
+> there is a sysfs file to export the bad block ranges for me raid. E.g
+> for a md raid1 device, file
+>     /sys/block/md0/md/rd0/bad_blocks
+> may contain the following text content,
+>     64 32
+>    128 8
+> The above lines mean there are two bad block ranges, one starts at LBA
+> 64, length 32 sectors, another one starts at LBA 128 and length 8
+> sectors. All the content is generated from the internal bad block
+> records with 512 elements. In my testing the worst case only 185 from
+> 512 records can be displayed via the sysfs file if the LBA string is
+> very long, e.g.the following content,
+>   17668164135030776 512
+>   17668164135029776 512
+>   17668164135028776 512
+>   17668164135027776 512
+>   ... ...
+> The bad block ranges stored in internal bad blocks array are correct,
+> but the output message is truncated. This is the problem I encountered.
+> 
+> I don't see sysfs has seq_file support (correct me if I am wrong), and I
+> know it is improper to transfer 4KB+ text via sysfs interface, but the
+> code is here already for long time.
+> 
+> There are 2 ideas to fix showing up in my brain,
+> 1) Do not fix the problem
+>     Normally it is rare that a storage media has 100+ bad block ranges,
+> maybe in real world all the existing bad blocks information won't exceed
+> the page size limitation of sysfs file.
+> 2) Add seq_file support to sysfs interface if there is no
+> 
+> It is probably there is other better solution to fix. So I do want to
+> get hint/advice from you.
+> 
+> Thanks in advance for any comment :-)
+> 
+> Coly Li
+> 
+> On 9/14/21 12:36 AM, Coly Li wrote:
+>> This is the second effort to improve badblocks code APIs to handle
+>> multiple ranges in bad block table.
+>>
+>> There are 2 changes from previous version,
+>> - Fixes 2 bugs in front_overwrite() which are detected by the user
+>>    space testing code.
+>> - Provide the user space testing code in last patch.
+>>
+>> There is NO in-memory or on-disk format change in the whole series, all
+>> existing API and data structures are consistent. This series just only
+>> improve the code algorithm to handle more corner cases, the interfaces
+>> are same and consistency to all existing callers (md raid and nvdimm
+>> drivers).
+>>
+>> The original motivation of the change is from the requirement from our
+>> customer, that current badblocks routines don't handle multiple ranges.
+>> For example if the bad block setting range covers multiple ranges from
+>> bad block table, only the first two bad block ranges merged and rested
+>> ranges are intact. The expected behavior should be all the covered
+>> ranges to be handled.
+>>
+>> All the patches are tested by modified user space code and the code
+>> logic works as expected. The modified user space testing code is
+>> provided in last patch. The testing code detects 2 defects in helper
+>> front_overwrite() and fixed in this version.
+>>
+>> The whole change is divided into 6 patches to make the code review more
+>> clear and easier. If people prefer, I'd like to post a single large
+>> patch finally after the code review accomplished.
+>>
+>> This version is seriously tested, and so far no more defect observed.
+>>
+>>
+>> Coly Li
+>>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Hannes Reinecke <hare@suse.de>
+>> Cc: Jens Axboe <axboe@kernel.dk>
+>> Cc: NeilBrown <neilb@suse.de>
+>> Cc: Richard Fan <richard.fan@suse.com>
+>> Cc: Vishal L Verma <vishal.l.verma@intel.com>
+>> ---
+>> Changelog:
+>> v3: add tester Richard Fan <richard.fan@suse.com>
+>> v2: the improved version, and with testing code.
+>> v1: the first completed version.
+>>
+>>
+>> Coly Li (6):
+>>    badblocks: add more helper structure and routines in badblocks.h
+>>    badblocks: add helper routines for badblock ranges handling
+>>    badblocks: improvement badblocks_set() for multiple ranges handling
+>>    badblocks: improve badblocks_clear() for multiple ranges handling
+>>    badblocks: improve badblocks_check() for multiple ranges handling
+>>    badblocks: switch to the improved badblock handling code
+>> Coly Li (1):
+>>    test: user space code to test badblocks APIs
+>>
+>>   block/badblocks.c         | 1599 ++++++++++++++++++++++++++++++-------
+>>   include/linux/badblocks.h |   32 +
+>>   2 files changed, 1340 insertions(+), 291 deletions(-)
+>>
+> 
 
-I understand your point, but it's better to use a more specific matching
-rule were possible since it prevents driver core from even trying to
-bind the driver.
+Please have a look at the patchset 'start switching sysfs attributes to
+expose the seq_file' from Christoph Hellwig on linux-block; that seems
+to be the approach you are looking for.
 
-Note that for T77W968 we couldn't do so since we needed to bind also to
-non-vendor-class interfaces.
 
-I'll just change this to USB_DEVICE_INTERFACE_CLASS() when applying.
+Cheers,
 
-> And for GNSS port, it can't be supported with serial driver. It
-> doesn't like a  NMEA port which is using serial driver.
-> I checked it for T77W968(MBIM mode) and found settings as below:
-> if0/if1: MBIM, if2: Modem, if3:AT,  if4: NMEA, if5: Diag, if6: GNSS
-> GNSS is also reserved.
-
-Ah, thanks for explaining. I only saw that T77W968 had an NMEA port and
-thought it was the same one.
-
-Now applied with the change mentioned above.
-
-Johan
+Hannes
+-- 
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
