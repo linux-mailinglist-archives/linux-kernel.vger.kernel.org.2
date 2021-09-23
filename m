@@ -2,138 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A3B4161A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63EE4161A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241877AbhIWPE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:04:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:36074 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241734AbhIWPEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:04:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46062D6E;
-        Thu, 23 Sep 2021 08:03:23 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA48B3F718;
-        Thu, 23 Sep 2021 08:03:21 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 16:03:19 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        etienne.carriere@linaro.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Souvik Chakravarty <souvik.chakravarty@arm.com>
-Subject: Re: [PATCH v4 11/12] [RFC] firmware: arm_scmi: Add
- sync_cmds_atomic_replies transport flag
-Message-ID: <20210923150319.GC6510@e120937-lin>
-References: <20210824135941.38656-1-cristian.marussi@arm.com>
- <20210824135941.38656-12-cristian.marussi@arm.com>
- <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
- <CA+-6iNw-_VXcntU_UE8kTiPb8Sq28KkZG1__N7rE4ezo=VqQVQ@mail.gmail.com>
- <20210825184915.GI13160@e120937-lin>
- <CA+-6iNwjQ1SogxdyrjwqEwLosscUyvrioqFKmesifM_nmCpJAw@mail.gmail.com>
+        id S241893AbhIWPFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:05:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35056 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241892AbhIWPFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:05:00 -0400
+Date:   Thu, 23 Sep 2021 15:03:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632409407;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9a3HKppqTFE1kQSQshaEGhBBvbgpNg6MnwDGLPFNqy4=;
+        b=khxc163DWoMdQll/4D6dQG7LFhXfjY7+szyrqzYtKsld49AYCVoUhFb8aR/bM4Ku10lHlm
+        tvvtQiFzXUoRMLulmoqUGv2kArZ8ASa+DBGhePVG55qSSSwepByAl9CnyeOy2hsLBKkE64
+        nbzxDeWlkVnz+Ad68J2myteUDnNmvMaYLt+Q+mjEwBKUueKIOUPlWNXsDWS/5zWHB4VUot
+        PXCighvSNDceP7VtFmF4GiPh6VZ9/ZadkHL/lBDjaCN9schsxeC4Kuv0TWqDkCCPryiyHW
+        qJtzYzBK8i481/E3GEjW2XmXIHCxV3G7wWFfb24pBZtEO5hoYKZtJKMK7MTJEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632409407;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9a3HKppqTFE1kQSQshaEGhBBvbgpNg6MnwDGLPFNqy4=;
+        b=sP7tt7P6rvVfN9WsE+i+6QniBzWgk+gV8BY2/l69bKUaeUXX5XfWEwJF/SM0xKaumZpcnA
+        o1/fom81okzHFtDQ==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/umip: Downgrade warning messages to debug loglevel
+Cc:     mrueckert@suse.com, Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210907200454.30458-1-bp@alien8.de>
+References: <20210907200454.30458-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+-6iNwjQ1SogxdyrjwqEwLosscUyvrioqFKmesifM_nmCpJAw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <163240940683.25758.12927273059878995672.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 02:29:21PM -0400, Jim Quinlan wrote:
-> On Wed, Aug 25, 2021 at 2:49 PM Cristian Marussi
-> <cristian.marussi@arm.com> wrote:
-> >
-> > On Wed, Aug 25, 2021 at 01:17:47PM -0400, Jim Quinlan wrote:
-> > > On Wed, Aug 25, 2021 at 12:38 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> > > >
-> > > >
-> > > >
-> >
-> > Hi Florian and Jim,
-> >
-> > > > On 8/24/2021 3:59 PM, Cristian Marussi wrote:
-> > > > > A flag is added to let the transport signal the core that its handling of
-> > > > > synchronous command messages implies that, after .send_message has returned
-> > > > > successfully, the requested command can be assumed to be fully and
-> > > > > completely executed on SCMI platform side so that any possible response
-> > > > > value is already immediately available to be retrieved by a .fetch_reponse:
-> > > > > in other words the polling phase can be skipped in such a case and the
-> > > > > response values accessed straight away.
-> > > > >
-> > > > > Note that all of the above applies only when polling mode of operation was
-> > > > > selected by the core: if instead a completion IRQ was found to be available
-> > > > > the normal response processing path based on completions will still be
-> > > > > followed.
-> > > >
-> > > > This might actually have to be settable on a per-message basis ideally
-> > > > since we may be transporting short lived SCMI messages for which the
-> > > > completion can be done at SMC time, and long lived SCMI messages (e.g.:
-> > > > involving a voltage change) for which we would prefer a completion
-> > > > interrupt. Jim, what do you think?
-> > > Even if the SCMI main driver could be configured this way in an
-> > > elegant manner, I'm not sure that there is a clean way of specifying
-> > > this  attribute on a per-message basis.  Certainly we could do this
-> > > with our own protocols, but  many of our "long lived" messages are the
-> > > Perf protocol's set_level command.  At any rate, let me give it some
-> > > thought.
-> > >
-> >
-> > The new flag .sync_cmds_atomic_replies applies only when polling mode
-> > has been selected for a specific cmd transaction, which means when no
-> > completion IRQ was found available OR if xfer.poll_completion was
-> > excplicitly set for a specific command.
-> >
-> > At the moment in this series (unknown bugs apart :D), if you have a
-> > channel configured with a completion IRQ and the .sync_cmds_atomic_replies
-> > set for the transport, this latter flag would be generally ignored and a
-> > wait_for_completion() will be normally used upon reception of the
-> > completionIRQ, UNLESS you specify that one specific command has to be
-> > polled using the per message xfer.poll_completion flag: so you should be
-> > already able to selectively use a polling which immediately returns after
-> > the smc by setting xfer.poll_completion for that specific short lived
-> > message (since sync_cmds_atomic_replies is set and applies to pollmode).
-> > On the other side any other LONG lived message will be naturally handled
-> > via completionIRQ + wait_for_completion. (at least that was the aim..)
-> >
-> > !!! NOTE that you'll have also to drop
-> >
-> >  [PATCH v4 10/12] [RFC] firmware: arm_scmi: Make smc transport atomic
-> >
-> > from this series for the wait_completion to happen as you wish.
-> 
-> Hi Cristian,
-> 
+The following commit has been merged into the x86/cpu branch of tip:
 
-Hi Jim,
+Commit-ID:     1eefe7a85678a056951cd9efb09820c1b0a1b4da
+Gitweb:        https://git.kernel.org/tip/1eefe7a85678a056951cd9efb09820c1b0a=
+1b4da
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Wed, 15 Sep 2021 16:39:18 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 23 Sep 2021 16:30:11 +02:00
 
-> I've tested all commits on our SMC-based system.  I also tested all commits
-> minus  "10/12 [RFC] firmware: arm_scmi: Make smc transport atomic".
-> This was a basic stress test, not a comprehensive one.  So
-> 
-> Tested-by: Jim Quinlan <james.quinlan@broadcom.com>
-> 
-> Of course I have a strong preference for omitting  "10/12 [RFC]" :-).
-> FWIW, if you are not planning on dropping this commit, perhaps there
-> could be a transport
-> node in the DT, and that could contain the  a bool  property
-> "smc-atomic-capable"?
-> 
+x86/umip: Downgrade warning messages to debug loglevel
 
-I just posted V5 on this SCMI atomic transport series, where the atomic
-mode behaviour of a transport can be selected by a Kconfig which is defined
-as default N: so this new series should behave out-of-the-box like with the
-previous one when you had dropped as a whole the SMC atomic patch.
+After four years in the wild, those have not fullfilled their
+initial purpose of pushing people to fix their software to not use
+UMIP-emulated instructions, and to warn users about the degraded
+emulation performance.
 
-Any feedback welcome.
+Yet, the only thing that "degrades" performance is overflowing dmesg
+with those:
 
-Thanks,
-Cristian
+  [Di Sep  7 00:24:05 2021] umip_printk: 1345 callbacks suppressed
+  [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: =
+SIDT instruction cannot be used by applications.
+  [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: =
+For now, expensive software emulation returns the result.
+  ...
+  [Di Sep  7 00:26:06 2021] umip_printk: 2227 callbacks suppressed
+  [Di Sep  7 00:26:06 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b940: =
+SIDT instruction cannot be used by applications.
 
+and users don't really care about that - they just want to play their
+games in wine.
+
+So convert those to debug loglevel - in case someone is still interested
+in them, someone can boot with "debug" on the kernel cmdline.
+
+Reported-by: Marcus R=C3=BCckert <mrueckert@suse.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210907200454.30458-1-bp@alien8.de
+---
+ arch/x86/kernel/umip.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+index 576b47e..5a4b213 100644
+--- a/arch/x86/kernel/umip.c
++++ b/arch/x86/kernel/umip.c
+@@ -92,8 +92,8 @@ static const char * const umip_insns[5] =3D {
+=20
+ #define umip_pr_err(regs, fmt, ...) \
+ 	umip_printk(regs, KERN_ERR, fmt, ##__VA_ARGS__)
+-#define umip_pr_warn(regs, fmt, ...) \
+-	umip_printk(regs, KERN_WARNING, fmt,  ##__VA_ARGS__)
++#define umip_pr_debug(regs, fmt, ...) \
++	umip_printk(regs, KERN_DEBUG, fmt,  ##__VA_ARGS__)
+=20
+ /**
+  * umip_printk() - Print a rate-limited message
+@@ -361,10 +361,10 @@ bool fixup_umip_exception(struct pt_regs *regs)
+ 	if (umip_inst < 0)
+ 		return false;
+=20
+-	umip_pr_warn(regs, "%s instruction cannot be used by applications.\n",
++	umip_pr_debug(regs, "%s instruction cannot be used by applications.\n",
+ 			umip_insns[umip_inst]);
+=20
+-	umip_pr_warn(regs, "For now, expensive software emulation returns the resul=
+t.\n");
++	umip_pr_debug(regs, "For now, expensive software emulation returns the resu=
+lt.\n");
+=20
+ 	if (emulate_umip_insn(&insn, umip_inst, dummy_data, &dummy_data_size,
+ 			      user_64bit_mode(regs)))
