@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F665416813
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D442416818
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243460AbhIWWfO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Sep 2021 18:35:14 -0400
-Received: from aposti.net ([89.234.176.197]:50048 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243431AbhIWWfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:35:13 -0400
-Date:   Thu, 23 Sep 2021 23:33:31 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] DRM/Panel : abt-y030xx067a yellow tint fix
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Christophe Branchereau <cbranchereau@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-Id: <VZRWZQ.AN75Q6XHYN1C1@crapouillou.net>
-In-Reply-To: <YUzg7wv8NQGf3Qq0@ravnborg.org>
-References: <20210914092716.2370039-1-cbranchereau@gmail.com>
-        <YUzg7wv8NQGf3Qq0@ravnborg.org>
+        id S243480AbhIWWfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:35:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37652 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243431AbhIWWfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 18:35:40 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632436445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L2ZhBYtJSvsZ3l7DnjO1RVJlU7qQTq328JBw+26BNO0=;
+        b=AP2AqeL2It81p8EYgU0ybGho7LB+fApxbTmly/ggs1shuqHQQHYakj1Y1V64qry/bSY5fB
+        2kDyrurJ4kW1q6toAyoMrundluRj28RNSBBxzhUcUaD7xwLJN+kCJVvUlomT3h97kSHj8o
+        PugfBxdna1AC/63Xf/5FiWrNiEZrkG8ciEUvptOAVbWcGsxPkpbnspRAqsDLGLWpPslChE
+        CNUyzYQkYKv15igtp86SI/tiEIzIbea5VlmKkc+miIXpNcUdQinOMyYf8+FkJMjO1bdr6F
+        IIi8xhJK7pywp4oE/tW+BwPA9Nrm/Vjhr+/Xun85rlj8oeopPa6/wC5J4tB3SQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632436445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L2ZhBYtJSvsZ3l7DnjO1RVJlU7qQTq328JBw+26BNO0=;
+        b=C0Pn5U/YXm47mFk3fbXZQ1wtQFg7AG5C8SWwYN78P+hG8M5mLENfAsMrk+hXP+9nAoB1Lm
+        aKpHY+vQmzE6zOAw==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 04/13] x86/fpu/xstate: Enumerate User Interrupts
+ supervisor state
+In-Reply-To: <20210913200132.3396598-5-sohil.mehta@intel.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-5-sohil.mehta@intel.com>
+Date:   Fri, 24 Sep 2021 00:34:04 +0200
+Message-ID: <87ilyqgbvn.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+> Enable xstate supervisor support for User Interrupts by default.
 
-Le jeu., sept. 23 2021 at 22:17:51 +0200, Sam Ravnborg 
-<sam@ravnborg.org> a écrit :
-> Hi Christophe, Paul,
-> On Tue, Sep 14, 2021 at 11:27:16AM +0200, Christophe Branchereau 
-> wrote:
->>  The previous parameters caused an unbalanced yellow tint.
->> 
->>  Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
-> 
-> with the subject fixed the patch is:
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> 
-> Paul - I assume you will apply this as you wrote on irc.
+What means enabled by default? It's enabled when available and not
+disabled on the command line.
 
-I added:
-Fixes: 7467389bdafb ("drm/panel: Add ABT Y030XX067A 3.0" 320x480 panel")
+> The user interrupt state for a task consists of the MSR state and the
+> User Interrupt Flag (UIF) value. XSAVES and XRSTORS handle saving and
+> restoring both of these states.
+>
+> <The supervisor XSTATE code might be reworked based on issues reported
+> in the past. The Uintr context switching code would also need rework and
+> additional testing in that regard.>
 
-I also fixed the subject (case and punctuation), and pushed to 
-drm-misc-fixes.
+What? Which issues were reported and if they have been reported then how
+is the provided code correct?
 
-Thanks!
+> +/*
+> + * State component 14 is supervisor state used for User Interrupts state.
+> + * The size of this state is 48 bytes
+> + */
+> +struct uintr_state {
+> +	u64 handler;
+> +	u64 stack_adjust;
+> +	u32 uitt_size;
+> +	u8  uinv;
+> +	u8  pad1;
+> +	u8  pad2;
+> +	u8  uif_pad3;		/* bit 7 - UIF, bits 6:0 - reserved */
 
-Cheers,
--Paul
+Please do not use tail comments. Also what kind of name is uif_pad3?
+Bitfields exist for a reason.
 
-> 
-> 	Sam
-> 
->>  ---
->>   drivers/gpu/drm/panel/panel-abt-y030xx067a.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->> 
->>  diff --git a/drivers/gpu/drm/panel/panel-abt-y030xx067a.c 
->> b/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
->>  index 2d8794d495d0..3d8a9ab47cae 100644
->>  --- a/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
->>  +++ b/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
->>  @@ -146,8 +146,8 @@ static const struct reg_sequence 
->> y030xx067a_init_sequence[] = {
->>   	{ 0x09, REG09_SUB_BRIGHT_R(0x20) },
->>   	{ 0x0a, REG0A_SUB_BRIGHT_B(0x20) },
->>   	{ 0x0b, REG0B_HD_FREERUN | REG0B_VD_FREERUN },
->>  -	{ 0x0c, REG0C_CONTRAST_R(0x10) },
->>  -	{ 0x0d, REG0D_CONTRAST_G(0x10) },
->>  +	{ 0x0c, REG0C_CONTRAST_R(0x00) },
->>  +	{ 0x0d, REG0D_CONTRAST_G(0x00) },
->>   	{ 0x0e, REG0E_CONTRAST_B(0x10) },
->>   	{ 0x0f, 0 },
->>   	{ 0x10, REG10_BRIGHT(0x7f) },
->>  --
->>  2.33.0
+Aside of that please use tabs to seperate type and name.
 
+> +	u64 upid_addr;
+> +	u64 uirr;
+> +	u64 uitt_addr;
+> +} __packed;
+> +
 
+Thanks,
+
+        tglx
