@@ -2,139 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEDF416455
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B9741645A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242561AbhIWR0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 13:26:00 -0400
-Received: from mga09.intel.com ([134.134.136.24]:14424 "EHLO mga09.intel.com"
+        id S242477AbhIWR1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:27:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242288AbhIWRZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:25:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="223933241"
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="223933241"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 10:24:26 -0700
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="551231224"
-Received: from tbirrer-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.101.82])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 10:24:25 -0700
-Subject: Re: [PATCH v6 05/10] x86/tdx: Handle port I/O
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210922225239.3501262-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210922225239.3501262-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <c2fa7839-49d5-3e1c-97c4-c1b77e11ef93@amd.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <6cb4efa4-6f40-37f4-8807-e44b2c069021@linux.intel.com>
-Date:   Thu, 23 Sep 2021 10:24:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S233669AbhIWR1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 13:27:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8208161090;
+        Thu, 23 Sep 2021 17:25:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632417940;
+        bh=iH1WZKYB5nl+u17U5tboZL+YnRdFI42sn/d58orX49Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rv3o9dTbbAywi+gKF2YHgsIdGF1rIWVf2C1aGfzWyMVV7IP/WsjjPzXtxe+uB6ZdK
+         yv//fquK4+NBSk+05Sn4UhRcjLCE849IeV23b98M5+ybcGl91iA86OcnJL/afs4K+t
+         CbVWUOI2XWOhMailnobfV8wYJbcF0C7nfoGW+p1f+LowkLClzdYdrrEr9wUDsCmsdB
+         LOGAIxcLLZm038lMVuOqLWRkBbol3KViFcEUpkIJYYkDgObwpTXq39QAvX4WwUKx0u
+         f6YJEblPnq5Ura8usfBcCwssHQHCsb0YFaeLSKUpfGASAsfWxOXxmv7FraBvmlR1iA
+         7yF5w0MVjiXMg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [PATCH] eeprom: at25: Add SPI ID table
+Date:   Thu, 23 Sep 2021 18:24:53 +0100
+Message-Id: <20210923172453.4921-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <c2fa7839-49d5-3e1c-97c4-c1b77e11ef93@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1267; h=from:subject; bh=iH1WZKYB5nl+u17U5tboZL+YnRdFI42sn/d58orX49Y=; b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhTLgHd5nxoCbeSDnMsFrhgklWsfg0BMoOaKtl/Y2L 4ONJU5SJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUy4BwAKCRAk1otyXVSH0CVfB/ 4tiNcxJAXy6hvu0gEaH5xYOy5MJUm3e5qYZIJ/CNZ8DBD03pWMnMEEScQ2X7d3vJMYdGOpYdVtaI5k oSndIzradWJJWQrohQXUF13LzpOD/N3tpGLpM0CS7tbdL7Q8SPKy1rwYTeg6lMS3JnF3DYo2+MzaeK qR45XpzBJjzVv0c+ay+8TBqMYGL3fgWi3GZrfz5G9vWXUlcOO67RtD1kAcdQLzPk2vcDRNFTfAARQt 7GmvqWqJe8WpbK5SeLmcGApyEEYIdHeqJxAl3cbPnHlJYS21mDVyipBHb/RU882nVDq2/5+DpOZNb/ 5/eQI+0Js6TPn3hoFFMcT8lw0q8WiX
+X-Developer-Key: i=broonie@kernel.org; a=openpgp; fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding an id_table listing the
+SPI IDs for everything.
 
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/misc/eeprom/at25.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-On 9/23/21 9:32 AM, Tom Lendacky wrote:
-> On 9/22/21 5:52 PM, Kuppuswamy Sathyanarayanan wrote:
->> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
->>
->> TDX hypervisors cannot emulate instructions directly. This includes
->> port IO which is normally emulated in the hypervisor. All port IO
->> instructions inside TDX trigger the #VE exception in the guest and
->> would be normally emulated there.
->>
->> Also string I/O is not supported in TDX guest. So, unroll the string
->> I/O operation into a loop operating on one element at a time. This
->> method is similar to AMD SEV, so just extend the support for TDX guest
->> platform.
->>
->> Add a new confidential guest flag CC_ATTR_GUEST_UNROLL_STRING_IO to
->> add string unroll support in asm/io.h
->>
->> Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->> Reviewed-by: Andi Kleen <ak@linux.intel.com>
->> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
->> ---
->>
->> Changes since v5:
->>   * Changed prot_guest_has() to cc_platform_has().
->>
->> Changes since v4:
->>   * Changed order of variable declaration in tdx_handle_io().
->>   * Changed tdg_* prefix with tdx_*.
->>
->> Changes since v3:
->>   * Included PATTR_GUEST_UNROLL_STRING_IO protected guest flag
->>     addition change in this patch.
->>   * Rebased on top of Tom Lendacks protected guest change.
->>
->> Changes since v2:
->>   * None
->>
->> Changes since v1:
->>   * Fixed comments for tdg_handle_io().
->>   * Used _tdx_hypercall() instead of __tdx_hypercall() in tdg_handle_io().
->>
->>   arch/x86/include/asm/io.h   |  7 +++++--
->>   arch/x86/kernel/cpu/intel.c |  1 +
->>   arch/x86/kernel/tdx.c       | 35 +++++++++++++++++++++++++++++++++++
->>   include/linux/cc_platform.h | 11 +++++++++++
->>   4 files changed, 52 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
->> index fa6aa43e5dc3..67e0c4a0a0f4 100644
->> --- a/arch/x86/include/asm/io.h
->> +++ b/arch/x86/include/asm/io.h
->> @@ -40,6 +40,7 @@
->>   #include <linux/string.h>
->>   #include <linux/compiler.h>
->> +#include <linux/cc_platform.h>
->>   #include <asm/page.h>
->>   #include <asm/tdx.h>
->>   #include <asm/early_ioremap.h>
->> @@ -310,7 +311,8 @@ static inline unsigned type in##bwl##_p(int port)            \
->>                                       \
->>   static inline void outs##bwl(int port, const void *addr, unsigned long count) \
->>   {                                    \
->> -    if (sev_key_active()) {                        \ > +    if (sev_key_active() 
->> ||                        \
->> +        cc_platform_has(CC_ATTR_GUEST_UNROLL_STRING_IO)) {        \
-> 
-> Would it make sense to make sev_key_active() and sev_enable_key generic and just re-use those 
-> instead of adding CC_ATTR_GUEST_UNROLL_STRING_IO and having multiple conditions here?
-> 
-> You can set the key in the TDX init routine just like SEV does.
-
-Any reason for using sev_enable_key over CC attribute? IMO, CC attribute exist
-to generalize the common feature code. My impression is SEV is specific to AMD
-code.
-
-> 
-> Thanks,
-> Tom
-> 
-
+diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
+index 4d09b672ac3c..632325474233 100644
+--- a/drivers/misc/eeprom/at25.c
++++ b/drivers/misc/eeprom/at25.c
+@@ -366,6 +366,13 @@ static const struct of_device_id at25_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, at25_of_match);
+ 
++static const struct spi_device_id at25_spi_ids[] = {
++	{ .name = "at25",},
++	{ .name = "fm25",},
++	{ }
++};
++MODULE_DEVICE_TABLE(spi, at25_spi_ids);
++
+ static int at25_probe(struct spi_device *spi)
+ {
+ 	struct at25_data	*at25 = NULL;
+@@ -491,6 +498,7 @@ static struct spi_driver at25_driver = {
+ 		.dev_groups	= sernum_groups,
+ 	},
+ 	.probe		= at25_probe,
++	.id_table	= at25_spi_ids,
+ };
+ 
+ module_spi_driver(at25_driver);
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.20.1
+
