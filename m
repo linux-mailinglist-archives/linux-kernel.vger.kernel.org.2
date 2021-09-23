@@ -2,132 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A9F415E58
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4263A415E48
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241003AbhIWM3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232201AbhIWM3f (ORCPT
+        id S240918AbhIWMZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:25:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39717 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240793AbhIWMZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:29:35 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA96C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 05:28:04 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id g16so16731740wrb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 05:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=sAdDiXDZ/ozWki9RSCsBqvvHl/GawwV89+dUg68JVq8=;
-        b=BDXZVCc2q3lUic06eI3A7pNDnf84wSyFsIdbpRH87Y1hocUMgNUr/65awHzxDmJZoY
-         7qHQlEyKcr9x5XPCrFTDjw2HxK/neuaGQ7ikFVdBzhbqCfU4PeiNlwLNq3xdEWAtXMbc
-         C76CU52Un+GJTwpTpncBNvcUZvt5D82xg96D5bm+LfylIPIUV+Xo/WxTkxiWPPGNl8Mw
-         oe+dVo22saiCKJ49QVuhpK7O503tjNYNxkp3acDuF//Pn7Cz5i1Q2p2QE+kVVbH0Ebuw
-         E/icgCdrONhpYBAE7aaeymF0FtGtkQFRrsvyCDSzkqko8hq3oT5fW7eSk3WuJoHstfJ9
-         GlJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=sAdDiXDZ/ozWki9RSCsBqvvHl/GawwV89+dUg68JVq8=;
-        b=kBopmNEoIVXHLmqrrDza0np3eNRNry2vFlOriqn2HdVQI9x+F5YtTvUJ+50vmEQon3
-         mXfCc3Lz/AWqgA6T19T+0nYwxGJI1v+lURZ8F5ol/J7HnjW6Ru58RA3SqBBFXjLoQvcF
-         dQv572ShexkyxD+9O3AkWu32DK60D4NNHazuZTZGHlF21kcPpkjLL6bkoLcLxoUwGRXq
-         b2cyLqVwm11yVDYkoi8g6iDkZQ6pLLgxInDpOKbQdUTtE4t1qG+06DLrSl31lWg4N1kT
-         uLL6oVptvqxHstTKwBEzy45xvuNMOFS7IrXeVYp6OZgu/WNbHrEVVa13BSxi5v0j+GV5
-         eKAQ==
-X-Gm-Message-State: AOAM531yi+7wsr/ERqdOxf42JIa5Rnof0ZQIdAhTjEktkiDKe3wzTj84
-        0TNajwn8jGsTIgrHtSyjCm9ZkQ==
-X-Google-Smtp-Source: ABdhPJySJCgEKUbETC/WzFrGyif34wRWks/YRffd0ZNtreRY1aDIrHVWc3NFuOItxOSkidyD/nRpDA==
-X-Received: by 2002:a05:600c:4ba2:: with SMTP id e34mr16103109wmp.50.1632400082959;
-        Thu, 23 Sep 2021 05:28:02 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id y18sm5113842wrq.6.2021.09.23.05.28.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 05:28:02 -0700 (PDT)
-References: <20210713232510.3057750-1-martin.blumenstingl@googlemail.com>
- <20210713232510.3057750-4-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.6.6; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, narmstrong@baylibre.com
-Subject: Re: [PATCH 3/6] clk: meson: meson8b: Add the HDMI PLL M/N parameters
-Date:   Thu, 23 Sep 2021 14:22:37 +0200
-In-reply-to: <20210713232510.3057750-4-martin.blumenstingl@googlemail.com>
-Message-ID: <1jfstvschd.fsf@starbuckisacylon.baylibre.com>
+        Thu, 23 Sep 2021 08:25:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632399850;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7hoNhdPOfuPxMMO6XZ7wpIHpH7AP0ResWRFOF/uS/EE=;
+        b=LuxHONYCDEF/aiasRh56Dxc65/H9elaMDqLiABvmPgC4G0Apl2N6018GoHkHxjZOdfoWp9
+        MJsJ8NXyrOOuzZr3TCwZ6HciSqBVMs/iFfUKGq7G9pdi69vinChNcfGW3Axr11M1xNdYs0
+        B5YWyt3jgEt2ucp3Qw0gG0JiMhfr3c0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-4HFMxr4pNiSqWth-zA3HNQ-1; Thu, 23 Sep 2021 08:24:09 -0400
+X-MC-Unique: 4HFMxr4pNiSqWth-zA3HNQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C1D483DD25;
+        Thu, 23 Sep 2021 12:24:07 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.16.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 61DD45DA2D;
+        Thu, 23 Sep 2021 12:24:05 +0000 (UTC)
+Date:   Thu, 23 Sep 2021 08:24:03 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+Message-ID: <YUxx42W3K2Ur7W84@lorien.usersys.redhat.com>
+References: <20210921103621.GM3959@techsingularity.net>
+ <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+ <20210922132002.GX3959@techsingularity.net>
+ <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+ <20210922150457.GA3959@techsingularity.net>
+ <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+ <20210922173853.GB3959@techsingularity.net>
+ <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+ <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
+ <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed 14 Jul 2021 at 01:25, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
-
-> The 3.10 vendor kernel uses only specific HDMI PLL M/N parameter
-> combinations. The PLL won't lock for values smaller than 50 if the
-> internal doubling (which is yet unknown how to use it) is disabled.
-> However, when this doubling is enabled then the values smaller than 50
-> will lock just fine. The only restriction for values greater than 50 is
-> that the resulting frequency must not exceed the 3.0GHz limit.
-
-Hum, it's not the first time we have that type of issue.
-I'm thinking that, instead of using mult_range, we should probably have
-min and max output frequencies . The datasheet usually documents these
-values for PLL DCO. Something to think about ...
-
+On Thu, Sep 23, 2021 at 10:40:48AM +0200 Vincent Guittot wrote:
+> On Thu, 23 Sept 2021 at 03:47, Mike Galbraith <efault@gmx.de> wrote:
+> >
+> > On Wed, 2021-09-22 at 20:22 +0200, Vincent Guittot wrote:
+> > > On Wed, 22 Sept 2021 at 19:38, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > > >
+> > > >
+> > > > I'm not seeing an alternative suggestion that could be turned into
+> > > > an implementation. The current value for sched_wakeup_granularity
+> > > > was set 12 years ago was exposed for tuning which is no longer
+> > > > the case. The intent was to allow some dynamic adjustment between
+> > > > sysctl_sched_wakeup_granularity and sysctl_sched_latency to reduce
+> > > > over-scheduling in the worst case without disabling preemption entirely
+> > > > (which the first version did).
+> >
+> > I don't think those knobs were ever _intended_ for general purpose
+> > tuning, but they did get used that way by some folks.
+> >
+> > > >
+> > > > Should we just ignore this problem and hope it goes away or just let
+> > > > people keep poking silly values into debugfs via tuned?
+> > >
+> > > We should certainly not add a bandaid because people will continue to
+> > > poke silly value at the end. And increasing
+> > > sysctl_sched_wakeup_granularity based on the number of running threads
+> > > is not the right solution.
+> >
+> > Watching my desktop box stack up large piles of very short running
+> > threads, I agree, instantaneous load looks like a non-starter.
+> >
+> > >  According to the description of your
+> > > problem that the current task doesn't get enough time to move forward,
+> > > sysctl_sched_min_granularity should be part of the solution. Something
+> > > like below will ensure that current got a chance to move forward
+> >
+> > Nah, progress is guaranteed, the issue is a zillion very similar short
+> > running threads preempting each other with no win to be had, thus
+> > spending cycles in the scheduler that are utterly wasted.  It's a valid
+> > issue, trouble is teaching the scheduler to recognize that situation
+> > without mucking up other situations where there IS a win for even very
+> > short running threads say, doing a synchronous handoff; preemption is
+> > cheaper than scheduling off if the waker is going be awakened again in
+> > very short order.
+> >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 9bf540f04c2d..39d4e4827d3d 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -7102,6 +7102,7 @@ static void check_preempt_wakeup(struct rq *rq,
+> > > struct task_struct *p, int wake_
+> > >         int scale = cfs_rq->nr_running >= sched_nr_latency;
+> > >         int next_buddy_marked = 0;
+> > >         int cse_is_idle, pse_is_idle;
+> > > +       unsigned long delta_exec;
+> > >
+> > >         if (unlikely(se == pse))
+> > >                 return;
+> > > @@ -7161,6 +7162,13 @@ static void check_preempt_wakeup(struct rq *rq,
+> > > struct task_struct *p, int wake_
+> > >                 return;
+> > >
+> > >         update_curr(cfs_rq_of(se));
+> > > +       delta_exec = se->sum_exec_runtime - se->prev_sum_exec_runtime;
+> > > +       /*
+> > > +        * Ensure that current got a chance to move forward
+> > > +        */
+> > > +       if (delta_exec < sysctl_sched_min_granularity)
+> > > +               return;
+> > > +
+> > >         if (wakeup_preempt_entity(se, pse) == 1) {
+> > >                 /*
+> > >                  * Bias pick_next to pick the sched entity that is
+> >
+> > Yikes!  If you do that, you may as well go the extra nanometer and rip
+> > wakeup preemption out entirely, same result, impressive diffstat.
+> 
+> This patch is mainly there to show that there are other ways to ensure
+> progress without using some load heuristic.
+> sysctl_sched_min_granularity has the problem of scaling with the
+> number of cpus and this can generate large values. At least we should
+> use the normalized_sysctl_sched_min_granularity or even a smaller
+> value but wakeup preemption still happens with this change. It only
+> ensures that we don't waste time preempting each other without any
+> chance to do actual stuff.
 >
-> These values are taken from the endlessm 3.10 kernel which includes
-> additional M/N combinations for some VESA and 75Hz display modes.
->
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  drivers/clk/meson/meson8b.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-> index 9ccffbfe44e5..8f29d26ed726 100644
-> --- a/drivers/clk/meson/meson8b.c
-> +++ b/drivers/clk/meson/meson8b.c
-> @@ -118,6 +118,27 @@ static struct clk_regmap meson8b_fixed_pll = {
->  	},
->  };
->  
-> +static const struct pll_params_table hdmi_pll_params_table[] = {
-> +	PLL_PARAMS(40, 1),
-> +	PLL_PARAMS(42, 1),
-> +	PLL_PARAMS(44, 1),
-> +	PLL_PARAMS(45, 1),
-> +	PLL_PARAMS(49, 1),
-> +	PLL_PARAMS(52, 1),
-> +	PLL_PARAMS(54, 1),
-> +	PLL_PARAMS(56, 1),
-> +	PLL_PARAMS(59, 1),
-> +	PLL_PARAMS(60, 1),
-> +	PLL_PARAMS(61, 1),
-> +	PLL_PARAMS(62, 1),
-> +	PLL_PARAMS(64, 1),
-> +	PLL_PARAMS(66, 1),
-> +	PLL_PARAMS(68, 1),
-> +	PLL_PARAMS(71, 1),
-> +	PLL_PARAMS(82, 1),
-> +	{ /* sentinel */ }
-> +};
-> +
->  static struct clk_regmap meson8b_hdmi_pll_dco = {
->  	.data = &(struct meson_clk_pll_data){
->  		.en = {
-> @@ -150,6 +171,7 @@ static struct clk_regmap meson8b_hdmi_pll_dco = {
->  			.shift   = 29,
->  			.width   = 1,
->  		},
-> +		.table = hdmi_pll_params_table,
->  	},
->  	.hw.init = &(struct clk_init_data){
->  		/* sometimes also called "HPLL" or "HPLL PLL" */
+
+It's capped at 8 cpus, which is pretty easy to reach these days, so the
+values don't get too large.  That scaling is almost a no-op these days.
+
+
+Cheers,
+Phil
+
+
+> a 100us value should even be enough to fix Mel's problem without
+> impacting common wakeup preemption cases.
+> 
+> 
+> >
+> >         -Mike
+> 
+
+-- 
 
