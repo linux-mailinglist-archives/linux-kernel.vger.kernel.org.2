@@ -2,132 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FFB415C93
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C448415C94
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240543AbhIWLOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:14:14 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9911 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240513AbhIWLON (ORCPT
+        id S240557AbhIWLOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:14:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54604 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240550AbhIWLOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:14:13 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HFXT254Tnz8ykM;
-        Thu, 23 Sep 2021 19:08:06 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 23 Sep 2021 19:12:28 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Thu, 23 Sep
- 2021 19:12:28 +0800
-Subject: Re: [PATCH net-next 0/7] some optimization for page pool
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <hawk@kernel.org>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <cong.wang@bytedance.com>,
-        <pabeni@redhat.com>, <haokexin@gmail.com>, <nogikh@google.com>,
-        <elver@google.com>, <memxor@gmail.com>, <edumazet@google.com>,
-        <alexander.duyck@gmail.com>, <dsahern@gmail.com>
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <YUwnogBl/qbNbQ7X@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <953f1319-ff1d-a5a0-9aa5-5ff5cf24e37a@huawei.com>
-Date:   Thu, 23 Sep 2021 19:12:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 23 Sep 2021 07:14:15 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9419E1FFA5;
+        Thu, 23 Sep 2021 11:12:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632395563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aEVPoxQen73SrDxSP+9kD2Kz53XX95G6TqvPawceJl0=;
+        b=aMIMZ3p+NoahC+IwiLLRYLcRvVU9dvfBfQn/9wyv7qpmsc66wjyLirHMsuSYegGl79SY5s
+        7X/s5hh43TI0cvshY647L+Bi+i46ymVBlv985tPGD2kdbgsGwZ9zuaiivCuSe2D8C4fmBp
+        enCX7AFR4JnBcWeS7WwWHxXnsjhFLF0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4AFA313DCD;
+        Thu, 23 Sep 2021 11:12:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +cGmECthTGEpegAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 11:12:43 +0000
+Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
+To:     Jan Beulich <jbeulich@suse.com>,
+        Oleksandr Andrushchenko <andr2000@gmail.com>
+Cc:     boris.ostrovsky@oracle.com, julien@xen.org, sstabellini@kernel.org,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20210923095345.185489-1-andr2000@gmail.com>
+ <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <478b9175-f21f-b77a-2bc1-ad230bbdf548@suse.com>
+Date:   Thu, 23 Sep 2021 13:12:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YUwnogBl/qbNbQ7X@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+In-Reply-To: <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="2lcwPdRBsDCp1LdWI77itRlY1UcSO1FMi"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/23 15:07, Ilias Apalodimas wrote:
-> Hi Yunsheng, 
-> 
-> On Wed, Sep 22, 2021 at 05:41:24PM +0800, Yunsheng Lin wrote:
->> Patch 1: disable dma mapping support for 32-bit arch with 64-bit
->>          DMA.
->> Patch 2: support non-split page when PP_FLAG_PAGE_FRAG is set.
->> patch 3: avoid calling compound_head() for skb frag page
->> Patch 4-7: use pp_magic to identify pp page uniquely.
-> 
-> There's some subtle changes in this patchset that might affect XDP.
-> 
-> What I forgot when I proposed removing the recycling bit,  is that it also
-> serves as an 'opt-in' mechanism for drivers that want to use page_pool but 
-> do the recycling internally.  With that removed we need to make sure
-> nothing bad happens to them.  In theory the page refcnt for mlx5
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2lcwPdRBsDCp1LdWI77itRlY1UcSO1FMi
+Content-Type: multipart/mixed; boundary="RabaBlNU167INrkhGG7TimY4gvZhpBVDu";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>,
+ Oleksandr Andrushchenko <andr2000@gmail.com>
+Cc: boris.ostrovsky@oracle.com, julien@xen.org, sstabellini@kernel.org,
+ Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+ xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Message-ID: <478b9175-f21f-b77a-2bc1-ad230bbdf548@suse.com>
+Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
+References: <20210923095345.185489-1-andr2000@gmail.com>
+ <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
+In-Reply-To: <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
 
-It seems odd that mlx5 is adding its own page cache on top of page pool,
-is it about support both "struct sk_buff" and "struct xdp_buff" for the
-same queue?
+--RabaBlNU167INrkhGG7TimY4gvZhpBVDu
+Content-Type: multipart/mixed;
+ boundary="------------A604B18524153844DF606DEF"
+Content-Language: en-US
 
-> specifically will be elevated, so we'll just end up unmapping the buffer.
-> Arguably we could add a similar mechanism internally into page pool,  
-> which would allow us to enable and disable recycling,  but that's
-> an extra if per packet allocation and I don't know if we want that on the XDP 
-> case.
+This is a multi-part message in MIME format.
+--------------A604B18524153844DF606DEF
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Or we could change mlx5e_rx_cache_get() to check for "page->pp_frag_count
-== 1" too, and adjust mlx5e_page_release() accordingly?
+On 23.09.21 13:10, Jan Beulich wrote:
+> On 23.09.2021 11:53, Oleksandr Andrushchenko wrote:
+>> --- a/drivers/xen/Kconfig
+>> +++ b/drivers/xen/Kconfig
+>> @@ -180,10 +180,34 @@ config SWIOTLB_XEN
+>>   	select DMA_OPS
+>>   	select SWIOTLB
+>>  =20
+>> +config XEN_PCI_STUB
+>> +	bool
+>> +
+>> +config XEN_PCIDEV_STUB
+>> +	tristate "Xen PCI-device stub driver"
+>> +	depends on PCI && !X86 && XEN
+>> +	depends on XEN_BACKEND
+>> +	select XEN_PCI_STUB
+>> +	default m
+>> +	help
+>> +	  The PCI device stub driver provides limited version of the PCI
+>> +	  device backend driver without para-virtualized support for guests.=
 
-> A few numbers pre/post patch for XDP would help, but iirc hns3 doesn't have
-> XDP support yet?
+>> +	  If you select this to be a module, you will need to make sure no
+>> +	  other driver has bound to the device(s) you want to make visible t=
+o
+>> +	  other guests.
+>> +
+>> +	  The "hide" parameter (only applicable if backend driver is compile=
+d
+>> +	  into the kernel) allows you to bind the PCI devices to this module=
 
-You are right, hns3 doesn't have XDP support yet.
+>> +	  from the default device drivers. The argument is the list of PCI B=
+DFs:
+>> +	  xen-pciback.hide=3D(03:00.0)(04:00.0)
+>> +
+>> +	  If in doubt, say m.
+>> +
+>>   config XEN_PCIDEV_BACKEND
+>>   	tristate "Xen PCI-device backend driver"
+>>   	depends on PCI && X86 && XEN
+>>   	depends on XEN_BACKEND
+>> +	select XEN_PCI_STUB
+>=20
+> Does kconfig not at least warn about this? The selected item has a
+> "depends on !X88" conflicting with the "depends on X86" here.
 
-> 
-> It's plumbers week so I'll do some testing starting Monday.
-> 
-> Thanks
-> /Ilias
-> 
->>
->> V3:
->>     1. add patch 1/4/6/7.
->>     2. use pp_magic to identify pp page uniquely too.
->>     3. avoid unnecessary compound_head() calling.
->>
->> V2: add patch 2, adjust the commit log accroding to the discussion
->>     in V1, and fix a compiler error reported by kernel test robot.
->>
->> Yunsheng Lin (7):
->>   page_pool: disable dma mapping support for 32-bit arch with 64-bit DMA
->>   page_pool: support non-split page with PP_FLAG_PAGE_FRAG
->>   pool_pool: avoid calling compound_head() for skb frag page
->>   page_pool: change BIAS_MAX to support incrementing
->>   skbuff: keep track of pp page when __skb_frag_ref() is called
->>   skbuff: only use pp_magic identifier for a skb' head page
->>   skbuff: remove unused skb->pp_recycle
->>
->>  .../net/ethernet/hisilicon/hns3/hns3_enet.c   |  6 ---
->>  drivers/net/ethernet/marvell/mvneta.c         |  2 -
->>  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  4 +-
->>  drivers/net/ethernet/marvell/sky2.c           |  2 +-
->>  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
->>  drivers/net/ethernet/ti/cpsw.c                |  2 -
->>  drivers/net/ethernet/ti/cpsw_new.c            |  2 -
->>  include/linux/mm_types.h                      | 13 +-----
->>  include/linux/skbuff.h                        | 39 ++++++++----------
->>  include/net/page_pool.h                       | 31 ++++++++------
->>  net/core/page_pool.c                          | 40 +++++++------------
->>  net/core/skbuff.c                             | 36 ++++++-----------
->>  net/tls/tls_device.c                          |  2 +-
->>  13 files changed, 67 insertions(+), 114 deletions(-)
->>
->> -- 
->> 2.33.0
->>
-> .
-> 
+XEN_PCI_STUB !=3D XEN_PCIDEV_STUB
+
+
+Juergen
+
+--------------A604B18524153844DF606DEF
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------A604B18524153844DF606DEF--
+
+--RabaBlNU167INrkhGG7TimY4gvZhpBVDu--
+
+--2lcwPdRBsDCp1LdWI77itRlY1UcSO1FMi
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMYSoFAwAAAAAACgkQsN6d1ii/Ey9F
+jAf8Dbp2R2HZn0f7rIjof1tX1Os673CwlUaxnI/ciMK9PSwo6nvII9KPwHFeK+STusBQ3uAafvBB
+ztdiA0zYckwVE0zjyvaHJ+oa1IY0b5Nqbbj2bBopu+uKB3ZKnX6JD4AL4ro/RudxQC4FMN8+ILrJ
+rzFTLYN6ErnQztmwnkiJGDlx5xfkyMULySu8S1FDjkdo9nDHZUUZMIorLjT6XD9AWB9oW07yJA+V
+S5ZtbPQL4gSHhsIRKoMLipSy3aZhWKYsqYNtan5wA0uMqKDF36fpJmQwoMMjb+FC1wDkdzv/HsQV
+lJcIiLuHYA8UrA53yoQmVLEPkEaAd4WVg27q/ol6tA==
+=uxBc
+-----END PGP SIGNATURE-----
+
+--2lcwPdRBsDCp1LdWI77itRlY1UcSO1FMi--
