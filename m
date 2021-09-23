@@ -2,145 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E9E4167F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3719E4167F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243452AbhIWWZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:25:44 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:37578 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243436AbhIWWZf (ORCPT
+        id S243454AbhIWW0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:26:15 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:34404 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243436AbhIWW0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:25:35 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632435841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Matoo2OIfdawfGuu3j6hbf2m+pvAyOqko4uRRDDqJ0=;
-        b=N9ssRTZGMxorWOBqZEIQ9Tt2vNTC5I8aj19BMSE9Xssk0QWWtT/+0NICD6ssXGkA5FR8ds
-        7HwcthwHMm5PC2Ku+n2v00I8mpZkiSVyBlEP9litACd8ROqGfpHbiBNt7rpSxNEqPlEYoy
-        0WAbbsoSaHa38BXkXdMOEyhZcgpZeu/OVVG86ipRvJudoV8qZrOLuOHhnH4J38TdHWYzTm
-        k2wC7mCPI2oPu5BiSuRDTc1c4YPpiojnhbSVvtiUjxhC8qtgZkHBzuLSFi9C4zMHQXQui+
-        44GBHIIVFKD1k02kDBFfUkrxVzbrvQND6Rs33SPZqSweYAPfS01ntNPARWGLOg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632435841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Matoo2OIfdawfGuu3j6hbf2m+pvAyOqko4uRRDDqJ0=;
-        b=/7ConpvTXAvFWy6BmvzoZaT07ZxWDyhnP2mIpX3mCcpKyA1zbHQBf+ebCtIwiiVEMqZdvP
-        uR9Iu/xxODMvHjBw==
-To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
-Cc:     Sohil Mehta <sohil.mehta@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 03/13] x86/cpu: Enumerate User Interrupts support
-In-Reply-To: <20210913200132.3396598-4-sohil.mehta@intel.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-4-sohil.mehta@intel.com>
-Date:   Fri, 24 Sep 2021 00:24:00 +0200
-Message-ID: <87lf3nexrz.ffs@tglx>
+        Thu, 23 Sep 2021 18:26:13 -0400
+Received: by mail-ot1-f50.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so4933665otb.1;
+        Thu, 23 Sep 2021 15:24:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mb587nGf0voR/Ax95mATSV+fC/nr8Rr1/llTyc2fCdg=;
+        b=OUDRObaWr2dP1CaUHxO2IK+s9QJyoTd3QJWJZgTsW2k7Y+VhU6d7r8HwOYYNzgKGeB
+         TVLC7eUhmihiXVpVSr8hB+wPDE9LIEZri8EOyiBLBj9OMtH6rqG8Luue61JI2nXNcPYc
+         iWOjb7Nbk+Ty8NFQrYO08Us97Zay0iFFSUe6b2E7NXYIlE22uRV1czCNnmYl7B6B0+85
+         If+WaPXc9hdSKprM9BwIbBbNs+m6hBBIOf1UQwmkQT0LKUFJ66YwSnpcEE7DCvYmnQvs
+         43nUwEraDD/yhGgwkBdRxnf1H918DJoJTzQgq3P4AAyypzf+1Q+6jobD9FEKiPmSL5rs
+         4bTg==
+X-Gm-Message-State: AOAM533YlwZW29hA1A8GHk0Ncco817vxgfNG0o2UhhGYeu0VJKNk3I2U
+        9rM+yX18o7WYFHpKEZF8mQ==
+X-Google-Smtp-Source: ABdhPJyK5AkfcoxcdUx/qdVtfEdGVdXMSEbvuYeuL1VZkTBuHnfC586+HY3jM+CBAcMYp22wu+ryxw==
+X-Received: by 2002:a05:6830:1512:: with SMTP id k18mr968033otp.31.1632435880696;
+        Thu, 23 Sep 2021 15:24:40 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id p64sm1647430oih.29.2021.09.23.15.24.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 15:24:40 -0700 (PDT)
+Received: (nullmailer pid 3633988 invoked by uid 1000);
+        Thu, 23 Sep 2021 22:24:39 -0000
+Date:   Thu, 23 Sep 2021 17:24:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jiri Kosina <trivial@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] dt-bindings: hwmon: ibm,cffps: move to trivial
+ devices
+Message-ID: <YUz+psAILnF5L5GH@robh.at.kernel.org>
+References: <20210921102832.143352-1-krzysztof.kozlowski@canonical.com>
+ <20210921102832.143352-3-krzysztof.kozlowski@canonical.com>
+ <20210921123025.GC1043608@roeck-us.net>
+ <68fa27ae-4704-181f-e2f6-92635865798b@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68fa27ae-4704-181f-e2f6-92635865798b@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
-> SENDUIPI is a special ring-3 instruction that makes a supervisor mode
-> memory access to the UPID and UITT memory. Currently, KPTI needs to be
-> off for User IPIs to work.  Processors that support user interrupts are
-> not affected by Meltdown so the auto mode of KPTI will default to off.
->
-> Users who want to force enable KPTI will need to wait for a later
-> version of this patch series that is compatible with KPTI. We need to
-> allocate the UPID and UITT structures from a special memory region that
-> has supervisor access but it is mapped into userspace. The plan is to
-> implement a mechanism similar to LDT.
+On Tue, Sep 21, 2021 at 02:45:42PM +0200, Krzysztof Kozlowski wrote:
+> On 21/09/2021 14:30, Guenter Roeck wrote:
+> > On Tue, Sep 21, 2021 at 12:28:29PM +0200, Krzysztof Kozlowski wrote:
+> >> The IBM Common Form Factor Power Supply Versions 1 and 2 bindings are
+> >> trivial, so they can be integrated into trivial devices bindings.
+> >>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > 
+> > I won't accept any of those "move to trivial devices" patches. In many cases
+> > the bindings are simply incomplete. I can not and will not make that call,
+> > and I always did and will leave it up to driver authors to decide if they
+> > want to add a device to trivial devices or provide explicit bindings.
+> > 
+> > Please stop sending those patches.
+> > 
+> 
+> Back in the older times, there were no trivial-devices and checkpatch
+> plus maintainers required documenting compatibles, so some of such
+> simple bindings were created.
 
-Seriously?
+We've had trivial-devices since at least 2011, but it was under i2c 
+until 2017. Many existed before we had clock, regulator, etc. bindings, 
+so they may have been complete at the time.
 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Signed-off-by: Sohil Mehta <sohil.mehta@intel.com>
+> 
+> I understand however your point, fair enough. I'll stop sending such
+> patches.
 
-This SOB chain is invalid. Ditto in several other patches.
+Just about every device has a power supply which would not fall in the 
+current definition of trivial-devices, though maybe that could be 
+extended. I do sometimes wonder if we should just get rid of 
+trivial-devices.yaml.
 
->  
-> +config X86_USER_INTERRUPTS
-> +	bool "User Interrupts (UINTR)"
-> +	depends on X86_LOCAL_APIC && X86_64
+On the flip side, I'd much rather have a schema for these than wait on 
+someone to decide to convert them. That could mean a device.txt -> 
+trivial-devices.yaml -> device.yaml trip, but that doesn't seem that 
+terrible to me. Then we at least are running schema checks on the 
+devices and know if actual users have more undocumented properties. 
+We still have ~2000 free form binding docs to convert. I'm looking for 
+whatever ways we can speed that up and this looks like one of them to 
+me (both Krzysztof's great job doing all these conversions and utilizing 
+trivial-devices.yaml).
 
-X86_64 does not work w/o LOCAL_APIC so this dependency is pointless.
-
-> +	depends on CPU_SUP_INTEL
-> +	help
-> +	  User Interrupts are events that can be delivered directly to
-> +	  userspace without a transition through the kernel. The interrupts
-> +	  could be generated by another userspace application, kernel or a
-> +	  device.
-> +
-> +	  Refer, Documentation/x86/user-interrupts.rst for details.
-
-"Refer, Documentation..." is not a sentence.
-
->  
-> +/* User Interrupt interface */
-> +#define MSR_IA32_UINTR_RR		0x985
-> +#define MSR_IA32_UINTR_HANDLER		0x986
-> +#define MSR_IA32_UINTR_STACKADJUST	0x987
-> +#define MSR_IA32_UINTR_MISC		0x988	/* 39:32-UINV, 31:0-UITTSZ */
-
-Bah, these tail comments are crap. Please define proper masks/shift
-constants for this instead of using magic numbers in the code.
-
-> +static __always_inline void setup_uintr(struct cpuinfo_x86 *c)
-
-This has to be always inline because it's performance critical or what?
-
-> +{
-> +	/* check the boot processor, plus compile options for UINTR. */
-
-Sentences start with uppercase letters.
-
-> +	if (!cpu_feature_enabled(X86_FEATURE_UINTR))
-> +		goto disable_uintr;
-> +
-> +	/* checks the current processor's cpuid bits: */
-> +	if (!cpu_has(c, X86_FEATURE_UINTR))
-> +		goto disable_uintr;
-> +
-> +	/*
-> +	 * User Interrupts currently doesn't support PTI. For processors that
-> +	 * support User interrupts PTI in auto mode will default to off.  Need
-> +	 * this check only for users who have force enabled PTI.
-> +	 */
-> +	if (boot_cpu_has(X86_FEATURE_PTI)) {
-> +		pr_info_once("x86: User Interrupts (UINTR) not enabled. Please disable PTI using 'nopti' kernel parameter\n");
-
-That message does not make sense. The admin has explicitly added 'pti'
-to the kernel command line on a CPU which is not affected. So why would
-he now have to add 'nopti' ?
-
-Thanks,
-
-        tglx
+Rob
