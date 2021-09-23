@@ -2,397 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4E0416686
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9F9416687
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243167AbhIWUT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 16:19:56 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:32828 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S243130AbhIWUTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 16:19:52 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from asmaa@mellanox.com)
-        with SMTP; 23 Sep 2021 23:18:17 +0300
-Received: from farm-0002.mtbu.labs.mlnx (farm-0002.mtbu.labs.mlnx [10.15.2.32])
-        by mtbu-labmailer.labs.mlnx (8.14.4/8.14.4) with ESMTP id 18NKIGkh016796;
-        Thu, 23 Sep 2021 16:18:16 -0400
-Received: (from asmaa@localhost)
-        by farm-0002.mtbu.labs.mlnx (8.14.7/8.13.8/Submit) id 18NKIGSb015790;
-        Thu, 23 Sep 2021 16:18:16 -0400
-From:   Asmaa Mnebhi <asmaa@nvidia.com>
-To:     andy.shevchenko@gmail.com, linux-gpio@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     Asmaa Mnebhi <asmaa@nvidia.com>, andrew@lunn.ch, kuba@kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        davem@davemloft.net, rjw@rjwysocki.net, davthompson@nvidia.com
-Subject: [PATCH v2 2/2] net: mellanox: mlxbf_gige: Replace non-standard interrupt handling
-Date:   Thu, 23 Sep 2021 16:18:04 -0400
-Message-Id: <20210923201804.15733-3-asmaa@nvidia.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210923201804.15733-1-asmaa@nvidia.com>
-References: <20210923201804.15733-1-asmaa@nvidia.com>
+        id S243177AbhIWUUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 16:20:17 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:33308 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243148AbhIWUUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 16:20:10 -0400
+Received: from p5b1274d2.dip0.t-ipconnect.de ([91.18.116.210] helo=phil.fritz.box)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mTVAx-00081Y-5F; Thu, 23 Sep 2021 22:18:35 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        heiko@sntech.de,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: [PATCH] arm64: dts: rockchip: add powerdomains to rk3368
+Date:   Thu, 23 Sep 2021 22:18:32 +0200
+Message-Id: <20210923201832.2553667-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the GPIO driver (gpio-mlxbf2.c) supports interrupt
-handling, replace the custom routine with simple IRQ
-request.
+From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
+Add the core io-domain node for rk3368.
+
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 ---
- .../net/ethernet/mellanox/mlxbf_gige/Makefile |   1 -
- .../ethernet/mellanox/mlxbf_gige/mlxbf_gige.h |  12 -
- .../mellanox/mlxbf_gige/mlxbf_gige_gpio.c     | 212 ------------------
- .../mellanox/mlxbf_gige/mlxbf_gige_main.c     |  22 +-
- 4 files changed, 9 insertions(+), 238 deletions(-)
- delete mode 100644 drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
+ arch/arm64/boot/dts/rockchip/rk3368.dtsi | 173 +++++++++++++++++++++++
+ 1 file changed, 173 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile b/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
-index e57c1375f236..a97c2bef846b 100644
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
-+++ b/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
-@@ -3,7 +3,6 @@
- obj-$(CONFIG_MLXBF_GIGE) += mlxbf_gige.o
+diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
+index 4217897cd454..a3835dd97f99 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
+@@ -8,6 +8,7 @@
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/pinctrl/rockchip.h>
++#include <dt-bindings/power/rk3368-power.h>
+ #include <dt-bindings/soc/rockchip,boot-mode.h>
+ #include <dt-bindings/thermal/thermal.h>
  
- mlxbf_gige-y := mlxbf_gige_ethtool.o \
--		mlxbf_gige_gpio.o \
- 		mlxbf_gige_intr.o \
- 		mlxbf_gige_main.o \
- 		mlxbf_gige_mdio.o \
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
-index e3509e69ed1c..86826a70f9dd 100644
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
-+++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
-@@ -51,11 +51,6 @@
- #define MLXBF_GIGE_ERROR_INTR_IDX       0
- #define MLXBF_GIGE_RECEIVE_PKT_INTR_IDX 1
- #define MLXBF_GIGE_LLU_PLU_INTR_IDX     2
--#define MLXBF_GIGE_PHY_INT_N            3
--
--#define MLXBF_GIGE_MDIO_DEFAULT_PHY_ADDR 0x3
--
--#define MLXBF_GIGE_DEFAULT_PHY_INT_GPIO 12
+@@ -615,6 +616,110 @@ mbox: mbox@ff6b0000 {
+ 		status = "disabled";
+ 	};
  
- struct mlxbf_gige_stats {
- 	u64 hw_access_errors;
-@@ -81,11 +76,7 @@ struct mlxbf_gige {
- 	struct platform_device *pdev;
- 	void __iomem *mdio_io;
- 	struct mii_bus *mdiobus;
--	void __iomem *gpio_io;
--	struct irq_domain *irqdomain;
--	u32 phy_int_gpio_mask;
- 	spinlock_t lock;      /* for packet processing indices */
--	spinlock_t gpio_lock; /* for GPIO bus access */
- 	u16 rx_q_entries;
- 	u16 tx_q_entries;
- 	u64 *tx_wqe_base;
-@@ -184,7 +175,4 @@ int mlxbf_gige_poll(struct napi_struct *napi, int budget);
- extern const struct ethtool_ops mlxbf_gige_ethtool_ops;
- void mlxbf_gige_update_tx_wqe_next(struct mlxbf_gige *priv);
- 
--int mlxbf_gige_gpio_init(struct platform_device *pdev, struct mlxbf_gige *priv);
--void mlxbf_gige_gpio_free(struct mlxbf_gige *priv);
--
- #endif /* !defined(__MLXBF_GIGE_H__) */
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
-deleted file mode 100644
-index a8d966db5715..000000000000
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
-+++ /dev/null
-@@ -1,212 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
--
--/* Initialize and handle GPIO interrupt triggered by INT_N PHY signal.
-- * This GPIO interrupt triggers the PHY state machine to bring the link
-- * up/down.
-- *
-- * Copyright (C) 2021 NVIDIA CORPORATION & AFFILIATES
-- */
--
--#include <linux/acpi.h>
--#include <linux/bitfield.h>
--#include <linux/device.h>
--#include <linux/err.h>
--#include <linux/gpio/driver.h>
--#include <linux/interrupt.h>
--#include <linux/io.h>
--#include <linux/irq.h>
--#include <linux/irqdomain.h>
--#include <linux/irqreturn.h>
--#include <linux/platform_device.h>
--#include <linux/property.h>
--
--#include "mlxbf_gige.h"
--#include "mlxbf_gige_regs.h"
--
--#define MLXBF_GIGE_GPIO_CAUSE_FALL_EN		0x48
--#define MLXBF_GIGE_GPIO_CAUSE_OR_CAUSE_EVTEN0	0x80
--#define MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0		0x94
--#define MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE	0x98
--
--static void mlxbf_gige_gpio_enable(struct mlxbf_gige *priv)
--{
--	unsigned long flags;
--	u32 val;
--
--	spin_lock_irqsave(&priv->gpio_lock, flags);
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--
--	/* The INT_N interrupt level is active low.
--	 * So enable cause fall bit to detect when GPIO
--	 * state goes low.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_FALL_EN);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_FALL_EN);
--
--	/* Enable PHY interrupt by setting the priority level */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	spin_unlock_irqrestore(&priv->gpio_lock, flags);
--}
--
--static void mlxbf_gige_gpio_disable(struct mlxbf_gige *priv)
--{
--	unsigned long flags;
--	u32 val;
--
--	spin_lock_irqsave(&priv->gpio_lock, flags);
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	val &= ~priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	spin_unlock_irqrestore(&priv->gpio_lock, flags);
--}
--
--static irqreturn_t mlxbf_gige_gpio_handler(int irq, void *ptr)
--{
--	struct mlxbf_gige *priv;
--	u32 val;
--
--	priv = ptr;
--
--	/* Check if this interrupt is from PHY device.
--	 * Return if it is not.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CAUSE_EVTEN0);
--	if (!(val & priv->phy_int_gpio_mask))
--		return IRQ_NONE;
--
--	/* Clear interrupt when done, otherwise, no further interrupt
--	 * will be triggered.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--
--	generic_handle_irq(priv->phy_irq);
--
--	return IRQ_HANDLED;
--}
--
--static void mlxbf_gige_gpio_mask(struct irq_data *irqd)
--{
--	struct mlxbf_gige *priv = irq_data_get_irq_chip_data(irqd);
--
--	mlxbf_gige_gpio_disable(priv);
--}
--
--static void mlxbf_gige_gpio_unmask(struct irq_data *irqd)
--{
--	struct mlxbf_gige *priv = irq_data_get_irq_chip_data(irqd);
--
--	mlxbf_gige_gpio_enable(priv);
--}
--
--static struct irq_chip mlxbf_gige_gpio_chip = {
--	.name			= "mlxbf_gige_phy",
--	.irq_mask		= mlxbf_gige_gpio_mask,
--	.irq_unmask		= mlxbf_gige_gpio_unmask,
--};
--
--static int mlxbf_gige_gpio_domain_map(struct irq_domain *d,
--				      unsigned int irq,
--				      irq_hw_number_t hwirq)
--{
--	irq_set_chip_data(irq, d->host_data);
--	irq_set_chip_and_handler(irq, &mlxbf_gige_gpio_chip, handle_simple_irq);
--	irq_set_noprobe(irq);
--
--	return 0;
--}
--
--static const struct irq_domain_ops mlxbf_gige_gpio_domain_ops = {
--	.map    = mlxbf_gige_gpio_domain_map,
--	.xlate	= irq_domain_xlate_twocell,
--};
--
--#ifdef CONFIG_ACPI
--static int mlxbf_gige_gpio_resources(struct acpi_resource *ares,
--				     void *data)
--{
--	struct acpi_resource_gpio *gpio;
--	u32 *phy_int_gpio = data;
--
--	if (ares->type == ACPI_RESOURCE_TYPE_GPIO) {
--		gpio = &ares->data.gpio;
--		*phy_int_gpio = gpio->pin_table[0];
--	}
--
--	return 1;
--}
--#endif
--
--void mlxbf_gige_gpio_free(struct mlxbf_gige *priv)
--{
--	irq_dispose_mapping(priv->phy_irq);
--	irq_domain_remove(priv->irqdomain);
--}
--
--int mlxbf_gige_gpio_init(struct platform_device *pdev,
--			 struct mlxbf_gige *priv)
--{
--	struct device *dev = &pdev->dev;
--	struct resource *res;
--	u32 phy_int_gpio = 0;
--	int ret;
--
--	LIST_HEAD(resources);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, MLXBF_GIGE_RES_GPIO0);
--	if (!res)
--		return -ENODEV;
--
--	priv->gpio_io = devm_ioremap(dev, res->start, resource_size(res));
--	if (!priv->gpio_io)
--		return -ENOMEM;
--
--#ifdef CONFIG_ACPI
--	ret = acpi_dev_get_resources(ACPI_COMPANION(dev),
--				     &resources, mlxbf_gige_gpio_resources,
--				     &phy_int_gpio);
--	acpi_dev_free_resource_list(&resources);
--	if (ret < 0 || !phy_int_gpio) {
--		dev_err(dev, "Error retrieving the gpio phy pin");
--		return -EINVAL;
--	}
--#endif
--
--	priv->phy_int_gpio_mask = BIT(phy_int_gpio);
--
--	mlxbf_gige_gpio_disable(priv);
--
--	priv->hw_phy_irq = platform_get_irq(pdev, MLXBF_GIGE_PHY_INT_N);
--
--	priv->irqdomain = irq_domain_add_simple(NULL, 1, 0,
--						&mlxbf_gige_gpio_domain_ops,
--						priv);
--	if (!priv->irqdomain) {
--		dev_err(dev, "Failed to add IRQ domain\n");
--		return -ENOMEM;
--	}
--
--	priv->phy_irq = irq_create_mapping(priv->irqdomain, 0);
--	if (!priv->phy_irq) {
--		irq_domain_remove(priv->irqdomain);
--		priv->irqdomain = NULL;
--		dev_err(dev, "Error mapping PHY IRQ\n");
--		return -EINVAL;
--	}
--
--	ret = devm_request_irq(dev, priv->hw_phy_irq, mlxbf_gige_gpio_handler,
--			       IRQF_ONESHOT | IRQF_SHARED, "mlxbf_gige_phy", priv);
--	if (ret) {
--		dev_err(dev, "Failed to request PHY IRQ");
--		mlxbf_gige_gpio_free(priv);
--		return ret;
--	}
--
--	return ret;
--}
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-index 3e85b17f5857..4382ec8f7d64 100644
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-+++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-@@ -273,8 +273,8 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	void __iomem *llu_base;
- 	void __iomem *plu_base;
- 	void __iomem *base;
-+	int addr, phy_irq;
- 	u64 control;
--	int addr;
- 	int err;
- 
- 	base = devm_platform_ioremap_resource(pdev, MLXBF_GIGE_RES_MAC);
-@@ -309,20 +309,12 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	priv->pdev = pdev;
- 
- 	spin_lock_init(&priv->lock);
--	spin_lock_init(&priv->gpio_lock);
- 
- 	/* Attach MDIO device */
- 	err = mlxbf_gige_mdio_probe(pdev, priv);
- 	if (err)
- 		return err;
- 
--	err = mlxbf_gige_gpio_init(pdev, priv);
--	if (err) {
--		dev_err(&pdev->dev, "PHY IRQ initialization failed\n");
--		mlxbf_gige_mdio_remove(priv);
--		return -ENODEV;
--	}
--
- 	priv->base = base;
- 	priv->llu_base = llu_base;
- 	priv->plu_base = plu_base;
-@@ -343,6 +335,12 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	priv->rx_irq = platform_get_irq(pdev, MLXBF_GIGE_RECEIVE_PKT_INTR_IDX);
- 	priv->llu_plu_irq = platform_get_irq(pdev, MLXBF_GIGE_LLU_PLU_INTR_IDX);
- 
-+	phy_irq = acpi_dev_gpio_irq_get_by(ACPI_COMPANION(&pdev->dev), "phy-gpios", 0);
-+	if (phy_irq < 0) {
-+		dev_err(&pdev->dev, "Error getting PHY irq. Use polling instead");
-+		phy_irq = PHY_POLL;
-+	}
++	pmu: power-management@ff730000 {
++		compatible = "rockchip,rk3368-pmu", "syscon", "simple-mfd";
++		reg = <0x0 0xff730000 0x0 0x1000>;
 +
- 	phydev = phy_find_first(priv->mdiobus);
- 	if (!phydev) {
- 		err = -ENODEV;
-@@ -350,8 +348,8 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	}
++		power: power-controller {
++			compatible = "rockchip,rk3368-power-controller";
++			#power-domain-cells = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			/*
++			 * Note: Although SCLK_* are the working clocks
++			 * of device without including on the NOC, needed for
++			 * synchronous reset.
++			 *
++			 * The clocks on the which NOC:
++			 * ACLK_IEP/ACLK_VIP/ACLK_VOP0 are on ACLK_VIO0_NIU.
++			 * ACLK_ISP/ACLK_VOP1 are on ACLK_VIO1_NIU.
++			 * ACLK_RGA is on ACLK_RGA_NIU.
++			 * The others (HCLK_*,PLCK_*) are on HCLK_VIO_NIU.
++			 *
++			 * Which clock are device clocks:
++			 *	clocks		devices
++			 *	*_IEP		IEP:Image Enhancement Processor
++			 *	*_ISP		ISP:Image Signal Processing
++			 *	*_VIP		VIP:Video Input Processor
++			 *	*_VOP*		VOP:Visual Output Processor
++			 *	*_RGA		RGA
++			 *	*_EDP*		EDP
++			 *	*_DPHY*		LVDS
++			 *	*_HDMI		HDMI
++			 *	*_MIPI_*	MIPI
++			 */
++			pd_vio@RK3368_PD_VIO {
++				reg = <RK3368_PD_VIO>;
++				clocks = <&cru ACLK_IEP>,
++					 <&cru ACLK_ISP>,
++					 <&cru ACLK_VIP>,
++					 <&cru ACLK_RGA>,
++					 <&cru ACLK_VOP>,
++					 <&cru ACLK_VOP_IEP>,
++					 <&cru DCLK_VOP>,
++					 <&cru HCLK_IEP>,
++					 <&cru HCLK_ISP>,
++					 <&cru HCLK_RGA>,
++					 <&cru HCLK_VIP>,
++					 <&cru HCLK_VOP>,
++					 <&cru HCLK_VIO_HDCPMMU>,
++					 <&cru PCLK_EDP_CTRL>,
++					 <&cru PCLK_HDMI_CTRL>,
++					 <&cru PCLK_HDCP>,
++					 <&cru PCLK_ISP>,
++					 <&cru PCLK_VIP>,
++					 <&cru PCLK_DPHYRX>,
++					 <&cru PCLK_DPHYTX0>,
++					 <&cru PCLK_MIPI_CSI>,
++					 <&cru PCLK_MIPI_DSI0>,
++					 <&cru SCLK_VOP0_PWM>,
++					 <&cru SCLK_EDP_24M>,
++					 <&cru SCLK_EDP>,
++					 <&cru SCLK_HDCP>,
++					 <&cru SCLK_ISP>,
++					 <&cru SCLK_RGA>,
++					 <&cru SCLK_HDMI_CEC>,
++					 <&cru SCLK_HDMI_HDCP>;
++				pm_qos = <&qos_iep>,
++					 <&qos_isp_r0>,
++					 <&qos_isp_r1>,
++					 <&qos_isp_w0>,
++					 <&qos_isp_w1>,
++					 <&qos_vip>,
++					 <&qos_vop>,
++					 <&qos_rga_r>,
++					 <&qos_rga_w>;
++			};
++			/*
++			 * Note: ACLK_VCODEC/HCLK_VCODEC are VCODEC
++			 * (video endecoder & decoder) clocks that on the
++			 * ACLK_VCODEC_NIU and HCLK_VCODEC_NIU (NOC).
++			 */
++			pd_video@RK3368_PD_VIDEO {
++				reg = <RK3368_PD_VIDEO>;
++				clocks = <&cru ACLK_VIDEO>,
++					 <&cru HCLK_VIDEO>,
++					 <&cru SCLK_HEVC_CABAC>,
++					 <&cru SCLK_HEVC_CORE>;
++				pm_qos = <&qos_hevc_r>,
++					 <&qos_vpu_r>,
++					 <&qos_vpu_w>;
++			};
++			/*
++			 * Note: ACLK_GPU is the GPU clock,
++			 * and on the ACLK_GPU_NIU (NOC).
++			 */
++			pd_gpu_1@RK3368_PD_GPU_1 {
++				reg = <RK3368_PD_GPU_1>;
++				clocks = <&cru ACLK_GPU_CFG>,
++					 <&cru ACLK_GPU_MEM>,
++					 <&cru SCLK_GPU_CORE>;
++				pm_qos = <&qos_gpu>;
++			};
++		};
++	};
++
+ 	pmugrf: syscon@ff738000 {
+ 		compatible = "rockchip,rk3368-pmugrf", "syscon", "simple-mfd";
+ 		reg = <0x0 0xff738000 0x0 0x1000>;
+@@ -711,6 +816,7 @@ iep_mmu: iommu@ff900800 {
+ 		interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+ 		clocks = <&cru ACLK_IEP>, <&cru HCLK_IEP>;
+ 		clock-names = "aclk", "iface";
++		power-domains = <&power RK3368_PD_VIO>;
+ 		#iommu-cells = <0>;
+ 		status = "disabled";
+ 	};
+@@ -723,6 +829,7 @@ isp_mmu: iommu@ff914000 {
+ 		clocks = <&cru ACLK_ISP>, <&cru HCLK_ISP>;
+ 		clock-names = "aclk", "iface";
+ 		#iommu-cells = <0>;
++		power-domains = <&power RK3368_PD_VIO>;
+ 		rockchip,disable-mmu-reset;
+ 		status = "disabled";
+ 	};
+@@ -733,6 +840,7 @@ vop_mmu: iommu@ff930300 {
+ 		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+ 		clocks = <&cru ACLK_VOP>, <&cru HCLK_VOP>;
+ 		clock-names = "aclk", "iface";
++		power-domains = <&power RK3368_PD_VIO>;
+ 		#iommu-cells = <0>;
+ 		status = "disabled";
+ 	};
+@@ -759,6 +867,71 @@ vpu_mmu: iommu@ff9a0800 {
+ 		status = "disabled";
+ 	};
  
- 	addr = phydev->mdio.addr;
--	priv->mdiobus->irq[addr] = priv->phy_irq;
--	phydev->irq = priv->phy_irq;
-+	priv->mdiobus->irq[addr] = phy_irq;
-+	phydev->irq = phy_irq;
- 
- 	err = phy_connect_direct(netdev, phydev,
- 				 mlxbf_gige_adjust_link,
-@@ -387,7 +385,6 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	return 0;
- 
- out:
--	mlxbf_gige_gpio_free(priv);
- 	mlxbf_gige_mdio_remove(priv);
- 	return err;
- }
-@@ -398,7 +395,6 @@ static int mlxbf_gige_remove(struct platform_device *pdev)
- 
- 	unregister_netdev(priv->netdev);
- 	phy_disconnect(priv->netdev->phydev);
--	mlxbf_gige_gpio_free(priv);
- 	mlxbf_gige_mdio_remove(priv);
- 	platform_set_drvdata(pdev, NULL);
- 
++	qos_iep: qos@ffad0000 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0000 0x0 0x20>;
++	};
++
++	qos_isp_r0: qos@ffad0080 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0080 0x0 0x20>;
++	};
++
++	qos_isp_r1: qos@ffad0100 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0100 0x0 0x20>;
++	};
++
++	qos_isp_w0: qos@ffad0180 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0180 0x0 0x20>;
++	};
++
++	qos_isp_w1: qos@ffad0200 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0200 0x0 0x20>;
++	};
++
++	qos_vip: qos@ffad0280 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0280 0x0 0x20>;
++	};
++
++	qos_vop: qos@ffad0300 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0300 0x0 0x20>;
++	};
++
++	qos_rga_r: qos@ffad0380 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0380 0x0 0x20>;
++	};
++
++	qos_rga_w: qos@ffad0400 {
++		compatible = "syscon";
++		reg = <0x0 0xffad0400 0x0 0x20>;
++	};
++
++	qos_hevc_r: qos@ffae0000 {
++		compatible = "syscon";
++		reg = <0x0 0xffae0000 0x0 0x20>;
++	};
++
++	qos_vpu_r: qos@ffae0100 {
++		compatible = "syscon";
++		reg = <0x0 0xffae0100 0x0 0x20>;
++	};
++
++	qos_vpu_w: qos@ffae0180 {
++		compatible = "syscon";
++		reg = <0x0 0xffae0180 0x0 0x20>;
++	};
++
++	qos_gpu: qos@ffaf0000 {
++		compatible = "syscon";
++		reg = <0x0 0xffaf0000 0x0 0x20>;
++	};
++
+ 	efuse256: efuse@ffb00000 {
+ 		compatible = "rockchip,rk3368-efuse";
+ 		reg = <0x0 0xffb00000 0x0 0x20>;
 -- 
-2.30.1
+2.29.2
 
