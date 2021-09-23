@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6A141683B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72F041683D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243537AbhIWW4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:56:32 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:53816 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243528AbhIWW4a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:56:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1632437699; x=1663973699;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=nzSKhDY13mK++9t7Je2bVwF1BfPMf2B+QPve7nlub6g=;
-  b=COCEcNoOxOvL++1ChLBcNlO2Lll4Kk9iXz22LIjm5QNg+ixYU2bF1dxd
-   O7K+HD6orROuR5nZcqHO7aF6n8RY7Xrwx8OlFaSjtqDK/O3LC+eQaexUE
-   NSQLNvCzJDMEWxylbwWFxiWxt7I/XgEZrCr4TC/h5vXjXyVo6LqS67kLl
-   8=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 23 Sep 2021 15:54:59 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 15:54:58 -0700
-Received: from hu-cgoldswo-sd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 23 Sep 2021 15:54:57 -0700
-From:   Chris Goldsworthy <quic_cgoldswo@quicinc.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     David Hildenbrand <david@redhat.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
-        Chris Goldsworthy <quic_cgoldswo@quicinc.com>
-Subject: [RFC] arm64: mm: update max_pfn after memory hotplug
-Date:   Thu, 23 Sep 2021 15:54:48 -0700
-Message-ID: <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
-References: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
+        id S243544AbhIWW5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:57:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243435AbhIWW5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 18:57:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C483661050;
+        Thu, 23 Sep 2021 22:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632437749;
+        bh=YCc8QSTAl6IqvIo5XZId9oapktBmGOuuYiyhrObvKr0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=t0FKWhPPx405FMBvQEkBkZ5S8jz0qoj9QO0Veq976W50SOy0DPJmFqtgWzopnYH1K
+         DvVA0sKKl/FkwFLRPrmt7jYOMTDHR/KMY0XP3Lfrj9mQ/neGK6PUtsq2iM3zV1hL2Q
+         hJH3whaFxtWAUh2p/FSEHt9I2jFOqdAtbhDbCvh/taJI7cLAX+ZxQa9u1CX3DQ+EV2
+         zkourkZILuuOIymxUVygEKIjkrL2My15u2XRHU4DEDoqY4eIA9JAVowOHkabeKZ5kG
+         XJlB7rS+TBkDi1f+CijNXFMoOnWzCj7cJoXVVcmFkdCzY4aB9U2iWyyedG4CoORcI7
+         buIdUvImxu/2w==
+Date:   Thu, 23 Sep 2021 15:55:47 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Igor Russkikh <irusskikh@marvell.com>,
+        intel-wired-lan@lists.osuosl.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        netdev@vger.kernel.org, Sathya Perla <sathya.perla@broadcom.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Subject: Re: [PATCH net-next 0/6] Batch of devlink related fixes
+Message-ID: <20210923155547.248ab1aa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <cover.1632420430.git.leonro@nvidia.com>
+References: <cover.1632420430.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+On Thu, 23 Sep 2021 21:12:47 +0300 Leon Romanovsky wrote:
+> I'm asking to apply this batch of devlink fixes to net-next and not to
+> net, because most if not all fixes are for old code or/and can be considered
+> as cleanup.
+> 
+> It will cancel the need to deal with merge conflicts for my next devlink series :).
 
-After new memory blocks have been hotplugged, max_pfn and max_low_pfn
-needs updating to reflect on new PFNs being hot added to system.
+Not sure how Dave will feel about adding fixes to net-next,
+we do merge the trees weekly after all.
 
-Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
-Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
----
- arch/arm64/mm/mmu.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index cfd9deb..fd85b51 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
- 	if (ret)
- 		__remove_pgd_mapping(swapper_pg_dir,
- 				     __phys_to_virt(start), size);
-+	else {
-+		max_pfn = PFN_UP(start + size);
-+		max_low_pfn = max_pfn;
-+	}
-+
- 	return ret;
- }
- 
--- 
-2.7.4
-
+Otherwise the patches look fine.
