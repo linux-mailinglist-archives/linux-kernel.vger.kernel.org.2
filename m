@@ -2,83 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D5041687E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9765416881
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243552AbhIWX3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 19:29:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235628AbhIWX3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 19:29:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60AC760F43;
-        Thu, 23 Sep 2021 23:28:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1632439692;
-        bh=1MbzwBSkc1BV2l0Q1eJRZ5r/+IJZfOlfncEyBxNFNc4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QoqOFG2qw3bM46IOzMY71mwInBqJkHG8+OaD0tKjys3CTuJIyHgxVXlvJAYMas12F
-         F2HEy8YxLuWFAhnHc31JAym5Ugkr3ZCQlFde6FPJ8lsV9Yc0HpPGIYxBYHz/UUrYoH
-         TvCWm5q1iXTxSPSnTlHJezXskmBuR96UAL4grWhE=
-Date:   Thu, 23 Sep 2021 16:28:11 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH v3 4/5] kfence: limit currently covered allocations when
- pool nearly full
-Message-Id: <20210923162811.3cc8188d6a30d9eed2375468@linux-foundation.org>
-In-Reply-To: <CANpmjNOh0ugPq90cVRPAbR-6qr=Q4CsQ_R1Qxk_Bi4TocgwUQA@mail.gmail.com>
-References: <20210923104803.2620285-1-elver@google.com>
-        <20210923104803.2620285-4-elver@google.com>
-        <CACT4Y+Zvm4dXQY2tCuypso9aU97_6U2dLhfg2NNA8GTvcQoCLQ@mail.gmail.com>
-        <CAG_fn=V31jEBeEVh0H2+uPAd2AhV9y6hYJmcP0P_i05UJ+MiTg@mail.gmail.com>
-        <CANpmjNOh0ugPq90cVRPAbR-6qr=Q4CsQ_R1Qxk_Bi4TocgwUQA@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S243559AbhIWXcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 19:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235628AbhIWXck (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 19:32:40 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E881C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:31:08 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id g184so7966971pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:31:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K4JmpLMfEZBQDMzNklJ8FfcrVNZ01v7mucqNK5/dyZM=;
+        b=gkAVQneMwXP7Huc8zYfsd3+1f1zM7FLbbtgibwzhZyhgU55BgV5tzOdFE2ZrWDtWUf
+         22jHQ23C2B5DLppVf2q47Bd9BXZqXZbQmnCrUcB8gFHbJLpluqB/XOUCpBrsHQKnL+dT
+         s104HCmPGY6HjNHsGhc1d+aSlUPg7supgiI/0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K4JmpLMfEZBQDMzNklJ8FfcrVNZ01v7mucqNK5/dyZM=;
+        b=4n883QUx4I83M8D517CX1iwABs/W8gmu+vLDtLbJ9KUMvW+hYsY37vgt4KTN0dQbWq
+         F52pMGOcTtGaAr2zqMKT0qSzosyRWfom1U1qdinkHHTPxJgWoq1HbKPMXS36/MgvSJp+
+         yPdEHN0vf6Q/nQPuf9eUmRx40s3JNzeK4vOu8ZLFIDroC7zSRSi4ufgsw3XKX1M/+ym+
+         ed5gh5ZNozqvYsX4xxgYppy6sNf+8I/OJk70IPGNaCTnFnP/M24UQCc4T9pB0bRynFmb
+         vkBlvRAl6/x7+njdabjFttO/Yr4En6GH7DVbk6mKAcwiPO4uUPZug/IaJ0mIhL2DYOkQ
+         hnEQ==
+X-Gm-Message-State: AOAM530XCraWy4cX7P8Xe40eRdbtplOjmWNtmtqYv4AYc/Vn3rG2bH59
+        UTXxssry2eaOGu/mAZ8jvonn5A==
+X-Google-Smtp-Source: ABdhPJyUMS9+dkTAn8bulQI1PwKGSJAiEU2TFwDmmGMul0cs12yHNWHgE4jLhjMiCypNQPSZXhdB6w==
+X-Received: by 2002:a63:595f:: with SMTP id j31mr1147183pgm.109.1632439868090;
+        Thu, 23 Sep 2021 16:31:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g15sm6628254pfu.155.2021.09.23.16.31.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 16:31:07 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
+        Anand K Mistry <amistry@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] proc: Disable /proc/$pid/wchan
+Date:   Thu, 23 Sep 2021 16:31:05 -0700
+Message-Id: <20210923233105.4045080-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3943; h=from:subject; bh=U7oablg1sEKMje5UnBxNq5+kJW+PeEznOm0x7d0aYaI=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhTQ448wi0wTXGV8xEtY6E/CSU09UrdLNeiRXpCrh6 PoRw46mJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYU0OOAAKCRCJcvTf3G3AJiL3D/ 431c8P+vVpq52hw+H+OcLEs36FHusT1bdXUKccVVKLCHKpzUoI+dv/3CNx8vVD0c91XAVZ5gS5LOw8 Gc6QB0slsnBq6QeOXcmDSbO804cI3t62G0hyfBR3nzzQcx5EIlHOaSprFC6bv5WsbciVfNyarKZszP 8h1XiwaIOpzAluyGupS82TzsPEIK4qK/kf84J3c5SnxBaYDBaF8VwlapazTz0ioYt19SvV+2LwQuMu ViEGXi0++E+6zGLibw0QFNByU5pUQ87QaXoNYkk3G9OqQWQomVtC7r9hecBqylypGB81zHpR71Kp4f 1rAFHLjhRBIHMccBpMaR6Ctvn9cXdHbpdoHOgxTrAvq6dstt9mAutFMmcm5DenSceLRih93BpxcEbJ g+lICZwWoM66jLpQrS4Z4fxl6zvr4JwcK7BFgs7uX8oVbHf2/1qfawJ03f0fjt0t5wjuGry3SlwXtj PvEW87KK3u4N8eN+bMCjTcgCebhYL+i/a0H8rMyYT7gnEdhBTBnQBxPoiu0mlZLhvs7HxeO6fK+By2 87ViZG2+v+LimtPlO43Vstw4A0UE50JNHwjPI+JiZqwyo+jLTGUpduK1sp8BXTeLLUi7A491jg+BSV lnU0IozaYhGmrkDOZQRN95E7I5mZR4u3SSbOx1SquO5EFCG8l9+agPOxonSw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 15:44:10 +0200 Marco Elver <elver@google.com> wrote:
+The /proc/$pid/wchan file has been broken by default on x86_64 for 4
+years now[1]. As this remains a potential leak of either kernel
+addresses (when symbolization fails) or limited observation of kernel
+function progress, just remove the contents for good.
 
-> > > > + * time, the below parameters provide a probablity of 0.02-0.33 for false
-> > > > + * positive hits respectively:
-> > > > + *
-> > > > + *     P(alloc_traces) = (1 - e^(-HNUM * (alloc_traces / SIZE)) ^ HNUM
-> > > > + */
-> > > > +#define ALLOC_COVERED_HNUM     2
-> > > > +#define ALLOC_COVERED_SIZE     (1 << (const_ilog2(CONFIG_KFENCE_NUM_OBJECTS) + 2))
-> > > > +#define ALLOC_COVERED_HNEXT(h) (1664525 * (h) + 1013904223)
-> >
-> > Unless we are planning to change these primes, can you use
-> > next_pseudo_random32() instead?
-> 
-> I'm worried about next_pseudo_random32() changing their implementation
-> to longer be deterministic or change in other ways that break our
-> usecase. In this case we want pseudorandomness, but we're not
-> implementing a PRNG.
-> 
-> Open-coding the constants (given they are from "Numerical Recipes") is
-> more reliable and doesn't introduce unwanted reliance on
-> next_pseudo_random32()'s behaviour.
+Unconditionally set the contents to "0" and also mark the wchan
+field in /proc/$pid/stat with 0.
 
-Perhaps we could summarize this in an additional comment?
+This leaves kernel/sched/fair.c as the only user of get_wchan(). But
+again, since this was broken for 4 years, was this profiling logic
+actually doing anything useful?
 
-Also, this:
+[1] https://lore.kernel.org/lkml/20210922001537.4ktg3r2ky3b3r6yp@treble/
 
-+static u32 get_alloc_stack_hash(unsigned long *stack_entries, size_t num_entries)
-+{
-+	/* Some randomness across reboots / different machines. */
-+	u32 seed = (u32)((unsigned long)__kfence_pool >> (BITS_PER_LONG - 32));
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Vito Caputo <vcaputo@pengaru.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ arch/x86/kernel/process.c |  2 +-
+ fs/proc/array.c           | 16 +++++-----------
+ fs/proc/base.c            | 16 +---------------
+ 3 files changed, 7 insertions(+), 27 deletions(-)
 
-seems a bit weak.  Would it be better to seed this at boot time with
-a randomish number?
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 1d9463e3096b..84a4f9f3f0c2 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -937,7 +937,7 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
+ }
+ 
+ /*
+- * Called from fs/proc with a reference on @p to find the function
++ * Called from scheduler with a reference on @p to find the function
+  * which called into schedule(). This needs to be done carefully
+  * because the task might wake up and we might look at a stack
+  * changing under us.
+diff --git a/fs/proc/array.c b/fs/proc/array.c
+index 49be8c8ef555..8a4ecfd901b8 100644
+--- a/fs/proc/array.c
++++ b/fs/proc/array.c
+@@ -452,7 +452,7 @@ int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
+ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
+ 			struct pid *pid, struct task_struct *task, int whole)
+ {
+-	unsigned long vsize, eip, esp, wchan = 0;
++	unsigned long vsize, eip, esp;
+ 	int priority, nice;
+ 	int tty_pgrp = -1, tty_nr = 0;
+ 	sigset_t sigign, sigcatch;
+@@ -540,8 +540,6 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
+ 		unlock_task_sighand(task, &flags);
+ 	}
+ 
+-	if (permitted && (!whole || num_threads < 2))
+-		wchan = get_wchan(task);
+ 	if (!whole) {
+ 		min_flt = task->min_flt;
+ 		maj_flt = task->maj_flt;
+@@ -600,16 +598,12 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
+ 	seq_put_decimal_ull(m, " ", sigcatch.sig[0] & 0x7fffffffUL);
+ 
+ 	/*
+-	 * We used to output the absolute kernel address, but that's an
+-	 * information leak - so instead we show a 0/1 flag here, to signal
+-	 * to user-space whether there's a wchan field in /proc/PID/wchan.
+-	 *
++	 * We used to output the absolute kernel address, and then just
++	 * a symbol. But both are information leaks, so just report 0
++	 * to indicate there is no wchan field in /proc/$PID/wchan.
+ 	 * This works with older implementations of procps as well.
+ 	 */
+-	if (wchan)
+-		seq_puts(m, " 1");
+-	else
+-		seq_puts(m, " 0");
++	seq_puts(m, " 0");
+ 
+ 	seq_put_decimal_ull(m, " ", 0);
+ 	seq_put_decimal_ull(m, " ", 0);
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 533d5836eb9a..52484cd77f99 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -378,24 +378,10 @@ static const struct file_operations proc_pid_cmdline_ops = {
+ };
+ 
+ #ifdef CONFIG_KALLSYMS
+-/*
+- * Provides a wchan file via kallsyms in a proper one-value-per-file format.
+- * Returns the resolved symbol.  If that fails, simply return the address.
+- */
+ static int proc_pid_wchan(struct seq_file *m, struct pid_namespace *ns,
+ 			  struct pid *pid, struct task_struct *task)
+ {
+-	unsigned long wchan;
+-
+-	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
+-		wchan = get_wchan(task);
+-	else
+-		wchan = 0;
+-
+-	if (wchan)
+-		seq_printf(m, "%ps", (void *) wchan);
+-	else
+-		seq_putc(m, '0');
++	seq_putc(m, '0');
+ 
+ 	return 0;
+ }
+-- 
+2.30.2
+
