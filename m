@@ -2,250 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE0E416526
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5079B41652A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242741AbhIWSWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        id S242746AbhIWSWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242679AbhIWSWl (ORCPT
+        with ESMTP id S242748AbhIWSWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:22:41 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DF3C061574;
-        Thu, 23 Sep 2021 11:21:09 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d6800010999bf90259edb.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6800:109:99bf:9025:9edb])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 31D311EC056D;
-        Thu, 23 Sep 2021 20:21:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632421264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=sRYoha6VNo1mirZ2tDsvl5M4pw+Lp6nZ+ru63TzNfNk=;
-        b=QKT9j+FcdVSYJR6XqJj56f1VwmVttXbYqJzEh1SRFX0BCeMFEzKjMYiIWUA0PUQHi/v6u7
-        4en/x3BlyGxbdkIoskyOLkXgWWnAMIwJ3773mYKBf/drdpiGwxNPJqJ1cm4p23LLLRJNSO
-        HKy8yqvOqt2DJB2fdgaAhYC7Oaw9OY0=
-Date:   Thu, 23 Sep 2021 20:21:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 5/8] x86/sme: Replace occurrences of sme_active() with
- cc_platform_has()
-Message-ID: <YUzFj+yH79XRc3F3@zn.tnic>
-References: <YUoao0LlqQ6+uBrq@zn.tnic>
- <20210921212059.wwlytlmxoft4cdth@box.shutemov.name>
- <YUpONYwM4dQXAOJr@zn.tnic>
- <20210921213401.i2pzaotgjvn4efgg@box.shutemov.name>
- <00f52bf8-cbc6-3721-f40e-2f51744751b0@amd.com>
- <20210921215830.vqxd75r4eyau6cxy@box.shutemov.name>
- <01891f59-7ec3-cf62-a8fc-79f79ca76587@amd.com>
- <20210922143015.vvxvh6ec73lffvkf@box.shutemov.name>
- <YUuJZ2qOgbdpfk6N@zn.tnic>
- <20210922210558.itofvu3725dap5xx@box.shutemov.name>
+        Thu, 23 Sep 2021 14:22:45 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAACEC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:21:13 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id a7so4579557plm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9ob8il3sRtB0EI7oiEUopUhSlFw8JQBlyLJrl6BInFM=;
+        b=HRjK4Qx9mhlqFEzTjmanpRbSehH0JkVBu3hRLhbHZz727WBzyxGUZoZX274nPyswKZ
+         8O6MWupe2Yppruq/Nc7SvEBtlS/VlvGz8DC3iIFmtnqelUbMrtpNG3LTHUC/jPZ/ne3A
+         +nRH9XNTHn46Kzc5Ox8+E+ozUGqo2igsTEX/8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9ob8il3sRtB0EI7oiEUopUhSlFw8JQBlyLJrl6BInFM=;
+        b=bFKb+VpNv/TTwtZmv2H/ZnqSURyvbNSXmvah1SfzAPECBwosf5nWUWdXmYCnnjloRr
+         ZJObdyv8N6PbKJVB/pJTavzyfkvPD8qKp5YWzAT3yJTmZI+ZAFcRA9KZuFMTbz1UIB0n
+         Sg+2BscfiwAgiNAnzz3EDBPzSPXH4/CwVq32WttWReiGWvpeKd9H6tr5cOm5c7I/+z/9
+         W6WVvu75GjTwoXFIvPQ8+NMaFVdBC7PVVZFxnkRzzB1ZGU2wvUT/+W2Y+qF6nYpxNcBw
+         KTvFmsX8PxB92vu8uY4b8xGcoVKFSGsy/PfL0+Nj1n1ExKCgIrP5qzigFTmPXzfUtrnD
+         7gew==
+X-Gm-Message-State: AOAM530z3ExnQI54OZzFX47LmPIh+S8hXK0c4aT/O/fioSN/QdaLwNo7
+        X4avVvV9NIs+44NVKkO+vK7GmQ==
+X-Google-Smtp-Source: ABdhPJygSTaJiz/7Xf1f5dFn5nSbDvvYu1SpdmTUrC2Va/hxHGSHYbn4p/Kz12L8EwlttC6T4Kff7g==
+X-Received: by 2002:a17:90b:4a0d:: with SMTP id kk13mr19503270pjb.215.1632421273292;
+        Thu, 23 Sep 2021 11:21:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s89sm6117532pjj.43.2021.09.23.11.21.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 11:21:12 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 11:21:11 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Subject: Re: [GIT PULL] ksmbd server security fixes
+Message-ID: <202109231109.0AD3D5A@keescook>
+References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
+ <202109221850.003A16EC1@keescook>
+ <CAH2r5muNG4GvziyMG2unkYNjUiT4V+pz0pWUGkWQNxUZJnBadw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922210558.itofvu3725dap5xx@box.shutemov.name>
+In-Reply-To: <CAH2r5muNG4GvziyMG2unkYNjUiT4V+pz0pWUGkWQNxUZJnBadw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 12:05:58AM +0300, Kirill A. Shutemov wrote:
-> Unless we find other way to guarantee RIP-relative access, we must use
-> fixup_pointer() to access any global variables.
+On Wed, Sep 22, 2021 at 10:20:01PM -0500, Steve French wrote:
+> After lots of discussion about areas to review - we created this wiki
+> page to track some of the detailed security review ongoing:
+> 
+> https://wiki.samba.org/index.php/Ksmbd-review
 
-Yah, I've asked compiler folks about any guarantees we have wrt
-rip-relative addresses but it doesn't look good. Worst case, we'd have
-to do the fixup_pointer() thing.
+Great!
 
-In the meantime, Tom and I did some more poking at this and here's a
-diff ontop.
+> That (adding additional functional tests for smb3 overflows, and
+> also it restarts a discussion about creating open source "smb3 fuzzing"
+> tools to help Samba and ksmbd both) ... that is a discussion I have
+> been having with others on the Samba team as well, some of
+> the security bugs could have been found with additions
+> to the "smbtorture" set of functional tests (which are hosted in the Samba
+> server projects).
 
-The direction being that we'll stick both the AMD and Intel
-*cc_platform_has() call into cc_platform.c for which instrumentation
-will be disabled so no issues with that.
+Yeah, I think this is really important, and especially for bug fixing:
+if a bug gets fixed in protocol or filesystem handling, there needs to
+be a test to go with it. Without that, no one can say with a straight
+face that it is actually fixed. It's just a band-aid unless there is an
+accompanying test that exercises the flaw to make sure the fix doesn't
+regress in the future.
 
-And that will keep all that querying all together in a single file.
+So, I think each of the recent fixes needs to have an associated test --
+especially the path walking and buffer overflows.
 
----
-diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index a73712b6ee0e..2d4f5c17d79c 100644
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -51,7 +51,6 @@ void __init mem_encrypt_free_decrypted_mem(void);
- void __init mem_encrypt_init(void);
- 
- void __init sev_es_init_vc_handling(void);
--bool amd_cc_platform_has(enum cc_attr attr);
- 
- #define __bss_decrypted __section(".bss..decrypted")
- 
-@@ -74,7 +73,6 @@ static inline void __init sme_encrypt_kernel(struct boot_params *bp) { }
- static inline void __init sme_enable(struct boot_params *bp) { }
- 
- static inline void sev_es_init_vc_handling(void) { }
--static inline bool amd_cc_platform_has(enum cc_attr attr) { return false; }
- 
- static inline int __init
- early_set_memory_decrypted(unsigned long vaddr, unsigned long size) { return 0; }
-@@ -103,12 +101,6 @@ static inline u64 sme_get_me_mask(void)
- 	return sme_me_mask;
- }
- 
--#if defined(CONFIG_CPU_SUP_INTEL) && defined(CONFIG_ARCH_HAS_CC_PLATFORM)
--bool intel_cc_platform_has(enum cc_attr attr);
--#else
--static inline bool intel_cc_platform_has(enum cc_attr attr) { return false; }
--#endif
--
- #endif	/* __ASSEMBLY__ */
- 
- #endif	/* __X86_MEM_ENCRYPT_H__ */
-diff --git a/arch/x86/kernel/cc_platform.c b/arch/x86/kernel/cc_platform.c
-index da54a1805211..97ede7052f77 100644
---- a/arch/x86/kernel/cc_platform.c
-+++ b/arch/x86/kernel/cc_platform.c
-@@ -13,6 +13,52 @@
- 
- #include <asm/processor.h>
- 
-+static bool intel_cc_platform_has(enum cc_attr attr)
-+{
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+	return false;
-+#else
-+	return false;
-+#endif
-+}
-+
-+/*
-+ * SME and SEV are very similar but they are not the same, so there are
-+ * times that the kernel will need to distinguish between SME and SEV. The
-+ * cc_platform_has() function is used for this.  When a distinction isn't
-+ * needed, the CC_ATTR_MEM_ENCRYPT attribute can be used.
-+ *
-+ * The trampoline code is a good example for this requirement.  Before
-+ * paging is activated, SME will access all memory as decrypted, but SEV
-+ * will access all memory as encrypted.  So, when APs are being brought
-+ * up under SME the trampoline area cannot be encrypted, whereas under SEV
-+ * the trampoline area must be encrypted.
-+ */
-+static bool amd_cc_platform_has(enum cc_attr attr)
-+{
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	switch (attr) {
-+	case CC_ATTR_MEM_ENCRYPT:
-+		return sme_me_mask;
-+
-+	case CC_ATTR_HOST_MEM_ENCRYPT:
-+		return sme_me_mask && !(sev_status & MSR_AMD64_SEV_ENABLED);
-+
-+	case CC_ATTR_GUEST_MEM_ENCRYPT:
-+		return sev_status & MSR_AMD64_SEV_ENABLED;
-+
-+	case CC_ATTR_GUEST_STATE_ENCRYPT:
-+		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
-+
-+	default:
-+		return false;
-+	}
-+#else
-+	return false;
-+#endif
-+}
-+
-+
- bool cc_platform_has(enum cc_attr attr)
- {
- 	if (sme_me_mask)
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 53756ff12295..8321c43554a1 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -60,13 +60,6 @@ static u64 msr_test_ctrl_cache __ro_after_init;
-  */
- static bool cpu_model_supports_sld __ro_after_init;
- 
--#ifdef CONFIG_ARCH_HAS_CC_PLATFORM
--bool intel_cc_platform_has(enum cc_attr attr)
--{
--	return false;
--}
--#endif
--
- /*
-  * Processors which have self-snooping capability can handle conflicting
-  * memory type across CPUs by snooping its own cache. However, there exists
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index 9417d404ea92..23d54b810f08 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -361,38 +361,6 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size)
- 	return early_set_memory_enc_dec(vaddr, size, true);
- }
- 
--/*
-- * SME and SEV are very similar but they are not the same, so there are
-- * times that the kernel will need to distinguish between SME and SEV. The
-- * cc_platform_has() function is used for this.  When a distinction isn't
-- * needed, the CC_ATTR_MEM_ENCRYPT attribute can be used.
-- *
-- * The trampoline code is a good example for this requirement.  Before
-- * paging is activated, SME will access all memory as decrypted, but SEV
-- * will access all memory as encrypted.  So, when APs are being brought
-- * up under SME the trampoline area cannot be encrypted, whereas under SEV
-- * the trampoline area must be encrypted.
-- */
--bool amd_cc_platform_has(enum cc_attr attr)
--{
--	switch (attr) {
--	case CC_ATTR_MEM_ENCRYPT:
--		return sme_me_mask;
--
--	case CC_ATTR_HOST_MEM_ENCRYPT:
--		return sme_me_mask && !(sev_status & MSR_AMD64_SEV_ENABLED);
--
--	case CC_ATTR_GUEST_MEM_ENCRYPT:
--		return sev_status & MSR_AMD64_SEV_ENABLED;
--
--	case CC_ATTR_GUEST_STATE_ENCRYPT:
--		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
--
--	default:
--		return false;
--	}
--}
--
- /* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
- bool force_dma_unencrypted(struct device *dev)
- {
+Is there a "patch requirements" doc for doing reviews? I don't see
+anything specific to the "on going" review process at the wiki. The wiki
+just calls out a number of areas that need out-of-band examination
+(which is great!) in the form of basically a detailed TODO list. But I
+don't see an actual patch review process. Specifically, what things must
+a patch author do before the maintainer will be happy to accept a patch?
+
+> I am pleased with the progress that Namjae et al have been making
+> addressing the problems identified, but agree it is not ready for production
+> use yet, despite good functional test results - and testing events
+> (like the SMB3
+> plugfest next week) are going to be important, as well as the security reviews.
+> Fortunately the code size is manageable (25KLOC), and without legacy,
+> insecure dialects to worry about (SMB1, LANMAN etc.), unlike most servers,
+> the reviews should proceed reasonably quickly.
+
+Great! I'm glad to hear it. For those events do you build kernels will
+full KASAN, KMSAN, KCSAN, etc enabled? There might be a lot of flaws
+that wouldn't otherwise get noticed.
+
+> There is some good news (relating to security), once Namjae et al get past
+> these buffer overflow etc. patches.
+> - he has already implemented the strongest encryption supported in SMB3.1.1
+> - he has implemented the man in the middle attack prevention features
+> of the protocol
+> - strong (Kerberos) authentication is implemented
+
+Sounds excellent -- have these received professional crypto review?
+There are a lot of corner cases in crypto negotiation procotols.
+
+> - he has removed support for weak older dialects (including SMB1 and
+> SMB2) of the protocol
+> - he will be removing support for weaker authentication (including NTLMv1)
+
+Yay attack surface reduction! :)
+
+> Any feedback you have on the security list identified in the wiki list
+> above, or other
+> things you see in Coverity or the mailing list discussions reviewing the patches
+> would be helpful.
+
+Thanks for making these recent changes; I feel much better about ksmbd's
+direction. I'll take a look through the Wiki.
+
+Thanks!
+
+-Kees
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Kees Cook
