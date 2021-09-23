@@ -2,78 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F478415F15
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EF2415F17
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241147AbhIWNCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:02:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52141 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235776AbhIWNCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:02:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="221946832"
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="221946832"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 06:00:30 -0700
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="474841488"
-Received: from mmocanu-mobl1.ger.corp.intel.com (HELO [10.249.36.33]) ([10.249.36.33])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 06:00:27 -0700
-Message-ID: <ab4ea50f-9149-3468-ce2b-7cd421095b40@linux.intel.com>
-Date:   Thu, 23 Sep 2021 16:00:28 +0300
+        id S241173AbhIWNCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:02:32 -0400
+Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:55519 "EHLO
+        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241167AbhIWNCY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:02:24 -0400
+Received: from MTA-15-3.privateemail.com (MTA-15-1.privateemail.com [198.54.118.208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id D567B8064F;
+        Thu, 23 Sep 2021 09:00:51 -0400 (EDT)
+Received: from mta-15.privateemail.com (localhost [127.0.0.1])
+        by mta-15.privateemail.com (Postfix) with ESMTP id 8254A18000AD;
+        Thu, 23 Sep 2021 09:00:50 -0400 (EDT)
+Received: from [192.168.0.46] (unknown [10.20.151.205])
+        by mta-15.privateemail.com (Postfix) with ESMTPA id 5791818000A3;
+        Thu, 23 Sep 2021 09:00:49 -0400 (EDT)
+Date:   Thu, 23 Sep 2021 09:00:43 -0400
+From:   Hamza Mahfooz <someguy@effective-light.com>
+Subject: Re: [PATCH v2] aio: convert active_reqs into a hashtable
+To:     Benjamin LaHaise <bcrl@kvack.org>
+Cc:     linux-kernel@vger.kernel.org,
+        kernel test robot <yujie.liu@intel.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org
+Message-Id: <7H1WZQ.H8D3XK8HUSNQ3@effective-light.com>
+In-Reply-To: <20210919145645.GE16005@kvack.org>
+References: <20210919144146.19531-1-someguy@effective-light.com>
+        <20210919145645.GE16005@kvack.org>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v2 10/12] ASoC: SOF: Intel: hda: make sure DAI widget is
- set up before IPC
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@oss.nxp.com>, broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        daniel.baluta@nxp.com
-References: <20210917143659.401102-1-daniel.baluta@oss.nxp.com>
- <20210917143659.401102-11-daniel.baluta@oss.nxp.com>
- <203bf6cd-6407-f01d-52c3-e399d06cb3f6@linux.intel.com>
- <b90eff84-b56c-7764-a5bb-f1e07db57cc3@linux.intel.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <b90eff84-b56c-7764-a5bb-f1e07db57cc3@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 23/09/2021 15:58, Pierre-Louis Bossart wrote:
-> 
->>> +static struct sof_ipc_dai_config *hda_dai_update_config(struct snd_soc_dapm_widget *w,
->>> +							int channel)
->>>  {
->>> +	struct snd_sof_widget *swidget = w->dobj.private;
->>>  	struct sof_ipc_dai_config *config;
->>>  	struct snd_sof_dai *sof_dai;
->>> -	struct sof_ipc_reply reply;
->>> -	int ret = 0;
->>>  
->>> -	list_for_each_entry(sof_dai, &hda_stream->sdev->dai_list, list) {
->>> -		if (!sof_dai->cpu_dai_name)
->>> -			continue;
->>> +	if (!swidget) {
->>> +		dev_err(swidget->scomp->dev, "error: No private data for widget %s\n", w->name);
->>
->> NULL pointer dereference, just return NULL without the print. The caller
->> is printing anyways.
-> 
-> yes good catch, we need a v3 with the fixes suggested by Peter in
-> https://github.com/thesofproject/linux/pull/3171/ applied.
+On Sun, Sep 19 2021 at 10:56:45 AM -0400, Benjamin LaHaise 
+<bcrl@kvack.org> wrote:
+> You're doing this wrong.  If you want faster cancellations, stash an 
+> index
+> into iocb->aio_key to index into an array with all requests rather 
+> than
+> using a hash table.
 
-Only the second patch in the PR is applicable for upstream, but it
-should be squashed in for v3.
+Would that not mean that, we would have to keep track of the indices of 
+the
+array that are not being held by an `aio_kiocb`?
 
--- 
-Péter
+
