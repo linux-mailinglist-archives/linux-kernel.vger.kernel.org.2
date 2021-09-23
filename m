@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7C941572A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1276141573D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239687AbhIWDrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:47:03 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:42052 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239285AbhIWDoa (ORCPT
+        id S239131AbhIWD5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232419AbhIWD5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:44:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UpHnR.b_1632368577;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UpHnR.b_1632368577)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 23 Sep 2021 11:42:57 +0800
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Subject: [RFC PATCH] trace: prevent preemption in perf_ftrace_function_call()
-Message-ID: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
-Date:   Thu, 23 Sep 2021 11:42:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Wed, 22 Sep 2021 23:57:30 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46253C061574;
+        Wed, 22 Sep 2021 20:55:59 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so768374pjw.0;
+        Wed, 22 Sep 2021 20:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZFkGDmBfwTQemY7FBg23LWt2kzYZwvNOc/FK/5I0Trk=;
+        b=avkvJs9R7pHcZxUnnlsnTRRlHB7UHqrW9XaY5GRbHOZbTtzpoGy8/8SlJGxOEPtNhv
+         jOMmg7L4/rw7DRBnyRpttgQJomJxU9SL7mQkh0oXzbJgzqFZbvp+s0JkJF1VBqPM/D/x
+         4kA106OuenBYRQ9yFQsYPr09GRS3BSRfF6HYjptqGarKBcRK1MehDaZlwquLqK8CRBDR
+         Vokb3loIgUMdFWx55Bt9G86g/C1gRHXqtABNIGx13690DuykJRMMXkM7waqE9xXE9Gqk
+         XuBjXhTY8UWL3Y+OZXVoIU2Sg+dmBJS497DVdl/BqtiomfOE4QJ+9nE/iIpyTqQpEy1+
+         wLSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZFkGDmBfwTQemY7FBg23LWt2kzYZwvNOc/FK/5I0Trk=;
+        b=WK/Z3oQxuYADU/5vXgiP/P9ggbV87zBBYvpt3fwgU3E+KxlhkX3fkMXb0M0fpXlkRN
+         n85WO+AjtXVnDvWKMNsXPqytIE414+FdsZz7CasI0uYX2yVF/pmcV/GsIxCRdnAqg5xL
+         uKHzJEI+FIOd60KuGcCbBHlgovIgh3DjOV/E8b4MxXi4a15Qa9UPRKXwSqg//lemDeh8
+         kKz3jWFl6RKOeEOOJHwSZ8ihdW8mUNIkArSqiQJqlJjWsBzAMxxzaGsly5ceOYov/+MO
+         iAAfjtwHkq6BzIKPV4qmjb70K98ltGGLMBrnmq0rPPVnsX51PvEUpTNSJB84QNWtAYdf
+         noxw==
+X-Gm-Message-State: AOAM533qf8qwREFc9rqhn2amKfkX3M74vaS2u8DKwOYF1xMlTRfAIuFu
+        H262NzRjnOfLpC0gH4pV0aenXhMcnlc=
+X-Google-Smtp-Source: ABdhPJxyR0hq8wOolCA9Xzp8LEF8ocks743zdsq5UM2xcSS1vdTP+CJUieTrSwkOwvfy7KxPQ3NojQ==
+X-Received: by 2002:a17:90b:1e4d:: with SMTP id pi13mr15412337pjb.96.1632369358819;
+        Wed, 22 Sep 2021 20:55:58 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id l128sm3871716pfd.106.2021.09.22.20.55.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 20:55:58 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 03:55:53 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        John Garry <john.garry@huawei.com>,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org
+Subject: Github link here
+Message-ID: <20210923035553.GA4247@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920154816.31832-1-42.hyeyoo@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_DEBUG_PREEMPT we observed reports like:
+Hello there!
 
-  BUG: using smp_processor_id() in preemptible
-  caller is perf_ftrace_function_call+0x6f/0x2e0
-  CPU: 1 PID: 680 Comm: a.out Not tainted
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x8d/0xcf
-   check_preemption_disabled+0x104/0x110
-   ? optimize_nops.isra.7+0x230/0x230
-   ? text_poke_bp_batch+0x9f/0x310
-   perf_ftrace_function_call+0x6f/0x2e0
-   ...
-   __text_poke+0x5/0x620
-   text_poke_bp_batch+0x9f/0x310
+In v1 and v2, I showed simple proof of concept of lockless cache.
+After some discussions, it turns out that there are some issues to solve.
+It will take some to solve them.
 
-This tell us the CPU could be changed after task is preempted, and
-the checking on CPU before preemption is helpless.
+I made git repository on github to share its progress:
+	https://github.com/hygoni/linux.git
 
-This patch just turn off preemption in perf_ftrace_function_call()
-to prevent CPU changing.
+This is based on v5.15-rc2, and the main branch will be
+'lockless_cache'. There's *nothing* in the repo now and
+will be updated randomly. hopefully every 1-3 days, or every week.
+(note that I'm not full time kernel developer. it's hobby.)
 
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
----
- kernel/trace/trace_event_perf.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+I'll make use of 'issues' and 'discussions' tab (github feature to track
+issues and discussions).
 
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index 6aed10e..5486b18 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -438,15 +438,17 @@ void perf_trace_buf_update(void *record, u16 type)
- 	int rctx;
- 	int bit;
+You can join if you're interested.
+Thank you for your interest on this project!
 
-+	preempt_disable_notrace();
-+
- 	if (!rcu_is_watching())
--		return;
-+		goto out;
-
- 	if ((unsigned long)ops->private != smp_processor_id())
--		return;
-+		goto out;
-
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
--		return;
-+		goto out;
-
- 	event = container_of(ops, struct perf_event, ftrace_ops);
-
-@@ -468,16 +470,18 @@ void perf_trace_buf_update(void *record, u16 type)
-
- 	entry = perf_trace_buf_alloc(ENTRY_SIZE, NULL, &rctx);
- 	if (!entry)
--		goto out;
-+		goto out_unlock;
-
- 	entry->ip = ip;
- 	entry->parent_ip = parent_ip;
- 	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, TRACE_FN,
- 			      1, &regs, &head, NULL);
-
--out:
-+out_unlock:
- 	ftrace_test_recursion_unlock(bit);
- #undef ENTRY_SIZE
-+out:
-+	preempt_enable_notrace();
- }
-
- static int perf_ftrace_function_register(struct perf_event *event)
--- 
-1.8.3.1
-
+--
+Hyeonggon
