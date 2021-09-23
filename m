@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC185415850
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B18E415855
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239403AbhIWGjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 02:39:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54034 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239330AbhIWGjA (ORCPT
+        id S239365AbhIWGnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 02:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239329AbhIWGnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:39:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632379048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r3N1Pk90niGm/fYHoe53S2YI5UtAjlPE7QGhiZeYU94=;
-        b=DHiTGzdRkln+CBNBuFR5p/GhDuIw0ofYM9M6EAO7Zin1lpizLC6Em06sXPqj1HSCd44ZxE
-        JaiwOer9Zq/2SARDb3uhS/NyvOzOdyDHt3vMUanA3ExFrWT1IFW/8RWtGki/ov4LdSZSu+
-        2zXn8vhIjt+Jnr8pGiVyYiwTv69s38U=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-oF1itKmBOrGbqCIhlp7-2g-1; Thu, 23 Sep 2021 02:37:27 -0400
-X-MC-Unique: oF1itKmBOrGbqCIhlp7-2g-1
-Received: by mail-ed1-f70.google.com with SMTP id c7-20020a05640227c700b003d27f41f1d4so5742935ede.16
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:37:26 -0700 (PDT)
+        Thu, 23 Sep 2021 02:43:19 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DCEC061574;
+        Wed, 22 Sep 2021 23:41:48 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id p12-20020a17090adf8c00b0019c959bc795so4175999pjv.1;
+        Wed, 22 Sep 2021 23:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KX+BeTvm2OfDvt4yEQs7c9VNutss4NZTW2hQF6gEICw=;
+        b=PWpOV/oUWPTrlV37sCziDPsNWy3YQe1lqM0qr+RyHc5qicXsjBJhFRwoZRRoqtaKnX
+         np/jzpMuzeWazz9Y6c8b16sYsdloEnVnp9Y81dEu4lih8bQGQ7VjlQbG3wv/0DcJr6iQ
+         eXOo5Ye92tGXQF6JA2/sERGfjG2r91nfyWACFjPxY8ibJ/P1NWaflmpjg/l6ScgEg/VI
+         JhllzhbPNBbsICX6tcybj8ILPNh2MYS4bSkIKdRHqpfCe9s5uakIAvNoQoOP8jS/VJ5+
+         iO7SEeFT11ecfbW0/I4ESZ4lorspzlHZdPs6sjeKq3tbm36gsMXrhUPZT4RUPh2Ye1a4
+         hzbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=r3N1Pk90niGm/fYHoe53S2YI5UtAjlPE7QGhiZeYU94=;
-        b=UYrVTbpDbqxtohSuNU4C/BGuPGBFH5IJ3461/2wwL5k6Gu1/aqoX3ABW/ejjFghNW4
-         QeIhWHuRV1dHjUltXKzKPjnrf0xkPVH28pAUCNpNSK25tmNYgg/N3hW721xQ0OL0tdOI
-         G4V7hSQTcUcbXipUoroUreAM9opErLTv2vYucPByZf9X8doz/XfGUQX+SRWFsn18al2C
-         aO57QCgRxoIsJNDTVHDmSsX1IpxVlVzB/nFbLddnqa63EX2K30pMRI2eziX7ppypQoT/
-         8CHVxm2eFEIHuDJnkLs+aoxQwbsEQg1L+fd4sFDmMbrn/xr2b76efIGP9EQT425OtzL0
-         pTGQ==
-X-Gm-Message-State: AOAM5324zQWPOzcnGr8Vb3UtLhx83S0Z8AkYY/9C0eydchSds5/c5Lua
-        Amd57IkWFgeZb6IHOoxoupXBdTCV2sS/Zj3Y5YeDLtrDQKVkiQfOVVv//YREXwIozF+scamdynq
-        kMnEhgKs7t+X+EZ+B4QC8JF1+
-X-Received: by 2002:a17:906:144b:: with SMTP id q11mr3489659ejc.78.1632379045846;
-        Wed, 22 Sep 2021 23:37:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz8+tt6EgDc6snF2gl3BYAQrxR5dQeSrRfvqz2EVy/8Rxah+ezCSf6VfGuZJo/6DI0wkSBBOg==
-X-Received: by 2002:a17:906:144b:: with SMTP id q11mr3489648ejc.78.1632379045682;
-        Wed, 22 Sep 2021 23:37:25 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w25sm2722302edi.22.2021.09.22.23.37.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 23:37:24 -0700 (PDT)
-Subject: Re: [PATCH] KVM: VMX: Check if bus lock vmexit was preempted
-To:     Hao Xiang <hao.xiang@linux.alibaba.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, chenyi.qiang@intel.com,
-        shannon.zhao@linux.alibaba.com,
-        Sean Christopherson <seanjc@google.com>
-References: <1631964600-73707-1-git-send-email-hao.xiang@linux.alibaba.com>
- <87b411c3-da75-e074-91a4-a73891f9f5f8@redhat.com>
- <57597778-836c-7bac-7f1d-bcdae0cd6ac4@intel.com>
- <a0d6bcd8-11e4-4efd-0317-0bec6e59f06a@redhat.com>
- <84cd2713-3cc4-3120-946e-0cf8b8a8187d@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0b8714ed-c3ae-01ee-d2fd-fe7542d01596@redhat.com>
-Date:   Thu, 23 Sep 2021 08:37:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=KX+BeTvm2OfDvt4yEQs7c9VNutss4NZTW2hQF6gEICw=;
+        b=4I2L64/t3Ll/rYgvnrCh83GESf7QV8I/e3d0zascl9H4p/tp7XUt6VgIBAjb9y3NV9
+         0sIwkoZ+IiKu5lY3uO1EHNkyvHik1yBEy3TFdj6T+D3+FiOPQRGmbpE69fzXMKptqzLc
+         9jD5e8hrTgXYtDFW7kaBn5WLrDKAPx5Pgl6LAygFxXZBEonEuyVkaVQIL9IZiMvhYMvB
+         7c3gMgpjyBvmuxny7fMqshcoBayMBggafaiQvLGNSeTqHIlixCHBrWDuGd+W4cTxcv8m
+         aA2SMU5jc0C8YkMi3yghuU09804LdZk2miC658xpgIeChMNT8GbeGGDxhLOIoYxBwQ22
+         sbsg==
+X-Gm-Message-State: AOAM5308ssuydc+T0nq67DVozMIvc2ml4cZXwO23P1raVMF6qOZuUcDy
+        ULPIUoYm5ij40yObqquqJcU=
+X-Google-Smtp-Source: ABdhPJxPhxlYdylWr11UScIxg4q9qahayxo1GhiVQlNbjddxH0T9o945fCfqI9A0K+XkhmwHt28uPw==
+X-Received: by 2002:a17:90a:fd85:: with SMTP id cx5mr16061356pjb.168.1632379308255;
+        Wed, 22 Sep 2021 23:41:48 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id w11sm4779474pgf.5.2021.09.22.23.41.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 23:41:47 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/4] Add Unisoc's UMS512 clock support
+Date:   Thu, 23 Sep 2021 14:41:33 +0800
+Message-Id: <20210923064137.60722-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <84cd2713-3cc4-3120-946e-0cf8b8a8187d@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/21 02:59, Hao Xiang wrote:
-> EXIT_REASON.bus_lock_detected may or may not be set when 
-> exit_reason=EXIT_REASON_BUS_LOCK,  It clould depend on hardware 
-> implementaion. No matter when intel states it clearly, I think it is 
-> better that we avoid repeated assignment by adding additional check 
-> condition in vmx_handle_exit.  Of course , it is also ok that 
-> hand_bus_lock_vmexit do nothing , but the code is not clear, and the 
-> code logic will be inconsistent with spec description.
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-For 5.16 we'll go with something like Sean's sketch, that sets the 
-bus_lock_detected bit on EXIT_REASON_BUS_LOCK.
+Changes since v3:
+* Added back 'reg' property as required;
+* Added Rob's Reviewed-by on patch 2/4;
+* Changed to dual license for sprd,ums512-clk.h;
 
-Paolo
+Changes since v2:
+* Fixed bindings check errors;
+* Addressed Rob's comments;
+* Added an example of syscon which doesn't include "#address-cells",
+ "#size-cells", "ranges" properties, so removed these three
+  properties from "required".
+
+Changes since v1:
+* Fixed errors founded on sprd,ums512-clk.yaml;
+* Added a new bindings file for global register which would provide register map for clocks.
+
+Chunyan Zhang (2):
+  dt-bindings: clk: sprd: Add bindings for ums512 clock controller
+  dt-bindings: mfd: sprd: Add bindings for ums512 global registers
+
+Xiongpeng Wu (2):
+  clk: sprd: Add dt-bindings include file for UMS512
+  clk: sprd: Add Unisoc's UMS512 clock driver
+
+ .../bindings/clock/sprd,ums512-clk.yaml       |   72 +
+ .../bindings/mfd/sprd,ums512-glbreg.yaml      |   68 +
+ drivers/clk/sprd/Kconfig                      |    8 +
+ drivers/clk/sprd/Makefile                     |    1 +
+ drivers/clk/sprd/ums512-clk.c                 | 2197 +++++++++++++++++
+ include/dt-bindings/clock/sprd,ums512-clk.h   |  396 +++
+ 6 files changed, 2742 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
+ create mode 100644 drivers/clk/sprd/ums512-clk.c
+ create mode 100644 include/dt-bindings/clock/sprd,ums512-clk.h
+
+-- 
+2.25.1
 
