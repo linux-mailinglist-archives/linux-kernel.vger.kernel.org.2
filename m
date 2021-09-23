@@ -2,121 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF08415484
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018D0415489
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238667AbhIWARr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 20:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234042AbhIWARq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 20:17:46 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F21C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:16:16 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so5699826pjc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:16:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=Fl9XoN3viCQtNolMKLNiLXtJoc0M0YllPIN6GladX98=;
-        b=PKo1cjcoTMKXAFHW5IY70J8+sbtZIM59hnD7JBK6DG+GG2+zx9fymYMxVa9Bu4e5Cf
-         v9KQkH4bFb0ZC6zWNIgqO1jBNw8S8TasupaDQ6RuHkyBn5bUkdKUAv1S6KhFJTG5KWc4
-         +xPNPoUEt2Vwz/B4pJtdIlxZ0tZmMIbwKJel7I7LAIAlihLpPdpqDtLDfiD8PQDg1Pvf
-         VmXVA+6kNg2LDINUNHMvr0Poaa1vsDsl3ss/ExHxSqstlwehlqmXbtPtYecjk5IMnyqt
-         gYv838WXk3V5AExkg2VLUIGOfWEx4BVFPwxbXCAxGE6GT2gH8JRCiTtmIkO3jwAwWd89
-         xLnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=Fl9XoN3viCQtNolMKLNiLXtJoc0M0YllPIN6GladX98=;
-        b=hY2ZAc/0PuwFHZkt7fnIY9OP5g7hgYIBb/PvxWP5COxFTxKxRqEN3CTH2fYdMZahWa
-         iH52FPpcw1EQXbTo1de8UU0YHlDwzNAxscDS80I6pUZaCU9s6Y4hnMhoo+vHqejSsSU6
-         lX1RSDoAD6fnZ+GSZRAPDgB2y9KsgIEGzLC8OkC/gBnYxPNXgchwDm6y2WjRmYEXhJTw
-         vimvXqeOUUc1u1471mxZNNuRV4kCposU+USAyPLK983nYb83jkTlYVpFOxlXVh63hHvk
-         /NQHEpO5Z1YqdQZYpV94v58le7tmSsUwEjCxbY1kXrH/CVgASl/oWSXZE5A0C1qlOmO9
-         6O/g==
-X-Gm-Message-State: AOAM530ZSvRajB3ykkyzaEWH1Mmw4kPCeHXfUO46CFnmHF7IcVIBx7Eh
-        jtZPZoQCx99S/+xX5mDMgEVQ7Nx0DtsD3D+MnH0=
-X-Google-Smtp-Source: ABdhPJzQdRh8kuiqT6GRXhsTohBUwWwV+Egnx7SmcOK2NuNjIAB3DfzLoDsh9FXB2GJTX0xOVImuE4JuMguIBDOau2M=
-X-Received: by 2002:a17:90b:1c92:: with SMTP id oo18mr14621103pjb.56.1632356175694;
- Wed, 22 Sep 2021 17:16:15 -0700 (PDT)
+        id S238679AbhIWAT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 20:19:57 -0400
+Received: from mga09.intel.com ([134.134.136.24]:8311 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234042AbhIWATz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 20:19:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="223763481"
+X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
+   d="scan'208";a="223763481"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 17:18:24 -0700
+X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
+   d="scan'208";a="474688899"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.209.87.52])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 17:18:24 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v15 0/4] Intel MAX10 BMC Secure Update Driver
+Date:   Wed, 22 Sep 2021 17:18:18 -0700
+Message-Id: <20210923001822.283220-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Sender: mrs.kimhongyeoh55@gmail.com
-Received: by 2002:a05:6a10:8c18:0:0:0:0 with HTTP; Wed, 22 Sep 2021 17:16:15
- -0700 (PDT)
-From:   "Mrs. Nadia Emaan" <mrsnadiaemaan51@gmail.com>
-Date:   Thu, 23 Sep 2021 00:16:15 +0000
-X-Google-Sender-Auth: 17blBSYRHC6yXdL8dD5W2ebjboM
-Message-ID: <CAPeJZ8CgVL=k1hKGumR=uei6Nz78+96vGe8PYdMv+HGNLj1VmA@mail.gmail.com>
-Subject: HELLO:
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-May God Bless you My Friend,
+The Intel MAX10 BMC Secure Update driver instantiates the FPGA Image
+Load framework and provides the callback functions required to
+support secure updates on Intel n3000 PAC devices. This driver is
+implemented as a sub-driver of the Intel MAX10 BMC mfd driver.
 
-I am contacting you through this means because I need your urgent
-assistance and also help me to carry a charity project in your
-country. I found your email address as a true child of God for past
-few days now that I have been praying to know if you are really the
-chosen one for this great charity project, according to God's
-direction, after all prayers I am convinced, and I have decided to
-contact you. Please, i want you use the funds for the Lord's work,
-with confidence, read and respond now.
+This driver interacts with the HW secure update engine of the FPGA
+card BMC in order to transfer new FPGA and BMC images to FLASH on
+the FPGA card so that they will be automatically loaded when the
+FPGA card reboots. Security is enforced by hardware and firmware.
+The MAX10 BMC Secure Update driver interacts with the firmware to
+initiate an update, pass in the necessary data, and collect status
+on the update.
 
+This driver provides sysfs files for displaying the flash count, the
+root entry hashes (REH), and the code-signing-key (CSK) cancellation
+vectors.
 
-My name is Mrs. Emman Nadia Faroul, a widow, but currently based in West
-Africa since my life with my late husband, who was a businessman in
-this country before dying some years ago. We were married to many
-years without a child. He died after a brief illness that lasted only
-six days and I myself have been suffering from an ovarian cancer
-disease. At this moment I am about to finish the race in this way
-because the disease has reached a very bad stage, without any family
-member and without children. I hope you do not expose or betray this
-trust and I am sure that I am about to trust you for the mutual
-benefit of orphans and the less privileged. I have some funds that I
-inherited from my late husband, the total sum of ($ 12,500,000.00)
-deposited at a bank here in Burkina Faso. After knowing my current
-state of health, I decided to trust you with this fund, believing that
-you will use it in the way I will instruct here.
+These patches are dependent on other patches that are under review.
+If you want to apply and compile these patches on linux-next, please
+apply these patches first:
 
+(5 patches) https://lkml.org/lkml/2021/9/22/1187
 
-you will use this $12.5 Million for public benefit as follows;
+Changelog v14 -> v15:
+  - Updated the Dates and KernelVersions in the ABI documentation
+  - Change driver name from "n3000bmc-secure" to "n3000bmc-sec-update".
+  - Change CONFIG_FPGA_M10_BMC_SECURE to CONFIG_FPGA_M10_BMC_SEC_UPDATE.
+  - Change instances of *bmc-secure to *bmc-sec-update in file name
+    and symbol names.
+  - Change instances of *m10bmc_secure* to *m10bmc-sec_update* in symbol
+    names.
+  - Adapted to changes in the FPGA Image Load framework:
+    (1) All enum types (progress and errors) are now type u32
+    (2) m10bmc_sec_write_blk() adds *blk_size and max_size parameters
+        and uses *blk_size as provided by the caller.
+    (3) m10bmc_sec_poll_complete() no long checks the driver_unload
+        flag.
 
-1. Establish An Orphanage Home To Help The Orphanages Children.
-2. Build A Hospital To Help The Poor.
-3. Build A Nursing Home For Elderly People Need Care & Meal.
+Changelog v13 -> v14:
+  - Changed symbol and text references to reflect the renaming of the
+    Security Manager Class driver to FPGA Image Load.
 
-You will named them after my late husband.Therefore, I need you to
-help me and claim this money and use it for charities, for orphanages
-and provide justice and help to the poor, needy and to promote the
-words of God and the effort to maintain the house of God, according to
-the bible in the book of. Jeremiah 22: 15-16, without minding our
-different religions.
+Changelog v12 -> v13:
+  - Updated copyright to 2021
+  - Updated Date and KernelVersion fields in ABI documentation
+  - Call updated fpga_sec_mgr_register() and fpga_sec_mgr_unregister()
+    functions instead of devm_fpga_sec_mgr_create() and
+    devm_fpga_sec_mgr_register().
 
-It will be a pleasure to compensate with 40% percent of the total
-money for your effort in handling the transaction, while 60% of the
-money will go to charity project.
+Changelog v11 -> v12:
+  - Updated Date and KernelVersion fields in ABI documentation
+  - Removed size parameter from the write_blk() op. m10bmc_sec_write_blk()
+    no longer has a size parameter, and the block size is determined
+    in this (the lower-level) driver.
 
-All I need from you is sincerity and ability to complete the task of
-God without any failure. It will be my pleasure to see that the bank
-has finally released and transferred the fund to your bank account in
-the country, even before I die here in the hospital, due to my current
-state of health, everything must be processed as soon as possible.
+Changelog v10 -> v11:
+  - Added Reviewed-by tag to patch #1
 
-I am waiting for your immediate response, if you are only interested
-in obtaining more details about the transaction and execution of this
-humanitarian project for the glory and honor of God.
+Changelog v9 -> v10:
+  - Changed the path expressions in the sysfs documentation to
+    replace the n3000 reference with something more generic to
+    accomodate other devices that use the same driver.
 
-Sorry if you received this letter in your spam, is due to recent
-connection/network error here in the country.
+Changelog v8 -> v9:
+  - Rebased to 5.12-rc2 next
+  - Updated Date and KernelVersion in ABI documentation
 
-Please I am waiting for your urgent reply now.
+Changelog v7 -> v8:
+  - Split out patch "mfd: intel-m10-bmc: support for MAX10 BMC Secure
+    Updates" and submitted it separately:
+    https://marc.info/?l=linux-kernel&m=161126987101096&w=2
 
-May God Bless you,
-Mrs. Emman Nadia Faroul.
+Changelog v6 -> v7:
+  - Rebased patches for 5.11-rc2
+  - Updated Date and KernelVersion in ABI documentation
+
+Changelog v5 -> v6:
+  - Added WARN_ON() prior to several calls to regmap_bulk_read()
+    to assert that the (SIZE / stride) calculations did not result
+    in remainders.
+  - Changed the (size / stride) calculation in regmap_bulk_write()
+    call to ensure that we don't write one less than intended.
+  - Changed flash_count_show() parameter list to achieve
+    reverse-christmas tree format.
+  - Removed unnecessary call to rsu_check_complete() in
+    m10bmc_sec_poll_complete() and changed while loop to
+    do/while loop.
+  - Initialized auth_result and doorbell to HW_ERRINFO_POISON
+    in m10bmc_sec_hw_errinfo() and removed unnecessary if statements.
+
+Changelog v4 -> v5:
+  - Renamed sysfs node user_flash_count to flash_count and updated
+    the sysfs documentation accordingly to more accurately descirbe
+    the purpose of the count.
+
+Changelog v3 -> v4:
+  - Moved sysfs files for displaying the flash count, the root
+    entry hashes (REH), and the code-signing-key (CSK) cancellation
+    vectors from the FPGA Security Manager class driver to this
+    driver (as they are not generic enough for the class driver).
+  - Added a new ABI documentation file with informtaion about the
+    new sysfs entries: sysfs-driver-intel-m10-bmc-secure
+  - Updated the MAINTAINERS file to add the new ABI documentation
+    file: sysfs-driver-intel-m10-bmc-secure
+  - Removed unnecessary ret variable from m10bmc_secure_probe()
+  - Incorporated new devm_fpga_sec_mgr_register() function into
+    m10bmc_secure_probe() and removed the m10bmc_secure_remove()
+    function.
+
+Changelog v2 -> v3:
+  - Changed "MAX10 BMC Security Engine driver" to "MAX10 BMC Secure
+    Update driver"
+  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+  - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+    underlying functions are now called directly.
+  - Changed "_root_entry_hash" to "_reh", with a comment explaining
+    what reh is.
+  - Renamed get_csk_vector() to m10bmc_csk_vector()
+  - Changed calling functions of functions that return "enum fpga_sec_err"
+    to check for (ret != FPGA_SEC_ERR_NONE) instead of (ret)
+
+Changelog v1 -> v2:
+  - These patches were previously submitted as part of a larger V1
+    patch set under the title "Intel FPGA Security Manager Class Driver".
+  - Grouped all changes to include/linux/mfd/intel-m10-bmc.h into a
+    single patch: "mfd: intel-m10-bmc: support for MAX10 BMC Security
+    Engine".
+  - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
+  - Adapted to changes in the Intel FPGA Security Manager by splitting
+    the single call to ifpga_sec_mgr_register() into two function
+    calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
+  - Replaced small function-creation macros for explicit function
+    declarations.
+  - Bug fix for the get_csk_vector() function to properly apply the
+    stride variable in calls to m10bmc_raw_bulk_read().
+  - Added m10bmc_ prefix to functions in m10bmc_iops structure
+  - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
+    ensure that corresponding bits are set to 1 if we are unable
+    to read the doorbell or auth_result registers.
+  - Added comments and additional code cleanup per V1 review.
+
+Russ Weight (4):
+  fpga: m10bmc-sec: create max10 bmc secure update driver
+  fpga: m10bmc-sec: expose max10 flash update count
+  fpga: m10bmc-sec: expose max10 canceled keys in sysfs
+  fpga: m10bmc-sec: add max10 secure update functions
+
+ .../sysfs-driver-intel-m10-bmc-sec-update     |  61 ++
+ MAINTAINERS                                   |   2 +
+ drivers/fpga/Kconfig                          |  22 +
+ drivers/fpga/Makefile                         |   3 +
+ drivers/fpga/intel-m10-bmc-sec-update.c       | 531 ++++++++++++++++++
+ 5 files changed, 619 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
+ create mode 100644 drivers/fpga/intel-m10-bmc-sec-update.c
+
+-- 
+2.25.1
+
