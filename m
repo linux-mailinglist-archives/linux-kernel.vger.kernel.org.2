@@ -2,68 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB171415A67
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0997415A6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240048AbhIWI44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 04:56:56 -0400
-Received: from mail-vk1-f170.google.com ([209.85.221.170]:34566 "EHLO
-        mail-vk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239986AbhIWI4z (ORCPT
+        id S240064AbhIWI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 04:59:16 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:43699 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239137AbhIWI7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 04:56:55 -0400
-Received: by mail-vk1-f170.google.com with SMTP id z202so2313822vkd.1;
-        Thu, 23 Sep 2021 01:55:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pn3d8p5WEmjlwHUyeMcb4ZqHn6KLoL3cOsy+Hfcg6Hc=;
-        b=GxAC4hGm3cLdncpa7QsByQ7D/kPBK1fEROLDdktoc5R0MqzVU3QtPwiLOZ9Xy7DCEw
-         CP0GLIB3r8wrdNfwGY92f2weHVMM5dAyiv4zUXVBBNCBks2pNXPCDHSJKGctvT3kB88J
-         7Wx50bLr67tVEHiMOKEU9WXfKHBWXC5deXRCJ5wUtXCUHMcFz8F4FFUyZ2ZqGyoWJVGI
-         VYoEC230MgjmCJfdlQDJrQZ0KoGedFz9D/da0zAKqTuOXpBX8xqdL2tsNbwAIOJJCuhi
-         4K3Xl5JCuaEYrK3Ck5KuX2QbkaBvr2N6C0r0qI3Ur59Cz7mcgwwqkiwFKOY4S0kdQZ8a
-         14Mw==
-X-Gm-Message-State: AOAM532oqrS5hrUXs9fi3y5kE3yCHXvQHucX0qpTT6RsULnZ+KmE9mgn
-        r0ot3S8Kfon8f6J5ZqHJ8ljrbMYENqXJlFkTlzM=
-X-Google-Smtp-Source: ABdhPJy6mWvufMatGi7BXpFlQVW0DHT6LYg0vfeDZyBjF9wvKy+uQsuOXJohw5MaXtg+csS8iEsDZ1sf21Dw0BhoRu0=
-X-Received: by 2002:a1f:9187:: with SMTP id t129mr2450912vkd.15.1632387323519;
- Thu, 23 Sep 2021 01:55:23 -0700 (PDT)
+        Thu, 23 Sep 2021 04:59:16 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UpJJrJO_1632387460;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UpJJrJO_1632387460)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 23 Sep 2021 16:57:42 +0800
+Subject: Re: [RFC PATCH] trace: prevent preemption in
+ perf_ftrace_function_call()
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
+Message-ID: <f2159a81-66e4-ca2d-d9d2-e024040cf271@linux.alibaba.com>
+Date:   Thu, 23 Sep 2021 16:57:40 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210922085831.5375-1-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20210922085831.5375-1-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 23 Sep 2021 10:55:12 +0200
-Message-ID: <CAMuHMdWACcp8qzcDfQrUQLOYaE+M_6J7LC8vR-yrKKJCrXDf1A@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: rpc: renesas-rpc-if: Add support for the
- R8A779A0 RPC-IF
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:59 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reported-by: Abaci <abaci@linux.alibaba.com>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+On 2021/9/23 上午11:42, 王贇 wrote:
+> With CONFIG_DEBUG_PREEMPT we observed reports like:
+> 
+>   BUG: using smp_processor_id() in preemptible
+>   caller is perf_ftrace_function_call+0x6f/0x2e0
+>   CPU: 1 PID: 680 Comm: a.out Not tainted
+>   Call Trace:
+>    <TASK>
+>    dump_stack_lvl+0x8d/0xcf
+>    check_preemption_disabled+0x104/0x110
+>    ? optimize_nops.isra.7+0x230/0x230
+>    ? text_poke_bp_batch+0x9f/0x310
+>    perf_ftrace_function_call+0x6f/0x2e0
+>    ...
+>    __text_poke+0x5/0x620
+>    text_poke_bp_batch+0x9f/0x310
+> 
+> This tell us the CPU could be changed after task is preempted, and
+> the checking on CPU before preemption is helpless.
+> 
+> This patch just turn off preemption in perf_ftrace_function_call()
+> to prevent CPU changing.
+> 
+> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+> ---
+>  kernel/trace/trace_event_perf.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+> index 6aed10e..5486b18 100644
+> --- a/kernel/trace/trace_event_perf.c
+> +++ b/kernel/trace/trace_event_perf.c
+> @@ -438,15 +438,17 @@ void perf_trace_buf_update(void *record, u16 type)
+>  	int rctx;
+>  	int bit;
+> 
+> +	preempt_disable_notrace();
+> +
+>  	if (!rcu_is_watching())
+> -		return;
+> +		goto out;
+> 
+>  	if ((unsigned long)ops->private != smp_processor_id())
+> -		return;
+> +		goto out;
+> 
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (bit < 0)
+> -		return;
+> +		goto out;
+> 
+>  	event = container_of(ops, struct perf_event, ftrace_ops);
+> 
+> @@ -468,16 +470,18 @@ void perf_trace_buf_update(void *record, u16 type)
+> 
+>  	entry = perf_trace_buf_alloc(ENTRY_SIZE, NULL, &rctx);
+>  	if (!entry)
+> -		goto out;
+> +		goto out_unlock;
+> 
+>  	entry->ip = ip;
+>  	entry->parent_ip = parent_ip;
+>  	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, TRACE_FN,
+>  			      1, &regs, &head, NULL);
+> 
+> -out:
+> +out_unlock:
+>  	ftrace_test_recursion_unlock(bit);
+>  #undef ENTRY_SIZE
+> +out:
+> +	preempt_enable_notrace();
+>  }
+> 
+>  static int perf_ftrace_function_register(struct perf_event *event)
+> 
