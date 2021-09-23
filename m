@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BC5415FC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA50415FFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241296AbhIWNaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232316AbhIWNaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:30:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09C1861107;
-        Thu, 23 Sep 2021 13:28:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632403725;
-        bh=w0JufNshx/PXI2oi9FITKwYGXFUmV7b/kmCZtFIv61E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J9Ezn/lBNXW73vjn6aYXvT1FJ+1Zc5vGGQPPaJx/RGjvMhhqlu0VXNVtw6Ia4nm17
-         T/xbP3fcz59nbaknDSFRHCcorU0UQ00eBy1nDt3cgQarFyJDgW9n+4jlS0qKiGj++f
-         SJdqhjw4NuvAT2VO0a1m9z8KL6UZ/j+UV7mw2CDi0UlX6KuXbgT25eF/3/5R3eWnyV
-         gxjLBkJJoTBPMaWUiJDv1U5Uf2q3uKP6sosQWSxtZktMnS9R9prDGqJOuV46skqOvG
-         +FK4DJCwUVqmpDO/YLNzDVb2JR/vJ5kiBp94pKZXu4cHj7pcB59gZ0yxK122ZaMa+E
-         9Bjn+XKtVxuGw==
-Date:   Thu, 23 Sep 2021 06:28:44 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        John Garry <john.garry@huawei.com>,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC v2 PATCH] mm, sl[au]b: Introduce lockless cache
-Message-ID: <20210923062844.148e08fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <688e6750-87e9-fb44-ce40-943bad072e48@kernel.dk>
-References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
-        <ebea2af2-90d0-248f-8461-80f2e834dfea@kernel.dk>
-        <20210922081906.GA78305@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-        <688e6750-87e9-fb44-ce40-943bad072e48@kernel.dk>
+        id S241318AbhIWNeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241369AbhIWNe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:34:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6306C061574;
+        Thu, 23 Sep 2021 06:32:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mRZoFF2Npvi34/71lpu+V+qZDQvPo0l+ydza7SqNuww=; b=RIbeQn55XpDN6/6y2Y/A0Q+cWk
+        HM+UDeWnjFUv/yTm8H088DjFDoiDgl9GYI0hzd+hM7vXT1A5LnbGCNxnyZBNB9ernys47EOenpJby
+        b8V9Xupkzj97rASZKA6g8Fued/tgKBJmGOoUc7D7G6LnjK8+KGfjVTVqjwkC6V2HLbW0aWV4lGbrx
+        e8IvOYCBIDH0YurqeoSUNk/cO+bEtw+lfDxqA1QU55VT3rGGhK8kZqW+cIuMRtc0eh66zCr9+q5VX
+        AjfSbEecDZS7VYxH/f06mBB4jqEphE7yDS+3sTxYhciQyRY6IbOUnb+DM/gDX42fKlR3zi5GDMZgI
+        ITTaNi9Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mTOmX-005v1L-UB; Thu, 23 Sep 2021 13:29:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 26C0930031A;
+        Thu, 23 Sep 2021 15:28:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0E868201B1264; Thu, 23 Sep 2021 15:28:57 +0200 (CEST)
+Date:   Thu, 23 Sep 2021 15:28:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org
+Subject: Re: [RFC][PATCH 7/7] livepatch,context_tracking: Avoid disturbing
+ NOHZ_FULL tasks
+Message-ID: <YUyBGJGCgrR56C7r@hirez.programming.kicks-ass.net>
+References: <20210922110506.703075504@infradead.org>
+ <20210922110836.304335737@infradead.org>
+ <YUx9yNfgm4nnd23y@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUx9yNfgm4nnd23y@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 06:58:00 -0600 Jens Axboe wrote:
-> > I considered only case 2) when writing code. Well, To support 1),
-> > I think there are two ways:
-> > 
-> >  a) internally call kmem_cache_free when in_interrupt() is true
-> >  b) caller must disable interrupt when freeing
-> > 
-> > I think a) is okay, how do you think?  
+On Thu, Sep 23, 2021 at 03:14:48PM +0200, Petr Mladek wrote:
+
+> IMHO, this is not safe:
 > 
-> If the API doesn't support freeing from interrupts, then I'd make that
-> the rule. Caller should know better if that can happen, and then just
-> use kmem_cache_free() if in a problematic context. That avoids polluting
-> the fast path with that check. I'd still make it a WARN_ON_ONCE() as
-> described and it can get removed later, hopefully.
+> CPU0				CPU1
+> 
+> klp_check_task(A)
+>   if (context_tracking_state_cpu(task_cpu(task)) == CONTEXT_USER)
+>      goto complete;
+> 
+>   clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+> 
+> 				# task switching to kernel space
+> 				klp_update_patch_state(A)
+> 				       if (test_and_clear_tsk_thread_flag(task,	TIF_PATCH_PENDING))
+> 				       //false
+> 
+> 				# calling kernel code with old task->patch_state
+> 
+> 	task->patch_state = klp_target_state;
+> 
+> BANG: CPU0 sets task->patch_state when task A is already running
+> 	kernel code on CPU1.
 
-Shooting from the hip a little but if I'm getting the context right
-this is all very similar to the skb cache so lockdep_assert_in_softirq()
-may be useful:
-
-/*
- * Acceptable for protecting per-CPU resources accessed from BH.
- * Much like in_softirq() - semantics are ambiguous, use carefully.
- */
-#define lockdep_assert_in_softirq()					\
-do {									\
-	WARN_ON_ONCE(__lockdep_enabled			&&		\
-		     (!in_softirq() || in_irq() || in_nmi()));		\
-} while (0)
+Why is that a problem? That is, who actually cares about
+task->patch_state ? I was under the impression that state was purely for
+klp itself, to track which task has observed the new state.
