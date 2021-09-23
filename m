@@ -2,215 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2522C41688A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4173D416892
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243590AbhIWXkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 19:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243550AbhIWXkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 19:40:00 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C63C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:38:28 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id k23-20020a17090a591700b001976d2db364so6043982pji.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:38:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5/WAgNALfvsB4KP6m0qi12xIQRzUGya+l2VNZgSQQFs=;
-        b=UUrHZBh8vYnktVCpv8EX35Ama1oym9Nh8GVSqcMGyZtB/zI51bp8GnrNlnumoMvDLP
-         pL7TtKl+bSA9hnB6pHh067v8/9z4C6BV6aiHOfxHoDTsSJffSTxgttXCfcoVAH35RuHK
-         vFuKm1/WezYhGxxQhvrW2Fc7WpGP4+ohknJ3Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5/WAgNALfvsB4KP6m0qi12xIQRzUGya+l2VNZgSQQFs=;
-        b=MUakQWo8OtI2RSP0PGr58Yu0lGSdk9TchJWiBq86VIaP1KlShAcHGtvjKa9gV5RA2S
-         1HB72+iWBKAQtu/htsriQ2bIELp/7nOjVR8JHFGdWZ2jtZnOtdoUSMlKMr8x2dDS5VL/
-         WVfLvMz2f1ac7TFPIj7UWHdAkFFrI0ZKN3JH4jTZkQl4ngpvmKzFM2iA6NDf0iEsfUCO
-         5uSIf7H56dBrI+QHNj/bd2Sbl4mIDvXo6xQBYsRMpZEQlQ8Cg8xFc+YIRnVxGcTncs9y
-         Z9N8vsriA/G6fidMGXqupG7aOkfQ9rWDhWId5k8HqcDGiNosY8WCshxO93SyhBDWB9tz
-         bGrA==
-X-Gm-Message-State: AOAM531jQOwoPHs2NCsCWn9qFmq5sBE86EwGxbDPjk2/4NA4TT2u9nsR
-        904gp+phD9onun7QRvq/Jq5mng==
-X-Google-Smtp-Source: ABdhPJyyrM0zRw6DFdwMAtzDrtQKF3bniLC06zxmI/Y0shk9SiOdcyTKWxmv58K52tHT0wioCtI5pg==
-X-Received: by 2002:a17:90a:aa14:: with SMTP id k20mr20461715pjq.88.1632440308367;
-        Thu, 23 Sep 2021 16:38:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h16sm6423013pjt.30.2021.09.23.16.38.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 16:38:27 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 16:38:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
-Message-ID: <202109231636.C233D6D82@keescook>
-References: <20210923233105.4045080-1-keescook@chromium.org>
+        id S243558AbhIWXpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 19:45:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240661AbhIWXpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 19:45:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 566F3611B0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 23:43:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632440631;
+        bh=73qXItziYjU8T3s1nC2dBa8YmhQRMqulB64m5hKpetk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cy0VTjDyzbPFUPTihEUCx4jpQVYpoVTnMdjK5eFg7Ib6vgXOUotDE3Geu4jSj8iHv
+         u6cYpTyHYkHp1MeRFGWrNlKvuiyMEXZOs/Y3ryCXF4hJdMDu4ryTW10fwhYNh3l02X
+         jc5hCOiEpXdKgcMgZsEzpydRMQ09k+qwh7cCqgYZEINRjC68lpCO/EIppvAQdAQvJs
+         4+H8YE+OXZ5snI09m5X3loLaqYTu76ofZxKUpIWggO7ILVoXjtvHuqZzDd6Y7USg7d
+         KUdCo51uI3IGEipShopVpS3DcIV6Wfy4AO8OCJMRbSLO0TjZWhcv8IYnsFpIN56oJ4
+         HuZt4coGCSu3g==
+Received: by mail-ed1-f53.google.com with SMTP id v10so24531224edj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:43:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532hOGbzlei7Ldv9K+fzYQGbxiuwd5hyB2sWLv4cmQigcw2Cecj7
+        G3WkmVFAFrY2a5sk3opKpUs6pZxWki4BAPTb2g==
+X-Google-Smtp-Source: ABdhPJyoLe+L1VetVRQrvZ/5P5SZFMzBzxpqzybf7df+HauTLm5x8pSULRqhr/8gcYXVH+D5+xW7zzIWjURe/ZeRX34=
+X-Received: by 2002:aa7:c617:: with SMTP id h23mr1741696edq.357.1632440629875;
+ Thu, 23 Sep 2021 16:43:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923233105.4045080-1-keescook@chromium.org>
+References: <20210808234733.14782-1-chunkuang.hu@kernel.org>
+ <CAAOTY_9LstZegE_Gyibov5tLo5eEqiPfoAcnyj_uoS=8xLLhnA@mail.gmail.com>
+ <CAFqH_53M2OO8DpkPa3L7cwppVRYiUgEDjrLjK7JJNgKgxnQpVA@mail.gmail.com>
+ <CAAOTY__4ZKf8YwJWMHkiZRjbcnDuf4tcVPO=AG1V3pv9_-4bVw@mail.gmail.com> <CAFqH_51Vtq=AkZaV2A69-FAVohr2DyD=1cjKkQ-hStQ4GXRnPA@mail.gmail.com>
+In-Reply-To: <CAFqH_51Vtq=AkZaV2A69-FAVohr2DyD=1cjKkQ-hStQ4GXRnPA@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 24 Sep 2021 07:43:38 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__dgkSnYnEhYaFsF2G9f+iiBYeA4VhV7gBcrGY6NU_bgg@mail.gmail.com>
+Message-ID: <CAAOTY__dgkSnYnEhYaFsF2G9f+iiBYeA4VhV7gBcrGY6NU_bgg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] CMDQ refinement of Mediatek DRM driver
+To:     Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 04:31:05PM -0700, Kees Cook wrote:
-> The /proc/$pid/wchan file has been broken by default on x86_64 for 4
-> years now[1]. As this remains a potential leak of either kernel
-> addresses (when symbolization fails) or limited observation of kernel
-> function progress, just remove the contents for good.
-> 
-> Unconditionally set the contents to "0" and also mark the wchan
-> field in /proc/$pid/stat with 0.
+Hi, Enric:
 
-I forgot to CC Qi Zheng on this patch. Now corrected. :)
+Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
+=8824=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8812:36=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> Hi Chun-Kuang,
+>
+> Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dt., 21 de
+> set. 2021 a les 15:15:
+> >
+> > Hi, Enric:
+> >
+> > Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B49=E6=
+=9C=8821=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:36=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+> > >
+> > > Hi Chun-Kuang,
+> > >
+> > > (again without html format, sorry for the noise)
+> > >
+> > > Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dj., 12
+> > > d=E2=80=99ag. 2021 a les 2:13:
+> > > >
+> > > > Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B48=E6=
+=9C=889=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=887:47=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+> > > > >
+> > > > > These refinements include using standard mailbox callback interfa=
+ce,
+> > > > > timeout detection, and a fixed cmdq_handle.
+> > > >
+> > > > For this series, applied to mediatek-drm-next [1].
+> > > >
+> > > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/li=
+nux.git/log/?h=3Dmediatek-drm-next
+> > > >
+> > >
+> > > These patches seem to break the display on the Acer Chromebook R 13
+> > > (MT8173) in the current mainline. After running a bisection it pointe=
+d
+> > > me to the following commit
+> > >
+> > > commit f4be17cd5b14dd73545b0e014a63ebe9ab5ef837
+> > > Author: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> > > Date:   Sun Jul 4 15:36:48 2021 +0800
+> > >
+> > >     drm/mediatek: Remove struct cmdq_client
+> > >
+> > > Reverting this patch alone is not trivial, so I ended up reverting th=
+e
+> > > full series, and I can confirm that reverting the full series makes
+> > > the display work again.
+> >
+> > I think you could not just revert "drm/mediatek: Remove struct
+> > cmdq_client", you should also revert the patches after it, such as
+> >
+> > "drm/mediatek: Clear pending flag when cmdq packet is done"
+> > "drm/mediatek: Add cmdq_handle in mtk_crtc"
+> > "drm/mediatek: Detect CMDQ execution timeout"
+> >
+>
+> Yes, in fact I reverted:
+>
+> 9efb16c2fdd6 drm/mediatek: Clear pending flag when cmdq packet is done
+> bc9241be73d9 drm/mediatek: Add cmdq_handle in mtk_crtc
+> 8cdcb3653424 drm/mediatek: Detect CMDQ execution timeout
+> f4be17cd5b14 drm/mediatek: Remove struct cmdq_client
+> c1ec54b7b5af drm/mediatek: Use mailbox rx_callback instead of cmdq_task_c=
+b
+>
+> Without these patches 5.15-rc2 works again on my platform.
+>
+> The commit 'c1ec54b7b5af drm/mediatek: Use mailbox rx_callback instead
+> of cmdq_task_cb' alone introduces lots of warnings in the kernel
+>
+> WARNING: CPU: 0 PID: 0 at drivers/mailbox/mtk-cmdq-mailbox.c:198
+> cmdq_task_exec_done+0xb8/0xe0
 
-> This leaves kernel/sched/fair.c as the only user of get_wchan(). But
-> again, since this was broken for 4 years, was this profiling logic
-> actually doing anything useful?
+I think the WARN_ON in cmdq driver should be remove because that
+warning show that cmdq_task_cb is not used but I that is what I want.
 
-If the fair scheduler would actually benefit from still using get_wchan,
-I think this patch:
-https://lore.kernel.org/all/20210831083625.59554-1-zhengqi.arch@bytedance.com/
-should still be applied too.
+>
+> I think is just a leftover or the mentioned warning, but that confused
+> me a bit doing the bisection. Then, after commit 'f4be17cd5b14
+> drm/mediatek: Remove struct cmdq_client' my system simply gets stuck.
+> For now I don't see any obvious mistake but will dig further.
+>
+> Can I ask you in which platform did you test? And if you can double
+> check if your platform is broken too in current mainline?
 
-If not, we can rip get_wchan() out completely (across all
-architectures).
+I've no environment to test code now. I apply this series because I
+assume Yongqiang has test his patch "Clear pending flag when cmdq
+packet is done".  Before I setup the environment (this may take a long
+time), I would find others to fix this problem.
+According to your information, "c1ec54b7b5af drm/mediatek: Use mailbox
+rx_callback instead of cmdq_task_cb" would cause many warning but
+display still work, right? If so, I think we should focus on
+"f4be17cd5b14 drm/mediatek: Remove struct cmdq_client".
 
--Kees
+Regards,
+Chun-Kuang.
 
-> [1] https://lore.kernel.org/lkml/20210922001537.4ktg3r2ky3b3r6yp@treble/
-> 
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Vito Caputo <vcaputo@pengaru.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/x86/kernel/process.c |  2 +-
->  fs/proc/array.c           | 16 +++++-----------
->  fs/proc/base.c            | 16 +---------------
->  3 files changed, 7 insertions(+), 27 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> index 1d9463e3096b..84a4f9f3f0c2 100644
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -937,7 +937,7 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
->  }
->  
->  /*
-> - * Called from fs/proc with a reference on @p to find the function
-> + * Called from scheduler with a reference on @p to find the function
->   * which called into schedule(). This needs to be done carefully
->   * because the task might wake up and we might look at a stack
->   * changing under us.
-> diff --git a/fs/proc/array.c b/fs/proc/array.c
-> index 49be8c8ef555..8a4ecfd901b8 100644
-> --- a/fs/proc/array.c
-> +++ b/fs/proc/array.c
-> @@ -452,7 +452,7 @@ int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
->  static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
->  			struct pid *pid, struct task_struct *task, int whole)
->  {
-> -	unsigned long vsize, eip, esp, wchan = 0;
-> +	unsigned long vsize, eip, esp;
->  	int priority, nice;
->  	int tty_pgrp = -1, tty_nr = 0;
->  	sigset_t sigign, sigcatch;
-> @@ -540,8 +540,6 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
->  		unlock_task_sighand(task, &flags);
->  	}
->  
-> -	if (permitted && (!whole || num_threads < 2))
-> -		wchan = get_wchan(task);
->  	if (!whole) {
->  		min_flt = task->min_flt;
->  		maj_flt = task->maj_flt;
-> @@ -600,16 +598,12 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
->  	seq_put_decimal_ull(m, " ", sigcatch.sig[0] & 0x7fffffffUL);
->  
->  	/*
-> -	 * We used to output the absolute kernel address, but that's an
-> -	 * information leak - so instead we show a 0/1 flag here, to signal
-> -	 * to user-space whether there's a wchan field in /proc/PID/wchan.
-> -	 *
-> +	 * We used to output the absolute kernel address, and then just
-> +	 * a symbol. But both are information leaks, so just report 0
-> +	 * to indicate there is no wchan field in /proc/$PID/wchan.
->  	 * This works with older implementations of procps as well.
->  	 */
-> -	if (wchan)
-> -		seq_puts(m, " 1");
-> -	else
-> -		seq_puts(m, " 0");
-> +	seq_puts(m, " 0");
->  
->  	seq_put_decimal_ull(m, " ", 0);
->  	seq_put_decimal_ull(m, " ", 0);
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index 533d5836eb9a..52484cd77f99 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -378,24 +378,10 @@ static const struct file_operations proc_pid_cmdline_ops = {
->  };
->  
->  #ifdef CONFIG_KALLSYMS
-> -/*
-> - * Provides a wchan file via kallsyms in a proper one-value-per-file format.
-> - * Returns the resolved symbol.  If that fails, simply return the address.
-> - */
->  static int proc_pid_wchan(struct seq_file *m, struct pid_namespace *ns,
->  			  struct pid *pid, struct task_struct *task)
->  {
-> -	unsigned long wchan;
-> -
-> -	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
-> -		wchan = get_wchan(task);
-> -	else
-> -		wchan = 0;
-> -
-> -	if (wchan)
-> -		seq_printf(m, "%ps", (void *) wchan);
-> -	else
-> -		seq_putc(m, '0');
-> +	seq_putc(m, '0');
->  
->  	return 0;
->  }
-> -- 
-> 2.30.2
-> 
-
--- 
-Kees Cook
+>
+> Thanks,
+>   Enric
+>
+> > If "drm/mediatek: Remove struct cmdq_client" is the patch cause
+> > display abnormal, I think you could compare code w/ and w/o this
+> > patch. Focus on the value accuracy, such as cmdq_cl and cmdq_chan. And
+> > focus on the flow accuracy, such as mtk_drm_crtc_update_config() and
+> > ddp_cmdq_cb(). If this could not find the problem, I think the latest
+> > way is to break this patch into small patches, changes little in each
+> > small patches and we could finally find out the problem.
+> >
+> > Regards,
+> > Chun-Kuang.
+> >
+> > >
+> > > Unfortunately, after the merge window, different things broke for thi=
+s
+> > > device, and I didn't finish isolating them, and it is not clear to me
+> > > yet whether the logs I'm getting are useful for this specific issue o=
+r
+> > > not. Basically with this series merged the kernel seems to be stuck,
+> > > and the display is not working. Latest message is
+> > >
+> > > [   12.329173] mtk-iommu 10205000.iommu: Partial TLB flush timed out,
+> > > falling back to full flush
+> > >
+> > > Without the series, the kernel goes far and display works, however
+> > > there are other issues affecting the cros-ec, but I think that's
+> > > another issue.
+> > >
+> > > I'll try to dig a bit more, but, meanwhile, if you have any idea
+> > > please let me know.
+> > >
+> > > Thanks,
+> > >  Enric
+> > >
+> > >
+> > > > Regards,
+> > > > Chun-Kuang.
+> > > >
+> > > > >
+> > > > > Changes in v2:
+> > > > > 1. Define mtk_drm_cmdq_pkt_create() and mtk_drm_cmdq_pkt_destroy(=
+)
+> > > > >    when CONFIG_MTK_CMDQ is reachable.
+> > > > >
+> > > > > Chun-Kuang Hu (4):
+> > > > >   drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb
+> > > > >   drm/mediatek: Remove struct cmdq_client
+> > > > >   drm/mediatek: Detect CMDQ execution timeout
+> > > > >   drm/mediatek: Add cmdq_handle in mtk_crtc
+> > > > >
+> > > > >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 110 ++++++++++++++++++=
+++----
+> > > > >  1 file changed, 91 insertions(+), 19 deletions(-)
+> > > > >
+> > > > > --
+> > > > > 2.25.1
+> > > > >
