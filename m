@@ -2,116 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5C54158BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544B44158C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239534AbhIWHGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
+        id S239459AbhIWHIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239358AbhIWHGs (ORCPT
+        with ESMTP id S239380AbhIWHIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:06:48 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852AAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 00:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MKyCSBe17569FQKUN9uYPzsBrtR6yhh1quExeWYo6x0=; b=Gpo+PfTGtMC8bYFUnWTsGSG9j4
-        s0FMMEqMgrIKFtOlEb1F7pdyyPMDdV/ByQsx8MU5bOf0DloJ2sUkVZzUHKyZmltUO7uj6Gvp16LFJ
-        HzH1RQJch2GuXtgFu25vuzUer5+PypWZps9jjdO38l7Ts0bHfeFcfLuVmWBxvwGbyu/eexrndoLOm
-        7Zdm0mQJizR2xX/uV+yvZWC6rVtg8r/VufBfqnFYKOVN//+5UnOyeVvQjC6pm9Og67M3R7tJ2Vbpm
-        H21id5PPRfLhs+xu2hrA483NLoPQ0CeOjeb8Tdk/BW53H313pr55NgNPo8HpRQfHxdyjaNdUox+ki
-        9A9HDhZQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTImz-005AUz-Fy; Thu, 23 Sep 2021 07:05:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1631C300250;
-        Thu, 23 Sep 2021 09:05:01 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F102F2C0D22ED; Thu, 23 Sep 2021 09:05:00 +0200 (CEST)
-Date:   Thu, 23 Sep 2021 09:05:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Message-ID: <YUwnHDUKfvNKQgPF@hirez.programming.kicks-ass.net>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
- <20210922210722.GV4323@worktop.programming.kicks-ass.net>
- <20210922211145.GF5106@worktop.programming.kicks-ass.net>
- <a5944e66-0552-d919-bd11-d9eced48bb45@intel.com>
+        Thu, 23 Sep 2021 03:08:36 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE21C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 00:07:05 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u18so14194591wrg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 00:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5GWAsl4l64TQBtsmcfug9p1yGttFyM9Ke67LZF01xVU=;
+        b=d9BuzkQ4r4tP5eRWDOMRiIPSIfhlfsoyCCF+cNGUvGn07I1BwTOcpGUCMrCVzi/TEW
+         eludHV8OstE6OBnKI4OyMUuhifZDSLAvY465HQBx38ydDMB1y1+JBn9+xqqvowRE8qN/
+         7Rgss8Pts8eUU6DuMYkj6ZSFRND3sDk21e9ppIu7Eo3gQ57XfSdyPQip2/Us8qrQInEV
+         NGVzPYy4OyyNzLm2CBtpZE7vSVGo4XleSk7sBiCtsCzC70jBPoFO1ThEDBQfkADjdO/+
+         /FODRtwF3tMr1PxxskKxcZW9cV6MrYW8nKaW2WY17DtzDrwa9JiJ1XB+g+Fg1GA/fT8w
+         0wEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5GWAsl4l64TQBtsmcfug9p1yGttFyM9Ke67LZF01xVU=;
+        b=LIhUwpQ9XdPaFscW5q6dODV9RHrRsWu2yMtsG0XgnJYToAQOl404uksewmeBdnZzvI
+         /ip02DJAYuSvMUUlg9xUp3mdKsfhkqGClRc/lVQ/JilvwpEbr8YBd8JAuvz2li11mtqx
+         GgFSPp46cXhnNsllvJZRC6aNunVuaTPLYdguWZGUbpyuv5+Brq0DA7cxMN34eaZkSm/9
+         8qJee+XJbNS1HCfyUpFuMZUtP3uI8K6MtATg3lBxad926EQeKNr/p6c1TFRs/PNHJChn
+         t5pfybStrc4pJpjbeIy1cL4vQ2MSSXErtUP9Q21u5WUWrY14gYGf52DaYJFcikNdo8Ey
+         SbHw==
+X-Gm-Message-State: AOAM533D8R4+e2qEvQI/5+yT/L3d99PJF7mgxsT9fvneOTvA4uTUhuig
+        LnDFcKHRBSLJPDUsZgKCyiGfp//NgBlQnBiE
+X-Google-Smtp-Source: ABdhPJzJXo/zSlxISVuBtECbdiljJaMAtg8mhirRu9qOf52JpS4J5LwiHunEEHKRXiTq0yePT2icuw==
+X-Received: by 2002:adf:ec4b:: with SMTP id w11mr3091248wrn.389.1632380823641;
+        Thu, 23 Sep 2021 00:07:03 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:44c0:66c0:74cf:b054:76f4:7692])
+        by smtp.gmail.com with ESMTPSA id d2sm4380357wrc.32.2021.09.23.00.07.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 00:07:03 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     tomba@kernel.org
+Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v5 0/8] drm/omap: Add virtual-planes support
+Date:   Thu, 23 Sep 2021 09:06:53 +0200
+Message-Id: <20210923070701.145377-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5944e66-0552-d919-bd11-d9eced48bb45@intel.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2183; h=from:subject; bh=yOy5rWZ5ENlqECjbFwkSYwKDX6hpYWcemiBYkbWEeNs=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhTCceglpcB1dj9PYGpYa5ZkCO0lTrijPyuaDPsRyi x8nXJ6iJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYUwnHgAKCRB33NvayMhJ0W26D/ 42qZZtIUkKfXE+zeZeenqKivzrk/RLby68iBMhBX+Uth+xSa9ZmVyrn6dDEIEIPQnh/Hd+UjyU/1Hv XoBm2eatKhFoKW72clHIuNuocTEXGqTW6B42PQyENIwYD3TMxhDi+FM/mAe85U9v0S9eBITQMiEm8K 0U1q76x06HrR09+i0sEmBtsDVhYe7lvAdOoDFerkToRbHpf8KT6r3aaxZ/CCNBm75VhpNipSBbCo4J ikYm/woKxBlcjxDqwjd93mmlwnY7ug4dbJosf4JqTurmWzgyPMe3zKs6u8uAVTENn2inKLDdYAeU90 mjmZf7OAzxXnLV2Bjz8pmcjDdk5qYirz4YjncdarFbjU1GAdLdNbMXVJJQVlYYP4LLU9t+FYRNDTZ9 vyEVtt3KLK1JIR4LakD5LpEjx1vtU79pXjK0giIRxewOK4d4McH5l+BahcfbQpDrWLJVUd+w+Bqoys 7+Rh+tzTHTEgOlrE5X+cTlhos63WcGXR6Op3PoNHRYg9LUuOeVMYN1mBTnnnWMUf/hIRgtzvLerMgM P/hiKmJEG9iKPdmDYxhKp5fTQONdM1obR8QaPKZnWQ98vE3QNxPAn2/kF0U6ns3H/su2P20cncPB18 /hehqOaHi29JbDFWZU24zyXMpyQRfPNpCiHIi3TTh+UomFFxBlM9vvhMnp7Q==
+X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 02:33:09PM -0700, Dave Hansen wrote:
-> On 9/22/21 2:11 PM, Peter Zijlstra wrote:
-> >>> +static bool fixup_pasid_exception(void)
-> >>> +{
-> >>> +	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
-> >>> +		return false;
-> >>> +
-> >>> +	return __fixup_pasid_exception();
-> >>> +}
-> > That is, shouldn't the above at the very least decode the instruction
-> > causing the #GP and check it's this ENQCMD thing?
-> 
-> To reiterate: on systems with no X86_FEATURE_ENQCMD, there is basically
-> no additional overhead.  It isn't worth doing decoding there.
+This patchset is the follow-up the v4 patchset from Benoit Parrot at [1].
 
-Well, they won't get past the X86_FEATURE check anyway, so who cares.
+This patch series adds virtual-plane support to omapdrm driver to allow the use
+of display wider than 2048 pixels.
 
-> On systems with X86_FEATURE_ENQCMD, but where it is unused, the #GP
-> handler gets some new overhead on every #GP.  Basically:
-> 
-> > +	pasid = current->mm->pasid;
-> > +	if (pasid == PASID_DISABLED)
-> > +		return false;
-> 
-> That's still pretty cheap.  Probably not worth doing decoding there either.
-> 
-> So, that leaves us with if you are:
-> 1. On system with X86_FEATURE_ENQCMD
-> 2. In a process/mm that has an allocated pasid
-> 3. Your *task* does not have the MSR set
-> 4. You get a #GP for some other reason
-> 
-> Then, you'll do this double-#GP dance.
-> 
-> So, instruction decoding could absolutely be added between steps 3 and
-> 4.  It would absolutely save doing the double-#GP in cases where 1/2/3
-> are met.  But, I wouldn't move it up above and of the 1/2/3 checks
-> because they're way cheaper than instruction decoding.
-> 
-> In the end, it didn't seem worth it to me to be optimizing a relatively
-> rare path which 99% of the time ends up in a crash.
-> 
-> If you want instruction decoding in here, though, just say the word. :)
+In order to do so we introduce the concept of hw_overlay which can then be
+dynamically allocated to a plane. When the requested output width exceed what
+be supported by one overlay a second is then allocated if possible to handle
+display wider then 2048.
 
-Instruction deoding makes it obvious you only consume your own #GP, the
-alternative is a comment that explains this reasoning. Having neither
-gets you confusion as per this thread.
+This series replaces an earlier series which was DT based and using statically
+allocated resources. 
+
+This implementation is inspired from the work done in msm/disp/mdp5
+driver.
+
+Changes since v4 at [1]:
+- rebased on v5.15-rc2
+- adapted to drm_atomic_get_new/old_plane_state()
+- tested on Beagle-x15
+- checked for non-regression on Beagle-x15
+- removed unused "state" variable in omap_global_state
+
+[1] https://lore.kernel.org/all/20181012201703.29065-1-bparrot@ti.com/
+
+Benoit Parrot (8):
+  drm/omap: Add ability to check if requested plane modes can be
+    supported
+  drm/omap: Add ovl checking funcs to dispc_ops
+  drm/omap: introduce omap_hw_overlay
+  drm/omap: omap_plane: subclass drm_plane_state
+  drm/omap: Add global state as a private atomic object
+  drm/omap: dynamically assign hw overlays to planes
+  drm/omap: add plane_atomic_print_state support
+  drm/omap: Add a 'right overlay' to plane state
+
+ drivers/gpu/drm/omapdrm/Makefile       |   1 +
+ drivers/gpu/drm/omapdrm/dss/dispc.c    |  31 +-
+ drivers/gpu/drm/omapdrm/dss/dss.h      |   5 +
+ drivers/gpu/drm/omapdrm/omap_drv.c     | 189 ++++++++++++-
+ drivers/gpu/drm/omapdrm/omap_drv.h     |  28 ++
+ drivers/gpu/drm/omapdrm/omap_fb.c      |  33 ++-
+ drivers/gpu/drm/omapdrm/omap_fb.h      |   4 +-
+ drivers/gpu/drm/omapdrm/omap_overlay.c | 254 +++++++++++++++++
+ drivers/gpu/drm/omapdrm/omap_overlay.h |  41 +++
+ drivers/gpu/drm/omapdrm/omap_plane.c   | 375 +++++++++++++++++++++----
+ drivers/gpu/drm/omapdrm/omap_plane.h   |   1 +
+ 11 files changed, 903 insertions(+), 59 deletions(-)
+ create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.c
+ create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.h
+
+-- 
+2.25.1
+
