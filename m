@@ -2,114 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA875416443
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC6441642B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242508AbhIWRVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 13:21:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235318AbhIWRVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:21:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFFFE60F24;
-        Thu, 23 Sep 2021 17:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632417618;
-        bh=DR0FN25Ug9Xy3RR+UsMr2wZWKepCxowsNunAN/DFPFY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bt7r94vi16o2Xp+T11fAie2jHr5vwktiVtCK3DekEUVn3V19CMKqd2jAj6+eaYnVs
-         hA7JTH8K66U8ghfgdraPsMZgiWeCOeWkOZ5zIgCSY2MriktuCyq4usBuLCu3QsN3MS
-         yEeRkcANZoTXvbDlHmoxlE1TkusL21QxvyHTwWzA=
-Date:   Thu, 23 Sep 2021 19:13:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 0/8] (REBASED) get_abi.pl undefined: improve precision
- and performance
-Message-ID: <YUy1oPjdLTh9rEfq@kroah.com>
-References: <YUyICHTRdfL8Ul7X@kroah.com>
- <cover.1632411447.git.mchehab+huawei@kernel.org>
+        id S242607AbhIWRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242611AbhIWRPa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 13:15:30 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9105DC0613E7
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:13:49 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id s17so7040352edd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=moyQHAXFsEWkQTSeR+QwttAi//JsAcJ9MwD7pPn60J0=;
+        b=6SuFaPpSttis5h/NPr3G3LiA3lXCFrN3pGb9QxTzu6R0D/0Wuieu5/pZ6Nh40h39X7
+         5lw5I/jpCVFd4VZ07B0Htw1/H8GVl7Vc7GK8S1etKIAl2dKczLJyaeSjx8gEuuLYFhCU
+         NeEdAxPrhEcycGgTrpkKK2fUG3ayBib2b6SaDoTAbQCiQoBfIh7piANfu32+hc9tLrW7
+         bFaiFkvG9imxJWRw0BDqnlKQGjeUykbGOEJUMg134Fuzw1xDZnCZP5LeL35JBi+KXrXd
+         YJUdpWs2gOP3UvAXgrJZ7zzZMXWrexQqD4ErmGlIKoBphoeplte1XtScQojjjrJqi2v5
+         /oWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=moyQHAXFsEWkQTSeR+QwttAi//JsAcJ9MwD7pPn60J0=;
+        b=Hpe7qytBX+jsYiPwH9kd3lR/rT+FJLwN0/Ljr9BePG6/tdOxp8JttEdffdKpGLrMUp
+         Te+46tUtuep6ks/ekWgG62ExAgrMAkKV1C7iNV52ppXwXEfZazVjrxUUFQpxSA6Hy2Zi
+         KnpLa/u0+O63BDUOtR8RM85B8uxcJR0A2N1SdfHGSdE+1tWW/twykuPwzWgppHx5Abhz
+         V/eHYFyExXg8St338+YTmOs+nAmYLsB8BYfkk6Mr/wYFkvNqvLrUx1J+hCzEozQDSRnV
+         6AlUv9o0bWEID/nUb4e69dPJbH5azYrf0SIG8oVZG8+9V439jM3HoK0JvaFnY3wQVc+M
+         R8Ug==
+X-Gm-Message-State: AOAM531QXyQB5QNy2utFPFH2h4AR9WKZ7HYWPAjF1EVKn0S76IwZHUo/
+        38ep+boxnufdalt5mLwQMQIwADRCyrgMi+ljfClD
+X-Google-Smtp-Source: ABdhPJypE6DfFR6lPWO/hvONHMTprcqME1sjRRuc+g49CTkuS98ah3V2NClNkyntVi/zIm4svekOxzqpZDd8UlhD6vw=
+X-Received: by 2002:a50:e10d:: with SMTP id h13mr6813705edl.77.1632417228001;
+ Thu, 23 Sep 2021 10:13:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1632411447.git.mchehab+huawei@kernel.org>
+References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
+ <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
+ <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
+ <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com>
+ <CAHC9VhSZp1-Qi7ApoQHauaFXDgoNaFTwFEieEFFuBtdPqAtXQg@mail.gmail.com>
+ <CAHk-=whoExoB6xGD0as0kpfwr38B=W7GRkO2NXWDRW-tmQS6Qw@mail.gmail.com>
+ <CAHC9VhTtz_aNY6MOCM6ypbz+SHvS30hx42PWjXJhG1Z=t5jpBw@mail.gmail.com> <CAHk-=wivxthY49NPyPG0QG302dmH_hrioE7NdDKMR1Fus0GHow@mail.gmail.com>
+In-Reply-To: <CAHk-=wivxthY49NPyPG0QG302dmH_hrioE7NdDKMR1Fus0GHow@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 23 Sep 2021 13:13:37 -0400
+Message-ID: <CAHC9VhSgG9wRJk9pyUnz90Th8MLfJ9LAMsFKyFMZMjK097+ZXw@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 05:41:11PM +0200, Mauro Carvalho Chehab wrote:
-> Hi Greg,
-> 
-> As requested, this is exactly the same changes, rebased on the top of
-> driver-core/driver-core-next.
-> 
-> -
-> 
-> It follows a series of improvements for get_abi.pl. it is on the top of driver-core/driver-core-next.
-> 
-> With such changes, on my development tree, the script is taking 6 seconds to run 
-> on my desktop:
-> 
-> 	$ !1076
-> 	$ time ./scripts/get_abi.pl undefined |sort >undefined_after && cat undefined_after| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined_after undefined_symbols
-> 
-> 	real	0m6,292s
-> 	user	0m5,640s
-> 	sys	0m0,634s
-> 	  6838 undefined_after
-> 	   808 undefined_symbols
-> 	  7646 total
-> 
-> And 7 seconds on a Dell Precision 5820:
-> 
-> 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
-> 
-> 	real	0m7.162s
-> 	user	0m5.836s
-> 	sys	0m1.329s
-> 	6548 undefined
-> 	772 undefined_symbols
-> 
-> Both tests were done against this tree (based on today's linux-next):
-> 
-> 	$ https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_abi_undefined-latest
-> 
-> It should be noticed that, as my tree has several ABI fixes,  the time to run the
-> script is likely less than if you run on your tree, as there will be less symbols to
-> be reported, and the algorithm is optimized to reduce the number of regexes
-> when a symbol is found.
-> 
-> Besides optimizing and improving the seek logic, this series also change the
-> debug logic. It how receives a bitmap, where "8" means to print the regexes
-> that will be used by "undefined" command:
-> 
-> 	$ time ./scripts/get_abi.pl undefined --debug 8 >foo
-> 	real	0m17,189s
-> 	user	0m13,940s
-> 	sys	0m2,404s
-> 
-> 	$wc -l foo
-> 	18421939 foo
-> 
-> 	$ cat foo
-> 	...
-> 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_voltage.*_scale_available$)$/
-> 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_voltage.*_scale_available$)$/
-> 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_altvoltage.*_scale_available$)$/
-> 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_pressure.*_scale_available$)$/
-> 	...
-> 
-> On other words, on my desktop, the /sys match is performing >18M regular 
-> expression searches, which takes 6,2 seconds (or 17,2 seconds, if debug is 
-> enabled and sent to an area on my nvme storage).
+On Thu, Sep 23, 2021 at 11:53 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Thu, Sep 23, 2021 at 8:43 AM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > However, we have the LSM framework because there is never one way to
+> > solve a problem,
+>
+> The thing is, the lockdown patches were merged because they were allegedly sane.
+>
+> As far as I can tell, this is purely a SELinux internal bug.
 
-Better, it's down to 10 minutes on my machine now:
+I'm not sure why that matters, but sure.  There is a problem, we are
+working to fix it.
 
-	real	10m39.218s
-	user	10m37.742s
-	sys	0m0.775s
+> SELinux did something wrong. Stop doing it.
 
-thanks!
+We *are* trying to fix the problem.  Please stop pretending we are
+not.  You can certainly disagree with our approach, but I'm getting
+tired of the chastising where you imply we are actively trying to
+screw things up or do bad things.  We care about the kernel.  We care
+a lot.  I care more than I probably should, and probably more than is
+healthy at times.  You can disagree with the design and/or
+implementation, but making claims that we are "thinking it's ok for
+SELinux to just do bad things." is just plain wrong not to mention
+insulting.
 
-greg k-h
+> Stop sending patches to
+> then screw up the generic security layer, and violate the rules under
+> which these patches were accepted.
+
+*Sigh*
+
+There was plenty of discussion about this patch and the previous
+drafts, no one was overly upset about adding the caller context/cred
+info.  The other LSM folks were okay with it.  We've got plenty of
+historical examples of the LSM hook evolving over time to adapt to
+LSMs adding new functionality, new LSMs, and new kernel modules.  So
+let's look at why you are shouting about "screwing up the generic
+security layer", but let's try to keep the focus at the LSM interface
+level.
+
+Prior to this patch there was one relevant LSM hook for lockdown:
+
+  int security_locked_down(enum lockdown_reason what);
+
+... the patch in this PR changed it to this:
+
+  int security_locked_down(const struct cred *cred,
+                           enum lockdown_reason what);
+
+It's become clear you *really* don't like passing the cred pointer
+here, presumably based on a very specific security model for lockdown.
+At this point there are two thoughts that spring to mind: 1) how else
+can we enable the SELinux model that we want to implement and 2) why
+is the LSM forcing a single security model on LSMs for the lockdown
+hook?
+
+Let's deal with the first point first.  If you aren't going to merge a
+change to the LSM framework that allows for the context credentials,
+would you be willing to merge a new LSM hook that is used in place of
+the existing lockdown hook for callers that are not associated with a
+user task?  Both hooks would take a single lockdown_reason as the only
+argument and would look something like this:
+
+  int security_locked_down(enum lockdown_reason what);
+  int security_locked_down_kern(enum lockdown_reason what);
+
+There is already precedence in the kernel as a whole for LSM hooks
+that exist solely for kernel (non-user tasks) operations so this
+wouldn't be a big stretch.  LSMs that don't care to make a distinction
+between the two, e.g. the existing lockdown LSM, could set the LSM
+hook to point to the same function (in the case of lockdown this would
+be lockdown_is_locked_down()).
+
+However, if the above doesn't fly, let's move on to the second thought
+I mentioned above: why is the LSM forcing a single security model on
+LSMs for the lockdown hook?  If the lockdown functionality is really
+going to be restricted to just a single security model, why is it
+implemented as a LSM and not as core kernel functionality?  The
+original motivation for the LSM was that the kernel needed an
+abstraction layer to support multiple security models and we've seen
+it do just that over the years; SELinux may have been the first, but
+the number has certainly grown over the years and the LSM framework
+has evolved right along with it.  Putting restrictions on the LSM
+framework so that only specific security models could be implemented
+is not something we have really done, and at this point I think it
+would be a major mistake.
+
+--
+paul moore
+www.paul-moore.com
