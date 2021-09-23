@@ -2,162 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58AB4164FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDBE4164E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242910AbhIWSPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242833AbhIWSO6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:14:58 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D71C0613DF
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:13:15 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id i25so29819529lfg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:13:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EU9IPP096OeclFzFMM2Ay6h5ady4PhP3HzR9YloYxzA=;
-        b=hUqI2ov2NiUzTKqx3J7nQLUSavcjKJdrwXscXXPegZOM38uXJGByC9gzUlpVCQ1eY6
-         yob7s8ApRkuoLTuE75uwg8VXagYviziVattKKFwjFweM2pWRVBeJGyCz90l1gUj+GlzD
-         Bkiq0A2Y9ZhYT4GnidJq+ZJxfORVovrYPUhDbpeXMrfi0mzR06/AM1aSQvyzZsSTB/L5
-         qjTs9AH92IeIRoVhkUOz4d3jFye3c6fIYGDraAlT3HiKyJ9RrTu0+S9v698YkeAXh7Q5
-         Ih9aMm+jVr6AC9iHbDSPpAFfkoFp0K9D1JxTnykKEPXl+JHUtQTC4R+wHbCfPKxUnpXy
-         UQyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EU9IPP096OeclFzFMM2Ay6h5ady4PhP3HzR9YloYxzA=;
-        b=Xhwl5p883SlMgxIk6yG/wWe6NkOyzitKUWNc0y2b2Rmotx6eMsG83CuXtotzGbHPPu
-         NDR7j9ocjBK/8hI7ak8NvFPB6ofPmfud4VL4J4tRNhvi0Wid5d7zAIVUmZZY0pWlrB5F
-         8Q7iieNMFt0CHvmtt0Qxz8Vv3d6W8Rwh8pIScjJtfY8Q99ccEPR4l0rG8AtJeFQ2kSYE
-         /KJ/7M96818bCjK0yAMIn5vMxM8jkvftvyfqGsIbM6YMVFLFq704ovsX8UJAxzi+PN5w
-         3btv7XBJMCS4u6vfZlqiFLR4P56uCHy0zVtA93JHpnJpPl5M50oiiGlQXBXXV9AnKzFn
-         GGMg==
-X-Gm-Message-State: AOAM531B8PIwbdH+BS5VtrnIRIpZWsyiaTelOoTt+9tY2vlgbLfo964b
-        RLdk+qa2/q+1GjHpUr7OC4JwPSheTg/33EtIzZeocg==
-X-Google-Smtp-Source: ABdhPJwdKxAIFgqFT76MuUcfsk2unbcW2af2CnUcD2lkSYJnkndGJ0sNbrvI2hqv9sK4stP3MupDcAVmXSRtsYQvC2c=
-X-Received: by 2002:a19:6a16:: with SMTP id u22mr5421205lfu.254.1632420794094;
- Thu, 23 Sep 2021 11:13:14 -0700 (PDT)
+        id S242742AbhIWSOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:14:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242696AbhIWSOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 14:14:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3820360F43;
+        Thu, 23 Sep 2021 18:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632420778;
+        bh=mXvrfKC+e6Fp2msO1e9dvOO8RC/ii9We36xFgFUas8g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QqLZnuaHT8QqfyojGiczmUWMS8siMAdkDvolM75Q84+AiRhzknbPi0WqWHzhE5p33
+         xJdzMF2B52hs/UCKQtZikWC/1/BbqRTc3EQzYJaJMJJLZ5s9Zv4FpRw1eFkajMMV4f
+         t5sRXEGpTVHlZBxkIetdwTAE1b0fJihXnA5wUMUr02maJeFpYrE3IprsIPH+joGpL/
+         pci6nd0BgQZd3FXo2vRMQevQK5B/munYkvA9GajE4nIKkNWPiBRAlIcRHSz0SLnshP
+         FErUmwhcStUMdFLBaId569v8Gt5vMQfOzlCB+qcUGQu03mMyIz3U9Ryex66gLKfCG7
+         /kzgI9+ckOGdg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Igor Russkikh <irusskikh@marvell.com>,
+        intel-wired-lan@lists.osuosl.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        netdev@vger.kernel.org, Sathya Perla <sathya.perla@broadcom.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Subject: [PATCH net-next 0/6] Batch of devlink related fixes
+Date:   Thu, 23 Sep 2021 21:12:47 +0300
+Message-Id: <cover.1632420430.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210916181808.2399-1-xiongx18@fudan.edu.cn>
-In-Reply-To: <20210916181808.2399-1-xiongx18@fudan.edu.cn>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 23 Sep 2021 20:12:38 +0200
-Message-ID: <CAPDyKFr8nkVCQB63rZ6ZcHeTrmQno7aYv2Pa3PmZwzW9Ei3HDQ@mail.gmail.com>
-Subject: Re: [PATCH] drivers/mmc: fix reference count leaks in moxart_probe
-To:     Xin Xiong <xiongx18@fudan.edu.cn>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sept 2021 at 20:19, Xin Xiong <xiongx18@fudan.edu.cn> wrote:
->
-> The issue happens in several error handling paths on two refcounted
-> object related to the object "host" (dma_chan_rx, dma_chan_tx). In
-> these paths, the function forgets to decrement the reference count of
-> one or both objects' reference count increased earlier by
-> dma_request_chan(), causing reference count leaks.
->
-> Fix it by decreasing reference counts of both objects in each path
-> separately.
->
-> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->  drivers/mmc/host/moxart-mmc.c | 38 ++++++++++++++++++++++++++---------
->  1 file changed, 28 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-> index 6c9d38132..b5aa1010c 100644
-> --- a/drivers/mmc/host/moxart-mmc.c
-> +++ b/drivers/mmc/host/moxart-mmc.c
-> @@ -606,7 +606,28 @@ static int moxart_probe(struct platform_device *pdev)
->         host->sysclk = clk_get_rate(clk);
->         host->fifo_width = readl(host->base + REG_FEATURE) << 2;
->         host->dma_chan_tx = dma_request_chan(dev, "tx");
-> +       if (IS_ERR(host->dma_chan_tx)) {
-> +               if (PTR_ERR(host->dma_chan_tx) == -EPROBE_DEFER) {
-> +                       ret = -EPROBE_DEFER;
-> +            goto out;
-> +        }
-> +    }
-> +
->         host->dma_chan_rx = dma_request_chan(dev, "rx");
-> +       if (IS_ERR(host->dma_chan_rx)) {
-> +               if (!IS_ERR(host->dma_chan_tx))
-> +                       dma_release_channel(host->dma_chan_tx);
-> +               if (PTR_ERR(host->dma_chan_rx) == -EPROBE_DEFER) {
-> +                       ret = -EPROBE_DEFER;
-> +                       goto out;
-> +        }
-> +        dev_dbg(dev, "PIO mode transfer enabled\n");
-> +        host->have_dma = false;
-> +    } else if (IS_ERR(host->dma_chan_tx)) {
-> +               dma_release_channel(host->chan_rx);
-> +               dev_dbg(dev, "PIO mode transfer enabled\n");
-> +               host->have_dma = false;
-> +    }
->
->         spin_lock_init(&host->lock);
->
-> @@ -615,15 +636,7 @@ static int moxart_probe(struct platform_device *pdev)
->         mmc->f_min = DIV_ROUND_CLOSEST(host->sysclk, CLK_DIV_MASK * 2);
->         mmc->ocr_avail = 0xffff00;      /* Support 2.0v - 3.6v power. */
->
-> -       if (IS_ERR(host->dma_chan_tx) || IS_ERR(host->dma_chan_rx)) {
-> -               if (PTR_ERR(host->dma_chan_tx) == -EPROBE_DEFER ||
-> -                   PTR_ERR(host->dma_chan_rx) == -EPROBE_DEFER) {
-> -                       ret = -EPROBE_DEFER;
-> -                       goto out;
-> -               }
-> -               dev_dbg(dev, "PIO mode transfer enabled\n");
-> -               host->have_dma = false;
-> -       } else {
-> +    if (!IS_ERR(host->dma_chan_tx) && !IS_ERR(host->dma_chan_rx)) {
->                 dev_dbg(dev, "DMA channels found (%p,%p)\n",
->                          host->dma_chan_tx, host->dma_chan_rx);
->                 host->have_dma = true;
-> @@ -664,8 +677,13 @@ static int moxart_probe(struct platform_device *pdev)
->         }
->
->         ret = devm_request_irq(dev, irq, moxart_irq, 0, "moxart-mmc", host);
-> -       if (ret)
-> +       if (ret) {
-> +               if (host->have_dma) {
-> +                       dma_release_channel(host->dma_chan_tx);
-> +                       dma_release_channel(host->dma_chan_rx);
-> +               }
->                 goto out;
-> +       }
+From: Leon Romanovsky <leonro@nvidia.com>
 
-You are right, that we should call dma_release_channel in some error
-paths. Although, the above looks rather messy to me. May I suggest
-that we add the error handling below the "out" label instead. Along
-the lines of this:
+Hi,
 
-if (!IS_ERR(host->dma_chan_tx))
-     dma_release_channel(host->dma_chan_tx);
-if (!IS_ERR(host->dma_chan_rx))
-     dma_release_channel(host->dma_chan_rx);
+I'm asking to apply this batch of devlink fixes to net-next and not to
+net, because most if not all fixes are for old code or/and can be considered
+as cleanup.
 
->
->         dev_set_drvdata(dev, mmc);
->         mmc_add_host(mmc);
-> --
-> 2.25.1
->
+It will cancel the need to deal with merge conflicts for my next devlink series :).
 
-Kind regards
-Uffe
+Thanks
+
+Leon Romanovsky (6):
+  bnxt_en: Check devlink allocation and registration status
+  bnxt_en: Properly remove port parameter support
+  devlink: Delete not used port parameters APIs
+  devlink: Remove single line function obfuscations
+  ice: Delete always true check of PF pointer
+  qed: Don't ignore devlink allocation failures
+
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   5 +-
+ .../net/ethernet/broadcom/bnxt/bnxt_devlink.c |  26 +---
+ .../net/ethernet/broadcom/bnxt/bnxt_devlink.h |  13 --
+ drivers/net/ethernet/intel/ice/ice_main.c     |   3 -
+ drivers/net/ethernet/qlogic/qede/qede_main.c  |  12 +-
+ drivers/scsi/qedf/qedf_main.c                 |   2 +
+ include/net/devlink.h                         |   6 -
+ net/core/devlink.c                            | 123 +++++-------------
+ 8 files changed, 47 insertions(+), 143 deletions(-)
+
+-- 
+2.31.1
+
