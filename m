@@ -2,145 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992E2415BA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB6F415BB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240279AbhIWKCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 06:02:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40026 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240186AbhIWKCp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:02:45 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9655622308;
-        Thu, 23 Sep 2021 10:01:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632391273;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UzJP1NacuRrgyoFRt4Ocp3ynHeVYoUlVZdZtaHi2uBE=;
-        b=iKFB2v0lDs03sugqu0Q8wHXo3HNjI9ogoEkYBh7xRrfRqEAtOfWbd2+4O8e+1PXbOlQh6j
-        X9kBnJ+m9TluSiKGzk/1iXGV11ptPNYTLtku1zq+CQTxYL95l+ND8ulHSPuEj+3ZzBV2Mn
-        pikn9ttaONfoVNQJyeSPSEapY90g+RA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632391273;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UzJP1NacuRrgyoFRt4Ocp3ynHeVYoUlVZdZtaHi2uBE=;
-        b=As0XRGUSDMSN0X6e0YkkmOOs1WrEAm2X429Mo3aBaWRx8duMlnAXU3N22wHQFkMVACE5L2
-        3m5uyfsRfzuh4MAw==
-Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.24.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S240347AbhIWKEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:04:25 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:51908 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240281AbhIWKEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 06:04:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632391371; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ZSwkghkpKQA37kwC61R4tPg4+Lb80MaPfKoCgF7cuyY=;
+ b=Zg1CzuK6ju3CUnUbvZWS4eHqbUE76gsRWWO8/7yyg1rGEE6RY9foxOM/iSBTi3sNWXhqu7B+
+ sVv/5CzvHmclsegDuMybpo/qk7DEJEqxMNKq7g/7qvbhS+kxD63aULjgkzJszz0JQQTgiIr3
+ xMVOzBe8poWZ1Vp+SO+1EFVURyg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 614c5088e0f78151d6d16c5f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 23 Sep 2021 10:01:44
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 09BB3C4360C; Thu, 23 Sep 2021 10:01:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by relay1.suse.de (Postfix) with ESMTPS id 8DCA525D3C;
-        Thu, 23 Sep 2021 10:01:12 +0000 (UTC)
-References: <20210921130127.24131-1-rpalethorpe@suse.com>
- <CAK8P3a29ycNqOC_pD-UUtK37jK=Rz=nik=022Q1XtXr6-o6tuA@mail.gmail.com>
- <87o88mkor1.fsf@suse.de> <87lf3qkk72.fsf@suse.de> <87ilytkngp.fsf@suse.de>
- <CAK8P3a2S=a0aw8GY8fZxaU5fz7ZkdehtHgStkn2=u9gO28GVEw@mail.gmail.com>
-User-agent: mu4e 1.4.15; emacs 27.2
-From:   Richard Palethorpe <rpalethorpe@suse.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>
-Subject: Re: ia32 signed long treated as x64 unsigned int by __ia32_sys*
-Reply-To: rpalethorpe@suse.de
-In-reply-to: <CAK8P3a2S=a0aw8GY8fZxaU5fz7ZkdehtHgStkn2=u9gO28GVEw@mail.gmail.com>
-Date:   Thu, 23 Sep 2021 11:01:09 +0100
-Message-ID: <87fstvlifu.fsf@suse.de>
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AFECC4338F;
+        Thu, 23 Sep 2021 10:01:43 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 23 Sep 2021 15:31:43 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v8 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+In-Reply-To: <CAE-0n53d9wjc7-U2M6i5MzjAqOxu8oNUcihrxJv-HJnRX0TJHQ@mail.gmail.com>
+References: <1631898947-27433-1-git-send-email-pmaliset@codeaurora.org>
+ <1631898947-27433-5-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n53d9wjc7-U2M6i5MzjAqOxu8oNUcihrxJv-HJnRX0TJHQ@mail.gmail.com>
+Message-ID: <a4b5ddd8f3376688cca5e79577fed89c@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Arnd,
+On 2021-09-21 01:23, Stephen Boyd wrote:
+> Quoting Prasad Malisetty (2021-09-17 10:15:47)
+>> On the SC7280, the clock source for gcc_pcie_1_pipe_clk_src
+>> must be the TCXO while gdsc is enabled. After PHY init successful
+>> clock source should switch to pipe clock for gcc_pcie_1_pipe_clk_src.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+> 
+> One nit below
+> 
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> 
+>> @@ -1488,7 +1553,9 @@ static int qcom_pcie_probe(struct 
+>> platform_device *pdev)
+>> 
+>>         pcie->pci = pci;
+>> 
+>> -       pcie->ops = of_device_get_match_data(dev);
+>> +       pcie_cfg = of_device_get_match_data(dev);
+>> +       pcie->ops = pcie_cfg->ops;
+> 
+> Maybe worth failing probe with if (!pcie->ops) just to be a little
+> nicer here.
+> 
+Thanks Stephen, I will add the check in new patch series if any.
 
-Arnd Bergmann <arnd@arndb.de> writes:
-
-> On Wed, Sep 22, 2021 at 10:46 AM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->> Richard Palethorpe <rpalethorpe@suse.de> writes:
->
->> >
->> > Then the output is:
->> >
->> > [   11.252268] io_pgetevents(f7f19000, 4294967295, 1, ...)
->> > [   11.252401] comparing 4294967295 <= 1
->> > io_pgetevents02.c:114: TPASS: invalid min_nr: io_pgetevents() failed as expected: EINVAL (22)
->> > [   11.252610] io_pgetevents(f7f19000, 1, 4294967295, ...)
->> > [   11.252748] comparing 1 <= 4294967295
->> > io_pgetevents02.c:103: TFAIL: invalid max_nr: io_pgetevents() passed unexpectedly
->>
->> and below is the macro expansion for the automatically generated 32bit to
->> 64bit io_pgetevents. I believe it is casting u32 to s64, which appears
->> to mean there is no sign extension. I don't know if this is the expected
->> behaviour?
->
-> Thank you for digging through this, I meant to already reply once more yesterday
-> but didn't get around to that.
-
-Thanks, no problem. I suppose this will effect other systemcalls as
-well. Which if nothing else is a pain for testing.
-
->
->>     __typeof(__builtin_choose_expr(
->>         (__builtin_types_compatible_p(typeof((long)0), typeof(0LL)) ||
->>          __builtin_types_compatible_p(typeof((long)0), typeof(0ULL))),
->>         0LL, 0L)) min_nr,
->>     __typeof(__builtin_choose_expr(
->>         (__builtin_types_compatible_p(typeof((long)0), typeof(0LL)) ||
->>          __builtin_types_compatible_p(typeof((long)0), typeof(0ULL))),
->>         0LL, 0L)) nr,
->
-> The part that I remembered is in arch/s390/include/asm/syscall_wrapper.h,
-> which uses this version instead:
->
-> #define __SC_COMPAT_CAST(t, a)                                          \
-> ({                                                                      \
->         long __ReS = a;                                                 \
->                                                                         \
->         BUILD_BUG_ON((sizeof(t) > 4) && !__TYPE_IS_L(t) &&              \
->                      !__TYPE_IS_UL(t) && !__TYPE_IS_PTR(t) &&           \
->                      !__TYPE_IS_LL(t));                                 \
->         if (__TYPE_IS_L(t))                                             \
->                 __ReS = (s32)a;                                         \
->         if (__TYPE_IS_UL(t))                                            \
->                 __ReS = (u32)a;                                         \
->         if (__TYPE_IS_PTR(t))                                           \
->                 __ReS = a & 0x7fffffff;                                 \
->         if (__TYPE_IS_LL(t))                                            \
->                 return -ENOSYS;                                         \
->         (t)__ReS;                                                       \
-> })
->
-> This also takes care of s390-specific pointer conversion, which is the
-> reason for needing an architecture-specific wrapper, but I suppose the
-> handling of signed arguments as done in s390 should also be done
-> everywhere else.
->
-> I also noticed that only x86 and s390 even have separate entry
-> points for normal syscalls when called in compat mode, while
-> the others all just zero the upper halves of the registers in the
-> low-level entry code and then call the native entry point.
->
->         Arnd
-
-It looks to me like aarch64 also has something similar? At any rate, I
-can try to fix it for x86 and investigate what else might be effected.
-
--- 
-Thank you,
-Richard.
+>> +       pcie->pipe_clk_need_muxing = pcie_cfg->pipe_clk_need_muxing;
+>> 
+>>         pcie->reset = devm_gpiod_get_optional(dev, "perst", 
+>> GPIOD_OUT_HIGH);
+>>         if (IS_ERR(pcie->reset)) {
