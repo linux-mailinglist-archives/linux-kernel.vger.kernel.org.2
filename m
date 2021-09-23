@@ -2,240 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0975415483
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF08415484
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238651AbhIWARP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 20:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
+        id S238667AbhIWARr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 20:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234042AbhIWARO (ORCPT
+        with ESMTP id S234042AbhIWARq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 20:17:14 -0400
+        Wed, 22 Sep 2021 20:17:46 -0400
 Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C38EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:15:44 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so473922pjw.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:15:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F21C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:16:16 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so5699826pjc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:16:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MX45CYthlB2cgfjMAIOovhWIorSiEicvQ8dcX7fV3Ek=;
-        b=NMOdiVhPWCtXcDpo7CjaC/r2cAKV/gIqHRhI2FMjOwwf6l0meQYVHrPlB8G5Zfpw3c
-         6YN5QATjL2VY2SgpOs1fuCn9I8z1+uaRIP837A+NZny+r8Zl8G+TjqwjZ0GcIBBDs3Gu
-         H5NmI2sX8kfUdjlvpTsvcsZjNYbGQOtgY4RZpsEGgjCivQ+3Fh0fshwUO0d1rCT5tCY/
-         Qq7KJYDABIQrvOngoaMrxJKqN2ArH516VxnmB8Ws+l8Hezm0piX+eqWsRRQrtO1yeTJv
-         uHB3yKpIQ/SJOSIdO/TFI/slB2rIQBv9thKOqx5W/n67lQwTKmgF7y3/vShuGoocs8fr
-         GbIg==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=Fl9XoN3viCQtNolMKLNiLXtJoc0M0YllPIN6GladX98=;
+        b=PKo1cjcoTMKXAFHW5IY70J8+sbtZIM59hnD7JBK6DG+GG2+zx9fymYMxVa9Bu4e5Cf
+         v9KQkH4bFb0ZC6zWNIgqO1jBNw8S8TasupaDQ6RuHkyBn5bUkdKUAv1S6KhFJTG5KWc4
+         +xPNPoUEt2Vwz/B4pJtdIlxZ0tZmMIbwKJel7I7LAIAlihLpPdpqDtLDfiD8PQDg1Pvf
+         VmXVA+6kNg2LDINUNHMvr0Poaa1vsDsl3ss/ExHxSqstlwehlqmXbtPtYecjk5IMnyqt
+         gYv838WXk3V5AExkg2VLUIGOfWEx4BVFPwxbXCAxGE6GT2gH8JRCiTtmIkO3jwAwWd89
+         xLnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MX45CYthlB2cgfjMAIOovhWIorSiEicvQ8dcX7fV3Ek=;
-        b=g8k8OV+1WlfBls0za4lwSAH33ODyiTYMo1PBOX2MOiMGmZTSlA/nooN2z/HlcU4Mgw
-         Ul6t44jBK89qsGPCjYXSFD91YSeENow7r4YZ+GD/pXFo7HsVW5+XqHWU96zv3Kg6q44k
-         mTRPEdRj39jRlFea4XmoKaUueMRjo5La3AtjEmUg14bIUYH1dM06psr0SVkd4pEq52Y3
-         oTvsQf74s1mdUporQ+xZPwv9YJd67lShpHkKXzwplAqmmsgQ0ujihdObCLU7plPGmPGA
-         NQPHo5oIro07GmGyJWOR4oso5n62h7HyBfpXiwDIL/hRsVSFO/mdXQYzoWsWAzOmeGa8
-         cUFw==
-X-Gm-Message-State: AOAM531AKSbsNa/aG8rgLYmGZZ5ldX4AI0Ynd3K7B+WNQj0D4BPtYrrh
-        uVYiQ1ieF4aS6Q//HetgRTvLh84ZKVg2wvQRTaA=
-X-Google-Smtp-Source: ABdhPJxmFpJy1YphXYGykKG+SKOWDHVsQRHgTiApDUe6N5vGV8IXL6+mA8tTV/iSbITkQV9GyzgpcPMm0vAkIDIcNAg=
-X-Received: by 2002:a17:90a:9292:: with SMTP id n18mr14425588pjo.120.1632356143343;
- Wed, 22 Sep 2021 17:15:43 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=Fl9XoN3viCQtNolMKLNiLXtJoc0M0YllPIN6GladX98=;
+        b=hY2ZAc/0PuwFHZkt7fnIY9OP5g7hgYIBb/PvxWP5COxFTxKxRqEN3CTH2fYdMZahWa
+         iH52FPpcw1EQXbTo1de8UU0YHlDwzNAxscDS80I6pUZaCU9s6Y4hnMhoo+vHqejSsSU6
+         lX1RSDoAD6fnZ+GSZRAPDgB2y9KsgIEGzLC8OkC/gBnYxPNXgchwDm6y2WjRmYEXhJTw
+         vimvXqeOUUc1u1471mxZNNuRV4kCposU+USAyPLK983nYb83jkTlYVpFOxlXVh63hHvk
+         /NQHEpO5Z1YqdQZYpV94v58le7tmSsUwEjCxbY1kXrH/CVgASl/oWSXZE5A0C1qlOmO9
+         6O/g==
+X-Gm-Message-State: AOAM530ZSvRajB3ykkyzaEWH1Mmw4kPCeHXfUO46CFnmHF7IcVIBx7Eh
+        jtZPZoQCx99S/+xX5mDMgEVQ7Nx0DtsD3D+MnH0=
+X-Google-Smtp-Source: ABdhPJzQdRh8kuiqT6GRXhsTohBUwWwV+Egnx7SmcOK2NuNjIAB3DfzLoDsh9FXB2GJTX0xOVImuE4JuMguIBDOau2M=
+X-Received: by 2002:a17:90b:1c92:: with SMTP id oo18mr14621103pjb.56.1632356175694;
+ Wed, 22 Sep 2021 17:16:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
- <CACT4Y+bh1yaGLs5H3YTM6YLLtyWELvjWR7HcEk0pd9Nod9u4ZQ@mail.gmail.com>
- <20210207141104.ikxbdxhoisgqaoio@box> <CACT4Y+YwUgksZBj4YpChqL8iac2us7mOkbVDLsib3Y+MVb31cw@mail.gmail.com>
- <CAMe9rOog08O8xmhhXuJ6aTO+ctv8D2yw1_vu8XjQWwsfw707Mg@mail.gmail.com>
- <MWHPR11MB00787E70E2E0316E5124741DD3A29@MWHPR11MB0078.namprd11.prod.outlook.com>
- <CACT4Y+anEXw18nT47gxBTA7BEh3GUhqm6qb+PUdVPf6E4Fs6cg@mail.gmail.com> <CACT4Y+ZGFdmKYZvA4kvw3iTYLJWmnNp=GeL=0Dz2xyC0EpSuCw@mail.gmail.com>
-In-Reply-To: <CACT4Y+ZGFdmKYZvA4kvw3iTYLJWmnNp=GeL=0Dz2xyC0EpSuCw@mail.gmail.com>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Wed, 22 Sep 2021 17:15:06 -0700
-Message-ID: <CAMe9rOp+_2LcMWcxxnJVH1CtQQT1Az1V2VW-dXA0_o0eM6iHdQ@mail.gmail.com>
-Subject: Re: [RFC 0/9] Linear Address Masking enabling
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     "Zhang, Xiang1" <xiang1.zhang@intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Carlos O'Donell" <carlos@redhat.com>,
-        Marco Elver <elver@google.com>,
-        Taras Madan <tarasmadan@google.com>
+Sender: mrs.kimhongyeoh55@gmail.com
+Received: by 2002:a05:6a10:8c18:0:0:0:0 with HTTP; Wed, 22 Sep 2021 17:16:15
+ -0700 (PDT)
+From:   "Mrs. Nadia Emaan" <mrsnadiaemaan51@gmail.com>
+Date:   Thu, 23 Sep 2021 00:16:15 +0000
+X-Google-Sender-Auth: 17blBSYRHC6yXdL8dD5W2ebjboM
+Message-ID: <CAPeJZ8CgVL=k1hKGumR=uei6Nz78+96vGe8PYdMv+HGNLj1VmA@mail.gmail.com>
+Subject: HELLO:
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 1:03 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Wed, 22 Sept 2021 at 14:54, Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Wed, 22 Sept 2021 at 03:15, Zhang, Xiang1 <xiang1.zhang@intel.com> w=
-rote:
-> > >
-> > > There are already in llvm.org.
-> > > One of my old patch is https://reviews.llvm.org/D102472 which has bee=
-n committed by https://reviews.llvm.org/D102901  and https://reviews.llvm.o=
-rg/D109790
-> >
-> > Hi Xiang,
-> >
-> > Good sanitizer patches are upstream!
-> >
-> > Please help me to understand the status of other pieces (H.J. you
-> > probably talked about this yesterday, but I wasn't able to build a
-> > complete picture during the talk, I think it will be useful to have
-> > this in written form).
-> >
-> > 1. The presentation mentions "GCC: enable memory tagging with LAM in
-> > x86 codegen".
-> > What exactly is needed? Isn't LAM transparent for codegen? What's the
-> > status in gcc? Does a corresponding change need to be done in llvm?
-> >
-> > 2. "Enable LAM in binutils".
-> > This is already upstream in binutils 2.36, right?
-> >
-> > 3. The mentioned glibc patch:
-> > http://patchwork.ozlabs.org/project/glibc/patch/20210211173711.71736-1-=
-hjl.tools@gmail.com/
-> > Not upstream yet, targeting glibc 2.34.
->
-> Do we need any support in other libc's, e.g. Android bionic?
+May God Bless you My Friend,
 
-Here is my tagged address API proposal:
-
-https://sourceware.org/pipermail/libc-alpha/2021-August/130382.html
-
-> > 4. "Avoid pointer operations incompatible with LAM. memmove: mask out
-> > memory tags before comparing pointers".
-> > Is this upstream? Where is the patch? Are there other similar patches?
-> >
-> > As a side note, regarding the memmove change: do we really need it?
-> > Memory regions can overlap only if they come from the same
-> > allocation/base object. If they come from different allocations, they
-> > can't overlap (undefined behavior already).
-> >
-> > 5. Do we need any additional enabling changes in clang/llvm?
-> >
-> > 6. The kernel patches (this email thread) depend on the CET patches
-> > (for the interface part only). And the CET patches is this, right?
-> > https://lore.kernel.org/linux-doc/?q=3Dx86%2Fcet%2Fshstk
-> >
-> > 7. Do I miss anything else?
-> >
-> > H.J. please upload your slides here:
-> > https://linuxplumbersconf.org/event/11/contributions/1010/
-> > It would help with links and copy-pasting text.
-> >
-> > FTR here is the link to the Plumbers talk:
-> > https://youtu.be/zUw0ZVXCwoM?t=3D10456
-> >
-> > Thank you
-> >
-> >
-> > > BR
-> > > Xiang
-> > >
-> > > -----Original Message-----
-> > > From: H.J. Lu <hjl.tools@gmail.com>
-> > > Sent: Wednesday, September 22, 2021 1:16 AM
-> > > To: Dmitry Vyukov <dvyukov@google.com>
-> > > Cc: Kirill A. Shutemov <kirill@shutemov.name>; Kirill A. Shutemov <ki=
-rill.shutemov@linux.intel.com>; Dave Hansen <dave.hansen@linux.intel.com>; =
-Lutomirski, Andy <luto@kernel.org>; Peter Zijlstra <peterz@infradead.org>; =
-the arch/x86 maintainers <x86@kernel.org>; Andrey Ryabinin <aryabinin@virtu=
-ozzo.com>; Alexander Potapenko <glider@google.com>; Catalin Marinas <catali=
-n.marinas@arm.com>; Will Deacon <will@kernel.org>; Andi Kleen <ak@linux.int=
-el.com>; Linux-MM <linux-mm@kvack.org>; LKML <linux-kernel@vger.kernel.org>=
-; Carlos O'Donell <carlos@redhat.com>; Marco Elver <elver@google.com>; Tara=
-s Madan <tarasmadan@google.com>; Zhang, Xiang1 <xiang1.zhang@intel.com>
-> > > Subject: Re: [RFC 0/9] Linear Address Masking enabling
-> > >
-> > > On Tue, Sep 21, 2021 at 9:52 AM Dmitry Vyukov <dvyukov@google.com> wr=
-ote:
-> > > >
-> > > > On Sun, 7 Feb 2021 at 15:11, Kirill A. Shutemov <kirill@shutemov.na=
-me> wrote:
-> > > > >
-> > > > > On Sun, Feb 07, 2021 at 09:24:23AM +0100, Dmitry Vyukov wrote:
-> > > > > > On Fri, Feb 5, 2021 at 4:16 PM Kirill A. Shutemov
-> > > > > > <kirill.shutemov@linux.intel.com> wrote:
-> > > > > > >
-> > > > > > > Linear Address Masking[1] (LAM) modifies the checking that is
-> > > > > > > applied to 64-bit linear addresses, allowing software to use =
-of
-> > > > > > > the untranslated address bits for metadata.
-> > > > > > >
-> > > > > > > The patchset brings support for LAM for userspace addresses.
-> > > > > > >
-> > > > > > > The most sensitive part of enabling is change in tlb.c, where
-> > > > > > > CR3 flags get set. Please take a look that what I'm doing mak=
-es sense.
-> > > > > > >
-> > > > > > > The patchset is RFC quality and the code requires more testin=
-g
-> > > > > > > before it can be applied.
-> > > > > > >
-> > > > > > > The userspace API is not finalized yet. The patchset extends =
-API
-> > > > > > > used by
-> > > > > > > ARM64: PR_GET/SET_TAGGED_ADDR_CTRL. The API is adjusted to no=
-t
-> > > > > > > imply ARM
-> > > > > > > TBI: it now allows to request a number of bits of metadata
-> > > > > > > needed and report where these bits are located in the address=
-.
-> > > > > > >
-> > > > > > > There's an alternative proposal[2] for the API based on Intel
-> > > > > > > CET interface. Please let us know if you prefer one over anot=
-her.
-> > > > > > >
-> > > > > > > The feature competes for bits with 5-level paging: LAM_U48 ma=
-kes
-> > > > > > > it impossible to map anything about 47-bits. The patchset mad=
-e
-> > > > > > > these capability mutually exclusive: whatever used first wins=
-.
-> > > > > > > LAM_U57 can be combined with mappings above 47-bits.
-> > > > > > >
-> > > > > > > I include QEMU patch in case if somebody wants to play with t=
-he feature.
-> > > > > >
-> > > > > > Exciting! Do you plan to send the QEMU patch to QEMU?
-> > > > >
-> > > > > Sure. After more testing, once I'm sure it's conforming to the ha=
-rdware.
-> > > >
-> > > > A follow up after H.J.'s LPC talk:
-> > > > https://linuxplumbersconf.org/event/11/contributions/1010/
-> > > > (also +Carlos)
-> > > >
-> > > > As far as I understood, this kernel series depends on the Intel CET=
- patches.
-> > > >
-> > > > Where are these compiler-rt patches that block gcc support?
-> > >
-> > > Hi Xiang,
-> > >
-> > > Please share your compiler-rt changes for LAM.
-> > >
-> > > --
-> > > H.J.
+I am contacting you through this means because I need your urgent
+assistance and also help me to carry a charity project in your
+country. I found your email address as a true child of God for past
+few days now that I have been praying to know if you are really the
+chosen one for this great charity project, according to God's
+direction, after all prayers I am convinced, and I have decided to
+contact you. Please, i want you use the funds for the Lord's work,
+with confidence, read and respond now.
 
 
+My name is Mrs. Emman Nadia Faroul, a widow, but currently based in West
+Africa since my life with my late husband, who was a businessman in
+this country before dying some years ago. We were married to many
+years without a child. He died after a brief illness that lasted only
+six days and I myself have been suffering from an ovarian cancer
+disease. At this moment I am about to finish the race in this way
+because the disease has reached a very bad stage, without any family
+member and without children. I hope you do not expose or betray this
+trust and I am sure that I am about to trust you for the mutual
+benefit of orphans and the less privileged. I have some funds that I
+inherited from my late husband, the total sum of ($ 12,500,000.00)
+deposited at a bank here in Burkina Faso. After knowing my current
+state of health, I decided to trust you with this fund, believing that
+you will use it in the way I will instruct here.
 
---=20
-H.J.
+
+you will use this $12.5 Million for public benefit as follows;
+
+1. Establish An Orphanage Home To Help The Orphanages Children.
+2. Build A Hospital To Help The Poor.
+3. Build A Nursing Home For Elderly People Need Care & Meal.
+
+You will named them after my late husband.Therefore, I need you to
+help me and claim this money and use it for charities, for orphanages
+and provide justice and help to the poor, needy and to promote the
+words of God and the effort to maintain the house of God, according to
+the bible in the book of. Jeremiah 22: 15-16, without minding our
+different religions.
+
+It will be a pleasure to compensate with 40% percent of the total
+money for your effort in handling the transaction, while 60% of the
+money will go to charity project.
+
+All I need from you is sincerity and ability to complete the task of
+God without any failure. It will be my pleasure to see that the bank
+has finally released and transferred the fund to your bank account in
+the country, even before I die here in the hospital, due to my current
+state of health, everything must be processed as soon as possible.
+
+I am waiting for your immediate response, if you are only interested
+in obtaining more details about the transaction and execution of this
+humanitarian project for the glory and honor of God.
+
+Sorry if you received this letter in your spam, is due to recent
+connection/network error here in the country.
+
+Please I am waiting for your urgent reply now.
+
+May God Bless you,
+Mrs. Emman Nadia Faroul.
