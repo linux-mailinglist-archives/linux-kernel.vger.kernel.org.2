@@ -2,414 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FCA415FAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11C0415FB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241383AbhIWN0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241333AbhIWNZt (ORCPT
+        id S241237AbhIWN2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:28:23 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:53061 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241104AbhIWN2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:25:49 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B78C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:24:17 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id w17so6100882qta.9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9u6DpipKdkYxzryu97JGWR+FHzvdxp/0hUwzm5Xllkg=;
-        b=E4bTKRFTb159AyUy1ADkq1t30860DD6V83n0AegZv0pIeGtHY2W60aJxmf1LwLJZkk
-         VSZXyuB45jKsVPqmPMwtYasxUyDjWaJS1FGljRpOn8EmyV/5LKmur+mBjoWAt+t7vmfv
-         8arLrZW/MWjTJqolFPk/286QUNJxCvFLtgO25SeFHlh7HUjdOGv6tKZUpPTvn4dQj5f+
-         2JUZxRxfgdBK3nABSd5CZ5wFndoJswjusWXeH5IwIcPUkf3QSaN66ctpY+XWL4XDO6Op
-         mK/V5/kmeGMKKIvJry9ieP332oGEI+gQEf7/HrG2JT9U1CiWy1g8JNI6n3SwcUffH7Mo
-         N4Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9u6DpipKdkYxzryu97JGWR+FHzvdxp/0hUwzm5Xllkg=;
-        b=hp93b/4Si44BSQ/PrY/4d8m4VdiIVhC4syvh/0/vqCTwnrafnuh4u50STDsKnOM/tJ
-         GiCmQDjBvnPbAf3VeUa6mnYtMt4I2Ge4G02LdRQv7U0VtAD78yOBsmNb3DuRx/oyyFvs
-         EgwmOHQSHjUVNIwA+dvewPH7gmWI6n2Uaja+I+7uR/ja7Zk7XdDvCa8ikgLQ/v1F77IS
-         6mJrGejKNMmZDPhiQ9Y0cNwQEWuASBVpoaE4K26bg5YfV/nNKUkdfeTmsmxA7wVRd0ym
-         sczlP5o34uCDSmMFBeLzx+mxEVDCsvjhEa99+MsbNvaNbjqu7k3GM7rR0sDLnQ+WYy1X
-         Opbg==
-X-Gm-Message-State: AOAM532Cvrf8LY+hcqlfFx61MWkUZHEdaTplhwsF4S2dGt6UiWT9q0ZS
-        Q/NG92IfvxsSiCQ/7yNOs2I+3NgWktRilK44rWB67w==
-X-Google-Smtp-Source: ABdhPJzqpKIivVlP6DdxD5Jl1mNsz6f2a00ynXFo7GNT0Jt/BQmpTBCkaUO5P6OFQfYnWxXIgq8vTWCLgvIDy6ho6Xc=
-X-Received: by 2002:ac8:560b:: with SMTP id 11mr4779099qtr.319.1632403456468;
- Thu, 23 Sep 2021 06:24:16 -0700 (PDT)
+        Thu, 23 Sep 2021 09:28:22 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N0F9t-1mp4rW26id-00xJGN; Thu, 23 Sep 2021 15:26:49 +0200
+Received: by mail-wr1-f51.google.com with SMTP id t18so17310353wrb.0;
+        Thu, 23 Sep 2021 06:26:49 -0700 (PDT)
+X-Gm-Message-State: AOAM532XyXmkW+TZQ+Zsb5k5tZspnPX9Bcz88LOW1NqC1XdnGqCUU3wW
+        Q2cR+csHxVSXYvMNEiKBFX9CnpgiTtno0NCLgM4=
+X-Google-Smtp-Source: ABdhPJw4UBkTVB6mvmMc1RQ4ZclrJtxhHJpuF6D7fFM8+8KgqGaZ+oJj0Hxv0wUOvOTVJOoZ48OfTnkS7cg4jdQ6xS0=
+X-Received: by 2002:a05:600c:896:: with SMTP id l22mr15859999wmp.173.1632403609085;
+ Thu, 23 Sep 2021 06:26:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210923104803.2620285-1-elver@google.com> <20210923104803.2620285-4-elver@google.com>
- <CACT4Y+Zvm4dXQY2tCuypso9aU97_6U2dLhfg2NNA8GTvcQoCLQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+Zvm4dXQY2tCuypso9aU97_6U2dLhfg2NNA8GTvcQoCLQ@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 23 Sep 2021 15:23:39 +0200
-Message-ID: <CAG_fn=V31jEBeEVh0H2+uPAd2AhV9y6hYJmcP0P_i05UJ+MiTg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] kfence: limit currently covered allocations when
- pool nearly full
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
+ <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+ <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+ <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
+ <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
+ <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
+ <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
+ <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
+ <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com>
+ <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com> <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com>
+In-Reply-To: <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 23 Sep 2021 15:26:32 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
+Message-ID: <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zaXvNWEPrlj1bhL7HkFmMW/Tpvat2zhfOUly+zgxXOlsBTzNBDI
+ ttt+rLcon28koaw6AAmRKHpkgmQ2b8r7tkWl6pxARDnJwtD1CKDtq4rSjRO95sjyoZp/Hde
+ g0WKHzLNFuT07I9QXMLGVWtkrdT6ukXKknw9Y+1bbp4rvF0x21N5FHtzSYVJV928T19a7NB
+ rZKYh9CWB6VIlWjcKvZMQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ebET27t9iSM=:O4JCxyD3aZMWFCqL+xubE/
+ B34vPRal4iy0rI02KcuQjd+xcqe+CaLD8V7jWKUPtVBPx3x7+/VeeBqTYr2wkY9UZLdeRQpyb
+ lUaJd6jKKo0GVxYcrZ7Ta/nTSU8nvIVDOdGSeruhaYMSBa1F5dEbYG2fcS7Qu3pu7sxnTNJ6m
+ Gnli6moCPaJK80ilH+Rmbx9CvbZa1q8QDGn700j4UzIRjyI4bMi0U5HFxTWqgXKuFtWbfnXRU
+ 6I7fO7XErK1og+g40McedWNn5g/vddOMDvNtbX1lwZS9/NBwyxhBtj0GxkWJ4AaJ0cffwtSRH
+ E9iTvEDTBqUVg/Aij17+ZfVX6+pnGxvjm++fElYn0ps9oLO5prCLnMQNORQjicrXJlezXNC/8
+ 2t8tjVi268iRieI6JCFHFJY7m3HLCv3zWlz8KdZj8kb6x3EfUr5QzYB1cLz4ildWs0JOtdsps
+ ZHqis+aQEHyOxHYS/SmlfcmWoTK9bH8VZVDTjqFeazxxQAjAFw0E4gbKKZd9RBwVo26KISm12
+ gedSr6YabWfPMwfGAiGCUPE+wvwUGxQSTBs9ZsCIrf1053URZhzKOWJMQiaM5ARHdNJUsIebS
+ U0HpieouZivY4Oa85GrltjzJNZNWnBuKVWuXkvtrnS8ypolrDrvBdmRlsYWx9wnrHv7IKAA6O
+ +84y+tk9Z1XR8AWmvEbYaARsxnnvmsLqyis0Q0tbJ0v/9zW0FXKCCI1CZ8IAU43oUkn38CLEy
+ QYGa6iU7n0fsqhqa4lDH0P/+OPj69ESRgqNcrA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 1:19 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+ ==On Thu, Sep 23, 2021 at 1:09 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> On Thu, Sep 23, 2021 at 11:07 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > ()On Thu, Sep 23, 2021 at 8:36 AM Sergio Paracuellos
+> > <sergio.paracuellos@gmail.com> wrote:
+> > > On Thu, Sep 23, 2021 at 7:51 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > > I am not really understanding this yet (I think I need a bit of sleep
+> > > > > time :)), but I will test this tomorrow and come back to you again
+> > > > > with results.
+> > > >
+> > > > Both would let devices access the registers, but they are different
+> > > > regarding the bus translations you have to program into the
+> > > > host bridge, and how to access the hardcoded port numbers.
+> > >
+> > > I have tested this and I get initial invalidid BAR value errors on pci
+> > > bus I/O enumeration an also bad addresses in /proc/ioports in the same
+> > > way I got defining PCI_IOBASE as _AC(0xa0000000, UL):
+> > >
+> > > root@gnubee:~# cat /proc/ioports
+> > > 00000000-0000ffff : pcie@1e140000
+> > >   00000000-00000fff : PCI Bus 0000:01
+> > >     00000000-0000000f : 0000:01:00.0
+> > >       00000000-0000000f : ahci
+> > >     00000010-00000017 : 0000:01:00.0
+> > >       00000010-00000017 : ahci
+> > >     00000018-0000001f : 0000:01:00.0
+> > >       00000018-0000001f : ahci
+> >
+> > Ok, These look good to me now.
 >
-> On Thu, 23 Sept 2021 at 12:48, Marco Elver <elver@google.com> wrote:
-> >
-> > One of KFENCE's main design principles is that with increasing uptime,
-> > allocation coverage increases sufficiently to detect previously
-> > undetected bugs.
-> >
-> > We have observed that frequent long-lived allocations of the same
-> > source (e.g. pagecache) tend to permanently fill up the KFENCE pool
-> > with increasing system uptime, thus breaking the above requirement.
-> > The workaround thus far had been increasing the sample interval and/or
-> > increasing the KFENCE pool size, but is no reliable solution.
-> >
-> > To ensure diverse coverage of allocations, limit currently covered
-> > allocations of the same source once pool utilization reaches 75%
-> > (configurable via `kfence.skip_covered_thresh`) or above. The effect is
-> > retaining reasonable allocation coverage when the pool is close to full=
-.
-> >
-> > A side-effect is that this also limits frequent long-lived allocations
-> > of the same source filling up the pool permanently.
-> >
-> > Uniqueness of an allocation for coverage purposes is based on its
-> > (partial) allocation stack trace (the source). A Counting Bloom filter
-> > is used to check if an allocation is covered; if the allocation is
-> > currently covered, the allocation is skipped by KFENCE.
-> >
-> > Testing was done using:
-> >
-> >         (a) a synthetic workload that performs frequent long-lived
-> >             allocations (default config values; sample_interval=3D1;
-> >             num_objects=3D63), and
-> >
-> >         (b) normal desktop workloads on an otherwise idle machine where
-> >             the problem was first reported after a few days of uptime
-> >             (default config values).
-> >
-> > In both test cases the sampled allocation rate no longer drops to zero
-> > at any point. In the case of (b) we observe (after 2 days uptime) 15%
-> > unique allocations in the pool, 77% pool utilization, with 20% "skipped
-> > allocations (covered)".
-> >
-> > Signed-off-by: Marco Elver <elver@google.com>
+> This is the behaviour we already had with spaces.h [0] without any
+> other change. See also comments of Thomas [1] about this being wrong
+> which at the end are the motivation for this patch series.
 >
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-Acked-by: Alexander Potapenko <glider@google.com>
-
+> > > mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x001e160000
+> > > LOGIC PIO: PIO TO CPUADDR: ADDR: 0x1e160000 -  addr HW_START:
+> > > 0x1e160000 + RANGE IO: 0x00000000
 >
-> > ---
-> > v3:
-> > * Remove unneeded !alloc_stack_hash checks.
-> > * Remove unneeded meta->alloc_stack_hash=3D0 in kfence_guarded_free().
-> >
-> > v2:
-> > * Switch to counting bloom filter to guarantee currently covered
-> >   allocations being skipped.
-> > * Use a module param for skip_covered threshold.
-> > * Use kfence pool address as hash entropy.
-> > * Use filter_irq_stacks().
-> > ---
-> >  mm/kfence/core.c   | 103 ++++++++++++++++++++++++++++++++++++++++++++-
-> >  mm/kfence/kfence.h |   2 +
-> >  2 files changed, 103 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> > index db01814f8ff0..58a0f6f1acc5 100644
-> > --- a/mm/kfence/core.c
-> > +++ b/mm/kfence/core.c
-> > @@ -11,11 +11,13 @@
-> >  #include <linux/bug.h>
-> >  #include <linux/debugfs.h>
-> >  #include <linux/irq_work.h>
-> > +#include <linux/jhash.h>
-> >  #include <linux/kcsan-checks.h>
-> >  #include <linux/kfence.h>
-> >  #include <linux/kmemleak.h>
-> >  #include <linux/list.h>
-> >  #include <linux/lockdep.h>
-> > +#include <linux/log2.h>
-> >  #include <linux/memblock.h>
-> >  #include <linux/moduleparam.h>
-> >  #include <linux/random.h>
-> > @@ -82,6 +84,10 @@ static const struct kernel_param_ops sample_interval=
-_param_ops =3D {
-> >  };
-> >  module_param_cb(sample_interval, &sample_interval_param_ops, &kfence_s=
-ample_interval, 0600);
-> >
-> > +/* Pool usage% threshold when currently covered allocations are skippe=
-d. */
-> > +static unsigned long kfence_skip_covered_thresh __read_mostly =3D 75;
-> > +module_param_named(skip_covered_thresh, kfence_skip_covered_thresh, ul=
-ong, 0644);
-> > +
-> >  /* The pool of pages used for guard pages and objects. */
-> >  char *__kfence_pool __ro_after_init;
-> >  EXPORT_SYMBOL(__kfence_pool); /* Export for test modules. */
-> > @@ -105,6 +111,25 @@ DEFINE_STATIC_KEY_FALSE(kfence_allocation_key);
-> >  /* Gates the allocation, ensuring only one succeeds in a given period.=
- */
-> >  atomic_t kfence_allocation_gate =3D ATOMIC_INIT(1);
-> >
-> > +/*
-> > + * A Counting Bloom filter of allocation coverage: limits currently co=
-vered
-> > + * allocations of the same source filling up the pool.
-> > + *
-> > + * Assuming a range of 15%-85% unique allocations in the pool at any p=
-oint in
+> Why is my RANGE IO start transformed here to 0x0? Should not be the
+> one defined in dts 0x001e160000?
 
-Where do these 85% come from?
+Can you show the exact property in your device tree? It sounds like the
+problem is an incorrect entry in the ranges, unless the chip is hardwired
+to the bus address in an unusual way.
 
-> > + * time, the below parameters provide a probablity of 0.02-0.33 for fa=
-lse
-> > + * positive hits respectively:
-> > + *
-> > + *     P(alloc_traces) =3D (1 - e^(-HNUM * (alloc_traces / SIZE)) ^ HN=
-UM
-> > + */
-> > +#define ALLOC_COVERED_HNUM     2
-> > +#define ALLOC_COVERED_SIZE     (1 << (const_ilog2(CONFIG_KFENCE_NUM_OB=
-JECTS) + 2))
-> > +#define ALLOC_COVERED_HNEXT(h) (1664525 * (h) + 1013904223)
+> > I think you have to have another #ifdef around the declaration in
+> > this case, or alternatively move the mips definition back to a .c
+> > file and leave only the #define
+>
+> Ok, so the following changes:
+>
+> diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
+> index 95b00017886c..ee0e0951b800 100644
+> --- a/arch/mips/pci/pci-generic.c
+> +++ b/arch/mips/pci/pci-generic.c
+> @@ -46,3 +46,9 @@ void pcibios_fixup_bus(struct pci_bus *bus)
+>  {
+>         pci_read_bridge_bases(bus);
+>  }
+> +
+> +int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
+> +{
+> +       mips_io_port_base = phys_addr;
+> +       return 0;
+> +}
+...
+> These changes got me to the same behaviour that this patch pretends
+> without the ifdef on this patch. But, this behaviour is wrong
+> according to your explanations since I got
+>
+> OF: IO START returned by pci_address_to_pio: 0x1e160000-0x1e16ffff
+>
+> and ioports using this range address and not lower 0x0-0xffff.
+>
+> So all of these changes seem to be invalid: this patch and the already
+> added to staging-tree two ones: [2] and [3], right?
 
-Unless we are planning to change these primes, can you use
-next_pseudo_random32() instead?
+Right, there is probably yet another problem. Patch [2] should
+be harmless here, but patch [3] is wrong as you should not override
+the length of the I/O port window that is in the DT.
 
+> Currently, no. But if they were ideally moved to work in the same way
+> mt7621 would be the same case. Mt7621 is device tree based PCI host
+> bridge driver that uses pci core apis but is still mips since it has
+> to properly set IO coherency units which is a mips thing...
 
-> > +#define ALLOC_COVERED_MASK     (ALLOC_COVERED_SIZE - 1)
-> > +static atomic_t alloc_covered[ALLOC_COVERED_SIZE];
-> > +
-> > +/* Stack depth used to determine uniqueness of an allocation. */
-> > +#define UNIQUE_ALLOC_STACK_DEPTH 8UL
-> > +
-> >  /* Statistics counters for debugfs. */
-> >  enum kfence_counter_id {
-> >         KFENCE_COUNTER_ALLOCATED,
-> > @@ -114,6 +139,7 @@ enum kfence_counter_id {
-> >         KFENCE_COUNTER_BUGS,
-> >         KFENCE_COUNTER_SKIP_INCOMPAT,
-> >         KFENCE_COUNTER_SKIP_CAPACITY,
-> > +       KFENCE_COUNTER_SKIP_COVERED,
-> >         KFENCE_COUNTER_COUNT,
-> >  };
-> >  static atomic_long_t counters[KFENCE_COUNTER_COUNT];
-> > @@ -125,11 +151,60 @@ static const char *const counter_names[] =3D {
-> >         [KFENCE_COUNTER_BUGS]           =3D "total bugs",
-> >         [KFENCE_COUNTER_SKIP_INCOMPAT]  =3D "skipped allocations (incom=
-patible)",
-> >         [KFENCE_COUNTER_SKIP_CAPACITY]  =3D "skipped allocations (capac=
-ity)",
-> > +       [KFENCE_COUNTER_SKIP_COVERED]   =3D "skipped allocations (cover=
-ed)",
-> >  };
-> >  static_assert(ARRAY_SIZE(counter_names) =3D=3D KFENCE_COUNTER_COUNT);
-> >
-> >  /* =3D=3D=3D Internals =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D */
-> >
-> > +static inline bool should_skip_covered(void)
-> > +{
-> > +       unsigned long thresh =3D (CONFIG_KFENCE_NUM_OBJECTS * kfence_sk=
-ip_covered_thresh) / 100;
-> > +
-> > +       return atomic_long_read(&counters[KFENCE_COUNTER_ALLOCATED]) > =
-thresh;
-> > +}
-> > +
-> > +static u32 get_alloc_stack_hash(unsigned long *stack_entries, size_t n=
-um_entries)
-> > +{
-> > +       /* Some randomness across reboots / different machines. */
-> > +       u32 seed =3D (u32)((unsigned long)__kfence_pool >> (BITS_PER_LO=
-NG - 32));
-> > +
-> > +       num_entries =3D min(num_entries, UNIQUE_ALLOC_STACK_DEPTH);
-> > +       num_entries =3D filter_irq_stacks(stack_entries, num_entries);
-> > +       return jhash(stack_entries, num_entries * sizeof(stack_entries[=
-0]), seed);
-> > +}
-> > +
-> > +/*
-> > + * Adds (or subtracts) count @val for allocation stack trace hash
-> > + * @alloc_stack_hash from Counting Bloom filter.
-> > + */
-> > +static void alloc_covered_add(u32 alloc_stack_hash, int val)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i =3D 0; i < ALLOC_COVERED_HNUM; i++) {
-> > +               atomic_add(val, &alloc_covered[alloc_stack_hash & ALLOC=
-_COVERED_MASK]);
-> > +               alloc_stack_hash =3D ALLOC_COVERED_HNEXT(alloc_stack_ha=
-sh);
-> > +       }
-> > +}
-> > +
-> > +/*
-> > + * Returns true if the allocation stack trace hash @alloc_stack_hash i=
-s
-> > + * currently contained (non-zero count) in Counting Bloom filter.
-> > + */
-> > +static bool alloc_covered_contains(u32 alloc_stack_hash)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i =3D 0; i < ALLOC_COVERED_HNUM; i++) {
-> > +               if (!atomic_read(&alloc_covered[alloc_stack_hash & ALLO=
-C_COVERED_MASK]))
-> > +                       return false;
-> > +               alloc_stack_hash =3D ALLOC_COVERED_HNEXT(alloc_stack_ha=
-sh);
-> > +       }
-> > +
-> > +       return true;
-> > +}
-> > +
-> >  static bool kfence_protect(unsigned long addr)
-> >  {
-> >         return !KFENCE_WARN_ON(!kfence_protect_page(ALIGN_DOWN(addr, PA=
-GE_SIZE), true));
-> > @@ -269,7 +344,8 @@ static __always_inline void for_each_canary(const s=
-truct kfence_metadata *meta,
-> >  }
-> >
-> >  static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t siz=
-e, gfp_t gfp,
-> > -                                 unsigned long *stack_entries, size_t =
-num_stack_entries)
-> > +                                 unsigned long *stack_entries, size_t =
-num_stack_entries,
-> > +                                 u32 alloc_stack_hash)
-> >  {
-> >         struct kfence_metadata *meta =3D NULL;
-> >         unsigned long flags;
-> > @@ -332,6 +408,8 @@ static void *kfence_guarded_alloc(struct kmem_cache=
- *cache, size_t size, gfp_t g
-> >         /* Pairs with READ_ONCE() in kfence_shutdown_cache(). */
-> >         WRITE_ONCE(meta->cache, cache);
-> >         meta->size =3D size;
-> > +       meta->alloc_stack_hash =3D alloc_stack_hash;
-> > +
-> >         for_each_canary(meta, set_canary_byte);
-> >
-> >         /* Set required struct page fields. */
-> > @@ -344,6 +422,8 @@ static void *kfence_guarded_alloc(struct kmem_cache=
- *cache, size_t size, gfp_t g
-> >
-> >         raw_spin_unlock_irqrestore(&meta->lock, flags);
-> >
-> > +       alloc_covered_add(alloc_stack_hash, 1);
-> > +
-> >         /* Memory initialization. */
-> >
-> >         /*
-> > @@ -412,6 +492,8 @@ static void kfence_guarded_free(void *addr, struct =
-kfence_metadata *meta, bool z
-> >
-> >         raw_spin_unlock_irqrestore(&meta->lock, flags);
-> >
-> > +       alloc_covered_add(meta->alloc_stack_hash, -1);
-> > +
-> >         /* Protect to detect use-after-frees. */
-> >         kfence_protect((unsigned long)addr);
-> >
-> > @@ -752,6 +834,7 @@ void *__kfence_alloc(struct kmem_cache *s, size_t s=
-ize, gfp_t flags)
-> >  {
-> >         unsigned long stack_entries[KFENCE_STACK_DEPTH];
-> >         size_t num_stack_entries;
-> > +       u32 alloc_stack_hash;
-> >
-> >         /*
-> >          * Perform size check before switching kfence_allocation_gate, =
-so that
-> > @@ -799,7 +882,23 @@ void *__kfence_alloc(struct kmem_cache *s, size_t =
-size, gfp_t flags)
-> >
-> >         num_stack_entries =3D stack_trace_save(stack_entries, KFENCE_ST=
-ACK_DEPTH, 0);
-> >
-> > -       return kfence_guarded_alloc(s, size, flags, stack_entries, num_=
-stack_entries);
-> > +       /*
-> > +        * Do expensive check for coverage of allocation in slow-path a=
-fter
-> > +        * allocation_gate has already become non-zero, even though it =
-might
-> > +        * mean not making any allocation within a given sample interva=
-l.
-> > +        *
-> > +        * This ensures reasonable allocation coverage when the pool is=
- almost
-> > +        * full, including avoiding long-lived allocations of the same =
-source
-> > +        * filling up the pool (e.g. pagecache allocations).
-> > +        */
-> > +       alloc_stack_hash =3D get_alloc_stack_hash(stack_entries, num_st=
-ack_entries);
-> > +       if (should_skip_covered() && alloc_covered_contains(alloc_stack=
-_hash)) {
-> > +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_COVERED])=
-;
-> > +               return NULL;
-> > +       }
-> > +
-> > +       return kfence_guarded_alloc(s, size, flags, stack_entries, num_=
-stack_entries,
-> > +                                   alloc_stack_hash);
-> >  }
-> >
-> >  size_t kfence_ksize(const void *addr)
-> > diff --git a/mm/kfence/kfence.h b/mm/kfence/kfence.h
-> > index c1f23c61e5f9..2a2d5de9d379 100644
-> > --- a/mm/kfence/kfence.h
-> > +++ b/mm/kfence/kfence.h
-> > @@ -87,6 +87,8 @@ struct kfence_metadata {
-> >         /* Allocation and free stack information. */
-> >         struct kfence_track alloc_track;
-> >         struct kfence_track free_track;
-> > +       /* For updating alloc_covered on frees. */
-> > +       u32 alloc_stack_hash;
-> >  };
-> >
-> >  extern struct kfence_metadata kfence_metadata[CONFIG_KFENCE_NUM_OBJECT=
-S];
-> > --
-> > 2.33.0.464.g1972c5931b-goog
-> >
+I don't know what those IO coherency units are, but I would think that
+if you have to do some extra things on MIPS but not ARM, then those
+should be done from the common PCI host bridge code and stubbed out
+on architectures that don't need them.
 
+> > I realize this is very confusing, but there are indeed at least three
+> > address spaces that you must not confuse here:
+> >
+> > a) I/O port numbers as programmed into BAR registers and
+> >     used in PCIe transactions, normally 0 through 0xffff on each
+> >     bus.
+> > b) Linux I/O port numbers as seen from user space, in the range
+> >      from 0 to IO_SPACE_LIMIT, these correspond to the
+> >      bus addresses from a) if io_offset is zero, but could be
+> >      different with a non-zero value passed into
+> >      pci_add_resource_offset() when the region is probed.
+> >      The offset may be different on each pci host bridge.
+>
+> This "offset" is the pci address configured in device tree range,
+> right? This seems the part is not doing properly in my case since all
+> of these changes are needed to at the end got BAR's as
+>
+> pci 0000:02:00.0: BAR 4: assigned [io  0x1e161000-0x1e16100f]
+> pci 0000:02:00.0: BAR 0: assigned [io  0x1e161010-0x1e161017]
+> pci 0000:02:00.0: BAR 2: assigned [io  0x1e161018-0x1e16101f]
+> pci 0000:02:00.0: BAR 1: assigned [io  0x1e161020-0x1e161023]
+> pci 0000:02:00.0: BAR 3: assigned [io  0x1e161024-0x1e161027]
+>
+> which I understand is correct.
 
+The "offset" is between two numbers that can normally both be
+picked freely, so it could literally be anything, but in the most common
+and ideal case, it is zero:
 
---
-Alexander Potapenko
-Software Engineer
+The Linux port number gets assigned when probing the host bridge,
+this is purely a software construct and the first bridge should normally
+get range 0-0xffff, the second bridge gets range 0x10000-0x1ffff
+etc. The code assigning these numbers is rather confusing, and I
+can't even find where it is now...
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+The port number on the bus is platform specific. In some cases
+you can set it through a register in the pci host bridge, in other
+cases it is fixed to starting at zero. If the address is programmable,
+it can be either set by the firmware or bootloader and passed down
+to the kernel through the DT ranges property, or the ranges can
+contain a suggested value that then has to be programmed by
+the host bridge driver.
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+If the value is not zero, you should try setting it to zero to get
+an identity mapping against the Linux port numbers, to minimize
+the confusion.
+
+It is possible that the hardware (or bootloader) designers
+misunderstood what the window is about, and hardcoded it so
+that the port number on the bus is the same as the physical
+address as seen from the CPU. If this is the case and you
+can't change it to a sane value, you have to put the 1:1
+translation into the DT and would actually get the strange
+port numbers 0x1e161000-0x1e16100f from that nonzero offset.
+
+This means you can only use PCI devices that can be
+programmed with high port numbers, but not devices with
+hardcoded legacy ports.
+
+> > c) MMIO address used to access ports, offset by PCI_IOBASE
+> >     from the Linux port numbers in b).
+> >     No other registers should be visible between PCI_IOBASE
+> >     and PCI_IOBASE+IO_SPACE_LIMIT
+>
+> mips_io_port_base + offset, right? KSEG1 addresses for mips by default.
+
+no, not the offset. As long as mips_io_port_base==PCI_IOBASE,
+the accessible ports will be between mips_io_port_base and
+mips_io_port_base+0xffff.
+
+         Arnd
