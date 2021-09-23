@@ -2,125 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDFA416025
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2058416044
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241376AbhIWNlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:41:15 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:20003 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241240AbhIWNlO (ORCPT
+        id S237616AbhIWNv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231974AbhIWNvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:41:14 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HFbl42nJtzbmkf;
-        Thu, 23 Sep 2021 21:35:28 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Thu, 23 Sep 2021 21:39:40 +0800
-Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
- (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Thu, 23
- Sep 2021 21:39:40 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <axboe@kernel.dk>, <rostedt@goodmis.org>, <mingo@redhat.com>,
-        <acme@redhat.com>, <hch@infradead.org>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>
-Subject: [PATCH v2] blktrace: Fix uaf in blk_trace access after removing by sysfs
-Date:   Thu, 23 Sep 2021 21:49:21 +0800
-Message-ID: <20210923134921.109194-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 23 Sep 2021 09:51:54 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCAEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:50:23 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id w14so5814862pfu.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dqdBw2q82tw3UxPByQedIfwoN1Q495k4FaINszVdW6A=;
+        b=ne8+owbGduumnIzo43j++kezGdV/UQlnN7zQ64Qlnn/AorO8N94Mox5On8JkjPw5Cn
+         VSJsq3kw9Kw6DdnsTZKKhoqfg1mIKP2Oy76sRfDx6oY0CwwD99jnLdNlly1L2yIkUpaW
+         EG7MSpAEOZV6dDdI+JK+F4mJnBcrWS11/zX4/OoO9XbiTS75fYPlZNxLZJJ9ZUceZZct
+         Ik92ULnXmdiTifnIH5i32JZ2jGlcY0lmbTa+sFEOW5DFoxhPUFgPwulo0a4QJCewp6OS
+         Nr9Tq9cHqBXetjT1e3fQylIBSDswdOpaDpEDkycpLKAMLE7OmyLMWdoS9UNfnspUnFmz
+         lRLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dqdBw2q82tw3UxPByQedIfwoN1Q495k4FaINszVdW6A=;
+        b=g98VnbJzqLxNVVFOLoTQTF3kO1HNhsvs853AWf9SdV7q4b+yKybZayGpJxBKg5cilg
+         rns8lFIFwF7MG6OvOLMf6/r5jmx8rv/zikLEXtHY9NK5/skZtKWEYBaShghqT/5yGKnx
+         DvX2kCxq9qzUryuHsS555chc/k5bW3AkaPPpjbZ+QtczFJVO6YJTK709muZm6Y6cnBvL
+         r2/rH37jvICJRrLMMMto0pw/O/2aWFU2+v2mU9NQYXVHd9EyEv7iKCpA9RWLkOn18eYZ
+         VTt9nqbB4MAWONjCfZ+oEiEMjdj0EtDbj4w8UqyM4lRuo/ajXBvO9aauGiCsynXToB46
+         V8ag==
+X-Gm-Message-State: AOAM530aa6MD8vV6o+ITVP9yB8vzJIz5ZP4F8615ZO3ZGdden0DJghjH
+        e4vDg/RrbRUTany906tXDWPSJQ==
+X-Google-Smtp-Source: ABdhPJynkQqQpD/56rUtOcDaRhUI9NDqoydH7SmxM88A7sEWkvDSHhaWEIau66t+YdTTHHA86oJVHQ==
+X-Received: by 2002:a05:6a00:22d5:b0:440:3750:f5f4 with SMTP id f21-20020a056a0022d500b004403750f5f4mr4425202pfj.64.1632405022676;
+        Thu, 23 Sep 2021 06:50:22 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([213.173.35.225])
+        by smtp.gmail.com with ESMTPSA id q20sm6208475pfc.57.2021.09.23.06.50.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 06:50:22 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 21:50:16 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+Message-ID: <20210923135016.GG400258@leoy-ThinkPad-X240s>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-4-german.gomez@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916154635.1525-4-german.gomez@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an use-after-free problem triggered by following process:
+Hi German,
 
-      P1(sda)				P2(sdb)
-			echo 0 > /sys/block/sdb/trace/enable
-			  blk_trace_remove_queue
-			    synchronize_rcu
-			    blk_trace_free
-			      relay_close
-rcu_read_lock
-__blk_add_trace
-  trace_note_tsk
-  (Iterate running_trace_list)
-			        relay_close_buf
-				  relay_destroy_buf
-				    kfree(buf)
-    trace_note(sdb's bt)
-      relay_reserve
-        buf->offset <- nullptr deference (use-after-free) !!!
-rcu_read_unlock
+On Thu, Sep 16, 2021 at 04:46:34PM +0100, German Gomez wrote:
+> The head pointer of the AUX buffer managed by the arm_spe_pmu.c driver
+> is not monotonically increasing, therefore the find_snapshot callback is
+> needed in order to find the trace data within the AUX buffer and avoid
+> wasting space in the perf.data file.
+> 
+> The pointer is assumed to have wrapped if the buffer contains non-zero
+> data at the end. If it has wrapped, the entire contents of the AUX
+> buffer are stored in the perf.data file. Otherwise only the data up to
+> the head pointer is stored.
+> 
+> Reviewed-by: James Clark <james.clark@arm.com>
+> Signed-off-by: German Gomez <german.gomez@arm.com>
+> ---
+>  tools/perf/arch/arm64/util/arm-spe.c | 145 +++++++++++++++++++++++++++
+>  1 file changed, 145 insertions(+)
+> 
+> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
+> index f8b03d164b42..56785034fc84 100644
+> --- a/tools/perf/arch/arm64/util/arm-spe.c
+> +++ b/tools/perf/arch/arm64/util/arm-spe.c
+> @@ -23,6 +23,7 @@
+>  #include "../../../util/auxtrace.h"
+>  #include "../../../util/record.h"
+>  #include "../../../util/arm-spe.h"
+> +#include <tools/libc_compat.h> // reallocarray
+>  
+>  #define KiB(x) ((x) * 1024)
+>  #define MiB(x) ((x) * 1024 * 1024)
+> @@ -31,6 +32,8 @@ struct arm_spe_recording {
+>  	struct auxtrace_record		itr;
+>  	struct perf_pmu			*arm_spe_pmu;
+>  	struct evlist		*evlist;
+> +	int			wrapped_cnt;
+> +	bool			*wrapped;
+>  };
+>  
+>  static void arm_spe_set_timestamp(struct auxtrace_record *itr,
+> @@ -299,6 +302,146 @@ static int arm_spe_snapshot_finish(struct auxtrace_record *itr)
+>  	return -EINVAL;
+>  }
+>  
+> +static int arm_spe_alloc_wrapped_array(struct arm_spe_recording *ptr, int idx)
+> +{
+> +	bool *wrapped;
+> +	int cnt = ptr->wrapped_cnt, new_cnt, i;
+> +
+> +	/*
+> +	 * No need to allocate, so return early.
+> +	 */
+> +	if (idx < cnt)
+> +		return 0;
+> +
+> +	/*
+> +	 * Make ptr->wrapped as big as idx.
+> +	 */
+> +	new_cnt = idx + 1;
+> +
+> +	/*
+> +	 * Free'ed in arm_spe_recording_free().
+> +	 */
+> +	wrapped = reallocarray(ptr->wrapped, new_cnt, sizeof(bool));
+> +	if (!wrapped)
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * init new allocated values.
+> +	 */
+> +	for (i = cnt; i < new_cnt; i++)
+> +		wrapped[i] = false;
+> +
+> +	ptr->wrapped_cnt = new_cnt;
+> +	ptr->wrapped = wrapped;
+> +
+> +	return 0;
+> +}
+> +
+> +static bool arm_spe_buffer_has_wrapped(unsigned char *buffer,
+> +				      size_t buffer_size, u64 head)
+> +{
+> +	u64 i, watermark;
+> +	u64 *buf = (u64 *)buffer;
+> +	size_t buf_size = buffer_size;
+> +
+> +	/*
+> +	 * Defensively handle the case where head might be continually increasing - if its value is
+> +	 * equal or greater than the size of the ring buffer, then we can safely determine it has
+> +	 * wrapped around. Otherwise, continue to detect if head might have wrapped.
+> +	 */
+> +	if (head >= buffer_size)
+> +		return true;
+> +
+> +	/*
+> +	 * We want to look the very last 512 byte (chosen arbitrarily) in the ring buffer.
+> +	 */
+> +	watermark = buf_size - 512;
+> +
+> +	/*
+> +	 * The value of head is somewhere within the size of the ring buffer. This can be that there
+> +	 * hasn't been enough data to fill the ring buffer yet or the trace time was so long that
+> +	 * head has numerically wrapped around.  To find we need to check if we have data at the
+> +	 * very end of the ring buffer.  We can reliably do this because mmap'ed pages are zeroed
+> +	 * out and there is a fresh mapping with every new session.
+> +	 */
+> +
+> +	/*
+> +	 * head is less than 512 byte from the end of the ring buffer.
+> +	 */
+> +	if (head > watermark)
+> +		watermark = head;
+> +
+> +	/*
+> +	 * Speed things up by using 64 bit transactions (see "u64 *buf" above)
+> +	 */
+> +	watermark /= sizeof(u64);
+> +	buf_size /= sizeof(u64);
+> +
+> +	/*
+> +	 * If we find trace data at the end of the ring buffer, head has been there and has
+> +	 * numerically wrapped around at least once.
+> +	 */
+> +	for (i = watermark; i < buf_size; i++)
+> +		if (buf[i])
+> +			return true;
+> +
+> +	return false;
+> +}
+> +
+> +static int arm_spe_find_snapshot(struct auxtrace_record *itr, int idx,
+> +				  struct auxtrace_mmap *mm, unsigned char *data,
+> +				  u64 *head, u64 *old)
+> +{
+> +	int err;
+> +	bool wrapped;
+> +	struct arm_spe_recording *ptr =
+> +			container_of(itr, struct arm_spe_recording, itr);
+> +
+> +	/*
+> +	 * Allocate memory to keep track of wrapping if this is the first
+> +	 * time we deal with this *mm.
+> +	 */
+> +	if (idx >= ptr->wrapped_cnt) {
+> +		err = arm_spe_alloc_wrapped_array(ptr, idx);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	/*
+> +	 * Check to see if *head has wrapped around.  If it hasn't only the
+> +	 * amount of data between *head and *old is snapshot'ed to avoid
+> +	 * bloating the perf.data file with zeros.  But as soon as *head has
+> +	 * wrapped around the entire size of the AUX ring buffer it taken.
+> +	 */
+> +	wrapped = ptr->wrapped[idx];
+> +	if (!wrapped && arm_spe_buffer_has_wrapped(data, mm->len, *head)) {
+> +		wrapped = true;
+> +		ptr->wrapped[idx] = true;
+> +	}
+> +
+> +	pr_debug3("%s: mmap index %d old head %zu new head %zu size %zu\n",
+> +		  __func__, idx, (size_t)*old, (size_t)*head, mm->len);
+> +
+> +	/*
+> +	 * No wrap has occurred, we can just use *head and *old.
+> +	 */
+> +	if (!wrapped)
+> +		return 0;
+> +
+> +	/*
+> +	 * *head has wrapped around - adjust *head and *old to pickup the
+> +	 * entire content of the AUX buffer.
+> +	 */
+> +	if (*head >= mm->len) {
+> +		*old = *head - mm->len;
+> +	} else {
+> +		*head += mm->len;
+> +		*old = *head - mm->len;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static u64 arm_spe_reference(struct auxtrace_record *itr __maybe_unused)
+>  {
+>  	struct timespec ts;
+> @@ -313,6 +456,7 @@ static void arm_spe_recording_free(struct auxtrace_record *itr)
+>  	struct arm_spe_recording *sper =
+>  			container_of(itr, struct arm_spe_recording, itr);
+>  
+> +	free(sper->wrapped);
+>  	free(sper);
+>  }
+>  
+> @@ -336,6 +480,7 @@ struct auxtrace_record *arm_spe_recording_init(int *err,
+>  	sper->itr.pmu = arm_spe_pmu;
+>  	sper->itr.snapshot_start = arm_spe_snapshot_start;
+>  	sper->itr.snapshot_finish = arm_spe_snapshot_finish;
+> +	sper->itr.find_snapshot = arm_spe_find_snapshot;
 
-[  502.714379] BUG: kernel NULL pointer dereference, address:
-0000000000000010
-[  502.715260] #PF: supervisor read access in kernel mode
-[  502.715903] #PF: error_code(0x0000) - not-present page
-[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
-[  502.717252] Oops: 0000 [#1] SMP
-[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
-[  502.732872] Call Trace:
-[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
-[  502.733734]  blk_add_trace_rq+0x7b/0xd0
-[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
-[  502.734755]  blk_mq_start_request+0xde/0x1b0
-[  502.735287]  scsi_queue_rq+0x528/0x1140
-...
-[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
-[  502.747501]  sg_ioctl+0x466/0x1100
+If I understand correctly, this patch copies the code from cs-etm for
+snapshot handling.  About 2 months ago, we removed the Arm cs-etm's
+specific snapshot callback function and directly use perf's function
+__auxtrace_mmap__read() to handle 'head' and 'tail' pointers.  Please
+see the commit for details:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2f01c200d4405c4562e45e8bb4de44a5ce37b217
 
-Reproduce method:
-  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sda, BLKTRACESTART)
-  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sdb, BLKTRACESTART)
+Before I review more details for snapshot enabling in patches 03 and
+04, could you confirm if Arm SPE can use the same way with cs-etm for
+snapshot handling?  From my understanding, this is a better way to
+handle AUX buffer's 'head' and 'tail'.
 
-  echo 0 > /sys/block/sdb/trace/enable &
-  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
+Thanks,
+Leo
 
-  ioctl$SG_IO(/dev/sda, SG_IO, ...)
-  // Enters trace_note_tsk() after blk_trace_free() returned
-  // Use mdelay in rcu region rather than msleep(which may schedule out)
-
-Remove blk_trace from running_list before calling blk_trace_free() by
-sysfs if blk_trace is at Blktrace_running state.
-
-Fixes: c71a896154119f ("blktrace: add ftrace plugin")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- kernel/trace/blktrace.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index c221e4c3f625..fa91f398f28b 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1605,6 +1605,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
- 	if (bt == NULL)
- 		return -EINVAL;
- 
-+	if (bt->trace_state == Blktrace_running) {
-+		bt->trace_state = Blktrace_stopped;
-+		spin_lock_irq(&running_trace_lock);
-+		list_del_init(&bt->running_list);
-+		spin_unlock_irq(&running_trace_lock);
-+		relay_flush(bt->rchan);
-+	}
-+
- 	put_probe_ref();
- 	synchronize_rcu();
- 	blk_trace_free(bt);
--- 
-2.31.1
-
+>  	sper->itr.parse_snapshot_options = arm_spe_parse_snapshot_options;
+>  	sper->itr.recording_options = arm_spe_recording_options;
+>  	sper->itr.info_priv_size = arm_spe_info_priv_size;
+> -- 
+> 2.17.1
+> 
