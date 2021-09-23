@@ -2,80 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C100C41620E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892FE416210
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242006AbhIWPas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
+        id S241993AbhIWPbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241979AbhIWPar (ORCPT
+        with ESMTP id S233085AbhIWPbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:30:47 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA5EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:29:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=AnEeQ76X0azmr4+uOVT20QGvRc60URiBSo8uDfTzt2g=; b=K/qxyniVuxCWpbQZFwzJnDj0g8
-        UD9+E0DJYK+kXB0jVGFVEtRT3fDOSmlX5AjPSX3i/p6iZEaMsEsiS+rGxg6s7IsA+LGfFU/M0KzCJ
-        JR8X6lPsjX/odIxhW7K5+Sn1BDLW5g0mO6lA+x4N8wpQOTJxpigQUOXhhf752+1wSeWY7ymbAujyE
-        ucoHogmA6JnUmU/HRai/FFTPwLNaX68eVCCKGwQQoE5BSz0/iTa+r0JucFPTlIzPCTZOvrsEH+DZL
-        jKkaSQh838yyIhIGQ86lIBA/XyHV2yGEmJUR58NmXFzYYc2AjSe56vAVkqi567Wo0c+0gYiLzilRn
-        MaFMkWeg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTQet-00C3Wc-7f; Thu, 23 Sep 2021 15:29:11 +0000
-Subject: Re: [PATCH] clocksource: arc_timer: eliminate redefined macro error
-To:     Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Vineet Gupta <vgupta@kernel.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210923031808.5945-1-rdunlap@infradead.org>
- <61fef534-36df-2ed9-5662-ccebefef494e@synopsys.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fab5a32c-f33f-d546-0c9e-3673f2160d66@infradead.org>
-Date:   Thu, 23 Sep 2021 08:29:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 23 Sep 2021 11:31:37 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF51C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:30:06 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id r2so6696538pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=ZUy1p6PSvt5yN2wZ9JfbzOdoAH6IHdQaxa/WlcclC5A=;
+        b=vBJT9bZ8UIrkJtobhhnlh/mB+9KIPZv0ORskTyPFxmF+FPTxARiT5mBkoOp4F9mJks
+         oV6BXGQb/eIRLo7yw1UkrIb4oA8h6QSYDosiir5tiSGZwJ+1XGFfReDn0ZXK8DbWv0vG
+         uXpJw66fJjk1G80xiF43wKowpDLn/Dnw+1zbv7nSJQaMK6KiO2dFFkW/lAJIkffK5qTN
+         NNdqalKGAv57XsF3w27sPN4uY7kOE3bDk+4bdgW192dqqnKkvA3aTuh8rBj50AFs73i6
+         5V03TECnDljVWWcxfxdIQCL64+pM8IfCp114L/JzIkqAhlj+9SMt3/kadYYWaQOMqGef
+         6unQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=ZUy1p6PSvt5yN2wZ9JfbzOdoAH6IHdQaxa/WlcclC5A=;
+        b=RPg/kJN3KHvVWlVDrPErlhV6M7QAl9j4fgcmcExNoridjr5WAbSYvj6a+Dy5qAZBl2
+         56Sy1nmlTKJR9ELSMHwdt+EpmrvFTm3OowcCtaYJrinR6xv2blFxppX1jR3oJCtYLwem
+         wG2RgYSjo+9c3nW1FlDk6gXEoCVTp7h2Dfje6Ozp1lyCdd1izEBEoFBygPgUviEWb0WP
+         c78Z0V0kzxV3PvkQuSGPcvryQid8WwERliuFBspKOsqWDch+F0Gl+EoJca/k3SlRP93+
+         dEZZFn9zrLkJOzs1S2KWcbdlWSwriCVq6DdBUwnWQ1e1+vguK+n/KoH0eynULJjewiSq
+         g5Uw==
+X-Gm-Message-State: AOAM532xwgGmScCF2Z1ocQu00aeGg9WPUve5HMZhwQ+lClIDjnUB2CB5
+        w2zDAKY6H8ymGDjlmQjHZ1BOMlCfp6xckw==
+X-Google-Smtp-Source: ABdhPJzlRgeEr2IwjeVRqkMvNkcTvR86bvibTMPjWX++/ibNnSHZgn4GAdjqkrTH9WD3WFAmx9RjCg==
+X-Received: by 2002:a65:6107:: with SMTP id z7mr4762144pgu.43.1632411005784;
+        Thu, 23 Sep 2021 08:30:05 -0700 (PDT)
+Received: from [10.255.74.217] ([139.177.225.249])
+        by smtp.gmail.com with ESMTPSA id h10sm9044360pjs.51.2021.09.23.08.30.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 08:30:05 -0700 (PDT)
+Subject: Re: [PATCH] mm/memory_failure: Fix the missing pte_unmap() call
+To:     David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com
+References: <20210923122642.4999-1-zhengqi.arch@bytedance.com>
+ <7330e2e0-9dc4-e412-a821-ed62a469371d@redhat.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Message-ID: <7a93c298-fd78-1963-a9f6-b4a7191bf747@bytedance.com>
+Date:   Thu, 23 Sep 2021 23:30:01 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <61fef534-36df-2ed9-5662-ccebefef494e@synopsys.com>
+In-Reply-To: <7330e2e0-9dc4-e412-a821-ed62a469371d@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 2:42 AM, Shahab Vahedi wrote:
-> Hi Randy,
-> 
-> I have one minor comment.
-> 
-> On 9/23/21 5:18 AM, Randy Dunlap wrote:
+
+
+On 9/23/21 11:19 PM, David Hildenbrand wrote:
+> On 23.09.21 14:26, Qi Zheng wrote:
+>> The paired pte_unmap() call is missing before the
+>> dev_pagemap_mapping_shift() returns. So fix it.
 >>
->> --- linux-next-20210917.orig/include/soc/arc/timers.h
->> +++ linux-next-20210917/include/soc/arc/timers.h
->> @@ -17,7 +17,7 @@
->>   #define ARC_REG_TIMER1_CNT	0x100	/* timer 1 count */
->>   
->>   /* CTRL reg bits */
->> -#define TIMER_CTRL_IE	        (1 << 0) /* Interrupt when Count reaches limit */
->> +#define TIMER_CTRL_IEN	        (1 << 0) /* Interrupt when Count reaches limit */
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   mm/memory-failure.c | 9 ++++++---
+>>   1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+>> index e2984c123e7e..4e5419f16fd4 100644
+>> --- a/mm/memory-failure.c
+>> +++ b/mm/memory-failure.c
+>> @@ -306,6 +306,7 @@ static unsigned long 
+>> dev_pagemap_mapping_shift(struct page *page,
+>>           struct vm_area_struct *vma)
+>>   {
+>>       unsigned long address = vma_address(page, vma);
+>> +    unsigned long ret = 0;
+>>       pgd_t *pgd;
+>>       p4d_t *p4d;
+>>       pud_t *pud;
+>> @@ -330,10 +331,12 @@ static unsigned long 
+>> dev_pagemap_mapping_shift(struct page *page,
+>>           return PMD_SHIFT;
+>>       pte = pte_offset_map(pmd, address);
+>>       if (!pte_present(*pte))
+>> -        return 0;
+>> +        goto unmap;
+>>       if (pte_devmap(*pte))
+>> -        return PAGE_SHIFT;
+>> -    return 0;
+>> +        ret = PAGE_SHIFT;
+>> +unmap:
+>> +    pte_unmap(pte);
+>> +    return ret;
+>>   }
+>>   /*
+>>
 > 
-> Could you change the name to "ARC_TIMER_CTRL_IE" instead? and while at it, please rename
-> "TIMER_CTRL_NH" to "ARC_TIMER_CTRL_NH" for obvious consistency reasons and saving us
-> from future clashes.  Thank you!
+> I guess this code never runs on 32bit / highmem, that's why we didn't 
+> notice so far.
+
+I guess so too.
+
+> 
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 > 
 
-OK, no problem.
+Thanks,
+Qi
 
-Thanks for the feedback.
-
--- 
-~Randy
