@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1276141573D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF9A41573E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239131AbhIWD5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232419AbhIWD5a (ORCPT
+        id S239138AbhIWD54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:57:56 -0400
+Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:32986 "EHLO
+        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239133AbhIWD5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:57:30 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46253C061574;
-        Wed, 22 Sep 2021 20:55:59 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so768374pjw.0;
-        Wed, 22 Sep 2021 20:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZFkGDmBfwTQemY7FBg23LWt2kzYZwvNOc/FK/5I0Trk=;
-        b=avkvJs9R7pHcZxUnnlsnTRRlHB7UHqrW9XaY5GRbHOZbTtzpoGy8/8SlJGxOEPtNhv
-         jOMmg7L4/rw7DRBnyRpttgQJomJxU9SL7mQkh0oXzbJgzqFZbvp+s0JkJF1VBqPM/D/x
-         4kA106OuenBYRQ9yFQsYPr09GRS3BSRfF6HYjptqGarKBcRK1MehDaZlwquLqK8CRBDR
-         Vokb3loIgUMdFWx55Bt9G86g/C1gRHXqtABNIGx13690DuykJRMMXkM7waqE9xXE9Gqk
-         XuBjXhTY8UWL3Y+OZXVoIU2Sg+dmBJS497DVdl/BqtiomfOE4QJ+9nE/iIpyTqQpEy1+
-         wLSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZFkGDmBfwTQemY7FBg23LWt2kzYZwvNOc/FK/5I0Trk=;
-        b=WK/Z3oQxuYADU/5vXgiP/P9ggbV87zBBYvpt3fwgU3E+KxlhkX3fkMXb0M0fpXlkRN
-         n85WO+AjtXVnDvWKMNsXPqytIE414+FdsZz7CasI0uYX2yVF/pmcV/GsIxCRdnAqg5xL
-         uKHzJEI+FIOd60KuGcCbBHlgovIgh3DjOV/E8b4MxXi4a15Qa9UPRKXwSqg//lemDeh8
-         kKz3jWFl6RKOeEOOJHwSZ8ihdW8mUNIkArSqiQJqlJjWsBzAMxxzaGsly5ceOYov/+MO
-         iAAfjtwHkq6BzIKPV4qmjb70K98ltGGLMBrnmq0rPPVnsX51PvEUpTNSJB84QNWtAYdf
-         noxw==
-X-Gm-Message-State: AOAM533qf8qwREFc9rqhn2amKfkX3M74vaS2u8DKwOYF1xMlTRfAIuFu
-        H262NzRjnOfLpC0gH4pV0aenXhMcnlc=
-X-Google-Smtp-Source: ABdhPJxyR0hq8wOolCA9Xzp8LEF8ocks743zdsq5UM2xcSS1vdTP+CJUieTrSwkOwvfy7KxPQ3NojQ==
-X-Received: by 2002:a17:90b:1e4d:: with SMTP id pi13mr15412337pjb.96.1632369358819;
-        Wed, 22 Sep 2021 20:55:58 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
-        by smtp.gmail.com with ESMTPSA id l128sm3871716pfd.106.2021.09.22.20.55.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 20:55:58 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 03:55:53 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        John Garry <john.garry@huawei.com>,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org
-Subject: Github link here
-Message-ID: <20210923035553.GA4247@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
+        Wed, 22 Sep 2021 23:57:52 -0400
+Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
+        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id B49BA1008CBCD;
+        Thu, 23 Sep 2021 11:56:19 +0800 (CST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id DFA8C200B5750;
+        Thu, 23 Sep 2021 11:56:18 +0800 (CST)
+X-Virus-Scanned: amavisd-new at 
+Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
+        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id OmACp8iz5J-C; Thu, 23 Sep 2021 11:56:18 +0800 (CST)
+Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
+        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 1EB59200C02C8;
+        Thu, 23 Sep 2021 11:55:57 +0800 (CST)
+From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
+To:     nsaenz@kernel.org, gregkh@linuxfoundation.org,
+        peterz@infradead.org, maz@kernel.org, bsegall@google.com,
+        rdunlap@infradead.org, airlied@redhat.com,
+        kan.liang@linux.intel.com, odin@uged.al
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>
+Subject: [PATCH] staging: vchip_arm: Fix misuse of %x
+Date:   Thu, 23 Sep 2021 11:55:54 +0800
+Message-Id: <20210923035554.669434-1-qtxuning1999@sjtu.edu.cn>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920154816.31832-1-42.hyeyoo@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello there!
+Pointers should be printed with %p or %px rather than
+cast to (unsigned long) and printed with %lx.
+Change %lx to %pK to print the pointers.
 
-In v1 and v2, I showed simple proof of concept of lockless cache.
-After some discussions, it turns out that there are some issues to solve.
-It will take some to solve them.
+Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+---
+ .../staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I made git repository on github to share its progress:
-	https://github.com/hygoni/linux.git
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index b5aac862a29..408e5fe710b 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -591,11 +591,11 @@ service_callback(enum vchiq_reason reason, struct vchiq_header *header,
+ 		return VCHIQ_SUCCESS;
+ 
+ 	vchiq_log_trace(vchiq_arm_log_level,
+-		"%s - service %lx(%d,%p), reason %d, header %lx, instance %lx, bulk_userdata %lx",
+-		__func__, (unsigned long)user_service,
++		"%s - service %pK(%d,%p), reason %d, header %pK, instance %pK, bulk_userdata %pK",
++		__func__, user_service,
+ 		service->localport, user_service->userdata,
+-		reason, (unsigned long)header,
+-		(unsigned long)instance, (unsigned long)bulk_userdata);
++		reason, header,
++		instance, bulk_userdata);
+ 
+ 	if (header && user_service->is_vchi) {
+ 		spin_lock(&msg_queue_spinlock);
+-- 
+2.33.0
 
-This is based on v5.15-rc2, and the main branch will be
-'lockless_cache'. There's *nothing* in the repo now and
-will be updated randomly. hopefully every 1-3 days, or every week.
-(note that I'm not full time kernel developer. it's hobby.)
-
-I'll make use of 'issues' and 'discussions' tab (github feature to track
-issues and discussions).
-
-You can join if you're interested.
-Thank you for your interest on this project!
-
---
-Hyeonggon
