@@ -2,181 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461F0415D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1C0415D05
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240675AbhIWLqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:46:36 -0400
-Received: from mail-bn8nam08on2045.outbound.protection.outlook.com ([40.107.100.45]:22721
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238930AbhIWLqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:46:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vjno6xLew9u3SG5O7sVLNOIUAcrtOdyC0EZ+0UYrrtva3toQauokjHI+LGQYvdRO7Pe90TEZtDwiok2IyeCpTI0S1tGzuC2a3DvxTMCefTjJ2/GIWufBcFSetnoLYmAWGc/5CIwU85uRamcD9dtuV/GHKwaKjMJS11AEz3bQw7hYJ6FsDh7Lwqx6FiU/G2AO/7ywpo8QfZo5O+EwMV7spsZpt6lOX4cVahtsvHD+7tZq+sG58firfA1BLga1SkBr0P1366Ce/H8RT1/wrFCOclhfDtjplWC7bBYEqMe0/9161Mjop3p9tmTkGlUgKt9LNFogwZ6NwRJvmYmYCgduxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=XkfIjQb2hAJjGoZSnA7Z2PiDOezal5SQ0vleZfSNTOI=;
- b=UztHhq9pXkpaTTUHiZ79fPblupVWCu0r7sW8cud7BQtaih0k2dd/j6rMhzG94RClH4Z9l/DCIp6e26sNYmQg31GFu12ufoUrvZHhWjU/vaBERlhCYMm12ktyR4HTxgyURtat4bsSqPAGBFqfmUud7NNlFvg+OAMJPgAq0ZnXy/aEVZ3EdD8V6LbyuyKsZYyiOxWXR30ZEpH4c6IXpbrt0X0CvPi6QFYDcaJWmiTPguDBWUg8r8m6KkMRT3pvgAC6EBDjsRBBtrM1wtXt3XEy6cYh7Nxk5nmO2cfI0ne+ixuuFudUXuwzGyT49OmmDL/cX+Z6DrIzNfUcH57ZgaLo8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XkfIjQb2hAJjGoZSnA7Z2PiDOezal5SQ0vleZfSNTOI=;
- b=Mn+7Yu0rXn8Q9G1Colno1qVhlnuSRXSLhpfqbCEVpVGAHKpaGtMtlZUTZPvxY9EWoGzmcNyEI6bR6oL+SroVKTXyCPNTDZqW+wJB7ys7FVyIKKVTU2Hcti4+x4X8LItVd/vhO6Dl6SUis4sx5+A791r/W9VlD8ve09hj6nBuL31WVGfyMXeynG9tuFyRvWw+gdO7hXJEoo44CWfpcwhatjQMEyxN6JlB8wmX81MmfkCB5Y2ud9fk6A+xRJIT7SlSJ1hMcxN6dJNyD1POCTegWTuAH4WM0KxkzLOe4l2azRYtXSv/b5cqcOtlSOiXFVDN1cZ1fIx8VEYhnrdkTKTf7Q==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5128.namprd12.prod.outlook.com (2603:10b6:208:316::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 23 Sep
- 2021 11:45:00 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
- 11:45:00 +0000
-Date:   Thu, 23 Sep 2021 08:44:59 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Eric Auger <eric.auger@redhat.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
-Message-ID: <20210923114459.GH964074@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-4-yi.l.liu@intel.com>
- <20210921160108.GO327412@nvidia.com>
- <BN9PR11MB54330421CA825F5CAA44BAC98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922010014.GE327412@nvidia.com>
- <7d717ad0-fb9b-2af0-7818-147dc5d21373@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d717ad0-fb9b-2af0-7818-147dc5d21373@redhat.com>
-X-ClientProxiedBy: MN2PR05CA0018.namprd05.prod.outlook.com
- (2603:10b6:208:c0::31) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S240669AbhIWLtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240617AbhIWLtI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 07:49:08 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4252AC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:47:37 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id d207so21355179qkg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f5q4Q0naikJ3U5wGiMvQKb9E4gch+MACgCJ4ofFGfM0=;
+        b=CEH2FkNz7FYz8p9aGi3j4nq9KkH7fQWudfbUsWh3XWNrD1EXDnPuz74TC8yoAu2XVO
+         NnQSYCO//oyWdM/a5Dm/aNX31E6SlKEQjMOC3KXQZ0JIMmSZCTCCzpwMjQqKDOylxL3+
+         Gy7yUqcjdaOAUXjnv+s7608EgRwji7aKg35yxWswRHMAQEK3YhJghchL8h5c056GPCqx
+         TAo6i2rwVPZTz8BCAy5NcFT3aE19GxfDy8IcdHkxcH7NCgOfXpFnxwuzqmn4JEcmemrQ
+         j8+DSincvKzfd3Sq1KwQ25KpCoY33lJAHMp80jedyervndLDH9pS/H3yN5/3z8BZCKPi
+         SSXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f5q4Q0naikJ3U5wGiMvQKb9E4gch+MACgCJ4ofFGfM0=;
+        b=rzUR9lWboS4bdnso8rPhAlQl2Sgp1K5Iv/BhGQwGcsHXPVHx89bwGkq28Nmc7SZm6a
+         vTnKWtBTJVFh7t5pegONp/h6Ej+jr5lut8NrNRGjTwgwXUHzlhRJzjZWrHF6eii/YRhe
+         ufIAacX+QldYYA8RiW85kb9eKOR2rxzI2RL3h94sLL5z5OCMwQw5+h6rMBQAYtEM1GrQ
+         HbwrzUbDsDj/jtgMF5Sh/m9xFNorY7IVnzCheIf+Hd9C+/lPRc+H17dLzogDFXiNgkR1
+         qVo2CfkHH4l6aHSw2u5xTux6fYpAZ6lV47IaOjCWG4fS6gzFcB61mBnXlGcfH7+Nw0vz
+         fJIw==
+X-Gm-Message-State: AOAM532LAQ0GIFD4oz0ifY58GC4GaSm0FqPbEsZUsQDmuAk8Qj8UJBGK
+        8JqxmpnPNqk6PTWA/VtG0/jWnaz4x+fFGzHXzVbyxg==
+X-Google-Smtp-Source: ABdhPJwLLqnUaFZAORZ5Q3MAjaFmeajoEHsSPv22Q1Lx23MGL0NOtHPTqJryA3AIJc+i2XNlqHoRGi0UFbEiX9YEXlk=
+X-Received: by 2002:a25:2f48:: with SMTP id v69mr5031072ybv.339.1632397656362;
+ Thu, 23 Sep 2021 04:47:36 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR05CA0018.namprd05.prod.outlook.com (2603:10b6:208:c0::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.7 via Frontend Transport; Thu, 23 Sep 2021 11:45:00 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mTN9v-004OS8-HV; Thu, 23 Sep 2021 08:44:59 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 47aa95b5-40f6-40eb-1f50-08d97e87932a
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5128:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51283CB6089AF68E10BC2FCAC2A39@BL1PR12MB5128.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XbhI/JgZ+Lrgnwr4G2jkXlHaL9op488P1AenmEz3d25cB/27MrAlpdFpUvJTnS/vmTZswUQn0NMu88/oAnKlydj925KmpuJFypPcEQGCBqEIQwbvYWxSI99uGUoWlQ1AwqTDoeCYHz1Y+BoqAKAyoWURKem5v9sWpnsfqrZESXAkE1pUL1iBNcXQvXgWVXkaUWZtewI0t+/8KcZOBYNbjfYf9LXSV60NeiPN5H+gAM4oESPdW5GgG95LikGTv/eM+3Yrm6Y74NRr7MBQ7+SpdrqequiJNld1xvIbtYVTYBVHaxC4z94Y+T8m/bctDP/Iuy0uTxCGKuRHOrVG7hU9Mbx0qbMnBCEXZvPij+zr/VubM68UqKOG52SH7MYmtTeY5ABCUkYc+ADCZhpMIkYIYgjZf+56llvjHK4n0AqhWwVWSmAZIDOlnIt+l4ooCifhZb7299ncro8/RXcq2lcJUwMRtKMIc3JbJnLxvwrCYdgHgmjBHJubKU9PyzVWUyW/u1I71PCR3TbQ2PuOsFXp2JL/oIg9hJZrdn6EjWqV2pgUlJlH4Y3CuM98jwLc8/HSzlTXYLJ8nHskLqpS3oYdmkm3VXFScsSVKwwYvwGPlAs6mqqVQjYO/KDM8Rh7zhNJAvp0h0NQf3PYKIT9bZOqcjLCTgv0U63ERhMnWTNBSE9BOmK2nQyprXJ6bM6eiI+1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(84040400005)(6916009)(8676002)(33656002)(316002)(107886003)(5660300002)(8936002)(86362001)(54906003)(9746002)(2616005)(4326008)(426003)(7416002)(9786002)(66556008)(1076003)(83380400001)(38100700002)(2906002)(186003)(53546011)(66946007)(66476007)(26005)(36756003)(508600001)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WYmHH8mOQXcy8S9MP8pxXyIp9mOM5EKTe9X85pixhO+IEBu3GVw1m4ULgZf7?=
- =?us-ascii?Q?JikV5aSIy6uqv7gzNT0Ei03qkorJqJAddXeWJz4STKGg/qoQmIHCD/7hL781?=
- =?us-ascii?Q?n1yUM16RAzyTmINJreQ00Ks3c//oL2WLPd5iydeJVwTw6bowBW34qF7kp0f6?=
- =?us-ascii?Q?S9/b0nxIzNYnlS5MfQyfJk0WvTBmujmbTr60g+Mcf5+VmuEI+O7u+q32UYaI?=
- =?us-ascii?Q?G6MKnqe7XQMu4PnJbIyA+179QIsoOfV5FTdEFJ7iF0OZ5WwvuhbZGHYYZEnS?=
- =?us-ascii?Q?+PXwpApjRmX3wbDWIGYEOpOBzQvKD+ySco9EcRjSgSqjuSdAHq/Xzvw6LdMA?=
- =?us-ascii?Q?uVeYXah1aLAdKbMTWQgzPu/lKvCZP/erY/VrMfODVeNkZFdOgUU6cOmW8EkU?=
- =?us-ascii?Q?rWMJJrMxps9XVSnbNiaeZ649h/zm9QcEW1Rn6uOJCyYFC7GiJst0GaR1JTnt?=
- =?us-ascii?Q?YmGiqyx+4X4hr752BHCyA77nE/tajzl2Mw57mnVR+CIc5zaFYOzEJ4rcmjo/?=
- =?us-ascii?Q?opExy9ySp4Soq2kxnpZHOViEWJSnzjYR/WQ93lVd/jKSyHFczYKb6rBOQVUO?=
- =?us-ascii?Q?P/s7KWfk8AVyDOxe1Dop3i2ArR6I4QMRcJTOo+thEH5starYcqPTOqXEZwO4?=
- =?us-ascii?Q?Mqr6/iyywTaCaorNWfFhNO7XK+QNEY765mNV89BOcezP9BwzGc1YyswtfI2i?=
- =?us-ascii?Q?gP+FlHr9EZfSm3/IJxW2BkFRyb0TtilFiLIrJlZdJr795Yx7ywhTqW+3/Cnv?=
- =?us-ascii?Q?KEQv0GKLmBhGb3wkLoPWktFlYdCTBFEMPrM9UnZuFBvHq+0CCGcbFkJI+aob?=
- =?us-ascii?Q?vB6tfUrDCVY8pomaBOojDO9wVFWD2XIY5/FeCTufznT4HeemDPoKVOdLK11b?=
- =?us-ascii?Q?sUpL74lCxkb/3S0bKiFpIMsj4sk5Yqolr4rvIozv7el4mrpdiVjiOqoYwnkF?=
- =?us-ascii?Q?ooiBjYbit30oArI8URxn1LqExSUDy1Ye7mCzAMvPsDdN9NYJWnZd1q4K8xhu?=
- =?us-ascii?Q?84GbOiWsyzPSxiqhAdkc393ZQTPcCwBnvXztJencStJqT4y57VyNIi1vIgbW?=
- =?us-ascii?Q?crPw9SkyALdwQXSLQq1LK9f7bT0YLCIVysDQuIxJWe1Gaw6KddL/ZwHuienY?=
- =?us-ascii?Q?iL5fYv0Chjiogp2e2/uBNRjWUpZZ9OzAdhJylnwjsHFyWNGnpmQZan6NScu8?=
- =?us-ascii?Q?/e/tSpECTj/atY18OPs7ky/0XEKfcBTsXDYPXnweUjjC5XyTcNqA9ZRFTfHx?=
- =?us-ascii?Q?BAo14OrR9nXxEKF1SAhSG2tR7VBCOgBz9LsVYYTNzNGuxSdni7kMm1swEvju?=
- =?us-ascii?Q?Ro/2n2QWC+3L18aD/TL5OUBw?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47aa95b5-40f6-40eb-1f50-08d97e87932a
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 11:45:00.6850
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F8HqDX6nFvYYZf6n/Z6jGQztjd77Ijm7e9Hj0mrBUqJDY1iw2Q8ab6dRMWMzLfo2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5128
+References: <20210922094131.15625-1-linyunsheng@huawei.com>
+ <20210922094131.15625-4-linyunsheng@huawei.com> <YUw78q4IrfR0D2/J@apalos.home>
+ <b2779d81-4cb3-5ccc-8e36-02cd633383f3@huawei.com>
+In-Reply-To: <b2779d81-4cb3-5ccc-8e36-02cd633383f3@huawei.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Thu, 23 Sep 2021 14:47:00 +0300
+Message-ID: <CAC_iWj+yv8+=MaxtqLFkQh1Qb75vNZw30xcz2VTD-m37-RVp8A@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/7] pool_pool: avoid calling compound_head() for
+ skb frag page
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linuxarm@openeuler.org, Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, memxor@gmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        David Ahern <dsahern@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 09:25:27AM +0200, Eric Auger wrote:
-> Hi,
-> 
-> On 9/22/21 3:00 AM, Jason Gunthorpe wrote:
-> > On Wed, Sep 22, 2021 at 12:54:02AM +0000, Tian, Kevin wrote:
-> >>> From: Jason Gunthorpe <jgg@nvidia.com>
-> >>> Sent: Wednesday, September 22, 2021 12:01 AM
-> >>>
-> >>>>  One open about how to organize the device nodes under
-> >>> /dev/vfio/devices/.
-> >>>> This RFC adopts a simple policy by keeping a flat layout with mixed
-> >>> devname
-> >>>> from all kinds of devices. The prerequisite of this model is that devnames
-> >>>> from different bus types are unique formats:
-> >>> This isn't reliable, the devname should just be vfio0, vfio1, etc
-> >>>
-> >>> The userspace can learn the correct major/minor by inspecting the
-> >>> sysfs.
-> >>>
-> >>> This whole concept should disappear into the prior patch that adds the
-> >>> struct device in the first place, and I think most of the code here
-> >>> can be deleted once the struct device is used properly.
-> >>>
-> >> Can you help elaborate above flow? This is one area where we need
-> >> more guidance.
+On Thu, 23 Sept 2021 at 14:24, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2021/9/23 16:33, Ilias Apalodimas wrote:
+> > On Wed, Sep 22, 2021 at 05:41:27PM +0800, Yunsheng Lin wrote:
+> >> As the pp page for a skb frag is always a head page, so make
+> >> sure skb_pp_recycle() passes a head page to avoid calling
+> >> compound_head() for skb frag page case.
+> >
+> > Doesn't that rely on the driver mostly (i.e what's passed in skb_frag_set_page() ?
+> > None of the current netstack code assumes bv_page is the head page of a
+> > compound page.  Since our page_pool allocator can will allocate compound
+> > pages for order > 0,  why should we rely on it ?
+>
+> As the page pool alloc function return 'struct page *' to the caller, which
+> is the head page of a compound pages for order > 0, so I assume the caller
+> will pass that to skb_frag_set_page().
+
+Yea that's exactly the assumption I was afraid of.
+Sure not passing the head page might seem weird atm and the assumption
+stands, but the point is we shouldn't blow up the entire network stack
+if someone does that eventually.
+
+>
+> For non-pp page, I assume it is ok whether the page is a head page or tail
+> page, as the pp_magic for both of them are not set with PP_SIGNATURE.
+
+Yea that's true, although we removed the checking for coalescing
+recyclable and non-recyclable SKBs,   the next patch first checks the
+signature before trying to do anything with the skb.
+
+>
+> Or should we play safe here, and do the trick as skb_free_head() does in
+> patch 6?
+
+I don't think the &1 will even be measurable,  so I'd suggest just
+dropping this and play safe?
+
+Cheers
+/Ilias
+>
+> >
+> > Thanks
+> > /Ilias
 > >>
-> >> When Qemu accepts an option "-device vfio-pci,host=DDDD:BB:DD.F",
-> >> how does Qemu identify which vifo0/1/... is associated with the specified 
-> >> DDDD:BB:DD.F? 
-> > When done properly in the kernel the file:
+> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> >> ---
+> >>  include/linux/skbuff.h | 2 +-
+> >>  net/core/page_pool.c   | 2 --
+> >>  2 files changed, 1 insertion(+), 3 deletions(-)
+> >>
+> >> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> >> index 6bdb0db3e825..35eebc2310a5 100644
+> >> --- a/include/linux/skbuff.h
+> >> +++ b/include/linux/skbuff.h
+> >> @@ -4722,7 +4722,7 @@ static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
+> >>  {
+> >>      if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
+> >>              return false;
+> >> -    return page_pool_return_skb_page(virt_to_page(data));
+> >> +    return page_pool_return_skb_page(virt_to_head_page(data));
+> >>  }
+> >>
+> >>  #endif      /* __KERNEL__ */
+> >> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> >> index f7e71dcb6a2e..357fb53343a0 100644
+> >> --- a/net/core/page_pool.c
+> >> +++ b/net/core/page_pool.c
+> >> @@ -742,8 +742,6 @@ bool page_pool_return_skb_page(struct page *page)
+> >>  {
+> >>      struct page_pool *pp;
+> >>
+> >> -    page = compound_head(page);
+> >> -
+> >>      /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
+> >>       * in order to preserve any existing bits, such as bit 0 for the
+> >>       * head page of compound page and bit 1 for pfmemalloc page, so
+> >> --
+> >> 2.33.0
+> >>
+> > .
 > >
-> > /sys/bus/pci/devices/DDDD:BB:DD.F/vfio/vfioX/dev
-> >
-> > Will contain the major:minor of the VFIO device.
-> >
-> > Userspace then opens the /dev/vfio/devices/vfioX and checks with fstat
-> > that the major:minor matches.
-> >
-> > in the above pattern "pci" and "DDDD:BB:DD.FF" are the arguments passed
-> > to qemu.
-> I guess this would be the same for platform devices, for instance
-> /sys/bus/platform/devices/AMDI8001:01/vfio/vfioX/dev, right?
-
-Yes, it is the general driver core pattern for creating cdevs below a
-parent device
-
-Jason
