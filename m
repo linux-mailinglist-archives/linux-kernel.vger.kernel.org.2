@@ -2,86 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1397D4161F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0304161F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241944AbhIWPYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233085AbhIWPYP (ORCPT
+        id S241980AbhIWPYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:24:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58481 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233143AbhIWPYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:24:15 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DA7C061574;
-        Thu, 23 Sep 2021 08:22:42 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id q125so8660869qkd.12;
-        Thu, 23 Sep 2021 08:22:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HVxL0gvQeVwNSk7LMfLCfUfPmAJPbw6emcr/92Y6HPk=;
-        b=p+5JZA/d0QPeEFee2vyGl0teLRbu+HhGmmfCC0GugTpHLUpXa2mLytkqGART6iVOgX
-         nSocO8bRUPBGxcQYeC9A2+FRcSZVyaf441Haqy9KwVnJ6j48u4Pi5zcTQbOgp2XXLWoV
-         ALe6HnXjJbk0ytmMafoFSeFw6yaLzTsZLClFvK2vKW544icq1yjPSkTHEcqgqAqHSwg9
-         QUUFS9Dj2NHiP4vAVCS2IIKa0Hxhnz+an7+gD49oSnxRJ67N8wltVx7jF4CjXnZi5C3k
-         /V7Ut1KmhKzIq91iI/vcVTO9lM6JbCPfMXuBvDre6n4T8ROlZdPn6+PuChs38Ge2dg2b
-         rbuw==
+        Thu, 23 Sep 2021 11:24:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632410592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d5/wCK9GszM66NyRIxpmO26QgTu1IQH9r5GdUI8WeU8=;
+        b=Rl0D/LzPoeR95buKegZiz3bLCFiskljV8nkItEcUsLn1ITP9OpnAqqVh8AAuRN+5EIui+X
+        iXHeqCNNuxNhxc4+NSpr68s0OruQA1yTi2xp/8YYigPIE1OQr29NbjtSIsFytNXooDH8m4
+        DrP1SKa4yaNk8gPD5pXEDvzJfOcvkWc=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-601-r0GxFBn0Olil41g9LXhfSw-1; Thu, 23 Sep 2021 11:23:11 -0400
+X-MC-Unique: r0GxFBn0Olil41g9LXhfSw-1
+Received: by mail-ed1-f69.google.com with SMTP id r7-20020aa7c147000000b003d1f18329dcso7201611edp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:23:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HVxL0gvQeVwNSk7LMfLCfUfPmAJPbw6emcr/92Y6HPk=;
-        b=5O4mH8NsuwEdmqvi2GoPUGKTTK/PQBVoOlc7JVu+lPjxaqd16+994bCmtOpB0zQOJh
-         ejZUYGpcYHtpL3EoRPHT94GkP6d5f3BT5+viGCc6GQgjYP6xIGsQc/hWG92m2h1WIltl
-         sQZnakgDwHnxSti0MYLZa3TGQGztmIvtY2vVbGoLLVq9bl57q0T7jKf89FW9+xp3SNSp
-         DAMKHH+UmJKJUZ5KNEV7E9ZJ/kve3v7IJ2/GeO06YXOToSzPDONQB8udxKSdiTX8xVgB
-         n0kYlYw6/Hbxl66dIzy9bxqxwZmWU7okUCzkab5e5lyjfS1VDc04sN5Lz65D/CQk0Ggi
-         7BdQ==
-X-Gm-Message-State: AOAM533ZogfblmiqMsa24oofajslPip1xqqadmLmf0O8z09DPrCcBYE1
-        LLTD9eXe+3zNBRzBePr/XQ==
-X-Google-Smtp-Source: ABdhPJxksgW3toWKjh5yTplDAjHXG0UVdVM765dWPTWwIfBpqQcVOllpbDWkWcyt9BuLJjXr4x9dyw==
-X-Received: by 2002:a05:620a:530:: with SMTP id h16mr5269737qkh.230.1632410562138;
-        Thu, 23 Sep 2021 08:22:42 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id z186sm4409646qke.59.2021.09.23.08.22.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 08:22:41 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 11:22:35 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Struct page proposal
-Message-ID: <YUybu+OCpCM2lZJu@moria.home.lan>
-References: <YUvWm6G16+ib+Wnb@moria.home.lan>
- <e567ad16-0f2b-940b-a39b-a4d1505bfcb9@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d5/wCK9GszM66NyRIxpmO26QgTu1IQH9r5GdUI8WeU8=;
+        b=HDS6sRie/3fzY5Vp56KvQ0zPblOC9kQ5BDIuJ3SbVVgVZgl3YS+f7Ywba6Epz0Qykn
+         oQmEwEo7uh37O+akosVnMuW9XwN+D0FSb5cASm8QxOaH499rcFVV9ZuVW6lbW7frFyec
+         61xCww29RXVoR2UMkEtrDaqq8aU1pVzqVXMotZZOHCufumn+2J3SzKVw8MQQxT31jUqr
+         jkOvTri/i2G97SPQM0MoW+UpGQ0i7PadSf1YF2I1RMchsfQNRrb5CSwQMCq4ewdlsSG5
+         Tx7DGveR3lX0DyTQjmaBmDhmTnLRCN55jiveLki8IAR1s3mVQNMTTvemhRHgGm+Z88c7
+         IjPg==
+X-Gm-Message-State: AOAM530t4yLJql8D/KV0ViH3bBOBTUH6iAfzNF0ysO7IUQjfVilnfMFl
+        wViMUplPxbktk0sucxqQVMohSv9eN5VaWolrHNKYJy4qg+pq626IDCKgYDhB5FJzU9JVlgMeU4x
+        6deDG/tBwxDVgivi6qzHUvrWu
+X-Received: by 2002:a05:6402:2908:: with SMTP id ee8mr6260015edb.33.1632410589470;
+        Thu, 23 Sep 2021 08:23:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzDSEdE2T5kzt1HjSE8giRZeeqlHAAaF/qwd9m6UR/9UVNV+oh39zmx9cdvjGmKJDHkWhr4w==
+X-Received: by 2002:a05:6402:2908:: with SMTP id ee8mr6259999edb.33.1632410589282;
+        Thu, 23 Sep 2021 08:23:09 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id mm23sm3285150ejb.78.2021.09.23.08.23.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 08:23:08 -0700 (PDT)
+Subject: Re: [PATCH V2 03/10] KVM: Remove tlbs_dirty
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>, kvm@vger.kernel.org
+References: <20210918005636.3675-1-jiangshanlai@gmail.com>
+ <20210918005636.3675-4-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8dfdae11-7c51-530d-5c0d-83f778fa1e14@redhat.com>
+Date:   Thu, 23 Sep 2021 17:23:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e567ad16-0f2b-940b-a39b-a4d1505bfcb9@redhat.com>
+In-Reply-To: <20210918005636.3675-4-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:03:44AM +0200, David Hildenbrand wrote:
-> Don't get me wrong, but before there are answers to some of the very basic
-> questions raised above (especially everything that lives in page->flags,
-> which are not only page flags, refcount, ...) this isn't very tempting to
-> spend more time on, from a reviewer perspective.
+On 18/09/21 02:56, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> There is no user of tlbs_dirty.
+> 
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>   include/linux/kvm_host.h | 1 -
+>   virt/kvm/kvm_main.c      | 9 +--------
+>   2 files changed, 1 insertion(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index e4d712e9f760..3b7846cd0637 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -608,7 +608,6 @@ struct kvm {
+>   	unsigned long mmu_notifier_range_start;
+>   	unsigned long mmu_notifier_range_end;
+>   #endif
+> -	long tlbs_dirty;
+>   	struct list_head devices;
+>   	u64 manual_dirty_log_protect;
+>   	struct dentry *debugfs_dentry;
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 3e67c93ca403..6d6be42ec78d 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -312,12 +312,6 @@ EXPORT_SYMBOL_GPL(kvm_make_all_cpus_request);
+>   #ifndef CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+>   void kvm_flush_remote_tlbs(struct kvm *kvm)
+>   {
+> -	/*
+> -	 * Read tlbs_dirty before setting KVM_REQ_TLB_FLUSH in
+> -	 * kvm_make_all_cpus_request.
+> -	 */
+> -	long dirty_count = smp_load_acquire(&kvm->tlbs_dirty);
+> -
+>   	/*
+>   	 * We want to publish modifications to the page tables before reading
+>   	 * mode. Pairs with a memory barrier in arch-specific code.
+> @@ -332,7 +326,6 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
+>   	if (!kvm_arch_flush_remote_tlb(kvm)
+>   	    || kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH))
+>   		++kvm->stat.generic.remote_tlb_flush;
+> -	cmpxchg(&kvm->tlbs_dirty, dirty_count, 0);
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_flush_remote_tlbs);
+>   #endif
+> @@ -537,7 +530,7 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+>   		}
+>   	}
+>   
+> -	if (range->flush_on_ret && (ret || kvm->tlbs_dirty))
+> +	if (range->flush_on_ret && ret)
+>   		kvm_flush_remote_tlbs(kvm);
+>   
+>   	if (locked)
+> 
 
-Did you miss the part of the folios discussion where we were talking about how
-acrimonious it had gotten and why, and talking about (Chris Mason in particular)
-writing design docs up front and how they'd been pretty successful in other
-places?
+Queued up to here for 5.15, thanks!
 
-We're trying something new here, and trying to give people an opportunity to
-discussion what we're trying to do _before_ dumping thousands and thousands of
-lines of refactoring patches on the list.
+Paolo
+
