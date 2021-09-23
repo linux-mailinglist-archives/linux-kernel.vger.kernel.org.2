@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4AD4164F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E993D4164DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242888AbhIWSPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242711AbhIWSOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:14:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B13F61211;
-        Thu, 23 Sep 2021 18:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632420799;
-        bh=jwrL23NbCo2fsm514Iz5xIfaNN+I2B1pwpVoLvCR6TI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hqK4EjhPz3dvY3xJm/awyd9QJ6c+1DSwBOJp8FO+vKbRtw3RaEgqoqjr/tan5lpfk
-         rIJdAf0U0FDjGvaZfpV5+OimJrS7e9+vyi/ZFl9fvlscuHKGEEXDYR7aiu9vqMj0+7
-         aioSEAu1XkXpaAZ3Me++nEoAJs9I3XndjgG1LER+QZYQm7dJy8GDLF/0O4GHgRUZWb
-         L5oHsMkRgRoQSgsFUoaJBQxuORLgjWHsr1INekH1rC9Bu0oB6w3MvvuZUaxid6AFRT
-         GrCWLfysdWtvDS+ihvjy3w1pnlwv1uvSoV0CrVqRJCYxICLvYYkTwB01cLXwlvNKls
-         3aWJocAOiUBUw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Igor Russkikh <irusskikh@marvell.com>,
-        intel-wired-lan@lists.osuosl.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        netdev@vger.kernel.org, Sathya Perla <sathya.perla@broadcom.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Subject: [PATCH net-next 5/6] ice: Delete always true check of PF pointer
-Date:   Thu, 23 Sep 2021 21:12:52 +0300
-Message-Id: <1e19cd378b76b891acd4cff122b622fdb0f99ed0.1632420431.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632420430.git.leonro@nvidia.com>
-References: <cover.1632420430.git.leonro@nvidia.com>
+        id S242687AbhIWSO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:14:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42682 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242152AbhIWSO1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 14:14:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632420775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nGiyo9Kb8y6C4PyFYU5baolsG6mjzgEb10Ln0lF+3dY=;
+        b=THxa/rPcZ3EIuRt5rZP/fdRA2OT+fQlI/kbHg3V4AxOmy7gi7ekfexFf/Nqa5cUMYnAMDI
+        vigmYWhHtziYU5KwGcybLfXUFG3mJc3VRLmQw5+YOdZAVGZk0YsG+p9/1CZI++PQUdudAf
+        ygbNY3BQBn73y1719wLS5CdhZMmiIe0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-DJs5u56IPCKFXW3MVXcM1A-1; Thu, 23 Sep 2021 14:12:54 -0400
+X-MC-Unique: DJs5u56IPCKFXW3MVXcM1A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28F8BBBEE0;
+        Thu, 23 Sep 2021 18:12:53 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CC6186B54A;
+        Thu, 23 Sep 2021 18:12:52 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM/rseq changes for Linux 5.15-rc3
+Date:   Thu, 23 Sep 2021 14:12:52 -0400
+Message-Id: <20210923181252.44385-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Linus,
 
-PF pointer is always valid when PCI core calls its .shutdown() and
-.remove() callbacks. There is no need to check it again.
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
-Fixes: 837f08fdecbe ("ice: Add basic driver framework for Intel(R) E800 Series")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/net/ethernet/intel/ice/ice_main.c | 3 ---
- 1 file changed, 3 deletions(-)
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 34e64533026a..aacc0b345bbe 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -4593,9 +4593,6 @@ static void ice_remove(struct pci_dev *pdev)
- 	struct ice_pf *pf = pci_get_drvdata(pdev);
- 	int i;
- 
--	if (!pf)
--		return;
--
- 	for (i = 0; i < ICE_MAX_RESET_WAIT; i++) {
- 		if (!ice_is_reset_in_progress(pf->state))
- 			break;
--- 
-2.31.1
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus-rseq
+
+for you to fetch changes up to 2da4a23599c263bd4a7658c2fe561cb3a73ea6ae:
+
+  KVM: selftests: Remove __NR_userfaultfd syscall fallback (2021-09-22 10:24:02 -0400)
+
+----------------------------------------------------------------
+A fix for a bug with restartable sequences and KVM.  KVM's handling
+of TIF_NOTIFY_RESUME, e.g. for task migration, clears the flag without
+informing rseq and leads to stale data in userspace's rseq struct.
+
+I'm sending this as a separate pull request since it's not code
+that I usually touch.  In particular, patch 2 ("entry: rseq: Call
+rseq_handle_notify_resume() in tracehook_notify_resume()") is just a
+cleanup to try and make future bugs less likely.  If you prefer this to
+be sent via Thomas and only in 5.16, please speak up.
+
+----------------------------------------------------------------
+Sean Christopherson (5):
+      KVM: rseq: Update rseq when processing NOTIFY_RESUME on xfer to KVM guest
+      entry: rseq: Call rseq_handle_notify_resume() in tracehook_notify_resume()
+      tools: Move x86 syscall number fallbacks to .../uapi/
+      KVM: selftests: Add a test for KVM_RUN+rseq to detect task migration bugs
+      KVM: selftests: Remove __NR_userfaultfd syscall fallback
+
+ arch/arm/kernel/signal.c                          |   1 -
+ arch/arm64/kernel/signal.c                        |   4 +-
+ arch/csky/kernel/signal.c                         |   4 +-
+ arch/mips/kernel/signal.c                         |   4 +-
+ arch/powerpc/kernel/signal.c                      |   4 +-
+ include/linux/tracehook.h                         |   2 +
+ kernel/entry/common.c                             |   4 +-
+ kernel/rseq.c                                     |  14 +-
+ tools/arch/x86/include/{ => uapi}/asm/unistd_32.h |   0
+ tools/arch/x86/include/{ => uapi}/asm/unistd_64.h |   3 -
+ tools/testing/selftests/kvm/.gitignore            |   1 +
+ tools/testing/selftests/kvm/Makefile              |   3 +
+ tools/testing/selftests/kvm/rseq_test.c           | 236 ++++++++++++++++++++++
+ 13 files changed, 258 insertions(+), 22 deletions(-)
+ rename tools/arch/x86/include/{ => uapi}/asm/unistd_32.h (100%)
+ rename tools/arch/x86/include/{ => uapi}/asm/unistd_64.h (83%)
+ create mode 100644 tools/testing/selftests/kvm/rseq_test.c
 
