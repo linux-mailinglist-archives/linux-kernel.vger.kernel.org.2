@@ -2,78 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF11415ED9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FAE415EDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241066AbhIWMxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:53:35 -0400
-Received: from smtp179.sjtu.edu.cn ([202.120.2.179]:56256 "EHLO
-        smtp179.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240787AbhIWMxL (ORCPT
+        id S241145AbhIWMyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:54:47 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:46772 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241012AbhIWMye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:53:11 -0400
-Received: from mta04.sjtu.edu.cn (mta04.sjtu.edu.cn [202.121.179.8])
-        by smtp179.sjtu.edu.cn (Postfix) with ESMTPS id 6AACD100B0956;
-        Thu, 23 Sep 2021 20:51:37 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mta04.sjtu.edu.cn (Postfix) with ESMTP id 5032F185F5217;
-        Thu, 23 Sep 2021 20:51:37 +0800 (CST)
-X-Virus-Scanned: amavisd-new at mta04.sjtu.edu.cn
-Received: from mta04.sjtu.edu.cn ([127.0.0.1])
-        by localhost (mta04.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id vJ3hqoUkK9xP; Thu, 23 Sep 2021 20:51:37 +0800 (CST)
-Received: from mstore105.sjtu.edu.cn (unknown [10.118.0.105])
-        by mta04.sjtu.edu.cn (Postfix) with ESMTP id 25B611804EE54;
-        Thu, 23 Sep 2021 20:51:37 +0800 (CST)
-Date:   Thu, 23 Sep 2021 20:51:37 +0800 (CST)
-From:   =?gb2312?B?ufnWvg==?= <qtxuning1999@sjtu.edu.cn>
-To:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dledford <dledford@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <2038588983.392567.1632401497054.JavaMail.zimbra@sjtu.edu.cn>
-In-Reply-To: <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
-References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn> <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
-Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+        Thu, 23 Sep 2021 08:54:34 -0400
+Received: by mail-ot1-f41.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so6269216ota.13;
+        Thu, 23 Sep 2021 05:53:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T5pin4HBy/8oX+1D69jVpHUNgiCC1/7/deC2d6STVN4=;
+        b=zGaf4a22lvB0eEZ3DurNfF4VSm7cxd2HvZMV8J9SGVpe08OuonpyU7rpSRxuKv8YLz
+         PnBLNLBhFKcbJL4fIghjX8gULk0wtrD0xO1GFfQ+Q1EETX8P+2hnenmg7+2hi0Zffml2
+         cKpbWzEPPl4JbbBbfFdjpHbhUwyWpBodkWmHXDi0xYqJw/nA/5HcxRP2iFZaRfESCsEa
+         5YDD40gsLqWjT/WINb7h21Jvqo2x4/HAYzg1WneMJmoU6eJP++veoPxdL5BGSGcnlASs
+         rMMEKPpp24/8m/wlddUGOwVUq2lKlHqrPipKp2K5Hj++bf9+DzlipEHIRE+46iM73aaK
+         lwmg==
+X-Gm-Message-State: AOAM53140oL9DUhzbDEDqscK1241AjJW3xDw1tQPrh4Z3boDdzYcjJoU
+        JKih5O4uOAhytcdAfda8Pg==
+X-Google-Smtp-Source: ABdhPJx8/3hAVrRwReb56QdQatIrscxOfd4EPLlBYorNiziE9+o4Y1SN5nI078poAoT3V7CJC59j4w==
+X-Received: by 2002:a9d:77d4:: with SMTP id w20mr3929655otl.321.1632401582959;
+        Thu, 23 Sep 2021 05:53:02 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 14sm1262633oiy.53.2021.09.23.05.53.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 05:53:02 -0700 (PDT)
+Received: (nullmailer pid 2834023 invoked by uid 1000);
+        Thu, 23 Sep 2021 12:53:01 -0000
+Date:   Thu, 23 Sep 2021 07:53:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        linux@armlinux.org.uk, f.fainelli@gmail.com,
+        alexandre.belloni@bootlin.com, vladimir.oltean@nxp.com,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 08/12] dt-bindings: net: lan966x: Add
+ lan966x-switch bindings
+Message-ID: <YUx4rQtEw4fquxs0@robh.at.kernel.org>
+References: <20210920095218.1108151-1-horatiu.vultur@microchip.com>
+ <20210920095218.1108151-9-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [202.120.40.82]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - GC92 (Linux)/8.8.15_GA_3928)
-Thread-Topic: infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Thread-Index: AQHXr7imk55risfKAUmS2+aCDTMROauwTzmgxEEN6dM=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920095218.1108151-9-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have tried using %px rather than %p. However when checking the new patch through scripts/checkpatch.pl, there is a warning: Using vsprintf specifier '%px' potentially exposes the kernel memory layout. 
-
-Maybe %pK is the right one?
-
-Thanks.
-
-Guo
-
------ Original Message -----
-From: "Mike Marciniszyn" <mike.marciniszyn@cornelisnetworks.com>
-To: "Guo Zhi" <qtxuning1999@sjtu.edu.cn>, "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>, "dledford" <dledford@redhat.com>
-Cc: "linux-rdma" <linux-rdma@vger.kernel.org>, "linux-kernel" <linux-kernel@vger.kernel.org>
-Sent: Thursday, September 23, 2021 1:51:08 AM
-Subject: RE: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-
-> Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+On Mon, Sep 20, 2021 at 11:52:14AM +0200, Horatiu Vultur wrote:
+> Document the lan966x switch device driver bindings
 > 
-> Pointers should be printed with %p or %px rather than cast to (unsigned long
-> long) and printed with %llx.
-> Change %llx to %p to print the pointer.
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  .../net/microchip,lan966x-switch.yaml         | 114 ++++++++++++++++++
+>  1 file changed, 114 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml
 > 
-> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+> diff --git a/Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml b/Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml
+> new file mode 100644
+> index 000000000000..53d72a65c168
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/microchip,lan966x-switch.yaml
+> @@ -0,0 +1,114 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/microchip,lan966x-switch.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip Lan966x Ethernet switch controller
+> +
+> +maintainers:
+> +  - Horatiu Vultur <horatiu.vultur@microchip.com>
+> +  - UNGLinuxDriver@microchip.com
+> +
+> +description: |
+> +  The Lan966x Enterprise Ethernet switch family provides a rich set of
+> +  Enterprise switching features such as advanced TCAM-based VLAN and
+> +  QoS processing enabling delivery of differentiated services, and
+> +  security through TCAM-based frame processing using versatile content
+> +  aware processor (VCAP).
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^switch@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    const: microchip,lan966x-switch
+> +
+> +  reg:
+> +    items:
+> +      - description: cpu target
+> +      - description: devices target
+> +      - description: general control block target
+> +
+> +  reg-names:
+> +    items:
+> +      - const: cpu
+> +      - const: devices
+> +      - const: gcb
+> +
+> +  interrupts:
+> +    minItems: 1
 
-The unsigned long long was originally used to insure the entire accurate pointer as emitted.
+Don't need minItems unless it is less than number of entries for 
+'items'.
 
-This is to ensure the pointers in prints and event traces match values in stacks and register dumps.
+> +    items:
+> +      - description: register based extraction
+> +
+> +  interrupt-names:
+> +    minItems: 1
+> +    items:
+> +      - const: xtr
+> +
+> +  mac-address: true
+> +
+> +  ethernet-ports:
+> +    type: object
+> +    patternProperties:
+> +      "^port@[0-9a-f]+$":
 
-I think the %p will obfuscate the pointer so %px is correct for our use case.
+ethernet-port is preferred on new bindings.
 
-Mike
+> +        type: object
+> +
+> +        properties:
+> +          '#address-cells':
+> +            const: 1
+> +          '#size-cells':
+> +            const: 0
+> +
+> +          reg:
+> +            description: Switch port number
+> +
+> +          phy-mode:
+> +            description:
+> +              This specifies the interface used by the Ethernet SerDes towards
+> +              the PHY or SFP.
+> +
+> +          phy-handle:
+> +            description:
+> +              phandle of a Ethernet PHY.
+> +
+> +        required:
+> +          - reg
+> +          - phy-mode
+> +          - phy-handle
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - interrupt-names
+> +  - ethernet-ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    switch: switch@600000000 {
+
+Drop unused labels.
+
+> +      compatible = "microchip,lan966x-switch";
+> +      reg =  <0 0x401000>,
+> +             <0x10004000 0x7fc000>,
+> +             <0x11010000 0xaf0000>;
+> +      reg-names = "cpu", "devices", "gcb";
+> +      interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+> +      interrupt-names = "xtr";
+> +      ethernet-ports {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        port0: port@0 {
+> +          reg = <0>;
+> +          phy-handle = <&phy0>;
+> +          phy-mode = "gmii";
+> +        };
+> +      };
+> +    };
+> +
+> +...
+> +#  vim: set ts=2 sw=2 sts=2 tw=80 et cc=80 ft=yaml :
+
+Ummm, no.
+
+> -- 
+> 2.31.1
+> 
+> 
