@@ -2,90 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CEC415F26
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF408415F2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241164AbhIWNFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241043AbhIWNFY (ORCPT
+        id S241137AbhIWNIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:08:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43840 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241041AbhIWNIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:05:24 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F067C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:03:53 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id e16so5940562qte.13
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:03:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=HP04Hn8CepgatxLq+M5uPtre9hYCWS5PsizBd98RFZw=;
-        b=GAyhELXoy0hcPaFe8f3uSdng5Li+hZat3C5MCMayexoMMYz2pQpR030G1v2FRrR06B
-         XEX9pWjcUGaNgdQfSyxjV6rzcacZq2ueL+jkLvE7z55WKQfRRHQh0miGpBmGy8M7ihbA
-         axQS96K8XzltEF9l38VkSW+zZewT7p2NDhPeidJ/zWT+RiWEVPQlq4HVDtYZXS3Gj5Mb
-         M2UdcDU9WgkdbwEGxb4lVu0PKLj8yuG2ZI0KqQwCAbdW1xlVdqA2BPBuUMLytNCy6UJW
-         jZ80S0Ly1Ma47ETmsRindzS53lebARfyU3vn5gnv/6+3hCCjCcI/SUR9m5yzeVpAmisz
-         4WCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HP04Hn8CepgatxLq+M5uPtre9hYCWS5PsizBd98RFZw=;
-        b=YauotQ8O+xpjPW8O0yY1jsfj+6VkzQwNnWH3WoBhfu8UkCImeoxDB+xKcSE8edDoTP
-         YkZ7q8g/JyGXy8x1YOJFa/RJVy3hjbNKcX7T150UJvsPZuZMbTyryjySYKV5bR6c01ef
-         LwDtUhB5s098NV2zSXUVA2s3Qkqf4XR+xYCWAfX+CQQ49dPR60hCltjozDom446pmegX
-         3OZR6QQeSwT377Y4eWBU70yorM916f0l2pmjL3ylzukqthny/+UZvFu0Z7lRXrzc/buI
-         2q0nZqK0JPSP5+0+0QTjgkzinAOGCax8XuS2URx3n5W8Krk1TePsHL8OU2tbL+2gSDaf
-         gNGA==
-X-Gm-Message-State: AOAM530vW/stjOm2N46tdTLx8a0VZiDBzw15toDyv8xbk1soP5AJRZX6
-        Ql7VPpi5bOOXNFz/twrLxPhj57kx92g=
-X-Google-Smtp-Source: ABdhPJzkOPU7EUK+L4vaCfKYnqKdpniBGlclXIqxP3nM385jdzCBiFUfHwI9dyDRfHkEC6mPe1jKZQ==
-X-Received: by 2002:ac8:7756:: with SMTP id g22mr4630434qtu.160.1632402232312;
-        Thu, 23 Sep 2021 06:03:52 -0700 (PDT)
-Received: from [192.168.0.4] (d60-196-191.col.wideopenwest.com. [65.60.191.196])
-        by smtp.gmail.com with ESMTPSA id a189sm4006864qkf.114.2021.09.23.06.03.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 06:03:51 -0700 (PDT)
-Subject: Re: Boot opens CD tray
-To:     linux-kernel@vger.kernel.org
-References: <bbb0df1d-1e40-fbdf-d9aa-281ba77b4b6d@gmail.com>
- <20210923123407.GA19709@1wt.eu>
-From:   Ken <kennethcelander@gmail.com>
-Message-ID: <3e2fe30b-4c58-3164-2e2f-283f34ebe396@gmail.com>
-Date:   Thu, 23 Sep 2021 08:03:49 -0500
+        Thu, 23 Sep 2021 09:08:00 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 321542028E;
+        Thu, 23 Sep 2021 13:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632402388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gETyMuCCO3AVSEUMWLrDiqh3r48UCX/EnrNTKjKthVk=;
+        b=d/V+WLyPoCXRhhPzVFHk0iojvnnyd0jM3XFdE5DSctSERwmMQ4jh1mMf3AT9jSb+LmHYYE
+        gR/L3unsMXxMWUIw4lSPTMmhwlMcdq/tU5w7OLmAwlfBvEvt8jNqv2YA7Jss2t5cMyU3/Y
+        Ow9CeuR+ehdZj78jxtN2to/RCtj1rLE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E8DE13DD5;
+        Thu, 23 Sep 2021 13:06:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0mX+AdR7TGF0PgAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 13:06:28 +0000
+Subject: Re: [PATCH 1/9] xen/x86: prevent PVH type from getting clobbered
+To:     Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <46ec0dab-8b5e-f20f-225b-3f4c57f34a61@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <ca719eaa-892a-9baa-c9a3-136314193e7a@suse.com>
+Date:   Thu, 23 Sep 2021 15:06:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210923123407.GA19709@1wt.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+In-Reply-To: <46ec0dab-8b5e-f20f-225b-3f4c57f34a61@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="dYGjSbU8vl6fICgOr3YJ4Fc0FV5bSwepS"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CD/DVD is a SATA ASUS; connected to a ASRock 970A-G/3.1 motherboard.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dYGjSbU8vl6fICgOr3YJ4Fc0FV5bSwepS
+Content-Type: multipart/mixed; boundary="deraih2vZG4VkwYUGXEwF6oOHPJSNHRFY";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Message-ID: <ca719eaa-892a-9baa-c9a3-136314193e7a@suse.com>
+Subject: Re: [PATCH 1/9] xen/x86: prevent PVH type from getting clobbered
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <46ec0dab-8b5e-f20f-225b-3f4c57f34a61@suse.com>
+In-Reply-To: <46ec0dab-8b5e-f20f-225b-3f4c57f34a61@suse.com>
 
-The changed "driver" has to be in the kernel, if it changed.
+--deraih2vZG4VkwYUGXEwF6oOHPJSNHRFY
+Content-Type: multipart/mixed;
+ boundary="------------6C112F19F9003730F6CCB913"
+Content-Language: en-US
 
-On 9/23/21 7:34 AM, Willy Tarreau wrote:
-> On Thu, Sep 23, 2021 at 07:27:48AM -0500, Ken wrote:
->> Linux Mint 20.2.
->>
->> Near the end of the boot up process, the CD/DVD tray will open, and
->> immediately close.
->>
->> This started with the kernel update 5.4.0-84.94, and now also with
->> 5.4.0-86.97.
->>
->> Time shifted back to 5.4.0-81, with no CD tray opening problem.
-> I guess you should at least provide more info such as how your CD drive
-> is attached to the host (SATA/USB/IDE/SCSI/other?), and maybe compare
-> the boot logs from the working and broken kernels just in case you'd
-> find different messages possibly indicating a difference in a driver.
->
-> Willy
+This is a multi-part message in MIME format.
+--------------6C112F19F9003730F6CCB913
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 07.09.21 12:07, Jan Beulich wrote:
+> Like xen_start_flags, xen_domain_type gets set before .bss gets cleared=
+=2E
+> Hence this variable also needs to be prevented from getting put in .bss=
+,
+> which is possible because XEN_NATIVE is an enumerator evaluating to
+> zero. Any use prior to init_hvm_pv_info() setting the variable again
+> would lead to wrong decisions; one such case is xenboot_console_setup()=
+
+> when called as a result of "earlyprintk=3Dxen".
+>=20
+> Use __ro_after_init as more applicable than either __section(".data") o=
+r
+> __read_mostly.
+>=20
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+--------------6C112F19F9003730F6CCB913
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------6C112F19F9003730F6CCB913--
+
+--deraih2vZG4VkwYUGXEwF6oOHPJSNHRFY--
+
+--dYGjSbU8vl6fICgOr3YJ4Fc0FV5bSwepS
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMe9MFAwAAAAAACgkQsN6d1ii/Ey9Y
+7gf7Bct/QOlPYrfq/qHJYJVw9KaZg5SYiDvvTS7ZIp4fgN+Wd8TQmuZq+m0cBw7iukRuospaUTLc
+U022x873+bE/Rx7ZhXe130EpuVqwtR1VCrRZjTgJQlRHp3CN1ItmUTSpjeY28TVuiV3uB7wVyPX7
+RLbmbvP4O2/OeUmk6+QMRU1cr7ZbzCOKhqomUP1jGU7X6Fbm+xDj6xAt+N3aXR4qUXUqYb6ioZIf
+FRNNd53KCAUNQmGiFKtXA/m8j74sNcaCUj6+hOKZX9XSiAwl6uXWdojldj38QS7mpzWK1STBHW8o
+myjKiV5j2KXN+ixmy4DBGhcWUMepqsevMNIwT6kXtQ==
+=onPo
+-----END PGP SIGNATURE-----
+
+--dYGjSbU8vl6fICgOr3YJ4Fc0FV5bSwepS--
