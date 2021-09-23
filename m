@@ -2,113 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DE041639B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4A741639F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240582AbhIWQvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231564AbhIWQvX (ORCPT
+        id S242167AbhIWQvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:51:43 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:41925 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238671AbhIWQvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:51:23 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB47C061574;
-        Thu, 23 Sep 2021 09:49:51 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id a7so4418917plm.1;
-        Thu, 23 Sep 2021 09:49:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+MhAQCN3MCef3eJJtF6/ulwUDJ61UOPaUB864XhY6hE=;
-        b=E6h0eAjLzztag0xmHm4rwsMjS/0omLXnEHKaP64ien169x1qhb7wHjy82xy4RWt16t
-         O4WtxrwNbsU5rMfw9Q/jG/UmihU093yEOGj62l/q088u7b0g6088/PxGzQZJcakCjLix
-         4TjuXiIrm12uHELiTguio2JjaXIc545CmfcTj59FmmEoWMH4urLSuUET2iP3wi5LPWdR
-         DnX04XoZSVLrY3O9NRvuODOdRxbhVUDkqyCJ7iadBDkCYdUAcrz5dUTDfRYyJif5AxQl
-         yFeA6po4Zh1zzrFxLMGLbutyKAz3L/VoBTlPW6p4NRH3nmm1OTfYPtwiJ4a/GYFIgrYk
-         r6Aw==
+        Thu, 23 Sep 2021 12:51:42 -0400
+Received: by mail-oi1-f171.google.com with SMTP id s24so7956528oij.8;
+        Thu, 23 Sep 2021 09:50:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+MhAQCN3MCef3eJJtF6/ulwUDJ61UOPaUB864XhY6hE=;
-        b=rbSu3fB2NEhA63Mf1r4eFJeme3rMYsgJTrkjcfjS1ABW8zONBQeOTeJ0qpBFVMUd1R
-         GW5T6I4Z38M+3S1EbNljkxaN5K4saQkezZ4qh7NUWmY7DhX063/R5mqGZKtkAHFV2e+5
-         hTzsSP5KkP6PfMXmnTlSw7QAQk3fmS22QWuF8hKnEV8mQYQh/fTk93yehPPUbCyajxyx
-         wYJ98zy89o2Mnnfv5uhEDnY4IIXBklSwi/pezaX5ftN2OYVmcC4wcHNU6C2nP1lCW5d6
-         INeujBw5Rp7LHgllAVTckYMvvTKed+C3niVgGOxqBhXKQI1iTYQgCCoLh83Z4BTYdWl+
-         g3yQ==
-X-Gm-Message-State: AOAM530gydtwZ4s6FCVsp131vfoV5ajYJT4ce14Inqo/Me2N5sc9kHFp
-        eqeksvzEJSBLDJ3w2wMgJayhTuoa6d4=
-X-Google-Smtp-Source: ABdhPJyIYDJ/7xNtXUZjb4UZO+bXii4P0gJq7epfVHL852Suf8ajpLowrePBQu4B2z+0PmnrN+fbUw==
-X-Received: by 2002:a17:902:6848:b0:13a:4ffd:202e with SMTP id f8-20020a170902684800b0013a4ffd202emr4566154pln.79.1632415791253;
-        Thu, 23 Sep 2021 09:49:51 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id 9sm10017046pjs.14.2021.09.23.09.49.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 09:49:50 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: socket: integrate sockfd_lookup() and
- sockfd_lookup_light()
-To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210922063106.4272-1-yajun.deng@linux.dev>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <b6263d35-0d31-e4a8-a955-494ce2b36ad6@gmail.com>
-Date:   Thu, 23 Sep 2021 09:49:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B+3tojMz0oyw8FqGzN1wz11Os587TDZQGTeSsmPPlxM=;
+        b=s6lYI+Ivi49s8cZjd0OrVqhSzXrckjGUR5qOxyo8yQIBdBr+p5lv1ly4EO/v6Wht04
+         +l6fi8N/elRo1Mi2XH0Was6NL066biSLaypNE39w3J50FrY5pwcSt4PG1Li3RVZ1HJu+
+         jjtIMFzWQMkLMU1eNPl9DHmxpJES8NxkZDDbxeVjOBi1Np2qO9NLHBUoYBQgLByIiynA
+         +S6VxxFqtCBqxcEPc9AkspIDijB2UHrHJl5uPE/gtVYDQPkyKeN9rRKyUe69qz2kfuPh
+         o2o0ujtk9ip1xVASCJPBfi3FSyFpqGDRJw9n801OGfZxcidO7t7eMCuU/5YlpoDycmDl
+         fW5w==
+X-Gm-Message-State: AOAM532Bhcxh9388SujCcuUKRcR9/06uiX1EGvlUkijZbmi6d6NlZ8VH
+        JZyrWAUxGW+A8BUkvArUMg==
+X-Google-Smtp-Source: ABdhPJzoDjVkVqr/4jmmFSGvnqfFFjB0oTLcCVk7E2haCrEZkfMCKDYIxie4myybjMPIZn0g2j/98Q==
+X-Received: by 2002:aca:3d07:: with SMTP id k7mr4565904oia.6.1632415810433;
+        Thu, 23 Sep 2021 09:50:10 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id n4sm1403468otr.59.2021.09.23.09.50.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 09:50:09 -0700 (PDT)
+Received: (nullmailer pid 3155331 invoked by uid 1000);
+        Thu, 23 Sep 2021 16:50:08 -0000
+Date:   Thu, 23 Sep 2021 11:50:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, jamipkettunen@somainline.org,
+        Hector Martin <marcan@marcan.st>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        angelogioacchino.delregno@somainline.org,
+        devicetree@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, martin.botka@somainline.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        marijn.suijten@somainline.org, Mark Brown <broonie@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 01/17] dt-bindings: arm: cpus: Add Kryo 560 CPUs
+Message-ID: <YUywQLpCjKhipZeA@robh.at.kernel.org>
+References: <20210923162204.21752-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <20210922063106.4272-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923162204.21752-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/21/21 11:31 PM, Yajun Deng wrote:
-> As commit 6cb153cab92a("[NET]: use fget_light() in net/socket.c") said,
-> sockfd_lookup_light() is lower load than sockfd_lookup(). So we can
-> remove sockfd_lookup() but keep the name. As the same time, move flags
-> to sockfd_put().
-
-???
-
+On Thu, 23 Sep 2021 18:21:47 +0200, Konrad Dybcio wrote:
+> Document Kryo 560 CPUs found in Qualcomm Snapdragon 690 (SM6350).
 > 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> Reviewed-by:  AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
->  include/linux/net.h |   8 +++-
->  net/socket.c        | 101 +++++++++++++++++---------------------------
->  2 files changed, 46 insertions(+), 63 deletions(-)
+>  Documentation/devicetree/bindings/arm/cpus.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/include/linux/net.h b/include/linux/net.h
-> index ba736b457a06..63a179d4f760 100644
-> --- a/include/linux/net.h
-> +++ b/include/linux/net.h
-> @@ -238,8 +238,14 @@ int sock_recvmsg(struct socket *sock, struct msghdr *msg, int flags);
->  struct file *sock_alloc_file(struct socket *sock, int flags, const char *dname);
->  struct socket *sockfd_lookup(int fd, int *err);
->  struct socket *sock_from_file(struct file *file);
-> -#define		     sockfd_put(sock) fput(sock->file)
->  int net_ratelimit(void);
-> +#define		     sockfd_put(sock)             \
-> +do {                                              \
-> +	struct fd *fd = (struct fd *)&sock->file; \
-> +						  \
-> +	if (fd->flags & FDPUT_FPUT)               \
-> +		fput(sock->file);                 \
-> +} while (0)
->  
 
-Really ?
 
-I wonder how was this tested ?
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-We can not store FDPUT_FPUT in the sock itself, for obvious reasons.
-Each thread needs to keep this information private.
+If a tag was not added on purpose, please state why and what changed.
 
