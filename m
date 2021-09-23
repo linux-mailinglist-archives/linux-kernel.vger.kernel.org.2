@@ -2,181 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4136415D8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1E2415E2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240880AbhIWMDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:03:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25586 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240869AbhIWMDI (ORCPT
+        id S240902AbhIWMUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:20:13 -0400
+Received: from m13101.mail.163.com ([220.181.13.101]:53335 "EHLO
+        m13101.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240775AbhIWMUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:03:08 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18NAdUcU003364;
-        Thu, 23 Sep 2021 08:01:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=pXzEf65A4Oe5+XzfRr8terVnfyIyuO6PQs0+F8aXgGc=;
- b=ZCv5VVg5Axl96NC4/j5oW2leA+TyRu7PTszC85LX7OnyuvdR/QPrxFJvHee6+ph9/1Ah
- rUd/1Dr4tZ5yXYAiKoNA4l0g4riJzCer09eV4KmKCsnovao7Ujg6/MQzQ6IVb2C5LRSL
- 6WitPRreJzNPlii4WW55mXNNAxhzlImWjS7TBI5y3E9CuYqxTL+hR1eRpZFENX5WHVgo
- 3bzeScRRqqA6eAdFzB/5aWdZYhNxC/HkliRolmuo1Xv4pKsUbXkIzU8GEpyYBQunYUKJ
- 0M08Qqduz9x2e5o+taGQrQG0ce7A7g963Zzijz3wHvEhl/y43e2FXQI9OwpYg11CHmgU 9g== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b8p4dcmbn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Sep 2021 08:01:14 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18NBvwov029624;
-        Thu, 23 Sep 2021 12:01:11 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 3b7q6ps42c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Sep 2021 12:01:11 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18NC18Jk56885734
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Sep 2021 12:01:08 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 810B04C08B;
-        Thu, 23 Sep 2021 12:01:08 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64DD54C089;
-        Thu, 23 Sep 2021 12:01:06 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.159.121])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 23 Sep 2021 12:01:06 +0000 (GMT)
-Date:   Thu, 23 Sep 2021 15:01:04 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        devicetree@vger.kernel.org, linux-efi@vger.kernel.org,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
-        linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/3] memblock: cleanup memblock_free interface
-Message-ID: <YUxsgN/uolhn1Ok+@linux.ibm.com>
-References: <20210923074335.12583-1-rppt@kernel.org>
- <20210923074335.12583-4-rppt@kernel.org>
- <1101e3c7-fcb7-a632-8e22-47f4a01ea02e@csgroup.eu>
+        Thu, 23 Sep 2021 08:20:12 -0400
+X-Greylist: delayed 1802 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Sep 2021 08:20:12 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=HKqYx
+        FSnuMPPDtXTnZobr6aATLcwqztdTi69Fp0el8M=; b=jXUcGIJYu+PQMFqvnDc84
+        XA35+LSk2sXWeUKJs3WZkZEqhiYCGFdlyuQOYCvWIICsmmvRgHiUH47uYcbYwQrF
+        VnCPoa6/k1t2Lf30nA3SEFYScro2l/OlEUHyNFqiyHmCacTRbc8dHlEwZZBkQNFP
+        emkGRomAi2X9ORzPEACF14=
+Received: from slark_xiao$163.com ( [120.197.196.160] ) by
+ ajax-webmail-wmsvr101 (Coremail) ; Thu, 23 Sep 2021 19:32:27 +0800 (CST)
+X-Originating-IP: [120.197.196.160]
+Date:   Thu, 23 Sep 2021 19:32:27 +0800 (CST)
+From:   "Slark Xiao" <slark_xiao@163.com>
+To:     "Johan Hovold" <johan@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re:Re: Re: [PATCH] USB:serial:option Add Foxconn T99W265
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <YUxLKCGd0Icl+Mbv@hovoldconsulting.com>
+References: <20210917110106.9852-1-slark_xiao@163.com>
+ <YUhVKrRJ8M2hKJil@hovoldconsulting.com>
+ <2992805f.bc9.17c0b33a78e.Coremail.slark_xiao@163.com>
+ <YUxLKCGd0Icl+Mbv@hovoldconsulting.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1101e3c7-fcb7-a632-8e22-47f4a01ea02e@csgroup.eu>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fe2SFaLdoxw706nrVmE8bleSLkHdGrzC
-X-Proofpoint-ORIG-GUID: fe2SFaLdoxw706nrVmE8bleSLkHdGrzC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-23_04,2021-09-23_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 bulkscore=0 spamscore=0
- mlxlogscore=613 impostorscore=0 priorityscore=1501 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109200000 definitions=main-2109230076
+Message-ID: <fed0c65.8937.17c126da334.Coremail.slark_xiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: ZcGowADn78_MZUxh6AWcAQ--.18435W
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiMAwXZFWBzGBGBAACs3
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:47:48AM +0200, Christophe Leroy wrote:
-> 
-> 
-> Le 23/09/2021 à 09:43, Mike Rapoport a écrit :
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > For ages memblock_free() interface dealt with physical addresses even
-> > despite the existence of memblock_alloc_xx() functions that return a
-> > virtual pointer.
-> > 
-> > Introduce memblock_phys_free() for freeing physical ranges and repurpose
-> > memblock_free() to free virtual pointers to make the following pairing
-> > abundantly clear:
-> > 
-> > 	int memblock_phys_free(phys_addr_t base, phys_addr_t size);
-> > 	phys_addr_t memblock_phys_alloc(phys_addr_t base, phys_addr_t size);
-> > 
-> > 	void *memblock_alloc(phys_addr_t size, phys_addr_t align);
-> > 	void memblock_free(void *ptr, size_t size);
-> > 
-> > Replace intermediate memblock_free_ptr() with memblock_free() and drop
-> > unnecessary aliases memblock_free_early() and memblock_free_early_nid().
-> > 
-> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> 
-> > diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
-> > index 1a04e5bdf655..37826d8c4f74 100644
-> > --- a/arch/s390/kernel/smp.c
-> > +++ b/arch/s390/kernel/smp.c
-> > @@ -723,7 +723,7 @@ void __init smp_save_dump_cpus(void)
-> >   			/* Get the CPU registers */
-> >   			smp_save_cpu_regs(sa, addr, is_boot_cpu, page);
-> >   	}
-> > -	memblock_free(page, PAGE_SIZE);
-> > +	memblock_phys_free(page, PAGE_SIZE);
-> >   	diag_amode31_ops.diag308_reset();
-> >   	pcpu_set_smt(0);
-> >   }
-> > @@ -880,7 +880,7 @@ void __init smp_detect_cpus(void)
-> >   	/* Add CPUs present at boot */
-> >   	__smp_rescan_cpus(info, true);
-> > -	memblock_free_early((unsigned long)info, sizeof(*info));
-> > +	memblock_free(info, sizeof(*info));
-> >   }
-> >   /*
-> 
-> I'm a bit lost. IIUC memblock_free_early() and memblock_free() where
-> identical.
-
-Yes, they were, but all calls to memblock_free_early() were using
-__pa(vaddr) because they had a virtual address at hand.
-
-> In the first hunk memblock_free() gets replaced by memblock_phys_free()
-> In the second hunk memblock_free_early() gets replaced by memblock_free()
-
-In the first hunk the memory is allocated with memblock_phys_alloc() and we
-have a physical range to free. In the second hunk the memory is allocated
-with memblock_alloc() and we are freeing a virtual pointer.
- 
-> I think it would be easier to follow if you could split it in several
-> patches:
-
-It was an explicit request from Linus to make it a single commit:
-
-  but the actual commit can and should be just a single commit that just
-  fixes 'memblock_free()' to have sane interfaces.
-
-I don't feel strongly about splitting it (except my laziness really
-objects), but I don't think doing the conversion in several steps worth the
-churn.
-
-> - First patch: Create memblock_phys_free() and change all relevant
-> memblock_free() to memblock_phys_free() - Or change memblock_free() to
-> memblock_phys_free() and make memblock_free() an alias of it.
-> - Second patch: Make memblock_free_ptr() become memblock_free() and change
-> all remaining callers to the new semantics (IIUC memblock_free(__pa(ptr))
-> becomes memblock_free(ptr) and make memblock_free_ptr() an alias of
-> memblock_free()
-> - Fourth patch: Replace and drop memblock_free_ptr()
-> - Fifth patch: Drop memblock_free_early() and memblock_free_early_nid() (All
-> users should have been upgraded to memblock_free_phys() in patch 1 or
-> memblock_free() in patch 2)
-> 
-> Christophe
-
--- 
-Sincerely yours,
-Mike.
+CkF0IDIwMjEtMDktMjMgMTc6Mzg6NDgsICJKb2hhbiBIb3ZvbGQiIDxqb2hhbkBrZXJuZWwub3Jn
+PiB3cm90ZToKPlsgUGxlYXNlIGNvbmZpZ3VyZSB5b3VyIG1haWwgY2xpZW50IHRvIHdyYXAgbGlu
+ZXMgYXQgNzIgY29sdW1ucyBvciBzby4gXQo+Cj5PbiBXZWQsIFNlcCAyMiwgMjAyMSBhdCAwOTo1
+MTo0N0FNICswODAwLCBTbGFyayBYaWFvIHdyb3RlOgo+PiBBdCAyMDIxLTA5LTIwIDE3OjMyOjI2
+LCAiSm9oYW4gSG92b2xkIiA8am9oYW5Aa2VybmVsLm9yZz4gd3JvdGU6Cj4+ID5PbiBGcmksIFNl
+cCAxNywgMjAyMSBhdCAwNzowMTowNlBNICswODAwLCBTbGFyayBYaWFvIHdyb3RlOgo+PiA+PiBB
+ZGRpbmcgc3VwcG9ydCBmb3IgRm94Y29ubiBkZXZpY2UgVDk5VzI2NSBmb3IgZW51bWVyYXRpb24g
+d2l0aAo+PiA+PiBQSUQgMHhlMGRiLgo+PiA+PiAKPj4gPj4gdXNiLWRldmljZXMgb3V0cHV0IGZv
+ciAweGUwZGIKPj4gPj4gVDogIEJ1cz0wNCBMZXY9MDEgUHJudD0wMSBQb3J0PTAwIENudD0wMSBE
+ZXYjPSAxOSBTcGQ9NTAwMCBNeENoPSAwCj4+ID4+IEQ6ICBWZXI9IDMuMjAgQ2xzPWVmKG1pc2Mg
+KSBTdWI9MDIgUHJvdD0wMSBNeFBTPSA5ICNDZmdzPSAgMQo+PiA+PiBQOiAgVmVuZG9yPTA0ODkg
+UHJvZElEPWUwZGIgUmV2PTA1LjA0Cj4+ID4+IFM6ICBNYW51ZmFjdHVyZXI9TWljcm9zb2Z0Cj4+
+ID4+IFM6ICBQcm9kdWN0PUdlbmVyaWMgTW9iaWxlIEJyb2FkYmFuZCBBZGFwdGVyCj4+ID4+IFM6
+ICBTZXJpYWxOdW1iZXI9NmM1MGY0NTIKPj4gPj4gQzogICNJZnM9IDUgQ2ZnIz0gMSBBdHI9YTAg
+TXhQd3I9ODk2bUEKPj4gPj4gSTogIElmIz0weDAgQWx0PSAwICNFUHM9IDEgQ2xzPTAyKGNvbW1j
+KSBTdWI9MGUgUHJvdD0wMCBEcml2ZXI9Y2RjX21iaW0KPj4gPj4gSTogIElmIz0weDEgQWx0PSAx
+ICNFUHM9IDIgQ2xzPTBhKGRhdGEgKSBTdWI9MDAgUHJvdD0wMiBEcml2ZXI9Y2RjX21iaW0KPj4g
+Pj4gSTogIElmIz0weDIgQWx0PSAwICNFUHM9IDMgQ2xzPWZmKHZlbmQuKSBTdWI9ZmYgUHJvdD00
+MCBEcml2ZXI9b3B0aW9uCj4+ID4+IEk6ICBJZiM9MHgzIEFsdD0gMCAjRVBzPSAxIENscz1mZih2
+ZW5kLikgU3ViPWZmIFByb3Q9ZmYgRHJpdmVyPShub25lKQo+PiA+PiBJOiAgSWYjPTB4NCBBbHQ9
+IDAgI0VQcz0gMiBDbHM9ZmYodmVuZC4pIFN1Yj1mZiBQcm90PTMwIERyaXZlcj1vcHRpb24KPj4g
+Pj4gCj4+ID4+IGlmMC8xOiBNQklNLCBpZjI6RGlhZywgaWYzOkdOU1MsIGlmNDogTW9kZW0KPj4g
+Pj4gCj4+ID4+IFNpZ25lZC1vZmYtYnk6IFNsYXJrIFhpYW8gPHNsYXJrX3hpYW9AMTYzLmNvbT4K
+Pgo+PiA+PiAtLS0KPj4gPj4gIGRyaXZlcnMvdXNiL3NlcmlhbC9vcHRpb24uYyB8IDIgKysKPj4g
+Pj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKPj4gPj4gCj4+ID4+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL3VzYi9zZXJpYWwvb3B0aW9uLmMgYi9kcml2ZXJzL3VzYi9zZXJpYWwvb3B0
+aW9uLmMKPj4gPj4gaW5kZXggMjljNzY1Y2M4NDk1Li5mZGU1OTlmYTJkNzMgMTAwNjQ0Cj4+ID4+
+IC0tLSBhL2RyaXZlcnMvdXNiL3NlcmlhbC9vcHRpb24uYwo+PiA+PiArKysgYi9kcml2ZXJzL3Vz
+Yi9zZXJpYWwvb3B0aW9uLmMKPj4gPj4gQEAgLTIwNjgsNiArMjA2OCw4IEBAIHN0YXRpYyBjb25z
+dCBzdHJ1Y3QgdXNiX2RldmljZV9pZCBvcHRpb25faWRzW10gPSB7Cj4+ID4+ICAJICAuZHJpdmVy
+X2luZm8gPSBSU1ZEKDApIHwgUlNWRCgxKSB8IFJTVkQoNikgfSwKPj4gPj4gIAl7IFVTQl9ERVZJ
+Q0UoMHgwNDg5LCAweGUwYjUpLAkJCQkJCS8qIEZveGNvbm4gVDc3Vzk2OCBFU0lNICovCj4+ID4+
+ICAJICAuZHJpdmVyX2luZm8gPSBSU1ZEKDApIHwgUlNWRCgxKSB8IFJTVkQoNikgfSwKPj4gPj4g
+Kwl7IFVTQl9ERVZJQ0UoMHgwNDg5LCAweGUwZGIpLAkJCQkJCS8qIEZveGNvbm4gVDk5VzI2NSBN
+QklNIGV4dGVuc2lvbiovCj4+ID4+ICsJICAuZHJpdmVyX2luZm8gPSBSU1ZEKDApIHwgUlNWRCgx
+KSB8IFJTVkQoMykgfSwKPj4gPgo+PiA+SWYgeW91IHVzZSBVU0JfREVWSUNFX0lOVEVSRkFDRV9D
+TEFTUygpIGluc3RlYWQgeW91IGRvbid0IG5lZWQgdG8KPj4gPmV4cGxpY2l0bHkgcmVzZXJ2ZSB0
+aGUgTUJJTSBpbnRlcmZhY2VzLiAKPj4gPgo+PiA+QWxzbywgd2h5IGFyZSB5b3UgcmVzZXJ2aW5n
+IHRoZSBHTlNTIGludGVyZmFjZSAoZS5nLiB1bmxpa2UgVDc3Vzk2OCk/Cj4+IAo+PiBJIGp1c3Qg
+d2FudCB0byBrZWVwIHNhbWUgc3R5bGUgYXMgcHJldmlvdXMgcHJvZHVjdHMuIFRoYXQgd291bGQg
+YmUKPj4gbW9yZSBjb29yZGluYXRlZCwgSSB0aGluay4KPgo+SSB1bmRlcnN0YW5kIHlvdXIgcG9p
+bnQsIGJ1dCBpdCdzIGJldHRlciB0byB1c2UgYSBtb3JlIHNwZWNpZmljIG1hdGNoaW5nCj5ydWxl
+IHdlcmUgcG9zc2libGUgc2luY2UgaXQgcHJldmVudHMgZHJpdmVyIGNvcmUgZnJvbSBldmVuIHRy
+eWluZyB0bwo+YmluZCB0aGUgZHJpdmVyLgo+Cj5Ob3RlIHRoYXQgZm9yIFQ3N1c5Njggd2UgY291
+bGRuJ3QgZG8gc28gc2luY2Ugd2UgbmVlZGVkIHRvIGJpbmQgYWxzbyB0bwo+bm9uLXZlbmRvci1j
+bGFzcyBpbnRlcmZhY2VzLgo+Cj5JJ2xsIGp1c3QgY2hhbmdlIHRoaXMgdG8gVVNCX0RFVklDRV9J
+TlRFUkZBQ0VfQ0xBU1MoKSB3aGVuIGFwcGx5aW5nLgo+Cj4+IEFuZCBmb3IgR05TUyBwb3J0LCBp
+dCBjYW4ndCBiZSBzdXBwb3J0ZWQgd2l0aCBzZXJpYWwgZHJpdmVyLiBJdAo+PiBkb2Vzbid0IGxp
+a2UgYSAgTk1FQSBwb3J0IHdoaWNoIGlzIHVzaW5nIHNlcmlhbCBkcml2ZXIuCj4+IEkgY2hlY2tl
+ZCBpdCBmb3IgVDc3Vzk2OChNQklNIG1vZGUpIGFuZCBmb3VuZCBzZXR0aW5ncyBhcyBiZWxvdzoK
+Pj4gaWYwL2lmMTogTUJJTSwgaWYyOiBNb2RlbSwgaWYzOkFULCAgaWY0OiBOTUVBLCBpZjU6IERp
+YWcsIGlmNjogR05TUwo+PiBHTlNTIGlzIGFsc28gcmVzZXJ2ZWQuCj4KPkFoLCB0aGFua3MgZm9y
+IGV4cGxhaW5pbmcuIEkgb25seSBzYXcgdGhhdCBUNzdXOTY4IGhhZCBhbiBOTUVBIHBvcnQgYW5k
+Cj50aG91Z2h0IGl0IHdhcyB0aGUgc2FtZSBvbmUuCj4KPk5vdyBhcHBsaWVkIHdpdGggdGhlIGNo
+YW5nZSBtZW50aW9uZWQgYWJvdmUuCj4KPkpvaGFuClRoYW5rcyBmb3IgdGhhdCE=
