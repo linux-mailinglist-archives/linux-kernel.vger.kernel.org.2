@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2423A416837
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD3841683A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243514AbhIWWym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236363AbhIWWyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:54:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D4EA61050;
-        Thu, 23 Sep 2021 22:53:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1632437589;
-        bh=C3SYeyDKvKpb/ztYsrD8obNOu9dSdXZY8PFIa55n+74=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KZ3gMZwg4rgJ9cLecymJdeyv6i54jC7zVxLOfjkazVUlux9mYsa73ABGN59P4idUi
-         vuuJ7LslTKcm3niLg6ci5tCI5QkH6FfZMbvf+dXZp6sZAMKa4FePEb/vV/DSlnR+t8
-         rrRhkFGxbVQbFrgWJXjxie+JOSrcd/pPdSnyGya8=
-Date:   Thu, 23 Sep 2021 15:53:08 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>,
-        Jesse Barnes <jsbarnes@google.com>
-Subject: Re: [PATCH v4] zram: Introduce an aged idle interface
-Message-Id: <20210923155308.9b522a77a02ee13b76e9e613@linux-foundation.org>
-In-Reply-To: <20210923130115.1344361-1-bgeffon@google.com>
-References: <20210917210640.214211-1-bgeffon@google.com>
-        <20210923130115.1344361-1-bgeffon@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S243527AbhIWW4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:56:30 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:20815 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243499AbhIWW43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 18:56:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1632437697; x=1663973697;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=e97zNOiwir1aJze+wIByrdjedbkrWs1OwK8P/jZcHPw=;
+  b=H+npWXo7fzCPMWx+f5orbIkw+HxEEa5OSlyDiqmyMxgMaGHDVG1fRAqe
+   o3m4hvOhPY+Cc+O4+tLhPPtGhw+OIlARGzAlRqSljmG40RccIne/GR9P2
+   OsEIXsDFmwMrYYok/EamT61XH5okacc7RKFhi+io42DUGgLoFCzvVADcl
+   c=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 23 Sep 2021 15:54:57 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 15:54:56 -0700
+Received: from hu-cgoldswo-sd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Thu, 23 Sep 2021 15:54:55 -0700
+From:   Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     David Hildenbrand <david@redhat.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+Subject: [RFC] arm64: mm: update max_pfn after memory hotplug
+Date:   Thu, 23 Sep 2021 15:54:47 -0700
+Message-ID: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 06:01:15 -0700 Brian Geffon <bgeffon@google.com> wrote:
+On arm64 we set max_pfn at boot in arch/arm64/mm/init.c. If you
+hotplug in memory after booting up, max_pfn is not updated. This
+breaks diagnostic functions executed from user space like
+read_page_owner():
 
-> This change introduces an aged idle interface to the existing
-> idle sysfs file for zram.
-> 
-> When CONFIG_ZRAM_MEMORY_TRACKING is enabled the idle file
-> now also accepts an integer argument. This integer is the
-> age (in seconds) of pages to mark as idle. The idle file
-> still supports 'all' as it always has. This new approach
-> allows for much more control over which pages get marked
-> as idle.
-> 
-> @@ -291,22 +291,16 @@ static ssize_t mem_used_max_store(struct device *dev,
->  	return len;
->  }
->  
-> -static ssize_t idle_store(struct device *dev,
-> -		struct device_attribute *attr, const char *buf, size_t len)
-> +/*
-> + * Mark all pages which are older than or equal to cutoff as IDLE.
-> + * Callers should hold the zram init lock in read mode
-> + **/
+https://elixir.bootlin.com/linux/v5.14.7/source/mm/page_owner.c#L472
 
-A simple "*/" is conventional.
+or kpageflags_read() (see how get_max_dump_pfn() is used):
 
-> +static void mark_idle(struct zram *zram, ktime_t cutoff)
->  {
-> -	struct zram *zram = dev_to_zram(dev);
-> +	int is_idle = 1;
->  	unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
->  	int index;
->  
-> -	if (!sysfs_streq(buf, "all"))
-> -		return -EINVAL;
-> -
-> -	down_read(&zram->init_lock);
-> -	if (!init_done(zram)) {
-> -		up_read(&zram->init_lock);
-> -		return -EINVAL;
-> -	}
-> -
->  	for (index = 0; index < nr_pages; index++) {
->  		/*
->  		 * Do not mark ZRAM_UNDER_WB slot as ZRAM_IDLE to close race.
-> @@ -314,14 +308,48 @@ static ssize_t idle_store(struct device *dev,
->  		 */
->  		zram_slot_lock(zram, index);
->  		if (zram_allocated(zram, index) &&
-> -				!zram_test_flag(zram, index, ZRAM_UNDER_WB))
-> -			zram_set_flag(zram, index, ZRAM_IDLE);
-> +				!zram_test_flag(zram, index, ZRAM_UNDER_WB)) {
-> +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
-> +			is_idle = (!cutoff || ktime_after(cutoff, zram->table[index].ac_time));
-> +#endif
-> +			if (is_idle)
-> +				zram_set_flag(zram, index, ZRAM_IDLE);
-> +		}
->  		zram_slot_unlock(zram, index);
->  	}
-> +}
->  
-> -	up_read(&zram->init_lock);
-> +static ssize_t idle_store(struct device *dev,
-> +		struct device_attribute *attr, const char *buf, size_t len)
-> +{
-> +	struct zram *zram = dev_to_zram(dev);
-> +	ktime_t cutoff_time = 0;
-> +	ssize_t rv = -EINVAL;
->  
-> -	return len;
-> +	if (!sysfs_streq(buf, "all")) {
-> +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
-> +		u64 age_sec;
-> +		/* If it did not parse as 'all' try to treat it as an integer */
-> +		if (!kstrtoull(buf, 0, &age_sec))
-> +			cutoff_time = ktime_sub(ktime_get_boottime(),
-> +					ns_to_ktime(age_sec * NSEC_PER_SEC));
-> +		else
-> +#endif
-> +			goto out;
-> +	}
+https://elixir.bootlin.com/linux/v5.14.7/source/fs/proc/page.c#L47
 
-The ifdef tricks are pretty ugly.  Can things be improved with IS_ENABLED()?
+Thus, this patch updates max_pfn and max_low_pfn in arm64's
+arch_add_memory() function, mirroring what is updatated during boot:
 
+https://elixir.bootlin.com/linux/v5.14.7/source/arch/arm64/mm/init.c#L448
+
+We would appreciate feedback on any other variables that should be
+updated when hotplugging in memory - note that we're mirroring x86, in
+that max_pfn is only ever incremented when calling arch_add_memory():
+
+https://elixir.bootlin.com/linux/v5.14.7/source/arch/x86/mm/init_64.c#L958
+
+Sudarshan Rajagopalan (1):
+  arm64: mm: update max_pfn after memory hotplug
+
+ arch/arm64/mm/mmu.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+-- 
+2.7.4
 
