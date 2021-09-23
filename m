@@ -2,127 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449A7416473
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9EC416470
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242608AbhIWRbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 13:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        id S242591AbhIWRax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242597AbhIWRbB (ORCPT
+        with ESMTP id S242577AbhIWRaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:31:01 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97690C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:29:29 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id z24so29610804lfu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VQuTJey0iMtFxxij1vWY7f+IsNf90JqLBU1/x3EQ76g=;
-        b=dd7OfGhC56pTTDuQth+ikUEBmfb6QqKkOcSH2YKjdZCzAmJ4R0z070ECo7ON9fy2dh
-         hmHfzta9/fcjr7K0XwOLjpmNW/HWCXRI0ipXrA2Zf/JToqKC6R3uVeNvFoZlGMismyE8
-         0S2o3rpDlSx4lFlbDpKhSwrIDEsQ2vNz2j6ro=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VQuTJey0iMtFxxij1vWY7f+IsNf90JqLBU1/x3EQ76g=;
-        b=5m7HId/glxS2oDf8ksbvRxZh5Ja+icMOL0PE260mE0YEztlvkjwkVkh58OpCI+A7f4
-         mnSLA4lolPQDyA2F+Zfyrl+PXXSyhVFnHnv4tfnjaOH99wA1FSAuRZbek3HSfod03sAD
-         yvkfBpDdp+4krYt0dP+WBC8y40huttmvgibeWNFPk1LmVajIj6aBS0pav9fs3ctbHQ4K
-         m8a7GatuaRWs8sRil7AgdIBsQtMSzpntEZQ48OyLL4oIYAjGSma3bSDkeaTbx0+MCjpL
-         ktxk+ZRNHg13DGKXQkIjsgQQjsUfmZ8/hEETipMxOvHdweytmeYB4rh5K8SI0QonGJsQ
-         wFwA==
-X-Gm-Message-State: AOAM532HtvET64lBKc1leYjOkpM/v7H/TqZ98Mo4Wuz50qJdaR1UOw8x
-        599I7/5MWIJqGrCpS0zdnH9VcH51BrNh8c4nS7k=
-X-Google-Smtp-Source: ABdhPJxyTk2PRI61CUm8W11GHMzzavx6A/Tl1gJ3sXqnj9uflXStW10n55I528wtDaB2WsOIg/HqVQ==
-X-Received: by 2002:a19:c1c3:: with SMTP id r186mr5327163lff.400.1632418167213;
-        Thu, 23 Sep 2021 10:29:27 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id b4sm510994lfo.238.2021.09.23.10.29.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 10:29:25 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id a26so681189ljp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:29:25 -0700 (PDT)
-X-Received: by 2002:a2e:5815:: with SMTP id m21mr6222470ljb.95.1632418165461;
- Thu, 23 Sep 2021 10:29:25 -0700 (PDT)
+        Thu, 23 Sep 2021 13:30:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFC5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:29:21 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 19:29:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632418159;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Si/vz1d42NUZth7l/PUb8Mgx17FY4PbIXtYbGItefJo=;
+        b=RgfFB21HybwgXpaVSKFI+iKhjH7Rk9VfJ4tDz6rTFIYKaBVSUsXpI+CXDEKrmrb5T0ozvj
+        CXrs0kvLIomF+bArwmdD7neRhf10ZZ5IQkd31SdGoAaRIUWSbknmhuIijw65ZeOBKO0WtP
+        jVAXhaPsPflYk7UVDHB+jxe+l+cpc9dxx2E8Lv5Z0i9NxXJAPACc1aMI0SirVPGESka4LB
+        IdOovzGIJrtYJ9AVBNFziGW0HoeRL/jxTPs9co788YoOY7tr7y9c++8zkYD0Ci7QkfRigl
+        Akf6V2Z81dtSNhYbfJLw6/bqNNIvuBIQUoisbI1d5p5J3LlWm5s0rKZgpDvSCg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632418159;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Si/vz1d42NUZth7l/PUb8Mgx17FY4PbIXtYbGItefJo=;
+        b=IO5S33yV3iBB7UsNEUsvKDme5B7NwrSpNCKfXWxy0vDcmw1khIfIRbW833EV+HcK3z+IDz
+        tBEXqPBxDhWWHRCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Stefani Seibold <stefani@seibold.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] samples/kfifo: Rename read_lock/write_lock
+Message-ID: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
 MIME-Version: 1.0
-References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
- <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
- <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
- <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com>
- <CAHC9VhSZp1-Qi7ApoQHauaFXDgoNaFTwFEieEFFuBtdPqAtXQg@mail.gmail.com>
- <CAHk-=whoExoB6xGD0as0kpfwr38B=W7GRkO2NXWDRW-tmQS6Qw@mail.gmail.com>
- <CAHC9VhTtz_aNY6MOCM6ypbz+SHvS30hx42PWjXJhG1Z=t5jpBw@mail.gmail.com>
- <CAHk-=wivxthY49NPyPG0QG302dmH_hrioE7NdDKMR1Fus0GHow@mail.gmail.com> <CAHC9VhSgG9wRJk9pyUnz90Th8MLfJ9LAMsFKyFMZMjK097+ZXw@mail.gmail.com>
-In-Reply-To: <CAHC9VhSgG9wRJk9pyUnz90Th8MLfJ9LAMsFKyFMZMjK097+ZXw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 23 Sep 2021 10:29:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj09_XNBKQZ-735yum5h1xT9i2AgC793HjChBnwoWJ+jQ@mail.gmail.com>
-Message-ID: <CAHk-=wj09_XNBKQZ-735yum5h1xT9i2AgC793HjChBnwoWJ+jQ@mail.gmail.com>
-Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 10:13 AM Paul Moore <paul@paul-moore.com> wrote:
->
-> It's become clear you *really* don't like passing the cred pointer
-> here, presumably based on a very specific security model for lockdown.
+The variables names read_lock and write_lock can clash with functions used for
+read/writer locks.
 
-Not just that. I'm sensitive about the cred pointer because of the
-timing, but I'm also sensitive about just looking at code and saying
-"that makes no sense".
+Rename read_lock to read_access and write_lock to write_access to avoid a name
+collision.
 
-Having callers do pointless things that make no sense to the callers
-is a bad thing. Having a patch where 59 out of 63 callers just
-mindlessly pass in "current_cred()", and then remaining three callers
-pass in NULL for NO DISCERNIBLE REASON is a sign of just a bad
-interface.
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lkml.kernel.org/r/20210806152551.qio7c3ho6pexezup@linutronix.de
+---
 
-And I realize that to you, these interfaces are what you do.
+Repost.
 
-To everybody else, it's completely mindless noise that makes no sense
-at all, because there's no _logic_ to it. It's random LSM calls in
-random contexts that have no clear reason for them, because the
-"reason" is hidden in some odd SELinux rule that no kernel developer
-even knows about.
-
-You can't even grep for the use of it, because there is none. It's
-literally randomness. Which means that it _has_ to make conceptual
-sense to be at all maintainable.
-
-So when I see a diffstat where basically 90% of the patch has
-ABSOLUTELY NOTHING to do with SElinux or anything you maintain, and
-that 90% makes absolutely no sense to begin with, guess what? I think
-that patch is bad.
-
-When I then look closer, and see that the _reason_ for the patch is
-that SElinux - yet again - incorrectly accessed process credentials in
-random contexts, I just do "this is not just a bad patch, this is
-actually a fundamental problem with SELinux".
-
-See where I'm coming from? The "specific security model for lockdown"
-is just the high-level view of what made sense. You violated that view
-for bad reasons, with a bad patch, and with bad timing.
-
-This isn't _just_ a SElinux problem. I think it's a LSM problem in
-general. Lots of those random callbacks are completely
-incomprehensible, have odd rules, and the LSM people aren't even
-trying to have them make sense.
-
-As long as the oddity is contained, that's one thing. But when it is
-made this obvious and affects random code in strange places in the
-kernel, and it's for a feature that had a lot of discussion even when
-it got merged, I'm putting my foot down.
-
-             Linus
+ samples/kfifo/bytestream-example.c |   12 ++++++------
+ samples/kfifo/inttype-example.c    |   12 ++++++------
+ samples/kfifo/record-example.c     |   12 ++++++------
+ 3 files changed, 18 insertions(+), 18 deletions(-)
+---
+--- a/samples/kfifo/bytestream-example.c
++++ b/samples/kfifo/bytestream-example.c
+@@ -22,10 +22,10 @@
+ #define	PROC_FIFO	"bytestream-fifo"
+ 
+ /* lock for procfs read access */
+-static DEFINE_MUTEX(read_lock);
++static DEFINE_MUTEX(read_access);
+ 
+ /* lock for procfs write access */
+-static DEFINE_MUTEX(write_lock);
++static DEFINE_MUTEX(write_access);
+ 
+ /*
+  * define DYNAMIC in this example for a dynamically allocated fifo.
+@@ -116,12 +116,12 @@ static ssize_t fifo_write(struct file *f
+ 	int ret;
+ 	unsigned int copied;
+ 
+-	if (mutex_lock_interruptible(&write_lock))
++	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
+ 
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
+ 
+-	mutex_unlock(&write_lock);
++	mutex_unlock(&write_access);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -134,12 +134,12 @@ static ssize_t fifo_read(struct file *fi
+ 	int ret;
+ 	unsigned int copied;
+ 
+-	if (mutex_lock_interruptible(&read_lock))
++	if (mutex_lock_interruptible(&read_access))
+ 		return -ERESTARTSYS;
+ 
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+-	mutex_unlock(&read_lock);
++	mutex_unlock(&read_access);
+ 	if (ret)
+ 		return ret;
+ 
+--- a/samples/kfifo/inttype-example.c
++++ b/samples/kfifo/inttype-example.c
+@@ -22,10 +22,10 @@
+ #define	PROC_FIFO	"int-fifo"
+ 
+ /* lock for procfs read access */
+-static DEFINE_MUTEX(read_lock);
++static DEFINE_MUTEX(read_access);
+ 
+ /* lock for procfs write access */
+-static DEFINE_MUTEX(write_lock);
++static DEFINE_MUTEX(write_access);
+ 
+ /*
+  * define DYNAMIC in this example for a dynamically allocated fifo.
+@@ -109,12 +109,12 @@ static ssize_t fifo_write(struct file *f
+ 	int ret;
+ 	unsigned int copied;
+ 
+-	if (mutex_lock_interruptible(&write_lock))
++	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
+ 
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
+ 
+-	mutex_unlock(&write_lock);
++	mutex_unlock(&write_access);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -127,12 +127,12 @@ static ssize_t fifo_read(struct file *fi
+ 	int ret;
+ 	unsigned int copied;
+ 
+-	if (mutex_lock_interruptible(&read_lock))
++	if (mutex_lock_interruptible(&read_access))
+ 		return -ERESTARTSYS;
+ 
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+-	mutex_unlock(&read_lock);
++	mutex_unlock(&read_access);
+ 	if (ret)
+ 		return ret;
+ 
+--- a/samples/kfifo/record-example.c
++++ b/samples/kfifo/record-example.c
+@@ -22,10 +22,10 @@
+ #define	PROC_FIFO	"record-fifo"
+ 
+ /* lock for procfs read access */
+-static DEFINE_MUTEX(read_lock);
++static DEFINE_MUTEX(read_access);
+ 
+ /* lock for procfs write access */
+-static DEFINE_MUTEX(write_lock);
++static DEFINE_MUTEX(write_access);
+ 
+ /*
+  * define DYNAMIC in this example for a dynamically allocated fifo.
+@@ -123,12 +123,12 @@ static ssize_t fifo_write(struct file *f
+ 	int ret;
+ 	unsigned int copied;
+ 
+-	if (mutex_lock_interruptible(&write_lock))
++	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
+ 
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
+ 
+-	mutex_unlock(&write_lock);
++	mutex_unlock(&write_access);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -141,12 +141,12 @@ static ssize_t fifo_read(struct file *fi
+ 	int ret;
+ 	unsigned int copied;
+ 
+-	if (mutex_lock_interruptible(&read_lock))
++	if (mutex_lock_interruptible(&read_access))
+ 		return -ERESTARTSYS;
+ 
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+-	mutex_unlock(&read_lock);
++	mutex_unlock(&read_access);
+ 	if (ret)
+ 		return ret;
+ 
