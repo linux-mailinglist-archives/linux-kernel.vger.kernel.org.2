@@ -2,154 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8E6415C96
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E388F415C9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240560AbhIWLPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
+        id S240592AbhIWLPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240448AbhIWLPA (ORCPT
+        with ESMTP id S240585AbhIWLPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:15:00 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB2EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:13:28 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id u8so24553658lff.9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:13:28 -0700 (PDT)
+        Thu, 23 Sep 2021 07:15:13 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3778C061574;
+        Thu, 23 Sep 2021 04:13:41 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id c22so21901284edn.12;
+        Thu, 23 Sep 2021 04:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=z0SFg5XPiL4WJby2z1leZXw+OOsnwhmSnsCcKEN4ygk=;
-        b=TceJ00O86yDAQeqnnk1WFSsXG+WQofeifCY5VdqnzSTOQqXfsfx3rp1cYjGB7c+CV0
-         7Niq6yY0S9iG0npsOQFU0PYswqr6MUMiZje8Z8po+9evq77oAse15QUFttiFaupZttjE
-         7ev5ZBmoeVe5TJeyBzRqPb3xoLM17s39airAjz/0dG/KMz/qyJPaPqMHZNPo8DQE1QNp
-         +i9ckLxp4jX656M6rBW+DPcsBT1cmiqJhCEYbNISAjGKTrwUyOqS9S8+jCw4SgvsnOSi
-         Xbi2L7O9eCrnhkFmGuuG3HS26y2zmO3N5+A/3HY9I9KAprie+0Rva/rt9n4CbLNk1bOw
-         Yi1Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2YROe/l9i87aFktTShE/cGYLVd3ZGJJJdLJu/J3xLPM=;
+        b=mQCRwAD5e+FmFW6mCbmhRtPfheWErMjvw2Oo1JrYUx7ICR2qgJx4GEOy1r31myAnLa
+         4p99mVXnpN6hWUUuW9GOTUIA/QWR4uwDMV4tiZHLX6Hx7YuSgO90m3hr6M6aP95YQZvz
+         Cng3Tvlw6nt2hrfj2tzFaKFAQPG8zTDiETC8Bx2HY1a3TQPtelVw5vRl213Zgz02Gc43
+         n9p9WuAGxRxBVkeqToWyTAHZVQDzQHZxTVDD435QVIuVkY6n1sJ+4xeivQyD2EO9RkwG
+         M5tW1xzOwQe4bNr2MdqRuJIQvpF+cxP4zRpPdvas/VL9zrL6JVMIE/dVi1cL4vteRQG5
+         VYvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=z0SFg5XPiL4WJby2z1leZXw+OOsnwhmSnsCcKEN4ygk=;
-        b=ZauDvcWpGHeezL60J0viK057SkXDgCsK+8hvoSpc3k+riLt6o3UnbnM0U7o8QX48F1
-         7uhM+/4b8SLi2wCDjCxoMsKA4vAPYWAhyIJ2Ki55HIpso5O8BWkjbJE5O8r0VN5WL9RA
-         CTXAzuAJ6hn8Su8p8JYD0RiO8/nuoRAW2z80S/F7ehIniivyPoNRqLKyeNKr2K0GJi7J
-         dRgjDEqF4EtIzLx0kzf9Co6XOG6NNGBuvbCXbGkVE8u5A/KR7I37wugK9CXRCE5ZnVR7
-         +KIoq3qSGmyUXeGBrltVx4JyGeRKFPH1OfDQvaWahtu8ot3W9IZQe/0cNOebnAHFtyRI
-         OV7A==
-X-Gm-Message-State: AOAM532deMWj3uwidNIcm/KQlvCFTXL2iTDEKij1GSPraqjoSSpDuVCn
-        jrSk4EH10/MsWWxVX556DiQ=
-X-Google-Smtp-Source: ABdhPJygcHA8aODCwyu08fok6DpFLAp77494U9g/ZtlmPj1p5+Y305thcEH4TqTlc/GRwIYvaF65Iw==
-X-Received: by 2002:a05:651c:170e:: with SMTP id be14mr4340632ljb.487.1632395606947;
-        Thu, 23 Sep 2021 04:13:26 -0700 (PDT)
-Received: from [192.168.1.11] ([217.117.246.37])
-        by smtp.gmail.com with ESMTPSA id v8sm338366lfe.6.2021.09.23.04.13.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 04:13:26 -0700 (PDT)
-Message-ID: <4a556764-9a0a-b453-c2d5-16c1a8cbea61@gmail.com>
-Date:   Thu, 23 Sep 2021 14:13:25 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2YROe/l9i87aFktTShE/cGYLVd3ZGJJJdLJu/J3xLPM=;
+        b=rdwdRKhz8XHQ8wvNULp8hye+xrROY6Sn8/iE8Ig79YYaqO9ufEm1TeyXQw8B6IR8PM
+         gwyTjDaurMuyQf9hVboKFQ3IcRIHajMP59PsiCil1CE3k84A5rzaFcprCqQn4O39tk5W
+         uscS1ta7dSWPTPzW8mFhEFzSGNsYuKnN4hdn1t/HLva193sobpKSSp6iT1vFv/RIMKs5
+         RCz/vhV314aUqpibMXKa9cdjSovp+JiBe7z/5AbzEk+tXNB6DcQS5ndOmZsawuMRLThZ
+         zfopffmbj5QcuJ3LEEzLZX1XYiABlJ4pkKLgeBT6slo67aeNVwg+0fejnGvpg/6xSak8
+         zfmg==
+X-Gm-Message-State: AOAM531qO3kVQA35XLfEd21ZExcbunDJ8l7/bUeUTLh45WCSQsoErf2c
+        pxAdu2w0ZJUBFA/mkZgtfg8PFFzo3NMrLpOsC7g=
+X-Google-Smtp-Source: ABdhPJxIn01DQZ/5fhkJ4ei7DPdz93L1LP3E3hOiKHj+98hCcwLqqPClDpFToG1jp5foSxpF7PRJCuJYwmRpKhC35h4=
+X-Received: by 2002:a17:906:aeda:: with SMTP id me26mr4344981ejb.83.1632395620227;
+ Thu, 23 Sep 2021 04:13:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v9 16/16] staging: r8188eu: remove usb_vendor_req_mutex
-Content-Language: en-US
-To:     Greg KH <greg@kroah.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <david.Laight@aculab.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Martin Kaiser <martin@kaiser.cx>
-References: <20210921181834.29677-1-fmdefrancesco@gmail.com>
- <20210921181834.29677-17-fmdefrancesco@gmail.com>
- <dd99d40d-297e-8d27-dabe-d0e4c633d391@gmail.com>
- <4434c136-6bfc-9a25-d0ba-f989c655fa69@gmail.com>
- <dfa76ffe-2306-01b3-9746-c9aa43c03398@gmail.com> <YUxf5TD55Bf2v09v@kroah.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <YUxf5TD55Bf2v09v@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
+ <202109221850.003A16EC1@keescook>
+In-Reply-To: <202109221850.003A16EC1@keescook>
+From:   ronnie sahlberg <ronniesahlberg@gmail.com>
+Date:   Thu, 23 Sep 2021 21:13:28 +1000
+Message-ID: <CAN05THQ6xT0dWyev+c-PhJ+LZ6ABNpCxCzBK7PQHJM_yaE+wWQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ksmbd server security fixes
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Steve French <smfrench@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 14:07, Greg KH wrote:
-> On Thu, Sep 23, 2021 at 01:12:53PM +0300, Pavel Skripkin wrote:
->> On 9/23/21 11:47, Pavel Skripkin wrote:
->> > On 9/22/21 16:21, Pavel Skripkin wrote:
->> > > On 9/21/21 21:18, Fabio M. De Francesco wrote:
->> > > > From: Pavel Skripkin <paskripkin@gmail.com>
->> > > > 
->> > > > This mutex was used to protect shared buffer for USB requests. Since
->> > > > buffer was removed in previous patch we can remove this mutex as well.
->> > > > 
->> > > > Furthermore, because it was used to serialize the calls to the Core USB
->> > > > API, we thoroughly tested the enabling of concurrent firing of USB requests
->> > > > without the mutex and found no problems of any kind in common use cases.
->> > > > 
->> > > > Co-developed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->> > > > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
->> > > 
->> > > Hi, Greg!
->> > > 
->> > > If all is OK with previous 15 patches, please, do not take this one, it
->> > >    causes problems with connection... :)
->> > > 
->> > > I don't understand what went wrong after v8, but anyway, this one should
->> > > not be applied for now, since it's broken
->> > > 
->> > > 
->> > > Thank you
->> > > 
->> > > 
->> > 
->> > 
->> > Just to be clear: previous 15 patches _are_ tested and do not cause any
->> > misbehavior or bugs.
->> > 
->> > I guess, the stack buffer maybe the problem here, since it's the only
->> > change on this side since v8. I didn't have a chance to take a closer
->> > look, but I will do it on weekends, I hope :)
->> > 
->> 
->> Oh, I found the problem by just looking at the code with clear mind:
->> 
->> > -free_dvobj:
->> > -	if (status != _SUCCESS && pdvobjpriv) {
->> > +	if (pdvobjpriv) {
->> >  		usb_set_intfdata(usb_intf, NULL);
->> >  		kfree(pdvobjpriv);
->> >  		pdvobjpriv = NULL;
->> 
->> This if should be deleted completely, because we don't want to fail on every
->> probe :)
->> 
->> Sorry for noise... :(
->> 
->> Greg, can you take first 15 patches, if they look good and then I will send
->> fixed version of 16? AFAIU, you are ok with taking part of the series
-> 
-> Please fix up and resend the whole series as our tools work best by
-> taking the whole thing.
-> 
-> That way I "know" you tested them all :)
+On Thu, Sep 23, 2021 at 12:48 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Sun, Sep 19, 2021 at 09:22:31AM -0500, Steve French wrote:
+> > 3 ksmbd fixes: including an important security fix for path
+> > processing, and a missing buffer overflow check, and a trivial fix for
+> > incorrect header inclusion
+> >
+> > There are three additional patches (and also a patch to improve
+> > symlink checks) for other buffer overflow cases that are being
+> > reviewed and tested.
+>
+> Hi Steve,
+>
+> I was looking through the history[1] of the ksmbd work, and I'm kind
+> of surprised at some of the flaws being found here. This looks like new
+> code being written, too, I think (I found[0])? Some of these flaws are
+> pretty foundational filesystem security properties[2] that weren't being
+> tested for, besides the upsetting case of having buffer overflows[3]
+> in an in-kernel filesystem server.
+>
+> I'm concerned about code quality here, and I think something needs to
+> change about the review and testing processes.
+>
+> > Regression test results:
+> > http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/67
+> > and
+> > https://app.travis-ci.com/github/namjaejeon/ksmbd/builds/237919800
+>
+> Can you tell me more about these tests? I'm not immediately filled with
+> confidence, when I see on the second line of the test harness:
+>
+> - wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.4.109.tar.gz
+>        ^^^^^^^^^^^^^^^^^^^^^^
+>
+> (and why isn't this a sparse clone?)
+>
+> I see xfstests and smbtorture getting run. Were these not catching
+> things like "../../../../../" and the buffer overflows? And if not,
+> where are the new tests that make sure these bugs can never recur?
+>
+> (Also, I see they're being run individually -- why not run the totality?)
 
-It is true, but there was small error on testing side from me this time.
+I can answer this
 
-I am testing with qemu and I forgot to copy new driver to qemu's shared 
-folder (it was busy day or I was already asleep, idk). It resulted to 
-testing old version of the driver. Next day I've tested new changes on 
-top of this series and found the problem :)
+I set it up this way to unload and reload the module for each test because at
+the time the module was in really bad shape and doing these reset to known state
+would make it easier to find easily reproducible faults from running
+test xyz than chasing
+shadows when previous test abc or def had left residuals that caused an oops.
 
-I am sorry for kind of lying, i've already fixed it locally, so it won't 
-happen again
+I.e. Find oopses and failures that are contained in a single test.
 
+It should be possible to skip the unload/reload cycle for each test
+now as the module
+is a lot more stable.
 
-
-With regards,
-Pavel Skripkin
+>
+> And looking at the Coverity report[4] under fs/ksmbd/* for linux-next, I
+> see 12 issues dating back to Mar 17, and 1 from 2 days ago: 5 concurrency,
+> 4 memory corruptions, 1 hang, and 2 resource leaks. Coverity is hardly
+> free from false positives, but those seems worth addressing. (Both you and
+> Namjae have accounts already; thank you for doing that a few months back!)
+>
+> Anyway, I think my point is: this doesn't look ready for production use.
+> I understand having bugs, growing new features, etc, but I think more
+> work is needed here to really prove this code is ready to expose the
+> kernel to SMB protocol based attacks. Any binary parsing code needs to be
+> extremely paranoid, and a network file server gets it coming and going:
+> filesystem metadata and protocol handling (and crypto)! :P
+>
+> Anyway, I hope something can change here; if we're going to have an
+> in-kernel SMB server, it should have a distinct advantage over userspace
+> options.
+>
+> -Kees
+>
+> [0] https://lore.kernel.org/lkml/20210322051344.1706-1-namjae.jeon@samsung.com/
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/fs/ksmbd
+> [2] https://git.kernel.org/linus/f58eae6c5fa882d6d0a6b7587a099602a59d57b5
+> [3] https://git.kernel.org/linus/6d56262c3d224699b29b9bb6b4ace8bab7d692c2
+> [4] https://scan.coverity.com/projects/linux-next-weekly-scan
+>     View Defects, Settings cog, Filters, File: *ksmbd*, OK
+>
+> --
+> Kees Cook
