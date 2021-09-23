@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A00415480
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D746415481
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238618AbhIWAQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 20:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
+        id S238639AbhIWAQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 20:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234042AbhIWAQE (ORCPT
+        with ESMTP id S234042AbhIWAQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 20:16:04 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F5BC061574;
-        Wed, 22 Sep 2021 17:14:33 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso3608816pjb.3;
-        Wed, 22 Sep 2021 17:14:33 -0700 (PDT)
+        Wed, 22 Sep 2021 20:16:17 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917DDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:14:46 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id 134so5795902iou.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:14:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=M419tx9qbN6UyXQusgJi5ma7tnyBkMa/xyVjWd0AjKs=;
-        b=FYrhaM3Wle0ET5ZjzF9KA8vMYqQ4uCCqyrlFaGudSc9FXrJPWIzIIoV7w2c4BwHxDN
-         XPHbzfoiECIRsaPLTY7XyQaLgDP5xpXlNDrKMH14LZAxAUVMFSnD+OG9HIeZ+lsK2sOI
-         iPF17L2fUK+oD994nnXHM5qbrTz6bLLM2l3UJxBB/Lb6AId0cJ4LaVGghVISS+XDlTei
-         H3FkKFubuHbia9u/MvvhMKagHJKJkRSJizS0Cij+y9XNEmlR0g3SDg+e0e6f5+L3oMGg
-         PgcH7yqokTRBG+FHOu+C0Cg8Fjwlgii05B4vW8yykRzTYib9jBrUsSCzeX7kwZdY28Ne
-         nJxA==
+        bh=KdmefGt3bNlNy+/4h/zIr3+TEcrP0uqFHWCWgCsURrk=;
+        b=CIt0XlW2blkwRYijUlUZYH0jBndiw3PUQ11Et/fKLHMj3Lvek78rjzgpWTmVqS1erQ
+         af/jpIuRaIjHMTNykRxs8+68qF2wvZmRfL0XzdgeO9INSrzyXETgw+QOPvbRXlq4/4pr
+         s776LarrjWvV+FOlN11Jku9hH+K16NkqdfRYA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=M419tx9qbN6UyXQusgJi5ma7tnyBkMa/xyVjWd0AjKs=;
-        b=c/eeUhEyzmlaBYS0llxGHB01YMKK8wqMkUhF/2dz54nS13kEofBNCMtQDrRqlssF/Q
-         wFxvxUwGAULWQjYGNh6pWU2fwXfyv/MSFNVxtDu6Xzq+LdhTIk5WBfzt/ELCUy/3prNf
-         ng2pDPNnNGXLeZp2pYmbRSnCKaQOaLG6+/62XP06MZ8Y+XP7v2LOwPtWUq6+hyik3o6S
-         3ENMjgCaiaqf+WbVKlCUixsJ+YIJ0ZSvW956VHRBsfj8YMVEpnC+VzHxCUEoP/HHphiE
-         pL5qWa1yBfG5A759sEV/b9ocxMpGxRMzggxvbQwJrN8/eHx8HjeNrWN6wQogO792xp04
-         Wgsg==
-X-Gm-Message-State: AOAM532XwF6QYVanuoL2Rc+sp9C8FvFFfS3mt/98GW0/Tj234yu81Tu/
-        Bi7tTBqlz8w5guR+O19Nb6XWmevXzUo=
-X-Google-Smtp-Source: ABdhPJx64rbQwadQ7CvJCPSG7vl0Z/DZcFYRFaKJ7clwipFuO7X+n7QWRpSRgk43U+4o7ZLRBdxuZg==
-X-Received: by 2002:a17:90b:383:: with SMTP id ga3mr1974925pjb.72.1632356072892;
-        Wed, 22 Sep 2021 17:14:32 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id p26sm2789734pfw.137.2021.09.22.17.14.31
+        bh=KdmefGt3bNlNy+/4h/zIr3+TEcrP0uqFHWCWgCsURrk=;
+        b=m2znYuMR8APiMCx/GcGwfmCMzVZkyFBtRza5ySv7BvirLTNFW5gb91ha8TpMrQ0KEJ
+         rVS4rsAdxeyxd8oW6+HNkQf6JhLDw4YaZY/7MbEqcr7ysemhjFobEs2M0uOpfd4IxgWo
+         SZEVr7EgQgDsEX/LdLRyJOKg2AAYFM+8LRt3kfMt5tdBB7Yd8USJZpDfWDRb3qXgdP1o
+         k3ccl2SNxcM0BH0hT/61JombmWeMuy5H6I/hcgEfMsZ/HkOts4DGQ+iq+56vVteKsej9
+         IXibA2QrZa6QxdvAvkt0SweffTkUGRb5yv24LOCOjHOF/laJ6vGIBZ3PhAswN85orqyv
+         f7Ew==
+X-Gm-Message-State: AOAM5329qwKCX+/5vj5VQncfURvtpW+7qhMQbTDi9+8ITpzMYISAgnRb
+        Z7MVECxPj3gfoCmXN5TiItrPGQ==
+X-Google-Smtp-Source: ABdhPJxlL1X4qZmRxNozt+fWTK0Fm3LTnOwmLc7rgcjMW4pCPtqberO7aatizcBPwLWvZlKlRA0uIg==
+X-Received: by 2002:a5d:8183:: with SMTP id u3mr1432360ion.67.1632356084737;
+        Wed, 22 Sep 2021 17:14:44 -0700 (PDT)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id z6sm1695560iox.28.2021.09.22.17.14.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 17:14:32 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT)
-Subject: [PATCH stable 5.10] ARM: Qualify enabling of swiotlb_init()
-Date:   Wed, 22 Sep 2021 17:14:24 -0700
-Message-Id: <20210923001425.414046-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 22 Sep 2021 17:14:44 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     mcgrof@kernel.org, jeyu@kernel.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] module: fix invalid ELF structure error to print error code
+Date:   Wed, 22 Sep 2021 18:14:42 -0600
+Message-Id: <20210923001442.58278-1-skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit fcf044891c84e38fc90eb736b818781bccf94e38 upstream
+When elf_validity_check() returns error, load_module() prints an
+error message without error code. It is hard to determine why the
+module ELF structure is invalid without this information. Fix the
+error message to print the error code.
 
-We do not need a SWIOTLB unless we have DRAM that is addressable beyond
-the arm_dma_limit. Compare max_pfn with arm_dma_pfn_limit to determine
-whether we do need a SWIOTLB to be initialized.
-
-Fixes: ad3c7b18c5b3 ("arm: use swiotlb for bounce buffering on LPAE configs")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- arch/arm/mm/init.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/module.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index d54d69cf1732..75f3ab531bdf 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -378,7 +378,11 @@ static void __init free_highpages(void)
- void __init mem_init(void)
- {
- #ifdef CONFIG_ARM_LPAE
--	swiotlb_init(1);
-+	if (swiotlb_force == SWIOTLB_FORCE ||
-+	    max_pfn > arm_dma_pfn_limit)
-+		swiotlb_init(1);
-+	else
-+		swiotlb_force = SWIOTLB_NO_FORCE;
- #endif
+diff --git a/kernel/module.c b/kernel/module.c
+index 40ec9a030eec..a0d412d396d6 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3941,7 +3941,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
+ 	 */
+ 	err = elf_validity_check(info);
+ 	if (err) {
+-		pr_err("Module has invalid ELF structures\n");
++		pr_err("Module has invalid ELF structures:errno(%ld)\n", err);
+ 		goto free_copy;
+ 	}
  
- 	set_max_mapnr(pfn_to_page(max_pfn) - mem_map);
 -- 
-2.25.1
+2.30.2
 
