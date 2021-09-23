@@ -2,118 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFE64158F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002984158FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239570AbhIWHTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:19:33 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:47520 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235477AbhIWHTc (ORCPT
+        id S239075AbhIWH1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:27:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38830 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234343AbhIWH1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:19:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1632381481; x=1663917481;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=ZJHCPlUenoX0Vg51QRhzULd4haGISa9pFqNwx4FuZN0=;
-  b=SHWCtpId35kiZRARgHBe21PDtSjWFRCna6lLB86Ks6GEQ1V5cjUAnU7y
-   wmR8oNx/k9B9Gd+Dm/C8+xFsjmmtlkUmcaJoneL+n95TLaW+t8UNS2yWZ
-   iuo0at6FLCOzERFy1b5uN5a2u2X2GbI9t+6RrcJd6o/f44rVtyPaWZmZo
-   Y=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 23 Sep 2021 00:18:00 -0700
-X-QCInternal: smtphost
-Received: from nalasex01b.na.qualcomm.com ([10.47.209.197])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 00:18:00 -0700
-Received: from jianbinz-gv.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 23 Sep 2021 00:17:58 -0700
-From:   jianbinz <quic_jianbinz@quicinc.com>
-To:     <alexandre.belloni@bootlin.com>, <a.zummo@towertech.it>
-CC:     jianbinz <quic_jianbinz@quicinc.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>
-Subject: [PATCH] rtc: Disable alarm irq if alarm time is less than rtc time and irq is enabled
-Date:   Thu, 23 Sep 2021 15:17:34 +0800
-Message-ID: <20210923071734.25545-1-quic_jianbinz@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 23 Sep 2021 03:27:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632381933;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FvNkPyLF+1kcsTR6hdilBDqHZDnrfR2QQ6CleyZplLs=;
+        b=h+M4oYZdcSAcFtYKtVvwX+bn4KZhVYESX+9N/CDANafke3O4w2HThQDucSWK20CpUWYqzX
+        h6fAog/3QivrK7L7uHUNZs98K3bjws51xgcsDD3kXAmwy7TlL//CJ0D1R0ZwtAsQ75oD1I
+        YCHNlDGv6f3kXybMfTCuPs2XK50gcYw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-rhdbmU5vN5q4YOpM-KdejA-1; Thu, 23 Sep 2021 03:25:31 -0400
+X-MC-Unique: rhdbmU5vN5q4YOpM-KdejA-1
+Received: by mail-wr1-f70.google.com with SMTP id r7-20020a5d6947000000b0015e0f68a63bso4328294wrw.22
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 00:25:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=FvNkPyLF+1kcsTR6hdilBDqHZDnrfR2QQ6CleyZplLs=;
+        b=b8TjiG5Vj9yuZRPKNCYfyDEjJ/kj4Vs+/Z45zvglmvT1ARgeUjVtuPKLNEp9VruD+f
+         SxeI/LgmphHyNT1RXndJFvb19/rw4U7IOUJdQ9c5Fhyk/Bbrfq/mrIWmsfGbJwBSmNRb
+         Nlx2ayZdB9JADPHf1MImNnEc9HNxkgV/OSAroRBFbAS3TgWWjoVJSUVLo7n5qFn3xSnm
+         thoi+iXHVM6oJUphalKBCbIJtKHp2usmhAaPpP9XUCuUhlZfg+lNBw4Xv4gq8ZGm/Kk7
+         nwnWjis13Xg4m/zbQCcTqLjhzS1xPhmIb+/+tSXMAD6fu5OsCwLMoUgQI3gTSNt2gZTB
+         Kdkg==
+X-Gm-Message-State: AOAM530HicrhE3Qhfo2uZxhxlhi0ERzUst+sjDn2ZdKGoBimeWN7DAn2
+        xYf+7XXSAmBFws5AQ9DmDLKFJuboLGyuVVNoZfUrBwcUzCEQXvU+lWjjGHymDiO3LocNOEfFJ/e
+        O8Y1sJr9so91VK70owpQVmlu2
+X-Received: by 2002:a5d:4e90:: with SMTP id e16mr3162690wru.243.1632381930604;
+        Thu, 23 Sep 2021 00:25:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGEfOyPkvpzZWpr9l9SkDYU2vwNuyGcQuSIPfvYxfPQ2pBpa+znyeIdD2Ff7pAnFgXSYPtrQ==
+X-Received: by 2002:a5d:4e90:: with SMTP id e16mr3162668wru.243.1632381930433;
+        Thu, 23 Sep 2021 00:25:30 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id r9sm4325952wru.2.2021.09.23.00.25.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 00:25:29 -0700 (PDT)
+Reply-To: eric.auger@redhat.com
+Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-4-yi.l.liu@intel.com>
+ <20210921160108.GO327412@nvidia.com>
+ <BN9PR11MB54330421CA825F5CAA44BAC98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922010014.GE327412@nvidia.com>
+From:   Eric Auger <eric.auger@redhat.com>
+Message-ID: <7d717ad0-fb9b-2af0-7818-147dc5d21373@redhat.com>
+Date:   Thu, 23 Sep 2021 09:25:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
+In-Reply-To: <20210922010014.GE327412@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If device is boot up by rtc alarm, the alarm irq will still be enabled and the alarm time is smaller than current rtc time before any alarm is set or canceled.
-If the device is shutdown this time, the device will reboot automatically.
+Hi,
 
-So disable irq if alarm time is less than rtc time and irq is enabled.
+On 9/22/21 3:00 AM, Jason Gunthorpe wrote:
+> On Wed, Sep 22, 2021 at 12:54:02AM +0000, Tian, Kevin wrote:
+>>> From: Jason Gunthorpe <jgg@nvidia.com>
+>>> Sent: Wednesday, September 22, 2021 12:01 AM
+>>>
+>>>>  One open about how to organize the device nodes under
+>>> /dev/vfio/devices/.
+>>>> This RFC adopts a simple policy by keeping a flat layout with mixed
+>>> devname
+>>>> from all kinds of devices. The prerequisite of this model is that devnames
+>>>> from different bus types are unique formats:
+>>> This isn't reliable, the devname should just be vfio0, vfio1, etc
+>>>
+>>> The userspace can learn the correct major/minor by inspecting the
+>>> sysfs.
+>>>
+>>> This whole concept should disappear into the prior patch that adds the
+>>> struct device in the first place, and I think most of the code here
+>>> can be deleted once the struct device is used properly.
+>>>
+>> Can you help elaborate above flow? This is one area where we need
+>> more guidance.
+>>
+>> When Qemu accepts an option "-device vfio-pci,host=DDDD:BB:DD.F",
+>> how does Qemu identify which vifo0/1/... is associated with the specified 
+>> DDDD:BB:DD.F? 
+> When done properly in the kernel the file:
+>
+> /sys/bus/pci/devices/DDDD:BB:DD.F/vfio/vfioX/dev
+>
+> Will contain the major:minor of the VFIO device.
+>
+> Userspace then opens the /dev/vfio/devices/vfioX and checks with fstat
+> that the major:minor matches.
+>
+> in the above pattern "pci" and "DDDD:BB:DD.FF" are the arguments passed
+> to qemu.
+I guess this would be the same for platform devices, for instance
+/sys/bus/platform/devices/AMDI8001:01/vfio/vfioX/dev, right?
 
-Signed-off-by: jianbin zhang <quic_jianbinz@quicinc.com>
----
- drivers/rtc/rtc-pm8xxx.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+Thanks
 
-diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
-index 29a1c65661e9..c8a75d3e9c43 100644
---- a/drivers/rtc/rtc-pm8xxx.c
-+++ b/drivers/rtc/rtc-pm8xxx.c
-@@ -267,16 +267,19 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
- {
- 	int rc;
- 	unsigned int ctrl_reg;
-+	unsigned long irq_flags;
- 	u8 value[NUM_8_BIT_RTC_REGS];
- 	unsigned long secs;
- 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
- 	const struct pm8xxx_rtc_regs *regs = rtc_dd->regs;
- 
-+	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
-+
- 	rc = regmap_bulk_read(rtc_dd->regmap, regs->alarm_rw, value,
- 			      sizeof(value));
- 	if (rc) {
- 		dev_err(dev, "RTC alarm time read failed\n");
--		return rc;
-+		goto rtc_rw_fail;
- 	}
- 
- 	secs = value[0] | (value[1] << 8) | (value[2] << 16) |
-@@ -287,14 +290,30 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
- 	rc = regmap_read(rtc_dd->regmap, regs->alarm_ctrl, &ctrl_reg);
- 	if (rc) {
- 		dev_err(dev, "Read from RTC alarm control register failed\n");
--		return rc;
-+		goto rtc_rw_fail;
-+	}
-+
-+	if (ctrl_reg && (rtc_tm_to_ktime(alarm->time) >=
-+				rtc_dd->rtc->aie_timer.node.expires)) {
-+		ctrl_reg &= ~regs->alarm_en;
-+		rc = regmap_write(rtc_dd->regmap, regs->alarm_ctrl, ctrl_reg);
-+		if (rc) {
-+			dev_err(dev, "Update RTC control register failed \n");
-+			goto rtc_rw_fail;
-+		}
- 	}
- 	alarm->enabled = !!(ctrl_reg & PM8xxx_RTC_ALARM_ENABLE);
- 
-+	spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
-+
- 	dev_dbg(dev, "Alarm set for - h:m:s=%ptRt, y-m-d=%ptRdr\n",
- 		&alarm->time, &alarm->time);
- 
- 	return 0;
-+
-+rtc_rw_fail:
-+	spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
-+	return rc;
- }
- 
- static int pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
--- 
-2.17.1
+Eric
+>
+> You can look at this for some general over engineered code to handle
+> opening from a sysfs handle like above:
+>
+> https://github.com/linux-rdma/rdma-core/blob/master/util/open_cdev.c
+>
+> Jason
+>
 
