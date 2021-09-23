@@ -2,247 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804EC415BD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82354415BE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240384AbhIWKRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 06:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240305AbhIWKRU (ORCPT
+        id S240369AbhIWKWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:22:34 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:56037 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235605AbhIWKWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:17:20 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF4CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:15:48 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id w29so15582107wra.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aae/RsodGlMaQv4cjf+Ghj6Vk8G4MtoQty47v2BpJnw=;
-        b=vumkcNAOnHSQBaIWxGSauDBhoAHX288enF91Bo6RYzchogAsW50lE6QrWtENkUmPNt
-         RfGLdLB2s5dSIhHUA3rVTAkZb00Sm6EhxzgTUOtMMozh9vHQx6jqcMe9Q8uCUexL5d9g
-         AWIIskbIulJYxQzhhadfrHtT42eCYtx5raZQpt61t2J4JntsJnMbF80e5EBzt0DJAOB7
-         VnUJfUncA+06CW7pkiCtp8wLtXiJvTKLWUvu9kNzUG4Nrco6knEHyqHv5xcWf9zWDsAx
-         Zg/kjWtiFewwgf7M3KacTifr6nC2cImyfaiuNgMdTcGrTgkK1OKwt83ERj+WVI8YO1T7
-         OPtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aae/RsodGlMaQv4cjf+Ghj6Vk8G4MtoQty47v2BpJnw=;
-        b=6d3h6EjTBn9fX+pM9eK8gr0nvxvj5CzajvsydrIZEyXHFVk8Un0QyeamZyywv7zzPN
-         pH1d5sVrLc2Rq1Q5sDcGoBY6lsKnpxvKIi41uyDFfTMf4vxDlYQa4yeVEH12PE5RZ/sq
-         FUU+o0UzILdvk8StneKgXIa/Bh0GMJXPdgmZ7eahB/jPCKUs4Lo8xgGOEJKxVYR8ip3c
-         x/rQ55Bulw3qzXGMqBxb0g+0qUDjhTaDFFl6dWv0rCDx/z8IWwdSMZeiR/wXdgnnhN5U
-         oTiRGGgtyNkgE9iMihF0qAHnamrKVJwYEBTohX4paxoMmZL90WVzdRhwYz9rnpM0xDfx
-         Zn0g==
-X-Gm-Message-State: AOAM532JqenO2KzP1o1VNWSmj55U+2kapd77llHHAivzerEzYkZrdy3/
-        WKiYBSbyvItFxcu5JuPJyRuVTw==
-X-Google-Smtp-Source: ABdhPJxzYm05k77WJjrg1d4RZ92vsoJbfB5r3datoj+8v6STPIYXQuPQSgea8Kui3L4uijDIy+CkuQ==
-X-Received: by 2002:adf:f391:: with SMTP id m17mr4122306wro.294.1632392147392;
-        Thu, 23 Sep 2021 03:15:47 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id 198sm4881488wma.16.2021.09.23.03.15.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 03:15:46 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 11:15:24 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
-Message-ID: <YUxTvCt1mYDntO8z@myrica>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-11-yi.l.liu@intel.com>
- <20210922152407.1bfa6ff7.alex.williamson@redhat.com>
- <20210922234954.GB964074@nvidia.com>
- <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+        Thu, 23 Sep 2021 06:22:32 -0400
+Received: from [192.168.1.107] ([37.4.249.143]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1Mf0FY-1n5QgV42Vm-00gbQH; Thu, 23 Sep 2021 12:20:18 +0200
+Subject: Re: [PATCH] staging: vchip_arm: Fix misuse of %x
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
+        Phil Elwell <phil@raspberrypi.com>
+Cc:     nsaenz@kernel.org, peterz@infradead.org, maz@kernel.org,
+        bsegall@google.com, rdunlap@infradead.org, airlied@redhat.com,
+        kan.liang@linux.intel.com, odin@uged.al,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210923035554.669434-1-qtxuning1999@sjtu.edu.cn>
+ <YUwOZjr06RV2BUi6@kroah.com>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+Autocrypt: addr=stefan.wahren@i2se.com; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
+ CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
+ bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
+ TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
+ NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
+ MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
+ by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
+ MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
+ VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
+ aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
+ OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
+ bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
+ Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
+ ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
+ bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
+ dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
+ QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
+ UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
+ SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
+ VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
+ akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
+ NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
+ RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
+ QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
+ ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
+ cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
+ R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
+ aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
+ NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
+ SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
+ TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
+ TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
+ NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
+ YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
+ SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
+ KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
+ ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
+ VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
+ SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
+ d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
+ UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
+ c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
+ a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
+ anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
+ WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
+ Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
+ QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
+ Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
+ K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
+ aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
+ dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
+ TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
+ SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
+ U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
+ VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
+ OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
+ Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
+ eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
+ MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
+ SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
+ Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
+ WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
+ Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
+ OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
+ TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
+ eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
+ WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
+ cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
+ QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
+ Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
+ RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
+ SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
+ cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
+ dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
+ RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
+ SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
+ WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
+ VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
+ am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
+ OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
+ L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
+ aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
+ cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
+ WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
+ MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
+ RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
+ RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
+ TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
+ SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
+ M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
+ VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
+ MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
+ bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
+ NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
+ ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
+ Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
+ eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
+ QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
+ TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
+ dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
+ S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
+ VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
+ QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
+ ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
+ UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
+ SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
+ UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
+ N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
+ dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
+ MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
+ d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
+ WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
+ MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
+ MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
+ TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
+ NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
+ MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
+ RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
+ VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
+ WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
+ ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
+ SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
+ MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
+ M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
+ dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
+ CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
+ VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
+ bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
+ LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
+Message-ID: <c11381c3-0fd9-d84c-5b00-da5080b048b7@i2se.com>
+Date:   Thu, 23 Sep 2021 12:20:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+In-Reply-To: <YUwOZjr06RV2BUi6@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Provags-ID: V03:K1:utEBehw0xeU3QyiV3R0YVgW9f5DDUjAPQUP7pTmDgjPeP8K32oP
+ qxPTWJQ7xRD8NGS7fZtydN04zZiQv0PuIIclt/w5xHIAmhKgwX01EZipEzDkl/3OkFK+4Rz
+ zywnd5ZfakYyTCZwGOP0SWGsCuiGiNTAIxyW6RMrh6cxAoMFqveZN0xD1ITfIe7meANOegA
+ gXGnBJCod6FsptWFrxhpA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BQt9+HJ0HAU=:WyI0B+zhi5TyIdWGn31R0i
+ yT6R2wRdOovzGXXFB9/cWt2OVQoiU0AOME9YXjSzO82IB1ebUVSnA1XF7Rng78nG5jvTHWWeM
+ kUb3g8puayCeaCHdeR/2NaeLd5QaFy904z5DBcJkvzfiZ/LvyfhNc8YnETCa+yOhfjP6zyAHx
+ U1AnAs3Qy+f9vxoOQfAF+Lny59SA7zqKJtr5J+opbbuDus9zDTEd10vdXcFkFGIsV5IZAKj/5
+ PVE5twJ3acd7WHwg3/GUUHETdB0NYjv6MElTRVZqWzutCj1h93zagfe7OwVVf0TE8LWsfSNmj
+ itXmxXwrQhU9nCYgNz76/XaUMpSn8jtX9RC75osob0mxmk3Qf5Dr0GP3O+pa/S3ExWZfk+6v0
+ 9ddcs6K9vzU3lz6dX1siDZ9emTh3+jx61p5anNXyXTue9joFuAGylIqb5B51VJPwEvIyDSQa6
+ 0e93eO/JQI57YVNEKxRiyjaI8CslkzyignLVdpA2F142mgRmbHDueJLE1tRGmbabiKRRTqCKT
+ Er+VjfjJEKcXroguh7YVqvdLaxcL54PXh6J4aEzqtDKcOt7nghVeqZlprgBG0NY1z49fqrmws
+ qhaffKzAuCiFLcFDMef9qjMvy80QTFSnUPyYflaZ0/owZlE1AfXAeaGKWbyNMCQ9hnh/k2831
+ KLFH1krI8qvkdQmpBzU/oL35OmdkOyuiiy9mOL6ZdMYd2NC3tT6fUwLOvCbe8rUpjaSZWq9Mt
+ f8gRLkWoYUgKG/nILOWOSwmMPQKBtXOcu+IL5FVssTZ1ly9I+xXAzmwiLOo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 03:10:47AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Thursday, September 23, 2021 7:50 AM
-> > 
-> > On Wed, Sep 22, 2021 at 03:24:07PM -0600, Alex Williamson wrote:
-> > > On Sun, 19 Sep 2021 14:38:38 +0800
-> > > Liu Yi L <yi.l.liu@intel.com> wrote:
-> > >
-> > > > +struct iommu_device_info {
-> > > > +	__u32	argsz;
-> > > > +	__u32	flags;
-> > > > +#define IOMMU_DEVICE_INFO_ENFORCE_SNOOP	(1 << 0) /* IOMMU
-> > enforced snoop */
-> > >
-> > > Is this too PCI specific, or perhaps too much of the mechanism rather
-> 
-> Isn't snoop vs. !snoop a general concept not pci specific?
-> 
-> > > than the result?  ie. should we just indicate if the IOMMU guarantees
-> > > coherent DMA?  Thanks,
-> > 
-> > I think the name of "coherent DMA" for this feature inside the kernel
-> > is very, very confusing. We already have something called coherent dma
-> > and this usage on Intel has nothing at all to do with that.
-> > 
-> > In fact it looks like this confusing name has already caused
-> > implementation problems as I see dma-iommu, is connecting
-> > dev->dma_coherent to IOMMU_CACHE! eg in dma_info_to_prot(). This is
-> > completely wrong if IOMMU_CACHE is linked to no_snoop.
-> > 
-> > And ARM seems to have fallen out of step with x86 as the ARM IOMMU
-> > drivers are mapping IOMMU_CACHE to ARM_LPAE_PTE_MEMATTR_OIWB,
-> > ARM_LPAE_MAIR_ATTR_IDX_CACHE
-> > 
-> > The SMMU spec for ARMv8 is pretty clear:
-> > 
-> >  13.6.1.1 No_snoop
-> > 
-> >  Support for No_snoop is system-dependent and, if implemented, No_snoop
-> >  transforms a final access attribute of a Normal cacheable type to
-> >  Normal-iNC-oNC-OSH downstream of (or appearing to be performed
-> >  downstream of) the SMMU. No_snoop does not transform a final access
-> >  attribute of any-Device.
-> > 
-> > Meaning setting ARM_LPAE_MAIR_ATTR_IDX_CACHE from IOMMU_CACHE
-> > does NOT
-> > block non-snoop, in fact it *enables* it - the reverse of what Intel
-> > is doing!
-> 
-> Checking the code:
-> 
->         if (data->iop.fmt == ARM_64_LPAE_S2 ||
->             data->iop.fmt == ARM_32_LPAE_S2) {
->                 if (prot & IOMMU_MMIO)
->                         pte |= ARM_LPAE_PTE_MEMATTR_DEV;
->                 else if (prot & IOMMU_CACHE)
->                         pte |= ARM_LPAE_PTE_MEMATTR_OIWB;
->                 else
->                         pte |= ARM_LPAE_PTE_MEMATTR_NC;
-> 
-> It does set attribute to WB for IOMMU_CACHE and then NC (Non-cacheable)
-> for !IOMMU_CACHE. The main difference between Intel and ARM is that Intel
-> by default allows both snoop and non-snoop traffic with one additional bit
-> to enforce snoop, while ARM requires explicit SMMU configuration for snoop
-> and non-snoop respectively.
-> 
->         } else {
->                 if (prot & IOMMU_MMIO)
->                         pte |= (ARM_LPAE_MAIR_ATTR_IDX_DEV
->                                 << ARM_LPAE_PTE_ATTRINDX_SHIFT);
->                 else if (prot & IOMMU_CACHE)
->                         pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
->                                 << ARM_LPAE_PTE_ATTRINDX_SHIFT);
->         }
-> 
-> same for this one. MAIR_ELx register is programmed to ARM_LPAE_MAIR_
-> ATTR_WBRWA for IDX_CACHE bit. I'm not sure why it doesn't use 
-> IDX_NC though, when !IOMMU_CACHE.
+Add Phil
 
-It is in effect since IDX_NC == 0
-
-> 
-> > 
-> > So this is all a mess.
-> > 
-> > Better to start clear and unambiguous names in the uAPI and someone
-> > can try to clean up the kernel eventually.
-> > 
-> > The required behavior for iommufd is to have the IOMMU ignore the
-> > no-snoop bit so that Intel HW can disable wbinvd. This bit should be
-> > clearly documented for its exact purpose and if other arches also have
-> > instructions that need to be disabled if snoop TLPs are allowed then
-> > they can re-use this bit. It appears ARM does not have this issue and
-> > does not need the bit.
-> 
-> Disabling wbinvd is one purpose. imo the more important intention
-> is that iommu vendor uses different PTE formats between snoop and
-> !snoop. As long as we want allow userspace to opt in case of isoch 
-> performance requirement (unlike current vfio which always choose
-> snoop format if available), such mechanism is required for all vendors.
-> 
-> When creating an ioas there could be three snoop modes:
-> 
-> 1) snoop for all attached devices;
-> 2) non-snoop for all attached devices;
-> 3) device-selected snoop;
-> 
-> Intel supports 1) <enforce-snoop on> and 3) <enforce-snoop off>. snoop
-> and nonsnoop devices can be attached to a same ioas in 3).
-> 
-> ARM supports 1) <snoop format> and 2) <nonsnoop format>. snoop devices
-> and nonsnoop devices must be attached to different ioas's in 1) and 2)
-> respectively.
-
-I think Arm mainly supports 3), ie. No_snoop PCI transactions on pages
-mapped cacheable become non-cacheable memory accesses.
-
-But the Arm Base System Architecture 1.0
-(https://developer.arm.com/documentation/den0094/a) states that it's
-implementation dependent whether the system supports No_snoop.
-
-    In the case where the system has a System MMU translating and
-    attributing the transactions from the root complex, the PCI Express
-    transactions must keep the memory attributes assigned by the System
-    MMU. If the System MMU-assigned attribute is cacheable then it is
-    IMPLEMENTATION DEFINED if No_snoop transactions replace the attribute
-    with non-cached.
-
-So we can only tell userspace "No_snoop is not supported" (provided we
-even want to allow them to enable No_snoop). Users in control of stage-1
-tables can create non-cacheable mappings through MAIR attributes.
-
-Thanks,
-Jean
-
-> 
-> Then the device info should reports:
-> 
-> /* iommu enforced snoop */
-> +#define IOMMU_DEVICE_INFO_ENFORCE_SNOOP	(1 << 0)
-> /* iommu enforced nonsnoop */
-> +#define IOMMU_DEVICE_INFO_ENFORCE_NONSNOOP	(1 << 1)
-> /* device selected snoop */
-> +#define IOMMU_DEVICE_INFO_DEVICE_SNOOP	(1 << 2)
-> 
-> > 
-> > What ARM is doing with IOMMU_CACHE is unclear to me, and I'm unclear
-> > if/how iommufd should expose it as a controllable PTE flag. The ARM
-> > 
-> 
-> Based on above analysis I think the ARM usage with IOMMU_CACHE
-> doesn't change. 
-> 
-> Thanks
-> Kevin
+Am 23.09.21 um 07:19 schrieb Greg KH:
+> On Thu, Sep 23, 2021 at 11:55:54AM +0800, Guo Zhi wrote:
+>> Pointers should be printed with %p or %px rather than
+>> cast to (unsigned long) and printed with %lx.
+>> Change %lx to %pK to print the pointers.
+>>
+>> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+>> ---
+>>  .../staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+>> index b5aac862a29..408e5fe710b 100644
+>> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+>> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+>> @@ -591,11 +591,11 @@ service_callback(enum vchiq_reason reason, struct vchiq_header *header,
+>>  		return VCHIQ_SUCCESS;
+>>  
+>>  	vchiq_log_trace(vchiq_arm_log_level,
+>> -		"%s - service %lx(%d,%p), reason %d, header %lx, instance %lx, bulk_userdata %lx",
+>> -		__func__, (unsigned long)user_service,
+>> +		"%s - service %pK(%d,%p), reason %d, header %pK, instance %pK, bulk_userdata %pK",
+>> +		__func__, user_service,
+>>  		service->localport, user_service->userdata,
+>> -		reason, (unsigned long)header,
+>> -		(unsigned long)instance, (unsigned long)bulk_userdata);
+>> +		reason, header,
+>> +		instance, bulk_userdata);
+> Why print this out at all?  What uses this?  Can it just be deleted?
+>
+> thanks,
+>
+> greg k-h
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
