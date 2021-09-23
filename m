@@ -2,100 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A9341560A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D7241560B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239088AbhIWDav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239114AbhIWDa3 (ORCPT
+        id S239092AbhIWDbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:31:47 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9909 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239084AbhIWDbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:30:29 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBBBC061764;
-        Wed, 22 Sep 2021 20:28:57 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id v19so3504129pjh.2;
-        Wed, 22 Sep 2021 20:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mufzV1rPs7RSEi7IGGVM9toNzAQChP8eST1zCDl+0j0=;
-        b=a3H/PjnC3mHIrU/Dz1HjgLY8ZABe/dn5M0rM4dKdgaq8xHbRoQbRVN4Y+/prn4VQ6G
-         bziLsmnaZCxzFY//q7wpnL6BHO4KtLQ/DO26CDOfbGir8Ujr9jy31E+1xBesSpGk9f/U
-         Hy8K5PF5FuAPn4RHdvQY35SZexZ7NBWMhNtb+N+5QAckXNd8/a0QIewQ5SObeTSqOEH7
-         zC41oz2uvZRBDKZSbaRLuu/ygh+DcjXqpWP2bq9UeYdR1UDctpUeoIn945q+jOMDN9+3
-         +ObIc+P7IAslbSVK4+dFUXY/GcdoA+JOLNDwIhVj3PxBh6fmk4Tt1vNT0hqA4j0Ckc7v
-         F7VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mufzV1rPs7RSEi7IGGVM9toNzAQChP8eST1zCDl+0j0=;
-        b=0h4H8oxbzohnU9Y0GUQywgxa23DdoSe07UGbRXNA4YNK4i5vFwCCimixSmE47rwuJa
-         tgwXRen9k2ytZYt1OkpxEzD3UU9OYg9/2XC1zxWOsntwczp79+bGhTkKr2kjlUYjBycp
-         DYGL8TIkETIh0UnzGiY6LGkWMFLtyqUwXWCbiOvt+kLHNZaCz/qlFSJuj5hsmvRc/nOy
-         p6MB8QL4vzYtD2+YH2lwUq8MWLETWdpAisTyNmIVwvIYI3Q/vvYLYE5a1T9ain/W/zRL
-         +wwKKGWacFwiekTD9K9wjM9ROA+qXJVQ7Gf+lvz27MPr1mOqXPoqjrama6IJCE5fcZbZ
-         i3Ow==
-X-Gm-Message-State: AOAM53199EmiEaCyBvnyo2nmfX2TklNoFm6XNI5Px716YnXutVS+5SSu
-        mCoN7s4nUT7u8f9Zv7IxlPf88a+GXnJApQ==
-X-Google-Smtp-Source: ABdhPJxE/7FYG7IJ37yN6cBJHRQo7cXfobkaQIfJsJ6JoHQKPSdWaAqhKADJ29U4rK2ujWoua3VnuA==
-X-Received: by 2002:a17:90a:ac05:: with SMTP id o5mr15334262pjq.205.1632367737057;
-        Wed, 22 Sep 2021 20:28:57 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id x8sm3699696pfq.131.2021.09.22.20.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 20:28:56 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        peterx@redhat.com, osalvador@suse.de, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v2 PATCH 5/5] mm: hwpoison: handle non-anonymous THP correctly
-Date:   Wed, 22 Sep 2021 20:28:30 -0700
-Message-Id: <20210923032830.314328-6-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210923032830.314328-1-shy828301@gmail.com>
-References: <20210923032830.314328-1-shy828301@gmail.com>
+        Wed, 22 Sep 2021 23:31:46 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HFLCS56bjz8ylZ;
+        Thu, 23 Sep 2021 11:25:40 +0800 (CST)
+Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 23 Sep 2021 11:30:08 +0800
+Received: from [10.67.77.175] (10.67.77.175) by dggpeml500023.china.huawei.com
+ (7.185.36.114) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 23 Sep
+ 2021 11:30:07 +0800
+Subject: Re: [PATCH] sched: Make cookie functions static
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20210922085735.52812-1-zhangshaokun@hisilicon.com>
+ <20210922125034.GS4323@worktop.programming.kicks-ass.net>
+From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
+Message-ID: <641d5dfb-1c72-9fc3-0844-d4eab8115173@hisilicon.com>
+Date:   Thu, 23 Sep 2021 11:30:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210922125034.GS4323@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.77.175]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently hwpoison doesn't handle non-anonymous THP, but since v4.8 THP
-support for tmpfs and read-only file cache has been added.  They could
-be offlined by split THP, just like anonymous THP.
+Hi Peter,
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- mm/memory-failure.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+On 2021/9/22 20:50, Peter Zijlstra wrote:
+> On Wed, Sep 22, 2021 at 04:57:35PM +0800, Shaokun Zhang wrote:
+>> Make cookie functions static as these are no longer invoked directly
+>> by other code.
+> 
+> Yeah, this was supposed to get used from the cgroup code, but that never
+> happened. I suppose we can do this for now, easy enough to revert
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 3824bc708e55..e60224b3a315 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1443,14 +1443,11 @@ static int identify_page_state(unsigned long pfn, struct page *p,
- static int try_to_split_thp_page(struct page *page, const char *msg)
- {
- 	lock_page(page);
--	if (!PageAnon(page) || unlikely(split_huge_page(page))) {
-+	if (unlikely(split_huge_page(page))) {
- 		unsigned long pfn = page_to_pfn(page);
- 
- 		unlock_page(page);
--		if (!PageAnon(page))
--			pr_info("%s: %#lx: non anonymous thp\n", msg, pfn);
--		else
--			pr_info("%s: %#lx: thp split failed\n", msg, pfn);
-+		pr_info("%s: %#lx: thp split failed\n", msg, pfn);
- 		put_page(page);
- 		return -EBUSY;
- 	}
--- 
-2.26.2
+Got it,
 
+Thanks your reply.
+
+> if/when etc..
+> .
+> 
