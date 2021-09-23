@@ -2,190 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003EC415E1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65647415E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240984AbhIWMTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241052AbhIWMSv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:18:51 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB6EC0613DF;
-        Thu, 23 Sep 2021 05:17:17 -0700 (PDT)
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3021D58B;
-        Thu, 23 Sep 2021 14:17:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1632399435;
-        bh=/drw1Dk5E4UqncQuFxf04jqsz9XYsWqBltMyjLcA6Vo=;
-        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
-        b=QrzYKsh1Sk3GiIN/2GIM3wUc7wRNc1rjrkpi1CiJK22eB3nORVIWSrPC/moO1h0zI
-         zk4bFSWW2HUiEyFkWRZPSjF+YLrOUiFe/HXWdXcptVz1uhF+byzIxop3Ev/PF2FTWR
-         NMQ3vqNjBoA8c4ELhpktZ4iBbujo96wwm7rQEaTM=
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>
-References: <20210922203027.3229474-1-kieran.bingham@ideasonboard.com>
- <CAMuHMdULHnztv=7i1b1x9BEsO8pu=J3Af_Qx7=CzD3qJhYRNBA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: renesas: r8a779a0: falcon-cpu: Add SW46
- switch support
-Message-ID: <eda13f7c-b353-dcf4-c4ea-c2aa65858e7a@ideasonboard.com>
-Date:   Thu, 23 Sep 2021 13:17:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S240971AbhIWMUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:20:22 -0400
+Received: from mail-mw2nam12on2097.outbound.protection.outlook.com ([40.107.244.97]:13408
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240954AbhIWMUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 08:20:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NAFFtKB95ZKRg72uO13PcxU6xAwAOZP5rVA6h4wpU0o2Fw+xwm5KB6fvuSdrY6ph6+a1hlMIUm57Ha4SkkT1VhHAnDZMb+fy+EFMFQYKPDge4kSjE8aGKIaq4zzXV5RQZwthiwK35B6AhGk+FB4ywHLbH3qnxsX3N83g1QnodQ+WjW0TcXwLG1RkaNQvaRUl850qZQ9cZEicD3GngkckB0i+rwGhadYNuHPFpzMujzVRXjVr+2I9B5Rd3KwdRxzs2Vk78zmO6O0TgyWVzZxwIxkSG3lfpbafNgm610UlMx4khYsBVYmyavmeTES/RKa4F7ULEI9WUm4vSHBq5HeT4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=TU28VFZoKe4tnYvQbMCOtzESxA6pRsdt9FuicRYIxnw=;
+ b=DWlWkJlOZ4fPtQjQPRZoSj/bMdwNx2CljLbwdvaHC1rw7tHoeS1hNxiFQG2LnaYypRfpYWeOdxE7QiR9XKPHi7AFlvWZDSvTM5M/f9Pbpf3Jg9uPL0ewgXnO5+kS+1UKqrWpJzWORt/PJIWebD0WJNhp/dPLjJ+gJJD0Q9OhcJSHwhdJh1lxamFJwLtz1vWRk1v9PkQY43eTn14aUyRdOb9E1/p08DlIanLehAoQEiL0YzKRJDFluobn0oLM9x8uAb1a2FE4qUR3WuaX4j2gYoncHRkgmsYChlOMICKKLLs2RCve5gOE9agWQ5J41vAwff/gJpt2A9DD8HvJBSAB6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TU28VFZoKe4tnYvQbMCOtzESxA6pRsdt9FuicRYIxnw=;
+ b=jHUbebchhXLBk5EtVgpxcd80jOk8MQh7DvFSf/N2JqRdaQH8Swlm9u8B8y8afuK1/i9Mpt+842LiMWpsaqYf/I4XiedqYoJdEKOYJXcnXqfE9IhsfY1Ym7wC0LarVDISFoQrNhzOE9NJL8ZSvSwLmSu1uEuztxD7P703HcMfXVScftn8sHl9VyeCigUS9lQ+f4F1oM79CxbLoDuTJANOoriLtFfq/Zi6NczgJdKBj8XbPxrxBqsIYgwcRxk1E5YdRJ3XcTWaP7WZxLcs1Lgke9Sf179vpp0AwlWNdfH7UNezM0bOuYD3wx0yFbfAKput9v59+gvs2+3JPfbWG/i9eQ==
+Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
+ CH2PR01MB6055.prod.exchangelabs.com (2603:10b6:610:46::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4544.15; Thu, 23 Sep 2021 12:18:46 +0000
+Received: from CH0PR01MB7153.prod.exchangelabs.com
+ ([fe80::30a8:19a9:b5c7:96cd]) by CH0PR01MB7153.prod.exchangelabs.com
+ ([fe80::30a8:19a9:b5c7:96cd%9]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
+ 12:18:46 +0000
+From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Bart Van Assche <bvanassche@acm.org>,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+Thread-Topic: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+Thread-Index: AQHXr7imk55risfKAUmS2+aCDTMROauwTzmggAAKPwCAANRigIAAR+NggAALsYCAAAjmwA==
+Date:   Thu, 23 Sep 2021 12:18:46 +0000
+Message-ID: <CH0PR01MB71536B15C0911AFDE910E559F2A39@CH0PR01MB7153.prod.exchangelabs.com>
+References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
+ <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
+ <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org> <YUwin2cn8X5GGjyY@unreal>
+ <CH0PR01MB7153E7BD0F3CFBA384EF97ACF2A39@CH0PR01MB7153.prod.exchangelabs.com>
+ <YUxou5tFS5zcVAsV@unreal>
+In-Reply-To: <YUxou5tFS5zcVAsV@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c8c3e43b-0d5a-44e1-55f6-08d97e8c4af1
+x-ms-traffictypediagnostic: CH2PR01MB6055:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CH2PR01MB60552481E8BDAE81C5C51444F2A39@CH2PR01MB6055.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rkWVXSLctRcjel/M4RwGpkJk1oTwkJHPEnk9IHnHx2psVyEd0ITjEvaJU41l2u+gXooxpsWqF1mwEXh4WzPyjTW+V2A5qUeqlXJC1a8exaKAu6pIgB7dQd6ggC4P+6O8xEcGpVMV8S+rrmjna/YgiU8BQNWSzDR9FbCviSjj/iTGbz8qEKG1dzGyLYvd1chivIZ3yJG+GtVIQ+3WqIsowvPEHQLZVgcMLM1Ydxysz/52c59UUCEKRx1BUcqOaG3YfmOsF5i55ezhJS8W2fqAogVVTovCRtT2vK5GCKPKTFrUdvaBykUOnxjqTB1frR+dG26k5dNLLBv+f8B6klx1vlGbsEMKrLVpCkFFfU07LwZH9/oVj9mLTjX4bLZjv+2cI6v7rGryDaxIfgHW0zvse8mUY5pGr8qu14NQy0jNr3RJp476sa3Vy96m5N0eghG+Q2oFnkcX0gb9jEKvO4ifOt2nlO1eTw1Cws4KFWsW7tWvxjpNiwPY7DPEFSHb3HusHetNtr0fGCFepGFHIlH/L85/Z8IDx3QQ1Eyva4VnOATVXK5Yqo5kLa/YQ0K6zcMA984JZALELrDsVHHZAJUHt66DWNpC9VhKM91EZMiSFUU1uBElKJNYUgBf99TNcmGk/AiBXs61T7zjA2O0xHY52Ak/LkWuZ6zJrGF62yHpK3HHYbmj/A5rctEwHbp6NgXGz4dZ8WoEawI1WV96UutnLA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39840400004)(366004)(54906003)(2906002)(8936002)(76116006)(55016002)(4326008)(66476007)(66446008)(9686003)(66946007)(122000001)(4744005)(71200400001)(64756008)(38100700002)(5660300002)(52536014)(66556008)(316002)(8676002)(33656002)(508600001)(38070700005)(6916009)(7696005)(26005)(186003)(6506007)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?KaZaQsbdJuo7kR4zQdj3SonCJDOw9GcYlgeOeRRUMA2i4CBcCSpTrwgVNQHc?=
+ =?us-ascii?Q?aeI+ePnEZl4ldY2kYza6+Q5z1nZrfPMyBh2NQwy6kQ83uvng2FHlG44icCx7?=
+ =?us-ascii?Q?xuf5igX0pNqCxQFOjuvRt3cD8iyghvfxI+r5di/33Vdqz9qfDjnRqLMj7ejr?=
+ =?us-ascii?Q?ne5xq5jQOCRfgVy5lvWzY8M7lWGIMJOwQXKoPeNHxHvzBjYTSBAtmbRdqFvd?=
+ =?us-ascii?Q?MESvVfP5GEsQMApcEYPqQCbPdivNKQHMdjsL/ge5ziswpOG40IQXtESWDt+u?=
+ =?us-ascii?Q?xF1m6r2JXTP1Dd356bdfuMe8yIYvWL/S2gJ6g3Vfm7z7kVfbSPr5vcJenlV9?=
+ =?us-ascii?Q?Uvk6GpLbVOPEb65YjTUfXuT2qXwIcm+nrgyPygvF3X85zQEk8QDPSZG2+gSB?=
+ =?us-ascii?Q?gIoyvPNgU5yGgMGLEr67x8++LR5vU2zmtiHHciUtdQDM6sAjep3Ood+jqlJk?=
+ =?us-ascii?Q?lpkCuC7YTmq3uKgaHbkr4MLgyIiu1nxNCXeou9oUmlxa5UkmCXSpQsCw8Nr+?=
+ =?us-ascii?Q?pwgI2/S2Vjm2QoWL77fnOkn3TFxgQqyio371kSzsb4AXIfBrysH7WdxYZDAR?=
+ =?us-ascii?Q?NSW59OO2eTkNMFeVCk/YFy1SOEFc58CiAQXdfAKyn7WybpTu7oBKVCIX2jTC?=
+ =?us-ascii?Q?caCwyf59oozxGolkhk77ix8ngrgPdbzhzYHaZvzbXTR+sbsp2UnKZx7YVk7i?=
+ =?us-ascii?Q?frX/l6CLpV4lq8aMMXE5O6j9XDsljmqqHyQLHXaE4m+Qx0LUj9OFpTRlPSw/?=
+ =?us-ascii?Q?Do4nswZrOqnsUI9SKsT7e6n9Mdb9AdFI6KWn8EweOaka0JFN62X2vPKMuwrr?=
+ =?us-ascii?Q?Ksv5dbMTay/W8o0fSbRpEg+vd7ac/h8lJmQC63GUHZRLuvNnxj4Fp4k3n4XY?=
+ =?us-ascii?Q?Zxwwrlw64mMBJ1YldMXdbc4kcjlvqU63ZtOzRvNjJNPymsqg56uRclV03coP?=
+ =?us-ascii?Q?igNbRN3Frg8u9gmisl1HM1RjSF+mVQfQxiPQSaNV9RCnkVwJk4GnIJmeGcJu?=
+ =?us-ascii?Q?Vr7KMmqd3JBm/OlPrC7Ut6XXuijpQSDWVx1zDkgAYKOwDGwGN1tBselcQw4l?=
+ =?us-ascii?Q?D7g8wesKgBjbvmdLkJLNVJcwC/mfjWbb96gqn7NDFmKCd9jZB0Yk1L7RUID1?=
+ =?us-ascii?Q?vYQKLmseBAEjjdPsnXOXSybN3bvJ15kcUqS+Y5FOhEbkPENXbGaUp3ypiVFk?=
+ =?us-ascii?Q?4BHxvGea6MXMBWsxEizUGjJRWnFwszbVe2aZi64nfAcWZ4vR4/QnEs/5wtGc?=
+ =?us-ascii?Q?ND4gfeMXFmNy/0zry+qLvOG0TOP6ckc9WJnhHPqhgfzwYdtg53BYvvvi658B?=
+ =?us-ascii?Q?LzY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdULHnztv=7i1b1x9BEsO8pu=J3Af_Qx7=CzD3qJhYRNBA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8c3e43b-0d5a-44e1-55f6-08d97e8c4af1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 12:18:46.6421
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Nq94pYNhidxS+eSaDsZv9huMD3KOA6cbiSuvKsdovYnhXbERQ64q4Iyz6EUgVevdMgRYli3i7b0/w3/IztZAe8ZrqedXzvKAHioFF9vBJrSk7gmdjjnePGwTZl5JDZNv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB6055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2021 08:32, Geert Uytterhoeven wrote:
-> Hi Kieran,
-> 
-> CC input
-> 
-> On Wed, Sep 22, 2021 at 10:30 PM Kieran Bingham
-> <kieran.bingham@ideasonboard.com> wrote:
->> Add support for SW46-1 and SW46-2 as switches using the gpio-keys
->> framework.
->>
->> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> 
-> Thanks for your patch!
-> 
->> ---
->>
->> SW_LID and SW_DOCK are selected as low-impact switch events for the
->> default configuration. Would SW_RFKILL_ALL, and SW_MUTE_DEVICE be
->> preferred as more 'functional' defaults? (I have otherwise avoided these
->> to hopefully prevent unwanted / undocumented effects occuring on
->> development hardware running a full interface which may parse these)
->>
->> I'd expect them to be overridden by any platform using them anyway.
-> 
-> That's a good question
-> 
-> BTW, I'm happy you brought this up.  I discovered EV_SW only
+> > >
+> >
+> > It doesn't look like that works in irqs, softirqs.
+>=20
+> Are you certain about it?
+>=20
+> That sysctl is supposed to control the output of %p, nothing more.
+>=20
 
-I hoped it would start a discussion ;-) I noticed no one else was using
-EV_SW ... and ... well the slide switches just aren't buttons ;-)
+Actually I think is controls %pK.
 
-> recently, and had just started wondering whether we should use it
-> for the various slide switches on Renesas R-Car Gen2 and Gen3 boards,
-> which are modelled using the default EV_KEY and KEY_[1-4].
+The code here is what I was referring to.
 
-Indeed, that was my dilemma - there isn't really a 'generic' zero-impact
-choice for the slide switches. They all imply that they are likely to be
-interpreted by a window manager / gui to make some adjustment to the system.
+		/*
+		 * kptr_restrict=3D=3D1 cannot be used in IRQ context
+		 * because its test for CAP_SYSLOG would be meaningless.
+		 */
+		if (in_irq() || in_serving_softirq() || in_nmi()) {
+			if (spec.field_width =3D=3D -1)
+				spec.field_width =3D 2 * sizeof(ptr);
+			return error_string(buf, end, "pK-error", spec);
+		}
 
-Which is of course desired in a product/device - but on a test board
-like the evaluation modules - I can imagine someone saying they can't
-understand why the screen isn't working / is in powersave ... because
-... of the undocumented feature that the SW46-1 position indicating that
-the 'lid' is closed ...
+Mike
 
 
-
-
-> I see several DTS files using EV_SW (or hardcoded 5) with KEY_*
-> codes instead of EV_* codes, so perhaps KEY_A or KEY_B would be
-> suited better, to avoid strange effects? But SW_LID (and KEY_RESERVED)
-> seem to be quite popular, too.
-
-It feels 'horrible' reporting Key events on switch events ... but if
-it's an approved solution - I'm fine with that.
-
-As long as there is no further side impact of suddenly 'KEY_B' is
-constantly pressed, and so the WM is going to act as though a key
-modifier is active ...
-
-
-> Any input^Wgood advice from the input people? TIA!
-
-Yes please ;-)
-
-Maybe we need some 'test' keys / events that can be hooked up that allow
-testing/validation but represent that these keys/switches/buttons have
-no current definition for their operation...
-
-They're just generic buttons and switches ..
-
-> 
->> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
->> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
->> @@ -52,6 +52,24 @@ keys {
->>                 pinctrl-0 = <&keys_pins>;
->>                 pinctrl-names = "default";
->>
->> +               sw-1 {
->> +                       gpios = <&gpio1 28 GPIO_ACTIVE_LOW>;
->> +                       linux,code = <SW_LID>;
->> +                       linux,input-type = <EV_SW>;
->> +                       label = "SW46-1";
->> +                       wakeup-source;
->> +                       debounce-interval = <20>;
->> +               };
->> +
->> +               sw-2 {
->> +                       gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
->> +                       linux,code = <SW_DOCK>;
->> +                       linux,input-type = <EV_SW>;
->> +                       label = "SW46-2";
->> +                       wakeup-source;
->> +                       debounce-interval = <20>;
->> +               };
->> +
->>                 key-1 {
->>                         gpios = <&gpio6 18 GPIO_ACTIVE_LOW>;
->>                         linux,code = <KEY_1>;
-> 
-> Looks good to me.
-> 
->> @@ -193,7 +211,8 @@ i2c6_pins: i2c6 {
->>         };
->>
->>         keys_pins: keys {
->> -               pins = "GP_6_18", "GP_6_19", "GP_6_20";
->> +               pins = "GP_1_28", "GP_1_29",
->> +                      "GP_6_18", "GP_6_19", "GP_6_20";
->>                 bias-pull-up;
->>         };
-> 
-> This part is not needed, as the GPIOs connected to the slide switches
-> have external pull-up resistors (unlike the GPIOs connected to the
-> push switches, which are driven low by open-drain buffers, without
-> external pull-up resistors).
-> 
-
-Ah - for some reason I thought it was required to configure the PFC
-regardless, and show that these pins are acquired by the gpio function -
-but of course I'd expect 'getting' the gpio would do that..
-
-I'll await some feedback on the best key codes to use before reposting.
-
-
-Out of interest, is the OD buffer there to act as a hardware debounce or
-such? or is there another likely reason?
-
---
-Kieran
-
-
-
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
