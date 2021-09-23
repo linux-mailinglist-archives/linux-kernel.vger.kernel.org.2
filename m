@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1537416007
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1660441600A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241441AbhIWNgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241104AbhIWNgl (ORCPT
+        id S241447AbhIWNgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:36:51 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:41855 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241451AbhIWNgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:36:41 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36152C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:35:10 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id g14so5790616pfm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:35:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VlVB95cNrT7L7B14qG5U08EFg3vZ72o8QrXDE75UfsQ=;
-        b=H+7BpQGym/v8soxz1LNyRmIz1lQELJ28aKT/lFaFI5MgA6kMM8dyT3+r4JPGaP258v
-         K+ZZosPi5wXIvk0Biw3f7y11tZ90L/0SVhqT+Ueinl+lRR8VCyKL82AO/E5tyubyddip
-         qsoclkYBpk8SZP46xjI5XlD/Y3bzA8J7jphPeNGU6lm7kEErYtK9jc/UIMKjRG4xWjNZ
-         FbZqdaZKQ90k2sCN8CA2jjaMmFU7PmXaQDYN4FQ/7GwNcPgWhprtwXO0eF+vM2bdtMUG
-         YDSKkkf3bklcu+wrq9qiiriOuOV57gJbejbOHSCRIS+W/gat+lY4Y1leBH2PPMh6DX68
-         kkdw==
+        Thu, 23 Sep 2021 09:36:48 -0400
+Received: by mail-ot1-f42.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso8484439ota.8;
+        Thu, 23 Sep 2021 06:35:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VlVB95cNrT7L7B14qG5U08EFg3vZ72o8QrXDE75UfsQ=;
-        b=Hhe6/PX4Ce5NSXoyINRwtUnhLfUYYLsZ5MZB+NLxsVCAw0/8hbyj99eh1nMCydYzbQ
-         O8FdjrAJewHG4izLtDnYDKnKV2Pf0r7Vtf8BDkTFNYpXR8HNT8J2PHyj/0xWKnEy9Vnz
-         OlPy4+mR+3qhVtFtBwy99n2h9xTR43dfI43I4viS7RFkdUHpgKjiw7RcZkgsKkPYWlx7
-         JcMcfmPXpjkVI0ImRXbCGGrJLYebaDypbepMK7y/ZJy8HfECV+/qliWglzFJ2FcgQ/no
-         ArZNG4bNp1HizKmQI2orGHoyLAsB6CkImibj/9tqm+fHjEWXq5OYD/lPRFrSfkQ7V/n1
-         h+NA==
-X-Gm-Message-State: AOAM5306bDmzfNxc5HyGAqvyZyw0eyqP4zroh6/dSfYc06s3ElUJesQY
-        eOzk+fbydA463MQB2pAXB6WzsQ==
-X-Google-Smtp-Source: ABdhPJygZXKn4h3hX7WzpSaABOnvhY3ygPq4cAYtypuJuGsvDXTle4pnBtBlX9/0tzCZaNfTmQy4NA==
-X-Received: by 2002:a63:eb41:: with SMTP id b1mr4235459pgk.236.1632404109572;
-        Thu, 23 Sep 2021 06:35:09 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([213.173.35.225])
-        by smtp.gmail.com with ESMTPSA id d137sm6228691pfd.72.2021.09.23.06.35.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 06:35:08 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 21:35:03 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Subject: Re: [PATCH 1/5] perf cs-etm: Print size using consistent format
-Message-ID: <20210923133503.GE400258@leoy-ThinkPad-X240s>
-References: <20210916154635.1525-1-german.gomez@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XZZw776AxWux9GflNAqL8Dxi/2W2AZOaGIsTCN23/JI=;
+        b=zSfYErVihtWILD/QzPhxg+FT7es2tdaXKiryb8Q0A8bqZ2/BcXwcQ2RO+8LcdN+RrU
+         2BEefEh1CRhCc+IjwgSCdA6PUBfDeiG2k6h57m7vpEE98VukbNJ9jMQkkx0Vao/rpcQr
+         xPGRpz50zdtPiQx7ApX8qJrO36nRKOt9VzdHpXtXoET+pcH9egUqrfD71IED8QmMxUeh
+         uxzU8gofJgAfkWqF0XnlEvx58Ue8HUwBiaV4ayAUg9R516qnDT5EOPODIlXhtQBlqowr
+         CqkTkD+CZpYDoa/FhYgVLCREZ36Nf4h7BbbWWA5kpRTPp3X5n2g7TsmdvRGXfrs7/Juq
+         AfxA==
+X-Gm-Message-State: AOAM531GZH2CxhGygU/PlqV7/KWD3cDzRkSvrgJ2dqNe/W04SbagcuJx
+        h9N7qNmybVTu1OpzUrzd5MQbbOu34qmBqMJ/l1jKQSy9
+X-Google-Smtp-Source: ABdhPJxbep/n43sV1q9mnlvRyLJF8PEQI/TRth8de/xmRePf4Td9GNDiDEnxffMIwIJhaUPFtEk7Tf7jg65nb5BKQXw=
+X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr4489432otr.301.1632404116454;
+ Thu, 23 Sep 2021 06:35:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916154635.1525-1-german.gomez@arm.com>
+References: <1800633.tdWV9SEqCh@kreacher> <8879480.rMLUfLXkoz@kreacher>
+ <069444f7-d623-fae2-5cd0-83cbbc919aff@gmail.com> <CAJZ5v0gpodPPXTagy5gFFf6mp_jCAdc864CE_giaue72ke7UyQ@mail.gmail.com>
+ <013e3a7b-ec67-1a67-c2b9-e1fbb11c664e@gmail.com>
+In-Reply-To: <013e3a7b-ec67-1a67-c2b9-e1fbb11c664e@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 23 Sep 2021 15:35:05 +0200
+Message-ID: <CAJZ5v0h5TJVCJ+vEon8qK3LVfS_sNbne-M98tiJf2K2uBS6wmw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] PCI: ACPI: PM: Do not use pci_platform_pm_ops for ACPI
+To:     Ferry Toth <fntoth@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 04:46:31PM +0100, German Gomez wrote:
-> From: Andrew Kilroy <andrew.kilroy@arm.com>
-> 
-> Since the size is already printed earlier in hex, print the same data
-> using the same format, in hex.
-> 
-> Reviewed-by: James Clark <james.clark@arm.com>
-> Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
-> Signed-off-by: German Gomez <german.gomez@arm.com>
-
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-
+On Thu, Sep 23, 2021 at 3:26 PM Ferry Toth <fntoth@gmail.com> wrote:
+>
+> Hi,
+>
+> Op 23-09-2021 om 13:30 schreef Rafael J. Wysocki:
+>
+> On Wed, Sep 22, 2021 at 11:31 PM Ferry Toth <fntoth@gmail.com> wrote:
+>
+> Hi,
+> Op 20-09-2021 om 21:17 schreef Rafael J. Wysocki:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Using struct pci_platform_pm_ops for ACPI adds unnecessary
+> indirection to the interactions between the PCI core and ACPI PM,
+> which is also subject to retpolines.
+>
+> Moreover, it is not particularly clear from the current code that,
+> as far as PCI PM is concerned, "platform" really means just ACPI
+> except for the special casess when Intel MID PCI PM is used or when
+> ACPI support is disabled (through the kernel config or command line,
+> or because there are no usable ACPI tables on the system).
+>
+> To address the above, rework the PCI PM code to invoke ACPI PM
+> functions directly as needed and drop the acpi_pci_platform_pm
+> object that is not necessary any more.
+>
+> Accordingly, update some of the ACPI PM functions in question to do
+> extra checks in case the ACPI support is disabled (which previously
+> was taken care of by avoiding to set the pci_platform_ops pointer
+> in those cases).
+>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->  tools/perf/util/cs-etm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index f323adb1af85..4f672f7d008c 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -537,7 +537,7 @@ static void cs_etm__dump_event(struct cs_etm_queue *etmq,
->  
->  	fprintf(stdout, "\n");
->  	color_fprintf(stdout, color,
-> -		     ". ... CoreSight %s Trace data: size %zu bytes\n",
-> +		     ". ... CoreSight %s Trace data: size %#zx bytes\n",
->  		     cs_etm_decoder__get_name(etmq->decoder), buffer->size);
->  
->  	do {
-> -- 
-> 2.17.1
-> 
+>
+> v1 -> v2:
+>      * Rebase on top of the new [1/7] and move dropping struct
+>        pci_platform_pm_ops to a separate patch.
+>
+> I wanted to test this series on 5.15-rc2 but this patch 2/7 doesn't
+> apply (after 1/7 applied). Should I apply this on another tree?
+>
+> This is on top of
+> https://patchwork.kernel.org/project/linux-acpi/patch/2793105.e9J7NaK4W3@kreacher/
+> which is not yet in any tree.
+>
+> Sorry for the confusion.
+>
+> No problem at all. If I can I will try to report back tonight. Else, will be delayed 2 due to a short break.
+
+Thank you!
