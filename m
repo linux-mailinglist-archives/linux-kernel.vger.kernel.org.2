@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF33416311
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C4541630B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242315AbhIWQYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:24:30 -0400
-Received: from relay06.th.seeweb.it ([5.144.164.167]:32961 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242147AbhIWQYK (ORCPT
+        id S242302AbhIWQY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:24:28 -0400
+Received: from relay05.th.seeweb.it ([5.144.164.166]:34609 "EHLO
+        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242149AbhIWQYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:24:10 -0400
+        Thu, 23 Sep 2021 12:24:11 -0400
 Received: from localhost.localdomain (83.6.166.81.neoplus.adsl.tpnet.pl [83.6.166.81])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 420493F689;
-        Thu, 23 Sep 2021 18:22:23 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 3DF253F68B;
+        Thu, 23 Sep 2021 18:22:24 +0200 (CEST)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     ~postmarketos/upstreaming@lists.sr.ht
 Cc:     martin.botka@somainline.org,
@@ -26,9 +26,9 @@ Cc:     martin.botka@somainline.org,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 12/17] arm64: dts: qcom: sm6350: Add PRNG node
-Date:   Thu, 23 Sep 2021 18:21:58 +0200
-Message-Id: <20210923162204.21752-12-konrad.dybcio@somainline.org>
+Subject: [PATCH v3 13/17] arm64: dts: qcom: sm6350: Add RPMHPD and BCM voter
+Date:   Thu, 23 Sep 2021 18:21:59 +0200
+Message-Id: <20210923162204.21752-13-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210923162204.21752-1-konrad.dybcio@somainline.org>
 References: <20210923162204.21752-1-konrad.dybcio@somainline.org>
@@ -38,32 +38,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a node for the PRNG to enable hw-accelerated pseudo-random number
-generation.
+Add RPMHPD node, its OPP table and BCM voter to prepare for performance level
+voting.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- arch/arm64/boot/dts/qcom/sm6350.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/boot/dts/qcom/sm6350.dtsi | 54 ++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-index 0c50a8f9414c..0765ae4fb5ea 100644
+index 0765ae4fb5ea..6162af01ae9a 100644
 --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-@@ -390,6 +390,13 @@ ipcc: mailbox@408000 {
- 			#mbox-cells = <2>;
+@@ -686,6 +686,60 @@ rpmhcc: clock-controller {
+ 				clock-names = "xo";
+ 				clocks = <&xo_board>;
+ 			};
++
++			rpmhpd: power-controller {
++				compatible = "qcom,sm6350-rpmhpd";
++				#power-domain-cells = <1>;
++				operating-points-v2 = <&rpmhpd_opp_table>;
++
++				rpmhpd_opp_table: opp-table {
++					compatible = "operating-points-v2";
++
++					rpmhpd_opp_ret: opp1 {
++						opp-level = <RPMH_REGULATOR_LEVEL_RETENTION>;
++					};
++
++					rpmhpd_opp_min_svs: opp2 {
++						opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
++					};
++
++					rpmhpd_opp_low_svs: opp3 {
++						opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
++					};
++
++					rpmhpd_opp_svs: opp4 {
++						opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
++					};
++
++					rpmhpd_opp_svs_l1: opp5 {
++						opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
++					};
++
++					rpmhpd_opp_nom: opp6 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
++					};
++
++					rpmhpd_opp_nom_l1: opp7 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
++					};
++
++					rpmhpd_opp_nom_l2: opp8 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM_L2>;
++					};
++
++					rpmhpd_opp_turbo: opp9 {
++						opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
++					};
++
++					rpmhpd_opp_turbo_l1: opp10 {
++						opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
++					};
++				};
++			};
++
++			apps_bcm_voter: bcm_voter {
++				compatible = "qcom,bcm-voter";
++			};
  		};
  
-+		rng: rng@793000 {
-+			compatible = "qcom,prng-ee";
-+			reg = <0 0x00793000 0 0x1000>;
-+			clocks = <&gcc GCC_PRNG_AHB_CLK>;
-+			clock-names = "core";
-+		};
-+
- 		tcsr_mutex: hwlock@1f40000 {
- 			compatible = "qcom,tcsr-mutex";
- 			reg = <0x0 0x01f40000 0x0 0x40000>;
+ 		cpufreq_hw: cpufreq@18323000 {
 -- 
 2.33.0
 
