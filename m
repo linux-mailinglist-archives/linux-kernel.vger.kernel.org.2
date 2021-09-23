@@ -2,165 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96290415532
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 03:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D08415535
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 03:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238836AbhIWBtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 21:49:33 -0400
-Received: from mout.gmx.net ([212.227.17.22]:49537 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238177AbhIWBtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 21:49:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632361652;
-        bh=9rj0wRbsRka/mqdZWeaS364ql8AvDUlzY/e1FId8R5E=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=a3u3nYov9mr36WNFwmc3Z7fWCnyb9EJJa201Q9NRotDr5qcIEPb1RmvnZCQx+YtRD
-         tKwqfIem+XodvCbQiKl/eV3qFPxOf3/vMbO7zBbYgfyRQnfiHJUgqeuAOGN8NpBM1c
-         VuXO5znnJ/Gxz+FP1GolJ3WmME4/4geWeKNehL4o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.149.175]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MNt0C-1mDjFU0r28-00OFsT; Thu, 23
- Sep 2021 03:47:32 +0200
-Message-ID: <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
-Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
- nr_running
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 23 Sep 2021 03:47:30 +0200
-In-Reply-To: <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
-References: <20210920142614.4891-1-mgorman@techsingularity.net>
-         <20210920142614.4891-3-mgorman@techsingularity.net>
-         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
-         <20210921103621.GM3959@techsingularity.net>
-         <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
-         <20210922132002.GX3959@techsingularity.net>
-         <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
-         <20210922150457.GA3959@techsingularity.net>
-         <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
-         <20210922173853.GB3959@techsingularity.net>
-         <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S238844AbhIWBto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 21:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238177AbhIWBtm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 21:49:42 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE017C061574;
+        Wed, 22 Sep 2021 18:48:11 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id f2so3295850qvx.2;
+        Wed, 22 Sep 2021 18:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vHchXl8mrU0hcMLr2GF0n33FKRG61T38fqwkdg1AY/Q=;
+        b=iObpCcVfEXOR1qFpSmNg/dL3bBP7IDkI30qoSfwYqrmjrAOA/S7zkogrnLZMUN2kgG
+         KEspLpaVXS8WFLxOjMwPwM3VF+S1fKUMgO7FsnihdnY8yr4VkevWYFFjdR04eICgk7jB
+         PZLTv42hrFGGc2irzQ/LRbtwtbdCyoGAMufnl6nUdmlbe/MAvl5OzKUwCQTt1kWMOA6F
+         /5g1HWDpM7IaNC196Sg6TvEys43fDTdEbMTWjVSosB/anzCMhZYsL7bD2uDdpkFOQwin
+         xZQqTPI4u82z8pfdGDgeyjd8FJ25JNijINchot8wru0ULxm5RlbSDY8zMp6EsshlEMEI
+         3PDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vHchXl8mrU0hcMLr2GF0n33FKRG61T38fqwkdg1AY/Q=;
+        b=aRVsqvgBYqrtp9G4OOcMWTJFYjbP1FM+EwgqNpBpXO0bPZWPrgi6oDpnueTX0eRBjx
+         itdkYjub1nIV8yrLiippeSqzjZcNr4Z7QewWqFZim3O78v53gJcgigPvuAY0RuqJHoUU
+         Gn3v47EmWoftaIZaE7/oGGbJguz49XofwVhVd9gH4vscm1JK2f2z/RYLfsMajeaGZKCm
+         WitA6WbGDuJ1Eg1WW0qjGney27PPykzCX+nVW42CWqhrty+xSMhlfq41aL3bcEbAI29g
+         WB/CXlV9VQzjOvYK0s5sVsyXF087Dwb4OanP65yp98JFAE7+1mH55X4+OFzCgmlTiWSF
+         7nsA==
+X-Gm-Message-State: AOAM530qMlM8MSmpSNvh3nmYrQI27tx6rvycdx3tXEAt0gTqQt/AuWdb
+        teyL01f1Wqm89OZSADOmBhzQS19LrYGLOhTSO8g=
+X-Google-Smtp-Source: ABdhPJxXcDiICkp9V2vpdhBV3Rs+efwY7tasjR5Y6NoCT15J86mqXDDAPpkCgJ8PW42HNo54E8b27JVnfg4ntU5zyuc=
+X-Received: by 2002:a05:6214:584:: with SMTP id bx4mr2261885qvb.40.1632361691038;
+ Wed, 22 Sep 2021 18:48:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:T8IfYZu/IAaSTN9249HczCCLmJcCV9aXk6k4XZsq9bf/NOvbRo1
- jWaFC9J/X+ce+hJmlaXbVfoxt4sa0mO5Sv9jK6ig3DEQxXtHVq2xdpE+Zd0hARu/EVxrWW8
- 1tJ9XzgPVMalVi3no0bzi42B4iPEjT0qoUPIaorGjNPNlQIveEpC3nxGnZMt9PuI5qUoPcl
- r1DOId9pt4BnfNx35OUSg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:V7r5zrQ+5Pc=:TIdvRg8HldsK7eLu6WVo5H
- FXturr0Qzklf7kmhCo6kV8bfW49Fa3oH1b7L8eIAIWp7vWv9KGkm4T1oeIrf5QTouR5HzIQ3J
- prd6uI1JLnTR87Kw6S/+mmK6sQylpyhCp7Wd49Ya+/iRl1agUGTBgchu50M0JhTz6qhO3RjZx
- 3SDz52nCAyx2mdJIyxtZ/luW38jM4WRuCniHNEZF9c1KoBhdk4X819kukrDxcNb+Sh5IWjEn7
- xMf1tOIMg8648f4Twycgg+nqaXWJXtSTAF84WlEMggPS+HFoDmTJahVMmI+/aBE/XXHzBwK/T
- f0mqjvn+vMMy77ljmHo6oGlagTVllvPjTaClo4N6STfEW+4ObnZw+k7oJwJb+h6DOsf0NzRw9
- THh7h/Vcrpej2OKfbkFE/YfYh2ximrugv8LJrWGIj6VQ3r4mSZ5mpav7o3hAKpqPUqZZf4xca
- iklZilCU6KTt18lcYYdLt/bArs5ykXy/nZcvahnKu7j1MYNx/PlWbYBAf+h8YdiA+qQk5YV91
- 41nkzjfl5i+PSZuiCFz7B0knVxjJFg6vMgfYqDKAgFQUnJBZQZnqYkNCwF9NriR1feL1HhxMx
- qMMvIp6wucFSTzBaIZf8ohVwsJpMuRHXu34YFvozw2csk+4LKkWp4cMC+9UEM97j7tgVYp9IQ
- EvdIGKNCGogOmsi9SCtkvrNfudY/zZVbucmKjFSUk6qEWyTDheON78FEIHT0hM0NaKtFdordQ
- cqIfUu/XojfMQBa6o7p7aQdLd1YJ6a0eXhdFd6CjdDP4lov34GklBLpTQyOsvpDnD1flNba46
- Gk1u/7X/wOhvObCfTFyKXczYUhlfKm+PnjBTrF+HrDOQkbhIbeQxhoC1G/B8LrDZIPZu3qZRZ
- dc02Q4j4vYtoT862piNQzO+4QG790g203jhPkl3Gmk0bw4PD3Ngloukhyc1DSBGdGD0mSvr2S
- ccoIfnL/tQuEPI+jC01S0IxvG7+pR5VebuYizxFBblfCm01d7FyV2/kwEAYU2gSmw+8LcujQm
- tE37wad46VjOh/B+x+oTnI1sr/idsAeL5PEU6L/tFl+HDScf5Vyls7tve0/BoVA5ziqRzfDqr
- 97bQtc8BjTnQOM=
+References: <1631092255-25150-1-git-send-email-shengjiu.wang@nxp.com>
+ <1631092255-25150-4-git-send-email-shengjiu.wang@nxp.com> <20210915161624.GA1770838@p14s>
+ <CAA+D8AO0c+jk_k7j=ZvNFsVvC-p_zMLPJDS3qmLjNbJ+U0E9Cg@mail.gmail.com>
+ <20210916165957.GA1825273@p14s> <CAA+D8AN_ni_XmEFNfY0Z0qLAJX00XFSUP1RkJdNQd-MVY6pd4g@mail.gmail.com>
+ <CAA+D8AMaszzT5q8oGhXOtE3W5Ue9S3r=es2sTp2uJ7RwjX8Bzg@mail.gmail.com>
+ <20210917152236.GA1878943@p14s> <CAA+D8ANwXZdXheMkV8VHJ90JT8o+9YXFuE-EjTejijGUa4YALw@mail.gmail.com>
+ <20210922175521.GA2157824@p14s>
+In-Reply-To: <20210922175521.GA2157824@p14s>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 23 Sep 2021 09:48:00 +0800
+Message-ID: <CAA+D8AOXF_0qeg0H8zeSkz5bj8VQT95B1yMo98jSxxHUooYViw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] remoteproc: imx_dsp_rproc: Add remoteproc driver
+ for DSP on i.MX
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-22 at 20:22 +0200, Vincent Guittot wrote:
-> On Wed, 22 Sept 2021 at 19:38, Mel Gorman <mgorman@techsingularity.net> =
-wrote:
-> >
-> >
-> > I'm not seeing an alternative suggestion that could be turned into
-> > an implementation. The current value for sched_wakeup_granularity
-> > was set 12 years ago was exposed for tuning which is no longer
-> > the case. The intent was to allow some dynamic adjustment between
-> > sysctl_sched_wakeup_granularity and sysctl_sched_latency to reduce
-> > over-scheduling in the worst case without disabling preemption entirel=
-y
-> > (which the first version did).
-
-I don't think those knobs were ever _intended_ for general purpose
-tuning, but they did get used that way by some folks.
-
-> >
-> > Should we just ignore this problem and hope it goes away or just let
-> > people keep poking silly values into debugfs via tuned?
+On Thu, Sep 23, 2021 at 1:55 AM Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
 >
-> We should certainly not add a bandaid because people will continue to
-> poke silly value at the end. And increasing
-> sysctl_sched_wakeup_granularity based on the number of running threads
-> is not the right solution.
-
-Watching my desktop box stack up large piles of very short running
-threads, I agree, instantaneous load looks like a non-starter.
-
->  According to the description of your
-> problem that the current task doesn't get enough time to move forward,
-> sysctl_sched_min_granularity should be part of the solution. Something
-> like below will ensure that current got a chance to move forward
-
-Nah, progress is guaranteed, the issue is a zillion very similar short
-running threads preempting each other with no win to be had, thus
-spending cycles in the scheduler that are utterly wasted.  It's a valid
-issue, trouble is teaching the scheduler to recognize that situation
-without mucking up other situations where there IS a win for even very
-short running threads say, doing a synchronous handoff; preemption is
-cheaper than scheduling off if the waker is going be awakened again in
-very short order.
-
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 9bf540f04c2d..39d4e4827d3d 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7102,6 +7102,7 @@ static void check_preempt_wakeup(struct rq *rq,
-> struct task_struct *p, int wake_
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int scale =3D cfs_rq->nr_runn=
-ing >=3D sched_nr_latency;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int next_buddy_marked =3D 0;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int cse_is_idle, pse_is_idle;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long delta_exec;
+> On Wed, Sep 22, 2021 at 09:35:54AM +0800, Shengjiu Wang wrote:
+> > Hi Mathieu
+> >
+> > On Fri, Sep 17, 2021 at 11:22 PM Mathieu Poirier
+> > <mathieu.poirier@linaro.org> wrote:
+> > >
+> > > On Fri, Sep 17, 2021 at 05:44:44PM +0800, Shengjiu Wang wrote:
+> > > > On Fri, Sep 17, 2021 at 1:20 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Sep 17, 2021 at 1:00 AM Mathieu Poirier
+> > > > > <mathieu.poirier@linaro.org> wrote:
+> > > > > >
+> > > > > > [...]
+> > > > > >
+> > > > > > > > > +
+> > > > > > > > > +/**
+> > > > > > > > > + * imx_dsp_rproc_elf_load_segments() - load firmware segments to memory
+> > > > > > > > > + * @rproc: remote processor which will be booted using these fw segments
+> > > > > > > > > + * @fw: the ELF firmware image
+> > > > > > > > > + *
+> > > > > > > > > + * This function specially checks if memsz is zero or not, otherwise it
+> > > > > > > > > + * is mostly same as rproc_elf_load_segments().
+> > > > > > > > > + */
+> > > > > > > > > +static int imx_dsp_rproc_elf_load_segments(struct rproc *rproc,
+> > > > > > > > > +                                        const struct firmware *fw)
+> > > > > > > > > +{
+> > > > > > > > > +     struct device *dev = &rproc->dev;
+> > > > > > > > > +     u8 class = fw_elf_get_class(fw);
+> > > > > > > > > +     u32 elf_phdr_get_size = elf_size_of_phdr(class);
+> > > > > > > > > +     const u8 *elf_data = fw->data;
+> > > > > > > > > +     const void *ehdr, *phdr;
+> > > > > > > > > +     int i, ret = 0;
+> > > > > > > > > +     u16 phnum;
+> > > > > > > > > +
+> > > > > > > > > +     ehdr = elf_data;
+> > > > > > > > > +     phnum = elf_hdr_get_e_phnum(class, ehdr);
+> > > > > > > > > +     phdr = elf_data + elf_hdr_get_e_phoff(class, ehdr);
+> > > > > > > > > +
+> > > > > > > > > +     /* go through the available ELF segments */
+> > > > > > > > > +     for (i = 0; i < phnum; i++, phdr += elf_phdr_get_size) {
+> > > > > > > > > +             u64 da = elf_phdr_get_p_paddr(class, phdr);
+> > > > > > > > > +             u64 memsz = elf_phdr_get_p_memsz(class, phdr);
+> > > > > > > > > +             u64 filesz = elf_phdr_get_p_filesz(class, phdr);
+> > > > > > > > > +             u64 offset = elf_phdr_get_p_offset(class, phdr);
+> > > > > > > > > +             u32 type = elf_phdr_get_p_type(class, phdr);
+> > > > > > > > > +             void *ptr;
+> > > > > > > > > +             bool is_iomem;
+> > > > > > > > > +
+> > > > > > > > > +             if (type != PT_LOAD || !memsz)
+> > > > > > > >
+> > > > > > > > You did a really good job with adding comments but this part is undocumented...
+> > > > > > > > If I read this correctly you need to check for !memsz because some part of
+> > > > > > > > the program segment may have a header but its memsz is zero, in which case it can
+> > > > > > > > be safely skipped.  So why is that segment in the image to start with, and why
+> > > > > > > > is it marked PT_LOAD if it is not needed?  This is very puzzling...
+> > > > > > >
+> > > > > > > Actually I have added comments in the header of this function.
+> > > > > >
+> > > > > > Indeed there is a mention of memsz in the function's header but it doesn't
+> > > > > > mention _why_ this is needed, and that is what I'm looking for.
+> > > > > >
+> > > > > > >
+> > > > > > > memsz= 0 with PT_LOAD issue, I have asked the toolchain's vendor,
+> > > > > > > they said that this case is allowed by elf spec...
+> > > > > > >
+> > > > > > > And in the "pru_rproc.c" and "mtk_scp.c", seems they met same problem
+> > > > > > > they also check the filesz in their internal xxx_elf_load_segments() function.
+> > > > > >
+> > > > > > In both cases they are skipping PT_LOAD sections where "filesz" is '0', which
+> > > > > > makes sense because we don't know how many bytes to copy.  But here you are
+> > > > > > skipping over a PT_LOAD section with a potentially valid filesz, and that is the
+> > > > > > part I don't understand.
+> > > > >
+> > > > > Ok, I can use filesz instead. For my case, filesz = memsz = 0,
+> > > > > it is the same result I want.
+> > >
+> > > If that is the case then rproc_elf_load_segments() should work, i.e it won't
+> > > copy anything.  If rproc_elf_load_segments() doesn't work for you then there are
+> > > corner cases you haven't told me about.
+> > >
+> > > > >
+> > > > > The reason why I use "memsz '' is because there is  "if (filesz > memsz) "
+> > > > > check after this,  if memsz is zero, then "filesz" should be zero too, other
+> > > > > values are not allowed.
+> > > >
+> > > > But I still think checking "!memsz" is better than filesz,  because
+> > > > memsz > filesz is allowed (filesz = 0),  the code below can be executed.
+> > > > filesz > memsz is not allowed.
 >
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(se =3D=3D pse))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return;
-> @@ -7161,6 +7162,13 @@ static void check_preempt_wakeup(struct rq *rq,
-> struct task_struct *p, int wake_
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return;
+> The question remains the same - have you seen instances where memsz > filesz?
+> Also, can you point me to the reference where it is said that memsz is allowed?
+> And if it is allowed than how do we know that this program section has valid
+> data, because after all, filesz is 0?
+
+https://refspecs.linuxbase.org/elf/elf.pdf
+
+This is the specification. page 40,  p_filesz and p_memsz can be zero.
+
+p_filesz This member gives the number of bytes in the file image of
+the segment; it may be
+zero.
+p_memsz This member gives the number of bytes in the memory image of
+the segment; it
+may be zero.
+
+And page 41,  p_memsz can > p_filesz.
+
+PT_LOAD The array element specifies a loadable segment, described by
+p_filesz and
+p_memsz. The bytes from the file are mapped to the beginning of the memory
+segment. If the segment's memory size (p_memsz) is larger than the file size
+(p_filesz), the "extra'' bytes are defined to hold the value 0 and to follow the
+segment's initialized area. The file size may not be larger than the
+memory size.
+Loadable segment entries in the program header table appear in ascending order,
+sorted on the p_vaddr member
+
+
+best regards
+wang shengjiu
+
 >
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 update_curr(cfs_rq_of(se));
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 delta_exec =3D se->sum_exec_runtim=
-e - se->prev_sum_exec_runtime;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Ensure that current got a =
-chance to move forward
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (delta_exec < sysctl_sched_min_=
-granularity)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 return;
-> +
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (wakeup_preempt_entity(se,=
- pse) =3D=3D 1) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 /*
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 * Bias pick_next to pick the sched entity that is
-
-Yikes!  If you do that, you may as well go the extra nanometer and rip
-wakeup preemption out entirely, same result, impressive diffstat.
-
-	-Mike
+> > > >
+> > > > What do you think?
+> > >
+> > > I don't see a need to add a custom implementation for things that _may_ happen.
+> > > If using the default rproc_elf_load_segments() works than go with that.  We can deal
+> > > with problems if/when there is a need for it.
+> > >
+> >
+> > The default rproc_elf_load_segments() with filesz = memsz = 0, then the
+> > rproc_da_to_va() return ptr=NULL, then rproc_elf_load_segments() will return
+> > with error.  So this is the reason to add a custom implementation.
+>
+> Ok, I see about rproc_da_to_va() returning NULL and failing everything from
+> there one.
+>
+> >
+> > best regards
+> > wang shengjiu
