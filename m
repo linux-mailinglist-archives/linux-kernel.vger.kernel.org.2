@@ -2,124 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F03415D21
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6BB415D44
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240690AbhIWL6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:58:32 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:22955 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240665AbhIWL6W (ORCPT
+        id S240709AbhIWMA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:00:27 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:47518 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240710AbhIWMAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:58:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632398197;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=2vKLrD5/RVYcIrw7lc7p15FS32niKDCwgYtSX9xJmrI=;
-    b=rEyce8TZ5vvZOERd5TC8RhsnBi/ckqcpKvyyPMLYTvujjXcn+zd60xCIBZRhGTZy8A
-    OeT2pp5TcjeheiKJejxIer+A8rKdEUYLZl3NLizPqVIwXt7ybrvjpBY4rV4WL+ZDR2iY
-    OYxG3ev1k+KkYbDHOeWKm1c1/fHchvtG7ETG0HW+DYlOwSeIXa1D2JrHd8vIZuubxD+N
-    KaEtslTbMMWAIhtxSwytLrZlc2dTn3tx77FlJfeCF+RU1azAnk4h914DkfiiYJvMtms5
-    bo4s8f8E9prceKQ7i78tEAyjJWaheGumm7+SK/YKymx4EUM0iPMuDrJjTNmt5Ng3WBlO
-    W8Gg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3iMUQeg=="
-X-RZG-CLASS-ID: mo00
-Received: from mbp-13-nikolaus.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 SBL|AUTH)
-    with ESMTPSA id I01f74x8NBubKDq
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 23 Sep 2021 13:56:37 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <B7C9EEE8-F999-4105-B805-1B32619A3847@goldelico.com>
-Date:   Thu, 23 Sep 2021 13:56:36 +0200
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6CEB196E-231F-4548-B527-CFF83B587501@goldelico.com>
-References: <20210922205555.496871-1-paul@crapouillou.net>
- <20210922205555.496871-7-paul@crapouillou.net>
- <32234186-1802-4FDF-801A-B14E48FB86D8@goldelico.com>
- <RTPVZQ.WN90B9MHPMZ13@crapouillou.net>
- <896D04E4-4058-474B-8BD2-7F21B1C754E4@goldelico.com>
- <YUxIkdGcGnBhcT0y@pendragon.ideasonboard.com>
- <3764505C-7CA9-40C4-8CFA-8B0F2361E6D5@goldelico.com>
- <YUxQ9k/CDYz20rYo@pendragon.ideasonboard.com>
- <B7C9EEE8-F999-4105-B805-1B32619A3847@goldelico.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Thu, 23 Sep 2021 08:00:24 -0400
+X-UUID: ac0a49c064464231a573907a1adefbbf-20210923
+X-UUID: ac0a49c064464231a573907a1adefbbf-20210923
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1934805908; Thu, 23 Sep 2021 19:58:50 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Sep 2021 19:58:49 +0800
+Received: from localhost.localdomain (10.17.3.154) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Sep 2021 19:58:48 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, <anan.sun@mediatek.com>,
+        <chao.hao@mediatek.com>, <yen-chang.chen@mediatek.com>
+Subject: [PATCH v3 00/33] MT8195 IOMMU SUPPORT
+Date:   Thu, 23 Sep 2021 19:58:07 +0800
+Message-ID: <20210923115840.17813-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset adds MT8195 iommu support.
+
+MT8195 have 3 IOMMU HWs. 2 IOMMU HW is for multimedia, and 1 IOMMU HW is
+for infra-master, like PCIe/USB.
+
+About the 2 MM IOMMU HW, something like this:
+
+        IOMMU(VDO)          IOMMU(VPP)
+           |                   |
+      SMI_COMMON(VDO)      SMI_COMMON(VPP)
+      ---------------     ----------------
+      |      |   ...      |      |     ...
+    larb0 larb2  ...    larb1 larb3    ...
+
+these two MM IOMMU HW share a pgtable.
+
+About the INFRA IOMMU, it don't have larbs, the master connects the iommu
+directly. It use a independent pgtable.
+
+Also, mt8195 IOMMU bank supports. Normally the IOMMU register size only
+is 0x1000. In this IOMMU HW, the register size is 5 * 0x1000. each 0x1000
+is a bank. the banks' register look like this:
+     ----------------------------------------
+     |bank0  | bank1 | bank2 | bank3 | bank4|
+     ----------------------------------------
+     |global |
+     |control|         null
+     |regs   |
+     -----------------------------------------
+     |bank   |bank   |bank   |bank   |bank   |
+     |regs   |regs   |regs   |regs   |regs   |
+     |       |       |       |       |       |
+     -----------------------------------------
+All the banks share some global control registers, and each bank have its
+special bank registers, like pgtable base register, tlb operation registers,
+the fault status registers.
+ 
+In mt8195, we enable this bank feature for infra iommu, We put PCIe in bank0
+and USB in bank4. they have independent pgtable.
+
+patch[1..23]:  support mt8195 iommu. 
+patch[24..33]: support bank feature.
+
+TODO: there is another APU_IOMMU in mt8195, this should depend on APU patches.
+thus, we need add that feature after that.
+
+Change note:
+v3: 1) base on v5.15-rc1
+    2) Adjust devlink with smi-common, not use the property(sub-sommon).
+    3) Adjust tlb_flush_all flow,
+       a) Fix tlb_flush_all only is supported in bank0.
+       b) add tlb-flush-all in the resume callback.
+       c) remove the pm status checking in tlb-flush-all.
+       The reason are showed in the commit message.
+    4) Allow IOMMU_DOMAIN_UNMANAGED since PCIe VFIO use that.
+    5) Fix a clk warning and a null abort when unbind the iommu driver.
+
+v2: https://lore.kernel.org/linux-mediatek/20210813065324.29220-1-yong.wu@mediatek.com/
+    1) Base on v5.14-rc1.
+    2) Fix build fail for arm32.
+    3) Fix dt-binding issue from Rob.
+    4) Fix the bank issue when tlb flush. v1 always use bank->base.
+    5) adjust devlink with smi-common since the node may be smi-sub-common.
+    6) other changes: like reword some commit message(removing many
+       "This patch..."); seperate serveral patches.
+
+v1: https://lore.kernel.org/linux-mediatek/20210630023504.18177-1-yong.wu@mediatek.com/
+    Base on v5.13-rc1
+
+Yong Wu (33):
+  dt-bindings: mediatek: mt8195: Add binding for MM IOMMU
+  dt-bindings: mediatek: mt8195: Add binding for infra IOMMU
+  iommu/mediatek: Fix 2 HW sharing pgtable issue
+  iommu/mediatek: Remove clk_disable in mtk_iommu_remove
+  iommu/mediatek: Adapt sharing and non-sharing pgtable case
+  iommu/mediatek: Add 12G~16G support for multi domains
+  iommu/mediatek: Add a flag DCM_DISABLE
+  iommu/mediatek: Add a flag NON_STD_AXI
+  iommu/mediatek: Remove for_each_m4u in tlb_sync_all
+  iommu/mediatek: Add tlb_lock in tlb_flush_all
+  iommu/mediatek: Remove the granule in the tlb flush
+  iommu/mediatek: Always tlb_flush_all when each PM resume
+  iommu/mediatek: Remove the power status checking in tlb flush all
+  iommu/mediatek: Always enable output PA over 32bits in isr
+  iommu/mediatek: Add SUB_COMMON_3BITS flag
+  iommu/mediatek: Add IOMMU_TYPE flag
+  iommu/mediatek: Contain MM IOMMU flow with the MM TYPE
+  iommu/mediatek: Adjust device link when it is sub-common
+  iommu/mediatek: Add list_del in mtk_iommu_remove
+  iommu/mediatek: Allow IOMMU_DOMAIN_UNMANAGED for PCIe VFIO
+  iommu/mediatek: Add infra iommu support
+  iommu/mediatek: Add PCIe support
+  iommu/mediatek: Add mt8195 support
+  iommu/mediatek: Only adjust code about register base
+  iommu/mediatek: Just move code position in hw_init
+  iommu/mediatek: Add mtk_iommu_bank_data structure
+  iommu/mediatek: Initialise bank HW for each a bank
+  iommu/mediatek: Add bank_nr and bank_enable
+  iommu/mediatek: Change the domid to iova_region_id
+  iommu/mediatek: Get the proper bankid for multi banks
+  iommu/mediatek: Initialise/Remove for multi bank dev
+  iommu/mediatek: Backup/restore regsiters for multi banks
+  iommu/mediatek: mt8195: Enable multi banks for infra iommu
+
+ .../bindings/iommu/mediatek,iommu.yaml        |  20 +-
+ drivers/iommu/mtk_iommu.c                     | 799 ++++++++++++------
+ drivers/iommu/mtk_iommu.h                     |  56 +-
+ .../dt-bindings/memory/mt8195-memory-port.h   | 408 +++++++++
+ include/dt-bindings/memory/mtk-memory-port.h  |   2 +
+ 5 files changed, 1014 insertions(+), 271 deletions(-)
+ create mode 100644 include/dt-bindings/memory/mt8195-memory-port.h
+
+-- 
+2.18.0
 
 
-Hi Laurent,
-
-> IMHO it is leaving (mature) dw-hdmi untouched and make attachment of a =
-connector
-> in ingenic_drm_bind() depend on some condition.
-
-Since I don't know details of the DRM bridge/encoder/connector APIs),=20
-let me reformulate the quersion for a condition specifically.
-
-How can one find out in this code fragment from Paul's patch
-if drm_brige_attach() did create a connector or not?
-
-I.e. did call drm_connector_attach_encoder(connector, =
-hdmi->bridge.encoder);
-on its own?
-
-@@ -1154,20 +1186,36 @@ static int ingenic_drm_bind(struct device *dev, =
-bool has_components)
-			bridge =3D devm_drm_panel_bridge_add_typed(dev, =
-panel,
-								 =
-DRM_MODE_CONNECTOR_DPI);
-
-		drm_encoder_helper_add(encoder, =
-&ingenic_drm_encoder_helper_funcs);
-
--		ret =3D drm_bridge_attach(encoder, bridge, NULL, 0);
--		if (ret)
-+		ib->bridge.funcs =3D &ingenic_drm_bridge_funcs;
-+		ib->next_bridge =3D bridge;
-+
-+		ret =3D drm_bridge_attach(encoder, &ib->bridge, NULL,
-+					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-+		if (ret) {
-+			dev_err(dev, "Unable to attach bridge\n");
-			return ret;
-+		}
-+
-+		connector =3D drm_bridge_connector_init(drm, encoder);
-+		if (IS_ERR(connector)) {
-+			dev_err(dev, "Unable to init connector\n");
-+			return PTR_ERR(connector);
-+		}
-+
-+		drm_connector_attach_encoder(connector, encoder);
-	}
-
-A problem may be that "connector" is unknown before =
-drm_bridge_connector_init()
-is called.
-
-Then I think I can propose a fallback solution to drm_bridge_attach(, 0) =
-if
-drm_bridge_attach(, DRM_BRIDGE_ATTACH_NO_CONNECTOR) fails.=20
-
-BR and thanks,
-Nikolaus=
