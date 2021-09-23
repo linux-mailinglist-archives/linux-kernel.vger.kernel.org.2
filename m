@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85964165BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45DF4165BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243021AbhIWTLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 15:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
+        id S243121AbhIWTLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 15:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242988AbhIWTLX (ORCPT
+        with ESMTP id S242903AbhIWTLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 15:11:23 -0400
+        Thu, 23 Sep 2021 15:11:24 -0400
 Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0821CC0613E3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CC2C0613E4
         for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 12:09:43 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id u18so20154130wrg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 12:09:42 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id i23so20218427wrb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 12:09:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pXCipzl9B56mKxod5ijOn6eiX+PEO+AJkhtqSl6kGI4=;
-        b=ZJzST3r+CA9lBGzY3CaQqlpPJx/tgcQlZpizV1JlmMNPOENwdZxOqZRHI81+0L1fd9
-         ATgQne5y0bS0a3y5j6vSkxcgEHBUVfaWZuKOmRIjSOU52YucmLCkdNsPr+m3nT3jL/ZB
-         9kfAsESrfYYi71qoW7cZkVLrgba8Hw+Qt6B0ubus5YKrRT7+koeaCI1xvHhTdL4o/Num
-         +A1aiGyZ08YdOMd/RH6qYS2X6CKf/hz8LNlhDgk5FaEQn//BAexgDhG9IlJRLPg/t6qg
-         jhrFJ1C25WdrN/1JD0W43e7tkMaTo2edroqUKKCr/BwisY2Cx4QJtuQnhHH2N69NSR/X
-         AREw==
+        bh=/zLW5/q9hznY+XgxCCcCfBzxU/PyaF17WOIkChCx4sE=;
+        b=qFS8mSKuV+hhm9BXS2Xmv3gKHj81OhKA7zEvWOmnf6MsBHuJSu5pfEqewPlSYTeB2y
+         RaGnH6BDsSS2LF6WTONxjJwuZHgzoDanq70OFzcH6Ael68kaVVB/1wXXZHtFsQvKA/Fc
+         3wDF0UFQtSmBoOAMd+stfuyTjFe3KypNoxSjdA/CxuvrjFKT2cvwTW8vcO4/bZryja1Q
+         gNI2XmSNNXfWisvlWGqnwg9c5cPSLQJcJxaEZw7+htqdSFcVDvIP6Ge8vht/L27WmvJy
+         Wu1pFpqhURLP10MY79qkcutEwZAkvOb7JQ7Z9gr0mGw+yjjoGU7WxkqBAbqYddCgIejf
+         3Cyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pXCipzl9B56mKxod5ijOn6eiX+PEO+AJkhtqSl6kGI4=;
-        b=V1DhfNw6lvbz7gt2ley+79vRFyohjqEk1Mkss+A1rmaouzeKwFNtnIgpTLyNSvdMOs
-         KnCM+1nY8ZUSxNX3IsgjQQIfrNcnIeq/gKyYO0Wz3ZwSPWyPcyYi1otW9kSYI/yK7tW8
-         iUYIlG0U4ZFosqygrk8Eugs83H1HuRZVVJM1rgXmw0PzT2M2WvISimPrTyJIBMJQGUoC
-         eSOAkWiFr53DcwXkQOhIhrdET2WFDjR6bLYsVzAJA1sz5YYprn+YrXYyQH0wagXysHug
-         sh6IDyWB2EjKuCv9W0uL2wN9aoByb8epKONJn6D/HUvfIkeJDVcQTWcRe/vrhagB+WaX
-         JnOQ==
-X-Gm-Message-State: AOAM530OKj7jkm0a4aUvYIEz8nJwZWXPYN9xmP2z3qS9wF35v9VhyipR
-        je9V/jP76iMHSqr/b4V0gcw=
-X-Google-Smtp-Source: ABdhPJwEve5TqBZzzuhVP3S+YKCIlu/pqB2yEWi+lrVE6jFUbCD/aCs2n+Uost4KUD7uZqe/18WTWw==
-X-Received: by 2002:a05:600c:2046:: with SMTP id p6mr18334524wmg.88.1632424181658;
-        Thu, 23 Sep 2021 12:09:41 -0700 (PDT)
+        bh=/zLW5/q9hznY+XgxCCcCfBzxU/PyaF17WOIkChCx4sE=;
+        b=kDwwKdv4Hq2MnRDW41zzGp/ayxn50T1fIh0tMlgnsJw7qcSL8EKxpCpFW9MC/DxCe/
+         oaKbG/skI0vhTepAft0CS9+EiFF+Od98RRNl7vqFKUkg1BE/iLzlrpuyArrym1TqQ8Dj
+         2UF7CIxBdZw/cHlZvtLP7z0FNwvKS4ym/f0pwwpoiBXldMKn57EWJWSidkcZxjIR+FEF
+         mWEPAe8ZoTSl3vpD59ClusXp0JofeCvdvVvBXZLCgJbXiCZ+e/LBnGoM8PbzsYJI4Yai
+         B/tH800dquKh1ID5j7pPX2xlpAGUHKdBaZOfBeFepPv/8SxmqBSywhyUFvk4FzKBkPh+
+         zBCQ==
+X-Gm-Message-State: AOAM531z/1QR3uh4Z4MZjlqLRWM30//C6PtqPw/px/NUl0VVgL0VJtAe
+        fdS9yeX4A7tKsUIWFdqcfeU=
+X-Google-Smtp-Source: ABdhPJyejryliBu6e6AiSWQfvg5+/9qzatH+0aD9U35uLbmR82DaM0hR+D082pQ0ARbfcv88Rk/zBw==
+X-Received: by 2002:adf:fb50:: with SMTP id c16mr7247580wrs.120.1632424182491;
+        Thu, 23 Sep 2021 12:09:42 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::cad])
-        by smtp.gmail.com with ESMTPSA id e28sm6323591wrc.10.2021.09.23.12.09.40
+        by smtp.gmail.com with ESMTPSA id e28sm6323591wrc.10.2021.09.23.12.09.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 12:09:41 -0700 (PDT)
+        Thu, 23 Sep 2021 12:09:42 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 15/17] staging: r8188eu: remove rtw_setrttbl_cmd()
-Date:   Thu, 23 Sep 2021 21:09:18 +0200
-Message-Id: <20210923190920.3580-16-straube.linux@gmail.com>
+Subject: [PATCH 16/17] staging: r8188eu: remove rtw_setstandby_cmd()
+Date:   Thu, 23 Sep 2021 21:09:19 +0200
+Message-Id: <20210923190920.3580-17-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210923190920.3580-1-straube.linux@gmail.com>
 References: <20210923190920.3580-1-straube.linux@gmail.com>
@@ -65,67 +65,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function rtw_setrttbl_cmd() is not used, remove it.
+Function rtw_setstandby_cmd() is not used, remove it.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_cmd.c    | 30 -----------------------
+ drivers/staging/r8188eu/core/rtw_cmd.c    | 32 -----------------------
  drivers/staging/r8188eu/include/rtw_cmd.h |  1 -
- 2 files changed, 31 deletions(-)
+ 2 files changed, 33 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index 52edf3def405..d8acc6701248 100644
+index d8acc6701248..8173756fdeb8 100644
 --- a/drivers/staging/r8188eu/core/rtw_cmd.c
 +++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -815,36 +815,6 @@ u8 rtw_clearstakey_cmd(struct adapter *padapter, u8 *psta, u8 entry, u8 enqueue)
- 	return res;
+@@ -334,38 +334,6 @@ int rtw_cmd_thread(void *context)
+ 	thread_exit();
  }
  
--u8 rtw_setrttbl_cmd(struct adapter  *padapter, struct setratable_parm *prate_table)
+-u8 rtw_setstandby_cmd(struct adapter *padapter, uint action)
 -{
 -	struct cmd_obj *ph2c;
--	struct setratable_parm *psetrttblparm;
+-	struct usb_suspend_parm *psetusbsuspend;
 -	struct cmd_priv	*pcmdpriv = &padapter->cmdpriv;
--	u8	res = _SUCCESS;
 -
--	ph2c = kzalloc(sizeof(struct cmd_obj), GFP_KERNEL);
+-	u8 ret = _SUCCESS;
+-
+-	ph2c = kzalloc(sizeof(struct cmd_obj), GFP_ATOMIC);
 -	if (!ph2c) {
--		res = _FAIL;
+-		ret = _FAIL;
 -		goto exit;
 -	}
--	psetrttblparm = kzalloc(sizeof(struct setratable_parm), GFP_KERNEL);
 -
--	if (!psetrttblparm) {
+-	psetusbsuspend = kzalloc(sizeof(struct usb_suspend_parm), GFP_ATOMIC);
+-	if (!psetusbsuspend) {
 -		kfree(ph2c);
--		res = _FAIL;
+-		ret = _FAIL;
 -		goto exit;
 -	}
 -
--	init_h2fwcmd_w_parm_no_rsp(ph2c, psetrttblparm, GEN_CMD_CODE(_SetRaTable));
+-	psetusbsuspend->action = action;
 -
--	memcpy(psetrttblparm, prate_table, sizeof(struct setratable_parm));
+-	init_h2fwcmd_w_parm_no_rsp(ph2c, psetusbsuspend, GEN_CMD_CODE(_SetUsbSuspend));
 -
--	res = rtw_enqueue_cmd(pcmdpriv, ph2c);
+-	ret = rtw_enqueue_cmd(pcmdpriv, ph2c);
+-
 -exit:
 -
--	return res;
+-	return ret;
 -}
 -
- u8 rtw_addbareq_cmd(struct adapter *padapter, u8 tid, u8 *addr)
- {
- 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
+ /*
+ rtw_sitesurvey_cmd(~)
+ 	### NOTE:#### (!!!!)
 diff --git a/drivers/staging/r8188eu/include/rtw_cmd.h b/drivers/staging/r8188eu/include/rtw_cmd.h
-index 9ec0332e96f4..8895874a654b 100644
+index 8895874a654b..6ae0499cd81f 100644
 --- a/drivers/staging/r8188eu/include/rtw_cmd.h
 +++ b/drivers/staging/r8188eu/include/rtw_cmd.h
-@@ -756,7 +756,6 @@ u8 rtw_disassoc_cmd(struct adapter *padapter, u32 deauth_timeout_ms, bool enqueu
- u8 rtw_setopmode_cmd(struct adapter  *padapter, enum ndis_802_11_network_infra networktype);
- u8 rtw_setdatarate_cmd(struct adapter  *padapter, u8 *rateset);
- u8 rtw_setrfintfs_cmd(struct adapter  *padapter, u8 mode);
--u8 rtw_setrttbl_cmd(struct adapter  *padapter, struct setratable_parm *prate_table);
+@@ -744,7 +744,6 @@ struct TDLSoption_param
+ #define H2C_CMD_OVERFLOW	0x06
+ #define H2C_RESERVED		0x07
  
- u8 rtw_gettssi_cmd(struct adapter  *padapter, u8 offset,u8 *pval);
- u8 rtw_setfwdig_cmd(struct adapter*padapter, u8 type);
+-u8 rtw_setstandby_cmd(struct adapter *padapter, uint action);
+ u8 rtw_sitesurvey_cmd(struct adapter  *padapter, struct ndis_802_11_ssid *ssid,
+ 		      int ssid_num, struct rtw_ieee80211_channel *ch,
+ 		      int ch_num);
 -- 
 2.33.0
 
