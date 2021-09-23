@@ -2,275 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3348F415A8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE55415A93
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240090AbhIWJGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:06:37 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55914 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240127AbhIWJGg (ORCPT
+        id S240074AbhIWJJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:09:11 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:55239 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239985AbhIWJJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:06:36 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5525922346;
-        Thu, 23 Sep 2021 09:05:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632387904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SlpT/lxAM3jzsI+Mgdob12kTvoXiVmms10P//QNB5AM=;
-        b=iJTsPXCZYqt7+JPZVlPz+d97attND1bUg4UgMjSGHD6dztJbvcmzF6AFh5gEbvKFmXg0uJ
-        lCq2nlY6Q4mbQ43BR52LvI0eD26NVg+7csnAhVBROg2WN95lA0HbDAAyOxYsz1KQJnjw5N
-        pJ7ELKTtB5XYS6h387+HTsjodpvSzc0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1C26413DCA;
-        Thu, 23 Sep 2021 09:05:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id H9zeBEBDTGE/MQAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 09:05:04 +0000
-Subject: Re: [PATCH 2/2] xen-pciback: prepare for the split for stub and PV
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>
-References: <20210922101422.2319240-1-andr2000@gmail.com>
- <20210922101422.2319240-2-andr2000@gmail.com>
- <alpine.DEB.2.21.2109221407350.17979@sstabellini-ThinkPad-T480s>
- <4552e4b6-21a8-4829-16b4-7cda8ba0c0d1@epam.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <7880dee9-7372-5a25-db55-018f21e8b08c@suse.com>
-Date:   Thu, 23 Sep 2021 11:05:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 23 Sep 2021 05:09:09 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M3DeV-1mQJtd1Rm9-003eLa; Thu, 23 Sep 2021 11:07:36 +0200
+Received: by mail-wr1-f52.google.com with SMTP id d6so14988384wrc.11;
+        Thu, 23 Sep 2021 02:07:36 -0700 (PDT)
+X-Gm-Message-State: AOAM532OwlixegQ87DTkYLrhI/o+G9odB5cN0mLwXOcFRcXMp7ku4rO1
+        F3rLy39nJkWt97bmOveYDYADJwIOooEJ9Gof8lE=
+X-Google-Smtp-Source: ABdhPJw02Ym59JthBlWy2+omRXFea233bI9/OcKwe2cstYlMYfujSYUJUn4Jiyk/dDpmx1aXHsbwdLIbdp4hV2OlXgA=
+X-Received: by 2002:a5d:6a08:: with SMTP id m8mr3711232wru.336.1632388055871;
+ Thu, 23 Sep 2021 02:07:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4552e4b6-21a8-4829-16b4-7cda8ba0c0d1@epam.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Raagvfdh0L7U0w5qqCjIvjKl35tyxY7y3"
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
+ <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+ <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+ <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
+ <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
+ <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
+ <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
+ <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com> <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com>
+In-Reply-To: <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 23 Sep 2021 11:07:18 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com>
+Message-ID: <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:EI1qVFztvs+UMxa32vglsL3nwIKf4VCJ7JKtt+urFuH29VeuAKJ
+ 0K0iZ6/wsJEvOLT4COT1uPMNZK8/tfYkedZDp560XVhCpyh2gxTCfSWhp7QwNfGjF2X8z1T
+ F7bvol1/Bo/r9mSMUM3pccrR8zvDUXSd9pJMs4PbRRCbLUMfqhcU04rTN6JIwiuk5sBu0xB
+ TFzVNwDOn2oVYPuX7aDXg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kMvUb7KObPk=:H0GKPhAsY3vbIbiBRRK24f
+ IBl18SfcPLLSrNhmzPOnbh7XmdReO5FbYIIimjg1lsFt/+mqXZVHHeu3T3rOaLe4H1GIOXIOi
+ 2scMjl2I/UR7Hae9XXxQVN1zyYEIAoA6W2q5p5P4BPepSlUPsj5gBeRTzXhVna6cpU4+ATnvX
+ vlckDUpfZ4CuOmO1mbBM+WMGvyD2NB4dTyIUQiDdvXzR8wEey8fA8OHKCkvwm2cvf5OYF3hMp
+ 4B2yUKQMb2Qyyif4JyOq0sMe34AT3nWnh017RLlP/FN+LL3Uz+bBoDnZBclrVWRTqwMpVdxqs
+ WbKg9mSqSgmdjuiycLkp2T8WV4KWmIo3go/V3M8ZOJkO4He4EE8Fsuuty70wzcMxYXT8+zIu2
+ QmIJtQ5rG1R0If6Q38xyGeLbYHQNKZtEUAbqsW7vJVHXzutAp6HS+nPzP8hoZoMnNLV6x8YYe
+ QRuQXWVFuQiZmfdmqygeknNkAtd74A4gpacfSbbEqxQwqhYOBIuFfHp1ZcT47IUXGg5uK1WCK
+ CqjzbYz2lc2dNycye9Uf03BjUB9WQ/b/zYUhwusQFNT8FVE3Du1D0w0PEUdhGwA7gGXOVyINs
+ WPwpt3/MZF+EUYY5ZhmHWkXkyHgugTM3ZZIr/RYjIxN2drAwINrF9zesaqM+jO/+FkQhLJthI
+ FnmliKhbgGLLboQi7U3MutLSdcBpCf4cKu88neyqdM00YWJ0j6j+ESZsPB6rPRWTK+0bTKl6p
+ cnU/iSNj4z3ICfOzSmbCxVe8TUfSJ+4pBf2M4g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Raagvfdh0L7U0w5qqCjIvjKl35tyxY7y3
-Content-Type: multipart/mixed; boundary="GNX9GoSgpMQWceOML5nwDmElT2X4pKTAT";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Cc: "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
- "julien@xen.org" <julien@xen.org>, "jbeulich@suse.com" <jbeulich@suse.com>,
- Oleksandr Andrushchenko <andr2000@gmail.com>
-Message-ID: <7880dee9-7372-5a25-db55-018f21e8b08c@suse.com>
-Subject: Re: [PATCH 2/2] xen-pciback: prepare for the split for stub and PV
-References: <20210922101422.2319240-1-andr2000@gmail.com>
- <20210922101422.2319240-2-andr2000@gmail.com>
- <alpine.DEB.2.21.2109221407350.17979@sstabellini-ThinkPad-T480s>
- <4552e4b6-21a8-4829-16b4-7cda8ba0c0d1@epam.com>
-In-Reply-To: <4552e4b6-21a8-4829-16b4-7cda8ba0c0d1@epam.com>
+()On Thu, Sep 23, 2021 at 8:36 AM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> On Thu, Sep 23, 2021 at 7:51 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > I am not really understanding this yet (I think I need a bit of sleep
+> > > time :)), but I will test this tomorrow and come back to you again
+> > > with results.
+> >
+> > Both would let devices access the registers, but they are different
+> > regarding the bus translations you have to program into the
+> > host bridge, and how to access the hardcoded port numbers.
+>
+> I have tested this and I get initial invalidid BAR value errors on pci
+> bus I/O enumeration an also bad addresses in /proc/ioports in the same
+> way I got defining PCI_IOBASE as _AC(0xa0000000, UL):
+>
+> root@gnubee:~# cat /proc/ioports
+> 00000000-0000ffff : pcie@1e140000
+>   00000000-00000fff : PCI Bus 0000:01
+>     00000000-0000000f : 0000:01:00.0
+>       00000000-0000000f : ahci
+>     00000010-00000017 : 0000:01:00.0
+>       00000010-00000017 : ahci
+>     00000018-0000001f : 0000:01:00.0
+>       00000018-0000001f : ahci
 
---GNX9GoSgpMQWceOML5nwDmElT2X4pKTAT
-Content-Type: multipart/mixed;
- boundary="------------FEAB4E1D867B0D1D35FC67BF"
-Content-Language: en-US
+Ok, These look good to me now.
 
-This is a multi-part message in MIME format.
---------------FEAB4E1D867B0D1D35FC67BF
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x001e160000
+> LOGIC PIO: PIO TO CPUADDR: ADDR: 0x1e160000 -  addr HW_START:
+> 0x1e160000 + RANGE IO: 0x00000000
+> OF: IO START returned by pci_address_to_pio: 0x0-0xffff
+> mt7621-pci 1e140000.pcie: PCIE0 enabled
+> mt7621-pci 1e140000.pcie: PCIE1 enabled
+> mt7621-pci 1e140000.pcie: PCIE2 enabled
+> mt7621-pci 1e140000.pcie: PCI coherence region base: 0x60000000,
+> mask/settings: 0xf0000002
+> mt7621-pci 1e140000.pcie: PCI host bridge to bus 0000:00
+> pci_bus 0000:00: root bus resource [bus 00-ff]
+> pci_bus 0000:00: root bus resource [mem 0x60000000-0x6fffffff]
+> pci_bus 0000:00: root bus resource [io  0x0000-0xffff] (bus address
+> [0x1e160000-0x1e16ffff])
+>
+> This other one (correct behaviour AFAICS) is what I get with this
+> patch series setting IO_SPACE_LIMIT and ifdef to avoid the remapping:
+>
+> mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x001e160000
+> OF: IO START returned by pci_address_to_pio: 0x1e160000-0x1e16ffff
 
-On 23.09.21 11:02, Oleksandr Andrushchenko wrote:
->=20
-> On 23.09.21 00:10, Stefano Stabellini wrote:
->> On Wed, 22 Sep 2021, Oleksandr Andrushchenko wrote:
->>> --- a/drivers/xen/xen-pciback/xenbus.c
->>> +++ b/drivers/xen/xen-pciback/xenbus.c
->>> @@ -743,6 +743,9 @@ const struct xen_pcibk_backend *__read_mostly xen=
-_pcibk_backend;
->>>   =20
->>>    int __init xen_pcibk_xenbus_register(void)
->>>    {
->>> +	if (!xen_pcibk_pv_support())
->>> +		return 0;
->> Is this truly enough to stop the PV backend from initializing? Have yo=
-u
->> actually tested it to make sure? If it works, amazing! I am quite happ=
-y
->> about this approach :-)
->=20
-> Well, I put some logs into the driver and saw nothing obvious pointing
->=20
-> to any backend activities (probably this is also because I don't have a=
-ny
->=20
-> frontend). I see that the xenbus driver is not registered. In XenStore =
-I see:
->=20
-> root@dom0:~# xenstore-ls -f | grep pci
-> /local/domain/0/backend/pci =3D ""
-> /local/domain/0/backend/pci/2 =3D ""
-> /local/domain/0/backend/pci/2/0 =3D ""
-> /local/domain/0/backend/pci/2/0/frontend =3D "/local/domain/2/device/pc=
-i/0"
-> /local/domain/0/backend/pci/2/0/frontend-id =3D "2"
-> /local/domain/0/backend/pci/2/0/online =3D "1"
-> /local/domain/0/backend/pci/2/0/state =3D "1"
-> /local/domain/0/backend/pci/2/0/domain =3D "DomU"
-> /local/domain/0/backend/pci/2/0/key-0 =3D "0000:03:00.0"
-> /local/domain/0/backend/pci/2/0/dev-0 =3D "0000:03:00.0"
-> /local/domain/0/backend/pci/2/0/opts-0 =3D "msitranslate=3D0,power_mgmt=
-=3D0,permissive=3D0,rdm_policy=3Dstrict"
-> /local/domain/0/backend/pci/2/0/state-0 =3D "1"
-> /local/domain/0/backend/pci/2/0/num_devs =3D "1"
-> /local/domain/2/device/pci =3D ""
-> /local/domain/2/device/pci/0 =3D ""
-> /local/domain/2/device/pci/0/backend =3D "/local/domain/0/backend/pci/2=
-/0"
-> /local/domain/2/device/pci/0/backend-id =3D "0"
-> /local/domain/2/device/pci/0/state =3D "1"
-> /libxl/pci =3D ""
-> /libxl/pci/0000-03-00-0 =3D ""
-> /libxl/pci/0000-03-00-0/domid =3D "2"
->=20
-> But IIUIC these come from the toolstack
->=20
-> @Juergen, do you know how to check if the backend is indeed not running=
+While these look wrong, the output should be in the 0-0ffff range.
+I suppose you have set an incorrect io_offset now.
 
->=20
-> or the above should be enough to prove?
+> diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
+> index 6f48649201c5..9a8ca258c68b 100644
+> --- a/arch/mips/include/asm/pci.h
+> +++ b/arch/mips/include/asm/pci.h
+> @@ -20,6 +20,12 @@
+>  #include <linux/list.h>
+>  #include <linux/of.h>
+>
+> +#define pci_remap_iospace pci_remap_iospace
+> +static inline int pci_remap_iospace(const struct resource *res,
+> phys_addr_t phys_addr)
+> +{
+> +       return 0;
+> +}
+>
+> And then in the PCI core code do something like this?
 
-I don't see how the backend could be running without being registered
-with xenbus. It won't receive any watches, so there is no way a
-connection with a frontend could be established.
+This is not sufficient: pci_remap_iospace() has to tell the architecture
+code where the start of the I/O space is, which normally means
+ioremapping it, and in your case would mean setting the
+mips_io_port_base variable to phys_addr.
 
+> But since this 'pci_remap_iospace' is already defined in
+> 'include/linux/pci.h' and is not static at all the compiler complains
+> about doing such a thing. What am I missing here?
 
-Juergen
+I think you have to have another #ifdef around the declaration in
+this case, or alternatively move the mips definition back to a .c
+file and leave only the #define
 
+> > This is particularly important since we want the host bridge driver
+> > to be portable. If you set up the mapping differently between e.g.
+> > mt7621 and mt7623, they are not able to use the same driver
+> > code for setting pci_host_bridge->io_offset and for programming
+> > the inbound translation registers.
+>
+> mt7621 is only mips, mt7623 is arm based SoC. They cannot use the same
+> driver at all. mt7620 or mt7628 which have drivers which are in
+> 'arch/mips/pci' using legacy pci code would use and would be tried to
+> be ported to share the driver with mt7621 but those are also only mips
+> and the I/O addresses for all of them are similar and have I/O higher
+> than 0xffff as mt7621 has.
 
---------------FEAB4E1D867B0D1D35FC67BF
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+That was my point: the driver should never care what the I/O addresses
+are, so as long as it gets the addresses from DT and passes them into
+generic kernel interfaces, it must do the right thing on both MIPS and ARM.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+The mt7620/28/80/88 driver is obviously not portable because it does
+not attempt to be a generic PCI host bridge driver.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+> > > All I/O port addresses for ralink SoCs are in higher addresses than
+> > > default IO_SPACE_LIMIT 0xFFFF, that's why we have to also change this
+> > > limit together with this patch changes. Nothing to do with this, is an
+> > > architectural thing of these SoCs.
+> >
+> > I don't understand. What I see above is that the host bridge
+> > has the region 1e160000-1e16ffff registered, so presumably
+> > 1e160000 is actually the start of the window into the host bridge.
+> > If you set PCI_IOBASE to that location, the highest port number
+> > would become 0x2027, which is under 0xffff.
+>
+> But 0x1e160000 is defined in the device tree as the I/O start address
+> of the range and should not be hardcoded anywhere else since other
+> ralink platforms don't use this address as PCI_IOBASE. And yes, 0x2027
+> is the highest port number I get if I initially define PCI_IOBASE also
+> as KSEG1 since at the end is the entry point for I/O in mips (see
+> trace above).
+>
+> Thanks very much for your time and feedback.
 
---------------FEAB4E1D867B0D1D35FC67BF--
+0x1e160000 should not be listed as the I/O start address, it should
+be listed in the 'ranges' property as the MMIO address that the I/O
+window translates into, with the actual port numbers (on the bus)
+being in the low range.
 
---GNX9GoSgpMQWceOML5nwDmElT2X4pKTAT--
+I realize this is very confusing, but there are indeed at least three
+address spaces that you must not confuse here:
 
---Raagvfdh0L7U0w5qqCjIvjKl35tyxY7y3
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+a) I/O port numbers as programmed into BAR registers and
+    used in PCIe transactions, normally 0 through 0xffff on each
+    bus.
+b) Linux I/O port numbers as seen from user space, in the range
+     from 0 to IO_SPACE_LIMIT, these correspond to the
+     bus addresses from a) if io_offset is zero, but could be
+     different with a non-zero value passed into
+     pci_add_resource_offset() when the region is probed.
+     The offset may be different on each pci host bridge.
+c) MMIO address used to access ports, offset by PCI_IOBASE
+    from the Linux port numbers in b).
+    No other registers should be visible between PCI_IOBASE
+    and PCI_IOBASE+IO_SPACE_LIMIT
 
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMQz8FAwAAAAAACgkQsN6d1ii/Ey95
-CAf+LMrSF13F920AxmTtvMQbhQu/0abJ9OnAxlSGWpWb/n/qBvHE80H3GU69e4jRMCxQdru9w4F9
-z9IUDYL7w2ypVjWVmKszhCw3kDxP5SwH/SWGEu83cPIyfVW9ew3x0/wGIwEoFEOI/51iKvLIrwcw
-00tjR7RsSDAtHtc8zbLo87aYVYwo2J+NeKknTwYBDG2Poo+y9yNq+wrTxYTlPb3PF4TIfmcxm6Wu
-ZCAL2Gx0I6iEAp9pj+IOyErh7yCS4twkwP85gF8N/2N2FdC5bCuYIKyqgpCseef833dSmPsQvWIv
-kIfkrFqZ0Ph9X716CVtHvtS5I1XDX8TrjFN5tF6k9w==
-=mvh6
------END PGP SIGNATURE-----
-
---Raagvfdh0L7U0w5qqCjIvjKl35tyxY7y3--
+          Arnd
