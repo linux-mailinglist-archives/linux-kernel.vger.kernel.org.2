@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872974158A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569C84158B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239494AbhIWG56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 02:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239667AbhIWG5p (ORCPT
+        id S239462AbhIWHBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:01:54 -0400
+Received: from mail-vk1-f176.google.com ([209.85.221.176]:42878 "EHLO
+        mail-vk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239370AbhIWHBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:57:45 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CEDC0613E5
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:56:09 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id q23so4831491pfs.9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4+bVI50/U/Px2zafLKGxljVTDM1XHyN1eJT93Wdky9A=;
-        b=bXaP7hsMAlQQDjWuf7Lz+35buzCADQS6gm4KXJB3lS7Z0C732tfosARG3sqLV7KaA9
-         Fdtg9gllDyWvAqwNtq5gOg8E4PPyJWnJKEWJGrhNJDWtV8tZ0r4r8KQpGXkN9zoG3RL6
-         RHY6xQi1+tKzCWgd8EEy5+exMwsDMAf5zp5Eo=
+        Thu, 23 Sep 2021 03:01:53 -0400
+Received: by mail-vk1-f176.google.com with SMTP id o204so2176939vko.9;
+        Thu, 23 Sep 2021 00:00:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4+bVI50/U/Px2zafLKGxljVTDM1XHyN1eJT93Wdky9A=;
-        b=6XEjqn3GSObh5ArhkTVfgFo+Pn7E8i9gOZgOsRPsT7QA4CBauMV/CF6eJanUA58XE9
-         nP+RPxSwsI2V4nkBlGMGVwZSbKCSTWwBlTeOahRtSOMReoP+ODAtJqo/cZEgwnD0y9E9
-         sT/Pmjt6/g92L/BgevN2xi/WjlYV509qPAs13CrHpJGANBh/XGulZWgr2bNSgg2xTeFn
-         l+z4l06Z2C9kzwkWIm+DigNDSnPQmDKxnx+rN5thFyD1yFLMM3kqJPV4JQRWNEKS4y8P
-         H0qIOyFRLoxD5eqeEJED5oKslav2aUYqJ7FpBtz9Ef5SIa4FMM2BC+tMkAUTbeqVKUVJ
-         nASQ==
-X-Gm-Message-State: AOAM533d5/lYjwJ3ubvATechBJxKvRlYYftfKNWuyFbQB9F2KeiA8ApT
-        TiVpjVgLybboHBAX/dlq4+O6/g==
-X-Google-Smtp-Source: ABdhPJxVSpxmZt6T0yS0J0POEvpxKeFeTedQKq5tV5O5Ar/V2msMW3vnS2WcW7sX52oHPQC1n+bDgQ==
-X-Received: by 2002:a63:b505:: with SMTP id y5mr2775207pge.91.1632380168827;
-        Wed, 22 Sep 2021 23:56:08 -0700 (PDT)
-Received: from shiro.work ([2400:4162:2428:2f01:7285:c2ff:fe8e:66d7])
-        by smtp.googlemail.com with ESMTPSA id e12sm1581888pgv.82.2021.09.22.23.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 23:56:08 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        robh+dt@kernel.org, pavel@ucw.cz,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2 11/11] ARM: dts: mstar: unitv2: Add wifi switch
-Date:   Thu, 23 Sep 2021 15:55:00 +0900
-Message-Id: <20210923065500.2284347-12-daniel@0x0f.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210923065500.2284347-1-daniel@0x0f.com>
-References: <20210923065500.2284347-1-daniel@0x0f.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YmpAdGBuoZ2H4vsYmz/gaaH8SFsdh1aIHAgypR+PGH4=;
+        b=RA1yWcbGx086ibONZtnUw1iC/br73vqaUuB61rx0a2folwICoct+brQSpQO3O81ZvS
+         cZhj/V757OumRLCgJhW3VNijE6nS/sewD5wvSe4azkwTLZVAQ5YIT/rrHIv/gE3sl1/f
+         qUaO/QEoiPa4p388R5LcjviHmN2oI51c6z2NBUmyRDmz6WnvpErpWED9gpTOcj8oyTAS
+         S3DL264gjq/HPso5Sc91aErI11i7uogV+MneAfxErre6Z6x6mojDEQiJUj06MvT/V/Wr
+         XbXjXNIC6sfCQnZ+VVaF2ydnqcrKvFhmqUQL3NnrERb3hXWR1p+P37XeJl/nvn/HuVZp
+         okqA==
+X-Gm-Message-State: AOAM530TNHnYHaVkn/jK1Sfxe1Gyr0u1ZZC81vPwusYRKfBdL1+YQ6Mh
+        974SuDMwaFIa3MokuGAlzSTYUoiDQWnZd3nLiOhyjm4eaR4=
+X-Google-Smtp-Source: ABdhPJxrSnRuqRIPIA1q7UmwoFsiu8wwdht1494jD4SuBcubaowOHjiICmyOgzRobpfLJFy7CS+6PGcR734kT66e/3Y=
+X-Received: by 2002:a1f:3a4b:: with SMTP id h72mr2062529vka.19.1632380421342;
+ Thu, 23 Sep 2021 00:00:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210923010402.3418555-1-kieran.bingham@ideasonboard.com> <20210923010402.3418555-2-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20210923010402.3418555-2-kieran.bingham@ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 23 Sep 2021 09:00:09 +0200
+Message-ID: <CAMuHMdUTYYoZawgMhpTr56v88-mrKWPpgMwC-9KPeYhS6R2AzQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] arm64: dts: renesas: r8a779a0: Add DU support
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a GPIO controlled fixed regulator for the Realtek WiFi
-connected via USB.
+Hi Kieran,
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- arch/arm/boot/dts/mstar-infinity2m-ssd202d-unitv2.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On Thu, Sep 23, 2021 at 3:04 AM Kieran Bingham
+<kieran.bingham@ideasonboard.com> wrote:
+> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> Provide the device nodes for the DU on the V3U platforms.
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> ---
+> v2
+>  - Use a single clock specification for the whole DU.
+>
+> v3:
+>  - Use 'du.0' clock name instead of 'du'
 
-diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd202d-unitv2.dts b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-unitv2.dts
-index ec8da9cc8cb2..b3eaffa6ee06 100644
---- a/arch/arm/boot/dts/mstar-infinity2m-ssd202d-unitv2.dts
-+++ b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-unitv2.dts
-@@ -56,6 +56,14 @@ reg_vcc_dram: regulator-vcc-dram {
- 		regulator-max-microvolt = <1500000>;
- 		regulator-boot-on;
- 	};
-+
-+	reg_vcc_wifi: regulator-vcc-wifi {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_wifi";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpios = <&gpio SSD20XD_GPIO_GPIO14 0>;
-+	};
- };
- 
- &pm_uart {
+Thanks for the update!
+
+> --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> @@ -1251,6 +1251,36 @@ vspd1: vsp@fea28000 {
+>                         renesas,fcp = <&fcpvd1>;
+>                 };
+>
+> +               du: display@feb00000 {
+> +                       compatible = "renesas,du-r8a779a0";
+> +                       reg = <0 0xfeb00000 0 0x40000>;
+> +                       interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
+> +                                    <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
+> +                       clocks = <&cpg CPG_MOD 411>;
+> +                       clock-names = "du.0";
+> +                       power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
+> +                       resets = <&cpg 411>;
+
+You missed reset-names.
+
+> +                       vsps = <&vspd0 0>, <&vspd1 0>;
+> +                       status = "disabled";
+> +
+> +                       ports {
+> +                               #address-cells = <1>;
+> +                               #size-cells = <0>;
+> +
+> +                               port@0 {
+> +                                       reg = <0>;
+> +                                       du_out_dsi0: endpoint {
+> +                                       };
+> +                               };
+> +
+> +                               port@1 {
+> +                                       reg = <1>;
+> +                                       du_out_dsi1: endpoint {
+> +                                       };
+> +                               };
+> +                       };
+> +               };
+> +
+>                 prr: chipid@fff00044 {
+>                         compatible = "renesas,prr";
+>                         reg = <0 0xfff00044 0 4>;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.33.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
