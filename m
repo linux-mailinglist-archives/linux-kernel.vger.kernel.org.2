@@ -2,72 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EA2416273
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A1541627C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242136AbhIWPyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        id S242255AbhIWPyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242051AbhIWPyN (ORCPT
+        with ESMTP id S242089AbhIWPyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Sep 2021 11:54:13 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FC3C06175F;
-        Thu, 23 Sep 2021 08:42:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-        s=42; h=Message-ID:Cc:To:From:Date;
-        bh=rfll4h7LdtMEWw8B/3NMhDmFRKX+I7KhoeBywQmmero=; b=knJgrUjXLrmnHS/i0SSqtm0YPO
-        wmM8TWJEg5mw2CjZk3yyd+ANvjpNaFFb3wuyZEp4oaCfZs4iHpazy57XrYmGm/v9TYyCKCQGQhdQN
-        mZxy/qmWbscnnUr9l5/TdgZHDkA62qc5/lkOSUZp4QTHDqDrOr+8mmuBV3Vkn/0vAMT9H16CccxnA
-        KJJuGSmJSzYtfm8BBHsMmxOSW/Klevyn3H4AkqAe5i0zKQjjtW1kLULdBrPM6THi7EPEXBlNFwCZx
-        tFo+iDvePrQek1xQu1LUYJhPwAtNpdkL0VPjPjJOfmEOsaLI6/5di+4SDD3srZLX1dxzYtV7b+E98
-        hL+tXXSLkks7QOxVdQfeBPz2IckGk3qc01weP98BTQwPnym6bbiTCMhA1s2K2J+h4wppkbYCc/JBI
-        Tj/r/vQHZTgRos585MODsmol4hHj1IjWg0sgHiTPF3ATOtoNA1hcMNQD/T/+BLofvGNWo4VsJxqZ1
-        ip1cmePt0/izjR3onZ4IB70j;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-        (Exim)
-        id 1mTQs3-007Wvr-U3; Thu, 23 Sep 2021 15:42:48 +0000
-Date:   Thu, 23 Sep 2021 08:42:44 -0700
-From:   Jeremy Allison <jra@samba.org>
-To:     Steve French <smfrench@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Namjae Jeon <linkinjeon@kernel.org>
-Subject: Re: [GIT PULL] ksmbd server security fixes
-Message-ID: <YUygdDGXQhSZRqoo@jeremy-acer>
-Reply-To: Jeremy Allison <jra@samba.org>
-References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
- <202109221850.003A16EC1@keescook>
- <CAH2r5muNG4GvziyMG2unkYNjUiT4V+pz0pWUGkWQNxUZJnBadw@mail.gmail.com>
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4790C061762
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:43:10 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:bd83:e4f3:bd3e:98d5] (port=54076)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C4rlyn@norir.net>)
+        id 1mTQsO-0007GW-Kq
+        for linux-kernel@vger.kernel.org; Thu, 23 Sep 2021 17:43:08 +0200
+Subject: Re: Fair IT: Turan Psy
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@norir.net>
+To:     linux-kernel@vger.kernel.org
+References: <18f80add-7ad6-0894-0ef8-52b128cda24c@norir.net>
+Message-ID: <2618a00d-9d5b-4a29-571f-b1f46cd25f22@norir.net>
+Date:   Thu, 23 Sep 2021 17:42:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAH2r5muNG4GvziyMG2unkYNjUiT4V+pz0pWUGkWQNxUZJnBadw@mail.gmail.com>
+In-Reply-To: <18f80add-7ad6-0894-0ef8-52b128cda24c@norir.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:20:01PM -0500, Steve French wrote:
->On Wed, Sep 22, 2021 at 9:47 PM Kees Cook <keescook@chromium.org> wrote:
->>
->> Hi Steve,
->>
->> I was looking through the history[1] of the ksmbd work, and I'm kind
->> of surprised at some of the flaws being found here.
->
->I was also surprised that a couple of these weren't found by smbtorture,
->although to be fair it is more focused on functional testing of the protocol
->(and is quite detailed).  Most of my analysis of the code had been
->focused on functional coverage, and protocol features (and removing
+Also one could make a new degree of Querulus: Deviante. Like for KvR who 
+only argue, and are deviant.
 
-Steve, you should have been surprised they weren't
-caught by smbtorture, especially if your "analysis of the code
-had been focused on functional coverage".
-
-No one has been looking at the logic for this, and IMHO
-that's a problem. It's good they are looking now, but
-I think this code needs additional maintainers.
+Den 23.09.2021 15:55, skrev Ywe Cærlyn:
+> A contemporary issue has been abuse of psychiatry and legality of 
+> psychedelics.
+> 
+> Named after Saturn, when writing to the right - Turan.
+> 
+> I think there is monotheistic basis for the later, when against abuse, 
+> if a personal conviction is so.
+> 
+> Which would be a right version of psychiatry.
+> 
