@@ -2,143 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE62D41676E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164D241676F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243277AbhIWVZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243174AbhIWVZr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:25:47 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651BCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:24:15 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id i84so1273869ybc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4NFD50f4D8OM/NybzmgBINAYXaCydfgGt6oGYeUyWVM=;
-        b=a01KcFjfZE09aHK//1COGS+XgNwDx2f7ZNE1rGu2p5KFmmN7BH3qDdeknK+KiHCmF8
-         l8FgeRboJYMsUN2OmKIWF9+qycX0wTwfirMsltIADGBAYuiRn8JvgxQiJCksG6iyd6NC
-         7VNJFgLAbEll/y3DRc7wUIlZ9cWX089qCdBZ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4NFD50f4D8OM/NybzmgBINAYXaCydfgGt6oGYeUyWVM=;
-        b=nLac9MctdlXNEe0i3Bf1MNdf6OFAUiw40lQA1MzJwKIV04cTTbTYISGwJL+xAMbX71
-         P8/dM7oanwMi46M1LZQpMVzYMEIzGuTjgZJzrVOTyQPVS6usyR5J39qdp7dHOy3ELxRV
-         2XDObXPHuSMt51ZpR3G3FBHv6Q1LWp3vV3T6Nb4g0NfIG7ttZV9vHLEVtY9fgtB4dEHy
-         +MYubYEBk2vb9r2Szy9ofjimE+HKH1QtyyHxCVVT4WcHM5tE1yHbdXxchj+zkNjMPz+i
-         YSbq4xLu9h62+QKCxvOfXpJMzOXTK1msiJh7jfdliLF6xN/Ka/mINqOb5azB6XA58NuN
-         aDcA==
-X-Gm-Message-State: AOAM53052BttzopuFNkHX4UyilK9C6wnsDXgn9Apq0bkt8RFU8EgXnxr
-        XeCR7gITdQ1pEAg8NaTfW7TSEbHhd/CTNWi87IySTQ==
-X-Google-Smtp-Source: ABdhPJyZItCG+2qGFbPGCky+CLR7O1xm1lchqIXJehrltvrT3SdTl4WvTGugSEg3MJCKJkRphhP5e6yaOzEESqTdIa0=
-X-Received: by 2002:a25:81c5:: with SMTP id n5mr8514500ybm.276.1632432254531;
- Thu, 23 Sep 2021 14:24:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1632420430.git.leonro@nvidia.com> <7b85ce0d2a5056af2c7e14dbd16c55d86aac659c.1632420431.git.leonro@nvidia.com>
-In-Reply-To: <7b85ce0d2a5056af2c7e14dbd16c55d86aac659c.1632420431.git.leonro@nvidia.com>
-From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Thu, 23 Sep 2021 14:23:38 -0700
-Message-ID: <CAKOOJTzz1Pp9CYCWAO=gi3099xy2oBtdREp8iOftVzKqEC0hvQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/6] bnxt_en: Properly remove port parameter support
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Igor Russkikh <irusskikh@marvell.com>,
-        intel-wired-lan@lists.osuosl.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        netdev <netdev@vger.kernel.org>,
-        Sathya Perla <sathya.perla@broadcom.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S243340AbhIWVZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:25:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243291AbhIWVZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 17:25:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FD0F60F6D;
+        Thu, 23 Sep 2021 21:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1632432266;
+        bh=KnyKutFqoAJwR5PxeXhTE9a7a66eM57gSt+VwjBbwkU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zCkdcbEgoqvuk+qfIW2/B5tKC4A4ZfwOYErSaEF9rzypQUPOQpRg7Ue5j622RyQJR
+         FMFy5fQKfRE026MnISTuLuke+H2hgWeBNTj5D4p0s7NsF84WNQEAVrc0Yg6tr1fnGP
+         +7Bp7GfdveYJ8oDHqLCILzej44+gALcnlIc4Eymw=
+Date:   Thu, 23 Sep 2021 14:24:26 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH v2 1/4] hugetlb: add demote hugetlb page sysfs
+ interfaces
+Message-Id: <20210923142426.8930bd1cfcabc782a2152c18@linux-foundation.org>
+In-Reply-To: <20210923175347.10727-2-mike.kravetz@oracle.com>
+References: <20210923175347.10727-1-mike.kravetz@oracle.com>
+        <20210923175347.10727-2-mike.kravetz@oracle.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:13 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> This driver doesn't have any port parameters and registers
-> devlink port parameters with empty table. Remove the useless
-> calls to devlink_port_params_register and _unregister.
->
-> Fixes: da203dfa89ce ("Revert "devlink: Add a generic wake_on_lan port parameter"")
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 13 -------------
->  1 file changed, 13 deletions(-)
->
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-> index dc0851f709f5..ed95e28d60ef 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-> @@ -736,9 +736,6 @@ static const struct devlink_param bnxt_dl_params[] = {
->                              NULL),
->  };
->
-> -static const struct devlink_param bnxt_dl_port_params[] = {
-> -};
-> -
->  static int bnxt_dl_params_register(struct bnxt *bp)
->  {
->         int rc;
-> @@ -753,14 +750,6 @@ static int bnxt_dl_params_register(struct bnxt *bp)
->                             rc);
->                 return rc;
->         }
-> -       rc = devlink_port_params_register(&bp->dl_port, bnxt_dl_port_params,
-> -                                         ARRAY_SIZE(bnxt_dl_port_params));
-> -       if (rc) {
-> -               netdev_err(bp->dev, "devlink_port_params_register failed\n");
-> -               devlink_params_unregister(bp->dl, bnxt_dl_params,
-> -                                         ARRAY_SIZE(bnxt_dl_params));
-> -               return rc;
-> -       }
->         devlink_params_publish(bp->dl);
->
->         return 0;
-> @@ -773,8 +762,6 @@ static void bnxt_dl_params_unregister(struct bnxt *bp)
->
->         devlink_params_unregister(bp->dl, bnxt_dl_params,
->                                   ARRAY_SIZE(bnxt_dl_params));
-> -       devlink_port_params_unregister(&bp->dl_port, bnxt_dl_port_params,
-> -                                      ARRAY_SIZE(bnxt_dl_port_params));
->  }
->
->  int bnxt_dl_register(struct bnxt *bp)
-> --
-> 2.31.1
->
+On Thu, 23 Sep 2021 10:53:44 -0700 Mike Kravetz <mike.kravetz@oracle.com> wrote:
 
-Ah, looks like the revert in da203dfa89ce wasn't complete. Thanks for
-the cleanup.
+> Two new sysfs files are added to demote hugtlb pages.  These files are
+> both per-hugetlb page size and per node.  Files are:
+>   demote_size - The size in Kb that pages are demoted to. (read-write)
+>   demote - The number of huge pages to demote. (write-only)
+> 
+> By default, demote_size is the next smallest huge page size.  Valid huge
+> page sizes less than huge page size may be written to this file.  When
+> huge pages are demoted, they are demoted to this size.
+> 
+> Writing a value to demote will result in an attempt to demote that
+> number of hugetlb pages to an appropriate number of demote_size pages.
+> 
+> NOTE: Demote interfaces are only provided for huge page sizes if there
+> is a smaller target demote huge page size.  For example, on x86 1GB huge
+> pages will have demote interfaces.  2MB huge pages will not have demote
+> interfaces.
+> 
+> This patch does not provide full demote functionality.  It only provides
+> the sysfs interfaces.
+> 
+> It also provides documentation for the new interfaces.
+> 
+> ...
+>
+> +static ssize_t demote_store(struct kobject *kobj,
+> +	       struct kobj_attribute *attr, const char *buf, size_t len)
+> +{
+> +	unsigned long nr_demote;
+> +	unsigned long nr_available;
+> +	nodemask_t nodes_allowed, *n_mask;
+> +	struct hstate *h;
+> +	int err;
+> +	int nid;
+> +
+> +	err = kstrtoul(buf, 10, &nr_demote);
+> +	if (err)
+> +		return err;
+> +	h = kobj_to_hstate(kobj, &nid);
+> +
+> +	/* Synchronize with other sysfs operations modifying huge pages */
+> +	mutex_lock(&h->resize_lock);
+> +
+> +	spin_lock_irq(&hugetlb_lock);
+> +	if (nid != NUMA_NO_NODE) {
+> +		nr_available = h->free_huge_pages_node[nid];
+> +		init_nodemask_of_node(&nodes_allowed, nid);
+> +		n_mask = &nodes_allowed;
+> +	} else {
+> +		nr_available = h->free_huge_pages;
+> +		n_mask = &node_states[N_MEMORY];
+> +	}
+> +	nr_available -= h->resv_huge_pages;
+> +	if (nr_available <= 0)
+> +		goto out;
+> +	nr_demote = min(nr_available, nr_demote);
+> +
+> +	while (nr_demote) {
+> +		if (!demote_pool_huge_page(h, n_mask))
+> +			break;
+> +
+> +		/*
+> +		 * We may have dropped the lock in the routines to
+> +		 * demote/free a page.  Recompute nr_demote as counts could
+> +		 * have changed and we want to make sure we do not demote
+> +		 * a reserved huge page.
+> +		 */
 
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+This comment doesn't become true until patch #4, and is a bit confusing
+in patch #1.  Also, saying "the lock" is far less helpful than saying
+"hugetlb_lock"!
 
-Regards,
-Edwin Peer
+
+> +		nr_demote--;
+> +		if (nid != NUMA_NO_NODE)
+> +			nr_available = h->free_huge_pages_node[nid];
+> +		else
+> +			nr_available = h->free_huge_pages;
+> +		nr_available -= h->resv_huge_pages;
+> +		if (nr_available <= 0)
+> +			nr_demote = 0;
+> +		else
+> +			nr_demote = min(nr_available, nr_demote);
+> +	}
+> +
+> +out:
+> +	spin_unlock_irq(&hugetlb_lock);
+
+How long can we spend with IRQs disabled here (after patch #4!)?
+
+> +	mutex_unlock(&h->resize_lock);
+> +
+> +	return len;
+> +}
+> +HSTATE_ATTR_WO(demote);
+> +
+
