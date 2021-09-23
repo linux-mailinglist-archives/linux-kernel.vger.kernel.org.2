@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3ED415CE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22673415CF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240654AbhIWLiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
+        id S240657AbhIWLnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240567AbhIWLiF (ORCPT
+        with ESMTP id S238930AbhIWLng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:38:05 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F260C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:36:34 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id 42so4020861uak.11
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:36:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=AVuqCuI69lB47qlkpjuLyHlg8ssakPl2Ecl3HCf4XMg=;
-        b=bPvIQPRFE4eUwdAhfBpWkrc1+P12uz8LUP8EvTRZtJYqz/QTuDBovAuOtmvhIsybvX
-         5i0BcsKc+cF4tyWwd2XgEZxN7me9Yf9X0DTVLV93Japi//RwIhSYcYgFoCrnBX9MqPi+
-         fa457xkjeegOC5M0vsmFnaUkk/6MyLXdiDYAM9SzRXP2IVwgPuzLRw68/opv8nexllOi
-         xsZXSIDgJ/Le2fTbbc+XbioJZSjKrBIT6Ere7rah+iAFXx6lf0+1s+zSHAVODluvBvk+
-         w/XWZBrbKXrluHFyYCedntii1L9SAXsoZnhmhZFLqoOimVHDrqnU4B868oZ6a1+0fV0X
-         w6Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=AVuqCuI69lB47qlkpjuLyHlg8ssakPl2Ecl3HCf4XMg=;
-        b=7nH3QKM71ErNOu2rd9lKu45QF1ubGy4/Z2CUb80ID6Fs8hfJcJcdlOp2cNUo+1PcAo
-         G1Prss3z2Rt2Qdm5och/9UsMvdTdkHpX+EB2pKkX3nvttfSB7LQBZ98JqSqaenE4djCx
-         GUVLekgVnBdrDoUATuJ8WqXRWeuwjfUaxzrgg+GmY512D3ECiZKCUL7+DGaR+mzZvKyR
-         srVbZTF92rTIIN5aOGy2BnJZDHmvNoMOfyjtm4PLdXCy2UqLl18WqBfH1/veOzQtLlDi
-         zKLWhaxC7591A2nYy+dQyQIJ2bBnj8HqS3BaL6g6SIBxtbmwiT2ZEv784sNZfSJCUDOk
-         L9LQ==
-X-Gm-Message-State: AOAM533enILo7k6/wNRw2OzEWFR1KiRAaEZvYV0RdNBMXGk5ug9dUDgn
-        wvUfN0lxIK37oL7v9lphGqdkCkDIhZXqsFm+Jz8=
-X-Google-Smtp-Source: ABdhPJwDzPZAiNOXBN4I3HGdbkknMscP/Wg6X8W5jyocJpPAC4LBsazMPRsrafsUG1hud/6h72gx11iOfIQsBCwJKkk=
-X-Received: by 2002:a9f:2449:: with SMTP id 67mr3406394uaq.5.1632396993681;
- Thu, 23 Sep 2021 04:36:33 -0700 (PDT)
+        Thu, 23 Sep 2021 07:43:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009F3C061574;
+        Thu, 23 Sep 2021 04:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n8Mi5cs+FlsaY04tVh3IDSphRi78FWp+NqQJpSgK8j4=; b=CZdYXdf8h6Q+xsZWV/2sdWoW23
+        fGrqUFqTTcmxJHkqSHaACMPLKoW6klLmT+0Vd0eR8NNVfQ6MkZtodbas0yHL/0hQ3XZyet00Zkr+Q
+        wsp86MneIZ/eB0wK+av1BY8Y+PGOp4RH8iIYKQsIagw4eiEfZ5QqxRldiph1zS8G9Mt0Pj11YLWGz
+        cZdd/4rP+DEcQ6jT1Kxc6iKei3g/Y4SYb+ca/K0zU5vty45q+D5sPi31AAdBotDxpJV++y8p5yLU2
+        iD0PrxXQ4KRffFzXD5zsGfrTHrB8MrZxc/8HcTxOT8+5h5IpvBDyRW4xcPB8oIhXxgPpFkQYJaaW6
+        Imo1ADlg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mTN5K-005pNi-Gx; Thu, 23 Sep 2021 11:40:31 +0000
+Date:   Thu, 23 Sep 2021 12:40:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Mapcount of subpages
+Message-ID: <YUxnnq7uFBAtJ3rT@casper.infradead.org>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan>
+ <YUvzINep9m7G0ust@casper.infradead.org>
+ <YUwNZFPGDj4Pkspx@moria.home.lan>
 MIME-Version: 1.0
-Received: by 2002:a05:612c:19:b0:232:54eb:2d29 with HTTP; Thu, 23 Sep 2021
- 04:36:33 -0700 (PDT)
-Reply-To: ms.lisahugh000@gmail.com
-From:   MS LISA HUGH <safi.kabore3@gmail.com>
-Date:   Thu, 23 Sep 2021 13:36:33 +0200
-Message-ID: <CAE8aNp1KLky8oJfcxPVvoycaeeC-szAhQ5_P7S4qrNQD3_zE6w@mail.gmail.com>
-Subject: YOU WILL HAVE THE DETAILS >>MS LISA HUGH.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUwNZFPGDj4Pkspx@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Thu, Sep 23, 2021 at 01:15:16AM -0400, Kent Overstreet wrote:
+> On Thu, Sep 23, 2021 at 04:23:12AM +0100, Matthew Wilcox wrote:
+> > (compiling that list reminds me that we'll need to sort out mapcount
+> > on subpages when it comes time to do this.  ask me if you don't know
+> > what i'm talking about here.)
+> 
+> I am curious why we would ever need a mapcount for just part of a page, tell me
+> more.
 
-I am Ms Lisa Hugh, work in the department of Audit and accounting
-manager here in the Bank.
+I would say Kirill is the expert here.  My understanding:
 
-I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
-bank account with your co-operation for both of us benefit.
+We have three different approaches to allocating 2MB pages today;
+anon THP, shmem THP and hugetlbfs.  Hugetlbfs can only be mapped on a
+2MB boundary, so it has no special handling of mapcount [1].  Anon THP
+always starts out as being mapped exclusively on a 2MB boundary, but
+then it can be split by, eg, munmap().  If it is, then the mapcount in
+the head page is distributed to the subpages.
 
-Please send the follow below,
+Shmem THP is the tricky one.  You might have a 2MB page in the page cache,
+but then have processes which only ever map part of it.  Or you might
+have some processes mapping it with a 2MB entry and others mapping part
+or all of it with 4kB entries.  And then someone truncates the file to
+midway through this page; we split it, and now we need to figure out what
+the mapcount should be on each of the subpages.  We handle this by using
+->mapcount on each subpage to record how many non-2MB mappings there are
+of that specific page and using ->compound_mapcount to record how many 2MB
+mappings there are of the entire 2MB page.  Then, when we split, we just
+need to distribute the compound_mapcount to each page to make it correct.
+We also have the PageDoubleMap flag to tell us whether anybody has this
+2MB page mapped with 4kB entries, so we can skip all the summing of 4kB
+mapcounts if nobody has done that.
 
-1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
-
-Thanks.
-Ms Lisa Hugh
+[1] Mike is looking to change this, but I'm not sure where he is with it.
