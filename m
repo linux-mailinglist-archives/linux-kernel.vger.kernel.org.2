@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6584B41664E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5E4416650
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243053AbhIWUDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 16:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
+        id S243061AbhIWUE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 16:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243014AbhIWUDH (ORCPT
+        with ESMTP id S242861AbhIWUE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 16:03:07 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1E9C061574;
-        Thu, 23 Sep 2021 13:01:35 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id w29so20424574wra.8;
-        Thu, 23 Sep 2021 13:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MUxsvSywYATF0ZbuEzEN98G8Ufj/uEueYTTCMkm//7s=;
-        b=Ti6apDVSQZsmzI85j655wo3rfzUaUXGZxieDPgCnYPMCewcLMs6DlA/SplmRpeQwvr
-         4wzAsk5XIhy8UWCIyUb25/c0Cfirc/7YwJFGgYVEQNAb5xW2df6TfXLjH7aPi2/MHg25
-         OZgaHIltyCDJeSh8+DQAIxMKZLaAqxY0h3DFQ+BClHoNq+R2Hvm7K4TDdUe7ORgT0r/N
-         ZNL6SQ4Rs8bUt8e0P4mfOp2gwW7iCGknYFlx8bLGYdRXekq8vmFSGoicCseuzyU6JgDJ
-         1GaiNAVZPpBlJcomhsH+OVSxg9/3ly3uUqq9vpyhD0lwzq0o+bsbJujWTdWaosvFwwkS
-         juLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MUxsvSywYATF0ZbuEzEN98G8Ufj/uEueYTTCMkm//7s=;
-        b=ztymrG0LM0+Bqx7fBiVbaNCN6T+AROAtvQjg99hbWrfuob7MFAaJvna4dHO3+0IT6s
-         DdYqutpv8wlrh7egJuMtrKrgC/GetRDHzoQkKaISrIAOrkb4dsR+b8zg+sxMMfG/78fQ
-         mh4PdGLAttmNXjh6SA3AEOMbeUz28vaA6EliXoeTx9lFj6CcOFjckfJ6VUqEaE/YeSxe
-         99RtuFRM02XeHlFyfqlRjmgdbXYJPAoo0QJYVL21d9Uu0WHFEBmGyA7Q6/G8JXdpyPy3
-         Hrajn3vL8XOn0KAZOfXZqzHLJlYmh3a7GPayegZ3hQPeJp/QNE7UnLnpd7HaPnUuFqHI
-         ShzQ==
-X-Gm-Message-State: AOAM533Q/HjP5rYoENzfX3+yxjTfrFwM28UOUO669T4l4LpM2pp0TdMu
-        ZycVjgFvqIIGtfjyJAr02bo=
-X-Google-Smtp-Source: ABdhPJy8glkruwTfarrIIpcL2FwAB3cpiGav0BcFFK3Phs4V7wy0WKIDnIa0tl0gO9ZzIyl5U3ODjw==
-X-Received: by 2002:a05:600c:4c09:: with SMTP id d9mr18192798wmp.194.1632427294336;
-        Thu, 23 Sep 2021 13:01:34 -0700 (PDT)
-Received: from localhost.localdomain ([78.159.99.15])
-        by smtp.gmail.com with ESMTPSA id y7sm3597391wrs.95.2021.09.23.13.01.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 13:01:33 -0700 (PDT)
-From:   Leonard Crestez <cdleonard@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kernel-doc: Count enum warnings for -Werror
-Date:   Thu, 23 Sep 2021 23:01:12 +0300
-Message-Id: <46192b4c4ef74b2130333b52a569bfa55f3a7f03.1632427198.git.cdleonard@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 23 Sep 2021 16:04:27 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6704EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 13:02:55 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mTUvl-00023Z-Lh; Thu, 23 Sep 2021 22:02:53 +0200
+Subject: Re: [PATCH 1/6] dt-bindings: nvmem: add cell-type to nvmem cells
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org,
+        =?UTF-8?Q?Jan_L=c3=bcbbe?= <jlu@pengutronix.de>
+Cc:     devicetree@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org
+References: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
+ <20210908100257.17833-2-qiangqing.zhang@nxp.com>
+ <6d91d833-08cc-7ce2-4fe5-3d843a8b31ae@pengutronix.de>
+ <181c4037-3c34-0f71-6bb7-a9c11b173064@linaro.org>
+ <dbd1c20c-e3be-6c92-52a8-2ad76d0092d0@pengutronix.de>
+ <8fc0a5e2-18c0-fa81-3eed-a6d596361633@linaro.org>
+ <d580dd06-8bc8-91c9-262b-f6f276b033c2@pengutronix.de>
+ <53fd9335-baca-fb52-42f1-2af3b08b5f1f@linaro.org>
+ <89b4a2d6-1966-7fcb-d476-f69e88293ea0@pengutronix.de>
+ <18c0d9c0-bee8-41fa-8fe8-26a0ceda1ecd@linaro.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <7aa60518-1045-5773-5b24-9f386cac1b8e@pengutronix.de>
+Date:   Thu, 23 Sep 2021 22:02:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <18c0d9c0-bee8-41fa-8fe8-26a0ceda1ecd@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warnings about enum members were shown but not counted for -Werror, fix
-by adding a few more increments.
+Hello Srini,
 
-Also fix a misindented line.
+On 22.09.21 15:23, Srinivas Kandagatla wrote:
+> On 22/09/2021 14:08, Ahmad Fatoum wrote:
+>> On 22.09.21 15:03, Srinivas Kandagatla wrote:
+>>> User A and B should mention about this encoding information in there NVMEM provider bindings.
+>>>
+>>> Based on that specific post-processing should be selected.
+>>
+>> So instead of just compatible = "atmel,at24c16"; there will be
+>>
+>>    compatible = "user-A,my-eeprom", "atmel,at24c16";
+>>
+>> and
+>>
+>>    compatible = "user-B,my-eeprom", "atmel,at24c16";
+> 
+> It will depend how you specify encoding information.
 
-Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
----
- scripts/kernel-doc | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I would specify them in cell-type, which you disagree with, thus
+I am asking:
 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index cfcb60737957..1f22daafe44c 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1425,10 +1425,11 @@ sub dump_enum($$) {
- 	    if ($identifier eq "") {
- 		print STDERR "${file}:$.: warning: wrong kernel-doc identifier on line:\n";
- 	    } else {
- 		print STDERR "${file}:$.: warning: expecting prototype for enum $identifier. Prototype was for enum $declaration_name instead\n";
- 	    }
-+	    ++$warnings;
- 	    return;
- 	}
- 	$declaration_name = "(anonymous)" if ($declaration_name eq "");
- 
- 	my %_members;
-@@ -1440,19 +1441,21 @@ sub dump_enum($$) {
- 	    push @parameterlist, $arg;
- 	    if (!$parameterdescs{$arg}) {
- 		$parameterdescs{$arg} = $undescribed;
- 	        if (show_warnings("enum", $declaration_name)) {
- 			print STDERR "${file}:$.: warning: Enum value '$arg' not described in enum '$declaration_name'\n";
-+			++$warnings;
- 		}
- 	    }
- 	    $_members{$arg} = 1;
- 	}
- 
- 	while (my ($k, $v) = each %parameterdescs) {
- 	    if (!exists($_members{$k})) {
- 	        if (show_warnings("enum", $declaration_name)) {
--		     print STDERR "${file}:$.: warning: Excess enum value '$k' description in '$declaration_name'\n";
-+		    print STDERR "${file}:$.: warning: Excess enum value '$k' description in '$declaration_name'\n";
-+		    ++$warnings;
- 		}
- 	    }
-         }
- 
- 	output_declaration($declaration_name,
+Is using a stock EEPROM with a non-canonical format for e.g. a MAC
+address something that you think should be supported with NVMEM?
+
+> The issue with making this encoding information generic is that the combinations are endless and nvmem core bindings is definitely not the right place for this.
+
+Add a separate file and include it from the core file?
+
+> ex:
+> If I remember correctly we have mac-address stored in various formats:
+> from old thread I can see
+> 
+> Type 1: Octets in ASCII without delimiters. (Swapped/non-Swapped)
+> 
+> Type 2: Octets in ASCII with delimiters like (":", ",", ".", "-"... so on) (Swapped/non-Swapped)
+> 
+> Type 3: Is the one which stores mac address in Type1/2 but this has to
+> be incremented to be used on other instances of eth.
+> 
+> Type 4: Octets as bytes/u8, swapped/non-swapped
+> 
+> This list can be endless and its not just the cell-type property you have to deal with, new properties keep popping up.
+
+Yes, an extendible interface will likely encourage people to extend it.
+
+Cheers,
+Ahmad
+
+> --srini
+> 
+> 
+> 
+>>
+>> and they each need to patch the at24 driver to call one of the
+>> common library functions?
+>>
+>>>
+>>> --srini
+>>>>
+>>>
+>>>>>
+>>>>> --srini
+>>>>>
+>>>>>>
+>>>>>>>> I'd thus prefer to not make this specific to the OCOTP as all:
+>>>>>>>>
+>>>>>>>>       * #define NVMEM_CELL_ENCODING_MAC_ADDRESS_IMX    /* ... */
+>>>>>
+>>>>
+>>>>
+>>>
+>>
+>>
+> 
+
+
 -- 
-2.25.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
