@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AE041629A
+	by mail.lfdr.de (Postfix) with ESMTP id 3E244416299
 	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242381AbhIWQDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242375AbhIWQDl (ORCPT
+        id S242369AbhIWQDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:03:38 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:46907 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233772AbhIWQDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:03:41 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E97C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:02:08 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id b19so203847ljf.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DLOxhnwH/JaVIhRbDcxcZPpiYGHLJbtd0CRIGAWnOsw=;
-        b=QMXOiJ6n28J2emY/y7cY9+DD4h8Pn0KRvNWmJxYGi/2iw91Mhhsv5k4E/yi6SvFmH+
-         cwsdxpHCcIaSp+pnaMQx9j8vfDg38b4ujoTb2lzS4jvwjrgaoWuJfcNbrdzMUshkRDfy
-         wyxZpTZP4dsY0GDCSs5bbcT3wFiFu+kSB/Akk=
+        Thu, 23 Sep 2021 12:03:34 -0400
+Received: by mail-lf1-f44.google.com with SMTP id z24so29056385lfu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:02:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DLOxhnwH/JaVIhRbDcxcZPpiYGHLJbtd0CRIGAWnOsw=;
-        b=5jaZQdL+cR6MucRSxJ7b96jFCDGZcqX7/bTbJyGeRFhS8pjvpfSZ6Caybdf24BwSYy
-         qbUNko79z/Ferfd2/13ll76fYqID4TfP5S08I/09ktMolITkFPIze1XLso1pgYmc5RUZ
-         tpjveVyqJ+ZWnOdDlzulPfgp/9gG0Y4ljUPxCcnwbkUw5Vry5DfKUH5e98ctwd/4+EO9
-         e6MKpv7eUPDWdOypnUCgIxDX1nrAj7urzXEjMUXacgYJZ85bDm2Gqip15BRrKWqgRzWw
-         5soOp0wcyWXebL3x54Lxx0SF1nsC/FUjTICiFN+5Gi5euaVLALFmVsc2Z6okvxLzaoR2
-         dPyw==
-X-Gm-Message-State: AOAM533hbkSHc9rdNBoulkLWZ7dJBJ7KgYJ5UBNlzn09f6HLER27E5ML
-        Gu0F9zsxQxiNSN/fn8ADwN2SF2xzhg4r68zI
-X-Google-Smtp-Source: ABdhPJwyNE6mF0gwn6IAY5kydqQ431xzpzTnsf5zvLj3kiuCcwBkkR4bslxXRfkMpfoDyLUueI5x3A==
-X-Received: by 2002:a2e:9f0c:: with SMTP id u12mr6180521ljk.92.1632412926524;
-        Thu, 23 Sep 2021 09:02:06 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id y23sm18994lfg.41.2021.09.23.09.02.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 09:02:04 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id a20so201163ljq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:02:02 -0700 (PDT)
-X-Received: by 2002:a2e:3309:: with SMTP id d9mr5950451ljc.249.1632412922441;
- Thu, 23 Sep 2021 09:02:02 -0700 (PDT)
+        bh=//4vm2Zk0xHX2cAPLBijbFAl7mQX/1oOOmYkGnVPPUY=;
+        b=ao0h/H0TAVX/fw7DmlUj7gUu+4uKl8/z/CJSRzLfFc8/Z8e/NxyeD/RQnjQyyHl7p0
+         IDk6W+1JIx1WA62E16fsVSRQ4ORW6nglgyHgSe/9DNkzRIO0MLx2H8j5BR4QUBtI73ye
+         Le2zKJHZdVclXfFsHjfPtMVLBwyRWVm4cri9MTif1zuV4tfVCFGphwuGHxL+u6RDG4NG
+         LeBbjms7HpDrz/kEltRtNxQVwmLucBO1q4jQTk5Mr1i7FfGmJfp70h7bhyh3m3ecUIsv
+         2WujMp1XMzHM7xTY3Ji2Q9Oh29br1cYCSn3zvH6ae7//kIb18XaI6oyT/tt7ZBJMe6Mk
+         Hvew==
+X-Gm-Message-State: AOAM532/XVNEVoAtclQW858GcXXSDLQIX869X1xdrcgQWKKo+evSj1Qj
+        2IvqKSkXIXgFN/O/v25cvj8yEmwiBJVWHsfW2mo=
+X-Google-Smtp-Source: ABdhPJwyXFii+C3MLVuOkfsZfcjHpJR3wO4JkQCyd1RBao+Xmzm06UEA0/o8wHfPqoeYbvGB6Ch6XsLHCQBK3RXDQAU=
+X-Received: by 2002:a05:6512:128f:: with SMTP id u15mr5061602lfs.528.1632412921227;
+ Thu, 23 Sep 2021 09:02:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210923074335.12583-1-rppt@kernel.org>
-In-Reply-To: <20210923074335.12583-1-rppt@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 23 Sep 2021 09:01:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiJB8H5pZz-AKaSJ7ViRtdxQGJT7eOByp8DJx2OwZSYwA@mail.gmail.com>
-Message-ID: <CAHk-=wiJB8H5pZz-AKaSJ7ViRtdxQGJT7eOByp8DJx2OwZSYwA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] memblock: cleanup memblock_free interface
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KVM list <kvm@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-usb@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
+References: <20210916001748.1525291-1-namhyung@kernel.org> <20210916135418.GA383600@leoy-ThinkPad-X240s>
+ <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com> <20210923142305.GA603008@leoy-ThinkPad-X240s>
+In-Reply-To: <20210923142305.GA603008@leoy-ThinkPad-X240s>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 23 Sep 2021 09:01:49 -0700
+Message-ID: <CAM9d7cixyD6ZmXnBnoB8Zg-JN-tWYXUdqURHGn+2ZMD5x9evew@mail.gmail.com>
+Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        James Clark <james.clark@arm.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 12:43 AM Mike Rapoport <rppt@kernel.org> wrote:
+Hi Leo,
+
+On Thu, Sep 23, 2021 at 7:23 AM Leo Yan <leo.yan@linaro.org> wrote:
 >
-> The core change is in the third patch that makes memblock_free() a
-> counterpart of memblock_alloc() and adds memblock_phys_alloc() to be a
+> Hi Namhyung,
+>
+> On Thu, Sep 16, 2021 at 02:01:21PM -0700, Namhyung Kim wrote:
+>
+> [...]
+>
+> > > Before we had discussion for enabling PID/TID for SPE samples; in the patch
+> > > set [1], patches 07, 08 set sample's pid/tid based on the Arm SPE context
+> > > packets.  To enable hardware tracing context ID, you also needs to enable
+> > > kernel config CONFIG_PID_IN_CONTEXTIDR.
+> >
+> > Thanks for sharing this.
+> >
+> > Yeah I also look at the context info but having a dependency on a kconfig
+> > looks limiting its functionality.  Also the kconfig says it has some overhead
+> > in the critical path (even if perf is not running, right?) - but not sure how
+> > much it can add.
+>
+> Yes, after enabled config PID_IN_CONTEXTIDR, the kernel will always
+> write PID into the system register CONTEXTIDR during process context
+> switching.  Please see the flow:
+>
+>   __switch_to() (arch/arm64/kernel/process.c)
+>     `-> contextidr_thread_switch(next)
 
-^^^^^^^^^^^^^^^^^^^
-> counterpart of memblock_phys_alloc().
+Thanks for the info.  I assume it's a light-weight operation.
 
-That should be 'memblock_phys_free()'
 
-HOWEVER.
+> > > We also considered to use PERF_RECORD_SWITCH_CPU_WIDE event for setting
+> > > pid/tid, the Intel PT implementation uses two things to set sample's
+> > > pid/tid: one is PERF_RECORD_SWITCH_CPU_WIDE event and another is to detect
+> > > the branch instruction is the symbol "__switch_to".  Since the trace
+> > > event PERF_RECORD_SWITCH_CPU_WIDE is coarse, so it only uses the new
+> > > pid/tid after the branch instruction for "__switch_to".  Arm SPE is
+> > > 'statistical', thus it cannot promise the trace data must contain the
+> > > branch instruction for "__switch_to", please see details [2].
+> >
+> > I can see the need in the Intel PT as it needs to trace all (branch)
+> > instructions, but is it really needed for ARM SPE too?
+> > Maybe I am missing something, but it seems enough to have a
+> > coarse-grained context switch for sampling events..
+>
+> The issue is that the coarse-grained context switch if introduces any
+> inaccuracy in the reported result.  If we can run some workloads and
+> prove the coarse-grained context switch doesn't cause significant bias,
+> it will be great and can give us the confidence for this approach.
+>
+> Even enabling PERF_RECORD_SWITCH_CPU_WIDE event, I think it's good to
+> give priority for hardware PID tracing in Arm SPE trace data, if detects
+> the hardware PID tracing is enabled, then we can rollback to use
+> context packets from hardware trace data to set sample's PID.
+>
+> How about you think for this?
 
-The real reason I'm replying is that this patch is horribly buggy, and
-will cause subtle problems that are nasty to debug.
+I think it's good as long as it has a fallback when the context info
+is not available.
 
-You need to be a LOT more careful.
-
-From a trivial check - exactly because I looked at doing it with a
-script, and decided it's not so easy - I found cases like this:
-
--               memblock_free(__pa(paca_ptrs) + new_ptrs_size,
-+               memblock_free(paca_ptrs + new_ptrs_size,
-
-which is COMPLETELY wrong.
-
-Why? Because now that addition is done as _pointer_ addition, not as
-an integer addition, and the end result is something completely
-different.
-
-pcac_ptrs is of type 'struct paca_struct **', so when you add
-new_ptrs_size to it, it will add it in terms of that many pointers,
-not that many bytes.
-
-You need to use some smarter scripting, or some way to validate it.
-
-And no, making the scripting just replace '__pa(x)' with '(void *)(x)'
-- which _would_ be mindless and get the same result - is not
-acceptable either, because it avoids one of the big improvements from
-using the right interface, namely having compiler type checking (and
-saner code that people understand).
-
-So NAK. No broken automated scripting patches.
-
-               Linus
+Thanks,
+Namhyung
