@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5326D416375
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6269416379
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235928AbhIWQlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:41:11 -0400
-Received: from mout01.posteo.de ([185.67.36.65]:56251 "EHLO mout01.posteo.de"
+        id S233549AbhIWQm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:42:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:64344 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230139AbhIWQlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:41:11 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 73AF1240026
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 18:39:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1632415177; bh=JfaYUfRZS79mDdN7aSoR4XEwe4ueYpxquoUGhyEpO/U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pu1I434ATd2EYnaNHLRWwVS3FUmEtW232KXmoCzvHIGrI9TgojkdutdVObhDu/eOT
-         kVqrK4dvePuHYD6E5nBCNWI3t+O8wJ3fGaB8vwQZr6aV44G8/gwZ0J4ZYmTn44mc7O
-         kxq36X1ul14YX5hbeELkwgROjC+YAoXiinxh1wiHhP8/fT2PoVkcvTfUERW3or6GIk
-         XG29wPpkJ0Kpm+ddQAF4ITyLKP5XY4/xBrqKSikRB/qkRmiZypnpr33hpbvnBnUPj/
-         b8EdQ+WXPUWqp6/1LgHocRGilmO+kx5EYgRNMlzW2L/DduPBh04gFoeAfLudNHM1Ti
-         xvF3PH1v1SAyQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4HFgqX2ZJKz9rxD;
-        Thu, 23 Sep 2021 18:39:36 +0200 (CEST)
-Date:   Thu, 23 Sep 2021 16:39:34 +0000
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Joerg Reiling <joerg.reiling@jenoptik.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH] rtc: rtc-isl12022: add isl12020 device support
-Message-ID: <20210923183934.09cfb251@monster.powergraphx.local>
-In-Reply-To: <YUyfF5VRfOkdC4wn@piout.net>
-References: <YUx43WuvwrYIvjxe@monster.powergraphx.local>
-        <YUyfF5VRfOkdC4wn@piout.net>
+        id S233964AbhIWQmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 12:42:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="284901791"
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="284901791"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 09:40:52 -0700
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="551214763"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 09:40:51 -0700
+Date:   Thu, 23 Sep 2021 09:40:50 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/8] x86/mmu: Add mm-based PASID refcounting
+Message-ID: <YUyuEjlrcOeCp4qQ@agluck-desk2.amr.corp.intel.com>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-6-fenghua.yu@intel.com>
+ <87y27nfjel.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y27nfjel.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 17:36:55 +0200
-Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-
-> Hi,
-> 
-> On 23/09/2021 12:53:49+0000, Wilken Gottwalt wrote:
-> > Adds the isl12020 device, which is fully compatible to isl12022.
-> > 
-> 
-> Do you know what is differing between both parts? If there is nothing
-> relevant to linux, maybe we could just avoid adding a new compatible
-> string.
-
-Hmm no, there are no changes relevant for a driver. So yeah, you are
-right, that only would add the possibility to use isl12020 in the device
-tree instead of isl12022. Oh boy, this is kind of embarrassing, just
-didn't think about it. ;-) But there will be more patches, the chip
-also have temp sensor exposable by hwmon.
-
-> > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> > Signed-off-by: Joerg Reiling <joerg.reiling@jenoptik.com>
-> > ---
-> >  drivers/rtc/rtc-isl12022.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/rtc/rtc-isl12022.c b/drivers/rtc/rtc-isl12022.c
-> > index 961bd5d1d109..c62770ec99c9 100644
-> > --- a/drivers/rtc/rtc-isl12022.c
-> > +++ b/drivers/rtc/rtc-isl12022.c
-> > @@ -257,6 +257,8 @@ static int isl12022_probe(struct i2c_client *client,
-> >  static const struct of_device_id isl12022_dt_match[] = {
-> >  	{ .compatible = "isl,isl12022" }, /* for backward compat., don't use */
-> >  	{ .compatible = "isil,isl12022" },
-> > +	{ .compatible = "isl,isl12020" }, /* for backward compat., don't use */
-> 
-> Please, do not add this compatible string.
-> 
-> > +	{ .compatible = "isil,isl12020" },
-> 
-> You also need to document this string in Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
-
-I only checked the isl* bindings. Why is there no specific isl12022 yaml
-file like the other isl* chips have?
-
-> >  	{ },
-> >  };
-> >  MODULE_DEVICE_TABLE(of, isl12022_dt_match);
-> > @@ -264,6 +266,7 @@ MODULE_DEVICE_TABLE(of, isl12022_dt_match);
+On Thu, Sep 23, 2021 at 04:36:50PM +0200, Thomas Gleixner wrote:
+> On Mon, Sep 20 2021 at 19:23, Fenghua Yu wrote:
 > >  
-> >  static const struct i2c_device_id isl12022_id[] = {
-> >  	{ "isl12022", 0 },
-> > +	{ "isl12020", 0 },
-> >  	{ }
-> >  };
-> >  MODULE_DEVICE_TABLE(i2c, isl12022_id);
-> > -- 
-> > 2.33.0
-> > 
+> > +#ifdef CONFIG_INTEL_IOMMU_SVM
+> > +void pasid_put(struct task_struct *tsk, struct mm_struct *mm);
+> > +#else
+> > +static inline void pasid_put(struct task_struct *tsk, struct mm_struct *mm) { }
+> > +#endif
 > 
+> This code is again defining that PASID is entirely restricted to
+> INTEL. It's true, that no other vendor supports this, but PASID is
+> a non-vendor specific concept.
+> 
+> Sticking this into INTEL code means that any other PASID implementation
+> has to rip it out again from INTEL code and make it a run time property.
+> 
+> The refcounting issue should be the same for all PASID mechanisms which
+> attach PASID to a mm. What's INTEL specific about that?
+> 
+> So can we pretty please do that correct right away?
 
+It's a bit messy (surprise).
+
+There are two reasons to hold a refcount on a PASID
+
+1) The process has done a bind on a device that uses PASIDs
+
+	This one isn't dependent on Intel.
+
+2) A task within a process is using ENQCMD (and thus holds
+   a reference on the PASID because IA32_PASID MSR for this
+   task has the PASID value loaded with the enable bit set).
+
+	This is (currently) Intel specific (until others
+	implement an ENQCMD-like feature to allow apps to
+	access PASID enabled devices without going through
+	the OS).
+
+Perhaps some better function naming might help?  E.g. have
+a task_pasid_put() function that handles the process exit
+case separatley from the device unbind case.
+
+void task_pasid_put(void)
+{
+	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
+		return;
+
+	if (current->has_valid_pasid) {
+		mutex_lock(&pasid_mutex);
+		iommu_sva_free_pasid(mm);
+		mutex_unlock(&pasid_mutex);
+	}
+}
+
+-Tony
