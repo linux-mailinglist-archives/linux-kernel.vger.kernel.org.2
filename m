@@ -2,197 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFA0415B24
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245EF415B26
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240211AbhIWJmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:42:05 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37430 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238217AbhIWJmD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:42:03 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 262DA22350;
-        Thu, 23 Sep 2021 09:40:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632390031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tdrkbcJaQpQrn/IHpFzCloC4zCeYqpehfTVZ0y9y7nI=;
-        b=qBSKyhMIBtgtRWHLLpJDhaoNwH4u+oB2PSxzsHER0pOc4q5wZw+k6iZri+p179O5dLioqW
-        HwyQLvCbp2KGSbI1s2TMd5qWxeuOO93lRnMXr88/k45KFl1Dcu+S5BLas6IFddp7163qLk
-        9TFpVYNTdRse6meyWLSH4iT0A0hKVX0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632390031;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tdrkbcJaQpQrn/IHpFzCloC4zCeYqpehfTVZ0y9y7nI=;
-        b=aZDce/tZEfKNoJsQXI6WrZNYLS9HtSRFb2Ci9DEHRZhTbHbKGfCo9OF0L/0tvHG1/boff6
-        GViBT5kbtk34PmAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BC7A13DCE;
-        Thu, 23 Sep 2021 09:40:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id qaNfAo9LTGEiRQAAMHmgww
-        (envelope-from <hare@suse.de>); Thu, 23 Sep 2021 09:40:31 +0000
-Subject: Re: Too large badblocks sysfs file (was: [PATCH v3 0/7] badblocks
- improvement for multiple bad block ranges)
-To:     Coly Li <colyli@suse.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
-        nvdimm@lists.linux.dev
-Cc:     antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
-        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>,
-        Richard Fan <richard.fan@suse.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael@kernel.org
-References: <20210913163643.10233-1-colyli@suse.de>
- <a0f7b021-4816-6785-a9a4-507464b55895@suse.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <6bd61a93-6fb6-2bd5-c1a6-b782e87845a4@suse.de>
-Date:   Thu, 23 Sep 2021 11:40:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S240218AbhIWJmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:42:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:59694 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240204AbhIWJmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:42:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A571E106F;
+        Thu, 23 Sep 2021 02:40:38 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C351E3F59C;
+        Thu, 23 Sep 2021 02:40:36 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 10:40:31 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mark Kettenis <mark.kettenis@xs4all.nl>
+Cc:     justin.he@arm.com, harb@amperecomputing.com, will@kernel.org,
+        lenb@kernel.org, robert.moore@intel.com, erik.kaneda@intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@acpica.org, ardb@kernel.org,
+        guohanjun@huawei.com, catalin.marinas@arm.com,
+        rafael.j.wysocki@intel.com
+Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to
+ acpi_os_map_memory()"
+Message-ID: <20210923094031.GA6454@lpieralisi>
+References: <20210910122820.26886-1-justin.he@arm.com>
+ <20210910143223.6705-1-justin.he@arm.com>
+ <20210922163336.GA24633@lpieralisi>
+ <56147a0b8b9fba46@bloch.sibelius.xs4all.nl>
 MIME-Version: 1.0
-In-Reply-To: <a0f7b021-4816-6785-a9a4-507464b55895@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56147a0b8b9fba46@bloch.sibelius.xs4all.nl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 7:59 AM, Coly Li wrote:
-> Hi all the kernel gurus, and folks in mailing lists,
+On Thu, Sep 23, 2021 at 01:09:58AM +0200, Mark Kettenis wrote:
+> > Date: Wed, 22 Sep 2021 17:33:36 +0100
+> > From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > 
+> > On Fri, Sep 10, 2021 at 10:32:23PM +0800, Jia He wrote:
+> > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> > > 
+> > > After this commit, a boot panic is alway hit on an Ampere EMAG server
+> > > with call trace as follows:
+> > >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> > >  Modules linked in:
+> > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+> > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > > [...snip...]
+> > >  Call trace:
+> > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> > >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> > >   acpi_ex_access_region+0x114/0x268
+> > >   acpi_ex_field_datum_io+0x128/0x1b8
+> > >   acpi_ex_extract_from_field+0x14c/0x2ac
+> > >   acpi_ex_read_data_from_field+0x190/0x1b8
+> > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> > >   acpi_ex_resolve_to_value+0x250/0x274
+> > >   acpi_ds_evaluate_name_path+0xac/0x124
+> > >   acpi_ds_exec_end_op+0x90/0x410
+> > >   acpi_ps_parse_loop+0x4ac/0x5d8
+> > >   acpi_ps_parse_aml+0xe0/0x2c8
+> > >   acpi_ps_execute_method+0x19c/0x1ac
+> > >   acpi_ns_evaluate+0x1f8/0x26c
+> > >   acpi_ns_init_one_device+0x104/0x140
+> > >   acpi_ns_walk_namespace+0x158/0x1d0
+> > >   acpi_ns_initialize_devices+0x194/0x218
+> > >   acpi_initialize_objects+0x48/0x50
+> > >   acpi_init+0xe0/0x498
+> > > 
+> > > As mentioned by Lorenzo:
+> > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+> > >   eMAG does not like at all and I'd need to understand why. It looks
+> > >   like the issue happen in SystemMemory Opregion handler."
+> > > 
+> > > Hence just revert it before everything is clear.
+> > > 
+> > > Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
+> > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Hanjun Guo <guohanjun@huawei.com>
+> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > Cc: Harb Abdulhamid <harb@amperecomputing.com>
+> > > 
+> > > Signed-off-by: Jia He <justin.he@arm.com>
+> > 
+> > Rewrote the commit log, please take the patch below and repost
+> > it as a v3.
+> > 
+> > It would still be great if Ampere can help us understand why
+> > the NormalNC attributes trigger a sync abort on the opregion
+> > before merging it.
 > 
-> This is a question about exporting 4KB+ text information via sysfs
-> interface. I need advice on how to handle the problem.
-> 
-> Recently I work on the bad blocks API (block/badblocks.c) improvement,
-> there is a sysfs file to export the bad block ranges for me raid. E.g
-> for a md raid1 device, file
->     /sys/block/md0/md/rd0/bad_blocks
-> may contain the following text content,
->     64 32
->    128 8
-> The above lines mean there are two bad block ranges, one starts at LBA
-> 64, length 32 sectors, another one starts at LBA 128 and length 8
-> sectors. All the content is generated from the internal bad block
-> records with 512 elements. In my testing the worst case only 185 from
-> 512 records can be displayed via the sysfs file if the LBA string is
-> very long, e.g.the following content,
->   17668164135030776 512
->   17668164135029776 512
->   17668164135028776 512
->   17668164135027776 512
->   ... ...
-> The bad block ranges stored in internal bad blocks array are correct,
-> but the output message is truncated. This is the problem I encountered.
-> 
-> I don't see sysfs has seq_file support (correct me if I am wrong), and I
-> know it is improper to transfer 4KB+ text via sysfs interface, but the
-> code is here already for long time.
-> 
-> There are 2 ideas to fix showing up in my brain,
-> 1) Do not fix the problem
->     Normally it is rare that a storage media has 100+ bad block ranges,
-> maybe in real world all the existing bad blocks information won't exceed
-> the page size limitation of sysfs file.
-> 2) Add seq_file support to sysfs interface if there is no
-> 
-> It is probably there is other better solution to fix. So I do want to
-> get hint/advice from you.
-> 
-> Thanks in advance for any comment :-)
-> 
-> Coly Li
-> 
-> On 9/14/21 12:36 AM, Coly Li wrote:
->> This is the second effort to improve badblocks code APIs to handle
->> multiple ranges in bad block table.
->>
->> There are 2 changes from previous version,
->> - Fixes 2 bugs in front_overwrite() which are detected by the user
->>    space testing code.
->> - Provide the user space testing code in last patch.
->>
->> There is NO in-memory or on-disk format change in the whole series, all
->> existing API and data structures are consistent. This series just only
->> improve the code algorithm to handle more corner cases, the interfaces
->> are same and consistency to all existing callers (md raid and nvdimm
->> drivers).
->>
->> The original motivation of the change is from the requirement from our
->> customer, that current badblocks routines don't handle multiple ranges.
->> For example if the bad block setting range covers multiple ranges from
->> bad block table, only the first two bad block ranges merged and rested
->> ranges are intact. The expected behavior should be all the covered
->> ranges to be handled.
->>
->> All the patches are tested by modified user space code and the code
->> logic works as expected. The modified user space testing code is
->> provided in last patch. The testing code detects 2 defects in helper
->> front_overwrite() and fixed in this version.
->>
->> The whole change is divided into 6 patches to make the code review more
->> clear and easier. If people prefer, I'd like to post a single large
->> patch finally after the code review accomplished.
->>
->> This version is seriously tested, and so far no more defect observed.
->>
->>
->> Coly Li
->>
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> Cc: Hannes Reinecke <hare@suse.de>
->> Cc: Jens Axboe <axboe@kernel.dk>
->> Cc: NeilBrown <neilb@suse.de>
->> Cc: Richard Fan <richard.fan@suse.com>
->> Cc: Vishal L Verma <vishal.l.verma@intel.com>
->> ---
->> Changelog:
->> v3: add tester Richard Fan <richard.fan@suse.com>
->> v2: the improved version, and with testing code.
->> v1: the first completed version.
->>
->>
->> Coly Li (6):
->>    badblocks: add more helper structure and routines in badblocks.h
->>    badblocks: add helper routines for badblock ranges handling
->>    badblocks: improvement badblocks_set() for multiple ranges handling
->>    badblocks: improve badblocks_clear() for multiple ranges handling
->>    badblocks: improve badblocks_check() for multiple ranges handling
->>    badblocks: switch to the improved badblock handling code
->> Coly Li (1):
->>    test: user space code to test badblocks APIs
->>
->>   block/badblocks.c         | 1599 ++++++++++++++++++++++++++++++-------
->>   include/linux/badblocks.h |   32 +
->>   2 files changed, 1340 insertions(+), 291 deletions(-)
->>
-> 
+> To be honest, I don't think you really need an explanation from Ampere
+> here.  Mapping a part of the address space that doesn't provide memory
+> semantics with NormalNC attributes is wrong and triggering a sync
+> abort in that case is way better than silently ignoring the access.
 
-Please have a look at the patchset 'start switching sysfs attributes to
-expose the seq_file' from Christoph Hellwig on linux-block; that seems
-to be the approach you are looking for.
+That's understood and that's what I explained in the revert commit
+log, no question about it.
 
+I was just asking to confirm if that's what's actually happening.
 
-Cheers,
+> Putting my OpenBSD hat on (where we have our own ACPI OSPM
+> implementation) I must say that we always interpreted SystemMemory as
+> memory mapped IO and I think that is a logical choice as SystemIO is
+> used for (non-memory mapped) IO.  And I'd say that the ACPI OSPM code
+> should make sure that it uses properly aligned access to any Field
+> object that doesn't use AnyAcc as its access type.  Even on x86!  And
+> I'd say that AML that uses AnyAcc fields for SystemMemory OpRegions on
+> arm64 is buggy.
+> 
+> But maybe relaxing this when the EFI memory map indicates that the
+> address space in question does provide memory semantics does make
+> sense.  That should defenitely be documented in the ACPI standard
+> though.
 
-Hannes
--- 
-Dr. Hannes Reinecke		           Kernel Storage Architect
-hare@suse.de			                  +49 911 74053 688
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
+Mapping SystemMemory Opregions as "memory" does not make sense
+at all to me. Still, that's what Linux ACPICA code does (*if*
+that's what acpi_os_map_memory() is supposed to mean).
+
+https://lore.kernel.org/linux-acpi/20210916160827.GA4525@lpieralisi
+
+Where do we go from here, to be defined, we still have a bug
+to fix after the revert is applied.
+
+drivers/acpi/sysfs.c
+
+maps BERT error regions with acpi_os_map_memory(). If the BERT error
+region is not in the EFI memory map, we map that memory as device-nGnRnE
+and we execute memory semantics operation on it.
+
+https://lore.kernel.org/linux-acpi/e548e72c-83a4-2366-dd57-3e746040fea9@arm.com
+
+I could change that code to map those regions as ioremap_wc() because
+supposedly we *know* that's memory but this is becoming a slippery
+slope to follow IMO.
+
+> > -- >8 --
+> > Subject: [PATCH] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+> > 
+> > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> > 
+> > The memory semantics added in commit 437b38c51162 causes SystemMemory
+> > Operation region, whose address range is not described in the EFI memory
+> > map to be mapped as NormalNC memory on arm64 platforms (through
+> > acpi_os_map_memory() in acpi_ex_system_memory_space_handler()).
+> > 
+> > This triggers the following abort on an ARM64 Ampere eMAG machine,
+> > because presumably the physical address range area backing the Opregion
+> > does not support NormalNC memory attributes driven on the bus.
+> > 
+> >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> >  Modules linked in:
+> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+> >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > [...snip...]
+> >  Call trace:
+> >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> >   acpi_ex_access_region+0x114/0x268
+> >   acpi_ex_field_datum_io+0x128/0x1b8
+> >   acpi_ex_extract_from_field+0x14c/0x2ac
+> >   acpi_ex_read_data_from_field+0x190/0x1b8
+> >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> >   acpi_ex_resolve_to_value+0x250/0x274
+> >   acpi_ds_evaluate_name_path+0xac/0x124
+> >   acpi_ds_exec_end_op+0x90/0x410
+> >   acpi_ps_parse_loop+0x4ac/0x5d8
+> >   acpi_ps_parse_aml+0xe0/0x2c8
+> >   acpi_ps_execute_method+0x19c/0x1ac
+> >   acpi_ns_evaluate+0x1f8/0x26c
+> >   acpi_ns_init_one_device+0x104/0x140
+> >   acpi_ns_walk_namespace+0x158/0x1d0
+> >   acpi_ns_initialize_devices+0x194/0x218
+> >   acpi_initialize_objects+0x48/0x50
+> >   acpi_init+0xe0/0x498
+> > 
+> > If the Opregion address range is not present in the EFI memory map there
+> > is no way for us to determine the memory attributes to use to map it -
+> > defaulting to NormalNC does not work (and it is not correct on a memory
+> > region that may have read side-effects) and therefore commit
+> > 437b38c51162 should be reverted, which means reverting back to the
+> > original behavior whereby address ranges that are mapped using
+> > acpi_os_map_memory() default to the safe devicenGnRnE attributes on
+> > ARM64 if the mapped address range is not defined in the EFI memory map.
+> > 
+> > Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
+> > Signed-off-by: Jia He <justin.he@arm.com>
+> > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > Cc: Hanjun Guo <guohanjun@huawei.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Cc: Harb Abdulhamid <harb@amperecomputing.com>
+> > ---
+> >  arch/arm64/include/asm/acpi.h |  3 ---
+> >  arch/arm64/kernel/acpi.c      | 19 +++----------------
+> >  drivers/acpi/osl.c            | 23 +++++++----------------
+> >  include/acpi/acpi_io.h        |  8 --------
+> >  4 files changed, 10 insertions(+), 43 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> > index 7535dc7cc5aa..bd68e1b7f29f 100644
+> > --- a/arch/arm64/include/asm/acpi.h
+> > +++ b/arch/arm64/include/asm/acpi.h
+> > @@ -50,9 +50,6 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+> >  void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
+> >  #define acpi_os_ioremap acpi_os_ioremap
+> >  
+> > -void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
+> > -#define acpi_os_memmap acpi_os_memmap
+> > -
+> >  typedef u64 phys_cpuid_t;
+> >  #define PHYS_CPUID_INVALID INVALID_HWID
+> >  
+> > diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+> > index 1c9c2f7a1c04..f3851724fe35 100644
+> > --- a/arch/arm64/kernel/acpi.c
+> > +++ b/arch/arm64/kernel/acpi.c
+> > @@ -273,8 +273,7 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
+> >  	return __pgprot(PROT_DEVICE_nGnRnE);
+> >  }
+> >  
+> > -static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+> > -				       acpi_size size, bool memory)
+> > +void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+> >  {
+> >  	efi_memory_desc_t *md, *region = NULL;
+> >  	pgprot_t prot;
+> > @@ -300,11 +299,9 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+> >  	 * It is fine for AML to remap regions that are not represented in the
+> >  	 * EFI memory map at all, as it only describes normal memory, and MMIO
+> >  	 * regions that require a virtual mapping to make them accessible to
+> > -	 * the EFI runtime services. Determine the region default
+> > -	 * attributes by checking the requested memory semantics.
+> > +	 * the EFI runtime services.
+> >  	 */
+> > -	prot = memory ? __pgprot(PROT_NORMAL_NC) :
+> > -			__pgprot(PROT_DEVICE_nGnRnE);
+> > +	prot = __pgprot(PROT_DEVICE_nGnRnE);
+> >  	if (region) {
+> >  		switch (region->type) {
+> >  		case EFI_LOADER_CODE:
+> > @@ -364,16 +361,6 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+> >  	return __ioremap(phys, size, prot);
+> >  }
+> >  
+> > -void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+> > -{
+> > -	return __acpi_os_ioremap(phys, size, false);
+> > -}
+> > -
+> > -void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
+> > -{
+> > -	return __acpi_os_ioremap(phys, size, true);
+> > -}
+> > -
+> >  /*
+> >   * Claim Synchronous External Aborts as a firmware first notification.
+> >   *
+> > diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+> > index a43f1521efe6..45c5c0e45e33 100644
+> > --- a/drivers/acpi/osl.c
+> > +++ b/drivers/acpi/osl.c
+> > @@ -284,8 +284,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
+> >  #define should_use_kmap(pfn)   page_is_ram(pfn)
+> >  #endif
+> >  
+> > -static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
+> > -			      bool memory)
+> > +static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
+> >  {
+> >  	unsigned long pfn;
+> >  
+> > @@ -295,8 +294,7 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
+> >  			return NULL;
+> >  		return (void __iomem __force *)kmap(pfn_to_page(pfn));
+> >  	} else
+> > -		return memory ? acpi_os_memmap(pg_off, pg_sz) :
+> > -				acpi_os_ioremap(pg_off, pg_sz);
+> > +		return acpi_os_ioremap(pg_off, pg_sz);
+> >  }
+> >  
+> >  static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+> > @@ -311,10 +309,9 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+> >  }
+> >  
+> >  /**
+> > - * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
+> > + * acpi_os_map_iomem - Get a virtual address for a given physical address range.
+> >   * @phys: Start of the physical address range to map.
+> >   * @size: Size of the physical address range to map.
+> > - * @memory: true if remapping memory, false if IO
+> >   *
+> >   * Look up the given physical address range in the list of existing ACPI memory
+> >   * mappings.  If found, get a reference to it and return a pointer to it (its
+> > @@ -324,8 +321,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+> >   * During early init (when acpi_permanent_mmap has not been set yet) this
+> >   * routine simply calls __acpi_map_table() to get the job done.
+> >   */
+> > -static void __iomem __ref
+> > -*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
+> > +void __iomem __ref
+> > +*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+> >  {
+> >  	struct acpi_ioremap *map;
+> >  	void __iomem *virt;
+> > @@ -356,7 +353,7 @@ static void __iomem __ref
+> >  
+> >  	pg_off = round_down(phys, PAGE_SIZE);
+> >  	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
+> > -	virt = acpi_map(phys, size, memory);
+> > +	virt = acpi_map(phys, size);
+> >  	if (!virt) {
+> >  		mutex_unlock(&acpi_ioremap_lock);
+> >  		kfree(map);
+> > @@ -375,17 +372,11 @@ static void __iomem __ref
+> >  	mutex_unlock(&acpi_ioremap_lock);
+> >  	return map->virt + (phys - map->phys);
+> >  }
+> > -
+> > -void __iomem *__ref
+> > -acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+> > -{
+> > -	return __acpi_os_map_iomem(phys, size, false);
+> > -}
+> >  EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
+> >  
+> >  void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+> >  {
+> > -	return (void *)__acpi_os_map_iomem(phys, size, true);
+> > +	return (void *)acpi_os_map_iomem(phys, size);
+> >  }
+> >  EXPORT_SYMBOL_GPL(acpi_os_map_memory);
+> >  
+> > diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
+> > index a0212e67d6f4..027faa8883aa 100644
+> > --- a/include/acpi/acpi_io.h
+> > +++ b/include/acpi/acpi_io.h
+> > @@ -14,14 +14,6 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
+> >  }
+> >  #endif
+> >  
+> > -#ifndef acpi_os_memmap
+> > -static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
+> > -					    acpi_size size)
+> > -{
+> > -	return ioremap_cache(phys, size);
+> > -}
+> > -#endif
+> > -
+> >  extern bool acpi_permanent_mmap;
+> >  
+> >  void __iomem __ref
+> > -- 
+> > 2.31.0
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > 
