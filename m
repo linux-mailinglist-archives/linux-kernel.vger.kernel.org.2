@@ -2,214 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16BA415CE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AB3415CE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240642AbhIWLhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:37:05 -0400
-Received: from mail-eopbgr70074.outbound.protection.outlook.com ([40.107.7.74]:45379
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S240650AbhIWLhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:37:38 -0400
+Received: from mail-bn8nam11on2083.outbound.protection.outlook.com ([40.107.236.83]:1121
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240610AbhIWLhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:37:03 -0400
+        id S240567AbhIWLhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 07:37:35 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H804kEAaRtYfZZkNDq5oBLTRfZK8vP1C9EUdK8Kzwed62Oc3k8o75rOeqDPSYzHyq0FPvpqp+ggPCNrlYAcwErL2JQRy+V9P4c+51l7g6KA0J9jsTwAKNinkhw6AbU1mfwVEBwoJx5dtUbe5icmBEgpOvCPXBOA9Kvrb0+rx0DViWa+/Jn8q03Apk9tIK1Se10TS512sV2YyObBBUnVFFEdVVDmDRRTAJ8E802c6gzIdn8EYBw5n7ngsOwLNHd2G9OfBimuvpMXQXoDgXGiaXfaPMa+WMHfSxcRzhJADB7KVGkAROJCLbIRPCnVpP7MROSeDpySudXbhVJJuWZRDtQ==
+ b=PKuf1RyhiSFAr254woQT8PkPWY3sdENxRqtXkWbycvmy76NOtfOUy7Ci4pnlYtbDQTC9K46oIA5BfJz0Ez6wq/Z4ctpItJ9Q0LQWt7yelESUb+Z7zcQoEIffI9ofhda5Zpx8TCxzxbPkq0DHFZoy34+jTk/RRbCCUDawJ2whJUnVTAihfqMMXgRe7hKMqkcovguTcClk1v/suDQQcJch4jwjR0hNkIclm2bAfoOnrj+RZ+Tn4B9h+16pfBD0FlHnlLEocMEZNpp3dcL3Aku+dLK2ISgk0Jip1L73IjYmebYEExincvdpkIvqOzNIy+eW/pkenA5es+oPSs+lewSPWg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=5CPiZFT/7GfqyhbK9FEtlDk88pKtnnOBfFRjHtwRKGY=;
- b=DUPH4x1a93HO7DXFacyDnymvHLvZl0EW0mpcn8DWamxgihbVngwa0YVvWtNp8O1gPXeaF6bd4PoAx6I4eHPRidtT9GbTN8KA0cxzdRKCpD8rrP/HjGKmHQdKYPwO+Ocwkx6YvTBusMS5BcPZGoKjCg7R6TFTa3SrlJNyK2gIM/v6B4tdTR47SQ6Yl4ULe6WTUVr9/wbhvNCEo6q9wH7/me7Iw0tqhLgbcDgUR+xigR9GlzwM0rzod/vg+epvuF7bC1MVtEDladksUkSKG0us0a0p28Z1Uq4IYtaIVahIBlwxU4AqxzD6fn/i+dHazZWppfrkv4Jc5BcVhOjAkgl6uA==
+ bh=kEhNweG+2rb0XCTGkVOR76u9OpQi+HWVIaM1AwLVqRY=;
+ b=nEq/KluAOyrIaavMLpW/gLNtyR/PUtjAwgNM6I+vs6Liiq52QsLwxz6mykcGkAfhIxPKjcwc8KcNGZdXsqYw0rtY0Lq8K8bNYrSE9aEQEc8L54wXNfO22aIsQQvVgMn3HbZB6laAB3XYb9vBvi68mUggUh5Po56VumhpmHP1T+p/4h0hoGa5eXlQ7CjEDwHkDwZ03IQp1ySA1i13L1eyYVcZFM/GgFnaP418DfnXzC7ICQ3teS0xajht/0TWV7SC576D+z0QCY8lwKrCzUqWQCGCTw90FNyjb+4kjOMAmhQMF9D6+7YdWsVUJ+G41RAWStmEByX7EtHprXQP8EpNLQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5CPiZFT/7GfqyhbK9FEtlDk88pKtnnOBfFRjHtwRKGY=;
- b=gurqg99wxi4vtt4WkDsvGpZguth+yR8B7t7ESienljQdGhOYbdstles69KAD23MZ33kKFpErGQCat3B507wnjsx09jbXjn35qzCv/E/ylA9d3mIjHl5cgaNdiuJEbNiUqWICAtM0pQYOdEBS80Om1ksS9VBMf8dBQAPXYhUFckE=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR0402MB3406.eurprd04.prod.outlook.com (2603:10a6:803:c::27) with
+ bh=kEhNweG+2rb0XCTGkVOR76u9OpQi+HWVIaM1AwLVqRY=;
+ b=f2faKEfOjcCCV7QeEmd83YgTDc6sV6be0XapmTsb0E1PPT+DAW8mJLttrPimXpXSJQfmg6w3itXv5nMu9Q+UyfGrOEtoazaOMZSQK2WM1TnhvSGEqDa2EfCEQtX/UfmZVh0TFWVDCXjgHpzMyQMLetnu69VPm0Nm6YREwuuDVWBcXFmx3Ow0vaLgsK+lh9f/mII2OfJlZ0yIShlKOoVVuSWpsH+ohs9kRnrAjwwzmMHiUeWvahapDsA+9jOHBsX8G4x5tD/uZZ9NonAN1NqeiHsqCpPnM/mAy+ubZbeyzn26b2EM79OA4f7eZwwZcxlJ0s2JArwFzcUagKg3HBdJRw==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5160.namprd12.prod.outlook.com (2603:10b6:208:311::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.18; Thu, 23 Sep
- 2021 11:35:28 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4523.021; Thu, 23 Sep 2021
- 11:35:28 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Thu, 23 Sep
+ 2021 11:36:02 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
+ 11:36:02 +0000
+Date:   Thu, 23 Sep 2021 08:36:01 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Subject: Re: [PATCH v4 net-next 5/8] net: dsa: felix: support psfp filter on
- vsc9959
-Thread-Topic: [PATCH v4 net-next 5/8] net: dsa: felix: support psfp filter on
- vsc9959
-Thread-Index: AQHXr56GWZAJ2atrv0ecdycHDF0T3KuwAOYAgADlwACAAHlYgIAAG7WAgAADRYA=
-Date:   Thu, 23 Sep 2021 11:35:28 +0000
-Message-ID: <20210923113527.jd3buthrh2rx6ulz@skbuf>
-References: <20210922105202.12134-1-xiaoliang.yang_1@nxp.com>
- <20210922105202.12134-6-xiaoliang.yang_1@nxp.com>
- <20210922124758.3n2yrjgb6ijrq6ls@skbuf>
- <DB8PR04MB578547CBED62C7EEA9F8F534F0A39@DB8PR04MB5785.eurprd04.prod.outlook.com>
- <20210923094435.3jrpwd63fnmwhx7i@skbuf>
- <DB8PR04MB578574BC7F055D55725374CCF0A39@DB8PR04MB5785.eurprd04.prod.outlook.com>
-In-Reply-To: <DB8PR04MB578574BC7F055D55725374CCF0A39@DB8PR04MB5785.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4f0e8e86-a0ef-40f5-5379-08d97e863e56
-x-ms-traffictypediagnostic: VI1PR0402MB3406:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0402MB34062A4EA7C7D7BA2874D346E0A39@VI1PR0402MB3406.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: emg6LMqrrFokUqaOb8Fzz1zWngoYOrVtTbW4GP9fo70SwWXSS3p9ujirEPRMuEOsiFxMvupZNPtqxhGGYjEE7RuQ/awogGMcGvJzv31VEPcgzAlz1lHKUl72R573120ABw1Jmp/fj7f8/Bu/BTHxRqCx9utkrPDC/MX+Sh7iNkfABXvrIjhX0vh1KYwrxNh6uCKddXWGSbBGKNoRpYjias2MwBTC59jzsZz3nmDMv9jbCWHGd4S2cnSFgCKa2KGFxrrP7vM1i5lI3zpf2dyWalFSLcxdUxPhb/QrvnMpFCXk9Q3l+yP8DzhxuGvkAikA0uLVcSrDsPFPPlXgqidMokOicA3ZPt4aHMs89Dr6bX24gAW7JX8WQxDkR6OrLvbHjLjPronC9L9JOj5JGtiVTnoh2I3lzZNN4QnNMzjeQFBbawfllBMZ37Kgby4CQnyde8Thj14oIjbie+FQzmO6otRuWsgg+hajGCmNpJaM6oWFCR4CTdhHcO8WutH0B/PUMkAfEaf4jhc05ou9xl7vGY0QN9CYU0rP7bR0NZK9skPXhO21G3n0alLZF2Wy5TmqtgJtpHDR/rCP1XYOv7+istNYL0Q2TQFuIDTJQb28KmoU5AvSbGMsdbEd9q5f2YP875fevgkRxVV6yqS0ZuqAcqLKSiRoILfWUkpzlK6ZzK76+x21pDttCedrxpZ9V82mnuMg/8r/JpfNiLWUsSCTK/XvWHGRiuVM7gMlcTgWLrq3X46/XYGHsW6lWdFjk1IR4rR67vfSbDej/y3bEy0bwuulOPVRZjPW1pCq9FbBAHg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(33716001)(86362001)(2906002)(6506007)(8676002)(508600001)(316002)(5660300002)(53546011)(122000001)(966005)(6512007)(26005)(1076003)(6636002)(83380400001)(66946007)(4326008)(38100700002)(7416002)(44832011)(186003)(6486002)(54906003)(8936002)(76116006)(71200400001)(66556008)(66476007)(6862004)(66446008)(9686003)(38070700005)(64756008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?QS5XNJQPPZWTf7sCLKCOXYCqoFzxB0TlrkiR20Iu+qpVFNZv09Gh5Hr1u6rX?=
- =?us-ascii?Q?PJz9o3+vgnEFPCae+AKOnDBRER6+sYr8qGARZv1Kykn2V64OI15a+esAUEV4?=
- =?us-ascii?Q?DcTRhavpD7olo0uexODRcwPJ0lHL0dxufL4MQtHpbN0QI+agKQInnsx24E3V?=
- =?us-ascii?Q?HCfwfvQTf3Sn1THY2FhpxpQMrzv2CJtrm5GzvrzQ5xtUii5mVMgt7DW9Hz+7?=
- =?us-ascii?Q?nb+HGRqBX3+7ECX9bJCkmAgZPIDYIqbeSg4NWpjYNQyhTN0pmCXT/6AAbr5O?=
- =?us-ascii?Q?9f0+Vndnb5cnVxhHjzGRdZZBeLRnPdzAoP48+n0Z5bnXyfqo3IeJzT/Lvm/B?=
- =?us-ascii?Q?yC9tAn9GJ6PE+jVMqASDt0zmyYPycFobUx5Ub841d47hp1XeuJBxwEbWV5EZ?=
- =?us-ascii?Q?pupbhmZRM4gzgW2xmOV4yX22D/YfDX4YoTXziySxolMGQvckObv9Ry1GFnJf?=
- =?us-ascii?Q?E+jQ7iO9Q9cvKVolzkLVsyLbHfws5Zy3luXX0cNqaAqy5cfxni0itdIp8nRc?=
- =?us-ascii?Q?O3jT9EM9fAyggHIDX9ui92EV+ksl932iAVBDuJ2Bwcav9gkRHk+qEoRUpmtV?=
- =?us-ascii?Q?ooDNiCj9BQmoAskEsuQPxy4LTnO7zDy1dzSa+rk7AL4BPL8fX/4P2/MFHHlz?=
- =?us-ascii?Q?M0f8kFyEDEqbdoEqtVgWMZ01stFYxixutz3aRMCF56bTeGbqPkfRsLfNJUzy?=
- =?us-ascii?Q?Gurth4PTdI82wd9n0H1m/WPhwiCBNi7NnJWT2ddeHat09O3g8/q5neQfVtNf?=
- =?us-ascii?Q?ePGN4p6Q7fGbx+/ItSdsVakNvMkvAsfggFYZbgUTusYuraKDSMseJnCN9gP+?=
- =?us-ascii?Q?UGJ7mjylC9J80g5575tXYO5yWG60IfiA0UeHozeoftPhw5DKIMqEyNEQidLN?=
- =?us-ascii?Q?A82gEa0A/vpFI1iT1ZKUkdU9cXoL+n+88tq/3SO8m6h2z+duO2B/Fz+7mLzV?=
- =?us-ascii?Q?VEfu3a/FRvjSUoi8BfOs2NTIgTEiMrSeXGWzWjzaDFVB2JUQPRIqFiIA3vj1?=
- =?us-ascii?Q?XaXvVOn78RMq0749w4Z9+ZuhFa6eGWtywgKczcNG+VZMRdQrB/GUP79SKCNq?=
- =?us-ascii?Q?wR7KxdPCLI+dwzCbX0zK9QB1FwPnoaLM02d8+GFPKRJsonCNtSrl2w/gsn2X?=
- =?us-ascii?Q?wCmpI7QkEwR/Lry6lkNgMols1qa7bhHftzPabYe58USGhyd3an/8gxFjzj4l?=
- =?us-ascii?Q?XoL9LqZQ7yK0zWj+OROp49xX+aeUYav9VwtGW7UE1aVIu6G6qr49qZxvZVYU?=
- =?us-ascii?Q?xbb2EP5/ojbj68B+NEwU00PIZInfuq/83gHPSrTziNLIOy4YKsyw5qAYu6g4?=
- =?us-ascii?Q?usUSYZodbz4oLlz4hJKdmYEZWLcWPPanfdbSgZHxiNbPog=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <81BC30E2C9097542B69D82816DAB543E@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Message-ID: <20210923113601.GF964074@nvidia.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-11-yi.l.liu@intel.com>
+ <20210922152407.1bfa6ff7.alex.williamson@redhat.com>
+ <20210922234954.GB964074@nvidia.com>
+ <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+X-ClientProxiedBy: BL0PR03CA0002.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::15) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
+Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR03CA0002.namprd03.prod.outlook.com (2603:10b6:208:2d::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend Transport; Thu, 23 Sep 2021 11:36:02 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mTN1F-004OI7-JG; Thu, 23 Sep 2021 08:36:01 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a1a9049b-219b-4180-7b9a-08d97e865263
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5160:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5160E0692D5D184E7F27D56DC2A39@BL1PR12MB5160.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H23AJgynycVbhia4AByy9Rxwfo+PF+CEXOL5zT+xiQSZY4lM5GiVNz6JUylr0lepiqRK/usG1mhJ2QpnFPegwf6USVtPCFePhvXzu+HlNPzRLgD8wBrqLM5h/8yZU0SJu6nZj8XhkWuik+TX+HGm5+W9rqqhhD0yaSCtWa4yjm0BCdUN0O4NV16zl+8okP4uRAKBGEWST6eziS8RcrUosCm+WW8MpWOVG3gbrGSaKvocD4VRWg+gX5LOotMY/ZdVfoyyt620fqB0jAwkVl+u14zkBRQ/Tx8r+bH2YlTCq7L2DGHfnNy5amtXY9OSgHycfCu9Cf/UBf1RSkknSWgQsaQtfjurjXEhSq2nsvmy8ygfpVZVE3v6UNg7oLflAA7wmEDqlGen5TBwr9KRAZCOUD0pKBjJQ+Kb06gMJdpceRQe8W7r/3oIQJqIthjmZdIc75kR8cC3qjtj+SMYQiWlcLcab7X5guLkjEY/XZ3rcIS7EyYCN49QhhOSvK1RfbNyA1LChx9QXpm5AwefMVIt2358MfrRJJVu/mm3WNg2iQ0I1IRX0q3Q/HZoqAX2ApRtJh7tgdh6HUVQmJ0OFWjxhnJFyadF6aCaUhtG1+6sb6byjsCBvqOwqdC5QoexGPwzW+mMC3H3itk5sfeOSVCdzHgDsx/9KajxlMoeeUcwxotPZkLABWyxlLbrgLvlL/Nx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(186003)(8936002)(5660300002)(86362001)(33656002)(36756003)(1076003)(26005)(38100700002)(4326008)(4744005)(6916009)(107886003)(2906002)(508600001)(7416002)(66946007)(9746002)(2616005)(9786002)(426003)(66556008)(66476007)(316002)(83380400001)(8676002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J/xhyjLs32z6UM36q51AYOmsUFKXgBt553AZihg1Fdk65fqahuA2mT+wrP8G?=
+ =?us-ascii?Q?jmzrGcIeEMNLgIxSFNKqmnSABsLHe1NUTFugSUs+JFejgl4YcMPmxPmqbp/m?=
+ =?us-ascii?Q?PKb3DMZsZvsHG8xbd3hx6M3YF5l8Kfr5UnyDU0WJ6uzJ2cQGhuoqlulIZbE2?=
+ =?us-ascii?Q?TNugVKsbXfact53VCcBMaYTljhkxTWFxHmQA6xu/tLPWsHor7lS/0z/U02/7?=
+ =?us-ascii?Q?Wg3pHPyTzbsKpPbuOk967WnxQVZo+FWEULND2fOHvGqfdjZaGb/TX8X3w+hQ?=
+ =?us-ascii?Q?iV8G//8RgArJK0umIfg8K/vTPply1Jxp3FjUP1/LqeSZbw0lQMCn4gUGye5b?=
+ =?us-ascii?Q?+vWmU5nKye5OcOiB2kvbl52KyjCXZTHdrY2LnPcLy6E/Zb4rp/W5nNI/rxWV?=
+ =?us-ascii?Q?8+6W4wp4Gqc+NnrGhW1b8yaSBUXT/fhJz8tBg8/Va4Su2r86CjkyQMFjCVy9?=
+ =?us-ascii?Q?kHb7MmH+/3Uj4YECgHO2VQlHo8Qur29c/MYgQ0oYB7xYkoIKu0O+S2jvBfyK?=
+ =?us-ascii?Q?2N9hI6TzYuPky4sVJ51ck6JNS3WtiChBjtlaRWptHTvsYrYYV8XV0H/eEBzn?=
+ =?us-ascii?Q?zRh9SB7mFetkF9zCACqyNZbm9neMhSsOPL1vIi/3n0rbUOstZ1FfjM1eYDix?=
+ =?us-ascii?Q?FV/chLlmzAO0fqNeUVf7YH9vbrkp3ot4ztJK5UQ5wc28CSOEYNqHkSr3Llkx?=
+ =?us-ascii?Q?WNovmB3BmFU9ztOnkPETwWITE+HBeuu2VZ79Yn10klfQZwB/YA+N8v5z1DbZ?=
+ =?us-ascii?Q?3mZMLvF93asGrC2UM5/R1jxRaOTcFHgbuFmUT4IDPbXgaWv/3k528PaqLIle?=
+ =?us-ascii?Q?c3aRRNz23sW+VnMozWJU0CbaVQ5eeV+o3RiOPh9kkQdzbUTPoSR++kQtFjTp?=
+ =?us-ascii?Q?u0jSqP3FoAvlqJ/c0odd4+aFwwExxLQ4jAJ4qsAi0UlybLgEyB/tyC1VVv39?=
+ =?us-ascii?Q?ytz8Xmc46qp5UYvpzwxFPIofr9LyWlwYZqBTBRzEaOhtgegOvgHjLcRDCDII?=
+ =?us-ascii?Q?ChWPCKQ67eKJgc9Wgxj9o1qHz9GjqIVfFyIVs0t4yJcBclBdHP24dYqpMq9P?=
+ =?us-ascii?Q?4HP0o696zVt0hei0oRnPVIuf36gwDPBCiEq3w50dASWgzXVrSI2anDqL9oaF?=
+ =?us-ascii?Q?1oDRze+v/0x5HdcnQ1zZg8wB42A9yFMqfoYWqHd/e0dUekSvFrfPeco1LyFA?=
+ =?us-ascii?Q?OD8FMRPa8y/49m/WkMsHnMW2aUf61ih3KI3+td4RdinY/6HQFmYQ7QxEs9Rw?=
+ =?us-ascii?Q?nwBu4jmoQik7KkyL5DuNwxXXksagolAKsiob9XHOCS5G4R/WHUh4YD5y7OFU?=
+ =?us-ascii?Q?0md5PLY9A1v990XzqcZsRgke?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1a9049b-219b-4180-7b9a-08d97e865263
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f0e8e86-a0ef-40f5-5379-08d97e863e56
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 11:35:28.4479
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 11:36:02.4755
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6pu8rbEaY8kQ/pdjDa+nz6agbOJu34BLhQTkGkk9runPFQsAHVS7zmPesYDHw0eOGK11wZn5iraxfrobdxA40A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3406
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xq7olsuS3cpWd3WsEAJjopj1b0qNuCNAKn9jWhxW6gXMQxOHwCFqaALgi6zUX+SA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:23:45AM +0000, Xiaoliang Yang wrote:
-> Hi Vladimir,
->
-> On Thu, Sep 23, 2021 at 15:45:16 +0000, Vladimir Oltean wrote:
-> > > Maybe we need to use ocelot_mact_learn() instead of
-> > > ocelot_mact_write() after setting SFID in StreamData. I think this ca=
-n
-> > > avoid writing a wrong entry.
-> >
-> > So you're thinking of introducing a new ocelot_mact_learn_with_streamda=
-ta(),
-> > that writes the SFID and SSID of the STREAMDATA too, instead of editing=
- them
-> > in-place for an existing MAC table entry, and then issuing a LEARN MAC =
-Table
-> > command which would hopefully transfer the entire data structure to the=
- MAC
-> > table?
-> >
-> > Have you tried that?
->
-> Yes, I have tried. I mean writes SFID of STREAMDATA in
-> vsc9959_mact_stream_set() first, then calls ocelot_mact_learn()
-> function to write VID, mac and STREAMDATA in MAC table. We don't need
-> to introduce a new function. Once we call ocelot_mact_learn()
-> function, STREAMDATA will be stored in the learned entry.
->
-> >
-> > In the documentation for the LEARN MAC Table command, I see:
-> >
-> > Purpose: Insert/learn new entry in MAC table.  Position given by (MAC, =
-VID)
-> >
-> > Use: Configure MAC and VID of the new entry in MACHDATA and MACLDATA.
-> > Configure remaining entry fields in MACACCESS.  The location in the MAC
-> > table is calculated based on (MAC, VID).
-> >
-> > I just hope it will transfer the STREAMDATA too, it doesn't explicitly =
-say that it
-> > will...
-> >
-> > And assuming it does, will the LEARN command overwrite an existing stat=
-ic
-> > FDB entry which has the same MAC DA and VLAN ID, but not SFID?
-> > I haven't tried that either.
->
-> I tried the case that when MAC table index has changed, STREAMDATA
-> will keep move with VID and MAC. The entry { STREAMDATA , VID, MAC}
-> also can overwrite a static exist entry. I think we can do like this.
+On Thu, Sep 23, 2021 at 03:10:47AM +0000, Tian, Kevin wrote:
 
-Ok, so maybe we should do that?
+> Disabling wbinvd is one purpose. imo the more important intention
+> is that iommu vendor uses different PTE formats between snoop and
+> !snoop. 
 
-Even though I must say I don't really like the idea of partially writing
-MAC table entry data from the vsc9959 driver, and partially from
-ocelot_mact_learn. I also have this patch pending:
-https://patchwork.kernel.org/project/netdevbpf/patch/20210824114049.3814660=
--4-vladimir.oltean@nxp.com/
-and concurrency will be an absolute mess. The ocelot->mact_lock will
-need to be taken _before_ we start writing the STREAMDATA, so this
-variant of ocelot_mact_learn will still have to stay somewhere in the
-ocelot library, and be organized something like this:
+The PTE format for userspace is communicated through the format input,
+not through random flags. If Intel has two different PTE formats then
+userspace must negotiate which to use via the format input.
 
-__ocelot_mact_learn()
-{
-	do what ocelot_mact_learn() currently does
-}
+If the kernel controls the PTE then the format doesn't matter and the
+kernel should configure things to match the requested behavior
 
-ocelot_mact_learn()
-{
-	mutex_lock(&ocelot->mact_lock);
-	__ocelot_mact_learn();
-	mutex_unlock(&ocelot->mact_lock);
-}
+> When creating an ioas there could be three snoop modes:
+> 
+> 1) snoop for all attached devices;
+> 2) non-snoop for all attached devices;
+> 3) device-selected snoop;
 
-ocelot_mact_learn_streamdata()
-{
-	mutex_lock(&ocelot->mact_lock);
-	write_streamdata();
-	__ocelot_mact_learn();
-	mutex_unlock(&ocelot->mact_lock);
-}
+I'd express the three cases like this:
 
-otherwise I would need to introduce avoidable refactoring in the driver.
-In fact, could you please pick up that mact_lock patch? Even if the
-rtnl_mutex was not dropped yet, the extra lock should not hurt anyone.=
+ 0 
+    ARM can avoid cache shooping, must use arch cache flush helpers
+ IOMMU_CACHE
+     Normal DMAs get cache coherence, do not need arch cache flush helpers
+ IOMMU_CACHE | IOMMU_BLOCK_NO_SNOOP 
+     All DMAs get cache coherence, not supported on ARM
+
+Jason
