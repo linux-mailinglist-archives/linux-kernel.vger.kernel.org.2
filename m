@@ -2,258 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFD44160CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8951D4160CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241725AbhIWOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241710AbhIWOMO (ORCPT
+        id S241592AbhIWOMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:12:10 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:55816 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241608AbhIWOMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:12:14 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE53C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:10:43 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id v19so4548136pjh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:10:43 -0700 (PDT)
+        Thu, 23 Sep 2021 10:12:07 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18NDqZN7007034;
+        Thu, 23 Sep 2021 14:10:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=jkDtPb1T0sU5FbY+CiYBQbSOYKSIUZIPL2BFDe0J36I=;
+ b=wD9yLZp7FnMvrwHZf+j99va+yc52085wMo4aDFnsrSxbNG9PJgzG9TVSeaHgoC+r5R+/
+ P/4ZlVq8v+1/o4yC8e88KgLajeXclXwoiWJ+W/mjrvaAKsomOGXyTiNZ359BVpIweTD8
+ Yu0lcpuiO/1NL8nkasjNgMseRRvtaF+mMeAEmnfPme+sxMMpOM8WXbHjKRJia82WNk2q
+ 6msJVMBxI2Z1XvFQBfCrOSPS36sRxfxvBKCfgdg8dWbxBs0QPFYsfEwHIvDWBgtu9oKU
+ tCKMVfgJaZgrr+Hp4i9MUGQ9L0BQnMWey9hk1VcLq130t1OW/u+8DIJeJjt/g8b8ZXTm Mg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b8neb2bnk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Sep 2021 14:10:00 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18NE73cx147870;
+        Thu, 23 Sep 2021 14:09:59 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2106.outbound.protection.outlook.com [104.47.58.106])
+        by aserp3030.oracle.com with ESMTP id 3b7q5dsfre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Sep 2021 14:09:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZrSV/1aAySU3Z21yZRq3db2wvQnABx6rJeBDeXDPu+0JaG5ahHdwTxR5Uf+/Vm9C+HZB7QoMlMJY9FnttiawI5A84kwxN+ik3pF+RDzRk2GCl14T1aM/uUZYxKHj5j9t8nT8IOZgJJh9g6Cw+8EFiIM8PDOvaSiObaN8jy3WzlTU++LjBXphuH2JY51glF7/IkEAMNgVZ/Xm4YyH+DWCeY1vImskYgwbVi6aZSmtQjT0Hv87lKqDizfkRs65tYC8I/iEjRj7RyP/nSxjRYhfvA0CjrlIuQ0B5B9fwdYQr/9l7O9LTbCbhM012HQYbyBKvfP6VnHJaWUzmmFyLVjInA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=jkDtPb1T0sU5FbY+CiYBQbSOYKSIUZIPL2BFDe0J36I=;
+ b=M8SjOf+KMU9W7gKJeusdvDMT8lARc0zkiJE/4cDw2W8VTrEs9ci52yV1Jr5CBfgXnMIlMzKyEPYbpKn3yZr9gIoX7btIdMJ/32HLen5+BDHStJJLFc3JEeVw0rH42QeBvRwt0GcvwEfzAz2qjqc6haQdXkjDctmBCvjRyyhZ384XEKXEir8oIzcDzE1JXRIkHhE2pFWw5J5rW9XrF13cekm4DzuVF2ewITR2eSlH4FcLqDAQx7us8ga/c/ayiVShTzbe7RwClqzSYecB1J5fo6Rw3J4dd+WeVSC3Wc/4JWRcGm0Txu2APhsVAU+KV4fKwxvFUfphy3RkAiGj4aV03g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9ZysB6B1fylvRcmjz+YxzcufocnP0eHTmJAB2LpWg6Q=;
-        b=Vi+vH7BW/f9VkQhaVR+mOMIWqOBrDWTonxYSwBG/fXNPufRSitagCVDzDz26pYzYtD
-         b2IvZv6z0SFcV/PGMFaurJpxqlYyHFqyzqQNSQhMFw6j7XYSV8umsByWG0CJ7/zVtyOJ
-         Tco/fohEUcE0FRCNeCKgMAyZoJUCyal0JCuMhc3wlXFaJpoTK2RCGlRVsSO7QWgJz/1i
-         /pH1+nC3euSXAbTQjIRA2baOFApcIsGzZAoW2A7lT4eUW+vAoh4Pw7Gk+z/URz3RPYsB
-         VRQhRPNe1TdCHH9KwHqLUAk6fZ0mmhAad9SLOx4YZ0hVbJIm3KRWq6wZjcI1onMkZxf6
-         I3hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9ZysB6B1fylvRcmjz+YxzcufocnP0eHTmJAB2LpWg6Q=;
-        b=x2K3K3yWKrURCiJ3ZqD5aOL8gR3vmIR3msyNK7xuRLJD+IOEzNmMqroUcqBNb+FWdJ
-         dlEwZ98nzdawvVBFF5c3pHvmq18IHbiJn39XgzegTNLwKZXHmpA476Ye2c6kE7/CepZS
-         YwqjM/EyPCNPoqP503yT9scZ5gwYdfuGsit//4YzZfdSKAeExIAYIvmtJcrM2ewqrrVy
-         HeJyicK9N/0RqiCDwAsuMlTybzE0Jhn0Fo6MzDm/OMEkn6JcD6iJ3w0OK3wlb7NlLv21
-         cPpnVGdljLdLFc8yNrt/qdnYOthaCuBtjIlTTB2eNycswt82YQjlJ0TRVA8+Kv6HUcWf
-         tFfw==
-X-Gm-Message-State: AOAM5315w1D9Imc91Hvh5dObGdQNlkwljnhAS/ymXNOWda8eMdHs0DQV
-        ulN/4ZyJu6tRcEqSisCgLg==
-X-Google-Smtp-Source: ABdhPJzjrZs3XaHoleg1SXJxNrF68ViHeoZETQNt13Q41Kiwy9o56HgaZSsQ66w+fanThAzaApD9qA==
-X-Received: by 2002:a17:90a:f2cd:: with SMTP id gt13mr5597806pjb.153.1632406243141;
-        Thu, 23 Sep 2021 07:10:43 -0700 (PDT)
-Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id j6sm5800766pfn.107.2021.09.23.07.10.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 07:10:42 -0700 (PDT)
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wang Qing <wangqing@vivo.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCHv2 4/4] arm64: Enable perf events based hard lockup detector
-Date:   Thu, 23 Sep 2021 22:09:51 +0800
-Message-Id: <20210923140951.35902-5-kernelfans@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210923140951.35902-1-kernelfans@gmail.com>
-References: <20210923140951.35902-1-kernelfans@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jkDtPb1T0sU5FbY+CiYBQbSOYKSIUZIPL2BFDe0J36I=;
+ b=eaVXRq9cifzhamMPpiDUXbOEqTaw5/J36X5+3IZ0smQ2o28ItsUH0ylrlkRAzCppsl0EEY0yoHEz3xw6FM4zND1g4qkKRDXZfEpvev5HFaeDR4INAhM2bhnsUWEp04y8ltpjMQBJJp1ZWOxGyLbuHF1CD0U9fqwDZAERbEzpRIs=
+Authentication-Results: zytor.com; dkim=none (message not signed)
+ header.d=none;zytor.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by BLAPR10MB4931.namprd10.prod.outlook.com (2603:10b6:208:331::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Thu, 23 Sep
+ 2021 14:09:58 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::f520:b987:b36e:618f]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::f520:b987:b36e:618f%8]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
+ 14:09:58 +0000
+Subject: Re: [PATCH v2 1/2] x86/xen: remove xen_have_vcpu_info_placement flag
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210922103102.3589-1-jgross@suse.com>
+ <20210922103102.3589-2-jgross@suse.com>
+ <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
+ <7de79902-e31b-899d-44bb-f9daabb2ecf0@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <154d8fd5-1c31-97b2-8d8e-d50c9ff7a51f@oracle.com>
+Date:   Thu, 23 Sep 2021 10:09:55 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <7de79902-e31b-899d-44bb-f9daabb2ecf0@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: MN2PR16CA0019.namprd16.prod.outlook.com
+ (2603:10b6:208:134::32) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [10.74.119.142] (138.3.201.14) by MN2PR16CA0019.namprd16.prod.outlook.com (2603:10b6:208:134::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 14:09:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2074d78b-faf8-4d84-dbe3-08d97e9bd33d
+X-MS-TrafficTypeDiagnostic: BLAPR10MB4931:
+X-Microsoft-Antispam-PRVS: <BLAPR10MB49316794D3EE8C2DE6A090B28AA39@BLAPR10MB4931.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:336;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zifko0Ij+HI9t6Fq9bvXLNGjo8c7p2qbhzaqpgRIOo9DFxybwXWbQ2tfj+auvm++aW49q/Fe9cO1frGe2tga+ALTu3LpZUmBDmW9JZSXPZwk6B9iR3rVlSa0Uyd47L8cSDF4eGz5j8od3Qw0jEK3ufl4jyQ55fXbQsscr4cWwJjyYH0Y5a7C80b2sJSxLIJLiLXcFiDum59LoGtUNASRmchGyAQRE65qwXe0t0yu0zUO5oTfx2+Zq0k6iV9klW9S1YICcyLlyoKHRwmlYjrTTI9LaIum5iw2Makb/zMFxHtomt+ji+Dy5suHdv7OyAZuBETZGivajnPN3mdxBwKxjgJh/dMpSO/dP485ZGrLBDeKYxfSGouuf/4Ym8wvxcLTiKW2mAeN483QkgvW4TzYF+/BNDMDklsAFTyisoUKsngBSZei1ncqLJQk1NLLc91mRUw+/B9PdB2HEs2HrG/RgESqPlLkj7fJM7WWzSUZSR2gG/9rWt327z2Etf8vL178/hiclFr/TTzkZM7ahMXhpIlDwfr/1YHm/l7VXisZfrThP1rxNS+n6WQ5e3D3zLYwx4Q0mN+RjfrNyth/SfULHFiRIG+GhTweuot8dCUYopy2W6SP+qbTqvBjMh6oqIC+E+7Zk3iRhyw1Jxd2SZ3Jk6HsM0VpK9b+vWA0A4XWrDUkfDoSlDzyJQi6qr/os60Rp0andWuY6QlRuoNXtt92H755jVE+CoGc4fBP6NY/rWKxzQJ3mtv/zD15F6rVVtPQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(2616005)(4326008)(956004)(31686004)(186003)(508600001)(4744005)(26005)(38100700002)(44832011)(316002)(16576012)(7416002)(8676002)(6486002)(5660300002)(8936002)(54906003)(2906002)(53546011)(66476007)(66556008)(66946007)(36756003)(83380400001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enFobldFVUhrWlcvRlhkRVZKVThPdFZqUGpRUnduOVp5bUhZa2IzS0tEMHk3?=
+ =?utf-8?B?SVk3eGcvbjlQVEdzZStFM2ZFc2phTDQzbG9xZWpLbzZLRmdRajN0azc5dFN5?=
+ =?utf-8?B?M1VWck4zaS9JNW5YRFgxRVRoOGYxOUF1SDRISEFDdWZaWk56ZEF3Tm8ycGx1?=
+ =?utf-8?B?OE9HSUdtN0ljK2FFRm44VEh3anF6eHAxdDMxbk1oMmNsNTdNWGpwVmZ0cUFn?=
+ =?utf-8?B?N0N4SCtZVC9JYnlQZnJINytNMVp1MlBPTTVaSGc1VHN5TDV2ZGpDVjVYWlF4?=
+ =?utf-8?B?V3ZBUHNaYjNkT2VqSTl0NC9yeE9Bdng4Sm9QWXpsbi9nSXJvc3pBN1J4elZ3?=
+ =?utf-8?B?RGNZdTVKNjYwNVJQTGF2dzk5bVRvM3VnSmRmWUVJMHgyeVl4MWZEbnBBK2lW?=
+ =?utf-8?B?S0l6Rk1zZU1TN3pVQjVBRlhNSnE0TTIvVnM4R0JvbFMyWkhXc25GdU4rN1kw?=
+ =?utf-8?B?VGVKQWxRTzJGc2orRmdERmV6eWtFYmhkeW1GelRVZHBrVEJjUkJJcUpZM3J0?=
+ =?utf-8?B?bkJzSzA3R1A2N09zVTRIZmxuUHdpckcvKzVzTGg1SGRDZ3BsVlY1VDRiOUtx?=
+ =?utf-8?B?UG5uT0V5Njl6eXpaK1ZrOG42cmgzbDVrOVdRdDZJblZ1MjVFa0p4dmpjRW11?=
+ =?utf-8?B?SlRqdExqTjNMbllaNnZYdThSN0kzVlB1by8wKzQxM0t2b0d0S0RLMzlpRWRq?=
+ =?utf-8?B?MHQwTEUwbHIzS0t4cTRKUHMyQjM0a2hyTUlJbm1VczdXNFFxRU81aGxnUENh?=
+ =?utf-8?B?VTJrejBTOFZRVFVZUVZBZFJuTjFuUkZ6YUIva2xvK2Q4OGFnN2p3dzduM0k3?=
+ =?utf-8?B?VlpSMkZnUS9YNkMxR0x3SDljUUJ6Mk1GQnhrMFFocEdRZUhaQS9rVkFiQ1RC?=
+ =?utf-8?B?N2lJcGFXZkthTG5CbnowbFlYT0pVQytNdjBnQVc4RDFlajVUQ1RBMFh5OG41?=
+ =?utf-8?B?eCtXVm82SGdlS0I5SE9vQSswTHhaSVJVS1JzV3AwYTFwalk4N0oxYmlmeDNN?=
+ =?utf-8?B?QlpwcUJVYWJESVlsaWtFTWRmaU1oQWIrcmw1ZFpHazNGcWt1YU5jL1VzMkU3?=
+ =?utf-8?B?amZDSkp2VkU2UE43UzZtWXlmZTh4Snh0ZmVGL0hBY0ZGZDl4RkwvUkhhOWRJ?=
+ =?utf-8?B?VGNTaktmWUluWkhIZ3RlUE0yNkYzUTlkcnRGeE8vRU12WHd4WS9WWnhrZmRX?=
+ =?utf-8?B?Tmk0aHBqTHUrTU5DNytLdkswd0V4d0cwTExPWk56bEVqb3Bob240ZUZPSm9w?=
+ =?utf-8?B?NGdPQ0FXem16Z1IwMWhlUzZiaVF1aFlUZXhLOUExWVgzRXVsOXJSbi8yK2dW?=
+ =?utf-8?B?QjJBL3JpbXUvbEtLY3pTVitIbXFtVHNGZWFUK1RtOE5XbG80VVIzZVAwaEM4?=
+ =?utf-8?B?bGZDeWsyOGdsMGZhc2JiU0Zra3B2U2FBa2xjZ0N3QVlGbU1NV2tnd3pGaStR?=
+ =?utf-8?B?d3l5K0toaFBEZlN3N2tNRmdZekdDVHFCUVY4U3BIcDFKcWFFaWlXWTJkZXJz?=
+ =?utf-8?B?ZGRrYlhnV1F1RVZwUExHQTZSdUJHVTVLU0doM2libndpZno5ZnhYb3ZYcGhQ?=
+ =?utf-8?B?cTZJRmNiT2N5SGtNNE5selhlQ2c2ZDl5MUZWRHlxT2xuVmxTQm9CNFp4QUVi?=
+ =?utf-8?B?SGNTUlIxc3l2RTFOQ1JiQnk3b3ZoeFdIZkhlTzNYNWZUOXB5NFJNVlVBSjA1?=
+ =?utf-8?B?NldYbnRlS3FDVzVIcjlEclAwclZjMFNhdm9HdWNFODdhTkwyVFh0RmlscWxm?=
+ =?utf-8?Q?Ez99+r0C/qy66BlCrFnW/vcFp7Z3Y1vOpdss4qu?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2074d78b-faf8-4d84-dbe3-08d97e9bd33d
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 14:09:57.9877
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bu+XPjhqin/BmTfvFLj6R9eBrA0umBVK/zZpZ5nPyXW7Gh9ub8BHt0E/7MDMgiDCb2yo7QkuurQYNCfulysrNNoIAPpNpvYwH7x9y53eA6k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4931
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10115 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109230089
+X-Proofpoint-GUID: CedxHG7Pz8_Xx3hoSw6Mr5tVO9aQ9zRo
+X-Proofpoint-ORIG-GUID: CedxHG7Pz8_Xx3hoSw6Mr5tVO9aQ9zRo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Garg <sumit.garg@linaro.org>
 
-With the recent feature added to enable perf events to use pseudo NMIs
-as interrupts on platforms which support GICv3 or later, its now been
-possible to enable hard lockup detector (or NMI watchdog) on arm64
-platforms. So enable corresponding support.
+On 9/23/21 12:44 AM, Juergen Gross wrote:
+>
+> Hmm, maybe I should have been more explicit saying that the hypercall
+> was introduced in Xen 3.4, and only reason of failure is either an
+> illegal vcpu, an invalid mapping specification, or a try to reissue the
+> hypercall for a vcpu. None of those should ever happen.
+>
 
-One thing to note here is that normally lockup detector is initialized
-just after the early initcalls but PMU on arm64 comes up much later as
-device_initcall(). So we need to re-initialize lockup detection once
-PMU has been initialized.
+That last sentence -- famous last words ;-) But yes, sure.
 
-[1]: http://lore.kernel.org/linux-arm-kernel/1610712101-14929-1-git-send-email-sumit.garg@linaro.org
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-(Pingfan: adapt it to watchdog_hld async model based on [1])
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Sami Tolvanen <samitolvanen@google.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Wang Qing <wangqing@vivo.com>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc: Santosh Sivaraj <santosh@fossix.org>
-Cc: linux-kernel@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org
----
- arch/arm64/Kconfig               |  2 ++
- arch/arm64/kernel/Makefile       |  1 +
- arch/arm64/kernel/perf_event.c   | 11 ++++++++--
- arch/arm64/kernel/watchdog_hld.c | 36 ++++++++++++++++++++++++++++++++
- drivers/perf/arm_pmu.c           |  5 +++++
- include/linux/perf/arm_pmu.h     |  2 ++
- 6 files changed, 55 insertions(+), 2 deletions(-)
- create mode 100644 arch/arm64/kernel/watchdog_hld.c
+Assuming both patches adjust their commit messages and the typo
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5c7ae4c3954b..8287e9e1d28d 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -189,6 +189,8 @@ config ARM64
- 	select HAVE_NMI
- 	select HAVE_PATA_PLATFORM
- 	select HAVE_PERF_EVENTS
-+	select HAVE_PERF_EVENTS_NMI if ARM64_PSEUDO_NMI
-+	select HAVE_HARDLOCKUP_DETECTOR_PERF if PERF_EVENTS && HAVE_PERF_EVENTS_NMI
- 	select HAVE_PERF_REGS
- 	select HAVE_PERF_USER_STACK_DUMP
- 	select HAVE_REGS_AND_STACK_ACCESS_API
-diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index 3f1490bfb938..789c2fe5bb90 100644
---- a/arch/arm64/kernel/Makefile
-+++ b/arch/arm64/kernel/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_MODULES)			+= module.o
- obj-$(CONFIG_ARM64_MODULE_PLTS)		+= module-plts.o
- obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o perf_callchain.o
- obj-$(CONFIG_HW_PERF_EVENTS)		+= perf_event.o
-+obj-$(CONFIG_HARDLOCKUP_DETECTOR_PERF)	+= watchdog_hld.o
- obj-$(CONFIG_HAVE_HW_BREAKPOINT)	+= hw_breakpoint.o
- obj-$(CONFIG_CPU_PM)			+= sleep.o suspend.o
- obj-$(CONFIG_CPU_IDLE)			+= cpuidle.o
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index b4044469527e..a34343d0f418 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -23,6 +23,7 @@
- #include <linux/platform_device.h>
- #include <linux/sched_clock.h>
- #include <linux/smp.h>
-+#include <linux/nmi.h>
- 
- /* ARMv8 Cortex-A53 specific event types. */
- #define ARMV8_A53_PERFCTR_PREF_LINEFILL				0xC2
-@@ -1284,10 +1285,16 @@ static struct platform_driver armv8_pmu_driver = {
- 
- static int __init armv8_pmu_driver_init(void)
- {
-+	int ret;
-+
- 	if (acpi_disabled)
--		return platform_driver_register(&armv8_pmu_driver);
-+		ret = platform_driver_register(&armv8_pmu_driver);
- 	else
--		return arm_pmu_acpi_probe(armv8_pmuv3_init);
-+		ret = arm_pmu_acpi_probe(armv8_pmuv3_init);
-+
-+	hld_detector_delay_initialized = true;
-+	wake_up(&hld_detector_wait);
-+	return ret;
- }
- device_initcall(armv8_pmu_driver_init)
- 
-diff --git a/arch/arm64/kernel/watchdog_hld.c b/arch/arm64/kernel/watchdog_hld.c
-new file mode 100644
-index 000000000000..379743e0d001
---- /dev/null
-+++ b/arch/arm64/kernel/watchdog_hld.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/nmi.h>
-+#include <linux/cpufreq.h>
-+#include <linux/perf/arm_pmu.h>
-+
-+/*
-+ * Safe maximum CPU frequency in case a particular platform doesn't implement
-+ * cpufreq driver. Although, architecture doesn't put any restrictions on
-+ * maximum frequency but 5 GHz seems to be safe maximum given the available
-+ * Arm CPUs in the market which are clocked much less than 5 GHz. On the other
-+ * hand, we can't make it much higher as it would lead to a large hard-lockup
-+ * detection timeout on parts which are running slower (eg. 1GHz on
-+ * Developerbox) and doesn't possess a cpufreq driver.
-+ */
-+#define SAFE_MAX_CPU_FREQ	5000000000UL // 5 GHz
-+u64 hw_nmi_get_sample_period(int watchdog_thresh)
-+{
-+	unsigned int cpu = smp_processor_id();
-+	unsigned long max_cpu_freq;
-+
-+	max_cpu_freq = cpufreq_get_hw_max_freq(cpu) * 1000UL;
-+	if (!max_cpu_freq)
-+		max_cpu_freq = SAFE_MAX_CPU_FREQ;
-+
-+	return (u64)max_cpu_freq * watchdog_thresh;
-+}
-+
-+int __init watchdog_nmi_probe(void)
-+{
-+	if (!hld_detector_delay_initialized)
-+		return -EBUSY;
-+	else if (!arm_pmu_irq_is_nmi())
-+		return -ENODEV;
-+
-+	return hardlockup_detector_perf_init();
-+}
-diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-index 3cbc3baf087f..2aecb0c34290 100644
---- a/drivers/perf/arm_pmu.c
-+++ b/drivers/perf/arm_pmu.c
-@@ -697,6 +697,11 @@ static int armpmu_get_cpu_irq(struct arm_pmu *pmu, int cpu)
- 	return per_cpu(hw_events->irq, cpu);
- }
- 
-+bool arm_pmu_irq_is_nmi(void)
-+{
-+	return has_nmi;
-+}
-+
- /*
-  * PMU hardware loses all context when a CPU goes offline.
-  * When a CPU is hotplugged back in, since some hardware registers are
-diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
-index 505480217cf1..bf7966776c55 100644
---- a/include/linux/perf/arm_pmu.h
-+++ b/include/linux/perf/arm_pmu.h
-@@ -163,6 +163,8 @@ int arm_pmu_acpi_probe(armpmu_init_fn init_fn);
- static inline int arm_pmu_acpi_probe(armpmu_init_fn init_fn) { return 0; }
- #endif
- 
-+bool arm_pmu_irq_is_nmi(void);
-+
- /* Internal functions only for core arm_pmu code */
- struct arm_pmu *armpmu_alloc(void);
- struct arm_pmu *armpmu_alloc_atomic(void);
--- 
-2.31.1
+
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+
 
