@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A0F415B94
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992E2415BA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240338AbhIWJ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240310AbhIWJ7T (ORCPT
+        id S240279AbhIWKCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:02:49 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40026 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240186AbhIWKCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:59:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22FBC061756;
-        Thu, 23 Sep 2021 02:57:47 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 09:57:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632391066;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 23 Sep 2021 06:02:45 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9655622308;
+        Thu, 23 Sep 2021 10:01:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632391273;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5UltBQHhMoF8Yb7sKIN4Z42AUWMPW8NPyidd7V7lcc4=;
-        b=T1NdHgzlIpt4/6CXDIMM714cSrHQbFwp6tC94NNjNcNT8prIllNAqk7IxXBDu8/bGJMePq
-        0R6eQ+Yzc3NelHW2oMCfuEwH4L+Rscb7p11ztmuj+Y4mq0P2pNE3Gh9rwysZ/kLTZEMl1V
-        Wr22ZY0yt6BNprKMZRJFq87Q4akKFjl6Wn6aAmxZ09oTXxlsgKm2L3fJAMuyBKnmsG7wKm
-        CWrrquhn2VP8fI+0hYZSpEBcNEorOn0FAQ/tNDHwPK8k68oR/WbXvXg1Uu68adRMkCGqMG
-        Lk46f3c/D+TfOoB/yVuITdefrG560Z4xItszjxdhHhKcdFa+jSQFJuM14EhZZw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632391066;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        bh=UzJP1NacuRrgyoFRt4Ocp3ynHeVYoUlVZdZtaHi2uBE=;
+        b=iKFB2v0lDs03sugqu0Q8wHXo3HNjI9ogoEkYBh7xRrfRqEAtOfWbd2+4O8e+1PXbOlQh6j
+        X9kBnJ+m9TluSiKGzk/1iXGV11ptPNYTLtku1zq+CQTxYL95l+ND8ulHSPuEj+3ZzBV2Mn
+        pikn9ttaONfoVNQJyeSPSEapY90g+RA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632391273;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5UltBQHhMoF8Yb7sKIN4Z42AUWMPW8NPyidd7V7lcc4=;
-        b=CZhwIi2VSDDJ4+K/k07WzFaRDZIIGQse08AQJ2WaYpwueaEFWDrEsEEdfZYN0Z1R7tCzsx
-        zlBCkS6nO74tJBCw==
-From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/asm: Fix SETZ size enqcmds() build failure
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210910223332.3224851-1-keescook@chromium.org>
-References: <20210910223332.3224851-1-keescook@chromium.org>
+        bh=UzJP1NacuRrgyoFRt4Ocp3ynHeVYoUlVZdZtaHi2uBE=;
+        b=As0XRGUSDMSN0X6e0YkkmOOs1WrEAm2X429Mo3aBaWRx8duMlnAXU3N22wHQFkMVACE5L2
+        3m5uyfsRfzuh4MAw==
+Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.24.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay1.suse.de (Postfix) with ESMTPS id 8DCA525D3C;
+        Thu, 23 Sep 2021 10:01:12 +0000 (UTC)
+References: <20210921130127.24131-1-rpalethorpe@suse.com>
+ <CAK8P3a29ycNqOC_pD-UUtK37jK=Rz=nik=022Q1XtXr6-o6tuA@mail.gmail.com>
+ <87o88mkor1.fsf@suse.de> <87lf3qkk72.fsf@suse.de> <87ilytkngp.fsf@suse.de>
+ <CAK8P3a2S=a0aw8GY8fZxaU5fz7ZkdehtHgStkn2=u9gO28GVEw@mail.gmail.com>
+User-agent: mu4e 1.4.15; emacs 27.2
+From:   Richard Palethorpe <rpalethorpe@suse.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-aio <linux-aio@kvack.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>
+Subject: Re: ia32 signed long treated as x64 unsigned int by __ia32_sys*
+Reply-To: rpalethorpe@suse.de
+In-reply-to: <CAK8P3a2S=a0aw8GY8fZxaU5fz7ZkdehtHgStkn2=u9gO28GVEw@mail.gmail.com>
+Date:   Thu, 23 Sep 2021 11:01:09 +0100
+Message-ID: <87fstvlifu.fsf@suse.de>
 MIME-Version: 1.0
-Message-ID: <163239106571.25758.1553748717788924474.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hello Arnd,
 
-Commit-ID:     d81ff5fe14a950f53e2833cfa196e7bb3fd5d4e3
-Gitweb:        https://git.kernel.org/tip/d81ff5fe14a950f53e2833cfa196e7bb3fd5d4e3
-Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Fri, 10 Sep 2021 15:33:32 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 22 Sep 2021 19:45:48 +02:00
+Arnd Bergmann <arnd@arndb.de> writes:
 
-x86/asm: Fix SETZ size enqcmds() build failure
+> On Wed, Sep 22, 2021 at 10:46 AM Richard Palethorpe <rpalethorpe@suse.de> wrote:
+>> Richard Palethorpe <rpalethorpe@suse.de> writes:
+>
+>> >
+>> > Then the output is:
+>> >
+>> > [   11.252268] io_pgetevents(f7f19000, 4294967295, 1, ...)
+>> > [   11.252401] comparing 4294967295 <= 1
+>> > io_pgetevents02.c:114: TPASS: invalid min_nr: io_pgetevents() failed as expected: EINVAL (22)
+>> > [   11.252610] io_pgetevents(f7f19000, 1, 4294967295, ...)
+>> > [   11.252748] comparing 1 <= 4294967295
+>> > io_pgetevents02.c:103: TFAIL: invalid max_nr: io_pgetevents() passed unexpectedly
+>>
+>> and below is the macro expansion for the automatically generated 32bit to
+>> 64bit io_pgetevents. I believe it is casting u32 to s64, which appears
+>> to mean there is no sign extension. I don't know if this is the expected
+>> behaviour?
+>
+> Thank you for digging through this, I meant to already reply once more yesterday
+> but didn't get around to that.
 
-When building under GCC 4.9 and 5.5:
+Thanks, no problem. I suppose this will effect other systemcalls as
+well. Which if nothing else is a pain for testing.
 
-  arch/x86/include/asm/special_insns.h: Assembler messages:
-  arch/x86/include/asm/special_insns.h:286: Error: operand size mismatch for `setz'
+>
+>>     __typeof(__builtin_choose_expr(
+>>         (__builtin_types_compatible_p(typeof((long)0), typeof(0LL)) ||
+>>          __builtin_types_compatible_p(typeof((long)0), typeof(0ULL))),
+>>         0LL, 0L)) min_nr,
+>>     __typeof(__builtin_choose_expr(
+>>         (__builtin_types_compatible_p(typeof((long)0), typeof(0LL)) ||
+>>          __builtin_types_compatible_p(typeof((long)0), typeof(0ULL))),
+>>         0LL, 0L)) nr,
+>
+> The part that I remembered is in arch/s390/include/asm/syscall_wrapper.h,
+> which uses this version instead:
+>
+> #define __SC_COMPAT_CAST(t, a)                                          \
+> ({                                                                      \
+>         long __ReS = a;                                                 \
+>                                                                         \
+>         BUILD_BUG_ON((sizeof(t) > 4) && !__TYPE_IS_L(t) &&              \
+>                      !__TYPE_IS_UL(t) && !__TYPE_IS_PTR(t) &&           \
+>                      !__TYPE_IS_LL(t));                                 \
+>         if (__TYPE_IS_L(t))                                             \
+>                 __ReS = (s32)a;                                         \
+>         if (__TYPE_IS_UL(t))                                            \
+>                 __ReS = (u32)a;                                         \
+>         if (__TYPE_IS_PTR(t))                                           \
+>                 __ReS = a & 0x7fffffff;                                 \
+>         if (__TYPE_IS_LL(t))                                            \
+>                 return -ENOSYS;                                         \
+>         (t)__ReS;                                                       \
+> })
+>
+> This also takes care of s390-specific pointer conversion, which is the
+> reason for needing an architecture-specific wrapper, but I suppose the
+> handling of signed arguments as done in s390 should also be done
+> everywhere else.
+>
+> I also noticed that only x86 and s390 even have separate entry
+> points for normal syscalls when called in compat mode, while
+> the others all just zero the upper halves of the registers in the
+> low-level entry code and then call the native entry point.
+>
+>         Arnd
 
-Change the type to "bool" for condition code arguments, as documented.
+It looks to me like aarch64 also has something similar? At any rate, I
+can try to fix it for x86 and investigate what else might be effected.
 
-Fixes: 7f5933f81bd8 ("x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction")
-Co-developed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210910223332.3224851-1-keescook@chromium.org
----
- arch/x86/include/asm/special_insns.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index f3fbb84..68c257a 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -275,7 +275,7 @@ static inline int enqcmds(void __iomem *dst, const void *src)
- {
- 	const struct { char _[64]; } *__src = src;
- 	struct { char _[64]; } __iomem *__dst = dst;
--	int zf;
-+	bool zf;
- 
- 	/*
- 	 * ENQCMDS %(rdx), rax
+-- 
+Thank you,
+Richard.
