@@ -2,71 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEBC415811
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61431415819
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239286AbhIWGEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 02:04:47 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:33497 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239237AbhIWGEq (ORCPT
+        id S239282AbhIWGKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 02:10:25 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:47850 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239226AbhIWGKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:04:46 -0400
-Received: by mail-io1-f72.google.com with SMTP id g2-20020a6b7602000000b005be59530196so4988130iom.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:03:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=JXvRrW1iqPMwIYRHYBPAsiAM0PkHzg5GtfxmrglxQzQ=;
-        b=aX/WhxLRdSksoRNAEgCJJrCKnRbfZ/0NGcR1uMLtwaapmnWO+vLKa58jWHaPxHAqAq
-         eNO74CwlxPX7KSHpjgFkySzhCiVSnD2w4DskJaW5DCgZxJ37cWDssU5kQK5Ox0hovT4L
-         /CwC/BpxuRJNt1eMq5CHbkjHRzGoqnZzo6nhjNw8J2OaKWT2+j3W00Y8UXtVKUfwYdcD
-         XxEJfCX4lNs8D2Xky8WuN6swQhBIrR4Gh58sF9umRx6HgJx5f/zDaC5rtMScTSpw1ygB
-         l1mg1blRuhs6qxM2jdIN5lTL2aguzbqCdElJTq5ud6tq/GtkwTpTwMAWqdjtFIhlZM36
-         7OZg==
-X-Gm-Message-State: AOAM530VsA8gbImkvaVVTJaECqKJXhDZ2TO6brbtw+OcmeClDOFZE6l7
-        Z8EFVHm2Ihhq0oDaS4oAT3EZQVtwiXEI/iVfCQlUys33Tz11
-X-Google-Smtp-Source: ABdhPJwT9OjdtEE+jw3AVImKDXCzwGMdqVOLT4j2uiwu093ZOHPBREg1Xj/g9V66d630WZBAzcZXMF3cUBsYko/IRsjfaVrFtJsz
-MIME-Version: 1.0
-X-Received: by 2002:a6b:6a13:: with SMTP id x19mr2455017iog.111.1632376994998;
- Wed, 22 Sep 2021 23:03:14 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 23:03:14 -0700
-In-Reply-To: <000000000000bf710a05b05ae3f6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ed2e6705cca36282@google.com>
-Subject: Re: [syzbot] possible deadlock in f_getown
-From:   syzbot <syzbot+8073030e235a5a84dd31@syzkaller.appspotmail.com>
-To:     asm@florahospitality.com, bfields@fieldses.org,
-        boqun.feng@gmail.com, desmondcheongzx@gmail.com,
-        jlayton@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 23 Sep 2021 02:10:24 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 22 Sep 2021 23:08:52 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 22 Sep 2021 23:08:50 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 23 Sep 2021 11:38:33 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id B5B9321D9B; Thu, 23 Sep 2021 11:38:32 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        mchehab@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [RESEND PATCH v3] dt-bindings: media: venus: Add sc7280 dt schema
+Date:   Thu, 23 Sep 2021 11:38:29 +0530
+Message-Id: <1632377309-25148-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Add a schema description for the venus video encoder/decoder on the sc7280.
 
-commit f671a691e299f58835d4660d642582bf0e8f6fda
-Author: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Date:   Fri Jul 2 09:18:30 2021 +0000
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/media/qcom,sc7280-venus.yaml          | 159 +++++++++++++++++++++
+ 1 file changed, 159 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
 
-    fcntl: fix potential deadlocks for &fown_struct.lock
+diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+new file mode 100644
+index 0000000..b8574db
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+@@ -0,0 +1,159 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/media/qcom,sc7280-venus.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Qualcomm Venus video encode and decode accelerators
++
++maintainers:
++  - Stanimir Varbanov <stanimir.varbanov@linaro.org>
++
++description: |
++  The Venus Iris2 IP is a video encode and decode accelerator present
++  on Qualcomm platforms
++
++properties:
++  compatible:
++    const: qcom,sc7280-venus
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  power-domains:
++    minItems: 2
++    maxItems: 3
++
++  power-domain-names:
++    minItems: 2
++    maxItems: 3
++    items:
++      - const: venus
++      - const: vcodec0
++      - const: cx
++
++  clocks:
++    maxItems: 5
++
++  clock-names:
++    items:
++      - const: core
++      - const: bus
++      - const: iface
++      - const: vcodec_core
++      - const: vcodec_bus
++
++  iommus:
++    maxItems: 2
++
++  memory-region:
++    maxItems: 1
++
++  interconnects:
++    maxItems: 2
++
++  interconnect-names:
++    items:
++      - const: cpu-cfg
++      - const: video-mem
++
++  video-decoder:
++    type: object
++
++    properties:
++      compatible:
++        const: venus-decoder
++
++    required:
++      - compatible
++
++    additionalProperties: false
++
++  video-encoder:
++    type: object
++
++    properties:
++      compatible:
++        const: venus-encoder
++
++    required:
++      - compatible
++
++    additionalProperties: false
++
++  video-firmware:
++    type: object
++
++    description: |
++      Firmware subnode is needed when the platform does not
++      have TrustZone.
++
++    properties:
++      iommus:
++        maxItems: 1
++
++    required:
++      - iommus
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - power-domains
++  - power-domain-names
++  - clocks
++  - clock-names
++  - iommus
++  - memory-region
++  - video-decoder
++  - video-encoder
++
++additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/clock/qcom,videocc-sc7280.h>
++
++        venus: video-codec@aa00000 {
++                compatible = "qcom,sc7280-venus";
++                reg = <0x0aa00000 0xd0600>;
++                interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
++
++                clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
++                         <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
++                         <&videocc VIDEO_CC_VENUS_AHB_CLK>,
++                         <&videocc VIDEO_CC_MVS0_CORE_CLK>,
++                         <&videocc VIDEO_CC_MVS0_AXI_CLK>;
++                clock-names = "core", "bus", "iface",
++                              "vcodec_core", "vcodec_bus";
++
++                power-domains = <&videocc MVSC_GDSC>,
++                                <&videocc MVS0_GDSC>;
++                                <&rpmhpd SC7280_CX>;
++                power-domain-names = "venus", "vcodec0", "cx";
++
++                interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>
++                                <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
++                interconnect-names = "cpu-cfg", "video-mem";
++
++                iommus = <&apps_smmu 0x2180 0x20>,
++                         <&apps_smmu 0x2184 0x20>;
++
++                memory-region = <&video_mem>;
++
++                video-decoder {
++                        compatible = "venus-decoder";
++                };
++
++                video-encoder {
++                        compatible = "venus-encoder";
++                };
++
++                video-firmware {
++                        iommus = <&apps_smmu 0x21a2 0x0>;
++                };
++        };
+-- 
+2.7.4
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15fa8017300000
-start commit:   293837b9ac8d Revert "i915: fix remap_io_sg to verify the p..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=18fade5827eb74f7
-dashboard link: https://syzkaller.appspot.com/bug?extid=8073030e235a5a84dd31
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171390add00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10050553d00000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fcntl: fix potential deadlocks for &fown_struct.lock
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
