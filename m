@@ -2,187 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E300641679C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297C141679E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243352AbhIWVmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:42:32 -0400
-Received: from mail-dm6nam11on2083.outbound.protection.outlook.com ([40.107.223.83]:4832
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243291AbhIWVmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:42:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cPmlwhOFytlnTfmznXZMAKSuYJ4HVpBQHndjJpl5TU5bMjWvOMQxwk8gjnL5uKbRpnIlDPaPEsgghGtJU4VT6jdSP8eqU/HVkSJDvsKE4W7JdRpolvWmCPMChL8372SP7+Jg7xpQd4K0K3BsRjbeqgwvvBbewqrXcnSsHPY2jyueSFbvU7cV+3HOdghpiZ8VaYLuvoPvkllgrAYwdG+GdNH24Q3wo84UKiJoLUkLyJSNRKbSGIYU+8cSp/7UmJt51SkvpqIGcMEEfJXx/VM1U/EmE+wRFUZ09QuBt3r4ark5CDCFg6SHGs0vrCDO7hgMR4vN30lecWomhjWHIbpS7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=gNHYj/rFA7W7MM5DxiyE82h+KsIBqi88hsh0ieeIuRc=;
- b=i++2YxUASTPdl1HwTgEleLZavN63sdUX2FGyeE+mJn7tURHNwxef0YdCZ13JOO2oIVCS0KvR+GqSkYLXvxDTt/mzG5chbev4fttgCaVETZXdUhxOGdQHCmgV0TIrOxOqIbkhngziFoJjy5Kt8v9jYyGpY6qXIfOSZt4o7uMIhY644UU1e7yothqRJ4OsQTTzVG5iWwdqEiF5G8M9lsAUyPp3CGbzDXMvvJaux8AI+dz062I/jGPDHi0LJXDGE4pba34veyUOv5/k+cDWGY9gpcjdyfG4KTKhtlKIYx2VXDNWQ01M/N/OWZ2fvs/EQ31qJZ9bN5SOkhv37tnQa7kx6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gNHYj/rFA7W7MM5DxiyE82h+KsIBqi88hsh0ieeIuRc=;
- b=BsczkaA3kx00OgVb7Pa7mXg04LY8UKV4AuD62SfCOxzfeKZA0jqN+u7DhkIhL1Cnzup4s5JPLB4YqnZ2slp9DBQ4T1KElDVzTCnT0F82MBB+yrVkX+MUr5e8DGM57PAtDsHrvO+fXqtn34fKRY58VywlGa12/TQE+XhC/Wus8cI=
-Received: from MW2PR12MB2505.namprd12.prod.outlook.com (2603:10b6:907:4::16)
- by MWHPR1201MB0160.namprd12.prod.outlook.com (2603:10b6:301:50::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Thu, 23 Sep
- 2021 21:40:56 +0000
-Received: from MW2PR12MB2505.namprd12.prod.outlook.com
- ([fe80::b0ca:a449:3c3:a119]) by MW2PR12MB2505.namprd12.prod.outlook.com
- ([fe80::b0ca:a449:3c3:a119%5]) with mapi id 15.20.4544.014; Thu, 23 Sep 2021
- 21:40:55 +0000
-From:   "Phillips, Daniel" <Daniel.Phillips@amd.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>
-CC:     Linux MM <linux-mm@kvack.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Sierra Guiza, Alejandro (Alex)" <Alex.Sierra@amd.com>,
-        Daniel Stone <daniel@fooishbar.org>
-Subject: RE: BoF at LPC: Documenting the Heterogeneous Memory Model
- Architecture
-Thread-Topic: BoF at LPC: Documenting the Heterogeneous Memory Model
- Architecture
-Thread-Index: AQHXrx2LN10Y7437XUSgh9raYvqchKuyE/gAgAAD7ACAAAZRgA==
-Date:   Thu, 23 Sep 2021 21:40:55 +0000
-Message-ID: <MW2PR12MB2505680AC156F2A4F04E9271E3A39@MW2PR12MB2505.namprd12.prod.outlook.com>
-References: <23aeacb6-0cd9-d10f-76bc-3c9d33905daa@amd.com>
- <ca132183-e778-4a86-c81e-4d292e9d41a7@amd.com>
- <YUzl7qywbtVHipUT@casper.infradead.org>
-In-Reply-To: <YUzl7qywbtVHipUT@casper.infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-09-23T21:40:54Z;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD Official Use
- Only-AIP 2.0;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=549a49ed-d01a-4c07-af9b-4488ecdb81c3;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=1
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 54303191-8924-4396-ab6f-08d97edad2ca
-x-ms-traffictypediagnostic: MWHPR1201MB0160:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1201MB016016045A6A81A36AA722CAE3A39@MWHPR1201MB0160.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Lp6WRYXw7DoNVuZTrnX8nb2+8GxKOK+oysQsmdILD96pXzbWtjcYZdOuuQv/UWKXt9yWq/i+WZCtocpdXZWXvgV2NaProRhIG76DpxU9+9v0uQzBruBSGLTdwp9/BHIzEcRflY7F95Kpna5INo5POIMGnO5oLdbIrLU8yCx2jOzIWqs8/BCBUwGkyz9ulJLZ5fg/VjuFG5fXLeGLF+QAkr3ifgvMkvDBFqdlvys0tLj7wAQ9cMGSpVtOUVGlSSwg8pKyT2Cr5vFo4q2AlpNxjAyhrCKg8cde0YevfF+ZM7PtmQN+fL1bq/SCI7ImDpJhRbR10p3P3Z8T5BdVjvAG5d6gab/Hljv3icdophbKoLucyujPKlecgEYM1qMtu7NtO/HyrSHBs5KkZqN3O+/Hl0P+KjUxz9kxTA5UcZ4aNRHH+c1UIRs+ICr+cTpGrASvGe7wCOSm42hHf2cOaw5iBbR/wqrUUim+F1Vh4ttvMuDUKDU5XlwPR+i8GrdTJI5cA/g2bP9SurY2GheFUILFekGo72VKU6tkQ4xltMISPWnMLtAQnTSBnvFpnGregLxT4iftBmBPwbiU55XNKH6iWuSw1TMQvc1n7c7LNdP+IAM2hRN50tIOaMHrSuW0fAZxhWvHxJTUO5NDwGSxPxuOzDbXQn6g8j9qXFnSRoDTs+f4Rq6zhWeX4m9U4oGiOWm/+uWPjW6HfvX+Nf6zw5gco7wooV8tm3tBLWOwFc7jRauyyARGOPoVaLLFviv1vUZwNLfChEuOE2o1zJhhQhvW1L7h5tjqKFU45RmG1ZuSUJk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2505.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(86362001)(45080400002)(71200400001)(508600001)(66446008)(316002)(6506007)(53546011)(38070700005)(83380400001)(33656002)(7696005)(9686003)(55016002)(966005)(7416002)(66476007)(66946007)(8936002)(52536014)(4326008)(122000001)(186003)(6636002)(66556008)(76116006)(64756008)(8676002)(54906003)(38100700002)(2906002)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Wsd/N7GKMOC3W/0KmxM+qtBEk1rCKY2iWf4PQGPqGfg45AFJc8TGo/j/MHPq?=
- =?us-ascii?Q?anWYZxvUEFpYOotz8FzJsbiy9urx2ePOaQQXa7Lz1m0YoMmysBbmYmNwVy7Q?=
- =?us-ascii?Q?qzRgNvySZtlQPd/pTaH2MILfUh2LE+eLt1i3unQf9K8Lvh+Ukvb1xSShif3e?=
- =?us-ascii?Q?irvMjWFhjNbjzn/Fq2wQ/8wjrjdUr62N791htmGWWQZlZhvFatnm5PN0M8b7?=
- =?us-ascii?Q?b/dc5tbNI0EEnzFsJgF9lFCDgVmxY3FdJzCsCu7xkUCGhI953boCxympJSj9?=
- =?us-ascii?Q?0T2oVPsoAdVIzhhH+gsJIPH0cH6AFvg1KmevphCCCaHbsy1GTG4ObGbOViZ7?=
- =?us-ascii?Q?8mSBro5sRC3McfMIySkSz4ApCOsR034bGhwmjaenI6er5c4gcjtnVbt59LL9?=
- =?us-ascii?Q?o+MkPU9yYP5sAB77o/2JjBScAlQ6n03/qEX0vd5YP7XNKH1h9rYu8mZpUVaC?=
- =?us-ascii?Q?lNdiZP6g8D4pfFRkH1trUaiOvKUk55kGwZmJnjBp5fkNAJWhkIlb4uA0fWVN?=
- =?us-ascii?Q?QVWZF5PxffDJoAMr1m2b4mR+025PxmS+J4/GNCKMneghByvMLOUc/aXEFLNY?=
- =?us-ascii?Q?m6hbVDvhsBfSzZVslO46q7OdE9B4jF68TpAMIMOwbp6yyKl+UORP/iDs824C?=
- =?us-ascii?Q?IeeFanx43nvmftYgJCM1BnGDTE30o9I2SV5tWWXYXUCUr0Ix2m6mJAwkMKmh?=
- =?us-ascii?Q?cTzOmHrtFb/00qgMau+YkDWr5M2Ic3VF73PFf4uDgG42zXxweJKssvTQnu4Q?=
- =?us-ascii?Q?833vjuMqou2i3xR5Sws+t+fPU5zmG9X4qv52epPdutjZHuozV+oVXRQP3CIL?=
- =?us-ascii?Q?5Aznq3nrw5HAfQnda4Sda0BAFO8v12y6r054N9Z8817D8KrceQ9STWXUTWY5?=
- =?us-ascii?Q?M6g5P2N2H+Vj/piwyRMLNdIfGjfHgMQT6u5mrlKRhXw3N2BqB+UsEtDuUirB?=
- =?us-ascii?Q?uQ1VWRlvNBuokfQlE3rSIcVoYiloEdRGNDGAY1t7OlDxVwfgWWdkldTRRX55?=
- =?us-ascii?Q?rcyk/dKG6bxneZEHOwuMQfrQgndDEoaoABqLP1KZoSRKiz3S+GFpOsQKVzaU?=
- =?us-ascii?Q?TanJbxRAqF/oVMe6/X+QkTpvSeGjgLq5euM/kDshWXPBy64le3ecCxR26t7e?=
- =?us-ascii?Q?wz2OTRBb9UB55ynySfoARisVHA8fJ+ZDPSm24QuvP8iTiYBsGz/iEVDuYr3h?=
- =?us-ascii?Q?UXQl/fjTVqutS/2cJkZqpQdIHtMu/Ty958Ov+Oi2JgY4fkr/MP3fdY1WcThP?=
- =?us-ascii?Q?jWtOMYjzPHpyjV4bmwHZEZ1AVSHqPw98EYxzetHUwV1gtumMxHtDJSEY0AUX?=
- =?us-ascii?Q?xpR9lub+drb6MHOIK28zy3d8XM8xxhomKlFcokXPDgzC0q6v46hYGNRUk8jk?=
- =?us-ascii?Q?fhsnyKSttnrY/y4EJ2QtmJlgmXnc?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S243345AbhIWVnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243303AbhIWVny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 17:43:54 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D90C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:42:22 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id f129so7726506pgc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eyYDxmDuTKY2lFXVhVB2ELOLfNUN9k8MQqqdBbe1fsU=;
+        b=KCn+RIus6IoAP1X8IGB5+QqORKUYHiZhLK/h15vdz7nwgfVVFdnDeTUS6x5EfXNqEL
+         vHkl1lsNcWgI2Al+3tUFeWxzv41dExhFvYTSHffU7w2mJqYg/X4iTVmV0gzEv6VATSbN
+         GyrOI1pXzxSYSJQ2Su61Cky0Czb2vOefxnUSphokfU44py09/SjUTaxnIYLh7Be5ditG
+         13BEmHxxYJ41ceEGMeAmeMf8/NrNBgazCyMlEf22xgNKPlhHw9XSI4GKbwvwi0qv0ovI
+         KwZVg7eF6TaIoezX825StnyoRzKkWaAdbc7zT1oe51mmpWNq0/cltBhb4i62RbDpm+SV
+         N0pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eyYDxmDuTKY2lFXVhVB2ELOLfNUN9k8MQqqdBbe1fsU=;
+        b=OTvQndz1TciwDtqcPd02Nam23yeNmDBOdoY6I7bttUsP2QjscDbTBXQdP28YvhimaM
+         VD0a94nHp9Tj3qKPpTHDAaAWHDWd2woCIMtf2+115sFu0dqQiecpCVDJkBINa6aXy/Ak
+         GeRhaHwLit0PC2NUG8HAZ9IxzODVBx+UjoVCc3yu3YGScsXXDaipQjw2RxOxxBEW7als
+         jlereVhXTYH/9syqxhJZVzYMpqqbK+9LEj8P4QSuFfZO1FRWyYOrFhLIVUmKN5A3DzeM
+         Y1CXcQ4Um+ZwIzUAPeQMYYOJD2hJDDgcWGeroJdTcOwIKReVZkYcm8aCvmJcqUxlQcxM
+         pCfA==
+X-Gm-Message-State: AOAM5312JW21IRaYMhAmIc/UM8eSMyTwXe4UH2iBcV04+AbXnW5WGftA
+        JNgHGK8I6s8+6yjSvtGuKouBiGjp1dfyp+FLZnuwhg==
+X-Google-Smtp-Source: ABdhPJxkWk0rZvWEVajRy7qi3gMohR9kiAbp/zbww61b9hU8jzVgph1himNBBtHY9AvwIfwrqHDuZ1oo/UvxAInWtm8=
+X-Received: by 2002:a62:7f87:0:b0:444:b077:51ef with SMTP id
+ a129-20020a627f87000000b00444b07751efmr6537475pfd.61.1632433342168; Thu, 23
+ Sep 2021 14:42:22 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2505.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54303191-8924-4396-ab6f-08d97edad2ca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 21:40:55.2984
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xOdmWPAcJ14nFZInGRxLrD5mp2Tovh+Xb+nw+stOJwcF5fsLgsl4smIHdiZtrbhBOIGG8mN/whjGlDZn7yxtxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0160
+References: <20210914233132.3680546-1-jane.chu@oracle.com> <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
+ <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com> <20210915161510.GA34830@magnolia>
+ <324444b0-6121-d14c-a59f-7689bb206f58@oracle.com>
+In-Reply-To: <324444b0-6121-d14c-a59f-7689bb206f58@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 23 Sep 2021 14:42:10 -0700
+Message-ID: <CAPcyv4j8ro5rQKwbwknH+KTcc_8pGDsL8QwmJyi8fDUZE+G8JA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
+To:     Jane Chu <jane.chu@oracle.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only]
-
-Hi Matt,
-
-I originally picked the 10 am pdt time slot to avoid those conflicts. But I=
- see the overlap is only partial. I also see Peterz is giving a talk that a=
-lso overlaps partially. But I think this is survivable. I suggest we just t=
-ry to make this work as best we can. It's not a presentation, it's primaril=
-y intended as a meet and greet and discussion. Whatever starts there will c=
-ontinue on lkml and etc.
-
-Regards,
-Daniel
-
------Original Message-----
-From: Matthew Wilcox <willy@infradead.org>=20
-Sent: Thursday, September 23, 2021 1:39 PM
-To: Kuehling, Felix <Felix.Kuehling@amd.com>
-Cc: Linux MM <linux-mm@kvack.org>; linux-ext4@vger.kernel.org; linux-xfs@vg=
-er.kernel.org; Maling list - DRI developers <dri-devel@lists.freedesktop.or=
-g>; linux-kernel@vger.kernel.org; Christoph Hellwig <hch@lst.de>; Jason Gun=
-thorpe <jgg@mellanox.com>; Jerome Glisse <jglisse@redhat.com>; Ralph Campbe=
-ll <rcampbell@nvidia.com>; Theodore Ts'o <tytso@mit.edu>; Andrew Morton <ak=
-pm@linux-foundation.org>; Mel Gorman <mgorman@techsingularity.net>; Peter Z=
-ijlstra <peterz@infradead.org>; Phillips, Daniel <Daniel.Phillips@amd.com>;=
- Sierra Guiza, Alejandro (Alex) <Alex.Sierra@amd.com>; Daniel Stone <daniel=
-@fooishbar.org>
-Subject: Re: BoF at LPC: Documenting the Heterogeneous Memory Model Archite=
-cture
-
-[CAUTION: External Email]
-
-On Thu, Sep 23, 2021 at 04:25:08PM -0400, Felix Kuehling wrote:
-> Change of plan: Instead of a BoF, this is now a session in the=20
-> "GPU/media/AI buffer management and interop MC" micro conference.=20
-> Thank you Daniel Stone for making that happen.
-> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flinu
-> xplumbersconf.org%2Fevent%2F11%2Fcontributions%2F1112%2F&amp;data=3D04%7
-> C01%7CDaniel.Phillips%40amd.com%7Cb5064a1c5649431a90be08d97ed2517b%7C3
-> dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637680264672385094%7CUnknown
-> %7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJ
-> XVCI6Mn0%3D%7C2000&amp;sdata=3De%2Bpn4vXZI9yhLAbB8rtqik6OiZsEwOCBMdqk4JZ
-> n%2FC8%3D&amp;reserved=3D0
+On Thu, Sep 23, 2021 at 1:56 PM Jane Chu <jane.chu@oracle.com> wrote:
+[..]
+> > This (AFAICT) has already been done for dax_zero_page_range, so I sense
+> > that Dan is trying to save you a bunch of code plumbing work by nudging
+> > you towards doing s/dax_clear_poison/dax_zero_page_range/ to this series
+> > and then you only need patches 2-3.
 >
-> It is scheduled for tomorrow (Friday) 08:40-10:00 Pacific, 11:40-13:00=20
-> Eastern, 15:40-17:00 UTC.
+> Thanks Darrick for the explanation!
+> I don't mind to add DM layer support, it sounds straight forward.
+> I also like your latest patch and am wondering if the clear_poison API
+> is still of value.
 
-That's up against:
-
- Direct map management
-Vlastimil Babka, Mike Rapoport, Rick Edgecombe  11:30-12:15.
-
-Seems like a lot of the same people would want to be in both sessions.
-Maybe one could be moved?=
+No, the discussion about fallocate(...ZEROINIT...) has lead to a
+better solution. Instead of making error clearing a silent /
+opportunistic side-effect of writes, or trying to define new fallocate
+mode, just add a new RWF_CLEAR_HWERROR flag to pwritev2(). This allows
+for dax_direct_access() to map the page regardless of poison and
+trigger pmem_copy_from_iter() to precisely handle sub-page poison.
