@@ -2,124 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2897416556
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E59416560
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242784AbhIWSpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:45:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42495 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242708AbhIWSpx (ORCPT
+        id S242777AbhIWSvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242770AbhIWSvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:45:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632422661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x46eN9ZPpLusYWrqgbutzxSh8ecH9uBw9nNtjHfLCXU=;
-        b=h4ZEuaEtpuF/qXCpAC/phsc/9MvmQQJQvfX6NfmedhFQ4YZsT79mN7fUKCMY+j5vKPThv/
-        hlJQGbg2mSE7IRXmkBCLfyX2nMadHTXFGTXqYtHWEO0DiyK6AihdycLoWymQ8dbQzUI1WS
-        NbH2WkM5trQQbiB7cUn7RG8fxgcPAXc=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-rJ-GNhNuMVS905qwnLGxsQ-1; Thu, 23 Sep 2021 14:44:20 -0400
-X-MC-Unique: rJ-GNhNuMVS905qwnLGxsQ-1
-Received: by mail-ed1-f72.google.com with SMTP id r23-20020a50d697000000b003d824845066so7607833edi.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:44:20 -0700 (PDT)
+        Thu, 23 Sep 2021 14:51:45 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EDDC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:13 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x27so29951589lfu.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gGXok9C2zJwna124nPWk+7zhfwPZ1Gc6OCclICzrU9s=;
+        b=tF4NIGAYXmKJ/H3ElgS0dtGh5wnxcOEkstv9geZ8CLJSG7VESZWmjZPkPRe2gtBgSu
+         BeOR4O5npXiBdl+y6GEeutpjj8++GniiM3Q8bzTW72t1SQBNzMgklig3FUx+Ps4q6WOO
+         ONZExqJAj9rCHQDCreTVWxyF5/YupkU7KE9FasMcQSDR7ibIDieIL4wEx5EmUZSoqSG7
+         rgnRL5dsU0+dLVLIG600iulp2QytIf1RRaRyp8qdx0AcQm8eQ+eftf/zqDakgs6kve4u
+         IN6+h9A1q3Yklm9Edt7XyiuBR8MN2dHG8HGeGg3SuuCh60zK13BUiLeF0HEho43lciHJ
+         5dhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x46eN9ZPpLusYWrqgbutzxSh8ecH9uBw9nNtjHfLCXU=;
-        b=EG4oH5LaxBxUKekmQ8GDPz98zZasjJgt5vyKuVmXBZmYOF/A4ZVjoBg2mGSFiyaxkE
-         yzxHzkwWLyQQNpChSONR+1gKDFr4/dDB/S6WuculcAa+8hT9DOx3G/tGWjptVaozS4Az
-         sMCABJ5t1hekGZGGlQmuuhHVVFpPnla2dfyHGRt0eCaWaVkHB1eUbDs1vwEOy6bqTlnP
-         d6yP00NWjvlmAJ08OiVDeI3fR+oPnHce+137N3+JYu3108XJ/ll/Thi7FefnuaJgaHH7
-         jZoTpN5IZCxD4xAdze+wos/kSpe2cfeRNFJbl6s0UC8Ok1xednfcIlMH+eaza8TlQbWz
-         dXNA==
-X-Gm-Message-State: AOAM531z5cKoM9/2qBF1b3/d2tLmcknHXAzsecMn2iVdf0sWRb79LxG3
-        Up2uIayBboGayBe0K9KmoUMo8JpuyKCQ9TCb0/qKssIEh24uMpggB2uqp9ZycgixL6xtnqyTqwR
-        bG1M3OC4t+D9s6gbsEux5WGCf
-X-Received: by 2002:a17:906:318b:: with SMTP id 11mr7023128ejy.493.1632422659085;
-        Thu, 23 Sep 2021 11:44:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTdMDL6/n0aYA0fgWnBgCS+Q0RVDKeac5WzIl4FyXndcJbeT1l9fh0WjKxt9aUl05CJr3cZQ==
-X-Received: by 2002:a17:906:318b:: with SMTP id 11mr7023096ejy.493.1632422658785;
-        Thu, 23 Sep 2021 11:44:18 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id ku7sm3608060ejc.90.2021.09.23.11.44.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 11:44:18 -0700 (PDT)
-Subject: Re: [GIT PULL] KVM/rseq changes for Linux 5.15-rc3
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>
-References: <20210923181252.44385-1-pbonzini@redhat.com>
- <CAHk-=wjp7psdNc8KpxVDmcVYaAAxDUvvFTgx21OwZJzkghktLg@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5b351abc-3bb7-abce-7a5c-2d16f6fe9b34@redhat.com>
-Date:   Thu, 23 Sep 2021 20:44:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gGXok9C2zJwna124nPWk+7zhfwPZ1Gc6OCclICzrU9s=;
+        b=hOVZWdPW3/ep+QqXQiW8xxpQi7iufXLEOY5lnK4244sYarVAcYS05JkfX8TldwL9eh
+         CDfVMS4sep10e4h5dZ9EDYpOHlo67RXXZKa79dlhmokL4HE5nza5jE5wTYwuQU8iErUA
+         4DdgX56xIZ5V7SDhqgy4ulepP1wucOglnNcSi9Etdo/o49uZhqQy7J2M4KKRlTHP7jIj
+         xqS0CI8MQR2D0fSwRhK0AcUTlz31ZfdaxEAQKro8ub/WB8SL67PuejDS8jFhrq0UBT18
+         3sL7P+XHiqbcEkkCHm9fk1lJcIfca826rWGBMMvLGFygUZCaXrlb+F8s9P1+B2nd4n8g
+         Zwkg==
+X-Gm-Message-State: AOAM53225KO85F1+eMCRNaRTstHLQel2av14+etrclgs3RqPHtSSQGAD
+        GNGo535SjEedXzgRpUgwREwmQnk+iH6R60+mvivzLg==
+X-Google-Smtp-Source: ABdhPJz/3jM+HCenFQ1gKxUxySNubtYcaPRo7nshJex5Hy+YMoHfq+kEtsAKYVRqCqeAyDXzSo+nzfhy17UjRv6dItM=
+X-Received: by 2002:a2e:85c2:: with SMTP id h2mr6940282ljj.367.1632423012098;
+ Thu, 23 Sep 2021 11:50:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjp7psdNc8KpxVDmcVYaAAxDUvvFTgx21OwZJzkghktLg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com>
+In-Reply-To: <af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 23 Sep 2021 20:49:35 +0200
+Message-ID: <CAPDyKFqD=KKgSC1PQz_RVm=sGMWtdFsaHSHDiKDxMKajbkszMA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: dw_mmc: Dont wait for DRTO on Write RSP error
+To:     =?UTF-8?Q?Christian_L=C3=B6hle?= <CLoehle@hyperstone.com>
+Cc:     "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/21 20:35, Linus Torvalds wrote:
-> But I'm adding a few people to the cc for a completely different
-> reason: the cleanup to move all the notify_resume stuff to
-> tracehook_notify_resume() is good, but it does make me go - once again
-> - "Hmm, that naming is really really bad".
+On Thu, 16 Sept 2021 at 07:59, Christian L=C3=B6hle <CLoehle@hyperstone.com=
+> wrote:
+>
+> Only wait for DRTO on reads, otherwise the driver hangs.
+>
+> The driver prevents sending CMD12 on response errors like CRCs.
+> According to the comment this is because some cards have problems
+> with this during the UHS tuning sequence.
+> Unfortunately this workaround currently also applies for any command
+> with data.
+> On reads this will set the drto timer which then triggers after a while.
+> On writes this will not set any timer and the tasklet will not be
+> scheduled again.
+> I cannot attest for the UHS workarounds need, but even if so, it should
+> at most apply to reads.
+> I have observed many hangs when CMD25 response contained a CRC error.
+> This patch fixes this without touching the actual UHS tuning workaround.
+>
+> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
 
-Absolutely, it's even in the commit message:
+Applied for next and by adding a stable tag, thanks!
 
----
-Note, tracehook_notify_resume() is horribly named and arguably does not
-belong in tracehook.h as literally every line of code in it has nothing
-to do with tracing.  But, that's been true since commit a42c6ded827d
-("move key_repace_session_keyring() into tracehook_notify_resume()")
-first usurped tracehook_notify_resume() back in 2012.  Punt cleaning that
-mess up to future patches.
----
+If you don't think we need the stable tag, please tell me.
 
-As you point out, it's really all of the header and not just that one
-function.
+Kind regards
+Uffe
 
-Paolo
 
-> The <linux/tracehook.h> code was literally meant for tracing. It's
-> where the name comes from, and it's the original intent: having a
-> place that you can hook into for tracing that doesn't depend on how
-> the core kernel code ends up changing.
-> 
-> But that's not how it actually acts right now. That header file is now
-> some very core functionality, and little of it is actually related to
-> tracing any more. It's more core process state handling for the user
-> space return path.
-> 
-> So I don't object to the patches, and they are merged, but I'm cc'ing people to
-> 
->   (a) let them know about this (see commit a68de80f61f6: "entry: rseq:
-> Call rseq_handle_notify_resume() in tracehook_notify_resume()" in the
-> current -git tree)
-> 
->   (b) possibly prod some people into perhaps moving/renaming some of
-> that code to actual core kernel C files, instead of a misnamed header
-> file..
-> 
-> Hmm?
-> 
->           Linus
-> 
-
+> ---
+>  drivers/mmc/host/dw_mmc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+> index 6578cc64ae9e..22cf13dc799b 100644
+> --- a/drivers/mmc/host/dw_mmc.c
+> +++ b/drivers/mmc/host/dw_mmc.c
+> @@ -2081,7 +2081,8 @@ static void dw_mci_tasklet_func(struct tasklet_stru=
+ct *t)
+>                                  * delayed. Allowing the transfer to take=
+ place
+>                                  * avoids races and keeps things simple.
+>                                  */
+> -                               if (err !=3D -ETIMEDOUT) {
+> +                               if (err !=3D -ETIMEDOUT &&
+> +                                   host->dir_status =3D=3D DW_MCI_RECV_S=
+TATUS) {
+>                                         state =3D STATE_SENDING_DATA;
+>                                         continue;
+>                                 }
+> --
+> 2.32.0
+> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+> Managing Directors: Dr. Jan Peter Berns.
+> Commercial register of local courts: Freiburg HRB381782
+>
