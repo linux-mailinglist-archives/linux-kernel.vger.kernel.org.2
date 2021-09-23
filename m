@@ -2,61 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A4741613C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE63416143
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241817AbhIWOlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        id S241753AbhIWOmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241748AbhIWOlG (ORCPT
+        with ESMTP id S241710AbhIWOmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:41:06 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D38C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:39:34 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso8756580otc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=53ncPwLdT2g9SaKiSg548NXlFSd1dHLQMtolIlqWz2s=;
-        b=RUgT+CKEyzCPpo8H4UsDYr+Hur8TlbtLcr5PVZj0qwDTNUVEeMW8OR4EzmDd0Lqe0Y
-         X5GmDxAHF6HFgYN1Gv0VIwHGQlH7GTAs8XQQf6C7/s32zPUevGzpyA84xx7QMnqkigyY
-         TBtEKFz5h22JCCPjidnP5NArQ82T6QNtiCW7npVjW8Q0Lwm5Epd9cW6hhEvEgZkVj6VP
-         /lPkrdT72bVNzDg9f4Xd+CGjvtOxnkyY06hVMS9YJOWPIla46luwzqERMCvfII8p1Xss
-         NJJ6ttJQVzzgOMgsBFr+Aecwl1YUcejdEAxWw2pVhFI/a6DpUUkIV+aWHx0jtmQXz0O3
-         /VpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=53ncPwLdT2g9SaKiSg548NXlFSd1dHLQMtolIlqWz2s=;
-        b=29Vf/3veHqkzQCa9+Lvl3pBRFIy3raq88ve5FiBiPkH1A1dfqB/IQFtOZtqVCiB7B+
-         WPjtDy6kNfS/0/RvtIZx5Wcj67lhH7oNmCp4pYvsui3d94zqkQOKiYsnYMeEQwDn1eyG
-         XecifTQRwcTfx3+yQZL9ds6KuavTcMi761mRkOoMvZL0w8Z6zdfQuDV+m/h52XEOiBJ3
-         94LDd+Eex+2Q+GCNTBQ5BpeLlJvQFBDtyNMveSe0cPOBRBPYBBZCR17B/cN0KlFg73xG
-         M9yr61ZcDfm8GGLFTkbRn4ONoWYjYgt1idznAOW1mT7UCABNmVMu90es/tEDgZYRoIas
-         QB+Q==
-X-Gm-Message-State: AOAM530CdjyEptNooCAeDnz+Kes2U2OIpv7GL3eYBgFcHuXghKVg4vrI
-        Qvh1colqzkEHP2WCxmqQf5Rc6i37ug31DBHNQg==
-X-Google-Smtp-Source: ABdhPJw9UvebQ8qqsIEjS8ODkOXqZEB8bVkfzOd29vjtNqQS3zz1haiyATWJTuxUX2JICSWZpf2iTOKPJzBRJzxZ7ck=
-X-Received: by 2002:a05:6830:2706:: with SMTP id j6mr4823377otu.82.1632407974388;
- Thu, 23 Sep 2021 07:39:34 -0700 (PDT)
+        Thu, 23 Sep 2021 10:42:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C518CC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:40:35 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1mTPti-0001xl-9G; Thu, 23 Sep 2021 16:40:26 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1mTPth-0001lR-0r; Thu, 23 Sep 2021 16:40:25 +0200
+Date:   Thu, 23 Sep 2021 16:40:25 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Harini Katakam <harini.katakam@xilinx.com>
+Cc:     vkoul@kernel.org, romain.perier@gmail.com, allen.lkml@gmail.com,
+        yukuai3@huawei.com, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        harinikatakamlinux@gmail.com, michal.simek@xilinx.com,
+        radhey.shyam.pandey@xilinx.com, shravya.kumbham@xilinx.com,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 3/4] dmaengine: zynqmp_dma: Add conditions for return
+ value check
+Message-ID: <20210923144025.GC30905@pengutronix.de>
+References: <20210914082817.22311-1-harini.katakam@xilinx.com>
+ <20210914082817.22311-4-harini.katakam@xilinx.com>
 MIME-Version: 1.0
-Received: by 2002:a9d:22c5:0:0:0:0:0 with HTTP; Thu, 23 Sep 2021 07:39:34
- -0700 (PDT)
-Reply-To: alimaawari@gmail.com
-From:   Alima Anwari <ourognaousaouda@gmail.com>
-Date:   Thu, 23 Sep 2021 15:39:34 +0100
-Message-ID: <CA+w-2BFAjEh_SBrCbbWDPS=iyMD81VDgOcFJ4J_B8t0N=AbQ1g@mail.gmail.com>
-Subject: HOW ARE YOU
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210914082817.22311-4-harini.katakam@xilinx.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 16:32:19 up 217 days, 17:56, 113 users,  load average: 0.19, 0.24,
+ 0.20
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-'m Alima Anwari from Afghanistan, please reply back to me because i
-have urgent issue to share with you.
+On Tue, 14 Sep 2021 13:58:16 +0530, Harini Katakam wrote:
+> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> 
+> Add condition to check the return value of dma_async_device_register
+> and pm_runtime_get_sync functions.
+> 
+> Addresses-Coverity: Event check_return.
+> Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+> ---
+>  drivers/dma/xilinx/zynqmp_dma.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
+> index d28b9ffb4309..588460e56ab8 100644
+> --- a/drivers/dma/xilinx/zynqmp_dma.c
+> +++ b/drivers/dma/xilinx/zynqmp_dma.c
+> @@ -1080,7 +1080,11 @@ static int zynqmp_dma_probe(struct platform_device *pdev)
+>  	pm_runtime_set_autosuspend_delay(zdev->dev, ZDMA_PM_TIMEOUT);
+>  	pm_runtime_use_autosuspend(zdev->dev);
+>  	pm_runtime_enable(zdev->dev);
+> -	pm_runtime_get_sync(zdev->dev);
+> +	ret = pm_runtime_get_sync(zdev->dev);
+> +	if (ret < 0) {
+> +		dev_err(zdev->dev, "pm_runtime_get_sync() failed\n");
+> +		pm_runtime_disable(zdev->dev);
+> +	}
+
+Thanks for the patch.
+
+You need to call pm_runtime_put() on the error path. Or you could use
+pm_runtime_resume_and_get(), which does this automatically.
+
+I am wondering, if it wouldn't be cleaner to make this dependent on
+pm_runtime_enabled() and avoiding pm_runtime_disable() on the error path
+altogether.
+
+Michael
+
+>  	if (!pm_runtime_enabled(zdev->dev)) {
+>  		ret = zynqmp_dma_runtime_resume(zdev->dev);
+>  		if (ret)
+> @@ -1096,7 +1100,11 @@ static int zynqmp_dma_probe(struct platform_device *pdev)
+>  	p->dst_addr_widths = BIT(zdev->chan->bus_width / 8);
+>  	p->src_addr_widths = BIT(zdev->chan->bus_width / 8);
+>  
+> -	dma_async_device_register(&zdev->common);
+> +	ret = dma_async_device_register(&zdev->common);
+> +	if (ret) {
+> +		dev_err(zdev->dev, "failed to register the dma device\n");
+> +		goto free_chan_resources;
+> +	}
+>  
+>  	ret = of_dma_controller_register(pdev->dev.of_node,
+>  					 of_zynqmp_dma_xlate, zdev);
+> -- 
+> 2.17.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
