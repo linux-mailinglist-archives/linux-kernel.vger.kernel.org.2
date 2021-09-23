@@ -2,122 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B17E415C7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A412415C81
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240508AbhIWLFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:05:42 -0400
-Received: from mail-mw2nam12on2102.outbound.protection.outlook.com ([40.107.244.102]:46049
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240448AbhIWLFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:05:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AxrxEB76oS1LY9EFFOzOIFpwrbVN4fHipTSgdHG3tlOYaiSBeHwRhYa6nlqE3hmoiSJeDBy/kyO//3Nd3b0nPYfPLxSBae+9YLw729J93sC2SF7L9uK9FStyNl8e4f/HYhQtdvisYPJbD6dn+3j/C/fdH+W6NNSUYo0OXqCFw3Iz1pYKHK7jR5uRO984U8enfr17t83zFSoYry2JMU06/jMTEjW3GDsc8FTimXi00r5nPx9cMw5zBCts0rtXJsvM5Z3TNIJp1xRCWvyzhaLhhk/Ka+aeBHJCj+vLu3CeSYvtl1msEBhZOLHFwIjrxPBZ0+F9yMPx22ehoyrQ1f5H0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=CyKoOvkbgGuA6HmzM4H2DGmtV0/Pwu6yWs2H0cViYnM=;
- b=C5EmelbR0PuCFg5vZrOvqAN9QK0l7lEbV2eZ8jkzcOgT+2JgA9pehUntdgf+SUwpiB75uahitUIsWLg58kq4djyLUeqyGfUYRQafz7CcUwV2hL4wjweTlwnC1N+ulmX5veunoHttDGTrBpkiMiSLVHhCQNgLOr4bjAK1d9P1ZmC3vLaFESahjqeE//my5Qm0FzYs/Zk2z9YQ2BCkUEqotJCB1NVkCRrs5LpPINfoRQ3UaPMPnrTgcj0ImGMavmFWGm1eRaYUfxohT9mDDrfs1tPYoDogzJm6rhr1tk25WUFcPcSqM1UsRf7gu8g8+4MzXDI8fGmPuNkXTfizYkpmnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CyKoOvkbgGuA6HmzM4H2DGmtV0/Pwu6yWs2H0cViYnM=;
- b=YHP56Hy/guDzWE3PKJk09iaim6jtce6cFVsbx/l7JD64LOm0fpC6/ccABEYPgNjqb7IqgrVcV6vQvXPY4rVk0zFReO9dBehvzm4J9xn4qWpoIO9Ssy0z5gQ/5d3LqoaXEfTRzSRcGO+H0i9NqEVGaZi7Lu7bDsQ6MT0pt3ApLG/+WkOVrRG34wfK3onpHAZ4pWeizK31LuxBS9B0lA45uwJhkAeBXVrwPb2NvhiP51TBHv28frZOCigPPJStny4m/82qNIW9TpFCrEhDHi/+XQB2x19IZLbauVXC59veJXA89KGyrrOi0CTxpKNRfFeBJQhqdCUWCHahHVeSc4V2TQ==
-Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH0PR01MB6923.prod.exchangelabs.com (2603:10b6:610:104::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.15; Thu, 23 Sep 2021 11:04:03 +0000
-Received: from CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::30a8:19a9:b5c7:96cd]) by CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::30a8:19a9:b5c7:96cd%9]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
- 11:04:03 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>
-CC:     Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Thread-Topic: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Thread-Index: AQHXr7imk55risfKAUmS2+aCDTMROauwTzmggAAKPwCAANRigIAAR+Ng
-Date:   Thu, 23 Sep 2021 11:04:02 +0000
-Message-ID: <CH0PR01MB7153E7BD0F3CFBA384EF97ACF2A39@CH0PR01MB7153.prod.exchangelabs.com>
-References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
- <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
- <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org> <YUwin2cn8X5GGjyY@unreal>
-In-Reply-To: <YUwin2cn8X5GGjyY@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: aa153e5a-8b0f-42ab-dff7-08d97e81da80
-x-ms-traffictypediagnostic: CH0PR01MB6923:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH0PR01MB69231E9BCA285371347C6EF0F2A39@CH0PR01MB6923.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3044;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gAtJv+G4biRDwrmjGUwBM6q6Uob3pMsy2FU2dQuY80GxIPFF0oV+LH4qm5ZmxuE0E7+Vf5VlLX+Jn4STBcV2mQzcTBnfjBxnB4/sASoaFa2ONYFzHtlV+pZExFBP/V609I5F5WjyRq33Hqnl04WMLdczkrqJjvI+lShS26V/zXkoVzcwMjnL2xLax8ewPIQL/lj9X0+GYO+aajTlODSttwXIgIy7v/sBf2zmIUsRRp2rj2zvlp3FM8jTZfGVv0Da2+Ec5sovIrNWA/jxvnUBEYzXmGJHlyeOBqsPx407LIRI1BBWU4zO2LBBYfIKAao9jsjCx4t2DkGa9XK4bdsyp8A0fXAVYj0Q7F2CxdKCg49X9T37dUDa50ZXrlpY/LG332vB0lCgkafx9QEHXG1tiaIdxxqdwRj/nIu1DhWjIjO1wR2hJoZ6uTMdzERrQJo+v61iYGXmGReyHJbRKsbXsLjdWxCr8kbzcbECZ7tyBJMjDrZcnFNB0tY7GMkBUwvsD1BH3EVLA5eVQFgwFoPgBEV4AV7mumiWbQF5IWGge1bDtYQxVsgCYQOzEC9i+bpz0LHvsVrb3xr8LJtFLtl8Fj9SliHqEVFlMckG0thgP8FSk+lC/6XiNfvzEXB22DO7FNBkAGlooM4k6ZmdaRA1MUn2uh4I3G462sS3wH13uOZZs4B3fNpzueOUaOE9t6yUJkhkZbleQwvXdnFIAKDcNw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39840400004)(366004)(54906003)(2906002)(8936002)(76116006)(110136005)(55016002)(4326008)(66476007)(66446008)(9686003)(66946007)(122000001)(71200400001)(64756008)(38100700002)(5660300002)(52536014)(66556008)(316002)(8676002)(33656002)(508600001)(558084003)(38070700005)(7696005)(26005)(186003)(6506007)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GZJ4wZcnz5PAaBxQYxbEiqdDjqgJHjtlPORu1ZEHUCv6gaD3oPbQi2/rvG/c?=
- =?us-ascii?Q?wVjq0M7cqqPueDYX0bAh3jfbGp49If4OGoPWrYGfX3xcWH/pKNrOvh7z/sh7?=
- =?us-ascii?Q?w2y66PE7BwCPxiieOiXcYl9Emn1O1iHj1HKUh3rLahsWH35aJ2A02zge7Qw6?=
- =?us-ascii?Q?fRIl8hgAjmOWjT1CWXmHk717fbR2Bx13CeQqfOPoUSHr/za6JkpmPfNzaTNC?=
- =?us-ascii?Q?VGRwchtSjxh82J//o5/gbSGeYqWb8Qo28AkevdLy7Qa6hvy9ZAGP1O1JPsn3?=
- =?us-ascii?Q?7qanlK0x/kcAwEsej0LuTM3jILPkLxk6+pFvvH0vw+WGW4xoc4V3JEQpdjbE?=
- =?us-ascii?Q?tdgLcRYsnc0A9j83upAwqVlTU2GDbv0dI/6lfEYTj3xIUmQfPiY6wI1ZQZD8?=
- =?us-ascii?Q?6wTe/tGZb7nEUHBNyQJWS2aZvOq8KyB3kDjXnvOzh1qXyT8GzctQDfVnltwW?=
- =?us-ascii?Q?3LzxmL5d3Cex978viBPAhdLrfQWDU0WaZJoX/0eh8/OxO8anvZGd2sU6nPo3?=
- =?us-ascii?Q?iaMArsjZY29kDHdQp4cYW92kIwW0ETj5pb9EpGX1oRSgoomJ2MDBfGdWAIFn?=
- =?us-ascii?Q?ysj2s9Em+usm0C/TeYwhRgkjIH5k0Gh5KjYjTkh2ofSjjIRSDg3xFCOunmeL?=
- =?us-ascii?Q?e9Oz1IGsNkbKpVs8a0CagIU7HjTTP8jntk67WtVAylJOifhrMXoZlLe/975W?=
- =?us-ascii?Q?EGkDL1Jc8wOB+K5zz6DI3BSRR1sEG6JkgLIalrvRDyu0MeJ/EPY72hm/8Uub?=
- =?us-ascii?Q?6P3GCq2d1pdDVViofV5MDXiGdn1Ummny3zyTlAPv5w+wXiq1yCWJabk5g9hP?=
- =?us-ascii?Q?tvOhl1c5wbpB6h/h5743gjrNEgQ0q+KDkfFjZQOyyf/ptqQE8Oj2R11BkgpJ?=
- =?us-ascii?Q?ZXUGrqzSIpq0STYPDrK6e3I9QTm+E6aCoL6vKEorWiiE+RUXRSAjg9dgsYJw?=
- =?us-ascii?Q?8G8kaokfAcPwsk7J9A8QDP16hvEw5h5VzGYYzD0ghT9yy0p8kuFV2r+vX1Mk?=
- =?us-ascii?Q?hO7i+TZeehEks6LW63SgA4nYtertYOODd7iNS1Y2ta2xN1GwfSA9b6IK4LcM?=
- =?us-ascii?Q?6gf3+8c9ubsrROpbS5BMhLkaJQvJNqnaEQ90WiizPPgVsS44CBrBJgXugTyX?=
- =?us-ascii?Q?uFJ8BX1O6DDGMQgMAnWVVuqNRmplw/8mnPFqdSydAEgjhIaLCysqzEWxpHp8?=
- =?us-ascii?Q?MN/vNdudS8oXnQJhccD2FkOld+czom9ZY7Cz3TZm3zDV6GjPMXltbk+1kBYG?=
- =?us-ascii?Q?mIiLt2uRSwB73uPBmtW3QmluXrjmM20gb+a2X6Vz3WF/h5uY6BX6nz2W3xtI?=
- =?us-ascii?Q?7sM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S240523AbhIWLGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:06:51 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:37575 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240448AbhIWLGs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 07:06:48 -0400
+Received: by mail-ot1-f44.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so1081885otv.4;
+        Thu, 23 Sep 2021 04:05:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bpOeDRvPfljLyF5wASvtNjai/+9liEiaQSxwkm2X1A0=;
+        b=VeNkjabhNBLbxs1Qjls7JPR3eTaweOPRYmmZcM8QS4YzKJnSNi9NNx9CBxZVIKg+Tp
+         DiD9NN94tux90lKPWl4yB01/y359Poei+csJ7CWFdFyp/XBA3jzpR+u/kzr60EODWFR3
+         mJpGmVfYWWbPg+X9zgk5XntfPOM3Xs88KzHDmXDc1Ww/2n80QPLm09JC45hgvOPxaYxD
+         F1QidYRatUjCMEu2JJx8eG4UPNzwyq2v6e5muP0iw9Ub/cumwWww98TnKT1ngoLxgkBV
+         oK6mSM/JiJpA3AOaGnQ2N4kUn4BM6IwGTR7zj0mylGuXEpCCeem6JttAK247WUI54k/V
+         i0GQ==
+X-Gm-Message-State: AOAM531K8iygN7lRw4Z+9XM4Z5gzm0SIvciniwGxX6wweONI7UCzH6Sz
+        T1xT1Zmtfmpi4UJ/uRirBICh0IITz4mr/sL5QaA=
+X-Google-Smtp-Source: ABdhPJxIGpgVOyr1vxubbLoXLJ51nxTVlhPQZ5W6UT7iXCqziuK7aRDcRSffvu9mQtcFRN0AienGJANLuFj1NdF0LD0=
+X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr3838730otr.301.1632395116880;
+ Thu, 23 Sep 2021 04:05:16 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa153e5a-8b0f-42ab-dff7-08d97e81da80
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 11:04:02.9205
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wAXjVoaTs/OldnvLfUawvIQsHhUcYVLP5X6az+HDTTvjMip/Ewg6Uj0TePVpH8JsIbanvCHazJo0e66VsgbynTfZba3pzKAJwflfii7ZKOU2tTHvmkWOuH7gg66Jy7vd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR01MB6923
+References: <20210910122820.26886-1-justin.he@arm.com> <20210910143223.6705-1-justin.he@arm.com>
+ <20210922163336.GA24633@lpieralisi> <56147a0b8b9fba46@bloch.sibelius.xs4all.nl>
+ <20210923094031.GA6454@lpieralisi>
+In-Reply-To: <20210923094031.GA6454@lpieralisi>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 23 Sep 2021 13:05:05 +0200
+Message-ID: <CAJZ5v0g+OVbhuUUDrLUCfX_mVqY_e8ubgLTU98=jfjTeb4t+Pw@mail.gmail.com>
+Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Jia He <justin.he@arm.com>,
+        Harb Abdulhamid <harb@amperecomputing.com>,
+        Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Isn't kptr_restrict sysctl is for that?
->=20
+On Thu, Sep 23, 2021 at 11:40 AM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> On Thu, Sep 23, 2021 at 01:09:58AM +0200, Mark Kettenis wrote:
+> > > Date: Wed, 22 Sep 2021 17:33:36 +0100
+> > > From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > >
+> > > On Fri, Sep 10, 2021 at 10:32:23PM +0800, Jia He wrote:
+> > > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> > > >
+> > > > After this commit, a boot panic is alway hit on an Ampere EMAG server
+> > > > with call trace as follows:
+> > > >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> > > >  Modules linked in:
+> > > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> > > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+> > > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > > > [...snip...]
+> > > >  Call trace:
+> > > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> > > >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> > > >   acpi_ex_access_region+0x114/0x268
+> > > >   acpi_ex_field_datum_io+0x128/0x1b8
+> > > >   acpi_ex_extract_from_field+0x14c/0x2ac
+> > > >   acpi_ex_read_data_from_field+0x190/0x1b8
+> > > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> > > >   acpi_ex_resolve_to_value+0x250/0x274
+> > > >   acpi_ds_evaluate_name_path+0xac/0x124
+> > > >   acpi_ds_exec_end_op+0x90/0x410
+> > > >   acpi_ps_parse_loop+0x4ac/0x5d8
+> > > >   acpi_ps_parse_aml+0xe0/0x2c8
+> > > >   acpi_ps_execute_method+0x19c/0x1ac
+> > > >   acpi_ns_evaluate+0x1f8/0x26c
+> > > >   acpi_ns_init_one_device+0x104/0x140
+> > > >   acpi_ns_walk_namespace+0x158/0x1d0
+> > > >   acpi_ns_initialize_devices+0x194/0x218
+> > > >   acpi_initialize_objects+0x48/0x50
+> > > >   acpi_init+0xe0/0x498
+> > > >
+> > > > As mentioned by Lorenzo:
+> > > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+> > > >   eMAG does not like at all and I'd need to understand why. It looks
+> > > >   like the issue happen in SystemMemory Opregion handler."
+> > > >
+> > > > Hence just revert it before everything is clear.
+> > > >
+> > > > Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
+> > > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > > Cc: Hanjun Guo <guohanjun@huawei.com>
+> > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > > Cc: Harb Abdulhamid <harb@amperecomputing.com>
+> > > >
+> > > > Signed-off-by: Jia He <justin.he@arm.com>
+> > >
+> > > Rewrote the commit log, please take the patch below and repost
+> > > it as a v3.
+> > >
+> > > It would still be great if Ampere can help us understand why
+> > > the NormalNC attributes trigger a sync abort on the opregion
+> > > before merging it.
+> >
+> > To be honest, I don't think you really need an explanation from Ampere
+> > here.  Mapping a part of the address space that doesn't provide memory
+> > semantics with NormalNC attributes is wrong and triggering a sync
+> > abort in that case is way better than silently ignoring the access.
+>
+> That's understood and that's what I explained in the revert commit
+> log, no question about it.
+>
+> I was just asking to confirm if that's what's actually happening.
+>
+> > Putting my OpenBSD hat on (where we have our own ACPI OSPM
+> > implementation) I must say that we always interpreted SystemMemory as
+> > memory mapped IO and I think that is a logical choice as SystemIO is
+> > used for (non-memory mapped) IO.  And I'd say that the ACPI OSPM code
+> > should make sure that it uses properly aligned access to any Field
+> > object that doesn't use AnyAcc as its access type.  Even on x86!  And
+> > I'd say that AML that uses AnyAcc fields for SystemMemory OpRegions on
+> > arm64 is buggy.
+> >
+> > But maybe relaxing this when the EFI memory map indicates that the
+> > address space in question does provide memory semantics does make
+> > sense.  That should defenitely be documented in the ACPI standard
+> > though.
+>
+> Mapping SystemMemory Opregions as "memory" does not make sense
+> at all to me. Still, that's what Linux ACPICA code does (*if*
+> that's what acpi_os_map_memory() is supposed to mean).
+>
+> https://lore.kernel.org/linux-acpi/20210916160827.GA4525@lpieralisi
 
-It doesn't look like that works in irqs, softirqs.
+It doesn't need to do that, though, if there are good enough arguments
+to change the current behavior (and the argument here is that it may
+be an MMIO region, so mapping it as memory doesn't really work, but it
+also may be a region in memory - there is no rule in the spec by which
+SystemMemory Opregions cannot be "memory" AFAICS) and if that change
+doesn't introduce regressions in the installed base.
 
-We have plenty of those.
+> Where do we go from here, to be defined, we still have a bug
+> to fix after the revert is applied.
+>
+> drivers/acpi/sysfs.c
+>
+> maps BERT error regions with acpi_os_map_memory().
 
-Mike
+That mechanism is basically used for exporting ACPI tables to user
+space and they are known to reside in memory.  Whether or not BERT
+regions should be mapped in the same way is a good question.
+
+> If the BERT error
+> region is not in the EFI memory map, we map that memory as device-nGnRnE
+> and we execute memory semantics operation on it.
+>
+> https://lore.kernel.org/linux-acpi/e548e72c-83a4-2366-dd57-3e746040fea9@arm.com
+>
+> I could change that code to map those regions as ioremap_wc() because
+> supposedly we *know* that's memory but this is becoming a slippery
+> slope to follow IMO.
+>
+> > > -- >8 --
+> > > Subject: [PATCH] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+> > >
+> > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> > >
+> > > The memory semantics added in commit 437b38c51162 causes SystemMemory
+> > > Operation region, whose address range is not described in the EFI memory
+> > > map to be mapped as NormalNC memory on arm64 platforms (through
+> > > acpi_os_map_memory() in acpi_ex_system_memory_space_handler()).
+> > >
+> > > This triggers the following abort on an ARM64 Ampere eMAG machine,
+> > > because presumably the physical address range area backing the Opregion
+> > > does not support NormalNC memory attributes driven on the bus.
+> > >
+> > >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> > >  Modules linked in:
+> > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+> > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > > [...snip...]
+> > >  Call trace:
+> > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> > >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> > >   acpi_ex_access_region+0x114/0x268
+> > >   acpi_ex_field_datum_io+0x128/0x1b8
+> > >   acpi_ex_extract_from_field+0x14c/0x2ac
+> > >   acpi_ex_read_data_from_field+0x190/0x1b8
+> > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> > >   acpi_ex_resolve_to_value+0x250/0x274
+> > >   acpi_ds_evaluate_name_path+0xac/0x124
+> > >   acpi_ds_exec_end_op+0x90/0x410
+> > >   acpi_ps_parse_loop+0x4ac/0x5d8
+> > >   acpi_ps_parse_aml+0xe0/0x2c8
+> > >   acpi_ps_execute_method+0x19c/0x1ac
+> > >   acpi_ns_evaluate+0x1f8/0x26c
+> > >   acpi_ns_init_one_device+0x104/0x140
+> > >   acpi_ns_walk_namespace+0x158/0x1d0
+> > >   acpi_ns_initialize_devices+0x194/0x218
+> > >   acpi_initialize_objects+0x48/0x50
+> > >   acpi_init+0xe0/0x498
+> > >
+> > > If the Opregion address range is not present in the EFI memory map there
+> > > is no way for us to determine the memory attributes to use to map it -
+> > > defaulting to NormalNC does not work (and it is not correct on a memory
+> > > region that may have read side-effects) and therefore commit
+> > > 437b38c51162 should be reverted, which means reverting back to the
+> > > original behavior whereby address ranges that are mapped using
+> > > acpi_os_map_memory() default to the safe devicenGnRnE attributes on
+> > > ARM64 if the mapped address range is not defined in the EFI memory map.
+> > >
+> > > Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
+> > > Signed-off-by: Jia He <justin.he@arm.com>
+> > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Hanjun Guo <guohanjun@huawei.com>
+> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > Cc: Harb Abdulhamid <harb@amperecomputing.com>
+> > > ---
+> > >  arch/arm64/include/asm/acpi.h |  3 ---
+> > >  arch/arm64/kernel/acpi.c      | 19 +++----------------
+> > >  drivers/acpi/osl.c            | 23 +++++++----------------
+> > >  include/acpi/acpi_io.h        |  8 --------
+> > >  4 files changed, 10 insertions(+), 43 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> > > index 7535dc7cc5aa..bd68e1b7f29f 100644
+> > > --- a/arch/arm64/include/asm/acpi.h
+> > > +++ b/arch/arm64/include/asm/acpi.h
+> > > @@ -50,9 +50,6 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+> > >  void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
+> > >  #define acpi_os_ioremap acpi_os_ioremap
+> > >
+> > > -void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
+> > > -#define acpi_os_memmap acpi_os_memmap
+> > > -
+> > >  typedef u64 phys_cpuid_t;
+> > >  #define PHYS_CPUID_INVALID INVALID_HWID
+> > >
+> > > diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+> > > index 1c9c2f7a1c04..f3851724fe35 100644
+> > > --- a/arch/arm64/kernel/acpi.c
+> > > +++ b/arch/arm64/kernel/acpi.c
+> > > @@ -273,8 +273,7 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
+> > >     return __pgprot(PROT_DEVICE_nGnRnE);
+> > >  }
+> > >
+> > > -static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+> > > -                                  acpi_size size, bool memory)
+> > > +void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+> > >  {
+> > >     efi_memory_desc_t *md, *region = NULL;
+> > >     pgprot_t prot;
+> > > @@ -300,11 +299,9 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+> > >      * It is fine for AML to remap regions that are not represented in the
+> > >      * EFI memory map at all, as it only describes normal memory, and MMIO
+> > >      * regions that require a virtual mapping to make them accessible to
+> > > -    * the EFI runtime services. Determine the region default
+> > > -    * attributes by checking the requested memory semantics.
+> > > +    * the EFI runtime services.
+> > >      */
+> > > -   prot = memory ? __pgprot(PROT_NORMAL_NC) :
+> > > -                   __pgprot(PROT_DEVICE_nGnRnE);
+> > > +   prot = __pgprot(PROT_DEVICE_nGnRnE);
+> > >     if (region) {
+> > >             switch (region->type) {
+> > >             case EFI_LOADER_CODE:
+> > > @@ -364,16 +361,6 @@ static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
+> > >     return __ioremap(phys, size, prot);
+> > >  }
+> > >
+> > > -void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+> > > -{
+> > > -   return __acpi_os_ioremap(phys, size, false);
+> > > -}
+> > > -
+> > > -void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
+> > > -{
+> > > -   return __acpi_os_ioremap(phys, size, true);
+> > > -}
+> > > -
+> > >  /*
+> > >   * Claim Synchronous External Aborts as a firmware first notification.
+> > >   *
+> > > diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+> > > index a43f1521efe6..45c5c0e45e33 100644
+> > > --- a/drivers/acpi/osl.c
+> > > +++ b/drivers/acpi/osl.c
+> > > @@ -284,8 +284,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
+> > >  #define should_use_kmap(pfn)   page_is_ram(pfn)
+> > >  #endif
+> > >
+> > > -static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
+> > > -                         bool memory)
+> > > +static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
+> > >  {
+> > >     unsigned long pfn;
+> > >
+> > > @@ -295,8 +294,7 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
+> > >                     return NULL;
+> > >             return (void __iomem __force *)kmap(pfn_to_page(pfn));
+> > >     } else
+> > > -           return memory ? acpi_os_memmap(pg_off, pg_sz) :
+> > > -                           acpi_os_ioremap(pg_off, pg_sz);
+> > > +           return acpi_os_ioremap(pg_off, pg_sz);
+> > >  }
+> > >
+> > >  static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+> > > @@ -311,10 +309,9 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+> > >  }
+> > >
+> > >  /**
+> > > - * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
+> > > + * acpi_os_map_iomem - Get a virtual address for a given physical address range.
+> > >   * @phys: Start of the physical address range to map.
+> > >   * @size: Size of the physical address range to map.
+> > > - * @memory: true if remapping memory, false if IO
+> > >   *
+> > >   * Look up the given physical address range in the list of existing ACPI memory
+> > >   * mappings.  If found, get a reference to it and return a pointer to it (its
+> > > @@ -324,8 +321,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+> > >   * During early init (when acpi_permanent_mmap has not been set yet) this
+> > >   * routine simply calls __acpi_map_table() to get the job done.
+> > >   */
+> > > -static void __iomem __ref
+> > > -*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
+> > > +void __iomem __ref
+> > > +*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+> > >  {
+> > >     struct acpi_ioremap *map;
+> > >     void __iomem *virt;
+> > > @@ -356,7 +353,7 @@ static void __iomem __ref
+> > >
+> > >     pg_off = round_down(phys, PAGE_SIZE);
+> > >     pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
+> > > -   virt = acpi_map(phys, size, memory);
+> > > +   virt = acpi_map(phys, size);
+> > >     if (!virt) {
+> > >             mutex_unlock(&acpi_ioremap_lock);
+> > >             kfree(map);
+> > > @@ -375,17 +372,11 @@ static void __iomem __ref
+> > >     mutex_unlock(&acpi_ioremap_lock);
+> > >     return map->virt + (phys - map->phys);
+> > >  }
+> > > -
+> > > -void __iomem *__ref
+> > > -acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+> > > -{
+> > > -   return __acpi_os_map_iomem(phys, size, false);
+> > > -}
+> > >  EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
+> > >
+> > >  void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+> > >  {
+> > > -   return (void *)__acpi_os_map_iomem(phys, size, true);
+> > > +   return (void *)acpi_os_map_iomem(phys, size);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(acpi_os_map_memory);
+> > >
+> > > diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
+> > > index a0212e67d6f4..027faa8883aa 100644
+> > > --- a/include/acpi/acpi_io.h
+> > > +++ b/include/acpi/acpi_io.h
+> > > @@ -14,14 +14,6 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
+> > >  }
+> > >  #endif
+> > >
+> > > -#ifndef acpi_os_memmap
+> > > -static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
+> > > -                                       acpi_size size)
+> > > -{
+> > > -   return ioremap_cache(phys, size);
+> > > -}
+> > > -#endif
+> > > -
+> > >  extern bool acpi_permanent_mmap;
+> > >
+> > >  void __iomem __ref
+> > > --
+> > > 2.31.0
+> > >
+> > > _______________________________________________
+> > > linux-arm-kernel mailing list
+> > > linux-arm-kernel@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > >
