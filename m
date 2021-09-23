@@ -2,97 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A025415B5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D682415B6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240271AbhIWJuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240268AbhIWJuK (ORCPT
+        id S240246AbhIWJwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:52:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33366 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240174AbhIWJwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:50:10 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0824C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:48:38 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id w29so15366922wra.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6+eKVp8taoHSdR1ibPn1ZGg0knOd1Pb0ImjfZkR19aI=;
-        b=GTnuaG2v8n/EfVqZaGG/LrTewIRWMm7WeWMV3j9m4TQfzK6B0a4MoXuq7vYMKR5sRe
-         OhoSOfgq+MGSmZTFC4dvGYouByjVRmagaBS3cEfzpPL+bxGgJi88cjdg6u/Q8NdSHlnr
-         TpmTZ8f9YvBm66pwkXvPEHOTo1NB6sQLvtvYiAGLUfBVIxL8WW+ScDnGVm6p0pMIKP9r
-         IjZoQkoj9ZzeOJzbf75qrDRdryulrO0JYGBlK59x+4zuwE2eYvEVvBFRwLgVuVscci48
-         Jto3AO2FZ9nqFAOzVOhfpYEIAnXDM00By37MSsbuC3c/36E4Y5BPxSno7NjlJkfb7C8+
-         KtJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6+eKVp8taoHSdR1ibPn1ZGg0knOd1Pb0ImjfZkR19aI=;
-        b=zGtC//Ye3GRNox4kt63aJAiO/XGWU48nRpaailbzZDGS7G1QGpuka8D4Rp32CCn6X3
-         rSJDsJ7YUG3cMC52RkqU1fjc5JYmkhUh5C+y1ePAtYj+Hs3SjWiA8tGKw6C+AcgE81Ik
-         xQklI78Ct84iouKcZkEcmBCygDLv746tzlTsu571j9mF0A4CPGRLb5my1xj+Vk+eKT/u
-         F/byGkGyFW21kdPq/Ah7uw/U6zssnBRD1I0/AUKnv6sSxsjhEBvPZRwGnjG0gMVvYu0u
-         gY244jjC23Hi+LqyJSxsITBV0vThR6hWYd2ac9DnQLVQvgmHp4gM10qSRezVZlkyFqeS
-         Lu+g==
-X-Gm-Message-State: AOAM532tO2ZwURgvqRhX3sOsM8+aJj/5SHkwPJ+s+4e4CIqHGeLsuK13
-        VzLBZTujo99JKxXLdqQVUyDl0A==
-X-Google-Smtp-Source: ABdhPJyibbde3vB1FCGt9d/JYvsj6NAS6zqNEXkWGRfCVwpJ0z2rvlY7kgpkBqqwzYJkFqg5Tz1gKg==
-X-Received: by 2002:a05:600c:4105:: with SMTP id j5mr3402523wmi.138.1632390517246;
-        Thu, 23 Sep 2021 02:48:37 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id g22sm7965648wmp.39.2021.09.23.02.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 02:48:36 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 10:48:35 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] backlight: propagate errors from get_brightness()
-Message-ID: <YUxNczBccLQeQGA5@google.com>
-References: <20210907124751.6404-1-linux@weissschuh.net>
+        Thu, 23 Sep 2021 05:52:14 -0400
+Date:   Thu, 23 Sep 2021 09:50:40 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632390642;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Av5N3SltN+DMzp6ebBiml+GcQWR0bLIu9w6DuzFVCY=;
+        b=yDVtD5WkUtaphuOJwZzHX2ToqDq0wFhysAQFZBjiBxQY/nNx75nMSnfaj2rsVZKXJa5Zlt
+        zF9DIt7Y5wRLBgf38StKoGvzmXLXJof4WHvIpTrFxg7Wfme1Tp9iaHR8BBEb79HL+i2Ji6
+        ipCVF8wjqjtCo/kMFDxqKpoFEkRBXWNbVcFy/lREf7aTOBAm5PSKDgUfT0W2Cqmg8To5FX
+        POqwyXQoYDxrisvbCEpmrnOClPUUBD0i5B6LJ52HyRqcq4ZlYRHEFZnhVGjwzkgSvqpOAa
+        4nrZAW/BVDl8hyFXcGC8itbiSTn7TyLwHN0mrwAZaWJ/HZQ+7SJ607TZKm8dtg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632390642;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Av5N3SltN+DMzp6ebBiml+GcQWR0bLIu9w6DuzFVCY=;
+        b=SVibWTRg2g+xSoa335aDrltD7fYEDhpmxwKqYQowC7fqXduSE0hC4ZQjBVJhJinZQ7WuKa
+        gUM93Mavw1NPNfDw==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Sort mca_config members to get rid of
+ unnecessary padding
+Cc:     Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210922165101.18951-6-bp@alien8.de>
+References: <20210922165101.18951-6-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210907124751.6404-1-linux@weissschuh.net>
+Message-ID: <163239064090.25758.15366322469006879108.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Sep 2021, Thomas Weißschuh wrote:
+The following commit has been merged into the ras/core branch of tip:
 
-> backlight.h documents "struct backlight_ops->get_brightness()" to return
-> a negative errno on failure.
-> So far these errors have not been handled in the backlight core.
-> This leads to negative values being exposed through sysfs although only
-> positive values are documented to be reported.
-> 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> ---
-> 
-> v1: https://lore.kernel.org/dri-devel/20210906215525.15418-1-linux@weissschuh.net/
-> 
-> v1 -> v2:
-> * use dev_err() instead of dev_warn() (Daniel Thompson)
-> * Finish logging format string with newline (Daniel Thompson)
-> * Log errno via dedicated error pointer format (Daniel Thompson)
-> 
->  drivers/video/backlight/backlight.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
+Commit-ID:     15802468a95bd8ec9060eb861468f4a0f0106fa4
+Gitweb:        https://git.kernel.org/tip/15802468a95bd8ec9060eb861468f4a0f0106fa4
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Wed, 22 Sep 2021 18:44:17 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 23 Sep 2021 11:38:04 +02:00
 
-Applied, thanks.
+x86/mce: Sort mca_config members to get rid of unnecessary padding
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+$ pahole -C mca_config arch/x86/kernel/cpu/mce/core.o
+
+before:
+
+   /* size: 40, cachelines: 1, members: 16 */
+   /* sum members: 21, holes: 1, sum holes: 3 */
+   /* sum bitfield members: 64 bits, bit holes: 2, sum bit holes: 32 bits */
+   /* padding: 4 */
+   /* last cacheline: 40 bytes */
+
+after:
+
+   /* size: 32, cachelines: 1, members: 16 */
+   /* padding: 3 */
+   /* last cacheline: 32 bytes */
+
+No functional changes.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Link: https://lkml.kernel.org/r/20210922165101.18951-6-bp@alien8.de
+---
+ arch/x86/kernel/cpu/mce/internal.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
+index 2186554..37b9e38 100644
+--- a/arch/x86/kernel/cpu/mce/internal.h
++++ b/arch/x86/kernel/cpu/mce/internal.h
+@@ -113,11 +113,6 @@ static inline void mce_unregister_injector_chain(struct notifier_block *nb)	{ }
+ #endif
+ 
+ struct mca_config {
+-	bool dont_log_ce;
+-	bool cmci_disabled;
+-	bool ignore_ce;
+-	bool print_all;
+-
+ 	__u64 lmce_disabled		: 1,
+ 	      disabled			: 1,
+ 	      ser			: 1,
+@@ -127,11 +122,16 @@ struct mca_config {
+ 	      initialized		: 1,
+ 	      __reserved		: 58;
+ 
+-	s8 bootlog;
++	bool dont_log_ce;
++	bool cmci_disabled;
++	bool ignore_ce;
++	bool print_all;
++
+ 	int tolerant;
+ 	int monarch_timeout;
+ 	int panic_timeout;
+ 	u32 rip_msr;
++	s8 bootlog;
+ };
+ 
+ extern struct mca_config mca_cfg;
