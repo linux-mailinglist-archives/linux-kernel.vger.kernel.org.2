@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1BB415C6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF22415C6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240499AbhIWLCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:02:43 -0400
-Received: from mail-eopbgr40058.outbound.protection.outlook.com ([40.107.4.58]:22754
+        id S240540AbhIWLCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:02:54 -0400
+Received: from mail-eopbgr40073.outbound.protection.outlook.com ([40.107.4.73]:54915
         "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240442AbhIWLCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:02:42 -0400
+        id S240442AbhIWLCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 07:02:45 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jWE+JjQVb09kTM5gSZMZ+HnoyW4eTpJPOji5yCaH5IFJzyFpJJPoxwUnciYabB2amcbjs3VQP9Mr6hQuawGDTpFIHrrgnZiqoXVVBIvbgglaMyHhpLGFK7QTZtB4cwHjB7Jj2tCsePHc3TAcFy408ucYmXxZVaUq4mYsAkO7/3RimLSDGciZ/WkB4Yuc3DWpCpF/LzR0J8Tj6pzTdjENHg1DD23TaH7RqKZTi1pa0JJmBXMrC7/s89yP3EoEoBX2PFnwle84dhsDSgWFJKKSFoCRUHpdcDDsvfGKvkC7LfEcohqhViuiLM7AlvdTRjzXfRbLC/X9Pska4CYqaBEOCw==
+ b=jkpBt5dEHqPJ18Lf86/C4fo9ttCf70Lg7d1TlhFJTcL4QfctYA8I7PaGmsOgc8J8zxXpYTiZVISx4bofkV/mxeHxEP7makEUhWzqTkUVNFPeb0Kkl5gpRj8SeFQOMwhyc5GIZ5f0rPTplBqQz11Y45F+HWWKQ/M1MkhplAa2BNXsSoStIffA6yye3rxb6WWWKtBVP5TvUCoXvNius5l/mCEeBYolJ8Vls79ldPvIWh/lrHnG2FSeLE8tMw4njmeWPdqOKByZzoLAXr42/G4UlNajluVbHWC+KM3RpZBzk/zeueZ6TlxYFrOf9B83FPj0Eo596KizIgflixq768AYJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=gGed3XtF7ZstaxT41kwc7HAW9psN9+JQ6PZrwDGc6iY=;
- b=FDq42Vn0QGm+S5gz0/DGikrucJA2g1pshAn1VZLtUvzqTpk0Rzd5XNa+HUbR7TqvRkadDYIElKHGL7x5lghGo5rJqTujXE2gbfkcH8RaeiE6WSD6wpjVcCu7yKN3ZI317Xibal/lbD3z+YrP6zX11OolvUJ1fklXbUsWoCWCn1s8eEF31jBd57cSwcaMFEJgf21Q42crgumEIPo6wL7XydGb1ecTQNRxYe9dVH+21ExLhBVfCjCjEJTnCLbDHQE3HPuoEEYn1CXEcVfo0ryhNaWwQ9tHcNzbNINXRwtWtoNrTu/0hJvpU9V21g/XPhSeEF0oT99dIua6RD56QBQjIA==
+ bh=ueuWPSIKuJFJwaGclxCSNB6T64FLl3aDoSY+8oR2i94=;
+ b=ZUioluyMCq7mBcAGDA7rH+yhA6Ya6FkGditA/pgxmyBBfQNCATcr+Wc1RT1L5wT+J9QhP+zNuW/QYsKmiIhKcL2AwIzHBhAJLS3+uQYGV46qo9fyAy0GND8vLodyUGr17bLfRPYrFMhSqQTeZCWYjDJMYO4oIklKRMZg29/xy5+bzZbQfx02DfNnIgcTaqEfF48/aal62nazduU1EmxlKPcgIUaeYlmeRqGeLId3XI1sF2sFHZnHbbU8nPTex9Yp+j5deDuZWa7b9ZQTMOIyDGCbL/tfOy0flRlGttPu0rlPgAutMmKVR3hdfMgl/X3cNIK6MxUz0FfkB7fhWlOYzw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gGed3XtF7ZstaxT41kwc7HAW9psN9+JQ6PZrwDGc6iY=;
- b=ByBTTA3BqtfIyURDtrxuX4RuOzurvwDMZyYcJdNSXKksJGffpM+rCVoPQlG/c39H5EzOBUe0TIayC3St9aPv8qamN43Ua7r4pvNfe6VynllHXSaVa9Ltls3FCEURtXngPoY+RHGkIltz0O9BP01fDz8Y9jQ9GlEnmaljc+A3XYE=
+ bh=ueuWPSIKuJFJwaGclxCSNB6T64FLl3aDoSY+8oR2i94=;
+ b=Qk60MOwu081bhEsNDyTIDMiafCUHBg1C1nI1RwNjM6eYlnwkuMxzVG6e8VQgwP+rMWKzFgjnbSU1177XaVCtlIx3YHAcp5/BccnPuOHfMWpPLk+aH1tsAScTpntp/V6MPyGNTwqtl/kSktwKt9QsxEfxpjbNcZ9l25OR+02O+Gk=
 Authentication-Results: linaro.org; dkim=none (message not signed)
  header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
  by DBBPR04MB7836.eurprd04.prod.outlook.com (2603:10a6:10:1f3::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Thu, 23 Sep
- 2021 11:01:09 +0000
+ 2021 11:01:12 +0000
 Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::5d5a:30b0:2bc2:312f]) by DB8PR04MB6795.eurprd04.prod.outlook.com
  ([fe80::5d5a:30b0:2bc2:312f%9]) with mapi id 15.20.4544.013; Thu, 23 Sep 2021
- 11:01:09 +0000
+ 11:01:12 +0000
 From:   Joakim Zhang <qiangqing.zhang@nxp.com>
 To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
         shawnguo@kernel.org, a.fatoum@pengutronix.de
 Cc:     kernel@pengutronix.de, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH V2 1/6] dt-bindings: nvmem: add cell-type to nvmem cells
-Date:   Thu, 23 Sep 2021 19:01:04 +0800
-Message-Id: <20210923110109.29785-2-qiangqing.zhang@nxp.com>
+Subject: [PATCH V2 2/6] nvmem: core: parse nvmem cell-type from device tree
+Date:   Thu, 23 Sep 2021 19:01:05 +0800
+Message-Id: <20210923110109.29785-3-qiangqing.zhang@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210923110109.29785-1-qiangqing.zhang@nxp.com>
 References: <20210923110109.29785-1-qiangqing.zhang@nxp.com>
@@ -52,52 +52,52 @@ X-ClientProxiedBy: SG2PR02CA0004.apcprd02.prod.outlook.com
  (2603:1096:3:17::16) To DB8PR04MB6795.eurprd04.prod.outlook.com
  (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0004.apcprd02.prod.outlook.com (2603:1096:3:17::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 11:01:06 +0000
+Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0004.apcprd02.prod.outlook.com (2603:1096:3:17::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 11:01:09 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e95733f4-6fa8-48cd-348a-08d97e8172b8
+X-MS-Office365-Filtering-Correlation-Id: c42168d9-3eb7-41b5-751d-08d97e817477
 X-MS-TrafficTypeDiagnostic: DBBPR04MB7836:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBBPR04MB7836CB5290C717E63F040BE4E6A39@DBBPR04MB7836.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Microsoft-Antispam-PRVS: <DBBPR04MB78364CF0D100C614F16BF076E6A39@DBBPR04MB7836.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:113;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JVeOhoSwioHPOls42JdCt3QJFny7oYYyeahr2Mvpg4vjTTgRMDMqaL8+ILe8r7scZ1G9l/tZg0gMLyfCr5XYOfQmkEKxEfktWKUaweJdIMkXduTE37WohZ/Y4tl8M7BJOs5baDEXR4lmwc/M8EgrquH0bwZPmBdvpMXaNidxBb4Xp90XMvGMQjMqrxHHEC2w281vk4clSAF8L27MU6UEiEiMTeLRFIyG30IU3kFaxHCQbp+QUoyogGHzwlQFjKOMeBwBcYPgiPl7hu+o7QycvkNNZagikiSWovL952lO9M/dKR2cEmWmSJS1Gy+hdvmMZhpAEcgGgdC6S7TFviWPzpxgumW0tEFdBqVc3h6ZxlvsT1qfKoRzQuvBnSvqFiZc+FAMUjKgOTi6UTjLOiWR8oXxgEz7lDtD0GIU55QMqtrwnHEAHmiipTPTUyzPjSiUtQcO0FCEjVWjqq6o4dSh1AJpkMaPLbE1XdN2cYQHjG2ZwI50AejQbdmm1n7zg5O9sintroE14PZTjYP7Il/1U5g9cEM+wptIJn0OBNHZ9sXZzp1KbXdXqaanO/8Ro2g4ROv/3lEkgi5v1tfEF3+xwrnCzBnjMUCvN0qzt1Wjoq+bOXXVrtfGoPW97pyu1T+CvvExGnm2Erv42GaHYnedoM2JyoibseHCnXfhaEAG09K0xDovLtOOSUrFzI+MoqmKF2bvqSnYsgn7AjvSE8yQPw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(1076003)(36756003)(8936002)(86362001)(186003)(66946007)(2906002)(6512007)(38100700002)(38350700002)(26005)(8676002)(66476007)(6506007)(5660300002)(66556008)(508600001)(2616005)(316002)(83380400001)(956004)(4326008)(52116002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 8IgAL2v1YjYfPjQq0WsHu1HNURvroXdRCb4wUhsg/SMWuI9q60vZmTinxs0jFuJXLIe48cu9J2sNOuNmGtGzjQ2mIVe5bPGaPcAoEzML7QYahmkZXX9qoOaq1ZM470hlv7KK7WIdzvX6LgMuHpI9nmSHP8wkziAiY8w4lkZTWUWBjYppbQ0goevLRuEBIoChWYUolG2fGV4ANcnS+RVf3q7RIlT1IP31aNOZtsX/Ym8DoUlBKqVs2WdtmTVDi6Za293oYurJcrTQUa3fQgkPDNcmxLG7LT0c9PUxPRq5wamRIruIX3JvCZglfwYx9VkYuyscAB4aDQt+kRgnEKs/Acgy+nu8W/PPfANGQKAtLvrDBqEgzVZa2+BPzfSL2LBZLa0geSxH2k+ULKADimGE2sWxhUEleX8v21LMyDpm2AU9KOPSLb0glHBdDS5/dLxPf4JRQiFTxIjUGoNm8EUo9LDeecvhW/4Tx4BkKodg8YwMizESpq3qOFSiPtQILTO9yPAAY1OOznO3joHd5+1A4CfSNo9Z+eKPKTcWEjKh6/3axAfpRt8bIn8SdQ0b33W7LxXKRfTXg4b5rKPcdg9eHLMjcLzpAF2TeaycNSVAYvn1M3O7vEbjS1DRS8yne8/jxE0JGY2YM/RifQcaZLneOkrdwqnJlHKfk2vlhY33YJDeklTuN4FQm69Qnrazelx24PuDfitKUW+57TzHDzoHtA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(1076003)(36756003)(8936002)(86362001)(186003)(66946007)(2906002)(6512007)(38100700002)(38350700002)(4744005)(26005)(8676002)(66476007)(6666004)(6506007)(5660300002)(66556008)(508600001)(2616005)(316002)(956004)(4326008)(52116002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hUQIQWm6Oy2hxG1lHAq9oHBLKaHwfTjXACbENvbW8goddZ8m5NJ6C1qX2gbJ?=
- =?us-ascii?Q?bjZiXitgmCyugpP0Lqk1bpsR+QO9HGcdq+UqVEBWtDmJKf9kHM6DTeubBY4M?=
- =?us-ascii?Q?3MCByb9iNHCg2s69jG//i/RSWLEw+Ek4k1uJyYJLbc52HntFbYOTEr8CnPnD?=
- =?us-ascii?Q?93PIC+Ukg4YAvRaxeSUZjWq83aS6K0SZ/VTGdFUTPwhmjzimXb5saPz1WMZC?=
- =?us-ascii?Q?6jxML2J/NlaGg+LyU99Vu3e76Mfj0nNTHtwxzJRY7UV/BQHcUO9dihqcP1Sp?=
- =?us-ascii?Q?+LToL78RCNg5ykhTWE3nSAD1VGiXQ0/6AT0b4UpCOPRluApc8Rjm8UJiC89a?=
- =?us-ascii?Q?+jRepUbfqWAIBvqJ9f70zFTHzk0NMNynXeSXdwDffvHMlnwTVqqVcmFDWDxg?=
- =?us-ascii?Q?8EfsJB8GE/rVuPOBIWU3VmLuzhmDid/NnIzmgRnGAfrv8M7BXhQy4ZyJvXAK?=
- =?us-ascii?Q?/J/q1h5m1YgRhMcSBD3YnXe+hsMQAthLluQfeen13kvClAZYcChWUOdWzy7W?=
- =?us-ascii?Q?U9/X6qRPgis+uaQ9otSgJLq4RwqUCxxgTe0tAkT8THlCv1P3H2f795S+x0Ts?=
- =?us-ascii?Q?1e+OoAChsJl/EOneo2617sqYCot0FZ3IoxiFriFxyReYC2866yFjzw1S2U8V?=
- =?us-ascii?Q?HvHi3jITWOnd5FzMlGxzfqje9ETW/Dmsaw8FpAJwzeYszHBqG2jOYrp/f+1L?=
- =?us-ascii?Q?jWnTEZxlP/s2UoB63+8XnWlXG/ysO0/UD7bF3iTLeOs/I30ZemjUAHlmLS3g?=
- =?us-ascii?Q?YM6TspIrY/eT/U3mr9J7K7oHIa6VGwrvZcx8L1cEVFZARCwRY9XC8NFVDvCo?=
- =?us-ascii?Q?RKLFLvuISctFHYRP/FddFgBrTRH5Cqirfc05K5nNpUcfxSKbD7EhuMK8Yoyu?=
- =?us-ascii?Q?YtufBpl+h9IMSuJ4GvKcXkT0y38GJdaglOrMk5oUnP6ltDCi1iAWM/Er/jeJ?=
- =?us-ascii?Q?Y2r62SncI6yCiXaJWKbMtuv9WG0ZlKC0GoSOMpfcoPQ0cL+I+RIUrxhopytL?=
- =?us-ascii?Q?e8F1ngttDqcFHOhI/tbgrN4ymzyrtLDbnx5zFeeRlwgE2mTmK/A7yn9LHaL3?=
- =?us-ascii?Q?GQ6LJpbKoyInqslsFkHPTlsFFTLRimw1i0i+j22hGt83ink3s7xygI0l6oe0?=
- =?us-ascii?Q?Ap4QbY8Kxcf52Tf/ljGxly3ZXR1acxALtDvOUDH5AkMSRE5XuV4MZ1Anpe/2?=
- =?us-ascii?Q?Heg/KQvON3i45ytHTh104TWTAeRmjtvoFljMeeAzKsiH54ok0Ygve0qEjnK8?=
- =?us-ascii?Q?YHmxbsvIOM8wftbWrWoho1UZNMQHSt+ZWtEyIejHQlN3SzZhpw3KiMEmO8+2?=
- =?us-ascii?Q?zvS8ASw4hHE3uYF2l9SxqdUy?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ihjtFCgvVgiezLG8BuiCqSbt79kwhCIAYTl4GSZ6S8IMuWy1oKWVMn9er2R9?=
+ =?us-ascii?Q?5dzSgUrB3Q/Iz6/IZxdQePBkyP3+gwGpFHf3tIEXKgqIzH97IPHszC752y8o?=
+ =?us-ascii?Q?GedynYETYyJoVpwG5soq+O5hfxFREApfkExXOc1CMc6JsZgjayUN5jOQQD2j?=
+ =?us-ascii?Q?19gHL/aeE3HNN3xDDI7asMKg0lvZ8xOzh066HzGCslDcwHEaptw6DYYZZmWs?=
+ =?us-ascii?Q?oFUZyZeOgCAm/SMAanoNlgi7I11LcrkGPDhUf9Jm6jN9yMvn7fKkOOo25COB?=
+ =?us-ascii?Q?5XIfLsNDfnkK+TGhZw5vzxND9K5Mkd6NrCaQCY31x2wzsW325jcP7cdxk2y+?=
+ =?us-ascii?Q?x0vXjkPZ7SWNzY3cmQ6EtuKzU3FU2wBhyF+S9slNAQp9PBZGZMKGkP0TzZFg?=
+ =?us-ascii?Q?jwW2lRtBx8AxQaOmof2mvnVOCnjRa8N94+JUBum7iiYuyTqSxfO7GPxiUqeT?=
+ =?us-ascii?Q?IZQikTu8ME3NUVcgEOlHqYkFxamhpXtcuQTTOZ7ubj8p4LaGhOj9cxRjntCJ?=
+ =?us-ascii?Q?QxNHLpxwfFds0wRbSnIC0WUZD9gqYfzpwIEFrgfslXZQu8vkagCSWfvKQe1Z?=
+ =?us-ascii?Q?yJBJCRL539A5/Wx/EQEwZt4sUolTY33h5isDDNoi5NURXy5VjZ4EBujBGq+Y?=
+ =?us-ascii?Q?5Eg5+D8o7/TLiADlYmintgSSGg3vusCc/UockyTpBlvivwJbaF/uRM4nFiEQ?=
+ =?us-ascii?Q?ec5qY5T7HN5tLFDS8uVjjF3Jecb4ADbsU/FJ92dxedf5n26NiAMCdLWURjJu?=
+ =?us-ascii?Q?V2jF621b4Eg/LbBynXBuT0/z65IPL4jQ7OzeQOtbNkbckjNN4oE9HRpBzRLB?=
+ =?us-ascii?Q?wfhFQDo4g9vrqBAk8O4gBFvTZRhbaGZ2NdIncIAmZBsVWjKTv0i3r9yuK2ek?=
+ =?us-ascii?Q?DdtuGpvda8RbI/HZpzEKFnwfdCEW2q7jCt01v//fSUm3BV+oJ8Opo3MnUR9E?=
+ =?us-ascii?Q?DrvXP5V/T/8CmSBMXXKDEiSVUyfh0IVmFXjPfXeJVKrXxy2C14cZpQ+KeDbz?=
+ =?us-ascii?Q?KknjcOVSVKUkGQ/CkQyx3GSUt44fzH5ER8DGy1gNTEO3b31yvoNkj8JauNYN?=
+ =?us-ascii?Q?J7Z6+iP9RdXnQrffqxJqT99wfXj3mVRtAE841GIdn76BORwTy6sIGL4m8jBE?=
+ =?us-ascii?Q?f1KAxgkQY2HX2vyEmDZAeXLXWL8BM1o9+mkOE6g2WjpCHoqjvZo5ilX21xDy?=
+ =?us-ascii?Q?RN4pi5+adZAsH3KfVnlkouOulQGHuqy2lAVYcVJa0mEYS5QseIw9dMvROfu4?=
+ =?us-ascii?Q?I14x/6l28EYD9RlC+p4jMCIFqgzatRDcaOCAIg2+n39xDteitBQvkDXs+x4H?=
+ =?us-ascii?Q?4aU6AKy7TmsuNdpB168wNDeh?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e95733f4-6fa8-48cd-348a-08d97e8172b8
+X-MS-Exchange-CrossTenant-Network-Message-Id: c42168d9-3eb7-41b5-751d-08d97e817477
 X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 11:01:09.1784
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 11:01:12.2748
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gFIuvgOJ24y/D/1Q+MT8eD7q1b09ty8sx9I3sI4iOywTjqSrXx2p8OXul4b48Y74VxR94ReHxCkecwZoL//XHw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9mSn8qqRTTGA5w7zaWfjedjZO/ta5l3TYJeVNSEp/5nYKS+AglLLX5JJIJyKyR8ZGUx/vFc2Grj7UorHHI+Eew==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7836
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -105,70 +105,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Some of the nvmem providers encode data for certain type of nvmem cell,
-example mac-address is stored in ascii or with delimiter or in reverse order.
+get nvmem cell-type from device tree
 
-This is much specific to vendor, so having a cell-type would allow nvmem
-provider drivers to post-process this before using it.
-
+Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- Documentation/devicetree/bindings/nvmem/nvmem.yaml | 11 +++++++++++
- include/dt-bindings/nvmem/nvmem.h                  |  8 ++++++++
- 2 files changed, 19 insertions(+)
- create mode 100644 include/dt-bindings/nvmem/nvmem.h
+ drivers/nvmem/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-index b8dc3d2b6e92..8cf6c7e72b0a 100644
---- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-@@ -60,6 +60,11 @@ patternProperties:
-             - minimum: 1
-               description:
-                 Size in bit within the address range specified by reg.
-+      cell-type:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        maxItems: 1
-+        description:
-+          Type of nvmem, Use defines in dt-bindings/nvmem/nvmem.h.
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 3d87fadaa160..23c08dbaf45e 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -52,6 +52,7 @@ struct nvmem_cell {
+ 	int			bytes;
+ 	int			bit_offset;
+ 	int			nbits;
++	u32			type;
+ 	struct device_node	*np;
+ 	struct nvmem_device	*nvmem;
+ 	struct list_head	node;
+@@ -726,6 +727,8 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+ 			return -EINVAL;
+ 		}
  
-     required:
-       - reg
-@@ -69,6 +74,7 @@ additionalProperties: true
- examples:
-   - |
-       #include <dt-bindings/gpio/gpio.h>
-+      #include <dt-bindings/nvmem/nvmem.h>
- 
-       qfprom: eeprom@700000 {
-           #address-cells = <1>;
-@@ -98,6 +104,11 @@ examples:
-               reg = <0xc 0x1>;
-               bits = <2 3>;
-           };
++		of_property_read_u32(child, "cell-type", &cell->type);
 +
-+          mac_addr: mac-addr@90{
-+              reg = <0x90 0x6>;
-+              cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
-+          };
-       };
- 
- ...
-diff --git a/include/dt-bindings/nvmem/nvmem.h b/include/dt-bindings/nvmem/nvmem.h
-new file mode 100644
-index 000000000000..eed0478f6bfd
---- /dev/null
-+++ b/include/dt-bindings/nvmem/nvmem.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_NVMMEM_H
-+#define __DT_NVMMEM_H
-+
-+#define NVMEM_CELL_TYPE_UNKNOWN		0
-+#define NVMEM_CELL_TYPE_MAC_ADDRESS	1
-+
-+#endif /* __DT_NVMMEM_H */
+ 		cell->np = of_node_get(child);
+ 		nvmem_cell_add(cell);
+ 	}
 -- 
 2.17.1
 
