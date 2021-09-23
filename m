@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFCD416041
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDFA416025
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241474AbhIWNt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231974AbhIWNt2 (ORCPT
+        id S241376AbhIWNlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:41:15 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:20003 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241240AbhIWNlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:49:28 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977CFC061574;
-        Thu, 23 Sep 2021 06:47:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AACjuct2gGMa4ayO2xuoqolC1Rv6/bwwwAa1aD3p+b0=; b=WNIKsfJy8+K1rIn4ZOJB1ZHhl+
-        ih0IfCVb/e/LSuQEi8jr9OjP0PjQ75BU6dKM9AENCUUyHFeFIt3hho9XnQTEA6R7OM3FWMqmGXF0v
-        CYtowvaBRf1damLuadcRRz98u2VRO7mGrY5uCk6AGtx9c491kl7BeHwaty3XBFMS6Ii454K6qlJLv
-        t/EgQdf0aj64Gc5fMsqFPc3pxbNM5/sC0SgetHpstEUsGGdivwsa37KrBrmf4V5dTbvkbx84IhFzo
-        nwf6hakOLZAzDpVgT0ezQnJXFBOpLRGBx3K968fB2V8Nr/x6oE6MFh01vCETA1ni5z6hwLCUZqWKL
-        gJQdBJXw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTP4k-005EsR-T0; Thu, 23 Sep 2021 13:47:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 22F33300328;
-        Thu, 23 Sep 2021 15:47:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0A0EC2026C876; Thu, 23 Sep 2021 15:47:46 +0200 (CEST)
-Date:   Thu, 23 Sep 2021 15:47:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
-        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org
-Subject: Re: [RFC][PATCH 3/7] sched,livepatch: Use task_try_func()
-Message-ID: <YUyFgtOSB4J6wnDC@hirez.programming.kicks-ass.net>
-References: <20210922110506.703075504@infradead.org>
- <20210922110836.065940560@infradead.org>
- <YUxtbCthpr+l9XM0@alley>
- <YUx+XcYQlQ4SqEj8@hirez.programming.kicks-ass.net>
+        Thu, 23 Sep 2021 09:41:14 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HFbl42nJtzbmkf;
+        Thu, 23 Sep 2021 21:35:28 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Thu, 23 Sep 2021 21:39:40 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Thu, 23
+ Sep 2021 21:39:40 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <axboe@kernel.dk>, <rostedt@goodmis.org>, <mingo@redhat.com>,
+        <acme@redhat.com>, <hch@infradead.org>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>
+Subject: [PATCH v2] blktrace: Fix uaf in blk_trace access after removing by sysfs
+Date:   Thu, 23 Sep 2021 21:49:21 +0800
+Message-ID: <20210923134921.109194-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUx+XcYQlQ4SqEj8@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 03:17:17PM +0200, Peter Zijlstra wrote:
-> On Thu, Sep 23, 2021 at 02:05:00PM +0200, Petr Mladek wrote:
-> > I would prefer to be on the safe side and catch error codes that might
-> > eventually appear in the future.
-> > 
-> > 	case 0:
-> > 		/* success */
-> > 		break;
-> 
-> 	case -EAGAIN:
-> 		/* task_try_func() raced */
-> 		break;
+There is an use-after-free problem triggered by following process:
 
-Also, I'll try and see if I can get rid of that one.
+      P1(sda)				P2(sdb)
+			echo 0 > /sys/block/sdb/trace/enable
+			  blk_trace_remove_queue
+			    synchronize_rcu
+			    blk_trace_free
+			      relay_close
+rcu_read_lock
+__blk_add_trace
+  trace_note_tsk
+  (Iterate running_trace_list)
+			        relay_close_buf
+				  relay_destroy_buf
+				    kfree(buf)
+    trace_note(sdb's bt)
+      relay_reserve
+        buf->offset <- nullptr deference (use-after-free) !!!
+rcu_read_unlock
+
+[  502.714379] BUG: kernel NULL pointer dereference, address:
+0000000000000010
+[  502.715260] #PF: supervisor read access in kernel mode
+[  502.715903] #PF: error_code(0x0000) - not-present page
+[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
+[  502.717252] Oops: 0000 [#1] SMP
+[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
+[  502.732872] Call Trace:
+[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
+[  502.733734]  blk_add_trace_rq+0x7b/0xd0
+[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
+[  502.734755]  blk_mq_start_request+0xde/0x1b0
+[  502.735287]  scsi_queue_rq+0x528/0x1140
+...
+[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
+[  502.747501]  sg_ioctl+0x466/0x1100
+
+Reproduce method:
+  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
+  ioctl(/dev/sda, BLKTRACESTART)
+  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
+  ioctl(/dev/sdb, BLKTRACESTART)
+
+  echo 0 > /sys/block/sdb/trace/enable &
+  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
+
+  ioctl$SG_IO(/dev/sda, SG_IO, ...)
+  // Enters trace_note_tsk() after blk_trace_free() returned
+  // Use mdelay in rcu region rather than msleep(which may schedule out)
+
+Remove blk_trace from running_list before calling blk_trace_free() by
+sysfs if blk_trace is at Blktrace_running state.
+
+Fixes: c71a896154119f ("blktrace: add ftrace plugin")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ kernel/trace/blktrace.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index c221e4c3f625..fa91f398f28b 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -1605,6 +1605,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
+ 	if (bt == NULL)
+ 		return -EINVAL;
+ 
++	if (bt->trace_state == Blktrace_running) {
++		bt->trace_state = Blktrace_stopped;
++		spin_lock_irq(&running_trace_lock);
++		list_del_init(&bt->running_list);
++		spin_unlock_irq(&running_trace_lock);
++		relay_flush(bt->rchan);
++	}
++
+ 	put_probe_ref();
+ 	synchronize_rcu();
+ 	blk_trace_free(bt);
+-- 
+2.31.1
+
