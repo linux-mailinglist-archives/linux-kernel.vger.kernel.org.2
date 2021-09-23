@@ -2,129 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CB24162DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913C24162DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbhIWQUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbhIWQUV (ORCPT
+        id S231473AbhIWQVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:21:10 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:33644 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhIWQU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:20:21 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBA8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:18:50 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id e6-20020a0cb446000000b0037eeb9851dfso20053403qvf.17
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=AkcrhURqVthVCCtAtUC9nr8/+VOdZNhb5CMeqvSTap4=;
-        b=cb6GSeFqP+HlIiSHk5XN4uTTTJ0C4MgXTFISO3hkBoPjUUqz9M+s/TprS2c8EhE1ez
-         dEtdxbaf8bSHxQDbK6LToEzMxSqFL6HBVn4PSt738UYwaEu97vuNlPcjERk3gg1TsKKT
-         zFPoXo8I7o2jv0kh15as8dY7NMeYasxbd5uQPz0woUGUEi1s5bDoyCPzcrfHheZrJhRr
-         9YrvVzYUo5bMyIZbWRonV0maNteEI+RlKZBLb/YTX3apR37PgiyW67a4h95cF50KNWtt
-         xCr9lH/mG9LVISFPxdXL5mHDUb/7DQQxhhuBEVLX2fmCgr3L3/V2yEENCanLpTTPDshq
-         Cr9Q==
+        Thu, 23 Sep 2021 12:20:58 -0400
+Received: by mail-ua1-f45.google.com with SMTP id r8so4660783uap.0;
+        Thu, 23 Sep 2021 09:19:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=AkcrhURqVthVCCtAtUC9nr8/+VOdZNhb5CMeqvSTap4=;
-        b=WCRKtS4MPeaALXgalRIS2ROm25hsY3o27IXCTHgu7QiFVBQUF1oAW7M4yDAvTmdgy2
-         k3qJIcKFEcm1JeEFz2vSJ97QIBQm6WzUmY34ydC63F0EAwCD5afpLI+HflFULEbUgT4a
-         S4GCy+ftcx8eWVuS7xtXqb7emVZdL1TGAwW1BTIVidpLFfMiQNwgNA09lpKDjvyFoC2/
-         uzcoEVn8b029d8tlxR5bhjazq6O7zFrRcKY1t27B1AZgF+mBWmRu1V+7gq5DrhO6keid
-         doMCv/p32WjUtg/NZGsGgT1S7bADiv3lP8NMLsPe/7EdHQQ59V07iNPpxlJ/4cOLdaQn
-         KFWg==
-X-Gm-Message-State: AOAM530c9d/JcQBT/bF+7BNeVGIfgAsCX+MlNJh4memikkPJpuvj1aZe
-        H5lGrkVgPYsE96AsLbA1A4yniZzL1xGa
-X-Google-Smtp-Source: ABdhPJw/yb4+PlQ81wOG2f1X8Cy4espwcELE3rd7BM+t26J/LdMqudvlY0W49hK5skzYmexoKDVvHPgU7HNc
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d3ff:e8f7:11f4:c738])
- (user=irogers job=sendgmr) by 2002:a05:6214:50b:: with SMTP id
- v11mr5036151qvw.41.1632413929235; Thu, 23 Sep 2021 09:18:49 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 09:18:43 -0700
-Message-Id: <20210923161843.751834-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v4] x86/insn, tools/x86: Fix some potential undefined behavior.
-From:   Ian Rogers <irogers@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Cc:     Numfor Mbiziwo-Tiapo <nums@google.com>,
-        Ian Rogers <irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SBpZfoGMTotXxDAvtrxSwrqVhouzGhXeD4VzFaRJU5I=;
+        b=ASqL0FmvcOmrQ+CqBVdHQJZQ490J67f1fBl3CpITmCSDCaamDyf2KmiPlTd1T0GJc0
+         kTHv9uG6354/F2yPbJIHjYBwgTEWP3T6CWlztBgzPnFmIT5VoTRWN0xGHJe+285iUfYo
+         PzsOr1aDQEKyyncZy6D8yDeNnmYKL22wbEqYaPboRwqJrspjrsMXgUPfj6R5NvxB67p4
+         U7Uf4qJzT0tiiKbvp5Z0F1STkLyi8YF2cCfBIyTJqxofhRPK/cofnAIeNodv9Dvo9ENT
+         Ww+0c6mQEgY/LFTKKYZTVyHO3La8T+4N0cetob1KY608fbXuo4Hv++5BJAjAKbMpKXoJ
+         B2Sw==
+X-Gm-Message-State: AOAM530tXvflkpbnbrCpi5XvdWZutTL3/KCz78yaWcOzP/3Paq7oROVy
+        0KBU0n9PunkLkM5ebm5DK8I3ITLmovO0hGp8ook=
+X-Google-Smtp-Source: ABdhPJzTrH7tlrD1lqVoDJi6x0JlYXAHLrd+w0oaUOL+xhUDYXJXFzRiExIxuJNMK9MYANrA413HbLUezCFzz6qJNZg=
+X-Received: by 2002:ab0:16d4:: with SMTP id g20mr5101097uaf.114.1632413965859;
+ Thu, 23 Sep 2021 09:19:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210920190350.3860821-1-willmcvicker@google.com>
+ <20210920190350.3860821-3-willmcvicker@google.com> <2b48a41a-9130-b4cc-40d3-0bc7930ac76a@canonical.com>
+ <YUmVj80m/rEC2mT7@google.com> <CABYd82a4OwxHNUUmUtBmTpSvWLu-f4sepHMF49kPQtWLU3MkDA@mail.gmail.com>
+ <ad2de848-8fce-f275-25de-83a886243645@canonical.com> <YUx1c/xZ+nP5aI+X@google.com>
+ <db808138-e839-48d8-26e7-659cc9950163@canonical.com> <YUyD/AxIVw+mbxSP@google.com>
+In-Reply-To: <YUyD/AxIVw+mbxSP@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 23 Sep 2021 18:19:14 +0200
+Message-ID: <CAMuHMdUaHPoCDnu3sD7WOnvyaMp5qNjuRGaFxEDQp1ZoFkcrvg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/4] soc: samsung: change SOC_SAMSUNG default config logic
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Numfor Mbiziwo-Tiapo <nums@google.com>
+Hi Lee,
 
-Don't perform unaligned loads in __get_next and __peek_nbyte_next as
-these are forms of undefined behavior.
+On Thu, Sep 23, 2021 at 3:42 PM Lee Jones <lee.jones@linaro.org> wrote:
+> On Thu, 23 Sep 2021, Krzysztof Kozlowski wrote:
+> > On 23/09/2021 14:39, Lee Jones wrote:
+> > > As I've explained before, the trigger for all of this was
+> > > SERIAL_SAMSUNG which is required for early console on supported
+> > > Samsung platforms i.e. this symbol *has* to be built-in.
+> >
+> > Actually SERIAL_SAMSUNG does not have to be built-in. It is necessary
+> > for built-in only for debugging or development, not for real products.
+>
+> Right.  And in the early stages, GKI is used for early (non-released)
+> H/W (this is also the part of the reason these differences can't be
+> upstreamed early/now/yet) and sometimes changes break things requiring
+> low-level debugging techniques to solve (inc. early console).
+>
+> > Unlike other drivers which have to be built-in, e.g. clocks or pinctrl,
+> > or heavily tested whether setup from initrd works. Plus not breaking
+> > distros who like to have everything as module (solution from Geert?)...
+>
+> We don't know which drivers *need* to be built-in yet.
+>
+> Clocks is probably not a good example even, since the power-on default
+> is most likely all-on, which is fine.  Pinctrl remains to be seen.
 
-These problems were identified using the undefined behavior sanitizer
-(ubsan) with the tools version of the code and perf test. Part of this
-patch was previously posted here:
-https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
+Clocks is an excellent example: if a clock is missing, the driver
+will fail to probe (unless the clock is considered optional by
+the driver), regardless of the power-on or boot loader defaults.
+With fw_devlinks=on (which is the default now, and developed by a
+Google engineer (GKI or another division?)), the driver won't even
+get to the probing point.
 
-v4. Fixes a typo.
+Pinctrl is different, as unless I'm mistaken, drivers will still
+probe if the pin control driver is missing, so they will work if the
+power-on or boot loader defaults of pin control are fine.
 
-v3. Is a rebase picking up a fix for big endian architectures.
+> > > In order for
+> > > this to built-in ARCH_EXYNOS has to be enabled due to the listed
+> > > dependencies in Kconfig.  And since ARCH_EXYNOS 'selects' all of these
+> > > different extra symbols, it means they too will be built-in, meaning
+> > > that a) the core binary will be unnecessarily bloated and b) vendors
+> > > who wish to overwrite/replace this functionality with their
+> > > non-shareable value-add, are not able to do so.
+> >
+> > I am sorry, but this is not reflecting status we want to have in
+> > usptream. Everything selected by ARCH_EXYNOS *has to be selected* for
+> > supported platforms. Since vendor does not contribute anything new
+> > (except mentioned one work for UFS), we are not going to sacrifice
+> > supported mainline platforms for a non-cooperative out-of-tree unknown
+> > platforms.
+>
+> The is the part of the discussion that is the most contentious.
+>
+> Ideally we wouldn't have to enable any ARCH_* explicitly.  Greg has
+> mentioned this publicly on a number of discussions.  However, removing
+> the dependencies (from Kconfig in this case) is in contention with
+> other user's use-cases.  No one wants to be asked seemingly irrelevant
+> configuration questions during the config stages of a kernel build.
+>
+> So we are forced to enable ARCH_* to have our requirements built-in
+> (ARCH_EXYNOS for SAMSUNG_SERIAL [early console] in this case).
+> Unfortunately, this comes with additional cruft that we *might* not
+> want (resulting in bloat) or that we wish to overwrite with more
+> featureful driver modules.  We can't do that if these features are
+> built-in.
 
-v2. removes the validate_next check and merges the 2 changes into one as
-requested by Masami Hiramatsu <mhiramat@kernel.org>
+The question is if Linux can actually boot on the affected platform
+without this "additional cruft" builtin, for which we still haven't
+received any confirmation yet...
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/x86/lib/insn.c       | 4 ++--
- tools/arch/x86/lib/insn.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+So claiming to be "upstream first", and submitting patches, is great,
+but only if the changes you're upstreaming actually work.
+If they don't, and if you insist on keeping on upstreaming them,
+without providing evidence that they don't break the affected platform
+completely, perhaps this should be treated similar to the UMN patches?
 
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index 058f19b20465..c565def611e2 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -37,10 +37,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index c41f95815480..797699462cd8 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -37,10 +37,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.33.0.464.g1972c5931b-goog
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
