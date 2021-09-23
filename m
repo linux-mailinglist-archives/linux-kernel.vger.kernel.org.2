@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E592416610
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C544C416615
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242931AbhIWTnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 15:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        id S242964AbhIWTqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 15:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242796AbhIWTnk (ORCPT
+        with ESMTP id S242796AbhIWTqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 15:43:40 -0400
+        Thu, 23 Sep 2021 15:46:24 -0400
 Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B4EC061574;
-        Thu, 23 Sep 2021 12:42:08 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id v24so27024826eda.3;
-        Thu, 23 Sep 2021 12:42:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B37C061574;
+        Thu, 23 Sep 2021 12:44:52 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id eg28so27266845edb.1;
+        Thu, 23 Sep 2021 12:44:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wg07Nq0+S7AqwImslpDCTktGQm2uEPJ2QVWkbuBwygU=;
-        b=AjlMeFwPecvTyCnhNft0bXeMzyic3b9stseHJDhAwcx0arXZJo+5Gwif96E91wqLtp
-         WKfYerRtbcKP86nTH7vi3h3ghS5t762DZ1WpRWhVwhp/2T9LFaAwYLHx4G/Yg1ovKYk8
-         63nqj7ChEmRwUhT1ttI4rFu66h1nEFMrtUMZLP5V81QizvBGKOKwU+QBQY7PV4HlxGNo
-         NyTheC10s1lG36CsrP8zUe3Tl3Oj5s23RiWHDCHViwdrU7KztKbk7cODh/NK1hPfzV6z
-         x6K6UOFeUhklwBn9k6MUmmrKQcp55wQwSIYUEj/lYM0MC/S6bgaH+nLfdpKLCNV89/Dh
-         pZ4g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=USB+c9NQPlFOCzOlELYb3av2B5sqofQxC78jD/L/Faw=;
+        b=Ivaw8/yqDkDtpnoa7KVXQ6wxjxdqq44QfO1qZ78DTS4rrjKcWcUFsPBm+ofL7L7x6R
+         2IACsu+wVJpiBby+hhKqcpWZLnWHlKEvodtRGQDwLTKo/+iTUpRyV4orTrIkN+h1qs2x
+         XUFHBmZvvYaLJUBBrNmrvpYHkQyUXQGvotwbfkSaL5r4SlgvnJbdPsJQEaDS3bwp4s5q
+         Z5hH+MZLx37l8cSs84HcbrBmhLPCPTxtFYukZpARcdxF3OeiqN7xVc3IwN52TsdwDd5D
+         1OOAqogeF0kZdBMcUcCFFAsC3sNLEFDQk9Po65bBJvriI7kqVh2dbE8SSZDliJeAGV4X
+         tdtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wg07Nq0+S7AqwImslpDCTktGQm2uEPJ2QVWkbuBwygU=;
-        b=t5KUUD7VHB03WbBDuibu2PDyWvZMxZKKbXoPLu0/mYAusD9agfxnv/i/9QPgCj6kPr
-         f3LE08bvvCSJZKVwg4mdB3spNInR5sdnUxThXAwyM9m7Wm6PR3MUtNZlU46vrwEQTd4b
-         zV1P0qEl5j1bXM20qlZxatVfo2aF7cqNjAHpKiPO8iAET/0OVqJjFRFY1d8Hdp1K/93v
-         R3eQvAJPS8ocq8P/zRllCz2GNgtihYQbdc6g0hXG7ojQ8fPhGMM5xdRnY3cRVct8yuKz
-         QZzzJ0ReXWD2PQL3eYx/ODATSRUyQBtDZ4fmIcqaDtxHBXBWHUWk+O1ucaS/wv15RHzA
-         SeMg==
-X-Gm-Message-State: AOAM532nsEhSw3bVh8Dalo1H+0SIkXBgfCv+1c7V0+L9quc0isz77by7
-        Tr8atOcGig1fC/yDkDQADAYEwXqeQsnwMD5sErk=
-X-Google-Smtp-Source: ABdhPJwht/FokcguS3Z265L1prL1jWL6zI6VFHAxFj21zRVI0cuMn07EXgNyEPNBE7e1W3PLTUV/O4IalXlEWdAk5EY=
-X-Received: by 2002:a17:906:1707:: with SMTP id c7mr6697896eje.377.1632426126787;
- Thu, 23 Sep 2021 12:42:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210830123704.221494-1-verdre@v0yd.nl> <20210830123704.221494-2-verdre@v0yd.nl>
- <CA+ASDXPKZ0i5Bi11Q=qqppY8OCgw=7m0dnPn0s+y+GAvvQodog@mail.gmail.com>
- <CAHp75VdR4VC+Ojy9NjAtewAaPAgowq-3rffrr3uAdOeiN8gN-A@mail.gmail.com>
- <CA+ASDXNGR2=sQ+w1LkMiY_UCfaYgQ5tcu2pbBn46R2asv83sSQ@mail.gmail.com>
- <YS/rn8b0O3FPBbtm@google.com> <0ce93e7c-b041-d322-90cd-40ff5e0e8ef0@v0yd.nl>
- <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
- <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl> <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
-In-Reply-To: <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 23 Sep 2021 22:41:30 +0300
-Message-ID: <CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
-To:     =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=USB+c9NQPlFOCzOlELYb3av2B5sqofQxC78jD/L/Faw=;
+        b=0aWe1kamQ1hIKWsd80gtCEsvOacMbj12KIzwWzKGIqVKNZDSMPz3yPSlKE9oyxb4Jm
+         ORvgII5ULJzXH9B7arHTm7LqEv3drXIKtm2pOzAMgrZzORlGmh/1njYVpxd/hhFLu3Xb
+         3q1JlMMzyvXHjRt4bHE09qFqYYHsAK52iz52jdCVd1vE/hNBD8V5NGHVR7KQg6NLPycs
+         jf64gaoDb6vI7pUucpx/0dEdBlWHyq7CDIntc6zGnJ/Axy3yvQg053TKX6SuCwCz6WHK
+         h74bj+4NFfMbFcs6GYmSQAUEelzAvJjmUgq1mvf73u1y0jHzkgSyukKqzAl4SfJP2VNR
+         I2Vg==
+X-Gm-Message-State: AOAM533zoBC2X6llCS+z8ecwMZVocozN04fNHpYSiBZ01sriHR1hrFXy
+        jpcgFz7oB0lIrCEPrXduqwI=
+X-Google-Smtp-Source: ABdhPJx47JRxPImn3bCOzzIp9JgZuhIzAfodEXn1mXk91Uklp1+eljNjL+So5E5m3okurvJieN/S6g==
+X-Received: by 2002:a50:cfc3:: with SMTP id i3mr656314edk.36.1632426290611;
+        Thu, 23 Sep 2021 12:44:50 -0700 (PDT)
+Received: from skbuf ([188.26.53.217])
+        by smtp.gmail.com with ESMTPSA id b38sm4101128edf.46.2021.09.23.12.44.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 12:44:50 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 22:44:48 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] fw_devlink bug fixes
+Message-ID: <20210923194448.tnzkdvigknjrgoqn@skbuf>
+References: <20210915170940.617415-1-saravanak@google.com>
+ <YUy5nDMeWMg0sfGI@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUy5nDMeWMg0sfGI@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 6:28 PM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wrote:
-> On 9/22/21 2:50 PM, Jonas Dre=C3=9Fler wrote:
+On Thu, Sep 23, 2021 at 07:30:04PM +0200, Greg Kroah-Hartman wrote:
+> It fixes the real problem where drivers were making the wrong assumption
+> that if they registered a device, it would be instantly bound to a
+> driver.  Drivers that did this were getting lucky, as this was never a
+> guarantee of the driver core (think about if you enabled async
+> probing, and the mess with the bus specific locks that should be
+> preventing much of this)
 
-...
-
-> - Just calling mwifiex_write_reg() once and then blocking until the card
-> wakes up using my delay-loop doesn't fix the issue, it's actually
-> writing multiple times that fixes the issue
->
-> These observations sound a lot like writes (and even reads) are actually
-> being dropped, don't they?
-
-It sounds like you're writing into a not ready (fully powered on) device.
-
-To check this, try to put a busy loop for reading and check the value
-till it gets 0.
-
-Something like
-
-  unsigned int count =3D 1000;
-
-  do {
-    if (mwifiex_read_reg(...) =3D=3D 0)
-      break;
-  } while (--count);
-
-
---=20
-With Best Regards,
-Andy Shevchenko
+Since commit d173a137c5bd ("driver-core: enable drivers to opt-out of
+async probe") it is possible to opt out of async probing, and PHY
+drivers do opt out of it, at the time of writing.
