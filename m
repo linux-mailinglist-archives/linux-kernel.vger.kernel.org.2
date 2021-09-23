@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B28416129
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DA6416140
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241713AbhIWOjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:39:11 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:53103 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241708AbhIWOjJ (ORCPT
+        id S241758AbhIWOlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241681AbhIWOls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:39:09 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1mTPqt-000K86-7O; Thu, 23 Sep 2021 16:37:31 +0200
-Received: from p57bd97e9.dip0.t-ipconnect.de ([87.189.151.233] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1mTPqs-001G6v-Gf; Thu, 23 Sep 2021 16:37:31 +0200
-Message-ID: <c8730be9-edc4-5f71-b043-846d4b519e97@physik.fu-berlin.de>
-Date:   Thu, 23 Sep 2021 16:37:29 +0200
+        Thu, 23 Sep 2021 10:41:48 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518C3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:40:16 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id ee50so24570845edb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:40:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=forissier-org.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Yaq+Io+aloqpeNrqkhGX2eCCGpJnifon/5BjWIeCRs=;
+        b=fR4uDbtGmldOZAuI5ln4zQVgk3TJCWa1jOMhGXIf7tXUdq0xiZUZJcv/KxdrDQug30
+         FM4DnhJ0MVMpZneEgIiZGgrobWTCXECvyS/NyXSzjAVPNG7iU63lypI4KcweXGaTrU53
+         x/Z3j5b0zjMyX7l8ZJrDJHKkQJsvDjw5fuDc3JhzjzTB/9PPdGAfhMTzjEQCdYwcUUEl
+         fdLW8eN8vcwqy8Xe5KtkmW2lWwpAmRfuRqx1KHAZff5AQfH+UPG8fxR4zzPl5wCxrumX
+         5HaMD+ikLPexa+EIn6kZDYZs5+JN5aZiXkcbY6ks8njqg651KuSGDXnU9ZIn0ahqxzam
+         xosQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Yaq+Io+aloqpeNrqkhGX2eCCGpJnifon/5BjWIeCRs=;
+        b=WIzyqlR4tYGZ9NGHP4/T7cvJMVun8yYkZvlZ9JzGw2nGqOjrS1t2Npa+54t75aZ52p
+         OsRk0w95Et24cuNSQbcwK5vg9Z9o+LyFPOA5h+/mY4ouIzg2l7HAJ35Wv1krznal8LpR
+         3gu9Rc0bSIr9ZwxC7QUQYw/U+Qg+FvgoDTDxVvvzB3EyBUdNT44OfpX7WIDjj09bx+ZT
+         MhAKKSV7uhIZc8BliAL2sVjo0f1RXTCrOHLqxpDtcEBlwwU1CutamjNo2+jyHzaPg1Q3
+         BLOkjIvx3bFbTHz5XjkMVcOO0I6QxpdwDhTnh2hvwalO4SXcGO0RawVIiBo1qdC4f+CK
+         Uazw==
+X-Gm-Message-State: AOAM530dgibSq92iYDckfzDR9w6iHC9+FATQDcwoJyGvMVnzT9FHNngI
+        SSpZvzw4SdDy6LToPfRJP+Mfkw==
+X-Google-Smtp-Source: ABdhPJxAefN4F4ApYx42YsyuTD40jDQyU/uSf9VZgYlQeUSoSF+gBupuoUTOjGoTbFFlJmxWVPwIhQ==
+X-Received: by 2002:a17:906:414a:: with SMTP id l10mr5168365ejk.561.1632408014727;
+        Thu, 23 Sep 2021 07:40:14 -0700 (PDT)
+Received: from matebook.. ([2a01:e0a:3cb:7bb0:3c27:6eff:2c08:5257])
+        by smtp.gmail.com with ESMTPSA id a24sm3630785edu.49.2021.09.23.07.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 07:40:14 -0700 (PDT)
+From:   Jerome Forissier <jerome@forissier.org>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Jerome Forissier <jerome@forissier.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] checkpatch: relax regexp for COMMIT_LOG_LONG_LINE
+Date:   Thu, 23 Sep 2021 16:38:42 +0200
+Message-Id: <20210923143842.2837983-1-jerome@forissier.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
-Content-Language: en-US
-To:     Rich Felker <dalias@libc.org>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>, j-core@j-core.org
-References: <20210627220544.8757-1-rdunlap@infradead.org>
- <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
- <f63694aa-85b3-0238-5228-eb35a52bf360@physik.fu-berlin.de>
- <CAFr9PXn5S_3mpJBF0bNo+S1US=Z5s89rbO-OhhqGk=zqPGWXoQ@mail.gmail.com>
- <20210912015740.GJ13220@brightrain.aerifal.cx>
- <5aa5301e-9b01-4e96-e185-13c2d4d7b675@physik.fu-berlin.de>
- <20210922024537.GA27465@brightrain.aerifal.cx>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <20210922024537.GA27465@brightrain.aerifal.cx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.151.233
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rich!
+One exceptions to the COMMIT_LOG_LONG_LINE rule is a file path followed
+by :. That is typically some sort diagnostic message from a compiler or
+a build tool, in which case we don't want to wrap the lines but keep the
+message unmodified.
+The regular expression used to match this pattern currently doesn't
+accept absolute paths or + characters. This can result in false
+positives as in the following (out-of-tree) example:
 
-On 9/22/21 04:45, Rich Felker wrote:
-> I didn't get through that yet, but I have rebased the patches that
-> were pending in for-next onto v5.15-rc1 (no conflicts) and
-> smoke-tested that a sh4 build runs in my qemu environment. linux-next
-> pulled them 27 hours ago and hasn't complained yet either.
+  ...
+  /home/jerome/work/optee_repo_qemu/build/../toolchains/aarch32/bin/arm-linux-gnueabihf-ld.bfd: /home/jerome/work/toolchains-gcc10.2/aarch32/bin/../lib/gcc/arm-none-linux-gnueabihf/10.2.1/../../../../arm-none-linux-gnueabihf/lib/libstdc++.a(eh_alloc.o): in function `__cxa_allocate_exception':
+  /tmp/dgboter/bbs/build03--cen7x86_64/buildbot/cen7x86_64--arm-none-linux-gnueabihf/build/src/gcc/libstdc++-v3/libsupc++/eh_alloc.cc:284: undefined reference to `malloc'
+  ...
 
-Sounds promising, thanks!
+Update the regular expression to match the above paths.
 
-> I started going through the list/patch backlog, but didn't make it
-> nearly as far as I'd like yet. If you have even a vague list of what's
-> important (warnings breaking the build, unapplied changes blocking
-> removal of cruft from other parts of the kernel and making people
-> unhappy with us, etc.) that would be really helpful.
+Signed-off-by: Jerome Forissier <jerome@forissier.org>
+---
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I will start testing kernel updates again from next week as I'm currently
-busy with other open source work I want to get off my table first.
-
-> I'll follow up again soon.
-
-Thanks, looking forward for more updates.
-
-Adrian
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index c27d2312cfc3..bf2094cb4271 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3147,7 +3147,7 @@ sub process {
+ 		    length($line) > 75 &&
+ 		    !($line =~ /^\s*[a-zA-Z0-9_\/\.]+\s+\|\s+\d+/ ||
+ 					# file delta changes
+-		      $line =~ /^\s*(?:[\w\.\-]+\/)++[\w\.\-]+:/ ||
++		      $line =~ /^\s*(?:[\w\.\-\+]*\/)++[\w\.\-\+]+:/ ||
+ 					# filename then :
+ 		      $line =~ /^\s*(?:Fixes:|Link:|$signature_tags)/i ||
+ 					# A Fixes: or Link: line or signature tag line
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.30.2
 
