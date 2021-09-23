@@ -2,76 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C98B416723
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A9B416725
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243248AbhIWVLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56382 "EHLO
+        id S243256AbhIWVMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243216AbhIWVLp (ORCPT
+        with ESMTP id S243188AbhIWVMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:11:45 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F8DC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:10:13 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i4so31440815lfv.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:10:13 -0700 (PDT)
+        Thu, 23 Sep 2021 17:12:01 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB6AC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:10:28 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso10360493otc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:10:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RzCYOEChqS52ihYCFoLsCYGGR6ap8pXnjkTEkEmy1IM=;
-        b=DwUvUexVIQ2f+G5CJTygnALkzFfFQTEkUtuLnis44qdnGAWeGJ1siEXg4btlfrJY0L
-         1fp9oe9j1lL//ULw/51YZrFxU+cEPivYFu25FzHbGjZxHVFI9IomFikZHjhXLn+YNww9
-         tDgvefSWm5+2yZauq/3TM5oKOEcjntfUQ2wdk9cJi3+hqbSBICoo8SWpJskJw/prNYAA
-         OU9Tz+6FsN0/uprjvV9uZaLTpccMMnVoWE0eyaUp/9hPz982ubh2U3UXTuDqwPjuzHq+
-         A+mCQBddelyPSz7OhxZ5gcgWWYfhd85+nw8YeBLVgD9czkCk+60/4GWpi5Lw9225jOSp
-         oPzw==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=U8C7kTM2i0LULyId4CRBDB3WhhpE9MXA+bUV/5nqDCo=;
+        b=sVjEV9NF9eKm1hMfgtvsNUa3rZxxZ/Lezl4IcpqFtOVWR+5zaDUqxg/2hiXVYGCr7I
+         CQtjidNr9hwZ6tjsTvhRtQwqA2WGW79xEb5uZfAaH/b5TWCqeOnNStNWOKO+Vpo/wP6H
+         U9Ea713fUSGaeqS5WU6p2qphlKV57l9LG5ug8VBf9p8g0U62zTHdouMLa114GRaWESjO
+         blOcE5BxLA772si2ZZeJgIfj0tz2uwzgyy9dRxSeT2SsqNtdXwQ1kZom67fSsff1R26n
+         30uQDOqWJ1QpTpn1LVOshgY+6SJ/JiBChWBGGblWKwbRCCnlQ2II+jotRQ1v1p7zEydL
+         L7Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RzCYOEChqS52ihYCFoLsCYGGR6ap8pXnjkTEkEmy1IM=;
-        b=k/GNSXezLvc7Yz0YJU7pUg+eg4HmRURLl19NE2XqDTJ3pR8AGcKz02JJG3CwZLUwE3
-         U2quzNchDRKklP8ArC9bh5Et6omegMnWEds0+Xsbw5vt0sYsad9c+9JqezY8BQYZqjSZ
-         E4LcZG5zmpmo673Qqifdpze50YkgCYkDfjL3ZSLol7Z0pHiwBC8jJT6iBGVX8eYljgGH
-         NiDR5Pt2CCar5bvP2kq+XBMSyj22iV2qZx9DZpqIuNkoHCr62lSIby/EjX50b24fEn9g
-         EnXpyHpQacWwlXwUfN7n8ND8m0FTwpAnQC1cphCrB4tZZNojnN2/9u0CMtqZPvMpdhnJ
-         XF0g==
-X-Gm-Message-State: AOAM530nl7oOdc5VqW/dz8jUsYBjAYegJByZt1FpRUv9iCvmRbIfoUWu
-        qquMWL4A4eem/y0HiYzC3XxcU8BWVkvkR/uxhD12rw==
-X-Google-Smtp-Source: ABdhPJyvWnA5YfxMUa0cPBb67wdrszJXaQYs8/Ln8r6azwb7B76KLd8cP1MpRLp2CqAdwCnLqyZlEYKeslxOgKWfpOM=
-X-Received: by 2002:ac2:4651:: with SMTP id s17mr6100025lfo.584.1632431412003;
- Thu, 23 Sep 2021 14:10:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=U8C7kTM2i0LULyId4CRBDB3WhhpE9MXA+bUV/5nqDCo=;
+        b=K9u/npauGS3oGqsZ/kwCU2/pmZrIsCJ3NqhYp8Ay+GeoxyasHCt3K//IzDi7e6p69a
+         nkgETMCC4gL9SpQm3JxCpaNAYV0Vti1FqkVx/2eWZIUSZXSDnBEUAF2+qb+i66AAb1vP
+         BGkzplTRofRjSW9CD9XGmIRR03ZNL6msNTKFUEUwxeX8cUC4KQ35a1YW1rIr/IXztWsz
+         FWkd1NSJVxLQ3nt0AGJf55Mk7dDHvnp2Qi3Re++KiGy3G7y7ceXGViwh/SEel7RLFlOM
+         Cz0EmdAHNZ2GWzrMX5rIukEzw8KcGCpG/SJVk2uMw4CBkYbk00SubEv9trZx59cKcykD
+         N3TQ==
+X-Gm-Message-State: AOAM532g8KJE0lCWs5AsyXCNF9wfrUWVu21HU4Wi6Le5sXqgQDrPAaw2
+        sB3YRVafUALu3tIvgvzz8nJVWw==
+X-Google-Smtp-Source: ABdhPJzwY4l4nfzUx7XxLiPKY1zK2O5YluTcKjvD7YeJim2WLDvwlsxLKjkqIRbKCKLks7jJnRSJCA==
+X-Received: by 2002:a9d:60c2:: with SMTP id b2mr707393otk.27.1632431427084;
+        Thu, 23 Sep 2021 14:10:27 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id h25sm524386otl.1.2021.09.23.14.10.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 14:10:26 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 14:10:13 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+cc:     Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: Mapcount of subpages
+In-Reply-To: <20210923124502.nxfdaoiov4sysed4@box.shutemov.name>
+Message-ID: <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan> <YUvzINep9m7G0ust@casper.infradead.org> <YUwNZFPGDj4Pkspx@moria.home.lan> <YUxnnq7uFBAtJ3rT@casper.infradead.org> <20210923124502.nxfdaoiov4sysed4@box.shutemov.name>
 MIME-Version: 1.0
-References: <1632389487-11283-1-git-send-email-rnayak@codeaurora.org>
-In-Reply-To: <1632389487-11283-1-git-send-email-rnayak@codeaurora.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 23 Sep 2021 23:10:01 +0200
-Message-ID: <CACRpkdYSqyk4yhguZ0yWr5NDAsDZx8gR1Wchr=TPHaDpWg=KtA@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: qcom: sc7280: Add PM suspend callbacks
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:31 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+On Thu, 23 Sep 2021, Kirill A. Shutemov wrote:
+> On Thu, Sep 23, 2021 at 12:40:14PM +0100, Matthew Wilcox wrote:
+> > On Thu, Sep 23, 2021 at 01:15:16AM -0400, Kent Overstreet wrote:
+> > > On Thu, Sep 23, 2021 at 04:23:12AM +0100, Matthew Wilcox wrote:
+> > > > (compiling that list reminds me that we'll need to sort out mapcount
+> > > > on subpages when it comes time to do this.  ask me if you don't know
+> > > > what i'm talking about here.)
+> > > 
+> > > I am curious why we would ever need a mapcount for just part of a page, tell me
+> > > more.
+> > 
+> > I would say Kirill is the expert here.  My understanding:
+> > 
+> > We have three different approaches to allocating 2MB pages today;
+> > anon THP, shmem THP and hugetlbfs.  Hugetlbfs can only be mapped on a
+> > 2MB boundary, so it has no special handling of mapcount [1].  Anon THP
+> > always starts out as being mapped exclusively on a 2MB boundary, but
+> > then it can be split by, eg, munmap().  If it is, then the mapcount in
+> > the head page is distributed to the subpages.
+> 
+> One more complication for anon THP is that it can be shared across fork()
+> and one process may split it while other have it mapped with PMD.
+> 
+> > Shmem THP is the tricky one.  You might have a 2MB page in the page cache,
+> > but then have processes which only ever map part of it.  Or you might
+> > have some processes mapping it with a 2MB entry and others mapping part
+> > or all of it with 4kB entries.  And then someone truncates the file to
+> > midway through this page; we split it, and now we need to figure out what
+> > the mapcount should be on each of the subpages.  We handle this by using
+> > ->mapcount on each subpage to record how many non-2MB mappings there are
+> > of that specific page and using ->compound_mapcount to record how many 2MB
+> > mappings there are of the entire 2MB page.  Then, when we split, we just
+> > need to distribute the compound_mapcount to each page to make it correct.
+> > We also have the PageDoubleMap flag to tell us whether anybody has this
+> > 2MB page mapped with 4kB entries, so we can skip all the summing of 4kB
+> > mapcounts if nobody has done that.
+> 
+> Possible future complication comes from 1G THP effort. With 1G THP we
+> would have whole hierarchy of mapcounts: 1 PUD mapcount, 512 PMD
+> mapcounts and 262144 PTE mapcounts. (That's one of the reasons I don't
+> think 1G THP is viable.)
+> 
+> Note that there are places where exact mapcount accounting is critical:
+> try_to_unmap() may finish prematurely if we underestimate mapcount and
+> overestimating mapcount may lead to superfluous CoW that breaks GUP.
 
-> Use PM suspend callbacks from msm core, without this the hog_sleep
-> pins don't change state in suspend.
->
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
-> v2: removed some stale diffstat
+It is critical to know for sure when a page has been completely unmapped:
+but that does not need ptes of subpages to be accounted in the _mapcount
+field of subpages - they just need to be counted in the compound page's
+total_mapcount.
 
-Patch applied for fixes!
+I may be wrong, I never had time to prove it one way or the other: but
+I have a growing suspicion that the *only* reason for maintaining tail
+_mapcounts separately, is to maintain the NR_FILE_MAPPED count exactly
+(in the face of pmd mappings overlapping pte mappings).
 
-Yours,
-Linus Walleij
+NR_FILE_MAPPED being used for /proc/meminfo's "Mapped:" and a couple
+of other such stats files, and for a reclaim heuristic in mm/vmscan.c.
+
+Allow ourselves more slack in NR_FILE_MAPPED accounting (either count
+each pte as if it mapped the whole THP, or don't count a THP's ptes
+at all - you opted for the latter in the "Mlocked:" accounting),
+and I suspect subpage _mapcount could be abandoned.
+
+But you have a different point in mind when you refer to superfluous
+CoW and GUP: I don't know the score there (and I think we are still in
+that halfway zone, since pte CoW was changed to depend on page_count,
+but THP CoW still depending on mapcount).
+
+Hugh
