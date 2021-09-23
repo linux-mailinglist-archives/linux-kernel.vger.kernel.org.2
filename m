@@ -2,132 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434094163B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DB24163B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242420AbhIWQ4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:56:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36020 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242290AbhIWQ4R (ORCPT
+        id S242503AbhIWQ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242237AbhIWQ40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:56:17 -0400
-Message-ID: <20210923165358.305969211@linutronix.de>
+        Thu, 23 Sep 2021 12:56:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50386C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:54:48 -0700 (PDT)
+Message-ID: <20210923165358.368305497@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632416085;
+        s=2020; t=1632416087;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=s9aeG490t7G5G79kYLvX8jUIfAoEnZOsviDDWoDjJv8=;
-        b=S/ZEdZiI3P9l8CHztGXB6Nm5YFeBsnez7j+nCUZ5sZ4e0tCVw2Qi8J7l9gTzuQEst9e+Cq
-        PFbVqxfOTtWsSfSYWcyg4c/o0kIQsX9f9C/GC3ocyzzWUf+iF38hveWp+bhTOSSu3dJUWV
-        +VPBw/UU32WONdhbS4FZDWe3ZAnjMYer2D+II+uwypWtwR+zhzVHDb2Dfza6PuHM6KRjh6
-        3LwK1khZjApxa2y2itMhnJtN4W3cS2FMxJ6tb2Ib9ypxxdm99ssCfaxZvqEeDjkDWPlKS+
-        Y3lva8et9S/7Vb9BWgBfhHGTAEhccYgDQu5W9+zRA/kPctgHuIpz5aF6zlcS4Q==
+         references:references; bh=Hd3wmK0Mcn3SqRowdGJWGN25iN9sOUouw6g+YiSgcl0=;
+        b=209FrlQF/pNDLfOq3dBtVvdQPyKfedgJAKbcENp+DgQTKJcHuMwFQ4kPFjvxq6Rd7LorXe
+        IRMAdLGOs5UhH4uX375DU9cW8MHDnliqqf3EGSCTtqjxAiepGkXaRLA5AnsgYhK83fokV9
+        8wvsuVsDVo5YOC5xT+taQncqe9c9q4pSLmxN03mS3vhFM6RM859Rnkw2PCyMqWWFWfpuDU
+        PA7eFGsJrO4RCxaDJbtI+KyRx4ItKx9WZxFbBiGeiLiWI+ouYtj9Iot7Phgdwtc5ZHwoJH
+        xwH7QmtUpmWCMX5GHUnu6eqXXIVM2EYO6FVm4RoXtHSHOWr0HngLxHPlPKMKtA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632416085;
+        s=2020e; t=1632416087;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=s9aeG490t7G5G79kYLvX8jUIfAoEnZOsviDDWoDjJv8=;
-        b=upeRqNC4adYSIorw3yRoaR7v2ZXBUPp/IuBSbNI7GygVe0eSqqG6QxvbiuT/oyDOqXanPo
-        pMW/D9LGt5kGosDQ==
+         references:references; bh=Hd3wmK0Mcn3SqRowdGJWGN25iN9sOUouw6g+YiSgcl0=;
+        b=14+0jQ+69AnW/7aQa7uX0O1XrYQ/Gz/xen+0tbokCHvdAoo8rPZqs7nV6bl/cWrFvIcYP0
+        gYb0ZOgVh2a7G3Cg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         Paul McKenney <paulmck@linux.vnet.ibm.com>,
         Sebastian Siewior <bigeasy@linutronix.de>
-Subject: [patch 7/8] sched: Make cond_resched_lock() variants RT aware
+Subject: [patch 8/8] locking/rt: Take RCU nesting into account for __might_resched()
 References: <20210923164145.466686140@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 23 Sep 2021 18:54:44 +0200 (CEST)
+Date:   Thu, 23 Sep 2021 18:54:46 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __might_resched() checks in the cond_resched_lock() variants use
-PREEMPT_LOCK_OFFSET for preempt count offset checking which takes the
-preemption disable by the spin_lock() which is still held at that point
-into account.
+The general rule that rcu_read_lock() held sections cannot voluntary sleep
+does apply even on RT kernels. Though the substitution of spin/rw locks on
+RT enabled kernels has to be exempt from that rule. On !RT a spin_lock()
+can obviously nest inside a RCU read side critical section as the lock
+acquisition is not going to block, but on RT this is not longer the case
+due to the 'sleeping' spinlock substitution.
 
-On PREEMPT_RT enabled kernels spin/rw_lock held sections stay preemptible
-which means PREEMPT_LOCK_OFFSET is 0, but that still triggers the
-__might_resched() check because that takes RCU read side nesting into
-account.
+The RT patches contained a cheap hack to ignore the RCU nesting depth in
+might_sleep() checks, which was a pragmatic but incorrect workaround.
 
-On RT enabled kernels spin/read/write_lock() issue rcu_read_lock() to
-resemble the !RT semantics, which means in cond_resched_lock() the might
-resched check will see preempt_count() == 0 and rcu_preempt_depth() == 1.
+Instead of generally ignoring the RCU nesting depth in __might_sleep() and
+__might_resched() checks, pass the rcu_preempt_depth() via the offsets
+argument to __might_resched() from spin/read/write_lock() which makes the
+checks work correctly even in RCU read side critical sections.
 
-Introduce PREEMPT_LOCK_SCHED_OFFSET for those might resched checks and map
-them depending on CONFIG_PREEMPT_RT.
+The actual blocking on such a substituted lock within a RCU read side
+critical section is already handled correctly in __schedule() by treating
+it as a "preemption" of the RCU read side critical section.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/preempt.h |    5 +++--
- include/linux/sched.h   |   34 +++++++++++++++++++++++++---------
- 2 files changed, 28 insertions(+), 11 deletions(-)
+ kernel/locking/spinlock_rt.c |   17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -122,9 +122,10 @@
-  * The preempt_count offset after spin_lock()
-  */
- #if !defined(CONFIG_PREEMPT_RT)
--#define PREEMPT_LOCK_OFFSET	PREEMPT_DISABLE_OFFSET
-+#define PREEMPT_LOCK_OFFSET		PREEMPT_DISABLE_OFFSET
- #else
--#define PREEMPT_LOCK_OFFSET	0
-+/* Locks on RT do not disable preemption */
-+#define PREEMPT_LOCK_OFFSET		0
- #endif
+--- a/kernel/locking/spinlock_rt.c
++++ b/kernel/locking/spinlock_rt.c
+@@ -24,6 +24,17 @@
+ #define RT_MUTEX_BUILD_SPINLOCKS
+ #include "rtmutex.c"
  
- /*
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2052,19 +2052,35 @@ extern int __cond_resched_rwlock_write(r
- #define MIGHT_RESCHED_RCU_SHIFT		8
- #define MIGHT_RESCHED_PREEMPT_MASK	((1U << MIGHT_RESCHED_RCU_SHIFT) - 1)
- 
--#define cond_resched_lock(lock) ({					\
--	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
--	__cond_resched_lock(lock);					\
-+#ifndef CONFIG_PREEMPT_RT
 +/*
-+ * Non RT kernels have an elevated preempt count due to the held lock,
-+ * but are not allowed to be inside a RCU read side critical section
++ * __might_resched() skips the state check as rtlocks are state
++ * preserving. Take RCU nesting into account as spin/read/write_lock() can
++ * legitimately nest into an RCU read side critical section.
 + */
-+# define PREEMPT_LOCK_RESCHED_OFFSETS	PREEMPT_LOCK_OFFSET
-+#else
-+/*
-+ * spin/rw_lock() on RT implies rcu_read_lock(). The might_sleep() check in
-+ * cond_resched*lock() has to take that into account because it checks for
-+ * preempt_count() and rcu_preempt_depth().
-+ */
-+# define PREEMPT_LOCK_RESCHED_OFFSETS	\
-+	(PREEMPT_LOCK_OFFSET + (1U << MIGHT_RESCHED_RCU_SHIFT))
-+#endif
++#define RTLOCK_RESCHED_OFFSETS						\
++	(rcu_preempt_depth() << MIGHT_RESCHED_RCU_SHIFT)
 +
-+#define cond_resched_lock(lock) ({						\
-+	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSETS);	\
-+	__cond_resched_lock(lock);						\
- })
++#define rtlock_might_resched()						\
++	__might_resched(__FILE__, __LINE__, RTLOCK_RESCHED_OFFSETS)
++
+ static __always_inline void rtlock_lock(struct rt_mutex_base *rtm)
+ {
+ 	if (unlikely(!rt_mutex_cmpxchg_acquire(rtm, NULL, current)))
+@@ -32,7 +43,7 @@ static __always_inline void rtlock_lock(
  
--#define cond_resched_rwlock_read(lock) ({				\
--	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
--	__cond_resched_rwlock_read(lock);				\
-+#define cond_resched_rwlock_read(lock) ({					\
-+	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSETS);	\
-+	__cond_resched_rwlock_read(lock);					\
- })
+ static __always_inline void __rt_spin_lock(spinlock_t *lock)
+ {
+-	__might_resched(__FILE__, __LINE__, 0);
++	rtlock_might_resched();
+ 	rtlock_lock(&lock->lock);
+ 	rcu_read_lock();
+ 	migrate_disable();
+@@ -210,7 +221,7 @@ EXPORT_SYMBOL(rt_write_trylock);
  
--#define cond_resched_rwlock_write(lock) ({				\
--	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
--	__cond_resched_rwlock_write(lock);				\
-+#define cond_resched_rwlock_write(lock) ({					\
-+	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSETS);	\
-+	__cond_resched_rwlock_write(lock);					\
- })
+ void __sched rt_read_lock(rwlock_t *rwlock)
+ {
+-	__might_resched(__FILE__, __LINE__, 0);
++	rtlock_might_resched();
+ 	rwlock_acquire_read(&rwlock->dep_map, 0, 0, _RET_IP_);
+ 	rwbase_read_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
+ 	rcu_read_lock();
+@@ -220,7 +231,7 @@ EXPORT_SYMBOL(rt_read_lock);
  
- static inline void cond_resched_rcu(void)
+ void __sched rt_write_lock(rwlock_t *rwlock)
+ {
+-	__might_resched(__FILE__, __LINE__, 0);
++	rtlock_might_resched();
+ 	rwlock_acquire(&rwlock->dep_map, 0, 0, _RET_IP_);
+ 	rwbase_write_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
+ 	rcu_read_lock();
 
