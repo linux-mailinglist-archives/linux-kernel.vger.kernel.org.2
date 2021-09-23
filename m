@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C77B4161D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C734161D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241914AbhIWPPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241833AbhIWPPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:15:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E3DE61107;
-        Thu, 23 Sep 2021 15:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632410012;
-        bh=mOC7FdQdjTIAxxIgBlh19xNgYctoW/1KW2f4ltIRwOs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QzbPTYuE/Ex9WyYsMRH5XreZ9GDgqJZtLVs7qppdnE3vytbbX06zTCivHQSSDGOmv
-         vtfDFdG08lIEwEptWL/PinvZCMgLqCEOPLxeCZ/o3LHWd1mmpBtH277oUXrgKrW1KZ
-         WjsL79EjIEXassRiWyDePshre5rskXK/T5rul5ATD9ygh6XqtM52AFFKHsSb6maU8C
-         fCwMZRmNxV9T0e9W4CO/ph8OsOYof8ms9DycXLzmH/T19FejcF2Km/KFxR6+eExzG8
-         mDNGkLMW/GVfB2/ofPJCkSDy1wDMiYr25DfCN2Vas7XwrKX2+NUhtuZXB4ilBrF7p3
-         UfQtnhXUX963Q==
-Subject: Re: [PATCH] erofs: fix compacted_2b if compacted_4b_initial >
- totalidx
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Yue Hu <zbestahu@gmail.com>
-Cc:     xiang@kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, huyue2@yulong.com,
-        zhangwen@yulong.com, zbestahu@163.com
-References: <20210914035915.1190-1-zbestahu@gmail.com>
- <YUAm+kOdKcCzgcEy@B-P7TQMD6M-0146.local>
- <20210914125748.00003cd2.zbestahu@gmail.com>
- <YUxp1rsN0Ce88YQI@B-P7TQMD6M-0146.local>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <f9f2e7a1-7248-c5b2-64b4-2d5f91d68b6c@kernel.org>
-Date:   Thu, 23 Sep 2021 23:13:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S241969AbhIWPPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:15:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24894 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241947AbhIWPP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:15:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632410037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VqdjaNmOy3AFkCrcLAGhcrhZbFXF1wKvJPiKrQRv8Nc=;
+        b=AYb91eWUCdKQiWU3z0qpNoUv81R2fE1f6LsUgdGFtnZcAyIWdlattp1mIxxG3EFC6pAmoT
+        5UjsEwmiTs/yLfMAWFDEyP0uXNbrM6PqgmIladOEfuDnoLHVUA42y4AjomMhuP9fy+X9Us
+        2DryJvyRVYvR4HI6RsQ1W1t9ZVs9wvg=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-dkBYWIH-Nk6hmZy-bJgioA-1; Thu, 23 Sep 2021 11:13:56 -0400
+X-MC-Unique: dkBYWIH-Nk6hmZy-bJgioA-1
+Received: by mail-wr1-f71.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so5399900wrg.17
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:13:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=VqdjaNmOy3AFkCrcLAGhcrhZbFXF1wKvJPiKrQRv8Nc=;
+        b=b2tyWrTaq8RmzX6d3ZSAHCokCLmFi3XBz3tvWKg2F7CwdYmdmVMYoSt+Sx520qCaCQ
+         D7wiqX29rPhS4lHBFBW+fYYNY6A5WKusEm2g4EDMcLGqTCmEOdsxek4TF9ItVMbvLaQm
+         d3nTqI+rVKuxlr/Emv0Nt5DLBO5fylZaEnSs2F96nYDIdjbZSwOnN3KlK+TTktpNsfNJ
+         4NcXfF/SaD7lBqzc0nt93uYm/bgQvraBFixtkmQI8JfQFmXhI1TzbFQntOd30KcINTVf
+         ltZoFbEFVO8vJuLRPVjd5KSzEXysyV+Wcd2Xe3XXcQYClmdWaW9ThTU3UcqmGE2LySPB
+         eENA==
+X-Gm-Message-State: AOAM530RX9GVep4r0AVWyK8KB4nUnCNMjQi91OgEYNAiIgJ86VYCAOwv
+        FFau7rD9mdiXbXU9AB63BMyPQjl2deivxLnNHcTAcS7dZkBZmkNARE8OyDuoqu27jKf850HSTVK
+        L7VoC7yfH/SQlL3heXorqFhGP
+X-Received: by 2002:a5d:544c:: with SMTP id w12mr5948215wrv.398.1632410034872;
+        Thu, 23 Sep 2021 08:13:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwMQ1N3NmSdkCf4DeLiX4l4Vc0+xtlPiJy43V6hnH1kMLkDvekZuUvBWSzE7fU9HjrzFPaYNg==
+X-Received: by 2002:a5d:544c:: with SMTP id w12mr5948190wrv.398.1632410034662;
+        Thu, 23 Sep 2021 08:13:54 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-102-46.dyn.eolo.it. [146.241.102.46])
+        by smtp.gmail.com with ESMTPSA id u25sm6278000wmm.5.2021.09.23.08.13.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 08:13:54 -0700 (PDT)
+Message-ID: <286faa2529e01e6091666f97ad0cc703e5e80c7c.camel@redhat.com>
+Subject: Re: [syzbot] WARNING in mptcp_sendmsg_frag
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     syzbot <syzbot+263a248eec3e875baa7b@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.linux.dev, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Date:   Thu, 23 Sep 2021 17:13:53 +0200
+In-Reply-To: <20210923143728.GD2083@kadam>
+References: <00000000000015991c05cc43a736@google.com>
+         <7de92627f85522bf5640defe16eee6c8825f5c55.camel@redhat.com>
+         <20210923141942.GD2048@kadam> <20210923143728.GD2083@kadam>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <YUxp1rsN0Ce88YQI@B-P7TQMD6M-0146.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+On Thu, 2021-09-23 at 17:37 +0300, Dan Carpenter wrote:
+> On Thu, Sep 23, 2021 at 05:19:42PM +0300, Dan Carpenter wrote:
+> > On Wed, Sep 22, 2021 at 12:32:56PM +0200, Paolo Abeni wrote:
+> > > #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > > 
+> > > The debug code helped a bit. It looks like we have singed/unsigned
+> > > comparisons issue
+> > 
+> > There should be a static checker warning for these.  I have created one
+> > in response to your email.  It turns out there are a couple other
+> > instances of this bug in the same file.
 
-On 2021/9/23 19:49, Gao Xiang wrote:
-> On Tue, Sep 14, 2021 at 12:57:48PM +0800, Yue Hu wrote:
->> On Tue, 14 Sep 2021 12:37:14 +0800
->> Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
->>
->>> On Tue, Sep 14, 2021 at 11:59:15AM +0800, Yue Hu wrote:
->>>> From: Yue Hu <huyue2@yulong.com>
->>>>
->>>> Currently, the whole indexes will only be compacted 4B if
->>>> compacted_4b_initial > totalidx. So, the calculated compacted_2b
->>>> is worthless for that case. It may waste CPU resources.
->>>>
->>>> No need to update compacted_4b_initial as mkfs since it's used to
->>>> fulfill the alignment of the 1st compacted_2b pack and would handle
->>>> the case above.
->>>>
->>>> We also need to clarify compacted_4b_end here. It's used for the
->>>> last lclusters which aren't fitted in the previous compacted_2b
->>>> packs.
->>>>
->>>> Some messages are from Xiang.
->>>>
->>>> Signed-off-by: Yue Hu <huyue2@yulong.com>
->>>
->>> Looks good to me,
->>> Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
->>>
->>> (although I think the subject title would be better changed into
->>>   "clear compacted_2b if compacted_4b_initial > totalidx"
->>
->> Yeah, 'clear' is much better for this change.
->>
->> Thanks.
->>
->>>   since 'fix'-likewise words could trigger some AI bot for stable
->>>   kernel backporting..)
->>>
->>> Thanks,
->>> Gao Xiang
->>>
->>>> ---
->>>>   fs/erofs/zmap.c | 3 ++-
->>>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
->>>> index 9fb98d8..aeed404 100644
->>>> --- a/fs/erofs/zmap.c
->>>> +++ b/fs/erofs/zmap.c
->>>> @@ -369,7 +369,8 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
->>>>   	if (compacted_4b_initial == 32 / 4)
->>>>   		compacted_4b_initial = 0;
->>>>   
->>>> -	if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
->>>> +	if ((vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B) &&
->>>> +	    compacted_4b_initial <= totalidx) {
+Thank you!
+
+I was quite suprised the plain compiler did not emit a warn, even with
+W=1.
+
+> > net/mptcp/protocol.c:479 mptcp_subflow_could_cleanup() warn: unsigned subtraction: '(null)' use '!='
 > 
-> btw, I've fixed up the build error due to redundant brace '{' when
-> applying...
+> I should have checked my output a bit more carefully.  I don't want this
+> one to generate a warning.
+> 
+> > net/mptcp/protocol.c:909 mptcp_frag_can_collapse_to() warn: unsigned subtraction: 'pfrag->size - pfrag->offset' use '!='
+> 
+> Likely "pfrag->offset" can't be larger than "pfrag->size".  Smatch has
+> some code to try track this information but it's not clever enough.
 
-It looks good to me after above fix.
+Yes, this looks safe, offset can't be larger than size.
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Even the last reported warning looks safe to me: 'info->size_goal -
+skb->len', we just check for size_goal being greater then skb->len.
 
-Thanks,
+Cheers,
+
+Paolo
+
