@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B9B4166FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907E1416706
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243194AbhIWU7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 16:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhIWU7I (ORCPT
+        id S243201AbhIWVBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:01:04 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34040 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhIWVBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 16:59:08 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA578C061574;
-        Thu, 23 Sep 2021 13:57:36 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id y8so6845016pfa.7;
-        Thu, 23 Sep 2021 13:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KHgOgmrouOYZZcqRYMh0usWhvdx5OfrwOvmD1G6LDZo=;
-        b=QXDmWv36pjZMnDchbHBhFidlKPULmI8gZTTf+Ilm5srTv79RULKDaP9b3xPYKgV/iI
-         3YOOggHXoDyX8buY0cXm1VmUDyrqTwkEMSqa77fuIqeANg+22TbkoPzoWrmpiQhyoKf7
-         V5Bf8GOMjzCBSfkrOX+qVNGJBXVC+f9e06ndS1t5ig+TGBD4DocX68eaovceQR5nsiJ8
-         MKcWvQdw/D2ZZfpTRgU4/86NfNhqjCrcYsoDe+gQGiCv6aYAD5CSQfZPHmKBLko0goiF
-         K4xviazouGy2EEQ9gNf4r4hVj28eU+HbbsExgDv/UMQX5IOxYqJ2s6VjZu2PVen7HZEn
-         2ZOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KHgOgmrouOYZZcqRYMh0usWhvdx5OfrwOvmD1G6LDZo=;
-        b=JIvpM3dpT19ztmUgrz5n6WPAb0SM0MSjlt2UhpxZqKmsGQ8sFCGbmaGqerN2Sqyq+z
-         /sBFJlZXI1fnr8I0CcwQPwyrt3NhTNP+n6bXOD09NtCi0JcRBni4RqTqL10jXk67yTP4
-         PiS0oLyRoWEJRLJprduF4porewonilaEjI4GCp4/R/Hn5SlgnHy0SgHd4WPvy8Vgj44n
-         rGP70HuWeiWEDLNw0oZTwjC/laZ4wTi08SS75xFTyIvVfyUSBXggAmGEL1XoDwILYGNx
-         LeCeJo8E7U8TfwtKQoXZJ5yIsk63wX/8HpRalQQr/DSG23nHeV1Gparq9Mx4zNEO7tZt
-         Upzg==
-X-Gm-Message-State: AOAM532SHhGZy9QVUxHYtqfi3I7Adx4sEYHb4zr1x6uraPQwg0/1DgHV
-        uiQxRcmOPuY7DMRHrALCLErKvM0ACsQ=
-X-Google-Smtp-Source: ABdhPJzldSPJZzniruXpuHn2U1KzSPnuaUfda3zFl3AXwtxZ12YtQFQpsWY9AX1ChKTTduvvnhiG8w==
-X-Received: by 2002:a62:407:0:b0:447:c104:2529 with SMTP id 7-20020a620407000000b00447c1042529mr6270072pfe.8.1632430655463;
-        Thu, 23 Sep 2021 13:57:35 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id q21sm5873359pjg.55.2021.09.23.13.57.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 13:57:34 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: phy: broadcom: Fix PHY_BRCM_IDDQ_SUSPEND definition
-Date:   Thu, 23 Sep 2021 13:57:32 -0700
-Message-Id: <20210923205732.507795-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 23 Sep 2021 17:01:03 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id CD9BC1C0BA5; Thu, 23 Sep 2021 22:59:29 +0200 (CEST)
+Date:   Thu, 23 Sep 2021 22:59:29 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V3 01/22] Documentation: LoongArch: Add basic
+ documentations
+Message-ID: <20210923205929.GA23210@duo.ucw.cz>
+References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
+ <20210917035736.3934017-2-chenhuacai@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Disposition: inline
+In-Reply-To: <20210917035736.3934017-2-chenhuacai@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An extraneous number was added during the inclusion of that change,
-correct that such that we use a single bit as is expected by the PHY
-driver.
 
-Reported-by: Justin Chen <justinpopo6@gmail.com>
-Fixes: d6da08ed1425 ("net: phy: broadcom: Add IDDQ-SR mode")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- include/linux/brcmphy.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--5vNYLRcllDrimb99
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
-index b119d6819d6c..27d9b6683f0e 100644
---- a/include/linux/brcmphy.h
-+++ b/include/linux/brcmphy.h
-@@ -67,7 +67,7 @@
- #define PHY_BRCM_CLEAR_RGMII_MODE	0x00000004
- #define PHY_BRCM_DIS_TXCRXC_NOENRGY	0x00000008
- #define PHY_BRCM_EN_MASTER_MODE		0x00000010
--#define PHY_BRCM_IDDQ_SUSPEND		0x000000220
-+#define PHY_BRCM_IDDQ_SUSPEND		0x00000020
- 
- /* Broadcom BCM7xxx specific workarounds */
- #define PHY_BRCM_7XXX_REV(x)		(((x) >> 8) & 0xff)
--- 
-2.25.1
+Hi!
 
+> Add some basic documentations for LoongArch. LoongArch is a new RISC
+> ISA, which is a bit like MIPS or RISC-V. LoongArch includes a reduced
+> 32-bit version (LA32R), a standard 32-bit version (LA32S) and a 64-bit
+> version (LA64).
+>=20
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+
+> +Relationship of Loongson and LoongArch
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +LoongArch is a RISC ISA which is different from any other existing ones,=
+ while
+> +Loongson is a family of processors. Loongson includes 3 series: Loongson=
+-1 is
+> +32-bit processors, Loongson-2 is low-end 64-bit processors, and Loongson=
+-3 is
+> +high-end 64-bit processors. Old Loongson is based on MIPS, and New
+> Loongson is
+
+s/processors/processor/ , I guess.
+
+> +Official web site of Loongson and LoongArch (Loongson Technology Corp. L=
+td.):
+> +
+> +  http://www.loongson.cn/index.html
+
+It would be better to point to english version of page.
+
+> +Developer web site of Loongson and LoongArch (Software and Documentation=
+s):
+
+Documentation.
+
+BR,								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--5vNYLRcllDrimb99
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYUzqsQAKCRAw5/Bqldv6
+8vGmAJ9JXgVOqzCePPliXgVLLk/zRabUfQCeKP9TE9OX76UJSpSYHk3YkyKt/tc=
+=vT6P
+-----END PGP SIGNATURE-----
+
+--5vNYLRcllDrimb99--
