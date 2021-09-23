@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14480416198
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6983041619A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241859AbhIWPBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241807AbhIWPBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:01:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F03A60FC1;
-        Thu, 23 Sep 2021 14:59:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632409192;
-        bh=88u0FgUHUX8cPCvfv9jW9Rt/RzvchoT0U9GwNmj1jp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NHICIs3caYFBGM/yfGprZHt5bU45CHP3ScZk049PBlmwAd5Q5IIln5NPt+Zl2cFaN
-         t7pMrCVnMm0s3LTkguNrIFsd5B35xXV0XanI1ekaqke5c7G+8Fg0nehoUk3sFDa2ts
-         vTLW++ZKgsxxZlTKATzwbAIdSsgm7Y78T46jqSHwVa61MLEN0V+izmBDyS+w15rD1X
-         yBgT17HMxKSnDtxpiosBOigF+SeZTw6QrefWwORlh8NRzmDepfpPaH/2R7THC28qgt
-         bkDtLGVqJmuKFjYYnV7ZcFY+pe3rrCwmIuMZ85q9+shGYKu9e6A3hlAK+rlGAQCWQH
-         f8ouRLX560bIw==
-Date:   Thu, 23 Sep 2021 07:59:46 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-mm@kvack.org
-Subject: Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
-Message-ID: <YUyWYpDl2Dmegz0a@archlinux-ax161>
-References: <20210922205525.570068-1-nathan@kernel.org>
- <CANpmjNNqgUSbiPHOpD8z5JAv2aiujxAMiO4siymYdU6zpid_2g@mail.gmail.com>
+        id S241894AbhIWPBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:01:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33434 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241807AbhIWPBx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:01:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632409221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KAWkRRiP+ToKhHsVmpncsGA+uG5zL1/UXnCV1dJpPg0=;
+        b=dIgqxDPn6IDFCzO1SuK7v/H2txrHfwzXSjGY+tISbn3xhUqStyO3Mk4C44jvpssjH2pn+j
+        h23zcOWchwtDLZnNeo/xay2e63LqHDMmiObzLkWA+fRFayVr4H49a+aaK1STdAuyzoNuVK
+        Y0kE/hLaC5iJsdHgTWiyWExiXVlq1zE=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-230-YMlr34KuMtGDNMdZjlcpHg-1; Thu, 23 Sep 2021 11:00:20 -0400
+X-MC-Unique: YMlr34KuMtGDNMdZjlcpHg-1
+Received: by mail-qt1-f198.google.com with SMTP id 62-20020aed2044000000b002a6aa209efaso16796353qta.18
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:00:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KAWkRRiP+ToKhHsVmpncsGA+uG5zL1/UXnCV1dJpPg0=;
+        b=NY67pKlux+8MvpjqdAU9Q6Lq5Lpou6rCTFvL0pfChVgW3XTRfwQtHgpL1LFzRXkg/R
+         /8UjtUK69KQJaOu1N/unH8nNxtiTCvgbqVyu7ppWLmCu4vIxCr+Q0jk8sZW3ug0qn4sY
+         tNnjDMGjqzyj9RQPFznyf6Rcf6uCyNjEr/PDsjpw57vqix03Srw4p8NJAh3MTJeCU9IQ
+         guixZ4PvXtkmxMehHYYOYPBISsQpgMUEtZTakMUQGaglmn1Cv7pEgyvGPTCttYCSfthV
+         mTCP/QVrACE02BxU828lEKP6/nS6CgaMZVu4gPRamJ/AjNfb3ncy1VGBGWlDddGf8R61
+         vY1w==
+X-Gm-Message-State: AOAM532kQZH/6XeQdgwLwsoniNH/Q0aXIV3ytDaCnqPuY+z54qGqWcaB
+        r09PS2NmacszH6x7d7qqNaD/+noFOPiXqbJx1KY03S0lmVzbyR531D8ooUvi59UONIMaYiUh7MU
+        r8/mXjm7U5zJPIe2R82AKU0bg
+X-Received: by 2002:a05:620a:9c9:: with SMTP id y9mr5187045qky.207.1632409219589;
+        Thu, 23 Sep 2021 08:00:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwvF3oUBDTyvXXjo1UJaYDIMU/wevu6DSYRKaGO/Oh7HtqhBOY7spzcnGEiBKrNIRshX75npw==
+X-Received: by 2002:a05:620a:9c9:: with SMTP id y9mr5187008qky.207.1632409219296;
+        Thu, 23 Sep 2021 08:00:19 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id u4sm3574935qtq.31.2021.09.23.08.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 08:00:18 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 11:00:17 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com>
+Cc:     akpm@linux-foundation.org, corbet@lwn.net, david@redhat.com,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ivan.teterevkov@nutanix.com,
+        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
+        jonathan.davies@nutanix.com, chris.riches@nutanix.com
+Subject: Re: [PATCH v3 1/1] Documentation: update pagemap with shmem
+ exceptions
+Message-ID: <YUyWganKYoWOF1ns@t490s>
+References: <20210923064618.157046-1-tiberiu.georgescu@nutanix.com>
+ <20210923064618.157046-2-tiberiu.georgescu@nutanix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CANpmjNNqgUSbiPHOpD8z5JAv2aiujxAMiO4siymYdU6zpid_2g@mail.gmail.com>
+In-Reply-To: <20210923064618.157046-2-tiberiu.georgescu@nutanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 12:07:17PM +0200, Marco Elver wrote:
-> On Wed, 22 Sept 2021 at 22:55, Nathan Chancellor <nathan@kernel.org> wrote:
-> > Currently, the asan-stack parameter is only passed along if
-> > CFLAGS_KASAN_SHADOW is not empty, which requires KASAN_SHADOW_OFFSET to
-> > be defined in Kconfig so that the value can be checked. In RISC-V's
-> > case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which means that
-> > asan-stack does not get disabled with clang even when CONFIG_KASAN_STACK
-> > is disabled, resulting in large stack warnings with allmodconfig:
-> >
-> > drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c:117:12:
-> > error: stack frame size (14400) exceeds limit (2048) in function
-> > 'lb035q02_connect' [-Werror,-Wframe-larger-than]
-> > static int lb035q02_connect(struct omap_dss_device *dssdev)
-> >            ^
-> > 1 error generated.
-> >
-> > Ensure that the value of CONFIG_KASAN_STACK is always passed along to
-> > the compiler so that these warnings do not happen when
-> > CONFIG_KASAN_STACK is disabled.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1453
-> > References: 6baec880d7a5 ("kasan: turn off asan-stack for clang-8 and earlier")
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Thu, Sep 23, 2021 at 06:46:18AM +0000, Tiberiu A Georgescu wrote:
+> Mentioning the current missing information in the pagemap and alternatives
+> on how to retrieve it, in case someone stumbles upon unexpected behaviour.
 > 
-> Reviewed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com>
+> Reviewed-by: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
+> Reviewed-by: Florian Schmidt <florian.schmidt@nutanix.com>
+> Reviewed-by: Carl Waldspurger <carl.waldspurger@nutanix.com>
+> Reviewed-by: Jonathan Davies <jonathan.davies@nutanix.com>
 
-Thanks!
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-> [ Which tree are you planning to take it through? ]
+Thanks,
 
-Gah, I was intending for it to go through -mm, then I cc'd neither
-Andrew nor linux-mm... :/ Andrew, do you want me to resend or can you
-grab it from LKML?
+-- 
+Peter Xu
 
-> Note, arch/riscv/include/asm/kasan.h mentions KASAN_SHADOW_OFFSET in
-> comment (copied from arm64). Did RISC-V just forget to copy over the
-> Kconfig option?
-
-I do see it defined in that file as well but you are right that they did
-not copy the Kconfig logic, even though it was present in the tree when
-RISC-V KASAN was implemented. Perhaps they should so that they get
-access to the other flags in the "else" branch?
-
-> > ---
-> >  scripts/Makefile.kasan | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
-> > index 801c415bac59..b9e94c5e7097 100644
-> > --- a/scripts/Makefile.kasan
-> > +++ b/scripts/Makefile.kasan
-> > @@ -33,10 +33,11 @@ else
-> >         CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
-> >          $(call cc-param,asan-globals=1) \
-> >          $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
-> > -        $(call cc-param,asan-stack=$(stack_enable)) \
-> >          $(call cc-param,asan-instrument-allocas=1)
-> >  endif
-> >
-> > +CFLAGS_KASAN += $(call cc-param,asan-stack=$(stack_enable))
-> > +
-> >  endif # CONFIG_KASAN_GENERIC
-> >
-> >  ifdef CONFIG_KASAN_SW_TAGS
-> >
-> > base-commit: 4057525736b159bd456732d11270af2cc49ec21f
-> > --
-> > 2.33.0.514.g99c99ed825
-> >
-> >
