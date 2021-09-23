@@ -2,169 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53384415573
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AFB415588
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238924AbhIWCdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 22:33:09 -0400
-Received: from mout.gmx.net ([212.227.15.18]:58945 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238859AbhIWCdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 22:33:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-        s=badeba3b8450; t=1632364262;
-        bh=KB5ty1qLGgOUSJ01Uplt75ITqAkGDkvEfaUi1HBoiyg=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=WupzdjdJfUqBBbEjpbuZwpBAWPKE07wj16alof25FGOGd6ZG4lKJ+7+ltT3xLczY4
-         KTLpanIcJKAGv4YI5E9RyDd+JYpn4DTth0/XyOCyFlGkJAVHFo3D8t66d6vxYNA4Wo
-         CAs0QwzLj52fmsNzoopvTSFw98pZM/ChqUackeYE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7Jza-1mWYR80z0e-007i8Z; Thu, 23
- Sep 2021 04:31:02 +0200
-Message-ID: <1c1f0f00-cb9a-af0a-2662-bb144e353aa0@gmx.com>
-Date:   Thu, 23 Sep 2021 10:30:58 +0800
+        id S238929AbhIWCtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 22:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238899AbhIWCtR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 22:49:17 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551D2C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 19:47:46 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id q68so4826713pga.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 19:47:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/VKaH5LYPKrDQyH84TANzL55TxA7XWLk0nnnZWpUxxY=;
+        b=gWHI3fbRffkXeOZe7VBtHpM0rsjd95uMaPBQTsRiJPv5Fn/2faFRuKbgkQ9OrV2sNh
+         KTY7zucxT3Fb6f/ZL+8zs9FoQbcrkMEghy7cqtIYNRMMzPVzUuErMoH++tRCysj2DG/7
+         5kumQgjzIt4iEugzLGlKNOLYI/5At9xZMuS7Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/VKaH5LYPKrDQyH84TANzL55TxA7XWLk0nnnZWpUxxY=;
+        b=AdWA+rnZNniu3fMgQDIMaIHXbIOof4kCCH7xhdA/t29pC/E3QvyDRkT+oBqfmC6wgK
+         1XKNvVrV1WF4BI1jOMEiuU01Rt4pladEz8vQws9b/Q4xbGpd5faFhxqzoy+xhxg/nDx2
+         AKvAAnnBnP9k7xNzmyZvBrLVNivwILmFGpvXk9PsjF5EFbGz+aisFaqtm+tTPFB190az
+         iCHTsyx7H/tSukhGqHbT7AE0TchRrz27RNfAsDzz7MZM++hUW7q1OGGobpWUyqVtQBig
+         mcXcepfv8gueEFuG7f5wqsQIpRGeFPbCUDUS9JDQDOiwuHbRRCldZgcjrz/QtiFUiHJc
+         7Z5A==
+X-Gm-Message-State: AOAM532ldfvkPZW2tR1A8Ork6geTH+ritrK3O8ARoDo5YCeTq/kXZLq8
+        diH1XLVNQYS1iC8JTRGVxeWgOQClCzLElA==
+X-Google-Smtp-Source: ABdhPJznzKeB7V0t1SdgMK6bXz7z1bR0XFdE8eCy29ACVDf8DjyDo+lXIF/Z8xDnS5NfYPqzSxrv4Q==
+X-Received: by 2002:a63:8c42:: with SMTP id q2mr2022859pgn.325.1632365265849;
+        Wed, 22 Sep 2021 19:47:45 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o2sm7229487pja.7.2021.09.22.19.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 19:47:45 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 19:47:44 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] ksmbd server security fixes
+Message-ID: <202109221850.003A16EC1@keescook>
+References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: kernel BUG in __clear_extent_bit
-Content-Language: en-US
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CACkBjsYjkubyQBvBy7aaQStk_i1UuCu7oPNYXhZhvhWvBCM3ag@mail.gmail.com>
- <145029f0-5bc5-73fd-14ee-75b5829a3334@gmx.com>
- <CACkBjsauCShYkOdNU2snmJyLNSmdMvK7C0HbtMfKhoEXuUOSJg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CACkBjsauCShYkOdNU2snmJyLNSmdMvK7C0HbtMfKhoEXuUOSJg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Hi/5JfdTbWsUQSBlII1cbJvqXVjXIRK87Fanh5OPkB5+wBcf3xp
- eoAC05n5TofkRGNVTx7M98IWp7cl3DVbOhkbGUeKIToVtB4nmD9HdulcdG9Jiy1B+JuNq2w
- iPmbtFmRrGpjgBtI3M7uI7/NbbsLwbHKlrZCnQT1SDWJjbK1QfZlIZi9OVQoOtGaccBVrA0
- JgmuITuQwCAvL6ZmIxK5w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TEk9plFl97k=:zPAS4UQWMO24bnIDim4SNy
- YXGX1n6//JVmDD1mnkbKNaw2Yl9FrfwcsWHCVfAbndrgOtYz8RqI5ZUnSarZuU4NZ5VGWN4C4
- WlEc1rXglflEnqyKyh3kEKdOM1QezrGFc7lt5RoCsZH82sd1CwZzEDz2TKM+rV1NVtECtRL7a
- EQDekH7GI6oy/WRKzCLjOJX+eQDkzxRCR8FDiuOrFqGtjBIQpF8TzxYt7ZRX+hTQSTbeyeopD
- Zx2u7M95ILKbgxH+K0CYWMQs3S3TXIy93cjIRXAeao9Phvc2DzYhVGEC2m0pr5SbsRQYYsc7a
- 8SjlYchScMw17qmCcfP5CzL4rX2WMqCHCS8FBDeXZg5ZaME1oT8oxp1zLgL9D05hhHPb7Yb0Q
- uuOaFGrktqjF0Z/dIHiReMrQwp9Fm05duWgm1F+seRpOTeGmuZ7JyXAbRKzpoIYLCDdjZMeBG
- zwXeuMkH6OzHS380d6PA4BXV9y8Es2BQxVnb8I6RI5TscALPYy9xNvOXumEzOI6no3z0POviu
- 01d7+MBQOofddbhi8mb5chj08vS0Zs4kuWA0o+yqt0RNZa3ypy3nIj5AIOPPvUI1P8o6LxmkK
- GCcH9ClA0m3gJq981wgY996XFuARLXZuQFLinGHu1JM5WqKtB7EFjkATGhHu11m4izpREfTkn
- KVglsmZbS4GuFXiEjaq9QyD6Z6Eg9uiygfA0NcytubQLWZYxXm5jMPWF8TJhzYgys2UYny+xP
- 4XTXuSaATkrtO62zr1W7ooEqB7j2g2pZy/25PHCxjC5+Hhja6A/dKoIcTkD8kweXETf5l5d0n
- 3Y1ZHD4IT6XAHvqK3fDCvXgN1mh9jdnN8XkjOfQl5FLX9PLqXzbThgcaLKp5MVeVv8+CHCxt5
- lsNMQodx+8d0zoemNbUEbxj7+puiMYN+t1dl9Jlh1YImjX+Un+Sr/kfTDOWTRnIhQ8uUDnGbR
- A8olEC7cFh7BoLu3EoYNjho+wwuXaRrU87Prp7hWcWHRhttOrrbAas5HNHWggzbZWb0l7kii2
- daO5snlylTCrtuw3S1g9Wum9D1jwdwjKcoYWIlbIKWdq/kqLTPI4y0wIcXSdE6QFJsjdtSgb7
- jbfuHoqN1WFjLh559DawNwb8HMICJSpWxdym61nwbJlK6dO2cqTBtuKNOoFUOQ2lB7Sks51yR
- Oyuz7STpYiImxB4hIplAAR4cMh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 19, 2021 at 09:22:31AM -0500, Steve French wrote:
+> 3 ksmbd fixes: including an important security fix for path
+> processing, and a missing buffer overflow check, and a trivial fix for
+> incorrect header inclusion
+> 
+> There are three additional patches (and also a patch to improve
+> symlink checks) for other buffer overflow cases that are being
+> reviewed and tested.
 
+Hi Steve,
 
-On 2021/9/23 10:24, Hao Sun wrote:
-> Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=
-=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:33=E5=86=99=E9=81=93=EF=BC=9A
->>
->>
->>
->> On 2021/9/15 =E4=B8=8A=E5=8D=8810:20, Hao Sun wrote:
->>> Hello,
->>>
->>> When using Healer to fuzz the latest Linux kernel, the following crash
->>> was triggered.
->>>
->>> HEAD commit: 6880fa6c5660 Linux 5.15-rc1
->>> git tree: upstream
->>> console output:
->>> https://drive.google.com/file/d/1-9wwV6-OmBcJvHGCbMbP5_uCVvrUdTp3/view=
-?usp=3Dsharing
->>> kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHT=
-LJvsUdWcgB/view?usp=3Dsharing
->>> C reproducer: https://drive.google.com/file/d/1eXePTqMQ5ZA0TWtgpTX50Ez=
-4q9ZKm_HE/view?usp=3Dsharing
->>> Syzlang reproducer:
->>> https://drive.google.com/file/d/11s13louoKZ7Uz0mdywM2jmE9B1JEIt8U/view=
-?usp=3Dsharing
->>>
->>> If you fix this issue, please add the following tag to the commit:
->>> Reported-by: Hao Sun <sunhao.th@gmail.com>
->>>
->>> loop1: detected capacity change from 0 to 32768
->>> BTRFS info (device loop1): disk space caching is enabled
->>> BTRFS info (device loop1): has skinny extents
->>> BTRFS info (device loop1): enabling ssd optimizations
->>> FAULT_INJECTION: forcing a failure.
->>> name failslab, interval 1, probability 0, space 0, times 0
->>> CPU: 1 PID: 25852 Comm: syz-executor Not tainted 5.15.0-rc1 #16
->>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
->>> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
->>> Call Trace:
->>>    __dump_stack lib/dump_stack.c:88 [inline]
->>>    dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
->>>    fail_dump lib/fault-inject.c:52 [inline]
->>>    should_fail+0x13c/0x160 lib/fault-inject.c:146
->>>    should_failslab+0x5/0x10 mm/slab_common.c:1328
->>>    slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
->>>    slab_alloc_node mm/slub.c:3120 [inline]
->>>    slab_alloc mm/slub.c:3214 [inline]
->>>    kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
->>>    alloc_extent_state+0x1e/0x1c0 fs/btrfs/extent_io.c:340
->>
->> This is the one of the core systems btrfs uses, and we really don't wan=
-t
->> that to fail.
->>
->> Thus in fact it does some preallocation to prevent failure.
->>
->> But for error injection case, we can still hit BUG_ON() which is used t=
-o
->> catch ENOMEM.
->>
->
-> Hello,
->
-> Fuzzer triggered following crashes repeatedly when the `fault
-> injection` was enabled.
->
-> HEAD commit: 92477dd1faa6 Merge tag 's390-5.15-ebpf-jit-fixes'
-> git tree: upstream
-> kernel config: https://drive.google.com/file/d/1KgvcM8i_3hQiOL3fUh3JFpYN=
-QM4itvV4/view?usp=3Dsharing
-> [1] kernel BUG in btrfs_free_tree_block (fs/btrfs/extent-tree.c:3297):
-> https://paste.ubuntu.com/p/ZtzVKWbcGm/
-> [2] kernel BUG in clear_state_bit (fs/btrfs/extent_io.c:658!):
-> https://paste.ubuntu.com/p/hps2wXPG2b/
-> [3] kernel BUG in set_extent_bit (fs/btrfs/extent_io.c:1021):
-> https://paste.ubuntu.com/p/dcptjYYxgd/
-> [4] kernel BUG in set_state_bits (fs/btrfs/extent_io.c:939):
-> https://paste.ubuntu.com/p/NV9qtKB4KZ/
->
-> All the above crashes were triggered directly by the `BUG_ON()` macro
-> in the corresponding location.
-> Most `BUG_ON()` was hit due to `ENOMEM` when fault injected.
-> Would it be better for btrfs to handle the `ENOMEM` error, e.g.,
-> gracefully return, rather than panic the kernel?
+I was looking through the history[1] of the ksmbd work, and I'm kind
+of surprised at some of the flaws being found here. This looks like new
+code being written, too, I think (I found[0])? Some of these flaws are
+pretty foundational filesystem security properties[2] that weren't being
+tested for, besides the upsetting case of having buffer overflows[3]
+in an in-kernel filesystem server.
 
-The __clear_extent_bit() part is one of the critical section where we
-really rely on that to be work correctly.
+I'm concerned about code quality here, and I think something needs to
+change about the review and testing processes.
 
-We even implemented a preallocation scheme to prevent such problems, but
-error injection won't be completely resolved by preallocation.
+> Regression test results:
+> http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/67
+> and
+> https://app.travis-ci.com/github/namjaejeon/ksmbd/builds/237919800
 
-We indeed need to do the error handling better, but that would be a
-pretty big project, not something can be easily done right now.
+Can you tell me more about these tests? I'm not immediately filled with
+confidence, when I see on the second line of the test harness:
 
-Thanks,
-Qu
->
-> Regards
-> Hao
->
+- wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.4.109.tar.gz
+       ^^^^^^^^^^^^^^^^^^^^^^
+
+(and why isn't this a sparse clone?)
+
+I see xfstests and smbtorture getting run. Were these not catching
+things like "../../../../../" and the buffer overflows? And if not,
+where are the new tests that make sure these bugs can never recur?
+
+(Also, I see they're being run individually -- why not run the totality?)
+
+And looking at the Coverity report[4] under fs/ksmbd/* for linux-next, I
+see 12 issues dating back to Mar 17, and 1 from 2 days ago: 5 concurrency,
+4 memory corruptions, 1 hang, and 2 resource leaks. Coverity is hardly
+free from false positives, but those seems worth addressing. (Both you and
+Namjae have accounts already; thank you for doing that a few months back!)
+
+Anyway, I think my point is: this doesn't look ready for production use.
+I understand having bugs, growing new features, etc, but I think more
+work is needed here to really prove this code is ready to expose the
+kernel to SMB protocol based attacks. Any binary parsing code needs to be
+extremely paranoid, and a network file server gets it coming and going:
+filesystem metadata and protocol handling (and crypto)! :P
+
+Anyway, I hope something can change here; if we're going to have an
+in-kernel SMB server, it should have a distinct advantage over userspace
+options.
+
+-Kees
+
+[0] https://lore.kernel.org/lkml/20210322051344.1706-1-namjae.jeon@samsung.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/fs/ksmbd
+[2] https://git.kernel.org/linus/f58eae6c5fa882d6d0a6b7587a099602a59d57b5
+[3] https://git.kernel.org/linus/6d56262c3d224699b29b9bb6b4ace8bab7d692c2
+[4] https://scan.coverity.com/projects/linux-next-weekly-scan
+    View Defects, Settings cog, Filters, File: *ksmbd*, OK
+
+-- 
+Kees Cook
