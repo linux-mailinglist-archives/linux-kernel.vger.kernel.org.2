@@ -2,242 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B703C415FBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9744415FC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241249AbhIWN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:29:28 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:40901 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhIWN3U (ORCPT
+        id S241278AbhIWN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241188AbhIWN3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:29:20 -0400
-Received: by mail-wr1-f42.google.com with SMTP id t28so3821860wra.7;
-        Thu, 23 Sep 2021 06:27:48 -0700 (PDT)
+        Thu, 23 Sep 2021 09:29:24 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB61C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:27:52 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id w9so4059881qvs.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=pE+kUqL2PlpkB8tQauFk5qMrInUsMZVJSIrm21iK2iU=;
+        b=4m/+LebjmmnGicS8Pd8sJRVPobVe1maXDDWoaAVFwieN1i6hw3Kp9kzoGbTkRh1UhT
+         9swqVq7r06t6/o3wKxFUtITIzYtdh4I6mbtYxcaZzQB8SsFg2Yj5FAlfBenAI3FCBVss
+         JgPPrEdGP+MPtcCxGYjv5Fe4eOPgRTxDV8CmdMgcxCP+4f/cb9uK5JETc9krKJG2i90a
+         XUWLLzBJ89cEwHNJaYz66VxPz9Qh8lt9RBo6paGaFlENnZXZSlOgui8AtP8tOu3H8DZb
+         1mwKzcdJQaY9ctAYR6Qg1hLsPzWOb0qtEpw8TJe9fCLPboN9syR6mOZkX/UT+fKurtoD
+         uOKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/wLuOTGOM2923erGAXxPQ9YurX8bSLtQ7+eKGtfZWYs=;
-        b=YKhmK3HcG+Bs+P8lY25OI+CSW1hq2GLyozXvd1c90e4WD7DaiDtVPyPC0QwzLgQqLD
-         HC+S/gxfK9WNmeFwo9KAFu6onf0hRctAmZvWh7vWs4lzERQMTrV4pA6+84RcXe7t45D5
-         0PV/UOlJw7dAOOCGSA4a+EBJCpF/s5VQoKCdepuXt5JcfX8eJ+om1w4P2ZAHShq159C+
-         3K00LQaQr0ClDoUnA9RBoioRosDzFHBQBeTMcusvZDiNRTZ7CGERblo6A2NrVCESvfxE
-         xf0q6woy4WeWlTVs7SEzV+4twTo0+uDzVToMuxneykROThNLhk2OM/Jvn4RNwVCkhOlP
-         uF3w==
-X-Gm-Message-State: AOAM532m2Ye5DBL3A8S2EEDUYEDMzD7MXJY0UgDB/ev4fGinT8AoLjDg
-        YJDWSrG2VKY9nZijnwEzZGA1QrQeo32n4g==
-X-Google-Smtp-Source: ABdhPJxzbpr0WNXSLMFzPeFPqNvzQRU/+GHoYsE1TmQ7rQ7ma/BL93UnfJOiMlt4n1Z+t5zWQUQkAg==
-X-Received: by 2002:adf:f486:: with SMTP id l6mr4929948wro.375.1632403666666;
-        Thu, 23 Sep 2021 06:27:46 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.googlemail.com with ESMTPSA id u1sm2570543wmc.29.2021.09.23.06.27.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 06:27:45 -0700 (PDT)
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <20210920190350.3860821-2-willmcvicker@google.com>
- <a8d40b96-bcb2-5eb6-b0e5-c20c14471c8a@kernel.org>
- <CAMuHMdWdHF49qj+qV-DnbDDv14J3y98TPHd_6y_i7o7_azhErg@mail.gmail.com>
- <2c8a79f7-711a-b075-745f-ea77b82a1117@canonical.com>
- <CABYd82bzKh=QQHyk-kPXekzCKx+Uy-z2TY5qAQQNfuew=h=O-w@mail.gmail.com>
- <001cd621-53d1-fe22-0eaa-d13137827297@canonical.com>
- <YUx5uhKW/Jy2r3lv@google.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v1 1/4] clk: samsung: change COMMON_CLK_SAMSUNG default
- config logic
-Message-ID: <30a1d0f3-a17c-bf87-2519-542063a7a663@kernel.org>
-Date:   Thu, 23 Sep 2021 15:27:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=pE+kUqL2PlpkB8tQauFk5qMrInUsMZVJSIrm21iK2iU=;
+        b=z8Ln0AFuEtNwY88szk0YAp6T5fbJi2ZuApjoonwwDgYQCQPfWnd/tWY0AoVWcYdKFW
+         KBNl4cgo6JTNyYWR4EW/kqsbq+OQj/ylMsI5LLhndG6BtePmW9eTQIYrWD5dXk+NivzH
+         ufCwkj7M/69JJ5D6xffLyWRFIYsuc/x+jOTzpXpG1M1RxTG4nNNxGI6BLBvaiR3QPhy3
+         sERZ3NZwzyCoa26YS92KniGa5lGGCzWAda+Lkq2rJ6SRbugdCQa5SlNyhiPfsvF/UKeZ
+         zrXfYhaO5yzsBEIhMCQsos0Xmo7hVtIS4PpOt/OO1w+pANZnpZ4ScTkMuYFKu8gclTXf
+         ux0Q==
+X-Gm-Message-State: AOAM532YH9oFcyUk5v89pcdX+SjQ/uBQPjtrAUTrqdIUOsJBl85wIJxm
+        8ifW/5ZyqHPPXIguyXStOynP7w==
+X-Google-Smtp-Source: ABdhPJxKcZBa8xwy3niKjd2dWmWxuN3nSTVdqXmBmAojwo39fnitZFTHCIiwJ4VmaelURDWAHx6F6Q==
+X-Received: by 2002:ad4:55b3:: with SMTP id f19mr4555417qvx.16.1632403671727;
+        Thu, 23 Sep 2021 06:27:51 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id l3sm2755097qtu.47.2021.09.23.06.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 06:27:51 -0700 (PDT)
+Message-ID: <c3d05d4bdd26ea7a2098b53251cefcc4d1f6b589.camel@ndufresne.ca>
+Subject: Re: [EXT] Re: [PATCH v9 11/13] ARM64: dts: freescale: imx8q: add
+ imx vpu codec entries
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Ming Qian <ming.qian@nxp.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Cc:     "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 23 Sep 2021 09:27:49 -0400
+In-Reply-To: <AM6PR04MB63418DC3AB2CF38DCA63AA25E7A39@AM6PR04MB6341.eurprd04.prod.outlook.com>
+References: <cover.1631521295.git.ming.qian@nxp.com>
+         <620081ca2f6441de6307792dbb7797da148cf04c.1631521295.git.ming.qian@nxp.com>
+         <1a454107661fced1adfd8a76a20a819d75b882d4.camel@ndufresne.ca>
+         <AM6PR04MB63418DC3AB2CF38DCA63AA25E7A39@AM6PR04MB6341.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <YUx5uhKW/Jy2r3lv@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2021 14:57, Lee Jones wrote:
-> On Tue, 21 Sep 2021, Krzysztof Kozlowski wrote:
+Le jeudi 23 septembre 2021 à 10:31 +0000, Ming Qian a écrit :
+> > -----Original Message-----
+> > From: Nicolas Dufresne [mailto:nicolas@ndufresne.ca]
+> > Sent: Wednesday, September 22, 2021 8:55 PM
+> > To: Ming Qian <ming.qian@nxp.com>; mchehab@kernel.org;
+> > shawnguo@kernel.org; robh+dt@kernel.org; s.hauer@pengutronix.de
+> > Cc: hverkuil-cisco@xs4all.nl; kernel@pengutronix.de; festevam@gmail.com;
+> > dl-linux-imx <linux-imx@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>;
+> > linux-media@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > Subject: [EXT] Re: [PATCH v9 11/13] ARM64: dts: freescale: imx8q: add imx
+> > vpu
+> > codec entries
+> > 
+> > Caution: EXT Email
+> > 
+> > Hi Ming,
+> > 
+> > Le lundi 13 septembre 2021 à 17:11 +0800, Ming Qian a écrit :
+> > > Add the Video Processing Unit node for IMX8Q SoC.
+> > 
+> > Just to let you know that this patch no longer apply on 5.15-rc2. Please let
+> > us
+> > know which was your base.
 > 
->> On 21/09/2021 19:58, Will McVicker wrote:
->>> On Tue, Sep 21, 2021 at 1:35 AM Krzysztof Kozlowski
->>> <krzysztof.kozlowski@canonical.com> wrote:
->>>>
->>>> On 21/09/2021 09:50, Geert Uytterhoeven wrote:
->>>>> On Tue, Sep 21, 2021 at 9:31 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>>>>> On 20/09/2021 21:03, Will McVicker wrote:
->>>>>>> COMMON_CLK_SAMSUNG is selected by ARCH_EXYNOS which forces this config
->>>>>>> to be built-in when ARCH_EXYNOS is enabled. Switch the logic to use a
->>>>>>> "default y if ARCH_EXYNOS" to provide flexibilty for vendors to disable
->>>>>>> or modularize this driver.
->>>>>>
->>>>>> The clock drivers are essential, you cannot disable them for a generic
->>>>>> kernel supporting ARCH_EXYNOS. Such kernel won't work properly on platforms.
->>>>>
->>>>> Obviously it's not gonna work if the clock driver is not enabled
->>>>> at all.  But does it work if you make the clock driver modular, and
->>>>> put it with all other essential driver modules in initramfs?  Debugging
->>>>> would be hard, as the serial console driver also relies on clocks
->>>>> and PM Domains etc.
->>>>
->>>> The kernel could boot without clock drivers (default settings from
->>>> bootloader), probe clocks from initramfs and proceed with rootfs from
->>>> eMMC/SD/net.
->>>>
->>>> In theory.
->>>>
->>>> However I have no reports that it ever worked. If there is such working
->>>> upstream configuration, I don't mind here. Just please explain this in
->>>> the commit msg.
->>>>
->>>>>
->>>>> If not, this patch should be NAKed, until it works with a modular
->>>>> clock driver.
->>>>>
->>>>> If yes, perhaps another line should be added (_before_ the other line)?
->>>>>
->>>>>   + default m if ARCH_EXYNOS && MODULES
->>>>>     default y if ARCH_EXYNOS
->>>>>
->>>>> However, many developers may want MODULES=y, but not want to bother
->>>>> with an initramfs.  So perhaps we need a new symbol
->>>>> MINIMUM_GENERIC_KERNEL or so, protected by EXPERT, and make the
->>>>> driver default to m if that is enabled?
->>>>
->>>> Yeah, that's indeed a problem to solve. For most users (and distros)
->>>> building kernel for Exynos this should be built-in by default.
->>>>
->>>> Anyway, the option is non-selectable so it cannot be converted to "m" or
->>>> disabled. And this is claimed in the commit msg:
->>>> "provide flexibilty for vendors to disable or modularize this driver."
->>>>
->>>> The commit does not achieve it.
->>>>
->>>> Best regards,
->>>> Krzysztof
->>>
->>> Thanks for the reviews! As Lee has explained in his replies, the
->>> intent of this series is to provide config flexibility to create a
->>> defconfig that allows us to move out SoC specific drivers in order to
->>> create a generic kernel that can be used across multiple devices with
->>> different SoCs.
->>
->> That's quite generic statement... or let me put it that way - we already
->> have this ability to create a generic kernel supporting different SoCs.
->> Exynos and other ARMv7 and ARMv8 platforms are multiplatform.
->>
->> Task is done.
-> 
-> multi_v7_defconfig and ARMv8's defconfig are bloated monoliths which
-> provide limited flexibility.  Good for testing and messing around -
-> not much good for real products.
+> Hi Nicolas,
+>    The base commit I used is 9c3a0f285248899dfa81585bc5d5bc9ebdb8fead.
+>    It's recorded in the conver
 
-I am not saying about defconfigs. I am saying that ARMv8 platform is
-multiplatform so we already solved the problem Will mentioned. :)
+Ah, of course, now that you mention I see it, sorry about the noise.
 
 > 
->> Please be more specific about use case and describe what exactly in
->> current upstream multiplatform kernel is missing, what is not
->> multiplatform enough.
+> > 
+> > > 
+> > > Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> > > Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
+> > > Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
+> > > ---
+> > >  .../arm64/boot/dts/freescale/imx8-ss-vpu.dtsi | 72
+> > > +++++++++++++++++++  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
+> > > 17 +++++
+> > >  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    | 24 +++++++
+> > >  3 files changed, 113 insertions(+)
+> > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
+> > > b/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
+> > > new file mode 100644
+> > > index 000000000000..f2dde6d14ca3
+> > > --- /dev/null
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
+> > > @@ -0,0 +1,72 @@
+> > > +// SPDX-License-Identifier: GPL-2.0+
+> > > +/*
+> > > + * Copyright 2021 NXP
+> > > + *   Dong Aisheng <aisheng.dong@nxp.com>
+> > > + */
+> > > +
+> > > +vpu: vpu@2c000000 {
+> > > +     #address-cells = <1>;
+> > > +     #size-cells = <1>;
+> > > +     ranges = <0x2c000000 0x0 0x2c000000 0x2000000>;
+> > > +     reg = <0 0x2c000000 0 0x1000000>;
+> > > +     power-domains = <&pd IMX_SC_R_VPU>;
+> > > +     status = "disabled";
+> > > +
+> > > +     mu_m0: mailbox@2d000000 {
+> > > +             compatible = "fsl,imx6sx-mu";
+> > > +             reg = <0x2d000000 0x20000>;
+> > > +             interrupts = <GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>;
+> > > +             #mbox-cells = <2>;
+> > > +             power-domains = <&pd IMX_SC_R_VPU_MU_0>;
+> > > +             status = "okay";
+> > > +     };
+> > > +
+> > > +     mu1_m0: mailbox@2d020000 {
+> > > +             compatible = "fsl,imx6sx-mu";
+> > > +             reg = <0x2d020000 0x20000>;
+> > > +             interrupts = <GIC_SPI 470 IRQ_TYPE_LEVEL_HIGH>;
+> > > +             #mbox-cells = <2>;
+> > > +             power-domains = <&pd IMX_SC_R_VPU_MU_1>;
+> > > +             status = "okay";
+> > > +     };
+> > > +
+> > > +     mu2_m0: mailbox@2d040000 {
+> > > +             compatible = "fsl,imx6sx-mu";
+> > > +             reg = <0x2d040000 0x20000>;
+> > > +             interrupts = <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>;
+> > > +             #mbox-cells = <2>;
+> > > +             power-domains = <&pd IMX_SC_R_VPU_MU_2>;
+> > > +             status = "disabled";
+> > > +     };
+> > > +
+> > > +     vpu_core0: vpu_core@2d080000 {
+> > > +             reg = <0x2d080000 0x10000>;
+> > > +             compatible = "nxp,imx8q-vpu-decoder";
+> > > +             power-domains = <&pd IMX_SC_R_VPU_DEC_0>;
+> > > +             mbox-names = "tx0", "tx1", "rx";
+> > > +             mboxes = <&mu_m0 0 0>,
+> > > +                     <&mu_m0 0 1>,
+> > > +                     <&mu_m0 1 0>;
+> > > +             status = "disabled";
+> > > +     };
+> > > +     vpu_core1: vpu_core@2d090000 {
+> > > +             reg = <0x2d090000 0x10000>;
+> > > +             compatible = "nxp,imx8q-vpu-encoder";
+> > > +             power-domains = <&pd IMX_SC_R_VPU_ENC_0>;
+> > > +             mbox-names = "tx0", "tx1", "rx";
+> > > +             mboxes = <&mu1_m0 0 0>,
+> > > +                     <&mu1_m0 0 1>,
+> > > +                     <&mu1_m0 1 0>;
+> > > +             status = "disabled";
+> > > +     };
+> > > +     vpu_core2: vpu_core@2d0a0000 {
+> > > +             reg = <0x2d0a0000 0x10000>;
+> > > +             compatible = "nxp,imx8q-vpu-encoder";
+> > > +             power-domains = <&pd IMX_SC_R_VPU_ENC_1>;
+> > > +             mbox-names = "tx0", "tx1", "rx";
+> > > +             mboxes = <&mu2_m0 0 0>,
+> > > +                     <&mu2_m0 0 1>,
+> > > +                     <&mu2_m0 1 0>;
+> > > +             status = "disabled";
+> > > +     };
+> > > +};
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
+> > > b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
+> > > index 863232a47004..05495b60beb8 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
+> > > @@ -196,6 +196,23 @@ &usdhc2 {
+> > >       status = "okay";
+> > >  };
+> > > 
+> > > +&vpu {
+> > > +     compatible = "nxp,imx8qxp-vpu";
+> > > +     status = "okay";
+> > > +};
+> > > +
+> > > +&vpu_core0 {
+> > > +     reg = <0x2d040000 0x10000>;
+> > > +     memory-region = <&decoder_boot>, <&decoder_rpc>;
+> > > +     status = "okay";
+> > > +};
+> > > +
+> > > +&vpu_core1 {
+> > > +     reg = <0x2d050000 0x10000>;
+> > > +     memory-region = <&encoder_boot>, <&encoder_rpc>;
+> > > +     status = "okay";
+> > > +};
+> > > +
+> > >  &iomuxc {
+> > >       pinctrl_fec1: fec1grp {
+> > >               fsl,pins = <
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > > b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > > index 1e6b4995091e..6b421cfa5534 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> > > @@ -46,6 +46,9 @@ aliases {
+> > >               serial1 = &lpuart1;
+> > >               serial2 = &lpuart2;
+> > >               serial3 = &lpuart3;
+> > > +             vpu_core0 = &vpu_core0;
+> > > +             vpu_core1 = &vpu_core1;
+> > > +             vpu_core2 = &vpu_core2;
+> > >       };
+> > > 
+> > >       cpus {
+> > > @@ -134,10 +137,30 @@ reserved-memory {
+> > >               #size-cells = <2>;
+> > >               ranges;
+> > > 
+> > > +             decoder_boot: decoder-boot@84000000 {
+> > > +                     reg = <0 0x84000000 0 0x2000000>;
+> > > +                     no-map;
+> > > +             };
+> > > +
+> > > +             encoder_boot: encoder-boot@86000000 {
+> > > +                     reg = <0 0x86000000 0 0x200000>;
+> > > +                     no-map;
+> > > +             };
+> > > +
+> > > +             decoder_rpc: decoder-rpc@0x92000000 {
+> > > +                     reg = <0 0x92000000 0 0x100000>;
+> > > +                     no-map;
+> > > +             };
+> > > +
+> > >               dsp_reserved: dsp@92400000 {
+> > >                       reg = <0 0x92400000 0 0x2000000>;
+> > >                       no-map;
+> > >               };
+> > > +
+> > > +             encoder_rpc: encoder-rpc@0x94400000 {
+> > > +                     reg = <0 0x94400000 0 0x700000>;
+> > > +                     no-map;
+> > > +             };
+> > >       };
+> > > 
+> > >       pmu {
+> > > @@ -258,6 +281,7 @@ map0 {
+> > >       };
+> > > 
+> > >       /* sorted in register address */
+> > > +     #include "imx8-ss-vpu.dtsi"
+> > >       #include "imx8-ss-adma.dtsi"
+> > >       #include "imx8-ss-conn.dtsi"
+> > >       #include "imx8-ss-ddr.dtsi"
+> > 
 > 
-> The use-case is GKI.  A realistic middle-ground between fully open
-> source and real-world usage of the Linux kernel in a competitive
-> technical arena.  GKI aims to be as close to Mainline as possible,
-> whilst allowing hardware vendors to supply their own software
-> containing their perceived competitive edge and/or supporting
-> not-yet-released hardware platforms.
 
-<grumpy mode>
-Therefore the use case is to not contribute anything upstream around
-ARCH_EXYNOS but use it in millions of devices downstream with hundreds
-of out-of-tree modules. The use case is to make life easy for the vendor
-and out-of-tree code, not for the upstream. Instead of promoting
-upstreaming, or leaning towards usptream in some balanced way, the use
-case is to entirely go to out-of-tree.
 
-I am not thinking here about edge or not-yet-released platforms but
-"ancient" in terms of current SoC business, e.g. 3-5 years old.
-</grumpy mode>
-
-> 
-> If you end up over-constraining the ability to configure the kernel in
-> useful/meaningful ways, that makes one of the main (best intention)
-> aims of GKI, (i.e. to have an upstream first ethos in order to be as
-> close to upstream as possible) much more difficult.
-
-GKI encourages core kernel changes to be upstreamed but it is
-effectively the nail in the coffin of upstreaming vendor SoC changes.
-There is simply no incentive for less-cooperative vendor to upstream
-it's modules (except usual benefits like code quality and user support
-which are not important for less-cooperative vendors).
-
-The kernel should be configured mainly towards mainline platforms. Not
-the other way around. This of course does not stop it for supporting
-out-of-tree code, but I guess you also know that what's out-of-tree, it
-does not exist. :)
-
-> 
-> I put in a lot of effort to ensure GKI doesn't end up as just another
-> fork of the Linux kernel.  So far, so good, but flexibility and
-> understanding is key.
-> 
->>> I'm sorry I added confusion by mentioning
->>> modularization. All of these drivers that I am modifying in this
->>> series can be modularized which is an ongoing effort, but is not
->>> addressed here and I don't believe that modularizing them should be a
->>> requirement before supporting enabling/disabling them.
->>
->> Since the disabling the driver for a kernel supporting Exynos does not
->> make any sense, then making it at least modular unfortunately it is a
->> requirement.
-> 
-> I can go with that.
-> 
->>> I will update the series with my patch that refactors the Samsung SoC
->>> drivers menuconfig to make these visible as well.
->>
->> I would first recommend to really describe your use case because my
->> questions about this are still unanswered.
-> 
-> Hopefully my replies have helped somewhat.
-> 
-> Happy to discuss further if required.
-> 
-> If all else fails, feel free to ping me on IRC (lag).
-
-Thanks Lee, you described the use case. In general I like it and support
-it, except for what I wrote in the other mail.
-
-Vendor does not contribute much therefore there is no balance in
-upstreaming. Since none of other vendor's platforms are supported, I am
-looking only at what is supported. From that perspective - the change
-proposed by Will and previous guys, does not have much sense.
-
-My perspective probably would change a lot if vendor did contribute some
-of its non-edge platforms (3-5 years old)... especially that unlike few
-community guys (e.g. PostmarketOS), vendor has shit-tons of money and
-the hardware manuals. :)
-
-Instead of pushing this change, please let's give some incentive to the
-vendor for upstreaming anything.
-
-Best regards,
-Krzysztof
