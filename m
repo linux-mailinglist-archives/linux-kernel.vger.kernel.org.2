@@ -2,194 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9951C41611C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F237C41611F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240652AbhIWOhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:37:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241661AbhIWOhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:37:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 997E16109E;
-        Thu, 23 Sep 2021 14:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632407762;
-        bh=KFUibeGBJ4FkuumzysDaWGrAI4qssDwrzJIbW8ZA1mc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uxmkk4MkjRA85QZ9+7nnvqJEW+LePEe9LKTxu4vlwKZRQXIg8RVbzcRwqa0/1T+MH
-         x2MTIPRWrmpjAKYBFz9grTvGo2tulRZnufcbj0tDh++s2td74K8MX1fqCM3fCfiWeH
-         Q2dFuYS9Allrexba/V5xoV24Eol0T4kCZy56yx9kjy6s92WC+OM+kV9JBU0Pr4t7BD
-         zA3PuWb2gc9L4MxRn9CmREOZBqmdtQxeK5xoUtt8BlXqpEgbB9rrGdJGQqgbbNa3xl
-         flffZUoio7S7w67ce3NBd467YM1bSJ/ieaj2po0EVMu/0dLVhMbzQcAzsRzRyr4xFQ
-         5MEI8SiatnvxA==
-Date:   Thu, 23 Sep 2021 22:35:45 +0800
-From:   Gao Xiang <xiang@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] erofs: clean up erofs_map_blocks tracepoints
-Message-ID: <20210923143238.GB1852@hsiangkao-HP-ZHAN-66-Pro-G1>
-Mail-Followup-To: Chao Yu <chao@kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>
-References: <20210921143531.81356-1-hsiangkao@linux.alibaba.com>
- <20210921143531.81356-2-hsiangkao@linux.alibaba.com>
- <448368d3-d8a2-b872-7000-d93363aec9c6@kernel.org>
+        id S241605AbhIWOiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:38:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37632 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241565AbhIWOiF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:38:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632407794;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tM3g7fUHbsu5UDZIXRUIRPhWsRqGb+aH3IjlBpgEGsU=;
+        b=VqRhG2tC0TwluiuLGMRhbvsdRyJvCJ6wYtsfsJe8SJcLFbmYQ2uW2bgSPaEQ/PYLtHdlMM
+        fytT326rLAd/K7XELk4/R7X/OoJaEKLo2qe8wbrB0RxVklQoSMdLwOWrSrKKogOKWUQnbD
+        oXUXcS3mxeGk6qswZ3EHIv0ydodYafg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-NNJg_dDINSCBkcQ0Xcdx1A-1; Thu, 23 Sep 2021 10:36:32 -0400
+X-MC-Unique: NNJg_dDINSCBkcQ0Xcdx1A-1
+Received: by mail-wr1-f72.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso5268911wrb.20
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:36:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tM3g7fUHbsu5UDZIXRUIRPhWsRqGb+aH3IjlBpgEGsU=;
+        b=YKjjPt9zACQR/k1H0heNwtqH62VvaZEPn3c4owt8y5IWTltD95O4WunBXMNVxSyHAu
+         iG9meTbnisDb2VJMgmyEvwejwPozkML0nGmsX14OR+ON0Hzi8NznDlokRloSFgdXdvCQ
+         KrSduapldDF3fZWBKoJUzdmlUC25m2o/ZIFYrEQxD7S1G69zGw6ikP0w4DcRSWguRRu+
+         WBTV0AL8TXGLAFi/0y7IG/0bj2UrM5aF4r8T5TgvIS15qbQjOq++4ddC1/R3OwheJvMQ
+         95CY7Prkzv6q3tdeWXHDXRTlG7ULQlwOomc2viVoG6X5gJWxRUT2bWvBleWiIvgpl78Q
+         mong==
+X-Gm-Message-State: AOAM530XBsp39TxAdrqRwMgfPbB7FXxBG5yUzGNUK21OvCoBToqYcfZ9
+        W94Lf4CVtD1lwsrrtnY5vIo9UPPBLvny77B6HOimx+HDcBf7hVcEpscJ64GXKCIGsMHuJ8SFqkd
+        4/QLtdRBVKaEAiFuhDMBsEao1
+X-Received: by 2002:a5d:568a:: with SMTP id f10mr5484166wrv.314.1632407791682;
+        Thu, 23 Sep 2021 07:36:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzI7VO+gl5FNNX2Qjt40hO60rJs1kdwuEagO0synF/stcFYOiwV4VSXa+cDxEnaUvFMYPBXcA==
+X-Received: by 2002:a5d:568a:: with SMTP id f10mr5484141wrv.314.1632407791497;
+        Thu, 23 Sep 2021 07:36:31 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id c9sm3493853wmb.41.2021.09.23.07.36.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 07:36:30 -0700 (PDT)
+Subject: Re: [PATCH V2 02/10] KVM: X86: Synchronize the shadow pagetable
+ before link it
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Avi Kivity <avi@redhat.com>, kvm@vger.kernel.org
+References: <20210918005636.3675-1-jiangshanlai@gmail.com>
+ <20210918005636.3675-3-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <40f67a70-5076-3806-1ec7-a4ac50d13774@redhat.com>
+Date:   Thu, 23 Sep 2021 16:36:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <448368d3-d8a2-b872-7000-d93363aec9c6@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210918005636.3675-3-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
+On 18/09/21 02:56, Lai Jiangshan wrote:
+> +			 * It also makes KVM_REQ_MMU_SYNC request if the @sp
+> +			 * is linked on a different addr to expedite it.
+> +			 */
+> +			if (sp->unsync_children &&
+> +			    mmu_sync_children(vcpu, sp, false)) {
+> +				kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
+> +				return RET_PF_RETRY;
+> +			}
+>   		}
 
-On Thu, Sep 23, 2021 at 10:13:23PM +0800, Chao Yu wrote:
-> On 2021/9/21 22:35, Gao Xiang wrote:
-> > Since the new type of chunk-based files is introduced, there is no
-> > need to leave flatmode tracepoints. Rename to erofs_map_blocks.
-> > 
-> > Add the missing FIEMAP tracepoint map flag as well.
-> > 
-> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > ---
-> >   fs/erofs/data.c              | 31 ++++++++++++++-----------------
-> >   include/trace/events/erofs.h |  7 ++++---
-> >   2 files changed, 18 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> > index 9db8297..020c3e0 100644
-> > --- a/fs/erofs/data.c
-> > +++ b/fs/erofs/data.c
-> > @@ -26,14 +26,11 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
-> >   				     struct erofs_map_blocks *map,
-> >   				     int flags)
-> >   {
-> > -	int err = 0;
-> >   	erofs_blk_t nblocks, lastblk;
-> >   	u64 offset = map->m_la;
-> >   	struct erofs_inode *vi = EROFS_I(inode);
-> >   	bool tailendpacking = (vi->datalayout == EROFS_INODE_FLAT_INLINE);
-> > -	trace_erofs_map_blocks_flatmode_enter(inode, map, flags);
-> > -
-> >   	nblocks = DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
-> >   	lastblk = nblocks - tailendpacking;
-> > @@ -57,8 +54,7 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
-> >   				  "inline data cross block boundary @ nid %llu",
-> >   				  vi->nid);
-> >   			DBG_BUGON(1);
-> > -			err = -EFSCORRUPTED;
-> > -			goto err_out;
-> > +			return -EFSCORRUPTED;
-> >   		}
-> >   		map->m_flags |= EROFS_MAP_META;
-> > @@ -67,14 +63,10 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
-> >   			  "internal error @ nid: %llu (size %llu), m_la 0x%llx",
-> >   			  vi->nid, inode->i_size, map->m_la);
-> >   		DBG_BUGON(1);
-> > -		err = -EIO;
-> > -		goto err_out;
-> > +		return -EIO;
-> >   	}
-> > -
-> >   	map->m_llen = map->m_plen;
-> > -err_out:
-> > -	trace_erofs_map_blocks_flatmode_exit(inode, map, flags, 0);
-> > -	return err;
-> > +	return 0;
-> >   }
-> >   static int erofs_map_blocks(struct inode *inode,
-> > @@ -89,6 +81,7 @@ static int erofs_map_blocks(struct inode *inode,
-> >   	erofs_off_t pos;
-> >   	int err = 0;
-> > +	trace_erofs_map_blocks_enter(inode, map, flags);
-> >   	if (map->m_la >= inode->i_size) {
-> >   		/* leave out-of-bound access unmapped */
-> >   		map->m_flags = 0;
-> > @@ -96,8 +89,10 @@ static int erofs_map_blocks(struct inode *inode,
-> 
-> map->m_flags = 0;
-> map->m_plen = 0;
-> 
-> It needs to reset map->m_llen to zero here like we did after 'out' label before?
+I think we can put the sync in mmu_sync_children:
 
-Yeah, thanks for catching that! I will fix it in the next version
-(PATCH 2/2 will be delayed for 5.16...)
+-			if (!can_yield)
++			if (!can_yield) {
++				/*
++				 * Some progress has been made so the caller
++				 * can simply retry, but we can expedite the
++				 * process by forcing a sync to happen.
++				 */
++				kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
+  				return -EINTR;
++			}
 
-p.s. I might need to apply the following patches for 5.15 cycle in
-advance, could you help review these as well? Many thanks!
-1. erofs: fix misbehavior of unsupported chunk format check
-2. erofs: fix compacted_2b if compacted_4b_initial > totalidx
+Paolo
 
-Thanks,
-Gao Xiang
-
-> 
-> Thanks,
-> 
-> >   		goto out;
-> >   	}
-> > -	if (vi->datalayout != EROFS_INODE_CHUNK_BASED)
-> > -		return erofs_map_blocks_flatmode(inode, map, flags);
-> > +	if (vi->datalayout != EROFS_INODE_CHUNK_BASED) {
-> > +		err = erofs_map_blocks_flatmode(inode, map, flags);
-> > +		goto out;
-> > +	}
-> >   	if (vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)
-> >   		unit = sizeof(*idx);			/* chunk index */
-> > @@ -109,9 +104,10 @@ static int erofs_map_blocks(struct inode *inode,
-> >   		    vi->xattr_isize, unit) + unit * chunknr;
-> >   	page = erofs_get_meta_page(inode->i_sb, erofs_blknr(pos));
-> > -	if (IS_ERR(page))
-> > -		return PTR_ERR(page);
-> > -
-> > +	if (IS_ERR(page)) {
-> > +		err = PTR_ERR(page);
-> > +		goto out;
-> > +	}
-> >   	map->m_la = chunknr << vi->chunkbits;
-> >   	map->m_plen = min_t(erofs_off_t, 1UL << vi->chunkbits,
-> >   			    roundup(inode->i_size - map->m_la, EROFS_BLKSIZ));
-> > @@ -147,11 +143,12 @@ static int erofs_map_blocks(struct inode *inode,
-> >   		map->m_flags = EROFS_MAP_MAPPED;
-> >   		break;
-> >   	}
-> > +	map->m_llen = map->m_plen;
-> >   out_unlock:
-> >   	unlock_page(page);
-> >   	put_page(page);
-> >   out:
-> > -	map->m_llen = map->m_plen;
-> > +	trace_erofs_map_blocks_exit(inode, map, flags, 0);
-> >   	return err;
-> >   }
-> > diff --git a/include/trace/events/erofs.h b/include/trace/events/erofs.h
-> > index db4f2ce..5c91edd 100644
-> > --- a/include/trace/events/erofs.h
-> > +++ b/include/trace/events/erofs.h
-> > @@ -19,7 +19,8 @@
-> >   		{ 1,		"DIR" })
-> >   #define show_map_flags(flags) __print_flags(flags, "|",	\
-> > -	{ EROFS_GET_BLOCKS_RAW,	"RAW" })
-> > +	{ EROFS_GET_BLOCKS_RAW,	"RAW" },		\
-> > +	{ EROFS_GET_BLOCKS_FIEMAP, "FIEMAP" })
-> >   #define show_mflags(flags) __print_flags(flags, "",	\
-> >   	{ EROFS_MAP_MAPPED,	"M" },			\
-> > @@ -169,7 +170,7 @@
-> >   		  __entry->flags ? show_map_flags(__entry->flags) : "NULL")
-> >   );
-> > -DEFINE_EVENT(erofs__map_blocks_enter, erofs_map_blocks_flatmode_enter,
-> > +DEFINE_EVENT(erofs__map_blocks_enter, erofs_map_blocks_enter,
-> >   	TP_PROTO(struct inode *inode, struct erofs_map_blocks *map,
-> >   		 unsigned flags),
-> > @@ -221,7 +222,7 @@
-> >   		  show_mflags(__entry->mflags), __entry->ret)
-> >   );
-> > -DEFINE_EVENT(erofs__map_blocks_exit, erofs_map_blocks_flatmode_exit,
-> > +DEFINE_EVENT(erofs__map_blocks_exit, erofs_map_blocks_exit,
-> >   	TP_PROTO(struct inode *inode, struct erofs_map_blocks *map,
-> >   		 unsigned flags, int ret),
-> > 
