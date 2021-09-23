@@ -2,107 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B740415C3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6DF415C40
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240494AbhIWKt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 06:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240476AbhIWKtx (ORCPT
+        id S240480AbhIWKut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:50:49 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:35046 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240468AbhIWKuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:49:53 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A64C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:48:21 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id e6-20020a0cb446000000b0037eeb9851dfso18984540qvf.17
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=sS022PP0nBNSy8OKBYkYKJTWDCY37FWogqIg9gOqwaw=;
-        b=lz2zeNS9KKJed9/idbHiyT52xuRsU8jmRFz/4Mh/ZlYvIfI3NDOCAuA2Mq6nkWqR9E
-         JbggrFJJNsGHx4UKBCtnu9oTDdSfGQ0U63Ow6+INWd6jX6hEEq6oHYFPolUW7dRfVRSs
-         R6LrBwtvFPJpvUbHCmbEJZIDifLmii2lv7P7cjnPv8SxIUaqliMUYRn+f2H7Ehom3Emb
-         Nd3qoLdmJxeoeyBYCcPpjy52IK5R6kCxicripz/jbLDMASJ3WgAJNchlIAe9GvEqG38b
-         Zbs2ntvM8UA5eMvtb3l9ZHTuJ7KdpkCnp5pvlUHdzViBukGzgMT6AgB9Jc6cAayCd8Gp
-         3VSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=sS022PP0nBNSy8OKBYkYKJTWDCY37FWogqIg9gOqwaw=;
-        b=eLXTUZ4FDpk+b8Eey///vC3xh0Jj1lwBMugpo1BM+K15+FnCUh2n1fp5hjE3Hda7Cz
-         cSK97R0N6UTIhXAmbW6ZfAzPUjHww09xJ5CjR9LJyAgI4MxaP1XUc83Rj03jYs9OIaWA
-         7TN3xFqyvm0dmSoXCaGV1hFVDFkSPhA/PpGYstefpFU1kbtTY/89TSt2jcImI9/KuIHf
-         5g/q8a6T7HcmikhtZYdcK0fU5hX1BwfcbB635txWpwYAJSiw6mlDZ0Q89tbNQDAJGWQx
-         DEpHK/yNoEfeAy6jF8i3PsY12vEuB2twwjFYgsiU8BrWXdxkZP/jqk2bZz6e9GHUmzku
-         my2A==
-X-Gm-Message-State: AOAM533IdWoGs8yXdpRjTDffAMmP89Pw04JqknMh1YbKtreGZ8cPNRKp
-        UBdRgvui9efbpl/E/e1+PgxRnmGqMA==
-X-Google-Smtp-Source: ABdhPJwl3K/JOiSHRQnSOsLFlsdwEP0YkjR1wD9m+isgUOiNjdnzFZHgt8ubrMgehmtACfPt7lrjI06liQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:bd72:fd35:a085:c2e3])
- (user=elver job=sendgmr) by 2002:ad4:4990:: with SMTP id t16mr3775079qvx.32.1632394101026;
- Thu, 23 Sep 2021 03:48:21 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 12:48:03 +0200
-In-Reply-To: <20210923104803.2620285-1-elver@google.com>
-Message-Id: <20210923104803.2620285-5-elver@google.com>
-Mime-Version: 1.0
-References: <20210923104803.2620285-1-elver@google.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v3 5/5] kfence: add note to documentation about skipping
- covered allocations
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 23 Sep 2021 06:50:35 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18N8xkvd005755;
+        Thu, 23 Sep 2021 12:48:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=erpy7pilbQAUCgWWy8Jc10rf1wN9rih1xMYpuf1nGrI=;
+ b=tiZAK1KMKWbl0wv8ajSNPtaih5vem5xRVDdfw/gEsp1KOQhT65E4FePgQC4tC8ZEWVLj
+ WTimxHuwywMw2a+AbWEQAwktZFZxL5mi3Omq1ewnTPRGgvaJbKXs2MB9p4TH2yZ+ET2U
+ 49X0nyNZb6Q7NeRbkZA7Sk1SF/uBaPGv2hpqPb5Rn/hLFukSRn7+WIlPOtWSxhHAPAb9
+ TRVaTGclQKkpzsMCqmPzCM3xYDUi1JPQELJQ6bcPL9ebHUh4oR+TZmM2Kky+gIcqEY+U
+ m2OIAwQQ25E0RFhIf8HJ0yvnc1dhA5NbfgwWuS8wBKVsjhIb9F4HXn8xxuBZk9NOw3F/ wA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3b8hngaj78-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Sep 2021 12:48:33 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7F837100034;
+        Thu, 23 Sep 2021 12:48:32 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7578822FE39;
+        Thu, 23 Sep 2021 12:48:32 +0200 (CEST)
+Received: from [10.48.0.126] (10.75.127.48) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
+ 2021 12:48:30 +0200
+Subject: Re: [Linux-stm32] [PATCH v2 7/7] iio: adc: stm32-adc: use generic
+ binding for sample-time
+To:     Olivier Moysan <olivier.moysan@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>
+CC:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210922153418.21033-1-olivier.moysan@foss.st.com>
+ <20210922153418.21033-8-olivier.moysan@foss.st.com>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <6adf5b4d-8315-7311-8754-9c9ad5d6513a@foss.st.com>
+Date:   Thu, 23 Sep 2021 12:48:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210922153418.21033-8-olivier.moysan@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-23_03,2021-09-23_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a note briefly mentioning the new policy about "skipping currently
-covered allocations if pool close to full." Since this has a notable
-impact on KFENCE's bug-detection ability on systems with large uptimes,
-it is worth pointing out the feature.
+On 9/22/21 5:34 PM, Olivier Moysan wrote:
+> Add st,min-sample-time-nsecs to channel generic binding.
+> Sample time can be defined par channel node. If a channel
+> is configured as differential, the same sample time applies
+> for both inputs.
+> Keep support of legacy st,min-sample-time-nsecs property
+> for backward compatibility.
+> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> ---
+>  drivers/iio/adc/stm32-adc.c | 70 +++++++++++++++++++++----------------
+>  1 file changed, 39 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index c427e439bf4a..cfd11ff0cf36 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -1809,6 +1809,11 @@ static void stm32_adc_smpr_init(struct stm32_adc *adc, int channel, u32 smp_ns)
+>  	u32 period_ns, shift = smpr->shift, mask = smpr->mask;
+>  	unsigned int smp, r = smpr->reg;
+>  
+> +	/*
+> +	 * For vrefint channel, ensure that the sampling time cannot
+> +	 * be lower than the one specified in the datasheet
+> +	 */
+> +
 
-Signed-off-by: Marco Elver <elver@google.com>
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
----
-v2:
-* Rewrite.
----
- Documentation/dev-tools/kfence.rst | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Hi Olivier,
 
-diff --git a/Documentation/dev-tools/kfence.rst b/Documentation/dev-tools/kfence.rst
-index 0fbe3308bf37..d45f952986ae 100644
---- a/Documentation/dev-tools/kfence.rst
-+++ b/Documentation/dev-tools/kfence.rst
-@@ -269,6 +269,17 @@ tail of KFENCE's freelist, so that the least recently freed objects are reused
- first, and the chances of detecting use-after-frees of recently freed objects
- is increased.
- 
-+If pool utilization reaches 75% (default) or above, to reduce the risk of the
-+pool eventually being fully occupied by allocated objects yet ensure diverse
-+coverage of allocations, KFENCE limits currently covered allocations of the
-+same source from further filling up the pool. The "source" of an allocation is
-+based on its partial allocation stack trace. A side-effect is that this also
-+limits frequent long-lived allocations (e.g. pagecache) of the same source
-+filling up the pool permanently, which is the most common risk for the pool
-+becoming full and the sampled allocation rate dropping to zero. The threshold
-+at which to start limiting currently covered allocations can be configured via
-+the boot parameter ``kfence.skip_covered_thresh`` (pool usage%).
-+
- Interface
- ---------
- 
--- 
-2.33.0.464.g1972c5931b-goog
+I had a quick look at this series. It looks like some code is missing
+here, e.g. to check "ts_vrefint_ns".
 
+Thanks & BR,
+Fabrice
+
+>  	/* Determine sampling time (ADC clock cycles) */
+>  	period_ns = NSEC_PER_SEC / adc->common->rate;
+>  	for (smp = 0; smp <= STM32_ADC_MAX_SMP; smp++)
+> @@ -1885,6 +1890,13 @@ static int stm32_adc_get_legacy_chan_count(struct iio_dev *indio_dev, struct stm
+>  		num_channels += ret;
+>  	}
+>  
+> +	/* Optional sample time is provided either for each, or all channels */
+> +	ret = of_property_count_u32_elems(node, "st,min-sample-time-nsecs");
+> +	if (ret > 1 && ret != num_channels) {
+> +		dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	return num_channels;
+>  }
+>  
+> @@ -1900,6 +1912,7 @@ static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
+>  	int scan_index = 0, val, ret, i;
+>  	struct property *prop;
+>  	const __be32 *cur;
+> +	u32 smp = 0;
+>  
+>  	if (num_diff) {
+>  		ret = of_property_read_u32_array(node, "st,adc-diff-channels",
+> @@ -1942,6 +1955,19 @@ static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
+>  		scan_index++;
+>  	}
+>  
+> +	for (i = 0; i < scan_index; i++) {
+> +		/*
+> +		 * Using of_property_read_u32_index(), smp value will only be
+> +		 * modified if valid u32 value can be decoded. This allows to
+> +		 * get either no value, 1 shared value for all indexes, or one
+> +		 * value per channel.
+> +		 */
+> +		of_property_read_u32_index(node, "st,min-sample-time-nsecs", i, &smp);
+> +
+> +		/* Prepare sampling time settings */
+> +		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+> +	}
+> +
+>  	return scan_index;
+>  }
+>  
+> @@ -2034,6 +2060,19 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+>  
+>  		stm32_adc_chan_init_one(indio_dev, &channels[scan_index], val,
+>  					vin[1], scan_index, differential);
+> +
+> +		ret = of_property_read_u32(child, "st,min-sample-time-nsecs", &val);
+> +		/* st,min-sample-time-nsecs is optional */
+> +		if (!ret) {
+> +			stm32_adc_smpr_init(adc, channels[scan_index].channel, val);
+> +			if (differential)
+> +				stm32_adc_smpr_init(adc, vin[1], val);
+> +		} else if (ret != -EINVAL) {
+> +			dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs property %d\n",
+> +				ret);
+> +			goto err;
+> +		}
+> +
+>  		scan_index++;
+>  	}
+>  
+> @@ -2052,7 +2091,6 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+>  	const struct stm32_adc_info *adc_info = adc->cfg->adc_info;
+>  	struct iio_chan_spec *channels;
+>  	int scan_index = 0, num_channels = 0, ret, i;
+> -	u32 smp = 0;
+>  	bool legacy = false;
+>  
+>  	for (i = 0; i < STM32_ADC_INT_CH_NB; i++)
+> @@ -2080,13 +2118,6 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+>  		return -EINVAL;
+>  	}
+>  
+> -	/* Optional sample time is provided either for each, or all channels */
+> -	ret = of_property_count_u32_elems(node, "st,min-sample-time-nsecs");
+> -	if (ret > 1 && ret != num_channels) {
+> -		dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs\n");
+> -		return -EINVAL;
+> -	}
+> -
+>  	if (timestamping)
+>  		num_channels++;
+>  
+> @@ -2103,29 +2134,6 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+>  		return ret;
+>  	scan_index = ret;
+>  
+> -	for (i = 0; i < scan_index; i++) {
+> -		/*
+> -		 * Using of_property_read_u32_index(), smp value will only be
+> -		 * modified if valid u32 value can be decoded. This allows to
+> -		 * get either no value, 1 shared value for all indexes, or one
+> -		 * value per channel.
+> -		 */
+> -		of_property_read_u32_index(node, "st,min-sample-time-nsecs",
+> -					   i, &smp);
+> -
+> -		/*
+> -		 * For vrefint channel, ensure that the sampling time cannot
+> -		 * be lower than the one specified in the datasheet
+> -		 */
+> -		if (channels[i].channel == adc->int_ch[STM32_ADC_INT_CH_VREFINT] &&
+> -		    smp < adc->cfg->ts_vrefint_ns) {
+> -			smp = adc->cfg->ts_vrefint_ns;
+> -		}
+> -
+> -		/* Prepare sampling time settings */
+> -		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+> -	}
+> -
+>  	if (timestamping) {
+>  		struct iio_chan_spec *timestamp = &channels[scan_index];
+>  
+> 
