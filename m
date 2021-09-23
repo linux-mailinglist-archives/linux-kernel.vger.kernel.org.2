@@ -2,107 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D8A415514
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 03:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53FE41551A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 03:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238801AbhIWBTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 21:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
+        id S238800AbhIWBXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 21:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238793AbhIWBTn (ORCPT
+        with ESMTP id S238177AbhIWBXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 21:19:43 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C58C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 18:18:13 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id t1so4688150pgv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 18:18:13 -0700 (PDT)
+        Wed, 22 Sep 2021 21:23:06 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57736C061574;
+        Wed, 22 Sep 2021 18:21:35 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id 194so16284028qkj.11;
+        Wed, 22 Sep 2021 18:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3ZZhCH2Vnd9Kt434pHuZ5hWp8c4ouJ+mtsF91bOXzZg=;
-        b=Iql8bew1lM69HWtyICV0+BCANpENNBcAFp4oOs9104KnsgYi0k0UcUi+Gp6+XFvM3I
-         aRP8DBJXqm3/3B08rDJmVk5cSF08y8n98N5OtbpT2T+hotbc5KYM+4rKGAKABv0X7R4C
-         OIC04MvKfjAvy/aO8RTAvT5pO6CGayq24kgDH34Ln+4GLrCLaAp7TdpKYNBaKKeIJ5gl
-         nEDospbtY0QdtdW+KEC3CVnA8WmbyQvgo0WYEvEDaVp8TLzZPwBNput7GiASnUVr0VAm
-         L6GCSKBIzqEbVL5JoCxs2ufosiUNAGa0FOw+lJQ7jNBbfEfyh25avvsIbCClEFKI3HdE
-         az8w==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=w9LkJEpWBulKCuqXbddVVU+pNwq8BmQqZRxJCMFogUs=;
+        b=M8pOe13runKaI2J8x6QY5/NPaqVwPKra+lAHfq2Z2KuPQlNhidIz2QTpcZMKZsYsF4
+         AGIzMfrSs9rOjQshPafd7eT9/QTPQHo6MHAwZMYhg4WYBMnjb0HPYxwb6CfUi+Pwm99o
+         kMl1tlswk1PmsTj7lOwEZx83S9ixtECe5lp1EyhbcQt33Q5z8Om+5IeneNY6xoqmbB7q
+         KqcVk5KzvtiOelzTN+94MKmRwWcL8Eu2fwbTrnWjKrQB7Vs2XEZBJlm3KnWfUI585TYq
+         jVjd9N7Ft7XikAPzdvLGuWFnB3kVlev+XqobkWlXKUe/OFxFujbyQ2smDlJF8jsZt9se
+         AZAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3ZZhCH2Vnd9Kt434pHuZ5hWp8c4ouJ+mtsF91bOXzZg=;
-        b=6i3OX6/Jn3oO5uOHR5vDkWZtfKgYswPt3YK5updn3MsxR+jibvw65rMuFZ1Pxy0EVj
-         cfsSy8oomb4gLSAQd/cjCYjg2JLAaxFkU8D1UukaNxrdTWUMKG7KGaDwbYYxIuVAI0fV
-         /5wPpvB/9rQ6q0AYUYDpefLR8KjZwSFVu8opge5HoQQfJ0umu6wQgcHmzaG7OiEdbMPE
-         QIcOMUxGskfWBrnLQ8d7CaV/Be9wxDYLLFEQugagOkJDER0eFUmkKm19WyPYkAMe3ss8
-         26rmpC0c//x46Cfkkk0aq2+6PRtl548dMlIMfgvON3CYcEHU3Wg4dLDygedLgnDsJp+s
-         NIKg==
-X-Gm-Message-State: AOAM531/VRnVXtn2FibFz03s9y69EWtM8SQ3i2QV3IwqW0pEsYfBefGB
-        d4YOL4gcUiuWJnQ+c2tU2RvZ0A==
-X-Google-Smtp-Source: ABdhPJzG22UYMspocoNbhZgvqYlLmmWhc1d+fiZjdH0gH0SD98L4AoLfnuLiXlXYO7zJlcYUbBab6Q==
-X-Received: by 2002:a62:5216:0:b0:445:49d9:7b09 with SMTP id g22-20020a625216000000b0044549d97b09mr1998650pfb.60.1632359892387;
-        Wed, 22 Sep 2021 18:18:12 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([213.173.35.225])
-        by smtp.gmail.com with ESMTPSA id mv6sm3386091pjb.16.2021.09.22.18.18.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=w9LkJEpWBulKCuqXbddVVU+pNwq8BmQqZRxJCMFogUs=;
+        b=v+c++dNNgy5xakPEgBl5rWbD1eVWuuaM5ekLiCX1hzw9tKkCISWF88C+q/NABo9R1O
+         h3q5JRW5r+ckgiFwvfxnvnrtbnd1Yhq9Uyxwoncx8Qa8Uch34JJRydZSwXLB6m1CRt5M
+         vu+4map5Y14CCpOUhohqnTxbIRwHnDiaBCYRfQged7PZxZecA2h8/o8rU2V9hDmLzAbC
+         VaO1NIwqbmuIfC8AvbmujpMHfTRxZtdghZJYdliW9ViYDETeNnZDlAPi57F4t71bz6tk
+         FMfam2ZvOZ3lSvfNX3nXLvcu3k0SStEIx7U8P/DcuPge7PSzCnictST045fHQ9ewx8+E
+         UONg==
+X-Gm-Message-State: AOAM5309UW+7/ShA0OUAUbaEHA+kqOOu7H/VTUMSqg4wHsnYaelsfa3s
+        VC7P83qMQKA5OngaVcPTu5UL3gaADE68
+X-Google-Smtp-Source: ABdhPJyY8hqVtxmhC6tJhSK+2V0GQrTmoBGu9WSx98Qe8vUHqFjDPQ/XPXE338dX6KutxROFTuJgTw==
+X-Received: by 2002:a05:620a:bd4:: with SMTP id s20mr2440075qki.485.1632360093958;
+        Wed, 22 Sep 2021 18:21:33 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id t64sm3220631qkd.71.2021.09.22.18.21.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 18:18:11 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 09:18:07 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     acme@kernel.org, leo.yan@linaro.com,
-        linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] perf tests: Improve temp file cleanup in
- test_arm_coresight.sh
-Message-ID: <20210923011807.GC400258@leoy-ThinkPad-X240s>
-References: <20210921131009.390810-1-james.clark@arm.com>
- <20210921131009.390810-3-james.clark@arm.com>
- <20210922110012.GA400258@leoy-ThinkPad-X240s>
- <5a1c5eab-d9b7-5623-2d7d-c6b1921b3628@arm.com>
- <20210922140832.GB400258@leoy-ThinkPad-X240s>
- <85c593b5-5348-8e9a-b9e4-bc4d31ffc785@arm.com>
+        Wed, 22 Sep 2021 18:21:33 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 21:21:31 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Struct page proposal
+Message-ID: <YUvWm6G16+ib+Wnb@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <85c593b5-5348-8e9a-b9e4-bc4d31ffc785@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 05:49:55PM +0100, James Clark wrote:
+One thing that's come out of the folios discussions with both Matthew and
+Johannes is that we seem to be thinking along similar lines regarding our end
+goals for struct page.
 
-[...]
+The fundamental reason for struct page is that we need memory to be self
+describing, without any context - we need to be able to go from a generic
+untyped struct page and figure out what it contains: handling physical memory
+failure is the most prominent example, but migration and compaction are more
+common. We need to be able to ask the thing that owns a page of memory "hey,
+stop using this and move your stuff here".
 
-> > So below change should be sufficient?
-> > 
-> > cleanup_files()
-> > {
-> > 	rm -f ${perfdata}
-> > 	rm -f ${file}
-> > +       rm -f "${perfdata}.old"
-> > +       exit $glb_err
-> > }
-> > 
-> > Sorry if I miss anything at here and cause noise.
-> 
-> The problem with not re-sending the sigint is that if you want to run the
-> script in a bash while loop like:
-> 
->   while ! tests/shell/test_arm_coresight.sh; do echo loop; done
-> 
-> Then it's impossible to exit with Ctrl-C and delete the temp files at the
-> same time. It exits if we don't trap sigint like it is at the moment, but
-> then it leaves the temporary files. This change is so we can have both
-> behaviours of Ctrl-C in a loop and keep the cleanup working.
+Matthew's helpfully been coming up with a list of page types:
+https://kernelnewbies.org/MemoryTypes
 
-Okay, I cannot think out better idea to handle this test case;
-so current patch is fine for me.  Thanks for explanation.
+But struct page could be a lot smaller than it is now. I think we can get it
+down to two pointers, which means it'll take up 0.4% of system memory. Both
+Matthew and Johannes have ideas for getting it down even further - the main
+thing to note is that virt_to_page() _should_ be an uncommon operation (most of
+the places we're currently using it are completely unnecessary, look at all the
+places we're using it on the zero page). Johannes is thinking two layer radix
+tree, Matthew was thinking about using maple trees - personally, I think that
+0.4% of system memory is plenty good enough.
 
-Thanks,
-Leo
+
+Ok, but what do we do with the stuff currently in struct page?
+-------------------------------------------------------------
+
+The main thing to note is that since in normal operation most folios are going
+to be describing many pages, not just one - and we'll be using _less_ memory
+overall if we allocate them separately. That's cool.
+
+Of course, for this to make sense, we'll have to get all the other stuff in
+struct page moved into their own types, but file & anon pages are the big one,
+and that's already being tackled.
+
+Why two ulongs/pointers, instead of just one?
+---------------------------------------------
+
+Because one of the things we really want and don't have now is a clean division
+between allocator and allocatee state. Allocator meaning either the buddy
+allocator or slab, allocatee state would be the folio or the network pool state
+or whatever actually called kmalloc() or alloc_pages().
+
+Right now slab state sits in the same place in struct page where allocatee state
+does, and the reason this is bad is that slab/slub are a hell of a lot faster
+than the buddy allocator, and Johannes wants to move the boundary between slab
+allocations and buddy allocator allocations up to like 64k. If we fix where slab
+state lives, this will become completely trivial to do.
+
+So if we have this:
+
+struct page {
+	unsigned long	allocator;
+	unsigned long	allocatee;
+};
+
+The allocator field would be used for either a pointer to slab/slub's state, if
+it's a slab page, or if it's a buddy allocator page it'd encode the order of the
+allocation - like compound order today, and probably whether or not the
+(compound group of) pages is free.
+
+The allocatee field would be used for a type tagged (using the low bits of the
+pointer) to one of:
+ - struct folio
+ - struct anon_folio, if that becomes a thing
+ - struct network_pool_page
+ - struct pte_page
+ - struct zone_device_page
+
+Then we can further refactor things until all the stuff that's currently crammed
+in struct page lives in types where each struct field means one and precisely
+one thing, and also where we can freely reshuffle and reorganize and add stuff
+to the various types where we couldn't before because it'd make struct page
+bigger.
+
+Other notes & potential issues:
+ - page->compound_dtor needs to die
+
+ - page->rcu_head moves into the types that actually need it, no issues there
+
+ - page->refcount has question marks around it. I think we can also just move it
+   into the types that need it; with RCU derefing the pointer to the folio or
+   whatever and grabing a ref on folio->refcount can happen under a RCU read
+   lock - there's no real question about whether it's technically possible to
+   get it out of struct page, and I think it would be cleaner overall that way.
+
+   However, depending on how it's used from code paths that go from generic
+   untyped pages, I could see it turning into more of a hassle than it's worth.
+   More investigation is needed.
+
+ - page->memcg_data - I don't know whether that one more properly belongs in
+   struct page or in the page subtypes - I'd love it if Johannes could talk
+   about that one.
+
+ - page->flags - dealing with this is going to be a huge hassle but also where
+   we'll find some of the biggest gains in overall sanity and readability of the
+   code. Right now, PG_locked is super special and ad hoc and I have run into
+   situations multiple times (and Johannes was in vehement agreement on this
+   one) where I simply could not figure the behaviour of the current code re:
+   who is responsible for locking pages without instrumenting the code with
+   assertions.
+
+   Meaning anything we do to create and enforce module boundaries between
+   different chunks of code is going to suck, but the end result should be
+   really worthwhile.
+
+Matthew Wilcox and David Howells have been having conversations on IRC about
+what to do about other page bits. It appears we should be able to kill a lot of
+filesystem usage of both PG_private and PG_private_2 - filesystems in general
+hang state off of page->private, soon to be folio->private, and PG_private in
+current use just indicates whether page->private is nonzero - meaning it's
+completely redundant.
