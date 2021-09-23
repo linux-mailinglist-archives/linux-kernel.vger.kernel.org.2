@@ -2,121 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98F84164FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50950416500
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242865AbhIWSPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:15:21 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:38147 "EHLO
+        id S242887AbhIWSP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:15:28 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:35277 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242795AbhIWSPD (ORCPT
+        by vger.kernel.org with ESMTP id S242876AbhIWSPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:15:03 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1B652580C0B;
-        Thu, 23 Sep 2021 14:13:31 -0400 (EDT)
+        Thu, 23 Sep 2021 14:15:05 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D3274580C16;
+        Thu, 23 Sep 2021 14:13:33 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 23 Sep 2021 14:13:31 -0400
+  by compute2.internal (MEProxy); Thu, 23 Sep 2021 14:13:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=17nVF2rSqd6ZekV9XH0hI/1A94
-        LLTlfoYJpIt+y6Cpw=; b=evWJSCa+U2iFGl/OIt0/Warjz9npq5C5hPGgKdyuwY
-        Nz4pKcVU6rnMxMAqyYBICfAmm/rwfTiiua6w2aysaDyhgZIamu88SXKL//K5zEf8
-        yYv+7Xdf3P05G3ZaEbXy/7hC6FspCAHbvQeqHosDAmHMhQ95US0vsn/3657Xv1nA
-        z6HikmA4ErdyxizNX7pCfO4f2YdgOwqMjMprNnLjJU9mQKDyIdAY/xcRYVKijB3g
-        NL7LTW1SogAvomJfmT9SWw7Mg2KydRHqlO7dW6coSC8dXAhHL9Yj6L+VUEpnDFF2
-        zZ8K27ka7k0cJVZ6nEVEKymaUB+o/oGcl46D+N6hp77A==
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=8J2pMkdcddEeX
+        32jWc7dxabP5tr+NvvBXsVJUff+mmA=; b=rkILv9euxrZiUPLGwXcRgETcG3cqy
+        Za+Wk/iPiWeY8f5vXa7zxQ6aEixrek+D/UBNPbxBcNgqCxIXQUVBF5m4BaHs3c7k
+        4kertH7M3lfKv0C3/kaIT1RmUIsfAvX98EbMIxnIHCK8TciKEmZQlvmuwyr9Fvln
+        S+jnXK+av1OjOOd4sRlEdZr8/5pwKnezFJbLqpQ1zdTxrJ/oRTRyjpyOtX/xbmgN
+        QfGduDSLYCIbldrh/ifZQpcIPae1r5tjJSjolayge1J/2SXYkUDJCoAf+YzWmiLV
+        vTvDTynSJEhTsTITqo6pjVJ5JxhXFWQ/EGradfilwV7UEGF/X35QMbQmw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=17nVF2rSqd6ZekV9X
-        H0hI/1A94LLTlfoYJpIt+y6Cpw=; b=ugR7ZLESz8l7GQLGV5bNXeqJuXmkL3FC+
-        mkSi9+8VUizOPucCEACDiNbeFz0+b9g+Yc3quCeZSV8ZQuHEYiZV5f8eLqCOAO2w
-        yzmePAfrXGwCFg4hXLoHvDtqKadIfAfXDhnhlUCJXxpUfKBnx7cca2LMwha4pkw6
-        Hdh1F/xU2+1VdiX8+I+hw2z7mnWcGw3nE1RCejQRQzb1a3zU7plzyvWipHE0tdgw
-        F/zi48WxTC9WIGQprqK3xiVwzSJTwiSadzGnAPO5I8zguruupO0ZR1iLCDL5+hPf
-        Ky0eYnGxeQjBbgJuYH5YnsxgL16JVdNvqd1hAEM0ZuenmzPJ9jwWQ==
-X-ME-Sender: <xms:ysNMYT1BTciIzWosxk_yMw5ysXsGgWxwM-5y200344hKl0BIbY3G_A>
-    <xme:ysNMYSGxswPHdVYP060ZSPSdpgH5QNmDSF75dM8hwwEyLioSWuL_tzW1OZnUROpe2
-    uKfDzUROrY2nEEtX1w>
-X-ME-Received: <xmr:ysNMYT5pcuQfSrkgh51t_sj49zGEhc2H_bEva690ewc7_2hlzueTB2xnQFdWwjI6EuCeW0y8U2WXKc9sWgsfSP8dy2Y1Zn357NN36TggntoF_cQp-cibvL4>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=8J2pMkdcddEeX32jWc7dxabP5tr+NvvBXsVJUff+mmA=; b=P7Rk4uXV
+        fCDw/+thtFiowFWVqQWxGChWi/LuJ5XaSxQq8+yfTtfTg91DGLmSil9q8jgkUDWJ
+        C0gEarO+EVMf7ZeVF10QjUK9eRu8ONVy2LNTNhxBKipa1cVx9nfSh/+uTkTl1jNW
+        uw5ejHxYx2R53b46W1dmX/zK++sPx5zPZ5n9+HGQRyA5FYNjlp5ZoQmQ47Wy7CHa
+        043qh/G2cVuLWclbD6tK1fTX4kZXKKH5J3Ee/sSIMJKp47RZ69SzwzTr8mqDQ51U
+        y+DCdW9MuPbMMdAtel/C2Fu4R0TqUd+5YGNS/l7/py7u/tnXBEpeQ0E/T2R/zOlx
+        K+2aQHm27de2UA==
+X-ME-Sender: <xms:zcNMYUAcvPiX3doaju6Uj3Q1_NFzcU0yKqqzvb4sl1lnUieodqgIwQ>
+    <xme:zcNMYWijb7wGbTeCCZSaZI-_7_T_eWNSF_9o-vzCgfOE-T5vohmrwb_b0pqEuLo3-
+    xGlv26Z-GOv___Tkz8>
+X-ME-Received: <xmr:zcNMYXlbmFPRi84w0_4p2NNgfNLHKxZL-d4Lj-s2sIWW55kkXI6E_TX0TxHLCbVfxPUfegIAvLwcrpl2noO9NlJY9Isk9hc14pcDJW3_ei3NAyCQNFFOrgs>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeiledguddvudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfr
-    vghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrh
-    hnpeefhedufedtvdfhhedvudehtdejjeehueduffdtgfdvkedvleelueevlefgfeelgfen
-    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:ysNMYY3vTx1X0yFI5jq67UvFhL0CRNOG-9zIcKP0q-utFoNOtTPPWQ>
-    <xmx:ysNMYWFxgaTom4NKapNwnBLPq7qB-Rc7W80VueqKMxb1oV9k8IbUww>
-    <xmx:ysNMYZ8ITXsug5JpmtTx0N_LT7wXKO2vsyLIe4gLIV0Eajoe2qCLiw>
-    <xmx:y8NMYR-BQq_e_et4HFYD8F6iPSFDcv31BWCV0LkbS9cih5oLKvHioA>
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufhvvghn
+    ucfrvghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtth
+    gvrhhnpeetvdekteeluefffffhkeetteffgefggfevheeileeufedvtdeuffevveelhfef
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvh
+    gvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:zcNMYawUfQCCmRrUfzZrQTP9cwURQIUAWsdgHFdAGByI-zKdDiDQxA>
+    <xmx:zcNMYZQZqAi8uhGmsMVNZ7oSANo1bEVW8uuH3mbo9sUkORcYlj55GA>
+    <xmx:zcNMYVZ45CMlGXZ9Q-nfrkqh9w4eCVaefVz0nU14ApSuA4zLKF75QQ>
+    <xmx:zcNMYVpIAjyfSNOMKBbdK5DgEJEQiNjCsAVXefJudIKpacFx_AqMEg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 23 Sep 2021 14:13:28 -0400 (EDT)
+ 23 Sep 2021 14:13:31 -0400 (EDT)
 From:   Sven Peter <sven@svenpeter.dev>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Sven Peter <sven@svenpeter.dev>,
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
+Cc:     Sven Peter <sven@svenpeter.dev>,
         =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Hector Martin <marcan@marcan.st>,
         Mohamed Mediouni <mohamed.mediouni@caramail.com>,
         Stan Skowronek <stan@corellium.com>,
         Mark Kettenis <mark.kettenis@xs4all.nl>,
         Alexander Graf <graf@amazon.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: [PATCH v2 0/6] usb: typec: tipd: Add Apple M1 support
-Date:   Thu, 23 Sep 2021 20:13:15 +0200
-Message-Id: <20210923181321.3044-1-sven@svenpeter.dev>
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 1/6] dt-bindings: usb: tps6598x: Add Apple CD321x compatible
+Date:   Thu, 23 Sep 2021 20:13:16 +0200
+Message-Id: <20210923181321.3044-2-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20210923181321.3044-1-sven@svenpeter.dev>
+References: <20210923181321.3044-1-sven@svenpeter.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+A variant of the TI TPS 6598x Type-C Port Switch and Power Delivery
+controller known as Apple CD321x is present on boards with Apple SoCs
+such as the M1. Add its compatible to the device tree binding.
 
-v1: https://lore.kernel.org/linux-usb/20210918120934.28252-1-sven@svenpeter.dev/
-Thanks again to everyone for your review of the initial version!
+Reviewed-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+---
+changes since v1:
+  - added robh's ack and alyssa's rb
 
-This series adds initial support for the Apple CD3217/3218 chip which is also
-known as Apple ACE1/2. These chips are used on Apple M1 machines.
-They are based on the TI TPS6598x chips with a few differences:
+ Documentation/devicetree/bindings/usb/ti,tps6598x.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-	- The interrupt numbers have been changed
-	- The secondary i2c bus and its interrupt controller are connected to the
-	  system management controller and must not be disturbed
-	- The chip comes up in a low power state and must be booted using the
-	  "SPSS" (System Power State Switch maybe) command which is not
-	  documented in the TI manual
-	- The interrupt mask must be set up explicitly
-
-As suggested bei Heikki, this is now done by creating a separate interrupt handler
-for the Apple chips and adding specific setup code to the probe function.
-There should be no functional changes for existing TPS chips which is which
-I've removed the RFT.
-
-Best,
-
-Sven
-
-Sven Peter (6):
-  dt-bindings: usb: tps6598x: Add Apple CD321x compatible
-  usb: typec: tipd: Split interrupt handler
-  usb: typec: tipd: Add short-circuit for no irqs
-  usb: typec: tipd: Add support for Apple CD321X
-  usb: typec: tipd: Switch CD321X power state to S0
-  usb: typec: tipd: Remove FIXME about testing with I2C_FUNC_I2C
-
- .../devicetree/bindings/usb/ti,tps6598x.yaml  |   4 +
- drivers/usb/typec/tipd/core.c                 | 229 +++++++++++++++---
- drivers/usb/typec/tipd/tps6598x.h             |  12 +
- drivers/usb/typec/tipd/trace.h                |  23 ++
- 4 files changed, 231 insertions(+), 37 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+index f6819bf2a3b5..a4c53b1f1af3 100644
+--- a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
++++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+@@ -12,10 +12,14 @@ maintainers:
+ description: |
+   Texas Instruments 6598x Type-C Port Switch and Power Delivery controller
+ 
++  A variant of this controller known as Apple CD321x or Apple ACE is also
++  present on hardware with Apple SoCs such as the M1.
++
+ properties:
+   compatible:
+     enum:
+       - ti,tps6598x
++      - apple,cd321x
+   reg:
+     maxItems: 1
+ 
 -- 
 2.25.1
 
