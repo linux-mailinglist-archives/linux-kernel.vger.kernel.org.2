@@ -2,293 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9744415FC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E321415FC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241278AbhIWN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241188AbhIWN3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:29:24 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB61C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:27:52 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id w9so4059881qvs.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=pE+kUqL2PlpkB8tQauFk5qMrInUsMZVJSIrm21iK2iU=;
-        b=4m/+LebjmmnGicS8Pd8sJRVPobVe1maXDDWoaAVFwieN1i6hw3Kp9kzoGbTkRh1UhT
-         9swqVq7r06t6/o3wKxFUtITIzYtdh4I6mbtYxcaZzQB8SsFg2Yj5FAlfBenAI3FCBVss
-         JgPPrEdGP+MPtcCxGYjv5Fe4eOPgRTxDV8CmdMgcxCP+4f/cb9uK5JETc9krKJG2i90a
-         XUWLLzBJ89cEwHNJaYz66VxPz9Qh8lt9RBo6paGaFlENnZXZSlOgui8AtP8tOu3H8DZb
-         1mwKzcdJQaY9ctAYR6Qg1hLsPzWOb0qtEpw8TJe9fCLPboN9syR6mOZkX/UT+fKurtoD
-         uOKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=pE+kUqL2PlpkB8tQauFk5qMrInUsMZVJSIrm21iK2iU=;
-        b=z8Ln0AFuEtNwY88szk0YAp6T5fbJi2ZuApjoonwwDgYQCQPfWnd/tWY0AoVWcYdKFW
-         KBNl4cgo6JTNyYWR4EW/kqsbq+OQj/ylMsI5LLhndG6BtePmW9eTQIYrWD5dXk+NivzH
-         ufCwkj7M/69JJ5D6xffLyWRFIYsuc/x+jOTzpXpG1M1RxTG4nNNxGI6BLBvaiR3QPhy3
-         sERZ3NZwzyCoa26YS92KniGa5lGGCzWAda+Lkq2rJ6SRbugdCQa5SlNyhiPfsvF/UKeZ
-         zrXfYhaO5yzsBEIhMCQsos0Xmo7hVtIS4PpOt/OO1w+pANZnpZ4ScTkMuYFKu8gclTXf
-         ux0Q==
-X-Gm-Message-State: AOAM532YH9oFcyUk5v89pcdX+SjQ/uBQPjtrAUTrqdIUOsJBl85wIJxm
-        8ifW/5ZyqHPPXIguyXStOynP7w==
-X-Google-Smtp-Source: ABdhPJxKcZBa8xwy3niKjd2dWmWxuN3nSTVdqXmBmAojwo39fnitZFTHCIiwJ4VmaelURDWAHx6F6Q==
-X-Received: by 2002:ad4:55b3:: with SMTP id f19mr4555417qvx.16.1632403671727;
-        Thu, 23 Sep 2021 06:27:51 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id l3sm2755097qtu.47.2021.09.23.06.27.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 06:27:51 -0700 (PDT)
-Message-ID: <c3d05d4bdd26ea7a2098b53251cefcc4d1f6b589.camel@ndufresne.ca>
-Subject: Re: [EXT] Re: [PATCH v9 11/13] ARM64: dts: freescale: imx8q: add
- imx vpu codec entries
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ming Qian <ming.qian@nxp.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc:     "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 23 Sep 2021 09:27:49 -0400
-In-Reply-To: <AM6PR04MB63418DC3AB2CF38DCA63AA25E7A39@AM6PR04MB6341.eurprd04.prod.outlook.com>
-References: <cover.1631521295.git.ming.qian@nxp.com>
-         <620081ca2f6441de6307792dbb7797da148cf04c.1631521295.git.ming.qian@nxp.com>
-         <1a454107661fced1adfd8a76a20a819d75b882d4.camel@ndufresne.ca>
-         <AM6PR04MB63418DC3AB2CF38DCA63AA25E7A39@AM6PR04MB6341.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S241248AbhIWN3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:29:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241259AbhIWN3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:29:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AB9361107;
+        Thu, 23 Sep 2021 13:27:56 +0000 (UTC)
+Date:   Thu, 23 Sep 2021 14:27:53 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Jia He <justin.he@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Harb Abdulhamid <harb@amperecomputing.com>
+Subject: Re: [PATCH v3] Revert "ACPI: Add memory semantics to
+ acpi_os_map_memory()"
+Message-ID: <YUyA2U8H0vLEqr3/@arm.com>
+References: <20210923033557.19100-1-justin.he@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923033557.19100-1-justin.he@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 23 septembre 2021 à 10:31 +0000, Ming Qian a écrit :
-> > -----Original Message-----
-> > From: Nicolas Dufresne [mailto:nicolas@ndufresne.ca]
-> > Sent: Wednesday, September 22, 2021 8:55 PM
-> > To: Ming Qian <ming.qian@nxp.com>; mchehab@kernel.org;
-> > shawnguo@kernel.org; robh+dt@kernel.org; s.hauer@pengutronix.de
-> > Cc: hverkuil-cisco@xs4all.nl; kernel@pengutronix.de; festevam@gmail.com;
-> > dl-linux-imx <linux-imx@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>;
-> > linux-media@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> > Subject: [EXT] Re: [PATCH v9 11/13] ARM64: dts: freescale: imx8q: add imx
-> > vpu
-> > codec entries
-> > 
-> > Caution: EXT Email
-> > 
-> > Hi Ming,
-> > 
-> > Le lundi 13 septembre 2021 à 17:11 +0800, Ming Qian a écrit :
-> > > Add the Video Processing Unit node for IMX8Q SoC.
-> > 
-> > Just to let you know that this patch no longer apply on 5.15-rc2. Please let
-> > us
-> > know which was your base.
+On Thu, Sep 23, 2021 at 11:35:57AM +0800, Jia He wrote:
+> This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
 > 
-> Hi Nicolas,
->    The base commit I used is 9c3a0f285248899dfa81585bc5d5bc9ebdb8fead.
->    It's recorded in the conver
-
-Ah, of course, now that you mention I see it, sorry about the noise.
-
+> The memory semantics added in commit 437b38c51162 causes SystemMemory
+> Operation region, whose address range is not described in the EFI memory
+> map to be mapped as NormalNC memory on arm64 platforms (through
+> acpi_os_map_memory() in acpi_ex_system_memory_space_handler()).
 > 
-> > 
-> > > 
-> > > Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> > > Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
-> > > Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
-> > > ---
-> > >  .../arm64/boot/dts/freescale/imx8-ss-vpu.dtsi | 72
-> > > +++++++++++++++++++  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> > > 17 +++++
-> > >  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    | 24 +++++++
-> > >  3 files changed, 113 insertions(+)
-> > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
-> > > b/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
-> > > new file mode 100644
-> > > index 000000000000..f2dde6d14ca3
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
-> > > @@ -0,0 +1,72 @@
-> > > +// SPDX-License-Identifier: GPL-2.0+
-> > > +/*
-> > > + * Copyright 2021 NXP
-> > > + *   Dong Aisheng <aisheng.dong@nxp.com>
-> > > + */
-> > > +
-> > > +vpu: vpu@2c000000 {
-> > > +     #address-cells = <1>;
-> > > +     #size-cells = <1>;
-> > > +     ranges = <0x2c000000 0x0 0x2c000000 0x2000000>;
-> > > +     reg = <0 0x2c000000 0 0x1000000>;
-> > > +     power-domains = <&pd IMX_SC_R_VPU>;
-> > > +     status = "disabled";
-> > > +
-> > > +     mu_m0: mailbox@2d000000 {
-> > > +             compatible = "fsl,imx6sx-mu";
-> > > +             reg = <0x2d000000 0x20000>;
-> > > +             interrupts = <GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>;
-> > > +             #mbox-cells = <2>;
-> > > +             power-domains = <&pd IMX_SC_R_VPU_MU_0>;
-> > > +             status = "okay";
-> > > +     };
-> > > +
-> > > +     mu1_m0: mailbox@2d020000 {
-> > > +             compatible = "fsl,imx6sx-mu";
-> > > +             reg = <0x2d020000 0x20000>;
-> > > +             interrupts = <GIC_SPI 470 IRQ_TYPE_LEVEL_HIGH>;
-> > > +             #mbox-cells = <2>;
-> > > +             power-domains = <&pd IMX_SC_R_VPU_MU_1>;
-> > > +             status = "okay";
-> > > +     };
-> > > +
-> > > +     mu2_m0: mailbox@2d040000 {
-> > > +             compatible = "fsl,imx6sx-mu";
-> > > +             reg = <0x2d040000 0x20000>;
-> > > +             interrupts = <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>;
-> > > +             #mbox-cells = <2>;
-> > > +             power-domains = <&pd IMX_SC_R_VPU_MU_2>;
-> > > +             status = "disabled";
-> > > +     };
-> > > +
-> > > +     vpu_core0: vpu_core@2d080000 {
-> > > +             reg = <0x2d080000 0x10000>;
-> > > +             compatible = "nxp,imx8q-vpu-decoder";
-> > > +             power-domains = <&pd IMX_SC_R_VPU_DEC_0>;
-> > > +             mbox-names = "tx0", "tx1", "rx";
-> > > +             mboxes = <&mu_m0 0 0>,
-> > > +                     <&mu_m0 0 1>,
-> > > +                     <&mu_m0 1 0>;
-> > > +             status = "disabled";
-> > > +     };
-> > > +     vpu_core1: vpu_core@2d090000 {
-> > > +             reg = <0x2d090000 0x10000>;
-> > > +             compatible = "nxp,imx8q-vpu-encoder";
-> > > +             power-domains = <&pd IMX_SC_R_VPU_ENC_0>;
-> > > +             mbox-names = "tx0", "tx1", "rx";
-> > > +             mboxes = <&mu1_m0 0 0>,
-> > > +                     <&mu1_m0 0 1>,
-> > > +                     <&mu1_m0 1 0>;
-> > > +             status = "disabled";
-> > > +     };
-> > > +     vpu_core2: vpu_core@2d0a0000 {
-> > > +             reg = <0x2d0a0000 0x10000>;
-> > > +             compatible = "nxp,imx8q-vpu-encoder";
-> > > +             power-domains = <&pd IMX_SC_R_VPU_ENC_1>;
-> > > +             mbox-names = "tx0", "tx1", "rx";
-> > > +             mboxes = <&mu2_m0 0 0>,
-> > > +                     <&mu2_m0 0 1>,
-> > > +                     <&mu2_m0 1 0>;
-> > > +             status = "disabled";
-> > > +     };
-> > > +};
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> > > b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> > > index 863232a47004..05495b60beb8 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> > > @@ -196,6 +196,23 @@ &usdhc2 {
-> > >       status = "okay";
-> > >  };
-> > > 
-> > > +&vpu {
-> > > +     compatible = "nxp,imx8qxp-vpu";
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +&vpu_core0 {
-> > > +     reg = <0x2d040000 0x10000>;
-> > > +     memory-region = <&decoder_boot>, <&decoder_rpc>;
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +&vpu_core1 {
-> > > +     reg = <0x2d050000 0x10000>;
-> > > +     memory-region = <&encoder_boot>, <&encoder_rpc>;
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > >  &iomuxc {
-> > >       pinctrl_fec1: fec1grp {
-> > >               fsl,pins = <
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > > b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > > index 1e6b4995091e..6b421cfa5534 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > > @@ -46,6 +46,9 @@ aliases {
-> > >               serial1 = &lpuart1;
-> > >               serial2 = &lpuart2;
-> > >               serial3 = &lpuart3;
-> > > +             vpu_core0 = &vpu_core0;
-> > > +             vpu_core1 = &vpu_core1;
-> > > +             vpu_core2 = &vpu_core2;
-> > >       };
-> > > 
-> > >       cpus {
-> > > @@ -134,10 +137,30 @@ reserved-memory {
-> > >               #size-cells = <2>;
-> > >               ranges;
-> > > 
-> > > +             decoder_boot: decoder-boot@84000000 {
-> > > +                     reg = <0 0x84000000 0 0x2000000>;
-> > > +                     no-map;
-> > > +             };
-> > > +
-> > > +             encoder_boot: encoder-boot@86000000 {
-> > > +                     reg = <0 0x86000000 0 0x200000>;
-> > > +                     no-map;
-> > > +             };
-> > > +
-> > > +             decoder_rpc: decoder-rpc@0x92000000 {
-> > > +                     reg = <0 0x92000000 0 0x100000>;
-> > > +                     no-map;
-> > > +             };
-> > > +
-> > >               dsp_reserved: dsp@92400000 {
-> > >                       reg = <0 0x92400000 0 0x2000000>;
-> > >                       no-map;
-> > >               };
-> > > +
-> > > +             encoder_rpc: encoder-rpc@0x94400000 {
-> > > +                     reg = <0 0x94400000 0 0x700000>;
-> > > +                     no-map;
-> > > +             };
-> > >       };
-> > > 
-> > >       pmu {
-> > > @@ -258,6 +281,7 @@ map0 {
-> > >       };
-> > > 
-> > >       /* sorted in register address */
-> > > +     #include "imx8-ss-vpu.dtsi"
-> > >       #include "imx8-ss-adma.dtsi"
-> > >       #include "imx8-ss-conn.dtsi"
-> > >       #include "imx8-ss-ddr.dtsi"
-> > 
+> This triggers the following abort on an ARM64 Ampere eMAG machine,
+> because presumably the physical address range area backing the Opregion
+> does not support NormalNC memory attributes driven on the bus.
 > 
+>  Internal error: synchronous external abort: 96000410 [#1] SMP
+>  Modules linked in:
+>  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+>  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+>  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [...snip...]
+>  Call trace:
+>   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+>   acpi_ev_address_space_dispatch+0x228/0x2c4
+>   acpi_ex_access_region+0x114/0x268
+>   acpi_ex_field_datum_io+0x128/0x1b8
+>   acpi_ex_extract_from_field+0x14c/0x2ac
+>   acpi_ex_read_data_from_field+0x190/0x1b8
+>   acpi_ex_resolve_node_to_value+0x1ec/0x288
+>   acpi_ex_resolve_to_value+0x250/0x274
+>   acpi_ds_evaluate_name_path+0xac/0x124
+>   acpi_ds_exec_end_op+0x90/0x410
+>   acpi_ps_parse_loop+0x4ac/0x5d8
+>   acpi_ps_parse_aml+0xe0/0x2c8
+>   acpi_ps_execute_method+0x19c/0x1ac
+>   acpi_ns_evaluate+0x1f8/0x26c
+>   acpi_ns_init_one_device+0x104/0x140
+>   acpi_ns_walk_namespace+0x158/0x1d0
+>   acpi_ns_initialize_devices+0x194/0x218
+>   acpi_initialize_objects+0x48/0x50
+>   acpi_init+0xe0/0x498
+> 
+> If the Opregion address range is not present in the EFI memory map there
+> is no way for us to determine the memory attributes to use to map it -
+> defaulting to NormalNC does not work (and it is not correct on a memory
+> region that may have read side-effects) and therefore commit
+> 437b38c51162 should be reverted, which means reverting back to the
+> original behavior whereby address ranges that are mapped using
+> acpi_os_map_memory() default to the safe devicenGnRnE attributes on
+> ARM64 if the mapped address range is not defined in the EFI memory map.
+> 
+> Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
+> Signed-off-by: Jia He <justin.he@arm.com>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Hanjun Guo <guohanjun@huawei.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Cc: Harb Abdulhamid <harb@amperecomputing.com>
 
+Since I acked the original patch, I'm acking its revert as well:
 
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
