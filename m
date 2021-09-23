@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63EE4161A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B344161AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241893AbhIWPFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:05:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35056 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241892AbhIWPFA (ORCPT
+        id S241917AbhIWPFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241891AbhIWPFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:05:00 -0400
-Date:   Thu, 23 Sep 2021 15:03:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632409407;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9a3HKppqTFE1kQSQshaEGhBBvbgpNg6MnwDGLPFNqy4=;
-        b=khxc163DWoMdQll/4D6dQG7LFhXfjY7+szyrqzYtKsld49AYCVoUhFb8aR/bM4Ku10lHlm
-        tvvtQiFzXUoRMLulmoqUGv2kArZ8ASa+DBGhePVG55qSSSwepByAl9CnyeOy2hsLBKkE64
-        nbzxDeWlkVnz+Ad68J2myteUDnNmvMaYLt+Q+mjEwBKUueKIOUPlWNXsDWS/5zWHB4VUot
-        PXCighvSNDceP7VtFmF4GiPh6VZ9/ZadkHL/lBDjaCN9schsxeC4Kuv0TWqDkCCPryiyHW
-        qJtzYzBK8i481/E3GEjW2XmXIHCxV3G7wWFfb24pBZtEO5hoYKZtJKMK7MTJEw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632409407;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9a3HKppqTFE1kQSQshaEGhBBvbgpNg6MnwDGLPFNqy4=;
-        b=sP7tt7P6rvVfN9WsE+i+6QniBzWgk+gV8BY2/l69bKUaeUXX5XfWEwJF/SM0xKaumZpcnA
-        o1/fom81okzHFtDQ==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/umip: Downgrade warning messages to debug loglevel
-Cc:     mrueckert@suse.com, Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210907200454.30458-1-bp@alien8.de>
-References: <20210907200454.30458-1-bp@alien8.de>
+        Thu, 23 Sep 2021 11:05:35 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB8FC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:04:04 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso8870968ota.8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n99BUgoHnMCoEPxOhcp9LGegqDHiYuqfxJkhhRVvExs=;
+        b=UTPrb+fiXjsf5mEl41UjIo1i3V3rhi3Z60Zm0dr+pCW/ysLFmtAiRlHYJT/VkE4W00
+         jzhiytM2R2I6boM967PGJemYBW/U98w7W0E+0xSM5wUWHTp7o+YIWX6mfpUnMkVoUGmg
+         6Q1yuMtq30crpVPM2zb0e1xGg5vmumw0EiK7tKzNBc3EdGaG/TQv96axydwVo/frVUhH
+         utPCHtwWw5Git42T+3ZLKcAsFue6r6Mivx0kn/YepjXftgtnCm+8bj+TZPOASiLhnCdl
+         /q3HdMyJtokd8cNi87F3mAoVC6ab3sNddTYEceEMs6WhGwjyHz14MJpE2KfODwezbrdj
+         wHVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n99BUgoHnMCoEPxOhcp9LGegqDHiYuqfxJkhhRVvExs=;
+        b=7NIGujgFKznIheMzlcxjoDFr01nme9Rc8QhWi45r00aczjSkYXn6s5EqbfLHJQQ+Hw
+         ffGP+gtFycNZLEVrSWvY/XEIuvPHhn37fqq5RqOllabtwTG0POCzt+Be0F5dBLq6T6Tc
+         uHEypPwQBAxlhn3zQPfhAeq9jQyvf/L8JIuBVjEULWO4uFtoBnhpSanGE5+FzYTpaheJ
+         MUicBsuHWV+byWySnR92Y3Libz3W9pH4XU3iD8WTRIzC0+RTaRf/KHwhmofaempi9Oq8
+         XPEgvIs07xav4Jp9o0UTEvbaUgOvM9xWK1IQO5qTwy2Z1OoRWvEsvSRwLoq/Hu3pUjY7
+         c60w==
+X-Gm-Message-State: AOAM5324cT1m+vURLxxcAaHbZrVNAHqID78xXsntuuPnTm2BrOTfcEjJ
+        BR3f1i9ZtmHix6yXd9F5j+BEfg==
+X-Google-Smtp-Source: ABdhPJw2Ehvj6quxBELFlvg6Vn3bA7DsrbQr8GXGJ8MaKkvRxnHIOW7/C4X8MsAPrtNsjyXJLkpQqw==
+X-Received: by 2002:a05:6830:1f11:: with SMTP id u17mr525356otg.151.1632409443530;
+        Thu, 23 Sep 2021 08:04:03 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a11sm1329657oiw.36.2021.09.23.08.04.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 08:04:02 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Subject: [PATCH] arm64: dts: qcom: sdm845: mtp: Add vadc channels
+Date:   Thu, 23 Sep 2021 08:04:40 -0700
+Message-Id: <20210923150440.2726049-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Message-ID: <163240940683.25758.12927273059878995672.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
+Downstream defines four ADC channels related to thermal sensors external
+to the PM8998 and two channels for internal voltage measurements. Add
+these to the upstream SDM845 MTP as well.
 
-Commit-ID:     1eefe7a85678a056951cd9efb09820c1b0a1b4da
-Gitweb:        https://git.kernel.org/tip/1eefe7a85678a056951cd9efb09820c1b0a=
-1b4da
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Wed, 15 Sep 2021 16:39:18 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 23 Sep 2021 16:30:11 +02:00
-
-x86/umip: Downgrade warning messages to debug loglevel
-
-After four years in the wild, those have not fullfilled their
-initial purpose of pushing people to fix their software to not use
-UMIP-emulated instructions, and to warn users about the degraded
-emulation performance.
-
-Yet, the only thing that "degrades" performance is overflowing dmesg
-with those:
-
-  [Di Sep  7 00:24:05 2021] umip_printk: 1345 callbacks suppressed
-  [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: =
-SIDT instruction cannot be used by applications.
-  [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: =
-For now, expensive software emulation returns the result.
-  ...
-  [Di Sep  7 00:26:06 2021] umip_printk: 2227 callbacks suppressed
-  [Di Sep  7 00:26:06 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b940: =
-SIDT instruction cannot be used by applications.
-
-and users don't really care about that - they just want to play their
-games in wine.
-
-So convert those to debug loglevel - in case someone is still interested
-in them, someone can boot with "debug" on the kernel cmdline.
-
-Reported-by: Marcus R=C3=BCckert <mrueckert@suse.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210907200454.30458-1-bp@alien8.de
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- arch/x86/kernel/umip.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 34 +++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
-index 576b47e..5a4b213 100644
---- a/arch/x86/kernel/umip.c
-+++ b/arch/x86/kernel/umip.c
-@@ -92,8 +92,8 @@ static const char * const umip_insns[5] =3D {
-=20
- #define umip_pr_err(regs, fmt, ...) \
- 	umip_printk(regs, KERN_ERR, fmt, ##__VA_ARGS__)
--#define umip_pr_warn(regs, fmt, ...) \
--	umip_printk(regs, KERN_WARNING, fmt,  ##__VA_ARGS__)
-+#define umip_pr_debug(regs, fmt, ...) \
-+	umip_printk(regs, KERN_DEBUG, fmt,  ##__VA_ARGS__)
-=20
- /**
-  * umip_printk() - Print a rate-limited message
-@@ -361,10 +361,10 @@ bool fixup_umip_exception(struct pt_regs *regs)
- 	if (umip_inst < 0)
- 		return false;
-=20
--	umip_pr_warn(regs, "%s instruction cannot be used by applications.\n",
-+	umip_pr_debug(regs, "%s instruction cannot be used by applications.\n",
- 			umip_insns[umip_inst]);
-=20
--	umip_pr_warn(regs, "For now, expensive software emulation returns the resul=
-t.\n");
-+	umip_pr_debug(regs, "For now, expensive software emulation returns the resu=
-lt.\n");
-=20
- 	if (emulate_umip_insn(&insn, umip_inst, dummy_data, &dummy_data_size,
- 			      user_64bit_mode(regs)))
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+index 52dd7a858231..28a2f5d46db7 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+@@ -10,6 +10,8 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sdm845.dtsi"
++#include "pm8998.dtsi"
++#include "pmi8998.dtsi"
+ 
+ / {
+ 	model = "Qualcomm Technologies, Inc. SDM845 MTP";
+@@ -469,6 +471,38 @@ &mss_pil {
+ 	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mbn";
+ };
+ 
++&pm8998_adc {
++	adc-chan@4c {
++		reg = <ADC5_XO_THERM_100K_PU>;
++		label = "xo_therm";
++	};
++
++	adc-chan@4d {
++		reg = <ADC5_AMUX_THM1_100K_PU>;
++		label = "msm_therm";
++	};
++
++	adc-chan@4f {
++		reg = <ADC5_AMUX_THM3_100K_PU>;
++		label = "pa_therm1";
++	};
++
++	adc-chan@51 {
++		reg = <ADC5_AMUX_THM5_100K_PU>;
++		label = "quiet_therm";
++	};
++
++	adc-chan@83 {
++		reg = <ADC5_VPH_PWR>;
++		label = "vph_pwr";
++	};
++
++	adc-chan@85 {
++		reg = <ADC5_VCOIN>;
++		label = "vcoin";
++	};
++};
++
+ &qupv3_id_1 {
+ 	status = "okay";
+ };
+-- 
+2.29.2
+
