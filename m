@@ -2,188 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58E6416365
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFD541636B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234977AbhIWQgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:36:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44262 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230139AbhIWQgD (ORCPT
+        id S242020AbhIWQiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242031AbhIWQh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:36:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632414871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wWJIS2kE+szXqAFxlHSk2kWCjmNxITRa7Gc/WMUXuy8=;
-        b=WfKa+GVM4sg4meqU+H2lxZiFqMxXa1ZziYF+b00tHXNPlwTcSG5RRJKEcov16rIIAM4+QZ
-        yuPaoS7mT2xITwRe/7hq6NQgDFoRnyW2rziz/5B9rbxJISwKUON7Tqao1EF3C/wr8WQMFW
-        VZFTFPPjwvVged6C7EBrYT3L8q72dR0=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-GFVBb7K-MGaVz-bgJR6jlw-1; Thu, 23 Sep 2021 12:34:30 -0400
-X-MC-Unique: GFVBb7K-MGaVz-bgJR6jlw-1
-Received: by mail-ed1-f71.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so7288700edy.14
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:34:29 -0700 (PDT)
+        Thu, 23 Sep 2021 12:37:58 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB91BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:36:26 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id v10so10391664oic.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:36:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EgkHI1/87WDfYzGJHVb9uSE8ondAm9IZ1p7rxtfYoTA=;
+        b=idG49OCyvw2XsrxgeWp7JIYA5MIGDaQADtUR/XHYoXs21cqMY7Ja0Sf5vm+n94vsYW
+         E125f//+lcVc+h/6jjy+QPlyyma7fvCBoMPOjVq0R+oePyikDMpcGGvRcsMhe3re3ERl
+         YNiLG7aOKJdgeh9JrhTR6Ch8qlhc87rX+VcR8AB9brCFih06yF5Xtm4JfAh2WCqOWgdH
+         ZPFYmqsOj/1ioMkTasvEv1AE9XSHpjtuLDu8gkQ0ig5TREtT63mw8bK1no3cosNfsjj9
+         OjQr3fqVDmJp+em0WtdNSHOF55fuKUttxhJGc6yrRSlEHUxn93K3yyQ0JxMDmGFCG6NJ
+         tLzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wWJIS2kE+szXqAFxlHSk2kWCjmNxITRa7Gc/WMUXuy8=;
-        b=ZcLHL4s9dUhyUvVixQnCll+h1K7uo1qAfnjqgk/JjRtZSg9EdfUq0d/EbV5kpO5YSY
-         Jwt3SBkaa+dbBppHFs/EPoSJMBU/XMBO9O/P8BphKJWkvIj3dvXHYiYDxpR+Xrvb4R8I
-         jcj4BFKxsMpOtI18J9eip9yRTvjBnosNJ1HO87NVc1730VILmycVHInAjo2NFlH7GjNz
-         +TB54Xce+OglPBgprbuI0wUNBdOtEI0LwERUXuF6NXScDUkHjyztHXibETQ5axaKmxes
-         8cgUws2JDfUhDaD/pURMJhD+heZ9LIWUt9r7kShDm137H2YcLufbtNhUhRr6tVuiQ4Hd
-         BKdw==
-X-Gm-Message-State: AOAM533UuluoUpV/n868Gxjkz3pTWDrzm9CYD6OKmyMTCK5zymD0R3aW
-        nh4O0TppFEaZKCH7e6itfFJ7uvVb+pnUm/Uw1f1M0Srq9XawLmgPfH72sSwDexdmDNoXBtdiA/h
-        pqhmu8ryAYCxJPkuZWZLecOiP
-X-Received: by 2002:a05:6402:1437:: with SMTP id c23mr6481468edx.247.1632414868845;
-        Thu, 23 Sep 2021 09:34:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUms4bSxmu1S2j/lCVpl/iaye5bwxmfEaXwPEOBI4b/7vkjYl1tRGerBCTiMwIo/f04qiszg==
-X-Received: by 2002:a05:6402:1437:: with SMTP id c23mr6481443edx.247.1632414868641;
-        Thu, 23 Sep 2021 09:34:28 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 6sm3361080ejx.82.2021.09.23.09.34.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 09:34:28 -0700 (PDT)
-Subject: Re: [PATCH] kvm: irqfd: avoid update unmodified entries of the
- routing
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arei.gonglei@huawei.com
-References: <20210827080003.2689-1-longpeng2@huawei.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2b8efa4f-36db-a4d5-f07d-987f6053627b@redhat.com>
-Date:   Thu, 23 Sep 2021 18:34:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EgkHI1/87WDfYzGJHVb9uSE8ondAm9IZ1p7rxtfYoTA=;
+        b=OFgaL8nbS6S16Db/cC/35MSCaEeilDW3qsygj+v9e2KLZkZ2tHIfPUNiKFc1N3N29U
+         EUeh0aOsj1qufAVeyar2iwDKY09OYBvXmgwxa262rK0Shz0FxhCf+4zaDQy+OR9eDytP
+         WKVeZQU6Rg2SCbSH4pw4L2VnOANfhuK+PySPK8fESwr+j5PLtgF4ep97zzI+/bQKZSt8
+         Abz5WCTbWLq4aaXQyQmNJk76rrQlDx+H3vcqaJI4HbfsFGLXA5hrAqIGFSsubRS1NfjQ
+         HfglmD9GDPH6nEa6YFzLLdSr5EC88msI9uwZzhGC+qTVVO9kcCKGgutBiv/o6lhIHFP3
+         2OEw==
+X-Gm-Message-State: AOAM5302isloKVBMLrfQ/7nG16mzlVdp4ixe3x8PmE8jMhExAadHsbca
+        AhIQ1KVhFsKXO8LcncM37Q7OAraBL+jTPx2gz4i+XDbGO8k=
+X-Google-Smtp-Source: ABdhPJwVBfEUhgTdfCYXfFnmIw23HGHjH+SStzaW4GjLv4936Io/Sl3rGN0NJB+Nk6FYT3HqSJHrEAEGc+2fRjVyS0s=
+X-Received: by 2002:a05:6808:1787:: with SMTP id bg7mr13811452oib.39.1632414985961;
+ Thu, 23 Sep 2021 09:36:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210827080003.2689-1-longpeng2@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210808234733.14782-1-chunkuang.hu@kernel.org>
+ <CAAOTY_9LstZegE_Gyibov5tLo5eEqiPfoAcnyj_uoS=8xLLhnA@mail.gmail.com>
+ <CAFqH_53M2OO8DpkPa3L7cwppVRYiUgEDjrLjK7JJNgKgxnQpVA@mail.gmail.com> <CAAOTY__4ZKf8YwJWMHkiZRjbcnDuf4tcVPO=AG1V3pv9_-4bVw@mail.gmail.com>
+In-Reply-To: <CAAOTY__4ZKf8YwJWMHkiZRjbcnDuf4tcVPO=AG1V3pv9_-4bVw@mail.gmail.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Thu, 23 Sep 2021 18:36:14 +0200
+Message-ID: <CAFqH_51Vtq=AkZaV2A69-FAVohr2DyD=1cjKkQ-hStQ4GXRnPA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] CMDQ refinement of Mediatek DRM driver
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/21 10:00, Longpeng(Mike) wrote:
-> All of the irqfds would to be updated when update the irq
-> routing, it's too expensive if there're too many irqfds.
-> 
-> However we can reduce the cost by avoid some unnecessary
-> updates. For irqs of MSI type on X86, the update can be
-> saved if the msi values are not change.
-> 
-> The vfio migration could receives benefit from this optimi-
-> zaiton. The test VM has 128 vcpus and 8 VF (with 65 vectors
-> enabled), so the VM has more than 520 irqfds. We mesure the
-> cost of the vfio_msix_enable (in QEMU, it would set routing
-> for each irqfd) for each VF, and we can see the total cost
-> can be significantly reduced.
-> 
->                  Origin         Apply this Patch
-> 1st             8              4
-> 2nd             15             5
-> 3rd             22             6
-> 4th             24             6
-> 5th             36             7
-> 6th             44             7
-> 7th             51             8
-> 8th             58             8
-> Total           258ms          51ms
-> 
-> We're also tring to optimize the QEMU part [1], but it's still
-> worth to optimize the KVM to gain more benefits.
-> 
-> [1] https://lists.gnu.org/archive/html/qemu-devel/2021-08/msg04215.html
-> 
-> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-> ---
->   arch/x86/kvm/x86.c       |  9 +++++++++
->   include/linux/kvm_host.h |  2 ++
->   virt/kvm/eventfd.c       | 15 ++++++++++++++-
->   3 files changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index e5d5c5e..22cf20e 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12023,6 +12023,15 @@ int kvm_arch_update_irqfd_routing(struct kvm *kvm, unsigned int host_irq,
->   	return static_call(kvm_x86_update_pi_irte)(kvm, host_irq, guest_irq, set);
->   }
->   
-> +bool kvm_arch_irqfd_route_changed(struct kvm_kernel_irq_routing_entry *old,
-> +				  struct kvm_kernel_irq_routing_entry *new)
-> +{
-> +	if (new->type != KVM_IRQ_ROUTING_MSI)
-> +		return true;
-> +
-> +	return !!memcmp(&old->msi, &new->msi, sizeof(new->msi));
-> +}
-> +
->   bool kvm_vector_hashing_enabled(void)
->   {
->   	return vector_hashing;
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index ae7735b..c0954ae 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1621,6 +1621,8 @@ void kvm_arch_irq_bypass_del_producer(struct irq_bypass_consumer *,
->   void kvm_arch_irq_bypass_start(struct irq_bypass_consumer *);
->   int kvm_arch_update_irqfd_routing(struct kvm *kvm, unsigned int host_irq,
->   				  uint32_t guest_irq, bool set);
-> +bool kvm_arch_irqfd_route_changed(struct kvm_kernel_irq_routing_entry *,
-> +				  struct kvm_kernel_irq_routing_entry *);
->   #endif /* CONFIG_HAVE_KVM_IRQ_BYPASS */
->   
->   #ifdef CONFIG_HAVE_KVM_INVALID_WAKEUPS
-> diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
-> index e996989..2ad013b 100644
-> --- a/virt/kvm/eventfd.c
-> +++ b/virt/kvm/eventfd.c
-> @@ -281,6 +281,13 @@ int  __attribute__((weak)) kvm_arch_update_irqfd_routing(
->   {
->   	return 0;
->   }
-> +
-> +bool __attribute__((weak)) kvm_arch_irqfd_route_changed(
-> +				struct kvm_kernel_irq_routing_entry *old,
-> +				struct kvm_kernel_irq_routing_entry *new)
-> +{
-> +	return true;
-> +}
->   #endif
->   
->   static int
-> @@ -615,10 +622,16 @@ void kvm_irq_routing_update(struct kvm *kvm)
->   	spin_lock_irq(&kvm->irqfds.lock);
->   
->   	list_for_each_entry(irqfd, &kvm->irqfds.items, list) {
-> +#ifdef CONFIG_HAVE_KVM_IRQ_BYPASS
-> +		/* Under irqfds.lock, so can read irq_entry safely */
-> +		struct kvm_kernel_irq_routing_entry old = irqfd->irq_entry;
-> +#endif
-> +
->   		irqfd_update(kvm, irqfd);
->   
->   #ifdef CONFIG_HAVE_KVM_IRQ_BYPASS
-> -		if (irqfd->producer) {
-> +		if (irqfd->producer &&
-> +		    kvm_arch_irqfd_route_changed(&old, &irqfd->irq_entry)) {
->   			int ret = kvm_arch_update_irqfd_routing(
->   					irqfd->kvm, irqfd->producer->irq,
->   					irqfd->gsi, 1);
-> 
+Hi Chun-Kuang,
 
-Queued, thanks.
+Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dt., 21 de
+set. 2021 a les 15:15:
+>
+> Hi, Enric:
+>
+> Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
+=8821=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:36=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> >
+> > Hi Chun-Kuang,
+> >
+> > (again without html format, sorry for the noise)
+> >
+> > Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dj., 12
+> > d=E2=80=99ag. 2021 a les 2:13:
+> > >
+> > > Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B48=E6=
+=9C=889=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=887:47=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+> > > >
+> > > > These refinements include using standard mailbox callback interface=
+,
+> > > > timeout detection, and a fixed cmdq_handle.
+> > >
+> > > For this series, applied to mediatek-drm-next [1].
+> > >
+> > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linu=
+x.git/log/?h=3Dmediatek-drm-next
+> > >
+> >
+> > These patches seem to break the display on the Acer Chromebook R 13
+> > (MT8173) in the current mainline. After running a bisection it pointed
+> > me to the following commit
+> >
+> > commit f4be17cd5b14dd73545b0e014a63ebe9ab5ef837
+> > Author: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> > Date:   Sun Jul 4 15:36:48 2021 +0800
+> >
+> >     drm/mediatek: Remove struct cmdq_client
+> >
+> > Reverting this patch alone is not trivial, so I ended up reverting the
+> > full series, and I can confirm that reverting the full series makes
+> > the display work again.
+>
+> I think you could not just revert "drm/mediatek: Remove struct
+> cmdq_client", you should also revert the patches after it, such as
+>
+> "drm/mediatek: Clear pending flag when cmdq packet is done"
+> "drm/mediatek: Add cmdq_handle in mtk_crtc"
+> "drm/mediatek: Detect CMDQ execution timeout"
+>
 
-Paolo
+Yes, in fact I reverted:
 
+9efb16c2fdd6 drm/mediatek: Clear pending flag when cmdq packet is done
+bc9241be73d9 drm/mediatek: Add cmdq_handle in mtk_crtc
+8cdcb3653424 drm/mediatek: Detect CMDQ execution timeout
+f4be17cd5b14 drm/mediatek: Remove struct cmdq_client
+c1ec54b7b5af drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb
+
+Without these patches 5.15-rc2 works again on my platform.
+
+The commit 'c1ec54b7b5af drm/mediatek: Use mailbox rx_callback instead
+of cmdq_task_cb' alone introduces lots of warnings in the kernel
+
+WARNING: CPU: 0 PID: 0 at drivers/mailbox/mtk-cmdq-mailbox.c:198
+cmdq_task_exec_done+0xb8/0xe0
+
+I think is just a leftover or the mentioned warning, but that confused
+me a bit doing the bisection. Then, after commit 'f4be17cd5b14
+drm/mediatek: Remove struct cmdq_client' my system simply gets stuck.
+For now I don't see any obvious mistake but will dig further.
+
+Can I ask you in which platform did you test? And if you can double
+check if your platform is broken too in current mainline?
+
+Thanks,
+  Enric
+
+> If "drm/mediatek: Remove struct cmdq_client" is the patch cause
+> display abnormal, I think you could compare code w/ and w/o this
+> patch. Focus on the value accuracy, such as cmdq_cl and cmdq_chan. And
+> focus on the flow accuracy, such as mtk_drm_crtc_update_config() and
+> ddp_cmdq_cb(). If this could not find the problem, I think the latest
+> way is to break this patch into small patches, changes little in each
+> small patches and we could finally find out the problem.
+>
+> Regards,
+> Chun-Kuang.
+>
+> >
+> > Unfortunately, after the merge window, different things broke for this
+> > device, and I didn't finish isolating them, and it is not clear to me
+> > yet whether the logs I'm getting are useful for this specific issue or
+> > not. Basically with this series merged the kernel seems to be stuck,
+> > and the display is not working. Latest message is
+> >
+> > [   12.329173] mtk-iommu 10205000.iommu: Partial TLB flush timed out,
+> > falling back to full flush
+> >
+> > Without the series, the kernel goes far and display works, however
+> > there are other issues affecting the cros-ec, but I think that's
+> > another issue.
+> >
+> > I'll try to dig a bit more, but, meanwhile, if you have any idea
+> > please let me know.
+> >
+> > Thanks,
+> >  Enric
+> >
+> >
+> > > Regards,
+> > > Chun-Kuang.
+> > >
+> > > >
+> > > > Changes in v2:
+> > > > 1. Define mtk_drm_cmdq_pkt_create() and mtk_drm_cmdq_pkt_destroy()
+> > > >    when CONFIG_MTK_CMDQ is reachable.
+> > > >
+> > > > Chun-Kuang Hu (4):
+> > > >   drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb
+> > > >   drm/mediatek: Remove struct cmdq_client
+> > > >   drm/mediatek: Detect CMDQ execution timeout
+> > > >   drm/mediatek: Add cmdq_handle in mtk_crtc
+> > > >
+> > > >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 110 ++++++++++++++++++++=
+----
+> > > >  1 file changed, 91 insertions(+), 19 deletions(-)
+> > > >
+> > > > --
+> > > > 2.25.1
+> > > >
