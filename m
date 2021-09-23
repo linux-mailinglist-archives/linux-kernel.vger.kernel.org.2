@@ -2,117 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EC3415C47
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85419415C4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240459AbhIWKwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 06:52:32 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:54052 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240429AbhIWKwa (ORCPT
+        id S240486AbhIWKxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236762AbhIWKxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:52:30 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id D2885D8002;
-        Thu, 23 Sep 2021 18:50:53 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P30982T140487228909312S1632394252895090_;
-        Thu, 23 Sep 2021 18:50:54 +0800 (CST)
-X-IP-DOMAINF: 1
-X-RL-SENDER: sugar.zhang@rock-chips.com
-X-SENDER: zxg@rock-chips.com
-X-LOGIN-NAME: sugar.zhang@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 12
-X-LOCAL-RCPT-COUNT: 1
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-UNIQUE-TAG: <0073ee5634e02cce322910e426978038>
-X-System-Flag: 0
-From:   Sugar Zhang <sugar.zhang@rock-chips.com>
-To:     broonie@kernel.org, heiko@sntech.de
-Cc:     linux-rockchip@lists.infradead.org,
-        Sugar Zhang <sugar.zhang@rock-chips.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dmaengine: Introduce module option prealloc_buffer_size_kbytes
-Date:   Thu, 23 Sep 2021 18:50:46 +0800
-Message-Id: <1632394246-59341-1-git-send-email-sugar.zhang@rock-chips.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 23 Sep 2021 06:53:22 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF1CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:51:50 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id m3so25066373lfu.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:51:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZZAOZKDlswTrDBuirwUgec+0wirM62qGZzElgpQmHWc=;
+        b=c+uc7dBvi0o8VbzJj/9l72hYiJGZlLposYxLzcXp04J15VNUZglANSoNSTDDY85VzH
+         9vcFA6NuhDzSRoRriGM2MYxe/FAvpzq7X/o0hRTXU+qgvdYtk7qjkCTO+lmokQPVA7Ls
+         icxidEkDd5X+hRAWmWFWd09TXCzDoI36pJp9V4gkqRGQQJVVkj/BuAyWzf4443bnTbVG
+         /qHD9LXObzKDT2bZKHkljt6nCAU6th1mLXX3YeTygPVJ23jy142kItEgR6zrzlULEtcX
+         3kfJEY/v4XlmrkiAj4BseE976o2W388hKlH7aVSTJsHmZAhpgrYnEdKzpxiPolFZvLF/
+         gakw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZZAOZKDlswTrDBuirwUgec+0wirM62qGZzElgpQmHWc=;
+        b=Wf2Vhqh+6UReZcQC1W4lwmdDGjIMsI/vnM6hLDl8IftZb8wUIIoYwk4lhX7yuZdYW2
+         Tr4mC8c+7f66BJ2k0N2ZCr/9PQbYcDZfHy0uYcfPryjU0rB+6zjDSoMgRy0ckR7QEw6e
+         3bE6I2Dqt7j8/gPnbPSLL33UfqCF7lSwXyQCo2cyovmKhactMj05q44PnBqCv8jXwHJB
+         tmZzEkZ+kXXlk7p9ulZflS3Emn/lMhzfgr0EYrHjjNYTZUvbalK1tl4B61eIe18mEdCD
+         JBhgclVbmcT824FLHO06aUMKSDQd4j9cAT4zlAzbxDOqhpdz8t3TevXaNET28SNC9AFh
+         pSOg==
+X-Gm-Message-State: AOAM532vPacQ/Bk7t0jj735CWLjYzWHA42Ttbjs+HZXqKWzb+Qyc6PIX
+        GmgQbyEx66iDK7d/LVTKR88lEkRgW4rW/Ndu5O3JRdHFRBBJXw==
+X-Google-Smtp-Source: ABdhPJzDqiDdo7fH13X6725lmGDL0pLCjz5Voj6/qRJne0PS12YyRUk8hp3c10PW5rrZoHYv6HTq9mLQec1PhG0Xb6k=
+X-Received: by 2002:a2e:85c2:: with SMTP id h2mr4412758ljj.367.1632394309094;
+ Thu, 23 Sep 2021 03:51:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210913080504.832521-1-narmstrong@baylibre.com>
+In-Reply-To: <20210913080504.832521-1-narmstrong@baylibre.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 23 Sep 2021 12:51:12 +0200
+Message-ID: <CAPDyKFqLvnAOAmk3PeNiBzwXTgwvG+zEO1b_pJNzSuUZ3Zamxg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: meson-gx: do not use memcpy_to/fromio for dram-access-quirk
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, The fixed 512KB prealloc buffer size is too larger for
-tiny memory kernel (such as 16MB memory). This patch adds the module
-option "prealloc_buffer_size_kbytes" to specify prealloc buffer size.
+On Mon, 13 Sept 2021 at 10:05, Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> The memory at the end of the controller only accepts 32bit read/write
+> accesses, but the arm64 memcpy_to/fromio implementation only uses 64bit
+> (which will be split into two 32bit access) and 8bit leading to incomplete
+> copies to/from this memory when the buffer is not multiple of 8bytes.
+>
+> Add a local copy using writel/readl accesses to make sure we use the right
+> memory access width.
+>
+> The switch to memcpy_to/fromio was done because of 285133040e6c
+> ("arm64: Import latest memcpy()/memmove() implementation"), but using memcpy
+> worked before since it mainly used 32bit memory acceses.
+>
+> Fixes: 103a5348c22c ("mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk")
+> Reported-by: Christian Hewitt <christianshewitt@gmail.com>
+> Suggested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  drivers/mmc/host/meson-gx-mmc.c | 49 +++++++++++++++++++++++----------
+>  1 file changed, 35 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+> index 3f28eb4d17fe..08c0ff0bfa8b 100644
+> --- a/drivers/mmc/host/meson-gx-mmc.c
+> +++ b/drivers/mmc/host/meson-gx-mmc.c
+> @@ -746,7 +746,7 @@ static void meson_mmc_desc_chain_transfer(struct mmc_host *mmc, u32 cmd_cfg)
+>         writel(start, host->regs + SD_EMMC_START);
+>  }
+>
+> -/* local sg copy to buffer version with _to/fromio usage for dram_access_quirk */
+> +/* local sg copy for dram_access_quirk */
+>  static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data,
+>                                   size_t buflen, bool to_buffer)
+>  {
+> @@ -764,21 +764,34 @@ static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data
+>         sg_miter_start(&miter, sgl, nents, sg_flags);
+>
+>         while ((offset < buflen) && sg_miter_next(&miter)) {
+> -               unsigned int len;
+> +               unsigned int buf_offset = 0;
+> +               unsigned int len, left;
+> +               u32 *buf = miter.addr;
+> +
+> +               if (((unsigned long int)miter.addr % 4))
+> +                       dev_err(host->dev, "non word aligned sg");
 
-It's suitable for cards which use the generic dmaengine pcm driver
-with no config.
+This looks weird. You print an error message, but continue to process
+data? If this is a case you can't handle, perhaps you should propagate
+an error code instead?
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
----
+Additionally, you may want to use the IS_ALIGNED() macro.
 
- Documentation/sound/alsa-configuration.rst | 9 +++++++++
- sound/soc/soc-generic-dmaengine-pcm.c      | 6 +++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+>
+>                 len = min(miter.length, buflen - offset);
+>
+> -               /* When dram_access_quirk, the bounce buffer is a iomem mapping */
+> -               if (host->dram_access_quirk) {
+> -                       if (to_buffer)
+> -                               memcpy_toio(host->bounce_iomem_buf + offset, miter.addr, len);
+> -                       else
+> -                               memcpy_fromio(miter.addr, host->bounce_iomem_buf + offset, len);
+> +               if ((len % 4))
+> +                       dev_err(host->dev, "non word multiple sg");
 
-diff --git a/Documentation/sound/alsa-configuration.rst b/Documentation/sound/alsa-configuration.rst
-index 65f6169..34888d4 100644
---- a/Documentation/sound/alsa-configuration.rst
-+++ b/Documentation/sound/alsa-configuration.rst
-@@ -100,6 +100,15 @@ amidi_map
-     MIDI device number maps assigned to the 2st OSS device;
-     Default: 1
- 
-+Module snd-soc-core
-+-------------------
-+
-+The soc core module. It is used by all ALSA card drivers.
-+It takes the following options which have global effects.
-+
-+prealloc_buffer_size_kbytes
-+    Specify prealloc buffer size in kbytes (default: 512).
-+
- Common parameters for top sound card modules
- --------------------------------------------
- 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 4aa48c7..c54c8ca 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -15,6 +15,10 @@
- 
- #include <sound/dmaengine_pcm.h>
- 
-+static unsigned int prealloc_buffer_size_kbytes = 512;
-+module_param(prealloc_buffer_size_kbytes, uint, 0444);
-+MODULE_PARM_DESC(prealloc_buffer_size_kbytes, "Preallocate DMA buffer size (KB).");
-+
- /*
-  * The platforms dmaengine driver does not support reporting the amount of
-  * bytes that are still left to transfer.
-@@ -237,7 +241,7 @@ static int dmaengine_pcm_new(struct snd_soc_component *component,
- 		prealloc_buffer_size = config->prealloc_buffer_size;
- 		max_buffer_size = config->pcm_hardware->buffer_bytes_max;
- 	} else {
--		prealloc_buffer_size = 512 * 1024;
-+		prealloc_buffer_size = prealloc_buffer_size_kbytes * 1024;
- 		max_buffer_size = SIZE_MAX;
- 	}
- 
--- 
-2.7.4
+Again, a dev_err() doesn't seem like the right thing to do. If you
+can't handle this, please return an error code instead.
 
+Perhaps returning an error code isn't convenient at this point. An
+option could then be to pre-validate the sglist at the time of
+starting the request. We have other host drivers doing this, have a
+look at drivers/mmc/host/mmci*, for example.
 
+> +
+> +               left = len;
+> +
+> +               if (to_buffer) {
+> +                       do {
+> +                               writel(*buf++, host->bounce_iomem_buf + offset + buf_offset);
+> +
+> +                               buf_offset += 4;
+> +                               left -= 4;
+> +                       } while (left);
+>                 } else {
+> -                       if (to_buffer)
+> -                               memcpy(host->bounce_buf + offset, miter.addr, len);
+> -                       else
+> -                               memcpy(miter.addr, host->bounce_buf + offset, len);
+> +                       do {
+> +                               *buf++ = readl(host->bounce_iomem_buf + offset + buf_offset);
+> +
+> +                               buf_offset += 4;
+> +                               left -= 4;
+> +                       } while (left);
+>                 }
+>
+>                 offset += len;
+> @@ -830,7 +843,11 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
+>                 if (data->flags & MMC_DATA_WRITE) {
+>                         cmd_cfg |= CMD_CFG_DATA_WR;
+>                         WARN_ON(xfer_bytes > host->bounce_buf_size);
+> -                       meson_mmc_copy_buffer(host, data, xfer_bytes, true);
+> +                       if (host->dram_access_quirk)
+> +                               meson_mmc_copy_buffer(host, data, xfer_bytes, true);
+> +                       else
+> +                               sg_copy_to_buffer(data->sg, data->sg_len,
+> +                                                 host->bounce_buf, xfer_bytes);
+>                         dma_wmb();
+>                 }
+>
+> @@ -999,7 +1016,11 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
+>         if (meson_mmc_bounce_buf_read(data)) {
+>                 xfer_bytes = data->blksz * data->blocks;
+>                 WARN_ON(xfer_bytes > host->bounce_buf_size);
+> -               meson_mmc_copy_buffer(host, data, xfer_bytes, false);
+> +               if (host->dram_access_quirk)
+> +                       meson_mmc_copy_buffer(host, data, xfer_bytes, false);
+> +               else
+> +                       sg_copy_from_buffer(data->sg, data->sg_len,
+> +                                           host->bounce_buf, xfer_bytes);
+>         }
+>
+>         next_cmd = meson_mmc_get_next_command(cmd);
+> --
+> 2.25.1
+>
 
+Kind regards
+Uffe
