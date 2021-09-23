@@ -2,86 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14A141662C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3599C41662D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243047AbhIWTtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 15:49:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46734 "EHLO mail.kernel.org"
+        id S243058AbhIWTtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 15:49:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243036AbhIWTtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 15:49:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A5B561241;
-        Thu, 23 Sep 2021 19:47:50 +0000 (UTC)
+        id S243023AbhIWTtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 15:49:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CDF360F6F;
+        Thu, 23 Sep 2021 19:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632426471;
-        bh=tNTn5doza/MUdcrkZfi+2yHcLPGWqgBaaU9JXVCX+w0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T79cfkC+jgWtws/ibKWvyyFLP76A9LztI4MwaI70DYfUCSlvmWn9AyHc0z8oikruB
-         vl0nBne1JkORynttFeO/GBt0Ha3WyoCwSUFeceZ/wCkfyrYb+mZZ2dIhIhVC14px72
-         D88pjUWEowNVXpq3MYXt8EcMRuvWLJphNLTJbdE0N3zgnn2yQEIDM6o8kX0YUYsP32
-         D6/4t+e3sN9S8kBkzfd+wxPyehEHfS24WUAnMqhf+kyi8nfkPJQnR4bPnV33cJRyE8
-         mpOda0XbXGO+l4J5oG/e+3jEu8lhId58SC5YzEXQ+e13rBWbq0f3sNpXYmVngnfAn4
-         dI5D+Dlb9RtCw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: [PATCH v1 4/4] mfd: sprd: Add SPI device ID table
-Date:   Thu, 23 Sep 2021 20:46:45 +0100
-Message-Id: <20210923194645.53046-5-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210923194645.53046-1-broonie@kernel.org>
-References: <20210923194645.53046-1-broonie@kernel.org>
+        s=k20201202; t=1632426479;
+        bh=OeWc14n9eipH1NnZQkPVKzOesAfMuGylT40OBED6fnI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=RHH6bQOPihZRnwDCQoYpuBzKCTvOYtNwF12A6tTkkaZI+OnweE3Aa0ovbwXkx3ySQ
+         d7Tpn0knfTv8BcroVAStQr/okxA1LL15V4LndkFfAf+tETDLmxycdEkTUEcRqJMaBj
+         XduUuUI7F1nMfBGQ1RUJ9fRBoix+6gXrPiji0dQeI+mokdYTJ8Gn+1iCHGeeyUqwC3
+         IUV1lj5TN2TRH0W9KAESVcUkOn2MbB478Xp5MfDdQnF0tNN2aZIB/P05i7JX8OrHIL
+         vOXmDC6+flu3RqIBKnoOYCs04E868thQhVNWWFzXJDIsusfFytfCx8CbHDPsGqc21x
+         u84HlbqSdXufA==
+Date:   Thu, 23 Sep 2021 12:47:58 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Oleksandr Andrushchenko <andr2000@gmail.com>
+cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
+        sstabellini@kernel.org, jbeulich@suse.com,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and
+ PV
+In-Reply-To: <20210923095345.185489-1-andr2000@gmail.com>
+Message-ID: <alpine.DEB.2.21.2109231217050.17979@sstabellini-ThinkPad-T480s>
+References: <20210923095345.185489-1-andr2000@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1497; h=from:subject; bh=tNTn5doza/MUdcrkZfi+2yHcLPGWqgBaaU9JXVCX+w0=; b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhTNmjWem47OHdKBk/9sQCTVZL/frMHOo2EeSf0C/w i2y++TSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUzZowAKCRAk1otyXVSH0IgzB/ 4k6+iQV6CTTWX+qHzuooCTxENzid1K+9ZAAVACkDTbkx9BOfDaFpJJ6hTUmgFt0UeA/Nh0h5t9V5Ix YQjRXEYUFJBdZjmoK9dORmN0rZSLvrivjAL4xmBOS7aWxtg5vlZrfibu1UxAjRtlaxemklZqxon0UO VJN5+8ye+gQ9kJ1NO38f3Key7/+rP/+HpVyBlUNvRQqZOVdruleakBm7UqqqGmpF9Us9u5AvF/CiUy MLZ37lDQaPFtGgV5HrsxTnxvFNaWpjwnAZa1BlNEQFtEMW5fmXCtn+Xhyjk2BHvhhcojh6bFxPX/8K pF3lcoPfN24b1M2rMMqXIvIaCRDYYu
-X-Developer-Key: i=broonie@kernel.org; a=openpgp; fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding a SPI device ID table.
+On Thu, 23 Sep 2021, Oleksandr Andrushchenko wrote:
+> Currently PCI backend implements multiple functionalities at a time.
+> To name a few:
+> 1. It is used as a database for assignable PCI devices, e.g. xl
+>    pci-assignable-{add|remove|list} manipulates that list. So, whenever
+>    the toolstack needs to know which PCI devices can be passed through
+>    it reads that from the relevant sysfs entries of the pciback.
+> 2. It is used to hold the unbound PCI devices list, e.g. when passing
+>    through a PCI device it needs to be unbound from the relevant device
+>    driver and bound to pciback (strictly speaking it is not required
+>    that the device is bound to pciback, but pciback is again used as a
+>    database of the passed through PCI devices, so we can re-bind the
+>    devices back to their original drivers when guest domain shuts down)
+> 3. Device reset for the devices being passed through
+> 4. Para-virtualized use-cases support
+> 
+> The para-virtualized part of the driver is not always needed as some
+> architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
+> model for PCI device passthrough. For such use-cases make the very
+> first step in splitting the xen-pciback driver into two parts: extended
+> PCI stub and PCI PV backend drivers. At the moment x86 platform will
+> continue using CONFIG_XEN_PCIDEV_BACKEND for the fully featured backend
+> driver and new platforms may build a driver with limited functionality
+> (no PV) by enabling CONFIG_XEN_PCIDEV_STUB.
+> 
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>
+> ---
+> Changes since v2:
+>  - swap the patch order
+> New in v2
+> ---
+>  drivers/xen/Kconfig               | 24 ++++++++++++++++++++++++
+>  drivers/xen/Makefile              |  2 +-
+>  drivers/xen/xen-pciback/Makefile  |  1 +
+>  drivers/xen/xen-pciback/pciback.h |  5 +++++
+>  drivers/xen/xen-pciback/xenbus.c  |  6 +++++-
+>  5 files changed, 36 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+> index a37eb52fb401..6e92c6be19f1 100644
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -180,10 +180,34 @@ config SWIOTLB_XEN
+>  	select DMA_OPS
+>  	select SWIOTLB
+>  
+> +config XEN_PCI_STUB
+> +	bool
+> +
+> +config XEN_PCIDEV_STUB
+> +	tristate "Xen PCI-device stub driver"
+> +	depends on PCI && !X86 && XEN
+> +	depends on XEN_BACKEND
+> +	select XEN_PCI_STUB
+> +	default m
+> +	help
+> +	  The PCI device stub driver provides limited version of the PCI
+> +	  device backend driver without para-virtualized support for guests.
+> +	  If you select this to be a module, you will need to make sure no
+> +	  other driver has bound to the device(s) you want to make visible to
+> +	  other guests.
+> +
+> +	  The "hide" parameter (only applicable if backend driver is compiled
+> +	  into the kernel) allows you to bind the PCI devices to this module
+> +	  from the default device drivers. The argument is the list of PCI BDFs:
+> +	  xen-pciback.hide=(03:00.0)(04:00.0)
+> +
+> +	  If in doubt, say m.
+> +
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: Orson Zhai <orsonzhai@gmail.com>
-Cc: Baolin Wang <baolin.wang7@gmail.com>
-Cc: Chunyan Zhang <zhang.lyra@gmail.com>
----
- drivers/mfd/sprd-sc27xx-spi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+I get this build error on ARM:
 
-diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
-index 6b7956604a0f..d2d4c4b2087f 100644
---- a/drivers/mfd/sprd-sc27xx-spi.c
-+++ b/drivers/mfd/sprd-sc27xx-spi.c
-@@ -230,6 +230,12 @@ static int sprd_pmic_resume(struct device *dev)
- 
- static SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_pmic_resume);
- 
-+static const struct spi_device_id sprd_pmic_spi_ids[] = {
-+	{ .name = "sc2731", .driver_data = (unsigned long)&sc2731_data },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(spi, sprd_pmic_spi_ids);
-+
- static const struct of_device_id sprd_pmic_match[] = {
- 	{ .compatible = "sprd,sc2731", .data = &sc2731_data },
- 	{},
-@@ -243,6 +249,7 @@ static struct spi_driver sprd_pmic_driver = {
- 		.pm = &sprd_pmic_pm_ops,
- 	},
- 	.probe = sprd_pmic_probe,
-+	.id_table = sprd_pmic_spi_ids,
- };
- 
- static int __init sprd_pmic_init(void)
--- 
-2.20.1
+drivers/xen/xen-pciback/pci_stub.c:22:10: fatal error: asm/xen/pci.h: No such file or directory
+ #include <asm/xen/pci.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+scripts/Makefile.build:277: recipe for target 'drivers/xen/xen-pciback/pci_stub.o' failed
 
+
+I imagine that the second patch is required for the build on ARM. I
+suggest to move the definition of XEN_PCIDEV_STUB to the second patch.
+(keep XEN_PCI_STUB and xen_pcibk_pv_support here.)
+
+Alternatively, just remove "tristate "Xen PCI-device stub driver"" from
+here so that XEN_PCIDEV_STUB becomes non-selectable. You can add the
+tristate property in patch #2.
+
+
+
+>  config XEN_PCIDEV_BACKEND
+>  	tristate "Xen PCI-device backend driver"
+>  	depends on PCI && X86 && XEN
+>  	depends on XEN_BACKEND
+> +	select XEN_PCI_STUB
+>  	default m
+>  	help
+>  	  The PCI device backend driver allows the kernel to export arbitrary
+> diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
+> index 3434593455b2..5aae66e638a7 100644
+> --- a/drivers/xen/Makefile
+> +++ b/drivers/xen/Makefile
+> @@ -24,7 +24,7 @@ obj-$(CONFIG_XEN_SYS_HYPERVISOR)	+= sys-hypervisor.o
+>  obj-$(CONFIG_XEN_PVHVM_GUEST)		+= platform-pci.o
+>  obj-$(CONFIG_SWIOTLB_XEN)		+= swiotlb-xen.o
+>  obj-$(CONFIG_XEN_MCE_LOG)		+= mcelog.o
+> -obj-$(CONFIG_XEN_PCIDEV_BACKEND)	+= xen-pciback/
+> +obj-$(CONFIG_XEN_PCI_STUB)	        += xen-pciback/
+>  obj-$(CONFIG_XEN_PRIVCMD)		+= xen-privcmd.o
+>  obj-$(CONFIG_XEN_ACPI_PROCESSOR)	+= xen-acpi-processor.o
+>  obj-$(CONFIG_XEN_EFI)			+= efi.o
+> diff --git a/drivers/xen/xen-pciback/Makefile b/drivers/xen/xen-pciback/Makefile
+> index e8d981d43235..e2cb376444a6 100644
+> --- a/drivers/xen/xen-pciback/Makefile
+> +++ b/drivers/xen/xen-pciback/Makefile
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_XEN_PCIDEV_BACKEND) += xen-pciback.o
+> +obj-$(CONFIG_XEN_PCIDEV_STUB) += xen-pciback.o
+>  
+>  xen-pciback-y := pci_stub.o pciback_ops.o xenbus.o
+>  xen-pciback-y += conf_space.o conf_space_header.o \
+> diff --git a/drivers/xen/xen-pciback/pciback.h b/drivers/xen/xen-pciback/pciback.h
+> index 95e28ee48d52..9a64196e831d 100644
+> --- a/drivers/xen/xen-pciback/pciback.h
+> +++ b/drivers/xen/xen-pciback/pciback.h
+> @@ -71,6 +71,11 @@ struct pci_dev *pcistub_get_pci_dev(struct xen_pcibk_device *pdev,
+>  				    struct pci_dev *dev);
+>  void pcistub_put_pci_dev(struct pci_dev *dev);
+>  
+> +static inline bool xen_pcibk_pv_support(void)
+> +{
+> +	return IS_ENABLED(CONFIG_XEN_PCIDEV_BACKEND);
+> +}
+> +
+>  /* Ensure a device is turned off or reset */
+>  void xen_pcibk_reset_device(struct pci_dev *pdev);
+>  
+> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
+> index c09c7ebd6968..f8ba2903a3ff 100644
+> --- a/drivers/xen/xen-pciback/xenbus.c
+> +++ b/drivers/xen/xen-pciback/xenbus.c
+> @@ -743,6 +743,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
+>  
+>  int __init xen_pcibk_xenbus_register(void)
+>  {
+> +	if (!xen_pcibk_pv_support())
+> +		return 0;
+> +
+>  	xen_pcibk_backend = &xen_pcibk_vpci_backend;
+>  	if (passthrough)
+>  		xen_pcibk_backend = &xen_pcibk_passthrough_backend;
+> @@ -752,5 +755,6 @@ int __init xen_pcibk_xenbus_register(void)
+>  
+>  void __exit xen_pcibk_xenbus_unregister(void)
+>  {
+> -	xenbus_unregister_driver(&xen_pcibk_driver);
+> +	if (xen_pcibk_pv_support())
+> +		xenbus_unregister_driver(&xen_pcibk_driver);
+>  }
+> -- 
+> 2.25.1
+> 
