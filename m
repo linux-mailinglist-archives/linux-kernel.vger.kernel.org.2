@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68C2416788
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB72B41678E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243350AbhIWVg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243322AbhIWVgV (ORCPT
+        id S243356AbhIWVi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:38:27 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33694 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243232AbhIWVi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:36:21 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACE6C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:34:49 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i25so32018596lfg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hwjuFFEYUw6qLa4G4t6xm8xsFy3ftvS5x0wrGV04jCI=;
-        b=jZRRTpXoykphrWtGlmCGTQm7+dQBcpLvtXMU5q9RLQM0B7ggtcFJa3+gDaU0MTRjXb
-         qrf8++lzMfJ9Su9/48gHLCX+Xkj05jEIg6OM1kHpfLvAYl0CM6ADq1aMAY91cVUxdaOn
-         teJAnWphmD6obyQ58pohl3myJKlJuw+X7RTja2JlOKjLePie59S9v83OuJpbvxgJOvGi
-         cLV2/2rmV04Z7cOrtT7m1lM7q1zvh2DpQcH4FRVIWf8GEuo1zaI2QM4fyaP2y4PwuNGl
-         fpAlC0iafp/00PEmOMRggaojTHb+O94Coa1B1TOkuCpsl4jYpyVH6W/eFHj/wzzR+WM/
-         KTrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hwjuFFEYUw6qLa4G4t6xm8xsFy3ftvS5x0wrGV04jCI=;
-        b=2MfNKuBbsLOmOIQp8GKlPWzSiGuB0bllH0ynhoaPdTk08egtk0ac7/s0TUPfPo/Jug
-         hfQblsnhjcNBxNGO1SNKEkVtvAlyxXxr45ZdLThm+kb3KTGGtg5DVn6HdYFdyJKEDq9l
-         yiMM0Oht/aat2z+hNCIqBV9Qj9LBWy7yvib0lOmL1vo/xhAhnR94LkGu7Sw7fiMtaJeC
-         9rw35MpZqrCnvST0YbMsUlkFD67/B9gASjCrJ9QBbIi/waeCIdCrmOKDC2lQzaPK4UDk
-         PFOBHqmGRvAK9hSKKjjWHawnYa3PbLw3/yhdwiktNNJaPa/VFeKIa/PTPS5fXo5JDADr
-         hHUA==
-X-Gm-Message-State: AOAM532Ny+B+5++3dykBHnXkNYhnzFEd1LxHZ5Z5UDZrfMyqvRRCTyFl
-        8s3gt3oAv65sko6ZSBEiQZ3QkYj0Bl0JAqd8NHFS9g==
-X-Google-Smtp-Source: ABdhPJyZtA3tDkqn1sMYlY6x+GteCF64qDi14tvZqfNnSjwpru/kvnvXoFyvMmItzPeo5xawCArcnw1gMI5lGq9oC0c=
-X-Received: by 2002:a05:651c:4ca:: with SMTP id e10mr7854021lji.259.1632432887920;
- Thu, 23 Sep 2021 14:34:47 -0700 (PDT)
+        Thu, 23 Sep 2021 17:38:26 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8C6041FDA8;
+        Thu, 23 Sep 2021 21:36:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632433013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=YfiVNDupuJkAqDYA2q22AZZjU99YDJbsaYRL3NKp75A=;
+        b=GV7BD1WbtmjrItUKvVdZnKVflzhkd2EFQf4XdVCcZS7BRxH4jW2jthl6x2gzDM5ysfFinV
+        Ozip+JHyv6lNw3qrLptCKoPxKic9bF9PjiaKFnFrdu2KR5gAw6R+/r/2oMTD8azh2rRDQq
+        CPHoMs/AgcRpdTzFGSwLfQ0J6+Gb3TI=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay1.suse.de (Postfix) with ESMTP id 83C6D25D3C;
+        Thu, 23 Sep 2021 21:36:53 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 187CBDA7A3; Thu, 23 Sep 2021 23:36:39 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.15-rc3
+Date:   Thu, 23 Sep 2021 23:36:38 +0200
+Message-Id: <cover.1632432123.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <1631588246-4811-1-git-send-email-quic_subbaram@quicinc.com> <1631588246-4811-2-git-send-email-quic_subbaram@quicinc.com>
-In-Reply-To: <1631588246-4811-2-git-send-email-quic_subbaram@quicinc.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 23 Sep 2021 23:34:37 +0200
-Message-ID: <CACRpkdYiK+KPjz8RZKcS6sgTk6-RgB=zVtbim6vaQyVszhhk7A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom-pmic-gpio: Add
- output-{enable,disable} properties
-To:     Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 4:57 AM Subbaraman Narayanamurthy
-<quic_subbaram@quicinc.com> wrote:
+Hi,
 
-> Add support for the pinconf DT property output-enable, output-disable
-> so that output can be enabled/disabled.
->
-> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+a few fixes, please pull. Thanks.
 
-Both patches applied! Thanks!
+- regression, fix leak of transaction handle after verity rollback
+  failure
 
-Yours,
-Linus Walleij
+- properly reset device last error between mounts
+
+- improve one error handling case when checksumming bios
+
+- fixup confusing displayed size of space info free space
+
+----------------------------------------------------------------
+The following changes since commit f79645df806565a03abb2847a1d20e6930b25e7e:
+
+  btrfs: zoned: fix double counting of split ordered extent (2021-09-07 14:30:41 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc2-tag
+
+for you to fetch changes up to 0619b7901473c380abc05d45cf9c70bee0707db3:
+
+  btrfs: prevent __btrfs_dump_space_info() to underflow its free space (2021-09-17 19:29:54 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (2):
+      btrfs: fix transaction handle leak after verity rollback failure
+      btrfs: fix mount failure due to past and transient device flush error
+
+Qu Wenruo (2):
+      btrfs: replace BUG_ON() in btrfs_csum_one_bio() with proper error handling
+      btrfs: prevent __btrfs_dump_space_info() to underflow its free space
+
+ fs/btrfs/file-item.c  | 13 ++++++++++++-
+ fs/btrfs/space-info.c |  5 +++--
+ fs/btrfs/verity.c     |  6 ++++--
+ fs/btrfs/volumes.c    | 13 +++++++++++++
+ 4 files changed, 32 insertions(+), 5 deletions(-)
