@@ -2,420 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8800415901
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2852415905
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239626AbhIWH3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:29:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234343AbhIWH3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:29:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA3D960EC0;
-        Thu, 23 Sep 2021 07:27:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632382050;
-        bh=fiYXIDyr9LSL+vkuMbDrbexSBa3F6XCEsWvXSuIT/EU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=t/8E+z7wBCNsLV+m4LBCBOf7SsvVqr6byknbtpB5x/q/z0AnwvhUjGieSI56BlyOZ
-         7R3wqtqAtOKcX4Cl9XjjIy6xTPRbpYjtnX0MxTdDOT0/OJI5Qo4Bh6b6kmo0P2m6UW
-         3i1m/Ku9A9zshJ1K+4E4GINpSbR9JTErKV4J3mnejeO7VDzvt8RyScNFfRRJ6Y9ztI
-         enGa3/fRdbuJ19rpTlfgRe9pX08FvmfSUO4G8kH8L5HH5IsZ7fUVyo7tN5BQHg32hK
-         QJRbG6IwIVjF4p5PhAAfK4U0Uw2ADy9zKvUg03Js32cvkYN+1/v8VzS7XhRpnlWVdW
-         Ze20xVlIMbpBA==
-From:   guoren@kernel.org
-To:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
-        guoren@kernel.org, christoph.muellner@vrull.eu,
-        philipp.tomsich@vrull.eu, hch@lst.de, liush@allwinnertech.com,
-        wefu@redhat.com, lazyparser@gmail.com, drew@beagleboard.org
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
-Subject: [PATCH] riscv: Add RISC-V svpbmt extension
-Date:   Thu, 23 Sep 2021 15:27:16 +0800
-Message-Id: <20210923072716.913826-1-guoren@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S239605AbhIWHbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:31:42 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:29200 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229556AbhIWHbk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 03:31:40 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18N6WZYP003039;
+        Thu, 23 Sep 2021 07:29:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=vIkZ5qBAcqAZM3SHxcSjT/eHfz+b8nDiEmOYjfE48ik=;
+ b=gjSb4grBATQWB28KnrKqEDDZ+jgZbKecPtMoUWoi/Ep9fWa+o7iHwfldGotCZVrH7cbC
+ 6MDJOQraa3TtyfIqcIc1UbDmJElYgNLBbSA5MI46xQeMVC395S5pprCkFMxZYLdvNyqZ
+ OCNsS6WAZDXkNjmLn+q5xGkoJJvI9BLH+MVqoqwWHYBs8fKGfo2+z3g1d/FPUbA5cH2r
+ R4Tz00vlw98w1IQZntuD4xj8e+Xk5KdZDpO8c0fEbxnOIWv9GBGs4j0x3eKWsbfVM6kC
+ OZPxBGfMEFPRj5/SwOF1A4GzjQy0SFyrye8aNh1aMFG3mvsrj7mKNkCqIzb7AmpCTpu7 Uw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b8mdbg7y4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Sep 2021 07:29:51 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18N7ErEf058655;
+        Thu, 23 Sep 2021 07:29:50 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+        by aserp3020.oracle.com with ESMTP id 3b7q5bt7rv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Sep 2021 07:29:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NRoDP+QaIcxMPrhdauyuIMi6huPpUhz5/I4ernxlmIFmbdBaCKvimBZ18/ImzD1/MPwbSZTpCFgXQRZu882j0OUOu71C4zI1KKkT2Qa0bPpDQaJo3zuTFh5FWaQZInhOcDjP98t57DtfaSBgZPKZtbyeUxovaZfLhdeGWBLxxFDTVG7UkXqfLqsq/qmq1O9lJKvw+9z+8DjHRWPbBMosy5YKrR7rsZ7I7Ic+LXj7ygWurFl/H7hr332TSRwISlhzXVM5TtqylQlgBV2AU5zI5vlBgQSWCLTjvtdf3KnnZxo+MXbTUnlWTBnWrbagkvL4ykwoWiqdkezOHeViEGhzkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vIkZ5qBAcqAZM3SHxcSjT/eHfz+b8nDiEmOYjfE48ik=;
+ b=kVF0F61UdGtAVx75P2h51G4frp2/0zWHL9AYSrz5IOA/WEE+mi4kDWifhWGVU3l15HqHsCuAVX3FaM0ZfAS6iEvn2FCunkNq3es1NFMnVjsOTaQNmDq4N+4l65khY0Nmu1COGyEpyXmCdRy64dL0TX69TJMfY8zMZ3VyenzngVCMXkoKQQ7mcb2G2a669ujlsIi2ugrxfj55MYIi6puhEOMbt64FdMVmSx31x865GSmUuy79e2K24CTF88ve0pJxl+7IZl8lr9X5wI9dCinLYfXq+sCwWBBkGSjMWZZ7SfQmD0gZff6D2Qw9FTwJszz92IWa+psrGkU51hpkFpoWrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vIkZ5qBAcqAZM3SHxcSjT/eHfz+b8nDiEmOYjfE48ik=;
+ b=psnnH2+GucUkN5CHUh2jqHpethdnevf9Id9VejgsZWARhdCuNRUVe0xruw7CXqUlDSmlSChAdMVkqRc3bEiEHQrCo9ESloaO84rx1Kp1lfXiG54qeYnkzHBmdst+Ff8PlQP73xwzyTTdU4ypSvPugobKnlPGSTT7ORoxwzBRFnw=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1886.namprd10.prod.outlook.com
+ (2603:10b6:300:10e::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 23 Sep
+ 2021 07:29:48 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4523.018; Thu, 23 Sep 2021
+ 07:29:47 +0000
+Date:   Thu, 23 Sep 2021 10:29:29 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, martin@kaiser.cx, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/8] staging: r8188eu: remove dead code from
+ rtl8188e_rf6052.c
+Message-ID: <20210923072929.GA2048@kadam>
+References: <20210921194658.10654-1-straube.linux@gmail.com>
+ <20210921194658.10654-7-straube.linux@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921194658.10654-7-straube.linux@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNXP275CA0024.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::36)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from kadam (62.8.83.99) by JNXP275CA0024.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 07:29:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 85fcfda9-0ba8-455d-13f3-08d97e63ebc9
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1886:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1886505625261840EB2E0A468EA39@MWHPR10MB1886.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NCEha0fFPUSbkF1ZiyFl/mWSPkt3RXyA01DbGEbZ8UNOKzA3QInM8H2iyt542Bj09IyJwAzceg6fqbDP2cfwHy5t/5/YAjstzNSERK0AUT3I2NSkYF54PTEdDtc6sxe+c+pkoX0KiTjChu/kpYdJGi2QXLum87rSG+RWwv+C1TilVndTruxaUTPjS9cSjIMJplkPp+iOTjmFGRqsfp0OcrQVsE6+z21ZA7m4pc1x68Aw6k/YAjV0fOkFfOAjnXXEd3TEp/y3cElpZHEZ20duYkTo0xmPsohtB32Wb8EIJ1iBlFC+vQpiDAMqB3yVXl3FDb8F85qho5k+DCOUxX//XNSLA3eNMzklNg/Zt3byvvFfA0U1tY92O6BQkDzrfK9X8PQKsZPNm07T/Mk8YUWHEStYyBKCqyMBoxZpz3T6hOP3aMkfPSQWuTAGrN2/XgSFGTqbeoGDmob8Qk5OCZrUbHzUBxtUfnTzUjtDDEZbp8d838wLMgKLqY2fL0WLG4QK0ISjYvSzIUr6Y2tf/kZFiPnrWWPdf5YS9SXZndz4hJFXkSeU+LTEn7/hKLYx6BfM9EaaEAz0PU30kvgzsP1oK+tIgf575ojWoEtS0yBp2Kc+qut4ds1Zh4FTdyW150FIfV4Kd3KleX1IPpn8Q1duITPJeBFzV/GdzkDeOuTuSImpk1WBduU1nKdhD/pTPFuvjM2n7yTcIb2Altw3FASEUw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(316002)(55016002)(33656002)(9686003)(66946007)(5660300002)(9576002)(8936002)(52116002)(66476007)(66556008)(6496006)(83380400001)(956004)(8676002)(186003)(26005)(4326008)(508600001)(38100700002)(38350700002)(33716001)(2906002)(44832011)(1076003)(6666004)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EcwlAIDVEp+M1dfavDivu5MwrhQjh92938OqRnE4mfV8Omiyh2e7B9gBI7Qi?=
+ =?us-ascii?Q?xtgWC1DASOzpoegP7Cph5KS1Kw3xVMMUAmAVnO8DHk6eN31JygOC6HZbUIzT?=
+ =?us-ascii?Q?ewARCd7Eu/82cvhMKIl6V1YRaCmKcAnFX3+yuCfGhf1XWuRYnGVBxfEXKXdx?=
+ =?us-ascii?Q?b9D+8mnCYv2t/M/8R540v3jDydVbR1xoY8qXspuqinaWz5unvgcT29GF7/xw?=
+ =?us-ascii?Q?xuq7+sWBv1weV//WH3t6N/5LlEb89xk30ZJ5w41z3mtQk85X+6zTtNCZWhrI?=
+ =?us-ascii?Q?FwhwnMqBt00Rssk1Sh0AaMYhwsbUkiziaPy6U73j8/Z0/2XpX819slRtpIBh?=
+ =?us-ascii?Q?Q+KJRUYHoJWeppuB61t1/aaaD1o0sEtR1iVo8QRSFhX0Lx+FN7GfeVoALCZd?=
+ =?us-ascii?Q?8BDuXo4XeTnjr96YhrOHbJu09RY5t82HkUCqP+3Q82LHVKUkQ6qtJdZFHmdy?=
+ =?us-ascii?Q?HLHnDJFPGHUK4nNS/wW4yRMNIcO9snMqmAHOUyXBg3t/EMWjGe+m7Sq7299s?=
+ =?us-ascii?Q?sH1bpPwK5pD8r+AG0aSXtnEPS6BXazgzKPsQMN8sLjP0pZVc5L6fVWM1x1o8?=
+ =?us-ascii?Q?cd8nykBif8m4/B0V3yCOxMb1HWN3TlRXch/4p2ghdezr5DDsELsV4DJpcSi1?=
+ =?us-ascii?Q?JEeEpHl6iD4I0InUP3h0kLWofKfQ0mMXzKfMUglLP/AfQfbyFpX+R7xkP+Cu?=
+ =?us-ascii?Q?zbP09acBOuPwiiIfc34WZ/0/Q5UEMRiEAhW+IAVIqEVxfvWCMOaOTUV4O2XZ?=
+ =?us-ascii?Q?uFdxBtP/+5aCDD4cnmBXY3toC68IhpeKj58r5VKghs6n5vtOv7Vz8bjZXKyE?=
+ =?us-ascii?Q?MKE5Kb2MYnJlhzWHoyaY/OKegljaQtWswyc212wJNsTeuWO22f5Ir8Eu/ihY?=
+ =?us-ascii?Q?/FGiKrC/jCxS7Ccj/NfzNBZ/FmfDKJTLlE7nhIK2LAQdkkd73EAoGgmh+FRc?=
+ =?us-ascii?Q?qYHC4ACD4aPH73VLVTovqU5FaUi2oWblHBCebpipFjidCSjDtXfm+UhC/A0a?=
+ =?us-ascii?Q?AOhhIxpF8CtI8Ao+sycdUWHH8GU52seQeQfDQDYXk2kMqVigA2TpQB648Pxo?=
+ =?us-ascii?Q?MgDP+itG0JJiX/kcixahsP+P85O6sLTpczYXWyyLTXdcYQa+RuIRiZXl9IFg?=
+ =?us-ascii?Q?79WFvaXaayy9i2XeiZ3VwuLdfHq5BMcnSNmlDmFjJUALE0vGEFzCprz2okyh?=
+ =?us-ascii?Q?lwkLGRIAf09gemjX1BipNpbeyJBfAXl/83u9c3Hb3ulRLf0qb4oNBkOXLAsi?=
+ =?us-ascii?Q?D5MRJsIdoB6cOoEWdRgRalVDyeSljYgU/bSg4XkNqUevy9g0Q5pawx6BUhgZ?=
+ =?us-ascii?Q?kvD7mPVG80IXkSJCPXQsHAre?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85fcfda9-0ba8-455d-13f3-08d97e63ebc9
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 07:29:47.8547
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5HpEZJFIufb70XRc/dvv+RD06wGePegadUV/eNxRjqPE6266Q4zGH76DuzZXdBQ5D7JceGxYpAl4HSIeoUbFXXfxOyNSjDPnXqpII2SnfpA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1886
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10115 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109230044
+X-Proofpoint-ORIG-GUID: kAs7VAfktAznNyh_ee4NKZ_wmCCNCE0s
+X-Proofpoint-GUID: kAs7VAfktAznNyh_ee4NKZ_wmCCNCE0s
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On Tue, Sep 21, 2021 at 09:46:56PM +0200, Michael Straube wrote:
+> In this driver DynamicTxHighPowerLvl is set to TxHighPwrLevel_Normal
+> and never changed. In the file rtl8188e_rf6052.c there are some if
+> statements that check DynamicTxHighPowerLvl for other values than
+> TxHighPwrLevel_Normal. The code in the if blocks is never executed.
+> Remove the dead code.
+> 
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/hal/rtl8188e_rf6052.c | 57 +++++--------------
+>  1 file changed, 14 insertions(+), 43 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c b/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
+> index edaa9a6dfdb1..946a1b97d96f 100644
+> --- a/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
+> +++ b/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
+> @@ -85,7 +85,6 @@ rtl8188e_PHY_RF6052SetCckTxPower(
+>  		u8 *pPowerlevel)
+>  {
+>  	struct hal_data_8188e *pHalData = GET_HAL_DATA(Adapter);
+> -	struct dm_priv *pdmpriv = &pHalData->dmpriv;
+>  	struct mlme_ext_priv *pmlmeext = &Adapter->mlmeextpriv;
+>  	u32 TxAGC[2] = {0, 0}, tmpval = 0, pwrtrac_value;
+>  	bool TurboScanOff = false;
+> @@ -112,34 +111,19 @@ rtl8188e_PHY_RF6052SetCckTxPower(
+>  			}
+>  		}
+>  	} else {
+> -		/* Driver dynamic Tx power shall not affect Tx power.
+> -		 * It shall be determined by power training mechanism.
+> -i		 *  Currently, we cannot fully disable driver dynamic
+   ^
 
-This patch follows the standard pure RISC-V Svpbmt extension in
-privilege spec to solve the non-coherent SOC dma synchronization
-issues.
+You're a vimster.  :)
 
-Here is the svpbmt PTE format:
-| 63 | 62-61 | 60-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-  N     MT     RSW    D   A   G   U   X   W   R   V
-        ^
-
-Of the Reserved bits [63:54] in a leaf PTE, the high bit is already
-allocated (as the N bit), so bits [62:61] are used as the MT (aka
-MemType) field. This field specifies one of three memory types that
-are close equivalents (or equivalent in effect) to the three main x86
-and ARMv8 memory types - as shown in the following table.
-
-RISC-V
-Encoding &
-MemType     RISC-V Description
-----------  ------------------------------------------------
-00 - PMA    Normal Cacheable, No change to implied PMA memory type
-01 - NC     Non-cacheable, idempotent, weakly-ordered Main Memory
-10 - IO     Non-cacheable, non-idempotent, strongly-ordered I/O memory
-11 - Rsvd   Reserved for future standard use
-
-The standard protection_map [] needn't be modified because the "PMA"
-type keeps the highest bits zero. The standard protection_map[] needn't
-be modified. So the whole modification is in the arch/riscv pgtable and
-using a global variable (__riscv_svpbmt) in the _PAGE_DMA_MASK/IO/NC
-for pgprot_noncached (&writecombine). We also need _PAGE_CHG_MASK to
-detect PFN than before.
-
-Devicetree: reuse "mmu-type" of cpu_section as a user interface to
-enable the feature or not:
- - riscv,sv39,svpbmt
- - riscv,sv48,svpbmt
-
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Liu Shaohua <liush@allwinnertech.com>
-Cc: Wei Fu <wefu@redhat.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Anup Patel <anup.patel@wdc.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Atish Patra <atish.patra@wdc.com>
-Cc: Drew Fustini <drew@beagleboard.org>
-Cc: Wei Fu <wefu@redhat.com>
-Cc: Wei Wu <lazyparser@gmail.com>
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Maxime Ripard <maxime@cerno.tech>
-Cc: Daniel Lustig <dlustig@nvidia.com>
-Cc: Greg Favor <gfavor@ventanamicro.com>
-Cc: Andrea Mondelli <andrea.mondelli@huawei.com>
-Cc: Jonathan Behrens <behrensj@mit.edu>
-Cc: Xinhaoqu (Freddie) <xinhaoqu@huawei.com>
-Cc: Bill Huffman <huffman@cadence.com>
-Cc: Nick Kossifidis <mick@ics.forth.gr>
-Cc: Allen Baum <allen.baum@esperantotech.com>
-Cc: Josh Scheid <jscheid@ventanamicro.com>
-Cc: Richard Trauben <rtrauben@gmail.com>
----
- .../devicetree/bindings/riscv/cpus.yaml       |  2 +
- arch/riscv/include/asm/fixmap.h               |  2 +-
- arch/riscv/include/asm/pgtable-64.h           |  8 ++--
- arch/riscv/include/asm/pgtable-bits.h         | 46 ++++++++++++++++++-
- arch/riscv/include/asm/pgtable.h              | 39 ++++++++++++----
- arch/riscv/include/asm/processor.h            |  1 +
- arch/riscv/kernel/cpufeature.c                | 23 ++++++++++
- arch/riscv/kernel/setup.c                     |  2 +
- arch/riscv/mm/init.c                          |  5 ++
- 9 files changed, 113 insertions(+), 15 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-index e534f6a7cfa1..1825cd8db0de 100644
---- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-+++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-@@ -56,7 +56,9 @@ properties:
-     enum:
-       - riscv,sv32
-       - riscv,sv39
-+      - riscv,sv39,svpbmt
-       - riscv,sv48
-+      - riscv,sv48,svpbmt
-       - riscv,none
- 
-   riscv,isa:
-diff --git a/arch/riscv/include/asm/fixmap.h b/arch/riscv/include/asm/fixmap.h
-index 54cbf07fb4e9..5acd99d08e74 100644
---- a/arch/riscv/include/asm/fixmap.h
-+++ b/arch/riscv/include/asm/fixmap.h
-@@ -43,7 +43,7 @@ enum fixed_addresses {
- 	__end_of_fixed_addresses
- };
- 
--#define FIXMAP_PAGE_IO		PAGE_KERNEL
-+#define FIXMAP_PAGE_IO		PAGE_IOREMAP
- 
- #define __early_set_fixmap	__set_fixmap
- 
-diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
-index 228261aa9628..0b53ea67e91a 100644
---- a/arch/riscv/include/asm/pgtable-64.h
-+++ b/arch/riscv/include/asm/pgtable-64.h
-@@ -61,12 +61,14 @@ static inline void pud_clear(pud_t *pudp)
- 
- static inline pmd_t *pud_pgtable(pud_t pud)
- {
--	return (pmd_t *)pfn_to_virt(pud_val(pud) >> _PAGE_PFN_SHIFT);
-+	return (pmd_t *)pfn_to_virt((pud_val(pud) & _PAGE_CHG_MASK)
-+						>> _PAGE_PFN_SHIFT);
- }
- 
- static inline struct page *pud_page(pud_t pud)
- {
--	return pfn_to_page(pud_val(pud) >> _PAGE_PFN_SHIFT);
-+	return pfn_to_page((pud_val(pud) & _PAGE_CHG_MASK)
-+						>> _PAGE_PFN_SHIFT);
- }
- 
- static inline pmd_t pfn_pmd(unsigned long pfn, pgprot_t prot)
-@@ -76,7 +78,7 @@ static inline pmd_t pfn_pmd(unsigned long pfn, pgprot_t prot)
- 
- static inline unsigned long _pmd_pfn(pmd_t pmd)
- {
--	return pmd_val(pmd) >> _PAGE_PFN_SHIFT;
-+	return (pmd_val(pmd) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT;
- }
- 
- #define mk_pmd(page, prot)    pfn_pmd(page_to_pfn(page), prot)
-diff --git a/arch/riscv/include/asm/pgtable-bits.h b/arch/riscv/include/asm/pgtable-bits.h
-index 2ee413912926..041fe4fdbafa 100644
---- a/arch/riscv/include/asm/pgtable-bits.h
-+++ b/arch/riscv/include/asm/pgtable-bits.h
-@@ -7,7 +7,7 @@
- #define _ASM_RISCV_PGTABLE_BITS_H
- 
- /*
-- * PTE format:
-+ * rv32 PTE format:
-  * | XLEN-1  10 | 9             8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-  *       PFN      reserved for SW   D   A   G   U   X   W   R   V
-  */
-@@ -24,6 +24,47 @@
- #define _PAGE_DIRTY     (1 << 7)    /* Set by hardware on any write */
- #define _PAGE_SOFT      (1 << 8)    /* Reserved for software */
- 
-+#ifndef __ASSEMBLY__
-+#ifdef CONFIG_64BIT
-+/*
-+ * rv64 PTE format:
-+ * | 63 | 62 61 | 60 54 | 53  10 | 9             8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-+ *   N      MT     RSV    PFN      reserved for SW   D   A   G   U   X   W   R   V
-+ * [62:61] Memory Type definitions:
-+ *  00 - PMA    Normal Cacheable, No change to implied PMA memory type
-+ *  01 - NC     Non-cacheable, idempotent, weakly-ordered Main Memory
-+ *  10 - IO     Non-cacheable, non-idempotent, strongly-ordered I/O memory
-+ *  11 - Rsvd   Reserved for future standard use
-+ */
-+#define _PAGE_MT_MASK		((u64)0x3 << 61)
-+#define _PAGE_MT_PMA		((u64)0x0 << 61)
-+#define _PAGE_MT_NC		((u64)0x1 << 61)
-+#define _PAGE_MT_IO		((u64)0x2 << 61)
-+
-+enum {
-+	MT_PMA,
-+	MT_NC,
-+	MT_IO,
-+	MT_MAX
-+};
-+
-+extern struct __riscv_svpbmt_struct {
-+	unsigned long mask;
-+	unsigned long mt[MT_MAX];
-+} __riscv_svpbmt;
-+
-+#define _PAGE_DMA_MASK		__riscv_svpbmt.mask
-+#define _PAGE_DMA_PMA		__riscv_svpbmt.mt[MT_PMA]
-+#define _PAGE_DMA_NC		__riscv_svpbmt.mt[MT_NC]
-+#define _PAGE_DMA_IO		__riscv_svpbmt.mt[MT_IO]
-+#else
-+#define _PAGE_DMA_MASK		0
-+#define _PAGE_DMA_PMA		0
-+#define _PAGE_DMA_NC		0
-+#define _PAGE_DMA_IO		0
-+#endif /* CONFIG_64BIT */
-+#endif /* __ASSEMBLY__ */
-+
- #define _PAGE_SPECIAL   _PAGE_SOFT
- #define _PAGE_TABLE     _PAGE_PRESENT
- 
-@@ -38,7 +79,8 @@
- /* Set of bits to preserve across pte_modify() */
- #define _PAGE_CHG_MASK  (~(unsigned long)(_PAGE_PRESENT | _PAGE_READ |	\
- 					  _PAGE_WRITE | _PAGE_EXEC |	\
--					  _PAGE_USER | _PAGE_GLOBAL))
-+					  _PAGE_USER | _PAGE_GLOBAL |	\
-+					  _PAGE_DMA_MASK))
- /*
-  * when all of R/W/X are zero, the PTE is a pointer to the next level
-  * of the page table; otherwise, it is a leaf PTE.
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 39b550310ec6..d07ba586c866 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -136,7 +136,8 @@
- 				| _PAGE_PRESENT \
- 				| _PAGE_ACCESSED \
- 				| _PAGE_DIRTY \
--				| _PAGE_GLOBAL)
-+				| _PAGE_GLOBAL \
-+				| _PAGE_DMA_PMA)
- 
- #define PAGE_KERNEL		__pgprot(_PAGE_KERNEL)
- #define PAGE_KERNEL_READ	__pgprot(_PAGE_KERNEL & ~_PAGE_WRITE)
-@@ -146,11 +147,9 @@
- 
- #define PAGE_TABLE		__pgprot(_PAGE_TABLE)
- 
--/*
-- * The RISC-V ISA doesn't yet specify how to query or modify PMAs, so we can't
-- * change the properties of memory regions.
-- */
--#define _PAGE_IOREMAP _PAGE_KERNEL
-+#define _PAGE_IOREMAP	((_PAGE_KERNEL & ~_PAGE_DMA_MASK) | _PAGE_DMA_IO)
-+
-+#define PAGE_IOREMAP		__pgprot(_PAGE_IOREMAP)
- 
- extern pgd_t swapper_pg_dir[];
- 
-@@ -230,12 +229,12 @@ static inline unsigned long _pgd_pfn(pgd_t pgd)
- 
- static inline struct page *pmd_page(pmd_t pmd)
- {
--	return pfn_to_page(pmd_val(pmd) >> _PAGE_PFN_SHIFT);
-+	return pfn_to_page((pmd_val(pmd) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT);
- }
- 
- static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- {
--	return (unsigned long)pfn_to_virt(pmd_val(pmd) >> _PAGE_PFN_SHIFT);
-+	return (unsigned long)pfn_to_virt((pmd_val(pmd) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT);
- }
- 
- static inline pte_t pmd_pte(pmd_t pmd)
-@@ -251,7 +250,7 @@ static inline pte_t pud_pte(pud_t pud)
- /* Yields the page frame number (PFN) of a page table entry */
- static inline unsigned long pte_pfn(pte_t pte)
- {
--	return (pte_val(pte) >> _PAGE_PFN_SHIFT);
-+	return ((pte_val(pte) & _PAGE_CHG_MASK) >> _PAGE_PFN_SHIFT);
- }
- 
- #define pte_page(x)     pfn_to_page(pte_pfn(x))
-@@ -490,6 +489,28 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
- 	return ptep_test_and_clear_young(vma, address, ptep);
- }
- 
-+#define pgprot_noncached pgprot_noncached
-+static inline pgprot_t pgprot_noncached(pgprot_t _prot)
-+{
-+	unsigned long prot = pgprot_val(_prot);
-+
-+	prot &= ~_PAGE_DMA_MASK;
-+	prot |= _PAGE_DMA_IO;
-+
-+	return __pgprot(prot);
-+}
-+
-+#define pgprot_writecombine pgprot_writecombine
-+static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
-+{
-+	unsigned long prot = pgprot_val(_prot);
-+
-+	prot &= ~_PAGE_DMA_MASK;
-+	prot |= _PAGE_DMA_NC;
-+
-+	return __pgprot(prot);
-+}
-+
- /*
-  * THP functions
-  */
-diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index 021ed64ee608..92676156cbf6 100644
---- a/arch/riscv/include/asm/processor.h
-+++ b/arch/riscv/include/asm/processor.h
-@@ -70,6 +70,7 @@ struct device_node;
- int riscv_of_processor_hartid(struct device_node *node);
- int riscv_of_parent_hartid(struct device_node *node);
- 
-+extern void riscv_svpbmt(void);
- extern void riscv_fill_hwcap(void);
- extern int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
- 
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index d959d207a40d..4a2211c2c464 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/bitmap.h>
- #include <linux/of.h>
-+#include <linux/pgtable.h>
- #include <asm/processor.h>
- #include <asm/hwcap.h>
- #include <asm/smp.h>
-@@ -59,6 +60,28 @@ bool __riscv_isa_extension_available(const unsigned long *isa_bitmap, int bit)
- }
- EXPORT_SYMBOL_GPL(__riscv_isa_extension_available);
- 
-+void __init riscv_svpbmt(void)
-+{
-+#ifdef CONFIG_64BIT
-+	struct device_node *node;
-+	const char *str;
-+
-+	for_each_of_cpu_node(node) {
-+		if (of_property_read_string(node, "mmu-type", &str)) {
-+			continue;
-+		}
-+
-+		if (!strncmp(str + 11, "svpbmt", 6)) {
-+			__riscv_svpbmt.mask	  = _PAGE_MT_MASK;
-+			__riscv_svpbmt.mt[MT_PMA] = _PAGE_MT_PMA;
-+			__riscv_svpbmt.mt[MT_NC]  = _PAGE_MT_NC;
-+			__riscv_svpbmt.mt[MT_IO]  = _PAGE_MT_IO;
-+			break;
-+		}
-+	}
-+#endif
-+}
-+
- void __init riscv_fill_hwcap(void)
- {
- 	struct device_node *node;
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 120b2f6f71bc..e7457113b45e 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -294,6 +294,8 @@ void __init setup_arch(char **cmdline_p)
- 	setup_smp();
- #endif
- 
-+	riscv_svpbmt();
-+
- 	riscv_fill_hwcap();
- }
- 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 7cb4f391d106..43b2e11fd3e0 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -905,3 +905,8 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 	return vmemmap_populate_basepages(start, end, node, NULL);
- }
- #endif
-+
-+#ifdef CONFIG_64BIT
-+struct __riscv_svpbmt_struct __riscv_svpbmt __ro_after_init;
-+EXPORT_SYMBOL(__riscv_svpbmt);
-+#endif
--- 
-2.25.1
+regards,
+dan carpenter
 
