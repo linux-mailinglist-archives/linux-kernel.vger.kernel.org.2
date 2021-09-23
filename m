@@ -2,105 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E8A416331
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF972416336
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhIWQ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:27:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53104 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242141AbhIWQ1Y (ORCPT
+        id S242151AbhIWQ21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232675AbhIWQ2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:27:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632414352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b8Ah2Qh7p6T0mn87VL57RtyibfllbNYrDwoM7m+3Joo=;
-        b=KFrRnH5HWwCMv+MSKwMzhV3x78WEgbsKM6aQl29737vFHrNcTHPUb6e3/qcMRFOcf6kZq8
-        SPt4p79KTeEQzl0tdKsQUoREHDr+G4TDOC4uxIpEjHdB4HI2vuTcbSLkCBi+1p7s8pGv1b
-        pX4wDRC7t0at1cJSiwNdP+VgwnlwAaw=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-xfiW3XhgM3iBbsMPcAG03g-1; Thu, 23 Sep 2021 12:25:51 -0400
-X-MC-Unique: xfiW3XhgM3iBbsMPcAG03g-1
-Received: by mail-ej1-f70.google.com with SMTP id f21-20020a17090631d500b005f737f369d7so87864ejf.18
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:25:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b8Ah2Qh7p6T0mn87VL57RtyibfllbNYrDwoM7m+3Joo=;
-        b=FmcylVXdp1Q09tbTavtxhpiHTE8mIor+9HneczsoDEEutIlDw668CaMPyoZrD4T8sC
-         xRaIwzGxVYo4LMBc6bmD2Re0QiIDjiLC/elYn9Q/4f80IPlbd81auicQhjkGR5P6vqEz
-         aMlAVvSzsuxcvLH5301d9SzujJ0zYBJaiOhpetJBdnP8E94h8TJxZ0lg1R411euyOmdP
-         fZdpVAUutWks/LdfPJ+wjZf4G4N+bPie+eN1QN6xBo2hHaII3NuTJA7TWMAWeVvfOtFu
-         vr8/I+Lxo89SIvCb4AYo/uNUbTdpswLWsHPTJX9vtLsAeDUtEQ6NhjLX2EwYYtxw5Jxr
-         qLHw==
-X-Gm-Message-State: AOAM531BwjREPr/mDsP/a/PSmYm5qQK+A36b0kH69Sf8TQNkTSyeFZZR
-        4AiuGtW1Zdnb/Lj2nbxMR5V5OmYfat/l+4rw9+pFNs7VcFo9yg2XLTSt9xsW9DurnHw2nzzVQpR
-        Ml+RwUtv2SR9uBVDok3n4BfsPRSNJ+L30ZkpKx5WnfcreArqMEzqpKrkRi0+fJxmju2gcLtNs9W
-        ON
-X-Received: by 2002:aa7:da93:: with SMTP id q19mr6706460eds.206.1632414349590;
-        Thu, 23 Sep 2021 09:25:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9XnSwLPcjGBamhpDTdT3EiRg8QNymAoajRgXO8jyqO9O2UVhfynrBSpJ2DkEt/MKXS42ECQ==
-X-Received: by 2002:aa7:da93:: with SMTP id q19mr6706421eds.206.1632414349350;
-        Thu, 23 Sep 2021 09:25:49 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id gl2sm3237224ejb.110.2021.09.23.09.25.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 09:25:48 -0700 (PDT)
-Subject: Re: [PATCH] kvm: selftests: Fix spelling mistake "missmatch" ->
- "mismatch"
-To:     Colin King <colin.king@canonical.com>,
-        Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210826120752.12633-1-colin.king@canonical.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <02094ffc-11c4-8b72-f889-a0654f95d2bb@redhat.com>
-Date:   Thu, 23 Sep 2021 18:25:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 23 Sep 2021 12:28:25 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51492C061756;
+        Thu, 23 Sep 2021 09:26:53 -0700 (PDT)
+Received: from localhost.localdomain (83.6.166.81.neoplus.adsl.tpnet.pl [83.6.166.81])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 0658E3EBC4;
+        Thu, 23 Sep 2021 18:26:50 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/9] dt-bindings: clk: qcom: Add bindings for MSM8994 GCC driver
+Date:   Thu, 23 Sep 2021 18:26:34 +0200
+Message-Id: <20210923162645.23257-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210826120752.12633-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/21 14:07, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a spelling mistake in an error message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   tools/testing/selftests/kvm/lib/sparsebit.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/lib/sparsebit.c b/tools/testing/selftests/kvm/lib/sparsebit.c
-> index a0d0c83d83de..50e0cf41a7dd 100644
-> --- a/tools/testing/selftests/kvm/lib/sparsebit.c
-> +++ b/tools/testing/selftests/kvm/lib/sparsebit.c
-> @@ -1866,7 +1866,7 @@ void sparsebit_validate_internal(struct sparsebit *s)
->   		 * of total bits set.
->   		 */
->   		if (s->num_set != total_bits_set) {
-> -			fprintf(stderr, "Number of bits set missmatch,\n"
-> +			fprintf(stderr, "Number of bits set mismatch,\n"
->   				"  s->num_set: 0x%lx total_bits_set: 0x%lx",
->   				s->num_set, total_bits_set);
->   
-> 
+Add documentation for the MSM8994 GCC driver. While at it, retire its
+compatible from the old, everyone-get-in-here file.
 
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+Changes since v3:
+- Don't document the compatible twice
 
-Queued, thanks.
+ .../bindings/clock/qcom,gcc-msm8994.yaml      | 70 +++++++++++++++++++
+ .../devicetree/bindings/clock/qcom,gcc.yaml   |  2 -
+ 2 files changed, 70 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
 
-Paolo
+diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
+new file mode 100644
+index 000000000000..22e67b238bb6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/qcom,gcc-msm8994.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Global Clock & Reset Controller Binding for MSM8994
++
++maintainers:
++  - Konrad Dybcio <konrad.dybcio@somainline.org>
++
++description: |
++  Qualcomm global clock control module which supports the clocks, resets and
++  power domains on MSM8994 and MSM8992.
++
++  See also:
++  - dt-bindings/clock/qcom,gcc-msm8994.h
++
++properties:
++  compatible:
++    enum:
++      - qcom,gcc-msm8992
++      - qcom,gcc-msm8994
++
++  clocks:
++    items:
++      - description: Board XO source
++      - description: Sleep clock source
++
++  clock-names:
++    items:
++      - const: xo
++      - const: sleep
++
++  '#clock-cells':
++    const: 1
++
++  '#reset-cells':
++    const: 1
++
++  '#power-domain-cells':
++    const: 1
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - clocks
++  - clock-names
++  - reg
++  - '#clock-cells'
++  - '#reset-cells'
++  - '#power-domain-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    clock-controller@300000 {
++      compatible = "qcom,gcc-msm8994";
++      reg = <0x00300000 0x90000>;
++      clocks = <&xo_board>, <&sleep_clk>;
++      clock-names = "xo", "sleep";
++      #clock-cells = <1>;
++      #reset-cells = <1>;
++      #power-domain-cells = <1>;
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+index 8453eeddf30e..138e0745647f 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+@@ -28,7 +28,6 @@ description: |
+   - dt-bindings/reset/qcom,gcc-msm8660.h
+   - dt-bindings/clock/qcom,gcc-msm8974.h (qcom,gcc-msm8226 and qcom,gcc-msm8974)
+   - dt-bindings/reset/qcom,gcc-msm8974.h (qcom,gcc-msm8226 and qcom,gcc-msm8974)
+-  - dt-bindings/clock/qcom,gcc-msm8994.h
+   - dt-bindings/clock/qcom,gcc-mdm9607.h
+   - dt-bindings/clock/qcom,gcc-mdm9615.h
+   - dt-bindings/reset/qcom,gcc-mdm9615.h
+@@ -50,7 +49,6 @@ properties:
+       - qcom,gcc-msm8974
+       - qcom,gcc-msm8974pro
+       - qcom,gcc-msm8974pro-ac
+-      - qcom,gcc-msm8994
+       - qcom,gcc-mdm9615
+       - qcom,gcc-sdm630
+       - qcom,gcc-sdm660
+-- 
+2.33.0
 
