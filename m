@@ -2,316 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACABA41654A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2FE416550
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242738AbhIWSk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:40:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28561 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242728AbhIWSk4 (ORCPT
+        id S242774AbhIWSoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:44:05 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:44947 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242708AbhIWSoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:40:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632422363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gl3rmZvVThFaeFfRLTdG0cOEV5CZHPaggzd6TpSp/rE=;
-        b=Ypp8xa3dFBtHoCoZYmw/lRo0lesloqFE8XKoboiQ3atCOVAQ2DZ/nXHVX8cuSm8GP10FoG
-        i8rZyR36T9Nvhh5jkbjXakXK2eR1HPEKd+XSKQHThbxtGs6/unTfY1hQxINTWdlrkmRph5
-        xdaSkAONNekb5abvQAtcYNsWgx+T0kU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-w21FbXovN_C9AGMrWETDRA-1; Thu, 23 Sep 2021 14:39:22 -0400
-X-MC-Unique: w21FbXovN_C9AGMrWETDRA-1
-Received: by mail-wr1-f69.google.com with SMTP id u10-20020adfae4a000000b0016022cb0d2bso5870541wrd.19
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:39:22 -0700 (PDT)
+        Thu, 23 Sep 2021 14:44:03 -0400
+Received: by mail-ot1-f44.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso9761059otb.11;
+        Thu, 23 Sep 2021 11:42:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=gl3rmZvVThFaeFfRLTdG0cOEV5CZHPaggzd6TpSp/rE=;
-        b=n3TuHdIsIIQwYLlj1P5944MG1XfvHwkTQP/7kk/PZY6lTpJUvGc9AFmMEHchNxkG9k
-         6XpyP+3Bkxb/Nm8JicGLUL05frehj3vQ9IZvjstTDQ5qj9ciyrskYcyIMqo6akK9bFyP
-         zDa9AOgAoqVICDoPHnwWE5mPyGI6O94fMq5QjfxjI41eJc9iWjGF/+ih6I0wDNnXtKIy
-         icLLVpzKc5mtmPf7GQVmk7+lw3/cizwlLAELZ32ZOghvnJghL3kb1FpsH/jNm5R/KWD4
-         mOd4/x2MFyBdtQSHj4mkUnSscPoSpZZ5tXvFB0j9hYeV0KsVUb9IT3tG1mEGs73ZDKEO
-         HrHA==
-X-Gm-Message-State: AOAM533OVFI7IUq+7eGyHvfwYlUnRXQTWGiGfGlNSN5jyUPn+++JK76u
-        AYF31DzID7bfWt5AdGTJ3MGdja6nVDAc2TltZGKVEbdPide4y0unPYuBl7BAvd8chUS6tfb/vUN
-        mHSY5vnRQbYJqMAWpPRVyILFD
-X-Received: by 2002:a1c:9851:: with SMTP id a78mr17377016wme.107.1632422361373;
-        Thu, 23 Sep 2021 11:39:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwIFESmjQrx6emyOVymLS1YeXQOOTBEsXjK57+Zczby+mJ8smnriGz36fqHD+SNd+0fKZevBw==
-X-Received: by 2002:a1c:9851:: with SMTP id a78mr17376966wme.107.1632422361061;
-        Thu, 23 Sep 2021 11:39:21 -0700 (PDT)
-Received: from work-vm (cpc109011-salf6-2-0-cust1562.10-2.cable.virginm.net. [82.29.118.27])
-        by smtp.gmail.com with ESMTPSA id x21sm9982202wmc.14.2021.09.23.11.39.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 11:39:20 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 19:39:17 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 21/45] KVM: SVM: Make AVIC backing, VMSA and
- VMCB memory allocation SNP safe
-Message-ID: <YUzJ1VHbSIrKYy0c@work-vm>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-22-brijesh.singh@amd.com>
- <YUt8KOiwTwwa6xZK@work-vm>
- <b3f340dc-ceee-3d04-227d-741ad0c17c49@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A1nz/2r9dfa/43uvC8GU09aHy0M9gShwuzvCZZpWMOk=;
+        b=u6Z5l3LOmwcsWooXQF/uIJCT6/Ztv9sqPbDypgRAe5RdoSeca8AgRhvll/f2mEGDM7
+         0hlTSAq/x+JZuUzvaPnfB8oyocOcvn5RsvgGi72e86IJl330qwPQX/LEfu3jBp+K34yg
+         1aprIM1bbkR6ettAW9T3M8+Mim/J0RQhB1fynA9+So3fp/2/kottzZZnMUnGweZfTG7Q
+         4KWj6Tkhe6sd0lQDhOprEzk3xC1dYzRL3stnlP5TUq4jUduhnfPRo66iTDGKIAFojYK9
+         nnehi7kOxDERi60j/borhtxQk4t0nu1p8FQmN2x+5+VzEYnaY6hf4+psj5sUdvnIb+HB
+         w3GQ==
+X-Gm-Message-State: AOAM5304Yhel3vba6w1XJ0/1N96t/c+CdLNDIg0LpvPK3zACV+nOAtJ8
+        tBo5LjcmNun8Bix0j+ygOI2YQFb7YG2OaWBzaWw=
+X-Google-Smtp-Source: ABdhPJxcIsNvYPw/kdbWbAQe8WU2n06LO+xqz2p6civsh9f6C/8ERt38zFkXrN6Pstjl8b3+GXKNFEzBj2/XmER58ug=
+X-Received: by 2002:a05:6830:82b:: with SMTP id t11mr134299ots.319.1632422551641;
+ Thu, 23 Sep 2021 11:42:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b3f340dc-ceee-3d04-227d-741ad0c17c49@amd.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+References: <20210923033557.19100-1-justin.he@arm.com> <20210923091644.GA5882@lpieralisi>
+In-Reply-To: <20210923091644.GA5882@lpieralisi>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 23 Sep 2021 20:42:20 +0200
+Message-ID: <CAJZ5v0gFUcvoNPzAfHj8Bd9+m=+aPQAEy=djBOug9q1HbJzWnQ@mail.gmail.com>
+Subject: Re: [PATCH v3] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jia He <justin.he@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Harb Abdulhamid <harb@amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Brijesh Singh (brijesh.singh@amd.com) wrote:
-> 
-> On 9/22/21 1:55 PM, Dr. David Alan Gilbert wrote:
-> > * Brijesh Singh (brijesh.singh@amd.com) wrote:
-> >> Implement a workaround for an SNP erratum where the CPU will incorrectly
-> >> signal an RMP violation #PF if a hugepage (2mb or 1gb) collides with the
-> >> RMP entry of a VMCB, VMSA or AVIC backing page.
-> >>
-> >> When SEV-SNP is globally enabled, the CPU marks the VMCB, VMSA, and AVIC
-> >> backing   pages as "in-use" in the RMP after a successful VMRUN.  This is
-> >> done for _all_ VMs, not just SNP-Active VMs.
-> > Can you explain what 'globally enabled' means?
-> 
-> This means that SNP is enabled in  host SYSCFG_MSR.Snp=1. Once its
-> enabled then RMP checks are enforced.
-> 
-> 
-> > Or more specifically, can we trip this bug on public hardware that has
-> > the SNP enabled in the bios, but no SNP init in the host OS?
-> 
-> Enabling the SNP support on host is 3 step process:
-> 
-> step1 (bios): reserve memory for the RMP table.
-> 
-> step2 (host): initialize the RMP table memory, set the SYSCFG msr to
-> enable the SNP feature
-> 
-> step3 (host): call the SNP_INIT to initialize the SNP firmware (this is
-> needed only if you ever plan to launch SNP guest from this host).
-> 
-> The "SNP globally enabled" means the step 1 to 2. The RMP checks are
-> enforced as soon as step 2 is completed.
-
-So I think that means we don't need to backport this to older kernels
-that don't know about SNP but might run on SNP enabled hardware (1), since
-those kernels won't do step2.
-
-Dave
-
-> thanks
-> 
+On Thu, Sep 23, 2021 at 11:16 AM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> On Thu, Sep 23, 2021 at 11:35:57AM +0800, Jia He wrote:
+> > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
 > >
-> > Dave
+> > The memory semantics added in commit 437b38c51162 causes SystemMemory
+> > Operation region, whose address range is not described in the EFI memory
+> > map to be mapped as NormalNC memory on arm64 platforms (through
+> > acpi_os_map_memory() in acpi_ex_system_memory_space_handler()).
 > >
-> >> If the hypervisor accesses an in-use page through a writable translation,
-> >> the CPU will throw an RMP violation #PF.  On early SNP hardware, if an
-> >> in-use page is 2mb aligned and software accesses any part of the associated
-> >> 2mb region with a hupage, the CPU will incorrectly treat the entire 2mb
-> >> region as in-use and signal a spurious RMP violation #PF.
-> >>
-> >> The recommended is to not use the hugepage for the VMCB, VMSA or
-> >> AVIC backing page. Add a generic allocator that will ensure that the page
-> >> returns is not hugepage (2mb or 1gb) and is safe to be used when SEV-SNP
-> >> is enabled.
-> >>
-> >> Co-developed-by: Marc Orr <marcorr@google.com>
-> >> Signed-off-by: Marc Orr <marcorr@google.com>
-> >> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> >> ---
-> >>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
-> >>  arch/x86/include/asm/kvm_host.h    |  1 +
-> >>  arch/x86/kvm/lapic.c               |  5 ++++-
-> >>  arch/x86/kvm/svm/sev.c             | 35 ++++++++++++++++++++++++++++++
-> >>  arch/x86/kvm/svm/svm.c             | 16 ++++++++++++--
-> >>  arch/x86/kvm/svm/svm.h             |  1 +
-> >>  6 files changed, 56 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> >> index a12a4987154e..36a9c23a4b27 100644
-> >> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> >> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> >> @@ -122,6 +122,7 @@ KVM_X86_OP_NULL(enable_direct_tlbflush)
-> >>  KVM_X86_OP_NULL(migrate_timers)
-> >>  KVM_X86_OP(msr_filter_changed)
-> >>  KVM_X86_OP_NULL(complete_emulated_msr)
-> >> +KVM_X86_OP(alloc_apic_backing_page)
-> >>  
-> >>  #undef KVM_X86_OP
-> >>  #undef KVM_X86_OP_NULL
-> >> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> >> index 974cbfb1eefe..5ad6255ff5d5 100644
-> >> --- a/arch/x86/include/asm/kvm_host.h
-> >> +++ b/arch/x86/include/asm/kvm_host.h
-> >> @@ -1453,6 +1453,7 @@ struct kvm_x86_ops {
-> >>  	int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
-> >>  
-> >>  	void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
-> >> +	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
-> >>  };
-> >>  
-> >>  struct kvm_x86_nested_ops {
-> >> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> >> index ba5a27879f1d..05b45747b20b 100644
-> >> --- a/arch/x86/kvm/lapic.c
-> >> +++ b/arch/x86/kvm/lapic.c
-> >> @@ -2457,7 +2457,10 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
-> >>  
-> >>  	vcpu->arch.apic = apic;
-> >>  
-> >> -	apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
-> >> +	if (kvm_x86_ops.alloc_apic_backing_page)
-> >> +		apic->regs = static_call(kvm_x86_alloc_apic_backing_page)(vcpu);
-> >> +	else
-> >> +		apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
-> >>  	if (!apic->regs) {
-> >>  		printk(KERN_ERR "malloc apic regs error for vcpu %x\n",
-> >>  		       vcpu->vcpu_id);
-> >> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> >> index 1644da5fc93f..8771b878193f 100644
-> >> --- a/arch/x86/kvm/svm/sev.c
-> >> +++ b/arch/x86/kvm/svm/sev.c
-> >> @@ -2703,3 +2703,38 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
-> >>  		break;
-> >>  	}
-> >>  }
-> >> +
-> >> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
-> >> +{
-> >> +	unsigned long pfn;
-> >> +	struct page *p;
-> >> +
-> >> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> >> +		return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> >> +
-> >> +	/*
-> >> +	 * Allocate an SNP safe page to workaround the SNP erratum where
-> >> +	 * the CPU will incorrectly signal an RMP violation  #PF if a
-> >> +	 * hugepage (2mb or 1gb) collides with the RMP entry of VMCB, VMSA
-> >> +	 * or AVIC backing page. The recommeded workaround is to not use the
-> >> +	 * hugepage.
-> >> +	 *
-> >> +	 * Allocate one extra page, use a page which is not 2mb aligned
-> >> +	 * and free the other.
-> >> +	 */
-> >> +	p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
-> >> +	if (!p)
-> >> +		return NULL;
-> >> +
-> >> +	split_page(p, 1);
-> >> +
-> >> +	pfn = page_to_pfn(p);
-> >> +	if (IS_ALIGNED(__pfn_to_phys(pfn), PMD_SIZE)) {
-> >> +		pfn++;
-> >> +		__free_page(p);
-> >> +	} else {
-> >> +		__free_page(pfn_to_page(pfn + 1));
-> >> +	}
-> >> +
-> >> +	return pfn_to_page(pfn);
-> >> +}
-> >> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> >> index 25773bf72158..058eea8353c9 100644
-> >> --- a/arch/x86/kvm/svm/svm.c
-> >> +++ b/arch/x86/kvm/svm/svm.c
-> >> @@ -1368,7 +1368,7 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
-> >>  	svm = to_svm(vcpu);
-> >>  
-> >>  	err = -ENOMEM;
-> >> -	vmcb01_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> >> +	vmcb01_page = snp_safe_alloc_page(vcpu);
-> >>  	if (!vmcb01_page)
-> >>  		goto out;
-> >>  
-> >> @@ -1377,7 +1377,7 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
-> >>  		 * SEV-ES guests require a separate VMSA page used to contain
-> >>  		 * the encrypted register state of the guest.
-> >>  		 */
-> >> -		vmsa_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> >> +		vmsa_page = snp_safe_alloc_page(vcpu);
-> >>  		if (!vmsa_page)
-> >>  			goto error_free_vmcb_page;
-> >>  
-> >> @@ -4539,6 +4539,16 @@ static int svm_vm_init(struct kvm *kvm)
-> >>  	return 0;
-> >>  }
-> >>  
-> >> +static void *svm_alloc_apic_backing_page(struct kvm_vcpu *vcpu)
-> >> +{
-> >> +	struct page *page = snp_safe_alloc_page(vcpu);
-> >> +
-> >> +	if (!page)
-> >> +		return NULL;
-> >> +
-> >> +	return page_address(page);
-> >> +}
-> >> +
-> >>  static struct kvm_x86_ops svm_x86_ops __initdata = {
-> >>  	.hardware_unsetup = svm_hardware_teardown,
-> >>  	.hardware_enable = svm_hardware_enable,
-> >> @@ -4667,6 +4677,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
-> >>  	.complete_emulated_msr = svm_complete_emulated_msr,
-> >>  
-> >>  	.vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
-> >> +
-> >> +	.alloc_apic_backing_page = svm_alloc_apic_backing_page,
-> >>  };
-> >>  
-> >>  static struct kvm_x86_init_ops svm_init_ops __initdata = {
-> >> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> >> index d1f1512a4b47..e40800e9c998 100644
-> >> --- a/arch/x86/kvm/svm/svm.h
-> >> +++ b/arch/x86/kvm/svm/svm.h
-> >> @@ -575,6 +575,7 @@ void sev_es_create_vcpu(struct vcpu_svm *svm);
-> >>  void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
-> >>  void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu);
-> >>  void sev_es_unmap_ghcb(struct vcpu_svm *svm);
-> >> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
-> >>  
-> >>  /* vmenter.S */
-> >>  
-> >> -- 
-> >> 2.17.1
-> >>
-> >>
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> > This triggers the following abort on an ARM64 Ampere eMAG machine,
+> > because presumably the physical address range area backing the Opregion
+> > does not support NormalNC memory attributes driven on the bus.
+> >
+> >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> >  Modules linked in:
+> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+> >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > [...snip...]
+> >  Call trace:
+> >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> >   acpi_ex_access_region+0x114/0x268
+> >   acpi_ex_field_datum_io+0x128/0x1b8
+> >   acpi_ex_extract_from_field+0x14c/0x2ac
+> >   acpi_ex_read_data_from_field+0x190/0x1b8
+> >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> >   acpi_ex_resolve_to_value+0x250/0x274
+> >   acpi_ds_evaluate_name_path+0xac/0x124
+> >   acpi_ds_exec_end_op+0x90/0x410
+> >   acpi_ps_parse_loop+0x4ac/0x5d8
+> >   acpi_ps_parse_aml+0xe0/0x2c8
+> >   acpi_ps_execute_method+0x19c/0x1ac
+> >   acpi_ns_evaluate+0x1f8/0x26c
+> >   acpi_ns_init_one_device+0x104/0x140
+> >   acpi_ns_walk_namespace+0x158/0x1d0
+> >   acpi_ns_initialize_devices+0x194/0x218
+> >   acpi_initialize_objects+0x48/0x50
+> >   acpi_init+0xe0/0x498
+> >
+> > If the Opregion address range is not present in the EFI memory map there
+> > is no way for us to determine the memory attributes to use to map it -
+> > defaulting to NormalNC does not work (and it is not correct on a memory
+> > region that may have read side-effects) and therefore commit
+> > 437b38c51162 should be reverted, which means reverting back to the
+> > original behavior whereby address ranges that are mapped using
+> > acpi_os_map_memory() default to the safe devicenGnRnE attributes on
+> > ARM64 if the mapped address range is not defined in the EFI memory map.
+> >
+> > Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
+> > Signed-off-by: Jia He <justin.he@arm.com>
+> > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > Cc: Hanjun Guo <guohanjun@huawei.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Cc: Harb Abdulhamid <harb@amperecomputing.com>
+> > ---
+> > V3: refine the commit log which came from Lorenzo Pieralisi
+> >
+> >  arch/arm64/include/asm/acpi.h |  3 ---
+> >  arch/arm64/kernel/acpi.c      | 19 +++----------------
+> >  drivers/acpi/osl.c            | 23 +++++++----------------
+> >  include/acpi/acpi_io.h        |  8 --------
+> >  4 files changed, 10 insertions(+), 43 deletions(-)
+>
+> Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+>
+> Rafael if possible please apply it, thank you very much.
 
+Applied as 5.15-rc material, thanks!
