@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C3541644C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3292241644F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242501AbhIWRYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 13:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        id S242544AbhIWRYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242189AbhIWRY3 (ORCPT
+        with ESMTP id S242530AbhIWRYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:24:29 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C29EC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:22:57 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id bn35so650139ljb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:22:57 -0700 (PDT)
+        Thu, 23 Sep 2021 13:24:52 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A545CC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:23:20 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id n4-20020a4aa7c4000000b002adb4997965so707216oom.10
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:23:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kqgy4XtrAnXd2pwfNj+EfVSyKbIEO/VB+6CmCbnUb58=;
-        b=I0Kwhlf34TW1DuoQ+RwuO0yue27TE8Y7tMoc11qLpjk3yW+l4/DoYG5Xbpo3g5lny9
-         EdX1P8Wl7quuPC1PpeLn3GTeLsg72juTpB+uK8w1y7xwPqRnpSX8/NrGWBXK78wLqLeG
-         DuePTk38DGSo+FISTCPDNL2Ct/vKeicrYeT2Ye33scu7jMYTchYgrkThMGGxf+TGBVZy
-         zb3iwKBNKBHCDr5rNz1YniOfyQAnGaNNj2/3agCZtiwX9yXuM0eZWivvwHb24mkMLTw0
-         ioeDk4qPERuaQlcffNtk8/U6zVtRGTVJi+P44P34uwV47wzSqGy7G1uCwNoBVV2wfJhj
-         yt8Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4psaqAqkYBsHRJZIhz8Kb0YzLqDuMmJCURun1+ui80c=;
+        b=rxWR5F/BNcX1AMMGW6CfMfwuPwVeziorWJSn1rXPDf614kbk1wRlLqPEo02VJO54lL
+         B7BtY7sSJiw6McPc6ugF/+nqiooHzgI9N4RNHcR2w5BBigSYWw4NGrH8XiRd58qBuDOH
+         1jNGmlLjPNTpxwUuPH8Jj6L81wRKiFWITqZfMcH2L4cKM3FD6QeSq7J0o00CCzWed9DM
+         Wj/rC0Sk7Fky5vowF1QGzdNGrKqmrNyi1Kkc0uWkYh8X+BAThNCF0fySjskWgfWvF3Pw
+         rGeVp5DRlUpn1YExuJpXSNOXkCtOAbHP5OCK9zj2GFO7SHsTZpBJQKTGBo84rusobP1t
+         fsVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kqgy4XtrAnXd2pwfNj+EfVSyKbIEO/VB+6CmCbnUb58=;
-        b=oHwcVj4mvfw+lq7QbL8lI73V/VZqCR8gjMS35uhF8ZSsZKUGSkUNLH+wK8DA1X2f1R
-         JQ8N9O+g+cANSv6ZtCK0E8Flj6+z1JObs5V9t0GnnxuQ0XelwWprpCmEJcx+Z0834fmt
-         reCN7mGP6nv53IOf35+QtsUkMj3oAg88W1+YP0ZRAacor3Z8IoKaB3EoymJ6DlDvYlnt
-         PwkEIae2tkcnTpCPwOsP9YF1X9l9wnmY9DPVVcA+xX9ACto5JmLbzcLppikejjSuPJAA
-         PCnhdZMtdkoF381euq43E0ReEmUIt2mFw6c7L4fokTa1de47LG8C5Es5wwOe6UnXBuOE
-         ip0Q==
-X-Gm-Message-State: AOAM531Wlk39NmO7ewWJZlLYqJZV56K1vpObwMszggPZPCEXKIpU/GdP
-        zYg+lPiznYsj+DJ5WXdF+KuK0w==
-X-Google-Smtp-Source: ABdhPJyVseVGMDpMEEMzWfb3vbFS/Cx90+7pdNZah6YXtDvtAQ/Ml0GNuMXYIGzuanIC4dHHeOF/fw==
-X-Received: by 2002:a2e:944d:: with SMTP id o13mr6618922ljh.419.1632417775933;
-        Thu, 23 Sep 2021 10:22:55 -0700 (PDT)
-Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id p23sm336660ljm.127.2021.09.23.10.22.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4psaqAqkYBsHRJZIhz8Kb0YzLqDuMmJCURun1+ui80c=;
+        b=ij4gxNg684zOjcaxajSbI8JhY6trKsBwG1cL2Ucfj4H9aiewvibxgojNTuWZDHlzd1
+         zCEJFh5i18Zc3FmmG9Lj9G90ndI1i9jGaTvaAkhk2PrbYOdTh6C1L9GZJSfziP+2ltqL
+         1lJX91xeZkXOAPYFZKi0TWfA16Oc1lLXko4lW+WARf6i7sgyrYG6uji+/rxiee0QXlI6
+         Aef6jQNPk7aYmyqRUMbeoC6F3RYdqCE94poRfwZckL/z2OqThw8kJxOhDAoj/GJzwMPK
+         pAUzE/9es6NMXNarmJe4jIiGXaVObLg6rs8Oq9NBtrn1kRkREbKFB0j2Pzsr2u8f68Kr
+         h0SA==
+X-Gm-Message-State: AOAM533X8KYoImnkD1gRzWjGOTXxE+BU8Yat0xbwsjfz9GdLb4oPi7s0
+        M/IV43A9r1JeCWXZyshUAVygOg==
+X-Google-Smtp-Source: ABdhPJxgLEGgR52wqQW/bWd22UfJUy7hTkj4NwRbgYrtrinHMTAItyhkVol5Ujk0AZ//YeqfMUwm5g==
+X-Received: by 2002:a4a:ea84:: with SMTP id r4mr4787465ooh.92.1632417799967;
+        Thu, 23 Sep 2021 10:23:19 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j23sm1467347oih.30.2021.09.23.10.23.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 10:22:55 -0700 (PDT)
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] gpio: pca953x: do not ignore i2c errors
-Date:   Thu, 23 Sep 2021 20:22:16 +0300
-Message-Id: <20210923172215.18376-1-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 23 Sep 2021 10:23:19 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 12:23:17 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pinctrl: qcom: sc7280: Add PM suspend callbacks
+Message-ID: <YUy4BQ7BW1LgBipv@builder.lan>
+References: <1632389487-11283-1-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1632389487-11283-1-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+On Thu 23 Sep 04:31 CDT 2021, Rajendra Nayak wrote:
 
-Per gpio_chip interface, error shall be proparated to the caller.
+> Use PM suspend callbacks from msm core, without this the hog_sleep
+> pins don't change state in suspend.
+> 
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 
-Attempt to silent diagnostics by returning zero (as written in the
-comment) is plain wrong, because the zero return can be interpreted by
-the caller as the gpio value.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- drivers/gpio/gpio-pca953x.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-index f5cfc0698799..8ebf369b3ba0 100644
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -468,15 +468,8 @@ static int pca953x_gpio_get_value(struct gpio_chip *gc, unsigned off)
- 	mutex_lock(&chip->i2c_lock);
- 	ret = regmap_read(chip->regmap, inreg, &reg_val);
- 	mutex_unlock(&chip->i2c_lock);
--	if (ret < 0) {
--		/*
--		 * NOTE:
--		 * diagnostic already emitted; that's all we should
--		 * do unless gpio_*_value_cansleep() calls become different
--		 * from their nonsleeping siblings (and report faults).
--		 */
--		return 0;
--	}
-+	if (ret < 0)
-+		return ret;
- 
- 	return !!(reg_val & bit);
- }
--- 
-2.30.2
-
+> ---
+> v2: removed some stale diffstat
+> 
+>  drivers/pinctrl/qcom/pinctrl-sc7280.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> index 607d459..1cbf2cc 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> @@ -1498,6 +1498,7 @@ static const struct of_device_id sc7280_pinctrl_of_match[] = {
+>  static struct platform_driver sc7280_pinctrl_driver = {
+>  	.driver = {
+>  		.name = "sc7280-pinctrl",
+> +		.pm = &msm_pinctrl_dev_pm_ops,
+>  		.of_match_table = sc7280_pinctrl_of_match,
+>  	},
+>  	.probe = sc7280_pinctrl_probe,
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
