@@ -2,192 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454484160D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BB24160DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241583AbhIWOO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:14:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37550 "EHLO mail.kernel.org"
+        id S241588AbhIWOSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:18:30 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:46756 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241304AbhIWOO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:14:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A263460527;
-        Thu, 23 Sep 2021 14:13:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632406405;
-        bh=m3QBrSHhtUsj0sLXBZd9pjgg28d3bKTfA1avX1S/8lM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=BkyQEEYvPlLpNSFkepxPxIoVQRdIk7HaoFvTYKXx/Jvki2B2YLF8HjQYg9kTx3UDJ
-         DnjP/dw5K/yEPkDgxcARygksnC3wLyDYa+cK4N9LJpNL8ZU6LXOnYW1/jwfsiBitVs
-         SzyWHGhERfwIRhdhryIhyCPZlelqc54oiwN9uOD7HNO3GvOJ7mkQHHQWo8/o5t99KA
-         EargwtWTS80m+g34yi7ieYmM1BC6nWd99TmmYnLwUFdyVVk3fdRHwo50jLbyMZ8dip
-         NRpG9acglfSkYQlc4xScU8/9Vhgg8NWRb78OVWwzU+hO6oQIo5x5/ZwNO927WBx1fb
-         gkyRJg/pUAuww==
-Subject: Re: [PATCH 2/2] erofs: clean up erofs_map_blocks tracepoints
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20210921143531.81356-1-hsiangkao@linux.alibaba.com>
- <20210921143531.81356-2-hsiangkao@linux.alibaba.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <448368d3-d8a2-b872-7000-d93363aec9c6@kernel.org>
-Date:   Thu, 23 Sep 2021 22:13:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S241308AbhIWOS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:18:27 -0400
+Received: from zn.tnic (p200300ec2f0d6800d4c5e0e0616b3501.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6800:d4c5:e0e0:616b:3501])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A3DFF1EC0570;
+        Thu, 23 Sep 2021 16:16:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632406609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=efiZ+6HZwdsxnEvs1MbOCOu2S49rX4hw2KwueduGixU=;
+        b=ZCgT2hL3xyPBBKuC9g6ZLwYM7POatvczaWw2N2Le4mFQpUIxGnK7WEkABvcGtCi96cyjak
+        l5aFY5haTKeWoQvYO7flras/w+DDmHajWT6NoPA4nSM2YNJ4rvs1yXGumK8QIQerLKfarI
+        O3PgmZSh7J81YytqCvx14OUUT6qAIdk=
+Date:   Thu, 23 Sep 2021 16:16:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 04/12] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YUyMTdM7XKa60jBX@zn.tnic>
+References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210916183550.15349-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YUxQzRdoH3dLJjL2@zn.tnic>
+ <5a04034b-e692-6b45-bdde-f1a0fff96f7b@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210921143531.81356-2-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5a04034b-e692-6b45-bdde-f1a0fff96f7b@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/21 22:35, Gao Xiang wrote:
-> Since the new type of chunk-based files is introduced, there is no
-> need to leave flatmode tracepoints. Rename to erofs_map_blocks.
-> 
-> Add the missing FIEMAP tracepoint map flag as well.
-> 
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
->   fs/erofs/data.c              | 31 ++++++++++++++-----------------
->   include/trace/events/erofs.h |  7 ++++---
->   2 files changed, 18 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> index 9db8297..020c3e0 100644
-> --- a/fs/erofs/data.c
-> +++ b/fs/erofs/data.c
-> @@ -26,14 +26,11 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
->   				     struct erofs_map_blocks *map,
->   				     int flags)
->   {
-> -	int err = 0;
->   	erofs_blk_t nblocks, lastblk;
->   	u64 offset = map->m_la;
->   	struct erofs_inode *vi = EROFS_I(inode);
->   	bool tailendpacking = (vi->datalayout == EROFS_INODE_FLAT_INLINE);
->   
-> -	trace_erofs_map_blocks_flatmode_enter(inode, map, flags);
-> -
->   	nblocks = DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
->   	lastblk = nblocks - tailendpacking;
->   
-> @@ -57,8 +54,7 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
->   				  "inline data cross block boundary @ nid %llu",
->   				  vi->nid);
->   			DBG_BUGON(1);
-> -			err = -EFSCORRUPTED;
-> -			goto err_out;
-> +			return -EFSCORRUPTED;
->   		}
->   
->   		map->m_flags |= EROFS_MAP_META;
-> @@ -67,14 +63,10 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
->   			  "internal error @ nid: %llu (size %llu), m_la 0x%llx",
->   			  vi->nid, inode->i_size, map->m_la);
->   		DBG_BUGON(1);
-> -		err = -EIO;
-> -		goto err_out;
-> +		return -EIO;
->   	}
-> -
->   	map->m_llen = map->m_plen;
-> -err_out:
-> -	trace_erofs_map_blocks_flatmode_exit(inode, map, flags, 0);
-> -	return err;
-> +	return 0;
->   }
->   
->   static int erofs_map_blocks(struct inode *inode,
-> @@ -89,6 +81,7 @@ static int erofs_map_blocks(struct inode *inode,
->   	erofs_off_t pos;
->   	int err = 0;
->   
-> +	trace_erofs_map_blocks_enter(inode, map, flags);
->   	if (map->m_la >= inode->i_size) {
->   		/* leave out-of-bound access unmapped */
->   		map->m_flags = 0;
-> @@ -96,8 +89,10 @@ static int erofs_map_blocks(struct inode *inode,
+On Thu, Sep 23, 2021 at 07:10:00AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> Initially, tdx_early_init() was added between kasan_early_init() and
+> idt_setup_early_handler() in x86_64_start_kernel(). But I found that
+> we have requirement to parse command line params in future
+> changes to tdx_early_init() (not from the patches in this series). Since
+> command line pointer is getting initialized in copy_bootdata(), I want
+> move the tdx_early_init() call below it. Instead of moving the initialization
+> order in future, I thought to move it appropriate place in the initial
+> patch. Regarding IDT dependency, #VE handling will have a dependency on
+> it (so it is better to initialize it before tdx_early_init()).
 
-map->m_flags = 0;
-map->m_plen = 0;
+Then in your next version, pls add a comment that goes like this:
 
-It needs to reset map->m_llen to zero here like we did after 'out' label before?
+	/*
+	 * This call needs to be here because...
+	 * 	<insert reasons>
+	 */
 
-Thanks,
+So that it is clear that its placement is special.
 
->   		goto out;
->   	}
->   
-> -	if (vi->datalayout != EROFS_INODE_CHUNK_BASED)
-> -		return erofs_map_blocks_flatmode(inode, map, flags);
-> +	if (vi->datalayout != EROFS_INODE_CHUNK_BASED) {
-> +		err = erofs_map_blocks_flatmode(inode, map, flags);
-> +		goto out;
-> +	}
->   
->   	if (vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)
->   		unit = sizeof(*idx);			/* chunk index */
-> @@ -109,9 +104,10 @@ static int erofs_map_blocks(struct inode *inode,
->   		    vi->xattr_isize, unit) + unit * chunknr;
->   
->   	page = erofs_get_meta_page(inode->i_sb, erofs_blknr(pos));
-> -	if (IS_ERR(page))
-> -		return PTR_ERR(page);
-> -
-> +	if (IS_ERR(page)) {
-> +		err = PTR_ERR(page);
-> +		goto out;
-> +	}
->   	map->m_la = chunknr << vi->chunkbits;
->   	map->m_plen = min_t(erofs_off_t, 1UL << vi->chunkbits,
->   			    roundup(inode->i_size - map->m_la, EROFS_BLKSIZ));
-> @@ -147,11 +143,12 @@ static int erofs_map_blocks(struct inode *inode,
->   		map->m_flags = EROFS_MAP_MAPPED;
->   		break;
->   	}
-> +	map->m_llen = map->m_plen;
->   out_unlock:
->   	unlock_page(page);
->   	put_page(page);
->   out:
-> -	map->m_llen = map->m_plen;
-> +	trace_erofs_map_blocks_exit(inode, map, flags, 0);
->   	return err;
->   }
->   
-> diff --git a/include/trace/events/erofs.h b/include/trace/events/erofs.h
-> index db4f2ce..5c91edd 100644
-> --- a/include/trace/events/erofs.h
-> +++ b/include/trace/events/erofs.h
-> @@ -19,7 +19,8 @@
->   		{ 1,		"DIR" })
->   
->   #define show_map_flags(flags) __print_flags(flags, "|",	\
-> -	{ EROFS_GET_BLOCKS_RAW,	"RAW" })
-> +	{ EROFS_GET_BLOCKS_RAW,	"RAW" },		\
-> +	{ EROFS_GET_BLOCKS_FIEMAP, "FIEMAP" })
->   
->   #define show_mflags(flags) __print_flags(flags, "",	\
->   	{ EROFS_MAP_MAPPED,	"M" },			\
-> @@ -169,7 +170,7 @@
->   		  __entry->flags ? show_map_flags(__entry->flags) : "NULL")
->   );
->   
-> -DEFINE_EVENT(erofs__map_blocks_enter, erofs_map_blocks_flatmode_enter,
-> +DEFINE_EVENT(erofs__map_blocks_enter, erofs_map_blocks_enter,
->   	TP_PROTO(struct inode *inode, struct erofs_map_blocks *map,
->   		 unsigned flags),
->   
-> @@ -221,7 +222,7 @@
->   		  show_mflags(__entry->mflags), __entry->ret)
->   );
->   
-> -DEFINE_EVENT(erofs__map_blocks_exit, erofs_map_blocks_flatmode_exit,
-> +DEFINE_EVENT(erofs__map_blocks_exit, erofs_map_blocks_exit,
->   	TP_PROTO(struct inode *inode, struct erofs_map_blocks *map,
->   		 unsigned flags, int ret),
->   
-> 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
