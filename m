@@ -2,199 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9765416881
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F62416885
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243559AbhIWXcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 19:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235628AbhIWXck (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 19:32:40 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E881C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:31:08 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id g184so7966971pgc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:31:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K4JmpLMfEZBQDMzNklJ8FfcrVNZ01v7mucqNK5/dyZM=;
-        b=gkAVQneMwXP7Huc8zYfsd3+1f1zM7FLbbtgibwzhZyhgU55BgV5tzOdFE2ZrWDtWUf
-         22jHQ23C2B5DLppVf2q47Bd9BXZqXZbQmnCrUcB8gFHbJLpluqB/XOUCpBrsHQKnL+dT
-         s104HCmPGY6HjNHsGhc1d+aSlUPg7supgiI/0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K4JmpLMfEZBQDMzNklJ8FfcrVNZ01v7mucqNK5/dyZM=;
-        b=4n883QUx4I83M8D517CX1iwABs/W8gmu+vLDtLbJ9KUMvW+hYsY37vgt4KTN0dQbWq
-         F52pMGOcTtGaAr2zqMKT0qSzosyRWfom1U1qdinkHHTPxJgWoq1HbKPMXS36/MgvSJp+
-         yPdEHN0vf6Q/nQPuf9eUmRx40s3JNzeK4vOu8ZLFIDroC7zSRSi4ufgsw3XKX1M/+ym+
-         ed5gh5ZNozqvYsX4xxgYppy6sNf+8I/OJk70IPGNaCTnFnP/M24UQCc4T9pB0bRynFmb
-         vkBlvRAl6/x7+njdabjFttO/Yr4En6GH7DVbk6mKAcwiPO4uUPZug/IaJ0mIhL2DYOkQ
-         hnEQ==
-X-Gm-Message-State: AOAM530XCraWy4cX7P8Xe40eRdbtplOjmWNtmtqYv4AYc/Vn3rG2bH59
-        UTXxssry2eaOGu/mAZ8jvonn5A==
-X-Google-Smtp-Source: ABdhPJyUMS9+dkTAn8bulQI1PwKGSJAiEU2TFwDmmGMul0cs12yHNWHgE4jLhjMiCypNQPSZXhdB6w==
-X-Received: by 2002:a63:595f:: with SMTP id j31mr1147183pgm.109.1632439868090;
-        Thu, 23 Sep 2021 16:31:08 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g15sm6628254pfu.155.2021.09.23.16.31.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 16:31:07 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] proc: Disable /proc/$pid/wchan
-Date:   Thu, 23 Sep 2021 16:31:05 -0700
-Message-Id: <20210923233105.4045080-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S243551AbhIWXe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 19:34:27 -0400
+Received: from mga01.intel.com ([192.55.52.88]:61328 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235628AbhIWXeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 19:34:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="246426688"
+X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
+   d="scan'208";a="246426688"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 16:32:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
+   d="scan'208";a="653833615"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga005.jf.intel.com with ESMTP; 23 Sep 2021 16:32:53 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 23 Sep 2021 16:32:52 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 23 Sep 2021 16:32:52 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Thu, 23 Sep 2021 16:32:52 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Thu, 23 Sep 2021 16:32:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gbsYBH2Eq4PHVZHSxyJxMJwqj68GGv4FmsQpYJy8fcBOlOlhmPoLV+v42m5+mQKlouUvz/Xfvaf0Vmn9e9W8b76Its59lgN4EaOC8g/i5zXTHqitLOZWA2sJyxJ5INTvNMup9WDqqMU1TBrio3mjLXRW5kVMl4U5QsKolD0HUdLuCj3RskKK9OUtdJiVf0IvDn2BWM8UauYVUuVc/nOsbN+KoVZCUF+0hadGpljkZSeDm3XTpUfYLZM4Iu2OMrjwUq2pBhwqTqwKdaw6CnSUcxNmtnt2jMbg5ZJqxYWNd2zH+4bRiDMHv4tRLTLpXmoA0876JMRNlxivjfB0yXWPNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=6bVXQFzJ8vBokei2Bc67fUh/RRbqnOMoRlLmtZx7UZw=;
+ b=PD+lZfrMs7DJJELfjT1WYkYYV7DRU3XcRCzi/wuDc0FvHvXKq57YobBaA+l60EK5V5r6OP9vup6mPEGuB/Kc7aJSV7hvS0FFmVYUD4uSglbycQPswrD4azO95w4WRPhUTj6CidkCw+Vn5WWEuGoJeqmY/+9RIfFP1SxylgO1t5O3pzqDz9+Vf309OM3ahQCsjEKSSxzF0LXHeA8J8zrQi+5g3nKPXsMSPobrcpJ9hFdoORrkkcsaz5lyOVL0Ru7gGicXseEiuD/z5yBISxU+G4sRDV2hS86f7Rm47osG/oBHPlmgqW82hJmnG1MEHwWfGG7U4BQ5X3cYDcZ79hk0Jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6bVXQFzJ8vBokei2Bc67fUh/RRbqnOMoRlLmtZx7UZw=;
+ b=k2nB/qFPVZTNyRD75foZnZWFDd8cMkoqd2txEgTIv9C5LadvtLESorNqh5GlR62T6dsCOX2fMgw/WzJGvBCMNF/dilecme3nlZIrIJooUHI1RfS++Yx4IcHW8XZZ22T+3dWe/iGv8FlpDyBnxSGLkbwVvxaizRLjxG/xCM1YNmc=
+Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
+ by SA2PR11MB5003.namprd11.prod.outlook.com (2603:10b6:806:11e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 23 Sep
+ 2021 23:32:47 +0000
+Received: from SN6PR11MB3184.namprd11.prod.outlook.com
+ ([fe80::892e:cae1:bef0:935e]) by SN6PR11MB3184.namprd11.prod.outlook.com
+ ([fe80::892e:cae1:bef0:935e%6]) with mapi id 15.20.4523.022; Thu, 23 Sep 2021
+ 23:32:47 +0000
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "Lutomirski, Andy" <luto@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+CC:     "bsingharora@gmail.com" <bsingharora@gmail.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "esyr@redhat.com" <esyr@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
+        "jannh@google.com" <jannh@google.com>,
+        "kcc@google.com" <kcc@google.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>, "oleg@redhat.com" <oleg@redhat.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "Yang, Weijiang" <weijiang.yang@intel.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "pavel@ucw.cz" <pavel@ucw.cz>, "arnd@arndb.de" <arnd@arndb.de>,
+        "Moreira, Joao" <joao.moreira@intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "tarasmadan@google.com" <tarasmadan@google.com>,
+        "Dave.Martin@arm.com" <Dave.Martin@arm.com>,
+        "vedvyas.shanbhogue@intel.com" <vedvyas.shanbhogue@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "gorcunov@gmail.com" <gorcunov@gmail.com>
+Subject: Re: [NEEDS-REVIEW] Re: [PATCH v11 25/25] x86/cet/shstk: Add
+ arch_prctl functions for shadow stack
+Thread-Topic: [NEEDS-REVIEW] Re: [PATCH v11 25/25] x86/cet/shstk: Add
+ arch_prctl functions for shadow stack
+Thread-Index: AQHXpBafkXiywIsFO0GpZ4F+zmmfpKleug+AgAMcTACABC5WgIAAPYaAgjyGhQCACm2tAIAFKAoA
+Date:   Thu, 23 Sep 2021 23:32:47 +0000
+Message-ID: <1305ca8a74580a87d6c9aaa1c8d7f97422863ce0.camel@intel.com>
+References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
+         <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
+         <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com>
+         <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
+         <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
+         <20200901102758.GY6642@arm.com>
+         <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
+         <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
+         <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
+         <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
+         <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
+         <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
+         <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
+         <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
+         <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com>
+         <a881837d-c844-30e8-a614-8b92be814ef6@intel.com>
+         <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com>
+         <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
+         <a1efc4330a3beff10671949eddbba96f8cde96da.camel@intel.com>
+         <41aa5e8f-ad88-2934-6d10-6a78fcbe019b@intel.com>
+         <CALCETrX5qJAZBe9sHL6+HFvre-bbo+us1==q9KHNCyRrzaUsjw@mail.gmail.com>
+         <45c62101c065ed7e728fadac7207866bf8c36ec4.camel@intel.com>
+         <b5b5787b-17ce-4e66-8bc6-ab42ae3e398d@www.fastmail.com>
+In-Reply-To: <b5b5787b-17ce-4e66-8bc6-ab42ae3e398d@www.fastmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6ecdbf25-3e7a-491e-4528-08d97eea7392
+x-ms-traffictypediagnostic: SA2PR11MB5003:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA2PR11MB50038CE820E394F8060901ADC9A39@SA2PR11MB5003.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: k2opfqWHdsUY5cqJwE6Y78bzSwcAIx6thdoKHNYlzmh5DKcGsk6yp7j2LlMvBkJ8IznHXEIWjK0ttPIvYpo36kvVmyzjxrLSkC8e+Xt/PZo6Xa4obZChEQnKZXtL2dXs07/fJZchw8mLKF0zO2vE2MI1Qh23QPjjqHEtD+6jT38T1Bs2AZSph1DquKmvs9vF+xUB9niPoHSfjqvMZiGq5+MpCIWn8XmbDOF7Q8ng5g0Wew4wLL6Ffjtdlx5Q3LKcX/0iVhjypTiWmzaQ0Qx/Dh5fe49B31A3tZkXFUU45U+IgRVNUaoN9VNp8tiMxM68JrGZ3VRUcvnhZHoXAfkDCeDu80Ko44HRt3DquXwECujCUrfG8bLM2UdCvnWR9ss414FCKhCv69IqIwDcGENdXGhAj67sBAcGiWV6YrRYzcF5zqQY79G5Dn00gdYVcsHrpcxRda09D5KdloPakn3CzV3rqQh+j8tdirgfnrvRMntludfqvVFkuLtjQ6FVk348cV0ucTD0KU5OHKlsbWVPiV+ah1c0pNEcp4BGW0tkLrkFKFgK+P92/4rqxPR8Wv7sELIj1dM/pyVBCDoodR/iCl7ETZAgomAlWH+3/kzXAXkzZNJIyQTZD9JdNZTDwxC1QQiargagO6Xi86ymafQNak1k2YQfzKFDqixRVQobT1IV6Wmnz8PgxOeHC98noxwEZoJ2wWXH6ZdKq2MC3eCs8QlpuBovCESKeX+YjjKvlCA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(2906002)(38070700005)(8676002)(6512007)(91956017)(83380400001)(66946007)(76116006)(64756008)(186003)(86362001)(508600001)(5660300002)(38100700002)(66556008)(36756003)(4326008)(2616005)(66446008)(122000001)(6636002)(26005)(8936002)(316002)(6486002)(7416002)(66476007)(6506007)(110136005)(7406005)(54906003)(99106002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S3RGKy9uUHhWNEZKMmc0dWh2NG9hUVJLYVY3aFpWZjZMQU9CdjFWeWdvNVgw?=
+ =?utf-8?B?NjZBZ0lISElQbi94M2pJNlJhWndnZ3A2YmRxLzlhU1BKV0VhcFptenhKTzBM?=
+ =?utf-8?B?SW90T25ISzBIOHMvL3QrV2haWkJhUzQwaThHeTBBVWdZUDUyMkhsYlZIVW5D?=
+ =?utf-8?B?dWE2K1Jqb2RiV0dPdjRpMVBxRDM1RjJtWkk5bUV0WlRXTzZaK1JMMFBWVmNT?=
+ =?utf-8?B?bWZudGJYNWRzU2FSQUZpYzIydnBnbldTK2xJckQ4M3FmT3ZJb2RiY2taZzlo?=
+ =?utf-8?B?cWgwSmVPSnNmOXFYemZuMmFCL0k3Qm1IYUIxczRQamgvY0NLQkFOVGVieTRa?=
+ =?utf-8?B?am5tekw3M2YweUJQRTZSaVhlVGNqU0pEdXRETGVUOXd4d1o1QWF2Z1FEWUhj?=
+ =?utf-8?B?Tk82WmxiTUhBUUExbGdTVUxWbmVTb2JDNU5XY2YvZ2puUUdtNkhMdjdtVWdI?=
+ =?utf-8?B?L3J5VmM4UGtuSTMvTXFvV0FTQjJaMlNwYXJnZElDdVU3c09ZY3JaOFpaN01V?=
+ =?utf-8?B?dERudzRMeWNMYkRnNVE1a1ExZ1JwOEFQRW1NMWdQd3grM051RDhYbTU5TFZr?=
+ =?utf-8?B?ZUcyRGpLNFM1YUFNSkZGdmI3eVJVeTFFRzBDR0N1b0c2WE5HdHV6a2RNeFBm?=
+ =?utf-8?B?am0rTi84cndjbmNzaXNpcno5SkphQlFnV2c1WGVxbmFjckYrZCtLNGY3UTJz?=
+ =?utf-8?B?aC9zNkFwZ0VjRFZCYVhIMkFsTkhLWWRLb2ZMMXlWOUlXQVFqcFgvNGpTWWkv?=
+ =?utf-8?B?Zy9oMHVDMDluMGZPRzI3ekVHNTg3YU1aSnNpNUxIQmUwM2JWYktaTE5BUHJG?=
+ =?utf-8?B?K3JzQ24rRzFGOGJrODVjV1VqYzBCSVdpaTFWR3N3ZlNsdmZUY0xLNW4yL2pp?=
+ =?utf-8?B?N0puZG9TSjBrTDdlbVhHYjMzdUl0d2FEYkRmTEdMNlh5MXRzVFYwZGVadUdh?=
+ =?utf-8?B?cm15d2xmdU9vS3hTYTZFNDRyeHRYUk1XK0dZK2pPQ1M4ekYwNGFST1pOZmdY?=
+ =?utf-8?B?SWFRbTBDbmZSVk85UmpCMDJRaDlTcjhDR3ZmV1dGSHRwSkFqRXlWUDQxSlJx?=
+ =?utf-8?B?RzQvVnNBTW04Wmw4SXo3RDViNFJJY0hPcVBuSXRrTGRhdkZsOUZ3K1UwaGd4?=
+ =?utf-8?B?c1FtVVp3NjBJYkhDSUlsWDdoUHJFT1VzUUoxMG1zVEsvMnVueHBSOXN6Mmor?=
+ =?utf-8?B?R0t6cHBBdHREWEl1SjB6RmRQVFlNWDg4RThxcVVaZGdqS0hycWpVWTZaazM5?=
+ =?utf-8?B?TGh5Uk5GUmJNYTI2WTkzUzVJT1c2RThlMklPRnV6Wm5YNGxvZmc5aE1VWkpL?=
+ =?utf-8?B?YkVKVXJGZGtFa3gxaCtoeE1uNzdLQzJhQzVVSXFRV3J1eDNaM3pLN09TeHFJ?=
+ =?utf-8?B?RTdldjAxdnE4VTNQbUJWdnZtN3lQSkIzbVFtV1dwR1pTcjhwL2tPUXNzNTFy?=
+ =?utf-8?B?VVdyRFhHODIzamVUeUFqUW1zNGhEU2RtR2JaM2NPMnRxeWJXR25FYjBBbEY3?=
+ =?utf-8?B?M0dBTkxlZnovd1VFUTNvamI3b0k1empCMWxKazc4YU1UMzlmTG4xOEQxU0Jx?=
+ =?utf-8?B?d2FGTjEzTXIwOVlud0swMmp0ZVdOTUNJdkxMd3k3TWQ2eGxYUVExbVlOYStG?=
+ =?utf-8?B?aEVUMWJ2TTlwUWpxNllYZFJkTDl6dW5mVnRwWXR3UU1uelYwWDRGZU9weUd4?=
+ =?utf-8?B?dGs2aUZWMFZadCtjN0R4OWJmQWpZTDJSWE1BWmg0K2svM0FiVkxMWlhNaFdC?=
+ =?utf-8?B?bldteTd3WkkvZVJlMi95ZnNkTFZCcmNTcTd2KzJzTG9ra3NMU3NGeXhhTlhy?=
+ =?utf-8?B?eHB3MjRNM2pSS0o1dHM2dz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E5EFED9CB67E1F48B0E7B3B67BAD8295@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3943; h=from:subject; bh=U7oablg1sEKMje5UnBxNq5+kJW+PeEznOm0x7d0aYaI=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhTQ448wi0wTXGV8xEtY6E/CSU09UrdLNeiRXpCrh6 PoRw46mJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYU0OOAAKCRCJcvTf3G3AJiL3D/ 431c8P+vVpq52hw+H+OcLEs36FHusT1bdXUKccVVKLCHKpzUoI+dv/3CNx8vVD0c91XAVZ5gS5LOw8 Gc6QB0slsnBq6QeOXcmDSbO804cI3t62G0hyfBR3nzzQcx5EIlHOaSprFC6bv5WsbciVfNyarKZszP 8h1XiwaIOpzAluyGupS82TzsPEIK4qK/kf84J3c5SnxBaYDBaF8VwlapazTz0ioYt19SvV+2LwQuMu ViEGXi0++E+6zGLibw0QFNByU5pUQ87QaXoNYkk3G9OqQWQomVtC7r9hecBqylypGB81zHpR71Kp4f 1rAFHLjhRBIHMccBpMaR6Ctvn9cXdHbpdoHOgxTrAvq6dstt9mAutFMmcm5DenSceLRih93BpxcEbJ g+lICZwWoM66jLpQrS4Z4fxl6zvr4JwcK7BFgs7uX8oVbHf2/1qfawJ03f0fjt0t5wjuGry3SlwXtj PvEW87KK3u4N8eN+bMCjTcgCebhYL+i/a0H8rMyYT7gnEdhBTBnQBxPoiu0mlZLhvs7HxeO6fK+By2 87ViZG2+v+LimtPlO43Vstw4A0UE50JNHwjPI+JiZqwyo+jLTGUpduK1sp8BXTeLLUi7A491jg+BSV lnU0IozaYhGmrkDOZQRN95E7I5mZR4u3SSbOx1SquO5EFCG8l9+agPOxonSw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ecdbf25-3e7a-491e-4528-08d97eea7392
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 23:32:47.5209
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JQQDFZdOZs0GDjZ0rk04Fdm49IATZyDueciDu6QMcYaQYZUtHNyiuVRG8VE162gBX41jj4qH4l0LlqQJiuCkT7XdISTnuzGYnvSZHn4vNi4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5003
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The /proc/$pid/wchan file has been broken by default on x86_64 for 4
-years now[1]. As this remains a potential leak of either kernel
-addresses (when symbolization fails) or limited observation of kernel
-function progress, just remove the contents for good.
-
-Unconditionally set the contents to "0" and also mark the wchan
-field in /proc/$pid/stat with 0.
-
-This leaves kernel/sched/fair.c as the only user of get_wchan(). But
-again, since this was broken for 4 years, was this profiling logic
-actually doing anything useful?
-
-[1] https://lore.kernel.org/lkml/20210922001537.4ktg3r2ky3b3r6yp@treble/
-
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Vito Caputo <vcaputo@pengaru.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/x86/kernel/process.c |  2 +-
- fs/proc/array.c           | 16 +++++-----------
- fs/proc/base.c            | 16 +---------------
- 3 files changed, 7 insertions(+), 27 deletions(-)
-
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 1d9463e3096b..84a4f9f3f0c2 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -937,7 +937,7 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
- }
- 
- /*
-- * Called from fs/proc with a reference on @p to find the function
-+ * Called from scheduler with a reference on @p to find the function
-  * which called into schedule(). This needs to be done carefully
-  * because the task might wake up and we might look at a stack
-  * changing under us.
-diff --git a/fs/proc/array.c b/fs/proc/array.c
-index 49be8c8ef555..8a4ecfd901b8 100644
---- a/fs/proc/array.c
-+++ b/fs/proc/array.c
-@@ -452,7 +452,7 @@ int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
- static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
- 			struct pid *pid, struct task_struct *task, int whole)
- {
--	unsigned long vsize, eip, esp, wchan = 0;
-+	unsigned long vsize, eip, esp;
- 	int priority, nice;
- 	int tty_pgrp = -1, tty_nr = 0;
- 	sigset_t sigign, sigcatch;
-@@ -540,8 +540,6 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
- 		unlock_task_sighand(task, &flags);
- 	}
- 
--	if (permitted && (!whole || num_threads < 2))
--		wchan = get_wchan(task);
- 	if (!whole) {
- 		min_flt = task->min_flt;
- 		maj_flt = task->maj_flt;
-@@ -600,16 +598,12 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
- 	seq_put_decimal_ull(m, " ", sigcatch.sig[0] & 0x7fffffffUL);
- 
- 	/*
--	 * We used to output the absolute kernel address, but that's an
--	 * information leak - so instead we show a 0/1 flag here, to signal
--	 * to user-space whether there's a wchan field in /proc/PID/wchan.
--	 *
-+	 * We used to output the absolute kernel address, and then just
-+	 * a symbol. But both are information leaks, so just report 0
-+	 * to indicate there is no wchan field in /proc/$PID/wchan.
- 	 * This works with older implementations of procps as well.
- 	 */
--	if (wchan)
--		seq_puts(m, " 1");
--	else
--		seq_puts(m, " 0");
-+	seq_puts(m, " 0");
- 
- 	seq_put_decimal_ull(m, " ", 0);
- 	seq_put_decimal_ull(m, " ", 0);
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 533d5836eb9a..52484cd77f99 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -378,24 +378,10 @@ static const struct file_operations proc_pid_cmdline_ops = {
- };
- 
- #ifdef CONFIG_KALLSYMS
--/*
-- * Provides a wchan file via kallsyms in a proper one-value-per-file format.
-- * Returns the resolved symbol.  If that fails, simply return the address.
-- */
- static int proc_pid_wchan(struct seq_file *m, struct pid_namespace *ns,
- 			  struct pid *pid, struct task_struct *task)
- {
--	unsigned long wchan;
--
--	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
--		wchan = get_wchan(task);
--	else
--		wchan = 0;
--
--	if (wchan)
--		seq_printf(m, "%ps", (void *) wchan);
--	else
--		seq_putc(m, '0');
-+	seq_putc(m, '0');
- 
- 	return 0;
- }
--- 
-2.30.2
-
+T24gTW9uLCAyMDIxLTA5LTIwIGF0IDA5OjQ4IC0wNzAwLCBBbmR5IEx1dG9taXJza2kgd3JvdGU6
+DQo+IE15IGdlbmVyYWwgb3BpbmlvbiBoZXJlICh0YWtlIHRoaXMgd2l0aCBhIGdyYWluIG9mIHNh
+bHQgLS0gSSBoYXZlbid0DQo+IHBhZ2VkIGJhY2sgaW4gZXZlcnkgc2luZ2xlIGRldGFpbCkgaXMg
+dGhhdCB0aGUga2VybmVsIHNob3VsZCBtYWtlIGl0DQo+IHN0cmFpZ2h0Zm9yd2FyZCBmb3IgYSBs
+aWJjIHRvIGRvIHRoZSByaWdodCB0aGluZyB3aXRob3V0IG5hc3R5IHJhY2VzLA0KPiBjcm9zcy10
+aHJlYWQgY29vcmRpbmF0aW9uLCBvciB1bm5lY2Vzc2FyeSBwZXJtaXNzaW9uIHRvIHdyaXRlIHRv
+IHRoZQ0KPiBzdGFjay4gIEkgKmFsc28qIHRoaW5rIHRoYXQgaXQgc2hvdWxkIGJlIHBvc3NpYmxl
+IGZvciB1c2Vyc3BhY2UgdG8NCj4gbWFuYWdlIGl0cyBvd24gc2hhZG93IHN0YWNrIGFsbG9jYXRp
+b24gaWYgaXQgd2FudHMgdG8sIHNpbmNlIEknbSBzdXJlDQo+IHRoZXJlIHdpbGwgYmUgSklUIG9y
+IGdyZWVuIHRocmVhZCBvciBvdGhlciB1c2UgY2FzZXMgdGhhdCB3YW50IHRvIGRvDQo+IGNyYXp5
+IHRoaW5ncyB0aGF0IHdlIGZhaWwgdG8gYW50aWNpcGF0ZSB3aXRoIGluLWtlcm5lbCBtYWdpYy4N
+Cj4gDQo+IFNvIHBlcmhhcHMgd2Ugc2hvdWxkIGtlZXAgdGhlIGV4cGxpY2l0IGFsbG9jYXRpb24g
+YW5kIGZyZWUNCj4gb3BlcmF0aW9ucywgaGF2ZSBhIHdheSB0byBvcHQtaW4gdG8gV1JTUyBiZWlu
+ZyBmbGlwcGVkIG9uLCBidXQgYWxzbw0KPiBkbyBvdXIgYmVzdCB0byBoYXZlIEFQSSB0aGF0IGhh
+bmRsZSB0aGUga25vd24gY2FzZXMgd2VsbC4NCj4gDQo+IERvZXMgdGhhdCBtYWtlIHNlbnNlPyAg
+Q2FuIHdlIGhhdmUgYm90aCBhcHByb2FjaGVzIHdvcmsgaW4gdGhlIHNhbWUNCj4ga2VybmVsPw0K
+DQpJIHRoaW5rIHNvLiBJJ2xsIHRha2UgYSBsb29rIGF0IGFkZGluZyBhIHByY3RsIHRvIGVuYWJs
+ZSBXUlNTLiBTaW5jZQ0KdGhlcmUgYWxyZWFkeSBpcyBBUkNIX1g4Nl9DRVRfRElTQUJMRSB0byBk
+aXNhYmxlIENFVCwgaXQgZG9lc24ndCBzZWVtDQpsaWtlIGl0IHNob3VsZCBlc2NhbGF0ZSBhbnl0
+aGluZy4gQW5kIEFSQ0hfWDg2X0NFVF9MT0NLIGNhbiBwcmV2ZW50DQp0dXJuaW5nIGl0IG9uIGlm
+IGRlc2lyZWQuDQoNClRoYW5rcywNCg0KUmljaw0K
