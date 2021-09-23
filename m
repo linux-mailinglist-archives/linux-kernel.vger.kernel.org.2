@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5574163BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60904163BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238628AbhIWQ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:58:24 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:39886 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbhIWQ6V (ORCPT
+        id S234957AbhIWRBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:01:07 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:41507 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233396AbhIWRBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:58:21 -0400
-Received: by mail-ot1-f43.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so9395065ota.6;
-        Thu, 23 Sep 2021 09:56:50 -0700 (PDT)
+        Thu, 23 Sep 2021 13:01:06 -0400
+Received: by mail-ot1-f44.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso9379781ota.8;
+        Thu, 23 Sep 2021 09:59:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yCuhDbFySv0WBASIMuHbe9F9f8YaVqjJ37FH7IkOu2Q=;
-        b=DBg6VDNvYa37lnsq6/Y7Mq0Z5LwlGRJnFhRurImxfeUD846HwX9xC8LRJAwgaPOiSH
-         kLfdGKhWl30szY2K0YPKgk79XFT5KS5syPgsZ0GcWWE3EeZWD4VPs0z2NY/a737vAu75
-         YLR9xsV2fLvbb4F2x7Dfnq+QaO6i7MZhZwirmjEdrvwl/rjUKJzlBjOQyQkXsXp6yCT+
-         /wVC3/v2teEug9Z9A3CDYSg2/Xjey3/go8SM8DBQyW53k1ikASdQuej/sk92CyTTUm8Z
-         /oIaPnOgbe7vqPh6rus9tKI1Xk2iPGjMCxWl3q0leD4p6Ji+IBI5/FGCvvGG9pqlliWG
-         ZPYw==
-X-Gm-Message-State: AOAM5319MFY82foKQ/n9CleQS40PdDNfyqm4voF6jiVPBm5qIVGhMVZe
-        k+DvK1rrMrTRCHfuZaAU/w==
-X-Google-Smtp-Source: ABdhPJwZF13O3L94Az07rbZOHYKpGcxO0Y3TsLBWTY4BwTvdCjMK2u5P9d4TPJIIAl0Dmte2Oz4hQQ==
-X-Received: by 2002:a9d:7dd0:: with SMTP id k16mr5369860otn.51.1632416209860;
-        Thu, 23 Sep 2021 09:56:49 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=1i+M8EOr7e57ftQjdyXXIOehi2M7Hp7GON39uqkaep4=;
+        b=urD8tnNoP15us9B2BiaQzewpgBT8gMx9dolQalsVOt4BnyLIFuzaLdL2e3pV4NxSIT
+         aKv7oBbDBMz+2dhbi5XoO3aMsJB7jTmbMqqrNa5tOKYMwuaZ2F8i06u3gIsiNObBdSw3
+         7lIPAh0S8pOAIxqUkwkDQVb7hEtprunXOgZRtXM/ixbTwrq8qZtbk7BPqLWjLT54b7pr
+         yigVF10n2SDNxtwTUo2x940Y5OqrWpGntgQOSNRbbdcLF81wAteuumnyS2z3TG5/xUT2
+         9rUs0/EUvKzyV4L/nvQADoXe8zZCelg1Mqb1Smxg7Lr5RcYLk83mirn06Z69XCKA9nsy
+         xpvQ==
+X-Gm-Message-State: AOAM533wcSV55Pz2TVeuoUDFlFghdoZlD0EUw7T8uH3ivRTIJjPF1nwh
+        Gdzhu0HaaKIqwKwr3nGq22vaK9TtIw==
+X-Google-Smtp-Source: ABdhPJyJacfEO2U/tWDyQhP1Mzyf1Ng9ln0l9pqO8lCSU02mh5acU8WvyIVenmskQ9rvKbUnPHh2iQ==
+X-Received: by 2002:a9d:7b4f:: with SMTP id f15mr5168057oto.158.1632416374200;
+        Thu, 23 Sep 2021 09:59:34 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s26sm1498922ooc.26.2021.09.23.09.56.48
+        by smtp.gmail.com with ESMTPSA id g23sm1407552otl.23.2021.09.23.09.59.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 09:56:49 -0700 (PDT)
-Received: (nullmailer pid 3165231 invoked by uid 1000);
-        Thu, 23 Sep 2021 16:56:48 -0000
-Date:   Thu, 23 Sep 2021 11:56:48 -0500
+        Thu, 23 Sep 2021 09:59:33 -0700 (PDT)
+Received: (nullmailer pid 3169434 invoked by uid 1000);
+        Thu, 23 Sep 2021 16:59:32 -0000
+Date:   Thu, 23 Sep 2021 11:59:32 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?UGF3ZcWC?= Anikiel <pan@semihalf.com>
-Cc:     linux-mtd@lists.infradead.org, olof@lixom.net, ka@semihalf.com,
-        dinguyen@kernel.org, devicetree@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, jam@semihalf.com,
-        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        tn@semihalf.com, p.zabel@pengutronix.de,
-        linux-kernel@vger.kernel.org, arnd@arndb.de, vigneshr@ti.com,
-        robh+dt@kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: mtd: spi-nor: add n25q00 schema
-Message-ID: <YUyx0K9M7wspVl+E@robh.at.kernel.org>
-References: <20210920124141.1166544-1-pan@semihalf.com>
- <20210920124141.1166544-2-pan@semihalf.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Zong Li <zong.li@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-clk@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [PATCH] dt-bindings: clock: fu740-prci: add reset-cells
+Message-ID: <YUyydGrDNzISu6JX@robh.at.kernel.org>
+References: <20210920144944.162431-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210920124141.1166544-2-pan@semihalf.com>
+In-Reply-To: <20210920144944.162431-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 14:41:39 +0200, Paweł Anikiel wrote:
-> Add schema for the n25q00 NOR flash memory.
+On Mon, 20 Sep 2021 16:49:44 +0200, Krzysztof Kozlowski wrote:
+> The SiFive FU740 Power Reset Clock Interrupt Controller is a reset line
+> provider so add respective reset-cells property to fix:
 > 
-> Signed-off-by: Paweł Anikiel <pan@semihalf.com>
+>   arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml: clock-controller@10000000:
+>     '#reset-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../devicetree/bindings/clock/sifive/fu740-prci.yaml          | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
