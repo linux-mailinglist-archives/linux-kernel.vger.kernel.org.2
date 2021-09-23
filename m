@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931B7416639
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F86B41663C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242984AbhIWTz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 15:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242955AbhIWTz4 (ORCPT
+        id S243022AbhIWT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 15:58:14 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:38042 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242955AbhIWT6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 15:55:56 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC34CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 12:54:24 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id dj4so27222985edb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 12:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XKmFgNVdybOzZnx4iX+AR6da3akZcPfP3E2Urr+BIck=;
-        b=HNQJJEy5MhdJJVqV79vO8IEuMfPm5ukO96/sXz8Vv0hlPzk/brpakD0LsWDOV7zXG7
-         l3reXPbQ0roEO6DzncmkQE05eiVSBwQdQ/BPQuBhe7m1OS21PlWX8Uf5rMKdu6OsA4Fw
-         wNkB6pcPetDZtFWos/x8V/yzraSpKibBafOPyqtiz0APpHX4D/cNSwbP8OCEHbttg56h
-         qZgWqfGndEx0Oc6r1Bqjj9fqsuAExJN1Y21beKGumUNQk4fbAvz+5pqRHoEmWN9VVv63
-         USM1Rbb8GXZVqgAkM6yL2DN4DPfmc7ZdKLSN/r8yvj1f2LOr9yxlbz0znwpl31fb5F5R
-         +h6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XKmFgNVdybOzZnx4iX+AR6da3akZcPfP3E2Urr+BIck=;
-        b=FJD0+wHwzx+Wszaz5erhw7qlNlw+3g2YxlFS1+LLR2b+hGIvUE0iGoC72CkgXknEsk
-         i8a3Rs0ZRadIrGsldbvuXpHjz6qBzdO6z+Y6nUKY1bwM6XlRnTge6SKpOQ5jrD8h7s4E
-         hcb4WqtzyanQ3kyR4iFSK2mE07Hw6Dzk4lvp/Y7nO9DHoZC7n7hkFH5/kF1fFGPhLvSt
-         NPKaYvNd3IWYGHQdXkRpRyQkm/C7Q0Y+CRxF32OiifIUx8FWMVzWXaPVd4sOjPbYcrlw
-         TIiieBAQj07pQ4dnnLGzXAlYhzfGoZTQzsZyj9whPftoCWHinjOvJjj6Wxy6Hdxh6by5
-         eKJA==
-X-Gm-Message-State: AOAM531fAoy6K4+Ul/ieCO0HOXmLLcpb32SpInk3RAO4dLIq8jJLsafc
-        lppnteOfXiMf3MNGjIKR+AI=
-X-Google-Smtp-Source: ABdhPJzWtq4GnWY/CSMvR8joZTq24QwlFIYA3fjYSgKxNqzvLi52FxKDqAJ8yfTr9FkfAio1h4lL3Q==
-X-Received: by 2002:a50:ba84:: with SMTP id x4mr698433ede.376.1632426863162;
-        Thu, 23 Sep 2021 12:54:23 -0700 (PDT)
-Received: from localhost.localdomain (host-212-171-30-160.pool212171.interbusiness.it. [212.171.30.160])
-        by smtp.gmail.com with ESMTPSA id m13sm3621003ejn.3.2021.09.23.12.54.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 12:54:22 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Edmundo Carmona Antoranz <eantoranz@gmail.com>,
-        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: vt6655: Replace camel case variable name
-Date:   Thu, 23 Sep 2021 21:54:12 +0200
-Message-ID: <4972337.8pBPQsAWaL@localhost.localdomain>
-In-Reply-To: <20210922220802.584952-1-tomm.merciai@gmail.com>
-References: <20210922220802.584952-1-tomm.merciai@gmail.com>
+        Thu, 23 Sep 2021 15:58:13 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18NGN5ji011025;
+        Thu, 23 Sep 2021 12:56:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=UFp7vHEWChMei+bX+QGXOPu3cQ4g6dhqP22TCpFrvSE=;
+ b=jpr0ul68PFkVVUhoAVkwVYlNuKkmZw0iJ8HXHRNwf1MS3xcItFTnzMPXwmvFUY68JYCg
+ LkBWkmyH9ZzocGoe6IONvNjcHUQhRfRbFvXVX+sU8mawNK2TBTRKl77dG9MA1R3+/+7I
+ S6haIPWmo6wlUTM0Ffk2ZnlDxQvlHRxKZ8LHoeS5zNjt5yKVYtovy83Ik5aU6UcMfODu
+ 8yliuYPZjv/zmX1jTGNE+ezy8vsLiLz6MYpb9gGLv+rlLBo28/gyf1sk4KayUGZYJ2Er
+ hdgf1azhviGstug/8pEcDnAEEfgmi9WF3g2lmxj97fgE81EeBnZR/rwuE7zhFEUOoj3h 7Q== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3b8ba6cub4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 23 Sep 2021 12:56:20 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
+ 2021 12:56:18 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Thu, 23 Sep 2021 12:56:18 -0700
+Received: from localhost.localdomain (unknown [10.110.150.250])
+        by maili.marvell.com (Postfix) with ESMTP id BD48F3F707C;
+        Thu, 23 Sep 2021 12:56:17 -0700 (PDT)
+From:   Vasyl Gomonovych <vgomonovych@marvell.com>
+To:     <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>
+CC:     Vasyl Gomonovych <vgomonovych@marvell.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        "Robert Richter" <rrichter@amd.com>,
+        Tom Saeger <tom.saeger@oracle.com>,
+        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ACPI: APEI: Check NULL argument in exported symbol
+Date:   Thu, 23 Sep 2021 12:56:10 -0700
+Message-ID: <20210923195612.25949-1-vgomonovych@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
+X-Proofpoint-GUID: aZDrHPWlEBaye8PBSFJWu5xH-RlXCIWt
+X-Proofpoint-ORIG-GUID: aZDrHPWlEBaye8PBSFJWu5xH-RlXCIWt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-23_06,2021-09-23_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, September 23, 2021 12:07:49 AM CEST Tommaso Merciai wrote:
-> Work in progress: replace camel case variables
-> 
-> PortOffset -> port_off_set
-> 
-> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> ---
->  drivers/staging/vt6655/baseband.c    |   6 +-
->  drivers/staging/vt6655/card.c        |  88 ++++++++--------
->  drivers/staging/vt6655/channel.c     |  10 +-
->  drivers/staging/vt6655/device.h      |   2 +-
->  drivers/staging/vt6655/device_main.c | 144 +++++++++++++--------------
->  drivers/staging/vt6655/mac.c         |  46 ++++-----
->  drivers/staging/vt6655/power.c       |  24 ++---
->  drivers/staging/vt6655/rf.c          |  12 +--
->  drivers/staging/vt6655/rxtx.c        |  12 +--
->  9 files changed, 172 insertions(+), 172 deletions(-)
+Exported symbol apei_hest_parse is external API
+and should check pointer argument
 
-If you split "Offset" into "Off set", you convey the message that something 
-is "Off the set". Probably that's not what you want to express.
+Signed-off-by: Vasyl Gomonovych <vgomonovych@marvell.com>
+---
+ drivers/acpi/apei/hest.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-
-Fabio
-
+diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+index 277f00b288d1..9f5c334c7c88 100644
+--- a/drivers/acpi/apei/hest.c
++++ b/drivers/acpi/apei/hest.c
+@@ -91,7 +91,7 @@ int apei_hest_parse(apei_hest_func_t func, void *data)
+ 	struct acpi_hest_header *hest_hdr;
+ 	int i, rc, len;
+ 
+-	if (hest_disable || !hest_tab)
++	if (hest_disable || !hest_tab || !func)
+ 		return -EINVAL;
+ 
+ 	hest_hdr = (struct acpi_hest_header *)(hest_tab + 1);
+-- 
+2.17.1
 
