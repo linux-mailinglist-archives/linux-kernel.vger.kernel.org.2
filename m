@@ -2,199 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5180A415754
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F6B41575C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbhIWETc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 00:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhIWETb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 00:19:31 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F70AC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 21:18:00 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id w17so13078907wrv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 21:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wwz3xT4jz1lCoxKDZBldnsOpbclkpwP/7ynQgLAOUHM=;
-        b=qvAwMSZBdrRC2mdukPHKwdwMPAfViwUcGfT54bhT915wZF00azFOpb+EOagOZQIEZp
-         s6lkW+kIz+joW/JB5RYAI5LLUif+tjQmKWUjR4ImrNvPPvhSgjcHQhAqBhSGD2I7EKe2
-         ySBvdn84LsBQMn9N5COawJaCKxkvk3lCffT5J86BWNCz+A4maVhwzxD9KrXQAR2YCW3y
-         LAu9axc/H1F6z5x2ybrkw0tG+9DRO+biL0juaGL3lmlMIf8rzpzl2IK05hFEZN+23TTd
-         ltciIc+P31jiXIht70EfdYUjydYPcbbkf13d62iY8uG4cn3bEhYEWBxKPJIPYnl29pI1
-         OdiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wwz3xT4jz1lCoxKDZBldnsOpbclkpwP/7ynQgLAOUHM=;
-        b=wEdrwJ6W9CoQeXcgzdOLyhScktvMxke/EWdSEEf2zDMKe/4l8x6/WMlOKROHPcUuji
-         hhRRAdln8XiWqDHXTJtw1uflM6G3j3sJf5GQJs8z762Hi6jqiGCeKai4cwwAljoG5l5E
-         Y6D9J9sm1j5SE+7Nc1lHpmAjHq3k2JYYTuICYB/lx23tCxryZkZmzZwimYwoJeQDv/lZ
-         RsZb7KI5P4tDyqmSjkSAt92aaGTlY8tXtU7xV0qcg50L14PuhdQTxZvPgRjXQBlNg9EC
-         5clEPkaRc7TViPEJLJAbkeHMrpf2fsTQiGG4yi1AJ5as2hYSByqqa7LziIGVsfkXbXv3
-         GEJA==
-X-Gm-Message-State: AOAM530y5T6tnAxGVK851cA1UTZC/CkuGhuXoS3MspQZej9lqe5XJPe6
-        DIAx6I4+egyanYurKUdpYDz4Q4dAYQK0ICBimJQMBw==
-X-Google-Smtp-Source: ABdhPJzzWDVXW7SYmpK56KayGBqKhCZCXE4NQ4dhCewYYN78rq+Cc8gA/Wd6cyZSlmCC1NptXnEaICo1LPucnW43vtM=
-X-Received: by 2002:a7b:cc14:: with SMTP id f20mr2124849wmh.137.1632370678382;
- Wed, 22 Sep 2021 21:17:58 -0700 (PDT)
+        id S235282AbhIWEWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 00:22:21 -0400
+Received: from mail-bn7nam10on2056.outbound.protection.outlook.com ([40.107.92.56]:32993
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229504AbhIWEWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 00:22:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MRs8+EJhY91KpYhRt0sgOiImQScEqeRR+loMXF+RbacO/zsolO+IYtkJql680RTYIEyCywZxKti/ok0YnzEGhLW1oCoAAbbvosP1V29+T9JI/fyDzUfONJQms9K24wL1YoBIcUuONHyC3L2YI7VACrPsP3dg/wPu8El/ugeoXeoWy+9S5+oG9JqvmkfG0/N3PIJwYISrLKbaoP7CCuI5525GdidICL6b0x5KSuUvbUo5MVy7m10ZwVRka9IYy6trIIEXk+xEhErhPhUnU8W+uVp0BeuNhKsE1E8mW/O1wLvhmHNLxLJIUzO2uEqU6Xjbo8plQoUZDBIxBIXeCkXa8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=rDgtMoUhboKCGPVyaqJEv7sHDX1Hjp3948zFYjy7JM0=;
+ b=iU8TFSAGEULPNhq/xH1xAaw9YGyuwWfGhxbKTwch4OTDuAsU8ohGd3BcNKgOuT+TrZzjrUcBr+Opohk1xsc75BW980Aw7uTU03NpbdXsp1DvtaRPHElFgbLTA/ZVYPAv0eMESiATMahYi6i9+VgBpx+5TbuVDojDlpWq4T2XooPRtoBxmDtnpThh/ruSM6QNtjPPAiDTDmg6D71lGIXy8XBeSTHEYS4LnbCen7uQl0lZxntLNy9yVXwmBfW9NO1fq8+z/lOdq2eh5xjV1V61mHZn2zXwkO/TrnvdGY9LBhM7otN35ri7VB2uQ/ZwSkgjwbjx+oUlohNW3BnRs79e1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rDgtMoUhboKCGPVyaqJEv7sHDX1Hjp3948zFYjy7JM0=;
+ b=iYIe6YFmUy5NkfotHD2oNsyqbIocjAsaHKaivX6lmT1JPjw/lGJ7OZGD5OJnZ8SUV+Fris9wL9+q7eA0uZnyrMMqEisTLRS/RxUqaK6+Yr8lvr3DmO2a8nQeE2SGsCG8T32S86xo7fuWcV8xDsW4mydiatig/zHQi5NJBO4bDAeGTfdlvPwIB5RPBo1tLjOulTeQZCpsUAFfjeCPAXgzLDc2q68omKM9T/lKND2wKTuSEmUWzxfHpA5F3XgX8G5PwQ+3orXTglVOj7LtJvUYdJY06hUWRF5btWNn2O/rX7UIcNVeT+Q+AvRvvbsW8pXY7IdRvcsKqui+hStT9ZpAkw==
+Received: from BN6PR16CA0011.namprd16.prod.outlook.com (2603:10b6:404:f5::21)
+ by CH2PR12MB4152.namprd12.prod.outlook.com (2603:10b6:610:a7::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Thu, 23 Sep
+ 2021 04:20:46 +0000
+Received: from BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:f5:cafe::13) by BN6PR16CA0011.outlook.office365.com
+ (2603:10b6:404:f5::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
+ Transport; Thu, 23 Sep 2021 04:20:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT068.mail.protection.outlook.com (10.13.177.69) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 04:20:46 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
+ 2021 21:20:45 -0700
+Received: from [10.25.97.189] (172.20.187.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
+ 2021 04:20:42 +0000
+Subject: Re: [PATCH] ASoC: tegra: Constify static snd_soc_dai_ops structs
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "Thierry Reding" <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210922205438.34519-1-rikard.falkeborn@gmail.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <73afcb2c-3ab3-8fe9-2d66-ee6ab9497089@nvidia.com>
+Date:   Thu, 23 Sep 2021 09:50:40 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <YUoaDr2wsW8wtk5Z@t490s> <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
- <YUowr6phZU4v7dds@t490s> <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
- <YUp438W5p5VHL1Ch@t490s> <CAJHvVciZc0mpcw8OSPk71YsVzCTajY+ikymcD3+zBJKsZynYkg@mail.gmail.com>
- <YUtoyNic4Jxfv9f7@t490s> <CAJHvVcg6PRCK_JcYEhRqq2vPyypnc+ySOtLhtFf5GrcQjimsJQ@mail.gmail.com>
- <YUulep3+YADkwlUu@t490s> <CAJHvVcijQdS_hfUnasz7BhhQeiHmNu=C5j8xfX=uWsfVO9-+Eg@mail.gmail.com>
- <YUvBEXV1Qs5wC+Jc@t490s>
-In-Reply-To: <YUvBEXV1Qs5wC+Jc@t490s>
-From:   James Houghton <jthoughton@google.com>
-Date:   Wed, 22 Sep 2021 21:17:46 -0700
-Message-ID: <CADrL8HUhV9ag6n3=MT2pNhtfrp8xH1Y-9zgispubzLy0ye6frw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Jue Wang <juew@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210922205438.34519-1-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9ef6aaa2-c64c-4db4-42da-08d97e498424
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4152:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB41525C6F0A28B36FC9650CE4A7A39@CH2PR12MB4152.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OcEqd/LFKvooqYxeEENPOujhHss+GHC+Vc95QAbf7QOxzavKWguPllQyRK5W8Xy5FrlGfHNxVHqJuDHpBsEWdbrMwlx+pMlQyYZqWypjoz7AxWLBsFtg8jgmwm2TBOmqchgmbWUplENSccBP3sxvMwwXh8ubFZxrHTyOcO/sQFsDxi4LZK/ylodKtXWH1uGeUvrE8pwsnEK88tjJfMI5W+W+FaCR4/kqtoU2oBU4VoWHzEpWISuvi4lwVHcWtsO+sB5blAz6ISfJBr18NoNzWraM/EtL3AeGbOuf4n6xi9yvjKq1X5vb+SxiopDZcZKT1hhxaE3WxhXNRKIBJHiP/wWKFZYFe31GkyEQCwuPpKKLA5PQqongFYriC+h+TU6gKsuTiTQDkulj73B2FvchYkRYRGca+lHdbt9N7oM0uMtsIN8+UsgnrbM0aK91/+6TxuD5TJx2N+Cjq5oyOK/YSg5qYzs/AW+rMs371xCR/poaMwYLIcqEGOVN1oBS6XScpKJ5fsQLyALSrCxnXBZwkWkDIF39QxYL+HxcpVtb+mWjWuYif6gVAYPEu5NjkL2HBbx4fyMn4dl/jzpQ9Vs5WS4iwTIKewtkNpNlpAyfk6p63gJwrCWUlsKGh1udqM09wTSS2TuW2TiUxg8CYNNti/5oqXQhb1KPygy53ZlslPwQAD9WbtZpixCsJE5slofWOtEoPCFqb4WqWzgm8R85zpOGiqA9tbJwrodNqr+BlGM=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(5660300002)(16526019)(16576012)(110136005)(2906002)(54906003)(8936002)(426003)(336012)(186003)(316002)(31686004)(36860700001)(26005)(4744005)(4326008)(47076005)(53546011)(82310400003)(508600001)(70206006)(36756003)(356005)(83380400001)(86362001)(31696002)(7636003)(2616005)(70586007)(8676002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 04:20:46.2708
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ef6aaa2-c64c-4db4-42da-08d97e498424
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 4:49 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Wed, Sep 22, 2021 at 03:29:42PM -0700, Axel Rasmussen wrote:
-> > On Wed, Sep 22, 2021 at 2:52 PM Peter Xu <peterx@redhat.com> wrote:
-> > >
-> > > On Wed, Sep 22, 2021 at 01:54:53PM -0700, Axel Rasmussen wrote:
-> > > > On Wed, Sep 22, 2021 at 10:33 AM Peter Xu <peterx@redhat.com> wrote:
-> > > > >
-> > > > > Hello, Axel,
-> > > > >
-> > > > > On Wed, Sep 22, 2021 at 10:04:03AM -0700, Axel Rasmussen wrote:
-> > > > > > Thanks for discussing the design Peter. I have some ideas which might
-> > > > > > make for a nicer v2; I'll massage the code a bit and see what I can
-> > > > > > come up with.
-> > > > >
-> > > > > Sure thing.  Note again that as I don't have a strong opinion on that, feel
-> > > > > free to keep it.  However if you provide v2, I'll read.
-> > > > >
-> > > > > [off-topic below]
-> > > > >
-> > > > > Another thing I probably have forgot but need your confirmation is, when you
-> > > > > worked on uffd minor mode, did you explicitly disable thp, or is it allowed?
-> > > >
-> > > > I gave a more detailed answer in the other thread, but: currently it
-> > > > is allowed, but this was a bug / oversight on my part. :) THP collapse
-> > > > can break the guarantees minor fault registration is trying to
-> > > > provide.
-> > >
-> > > I've replied there:
-> > >
-> > > https://lore.kernel.org/linux-mm/YUueOUfoamxOvEyO@t490s/
-> > >
-> > > We can try to keep the discussion unified there regarding this.
-> > >
-> > > > But there's another scenario: what if the collapse happened well
-> > > > before registration happened?
-> > >
-> > > Maybe yes, but my understanding of the current uffd-minor scenario tells me
-> > > that this is fine too.  Meanwhile I actually have another idea regarding minor
-> > > mode, please continue reading.
-> > >
-> > > Firstly, let me try to re-cap on how minor mode is used in your production
-> > > systems: I believe there should have two processes A and B, if A is the main
-> > > process, B could be the migration process.  B migrates pages in the background,
-> > > while A so far should have been stopped and never ran.  When we want to start
-> > > A, we should register A with uffd-minor upon the whole range (note: I think so
-> > > far A does not have any pgtable mapped within uffd-minor range).  Then any page
-> > > access of A should kick B and asking "whether it is the latest page", if yes
-> > > then UFFDIO_CONTINUE, if no then B modifies the page, plus UFFDIO_CONTINUE
-> > > afterwards.  Am I right above?
-> > >
-> > > So if that's the case, then A should have no page table at all.
-> > >
-> > > Then, is that a problem if the shmem file that A maps contains huge thps?  I
-> > > think no - because UFFDIO_CONTINUE will only install small pages.
-> > >
-> > > Let me know if I'm understanding it right above; I'll be happy to be corrected.
-> >
-> > Right, except that our use case is even more similar to QEMU: the code
-> > doing UFFDIO_CONTINUE / demand paging, and the code running the vCPUs,
-> > are in the same process (same mm) - just different threads.
->
-> I see.
->
-> >
-> > >
-> > > Actually besides this scenario, I'm also thinking of another scenario of using
-> > > minor fault in a single process - that's mostly what QEMU is doing right now,
-> > > as QEMU has the vcpu threads and migration thread sharing a single mm/pgtable.
-> > > So I think it'll be great to have a new madvise(MADV_ZAP) which will tear down
-> > > all the file-backed memory pgtables of a specific range.  I think it'll suite
-> > > perfectly for the minor fault use case, and it can be used for other things
-> > > too.  Let me know what you think about this idea, and whether that'll help in
-> > > your case too (e.g., if you worry a current process A mapped huge shmem thp
-> > > somewhere, we can use madvise(MADV_ZAP) to drop it).
-> >
-> > Yes, this would be convenient for our implementation too. :) There are
-> > workarounds if the feature doesn't exist, but it would be nice to
-> > have.
->
-> Could I know what's the workaround?  Normally if the workaround works solidly,
-> then there's less need to introduce a kernel interface for that.  Otherwise I'm
-> glad to look into such a formal proposal.
-
-The workaround is, for the region that you want to zap, run through
-this sequence of syscalls: mumap, mmap, and re-register with
-userfaultfd if it was registered before. If we're using tmpfs, we can
-use madvise(DONTNEED) instead, but this is kind of an abuse of the
-API. I don't think there's a guarantee that the PTEs will get zapped,
-but currently they will always get zapped if we're using tmpfs. I
-really like the idea of adding a new madvise() mode that is guaranteed
-to zap the PTEs.
-
->
-> > It's also useful for memory poisoning, I think, if the host
-> > decides some page(s) are "bad" and wants to intercept any future guest
-> > accesses to those page(s).
->
-> Curious: isn't hwpoison information come from MCEs; or say, host kernel side?
-> Then I thought the host kernel will have full control of it already.
->
-> Or there's other way that the host can try to detect some pages are going to be
-> rotten?  So the userspace can do something before the kernel handles those
-> exceptions?
-
-Here's a general idea of how we would like to use userfaultfd to support MPR:
-
-If a guest accesses a poisoned page for the first time, we will get an
-MCE through the host kernel and send an MCE to the guest. The guest
-will now no longer be able to access this page, and we have to enforce
-this. After a live migration, the pages that were poisoned before
-probably won't still be poisoned (from the host's perspective), so we
-can't rely on the host kernel's MCE handling path. This is where
-userfaultfd and this new madvise mode come in: we can just
-madvise(MADV_ZAP) the poisoned page(s) on the target during a
-migration. Now all accesses will be routed to the VMM and we can
-inject an MCE. We don't *need* the new madvise mode, as we can also
-use fallocate(PUNCH_HOLE) (works for tmpfs and hugetlbfs), but it
-would be more convenient if we didn't have to use fallocate.
-
-Jue Wang can provide more context here, so I've cc'd him. There may be
-some things I'm wrong about, so Jue feel free to correct me.
 
 
-- James
-
-
+On 9/23/2021 2:24 AM, Rikard Falkeborn wrote:
+> The only usage of these is to assign their address to the ops field in
+> the snd_soc_dai_driver struct, which is a pointer to const. Make them
+> const to allow the compiler to put them in read-only memory.
 >
-> --
-> Peter Xu
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
+>   sound/soc/tegra/tegra210_adx.c   | 4 ++--
+>   sound/soc/tegra/tegra210_amx.c   | 4 ++--
+>   sound/soc/tegra/tegra210_mixer.c | 4 ++--
+>   sound/soc/tegra/tegra210_mvc.c   | 2 +-
+>   sound/soc/tegra/tegra210_sfc.c   | 4 ++--
+>   5 files changed, 9 insertions(+), 9 deletions(-)
 >
+
+Thank you Rikard for the patch.
+
+Acked-by: Sameer Pujar <spujar@nvidia.com>
