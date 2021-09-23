@@ -2,221 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4173D416892
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4F2416898
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243558AbhIWXpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 19:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240661AbhIWXpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 19:45:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 566F3611B0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 23:43:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632440631;
-        bh=73qXItziYjU8T3s1nC2dBa8YmhQRMqulB64m5hKpetk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cy0VTjDyzbPFUPTihEUCx4jpQVYpoVTnMdjK5eFg7Ib6vgXOUotDE3Geu4jSj8iHv
-         u6cYpTyHYkHp1MeRFGWrNlKvuiyMEXZOs/Y3ryCXF4hJdMDu4ryTW10fwhYNh3l02X
-         jc5hCOiEpXdKgcMgZsEzpydRMQ09k+qwh7cCqgYZEINRjC68lpCO/EIppvAQdAQvJs
-         4+H8YE+OXZ5snI09m5X3loLaqYTu76ofZxKUpIWggO7ILVoXjtvHuqZzDd6Y7USg7d
-         KUdCo51uI3IGEipShopVpS3DcIV6Wfy4AO8OCJMRbSLO0TjZWhcv8IYnsFpIN56oJ4
-         HuZt4coGCSu3g==
-Received: by mail-ed1-f53.google.com with SMTP id v10so24531224edj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:43:51 -0700 (PDT)
-X-Gm-Message-State: AOAM532hOGbzlei7Ldv9K+fzYQGbxiuwd5hyB2sWLv4cmQigcw2Cecj7
-        G3WkmVFAFrY2a5sk3opKpUs6pZxWki4BAPTb2g==
-X-Google-Smtp-Source: ABdhPJyoLe+L1VetVRQrvZ/5P5SZFMzBzxpqzybf7df+HauTLm5x8pSULRqhr/8gcYXVH+D5+xW7zzIWjURe/ZeRX34=
-X-Received: by 2002:aa7:c617:: with SMTP id h23mr1741696edq.357.1632440629875;
- Thu, 23 Sep 2021 16:43:49 -0700 (PDT)
+        id S243596AbhIWXug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 19:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243550AbhIWXue (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 19:50:34 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B52CC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:49:01 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id e16so7789665qte.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=HAmJkHQDJJuagQxHQwV8veFd6rRsJ19PYDz/eTz1rB4=;
+        b=K14UTK5w94Mq7Y7d0WepqQG3vE1pbUyxcPERyofOaaiyIVHxbYyK8CI3+1lVRKwB0g
+         UGxogD+nvTWvrZQxq/FLDZ6pHz3qeBwZrqjFVAaElpacm1PBmVp4mepBXiWOr0KLSr0F
+         7JnWgQzbHfZJLJ6PjzcnIPJBq3MvzmnViyCCEKTVeT6dKhEXNkeosQ+TQYcWcrs+YvcJ
+         9vT+vOuW8zPALzddhzo4Ap+JWxJf42oQOtPTZSz1tqd4GHEfzK2J1n9TD2I/fu+4Ja8D
+         9FOg9+FIrgexLSYC7Hj+LAlJ74Zbhod48eyXJrVO5YIftatm4yzHbPA2//17GLe94VsH
+         UOEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=HAmJkHQDJJuagQxHQwV8veFd6rRsJ19PYDz/eTz1rB4=;
+        b=H5LrZ3gzSn2rBvXTCIOPqdwOqzAkZKAOTfrXd9Ye7TIjeDR1vRgI/qTj96DkOb0rXA
+         pZzl5Dt5zFq2OYSTqF6afVd/t4DxyO/85S024D/YRDt+MoSmVy9v7g3FeKKtTGevHXlJ
+         Lw62/cha6U1GOSO2SILmiS2M3xU7wkKbMseg1GrUMYqVh4RYrxAxCknFXK9elsJaIMmk
+         UJI2s0qwy8LIpgt0599Kksp0Cki3p5YJ2tYtk/W2btykYnrAcRWVp9+eDt02bb1dUVlQ
+         1W9C7bcl75pCjTLJrDhlmTqJinVWsXD1y2raOUDhAg/M3gv0R68jAEbVAbROBK6cFtsi
+         YgWw==
+X-Gm-Message-State: AOAM530/1tiy3Dviy7/VdBq/JUgbGomApEr4J0RMkpC8JGMGx/mMTZhR
+        NTh9UxNGp6MOhqUBqKMdGXQfAg==
+X-Google-Smtp-Source: ABdhPJyx4r0Ikvv2wOuAIuqSR2EMgA05qTmirNIFyEVLKHf+GXDLUUM3y7l0TeXUlNB2314011zgvQ==
+X-Received: by 2002:a05:622a:1792:: with SMTP id s18mr1465593qtk.136.1632440940819;
+        Thu, 23 Sep 2021 16:49:00 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id q14sm5171666qkl.44.2021.09.23.16.48.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 16:48:58 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 16:48:41 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Zi Yan <ziy@nvidia.com>
+cc:     Yang Shi <shy828301@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: Mapcount of subpages
+In-Reply-To: <2A311B26-8B33-458E-B2C1-8BA2CF3484AA@nvidia.com>
+Message-ID: <77b59314-5593-1a2e-293c-b66e8235ad@google.com>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan> <YUvzINep9m7G0ust@casper.infradead.org> <YUwNZFPGDj4Pkspx@moria.home.lan> <YUxnnq7uFBAtJ3rT@casper.infradead.org> <20210923124502.nxfdaoiov4sysed4@box.shutemov.name> <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
+ <CAHbLzkrELUKR2saOkA9_EeAyZwdboSq0HN6rhmCg2qxwSjdzbg@mail.gmail.com> <2A311B26-8B33-458E-B2C1-8BA2CF3484AA@nvidia.com>
 MIME-Version: 1.0
-References: <20210808234733.14782-1-chunkuang.hu@kernel.org>
- <CAAOTY_9LstZegE_Gyibov5tLo5eEqiPfoAcnyj_uoS=8xLLhnA@mail.gmail.com>
- <CAFqH_53M2OO8DpkPa3L7cwppVRYiUgEDjrLjK7JJNgKgxnQpVA@mail.gmail.com>
- <CAAOTY__4ZKf8YwJWMHkiZRjbcnDuf4tcVPO=AG1V3pv9_-4bVw@mail.gmail.com> <CAFqH_51Vtq=AkZaV2A69-FAVohr2DyD=1cjKkQ-hStQ4GXRnPA@mail.gmail.com>
-In-Reply-To: <CAFqH_51Vtq=AkZaV2A69-FAVohr2DyD=1cjKkQ-hStQ4GXRnPA@mail.gmail.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 24 Sep 2021 07:43:38 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__dgkSnYnEhYaFsF2G9f+iiBYeA4VhV7gBcrGY6NU_bgg@mail.gmail.com>
-Message-ID: <CAAOTY__dgkSnYnEhYaFsF2G9f+iiBYeA4VhV7gBcrGY6NU_bgg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] CMDQ refinement of Mediatek DRM driver
-To:     Enric Balletbo Serra <eballetbo@gmail.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Enric:
+On Thu, 23 Sep 2021, Zi Yan wrote:
+> On 23 Sep 2021, at 17:54, Yang Shi wrote:
+> > On Thu, Sep 23, 2021 at 2:10 PM Hugh Dickins <hughd@google.com> wrote:
+> >>
+> >> NR_FILE_MAPPED being used for /proc/meminfo's "Mapped:" and a couple
+> >> of other such stats files, and for a reclaim heuristic in mm/vmscan.c.
+> >>
+> >> Allow ourselves more slack in NR_FILE_MAPPED accounting (either count
+> >> each pte as if it mapped the whole THP, or don't count a THP's ptes
+> >> at all - you opted for the latter in the "Mlocked:" accounting),
+> >> and I suspect subpage _mapcount could be abandoned.
+> >
+> > AFAIK, partial THP unmap may need the _mapcount information of every
+> > subpage otherwise the deferred split can't know what subpages could be
+> > freed.
 
-Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
-=8824=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8812:36=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> Hi Chun-Kuang,
->
-> Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dt., 21 de
-> set. 2021 a les 15:15:
-> >
-> > Hi, Enric:
-> >
-> > Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B49=E6=
-=9C=8821=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:36=E5=AF=AB=E9=81=
-=93=EF=BC=9A
-> > >
-> > > Hi Chun-Kuang,
-> > >
-> > > (again without html format, sorry for the noise)
-> > >
-> > > Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dj., 12
-> > > d=E2=80=99ag. 2021 a les 2:13:
-> > > >
-> > > > Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B48=E6=
-=9C=889=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=887:47=E5=AF=AB=E9=81=
-=93=EF=BC=9A
-> > > > >
-> > > > > These refinements include using standard mailbox callback interfa=
-ce,
-> > > > > timeout detection, and a fixed cmdq_handle.
-> > > >
-> > > > For this series, applied to mediatek-drm-next [1].
-> > > >
-> > > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/li=
-nux.git/log/?h=3Dmediatek-drm-next
-> > > >
-> > >
-> > > These patches seem to break the display on the Acer Chromebook R 13
-> > > (MT8173) in the current mainline. After running a bisection it pointe=
-d
-> > > me to the following commit
-> > >
-> > > commit f4be17cd5b14dd73545b0e014a63ebe9ab5ef837
-> > > Author: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> > > Date:   Sun Jul 4 15:36:48 2021 +0800
-> > >
-> > >     drm/mediatek: Remove struct cmdq_client
-> > >
-> > > Reverting this patch alone is not trivial, so I ended up reverting th=
-e
-> > > full series, and I can confirm that reverting the full series makes
-> > > the display work again.
-> >
-> > I think you could not just revert "drm/mediatek: Remove struct
-> > cmdq_client", you should also revert the patches after it, such as
-> >
-> > "drm/mediatek: Clear pending flag when cmdq packet is done"
-> > "drm/mediatek: Add cmdq_handle in mtk_crtc"
-> > "drm/mediatek: Detect CMDQ execution timeout"
-> >
->
-> Yes, in fact I reverted:
->
-> 9efb16c2fdd6 drm/mediatek: Clear pending flag when cmdq packet is done
-> bc9241be73d9 drm/mediatek: Add cmdq_handle in mtk_crtc
-> 8cdcb3653424 drm/mediatek: Detect CMDQ execution timeout
-> f4be17cd5b14 drm/mediatek: Remove struct cmdq_client
-> c1ec54b7b5af drm/mediatek: Use mailbox rx_callback instead of cmdq_task_c=
-b
->
-> Without these patches 5.15-rc2 works again on my platform.
->
-> The commit 'c1ec54b7b5af drm/mediatek: Use mailbox rx_callback instead
-> of cmdq_task_cb' alone introduces lots of warnings in the kernel
->
-> WARNING: CPU: 0 PID: 0 at drivers/mailbox/mtk-cmdq-mailbox.c:198
-> cmdq_task_exec_done+0xb8/0xe0
+I believe Yang Shi is right insofar as the decision on whether it's worth
+queuing for deferred split is being done based on those subpage _mapcounts.
+That is a use I had not considered, and I've given no thought to how
+important or not it is.
 
-I think the WARN_ON in cmdq driver should be remove because that
-warning show that cmdq_task_cb is not used but I that is what I want.
+> 
+> Could we just scan page tables of a THP during deferred split process
+> instead? Deferred split is a slow path already, so maybe it can afford
+> the extra work.
 
->
-> I think is just a leftover or the mentioned warning, but that confused
-> me a bit doing the bisection. Then, after commit 'f4be17cd5b14
-> drm/mediatek: Remove struct cmdq_client' my system simply gets stuck.
-> For now I don't see any obvious mistake but will dig further.
->
-> Can I ask you in which platform did you test? And if you can double
-> check if your platform is broken too in current mainline?
+But unless I misunderstand, actually carrying out the deferred split
+already unmaps, uses migration entries, and remaps the remaining ptes:
+needing no help from subpage _mapcounts to do those, and free the rest.
 
-I've no environment to test code now. I apply this series because I
-assume Yongqiang has test his patch "Clear pending flag when cmdq
-packet is done".  Before I setup the environment (this may take a long
-time), I would find others to fix this problem.
-According to your information, "c1ec54b7b5af drm/mediatek: Use mailbox
-rx_callback instead of cmdq_task_cb" would cause many warning but
-display still work, right? If so, I think we should focus on
-"f4be17cd5b14 drm/mediatek: Remove struct cmdq_client".
-
-Regards,
-Chun-Kuang.
-
->
-> Thanks,
->   Enric
->
-> > If "drm/mediatek: Remove struct cmdq_client" is the patch cause
-> > display abnormal, I think you could compare code w/ and w/o this
-> > patch. Focus on the value accuracy, such as cmdq_cl and cmdq_chan. And
-> > focus on the flow accuracy, such as mtk_drm_crtc_update_config() and
-> > ddp_cmdq_cb(). If this could not find the problem, I think the latest
-> > way is to break this patch into small patches, changes little in each
-> > small patches and we could finally find out the problem.
-> >
-> > Regards,
-> > Chun-Kuang.
-> >
-> > >
-> > > Unfortunately, after the merge window, different things broke for thi=
-s
-> > > device, and I didn't finish isolating them, and it is not clear to me
-> > > yet whether the logs I'm getting are useful for this specific issue o=
-r
-> > > not. Basically with this series merged the kernel seems to be stuck,
-> > > and the display is not working. Latest message is
-> > >
-> > > [   12.329173] mtk-iommu 10205000.iommu: Partial TLB flush timed out,
-> > > falling back to full flush
-> > >
-> > > Without the series, the kernel goes far and display works, however
-> > > there are other issues affecting the cros-ec, but I think that's
-> > > another issue.
-> > >
-> > > I'll try to dig a bit more, but, meanwhile, if you have any idea
-> > > please let me know.
-> > >
-> > > Thanks,
-> > >  Enric
-> > >
-> > >
-> > > > Regards,
-> > > > Chun-Kuang.
-> > > >
-> > > > >
-> > > > > Changes in v2:
-> > > > > 1. Define mtk_drm_cmdq_pkt_create() and mtk_drm_cmdq_pkt_destroy(=
-)
-> > > > >    when CONFIG_MTK_CMDQ is reachable.
-> > > > >
-> > > > > Chun-Kuang Hu (4):
-> > > > >   drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb
-> > > > >   drm/mediatek: Remove struct cmdq_client
-> > > > >   drm/mediatek: Detect CMDQ execution timeout
-> > > > >   drm/mediatek: Add cmdq_handle in mtk_crtc
-> > > > >
-> > > > >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 110 ++++++++++++++++++=
-++----
-> > > > >  1 file changed, 91 insertions(+), 19 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.25.1
-> > > > >
+Hugh
