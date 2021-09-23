@@ -2,32 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738B941613D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625A641613F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241831AbhIWOlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:41:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:35340 "EHLO foss.arm.com"
+        id S241799AbhIWOlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:41:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:35350 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241759AbhIWOlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:41:08 -0400
+        id S241753AbhIWOlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:41:09 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77719D6E;
-        Thu, 23 Sep 2021 07:39:36 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3EBE11FB;
+        Thu, 23 Sep 2021 07:39:37 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 27B303F718;
-        Thu, 23 Sep 2021 07:39:35 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A9DFC3F718;
+        Thu, 23 Sep 2021 07:39:36 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     mathieu.poirier@linaro.org, linux-arm-kernel@lists.infradead.org
 Cc:     anshuman.khandual@arm.com, mike.leach@linaro.org,
         leo.yan@linaro.org, coresight@lists.linaro.org,
         linux-kernel@vger.kernel.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH v4 4/5] coresight: trbe: End the AUX handle on truncation
-Date:   Thu, 23 Sep 2021 15:39:18 +0100
-Message-Id: <20210923143919.2944311-5-suzuki.poulose@arm.com>
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH v4 5/5] coresight: trbe: Prohibit trace before disabling TRBE
+Date:   Thu, 23 Sep 2021 15:39:19 +0100
+Message-Id: <20210923143919.2944311-6-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210923143919.2944311-1-suzuki.poulose@arm.com>
 References: <20210923143919.2944311-1-suzuki.poulose@arm.com>
@@ -37,108 +35,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we detect that there isn't enough space left to start a meaningful
-session, we disable the TRBE, marking the buffer as TRUNCATED. But we delay
-the notification to the perf layer by perf_aux_output_end() until the event
-is scheduled out, triggered from the kernel perf layer. This will cause
-significant black outs in the trace. Now that the CoreSight PMU layer can
-handle a closed "AUX" handle properly, we can close the handle as soon as
-we detect the case, allowing the userspace to collect and re-enable the
-event.
+When the TRBE generates an IRQ, we stop the TRBE, collect the trace
+and then reprogram the TRBE with the updated buffer pointers, whenever
+possible. We might also leave the TRBE disabled, if there is not
+enough space left in the buffer. However, we do not touch the ETE at
+all during all of this. This means the ETE is only disabled when
+the event is disabled later (via irq_work). This is incorrect, as the
+ETE trace is still ON without actually being captured and may be routed
+to the ATB (even if it is for a short duration).
 
-Also, while in the IRQ handler, move the irq_work_run() after we have
-updated the handle, to make sure the "TRUNCATED" flag causes the event to
-be disabled as soon as possible.
+So, we move the CPU into trace prohibited state always before disabling
+the TRBE, upon entering the IRQ handler. The state is restored if the
+TRBE is enabled back. Otherwise the trace remains prohibited.
+
+Since, the ETM/ETE driver now controls the TRFCR_EL1 per session, the
+tracing can be restored/enabled back when the event is rescheduled
+in.
 
 Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Mike Leach <mike.leach@linaro.org>
 Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
 Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-trbe.c | 26 ++++++++++++--------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ .../hwtracing/coresight/coresight-self-hosted-trace.h    | 4 +++-
+ drivers/hwtracing/coresight/coresight-trbe.c             | 9 +++++++++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 0a9106c15639..4174300f1344 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -152,6 +152,7 @@ static void trbe_stop_and_truncate_event(struct perf_output_handle *handle)
- 	 */
- 	trbe_drain_and_disable_local();
- 	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
-+	perf_aux_output_end(handle, 0);
- 	*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
- }
- 
-@@ -715,7 +716,7 @@ static void trbe_handle_spurious(struct perf_output_handle *handle)
+diff --git a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+index 23f05df3f173..53840a2c41f2 100644
+--- a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
++++ b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+@@ -21,11 +21,13 @@ static inline void write_trfcr(u64 val)
  	isb();
  }
  
--static void trbe_handle_overflow(struct perf_output_handle *handle)
-+static int trbe_handle_overflow(struct perf_output_handle *handle)
+-static inline void cpu_prohibit_trace(void)
++static inline u64 cpu_prohibit_trace(void)
  {
- 	struct perf_event *event = handle->event;
- 	struct trbe_buf *buf = etm_perf_sink_config(handle);
-@@ -739,9 +740,10 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
- 		 */
- 		trbe_drain_and_disable_local();
- 		*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
--		return;
-+		return -EINVAL;
- 	}
--	__arm_trbe_enable(buf, handle);
-+
-+	return __arm_trbe_enable(buf, handle);
- }
+ 	u64 trfcr = read_trfcr();
  
- static bool is_perf_trbe(struct perf_output_handle *handle)
-@@ -772,6 +774,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
- 	struct perf_output_handle *handle = *handle_ptr;
+ 	/* Prohibit tracing at EL0 & the kernel EL */
+ 	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
++	/* Return the original value of the TRFCR */
++	return trfcr;
+ }
+ #endif /*  __CORESIGHT_SELF_HOSTED_TRACE_H */
+diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+index 4174300f1344..a53ee98f312f 100644
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@ -16,6 +16,7 @@
+ #define pr_fmt(fmt) DRVNAME ": " fmt
+ 
+ #include <asm/barrier.h>
++#include "coresight-self-hosted-trace.h"
+ #include "coresight-trbe.h"
+ 
+ #define PERF_IDX2OFF(idx, buf) ((idx) % ((buf)->nr_pages << PAGE_SHIFT))
+@@ -775,6 +776,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
  	enum trbe_fault_action act;
  	u64 status;
-+	bool truncated = false;
+ 	bool truncated = false;
++	u64 trfcr;
  
  	/* Reads to TRBSR_EL1 is fine when TRBE is active */
  	status = read_sysreg_s(SYS_TRBSR_EL1);
-@@ -796,24 +799,27 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
- 	if (!is_perf_trbe(handle))
+@@ -785,6 +787,8 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+ 	if (!is_trbe_irq(status))
  		return IRQ_NONE;
  
--	/*
--	 * Ensure perf callbacks have completed, which may disable
--	 * the trace buffer in response to a TRUNCATION flag.
--	 */
--	irq_work_run();
--
- 	act = trbe_get_fault_act(status);
- 	switch (act) {
- 	case TRBE_FAULT_ACT_WRAP:
--		trbe_handle_overflow(handle);
-+		truncated = !!trbe_handle_overflow(handle);
- 		break;
- 	case TRBE_FAULT_ACT_SPURIOUS:
- 		trbe_handle_spurious(handle);
- 		break;
- 	case TRBE_FAULT_ACT_FATAL:
- 		trbe_stop_and_truncate_event(handle);
-+		truncated = true;
- 		break;
- 	}
-+
-+	/*
-+	 * If the buffer was truncated, ensure perf callbacks
-+	 * have completed, which will disable the event.
-+	 */
-+	if (truncated)
-+		irq_work_run();
-+
++	/* Prohibit the CPU from tracing before we disable the TRBE */
++	trfcr = cpu_prohibit_trace();
+ 	/*
+ 	 * Ensure the trace is visible to the CPUs and
+ 	 * any external aborts have been resolved.
+@@ -816,9 +820,14 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+ 	/*
+ 	 * If the buffer was truncated, ensure perf callbacks
+ 	 * have completed, which will disable the event.
++	 *
++	 * Otherwise, restore the trace filter controls to
++	 * allow the tracing.
+ 	 */
+ 	if (truncated)
+ 		irq_work_run();
++	else
++		write_trfcr(trfcr);
+ 
  	return IRQ_HANDLED;
  }
- 
 -- 
 2.24.1
 
