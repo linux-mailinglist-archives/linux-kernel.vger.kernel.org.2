@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C325441613B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738B941613D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241788AbhIWOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:41:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:35326 "EHLO foss.arm.com"
+        id S241831AbhIWOlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:41:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:35340 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241752AbhIWOlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:41:06 -0400
+        id S241759AbhIWOlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:41:08 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E94C812FC;
-        Thu, 23 Sep 2021 07:39:34 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77719D6E;
+        Thu, 23 Sep 2021 07:39:36 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B40773F718;
-        Thu, 23 Sep 2021 07:39:33 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 27B303F718;
+        Thu, 23 Sep 2021 07:39:35 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     mathieu.poirier@linaro.org, linux-arm-kernel@lists.infradead.org
 Cc:     anshuman.khandual@arm.com, mike.leach@linaro.org,
         leo.yan@linaro.org, coresight@lists.linaro.org,
         linux-kernel@vger.kernel.org,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
-        James Clark <james.clark@arm.com>
-Subject: [PATCH v4 3/5] coresight: trbe: Do not truncate buffer on IRQ
-Date:   Thu, 23 Sep 2021 15:39:17 +0100
-Message-Id: <20210923143919.2944311-4-suzuki.poulose@arm.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v4 4/5] coresight: trbe: End the AUX handle on truncation
+Date:   Thu, 23 Sep 2021 15:39:18 +0100
+Message-Id: <20210923143919.2944311-5-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210923143919.2944311-1-suzuki.poulose@arm.com>
 References: <20210923143919.2944311-1-suzuki.poulose@arm.com>
@@ -36,99 +37,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TRBE driver marks the AUX buffer as TRUNCATED when we get an IRQ
-on FILL event. This has rather unwanted side-effect of the event
-being disabled when there may be more space in the ring buffer.
+When we detect that there isn't enough space left to start a meaningful
+session, we disable the TRBE, marking the buffer as TRUNCATED. But we delay
+the notification to the perf layer by perf_aux_output_end() until the event
+is scheduled out, triggered from the kernel perf layer. This will cause
+significant black outs in the trace. Now that the CoreSight PMU layer can
+handle a closed "AUX" handle properly, we can close the handle as soon as
+we detect the case, allowing the userspace to collect and re-enable the
+event.
 
-So, instead of TRUNCATE we need a different flag to indicate
-that the trace may have lost a few bytes (i.e from the point of
-generating the FILL event until the IRQ is consumed). Anyways, the
-userspace must use the size from RECORD_AUX headers to restrict
-the "trace" decoding.
+Also, while in the IRQ handler, move the irq_work_run() after we have
+updated the handle, to make sure the "TRUNCATED" flag causes the event to
+be disabled as soon as possible.
 
-Using PARTIAL flag causes the perf tool to generate the
-following warning:
-
-  Warning:
-  AUX data had gaps in it XX times out of YY!
-
-  Are you running a KVM guest in the background?
-
-which is pointlessly scary for a user. The other remaining options
-are :
-  - COLLISION - Use by SPE to indicate samples collided
-  - Add a new flag - Specifically for CoreSight, doesn't sound
-    so good, if we can re-use something.
-
-Given that we don't already use the "COLLISION" flag, the above
-behavior can be notified using this flag for CoreSight.
-
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
 Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mike Leach <mike.leach@linaro.org>
 Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
-Changes since v3:
- - Moved setting the COLLISION flag to a helper and added
-   comments to explain.
----
- drivers/hwtracing/coresight/coresight-trbe.c | 27 +++++++++++++++-----
- 1 file changed, 21 insertions(+), 6 deletions(-)
+ drivers/hwtracing/coresight/coresight-trbe.c | 26 ++++++++++++--------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 47120d263639..0a9106c15639 100644
+index 0a9106c15639..4174300f1344 100644
 --- a/drivers/hwtracing/coresight/coresight-trbe.c
 +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -120,6 +120,25 @@ static void trbe_reset_local(void)
- 	write_sysreg_s(0, SYS_TRBSR_EL1);
+@@ -152,6 +152,7 @@ static void trbe_stop_and_truncate_event(struct perf_output_handle *handle)
+ 	 */
+ 	trbe_drain_and_disable_local();
+ 	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
++	perf_aux_output_end(handle, 0);
+ 	*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
  }
  
-+static void trbe_report_wrap_event(struct perf_output_handle *handle)
-+{
-+	/*
-+	 * Mark the buffer to indicate that there was a WRAP event by
-+	 * setting the COLLISION flag. This indicates to the user that
-+	 * the TRBE trace collection was stopped without stopping the
-+	 * ETE and thus there might be some amount of trace that was
-+	 * lost between the time the WRAP was detected and the IRQ
-+	 * was consumed by the CPU.
-+	 *
-+	 * Setting the TRUNCATED flag would move the event to STOPPED
-+	 * state unnecessarily, even when there is space left in the
-+	 * ring buffer. Using the COLLISION flag doesn't have this side
-+	 * effect. We only set TRUNCATED flag when there is no space
-+	 * left in the ring buffer.
-+	 */
-+	perf_aux_output_flag(handle, PERF_AUX_FLAG_COLLISION);
-+}
-+
- static void trbe_stop_and_truncate_event(struct perf_output_handle *handle)
- {
- 	struct trbe_buf *buf = etm_perf_sink_config(handle);
-@@ -612,7 +631,7 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
- 		 * for correct size. Also, mark the buffer truncated.
- 		 */
- 		write = get_trbe_limit_pointer();
--		perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
-+		trbe_report_wrap_event(handle);
- 	}
+@@ -715,7 +716,7 @@ static void trbe_handle_spurious(struct perf_output_handle *handle)
+ 	isb();
+ }
  
- 	offset = write - base;
-@@ -708,11 +727,7 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
- 	if (buf->snapshot)
- 		handle->head += size;
+-static void trbe_handle_overflow(struct perf_output_handle *handle)
++static int trbe_handle_overflow(struct perf_output_handle *handle)
+ {
+ 	struct perf_event *event = handle->event;
+ 	struct trbe_buf *buf = etm_perf_sink_config(handle);
+@@ -739,9 +740,10 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
+ 		 */
+ 		trbe_drain_and_disable_local();
+ 		*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
+-		return;
++		return -EINVAL;
+ 	}
+-	__arm_trbe_enable(buf, handle);
++
++	return __arm_trbe_enable(buf, handle);
+ }
+ 
+ static bool is_perf_trbe(struct perf_output_handle *handle)
+@@ -772,6 +774,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+ 	struct perf_output_handle *handle = *handle_ptr;
+ 	enum trbe_fault_action act;
+ 	u64 status;
++	bool truncated = false;
+ 
+ 	/* Reads to TRBSR_EL1 is fine when TRBE is active */
+ 	status = read_sysreg_s(SYS_TRBSR_EL1);
+@@ -796,24 +799,27 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+ 	if (!is_perf_trbe(handle))
+ 		return IRQ_NONE;
  
 -	/*
--	 * Mark the buffer as truncated, as we have stopped the trace
--	 * collection upon the WRAP event, without stopping the source.
+-	 * Ensure perf callbacks have completed, which may disable
+-	 * the trace buffer in response to a TRUNCATION flag.
 -	 */
--	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
-+	trbe_report_wrap_event(handle);
- 	perf_aux_output_end(handle, size);
- 	event_data = perf_aux_output_begin(handle, event);
- 	if (!event_data) {
+-	irq_work_run();
+-
+ 	act = trbe_get_fault_act(status);
+ 	switch (act) {
+ 	case TRBE_FAULT_ACT_WRAP:
+-		trbe_handle_overflow(handle);
++		truncated = !!trbe_handle_overflow(handle);
+ 		break;
+ 	case TRBE_FAULT_ACT_SPURIOUS:
+ 		trbe_handle_spurious(handle);
+ 		break;
+ 	case TRBE_FAULT_ACT_FATAL:
+ 		trbe_stop_and_truncate_event(handle);
++		truncated = true;
+ 		break;
+ 	}
++
++	/*
++	 * If the buffer was truncated, ensure perf callbacks
++	 * have completed, which will disable the event.
++	 */
++	if (truncated)
++		irq_work_run();
++
+ 	return IRQ_HANDLED;
+ }
+ 
 -- 
 2.24.1
 
