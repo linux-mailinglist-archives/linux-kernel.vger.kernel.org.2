@@ -2,122 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC0E4167C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF024167C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243407AbhIWVz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38632 "EHLO
+        id S243416AbhIWV4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhIWVz5 (ORCPT
+        with ESMTP id S243343AbhIWV4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:55:57 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A79AC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:54:25 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id c1so6903636pfp.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:54:25 -0700 (PDT)
+        Thu, 23 Sep 2021 17:56:37 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2006DC061574;
+        Thu, 23 Sep 2021 14:55:05 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id c21so27906951edj.0;
+        Thu, 23 Sep 2021 14:55:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rO5fvWaAZTv31oC9ovhV41R9OYan3E5Hn4Me7MlHqao=;
-        b=PdHGDU8L54UaLJCl120uuECenLtn0S4ozb35+4bYoAq1fUqCCwbpP2gBaj0KTFzYTQ
-         Sgrnk3uox0p/1HC8ml/Mld6J4i5VH7np3Dr7QdNEgV9LRr2VpU/g4h+3eiYsdxEdhtfl
-         18ZawluARpGS6r6nmGk5zVdSW1AWolmSZSAMc=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yyaukEdoY1z1aKx24A8HjbLfYl3/26h3pGEVti21r2o=;
+        b=bKLgDd3gQ2vsGxxodi83AcpnShI19aXFzITFGpUC2/B67N5nRW6MaS08TQdLmLVo83
+         dBB+XTXDeuHIPIanceHrTOUj5vutRzEaQj6omoDdSuzoeGwovop/2B/HZv4KRuqefaVx
+         Im1U8ox47krXE91N/YcU8kq8tMQ7jR2nmyMzlEDeZfz/StqAQ+zIGR1rN+Oq5bT4JOAD
+         vMm5vJbHE+eH0J0TCeMGFJrWnOSQj7kz17jq11hPCWN/14eHVWmcwMxr25E8JTHnZOrj
+         fspqS8rznTsBkITGFIt53bpkM/AWUcbZVHXi0e7yHvpPr5krdJwzNklaP/1oanvW27Hu
+         k2xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rO5fvWaAZTv31oC9ovhV41R9OYan3E5Hn4Me7MlHqao=;
-        b=CcqAE6Pm1KMtWN4Yaa9zryaJ7tx6m5EoxHuZmWBI5EJwyldSfXDRqxv/POgeJMq+5U
-         wqh6uG3JbkBQxDUO8CSIV2oLr1s6e/wMmhBwdlMCgyCd6d6ijcGrHeJrtWpq3N4kRz35
-         QUHdQJXitX3wnynCXmkvNkr3w6PLR2GQ/YZtJ/5ZwU+hxfcjRsBB17jXq46RZ1wcTz9K
-         xUlYVsW1s7Tz9wEkqksyKQgn7vugTCAL8Lbf6h8cdHmOhsy4/0pF92jYNSi0F/WaitV4
-         49WLJGXtLTb2GVsjB1jpjuNIWZpOH2kBnOnu5SRy4LMbnzfiDnlei1B4vrQoqaYVgFWu
-         GDJA==
-X-Gm-Message-State: AOAM5302/xV8mg5kOAcF8IQillG/c9I0SEBFSV+5x53xb/V2YYmil/P7
-        mVAuBnDln97B7W8y2GAkD/VPfw==
-X-Google-Smtp-Source: ABdhPJz5pVycUAUnPkUoOj5EEeIyMN3UD7MqL9edoLVG3kOmI/4nCNwkI7uYkijol2fWRb/a5DtjVw==
-X-Received: by 2002:a62:b515:0:b0:42c:1d6e:3697 with SMTP id y21-20020a62b515000000b0042c1d6e3697mr6728074pfe.23.1632434064858;
-        Thu, 23 Sep 2021 14:54:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s4sm6474569pfw.182.2021.09.23.14.54.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 14:54:24 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        sparclinux@vger.kernel.org, Nicolas Schier <n.schier@avm.de>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] sparc: Add missing "FORCE" target when using if_changed
-Date:   Thu, 23 Sep 2021 14:54:18 -0700
-Message-Id: <20210923215418.3936726-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yyaukEdoY1z1aKx24A8HjbLfYl3/26h3pGEVti21r2o=;
+        b=QYJsAbIzAAPdq9hTiMx+U//pa7NF9/4xEb5DktVTCXXlaEZpkRKVi7d6Rl9afBkPWg
+         vqg5ouWFByK4APlVJoqKIdDbKmntDlYMitylhXUeUcfXebW8QGZDdF6KKjID5LOHkwIi
+         rj2WDhtyxQlw53PYmAHmYct13uM3JkO1wHo44AYM6asJCI+W7Br+aOClaMMgqgKCEP+H
+         FTs6bfqA0yk3kVzJP5ObFrSWHb6mtDFGHEB0J+FKd7m88Has4XH2TypEIcrbF3QIPRcD
+         fgI492rH7j6NePGOaP4MjkKfuhCgOw8q7OSsv5JerJLvcfENsEv8M6UFUYEby77cSL0Y
+         N+gw==
+X-Gm-Message-State: AOAM5305xCRR6hpT+UPpVKKs3YtGrbbuOsvCeW4Nzs2OHUxpEAs4bK2v
+        BSaRZvrYke2ATb/Kxp7G+8NcqHuIu9yXZXDK+Xc=
+X-Google-Smtp-Source: ABdhPJzvRBl4386O9mXbGkypIExS2NjtQkuuCYFediqBv/zuOYi/yQPY0oXVlOJmvbveYcJbHdVj85A5jW+HBRJMugw=
+X-Received: by 2002:a05:6402:14c3:: with SMTP id f3mr1389088edx.312.1632434103740;
+ Thu, 23 Sep 2021 14:55:03 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1740; h=from:subject; bh=Hi7mcbZQHql8JSSHs4df7iME4Qh5LyRhGPXmEIr0KIM=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhTPeK0F/lnHe1QtyWqYJaRZ7GdQ4iM4IHlTaipc+D HmZ0Y06JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYUz3igAKCRCJcvTf3G3AJpdaD/ 9CSsUqhdMc08Bxkzl4r+hGn7L0dUJO/0ix9wg5V3/6Dbh+mB/eqcwCvq9kGRbvGCWt6O/V62mxv4Vl SbJGH5PTiDVkCArO/liNSHWtJ5KxsK4qyPveSCi2p+yNjgH6kezcnft6x2jUG24XDHund4Go9P06V5 wRlFBaqQFUF6BqnG3vEcKlOir0nAxSE6q6KkBnZc6v8fYp6wpg0Yppe+wZ6IIZN8wNSgoC2SnjirVz nqD6eq/kbu8U9S+SAUP/vDN5W7hoSSBigBmiuMX4hSTjICopx2bUZFLT88rw1MuWtb4+AKbuMkITiW 3WTptPf1hhI2bPayOMW8+whe23hba/Qlrgq0PjuT92CpYAjUB/MFbfaS5fhwhN9w8seCKmxPTCCGJD iDyuIo2oPMwUW6zVP9wsf1HGhmaNmEBVvcN3SzPRR/xkfhJgEnbpFOU/Py1RzDY9yUs/DJ2v1Pu8Bi KnU1plyHY4P/IE0Ai8EZwvY0Lm0p2CTJ/zAcWvEj/yrfZ7Zux+luanfw6lEePxyLQhRgW3wZL/4FMZ 1rH2w/KfbbtU6w9biWSpduSNz+e91L4ftIy+oS33AlRZAXK/CoX1aZtu6CbLvHZozK+vFxkck9pdJw dLNMRNRKGkWUE36n6XVs0vUkPLGAUk0b145ol/m0ssFMO+P4tuSpclAVoQzw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <YUvWm6G16+ib+Wnb@moria.home.lan> <YUvzINep9m7G0ust@casper.infradead.org>
+ <YUwNZFPGDj4Pkspx@moria.home.lan> <YUxnnq7uFBAtJ3rT@casper.infradead.org>
+ <20210923124502.nxfdaoiov4sysed4@box.shutemov.name> <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
+In-Reply-To: <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 23 Sep 2021 14:54:51 -0700
+Message-ID: <CAHbLzkrELUKR2saOkA9_EeAyZwdboSq0HN6rhmCg2qxwSjdzbg@mail.gmail.com>
+Subject: Re: Mapcount of subpages
+To:     Hugh Dickins <hughd@google.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix observed warning:
+On Thu, Sep 23, 2021 at 2:10 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> On Thu, 23 Sep 2021, Kirill A. Shutemov wrote:
+> > On Thu, Sep 23, 2021 at 12:40:14PM +0100, Matthew Wilcox wrote:
+> > > On Thu, Sep 23, 2021 at 01:15:16AM -0400, Kent Overstreet wrote:
+> > > > On Thu, Sep 23, 2021 at 04:23:12AM +0100, Matthew Wilcox wrote:
+> > > > > (compiling that list reminds me that we'll need to sort out mapcount
+> > > > > on subpages when it comes time to do this.  ask me if you don't know
+> > > > > what i'm talking about here.)
+> > > >
+> > > > I am curious why we would ever need a mapcount for just part of a page, tell me
+> > > > more.
+> > >
+> > > I would say Kirill is the expert here.  My understanding:
+> > >
+> > > We have three different approaches to allocating 2MB pages today;
+> > > anon THP, shmem THP and hugetlbfs.  Hugetlbfs can only be mapped on a
+> > > 2MB boundary, so it has no special handling of mapcount [1].  Anon THP
+> > > always starts out as being mapped exclusively on a 2MB boundary, but
+> > > then it can be split by, eg, munmap().  If it is, then the mapcount in
+> > > the head page is distributed to the subpages.
+> >
+> > One more complication for anon THP is that it can be shared across fork()
+> > and one process may split it while other have it mapped with PMD.
+> >
+> > > Shmem THP is the tricky one.  You might have a 2MB page in the page cache,
+> > > but then have processes which only ever map part of it.  Or you might
+> > > have some processes mapping it with a 2MB entry and others mapping part
+> > > or all of it with 4kB entries.  And then someone truncates the file to
+> > > midway through this page; we split it, and now we need to figure out what
+> > > the mapcount should be on each of the subpages.  We handle this by using
+> > > ->mapcount on each subpage to record how many non-2MB mappings there are
+> > > of that specific page and using ->compound_mapcount to record how many 2MB
+> > > mappings there are of the entire 2MB page.  Then, when we split, we just
+> > > need to distribute the compound_mapcount to each page to make it correct.
+> > > We also have the PageDoubleMap flag to tell us whether anybody has this
+> > > 2MB page mapped with 4kB entries, so we can skip all the summing of 4kB
+> > > mapcounts if nobody has done that.
+> >
+> > Possible future complication comes from 1G THP effort. With 1G THP we
+> > would have whole hierarchy of mapcounts: 1 PUD mapcount, 512 PMD
+> > mapcounts and 262144 PTE mapcounts. (That's one of the reasons I don't
+> > think 1G THP is viable.)
+> >
+> > Note that there are places where exact mapcount accounting is critical:
+> > try_to_unmap() may finish prematurely if we underestimate mapcount and
+> > overestimating mapcount may lead to superfluous CoW that breaks GUP.
+>
+> It is critical to know for sure when a page has been completely unmapped:
+> but that does not need ptes of subpages to be accounted in the _mapcount
+> field of subpages - they just need to be counted in the compound page's
+> total_mapcount.
+>
+> I may be wrong, I never had time to prove it one way or the other: but
+> I have a growing suspicion that the *only* reason for maintaining tail
+> _mapcounts separately, is to maintain the NR_FILE_MAPPED count exactly
+> (in the face of pmd mappings overlapping pte mappings).
+>
+> NR_FILE_MAPPED being used for /proc/meminfo's "Mapped:" and a couple
+> of other such stats files, and for a reclaim heuristic in mm/vmscan.c.
+>
+> Allow ourselves more slack in NR_FILE_MAPPED accounting (either count
+> each pte as if it mapped the whole THP, or don't count a THP's ptes
+> at all - you opted for the latter in the "Mlocked:" accounting),
+> and I suspect subpage _mapcount could be abandoned.
 
-    /builds/linux/arch/sparc/boot/Makefile:35: FORCE prerequisite is missing
+AFAIK, partial THP unmap may need the _mapcount information of every
+subpage otherwise the deferred split can't know what subpages could be
+freed.
 
-Fixes: e1f86d7b4b2a5213 ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and filechk")
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: sparclinux@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-I'm not sure if this should go via sparc or via kbuild. :)
----
- arch/sparc/boot/Makefile | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/sparc/boot/Makefile b/arch/sparc/boot/Makefile
-index 849236d4eca4..45e5c76d449e 100644
---- a/arch/sparc/boot/Makefile
-+++ b/arch/sparc/boot/Makefile
-@@ -22,7 +22,7 @@ ifeq ($(CONFIG_SPARC64),y)
- 
- # Actual linking
- 
--$(obj)/zImage: $(obj)/image
-+$(obj)/zImage: $(obj)/image FORCE
- 	$(call if_changed,gzip)
- 	@echo '  kernel: $@ is ready'
- 
-@@ -31,7 +31,7 @@ $(obj)/vmlinux.aout: vmlinux FORCE
- 	@echo '  kernel: $@ is ready'
- else
- 
--$(obj)/zImage: $(obj)/image
-+$(obj)/zImage: $(obj)/image FORCE
- 	$(call if_changed,strip)
- 	@echo '  kernel: $@ is ready'
- 
-@@ -44,7 +44,7 @@ OBJCOPYFLAGS_image.bin := -S -O binary -R .note -R .comment
- $(obj)/image.bin: $(obj)/image FORCE
- 	$(call if_changed,objcopy)
- 
--$(obj)/image.gz: $(obj)/image.bin
-+$(obj)/image.gz: $(obj)/image.bin FORCE
- 	$(call if_changed,gzip)
- 
- UIMAGE_LOADADDR = $(CONFIG_UBOOT_LOAD_ADDR)
-@@ -56,7 +56,7 @@ quiet_cmd_uimage.o = UIMAGE.O $@
-                      -r -b binary $@ -o $@.o
- 
- targets += uImage
--$(obj)/uImage: $(obj)/image.gz
-+$(obj)/uImage: $(obj)/image.gz FORCE
- 	$(call if_changed,uimage)
- 	$(call if_changed,uimage.o)
- 	@echo '  Image $@ is ready'
--- 
-2.30.2
-
+>
+> But you have a different point in mind when you refer to superfluous
+> CoW and GUP: I don't know the score there (and I think we are still in
+> that halfway zone, since pte CoW was changed to depend on page_count,
+> but THP CoW still depending on mapcount).
+>
+> Hugh
+>
