@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4974F41622B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7946B416232
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242070AbhIWPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:38:36 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:35651 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241735AbhIWPic (ORCPT
+        id S242039AbhIWPkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:40:14 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:38835 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233143AbhIWPkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:38:32 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id CFE0824000F;
-        Thu, 23 Sep 2021 15:36:55 +0000 (UTC)
-Date:   Thu, 23 Sep 2021 17:36:55 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Joerg Reiling <joerg.reiling@jenoptik.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH] rtc: rtc-isl12022: add isl12020 device support
-Message-ID: <YUyfF5VRfOkdC4wn@piout.net>
-References: <YUx43WuvwrYIvjxe@monster.powergraphx.local>
+        Thu, 23 Sep 2021 11:40:13 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 74F1082239;
+        Thu, 23 Sep 2021 18:38:40 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1632411520;
+        bh=VNKx8KU7VfoNLnbUNfKMw8rrZuo+BUroDU6s4rSXPiY=;
+        h=Date:To:CC:From:Subject;
+        b=bRLO7OuLumhQwR6YcEgUFb1N6ofZdiZZR8RhsY0gv3yhan9k7Z8Cl7VjdjVAzjzuT
+         u9Ss6r2SbXxxNfoW+trG9S26+xDOaYymeQbDvFy+yBShPls1AVGF9uHo1m2Or2mcKK
+         WfSQ1Uo30GafFW9VtYC2IBFFMq7OGibs+n/Qdkrg=
+Received: from [192.168.211.73] (192.168.211.73) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 23 Sep 2021 18:38:40 +0300
+Message-ID: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
+Date:   Thu, 23 Sep 2021 18:38:39 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUx43WuvwrYIvjxe@monster.powergraphx.local>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Content-Language: en-US
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v2 0/6] fs/ntfs3: Refactor locking in inode_operations
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.73]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Speed up work with dir lock.
+Theoretically in successful cases those locks aren't needed at all.
+But proving the same for error cases is difficult.
+So instead of removing them we just move them.
 
-On 23/09/2021 12:53:49+0000, Wilken Gottwalt wrote:
-> Adds the isl12020 device, which is fully compatible to isl12022.
-> 
+V2:
+  added patch, that fixes logical error in ntfs_create_inode
 
-Do you know what is differing between both parts? If there is nothing
-relevant to linux, maybe we could just avoid adding a new compatible
-string.
+Konstantin Komarov (6):
+  fs/ntfs3: Fix logical error in ntfs_create_inode
+  fs/ntfs3: Move ni_lock_dir and ni_unlock into ntfs_create_inode
+  fs/ntfs3: Refactor ntfs_get_acl_ex for better readability
+  fs/ntfs3: Pass flags to ntfs_set_ea in ntfs_set_acl_ex
+  fs/ntfs3: Change posix_acl_equiv_mode to posix_acl_update_mode
+  fs/ntfs3: Refactoring lock in ntfs_init_acl
 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> Signed-off-by: Joerg Reiling <joerg.reiling@jenoptik.com>
-> ---
->  drivers/rtc/rtc-isl12022.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/rtc/rtc-isl12022.c b/drivers/rtc/rtc-isl12022.c
-> index 961bd5d1d109..c62770ec99c9 100644
-> --- a/drivers/rtc/rtc-isl12022.c
-> +++ b/drivers/rtc/rtc-isl12022.c
-> @@ -257,6 +257,8 @@ static int isl12022_probe(struct i2c_client *client,
->  static const struct of_device_id isl12022_dt_match[] = {
->  	{ .compatible = "isl,isl12022" }, /* for backward compat., don't use */
->  	{ .compatible = "isil,isl12022" },
-> +	{ .compatible = "isl,isl12020" }, /* for backward compat., don't use */
-
-Please, do not add this compatible string.
-
-> +	{ .compatible = "isil,isl12020" },
-
-You also need to document this string in Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
-
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(of, isl12022_dt_match);
-> @@ -264,6 +266,7 @@ MODULE_DEVICE_TABLE(of, isl12022_dt_match);
->  
->  static const struct i2c_device_id isl12022_id[] = {
->  	{ "isl12022", 0 },
-> +	{ "isl12020", 0 },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(i2c, isl12022_id);
-> -- 
-> 2.33.0
-> 
+ fs/ntfs3/inode.c | 19 ++++++++---
+ fs/ntfs3/namei.c | 20 -----------
+ fs/ntfs3/xattr.c | 88 +++++++++++++++++-------------------------------
+ 3 files changed, 46 insertions(+), 81 deletions(-)
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.33.0
+
