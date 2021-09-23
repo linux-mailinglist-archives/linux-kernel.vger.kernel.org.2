@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B334415737
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7C941572A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239120AbhIWDvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239155AbhIWDvd (ORCPT
+        id S239687AbhIWDrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:47:03 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:42052 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239285AbhIWDoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:51:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2022C0613A8;
-        Wed, 22 Sep 2021 20:45:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uMQ0LJdHQ7c4mM7EvTfGeqm/dVXZIGiACxHLT/lLI6Q=; b=ZGZo+ugLQ00vO0vKoAz2R2/AME
-        S2UZfjgIGzzR0DXMWh0A/CidIkYS9+Tf4dXHDIwKxQ8MRqDQ5OxYKyWK95649aU6pWGQ4OmL3iVMz
-        DoE/m/hZabJ1hKOtNq3yhOP6JER0+oEXFoW8DnxzDmvGaJPt7YChrBriNPh3BT9fl5O2bpUFKFlYt
-        0XgHT1lNsIacNqqchiGtK7gftdB/3qeAUS388tft8r9uKSKcFhilp3kxgTBMsLhvt+FLPP2lp3KKX
-        tKzdkNUahrdF1FCd7t8ZMHMM/A2nZGM7AyZvHXbf0pqCVFs86oa+srwEDCD+5CRWqQ/yWvFKo8uU8
-        njGbmxWw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTFbc-005UTs-SG; Thu, 23 Sep 2021 03:41:24 +0000
-Date:   Thu, 23 Sep 2021 04:41:04 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUv3UEE9JZgD+A/D@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpaTBJ/Jhz15S6a@casper.infradead.org>
- <20210923004515.GD3053272@iweiny-DESK2.sc.intel.com>
+        Wed, 22 Sep 2021 23:44:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UpHnR.b_1632368577;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UpHnR.b_1632368577)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 23 Sep 2021 11:42:57 +0800
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Subject: [RFC PATCH] trace: prevent preemption in perf_ftrace_function_call()
+Message-ID: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
+Date:   Thu, 23 Sep 2021 11:42:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923004515.GD3053272@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 05:45:15PM -0700, Ira Weiny wrote:
-> On Tue, Sep 21, 2021 at 11:18:52PM +0100, Matthew Wilcox wrote:
-> > +/**
-> > + * page_slab - Converts from page to slab.
-> > + * @p: The page.
-> > + *
-> > + * This function cannot be called on a NULL pointer.  It can be called
-> > + * on a non-slab page; the caller should check is_slab() to be sure
-> > + * that the slab really is a slab.
-> > + *
-> > + * Return: The slab which contains this page.
-> > + */
-> > +#define page_slab(p)		(_Generic((p),				\
-> > +	const struct page *:	(const struct slab *)_compound_head(p), \
-> > +	struct page *:		(struct slab *)_compound_head(p)))
-> > +
-> > +static inline bool is_slab(struct slab *slab)
-> > +{
-> > +	return test_bit(PG_slab, &slab->flags);
-> > +}
-> > +
-> 
-> I'm sorry, I don't have a dog in this fight and conceptually I think folios are
-> a good idea...
-> 
-> But for this work, having a call which returns if a 'struct slab' really is a
-> 'struct slab' seems odd and well, IMHO, wrong.  Why can't page_slab() return
-> NULL if there is no slab containing that page?
+With CONFIG_DEBUG_PREEMPT we observed reports like:
 
-No, this is a good question.
+  BUG: using smp_processor_id() in preemptible
+  caller is perf_ftrace_function_call+0x6f/0x2e0
+  CPU: 1 PID: 680 Comm: a.out Not tainted
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x8d/0xcf
+   check_preemption_disabled+0x104/0x110
+   ? optimize_nops.isra.7+0x230/0x230
+   ? text_poke_bp_batch+0x9f/0x310
+   perf_ftrace_function_call+0x6f/0x2e0
+   ...
+   __text_poke+0x5/0x620
+   text_poke_bp_batch+0x9f/0x310
 
-The way slub works right now is that if you ask for a "large" allocation,
-it does:
+This tell us the CPU could be changed after task is preempted, and
+the checking on CPU before preemption is helpless.
 
-        flags |= __GFP_COMP;
-        page = alloc_pages_node(node, flags, order);
+This patch just turn off preemption in perf_ftrace_function_call()
+to prevent CPU changing.
 
-and returns page_address(page) (eventually; the code is more complex)
-So when you call kfree(), it uses the PageSlab flag to determine if the
-allocation was "large" or not:
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ kernel/trace/trace_event_perf.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-        page = virt_to_head_page(x);
-        if (unlikely(!PageSlab(page))) {
-                free_nonslab_page(page, object);
-                return;
-        }
-        slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index 6aed10e..5486b18 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -438,15 +438,17 @@ void perf_trace_buf_update(void *record, u16 type)
+ 	int rctx;
+ 	int bit;
 
-Now, you could say that this is a bad way to handle things, and every
-allocation from slab should have PageSlab set, and it should use one of
-the many other bits in page->flags to indicate whether it's a large
-allocation or not.  I may have feelings in that direction myself.
-But I don't think I should be changing that in this patch.
++	preempt_disable_notrace();
++
+ 	if (!rcu_is_watching())
+-		return;
++		goto out;
 
-Maybe calling this function is_slab() is the confusing thing.
-Perhaps it should be called SlabIsLargeAllocation().  Not sure.
+ 	if ((unsigned long)ops->private != smp_processor_id())
+-		return;
++		goto out;
+
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+-		return;
++		goto out;
+
+ 	event = container_of(ops, struct perf_event, ftrace_ops);
+
+@@ -468,16 +470,18 @@ void perf_trace_buf_update(void *record, u16 type)
+
+ 	entry = perf_trace_buf_alloc(ENTRY_SIZE, NULL, &rctx);
+ 	if (!entry)
+-		goto out;
++		goto out_unlock;
+
+ 	entry->ip = ip;
+ 	entry->parent_ip = parent_ip;
+ 	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, TRACE_FN,
+ 			      1, &regs, &head, NULL);
+
+-out:
++out_unlock:
+ 	ftrace_test_recursion_unlock(bit);
+ #undef ENTRY_SIZE
++out:
++	preempt_enable_notrace();
+ }
+
+ static int perf_ftrace_function_register(struct perf_event *event)
+-- 
+1.8.3.1
+
