@@ -2,233 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23EF4164C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2A04164BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242665AbhIWSBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:01:21 -0400
-Received: from mail-bn8nam12on2054.outbound.protection.outlook.com ([40.107.237.54]:38721
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242152AbhIWSBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:01:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OgEljaS1o3I+i28/K0XhFFF0zuLAMk6IAC0Bf5eKjvWoZDBJ149ieL7TYbCQgxii7/uGPwqNAodIf2wZmX6PoYl5kl2r0C0JyI1X7H1QNYogjxqobMOuAHJD7AE+XRqdzZoXcAcad8aGJBYiifhGYBJX5ArDQ26a40NMugbr4BKapL9kXud/H1i46bmU8GxuHBcQBlATp3JlfgdmXyolYm/AcjqtQytpXQnHQW/Sy5D17URaUI/Spj6ARa7dYOZnJnnEbGBHa8Juex844sk0Vt0Aqe0tt+pbodX33dAwBsQujO2gIvdzbYVX4Yic53HI75seWHaEsC7kqYNhPNTPFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=twiJs6F4Jy67UyfQZZtwj0GQ8h5ArUZmxu1vS2Lj7bs=;
- b=T95j0515kJRaoiwO4gGa5dZB4lZonFyoL6nIY/lp5ehCoNalq4bBi1Abrc0zGI0+7sOIvZ+Gdj0ayd1P1DU43nzk6GsCmq+R9yR1gpb9V5OfqWQCcLfjun9OlaUU7yNqkXlj9Swm5yDsL7OjE4FAzl+QqRdrEFPvLbAKvsyymLJXA5PMHyNHpRK/l09YUMwePXu1V6zjX2WJLSc8NNWNtNQYGqDGjE1Hme3YDgolFCOcDqlbglGmRT8H8UBnFDUuxPhL/Pxg67A9uIB9/yVSaqDOlfhtwlCaKQh29He8tQu4e3RfdU0Z64E6cZTcK5AiXKD/Cfzg1VlWMEiAhB4Bxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=twiJs6F4Jy67UyfQZZtwj0GQ8h5ArUZmxu1vS2Lj7bs=;
- b=A6KePIDwjdCygZJNtVWKOaydSSxn68uA2THd2NRzUHJz3PhwmHhXK1+sEVFvcJKj9mhcW+yzclLsCntCMbWfqslCHujVKYGy9jPy+V0ZdpeIUl7nmzOKh1FuiF58jjn17q3rbAiufZ4iFCXBNV8VL8+D8h+Q8sn0elIEI5eGj4I=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM8PR12MB5463.namprd12.prod.outlook.com (2603:10b6:8:27::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Thu, 23 Sep
- 2021 17:59:46 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418%7]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
- 17:59:46 +0000
-Subject: Re: [PATCH v6 05/10] x86/tdx: Handle port I/O
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210922225239.3501262-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210922225239.3501262-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <c2fa7839-49d5-3e1c-97c4-c1b77e11ef93@amd.com>
- <6cb4efa4-6f40-37f4-8807-e44b2c069021@linux.intel.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <0f2a09ca-b098-03ba-a166-6f31c718220b@amd.com>
-Date:   Thu, 23 Sep 2021 12:59:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <6cb4efa4-6f40-37f4-8807-e44b2c069021@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA0PR12CA0030.namprd12.prod.outlook.com
- (2603:10b6:806:6f::35) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        id S242661AbhIWSAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242579AbhIWSAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 14:00:17 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86258C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:58:45 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id q81so21221937qke.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7hr09IOKvubmm29o++rFk+/rcGzXjuS4I9xs9JPMjPM=;
+        b=xVrtaAV+AsQi2BtDts7Ynr0kR8zUdzyqR/5bsUUkNlbXDC3iRZUM9xhBAOmIhROQ26
+         9chb8pmqfl3zsYrh9S56a0JKFfDoFmnpqAiopTSoH9QmLR1iB7T4QdR8XBUh5yAemX3B
+         vuIbRXQx5n7OfNqMHJnXjLDG5ERJeqI/LCv5YtFmPQJiw/Ff2CB4XYeSlmQk49oxSg/z
+         75M7XyC3NdvdzqYrUCBxRCEK4V1hrbFOfyKijDabbV+JstZPQYgmBFzoEgcb+0aJimr3
+         EFxmibhDN2G4nTE7BI0jHL4QcrzcFSN+1Tf8AkVhqAjMC0R5nTZlnI3Fhv3xOJFNN7Qk
+         57zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7hr09IOKvubmm29o++rFk+/rcGzXjuS4I9xs9JPMjPM=;
+        b=K8IiNKlXivwkiteeKnYjVu3LI4Rp8aIQqeNo1wSKzeA/bK3b41fz9FYSC3Zj9YUtGQ
+         F/RZwgFsiLY1opkI19UQbRkvBo96H5q/YtqUfqJojt5f26vi96CYEWLuoSHDY9rn6IN1
+         o7Jk2n+SZkRti5NzdeMg4W9rfMiR9bbUoqMTBgqJu1lLW85xRLaRbLV/5NVCXVxoI2hJ
+         lL6ezWkmueDqVQtbSgL4GgqmXeLJRWSChrbNVDR3GVVRzLoOie0a6Rf7Tn6ilMgwNtM2
+         0cd54vSK6IzE/JVAPAZbFxSA3VbuYt98Qtf6UaSmrSRz8e1q21VOLDJhY0yeqtmJffId
+         ZV8Q==
+X-Gm-Message-State: AOAM531lT/aY87er0FdW7X7z6e/z5p2EbBQeoJJREioDuR5X9x71sn6n
+        JprXxY+4ZfFCEkIwzGu8EMCsrw==
+X-Google-Smtp-Source: ABdhPJwXOWvF8OXeFLlBmZ7m3kp313BUPkFU7C1MgqkzrCm19j1rIEy8cN/gIVXkLtERTDASGuR+Pw==
+X-Received: by 2002:a37:9d96:: with SMTP id g144mr6019157qke.23.1632419924651;
+        Thu, 23 Sep 2021 10:58:44 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id t194sm4994003qka.72.2021.09.23.10.58.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 10:58:43 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 14:00:46 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YUzAzl5iCdfUBJqe@cmpxchg.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUfvK3h8w+MmirDF@casper.infradead.org>
+ <YUo20TzAlqz8Tceg@cmpxchg.org>
+ <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YUwTuaZlzx2WLXcG@moria.home.lan>
 MIME-Version: 1.0
-Received: from [10.236.30.241] (165.204.77.1) by SA0PR12CA0030.namprd12.prod.outlook.com (2603:10b6:806:6f::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend Transport; Thu, 23 Sep 2021 17:59:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5e8e5f08-f6ed-42af-0e5a-08d97ebbed5a
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5463:
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5463E3EFF93354FA5ECA44C5ECA39@DM8PR12MB5463.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qlkQ9ONA21EaYHQy9NNme1NJd1SJFerLZEhYZOjUQwR+LvYo/tdZjmCiV+SPcTphNG4g93ql4F7BzrM59HHq2jfEAgrlEsqLjqRA5/c25t3MWBeuCA6cu9PO9Hae0VLTtNmFjbcDDB+giaD2dKU1hhLLhXPW/eRBTcREkSvPA/bBOzscM5R4mj/h3sjnvQ2ASMD291+Arpyjkb4VlYOdnlwnE7HYGDwCIBhmFK3p6k3D7YW1bXuLOCx8NTHJUBzK3j0+ENqAr6ODXerLEhrQQ9/X4RCdRqhpekAFh4U/5Hudyf4LSB1UTbx4sL8QPmmwQaBm8IxYFgSCjuXFVcZoSUqof+JUD4UC6XQgo/V3wrRNc6ORZ1o75IqgR0cbiF+7jNnXGmWFVEqq/JfIyWsFpR3EtweqEVcFJEUH7I8Oj1v+JZBoHJyuq7lVJgx8cLXjTs87/HD9wzUYMwXzGLEk7fnDmfPfVq1EWJ+c3pfZkOe7erltPet8nkH5ZhvZS8YLtso+UvT/azaOHGH1zFdWJ0p0uj6uityuSCCIP9325vaRq9hx5TbNyHqHIrKv0mbwtoAev4iifW0VQBe8WkwgJkBOUBAnilOK/4iR9T5u64qHiCEsNz70/ZPdz/E8Ap4tQt5SDoc71c4KPl6ruDkQtKband3TZWN1iWWP3D4Wy/Wwy4FdvVvkO07OCPEbyA0Qvu+3RU6Mt+Rm/UAbZAeIB7KlaRS5P8lQsoyP5l5uc9CCebQXgd6ePj21b3KF/LC9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(956004)(2616005)(110136005)(54906003)(66946007)(8676002)(66476007)(66556008)(83380400001)(31696002)(2906002)(86362001)(36756003)(186003)(26005)(316002)(8936002)(508600001)(7416002)(5660300002)(6486002)(4326008)(53546011)(16576012)(31686004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dUtCK3V3Mko5VjJQZDlCbmJ1STd2aTJlN1dIaFErMVlwelJtSGo2b3FibFV2?=
- =?utf-8?B?M2JuSnhYZU5yQUJqWjhkY2ttblc5S3ppVXRuNTd5MFIvK3VMcTZyNWpnSU1V?=
- =?utf-8?B?WXN0d2NjU3BjZEJSdDFHR21qV3BsRTU2WEFLZUo5M21NNTVJMHRMNmQ3YnBx?=
- =?utf-8?B?ZnRndWRkc2JENC8vTklWY2dlTFRmQzRWV1V0NVVIemxLUzlpbFZzSWVyZlYx?=
- =?utf-8?B?R2tqSjlpL2pDSUtieEJVaDVjeXhhSjdQSTlxdlZ3Y1RYMnU4U05ITGlITHlJ?=
- =?utf-8?B?TnQ5aFErR1ZTYjMxR2ZEYlZYa253djUrNWdJN0VBcGx0M1pnYUJmRXdyS2d2?=
- =?utf-8?B?QkI2a005RmdDSUVjajJJT0FFMGx1ZmVGTkdnOWlOemErSzBNKzNMdW1VSTFr?=
- =?utf-8?B?QnppRnNxaUUwaTltWTROeGNvZEM0OEdGTlNKeDhVOE91Z2VscE5uVGRXNjRQ?=
- =?utf-8?B?R3VhcEliUXlmNzBxcUFIMmpPc0hwVHYvbExrVDA5cy9WenJ6SzJwYkNVbUpu?=
- =?utf-8?B?Vkx1MmhUWUdHMit4L1NobmNGei9yMjc1ZHpLRjNDNjZiL2hqeTlrYm0zOFRT?=
- =?utf-8?B?U0NheC9XNmxsbk9YM1JpSlA5ZVplQmp4V0JhOXFJZzFuRmFaT3dLd3R1Z1NC?=
- =?utf-8?B?QVBIeHNPTVNZN205V3ZCL1dBQytRS0RmVVhSaXRFUE1UeUJCV0hPbUpnS0o5?=
- =?utf-8?B?b2NGbFlGUDh0TFRDeTQ1MFBFN09PMFFoYjZGVVJxRVRhakhGaXBUYUhCZGwz?=
- =?utf-8?B?cTFQVXVSRlpYMzUxU3ZLbk5HUVhvZEdXajZQT08zcDU5aWpvNE5jcGxuU1k2?=
- =?utf-8?B?Z1FvdjBVY3hieDhhTkg3ZUNmWkVYTzJQMEVsa2xwZE5PUXh5S3dQUjNQVTMv?=
- =?utf-8?B?L1B0VFM3UHYzZTI3Y2d1Z3YwUnU3UGhnV2xGQ3V6bVBuTWx3Wk9IWHZxYmhT?=
- =?utf-8?B?QVhONzBPdlRHSVZudTlqV0tBUkxxVk5iUjhPY2ZnbXpPcVhueUl4TjVCeXR2?=
- =?utf-8?B?cS9kWVNRa3BzcnNEMExlSzdXbEJISXJaNThDeEVMaDU5WFBxNXZQQnltK0ZF?=
- =?utf-8?B?aEduVEY4eXk3djdEdkx4VThFc3J0R1lFZ00wcE5TREQ2RkJRb1pLQzR5OFJZ?=
- =?utf-8?B?enJrZU5GVVRyUDlhK3RqNGVrQVh5a2NKV1RkSVpYMUhvdFkrRzhianpYeHRq?=
- =?utf-8?B?NVoyY1dseWpuMlhSRXNJOVpsL1FxWnNmTVpFMXg5Um1nK3U1eHk3R2xERUFk?=
- =?utf-8?B?V1dVdnNUOW5SVko5WjJWMFhwUkRzeEVheUZBc0FkTnRKbHBPTm1DcUdOcFhu?=
- =?utf-8?B?LzBRRnBmRkI4UlViRmUrRUd4SVp3ZXBLTXF5VFp1ZlBQeVFwMW1raEYzb2ty?=
- =?utf-8?B?RkpweHEremFHK2tIKzFTS3RkY01LbXRvV3RaVC9KQzV5NU1UckY4Y0lybWQr?=
- =?utf-8?B?RTkxUzIxbVZCOXpjRllwa096eUdRdXNzelJac1d5NE5RZ2w0YWJwU0NtZ0tG?=
- =?utf-8?B?WFk5OVNkNHZReUtqUUlTc2tTam11L2tBY2FzNXMzN2kwNUxWaVhYbkNkNk9j?=
- =?utf-8?B?ckY0dnNtbU5WYzNDZ0xTN080Z2tVSklFSE9JV0hTaHF2NU5aemhWSXo4Q1FP?=
- =?utf-8?B?ZE1mRkJpRlpBYUt0eGh1eWY3NmlTYklwWFBXckE1Q1JzQ3MxS3U1SVhZejdN?=
- =?utf-8?B?cStBeHRJZGJ3Tzg0VzFzWkhBdHZvdjdlSUdTZWdxVFU5VEZYNzQySUpYMG1a?=
- =?utf-8?Q?2tMNefljkomtQIYPfnphu6ieJSu/3YplfdNjzvA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e8e5f08-f6ed-42af-0e5a-08d97ebbed5a
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 17:59:45.9455
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mHJxC/AwgWc8guf7z92Ppw13ahi9J35wCK4p4a9Fm0H8Jy6oF6W6TL5REWvYN7/40le8BVD/bpXJG9Q4lc+xug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5463
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUwTuaZlzx2WLXcG@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 12:24 PM, Kuppuswamy, Sathyanarayanan wrote:
+On Thu, Sep 23, 2021 at 01:42:17AM -0400, Kent Overstreet wrote:
+> On Wed, Sep 22, 2021 at 11:08:58AM -0400, Johannes Weiner wrote:
+> > On Tue, Sep 21, 2021 at 05:22:54PM -0400, Kent Overstreet wrote:
+> > >  - it's become apparent that there haven't been any real objections to the code
+> > >    that was queued up for 5.15. There _are_ very real discussions and points of
+> > >    contention still to be decided and resolved for the work beyond file backed
+> > >    pages, but those discussions were what derailed the more modest, and more
+> > >    badly needed, work that affects everyone in filesystem land
+> > 
+> > Unfortunately, I think this is a result of me wanting to discuss a way
+> > forward rather than a way back.
+> > 
+> > To clarify: I do very much object to the code as currently queued up,
+> > and not just to a vague future direction.
+> > 
+> > The patches add and convert a lot of complicated code to provision for
+> > a future we do not agree on. The indirections it adds, and the hybrid
+> > state it leaves the tree in, make it directly more difficult to work
+> > with and understand the MM code base. Stuff that isn't needed for
+> > exposing folios to the filesystems.
 > 
+> I think something we need is an alternate view - anon_folio, perhaps - and an
+> idea of what that would look like. Because you've been saying you don't think
+> file pages and anymous pages are similar enough to be the same time - so if
+> they're not, how's the code that works on both types of pages going to change to
+> accomadate that?
 > 
-> On 9/23/21 9:32 AM, Tom Lendacky wrote:
->> On 9/22/21 5:52 PM, Kuppuswamy Sathyanarayanan wrote:
->>> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
->>>
->>> TDX hypervisors cannot emulate instructions directly. This includes
->>> port IO which is normally emulated in the hypervisor. All port IO
->>> instructions inside TDX trigger the #VE exception in the guest and
->>> would be normally emulated there.
->>>
->>> Also string I/O is not supported in TDX guest. So, unroll the string
->>> I/O operation into a loop operating on one element at a time. This
->>> method is similar to AMD SEV, so just extend the support for TDX guest
->>> platform.
->>>
->>> Add a new confidential guest flag CC_ATTR_GUEST_UNROLL_STRING_IO to
->>> add string unroll support in asm/io.h
->>>
->>> Co-developed-by: Kuppuswamy Sathyanarayanan 
->>> <sathyanarayanan.kuppuswamy@linux.intel.com>
->>> Signed-off-by: Kuppuswamy Sathyanarayanan 
->>> <sathyanarayanan.kuppuswamy@linux.intel.com>
->>> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
->>> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
->>> ---
->>>
->>> Changes since v5:
->>>   * Changed prot_guest_has() to cc_platform_has().
->>>
->>> Changes since v4:
->>>   * Changed order of variable declaration in tdx_handle_io().
->>>   * Changed tdg_* prefix with tdx_*.
->>>
->>> Changes since v3:
->>>   * Included PATTR_GUEST_UNROLL_STRING_IO protected guest flag
->>>     addition change in this patch.
->>>   * Rebased on top of Tom Lendacks protected guest change.
->>>
->>> Changes since v2:
->>>   * None
->>>
->>> Changes since v1:
->>>   * Fixed comments for tdg_handle_io().
->>>   * Used _tdx_hypercall() instead of __tdx_hypercall() in tdg_handle_io().
->>>
->>>   arch/x86/include/asm/io.h   |  7 +++++--
->>>   arch/x86/kernel/cpu/intel.c |  1 +
->>>   arch/x86/kernel/tdx.c       | 35 +++++++++++++++++++++++++++++++++++
->>>   include/linux/cc_platform.h | 11 +++++++++++
->>>   4 files changed, 52 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
->>> index fa6aa43e5dc3..67e0c4a0a0f4 100644
->>> --- a/arch/x86/include/asm/io.h
->>> +++ b/arch/x86/include/asm/io.h
->>> @@ -40,6 +40,7 @@
->>>   #include <linux/string.h>
->>>   #include <linux/compiler.h>
->>> +#include <linux/cc_platform.h>
->>>   #include <asm/page.h>
->>>   #include <asm/tdx.h>
->>>   #include <asm/early_ioremap.h>
->>> @@ -310,7 +311,8 @@ static inline unsigned type in##bwl##_p(int 
->>> port)            \
->>>                                       \
->>>   static inline void outs##bwl(int port, const void *addr, unsigned 
->>> long count) \
->>>   {                                    \
->>> -    if (sev_key_active()) {                        \ > +    if 
->>> (sev_key_active() ||                        \
->>> +        cc_platform_has(CC_ATTR_GUEST_UNROLL_STRING_IO)) {        \
->>
->> Would it make sense to make sev_key_active() and sev_enable_key generic 
->> and just re-use those instead of adding CC_ATTR_GUEST_UNROLL_STRING_IO 
->> and having multiple conditions here?
->>
->> You can set the key in the TDX init routine just like SEV does.
-> 
-> Any reason for using sev_enable_key over CC attribute? IMO, CC attribute 
-> exist
-> to generalize the common feature code. My impression is SEV is specific to 
-> AMD
-> code.
+> Do we have if (file_folio) else if (anon_folio) both doing the same thing, but
+> operating on different types? Some sort of subclassing going on?
 
-When the SEV series was initially submitted, it originally did an 
-sev_active() check. For various reasons a static key and the 
-sev_key_active() call was requested.
+Yeah, with subclassing and a generic type for shared code. I outlined
+that earlier in the thread:
 
-My suggestion was to change the name to something that doesn't have 
-SEV/sev in it that can be used by both SEV and TDX. The sev_enable_key can 
-be moved to a common file (maybe cc_platform.c) and renamed. Then 
-arch/x86/include/asm/io.h can change the #ifdef from 
-CONFIG_AMD_MEM_ENCRYPT to CONFIG_ARCH_HAS_CC_PLATFORM.
+https://lore.kernel.org/all/YUo20TzAlqz8Tceg@cmpxchg.org/
 
-Not sure if anyone else feels the same, though, so just my suggestion.
+So you have anon_page and file_page being subclasses of page - similar
+to how filesystems have subclasses that inherit from struct inode - to
+help refactor what is generic, what isn't, and highlight what should be.
 
-Thanks,
-Tom
+Whether we do anon_page and file_page inheriting from struct page, or
+anon_folio and file_folio inheriting from struct folio - either would
+work of course. Again I think it comes down to the value proposition
+of folio as a means to clean up compound pages inside the MM code.
+It's pretty uncontroversial that we want PAGE_SIZE assumptions gone
+from the filesystems, networking, drivers and other random code. The
+argument for MM code is a different one. We seem to be discussing the
+folio abstraction as a binary thing for the Linux kernel, rather than
+a selectively applied tool, and I think it prevents us from doing
+proper one-by-one cost/benefit analyses on the areas of application.
 
-> 
->>
->> Thanks,
->> Tom
->>
-> 
+I suggested the anon/file split as an RFC to sidestep the cost/benefit
+question of doing the massive folio change in MM just to cleanup the
+compound pages; takeing the idea of redoing the page typing, just in a
+way that would maybe benefit MM code more broadly and obviously.
+
+> I was agreeing with you that slab/network pools etc. shouldn't be folios - that
+> folios shouldn't be a replacement for compound pages. But I think we're going to
+> need a serious alternative proposal for anonymous pages if you're still against
+> them becoming folios, especially because according to Kirill they're already
+> working on that (and you have to admit transhuge pages did introduce a mess that
+> they will help with...)
+
+I think we need a better analysis of that mess and a concept where
+tailpages are and should be, if that is the justification for the MM
+conversion.
+
+The motivation is that we have a ton of compound_head() calls in
+places we don't need them. No argument there, I think.
+
+But the explanation for going with whitelisting - the most invasive
+approach possible (and which leaves more than one person "unenthused"
+about that part of the patches) - is that it's difficult and error
+prone to identify which ones are necessary and which ones are not. And
+maybe that we'll continue to have a widespread hybrid existence of
+head and tail pages that will continue to require clarification.
+
+But that seems to be an article of faith. It's implied by the
+approach, but this may or may not be the case.
+
+I certainly think it used to be messier in the past. But strides have
+been made already to narrow the channels through which tail pages can
+actually enter the code. Certainly we can rule out entire MM
+subsystems and simply declare their compound_head() usage unnecessary
+with little risk or ambiguity.
+
+Then the question becomes which ones are legit. Whether anybody
+outside the page allocator ever needs to *see* a tailpage struct page
+to begin with. (Arguably that bit in __split_huge_page_tail() could be
+a page allocator function; the pte handling is pfn-based except for
+the mapcount management which could be encapsulated; the collapse code
+uses vm_normal_page() but follows it quickly by compound_head() - and
+arguably a tailpage generally isn't a "normal" vm page, so a new
+pfn_to_normal_page() could encapsulate the compound_head()). Because
+if not, seeing struct page in MM code isn't nearly as ambiguous as is
+being implied. You would never have to worry about it - unless you are
+in fact the page allocator.
+
+So if this problem could be solved by making tail pages an
+encapsulated page_alloc thing, and chasing down the rest of
+find_subpage() callers (which needs to happen anyway), I don't think a
+wholesale folio conversion of this subsystem would be justified.
+
+A more in-depth analyses of where and how we need to deal with
+tailpages - laying out the data structures that hold them and code
+entry points for them - would go a long way for making the case for
+folios. And might convince reluctant people to get behind the effort.
+
+Or show that we don't need it. Either way, it seems like a win-win.
+
+But I do think the onus for explaining why the particular approach was
+chosen against much less invasive options is on the person pushing the
+changes. And it should be more detailed than "we all know it sucks".
