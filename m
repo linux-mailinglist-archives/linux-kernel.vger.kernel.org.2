@@ -2,92 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA49A4166C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02554166CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 22:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243158AbhIWUex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 16:34:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242950AbhIWUev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 16:34:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE60F6124B;
-        Thu, 23 Sep 2021 20:33:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632429199;
-        bh=YkmDnE85IjHnkDWWkjXDdnfUT/kZZuzCNUO/FR000kE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cAa3JUfbcGyh5R7mKyFITVqQ8PFKJbq3yhhGM+U2tKpULzikhwJArJyrKTNt0L3ft
-         nVtvg9S53vwafH7H870IZLaZD35Z5HGR1zuDurEpgFjkipUJ2DZMN9iaL1vPyC/v3N
-         JYA4PBdHHbeyRNj8kbs3ajUt9jdRJrOzE7NE2wJfohYhhXPgxz/GyYx+SdwqtHSD8U
-         L/G2qRPrYbJJyp5mhRLqNjvK0hmGFzxR0ynHfPSyWcY/VHGlBU+3Z5rQJHxfVnGhq2
-         twovQ9m6wenNwMjIBtSadiYnLQcBZ7RifewJRVzc7urB+Ytqg3eK50xIVIlhLTjKuq
-         1Zvlq5kpmwg9w==
-Message-ID: <46d9ee41d2a482b19b6a91b978b0154d4f0cbcaf.camel@kernel.org>
-Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Date:   Thu, 23 Sep 2021 23:33:16 +0300
-In-Reply-To: <a0a2a628-62c5-d620-7714-2c28e4429e71@redhat.com>
-References: <20210920125401.2389105-1-pbonzini@redhat.com>
-         <20210920125401.2389105-2-pbonzini@redhat.com>
-         <060cfbbaa2c7a1a0643584aa79e6d6f3ab7c8f64.camel@kernel.org>
-         <a0a2a628-62c5-d620-7714-2c28e4429e71@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S242973AbhIWUim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 16:38:42 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59852 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229619AbhIWUik (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 16:38:40 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 497031C0BA3; Thu, 23 Sep 2021 22:37:06 +0200 (CEST)
+Date:   Thu, 23 Sep 2021 22:37:05 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V3 01/22] Documentation: LoongArch: Add basic
+ documentations
+Message-ID: <20210923203705.GA1936@bug>
+References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
+ <20210917035736.3934017-2-chenhuacai@loongson.cn>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917035736.3934017-2-chenhuacai@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-23 at 14:08 +0200, Paolo Bonzini wrote:
-> On 21/09/21 21:44, Jarkko Sakkinen wrote:
-> > "On bare-metal SGX, start of a power cycle zeros all of its reserved=
-=20
-> > memory. This happens after every reboot, but in addition to that=20
-> > happens after waking up from any of the sleep states."
-> >=20
-> > I can speculate and imagine where this might useful, but no matter
-> > how trivial or complex it is, this patch needs to nail a concrete
-> > usage example. I'd presume you know well the exact changes needed for
-> > QEMU, so from that knowledge it should be easy to write the
-> > motivational part.
->=20
-> Assuming that it's obvious that QEMU knows how to reset a machine (which=
-=20
-> includes writes to the ACPI reset register, or wakeup from sleep=20
-> states), the question of "why does userspace reuse vEPC" should be=20
-> answered by this paragraph:
->=20
-> "One way to do this is to simply close and reopen the /dev/sgx_vepc file
-> descriptor and re-mmap the virtual EPC.  However, this is problematic
-> because it prevents sandboxing the userspace (for example forbidding
-> open() after the guest starts, or running in a mount namespace that
-> does not have access to /dev; both are doable with pre-opened file
-> descriptors and/or SCM_RIGHTS file descriptor passing)."
+Hi!
 
-Right, this makes sense.
+> Add some basic documentations for LoongArch. LoongArch is a new RISC
 
->=20
-> > Even to a Linux guest, since EPC should stil be represented in the
-> > state that matches the hardware.  It'd be essentially a corrupted
-> > state, even if there was measures to resist this. Windows guests
-> > failing is essentially a side-effect of an issue, not an issue in the
-> > Windows guests.
->=20
-> Right, Linux is more liberal than it needs to be and ksgxd does the=20
-> EREMOVE itself at the beginning (__sgx_sanitize_pages).  Windows has=20
-> stronger expectations of what can and cannot happen before it boots,=20
-> which are entirely justified.
->=20
-> Paolo
+... documentation ...
 
-Yep. We do it for kexec(). Alternative would be to zero at the time
-of kexec() but this way things are just way more simpler, e.g. the
-whole behaviour is local to the driver...
+> +wide in LA64. $r0 is always zero, and other registers has no special feature,
 
-/Jarkko
+...have no special features...
+
+> +but we actually have an ABI register conversion as below.
+
+convention?
+
+> +``$r21``          ``$x``          Reserved            Unused
+> +``$r22``          ``$fp``         Frame pointer       Yes
+> +``$r23``-``$r31`` ``$s0``-``$s8`` Static registers    Yes
+> +================= =============== =================== ============
+
+Not sure I know the term 'static registers' before.
+								Pavel
