@@ -2,303 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC36416179
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 420B541617A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241775AbhIWO4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:56:25 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:60940 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241662AbhIWO4U (ORCPT
+        id S241801AbhIWO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:56:34 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60422 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241794AbhIWO4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:56:20 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18NEro6w007037;
-        Thu, 23 Sep 2021 14:54:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=cR9agXYf1NRUVCcMv4OXYHqv4p/TiIyjkmGmYWDLsR0=;
- b=DyN9E2ZjLv5GpD9ukjqJuKKnWgwxvQfC8zxqiYxvpETbZ2v7B+evDy1AfjAnzWhtdI8b
- r7cTcl2HPmJp7I8hyIL5QihG8epjaaoa2d6fDMIKLO68DHMYvnsnoLrtjRW8M/kj512t
- 0EgfZ4lvc8Nd3b13lBxCLTP9Y/KAEUO5ElLKGhBsXxMzJaIuwgnuHzhm3DXntAg09C/7
- 1dhI9FJMWxH5qWZjwzoJGNamiz34MxYxnkhFXijDp1Ar+rTyDU4zQ3GNsrMRW88ANXHi
- 2OXCIhReDCEpgJOMQ3KcrCuiwGhwdFysD8JL4D9UlEWyosICNx0c9Sx2zaES0aUaFM/2 xQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b8neb2qxj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Sep 2021 14:54:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18NEo832105625;
-        Thu, 23 Sep 2021 14:54:32 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by userp3020.oracle.com with ESMTP id 3b7q5xxvyq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Sep 2021 14:54:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IB8vYQQCLjbEMJAfhRX4egmFEdRVnN528lhmUAeYk1uhHTxlePWfpusSvejTiQadIj3WMQ2TSCZo541IVdSOEUXPBV/8klPJdgJsXyHGi4Am398s3f1ANlhLnUnFnj3eovtPgkH2hAebaoUtG/3LcHTTvCGeCykOZZC5IZ3LrfirMET6Azd8uOBaDzUsd/3qHJbSbRC+wZb/Qyh152eRT7mR2JF/QZ5Wu9QcwAs1SUJpWaWd1H643E2UyFvhPqHvnZ4pKCGnkaNG4cyF40i3Cd4DwWUCPapR0k//+jfT1/EvnlsrvxZru6xVyRl5+mzlkxV21nJ1+oQcieqv6mapXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=cR9agXYf1NRUVCcMv4OXYHqv4p/TiIyjkmGmYWDLsR0=;
- b=B9X2a1k1tBV7c8BLEjNbilaG4JL+bbmy1KHyRJORtYf4PCUqDsG8UcZ/4klYuw4y5OOClixoLyKVP+aWvwdyMV9aeMfoKCCG7MOCEtBHHLKN1/qupQZinfEZ5Ojj3MbSDQo91wy2U4H/UnO9JrC8ctnF9u3/i/0KNLQ98VJfZCQkKoQFK4DQ2fZXcWDMSDoWal27phm2ioZwanWbnxX8v7I0YJ3e7E4QL6sbDyQWY8ZXrDEdWl77iR6tmKk46FbH3XQeMtBGk2K3DZaflDEc7/qA5xLMYBpRlTx/0VS+CqV2SSB/VmjN6pKeR6YfMqlVrETCB1aqtkWgce9m2L9Qxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cR9agXYf1NRUVCcMv4OXYHqv4p/TiIyjkmGmYWDLsR0=;
- b=iGhD/A6jqvSNJ9krW/yeSZJkaJUQ+tuJTYaJzob7o2byyG0oUyTG9TUJhwTN7D+RiMcC674CGTTyDfiYUgO7uQKmfMTrzJ0inJiwF5fAfyCfyNnEKzSsCEZNbczmjI2NQPQD50DENM6LJb2Wf4dI/013V/g24DYbrsfwqXOvjbY=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from SA2PR10MB4665.namprd10.prod.outlook.com (2603:10b6:806:fb::17)
- by SA2PR10MB4556.namprd10.prod.outlook.com (2603:10b6:806:119::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Thu, 23 Sep
- 2021 14:54:30 +0000
-Received: from SA2PR10MB4665.namprd10.prod.outlook.com
- ([fe80::c12a:cfad:520a:2c94]) by SA2PR10MB4665.namprd10.prod.outlook.com
- ([fe80::c12a:cfad:520a:2c94%3]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
- 14:54:30 +0000
-Message-ID: <5678317c-9fd2-4557-6e28-984a8b74b99c@oracle.com>
-Date:   Thu, 23 Sep 2021 09:54:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v2] JFS: fix memleak in jfs_mount
-Content-Language: en-US
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     jfs-discussion@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210904023800.1813036-1-mudongliangabcd@gmail.com>
- <CAD-N9QV5OMe0ryEKaUYkwmNyOtu+Sgi7h2B0JFSK5Jj9bbQPQQ@mail.gmail.com>
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-In-Reply-To: <CAD-N9QV5OMe0ryEKaUYkwmNyOtu+Sgi7h2B0JFSK5Jj9bbQPQQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR08CA0036.namprd08.prod.outlook.com
- (2603:10b6:805:66::49) To SA2PR10MB4665.namprd10.prod.outlook.com
- (2603:10b6:806:fb::17)
+        Thu, 23 Sep 2021 10:56:33 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EC0512236C;
+        Thu, 23 Sep 2021 14:55:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632408900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=my7VqY53A6e1Wd90ewQAn8Sl1sh3HuXoPlhSNUiEzmI=;
+        b=EO78IeaGVeI9AbNU3/Oo2sIhF+U1+YlUVfZWAr10ZWTMqchVE+WF5xlgvH+WPmnxvW/29R
+        5R0LpnckeK1fJMx5c621/D6rcNYqmo8VRF3RhEyfyJPaYtEUZaoYGmzGcPTjLxQlzNX86X
+        ioKLPIS4JgZMHHq3J0YxGw+7hC85R28=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C73D913E76;
+        Thu, 23 Sep 2021 14:55:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wSNSL0SVTGFnfQAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 14:55:00 +0000
+To:     Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <0b7afef6-1c46-ed74-ca83-f1e29f763f4a@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH 6/9] xen/x86: generalize preferred console model from PV
+ to PVH Dom0
+Message-ID: <eac38453-a0d9-69ab-8fa2-35b3c55933de@suse.com>
+Date:   Thu, 23 Sep 2021 16:54:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Received: from [192.168.0.162] (68.201.65.98) by SN6PR08CA0036.namprd08.prod.outlook.com (2603:10b6:805:66::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 14:54:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 961a0ca9-6dd1-460b-34d5-08d97ea20c05
-X-MS-TrafficTypeDiagnostic: SA2PR10MB4556:
-X-Microsoft-Antispam-PRVS: <SA2PR10MB455674625FFD1D660C63A56487A39@SA2PR10MB4556.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7b1B/FneRG+VWRFWUNOnXPXNy5vE5tH12usnNNydlcEzIhQM9GsngWz4J1GscML5Rz2xDlWk5k4hGUep3lMtERaBO66dafjDtqLKbPEaE0YFa2UCHd2EVWej4BQ6OWy0MFMytgFIQJSpG9L6Y5j9ZmVKmXC79asQVMox/Wa/ZbkDpj2VkzOOcgz6E2YmjfNEkDQFbrK4PjhWk+l0BGsL9dDZh4YaGYfUS0HjWC3LbYxZxJziHym5/Uk96s1t5YoqgnQlsSqRechGVaiC5rwWq2bUC6MLOPVncr6wbb+h5NTra4Nyhq79eTuL5knZ3yWG2HIglZUkBguT0adDmiEiBbH6ZgmxUeOOFyQDiwg2ZhzuZ+eflN2prQtorr4JqYsqKtc/2x0iTwoXQm6PEnalm/S+5oTngGJ5AfgNxls4TXMRZF7q/r0Zmbm1f7jyc/0RBVb/iR+0LjhT9D16D0wMJ46VMj0jwSS66oWmKKexAs3jalSFr+gvSF2hK2dTrbegPeAXRoN6EoooJ6xCR0gy2O18MuBZXRXeJXgO1W6xERnAGdTyNLUrUPdnkgVPJ4/UXKykYv3ec2ZJSHVePRhMQtAqnpRTBlen9LCMvuwRsPSuhYrF4sxgjklQpJNLMmG+WCfmigwzSy+NuGXifAh3y6DxMXGO03nw10ntoO0T/9EamH8U7bh7/Yj+sfJkk4bXklK2glDiIJ3WbQ1dwcrTB+u+oe6t6P6v2v0FTuJ0rnQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR10MB4665.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(38100700002)(8936002)(83380400001)(186003)(4326008)(8676002)(31696002)(31686004)(6666004)(53546011)(16576012)(26005)(5660300002)(2906002)(6916009)(86362001)(6486002)(66556008)(66476007)(2616005)(316002)(66946007)(36756003)(44832011)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZGtSOXRiZ2xRNjE4Sk10c0FnMGpLUXU0eXdZR21CSXhETEYvQXBOWWtpRE4y?=
- =?utf-8?B?Z2dDN09tV2xpYjk2VklBWmFQVGNjdnRZVWZBeWp5Q21PS2wyTXRkOXV3OENV?=
- =?utf-8?B?T0lOVjJYTDRWWWduUW0zQkFYVWxYUitvcDdVS01zQlZib2JNVnRkQ0VuMlhu?=
- =?utf-8?B?WGtUVFBiZXQzMTBoTlNaQ1RXcU9SdUNyTzdUWUl4WUZWSTBIUE91Q1g3MEFW?=
- =?utf-8?B?cUdGZWlKaWpqS0I2alYyWnFGeU9sUS9VenZYZ2Z6dFRYNG02L3AwNzN1dHAw?=
- =?utf-8?B?V2p6TlVoMUV3UjY1bUtlaVVUWm01ODB5UTUzcElLcjNvbHZpM3J6ajNaSUF1?=
- =?utf-8?B?YjVOaUJZemowN2ZNMTV5N3ZNRVdXaGppQjFmeGgxNkdHRGFGWC95Z0tNM0lE?=
- =?utf-8?B?VmdINHZwTFFTQkthVklILzl0ZlpYMFRYYVd4L3JnSWtKZ3lQUVdaV1loUTB3?=
- =?utf-8?B?UFYzZHRlNEZPeXNYdWlqK1pVYmlRNDVtUFo4cDMrY2kxQUhZeXlpK2lrT3I4?=
- =?utf-8?B?VkRjUGF6YVRuWWQ0YXZ2bGtWckJuMWcyQ2FtRi9BcmwwS3Rsb2VlQ0tWaDFm?=
- =?utf-8?B?UGlTdTBEM0xJMlRzZVI3NmJVQnFCcmh1N216Z3hCZWNCTVJNTXkzMkxVd1ZN?=
- =?utf-8?B?a2xkbDRjSUUycWlMWnh6MHdUNVRGNmduUWlVOXZ3WU12NUpkUkppY3E3S2ND?=
- =?utf-8?B?Wk1xV0lwamMxMkZHbkw4SW9GMkZxNExGZ1NHeFZSdDNzV3dya3FaTE5mSGZj?=
- =?utf-8?B?Q1lPczM1a1B1Y1F1OFNhMzcyUXB3VDZhdU13dmxvMjhSbGpCaXA1a1RVbzBQ?=
- =?utf-8?B?NXMrUHdFTWJ1M2dpU1Jud21vc3hTcENNbFFTU3JFZWlBOUYwTCtPUXpFYzUr?=
- =?utf-8?B?aXFEWDZ3UkgvNGpleEZZU01sOXZJNTdYb3NMTG1rTlFvaTFxVTNqOC9jdFJl?=
- =?utf-8?B?aXMyZWx4Rk02VC8yU0V2L2pPb090SzFsdEZHdnpmbTkwbGdFbTJod3RsZGtz?=
- =?utf-8?B?RDJKUDNST1hHekFXMy9hZUVmdHZTRDgrdWdESnAvQjhCRk5SeEQ4aTZHUU9o?=
- =?utf-8?B?VDNXSHBpV2wyTUtUQ092U3gzQUM2WXhkOElrLzIrbFVNaEhYVDJObjZhY0xp?=
- =?utf-8?B?RDRtWG1nUnpvaE9zTzR0RVBLUTV2cDJpd3JEbTExZDFGOU54NERXaDJ1NG5s?=
- =?utf-8?B?TUFaMHp0SnFvR05oTVZvQy9FNUNndGFueUlvZkdZeStPR0ZsMGwweEo5dnBw?=
- =?utf-8?B?Nk1Pbk9CSUs0T2RJNXc2bEM2d0IzamJOc2Zob0Y2b2RkWnpTelpMSE5Vem5N?=
- =?utf-8?B?em1oR0JvdndJVSswd0pwUEdLakxITHcvVUJsem5FMFZKdjJWaUFNajAxUnUx?=
- =?utf-8?B?T0dWaTFEbjdPdlpVTW1UbkRocTV3NDNkV0w4RjIvQktaUmJjcUFFTHVvOVRi?=
- =?utf-8?B?eVo1L3hxa1BXV1RCbUd4VmpkRHMrMUQ2Tm9zL2cxWTFZSEUxMXpPcmVGZmNF?=
- =?utf-8?B?djlFT2JvbU16QzAzbFdDWFZ4bEFWTjMxbm1lS3lGS0JNeWlEZ3NndTB4M0R0?=
- =?utf-8?B?REUxd2tvSWFvMXpoU2ZsQUFkVGZGMHM4TVdxYXRZdGg0L3VrNG03aWRSZDFr?=
- =?utf-8?B?ZFJyaHAreWpaZFhZUi9wVlhKRWV6bGx6bmE2VjFJK2dQWlQ1T3NFN3M0MnQ1?=
- =?utf-8?B?OUl4bCtyYmx5UnBMV2JBZFpNSEFnVkpqT2RyUWRVc2I1ZDMwTFNlRFBFQnUw?=
- =?utf-8?Q?A6UOfjP3Y/WielwkRfr1ARVaEd0p4nbrtKLiAfI?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 961a0ca9-6dd1-460b-34d5-08d97ea20c05
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR10MB4665.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 14:54:30.3086
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e3bUDm1dCM1Nl10qEsDtDxGoQV2gZ7rxHNBl9UsmEAtvKfAKkNd/cJ8jTDgwIcy8yGch/n7nwDljAzUBQDEWeeEQJwqypbVmiyAq5zutORs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4556
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10116 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109200000
- definitions=main-2109230094
-X-Proofpoint-GUID: 8A4FS_UBHZhMAhbaCp_BUaBR9P-UXjn2
-X-Proofpoint-ORIG-GUID: 8A4FS_UBHZhMAhbaCp_BUaBR9P-UXjn2
+In-Reply-To: <0b7afef6-1c46-ed74-ca83-f1e29f763f4a@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="91iDXi0U6EUiXy5e5GnMRq1VY3EqTjDTl"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 19:53, Dongliang Mu wrote:
-> Any update on this thread?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--91iDXi0U6EUiXy5e5GnMRq1VY3EqTjDTl
+Content-Type: multipart/mixed; boundary="KJGvBtqHlnedeq33aAE3U0cqUhtZBlVt0";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Message-ID: <eac38453-a0d9-69ab-8fa2-35b3c55933de@suse.com>
+Subject: Re: [PATCH 6/9] xen/x86: generalize preferred console model from PV
+ to PVH Dom0
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <0b7afef6-1c46-ed74-ca83-f1e29f763f4a@suse.com>
+In-Reply-To: <0b7afef6-1c46-ed74-ca83-f1e29f763f4a@suse.com>
 
-Sorry for taking this long to get back to it. The patch looks good. It 
-should show up in linux-next shortly.
+--KJGvBtqHlnedeq33aAE3U0cqUhtZBlVt0
+Content-Type: multipart/mixed;
+ boundary="------------B81120A55C794E6A11CAA6AE"
+Content-Language: en-US
 
-Shaggy
+This is a multi-part message in MIME format.
+--------------B81120A55C794E6A11CAA6AE
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> On Sat, Sep 4, 2021 at 10:38 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>
->> In jfs_mount, when diMount(ipaimap2) fails, it goes to errout35. However,
->> the following code does not free ipaimap2 allocated by diReadSpecial.
->>
->> Fix this by refactoring the error handling code of jfs_mount. To be
->> specific, modify the lable name and free ipaimap2 when the above error
->> ocurrs.
->>
->> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
->> ---
->> v1->v2: change "return rc" to "goto out"; fix one coding style
->>   fs/jfs/jfs_mount.c | 51 ++++++++++++++++++++--------------------------
->>   1 file changed, 22 insertions(+), 29 deletions(-)
->>
->> diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
->> index 5d7d7170c03c..aa4ff7bcaff2 100644
->> --- a/fs/jfs/jfs_mount.c
->> +++ b/fs/jfs/jfs_mount.c
->> @@ -81,14 +81,14 @@ int jfs_mount(struct super_block *sb)
->>           * (initialize mount inode from the superblock)
->>           */
->>          if ((rc = chkSuper(sb))) {
->> -               goto errout20;
->> +               goto out;
->>          }
->>
->>          ipaimap = diReadSpecial(sb, AGGREGATE_I, 0);
->>          if (ipaimap == NULL) {
->>                  jfs_err("jfs_mount: Failed to read AGGREGATE_I");
->>                  rc = -EIO;
->> -               goto errout20;
->> +               goto out;
->>          }
->>          sbi->ipaimap = ipaimap;
->>
->> @@ -99,7 +99,7 @@ int jfs_mount(struct super_block *sb)
->>           */
->>          if ((rc = diMount(ipaimap))) {
->>                  jfs_err("jfs_mount: diMount(ipaimap) failed w/rc = %d", rc);
->> -               goto errout21;
->> +               goto err_ipaimap;
->>          }
->>
->>          /*
->> @@ -108,7 +108,7 @@ int jfs_mount(struct super_block *sb)
->>          ipbmap = diReadSpecial(sb, BMAP_I, 0);
->>          if (ipbmap == NULL) {
->>                  rc = -EIO;
->> -               goto errout22;
->> +               goto err_umount_ipaimap;
->>          }
->>
->>          jfs_info("jfs_mount: ipbmap:0x%p", ipbmap);
->> @@ -120,7 +120,7 @@ int jfs_mount(struct super_block *sb)
->>           */
->>          if ((rc = dbMount(ipbmap))) {
->>                  jfs_err("jfs_mount: dbMount failed w/rc = %d", rc);
->> -               goto errout22;
->> +               goto err_ipbmap;
->>          }
->>
->>          /*
->> @@ -139,7 +139,7 @@ int jfs_mount(struct super_block *sb)
->>                  if (!ipaimap2) {
->>                          jfs_err("jfs_mount: Failed to read AGGREGATE_I");
->>                          rc = -EIO;
->> -                       goto errout35;
->> +                       goto err_umount_ipbmap;
->>                  }
->>                  sbi->ipaimap2 = ipaimap2;
->>
->> @@ -151,7 +151,7 @@ int jfs_mount(struct super_block *sb)
->>                  if ((rc = diMount(ipaimap2))) {
->>                          jfs_err("jfs_mount: diMount(ipaimap2) failed, rc = %d",
->>                                  rc);
->> -                       goto errout35;
->> +                       goto err_ipaimap2;
->>                  }
->>          } else
->>                  /* Secondary aggregate inode table is not valid */
->> @@ -168,7 +168,7 @@ int jfs_mount(struct super_block *sb)
->>                  jfs_err("jfs_mount: Failed to read FILESYSTEM_I");
->>                  /* open fileset secondary inode allocation map */
->>                  rc = -EIO;
->> -               goto errout40;
->> +               goto err_umount_ipaimap2;
->>          }
->>          jfs_info("jfs_mount: ipimap:0x%p", ipimap);
->>
->> @@ -178,41 +178,34 @@ int jfs_mount(struct super_block *sb)
->>          /* initialize fileset inode allocation map */
->>          if ((rc = diMount(ipimap))) {
->>                  jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
->> -               goto errout41;
->> +               goto err_ipimap;
->>          }
->>
->> -       goto out;
->> +       return rc;
->>
->>          /*
->>           *      unwind on error
->>           */
->> -      errout41:                /* close fileset inode allocation map inode */
->> +err_ipimap:
->> +       /* close fileset inode allocation map inode */
->>          diFreeSpecial(ipimap);
->> -
->> -      errout40:                /* fileset closed */
->> -
->> +err_umount_ipaimap2:
->>          /* close secondary aggregate inode allocation map */
->> -       if (ipaimap2) {
->> +       if (ipaimap2)
->>                  diUnmount(ipaimap2, 1);
->> +err_ipaimap2:
->> +       /* close aggregate inodes */
->> +       if (ipaimap2)
->>                  diFreeSpecial(ipaimap2);
->> -       }
->> -
->> -      errout35:
->> -
->> -       /* close aggregate block allocation map */
->> +err_umount_ipbmap:     /* close aggregate block allocation map */
->>          dbUnmount(ipbmap, 1);
->> +err_ipbmap:            /* close aggregate inodes */
->>          diFreeSpecial(ipbmap);
->> -
->> -      errout22:                /* close aggregate inode allocation map */
->> -
->> +err_umount_ipaimap:    /* close aggregate inode allocation map */
->>          diUnmount(ipaimap, 1);
->> -
->> -      errout21:                /* close aggregate inodes */
->> +err_ipaimap:           /* close aggregate inodes */
->>          diFreeSpecial(ipaimap);
->> -      errout20:                /* aggregate closed */
->> -
->> -      out:
->> -
->> +out:
->>          if (rc)
->>                  jfs_err("Mount JFS Failure: %d", rc);
->>
->> --
->> 2.25.1
->>
+On 07.09.21 12:10, Jan Beulich wrote:
+> Without announcing hvc0 as preferred it won't get used as long as tty0
+> gets registered earlier. This is particularly problematic with there no=
+t
+> being any screen output for PVH Dom0 when the screen is in graphics
+> mode, as the necessary information doesn't get conveyed yet from the
+> hypervisor.
+>=20
+> Follow PV's model, but be conservative and do this for Dom0 only for
+> now.
+>=20
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+> ---
+> Prior to 418492ba40b2 ("x86/virt/xen: Use guest_late_init to detect Xen=
+
+> PVH guest") x86_init.oem.arch_setup was already used by PVH, so I assum=
+e
+> the use of this hook is acceptable here.
+
+Yes, I think so.
+
+> Seeing that change, I wonder in how far setting xen_pvh to true only in=
+
+> xen_hvm_guest_late_init() can really work: This hook, as its name says,=
+
+> gets called pretty late; any decision taken earlier might have been
+> wrong. One such wrong decision is what gets added here - preferred
+> consoles won't be registered when taking that path. While adding a 2nd
+> call there might work, aiui they would better be registered prior to
+> parse_early_param(), i.e. before "earlyprintk=3D" gets evaluated.
+>=20
+> I also consider tying "detecting" PVH mode to the no-VGA and no-CMOS-RT=
+C
+> FADT flags as problematic looking forward: There may conceivably be
+> "legacy free" HVM guests down the road, yet they shouldn't be mistaken
+> for being PVH. Most of the XEN_X86_EMU_* controlled functionality would=
+
+> seem unsuitable for the same reason; presence/absence of
+> XENFEAT_hvm_pirqs (tied to XEN_X86_EMU_USE_PIRQ) might be sufficiently
+> reliable an indicator. Question there is whether the separation
+> introduced by Xen commit b96b50004804 ("x86: remove XENFEAT_hvm_pirqs
+> for PVHv2 guests") came early enough in the process of enabling PVHv2.
+
+Yes, it did. The boot path not using the PVH specific entry point was
+enabled with Xen 4.11, while commit b96b50004804 was in 4.9.
+
+
+Juergen
+
+--------------B81120A55C794E6A11CAA6AE
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------B81120A55C794E6A11CAA6AE--
+
+--KJGvBtqHlnedeq33aAE3U0cqUhtZBlVt0--
+
+--91iDXi0U6EUiXy5e5GnMRq1VY3EqTjDTl
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMlUQFAwAAAAAACgkQsN6d1ii/Ey8x
+iAf/fgB9XcFj3SYVqzq+hQfPHb/7f8TzC1lVTGPiQA7e9d4ro//aIspKnnpzSujRBBA1vbdcNgqS
+2g2xF8pJkE2idoYXUcIJbGr+/r+3mOjfqjQSCDC6OcoR1qBC8kTWChjjHw8Wufb8nqF7j4ilW30p
+kjVKta6xvUN7hSw6KIvjRrejw8SnjkgeESP8kLKEm71uWuCbR7URli2MI3G2lDORfIlwoRyBfETY
+Ti6vQNgYPU7Ol2i+syUPxhDdnfF96niNSKFyNqzETQMnteuoO+yxBwlAoejaP2zjIXDt2sHRkKvK
+0WcvpWYxl3qY51WgYc1ivB7G2Bk84fAO553ibr4OiA==
+=Xbvv
+-----END PGP SIGNATURE-----
+
+--91iDXi0U6EUiXy5e5GnMRq1VY3EqTjDTl--
