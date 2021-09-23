@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9384B4167DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BE74167DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243396AbhIWWOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhIWWOF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:14:05 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EFFC061574;
-        Thu, 23 Sep 2021 15:12:32 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id x27so32107158lfu.5;
-        Thu, 23 Sep 2021 15:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uzKfTb+iGUsH3mWhIrSbIbsPD44CEKOd50V1lDVVLdA=;
-        b=LCh/98K/jr97CoCn3AQApNer4bPQNBbqmOd2gYXSSbZE2Y6DWmQgIJM6wwPkH+Bn2h
-         UhvSxV1cbC3PsMIcXjlhDMwLTAsDFtcsnaznuPwrF5jgxdNhIrOcd+egsjJkWJmJT+iY
-         9zfwyZGpwQxk7yQny3BvSu7xBXHSOaynpyLL6YO/h+mKK7CtFHuT1XpdgmSj1TqOFkvd
-         XB2QKLy9snWd4PqESNJDOvbmhyMEQzh2YouhF+peJYyShpCCdWT15x0+BvLgIUkFFNZ5
-         miW4fI0ZkNqz5pUKo9c3wY4TPpJ8uzwJ5kgfSzwsZS3ft27Vv0hgsXhAHDyK/foCkM4I
-         zYGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uzKfTb+iGUsH3mWhIrSbIbsPD44CEKOd50V1lDVVLdA=;
-        b=G9uRaF64vuIOR6h42jJxCviFbPxUrkQ4ljkueqzLCoBLgqfYHyzqfT5pgw6gT+wJIm
-         USrgbct9d52Ba1ELPGt7R22f96N3UlAjP1VPzj++HFAH5JLQGMdrrC04B/Wyaomm8JFB
-         Adn0ENLZ35AW1Sw4ejsVbta18dsEnYTbe6SS75yAfWuJ6ZJ22TQURrAmZKyquAyA4s/K
-         VBLVqtiurXQxlqzaxrbvfZyK4wXK79c8MNVQMIkTeuZHVi+doXR1bKtn+KL64aTN59sY
-         zSHxgQEl5OuWF9lRUSxXaofxU6TE7Q0Zkr/krLzuMiGeCihf1Xr4exWrd9zDGZCR60PP
-         W1IQ==
-X-Gm-Message-State: AOAM5327NGM31a3DIO8u2Z2dqV/LwXAmeWpHzrQ41vIhsqM5y5UhHlBP
-        DGiRbxpQEfreQPwNzalYw2ujGLXo/vlCBKf/EATv8aHU7NY=
-X-Google-Smtp-Source: ABdhPJwCe68hYsNL0xBCm5+FwBvnV0A6IqGx4zL4pZFssd9TFn7I1EDkwLYqI3Pvner4QOM73k7I5anCUCH//3xv52w=
-X-Received: by 2002:ac2:514e:: with SMTP id q14mr6492757lfd.154.1632435151284;
- Thu, 23 Sep 2021 15:12:31 -0700 (PDT)
+        id S243421AbhIWWOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:14:16 -0400
+Received: from mga14.intel.com ([192.55.52.115]:44436 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243412AbhIWWOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 18:14:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="223597605"
+X-IronPort-AV: E=Sophos;i="5.85,317,1624345200"; 
+   d="scan'208";a="223597605"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 15:12:42 -0700
+X-IronPort-AV: E=Sophos;i="5.85,317,1624345200"; 
+   d="scan'208";a="514282857"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 15:12:41 -0700
+Date:   Thu, 23 Sep 2021 15:12:41 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <20210923221241.GG3053272@iweiny-DESK2.sc.intel.com>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUfvK3h8w+MmirDF@casper.infradead.org>
+ <YUo20TzAlqz8Tceg@cmpxchg.org>
+ <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpaTBJ/Jhz15S6a@casper.infradead.org>
+ <20210923004515.GD3053272@iweiny-DESK2.sc.intel.com>
+ <YUv3UEE9JZgD+A/D@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210921052821.91-1-caihuoqing@baidu.com> <20210921052821.91-2-caihuoqing@baidu.com>
-In-Reply-To: <20210921052821.91-2-caihuoqing@baidu.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 23 Sep 2021 19:12:20 -0300
-Message-ID: <CAOMZO5CDgFHVyVAF6a5WKwsAE60t5zBBu-T+hScUO6WsmTQUvQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] iio: imx8qxp-adc: Add driver support for NXP
- IMX8QXP ADC
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-iio@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUv3UEE9JZgD+A/D@casper.infradead.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cai,
+On Thu, Sep 23, 2021 at 04:41:04AM +0100, Matthew Wilcox wrote:
+> On Wed, Sep 22, 2021 at 05:45:15PM -0700, Ira Weiny wrote:
+> > On Tue, Sep 21, 2021 at 11:18:52PM +0100, Matthew Wilcox wrote:
+> > > +/**
+> > > + * page_slab - Converts from page to slab.
+> > > + * @p: The page.
+> > > + *
+> > > + * This function cannot be called on a NULL pointer.  It can be called
+> > > + * on a non-slab page; the caller should check is_slab() to be sure
+> > > + * that the slab really is a slab.
+> > > + *
+> > > + * Return: The slab which contains this page.
+> > > + */
+> > > +#define page_slab(p)		(_Generic((p),				\
+> > > +	const struct page *:	(const struct slab *)_compound_head(p), \
+> > > +	struct page *:		(struct slab *)_compound_head(p)))
+> > > +
+> > > +static inline bool is_slab(struct slab *slab)
+> > > +{
+> > > +	return test_bit(PG_slab, &slab->flags);
+> > > +}
+> > > +
+> > 
+> > I'm sorry, I don't have a dog in this fight and conceptually I think folios are
+> > a good idea...
+> > 
+> > But for this work, having a call which returns if a 'struct slab' really is a
+> > 'struct slab' seems odd and well, IMHO, wrong.  Why can't page_slab() return
+> > NULL if there is no slab containing that page?
+> 
+> No, this is a good question.
+> 
+> The way slub works right now is that if you ask for a "large" allocation,
+> it does:
+> 
+>         flags |= __GFP_COMP;
+>         page = alloc_pages_node(node, flags, order);
+> 
+> and returns page_address(page) (eventually; the code is more complex)
+> So when you call kfree(), it uses the PageSlab flag to determine if the
+> allocation was "large" or not:
+> 
+>         page = virt_to_head_page(x);
+>         if (unlikely(!PageSlab(page))) {
+>                 free_nonslab_page(page, object);
+>                 return;
+>         }
+>         slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
+> 
+> Now, you could say that this is a bad way to handle things, and every
+> allocation from slab should have PageSlab set,
 
-On Tue, Sep 21, 2021 at 2:29 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
+Yea basically.
 
-> +error_iio_device_register:
-> +       clk_disable_unprepare(adc->ipg_clk);
-> +error_adc_ipg_clk_enable:
-> +       clk_disable_unprepare(adc->clk);
-> +error_adc_clk_enable:
-> +       regulator_disable(adc->vref);
+So what makes 'struct slab' different from 'struct page' in an order 0
+allocation?  Am I correct in deducing that PG_slab is not set in that case?
 
-Please rename these labels to indicate the action that will be performed.
+> and it should use one of
+> the many other bits in page->flags to indicate whether it's a large
+> allocation or not.
 
-Something like this:
+Isn't the fact that it is a compound page enough to know that?
 
-error_ipg_clk_disable:
-       clk_disable_unprepare(adc->ipg_clk);
-error_adc_clk_disable:
-       clk_disable_unprepare(adc->clk);
-error_regulator_disable:
-       regulator_disable(adc->vref);
+> I may have feelings in that direction myself.
+> But I don't think I should be changing that in this patch.
+> 
+> Maybe calling this function is_slab() is the confusing thing.
+> Perhaps it should be called SlabIsLargeAllocation().  Not sure.
+
+Well that makes a lot more sense to me from an API standpoint but checking
+PG_slab is still likely to raise some eyebrows.
+
+Regardless I like the fact that the community is at least attempting to fix
+stuff like this.  Because adding types like this make it easier for people like
+me to understand what is going on.
+
+Ira
+
