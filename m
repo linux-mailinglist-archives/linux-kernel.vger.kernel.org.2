@@ -2,161 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A482C416237
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF36416233
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242082AbhIWPkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        id S242058AbhIWPkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbhIWPku (ORCPT
+        with ESMTP id S233143AbhIWPk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:40:50 -0400
-X-Greylist: delayed 213 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Sep 2021 08:39:19 PDT
-Received: from rockwork.org (rockwork.org [IPv6:2001:19f0:6001:1139:5400:2ff:feee:29a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46865C061574;
-        Thu, 23 Sep 2021 08:39:19 -0700 (PDT)
-Received: from [IPV6:2409:8a28:c70:7540:bfbe:7940:90e7:5b7] (unknown [IPv6:2409:8a28:c70:7540:bfbe:7940:90e7:5b7])
-        by rockwork.org (Postfix) with ESMTPSA id 8A1F11692DB;
-        Thu, 23 Sep 2021 15:42:02 +0000 (UTC)
-Message-ID: <f1955267-c009-4dea-970e-9145c7cd6dbc@rockwork.org>
-Date:   Thu, 23 Sep 2021 23:38:49 +0800
+        Thu, 23 Sep 2021 11:40:29 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DA7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:38:57 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 4B0471F4452E
+Subject: Re: next/master bisection: baseline.login on minnowboard-turbot-E3826
+To:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>
+References: <614c7bae.1c69fb81.6c8f4.489e@mx.google.com>
+Cc:     "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        linux-kernel@vger.kernel.org,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <9dc8c966-9a34-6d8d-b8da-640aec33eea9@collabora.com>
+Date:   Thu, 23 Sep 2021 16:38:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:93.0) Gecko/20100101
- Thunderbird/93.0
-Subject: Re: [PATCH v4 0/3] cgroup: New misc cgroup controller
-To:     Vipin Sharma <vipinsh@google.com>, tj@kernel.org, mkoutny@suse.com,
-        jacob.jun.pan@intel.com, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        brian.welty@intel.com
-Cc:     corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210330044206.2864329-1-vipinsh@google.com>
-From:   Xingyou Chen <rockrush@rockwork.org>
-In-Reply-To: <20210330044206.2864329-1-vipinsh@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <614c7bae.1c69fb81.6c8f4.489e@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/30 12:42, Vipin Sharma wrote:
-> Hello,
-> 
-> This patch series is creating a new misc cgroup controller for limiting
-> and tracking of resources which are not abstract like other cgroup
-> controllers.
-> 
-> This controller was initially proposed as encryption_id but after the
-> feedbacks and use cases for other resources, it is now changed to misc
-> cgroup.
-> https://lore.kernel.org/lkml/20210108012846.4134815-2-vipinsh@google.com/
-> 
-> Most of the cloud infrastructure use cgroups for knowing the host state,
-> track the resources usage, enforce limits on them, etc. They use this
-> info to optimize work allocation in the fleet and make sure no rogue job
-> consumes more than it needs and starves others.
-> 
-> There are resources on a system which are not abstract enough like other
-> cgroup controllers and are available in a limited quantity on a host.
-> 
-> One of them is Secure Encrypted Virtualization (SEV) ASID on AMD CPU.
-> SEV ASIDs are used for creating encrypted VMs. SEV is mostly be used by
-> the cloud providers for providing confidential VMs. Since SEV ASIDs are
-> limited, there is a need to schedule encrypted VMs in a cloud
-> infrastructure based on SEV ASIDs availability and also to limit its
-> usage.
-> 
-> There are similar requirements for other resource types like TDX keys,
-> IOASIDs and SEID.
-> 
-> Adding these resources to a cgroup controller is a natural choice with
-> least amount of friction. Cgroup itself says it is a mechanism to
-> distribute system resources along the hierarchy in a controlled
-> mechanism and configurable manner. Most of the resources in cgroups are
-> abstracted enough but there are still some resources which are not
-> abstract but have limited availability or have specific use cases.
-> 
-> Misc controller is a generic controller which can be used by these
-> kinds of resources.
+Hi Thomas,
 
-Will we make this dynamic? Let resources be registered via something
-like misc_cg_res_{register,unregister}, at compile time or runtime,
-instead of hard coded into misc_res_name/misc_res_capacity etc.
+Please see the bisection report below about a kernel panic on
+minnowboard-turbot-E3826 right after starting init.
 
-There are needs as noted in drmcg session earlier this year. We may
-make misc cgroup stable, and let device drivers to register their
-own resources.
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
 
-This may make misc cgroup controller more complex than expected,
-but simpler than adding multiple similar controllers.
+Some more details can be found here:
 
+  https://linux.kernelci.org/test/case/id/614c1a1e98c5ed9ffc99a2e9/
+
+The same issue appears to be reproducible with QEMU:
+
+  https://linux.kernelci.org/test/case/id/614c71a50d39b53eee99a2f8/
+
+Please let us know if you need help debugging the issue or if you
+have a fix to try.
+
+Best wishes,
+Guillaume
+
+
+GitHub: https://github.com/kernelci/kernelci-project/issues/53
+
+
+On 23/09/2021 14:05, KernelCI bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 > 
-> One suggestion was to use BPF for this purpose, however, there are
-> couple of things which might not be addressed with BPF:
-> 1. Which controller to use in v1 case? These are not abstract resources
->     so in v1 where each controller have their own hierarchy it might not
->     be easy to identify the best controller to use for BPF.
+> next/master bisection: baseline.login on minnowboard-turbot-E3826
 > 
-> 2. Abstracting out a single BPF program which can help with all of the
->     resources types might not be possible, because resources we are
->     working with are not similar and abstract enough, for example network
->     packets, and there will be different places in the source code to use
->     these resources.
+> Summary:
+>   Start:      bc5aa70f2699 Add linux-next specific files for 20210923
+>   Plain log:  https://storage.kernelci.org/next/master/next-20210923/x86_64/x86_64_defconfig/clang-12/lab-collabora/baseline-minnowboard-turbot-E3826.txt
+>   HTML log:   https://storage.kernelci.org/next/master/next-20210923/x86_64/x86_64_defconfig/clang-12/lab-collabora/baseline-minnowboard-turbot-E3826.html
+>   Result:     2af07f3a6e9f x86/fpu/signal: Change return type of copy_fpregs_to_sigframe() helpers to boolean
 > 
-> A new cgroup controller tends to give much easier and well integrated
-> solution when it comes to scheduling and limiting a resource with
-> existing tools in a cloud infrastructure.
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
 > 
-> Changes in RFC v4:
-> 1. Misc controller patch is split into two patches. One for generic misc
->     controller and second for adding SEV and SEV-ES resource.
-> 2. Using READ_ONCE and WRITE_ONCE for variable accesses.
-> 3. Updated documentation.
-> 4. Changed EXPORT_SYMBOL to EXPORT_SYMBOL_GPL.
-> 5. Included cgroup header in misc_cgroup.h.
-> 6. misc_cg_reduce_charge changed to misc_cg_cancel_charge.
-> 7. misc_cg set to NULL after uncharge.
-> 8. Added WARN_ON if misc_cg not NULL before charging in SEV/SEV-ES.
+> Parameters:
+>   Tree:       next
+>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   Branch:     master
+>   Target:     minnowboard-turbot-E3826
+>   CPU arch:   x86_64
+>   Lab:        lab-collabora
+>   Compiler:   clang-12
+>   Config:     x86_64_defconfig
+>   Test case:  baseline.login
 > 
-> Changes in RFC v3:
-> 1. Changed implementation to support 64 bit counters.
-> 2. Print kernel logs only once per resource per cgroup.
-> 3. Capacity can be set less than the current usage.
+> Breaking commit found:
 > 
-> Changes in RFC v2:
-> 1. Documentation fixes.
-> 2. Added kernel log messages.
-> 3. Changed charge API to treat misc_cg as input parameter.
-> 4. Added helper APIs to get and release references on the cgroup.
+> -------------------------------------------------------------------------------
+> commit 2af07f3a6e9fb81331421ca24b26a96180d792dd
+> Author: Thomas Gleixner <tglx@linutronix.de>
+> Date:   Wed Sep 8 15:29:34 2021 +0200
 > 
-> [1] https://lore.kernel.org/lkml/20210218195549.1696769-1-vipinsh@google.com
-> [2] https://lore.kernel.org/lkml/20210302081705.1990283-1-vipinsh@google.com/
-> [3] https://lore.kernel.org/lkml/20210304231946.2766648-1-vipinsh@google.com/
+>     x86/fpu/signal: Change return type of copy_fpregs_to_sigframe() helpers to boolean
+>     
+>     Now that copy_fpregs_to_sigframe() returns boolean the individual return
+>     codes in the related helper functions do not make sense anymore. Change
+>     them to return boolean success/fail.
+>     
+>     Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>     Signed-off-by: Borislav Petkov <bp@suse.de>
+>     Link: https://lkml.kernel.org/r/20210908132525.794334915@linutronix.de
 > 
-> Vipin Sharma (3):
->    cgroup: Add misc cgroup controller
->    cgroup: Miscellaneous cgroup documentation.
->    svm/sev: Register SEV and SEV-ES ASIDs to the misc controller
+> diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+> index 7ce396dcc942..1d10fe9b5b6b 100644
+> --- a/arch/x86/kernel/fpu/signal.c
+> +++ b/arch/x86/kernel/fpu/signal.c
+> @@ -65,7 +65,7 @@ static inline int check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
+>  /*
+>   * Signal frame handlers.
+>   */
+> -static inline int save_fsave_header(struct task_struct *tsk, void __user *buf)
+> +static inline bool save_fsave_header(struct task_struct *tsk, void __user *buf)
+>  {
+>  	if (use_fxsr()) {
+>  		struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
+> @@ -82,18 +82,19 @@ static inline int save_fsave_header(struct task_struct *tsk, void __user *buf)
+>  		if (__copy_to_user(buf, &env, sizeof(env)) ||
+>  		    __put_user(xsave->i387.swd, &fp->status) ||
+>  		    __put_user(X86_FXSR_MAGIC, &fp->magic))
+> -			return -1;
+> +			return false;
+>  	} else {
+>  		struct fregs_state __user *fp = buf;
+>  		u32 swd;
+> +
+>  		if (__get_user(swd, &fp->swd) || __put_user(swd, &fp->status))
+> -			return -1;
+> +			return false;
+>  	}
+>  
+> -	return 0;
+> +	return true;
+>  }
+>  
+> -static inline int save_xstate_epilog(void __user *buf, int ia32_frame)
+> +static inline bool save_xstate_epilog(void __user *buf, int ia32_frame)
+>  {
+>  	struct xregs_state __user *x = buf;
+>  	struct _fpx_sw_bytes *sw_bytes;
+> @@ -131,7 +132,7 @@ static inline int save_xstate_epilog(void __user *buf, int ia32_frame)
+>  
+>  	err |= __put_user(xfeatures, (__u32 __user *)&x->header.xfeatures);
+>  
+> -	return err;
+> +	return !err;
+>  }
+>  
+>  static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
+> @@ -218,10 +219,10 @@ bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
+>  	}
+>  
+>  	/* Save the fsave header for the 32-bit frames. */
+> -	if ((ia32_fxstate || !use_fxsr()) && save_fsave_header(tsk, buf))
+> +	if ((ia32_fxstate || !use_fxsr()) && !save_fsave_header(tsk, buf))
+>  		return false;
+>  
+> -	if (use_fxsr() && save_xstate_epilog(buf_fx, ia32_fxstate))
+> +	if (use_fxsr() && !save_xstate_epilog(buf_fx, ia32_fxstate))
+>  		return false;
+>  
+>  	return true;
+> -------------------------------------------------------------------------------
 > 
->   Documentation/admin-guide/cgroup-v1/index.rst |   1 +
->   Documentation/admin-guide/cgroup-v1/misc.rst  |   4 +
->   Documentation/admin-guide/cgroup-v2.rst       |  73 +++-
->   arch/x86/kvm/svm/sev.c                        |  70 ++-
->   arch/x86/kvm/svm/svm.h                        |   1 +
->   include/linux/cgroup_subsys.h                 |   4 +
->   include/linux/misc_cgroup.h                   | 132 ++++++
->   init/Kconfig                                  |  14 +
->   kernel/cgroup/Makefile                        |   1 +
->   kernel/cgroup/misc.c                          | 407 ++++++++++++++++++
->   10 files changed, 695 insertions(+), 12 deletions(-)
->   create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
->   create mode 100644 include/linux/misc_cgroup.h
->   create mode 100644 kernel/cgroup/misc.c
 > 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [58e2cf5d794616b84f591d4d1276c8953278ce24] init: Revert accidental changes to print irqs_disabled()
+> git bisect good 58e2cf5d794616b84f591d4d1276c8953278ce24
+> # bad: [bc5aa70f26995791074a00da8b57ead3a9c1a646] Add linux-next specific files for 20210923
+> git bisect bad bc5aa70f26995791074a00da8b57ead3a9c1a646
+> # good: [18b9b2db40708ef6bbcaa9b8d8d10b7bb21e26e6] Merge branch 'nand/next' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
+> git bisect good 18b9b2db40708ef6bbcaa9b8d8d10b7bb21e26e6
+> # bad: [bcb42fa2db7240d8167cb1e7179f6377e468145e] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git
+> git bisect bad bcb42fa2db7240d8167cb1e7179f6377e468145e
+> # good: [c1d789f5e5155df5f629b95d93ac830fd7de97d6] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+> git bisect good c1d789f5e5155df5f629b95d93ac830fd7de97d6
+> # good: [ba8b54a3a086472c81ba2b4cda62dbd4adab45f6] Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
+> git bisect good ba8b54a3a086472c81ba2b4cda62dbd4adab45f6
+> # bad: [dcb7b66df80dc908f7dded6e8839093169e56a7b] Merge branch 'tip-x86-misc' into tip-auto-latest
+> git bisect bad dcb7b66df80dc908f7dded6e8839093169e56a7b
+> # good: [ccb4a51cd81f7ab035ba25df2c46f6f3c79f180d] Merge branch 'sched/core'
+> git bisect good ccb4a51cd81f7ab035ba25df2c46f6f3c79f180d
+> # bad: [1acd24c77ba4ec1f141f5175d19ae7275ce311d0] Merge branch 'x86/fpu'
+> git bisect bad 1acd24c77ba4ec1f141f5175d19ae7275ce311d0
+> # good: [fcfb7163329ce832aafef31f26345ef5e8642a17] x86/fpu/signal: Move xstate clearing out of copy_fpregs_to_sigframe()
+> git bisect good fcfb7163329ce832aafef31f26345ef5e8642a17
+> # bad: [be0040144152ed834c369a7830487e5ee4f27080] x86/fpu/signal: Change return code of check_xstate_in_sigframe() to boolean
+> git bisect bad be0040144152ed834c369a7830487e5ee4f27080
+> # bad: [ee4ecdfbd28954086a09740dc931c10c93e39370] x86/signal: Change return type of restore_sigcontext() to boolean
+> git bisect bad ee4ecdfbd28954086a09740dc931c10c93e39370
+> # bad: [2af07f3a6e9fb81331421ca24b26a96180d792dd] x86/fpu/signal: Change return type of copy_fpregs_to_sigframe() helpers to boolean
+> git bisect bad 2af07f3a6e9fb81331421ca24b26a96180d792dd
+> # good: [052adee668284b67105375c0a524f16a423f1424] x86/fpu/signal: Change return type of copy_fpstate_to_sigframe() to boolean
+> git bisect good 052adee668284b67105375c0a524f16a423f1424
+> # first bad commit: [2af07f3a6e9fb81331421ca24b26a96180d792dd] x86/fpu/signal: Change return type of copy_fpregs_to_sigframe() helpers to boolean
+> -------------------------------------------------------------------------------
