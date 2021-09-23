@@ -2,86 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1169D416732
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3826416734
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243279AbhIWVNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S243263AbhIWVNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243221AbhIWVNV (ORCPT
+        with ESMTP id S243221AbhIWVNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:13:21 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140A8C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:11:49 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id g41so31325042lfv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:11:48 -0700 (PDT)
+        Thu, 23 Sep 2021 17:13:49 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DB5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:12:17 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id z5so1207933ybj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=p1Ur9mDQJrxxxKKtvUNbsObnagkgoIKu1zTSJFMJRAI=;
-        b=OWzTBJO0Oxz9T1eiG1HmlQm+jlqfImdO27LbZ/sOl2nug8QeTffpfDP0O7pqzc7ywc
-         VW0Po3SOVCC7sN/1WlP0hLUzJ6oNYgm7uimAdkt/+4DnjqEDzkKfhp0ZPCsq0ytKmpA3
-         ERNs4s+hSSCH/pk1YfRfOpBsQ6YxwPuo1HhxgqfWVsNZwvKYJH+4mOvnCUpmxHGF5x89
-         fXfvMrfbx8jDO3JpYL/h+nJOxMlkn5WmOGicPoSTSdz8F+MIqT14+MPHg2uJeoZIZGqL
-         XmZEquEj7NXUbWSRk6kA4xJst+6DO8iQh5Vi+RVm3MVtJeW0dZzIa7oP3qYiJ4LFLh5+
-         cy3A==
+        bh=e4I0eibrZ4QXFLaZnyg/T68NEGU52nG0wW6n1XbQIjQ=;
+        b=dG37ybSuZM/2PWO2WUAlCFTgei4CWvCR+/3V/ba5AqbouIgMtK6R/N88t2fL6e8ES2
+         HXlfmDfLIxlNVt61DT2aeO3iHi1ERInV9PLlsO/SPeZ8qseDFM20DxIJnOXzZymLl5ma
+         Sf4KMe1TIhD6jwCpVfOKcATIO++tuc9tkqgIc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=p1Ur9mDQJrxxxKKtvUNbsObnagkgoIKu1zTSJFMJRAI=;
-        b=uLdY4z+Gjk03HnPUG5bAD0x73BPak7PXiaQ6C+8tzmVWi9Gc0L4EI7K1ho5f+3KIiH
-         BzXJb5iscO9l90h6DRSqC0fUCib9o/h9Q42SS5gRi/uQH07ejJh+f0pXHWr56m9I94Xl
-         y8KLhatPns/vYDfht7ZColGn+xcKs8txyUGpMZUxE2Ko/Bob5xesuKxxsx2CECxq2GNu
-         yZ1OchX2tm/XY7+vA8CddvHvM2LUcAEzM7CC5jhDTE8dQLFC4Jgm5sccagT9/nBdgYHs
-         znMob68ABgn5IwpI/8a3vQm7qZ50QkyrOekDTvAAHg6LBAJ6/60i/RF7t+ovadON6dUW
-         58yg==
-X-Gm-Message-State: AOAM533DiT9fG89uM90FcG4LatFCG8MGMbmMFgj9iDFxW6WBn9uSzaGi
-        yL0AfM+JoYh9G2lweuZiwYONAScoJ/7PEesbW4ojWw==
-X-Google-Smtp-Source: ABdhPJwPcligFsjGw59I+AviOKzPYmC+dBi5fWpJYxXSCjsw3GvUu/YonGc2AXAegTZ6biPRjBEzt7SUntjsGqIJNew=
-X-Received: by 2002:a05:651c:4ca:: with SMTP id e10mr7750969lji.259.1632431507415;
- Thu, 23 Sep 2021 14:11:47 -0700 (PDT)
+        bh=e4I0eibrZ4QXFLaZnyg/T68NEGU52nG0wW6n1XbQIjQ=;
+        b=hkR1mY4N+oSaNMrCCEcjpeqPWF3IBOWCcftN/ur0gO9+kkXhocFCWcmnzCnP4qTZ28
+         RucfsZA3r9AngVG3a3C3wmwlIPybde4M5UKOoX52gELxuwVxYb5RhhAelUsEZ7b9ZOEI
+         NrXdYTxV1v7GXn6Tx+OMR3PesT8zIF7ssgaNc5PbjfXHruOtZZEd85ANKB1GmESOVYZc
+         Om4fsCnLlXolAlGdopIy+vLSQ1ZHnASMIGXXF2GnfPCjpbG4qZUyHZdqVbZ+12QXNX1j
+         idYjAMqZkaSMfEEwEHyBl8hC8ZYvTysXF1geYExWZOg+nxCtJ51c5s2MgiQE59X4o7Ut
+         ensw==
+X-Gm-Message-State: AOAM530VMXArpBejdVdoi9BbjYmKKtwaoiREbM8ztKDz/jckPgSec1e2
+        SzfH3In5PuAF1sjmBhkzFPZon31CSMbGbiqVm++bhQ==
+X-Google-Smtp-Source: ABdhPJzPbZJuTOrMwImBU82x1iGNKaxl7ZrrpRIXcHLQEZ89VXGY0DTN1rpeXB3OFka4syEsC81GUEXozb35nSZ2MSQ=
+X-Received: by 2002:a25:748c:: with SMTP id p134mr7788992ybc.361.1632431536689;
+ Thu, 23 Sep 2021 14:12:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210923161450.15278-1-konrad.dybcio@somainline.org> <20210923161450.15278-2-konrad.dybcio@somainline.org>
-In-Reply-To: <20210923161450.15278-2-konrad.dybcio@somainline.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 23 Sep 2021 23:11:36 +0200
-Message-ID: <CACRpkdZ5+ZKd0KKRfkhoit5jbwqsBnMq76MnCdtv3tvzCdrOMQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] pinctrl: qcom: Add SM6350 pinctrl driver
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
-        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
-        Shevchenko <andy.shevchenko@gmail.com>," 
-        <~postmarketos/upstreaming@lists.sr.ht>,
-        Martin Botka <martin.botka@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <cover.1632420430.git.leonro@nvidia.com> <e7708737fadf4fe6f152afc76145c728c201adad.1632420430.git.leonro@nvidia.com>
+In-Reply-To: <e7708737fadf4fe6f152afc76145c728c201adad.1632420430.git.leonro@nvidia.com>
+From:   Edwin Peer <edwin.peer@broadcom.com>
+Date:   Thu, 23 Sep 2021 14:11:40 -0700
+Message-ID: <CAKOOJTz4A2ER8MQE1dW27Spocds09SYafjeuLcFDJ0nL6mKyOw@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/6] bnxt_en: Check devlink allocation and
+ registration status
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Igor Russkikh <irusskikh@marvell.com>,
+        intel-wired-lan@lists.osuosl.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-scsi@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        netdev <netdev@vger.kernel.org>,
+        Sathya Perla <sathya.perla@broadcom.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 6:15 PM Konrad Dybcio
-<konrad.dybcio@somainline.org> wrote:
-
-> This adds pincontrol driver for tlmm block found in SM6350 SoC
+On Thu, Sep 23, 2021 at 11:13 AM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> This patch is based on downstream copyleft code.
+> From: Leon Romanovsky <leonro@nvidia.com>
 >
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> devlink is a software interface that doesn't depend on any hardware
+> capabilities. The failure in SW means memory issues, wrong parameters,
+> programmer error e.t.c.
+>
+> Like any other such interface in the kernel, the returned status of
+> devlink APIs should be checked and propagated further and not ignored.
+>
+> Fixes: 4ab0c6a8ffd7 ("bnxt_en: add support to enable VF-representors")
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/net/ethernet/broadcom/bnxt/bnxt.c         |  5 ++++-
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 13 ++++++-------
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h | 13 -------------
+>  3 files changed, 10 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> index 037767b370d5..4c483fd91dbe 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> @@ -13370,7 +13370,9 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>         }
+>
+>         bnxt_inv_fw_health_reg(bp);
+> -       bnxt_dl_register(bp);
+> +       rc = bnxt_dl_register(bp);
+> +       if (rc)
+> +               goto init_err_dl;
+>
+>         rc = register_netdev(dev);
+>         if (rc)
+> @@ -13390,6 +13392,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>
+>  init_err_cleanup:
+>         bnxt_dl_unregister(bp);
+> +init_err_dl:
+>         bnxt_shutdown_tc(bp);
+>         bnxt_clear_int_mode(bp);
+>
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+> index bf7d3c17049b..dc0851f709f5 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+> @@ -134,7 +134,7 @@ void bnxt_dl_fw_reporters_create(struct bnxt *bp)
+>  {
+>         struct bnxt_fw_health *health = bp->fw_health;
+>
+> -       if (!bp->dl || !health)
+> +       if (!health)
+>                 return;
+>
+>         if (!(bp->fw_cap & BNXT_FW_CAP_HOT_RESET) || health->fw_reset_reporter)
+> @@ -188,7 +188,7 @@ void bnxt_dl_fw_reporters_destroy(struct bnxt *bp, bool all)
+>  {
+>         struct bnxt_fw_health *health = bp->fw_health;
+>
+> -       if (!bp->dl || !health)
+> +       if (!health)
+>                 return;
+>
+>         if ((all || !(bp->fw_cap & BNXT_FW_CAP_HOT_RESET)) &&
+> @@ -781,6 +781,7 @@ int bnxt_dl_register(struct bnxt *bp)
+>  {
+>         const struct devlink_ops *devlink_ops;
+>         struct devlink_port_attrs attrs = {};
+> +       struct bnxt_dl *bp_dl;
+>         struct devlink *dl;
+>         int rc;
+>
+> @@ -795,7 +796,9 @@ int bnxt_dl_register(struct bnxt *bp)
+>                 return -ENOMEM;
+>         }
+>
+> -       bnxt_link_bp_to_dl(bp, dl);
+> +       bp->dl = dl;
+> +       bp_dl = devlink_priv(dl);
+> +       bp_dl->bp = bp;
+>
+>         /* Add switchdev eswitch mode setting, if SRIOV supported */
+>         if (pci_find_ext_capability(bp->pdev, PCI_EXT_CAP_ID_SRIOV) &&
+> @@ -826,7 +829,6 @@ int bnxt_dl_register(struct bnxt *bp)
+>  err_dl_port_unreg:
+>         devlink_port_unregister(&bp->dl_port);
+>  err_dl_free:
+> -       bnxt_link_bp_to_dl(bp, NULL);
+>         devlink_free(dl);
+>         return rc;
+>  }
+> @@ -835,9 +837,6 @@ void bnxt_dl_unregister(struct bnxt *bp)
+>  {
+>         struct devlink *dl = bp->dl;
+>
+> -       if (!dl)
+> -               return;
+> -
 
-Patch applied for v5.16!
+minor nit: There's obviously nothing incorrect about doing this (and
+adding the additional error label in the cleanup code above), but bnxt
+has generally adopted a style of having cleanup functions being
+idempotent. It generally makes error handling simpler and less error
+prone.
 
-Yours,
-Linus Walleij
+>         if (BNXT_PF(bp)) {
+>                 bnxt_dl_params_unregister(bp);
+>                 devlink_port_unregister(&bp->dl_port);
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
+> index d889f240da2b..406dc655a5fc 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
+> @@ -20,19 +20,6 @@ static inline struct bnxt *bnxt_get_bp_from_dl(struct devlink *dl)
+>         return ((struct bnxt_dl *)devlink_priv(dl))->bp;
+>  }
+>
+> -/* To clear devlink pointer from bp, pass NULL dl */
+> -static inline void bnxt_link_bp_to_dl(struct bnxt *bp, struct devlink *dl)
+> -{
+> -       bp->dl = dl;
+> -
+> -       /* add a back pointer in dl to bp */
+> -       if (dl) {
+> -               struct bnxt_dl *bp_dl = devlink_priv(dl);
+> -
+> -               bp_dl->bp = bp;
+> -       }
+> -}
+> -
+>  #define NVM_OFF_MSIX_VEC_PER_PF_MAX    108
+>  #define NVM_OFF_MSIX_VEC_PER_PF_MIN    114
+>  #define NVM_OFF_IGNORE_ARI             164
+> --
+> 2.31.1
+>
+
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+
+Regards,
+Edwin Peer
