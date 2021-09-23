@@ -2,68 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACBB41558D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1817F415591
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238943AbhIWCvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 22:51:18 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:35344 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238859AbhIWCvP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 22:51:15 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1095)
-        id A96792089EE2; Wed, 22 Sep 2021 19:49:44 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A96792089EE2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1632365384;
-        bh=xLdsl8kzcMimc82CMKplU0g9FfAdCqs4Pu32SbQeCEE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VmLDghvMOMaar/xy4oNVDrTSqTn1kSdaJeEQDQMbBKJhEFZ1tzX+9xBHQgvWlUGKK
-         hDwQ4dXCehdZLDGP/friH+rvyOL5zDC9sN8jx0PksOkKAqI+jzpPU/6De7y1lQasc8
-         b79lFP9YxU7dC2G6i0ZViHG7tx36/Jrf3uCM6+k8=
-Date:   Wed, 22 Sep 2021 19:49:44 -0700
-From:   Muhammad Falak Wani <mwani@linux.microsoft.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Muhammad Falak R Wani <falakreyaz@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Use sysconf to simplify
- libbpf_num_possible_cpus
-Message-ID: <20210923024944.GA446@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20210922070748.21614-1-falakreyaz@gmail.com>
- <ef0f23d0-456a-70b0-1ef9-2615a5528278@iogearbox.net>
- <CAEf4Bza6Bsee1i_ypbDogG5MsVFGW9pnatxHCn9PycW9eP2Gkw@mail.gmail.com>
+        id S238951AbhIWCv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 22:51:58 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:44332 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238928AbhIWCv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 22:51:57 -0400
+Received: from BC-Mail-Ex30.internal.baidu.com (unknown [172.31.51.24])
+        by Forcepoint Email with ESMTPS id 5E0E8D2FE4E6757A21E8;
+        Thu, 23 Sep 2021 10:50:12 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex30.internal.baidu.com (172.31.51.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Thu, 23 Sep 2021 10:50:12 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Thu, 23 Sep 2021 10:50:11 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] phy: amlogic: Kconfig: Add configuration menu for Amlogic phy drivers
+Date:   Thu, 23 Sep 2021 10:50:04 +0800
+Message-ID: <20210923025005.136-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bza6Bsee1i_ypbDogG5MsVFGW9pnatxHCn9PycW9eP2Gkw@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex31.internal.baidu.com (172.31.51.25) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > This approach is unfortunately broken, see also commit e00c7b216f34 ("bpf: fix
-> > multiple issues in selftest suite and samples") for more details:
-> 
-> Oh, that predates me. Thanks, Daniel!
-Thank you Daniel for the context. 
+Adding a configuration menu to hold many Amlogic phy drivers
+helps to make the menu display more concise.
 
-> 
-> Sorry, Muhammad, seems like current implementation is there for a
-> reason and will have to stay. Thanks a lot for working on this,
-> though. Hopefully you can help with other issues, though.
-> 
-No worries at all, it was a good experience for me & I will
-try to help here and there for sure.
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/phy/amlogic/Kconfig | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-Thank you again!
+diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
+index db5d0cd757e3..f16802831d56 100644
+--- a/drivers/phy/amlogic/Kconfig
++++ b/drivers/phy/amlogic/Kconfig
+@@ -2,10 +2,12 @@
+ #
+ # Phy drivers for Amlogic platforms
+ #
++menu "PHY drivers for Amlogic platforms"
++	depends on OF && (ARCH_MESON || COMPILE_TEST)
++
+ config PHY_MESON8B_USB2
+ 	tristate "Meson8, Meson8b, Meson8m2 and GXBB USB2 PHY driver"
+ 	default ARCH_MESON
+-	depends on OF && (ARCH_MESON || COMPILE_TEST)
+ 	depends on USB_SUPPORT
+ 	select USB_COMMON
+ 	select GENERIC_PHY
+@@ -18,7 +20,6 @@ config PHY_MESON8B_USB2
+ config PHY_MESON_GXL_USB2
+ 	tristate "Meson GXL and GXM USB2 PHY drivers"
+ 	default ARCH_MESON
+-	depends on OF && (ARCH_MESON || COMPILE_TEST)
+ 	depends on USB_SUPPORT
+ 	select GENERIC_PHY
+ 	select REGMAP_MMIO
+@@ -30,7 +31,6 @@ config PHY_MESON_GXL_USB2
+ config PHY_MESON_G12A_USB2
+ 	tristate "Meson G12A USB2 PHY driver"
+ 	default ARCH_MESON
+-	depends on OF && (ARCH_MESON || COMPILE_TEST)
+ 	select GENERIC_PHY
+ 	select REGMAP_MMIO
+ 	help
+@@ -41,7 +41,6 @@ config PHY_MESON_G12A_USB2
+ config PHY_MESON_G12A_USB3_PCIE
+ 	tristate "Meson G12A USB3+PCIE Combo PHY driver"
+ 	default ARCH_MESON
+-	depends on OF && (ARCH_MESON || COMPILE_TEST)
+ 	select GENERIC_PHY
+ 	select REGMAP_MMIO
+ 	help
+@@ -52,7 +51,6 @@ config PHY_MESON_G12A_USB3_PCIE
+ config PHY_MESON_AXG_PCIE
+ 	tristate "Meson AXG PCIE PHY driver"
+ 	default ARCH_MESON
+-	depends on OF && (ARCH_MESON || COMPILE_TEST)
+ 	select GENERIC_PHY
+ 	select REGMAP_MMIO
+ 	help
+@@ -63,7 +61,6 @@ config PHY_MESON_AXG_PCIE
+ config PHY_MESON_AXG_MIPI_PCIE_ANALOG
+ 	tristate "Meson AXG MIPI + PCIE analog PHY driver"
+ 	default ARCH_MESON
+-	depends on OF && (ARCH_MESON || COMPILE_TEST)
+ 	select GENERIC_PHY
+ 	select REGMAP_MMIO
+ 	select GENERIC_PHY_MIPI_DPHY
+@@ -75,7 +72,6 @@ config PHY_MESON_AXG_MIPI_PCIE_ANALOG
+ config PHY_MESON_AXG_MIPI_DPHY
+ 	tristate "Meson AXG MIPI DPHY driver"
+ 	default ARCH_MESON
+-	depends on OF && (ARCH_MESON || COMPILE_TEST)
+ 	select GENERIC_PHY
+ 	select REGMAP_MMIO
+ 	select GENERIC_PHY_MIPI_DPHY
+@@ -83,3 +79,5 @@ config PHY_MESON_AXG_MIPI_DPHY
+ 	  Enable this to support the Meson MIPI DPHY found in Meson AXG
+ 	  SoCs.
+ 	  If unsure, say N.
++
++endmenu
+-- 
+2.25.1
 
--mfrw
