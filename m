@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E86A415E33
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9E9415E36
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241001AbhIWMUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:20:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56452 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240825AbhIWMUt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:20:49 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 894EC2235E;
-        Thu, 23 Sep 2021 12:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632399557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gxpf7d8Oowqt1Lj8qf+yCS9JtOiokgvQEJNA55aMtZI=;
-        b=ATobTh2vYzGRTEHa/xKE3U1CQ0Fum9fY8Tr6buJPVfVTJx8V0HgE+WbG06fiiZ2fMrY7KE
-        QqA9rJ+HKhxRNAKe0uWBr4kr7hdw2QTjvIKXOTC1YoYkE6+pEKIjJ4+x2vkNwJteIojejJ
-        a80p9elh7lABlzOA8xcFXplPMVcKxlI=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay1.suse.de (Postfix) with ESMTPS id 6CBFE25D3C;
-        Thu, 23 Sep 2021 12:19:17 +0000 (UTC)
-Date:   Thu, 23 Sep 2021 14:19:17 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Peter Zijlstra <peterz@infradead.org>, gor@linux.ibm.com,
-        jpoimboe@redhat.com, jikos@kernel.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org
-Subject: Re: [RFC][PATCH 5/7] sched,livepatch: Use wake_up_if_idle()
-Message-ID: <YUxwxUPLs0ig6d5S@alley>
-References: <20210922110506.703075504@infradead.org>
- <20210922110836.185239814@infradead.org>
- <alpine.LSU.2.21.2109221458230.442@pobox.suse.cz>
+        id S241011AbhIWMVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:21:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240874AbhIWMVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 08:21:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E9CF061248;
+        Thu, 23 Sep 2021 12:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632399608;
+        bh=7Dn1m/WquBO+/nQ4qhEL1e/bHnXVfgwZKIrc7iuaGOk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Ab2LsqJWjrgjyMW72WydsSc1heND+Vgl9kfkNcskaVtSOQpBHmYrquUYwSNl4KBwm
+         oAN75atDNlGBQumO0813jf1S7sm9I7mVzxVCOYNJoYZ8OVUDqjl4SkNZGdLMZrpNQe
+         yKjGMUwSn8vP7/2beh/X2glTO35/THUknESPmjiH8Mm3jgRbzHpE0q53jot/UwxuRU
+         Kf+vo0bJ4TpBoh2tsfaW+0OOUiJfoqayA2q/RXO1NYH4NQPYfA5U7fNSZHxfWH8jsz
+         n6cfljF6rsgcCTUgFl4pjh2PIqnmTtyjaJCJd6dPdSybWljtUciuWaoyNHjWNdEJqq
+         VjNbBTAlaSeFA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E05C360952;
+        Thu, 23 Sep 2021 12:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2109221458230.442@pobox.suse.cz>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v1 net 0/1] net: mscc: ocelot: broadcast storm fixup
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163239960791.10392.14381330842241900586.git-patchwork-notify@kernel.org>
+Date:   Thu, 23 Sep 2021 12:20:07 +0000
+References: <20210923020338.1945812-1-colin.foster@in-advantage.com>
+In-Reply-To: <20210923020338.1945812-1-colin.foster@in-advantage.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vladimir.oltean@nxp.com, claudiu.manoil@nxp.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-09-22 15:05:03, Miroslav Benes wrote:
-> > @@ -405,8 +405,10 @@ void klp_try_complete_transition(void)
-> >  	for_each_possible_cpu(cpu) {
-> >  		task = idle_task(cpu);
-> >  		if (cpu_online(cpu)) {
-> > -			if (!klp_try_switch_task(task))
-> > -				complete = false;
-> > +			int ret = klp_try_switch_task(task);
-> > +			if (ret == -EBUSY)
-> > +				wake_up_if_idle(cpu);
-> > +			complete = !ret;
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Wed, 22 Sep 2021 19:03:37 -0700 you wrote:
+> Ocelot ports would still forward out ethernet broadcasts when they were
+> in the LEARNING or BLOCKING state. This is due to the
+> ocelot_get_bridge_fwd_mask, which would tell disabled ports to forward
+> packets out all FORWARDING ports. Broadcast storms would insue.
 > 
-> This is broken. You can basically change "complete" only to false (when it 
-> applies). This could leave some tasks in the old patching state.
+> This patch restores the functionality of disabling forwarding for ports
+> that aren't in the FORWARDING state. No more broadcast storms.
+> 
+> [...]
 
-I was a bit confused by Mirek's comment ;-) Anyway, the following works for me:
+Here is the summary with links:
+  - [v1,net,1/1] net: mscc: ocelot: fix forwarding from BLOCKING ports remaining enabled
+    https://git.kernel.org/netdev/net/c/acc64f52afac
 
-@@ -406,9 +406,12 @@ void klp_try_complete_transition(void)
- 		task = idle_task(cpu);
- 		if (cpu_online(cpu)) {
- 			int ret = klp_try_switch_task(task);
--			if (ret == -EBUSY)
--				wake_up_if_idle(cpu);
--			complete = !ret;
-+			if (ret) {
-+				complete = false;
-+				/* Make idle task go through the main loop. */
-+				if (ret == -EBUSY)
-+					wake_up_if_idle(cpu);
-+			}
- 		} else if (task->patch_state != klp_target_state) {
- 			/* offline idle tasks can be switched immediately */
- 			clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Best Regards,
-Petr
+
