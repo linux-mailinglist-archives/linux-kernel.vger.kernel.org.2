@@ -2,137 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3FE415A80
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5752F415A7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240102AbhIWJFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:05:09 -0400
-Received: from mail-dm6nam11on2086.outbound.protection.outlook.com ([40.107.223.86]:14976
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239985AbhIWJFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:05:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ki0+SDyMVV3AfDFMWKdEwnLfQ7C0TwzFLBesBomnbP9DbJN0V7qz+6iUrYGKwIGYNXGdNfEgwi1Us2q7mcG2KZLCAjoPWNf+UfdLh0M+OO99UhXuc3IFuF0owQ9hnzmAb5mbQJnb5bpNQU4+Pk2XVOr2dmOQDcN63AAgA6/0uymJJwLsTz3Y6JYlqnPjG+q9oQprEydc9dYBtJ19octNybRULFhx0ZqKFYe0VUkfW0rGvD6PYIUmLqkL+HlTQ+i+t/0ZBySeBOp/d0nEVSlkvIcA/smoc1bkHsRh9B+nSUd0ouU6FwTJSI56rTGN4afSxBWb1xNWUu1gGTAkaTlujw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=Z5IvkNW+PQl5XE+cn9sNi/+NRSmilfcnoHM0rpMFc3g=;
- b=nyTA9XqWcP2kufF0nfrmZv7oVeGrVyf7pKMB3xsynsPR2GS55cdpAqCVIU4vdVUuMXteWBM13VhDRinOdBI95PSrSNdfrocRdkxDsfqjyLMOH0DDwm20CdulUQVYz0uThixKyALZ7A7kQiLlGuTPirqfzIPBp3rRkLqPfZtcGCGJQDMcitoYj7UyNEXwYRL9jSQLiAlsm1A5+2unHTnHJeQx8RIr5QcRXmyPWVxL1pNTWX5uhBQ14G8dj1i0MRG3XPX09HKFxYL+B0zGmvxB9/t46MMyKIHS5ep9y/q/Qpm+B+DHv6O4rNiH+jOfmtXCDgNSxvQYOVKwEPl42t/GWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linux.ie smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z5IvkNW+PQl5XE+cn9sNi/+NRSmilfcnoHM0rpMFc3g=;
- b=XV303PX18FvfHYqbfVQVvQdiX7WOpuSoZ8xcqbKFTVe5iGlh5ka2M8TTZ5yzQLnk9IuWmv7obaGCyQVa+UZIZlM3hc9nK/Auy3vBWwuqaZq2lb3ldgnS4ipueIQghcw1gyTcvpTviV3B6KEfWsBM7xVXNiJfNzwRiHnfeYV0iAo=
-Received: from DM5PR1401CA0006.namprd14.prod.outlook.com (2603:10b6:4:4a::16)
- by BL0PR12MB4740.namprd12.prod.outlook.com (2603:10b6:208:84::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.18; Thu, 23 Sep
- 2021 09:03:35 +0000
-Received: from DM6NAM11FT057.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:4a:cafe::a1) by DM5PR1401CA0006.outlook.office365.com
- (2603:10b6:4:4a::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Thu, 23 Sep 2021 09:03:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; linux.ie; dkim=none (message not signed)
- header.d=none;linux.ie; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT057.mail.protection.outlook.com (10.13.172.252) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 09:03:35 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 23 Sep
- 2021 04:03:34 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 23 Sep
- 2021 04:03:34 -0500
-Received: from jasdv6.amd.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2308.8 via Frontend
- Transport; Thu, 23 Sep 2021 04:03:29 -0500
-From:   <yipeng.chen@amd.com>
-To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
-        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>, <qingqing.zhuo@amd.com>,
-        <Aric.Cyr@amd.com>, <Anson.Jacob@amd.com>, <bindu.r@amd.com>,
-        <martin.tsai@amd.com>, <bing.guo@amd.com>, <roy.chan@amd.com>,
-        <george.shen@amd.com>, <joshua.aberback@amd.com>,
-        <Ashley.Thomas2@amd.com>, <Jing.Zhou@amd.com>, <dale.zhao@amd.com>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Yipeng Chen (Jasber)" <yipeng.chen@amd.com>,
-        Roman Li <Roman.Li@amd.com>
-Subject: [PATCH] drm/amd/display: Fix randomly flicking on overlay with enabled ABM
-Date:   Thu, 23 Sep 2021 17:02:32 +0800
-Message-ID: <20210923090232.61559-1-yipeng.chen@amd.com>
-X-Mailer: git-send-email 2.25.1
+        id S240098AbhIWJEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:04:15 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:43227 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239985AbhIWJEP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:04:15 -0400
+X-UUID: d79db8a8e5c34f1c83bbd2c232c2dd86-20210923
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/30howK7j/l7YGY93CiAwgCUFI2vv6zdM/0ApO7kiuo=;
+        b=We9c6Iwrv9Jqzzzaqx0HGUw0LYmV2mlIul47NPc3BdcH5GGT2iAqV8MJLHJRVuuJ5l1nuaxRg9LsEE5QAsCsaMzCJW4klSUWD6hrZFT9nibXCZv5Oz1o4Y6rnHeAugoGCB2CoviE8FA2+II17LSxpQLMhV9npogPNvVuCznLB3Y=;
+X-UUID: d79db8a8e5c34f1c83bbd2c232c2dd86-20210923
+Received: from mtkcas35.mediatek.inc [(172.27.6.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1225004111; Thu, 23 Sep 2021 17:02:39 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 23 Sep
+ 2021 17:02:32 +0800
+Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Sep 2021 17:02:32 +0800
+Message-ID: <cf5a0b929b9600ec3314f1370939a94ee43a5519.camel@mediatek.com>
+Subject: Re: [PATCH] phy: mediatek: Kconfig: Add configuration menu for
+ Mediatek phy drivers
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date:   Thu, 23 Sep 2021 17:02:34 +0800
+In-Reply-To: <20210923025036.348-1-caihuoqing@baidu.com>
+References: <20210923025036.348-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ee36f0d-0d0b-42ae-4146-08d97e71069e
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4740:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB47406829332999C395DC5ADFFFA39@BL0PR12MB4740.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q0TQyc+kODCMTuTwfSA3lsIiWmMC+dPz3epT/Vru8rd7jUR3MeCnz88sNyiz7qawobBbLZUkFcvCdg49W8XpUTpg0mXQpFWkoHftQcH1zvk4XPJA+b+HvIIcqKgaKZpLfP83QdCVtECjStmresMR0Jr71D6tXbMQJEKiF++qv7NR6S/fM2wZRUjH5IlFrfGByH/8N4dGcZtHr3ZcTQ/a0sU5LEYa/Rq+J93RC/gSrAuM+pBsJ9Da9utWM9jbscnlQ3kXU91k5EiHG/e7h7g5rx9fV1PlzYiZWDsU9+FrhJj48oIykEevKMb6GYaEXSzyGoaBINus5WEnerJbbknP3zMn2kDIUBHK3ATErCRCdTyaONAT3R7C1uBrwzqwfn5JcycH7e3OWKEIFISSw7CoLD6xg5WzLOqgLFE3U0j5vxaPccwB/4r8LXwLB4c7wxDNMIYujTN1Oev7cvui6oANr8Fw66+LwuMGz8Na3y5PIYzvrVF+vnmKBekrv4B9DdwUJExbvbFNhuMH+2qrpNBsqU4MK66TzINjPvDXwITK4yDXRcTEvroWgTRVSwkGpttHsAUHOo+vWBJ8FcIrR/oYM4EI6OV2gp01pejn0fSX1HvuQ1LnHqBtV63TtBDTL3s6irr0ab1VvkCe3kh3SX9z2UYsTH0oSmKotYdK7Tmn/a5L7vciUGepkCsAJvA/8DMrUWjQGj8NjjFWM5wdGjcTPO1s6pExE61sb939RhAeMYmYxaOs1TWxL8Eo4gTKjTtb
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(54906003)(2876002)(1076003)(316002)(426003)(4326008)(47076005)(36756003)(2616005)(2906002)(508600001)(36860700001)(356005)(110136005)(8676002)(6666004)(186003)(6636002)(8936002)(81166007)(921005)(7696005)(83380400001)(82310400003)(86362001)(26005)(5660300002)(336012)(70586007)(70206006)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 09:03:35.6235
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ee36f0d-0d0b-42ae-4146-08d97e71069e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT057.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4740
+X-TM-SNTS-SMTP: 9A3403D1E5A39C749996F7595B03727C5473FB5913C85F838A9D17F76712A9BE2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Yipeng Chen (Jasber)" <yipeng.chen@amd.com>
-
-[Why]
-Enabled ABM (level != 0) would raise short pluse irq DC_IRQ_SOURCE_HPD1RX
-randomly with PSR error LINK_CRC_ERROR. Actually there is no hot plugging
-on EDP panel. After correcting CRC error, there is no need to send drm
-hotplug event.
-
-[How]
-Returning false would skip doing hot-plug when handle_hpd_irq_psr_sink()
-handled irq. Hot-plug process causes visible flicking on overlay.
-
-Signed-off-by: Yipeng Chen (Jasber) <yipeng.chen@amd.com>
-Reviewed-by: Roman Li <Roman.Li@amd.com>
-             Anthony Koo <Anthony.Koo@amd.com>
----
- drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-index 1e4794e2825c..9b9fbe5e9bd4 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-@@ -3007,7 +3007,7 @@ bool dc_link_handle_hpd_rx_irq(struct dc_link *link, union hpd_irq_data *out_hpd
- 
- 	if (handle_hpd_irq_psr_sink(link))
- 		/* PSR-related error was detected and handled */
--		return true;
-+		return false;
- 
- 	/* If PSR-related error handled, Main link may be off,
- 	 * so do not handle as a normal sink status change interrupt.
--- 
-2.25.1
+T24gVGh1LCAyMDIxLTA5LTIzIGF0IDEwOjUwICswODAwLCBDYWkgSHVvcWluZyB3cm90ZToNCj4g
+QWRkaW5nIGEgY29uZmlndXJhdGlvbiBtZW51IHRvIGhvbGQgbWFueSBNZWRpYXRlayBwaHkgZHJp
+dmVycw0KPiBoZWxwcyB0byBtYWtlIHRoZSBtZW51IGRpc3BsYXkgbW9yZSBjb25jaXNlLg0KPiAN
+Cj4gU2lnbmVkLW9mZi1ieTogQ2FpIEh1b3FpbmcgPGNhaWh1b3FpbmdAYmFpZHUuY29tPg0KPiAt
+LS0NCj4gIGRyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcgfCAxMCArKysrKy0tLS0tDQo+ICAx
+IGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcNCj4gYi9kcml2ZXJzL3BoeS9t
+ZWRpYXRlay9LY29uZmlnDQo+IGluZGV4IDU1ZjhlNmMwNDhhYi4uNWRhMDQ1ODEzYjVhIDEwMDY0
+NA0KPiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnDQo+ICsrKyBiL2RyaXZlcnMv
+cGh5L21lZGlhdGVrL0tjb25maWcNCj4gQEAgLTIsOSArMiwxMSBAQA0KPiAgIw0KPiAgIyBQaHkg
+ZHJpdmVycyBmb3IgTWVkaWF0ZWsgZGV2aWNlcw0KPiAgIw0KPiArbWVudSAiUEhZIGRyaXZlcnMg
+Zm9yIE1lZGlhdGVrIHBsYXRmb3JtcyINCj4gKwlkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgfHwg
+Q09NUElMRV9URVNUDQo+ICsNCj4gIGNvbmZpZyBQSFlfTVRLX1RQSFkNCj4gIAl0cmlzdGF0ZSAi
+TWVkaWFUZWsgVC1QSFkgRHJpdmVyIg0KPiAtCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyB8fCBD
+T01QSUxFX1RFU1QNCj4gIAlkZXBlbmRzIG9uIE9GICYmIE9GX0FERFJFU1MNCj4gIAlkZXBlbmRz
+IG9uIEhBU19JT01FTQ0KPiAgCXNlbGVjdCBHRU5FUklDX1BIWQ0KPiBAQCAtMTgsNyArMjAsNiBA
+QCBjb25maWcgUEhZX01US19UUEhZDQo+ICANCj4gIGNvbmZpZyBQSFlfTVRLX1VGUw0KPiAgCXRy
+aXN0YXRlICJNZWRpYVRlayBVRlMgTS1QSFkgZHJpdmVyIg0KPiAtCWRlcGVuZHMgb24gQVJDSF9N
+RURJQVRFSyB8fCBDT01QSUxFX1RFU1QNCj4gIAlkZXBlbmRzIG9uIE9GDQo+ICAJc2VsZWN0IEdF
+TkVSSUNfUEhZDQo+ICAJaGVscA0KPiBAQCAtMjksNyArMzAsNiBAQCBjb25maWcgUEhZX01US19V
+RlMNCj4gIA0KPiAgY29uZmlnIFBIWV9NVEtfWFNQSFkNCj4gIAl0cmlzdGF0ZSAiTWVkaWFUZWsg
+WFMtUEhZIERyaXZlciINCj4gLQlkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgfHwgQ09NUElMRV9U
+RVNUDQo+ICAJZGVwZW5kcyBvbiBPRiAmJiBPRl9BRERSRVNTDQo+ICAJZGVwZW5kcyBvbiBIQVNf
+SU9NRU0NCj4gIAlzZWxlY3QgR0VORVJJQ19QSFkNCj4gQEAgLTQwLDcgKzQwLDYgQEAgY29uZmln
+IFBIWV9NVEtfWFNQSFkNCj4gIA0KPiAgY29uZmlnIFBIWV9NVEtfSERNSQ0KPiAgCXRyaXN0YXRl
+ICJNZWRpYVRlayBIRE1JLVBIWSBEcml2ZXIiDQo+IC0JZGVwZW5kcyBvbiBBUkNIX01FRElBVEVL
+IHx8IENPTVBJTEVfVEVTVA0KPiAgCWRlcGVuZHMgb24gQ09NTU9OX0NMSw0KPiAgCWRlcGVuZHMg
+b24gT0YNCj4gIAlzZWxlY3QgR0VORVJJQ19QSFkNCj4gQEAgLTQ5LDkgKzQ4LDEwIEBAIGNvbmZp
+ZyBQSFlfTVRLX0hETUkNCj4gIA0KPiAgY29uZmlnIFBIWV9NVEtfTUlQSV9EU0kNCj4gIAl0cmlz
+dGF0ZSAiTWVkaWFUZWsgTUlQSS1EU0kgRHJpdmVyIg0KPiAtCWRlcGVuZHMgb24gQVJDSF9NRURJ
+QVRFSyB8fCBDT01QSUxFX1RFU1QNCj4gIAlkZXBlbmRzIG9uIENPTU1PTl9DTEsNCj4gIAlkZXBl
+bmRzIG9uIE9GDQo+ICAJc2VsZWN0IEdFTkVSSUNfUEhZDQo+ICAJaGVscA0KPiAgCSAgU3VwcG9y
+dCBNSVBJIERTSSBmb3IgTWVkaWF0ZWsgU29Dcy4NCj4gKw0KPiArZW5kbWVudQ0KDQpSZXZpZXdl
+ZC1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KDQpUaGFua3Mg
+YSBsb3QNCg0K
 
