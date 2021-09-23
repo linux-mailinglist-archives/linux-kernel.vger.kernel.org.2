@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1234162A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C484162A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242414AbhIWQGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242363AbhIWQFy (ORCPT
+        id S242396AbhIWQFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:05:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35412 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242254AbhIWQFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:05:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAF7C061574;
-        Thu, 23 Sep 2021 09:04:22 -0700 (PDT)
-Message-ID: <20210923153311.225307347@linutronix.de>
+        Thu, 23 Sep 2021 12:05:53 -0400
+Message-ID: <20210923153339.437521634@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632413059;
+        s=2020; t=1632413061;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HKJ62ec0H3rRqwouVaEOlCdmeDwscUCB9fggww1qtqs=;
-        b=S9Sw4KaTyb9s7Z3KdYbFaJAvUzjpHUVpUTxvyQ3jFIhlWRMGgqgxLk8/cDw3/6XKvUpZZp
-        dhPkgsAfepaag4dai3tsQG8H1SEb6OcdSZOt4ZOJ+L5fXItf38KOz+VqvC3n7RURS0RvCQ
-        AOymsMXCjVfXsiR5+QYlShryPPOPagMf/WTMdP3bCxY4nDARQHkLdyUfBjfybnlnp7aDF4
-        +1FziWh42JVQop5OoCpYLsWFXx4DjgT4Pae3ReQR206O4iu4W5dBMixmm0/zU/iKuBBxQg
-        Lzba969dREamrSViMjsujMdwDyfjxU3YaUi5eaDsZEB1EpwUfhtSN4rB5GULJA==
+         references:references; bh=ohISsOI8tgBD5YIxvKmjwysILMYODAAguQoN+PGttvQ=;
+        b=z1nbtertSbcHr2Xp3vVrryxP89CX/E7hI/vOJjjy0XyN4E6WlUG5vJo48fW1oGBLFlm9Cp
+        LWKvn46gColjoZ7KmfC3ZpmjlAev2aoKYVTfESTlAazTpDC8uwSpAKD1tCFvbU5lppMcrx
+        aJqnLnys2F3zlXfWXVdVFQW9pJ0W81td+uyZYcwVKVzum1Ng2gGjzbwclOKYgQOaPsVDSZ
+        eBdrpf17Cil598z4HleqyXuQvwu7x9r7Esn5EvvZsIRdORPPZQJz/bydDC+scce6Brg/MM
+        NwdOMG83HX42/wC6zdKNwvv92d3QtR/4o7zPhd+OuHCrbSEOTOfNrN1Fl5sXDw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632413059;
+        s=2020e; t=1632413061;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HKJ62ec0H3rRqwouVaEOlCdmeDwscUCB9fggww1qtqs=;
-        b=qLgcomT0elm/TlKSiEwnkZ3rD3NJKvPZV3pfy2RnYzqCkiviMbALY7urqFmSkwiw4ven3n
-        7eMZvc1fRymbs4Dw==
+         references:references; bh=ohISsOI8tgBD5YIxvKmjwysILMYODAAguQoN+PGttvQ=;
+        b=8MJhroJGWYSyfr9r2Qrgtv8Znw4CKVb1NR7cQ1sRC908MM2SuyzhxODmFD0nYEfxEzmVu4
+        bvQf+3THob1LACBg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>, netdev@vger.kernel.org,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        M Chetan Kumar <m.chetan.kumar@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Intel Corporation <linuxwwan@intel.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        intel-gfx@lists.freedesktop.org,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [patch 00/11] hrtimers: Cleanup hrtimer_forward() [ab]use
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: [patch 01/11] hrtimer: Add a mechanism to catch runaway timers
+References: <20210923153311.225307347@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Date:   Thu, 23 Sep 2021 18:04:18 +0200 (CEST)
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 23 Sep 2021 18:04:20 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QSByZWNlbnQgc3l6Ym90IHJlcG9ydCB1bmVhcnRoZWQgYWJ1c2Ugb2YgaHJ0aW1lcl9mb3J3YXJk
-KCkgd2hpY2ggY2FuIGNhdXNlCnJ1bmF3YXkgdGltZXJzIGhvZ2dpbmcgdGhlIENQVSBpbiB0aW1l
-ciBleHBpcnkgY29udGV4dCBieSByZWFybWluZyB0aGUKdGltZXIgaW4gdGhlIHBhc3Qgb3ZlciBh
-bmQgb3Zlci4KClRoaXMgaGFwcGVucyB3aGVuIHRoZSBjYWxsZXIgdXNlcyB0aW1lci0+ZXhwaXJ5
-IGZvciB0aGUgJ25vdycgYXJndW1lbnQgb2YKaHJ0aW1lcl9mb3J3YXJkKCkuIFRoYXQgd29ya3Mg
-YXMgbG9uZyBhcyB0aGUgdGltZXIgZXhwaXJ5IGlzIG9uIHRpbWUsIGJ1dApjYW4gY2F1c2UgYSBs
-b25nIHBlcmlvZCBvZiByZWFybS9maXJlIGxvb3BzIHdoaWNoIGhvZyB0aGUgQ1BVLiBFeHBpcmlu
-ZwpsYXRlIGNhbiBoYXZlIHZhcmlvdXMgY2F1c2VzLCBidXQgb2J2aW91c2x5IHZpcnR1YWxpemF0
-aW9uIGlzIHByb25lIHRvIHRoYXQKZHVlIHRvIFZDUFUgc2NoZWR1bGluZy4KClRoZSBjb3JyZWN0
-IHVzYWdlIG9mIGhydGltZXJfZm9yd2FyZCgpIGlzIHRvIGhhbmQgdGhlIGN1cnJlbnQgdGltZSB0
-byB0aGUKJ25vdycgYXJndW1lbnQgd2hpY2ggZW5zdXJlcyB0aGF0IHRoZSBuZXh0IGV2ZW50IG9u
-IHRoZSBwZXJpb2RpYyB0aW1lIGxpbmUKaXMgcGFzdCBub3cuIFRoaXMgaXMgd2hhdCBocnRpbWVy
-X2ZvcndhcmRfbm93KCkgcHJvdmlkZXMuCgpUaGUgZm9sbG93aW5nIHNlcmllcyBhZGRyZXNzZXMg
-dGhpczoKCiAgICAxKSBBZGQgYSBkZWJ1ZyBtZWNoYW5pc20gdG8gdGhlIGhydGltZXIgZXhwaXJ5
-IGxvb3AKCiAgICAyKSBDb252ZXJ0IGFsbCBocnRpbWVyX2ZvcndhcmQoKSB1c2FnZSBvdXRzaWRl
-IG9mIGtlcm5lbC90aW1lLyB0bwogICAgICAgdXNlIGhydGltZXJfZm9yd2FyZF9ub3coKS4KCiAg
-ICAzKSBDb25maW5lIGhydGltZXJfZm9yd2FyZCgpIHRvIGtlcm5lbC90aW1lLyBjb3JlIGNvZGUu
-CgpUaGUgbWFjODAyMTFfaHdzaW0gcGF0Y2ggaGFzIGFscmVhZHkgYmVlbiBwaWNrZWQgdXAgYnkg
-dGhlIHdpcmVsZXNzCm1haW50YWluZXIgYW5kIGFsbCBvdGhlciBwYXRjaGVzIHdoaWNoIGFmZmVj
-dCB1c2FnZSBvdXRzaWRlIHRoZSBjb3JlIGNvZGUKY2FuIGJlIHBpY2tlZCB1cCBieSB0aGUgcmVs
-ZXZhbnQgc3Vic3lzdGVtcy4gSWYgYSBtYWludGFpbmVyIHdhbnRzIG1lIHRvCnBpY2sgYSBwYXJ0
-aWN1bGFyIHBhdGNoIHVwLCBwbGVhc2UgbGV0IG1lIGtub3cuCgpUaGUgbGFzdCBwYXRjaCB3aGlj
-aCBjb25maW5lcyBocnRpbWVyX2ZvcndhcmQoKSB3aWxsIGJlIHBvc3Rwb25lZCB1bnRpbCBhbGwK
-b3RoZXIgcGF0Y2hlcyBoYXZlIGJlZW4gbWVyZ2VkIGludG8gTGludXMgdHJlZS4KClRoZSBzZXJp
-ZXMgaXMgYWxzbyBhdmFpbGFibGUgZnJvbSBnaXQ6CgogICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcv
-cHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IGhydGltZXIKClRoYW5rcywK
-Cgl0Z2x4Ci0tLQogZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9wbXUuYyAgICAgICAgfCAgICAy
-IC0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL21hYzgwMjExX2h3c2ltLmMgIHwgICAgNCArLQogZHJp
-dmVycy9uZXQvd3dhbi9pb3NtL2lvc21faXBjX2ltZW0uYyAgfCAgICA0ICstCiBkcml2ZXJzL3Bv
-d2VyL3Jlc2V0L2x0YzI5NTItcG93ZXJvZmYuYyB8ICAgIDQgLS0KIGluY2x1ZGUvbGludXgvaHJ0
-aW1lci5oICAgICAgICAgICAgICAgIHwgICAyNiAtLS0tLS0tLS0tLS0tLS0tLQogaW5jbHVkZS9s
-aW51eC9wb3NpeC10aW1lcnMuaCAgICAgICAgICAgfCAgICAzICsrCiBrZXJuZWwvc2lnbmFsLmMg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTQgKy0tLS0tLS0tCiBrZXJuZWwvdGltZS9ocnRp
-bWVyLmMgICAgICAgICAgICAgICAgICB8ICAgNDggKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKystCiBrZXJuZWwvdGltZS9pdGltZXIuYyAgICAgICAgICAgICAgICAgICB8ICAgMTMgKysr
-KysrKysKIGtlcm5lbC90aW1lL3Bvc2l4LXRpbWVycy5jICAgICAgICAgICAgIHwgICA0MiArKysr
-KysrKysrKy0tLS0tLS0tLS0tLS0tLS0tCiBrZXJuZWwvdGltZS90aWNrLWludGVybmFsLmggICAg
-ICAgICAgICB8ICAgIDEgCiBuZXQvY2FuL2JjbS5jICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICAgIDIgLQogc291bmQvZHJpdmVycy9wY3NwL3Bjc3BfbGliLmMgICAgICAgICAgfCAgICAyIC0K
-IDEzIGZpbGVzIGNoYW5nZWQsIDkyIGluc2VydGlvbnMoKyksIDczIGRlbGV0aW9ucygtKQoK
+A recent report from syzbot unearthed a problem with self rearming timers
+which fire late and try to catch up to now with a short period. That causes
+the timer to be rearmed in the past until it eventually catches up with
+now. If that rearming happens from the timer callback the hard or soft
+interrupt expiry loop can run for a long time with either interrupts or
+bottom halves disabled which causes RCU stalls and other lockups.
+
+There is no safety net to stop or at least identify such runaway timers.
+
+Detection is trivial. Cache the pointer to the last expired timer. The next
+invocation from the same loop compares the pointer with the next expiring
+hrtimer pointer and if they match 10 times in a row (in the same hard or
+soft interrupt expiry instance) then it's reasonable to declare it as a
+runaway.
+
+In that case emit a warning and skip the callback invocation which stops
+the misbehaving timer right there.
+
+It's obviously incomplete, but it's definitely better than nothing and would
+have caught the reported issue in mac80211_hwsim.
+
+Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/time/hrtimer.c |   25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -1714,6 +1714,13 @@ static void __run_hrtimer(struct hrtimer
+ 	base->running = NULL;
+ }
+ 
++static void hrtimer_del_runaway(struct hrtimer_clock_base *base,
++				struct hrtimer *timer)
++{
++	__remove_hrtimer(timer, base, HRTIMER_STATE_INACTIVE, 0);
++	pr_warn("Runaway hrtimer %p %ps stopped\n", timer, timer->function);
++}
++
+ static void __hrtimer_run_queues(struct hrtimer_cpu_base *cpu_base, ktime_t now,
+ 				 unsigned long flags, unsigned int active_mask)
+ {
+@@ -1722,6 +1729,8 @@ static void __hrtimer_run_queues(struct
+ 
+ 	for_each_active_base(base, cpu_base, active) {
+ 		struct timerqueue_node *node;
++		struct hrtimer *last = NULL;
++		unsigned int cnt = 0;
+ 		ktime_t basenow;
+ 
+ 		basenow = ktime_add(now, base->offset);
+@@ -1732,6 +1741,22 @@ static void __hrtimer_run_queues(struct
+ 			timer = container_of(node, struct hrtimer, node);
+ 
+ 			/*
++			 * Catch timers which rearm themself with a expiry
++			 * time in the past over and over which makes this
++			 * loop run forever.
++			 */
++			if (IS_ENABLED(CONFIG_DEBUG_OBJECTS_TIMERS)) {
++				if (unlikely(last == timer)) {
++					if (++cnt == 10) {
++						hrtimer_del_runaway(base, timer);
++						continue;
++					}
++				}
++				last = timer;
++				cnt = 0;
++			}
++
++			/*
+ 			 * The immediate goal for using the softexpires is
+ 			 * minimizing wakeups, not running timers at the
+ 			 * earliest interrupt after their soft expiration.
+
