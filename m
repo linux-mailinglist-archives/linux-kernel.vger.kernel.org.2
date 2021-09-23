@@ -2,237 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2795241580D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27DD415813
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239253AbhIWGDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 02:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239208AbhIWGDl (ORCPT
+        id S239248AbhIWGFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 02:05:47 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:33250 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239226AbhIWGFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:03:41 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8B0C061574;
-        Wed, 22 Sep 2021 23:02:10 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id y5so866611pll.3;
-        Wed, 22 Sep 2021 23:02:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zw2o7pLl/QgjsQpgLLuvVSe64sAISOQHw3h2WR6yjQk=;
-        b=YmrdbCgZ5+SlGb8KK0B/yBW6+YTD/8AJ0qHvS0dVxY3r6uXN0Z3ErPcTpp8EKWWPmq
-         ESDhHDsqzUSDa+DkDYb6M63ddP8jbFKJ8AosUi+95ZHXJo6AF5pFe0GzqG1VXiIwvzvh
-         kP2ul/G/A7yBkGlAuP0gvuJmeuBSEXzDu6OqaEh4SPn8K/IChtRG7obUOp6Zod/9L8QV
-         wfxpJGYEsa6OwIbWMk4u7HavIfIlVMHraUclb0KVbd9Nzrb77zWWJ78mBWSM2n2m+Xd3
-         fzneuNQz4ZjDmkOos4+AOx8GcYkxhHOtXde7xiA8T40BJxbIaJIWStMnGpBc07bu5oF2
-         7vkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Zw2o7pLl/QgjsQpgLLuvVSe64sAISOQHw3h2WR6yjQk=;
-        b=ddxDq7JfOUvPQGjG3B/1vpl+8aNJclCm3gj384jPXQtvFrVZLbUiYOwgBCbCazGcm/
-         PxJk+N1+nkDDvctttL0qsq5F5F9sGF9s+eHYu+hz7EDPWMM/h23ULtZhfVqoYYgaI4wD
-         ZT4wFbt4HYeIX6aJJBBMf6jeZfYg3Z0glrFyKQ4QGfywMFF/yAOK7/k7pbmGIJbZKSg1
-         UhkPr9W1yO651sdy/PRzTQcmuS8i/fsH9KbqGmuBIxXru7txbMwfR4QQQe3yLGLv/cY4
-         92EojSSyAu1SS3EntcYm2SgbgFQXznHrMTHDpTNKPDkmPYIaC69/5aesIpMnNuN47Q9g
-         I4Dg==
-X-Gm-Message-State: AOAM531dYO+kGqflExtzQWoL1wq9C3PX/XgKj3+k3/vv2J5N1CVlUqRf
-        d1azhYIBBUAQA28jtyUMSokLMZcTO1E=
-X-Google-Smtp-Source: ABdhPJxz2FRBbFGRQOtLBrQopf3ZzXJbnze/j6F0MSm6LmBGV2BUkyZvpfaTHXMzoyqA146c5BWu8g==
-X-Received: by 2002:a17:903:244e:b0:13c:802d:92c with SMTP id l14-20020a170903244e00b0013c802d092cmr2317288pls.78.1632376929725;
-        Wed, 22 Sep 2021 23:02:09 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:6a2a:9e3c:d2c:e8bc])
-        by smtp.gmail.com with ESMTPSA id s65sm4199790pfc.139.2021.09.22.23.02.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 23:02:09 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 22 Sep 2021 23:02:07 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>,
-        Jesse Barnes <jsbarnes@google.com>
-Subject: Re: [PATCH v3] zram: Introduce an aged idle interface
-Message-ID: <YUwYX3LJQEwdrO4E@google.com>
-References: <20210917210640.214211-1-bgeffon@google.com>
- <20210921194336.947226-1-bgeffon@google.com>
- <YUvFvsyrp86mbjbY@google.com>
- <CADyq12yaSOdUAE7i9TtFEB-ryDx2kLYCH8eAxrUQGEPizw9ahg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADyq12yaSOdUAE7i9TtFEB-ryDx2kLYCH8eAxrUQGEPizw9ahg@mail.gmail.com>
+        Thu, 23 Sep 2021 02:05:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632376329;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=KRVDJneugkSFYzRxbywbXNqC4zMEwfySLQjb+rdEc6Y=;
+    b=J0LBWOAU3VfQNS0sU3+L4hSMBea+7Uz9rTgsw4cvlcydnj1fE9nT1Ob7TesN8XD5To
+    Hc+5opPgCfUXOuoJ5NO9DAuJA2p9yMYfCNx11e/c5Mzlbbaso3UkPBpFGhitNw8cY1OV
+    LuMnJZi2gUJUI+otc4ZFOxBnlKZ4/9oUGzsZibbyqPok8Om5i8OHvm7Efj8zzVsufb0A
+    POlHQLuVjgoc6ZFHRPdt6mSdMBkHJ/9kDnHAcnZh55UB+zL4exxPn3bcSiT57yEjASNb
+    WycKWUjfQKqvrY2GlSvxfcp3Nr00VvCPU5ut+Tv8zjePlRF5P3sDOVfjYcPZjKoTlTu3
+    Zu0A==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3iMUQeg=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.33.8 SBL|AUTH)
+    with ESMTPSA id I01f74x8N5q8I1o
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Thu, 23 Sep 2021 07:52:08 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20210922205555.496871-7-paul@crapouillou.net>
+Date:   Thu, 23 Sep 2021 07:52:08 +0200
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <32234186-1802-4FDF-801A-B14E48FB86D8@goldelico.com>
+References: <20210922205555.496871-1-paul@crapouillou.net>
+ <20210922205555.496871-7-paul@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Brian,
+Hi Paul,
+thanks for another update.
 
-On Wed, Sep 22, 2021 at 08:42:44PM -0400, Brian Geffon wrote:
-> Hi Minchan,
-> Thank you for taking a look. I'm happy to make that change, but I
-> personally cannot see why userspace would want to do something like
-> idle pages older than "0x3C seconds" or "0o250600 seconds," it just
-> seems like a strange way to represent seconds. What do you think?
+We have been delayed to rework the CI20 HDMI code on top of your series
+but it basically works in some situations. There is for example a =
+problem
+if the EDID reports DRM_COLOR_FORMAT_YCRCB422 but it appears to be =
+outside
+of your series.
 
-Kernel communty loves inline reply instead of top posting. ;-)
+The only issue we have is described below.
 
-I am not strong opinion about mutiple base support. The question
-just started from "what's the benefit with only 10-base support?"
-if we can support multiple bases with almost zero maintainace
-overhead.
+> Am 22.09.2021 um 22:55 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Attach a top-level bridge to each encoder, which will be used for
+> negociating the bus format and flags.
+>=20
+> All the bridges are now attached with DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+>=20
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 92 +++++++++++++++++------
+> 1 file changed, 70 insertions(+), 22 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c =
+b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index a5e2880e07a1..a05a9fa6e115 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -21,6 +21,7 @@
+> #include <drm/drm_atomic.h>
+> #include <drm/drm_atomic_helper.h>
+> #include <drm/drm_bridge.h>
+> +#include <drm/drm_bridge_connector.h>
+> #include <drm/drm_color_mgmt.h>
+> #include <drm/drm_crtc.h>
+> #include <drm/drm_crtc_helper.h>
+> @@ -108,6 +109,19 @@ struct ingenic_drm {
+> 	struct drm_private_obj private_obj;
+> };
+>=20
+> +struct ingenic_drm_bridge {
+> +	struct drm_encoder encoder;
+> +	struct drm_bridge bridge, *next_bridge;
+> +
+> +	struct drm_bus_cfg bus_cfg;
+> +};
+> +
+> +static inline struct ingenic_drm_bridge *
+> +to_ingenic_drm_bridge(struct drm_encoder *encoder)
+> +{
+> +	return container_of(encoder, struct ingenic_drm_bridge, =
+encoder);
+> +}
+> +
+> static inline struct ingenic_drm_private_state *
+> to_ingenic_drm_priv_state(struct drm_private_state *state)
+> {
+> @@ -668,11 +682,10 @@ static void =
+ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
+> {
+> 	struct ingenic_drm *priv =3D drm_device_get_priv(encoder->dev);
+> 	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
+> -	struct drm_connector *conn =3D conn_state->connector;
+> -	struct drm_display_info *info =3D &conn->display_info;
+> +	struct ingenic_drm_bridge *bridge =3D =
+to_ingenic_drm_bridge(encoder);
+> 	unsigned int cfg, rgbcfg =3D 0;
+>=20
+> -	priv->panel_is_sharp =3D info->bus_flags & =
+DRM_BUS_FLAG_SHARP_SIGNALS;
+> +	priv->panel_is_sharp =3D bridge->bus_cfg.flags & =
+DRM_BUS_FLAG_SHARP_SIGNALS;
+>=20
+> 	if (priv->panel_is_sharp) {
+> 		cfg =3D JZ_LCD_CFG_MODE_SPECIAL_TFT_1 | =
+JZ_LCD_CFG_REV_POLARITY;
+> @@ -685,19 +698,19 @@ static void =
+ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
+> 		cfg |=3D JZ_LCD_CFG_HSYNC_ACTIVE_LOW;
+> 	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
+> 		cfg |=3D JZ_LCD_CFG_VSYNC_ACTIVE_LOW;
+> -	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+> +	if (bridge->bus_cfg.flags & DRM_BUS_FLAG_DE_LOW)
+> 		cfg |=3D JZ_LCD_CFG_DE_ACTIVE_LOW;
+> -	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+> +	if (bridge->bus_cfg.flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+> 		cfg |=3D JZ_LCD_CFG_PCLK_FALLING_EDGE;
+>=20
+> 	if (!priv->panel_is_sharp) {
+> -		if (conn->connector_type =3D=3D DRM_MODE_CONNECTOR_TV) {
+> +		if (conn_state->connector->connector_type =3D=3D =
+DRM_MODE_CONNECTOR_TV) {
+> 			if (mode->flags & DRM_MODE_FLAG_INTERLACE)
+> 				cfg |=3D JZ_LCD_CFG_MODE_TV_OUT_I;
+> 			else
+> 				cfg |=3D JZ_LCD_CFG_MODE_TV_OUT_P;
+> 		} else {
+> -			switch (*info->bus_formats) {
+> +			switch (bridge->bus_cfg.format) {
+> 			case MEDIA_BUS_FMT_RGB565_1X16:
+> 				cfg |=3D JZ_LCD_CFG_MODE_GENERIC_16BIT;
+> 				break;
+> @@ -723,20 +736,29 @@ static void =
+ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
+> 	regmap_write(priv->map, JZ_REG_LCD_RGBC, rgbcfg);
+> }
+>=20
+> -static int ingenic_drm_encoder_atomic_check(struct drm_encoder =
+*encoder,
+> -					    struct drm_crtc_state =
+*crtc_state,
+> -					    struct drm_connector_state =
+*conn_state)
+> +static int ingenic_drm_bridge_attach(struct drm_bridge *bridge,
+> +				     enum drm_bridge_attach_flags flags)
+> +{
+> +	struct ingenic_drm_bridge *ib =3D =
+to_ingenic_drm_bridge(bridge->encoder);
+> +
+> +	return drm_bridge_attach(bridge->encoder, ib->next_bridge,
+> +				 &ib->bridge, flags);
+> +}
+> +
+> +static int ingenic_drm_bridge_atomic_check(struct drm_bridge *bridge,
+> +					   struct drm_bridge_state =
+*bridge_state,
+> +					   struct drm_crtc_state =
+*crtc_state,
+> +					   struct drm_connector_state =
+*conn_state)
+> {
+> -	struct drm_display_info *info =3D =
+&conn_state->connector->display_info;
+> 	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
+> +	struct ingenic_drm_bridge *ib =3D =
+to_ingenic_drm_bridge(bridge->encoder);
+>=20
+> -	if (info->num_bus_formats !=3D 1)
+> -		return -EINVAL;
+> +	ib->bus_cfg =3D bridge_state->output_bus_cfg;
+>=20
+> 	if (conn_state->connector->connector_type =3D=3D =
+DRM_MODE_CONNECTOR_TV)
+> 		return 0;
+>=20
+> -	switch (*info->bus_formats) {
+> +	switch (bridge_state->output_bus_cfg.format) {
+> 	case MEDIA_BUS_FMT_RGB888_3X8:
+> 	case MEDIA_BUS_FMT_RGB888_3X8_DELTA:
+> 		/*
+> @@ -900,8 +922,16 @@ static const struct drm_crtc_helper_funcs =
+ingenic_drm_crtc_helper_funcs =3D {
+> };
+>=20
+> static const struct drm_encoder_helper_funcs =
+ingenic_drm_encoder_helper_funcs =3D {
+> -	.atomic_mode_set	=3D ingenic_drm_encoder_atomic_mode_set,
+> -	.atomic_check		=3D ingenic_drm_encoder_atomic_check,
+> +	.atomic_mode_set        =3D ingenic_drm_encoder_atomic_mode_set,
+> +};
+> +
+> +static const struct drm_bridge_funcs ingenic_drm_bridge_funcs =3D {
+> +	.attach			=3D ingenic_drm_bridge_attach,
+> +	.atomic_check		=3D ingenic_drm_bridge_atomic_check,
+> +	.atomic_reset		=3D drm_atomic_helper_bridge_reset,
+> +	.atomic_duplicate_state	=3D =
+drm_atomic_helper_bridge_duplicate_state,
+> +	.atomic_destroy_state	=3D =
+drm_atomic_helper_bridge_destroy_state,
+> +	.atomic_get_input_bus_fmts =3D =
+drm_atomic_helper_bridge_propagate_bus_fmt,
+> };
+>=20
+> static const struct drm_mode_config_funcs =
+ingenic_drm_mode_config_funcs =3D {
+> @@ -976,7 +1006,9 @@ static int ingenic_drm_bind(struct device *dev, =
+bool has_components)
+> 	struct drm_plane *primary;
+> 	struct drm_bridge *bridge;
+> 	struct drm_panel *panel;
+> +	struct drm_connector *connector;
+> 	struct drm_encoder *encoder;
+> +	struct ingenic_drm_bridge *ib;
+> 	struct drm_device *drm;
+> 	void __iomem *base;
+> 	long parent_rate;
+> @@ -1154,20 +1186,36 @@ static int ingenic_drm_bind(struct device =
+*dev, bool has_components)
+> 			bridge =3D devm_drm_panel_bridge_add_typed(dev, =
+panel,
+> 								 =
+DRM_MODE_CONNECTOR_DPI);
+>=20
+> -		encoder =3D drmm_plain_encoder_alloc(drm, NULL, =
+DRM_MODE_ENCODER_DPI, NULL);
+> -		if (IS_ERR(encoder)) {
+> -			ret =3D PTR_ERR(encoder);
+> +		ib =3D drmm_encoder_alloc(drm, struct =
+ingenic_drm_bridge, encoder,
+> +					NULL, DRM_MODE_ENCODER_DPI, =
+NULL);
+> +		if (IS_ERR(ib)) {
+> +			ret =3D PTR_ERR(ib);
+> 			dev_err(dev, "Failed to init encoder: %d\n", =
+ret);
+> 			return ret;
+> 		}
+>=20
+> -		encoder->possible_crtcs =3D 1;
+> +		encoder =3D &ib->encoder;
+> +		encoder->possible_crtcs =3D drm_crtc_mask(&priv->crtc);
+>=20
+> 		drm_encoder_helper_add(encoder, =
+&ingenic_drm_encoder_helper_funcs);
+>=20
+> -		ret =3D drm_bridge_attach(encoder, bridge, NULL, 0);
+> -		if (ret)
+> +		ib->bridge.funcs =3D &ingenic_drm_bridge_funcs;
+> +		ib->next_bridge =3D bridge;
+> +
+> +		ret =3D drm_bridge_attach(encoder, &ib->bridge, NULL,
+> +					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
 
-> 
-> Brian
-> 
-> On Wed, Sep 22, 2021 at 8:09 PM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Tue, Sep 21, 2021 at 12:43:36PM -0700, Brian Geffon wrote:
-> > > This change introduces an aged idle interface to the existing
-> > > idle sysfs file for zram.
-> > >
-> > > When CONFIG_ZRAM_MEMORY_TRACKING is enabled the idle file
-> > > now also accepts an integer argument. This integer is the
-> > > age (in seconds) of pages to mark as idle. The idle file
-> > > still supports 'all' as it always has. This new approach
-> > > allows for much more control over which pages get marked
-> > > as idle.
-> > >
-> > >   v2 -> v3:
-> > >       - Correct unused variable warning when
-> > >         CONFIG_ZRAM_MEMORY_TRACKING is not enabled.
-> > >   v1 -> v2:
-> > >       - Switch to using existing idle file.
-> > >       - Dont compare ktime directly.
-> > >
-> > > Signed-off-by: Brian Geffon <bgeffon@google.com>
-> > > ---
-> > >  Documentation/admin-guide/blockdev/zram.rst |  8 +++
-> > >  drivers/block/zram/zram_drv.c               | 60 +++++++++++++++------
-> > >  2 files changed, 52 insertions(+), 16 deletions(-)
-> > >
-> > > diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
-> > > index 700329d25f57..8c8a92e5c00c 100644
-> > > --- a/Documentation/admin-guide/blockdev/zram.rst
-> > > +++ b/Documentation/admin-guide/blockdev/zram.rst
-> > > @@ -328,6 +328,14 @@ as idle::
-> > >  From now on, any pages on zram are idle pages. The idle mark
-> > >  will be removed until someone requests access of the block.
-> > >  IOW, unless there is access request, those pages are still idle pages.
-> > > +Additionally, when CONFIG_ZRAM_MEMORY_TRACKING is enabled pages can be
-> > > +marked as idle based on how long (in seconds) it's been since they were
-> > > +last accessed, in seconds::
-> > > +
-> > > +        echo 86400 > /sys/block/zramX/idle
-> > > +
-> > > +In this example all pages which haven't been accessed in more than 86400
-> > > +seconds (one day) will be marked idle.
-> > >
-> > >  Admin can request writeback of those idle pages at right timing via::
-> > >
-> > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> > > index fcaf2750f68f..2af5cdb8da1a 100644
-> > > --- a/drivers/block/zram/zram_drv.c
-> > > +++ b/drivers/block/zram/zram_drv.c
-> > > @@ -291,22 +291,16 @@ static ssize_t mem_used_max_store(struct device *dev,
-> > >       return len;
-> > >  }
-> > >
-> > > -static ssize_t idle_store(struct device *dev,
-> > > -             struct device_attribute *attr, const char *buf, size_t len)
-> > > +/*
-> > > + * Mark all pages which are older than or equal to cutoff as IDLE.
-> > > + * Callers should hold the zram init lock in read mode
-> > > + **/
-> > > +static void mark_idle(struct zram *zram, ktime_t cutoff)
-> > >  {
-> > > -     struct zram *zram = dev_to_zram(dev);
-> > > +     int is_idle = 1;
-> > >       unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
-> > >       int index;
-> > >
-> > > -     if (!sysfs_streq(buf, "all"))
-> > > -             return -EINVAL;
-> > > -
-> > > -     down_read(&zram->init_lock);
-> > > -     if (!init_done(zram)) {
-> > > -             up_read(&zram->init_lock);
-> > > -             return -EINVAL;
-> > > -     }
-> > > -
-> > >       for (index = 0; index < nr_pages; index++) {
-> > >               /*
-> > >                * Do not mark ZRAM_UNDER_WB slot as ZRAM_IDLE to close race.
-> > > @@ -314,14 +308,48 @@ static ssize_t idle_store(struct device *dev,
-> > >                */
-> > >               zram_slot_lock(zram, index);
-> > >               if (zram_allocated(zram, index) &&
-> > > -                             !zram_test_flag(zram, index, ZRAM_UNDER_WB))
-> > > -                     zram_set_flag(zram, index, ZRAM_IDLE);
-> > > +                             !zram_test_flag(zram, index, ZRAM_UNDER_WB)) {
-> > > +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
-> > > +                     is_idle = (!cutoff || ktime_after(cutoff, zram->table[index].ac_time));
-> > > +#endif
-> > > +                     if (is_idle)
-> > > +                             zram_set_flag(zram, index, ZRAM_IDLE);
-> > > +             }
-> > >               zram_slot_unlock(zram, index);
-> > >       }
-> > > +}
-> > >
-> > > -     up_read(&zram->init_lock);
-> > > +static ssize_t idle_store(struct device *dev,
-> > > +             struct device_attribute *attr, const char *buf, size_t len)
-> > > +{
-> > > +     struct zram *zram = dev_to_zram(dev);
-> > > +     ktime_t cutoff_time = 0;
-> > > +     ssize_t rv = -EINVAL;
-> > >
-> > > -     return len;
-> > > +     if (!sysfs_streq(buf, "all")) {
-> > > +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
-> > > +             u64 age_sec;
-> > > +             /* If it did not parse as 'all' try to treat it as an integer */
-> > > +             if (!kstrtoull(buf, 10, &age_sec))
-> >
-> > nit:
-> > Do we need such limit base which work with only 10 base?
-> > Passing 0 would give more flexibility.
-> >
-> > Otherwise, looks good to me.
-> >
-> > Thanks, Brian.
-> >
-> > > +                     cutoff_time = ktime_sub(ktime_get_boottime(),
-> > > +                                     ns_to_ktime(age_sec * NSEC_PER_SEC));
-> > > +             else
-> > > +#endif
-> > > +                     goto out;
-> > > +     }
-> > > +
-> > > +     down_read(&zram->init_lock);
-> > > +     if (!init_done(zram))
-> > > +             goto out_unlock;
-> > > +
-> > > +     /* A age_sec of 0 marks everything as idle, this is the "all" behavior */
-> > > +     mark_idle(zram, cutoff_time);
-> > > +     rv = len;
-> > > +
-> > > +out_unlock:
-> > > +     up_read(&zram->init_lock);
-> > > +out:
-> > > +     return rv;
-> > >  }
-> > >
-> > >  #ifdef CONFIG_ZRAM_WRITEBACK
-> > > --
-> > > 2.33.0.464.g1972c5931b-goog
-> > >
+DRM_BRIDGE_ATTACH_NO_CONNECTOR makes it fundamentally incompatible
+with synopsys/dw_hdmi.c
+
+That driver checks for DRM_BRIDGE_ATTACH_NO_CONNECTOR being NOT present,
+since it wants to register its own connector through =
+dw_hdmi_connector_create().
+
+It does it for a reason: the dw-hdmi is a multi-function driver which =
+does
+HDMI and DDC/EDID stuff in a single driver (because I/O registers and =
+power
+management seem to be shared).
+
+Since I do not see who could split this into a separate bridge and a =
+connector driver
+and test it on multiple SoC platforms (there are at least 3 or 4), I =
+think modifying
+the fundamentals of the dw-hdmi architecture just to get CI20 HDMI =
+working is not
+our turf.
+
+Therefore the code here should be able to detect if drm_bridge_attach() =
+already
+creates and attaches a connector and then skip the code below.
+
+> +		if (ret) {
+> +			dev_err(dev, "Unable to attach bridge\n");
+> 			return ret;
+> +		}
+> +
+> +		connector =3D drm_bridge_connector_init(drm, encoder);
+> +		if (IS_ERR(connector)) {
+> +			dev_err(dev, "Unable to init connector\n");
+> +			return PTR_ERR(connector);
+> +		}
+> +
+> +		drm_connector_attach_encoder(connector, encoder);
+> 	}
+>=20
+> 	drm_for_each_encoder(encoder, drm) {
+> --=20
+> 2.33.0
+
+I haven't replaced v2 with v3 in our test tree yet, but will do asap.
+
+BR and thanks,
+Nikolaus
+
+
