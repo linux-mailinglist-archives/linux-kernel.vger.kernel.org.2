@@ -2,187 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7118C41626E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EA2416273
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242181AbhIWPvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:51:31 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:35780 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242242AbhIWPvF (ORCPT
+        id S242136AbhIWPyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242051AbhIWPyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:51:05 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id BDD691D40;
-        Thu, 23 Sep 2021 18:42:06 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632411726;
-        bh=64yVPSdrcbCCQvDugxsNeN4BcIkj+7UISpaWRZ3MTYk=;
-        h=Date:Subject:From:To:References:CC:In-Reply-To;
-        b=ubtpVUPbJCTRVd1hTLcWDm/NzaFv7XfabViYqqtt6NpYey+uGXU4XB/a6Ob39unZP
-         qemVFPYQBVnGWB84Cg3ULOsPiJC49p/g1zJn7XrDMQBmTtz3K293SmA4CQFrmu2bIa
-         RPvB0cPQqAby2vVX0xo8cKGwNvhGIgpz7DtjlfZA=
-Received: from [192.168.211.73] (192.168.211.73) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 23 Sep 2021 18:42:06 +0300
-Message-ID: <c5750066-5997-740d-d3f2-a85978e3b112@paragon-software.com>
-Date:   Thu, 23 Sep 2021 18:42:05 +0300
+        Thu, 23 Sep 2021 11:54:13 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FC3C06175F;
+        Thu, 23 Sep 2021 08:42:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+        s=42; h=Message-ID:Cc:To:From:Date;
+        bh=rfll4h7LdtMEWw8B/3NMhDmFRKX+I7KhoeBywQmmero=; b=knJgrUjXLrmnHS/i0SSqtm0YPO
+        wmM8TWJEg5mw2CjZk3yyd+ANvjpNaFFb3wuyZEp4oaCfZs4iHpazy57XrYmGm/v9TYyCKCQGQhdQN
+        mZxy/qmWbscnnUr9l5/TdgZHDkA62qc5/lkOSUZp4QTHDqDrOr+8mmuBV3Vkn/0vAMT9H16CccxnA
+        KJJuGSmJSzYtfm8BBHsMmxOSW/Klevyn3H4AkqAe5i0zKQjjtW1kLULdBrPM6THi7EPEXBlNFwCZx
+        tFo+iDvePrQek1xQu1LUYJhPwAtNpdkL0VPjPjJOfmEOsaLI6/5di+4SDD3srZLX1dxzYtV7b+E98
+        hL+tXXSLkks7QOxVdQfeBPz2IckGk3qc01weP98BTQwPnym6bbiTCMhA1s2K2J+h4wppkbYCc/JBI
+        Tj/r/vQHZTgRos585MODsmol4hHj1IjWg0sgHiTPF3ATOtoNA1hcMNQD/T/+BLofvGNWo4VsJxqZ1
+        ip1cmePt0/izjR3onZ4IB70j;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+        (Exim)
+        id 1mTQs3-007Wvr-U3; Thu, 23 Sep 2021 15:42:48 +0000
+Date:   Thu, 23 Sep 2021 08:42:44 -0700
+From:   Jeremy Allison <jra@samba.org>
+To:     Steve French <smfrench@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Subject: Re: [GIT PULL] ksmbd server security fixes
+Message-ID: <YUygdDGXQhSZRqoo@jeremy-acer>
+Reply-To: Jeremy Allison <jra@samba.org>
+References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
+ <202109221850.003A16EC1@keescook>
+ <CAH2r5muNG4GvziyMG2unkYNjUiT4V+pz0pWUGkWQNxUZJnBadw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: [PATCH v2 2/6] fs/ntfs3: Move ni_lock_dir and ni_unlock into
- ntfs_create_inode
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-References: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-In-Reply-To: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.73]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAH2r5muNG4GvziyMG2unkYNjUiT4V+pz0pWUGkWQNxUZJnBadw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now ntfs3 locks mutex for smaller time.
-Theoretically in successful cases those locks aren't needed at all.
-But proving the same for error cases is difficult.
-So instead of removing them we just move them.
+On Wed, Sep 22, 2021 at 10:20:01PM -0500, Steve French wrote:
+>On Wed, Sep 22, 2021 at 9:47 PM Kees Cook <keescook@chromium.org> wrote:
+>>
+>> Hi Steve,
+>>
+>> I was looking through the history[1] of the ksmbd work, and I'm kind
+>> of surprised at some of the flaws being found here.
+>
+>I was also surprised that a couple of these weren't found by smbtorture,
+>although to be fair it is more focused on functional testing of the protocol
+>(and is quite detailed).  Most of my analysis of the code had been
+>focused on functional coverage, and protocol features (and removing
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/inode.c | 17 ++++++++++++++---
- fs/ntfs3/namei.c | 20 --------------------
- 2 files changed, 14 insertions(+), 23 deletions(-)
+Steve, you should have been surprised they weren't
+caught by smbtorture, especially if your "analysis of the code
+had been focused on functional coverage".
 
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index d51bf4018835..7dd162f6a7e2 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -1198,9 +1198,13 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 	struct REPARSE_DATA_BUFFER *rp = NULL;
- 	bool rp_inserted = false;
- 
-+	ni_lock_dir(dir_ni);
-+
- 	dir_root = indx_get_root(&dir_ni->dir, dir_ni, NULL, NULL);
--	if (!dir_root)
--		return ERR_PTR(-EINVAL);
-+	if (!dir_root) {
-+		err = -EINVAL;
-+		goto out1;
-+	}
- 
- 	if (S_ISDIR(mode)) {
- 		/* Use parent's directory attributes. */
-@@ -1549,6 +1553,9 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 	if (err)
- 		goto out6;
- 
-+	/* Unlock parent directory before ntfs_init_acl. */
-+	ni_unlock(dir_ni);
-+
- 	inode->i_generation = le16_to_cpu(rec->seq);
- 
- 	dir->i_mtime = dir->i_ctime = inode->i_atime;
-@@ -1605,8 +1612,10 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- out7:
- 
- 	/* Undo 'indx_insert_entry'. */
-+	ni_lock_dir(dir_ni);
- 	indx_delete_entry(&dir_ni->dir, dir_ni, new_de + 1,
- 			  le16_to_cpu(new_de->key_size), sbi);
-+	/* ni_unlock(dir_ni); will be called later. */
- out6:
- 	if (rp_inserted)
- 		ntfs_remove_reparse(sbi, IO_REPARSE_TAG_SYMLINK, &new_de->ref);
-@@ -1630,8 +1639,10 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
- 	kfree(rp);
- 
- out1:
--	if (err)
-+	if (err) {
-+		ni_unlock(dir_ni);
- 		return ERR_PTR(err);
-+	}
- 
- 	unlock_new_inode(inode);
- 
-diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
-index 1c475da4e19d..bc741213ad84 100644
---- a/fs/ntfs3/namei.c
-+++ b/fs/ntfs3/namei.c
-@@ -95,16 +95,11 @@ static struct dentry *ntfs_lookup(struct inode *dir, struct dentry *dentry,
- static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
- 		       struct dentry *dentry, umode_t mode, bool excl)
- {
--	struct ntfs_inode *ni = ntfs_i(dir);
- 	struct inode *inode;
- 
--	ni_lock_dir(ni);
--
- 	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFREG | mode,
- 				  0, NULL, 0, NULL);
- 
--	ni_unlock(ni);
--
- 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
- }
- 
-@@ -116,16 +111,11 @@ static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
- static int ntfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
- 		      struct dentry *dentry, umode_t mode, dev_t rdev)
- {
--	struct ntfs_inode *ni = ntfs_i(dir);
- 	struct inode *inode;
- 
--	ni_lock_dir(ni);
--
- 	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, mode, rdev,
- 				  NULL, 0, NULL);
- 
--	ni_unlock(ni);
--
- 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
- }
- 
-@@ -196,15 +186,10 @@ static int ntfs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
- {
- 	u32 size = strlen(symname);
- 	struct inode *inode;
--	struct ntfs_inode *ni = ntfs_i(dir);
--
--	ni_lock_dir(ni);
- 
- 	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFLNK | 0777,
- 				  0, symname, size, NULL);
- 
--	ni_unlock(ni);
--
- 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
- }
- 
-@@ -215,15 +200,10 @@ static int ntfs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
- 		      struct dentry *dentry, umode_t mode)
- {
- 	struct inode *inode;
--	struct ntfs_inode *ni = ntfs_i(dir);
--
--	ni_lock_dir(ni);
- 
- 	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFDIR | mode,
- 				  0, NULL, 0, NULL);
- 
--	ni_unlock(ni);
--
- 	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
- }
- 
--- 
-2.33.0
-
-
+No one has been looking at the logic for this, and IMHO
+that's a problem. It's good they are looking now, but
+I think this code needs additional maintainers.
