@@ -2,208 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4EA415CD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619E4415CDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240620AbhIWLdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
+        id S240633AbhIWLfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238930AbhIWLdD (ORCPT
+        with ESMTP id S240565AbhIWLfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:33:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A77C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:31:31 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632396690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ODvcRdqn5ATZUTeAZX+QVSmK4LQTW4+KuKCMEOCTHnY=;
-        b=mihvJjq0xBrdJF20Pl4fHXAR4ntgK2dUB5CvTkzcc13YVxoVeLCVf3EV5fxvhJMj0vtFKq
-        a7dh84nwqekkbDFBEeNn2A5N8PlDdCW7HPFuaIEh2u9XTYyfrKkj6gu8h23E+QHeWUdqVZ
-        nlzupnpG8TyuIQPX4G5q7XeFxiIqCOHQqKwVlZNe0aD7IxpU3cn2ythKd+v9RMyyRS3Kzv
-        3TLN6dE+gFuGHOEtiUXlWV43YUfU9Yj5RsKZIPYAALrjzGNy9eTMsT3UIYhVoiy9gZxnmS
-        e+Q3tY8BnfuV5zsxQynC5Ir5mIABWym5CjcoWD59NHJD9srDuxLWztN228OKog==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632396690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ODvcRdqn5ATZUTeAZX+QVSmK4LQTW4+KuKCMEOCTHnY=;
-        b=qKlkmtb7K2F7dLV38+9K6R1qwFrPd7IEUwkXsR/I5SVdsR/NJsgge39R7HS+dyiTsmVM9a
-        RjLF05CVJlBQ/4Cw==
-To:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-In-Reply-To: <20210920192349.2602141-5-fenghua.yu@intel.com>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
-Date:   Thu, 23 Sep 2021 13:31:29 +0200
-Message-ID: <875yurh6jy.ffs@tglx>
+        Thu, 23 Sep 2021 07:35:06 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98D0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:33:34 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id i132so21121018qke.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:33:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ggXcEXb/CHUjvrcz3BZioGS0po09zhrTU/EfIgarfj8=;
+        b=Zr+iAvq3Izz+Bknz6jq/NMP3bzqVL3tPWWy5j9IrJZtejKXTzS+bvej5zDkJa/BARw
+         OaMOUJ9JN96Ypo+a3rGdp/wNwwb9SdiKaEhbjPi6WhJ+xe34CGI+8AN1nXDm+5gmguiO
+         yhxYIBFFfb5tCDM2Buf4b6T9J2N7B/9fKd46bbJmnIbx1junWNGFpN0ys6LG6NhxQxng
+         anSR57NEdewba8GfOPTlLBYi37jE1Znjhv+bf6+AMgMKZoP9DDD7J0x4Sm9RDswVDa/c
+         va4KI3gUHVzLmB7SC2o85M98Z4OuWwoq7XZWqeRGpMz4wVL9Avz6itw71MHz7A5VoUEA
+         QW/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ggXcEXb/CHUjvrcz3BZioGS0po09zhrTU/EfIgarfj8=;
+        b=39mLIXkwSZnOKcTZKPk9CkR/a3OLcputX/UkfEnb0dvy1DY7L0NyfRTR3taICUU1bo
+         ygvQx7wsbAznwASDm5Xk8oJV4724hcCeQEx3uKjfExyU5hSAtZr7rJuK7P4WkSnhR9bn
+         PYqiK0sgAJMuiB6LYrQHsnFHscRcsClSh7FR8wnGk59iwB1eTr3fLR14pZD0nWyK8wfA
+         6tEBAH+y/o5I1PcCQVgtaPCdD/uKf9cep/Cj0LSboHoxWCbCvFjoeQqxQSTwD39CbkUD
+         b3hp8Mq0GsHsjyYppWWbAmQCNYisVdSUJoTgb8/kKhvjG88PRvyw3KdvWtMrNMKp1WSe
+         g+vA==
+X-Gm-Message-State: AOAM532efYKsnOyhIyURozb5ZlOnYiU046VnnFrne03q8evirQ8TTjQn
+        nmzx4lnD3wtlPn+ynC+DSMlam0+SqHjrjP0IAup8Ww==
+X-Google-Smtp-Source: ABdhPJwjnq0YIi1DjP67SfCEf/CgQCwudASkbOVKd7DI2WRtMOeWHML3zagvX0A8OxSJRSUVbi+94ftElSNrvcjvkvM=
+X-Received: by 2002:a37:8044:: with SMTP id b65mr4254304qkd.150.1632396813877;
+ Thu, 23 Sep 2021 04:33:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210923104803.2620285-1-elver@google.com> <20210923104803.2620285-3-elver@google.com>
+In-Reply-To: <20210923104803.2620285-3-elver@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 23 Sep 2021 13:32:57 +0200
+Message-ID: <CAG_fn=W+_Dx8TKofckVCUWCiPy_pS01r2AUWBYAS2yEMShmFcQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] kfence: move saving stack trace of allocations
+ into __kfence_alloc()
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20 2021 at 19:23, Fenghua Yu wrote:
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index c8def1b7f8fb..8a89b2cecd77 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -1289,3 +1289,62 @@ int proc_pid_arch_status(struct seq_file *m, struct pid_namespace *ns,
->  	return 0;
+On Thu, Sep 23, 2021 at 12:48 PM Marco Elver <elver@google.com> wrote:
+>
+> Move the saving of the stack trace of allocations into __kfence_alloc(),
+> so that the stack entries array can be used outside of
+> kfence_guarded_alloc() and we avoid potentially unwinding the stack
+> multiple times.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Acked-by: Alexander Potapenko <glider@google.com>
+
+> ---
+> v2:
+> * New patch.
+> ---
+>  mm/kfence/core.c | 35 ++++++++++++++++++++++++-----------
+>  1 file changed, 24 insertions(+), 11 deletions(-)
+>
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 249d75b7e5ee..db01814f8ff0 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -187,19 +187,26 @@ static inline unsigned long metadata_to_pageaddr(co=
+nst struct kfence_metadata *m
+>   * Update the object's metadata state, including updating the alloc/free=
+ stacks
+>   * depending on the state transition.
+>   */
+> -static noinline void metadata_update_state(struct kfence_metadata *meta,
+> -                                          enum kfence_object_state next)
+> +static noinline void
+> +metadata_update_state(struct kfence_metadata *meta, enum kfence_object_s=
+tate next,
+> +                     unsigned long *stack_entries, size_t num_stack_entr=
+ies)
+>  {
+>         struct kfence_track *track =3D
+>                 next =3D=3D KFENCE_OBJECT_FREED ? &meta->free_track : &me=
+ta->alloc_track;
+>
+>         lockdep_assert_held(&meta->lock);
+>
+> -       /*
+> -        * Skip over 1 (this) functions; noinline ensures we do not accid=
+entally
+> -        * skip over the caller by never inlining.
+> -        */
+> -       track->num_stack_entries =3D stack_trace_save(track->stack_entrie=
+s, KFENCE_STACK_DEPTH, 1);
+> +       if (stack_entries) {
+> +               memcpy(track->stack_entries, stack_entries,
+> +                      num_stack_entries * sizeof(stack_entries[0]));
+> +       } else {
+> +               /*
+> +                * Skip over 1 (this) functions; noinline ensures we do n=
+ot
+> +                * accidentally skip over the caller by never inlining.
+> +                */
+> +               num_stack_entries =3D stack_trace_save(track->stack_entri=
+es, KFENCE_STACK_DEPTH, 1);
+> +       }
+> +       track->num_stack_entries =3D num_stack_entries;
+>         track->pid =3D task_pid_nr(current);
+>         track->cpu =3D raw_smp_processor_id();
+>         track->ts_nsec =3D local_clock(); /* Same source as printk timest=
+amps. */
+> @@ -261,7 +268,8 @@ static __always_inline void for_each_canary(const str=
+uct kfence_metadata *meta,
+>         }
 >  }
->  #endif /* CONFIG_PROC_PID_ARCH_STATUS */
+>
+> -static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size,=
+ gfp_t gfp)
+> +static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size,=
+ gfp_t gfp,
+> +                                 unsigned long *stack_entries, size_t nu=
+m_stack_entries)
+>  {
+>         struct kfence_metadata *meta =3D NULL;
+>         unsigned long flags;
+> @@ -320,7 +328,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *=
+cache, size_t size, gfp_t g
+>         addr =3D (void *)meta->addr;
+>
+>         /* Update remaining metadata. */
+> -       metadata_update_state(meta, KFENCE_OBJECT_ALLOCATED);
+> +       metadata_update_state(meta, KFENCE_OBJECT_ALLOCATED, stack_entrie=
+s, num_stack_entries);
+>         /* Pairs with READ_ONCE() in kfence_shutdown_cache(). */
+>         WRITE_ONCE(meta->cache, cache);
+>         meta->size =3D size;
+> @@ -400,7 +408,7 @@ static void kfence_guarded_free(void *addr, struct kf=
+ence_metadata *meta, bool z
+>                 memzero_explicit(addr, meta->size);
+>
+>         /* Mark the object as freed. */
+> -       metadata_update_state(meta, KFENCE_OBJECT_FREED);
+> +       metadata_update_state(meta, KFENCE_OBJECT_FREED, NULL, 0);
+>
+>         raw_spin_unlock_irqrestore(&meta->lock, flags);
+>
+> @@ -742,6 +750,9 @@ void kfence_shutdown_cache(struct kmem_cache *s)
+>
+>  void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+>  {
+> +       unsigned long stack_entries[KFENCE_STACK_DEPTH];
+> +       size_t num_stack_entries;
 > +
-> +#ifdef CONFIG_INTEL_IOMMU_SVM
-> +/**
-> + * fpu__pasid_write - Write the current task's PASID state/MSR.
-> + * @pasid:	the PASID
-> + *
-> + * The PASID is written to the IA32_PASID MSR directly if the MSR is active.
-> + * Otherwise it's written to the PASID. The IA32_PASID MSR should contain
-
-written to the PASID? What's 'the PASID' ?
-
-> + * the PASID after returning to the user.
-> + *
-> + * This is called only when ENQCMD is enabled.
-
-Well, yes, but it does not explain why it is called and from which context.
-
-> + */
-> +void fpu__pasid_write(u32 pasid)
-> +{
-> +	struct xregs_state *xsave = &current->thread.fpu.state.xsave;
-> +	u64 msr_val = pasid | MSR_IA32_PASID_VALID;
-> +	struct fpu *fpu = &current->thread.fpu;
+>         /*
+>          * Perform size check before switching kfence_allocation_gate, so=
+ that
+>          * we don't disable KFENCE without making an allocation.
+> @@ -786,7 +797,9 @@ void *__kfence_alloc(struct kmem_cache *s, size_t siz=
+e, gfp_t flags)
+>         if (!READ_ONCE(kfence_enabled))
+>                 return NULL;
+>
+> -       return kfence_guarded_alloc(s, size, flags);
+> +       num_stack_entries =3D stack_trace_save(stack_entries, KFENCE_STAC=
+K_DEPTH, 0);
 > +
-> +	/*
-> +	 * ENQCMD always uses the compacted XSAVE format. Ensure the buffer
-> +	 * has space for the PASID.
-> +	 */
-> +	BUG_ON(!(xsave->header.xcomp_bv & XFEATURE_MASK_PASID));
-> +
-> +	fpregs_lock();
-> +
-> +	/*
-> +	 * If the task's FPU doesn't need to be loaded or is valid, directly
-> +	 * write the IA32_PASID MSR. Otherwise, write the PASID state and
-> +	 * the MSR will be loaded from the PASID state before returning to
-> +	 * the user.
-> +	 */
-> +	if (!test_thread_flag(TIF_NEED_FPU_LOAD) ||
-> +	    fpregs_state_valid(fpu, smp_processor_id())) {
-> +		wrmsrl(MSR_IA32_PASID, msr_val);
-> +	} else {
-> +		struct ia32_pasid_state *ppasid_state;
-> +		/*
-> +		 * Mark XFEATURE_PASID as non-init in the XSAVE buffer.
-> +		 * This ensures that a subsequent XRSTOR will see the new
-> +		 * value instead of writing the init value to the MSR.
-> +		 */
-
-This and the above wrmsrl() assume that @pasid is valid which might be
-correct, but I don't see any information about pasid lifetime. I assume
-that there is no way to drop a PASID, right?
-
-> +		xsave->header.xfeatures |= XFEATURE_MASK_PASID;
-> +		ppasid_state = get_xsave_addr(xsave, XFEATURE_PASID);
-> +		/*
-> +		 * ppasid_state shouldn't be NULL because XFEATURE_PASID
-> +		 * was set just now.
-> +		 *
-> +		 * Please note that the following operation is a "write only"
-> +		 * operation on the PASID state and it writes the *ENTIRE*
-> +		 * state component. Please don't blindly copy this code to
-> +		 * modify other XSAVE states.
-> +		 */
-> +		ppasid_state->pasid = msr_val;
-> +	}
-> +
-> +	fpregs_unlock();
-> +}
-> +#endif /* CONFIG_INTEL_IOMMU_SVM */
-
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index a58800973aed..a25d738ae839 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
->  
-> +static bool fixup_pasid_exception(void)
-> +{
-> +	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
-> +		return false;
-> +
-> +	return __fixup_pasid_exception();
-> +}
-
-Ok, so here is the hook into #GP which then calls out into:
-
-> --- a/drivers/iommu/intel/svm.c
-> +++ b/drivers/iommu/intel/svm.c
-> @@ -1179,3 +1179,35 @@ int intel_svm_page_response(struct device *dev,
->  	mutex_unlock(&pasid_mutex);
->  	return ret;
+> +       return kfence_guarded_alloc(s, size, flags, stack_entries, num_st=
+ack_entries);
 >  }
-> +
-> +/*
-> + * Try to figure out if there is a PASID MSR value to propagate to the
-> + * thread taking the #GP.
-> + */
-> +bool __fixup_pasid_exception(void)
-> +{
-> +	u32 pasid;
-> +
-> +	/*
-> +	 * This function is called only when this #GP was triggered from user
-> +	 * space. So the mm cannot be NULL.
-> +	 */
-> +	pasid = current->mm->pasid;
-> +
-> +	/* If no PASID is allocated, there is nothing to propagate. */
-> +	if (pasid == PASID_DISABLED)
-> +		return false;
-> +
-> +	/*
-> +	 * If the current task already has a valid PASID MSR, then the #GP
-> +	 * fault must be for some non-ENQCMD related reason.
-> +	 */
-> +	if (current->has_valid_pasid)
-> +		return false;
-> +
-> +	/* Fix up the MSR by the PASID in the mm. */
-> +	fpu__pasid_write(pasid);
-> +	current->has_valid_pasid = 1;
-> +
-> +	return true;
-> +}
-
-What is INTEL SVM specific on this? Nothing at all.
-
-If there is a valid PASID in current->mm and the MSR has not been
-updated yet, write it. Otherwise bail.
-
-Thanks,
-
-        tglx
+>
+>  size_t kfence_ksize(const void *addr)
+> --
+> 2.33.0.464.g1972c5931b-goog
+>
 
 
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
