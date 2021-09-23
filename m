@@ -2,180 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B711B415CAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1394415CAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240599AbhIWLS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:18:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240493AbhIWLSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:18:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2566760EC0;
-        Thu, 23 Sep 2021 11:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632395842;
-        bh=zKKSudppIjrRqr4TCmMFfzY41RyPZoIxc16LkmrNL/U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oGeyDLaX4lQGPaOi+ovJOGnARXuHikewcOJiJ3hcTJg+HCmlpKK1hZtk193nKXj4g
-         VYu/lY3gBmp7kNdJui6EMFwTnpeYXgpuv0Bl+Y07GxUpVyxMBmGsSamPafWauMYP+k
-         fqIh+VPDyu99HwV8vYMFOxlzjCs3iTdnatfa4xqRM8qSHWFfJaxrNeyFzV5OoA0D//
-         POBzO/pushbYCHybc5JuG8dkHMipLBXOF6zYLttGANC2mQuh6OAygYDuVRmVU86wpm
-         PuJj+caSmaVs+3Cs1WwJVmh3D/6t2pwj7pg7iw6BN4tNxHcGkmdJetP0VtBzM0XO1s
-         pHvTXnMKMiWyw==
-Date:   Thu, 23 Sep 2021 14:17:18 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Message-ID: <YUxiPqShZT4bk0uL@unreal>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
- <42729adc4df649f7b3ce5dc95e66e2dc@huawei.com>
+        id S240602AbhIWLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:19:37 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:33793 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240493AbhIWLTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 07:19:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1632395884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J81t8+yaR4LN6D9aRF2BIKOcrCWettxIPfYEDkKGzCQ=;
+        b=OZHFiOoQJqQqVkwG7mXgQtfpFAfaEY6wxtBSWS224ZJFbnyVYE97OmYbP+78Sq/HFG/mC+
+        usxzw7QhkkNmkjfmwVsqNTZ9tBH+SSEI8+XoJdRkhcau5oZ1nh57+mzenFAVwwwykfuD2j
+        vq0jroiukCyKXutq+rwqkYd+435/Pvs=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2057.outbound.protection.outlook.com [104.47.12.57]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-5-H_AUkDNRNbyR7QDuPPWtSQ-1;
+ Thu, 23 Sep 2021 13:18:02 +0200
+X-MC-Unique: H_AUkDNRNbyR7QDuPPWtSQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aNgY4my2hahXCig+MMTk5riAbbxuXPnJGe/ebnQoVwl4QkgPjA3H5V/TX8O4QwhFH5akqezB3p0cL7B+4CqN95JHB2fW12YNnqYLNqT/hUiy6NzIIQuSGY0gFNwRKjCxyekzESmtRJsktphqZrtJCJSLR+vRa00DXJLRB2MloXP+gOY+oyoLT9Vjj8J7hxPMNurREuD+KnhEjcRt6I/9Pd8CSeHZEA1I/kAcPcrE1KiAP0HsANN6vR4IrREw/7jhYPKl/qValQ6sRtvV7hDcqFp/xZPu5J63qyRGpo4r+nbwmQWmiHlVdQqZKDiD+SdicZQNCM3FRYqiUpRh1kNolA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=J81t8+yaR4LN6D9aRF2BIKOcrCWettxIPfYEDkKGzCQ=;
+ b=aV+fdTy60kq1ziVszaj3rcrxDLnXGUw/Rn9l3oRS0jdQbYloeKC70Idc0Je3ii5L0DsQCDTDCSx8MUSE2QrUfzBur5f9Nl4LeAPTbAOR8LIcaG1+tnHXNZ2d3FfdxJD5vjKEcurvhgKij5tmXczkd3lKKS7K9SQg/JZpUWSp6bKNs8KQvsJzgdJtM78gS9C3BWRPQAs+td3QLwSxPco/932r1rqAo6/HdqduJ5Mx/DZPYkOQ34Orgcau5QS+YypDXhliy2f8olvhInnQeyrJnptyzDL2unJSfN1frzpXlJYrdYyQIf1HnXtQQRWHG7sVSIFt2g+NO9ziMw3cXoJtaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB5741.eurprd04.prod.outlook.com (2603:10a6:803:df::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 23 Sep
+ 2021 11:18:00 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4544.013; Thu, 23 Sep 2021
+ 11:18:00 +0000
+Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
+To:     Juergen Gross <jgross@suse.com>
+Cc:     boris.ostrovsky@oracle.com, julien@xen.org, sstabellini@kernel.org,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Oleksandr Andrushchenko <andr2000@gmail.com>
+References: <20210923095345.185489-1-andr2000@gmail.com>
+ <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
+ <478b9175-f21f-b77a-2bc1-ad230bbdf548@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <87bb76ba-c8b4-5ab0-a8c3-13e8ab4af3b9@suse.com>
+Date:   Thu, 23 Sep 2021 13:17:59 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <478b9175-f21f-b77a-2bc1-ad230bbdf548@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR0P264CA0232.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1e::28) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42729adc4df649f7b3ce5dc95e66e2dc@huawei.com>
+Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0232.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Thu, 23 Sep 2021 11:18:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 38f43355-5a85-49c2-620d-08d97e83cdbc
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5741:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB57412606ADB588077C14D425B3A39@VI1PR04MB5741.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Beeqt/OZ1hyEHduJZDfMjyppdL7+nsSaSSRmO4TE8zqt2lhBKIC6NkkQrX7/mKVKmIoPWItawQ7WKLmmzGY66/5KgMyFHOmkkY6lxrp6X8y+AA4RQ+9gCKb3Rtufi9B88xqOn8b6TKky+IvoLZdcCKF5omxQlOK9ug6ygpul4nAmEPSU7mL/zKzdnYGhul6oo1POB0IAANocScsDgwUzVyH0ls+HL5PPIZba3yGgnrZWUsUOqZXVMXtf48b/0SHDo0VN8fUKzPN/zC7fvEV72u+VJ1zyguIFOduiknYVw+D+4hh3JguAK93Y+YGJZHqcAA8mOMoe8fbyjbqcQM28O0FtvJ07y6ZpcYn+wJHu69/tUngdDQ6z/WxVS5qAeCS0Evn9JjzkqdxnAJFl+AjTchdZ9R1pNnkhh6pNIHehNWHqsz5GsMqArDM3uE77G83P0kaIxO/+2EfpjzDY94JNVPESGZXstsVUYavmSbLaYZzVkrH8qR7O3ET4gbgBxSzIH0u0wSUfQbZt8ZcaOJjXU2uJjM2EjMCUhZcV2Z2t1wMz3UfWLPoiIE1Rys9Zfb2TbvjEvscndutaRDGP5Yks3TFelBp9Ja3IBTARY/Vk8XWrC4745yna+571JqE7KaFT9FgzjJZhW08Sc42A1JArkUlCIEHVk2KhPyAzbX98ZlsnYM18+h3LwiJtbxG5d5nyC89uRkrWeUBnM2+MuhIHOwrdCYPd2/VdNq+PEMSHs5s=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6862004)(186003)(36756003)(4326008)(26005)(6486002)(8676002)(2906002)(38100700002)(31696002)(83380400001)(6636002)(31686004)(53546011)(86362001)(508600001)(956004)(5660300002)(66946007)(2616005)(16576012)(37006003)(8936002)(316002)(66556008)(66476007)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUVjdUg5MjdxUXFWQmRSWWVFR0xtRCt4cGFHRDJGZ2pHQUdta1Iyb3V1SXdE?=
+ =?utf-8?B?WjZnenZ0YWNZMGFydTRHTmFLaWhjd1BpL053akttRitFZlh2VUoySmRJN2pH?=
+ =?utf-8?B?Tk44RUxnOXJXODEycHVPdlpDRzVrR0MvcWVkZVh1T0h3SHBaMFVhZDJxYmZm?=
+ =?utf-8?B?YlcydGFoOGZqN01YSndHUDBubEpBa0hmQmY5Nk9rbGZZd3h0Rm9kbVNkdjVh?=
+ =?utf-8?B?N2RON0lMeVR1OGpXQTZFdW5KdFBJK2xrZWEwQXdMdkY5cmlVSkdUVW5YM0d2?=
+ =?utf-8?B?bjJMU0dtOFpnNEErcXZSUW5pOFBQT1BDTWpzdGJuckFDTUVNTW9VcUpOelVU?=
+ =?utf-8?B?YjlVWTBLcnRRR1QxVEh6c1V6TXJFK3hkbXEzYUNtV1lqbGFMaXpEUGMwOXVq?=
+ =?utf-8?B?S0pjbDNQMFp1YmR0dTJXbXV5YjRsT25TOW9Xdy9xS1orMnQxUnNGWnpXbDl3?=
+ =?utf-8?B?RC9Lb2huUDE0Y1JNVlplNk03NHdvK1ZlcWxZVCtRNlVsK2N6ZDN0NzdoN3U4?=
+ =?utf-8?B?cW9BOUN2VHBZdmpQZ01BaVVxcFVQWjJ2aFpHMndqajZxeFlLcEtxanFPNGhC?=
+ =?utf-8?B?ejRyclB6MUxDbUdkNVYzSHVRbTVkYjhvZlRlL1dpb1RoQnUrNlBzVUpxWmph?=
+ =?utf-8?B?bHZWTjMvRkZxdDJreG4xQ2hvTzg2eXozWk1WWUplKzRPNjlKOUo4bG84ZHht?=
+ =?utf-8?B?STJmbXFUWnZpMEtWZzN2MzQvdVdNSS9YVlVLYWxZU2JQNStyWEtRWVcrY2xs?=
+ =?utf-8?B?SC80RFh2OXpRcTR4Mk9zSGRoa2NpMDVKTWZ0ZjNjWTh3a2RBdWtIeHFKOEIv?=
+ =?utf-8?B?NlZ4cDJyRnp5aWZianRFb0R4a2FuOGRkOVZwSzRQUCs4d3AxOE1xZkJCdFFo?=
+ =?utf-8?B?NENCTDAvci9ZT3lWZVFFbmFueXdFd2I1NG03citmRTlMdk5pN2l1MjJvZG1w?=
+ =?utf-8?B?YTFPZUZ0RVlHRkpJMFg4d1BHNHpwMSsxSFJublZleThKTVl0OFY1cXlQU3pp?=
+ =?utf-8?B?Z2VWWXBGdFI1ai90M1RaVTlMaE54WEF2NUJ1V0VFcnVXWVg1VkZORGt1aVNO?=
+ =?utf-8?B?N3UrQWowSXIrRldLQUdnZGI4TnFTK3RaVVl2MXVITlhMb0RVQldhTzgrcXRa?=
+ =?utf-8?B?WnBuT3pLMDd0WW03VmV3YTUyZm00RmFLNG1aeGNkSGxxcHlFcEVKUnNheWh1?=
+ =?utf-8?B?U1YzczJ4N1NCUmFvY0tKRW5zUUEyaXlubG1QOWNkL05KdnVFSDBVcU4wV3Nt?=
+ =?utf-8?B?NVN1UFR2bjU2MnQ0d3ZVOXdNVHZXVDQvaFdZc1pyckt5azFkN3pmMExPREdP?=
+ =?utf-8?B?ZkVaR2tGTElWTlJmaDEwbVN1ak9WemV5Nm9GTy9jTlBrb1RXV01IcWw1M0lY?=
+ =?utf-8?B?ZjB2SlppSEtyamY3Q2p2RUtKREpKRjRMbjBsbCt2RzczTkdCcmlEUHJ4T0Jq?=
+ =?utf-8?B?MXpCcm5jblpzVUlWR0N1a3pYMnIvWHNLMkNJWDd6djY0NEp2UDBGc3lvTTR1?=
+ =?utf-8?B?Mm5UUkgxZFJwNGRYaWNKZ0RQUDVmRnlZdElsNVp0Tm56bzE2WjBOVmVjbzVT?=
+ =?utf-8?B?a3lZc2pCOENkZ1QySm96UjRSNERabTlITGUyZGd4czJOZEtNN2N5b0VlaDcv?=
+ =?utf-8?B?c3N2OW82WWNoc00wbEZmdnFXQlN6V1JTRDgxNEg0K3Q4d0RELzdvYlExeTM1?=
+ =?utf-8?B?L08vMlFBZThuV05QWDdySzlFamR3QW5RZUFMcUd3a0xJaDBxZC9LaVBXYUFC?=
+ =?utf-8?Q?eLMFKvNIrC9u7gZCLSdcecTpWrkCm4xpNXYIn2c?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38f43355-5a85-49c2-620d-08d97e83cdbc
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 11:18:00.7826
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AHFVMvqamEqSEnqY3qQEGHs4J4ja+9HYem0/+C0cBrLIA0BZeVLQJn2gIM3OJ0ZczIOz1B34jlQG5bOcwUdS9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5741
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 10:33:10AM +0000, Shameerali Kolothum Thodi wrote:
+On 23.09.2021 13:12, Juergen Gross wrote:
+> On 23.09.21 13:10, Jan Beulich wrote:
+>> On 23.09.2021 11:53, Oleksandr Andrushchenko wrote:
+>>> --- a/drivers/xen/Kconfig
+>>> +++ b/drivers/xen/Kconfig
+>>> @@ -180,10 +180,34 @@ config SWIOTLB_XEN
+>>>   	select DMA_OPS
+>>>   	select SWIOTLB
+>>>   
+>>> +config XEN_PCI_STUB
+>>> +	bool
+>>> +
+>>> +config XEN_PCIDEV_STUB
+>>> +	tristate "Xen PCI-device stub driver"
+>>> +	depends on PCI && !X86 && XEN
+>>> +	depends on XEN_BACKEND
+>>> +	select XEN_PCI_STUB
+>>> +	default m
+>>> +	help
+>>> +	  The PCI device stub driver provides limited version of the PCI
+>>> +	  device backend driver without para-virtualized support for guests.
+>>> +	  If you select this to be a module, you will need to make sure no
+>>> +	  other driver has bound to the device(s) you want to make visible to
+>>> +	  other guests.
+>>> +
+>>> +	  The "hide" parameter (only applicable if backend driver is compiled
+>>> +	  into the kernel) allows you to bind the PCI devices to this module
+>>> +	  from the default device drivers. The argument is the list of PCI BDFs:
+>>> +	  xen-pciback.hide=(03:00.0)(04:00.0)
+>>> +
+>>> +	  If in doubt, say m.
+>>> +
+>>>   config XEN_PCIDEV_BACKEND
+>>>   	tristate "Xen PCI-device backend driver"
+>>>   	depends on PCI && X86 && XEN
+>>>   	depends on XEN_BACKEND
+>>> +	select XEN_PCI_STUB
+>>
+>> Does kconfig not at least warn about this? The selected item has a
+>> "depends on !X88" conflicting with the "depends on X86" here.
 > 
-> 
-> > -----Original Message-----
-> > From: Leon Romanovsky [mailto:leon@kernel.org]
-> > Sent: 22 September 2021 11:39
-> > To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@nvidia.com>
-> > Cc: Yishai Hadas <yishaih@nvidia.com>; Alex Williamson
-> > <alex.williamson@redhat.com>; Bjorn Helgaas <bhelgaas@google.com>; David
-> > S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Kirti
-> > Wankhede <kwankhede@nvidia.com>; kvm@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; linux-pci@vger.kernel.org;
-> > linux-rdma@vger.kernel.org; netdev@vger.kernel.org; Saeed Mahameed
-> > <saeedm@nvidia.com>
-> > Subject: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
-> > transition validity
-> > 
-> > From: Yishai Hadas <yishaih@nvidia.com>
-> > 
-> > Add an API in the core layer to check migration state transition validity
-> > as part of a migration flow.
-> > 
-> > The valid transitions follow the expected usage as described in
-> > uapi/vfio.h and triggered by QEMU.
-> > 
-> > This ensures that all migration implementations follow a consistent
-> > migration state machine.
-> > 
-> > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> > Reviewed-by: Kirti Wankhede <kwankhede@nvidia.com>
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/vfio/vfio.c  | 41 +++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/vfio.h |  1 +
-> >  2 files changed, 42 insertions(+)
-> > 
-> > diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> > index 3c034fe14ccb..c3ca33e513c8 100644
-> > --- a/drivers/vfio/vfio.c
-> > +++ b/drivers/vfio/vfio.c
-> > @@ -1664,6 +1664,47 @@ static int vfio_device_fops_release(struct inode
-> > *inode, struct file *filep)
-> >  	return 0;
-> >  }
-> > 
-> > +/**
-> > + * vfio_change_migration_state_allowed - Checks whether a migration state
-> > + *   transition is valid.
-> > + * @new_state: The new state to move to.
-> > + * @old_state: The old state.
-> > + * Return: true if the transition is valid.
-> > + */
-> > +bool vfio_change_migration_state_allowed(u32 new_state, u32 old_state)
-> > +{
-> > +	enum { MAX_STATE = VFIO_DEVICE_STATE_RESUMING };
-> > +	static const u8 vfio_from_state_table[MAX_STATE + 1][MAX_STATE + 1] = {
-> > +		[VFIO_DEVICE_STATE_STOP] = {
-> > +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> > +			[VFIO_DEVICE_STATE_RESUMING] = 1,
-> > +		},
-> > +		[VFIO_DEVICE_STATE_RUNNING] = {
-> > +			[VFIO_DEVICE_STATE_STOP] = 1,
-> > +			[VFIO_DEVICE_STATE_SAVING] = 1,
-> > +			[VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING]
-> > = 1,
-> 
-> Do we need to allow _RESUMING state here or not? As per the "State transitions"
-> section from uapi/linux/vfio.h, 
+> XEN_PCI_STUB != XEN_PCIDEV_STUB
 
-It looks like we missed this state transition.
+Oh, sorry.
 
-Thanks
+Jan
 
-> 
-> " * 4. To start the resuming phase, the device state should be transitioned from
->  *    the _RUNNING to the _RESUMING state."
-> 
-> IIRC, I have seen that transition happening on the destination dev while testing the 
-> HiSilicon ACC dev migration. 
-> 
-> Thanks,
-> Shameer
-> 
-> > +		},
-> > +		[VFIO_DEVICE_STATE_SAVING] = {
-> > +			[VFIO_DEVICE_STATE_STOP] = 1,
-> > +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> > +		},
-> > +		[VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING] = {
-> > +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> > +			[VFIO_DEVICE_STATE_SAVING] = 1,
-> > +		},
-> > +		[VFIO_DEVICE_STATE_RESUMING] = {
-> > +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> > +			[VFIO_DEVICE_STATE_STOP] = 1,
-> > +		},
-> > +	};
-> > +
-> > +	if (new_state > MAX_STATE || old_state > MAX_STATE)
-> > +		return false;
-> > +
-> > +	return vfio_from_state_table[old_state][new_state];
-> > +}
-> > +EXPORT_SYMBOL_GPL(vfio_change_migration_state_allowed);
-> > +
-> >  static long vfio_device_fops_unl_ioctl(struct file *filep,
-> >  				       unsigned int cmd, unsigned long arg)
-> >  {
-> > diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> > index b53a9557884a..e65137a708f1 100644
-> > --- a/include/linux/vfio.h
-> > +++ b/include/linux/vfio.h
-> > @@ -83,6 +83,7 @@ extern struct vfio_device
-> > *vfio_device_get_from_dev(struct device *dev);
-> >  extern void vfio_device_put(struct vfio_device *device);
-> > 
-> >  int vfio_assign_device_set(struct vfio_device *device, void *set_id);
-> > +bool vfio_change_migration_state_allowed(u32 new_state, u32 old_state);
-> > 
-> >  /* events for the backend driver notify callback */
-> >  enum vfio_iommu_notify_type {
-> > --
-> > 2.31.1
-> 
