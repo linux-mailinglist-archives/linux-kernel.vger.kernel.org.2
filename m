@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACCF4161F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1397D4161F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241952AbhIWPW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:22:29 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:35771 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241906AbhIWPWX (ORCPT
+        id S241944AbhIWPYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233085AbhIWPYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:22:23 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1mTQWi-000ce9-EJ; Thu, 23 Sep 2021 17:20:44 +0200
-Received: from p57bd97e9.dip0.t-ipconnect.de ([87.189.151.233] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1mTQWi-001KqW-5r; Thu, 23 Sep 2021 17:20:44 +0200
-Message-ID: <180a123c-304e-2e74-fed6-9da463e985b6@physik.fu-berlin.de>
-Date:   Thu, 23 Sep 2021 17:20:43 +0200
+        Thu, 23 Sep 2021 11:24:15 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DA7C061574;
+        Thu, 23 Sep 2021 08:22:42 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id q125so8660869qkd.12;
+        Thu, 23 Sep 2021 08:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HVxL0gvQeVwNSk7LMfLCfUfPmAJPbw6emcr/92Y6HPk=;
+        b=p+5JZA/d0QPeEFee2vyGl0teLRbu+HhGmmfCC0GugTpHLUpXa2mLytkqGART6iVOgX
+         nSocO8bRUPBGxcQYeC9A2+FRcSZVyaf441Haqy9KwVnJ6j48u4Pi5zcTQbOgp2XXLWoV
+         ALe6HnXjJbk0ytmMafoFSeFw6yaLzTsZLClFvK2vKW544icq1yjPSkTHEcqgqAqHSwg9
+         QUUFS9Dj2NHiP4vAVCS2IIKa0Hxhnz+an7+gD49oSnxRJ67N8wltVx7jF4CjXnZi5C3k
+         /V7Ut1KmhKzIq91iI/vcVTO9lM6JbCPfMXuBvDre6n4T8ROlZdPn6+PuChs38Ge2dg2b
+         rbuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HVxL0gvQeVwNSk7LMfLCfUfPmAJPbw6emcr/92Y6HPk=;
+        b=5O4mH8NsuwEdmqvi2GoPUGKTTK/PQBVoOlc7JVu+lPjxaqd16+994bCmtOpB0zQOJh
+         ejZUYGpcYHtpL3EoRPHT94GkP6d5f3BT5+viGCc6GQgjYP6xIGsQc/hWG92m2h1WIltl
+         sQZnakgDwHnxSti0MYLZa3TGQGztmIvtY2vVbGoLLVq9bl57q0T7jKf89FW9+xp3SNSp
+         DAMKHH+UmJKJUZ5KNEV7E9ZJ/kve3v7IJ2/GeO06YXOToSzPDONQB8udxKSdiTX8xVgB
+         n0kYlYw6/Hbxl66dIzy9bxqxwZmWU7okUCzkab5e5lyjfS1VDc04sN5Lz65D/CQk0Ggi
+         7BdQ==
+X-Gm-Message-State: AOAM533ZogfblmiqMsa24oofajslPip1xqqadmLmf0O8z09DPrCcBYE1
+        LLTD9eXe+3zNBRzBePr/XQ==
+X-Google-Smtp-Source: ABdhPJxksgW3toWKjh5yTplDAjHXG0UVdVM765dWPTWwIfBpqQcVOllpbDWkWcyt9BuLJjXr4x9dyw==
+X-Received: by 2002:a05:620a:530:: with SMTP id h16mr5269737qkh.230.1632410562138;
+        Thu, 23 Sep 2021 08:22:42 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id z186sm4409646qke.59.2021.09.23.08.22.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 08:22:41 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 11:22:35 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Struct page proposal
+Message-ID: <YUybu+OCpCM2lZJu@moria.home.lan>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan>
+ <e567ad16-0f2b-940b-a39b-a4d1505bfcb9@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] sh: pgtable-3level: Fix cast to pointer from integer of
- different size
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Daniel Palmer <daniel@0x0f.com>, linux-sh@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <2c2eef3c9a2f57e5609100a4864715ccf253d30f.1631713483.git.geert+renesas@glider.be>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <2c2eef3c9a2f57e5609100a4864715ccf253d30f.1631713483.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.151.233
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e567ad16-0f2b-940b-a39b-a4d1505bfcb9@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert!
+On Thu, Sep 23, 2021 at 11:03:44AM +0200, David Hildenbrand wrote:
+> Don't get me wrong, but before there are answers to some of the very basic
+> questions raised above (especially everything that lives in page->flags,
+> which are not only page flags, refcount, ...) this isn't very tempting to
+> spend more time on, from a reviewer perspective.
 
-On 9/15/21 15:50, Geert Uytterhoeven wrote:
-> If X2TLB=y (CPU_SHX2=y or CPU_SHX3=y, e.g. migor_defconfig), pgd_t.pgd
-> is "unsigned long long", causing:
-> 
->     In file included from arch/sh/include/asm/pgtable.h:13,
-> 		     from include/linux/pgtable.h:6,
-> 		     from include/linux/mm.h:33,
-> 		     from arch/sh/kernel/asm-offsets.c:14:
->     arch/sh/include/asm/pgtable-3level.h: In function ‘pud_pgtable’:
->     arch/sh/include/asm/pgtable-3level.h:37:9: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
->        37 |  return (pmd_t *)pud_val(pud);
-> 	  |         ^
-> 
-> Fix this by adding an intermediate cast to "unsigned long", which is
-> basically what the old code did before.
+Did you miss the part of the folios discussion where we were talking about how
+acrimonious it had gotten and why, and talking about (Chris Mason in particular)
+writing design docs up front and how they'd been pretty successful in other
+places?
 
-Thanks a lot for fixing this. My SH kernel build becomes much less noisy with
-your patch. I can also confirm that it doesn't break the boot on my SH-7785LCR
-as expected.
-
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+We're trying something new here, and trying to give people an opportunity to
+discussion what we're trying to do _before_ dumping thousands and thousands of
+lines of refactoring patches on the list.
