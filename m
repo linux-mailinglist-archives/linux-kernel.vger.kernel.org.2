@@ -2,139 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1F4415B32
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287A5415B3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240228AbhIWJoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:44:07 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:29843 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240215AbhIWJoG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:44:06 -0400
-X-Greylist: delayed 1092 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Sep 2021 05:44:05 EDT
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 18N9gXeI038035
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 12:42:33 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1632390148; x=1634982148;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=REVIbiYY3tzh8nWvkfpsBLWmSnyEr4yRMntSdzxF5UA=;
-        b=V59fssE5tBUm7ZA/ovi83MXG0MyFNiPGmIXYgcDAr5FJ2hZp0K3UUcEaKj0hnHg5
-        QVCm75G7OG+aIcrqbaVtEYyS68rqHLYirByBk9pyAcVyC7WDMnDrm+1ZRqqkZkuE
-        479nGizkAzou0nFMUgs03U1ONqhF8ESmun+IoPZ+v20tHk1E6J4X4t9C0+GCPmmU
-        NZhgwB2JLUe8i++IHG5P0FNEPqlH+NauyxfLgqLXnfRZprXr/lAMs+6mKikcA44l
-        sY4vtL+jD5fBiZaBGvexD6NXrnUGg/W2SsOaGVQNdmwtLsOGX3HX7YYztBwKj478
-        Dxf/Z5p/qAOj874i19ctfw==;
-X-AuditID: 8b5b014d-ba8f670000005d46-f0-614c4c0469b6
-Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id AF.FB.23878.40C4C416; Thu, 23 Sep 2021 12:42:28 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        id S240225AbhIWJqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:46:12 -0400
+Received: from mail-db8eur05on2049.outbound.protection.outlook.com ([40.107.20.49]:24928
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238217AbhIWJqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:46:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hk3+KFbD11hfypY0eXQow1XW4/V1HAZeUEri14AncvVknrYEJ7GGGON1rQEWilYZpXguH/gKFtulqUs66NtayutxjJW6pB1E5J83DMknY0rjwSIqaSJHHMEX9pfDv+8rOs8SXL0f5xMiHdO7ThXH1jIuUcbe88MUW2cTRqQZxvTg+t+Lr+gl9KUfxr8apDVGGp67xQBfToc0lUpAqu5gCjUhpqa1WQpDYgvJ3Jra7R9fTYkSofR4lWQzGWPzh8m7WqKYg8ap4pFIyycE2bcx24tvA/bOfKuV4bXLhTg8n+xt0N6Cs43fXEaLzbh3qKQYgjqgK0GtZHRW00Stg1Pgaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vSsXp+KZdLI52zt37r/dbdLE3XV7LDf079F2OCrZDjQ=;
+ b=BV0hI5WLTqS3R/xqwKzs6L8QeJk4k47vPeq/atcd+yMjD+v/NRNLBq+uKt4uKEM5QOe1mifxSJurfG/xackhl7vY4XByRfm+4eU2TvFcpdoJoiE4jiX4sPEXIGNLihWczadVwlLbRRhTX6cmH8ByCupZ6v+w5Il/E4UsYvnG1EUdD9wdgJgMuM/bJ6O7/KU3desICu9TU8wZm7yVg+u7dAsAlZrRgN9JaouiN49IHGE+55ucrtYsdcIfn1ENhjusvYB/iscwVVlvKoNpz+ILljrzHClKN5mP3I4XAkAmSUWQ/LZl/66/4hAD5Ny99jBygcZSlcEOVuCKRPn6ggz22g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vSsXp+KZdLI52zt37r/dbdLE3XV7LDf079F2OCrZDjQ=;
+ b=IgEDT9KyVNxGLmo79OO+mxBls6S/ASlk+JRhr/jzafsViLmjraznGZeNE9NLiEdalAD2FwpbUNtVwe31pAauQy1N1TqO/k0KX4MgU9Nuw9xF15oDlTw5oFJdtFtakW+XdFcEOcW26xcUUhvd0EtYHxANcaeju0DI18YeKtc3HOI=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB7119.eurprd04.prod.outlook.com (2603:10a6:800:12e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Thu, 23 Sep
+ 2021 09:44:36 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4523.021; Thu, 23 Sep 2021
+ 09:44:36 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>
+Subject: Re: [PATCH v4 net-next 5/8] net: dsa: felix: support psfp filter on
+ vsc9959
+Thread-Topic: [PATCH v4 net-next 5/8] net: dsa: felix: support psfp filter on
+ vsc9959
+Thread-Index: AQHXr56GWZAJ2atrv0ecdycHDF0T3KuwAOYAgADlwACAAHlYgA==
+Date:   Thu, 23 Sep 2021 09:44:36 +0000
+Message-ID: <20210923094435.3jrpwd63fnmwhx7i@skbuf>
+References: <20210922105202.12134-1-xiaoliang.yang_1@nxp.com>
+ <20210922105202.12134-6-xiaoliang.yang_1@nxp.com>
+ <20210922124758.3n2yrjgb6ijrq6ls@skbuf>
+ <DB8PR04MB578547CBED62C7EEA9F8F534F0A39@DB8PR04MB5785.eurprd04.prod.outlook.com>
+In-Reply-To: <DB8PR04MB578547CBED62C7EEA9F8F534F0A39@DB8PR04MB5785.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 987ba28a-3e4f-48d6-c1a4-08d97e76c13e
+x-ms-traffictypediagnostic: VI1PR04MB7119:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB71190D76541E4783AE5396D7E0A39@VI1PR04MB7119.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UPNl+tyXwSk8Pd0d9g5dpBr9OtqKryXRBE/uvI8Y+9dOZNljoXuXZt+EZE40KIoNMA0DVcayvplg8abSRvn/ukK0VuEtq0Rsggf7Sg+T0/6s4fAwje9fHvNTUS+++CdJ6udHrSevs/cE9OHCSTGfoT8TWEGwFkKCT0cFmDO8TRWwsdGeDCmBNbtLxySJOkF6FBlRxcnxbatkUARCzyYBHcsYlO9jL3voCjLQUyFRKDfgJLCtPZeDERV8oSZo4AAEHERvFphqN2M8Evh3J16tJkfz3cEHt4vGK8aoiNpyMc2VHfmWHvkplbfFFy6w8JmedQYo/F80aQlMjVmW+xzx9tjYeVKlfKoFK4kpLFzWOQqAvJz8F2FPI0JLGxV2g5OJ6BhmGjRAq/fpZhHQ9lAP/eR++ItYObVpjt606eIPnBxIqzM1AGsSPfQOyrWp7lHpHM5vX/bvvtirnYUtdFX3EVNp5Ss7L+SbTo+5lQqm6uTTCt/MRJeww0WUh6RMsxD/criH1x6rGhx/9FiDTkeWrMJ8fcMGt9bLJqnRjKPVQJeQRLlFZK0tsYn98LfaD7r5SH/M2J7YOrqG5cQYhAquXXA5zTfcEhJe0u1S6ii0wDa1MkmZhMAIddDew6IkrR9UT+tR1spDlmCT8iDT+SySqUXGYRYTSeDnpBtc1Vtj5oF9/x6Dvfq9fZqyDiLGA6jBKk6Je3WlxdtsQZes8q/Z5A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(83380400001)(66476007)(76116006)(91956017)(5660300002)(8676002)(66946007)(54906003)(66446008)(64756008)(71200400001)(33716001)(38100700002)(66556008)(6506007)(44832011)(508600001)(6636002)(316002)(7416002)(122000001)(8936002)(38070700005)(1076003)(6512007)(9686003)(26005)(186003)(6862004)(2906002)(6486002)(86362001)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?rVh3PbehDYLaeJGaGAQU787EMgD58nVQqVog2ZTCH8K4zBB8MTMOUUiZJl79?=
+ =?us-ascii?Q?X7g2Tsoadm4d4TXw4V54bWNyqGHGBn0IIAltOIs5GctrGVBzWEV37cG//EmN?=
+ =?us-ascii?Q?VOFVOmeIh6IX+gnkAIRcJGvkdVF5emIZLHaPs7kBudj6kbRMIwJLLhIs5UhE?=
+ =?us-ascii?Q?gz2u1NpIFeNu6udN9bnOn92nhevHQIqTHTzN1f6tW6SpCYiF/9CwCTADzwyW?=
+ =?us-ascii?Q?kjzOWfnfUUh9uM3msosPbVF6VUAYjIZwAThqEG1JN9B4BSjsh8T16AW8Dacp?=
+ =?us-ascii?Q?1LlxdIv7MUhNACMvvnSqZDHbco0TwACrDZBjCaVMmdtCpntXGYbAteEQPpdO?=
+ =?us-ascii?Q?OeNkjZdweF65w5/vpG84YjdhTYbs2q5gUsumnYLPySjQhpdpwDQyoIxXDYVE?=
+ =?us-ascii?Q?dL1aOwMoAGHXaHhPb9oVlJP0GgNNf5JcOll/z2ThSOzcwbsUzZ1+LSjkLF6G?=
+ =?us-ascii?Q?vX1kvlBoTFGM75kBrJ9Li57Psa7gNRzWyl1DYk6URhm9dTTnvwXj6d6VKEVP?=
+ =?us-ascii?Q?ztde7c2rlwSFxY4DyLQz9eHOFJuN848RARo3wmJ8oQ1SJO1RmnKvqqmsUwbm?=
+ =?us-ascii?Q?l9Dllk+vdkv7HWWXK5DOh5452gNN/bC9IxLq+46F/s4Tbn+TC/1QlBiVRAVM?=
+ =?us-ascii?Q?xWhLrpHMjryRK8t6w+rVS4+fXOE244RImTEsELz5MPOFKDG8smvTGr6pbe3w?=
+ =?us-ascii?Q?1yfuw6UHHX+1QiRw1I+XDtv0Hn/Wnxos7w2C9q+SVZjWm2RJAUzWWwjyETHu?=
+ =?us-ascii?Q?KMQEC+Yv5OVaAphwsLSNDMDJB9oO9I3lnEbgu8AiJrdY61U5KYTSaunp6xb9?=
+ =?us-ascii?Q?R8Xv2PuRrHC6x5MgL01TGJWxcvGoHOXJVf36FkYgcDuHYsRPEtqQBmTMcz7T?=
+ =?us-ascii?Q?lfoA/v6nfFbH1yq578yS4c215hJQKcqSvwEUgzZ9+4mjeiQoOdnVr7VcbUPS?=
+ =?us-ascii?Q?CCJHGOPlyh6+C5+F8FYsNGdbcjPwSTdL/R2CJn3rLos43UpoQbVnDAjjw3dn?=
+ =?us-ascii?Q?9NQ/EO0zcYzUmHd5LG03Et1qGO5R+2nyZXE5WFAEvt3kP1FQnaaBcQ2Vex1K?=
+ =?us-ascii?Q?uAWfFOuGeYhhB3F0+6VTS4IqLOeF/bNeY6iURX0qE6q/sB3mmex7Fq3noEcO?=
+ =?us-ascii?Q?VQZVVO/c9OW9JkKaCD/CfvUugRPG5vr8/SlFiTLKLuMoAVjEqzHlfXdkFHjT?=
+ =?us-ascii?Q?KkNa6iCMyRs5ITvRDSxAjgjS5iiWpqhfMXZ/hUKbGHi5Eew8wsxREApdxHS/?=
+ =?us-ascii?Q?PSgfq4c0W4EhxyrhwL5yxdj2dN43uO2jIKRxItoWghhv9F5FjtuUGWCMnVT1?=
+ =?us-ascii?Q?gFOP4naGYPmzxBDUo81ZwEL2R3X3QfL4WUZjyFOO0DCtNA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B96DA62532403F4096624BA2DBA63F2E@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 23 Sep 2021 12:42:28 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>, Guo Ren <guoren@kernel.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>, wefu@redhat.com,
-        =?UTF-8?Q?Wei_Wu_=28=E5=90=B4=E4=BC=9F=29?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
-Subject: Re: [PATCH] riscv: Add RISC-V svpbmt extension
-Organization: FORTH
-In-Reply-To: <CAAhSdy0YDP3Nk8N9fnrKgS+3Rjt=5tLCh20upmUGK9SK67nNvg@mail.gmail.com>
-References: <20210923072716.913826-1-guoren@kernel.org>
- <6d7b1668c1f562a5ef426bb2519f9784@mailhost.ics.forth.gr>
- <CAAhSdy0YDP3Nk8N9fnrKgS+3Rjt=5tLCh20upmUGK9SK67nNvg@mail.gmail.com>
-Message-ID: <0861cc74d3886e685e9aa5d13ddcd781@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplleLIzCtJLcpLzFFi42Lpjp6urMvi45NocPWDmsWTQ+1sFtMOHGK3
-        aJ2wm8XiyYeJbBYtH96xWvyddIzdYtGK7ywWS3ZKW+x5tYfd4kJzD6PFvRXL2C12989hsdh+
-        /jubxYu9jSwWxx/tYrFYufook8WFxpvsFpdXz2eyeH7qGJvFpS/XWCwu75rDZrHtcwubxcp1
-        x5gtZvz4x2jR/O4cu8XWjesYLbpXVluc3HCA0WLN0qmMFi37p7BY/Dx0nsli4et57A4KHq/a
-        njF5/P41idHj3e9ljB5Tf59h8VjT+ZrJY1ZDL5vHnXPn2Tw2PFrN6vH/0EoWj52z7rJ7LNhU
-        6tFy5C2rx8NNl5g8Nq3qZPPY+dDSY/OS+gCJKC6blNSczLLUIn27BK6M+1+vMRXs5ak4vu84
-        YwPjJ84uRk4OCQETiW3rXjGD2EICRxklzr6Rg4ibSsze28kIYvMKCEqcnPmEBcRmFrCQmHpl
-        PyOELS/RvHU2WC+LgKrE9wc/WEFsNgFNifmXDoLViwioSDx/eg6onguofg63xMZ9P5lAEsIC
-        5hJvvzawg9j8AsISn+5eBGvmFAiUuPLjIwtIg5DATkaJ6c+fMUNc4SLxcvNXRojrVCQ+/H4A
-        1MzBIQpkb56rNIFRcBaSW2chuXUWklsXMDKvYhRILDPWy0wu1kvLLyrJ0Esv2sQITimMvjsY
-        b29+q3eIkYmD8RCjBAezkgjv5xteiUK8KYmVValF+fFFpTmpxYcYpTlYlMR5efUmxAsJpCeW
-        pGanphakFsFkmTg4pRqYPEMN3u/PkwrWjOr9k2vz6k6sYGz1pCUJ0rWfnDw1udYaLDdXc1I7
-        qsfXExZSy/Fiy6yuK3Knsvc3rjq64GlUYu9DM58/l9cab5W8lf73q1CCklxESNHiTQ0SXuo3
-        D16tLddfZTD/w4LlcVsmRRjtjdkWlDUlfsXpe+eZetyfHl7IcMIu2zMjeLukn+XzlohLKyaa
-        8rdPet/H55x46amiRhVXVNA1oQWRm9yeFE9yixIonbYy7tDPwxbtb535JBmutc675vGyo31x
-        sHnedKsnd+LmandMVDbcyiL5csr9zx8EBGr68748v9zmnsS+PPno7cBmvg8Xvx6/fEDCbffC
-        BYHbnZRjti/42njfUnyfEktxRqKhFnNRcSIANIa0FpgDAAA=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 987ba28a-3e4f-48d6-c1a4-08d97e76c13e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 09:44:36.1682
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: f5rjwvY7IRF40cZJnarDA3bE/VJ9o6zlRBOscI/xAfZhBzWH7Mwm7Tps1ViCiut9uF9MQJ7LX7bYIyzG8bwNgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2021-09-23 12:37, Anup Patel έγραψε:
-> On Thu, Sep 23, 2021 at 2:55 PM Nick Kossifidis <mick@ics.forth.gr> 
-> wrote:
->> 
->> Hello Guo,
->> 
->> Στις 2021-09-23 10:27, guoren@kernel.org έγραψε:
->> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml
->> b/Documentation/devicetree/bindings/riscv/cpus.yaml
->> index e534f6a7cfa1..1825cd8db0de 100644
->> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
->> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
->> @@ -56,7 +56,9 @@ properties:
->>       enum:
->>         - riscv,sv32
->>         - riscv,sv39
->> +      - riscv,sv39,svpbmt
->>         - riscv,sv48
->> +      - riscv,sv48,svpbmt
->>         - riscv,none
->> 
->> Isn't svpbmt orthogonal to the mmu type ? It's a functionality that 
->> can
->> be present on either sv39/48/57 so why not have another "svpbmt"
->> property directly on the cpu node ?
-> 
-> Actually, "mmu-type" would be a good place because it's page based
-> memory attribute and paging can't exist without mmu translation mode.
-> 
-> Also, "svpmbt" is indeed a CPU property so has to be feature individual
-> CPU node. Hypothetically, a heterogeneous system is possible where
-> some CPUs have "svpmbt" and some CPUs don't have "svpmbt". For
-> example, a future FUxxx SoC might have a E-core and few S-cores
-> where S-cores have Svpmbt whereas E-core does not have Svpmbt
-> because it's an embedded core.
-> 
+On Thu, Sep 23, 2021 at 02:30:16AM +0000, Xiaoliang Yang wrote:
+> Maybe we need to use ocelot_mact_learn() instead of
+> ocelot_mact_write() after setting SFID in StreamData. I think this can
+> avoid writing a wrong entry.
 
-I should say cpuX node, not the root /cpu node. We can have an svpbmt 
-property in the same way we have an mmu-type property.
+So you're thinking of introducing a new ocelot_mact_learn_with_streamdata()=
+,
+that writes the SFID and SSID of the STREAMDATA too, instead of editing
+them in-place for an existing MAC table entry, and then issuing a LEARN
+MAC Table command which would hopefully transfer the entire data
+structure to the MAC table?
 
-Regards,
-Nick
+Have you tried that?
+
+In the documentation for the LEARN MAC Table command, I see:
+
+Purpose: Insert/learn new entry in MAC table.  Position given by (MAC, VID)
+
+Use: Configure MAC and VID of the new entry in MACHDATA and MACLDATA.
+Configure remaining entry fields in MACACCESS.  The location in the MAC
+table is calculated based on (MAC, VID).
+
+I just hope it will transfer the STREAMDATA too, it doesn't explicitly
+say that it will...
+
+And assuming it does, will the LEARN command overwrite an existing
+static FDB entry which has the same MAC DA and VLAN ID, but not SFID?
+I haven't tried that either.=
