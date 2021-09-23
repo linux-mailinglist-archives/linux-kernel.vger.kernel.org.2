@@ -2,135 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D71B415F33
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A07F415FA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241187AbhIWNJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbhIWNJa (ORCPT
+        id S241353AbhIWNZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:25:52 -0400
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17273 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241358AbhIWNZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:09:30 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91737C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:07:58 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id w29so16966783wra.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rE6nnZCkTUCQWXqTRzlILH190eg8HrCKfBnNZwDr1Zo=;
-        b=VV2tCq3SN8ulJhpc0E6jDm+p8kHvTGIWq0mPVdpqBKCELiHsCgpY8t7yIKoUsss3oA
-         9+FzKPqeQbvPha1ggffEuMX0eobcioNr0u/yhCbaX2f9zWv+bDZjx9dBH++SKlo/GxLc
-         r/TV9g24RrZRebJvy82+h3DzTxGoYH5F7+Sn5Zw4bRLh0zYEREy6tCiAdaVQQBLsMFqD
-         TEqeDIe/Uvm+ez7Bh9nbptOPACNTxy+kM8IRI6WEi9xScYcX+4S6ir5be7cL9yVqIsGg
-         RSh+2wA+u9a9HWrQj/GvFVZYhD2+kbSEJ2j9ibvs7yvNvEjIyMB+XR0cFnxNRP0LjALK
-         AhpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rE6nnZCkTUCQWXqTRzlILH190eg8HrCKfBnNZwDr1Zo=;
-        b=kfAfQ12YPHZIwFRE2nEaHfSc7kO7y6kNowkoHYP4utlLWi+yceIr9c+7j4f2yZdx+l
-         lIl3HcKoDp9GJX5Hv0w3GPp3qp8rS3tR471YHO0c/shfPCtuO1eFrLA2EAAuvVX2cGiF
-         LU8zR8r184SlTd1VdTQAEtVXtRyax8mEx55y5g7c0ckELr9VD6tf0M8ECdVmHH3+Juwb
-         4KgH99Nfk9cr2256VY1oaOZIj9ON8CzokQk2P6KSVIFYi4qcMFGOnIMHiVaetPPIKJXq
-         iWcimRuqfJCkJuorSy9+7cFMSAsRvhHcM5QbW78OKuVbEkcLX7iv37cWdj6d5Ue9Zu/D
-         RyCw==
-X-Gm-Message-State: AOAM530FfKo66x9URwrEv5dJEouYJ4n++jOfe3hHNs22VW6a/4+tHDXy
-        nm4o77SMZVuAZtOty10q9szzyw==
-X-Google-Smtp-Source: ABdhPJwuMnzsQggZhsSErxfF8pu9yl1541ldsvSrqOM8VzsHHyZLEe0lBR+TR8HxTw8LgR4Pqc47UQ==
-X-Received: by 2002:a1c:403:: with SMTP id 3mr4417280wme.161.1632402476975;
-        Thu, 23 Sep 2021 06:07:56 -0700 (PDT)
-Received: from apalos.home (ppp-94-66-220-137.home.otenet.gr. [94.66.220.137])
-        by smtp.gmail.com with ESMTPSA id b16sm5406560wrp.82.2021.09.23.06.07.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 06:07:56 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 16:07:53 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org, Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, memxor@gmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-Subject: Re: [PATCH net-next 1/7] page_pool: disable dma mapping support for
- 32-bit arch with 64-bit DMA
-Message-ID: <YUx8KZS5NPdTRkPS@apalos.home>
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <20210922094131.15625-2-linyunsheng@huawei.com>
- <0ffa15a1-742d-a05d-3ea6-04ff25be6a29@redhat.com>
- <CAC_iWjJLCQNHxgbQ-mzLC3OC-m2s7qj3YAtw7vPAKGG6WxywpA@mail.gmail.com>
- <adb2687f-b501-9324-52b2-33ede1169007@huawei.com>
+        Thu, 23 Sep 2021 09:25:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1632402517; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=QEEITetxp1KdUF3UTM/ee3rbezGxhy9H2yMiiG3wK54nC60d0c9BUiC5KeVkHlVWwxtj3AosbPHN04aysB/ACB2fF3fdYBzdwPOjGWaoaOvcUAhgh3tAmXjwOpm5Ih4huR9vtY6bfY76H+EXIzH9641O7wy6a31YI1KHS1X4+zM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1632402517; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=nzuO9db+SWL+uI8mD5Cj6/bYdT9zgt12KRFdhPHa4C8=; 
+        b=fuEBgFrQ/O1i6S5zx7Vpo5/spDqL0YNjTQLwFIl4EtDeR65qrdZX0rMEu1mhkhSR0acB47AGtXo3K3vYZeHnZYC4I6k2aourj1Q4pAFl4X4OyV0+TJImSAnRuADCLGagolh39tv7fE1xgYPKQaQriZRDXk34MRboXTDyrwED6ZI=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1632402517;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=nzuO9db+SWL+uI8mD5Cj6/bYdT9zgt12KRFdhPHa4C8=;
+        b=ff3PytOohXhRoq0TJHWw4MwlnjUEnXgRzlEkTajzyeMkAHXEEgX1+znnORMSeJf3
+        VF9ukkfBaE0uCqC2pGAJmRFsKDSkl7uEwRf/2qxfDFL1W+ju2x00gDgtUB4rh2Mv3ij
+        XrQcC1yEcON62voe5GqDXdb2qgqG/EYE7ygJ+a20=
+Received: from localhost.localdomain (81.71.33.115 [81.71.33.115]) by mx.zoho.com.cn
+        with SMTPS id 163240251605690.26904563646679; Thu, 23 Sep 2021 21:08:36 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     miklos@szeredi.hu, jack@suse.cz, amir73il@gmail.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <20210923130814.140814-1-cgxu519@mykernel.net>
+Subject: [RFC PATCH v5 00/10] implement containerized syncfs for overlayfs
+Date:   Thu, 23 Sep 2021 21:08:04 +0800
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adb2687f-b501-9324-52b2-33ede1169007@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 07:13:11PM +0800, Yunsheng Lin wrote:
-> On 2021/9/23 18:02, Ilias Apalodimas wrote:
-> > Hi Jesper,
-> > 
-> > On Thu, 23 Sept 2021 at 12:33, Jesper Dangaard Brouer
-> > <jbrouer@redhat.com> wrote:
-> >>
-> >>
-> >> On 22/09/2021 11.41, Yunsheng Lin wrote:
-> >>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> >>> index 1a6978427d6c..a65bd7972e37 100644
-> >>> --- a/net/core/page_pool.c
-> >>> +++ b/net/core/page_pool.c
-> >>> @@ -49,6 +49,12 @@ static int page_pool_init(struct page_pool *pool,
-> >>>        * which is the XDP_TX use-case.
-> >>>        */
-> >>>       if (pool->p.flags & PP_FLAG_DMA_MAP) {
-> >>> +             /* DMA-mapping is not supported on 32-bit systems with
-> >>> +              * 64-bit DMA mapping.
-> >>> +              */
-> >>> +             if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> >>> +                     return -EINVAL;
-> >>
-> >> As I said before, can we please use another error than EINVAL.
-> >> We should give drivers a chance/ability to detect this error, and e.g.
-> >> fallback to doing DMA mappings inside driver instead.
-> >>
-> >> I suggest using EOPNOTSUPP 95 (Operation not supported).
-> 
-> Will change it to EOPNOTSUPP, thanks.
+Current syncfs(2) syscall on overlayfs just calls sync_filesystem()
+on upper_sb to synchronize whole dirty inodes in upper filesystem
+regardless of the overlay ownership of the inode. In the use case of
+container, when multiple containers using the same underlying upper
+filesystem, it has some shortcomings as below.
 
-Mind sending this one separately (and you can keep my reviewed-by).  It
-fits nicely on it's own and since I am not sure about the rest of the
-changes yet, it would be nice to get this one in.
+(1) Performance
+Synchronization is probably heavy because it actually syncs unnecessary
+inodes for target overlayfs.
 
-Cheers
-/Ilias
-> 
-> > 
-> > I am fine with both.  In any case though the aforementioned driver can
-> > just remove PP_FLAG_DMA_MAP and do it's own mappings.
-> > 
-> > Regards
-> > /Ilias
-> >>
-> >> -Jesper
-> >>
-> > .
-> > 
+(2) Interference
+Unplanned synchronization will probably impact IO performance of
+unrelated container processes on the other overlayfs.
+
+This series try to implement containerized syncfs for overlayfs so that
+only sync target dirty upper inodes which are belong to specific overlayfs
+instance. By doing this, it is able to reduce cost of synchronization and
+will not seriously impact IO performance of unrelated processes.
+
+v1->v2:
+- Mark overlayfs' inode dirty itself instead of adding notification
+  mechanism to vfs inode.
+
+v2->v3:
+- Introduce overlayfs' extra syncfs wait list to wait target upper inodes
+in ->sync_fs.
+
+v3->v4:
+- Using wait_sb_inodes() to wait syncing upper inodes.
+- Mark overlay inode dirty only when having upper inode and  VM_SHARED
+flag in ovl_mmap().
+- Check upper i_state after checking upper mmap state
+in ovl_write_inode.
+
+v4->v5:
+- Add underlying inode dirtiness check after mnt_drop_write().
+- Handle both wait/no-wait mode of syncfs(2) in overlayfs' ->sync_fs().
+
+Chengguang Xu (10):
+  ovl: setup overlayfs' private bdi
+  ovl: implement ->writepages operation
+  ovl: implement overlayfs' ->evict_inode operation
+  ovl: mark overlayfs' inode dirty on modification
+  ovl: mark overlayfs' inode dirty on shared mmap
+  ovl: implement overlayfs' ->write_inode operation
+  ovl: cache dirty overlayfs' inode
+  fs: export wait_sb_inodes()
+  fs: introduce new helper sync_fs_and_blockdev()
+  ovl: implement containerized syncfs for overlayfs
+
+ fs/fs-writeback.c         |  3 +-
+ fs/overlayfs/file.c       |  6 ++++
+ fs/overlayfs/inode.c      | 14 ++++++++
+ fs/overlayfs/overlayfs.h  |  4 +++
+ fs/overlayfs/super.c      | 69 ++++++++++++++++++++++++++++++++++-----
+ fs/overlayfs/util.c       | 21 ++++++++++++
+ fs/sync.c                 | 14 +++++---
+ include/linux/fs.h        |  1 +
+ include/linux/writeback.h |  1 +
+ 9 files changed, 120 insertions(+), 13 deletions(-)
+
+--=20
+2.27.0
+
+
