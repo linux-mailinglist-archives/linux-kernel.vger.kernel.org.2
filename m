@@ -2,155 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC21415F60
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF898415F6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241199AbhIWNWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:22:09 -0400
-Received: from mail-dm6nam11on2077.outbound.protection.outlook.com ([40.107.223.77]:49281
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234515AbhIWNWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:22:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QDPSqK6+LenjmIzQgjBcsXrDxnr6vzTEs/OqG0/kvQfuwPFK8ZNvN/6jDI3JbPPFU7lNyGDgnxettiMYT19lDaIsHLhrX5eybjIw9fm3GS/qK6kDFasjnwvL4l/1Nhp7mSOHH/EJLIQEXXk0CYtxbM8d+S+TUTtz24EPZz5YV5SMEHZhxkeI99NpHcvv+mNU21RUIRHdHUysCHFo4kpXo7exBCWd2T+Knf0Hl3yPr0snKTsNEztY39jSKAuzNf63o7P4Mq6pD+WWyDLdZVzyVBJPz9pYSBzQJJiBkVfdK4ygHQnFRv4t0mE7XfQXaE/jd5VgOknXAanj6Kt2Wr/orA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=EQwCTEH+trJTGmzOfvwWnxfQ9oUCLOmZZQdPx3edWJM=;
- b=S8O4RqmoPOFH1ujdPCk+hK3Dolv29nq+SF5MGywzDfnr38Z0oe0sL0EO+IAssU9HjA9Jk0+oD3d6MQeBAOx/dwB0EZrZ/oRUxXC3zfqy5QTvlgC8Mmm9w9Ij7kBsETzau1JJtABnXNh6pgAuVJp60A2tOH+wpIqO65idigw0H3JgNmvX4JsKBYstNDe59VEXb8BHRWllrfAwiLsJfqG8Y3xSDwmvU43TrsemftXpPeFJtVSIB72+yFGiLZgajXRI2VrLNHyHkNbSk5fEv5vBEz1shbFPfgLebWoURQof5eDhsIxsNfIjX1VPeFhKn9ipKVfoxMky/PMgzkFLYU/+jg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EQwCTEH+trJTGmzOfvwWnxfQ9oUCLOmZZQdPx3edWJM=;
- b=XXHhmhnu1Di/oX8Cgk8/8pz8CApSap3NtrSE0rYsCZpSllRBIMxSL7oePHkcFHrlAEzINpx5hBdqzGHA1cjbZo/RHkV6jWrsFPcP00XXgNHZKDZ+pqY8aNOzQtjpvcXwqVLgu9Xa7OLFnk0e0LHEKy+xWzOqMaFIwwJ6kHPXm++A2TLr7hkP8ArsjAznk+adey4kzwr9bf9fds8M15p27IoaIE6Niw8rvVFPXCZNG/JcUBneVq7p5x+T6VX56Mdhyy1cls70e+yYQNfEcnBJSDie6LjVdtycV2q8kYFdiKSBgbJVtb8RZKcmZ/PuKgzcpzzM3TOpJTvBmMtpnIxnZA==
-Received: from DM3PR11CA0009.namprd11.prod.outlook.com (2603:10b6:0:54::19) by
- DM6PR12MB4185.namprd12.prod.outlook.com (2603:10b6:5:216::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.14; Thu, 23 Sep 2021 13:20:36 +0000
-Received: from DM6NAM11FT059.eop-nam11.prod.protection.outlook.com
- (2603:10b6:0:54:cafe::ea) by DM3PR11CA0009.outlook.office365.com
- (2603:10b6:0:54::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Thu, 23 Sep 2021 13:20:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- DM6NAM11FT059.mail.protection.outlook.com (10.13.172.92) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 13:20:35 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
- 2021 13:20:35 +0000
-Received: from [10.26.49.14] (172.20.187.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
- 2021 13:20:32 +0000
-Subject: Re: [PATCH v6 2/4] dmaengine: tegra: Add tegra gpcdma driver
-To:     Akhil R <akhilrajeev@nvidia.com>
-CC:     "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        Krishna Yarlagadda <kyarlagadda@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        Rajesh Gumasta <rgumasta@nvidia.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        Pavan Kunapuli <pkunapuli@nvidia.com>
-References: <1631887887-18967-1-git-send-email-akhilrajeev@nvidia.com>
- <1631887887-18967-3-git-send-email-akhilrajeev@nvidia.com>
- <fe8b4d60-0051-a11a-50e5-c188a9e9b346@nvidia.com>
- <BN9PR12MB5273F667288F7DEE99BA275DC0A29@BN9PR12MB5273.namprd12.prod.outlook.com>
- <5a3de015-a0d1-4440-12d0-06297ac7f9d0@nvidia.com>
- <BN9PR12MB52731FB8F424A7E92EB8694AC0A39@BN9PR12MB5273.namprd12.prod.outlook.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <bd4036f2-2ec2-1301-0956-42626ad3e12e@nvidia.com>
-Date:   Thu, 23 Sep 2021 14:20:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S241270AbhIWNWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:22:48 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:42910 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241264AbhIWNWm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:22:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1632403270; x=1663939270;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=2RWqN9QB2QVB/b7ge5LAdzUZ1SFAzssOZe07e839kf4=;
+  b=xJgw4z2vmNb9CkjhcGMwFSvmuxIBOtM117wQ2cpBlGsfc08lLafFPQ/B
+   77AgTOZhXiiXFUh1YWQVAcefXWACyv2NPH//1Zx5/92b9VkZ+Y+UowdIC
+   Lzl4WHIqaTIJOkwQk3z7bmBRgTcUU0aS6ATeHXIWXHEflHiAxzGeZZXjq
+   ltnFgTbgw7Y+dDR7G9ztoFCXldB9m7hg8WAe5GCCbcMakad4+YvysisKG
+   unNBr5JpgBRbRr4I1Okh5GAXn34g9OLq9Za1B5VREOpWd/VfxeGP7ZAwP
+   BiFbY3UkDBaCV3JNniMOkGbMV/I/mp3TEjIGbmYNV0SsCWmgeIftsijVV
+   w==;
+IronPort-SDR: 5cz/a+by3UACqSP0rYaRiJJsWe+xA9nqtrjzUwmHGBXhug0t6JWeoO17xxF0IlO3gpJ/dLHI2y
+ /oa+RBSRWHHwoZBbKePR0j+YekUZD6G8cercJZO5To/ZUi+F2re8bRUOWqfB1i0T5adPbhT2Wx
+ b4AzMVOa+iuU7TmxV9jPe5eaWPzc3jI8vXYsA/A0Yei7Wnye+p4tmqQQngfsIRdL3ZH6YEJcm0
+ pcLipp/ZNw++1e8zKTrz8aMXdj3Pctb8bg4X6TqysjwvRLrUj5jDsLJ9Rx16KqqxPopEpo+xhQ
+ KqzrFMLyREBLOhjBSmtERWYS
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="137664785"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Sep 2021 06:21:10 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 23 Sep 2021 06:21:06 -0700
+Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 23 Sep 2021 06:21:04 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v4 02/17] clk: at91: pmc: execute suspend/resume only for backup mode
+Date:   Thu, 23 Sep 2021 16:20:31 +0300
+Message-ID: <20210923132046.1860549-3-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210923132046.1860549-1-claudiu.beznea@microchip.com>
+References: <20210923132046.1860549-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <BN9PR12MB52731FB8F424A7E92EB8694AC0A39@BN9PR12MB5273.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 24f3d5cd-2e60-44c8-c3b0-08d97e94edbf
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4185:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB41855CF11C6005B6DF03299ED9A39@DM6PR12MB4185.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Wkuf+z9RTDmH+t/YHxTFM6iKPG6m1D1n04pHnuUgnswlsBdUfERvpwRsexM+VM2JGslVq18rsQwrFZiyNKrXGDx7cmndeC7LCuQBfrsow3TlB5MPkT1KX5I/d1z2Kck+l2arViE5pM7pb9zaJ0XEdZu1jOA81EXrwjLqhIhVwd7v6y1BmOIrr7j5IyAKDy5Z/D9OS3NikceNJQtlm9mnUY2/x1Yi+XLtpGH+OTFsz0V3mw8VK735kbsu3+E8ruDZS5wp+vfqIZ4ACPbKWkl1OTFDoImh+RpKHyeiKn33ZhYzRE9Ir8Ml/PPpcCc5HBsvj6eMZGvqCPkf5Ha8ssvEE7ugFBC+Px0njpaY8nzkf0O78SwKL6wbE+ulk+QRHekBbtJKw/fA1GXOYeVAYDyNd9JDEvrzgrteo2c+aH5iAzTr9BNFUctiOYaxqsGDMqzv7YtCb8eePeDIpEUZ0IbgldOPgGEpay3rPjXDDLclnblFFzile623/JnnqvQh40wViwPHlQr9SEx2JIAUpjFr6D9f1iN3dLsdMi3CCBOnJShoYANNR5wOAWYvq5hHBJnfh512e8NnXewFnwNkBDyGE59rXr7q7bc0QQ/nRu1k8sdz1JMEX1KFHxfHiN/0BXWNxlWdegku7wmqONv4gHP2mc0EQMrILmuReVlVQvx58rx0z8KrMn4KPQWtGltlJwnPrZwveIqUGi6NgCi722ZuQSkEeXlAGtqJzltLuPHZa1U=
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(2616005)(4326008)(54906003)(36906005)(16576012)(8936002)(53546011)(8676002)(316002)(82310400003)(36756003)(426003)(37006003)(86362001)(186003)(31696002)(356005)(31686004)(336012)(6862004)(2906002)(6636002)(107886003)(508600001)(47076005)(5660300002)(7636003)(70206006)(70586007)(36860700001)(26005)(16526019)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 13:20:35.7613
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24f3d5cd-2e60-44c8-c3b0-08d97e94edbf
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT059.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4185
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Before going to backup mode architecture specific PM code sets the first
+word in securam (file arch/arm/mach-at91/pm.c, function at91_pm_begin()).
+Thus take this into account when suspending/resuming clocks. This will
+avoid executing unnecessary instructions when suspending to non backup
+modes. Also this commit changed the postcore_initcall() with
+subsys_initcall() to be able to execute of_find_compatible_node() since
+this was not available at the moment of postcore_initcall(). This should
+not alter the tcb_clksrc since the changes are related to clocks
+suspend/resume procedure that will be executed at the user space request,
+thus long ago after subsys_initcall().
 
-On 23/09/2021 13:51, Akhil R wrote:
->> On 22/09/2021 15:46, Akhil R wrote:
->>>
->>>> On 17/09/2021 15:11, Akhil R wrote:
->>>>> +static int tegra_dma_slave_config(struct dma_chan *dc,
->>>>> +				  struct dma_slave_config *sconfig) {
->>>>> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
->>>>> +
->>>>> +	if (tdc->dma_desc) {
->>>>> +		dev_err(tdc2dev(tdc), "Configuration not allowed\n");
->>>>> +		return -EBUSY;
->>>>> +	}
->>>>> +
->>>>> +	memcpy(&tdc->dma_sconfig, sconfig, sizeof(*sconfig));
->>>>> +	if (tdc->slave_id == -1)
->>>>> +		tdc->slave_id = sconfig->slave_id;
->>>>> +
->>>>> +	tdc->config_init = true;
->>>>> +	return 0;
->>>>> +}
->>>>
->>>> So you have a function to reserve a slave ID, but you don't check
->>>> here if it is already reserved.
->>> slave-id is reserved considering the direction as well.
->>> 'direction' is available only during prep_slave_sg function, I guess.
->>
->> Sorry I don't understand what you mean by that.
-> I mean, it would not be possible to check if the sid is in use without knowing
-> if the direction is MEM_TO_DEV or DEV_TO_MEM. The bitmask to check the
-> sid reservation is separate for MEM_TO_DEV and DEV_TO_MEM.
-> To get the direction parameter, we would need to wait till dma_prep_slave_sg
-> is called, I guess. I saw in the documentation that the 'direction' element in
-> dma_slave_config struct is deprecated and should use the value passed to
-> dma_prep_slave_sg().
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/clk/at91/pmc.c | 49 ++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 47 insertions(+), 2 deletions(-)
 
-Do we even need to worry about slave_id here? Typically the slave_id is 
-coming from device-tree and so is handled by tegra_dma_of_xlate(). I 
-would drop this unless there is an actual use-case we need to support 
-that uses this.
-
-Jon
-
+diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
+index b2806946a77a..58e9c088cb22 100644
+--- a/drivers/clk/at91/pmc.c
++++ b/drivers/clk/at91/pmc.c
+@@ -8,6 +8,8 @@
+ #include <linux/clkdev.h>
+ #include <linux/clk/at91_pmc.h>
+ #include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_platform.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+@@ -110,13 +112,35 @@ struct pmc_data *pmc_data_allocate(unsigned int ncore, unsigned int nsystem,
+ }
+ 
+ #ifdef CONFIG_PM
++
++/* Address in SECURAM that say if we suspend to backup mode. */
++static void __iomem *at91_pmc_backup_suspend;
++
+ static int at91_pmc_suspend(void)
+ {
++	unsigned int backup;
++
++	if (!at91_pmc_backup_suspend)
++		return 0;
++
++	backup = *(unsigned int *)at91_pmc_backup_suspend;
++	if (!backup)
++		return 0;
++
+ 	return clk_save_context();
+ }
+ 
+ static void at91_pmc_resume(void)
+ {
++	unsigned int backup;
++
++	if (!at91_pmc_backup_suspend)
++		return;
++
++	backup = *(unsigned int *)at91_pmc_backup_suspend;
++	if (!backup)
++		return;
++
+ 	clk_restore_context();
+ }
+ 
+@@ -132,6 +156,7 @@ static const struct of_device_id sama5d2_pmc_dt_ids[] = {
+ 
+ static int __init pmc_register_ops(void)
+ {
++	struct platform_device *pdev;
+ 	struct device_node *np;
+ 
+ 	np = of_find_matching_node(NULL, sama5d2_pmc_dt_ids);
+@@ -144,10 +169,30 @@ static int __init pmc_register_ops(void)
+ 	}
+ 	of_node_put(np);
+ 
++	np = of_find_compatible_node(NULL, NULL, "atmel,sama5d2-securam");
++	if (!np)
++		return -ENODEV;
++
++	if (!of_device_is_available(np)) {
++		of_node_put(np);
++		return -ENODEV;
++	}
++
++	pdev = of_find_device_by_node(np);
++	of_node_put(np);
++	if (!pdev)
++		return -ENODEV;
++
++	at91_pmc_backup_suspend = of_iomap(np, 0);
++	if (!at91_pmc_backup_suspend) {
++		pr_warn("%s(): unable to map securam\n", __func__);
++		return -ENOMEM;
++	}
++
+ 	register_syscore_ops(&pmc_syscore_ops);
+ 
+ 	return 0;
+ }
+-/* This has to happen before arch_initcall because of the tcb_clksrc driver */
+-postcore_initcall(pmc_register_ops);
++
++subsys_initcall(pmc_register_ops);
+ #endif
 -- 
-nvpublic
+2.25.1
+
