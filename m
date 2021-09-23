@@ -2,184 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402774158DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4222B4158DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239523AbhIWHNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:13:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36546 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239358AbhIWHNl (ORCPT
+        id S239358AbhIWHOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:14:37 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:35760 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234343AbhIWHOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:13:41 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A0E4622307;
-        Thu, 23 Sep 2021 07:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632381129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mmBOGVhFBxLxi8U95qA0irvUWd9BKBad4ey/QHF4OLA=;
-        b=wrogAHCKAfbCKEVzuRb+fVH0a/fcySAs4mGvGXKmz5+zd+NIKCB05mD+xyfeDze1fOLeTx
-        4eZ4yCj5esduI3FmuhopejyyqvSDHZrbSyIBd9oxLO/e5Y7VPUzkywWd3FYiVxCa5nzMrm
-        vMGCstL8ZncY7TnPdo3+aiITtbjQqJY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632381129;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mmBOGVhFBxLxi8U95qA0irvUWd9BKBad4ey/QHF4OLA=;
-        b=ZSYP82rm/oDJjiyKo9rlW2b2VZJoezlrrkQbWMh6Zt4uZ4QpatSCAdq622p2lRz8hrvUuM
-        l8RL90ZAExVrS3BQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6307413DC4;
-        Thu, 23 Sep 2021 07:12:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7EpiF8koTGH5cwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 23 Sep 2021 07:12:09 +0000
-Message-ID: <efb4a5e1-d64a-38de-97d8-350c3d1b0962@suse.cz>
-Date:   Thu, 23 Sep 2021 09:12:09 +0200
+        Thu, 23 Sep 2021 03:14:35 -0400
+Received: by mail-vs1-f48.google.com with SMTP id f18so5589010vsp.2;
+        Thu, 23 Sep 2021 00:13:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HzeQrgtYJ+KN9cbzfGKrylJWKL7WhW18t10xUgj9FyM=;
+        b=hw1bQ6wU8YLh78tTbPW/trxu8UU6XwnoucVggROaKxtG5QPtrpDxgGXtF+LENM6vIg
+         JRTP2wrPIqvBs7l1zt7tL3r0ICPMil5Z1yamULDWBiaIzg7f/xQIr5b23FQxG7Xu9JdK
+         3Dnee2Htk9atsSnot8AphAiKy8Upw8UxVZhzk//C7+2TDjLzoloTNewE1thrskLAeFuZ
+         3uCoRPonOiv67YIzi1KHlD/kPkWnrUFpvAzT0piRihFKYZCvzN02om54AheqioDmNUcd
+         hR9E+xuwz9PRVk8L3aN2dlBCj7rqjkOUe9mcrPlk3j2WHTyQjMGdyRj7WI5pfBik1n63
+         34Ig==
+X-Gm-Message-State: AOAM532uI//seRqd8ZXRCacqItqnajtbc0lUwiEaV2BrOVjRbJSt68s7
+        /9Xi8AHue/FGVTU/hEUaRli8EEZlha8D7kQTVmZsVvfU
+X-Google-Smtp-Source: ABdhPJyPXVLr89ihtCYGJHbouzG39IJdqPgTa3cXRRZKWPsS8ezadlBfC6KvuZLn/1w5MviosnMZhBr8JewDKsfO69U=
+X-Received: by 2002:a67:2c58:: with SMTP id s85mr2903486vss.35.1632381184361;
+ Thu, 23 Sep 2021 00:13:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        akpm@linux-foundation.org, frederic@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, cl@linux.com,
-        juri.lelli@redhat.com, mingo@redhat.com, mtosatti@redhat.com,
-        nilal@redhat.com, mgorman@suse.de, ppandit@redhat.com,
-        williams@redhat.com, bigeasy@linutronix.de,
-        anna-maria@linutronix.de, linux-rt-users@vger.kernel.org
-References: <20210921161323.607817-1-nsaenzju@redhat.com>
- <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
- <20210922112817.GO4323@worktop.programming.kicks-ass.net>
- <87v92sgt3n.ffs@tglx>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 0/6] mm: Remote LRU per-cpu pagevec cache/per-cpu page
- list drain support
-In-Reply-To: <87v92sgt3n.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210922201314.3205674-1-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20210922201314.3205674-1-kieran.bingham@ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 23 Sep 2021 09:12:53 +0200
+Message-ID: <CAMuHMdW=4ZjtSynuBmwAnK+Nx_q+Ocn-wP36WoC+COUp-fdiXw@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: renesas: r8a779a0: falcon-cpu: Add
+ SW47-SW49 support
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 00:09, Thomas Gleixner wrote:
-> On Wed, Sep 22 2021 at 13:28, Peter Zijlstra wrote:
->> On Tue, Sep 21, 2021 at 07:59:51PM +0200, Vlastimil Babka wrote:
->>
->>> These days the pcplist protection is done by local_lock, which solved
->>> the RT concerns. Probably a stupid/infeasible idea, but maybe what you
->>> want to achieve could be more generally solved at the local_lock level?
->>> That on NOHZ_FULL CPUs, local_locks could have this mode where they
->>> could synchronize with remote cpus?
->>
->> local_lock and spinlock have different rules, local_lock for example can
->> never cause an irq inversion, unlike a spinlock.
-> 
-> TBH, I really regret an attempt I made at some point in the RT
-> development to abuse local locks for this kind of cross CPU protections
-> because that led to yet another semantically ill defined construct.
-> 
-> local locks are as the name says strictly local. IOW, they do not exist
-> for remote access. Just look at the !RT mapping:
-> 
->   local_lock() 		-> preempt_disable()
->   local_lock_irq()	-> local_irq_disable()
->   ...
+On Wed, Sep 22, 2021 at 10:13 PM Kieran Bingham
+<kieran.bingham@ideasonboard.com> wrote:
+> Add support for SW47, SW48 and SW49 via "gpio-keys" on the R-Car V3U
+> Falcon board.
+>
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-Yes, to be clean, this would have to be a new primitive, not just an abused
-local lock. It would just look similar to the RT version (a percpu array of
-spinlocks), so for this patchset it would allow not to have two such locks
-side be side (local + spin) while only one is being used. For maximum
-flexibility the initialization would take a CONFIG_ (or something
-compile-time bool) that when false would make the !RT version an empty
-struct and "locking" would rely on preempt/irq disable (just as with !RT
-local_lock). If compile-time true it would take a static key to decide on
-boot whether the !RT version only does the preepmt/irq disable or actually
-takes the lock.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.16.
 
-But as you say below, it's too much complexity for questionable benefit.
+Gr{oetje,eeting}s,
 
-But maybe this can all be avoided anyway, as I recalled what we do for
-vmstat already (IIUC). See quiet_vmstat() - when cpu enters the nohz mode,
-it flushes per-cpu vmstat diffs and then there's no reason to further
-disturb the cpu to do that while it's on NOHZ mode. We could do the same for
-lru pagevecs and pcplists?
+                        Geert
 
-> The only thing local_lock is addressing is the opaque nature of
-> preempt_disable(), local*_disable/save() protected critical sections,
-> which have per CPU BKL, i.e. undefined protection scope, semantics.
-> 
-> If you really want cross CPU protection then using a regular spinlock in
-> a per CPU data structure is the right way to go.
-> 
-> That makes it a bit akward vs. the code at hand which already introduced
-> local locks to replace the opaque preempt/local_irq disabled critical
-> sections with scoped local locks which in turn allows RT to substitute
-> them with strict CPU local spinlocks.
-> 
-> But for clarity sake we really have to look at two different cases now:
-> 
->    1) Strict per CPU local protection
-> 
->       That's what the code does today via local lock and this includes
->       RT where the locality is preserved via the local lock semantics
-> 
->       I.e. for the !RT case the spinlock overhead is avoided 
-> 
->    2) Global scoped per CPU protection
-> 
->       That's what Nicolas is trying to achieve to be able to update
->       data structures cross CPU for the sake of avoiding smp function
->       calls or queuing work on remote CPUs for the NOHZ_FULL isolation
->       use case.
-> 
-> That said, I completely understand Andrew's concerns versus these
-> distinctions and their test coverage.
-> 
-> In consequence the real interesting question here is whether any of
-> these use cases are sensible to the extra overhead of #2.
-> 
-> IOW, does it really matter whether the !RT and !NOHZ_FULL case take an
-> uncontended per CPU spinlock unconditionally instead of just disabling
-> preemption / interrupts?
-> 
-> The same question arises vs. the remote work queuing. Does it really
-> matter? I think that a proper investigation is due to figure out whether
-> delegated work is really superiour vs. doing the same work locked from a
-> remote CPU occasionally.
-> 
-> If you really think about it then the task which is initiating the work
-> is already in a slow path. So what's the tradeoff to make this path a
-> little bit slower due to remote access vs. scheduling work and thereby
-> disturbing the remote CPU which has a performance impact as well and in
-> the NOHZ_FULL case even a correctness impact? That's especially
-> questionable for situations where the initiator has to wait for
-> completion of the remote work.
-> 
-> The changelogs and the cover letter have a distinct void vs. that which
-> means this is just another example of 'scratch my itch' changes w/o
-> proper justification.
-> 
-> I'm well aware that the inital stuff which myself, and in consequence
-> Sebastian and Anna-Maria, were doing back then falls into the same
-> category. IOW, guilty as charged, but that does not make the current
-> approach more palatable than the one from years ago.
-> 
-> Thanks,
-> 
->         tglx
-> 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
