@@ -2,336 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A261415CB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96961415CB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240588AbhIWLUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240493AbhIWLUc (ORCPT
+        id S240607AbhIWLVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:21:04 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:56650 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240493AbhIWLVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:20:32 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EC6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:19:01 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso7994769ota.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s0cPQoIqCHpexQHN8I9O9O1s6hHQIW6w4g54hPahYMY=;
-        b=qHGxCAn7jinjDDPHFQUDloEwU1harzzS5BJHKqqUmOVpa53v56pEb/snjXFueSJQlE
-         WZMN1u9sh2uvDXUP6GghIdBZiXWYudbzoseo76XTZPLqCpV43T609NVrnbOG2TvqkL3q
-         2ror1gzZ3nnY+9tYAphSHWn9VISBGsoQ1v4B5cOf8ORGOMVxH6yzV/bG+JSV6aJJYMfu
-         IiFptphYABB0gZfh4ALTeFjB6cqfEMggokaoTVU9JnKh2a1BO7yzqUi/ynFEeLTWs421
-         9ilYt0reMrZyY2GX9FYNFGB6/gFO4J+Q865FW4+S6qfbywnLuAqXws+KRr+XCocz9sjK
-         s3UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s0cPQoIqCHpexQHN8I9O9O1s6hHQIW6w4g54hPahYMY=;
-        b=wdnNPFdsYwMg9hba27InamVY0S9sulZjhG6ntECT57UQcywt808djljSSki64Rcs9N
-         5HHhsP4g3oWULWIuTCl9bObjPXbIq/bNcMRKGEBZ+PNbRIGdogy3GGANPbC66XHM1HqO
-         dGQGeJgsMy66vp3EqdGanrkQEJ+LC5W2flivAwd/v7OJ+AJL/qw7DtS5wUC+GEY/uhb9
-         eL55xyfFHLAphGKwiTNmiMckOnKPDkKETBxQMnYc9KZqWg//Ey6kISpsQMpe+j9ILfgx
-         JPQZU3bH1gl90I5p5PIQjtqPU520fSPLsRW5oRUCgOEYvgyzJua2YuH9SL6s4nsZ5p4c
-         OGWw==
-X-Gm-Message-State: AOAM531NlLaksiNlNSyeDesYLvoaJjQviUUxWLLx9OoKCrcC5bAltDdo
-        PJmgxNAyVBtvGbJ22jLTo7dACeX8Bgfn5xSuv9CKQg==
-X-Google-Smtp-Source: ABdhPJyV6Gq0lOamTxj0NtSjJE+CiMC+Gbio02ClpLQlVGav8QgwgW3aaEaPL3RpeERBg3iaBCWSk52uC09avgKBb/M=
-X-Received: by 2002:a9d:7244:: with SMTP id a4mr3878121otk.137.1632395940082;
- Thu, 23 Sep 2021 04:19:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210923104803.2620285-1-elver@google.com> <20210923104803.2620285-4-elver@google.com>
-In-Reply-To: <20210923104803.2620285-4-elver@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 23 Sep 2021 13:18:48 +0200
-Message-ID: <CACT4Y+Zvm4dXQY2tCuypso9aU97_6U2dLhfg2NNA8GTvcQoCLQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] kfence: limit currently covered allocations when
- pool nearly full
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com
+        Thu, 23 Sep 2021 07:21:03 -0400
+X-UUID: 9b253f948c5b4dac8dd1a58292d989df-20210923
+X-UUID: 9b253f948c5b4dac8dd1a58292d989df-20210923
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <kuan-ying.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1948045060; Thu, 23 Sep 2021 19:19:29 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Sep 2021 19:19:28 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 23 Sep
+ 2021 19:19:28 +0800
+Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Sep 2021 19:19:22 +0800
+Message-ID: <5f7a9ed1dabba25596c38a8e7c32ee5750b80459.camel@mediatek.com>
+Subject: Re: [PATCH] scs: Release kasan vmalloc poison in scs_free process
+From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+To:     <yee.lee@mediatek.com>, <linux-kernel@vger.kernel.org>
+CC:     <nicholas.Tang@mediatek.com>, <chinwen.chang@mediatek.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        "Sami Tolvanen" <samitolvanen@google.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 23 Sep 2021 19:19:21 +0800
+In-Reply-To: <20210923095316.13867-1-yee.lee@mediatek.com>
+References: <20210923095316.13867-1-yee.lee@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sept 2021 at 12:48, Marco Elver <elver@google.com> wrote:
->
-> One of KFENCE's main design principles is that with increasing uptime,
-> allocation coverage increases sufficiently to detect previously
-> undetected bugs.
->
-> We have observed that frequent long-lived allocations of the same
-> source (e.g. pagecache) tend to permanently fill up the KFENCE pool
-> with increasing system uptime, thus breaking the above requirement.
-> The workaround thus far had been increasing the sample interval and/or
-> increasing the KFENCE pool size, but is no reliable solution.
->
-> To ensure diverse coverage of allocations, limit currently covered
-> allocations of the same source once pool utilization reaches 75%
-> (configurable via `kfence.skip_covered_thresh`) or above. The effect is
-> retaining reasonable allocation coverage when the pool is close to full.
->
-> A side-effect is that this also limits frequent long-lived allocations
-> of the same source filling up the pool permanently.
->
-> Uniqueness of an allocation for coverage purposes is based on its
-> (partial) allocation stack trace (the source). A Counting Bloom filter
-> is used to check if an allocation is covered; if the allocation is
-> currently covered, the allocation is skipped by KFENCE.
->
-> Testing was done using:
->
->         (a) a synthetic workload that performs frequent long-lived
->             allocations (default config values; sample_interval=1;
->             num_objects=63), and
->
->         (b) normal desktop workloads on an otherwise idle machine where
->             the problem was first reported after a few days of uptime
->             (default config values).
->
-> In both test cases the sampled allocation rate no longer drops to zero
-> at any point. In the case of (b) we observe (after 2 days uptime) 15%
-> unique allocations in the pool, 77% pool utilization, with 20% "skipped
-> allocations (covered)".
->
-> Signed-off-by: Marco Elver <elver@google.com>
-
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-
+On Thu, 2021-09-23 at 17:53 +0800, yee.lee@mediatek.com wrote:
+> From: Yee Lee <yee.lee@mediatek.com>
+> 
+> Since scs allocation has been moved to vmalloc region, the
+> shadow stack is protected by kasan_posion_vmalloc.
+> However, the vfree_atomic operation needs to access
+> its context for scs_free process and causes kasan error
+> as the dump info below.
+> 
+> This patch Adds kasan_unpoison_vmalloc() before vfree_atomic,
+> which aligns to the prior flow as using kmem_cache.
+> The vmalloc region will go back posioned in the following
+> vumap() operations.
+> 
+>  ==================================================================
+>  BUG: KASAN: vmalloc-out-of-bounds in llist_add_batch+0x60/0xd4
+>  Write of size 8 at addr ffff8000100b9000 by task kthreadd/2
+> 
+>  CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.15.0-rc2-11681-(skip)
+>  Hardware name: linux,dummy-virt (DT)
+>  Call trace:
+>   dump_backtrace+0x0/0x43c
+>   show_stack+0x1c/0x2c
+>   dump_stack_lvl+0x68/0x84
+>   print_address_description+0x80/0x394
+>   kasan_report+0x180/0x1dc
+>   __asan_report_store8_noabort+0x48/0x58
+>   llist_add_batch+0x60/0xd4
+>   vfree_atomic+0x60/0xe0
+>   scs_free+0x1dc/0x1fc
+>   scs_release+0xa4/0xd4
+>   free_task+0x30/0xe4
+>   __put_task_struct+0x1ec/0x2e0
+>   delayed_put_task_struct+0x5c/0xa0
+>   rcu_do_batch+0x62c/0x8a0
+>   rcu_core+0x60c/0xc14
+>   rcu_core_si+0x14/0x24
+>   __do_softirq+0x19c/0x68c
+>   irq_exit+0x118/0x2dc
+>   handle_domain_irq+0xcc/0x134
+>   gic_handle_irq+0x7c/0x1bc
+>   call_on_irq_stack+0x40/0x70
+>   do_interrupt_handler+0x78/0x9c
+>   el1_interrupt+0x34/0x60
+>   el1h_64_irq_handler+0x1c/0x2c
+>   el1h_64_irq+0x78/0x7c
+>   _raw_spin_unlock_irqrestore+0x40/0xcc
+>   sched_fork+0x4f0/0xb00
+>   copy_process+0xacc/0x3648
+>   kernel_clone+0x168/0x534
+>   kernel_thread+0x13c/0x1b0
+>   kthreadd+0x2bc/0x400
+>   ret_from_fork+0x10/0x20
+> 
+>  Memory state around the buggy address:
+>   ffff8000100b8f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>   ffff8000100b8f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>  >ffff8000100b9000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>                     ^
+>   ffff8000100b9080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>   ffff8000100b9100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>  ==================================================================
+> 
+> CC: Matthias Brugger <matthias.bgg@gmail.com>
+> CC: Will Deacon <will@kernel.org>
+> CC: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Yee Lee <yee.lee@mediatek.com>
 > ---
-> v3:
-> * Remove unneeded !alloc_stack_hash checks.
-> * Remove unneeded meta->alloc_stack_hash=0 in kfence_guarded_free().
->
-> v2:
-> * Switch to counting bloom filter to guarantee currently covered
->   allocations being skipped.
-> * Use a module param for skip_covered threshold.
-> * Use kfence pool address as hash entropy.
-> * Use filter_irq_stacks().
-> ---
->  mm/kfence/core.c   | 103 ++++++++++++++++++++++++++++++++++++++++++++-
->  mm/kfence/kfence.h |   2 +
->  2 files changed, 103 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index db01814f8ff0..58a0f6f1acc5 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -11,11 +11,13 @@
->  #include <linux/bug.h>
->  #include <linux/debugfs.h>
->  #include <linux/irq_work.h>
-> +#include <linux/jhash.h>
->  #include <linux/kcsan-checks.h>
->  #include <linux/kfence.h>
->  #include <linux/kmemleak.h>
->  #include <linux/list.h>
->  #include <linux/lockdep.h>
-> +#include <linux/log2.h>
->  #include <linux/memblock.h>
->  #include <linux/moduleparam.h>
->  #include <linux/random.h>
-> @@ -82,6 +84,10 @@ static const struct kernel_param_ops sample_interval_param_ops = {
->  };
->  module_param_cb(sample_interval, &sample_interval_param_ops, &kfence_sample_interval, 0600);
->
-> +/* Pool usage% threshold when currently covered allocations are skipped. */
-> +static unsigned long kfence_skip_covered_thresh __read_mostly = 75;
-> +module_param_named(skip_covered_thresh, kfence_skip_covered_thresh, ulong, 0644);
-> +
->  /* The pool of pages used for guard pages and objects. */
->  char *__kfence_pool __ro_after_init;
->  EXPORT_SYMBOL(__kfence_pool); /* Export for test modules. */
-> @@ -105,6 +111,25 @@ DEFINE_STATIC_KEY_FALSE(kfence_allocation_key);
->  /* Gates the allocation, ensuring only one succeeds in a given period. */
->  atomic_t kfence_allocation_gate = ATOMIC_INIT(1);
->
-> +/*
-> + * A Counting Bloom filter of allocation coverage: limits currently covered
-> + * allocations of the same source filling up the pool.
-> + *
-> + * Assuming a range of 15%-85% unique allocations in the pool at any point in
-> + * time, the below parameters provide a probablity of 0.02-0.33 for false
-> + * positive hits respectively:
-> + *
-> + *     P(alloc_traces) = (1 - e^(-HNUM * (alloc_traces / SIZE)) ^ HNUM
-> + */
-> +#define ALLOC_COVERED_HNUM     2
-> +#define ALLOC_COVERED_SIZE     (1 << (const_ilog2(CONFIG_KFENCE_NUM_OBJECTS) + 2))
-> +#define ALLOC_COVERED_HNEXT(h) (1664525 * (h) + 1013904223)
-> +#define ALLOC_COVERED_MASK     (ALLOC_COVERED_SIZE - 1)
-> +static atomic_t alloc_covered[ALLOC_COVERED_SIZE];
-> +
-> +/* Stack depth used to determine uniqueness of an allocation. */
-> +#define UNIQUE_ALLOC_STACK_DEPTH 8UL
-> +
->  /* Statistics counters for debugfs. */
->  enum kfence_counter_id {
->         KFENCE_COUNTER_ALLOCATED,
-> @@ -114,6 +139,7 @@ enum kfence_counter_id {
->         KFENCE_COUNTER_BUGS,
->         KFENCE_COUNTER_SKIP_INCOMPAT,
->         KFENCE_COUNTER_SKIP_CAPACITY,
-> +       KFENCE_COUNTER_SKIP_COVERED,
->         KFENCE_COUNTER_COUNT,
->  };
->  static atomic_long_t counters[KFENCE_COUNTER_COUNT];
-> @@ -125,11 +151,60 @@ static const char *const counter_names[] = {
->         [KFENCE_COUNTER_BUGS]           = "total bugs",
->         [KFENCE_COUNTER_SKIP_INCOMPAT]  = "skipped allocations (incompatible)",
->         [KFENCE_COUNTER_SKIP_CAPACITY]  = "skipped allocations (capacity)",
-> +       [KFENCE_COUNTER_SKIP_COVERED]   = "skipped allocations (covered)",
->  };
->  static_assert(ARRAY_SIZE(counter_names) == KFENCE_COUNTER_COUNT);
->
->  /* === Internals ============================================================ */
->
-> +static inline bool should_skip_covered(void)
-> +{
-> +       unsigned long thresh = (CONFIG_KFENCE_NUM_OBJECTS * kfence_skip_covered_thresh) / 100;
-> +
-> +       return atomic_long_read(&counters[KFENCE_COUNTER_ALLOCATED]) > thresh;
-> +}
-> +
-> +static u32 get_alloc_stack_hash(unsigned long *stack_entries, size_t num_entries)
-> +{
-> +       /* Some randomness across reboots / different machines. */
-> +       u32 seed = (u32)((unsigned long)__kfence_pool >> (BITS_PER_LONG - 32));
-> +
-> +       num_entries = min(num_entries, UNIQUE_ALLOC_STACK_DEPTH);
-> +       num_entries = filter_irq_stacks(stack_entries, num_entries);
-> +       return jhash(stack_entries, num_entries * sizeof(stack_entries[0]), seed);
-> +}
-> +
-> +/*
-> + * Adds (or subtracts) count @val for allocation stack trace hash
-> + * @alloc_stack_hash from Counting Bloom filter.
-> + */
-> +static void alloc_covered_add(u32 alloc_stack_hash, int val)
-> +{
-> +       int i;
-> +
-> +       for (i = 0; i < ALLOC_COVERED_HNUM; i++) {
-> +               atomic_add(val, &alloc_covered[alloc_stack_hash & ALLOC_COVERED_MASK]);
-> +               alloc_stack_hash = ALLOC_COVERED_HNEXT(alloc_stack_hash);
-> +       }
-> +}
-> +
-> +/*
-> + * Returns true if the allocation stack trace hash @alloc_stack_hash is
-> + * currently contained (non-zero count) in Counting Bloom filter.
-> + */
-> +static bool alloc_covered_contains(u32 alloc_stack_hash)
-> +{
-> +       int i;
-> +
-> +       for (i = 0; i < ALLOC_COVERED_HNUM; i++) {
-> +               if (!atomic_read(&alloc_covered[alloc_stack_hash & ALLOC_COVERED_MASK]))
-> +                       return false;
-> +               alloc_stack_hash = ALLOC_COVERED_HNEXT(alloc_stack_hash);
-> +       }
-> +
-> +       return true;
-> +}
-> +
->  static bool kfence_protect(unsigned long addr)
->  {
->         return !KFENCE_WARN_ON(!kfence_protect_page(ALIGN_DOWN(addr, PAGE_SIZE), true));
-> @@ -269,7 +344,8 @@ static __always_inline void for_each_canary(const struct kfence_metadata *meta,
->  }
->
->  static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t gfp,
-> -                                 unsigned long *stack_entries, size_t num_stack_entries)
-> +                                 unsigned long *stack_entries, size_t num_stack_entries,
-> +                                 u32 alloc_stack_hash)
->  {
->         struct kfence_metadata *meta = NULL;
->         unsigned long flags;
-> @@ -332,6 +408,8 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
->         /* Pairs with READ_ONCE() in kfence_shutdown_cache(). */
->         WRITE_ONCE(meta->cache, cache);
->         meta->size = size;
-> +       meta->alloc_stack_hash = alloc_stack_hash;
-> +
->         for_each_canary(meta, set_canary_byte);
->
->         /* Set required struct page fields. */
-> @@ -344,6 +422,8 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
->
->         raw_spin_unlock_irqrestore(&meta->lock, flags);
->
-> +       alloc_covered_add(alloc_stack_hash, 1);
-> +
->         /* Memory initialization. */
->
->         /*
-> @@ -412,6 +492,8 @@ static void kfence_guarded_free(void *addr, struct kfence_metadata *meta, bool z
->
->         raw_spin_unlock_irqrestore(&meta->lock, flags);
->
-> +       alloc_covered_add(meta->alloc_stack_hash, -1);
-> +
->         /* Protect to detect use-after-frees. */
->         kfence_protect((unsigned long)addr);
->
-> @@ -752,6 +834,7 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
->  {
->         unsigned long stack_entries[KFENCE_STACK_DEPTH];
->         size_t num_stack_entries;
-> +       u32 alloc_stack_hash;
->
->         /*
->          * Perform size check before switching kfence_allocation_gate, so that
-> @@ -799,7 +882,23 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
->
->         num_stack_entries = stack_trace_save(stack_entries, KFENCE_STACK_DEPTH, 0);
->
-> -       return kfence_guarded_alloc(s, size, flags, stack_entries, num_stack_entries);
-> +       /*
-> +        * Do expensive check for coverage of allocation in slow-path after
-> +        * allocation_gate has already become non-zero, even though it might
-> +        * mean not making any allocation within a given sample interval.
-> +        *
-> +        * This ensures reasonable allocation coverage when the pool is almost
-> +        * full, including avoiding long-lived allocations of the same source
-> +        * filling up the pool (e.g. pagecache allocations).
-> +        */
-> +       alloc_stack_hash = get_alloc_stack_hash(stack_entries, num_stack_entries);
-> +       if (should_skip_covered() && alloc_covered_contains(alloc_stack_hash)) {
-> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_COVERED]);
-> +               return NULL;
-> +       }
-> +
-> +       return kfence_guarded_alloc(s, size, flags, stack_entries, num_stack_entries,
-> +                                   alloc_stack_hash);
->  }
->
->  size_t kfence_ksize(const void *addr)
-> diff --git a/mm/kfence/kfence.h b/mm/kfence/kfence.h
-> index c1f23c61e5f9..2a2d5de9d379 100644
-> --- a/mm/kfence/kfence.h
-> +++ b/mm/kfence/kfence.h
-> @@ -87,6 +87,8 @@ struct kfence_metadata {
->         /* Allocation and free stack information. */
->         struct kfence_track alloc_track;
->         struct kfence_track free_track;
-> +       /* For updating alloc_covered on frees. */
-> +       u32 alloc_stack_hash;
->  };
->
->  extern struct kfence_metadata kfence_metadata[CONFIG_KFENCE_NUM_OBJECTS];
-> --
-> 2.33.0.464.g1972c5931b-goog
->
+>  kernel/scs.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/scs.c b/kernel/scs.c
+> index e2a71fc82fa0..25c0d8e416e6 100644
+> --- a/kernel/scs.c
+> +++ b/kernel/scs.c
+> @@ -68,6 +68,7 @@ void scs_free(void *s)
+>  
+>  	__scs_account(s, -1);
+>  
+> +	kasan_unpoison_vmalloc(s, SCS_SIZE);
+>  	/*
+>  	 * We cannot sleep as this can be called in interrupt context,
+>  	 * so use this_cpu_cmpxchg to update the cache, and
+> vfree_atomic
+
+I'm not sure if we need to add kasan_unpoison_vmalloc() and
+kasan_poison_vmalloc() in this file.
+
+As far as I know, vmalloc() and vfree() will do these two functions.
+
