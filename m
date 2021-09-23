@@ -2,145 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640F4416357
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F40416359
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242324AbhIWQ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:29:21 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:38773 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242290AbhIWQ3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:29:05 -0400
-Received: by mail-wr1-f52.google.com with SMTP id u18so18876303wrg.5;
-        Thu, 23 Sep 2021 09:27:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6oZ+XUtQEDrny/KQntjDoiQWQURAQNGi1iLVidQw//k=;
-        b=rHawQ8SXR+/N/K2YoK+SAKotCOy1EwfMuM7tu+h58BWpWPc6OozTItMqa9KoV2EfE5
-         WHM6u2PGgeq40hjLijiUgacD08Ofv4Gp1YhZFybde0kEpjO9Ia+WxgJvZXI3RWAi33b3
-         Is6zFvHe6JpU2NcQyVf47IFZYX6dHvEjjz+KvRt6hHKiZxMCYq59BeAcGJPSBAVpFC87
-         M+EQF/xmjl4x/l8HbAexiXRuxU9+5Jdt1BLjFyCIEKsCzjQby/L1czVDImtPSCZWtIdZ
-         3Z4uvQ6QgzGKYgLiUL+KcmSspCI37Aa8q5kuMAZanOE4tU8jQz11eKpd7Pukgp3jb4kV
-         LhdQ==
-X-Gm-Message-State: AOAM531eVwLzF3UcQn1KY9jNgp0XsfjGXJvOGM0V6xN7M6QsAgtRqzr1
-        IuH9ZFVO9fgy6D/w26ESXy3xnKP4Lcj1WA==
-X-Google-Smtp-Source: ABdhPJx1XUGWyc8DO+i1cz/XpGWL6buzyo9KmMMCSh32fHq65J1KI02NFcY6GOANSG215QA6Ti6udQ==
-X-Received: by 2002:a1c:2543:: with SMTP id l64mr16960192wml.9.1632414451033;
-        Thu, 23 Sep 2021 09:27:31 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.googlemail.com with ESMTPSA id g2sm6249670wrb.20.2021.09.23.09.27.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 09:27:30 -0700 (PDT)
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <20210920190350.3860821-2-willmcvicker@google.com>
- <a8d40b96-bcb2-5eb6-b0e5-c20c14471c8a@kernel.org>
- <CAMuHMdWdHF49qj+qV-DnbDDv14J3y98TPHd_6y_i7o7_azhErg@mail.gmail.com>
- <2c8a79f7-711a-b075-745f-ea77b82a1117@canonical.com>
- <CABYd82bzKh=QQHyk-kPXekzCKx+Uy-z2TY5qAQQNfuew=h=O-w@mail.gmail.com>
- <001cd621-53d1-fe22-0eaa-d13137827297@canonical.com>
- <YUx5uhKW/Jy2r3lv@google.com>
- <30a1d0f3-a17c-bf87-2519-542063a7a663@kernel.org>
- <YUyMyVezyjfv1Hs7@google.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v1 1/4] clk: samsung: change COMMON_CLK_SAMSUNG default
- config logic
-Message-ID: <6ea9e6fc-1b38-7a45-3aed-c092da5fc044@kernel.org>
-Date:   Thu, 23 Sep 2021 18:27:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <YUyMyVezyjfv1Hs7@google.com>
-Content-Type: text/plain; charset=utf-8
+        id S242120AbhIWQbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:31:20 -0400
+Received: from mail-eopbgr1410102.outbound.protection.outlook.com ([40.107.141.102]:23018
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233964AbhIWQbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 12:31:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oI40dCIFRCBWSajPAplAbi6bnaPD12y3w5PmN+3mjJFbBhJ5kRdOcdMRERxPT69Juk9etnfy56x2nL101VU+vuVGd5mtBeneD97kNQnzRDP8tpVOjHdh1l05kJGG6Dn0Pb6kYiNxsbm5z1Eqt+lNyFc9htsPa3F1+utNDkxTi2RlwULZjFQ7Q2fZdu3sRSuxV/i7KD0DleeNwcX5ryzB7wAhcs71MGlm4z3Z62vnw+Ro6IYXGfAwTxxbaWq+MSVN19iGvitjMkqxsKFcAIiKRMDK6XQb4rNUylJhmpN7GSYmsdCacup25nnftOvk99HSR9RMMD1zDRm6DkSWwGrxjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=BOVosPK/xg9lksnfuaDME8IiEFZpUITAi+u6hGMxSmQ=;
+ b=Njf5P0mvn73TPsr75cQqdoC8lBin4BLVc745nfIHX1Ix9eJ0Pnh2KCaQmMP4D2nCW5gPprZ2PnC5vs/+4a319EU3RN0UsXx1o48pk9sUqz102+/H5W7Tp6sZzNUTTR/pues4r9N+xLW2i9krc7qXDazCyO/5Xv8eAalk93N917tx4nnt2/ma+um4ID3DjLfwhRHkE3Ok4qLtr+uCV35MvPy5zi5ToMyiPk5XH63oWpUmwe23BoYpoA9qUpJWFXNLAiM7olVi4oHTWKSv18IjGaxP7q/ywd5UZK9rPErQh9kOsPLedqWCsL7aYT5lIkK/PsoZo+NS3jDVcxqdNiIOSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BOVosPK/xg9lksnfuaDME8IiEFZpUITAi+u6hGMxSmQ=;
+ b=QsbYq+hVZK9kPDZAnj3b2c4M+gt9s+voYu1wNEjhEburuWhPz3aP1/9iK6Ulm8JYYXpkMN2e8WVupevlOnFA7a8HFhUr76wzEAGJdplfpt8ZEdkiX9v5euYpepWF/Ctn9tIOJ//vH24ADGn8LhfIiEZ5bF/dOgsSbSQyRN8b94M=
+Received: from TYCPR01MB6608.jpnprd01.prod.outlook.com (2603:1096:400:ae::14)
+ by TYAPR01MB2589.jpnprd01.prod.outlook.com (2603:1096:404:8e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 23 Sep
+ 2021 16:29:44 +0000
+Received: from TYCPR01MB6608.jpnprd01.prod.outlook.com
+ ([fe80::e551:f847:27da:4929]) by TYCPR01MB6608.jpnprd01.prod.outlook.com
+ ([fe80::e551:f847:27da:4929%4]) with mapi id 15.20.4523.022; Thu, 23 Sep 2021
+ 16:29:44 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>
+Subject: RE: [PATCH net-next] ptp: clockmatrix: use rsmu driver to access
+ i2c/spi bus
+Thread-Topic: [PATCH net-next] ptp: clockmatrix: use rsmu driver to access
+ i2c/spi bus
+Thread-Index: AQHXr7nQycIf/kQI20iun4+FyujEaquxwHAAgAAQGjA=
+Date:   Thu, 23 Sep 2021 16:29:44 +0000
+Message-ID: <TYCPR01MB66084980E50015D3C3F1F43CBAA39@TYCPR01MB6608.jpnprd01.prod.outlook.com>
+References: <1632319034-3515-1-git-send-email-min.li.xe@renesas.com>
+ <20210923083032.093c3859@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210923083032.093c3859@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-CA, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=renesas.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8423c096-539b-49f6-4637-08d97eaf59ee
+x-ms-traffictypediagnostic: TYAPR01MB2589:
+x-microsoft-antispam-prvs: <TYAPR01MB25897D412AE1C3C8D48DD570BAA39@TYAPR01MB2589.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ovqBFHwXxFrAQIY06/QqO8lDmSl0qt+iw3fpOm57mXP728zzdP6EMAGgutbTH+AXiVL6VDy6uRl8WU5hAOepVTdf1pHkfZCxzz2wyzXdBWkLu56hCnYsFhKJ4L3HUT6fQVVgqkFKjep2OUojRJmObuda3XaebXMjRa93/uiHYeyXtFirVuryHZ3fOA38blBcvplYTTv6ZCU2uKBXEFgY9lQwX7Ym841CF5rtV8ioz8rSYO1XBoFQN5bfSYfhBSEHJwDyIZRhZYqpCWIqbhiXPCLldmERmCT+leBkdlcdLxc1D0YoxzfQ7OWKoQ55UqXtjDbR2sLpEvmqfPnKDJwx3dFaeawO6N/hZx0PM06Ov/up/KhESrAqbrJBWKCgkxDWRC9bNYjTLSEd04k/5orbTutdWd2zvxHU6achWEAmKN6shJoPjrMS0GDIKS/PjNggox7AqPlID47l4ygJg5BJNVh7ZkeNadnKis6mTSF+l9sT5xlE1rgqQwHuv2Wak8P1QYtYZSEdN1qp2RZyXb6dX/46rLpiHVGmNjWQguU6oq/c2ycHmhi2ZIU9dsk45WT7EOqEFtrUKigGWntYwNwuN/DKeBBnjp7v9vdH5lXwmZbV6o6BldAywMP4vf1cfWEaWcAMjn+hlxUeYrPV/+Tp70eVlDoTMFWnK0SRlfpu8RZEleRbx9R2IH/bLYN95373vs6JFqb6NMzZ1bQ0s0gCjg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB6608.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(55016002)(83380400001)(38070700005)(9686003)(8936002)(86362001)(64756008)(38100700002)(5660300002)(2906002)(186003)(8676002)(6506007)(7696005)(71200400001)(316002)(122000001)(33656002)(76116006)(53546011)(66476007)(52536014)(66946007)(6916009)(54906003)(66446008)(4744005)(26005)(66556008)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?poeAD/BiqcDYErj2Vby/+wvBMl3CQvrQZBpLSTKa4dsxaF0+obUwlT1HWN2T?=
+ =?us-ascii?Q?C3EwvGRdjrUy3kZ/+oHL7mrrLGoCPcw5PGKDZFo0QwcbpupYm43QDoK23bZA?=
+ =?us-ascii?Q?/Rn66T9tuoACuVqTZzD4BnUGy85MV4J3HfNvQhmk/OVExU85SUBlXE5bziNc?=
+ =?us-ascii?Q?uqXXQqg0uiXolBruplRddnZWy/0hIrKw6M0zRJC3OvWI8CWR9yAe3leuSMXw?=
+ =?us-ascii?Q?fv2mGfmsrthoxiRwjcNUvEhdglEbJXkruL8mbSJNKWUxfPC4qdtQy54+iEKg?=
+ =?us-ascii?Q?jMIBmpin/SfCFoKiqtnx54h+sLWl3RM1wXZoEFd+QKa/iuol0jL85sTbFN4V?=
+ =?us-ascii?Q?Od07CPgGZON+Hm9GUq2A1pKYfji+rfXkKNhqJI4UJWiwyiuIEw+k1h1fIeF4?=
+ =?us-ascii?Q?DEsTclDGQYAxVK11Bs7i6/YFWH+Ic533W5X3NBTX2Ml2avPcfHWuQ7YJGblC?=
+ =?us-ascii?Q?E1cYI2b6PDNiDrTGDJetAWJ2DgJAAGOlYuVlHyhDjDFKcj+w+nExACqv5/us?=
+ =?us-ascii?Q?cCXNAs0gVn/UsjrxorZvzKClgbXI6RrIYhUH9UNaU1a3V8meiQXS00+21G7d?=
+ =?us-ascii?Q?ykEEAvCXl8V6jmYFOQPpRY4xFkz+CnN84/+xAvqWVWMpwJBTDlpjwG/yy2r5?=
+ =?us-ascii?Q?sZpwxM85gjnovhX1Ivt3BDLUeTmNQttUAl9yfXXYgIFteoawVVYEDISPqwya?=
+ =?us-ascii?Q?Y3disKyJInc4POsrltyN251FBIRfc9mLf2N7g32vjwcrgv5aFrVUzY+sLky8?=
+ =?us-ascii?Q?NOx1eYsQxN3ICbOh3yGaVfgT8LRr6q2aia7nULXfKlY2+8NFeOwQ4HzhmJJt?=
+ =?us-ascii?Q?F8gWFFZpCTQAWMZlQftPjz9leZUT3O662/rKPsm5lI+vPfVPz7Ur3KTG65H0?=
+ =?us-ascii?Q?B1qVr1jpKcktBmtnVaw1lZZIgzo6IDHMLsFZ7woKUPquS24bzgtJWDxvj3pp?=
+ =?us-ascii?Q?49EDH+6ZWZ8ZT2xldMpE9n/qz7ROSGONrNOup/V8g3+/7e6mEvvYvUA+Dfmm?=
+ =?us-ascii?Q?Jt996KMro8sb+mWUvQReiL+gmaIDAjl1fdyN5MJ6t/VqPhcG2a7H/dLSg9Mt?=
+ =?us-ascii?Q?0B32ejNeHIyEaTcMZI1fjKJN7UyDryqJngnY9Dphj6PX986vJp5X6+pptZLi?=
+ =?us-ascii?Q?fBX3qDtDmQ0kPUYByxE0YcmC9X2TbAL3TTMyazHCNLDm1DvOhSMDoZ/qNjre?=
+ =?us-ascii?Q?ehcLKZQAU3FuAQTc6H6ADhknOLMZc+4VK27gHrEFnINsqoDyFPlqkgJeDL1P?=
+ =?us-ascii?Q?gUddzjMZzBZQ0mIkVL9hPDh36fXns8aehpLieypEX6SVlr9xImofwKncbR6Q?=
+ =?us-ascii?Q?/JNzCMuSF/tFL2IsK7lpN9lK?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6608.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8423c096-539b-49f6-4637-08d97eaf59ee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 16:29:44.1505
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uxiOp040DqMcTBQxCJVNUNRPUtG5MLvvF6ofzjzSocwCDSGP8qWS7IqyiRFmObB/taqf+7g263IuZWbkkKKIcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB2589
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2021 16:18, Lee Jones wrote:
->> Thanks Lee, you described the use case. In general I like it and support
->> it, except for what I wrote in the other mail.
->>
->> Vendor does not contribute much therefore there is no balance in
->> upstreaming. Since none of other vendor's platforms are supported, I am
->> looking only at what is supported. From that perspective - the change
->> proposed by Will and previous guys, does not have much sense.
->>
->> My perspective probably would change a lot if vendor did contribute some
->> of its non-edge platforms (3-5 years old)... especially that unlike few
->> community guys (e.g. PostmarketOS), vendor has shit-tons of money and
->> the hardware manuals. :)
-> 
-> But no incentive to upstream code old (dead) platforms that they no
-> longer make money from.  We're not talking about kind-hearted
-> individuals here.  These are business entities.
-> 
-> What is the business incentive to put hundreds of thousands of dollars
-> into something with no RoI?
 
-Before you mentioned business entities refrain from upstreaming recent
-hardware. You question upstreaming not that recent, so basically
-business entity will claim it has zero incentives working with upstream.
 
-Actually there are incentives for both cases - better code quality for
-the pieces being base for future devices, selling mainline supported
-hardware to other businesses, eventually less work for themselves around
-keeping code in sync with mainline. All these are of course difficult to
-measure from business perspective.
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: September 23, 2021 11:31 AM
+> To: Min Li <min.li.xe@renesas.com>
+> Cc: richardcochran@gmail.com; netdev@vger.kernel.org; linux-
+> kernel@vger.kernel.org; lee.jones@linaro.org
+> Subject: Re: [PATCH net-next] ptp: clockmatrix: use rsmu driver to access
+> i2c/spi bus
+>=20
+> On Wed, 22 Sep 2021 09:57:14 -0400 min.li.xe@renesas.com wrote:
+> > From: Min Li <min.li.xe@renesas.com>
+> >
+> > rsmu (Renesas Synchronization Management Unit ) driver is located in
+> > drivers/mfd and responsible for creating multiple devices including
+> > clockmatrix phc, which will then use the exposed regmap and mutex
+> > handle to access i2c/spi bus.
+>=20
+> Does not build on 32 bit. You need to use division helpers.
 
-> 
->> Instead of pushing this change, please let's give some incentive to the
->> vendor for upstreaming anything.
-> 
-> Again, you're being specific.  We would also like/need to make the
-> same kinds of changes to other vendor configurations.  One's which do
-> contribute significantly at their own cost.
+Hi Jakub
 
-Yes, I am specific because we talk here about specfic Kconfig changes
-for one specific ARM sub-architecture. Same set of changes can be
-applied to other SoCs and usually have more sense there because number
-of upstream platforms is bigger.
+I did build it through 32 bit arm and didn't get the problem.
 
-If you have 10 different pinctrl drivers, you might decide to narrow the
-defconfigs to subset of it. If you have 2-3, the extra complexity does
-not matter and you just enable all of them. That's also decision we made
-few years ago internally in Samsung.
+make ARCH=3Darm CROSS_COMPILE=3Darm-linux-gnueabi-
 
-> The technical reasoning cannot be different because you do or don't
-> like the way the company operates.  Try to detach a little from
-> your feelings during discussions which should be purely technical.
+Thanks
 
-I mentioned the less-contributing vendor arguments because you said:
-
->> Vendors are not able to upstream all functionality right away
-
-That's the side-topic in this discussion.
-
-Technically, all supported Exynos platforms require selecting
-ARCH_EXYNOS and require all drivers selected by ARCH_EXYNOS. If you
-mention some unsupported out-of-tree platforms, which I cannot
-audit/see/use, it is not a valid reason to change statement above. Make
-them supported, available to audit and check and statement above stops
-being valid.
-
-Best regards,
-Krzysztof
+Min
