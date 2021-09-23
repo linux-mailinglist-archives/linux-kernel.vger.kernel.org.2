@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5935416802
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9448416806
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235578AbhIWWaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239507AbhIWWaC (ORCPT
+        id S243465AbhIWWa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:30:27 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:45949 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239507AbhIWWa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:30:02 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48850C061574;
-        Thu, 23 Sep 2021 15:28:30 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id s11so7772077pgr.11;
-        Thu, 23 Sep 2021 15:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NjGFClgphH4uTkcVbbvx9JSSPvqb15w479MfvY6Wezk=;
-        b=no//ku5b7snvMBl+1g518aa6fRx78zQ6g1vD3ki+ui5MOpQQfkuOypjKhAVZDTyvWe
-         mXnCTJ/pDREsuRoYbI5kSqGg3lDvJHTzhonj1wmZ97Bgc0zMnc3aMcS6OgWnusGwK2sf
-         NgKiQvV5Ni+3fmMuqnZdAD1pYAvFqPuEzgWMnSJv48hqjkNKj72rHF4C8VThbRJMbs8/
-         sWfExLKVEEiTdfSAQdbW5Klb67tio4u8ywzq0BABXKKwxpXjZxHNGclhPMPPBQ1eFwJF
-         HuO1BS3FwCR3KJuzWgqDRayU9EeMPBgEBBlhoxBnpSEDKb2G6WhwjAKLZnMTr0kL/aBa
-         4CZA==
+        Thu, 23 Sep 2021 18:30:26 -0400
+Received: by mail-ot1-f46.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso10579874otv.12;
+        Thu, 23 Sep 2021 15:28:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NjGFClgphH4uTkcVbbvx9JSSPvqb15w479MfvY6Wezk=;
-        b=ZAbaOxQ3gTIHwVunnP3Bgnyfj9BBQFmlldPQ5G9QNtsRDIdGTivkFgbngVIZ/1KwHL
-         FRmuV0Mf7c9qNRcntxmw5JPNl4OuTKt3faFSh/MviZB88SJVhBG4JYJLbgsTUXfMUB+Y
-         XBr6CRyQPlNkFlaRcHq1garLEt9mWJrcBuyYtHOsX1M85ahkBoPt5adkIKU2iqApUcdq
-         1B6n2QXYZ9JJ+k3pYFrkIPYqSAGzNiHsqTm7G0Kt3MvrmiOK5j4QLPeNYNcQMsJ8arkT
-         fn7/wlB0k1goy8lKGiBYZxmDfrA0UqvdxFobFlsahRMyw1am5G9hBz8VZWQa8wl+LXqh
-         eZCA==
-X-Gm-Message-State: AOAM532gRCUrGx/uiJYTV8lCRPBMPSBXH9ylFzlXF4jnwmvQ6u2WFisP
-        gMt9gaxhSH2X88M2tq45ec6zXPDF2So=
-X-Google-Smtp-Source: ABdhPJyzhgFkF1eEIzYu1I4d7RfR6teqOQhwYLp2lU0kOIX1loIDvI/Mc+LOJNMKymdVps21FmH9Zw==
-X-Received: by 2002:a63:f84f:: with SMTP id v15mr967754pgj.204.1632436109271;
-        Thu, 23 Sep 2021 15:28:29 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id m186sm5192300pfb.165.2021.09.23.15.28.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 15:28:28 -0700 (PDT)
-Subject: Re: [PATCH v3 0/3] fw_devlink bug fixes
-To:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Vladimir Oltean <olteanv@gmail.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-References: <20210915170940.617415-1-saravanak@google.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6b36ad72-a65f-bd65-abae-c06b673e9154@gmail.com>
-Date:   Thu, 23 Sep 2021 15:28:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8LuhT+hwUfGfKsdp2p0Zj6c1iUcRHgKSeaQyIG39eWk=;
+        b=hgrc9nO7t8PxN7REWHfEHHinOmGiwJhVkun0Vivqwt9X+l6UUzRKqsnugVw3A7SkV/
+         U+aii75N7+x47lu3SBw8rgTViyEsXQ0WugTS8y2JJw+0U1kKqpykJqgxmS0DzX4fZbYp
+         QdzidUmTdSp2snbxfDTYjAVSKqm+4o5DLcT1vWjpO7C82RV+q4M9vHb34XF7lGMKyzxI
+         B2ad2GzF9yecBfhmYeV1stAvVNDNSWD0xEhKaXPEdCz6bE4QG5aulUW4ImFYiElfW4CA
+         DyGgUkPLhnMiP/PxsNo+MBEye44U1KUzC0Yba5lMFt89z9ehqOmoBSMewe5pdqcNcI/j
+         iolg==
+X-Gm-Message-State: AOAM531xObr7L+xyhkNQoUCqVRTu8p6XHMsz5CFVxQBEXluqmr1XuvaC
+        vY+DHkiVYa/TOrjuyiOE4g==
+X-Google-Smtp-Source: ABdhPJwQtmUke5bqMoNe/7yPXWnQlFibQPHA+ia3CLW7T2vLndFGguShmCzGzj0aYdzujx03U9qVXA==
+X-Received: by 2002:a05:6830:40cb:: with SMTP id h11mr1019749otu.176.1632436134235;
+        Thu, 23 Sep 2021 15:28:54 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id y12sm1562748otu.11.2021.09.23.15.28.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 15:28:53 -0700 (PDT)
+Received: (nullmailer pid 3639888 invoked by uid 1000);
+        Thu, 23 Sep 2021 22:28:52 -0000
+Date:   Thu, 23 Sep 2021 17:28:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-hwmon@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org, Jiri Kosina <trivial@kernel.org>,
+        devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 4/6] dt-bindings: hwmon: lltc,ltc4151: convert to dtschema
+Message-ID: <YUz/pI2Nn7pEEqVP@robh.at.kernel.org>
+References: <20210921102832.143352-1-krzysztof.kozlowski@canonical.com>
+ <20210921102832.143352-4-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210915170940.617415-1-saravanak@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921102832.143352-4-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 10:09 AM, Saravana Kannan wrote:
-> Intended for 5.15.
+On Tue, 21 Sep 2021 12:28:30 +0200, Krzysztof Kozlowski wrote:
+> Convert the LTC4151 current and voltage sensor bindings to DT schema
+> format.
 > 
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Vladimir Oltean <olteanv@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  .../bindings/hwmon/lltc,ltc4151.yaml          | 41 +++++++++++++++++++
+>  .../devicetree/bindings/hwmon/ltc4151.txt     | 18 --------
+>  2 files changed, 41 insertions(+), 18 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc4151.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/hwmon/ltc4151.txt
 > 
-> v1->v2:
-> - Added a few Reviewed-by and Tested-by tags
-> - Addressed Geert's comments in patches 3 and 5
-> - Dropped the fw_devlink.debug patch
-> - Added 2 more patches to the series to address other fw_devlink issues
-> 
-> v2->v3:
-> - Split the logging/debug changes into a separate series
-> 
-> Thanks,
-> Saravana
-> 
-> Saravana Kannan (3):
->   driver core: fw_devlink: Improve handling of cyclic dependencies
->   driver core: fw_devlink: Add support for
->     FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
->   net: mdiobus: Set FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD for mdiobus
->     parents
 
-Andrew, did you get a chance to test this patch set on a ZII development
-board rev B or C by any chance?
--- 
-Florian
+Reviewed-by: Rob Herring <robh@kernel.org>
