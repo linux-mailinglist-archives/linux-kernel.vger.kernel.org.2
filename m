@@ -2,106 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0B241580E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEBC415811
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239279AbhIWGET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 02:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239239AbhIWGER (ORCPT
+        id S239286AbhIWGEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 02:04:47 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:33497 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239237AbhIWGEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:04:17 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE62C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:02:46 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id t28so368532wra.7
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=reply-to:subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fgwahsTAg8KuN6NY+9uMhllAHmwKLjBVPsZvBLty6KM=;
-        b=dZFnSEILauy+orsjX6RvU01y4YVpvooFp7E9cGDWrj1T40VVfgCVE7L2tEfq1n6cKG
-         8z7ZfOPolyYJQYU4cr8S+EY8QPb9Q9DFJZTbjlkKgjs/lYCcMrvNjwDIuPA4k4LhZWnN
-         RIrFuPNSWNvjf5o5VddHz0ZrOSHU5Xpn7COLOEDDmXOe3VC7JgBMdu69uOc+Yv1/0ASx
-         Sh0kszrfF7cXW9ZOT+eeAq9sGaC/4WcXlw3hl5bG5NlBwUBkyiTMCaarRzX2WcSU+GT1
-         waD94qWHqeHo1IitWUOpAaiITE+eR/s50a+w0ImR6DnSjrSvPasf8XpGrwuGy5OedDI+
-         /i+Q==
+        Thu, 23 Sep 2021 02:04:46 -0400
+Received: by mail-io1-f72.google.com with SMTP id g2-20020a6b7602000000b005be59530196so4988130iom.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:03:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fgwahsTAg8KuN6NY+9uMhllAHmwKLjBVPsZvBLty6KM=;
-        b=H8bGPsaIP9h5l5hSs8hp+pbknthk3uiDz7EGvixqEzK4ewYQU5Ze4KtbsKS5K2iQaC
-         3Wzed7ySXGm1EhpteFIEeenl5ZeTrfaboboKn9f2WeP2tVytswNfTFbxZF17xWwW6RJU
-         tBZZaDR/ZghNyEAdQM9J/TuZniXn5IMcZG+WDnNohJ9oJB/K1eR+nGW84VM7mJzZ8dGk
-         0MuXGSp6xqLyk93vp0YWp2plhvoQ7zcRRrpFmh8wib+1P3G6bvUbq4t5981Rn0SR0GT6
-         oWydIB9wdOIaMSEYQbX8Rxh+OicmTwkvfyxQOfg7FydDyF6DJ8u+qPA+nJT9gA0zGXNS
-         oVjg==
-X-Gm-Message-State: AOAM532BMia9IEE8LPequ6kdvBlOmFa5hDrtcywdBY2tDXphYZ3s4leB
-        glk0eYAj1Q51liQrAS0A0Bc8yD/z8J9odg==
-X-Google-Smtp-Source: ABdhPJzkXEe3am9jBRg6LgVFXpqmI4t8u4H9q8Pj20BOPC/zsrX0oRwMUFh6aErXV66LEF9ciWWoUA==
-X-Received: by 2002:a7b:cc96:: with SMTP id p22mr2438390wma.83.1632376965301;
-        Wed, 22 Sep 2021 23:02:45 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:410:bb00:88ab:30e5:cd:d558? ([2a01:e0a:410:bb00:88ab:30e5:cd:d558])
-        by smtp.gmail.com with ESMTPSA id o7sm5424039wro.45.2021.09.22.23.02.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 23:02:44 -0700 (PDT)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH net-next v5] net: openvswitch: IPv6: Add IPv6 extension
- header support
-To:     Toms Atteka <cpp.code.lv@gmail.com>, netdev@vger.kernel.org
-Cc:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org,
-        dev@openvswitch.org, linux-kernel@vger.kernel.org
-References: <20210920182038.1510501-1-cpp.code.lv@gmail.com>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-Message-ID: <0d70b112-dc7a-7083-db8d-183782b8ef8f@6wind.com>
-Date:   Thu, 23 Sep 2021 08:02:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=JXvRrW1iqPMwIYRHYBPAsiAM0PkHzg5GtfxmrglxQzQ=;
+        b=aX/WhxLRdSksoRNAEgCJJrCKnRbfZ/0NGcR1uMLtwaapmnWO+vLKa58jWHaPxHAqAq
+         eNO74CwlxPX7KSHpjgFkySzhCiVSnD2w4DskJaW5DCgZxJ37cWDssU5kQK5Ox0hovT4L
+         /CwC/BpxuRJNt1eMq5CHbkjHRzGoqnZzo6nhjNw8J2OaKWT2+j3W00Y8UXtVKUfwYdcD
+         XxEJfCX4lNs8D2Xky8WuN6swQhBIrR4Gh58sF9umRx6HgJx5f/zDaC5rtMScTSpw1ygB
+         l1mg1blRuhs6qxM2jdIN5lTL2aguzbqCdElJTq5ud6tq/GtkwTpTwMAWqdjtFIhlZM36
+         7OZg==
+X-Gm-Message-State: AOAM530VsA8gbImkvaVVTJaECqKJXhDZ2TO6brbtw+OcmeClDOFZE6l7
+        Z8EFVHm2Ihhq0oDaS4oAT3EZQVtwiXEI/iVfCQlUys33Tz11
+X-Google-Smtp-Source: ABdhPJwT9OjdtEE+jw3AVImKDXCzwGMdqVOLT4j2uiwu093ZOHPBREg1Xj/g9V66d630WZBAzcZXMF3cUBsYko/IRsjfaVrFtJsz
 MIME-Version: 1.0
-In-Reply-To: <20210920182038.1510501-1-cpp.code.lv@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:6a13:: with SMTP id x19mr2455017iog.111.1632376994998;
+ Wed, 22 Sep 2021 23:03:14 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 23:03:14 -0700
+In-Reply-To: <000000000000bf710a05b05ae3f6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ed2e6705cca36282@google.com>
+Subject: Re: [syzbot] possible deadlock in f_getown
+From:   syzbot <syzbot+8073030e235a5a84dd31@syzkaller.appspotmail.com>
+To:     asm@florahospitality.com, bfields@fieldses.org,
+        boqun.feng@gmail.com, desmondcheongzx@gmail.com,
+        jlayton@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 20/09/2021 à 20:20, Toms Atteka a écrit :
-> This change adds a new OpenFlow field OFPXMT_OFB_IPV6_EXTHDR and
-> packets can be filtered using ipv6_ext flag.
-> 
-> Signed-off-by: Toms Atteka <cpp.code.lv@gmail.com>
-> ---
->  include/uapi/linux/openvswitch.h |  12 +++
->  net/openvswitch/flow.c           | 140 +++++++++++++++++++++++++++++++
->  net/openvswitch/flow.h           |  14 ++++
->  net/openvswitch/flow_netlink.c   |  24 +++++-
->  4 files changed, 189 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/openvswitch.h b/include/uapi/linux/openvswitch.h
-> index a87b44cd5590..dc6eb5f6399f 100644
-> --- a/include/uapi/linux/openvswitch.h
-> +++ b/include/uapi/linux/openvswitch.h
-> @@ -346,6 +346,13 @@ enum ovs_key_attr {
->  #ifdef __KERNEL__
->  	OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info */
->  #endif
-> +
-> +#ifndef __KERNEL__
-> +	PADDING,  /* Padding so kernel and non kernel field count would match */
-> +#endif
-> +
-> +	OVS_KEY_ATTR_IPV6_EXTHDRS,  /* struct ovs_key_ipv6_exthdr */
-Naive question, why not moving OVS_KEY_ATTR_IPV6_EXTHDRS above
-OVS_KEY_ATTR_TUNNEL_INFO?
+syzbot suspects this issue was fixed by commit:
 
+commit f671a691e299f58835d4660d642582bf0e8f6fda
+Author: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Date:   Fri Jul 2 09:18:30 2021 +0000
 
+    fcntl: fix potential deadlocks for &fown_struct.lock
 
-Regards,
-Nicolas
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15fa8017300000
+start commit:   293837b9ac8d Revert "i915: fix remap_io_sg to verify the p..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=18fade5827eb74f7
+dashboard link: https://syzkaller.appspot.com/bug?extid=8073030e235a5a84dd31
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171390add00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10050553d00000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fcntl: fix potential deadlocks for &fown_struct.lock
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
