@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F29415DA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC811415DA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240915AbhIWMER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:04:17 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53974 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240886AbhIWMEG (ORCPT
+        id S240919AbhIWMEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:04:20 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:55382 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240931AbhIWMEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:04:06 -0400
-X-UUID: 268fe6756faf4885b84abd2d1afd736f-20210923
-X-UUID: 268fe6756faf4885b84abd2d1afd736f-20210923
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        Thu, 23 Sep 2021 08:04:12 -0400
+X-UUID: a1d86a87986649dcb797edf5fc6fa559-20210923
+X-UUID: a1d86a87986649dcb797edf5fc6fa559-20210923
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 157916079; Thu, 23 Sep 2021 20:02:32 +0800
+        with ESMTP id 164158591; Thu, 23 Sep 2021 20:02:39 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
  mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 23 Sep 2021 20:02:30 +0800
+ 15.0.1497.2; Thu, 23 Sep 2021 20:02:38 +0800
 Received: from localhost.localdomain (10.17.3.154) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 23 Sep 2021 20:02:30 +0800
+ Transport; Thu, 23 Sep 2021 20:02:37 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -39,9 +39,9 @@ CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Hsin-Yi Wang <hsinyi@chromium.org>, <yong.wu@mediatek.com>,
         <youlin.pei@mediatek.com>, <anan.sun@mediatek.com>,
         <chao.hao@mediatek.com>, <yen-chang.chen@mediatek.com>
-Subject: [PATCH v3 22/33] iommu/mediatek: Add PCIe support
-Date:   Thu, 23 Sep 2021 19:58:29 +0800
-Message-ID: <20210923115840.17813-23-yong.wu@mediatek.com>
+Subject: [PATCH v3 23/33] iommu/mediatek: Add mt8195 support
+Date:   Thu, 23 Sep 2021 19:58:30 +0800
+Message-ID: <20210923115840.17813-24-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210923115840.17813-1-yong.wu@mediatek.com>
 References: <20210923115840.17813-1-yong.wu@mediatek.com>
@@ -52,95 +52,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the code for of_iommu_configure_dev_id is like this:
-
-static int of_iommu_configure_dev_id(struct device_node *master_np,
-                                     struct device *dev,
-                                     const u32 *id)
-{
-       struct of_phandle_args iommu_spec = { .args_count = 1 };
-
-       err = of_map_id(master_np, *id, "iommu-map",
-                       "iommu-map-mask", &iommu_spec.np,
-                       iommu_spec.args);
-...
-}
-
-It supports only one id output. BUT our PCIe HW has two ID(one is for
-writing, the other is for reading). I'm not sure if we should change
-of_map_id to support output MAX_PHANDLE_ARGS.
-
-Here add the solution in ourselve drivers. If it's pcie case, enable one
-more bit.
-
-Not all infra iommu support PCIe, thus add a PCIe support flag here.
+mt8195 has 3 IOMMU, containing 2 MM IOMMUs, one is for vdo, the other
+is for vpp. and 1 INFRA IOMMU.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/iommu/mtk_iommu.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/iommu/mtk_iommu.c | 42 +++++++++++++++++++++++++++++++++++++++
+ drivers/iommu/mtk_iommu.h |  1 +
+ 2 files changed, 43 insertions(+)
 
 diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 37d6dfb4feab..3f1fd8036345 100644
+index 3f1fd8036345..df823ee3541a 100644
 --- a/drivers/iommu/mtk_iommu.c
 +++ b/drivers/iommu/mtk_iommu.c
-@@ -20,6 +20,7 @@
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-@@ -132,6 +133,7 @@
- #define MTK_IOMMU_TYPE_MM		(0x0 << 13)
- #define MTK_IOMMU_TYPE_INFRA		(0x1 << 13)
- #define MTK_IOMMU_TYPE_MASK		(0x3 << 13)
-+#define IFA_IOMMU_PCIe_SUPPORT		BIT(15)
+@@ -1163,6 +1163,45 @@ static const struct mtk_iommu_plat_data mt8192_data = {
+ 			   {0, 14, 16}, {0, 13, 18, 17}},
+ };
  
- #define MTK_IOMMU_HAS_FLAG(pdata, _x)	(!!(((pdata)->flags) & (_x)))
++static const struct mtk_iommu_plat_data mt8195_data_infra = {
++	.m4u_plat	  = M4U_MT8195,
++	.flags            = WR_THROT_EN | DCM_DISABLE |
++			    MTK_IOMMU_TYPE_INFRA | IFA_IOMMU_PCIe_SUPPORT,
++	.pericfg_comp_str = "mediatek,mt8195-pericfg_ao",
++	.inv_sel_reg      = REG_MMU_INV_SEL_GEN2,
++	.iova_region      = single_domain,
++	.iova_region_nr   = ARRAY_SIZE(single_domain),
++};
++
++static const struct mtk_iommu_plat_data mt8195_data_vdo = {
++	.m4u_plat	= M4U_MT8195,
++	.flags          = HAS_BCLK | HAS_SUB_COMM_2BITS | OUT_ORDER_WR_EN |
++			  WR_THROT_EN | NOT_STD_AXI_MODE | IOVA_34_EN |
++			  SHARE_PGTABLE | MTK_IOMMU_TYPE_MM,
++	.hw_list        = &m4ulist,
++	.inv_sel_reg    = REG_MMU_INV_SEL_GEN2,
++	.iova_region	= mt8192_multi_dom,
++	.iova_region_nr	= ARRAY_SIZE(mt8192_multi_dom),
++	.larbid_remap   = {{2, 0}, {21}, {24}, {7}, {19}, {9, 10, 11},
++			   {13, 17, 15/* 17b */, 25}, {5}},
++};
++
++static const struct mtk_iommu_plat_data mt8195_data_vpp = {
++	.m4u_plat	= M4U_MT8195,
++	.flags          = HAS_BCLK | HAS_SUB_COMM_3BITS | OUT_ORDER_WR_EN |
++			  WR_THROT_EN | NOT_STD_AXI_MODE | IOVA_34_EN |
++			  SHARE_PGTABLE | MTK_IOMMU_TYPE_MM,
++	.hw_list        = &m4ulist,
++	.inv_sel_reg    = REG_MMU_INV_SEL_GEN2,
++	.iova_region	= mt8192_multi_dom,
++	.iova_region_nr	= ARRAY_SIZE(mt8192_multi_dom),
++	.larbid_remap   = {{1}, {3}, {22, 0, 0, 0, 23}, {8},
++			   {20}, {12},
++			   /* 16: 16a; 29: 16b; 30: CCUtop0; 31: CCUtop1 */
++			   {14, 16, 29, 26, 30, 31, 18},
++			   {4, 0, 0, 0, 6}},
++};
++
+ static const struct of_device_id mtk_iommu_of_ids[] = {
+ 	{ .compatible = "mediatek,mt2712-m4u", .data = &mt2712_data},
+ 	{ .compatible = "mediatek,mt6779-m4u", .data = &mt6779_data},
+@@ -1170,6 +1209,9 @@ static const struct of_device_id mtk_iommu_of_ids[] = {
+ 	{ .compatible = "mediatek,mt8173-m4u", .data = &mt8173_data},
+ 	{ .compatible = "mediatek,mt8183-m4u", .data = &mt8183_data},
+ 	{ .compatible = "mediatek,mt8192-m4u", .data = &mt8192_data},
++	{ .compatible = "mediatek,mt8195-iommu-infra", .data = &mt8195_data_infra},
++	{ .compatible = "mediatek,mt8195-iommu-vdo",   .data = &mt8195_data_vdo},
++	{ .compatible = "mediatek,mt8195-iommu-vpp",   .data = &mt8195_data_vpp},
+ 	{}
+ };
  
-@@ -401,8 +403,11 @@ static int mtk_iommu_config(struct mtk_iommu_data *data, struct device *dev,
- 				larb_mmu->mmu &= ~MTK_SMI_MMU_EN(portid);
- 		} else if (MTK_IOMMU_IS_TYPE(data->plat_data, MTK_IOMMU_TYPE_INFRA)) {
- 			peri_mmuen_msk = BIT(portid);
--			peri_mmuen = enable ? peri_mmuen_msk : 0;
-+			/* PCIdev has only one output id, enable the next writing bit for PCIe */
-+			if (dev_is_pci(dev))
-+				peri_mmuen_msk |= BIT(portid + 1);
+diff --git a/drivers/iommu/mtk_iommu.h b/drivers/iommu/mtk_iommu.h
+index d83c79bf800a..a9dc79c5a724 100644
+--- a/drivers/iommu/mtk_iommu.h
++++ b/drivers/iommu/mtk_iommu.h
+@@ -46,6 +46,7 @@ enum mtk_iommu_plat {
+ 	M4U_MT8173,
+ 	M4U_MT8183,
+ 	M4U_MT8192,
++	M4U_MT8195,
+ };
  
-+			peri_mmuen = enable ? peri_mmuen_msk : 0;
- 			ret = regmap_update_bits(data->pericfg, PERICFG_IOMMU_1,
- 						 peri_mmuen_msk, peri_mmuen);
- 			if (ret)
-@@ -977,6 +982,15 @@ static int mtk_iommu_probe(struct platform_device *pdev)
- 		ret = component_master_add_with_match(dev, &mtk_iommu_com_ops, match);
- 		if (ret)
- 			goto out_bus_set_null;
-+	} else if (MTK_IOMMU_IS_TYPE(data->plat_data, MTK_IOMMU_TYPE_INFRA) &&
-+		   MTK_IOMMU_HAS_FLAG(data->plat_data, IFA_IOMMU_PCIe_SUPPORT)) {
-+		#ifdef CONFIG_PCI
-+		if (!iommu_present(&pci_bus_type)) {
-+			ret = bus_set_iommu(&pci_bus_type, &mtk_iommu_ops);
-+			if (ret) /* PCIe fail don't affect platform_bus. */
-+				goto out_list_del;
-+		}
-+		#endif
- 	}
- 	return ret;
- 
-@@ -1007,6 +1021,11 @@ static int mtk_iommu_remove(struct platform_device *pdev)
- 	if (MTK_IOMMU_IS_TYPE(data->plat_data, MTK_IOMMU_TYPE_MM)) {
- 		device_link_remove(data->smicomm_dev, &pdev->dev);
- 		component_master_del(&pdev->dev, &mtk_iommu_com_ops);
-+	} else if (MTK_IOMMU_IS_TYPE(data->plat_data, MTK_IOMMU_TYPE_INFRA) &&
-+		   MTK_IOMMU_HAS_FLAG(data->plat_data, IFA_IOMMU_PCIe_SUPPORT)) {
-+		#ifdef CONFIG_PCI
-+		bus_set_iommu(&pci_bus_type, NULL);
-+		#endif
- 	}
- 	pm_runtime_disable(&pdev->dev);
- 	devm_free_irq(&pdev->dev, data->irq, data);
+ struct mtk_iommu_iova_region;
 -- 
 2.18.0
 
