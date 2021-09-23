@@ -2,161 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BF44157A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838E34157A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239154AbhIWEqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 00:46:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38400 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238259AbhIWEqX (ORCPT
+        id S239169AbhIWEr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 00:47:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39944 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238259AbhIWErZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 00:46:23 -0400
+        Thu, 23 Sep 2021 00:47:25 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C5C5822304;
-        Thu, 23 Sep 2021 04:44:51 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C69CA1FD6F;
+        Thu, 23 Sep 2021 04:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632372291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1632372353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6DS1OShxkN081ActC9VohxvjjWhXQsUmGfkvB+j0Sq4=;
-        b=NxKyAbJyMgEPCr4dSNHUkVYCcpBq8h4ByundRC9cvA4lsE4KPrue+SiaBi7yzhPxl8HhrZ
-        jITXbjboLxn7r1+fA/d5DKm+Zm0Xfc1CWQa4nDujoUZwGkWwpVQayUeMYhV+ZlPw+OjWsd
-        TrSZkpkSTvUiO0G1dTM319PHna12LRo=
+        bh=HmN9x6rySyJ9lUi9QYfe8S0ZHeO+Ta1jHzRHG0MMrbg=;
+        b=dOZsXn5pKF/mnbvYLocKNOzoAe6pDthx4PJwpOd2WGWLD3xvRgdrcTKMQjzNFWqFq2K0vc
+        Uz8xurjQ6hRNnB3wdQKaR66e9/3yk6u40ZQj7Lkr7H0IcimRIZTC4599/ByHgVjmyRmMTB
+        zKr3RQDF91/CHewQuLbz14b5s4NSf3U=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D2B113DBB;
-        Thu, 23 Sep 2021 04:44:51 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 781FA13DBB;
+        Thu, 23 Sep 2021 04:45:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id TWNPHUMGTGHlNwAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 04:44:51 +0000
-Subject: Re: [PATCH v2 1/2] x86/xen: remove xen_have_vcpu_info_placement flag
+        id o24jHIEGTGFwOAAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 04:45:53 +0000
+Subject: Re: [PATCH v2 2/2] x86/xen: switch initial pvops IRQ functions to
+ dummy ones
 To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         xen-devel@lists.xenproject.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, Stefano Stabellini <sstabellini@kernel.org>,
+Cc:     peterz@infradead.org, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
 References: <20210922103102.3589-1-jgross@suse.com>
- <20210922103102.3589-2-jgross@suse.com>
- <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
+ <20210922103102.3589-3-jgross@suse.com>
+ <429cdc9b-b9f1-5393-8baf-cdd2046cd65a@oracle.com>
 From:   Juergen Gross <jgross@suse.com>
-Message-ID: <7de79902-e31b-899d-44bb-f9daabb2ecf0@suse.com>
-Date:   Thu, 23 Sep 2021 06:44:50 +0200
+Message-ID: <aa634c0c-d949-de8f-c1a3-668b83271c14@suse.com>
+Date:   Thu, 23 Sep 2021 06:45:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
+In-Reply-To: <429cdc9b-b9f1-5393-8baf-cdd2046cd65a@oracle.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="7p42MbmcR2R1URc5b0nLq1zIkTD8u7F9m"
+ boundary="6k9FXmeDukZ9ZMu6ldsw95ygj9YXpZQo4"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---7p42MbmcR2R1URc5b0nLq1zIkTD8u7F9m
-Content-Type: multipart/mixed; boundary="IlXSuJXAwFX31QSGBlKtSGJwPbIgwtFQl";
+--6k9FXmeDukZ9ZMu6ldsw95ygj9YXpZQo4
+Content-Type: multipart/mixed; boundary="7roZvm7HEwotfUhEtHFwEXWgMEbTw8Sr9";
  protected-headers="v1"
 From: Juergen Gross <jgross@suse.com>
 To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- xen-devel@lists.xenproject.org, x86@kernel.org, linux-kernel@vger.kernel.org
-Cc: peterz@infradead.org, Stefano Stabellini <sstabellini@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <7de79902-e31b-899d-44bb-f9daabb2ecf0@suse.com>
-Subject: Re: [PATCH v2 1/2] x86/xen: remove xen_have_vcpu_info_placement flag
+ xen-devel@lists.xenproject.org, x86@kernel.org,
+ virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org, Deep Shah <sdeep@vmware.com>,
+ "VMware, Inc." <pv-drivers@vmware.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <aa634c0c-d949-de8f-c1a3-668b83271c14@suse.com>
+Subject: Re: [PATCH v2 2/2] x86/xen: switch initial pvops IRQ functions to
+ dummy ones
 References: <20210922103102.3589-1-jgross@suse.com>
- <20210922103102.3589-2-jgross@suse.com>
- <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
-In-Reply-To: <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
+ <20210922103102.3589-3-jgross@suse.com>
+ <429cdc9b-b9f1-5393-8baf-cdd2046cd65a@oracle.com>
+In-Reply-To: <429cdc9b-b9f1-5393-8baf-cdd2046cd65a@oracle.com>
 
---IlXSuJXAwFX31QSGBlKtSGJwPbIgwtFQl
+--7roZvm7HEwotfUhEtHFwEXWgMEbTw8Sr9
 Content-Type: multipart/mixed;
- boundary="------------2D82B1FDA2C0BF04A0178389"
+ boundary="------------E8E80534100E141BF91E57C6"
 Content-Language: en-US
 
 This is a multi-part message in MIME format.
---------------2D82B1FDA2C0BF04A0178389
+--------------E8E80534100E141BF91E57C6
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-On 22.09.21 23:43, Boris Ostrovsky wrote:
+On 22.09.21 23:49, Boris Ostrovsky wrote:
 >=20
 > On 9/22/21 6:31 AM, Juergen Gross wrote:
->>  =20
->> -	if (xen_have_vcpu_info_placement) {
->> -		vcpup =3D &per_cpu(xen_vcpu_info, cpu);
->> -		info.mfn =3D arbitrary_virt_to_mfn(vcpup);
->> -		info.offset =3D offset_in_page(vcpup);
->> +	vcpup =3D &per_cpu(xen_vcpu_info, cpu);
->> +	info.mfn =3D arbitrary_virt_to_mfn(vcpup);
->> +	info.offset =3D offset_in_page(vcpup);
->>  =20
->> -		/*
->> -		 * Check to see if the hypervisor will put the vcpu_info
->> -		 * structure where we want it, which allows direct access via
->> -		 * a percpu-variable.
->> -		 * N.B. This hypercall can _only_ be called once per CPU.
->> -		 * Subsequent calls will error out with -EINVAL. This is due to
->> -		 * the fact that hypervisor has no unregister variant and this
->> -		 * hypercall does not allow to over-write info.mfn and
->> -		 * info.offset.
->> -		 */
->> -		err =3D HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info,
->> -					 xen_vcpu_nr(cpu), &info);
->> -
->> -		if (err) {
->> -			pr_warn_once("register_vcpu_info failed: cpu=3D%d err=3D%d\n",
->> -				     cpu, err);
->> -			xen_have_vcpu_info_placement =3D 0;
->> -		} else {
->> -			/*
->> -			 * This cpu is using the registered vcpu info, even if
->> -			 * later ones fail to.
->> -			 */
->> -			per_cpu(xen_vcpu, cpu) =3D vcpup;
->> -		}
->> -	}
->> -
->> -	if (!xen_have_vcpu_info_placement)
->> -		xen_vcpu_info_reset(cpu);
->> +	/*
->> +	 * N.B. This hypercall can _only_ be called once per CPU.
->> +	 * Subsequent calls will error out with -EINVAL. This is due to
->> +	 * the fact that hypervisor has no unregister variant and this
->> +	 * hypercall does not allow to over-write info.mfn and
->> +	 * info.offset.
->> +	 */
->> +	err =3D HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cp=
-u),
->> +				 &info);
->> +	if (err)
->> +		panic("register_vcpu_info failed: cpu=3D%d err=3D%d\n", cpu, err);
->>  =20
+>> The initial pvops functions handling irq flags will only ever be calle=
+d
+>> before interrupts are being enabled.
+>>
+>> So make the __init and switch them to be dummy functions:
 >=20
 >=20
-> This is change in behavior. Before if the hypercall failed we still try=
- to boot. I am not sure we need to worry about this (since it's not clear=
- it actually works)=C2=A0 but I'd at least mention this in the commit mes=
-sage.
+> What are you making __init?
 
-Hmm, maybe I should have been more explicit saying that the hypercall
-was introduced in Xen 3.4, and only reason of failure is either an
-illegal vcpu, an invalid mapping specification, or a try to reissue the
-hypercall for a vcpu. None of those should ever happen.
+Oh, sorry, that's a leftover from a previous version.
+
+>> +/* stub always return ing 0. */
+>=20
+>=20
+> "always returning"
+
+Yes.
 
 
 Juergen
 
---------------2D82B1FDA2C0BF04A0178389
+--------------E8E80534100E141BF91E57C6
 Content-Type: application/pgp-keys;
  name="OpenPGP_0xB0DE9DD628BF132F.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -248,24 +212,24 @@ ZDn8R38=3D
 =3D2wuH
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------2D82B1FDA2C0BF04A0178389--
+--------------E8E80534100E141BF91E57C6--
 
---IlXSuJXAwFX31QSGBlKtSGJwPbIgwtFQl--
+--7roZvm7HEwotfUhEtHFwEXWgMEbTw8Sr9--
 
---7p42MbmcR2R1URc5b0nLq1zIkTD8u7F9m
+--6k9FXmeDukZ9ZMu6ldsw95ygj9YXpZQo4
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMBkIFAwAAAAAACgkQsN6d1ii/Ey/C
-QAf+MW8NU9ZWXXfs6ZXLLjQIV2BF+hUkXZKRQdnZdeNvIr2UQrI40xq5SihwSro9Tnr9vLldkD/y
-2Krat7LKnzMF/MfK5XXm2v9iuTK3Rc/1AYCnovaiDbRJCd+h+3cWWccEyhNEtsjV7m70m9+E9oYV
-zx0iarlETkSzZfilELCEFvgn037PJveprAhaODuxL8h7JV0zFwkGyUOowQz5TiY/iQ3Nmzv2GzF8
-3WS/lzTV8NhJgMqwSVecAUBJkdRG/hCzxBuoTuPuaSp8YBSWwfgCtfWL3Cz1f3aLsBtGH4wi18L5
-Wifa075NKRESCVJDxHEM2tbFJVfYiXXe4Wgxg9LwFw==
-=c79E
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMBoAFAwAAAAAACgkQsN6d1ii/Ey92
+gQf+LEMpK732kRBHeHq+3Y9FgdNcrAmxTA0hegwAC3XGOd3xp8EtUpI7z9SpsJ3vREMnOebdOaRH
+S+S+7L3yt72EKy8XI1qteFS322jgz2SJ+z3U5DrH0xD4XRjNt+6BhiMmno6904+oDIG6QOQkFs+T
+WG8MfT5baQopElSTmzAFsrI1/vHKQdutvpaoOKv+Pq+v77zjkbBQsV7g7c+T8dVC7ueCeFHZOrPN
+gifwHMaWx+r8vJg2WqOszNOkclM7iTgApwl37doNJuztDUoYj06yIPYrJxcLentm7NdsPiUU1OlT
+y26L/cXNn/4eGp9NkyL6SJkktNx6EseE7PUnpaoGVw==
+=5cLA
 -----END PGP SIGNATURE-----
 
---7p42MbmcR2R1URc5b0nLq1zIkTD8u7F9m--
+--6k9FXmeDukZ9ZMu6ldsw95ygj9YXpZQo4--
