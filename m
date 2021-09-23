@@ -2,112 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C734161D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344854161D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241969AbhIWPPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:15:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24894 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241947AbhIWPP3 (ORCPT
+        id S241950AbhIWPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241898AbhIWPQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:15:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632410037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VqdjaNmOy3AFkCrcLAGhcrhZbFXF1wKvJPiKrQRv8Nc=;
-        b=AYb91eWUCdKQiWU3z0qpNoUv81R2fE1f6LsUgdGFtnZcAyIWdlattp1mIxxG3EFC6pAmoT
-        5UjsEwmiTs/yLfMAWFDEyP0uXNbrM6PqgmIladOEfuDnoLHVUA42y4AjomMhuP9fy+X9Us
-        2DryJvyRVYvR4HI6RsQ1W1t9ZVs9wvg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-dkBYWIH-Nk6hmZy-bJgioA-1; Thu, 23 Sep 2021 11:13:56 -0400
-X-MC-Unique: dkBYWIH-Nk6hmZy-bJgioA-1
-Received: by mail-wr1-f71.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so5399900wrg.17
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:13:55 -0700 (PDT)
+        Thu, 23 Sep 2021 11:16:39 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B295FC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:15:07 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id g184so6662837pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Mari3rXpEVIL/MKBwf7Gl4BPU8uaHHJQrmX15CzPOg=;
+        b=f9a6wPA2/Ed139nmoq+9njwD0XVqlnEzQYvyODTZpMjfsazNea0OMf6K0Q+Jft1DeD
+         O3FhuKxely5MvxnjeP+Hw71KjtWnQUgQEKTgW858KuxrO17LKhJt/1jpZbnDDE/l6Tup
+         efMI/YAFqUm1STPTUJTNjMUuXTnoBMmzTf5CI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=VqdjaNmOy3AFkCrcLAGhcrhZbFXF1wKvJPiKrQRv8Nc=;
-        b=b2tyWrTaq8RmzX6d3ZSAHCokCLmFi3XBz3tvWKg2F7CwdYmdmVMYoSt+Sx520qCaCQ
-         D7wiqX29rPhS4lHBFBW+fYYNY6A5WKusEm2g4EDMcLGqTCmEOdsxek4TF9ItVMbvLaQm
-         d3nTqI+rVKuxlr/Emv0Nt5DLBO5fylZaEnSs2F96nYDIdjbZSwOnN3KlK+TTktpNsfNJ
-         4NcXfF/SaD7lBqzc0nt93uYm/bgQvraBFixtkmQI8JfQFmXhI1TzbFQntOd30KcINTVf
-         ltZoFbEFVO8vJuLRPVjd5KSzEXysyV+Wcd2Xe3XXcQYClmdWaW9ThTU3UcqmGE2LySPB
-         eENA==
-X-Gm-Message-State: AOAM530RX9GVep4r0AVWyK8KB4nUnCNMjQi91OgEYNAiIgJ86VYCAOwv
-        FFau7rD9mdiXbXU9AB63BMyPQjl2deivxLnNHcTAcS7dZkBZmkNARE8OyDuoqu27jKf850HSTVK
-        L7VoC7yfH/SQlL3heXorqFhGP
-X-Received: by 2002:a5d:544c:: with SMTP id w12mr5948215wrv.398.1632410034872;
-        Thu, 23 Sep 2021 08:13:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMQ1N3NmSdkCf4DeLiX4l4Vc0+xtlPiJy43V6hnH1kMLkDvekZuUvBWSzE7fU9HjrzFPaYNg==
-X-Received: by 2002:a5d:544c:: with SMTP id w12mr5948190wrv.398.1632410034662;
-        Thu, 23 Sep 2021 08:13:54 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-102-46.dyn.eolo.it. [146.241.102.46])
-        by smtp.gmail.com with ESMTPSA id u25sm6278000wmm.5.2021.09.23.08.13.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Mari3rXpEVIL/MKBwf7Gl4BPU8uaHHJQrmX15CzPOg=;
+        b=V9yFdOXdbNcgfn345SkmrS+OjjcjpsCqdb6Ocy8TA6333LyfTc30RffMdbvLlQoF2j
+         Wf506RIImDmhegYTxHoGCTwpbIb/zARIWC8wEtBnN4x3bPhA8mOGKozDMc5PCvnxCTrM
+         9ewDBqOeeDDWBLz1zPgdq2vGm85wsTJUX5jm7hBGGV3JR9XvZXW/PyJ4lwJx6XW+MgXD
+         9kYWJt5ltdW/tuFyBlY23YhZQRVrFxkkHvoB9mJxs5fqHKWitui/10zykpAcycEMjc8p
+         SeaQduqQYDE8Eswu6iWVjpguAlU51A/Ml/vVssep9UqQrRrhAijEMYPmRFIVEuQJ0L5v
+         P3Uw==
+X-Gm-Message-State: AOAM531dpB2JI370wc6fjzMSw/gxdXIdeAoaCIHYiOXBS4pToj2x8goq
+        nns/TByj2KNPfG0Jgw6JCqzN+Q==
+X-Google-Smtp-Source: ABdhPJzwhEuRwdUoHrmNTU5q/yYWuNBJursV7vpG2LiRw6Ys4fKbud5vR0OVEyxYD9sVkTgMk3WULg==
+X-Received: by 2002:a63:e413:: with SMTP id a19mr4695277pgi.408.1632410107206;
+        Thu, 23 Sep 2021 08:15:07 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:4b4:fd97:7a10:9739])
+        by smtp.gmail.com with ESMTPSA id x9sm9591749pjp.50.2021.09.23.08.15.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 08:13:54 -0700 (PDT)
-Message-ID: <286faa2529e01e6091666f97ad0cc703e5e80c7c.camel@redhat.com>
-Subject: Re: [syzbot] WARNING in mptcp_sendmsg_frag
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     syzbot <syzbot+263a248eec3e875baa7b@syzkaller.appspotmail.com>,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        mptcp@lists.linux.dev, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Date:   Thu, 23 Sep 2021 17:13:53 +0200
-In-Reply-To: <20210923143728.GD2083@kadam>
-References: <00000000000015991c05cc43a736@google.com>
-         <7de92627f85522bf5640defe16eee6c8825f5c55.camel@redhat.com>
-         <20210923141942.GD2048@kadam> <20210923143728.GD2083@kadam>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 23 Sep 2021 08:15:06 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7180: Base homestar's power coefficients in reality
+Date:   Thu, 23 Sep 2021 08:14:04 -0700
+Message-Id: <20210923081352.1.I2a2ee0ac428a63927324d65022929565aa7d8361@changeid>
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The commit 82ea7d411d43 ("arm64: dts: qcom: sc7180: Base dynamic CPU
+power coefficients in reality") and the commit be0416a3f917 ("arm64:
+dts: qcom: Add sc7180-trogdor-homestar") passed each other in the
+tubes that make up the Internet. Despite the fact the patches didn't
+cause a merge conflict, they need to account for each other. Do that.
 
-On Thu, 2021-09-23 at 17:37 +0300, Dan Carpenter wrote:
-> On Thu, Sep 23, 2021 at 05:19:42PM +0300, Dan Carpenter wrote:
-> > On Wed, Sep 22, 2021 at 12:32:56PM +0200, Paolo Abeni wrote:
-> > > #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > > 
-> > > The debug code helped a bit. It looks like we have singed/unsigned
-> > > comparisons issue
-> > 
-> > There should be a static checker warning for these.  I have created one
-> > in response to your email.  It turns out there are a couple other
-> > instances of this bug in the same file.
+Fixes: 82ea7d411d43 ("arm64: dts: qcom: sc7180: Base dynamic CPU power coefficients in reality")
+Fixes: be0416a3f917 ("arm64: dts: qcom: Add sc7180-trogdor-homestar")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-Thank you!
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I was quite suprised the plain compiler did not emit a warn, even with
-W=1.
-
-> > net/mptcp/protocol.c:479 mptcp_subflow_could_cleanup() warn: unsigned subtraction: '(null)' use '!='
-> 
-> I should have checked my output a bit more carefully.  I don't want this
-> one to generate a warning.
-> 
-> > net/mptcp/protocol.c:909 mptcp_frag_can_collapse_to() warn: unsigned subtraction: 'pfrag->size - pfrag->offset' use '!='
-> 
-> Likely "pfrag->offset" can't be larger than "pfrag->size".  Smatch has
-> some code to try track this information but it's not clever enough.
-
-Yes, this looks safe, offset can't be larger than size.
-
-Even the last reported warning looks safe to me: 'info->size_goal -
-skb->len', we just check for size_goal being greater then skb->len.
-
-Cheers,
-
-Paolo
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
+index cd3054226865..382f8c6f1576 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
+@@ -51,7 +51,7 @@ skin_temp_thermal: skin-temp-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&pm6150_adc_tm 1>;
+-			sustainable-power = <814>;
++			sustainable-power = <965>;
+ 
+ 			trips {
+ 				skin_temp_alert0: trip-point0 {
+-- 
+2.33.0.464.g1972c5931b-goog
 
