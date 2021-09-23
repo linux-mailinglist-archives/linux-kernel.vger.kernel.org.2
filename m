@@ -2,144 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745A0415ECD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94588415ED0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241140AbhIWMu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:50:57 -0400
-Received: from mail-oo1-f50.google.com ([209.85.161.50]:36388 "EHLO
-        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241000AbhIWMut (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:50:49 -0400
-Received: by mail-oo1-f50.google.com with SMTP id y47-20020a4a9832000000b00290fb9f6d3fso2105359ooi.3;
-        Thu, 23 Sep 2021 05:49:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=32AqBVXNroHHsS62jPgtjGmkNYUjzZq0gtkFGRv5Kts=;
-        b=QiNPgKSUqDKTH9H9y8dT2q728sI88rkv23iDSNHzDIgcleesdPtTdzzUPqn2dER87d
-         m9n/PW610BbUH8/mPQ6qRh+LSlf4pK1lz9CIPrZjObrPdaXmmmg3NqT08qjp7yNsfihK
-         c28vGUfNBjpbgJMhq/R+YFkuILDp0/xgBwv56KBQnXBfGvQsKWdBNTcZgiuDneKxq3VU
-         0aJzs6yWKXwn/lW9nmqI2Hm9UhMahvHxBxQSF9DQsSEgX5vj/YTJZzKkC2G0/6L56+CS
-         2058mjgR+AWXytKgVQ2XBmgfJ6nDs6BydDmNoG+2rElKjbHAygB9HxPCT04gPYjfzSn6
-         lieg==
-X-Gm-Message-State: AOAM531ZOpOSGzlyRz7LiTllBPN3HXXvM054z39Uml8sUWBjEHw6raN5
-        gO+Tr7wtmryNRYo0XN9KRQ==
-X-Google-Smtp-Source: ABdhPJy/+1msRjPfYSZItQTF2FX/XSozQKcIBXilhnC8CsG6TfKUKNsiC4VyOE3zFEDTwvBP8VIx/w==
-X-Received: by 2002:a4a:ba90:: with SMTP id d16mr1257550oop.31.1632401343915;
-        Thu, 23 Sep 2021 05:49:03 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id i27sm1277529ots.12.2021.09.23.05.49.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 05:49:03 -0700 (PDT)
-Received: (nullmailer pid 2828726 invoked by uid 1000);
-        Thu, 23 Sep 2021 12:49:02 -0000
-Date:   Thu, 23 Sep 2021 07:49:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        linux@armlinux.org.uk, f.fainelli@gmail.com,
-        alexandre.belloni@bootlin.com, vladimir.oltean@nxp.com,
-        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 04/12] dt-bindings: reset: Add lan966x
- switch reset bindings
-Message-ID: <YUx3vuQQbHVbpcTh@robh.at.kernel.org>
-References: <20210920095218.1108151-1-horatiu.vultur@microchip.com>
- <20210920095218.1108151-5-horatiu.vultur@microchip.com>
+        id S241110AbhIWMva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:51:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241000AbhIWMv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 08:51:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3635C60FE6;
+        Thu, 23 Sep 2021 12:49:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632401398;
+        bh=UMepoSpw7A+fESNgPq1gBYNpjtYbMA1QMXXCmUStQ3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bKNWDjKpLU2Z+6/d4fxh7ogVZ1YAp7XG1nxQSQRqnw0VKsA4lEkI9FFIQO7UoBL5I
+         a8Vo7cXHmO1XFBZXXhm3HbUGwu4DFj5QDsdt6xURSbmHkEBklLTo0iljMuMh/ymQeR
+         v9uBBcudr05ppvzu3cJmUS6IZaQL2OC3RorhnGCrDjx2SCwPB9FL9O4gKfyQt0KEZ4
+         /Q8KRXQdP5pUpM8BX1IAB4O0AznADbVTmVdB8YAxo6f9onQZY2GvqsoAOsbnIC23y2
+         AO/YpreQjncm+0uU3TcfrdiwL8wTAlSquD4gHIJ6a1W2rsW9xZHSLiy/qXLBC/38jC
+         qkCBkVwii28eQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mTOAp-0001cS-Q2; Thu, 23 Sep 2021 14:49:59 +0200
+Date:   Thu, 23 Sep 2021 14:49:59 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] serial: 8250: Implement prep_tx for power management
+Message-ID: <YUx399WBrMiZDhno@hovoldconsulting.com>
+References: <20210921103346.64824-1-tony@atomide.com>
+ <20210921103346.64824-5-tony@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210920095218.1108151-5-horatiu.vultur@microchip.com>
+In-Reply-To: <20210921103346.64824-5-tony@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 11:52:10AM +0200, Horatiu Vultur wrote:
-> Document the lan966x switch reset device driver bindings
+On Tue, Sep 21, 2021 at 01:33:44PM +0300, Tony Lindgren wrote:
+> We can use the prep_tx() call to wake up an idle serial port. This allows
+> ust to remove the depedency to pm_runtime_irq_safe() for 8250_omap driver
+> in the following patches.
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 > ---
->  .../bindings/reset/lan966x,rst.yaml           | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/reset/lan966x,rst.yaml
+>  drivers/tty/serial/8250/8250_port.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/reset/lan966x,rst.yaml b/Documentation/devicetree/bindings/reset/lan966x,rst.yaml
-> new file mode 100644
-> index 000000000000..97d6334e4e0a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reset/lan966x,rst.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/reset/lan966x,rst.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+> --- a/drivers/tty/serial/8250/8250_port.c
+> +++ b/drivers/tty/serial/8250/8250_port.c
+> @@ -1650,6 +1650,29 @@ static enum hrtimer_restart serial8250_em485_handle_start_tx(struct hrtimer *t)
+>  	return HRTIMER_NORESTART;
+>  }
+>  
+> +static int serial8250_prep_tx(struct uart_port *port)
+> +{
+> +	struct uart_8250_port *up = up_to_u8250p(port);
+> +	struct device *dev = up->port.dev;
+> +	int err;
 > +
-> +title: Microchip lan966x Switch Reset Controller
+> +	if (!(up->capabilities & UART_CAP_RPM))
+> +		return 0;
 > +
-> +maintainers:
-> +  - Horatiu Vultur <horatiu.vultur@microchip.com>
-> +  - UNGLinuxDriver@microchip.com
+> +	if (!pm_runtime_suspended(dev)) {
+> +		pm_runtime_mark_last_busy(dev);
+> +		return 0;
+> +	}
 > +
-> +description: |
-> +  The Microchip lan966x Switch provides reset control and implements the
-> +  following
-> +  functions
-> +    - One Time Switch Core Reset (Soft Reset)
+> +	err = pm_request_resume(dev);
+> +	if (err < 0) {
+> +		dev_warn(dev, "prep_tx wakeup failed: %d\n", err);
+> +		return err;
+> +	}
 
-This looks like just some grouping of separate reset controllers. If 
-there are 3 h/w blocks providing resets, then the DT should have 3 reset 
-providers.
-
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^reset-controller$"
-
-Don't use 'pattern' for fixed strings.
+How is this supposed to work without a runtime PM usage-counter
+increment? What's to prevent the port from suspending again while it's
+transmitting?
 
 > +
-> +  compatible:
-> +    const: microchip,lan966x-switch-reset
-> +
-> +  "#reset-cells":
-> +    const: 1
-> +
-> +  cpu-syscon:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> +    description: syscon used to access CPU reset
-> +
-> +  switch-syscon:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> +    description: syscon used to access SWITCH reset
-> +
-> +  chip-syscon:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> +    description: syscon used to access CHIP reset
-> +
-> +required:
-> +  - compatible
-> +  - "#reset-cells"
-> +  - cpu-syscon
-> +  - switch-syscon
-> +  - chip-syscon
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    reset: reset-controller {
-> +        compatible = "microchip,lan966x-switch-reset";
-> +        #reset-cells = <1>;
-> +        cpu-syscon = <&cpu_ctrl>;
-> +        switch-syscon = <&switch_ctrl>;
-> +        chip-syscon = <&chip_ctrl>;
-> +    };
-> -- 
-> 2.31.1
-> 
-> 
+> +	return -EINPROGRESS;
+> +}
+
+Johan
