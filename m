@@ -2,78 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4DD416276
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D584416264
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242224AbhIWPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242084AbhIWPyN (ORCPT
+        id S232752AbhIWPu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:50:57 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:40508 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242016AbhIWPsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:54:13 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C886C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:45:09 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id k10so6927229vsp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:45:09 -0700 (PDT)
+        Thu, 23 Sep 2021 11:48:20 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id A7DFA82255;
+        Thu, 23 Sep 2021 18:45:44 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=AHRL6k+O5cSxf/cD7nCTQMBvZXDAjEZP97Ku5ntq/w0=;
-        b=Svm1rrgrgfmuSquNzjMl80kZePMbPdVMAgaPT2RTOZJgPl5zS5cSIB2cpBGtOd6w7N
-         pVAHj8LMld3N6sV0e6ejD/bd/klkvLVlz3LptmBb0tOMJQKHsKfusbCyWncMqiiae6eu
-         gzql00XpbRBNe6CqK3LhqoQT36PFS3bgjaqykv06jyep/YxB2XYFdC6QgSK36Y63oDd6
-         YQHS6/rlSIEYrGnWITFIL562ZuDifXkfTMJNvejonVvlB6sdykGoQBQqASN3aGWK76ok
-         ekesJmNBDk9Bnqtp9NkCuoUeOePFS/MRmRXB7IALGAtb1AmMmMrSIkElTzSuAPW1z/gG
-         1zNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=AHRL6k+O5cSxf/cD7nCTQMBvZXDAjEZP97Ku5ntq/w0=;
-        b=QPuWJigzOyM11hSk6EP37EMZS9TbH4ykHWVof7AX5tWcvhxlAb5lzc5LM9egk0A7Bf
-         Ib86DZhMXoYjE6pyCI59dQ4JIWMXdYhNSVJDhokhJV5NBNloNR5q+8kbzQE9NEMn/RQm
-         iZmjT1ufRC9UEfSlYNdNAzVxwbUo6Prp4dbQ6acpUxPs4p4RGScvYCYFC8t10OCEDj8z
-         hzgRvmJ8WrBv+Y5ZDi49Y7s//bGg5Uqak0434JngKDPkU7OuhD7mIvxYe77Rezx1zAhM
-         qJYBZ3+8bBcLksna4itmCNl27IRv0HmzXlduVw5OitmaHLPISbKuyF08ZcLDlJtqK3iA
-         Ri0A==
-X-Gm-Message-State: AOAM530BQ9Bvoi1gcE0cCMzBz4ACosQBzsHsg/RvSLij0IUbnrR9ut2D
-        gWyUJ8//zD8SMjhKR3edeNwJ0lCOG8rk8JFGlGA=
-X-Google-Smtp-Source: ABdhPJy8J7DfJbQI3N4PLWTd05I5o8Bm4dreQC5ldFO11fNTqkpRmpQhn9Z3zbiymKLq5j88yMLZh7/FxSw5eOjmEcs=
-X-Received: by 2002:a67:ab04:: with SMTP id u4mr1877033vse.12.1632411908521;
- Thu, 23 Sep 2021 08:45:08 -0700 (PDT)
+        d=paragon-software.com; s=mail; t=1632411944;
+        bh=1Rg2zXZ/vgixRrUZ0go+XppCVTwHrFXwMt2I9sXaE38=;
+        h=Date:Subject:From:To:References:CC:In-Reply-To;
+        b=H7Y1VQG4nfpOb2qXJVQVZXs/x7vb9PI2NnD363MYSKG/mxYaylCn4lpFS0m/lqcXc
+         FhVOtOZRN4hv7INYOOJfSu5nF3pMn7lhoi5gwzvCx9UnuigzCVOA7gNakFsq1xARSy
+         69bhEfKSbLPWBXCoGcjULONIiW9VRBjK9WZkerag=
+Received: from [192.168.211.73] (192.168.211.73) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 23 Sep 2021 18:45:44 +0300
+Message-ID: <894082b3-16c2-d9bd-13c3-476c0a80308a@paragon-software.com>
+Date:   Thu, 23 Sep 2021 18:45:43 +0300
 MIME-Version: 1.0
-Received: by 2002:a59:ca2e:0:b0:232:6514:a90e with HTTP; Thu, 23 Sep 2021
- 08:45:08 -0700 (PDT)
-Reply-To: elianzana02@gmail.com
-From:   Elian Zana <stmaryhospitalabidjan@gmail.com>
-Date:   Thu, 23 Sep 2021 17:45:08 +0200
-Message-ID: <CAAhUAeZK+y-TcOv1xkRXYbYvpX+d1K1BJhp7MZ-V0X4-0aHOyg@mail.gmail.com>
-Subject: RE
-To:     undisclosed-recipients:;
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: [PATCH v2 6/6] fs/ntfs3: Refactoring lock in ntfs_init_acl
+Content-Language: en-US
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+References: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+In-Reply-To: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.73]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Von: Miss Elian Zana.
-Abidjan, Elfenbeink=C3=BCste
+This is possible because of moving lock into ntfs_create_inode.
+
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+ fs/ntfs3/xattr.c | 55 ++++++++++++------------------------------------
+ 1 file changed, 14 insertions(+), 41 deletions(-)
+
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 59ec5e61a239..83bbee277e12 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -693,54 +693,27 @@ int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 	struct posix_acl *default_acl, *acl;
+ 	int err;
+ 
+-	/*
+-	 * TODO: Refactoring lock.
+-	 * ni_lock(dir) ... -> posix_acl_create(dir,...) -> ntfs_get_acl -> ni_lock(dir)
+-	 */
+-	inode->i_default_acl = NULL;
+-
+-	default_acl = ntfs_get_acl_ex(mnt_userns, dir, ACL_TYPE_DEFAULT, 1);
+-
+-	if (!default_acl || default_acl == ERR_PTR(-EOPNOTSUPP)) {
+-		inode->i_mode &= ~current_umask();
+-		err = 0;
+-		goto out;
+-	}
+-
+-	if (IS_ERR(default_acl)) {
+-		err = PTR_ERR(default_acl);
+-		goto out;
+-	}
+-
+-	acl = default_acl;
+-	err = __posix_acl_create(&acl, GFP_NOFS, &inode->i_mode);
+-	if (err < 0)
+-		goto out1;
+-	if (!err) {
+-		posix_acl_release(acl);
+-		acl = NULL;
+-	}
+-
+-	if (!S_ISDIR(inode->i_mode)) {
+-		posix_acl_release(default_acl);
+-		default_acl = NULL;
+-	}
++	err = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
++	if (err)
++		return err;
+ 
+-	if (default_acl)
++	if (default_acl) {
+ 		err = ntfs_set_acl_ex(mnt_userns, inode, default_acl,
+ 				      ACL_TYPE_DEFAULT, 1);
++		posix_acl_release(default_acl);
++	} else {
++		inode->i_default_acl = NULL;
++	}
+ 
+ 	if (!acl)
+ 		inode->i_acl = NULL;
+-	else if (!err)
+-		err = ntfs_set_acl_ex(mnt_userns, inode, acl, ACL_TYPE_ACCESS,
+-				      1);
+-
+-	posix_acl_release(acl);
+-out1:
+-	posix_acl_release(default_acl);
++	else {
++		if (!err)
++			err = ntfs_set_acl_ex(mnt_userns, inode, acl,
++					      ACL_TYPE_ACCESS, 1);
++		posix_acl_release(acl);
++	}
+ 
+-out:
+ 	return err;
+ }
+ #endif
+-- 
+2.33.0
 
 
-Beachtung,
-
-Ich bin Miss Elian Zana von der Elfenbeink=C3=BCste und ich bin 18
-Jahrealt. Ich freue mich sehr
- =C3=BCber ein pers=C3=B6nliches Gespr=C3=A4ch mit Ihnen =C3=BCber die Anla=
-ge meines
-geerbten Fonds. Wenn m=C3=B6glich, m=C3=B6chte ich, dass es sich um ein pri=
-vates
-Einzelgespr=C3=A4ch handelt. Bitte kontaktieren Sie mich =C3=BCber meine pr=
-ivate
-E-Mail-Adresse (elianzana02@gmail.com)
-
-Danke und bleib gesegnet
-Fr=C3=A4ulein Elian Zana
