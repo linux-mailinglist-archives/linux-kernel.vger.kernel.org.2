@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5752F415A7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDD7415A7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240098AbhIWJEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:04:15 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:43227 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239985AbhIWJEP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:04:15 -0400
-X-UUID: d79db8a8e5c34f1c83bbd2c232c2dd86-20210923
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/30howK7j/l7YGY93CiAwgCUFI2vv6zdM/0ApO7kiuo=;
-        b=We9c6Iwrv9Jqzzzaqx0HGUw0LYmV2mlIul47NPc3BdcH5GGT2iAqV8MJLHJRVuuJ5l1nuaxRg9LsEE5QAsCsaMzCJW4klSUWD6hrZFT9nibXCZv5Oz1o4Y6rnHeAugoGCB2CoviE8FA2+II17LSxpQLMhV9npogPNvVuCznLB3Y=;
-X-UUID: d79db8a8e5c34f1c83bbd2c232c2dd86-20210923
-Received: from mtkcas35.mediatek.inc [(172.27.6.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1225004111; Thu, 23 Sep 2021 17:02:39 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 23 Sep
- 2021 17:02:32 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 23 Sep 2021 17:02:32 +0800
-Message-ID: <cf5a0b929b9600ec3314f1370939a94ee43a5519.camel@mediatek.com>
-Subject: Re: [PATCH] phy: mediatek: Kconfig: Add configuration menu for
- Mediatek phy drivers
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Date:   Thu, 23 Sep 2021 17:02:34 +0800
-In-Reply-To: <20210923025036.348-1-caihuoqing@baidu.com>
-References: <20210923025036.348-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S240092AbhIWJEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:04:01 -0400
+Received: from mga18.intel.com ([134.134.136.126]:28068 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239985AbhIWJDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:03:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="210875978"
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="210875978"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 02:02:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="550781819"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.84]) ([10.237.72.84])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Sep 2021 02:02:09 -0700
+Subject: Re: [PATCH] mmc: sdhci-of-at91: wait for calibration done before
+ proceed
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        eugen.hristev@microchip.com, ulf.hansson@linaro.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        ludovic.desroches@microchip.com
+Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210915102838.8344-1-claudiu.beznea@microchip.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <4e20c4fb-ff54-59b7-bca2-1b359fe9ff42@intel.com>
+Date:   Thu, 23 Sep 2021 12:02:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 9A3403D1E5A39C749996F7595B03727C5473FB5913C85F838A9D17F76712A9BE2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210915102838.8344-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA5LTIzIGF0IDEwOjUwICswODAwLCBDYWkgSHVvcWluZyB3cm90ZToNCj4g
-QWRkaW5nIGEgY29uZmlndXJhdGlvbiBtZW51IHRvIGhvbGQgbWFueSBNZWRpYXRlayBwaHkgZHJp
-dmVycw0KPiBoZWxwcyB0byBtYWtlIHRoZSBtZW51IGRpc3BsYXkgbW9yZSBjb25jaXNlLg0KPiAN
-Cj4gU2lnbmVkLW9mZi1ieTogQ2FpIEh1b3FpbmcgPGNhaWh1b3FpbmdAYmFpZHUuY29tPg0KPiAt
-LS0NCj4gIGRyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcgfCAxMCArKysrKy0tLS0tDQo+ICAx
-IGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcNCj4gYi9kcml2ZXJzL3BoeS9t
-ZWRpYXRlay9LY29uZmlnDQo+IGluZGV4IDU1ZjhlNmMwNDhhYi4uNWRhMDQ1ODEzYjVhIDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnDQo+ICsrKyBiL2RyaXZlcnMv
-cGh5L21lZGlhdGVrL0tjb25maWcNCj4gQEAgLTIsOSArMiwxMSBAQA0KPiAgIw0KPiAgIyBQaHkg
-ZHJpdmVycyBmb3IgTWVkaWF0ZWsgZGV2aWNlcw0KPiAgIw0KPiArbWVudSAiUEhZIGRyaXZlcnMg
-Zm9yIE1lZGlhdGVrIHBsYXRmb3JtcyINCj4gKwlkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgfHwg
-Q09NUElMRV9URVNUDQo+ICsNCj4gIGNvbmZpZyBQSFlfTVRLX1RQSFkNCj4gIAl0cmlzdGF0ZSAi
-TWVkaWFUZWsgVC1QSFkgRHJpdmVyIg0KPiAtCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyB8fCBD
-T01QSUxFX1RFU1QNCj4gIAlkZXBlbmRzIG9uIE9GICYmIE9GX0FERFJFU1MNCj4gIAlkZXBlbmRz
-IG9uIEhBU19JT01FTQ0KPiAgCXNlbGVjdCBHRU5FUklDX1BIWQ0KPiBAQCAtMTgsNyArMjAsNiBA
-QCBjb25maWcgUEhZX01US19UUEhZDQo+ICANCj4gIGNvbmZpZyBQSFlfTVRLX1VGUw0KPiAgCXRy
-aXN0YXRlICJNZWRpYVRlayBVRlMgTS1QSFkgZHJpdmVyIg0KPiAtCWRlcGVuZHMgb24gQVJDSF9N
-RURJQVRFSyB8fCBDT01QSUxFX1RFU1QNCj4gIAlkZXBlbmRzIG9uIE9GDQo+ICAJc2VsZWN0IEdF
-TkVSSUNfUEhZDQo+ICAJaGVscA0KPiBAQCAtMjksNyArMzAsNiBAQCBjb25maWcgUEhZX01US19V
-RlMNCj4gIA0KPiAgY29uZmlnIFBIWV9NVEtfWFNQSFkNCj4gIAl0cmlzdGF0ZSAiTWVkaWFUZWsg
-WFMtUEhZIERyaXZlciINCj4gLQlkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgfHwgQ09NUElMRV9U
-RVNUDQo+ICAJZGVwZW5kcyBvbiBPRiAmJiBPRl9BRERSRVNTDQo+ICAJZGVwZW5kcyBvbiBIQVNf
-SU9NRU0NCj4gIAlzZWxlY3QgR0VORVJJQ19QSFkNCj4gQEAgLTQwLDcgKzQwLDYgQEAgY29uZmln
-IFBIWV9NVEtfWFNQSFkNCj4gIA0KPiAgY29uZmlnIFBIWV9NVEtfSERNSQ0KPiAgCXRyaXN0YXRl
-ICJNZWRpYVRlayBIRE1JLVBIWSBEcml2ZXIiDQo+IC0JZGVwZW5kcyBvbiBBUkNIX01FRElBVEVL
-IHx8IENPTVBJTEVfVEVTVA0KPiAgCWRlcGVuZHMgb24gQ09NTU9OX0NMSw0KPiAgCWRlcGVuZHMg
-b24gT0YNCj4gIAlzZWxlY3QgR0VORVJJQ19QSFkNCj4gQEAgLTQ5LDkgKzQ4LDEwIEBAIGNvbmZp
-ZyBQSFlfTVRLX0hETUkNCj4gIA0KPiAgY29uZmlnIFBIWV9NVEtfTUlQSV9EU0kNCj4gIAl0cmlz
-dGF0ZSAiTWVkaWFUZWsgTUlQSS1EU0kgRHJpdmVyIg0KPiAtCWRlcGVuZHMgb24gQVJDSF9NRURJ
-QVRFSyB8fCBDT01QSUxFX1RFU1QNCj4gIAlkZXBlbmRzIG9uIENPTU1PTl9DTEsNCj4gIAlkZXBl
-bmRzIG9uIE9GDQo+ICAJc2VsZWN0IEdFTkVSSUNfUEhZDQo+ICAJaGVscA0KPiAgCSAgU3VwcG9y
-dCBNSVBJIERTSSBmb3IgTWVkaWF0ZWsgU29Dcy4NCj4gKw0KPiArZW5kbWVudQ0KDQpSZXZpZXdl
-ZC1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KDQpUaGFua3Mg
-YSBsb3QNCg0K
+On 15/09/21 1:28 pm, Claudiu Beznea wrote:
+> Datasheet specifies that at the end of calibration the SDMMC_CALCR_EN
+> bit will be cleared. No commands should be send before calibration is
+> done.
+> 
+> Fixes: dbdea70f71d67 ("mmc: sdhci-of-at91: fix CALCR register being rewritten")
+> Fixes: 727d836a375ad ("mmc: sdhci-of-at91: add DT property to enable calibration on full reset")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>  drivers/mmc/host/sdhci-of-at91.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-at91.c b/drivers/mmc/host/sdhci-of-at91.c
+> index 5564d7b23e7c..2b28711e039d 100644
+> --- a/drivers/mmc/host/sdhci-of-at91.c
+> +++ b/drivers/mmc/host/sdhci-of-at91.c
+> @@ -114,6 +114,8 @@ static void sdhci_at91_reset(struct sdhci_host *host, u8 mask)
+>  {
+>  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+>  	struct sdhci_at91_priv *priv = sdhci_pltfm_priv(pltfm_host);
+> +	unsigned long timeout = jiffies + msecs_to_jiffies(20);
+> +	unsigned int tmp;
+>  
+>  	sdhci_reset(host, mask);
+>  
+> @@ -126,6 +128,14 @@ static void sdhci_at91_reset(struct sdhci_host *host, u8 mask)
+>  
+>  		sdhci_writel(host, calcr | SDMMC_CALCR_ALWYSON | SDMMC_CALCR_EN,
+>  			     SDMMC_CALCR);
+> +
+> +		do {
+> +			tmp = sdhci_readl(host, SDMMC_CALCR);
+> +		} while (time_before(jiffies, timeout) &&
+> +			 (tmp & SDMMC_CALCR_EN));
+> +
+> +		if (tmp & SDMMC_CALCR_EN)
+> +			dev_err(mmc_dev(host->mmc), "Failed to calibrate\n");
+
+Please use a polling macro (include <linux/iopoll.h>)
+i.e.
+
+		if (read_poll_timeout(sdhci_readl, tmp, !(tmp & SDMMC_CALCR_EN),
+				      10, 20000, false, host, SDMMC_CALCR))
+			dev_err(mmc_dev(host->mmc), "Failed to calibrate\n");
+
+
+
+>  	}
+>  }
+>  
+> 
 
