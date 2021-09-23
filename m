@@ -2,246 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C65A416769
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE62D41676E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243367AbhIWVYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59452 "EHLO
+        id S243277AbhIWVZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243318AbhIWVYK (ORCPT
+        with ESMTP id S243174AbhIWVZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:24:10 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50676C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:22:38 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so4734376otb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:22:38 -0700 (PDT)
+        Thu, 23 Sep 2021 17:25:47 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651BCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:24:15 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id i84so1273869ybc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:24:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ElSmUHA5tSuw64eBsWSEwxSDKoBXfjWoeEi2P04SziQ=;
-        b=WOQ+M4oz67aaD9T7TWMu5DlF15PQvuH4E7/Cw59s3SzS7weFqR7spsm5L10YoLqJdj
-         X8ty/IMzTjCKMIsyffUnReb26rSYInF5fLBeFMyEAHQwqr83T0IGOeNSQud+IKJh10Au
-         rVxv5dkmNlZ7XcQtmnu1ktacN1KS39afaFA/SGAX8aSvW/HZ4zHYLqyDI2j7gdpf15BN
-         RzqxzDrnhG84LBNIOliqzbhTy+3Kfi1ED7QIMvymz8rWYrLRLubMgpzc1qmEUkv8qgHH
-         Sg5HQfeqIiOxRNPKuwxJysigqBfoDMWkpsiFSPokmhhVcBmUJg6T4rNIiSK5aHjkPvXR
-         +7PQ==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4NFD50f4D8OM/NybzmgBINAYXaCydfgGt6oGYeUyWVM=;
+        b=a01KcFjfZE09aHK//1COGS+XgNwDx2f7ZNE1rGu2p5KFmmN7BH3qDdeknK+KiHCmF8
+         l8FgeRboJYMsUN2OmKIWF9+qycX0wTwfirMsltIADGBAYuiRn8JvgxQiJCksG6iyd6NC
+         7VNJFgLAbEll/y3DRc7wUIlZ9cWX089qCdBZ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ElSmUHA5tSuw64eBsWSEwxSDKoBXfjWoeEi2P04SziQ=;
-        b=H8c9lfw3YpNYygofPOVK8R4srpPrIvAgoeFHarwJYb+w2pI/ssFZ60/qoVbFleKGtZ
-         88bzW2XtkE7bVqhX/wrvUTekXU3y+ma+SHkRo3UQNV0QrcrSOJ7Tfl0r94OQ8sbnp7dI
-         wWraDV0mytDk61o7cYtkK/P487SbziVy92cBirsr5flXIIO61b8cVPTo8RRotkGlyEFq
-         ybc8V7EPyybzL6gpJETxvkPU0AJ3Uv1xyhP8vAWpxB8dBFCwf2POjnStFCEg1aYH9Pcg
-         fMoZwLC5baqurKk/febfq0uACU0P42QmOuv42muieytjWo/veDETCvFbHpxKA/QoaZvS
-         ff8g==
-X-Gm-Message-State: AOAM5337sbGQ7XhaPS0v7llOncQOxpi2UTHqehNOX467kgNUogPrQeNq
-        aEYCaYea5/pZXpMOCfhcWTVRAw==
-X-Google-Smtp-Source: ABdhPJyVSM8UxVVJQ8y7N5bhTs+GUx9AYDM4ISabCojtg5OUEh9wz64DBpsZRgmAYMIu7UDYi2WxMQ==
-X-Received: by 2002:a9d:7091:: with SMTP id l17mr740020otj.309.1632432157675;
-        Thu, 23 Sep 2021 14:22:37 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e16sm1586820oie.17.2021.09.23.14.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 14:22:37 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] arm64: dts: qcom: sdm845: mtp: Add vadc channels and thermal zones
-Date:   Thu, 23 Sep 2021 14:23:11 -0700
-Message-Id: <20210923212311.2877048-5-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210923212311.2877048-1-bjorn.andersson@linaro.org>
-References: <20210923212311.2877048-1-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4NFD50f4D8OM/NybzmgBINAYXaCydfgGt6oGYeUyWVM=;
+        b=nLac9MctdlXNEe0i3Bf1MNdf6OFAUiw40lQA1MzJwKIV04cTTbTYISGwJL+xAMbX71
+         P8/dM7oanwMi46M1LZQpMVzYMEIzGuTjgZJzrVOTyQPVS6usyR5J39qdp7dHOy3ELxRV
+         2XDObXPHuSMt51ZpR3G3FBHv6Q1LWp3vV3T6Nb4g0NfIG7ttZV9vHLEVtY9fgtB4dEHy
+         +MYubYEBk2vb9r2Szy9ofjimE+HKH1QtyyHxCVVT4WcHM5tE1yHbdXxchj+zkNjMPz+i
+         YSbq4xLu9h62+QKCxvOfXpJMzOXTK1msiJh7jfdliLF6xN/Ka/mINqOb5azB6XA58NuN
+         aDcA==
+X-Gm-Message-State: AOAM53052BttzopuFNkHX4UyilK9C6wnsDXgn9Apq0bkt8RFU8EgXnxr
+        XeCR7gITdQ1pEAg8NaTfW7TSEbHhd/CTNWi87IySTQ==
+X-Google-Smtp-Source: ABdhPJyZItCG+2qGFbPGCky+CLR7O1xm1lchqIXJehrltvrT3SdTl4WvTGugSEg3MJCKJkRphhP5e6yaOzEESqTdIa0=
+X-Received: by 2002:a25:81c5:: with SMTP id n5mr8514500ybm.276.1632432254531;
+ Thu, 23 Sep 2021 14:24:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1632420430.git.leonro@nvidia.com> <7b85ce0d2a5056af2c7e14dbd16c55d86aac659c.1632420431.git.leonro@nvidia.com>
+In-Reply-To: <7b85ce0d2a5056af2c7e14dbd16c55d86aac659c.1632420431.git.leonro@nvidia.com>
+From:   Edwin Peer <edwin.peer@broadcom.com>
+Date:   Thu, 23 Sep 2021 14:23:38 -0700
+Message-ID: <CAKOOJTzz1Pp9CYCWAO=gi3099xy2oBtdREp8iOftVzKqEC0hvQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/6] bnxt_en: Properly remove port parameter support
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Igor Russkikh <irusskikh@marvell.com>,
+        intel-wired-lan@lists.osuosl.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-scsi@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        netdev <netdev@vger.kernel.org>,
+        Sathya Perla <sathya.perla@broadcom.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Downstream defines four ADC channels related to thermal sensors external
-to the PM8998 and two channels for internal voltage measurements.
+On Thu, Sep 23, 2021 at 11:13 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> This driver doesn't have any port parameters and registers
+> devlink port parameters with empty table. Remove the useless
+> calls to devlink_port_params_register and _unregister.
+>
+> Fixes: da203dfa89ce ("Revert "devlink: Add a generic wake_on_lan port parameter"")
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 13 -------------
+>  1 file changed, 13 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+> index dc0851f709f5..ed95e28d60ef 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+> @@ -736,9 +736,6 @@ static const struct devlink_param bnxt_dl_params[] = {
+>                              NULL),
+>  };
+>
+> -static const struct devlink_param bnxt_dl_port_params[] = {
+> -};
+> -
+>  static int bnxt_dl_params_register(struct bnxt *bp)
+>  {
+>         int rc;
+> @@ -753,14 +750,6 @@ static int bnxt_dl_params_register(struct bnxt *bp)
+>                             rc);
+>                 return rc;
+>         }
+> -       rc = devlink_port_params_register(&bp->dl_port, bnxt_dl_port_params,
+> -                                         ARRAY_SIZE(bnxt_dl_port_params));
+> -       if (rc) {
+> -               netdev_err(bp->dev, "devlink_port_params_register failed\n");
+> -               devlink_params_unregister(bp->dl, bnxt_dl_params,
+> -                                         ARRAY_SIZE(bnxt_dl_params));
+> -               return rc;
+> -       }
+>         devlink_params_publish(bp->dl);
+>
+>         return 0;
+> @@ -773,8 +762,6 @@ static void bnxt_dl_params_unregister(struct bnxt *bp)
+>
+>         devlink_params_unregister(bp->dl, bnxt_dl_params,
+>                                   ARRAY_SIZE(bnxt_dl_params));
+> -       devlink_port_params_unregister(&bp->dl_port, bnxt_dl_port_params,
+> -                                      ARRAY_SIZE(bnxt_dl_port_params));
+>  }
+>
+>  int bnxt_dl_register(struct bnxt *bp)
+> --
+> 2.31.1
+>
 
-Add these to the upstream SDM845 MTP, describe the thermal monitor
-channels and add thermal_zones for these.
+Ah, looks like the revert in da203dfa89ce wasn't complete. Thanks for
+the cleanup.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
 
-In addition to the iio channels exposed by v1, Daniel wanted thermal_zones...
-
-Changes since v1:
-- Enable the pm8998_adc_tm and describe the ADC channels
-- Add thermal-zones for the new channels
-
- arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 128 ++++++++++++++++++++++++
- 1 file changed, 128 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-index 52dd7a858231..e3b40daef801 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-@@ -10,6 +10,8 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sdm845.dtsi"
-+#include "pm8998.dtsi"
-+#include "pmi8998.dtsi"
- 
- / {
- 	model = "Qualcomm Technologies, Inc. SDM845 MTP";
-@@ -46,6 +48,68 @@ vreg_s4a_1p8: pm8998-smps4 {
- 
- 		vin-supply = <&vph_pwr>;
- 	};
-+
-+	thermal-zones {
-+		xo_thermal: xo-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&pm8998_adc_tm 1>;
-+
-+			trips {
-+				trip-point {
-+					temperature = <125000>;
-+					hysteresis = <10000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		msm_thermal: msm-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&pm8998_adc_tm 2>;
-+
-+			trips {
-+				trip-point {
-+					temperature = <125000>;
-+					hysteresis = <10000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		pa_thermal: pa-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&pm8998_adc_tm 3>;
-+
-+			trips {
-+				trip-point {
-+					temperature = <125000>;
-+					hysteresis = <10000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		quiet_thermal: quiet-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&pm8998_adc_tm 4>;
-+
-+			trips {
-+				trip-point {
-+					temperature = <125000>;
-+					hysteresis = <10000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+	};
- };
- 
- &adsp_pas {
-@@ -469,6 +533,70 @@ &mss_pil {
- 	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mbn";
- };
- 
-+&pm8998_adc {
-+	adc-chan@4c {
-+		reg = <ADC5_XO_THERM_100K_PU>;
-+		label = "xo_therm";
-+	};
-+
-+	adc-chan@4d {
-+		reg = <ADC5_AMUX_THM1_100K_PU>;
-+		label = "msm_therm";
-+	};
-+
-+	adc-chan@4f {
-+		reg = <ADC5_AMUX_THM3_100K_PU>;
-+		label = "pa_therm1";
-+	};
-+
-+	adc-chan@51 {
-+		reg = <ADC5_AMUX_THM5_100K_PU>;
-+		label = "quiet_therm";
-+	};
-+
-+	adc-chan@83 {
-+		reg = <ADC5_VPH_PWR>;
-+		label = "vph_pwr";
-+	};
-+
-+	adc-chan@85 {
-+		reg = <ADC5_VCOIN>;
-+		label = "vcoin";
-+	};
-+};
-+
-+&pm8998_adc_tm {
-+	status = "okay";
-+
-+	xo-thermistor@1 {
-+		reg = <1>;
-+		io-channels = <&pm8998_adc ADC5_XO_THERM_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time-us = <200>;
-+	};
-+
-+	msm-thermistor@2 {
-+		reg = <2>;
-+		io-channels = <&pm8998_adc ADC5_AMUX_THM1_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time-us = <200>;
-+	};
-+
-+	pa-thermistor@3 {
-+		reg = <3>;
-+		io-channels = <&pm8998_adc ADC5_AMUX_THM3_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time-us = <200>;
-+	};
-+
-+	quiet-thermistor@4 {
-+		reg = <4>;
-+		io-channels = <&pm8998_adc ADC5_AMUX_THM5_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time-us = <200>;
-+	};
-+};
-+
- &qupv3_id_1 {
- 	status = "okay";
- };
--- 
-2.29.2
-
+Regards,
+Edwin Peer
