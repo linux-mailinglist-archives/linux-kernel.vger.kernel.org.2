@@ -2,188 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7244A41621B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC5B41621D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242035AbhIWPdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:33:23 -0400
-Received: from mail-dm3nam07on2074.outbound.protection.outlook.com ([40.107.95.74]:56769
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242047AbhIWPc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:32:57 -0400
+        id S242043AbhIWPdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:33:40 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:55945 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242039AbhIWPdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:33:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1632411123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9kXcq69D0bXdw3pbsqlftrpFQJqP372BXXSOWoCFpws=;
+        b=TU9Iv1eaZhMcYC5WwTMSC/BQouaVGVApbihssSihtV91Vf8avuw2CG2YP7mWXMeZHeeYf2
+        LKitMPS82sDRiM4k8qYjj0NobiScNUCv9ytv07IcL2mWuJ5LeuuUpCL8K6kXgcPoRS4g9h
+        CFHhtJEm/ErqVqF7AEaRqYani77YRQI=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2107.outbound.protection.outlook.com [104.47.18.107])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-17-N8twr9TiNfeJGpqMDpf8KA-1; Thu, 23 Sep 2021 17:32:02 +0200
+X-MC-Unique: N8twr9TiNfeJGpqMDpf8KA-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oWD6ZwH6T/kEtsHzW4uhhDgdu/XWOXcJFSQsQJrGVZdlXrfR5q5IHHAN7jypFS5Op0aJLlT1qMnj87gmoeC2eW9nC37/GUH6HtxMyNNoDbV/WpzeBqQwNXRzwKYEfpx0PDFTrotKx0ZUI5e1/PM+PVVbibnOeQsfr8qhp5oR9SvdkhJCL2EHsWLyH2XKGEI7t+truHz/2NXUtXXPR7d38W7x04zyYl726tZIieyIrR8he6PVGOvu1+PXM8eXHCa++OSUeG24DPOWuTWNMP94m8hILpAGNZp7BS5wmYz5TMKxfcU3wuqfhw6ZgINQykqEwZzfrMWELWym6QoeGAaXaQ==
+ b=NJyMLl9S4u2ce2KlGq/i+WrRjis1fO+Ebw3fJtmyMLNfRMgd55uc2Np/KNSIYqZZIILSNIgaNt2PMuZTC4m1QPN4N4SLVipPxudOT3XSnHgXT2eHs/jJE9DB+zHtC2EYvMGyM/5zRy9VfUDjOWYq+IPwPSX84ZfflgvAXhreQOfTiw8KyJyUwINBObapOfYUnEmXAl5Nhyu8/ITavzaitFJTF3X01OpdfhCUu8bd4ERuFN9EqSDftMdu0TNCyCEXCf4pNT1xu2G/7VfXY+bHVAPxezOKO2lIU2bbBY4d2HnUP+kKz7aGhXjavu/Qxwcw5MacsJmPfSdsVEaWdXrp0A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=kpxXkebSVEnMnSma5aTnN+OYkL8/6RlIr0OZbj9wjIc=;
- b=Vp1Ow3XLGhQdKYT9hEq1lmsKplllUXrEbVEjl8NT3mO1n/mlSWR9mGlbHFWJjD928GxMCSDbRgasPVMUchB2EPpGqTg90xKEQwnyIEyDdIl+IYVZC2Hjan1wxMRCdJsbcXoG6/dQe2UPfWGWdap6dfT/Kwzh8EWlizSMvR++uY7EkgXo53nrwpCvaYvmxBR4crTtBlXNUjPInwfl6qVW/wENBFVK/84z/7G7d+CSBChuzSbc7/ObvGWSfPjSNb19libsvNNotF7M0HkZQcQWVm2QrV/DuwiIG5ZsTg3Rb+MMJjAl3lhaj/+plp0iYj8vk6Az4duxqFpBek6h6zagrg==
+ bh=9kXcq69D0bXdw3pbsqlftrpFQJqP372BXXSOWoCFpws=;
+ b=G3X6L+wGTWRXPIn9J2uT2xsjoujoDFJwbeQZw2E2tTHCkjjY4M3m24Ph4o72EnKX5zaGXHKi2aRljbV00PAtG1tkMBEzs6QsW7WlyAfPSkrarAkNJVZskxgveawTC12Qs7yrZPcjhKQwaYAlDPdXALvnQDha7BA7bNDDJ/y1b2YckvQyFRw9gNlRb5nMDV4mlGTcxHsYijKcmI2x1y0Zd+Oo1GbqTP3phiokMLLbKXhnoqjRcUjc/R4VZmP11tykLZ2BUqAOG3Gg5C8ySjkqfQKt9LLnFOiK6/z3sBfWAx7qqjcVy2tpZj1hUXAOSEOQbe+xrj+NCN9ovC/JKjBJwg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kpxXkebSVEnMnSma5aTnN+OYkL8/6RlIr0OZbj9wjIc=;
- b=u++eh4T9D1LdQTyZ96DJIlBPnVgNBabRqlAjjA/7AckLBqC2Txd+Zlf6S6ln6/URVFZTN/dJOI5F5vRJOff5+NIGsmhT2xNR7Gt0+e3s+DczJr4Q/P6UnXoBvfAhfSOb+tJOvZBWZ/dtsfRqEfCFnU4iVeh4YKDWuzsZ+sXeg0w=
-Received: from DM4PR12MB5263.namprd12.prod.outlook.com (2603:10b6:5:39b::23)
- by DM4PR12MB5311.namprd12.prod.outlook.com (2603:10b6:5:39f::7) with
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB6863.eurprd04.prod.outlook.com (2603:10a6:803:12f::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Thu, 23 Sep
- 2021 15:31:24 +0000
-Received: from DM4PR12MB5263.namprd12.prod.outlook.com
- ([fe80::90b2:e7f6:c5e5:c80f]) by DM4PR12MB5263.namprd12.prod.outlook.com
- ([fe80::90b2:e7f6:c5e5:c80f%7]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
- 15:31:24 +0000
-From:   "Joshi, Mukul" <Mukul.Joshi@amd.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        "Ghannam, Yazen" <Yazen.Ghannam@amd.com>
-CC:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: RE: [PATCHv3 2/2] drm/amdgpu: Register MCE notifier for Aldebaran RAS
-Thread-Topic: [PATCHv3 2/2] drm/amdgpu: Register MCE notifier for Aldebaran
- RAS
-Thread-Index: AQHXr+ktpJldbvXsiEi/xMi8ZoJNQKuxrumAgAACPwCAAA8RIA==
-Date:   Thu, 23 Sep 2021 15:31:24 +0000
-Message-ID: <DM4PR12MB526346B7ECC03951C33C0253EEA39@DM4PR12MB5263.namprd12.prod.outlook.com>
-References: <20210913021311.12896-2-mukul.joshi@amd.com>
- <20210922193620.15925-1-mukul.joshi@amd.com> <YUyPM7VfYFG/PJmu@yaz-ubuntu>
- <YUyRFl3oc2CwFxZz@zn.tnic>
-In-Reply-To: <YUyRFl3oc2CwFxZz@zn.tnic>
-Accept-Language: en-US
+ 2021 15:31:59 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4544.013; Thu, 23 Sep 2021
+ 15:31:59 +0000
+Subject: Re: [PATCH 7/9] xen/x86: hook up xen_banner() also for PVH
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <5af11027-cf9d-cf78-9f48-b2ce2edd6e62@suse.com>
+ <2ded8c58-b9c3-89dc-6883-1794d1c4126a@suse.com>
+ <d9b6e98c-4e75-73f3-1e6d-42df300cfd49@suse.com>
+ <89cb2d39-2bfc-dccf-8e92-39e4e952750d@suse.com>
+ <f613a83c-2b29-23eb-ca78-a8a75a67f651@suse.com>
+ <e095eec1-f35b-ca35-9ad1-54c817e61408@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <1bcb3b62-8327-7da8-abdb-65ee965714a7@suse.com>
+Date:   Thu, 23 Sep 2021 17:31:57 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <e095eec1-f35b-ca35-9ad1-54c817e61408@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-09-23T15:31:22Z;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD Official Use
- Only-AIP 2.0;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=464bbd2b-fcde-409c-8471-4af9fed62717;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=1
-authentication-results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 47fc0156-f742-4388-2e11-08d97ea733b7
-x-ms-traffictypediagnostic: DM4PR12MB5311:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM4PR12MB531167ABD83D826B25BAD960EEA39@DM4PR12MB5311.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YAkMptov/HnJG+T7OAW/uMUAYjjhCI9TN0fWskWADe2uUMYUAlkFPLMtvND23/e8n8eCPHa59/qSV8XuQJ2T+tnG9QtpLN4UaA4T/JRTsTLKaVdk9plNywOkIgvLCvgL9hxb2uxGbKD3exRsYcActeKAoCESnvVmVTjq2S3vkOtexrF9kn2T70rprzYArFPKAyWo5T3heelMPz6i/rV642+t1mmvrtLMLXGLmqcpNzBY8MAwk1pPlnij+nHwhKoYp7eSi3JLsidyG4Y7EOdWQtxAdpJfiU7z4NkN3t0MDHxqWpnaa857I2/+7c/YTadircwDA/bX2wPHVhTVonfeHfLCi+bUFhXbRkATfGIDYJOZmvwpy/hqdCP0ob/sEiLVJNC9Q1FYq6PrazWMQXTkIN+p50SIlgqFyck6SQuLADEvCorhJCuksk68VNizyqB4vqktsDLWPR2A4cGMK/cQhEuYVoNFJThl0kwIMS7tge0lpXVHCieVv8LLUYUQoecDBP1RnMMRfOy6QuOD1FPraexhwSrU8WgJPVT0Qtcikd3eepg3gclIExQPWvxsCFX0pH6y9TMM10Mn8vJ/Bw4DND1cHtYJlEEI25JZd3Jom1Dyqs7IGLUIRllI29Xb5gIt+yZ8mKWXfeOG9yAMNMHmduU9dQwNji7GE6xvBdlhn6ySspTvM972mc71/4i0NyEJt7sGtx75CXA4YlsIGZjQC06Ulj1lHLG4NgAwpOe+IBvPKj3TA/9Gy4G2mNOGMqdcEhEJV5OfQJNavJ4btpTyUTHJSslYT+l3xWBnTGaXCg0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5263.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(7696005)(33656002)(45080400002)(53546011)(8676002)(76116006)(8936002)(38070700005)(5660300002)(122000001)(2906002)(83380400001)(38100700002)(52536014)(55016002)(6506007)(86362001)(110136005)(6636002)(966005)(9686003)(316002)(26005)(186003)(54906003)(71200400001)(4326008)(66476007)(66946007)(64756008)(66446008)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?O9ULmQM4x9nmVPnu9GRThYzO/yF2JI/QY24CxC1/zrR6TIs9n2EK5tU0DrgY?=
- =?us-ascii?Q?b8+k454Iq7G3jL2LHWRDnim0pueua/GXQK2X4Mci42RauXNumrwRwq+11OeE?=
- =?us-ascii?Q?dL06yGzrDrP/oyqoH13Hw/B3nK0ZA2XxyfVdFprut+l5vL/GGRozYt9DwPV8?=
- =?us-ascii?Q?xj02dz5N8i2ir3SXJLzDL0nBZPsIazWhbR1N0l18JOUfTGlZiukPM+R7tFqu?=
- =?us-ascii?Q?CcDBXEBcofUgB2LlWVXF87K/GnA8TvCboqS/uED7MvMSK2oKDS1M9BC2J6AO?=
- =?us-ascii?Q?fKDPEC0sjM1xDYadm+w++ccF0qyfeh+0ikleJXgzXc1A/7LwbuNSX1x7jvQH?=
- =?us-ascii?Q?DAQThxGVPxhtJHoCzAQU0b5l1Y05wEFMihWvqiCat8Sx/hNcnocRDfsCzfj+?=
- =?us-ascii?Q?n3R2wnzsMNom6jZ3QDBMozebsRlBvXgWb+nQA+oO6qRTgM9J0/7CO374CVT0?=
- =?us-ascii?Q?RCvZXu0plMyoElkAzbSshOS9wUc5eFuqXGfH6UPhlBgcsGLUYU2vl98RNZFc?=
- =?us-ascii?Q?zDM/Zl2YBaEnhEOI0mKJGZROSX0dmZPyrJG3CmWrF4Y7goXKC8AxmCjQKwKp?=
- =?us-ascii?Q?PzjQyUTjEoj015a4OAyeLsOKQE/qdu861O4EMZ/7VqFhfOrr2NnDUNRRVyBL?=
- =?us-ascii?Q?0TyUBv7dEsTUWXrrGPhvkCcWoNoLmz0fPdN+M9/JwbiQBVjy8Ur3mZiIkXjf?=
- =?us-ascii?Q?zo/7qgm0QX9CfGWC5VOYZPECnOnLWtUKNltsj850tpAdoYWMJutX8CBzWNIY?=
- =?us-ascii?Q?Ks0B4iFVDB5KaxR5M7UgK6NTLI4CGr78jWGv4YhuUzr+Aa9a7gqe8NaKCz+w?=
- =?us-ascii?Q?v74/qlLvLVZW8bpbXvxckt4rIG0EpbjdCJDPEVC74nnMt9GftWXKDIj5UtIV?=
- =?us-ascii?Q?i/09YvPNAJshItMcuLKR8gSbDywTUopMpyjgN/hpr3kBgo1s/a5sMthy/EeL?=
- =?us-ascii?Q?hnH6R9BnCaOLpkbC7AZa5Ayy/MQKw83Ji/3x/1BW+Uf5IL6YCrtugGTNo8RX?=
- =?us-ascii?Q?3AbDGTREkBx1QkFZSKQceO33uuzGfeMFkXOuIJJRUOa4nPmjBh3sJbO0BFvj?=
- =?us-ascii?Q?FdtvOmlTpx00pakAU3S97mfg0cKmeYeFZdvs7Je7a/+U87x92ZfBXluIO8ew?=
- =?us-ascii?Q?mk4vcU1/F3zF/WfOetBLfb8BaOpThpRHi41zQLZYYCeztLrpXcu9Z0B+xh+7?=
- =?us-ascii?Q?omL4OPXOuIlzpvcqhr1WipUxMYQU0vzYW7AFA9GR5l+qs6VmdPJVm+r+5mYz?=
- =?us-ascii?Q?TownGyi+Jh5f4mZOVPqhGa/MI5z1BoWTRKVbMOa41rFmpPwV/DoFGUxluAnC?=
- =?us-ascii?Q?OII=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3P191CA0035.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:102:55::10) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
+Received: from [10.156.60.236] (37.24.206.209) by PR3P191CA0035.EURP191.PROD.OUTLOOK.COM (2603:10a6:102:55::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 15:31:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 416953b3-d528-477b-5289-08d97ea74868
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6863:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB68637095E69AFD9C149EDAC3B3A39@VI1PR04MB6863.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Eola3OnvjqlASQMzAKxKZClOYH4l2bZejwtY4wYxupTU3tO1BvP+Mv3+yVqv0UHglhBgdIccSV69d6o0xD7B7IvNBkK22fbBLvLov+z5lDHNq05CURSxDJFJka0XsjiXoeOs9qm5joOn6tGzhm4OH02ZL52OGGGo8Lf1W+TIuno8pZTxyzR8qqoTvMmtPg48DfdNsDGgIsfagtDe7u8xetVYBhEZrgkWOujoQ38X+BZQdjUW4GcSZt3fpdqXo8pwdE6mNKfq73AfIrjfcocGw1EWAqaWf33ZiZZNBjZVorPzHPNCtGbYnQ+dPuXQW8ktaIB0yQmQRCcOGWF+o5QsLqkfa367j6m6RkClJJte4V0FvNkqMZ0DZHiRm673/v9f52akoBSbE0/1OZgisVqfWU1yu2y0MewhPUOiheREeOOtvNYbzbCx2wc93Mmym/AuCUC5vL5VCRxP5jimK1ZSXlPEAv3P/8aOESmOT4qtLAMDQxsinY3Dw2qxPmFxtlDHuGpFXuTMyEjeuxUt5naSc8EajqXbJZRcqZfO0CJ4ed5KzPlbrJZiu3H+qBHXHIfFD9O333HBVxZEB/nin9SPd3d+XTz24uI+5N2Nc57MgANPIa0VO7lc54EE+eHUJtW+UXkGYQqhya8OeJI1tR6XL0ec8qn/xHuE59CAITsU8gzDSERZMjQPSLNNYPZrqUAzEPQJqRDHETOuEzacMNdun7oRZZDby8wE6vKcY7I9VFwpqUUtvVs5WFq7NPHBkB9f3DOTw7XR3SVE2f1JFLJRUZ6ZCANUFYaBer0GzAjWnlA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8676002)(956004)(86362001)(16576012)(508600001)(2616005)(186003)(2906002)(83380400001)(8936002)(4326008)(38100700002)(37006003)(316002)(5660300002)(31686004)(66946007)(31696002)(53546011)(6486002)(36756003)(54906003)(66476007)(26005)(66556008)(6862004)(6636002)(52103002)(158003001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VmU4TnZOTE00NXNrdEQyM1NvZnovR3JTZjgwbEFQZWFSWTc3bXRsSzhidWlz?=
+ =?utf-8?B?SWxZMDlaTGk1KzdsZFh5WXlMdjBIWGZOZEFjSk1MZ2g1NDd6bHdNRmJBV0s2?=
+ =?utf-8?B?Rzlkc2JXSTk5aWY5TEMrbVN2RExGKzVIQ3hoeC9PSTFnRU9va0V0aXlnNHFZ?=
+ =?utf-8?B?ajFkZ3hlMXd6MjhDNjZxWlFjaCt6SmNObEd5RXBzMFFYalUvdkdtbFc5aDNp?=
+ =?utf-8?B?K01tbVEzclJ3SVBxS2dpRkJsc1lBOHNBRDhYU1FWR0J4enNSNnZoV0MwcW1q?=
+ =?utf-8?B?Q1JQNEhpZ2lSdmtnbTl2eTBNaFZiMVRKbk81QklsOTJrY3o1UG43V1NPMGNS?=
+ =?utf-8?B?VHEwZ1ZvWE1jb05xQ1JGK3ZBRWYwaUpwRmIyQ1AvSkR2d0hub0toS1JvMHlV?=
+ =?utf-8?B?R2RRSCtjNHlBSzB4T0RGN0RydVpobnBHSTNFVGJBb0ZVYXFlT3ZMVVBBK21k?=
+ =?utf-8?B?dVN3cytjdFp5RVpPMXIwZHB5ZkxSU3hFSWlDdmxRSVlKaVNWQ0NSMEMwc0xv?=
+ =?utf-8?B?NldGMVNmNTlTd1lxUXVoeTBoYmc5SHFwM3ZoUmEzNGFLMWtjSWozaDlVc2J3?=
+ =?utf-8?B?aC9GYnk0b0FKQm5PVWFmS2FIZnpqNnFqblh2VWdvbHhud2FTR3RQMUh6TTFR?=
+ =?utf-8?B?UGs0dnY0NFJoTnVDdHBWa0dJQyt2a3JzOEJPTXNyRWpXVUF0cjB4K3NGMkVi?=
+ =?utf-8?B?SFB3Zm8zOHBjaFFWczJUcFYzbUxLVEcwYUoxRXR0YkQxTkdtVHF4eWxROXFm?=
+ =?utf-8?B?VHNaemFLSWlrNVk0SDRWRFN2MFdONThzMVJDTmxWNTdnUWZ4OFRZTzZlMDB2?=
+ =?utf-8?B?MDN4a2tpelcwcVVFZEw3U0x3Y21Mcm52MHpWanA2YXlockYrcy9ZRlZmcGZu?=
+ =?utf-8?B?N2FxdFp0aVNaZmI1NmdpUklYTmFSLzBranRLZGxPbS9KQk5Vb2d5T1pKN3pT?=
+ =?utf-8?B?WktUcCs5bFZpZCtQcUFTNnc3alJqUnpaTnRvU0RKek5OQi9CTTFVMzEzQ24r?=
+ =?utf-8?B?ZDFMR2hVbXNvaHcrRW1VSGNyc1h3M3pydllHVU5kZFRlNElWSEI1NktBUzhr?=
+ =?utf-8?B?bTFCTFhuOExYbjJKL2VVNnMrM1NDZCtWbHg3V3pYVGhxQUNEd3F5SUV6UlIr?=
+ =?utf-8?B?WFNrdFcvWmpXdVZzR0grZW5kUzJScjBZYnVoWW1HN1lmVmthR3lEektzZVlJ?=
+ =?utf-8?B?bkNiMU1KQzFIMFNnQUMvWkt5c2VyeXI3eFV4Z0c1MEF3VldrenhGMGw5MWpK?=
+ =?utf-8?B?RnU3eTFha3VRTjZaaFRqTE1UZEE0Z0xMSTg2UjBQR2VOdFJ4azl2ZFFhSFNO?=
+ =?utf-8?B?SndveDl4Z2xmRGtFZXdlVDljdjNZSU9FUVFUc2lPS2hJSXpHZVJ5d1lhU0N4?=
+ =?utf-8?B?OVluOTRmYUNhVFl3TUtUQ2ZvWTNSTVROTWxBRGpnbFN6USs0TzNqdDhnRVE5?=
+ =?utf-8?B?Z0VMQ1lzb0RJaEp5Zmg3U0drVFpPVDRuZ2x6N0dlRW45YmJzUWswQitKTVNu?=
+ =?utf-8?B?NWZOQTVQWVN0VnNLOTlxNVVTak1SSFNJSzF5OFlVM3RGUDROWGlWWi9TSkVB?=
+ =?utf-8?B?LzBoVWl6VjAzWVgrYTJUUVdZUEEyeFdYZExDMS9YNFBhUnRVSC8zRlFvUlVQ?=
+ =?utf-8?B?VHZsL2REN3lLR2lJaWt6SCtEUDNYbUx0RW5FZkVWU2NGbTlVSFRCcVVFRWZu?=
+ =?utf-8?B?VWU2cEY5SjhjVFZ1ZGhqMEExVWt5Q0dYWmlZZGVUUUJra0NoaC81TWRKZUkr?=
+ =?utf-8?Q?N2skWF7X/M1xfwoMvyk0TScRY+xX2COGtiQV7yD?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 416953b3-d528-477b-5289-08d97ea74868
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5263.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47fc0156-f742-4388-2e11-08d97ea733b7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 15:31:24.1677
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 15:31:58.9939
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Eruu2ymqDCQ8tqsdf/mQ0Hb9W6hTOOwMiinqwYTuuR2czs4+bAAc/lmFc1BuqRTZQbj9igPfPodTLIh3n20ZWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5311
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 188gB6kPrY2aEcMVPD2BV3o8uiFr/2HV5Kmev+AYknyl1GYtXsls50A7LqsuzoMnhCG+CdRbMWdmtIM8qGMwqw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6863
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only]
+On 23.09.2021 17:25, Juergen Gross wrote:
+> On 23.09.21 17:19, Jan Beulich wrote:
+>> On 23.09.2021 17:15, Juergen Gross wrote:
+>>> On 23.09.21 17:10, Jan Beulich wrote:
+>>>> On 23.09.2021 16:59, Juergen Gross wrote:
+>>>>> On 07.09.21 12:11, Jan Beulich wrote:
+>>>>>> This was effectively lost while dropping PVHv1 code. Move the function
+>>>>>> and arrange for it to be called the same way as done in PV mode. Clearly
+>>>>>> this then needs re-introducing the XENFEAT_mmu_pt_update_preserve_ad
+>>>>>> check that was recently removed, as that's a PV-only feature.
+>>>>>>
+>>>>>> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+>>>>>>
+>>>>>> --- a/arch/x86/xen/enlighten.c
+>>>>>> +++ b/arch/x86/xen/enlighten.c
+>>>>>> @@ -261,6 +261,18 @@ int xen_vcpu_setup(int cpu)
+>>>>>>     	return ((per_cpu(xen_vcpu, cpu) == NULL) ? -ENODEV : 0);
+>>>>>>     }
+>>>>>>     
+>>>>>> +void __init xen_banner(void)
+>>>>>> +{
+>>>>>> +	unsigned version = HYPERVISOR_xen_version(XENVER_version, NULL);
+>>>>>> +	struct xen_extraversion extra;
+>>>>>
+>>>>> Please add a blank line here.
+>>>>
+>>>> Oops.
+>>>>
+>>>>>> +	HYPERVISOR_xen_version(XENVER_extraversion, &extra);
+>>>>>> +
+>>>>>> +	pr_info("Booting paravirtualized kernel on %s\n", pv_info.name);
+>>>>>
+>>>>> Is this correct? I don't think the kernel needs to be paravirtualized
+>>>>> with PVH (at least not to the same extend as for PV).
+>>>>
+>>>> What else do you suggest the message to say? Simply drop
+>>>> "paravirtualized"? To some extent it is applicable imo, further
+>>>> qualified by pv_info.name. And that's how it apparently was with
+>>>> PVHv1.
+>>>
+>>> The string could be selected depending on CONFIG_XEN_PV.
+>>
+>> Hmm, now I'm confused: Doesn't this setting control whether the kernel
+>> can run in PV mode? If so, that functionality being present should have
+>> no effect on the functionality of the kernel when running in PVH mode.
+>> So what you suggest would end up in misleading information imo.
+> 
+> Hmm, yes, I mixed "paravirtualized" with "capable to run
+> paravirtualized".
+> 
+> So the string should depend on xen_pv_domain().
 
+But that's already expressed by pv_info.name then being "Xen PV".
 
+Jan
 
-> -----Original Message-----
-> From: Borislav Petkov <bp@alien8.de>
-> Sent: Thursday, September 23, 2021 10:37 AM
-> To: Ghannam, Yazen <Yazen.Ghannam@amd.com>
-> Cc: Joshi, Mukul <Mukul.Joshi@amd.com>; linux-edac@vger.kernel.org;
-> x86@kernel.org; linux-kernel@vger.kernel.org; mingo@redhat.com;
-> mchehab@kernel.org; amd-gfx@lists.freedesktop.org
-> Subject: Re: [PATCHv3 2/2] drm/amdgpu: Register MCE notifier for Aldebara=
-n
-> RAS
->=20
-> [CAUTION: External Email]
->=20
-> On Thu, Sep 23, 2021 at 02:29:07PM +0000, Yazen Ghannam wrote:
-> > > +   /*
-> > > +    * If the error was generated in UMC_V2, which belongs to GPU UMC=
-s,
-> > > +    * and error occurred in DramECC (Extended error code =3D 0) then=
- only
-> > > +    * process the error, else bail out.
-> > > +    */
-> > > +   if (!m || !((smca_get_bank_type(m->bank) =3D=3D SMCA_UMC_V2) &&
-> > > +               (XEC(m->status, 0x1f) =3D=3D 0x0)))
-> >
-> > The MCA_STATUS[ErrorCodeExt] field is bits [21:16], so the mask should
-> > be 0x3f.
-> >
-> > > +           return NOTIFY_DONE;
-> > > +
-> > > +   /*
-> > > +    * If it is correctable error, return.
-> > > +    */
-> > > +   if (mce_is_correctable(m))
-> > > +           return NOTIFY_OK;
-> >
-> > Shouldn't this be "NOTIFY_DONE" if "don't care" about this error?
->=20
-> I think the logic here is to stop calling any further consumers on the no=
-tify chain
-> because this is a GPU correctable error and they can't do anything about =
-it
-> anyway, right?
-
-That's correct.
-
-Regards,
-Mukul
-
->=20
-> Or am I misreading it?
->=20
-> --
-> Regards/Gruss,
->     Boris.
->=20
-> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpeopl=
-e.
-> kernel.org%2Ftglx%2Fnotes-about-
-> netiquette&amp;data=3D04%7C01%7Cmukul.joshi%40amd.com%7C1493bcdae62
-> 8466d5b8408d97e9fa6f0%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0
-> %7C637680046455034969%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
-> MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata
-> =3DuqbjJslUPJabZonJc6m9Ub3C5IkZDPdqwr6MI0oLPcc%3D&amp;reserved=3D0
