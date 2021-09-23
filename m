@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626C14162AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11E44162AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242436AbhIWQGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:06:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35450 "EHLO
+        id S242460AbhIWQG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:06:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35468 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242373AbhIWQF6 (ORCPT
+        with ESMTP id S242406AbhIWQGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:05:58 -0400
-Message-ID: <20210923153339.623208460@linutronix.de>
+        Thu, 23 Sep 2021 12:06:00 -0400
+Message-ID: <20210923153339.684546907@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632413066;
+        s=2020; t=1632413067;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=O+eQk8u/ka3YLY7XRsH/AdQMs3q0/TK+//yr5k43qZM=;
-        b=hxjpN/fiZbguPl9Ugg65t8iJZTEsptDGMcYbmqKyyQqUZErlcTJjInhjJrseUFfLcOoDSp
-        G2niHC+tL3UzXtQuTpwFxOXt2Q6neXbVG3aOc6vPVXtNw/Ro1yajganewAkrbSNHcu0gGn
-        FjIkTH9axPhfftmx2JEXzLQrQ+70wHAxyuXYnUlIdCozG0KEURa4sT4ibF2yLNCb846Eu7
-        wiqsA4UCpBWn29ZfrG1C7eNrOG3mFAlq6VMcX/avs/F48lcrmkdykByrTj9Z0g7WhjP8c+
-        5m/SfPlXJ/rtnoyQ+d6y5e+A7YRZACPydJnqJ5bJMh8LlGOfvLZ69J5OYO+8Aw==
+         references:references; bh=V+wcLznHEL6e40Q6X7LpkxWU7Zjc25v6soPUcFLqFBY=;
+        b=dVM4Xum+mQkFstydxFuGf5BisZe/c9O6s8w6jSuLA7aFJd64a6TX3rafQ7vbCLrtT/RRA6
+        gEO/cN+Q80Lw8ckbKyKPdtAyEhTVfHQNeRSRkDriW9nq5Hfgr5C8POOVqcqbu8bdu88eJO
+        j5QeAHVtuCQ12n3kSEYR9S3xZvBHuvkSxHTZ6HLo8CLhymUTm8p17YJMGuxRMqbNOHcNuy
+        MeMmKn7fUvaSw+XermL9Bmbx7npPdu3i4jNyhHgqxoGxDBBjTbxVeHgIqTxSd6OUpLdNAc
+        gtnHXiI0kzTRVIgvk63MJvpnghAzdCg6Hqv27hl+ub2eJNg2GFZsbow5p3os4g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632413066;
+        s=2020e; t=1632413067;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=O+eQk8u/ka3YLY7XRsH/AdQMs3q0/TK+//yr5k43qZM=;
-        b=/pakvF5tifiIv5hz720qFG+huSlyRoYiz+DD/cB0haV8bNXI1S1moBtwGCqa0PZkpLn5UW
-        lRfXFWWZtlU8b/DA==
+         references:references; bh=V+wcLznHEL6e40Q6X7LpkxWU7Zjc25v6soPUcFLqFBY=;
+        b=ntmMbnkLf5fxazFGm6OXJkBz0j1nWLwzO+vpZ3AaiKb0kCzl1acxcdGqKpK2N87Ikus9f6
+        sSAAqtt7HpZ1EaBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Subject: [patch 04/11] ALSA: pcsp: Make hrtimer forwarding more robust
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [patch 05/11] can: bcm: Use hrtimer_forward_now()
 References: <20210923153311.225307347@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 23 Sep 2021 18:04:25 +0200 (CEST)
+Date:   Thu, 23 Sep 2021 18:04:27 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hrtimer callback pcsp_do_timer() prepares rearming of the timer with
-hrtimer_forward(). hrtimer_forward() is intended to provide a mechanism to
-forward the expiry time of the hrtimer by a multiple of the period argument
-so that the expiry time greater than the time provided in the 'now'
-argument.
-
-pcsp_do_timer() invokes hrtimer_forward() with the current timer expiry
-time as 'now' argument. That's providing a periodic timer expiry, but is
-not really robust when the timer callback is delayed so that the resulting
-new expiry time is already in the past which causes the callback to be
-invoked immediately again. If the timer is delayed then the back to back
-invocation is not really making it better than skipping the missed
-periods. Sound is distorted in any case.
-
-Use hrtimer_forward_now() which ensures that the next expiry is in the
-future. This prevents hogging the CPU in the timer expiry code and allows
-later on to remove hrtimer_forward() from the public interfaces.
+hrtimer_forward_now() provides the same functionality as the open coded
+hrimer_forward() invocation. Prepares for removal of hrtimer_forward() from
+the public interfaces.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: netdev@vger.kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
 ---
- sound/drivers/pcsp/pcsp_lib.c |    2 +-
+ net/can/bcm.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/drivers/pcsp/pcsp_lib.c
-+++ b/sound/drivers/pcsp/pcsp_lib.c
-@@ -143,7 +143,7 @@ enum hrtimer_restart pcsp_do_timer(struc
- 	if (pointer_update)
- 		pcsp_pointer_update(chip);
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -625,7 +625,7 @@ static enum hrtimer_restart bcm_rx_thr_h
+ 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, thrtimer);
  
--	hrtimer_forward(handle, hrtimer_get_expires(handle), ns_to_ktime(ns));
-+	hrtimer_forward_now(handle, ns_to_ktime(ns));
- 
- 	return HRTIMER_RESTART;
- }
+ 	if (bcm_rx_thr_flush(op)) {
+-		hrtimer_forward(hrtimer, ktime_get(), op->kt_ival2);
++		hrtimer_forward_now(hrtimer, op->kt_ival2);
+ 		return HRTIMER_RESTART;
+ 	} else {
+ 		/* rearm throttle handling */
 
