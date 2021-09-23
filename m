@@ -2,126 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295C94162CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247F24162D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242001AbhIWQQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        id S242078AbhIWQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbhIWQQb (ORCPT
+        with ESMTP id S242022AbhIWQQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:16:31 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1655EC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:15:00 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id z6-20020a056214060600b0037a3f6bd9abso21217552qvw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:15:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=8skwKNtO9I6V2G8mmM/41MyFzuQ5MEvFVCQ4srHSO5U=;
-        b=StP+whmufP9F/dLmxaO5AZdsk1rqzYkCY8Wjt8hnmM0pwS+sJEqMz96BShtHjlzQQq
-         gOFL9yFNDzDiL7lL2xl/NjVB9WRQ3yXQLzJKz6FNM+AI9BusTmx04Ig8CDy//108tRMG
-         ktt8NudAYgbMS0wb+9DoKL94Gb3xRqlhkxqAdQ4VLkmB7aMS4K/iIRfgddNyuzVsl/zM
-         RF2KQ9ne0fRAqUf+M2rOTk8V1hIgHSO382gQDejol9gqNEQ3fTgD7NX694Eip/xve0zo
-         QSkawXq2JOiepUxlnY7LC+QXK7g2Gi+XLg56KiGXq5u+AOhZP68aKOD1PmPiNEGjyCO2
-         F2lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=8skwKNtO9I6V2G8mmM/41MyFzuQ5MEvFVCQ4srHSO5U=;
-        b=G6YvCOt+L8ojnHREJG+T2IoR3ryEV6L21sBnjajc9RZwAPEvOdOL+hra9V1TeKNS35
-         uslzP4NNGNk/4cQdTlbAp1ayGpFRObEWJiQEyC6tUK/ewJRyCEEVrbD96/G5m94uOuJb
-         AwOPM2ObxxNT3lvSbYXRvtRHklroreCKIjtG7vpIwj/tfXTrKn7xzS2G2DM0sXddI5MQ
-         EA/8nVhOOBUSzLzWyF/qQ1r+3yoC0EydLDP1OHmapBofBaPUDMc2x986VDti4Ci3b91Q
-         KzLn+u7+sHzqDUBuPclcKvsiUkjq9PdHV2otJsCVxm1rZkD+8Qe0lNl1WGz5gU67eUFD
-         oPPg==
-X-Gm-Message-State: AOAM533LwYKZTxfEz0n/4izcgEs9c7e4Tdeyxu3pFue1m8ScV3xQ2dBL
-        1FKmeLn15/rlG+SKjeCUhQIjgWYbKFAg
-X-Google-Smtp-Source: ABdhPJz4BkGaJpb9N5HKKwzsg2+PxWO/3F209IbCIgr+IOfty/pF3oUk82+fPA+78zbZBzGo48C4zVZGCBTj
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d3ff:e8f7:11f4:c738])
- (user=irogers job=sendgmr) by 2002:a25:bacd:: with SMTP id
- a13mr7450706ybk.216.1632413699216; Thu, 23 Sep 2021 09:14:59 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 09:14:40 -0700
-Message-Id: <20210923161440.746537-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v3] x86/insn, tools/x86: Fix some potential undefined behavior.
-From:   Ian Rogers <irogers@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Cc:     Numfor Mbiziwo-Tiapo <nums@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 23 Sep 2021 12:16:52 -0400
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F625C061574;
+        Thu, 23 Sep 2021 09:15:20 -0700 (PDT)
+Received: from localhost.localdomain (83.6.166.81.neoplus.adsl.tpnet.pl [83.6.166.81])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 5BF4A3EBC4;
+        Thu, 23 Sep 2021 18:15:15 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add SM6350 pinctrl bindings
+Date:   Thu, 23 Sep 2021 18:14:48 +0200
+Message-Id: <20210923161450.15278-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Numfor Mbiziwo-Tiapo <nums@google.com>
+Add device tree binding Documentation details for Qualcomm SM6350
+pinctrl driver.
 
-Don't perform unaligned loads in __get_next and __peek_nbyte_next as
-these are forms of undefined behavior.
-
-These problems were identified using the undefined behavior sanitizer
-(ubsan) with the tools version of the code and perf test. Part of this
-patch was previously posted here:
-https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
-
-v3. Is a rebase picking up a fix for big endian architectures.
-
-v2. removes the validate_next check and merges the 2 changes into one as
-requested by Masami Hiramatsu <mhiramat@kernel.org>
-
-Signed-off-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- arch/x86/lib/insn.c       | 4 ++--
- tools/arch/x86/lib/insn.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ .../bindings/pinctrl/qcom,sm6350-pinctrl.yaml | 148 ++++++++++++++++++
+ 1 file changed, 148 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
 
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index 058f19b20465..c565def611e2 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -37,10 +37,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index c41f95815480..bc11b5774a44 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -37,10 +37,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r);; })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r);; })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+new file mode 100644
+index 000000000000..554992a681f3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+@@ -0,0 +1,148 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/qcom,sm6350-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. SM6350 TLMM block
++
++maintainers:
++  - Konrad Dybcio <konrad.dybcio@somainline.org>
++
++description: |
++  This binding describes the Top Level Mode Multiplexer (TLMM) block found
++  in the SM6350 platform.
++
++allOf:
++  - $ref: /schemas/pinctrl/qcom,tlmm-common.yaml#
++
++properties:
++  compatible:
++    const: qcom,sm6350-tlmm
++
++  reg:
++    maxItems: 1
++
++  interrupts: true
++  interrupt-controller: true
++  '#interrupt-cells': true
++  gpio-controller: true
++  gpio-reserved-ranges: true
++  '#gpio-cells': true
++  gpio-ranges: true
++  wakeup-parent: true
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++patternProperties:
++  '-state$':
++    oneOf:
++      - $ref: "#/$defs/qcom-sm6350-tlmm-state"
++      - patternProperties:
++          ".*":
++            $ref: "#/$defs/qcom-sm6350-tlmm-state"
++
++$defs:
++  qcom-sm6350-tlmm-state:
++    type: object
++    description:
++      Pinctrl node's client devices use subnodes for desired pin configuration.
++      Client device subnodes use below standard properties.
++    $ref: "qcom,tlmm-common.yaml#/$defs/qcom-tlmm-state"
++
++    properties:
++      pins:
++        description:
++          List of gpio pins affected by the properties specified in this
++          subnode.
++        items:
++          oneOf:
++            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-4][0-9]|15[0-7])$"
++            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
++        minItems: 1
++        maxItems: 36
++
++      function:
++        description:
++          Specify the alternative function to be configured for the specified
++          pins.
++
++        enum: [ adsp_ext, agera_pll, atest_char, atest_char0, atest_char1, atest_char2,
++                atest_char3, atest_tsens, atest_tsens2, atest_usb1, atest_usb10, atest_usb11,
++                atest_usb12, atest_usb13, atest_usb2, atest_usb20, atest_usb21, atest_usb22,
++                atest_usb23, audio_ref, btfm_slimbus, cam_mclk0, cam_mclk1, cam_mclk2, cam_mclk3,
++                cam_mclk4, cci_async, cci_i2c, cci_timer0, cci_timer1, cci_timer2, cci_timer3,
++                cci_timer4, cri_trng, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1, ddr_pxi2, ddr_pxi3,
++                dp_hot, edp_lcd, gcc_gp1, gcc_gp2, gcc_gp3, gp_pdm0, gp_pdm1, gp_pdm2, gpio,
++                gps_tx, ibi_i3c, jitter_bist, ldo_en, ldo_update, lpass_ext, m_voc, mclk,
++                mdp_vsync, mdp_vsync0, mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s_0, mi2s_1, mi2s_2,
++                mss_lte, nav_gpio, nav_pps, pa_indicator, pcie0_clk, phase_flag0, phase_flag1,
++                phase_flag10, phase_flag11, phase_flag12, phase_flag13, phase_flag14, phase_flag15,
++                phase_flag16, phase_flag17, phase_flag18, phase_flag19, phase_flag2, phase_flag20,
++                phase_flag21, phase_flag22, phase_flag23, phase_flag24, phase_flag25, phase_flag26,
++                phase_flag27, phase_flag28, phase_flag29, phase_flag3, phase_flag30, phase_flag31,
++                phase_flag4, phase_flag5, phase_flag6, phase_flag7, phase_flag8, phase_flag9,
++                pll_bist, pll_bypassnl, pll_reset, prng_rosc, qdss_cti, qdss_gpio, qdss_gpio0,
++                qdss_gpio1, qdss_gpio10, qdss_gpio11, qdss_gpio12, qdss_gpio13, qdss_gpio14,
++                qdss_gpio15, qdss_gpio2, qdss_gpio3, qdss_gpio4, qdss_gpio5, qdss_gpio6,
++                qdss_gpio7, qdss_gpio8, qdss_gpio9, qlink0_enable, qlink0_request, qlink0_wmss,
++                qlink1_enable, qlink1_request, qlink1_wmss, qup00, qup01, qup02, qup10, qup11,
++                qup12, qup13_f1, qup13_f2, qup14, rffe0_clk, rffe0_data, rffe1_clk, rffe1_data,
++                rffe2_clk, rffe2_data, rffe3_clk, rffe3_data, rffe4_clk, rffe4_data, sd_write,
++                sdc1_tb, sdc2_tb, sp_cmu, tgu_ch0, tgu_ch1, tgu_ch2, tgu_ch3, tsense_pwm1,
++                tsense_pwm2, uim1_clk, uim1_data, uim1_present, uim1_reset, uim2_clk, uim2_data,
++                uim2_present, uim2_reset, usb_phy, vfr_1, vsense_trigger, wlan1_adc0, wlan1_adc1,
++                wlan2_adc0, wlan2_adc1, ]
++
++
++      bias-disable: true
++      bias-pull-down: true
++      bias-pull-up: true
++      drive-strength: true
++      input-enable: true
++      output-high: true
++      output-low: true
++
++    required:
++      - pins
++      - function
++
++    additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/interrupt-controller/arm-gic.h>
++        pinctrl@f100000 {
++                compatible = "qcom,sm6350-tlmm";
++                reg = <0x0f100000 0x300000>;
++                interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++                gpio-controller;
++                #gpio-cells = <2>;
++                interrupt-controller;
++                #interrupt-cells = <2>;
++                gpio-ranges = <&tlmm 0 0 157>;
++
++                gpio-wo-subnode-state {
++                        pins = "gpio1";
++                        function = "gpio";
++                };
++
++                uart-w-subnodes-state {
++                        rx {
++                                pins = "gpio25";
++                                function = "qup13_f2";
++                                bias-disable;
++                        };
++
++                        tx {
++                                pins = "gpio26";
++                                function = "qup13_f2";
++                                bias-disable;
++                        };
++                };
++        };
++...
 -- 
-2.33.0.464.g1972c5931b-goog
+2.33.0
 
