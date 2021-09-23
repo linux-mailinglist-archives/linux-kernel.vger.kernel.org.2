@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB77415E52
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607F1415E56
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240963AbhIWM2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
+        id S240982AbhIWM3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240787AbhIWM2j (ORCPT
+        with ESMTP id S240787AbhIWM3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:28:39 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D084C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 05:27:08 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id n2so3868353plk.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 05:27:08 -0700 (PDT)
+        Thu, 23 Sep 2021 08:29:22 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E9BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 05:27:51 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id b65so20970723qkc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 05:27:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EG/jIsXsinDHEREmGQKFYzsvt6qH7E+P5K9bH6Rw3k8=;
-        b=q5UmY5hkt8KCJWcDURo1rVUITu5vDqRjhzC2FLP1HxC286Ha0Desx0hRoXfA4lO04k
-         8VvhbkS1w8vAUH1kNaIahccythth+fllOS4kgzzkFl0cxTiW5cz56sOirLwo600qnn1y
-         4qivyYm31m5W8QPS0MY2YEwpAohzDOI6u2KNbmLOzZbmPuU+9tsTrf9C5/WAhcL7i4EK
-         L5fpEOhom/HOp5jKj+Zm1l0vfZO6oo/rDdUMXS/rZ4+x0eJok8fRkfJTPu5ShVy6FxVh
-         8qfw5riRS7825a7f1rANAWs63FWzTnTE0fyPz+iet7b61SAVUWrld98ygtD5sampl5f9
-         EFlA==
+        d=gmail.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=kEischmQPfFMnM+KWUi3YNV9XnpVqPEC7z2/a7+DlSQ=;
+        b=BdNfAOvZdjrQIUVP4mtaHjraOJrZa9qE0rIQY0rrrNoB+cHpvg1ji9zwMxjZV/vcMw
+         dX7WImLdvT8qmQuSJ55V0w+1l8A19o4JYkbKB1ZSsGCxo7mMFLPNkGptBob8ZWTlP/pm
+         9hv60xNaWXekE2+GWizspeaEQr50N/3zUi7Fg9mfSsar1ri6nhnJGzS3Y2mQDfz8DSwd
+         /ynSz5FFb1LI5NJM/tB579mx7lgQO5SiENKMetVWsxPqVmTtSaPssSUeph96woSNayfS
+         V+xd4g+cvvMbu1lJvTTcUxF7F4xfACW+mvdotsbR3yN4eGRckM9kaVom42EB8uR/BVDz
+         nCmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EG/jIsXsinDHEREmGQKFYzsvt6qH7E+P5K9bH6Rw3k8=;
-        b=kbyDzpyx9/a7pfMVVL/dqkw0AoHIRzBDd3l8EC1bBgFsilcWZkSUT3bTpk/vDU6XXO
-         BmJdj2wt7BHnmDCw5K/YF1hxHN4DARQJLLUtM22n2X5+sg/Meuz2XZG3O78BOsTvuk1h
-         GUJ0Fxcu4DKjWw0ommlVKK/P74clDkTC3HsGj90hIDGGi0vW7IAanlVbJljeTzSXLBxC
-         Kyc/LIUke0bd9IRBA2WcZf4Jxkm7+Q9i0y7FXlJqKNjbkWQc9xfiN+wDcom0Xn1DJFii
-         cJ7SQHm6u5L/OW/x/+V90lgUw8dgI167Q9yyy86a4kJSKyM1Z9kk/peMftnxzwFE76D7
-         iL3Q==
-X-Gm-Message-State: AOAM5333YMKAs3iElfKSHuZVP0qXDO2U/Hi6RWEdhnuqrexh/ojYdEIi
-        Z28KTP6C9cAKbk+Ai6Atw0/R3Q==
-X-Google-Smtp-Source: ABdhPJzJumf/vq3brjK1T9CHdxiVtqzRbHdGtmE9hicDTx8of0VoCMMYIv4czr5pNaYXuHBtnyEL8Q==
-X-Received: by 2002:a17:90b:1e09:: with SMTP id pg9mr17562608pjb.73.1632400027804;
-        Thu, 23 Sep 2021 05:27:07 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([139.177.225.249])
-        by smtp.gmail.com with ESMTPSA id y5sm5561401pfb.207.2021.09.23.05.27.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Sep 2021 05:27:07 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     naoya.horiguchi@nec.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH] mm/memory_failure: Fix the missing pte_unmap() call
-Date:   Thu, 23 Sep 2021 20:26:42 +0800
-Message-Id: <20210923122642.4999-1-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=kEischmQPfFMnM+KWUi3YNV9XnpVqPEC7z2/a7+DlSQ=;
+        b=xiQkqqrUIgTXBPf6QedcFyvj0RYShfJC0lpm+JanMEQFq8eis8lx2SL1vSME+5puob
+         eSQQ7l+Uw+YIlWGDmXIypWLLWRNXBrR6L2RvYxvl5Gfqk0hlVCM8233pkUNxqvTW4uGb
+         EeFstYF9mRY3GF4r/dB1/qcwY85Gx5o2rBv9fJ5+4XNoCWErfxODEsvteoIFAGwsj6iN
+         t1GhZ50slXsMuikWrKuGKhrofdNi55MKcuFd0xaX9gVNqOL8jboUJxaXRGXXlDM3mUfQ
+         iPjMuRhMHfR1sFIa9erS93BdHdcWTUy+0YqK0wnI7rQ71EUo5/rA4ieknfIr8SK9x3lv
+         k0/A==
+X-Gm-Message-State: AOAM530vCmMZ43KhejrcluNIfanBFAL/q68nb07OcQlooLMgsD7ZQVmG
+        ee5ciB9X5WXiIUi5fM+yuY3nbG7WmPg=
+X-Google-Smtp-Source: ABdhPJwiFVi6rD188hRdmDl95ySm0g8TiqpttxuneBaCzDE7ogB+nbqaBbkpLjb2O7+qyf3G89zhVA==
+X-Received: by 2002:a37:aa46:: with SMTP id t67mr4320476qke.346.1632400070105;
+        Thu, 23 Sep 2021 05:27:50 -0700 (PDT)
+Received: from [192.168.0.4] (d60-196-191.col.wideopenwest.com. [65.60.191.196])
+        by smtp.gmail.com with ESMTPSA id c4sm4035184qkf.122.2021.09.23.05.27.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 05:27:49 -0700 (PDT)
+To:     linux-kernel@vger.kernel.org
+From:   Ken <kennethcelander@gmail.com>
+Subject: Boot opens CD tray
+Message-ID: <bbb0df1d-1e40-fbdf-d9aa-281ba77b4b6d@gmail.com>
+Date:   Thu, 23 Sep 2021 07:27:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The paired pte_unmap() call is missing before the
-dev_pagemap_mapping_shift() returns. So fix it.
+Linux Mint 20.2.
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
----
- mm/memory-failure.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Near the end of the boot up process, the CD/DVD tray will open, and 
+immediately close.
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index e2984c123e7e..4e5419f16fd4 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -306,6 +306,7 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
- 		struct vm_area_struct *vma)
- {
- 	unsigned long address = vma_address(page, vma);
-+	unsigned long ret = 0;
- 	pgd_t *pgd;
- 	p4d_t *p4d;
- 	pud_t *pud;
-@@ -330,10 +331,12 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
- 		return PMD_SHIFT;
- 	pte = pte_offset_map(pmd, address);
- 	if (!pte_present(*pte))
--		return 0;
-+		goto unmap;
- 	if (pte_devmap(*pte))
--		return PAGE_SHIFT;
--	return 0;
-+		ret = PAGE_SHIFT;
-+unmap:
-+	pte_unmap(pte);
-+	return ret;
- }
- 
- /*
--- 
-2.11.0
+This started with the kernel update 5.4.0-84.94, and now also with 
+5.4.0-86.97.
+
+Time shifted back to 5.4.0-81, with no CD tray opening problem.
+
+    Thank You!
 
