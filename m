@@ -2,214 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394E34160A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68AA4160C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241653AbhIWOKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:10:19 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56344 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241643AbhIWOKS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:10:18 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 715D21FFB0;
-        Thu, 23 Sep 2021 14:08:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632406126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YpdVqII+a+2ign5Gw5YEwLEqZL7daQpZ14uDvZt0kn8=;
-        b=qfJDn5jN8BgsSg7vRDzNUS39VlaWgwGyf3Vbx1+zAsTn6/16Cb0JKkKKrHllAWLLrOXoDB
-        pGnVvvcY7OkKY82+pdpanZaDvWLFbeq4HGQ/YwTntjYDW487JlykHYAVHDSJ8Qnsn+ipH8
-        iROnSTlVuXdn33JLlYGF4g1ujiYpgOA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A95513E76;
-        Thu, 23 Sep 2021 14:08:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UmAiDW6KTGEmZAAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 14:08:46 +0000
-Subject: Re: [PATCH 5/9] xen/x86: make "earlyprintk=xen" work for HVM/PVH DomU
-To:     Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
- <5e9ff16e-85f0-50ea-f053-37e17351a0cc@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <8d9625ce-e92d-61e0-76c3-98b373ac58b4@suse.com>
-Date:   Thu, 23 Sep 2021 16:08:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241690AbhIWOLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:11:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241603AbhIWOLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:11:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22F9360F44;
+        Thu, 23 Sep 2021 14:09:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632406188;
+        bh=ZTXZf30T3ZUc5R8VZRJeJBfdae5TPW0th0RClDFdmdM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RxK7Top7vHYOES/amPXJnFenVjo0z1GxYXGT3k/Pyxf3hwK+9RBPl2JQBMvA3rhgj
+         ztdDDfIrLIkkNbZ4oLXX2AhB/qQ8rB/TQz4SMfzg5+od+heVr1b1aInMgefEGzDDjv
+         xjSTc4pdVdE2p+fxWCl5UKcuHhuGEoZ0fIk4RucM=
+Date:   Thu, 23 Sep 2021 16:09:46 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Mehta, Sohil" <sohil.mehta@intel.com>
+Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Lutomirski, Andy" <luto@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "Kammela, Gayatri" <gayatri.kammela@intel.com>,
+        "Zeng, Guang" <guang.zeng@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Witt, Randy E" <randy.e.witt@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Thomas, Ramesh" <ramesh.thomas@intel.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: Re: [RFC PATCH 00/13] x86 User Interrupts support
+Message-ID: <YUyKqmKR0pOcP/NA@kroah.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <c08f38db-77da-c50e-23f7-b3a76688deeb@intel.com>
+ <BYAPR11MB33203044CD5D7413846655F9E5DA9@BYAPR11MB3320.namprd11.prod.outlook.com>
+ <YUxwuR4V+kwk1L34@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <5e9ff16e-85f0-50ea-f053-37e17351a0cc@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="rcxj8k18kJK4Rt3BNqZmdkTMVC38Ha0Gi"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUxwuR4V+kwk1L34@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rcxj8k18kJK4Rt3BNqZmdkTMVC38Ha0Gi
-Content-Type: multipart/mixed; boundary="dTkucEr8pCYBdB1EMrSXQ2wqaNLRyP23c";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- lkml <linux-kernel@vger.kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Message-ID: <8d9625ce-e92d-61e0-76c3-98b373ac58b4@suse.com>
-Subject: Re: [PATCH 5/9] xen/x86: make "earlyprintk=xen" work for HVM/PVH DomU
-References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
- <5e9ff16e-85f0-50ea-f053-37e17351a0cc@suse.com>
-In-Reply-To: <5e9ff16e-85f0-50ea-f053-37e17351a0cc@suse.com>
+On Thu, Sep 23, 2021 at 02:19:05PM +0200, Greg KH wrote:
+> On Tue, Sep 14, 2021 at 07:03:36PM +0000, Mehta, Sohil wrote:
+> > Resending.. There were some email delivery issues.
+> > 
+> > On 9/13/2021 1:27 PM, Dave Hansen wrote:
+> > >	User Interrupts directly deliver events to user space and are
+> > >	10x faster than the closest alternative.
+> > 
+> > Thanks Dave. This is definitely more attention-grabbing than the
+> > previous intro. I'll include this next time.
+> > 
+> > One thing to note, the 10x gain is only applicable for User IPIs.
+> > For other source of User Interrupts (like kernel-to-user
+> > notifications and other external sources), we don't have the data
+> > yet.
+> > 
+> > I realized the User IPI data in the cover also needs some
+> > clarification. The 10x gain is only seen when the receiver is
+> > spinning in User space - waiting for interrupts.
+> > 
+> > If the receiver were to block (wait) in the kernel, the performance
+> > would drop as expected. However, User IPI (blocked) would still be
+> > 10% faster than Eventfd and 40% faster than signals.
+> > 
+> > Here is the updated table:
+> > +---------------------+-------------------------+
+> > | IPC type            |   Relative Latency      |
+> > |                     |(normalized to User IPI) |
+> > +---------------------+-------------------------+
+> > | User IPI            |                     1.0 |
+> > | User IPI (blocked)  |                     8.9 |
+> > | Signal              |                    14.8 |
+> > | Eventfd             |                     9.7 |
+> > | Pipe                |                    16.3 |
+> > | Domain              |                    17.3 |
+> > +---------------------+-------------------------+
+> 
+> Relative is just that, "relative".  If the real values are extremely
+> tiny, then relative is just "this goes a tiny tiny bit faster than what
+> you have today in eventfd", right?
+> 
+> So how about "absolute"?  What are we talking here?
+> 
+> And this is really only for the "one userspace task waking up another
+> userspace task" policies.  What real workload can actually use this?
 
---dTkucEr8pCYBdB1EMrSXQ2wqaNLRyP23c
-Content-Type: multipart/mixed;
- boundary="------------F71F769F00374A0B92B7ECAA"
-Content-Language: en-US
+Also, you forgot to list Binder in the above IPC type.
 
-This is a multi-part message in MIME format.
---------------F71F769F00374A0B92B7ECAA
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+And you forgot to mention that this is tied to one specific CPU type
+only.  Are syscalls allowed to be created that would only work on
+obscure cpus like this one?
 
-On 07.09.21 12:10, Jan Beulich wrote:
-> xenboot_write_console() is dealing with these quite fine so I don't see=
+thanks,
 
-> why xenboot_console_setup() would return -ENOENT in this case.
->=20
-> Adjust documentation accordingly.
->=20
-> Signed-off-by: Jan Beulich <jbeulich@suse.com>
-
-Reviewed-by: Juergen Gross <jgross@suse.com>
-
-
-Juergen
-
---------------F71F769F00374A0B92B7ECAA
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------F71F769F00374A0B92B7ECAA--
-
---dTkucEr8pCYBdB1EMrSXQ2wqaNLRyP23c--
-
---rcxj8k18kJK4Rt3BNqZmdkTMVC38Ha0Gi
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMim0FAwAAAAAACgkQsN6d1ii/Ey/J
-7gf/RKO2W7fozhOgDLmvzri9NwREBxZtrCgj4Ri8XOSLct0/S2u8vSkP8Js3/IPDjM//JzqCXpTj
-4czZwneK9yEQ614n5OpGZ06SE0NZr9OGDHccHT17VTmaqVu6Wtu2TrdB8dXcjJwVxyZz1OiSIrvH
-Iaz/S19KcsqmusKYumEjMjj9cOrdEMShG/bxRoHlc3Y/HmZxYA6LvPtVrVHmFoDskTp2qv6VR8YL
-WcQtv/ucbDjio+C6ZgpQny5hoYcJ4hwCBKeh/d1V/GaQ/DkNDTUD5rqqzVYUzcT+L6moYGXYduN6
-jq0lHz1evvZHzhvV7pK4zLms9uadtVgeVrCzjrJwqQ==
-=lu/s
------END PGP SIGNATURE-----
-
---rcxj8k18kJK4Rt3BNqZmdkTMVC38Ha0Gi--
+greg k-h
