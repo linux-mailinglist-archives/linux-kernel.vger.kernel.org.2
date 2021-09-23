@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771B4416266
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8203416263
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242204AbhIWPvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:51:05 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:35722 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242143AbhIWPsO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:48:14 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 803F11D99;
-        Thu, 23 Sep 2021 18:44:56 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632411896;
-        bh=SuD8zN6xNAKrdgxn219w20we7FQ4HvQ5FkLa7M0DkHU=;
-        h=Date:Subject:From:To:References:CC:In-Reply-To;
-        b=G+mHblGnK8rNSp7ONON6k/QvKelb3TjsmJnOmb18XWa1n6tuqMqynrc4i0D5KovGE
-         zet35q7FlpGnH0JfaQLHem3oDnv+7jQF7u5i2Y4vfbxGQyJKHVE3c2hoSh80uDxNbH
-         P3Dtt9xZOXxyZ63uje/ZdIPZJhZP50h45MQ5Go2I=
-Received: from [192.168.211.73] (192.168.211.73) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 23 Sep 2021 18:44:56 +0300
-Message-ID: <22b8b701-e0c0-9b3f-dd58-0e8ab7c54754@paragon-software.com>
-Date:   Thu, 23 Sep 2021 18:44:55 +0300
+        id S242274AbhIWPu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:50:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241995AbhIWPsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:48:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B531E611C6;
+        Thu, 23 Sep 2021 15:45:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632411911;
+        bh=tRebfobguUkhm+TtIpFBE2sYYMQgs5iL2mj88sXA5Qk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KNQt8u73VmwldWhvgVep8ELnoN0JwHSmjdnNw3TO4lty2kbXYLj1tyOSMpWaXDTWX
+         94Fy7aWT+k0fV8rV8a1i+Ompwj4gGr69zEsSC4F6AG/Td5BMA6eL/4UX2ZxddlQ7Oe
+         lU5Lxt0eZCTLuIqHSd0/uL6jfr1xYxwxe8BtOLEMmGB1snjVl0hp8exyUhOmv2Pvt5
+         RmZag4AwrRNRZ95FpXJNxQQgBGt/SXr8XieXv6vg6BzQcreAxzXYF5/Db94+Vc9Wp1
+         282zfY230xmlJ1tpsleDPS24p3eO70gdHmtAbXmKo8PZT8Al2LNW1LlXKKqrPSBaoq
+         WxoIVH4xQpEyA==
+Received: by mail-ej1-f52.google.com with SMTP id x11so116391ejv.0;
+        Thu, 23 Sep 2021 08:45:11 -0700 (PDT)
+X-Gm-Message-State: AOAM530vYcgjYdszZ/7VmDVGH9odWUJZZfD7t9uEydCwgWFqNhwYmrD5
+        Zau5ImaBLaWQELWaepJ1MALuH6r0W8c8P3CqHQ==
+X-Google-Smtp-Source: ABdhPJzW9Q+u1kOp8EsMy8AIW1G+psMo8rKJnH3nfvU4j/Fig0hxqVDbPZLyfZj+snYbimSLZFC2ugeiN1nbnXj1830=
+X-Received: by 2002:a17:907:33ce:: with SMTP id zk14mr5810785ejb.84.1632411910279;
+ Thu, 23 Sep 2021 08:45:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: [PATCH v2 5/6] fs/ntfs3: Change posix_acl_equiv_mode to
- posix_acl_update_mode
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-References: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-In-Reply-To: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
+References: <20210804132912.30685-1-kishon@ti.com> <20210804132912.30685-2-kishon@ti.com>
+ <YRapMFNb63MSPJ1E@robh.at.kernel.org> <d0f83129-4c9a-d9ff-380a-cab37a86e29e@ti.com>
+ <220bbd3c-304a-ba6a-d20e-634f23f4eed2@ti.com>
+In-Reply-To: <220bbd3c-304a-ba6a-d20e-634f23f4eed2@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 23 Sep 2021 10:44:57 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKTn8G1HiyBySOY-_SvX0NKzbZnpykDAjCpnEdb7GM6Sg@mail.gmail.com>
+Message-ID: <CAL_JsqKTn8G1HiyBySOY-_SvX0NKzbZnpykDAjCpnEdb7GM6Sg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: PCI: ti,j721e: Add bindings to
+ specify legacy interrupts
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.73]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now ntfs3 uses posix_acl_equiv_mode instead of
-posix_acl_update_mode like all other fs.
+On Wed, Sep 22, 2021 at 11:33 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> Hi Rob,
+>
+> On 18/08/21 7:28 pm, Kishon Vijay Abraham I wrote:
+> > Hi Rob,
+> >
+> > On 13/08/21 10:47 pm, Rob Herring wrote:
+> >> On Wed, Aug 04, 2021 at 06:59:10PM +0530, Kishon Vijay Abraham I wrote:
+> >>> Add bindings to specify interrupt controller for legacy interrupts.
+> >>>
+> >>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> >>> ---
+> >>>  .../bindings/pci/ti,j721e-pci-host.yaml           | 15 +++++++++++++++
+> >>>  1 file changed, 15 insertions(+)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> >>> index cc900202df29..f461d7b4c0cc 100644
+> >>> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> >>> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> >>> @@ -74,6 +74,11 @@ properties:
+> >>>
+> >>>    msi-map: true
+> >>>
+> >>> +patternProperties:
+> >>> +  "interrupt-controller":
+> >>
+> >> Not a pattern unless you meant for foo-interrupt-controller-bar to be
+> >> valid.
+> >>
+> >> Anything is allowed in the node?
+> >
+> > It's same as whatever is defined in schemas/interrupt-controller.yaml,
+> > just that it should be a subnode of pcie@. Should I add whatever is
+> > present in schemas/interrupt-controller.yaml here?
+>
+> Can you suggest how to include this?
 
-Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/xattr.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+You don't. List the properties you are using. You need to define the
+#interrupt-cells value for example. I'm sure there's already examples
+in the tree doing this same child node.
 
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 70f2f9eb6b1e..59ec5e61a239 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -559,22 +559,15 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
- 		if (acl) {
- 			umode_t mode = inode->i_mode;
- 
--			err = posix_acl_equiv_mode(acl, &mode);
--			if (err < 0)
--				return err;
-+			err = posix_acl_update_mode(mnt_userns, inode, &mode,
-+						    &acl);
-+			if (err)
-+				goto out;
- 
- 			if (inode->i_mode != mode) {
- 				inode->i_mode = mode;
- 				mark_inode_dirty(inode);
- 			}
--
--			if (!err) {
--				/*
--				 * ACL can be exactly represented in the
--				 * traditional file mode permission bits.
--				 */
--				acl = NULL;
--			}
- 		}
- 		name = XATTR_NAME_POSIX_ACL_ACCESS;
- 		name_len = sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1;
--- 
-2.33.0
-
-
+Rob
