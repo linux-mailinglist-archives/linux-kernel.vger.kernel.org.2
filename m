@@ -2,97 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AAD74157A6
+	by mail.lfdr.de (Postfix) with ESMTP id 2169B4157A5
 	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239143AbhIWEpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 00:45:49 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32518 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239093AbhIWEpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239071AbhIWEpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 23 Sep 2021 00:45:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="287431034"
-X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
-   d="scan'208";a="287431034"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 21:44:16 -0700
-X-IronPort-AV: E=Sophos;i="5.85,315,1624345200"; 
-   d="scan'208";a="550632728"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 21:44:12 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <oliver.sang@intel.com>,
-        <mhocko@suse.com>, <weixugc@google.com>, <osalvador@suse.de>,
-        <rientjes@google.com>, <dan.j.williams@intel.com>,
-        <david@redhat.com>, <gthelen@google.com>,
-        <yang.shi@linux.alibaba.com>, <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/2] mm/migrate: optimize hotplug-time demotion order
- updates
-References: <20210917223504.C140445A@davehans-spike.ostc.intel.com>
-        <20210917223505.F817CB6B@davehans-spike.ostc.intel.com>
-        <87k0jeog7r.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <2d7e4078-f9c0-7511-0bab-de5dab25b45d@intel.com>
-        <87a6k66lnd.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Date:   Thu, 23 Sep 2021 12:44:10 +0800
-In-Reply-To: <87a6k66lnd.fsf@yhuang6-desk2.ccr.corp.intel.com> (Ying Huang's
-        message of "Tue, 21 Sep 2021 22:36:22 +0800")
-Message-ID: <87tuibucit.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Received: from mailout2.samsung.com ([203.254.224.25]:28307 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230471AbhIWEpo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 00:45:44 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210923044411epoutp0228c17d0993862a15c8846e9cc2f86b2c~nWeoKgHv12780527805epoutp02E
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:44:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210923044411epoutp0228c17d0993862a15c8846e9cc2f86b2c~nWeoKgHv12780527805epoutp02E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1632372251;
+        bh=AGrDBpsyXrosj3KNIKzP7yWVgAxWzdVkyTGz3tXdgjY=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=AMYbEZNTqSaM4QBN1q1pKmrgbPDIjlovTpPee06t6fegeuWIeTe6HrubZvtUotSl9
+         bYeVvP4TD4hKz9FkkNwkE/IvTCCo5YVsJdFoem+XYLz2eXFwCL+9fjBuOiQY8Bn4WD
+         gn58SlG3gm8CsDVyQBD54bkskf/sY7wsaNR2UqkA=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210923044411epcas1p468b4653ee865f247e05cd33fccc902a4~nWen84qV30315403154epcas1p40;
+        Thu, 23 Sep 2021 04:44:11 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.38.235]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4HFMxv6jYvz4x9Q0; Thu, 23 Sep
+        2021 04:44:03 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5C.F4.62447.F060C416; Thu, 23 Sep 2021 13:43:59 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210923044358epcas1p2fce36ec06ad52a79751233958e7aa47f~nWebsJXut1888718887epcas1p2W;
+        Thu, 23 Sep 2021 04:43:58 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210923044358epsmtrp2eec3876076b9c41dbc18b337bde7fc22~nWebomzSb2224922249epsmtrp2a;
+        Thu, 23 Sep 2021 04:43:58 +0000 (GMT)
+X-AuditID: b6c32a36-3b5ff7000001f3ef-e6-614c060fccc2
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        80.75.08750.E060C416; Thu, 23 Sep 2021 13:43:58 +0900 (KST)
+Received: from [10.113.113.235] (unknown [10.113.113.235]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210923044358epsmtip1da532866bfc8155e20384a207dc2d7bd~nWebdhBDL1492214922epsmtip1I;
+        Thu, 23 Sep 2021 04:43:58 +0000 (GMT)
+Subject: Re: [PATCH] mmc: dw_mmc: Dont wait for DRTO on Write RSP error
+From:   Jaehoon Chung <jh80.chung@samsung.com>
+To:     =?UTF-8?Q?Christian_L=c3=b6hle?= <CLoehle@hyperstone.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <412adf8f-bbec-dabe-d80f-ef33da65a69d@samsung.com>
+Date:   Thu, 23 Sep 2021 13:44:36 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <5212d8d7-7e77-b874-8f85-7948c03b5748@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLKsWRmVeSWpSXmKPExsWy7bCmri4/m0+iwcm1fBazb/tbXN41h83i
+        yP9+Rovja8MdWDzOrHvA6HHn2h42j8+b5AKYo7JtMlITU1KLFFLzkvNTMvPSbZW8g+Od403N
+        DAx1DS0tzJUU8hJzU22VXHwCdN0yc4B2KSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVIL
+        UnIKTAv0ihNzi0vz0vXyUkusDA0MjEyBChOyMw6/38pYcJqv4tKMS4wNjDu4uxg5OSQETCT6
+        N39l7mLk4hAS2MEosXLicSYI5xOjxLoL86Eynxklbh9+zwbTMnvSRqjELkaJk9O+M4IkhATe
+        M0qs/68MYgsLuEvM6P7IBGKzCehIbP8GMVZE4B2jxOyrf9hBErwCdhJXl91i7WLk4GARUJVo
+        msEJEhYViJT4e3IXK0SJoMTJmU9YQGxOAXuJLzsngrUyC4hL3HoynwnClpdo3jqbGeK4W+wS
+        rRfiIGwXieNLl7JC2MISr45vYYewpSQ+v9sL9Uy1xK7mM2DPSAh0MErc2tbEBJEwlti/dDIT
+        yG3MApoS63fpQ4QVJXb+nssIsZdP4t3XHrDzJQR4JTrahCBKVCQuvX7JBLPq7pP/UCd4SLxt
+        u80KCbdjjBLnN6xjmcCoMAvJm7OQvDYLyWuzEK5YwMiyilEstaA4Nz212LDACB7byfm5mxjB
+        6VDLbAfjpLcf9A4xMnEwHmKU4GBWEuH9fMMrUYg3JbGyKrUoP76oNCe1+BCjKTDcJzJLiSbn
+        AxNyXkm8oYmlgYmZkbGJhaGZoZI477HXlolCAumJJanZqakFqUUwfUwcnFINTFExvmcF7O+k
+        vGnX/LB6ZlzpTVnu1xrzXB5MSGveJOt7N3hyuvwJdc1zV9f3H+JiY33JU+P080XmvvNNScvk
+        9sZKvjuyIdP7SeedLbp2TJwrxc3m8Jo6hExdqOGrLXKnz3XLL7Z/5iy3t02brC3k26imWbvi
+        YavFb7ULYtZhHzU22eq+3Gt36cPuTpVozxoz+083N/sfcF96dcd6ma5w3nutQX9kGj8FP+/n
+        vXnoxcm+Ztf7DK8Wi+e+UzB9cV/rQuG9LYbWqw++Om31drF4s6ZtQNbrvkWnNwRP2+IXlx4v
+        qhly4rSgTJDM6ooUnWaH6SLFjw9mPhU571Vms/3kP+2OXBvGj4vef+qfFhZoosRSnJFoqMVc
+        VJwIAGI6+4AQBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrALMWRmVeSWpSXmKPExsWy7bCSnC4fm0+iwfNpbBazb/tbXN41h83i
+        yP9+Rovja8MdWDzOrHvA6HHn2h42j8+b5AKYo7hsUlJzMstSi/TtErgyDr/fylhwmq/i0oxL
+        jA2MO7i7GDk5JARMJGZP2sjcxcjFISSwg1HieMMfFoiElMTnp1PZuhg5gGxhicOHiyFq3jJK
+        /F19mRGkRljAXWJG90cmEJtNQEdi+7fjTCBFIgLvGCUOn3rHBNFxjFHiwKnJbCBVvAJ2EleX
+        3WIFmcoioCrRNIMTJCwqECnRdGIrVImgxMmZT8CO4BSwl/iycyI7iM0soC7xZ94lZghbXOLW
+        k/lMELa8RPPW2cwTGAVnIWmfhaRlFpKWWUhaFjCyrGKUTC0ozk3PLTYsMMpLLdcrTswtLs1L
+        10vOz93ECA50La0djHtWfdA7xMjEwXiIUYKDWUmE9/MNr0Qh3pTEyqrUovz4otKc1OJDjNIc
+        LErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamE65PhCzmS7EfVGSu15KMyw8ddPDAyfMlObr
+        To3WVV6VPYld4cvPPbtm3rrko5B23YehQumolO8zkXrvtBJdi4vGt398UrjiwNTP5y58TO/V
+        Q03vcxfXZc92XZiRfymNqYU3r+XdXC1F7fgZfhcKb7X9zLG4F3hnUvm0o2kfCip+3VQJlGyS
+        CWzW5TztYDPP+tsLFadX9/lM/f5vcm1sV0kt1RQ++NvqZu0j3WW/z2ZtMxeJDK/vLHj0ocwg
+        XK523exr8je+On1xfpJxeO1Z2x1/OwXYlFy9I2fNYtKW9Pu22Oqv0rdHklcEu8RL327U23w0
+        2O7AVu9Dfa0ibu7RVbznT8SW2W1vuu3q9OekEktxRqKhFnNRcSIASKHJOuMCAAA=
+X-CMS-MailID: 20210923044358epcas1p2fce36ec06ad52a79751233958e7aa47f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210916055929epcas1p2b5cc839886e68a2f2cec17200a2b6d83
+References: <CGME20210916055929epcas1p2b5cc839886e68a2f2cec17200a2b6d83@epcas1p2.samsung.com>
+        <af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com>
+        <5212d8d7-7e77-b874-8f85-7948c03b5748@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Huang, Ying" <ying.huang@intel.com> writes:
+On 9/23/21 7:52 AM, Jaehoon Chung wrote:
+> Hi Chritstian,
+> 
+> On 9/16/21 2:59 PM, Christian Löhle wrote:
+>> Only wait for DRTO on reads, otherwise the driver hangs.
+>>
+>> The driver prevents sending CMD12 on response errors like CRCs.
+>> According to the comment this is because some cards have problems
+>> with this during the UHS tuning sequence.
+>> Unfortunately this workaround currently also applies for any command
+>> with data.
+>> On reads this will set the drto timer which then triggers after a while.
+>> On writes this will not set any timer and the tasklet will not be
+>> scheduled again.
+>> I cannot attest for the UHS workarounds need, but even if so, it should
+>> at most apply to reads.
+>> I have observed many hangs when CMD25 response contained a CRC error.
+>> This patch fixes this without touching the actual UHS tuning workaround.
+> 
+> Sorry for reply too late. I'm checking your patch on my target. 
+> I will share the result.
+> 
+> Best Regards,
+> Jaehoon Chung
+> 
+>>
+>> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
 
-> Dave Hansen <dave.hansen@intel.com> writes:
->
->> On 9/17/21 5:55 PM, Huang, Ying wrote:
->>>> @@ -3147,6 +3177,16 @@ static void __set_migration_target_nodes
->>>>  	int node;
->>>>  
->>>>  	/*
->>>> +	 * The "migration path" array is heavily optimized
->>>> +	 * for reads.  This is the write side which incurs a
->>>> +	 * very heavy synchronize_rcu().  Avoid this overhead
->>>> +	 * when nothing of consequence has changed since the
->>>> +	 * last write.
->>>> +	 */
->>>> +	if (!node_demotion_topo_changed())
->>>> +		return;
->>>> +
->>>> +	/*
->>>>  	 * Avoid any oddities like cycles that could occur
->>>>  	 * from changes in the topology.  This will leave
->>>>  	 * a momentary gap when migration is disabled.
->>> Now synchronize_rcu() is called in disable_all_migrate_targets(), which
->>> is called for MEM_GOING_OFFLINE.  Can we remove the synchronize_rcu()
->>> from disable_all_migrate_targets() and call it in
->>> __set_migration_target_nodes() before we update the node_demotion[]?
->>
->> I see what you are saying.  This patch just targeted
->> __set_migration_target_nodes() which is called in for
->> MEM_ONLINE/OFFLINE.  But, it missed MEM_GOING_OFFLINE's call to
->> disable_all_migrate_targets().
->>
->> I think I found something better than what I had in this patch, or the
->> tweak you suggested: The 'memory_notify->status_change_nid' field is
->> passed to all memory hotplug notifiers and tells us whether the node is
->> going online/offline.  Instead of trying to track the changes, I think
->> we can simply rely on it to tell us when a node is going online/offline.
->>
->> This removes the need for the demotion code to track *any* state.  I've
->> attached a totally untested patch to do this.
->
-> Yes.  This sounds good.  I will try to test this patch on my side.
-
-I have tested this patch, it works as expected for memory hotplug.  I
-have asked 0-Day guys to test the original test case, but 0-Day doesn't
-work very well for now, we need to wait for a while for 0-Day test
-result.
+Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
 
 Best Regards,
-Huang, Ying
+Jaehoon Chung
+
+>> ---
+>>  drivers/mmc/host/dw_mmc.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+>> index 6578cc64ae9e..22cf13dc799b 100644
+>> --- a/drivers/mmc/host/dw_mmc.c
+>> +++ b/drivers/mmc/host/dw_mmc.c
+>> @@ -2081,7 +2081,8 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+>>  				 * delayed. Allowing the transfer to take place
+>>  				 * avoids races and keeps things simple.
+>>  				 */
+>> -				if (err != -ETIMEDOUT) {
+>> +				if (err != -ETIMEDOUT &&
+>> +				    host->dir_status == DW_MCI_RECV_STATUS) {
+>>  					state = STATE_SENDING_DATA;
+>>  					continue;
+>>  				}
+>>
+> 
+> 
+
