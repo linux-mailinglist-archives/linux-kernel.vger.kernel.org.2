@@ -2,210 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35804157EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 07:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC9F4157F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 07:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239217AbhIWFpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 01:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhIWFpY (ORCPT
+        id S239220AbhIWFxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 01:53:11 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:38365 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhIWFxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 01:45:24 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1E6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 22:43:53 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id i23so13733058wrb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 22:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rnIcwu0FFo3Ne+0nuy0UQ27c0vRdOwWjvM3R97Jd11w=;
-        b=tNj8lripLW6wTqHkpoYqCMMIyDoswe4J/v2ne3MxQ0V4Wk4olSLqM/CVIrsVW1Id3o
-         Go8D0zvh+pxwrOt2cXs09oym4e3LVmoahhS9T5GwVqNqQqOA5mepYk4kn55sNTXtScvo
-         sOoNAb4BuwzXpdzs9wU4xzpofnfw6ZmnrGPd+aK16elBnVLpWUrDFhjRm/k14vAOfa38
-         C13T98wU6xYqsYZJa0QGlAfd+DlBxConccVnpxF4hBtbwYERWNF5+MjVftcyu8mE5HJj
-         s6ZEI4WxHPTx7qbmS33FNPnEkRx+d4lnEvu9Obr3HdWzTMF3PZOpgZeElyfm4uoHPPu6
-         hW9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rnIcwu0FFo3Ne+0nuy0UQ27c0vRdOwWjvM3R97Jd11w=;
-        b=GtBJYuWjYdKFs2wMEZLWTlBE4z76DOTuJ1rhRFsZpwYp828UmxQBKQYgTXcWN05LvL
-         RYDmjt1ufdmTFRrWSi9pgaDKoMgG/y05uWbkGAs9wEsYr68MtOnz3FTopgbEqakeM5b2
-         iW0pNPzly/O1dH4wlMVA2/Muah4bpCNq5chIIZUKB/xGIBJogWuXy+rJA5IEmlduk3Hr
-         f7oikRXQedeCDawhEcajQopQfEZx+aovhyGeSXTDrHCjywX4ie8IIbKuEHSodEwiScDz
-         XKrYwduW6DkoAMfAYkmxl0quH1vd21jSECOkRbn6y9Xme1FnvtKhpPcLHCdU1YLcvmYD
-         eYXQ==
-X-Gm-Message-State: AOAM530j1it4Fxsc8lqVGCWVGjbis6GOwVsD2hBt1o+edNZJ8hzAulV7
-        5lgr5eJXfYuIJ/XBwA/taCETKrnVkSG33DpxzPnWyw==
-X-Google-Smtp-Source: ABdhPJwqwukkcM772+ZmF0+qpiKuTreRYrVIpU4YlkYlD2u7bMA6YS94V5gD+3Hv+gYqH0B9a6NFzN0yKxC2wA3TD40=
-X-Received: by 2002:a05:600c:a05:: with SMTP id z5mr2426125wmp.73.1632375831462;
- Wed, 22 Sep 2021 22:43:51 -0700 (PDT)
+        Thu, 23 Sep 2021 01:53:10 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MHndY-1mfwp52EfW-00Eww3; Thu, 23 Sep 2021 07:51:37 +0200
+Received: by mail-wr1-f47.google.com with SMTP id t8so13726791wrq.4;
+        Wed, 22 Sep 2021 22:51:37 -0700 (PDT)
+X-Gm-Message-State: AOAM530JoP3fg7UVosXQOvuL9bnSZiIHkZ7PnD1o0nLsEV4OhUj+4Ohz
+        TLTBLKHPoa9LufNBzrsc7RNrZfMxI67LH+Btsa8=
+X-Google-Smtp-Source: ABdhPJzkTUOlS4kEZT3tzZYt8PlsmOMnXhexjU4isdYGYLh2wRHGnsmdFDp9P8R+wr45AFlj/98UMh/w3gOpZJfNzx4=
+X-Received: by 2002:a1c:7413:: with SMTP id p19mr2506337wmc.98.1632376297156;
+ Wed, 22 Sep 2021 22:51:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <YUoaDr2wsW8wtk5Z@t490s> <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
- <YUowr6phZU4v7dds@t490s> <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
- <YUp438W5p5VHL1Ch@t490s> <CAJHvVciZc0mpcw8OSPk71YsVzCTajY+ikymcD3+zBJKsZynYkg@mail.gmail.com>
- <YUtoyNic4Jxfv9f7@t490s> <CAJHvVcg6PRCK_JcYEhRqq2vPyypnc+ySOtLhtFf5GrcQjimsJQ@mail.gmail.com>
- <YUulep3+YADkwlUu@t490s> <CAJHvVcijQdS_hfUnasz7BhhQeiHmNu=C5j8xfX=uWsfVO9-+Eg@mail.gmail.com>
- <YUvBEXV1Qs5wC+Jc@t490s> <CADrL8HUhV9ag6n3=MT2pNhtfrp8xH1Y-9zgispubzLy0ye6frw@mail.gmail.com>
-In-Reply-To: <CADrL8HUhV9ag6n3=MT2pNhtfrp8xH1Y-9zgispubzLy0ye6frw@mail.gmail.com>
-From:   Jue Wang <juew@google.com>
-Date:   Wed, 22 Sep 2021 22:43:40 -0700
-Message-ID: <CAPcxDJ6E3c2gcnJ8pDeQidf-yHDP7S=Knah_b3hy+FL1kOObqA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
-To:     James Houghton <jthoughton@google.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
+ <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+ <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+ <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
+ <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
+ <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com> <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
+In-Reply-To: <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 23 Sep 2021 07:51:20 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
+Message-ID: <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:xv8RrzNmREWG4GMhF/nNNp5j9QdW14KzunUs7vE2EL2E/13tKTN
+ PJ0kiNwNdFT4yGitK0tG8afr3AnE2xnZsIIP/U0o8FlSu0co9Tfcw2jyEw1hEYf/cKhPNkV
+ NPg5lFz+ISxvwuQVrbXdtIOsu+t66+mnAlSoOecnQkVTDgoDUCJ/F6NSrUW4fp1n8GlZ8d2
+ 69P1DLUycDGeT6jb7fQcQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LXtt0IuK74s=:zdz9X0yvWoKc+I7SykUiwz
+ kmsmE6Ezov6KczQTaZlRZj3EProRv1LRrQ0sSGwapT18jROLGtvBzk54U7+PFp90sh/zytbyo
+ vUZJPYlukYWyyM8qRfw7lClDwcWqmHFS8+gox6RZEnvM2GG92N8/L2K+eRfZeMMH241iKlyyJ
+ UD4UKeahIqhA5j2Ekx2f//JADfycKUowfCbD/AaxnZjZDmkwMVgujikTvA2tiLMYRX8kkHwSj
+ 7Gr7aAVkJna61tFfc33RgXtMLPmRE2tQ149ys1eW3WdO65RTKg1AF5HWADw/WbVn891/W4trp
+ 8drAud3vmGBHy5oglwq9dUXjIULBxZdYWMTyzcYAGDxPbmxUbe2yPeU98xY6X040nsrSUrDoy
+ dG5oUQ9h3826md1bk2FrBpGpgzrz4TZqGjnnATzlcOwurKHE5kyVPnBU5KSvil9EFF5iDvxcY
+ /QLi60xPscNwpcBBFxZk/9GoazT6URdo48P7igT2tmTuJzOOzVgZ0FE3BbY3ng/2gn4QMqvR3
+ cjwbovUtxvd24WtK6ZRzyrgA2HflGRhansx1acpWkvLe3fE7uMPmZKPojrXmxIEda/CkZ8rDI
+ A/XDF/Dt+2EodgGAaXx3Caqo5mo/Ei68E3S+IWrAbZm8qwChh8C1cfbgYDx2aKOT7U2GVYJN2
+ L5PN82rdnnP9XBbcH69zmotgN+w3UJwmAS6BE8+5JpLoNWoTk11SsHNpWtCLPwL3QowQWDZj9
+ z/8btDtmXbB/hxkVst7HD0RQFpt197LZr7Pa6g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 9:18 PM James Houghton <jthoughton@google.com> wrote:
->
-> On Wed, Sep 22, 2021 at 4:49 PM Peter Xu <peterx@redhat.com> wrote:
+ isOn Wed, Sep 22, 2021 at 10:55 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> On Wed, Sep 22, 2021 at 9:57 PM Arnd Bergmann <arnd@arndb.de> wrote:
 > >
-> > On Wed, Sep 22, 2021 at 03:29:42PM -0700, Axel Rasmussen wrote:
-> > > On Wed, Sep 22, 2021 at 2:52 PM Peter Xu <peterx@redhat.com> wrote:
+> > On Wed, Sep 22, 2021 at 8:40 PM Sergio Paracuellos
+> > <sergio.paracuellos@gmail.com> wrote:
+> > > On Wed, Sep 22, 2021 at 8:07 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > On Wed, Sep 22, 2021 at 7:42 PM Sergio Paracuellos
+> > > > Ok, thank you for the detailed explanation.
 > > > >
-> > > > On Wed, Sep 22, 2021 at 01:54:53PM -0700, Axel Rasmussen wrote:
-> > > > > On Wed, Sep 22, 2021 at 10:33 AM Peter Xu <peterx@redhat.com> wrote:
-> > > > > >
-> > > > > > Hello, Axel,
-> > > > > >
-> > > > > > On Wed, Sep 22, 2021 at 10:04:03AM -0700, Axel Rasmussen wrote:
-> > > > > > > Thanks for discussing the design Peter. I have some ideas which might
-> > > > > > > make for a nicer v2; I'll massage the code a bit and see what I can
-> > > > > > > come up with.
-> > > > > >
-> > > > > > Sure thing.  Note again that as I don't have a strong opinion on that, feel
-> > > > > > free to keep it.  However if you provide v2, I'll read.
-> > > > > >
-> > > > > > [off-topic below]
-> > > > > >
-> > > > > > Another thing I probably have forgot but need your confirmation is, when you
-> > > > > > worked on uffd minor mode, did you explicitly disable thp, or is it allowed?
-> > > > >
-> > > > > I gave a more detailed answer in the other thread, but: currently it
-> > > > > is allowed, but this was a bug / oversight on my part. :) THP collapse
-> > > > > can break the guarantees minor fault registration is trying to
-> > > > > provide.
-> > > >
-> > > > I've replied there:
-> > > >
-> > > > https://lore.kernel.org/linux-mm/YUueOUfoamxOvEyO@t490s/
-> > > >
-> > > > We can try to keep the discussion unified there regarding this.
-> > > >
-> > > > > But there's another scenario: what if the collapse happened well
-> > > > > before registration happened?
-> > > >
-> > > > Maybe yes, but my understanding of the current uffd-minor scenario tells me
-> > > > that this is fine too.  Meanwhile I actually have another idea regarding minor
-> > > > mode, please continue reading.
-> > > >
-> > > > Firstly, let me try to re-cap on how minor mode is used in your production
-> > > > systems: I believe there should have two processes A and B, if A is the main
-> > > > process, B could be the migration process.  B migrates pages in the background,
-> > > > while A so far should have been stopped and never ran.  When we want to start
-> > > > A, we should register A with uffd-minor upon the whole range (note: I think so
-> > > > far A does not have any pgtable mapped within uffd-minor range).  Then any page
-> > > > access of A should kick B and asking "whether it is the latest page", if yes
-> > > > then UFFDIO_CONTINUE, if no then B modifies the page, plus UFFDIO_CONTINUE
-> > > > afterwards.  Am I right above?
-> > > >
-> > > > So if that's the case, then A should have no page table at all.
-> > > >
-> > > > Then, is that a problem if the shmem file that A maps contains huge thps?  I
-> > > > think no - because UFFDIO_CONTINUE will only install small pages.
-> > > >
-> > > > Let me know if I'm understanding it right above; I'll be happy to be corrected.
+> > > > I suppose you can use the generic infrastructure in asm-generic/io.h
+> > > > if you "#define PCI_IOBASE mips_io_port_base". In this case, you
+> > > > should have an architecture specific implementation of
+> > > > pci_remap_iospace() that assigns mips_io_port_base.
 > > >
-> > > Right, except that our use case is even more similar to QEMU: the code
-> > > doing UFFDIO_CONTINUE / demand paging, and the code running the vCPUs,
-> > > are in the same process (same mm) - just different threads.
+> > > No, that is what I tried originally defining PCI_IOBASE as
+> > > _AC(0xa0000000, UL) [0] which is the same as KSEG1 [1] that ends in
+> > > 'mips_io_port_base'.
 > >
-> > I see.
+> > Defining it as KSEG1 would be problematic because that means that
+> > the Linux-visible port numbers are offset from the bus-visible ones.
 > >
-> > >
-> > > >
-> > > > Actually besides this scenario, I'm also thinking of another scenario of using
-> > > > minor fault in a single process - that's mostly what QEMU is doing right now,
-> > > > as QEMU has the vcpu threads and migration thread sharing a single mm/pgtable.
-> > > > So I think it'll be great to have a new madvise(MADV_ZAP) which will tear down
-> > > > all the file-backed memory pgtables of a specific range.  I think it'll suite
-> > > > perfectly for the minor fault use case, and it can be used for other things
-> > > > too.  Let me know what you think about this idea, and whether that'll help in
-> > > > your case too (e.g., if you worry a current process A mapped huge shmem thp
-> > > > somewhere, we can use madvise(MADV_ZAP) to drop it).
-> > >
-> > > Yes, this would be convenient for our implementation too. :) There are
-> > > workarounds if the feature doesn't exist, but it would be nice to
-> > > have.
-> >
-> > Could I know what's the workaround?  Normally if the workaround works solidly,
-> > then there's less need to introduce a kernel interface for that.  Otherwise I'm
-> > glad to look into such a formal proposal.
+> > You really want PCI_IOBASE to point to the address of port 0.
 >
-> The workaround is, for the region that you want to zap, run through
-> this sequence of syscalls: mumap, mmap, and re-register with
-> userfaultfd if it was registered before. If we're using tmpfs, we can
-> use madvise(DONTNEED) instead, but this is kind of an abuse of the
-> API. I don't think there's a guarantee that the PTEs will get zapped,
-> but currently they will always get zapped if we're using tmpfs. I
-> really like the idea of adding a new madvise() mode that is guaranteed
-> to zap the PTEs.
+> Do you mean that doing
 >
-> >
-> > > It's also useful for memory poisoning, I think, if the host
-> > > decides some page(s) are "bad" and wants to intercept any future guest
-> > > accesses to those page(s).
-> >
-> > Curious: isn't hwpoison information come from MCEs; or say, host kernel side?
-> > Then I thought the host kernel will have full control of it already.
-> >
-> > Or there's other way that the host can try to detect some pages are going to be
-> > rotten?  So the userspace can do something before the kernel handles those
-> > exceptions?
+> #define PCI_IOBASE mips_io_port_base
 >
-> Here's a general idea of how we would like to use userfaultfd to support MPR:
+> would have different result that doing what I did
 >
-> If a guest accesses a poisoned page for the first time, we will get an
-> MCE through the host kernel and send an MCE to the guest. The guest
-> will now no longer be able to access this page, and we have to enforce
-> this. After a live migration, the pages that were poisoned before
-> probably won't still be poisoned (from the host's perspective), so we
-> can't rely on the host kernel's MCE handling path. This is where
-> userfaultfd and this new madvise mode come in: we can just
-> madvise(MADV_ZAP) the poisoned page(s) on the target during a
-> migration. Now all accesses will be routed to the VMM and we can
-> inject an MCE. We don't *need* the new madvise mode, as we can also
-> use fallocate(PUNCH_HOLE) (works for tmpfs and hugetlbfs), but it
-> would be more convenient if we didn't have to use fallocate.
+> #define PCI_IOBASE _AC(0xa0000000, UL)
 >
-> Jue Wang can provide more context here, so I've cc'd him. There may be
-> some things I'm wrong about, so Jue feel free to correct me.
+> ?
 >
-James is right.
+> I am not really understanding this yet (I think I need a bit of sleep
+> time :)), but I will test this tomorrow and come back to you again
+> with results.
 
-The page is marked PG_HWPoison in the source VM host's kernel. The need
-of intercepting guest accesses to it exist on the target VM host, where
-the same physical page is no longer poisoned.
+Both would let devices access the registers, but they are different
+regarding the bus translations you have to program into the
+host bridge, and how to access the hardcoded port numbers.
 
-On the target host, the hypervisor needs to intercept all guest accesses
-to pages poisoned from the source VM host.
->
-> - James
->
->
+> > > > pci_remap_iospace() was originally meant as an architecture
+> > > > specific helper, but it moved into generic code after all architectures
+> > > > had the same requirements. If MIPS has different requirements,
+> > > > then it should not be shared.
+> > >
+> > > I see. So, if it can not be shared, would defining 'pci_remap_iospace'
+> > > as 'weak' acceptable? Doing in this way I guess I can redefine the
+> > > symbol for mips to have the same I currently have but without the
+> > > ifdef in the core APIs...
 > >
-> > --
-> > Peter Xu
+> > I would hope to kill off the __weak functions, and prefer using an #ifdef
+> > around the generic implementation. One way to do it is to define
+> > a macro with the same name, such as
 > >
+> > #define pci_remap_iospace pci_remap_iospace
+>
+> I guess this should be defined in arch/mips/include/asm/pci.h?
+
+Yes, that would be a good place for that, possibly next to
+the (static inline) definition.
+
+> > and then use #ifdef around the C function to see if that's already defined.
+>
+> I see. That would work, I guess. But I don't really understand why
+> this approach would be better than this patch changes itself. Looks
+> more hacky to me. As Bjorn pointed out in a previous version of this
+> patch [0], this case is the same as the one in
+> 'acpi_pci_root_remap_iospace' and the same approach is used there...
+
+The acpi_pci_root_remap_iospace() does this because on that code is
+shared with x86 and ia64, where the port numbers are accessed using
+separate instructions that do not translate into MMIO addresses at all.
+
+On MIPS, the port access eventually does translate into MMIO, and
+you need a way to communicate the mapping between the host
+bridge and the architecture specific code.
+
+This is particularly important since we want the host bridge driver
+to be portable. If you set up the mapping differently between e.g.
+mt7621 and mt7623, they are not able to use the same driver
+code for setting pci_host_bridge->io_offset and for programming
+the inbound translation registers.
+
+> > I only see one host bridge here though, and it has a single
+> > I/O port range, so maybe all three ports are inside of
+> > a single PCI domain?
+>
+> See this cover letter [1] with a fantastic ascii art :) to a better
+> understanding of this pci topology. Yes, there is one host bridge and
+> from here three virtual bridges where at most three endpoints can be
+> connected.
+
+Ok, so you don't have the problem I was referring to. A lot of
+SoCs actually have multiple host bridges, but only one root
+port per host bridge, because they are based on licensed IP
+blocks that don't support a normal topology like the one you have.
+
+> > Having high numbers for the I/O ports is definitely a
+> > problem as I mentioned. Anything that tries to access
+> > PC-style legacy devices on the low port numbers
+> > will now directly go on the bus accessing MMIO
+> > registers that it shouldn't, either causing a CPU exception
+> > or (worse) undefined behavior from random register
+> > accesses.
+>
+> All I/O port addresses for ralink SoCs are in higher addresses than
+> default IO_SPACE_LIMIT 0xFFFF, that's why we have to also change this
+> limit together with this patch changes. Nothing to do with this, is an
+> architectural thing of these SoCs.
+
+I don't understand. What I see above is that the host bridge
+has the region 1e160000-1e16ffff registered, so presumably
+1e160000 is actually the start of the window into the host bridge.
+If you set PCI_IOBASE to that location, the highest port number
+would become 0x2027, which is under 0xffff.
+
+       Arnd
