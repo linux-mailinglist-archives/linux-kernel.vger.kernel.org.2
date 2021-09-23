@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743A241615A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128DE41615C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241800AbhIWOqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:46:32 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:56854 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241662AbhIWOqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:46:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=jgw3MMJ0lzxDwTLbKoxnzju2sR5xuO3tCpwWUyzdaVM=; b=5KZbXBLUQK5qVswEJ9j+i2ivay
-        bWkLe4WSrL+UrGKXIl37f361qEetSrmD9i0NfuGxywkAzcgFrxtI30ZA4xr2gvkhknVp1IHDGjgEb
-        JIOmUNc246POrMUPYpQy3OgsvVeFwG0c2fYbl1FkqUcbVM69qSIvn9G3tSS9guO3rIMM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mTPy5-007wKT-7K; Thu, 23 Sep 2021 16:44:57 +0200
-Date:   Thu, 23 Sep 2021 16:44:57 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Asmaa Mnebhi <asmaa@nvidia.com>
-Cc:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        David Thompson <davthompson@nvidia.com>
-Subject: Re: [PATCH v2 1/2] gpio: mlxbf2: Introduce IRQ support
-Message-ID: <YUyS6fqD1TJU+sPt@lunn.ch>
-References: <20210920212227.19358-1-asmaa@nvidia.com>
- <20210920212227.19358-2-asmaa@nvidia.com>
- <YUpdjh8dtjz29TWU@lunn.ch>
- <CH2PR12MB38951F1A008AE68A6FE7ED96D7A29@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YUtEZvkI7ZPzfffo@lunn.ch>
- <CH2PR12MB3895D489497D7F45B4A45A34D7A39@CH2PR12MB3895.namprd12.prod.outlook.com>
+        id S241813AbhIWOq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:46:56 -0400
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:37799 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241707AbhIWOqz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:46:55 -0400
+Received: by mail-vs1-f44.google.com with SMTP id q66so6801360vsa.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:45:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S3ucXHKaz0Rc++ad0uZxKyS05SChsJUfx3Hh2lMYmn4=;
+        b=umQzOokeGEfMXSWNdCzm1nhOxpTZW6FcZBLOkwjCo8Ge1Fb9MlrR99/dYo4RLk6Ruy
+         Z6c+9rpjTc3d/yP4s9cbeIIenUigkqPUfvRZ95rxNWFX214xP134WCWyNBBKll6GHl1U
+         owlu1gzSBumVI6KgiswFVRHpkxFrIOq4JazmwbtlLy5iyfPSBQ09SbCOlSLTz9DYO2zi
+         DnpiYM+RLxWbz63af4C4jh6V+bXMY2HeM9ODusGFZyQy/AMWBOWu5sGJc2rVt4eKP22I
+         33EoIIyLSiu9imttmPRMdVelnLc3Q5GRfcGaKueQdbzdavqo2pt8quell/cHPCGhsvuG
+         G5vw==
+X-Gm-Message-State: AOAM532SwZ6yZ7xjyTda+S1FDD7xmoDb2X0g4DRaEtmZNET1WTUP/UJv
+        yVzuLsAa8g5TQfsiVUcH6jj6G3kCbVq71tq9GbT7EVYV
+X-Google-Smtp-Source: ABdhPJycyPw0Z3wCTyupvlm6Je/yzgM2E9MAnxgje5sO6MKGsuy6PcrBBUp++1JNy3xgQ3TM3ZgYoOoHsUOwOzHhxhg=
+X-Received: by 2002:a67:cc1c:: with SMTP id q28mr4390391vsl.37.1632408318973;
+ Thu, 23 Sep 2021 07:45:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH2PR12MB3895D489497D7F45B4A45A34D7A39@CH2PR12MB3895.namprd12.prod.outlook.com>
+References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
+In-Reply-To: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 23 Sep 2021 16:45:07 +0200
+Message-ID: <CAMuHMdU1DrwMAP4qRvK6tq5GV_c3bF5RmUR6ok2AqBXSbn7UBg@mail.gmail.com>
+Subject: Re: [RFC][CFT] signal handling fixes
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> No we don't. I double checked with the HW team and they confirmed that
-> YU_GPIO_CAUSE_FALL_EN and YU_GPIO_CAUSE_RISE_EN are used in
-> Both level and edge interrupts cases.
+On Sun, Jul 25, 2021 at 7:18 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>         Back in 2012 or so I'd found a bunch of fun issues with multiple
+> pending signals on a lot of architectures.  m68k looked scarier than
+> usual (due to the combination of variable-sized exception frames with the
+> way kernel stack pointer is handled by the hardware), but I'd convinced
+> myself that it had been correct.
+>
+>         Unfortunately, I was wrong - handling of multiple pending signals
+> does *not* work correctly there.
 
-How? They are different things.
+[...]
 
-I suggest you test this. Make sure a level interrupt real does fire on
-level. One simple test is use a resistor to force the interrupt pin
-low. Your machine should then die in an interrupt storm, until the
-kernel declares the interrupt broken and disables it.
+Thank you, queuing in the m68k branch as fixes.
 
-       Andrew
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
