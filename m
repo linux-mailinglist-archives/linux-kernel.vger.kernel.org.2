@@ -2,116 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E73415933
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98B541593C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239673AbhIWHka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbhIWHkZ (ORCPT
+        id S239686AbhIWHo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:44:59 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:38615 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239619AbhIWHou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:40:25 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28650C061574;
-        Thu, 23 Sep 2021 00:38:54 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id v24so20227912eda.3;
-        Thu, 23 Sep 2021 00:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rDC5PC+a0NllCEpjH7mFGoqlO3Pfx2bUG7RA79+/FLw=;
-        b=m2i5+hexQJVilRRhFLWcncgCHBgJvNoFBnXpbuM/mncHeX51TWSF/F20729JVlNEAr
-         V45pr+tYK7IZgHHi+4F4GMl7Nh00Mykgj3ISPyGlYXNGXBKpt+h1vijAdTTCMasQof7P
-         /gGA1pil25WjMTbu1BMpnuaP97S9KCmKTPWFwS1k3Pq5o35W+i0VX4boNMmSntdeTBzH
-         6Ksjt3e2OPnWpVLsVXIqM5k8BUzRuBk5lM81TBtrv45bg81NbpVdA1qEi6BkHcRrny0N
-         br1t93AYgltzYlPTgbAe8uPUbwdVJYCxA4qwdMb3eUCGbsrZgVz3aI80bB8Rhpggi73A
-         8/HQ==
+        Thu, 23 Sep 2021 03:44:50 -0400
+Received: by mail-vs1-f48.google.com with SMTP id y141so5631437vsy.5;
+        Thu, 23 Sep 2021 00:43:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rDC5PC+a0NllCEpjH7mFGoqlO3Pfx2bUG7RA79+/FLw=;
-        b=vVfnRsZqQLGZP84N5Ffnm+cXKXXKxej9EIMz5PRuGTOYG1LikLIayL8RtaID5bJedV
-         olTt0Jy+QYc6m44LXohBX4Kfa/k7wp/+QzapI/BMqz7AqU3yEmPETGxUM0GzrfkAlLNI
-         v6k2+EmaMPYhPmFaw6IftRp42606u8w4fmNVa7/2mySqQT6enuHJbQLLYbLWLkvEzl8O
-         0BaWBAFcW39isS396CtKIbjo8RvDg5ArwbnkSo2JcuDQeTbT2lsWfu1B7QtHoL1PtWui
-         gx3l3XqHhmQhWDrqGq48a5bbgwmEKDYt68onR4Z/+pv18tVyqlBKejO3r+LVkAA0P6RF
-         5bYQ==
-X-Gm-Message-State: AOAM530qZSdvD9TrHhxq7an69osZ+qR8HUpERbCGgDT6NzPz96xMmuog
-        yEy9buhnZAYMAvbnXP23IpT0m/mfsmA9snudfqg=
-X-Google-Smtp-Source: ABdhPJyjzgHJDh+Fs64RdNZbvuzzH3I7YTJrBgLlFYJ+90fM3o+BJpkdJnZ7Olj0kmds1AjaloWBuA==
-X-Received: by 2002:a17:906:9401:: with SMTP id q1mr3493373ejx.313.1632382732580;
-        Thu, 23 Sep 2021 00:38:52 -0700 (PDT)
-Received: from ?IPv6:2a04:241e:501:3870:3080:ac6c:f9d1:39b4? ([2a04:241e:501:3870:3080:ac6c:f9d1:39b4])
-        by smtp.gmail.com with ESMTPSA id b14sm2817949edy.56.2021.09.23.00.38.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 00:38:52 -0700 (PDT)
-Subject: Re: [PATCH 00/19] tcp: Initial support for RFC5925 auth option
-To:     Francesco Ruggeri <fruggeri@arista.com>
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        netdev <netdev@vger.kernel.org>, linux-crypto@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-References: <cover.1632240523.git.cdleonard@gmail.com>
- <CA+HUmGjQWwDJSYRJPix3xBw8yMwqLcgYO7hBWxXT9eYmJttKgQ@mail.gmail.com>
-From:   Leonard Crestez <cdleonard@gmail.com>
-Message-ID: <6505b7d2-7792-429d-42a6-d41711de0dc1@gmail.com>
-Date:   Thu, 23 Sep 2021 10:38:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/Ha/wlFhpE3wzhxqsYVFhc8UhMgQgIXbZ52hSCO/LZU=;
+        b=m4IFBW2LxqIWtnTecaw+YIqcsGQdwAVme+7Twydb5eax83BSXgMt8qyCupNcLKfFjX
+         UquFvnsKgcRuapXSpUETG2Xj2B0gI7c0c4eBLwlkTpoY8g5Yzb3FbL0P4jWPFIlErPs8
+         M2qhu81e5l9W/uXen7p6lHSGYBk7BW5TS9Qh4+4xIm8WcSyKm7Empmrvk3Cb4+Z/fbih
+         pYpumLEK+Mks07eJgmxG5H2TGeawbTJJWook3Wpuj+1WGos6SizzxoD9JyfGJYL7+hqp
+         M/OrXDFh/836dpeXctIBw1FIcllPH5iMISi+x4L90t3xlfJW3hToygPt8FSPlckehlkz
+         gq3Q==
+X-Gm-Message-State: AOAM530b3xwAUgPOCFqTOAvOXcIwygqz2M+ZHVHSF5WmPSer4kt0vtsr
+        5nKHON7ye2aHS/oMmt1i5a9ITtlKuJ0WgBq4QjAOmBT3
+X-Google-Smtp-Source: ABdhPJzKQLsa6lAVIiUAQaqshZfD+cCmfuMpwO2GNU/H/yzPZqKWK1YyaY9bVHDLIhvsPRJM5ycaxYEJFPxbKcq0wx4=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr3048824vsl.9.1632382998923;
+ Thu, 23 Sep 2021 00:43:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+HUmGjQWwDJSYRJPix3xBw8yMwqLcgYO7hBWxXT9eYmJttKgQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210922234726.3337265-1-kieran.bingham@ideasonboard.com> <20210922234726.3337265-2-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20210922234726.3337265-2-kieran.bingham@ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 23 Sep 2021 09:43:07 +0200
+Message-ID: <CAMuHMdWfcxb+5uOnPMiB2Z9rUfnRAg2Pzz--H16fOoVoASP=Kw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] dt-bindings: display: renesas,du: Provide bindings
+ for r8a779a0
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 11:23 PM, Francesco Ruggeri wrote:
-> On Tue, Sep 21, 2021 at 9:15 AM Leonard Crestez <cdleonard@gmail.com> wrote:
->> * Sequence Number Extension not implemented so connections will flap
->> every ~4G of traffic.
-> 
-> Could you expand on this?
-> What exactly do you mean by flap? Will the connection be terminated?
-> I assume that depending on the initial sequence numbers the first flaps
-> may occur well before 4G.
-> Do you use a SNE of 0 in the hash computation, or do you just not include
-> the SNE in it?
+Hi Kieran,
 
-SNE is hardcoded to zero, with the logical consequence of incorrect 
-signatures on sequence number wrapping. The SNE has to be included 
-because otherwise all signatures would be invalid.
+On Thu, Sep 23, 2021 at 1:47 AM Kieran Bingham
+<kieran.bingham@ideasonboard.com> wrote:
+> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>
+> Extend the Renesas DU display bindings to support the r8a779a0 V3U.
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>
+> ---
+> v2:
+>  - Collected Laurent's tag
+>  - Remove clock-names requirement
+>  - Specify only a single clock
+>
+> v3:
+>  - Use clocknames: 'du.0' instead of 'du' to remain consistent
 
-You are correct that this can break much sooner than 4G of traffic, but 
-still in the GB range on average. I didn't test the exact behavior (not 
-clear how) but if signatures don't validate the connection will likely 
-timeout.
+Thanks for the update!
 
-My plan is to use TCP_REPAIR to control sequence numbers and test this 
-reliably in an isolated environment (not interop with a cisco VM or 
-similar). I want to implement TCP_REPAIR support for TCP-AO anyway.
+> --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
+> +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
+> @@ -39,6 +39,7 @@ properties:
+>        - renesas,du-r8a77980 # for R-Car V3H compatible DU
+>        - renesas,du-r8a77990 # for R-Car E3 compatible DU
+>        - renesas,du-r8a77995 # for R-Car D3 compatible DU
+> +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
+>
+>    reg:
+>      maxItems: 1
+> @@ -773,6 +774,55 @@ allOf:
+>          - reset-names
+>          - renesas,vsps
+>
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - renesas,du-r8a779a0
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: Functional clock
+> +
+> +        clock-names:
+> +          maxItems: 1
+> +          items:
+> +            - const: du.0
+> +
+> +        interrupts:
+> +          maxItems: 2
+> +
+> +        resets:
+> +          maxItems: 1
+> +
+> +        reset-names:
+> +          items:
+> +            - const: du.0
+> +
+> +        ports:
+> +          properties:
+> +            port@0:
+> +              description: DSI 0
+> +            port@1:
+> +              description: DSI 1
+> +            port@2: false
+> +            port@3: false
+> +
+> +          required:
+> +            - port@0
+> +            - port@1
+> +
+> +        renesas,vsps:
+> +          minItems: 2
+> +
+> +      required:
+> +        - interrupts
+> +        - resets
+> +        - reset-names
+> +        - renesas,vsps
 
-It was skipped because the patch series is already quite large.
+clock-names, for consistency?
 
---
-Regards,
-Leonard
+> +
+>  additionalProperties: false
+>
+>  examples:
+
+With the above fixed:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
