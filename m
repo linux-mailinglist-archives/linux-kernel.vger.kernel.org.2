@@ -2,158 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77D0416424
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E03416410
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242683AbhIWRO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 13:14:59 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47274 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242705AbhIWROg (ORCPT
+        id S242584AbhIWROF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242540AbhIWRN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:14:36 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id A9F1D1F44614
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel@collabora.com, krisman@collabora.com,
-        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
-        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH v2 22/22] futex2: Documentation: Document sys_futex_waitv() uAPI
-Date:   Thu, 23 Sep 2021 14:11:11 -0300
-Message-Id: <20210923171111.300673-23-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210923171111.300673-1-andrealmeid@collabora.com>
-References: <20210923171111.300673-1-andrealmeid@collabora.com>
+        Thu, 23 Sep 2021 13:13:57 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A82C061766
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:12:24 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id i4so28920208lfv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i/CxnIoh9vGI3IXe2n3zSyhD1ELxDhirk2SHmfQlOLQ=;
+        b=RMG/Scp8QfSxAZON5Uq51XOAc0XNXVcBG2GnnrniXglTgraSBvZ9RTKockwhPH4mGf
+         WeyPErky+FsOoPedYN2c7qDYCZw5WhZNubXkskDS/lKdYEHUbPqNnam84t6nOFdacy7a
+         Ly9YiJwUacU0hCuahpkwUe3ElAzj5gwsY1c2E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i/CxnIoh9vGI3IXe2n3zSyhD1ELxDhirk2SHmfQlOLQ=;
+        b=s5uJS7eNTNj+4ebhtVbPeI3o+CpI7F0z/1lJuxnSsZMRj6USGY5j1xl2/crI3L3t+m
+         PKOOGVcy7+ovKbUHjogh6pCe9y9Zj0kN1zcUbhh/2HVsb8TAlgXIcwkY7RMMBpm2X3sA
+         4XbzETCI0sPlYSJ5XLjcTtg4VVjVGu6nCO6Htvm4VKoNoStkP0hwT3gsTExO6+q+Mt0P
+         SNMyZpDnauq6IYKKcmhsY6DlBjQB3Xl2VkInT1DaLtEAKnpwkzz8OUhiMXlZWbaSAUG6
+         c3zcNHyAjB1I/mpWwT4L+K/bdmXsYo1mvr0cSaqv5EdTjTT9uyBRr2IqGO4ozSGIYAL3
+         jfKw==
+X-Gm-Message-State: AOAM530FIq0mgKpDkXIFhOZrDNmLJXmw0QL5K5WKAMSQ40MWbu0XAzSS
+        Y5b+c/CF8AW1sr1npZnpjzcup02MXx/LrgRyAjc=
+X-Google-Smtp-Source: ABdhPJxT3k8j7fIM83cNT5O3sauRFY1hcsi7I1PSGgPIcKZJ6iasPz2hIwMvX9IjseHM/J72HxK0Fw==
+X-Received: by 2002:a05:6512:33c7:: with SMTP id d7mr5272619lfg.28.1632417142012;
+        Thu, 23 Sep 2021 10:12:22 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id b14sm647626ljr.111.2021.09.23.10.12.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 10:12:19 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id m3so29132214lfu.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:12:17 -0700 (PDT)
+X-Received: by 2002:a05:6512:3d29:: with SMTP id d41mr5080713lfv.474.1632417137194;
+ Thu, 23 Sep 2021 10:12:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210922224906.676151-1-shakeelb@google.com>
+In-Reply-To: <20210922224906.676151-1-shakeelb@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 23 Sep 2021 10:12:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whgL6H0fYt9o2qOVwExZJy_nmZ9=_hTcBUKf=YHXDJVxQ@mail.gmail.com>
+Message-ID: <CAHk-=whgL6H0fYt9o2qOVwExZJy_nmZ9=_hTcBUKf=YHXDJVxQ@mail.gmail.com>
+Subject: Re: [PATCH] memcg: flush lruvec stats in the refault
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michael Larabel <michael@michaellarabel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create userspace documentation for futex_waitv() syscall, detailing how
-the arguments are used.
+On Wed, Sep 22, 2021 at 3:50 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> From the above result, it seems like the option-2 not only solves the
+> regression but also improves the performance for at least these
+> benchmarks.
+>
+> Feng Tang (intel) ran the aim7 benchmark with these two options and
+> confirms that option-1 reduces the regression but option-2 removes the
+> regression.
+>
+> Michael Larabel (phoronix) ran multiple benchmarks with these options
+> and reported the results at [3] and it shows for most benchmarks
+> option-2 removes the regression introduced by the commit aa48e47e3906
+> ("memcg: infrastructure to flush memcg stats").
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- Documentation/userspace-api/futex2.rst | 86 ++++++++++++++++++++++++++
- Documentation/userspace-api/index.rst  |  1 +
- 2 files changed, 87 insertions(+)
- create mode 100644 Documentation/userspace-api/futex2.rst
+Ok, I've applied this just to close the issue.
 
-diff --git a/Documentation/userspace-api/futex2.rst b/Documentation/userspace-api/futex2.rst
-new file mode 100644
-index 000000000000..7d37409df355
---- /dev/null
-+++ b/Documentation/userspace-api/futex2.rst
-@@ -0,0 +1,86 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======
-+futex2
-+======
-+
-+:Author: André Almeida <andrealmeid@collabora.com>
-+
-+futex, or fast user mutex, is a set of syscalls to allow userspace to create
-+performant synchronization mechanisms, such as mutexes, semaphores and
-+conditional variables in userspace. C standard libraries, like glibc, uses it
-+as a means to implement more high level interfaces like pthreads.
-+
-+futex2 is a followup version of the initial futex syscall, designed to overcome
-+limitations of the original interface.
-+
-+User API
-+========
-+
-+``futex_waitv()``
-+-----------------
-+
-+Wait on an array of futexes, wake on any::
-+
-+  futex_waitv(struct futex_waitv *waiters, unsigned int nr_futexes,
-+              unsigned int flags, struct timespec *timeout, clockid_t clockid)
-+
-+  struct futex_waitv {
-+        __u64 val;
-+        __u64 uaddr;
-+        __u32 flags;
-+        __u32 __reserved;
-+  };
-+
-+Userspace sets an array of struct futex_waitv (up to a max of 128 entries),
-+using ``uaddr`` for the address to wait for, ``val`` for the expected value
-+and ``flags`` to specify the type (e.g. private) and size of futex.
-+``__reserved`` needs to be 0, but it can be used for future extension. The
-+pointer for the first item of the array is passed as ``waiters``. An invalid
-+address for ``waiters`` or for any ``uaddr`` returns ``-EFAULT``.
-+
-+If userspace has 32-bit pointers, it should do a explicit cast to make sure
-+the upper bits are zeroed. ``uintptr_t`` does the tricky and it works for
-+both 32/64-bit pointers.
-+
-+``nr_futexes`` specifies the size of the array. Numbers out of [1, 128]
-+interval will make the syscall return ``-EINVAL``.
-+
-+The ``flags`` argument of the syscall needs to be 0, but it can be used for
-+future extension.
-+
-+For each entry in ``waiters`` array, the current value at ``uaddr`` is compared
-+to ``val``. If it's different, the syscall undo all the work done so far and
-+return ``-EAGAIN``. If all tests and verifications succeeds, syscall waits until
-+one of the following happens:
-+
-+- The timeout expires, returning ``-ETIMEOUT``.
-+- A signal was sent to the sleeping task, returning ``-ERESTARTSYS``.
-+- Some futex at the list was awaken, returning the index of some waked futex.
-+
-+An example of how to use the interface can be found at ``tools/testing/selftests/futex/functional/futex_waitv.c``.
-+
-+Timeout
-+-------
-+
-+``struct timespec *timeout`` argument is an optional argument that points to an
-+absolute timeout. You need to specify the type of clock being used at
-+``clockid`` argument. ``CLOCK_MONOTONIC`` and ``CLOCK_REALTIME`` are supported.
-+This syscall accepts only 64bit timespec structs.
-+
-+Types of futex
-+--------------
-+
-+A futex can be either private or shared. Private is used for processes that
-+shares the same memory space and the virtual address of the futex will be the
-+same for all processes. This allows for optimizations in the kernel. To use
-+private futexes, it's necessary to specify ``FUTEX_PRIVATE_FLAG`` in the futex
-+flag. For processes that doesn't share the same memory space and therefore can
-+have different virtual addresses for the same futex (using, for instance, a
-+file-backed shared memory) requires different internal mechanisms to be get
-+properly enqueued. This is the default behavior, and it works with both private
-+and shared futexes.
-+
-+Futexes can be of different sizes: 8, 16, 32 or 64 bits. Currently, the only
-+supported one is 32 bit sized futex, and it need to be specified using
-+``FUTEX_32`` flag.
-diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-index c432be070f67..a61eac0c73f8 100644
---- a/Documentation/userspace-api/index.rst
-+++ b/Documentation/userspace-api/index.rst
-@@ -28,6 +28,7 @@ place where this information is gathered.
-    media/index
-    sysfs-platform_profile
-    vduse
-+   futex2
- 
- .. only::  subproject and html
- 
--- 
-2.33.0
+If somebody comes up with more data and the delayed flushing or
+something is problematic, we'll revisit, but this looks all sane to me
+and fixes the regression.
 
+Thanks,
+              Linus
