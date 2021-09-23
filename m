@@ -2,66 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D7241560B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4C4415611
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239092AbhIWDbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:31:47 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9909 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239084AbhIWDbq (ORCPT
+        id S239058AbhIWDcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238949AbhIWDck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:31:46 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HFLCS56bjz8ylZ;
-        Thu, 23 Sep 2021 11:25:40 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 23 Sep 2021 11:30:08 +0800
-Received: from [10.67.77.175] (10.67.77.175) by dggpeml500023.china.huawei.com
- (7.185.36.114) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 23 Sep
- 2021 11:30:07 +0800
-Subject: Re: [PATCH] sched: Make cookie functions static
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <20210922085735.52812-1-zhangshaokun@hisilicon.com>
- <20210922125034.GS4323@worktop.programming.kicks-ass.net>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <641d5dfb-1c72-9fc3-0844-d4eab8115173@hisilicon.com>
-Date:   Thu, 23 Sep 2021 11:30:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 22 Sep 2021 23:32:40 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69485C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 20:31:09 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id y201so7777044oie.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 20:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WZnkbDqe35agx+YRdoGtlkEIS1vsNJiYQTbIpjWyLqg=;
+        b=P3kClDnLsxyd8P5md1GK2izJhbgXFpqpxbnKHA/qDWSDqZ1P9e4S93LBbgYC62Yq8T
+         R9UaBvr71Hsdw9Qj0ogvmHgPrs9nA1wIHDSmQSuCmI5BXq1lFS+SXlcuuJMu87sN//ts
+         uoAPab1EJfLPjXzcHCtyOod6MCr36/JsjZGHXkrS08VftM1XbrMnc3oaxktFgmfo0vMJ
+         t3zsbSBGmyNFg8GpXBD4sDxGxAGUUstl+bhic/DrGsf1M8oshxwuxGJQR4jQBkF6tgbQ
+         9K8Mc5CYg7yqg3huKD7lL3thxynHYPVd6unTn3tlAVKYNZOFsjTVusdqhsqsmGe5Tnii
+         M9Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WZnkbDqe35agx+YRdoGtlkEIS1vsNJiYQTbIpjWyLqg=;
+        b=lH33o1EZllvYpmLPxpsPgG0qnU6swe+x5bOMCPe+5aR2rnRGRuNxK2PA9KuegV8ty8
+         +Wbd9KKowSAALmqQ2+vECsj9kps/slMo1FRQtYwsnAp5QscZfNgeZrYwvSBgfRZAUodc
+         ifW01DZ5poBGJ22T/RZdl8xpPcO/mlAjEhV1bS4jAYNZvJMNfpUvBmdSO8FCLxFZuj+G
+         1yy7bnw7KsR1oOd/9vddKUbGbRIQ97HAFVTzNs3Rc4s+V2r4ZDRyOPWk+K2nqg+hbc5O
+         y2R9tDTFMWocf7kWhTw9urg1evyZqcLltYgcmaytwL2dVbopVcM7+FeSwQv4hQqvjI9K
+         S6iA==
+X-Gm-Message-State: AOAM5316z9POUmmlHvhdyh+f3LBdpKe32EvXf2K1MsoqZhC/y87QOgLV
+        uv5m6Pe5YdFJrZjd7Tl1+V9t1A==
+X-Google-Smtp-Source: ABdhPJyEqCFgpzYG5stN1XffFzyyUS7C0XaZxoEnwmEkDrixdgCQQ6CDVf7BYB8h73LGP9V2OIFLXA==
+X-Received: by 2002:a05:6808:618:: with SMTP id y24mr1978169oih.179.1632367868718;
+        Wed, 22 Sep 2021 20:31:08 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id bf6sm1051367oib.0.2021.09.22.20.31.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 20:31:08 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 22:31:06 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alexandre Bailon <abailon@baylibre.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
+        matthias.bgg@gmail.com, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, ohad@wizery.com,
+        mathieu.poirier@linaro.org, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, khilman@baylibre.com,
+        gpain@baylibre.com
+Subject: Re: [RFC PATCH 3/4] rpmsg: Add support of AI Processor Unit (APU)
+Message-ID: <YUv0+jQ/91QdydkR@yoga>
+References: <20210917125945.620097-1-abailon@baylibre.com>
+ <20210917125945.620097-4-abailon@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20210922125034.GS4323@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.77.175]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917125945.620097-4-abailon@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Fri 17 Sep 07:59 CDT 2021, Alexandre Bailon wrote:
 
-On 2021/9/22 20:50, Peter Zijlstra wrote:
-> On Wed, Sep 22, 2021 at 04:57:35PM +0800, Shaokun Zhang wrote:
->> Make cookie functions static as these are no longer invoked directly
->> by other code.
+> Some Mediatek SoC provides hardware accelerator for AI / ML.
+> This driver use the DRM driver to manage the shared memory,
+> and use rpmsg to execute jobs on the APU.
 > 
-> Yeah, this was supposed to get used from the cgroup code, but that never
-> happened. I suppose we can do this for now, easy enough to revert
+> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
+> ---
+>  drivers/rpmsg/Kconfig     |  10 +++
+>  drivers/rpmsg/Makefile    |   1 +
+>  drivers/rpmsg/apu_rpmsg.c | 184 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 195 insertions(+)
+>  create mode 100644 drivers/rpmsg/apu_rpmsg.c
+> 
+> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> index 0b4407abdf138..fc1668f795004 100644
+> --- a/drivers/rpmsg/Kconfig
+> +++ b/drivers/rpmsg/Kconfig
+> @@ -73,4 +73,14 @@ config RPMSG_VIRTIO
+>  	select RPMSG_NS
+>  	select VIRTIO
+>  
+> +config RPMSG_APU
+> +	tristate "APU RPMSG driver"
+> +	select REMOTEPROC
+> +	select RPMSG_VIRTIO
+> +	select DRM_APU
+> +	help
+> +	  This provides a RPMSG driver that provides some facilities to
+> +	  communicate with an accelerated processing unit (APU).
+> +	  This Uses the APU DRM driver to manage memory and job scheduling.
 
-Got it,
+Similar to how a driver for e.g. an I2C device doesn't live in
+drivers/i2c, this doesn't belong in drivers/rpmsg. Probably rather
+directly in the DRM driver.
 
-Thanks your reply.
+> +
+>  endmenu
+> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
+> index 8d452656f0ee3..8b336b9a817c1 100644
+> --- a/drivers/rpmsg/Makefile
+> +++ b/drivers/rpmsg/Makefile
+> @@ -9,3 +9,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
+>  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
+>  obj-$(CONFIG_RPMSG_QCOM_SMD)	+= qcom_smd.o
+>  obj-$(CONFIG_RPMSG_VIRTIO)	+= virtio_rpmsg_bus.o
+> +obj-$(CONFIG_RPMSG_APU)		+= apu_rpmsg.o
+> diff --git a/drivers/rpmsg/apu_rpmsg.c b/drivers/rpmsg/apu_rpmsg.c
+> new file mode 100644
+> index 0000000000000..7e504bd176a4d
+> --- /dev/null
+> +++ b/drivers/rpmsg/apu_rpmsg.c
+> @@ -0,0 +1,184 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +//
+> +// Copyright 2020 BayLibre SAS
+> +
+> +#include <asm/cacheflush.h>
+> +
+> +#include <linux/cdev.h>
+> +#include <linux/dma-buf.h>
+> +#include <linux/dma-map-ops.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/iommu.h>
+> +#include <linux/iova.h>
+> +#include <linux/mm.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/remoteproc.h>
+> +#include <linux/rpmsg.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +
+> +#include <drm/apu_drm.h>
+> +
+> +#include "rpmsg_internal.h"
+> +
+> +#define APU_RPMSG_SERVICE_MT8183 "rpmsg-mt8183-apu0"
+> +
+> +struct rpmsg_apu {
+> +	struct apu_core *core;
+> +	struct rpmsg_device *rpdev;
+> +};
+> +
+> +static int apu_rpmsg_callback(struct rpmsg_device *rpdev, void *data, int count,
+> +			      void *priv, u32 addr)
+> +{
+> +	struct rpmsg_apu *apu = dev_get_drvdata(&rpdev->dev);
+> +	struct apu_core *apu_core = apu->core;
+> +
+> +	return apu_drm_callback(apu_core, data, count);
+> +}
+> +
+> +static int apu_rpmsg_send(struct apu_core *apu_core, void *data, int len)
+> +{
+> +	struct rpmsg_apu *apu = apu_drm_priv(apu_core);
+> +	struct rpmsg_device *rpdev = apu->rpdev;
+> +
+> +	return rpmsg_send(rpdev->ept, data, len);
 
-> if/when etc..
-> .
+The rpmsg API is exposed outside drivers/rpmsg, so as I said above, just
+implement this directly in your driver, no need to lug around a dummy
+wrapper for things like this.
+
+> +}
+> +
+> +static struct apu_drm_ops apu_rpmsg_ops = {
+> +	.send = apu_rpmsg_send,
+> +};
+> +
+> +static int apu_init_iovad(struct rproc *rproc, struct rpmsg_apu *apu)
+> +{
+> +	struct resource_table *table;
+> +	struct fw_rsc_carveout *rsc;
+> +	int i;
+> +
+> +	if (!rproc->table_ptr) {
+> +		dev_err(&apu->rpdev->dev,
+> +			"No resource_table: has the firmware been loaded ?\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	table = rproc->table_ptr;
+> +	for (i = 0; i < table->num; i++) {
+> +		int offset = table->offset[i];
+> +		struct fw_rsc_hdr *hdr = (void *)table + offset;
+> +
+> +		if (hdr->type != RSC_CARVEOUT)
+> +			continue;
+> +
+> +		rsc = (void *)hdr + sizeof(*hdr);
+> +		if (apu_drm_reserve_iova(apu->core, rsc->da, rsc->len)) {
+> +			dev_err(&apu->rpdev->dev,
+> +				"failed to reserve iova\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct rproc *apu_get_rproc(struct rpmsg_device *rpdev)
+> +{
+> +	/*
+> +	 * To work, the APU RPMsg driver need to get the rproc device.
+> +	 * Currently, we only use virtio so we could use that to find the
+> +	 * remoteproc parent.
+> +	 */
+> +	if (!rpdev->dev.parent && rpdev->dev.parent->bus) {
+> +		dev_err(&rpdev->dev, "invalid rpmsg device\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	if (strcmp(rpdev->dev.parent->bus->name, "virtio")) {
+> +		dev_err(&rpdev->dev, "unsupported bus\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	return vdev_to_rproc(dev_to_virtio(rpdev->dev.parent));
+> +}
+> +
+> +static int apu_rpmsg_probe(struct rpmsg_device *rpdev)
+> +{
+> +	struct rpmsg_apu *apu;
+> +	struct rproc *rproc;
+> +	int ret;
+> +
+> +	apu = devm_kzalloc(&rpdev->dev, sizeof(*apu), GFP_KERNEL);
+> +	if (!apu)
+> +		return -ENOMEM;
+> +	apu->rpdev = rpdev;
+> +
+> +	rproc = apu_get_rproc(rpdev);
+
+I believe that you can replace apu_get_rproc() with:
+
+	rproc = rproc_get_by_child(&rpdev->dev);
+
+> +	if (IS_ERR_OR_NULL(rproc))
+> +		return PTR_ERR(rproc);
+> +
+> +	/* Make device dma capable by inheriting from parent's capabilities */
+> +	set_dma_ops(&rpdev->dev, get_dma_ops(rproc->dev.parent));
+> +
+> +	ret = dma_coerce_mask_and_coherent(&rpdev->dev,
+> +					   dma_get_mask(rproc->dev.parent));
+> +	if (ret)
+> +		goto err_put_device;
+> +
+> +	rpdev->dev.iommu_group = rproc->dev.parent->iommu_group;
+
+Would it be better or you if we have a device_node, so that you could
+specify the iommus property for this compute device?
+
+I'm asking because I've seen cases where multi-purpose remoteproc
+firmware operate using multiple different iommu streams...
+
+> +
+> +	apu->core = apu_drm_register_core(rproc, &apu_rpmsg_ops, apu);
+> +	if (!apu->core) {
+> +		ret = -ENODEV;
+> +		goto err_put_device;
+> +	}
+> +
+> +	ret = apu_init_iovad(rproc, apu);
+> +
+> +	dev_set_drvdata(&rpdev->dev, apu);
+> +
+> +	return ret;
+> +
+> +err_put_device:
+
+This label looks misplaced, and sure enough, if apu_init_iovad() fails
+you're not apu_drm_unregister_core().
+
+But on that note, don't you want to apu_init_iovad() before you
+apu_drm_register_core()?
+
+> +	devm_kfree(&rpdev->dev, apu);
+
+The reason for using devm_kzalloc() is that once you return
+unsuccessfully from probe, or from remove the memory is freed.
+
+So devm_kfree() should go in both cases.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static void apu_rpmsg_remove(struct rpmsg_device *rpdev)
+> +{
+> +	struct rpmsg_apu *apu = dev_get_drvdata(&rpdev->dev);
+> +
+> +	apu_drm_unregister_core(apu);
+> +	devm_kfree(&rpdev->dev, apu);
+
+No need to explicitly free devm resources.
+
+Regards,
+Bjorn
+
+> +}
+> +
+> +static const struct rpmsg_device_id apu_rpmsg_match[] = {
+> +	{ APU_RPMSG_SERVICE_MT8183 },
+> +	{}
+> +};
+> +
+> +static struct rpmsg_driver apu_rpmsg_driver = {
+> +	.probe = apu_rpmsg_probe,
+> +	.remove = apu_rpmsg_remove,
+> +	.callback = apu_rpmsg_callback,
+> +	.id_table = apu_rpmsg_match,
+> +	.drv  = {
+> +		.name  = "apu_rpmsg",
+> +	},
+> +};
+> +
+> +static int __init apu_rpmsg_init(void)
+> +{
+> +	return register_rpmsg_driver(&apu_rpmsg_driver);
+> +}
+> +arch_initcall(apu_rpmsg_init);
+> +
+> +static void __exit apu_rpmsg_exit(void)
+> +{
+> +	unregister_rpmsg_driver(&apu_rpmsg_driver);
+> +}
+> +module_exit(apu_rpmsg_exit);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("APU RPMSG driver");
+> -- 
+> 2.31.1
 > 
