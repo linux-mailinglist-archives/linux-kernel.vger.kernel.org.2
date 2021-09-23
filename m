@@ -2,170 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA084416185
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DF6416186
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241783AbhIWO65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:58:57 -0400
-Received: from mga07.intel.com ([134.134.136.100]:62058 "EHLO mga07.intel.com"
+        id S241804AbhIWO77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:59:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:35768 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241702AbhIWO64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:58:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="287528049"
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="287528049"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 07:57:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="513999620"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by fmsmga008.fm.intel.com with ESMTP; 23 Sep 2021 07:57:20 -0700
-Date:   Thu, 23 Sep 2021 22:57:20 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC PATCH] x86, vmlinux.lds: Add debug option to force all data
- sections aligned
-Message-ID: <20210923145720.GA28463@shbuild999.sh.intel.com>
-References: <1627456900-42743-1-git-send-email-feng.tang@intel.com>
- <20210922185137.ivdp4yoalv4qdbe2@treble>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922185137.ivdp4yoalv4qdbe2@treble>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S241501AbhIWO76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:59:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5259D6E;
+        Thu, 23 Sep 2021 07:58:26 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB23A3F718;
+        Thu, 23 Sep 2021 07:58:24 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, peter.hilber@opensynergy.com,
+        igor.skalkin@opensynergy.com, cristian.marussi@arm.com
+Subject: [PATCH v5 0/13] Introduce atomic support for SCMI transports
+Date:   Thu, 23 Sep 2021 15:57:49 +0100
+Message-Id: <20210923145802.50938-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josh, 
+Hi all,
 
-On Wed, Sep 22, 2021 at 11:51:37AM -0700, Josh Poimboeuf wrote:
-> On Wed, Jul 28, 2021 at 03:21:40PM +0800, Feng Tang wrote:
-> > 0day has reported many strange performance changes (regression or
-> > improvement), in which there was no obvious relation between the culprit
-> > commit and the benchmark at the first look, and it causes people to doubt
-> > the test itself is wrong.
-> > 
-> > Upon further check, many of these cases are caused by the change to the
-> > alignment of kernel text or data, as whole text/data of kernel are linked
-> > together, change in one domain can affect alignments of other domains.
-> > 
-> > To help to quickly identify if the strange performance change is caused
-> > by _data_ alignment. add a debug option to force the data sections from
-> > all .o files aligned on THREAD_SIZE, so that change in one domain won't
-> > affect other modules' data alignment.
-> > 
-> > We have used this option to check some strange kernel changes [1][2][3],
-> > and those performance changes were gone after enabling it, which proved
-> > they are data alignment related.
-> > 
-> > Similarly, there is another kernel debug option to check text alignment
-> > related performance changes: CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B,  
-> > which forces all function's start address to be 64 bytes alinged.
-> > 
-> > This option depends on CONFIG_DYNAMIC_DEBUG==n, as '__dyndbg' subsection
-> > of .data has a hard requirement of ALIGN(8), shown in the 'vmlinux.lds':
-> > 
-> > "
-> > . = ALIGN(8); __start___dyndbg = .; KEEP(*(__dyndbg)) __stop___dyndbg = .;
-> > "
-> > 
-> > It contains all pointers to 'struct _ddebug', and dynamic_debug_init()
-> > will "pointer++" to loop accessing these pointers, which will be broken
-> > with this option enabled.
-> > 
-> > [1]. https://lore.kernel.org/lkml/20200205123216.GO12867@shao2-debian/
-> > [2]. https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
-> > [3]. https://lore.kernel.org/lkml/20201112140625.GA21612@xsang-OptiPlex-9020/
-> > 
-> > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> > ---
-> >  arch/x86/Kconfig.debug        | 13 +++++++++++++
-> >  arch/x86/kernel/vmlinux.lds.S |  7 ++++++-
-> >  2 files changed, 19 insertions(+), 1 deletion(-)
-> 
-> Hi Feng,
-> 
-> Thanks for the interesting LPC presentation about alignment-related
-> performance issues (which mentioned this patch).
->  
->   https://linuxplumbersconf.org/event/11/contributions/895/
-> 
-> I wonder if we can look at enabling some kind of data section alignment
-> unconditionally instead of just making it a debug option.  Have you done
-> any performance and binary size comparisons?
- 
-Thanks for reviewing this!
+This series mainly aims to introduce atomic support for transports
+that can support it.
 
-For binary size, I just tested 5.14 kernel with a default desktop
-config from Ubuntu (I didn't use the normal rhel-8.3 config used
-by 0Day, which is more for server):
+At first in [02/13], as a closely related addition, it is introduced a
+common way for a transport to signal to the SCMI core that it does not
+offer completion interrupts, so that the usual polling behaviour based
+on .poll_done() will be required: this can be done enabling statically
+a global polling behaviour for the whole transport with flag
+scmi_desc.force_polling OR dynamically enabling at runtime such polling
+behaviour on a per-channel basis with scmi_chan_info.no_completion_irq,
+typically during .chan_setup(). The usual per-command polling selection
+behaviour based on hdr.poll_completion is preserved as before.
 
-v5.14
-------------------------
-text		data		bss	    dec		hex	filename
-16010221	14971391	6098944	37080556	235cdec	vmlinux
+In [03/13] a Kconfig is added to enable at build-time force_polling on
+SCMI Mailbox transport only. (VirtIO does not support polling, while it
+does not make sense to support global force_polling on SMC given the
+presence of sync_cmds_atomic_replies flag)
 
-v5.14 + 64B-function-align
---------------------------
-text		data		bss	    dec		hex	filename
-18107373	14971391	6098944	39177708	255cdec	vmlinux
+Then in [04/13], a transport that supports atomic operations on its TX
+path can now declare itself as .atomic_capable and, if the platform has
+been also configured to use such atomic operation mode, the SCMI core will
+refrain itself too from sleeping on the correspondent RX-path even when
+using completion IRQs.
 
-v5.14 + data-align(THREAD_SIZE 16KB)
---------------------------
-text		data		bss	    dec		hex	filename
-16010221	57001791	6008832	79020844	4b5c32c	vmlinux
+In [07/13] a simple method is introduced so that an SCMI driver can easily
+query the core to check if the currently used transport is configured to
+behave in an atomic manner: in this way, interested SCMI driver users, like
+Clock framework [08/13], can optionally support atomic operations when
+operating on an atomically configured transport.
 
-So for the text-align, we see 13.1% increase for text. And for data-align,
-there is 280.8% increase for data.
+In [09/13] virtio transport is declared atomic and a new Kconfig is added
+to be able to choose at build time if that specific platform should use
+the atomic operation mode or not; such new option is default N, so VirtIO
+will continue to operate in non-atomic mode unless otherwise specified.
 
-Performance wise, I have done some test with the force-32bytes-text-align
-option before (v5.8 time), for benchmark will-it-scale, fsmark, hackbench,
-netperf and kbuild:
-* no obvious change for will-it-scale/fsmark/kbuild
-* see both regression/improvement for different hackbench case
-* see both regression/improvement for netperf, from -20% to +98%
+Finally there are 4 patches related to SMC transport.
 
-As I didn't expect the text-align will be turned on by-default, so I
-didn't dive deep into it at that time.
+At first [10/13] ports SMC to use the common core completions when
+completion interrupt is available or otherwise revert to use common core
+polling mechanism above introduced: this avoids the improper call of
+scmi_rx_callback directly in smc_send_message.
 
+Then in [11/13] SMC is converted to be .atomic_capable by substituting
+the mutexes with busy-waiting to keep the channel 'locked' ONLY IF the
+SMC transport is configured to operate in atomic mode.
+(CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE=y)
 
-For data-alignment, it has huge impact for the size, and occupies more
-cache/TLB, plus it hurts some normal function like dynamic-debug. So
-I'm afraid it can only be used as a debug option.
+With [12/13] I introduce a flag to allow a transport to signal to the core
+that upon return of a .send_message() the requested command execution can
+be assumed by the core to have been fully completed by the platform, so
+that the response payload (if any) can be immediately fetched without the
+need to poll the channel.
 
-> On a similar vein I think we should re-explore permanently enabling
-> cacheline-sized function alignment i.e. making something like
-> CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B the default.  Ingo did some
-> research on that a while back:
-> 
->    https://lkml.kernel.org/r/20150519213820.GA31688@gmail.com
+Finally in [13/13] I enable the above flag for SMC transport.
 
-Thanks for sharing this, from which I learned a lot, and I hope I
-knew this thread when we first check strange regressions in 2019 :)
+Atomic support has been minimally tested against the virtio transport,
+while polling has been tested with mailbox transports.
 
-> At the time, the main reported drawback of -falign-functions=64 was that
-> even small functions got aligned.  But now I think that can be mitigated
-> with some new options like -flimit-function-alignment and/or
-> -falign-functions=64,X (for some carefully-chosen value of X).
+The series is based on sudeep/for-next/scmi[1] on top of:
 
-Will study more about these options. 
+commit 1cd73200dad2 ("firmware: arm_scmi: Remove __exit annotation")
 
-If they have much less size increase and no regression in performance,
-then maybe it could be turned on by default.
+Given I'm still gathering feedback on this, I still not have CCed any
+maintainer out of SCMI subsystem.
+
+Any feedback welcome.
 
 Thanks,
-Feng
 
-> -- 
-> Josh
+Cristian
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi 
+
+---
+V4 --> V5
+- removed RFCs tags
+- added scmi_desc.atomic_enabled flags and a few Kconfig options to set
+  atomic mode for SMC and VirtIO transports. Default disabled.
+- added Kconfig option to enable forced polling as a whole on the Mailbox
+  transport
+- removed .poll_done callback from SMC transport since no real polling is
+  needed once sync_cmds_atomic_replies is set
+- made atomic_capable changes on SMC transport dependent on Kconfig
+  CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE: so no change and no busy waiting
+  if atomic mode is NOT enabled in Kconfig.
+- made const: force_polling/atomic_capable/atomic_enabled/sync_cmds_atomic_replies
+
+V3 --> V4
+- rebased on linux-next/master next-20210824
+- renamed .needs_polling to .no_completion_irq
+- added .sync_cmds_atomic_replies
+- make SMC use .sync_cmd_atomic_replies
+
+V2 --> v3
+- rebased on SCMI VirtIO V6 which in turn is based on v5.14-rc1
+
+
+Cristian Marussi (13):
+  firmware: arm_scmi: Perform earlier cinfo lookup call in do_xfer
+  firmware: arm_scmi: Add configurable polling mode for transports
+  firmware: arm_scmi: Add forced polling support to mailbox transport
+  firmware: arm_scmi: Add support for atomic transports
+  include: trace: Add new scmi_xfer_response_wait event
+  firmware: arm_scmi: Use new trace event scmi_xfer_response_wait
+  firmware: arm_scmi: Add is_transport_atomic() handle method
+  clk: scmi: Support atomic enable/disable API
+  firmware: arm_scmi: Add atomic mode support to virtio transport
+  firmware: arm_scmi: Make smc transport use common completions
+  firmware: arm_scmi: Add atomic mode support to smc transport
+  firmware: arm_scmi: Add sync_cmds_atomic_replies transport flag
+  firmware: arm_scmi: Make smc support atomic sync commands replies
+
+ drivers/clk/clk-scmi.c              |  44 ++++-
+ drivers/firmware/arm_scmi/Kconfig   |  38 +++++
+ drivers/firmware/arm_scmi/common.h  |  25 +++
+ drivers/firmware/arm_scmi/driver.c  | 251 +++++++++++++++++++++++-----
+ drivers/firmware/arm_scmi/mailbox.c |   1 +
+ drivers/firmware/arm_scmi/smc.c     | 114 ++++++++++---
+ drivers/firmware/arm_scmi/virtio.c  |   2 +
+ include/linux/scmi_protocol.h       |   8 +
+ include/trace/events/scmi.h         |  28 ++++
+ 9 files changed, 432 insertions(+), 79 deletions(-)
+
+-- 
+2.17.1
+
