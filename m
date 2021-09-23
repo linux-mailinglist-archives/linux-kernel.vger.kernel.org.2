@@ -2,164 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD9D415832
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB10415836
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239323AbhIWG1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 02:27:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31831 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239266AbhIWG1o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:27:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632378372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=71fUOImGUODDyJCOfZ+X9xPf/a4pfZ4Afxj/CEjfaLk=;
-        b=f6E8+MZIipTbD+3Ktb52dY80XXvlvWG3EkANabixyf8aF0Pw2vU4Ql0vuRGTWyIlsVyaK/
-        jxyUObYbJ7+ZVMZN52by4bFVokJZgJd08fDTGrE4T60nl02I/a645T6JircL2I/I9xHRQN
-        gafOgpmeSiSmEKexlUUSiMRhQk78otE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-RtOwM3-SMBK0dsk6rLnXYQ-1; Thu, 23 Sep 2021 02:26:11 -0400
-X-MC-Unique: RtOwM3-SMBK0dsk6rLnXYQ-1
-Received: by mail-wr1-f70.google.com with SMTP id r7-20020a5d6947000000b0015e0f68a63bso4213459wrw.22
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:26:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=71fUOImGUODDyJCOfZ+X9xPf/a4pfZ4Afxj/CEjfaLk=;
-        b=R0TC/GfBi+y+O9KE8S7d2KJam12fiaBylisqG4zGVdwm4nk2MbwcgSCXc5CXQuM4lc
-         CSTkLuW+dEYmcgTZtO5mryeYfGu8gqwwj9XeuLJKkBrP42oPCiwjmaOvoXmImkYycH6f
-         bQLA2UwACEsIvY0VQhm9thmSUjg/FEArVHOZRs7yplCMnBxUW6Gw4G4QLizr1QUR2y9Z
-         ZU7dSep6saJmyDI6Irp2IGtEnIiYBIPbPqRu/J+/YyT2lmNBpcZ64oVfJItjaCF0a9SM
-         9PH/Y85Ie1bH7rnHJ7BIZirXnOo5IigF3o1rgSEeVBohWZCMEJVtoD1uODcbk/05T6hP
-         ACxw==
-X-Gm-Message-State: AOAM530rCKXW+6M2PJriuOy1d+5hHLr+kui4IAcI1i5vFftx/c/+2NIm
-        EL/UlcxZnnLTSeMbu/q3dfR+fZi4eDhMKOEN5nAj+mo0QrLpS+kQOyNBErXr640nRYVnAaj8uFe
-        kz7CcCw1pUV4jDnsvZ2DkznKC
-X-Received: by 2002:a05:600c:35d2:: with SMTP id r18mr14004168wmq.97.1632378369831;
-        Wed, 22 Sep 2021 23:26:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/DaTIZtdSS0b0eqh6Dbu9+P7YRuw+Cv3OyT69GeFyi7+s2AXNgBTjbFRA58JrR83WfyjtAw==
-X-Received: by 2002:a05:600c:35d2:: with SMTP id r18mr14004142wmq.97.1632378369633;
-        Wed, 22 Sep 2021 23:26:09 -0700 (PDT)
-Received: from [192.168.100.42] ([82.142.21.142])
-        by smtp.gmail.com with ESMTPSA id v20sm4386301wra.73.2021.09.22.23.26.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 23:26:08 -0700 (PDT)
-Message-ID: <0dd338bb-0fbe-b9d5-0962-d47ac2de4c4e@redhat.com>
-Date:   Thu, 23 Sep 2021 08:26:06 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 1/4] hwrng: virtio - add an internal buffer
+        id S239344AbhIWG2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 02:28:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:29583 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239331AbhIWG2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 02:28:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10115"; a="203272261"
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="203272261"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 23:26:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="518860062"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga001.jf.intel.com with ESMTP; 22 Sep 2021 23:26:42 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 22 Sep 2021 23:26:42 -0700
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 22 Sep 2021 23:26:41 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Wed, 22 Sep 2021 23:26:41 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.46) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Wed, 22 Sep 2021 23:26:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GgzXEONzMD4CeXVoHyr9+gfwsP/TZRmW7eHOV+ztST6JWl/9BiC3mcGgG4KgNHBQk8PGmQkzPtsap9bpqFn1YcVS73BvIHE99hO87xy/d1SMKWWWvJWfePpsn3zwYzgBqjX1YNYNdFi5N0dVMd03BzC7apMZ+u7MVgY8l3wfp7NgAu9/0iQE4QIpfnjf7GA7VgGWXbIJvSDML3LlwGkhhRLV4mqJpOggbNgo9bpBwfdtae9YfdHfHD9DWPtfku8IV2ep+2SE4mVPYvWUKvmWKKGEeQEDoB5J5pyBiGGhyNu7qktPd+xWHMGLooX29aq7HQf/BRuex5rpPomb6qyclw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=WR8ecBiavs48SoxlSjpqs+b9ujaTm+yIRwAD9qMvqNI=;
+ b=R/OgPTNjbfyrkAddz1WDzX/5HuSJf/7+2pY5Z30pE0P/0KwdCp/dfezN/9Wl1DC5E1ZbhTdRej/qTCdx5wCVsAbdzyvZ4Mxp/eddO+cUjm/R0DDEYvJCW2Ix9h+HYGT3bhvRMCJjDyNd2twR5dzXTmOrQFQ4gYLaKUkio1/vWWV5y1QmpghfXNo0iVMqC+2s6gXJRlL0sEpMisSu6gLHL3/3OW5MwTupEZpyxu4L6IyreVj0Qv/Lm2bFofcwU4WVzoUuj09dLerHTJ0XyV5+D4i3fuyQGdBht33MmYT3mjZnqWWDahLauz6zHE5BTacrVj76pUPGbyqQkr8DxaMDNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WR8ecBiavs48SoxlSjpqs+b9ujaTm+yIRwAD9qMvqNI=;
+ b=LYEa3/w2b7EhC2HQy6dK9Bs+OCbJT+JNIt5fh8ox25G4IkoZq6kWcJOBjkraUEt4DcaWk8SeuemeD1lsn75d9RVFTzXBMU+21UcuqjoX/hXXDLVftQmGwnPnQ4zJKbOxT7qR8U0jpKBdSiy0xmtxW5V/LCrfeVJJyIGXdvtwt0o=
+Received: from PH0PR11MB5658.namprd11.prod.outlook.com (2603:10b6:510:e2::23)
+ by PH0PR11MB5580.namprd11.prod.outlook.com (2603:10b6:510:e5::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 23 Sep
+ 2021 06:26:39 +0000
+Received: from PH0PR11MB5658.namprd11.prod.outlook.com
+ ([fe80::5009:9c8c:4cb4:e119]) by PH0PR11MB5658.namprd11.prod.outlook.com
+ ([fe80::5009:9c8c:4cb4:e119%6]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
+ 06:26:39 +0000
+From:   "Liu, Yi L" <yi.l.liu@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: RE: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
+Thread-Topic: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
+Thread-Index: AQHXrSGQLQh7Daiwk0GPvXz/w70Xfquuxm8AgAE+jLCAAA1HgIABGJEQ
+Date:   Thu, 23 Sep 2021 06:26:39 +0000
+Message-ID: <PH0PR11MB565877082436FE98CF4D978DC3A39@PH0PR11MB5658.namprd11.prod.outlook.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-12-yi.l.liu@intel.com>
+ <20210921174438.GW327412@nvidia.com>
+ <SJ0PR11MB5662A74575125536D9BEF57AC3A29@SJ0PR11MB5662.namprd11.prod.outlook.com>
+ <20210922133217.GR327412@nvidia.com>
+In-Reply-To: <20210922133217.GR327412@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        linux-crypto@vger.kernel.org, Dmitriy Vyukov <dvyukov@google.com>,
-        rusty@rustcorp.com.au, amit@kernel.org, akong@redhat.com,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Matt Mackall <mpm@selenic.com>,
-        virtualization@lists.linux-foundation.org
-References: <20210922170903.577801-1-lvivier@redhat.com>
- <20210922170903.577801-2-lvivier@redhat.com>
- <20210922145651-mutt-send-email-mst@kernel.org>
-From:   Laurent Vivier <lvivier@redhat.com>
-In-Reply-To: <20210922145651-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e96433a3-b313-4013-05b9-08d97e5b1a22
+x-ms-traffictypediagnostic: PH0PR11MB5580:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB558057A04E4C243173E41919C3A39@PH0PR11MB5580.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sTKXwfDtkCd1wyil5IMw2QQKTSXVdv5MC0WqDsTtJ+vlFuhvQxUN1l5FWK0J5crffCcCA7aROE8kD2SW2sF3+dCNpYdrVqXS3oHEpY3u6NQvBHaxm5eNTYuCFZm2mnM+rBSq+AJM9X2jto0LmPJeXIppHpweSt7cBoGukB5qOs7Lz56902R7TaJ4WCGe5YXa4HEe57+ayVPmbteFyS/KkDzXYnZD4dH3predAbx4jYe2JHYT9NA/GQg8Ap6EFQrW7mvcrYRttR7ABGqDn18Wgib6KxHOIRRfcMOLIYoERyD5o4l3qmp0Il7c0qqInY7DA4laiX5nRj/Q79ZAG23AOdK6Uy3/vujugXFrLotao1E4aj43u3HomTH/ifgBg+/AE3XxFsY2OlEgKccWr1RdWoTZkN4lODi0hITtq1FCHv+5VhPMT2znBle4kdYela1HhjWuuFfY8XGdZVc2jUqbJrkhSfv6lt4O/kfI3D4qGzwYdJmHlLjAMKe9Q5hZOk7Zr+MWk3oorEFlZlrE9YJ8Rl2bxsgJ1A/W9Ny+PobSofEoFzJ/TNjtmef/fVZCARpwssVedBNohzIblNCDrpSiNwiBcEZ+ihNOZn+1/084fBGRPxeReFu1H5xR/5KPhO6TfDSJnMRcqB0/Ft6Abp1XICMHoQZlK8DgCEuw7FkirwR/059f7jRpc1RdIC5PJ5zmW2jyoWUKGA3TNb9tmjNMVqR7MQfWWGS0UOSHgSeh5Zo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5658.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(71200400001)(7416002)(86362001)(66446008)(83380400001)(186003)(38100700002)(26005)(66946007)(7696005)(508600001)(6506007)(6916009)(66476007)(76116006)(122000001)(2906002)(64756008)(66556008)(38070700005)(8936002)(5660300002)(55016002)(9686003)(33656002)(8676002)(316002)(52536014)(54906003)(84603001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?hxNLe6x4f83daDw8O/kSiighfiQvPBRWbVOoUXqY4ktR60Y3BF/m1yMDh2Ef?=
+ =?us-ascii?Q?N2uJGJPZkp9/wjV8hX1kfCd0MzTkh5SGUllCfxo5INaIeuW1OkAS4rx8axzt?=
+ =?us-ascii?Q?NhjiatUtr3ZUzpY/3/e/CNT39Z+m0RdnsR86QG9QXAfJnUQqHwpRGySc9omJ?=
+ =?us-ascii?Q?pYJAlmHH3moxq/e1Vo+VRIMuioi52wLqtWp7CYO9broVptguEx1fu4y155IK?=
+ =?us-ascii?Q?MJ2GYK20ScRgHKSjTSk5ToXXthpJF0zH4Qt/suxp5mZfmqz/hzlmsc2tpCVe?=
+ =?us-ascii?Q?2J43zLsq9THtU89iaOvjKBY6EVrWzyEa8j8PTtdqltCX/HhPyOaKxk1v3Kaq?=
+ =?us-ascii?Q?T8m6/HekEINPP5JQMEckEM6KZ/gu5z8MKuxYZjk1aNf3n3kZfEFnKYbH1IEd?=
+ =?us-ascii?Q?j6/YXIirIOSgnyqDqHYGII1lWM1hh+DdahBdK+Pe9NPyONWbSH7EJxAtu93D?=
+ =?us-ascii?Q?Y18wZC7AARpnYrcVgxFx7wG/gyjJxJQ31l6d5kIZ+ZXsJlIDoxN7JOvNtUyK?=
+ =?us-ascii?Q?L7B9nhNOa2uJjYQ42t/aXXWB9NlxOJFDuWdqZWb1/tYOg5vm3EzJUQNGPgF1?=
+ =?us-ascii?Q?WZKXJv+CJC5+jyAfyFPudGRdNoDQsmeoqT24ooTE/t7XzKtm5P9d3bWATRdB?=
+ =?us-ascii?Q?znGljahvb47b8gUtSRttnw+xUiHiA72Q/7BUoI0JIlvTaP8eGLVCp4gSrUap?=
+ =?us-ascii?Q?1HFl0W15W/7waV5yEcBYU0VYdl+J5BCCPM9clnt8u1P8hdeKdkJ0mbk8o5y5?=
+ =?us-ascii?Q?CKepEudEsJjzdGHVOpvMrlNNF4Jj6CzIgJ6/U7tiUlMheYfO3feoeSqk9Bzc?=
+ =?us-ascii?Q?hbw4qFPZOc+lNSb/n02gekdiPSQ52wAKFZvCAE+LMjV3NpyL69Vfo1My1MvS?=
+ =?us-ascii?Q?ZHTuXRpG61g75wiyQQ0Qg4ZTRlmVRcOi69Umnv/x3PPMCu7FuSIQBboCa3Y+?=
+ =?us-ascii?Q?NNBbDs7GYvfZQHY8eQx/9rcTZoSW+94KBL6AXmwgkyWUV5qb4w9xgDxvyJp2?=
+ =?us-ascii?Q?n/prG4VHPTZSa3q3UbHnB0TvaM1gLWLqjd0u4XF+7RZz4dN0+iEaTGcbYLyv?=
+ =?us-ascii?Q?LIciHO+KCxvX0kd/N8oNRMen0wv6qQSzZ7FIzQi9GT/rEyGoVv3SZnPUPILs?=
+ =?us-ascii?Q?HhtZ9+FbhPoSZN4PxlCeFHMR74nQC7tga3jj1jVu/MvDu/8oRu1G9LYk09Ja?=
+ =?us-ascii?Q?PAGg5xAduc5+OzfxzRGDyS9OuwoNPfMiEogzyb0g2avZAY9W38Co28O4DRhg?=
+ =?us-ascii?Q?umM0VLF0bo7PtcfaGrlWKW02XFergXcaPMPeOw+61a3hPSZwDsMR8Qk6h3Aj?=
+ =?us-ascii?Q?cAYD4F5eIfmXr0jzH9xLnVec?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5658.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e96433a3-b313-4013-05b9-08d97e5b1a22
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 06:26:39.3444
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m7WIENTtYDk9L+ueyPrGPvK+/uXQs3Uh8ZwNnHGBb/3+/1gM12HHxpeliWI0SNqwX1Vsqyu5VEG0C9EXaNlPVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5580
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2021 21:02, Michael S. Tsirkin wrote:
-> On Wed, Sep 22, 2021 at 07:09:00PM +0200, Laurent Vivier wrote:
->> hwrng core uses two buffers that can be mixed in the
->> virtio-rng queue.
->>
->> If the buffer is provided with wait=0 it is enqueued in the
->> virtio-rng queue but unused by the caller.
->> On the next call, core provides another buffer but the
->> first one is filled instead and the new one queued.
->> And the caller reads the data from the new one that is not
->> updated, and the data in the first one are lost.
->>
->> To avoid this mix, virtio-rng needs to use its own unique
->> internal buffer at a cost of a data copy to the caller buffer.
->>
->> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
->> ---
->>   drivers/char/hw_random/virtio-rng.c | 43 ++++++++++++++++++++++-------
->>   1 file changed, 33 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
->> index a90001e02bf7..208c547dcac1 100644
->> --- a/drivers/char/hw_random/virtio-rng.c
->> +++ b/drivers/char/hw_random/virtio-rng.c
->> @@ -18,13 +18,20 @@ static DEFINE_IDA(rng_index_ida);
->>   struct virtrng_info {
->>   	struct hwrng hwrng;
->>   	struct virtqueue *vq;
->> -	struct completion have_data;
->>   	char name[25];
->> -	unsigned int data_avail;
->>   	int index;
->>   	bool busy;
->>   	bool hwrng_register_done;
->>   	bool hwrng_removed;
->> +	/* data transfer */
->> +	struct completion have_data;
->> +	unsigned int data_avail;
->> +	/* minimal size returned by rng_buffer_size() */
->> +#if SMP_CACHE_BYTES < 32
->> +	u8 data[32];
->> +#else
->> +	u8 data[SMP_CACHE_BYTES];
->> +#endif
-> 
-> Let's move this logic to a macro in hw_random.h ?
-> 
->>   };
->>   
->>   static void random_recv_done(struct virtqueue *vq)
->> @@ -39,14 +46,14 @@ static void random_recv_done(struct virtqueue *vq)
->>   }
->>   
->>   /* The host will fill any buffer we give it with sweet, sweet randomness. */
->> -static void register_buffer(struct virtrng_info *vi, u8 *buf, size_t size)
->> +static void register_buffer(struct virtrng_info *vi)
->>   {
->>   	struct scatterlist sg;
->>   
->> -	sg_init_one(&sg, buf, size);
->> +	sg_init_one(&sg, vi->data, sizeof(vi->data));
-> 
-> Note that add_early_randomness requests less:
->          size_t size = min_t(size_t, 16, rng_buffer_size());
-> 
-> maybe track how much was requested and grow up to sizeof(data)?
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Wednesday, September 22, 2021 9:32 PM
+>=20
+> On Wed, Sep 22, 2021 at 12:51:38PM +0000, Liu, Yi L wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Wednesday, September 22, 2021 1:45 AM
+> > >
+> > [...]
+> > > > diff --git a/drivers/iommu/iommufd/iommufd.c
+> > > b/drivers/iommu/iommufd/iommufd.c
+> > > > index 641f199f2d41..4839f128b24a 100644
+> > > > +++ b/drivers/iommu/iommufd/iommufd.c
+> > > > @@ -24,6 +24,7 @@
+> > > >  struct iommufd_ctx {
+> > > >  	refcount_t refs;
+> > > >  	struct mutex lock;
+> > > > +	struct xarray ioasid_xa; /* xarray of ioasids */
+> > > >  	struct xarray device_xa; /* xarray of bound devices */
+> > > >  };
+> > > >
+> > > > @@ -42,6 +43,16 @@ struct iommufd_device {
+> > > >  	u64 dev_cookie;
+> > > >  };
+> > > >
+> > > > +/* Represent an I/O address space */
+> > > > +struct iommufd_ioas {
+> > > > +	int ioasid;
+> > >
+> > > xarray id's should consistently be u32s everywhere.
+> >
+> > sure. just one more check, this id is supposed to be returned to
+> > userspace as the return value of ioctl(IOASID_ALLOC). That's why
+> > I chose to use "int" as its prototype to make it aligned with the
+> > return type of ioctl(). Based on this, do you think it's still better
+> > to use "u32" here?
+>=20
+> I suggest not using the return code from ioctl to exchange data.. The
+> rest of the uAPI uses an in/out struct, everything should do
+> that consistently.
 
-I think this problem is managed by PATCH 3/4 as we reuse unused data of the buffer.
-
-> 
->>   
->>   	/* There should always be room for one buffer. */
->> -	virtqueue_add_inbuf(vi->vq, &sg, 1, buf, GFP_KERNEL);
->> +	virtqueue_add_inbuf(vi->vq, &sg, 1, vi->data, GFP_KERNEL);
-> 
-> 
-> BTW no longer true if DMA API is in use ... not easy to fix,
-> I think some changes to virtio API to allow pre-mapping
-> s/g for DMA might be needed ...
-
-Is there something I can do here?
+got it.
 
 Thanks,
-Laurent
-
+Yi Liu
