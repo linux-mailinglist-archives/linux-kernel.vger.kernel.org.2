@@ -2,131 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BE74167DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C154167E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243421AbhIWWOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:14:16 -0400
-Received: from mga14.intel.com ([192.55.52.115]:44436 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243412AbhIWWOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:14:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="223597605"
-X-IronPort-AV: E=Sophos;i="5.85,317,1624345200"; 
-   d="scan'208";a="223597605"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 15:12:42 -0700
-X-IronPort-AV: E=Sophos;i="5.85,317,1624345200"; 
-   d="scan'208";a="514282857"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 15:12:41 -0700
-Date:   Thu, 23 Sep 2021 15:12:41 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <20210923221241.GG3053272@iweiny-DESK2.sc.intel.com>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpaTBJ/Jhz15S6a@casper.infradead.org>
- <20210923004515.GD3053272@iweiny-DESK2.sc.intel.com>
- <YUv3UEE9JZgD+A/D@casper.infradead.org>
+        id S243429AbhIWWTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234844AbhIWWTB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 18:19:01 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DA3C061574;
+        Thu, 23 Sep 2021 15:17:29 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u8so31314318lff.9;
+        Thu, 23 Sep 2021 15:17:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bG1fINzHq+PPw2kM9HMNJ0v4CmBvHSBMAzOq03fbU1g=;
+        b=B6FbK/7XZVFlxqHhwRKM11wwuM0Qiy6MWMGmBJ1PAZtUfCTBtcl7cMGyPqCt8mxehp
+         f4LJUsY59THUziDpD+N0IwrOBNTwPU9FDkTwi2H4ykQQl/XhGb9FuyFA48sl9sGwe4uQ
+         3aEFpRYibvfYV6gIHOmd0AaSaQoID6PbhYx2r5fsdGUJHxkh4Cvow8opuXViMgNwvERD
+         raksxTTIIy8AP4UNS8kyF13wNoTFZLiI/to2rtYrgrQDSEe1YKROLPjSXfeB4o6pMS4s
+         ysx3I7Hq1v69XdSeZnec0dRRwWAZYWVBjDDs44hEXw+ArOB7N+3rhRs+9vOuqYKsq/vj
+         DjNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bG1fINzHq+PPw2kM9HMNJ0v4CmBvHSBMAzOq03fbU1g=;
+        b=0lY8YlXiL3poRIpSmlMf7QvMbnT17UDTiPP8MoMK8g0bKoqiPUJ06igcklgAGlqP1U
+         6CnAlEkMiB9h0vtdhWDUu1Kx/518L7x+KGeFh+XwRtqiSxodvFS3qMgIXXlzKjmEoAXJ
+         quCC2bUDHHhf2M7Py7Wstwq7L9OY8SxJARvhauwG6ct1ZEhFsJHeyfwRR39aYbiW5Q02
+         ROsE1iRC1/BO235cIWgjDGUhMgVypHBnMiov8ATRy7c4czxjBj+TpkURTj0Y+6atBB3i
+         pDa2I7vLHprYI8nu4cEVbSfGOZ2TpfrLj4gtUZoqXVg/wwTKRn3l5r0aNvRrqHV8ev7R
+         aMDA==
+X-Gm-Message-State: AOAM530Qi+8hRo2LPxETKkG07ce36BBDNuv/DhYcX8qAu6G/12m54E5M
+        PVYdEXsA6k92EepHmS5gOf63MdbEEsaY7QUb6TU=
+X-Google-Smtp-Source: ABdhPJw8asmz2c747TmyiiBAF7CiOEyp0VvbT9EUw5iPUTWV12Kiy85GXf0nxeeae9yAiR4ubDkfkaT5W99ckOOIUNg=
+X-Received: by 2002:a2e:9d4:: with SMTP id 203mr7560263ljj.228.1632435447793;
+ Thu, 23 Sep 2021 15:17:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUv3UEE9JZgD+A/D@casper.infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20210825082251.2484-1-caihuoqing@baidu.com> <CAOMZO5DKGv1GQBpwr0ff0YC1yDmCH2A5Xpq7jzUA2h75bmN6eQ@mail.gmail.com>
+ <20210918022636.GA18195@LAPTOP-UKSR4ENP.internal.baidu.com>
+In-Reply-To: <20210918022636.GA18195@LAPTOP-UKSR4ENP.internal.baidu.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 23 Sep 2021 19:17:16 -0300
+Message-ID: <CAOMZO5Aauz0Kb18xYrBc-4dX-ZAeOOGxraFbbYOz0Lz1LFZJ6A@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: freescale: Add helper dependency on COMPILE_TEST
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 04:41:04AM +0100, Matthew Wilcox wrote:
-> On Wed, Sep 22, 2021 at 05:45:15PM -0700, Ira Weiny wrote:
-> > On Tue, Sep 21, 2021 at 11:18:52PM +0100, Matthew Wilcox wrote:
-> > > +/**
-> > > + * page_slab - Converts from page to slab.
-> > > + * @p: The page.
-> > > + *
-> > > + * This function cannot be called on a NULL pointer.  It can be called
-> > > + * on a non-slab page; the caller should check is_slab() to be sure
-> > > + * that the slab really is a slab.
-> > > + *
-> > > + * Return: The slab which contains this page.
-> > > + */
-> > > +#define page_slab(p)		(_Generic((p),				\
-> > > +	const struct page *:	(const struct slab *)_compound_head(p), \
-> > > +	struct page *:		(struct slab *)_compound_head(p)))
-> > > +
-> > > +static inline bool is_slab(struct slab *slab)
-> > > +{
-> > > +	return test_bit(PG_slab, &slab->flags);
-> > > +}
-> > > +
-> > 
-> > I'm sorry, I don't have a dog in this fight and conceptually I think folios are
-> > a good idea...
-> > 
-> > But for this work, having a call which returns if a 'struct slab' really is a
-> > 'struct slab' seems odd and well, IMHO, wrong.  Why can't page_slab() return
-> > NULL if there is no slab containing that page?
-> 
-> No, this is a good question.
-> 
-> The way slub works right now is that if you ask for a "large" allocation,
-> it does:
-> 
->         flags |= __GFP_COMP;
->         page = alloc_pages_node(node, flags, order);
-> 
-> and returns page_address(page) (eventually; the code is more complex)
-> So when you call kfree(), it uses the PageSlab flag to determine if the
-> allocation was "large" or not:
-> 
->         page = virt_to_head_page(x);
->         if (unlikely(!PageSlab(page))) {
->                 free_nonslab_page(page, object);
->                 return;
->         }
->         slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
-> 
-> Now, you could say that this is a bad way to handle things, and every
-> allocation from slab should have PageSlab set,
+Hi Cai,
 
-Yea basically.
+On Fri, Sep 17, 2021 at 11:26 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-So what makes 'struct slab' different from 'struct page' in an order 0
-allocation?  Am I correct in deducing that PG_slab is not set in that case?
+> > I am not sure why you need the && OF, as we have a "select PINCTRL_IMX",
+> > that already depends on OF.
+> No, it's just an invalid dependency. PINCTRL_IMX can be selected without OF
 
-> and it should use one of
-> the many other bits in page->flags to indicate whether it's a large
-> allocation or not.
+I don't understand your statement.
 
-Isn't the fact that it is a compound page enough to know that?
+From drivers/pinctrl/freescale/Kconfig:
 
-> I may have feelings in that direction myself.
-> But I don't think I should be changing that in this patch.
-> 
-> Maybe calling this function is_slab() is the confusing thing.
-> Perhaps it should be called SlabIsLargeAllocation().  Not sure.
+config PINCTRL_IMX
+      tristate
+      depends on OF
 
-Well that makes a lot more sense to me from an API standpoint but checking
-PG_slab is still likely to raise some eyebrows.
-
-Regardless I like the fact that the community is at least attempting to fix
-stuff like this.  Because adding types like this make it easier for people like
-me to understand what is going on.
-
-Ira
-
+So PINCTRL_IMX depends on OF, which means that it can only be selected
+when CONFIG_OF=y.
