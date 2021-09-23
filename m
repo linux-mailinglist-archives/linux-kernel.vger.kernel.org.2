@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B051C4163AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D334A4163AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242162AbhIWQ4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240732AbhIWQ4K (ORCPT
+        id S242165AbhIWQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:56:20 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35980 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233389AbhIWQ4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:56:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131F5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:54:39 -0700 (PDT)
-Message-ID: <20210923165357.991262778@linutronix.de>
+        Thu, 23 Sep 2021 12:56:11 -0400
+Message-ID: <20210923165358.054321586@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632416077;
+        s=2020; t=1632416079;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=+x3a3U01x3/KHPZpen6Xkh6ecYX3g15V47u3+lMxhwA=;
-        b=IkeD9qWNmlYUz+h+lDXvEiAQyPtcpSHhogG/uVAPGZfrgkksv4+jRVbwNJMwQ3QpCaKDRN
-        YAMOAilSabPyoOG5BBCGkMjOz9AK8QwNHIgMl2FA5t298nZEKjR7L5s7N1O44a91VaNyi9
-        +Gj1JC8BOQt0YNixvBSn4ziQC1pwca8w34qS0/ufUkkna/MoJezstp1Apzmhk1WZ0cT+cA
-        HKkXItpEsyiP7/9u52B64cBXIez0UsiOkb0HIdkzCgsUrrTjQBYhfqFNflivDEafXI5nmy
-        XPn+QsiOGrMMWEQgnKv+hApPHzjWxg0hubpK3Fb8rKbLBzze8viWM6NHE5PQGg==
+         references:references; bh=0anKzO8a5auLHfFJ7QaKvJpyensAQe8+/0Dvw1RkbUo=;
+        b=VZzCPnQewvGhB/dOy+2wl71iWWQSy0FQE9fApDMUQFbvUW1q8XecuG5yC7CRDQApP9cdR6
+        R6BxQZns7gWkH6+p8rFIdU1ZP0J5GacokQr8wcbSeC3PI5DtEb+TqRD0fexcdFBor4fROE
+        wJdQnoNYuW/E7zZn+UVuV1197rxiKtrKVqdsoDPxOcj7hb7jrwPNr5PWo1JTn7EkPWCtfG
+        4q9CW9npiyELD5rOTpdbGbSFHy6+YIsYyWnhTG28SSG0WoaItM0vxrG0oVMzZCWIj+6JU+
+        g0eY/Dh5jzunAmlPQRSaDEenAcJwR6SgkfobM65IY01p+H3WsbzFcd0yT2sRQQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632416077;
+        s=2020e; t=1632416079;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=+x3a3U01x3/KHPZpen6Xkh6ecYX3g15V47u3+lMxhwA=;
-        b=GhqbrKi/PZTVw9bN6wwSHdHkvw3n9NVaZ/1lxdJ3oPwCAykreEZbmR6sPrcQgSih4RYtJs
-        YPl24nlmYHNw47Dg==
+         references:references; bh=0anKzO8a5auLHfFJ7QaKvJpyensAQe8+/0Dvw1RkbUo=;
+        b=7SD2Uk9H/iL7yRHrlkY6Bz258HcZuzbfm4sxxOuQziU8iLt6oSKL6svEJkVrzmQ67g10pw
+        n5uPpIhzLSHN6QBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         Paul McKenney <paulmck@linux.vnet.ibm.com>,
         Sebastian Siewior <bigeasy@linutronix.de>
-Subject: [patch 2/8] sched: Make cond_resched_*lock() variants consistent vs.
- might_sleep()
+Subject: [patch 3/8] sched: Remove preempt_offset argument from __might_sleep()
 References: <20210923164145.466686140@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 23 Sep 2021 18:54:37 +0200 (CEST)
+Date:   Thu, 23 Sep 2021 18:54:38 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3427445afd26 ("sched: Exclude cond_resched() from nested sleep
-test") removed the task state check of __might_sleep() for
-cond_resched_lock() because cond_resched_lock() is not a voluntary
-scheduling point which blocks. It's a preemption point which requires the
-lock holder to release the spin lock.
-
-The same rationale applies to cond_resched_rwlock_read/write(), but those
-were not touched.
-
-Make it consistent and use the non-state checking __might_resched() there
-as well.
+All callers hand in 0 and never will hand in anything else.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/sched.h |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ include/linux/kernel.h |    7 +++----
+ kernel/sched/core.c    |    4 ++--
+ mm/memory.c            |    2 +-
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2054,14 +2054,14 @@ extern int __cond_resched_rwlock_write(r
- 	__cond_resched_lock(lock);					\
- })
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -112,7 +112,7 @@ static __always_inline void might_resche
  
--#define cond_resched_rwlock_read(lock) ({			\
--	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
--	__cond_resched_rwlock_read(lock);			\
-+#define cond_resched_rwlock_read(lock) ({				\
-+	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
-+	__cond_resched_rwlock_read(lock);				\
- })
+ #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+ extern void __might_resched(const char *file, int line, int preempt_offset);
+-extern void __might_sleep(const char *file, int line, int preempt_offset);
++extern void __might_sleep(const char *file, int line);
+ extern void __cant_sleep(const char *file, int line, int preempt_offset);
+ extern void __cant_migrate(const char *file, int line);
  
--#define cond_resched_rwlock_write(lock) ({			\
--	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
--	__cond_resched_rwlock_write(lock);			\
-+#define cond_resched_rwlock_write(lock) ({				\
-+	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
-+	__cond_resched_rwlock_write(lock);				\
- })
+@@ -129,7 +129,7 @@ extern void __cant_migrate(const char *f
+  * supposed to.
+  */
+ # define might_sleep() \
+-	do { __might_sleep(__FILE__, __LINE__, 0); might_resched(); } while (0)
++	do { __might_sleep(__FILE__, __LINE__); might_resched(); } while (0)
+ /**
+  * cant_sleep - annotation for functions that cannot sleep
+  *
+@@ -170,8 +170,7 @@ extern void __cant_migrate(const char *f
+ #else
+   static inline void __might_resched(const char *file, int line,
+ 				     int preempt_offset) { }
+-  static inline void __might_sleep(const char *file, int line,
+-				   int preempt_offset) { }
++static inline void __might_sleep(const char *file, int line) { }
+ # define might_sleep() do { might_resched(); } while (0)
+ # define cant_sleep() do { } while (0)
+ # define cant_migrate()		do { } while (0)
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9432,7 +9432,7 @@ static inline int preempt_count_equals(i
+ 	return (nested == preempt_offset);
+ }
  
- static inline void cond_resched_rcu(void)
+-void __might_sleep(const char *file, int line, int preempt_offset)
++void __might_sleep(const char *file, int line)
+ {
+ 	unsigned int state = get_current_state();
+ 	/*
+@@ -9446,7 +9446,7 @@ void __might_sleep(const char *file, int
+ 			(void *)current->task_state_change,
+ 			(void *)current->task_state_change);
+ 
+-	__might_resched(file, line, preempt_offset);
++	__might_resched(file, line, 0);
+ }
+ EXPORT_SYMBOL(__might_sleep);
+ 
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5255,7 +5255,7 @@ void __might_fault(const char *file, int
+ 		return;
+ 	if (pagefault_disabled())
+ 		return;
+-	__might_sleep(file, line, 0);
++	__might_sleep(file, line);
+ #if defined(CONFIG_DEBUG_ATOMIC_SLEEP)
+ 	if (current->mm)
+ 		might_lock_read(&current->mm->mmap_lock);
 
