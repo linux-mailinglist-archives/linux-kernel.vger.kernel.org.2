@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21022416391
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DE041639B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236669AbhIWQtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        id S240582AbhIWQvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhIWQtV (ORCPT
+        with ESMTP id S231564AbhIWQvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:49:21 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C53C061574;
-        Thu, 23 Sep 2021 09:47:49 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id h3so6932388pgb.7;
-        Thu, 23 Sep 2021 09:47:49 -0700 (PDT)
+        Thu, 23 Sep 2021 12:51:23 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB47C061574;
+        Thu, 23 Sep 2021 09:49:51 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id a7so4418917plm.1;
+        Thu, 23 Sep 2021 09:49:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XwHjIKgk8eS5XqWT9Kni8aRMXAG2u3vYTTL4J9FiqpA=;
-        b=Ddv64i+ECH4vNrICBPZ6G1kSfCtqM4SyCDR0/CB68ZcWQz+6kFXeawJLWSKKvabO0Z
-         4SIPcnE62VJNJ8ELF4WiUDmaGnC/ehZiogL6JGUpA/nR1liLJSH+pSlS/SsIuSNjV68S
-         o2yz4xMuH9fbvzWarjb9ONY7BgDIxmfFd0+0mY4U3yTY3PXWoieaW+51bJiYA2ejlaVi
-         KTEnFVMiptzuB73V0TkuD5CeoDyT78hr2MRm9LRphRA2ocGdcr/b7R96qChDjhmfpNgE
-         9CyHS/KRZj0tLBeqJFR9Gzmuou3HCmqdAf/XJ/Kp3lWkLY+/VnpeY8AmBnFKJGPAO2xw
-         C8IQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+MhAQCN3MCef3eJJtF6/ulwUDJ61UOPaUB864XhY6hE=;
+        b=E6h0eAjLzztag0xmHm4rwsMjS/0omLXnEHKaP64ien169x1qhb7wHjy82xy4RWt16t
+         O4WtxrwNbsU5rMfw9Q/jG/UmihU093yEOGj62l/q088u7b0g6088/PxGzQZJcakCjLix
+         4TjuXiIrm12uHELiTguio2JjaXIc545CmfcTj59FmmEoWMH4urLSuUET2iP3wi5LPWdR
+         DnX04XoZSVLrY3O9NRvuODOdRxbhVUDkqyCJ7iadBDkCYdUAcrz5dUTDfRYyJif5AxQl
+         yFeA6po4Zh1zzrFxLMGLbutyKAz3L/VoBTlPW6p4NRH3nmm1OTfYPtwiJ4a/GYFIgrYk
+         r6Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=XwHjIKgk8eS5XqWT9Kni8aRMXAG2u3vYTTL4J9FiqpA=;
-        b=xSuRzDLIir690Fh0/hYydSptLOb6+lWkTRXA7Y8uGzKOCJiUZHSjpg0lE1GRMNf7IY
-         iHbxJYD5CkCfkjUiXkRzuoDrtHZdAIkXI+3wCryetS8CKNu7TM8Hz4UQvazGe5z2JQq7
-         /+0EwHRZQnCd474CEmLc39jhaGR1tyF9qMy9HxFqF9F7DBe6MCNPHOZTREtHAJp9z8LW
-         pmnO9NExN6dPKCnDOcgK3OfPQuzRQqPtFsfNmM9xJheiqtbQvbDL6E5BlN+BxpGfxkLd
-         NfaPmMaxAMHHTly0RtrrW8UWnujLbzJznCpiU3dub4fCTfZ58wyzok2vy9N+ICjy/ye2
-         2xGA==
-X-Gm-Message-State: AOAM533gYd+GXTjUoPAe25CzZI3HMz590qQyyasW0dCX0AaPCAGMFj49
-        G4p/zwuLuJv4vbxZxJH1ltM=
-X-Google-Smtp-Source: ABdhPJztvNYbXx+hJkQXjwYRAqDO1gtCE4huaQwLMR/xRNZ9Wm2y9E1wOIhcx6zIY4Ll4am5rasWoA==
-X-Received: by 2002:aa7:9e9a:0:b0:43e:d9b:cd93 with SMTP id p26-20020aa79e9a000000b0043e0d9bcd93mr5515716pfq.50.1632415669453;
-        Thu, 23 Sep 2021 09:47:49 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:5571:502d:54ea:90d6])
-        by smtp.gmail.com with ESMTPSA id j3sm6361857pgn.12.2021.09.23.09.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 09:47:46 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 23 Sep 2021 09:47:44 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>,
-        Jesse Barnes <jsbarnes@google.com>
-Subject: Re: [PATCH v4] zram: Introduce an aged idle interface
-Message-ID: <YUyvsJz+aMCtlRxD@google.com>
-References: <20210917210640.214211-1-bgeffon@google.com>
- <20210923130115.1344361-1-bgeffon@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+MhAQCN3MCef3eJJtF6/ulwUDJ61UOPaUB864XhY6hE=;
+        b=rbSu3fB2NEhA63Mf1r4eFJeme3rMYsgJTrkjcfjS1ABW8zONBQeOTeJ0qpBFVMUd1R
+         GW5T6I4Z38M+3S1EbNljkxaN5K4saQkezZ4qh7NUWmY7DhX063/R5mqGZKtkAHFV2e+5
+         hTzsSP5KkP6PfMXmnTlSw7QAQk3fmS22QWuF8hKnEV8mQYQh/fTk93yehPPUbCyajxyx
+         wYJ98zy89o2Mnnfv5uhEDnY4IIXBklSwi/pezaX5ftN2OYVmcC4wcHNU6C2nP1lCW5d6
+         INeujBw5Rp7LHgllAVTckYMvvTKed+C3niVgGOxqBhXKQI1iTYQgCCoLh83Z4BTYdWl+
+         g3yQ==
+X-Gm-Message-State: AOAM530gydtwZ4s6FCVsp131vfoV5ajYJT4ce14Inqo/Me2N5sc9kHFp
+        eqeksvzEJSBLDJ3w2wMgJayhTuoa6d4=
+X-Google-Smtp-Source: ABdhPJyIYDJ/7xNtXUZjb4UZO+bXii4P0gJq7epfVHL852Suf8ajpLowrePBQu4B2z+0PmnrN+fbUw==
+X-Received: by 2002:a17:902:6848:b0:13a:4ffd:202e with SMTP id f8-20020a170902684800b0013a4ffd202emr4566154pln.79.1632415791253;
+        Thu, 23 Sep 2021 09:49:51 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id 9sm10017046pjs.14.2021.09.23.09.49.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 09:49:50 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: socket: integrate sockfd_lookup() and
+ sockfd_lookup_light()
+To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210922063106.4272-1-yajun.deng@linux.dev>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <b6263d35-0d31-e4a8-a955-494ce2b36ad6@gmail.com>
+Date:   Thu, 23 Sep 2021 09:49:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923130115.1344361-1-bgeffon@google.com>
+In-Reply-To: <20210922063106.4272-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 06:01:15AM -0700, Brian Geffon wrote:
-> This change introduces an aged idle interface to the existing
-> idle sysfs file for zram.
+
+
+On 9/21/21 11:31 PM, Yajun Deng wrote:
+> As commit 6cb153cab92a("[NET]: use fget_light() in net/socket.c") said,
+> sockfd_lookup_light() is lower load than sockfd_lookup(). So we can
+> remove sockfd_lookup() but keep the name. As the same time, move flags
+> to sockfd_put().
+
+???
+
 > 
-> When CONFIG_ZRAM_MEMORY_TRACKING is enabled the idle file
-> now also accepts an integer argument. This integer is the
-> age (in seconds) of pages to mark as idle. The idle file
-> still supports 'all' as it always has. This new approach
-> allows for much more control over which pages get marked
-> as idle.
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>  include/linux/net.h |   8 +++-
+>  net/socket.c        | 101 +++++++++++++++++---------------------------
+>  2 files changed, 46 insertions(+), 63 deletions(-)
 > 
->   v3 -> v4:
->         - Remove base10 restriction.
-> 
->   v2 -> v3:
-> 	- Correct unused variable warning when
-> 	  CONFIG_ZRAM_MEMORY_TRACKING is not enabled.
->   v1 -> v2:
-> 	- Switch to using existing idle file.
-> 	- Dont compare ktime directly.
-> 
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
-Acked-by: Minchan Kim <minchan@kernel.org>
+> diff --git a/include/linux/net.h b/include/linux/net.h
+> index ba736b457a06..63a179d4f760 100644
+> --- a/include/linux/net.h
+> +++ b/include/linux/net.h
+> @@ -238,8 +238,14 @@ int sock_recvmsg(struct socket *sock, struct msghdr *msg, int flags);
+>  struct file *sock_alloc_file(struct socket *sock, int flags, const char *dname);
+>  struct socket *sockfd_lookup(int fd, int *err);
+>  struct socket *sock_from_file(struct file *file);
+> -#define		     sockfd_put(sock) fput(sock->file)
+>  int net_ratelimit(void);
+> +#define		     sockfd_put(sock)             \
+> +do {                                              \
+> +	struct fd *fd = (struct fd *)&sock->file; \
+> +						  \
+> +	if (fd->flags & FDPUT_FPUT)               \
+> +		fput(sock->file);                 \
+> +} while (0)
+>  
+
+Really ?
+
+I wonder how was this tested ?
+
+We can not store FDPUT_FPUT in the sock itself, for obvious reasons.
+Each thread needs to keep this information private.
+
