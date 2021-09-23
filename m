@@ -2,114 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483B84159FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F06415A00
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239899AbhIWIXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 04:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        id S239929AbhIWIY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 04:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237996AbhIWIXI (ORCPT
+        with ESMTP id S239909AbhIWIYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 04:23:08 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F3AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 01:21:36 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id w29so14682146wra.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 01:21:36 -0700 (PDT)
+        Thu, 23 Sep 2021 04:24:54 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B8FC061757;
+        Thu, 23 Sep 2021 01:23:23 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id t8so14803942wrq.4;
+        Thu, 23 Sep 2021 01:23:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=uciQn968xz5iDfDj/cdHt3DpJ9m830OzWZsXI8bgxYE=;
-        b=hFym1PO+8s2sLQQA3XAlERKOx7IFza3NXKW6Fe1BO8Hm0OhBfydwrf7XXa+CmHp/hS
-         MUmUuY6ASrAPAKKelv8bRyGmNh+jI8Vj9kftOSYqfMNUlhG1UgGPmj8PbII5d6uMl/5n
-         agvO/1yKrH8iLWKZmfkBS8rHsxjERbH7+VjOzv0698dNt2Ewj1Qf8qXRnhkR3v+Y+qbJ
-         6soY95l95zGnWOAJy8BSgCUu1VOMaG29eU2OoeB61LA6dxvqAg4UdBQKw2Sb8qi15xKJ
-         bRM7f4KtjQk3jSTzrmaFpuCyzkWUI6IEcQdBiQxyv+Zo2hYXh/rLODkulmKQkF9nJ8Kb
-         6XfQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VNBIkdqrfBWoODl4rVjrpYZvK6+z3y3Yg3DlUkxU4pk=;
+        b=ip7+kVR2I44Dogsy2DooLa4tAj9TEdElY2AlnrnTrzJbaImvVRkuTijeJT7LgtxrP5
+         1T8RS35G3+00KZFlz4mYpL/xeaF3/ouRFpQUe4WagQogxCDBudx83Bc8RRd3OQ9pGgJT
+         HCouyc9Gb6XEGcmzY2NGDdkYyVoR8VQyq2+2dLOVJTjHgbQoOvajQJCg5pIS87cDSZfV
+         uS05DUv3grHCriBDumBy/yyop/xH9KXVliBNP7idO6tgbuiiEhnSY17Yz+rjLioEDsOX
+         EwcKmfPDQYtLhzC+/sH7ycLTwn5YgF0Vl53AV9RQZXQyAJq3fFd9+1VXadqRu1nEF75D
+         +vRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uciQn968xz5iDfDj/cdHt3DpJ9m830OzWZsXI8bgxYE=;
-        b=dQbEdj8u3Ls6iluUteJSEiT99ymkb9KXhv0heObrXCHyzyRMOLp+Ka2g92zpiBMyb+
-         KXHOq9dA35jBb++cJLdRDxatg8B6e6/VcXpsyRN36Shy2lpdzUx1VMqDGckCqgugs0Hd
-         2D2IfSDW5ySELRboeDJo1Gn1lLQLw0C9h2b9WJmkkzYqBgDp0pY35B4O8n6FmIS/gYh0
-         1xKM4R2JyCIP6cHeu+nFhr2MflkBhhJVUSbPTTIVYKA9n70YrqD3PfkiylhhDwriiDt0
-         2glJAjBUfQwrUOC7LsXFUXY10lfld0eznJYPNBOk5U2MpG7/cGwyryi0qt0GdxWgEkyC
-         91SQ==
-X-Gm-Message-State: AOAM531Hp8NC9u9VP5phKUQtB+bUgdGgiWYkAnMM44znDblG9c+66DGI
-        o4iUchDTUvXmudL19ShcAVQ=
-X-Google-Smtp-Source: ABdhPJxpHXYA7DekL4S6yicpqOuD3n++miuIYlYENlMIha7KctYNaqHmP6Z+xq7d776JpJjRjEUKxA==
-X-Received: by 2002:a5d:58c9:: with SMTP id o9mr3601080wrf.279.1632385295450;
-        Thu, 23 Sep 2021 01:21:35 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::cad? ([2a02:8108:96c0:3b88::cad])
-        by smtp.gmail.com with ESMTPSA id o24sm8103387wmm.11.2021.09.23.01.21.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 01:21:35 -0700 (PDT)
-Message-ID: <2d2b1e72-9c74-a2c3-2fb7-dc0ec41bbe03@gmail.com>
-Date:   Thu, 23 Sep 2021 10:21:34 +0200
+        bh=VNBIkdqrfBWoODl4rVjrpYZvK6+z3y3Yg3DlUkxU4pk=;
+        b=wgiwFowvu+iylNCgqHEO20dh5sePMzVEk2qMklCDqMfegjgCSN+MAEbMAnJ6MUM9DZ
+         +DWPsAvlYsWKHPc39QBjgwdW8TSSPUgwQ5Hpc9cR8N5zmC7Hv1KVsCbZuNh4cothH738
+         RmJDBLVRwbme1VSJ9o4eBmhwNu4/108GQldu3B2LYTXC0HjKdqEL54uCC/X8aLfIP/ON
+         6Zb2VJF28wnbqxkKYYP+t95c97qCHJ7XF1tcInG+S9drUfcN7Fvhfh0SdAEDRVDMkCGE
+         R+1XLGcYUNzKXX49nnXx7xLgEBP5XQiC8qlWKZODFNIPUqDe/kzESvAmwHAsaOb8Bvox
+         qzzg==
+X-Gm-Message-State: AOAM532WThzCeznyCYEZ8aLXBC+922dE/FYKV/4k+PnL/xXjkgnApYEd
+        7YqJkM+B64g4KkogppgeobpoT7FqVi6vqQ==
+X-Google-Smtp-Source: ABdhPJyx93y7q9O7DmtOlj6h338X1hPwSNvz3mUKnA5464/RDJ7MCEXpz8CTsjXPyIKLfu5Fz9UnPg==
+X-Received: by 2002:a05:6000:1569:: with SMTP id 9mr3611236wrz.337.1632385401956;
+        Thu, 23 Sep 2021 01:23:21 -0700 (PDT)
+Received: from stewarton.broadband ([84.67.150.141])
+        by smtp.googlemail.com with ESMTPSA id r25sm4604999wra.76.2021.09.23.01.23.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 01:23:21 -0700 (PDT)
+From:   Iain Hunter <drhunter95@gmail.com>
+Cc:     lothar.felten@gmail.com, iain@hunterembedded.co.uk,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] workaround regression in ina2xx introduced by cb47755725da("time: Prevent undefined behaviour in timespec64_to_ns()")
+Date:   Thu, 23 Sep 2021 09:23:16 +0100
+Message-Id: <20210923082319.1510936-1-drhunter95@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 6/8] staging: r8188eu: remove dead code from
- rtl8188e_rf6052.c
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, martin@kaiser.cx, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210921194658.10654-1-straube.linux@gmail.com>
- <20210921194658.10654-7-straube.linux@gmail.com>
- <20210923072929.GA2048@kadam>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20210923072929.GA2048@kadam>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 09:29, Dan Carpenter wrote:
-> On Tue, Sep 21, 2021 at 09:46:56PM +0200, Michael Straube wrote:
->> In this driver DynamicTxHighPowerLvl is set to TxHighPwrLevel_Normal
->> and never changed. In the file rtl8188e_rf6052.c there are some if
->> statements that check DynamicTxHighPowerLvl for other values than
->> TxHighPwrLevel_Normal. The code in the if blocks is never executed.
->> Remove the dead code.
->>
->> Signed-off-by: Michael Straube <straube.linux@gmail.com>
->> ---
->>   drivers/staging/r8188eu/hal/rtl8188e_rf6052.c | 57 +++++--------------
->>   1 file changed, 14 insertions(+), 43 deletions(-)
->>
->> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c b/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
->> index edaa9a6dfdb1..946a1b97d96f 100644
->> --- a/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
->> +++ b/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
->> @@ -85,7 +85,6 @@ rtl8188e_PHY_RF6052SetCckTxPower(
->>   		u8 *pPowerlevel)
->>   {
->>   	struct hal_data_8188e *pHalData = GET_HAL_DATA(Adapter);
->> -	struct dm_priv *pdmpriv = &pHalData->dmpriv;
->>   	struct mlme_ext_priv *pmlmeext = &Adapter->mlmeextpriv;
->>   	u32 TxAGC[2] = {0, 0}, tmpval = 0, pwrtrac_value;
->>   	bool TurboScanOff = false;
->> @@ -112,34 +111,19 @@ rtl8188e_PHY_RF6052SetCckTxPower(
->>   			}
->>   		}
->>   	} else {
->> -		/* Driver dynamic Tx power shall not affect Tx power.
->> -		 * It shall be determined by power training mechanism.
->> -i		 *  Currently, we cannot fully disable driver dynamic
->     ^
-> 
-> You're a vimster.  :)
-> 
+From: Iain Hunter <iain@hunterembedded.co.uk>
 
-Not really, actually this was part of the original code. ;)
+That change adds an error check to avoid saturation during multiplication
+to calculate nano seconds in timespec64_to_ns(). This function was changed
+in kernel 5.4.
+In ina2xx_capture_thread() a timespec64 structure is used to calculate
+the delta time until the next sample time. This delta can be negative if
+the next sample time was in the past. In the -1 case timespec64_to_ns()
+now clamps the -1 second value to KTIME_MAX. This essentially puts ina2xx
+thread to sleep forever.
+Proposed patch is to split the functionality in the loop into two parts:
+- do while loop only does the test to see if the next sample time is in 
+the future or in the past and so will be skipped and the sample time 
+incremented until it is in the future. This comparision can be done with 
+timespec64_compare() as we are only interested in the sign being positive
+or negative.
+The variable skip_next_sample is only used for clarity.
+- after do while loop we know that next is later than now and so delta is
+guaranteed to be positive. This means timespec64_to_ns() can be safely
+used.
 
-Regards,
-Michael
+Signed-off-by: Iain Hunter <iain@hunterembedded.co.uk>
+
+Fixes: regression introduced by
+ cb47755725da("time: Prevent undefined behaviour in timespec64_to_ns()")
+---
+ drivers/iio/adc/ina2xx-adc.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iio/adc/ina2xx-adc.c b/drivers/iio/adc/ina2xx-adc.c
+index a4b2ff9e0..e30012d0d 100644
+--- a/drivers/iio/adc/ina2xx-adc.c
++++ b/drivers/iio/adc/ina2xx-adc.c
+@@ -777,6 +777,7 @@ static int ina2xx_capture_thread(void *data)
+ 	int ret;
+ 	struct timespec64 next, now, delta;
+ 	s64 delay_us;
++	int skip_next_sample;
+ 
+ 	/*
+ 	 * Poll a bit faster than the chip internal Fs, in case
+@@ -817,10 +818,15 @@ static int ina2xx_capture_thread(void *data)
+ 		 */
+ 		do {
+ 			timespec64_add_ns(&next, 1000 * sampling_us);
+-			delta = timespec64_sub(next, now);
+-			delay_us = div_s64(timespec64_to_ns(&delta), 1000);
+-		} while (delay_us <= 0);
+ 
++			if (timespec64_compare(&next, &now) < 0)
++				skip_next_sample = 1;
++			else
++				skip_next_sample = 0;
++		} while (skip_next_sample);
++
++		delta = timespec64_sub(next, now);
++		delay_us = div_s64(timespec64_to_ns(&delta), 1000);
+ 		usleep_range(delay_us, (delay_us * 3) >> 1);
+ 
+ 	} while (!kthread_should_stop());
+-- 
+2.17.1
+
