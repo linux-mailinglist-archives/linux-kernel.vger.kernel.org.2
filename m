@@ -2,165 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBEA416180
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA084416185
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241821AbhIWO5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52638 "EHLO mail.kernel.org"
+        id S241783AbhIWO65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:58:57 -0400
+Received: from mga07.intel.com ([134.134.136.100]:62058 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241735AbhIWO5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:57:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B778610C9;
-        Thu, 23 Sep 2021 14:55:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632408940;
-        bh=RKJxYrYCoM2k7aZ2F996O9q/c65kSExCnAmxsZRz7+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QHTqu20PhZP93CZB+M8svagNjNtHUNaGsP4fiansQScIRqfD9za0GITTCI0ovnvAl
-         rqniKstoCwaFtdPBlmAx9I8ffXnCD5BnvOl9y6LOIkJ9ELHTntBXVDY9HldLuETeZ6
-         ZxS7VgVGpAvnLK8VVLC0kruvtjqpsFHR19/gQP2wMcxqXeqHwrg95+lLITAc9VLBPK
-         SJKI6ZyT25RS9R/9T7mRmv6ps+PzjI9ULOWNFdusCP3zu/EvZdCbSnhYb2ozRA+wpB
-         XDYaTAuHkwIrz8ZbwvyHeFbHQ2dQNDFKzHunu13JXrfzKwIWQ2ZzUFYHqLPhggHwKS
-         uf6jEk+qckUXg==
-Date:   Thu, 23 Sep 2021 07:55:32 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Emma Anholt <emma@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Openrisc <openrisc@lists.librecores.org>
-Subject: Re: [PATCH v3 1/6] drm/vc4: select PM (openrisc)
-Message-ID: <YUyVZCEeRPE8VJ7w@archlinux-ax161>
-References: <20210819135931.895976-1-maxime@cerno.tech>
- <20210819135931.895976-2-maxime@cerno.tech>
- <8a5cdcf5-33ed-398f-243a-b8889fd754e3@infradead.org>
- <20210922084156.xqru5fdjkarbkyew@gilmour>
- <YUtQnml8FO8BC7sM@archlinux-ax161>
- <20210923145208.433zaqldird2vnxk@gilmour>
+        id S241702AbhIWO64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 10:58:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="287528049"
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="287528049"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 07:57:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
+   d="scan'208";a="513999620"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga008.fm.intel.com with ESMTP; 23 Sep 2021 07:57:20 -0700
+Date:   Thu, 23 Sep 2021 22:57:20 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [RFC PATCH] x86, vmlinux.lds: Add debug option to force all data
+ sections aligned
+Message-ID: <20210923145720.GA28463@shbuild999.sh.intel.com>
+References: <1627456900-42743-1-git-send-email-feng.tang@intel.com>
+ <20210922185137.ivdp4yoalv4qdbe2@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210923145208.433zaqldird2vnxk@gilmour>
+In-Reply-To: <20210922185137.ivdp4yoalv4qdbe2@treble>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 04:52:08PM +0200, Maxime Ripard wrote:
-> Hi Nathan,
-> 
-> On Wed, Sep 22, 2021 at 08:49:50AM -0700, Nathan Chancellor wrote:
-> > On Wed, Sep 22, 2021 at 10:41:56AM +0200, Maxime Ripard wrote:
-> > > Hi Randy,
-> > > 
-> > > On Sun, Sep 19, 2021 at 09:40:44AM -0700, Randy Dunlap wrote:
-> > > > On 8/19/21 6:59 AM, Maxime Ripard wrote:
-> > > > > We already depend on runtime PM to get the power domains and clocks for
-> > > > > most of the devices supported by the vc4 driver, so let's just select it
-> > > > > to make sure it's there, and remove the ifdef.
-> > > > > 
-> > > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > > > > ---
-> > > > >   drivers/gpu/drm/vc4/Kconfig    | 1 +
-> > > > >   drivers/gpu/drm/vc4/vc4_hdmi.c | 2 --
-> > > > >   2 files changed, 1 insertion(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/gpu/drm/vc4/Kconfig b/drivers/gpu/drm/vc4/Kconfig
-> > > > > index 118e8a426b1a..f774ab340863 100644
-> > > > > --- a/drivers/gpu/drm/vc4/Kconfig
-> > > > > +++ b/drivers/gpu/drm/vc4/Kconfig
-> > > > > @@ -9,6 +9,7 @@ config DRM_VC4
-> > > > >   	select DRM_KMS_CMA_HELPER
-> > > > >   	select DRM_GEM_CMA_HELPER
-> > > > >   	select DRM_PANEL_BRIDGE
-> > > > > +	select PM
-> > > > >   	select SND_PCM
-> > > > >   	select SND_PCM_ELD
-> > > > >   	select SND_SOC_GENERIC_DMAENGINE_PCM
-> > > > > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > > > > index c2876731ee2d..602203b2d8e1 100644
-> > > > > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > > > > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > > > > @@ -2107,7 +2107,6 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
-> > > > >   	return 0;
-> > > > >   }
-> > > > > -#ifdef CONFIG_PM
-> > > > >   static int vc4_hdmi_runtime_suspend(struct device *dev)
-> > > > >   {
-> > > > >   	struct vc4_hdmi *vc4_hdmi = dev_get_drvdata(dev);
-> > > > > @@ -2128,7 +2127,6 @@ static int vc4_hdmi_runtime_resume(struct device *dev)
-> > > > >   	return 0;
-> > > > >   }
-> > > > > -#endif
-> > > > >   static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
-> > > > >   {
-> > > > > 
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > FYI.
-> > > > 
-> > > > This still causes a build error on arch/openrisc/ since it does not support
-> > > > CONFIG_PM (it does not source "kernel/power/Kconfig" like some other arches do):
-> > > > 
-> > > > ./arch/riscv/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/x86/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/nds32/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/sh/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/arc/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/arm64/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/xtensa/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/sparc/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/arm/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/mips/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/powerpc/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/um/Kconfig:source "kernel/power/Kconfig"
-> > > > ./arch/ia64/Kconfig:source "kernel/power/Kconfig"
-> > > > 
-> > > > so with
-> > > > CONFIG_DRM_VC4=y
-> > > > # CONFIG_DRM_VC4_HDMI_CEC is not set
-> > > > 
-> > > > I still see
-> > > > ../drivers/gpu/drm/vc4/vc4_hdmi.c:2139:12: warning: 'vc4_hdmi_runtime_suspend' defined but not used [-Wunused-function]
-> > > >  2139 | static int vc4_hdmi_runtime_suspend(struct device *dev)
-> > > >       |            ^~~~~~~~~~~~~~~~~~~~~~~~
-> > > 
-> > > With what version did you get that build error? -rc2 shouldn't have it
-> > > anymore since the runtime_pm hooks introduction got reverted.
-> > 
-> > -next still contains these patches as Stephen effectively reverted the
-> > changes in Linus' tree when merging in the drm-misc-fixes tree:
-> > 
-> > https://lore.kernel.org/r/20210920090729.19458953@canb.auug.org.au/
-> 
-> Ah, indeed, thanks.
-> 
-> What's the typical fix for these errors?
-> 
-> I guess adding a depends on ARM || ARM64 || COMPILE_TEST would work?
+Hi Josh, 
 
-I think the typical fix from most people is marking these functions as
-__maybe_unused so that they are always defined but the compiler does not
-warn. An alternative would be changing the "select PM" to be
-"depends on PM" I believe but that is less frequent.
+On Wed, Sep 22, 2021 at 11:51:37AM -0700, Josh Poimboeuf wrote:
+> On Wed, Jul 28, 2021 at 03:21:40PM +0800, Feng Tang wrote:
+> > 0day has reported many strange performance changes (regression or
+> > improvement), in which there was no obvious relation between the culprit
+> > commit and the benchmark at the first look, and it causes people to doubt
+> > the test itself is wrong.
+> > 
+> > Upon further check, many of these cases are caused by the change to the
+> > alignment of kernel text or data, as whole text/data of kernel are linked
+> > together, change in one domain can affect alignments of other domains.
+> > 
+> > To help to quickly identify if the strange performance change is caused
+> > by _data_ alignment. add a debug option to force the data sections from
+> > all .o files aligned on THREAD_SIZE, so that change in one domain won't
+> > affect other modules' data alignment.
+> > 
+> > We have used this option to check some strange kernel changes [1][2][3],
+> > and those performance changes were gone after enabling it, which proved
+> > they are data alignment related.
+> > 
+> > Similarly, there is another kernel debug option to check text alignment
+> > related performance changes: CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B,  
+> > which forces all function's start address to be 64 bytes alinged.
+> > 
+> > This option depends on CONFIG_DYNAMIC_DEBUG==n, as '__dyndbg' subsection
+> > of .data has a hard requirement of ALIGN(8), shown in the 'vmlinux.lds':
+> > 
+> > "
+> > . = ALIGN(8); __start___dyndbg = .; KEEP(*(__dyndbg)) __stop___dyndbg = .;
+> > "
+> > 
+> > It contains all pointers to 'struct _ddebug', and dynamic_debug_init()
+> > will "pointer++" to loop accessing these pointers, which will be broken
+> > with this option enabled.
+> > 
+> > [1]. https://lore.kernel.org/lkml/20200205123216.GO12867@shao2-debian/
+> > [2]. https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
+> > [3]. https://lore.kernel.org/lkml/20201112140625.GA21612@xsang-OptiPlex-9020/
+> > 
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> > ---
+> >  arch/x86/Kconfig.debug        | 13 +++++++++++++
+> >  arch/x86/kernel/vmlinux.lds.S |  7 ++++++-
+> >  2 files changed, 19 insertions(+), 1 deletion(-)
+> 
+> Hi Feng,
+> 
+> Thanks for the interesting LPC presentation about alignment-related
+> performance issues (which mentioned this patch).
+>  
+>   https://linuxplumbersconf.org/event/11/contributions/895/
+> 
+> I wonder if we can look at enabling some kind of data section alignment
+> unconditionally instead of just making it a debug option.  Have you done
+> any performance and binary size comparisons?
+ 
+Thanks for reviewing this!
 
-Cheers,
-Nathan
+For binary size, I just tested 5.14 kernel with a default desktop
+config from Ubuntu (I didn't use the normal rhel-8.3 config used
+by 0Day, which is more for server):
+
+v5.14
+------------------------
+text		data		bss	    dec		hex	filename
+16010221	14971391	6098944	37080556	235cdec	vmlinux
+
+v5.14 + 64B-function-align
+--------------------------
+text		data		bss	    dec		hex	filename
+18107373	14971391	6098944	39177708	255cdec	vmlinux
+
+v5.14 + data-align(THREAD_SIZE 16KB)
+--------------------------
+text		data		bss	    dec		hex	filename
+16010221	57001791	6008832	79020844	4b5c32c	vmlinux
+
+So for the text-align, we see 13.1% increase for text. And for data-align,
+there is 280.8% increase for data.
+
+Performance wise, I have done some test with the force-32bytes-text-align
+option before (v5.8 time), for benchmark will-it-scale, fsmark, hackbench,
+netperf and kbuild:
+* no obvious change for will-it-scale/fsmark/kbuild
+* see both regression/improvement for different hackbench case
+* see both regression/improvement for netperf, from -20% to +98%
+
+As I didn't expect the text-align will be turned on by-default, so I
+didn't dive deep into it at that time.
+
+
+For data-alignment, it has huge impact for the size, and occupies more
+cache/TLB, plus it hurts some normal function like dynamic-debug. So
+I'm afraid it can only be used as a debug option.
+
+> On a similar vein I think we should re-explore permanently enabling
+> cacheline-sized function alignment i.e. making something like
+> CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B the default.  Ingo did some
+> research on that a while back:
+> 
+>    https://lkml.kernel.org/r/20150519213820.GA31688@gmail.com
+
+Thanks for sharing this, from which I learned a lot, and I hope I
+knew this thread when we first check strange regressions in 2019 :)
+
+> At the time, the main reported drawback of -falign-functions=64 was that
+> even small functions got aligned.  But now I think that can be mitigated
+> with some new options like -flimit-function-alignment and/or
+> -falign-functions=64,X (for some carefully-chosen value of X).
+
+Will study more about these options. 
+
+If they have much less size increase and no regression in performance,
+then maybe it could be turned on by default.
+
+Thanks,
+Feng
+
+> -- 
+> Josh
