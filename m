@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF87415F44
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A42E415F4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241206AbhIWNMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:12:32 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:45755 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238588AbhIWNM3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:12:29 -0400
-Received: by mail-ot1-f53.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso8353404otv.12;
-        Thu, 23 Sep 2021 06:10:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=cFspYBLeURdfYGcovqZnYm0YSY7LeEP/BmbI4nCU0mU=;
-        b=bTjHAvg7WugVnMOfxjH1AtHQF8aXac9RwivmZNXnwWit+zJ3CzEbDfvf+ZsYZyQQzz
-         EDFcATkv6CtbzpCREmPwJ/Af14XIqZNmeccojIykA3pOv0CO8xslocIXN830eYXf8vqF
-         3gAMSVlPhY8e+qMt12J8DPUOok8reC3rNtu7w0118ELW4+l8is9f28k5654fwcwu6Ec2
-         GRAr77zjVTU8HQ4thxTgLiax3U2ZsEXlZT1b1GKJZmdRS1okQ1ONDj3S8YOrYTyArSGb
-         9fzEvT2lOdpzCP5z5IyB2hIyBuj6SymTgkFKy/+qA90HC2okGKQi9HYnETocrzMsT+H2
-         mkmg==
-X-Gm-Message-State: AOAM532ukkdJuRfMx+FAe7JL5ToYklXXWFnw3nShPjW1UmMUKPi6kW+f
-        1lvv+e0fbyLs5+H6fH31NaUmzfUCsQ==
-X-Google-Smtp-Source: ABdhPJybDJ7Lb8fIZU10sfK8nNbiDimDfC7u+ouNEMJmW0a2CScZ5nkLpcBFkUpNYos99iZlSTkXAA==
-X-Received: by 2002:a9d:4604:: with SMTP id y4mr4229176ote.79.1632402657391;
-        Thu, 23 Sep 2021 06:10:57 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id p8sm1262495oti.15.2021.09.23.06.10.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 06:10:56 -0700 (PDT)
-Received: (nullmailer pid 2861278 invoked by uid 1000);
-        Thu, 23 Sep 2021 13:10:53 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Dikshita Agarwal <dikshita@codeaurora.org>
-Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        stanimir.varbanov@linaro.org, mchehab@kernel.org,
-        devicetree@vger.kernel.org, vgarodia@codeaurora.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, linux-media@vger.kernel.org
-In-Reply-To: <1632377309-25148-1-git-send-email-dikshita@codeaurora.org>
-References: <1632377309-25148-1-git-send-email-dikshita@codeaurora.org>
-Subject: Re: [RESEND PATCH v3] dt-bindings: media: venus: Add sc7280 dt schema
-Date:   Thu, 23 Sep 2021 08:10:53 -0500
-Message-Id: <1632402653.567694.2861277.nullmailer@robh.at.kernel.org>
+        id S241128AbhIWNP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:15:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234515AbhIWNP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:15:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E34A61164;
+        Thu, 23 Sep 2021 13:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632402836;
+        bh=b7ciuEU81I/+7+Kcf5GtQcPnxHNd6AApdTsqk+hICIc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b6dQij5uc96X0dTcnPcoUuxkPTLbF2fN2/4Y5WaYYhXJ6M2KOCv5+18SPDtUxEOMv
+         JhsZevCeAarVQfrdBBLKmDTCCmizljQrOD2L/1iNv8E+2eF4KifI/fsdwvO+G0uLoF
+         PgeaGsco1S9SgPDGj0lg6aesyAuewN/oXBER2PLk=
+Date:   Thu, 23 Sep 2021 15:13:53 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Guo Zhi <qtxuning1999@sjtu.edu.cn>
+Cc:     nsaenz@kernel.org, peterz@infradead.org, maz@kernel.org,
+        bsegall@google.com, rdunlap@infradead.org, airlied@redhat.com,
+        kan liang <kan.liang@linux.intel.com>, odin@uged.al,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] staging: vchip_arm: Fix misuse of %x
+Message-ID: <YUx9kdY5+Le+i29z@kroah.com>
+References: <20210923035554.669434-1-qtxuning1999@sjtu.edu.cn>
+ <YUwOZjr06RV2BUi6@kroah.com>
+ <590112814.393656.1632401860257.JavaMail.zimbra@sjtu.edu.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <590112814.393656.1632401860257.JavaMail.zimbra@sjtu.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 11:38:29 +0530, Dikshita Agarwal wrote:
-> Add a schema description for the venus video encoder/decoder on the sc7280.
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/media/qcom,sc7280-venus.yaml          | 159 +++++++++++++++++++++
->  1 file changed, 159 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> 
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+A: No.
+Q: Should I include quotations after my reply?
 
-yamllint warnings/errors:
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/media/qcom,sc7280-venus.example.dts:24.31-32 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/media/qcom,sc7280-venus.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
+http://daringfireball.net/2007/07/on_top
 
-doc reference errors (make refcheckdocs):
+On Thu, Sep 23, 2021 at 08:57:40PM +0800, Guo Zhi wrote:
+> We should restrict kernel pointer leakage issue by using kptr_restrict. 
+> Therefore kernel pointers should be specified by %pK rather than %lx.
 
-See https://patchwork.ozlabs.org/patch/1531553
+I totally agree.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+What I am asking about is why is this message needed at all?  Why not
+just remove the whole thing?  Who uses it?
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+thanks,
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+greg k-h
