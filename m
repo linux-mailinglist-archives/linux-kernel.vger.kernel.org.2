@@ -2,260 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F01416535
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8AE416536
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242747AbhIWS3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234622AbhIWS3o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:29:44 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C0AC061574;
-        Thu, 23 Sep 2021 11:28:12 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id j13so7082580qtq.6;
-        Thu, 23 Sep 2021 11:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fYnb5ab4lp0ROjl6/6NT8Tp6t+DQKceitF9LWDOIDoA=;
-        b=BTZY7dEu9PSwyWJgCpleiuPCpeKSsMa4O1GTGrNe+ShXG1VdwfjZYjH9NKikLYOTqR
-         ZoaX+psqkvq1yQn1sy5MJr0mPI3wCCX3L44rPeX6CavnCbw/VdITYpi1hVCOOetk9DLz
-         9c502/ERtL6Uol+ycu/ZQ4DYKhAyxW4knizeQTNzZzH3nqfn2ezaNAT6wnEb4hG80eNx
-         w3G1EM8cVU0j2/GRJwcQsDzPx2vB4fCsLJlMrGW8Xj/YIg5ISuBlimYFZECGeMb4nVpw
-         yOAImdxfyBGdgMrU3Bfcwlig4XIpA52bIFvVtAdZINn8v6YWvHDJGN3EGzDqlFFvuqts
-         VacQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fYnb5ab4lp0ROjl6/6NT8Tp6t+DQKceitF9LWDOIDoA=;
-        b=6A3UiTTBWltbW1Fqexf2atcJxhJz5MV34tUum//LOSj6iFNT5QLGPm+iVmtYQ9UfBj
-         /RhCGDmUekHkc1OWmhUmVrQ5pVu9NOFZIvKccjwS+kDbE/Q1fWsulFFMgwuU9gPWxXJT
-         hUoFigY2OwBZ3ZeoDpMzpkm87kfLnwW8OJk9i64SoKfnth3L08AHtH4ef3MwLPywreJ3
-         5+xruUCdOMamg51w18QLU8T7SeOUtdSZox5omApowrgOw/kPZbwQooUXEogQ8flwR+eL
-         NKzNpD7MYXx2ZyBI949ixzeerFA4vDSJ9jtzide6QPRsu15G6UGt0vl8nPb7YIROi6lx
-         bAtw==
-X-Gm-Message-State: AOAM533NrBRwMS71DgZNbdwjqyuCh31hAV/0JjSiEJkolvvuPMtS8Dmi
-        /j7YdwkhA4NpG+fHX4j31wpXBxJzDZb7vA==
-X-Google-Smtp-Source: ABdhPJxrigMHTVkDkmCHzNd2Kc6K+hdfoRtLjyNxUNk34+qVcBCGdzlUalVNDLhY9/BHeqIqLXF89A==
-X-Received: by 2002:ac8:4d48:: with SMTP id x8mr86324qtv.415.1632421691108;
-        Thu, 23 Sep 2021 11:28:11 -0700 (PDT)
-Received: from localhost.localdomain ([170.84.227.206])
-        by smtp.gmail.com with ESMTPSA id bj31sm4570971qkb.43.2021.09.23.11.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 11:28:10 -0700 (PDT)
-From:   Ramon Fontes <ramonreisfontes@gmail.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-Cc:     johannes@sipsolutions.net, kvalo@codeaurora.org,
-        davem@davemloft.net, Ramon Fontes <ramonreisfontes@gmail.com>
-Subject: [PATCH] mac80211_hwsim: enable 6GHz channels
-Date:   Thu, 23 Sep 2021 15:28:05 -0300
-Message-Id: <20210923182805.27122-1-ramonreisfontes@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S242752AbhIWSaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:30:24 -0400
+Received: from mga07.intel.com ([134.134.136.100]:18636 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242725AbhIWSaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 14:30:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="287585042"
+X-IronPort-AV: E=Sophos;i="5.85,317,1624345200"; 
+   d="scan'208";a="287585042"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 11:28:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,317,1624345200"; 
+   d="scan'208";a="558646546"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.84]) ([10.237.72.84])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Sep 2021 11:28:46 -0700
+Subject: Re: [PATCH V3 1/3] perf/x86: Add new event for AUX output counter
+ index
+To:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        x86@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210907163903.11820-1-adrian.hunter@intel.com>
+ <20210907163903.11820-2-adrian.hunter@intel.com>
+ <ab6f9ec2-2571-de5a-d44a-427851b08d19@linux.intel.com>
+ <20210910160409.GI4323@worktop.programming.kicks-ass.net>
+ <453b9364-c350-79ca-00fa-b9e6ed6e3367@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <9da4ae5e-3e0e-180e-5bba-1351c08d7df9@intel.com>
+Date:   Thu, 23 Sep 2021 21:29:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <453b9364-c350-79ca-00fa-b9e6ed6e3367@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds 6 GHz capabilities and reject HT/VHT
+On 10/09/21 7:29 pm, Liang, Kan wrote:
+> 
+> 
+> On 9/10/2021 12:04 PM, Peter Zijlstra wrote:
+>> On Tue, Sep 07, 2021 at 01:45:22PM -0400, Liang, Kan wrote:
+>>> On 9/7/2021 12:39 PM, Adrian Hunter wrote:
+>>
+>>>> @@ -4494,8 +4500,16 @@ static int intel_pmu_check_period(struct perf_event *event, u64 value)
+>>>>        return intel_pmu_has_bts_period(event, value) ? -EINVAL : 0;
+>>>>    }
+>>>> +static void intel_aux_output_init(void)
+>>>> +{
+>>>> +    /* Refer also intel_pmu_aux_output_match() */
+>>>> +    if (x86_pmu.intel_cap.pebs_output_pt_available)
+>>>> +        x86_pmu.assign = intel_pmu_assign_event;
+>>>> +}
+>>>
+>>> For a hybrid machine, x86_pmu.intel_cap.pebs_output_pt_available is always
+>>> cleared. We probably need the PMU specific
+>>> pmu->intel_cap.pebs_output_pt_available here.
+>>>
+>>>> +
+>>>>    static int intel_pmu_aux_output_match(struct perf_event *event)
+>>>>    {
+>>>> +    /* intel_pmu_assign_event() is needed, refer intel_aux_output_init() */
+>>>>        if (!x86_pmu.intel_cap.pebs_output_pt_available)
+>>>>            return 0;
+>>>>
+>>>
+>>> For a hybrid machine, this always return 0. I think we need to fix it first?
+>>
+>> AFAICT the patch is correct for !hybrid, and the hybrid PT muck can then
+>> also fix this up, right?
+>>
+> 
+> Yes, for !hybrid, the patch is good.
+> 
+> Since PEBS via PT is temporarily disabled for hybrid for now, the patch set should not bring any issues with hybrid either.
+> The hybrid PT can be fixed separately.
 
-Signed-off-by: Ramon Fontes <ramonreisfontes@gmail.com>
----
- drivers/net/wireless/mac80211_hwsim.c | 154 +++++++++++++++++++++++---
- 1 file changed, 141 insertions(+), 13 deletions(-)
+I don't have much time to look at the hybrid case right now.
 
-diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
-index ffa894f73..a11eb730e 100644
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -2988,6 +2988,122 @@ static const struct ieee80211_sband_iftype_data he_capa_5ghz[] = {
- #endif
- };
- 
-+static const struct ieee80211_sband_iftype_data he_capa_6ghz[] = {
-+	{
-+		/* TODO: should we support other types, e.g., P2P?*/
-+		.types_mask = BIT(NL80211_IFTYPE_STATION) |
-+			      BIT(NL80211_IFTYPE_AP),
-+		.he_6ghz_capa = {
-+			.capa = cpu_to_le16(IEEE80211_HE_6GHZ_CAP_MIN_MPDU_START |
-+					    IEEE80211_HE_6GHZ_CAP_MAX_AMPDU_LEN_EXP |
-+					    IEEE80211_HE_6GHZ_CAP_MAX_MPDU_LEN |
-+					    IEEE80211_HE_6GHZ_CAP_SM_PS |
-+					    IEEE80211_HE_6GHZ_CAP_RD_RESPONDER |
-+					    IEEE80211_HE_6GHZ_CAP_TX_ANTPAT_CONS |
-+					    IEEE80211_HE_6GHZ_CAP_RX_ANTPAT_CONS),
-+		},
-+		.he_cap = {
-+			.has_he = true,
-+			.he_cap_elem = {
-+				.mac_cap_info[0] =
-+					IEEE80211_HE_MAC_CAP0_HTC_HE,
-+				.mac_cap_info[1] =
-+					IEEE80211_HE_MAC_CAP1_TF_MAC_PAD_DUR_16US |
-+					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
-+				.mac_cap_info[2] =
-+					IEEE80211_HE_MAC_CAP2_BSR |
-+					IEEE80211_HE_MAC_CAP2_MU_CASCADING |
-+					IEEE80211_HE_MAC_CAP2_ACK_EN,
-+				.mac_cap_info[3] =
-+					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
-+					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_EXT_3,
-+				.mac_cap_info[4] = IEEE80211_HE_MAC_CAP4_AMSDU_IN_AMPDU,
-+				.phy_cap_info[0] =
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G,
-+				.phy_cap_info[1] =
-+					IEEE80211_HE_PHY_CAP1_PREAMBLE_PUNC_RX_MASK |
-+					IEEE80211_HE_PHY_CAP1_DEVICE_CLASS_A |
-+					IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD |
-+					IEEE80211_HE_PHY_CAP1_MIDAMBLE_RX_TX_MAX_NSTS,
-+				.phy_cap_info[2] =
-+					IEEE80211_HE_PHY_CAP2_NDP_4x_LTF_AND_3_2US |
-+					IEEE80211_HE_PHY_CAP2_STBC_TX_UNDER_80MHZ |
-+					IEEE80211_HE_PHY_CAP2_STBC_RX_UNDER_80MHZ |
-+					IEEE80211_HE_PHY_CAP2_UL_MU_FULL_MU_MIMO |
-+					IEEE80211_HE_PHY_CAP2_UL_MU_PARTIAL_MU_MIMO,
-+
-+				/* Leave all the other PHY capability bytes
-+				 * unset, as DCM, beam forming, RU and PPE
-+				 * threshold information are not supported
-+				 */
-+			},
-+			.he_mcs_nss_supp = {
-+				.rx_mcs_80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80 = cpu_to_le16(0xfffa),
-+				.rx_mcs_160 = cpu_to_le16(0xfffa),
-+				.tx_mcs_160 = cpu_to_le16(0xfffa),
-+				.rx_mcs_80p80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80p80 = cpu_to_le16(0xfffa),
-+			},
-+		},
-+	},
-+#ifdef CONFIG_MAC80211_MESH
-+	{
-+		/* TODO: should we support other types, e.g., IBSS?*/
-+		.types_mask = BIT(NL80211_IFTYPE_MESH_POINT),
-+		.he_6ghz_capa = {
-+			.capa = cpu_to_le16(IEEE80211_HE_6GHZ_CAP_MIN_MPDU_START |
-+					    IEEE80211_HE_6GHZ_CAP_MAX_AMPDU_LEN_EXP |
-+					    IEEE80211_HE_6GHZ_CAP_MAX_MPDU_LEN |
-+					    IEEE80211_HE_6GHZ_CAP_SM_PS |
-+					    IEEE80211_HE_6GHZ_CAP_RD_RESPONDER |
-+					    IEEE80211_HE_6GHZ_CAP_TX_ANTPAT_CONS |
-+					    IEEE80211_HE_6GHZ_CAP_RX_ANTPAT_CONS),
-+		},
-+		.he_cap = {
-+			.has_he = true,
-+			.he_cap_elem = {
-+				.mac_cap_info[0] =
-+					IEEE80211_HE_MAC_CAP0_HTC_HE,
-+				.mac_cap_info[1] =
-+					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
-+				.mac_cap_info[2] =
-+					IEEE80211_HE_MAC_CAP2_ACK_EN,
-+				.mac_cap_info[3] =
-+					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
-+					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_EXT_3,
-+				.mac_cap_info[4] = IEEE80211_HE_MAC_CAP4_AMSDU_IN_AMPDU,
-+				.phy_cap_info[0] =
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G,
-+				.phy_cap_info[1] =
-+					IEEE80211_HE_PHY_CAP1_PREAMBLE_PUNC_RX_MASK |
-+					IEEE80211_HE_PHY_CAP1_DEVICE_CLASS_A |
-+					IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD |
-+					IEEE80211_HE_PHY_CAP1_MIDAMBLE_RX_TX_MAX_NSTS,
-+				.phy_cap_info[2] = 0,
-+
-+				/* Leave all the other PHY capability bytes
-+				 * unset, as DCM, beam forming, RU and PPE
-+				 * threshold information are not supported
-+				 */
-+			},
-+			.he_mcs_nss_supp = {
-+				.rx_mcs_80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80 = cpu_to_le16(0xfffa),
-+				.rx_mcs_160 = cpu_to_le16(0xfffa),
-+				.tx_mcs_160 = cpu_to_le16(0xfffa),
-+				.rx_mcs_80p80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80p80 = cpu_to_le16(0xfffa),
-+			},
-+		},
-+	},
-+#endif
-+};
-+
- static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
- {
- 	u16 n_iftype_data;
-@@ -3000,6 +3116,10 @@ static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
- 		n_iftype_data = ARRAY_SIZE(he_capa_5ghz);
- 		sband->iftype_data =
- 			(struct ieee80211_sband_iftype_data *)he_capa_5ghz;
-+	} else if (sband->band == NL80211_BAND_6GHZ) {
-+		n_iftype_data = ARRAY_SIZE(he_capa_6ghz);
-+		sband->iftype_data =
-+			(struct ieee80211_sband_iftype_data *)he_capa_6ghz;
- 	} else {
- 		return;
- 	}
-@@ -3290,6 +3410,12 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
- 			sband->vht_cap.vht_mcs.tx_mcs_map =
- 				sband->vht_cap.vht_mcs.rx_mcs_map;
- 			break;
-+		case NL80211_BAND_6GHZ:
-+			sband->channels = data->channels_6ghz;
-+			sband->n_channels = ARRAY_SIZE(hwsim_channels_6ghz);
-+			sband->bitrates = data->rates + 4;
-+			sband->n_bitrates = ARRAY_SIZE(hwsim_rates) - 4;
-+			break;
- 		case NL80211_BAND_S1GHZ:
- 			memcpy(&sband->s1g_cap, &hwsim_s1g_cap,
- 			       sizeof(sband->s1g_cap));
-@@ -3300,19 +3426,21 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
- 			continue;
- 		}
- 
--		sband->ht_cap.ht_supported = true;
--		sband->ht_cap.cap = IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
--				    IEEE80211_HT_CAP_GRN_FLD |
--				    IEEE80211_HT_CAP_SGI_20 |
--				    IEEE80211_HT_CAP_SGI_40 |
--				    IEEE80211_HT_CAP_DSSSCCK40;
--		sband->ht_cap.ampdu_factor = 0x3;
--		sband->ht_cap.ampdu_density = 0x6;
--		memset(&sband->ht_cap.mcs, 0,
--		       sizeof(sband->ht_cap.mcs));
--		sband->ht_cap.mcs.rx_mask[0] = 0xff;
--		sband->ht_cap.mcs.rx_mask[1] = 0xff;
--		sband->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
-+		if (band != NL80211_BAND_6GHZ){
-+			sband->ht_cap.ht_supported = true;
-+			sband->ht_cap.cap = IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
-+					    IEEE80211_HT_CAP_GRN_FLD |
-+					    IEEE80211_HT_CAP_SGI_20 |
-+					    IEEE80211_HT_CAP_SGI_40 |
-+					    IEEE80211_HT_CAP_DSSSCCK40;
-+			sband->ht_cap.ampdu_factor = 0x3;
-+			sband->ht_cap.ampdu_density = 0x6;
-+			memset(&sband->ht_cap.mcs, 0,
-+			       sizeof(sband->ht_cap.mcs));
-+			sband->ht_cap.mcs.rx_mask[0] = 0xff;
-+			sband->ht_cap.mcs.rx_mask[1] = 0xff;
-+			sband->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
-+		}
- 
- 		mac80211_hwsim_he_capab(sband);
- 
--- 
-2.25.1
-
+Would it be OK to go ahead with these patches?
