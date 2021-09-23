@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED8C415874
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE622415880
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239437AbhIWGvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 02:51:33 -0400
-Received: from relay.sw.ru ([185.231.240.75]:39560 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239373AbhIWGvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:51:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=vtROa+P4fLarhoo5zHVgaO07dFJHZ8lgd6rV14a23N4=; b=mm4NFGv1WorRzXdvb
-        0fANICC/P0JNGuqguha1XOl3FMrxkIIzBvMJSgQ8zZnnDu2HTxwDLxRe7NnFrR6Xq4TES1kfjz3TK
-        n2Sa4PWBllcqGfzkEBCw+TTHgQm2HluKwcynBwEyDlKHKB6tpN3mAqO4PbI9bP0hQL8okJfjtZqeY
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mTIYP-002xdr-JG; Thu, 23 Sep 2021 09:49:57 +0300
-Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
- <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
- <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
-Date:   Thu, 23 Sep 2021 09:49:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239423AbhIWG5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 02:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239334AbhIWG5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 02:57:09 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BC3C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:55:38 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id y5so941696pll.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 23:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AmWq9SbwrmVcYQXqbOudIpr4L0AR6cg4qMF13tN786o=;
+        b=On0oxMzCr2gt/8NejZK3kYR/EO3dvskZYTlcGLu8gDKR+DnZf5k5y/rjK6myt08FKq
+         E8B27+oFGcZ7XXAlkmpWzHn3vdIEgCmbuGuugm1fhOfqg6+JqaZAYM7H8WKsegqpGtt4
+         1hOCHLvJkXoe3t/Ct42W9nKgIXHq5uXAZmYmI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AmWq9SbwrmVcYQXqbOudIpr4L0AR6cg4qMF13tN786o=;
+        b=NDWdZI9wOlcrJ/jiXOahffqi7uwrOdC9uSDoiwstrZlIx4jiscIuXY/2x2a5BJ4VUk
+         dSK+YqefShVzxpAPehIxTwHBUMqOaqOZBDQ9E2ZUYq/kIPsF3b3SHyPLILf8JlofJ75r
+         CIUYmf55PxZN8/fJ/J0vVDJJqZoHF2B9XpJYhrU/8yZf8bUDICMDZVe3GVY4/81vorpx
+         v28pQfGbU25Rv4n3iMb7jtW5iQKp8M8xNtLIiuidipNT3h5EQVQQHgbBZQclthHZ6x6S
+         /YkMAyJEDdxgxM3dQa0KraeLIloBi6v/Jxmi67XRfJlp19Kl6ydRdhEr65HCuJWPL03L
+         kiBw==
+X-Gm-Message-State: AOAM530M7YSMuhwjyMMES6/DByBG7NA4FDT2WsJnNwH7jyXkzsClymzC
+        t9hbpCSa7i73ECNjcaJauSV5SA==
+X-Google-Smtp-Source: ABdhPJzwl9SAOMvhQ9teA4ReWM9oVUM2ZPM+DZVNLVyVCtjew7NBoOmLZS6RHuD9OjQuNz8J5ui5zQ==
+X-Received: by 2002:a17:902:7882:b0:131:2e12:c928 with SMTP id q2-20020a170902788200b001312e12c928mr2876342pll.74.1632380137887;
+        Wed, 22 Sep 2021 23:55:37 -0700 (PDT)
+Received: from shiro.work ([2400:4162:2428:2f01:7285:c2ff:fe8e:66d7])
+        by smtp.googlemail.com with ESMTPSA id e12sm1581888pgv.82.2021.09.22.23.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 23:55:37 -0700 (PDT)
+From:   Daniel Palmer <daniel@0x0f.com>
+To:     devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, pavel@ucw.cz,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH v2 00/11] gpio: msc313: Add gpio support for ssd20xd
+Date:   Thu, 23 Sep 2021 15:54:49 +0900
+Message-Id: <20210923065500.2284347-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 3:27 PM, Michal Hocko wrote:
-> On Fri 17-09-21 11:06:49, Vasily Averin wrote:
->> Huge vmalloc allocation on heavy loaded node can lead to a global
->> memory shortage. A task called vmalloc can have the worst badness
->> and be chosen by OOM-killer, however received fatal signal and
->> oom victim mark does not interrupt allocation cycle. Vmalloc will
->> continue allocating pages over and over again, exacerbating the crisis
->> and consuming the memory freed up by another killed tasks.
->>
->> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
->> effective and avoid host panic.
->>
->> Unfortunately it is not 100% safe. Previous attempt to break vmalloc
->> cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
->> the current task is killed"") due to some vmalloc callers did not handled
->> failures properly. Found issues was resolved, however, there may
->> be other similar places.
->>
->> Such failures may be acceptable for emergencies, such as OOM. On the other
->> hand, we would like to detect them earlier. However they are quite rare,
->> and will be hidden by OOM messages, so I'm afraid they wikk have quite
->> small chance of being noticed and reported.
->>
->> To improve the detection of such places this patch also interrupts the vmalloc
->> allocation cycle for all fatal signals. The checks are hidden under DEBUG_VM
->> config option to do not break unaware production kernels.
-> 
-> I really dislike this. We shouldn't have a sementically different
-> behavior for a debugging kernel.
+This is a little series to add a compatible string for the Sigmastar
+SSD201 and SSD202D to the msc313 gpio driver, add the specific offsets
+for the pins on these chips, and then a bunch of DT wiring stuff so
+that the LEDs on the M5 stack unitv2 work and it can control the
+power switch for the USB connected.
 
-Yes, you're right, thank you.
+Changes since v1:
+  - Add a fix for the led binding to squash the warning about the
+    activity trigger in the unitv2 dts.
+  - Fix up the regulator node names so they pass dtb check
 
-> Is there any technical reason to not do fatal_signal_pending bailout
-> unconditionally? OOM victim based check will make it less likely and
-> therefore any potential bugs are just hidden more. So I think we should
-> really go with fatal_signal_pending check here.
+Daniel Palmer (11):
+  dt-bindings: gpio: msc313: Add compatible for ssd20xd
+  dt-bindings: gpio: msc313: Add offsets for ssd20xd
+  dt-bindings: leds: Document "activity" trigger
+  gpio: msc313: Code clean ups
+  gpio: msc313: Add support for SSD201 and SSD202D
+  ARM: dts: mstar: Set gpio compatible for ssd20xd
+  ARM: dts: mstar: unitv2: Wire up LEDs
+  ARM: dts: mstar: unitv2: Add core regulator
+  ARM: dts: mstar: unitv2: Add io regulator
+  ARM: dts: mstar: unitv2: Add DRAM regulator
+  ARM: dts: mstar: unitv2: Add wifi switch
 
-I'm agree, oom_victim == fatal_signal_pending.
-I'm agree that vmalloc callers should expect and handle single vnalloc failures.
-I think it is acceptable to enable fatal_signal_pending check to quickly
-detect such kind of iussues.
-However fatal_signal_pending check can cause serial vmalloc failures
-and I doubt it is acceptable. 
+ .../bindings/gpio/mstar,msc313-gpio.yaml      |   4 +-
+ .../devicetree/bindings/leds/common.yaml      |   2 +
+ .../dts/mstar-infinity2m-ssd202d-unitv2.dts   |  46 +++
+ .../boot/dts/mstar-infinity2m-ssd20xd.dtsi    |   5 +
+ drivers/gpio/gpio-msc313.c                    | 266 +++++++++++++++++-
+ include/dt-bindings/gpio/msc313-gpio.h        |  71 +++++
+ 6 files changed, 389 insertions(+), 5 deletions(-)
 
-Rollback after failed vmalloc can call new vmalloc calls that will be failed too, 
-even properly handled such serial failures can cause troubles.
+-- 
+2.33.0
 
-Hypothetically, cancelled vmalloc called inside some filesystem's transaction
-forces its rollback, that in own turn it can call own vmalloc.
-Any failures on this path can break the filesystem.
-I doubt it is acceptable, especially for non-OOM fatal signals.
-On the other hand I cannot say that it is a 100% bug.
-
-Another scenario:
-as you know failed vmalloc calls pr_warn. According message should be sent
-to remote terminal or netconsole. I'm not sure about execution context,
-however if this is done in task context it may call vmalloc either in terminal
-or in network subsystems. Even handled, such failures are not fatal,
-but this behaviour is at least unexpected.
-
-Should we perhaps interrupt the first vmalloc only?
-
->> Vmalloc uses new alloc_pages_bulk subsystem, so newly added checks can
->> affect other users of this subsystem.
->>
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->> ---
->>  mm/page_alloc.c | 5 +++++
->>  mm/vmalloc.c    | 6 ++++++
->>  2 files changed, 11 insertions(+)
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index b37435c274cf..133d52e507ff 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -5288,6 +5288,11 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->>  			continue;
->>  		}
->>  
->> +		if (tsk_is_oom_victim(current) ||
->> +		    (IS_ENABLED(CONFIG_DEBUG_VM) &&
->> +		     fatal_signal_pending(current)))
->> +			break;
-> 
-> This allocator interface is used in some real hot paths. It is also
-> meant to be fail fast interface (e.g. it only allocates from pcp
-> allocator) so it shouldn't bring any additional risk to memory depletion
-> under heavy memory pressure.
-> 
-> In other words I do not see any reason to bail out in this code path.
-
-Thank you for the explanation, let's drop this check at all.
-
-Thank you,
-	Vasily Averin
