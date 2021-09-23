@@ -2,186 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726E6416465
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEBE416482
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242575AbhIWR2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 13:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238674AbhIWR2x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:28:53 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E8BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:27:21 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id t8so19389855wrq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:27:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z8P/N3nWO0xQm62MFlmAAZqgDHsYeso9viJ+hbtMyd4=;
-        b=hy7aVkeaLnbUmjeFX+DYjMGNVNYriACYfGZQyjwmls49RYDUYd3/HoBrjRYAUBcP5u
-         WdQnR73JdNER1uCzMJocK1HW91vlAVMxtZcESqP1i97xaJzjUhusfzOq5bZNIb/07u6O
-         PHxp1L2be2L6LFSHWSN2hvDKWp6O/aFYzk04ao59UCgXZo4CfdQEz43ubxVEWZ+YhSyY
-         7DAnjTjddx0gG8gorwAX2HMRpSZH3Xlg2biA8xt0TZ6xAl7dHMTaGxRx/P/jgPE9K9hy
-         Aecwnh8Zc8otTWFXx6czDnJzLZ1teitLwEa8ByCIXrXn0AkpK3BAr9sNL8x0FgN0bPVR
-         X+rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z8P/N3nWO0xQm62MFlmAAZqgDHsYeso9viJ+hbtMyd4=;
-        b=tgwSUdyW1JAXZ+/9JMr+UZ9EQkJl1f3FPkPC5DOsedHs8fMytWp2ER+XFk4un326Ic
-         FRlQZcOSs+74tou0eGnNfHqF4pRO/HSbh2/pLAyzAsPrdst5Q0taYo68UO26r7IBH5Eo
-         4NVML5K75JAoTUAeg/YB1c09KkBywhYHBwJWZBhhxP2dvYezJLbHV5OZV69Cscm4BMXn
-         t3Ued8nBwxCzujuIfDdGVORNpuBowu/Uh66NP8QDSxvAGLZhAdDrlkNV8/uMa0atmYgz
-         xOtxNbN9ukhDQ1Gq/EBXW8pA/PE9Ozji1FURP0syBiDSxt+VaAJezTSP7vDcE4aIGSha
-         TFmw==
-X-Gm-Message-State: AOAM531NQVYF/lUraM3H1gMQHcxdur7D8CNdzcQUATaw0J9ulQ1t3+2J
-        YTjQSrIoBMXG7TCkQABG8zLa2GumU3+NHLRm98s=
-X-Google-Smtp-Source: ABdhPJx6UeLUNJEg4ECtZTPmdRdNxeNfodeUo9giXcpmLiqe3uXJ23JEPIV7y6k3ETipKna4LRADAw7g7juNd7bi/Bg=
-X-Received: by 2002:a1c:2b04:: with SMTP id r4mr5668001wmr.168.1632418040015;
- Thu, 23 Sep 2021 10:27:20 -0700 (PDT)
+        id S242622AbhIWReX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:34:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:57130 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242402AbhIWReW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 13:34:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=fLbWQGZ0ZFZbah0fwNhnccDlem7A8vW8BXBdw45XA5s=; b=iWliOkzX5o9u5EfiX4LVSU5lrW
+        UG0Qj49GPzoPsQLVUy6z43/2V9R1Dz3cDmPbHwOcpGxPHld/6GkU24rfGOnfCclhaOH1cgALMgCe6
+        1ZKqp0oDWuEd8pSXEwoRb++40ZOIYMjseqJ2Pg/YpQ4gUXXNtar0hfhOwXsnomv+TbQE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mTSaS-007xHv-2T; Thu, 23 Sep 2021 19:32:44 +0200
+Date:   Thu, 23 Sep 2021 19:32:44 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     robh+dt@kernel.org, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: marvell: add Globalscale MOCHAbin
+Message-ID: <YUy6PBMG25Ipr/vO@lunn.ch>
+References: <20210923135454.2967198-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
-References: <20210920225801.227211-1-robdclark@gmail.com> <20210920225801.227211-4-robdclark@gmail.com>
- <YUvN3j0v+8NMjNte@pendragon.ideasonboard.com>
-In-Reply-To: <YUvN3j0v+8NMjNte@pendragon.ideasonboard.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 23 Sep 2021 10:31:52 -0700
-Message-ID: <CAF6AEGviyfX6+c-CB5gMXqRQfHhvb5L8t++-VkZpvS3r9qDNoA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923135454.2967198-1-robert.marko@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 5:44 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Rob,
->
-> Thank you for the patch.
->
-> On Mon, Sep 20, 2021 at 03:58:00PM -0700, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > Slightly awkward to fish out the display_info when we aren't creating
-> > own connector.  But I don't see an obvious better way.
-> >
-> > v2: Remove error return with NO_CONNECTOR flag
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 39 ++++++++++++++++++++-------
-> >  1 file changed, 29 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > index 6154bed0af5b..94c94cc8a4d8 100644
-> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > @@ -667,11 +667,6 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
-> >                                                  .node = NULL,
-> >                                                };
-> >
-> > -     if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
-> > -             DRM_ERROR("Fix bridge driver to make connector optional!");
-> > -             return -EINVAL;
-> > -     }
-> > -
-> >       pdata->aux.drm_dev = bridge->dev;
-> >       ret = drm_dp_aux_register(&pdata->aux);
-> >       if (ret < 0) {
-> > @@ -679,9 +674,11 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
-> >               return ret;
-> >       }
-> >
-> > -     ret = ti_sn_bridge_connector_init(pdata);
-> > -     if (ret < 0)
-> > -             goto err_conn_init;
-> > +     if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-> > +             ret = ti_sn_bridge_connector_init(pdata);
-> > +             if (ret < 0)
-> > +                     goto err_conn_init;
-> > +     }
-> >
-> >       /*
-> >        * TODO: ideally finding host resource and dsi dev registration needs
-> > @@ -743,7 +740,8 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
-> >  err_dsi_attach:
-> >       mipi_dsi_device_unregister(dsi);
-> >  err_dsi_host:
-> > -     drm_connector_cleanup(&pdata->connector);
-> > +     if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
-> > +             drm_connector_cleanup(&pdata->connector);
->
-> I wonder if we actually need this. The connector gets attached to the
-> encoder, won't it be destroyed by the DRM core in the error path ?
+> +	/* 88E6141 Topaz switch */
+> +	switch: switch@3 {
+> +		compatible = "marvell,mv88e6085";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		reg = <3>;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&cp0_switch_pins>;
+> +		reset-gpios = <&cp0_gpio1 0 GPIO_ACTIVE_LOW>;
+> +
+> +		interrupt-parent = <&cp0_gpio1>;
+> +		interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
 
-This does not appear to be the case, we leak the connector if I remove
-this (and add a hack to trigger the error path)
+The switch interrupt is a level interrupt, not an edge interrupt.
 
-> >  err_conn_init:
-> >       drm_dp_aux_unregister(&pdata->aux);
-> >       return ret;
-> > @@ -792,9 +790,30 @@ static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
-> >       regmap_write(pdata->regmap, SN_DSIA_CLK_FREQ_REG, val);
-> >  }
-> >
-> > +/*
-> > + * Find the connector and fish out the bpc from display_info.  It would
-> > + * be nice if we could get this instead from drm_bridge_state, but that
-> > + * doesn't yet appear to be the case.
->
-> You already have a bus format in the bridge state, from which you can
-> derive the bpp. Could you give it a try ?
-
-Possibly the bridge should be converted to ->atomic_enable(), etc..
-I'll leave that for another time
-
-BR,
--R
-
-> > + */
-> >  static unsigned int ti_sn_bridge_get_bpp(struct ti_sn65dsi86 *pdata)
-> >  {
-> > -     if (pdata->connector.display_info.bpc <= 6)
-> > +     struct drm_bridge *bridge = &pdata->bridge;
-> > +     struct drm_connector_list_iter conn_iter;
-> > +     struct drm_connector *connector;
-> > +     unsigned bpc = 0;
-> > +
-> > +     drm_connector_list_iter_begin(bridge->dev, &conn_iter);
-> > +     drm_for_each_connector_iter(connector, &conn_iter) {
-> > +             if (drm_connector_has_possible_encoder(connector, bridge->encoder)) {
-> > +                     bpc = connector->display_info.bpc;
-> > +                     break;
-> > +             }
-> > +     }
-> > +     drm_connector_list_iter_end(&conn_iter);
-> > +
-> > +     WARN_ON(bpc == 0);
-> > +
-> > +     if (bpc <= 6)
-> >               return 18;
-> >       else
-> >               return 24;
->
-> --
-> Regards,
->
-> Laurent Pinchart
+    Andrew
