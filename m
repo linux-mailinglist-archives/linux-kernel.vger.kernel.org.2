@@ -2,165 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84158415A27
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A74415A2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240002AbhIWIjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 04:39:51 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48150 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239825AbhIWIjt (ORCPT
+        id S240027AbhIWImd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 04:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240054AbhIWImc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 04:39:49 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18N2qx2N000635;
-        Thu, 23 Sep 2021 10:38:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=jZB2v7cRtiNx2ClUgCrZhsw4GjZEOLW21gZOD4Egx74=;
- b=g4kDDX76uJWvBkxeIxrMOu4ZAS3aMX0w3N9V/bcTwqvfI6B5Bon6LfpxeZx7kcsw81n+
- LW7zqqMngAAReuXoJ9QlF1JcSB0L+CUMPsJRHCTxUNIyHxgJowRhMK5Ya1gKc/iiiBAE
- 2FJ988R6cCnl1es9Mx2v0a67bcrt/hCxl5TDIM2kV1R+tmYLHAD3wgxVsDa+1NJ8n42r
- QCBXLZ0LIEu1u/azEttDsbYon8NeE6B07o+q+a/rydqxtwHecO3WBKpqcLrih2r3guEX
- Zxr5uEvk+5NzBFeZ6ljao2MnPcncYXRqdgxXJ+3QLqGoMAI4p++JqUp5f3Jm9+NgZmZv bQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3b8h6f9u94-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Sep 2021 10:38:12 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 59ED910002A;
-        Thu, 23 Sep 2021 10:38:11 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 50F6C2248BF;
-        Thu, 23 Sep 2021 10:38:11 +0200 (CEST)
-Received: from lmecxl1060.lme.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
- 2021 10:38:09 +0200
-Subject: Re: [PATCH 4/4] i2c: stm32f7: use proper DMAENGINE API for
- termination
-To:     Alain Volmat <alain.volmat@foss.st.com>, <wsa@kernel.org>
-CC:     <alexandre.torgue@foss.st.com>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <amelie.delaunay@foss.st.com>
-References: <1632151292-18503-1-git-send-email-alain.volmat@foss.st.com>
- <1632151292-18503-5-git-send-email-alain.volmat@foss.st.com>
-From:   Pierre Yves MORDRET <pierre-yves.mordret@foss.st.com>
-Message-ID: <1b717a3f-8e2f-2e78-4509-63b04648659b@foss.st.com>
-Date:   Thu, 23 Sep 2021 10:38:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 23 Sep 2021 04:42:32 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73D1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 01:41:00 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id b65so19151516qkc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 01:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8oGhgVkawMnRHXxCUXlx6Q2c+rolf6rCe4TA6ccp79o=;
+        b=yZ2gBZPjfyvxK8VLKmsI3dBvCkVOBS72PjytH1Liz9z7mHlhV0DYtwOEc7NFXV+BlY
+         4PzCg816ucgTyCd2t86zPr3A7XAYgvq+NweoV72w0Ft/1RhWXdTxUsaLq+40XV344bRK
+         fTeFLcA4+HGZNeIbF2oepyOl+3yIdDjOWUlkBaM4K3ocyq/IG6IOm04959jnCOFIuwyx
+         Av6CqPc1z9EvYeVnxWYvH3EfD1IGemOWnP/m8Uy7S7EHrVwLfH5g57xP5v6Ns0uIWoKt
+         qzWY/ARiFrXg1Lmz1akTHCUr/UG7OiofGf+K2ZmuTpejgy3MswLgIDZYXsOllxKLnE68
+         P5SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8oGhgVkawMnRHXxCUXlx6Q2c+rolf6rCe4TA6ccp79o=;
+        b=kktru9skNbhp5/oXE75/TILtiJQq2hKmd7TOlDA0hAIXiioU/8//wOjKxJaylJ6R/X
+         xEtYTCrXIxrxoRbl+UXsL8mns6p+mV8vh1A/usLco/Jx5zWXlPUEFX2+3bJiRhlQ+zaq
+         lLIMOfoy9Mj8OxmVNxCzRx0cd2BO7fGhHwoclUc8Su2oqEnYP6PDQrRB72rlmMlWvTMr
+         mK6SjPj/rQnT8EN/RtMQH5r3k6MUmvJdajMhufNsbor60usoldRaprYIilQVeLNZpB6x
+         LtWqCyw1DB1PgfycrkIaVasHnUr4UkjVRIH2VoiDA7eBXwDSg5X0fcODxuPie0ngC1ck
+         f7lw==
+X-Gm-Message-State: AOAM53005v+jQm0BYi89/Y1XKC6cQfr2OucMZ+1QrgXKi1R7bKxhTv6C
+        PTfAH9rf+Dfnu/s/CJtWcPVWRkwRavzHpNclycjm0WQ2DpuMG9K9
+X-Google-Smtp-Source: ABdhPJyB086T6+NQMg7p6Vni1fNsTfU8tIjCQB5sGc1UoTm+LJs3Y6ydd6qC7337oy2yl8H5QWutb4fUC7rKybySGSc=
+X-Received: by 2002:a25:c753:: with SMTP id w80mr4282867ybe.245.1632386460044;
+ Thu, 23 Sep 2021 01:41:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1632151292-18503-5-git-send-email-alain.volmat@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-23_02,2021-09-22_01,2020-04-07_01
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+ <20210920142614.4891-3-mgorman@techsingularity.net> <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+ <20210921103621.GM3959@techsingularity.net> <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+ <20210922132002.GX3959@techsingularity.net> <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+ <20210922150457.GA3959@techsingularity.net> <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+ <20210922173853.GB3959@techsingularity.net> <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+ <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
+In-Reply-To: <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 23 Sep 2021 10:40:48 +0200
+Message-ID: <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to nr_running
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain
+On Thu, 23 Sept 2021 at 03:47, Mike Galbraith <efault@gmx.de> wrote:
+>
+> On Wed, 2021-09-22 at 20:22 +0200, Vincent Guittot wrote:
+> > On Wed, 22 Sept 2021 at 19:38, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > >
+> > >
+> > > I'm not seeing an alternative suggestion that could be turned into
+> > > an implementation. The current value for sched_wakeup_granularity
+> > > was set 12 years ago was exposed for tuning which is no longer
+> > > the case. The intent was to allow some dynamic adjustment between
+> > > sysctl_sched_wakeup_granularity and sysctl_sched_latency to reduce
+> > > over-scheduling in the worst case without disabling preemption entirely
+> > > (which the first version did).
+>
+> I don't think those knobs were ever _intended_ for general purpose
+> tuning, but they did get used that way by some folks.
+>
+> > >
+> > > Should we just ignore this problem and hope it goes away or just let
+> > > people keep poking silly values into debugfs via tuned?
+> >
+> > We should certainly not add a bandaid because people will continue to
+> > poke silly value at the end. And increasing
+> > sysctl_sched_wakeup_granularity based on the number of running threads
+> > is not the right solution.
+>
+> Watching my desktop box stack up large piles of very short running
+> threads, I agree, instantaneous load looks like a non-starter.
+>
+> >  According to the description of your
+> > problem that the current task doesn't get enough time to move forward,
+> > sysctl_sched_min_granularity should be part of the solution. Something
+> > like below will ensure that current got a chance to move forward
+>
+> Nah, progress is guaranteed, the issue is a zillion very similar short
+> running threads preempting each other with no win to be had, thus
+> spending cycles in the scheduler that are utterly wasted.  It's a valid
+> issue, trouble is teaching the scheduler to recognize that situation
+> without mucking up other situations where there IS a win for even very
+> short running threads say, doing a synchronous handoff; preemption is
+> cheaper than scheduling off if the waker is going be awakened again in
+> very short order.
+>
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 9bf540f04c2d..39d4e4827d3d 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -7102,6 +7102,7 @@ static void check_preempt_wakeup(struct rq *rq,
+> > struct task_struct *p, int wake_
+> >         int scale = cfs_rq->nr_running >= sched_nr_latency;
+> >         int next_buddy_marked = 0;
+> >         int cse_is_idle, pse_is_idle;
+> > +       unsigned long delta_exec;
+> >
+> >         if (unlikely(se == pse))
+> >                 return;
+> > @@ -7161,6 +7162,13 @@ static void check_preempt_wakeup(struct rq *rq,
+> > struct task_struct *p, int wake_
+> >                 return;
+> >
+> >         update_curr(cfs_rq_of(se));
+> > +       delta_exec = se->sum_exec_runtime - se->prev_sum_exec_runtime;
+> > +       /*
+> > +        * Ensure that current got a chance to move forward
+> > +        */
+> > +       if (delta_exec < sysctl_sched_min_granularity)
+> > +               return;
+> > +
+> >         if (wakeup_preempt_entity(se, pse) == 1) {
+> >                 /*
+> >                  * Bias pick_next to pick the sched entity that is
+>
+> Yikes!  If you do that, you may as well go the extra nanometer and rip
+> wakeup preemption out entirely, same result, impressive diffstat.
 
-Look good to me
+This patch is mainly there to show that there are other ways to ensure
+progress without using some load heuristic.
+sysctl_sched_min_granularity has the problem of scaling with the
+number of cpus and this can generate large values. At least we should
+use the normalized_sysctl_sched_min_granularity or even a smaller
+value but wakeup preemption still happens with this change. It only
+ensures that we don't waste time preempting each other without any
+chance to do actual stuff.
 
-Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+a 100us value should even be enough to fix Mel's problem without
+impacting common wakeup preemption cases.
 
-Regards
 
-On 9/20/21 5:21 PM, Alain Volmat wrote:
-> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
-> it should be sync or async.  Here, we use dmaengine_terminate_sync in
-> i2c_xfer and i2c_smbus_xfer handlers and rely on
-> dmaengine_terminate_async within interrupt handlers
-> (transmission error cases).
-> dmaengine_synchronize is added within i2c_xfer and i2c_smbus_xfer handler
-> to finalize terminate started in interrupt handlers.
-> 
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> ---
->  drivers/i2c/busses/i2c-stm32f7.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-> index 50d5ae81d227..66145d2b9b55 100644
-> --- a/drivers/i2c/busses/i2c-stm32f7.c
-> +++ b/drivers/i2c/busses/i2c-stm32f7.c
-> @@ -1521,7 +1521,7 @@ static irqreturn_t stm32f7_i2c_isr_event(int irq, void *data)
->  		writel_relaxed(STM32F7_I2C_ICR_NACKCF, base + STM32F7_I2C_ICR);
->  		if (i2c_dev->use_dma) {
->  			stm32f7_i2c_disable_dma_req(i2c_dev);
-> -			dmaengine_terminate_all(dma->chan_using);
-> +			dmaengine_terminate_async(dma->chan_using);
->  		}
->  		f7_msg->result = -ENXIO;
->  	}
-> @@ -1588,7 +1588,7 @@ static irqreturn_t stm32f7_i2c_isr_event_thread(int irq, void *data)
->  	if (!ret) {
->  		dev_dbg(i2c_dev->dev, "<%s>: Timed out\n", __func__);
->  		stm32f7_i2c_disable_dma_req(i2c_dev);
-> -		dmaengine_terminate_all(dma->chan_using);
-> +		dmaengine_terminate_async(dma->chan_using);
->  		f7_msg->result = -ETIMEDOUT;
->  	}
->  
-> @@ -1665,7 +1665,7 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
->  	/* Disable dma */
->  	if (i2c_dev->use_dma) {
->  		stm32f7_i2c_disable_dma_req(i2c_dev);
-> -		dmaengine_terminate_all(dma->chan_using);
-> +		dmaengine_terminate_async(dma->chan_using);
->  	}
->  
->  	i2c_dev->master_mode = false;
-> @@ -1702,6 +1702,9 @@ static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
->  						i2c_dev->adap.timeout);
->  	ret = f7_msg->result;
->  	if (ret) {
-> +		if (i2c_dev->use_dma)
-> +			dmaengine_synchronize(dma->chan_using);
-> +
->  		/*
->  		 * It is possible that some unsent data have already been
->  		 * written into TXDR. To avoid sending old data in a
-> @@ -1716,7 +1719,7 @@ static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
->  		dev_dbg(i2c_dev->dev, "Access to slave 0x%x timed out\n",
->  			i2c_dev->msg->addr);
->  		if (i2c_dev->use_dma)
-> -			dmaengine_terminate_all(dma->chan_using);
-> +			dmaengine_terminate_sync(dma->chan_using);
->  		stm32f7_i2c_wait_free_bus(i2c_dev);
->  		ret = -ETIMEDOUT;
->  	}
-> @@ -1761,6 +1764,9 @@ static int stm32f7_i2c_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
->  					      i2c_dev->adap.timeout);
->  	ret = f7_msg->result;
->  	if (ret) {
-> +		if (i2c_dev->use_dma)
-> +			dmaengine_synchronize(dma->chan_using);
-> +
->  		/*
->  		 * It is possible that some unsent data have already been
->  		 * written into TXDR. To avoid sending old data in a
-> @@ -1774,7 +1780,7 @@ static int stm32f7_i2c_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
->  	if (!timeout) {
->  		dev_dbg(dev, "Access to slave 0x%x timed out\n", f7_msg->addr);
->  		if (i2c_dev->use_dma)
-> -			dmaengine_terminate_all(dma->chan_using);
-> +			dmaengine_terminate_sync(dma->chan_using);
->  		stm32f7_i2c_wait_free_bus(i2c_dev);
->  		ret = -ETIMEDOUT;
->  		goto pm_free;
-> 
-
--- 
---
-~ Py MORDRET
---
+>
+>         -Mike
