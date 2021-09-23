@@ -2,219 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61281415E5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EEA415E69
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241020AbhIWMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241010AbhIWM37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:29:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7462260F4C;
-        Thu, 23 Sep 2021 12:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632400108;
-        bh=Os5LXya4yRMgFGSZwh+5l9dBxaDCc5Hf5BRdOqzikTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qIqDmD2hM77r8GfB2HCKg3sY9UhopIZAfU1DUkeprNtxtiHDrjSE++43XK0h4vWpD
-         PHnyvPS+BrNHbgg9a3B2UvsWvdyDuOVEYkAT6KETC/v4rMBdvaGePN1Y5119p3imx5
-         MbdyunX9Vh1R04xj210trvbaSZB0/CWAz33X9s/A=
-Date:   Thu, 23 Sep 2021 14:28:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sohil Mehta <sohil.mehta@intel.com>
-Cc:     x86@kernel.org, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 10/13] x86/uintr: Introduce user IPI sender syscalls
-Message-ID: <YUxy6XqMB1+DYJtP@kroah.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-11-sohil.mehta@intel.com>
+        id S241010AbhIWMcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:32:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58762 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240787AbhIWMcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 08:32:16 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E0E242235E;
+        Thu, 23 Sep 2021 12:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632400243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LhcIQcMVizxGvHBw/6VV2mKGKHrIYgyDJMe76PlbHdo=;
+        b=ocX8UxG9NxyMAuSYlp6hZ/vEpdGknBAUndqPdryiJUC+KAl0JjpDXnzpFQrnke18cHK1uW
+        uEL0gyhwtxyL/rS6l9UQwo01xGcvzcNWd4oJj6ee/L4vkjNfdcOT47nAEs4MpLLn642Yi/
+        aksD4x0o0RQTz6vumfunHYecFKiAo4k=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEA6013C62;
+        Thu, 23 Sep 2021 12:30:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NvNjKXNzTGG3JwAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 12:30:43 +0000
+Subject: Re: [PATCH RFC 1/3] xen/privcmd: replace kcalloc() by kvcalloc() when
+ allocating empty pages
+To:     Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <0f0db6fa-2604-9a0d-1138-0063b5a39a87@suse.com>
+ <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <6e90efe0-4c0d-55d9-bff8-6da9b9614cd1@suse.com>
+Date:   Thu, 23 Sep 2021 14:30:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913200132.3396598-11-sohil.mehta@intel.com>
+In-Reply-To: <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="DReaxJbM2X5uf5LruUj9ZWLgctnRzIgmv"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 01:01:29PM -0700, Sohil Mehta wrote:
-> Add a registration syscall for a task to register itself as a user
-> interrupt sender using the uintr_fd generated by the receiver. A task
-> can register multiple uintr_fds. Each unique successful connection
-> creates a new entry in the User Interrupt Target Table (UITT).
-> 
-> Each entry in the UITT table is referred by the UITT index (uipi_index).
-> The uipi_index returned during the registration syscall lets a sender
-> generate a user IPI using the 'SENDUIPI <uipi_index>' instruction.
-> 
-> Also, add a sender unregister syscall to unregister a particular task
-> from the uintr_fd. Calling close on the uintr_fd will disconnect all
-> threads in a sender process from that FD.
-> 
-> Currently, the UITT size is arbitrarily chosen as 256 entries
-> corresponding to a 4KB page. Based on feedback and usage data this can
-> either be increased/decreased or made dynamic later.
-> 
-> Architecturally, the UITT table can be unique for each thread or shared
-> across threads of the same thread group. The current implementation
-> keeps the UITT as unique for the each thread. This makes the kernel
-> implementation relatively simple and only threads that use uintr get
-> setup with the related structures. However, this means that the
-> uipi_index for each thread would be inconsistent wrt to other threads.
-> (Executing 'SENDUIPI 2' on threads of the same process could generate
-> different user interrupts.)
-> 
-> Alternatively, the benefit of sharing the UITT table is that all threads
-> would see the same view of the UITT table. Also the kernel UITT memory
-> allocation would be more efficient if multiple threads connect to the
-> same uintr_fd. However, this would mean the kernel needs to keep the
-> UITT table size MISC_MSR[] in sync across these threads. Also the
-> UPID/UITT teardown flows might need additional consideration.
-> 
-> Signed-off-by: Sohil Mehta <sohil.mehta@intel.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--DReaxJbM2X5uf5LruUj9ZWLgctnRzIgmv
+Content-Type: multipart/mixed; boundary="MY6l14mAjftPp6ROEXXWrrmnZRAeYFlKL";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ lkml <linux-kernel@vger.kernel.org>
+Message-ID: <6e90efe0-4c0d-55d9-bff8-6da9b9614cd1@suse.com>
+Subject: Re: [PATCH RFC 1/3] xen/privcmd: replace kcalloc() by kvcalloc() when
+ allocating empty pages
+References: <0f0db6fa-2604-9a0d-1138-0063b5a39a87@suse.com>
+ <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
+In-Reply-To: <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
+
+--MY6l14mAjftPp6ROEXXWrrmnZRAeYFlKL
+Content-Type: multipart/mixed;
+ boundary="------------7F2FB7307810C6841AC92D01"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------7F2FB7307810C6841AC92D01
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 22.09.21 12:16, Jan Beulich wrote:
+> Osstest has been suffering test failures for a little while from order-=
+4
+> allocation failures, resulting from alloc_empty_pages() calling
+> kcalloc(). As there's no need for physically contiguous space here,
+> switch to kvcalloc().
+>=20
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
 > ---
->  arch/x86/include/asm/processor.h |   2 +
->  arch/x86/include/asm/uintr.h     |  15 ++
->  arch/x86/kernel/process.c        |   1 +
->  arch/x86/kernel/uintr_core.c     | 355 ++++++++++++++++++++++++++++++-
->  arch/x86/kernel/uintr_fd.c       | 133 ++++++++++++
->  5 files changed, 495 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index d229bfac8b4f..3482c3182e39 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -10,6 +10,7 @@ struct mm_struct;
->  struct io_bitmap;
->  struct vm86;
->  struct uintr_receiver;
-> +struct uintr_sender;
->  
->  #include <asm/math_emu.h>
->  #include <asm/segment.h>
-> @@ -533,6 +534,7 @@ struct thread_struct {
->  #ifdef CONFIG_X86_USER_INTERRUPTS
->  	/* User Interrupt state*/
->  	struct uintr_receiver	*ui_recv;
-> +	struct uintr_sender	*ui_send;
->  #endif
->  
->  	/* Floating point and extended processor state */
-> diff --git a/arch/x86/include/asm/uintr.h b/arch/x86/include/asm/uintr.h
-> index 1f00e2a63da4..ef3521dd7fb9 100644
-> --- a/arch/x86/include/asm/uintr.h
-> +++ b/arch/x86/include/asm/uintr.h
-> @@ -8,6 +8,7 @@ struct uintr_upid_ctx {
->  	struct task_struct *task;	/* Receiver task */
->  	struct uintr_upid *upid;
->  	refcount_t refs;
-> +	bool receiver_active;		/* Flag for UPID being mapped to a receiver */
->  };
->  
->  struct uintr_receiver_info {
-> @@ -16,12 +17,26 @@ struct uintr_receiver_info {
->  	u64 uvec;				/* Vector number */
->  };
->  
-> +struct uintr_sender_info {
-> +	struct list_head node;
-> +	struct uintr_uitt_ctx *uitt_ctx;
-> +	struct task_struct *task;
-> +	struct uintr_upid_ctx *r_upid_ctx;	/* Receiver's UPID context */
-> +	struct callback_head twork;		/* Task work head */
-> +	unsigned int uitt_index;
-> +};
-> +
->  bool uintr_arch_enabled(void);
->  int do_uintr_register_handler(u64 handler);
->  int do_uintr_unregister_handler(void);
->  int do_uintr_register_vector(struct uintr_receiver_info *r_info);
->  void do_uintr_unregister_vector(struct uintr_receiver_info *r_info);
->  
-> +int do_uintr_register_sender(struct uintr_receiver_info *r_info,
-> +			     struct uintr_sender_info *s_info);
-> +void do_uintr_unregister_sender(struct uintr_receiver_info *r_info,
-> +				struct uintr_sender_info *s_info);
-> +
->  void uintr_free(struct task_struct *task);
->  
->  /* TODO: Inline the context switch related functions */
-> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> index 83677f76bd7b..9db33e467b30 100644
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -92,6 +92,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
->  #ifdef CONFIG_X86_USER_INTERRUPTS
->  	/* User Interrupt state is unique for each task */
->  	dst->thread.ui_recv = NULL;
-> +	dst->thread.ui_send = NULL;
->  #endif
->  
->  	return fpu_clone(dst);
-> diff --git a/arch/x86/kernel/uintr_core.c b/arch/x86/kernel/uintr_core.c
-> index 9dcb9f60e5bc..8f331c5fe0cf 100644
-> --- a/arch/x86/kernel/uintr_core.c
-> +++ b/arch/x86/kernel/uintr_core.c
-> @@ -21,6 +21,11 @@
->  #include <asm/msr-index.h>
->  #include <asm/uintr.h>
->  
-> +/*
-> + * Each UITT entry is 16 bytes in size.
-> + * Current UITT table size is set as 4KB (256 * 16 bytes)
-> + */
-> +#define UINTR_MAX_UITT_NR 256
->  #define UINTR_MAX_UVEC_NR 64
->  
->  /* User Posted Interrupt Descriptor (UPID) */
-> @@ -44,6 +49,27 @@ struct uintr_receiver {
->  	u64 uvec_mask;	/* track active vector per bit */
->  };
->  
-> +/* User Interrupt Target Table Entry (UITTE) */
-> +struct uintr_uitt_entry {
-> +	u8	valid;			/* bit 0: valid, bit 1-7: reserved */
+> RFC: I cannot really test this, as alloc_empty_pages() only gets used i=
+n
+>       the auto-translated case (i.e. on Arm or PVH Dom0, the latter of
+>       which I'm not trusting enough yet to actually start playing with
+>       guests).
+>=20
+> There are quite a few more kcalloc() where it's not immediately clear
+> how large the element counts could possibly grow nor whether it would b=
+e
+> fine to replace them (i.e. physically contiguous space not required).
 
-Do you check that the other bits are set to 0?
+I don't think those are an issue. Per default the sizes seem to be well
+below a single page.
 
-> +	u8	user_vec;
-> +	u8	reserved[6];
+> I wasn't sure whether to Cc stable@ here; the issue certainly has been
+> present for quite some time. But it didn't look to cause issues until
+> recently.
 
-What is this reserved for?
+I'd rather add it to stable. Its not as if the patch had a high
+complexity.
 
-> +	u64	target_upid_addr;
 
-If this is a pointer, why not say it is a pointer?
+Juergen
 
-> +} __packed __aligned(16);
-> +
-> +struct uintr_uitt_ctx {
-> +	struct uintr_uitt_entry *uitt;
-> +	/* Protect UITT */
-> +	spinlock_t uitt_lock;
-> +	refcount_t refs;
+--------------7F2FB7307810C6841AC92D01
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-Again, a kref please.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-thanks,
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-greg k-h
+--------------7F2FB7307810C6841AC92D01--
+
+--MY6l14mAjftPp6ROEXXWrrmnZRAeYFlKL--
+
+--DReaxJbM2X5uf5LruUj9ZWLgctnRzIgmv
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMc3MFAwAAAAAACgkQsN6d1ii/Ey+0
+lQf9GKjiImongEdgd0ahwBbAun2YWu+HqadhVoJKBzKa2XkXfL5RictA7VuW5J1+2XZGQzoiT1YC
+VBTg5CeYvp1UoqVV2u7PcgXsfTcgMZc0VLt2pl8HpniFD34ToEFDooENtu/yxeAF557KK5gw+JQG
+3ArlHZoOI2e38WXhCTj+nG79GwCbyplgZPwPqlUhAZuYtwQXu9pu6jGKdO6zUCl02aN7D7P3Vu61
+ibkntBOMUorimlX5rtEF4Bryp4N8AnWI20MzFLq6FhvCH369RNfOMgz8os4hBbe2oiquQNCRpfb/
+OBfZMxihbvVPqtKcImChLF+6cYBFaiBweY53CO44QQ==
+=DEf8
+-----END PGP SIGNATURE-----
+
+--DReaxJbM2X5uf5LruUj9ZWLgctnRzIgmv--
