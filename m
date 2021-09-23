@@ -2,351 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB2B4161FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D864161FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241997AbhIWP1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:27:02 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:41425 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241985AbhIWP1B (ORCPT
+        id S242003AbhIWP1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:27:18 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37602 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241999AbhIWP1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:27:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=26;SR=0;TI=SMTPD_---0UpLqEtb_1632410722;
-Received: from ashimida.local(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0UpLqEtb_1632410722)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 23 Sep 2021 23:25:24 +0800
-Subject: Re: [PATCH] [RFC/RFT]SCS:Add gcc plugin to support Shadow Call Stack
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Colin King <colin.king@canonical.com>, andreyknvl@gmail.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Will Deacon <will@kernel.org>,
-        luc.vanoostenryck@gmail.com, Marco Elver <elver@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <1632069436-25075-1-git-send-email-ashimida@linux.alibaba.com>
- <CAMj1kXGQ+x243wK-8NP+kxs2dCgSa+MD5+Tv3Xzo3510Td1t3Q@mail.gmail.com>
- <bbe282c6-64f4-cd95-5d64-8266d52ee7a1@linux.alibaba.com>
- <CAMj1kXGr7ZzBmr-SrxmBsqWvn+NSPC_VKAr5gqx1WN-91i7wpg@mail.gmail.com>
- <94198e26-2cfd-fdc8-7427-d41437cae964@linux.alibaba.com>
- <CAMj1kXHTksfrmVLyNW6q4aKV0N38KRRx5_9426zpb6MGPNDdKg@mail.gmail.com>
-From:   Dan Li <ashimida@linux.alibaba.com>
-Message-ID: <377e7da8-577b-cd8e-1212-ba0c2d31eb05@linux.alibaba.com>
-Date:   Thu, 23 Sep 2021 23:25:22 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        Thu, 23 Sep 2021 11:27:03 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6F8A622259;
+        Thu, 23 Sep 2021 15:25:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632410731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ej12isJcowNNLOgeaywRRKDnV7BrcTMYPQN4LE2jtM=;
+        b=nk/pt2Cd+40MLiSy77vU9N0l6Hgyxkt9XZ6YBuEUBjCL/+lRzsPQKnh24s+RsgPJX+ufyX
+        5Zyvx/LsIrJW5w4gLm2dTqGpP01Tt+s6VnezQ6lNtSUTk+dfhmRR+BFczXPPmUiJPz8H05
+        4LG0d1lTw2IBepayEdBxxf5/TQIkxXw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3927313E6E;
+        Thu, 23 Sep 2021 15:25:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GFygDGucTGGrDgAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 15:25:31 +0000
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <5af11027-cf9d-cf78-9f48-b2ce2edd6e62@suse.com>
+ <2ded8c58-b9c3-89dc-6883-1794d1c4126a@suse.com>
+ <d9b6e98c-4e75-73f3-1e6d-42df300cfd49@suse.com>
+ <89cb2d39-2bfc-dccf-8e92-39e4e952750d@suse.com>
+ <f613a83c-2b29-23eb-ca78-a8a75a67f651@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH 7/9] xen/x86: hook up xen_banner() also for PVH
+Message-ID: <e095eec1-f35b-ca35-9ad1-54c817e61408@suse.com>
+Date:   Thu, 23 Sep 2021 17:25:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXHTksfrmVLyNW6q4aKV0N38KRRx5_9426zpb6MGPNDdKg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <f613a83c-2b29-23eb-ca78-a8a75a67f651@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="PFXOQuIsPnpM36gnvqC8IX13s63RGmP6X"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PFXOQuIsPnpM36gnvqC8IX13s63RGmP6X
+Content-Type: multipart/mixed; boundary="mUFqiPeflUgtMo9r5bhO1fdNfDpEYCym1";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <e095eec1-f35b-ca35-9ad1-54c817e61408@suse.com>
+Subject: Re: [PATCH 7/9] xen/x86: hook up xen_banner() also for PVH
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <5af11027-cf9d-cf78-9f48-b2ce2edd6e62@suse.com>
+ <2ded8c58-b9c3-89dc-6883-1794d1c4126a@suse.com>
+ <d9b6e98c-4e75-73f3-1e6d-42df300cfd49@suse.com>
+ <89cb2d39-2bfc-dccf-8e92-39e4e952750d@suse.com>
+ <f613a83c-2b29-23eb-ca78-a8a75a67f651@suse.com>
+In-Reply-To: <f613a83c-2b29-23eb-ca78-a8a75a67f651@suse.com>
 
+--mUFqiPeflUgtMo9r5bhO1fdNfDpEYCym1
+Content-Type: multipart/mixed;
+ boundary="------------C640D5E0E67FA74A447A863B"
+Content-Language: en-US
 
-On 9/22/21 9:48 PM, Ard Biesheuvel wrote:
-> On Tue, 21 Sept 2021 at 08:00, Dan Li <ashimida@linux.alibaba.com> wrote:
->>
->>
->>
->> On 9/21/21 5:22 AM, Ard Biesheuvel wrote:
->>> On Mon, 20 Sept 2021 at 20:53, Dan Li <ashimida@linux.alibaba.com> wrote:
->>>>
->>>> Hi Ard,
->>>>
->>>> Thanks for your comment.
->>>>
->>>> I pasted a copy of the config code in my last email, could you please check it again?
->>>>
->>>> On 9/20/21 3:18 PM, Ard Biesheuvel wrote:
->>>>> Hi Dan,
+This is a multi-part message in MIME format.
+--------------C640D5E0E67FA74A447A863B
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 23.09.21 17:19, Jan Beulich wrote:
+> On 23.09.2021 17:15, Juergen Gross wrote:
+>> On 23.09.21 17:10, Jan Beulich wrote:
+>>> On 23.09.2021 16:59, Juergen Gross wrote:
+>>>> On 07.09.21 12:11, Jan Beulich wrote:
+>>>>> This was effectively lost while dropping PVHv1 code. Move the funct=
+ion
+>>>>> and arrange for it to be called the same way as done in PV mode. Cl=
+early
+>>>>> this then needs re-introducing the XENFEAT_mmu_pt_update_preserve_a=
+d
+>>>>> check that was recently removed, as that's a PV-only feature.
 >>>>>
->>>>> On Sun, 19 Sept 2021 at 18:37, Dan Li <ashimida@linux.alibaba.com> wrote:
->>>>>>
->>>>>> The Clang-based shadow call stack protection has been integrated into the
->>>>>> mainline, but kernel compiled by gcc cannot enable this feature for now.
->>>>>>
->>>>>> This Patch supports gcc-based SCS protection by adding a plugin.
->>>>>>
+>>>>> Signed-off-by: Jan Beulich <jbeulich@suse.com>
 >>>>>
->>>>> Thanks for working on this. I had a stab at this myself about 2 years
->>>>> ago and couldn't make it work.
->>>>>
->>>>>> For each function that x30 will be pushed onto the stack during execution,
->>>>>> this plugin:
->>>>>> 1) insert "str x30, [x18], #8" at the entry of the function to save x30
->>>>>>       to current SCS
->>>>>> 2) insert "ldr x30, [x18, #-8]!"  before the exit of this function to
->>>>>>       restore x30
->>>>>>
->>>>>
->>>>> This logic seems sound to me, but it would be nice if someone more
->>>>> familiar with Clang's implementation could confirm that it is really
->>>>> this simple.
->>>>>
->>>>> Looking at your plugin, there is an issue with tail calls, and I don't
->>>>> think Clang simply disables those altogether as well, right?
+>>>>> --- a/arch/x86/xen/enlighten.c
+>>>>> +++ b/arch/x86/xen/enlighten.c
+>>>>> @@ -261,6 +261,18 @@ int xen_vcpu_setup(int cpu)
+>>>>>     	return ((per_cpu(xen_vcpu, cpu) =3D=3D NULL) ? -ENODEV : 0);
+>>>>>     }
+>>>>>    =20
+>>>>> +void __init xen_banner(void)
+>>>>> +{
+>>>>> +	unsigned version =3D HYPERVISOR_xen_version(XENVER_version, NULL)=
+;
+>>>>> +	struct xen_extraversion extra;
 >>>>
->>>> I am not familiar with clang's code, the logic comes from clang's description and the
->>>> disassembled binary code for now, so it may be different from the actual situation.
->>>>
+>>>> Please add a blank line here.
 >>>
->>> OK
+>>> Oops.
 >>>
->>>> The tail call could be handled (theoretically), and I will try to solve the issue in
->>>> the next version.
->>>>>
->>>>>>     ifdef CONFIG_SHADOW_CALL_STACK
->>>>>> -CC_FLAGS_SCS   := -fsanitize=shadow-call-stack
->>>>>> +CC_FLAGS_SCS   := $(if $(CONFIG_CC_IS_CLANG),-fsanitize=shadow-call-stack,)
->>>>>
->>>>> This variable should contain whatever needs to be added to the
->>>>> compiler comamand line
->>>>      In the new code, an 'enable' option is added here to enable the plugin
->>>>>>     KBUILD_CFLAGS  += $(CC_FLAGS_SCS)
->>>>>>     export CC_FLAGS_SCS
->>>>>>     endif
->>>>>> diff --git a/arch/Kconfig b/arch/Kconfig
->>>>>> index 98db634..81ff127 100644
->>>>>> --- a/arch/Kconfig
->>>>>> +++ b/arch/Kconfig
->>>>>> @@ -594,7 +594,7 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
->>>>>>
->>>>>>     config SHADOW_CALL_STACK
->>>>>>            bool "Clang Shadow Call Stack"
->>>>>> -       depends on CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK
->>>>>> +       depends on (CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK) || GCC_PLUGIN_SHADOW_CALL_STACK
->>>>>
->>>>> This logic needs to be defined in such a way that a builtin
->>>>> implementation provided by GCC will take precedence once it becomes
->>>>> available.
->>>>>
->>>>      In new code, if gcc supports SCS in the future, the plugin will be closed due to
->>>>      CC_HAVE_SHADOW_CALL_STACK is true.
->>>>>>            depends on DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
->>>>>>            help
->>>>>>              This option enables Clang's Shadow Call Stack, which uses a
->>>>>> diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
->>>>>> index ab9eb4c..2534195e 100644
->>>>>> --- a/scripts/gcc-plugins/Kconfig
->>>>>> +++ b/scripts/gcc-plugins/Kconfig
->>>>>> @@ -19,6 +19,14 @@ menuconfig GCC_PLUGINS
->>>>>>
->>>>>>     if GCC_PLUGINS
->>>>>>
->>>>>> +config GCC_PLUGIN_SHADOW_CALL_STACK
->>>>>> +       bool "GCC Shadow Call Stack plugin"
->>>>>> +       select SHADOW_CALL_STACK
->>>>>
->>>>> You shouldn't 'select' something like this if the symbol has its own
->>>>> dependencies which may be unsatisfied, as this causes a Kconfig
->>>>> warning. Also, en/disabling shadow call stacks for the architecture
->>>>> should be done from the arch's 'kernel features' menu, it shouldn't be
->>>>> buried in the GCC plugins menu.
->>>>       I removed 'select' in the new version.
->>>>       SCS's enable is changed to rely on CONFIG_SHADOW_CALL_STACK in arch/kernel,
->>>>       the GCC_PLUGIN_SHADOW_CALL_STACK config is just to add a usable platform to it.
->>>>>> +       help
->>>>>> +         This plugin is used to support the kernel CONFIG_SHADOW_CALL_STACK
->>>>>> +         compiled by gcc. Its principle is basically the same as that of CLANG.
->>>>>> +         For more information, please refer to "config SHADOW_CALL_STACK"
->>>>>> +
->>>>>> +__visible int plugin_is_GPL_compatible;
->>>>>> +
->>>>>> +static struct plugin_info arm64_scs_plugin_info = {
->>>>>> +       .version        = "20210926vanilla",
->>>>>
->>>>> I will respond to this obvious invitation at bikeshedding by saying
->>>>> that 'salted caramel' is clearly the superior flavor of ice cream.
->>>>      I'm sorry, as a non-native English speaker, I think I might not understand
->>>>      what you mean here. My intention is to say that this is the first/initial
->>>>      version, do I miss something?
+>>>>> +	HYPERVISOR_xen_version(XENVER_extraversion, &extra);
+>>>>> +
+>>>>> +	pr_info("Booting paravirtualized kernel on %s\n", pv_info.name);
+>>>>
+>>>> Is this correct? I don't think the kernel needs to be paravirtualize=
+d
+>>>> with PVH (at least not to the same extend as for PV).
 >>>
->>> It was a joke - don't worry about it.
->>>
->>>>>> +       .help           = "disable\tdo not activate plugin\n"
->>>>>> +                         "verbose\tprint all debug infos\n",
->>>>>> +};
->>>>>> +static unsigned int arm64_scs_execute(void)
->>>>>> +{
->>>>>> +       rtx_insn *insn;
->>>>>> +       enum scs_state state = SCS_SEARCHING_FIRST_INSN;
->>>>>> +
->>>>>> +       for (insn = get_insns(); insn; insn = NEXT_INSN(insn)) {
->>>>>> +               rtx mark = NULL;
->>>>>> +
->>>>>> +               switch (GET_CODE(insn)) {
->>>>>> +               case NOTE:
->>>>>> +               case BARRIER:
->>>>>> +               case CODE_LABEL:
->>>>>> +               case INSN:
->>>>>> +               case DEBUG_INSN:
->>>>>> +               case JUMP_INSN:
->>>>>> +               case JUMP_TABLE_DATA:
->>>>>> +                       break;
->>>>>> +               case CALL_INSN:
->>>>>> +                       if (SIBLING_CALL_P(insn)) {
->>>>>> +                               error(G_("Sibling call found in func:%s, file:%s\n"),
->>>>>> +                                               get_name(current_function_decl),
->>>>>> +                                               main_input_filename);
->>>>>> +                               gcc_unreachable();
->>>>>> +                       }
->>>>>
->>>>> Sibling calls are an important optimization, not only for performance
->>>>> but also for stack utilization, so this needs to be fixed. Can you
->>>>> elaborate on the issue you are working around here?
->>>>>
->>>>      Since the ARM64 has disabled sibling calls (-fno-optimize-sibling-calls) by default,
->>>>      there is almost no sibling call appear in the kernel I encountered.
->>>
->>> What do you mean this is disabled by default? Is that a compiler
->>> setting or a Linux setting?
->> It's a linux setting in aarch64 kernel.
+>>> What else do you suggest the message to say? Simply drop
+>>> "paravirtualized"? To some extent it is applicable imo, further
+>>> qualified by pv_info.name. And that's how it apparently was with
+>>> PVHv1.
 >>
->> In aarch64, since CONFIG_FRAME_POINTER is always selected, -fno-optimize-sibling-calls is
->> usually enable by default, and I think sibling calls rarely appear (I only encountered
->> it once in my cases from bsp's code):
->>
->> ./arch/arm64/Kconfig
->> config ARM64
->> ...
->> select FRAME_POINTER
->>
->> ./Makefile
->> ifdef CONFIG_FRAME_POINTER
->> KBUILD_CFLAGS   += -fno-omit-frame-pointer -fno-optimize-sibling-calls
->> ...
->>
-> 
-> Ah good to know. I don't think we should disable this optimization -
-> we need the frame pointer to unwind the call stack, but that doesn't
-> mean we should obsess about function calls disappearing from the call
-> stack because they end in a tail call.
-> 
-> Anyway, I spotted another issue with your code:
-> 
-> 0000000000000080 <sysctl_net_exit>:
-> {
->    80:   f800865e        str     x30, [x18], #8
->    84:   d503245f        bti     c
->    88:   d503233f        paciasp
-> 
-> You cannot put that str at the start of the function like that: the
-> BTI needs to come first, or you will trigger BTI faults if any of
-> these functions are called indirectly.
-> 
-> There are other reasons why adding it at the start is a bad idea: we
-> insert NOPs there for ftrace, for instance, which also should appear
-> at a fixed offset in the prologue.
+>> The string could be selected depending on CONFIG_XEN_PV.
+>=20
+> Hmm, now I'm confused: Doesn't this setting control whether the kernel
+> can run in PV mode? If so, that functionality being present should have=
 
-Thanks for your help, Ard, I did not consider of BTI and NOP
-instructions before.
+> no effect on the functionality of the kernel when running in PVH mode.
+> So what you suggest would end up in misleading information imo.
 
-It took me some time to view the source code. Currently, I think
-there may be three problems here(please let me know if i miss
-something):
-1)NOP instruction insertion
-2)Position of BTI instruction
-3)PAC verification
+Hmm, yes, I mixed "paravirtualized" with "capable to run
+paravirtualized".
 
-1)NOP instruction insertion
-As far as I know, the insertion of the kernel nop instruction is
-caused by CONFIG_DYNAMIC_FTRACE_WITH_REGS, which sets
--fpatchable-function-entry=2 to leave positions at the beginning
-of each function.
+So the string should depend on xen_pv_domain().
 
-SCS push should not be affected, because NOP instructions is
-generated during assembly code output stage(pass final =>
-assemble_start_function),which occurs after the scs pass.
 
-So in the final binary, the nop instruction is always inserted
-before scs push, such as:
-ffff800010010260 <gic_handle_irq>:
-ffff800010010260:       d503201f        nop
-ffff800010010264:       d503201f        nop
-ffff800010010268:       f800865e        str     x30, [x18], #8
-ffff80001001026c:       a9bb7bfd        stp     x29, x30, [sp, #-80]!
-  
-I enabled CONFIG_DYNAMIC_FTRACE_WITH_REGS + SCS_plugin on the 5.14
-kernel compiled by gcc 10.3, the kernel can startup normally.
+Juergen
 
-2)Position of BTI instruction
-BTI instructions are mainly inserted in pass_insert_bti, and the pass
-sequence is:
-rtl-mach		:  OFF
-......
-rtl-bti			:  ON
-rtl-arm64_scs		:  ON
-rtl-shorten		:  ON
-.......
-rtl-final
-  
-Since arm64_scs is after rtl-bti, the scs push will inserted before
-bti insns.
+--------------C640D5E0E67FA74A447A863B
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-To solve this, I changed the insertion point of scs pass to before
-'mach' (which is the insertion point I originally used), patch:
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
---- a/scripts/gcc-plugins/arm64_scs_plugin.c
-+++ b/scripts/gcc-plugins/arm64_scs_plugin.c
-@@ -214,7 +214,7 @@ __visible int plugin_init(struct plugin_name_args *plugin_info, struct plugin_gc
-         const struct plugin_argument * const argv = plugin_info->argv;
-         bool enable = true;
-  
--       PASS_INFO(arm64_scs, "shorten", 1, PASS_POS_INSERT_BEFORE);
-+       PASS_INFO(arm64_scs, "mach", 1, PASS_POS_INSERT_AFTER);
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-Then BTI will be inserted before scs push, as follows:
-ffff800010010290 <gic_handle_irq>:
-ffff800010010290:       d503245f        bti     c
-ffff800010010294:       d503201f        nop
-ffff800010010298:       d503201f        nop
-ffff80001001029c:       f800865e        str     x30, [x18], #8
-ffff8000100102a0:       d503233f        paciasp
-ffff8000100102a4:       a9bb7bfd        stp     x29, x30, [sp, #-80]!
-ffff8000100102a8:       910003fd        mov     x29, sp
-   
-At present, the system startup normally with
-CONFIG_ARM64_PTR_AUTH_KERNEL + CONFIG_ARM64_BTI_KERNEL (but my qemu
-does not seem to support BTI commands, and I'm still trying to build
-a test environment)
+--------------C640D5E0E67FA74A447A863B--
 
-3)PAC verification
-PAC is processed in rtl-pro_and_epilogue, scs can't be put in front
-of it.
+--mUFqiPeflUgtMo9r5bhO1fdNfDpEYCym1--
 
-In current patch, it will generate instructions like:
-ffff800010010290 <gic_handle_irq>:
-......
-ffff80001001029c:       f800865e        str     x30, [x18], #8
-ffff8000100102a0:       d503233f        paciasp
-......
-ffff800010010364:       d50323bf        autiasp
-ffff800010010368:       f85f8e5e        ldr     x30, [x18, #-8]!
+--PFXOQuIsPnpM36gnvqC8IX13s63RGmP6X
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-which means pac is invalid, the attacker only needs to modify the
-x30 from shadow stack.
+-----BEGIN PGP SIGNATURE-----
 
-Modifying the insertion point of scs push/pop should solve this
-problem(I will try it later).
-   
-But what puzzles me is that PAC should be an enhanced implementation
-of SCS. Do we need to support PAC and SCS at the same time?
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMnGoFAwAAAAAACgkQsN6d1ii/Ey9z
+uwf8C88vGxy+hk85cObqee7HTXy4o0t1QPe02mx9fEDsYrOnesJBQwrBX3BlYbUDMXUpsMxqMOgi
+jcUTJIExSYGXCKmp8OS9+8bBxlO7kk1T+G7qDDgUqcZW6WJHY8BekoKTfzvk9oS3eW49KPrJyEwM
+1udbzsYB9VNNUAklxFJ5k7kVR6YHVQpAfq+2wC2+UPffHjgpZW9kmRs8lS5PcTONWQCSvWY9mbth
+aAzP6/ImzElQmRGrtJ02N82o5e+T38hc53wZW3uvOQvdJb22iSH2uzw+uRmo9cS1ZHuMpwyX0akw
+Xrr01pTaSeTTDIFatD6AnAy4toV9nz3xX9jvY9BjCw==
+=PcsT
+-----END PGP SIGNATURE-----
+
+--PFXOQuIsPnpM36gnvqC8IX13s63RGmP6X--
