@@ -2,185 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0F9415C00
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DDB415C06
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240425AbhIWKep convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Sep 2021 06:34:45 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3852 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhIWKeo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:34:44 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HFWdw4R79z67bWP;
-        Thu, 23 Sep 2021 18:30:44 +0800 (CST)
-Received: from lhreml717-chm.china.huawei.com (10.201.108.68) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 23 Sep 2021 12:33:10 +0200
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- lhreml717-chm.china.huawei.com (10.201.108.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 23 Sep 2021 11:33:10 +0100
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2308.008; Thu, 23 Sep 2021 11:33:10 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yishai Hadas <yishaih@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Kirti Wankhede" <kwankhede@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: RE: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Thread-Topic: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Thread-Index: AQHXr54pt96rmXk0YUaXSN2Kf89+2auxakgA
-Date:   Thu, 23 Sep 2021 10:33:10 +0000
-Message-ID: <42729adc4df649f7b3ce5dc95e66e2dc@huawei.com>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
-In-Reply-To: <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.85.235]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S240413AbhIWKgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:36:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231392AbhIWKgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 06:36:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C6260E08;
+        Thu, 23 Sep 2021 10:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632393306;
+        bh=/oMcB38peSEm5eJWmjgTEgvUZiehyV7psg1RYfGdza8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZKhO04fNm+sOi0gW2ikgeY6r9ERaQ2RU2HKN/lIEMTDkptCA6nkWxC6kZyVDB5Yyg
+         8cZieSr3Bl0gYXTaql23k2S7KXUBeV0yoCSFZyA3rAHG8vE+RyOvdwTOcboZ4T+dK9
+         cg0BR5aOwyne+RYp0AoUsTaP6gMRZ33p/X37IO34=
+Date:   Thu, 23 Sep 2021 12:35:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alex Sverdlin <alexander.sverdlin@nokia.com>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH stable 4.9 v2 0/4] ARM: ftrace MODULE_PLTS warning
+Message-ID: <YUxYV/m36iPuxdoe@kroah.com>
+References: <20210922170246.190499-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922170246.190499-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 22, 2021 at 10:02:42AM -0700, Florian Fainelli wrote:
+> This patch series is present in v5.14 and fixes warnings seen at insmod
+> with FTRACE and MODULE_PLTS enabled on ARM/Linux.
 
+All now queued up, thanks.
 
-> -----Original Message-----
-> From: Leon Romanovsky [mailto:leon@kernel.org]
-> Sent: 22 September 2021 11:39
-> To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@nvidia.com>
-> Cc: Yishai Hadas <yishaih@nvidia.com>; Alex Williamson
-> <alex.williamson@redhat.com>; Bjorn Helgaas <bhelgaas@google.com>; David
-> S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Kirti
-> Wankhede <kwankhede@nvidia.com>; kvm@vger.kernel.org;
-> linux-kernel@vger.kernel.org; linux-pci@vger.kernel.org;
-> linux-rdma@vger.kernel.org; netdev@vger.kernel.org; Saeed Mahameed
-> <saeedm@nvidia.com>
-> Subject: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
-> transition validity
-> 
-> From: Yishai Hadas <yishaih@nvidia.com>
-> 
-> Add an API in the core layer to check migration state transition validity
-> as part of a migration flow.
-> 
-> The valid transitions follow the expected usage as described in
-> uapi/vfio.h and triggered by QEMU.
-> 
-> This ensures that all migration implementations follow a consistent
-> migration state machine.
-> 
-> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> Reviewed-by: Kirti Wankhede <kwankhede@nvidia.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/vfio/vfio.c  | 41 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/vfio.h |  1 +
->  2 files changed, 42 insertions(+)
-> 
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index 3c034fe14ccb..c3ca33e513c8 100644
-> --- a/drivers/vfio/vfio.c
-> +++ b/drivers/vfio/vfio.c
-> @@ -1664,6 +1664,47 @@ static int vfio_device_fops_release(struct inode
-> *inode, struct file *filep)
->  	return 0;
->  }
-> 
-> +/**
-> + * vfio_change_migration_state_allowed - Checks whether a migration state
-> + *   transition is valid.
-> + * @new_state: The new state to move to.
-> + * @old_state: The old state.
-> + * Return: true if the transition is valid.
-> + */
-> +bool vfio_change_migration_state_allowed(u32 new_state, u32 old_state)
-> +{
-> +	enum { MAX_STATE = VFIO_DEVICE_STATE_RESUMING };
-> +	static const u8 vfio_from_state_table[MAX_STATE + 1][MAX_STATE + 1] = {
-> +		[VFIO_DEVICE_STATE_STOP] = {
-> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> +			[VFIO_DEVICE_STATE_RESUMING] = 1,
-> +		},
-> +		[VFIO_DEVICE_STATE_RUNNING] = {
-> +			[VFIO_DEVICE_STATE_STOP] = 1,
-> +			[VFIO_DEVICE_STATE_SAVING] = 1,
-> +			[VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING]
-> = 1,
-
-Do we need to allow _RESUMING state here or not? As per the "State transitions"
-section from uapi/linux/vfio.h, 
-
-" * 4. To start the resuming phase, the device state should be transitioned from
- *    the _RUNNING to the _RESUMING state."
-
-IIRC, I have seen that transition happening on the destination dev while testing the 
-HiSilicon ACC dev migration. 
-
-Thanks,
-Shameer
-
-> +		},
-> +		[VFIO_DEVICE_STATE_SAVING] = {
-> +			[VFIO_DEVICE_STATE_STOP] = 1,
-> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> +		},
-> +		[VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING] = {
-> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> +			[VFIO_DEVICE_STATE_SAVING] = 1,
-> +		},
-> +		[VFIO_DEVICE_STATE_RESUMING] = {
-> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> +			[VFIO_DEVICE_STATE_STOP] = 1,
-> +		},
-> +	};
-> +
-> +	if (new_state > MAX_STATE || old_state > MAX_STATE)
-> +		return false;
-> +
-> +	return vfio_from_state_table[old_state][new_state];
-> +}
-> +EXPORT_SYMBOL_GPL(vfio_change_migration_state_allowed);
-> +
->  static long vfio_device_fops_unl_ioctl(struct file *filep,
->  				       unsigned int cmd, unsigned long arg)
->  {
-> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> index b53a9557884a..e65137a708f1 100644
-> --- a/include/linux/vfio.h
-> +++ b/include/linux/vfio.h
-> @@ -83,6 +83,7 @@ extern struct vfio_device
-> *vfio_device_get_from_dev(struct device *dev);
->  extern void vfio_device_put(struct vfio_device *device);
-> 
->  int vfio_assign_device_set(struct vfio_device *device, void *set_id);
-> +bool vfio_change_migration_state_allowed(u32 new_state, u32 old_state);
-> 
->  /* events for the backend driver notify callback */
->  enum vfio_iommu_notify_type {
-> --
-> 2.31.1
-
+greg k-h
