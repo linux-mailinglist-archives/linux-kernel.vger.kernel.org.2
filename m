@@ -2,72 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885C44158E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A834158EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239575AbhIWHQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:16:29 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:48194 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239504AbhIWHQ2 (ORCPT
+        id S239595AbhIWHQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:16:59 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:42957 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239075AbhIWHQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:16:28 -0400
-X-UUID: c544ae7d4a1345fa812414bb1ba5501c-20210923
-X-UUID: c544ae7d4a1345fa812414bb1ba5501c-20210923
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 839298269; Thu, 23 Sep 2021 15:14:47 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Thu, 23 Sep 2021 15:14:46 +0800
-Received: from localhost.localdomain (10.17.3.154) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 23 Sep 2021 15:14:45 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Eddie Hung" <eddie.hung@mediatek.com>
-Subject: [PATCH] usb: xhci-mtk: use xhci_dbg() to print log
-Date:   Thu, 23 Sep 2021 15:14:47 +0800
-Message-ID: <20210923071447.15688-1-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 23 Sep 2021 03:16:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hao.xiang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UpIwbV9_1632381325;
+Received: from 30.43.105.150(mailfrom:hao.xiang@linux.alibaba.com fp:SMTPD_---0UpIwbV9_1632381325)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 23 Sep 2021 15:15:25 +0800
+Message-ID: <a6a770c9-227a-08b2-2829-09cd45141889@linux.alibaba.com>
+Date:   Thu, 23 Sep 2021 15:15:25 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] KVM: VMX: Check if bus lock vmexit was preempted
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chenyi.qiang@intel.com,
+        shannon.zhao@linux.alibaba.com
+References: <1631964600-73707-1-git-send-email-hao.xiang@linux.alibaba.com>
+ <87b411c3-da75-e074-91a4-a73891f9f5f8@redhat.com>
+ <57597778-836c-7bac-7f1d-bcdae0cd6ac4@intel.com>
+ <YUtEraihPxsytaJc@google.com>
+From:   Hao Xiang <hao.xiang@linux.alibaba.com>
+In-Reply-To: <YUtEraihPxsytaJc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use xhci_dbg() to print log instead of xhci_err() due to it's not
-error log.
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
- drivers/usb/host/xhci-mtk-sch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-index 134f4789bd89..1edef7527c11 100644
---- a/drivers/usb/host/xhci-mtk-sch.c
-+++ b/drivers/usb/host/xhci-mtk-sch.c
-@@ -734,7 +734,7 @@ static void drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
- 	if (!need_bw_sch(udev, ep))
- 		return;
- 
--	xhci_err(xhci, "%s %s\n", __func__, decode_ep(ep, udev->speed));
-+	xhci_dbg(xhci, "%s %s\n", __func__, decode_ep(ep, udev->speed));
- 
- 	hash_for_each_possible_safe(mtk->sch_ep_hash, sch_ep,
- 				    hn, hentry, (unsigned long)ep) {
--- 
-2.18.0
-
+On 2021/9/22 22:58, Sean Christopherson wrote:
+> On Wed, Sep 22, 2021, Xiaoyao Li wrote:
+>> On 9/22/2021 6:02 PM, Paolo Bonzini wrote:
+>>> On 18/09/21 13:30, Hao Xiang wrote:
+>>>> exit_reason.bus_lock_detected is not only set when bus lock VM exit
+>>>> was preempted, in fact, this bit is always set if bus locks are
+>>>> detected no matter what the exit_reason.basic is.
+>>>>
+>>>> So the bus_lock_vmexit handling in vmx_handle_exit should be duplicated
+>>>> when exit_reason.basic is EXIT_REASON_BUS_LOCK(74). We can avoid it by
+>>>> checking if bus lock vmexit was preempted in vmx_handle_exit.
+>>> I don't understand, does this mean that bus_lock_detected=1 if
+>>> basic=EXIT_REASON_BUS_LOCK?  If so, can we instead replace the contents
+>>> of handle_bus_lock_vmexit with
+>>>
+>>>       /* Do nothing and let vmx_handle_exit exit to userspace.  */
+>>>       WARN_ON(!to_vmx(vcpu)->exit_reason.bus_lock_detected);
+>>>       return 0;
+>>>
+>>> ?
+>>>
+>>> That would be doable only if this is architectural behavior and not a
+>>> processor erratum, of course.
+>> EXIT_REASON.bus_lock_detected may or may not be set when exit reason ==
+>> EXIT_REASON_BUS_LOCK. Intel will update ISE or SDM to state it.
+>>
+>> Maybe we can do below in handle_bus_lock_vmexit handler:
+>>
+>> 	if (!to_vmx(vcpu)->exit_reason.bus_lock_detected)
+>> 		to_vmx(vcpu)->exit_reason.bus_lock_detected = 1;
+>>
+>> But is manually changing the hardware reported value for software purpose a
+>> good thing?
+> In this case, I'd say yes.  Hardware having non-deterministic behavior is the not
+> good thing, KVM would simply be correctly the not-technically-an-erratum erratum.
+>
+> Set it unconditionally and then handle everything in common path.  This has the
+> added advantage of having only one site that deals with KVM_RUN_X86_BUS_LOCK.
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 33f92febe3ce..aa9372452e49 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -5561,9 +5561,9 @@ static int handle_encls(struct kvm_vcpu *vcpu)
+>
+>   static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
+>   {
+> -       vcpu->run->exit_reason = KVM_EXIT_X86_BUS_LOCK;
+> -       vcpu->run->flags |= KVM_RUN_X86_BUS_LOCK;
+> -       return 0;
+> +       /* The dedicated flag may or may not be set by hardware.  /facepalm. */
+> +       vcpu->exit_reason.bus_lock_detected = true;
+> +       return 1;
+>   }
+>
+>   /*
+> @@ -6050,9 +6050,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+>          int ret = __vmx_handle_exit(vcpu, exit_fastpath);
+>
+>          /*
+> -        * Even when current exit reason is handled by KVM internally, we
+> -        * still need to exit to user space when bus lock detected to inform
+> -        * that there is a bus lock in guest.
+> +        * Exit to user space when bus lock detected to inform that there is a
+> +        * bus lock in guest.
+>           */
+>          if (to_vmx(vcpu)->exit_reason.bus_lock_detected) {
+>                  if (ret > 0)
+I agree with your modifications. And I will  re-submit the patch. Thanks.
