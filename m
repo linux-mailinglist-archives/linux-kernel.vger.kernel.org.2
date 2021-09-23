@@ -2,187 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D9B415565
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F6D41556B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238897AbhIWCUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 22:20:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39307 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238859AbhIWCUI (ORCPT
+        id S238910AbhIWC0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 22:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238859AbhIWC0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 22:20:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632363517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2cVpCaYgqZbzYwtdNEOswMkSLXpY9PVp/jLh/csEpFo=;
-        b=U75QLraiCSNxikF1hZ/raa6lSGp1gOqfRFEDLKXbDTlbj4YocAXo5Jd5xB8SVBAuJ6Q+s2
-        N2+ZbeyM3zX+LiXohkzNrVGNx8pRtm+YHYKdUTQDsKxBB3Cx7t4gGCUncdicc0Qkt5yy2c
-        F6nRFUOlyTvfFmCe/BnDt8VxNwlfs50=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-70a11aeXPTOsIsqLzE6pqw-1; Wed, 22 Sep 2021 22:18:34 -0400
-X-MC-Unique: 70a11aeXPTOsIsqLzE6pqw-1
-Received: by mail-qk1-f198.google.com with SMTP id bi14-20020a05620a318e00b00432f0915dd6so15430906qkb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 19:18:34 -0700 (PDT)
+        Wed, 22 Sep 2021 22:26:34 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848A4C061574;
+        Wed, 22 Sep 2021 19:25:03 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso3785887pjb.3;
+        Wed, 22 Sep 2021 19:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iWbjnVW9quu+0NtNnTMMNkLY8fmdpVFvrVoHkkaQvEQ=;
+        b=LirCHkh4/Ld68Fp4nkh0EaFnDsus30j10wVz/x/a/R7s3nMTUn+l5Bp92FgFPAHWKa
+         Ag12W/iAQ2ZI8/qxhF3/rU8E/gGK05tNWMNOo0ezOfy9ABKB9fgr8OZ2IgvU+RShYpJf
+         Pu8Cpg+CBhL16jvUUuaRx95akl+I791Rw14u58h7jgOTfvETi0roOq8noEW9bAE39CaN
+         SaAeRj1edoeRGOaC0UU35fOzoO81vFZ861HPsi7tbHLbkaFSpCLxlbXDm8CkDD4CAKen
+         t7dtWnhae6fgOLVbIbGd1dyfI4oh4D0j4iUSF5B+iFU0soi/M+gNPTeAZETQEWgtDmkm
+         t1KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2cVpCaYgqZbzYwtdNEOswMkSLXpY9PVp/jLh/csEpFo=;
-        b=LBdnYIqO+MLNmnmeOI3z4SN32mYhKWELozFcuNzqe7qouQ841S4TdkA9HQUBaeN7JN
-         W1xYbqGHa1RXEUDN+x8Jtg9DDeVK4J4mJnMU5HJJ/qEitFQC+19cwIdCKg/j23+LGOFz
-         MZ6QM7v1ko1bhhU0EcDDhXjoZKvQ882sU3ytMqpJf8zwrcwnCck3DsqL+jsvQKz18601
-         f7CXqIvV5qv5Mx9tqK0fqmJ/NF0aoWDg5+yL63PNLjH8BNoOF7UeYrqzWMBLahUyZyAq
-         IGuOnh/eVjwOi/mr/vuXmEyXhLvR6Q4bz4055jaBZiaEa5cXVqXj0TvzY5OdU3O28wqR
-         r7KA==
-X-Gm-Message-State: AOAM530DuEt2y/EuYIDZwkAbi/FQ6SMC3AqG8mN805IclX4w/LM2NAbt
-        4puFPj5Y/oAozHXsYjpmYPTx9Vsn2oZhelbZcNWSRDFX7ZXsEZcpvlgoO36dWi6o5kwaJhZ6ivY
-        oy1Ezuk+mkds4bhWCFax1U+Ir
-X-Received: by 2002:a05:620a:2808:: with SMTP id f8mr2571535qkp.462.1632363513704;
-        Wed, 22 Sep 2021 19:18:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzlWKEomkNcSfL1zxNzyEwWsyoxVCE9PwBsK+sraVKUMgitw9v/5atWt01lAjrCJG+b28U41w==
-X-Received: by 2002:a05:620a:2808:: with SMTP id f8mr2571520qkp.462.1632363513395;
-        Wed, 22 Sep 2021 19:18:33 -0700 (PDT)
-Received: from xz-m1.local ([2607:fea8:56a2:9100:b17b:78a:bb8a:9b0f])
-        by smtp.gmail.com with ESMTPSA id j184sm3300321qkd.74.2021.09.22.19.18.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 19:18:32 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 22:18:30 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
-Message-ID: <YUvj9r3Y954pYPnf@xz-m1.local>
-References: <20210922175156.130228-1-peterx@redhat.com>
- <CAJHvVch3g_UY-akMdu0O9413iCb1H83DLhR1Am8WnfUyV=s1=g@mail.gmail.com>
- <YUueOUfoamxOvEyO@t490s>
- <24224366-293a-879-95db-f69abcb0cb70@google.com>
- <YUu/6lWX92WLUzpt@t490s>
- <472a3497-ba70-ac6b-5828-bc5c4c93e9ab@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iWbjnVW9quu+0NtNnTMMNkLY8fmdpVFvrVoHkkaQvEQ=;
+        b=utuiQWqBGvIHI4UX+y6etoI/i6zE3c2Fe83gtGdaQah8+RaAPvlUNiNYE2U+TascMY
+         rxBGy6warF3IkhslEc3IxI7bA4XnZauDmdC+LsV7phiPuktcMvLMwXqhUhRKLt1++JKY
+         ZRbQU1rxpFMTxehwImh3r2c1xF1NgNAKS5XxwYYX3g6P+Axul5ccicXGyEp3j4BBoLj0
+         WAenPt1eixVNwlGDPgs52iL3aLEj4WMWfmYMKGuTuX3nyYENSV2saxLZWgrxYK/YeRZA
+         qgogYu7NUHMwW/lneI+psHAIs4XVi+nfo1ZLyhlr9mi09FE8c5XqbZRvWg10+/3foYbu
+         CsQA==
+X-Gm-Message-State: AOAM533BdLCP4npLNXltLyCu5APtVBA2Ax35mszEc19w4o8m3Yh3s2F+
+        i8n1vfCkdLDNiUwUDXw0pEUMc3KklciEPdueYw==
+X-Google-Smtp-Source: ABdhPJzcCdvq8q9XQb1O4aR4bIpvJEJGxXrhO6ualjK9V7a2GMhPqSOLanZOyZ3qJdbHQ3QYHTDQ9ncHIm5YCSlIY08=
+X-Received: by 2002:a17:90b:3447:: with SMTP id lj7mr2517568pjb.112.1632363901814;
+ Wed, 22 Sep 2021 19:25:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="hOe13WIugokcaN/t"
-Content-Disposition: inline
-In-Reply-To: <472a3497-ba70-ac6b-5828-bc5c4c93e9ab@google.com>
+References: <CACkBjsYjkubyQBvBy7aaQStk_i1UuCu7oPNYXhZhvhWvBCM3ag@mail.gmail.com>
+ <145029f0-5bc5-73fd-14ee-75b5829a3334@gmx.com>
+In-Reply-To: <145029f0-5bc5-73fd-14ee-75b5829a3334@gmx.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Thu, 23 Sep 2021 10:24:51 +0800
+Message-ID: <CACkBjsauCShYkOdNU2snmJyLNSmdMvK7C0HbtMfKhoEXuUOSJg@mail.gmail.com>
+Subject: Re: kernel BUG in __clear_extent_bit
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     clm@fb.com, dsterba@suse.com, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=
+=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:33=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+>
+> On 2021/9/15 =E4=B8=8A=E5=8D=8810:20, Hao Sun wrote:
+> > Hello,
+> >
+> > When using Healer to fuzz the latest Linux kernel, the following crash
+> > was triggered.
+> >
+> > HEAD commit: 6880fa6c5660 Linux 5.15-rc1
+> > git tree: upstream
+> > console output:
+> > https://drive.google.com/file/d/1-9wwV6-OmBcJvHGCbMbP5_uCVvrUdTp3/view?=
+usp=3Dsharing
+> > kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTL=
+JvsUdWcgB/view?usp=3Dsharing
+> > C reproducer: https://drive.google.com/file/d/1eXePTqMQ5ZA0TWtgpTX50Ez4=
+q9ZKm_HE/view?usp=3Dsharing
+> > Syzlang reproducer:
+> > https://drive.google.com/file/d/11s13louoKZ7Uz0mdywM2jmE9B1JEIt8U/view?=
+usp=3Dsharing
+> >
+> > If you fix this issue, please add the following tag to the commit:
+> > Reported-by: Hao Sun <sunhao.th@gmail.com>
+> >
+> > loop1: detected capacity change from 0 to 32768
+> > BTRFS info (device loop1): disk space caching is enabled
+> > BTRFS info (device loop1): has skinny extents
+> > BTRFS info (device loop1): enabling ssd optimizations
+> > FAULT_INJECTION: forcing a failure.
+> > name failslab, interval 1, probability 0, space 0, times 0
+> > CPU: 1 PID: 25852 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > Call Trace:
+> >   __dump_stack lib/dump_stack.c:88 [inline]
+> >   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+> >   fail_dump lib/fault-inject.c:52 [inline]
+> >   should_fail+0x13c/0x160 lib/fault-inject.c:146
+> >   should_failslab+0x5/0x10 mm/slab_common.c:1328
+> >   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+> >   slab_alloc_node mm/slub.c:3120 [inline]
+> >   slab_alloc mm/slub.c:3214 [inline]
+> >   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
+> >   alloc_extent_state+0x1e/0x1c0 fs/btrfs/extent_io.c:340
+>
+> This is the one of the core systems btrfs uses, and we really don't want
+> that to fail.
+>
+> Thus in fact it does some preallocation to prevent failure.
+>
+> But for error injection case, we can still hit BUG_ON() which is used to
+> catch ENOMEM.
+>
 
---hOe13WIugokcaN/t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Hello,
 
-On Wed, Sep 22, 2021 at 06:22:45PM -0700, Hugh Dickins wrote:
-> No, I think I misunderstood you before: thanks for re-explaining.
-> (And Axel's !userfaultfd_minor() check before calling do_fault_around()
-> plays an important part in making sure that it does reach shmem_fault().)
+Fuzzer triggered following crashes repeatedly when the `fault
+injection` was enabled.
 
-Still thanks for confirming this, Hugh.
+HEAD commit: 92477dd1faa6 Merge tag 's390-5.15-ebpf-jit-fixes'
+git tree: upstream
+kernel config: https://drive.google.com/file/d/1KgvcM8i_3hQiOL3fUh3JFpYNQM4=
+itvV4/view?usp=3Dsharing
+[1] kernel BUG in btrfs_free_tree_block (fs/btrfs/extent-tree.c:3297):
+https://paste.ubuntu.com/p/ZtzVKWbcGm/
+[2] kernel BUG in clear_state_bit (fs/btrfs/extent_io.c:658!):
+https://paste.ubuntu.com/p/hps2wXPG2b/
+[3] kernel BUG in set_extent_bit (fs/btrfs/extent_io.c:1021):
+https://paste.ubuntu.com/p/dcptjYYxgd/
+[4] kernel BUG in set_state_bits (fs/btrfs/extent_io.c:939):
+https://paste.ubuntu.com/p/NV9qtKB4KZ/
 
-Said that, Axel, I didn't mean I'm against doing something similar like
-uffd-wp; it's just a heads-up that maybe you won't find a reproducer with real
-issues with minor mode.
+All the above crashes were triggered directly by the `BUG_ON()` macro
+in the corresponding location.
+Most `BUG_ON()` was hit due to `ENOMEM` when fault injected.
+Would it be better for btrfs to handle the `ENOMEM` error, e.g.,
+gracefully return, rather than panic the kernel?
 
-Even if I think minor mode should be fine with current code, we could still
-choose to disable khugepaged from removing the pmd for VM_UFFD_MINOR vmas, just
-like what we'll do with VM_UFFD_WP.  At least it can still reduce false
-positives.
-
-So far in my local branch I queued the patch which I attached, that's required
-for uffd-wp shmem afaict.  If you think minor mode would like that too, I can
-post it separately with minor mode added in.
-
-Note that it's slightly different from what I pasted in reply to Yang Shi - I
-made it slightly more complicated just to make sure there's no race.  I
-mentioned the possible race (I think) in the commit log.
-
-Let me know your preference.
-
-Thanks,
-
--- 
-Peter Xu
-
---hOe13WIugokcaN/t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename=patch
-
-From 989d36914ac144177e17f9aacbf2785bb8f21420 Mon Sep 17 00:00:00 2001
-From: Peter Xu <peterx@redhat.com>
-Date: Wed, 22 Sep 2021 16:23:33 -0400
-Subject: [PATCH] mm/khugepaged: Don't recycle vma pgtable if uffd-wp
- registered
-
-When we're trying to collapse a 2M huge shmem page, don't retract pgtable pmd
-page if it's registered with uffd-wp, because that pgtable could have pte
-markers installed.  Recycling of that pgtable means we'll lose the pte markers.
-That could cause data loss for an uffd-wp enabled application on shmem.
-
-Instead of disabling khugepaged on these files, simply skip retracting these
-special VMAs, then the page cache can still be merged into a huge thp, and
-other mm/vma can still map the range of file with a huge thp when proper.
-
-Note that checking VM_UFFD_WP needs to be done with mmap_sem held for write,
-that avoids race like:
-
-         khugepaged                             user thread
-         ==========                             ===========
-     check VM_UFFD_WP, not set
-                                       UFFDIO_REGISTER with uffd-wp on shmem
-                                       wr-protect some pages (install markers)
-     take mmap_sem write lock
-     erase pmd and free pmd page
-      --> pte markers are dropped unnoticed!
-
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/khugepaged.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc579f724..23e1d03156b3 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1451,6 +1451,10 @@ void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr)
- 	if (!hugepage_vma_check(vma, vma->vm_flags | VM_HUGEPAGE))
- 		return;
- 
-+	/* Keep pmd pgtable for uffd-wp; see comment in retract_page_tables() */
-+	if (userfaultfd_wp(vma))
-+		return;
-+
- 	hpage = find_lock_page(vma->vm_file->f_mapping,
- 			       linear_page_index(vma, haddr));
- 	if (!hpage)
-@@ -1591,7 +1595,15 @@ static void retract_page_tables(struct address_space *mapping, pgoff_t pgoff)
- 		 * reverse order. Trylock is a way to avoid deadlock.
- 		 */
- 		if (mmap_write_trylock(mm)) {
--			if (!khugepaged_test_exit(mm)) {
-+			/*
-+			 * When a vma is registered with uffd-wp, we can't
-+			 * recycle the pmd pgtable because there can be pte
-+			 * markers installed.  Skip it only, so the rest mm/vma
-+			 * can still have the same file mapped hugely, however
-+			 * it'll always mapped in small page size for uffd-wp
-+			 * registered ranges.
-+			 */
-+			if (!khugepaged_test_exit(mm) && !userfaultfd_wp(vma)) {
- 				spinlock_t *ptl = pmd_lock(mm, pmd);
- 				/* assume page table is clear */
- 				_pmd = pmdp_collapse_flush(vma, addr, pmd);
--- 
-2.31.1
-
-
---hOe13WIugokcaN/t--
-
+Regards
+Hao
