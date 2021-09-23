@@ -2,100 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216FF415FB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3ECD415F39
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241502AbhIWN0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:26:25 -0400
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17232 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241431AbhIWNZ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:25:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1632402523; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=f2h811w2svJQ4VmTGeEPdH8ik/s9xSbE+Y2NhLHm4skAElJ4FYA4xm5dEZGFMAi1TGnQJewLXfnkxfoHMNJGI3jNPYuLd4vA0vip+HcqcY+zwSgNfsMa1ORU7ggfUWGi3pDN72aPTjEogAu7+kShz6Zh98ewPabDJhBOXBqL4xc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1632402523; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=oG9u6AuZGZnG2KRRqhJabX8iiojey6H8VgFRc9r8zZI=; 
-        b=VkcPKRSjcPvbDFAsHX4SaX3tRDA349fSUPEhiU7yZblCVudkVNhNPAh8EjSEhhquivpvlX/Y2+ep4mRONhMq5NdadZqjKW0IrEbQ9WE1ncQejOM9iLp0VN/EcTaYok3dknMfKuY1V952v6eneT6XYeQERXol7ZFqmkrrvyDNUhQ=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1632402523;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=oG9u6AuZGZnG2KRRqhJabX8iiojey6H8VgFRc9r8zZI=;
-        b=XJQM+4b0CJp8iL2K71cfogKzVBIQgvz8ktaI3l4hTq+Fyn3vaxMs2Vo46b6Ap2Di
-        78la47q64qXuBX4hgyzGubgPeER3oS7CfGs3fPVN3BhSN+j/VOtQeUBJaqdqXFZLaJS
-        Tft2OQcHcIoZ55Cvjh/9z2MNFtN00A1UW+hZ7vXA=
-Received: from localhost.localdomain (81.71.33.115 [81.71.33.115]) by mx.zoho.com.cn
-        with SMTPS id 1632402522914922.0766031758626; Thu, 23 Sep 2021 21:08:42 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     miklos@szeredi.hu, jack@suse.cz, amir73il@gmail.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20210923130814.140814-11-cgxu519@mykernel.net>
-Subject: [RFC PATCH v5 10/10] ovl: implement containerized syncfs for overlayfs
-Date:   Thu, 23 Sep 2021 21:08:14 +0800
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210923130814.140814-1-cgxu519@mykernel.net>
-References: <20210923130814.140814-1-cgxu519@mykernel.net>
+        id S241041AbhIWNKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:10:44 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42488 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232333AbhIWNKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:10:43 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 18ND99Uu019984;
+        Thu, 23 Sep 2021 15:09:09 +0200
+Date:   Thu, 23 Sep 2021 15:09:09 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Ken <kennethcelander@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: Boot opens CD tray
+Message-ID: <20210923130909.GB19709@1wt.eu>
+Reply-To: linux-kernel@vger.kernel.org
+References: <bbb0df1d-1e40-fbdf-d9aa-281ba77b4b6d@gmail.com>
+ <20210923123407.GA19709@1wt.eu>
+ <3e2fe30b-4c58-3164-2e2f-283f34ebe396@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e2fe30b-4c58-3164-2e2f-283f34ebe396@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now overlayfs can sync proper dirty inodes during syncfs,
-so remove unnecessary sync_filesystem() on upper file
-system.
+On Thu, Sep 23, 2021 at 08:03:49AM -0500, Ken wrote:
+> The CD/DVD is a SATA ASUS; connected to a ASRock 970A-G/3.1 motherboard.
+> 
+> The changed "driver" has to be in the kernel, if it changed.
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/overlayfs/super.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Sure but I mean that it will help narrow the problem to some subsystems.
+Unfortunately we don't know what patches your distro kernel applied between
+the two versions, but if you can figure that out from their changelogs, it
+may help you narrow this down to just a few patches. These ones would
+typically have "ata" in their subject line (sometimes "sata" or "libata"),
+that could significantly limit the number of possible candidates. If you
+can't find this there, you'll have two possibilities left:
+  - either retry with an official kernel from kernel.org
+  - or report a bug to your distro
 
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index bf4000eb9be8..ef998ada6cb9 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -15,6 +15,7 @@
- #include <linux/seq_file.h>
- #include <linux/posix_acl_xattr.h>
- #include <linux/exportfs.h>
-+#include <linux/writeback.h>
- #include "overlayfs.h"
-=20
- MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
-@@ -281,18 +282,15 @@ static int ovl_sync_fs(struct super_block *sb, int wa=
-it)
- =09/*
- =09 * Not called for sync(2) call or an emergency sync (SB_I_SKIP_SYNC).
- =09 * All the super blocks will be iterated, including upper_sb.
--=09 *
--=09 * If this is a syncfs(2) call, then we do need to call
--=09 * sync_filesystem() on upper_sb, but enough if we do it when being
--=09 * called with wait =3D=3D 1.
- =09 */
--=09if (!wait)
--=09=09return 0;
-=20
- =09upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
-=20
- =09down_read(&upper_sb->s_umount);
--=09ret =3D sync_filesystem(upper_sb);
-+=09if (wait)
-+=09=09wait_sb_inodes(upper_sb);
-+
-+=09ret =3D sync_fs_and_blockdev(upper_sb, wait);
- =09up_read(&upper_sb->s_umount);
-=20
- =09return ret;
---=20
-2.27.0
-
-
+Willy
