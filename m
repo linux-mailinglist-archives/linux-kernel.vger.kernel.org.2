@@ -2,240 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542E4416604
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E592416610
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242960AbhIWTlF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Sep 2021 15:41:05 -0400
-Received: from aposti.net ([89.234.176.197]:41302 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242796AbhIWTlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 15:41:03 -0400
-Date:   Thu, 23 Sep 2021 20:39:18 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>
-Message-Id: <IXJWZQ.BZQ2M7FHYVJM@crapouillou.net>
-In-Reply-To: <ABE75744-46FE-4F37-A14C-D996F36B7B0E@goldelico.com>
-References: <20210922205555.496871-1-paul@crapouillou.net>
-        <20210922205555.496871-7-paul@crapouillou.net>
-        <32234186-1802-4FDF-801A-B14E48FB86D8@goldelico.com>
-        <RTPVZQ.WN90B9MHPMZ13@crapouillou.net>
-        <896D04E4-4058-474B-8BD2-7F21B1C754E4@goldelico.com>
-        <YUxIkdGcGnBhcT0y@pendragon.ideasonboard.com>
-        <3764505C-7CA9-40C4-8CFA-8B0F2361E6D5@goldelico.com>
-        <YUxQ9k/CDYz20rYo@pendragon.ideasonboard.com>
-        <B7C9EEE8-F999-4105-B805-1B32619A3847@goldelico.com>
-        <7U2WZQ.D8DTPCJ0ZPKO3@crapouillou.net>
-        <ABE75744-46FE-4F37-A14C-D996F36B7B0E@goldelico.com>
+        id S242931AbhIWTnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 15:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242796AbhIWTnk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 15:43:40 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B4EC061574;
+        Thu, 23 Sep 2021 12:42:08 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id v24so27024826eda.3;
+        Thu, 23 Sep 2021 12:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wg07Nq0+S7AqwImslpDCTktGQm2uEPJ2QVWkbuBwygU=;
+        b=AjlMeFwPecvTyCnhNft0bXeMzyic3b9stseHJDhAwcx0arXZJo+5Gwif96E91wqLtp
+         WKfYerRtbcKP86nTH7vi3h3ghS5t762DZ1WpRWhVwhp/2T9LFaAwYLHx4G/Yg1ovKYk8
+         63nqj7ChEmRwUhT1ttI4rFu66h1nEFMrtUMZLP5V81QizvBGKOKwU+QBQY7PV4HlxGNo
+         NyTheC10s1lG36CsrP8zUe3Tl3Oj5s23RiWHDCHViwdrU7KztKbk7cODh/NK1hPfzV6z
+         x6K6UOFeUhklwBn9k6MUmmrKQcp55wQwSIYUEj/lYM0MC/S6bgaH+nLfdpKLCNV89/Dh
+         pZ4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wg07Nq0+S7AqwImslpDCTktGQm2uEPJ2QVWkbuBwygU=;
+        b=t5KUUD7VHB03WbBDuibu2PDyWvZMxZKKbXoPLu0/mYAusD9agfxnv/i/9QPgCj6kPr
+         f3LE08bvvCSJZKVwg4mdB3spNInR5sdnUxThXAwyM9m7Wm6PR3MUtNZlU46vrwEQTd4b
+         zV1P0qEl5j1bXM20qlZxatVfo2aF7cqNjAHpKiPO8iAET/0OVqJjFRFY1d8Hdp1K/93v
+         R3eQvAJPS8ocq8P/zRllCz2GNgtihYQbdc6g0hXG7ojQ8fPhGMM5xdRnY3cRVct8yuKz
+         QZzzJ0ReXWD2PQL3eYx/ODATSRUyQBtDZ4fmIcqaDtxHBXBWHUWk+O1ucaS/wv15RHzA
+         SeMg==
+X-Gm-Message-State: AOAM532nsEhSw3bVh8Dalo1H+0SIkXBgfCv+1c7V0+L9quc0isz77by7
+        Tr8atOcGig1fC/yDkDQADAYEwXqeQsnwMD5sErk=
+X-Google-Smtp-Source: ABdhPJwht/FokcguS3Z265L1prL1jWL6zI6VFHAxFj21zRVI0cuMn07EXgNyEPNBE7e1W3PLTUV/O4IalXlEWdAk5EY=
+X-Received: by 2002:a17:906:1707:: with SMTP id c7mr6697896eje.377.1632426126787;
+ Thu, 23 Sep 2021 12:42:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210830123704.221494-1-verdre@v0yd.nl> <20210830123704.221494-2-verdre@v0yd.nl>
+ <CA+ASDXPKZ0i5Bi11Q=qqppY8OCgw=7m0dnPn0s+y+GAvvQodog@mail.gmail.com>
+ <CAHp75VdR4VC+Ojy9NjAtewAaPAgowq-3rffrr3uAdOeiN8gN-A@mail.gmail.com>
+ <CA+ASDXNGR2=sQ+w1LkMiY_UCfaYgQ5tcu2pbBn46R2asv83sSQ@mail.gmail.com>
+ <YS/rn8b0O3FPBbtm@google.com> <0ce93e7c-b041-d322-90cd-40ff5e0e8ef0@v0yd.nl>
+ <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
+ <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl> <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
+In-Reply-To: <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 23 Sep 2021 22:41:30 +0300
+Message-ID: <CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+To:     =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 23, 2021 at 6:28 PM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wrote:
+> On 9/22/21 2:50 PM, Jonas Dre=C3=9Fler wrote:
+
+...
+
+> - Just calling mwifiex_write_reg() once and then blocking until the card
+> wakes up using my delay-loop doesn't fix the issue, it's actually
+> writing multiple times that fixes the issue
+>
+> These observations sound a lot like writes (and even reads) are actually
+> being dropped, don't they?
+
+It sounds like you're writing into a not ready (fully powered on) device.
+
+To check this, try to put a busy loop for reading and check the value
+till it gets 0.
+
+Something like
+
+  unsigned int count =3D 1000;
+
+  do {
+    if (mwifiex_read_reg(...) =3D=3D 0)
+      break;
+  } while (--count);
 
 
-Le jeu., sept. 23 2021 at 20:52:23 +0200, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> Hi Paul,
-> 
->>  Am 23.09.2021 um 15:30 schrieb Paul Cercueil <paul@crapouillou.net>:
->> 
->>  Hi Nikolaus,
->> 
->>  Le jeu., sept. 23 2021 at 13:41:28 +0200, H. Nikolaus Schaller 
->> <hns@goldelico.com> a écrit :
->>>  Hi Laurent,
->>>  Ah, ok.
->>>  But then we still have issues.
->>>  Firstly I would assume that get_edid only works properly if it is 
->>> initialized
->>>  through dw_hdmi_connector_create().
->>>  Next, in the current code, passing DRM_BRIDGE_ATTACH_NO_CONNECTOR 
->>> to
->>>  dw_hdmi_bridge_attach() indeed does not call 
->>> dw_hdmi_connector_create()
->>>  but returns 0.
->>>  This patch 6/6 makes drm/ingenic unconditionally require a 
->>> connector
->>>  to be attached which is defined somewhere else (device tree e.g. 
->>> "connector-hdmi")
->>>  unrelated to dw-hdmi. Current upstream code for drm/ingenic does 
->>> not init/attach
->>>  such a connector on its own so it did work before.
->>>  I.e. I think we can't just use parts of dw-hdmi.
->> 
->>  The fact that Laurent is using dw-hdmi with 
->> DRM_BRIDGE_ATTACH_NO_CONNECTOR on Renesas makes me think that it's 
->> possible here as well. There's no reason why it shouldn't work with 
->> ingenic-drm.
-> 
-> That is interesting and Laurent can probably comment on differences 
-> between
-> his setup (I wasn't able to deduce what device you are referring to) 
-> and dw-hdmi.
-> 
-> For jz4780 we tried that first. I do not remember the exact reasons 
-> but we wasted
-> weeks trying to but failed to get it working. While the dw-hdmi 
-> connector simply works
-> on top of upstream and fails only if we apply your patch.
-> 
-> Another issue is how you want to tell connector-hdmi to use the extra 
-> i2c bus driver
-> for ddc which is not available directly as a standard i2c controller 
-> of the jz4780.
-> 
-> hdmi-connector.yaml defines:
-> 
->   ddc-i2c-bus:
-> 	description: phandle link to the I2C controller used for DDC EDID 
-> probing
-> 	$ref: /schemas/types.yaml#/definitions/phandle
-> 
-> So we would need some ddc-i2c-bus = <&i2c-controller-inside-the 
-> dw-hdmi>.
-> 
-> But that i2c-controller-inside-the dw-hdmi does not exist in device 
-> tree
-> and can not be added unless someone significantly rewrites dw-hdmi to
-> register and expose it as i2c controller.
-
-No, you don't need to do that at all. Just don't set the "ddc-i2c-bus" 
-property.
-
->> 
->>  The ingenic-drm driver does not need to create any connector. The 
->> "connector-hdmi" is connected to dw-hdmi as the "next bridge" in the 
->> list.
-> 
-> Sure. It does not *create* a connector. It expects that it can safely 
-> call
-> drm_bridge_connector_init() to get a pointer to a newly created 
-> connector.
-> 
-> But if we use the dw-hdmi connector, there is no such connector and 
-> "next bridge".
-
-We don't want to use the dw-hdmi connector. Your "next bridge" is the 
-"hdmi-connector" that should be wired in DTS.
-
-> Or can you tell me how to make the dw-hdmi connector created by
-> dw_hdmi_connector_create() become the "next bridge" in the list for 
-> your driver?
-> But without significantly rewriting dw-hdmi.c (and testing).
-
-Wire it to the LCD node in DTS...
-
-See how we do it for the IT66121 driver:
-https://github.com/OpenDingux/linux/blob/jz-5.15/arch/mips/boot/dts/ingenic/rg350m.dts#L114-L134
-
->> 
->>>  If drm_bridge_attach() would return some errno if 
->>> DRM_BRIDGE_ATTACH_NO_CONNECTOR
->>>  is set, initialization in ingenic_drm_bind() would fail likewise 
->>> with "Unable to attach bridge".
->>>  So in any case dw-hdmi is broken by this drm/ingenic patch unless 
->>> someone
->>>  reworks it to make it compatible.
->> 
->>  Where would the errno be returned? Why would drm_bridge_attach() 
->> return an error code?
-> 
-> Currently dw_hdmi_bridge_attach() returns 0 if it is asked to support
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
-> 
-> This is not treated as an error by drm_bridge_attach().
-> 
-> Here it could return an error (-ENOTSUPP?) instead, to allow for 
-> error handling
-> by its caller.
-
-And why would you do that? If you don't want to attach a connector, 
-then drm_bridge_attach() doesn't need to do much. So it's normal that 
-it returns zero.
-
-> But that raises an error message like "failed to attach bridge to 
-> encoder" and
-> the bridge is reset and detached.
-> 
->> 
->>>  Another issue is that dw_hdmi_connector_create() does not only do 
->>> dcd/edid
->>>  but appears to detects hot plug and does some special 
->>> initialization.
->>>  So we probably loose hotplug detect if we just use 
->>> drm_bridge_funcs.get_edid().
->> 
->>  There's drm_bridge_funcs.detect().
-> 
-> You mean in dw-hdmi? Yes, it calls dw_hdmi_bridge_detect() which 
-> calls dw_hdmi_detect().
-> This does some read_hpd.
-> 
-> Anyways, this does not solve the problem that with your drm/ingenic 
-> proposal the
-> dw-hdmi subsystem (hdmi + ddc) can no longer be initialized properly 
-> unless someone
-> fixes either.
-> 
-> So IMHO this should be treated as a significant blocking point for 
-> your patch
-> because it breaks something that is working upstream and there seems 
-> to be no
-> rationale to change it.
-> 
-> Your commit message just says:
-> "All the bridges are now attached with 
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR."
-> but gives no reason why.
-> 
-> I fully understand that you want to change it and Laurent said that 
-> it will become
-> standard in the far future. Therefore I suggest to find a way that 
-> you can find out
-> if a connector has already been created by drm_bridge_attach() to 
-> stay compatible
-> with current upstream code.
-
-No, absolutely not. There is nothing upstream yet that can bind the 
-ingenic-drm driver with the dw-hdmi driver. This is your downstream 
-patch. I'm not breaking anything that's upstream, so there is no 
-blocking point.
-
-Besides, even with your downstream patch I don't see any reason why the 
-dw-hdmi driver wouldn't work with this patch, provided it's wired 
-properly, and you never did show a proof of failure either. You come up 
-with "possible points where it will fail" but these are based on your 
-assumptions on how the drivers should be working together, and I think 
-you somehow miss the whole picture.
-
-Start by wiring things properly, like in my previously linked DTS, and 
-*test*. If it fails, tell us where it fails. Because your "it doesn't 
-work" arguments have zero weight otherwise.
-
-If I can find some time this weekend I will test it myself.
-
-Cheers,
--Paul
-
-> I even want to help here but I don't know how to detect the inverse of
-> drm_connector_attach_encoder(), i.e. 
-> is_drm_encoder_attached_to_any_connector().
-> 
-> BR and thanks,
-> Nikolaus
-> 
-> 
-> 
-
-
+--=20
+With Best Regards,
+Andy Shevchenko
