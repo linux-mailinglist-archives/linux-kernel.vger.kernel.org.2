@@ -2,100 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E8A415870
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED8C415874
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 08:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239444AbhIWGta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 02:49:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47756 "EHLO mail.kernel.org"
+        id S239437AbhIWGvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 02:51:33 -0400
+Received: from relay.sw.ru ([185.231.240.75]:39560 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239359AbhIWGt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:49:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B98D2610D1;
-        Thu, 23 Sep 2021 06:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632379677;
-        bh=AF60ZPwUP8z9XvN4FVZ6x/vIwqknICKlpihnYWy1TEU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qvh3psuo++MhYg868DDM5/QIZsRvkN1DZFAmj6R7h4FhZS8cXaZN48sQjErG2rb7S
-         boUddQRvLDXjhLRGYM11Oi0rDiEGvdN2L1a30ajG2r4+05xpJYfENvSUBJIqtpjGGz
-         5aYk0UDGTz3PYRcQwT84cMtPjoDUl0XoBVDx+FGo=
-Date:   Thu, 23 Sep 2021 08:47:28 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Coly Li <colyli@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-raid@vger.kernel.org, nvdimm@lists.linux.dev,
-        antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        NeilBrown <neilb@suse.de>, Richard Fan <richard.fan@suse.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>, rafael@kernel.org
-Subject: Re: Too large badblocks sysfs file (was: [PATCH v3 0/7] badblocks
- improvement for multiple bad block ranges)
-Message-ID: <YUwjAJXjFR9tbJiQ@kroah.com>
-References: <20210913163643.10233-1-colyli@suse.de>
- <a0f7b021-4816-6785-a9a4-507464b55895@suse.de>
- <YUwZ95Z+L5M3aZ9V@kroah.com>
- <e227eb59-fcda-8f3e-d305-b4c21f0f2ef2@suse.de>
+        id S239373AbhIWGvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 02:51:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=vtROa+P4fLarhoo5zHVgaO07dFJHZ8lgd6rV14a23N4=; b=mm4NFGv1WorRzXdvb
+        0fANICC/P0JNGuqguha1XOl3FMrxkIIzBvMJSgQ8zZnnDu2HTxwDLxRe7NnFrR6Xq4TES1kfjz3TK
+        n2Sa4PWBllcqGfzkEBCw+TTHgQm2HluKwcynBwEyDlKHKB6tpN3mAqO4PbI9bP0hQL8okJfjtZqeY
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mTIYP-002xdr-JG; Thu, 23 Sep 2021 09:49:57 +0300
+Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+ <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
+ <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
+Date:   Thu, 23 Sep 2021 09:49:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e227eb59-fcda-8f3e-d305-b4c21f0f2ef2@suse.de>
+In-Reply-To: <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 02:14:12PM +0800, Coly Li wrote:
-> On 9/23/21 2:08 PM, Greg Kroah-Hartman wrote:
-> > On Thu, Sep 23, 2021 at 01:59:28PM +0800, Coly Li wrote:
-> > > Hi all the kernel gurus, and folks in mailing lists,
-> > > 
-> > > This is a question about exporting 4KB+ text information via sysfs
-> > > interface. I need advice on how to handle the problem.
+On 9/22/21 3:27 PM, Michal Hocko wrote:
+> On Fri 17-09-21 11:06:49, Vasily Averin wrote:
+>> Huge vmalloc allocation on heavy loaded node can lead to a global
+>> memory shortage. A task called vmalloc can have the worst badness
+>> and be chosen by OOM-killer, however received fatal signal and
+>> oom victim mark does not interrupt allocation cycle. Vmalloc will
+>> continue allocating pages over and over again, exacerbating the crisis
+>> and consuming the memory freed up by another killed tasks.
+>>
+>> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
+>> effective and avoid host panic.
+>>
+>> Unfortunately it is not 100% safe. Previous attempt to break vmalloc
+>> cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
+>> the current task is killed"") due to some vmalloc callers did not handled
+>> failures properly. Found issues was resolved, however, there may
+>> be other similar places.
+>>
+>> Such failures may be acceptable for emergencies, such as OOM. On the other
+>> hand, we would like to detect them earlier. However they are quite rare,
+>> and will be hidden by OOM messages, so I'm afraid they wikk have quite
+>> small chance of being noticed and reported.
+>>
+>> To improve the detection of such places this patch also interrupts the vmalloc
+>> allocation cycle for all fatal signals. The checks are hidden under DEBUG_VM
+>> config option to do not break unaware production kernels.
 > 
-> Hi Greg,
+> I really dislike this. We shouldn't have a sementically different
+> behavior for a debugging kernel.
+
+Yes, you're right, thank you.
+
+> Is there any technical reason to not do fatal_signal_pending bailout
+> unconditionally? OOM victim based check will make it less likely and
+> therefore any potential bugs are just hidden more. So I think we should
+> really go with fatal_signal_pending check here.
+
+I'm agree, oom_victim == fatal_signal_pending.
+I'm agree that vmalloc callers should expect and handle single vnalloc failures.
+I think it is acceptable to enable fatal_signal_pending check to quickly
+detect such kind of iussues.
+However fatal_signal_pending check can cause serial vmalloc failures
+and I doubt it is acceptable. 
+
+Rollback after failed vmalloc can call new vmalloc calls that will be failed too, 
+even properly handled such serial failures can cause troubles.
+
+Hypothetically, cancelled vmalloc called inside some filesystem's transaction
+forces its rollback, that in own turn it can call own vmalloc.
+Any failures on this path can break the filesystem.
+I doubt it is acceptable, especially for non-OOM fatal signals.
+On the other hand I cannot say that it is a 100% bug.
+
+Another scenario:
+as you know failed vmalloc calls pr_warn. According message should be sent
+to remote terminal or netconsole. I'm not sure about execution context,
+however if this is done in task context it may call vmalloc either in terminal
+or in network subsystems. Even handled, such failures are not fatal,
+but this behaviour is at least unexpected.
+
+Should we perhaps interrupt the first vmalloc only?
+
+>> Vmalloc uses new alloc_pages_bulk subsystem, so newly added checks can
+>> affect other users of this subsystem.
+>>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>>  mm/page_alloc.c | 5 +++++
+>>  mm/vmalloc.c    | 6 ++++++
+>>  2 files changed, 11 insertions(+)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index b37435c274cf..133d52e507ff 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -5288,6 +5288,11 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>>  			continue;
+>>  		}
+>>  
+>> +		if (tsk_is_oom_victim(current) ||
+>> +		    (IS_ENABLED(CONFIG_DEBUG_VM) &&
+>> +		     fatal_signal_pending(current)))
+>> +			break;
 > 
-> This is the code in mainline kernel for quite long time.
-
-{sigh}
-
-What tools rely on this?  If none, just don't add new stuff to the file
-and work to create a new api instead.
-
-> > Please do not do that.  Seriously, that is not what sysfs is for, and is
-> > an abuse of it.
-> > 
-> > sysfs is for "one value per file" and should never even get close to a
-> > 4kb limit.  If it does, you are doing something really really wrong and
-> > should just remove that sysfs file from the system and redesign your
-> > api.
+> This allocator interface is used in some real hot paths. It is also
+> meant to be fail fast interface (e.g. it only allocates from pcp
+> allocator) so it shouldn't bring any additional risk to memory depletion
+> under heavy memory pressure.
 > 
-> I understand this. And what I addressed is the problem I need to fix.
-> 
-> The code is there for almost 10 years, I just find it during my work on bad
-> blocks API fixing.
-> 
-> 
-> > > Recently I work on the bad blocks API (block/badblocks.c) improvement, there
-> > > is a sysfs file to export the bad block ranges for me raid. E.g for a md
-> > > raid1 device, file
-> > >      /sys/block/md0/md/rd0/bad_blocks
-> > > may contain the following text content,
-> > >      64 32
-> > >     128 8
-> > Ick, again, that's not ok at all.  sysfs files should never have to be
-> > parsed like this.
-> 
-> I cannot agree more with you. What I am asking for was ---- how to fix it ?
+> In other words I do not see any reason to bail out in this code path.
 
-Best solution, come up with a new api.
+Thank you for the explanation, let's drop this check at all.
 
-Worst solution, you are stuck with the existing file and I can show you
-the "way out" of dealing with files larger than 4kb in sysfs that a
-number of other apis are being forced to do as they grow over time.
-
-But ideally, just drop ths api and make a new one please.
-
-thanks,
-
-greg k-h
+Thank you,
+	Vasily Averin
