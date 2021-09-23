@@ -2,75 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3B44161BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504404161C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241892AbhIWPJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:09:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57348 "EHLO mail.kernel.org"
+        id S241852AbhIWPLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241838AbhIWPJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:09:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC473610D1;
-        Thu, 23 Sep 2021 15:07:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632409649;
-        bh=US8IJM1epMnlaRX8k7bmkMIXpNy7JU6hUxfHTCGrtsE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1viTjeFbDHNjqqb5AqC6js61riKitWdybX0g+NBdztf2PoRzMoYYLeJyzNSfYz8x/
-         KT6g6sLG985JesBuK9ooyaLwz8bx0WSO3Erxz5oLG0dDt1RBBvnvLY8wIghUrZAq2s
-         SJem+TVA1n/a8NgHtZA/W/AfcFefNcZDyYddxQo8=
-Date:   Thu, 23 Sep 2021 17:07:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Lutomirski, Andy" <luto@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Kammela, Gayatri" <gayatri.kammela@intel.com>,
-        "Zeng, Guang" <guang.zeng@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Witt, Randy E" <randy.e.witt@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Thomas, Ramesh" <ramesh.thomas@intel.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Subject: Re: [RFC PATCH 00/13] x86 User Interrupts support
-Message-ID: <YUyYL9HIfP+rLsLv@kroah.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <c08f38db-77da-c50e-23f7-b3a76688deeb@intel.com>
- <BYAPR11MB33203044CD5D7413846655F9E5DA9@BYAPR11MB3320.namprd11.prod.outlook.com>
- <YUxwuR4V+kwk1L34@kroah.com>
- <YUyKqmKR0pOcP/NA@kroah.com>
- <b335f28f-ecb6-525e-c56d-0d8f303ce081@intel.com>
+        id S241792AbhIWPLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:11:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34A0561211;
+        Thu, 23 Sep 2021 15:09:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632409769;
+        bh=oA+WWs5P3iaZypn5jU4SpKYZzff2WutgvUss6C8I1ls=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=OpjLqQ3wJS0mnuI98GptpCEetjJ7ryrKPRZawRxcJyOjz39Wm0twQ88tzZObVtMa9
+         QirClY/g+GQBLZejLEdyBfzOjNXKsC8u85V5dflPNMap/uUNEpb4PbYBWqazCivDFw
+         H1CeAhEm7ctFniGz5gqTchtFCM7PmG7d14tcezwZGUo7yhVbFREvm4RmiW4Vx6F0wc
+         4WM7ylAKNg00kdQNmWhhvx9MxVp5DT7oMWgkYHMm2QA9FOmnbvua9/xgug/pzRWpYI
+         mEno+UW5OxERAGrRNu1ijGqrngs6+dF99CMPNCbq3VGnxP2JfOZVFXYMhHrksK8y0S
+         S0mBdZrDOo02w==
+Subject: Re: [PATCH] erofs: fix misbehavior of unsupported chunk format check
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org, Liu Bo <bo.liu@linux.alibaba.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <20210922095141.233938-1-hsiangkao@linux.alibaba.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <926fb1a9-174e-26de-c9ed-70aa0a01d394@kernel.org>
+Date:   Thu, 23 Sep 2021 23:09:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b335f28f-ecb6-525e-c56d-0d8f303ce081@intel.com>
+In-Reply-To: <20210922095141.233938-1-hsiangkao@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 07:46:43AM -0700, Dave Hansen wrote:
-> I encourage everyone submitting new hardware features to include
-> information about where their feature will show up to end users *and* to
-> say how widely it will be available.  I'd actually prefer if maintainers
-> rejected patches that didn't have this information.
+On 2021/9/22 17:51, Gao Xiang wrote:
+> Unsupported chunk format should be checked with
+> "if (vi->chunkformat & ~EROFS_CHUNK_FORMAT_ALL)"
+> 
+> Found when checking with 4k-byte blockmap (although currently mkfs
 
-Make sense.  So, what are the answers to these questions for this new
-CPU feature?
+That means for 4k-byte blockmap, chunkformat should be zero, right?
 
-thanks,
+> uses inode chunk indexes format by default.)
+> 
+> Fixes: c5aa903a59db ("erofs: support reading chunk-based uncompressed files")
+> Cc: Liu Bo <bo.liu@linux.alibaba.com>
+> Cc: Chao Yu <chao@kernel.org>
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-greg k-h
+Reviewed-by: Chao Yu <chao@kernel.org>
+
+Thanks,
