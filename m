@@ -2,158 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1C0415D05
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D356415D0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240669AbhIWLtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240617AbhIWLtI (ORCPT
+        id S240680AbhIWLv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:51:29 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:17614 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240645AbhIWLv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:49:08 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4252AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:47:37 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id d207so21355179qkg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:47:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f5q4Q0naikJ3U5wGiMvQKb9E4gch+MACgCJ4ofFGfM0=;
-        b=CEH2FkNz7FYz8p9aGi3j4nq9KkH7fQWudfbUsWh3XWNrD1EXDnPuz74TC8yoAu2XVO
-         NnQSYCO//oyWdM/a5Dm/aNX31E6SlKEQjMOC3KXQZ0JIMmSZCTCCzpwMjQqKDOylxL3+
-         Gy7yUqcjdaOAUXjnv+s7608EgRwji7aKg35yxWswRHMAQEK3YhJghchL8h5c056GPCqx
-         TAo6i2rwVPZTz8BCAy5NcFT3aE19GxfDy8IcdHkxcH7NCgOfXpFnxwuzqmn4JEcmemrQ
-         j8+DSincvKzfd3Sq1KwQ25KpCoY33lJAHMp80jedyervndLDH9pS/H3yN5/3z8BZCKPi
-         SSXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f5q4Q0naikJ3U5wGiMvQKb9E4gch+MACgCJ4ofFGfM0=;
-        b=rzUR9lWboS4bdnso8rPhAlQl2Sgp1K5Iv/BhGQwGcsHXPVHx89bwGkq28Nmc7SZm6a
-         vTnKWtBTJVFh7t5pegONp/h6Ej+jr5lut8NrNRGjTwgwXUHzlhRJzjZWrHF6eii/YRhe
-         ufIAacX+QldYYA8RiW85kb9eKOR2rxzI2RL3h94sLL5z5OCMwQw5+h6rMBQAYtEM1GrQ
-         HbwrzUbDsDj/jtgMF5Sh/m9xFNorY7IVnzCheIf+Hd9C+/lPRc+H17dLzogDFXiNgkR1
-         qVo2CfkHH4l6aHSw2u5xTux6fYpAZ6lV47IaOjCWG4fS6gzFcB61mBnXlGcfH7+Nw0vz
-         fJIw==
-X-Gm-Message-State: AOAM532LAQ0GIFD4oz0ifY58GC4GaSm0FqPbEsZUsQDmuAk8Qj8UJBGK
-        8JqxmpnPNqk6PTWA/VtG0/jWnaz4x+fFGzHXzVbyxg==
-X-Google-Smtp-Source: ABdhPJwLLqnUaFZAORZ5Q3MAjaFmeajoEHsSPv22Q1Lx23MGL0NOtHPTqJryA3AIJc+i2XNlqHoRGi0UFbEiX9YEXlk=
-X-Received: by 2002:a25:2f48:: with SMTP id v69mr5031072ybv.339.1632397656362;
- Thu, 23 Sep 2021 04:47:36 -0700 (PDT)
+        Thu, 23 Sep 2021 07:51:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UpKskVP_1632397782;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UpKskVP_1632397782)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 23 Sep 2021 19:49:44 +0800
+Date:   Thu, 23 Sep 2021 19:49:42 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com,
+        zhangwen@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] erofs: fix compacted_2b if compacted_4b_initial >
+ totalidx
+Message-ID: <YUxp1rsN0Ce88YQI@B-P7TQMD6M-0146.local>
+References: <20210914035915.1190-1-zbestahu@gmail.com>
+ <YUAm+kOdKcCzgcEy@B-P7TQMD6M-0146.local>
+ <20210914125748.00003cd2.zbestahu@gmail.com>
 MIME-Version: 1.0
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <20210922094131.15625-4-linyunsheng@huawei.com> <YUw78q4IrfR0D2/J@apalos.home>
- <b2779d81-4cb3-5ccc-8e36-02cd633383f3@huawei.com>
-In-Reply-To: <b2779d81-4cb3-5ccc-8e36-02cd633383f3@huawei.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Thu, 23 Sep 2021 14:47:00 +0300
-Message-ID: <CAC_iWj+yv8+=MaxtqLFkQh1Qb75vNZw30xcz2VTD-m37-RVp8A@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/7] pool_pool: avoid calling compound_head() for
- skb frag page
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org, Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, memxor@gmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210914125748.00003cd2.zbestahu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sept 2021 at 14:24, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2021/9/23 16:33, Ilias Apalodimas wrote:
-> > On Wed, Sep 22, 2021 at 05:41:27PM +0800, Yunsheng Lin wrote:
-> >> As the pp page for a skb frag is always a head page, so make
-> >> sure skb_pp_recycle() passes a head page to avoid calling
-> >> compound_head() for skb frag page case.
-> >
-> > Doesn't that rely on the driver mostly (i.e what's passed in skb_frag_set_page() ?
-> > None of the current netstack code assumes bv_page is the head page of a
-> > compound page.  Since our page_pool allocator can will allocate compound
-> > pages for order > 0,  why should we rely on it ?
->
-> As the page pool alloc function return 'struct page *' to the caller, which
-> is the head page of a compound pages for order > 0, so I assume the caller
-> will pass that to skb_frag_set_page().
+On Tue, Sep 14, 2021 at 12:57:48PM +0800, Yue Hu wrote:
+> On Tue, 14 Sep 2021 12:37:14 +0800
+> Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> 
+> > On Tue, Sep 14, 2021 at 11:59:15AM +0800, Yue Hu wrote:
+> > > From: Yue Hu <huyue2@yulong.com>
+> > > 
+> > > Currently, the whole indexes will only be compacted 4B if
+> > > compacted_4b_initial > totalidx. So, the calculated compacted_2b
+> > > is worthless for that case. It may waste CPU resources.
+> > > 
+> > > No need to update compacted_4b_initial as mkfs since it's used to
+> > > fulfill the alignment of the 1st compacted_2b pack and would handle
+> > > the case above.
+> > > 
+> > > We also need to clarify compacted_4b_end here. It's used for the
+> > > last lclusters which aren't fitted in the previous compacted_2b
+> > > packs.
+> > > 
+> > > Some messages are from Xiang.
+> > > 
+> > > Signed-off-by: Yue Hu <huyue2@yulong.com>  
+> > 
+> > Looks good to me,
+> > Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > 
+> > (although I think the subject title would be better changed into
+> >  "clear compacted_2b if compacted_4b_initial > totalidx"
+> 
+> Yeah, 'clear' is much better for this change.
+> 
+> Thanks.
+> 
+> >  since 'fix'-likewise words could trigger some AI bot for stable
+> >  kernel backporting..)
+> > 
+> > Thanks,
+> > Gao Xiang
+> > 
+> > > ---
+> > >  fs/erofs/zmap.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+> > > index 9fb98d8..aeed404 100644
+> > > --- a/fs/erofs/zmap.c
+> > > +++ b/fs/erofs/zmap.c
+> > > @@ -369,7 +369,8 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+> > >  	if (compacted_4b_initial == 32 / 4)
+> > >  		compacted_4b_initial = 0;
+> > >  
+> > > -	if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
+> > > +	if ((vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B) &&
+> > > +	    compacted_4b_initial <= totalidx) {
 
-Yea that's exactly the assumption I was afraid of.
-Sure not passing the head page might seem weird atm and the assumption
-stands, but the point is we shouldn't blow up the entire network stack
-if someone does that eventually.
+btw, I've fixed up the build error due to redundant brace '{' when
+applying...
 
->
-> For non-pp page, I assume it is ok whether the page is a head page or tail
-> page, as the pp_magic for both of them are not set with PP_SIGNATURE.
+Thanks,
+Gao Xiang
 
-Yea that's true, although we removed the checking for coalescing
-recyclable and non-recyclable SKBs,   the next patch first checks the
-signature before trying to do anything with the skb.
-
->
-> Or should we play safe here, and do the trick as skb_free_head() does in
-> patch 6?
-
-I don't think the &1 will even be measurable,  so I'd suggest just
-dropping this and play safe?
-
-Cheers
-/Ilias
->
-> >
-> > Thanks
-> > /Ilias
-> >>
-> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >> ---
-> >>  include/linux/skbuff.h | 2 +-
-> >>  net/core/page_pool.c   | 2 --
-> >>  2 files changed, 1 insertion(+), 3 deletions(-)
-> >>
-> >> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> >> index 6bdb0db3e825..35eebc2310a5 100644
-> >> --- a/include/linux/skbuff.h
-> >> +++ b/include/linux/skbuff.h
-> >> @@ -4722,7 +4722,7 @@ static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
-> >>  {
-> >>      if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
-> >>              return false;
-> >> -    return page_pool_return_skb_page(virt_to_page(data));
-> >> +    return page_pool_return_skb_page(virt_to_head_page(data));
-> >>  }
-> >>
-> >>  #endif      /* __KERNEL__ */
-> >> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> >> index f7e71dcb6a2e..357fb53343a0 100644
-> >> --- a/net/core/page_pool.c
-> >> +++ b/net/core/page_pool.c
-> >> @@ -742,8 +742,6 @@ bool page_pool_return_skb_page(struct page *page)
-> >>  {
-> >>      struct page_pool *pp;
-> >>
-> >> -    page = compound_head(page);
-> >> -
-> >>      /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
-> >>       * in order to preserve any existing bits, such as bit 0 for the
-> >>       * head page of compound page and bit 1 for pfmemalloc page, so
-> >> --
-> >> 2.33.0
-> >>
-> > .
-> >
+> > >  		compacted_2b = rounddown(totalidx - compacted_4b_initial, 16);
+> > >  	else
+> > >  		compacted_2b = 0;
+> > > -- 
+> > > 1.9.1  
