@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AB44155AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EF94155B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238937AbhIWDAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59694 "EHLO
+        id S238977AbhIWDCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238905AbhIWDAl (ORCPT
+        with ESMTP id S238934AbhIWDCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:00:41 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21538C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 19:59:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vCwqPpKpFoYR/HoAFTSRyHPaX5Ao3ESn8CUqdRVhDvI=; b=QzAmFNTHk8HdZbrAU+/ncY6EHk
-        wAAmBFMIz8SLK/jdMWcBm6fMtRxe/rQOt2pl6r5G/TEeYcJarskqDijuwiNQtUyJHEwcHLlAajwcH
-        4mwn2vykag6FmKOblqiRiEqiGlekGxin8O+o4QLqp8Mcv0tssNUhKMLhf6EV1tYHTqGhcajVE2WCn
-        jwwj7+GBSh1K75yyvJhObMZKuP7N3ZhIO6GOhm43hLaMJ23pij0pi8DGl2JpEHKPcaw78zAjH4u8g
-        Ik8HkvUyy5fhlaJ1I9AqfrZyPhodww+6JUoFxGGuJdWspE8Hi46FzW/Wg38VJjcARR+nhQRSyhutv
-        glCcU53g==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTEx3-00A8fE-9P; Thu, 23 Sep 2021 02:59:09 +0000
-Date:   Wed, 22 Sep 2021 19:59:09 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: fix invalid ELF structure error to print error
- code
-Message-ID: <YUvtfUHb+8XjEtTf@bombadil.infradead.org>
-References: <20210923001442.58278-1-skhan@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923001442.58278-1-skhan@linuxfoundation.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+        Wed, 22 Sep 2021 23:02:50 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E069C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 20:01:19 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id j15so1652550plh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 20:01:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Rsco8rJJnmLAZwuOl5TFQP4xk+kS1llqY9y42TeLc7k=;
+        b=ZDVmwjwpxM1L0d9KchLJG+3f3jTvhiSmAQOgPf2/GA2T3yLlD3ZeqZqyaz4LBgKfXJ
+         fibnn7uSUtltU7Xni6VWAQQs4a5ZPaVU8QQAOcVHM5cQ8MCMynuamPDCBwFK35Tbz9eC
+         gpVwWqU8N7kwsLbZKowKhY7Rl72MsHClzjEmbAXF4NI+TKEfjLwo5dDjQaElwIjycsgb
+         /8n1z9zGYXwuWYML9esdwfJCEzMI8OteF8y5pPMV7pa0UQDbq+2zzKjBpGwD16mxVPfd
+         deH1ODs+gubjOXufAAQOHlhTpfjWDKVKA/TRX1pEwhxBc7Ec2hk1OzWeFZ2oZiZlesoV
+         xI4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Rsco8rJJnmLAZwuOl5TFQP4xk+kS1llqY9y42TeLc7k=;
+        b=tkEfx4/AFtWkR6ARcuaBv1fYKu2ojRXZTIHBMXiqmk5/ECfGVT/UuPWEWeOlkENn/E
+         +p97vXt7M25MAxLvFb1YGy0iP7w681ZDYFURsPvlaO+M5fFEWEWCw6L15AcR3MtIFYcS
+         f28r0ok/H4HXp2wlTwDOzd3pWU2OYWCA+7HNgP82zZTAkWEEQXduZ7Zgn75BUVhg3f3f
+         1oibgzl9Zi3uCzBO92LYuaPjG4Fux46AC6XanvvnXzUSi9aTqtL6wCRg9bsBwzcp+1Q8
+         6uVMO4S0PntJPnUioTJLBruLDgU1v0gvpRWlmS9AwsOqSLAxzerV940x1xdv2kSKfAa2
+         SQJg==
+X-Gm-Message-State: AOAM533tNcpdxA7g81wWwNPNghLDA0z1IWxInwCgMVrkDygOrAFhrmJe
+        GW1r9yh3nax09CdTJk2jqTxWeA==
+X-Google-Smtp-Source: ABdhPJybJbLzIo5B2ipqXGGUZDnneckSq02xnZlDHPOc08LSdrQ2583QYBqxR429xY65u76mkmJKxA==
+X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr15085854pjj.122.1632366078854;
+        Wed, 22 Sep 2021 20:01:18 -0700 (PDT)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id i7sm4226869pgp.39.2021.09.22.20.01.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 20:01:18 -0700 (PDT)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH v2 0/2] Add pinctrl driver for QCM2290
+Date:   Thu, 23 Sep 2021 11:01:00 +0800
+Message-Id: <20210923030102.29148-1-shawn.guo@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 06:14:42PM -0600, Shuah Khan wrote:
-> When elf_validity_check() returns error, load_module() prints an
-> error message without error code. It is hard to determine why the
-> module ELF structure is invalid without this information. Fix the
-> error message to print the error code.
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> ---
->  kernel/module.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 40ec9a030eec..a0d412d396d6 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -3941,7 +3941,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
->  	 */
->  	err = elf_validity_check(info);
->  	if (err) {
-> -		pr_err("Module has invalid ELF structures\n");
-> +		pr_err("Module has invalid ELF structures:errno(%ld)\n", err);
->  		goto free_copy;
+The series adds QCM2290 pinctrl driver and bindings.
 
-The subject seems to indicate a fix is being made, and I think that the
-bots that pick up fixes through language might find that this is a
-candidate because of that. It is not, and so if you can change the
-subject to indicate that this is just expanding the error print message
-with the actual error code passed it would be better.
+Changes for v2:
+- Update pattern in bindings to cover entire GPIO space.
+- Sort qcm2290 functions.
+- Group phase_flagN into a single function, and same to qdss_gpio, atest
+  and dac_calib.
+- Correct .compatible to be qcom,qcm2290-tlmm.
 
-Now, if you look at elf_validity_check() and how it can fail, it would
-seem tons of errors are due to -ENOEXEC. Even a function it calls,
-validate_section_offset() also uses that return code. So on failure,
-you likely won't still know exactly where this failed as you likely
-will juse see the -ENOEXEC value, but that won't tell you much I think.
 
-So, it would seem a bit more useful instead to add some pr_debug()s
-on the elf_validity_check() and friends so that dynamic debug could
-be used to debug and figure out where this did fail, when needed?
-Thoughts?
+Shawn Guo (2):
+  dt-bindings: pinctrl: qcom: Add QCM2290 pinctrl bindings
+  pinctrl: qcom: Add QCM2290 pinctrl driver
 
-  Luis
+ .../pinctrl/qcom,qcm2290-pinctrl.yaml         |  186 +++
+ drivers/pinctrl/qcom/Kconfig                  |    8 +
+ drivers/pinctrl/qcom/Makefile                 |    1 +
+ drivers/pinctrl/qcom/pinctrl-qcm2290.c        | 1129 +++++++++++++++++
+ 4 files changed, 1324 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,qcm2290-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-qcm2290.c
+
+-- 
+2.17.1
+
