@@ -2,105 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73821415EC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00658415ECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241075AbhIWMtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:49:05 -0400
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:35609 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241013AbhIWMtD (ORCPT
+        id S241082AbhIWMuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:50:51 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:37566 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240787AbhIWMub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:49:03 -0400
-Received: by mail-ua1-f44.google.com with SMTP id d4so4173200uak.2;
-        Thu, 23 Sep 2021 05:47:32 -0700 (PDT)
+        Thu, 23 Sep 2021 08:50:31 -0400
+Received: by mail-ot1-f52.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so1434657otv.4;
+        Thu, 23 Sep 2021 05:49:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9+oX/hZLMr7MwGX9KlLoMnQVuO/vswFUJrco6bWsLco=;
-        b=irt4xHMKOkN7qrSI/xkTv6bYxmZgU2YnYSyQczus2SgE9krWvLSDh1TB6/+BAcqi/2
-         7c+8Prz51YAEaIjVva/wGXYDcCTcj8CH/GmIi7/0nXOv8+lHpKD9uksDnj04wgdz5Hsx
-         1IK4G9AkqXoP0HRDq9uahRfKJLU4CyaeT5tjt2+3liG3HSys5Ujzi/JBUmf6wzP40aXv
-         X404IyQLPal5ekGJqvFkl+qC9Ozqgm/314cWgE6T6kLYc34BiKBB7oYkjAKrFahwB2JP
-         gqXVsLwaFRDVhjonpJo2H7xImnda396MYanepRKcRVd91ji/6m0VUMuBAU1edNNuOlK7
-         tfVA==
-X-Gm-Message-State: AOAM531iTVLgnv1ZagqsGdioUr7HS76MTpYqsvmTGB2/cHy+oogaYH4Z
-        69t65TwkM1biTq7h1vPIFGnDWr+4WqpxLl9bpcI=
-X-Google-Smtp-Source: ABdhPJxNh8HF+zJVW644DxAFWsBPkZApmTfFOKbdG02sCW+Xa5hJlIjdDankGv2SFSOFQGCbZGvmt6B/k4BUQkn8Lxc=
-X-Received: by 2002:a9f:30d8:: with SMTP id k24mr3743169uab.89.1632401251566;
- Thu, 23 Sep 2021 05:47:31 -0700 (PDT)
+        bh=HPho5pdPE80Ol42nlkZkWLtxK1B46FluJvPe15qBAgc=;
+        b=7rVbIfl1b/C++IYVIWXpNB3EA8xFGzByqqszAQZAdjoOq30ZWWwVGi9e/MxCoBamhF
+         btsben525ir2iPjbuYOHsA2EWnM2LLVPOJg0OLZrzUE6TiSN0Vp4b1HW08eKs7W/lqyq
+         efWjm9C5slyMqsYr0vsd/2+oIcLvrRGWqZ634k8MlfjcTGdKCsDXPdnW1tG1kZk3kSf+
+         RNHufJzgQK2EXGvl1JfmHFmHZje+hsJmD2mmw4jNWH/2FA0PiB8Rx4feT4SRLFdXtLxb
+         0gpGSGi09ICzLYDbjAJNoXdeXlwCE+jG557qCAFiG4k5OPSViPwSx1Ug7jdHOjNXqSPD
+         rE1A==
+X-Gm-Message-State: AOAM530Ch7mGj31FqJh5giljUlwAiJIqtndlgeGp/lGgetpM9DQwgU3Q
+        mc/YaL8aqp70vSBbI5i8hTDx9SjY4LFSIb3bRZ4=
+X-Google-Smtp-Source: ABdhPJzqIyB8PZUiSI/+lxuDijrE0Lm85sXH1TPxYCbh18wwxFZKnOcawv+pJ9UsVPnnVvNwjuumEoIDYRDPdAZKE10=
+X-Received: by 2002:a9d:4d93:: with SMTP id u19mr4185271otk.86.1632401339990;
+ Thu, 23 Sep 2021 05:48:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210922203027.3229474-1-kieran.bingham@ideasonboard.com>
- <CAMuHMdULHnztv=7i1b1x9BEsO8pu=J3Af_Qx7=CzD3qJhYRNBA@mail.gmail.com> <eda13f7c-b353-dcf4-c4ea-c2aa65858e7a@ideasonboard.com>
-In-Reply-To: <eda13f7c-b353-dcf4-c4ea-c2aa65858e7a@ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 23 Sep 2021 14:47:20 +0200
-Message-ID: <CAMuHMdWzXz7ymzqajcUMNDU_jQewssWcb7=g73nKaDBq5w3qcQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: renesas: r8a779a0: falcon-cpu: Add SW46
- switch support
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>
+References: <20210915170940.617415-1-saravanak@google.com> <20210915170940.617415-3-saravanak@google.com>
+ <CAJZ5v0h11ts69FJh7LDzhsDs=BT2MrN8Le8dHi73k9dRKsG_4g@mail.gmail.com>
+ <YUaPcgc03r/Dw0yk@lunn.ch> <YUoFFXtWFAhLvIoH@kroah.com> <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+ <YUocuMM4/VKzNMXq@lunn.ch> <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
+ <YUo3kD9jgx6eNadX@lunn.ch> <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
+In-Reply-To: <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 23 Sep 2021 14:48:48 +0200
+Message-ID: <CAJZ5v0h4M1Rp2fVWWYN5qjTi4QjYjjjZ5Nc9=mNU-UtrN1RSXg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
-
-On Thu, Sep 23, 2021 at 2:17 PM Kieran Bingham
-<kieran.bingham@ideasonboard.com> wrote:
-> On 23/09/2021 08:32, Geert Uytterhoeven wrote:
-> > On Wed, Sep 22, 2021 at 10:30 PM Kieran Bingham
-> > <kieran.bingham@ideasonboard.com> wrote:
-> >> Add support for SW46-1 and SW46-2 as switches using the gpio-keys
-> >> framework.
-> >>
-> >> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> >>         keys_pins: keys {
-> >> -               pins = "GP_6_18", "GP_6_19", "GP_6_20";
-> >> +               pins = "GP_1_28", "GP_1_29",
-> >> +                      "GP_6_18", "GP_6_19", "GP_6_20";
-> >>                 bias-pull-up;
-> >>         };
-> >
-> > This part is not needed, as the GPIOs connected to the slide switches
-> > have external pull-up resistors (unlike the GPIOs connected to the
-> > push switches, which are driven low by open-drain buffers, without
-> > external pull-up resistors).
+On Tue, Sep 21, 2021 at 10:07 PM Saravana Kannan <saravanak@google.com> wrote:
 >
-> Ah - for some reason I thought it was required to configure the PFC
-> regardless, and show that these pins are acquired by the gpio function -
-> but of course I'd expect 'getting' the gpio would do that..
+> Sorry I've been busy with LPC and some other stuff and could respond earlier.
+>
+> On Tue, Sep 21, 2021 at 12:50 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > > It works at a device level, so it doesn't know about resources.  The
+> > > only information it has is of the "this device may depend on that
+> > > other device" type and it uses that information to figure out a usable
+> > > probe ordering for drivers.
+> >
+> > And that simplification is the problem. A phandle does not point to a
+> > device, it points to a resource of a device. It should really be doing
+> > what the driver would do, follow the phandle to the resource and see
+> > if it exists yet. If it does not exist then yes it can defer the
+> > probe. If the resource does exist, allow the driver to probe.
+> >
+> > > Also if the probe has already started, it may still return
+> > > -EPROBE_DEFER at any time in theory
+> >
+> > Sure it can, and does. And any driver which is not broken will
+> > unregister its resources on the error path. And that causes users of
+> > the resources to release them. It all nicely unravels, and then tries
+> > again later. This all works, it is what these drivers do.
+>
+> One of the points of fw_devlink=on is to avoid the pointless deferred
+> probes that'd happen in this situation. So saying "let this happen"
+> when fw_devlink=on kinda beats the point of it. See further below.
 
-That should work automatically, for a GPIO.
+Well, you need to define "pointless deferred probes" in the first
+place.  fw_devlink adds deferred probes by itself, so why are those
+not pointless whereas the others are?
 
-> Out of interest, is the OD buffer there to act as a hardware debounce or
-> such? or is there another likely reason?
+> >
+> > > However, making children wait for their parents to complete probing is
+> > > generally artificial, especially in the cases when the children are
+> > > registered by the parent's driver.  So waiting should be an exception
+> > > in these cases, not a rule.
+>
+> Rafael,
+>
+> There are cases where the children try to probe too quickly (before
+> the parent has had time to set up all the resources it's setting up)
+> and the child defers the probe. Even Andrew had an example of that
+> with some ethernet driver where the deferred probe is attempted
+> multiple times wasting time and then it eventually succeeds.
 
-Perhaps to improve sharing of the GPIO through the expansion connector?
-Other Renesas boards use the exact same input circuitry, with a
-capacitor and resistor for debouncing, but without the OD buffer, and
-they also provide access to the GPIO through an expansion connector.
-It's even a plain buffer, without schmitt-trigger inputs.  Personally,
-I would have taken one with schmitt-trigger functionality, if I would
-have bothered with adding a buffer in the first place (but I'm not
-a real hardware engineer ;-)
+You seem to be arguing that it may be possible to replace multiple
+probe attempts that each are deferred with one probe deferral which
+then is beneficial from the performance perspective.
 
-Gr{oetje,eeting}s,
+Yes, there are cases like that, but when this is used as a general
+rule, it introduces a problem if it does a deferred probe when there
+is no need for a probe deferral at all (like in the specific problem
+case at hand).  Also if the probing of the child is deferred just
+once, adding an extra dependency on the parent to it doesn't really
+help.
 
-                        Geert
+> Considering there's no guarantee that a device_add() will result in
+> the device being bound immediately, why shouldn't we make the child
+> device wait until the parent has completely probed and we know all the
+> resources from the parent are guaranteed to be available? Why can't we
+> treat drivers that assume a device will get bound as soon as it's
+> added as the exception (because we don't guarantee that anyway)?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Because this adds artificial constraints that otherwise aren't there
+in some cases to the picture and asking drivers to mark themselves as
+"please don't add these artificial constraints for me" is not
+particularly straightforward.  Moreover, it does that retroactively
+causing things that are entirely correct and previously worked just
+fine to now have to paint themselves red to continue working as
+before.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+The fact that immediate probe completion cannot be guaranteed in
+general doesn't mean that it cannot be assumed in certain situations.
+For example, a parent driver registering a child may know what the
+child driver is and so it may know that the child will either probe
+successfully right away or the probing of it will fail and your extra
+constraint breaks that assumption.  You can't really know how many of
+such cases there are and trying to cover them with a new flag is a
+retroactive whack-a-mole game.
+
+> Also, this assumption that the child will be bound successfully upon
+> addition forces the parent/child drivers to play initcall chicken --
+> the child's driver has to be registered before the parent's driver.
+
+That's true, but why is this a general problem?  For example, they
+both may be registered by the same function in the right order.
+What's wrong with that?
+
+> We should be getting away from those by fixing the parent driver that's
+> making these assumptions (I'll be glad to help with that). We need to
+> be moving towards reducing pointless deferred probes and initcall
+> ordering requirements instead of saying "this bad assumption used to
+> work, so allow me to continue doing that".
+
+It is not always a bad assumption.  It may be code designed this way.
