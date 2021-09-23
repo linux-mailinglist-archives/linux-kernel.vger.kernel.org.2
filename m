@@ -2,212 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5454155E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852BC4155E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237570AbhIWDWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:22:12 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60154
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235623AbhIWDWG (ORCPT
+        id S239027AbhIWDZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238190AbhIWDZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:22:06 -0400
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A9A2E402DA
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632367233;
-        bh=+y78UmABh7HK9tr/4S4sGTCsj4Mr5ovgzCxdWvhQlG4=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=uNh29KRnZbR8/SoCvkGLKHhi21F46gzpXddgQxLgNCgULNmoyDkZf+eDMDWgsn0bD
-         Qle+q3LTLuci42Bf+CLTCIsExq9sYVuMIO4nlq42XJvTXKkbDfniIZ05BpyiGtwLE/
-         mlQo6sRqbJXnCWhfxR3I7HMSwO/YaBp6Eefpsg7r+5TRtRnZba1dRns34iCvVg4e0r
-         fI7MmQJ7pcdTyItQJdpOKCDI+h9nZSqTEx7HjfAYr/Oih/hdXw8wgwZRUZvHdiY2T6
-         EKZg7cCaLgQE0OPFM16ApS4s6WgynHyyD4dbuy2K4ZVmCHTx5/b9NO2/P6B3nJiaQ7
-         pdolEWpvn5SSg==
-Received: by mail-oo1-f69.google.com with SMTP id z23-20020a4ad597000000b0029174f63d3eso2996352oos.18
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 20:20:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+y78UmABh7HK9tr/4S4sGTCsj4Mr5ovgzCxdWvhQlG4=;
-        b=Cbku/EvRnVc9Bhpj0m8CeiH8BqTdaXouCC/dVAVtaHH5ThbNHM1oXB7fEvmO2sc+2S
-         sV47qVLmPA3K1whWb2psRcGqtsfSRUZCcoEtckS/rdUH9yS/nZ89xQZMBKY0ZqUI2FIY
-         cQhNwhgLxEy9LaW96Rn5Y033aTwDatRbwkg5ubzqsjA9LMTh0RzwF7CCdsFH8SgjAk+R
-         Icv03MOPWvtWQH3b33nK+uvJakXMJf6eer5ErEN9AP2QDZhVHvBmMRLVqZF5PD2kaSUC
-         LWeqoGam6ssrkr96pPOSyrTWtByhcLTZ+9uv7cMxcN7e56KK53KzBm9Uu5vSU8eiAIzL
-         IcoA==
-X-Gm-Message-State: AOAM533MSt3kdPDHR9iZu7ug1YLZ2MCt2PmTSonYlRyzYKCeVBUDDQjB
-        zMMdY4WssVrfuEZjuDdCzyT0r42HCkqaqFJn8sqQNTu7XYTWrUsGoCt7xae/xK7Mh6X9Yz7KMhE
-        cpmZcDN+6HaN3MUO3tdNMqDwFbthmwc/Y+OfeDn7DkgUEBENx4KFchdkVgQ==
-X-Received: by 2002:aca:2102:: with SMTP id 2mr10887125oiz.98.1632367232285;
-        Wed, 22 Sep 2021 20:20:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyo/AOHrlw7eOB4SMFrUrqCF4z6yGeBZyQ9DCJWkuum5LRKyrbRQIRZgx6p+VovUjqHalCZTcYbTL6gqQfhfKI=
-X-Received: by 2002:aca:2102:: with SMTP id 2mr10887103oiz.98.1632367231968;
- Wed, 22 Sep 2021 20:20:31 -0700 (PDT)
+        Wed, 22 Sep 2021 23:25:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E342C061574;
+        Wed, 22 Sep 2021 20:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cdwGbJhCdZfPvbE5YQ9fHyZz3Nnu8LjufzhZ9sT+PUY=; b=dXqGLXI/tXcTdVyBCjx9XA641I
+        uZK5/7s8XVsJwM3BneZXKjC3CddUAprDRfts74WJK/uVTUez/DfYXyyOg12bDBie6w15LiH8V8YkI
+        1pt1Jj4rfrxiSRgGbmFH3RNG52LI8TXHn/hAwHOVEqwKU91JSmeN1VtPTsMtCn0z7mSJjrb2LixPP
+        /xtTLjYjqfvVwCi/tl4RyPLVAOdSfno3e3I20pPUri3IeUfxvfyfUxwIZfUSe4G/o1OGT3u1Bglx1
+        5DtGV8i98RZZo424RutJiNpXk1+eMuMX6Gt3Cj9xAKznYN1AUFsSxf9nzdf+kBxEoPPc2yORy+4eZ
+        eHfezsfQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mTFKK-005TjG-3A; Thu, 23 Sep 2021 03:23:17 +0000
+Date:   Thu, 23 Sep 2021 04:23:12 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Struct page proposal
+Message-ID: <YUvzINep9m7G0ust@casper.infradead.org>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan>
 MIME-Version: 1.0
-References: <CAAd53p6XdeYcLNctghOi5VPy1YHEOaGoeo9Wc_T9P-RmYTJKzA@mail.gmail.com>
- <20210917165500.GA1723244@bjorn-Precision-5520>
-In-Reply-To: <20210917165500.GA1723244@bjorn-Precision-5520>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 23 Sep 2021 11:20:20 +0800
-Message-ID: <CAAd53p4raiRuWQ3O9VFpxhtro4YJ-E2sUiDrnFnNEMDyxXDK=w@mail.gmail.com>
-Subject: Re: [PATCH] vgaarb: Use ACPI HID name to find integrated GPU
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        mripard@kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUvWm6G16+ib+Wnb@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 12:55 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Fri, Sep 17, 2021 at 11:49:45AM +0800, Kai-Heng Feng wrote:
-> > On Fri, Sep 17, 2021 at 12:38 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > >
-> > > [+cc Huacai, linux-pci]
-> > >
-> > > On Wed, May 19, 2021 at 09:57:23PM +0800, Kai-Heng Feng wrote:
-> > > > Commit 3d42f1ddc47a ("vgaarb: Keep adding VGA device in queue") assumes
-> > > > the first device is an integrated GPU. However, on AMD platforms an
-> > > > integrated GPU can have higher PCI device number than a discrete GPU.
-> > > >
-> > > > Integrated GPU on ACPI platform generally has _DOD and _DOS method, so
-> > > > use that as predicate to find integrated GPU. If the new strategy
-> > > > doesn't work, fallback to use the first device as boot VGA.
-> > > >
-> > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > > ---
-> > > >  drivers/gpu/vga/vgaarb.c | 31 ++++++++++++++++++++++++++-----
-> > > >  1 file changed, 26 insertions(+), 5 deletions(-)
-> > > >
-> > > > diff --git a/drivers/gpu/vga/vgaarb.c b/drivers/gpu/vga/vgaarb.c
-> > > > index 5180c5687ee5..949fde433ea2 100644
-> > > > --- a/drivers/gpu/vga/vgaarb.c
-> > > > +++ b/drivers/gpu/vga/vgaarb.c
-> > > > @@ -50,6 +50,7 @@
-> > > >  #include <linux/screen_info.h>
-> > > >  #include <linux/vt.h>
-> > > >  #include <linux/console.h>
-> > > > +#include <linux/acpi.h>
-> > > >
-> > > >  #include <linux/uaccess.h>
-> > > >
-> > > > @@ -1450,9 +1451,23 @@ static struct miscdevice vga_arb_device = {
-> > > >       MISC_DYNAMIC_MINOR, "vga_arbiter", &vga_arb_device_fops
-> > > >  };
-> > > >
-> > > > +#if defined(CONFIG_ACPI)
-> > > > +static bool vga_arb_integrated_gpu(struct device *dev)
-> > > > +{
-> > > > +     struct acpi_device *adev = ACPI_COMPANION(dev);
-> > > > +
-> > > > +     return adev && !strcmp(acpi_device_hid(adev), ACPI_VIDEO_HID);
-> > > > +}
-> > > > +#else
-> > > > +static bool vga_arb_integrated_gpu(struct device *dev)
-> > > > +{
-> > > > +     return false;
-> > > > +}
-> > > > +#endif
-> > > > +
-> > > >  static void __init vga_arb_select_default_device(void)
-> > > >  {
-> > > > -     struct pci_dev *pdev;
-> > > > +     struct pci_dev *pdev, *found = NULL;
-> > > >       struct vga_device *vgadev;
-> > > >
-> > > >  #if defined(CONFIG_X86) || defined(CONFIG_IA64)
-> > > > @@ -1505,20 +1520,26 @@ static void __init vga_arb_select_default_device(void)
-> > > >  #endif
-> > > >
-> > > >       if (!vga_default_device()) {
-> > > > -             list_for_each_entry(vgadev, &vga_list, list) {
-> > > > +             list_for_each_entry_reverse(vgadev, &vga_list, list) {
-> > >
-> > > Hi Kai-Heng, do you remember why you changed the order of this list
-> > > traversal?
-> >
-> > The descending order is to keep the original behavior.
-> >
-> > Before this patch, it breaks out of the loop as early as possible, so
-> > the lower numbered device is picked.
-> > This patch makes it only break out of the loop when ACPI_VIDEO_HID
-> > device is found.
-> > So if there are more than one device that meet "cmd & (PCI_COMMAND_IO
-> > | PCI_COMMAND_MEMORY)", higher numbered device will be selected.
-> > So the traverse order reversal is to keep the original behavior.
->
-> Can you give an example of what you mean?  I don't quite follow how it
-> keeps the original behavior.
->
-> If we have this:
->
->   0  PCI_COMMAND_MEMORY set   ACPI_VIDEO_HID
->   1  PCI_COMMAND_MEMORY set   ACPI_VIDEO_HID
->
-> Previously we didn't look for ACPI_VIDEO_HID, so we chose 0, now we
-> choose 1, which seems wrong.  In the absence of other information, I
-> would prefer the lower-numbered device.
->
-> Or this:
->
->   0  PCI_COMMAND_MEMORY set
->   1  PCI_COMMAND_MEMORY set   ACPI_VIDEO_HID
->
-> Previously we chose 0; now we choose 1, which does seem right, but
-> we'd choose 1 regardless of the order.
->
-> Or this:
->
->   0  PCI_COMMAND_MEMORY set   ACPI_VIDEO_HID
->   1  PCI_COMMAND_MEMORY set
->
-> Previously we chose 0, now we still choose 0, which seems right but
-> again doesn't depend on the order.
->
-> The first case, where both devices are ACPI_VIDEO_HID, is the only one
-> where the order matters, and I suggest that we should be using the
-> original order, not the reversed order.
+On Wed, Sep 22, 2021 at 09:21:31PM -0400, Kent Overstreet wrote:
+> The fundamental reason for struct page is that we need memory to be self
+> describing, without any context - we need to be able to go from a generic
+> untyped struct page and figure out what it contains: handling physical memory
+> failure is the most prominent example, but migration and compaction are more
+> common. We need to be able to ask the thing that owns a page of memory "hey,
+> stop using this and move your stuff here".
 
-Consider this:
-0  PCI_COMMAND_MEMORY set
-1  PCI_COMMAND_MEMORY set
+Yup, and another thing we need is to take any page mapped to userspace
+and mark it as dirty (whatever that means for the owner of the page).
 
-Originally device 0 will be picked. If the traverse order is kept,
-device 1 will be selected instead, because none of them pass
-vga_arb_integrated_gpu().
+> Matthew's helpfully been coming up with a list of page types:
+> https://kernelnewbies.org/MemoryTypes
+> 
+> But struct page could be a lot smaller than it is now. I think we can get it
+> down to two pointers, which means it'll take up 0.4% of system memory. Both
+> Matthew and Johannes have ideas for getting it down even further - the main
+> thing to note is that virt_to_page() _should_ be an uncommon operation (most of
+> the places we're currently using it are completely unnecessary, look at all the
+> places we're using it on the zero page). Johannes is thinking two layer radix
+> tree, Matthew was thinking about using maple trees - personally, I think that
+> 0.4% of system memory is plenty good enough.
 
-Kai-Heng
+As with a lot of these future plans, I think the details can vary
+slightly.  What I propose on the above wiki page is to take it
+down to one pointer per page, but yes, I have a dream that eventually we
+can take it down to one pointer + size per allocation (so 16 bytes)
+rather than 16 bytes per page.
 
->
-> > > I guess the list_add_tail() in vga_arbiter_add_pci_device() means
-> > > vga_list is generally ordered with small device numbers first and
-> > > large ones last.
-> > >
-> > > So you pick the integrated GPU with the largest device number.  Are
-> > > there systems with more than one integrated GPU?  If so, I would
-> > > naively expect that in the absence of an indication otherwise, we'd
-> > > want the one with the *smallest* device number.
-> >
-> > There's only one integrated GPU on the affected system.
-> >
-> > The approach is to keep the list traversal in one pass.
-> > Is there any regression introduce by this patch?
-> > If that's the case, we can separate the logic and find the
-> > ACPI_VIDEO_HID in second pass.
->
-> No regression, I'm just looking at Huacai's VGA patches, which affect
-> this area.
+> Ok, but what do we do with the stuff currently in struct page?
+> -------------------------------------------------------------
+> 
+> The main thing to note is that since in normal operation most folios are going
+> to be describing many pages, not just one - and we'll be using _less_ memory
+> overall if we allocate them separately. That's cool.
+> 
+> Of course, for this to make sense, we'll have to get all the other stuff in
+> struct page moved into their own types, but file & anon pages are the big one,
+> and that's already being tackled.
+
+We can also allocate a far larger structure.  eg, we might decide that
+a file page looks like this:
+
+struct folio {
+    unsigned long flags;
+    unsigned long pfn;
+    struct list_head lru;
+    struct address_space *mapping;
+    pgoff_t index;
+    void *private;
+    atomic_t _mapcount;
+    atomic_t _refcount;
+#ifdef CONFIG_MEMCG
+    unsigned long memcg_data;
+#endif
+    unsigned char dtor;
+    unsigned char order;
+    atomic_t hmapcount;
+    unsigned int nr_pages;
+    atomic_t hpinned_count;
+    struct list_head deferred_list;
+};
+
+(compiling that list reminds me that we'll need to sort out mapcount
+on subpages when it comes time to do this.  ask me if you don't know
+what i'm talking about here.)
+
+> Why two ulongs/pointers, instead of just one?
+> ---------------------------------------------
+> 
+> Because one of the things we really want and don't have now is a clean division
+> between allocator and allocatee state. Allocator meaning either the buddy
+> allocator or slab, allocatee state would be the folio or the network pool state
+> or whatever actually called kmalloc() or alloc_pages().
+> 
+> Right now slab state sits in the same place in struct page where allocatee state
+> does, and the reason this is bad is that slab/slub are a hell of a lot faster
+> than the buddy allocator, and Johannes wants to move the boundary between slab
+> allocations and buddy allocator allocations up to like 64k. If we fix where slab
+> state lives, this will become completely trivial to do.
+> 
+> So if we have this:
+> 
+> struct page {
+> 	unsigned long	allocator;
+> 	unsigned long	allocatee;
+> };
+> 
+> The allocator field would be used for either a pointer to slab/slub's state, if
+> it's a slab page, or if it's a buddy allocator page it'd encode the order of the
+> allocation - like compound order today, and probably whether or not the
+> (compound group of) pages is free.
+> 
+> The allocatee field would be used for a type tagged (using the low bits of the
+> pointer) to one of:
+>  - struct folio
+>  - struct anon_folio, if that becomes a thing
+>  - struct network_pool_page
+>  - struct pte_page
+>  - struct zone_device_page
+
+I think we /can/ do all this.  I don't know that it's the right thing to
+do.  And I really mean that.  I genuinely don't know that "allocate
+file pages from slab" will solve any problems at all.  And I kind of
+don't want to investigate that until later.
+
+By the way, another way we could do this is to put the 'allocator'
+field into the allocatee's data structure.  eg the first word
+in struct folio could point to the struct slab that contains it.
+
+> Other notes & potential issues:
+>  - page->compound_dtor needs to die
+
+The reason we have it right now is that the last person to call
+put_page() may not be the one who allocated it.  _maybe_ we can do
+all-of-the-dtor-stuff when the person who allocates it frees it, and
+have put_page() only free the memory.  TBD.
+
+>  - page->rcu_head moves into the types that actually need it, no issues there
+
+Hope so!
+
+>  - page->refcount has question marks around it. I think we can also just move it
+>    into the types that need it; with RCU derefing the pointer to the folio or
+>    whatever and grabing a ref on folio->refcount can happen under a RCU read
+>    lock - there's no real question about whether it's technically possible to
+>    get it out of struct page, and I think it would be cleaner overall that way.
+> 
+>    However, depending on how it's used from code paths that go from generic
+>    untyped pages, I could see it turning into more of a hassle than it's worth.
+>    More investigation is needed.
+
+I think this depends how far we go splitting everything apart.
+
+>  - page->memcg_data - I don't know whether that one more properly belongs in
+>    struct page or in the page subtypes - I'd love it if Johannes could talk
+>    about that one.
+
+Johannes certainly knows more about this than I do.  I think it's needed
+for anon folios, file folios and slab, but maybe it's needed for page
+tables too?
+
+>  - page->flags - dealing with this is going to be a huge hassle but also where
+>    we'll find some of the biggest gains in overall sanity and readability of the
+>    code. Right now, PG_locked is super special and ad hoc and I have run into
+>    situations multiple times (and Johannes was in vehement agreement on this
+>    one) where I simply could not figure the behaviour of the current code re:
+>    who is responsible for locking pages without instrumenting the code with
+>    assertions.
+> 
+>    Meaning anything we do to create and enforce module boundaries between
+>    different chunks of code is going to suck, but the end result should be
+>    really worthwhile.
+> 
+> Matthew Wilcox and David Howells have been having conversations on IRC about
+> what to do about other page bits. It appears we should be able to kill a lot of
+> filesystem usage of both PG_private and PG_private_2 - filesystems in general
+> hang state off of page->private, soon to be folio->private, and PG_private in
+> current use just indicates whether page->private is nonzero - meaning it's
+> completely redundant.
+
+Also I want to kill PG_error.  PG_slab and PG_hwpoison become page
+types (in the "allocatee" field in your parlance).  PG_head goes away
+naturally.
+
+Something we don't have to talk about right now is that there's no reason
+several non-contiguous pages can't have the same 'allocatee' value.
+I'm thinking that every page allocated to a given vmalloc allocation
+would point to the same vm_struct.  So I'm thinking that the way all of
+the above would work is we'd allocate a "struct folio" from slab, then
+pass the (tagged) pointer to alloc_pages().  alloc_pages() would fill
+in the 'allocatee' pointer for each of the struct pages with whatever
+pointer it is given.
+
+There's probably a bunch of holes in the above handwaving, but I'm
+pretty confident we can fill them.
