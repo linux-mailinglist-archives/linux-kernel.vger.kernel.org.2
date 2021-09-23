@@ -2,293 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021E6415570
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53384415573
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 04:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238915AbhIWCb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 22:31:56 -0400
-Received: from mail-eopbgr50058.outbound.protection.outlook.com ([40.107.5.58]:54110
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238859AbhIWCbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 22:31:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QNPgzDUUai3/h0Cjdkqx2vdKQCP94pb2zTmJr/fe429P2wTCyishb2Q5iAK9ObO7uXrCvcXPqT9uC97aLmnnsO3gdlIVq3lztWMQLr1/M/nzCsyUinykhZk6T1SM+4Ceukzu2H3h0wE5+sed4+NHF8i0sJCegruaOsYd9dpfzonU56bo9rWYMZ0BCdO4e459XQHLscaVRvl5noImF3T1fQb89t2HjSfzBf0X2KVbV722/WH+WP/QoABmtzfySf4krdRatNUGeff0PGtlQjFkubqSkJqcYBG2QVYpDfGCAa2rntJoEIChsXaAI+xmv1J2gtCgI8w9VvM/fGKShysFwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=tDeLsSX2Ewc3NdrvaAAZ1tB4vEa8WFAkZQMLsI4GqmA=;
- b=kp4/QpDngB1CGise2ahYi6DXntVVqqhqnpA9GwdGtqhEbTNRCREAsyrNUVIwacMm7pKAhlSoeB76sA8uHyRvdPumwtMz1hf6Za9HCl/qugdgLYLUlwhLmLYMpqr7alfXwtAcyqjsQUUs88TS0lEiKldZvvEs0yol8CID0K6ExFYOW0fltmhFlbt+M2Q/xlx0pPfFfJiyYbgpTTTYsJIXAwlkFYKnI7HQxT5vKha455tE196nChX707c1t0w40yEKSKhEn+ES5cG7Q45FlWWmgIzYXpYg2Nz6rLvtDd8oFVZuivZawG6gITj/rvbP52/N4KD8piNGcTdRSU6tRmHABg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tDeLsSX2Ewc3NdrvaAAZ1tB4vEa8WFAkZQMLsI4GqmA=;
- b=J4iECSz6igQWZTXokqGHD5ecXFKgYej0gCTkYbRCQKoxScOfo4uZ3vRuwlkuDHIvAoVrwerecZ2C/mQ1JnPCot9ShnzxFiH7EgiCqcf039hgvCSK9Anlb2AtcwV+/p6r4CLwcyIbvDPNae7+USLLzv9sJ73UhbPJr4xt9K9nfG8=
-Received: from DB8PR04MB5785.eurprd04.prod.outlook.com (2603:10a6:10:b0::22)
- by DBAPR04MB7333.eurprd04.prod.outlook.com (2603:10a6:10:1b2::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.18; Thu, 23 Sep
- 2021 02:30:22 +0000
-Received: from DB8PR04MB5785.eurprd04.prod.outlook.com
- ([fe80::7c1f:f1c4:3d81:13fc]) by DB8PR04MB5785.eurprd04.prod.outlook.com
- ([fe80::7c1f:f1c4:3d81:13fc%7]) with mapi id 15.20.4544.014; Thu, 23 Sep 2021
- 02:30:16 +0000
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Subject: RE: [PATCH v4 net-next 5/8] net: dsa: felix: support psfp filter on
- vsc9959
-Thread-Topic: [PATCH v4 net-next 5/8] net: dsa: felix: support psfp filter on
- vsc9959
-Thread-Index: AQHXr56G+7I3t59N40au/ymUR0+Ct6uwAOeAgADj42A=
-Date:   Thu, 23 Sep 2021 02:30:16 +0000
-Message-ID: <DB8PR04MB578547CBED62C7EEA9F8F534F0A39@DB8PR04MB5785.eurprd04.prod.outlook.com>
-References: <20210922105202.12134-1-xiaoliang.yang_1@nxp.com>
- <20210922105202.12134-6-xiaoliang.yang_1@nxp.com>
- <20210922124758.3n2yrjgb6ijrq6ls@skbuf>
-In-Reply-To: <20210922124758.3n2yrjgb6ijrq6ls@skbuf>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3f40b2c2-cb89-456f-455c-08d97e3a1436
-x-ms-traffictypediagnostic: DBAPR04MB7333:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBAPR04MB733326990B2E318BA9CCB932F0A39@DBAPR04MB7333.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5OrzVAFqHc2ra+44wNKHLSlCyzX2dhP3BfQ+FPdOBCxAkp1+l/5xPrsqiXkR+giAmHyDztVXQE3gvKd8xaYNrVwg1VafyyUxfCBrq2asMGrdJ7g2Y0Isc+e1OgaAJ8foV0QNyuE7Py3kh3K1xUybBLmDHKg2cxcN4hJVkGYW45Q4s7uP0QwtrI4A8PRddXO6ppmNyn4izpv9Em+mma6CgyeThODmdh9lAwaoR2QItJZiiQtiv3PvZsXnKdTpJb114vJecLLeEjAawjrMWYKWlQvetttRmeb/DhLxchMrNoE6krF/FIA7DHUNCAh8MlfzKtFRP+A4AJK5FjurE5x02aIL3Nw07Vct3lS+bIxn7dDXu/kMgAIxL+3pFwIar+vmWrxsIg7p/fvicJacDsprzfBgSP/WuzFdutsaQCFh9L0I4lZYzA8IhW84YqwhMeKMPbIqvXFdNnpoVbWBJAFFyM9TJii2PAPVLVVOqBhm3suHCBY/fTDuwo3eEYruKBx/5Q9AL4f8lpxYfc6q22hHv00ggQqB0SSFeilXfgiVRyGF4T0tg6+cs512+Ihiu4kqHbK9osBx0q8ASlrNYqAcEYiXGZiy6iI8THcY+MSTe9neWcHJ7RtDD460dveOEjtj0ETyXKYNIdulFkOY2qQ9d4LjJq1xrjf1JunkS3Pg+waSdkZUHuaqm2qLl9/6XmxhGq5pQEcgH7svg5dzl+0vXw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB5785.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7696005)(76116006)(86362001)(53546011)(52536014)(55016002)(71200400001)(8676002)(26005)(33656002)(122000001)(66476007)(66556008)(4326008)(54906003)(7416002)(2906002)(38070700005)(38100700002)(316002)(6636002)(66446008)(66946007)(9686003)(186003)(8936002)(508600001)(6506007)(5660300002)(64756008)(83380400001)(6862004);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xaEDWrGfKYgRjppbrY+YXhUTpFxv6YIAxkBHLMYmIw2YnaZnVNpY5zRC9Zlx?=
- =?us-ascii?Q?dyybhuRE8V1WTrUnbfRXdta9tQf03fk3Y6GRDACH0JsXq+W95fWxM7hOIYcs?=
- =?us-ascii?Q?+JnNR1Bs3H3waPth3+m0td4VSYX6SpPVUMXMSFqx3QYFXxeEjATv8RV8Fu15?=
- =?us-ascii?Q?QfKHsXUL6M9p7eSkja39YW8mz4n7DZV0on+LEeAHUW5NOB2JpwpkPUrVMkOB?=
- =?us-ascii?Q?uor9dH4o5rV4/JYp2VqO6BUMs/5xf73y88mkM1NJeoxSrCzURgGPmFO9S2S5?=
- =?us-ascii?Q?UxQDe2DcqDK5YlMZ8gdm4h26lKF+JuLmUPWDUZyHNZufgrA293oAZ9JIf8/z?=
- =?us-ascii?Q?woICU2+5fL3mIzvc6EnIC7FsF1m2WK5v/Ax7kwhXl++ktOJQk3xgF4UVA4pA?=
- =?us-ascii?Q?0htHsGObgF1j+1ezTmK0KJ1pgUdV16G+sfmvgQIvp69ytg9S+NcybNqYYbjt?=
- =?us-ascii?Q?KTFaPvUJf+OmEHnl5qW+OMYhn9lmqp/o5TQkvi1A/xWjS2xGMyzi9jAWl0wN?=
- =?us-ascii?Q?7wEcO4837Uz0MYd+iHep+d6mIoR3BCYEXpSz7AiqhK1oRhxxehggEUnh0aT9?=
- =?us-ascii?Q?9TVsHa3fm9yj9dy54zjIaQZVVr+VZiUWNnNSApRFRQ+4iQuec/L2O/6A+Hjb?=
- =?us-ascii?Q?pDcjAfwQB3Yu/OfgtHqmqWXVmcHPqVOQ6Py/hTa77iMHKV09c/tq/OioV7BK?=
- =?us-ascii?Q?OR/T5QaHGZ4ObEfyZLh+KapsxjQPezToLDLXsU7abTWJ2y7wr5d6uBo3OZps?=
- =?us-ascii?Q?4rLVvLrCii+1SnlP0+ewrPKA976sEBWyw5WSOt59DDQXHgqLO28vYeYOj9qr?=
- =?us-ascii?Q?zojnKDPjPX0CUbgs2A4vWw51WBK4m3ukQycc8UccBk/wZ+KGMPA46er7dnmC?=
- =?us-ascii?Q?GzxpK/S0q/nYj+IqnpTxoJYrHqyBVlFQKQJ5p8x8OcgpZrm48ZRv+Yn8XGaw?=
- =?us-ascii?Q?r8dfLnzJd7R3LIJtQz64LHIZqr/WbyLmDiPX/rVM/nMJ3TqFdmpWkFnvsxAw?=
- =?us-ascii?Q?u9ADh/xvbdFJvKGbq8SlCA7qUdhHdkI+0fipV+XhAbAGptt6k7DTpZHJE+Og?=
- =?us-ascii?Q?+yxE6bdLcqIDfnBHYDiREvonsr2rwFkdWtmuFKG/DnBUIdmBf+H+9uBqKJiQ?=
- =?us-ascii?Q?R4Zza11mS5Ik3o8aaHl/5Qyl5esjjYnIuB8QohsCO+fnlTRmaYTLhd65E6jz?=
- =?us-ascii?Q?K96XmBNDty65pYeoG1O2HfZ3sQ5cNa4GjvTeNZ97flanKIrFHpneKYOeSRAu?=
- =?us-ascii?Q?Mlm2hrqQlk2303fE3TnZUEQvxW0BL99nyLee501XJUVjzZ1B5YDC4ZDy2sXK?=
- =?us-ascii?Q?LDeWVLiW4NWu/7zxa2Fld+HJ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S238924AbhIWCdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 22:33:09 -0400
+Received: from mout.gmx.net ([212.227.15.18]:58945 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238859AbhIWCdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 22:33:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+        s=badeba3b8450; t=1632364262;
+        bh=KB5ty1qLGgOUSJ01Uplt75ITqAkGDkvEfaUi1HBoiyg=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=WupzdjdJfUqBBbEjpbuZwpBAWPKE07wj16alof25FGOGd6ZG4lKJ+7+ltT3xLczY4
+         KTLpanIcJKAGv4YI5E9RyDd+JYpn4DTth0/XyOCyFlGkJAVHFo3D8t66d6vxYNA4Wo
+         CAs0QwzLj52fmsNzoopvTSFw98pZM/ChqUackeYE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7Jza-1mWYR80z0e-007i8Z; Thu, 23
+ Sep 2021 04:31:02 +0200
+Message-ID: <1c1f0f00-cb9a-af0a-2662-bb144e353aa0@gmx.com>
+Date:   Thu, 23 Sep 2021 10:30:58 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB5785.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f40b2c2-cb89-456f-455c-08d97e3a1436
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 02:30:16.0910
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgxCp+pk2oOuVhhV9tx2weU5Y5Z3XKZhY/OILPbef2Mg/dlGBdu+jhK2hA0ZnIHHSIaQN9D6//koj1weoquQ6SBbKauXkyJsxmTi/T9BtwA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7333
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: kernel BUG in __clear_extent_bit
+Content-Language: en-US
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CACkBjsYjkubyQBvBy7aaQStk_i1UuCu7oPNYXhZhvhWvBCM3ag@mail.gmail.com>
+ <145029f0-5bc5-73fd-14ee-75b5829a3334@gmx.com>
+ <CACkBjsauCShYkOdNU2snmJyLNSmdMvK7C0HbtMfKhoEXuUOSJg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CACkBjsauCShYkOdNU2snmJyLNSmdMvK7C0HbtMfKhoEXuUOSJg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Hi/5JfdTbWsUQSBlII1cbJvqXVjXIRK87Fanh5OPkB5+wBcf3xp
+ eoAC05n5TofkRGNVTx7M98IWp7cl3DVbOhkbGUeKIToVtB4nmD9HdulcdG9Jiy1B+JuNq2w
+ iPmbtFmRrGpjgBtI3M7uI7/NbbsLwbHKlrZCnQT1SDWJjbK1QfZlIZi9OVQoOtGaccBVrA0
+ JgmuITuQwCAvL6ZmIxK5w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TEk9plFl97k=:zPAS4UQWMO24bnIDim4SNy
+ YXGX1n6//JVmDD1mnkbKNaw2Yl9FrfwcsWHCVfAbndrgOtYz8RqI5ZUnSarZuU4NZ5VGWN4C4
+ WlEc1rXglflEnqyKyh3kEKdOM1QezrGFc7lt5RoCsZH82sd1CwZzEDz2TKM+rV1NVtECtRL7a
+ EQDekH7GI6oy/WRKzCLjOJX+eQDkzxRCR8FDiuOrFqGtjBIQpF8TzxYt7ZRX+hTQSTbeyeopD
+ Zx2u7M95ILKbgxH+K0CYWMQs3S3TXIy93cjIRXAeao9Phvc2DzYhVGEC2m0pr5SbsRQYYsc7a
+ 8SjlYchScMw17qmCcfP5CzL4rX2WMqCHCS8FBDeXZg5ZaME1oT8oxp1zLgL9D05hhHPb7Yb0Q
+ uuOaFGrktqjF0Z/dIHiReMrQwp9Fm05duWgm1F+seRpOTeGmuZ7JyXAbRKzpoIYLCDdjZMeBG
+ zwXeuMkH6OzHS380d6PA4BXV9y8Es2BQxVnb8I6RI5TscALPYy9xNvOXumEzOI6no3z0POviu
+ 01d7+MBQOofddbhi8mb5chj08vS0Zs4kuWA0o+yqt0RNZa3ypy3nIj5AIOPPvUI1P8o6LxmkK
+ GCcH9ClA0m3gJq981wgY996XFuARLXZuQFLinGHu1JM5WqKtB7EFjkATGhHu11m4izpREfTkn
+ KVglsmZbS4GuFXiEjaq9QyD6Z6Eg9uiygfA0NcytubQLWZYxXm5jMPWF8TJhzYgys2UYny+xP
+ 4XTXuSaATkrtO62zr1W7ooEqB7j2g2pZy/25PHCxjC5+Hhja6A/dKoIcTkD8kweXETf5l5d0n
+ 3Y1ZHD4IT6XAHvqK3fDCvXgN1mh9jdnN8XkjOfQl5FLX9PLqXzbThgcaLKp5MVeVv8+CHCxt5
+ lsNMQodx+8d0zoemNbUEbxj7+puiMYN+t1dl9Jlh1YImjX+Un+Sr/kfTDOWTRnIhQ8uUDnGbR
+ A8olEC7cFh7BoLu3EoYNjho+wwuXaRrU87Prp7hWcWHRhttOrrbAas5HNHWggzbZWb0l7kii2
+ daO5snlylTCrtuw3S1g9Wum9D1jwdwjKcoYWIlbIKWdq/kqLTPI4y0wIcXSdE6QFJsjdtSgb7
+ jbfuHoqN1WFjLh559DawNwb8HMICJSpWxdym61nwbJlK6dO2cqTBtuKNOoFUOQ2lB7Sks51yR
+ Oyuz7STpYiImxB4hIplAAR4cMh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
 
-On Wed, Sep 22, 2021 at 12:47:59 +0000, Vladimir Oltean wrote:
-> > +static int vsc9959_mact_stream_set(struct ocelot *ocelot,
-> > +				   struct felix_stream *stream,
-> > +				   struct netlink_ext_ack *extack) {
-> > +	struct ocelot_mact_entry entry;
-> > +	u32 row, col, reg, dst_idx;
-> > +	u8 type;
-> > +	int ret;
-> > +
-> > +	/* Stream identification desn't support to add a stream with non
-> > +	 * existent MAC (The MAC entry has not been learned in MAC table).
-> > +	 */
-> > +	ret =3D ocelot_mact_lookup(ocelot, stream->dmac, stream->vid, &row,
-> &col);
-> > +	if (ret) {
-> > +		if (extack)
-> > +			NL_SET_ERR_MSG_MOD(extack, "Stream is not learned in MAC
-> table");
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	ocelot_rmw(ocelot,
-> > +		   (stream->sfid_valid ? ANA_TABLES_STREAMDATA_SFID_VALID : 0)
-> |
-> > +		   ANA_TABLES_STREAMDATA_SFID(stream->sfid),
-> > +		   ANA_TABLES_STREAMDATA_SFID_VALID |
-> > +		   ANA_TABLES_STREAMDATA_SFID_M,
-> > +		   ANA_TABLES_STREAMDATA);
-> > +
-> > +	reg =3D ocelot_read(ocelot, ANA_TABLES_MACACCESS);
-> > +	dst_idx =3D (reg & ANA_TABLES_MACACCESS_DEST_IDX_M) >> 3;
-> > +	type =3D ANA_TABLES_MACACCESS_ENTRYTYPE_X(reg);
-> > +
-> > +	reg =3D ocelot_read(ocelot, ANA_TABLES_STREAMDATA);
-> > +	if ((ANA_TABLES_STREAMDATA_SFID_VALID |
-> > +	     ANA_TABLES_STREAMDATA_SSID_VALID) & reg) {
-> > +		entry.type =3D (type ? type : ENTRYTYPE_LOCKED);
-> > +		stream->rsv_type =3D type;
-> > +	} else {
-> > +		entry.type =3D stream->rsv_type;
-> > +	}
-> > +
-> > +	ether_addr_copy(entry.mac, stream->dmac);
-> > +	entry.vid =3D stream->vid;
-> > +
-> > +	ocelot_mact_write(ocelot, dst_idx, &entry, row, col);
-> > +
-> > +	return 0;
-> > +}
->=20
-> > +static int vsc9959_stream_table_add(struct ocelot *ocelot,
-> > +				    struct list_head *stream_list,
-> > +				    struct felix_stream *stream,
-> > +				    struct netlink_ext_ack *extack) {
-> > +	struct felix_stream *stream_entry;
-> > +	int ret;
-> > +
-> > +	stream_entry =3D kzalloc(sizeof(*stream_entry), GFP_KERNEL);
-> > +	if (!stream_entry)
-> > +		return -ENOMEM;
-> > +
-> > +	memcpy(stream_entry, stream, sizeof(*stream_entry));
-> > +
-> > +	ret =3D vsc9959_mact_stream_set(ocelot, stream_entry, extack);
-> > +	if (ret) {
-> > +		kfree(stream_entry);
-> > +		return ret;
-> > +	}
-> > +
-> > +	list_add_tail(&stream_entry->list, stream_list);
-> > +
-> > +	return 0;
-> > +}
->=20
-> Remember this discussion we had a while ago?
->=20
-> | Let's take the function below.
-> |
-> | static void ocelot_prove_mac_table_entries_can_move(struct ocelot
-> | *ocelot) {
-> | 	unsigned char mac1[ETH_ALEN] =3D {0x00, 0x04, 0x9f, 0x63, 0x35, 0xea};
-> | 	unsigned char mac2[ETH_ALEN] =3D {0x00, 0x04, 0x9f, 0x63, 0x35, 0xeb};
-> | 	int row, bucket, arbitrary_pgid =3D 4;
-> | 	int vid1 =3D 102;
-> | 	int vid2 =3D 103;
-> | 	int err;
-> |
-> | 	err =3D ocelot_mact_learn(ocelot, arbitrary_pgid, mac1, vid1,
-> | 				ENTRYTYPE_LOCKED);
-> | 	if (err)
-> | 		return;
-> |
-> | 	err =3D ocelot_mact_lookup(ocelot, mac1, vid1, &row, &bucket);
-> | 	if (err)
-> | 		return;
-> |
-> | 	dev_info(ocelot->dev,
-> | 		 "Address 1 (mac %pM vid %d) is in MAC table row %d
-> bucket %d\n",
-> | 		 mac1, vid1, row, bucket);
-> |
-> | 	err =3D ocelot_mact_learn(ocelot, arbitrary_pgid, mac2, vid2,
-> | 				ENTRYTYPE_LOCKED);
-> | 	if (err)
-> | 		return;
-> |
-> | 	err =3D ocelot_mact_lookup(ocelot, mac2, vid2, &row, &bucket);
-> | 	if (err)
-> | 		return;
-> |
-> | 	dev_info(ocelot->dev,
-> | 		 "Address 2 (mac %pM vid %d) is in MAC table row %d
-> bucket %d\n",
-> | 		 mac2, vid2, row, bucket);
-> |
-> | 	err =3D ocelot_mact_lookup(ocelot, mac1, vid1, &row, &bucket);
-> | 	if (err)
-> | 		return;
-> |
-> | 	dev_info(ocelot->dev,
-> | 		 "Address 1 (mac %pM vid %d) is in MAC table row %d
-> bucket %d\n",
-> | 		 mac1, vid1, row, bucket);
-> | }
-> |
-> | What will it print?
-> |
-> | Address 1 (mac 00:04:9f:63:35:ea vid 102) is in MAC table row 917
-> | bucket 0 Address 2 (mac 00:04:9f:63:35:eb vid 103) is in MAC table row
-> | 917 bucket 0 Address 1 (mac 00:04:9f:63:35:ea vid 102) is in MAC table
-> | row 917 bucket 1
-> |
-> | What does this mean?
-> |
-> | The ROW portion of a FDB entry's position within the MAC table is
-> | statically determined using an 11-bit hash derived from the {DMAC,
-> | VID} key. Within a row, there can be up to 4 buckets, each bucket
-> | holding 1 MAC table entry.
-> |
-> | But when the hashes of 2 addresses collide and they end up in the same
-> | row (as in the above example, with address 1 =3D "mac 00:04:9f:63:35:ea
-> | vid 102" and address 2 =3D "mac 00:04:9f:63:35:eb vid 103"), things
-> | don't happen quite as you might expect. Namely, the second address
-> | appears to be installed by the switch at the same row and bucket as
-> | the first address. So is the first address overwritten? No, it has
-> | been moved by the switch, automatically, to bucket 1.
->=20
-> So if the autonomous and concurrent learning of one MAC address might
-> move existing MAC table entries from a row to the right, then who guarant=
-ees
-> exactly that the {row, col} for which you are setting up the SFID is the =
-{row, col}
-> that belongs to the {stream->dmac, stream->vid} you have searched for?
->=20
-> Microchip people, do we need to temporarily disable hardware address
-> learning on all ports, and take a lock with the FDB add and delete operat=
-ions
-> to ensure they are serialized?
 
-Maybe we need to use ocelot_mact_learn() instead of ocelot_mact_write() aft=
-er setting SFID in StreamData. I think this can avoid writing a wrong entry=
-.
+On 2021/9/23 10:24, Hao Sun wrote:
+> Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=
+=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:33=E5=86=99=E9=81=93=EF=BC=9A
+>>
+>>
+>>
+>> On 2021/9/15 =E4=B8=8A=E5=8D=8810:20, Hao Sun wrote:
+>>> Hello,
+>>>
+>>> When using Healer to fuzz the latest Linux kernel, the following crash
+>>> was triggered.
+>>>
+>>> HEAD commit: 6880fa6c5660 Linux 5.15-rc1
+>>> git tree: upstream
+>>> console output:
+>>> https://drive.google.com/file/d/1-9wwV6-OmBcJvHGCbMbP5_uCVvrUdTp3/view=
+?usp=3Dsharing
+>>> kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHT=
+LJvsUdWcgB/view?usp=3Dsharing
+>>> C reproducer: https://drive.google.com/file/d/1eXePTqMQ5ZA0TWtgpTX50Ez=
+4q9ZKm_HE/view?usp=3Dsharing
+>>> Syzlang reproducer:
+>>> https://drive.google.com/file/d/11s13louoKZ7Uz0mdywM2jmE9B1JEIt8U/view=
+?usp=3Dsharing
+>>>
+>>> If you fix this issue, please add the following tag to the commit:
+>>> Reported-by: Hao Sun <sunhao.th@gmail.com>
+>>>
+>>> loop1: detected capacity change from 0 to 32768
+>>> BTRFS info (device loop1): disk space caching is enabled
+>>> BTRFS info (device loop1): has skinny extents
+>>> BTRFS info (device loop1): enabling ssd optimizations
+>>> FAULT_INJECTION: forcing a failure.
+>>> name failslab, interval 1, probability 0, space 0, times 0
+>>> CPU: 1 PID: 25852 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>>> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+>>> Call Trace:
+>>>    __dump_stack lib/dump_stack.c:88 [inline]
+>>>    dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+>>>    fail_dump lib/fault-inject.c:52 [inline]
+>>>    should_fail+0x13c/0x160 lib/fault-inject.c:146
+>>>    should_failslab+0x5/0x10 mm/slab_common.c:1328
+>>>    slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+>>>    slab_alloc_node mm/slub.c:3120 [inline]
+>>>    slab_alloc mm/slub.c:3214 [inline]
+>>>    kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
+>>>    alloc_extent_state+0x1e/0x1c0 fs/btrfs/extent_io.c:340
+>>
+>> This is the one of the core systems btrfs uses, and we really don't wan=
+t
+>> that to fail.
+>>
+>> Thus in fact it does some preallocation to prevent failure.
+>>
+>> But for error injection case, we can still hit BUG_ON() which is used t=
+o
+>> catch ENOMEM.
+>>
+>
+> Hello,
+>
+> Fuzzer triggered following crashes repeatedly when the `fault
+> injection` was enabled.
+>
+> HEAD commit: 92477dd1faa6 Merge tag 's390-5.15-ebpf-jit-fixes'
+> git tree: upstream
+> kernel config: https://drive.google.com/file/d/1KgvcM8i_3hQiOL3fUh3JFpYN=
+QM4itvV4/view?usp=3Dsharing
+> [1] kernel BUG in btrfs_free_tree_block (fs/btrfs/extent-tree.c:3297):
+> https://paste.ubuntu.com/p/ZtzVKWbcGm/
+> [2] kernel BUG in clear_state_bit (fs/btrfs/extent_io.c:658!):
+> https://paste.ubuntu.com/p/hps2wXPG2b/
+> [3] kernel BUG in set_extent_bit (fs/btrfs/extent_io.c:1021):
+> https://paste.ubuntu.com/p/dcptjYYxgd/
+> [4] kernel BUG in set_state_bits (fs/btrfs/extent_io.c:939):
+> https://paste.ubuntu.com/p/NV9qtKB4KZ/
+>
+> All the above crashes were triggered directly by the `BUG_ON()` macro
+> in the corresponding location.
+> Most `BUG_ON()` was hit due to `ENOMEM` when fault injected.
+> Would it be better for btrfs to handle the `ENOMEM` error, e.g.,
+> gracefully return, rather than panic the kernel?
 
-Regards,
-Xiaoliang
+The __clear_extent_bit() part is one of the critical section where we
+really rely on that to be work correctly.
+
+We even implemented a preallocation scheme to prevent such problems, but
+error injection won't be completely resolved by preallocation.
+
+We indeed need to do the error handling better, but that would be a
+pretty big project, not something can be easily done right now.
+
+Thanks,
+Qu
+>
+> Regards
+> Hao
+>
