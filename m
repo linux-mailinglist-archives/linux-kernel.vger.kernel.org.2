@@ -2,579 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3608441605A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567FD416060
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241516AbhIWN4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241524AbhIWN4d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:56:33 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CFAC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:55:01 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id ee50so23991484edb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 06:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=74wY1AuEF/7lmscli+ZkehN0wJXzXidKqpSPopJphNY=;
-        b=3uKwoy07S/vU5B/qlN4jNSilv+DWwmfN6+ztHq4Ovwgurh5RWbyJJ1oZYgePcqXWIX
-         gSma6CgjldJHhLIXmPCMuYDsZauX43pa++mqyv+oEj1aCsGxLMoUxBZU7bFEC5TcF2Ic
-         NVhG9O6/UmH6HGEggXdLE4BdjFeTCN9b/J4chacIa4O1q/f6iYQp/5Tt6tM0EbQc3eQg
-         bzIEvw7Fu6mPkdQaQMxbDNtqFRGlidRWgprMSe8u1CeDoLS5Ahky3BtcEQttURcc+/sE
-         vKPjHDGNTP1absFt2M/WtPfuIutRsbAMWSMGo/ofYCIbGBGgnfAIUH8Kyh/uRbzzV0Xl
-         DFFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=74wY1AuEF/7lmscli+ZkehN0wJXzXidKqpSPopJphNY=;
-        b=44FtUaSAWOmIkIPcfQrB4y5ZkbuhYTIpozopQlXllyxXNSMoDPMxnW0niGT+AkhTdY
-         WO7FHdjRHmNMwDby3PwfK2/lFjPOX3n8ylxKJ+xsEX7iYJVxxx5pNwERNUY7gl+BPV9s
-         vtKSxD7PM6jWQTdkfpGI9cz0eUSwGJMeQWYZTwii0C2b8xUeW0chW0z+KPQMRnch5EwC
-         UAJgw2XU6Dwa/8jsIujme1P/UadHrONfr2Q8c+R7wgYOO01gx+t9kRAdLqcVM0zSTJMb
-         rvLWLMRk4COhW8704T74ouoxn4DSvW70y+9chAuH0kLvgURsiPDMxGX3x70Cu78QmUmK
-         jt6w==
-X-Gm-Message-State: AOAM533VPL5JITBOq+QcJfvvsjlzlMq1b08U5cWTr9kXjjlExviGV9wM
-        6gWaNhkc+vzcWzxTznWLsxkRfw==
-X-Google-Smtp-Source: ABdhPJxPaPg4zlGAKqJiqMFI3OiNY/mHycx+rafGR9DgY4HIWdJL+rMvrjy8ZQPMhgUMK2lVwvkcBA==
-X-Received: by 2002:aa7:db85:: with SMTP id u5mr5578162edt.234.1632405300024;
-        Thu, 23 Sep 2021 06:55:00 -0700 (PDT)
-Received: from fedora.. (cpezg-94-253-144-162-cbl.xnet.hr. [94.253.144.162])
-        by smtp.googlemail.com with ESMTPSA id y8sm3104970ejm.104.2021.09.23.06.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 06:54:59 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     robh+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH] arm64: dts: marvell: add Globalscale MOCHAbin
-Date:   Thu, 23 Sep 2021 15:54:54 +0200
-Message-Id: <20210923135454.2967198-1-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.31.1
+        id S241533AbhIWN5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:57:19 -0400
+Received: from mail-bn7nam10on2047.outbound.protection.outlook.com ([40.107.92.47]:30762
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231974AbhIWN5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:57:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dbx7Ks9i3Uhgzm8R6rKgAfh1v3A+1ZcC6ftHc+QdG48ROvqKKLpT78V5588uEPPTJ17l1Ll4sQIHMRUUYY0fli6suK6LDHTcZtbqCGfp9R90y87xCypBByOjYcAwn+OQhkZaEI22Sil/j95lP7NfPOAb2/nRwFXj87/iBB9150RBjnC6ysx3dYI7Gw02T5xIngVLqH4Io+o9gYwYRQI7iJI+oXq7PoIS0w9dIDOa8oWiG9ykxhBmgbOhPZC5zaK9Vr9DwbTePyfrSsm/YJBudYzko1xmlSRY9jO1xl62IHNYUZzS4VQeIOJbLJg+Bj4Hph7ROqC3JUSot5LPHlbjxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=uXNbn0g4xzMzyWf+BjpM9VY/3lEV/LNbIYeSWuJMylA=;
+ b=IjgPnQu/Vb/rzwlJFE3Wit30AcgXXmLOGGcyqn6wKpbMgsx9sD/iv2+43ZMTjF+NhjfmABtNwE+4CFSPTRobhgh6wImnbddrSagJA4mvGItnLdFS0tvnZRKGDwFEXKEaPKTRrSmeq8BkueKkZEuvsR+O13xp6uj2D3gP/JchHmV31HPhxyb0WAxv278Zbq7XpKaDIl1X63R9VXeaNSQuk2OXontt+NOShqkWSUmOw4XEAw9NrLRcfN58QObrBbTZR245UaDP62VZ4GB2ihhrAgWbjot2VRjRkcy2GrQYzZmPAdagDV8UnELMm8ydRruxj+WZMzOvjhfr+it9XtiNjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uXNbn0g4xzMzyWf+BjpM9VY/3lEV/LNbIYeSWuJMylA=;
+ b=lzUdpsXqh5W9fuM7AWU0ZhusoRBmQq5xorylAGRtGdOMYxwuO1rI6XsW6Ew6oUnOV4oAHrTCljc60AdhK3O0LnIJg6PUa/JvGOU3Kr0E4ecTeVmVRPhURUWgUiLqafc4T7N5pnrfqDpifcHWYNX2ZEHCsG3z9sAL6FpQ+IkgzJr6rxU9VKw3cbyUeEu+qeFCPNRyCcEqPztifVZw2ylc4D1LGD6ISjmDJzi81KXEulGRU08w58VMSehs3xB3CaBYQ+aKag+M8sAEsFOEkjw4/1J0eEQt0NTo5f7vMB7x4wnei9dAiyvMuW6reL7FHfTwm5RqNvrRPuXHl7/ltEE+4A==
+Received: from DM5PR15CA0046.namprd15.prod.outlook.com (2603:10b6:4:4b::32) by
+ MW2PR12MB2442.namprd12.prod.outlook.com (2603:10b6:907:4::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4544.15; Thu, 23 Sep 2021 13:55:43 +0000
+Received: from DM6NAM11FT064.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:4b:cafe::6e) by DM5PR15CA0046.outlook.office365.com
+ (2603:10b6:4:4b::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
+ Transport; Thu, 23 Sep 2021 13:55:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT064.mail.protection.outlook.com (10.13.172.234) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4544.13 via Frontend Transport; Thu, 23 Sep 2021 13:55:43 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
+ 2021 06:55:42 -0700
+Received: from [172.27.15.96] (172.20.187.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
+ 2021 13:55:37 +0000
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+To:     Leon Romanovsky <leon@kernel.org>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Kirti Wankhede" <kwankhede@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+References: <cover.1632305919.git.leonro@nvidia.com>
+ <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
+ <42729adc4df649f7b3ce5dc95e66e2dc@huawei.com> <YUxiPqShZT4bk0uL@unreal>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <60989aa8-4231-0cdf-47bb-1e2026bd1f17@nvidia.com>
+Date:   Thu, 23 Sep 2021 16:55:35 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YUxiPqShZT4bk0uL@unreal>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f30a9f56-c5a8-4e6e-5501-08d97e99d5d6
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2442:
+X-Microsoft-Antispam-PRVS: <MW2PR12MB24421E989B84A991FF1517DCDEA39@MW2PR12MB2442.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gAU8FT/dUXNfzqNzckBFkbuMhCWslULbYgsGu7hYXcIGEr6f+tqYpnFRJEItW68TIeiHWy0SanQhk/rAvRP1QxBv8SP2oQal4jFOjwhk8Xf+Z/cZ1T4ggOwaQiIR2NV1XGgJHRDvPIzpKCOj+UYCkd4nbU9HF5A1QeGerpg/OHbK6uHn/IfyWKQkv1n29waMHsP2phyykcXqXwf+mFVQHPaB5zrcgXjHOgIAGmV7D8+X02YEhVSBrZeL2wSwSmPYrwqS7aH/tBk8/sUC5b59Lunb7dPockHNTQ7xLCuHU66Db9H3zMYxA5nF9KYmmIx3YR5xo/O1y/TvbChfDnZwfQAGluwMKAx0z+Ys3YDILCbpIxBF0dhhVsD/dRNw7YlxVlaMEsM9B+WsXn7+Jzwvu8BnLmMR8Pfhd5hNwBAJRAB0EJwep99bN8vf6HUqzNwINLZ4NecO1VNldTu68Q8xUMZnm+fCV05fdd5fRvGaCpTVfCZljRuUleLVaeyNQ0OowRDPkAKFW6a06HMZ5VAJiEsQOOh60osXd55fVuRe3/bf0b7xvsapHQ/cKXWmkX6NhKF00Z0j8Qr8n3BY1D6EiTD69MJSKjxpK/k5Y31IdFB+ginLzTm1NUAf905QF/KX5p1f+PETR9FOgIQGrxbjqu+/vJgore8O/+WfzlHDg7xR13nUq4c/5HfqrHSmJTyKdyUT2XRX48ExCiS3yM0/uqI6W5TzH94r7O/m8ewdkkI=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(82310400003)(36860700001)(508600001)(70586007)(70206006)(31696002)(31686004)(426003)(54906003)(110136005)(316002)(5660300002)(86362001)(16576012)(107886003)(53546011)(4326008)(8936002)(2616005)(336012)(2906002)(16526019)(26005)(186003)(8676002)(83380400001)(7636003)(36756003)(356005)(47076005)(7416002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 13:55:43.1116
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f30a9f56-c5a8-4e6e-5501-08d97e99d5d6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT064.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2442
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Globalscale MOCHAbin is a Armada 7040 based development board.
 
-Specifications:
-* Armada 7040 Quad core ARMv8 Cortex A-72 @ 1.4GHz
-* 2 / 4 / 8 GB of DDR4 DRAM
-* 16 GB eMMC
-* 4MB SPI-NOR (Bootloader)
-* 1x M.2-2280 B-key socket (for SSD expansion, SATA3 only)
-* 1x M.2-2250 B-key socket (for modems, USB2.0 and I2C only)
-* 1x Mini-PCIe 3.0 (x1, USB2.0 and I2C)
-* 1x SATA 7+15 socket (SATA3)
-* 1x 16-pin (2×8) MikroBus Connector
-* 1x SIM card slot (Connected to the mini-PCIe and both M.2 slots)
-* 2x USB3.0 Type-A ports via SMSC USB5434B hub
-* Cortex 2x5 JTAG
-* microUSB port for UART (PL2303GL/PL2303SA onboard)
-* 1x 10G SFP+
-* 1x 1G SFP (Connected to 88E1512 PHY)
-* 1x 1G RJ45 with PoE PD (Connected to 88E1512 PHY)
-* 4x 1G RJ45 ports via Topaz 88E6141 switch
-* RTC with battery holder (SoC provided, requires CR2032 battery)
-* 1x 12V DC IN
-* 1x Power switch
-* 1x 12V fan header (3-pin, power only)
-* 1x mini-PCIe LED header (2x0.1" pins)
-* 1x M.2-2280 LED header (2x0.1" pins)
-* 6x Bootstrap jumpers
-* 1x Power LED (Green)
-* 3x Tri-color RGB LEDs (Controllable)
-* 1x Microchip ATECC608B secure element
+On 9/23/2021 2:17 PM, Leon Romanovsky wrote:
+> On Thu, Sep 23, 2021 at 10:33:10AM +0000, Shameerali Kolothum Thodi wrote:
+>>
+>>> -----Original Message-----
+>>> From: Leon Romanovsky [mailto:leon@kernel.org]
+>>> Sent: 22 September 2021 11:39
+>>> To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@nvidia.com>
+>>> Cc: Yishai Hadas <yishaih@nvidia.com>; Alex Williamson
+>>> <alex.williamson@redhat.com>; Bjorn Helgaas <bhelgaas@google.com>; David
+>>> S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Kirti
+>>> Wankhede <kwankhede@nvidia.com>; kvm@vger.kernel.org;
+>>> linux-kernel@vger.kernel.org; linux-pci@vger.kernel.org;
+>>> linux-rdma@vger.kernel.org; netdev@vger.kernel.org; Saeed Mahameed
+>>> <saeedm@nvidia.com>
+>>> Subject: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+>>> transition validity
+>>>
+>>> From: Yishai Hadas <yishaih@nvidia.com>
+>>>
+>>> Add an API in the core layer to check migration state transition validity
+>>> as part of a migration flow.
+>>>
+>>> The valid transitions follow the expected usage as described in
+>>> uapi/vfio.h and triggered by QEMU.
+>>>
+>>> This ensures that all migration implementations follow a consistent
+>>> migration state machine.
+>>>
+>>> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+>>> Reviewed-by: Kirti Wankhede <kwankhede@nvidia.com>
+>>> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+>>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>>> ---
+>>>   drivers/vfio/vfio.c  | 41 +++++++++++++++++++++++++++++++++++++++++
+>>>   include/linux/vfio.h |  1 +
+>>>   2 files changed, 42 insertions(+)
+>>>
+>>> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+>>> index 3c034fe14ccb..c3ca33e513c8 100644
+>>> --- a/drivers/vfio/vfio.c
+>>> +++ b/drivers/vfio/vfio.c
+>>> @@ -1664,6 +1664,47 @@ static int vfio_device_fops_release(struct inode
+>>> *inode, struct file *filep)
+>>>   	return 0;
+>>>   }
+>>>
+>>> +/**
+>>> + * vfio_change_migration_state_allowed - Checks whether a migration state
+>>> + *   transition is valid.
+>>> + * @new_state: The new state to move to.
+>>> + * @old_state: The old state.
+>>> + * Return: true if the transition is valid.
+>>> + */
+>>> +bool vfio_change_migration_state_allowed(u32 new_state, u32 old_state)
+>>> +{
+>>> +	enum { MAX_STATE = VFIO_DEVICE_STATE_RESUMING };
+>>> +	static const u8 vfio_from_state_table[MAX_STATE + 1][MAX_STATE + 1] = {
+>>> +		[VFIO_DEVICE_STATE_STOP] = {
+>>> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
+>>> +			[VFIO_DEVICE_STATE_RESUMING] = 1,
+>>> +		},
+>>> +		[VFIO_DEVICE_STATE_RUNNING] = {
+>>> +			[VFIO_DEVICE_STATE_STOP] = 1,
+>>> +			[VFIO_DEVICE_STATE_SAVING] = 1,
+>>> +			[VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING]
+>>> = 1,
+>> Do we need to allow _RESUMING state here or not? As per the "State transitions"
+>> section from uapi/linux/vfio.h,
+> It looks like we missed this state transition.
+>
+> Thanks
 
-Note that 1G SFP and 1G WAN cannot be used at the same time as they are in
-parallel connected to the same PHY.
+I'm not sure this state transition is valid.
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
----
- arch/arm64/boot/dts/marvell/Makefile          |   1 +
- .../boot/dts/marvell/armada-7040-mochabin.dts | 452 ++++++++++++++++++
- 2 files changed, 453 insertions(+)
- create mode 100644 arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
+Kirti, When we would like to move from RUNNING to RESUMING ?
 
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index 34efe0fb6f37..4d3a2ae9adbd 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -9,6 +9,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-uDPU.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-db.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-mochabin.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-clearfog-gt-8k.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin.dtb
-diff --git a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-new file mode 100644
-index 000000000000..12d7c55ed00a
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-@@ -0,0 +1,452 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Device Tree file for Globalscale MOCHAbin
-+ * Copyright (C) 2019 Globalscale technologies, Inc.
-+ * Copyright (C) 2021 Sartura Ltd.
-+ *
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include "armada-7040.dtsi"
-+
-+/ {
-+	model = "Globalscale MOCHAbin";
-+	compatible = "globalscale,mochabin", "marvell,armada7040",
-+		     "marvell,armada-ap806-quad", "marvell,armada-ap806";
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	aliases {
-+		ethernet0 = &cp0_eth0;
-+		ethernet1 = &cp0_eth1;
-+		ethernet2 = &cp0_eth2;
-+		ethernet3 = &swport1;
-+		ethernet4 = &swport2;
-+		ethernet5 = &swport3;
-+		ethernet6 = &swport4;
-+	};
-+
-+	/* SFP+ 10G */
-+	sfp_eth0: sfp-eth0 {
-+		compatible = "sff,sfp";
-+		i2c-bus = <&cp0_i2c1>;
-+		los-gpio = <&sfp_gpio 3 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpio = <&sfp_gpio 2 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpio = <&sfp_gpio 1 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio  = <&sfp_gpio 0 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	/* SFP 1G */
-+	sfp_eth2: sfp-eth2 {
-+		compatible = "sff,sfp";
-+		i2c-bus = <&cp0_i2c0>;
-+		los-gpio = <&sfp_gpio 7 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpio = <&sfp_gpio 6 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpio = <&sfp_gpio 5 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio  = <&sfp_gpio 4 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-+
-+/* microUSB UART console */
-+&uart0 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&uart0_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+/* eMMC */
-+&ap_sdhci0 {
-+	status = "okay";
-+
-+	bus-width = <4>;
-+	non-removable;
-+	/delete-property/ marvell,xenon-phy-slow-mode;
-+	no-1-8-v;
-+};
-+
-+&cp0_pinctrl {
-+	cp0_uart0_pins: cp0-uart0-pins {
-+		marvell,pins = "mpp6", "mpp7";
-+		marvell,function = "uart0";
-+	};
-+
-+	cp0_spi0_pins: cp0-spi0-pins {
-+		marvell,pins = "mpp56", "mpp57", "mpp58", "mpp59";
-+		marvell,function = "spi0";
-+	};
-+
-+	cp0_spi1_pins: cp0-spi1-pins {
-+		marvell,pins = "mpp13", "mpp14", "mpp15", "mpp16";
-+		marvell,function = "spi1";
-+	};
-+
-+	cp0_i2c0_pins: cp0-i2c0-pins {
-+		marvell,pins = "mpp37", "mpp38";
-+		marvell,function = "i2c0";
-+	};
-+
-+	cp0_i2c1_pins: cp0-i2c1-pins {
-+		marvell,pins = "mpp2", "mpp3";
-+		marvell,function = "i2c1";
-+	};
-+
-+	pca9554_int_pins: pca9554-int-pins {
-+		marvell,pins = "mpp27";
-+		marvell,function = "gpio";
-+	};
-+
-+	cp0_rgmii1_pins: cp0-rgmii1-pins {
-+		marvell,pins = "mpp44", "mpp45", "mpp46", "mpp47", "mpp48", "mpp49",
-+			       "mpp50", "mpp51", "mpp52", "mpp53", "mpp54", "mpp55";
-+		marvell,function = "ge1";
-+	};
-+
-+	is31_sdb_pins: is31-sdb-pins {
-+		marvell,pins = "mpp30";
-+		marvell,function = "gpio";
-+	};
-+
-+	cp0_pcie_reset_pins: cp0-pcie-reset-pins {
-+		marvell,pins = "mpp9";
-+		marvell,function = "gpio";
-+	};
-+
-+	cp0_switch_pins: cp0-switch-pins {
-+		marvell,pins = "mpp0", "mpp1";
-+		marvell,function = "gpio";
-+	};
-+
-+	cp0_phy_pins: cp0-phy-pins {
-+		marvell,pins = "mpp12";
-+		marvell,function = "gpio";
-+	};
-+};
-+
-+/* mikroBUS UART */
-+&cp0_uart0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_uart0_pins>;
-+};
-+
-+/* mikroBUS SPI */
-+&cp0_spi0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_spi0_pins>;
-+};
-+
-+/* SPI-NOR */
-+&cp0_spi1{
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_spi1_pins>;
-+
-+	spi-flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <20000000>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "u-boot";
-+				reg = <0x0 0x3e0000>;
-+				read-only;
-+			};
-+
-+			partition@3e0000 {
-+				label = "hw-info";
-+				reg = <0x3e0000 0x10000>;
-+				read-only;
-+			};
-+
-+			partition@3f0000 {
-+				label = "u-boot-env";
-+				reg = <0x3f0000 0x10000>;
-+			};
-+		};
-+	};
-+};
-+
-+/* mikroBUS, 1G SFP and GPIO expander */
-+&cp0_i2c0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_i2c0_pins>;
-+	clock-frequency = <100000>;
-+
-+	sfp_gpio: pca9554@39 {
-+		compatible = "nxp,pca9554";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pca9554_int_pins>;
-+		reg = <0x39>;
-+
-+		interrupt-parent = <&cp0_gpio1>;
-+		interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		/*
-+		 * IO0_0: SFP+_TX_FAULT
-+		 * IO0_1: SFP+_TX_DISABLE
-+		 * IO0_2: SFP+_PRSNT
-+		 * IO0_3: SFP+_LOSS
-+		 * IO0_4: SFP_TX_FAULT
-+		 * IO0_5: SFP_TX_DISABLE
-+		 * IO0_6: SFP_PRSNT
-+		 * IO0_7: SFP_LOSS
-+		 */
-+	};
-+};
-+
-+/* IS31FL3199, mini-PCIe and 10G SFP+ */
-+&cp0_i2c1 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_i2c1_pins>;
-+	clock-frequency = <100000>;
-+
-+	leds@64 {
-+		compatible = "issi,is31fl3199";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&is31_sdb_pins>;
-+		shutdown-gpios = <&cp0_gpio1 30 GPIO_ACTIVE_HIGH>;
-+		reg = <0x64>;
-+
-+		led1_red: led@1 {
-+			label = "led1:red";
-+			reg = <1>;
-+			led-max-microamp = <20000>;
-+		};
-+
-+		led1_green: led@2 {
-+			label = "led1:green";
-+			reg = <2>;
-+		};
-+
-+		led1_blue: led@3 {
-+			label = "led1:blue";
-+			reg = <3>;
-+		};
-+
-+		led2_red: led@4 {
-+			label = "led2:red";
-+			reg = <4>;
-+		};
-+
-+		led2_green: led@5 {
-+			label = "led2:green";
-+			reg = <5>;
-+		};
-+
-+		led2_blue: led@6 {
-+			label = "led2:blue";
-+			reg = <6>;
-+		};
-+
-+		led3_red: led@7 {
-+			label = "led3:red";
-+			reg = <7>;
-+		};
-+
-+		led3_green: led@8 {
-+			label = "led3:green";
-+			reg = <8>;
-+		};
-+
-+		led3_blue: led@9 {
-+			label = "led3:blue";
-+			reg = <9>;
-+		};
-+	};
-+};
-+
-+&cp0_mdio {
-+	status = "okay";
-+
-+	/* 88E1512 PHY */
-+	eth2phy: ethernet-phy@1 {
-+		reg = <1>;
-+		sfp = <&sfp_eth2>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&cp0_phy_pins>;
-+		reset-gpios = <&cp0_gpio1 12 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	/* 88E6141 Topaz switch */
-+	switch: switch@3 {
-+		compatible = "marvell,mv88e6085";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <3>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&cp0_switch_pins>;
-+		reset-gpios = <&cp0_gpio1 0 GPIO_ACTIVE_LOW>;
-+
-+		interrupt-parent = <&cp0_gpio1>;
-+		interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			swport1: port@1 {
-+				reg = <1>;
-+				label = "lan0";
-+				phy-handle = <&swphy1>;
-+			};
-+
-+			swport2: port@2 {
-+				reg = <2>;
-+				label = "lan1";
-+				phy-handle = <&swphy2>;
-+			};
-+
-+			swport3: port@3 {
-+				reg = <3>;
-+				label = "lan2";
-+				phy-handle = <&swphy3>;
-+			};
-+
-+			swport4: port@4 {
-+				reg = <4>;
-+				label = "lan3";
-+				phy-handle = <&swphy4>;
-+			};
-+
-+			port@5 {
-+				reg = <5>;
-+				label = "cpu";
-+				ethernet = <&cp0_eth1>;
-+				phy-mode = "2500base-x";
-+				managed = "in-band-status";
-+			};
-+		};
-+
-+		mdio {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			swphy1: swphy1@17 {
-+				reg = <17>;
-+			};
-+
-+			swphy2: swphy2@18 {
-+				reg = <18>;
-+			};
-+
-+			swphy3: swphy3@19 {
-+				reg = <19>;
-+			};
-+
-+			swphy4: swphy4@20 {
-+				reg = <20>;
-+			};
-+		};
-+	};
-+};
-+
-+&cp0_ethernet {
-+	status = "okay";
-+};
-+
-+/* 10G SFP+ */
-+&cp0_eth0 {
-+	status = "okay";
-+
-+	phy-mode = "10gbase-kr";
-+	phys = <&cp0_comphy4 0>;
-+	managed = "in-band-status";
-+	sfp = <&sfp_eth0>;
-+};
-+
-+/* Topaz switch uplink */
-+&cp0_eth1 {
-+	status = "okay";
-+
-+	phy-mode = "2500base-x";
-+	phys = <&cp0_comphy0 1>;
-+
-+	fixed-link {
-+		speed = <2500>;
-+		full-duplex;
-+	};
-+};
-+
-+/* 1G SFP or 1G RJ45 */
-+&cp0_eth2 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_rgmii1_pins>;
-+
-+	phy = <&eth2phy>;
-+	phy-mode = "rgmii-id";
-+};
-+
-+&cp0_utmi {
-+	status = "okay";
-+};
-+
-+/* SMSC USB5434B hub */
-+&cp0_usb3_0 {
-+	status = "okay";
-+
-+	phys = <&cp0_comphy1 0>, <&cp0_utmi0>;
-+	phy-names = "cp0-usb3h0-comphy", "utmi";
-+};
-+
-+/* miniPCI-E USB */
-+&cp0_usb3_1 {
-+	status = "okay";
-+};
-+
-+&cp0_sata0 {
-+	status = "okay";
-+
-+	/* 7 + 12 SATA connector (J24) */
-+	sata-port@0 {
-+		phys = <&cp0_comphy2 0>;
-+		phy-names = "cp0-sata0-0-phy";
-+	};
-+
-+	/* M.2-2250 B-key (J39) */
-+	sata-port@1 {
-+		phys = <&cp0_comphy3 1>;
-+		phy-names = "cp0-sata0-1-phy";
-+	};
-+};
-+
-+/* miniPCI-E (J5) */
-+&cp0_pcie2 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_pcie_reset_pins>;
-+	phys = <&cp0_comphy5 2>;
-+	phy-names = "cp0-pcie2-x1-phy";
-+	reset-gpio = <&cp0_gpio1 9 GPIO_ACTIVE_LOW>;
-+};
--- 
-2.31.1
+Sameerali, can you please re-test and update if you see this transition ?
 
+
+>
+>> " * 4. To start the resuming phase, the device state should be transitioned from
+>>   *    the _RUNNING to the _RESUMING state."
+>>
+>> IIRC, I have seen that transition happening on the destination dev while testing the
+>> HiSilicon ACC dev migration.
+>>
+>> Thanks,
+>> Shameer
+>>
+>>> +		},
+>>> +		[VFIO_DEVICE_STATE_SAVING] = {
+>>> +			[VFIO_DEVICE_STATE_STOP] = 1,
+>>> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
+>>> +		},
+>>> +		[VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING] = {
+>>> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
+>>> +			[VFIO_DEVICE_STATE_SAVING] = 1,
+>>> +		},
+>>> +		[VFIO_DEVICE_STATE_RESUMING] = {
+>>> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
+>>> +			[VFIO_DEVICE_STATE_STOP] = 1,
+>>> +		},
+>>> +	};
+>>> +
+>>> +	if (new_state > MAX_STATE || old_state > MAX_STATE)
+>>> +		return false;
+>>> +
+>>> +	return vfio_from_state_table[old_state][new_state];
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(vfio_change_migration_state_allowed);
+>>> +
+>>>   static long vfio_device_fops_unl_ioctl(struct file *filep,
+>>>   				       unsigned int cmd, unsigned long arg)
+>>>   {
+>>> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+>>> index b53a9557884a..e65137a708f1 100644
+>>> --- a/include/linux/vfio.h
+>>> +++ b/include/linux/vfio.h
+>>> @@ -83,6 +83,7 @@ extern struct vfio_device
+>>> *vfio_device_get_from_dev(struct device *dev);
+>>>   extern void vfio_device_put(struct vfio_device *device);
+>>>
+>>>   int vfio_assign_device_set(struct vfio_device *device, void *set_id);
+>>> +bool vfio_change_migration_state_allowed(u32 new_state, u32 old_state);
+>>>
+>>>   /* events for the backend driver notify callback */
+>>>   enum vfio_iommu_notify_type {
+>>> --
+>>> 2.31.1
