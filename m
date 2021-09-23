@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251BD41671E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C98B416723
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243238AbhIWVLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:11:10 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:43538 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243174AbhIWVLJ (ORCPT
+        id S243248AbhIWVLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243216AbhIWVLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:11:09 -0400
-Received: by mail-oi1-f177.google.com with SMTP id w19so11541174oik.10;
-        Thu, 23 Sep 2021 14:09:37 -0700 (PDT)
+        Thu, 23 Sep 2021 17:11:45 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F8DC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:10:13 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id i4so31440815lfv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RzCYOEChqS52ihYCFoLsCYGGR6ap8pXnjkTEkEmy1IM=;
+        b=DwUvUexVIQ2f+G5CJTygnALkzFfFQTEkUtuLnis44qdnGAWeGJ1siEXg4btlfrJY0L
+         1fp9oe9j1lL//ULw/51YZrFxU+cEPivYFu25FzHbGjZxHVFI9IomFikZHjhXLn+YNww9
+         tDgvefSWm5+2yZauq/3TM5oKOEcjntfUQ2wdk9cJi3+hqbSBICoo8SWpJskJw/prNYAA
+         OU9Tz+6FsN0/uprjvV9uZaLTpccMMnVoWE0eyaUp/9hPz982ubh2U3UXTuDqwPjuzHq+
+         A+mCQBddelyPSz7OhxZ5gcgWWYfhd85+nw8YeBLVgD9czkCk+60/4GWpi5Lw9225jOSp
+         oPzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ECAcJQ5j3b9V37w+5AU1dCjJzeuc06UOkYf0x/TJhHI=;
-        b=xIdLizm4aubTc3dGOr/JOOrmu/jGmoWQ1B+ry9dtYUiPsD6NfmRoN4HOihRT5Cyc+m
-         26xhWVWU5zolKwopYzzACSCyMQyPhWdae9KYinSfzPY5V2bUmsZtHQw253u+mXUwjWcz
-         hZ3KtcEaJ7G2AQo6VVgkHgs1IBpP9BcRnck4CkZnO85wIlE7eu5bb6ai3XjNu8f5jYq5
-         Vc8mP7zS1F+f+X30oCmD1y+uTkuD3rvthnLu+18HsnIjblgiJ+3d/z5A+JHeqv1LqEfh
-         dI5UbMrEeCVxS35KYOftBanaD2WRfDGWBceNepJmXAnA5kKf5mZTrTvWR3FyQkGAyc2u
-         NRcA==
-X-Gm-Message-State: AOAM5314M/Ns5HRCOV8AJMEoGbhkjzLYg4+Tk7O1cc5lV7jp7CS2BSMl
-        JK3KG9Ggu+n2Da6WjjxcI9fQA//FoA==
-X-Google-Smtp-Source: ABdhPJxgGB/F5m/HUdgfquhEQY/6qPe41K4exPARMH+1jXMEbOmyXEtt37OEluaLbFS8sOex0LCyaQ==
-X-Received: by 2002:aca:645:: with SMTP id 66mr5369149oig.145.1632431377021;
-        Thu, 23 Sep 2021 14:09:37 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id d10sm1701331ooj.24.2021.09.23.14.09.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 14:09:36 -0700 (PDT)
-Received: (nullmailer pid 3527425 invoked by uid 1000);
-        Thu, 23 Sep 2021 21:09:34 -0000
-Date:   Thu, 23 Sep 2021 16:09:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Lucas Stach <dev@lynxeye.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        linux-kernel@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, David Heidelberg <david@ixit.cz>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-tegra@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-usb@vger.kernel.org, linux-clk@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Nishanth Menon <nm@ti.com>, linux-pwm@vger.kernel.org,
-        linux-staging@lists.linux.dev, Stefan Agner <stefan@agner.ch>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        devicetree@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH v12 05/35] dt-bindings: clock: tegra-car: Document new
- clock sub-nodes
-Message-ID: <YUztDv/KbKVAY7cB@robh.at.kernel.org>
-References: <20210920181145.19543-1-digetx@gmail.com>
- <20210920181145.19543-6-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RzCYOEChqS52ihYCFoLsCYGGR6ap8pXnjkTEkEmy1IM=;
+        b=k/GNSXezLvc7Yz0YJU7pUg+eg4HmRURLl19NE2XqDTJ3pR8AGcKz02JJG3CwZLUwE3
+         U2quzNchDRKklP8ArC9bh5Et6omegMnWEds0+Xsbw5vt0sYsad9c+9JqezY8BQYZqjSZ
+         E4LcZG5zmpmo673Qqifdpze50YkgCYkDfjL3ZSLol7Z0pHiwBC8jJT6iBGVX8eYljgGH
+         NiDR5Pt2CCar5bvP2kq+XBMSyj22iV2qZx9DZpqIuNkoHCr62lSIby/EjX50b24fEn9g
+         EnXpyHpQacWwlXwUfN7n8ND8m0FTwpAnQC1cphCrB4tZZNojnN2/9u0CMtqZPvMpdhnJ
+         XF0g==
+X-Gm-Message-State: AOAM530nl7oOdc5VqW/dz8jUsYBjAYegJByZt1FpRUv9iCvmRbIfoUWu
+        qquMWL4A4eem/y0HiYzC3XxcU8BWVkvkR/uxhD12rw==
+X-Google-Smtp-Source: ABdhPJyvWnA5YfxMUa0cPBb67wdrszJXaQYs8/Ln8r6azwb7B76KLd8cP1MpRLp2CqAdwCnLqyZlEYKeslxOgKWfpOM=
+X-Received: by 2002:ac2:4651:: with SMTP id s17mr6100025lfo.584.1632431412003;
+ Thu, 23 Sep 2021 14:10:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920181145.19543-6-digetx@gmail.com>
+References: <1632389487-11283-1-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1632389487-11283-1-git-send-email-rnayak@codeaurora.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Sep 2021 23:10:01 +0200
+Message-ID: <CACRpkdYSqyk4yhguZ0yWr5NDAsDZx8gR1Wchr=TPHaDpWg=KtA@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: qcom: sc7280: Add PM suspend callbacks
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 21:11:15 +0300, Dmitry Osipenko wrote:
-> Document sub-nodes which describe Tegra SoC clocks that require a higher
-> voltage of the core power domain in order to operate properly on a higher
-> clock rates.  Each node contains a phandle to OPP table and power domain.
-> 
-> The root PLLs and system clocks don't have any specific device dedicated
-> to them, clock controller is in charge of managing power for them.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../bindings/clock/nvidia,tegra20-car.yaml    | 37 +++++++++++++++++++
->  1 file changed, 37 insertions(+)
-> 
+On Thu, Sep 23, 2021 at 11:31 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> Use PM suspend callbacks from msm core, without this the hog_sleep
+> pins don't change state in suspend.
+>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+> v2: removed some stale diffstat
+
+Patch applied for fixes!
+
+Yours,
+Linus Walleij
