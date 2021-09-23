@@ -2,101 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C0141684A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FFF416851
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243542AbhIWXCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 19:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243507AbhIWXCN (ORCPT
+        id S243546AbhIWXJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 19:09:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37864 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236363AbhIWXJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 19:02:13 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94791C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:00:41 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id s16so1728331ybe.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 16:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fooishbar-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tNi4Bos8lh7sJkc+jDcM0nJh0Q/L0O1bHURQWGbTkX4=;
-        b=BSc1fqu6/Z/Rv3MnwMMeXb/jTCrjhoOWWYoqBAGDKtIkwZf5Ohw+67BmYf7iyGtKLw
-         FGPyN7RfyoVb/tO3VZUYC67xDFTbdn2SvyUwiirIGqrO3ztPpmYSJ+QQoBVJAhPXsQzH
-         JIgFfev54CDOz7nVU0ko5gEDaIniTuNVSzBdP3SUiz4wrhztbFrvVI617a+Qg7Q7GU2Y
-         PxqWZ/Y4REdyQy8jB1fGjgCHPwZQe+RvBts8vdqPb14T84tyq1AgoglerVejtYa/hSrx
-         TknyI/LcvKRi1Qa0viPfnd3bH164YUcPly4CFCQw61l9fehNp4BxbaO2AD8T1AQlkEkJ
-         ygAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tNi4Bos8lh7sJkc+jDcM0nJh0Q/L0O1bHURQWGbTkX4=;
-        b=R455n0SnYrSNLmaaaI9qsADcqri5k/MBofBxwpBNweePgKd7873+RZfQWXuvYXGHe8
-         /LwvV+uBqfbw9hjDtyeov6QSiIrgbOtaPyv1gfahXtwz4rdUEHK1pPsgICzxjIdvGQal
-         z3nJqodcJ8KyLEyFyX4f8rCpccISWmGnBeIVjfUhPKHK/aTqjQVV7jaeU8Xl02Um02Jn
-         6e4KlmxDq32kXocVTTupWppO3+C1egv5/+nQNipulLE+ylhPVL61cIeIbWPLZ3BunUQd
-         Fosex47xoEaLAUi7dHcaYhO/9X8hZQTrSwx5bQTybGO8Hmb9Hhf+ZIyQtW4FbWOzHvgi
-         /74Q==
-X-Gm-Message-State: AOAM532QqUCIVtgIq3sCWekpJCf8MO3PDaOjL5BNTxKdtW5nWfGMpnJh
-        PeiXGy1Eluqa7q7t78nezKfOg9bgOWu+Tas0OCO5V0xhvv0=
-X-Google-Smtp-Source: ABdhPJzVucE3eg4ogr+EckrLlTAcmioko3LFLfBIUNJScv90rQfbKQAJbN/ec8tKzwtaa08Bv8HD0UYl2BesVajSqx8=
-X-Received: by 2002:a25:bb52:: with SMTP id b18mr9308175ybk.506.1632438040561;
- Thu, 23 Sep 2021 16:00:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <23aeacb6-0cd9-d10f-76bc-3c9d33905daa@amd.com> <ca132183-e778-4a86-c81e-4d292e9d41a7@amd.com>
- <YUzl7qywbtVHipUT@casper.infradead.org>
-In-Reply-To: <YUzl7qywbtVHipUT@casper.infradead.org>
-From:   Daniel Stone <daniel@fooishbar.org>
-Date:   Fri, 24 Sep 2021 00:00:29 +0100
-Message-ID: <CAPj87rNqCuSvSZLuF=ULCXRpbDBQC+XAA+_Awa__4dvRkckamw@mail.gmail.com>
-Subject: Re: BoF at LPC: Documenting the Heterogeneous Memory Model Architecture
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Felix Kuehling <felix.kuehling@amd.com>,
-        Linux MM <linux-mm@kvack.org>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
+        Thu, 23 Sep 2021 19:09:21 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632438467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RKiJ0bK6+KzdC8aHY81emb+95YF6Us7KSKw66ZyyWbI=;
+        b=tFxRFRTBlgb2nhKu7clOVExR41yEZWh3IqcnwOjptLMJtecJhgfvrXH4enPNRvWYsp48HR
+        nRaeVjWkOF4zc57VvXJOnZje807UdpsNoYcwQBWP0SE8otfpDxMsF1vmVe5XKjRLpW5zPk
+        WgLkrcdAufkvJm/w/gXkmm7zFTP59HlfgBTrZtEv4HZwzm5d9aUu61KQD8fa0Y1Znpi8ze
+        hkswfqPw0C62x/G86zoNRVHeojLxiG3/vPM7gxL/7u23sd0WfqJQFoIiBYMyVS4hwiu+Il
+        lClTAGPvO7j/payQJTVU1M/RFSP3pVLIJE2pN3+xewTubUJ6/ZDqBiRNy8uP0A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632438467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RKiJ0bK6+KzdC8aHY81emb+95YF6Us7KSKw66ZyyWbI=;
+        b=kkn5nB01Kguwj7p/jOez68FbhkvZzbZpY/fVCIJgMs1DII5bRDr7fkz80YkKb2ECAC1HMz
+        N53bu6JgPhQzbHAg==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Phillips, Daniel" <Daniel.Phillips@amd.com>,
-        "Sierra Guiza, Alejandro (Alex)" <Alex.Sierra@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 05/13] x86/irq: Reserve a user IPI notification vector
+In-Reply-To: <20210913200132.3396598-6-sohil.mehta@intel.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-6-sohil.mehta@intel.com>
+Date:   Fri, 24 Sep 2021 01:07:47 +0200
+Message-ID: <87fstugabg.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, 23 Sept 2021 at 21:40, Matthew Wilcox <willy@infradead.org> wrote:
-> On Thu, Sep 23, 2021 at 04:25:08PM -0400, Felix Kuehling wrote:
-> > Change of plan: Instead of a BoF, this is now a session in the "GPU/media/AI
-> > buffer management and interop MC" micro conference. Thank you Daniel Stone
-> > for making that happen.
-> > https://linuxplumbersconf.org/event/11/contributions/1112/
-> >
-> > It is scheduled for tomorrow (Friday) 08:40-10:00 Pacific, 11:40-13:00
-> > Eastern, 15:40-17:00 UTC.
+On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+> A user interrupt notification vector is used on the receiver's cpu to
+> identify an interrupt as a user interrupt (and not a kernel interrupt).
+> Hardware uses the same notification vector to generate an IPI from a
+> sender's cpu core when the SENDUIPI instruction is executed.
 >
-> That's up against:
+> Typically, the kernel shouldn't receive an interrupt with this vector.
+> However, it is possible that the kernel might receive this vector.
 >
->  Direct map management
-> Vlastimil Babka, Mike Rapoport, Rick Edgecombe  11:30-12:15.
+> Scenario that can cause the spurious interrupt:
 >
-> Seems like a lot of the same people would want to be in both sessions.
-> Maybe one could be moved?
+> Step	cpu 0 (receiver task)		cpu 1 (sender task)
+> ----	---------------------		-------------------
+> 1	task is running
+> 2					executes SENDUIPI
+> 3					IPI sent
+> 4	context switched out
+> 5	IPI delivered
+> 	(kernel interrupt detected)
+>
+> A kernel interrupt can be detected, if a receiver task gets scheduled
+> out after the SENDUIPI-based IPI was sent but before the IPI was
+> delivered.
 
-Good point, and thanks, but it's hard to keep the longer slot whilst
-moving it later; I wonder if we could move direct map management to
-the final slot?
+What happens if the SENDUIPI is issued when the target task is not on
+the CPU? How is that any different from the above?
 
-Cheers,
-Daniel
+> The kernel doesn't need to do anything in this case other than receiving
+> the interrupt and clearing the local APIC. The user interrupt is always
+> stored in the receiver's UPID before the IPI is generated. When the
+> receiver gets scheduled back the interrupt would be delivered based on
+> its UPID.
+
+So why on earth is that vector reaching the CPU at all?
+
+> +#ifdef CONFIG_X86_USER_INTERRUPTS
+> +	seq_printf(p, "%*s: ", prec, "UIS");
+
+No point in printing that when user interrupts are not available/enabled
+on the system.
+
+> +	for_each_online_cpu(j)
+> +		seq_printf(p, "%10u ", irq_stats(j)->uintr_spurious_count);
+> +	seq_puts(p, "  User-interrupt spurious event\n");
+>  #endif
+>  	return 0;
+>  }
+> @@ -325,6 +331,33 @@ DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_kvm_posted_intr_nested_ipi)
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_X86_USER_INTERRUPTS
+> +/*
+> + * Handler for UINTR_NOTIFICATION_VECTOR.
+> + *
+> + * The notification vector is used by the cpu to detect a User Interrupt. In
+> + * the typical usage, the cpu would handle this interrupt and clear the local
+> + * apic.
+> + *
+> + * However, it is possible that the kernel might receive this vector. This can
+> + * happen if the receiver thread was running when the interrupt was sent but it
+> + * got scheduled out before the interrupt was delivered. The kernel doesn't
+> + * need to do anything other than clearing the local APIC. A pending user
+> + * interrupt is always saved in the receiver's UPID which can be referenced
+> + * when the receiver gets scheduled back.
+> + *
+> + * If the kernel receives a storm of these, it could mean an issue with the
+> + * kernel's saving and restoring of the User Interrupt MSR state; Specifically,
+> + * the notification vector bits in the IA32_UINTR_MISC_MSR.
+
+Definitely well thought out hardware that.
+
+Thanks,
+
+        tglx
