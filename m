@@ -2,160 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98B541593C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D5C41594A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239686AbhIWHo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:44:59 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:38615 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239619AbhIWHou (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:44:50 -0400
-Received: by mail-vs1-f48.google.com with SMTP id y141so5631437vsy.5;
-        Thu, 23 Sep 2021 00:43:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Ha/wlFhpE3wzhxqsYVFhc8UhMgQgIXbZ52hSCO/LZU=;
-        b=m4IFBW2LxqIWtnTecaw+YIqcsGQdwAVme+7Twydb5eax83BSXgMt8qyCupNcLKfFjX
-         UquFvnsKgcRuapXSpUETG2Xj2B0gI7c0c4eBLwlkTpoY8g5Yzb3FbL0P4jWPFIlErPs8
-         M2qhu81e5l9W/uXen7p6lHSGYBk7BW5TS9Qh4+4xIm8WcSyKm7Empmrvk3Cb4+Z/fbih
-         pYpumLEK+Mks07eJgmxG5H2TGeawbTJJWook3Wpuj+1WGos6SizzxoD9JyfGJYL7+hqp
-         M/OrXDFh/836dpeXctIBw1FIcllPH5iMISi+x4L90t3xlfJW3hToygPt8FSPlckehlkz
-         gq3Q==
-X-Gm-Message-State: AOAM530b3xwAUgPOCFqTOAvOXcIwygqz2M+ZHVHSF5WmPSer4kt0vtsr
-        5nKHON7ye2aHS/oMmt1i5a9ITtlKuJ0WgBq4QjAOmBT3
-X-Google-Smtp-Source: ABdhPJzKQLsa6lAVIiUAQaqshZfD+cCmfuMpwO2GNU/H/yzPZqKWK1YyaY9bVHDLIhvsPRJM5ycaxYEJFPxbKcq0wx4=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr3048824vsl.9.1632382998923;
- Thu, 23 Sep 2021 00:43:18 -0700 (PDT)
+        id S239724AbhIWHpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:45:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239689AbhIWHpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 03:45:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D07E60EC0;
+        Thu, 23 Sep 2021 07:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632383025;
+        bh=3uVNPtFfbPBZRQaNfQKwTwtev9YVKUZqny4BWnp3ztY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Vold8Z9hLOut5Y57D9YqGfAPpL4eeU2GGKe6N2/G2K+rSChme5BK2bVJUGQMhNnD5
+         tlc7pIoxBTA8mtBmkSbcvxOA4ol2fbYKLvd84RUIoei3PfOrgW7d8UvcqmHNvAAnqH
+         2rTOLkAFW6DycEheiJuAByIZSW1Mb0ht/+wW3EsUTQK66rudMrHlsuHTSWtaF9pCtZ
+         zz2eXREGQLaTYVqwKNRZd1xLM2W36l4O1x9wg+UbZ8351+5wCVj9XzBQPxb3HkA2G0
+         kjff1rDe9w+gBCM2bpBWj7skIwT6XMoMhVQl3RcYgUgyL/ulxZSnczTeB3j1RHlvfS
+         d5Zxibdoq1rzA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        devicetree@vger.kernel.org, iommu@lists.linux-foundation.org,
+        kasan-dev@googlegroups.com, kvm@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 0/3] memblock: cleanup memblock_free interface
+Date:   Thu, 23 Sep 2021 10:43:32 +0300
+Message-Id: <20210923074335.12583-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210922234726.3337265-1-kieran.bingham@ideasonboard.com> <20210922234726.3337265-2-kieran.bingham@ideasonboard.com>
-In-Reply-To: <20210922234726.3337265-2-kieran.bingham@ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 23 Sep 2021 09:43:07 +0200
-Message-ID: <CAMuHMdWfcxb+5uOnPMiB2Z9rUfnRAg2Pzz--H16fOoVoASP=Kw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] dt-bindings: display: renesas,du: Provide bindings
- for r8a779a0
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-On Thu, Sep 23, 2021 at 1:47 AM Kieran Bingham
-<kieran.bingham@ideasonboard.com> wrote:
-> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
->
-> Extend the Renesas DU display bindings to support the r8a779a0 V3U.
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
->
-> ---
-> v2:
->  - Collected Laurent's tag
->  - Remove clock-names requirement
->  - Specify only a single clock
->
-> v3:
->  - Use clocknames: 'du.0' instead of 'du' to remain consistent
+Hi,
 
-Thanks for the update!
+Following the discussion on [1] this is the fix for memblock freeing APIs
+mismatch. 
 
-> --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
-> +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
-> @@ -39,6 +39,7 @@ properties:
->        - renesas,du-r8a77980 # for R-Car V3H compatible DU
->        - renesas,du-r8a77990 # for R-Car E3 compatible DU
->        - renesas,du-r8a77995 # for R-Car D3 compatible DU
-> +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
->
->    reg:
->      maxItems: 1
-> @@ -773,6 +774,55 @@ allOf:
->          - reset-names
->          - renesas,vsps
->
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - renesas,du-r8a779a0
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: Functional clock
-> +
-> +        clock-names:
-> +          maxItems: 1
-> +          items:
-> +            - const: du.0
-> +
-> +        interrupts:
-> +          maxItems: 2
-> +
-> +        resets:
-> +          maxItems: 1
-> +
-> +        reset-names:
-> +          items:
-> +            - const: du.0
-> +
-> +        ports:
-> +          properties:
-> +            port@0:
-> +              description: DSI 0
-> +            port@1:
-> +              description: DSI 1
-> +            port@2: false
-> +            port@3: false
-> +
-> +          required:
-> +            - port@0
-> +            - port@1
-> +
-> +        renesas,vsps:
-> +          minItems: 2
-> +
-> +      required:
-> +        - interrupts
-> +        - resets
-> +        - reset-names
-> +        - renesas,vsps
+The first patch is a cleanup of numa_distance allocation in arch_numa I've
+spotted during the conversion.
+The second patch is a fix for Xen memory freeing on some of the error
+paths.
 
-clock-names, for consistency?
+The core change is in the third patch that makes memblock_free() a
+counterpart of memblock_alloc() and adds memblock_phys_alloc() to be a
+counterpart of memblock_phys_alloc().
 
-> +
->  additionalProperties: false
->
->  examples:
+Since scripts/get_maintainer.pl returned more than 100 addresses I've
+trimmed the distribution list only to the relevant lists.
 
-With the above fixed:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[1] https://lore.kernel.org/all/CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com
 
-Gr{oetje,eeting}s,
+Mike Rapoport (3):
+  arch_numa: simplify numa_distance allocation
+  xen/x86: free_p2m_page: use memblock_free_ptr() to free a virtual pointer
+  memblock: cleanup memblock_free interface
 
-                        Geert
+ arch/alpha/kernel/core_irongate.c         |  2 +-
+ arch/arc/mm/init.c                        |  2 +-
+ arch/arm/mach-hisi/platmcpm.c             |  2 +-
+ arch/arm/mm/init.c                        |  2 +-
+ arch/arm64/mm/mmu.c                       |  4 ++--
+ arch/mips/mm/init.c                       |  2 +-
+ arch/mips/sgi-ip30/ip30-setup.c           |  6 +++---
+ arch/powerpc/kernel/dt_cpu_ftrs.c         |  2 +-
+ arch/powerpc/kernel/paca.c                |  4 ++--
+ arch/powerpc/kernel/setup-common.c        |  2 +-
+ arch/powerpc/kernel/setup_64.c            |  2 +-
+ arch/powerpc/platforms/powernv/pci-ioda.c |  2 +-
+ arch/powerpc/platforms/pseries/svm.c      |  4 +---
+ arch/riscv/kernel/setup.c                 |  4 ++--
+ arch/s390/kernel/setup.c                  |  8 ++++----
+ arch/s390/kernel/smp.c                    |  4 ++--
+ arch/s390/kernel/uv.c                     |  2 +-
+ arch/s390/mm/kasan_init.c                 |  2 +-
+ arch/sh/boards/mach-ap325rxa/setup.c      |  2 +-
+ arch/sh/boards/mach-ecovec24/setup.c      |  4 ++--
+ arch/sh/boards/mach-kfr2r09/setup.c       |  2 +-
+ arch/sh/boards/mach-migor/setup.c         |  2 +-
+ arch/sh/boards/mach-se/7724/setup.c       |  4 ++--
+ arch/sparc/kernel/smp_64.c                |  2 +-
+ arch/um/kernel/mem.c                      |  2 +-
+ arch/x86/kernel/setup.c                   |  4 ++--
+ arch/x86/kernel/setup_percpu.c            |  2 +-
+ arch/x86/mm/init.c                        |  2 +-
+ arch/x86/mm/kasan_init_64.c               |  4 ++--
+ arch/x86/mm/numa.c                        |  2 +-
+ arch/x86/mm/numa_emulation.c              |  2 +-
+ arch/x86/xen/mmu_pv.c                     |  6 +++---
+ arch/x86/xen/p2m.c                        |  2 +-
+ arch/x86/xen/setup.c                      |  6 +++---
+ drivers/base/arch_numa.c                  | 10 ++++------
+ drivers/firmware/efi/memmap.c             |  2 +-
+ drivers/macintosh/smu.c                   |  2 +-
+ drivers/of/kexec.c                        |  2 +-
+ drivers/of/of_reserved_mem.c              |  4 ++--
+ drivers/s390/char/sclp_early.c            |  2 +-
+ drivers/usb/early/xhci-dbc.c              | 10 +++++-----
+ drivers/xen/swiotlb-xen.c                 |  2 +-
+ include/linux/memblock.h                  | 16 ++--------------
+ init/initramfs.c                          |  2 +-
+ init/main.c                               |  2 +-
+ kernel/dma/swiotlb.c                      |  2 +-
+ kernel/printk/printk.c                    |  4 ++--
+ lib/bootconfig.c                          |  2 +-
+ lib/cpumask.c                             |  2 +-
+ mm/cma.c                                  |  2 +-
+ mm/memblock.c                             | 20 ++++++++++----------
+ mm/memory_hotplug.c                       |  2 +-
+ mm/percpu.c                               |  8 ++++----
+ mm/sparse.c                               |  2 +-
+ tools/bootconfig/include/linux/memblock.h |  2 +-
+ 55 files changed, 94 insertions(+), 110 deletions(-)
 
+
+base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.28.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
