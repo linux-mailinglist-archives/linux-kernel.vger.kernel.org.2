@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D55E416081
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75771416084
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241535AbhIWOHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:07:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52053 "EHLO
+        id S241560AbhIWOH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:07:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21908 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241499AbhIWOHR (ORCPT
+        by vger.kernel.org with ESMTP id S241567AbhIWOHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:07:17 -0400
+        Thu, 23 Sep 2021 10:07:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632405946;
+        s=mimecast20190719; t=1632405951;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cX47g2TKWyTcGZ3lLgtM2l5RhRkt4502e9pXcwjNvzg=;
-        b=ICRruicQCHG7K6C+Dta46uH9yB8PmQyJVgBa34K2pyIQ8QEvdHcDx3uzHy0GbdnJmgUkwG
-        4BjqjdplQ45Exf8zunxvc52iPqVHy7L7VmiIs8ng1GyicftGT07iCZew2FTbR6vOHB+pgd
-        6LYibdGNt+UH7RscZwtinEgIV09BXFQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-i4_2colOPX-I9uQ2ZsiNTA-1; Thu, 23 Sep 2021 10:05:44 -0400
-X-MC-Unique: i4_2colOPX-I9uQ2ZsiNTA-1
-Received: by mail-wr1-f69.google.com with SMTP id i4-20020a5d5224000000b0015b14db14deso5179560wra.23
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:05:44 -0700 (PDT)
+        bh=I61BRjMeqtBhdStSHIPW3/cYSD2YUvHTtLYDBjO5ZPg=;
+        b=EGQzi3wAjcIYzM9W2FsuXNEkBWa/hx/XyvSoGAuO02A01b6kwQDYJbQm6/Abcsxr5iGHK0
+        qc9VeU5Ajn8D6xfORNyV2Wux58RlqyAKp3TVqS6JPjbvK1B/QQlyJEHz9xcRIGMxq85Urc
+        ldgOaxbYPkAnjqnff1SDWhYiDU0G6vU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-535-7oIQipXnNMCfIT7ZyIEFLw-1; Thu, 23 Sep 2021 10:05:50 -0400
+X-MC-Unique: 7oIQipXnNMCfIT7ZyIEFLw-1
+Received: by mail-wr1-f70.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so5237516wrt.9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:05:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=cX47g2TKWyTcGZ3lLgtM2l5RhRkt4502e9pXcwjNvzg=;
-        b=C1NEOBp2GOzqOP8bku17NjZoL328nrjcX9d8i1nXDJnNThwYxFLRtzC4bz6uM+Zq2+
-         bV4U48LBDtjFbKFPgXyq5u+KwXFff7bgRfQsuq+LQ3JIjh0ctSRmPam0rNQYYucYvVjH
-         OyL0UBfkapZmBYV0zNj7MDmRyAsFdn2oMI+oTAM2YlDFzW7bkXciOFpU5OCfqaTZEoop
-         mKSwKaH9V59+FoGF6KbeIGrDZUyhpX8TmvZneOeFNyHWWBHubwwIja+JDoePaI15YaUB
-         3w7K4s98PzuTfO+yY2C6cZcj/nN1tG4w1FvvowWbPaAdFvhxjoqpHN2LRCGcoPKXrjKC
-         DW7w==
-X-Gm-Message-State: AOAM532tWuKS3FrmIgxFU0jZt1YGUHGBP4HLZC7waOdh89ssYaaG6dNK
-        DgJR9H87BehxSkHn/MWgqjJPI/KK5WwLOAznX54m7zcDDfmQQClhYlO+K4eFc1sVsLNqifn1h5E
-        +7QibNRehrUc/vx8/3M/1hoR5
-X-Received: by 2002:a1c:f00a:: with SMTP id a10mr4627417wmb.112.1632405943377;
-        Thu, 23 Sep 2021 07:05:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwiAa96ENorZQvlWHjdYI1iE16TzOB++hfYYtVRSw05S7pz1fhbwi0pzRTTTE6avMtpDpwtVg==
-X-Received: by 2002:a1c:f00a:: with SMTP id a10mr4627392wmb.112.1632405943132;
-        Thu, 23 Sep 2021 07:05:43 -0700 (PDT)
+        bh=I61BRjMeqtBhdStSHIPW3/cYSD2YUvHTtLYDBjO5ZPg=;
+        b=ULfw3BwWBuZNX3+AXkBa6fZu6OAyf5aFxQoZAhiHVbFpd64U76cedxv0rPRGMY0JIk
+         6KpIlwf7OcCsQrKF1AIe7G6xHgDISTORnH0ArivLvQbdId9B8ugZat5bd9qXZniozZTZ
+         /Yp3ap0Tv9Hn+YwHQx/67GsOnT/bl7yqVcP65jb9jCcDxbjZ7b2nn8XwK8stuIldyIzL
+         RMyjiY5NxwqblbTou1vCIDBtH9IuR1L3+GzO2GFtKzo1DCQ04Uef9FuxTKMQM9t9WGhI
+         WNDsofD69ECUjXWg+ne/HWfJfG4nc4C+M6ISyvfW7xF+dXWrn5cxub2C3VBXWzCMS3Dx
+         OaLg==
+X-Gm-Message-State: AOAM530sBfsqx460l5zWPrvv9vPa7K+WGCufILUQhTay9LZl28oamf73
+        3RvIYgRhlAj7r+QcZ+ys4MflO5k4/9q2pbb5LG9lJYZ1AjjBNQHaPZ4t4zO0JQ7BjpymOR5t1Z6
+        o0z4rHjy9LmfQJpvimPO4UreN
+X-Received: by 2002:a1c:f00a:: with SMTP id a10mr4627948wmb.112.1632405949070;
+        Thu, 23 Sep 2021 07:05:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwBO+kcR3MMr9vXzqpgSTE2fqf1eRRmNCeq1QHKJ3qEXiRHRA8kfVeFeyBm7fUDExvf0mXVQQ==
+X-Received: by 2002:a1c:f00a:: with SMTP id a10mr4627927wmb.112.1632405948843;
+        Thu, 23 Sep 2021 07:05:48 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id c7sm5745201wmq.13.2021.09.23.07.05.40
+        by smtp.gmail.com with ESMTPSA id 25sm10735912wmo.9.2021.09.23.07.05.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 07:05:42 -0700 (PDT)
-Subject: Re: [PATCH 02/14] KVM: x86: selftests: test simultaneous uses of
- V_IRQ from L1 and L0
+        Thu, 23 Sep 2021 07:05:48 -0700 (PDT)
+Subject: Re: [PATCH 03/14] KVM: x86: nSVM: test eax for 4K alignment for GP
+ errata workaround
 To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
 Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
         Borislav Petkov <bp@alien8.de>, Bandan Das <bsd@redhat.com>,
@@ -70,14 +70,14 @@ Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
         Shuah Khan <shuah@kernel.org>,
         Wanpeng Li <wanpengli@tencent.com>
 References: <20210914154825.104886-1-mlevitsk@redhat.com>
- <20210914154825.104886-3-mlevitsk@redhat.com>
+ <20210914154825.104886-4-mlevitsk@redhat.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ee791308-bc84-7765-1949-e7422de2ddb0@redhat.com>
-Date:   Thu, 23 Sep 2021 16:05:39 +0200
+Message-ID: <59d45b27-9191-4136-929a-a7826ac891d8@redhat.com>
+Date:   Thu, 23 Sep 2021 16:05:46 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210914154825.104886-3-mlevitsk@redhat.com>
+In-Reply-To: <20210914154825.104886-4-mlevitsk@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -86,197 +86,40 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 14/09/21 17:48, Maxim Levitsky wrote:
-> Test that if:
+> GP SVM errata workaround made the #GP handler always emulate
+> the SVM instructions.
 > 
-> * L1 disables virtual interrupt masking, and INTR intercept.
+> However these instructions #GP in case the operand is not 4K aligned,
+> but the workaround code didn't check this and we ended up
+> emulating these instructions anyway.
 > 
-> * L1 setups a virtual interrupt to be injected to L2 and enters L2 with
->    interrupts disabled, thus the virtual interrupt is pending.
+> This is only an emulation accuracy check bug as there is no harm for
+> KVM to read/write unaligned vmcb images.
 > 
-> * Now an external interrupt arrives in L1 and since
->    L1 doesn't intercept it, it should be delivered to L2 when
->    it enables interrupts.
-> 
->    to do this L0 (abuses) V_IRQ to setup an
->    interrupt window, and returns to L2.
-> 
-> * L2 enables interrupts.
->    This should trigger the interrupt window,
->    injection of the external interrupt and delivery
->    of the virtual interrupt that can now be done.
-> 
-> * Test that now L2 gets those interrupts.
-> 
-> This is the test that demonstrates the issue that was
-> fixed in the previous patch.
+> Fixes: 82a11e9c6fa2 ("KVM: SVM: Add emulation support for #GP triggered by SVM instructions")
 > 
 > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > ---
->   tools/testing/selftests/kvm/.gitignore        |   1 +
->   tools/testing/selftests/kvm/Makefile          |   1 +
->   .../selftests/kvm/x86_64/svm_int_ctl_test.c   | 128 ++++++++++++++++++
->   3 files changed, 130 insertions(+)
->   create mode 100644 tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c
+>   arch/x86/kvm/svm/svm.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-> index 36896d251977..eb98958b15e4 100644
-> --- a/tools/testing/selftests/kvm/.gitignore
-> +++ b/tools/testing/selftests/kvm/.gitignore
-> @@ -23,6 +23,7 @@
->   /x86_64/smm_test
->   /x86_64/state_test
->   /x86_64/svm_vmcall_test
-> +/x86_64/svm_int_ctl_test
->   /x86_64/sync_regs_test
->   /x86_64/tsc_msrs_test
->   /x86_64/userspace_msr_exit_test
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index c103873531e0..3b8b143daecc 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -56,6 +56,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/smm_test
->   TEST_GEN_PROGS_x86_64 += x86_64/state_test
->   TEST_GEN_PROGS_x86_64 += x86_64/vmx_preemption_timer_test
->   TEST_GEN_PROGS_x86_64 += x86_64/svm_vmcall_test
-> +TEST_GEN_PROGS_x86_64 += x86_64/svm_int_ctl_test
->   TEST_GEN_PROGS_x86_64 += x86_64/sync_regs_test
->   TEST_GEN_PROGS_x86_64 += x86_64/userspace_msr_exit_test
->   TEST_GEN_PROGS_x86_64 += x86_64/vmx_apic_access_test
-> diff --git a/tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c b/tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c
-> new file mode 100644
-> index 000000000000..df04f56ce859
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c
-> @@ -0,0 +1,128 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * svm_int_ctl_test
-> + *
-> + * Copyright (C) 2021, Red Hat, Inc.
-> + *
-> + * Nested SVM testing: test simultaneous use of V_IRQ from L1 and L0.
-> + */
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index b2e710a3fff6..6645542df9bd 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -2224,6 +2224,10 @@ static int gp_interception(struct kvm_vcpu *vcpu)
+>   	if (error_code)
+>   		goto reinject;
+>   
+> +	/* All SVM instructions expect page aligned RAX */
+> +	if (svm->vmcb->save.rax & ~PAGE_MASK)
+> +		goto reinject;
 > +
-> +#include "test_util.h"
-> +#include "kvm_util.h"
-> +#include "processor.h"
-> +#include "svm_util.h"
-> +#include "apic.h"
-> +
-> +#define VCPU_ID		0
-> +
-> +static struct kvm_vm *vm;
-> +
-> +bool vintr_irq_called;
-> +bool intr_irq_called;
-> +
-> +#define VINTR_IRQ_NUMBER 0x20
-> +#define INTR_IRQ_NUMBER 0x30
-> +
-> +static void vintr_irq_handler(struct ex_regs *regs)
-> +{
-> +	vintr_irq_called = true;
-> +}
-> +
-> +static void intr_irq_handler(struct ex_regs *regs)
-> +{
-> +	x2apic_write_reg(APIC_EOI, 0x00);
-> +	intr_irq_called = true;
-> +}
-> +
-> +static void l2_guest_code(struct svm_test_data *svm)
-> +{
-> +	/* This code raises interrupt INTR_IRQ_NUMBER in the L1's LAPIC,
-> +	 * and since L1 didn't enable virtual interrupt masking,
-> +	 * L2 should receive it and not L1.
-> +	 *
-> +	 * L2 also has virtual interrupt 'VINTR_IRQ_NUMBER' pending in V_IRQ
-> +	 * so it should also receive it after the following 'sti'.
-> +	 */
-> +	x2apic_write_reg(APIC_ICR,
-> +		APIC_DEST_SELF | APIC_INT_ASSERT | INTR_IRQ_NUMBER);
-> +
-> +	__asm__ __volatile__(
-> +		"sti\n"
-> +		"nop\n"
-> +	);
-> +
-> +	GUEST_ASSERT(vintr_irq_called);
-> +	GUEST_ASSERT(intr_irq_called);
-> +
-> +	__asm__ __volatile__(
-> +		"vmcall\n"
-> +	);
-> +}
-> +
-> +static void l1_guest_code(struct svm_test_data *svm)
-> +{
-> +	#define L2_GUEST_STACK_SIZE 64
-> +	unsigned long l2_guest_stack[L2_GUEST_STACK_SIZE];
-> +	struct vmcb *vmcb = svm->vmcb;
-> +
-> +	x2apic_enable();
-> +
-> +	/* Prepare for L2 execution. */
-> +	generic_svm_setup(svm, l2_guest_code,
-> +			  &l2_guest_stack[L2_GUEST_STACK_SIZE]);
-> +
-> +	/* No virtual interrupt masking */
-> +	vmcb->control.int_ctl &= ~V_INTR_MASKING_MASK;
-> +
-> +	/* No intercepts for real and virtual interrupts */
-> +	vmcb->control.intercept &= ~(1ULL << INTERCEPT_INTR | INTERCEPT_VINTR);
-> +
-> +	/* Make a virtual interrupt VINTR_IRQ_NUMBER pending */
-> +	vmcb->control.int_ctl |= V_IRQ_MASK | (0x1 << V_INTR_PRIO_SHIFT);
-> +	vmcb->control.int_vector = VINTR_IRQ_NUMBER;
-> +
-> +	run_guest(vmcb, svm->vmcb_gpa);
-> +	GUEST_ASSERT(vmcb->control.exit_code == SVM_EXIT_VMMCALL);
-> +	GUEST_DONE();
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	vm_vaddr_t svm_gva;
-> +
-> +	nested_svm_check_supported();
-> +
-> +	vm = vm_create_default(VCPU_ID, 0, (void *) l1_guest_code);
-> +
-> +	vm_init_descriptor_tables(vm);
-> +	vcpu_init_descriptor_tables(vm, VCPU_ID);
-> +
-> +	vm_install_exception_handler(vm, VINTR_IRQ_NUMBER, vintr_irq_handler);
-> +	vm_install_exception_handler(vm, INTR_IRQ_NUMBER, intr_irq_handler);
-> +
-> +	vcpu_alloc_svm(vm, &svm_gva);
-> +	vcpu_args_set(vm, VCPU_ID, 1, svm_gva);
-> +
-> +	struct kvm_run *run = vcpu_state(vm, VCPU_ID);
-> +	struct ucall uc;
-> +
-> +	vcpu_run(vm, VCPU_ID);
-> +	TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
-> +		    "Got exit_reason other than KVM_EXIT_IO: %u (%s)\n",
-> +		    run->exit_reason,
-> +		    exit_reason_str(run->exit_reason));
-> +
-> +	switch (get_ucall(vm, VCPU_ID, &uc)) {
-> +	case UCALL_ABORT:
-> +		TEST_FAIL("%s", (const char *)uc.args[0]);
-> +		break;
-> +		/* NOT REACHED */
-> +	case UCALL_DONE:
-> +		goto done;
-> +	default:
-> +		TEST_FAIL("Unknown ucall 0x%lx.", uc.cmd);
-> +	}
-> +done:
-> +	kvm_vm_free(vm);
-> +	return 0;
-> +}
+>   	/* Decode the instruction for usage later */
+>   	if (x86_decode_emulated_instruction(vcpu, 0, NULL, 0) != EMULATION_OK)
+>   		goto reinject;
 > 
+
 
 Queued, thanks.
 
