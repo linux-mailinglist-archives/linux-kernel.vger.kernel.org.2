@@ -2,157 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0215415AC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8A5415ACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240028AbhIWJVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:21:10 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:34927 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239796AbhIWJVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:21:09 -0400
-X-Greylist: delayed 12082 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Sep 2021 05:21:08 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632388764;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=Hmi9mDxMfGmpjf9AOoTu/Kv4h8mKdoxBjvMO/ClKwfg=;
-    b=T4nKTAs2TMJptDF6hDMgt5dfZkhW7h4sBoXgnXkLCypfm3pHCqyjTanS/6OGlr2WN0
-    q9bPStXLyVb5q8z78jLkp8baZOU6aQRbKEIt09KDBgVQdyZxz3uRYfRMd3WPOzTiSRF6
-    PJa73gJZ9cUquSC7tegweW1PNxNVSZyPTxssQOMzxbtNsegEQVMp0tChULU34LXKmnA3
-    CQTsn/HkBt6FRoxXTJ1Q9ZTmlhpPA+KOLM20q4TpHF8fA5yt6kobcMwgcEXEe5BDwR9Q
-    lyfPnCHaFapyp34wPg382YYFdY/5yqyd8PBJNfNQ+DqQMJRt1qktd9KreMWsixwkszNu
-    zd/Q==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3iMUQeg=="
-X-RZG-CLASS-ID: mo00
-Received: from mbp-13-nikolaus.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 SBL|AUTH)
-    with ESMTPSA id I01f74x8N9JNJBX
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 23 Sep 2021 11:19:23 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <RTPVZQ.WN90B9MHPMZ13@crapouillou.net>
-Date:   Thu, 23 Sep 2021 11:19:23 +0200
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+        id S240155AbhIWJYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:24:05 -0400
+Received: from mout.gmx.net ([212.227.15.15]:39245 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239965AbhIWJYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:24:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632388920;
+        bh=kg2X/33R3HpULtgGMrnIJ3mpCCH8dRU6dKWBGjFCbcc=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Wd6D97buHcpeM5C9OaH6mBRlnawOHWnVRmwDHzQnyinaB4DBGvZJH/I9qJLvDwOho
+         /gpsDJefssoDB8bjFbSve/BVjKU+BZNqWMcF84FZFVcNos8iLldsLkwX0JgKzmROn4
+         AIZnBi0Up0+2b3FrJTCyuF4XTcADdd5gOP19VfMg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.149.175]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0FxV-1mp8hT1RUl-00xGMP; Thu, 23
+ Sep 2021 11:22:00 +0200
+Message-ID: <50400427070018eff83b0782d2e26c0cc9ff4521.camel@gmx.de>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 23 Sep 2021 11:21:58 +0200
+In-Reply-To: <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+         <20210920142614.4891-3-mgorman@techsingularity.net>
+         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+         <20210921103621.GM3959@techsingularity.net>
+         <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+         <20210922132002.GX3959@techsingularity.net>
+         <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+         <20210922150457.GA3959@techsingularity.net>
+         <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+         <20210922173853.GB3959@techsingularity.net>
+         <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+         <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
+         <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <896D04E4-4058-474B-8BD2-7F21B1C754E4@goldelico.com>
-References: <20210922205555.496871-1-paul@crapouillou.net>
- <20210922205555.496871-7-paul@crapouillou.net>
- <32234186-1802-4FDF-801A-B14E48FB86D8@goldelico.com>
- <RTPVZQ.WN90B9MHPMZ13@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+X-Provags-ID: V03:K1:7kfjVT+3Odk2NlZvSGf0pS+jISsoalbLGF7/wHC7Fpqfsd1V4Mv
+ bfS+eTFqtOkL1CZ7al7yveBmYHRIXdZ8Cy/nFn/1Izg+80cfhRDV94kyATCHkHnJVHND9cp
+ zfoj+6nWrhclPHuzInuvuMXtqU3+2ZTedDh5fSEmcMiFenHwrc4OYMQGuqTrncoQWoJIRZD
+ I2eX2cElk1YXfRpk1ZIIg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vd/QnmmMMow=:bxeBdq2phMXcEO8/VKiPjG
+ A8NgZKtUNkTrk25GtOepUfwDTwYRTylAyaDeb9/NfwQ/RGcHUYNxvLP48z3YVBP0SjhThTkbQ
+ f2wplkLZfnSuY+5vNr33KIBNKFRLChLF3DG6qsMJDETHfCStM6Uf6YxBTo4ks4cyu3jQ8CUUX
+ iJAarAVlWEx4uBew2qdgJhNUjRY44jPGhmZL63iiTPmmIAxTpmLydEIllrM7k9K8WdXQnjxdt
+ AV3rooe2K3+6ItI41vfDImhkwtxPMLf0iDnwZyEIG31RjYhr9CaaVxbP0pf1ibvU3RzogttMH
+ awe8knNLM9ajwixI3LR0chtJuy2S6NLskmBuJxDt2bHQ2yi51wq4tXKj/oi/3o8JQpvRCP3AO
+ iw368JLnt+4nHExDsg4V4Qanz4T3MxgNqZx2CcNOISBwHua34Ab6V2/ayrxZxTDHNeDmo//se
+ ppqB+sJ8sfPG+/87/dV0oCXQz2Q24n6djJY0ufFbdXlbK01OqoWQOuJqfpLjQW/LqEcnb6c8/
+ slP2mqX8I4Z3AO7CCZ+5XKOzj2d5n04ieVQVf/Oa3771WWaW91hxvreKyGXiePswHQIISO4fP
+ Cjdiq52yXmdr41bI3vFzDk1UhH1alcqO8t8smlllBcyv1yjsZWPk2Cb4CtKu0tf+NKRNwdujO
+ gtaq/3o/xSynvzQCi7odO/OuRwGaPGxs9CWhaJCj8t5TT5T1QzrvqDSTsVFvpBRyI3V+6trjt
+ 0LSHCSr36VHZgVPQ2pyegM4zZSI42smbbcfOvZoTg1zWDeM6nbfkWUn3Ul16Pq1apdY57pPSg
+ LOFQV1qDFi3/pzd3psmFW4q+KKRdGiwfJtTLUHG37PpH8XuDEHXIJp42N064XQdajMnlcoRbq
+ KouDy7V1Zp6/lJpULoD0OQPGHYY+O0O74uWAJasI3vvpjbJZU+6R5MIK0hTf8TTrhU2PWB6iv
+ otmf9bDfZ8RqKxozcVJQmL6i653EzP1rx0jtymy4eCGLxkhI6OFGir3F6LxHBFXnZWj5w4M3B
+ VmAT2L/Px9pX+m0GdaaJt5VggiVZfLMroZKaWFskgUS/5UQ+l9yXUAyEddcrGKFQLtpgC3eTZ
+ KIjSTucuF3CPCI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Thu, 2021-09-23 at 10:40 +0200, Vincent Guittot wrote:
+>
+> a 100us value should even be enough to fix Mel's problem without
+> impacting common wakeup preemption cases.
 
-> Am 23.09.2021 um 10:49 schrieb Paul Cercueil <paul@crapouillou.net>:
->=20
-> Hi Nikolaus,
->=20
-> Le jeu., sept. 23 2021 at 07:52:08 +0200, H. Nikolaus Schaller =
-<hns@goldelico.com> a =C3=A9crit :
->> Hi Paul,
->> thanks for another update.
->> We have been delayed to rework the CI20 HDMI code on top of your =
-series
->> but it basically works in some situations. There is for example a =
-problem
->> if the EDID reports DRM_COLOR_FORMAT_YCRCB422 but it appears to be =
-outside
->> of your series.
->=20
-> I think the SoC can output YCbCr as well, but I never tried to use it.
+It'd be nice if it turn out to be something that simple, but color me
+skeptical.  I've tried various preemption throttling schemes, and while
+it was trivial to get promising results, my scheme always managed to
+harm something.  Everything I ever tried, I ended up tossing.
 
-Maybe there is code missing or something else. We have not yet deeply =
-researched.
-Except that when ignoring DRM_COLOR_FORMAT_YCRCB422 capability it uses =
-RGB
-and works.
-
->=20
->>> +		ret =3D drm_bridge_attach(encoder, &ib->bridge, NULL,
->>> +					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
->> DRM_BRIDGE_ATTACH_NO_CONNECTOR makes it fundamentally incompatible
->> with synopsys/dw_hdmi.c
->> That driver checks for DRM_BRIDGE_ATTACH_NO_CONNECTOR being NOT =
-present,
->> since it wants to register its own connector through =
-dw_hdmi_connector_create().
->> It does it for a reason: the dw-hdmi is a multi-function driver which =
-does
->> HDMI and DDC/EDID stuff in a single driver (because I/O registers and =
-power
->> management seem to be shared).
->=20
-> The IT66121 driver does all of that too, and does not need =
-DRM_BRIDGE_ATTACH_NO_CONNECTOR. The drm_bridge_funcs struct has =
-callbacks to handle cable detection and DDC stuff.
->=20
->> Since I do not see who could split this into a separate bridge and a =
-connector driver
->> and test it on multiple SoC platforms (there are at least 3 or 4), I =
-think modifying
->> the fundamentals of the dw-hdmi architecture just to get CI20 HDMI =
-working is not
->> our turf.
->=20
-> You could have a field in the dw-hdmi pdata structure, that would =
-instruct the driver whether or not it should use the new API. Ugly, I =
-know, and would probably duplicate a lot of code, but that would allow =
-other drivers to be updated at a later date.
-
-Yes, would be very ugly.
-
-But generally who has the knowledge (and time) to do this work?
-And has a working platform to test (jz4780 isn't a good development =
-environment)?
-
-The driver seems to have a turbulent history starting 2013 in =
-staging/imx and
-apparently it was generalized since then... Is Laurent currently dw-hdmi =
-maintainer?
-
->=20
->> Therefore the code here should be able to detect if =
-drm_bridge_attach() already
->> creates and attaches a connector and then skip the code below.
->=20
-> Not that easy, unfortunately. On one side we have dw-hdmi which checks =
-that DRM_BRIDGE_ATTACH_NO_CONNECTOR is not set, and on the other side we =
-have other drivers like the IT66121 which will fail if this flag is not =
-set.
-
-Ok, I see. You have to handle contradicting cases here.
-
-Would it be possible to run it with DRM_BRIDGE_ATTACH_NO_CONNECTOR first
-and retry if it fails without?
-
-But IMHO the return value (in error case) is not well defined. So there
-must be a test if a connector has been created (I do not know how this
-would work).
-
-Another suggestion: can you check if there is a downstream connector =
-defined in
-device tree (dw-hdmi does not need such a definition)?
-If not we call it with 0 and if there is one we call it with
-DRM_BRIDGE_ATTACH_NO_CONNECTOR and create one?
-
-Just some ideas how to solve without touching hdmi drivers.
-
-BR and thanks,
-Nikolaus=
+	-Mike
