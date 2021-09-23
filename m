@@ -2,72 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62E941682D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D87416842
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243522AbhIWWsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243431AbhIWWsj (ORCPT
+        id S243524AbhIWW6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 18:58:55 -0400
+Received: from smtp2.de.opalstack.com ([139.162.136.213]:48228 "EHLO
+        smtp2.de.opalstack.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236363AbhIWW6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 18:48:39 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6206AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 15:47:07 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id x2so8288818ila.11
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 15:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=SaQJaLQJV1tXeTErb3iEo2Jt85n+Ln12ULE3k7m2zSU=;
-        b=FEpTPPtbwhHXo3cZogOv4aohAAGpXmIZNhOXmrTOCsgRvCKmIn/m2wzQLEFR62OBUD
-         FcMvHu4zAK1j0EhiHcjlFN+2wpCM/8zGvQ21so98eRX8iqEEb2EPAwo+o41yeBxRPE7B
-         CbdI4F1ckljenLEzY8mgM+dnWR/2s7b4fod/uYB9kRvuG4fOYk02tQMGNDOo2mqyPYxC
-         UpJEB6QK1jEaiMg7hQfSCvVVFBZvJLfb0f9W/fT2EPmUTdNnRUZsxo9IrvF7HKNJvdVU
-         6Mrl7b27earRQAJTr9A6kTHdc4jAi7eXCFbphwebIB1sSwykS9hCPEpkzOG56+JWH7AO
-         eNjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=SaQJaLQJV1tXeTErb3iEo2Jt85n+Ln12ULE3k7m2zSU=;
-        b=aeX/lDX0ZZ72W/BIa8qgXdVSlG/miulUWGIh1MMIvtAvktw+HWikMyP95MhpgvKilu
-         DGes8PaHLtrq4z/DVs+RgFliNoCHysEBkNQkhztjM4OUt6gG6uVlQol0HYDPuZdzkm04
-         M9W6exHCAq3Njj9dNH59gog65vDvpmZ+nNNM3k58xGhn3uV2Kzsid0BMQjRD5L53lIgo
-         eUHRbzL9iZTG+jqykfquPhcvEoLhYkcvNccK7PvMafSZVnQoWedKBPtoPGjFXCj4hyme
-         j6McLWgq9RSw/a/nYWmyLYf3hzlAR49lpLBK64vjw+egqzcqx5l4IEPWX8tkUtsLG7E+
-         +Yvw==
-X-Gm-Message-State: AOAM5336P/hKs9t78JiiTRqUbIcPLMdh/DTkeYl5Uo6ULz0PEjhrA6tC
-        5th/cvIdq8Z9LdEpaLAi1PaL3vRW1IyqSpoYwMI=
-X-Google-Smtp-Source: ABdhPJxHi9+hvGQmkFb4FoNH92jlQ3+TzGerPYmZ74H30b01ni70arR73MVKddg1dU+YQNNBPc5+vERrgCbNXhyxv1o=
-X-Received: by 2002:a05:6e02:893:: with SMTP id z19mr5576501ils.224.1632437226564;
- Thu, 23 Sep 2021 15:47:06 -0700 (PDT)
+        Thu, 23 Sep 2021 18:58:54 -0400
+X-Greylist: delayed 334 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Sep 2021 18:58:54 EDT
+Received: from jason.localnet (host-37-191-188-128.lynet.no [37.191.188.128])
+        by smtp2.de.opalstack.com (Postfix) with ESMTPSA id A004E129C6B;
+        Thu, 23 Sep 2021 22:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=boddie.org.uk;
+        s=dkim; t=1632437506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e4PZqbATcpFKvMSWvz2SaHStw0CXunL88V36uVDDWCY=;
+        b=OFTg1Ac2UZUlbgTsGydnHAY5uSE+xsua3v4Eu4kFF4WcjRbWYKciC02F+5A+g7dE2bNapz
+        Hao6cKqlHFp5+P6PBp3gBtnU8Bsnz0r48kzs6hX4DhqnbiPATRl3LslnOK09sxVH7NM5il
+        MaJLXl9igFrtG5dr0huIBpR37G8bPC0=
+From:   Paul Boddie <paul@boddie.org.uk>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
+Date:   Fri, 24 Sep 2021 00:51:39 +0200
+Message-ID: <4366739.KZ8Jxz7LyS@jason>
+In-Reply-To: <B7B431EC-BC73-4B39-A03C-003347D8C239@goldelico.com>
+References: <20210922205555.496871-1-paul@crapouillou.net> <IXJWZQ.BZQ2M7FHYVJM@crapouillou.net> <B7B431EC-BC73-4B39-A03C-003347D8C239@goldelico.com>
 MIME-Version: 1.0
-Received: by 2002:ac0:c5c4:0:0:0:0:0 with HTTP; Thu, 23 Sep 2021 15:47:06
- -0700 (PDT)
-Reply-To: mrschantelhermans@gmail.com
-From:   Mrs Chantel Hermans <leokunkur@gmail.com>
-Date:   Thu, 23 Sep 2021 15:47:06 -0700
-Message-ID: <CACE1W5UwDKZx44q5YOEzo-Ht=_wpY5i4Ra1w8bGjw83ciH0PAw@mail.gmail.com>
-Subject: ATTENTION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-0.28
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-ATTENTION
+On Thursday, 23 September 2021 22:23:28 CEST H. Nikolaus Schaller wrote:
+> 
+> > Am 23.09.2021 um 21:39 schrieb Paul Cercueil <paul@crapouillou.net>:
+> > 
+> > Start by wiring things properly, like in my previously linked DTS, and
+> > *test*. If it fails, tell us where it fails.
+>
+> Well, I tell where drm_bridge_attach fails with
+> DRM_BRIDGE_ATTACH_NO_CONNECTOR...
+
+I tried to piece together this entire discussion from the mailing list 
+archives, but there appear to be two approaches that "work", in that they 
+activate the LCD controller with the HDMI peripheral:
+
+1. Nikolaus's approach, which involves getting the Synopsys driver to create a 
+connector and then avoiding the call to drm_bridge_connector_init in the 
+Ingenic DRM driver.
+
+2. My approach, which just involves changing the Synopsys driver to set the 
+bridge type in dw_hdmi_probe like this:
+
+  hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
+
+Otherwise, I don't see how the bridge's (struct drm_bridge) type will be set. 
+And this causes drm_bridge_connector_init to fail because it tests the bridge 
+type.
+
+Now, I just reintroduced the HDMI connector to the device tree as follows:
+
+        hdmi_connector {
+                compatible = "hdmi-connector";
+                label = "hdmi";
+
+                type = "a";
+
+                port {
+                        hdmi_connector_in: endpoint {
+                                remote-endpoint = <&dw_hdmi_out>;
+                        };
+                };
+        };
+
+And then I added a second port to the HDMI peripheral node as follows:
+
+                port@1 {
+                        reg = <1>;
+                        dw_hdmi_out: endpoint {
+                                remote-endpoint = <&hdmi_connector_in>;
+                        };
+                };
+
+And I removed any of the above hacks. What I observe, apart from an inactive 
+LCD controller (and ingenic-drm driver), is the following in /sys/devices/
+platform/10180000.hdmi/:
+
+consumer:platform:13050000.lcdc0
+consumer:platform:hdmi_connector
+
+Maybe I don't understand the significance of "consumer" here, but the LCD 
+controller and the HDMI connector obviously have rather different roles. Then 
+again, the device tree is defining bidirectional relationships, so maybe this 
+is how they manifest themselves.
+
+> > Because your "it doesn't work" arguments have zero weight otherwise.
+> 
+> I hope I still can find it. So I can't promise anything.
+> We have had it complete in DTS and added code to parse it.
+> It may have been wiped out by cleaning up patch series during rebase.
+
+I suppose the question is whether this is actually handled already. I would 
+have thought that either the DRM framework would be able to identify such 
+relationships in a generic way or that the Synopsys driver would need to do 
+so. This might actually be happening, given that the sysfs entries are there, 
+but I might also imagine that something extra would be required to set the 
+bridge type.
+
+I did start writing some code to look up a remote endpoint for the second 
+port, find the connector type, and then set it, but it was probably after 
+midnight on that occasion as well. Short-circuiting this little dance and 
+setting the bridge type indicated that this might ultimately be the right 
+approach, but it would probably also mean introducing a point of 
+specialisation to the Synopsys driver so that device-specific drivers can 
+define a function to set the connector type.
+
+Otherwise, I can't see the Synopsys driver working for devices like the 
+JZ4780, but then again, it seems that all the other devices seem to 
+incorporate the Synopsys functionality in a different way and do not need to 
+deal with connectors at all.
+
+> > If I can find some time this weekend I will test it myself.
+> 
+> You may be faster than me.
+
+So, when I wrote about approaches that "work", I can seemingly get the LCD 
+controller and HDMI peripheral registers set up to match a non-Linux 
+environment where I can demonstrate a functioning display, and yet I don't get 
+a valid signal in the Linux environment.
+
+Nikolaus can actually get HDMI output, but there may be other factors 
+introduced by the Linux environment that frustrate success for me, whereas my 
+non-Linux environment is much simpler and can reliably reproduce a successful 
+result.
+
+For me, running modetest yields plenty of information about encoders, 
+connectors (and the supported modes via the EDID, thanks to my HDMI-A hack), 
+CRTCs, and planes. But no framebuffers are reported.
+
+Paul
 
 
-You have been compensated with the sum of 6.9 million dollars in this
-United Nation the payment will be issue into ATM Visa Card,
-
-
-and send to you from the Santander Bank of Spain we need your
-Address,Passport and your whatsapp number.
-
-
-THANKS
-Mrs Chantel Hermans
