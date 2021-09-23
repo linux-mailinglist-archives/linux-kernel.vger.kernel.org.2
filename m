@@ -2,165 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F56D415C9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01829415C9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240601AbhIWLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:15:16 -0400
-Received: from mx0b-0039f301.pphosted.com ([148.163.137.242]:61958 "EHLO
-        mx0b-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240564AbhIWLPN (ORCPT
+        id S240564AbhIWLQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240448AbhIWLQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:15:13 -0400
-Received: from pps.filterd (m0174681.ppops.net [127.0.0.1])
-        by mx0b-0039f301.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18NAlmGm001951;
-        Thu, 23 Sep 2021 11:13:34 GMT
-Received: from eur04-he1-obe.outbound.protection.outlook.com (mail-he1eur04lp2051.outbound.protection.outlook.com [104.47.13.51])
-        by mx0b-0039f301.pphosted.com with ESMTP id 3b8pfegkp6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Sep 2021 11:13:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dfcAZxsSdMPBBvFzpvCmDiR3U/RbP3XiWoPB2UOtThnaqG8UA2iY+J1xnV0gfWrBV4qMS86KHDMumVEUC6JBG2J8Lfnr8mxqkAxJ4cLRE3dKP6rbDDyoZuJOK/mVvBDRUIeesecE/59pRbgbOaR6+nPnjWx+oeU+QlAPQMYO1zyrvN+dnjxKVYrvgWW8XtI+aK/LHmjgqaqTG2feUIB9v0DwvxJDRfLHPfIxgJSyLZa85h+bRlopGQ6mGx9BkSds1vn1JiOODdYoAQQ7jhkPG/3AIiUfAJotTeo4FiOuw33/GK7nMZUzoe9F+Xtz2LnOlCY3EqtQ1jLrNVBNAVmp+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=bmH2R3i2RP4dHzfHu0s3hjen1sJwkocnlF0NpX9KS3U=;
- b=bTXRt/Yn1P3/zxPynK7G3HSFruDhiBZyyIZNioSBsBs9Z6Yr8QmRTibOFkBtX02J9IbAe9oMcG26In+zbyB1rcCjs6OXs6dHth/PHF5pr/xke+0bpThEhMyuCZ8wy6YDqoRpXuC1ZCfslp/GO8yWIho1yy3RqFyjnD0NPvCdonk6voOVr6YtLxEXr1oQ9ur/SeNBXw5mJ2t5zQa4kaEADIU3vCcnFtXOJ8+xWKX0voQW4pxZD9XkyMg/brg32TI5NeeYqFL3ewAP+bRaY7GcRg57SRzMa9ODoYpjbqiaoHtNQszp1FPXio8zJafkS0AWfIQhDsuVVSau2CmWbzxONA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
- dkim=pass header.d=epam.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bmH2R3i2RP4dHzfHu0s3hjen1sJwkocnlF0NpX9KS3U=;
- b=QZ7igPuNoRlyN6fe9VZsvZoOn25oA/kiuXFVrgq77Mw3Zemm0rV+agWPLhepw8YRWVPBh1AKgk17X2CmdsG1jxJOBl4d3frEYY1Ci+5BLPw9AwoSY8jd+KNCG2h7PEfrjHQ/0uvvsoCgS8NMiMkKJa9b7k8WhAoq22V3sqf8n9weorZJCDPY00BvgmWbE2EXdfK1IxWs9zX2/sdkw0JwaMBuQFF/aFe5mD+GNN5WqmWtvzNSDTxBLv4MYlOS6p+KAKMN/NBwX4wNFYu7HNMaF6APym6gDgzCrOE81bBZ72vSMt+qUf47L2FvYON/tjPOm8yXEuQ2m1NvniJsxPLm7A==
-Received: from AM0PR03MB6324.eurprd03.prod.outlook.com (2603:10a6:20b:153::17)
- by AM9PR03MB6884.eurprd03.prod.outlook.com (2603:10a6:20b:2de::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Thu, 23 Sep
- 2021 11:13:31 +0000
-Received: from AM0PR03MB6324.eurprd03.prod.outlook.com
- ([fe80::70f5:8ba9:da74:8994]) by AM0PR03MB6324.eurprd03.prod.outlook.com
- ([fe80::70f5:8ba9:da74:8994%4]) with mapi id 15.20.4544.015; Thu, 23 Sep 2021
- 11:13:31 +0000
-From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-To:     Jan Beulich <jbeulich@suse.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>
-CC:     "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
-Thread-Topic: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and
- PV
-Thread-Index: AQHXsGDshY1QGXQ13Ui5WskBVnVMCauxdpMAgAAAwIA=
-Date:   Thu, 23 Sep 2021 11:13:31 +0000
-Message-ID: <4efeaf1e-26d4-a2f0-89ab-1a9d795f1f5a@epam.com>
-References: <20210923095345.185489-1-andr2000@gmail.com>
- <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
-In-Reply-To: <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=epam.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2e3beadf-a73b-403e-a635-08d97e832d7a
-x-ms-traffictypediagnostic: AM9PR03MB6884:
-x-microsoft-antispam-prvs: <AM9PR03MB6884C2EB66E360F3A0012759E7A39@AM9PR03MB6884.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DxJmgmjWZp9KxcncOdtwYajJh1AAapFALq8YaWsGFuQEENKbfR3QGeaks+uh+7mCyh0pjbfP63JW5a5GxxDhYbldf1lNdGrNkiJjTJQqISzMgaPnOcB1glXIV/W4qzGDqWD47s8bfkb9A741adlpmh+w90BnQnYO4d9OvI4GmBDS7YN8Qd4wfvrzT+l00OErO/P/FUyBl1rQtahWGtBcLMbHfGl/YG5vJMG4/idQvZdNigAN/6xssaF8pnuXSq7xtDU9zhw9Q6icSmcG+RW/aYVxj5W8OL8udSaN/l4UPa1t6Bl6oIB8Oej8z7UppR84fyaGQR/gF1SFWBVtHTu1RIz2vGbPq/7ZHzZIsio8VXmS/uE+gvj6xsz8jaQAUjAUteVffUAYtEYKEafJnbrIZdeJTFD96MrGnNGwSMojrwshcDOabBWk0Szkvw5t4geieKg3bKm79/+W9OdzyIR0VlUX5tlfwdtl7fSslWpYlq7M+5zspaVKuTEizLMs9R+GKqLoQgD0VTxtuZDKLKD5GHPApz6iwJE0H4EXGFR18uA0Ha2xtZZbUBws3QGSG0LLYP9sgL6oLvtrXElM6OqPQ1hxI5qZKUvcorW+cNNB9KRkgQVdKQBD1B5b3/g9hhhuOXXwtbdJt6IeIayr9+6xuWM2cy6h7yYmVKUBLJrIg4v2wlNNCFXI0BWbsXUxU+YjHlgMcIkIWlBeQRrgrH9OeD8OL+WEm4fxZI/XWBsvUu0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB6324.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(316002)(54906003)(83380400001)(186003)(6512007)(5660300002)(8936002)(110136005)(2906002)(26005)(31696002)(508600001)(4326008)(6506007)(2616005)(71200400001)(31686004)(53546011)(122000001)(66946007)(38070700005)(76116006)(66446008)(64756008)(91956017)(38100700002)(66476007)(66556008)(86362001)(36756003)(8676002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eXFPcnV4TFdHTlVzWk4xMFB1T1ZZQWJXMmNrcGphdUNXS0VMVzNtL01IZVIx?=
- =?utf-8?B?UHVTT0NGRHJFNmZkcWJyaFNJZEYwazVReElWdFNKMEkwSWt5eXQrT1FrWlRK?=
- =?utf-8?B?by9lTGZZZG5tdkZXM1MreDVDNmM3STNHaUdKaVJ1Mm5YNmFKcVNGbFJhUzB1?=
- =?utf-8?B?UnN6YnhYZE9mQnFPcCtGamtmOXVuSVBWQU9kU0xiUU5TNUNiYjZrQUFXbnN2?=
- =?utf-8?B?WkFXWWVCdURxbkhFRk5LL3NvdWUvYUZ4ak5JVnZSa3pmdXl1WWxDcnY0Myt3?=
- =?utf-8?B?dGJzZWdDQ2w4QmpiODk1S3BTQVVjeGFHTzRDWHlRQjQ4Vk14UkNQckxxMUw5?=
- =?utf-8?B?MmwvR0k4WWd3YVpuZG1SVDdibko2eGRyMDZxTWxzZGI2bUZaNmJCVWxWQmdS?=
- =?utf-8?B?Rll0bU9qY081M1FTUFJrRUpNWE1xdERnVEZOVkl4alU2azNUQXRISDVYOFdx?=
- =?utf-8?B?RWxpQ3d0alFzYlVMQjZsS2Y5V045anZUSVdLak9MMm1ZQncvZUsrNENlOGNC?=
- =?utf-8?B?RExzUHFEVm5VaUd1THZTTlhBNm1IWUlCMXBaSWdOa2JkdS9mQzJ1UEtlSHgr?=
- =?utf-8?B?UHVZMDdIYmdUOXQ4SG1mYlVFWnpOd1daaytHN0NKci9HaTJtcXpLZ3ROUkRE?=
- =?utf-8?B?b2tTaG5Md2xDeTB6Wi9aVlUxbTRqdGlFL016aFNNcW1EV2pmTUZMVGl6TzNC?=
- =?utf-8?B?VU9iTUJNdVpOQ29nVy9Eb2dPUkJuSnJ0V1FRZVlNaWhHWGdhTDZrMTJERUpH?=
- =?utf-8?B?a3RINWVyMVRyLzBtTmQzdXdTL0tKbDJyOTRTVXA4UFc1eGk0UWNXRUJqWnFu?=
- =?utf-8?B?THkyTHQyOUxUektKOW9ZVGx2NE4vaE9uKzhWOG1ad0RPMVpxdUdTL3hFdGhr?=
- =?utf-8?B?RERhU1BOc09nOGc3eFkxZ29SOGtZeU9zRmtUUko4TU5Ea2JSWlpqbHV2L1Zl?=
- =?utf-8?B?enp2NUxlRDl3VWY3MUFiaUQ1RkFHUUhSZTZTZFlDRXJiNXFUMWZ5OEp4dzBy?=
- =?utf-8?B?dXVPc3VHQ2lGTUVhY1VQSEE0YkptTVBUbVNMSUdkYlhhMHl1TFlrd25MRy94?=
- =?utf-8?B?U3pGRE1SQkFDdXduakVwRlZZMk9kZDJMYkJNSFU4MndOOFRHRUxmNlRDaHpv?=
- =?utf-8?B?Y3JXNGJFU2dpejlCZVY3TjBQQ1BaWjVlTnVNUUlCOXlxOVU1Umx0aURROW13?=
- =?utf-8?B?S3NoMXIzWDBvMU1BSzJBNTUyS2ZRaE56c1M3QVY4NWI4TWxIY0ZyYlNzRlhN?=
- =?utf-8?B?bjNjcFNqTFpMTm5rMzJXTW56Q0lwcXJJTGJkRjFnMDhmVUJGb0FjV3NuZzgz?=
- =?utf-8?B?cmlNcWNhaEZFbFNsWXowdEk0LzVWaE83Q2hNKzdIM3VVL3dIeWNBYTAyRVp2?=
- =?utf-8?B?TXlFMzFMTXlvZ2NSaEV6SVFUYThHK2QrNVBIamFsMUFYYWVibjYraGxzcGF5?=
- =?utf-8?B?TEhDTE5lbVc2aXh1VExvWVl4L1NCOUd4NlY3QXpUT1ZMVmc2ZzMrbm1PUC9w?=
- =?utf-8?B?YVpESzM3bEx1dE5NREJGSk14S0VtaVJodS9IdEx6Qmg5VVNFZUVNTjU0L0U2?=
- =?utf-8?B?NHBTR1JuU1h5MlphQ1NyWnZUb0FWRW9KVmFIMm9UbWo0dTlUTVJBRDFGSVVy?=
- =?utf-8?B?UXQ5cTBhQTZYZnNMOU9FUUpBcmtydkZpbVdyVXkvYWdLZVJQeHR4K2RId3pv?=
- =?utf-8?B?Uk1FVFQ0c2VNRWZwMDdjeWJiWXdwSE8xUUNsRzlsZ0daaDJtdGdTVDF4UWFp?=
- =?utf-8?Q?CA5N/rDvoeC7V4ECCgUtmyp480ykueYKQo5WYg2?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <86AA8D9B9F38F84AB71E7D5618A72D71@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 23 Sep 2021 07:16:46 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B83C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:15:14 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id c19so5752350qte.7
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lqxtxP5+e+pk1U3fha6q3vivDTvYwQzQQPvtliibVDE=;
+        b=L4y/1Lm4ytNJF6JNKYdVL8tcAFh1WWnHlnFZtx8mQFlyjrIPxYhsCO2n1NhBJ1z96f
+         toZvW/UeILZLfvF/s/CmZgWt6xT9FmAtDOlnfIM8UrgJKSTI5CXLLYIraUilr6wMl+kj
+         wpYLx8yY0b0E6xRlwbWKPSz6JGD2DbAG0jnWjv+luUgLxUZqnvBxb0zWBDI/2Y/p/wAb
+         ZTQPfyU1W10X8q5pTuJOa9nes1SdHsi3Fh/ZfjkCYtKMhnOmFAz4l5TmF3VojI4i/Mdq
+         WZWr7lUn3R8zD8uegvHMnHXszFAp0WnbV/73soEd0jWhcF2mNKf2lb1puj5M+TaTfp6u
+         7FCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lqxtxP5+e+pk1U3fha6q3vivDTvYwQzQQPvtliibVDE=;
+        b=GaXt4joePUANgjEw5tsZZT2tKq3APoq+IyLzFx1y0eJKBT3Q9rlCalTRmEixBBXTOq
+         m5bs3bpAvHU8B6kxUT1ly8vQjC+dJex29qc+cjrWjJnbk8F5th5jP9iCXh4sP7zBsExF
+         JLxHcsL2GM+27cyFqm1aQXsfhPaoCOJMWEG22SfJDAerwPVecn4ak0kDy7nnnzFrlftN
+         MB5GxV2Xg88ke0lKxmsxUZ5GPC++MBxjqNfWkiVvx680lb8GECeLn6EMhAA2koZmFheG
+         LJM4qlkVtYDtbr9vgHoIBJ/C6PmShMij/rTEjfY9y+FQrhG1cWk8kV6f5ofLDJkQBEH0
+         xaKQ==
+X-Gm-Message-State: AOAM532Ph7G3ctqVo0WHUkANkpSh6MP/V+iBi8Qs9R9vahe0pcLMUelK
+        mPzyZFfajQ/P3+TtW2DaZRV4Gh7gEG+Y5PG5BBSjkg==
+X-Google-Smtp-Source: ABdhPJz2u4j3X9ahIq9/HugIftpzeYB9Ri1uDJLz8KEDeMWAQCFa8lxV7bqUe/nJi++C9NGOnPwR6sGUN1fF7d4Qb9c=
+X-Received: by 2002:ac8:5c49:: with SMTP id j9mr4078733qtj.246.1632395713528;
+ Thu, 23 Sep 2021 04:15:13 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: epam.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB6324.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e3beadf-a73b-403e-a635-08d97e832d7a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2021 11:13:31.7577
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SLSPo3VMtIxktad63t9EFZ8nUDAlceuMa3BQeXGWL/HI1YBUslcPMUhs08MsZh9B/mcJMqYwTGfobRUcTK0SBTu0hxXWZx0aQNXZdB84vn1bub4ZA0r5O9jpxACOvkuV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB6884
-X-Proofpoint-GUID: oSKDCu5391jkehK1iYZvSdqW8hDBFR2-
-X-Proofpoint-ORIG-GUID: oSKDCu5391jkehK1iYZvSdqW8hDBFR2-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-23_03,2021-09-23_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 adultscore=0 lowpriorityscore=0 priorityscore=1501
- bulkscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109200000 definitions=main-2109230070
+References: <20210923104803.2620285-1-elver@google.com>
+In-Reply-To: <20210923104803.2620285-1-elver@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 23 Sep 2021 13:14:36 +0200
+Message-ID: <CAG_fn=Vr7CJiug+C2LT2U5wdmysG5BbTFwU2-yaz-pe0kvaXPw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] stacktrace: move filter_irq_stacks() to kernel/stacktrace.c
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAyMy4wOS4yMSAxNDoxMCwgSmFuIEJldWxpY2ggd3JvdGU6DQo+IE9uIDIzLjA5LjIwMjEg
-MTE6NTMsIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOg0KPj4gLS0tIGEvZHJpdmVycy94
-ZW4vS2NvbmZpZw0KPj4gKysrIGIvZHJpdmVycy94ZW4vS2NvbmZpZw0KPj4gQEAgLTE4MCwxMCAr
-MTgwLDM0IEBAIGNvbmZpZyBTV0lPVExCX1hFTg0KPj4gICAJc2VsZWN0IERNQV9PUFMNCj4+ICAg
-CXNlbGVjdCBTV0lPVExCDQo+PiAgIA0KPj4gK2NvbmZpZyBYRU5fUENJX1NUVUINCj4+ICsJYm9v
-bA0KPj4gKw0KPj4gK2NvbmZpZyBYRU5fUENJREVWX1NUVUINCj4+ICsJdHJpc3RhdGUgIlhlbiBQ
-Q0ktZGV2aWNlIHN0dWIgZHJpdmVyIg0KPj4gKwlkZXBlbmRzIG9uIFBDSSAmJiAhWDg2ICYmIFhF
-Tg0KPj4gKwlkZXBlbmRzIG9uIFhFTl9CQUNLRU5EDQo+PiArCXNlbGVjdCBYRU5fUENJX1NUVUIN
-Cj4+ICsJZGVmYXVsdCBtDQo+PiArCWhlbHANCj4+ICsJICBUaGUgUENJIGRldmljZSBzdHViIGRy
-aXZlciBwcm92aWRlcyBsaW1pdGVkIHZlcnNpb24gb2YgdGhlIFBDSQ0KPj4gKwkgIGRldmljZSBi
-YWNrZW5kIGRyaXZlciB3aXRob3V0IHBhcmEtdmlydHVhbGl6ZWQgc3VwcG9ydCBmb3IgZ3Vlc3Rz
-Lg0KPj4gKwkgIElmIHlvdSBzZWxlY3QgdGhpcyB0byBiZSBhIG1vZHVsZSwgeW91IHdpbGwgbmVl
-ZCB0byBtYWtlIHN1cmUgbm8NCj4+ICsJICBvdGhlciBkcml2ZXIgaGFzIGJvdW5kIHRvIHRoZSBk
-ZXZpY2UocykgeW91IHdhbnQgdG8gbWFrZSB2aXNpYmxlIHRvDQo+PiArCSAgb3RoZXIgZ3Vlc3Rz
-Lg0KPj4gKw0KPj4gKwkgIFRoZSAiaGlkZSIgcGFyYW1ldGVyIChvbmx5IGFwcGxpY2FibGUgaWYg
-YmFja2VuZCBkcml2ZXIgaXMgY29tcGlsZWQNCj4+ICsJICBpbnRvIHRoZSBrZXJuZWwpIGFsbG93
-cyB5b3UgdG8gYmluZCB0aGUgUENJIGRldmljZXMgdG8gdGhpcyBtb2R1bGUNCj4+ICsJICBmcm9t
-IHRoZSBkZWZhdWx0IGRldmljZSBkcml2ZXJzLiBUaGUgYXJndW1lbnQgaXMgdGhlIGxpc3Qgb2Yg
-UENJIEJERnM6DQo+PiArCSAgeGVuLXBjaWJhY2suaGlkZT0oMDM6MDAuMCkoMDQ6MDAuMCkNCj4+
-ICsNCj4+ICsJICBJZiBpbiBkb3VidCwgc2F5IG0uDQo+PiArDQo+PiAgIGNvbmZpZyBYRU5fUENJ
-REVWX0JBQ0tFTkQNCj4+ICAgCXRyaXN0YXRlICJYZW4gUENJLWRldmljZSBiYWNrZW5kIGRyaXZl
-ciINCj4+ICAgCWRlcGVuZHMgb24gUENJICYmIFg4NiAmJiBYRU4NCj4+ICAgCWRlcGVuZHMgb24g
-WEVOX0JBQ0tFTkQNCj4+ICsJc2VsZWN0IFhFTl9QQ0lfU1RVQg0KPiBEb2VzIGtjb25maWcgbm90
-IGF0IGxlYXN0IHdhcm4gYWJvdXQgdGhpcz8gVGhlIHNlbGVjdGVkIGl0ZW0gaGFzIGENCj4gImRl
-cGVuZHMgb24gIVg4OCIgY29uZmxpY3Rpbmcgd2l0aCB0aGUgImRlcGVuZHMgb24gWDg2IiBoZXJl
-Lg0KDQpXaHk/DQoNClhFTl9QQ0lERVZfU1RVQiBkZXBlbmRzIG9uIFBDSSAmJiAhWDg2ICYmIFhF
-Tg0KDQpYRU5fUENJX1NUVUIgaGFzIG5vdGhpbmcsIGp1c3QgYm9vbA0KDQpYRU5fUENJREVWX0JB
-Q0tFTkQgc2VsZWN0cyBYRU5fUENJX1NUVUINCg0KPg0KPiBKYW4NCj4=
+On Thu, Sep 23, 2021 at 12:48 PM Marco Elver <elver@google.com> wrote:
+>
+> filter_irq_stacks() has little to do with the stackdepot implementation,
+> except that it is usually used by users (such as KASAN) of stackdepot to
+> reduce the stack trace.
+>
+> However, filter_irq_stacks() itself is not useful without a stack trace
+> as obtained by stack_trace_save() and friends.
+>
+> Therefore, move filter_irq_stacks() to kernel/stacktrace.c, so that new
+> users of filter_irq_stacks() do not have to start depending on
+> STACKDEPOT only for filter_irq_stacks().
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Acked-by: Dmitry Vyukov <dvyukov@google.com>
+Acked-by: Alexander Potapenko <glider@google.com>
+
+> ---
+> v3:
+> * Rebase to -next due to conflicting stackdepot changes.
+>
+> v2:
+> * New patch.
+> ---
+>  include/linux/stackdepot.h |  2 --
+>  include/linux/stacktrace.h |  1 +
+>  kernel/stacktrace.c        | 30 ++++++++++++++++++++++++++++++
+>  lib/stackdepot.c           | 24 ------------------------
+>  4 files changed, 31 insertions(+), 26 deletions(-)
+>
+> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
+> index ee03f11bb51a..c34b55a6e554 100644
+> --- a/include/linux/stackdepot.h
+> +++ b/include/linux/stackdepot.h
+> @@ -30,8 +30,6 @@ int stack_depot_snprint(depot_stack_handle_t handle, ch=
+ar *buf, size_t size,
+>
+>  void stack_depot_print(depot_stack_handle_t stack);
+>
+> -unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_e=
+ntries);
+> -
+>  #ifdef CONFIG_STACKDEPOT
+>  int stack_depot_init(void);
+>  #else
+> diff --git a/include/linux/stacktrace.h b/include/linux/stacktrace.h
+> index 9edecb494e9e..bef158815e83 100644
+> --- a/include/linux/stacktrace.h
+> +++ b/include/linux/stacktrace.h
+> @@ -21,6 +21,7 @@ unsigned int stack_trace_save_tsk(struct task_struct *t=
+ask,
+>  unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *=
+store,
+>                                    unsigned int size, unsigned int skipnr=
+);
+>  unsigned int stack_trace_save_user(unsigned long *store, unsigned int si=
+ze);
+> +unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_e=
+ntries);
+>
+>  /* Internal interfaces. Do not use in generic code */
+>  #ifdef CONFIG_ARCH_STACKWALK
+> diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
+> index 9f8117c7cfdd..9c625257023d 100644
+> --- a/kernel/stacktrace.c
+> +++ b/kernel/stacktrace.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/export.h>
+>  #include <linux/kallsyms.h>
+>  #include <linux/stacktrace.h>
+> +#include <linux/interrupt.h>
+>
+>  /**
+>   * stack_trace_print - Print the entries in the stack trace
+> @@ -373,3 +374,32 @@ unsigned int stack_trace_save_user(unsigned long *st=
+ore, unsigned int size)
+>  #endif /* CONFIG_USER_STACKTRACE_SUPPORT */
+>
+>  #endif /* !CONFIG_ARCH_STACKWALK */
+> +
+> +static inline bool in_irqentry_text(unsigned long ptr)
+> +{
+> +       return (ptr >=3D (unsigned long)&__irqentry_text_start &&
+> +               ptr < (unsigned long)&__irqentry_text_end) ||
+> +               (ptr >=3D (unsigned long)&__softirqentry_text_start &&
+> +                ptr < (unsigned long)&__softirqentry_text_end);
+> +}
+> +
+> +/**
+> + * filter_irq_stacks - Find first IRQ stack entry in trace
+> + * @entries:   Pointer to stack trace array
+> + * @nr_entries:        Number of entries in the storage array
+> + *
+> + * Return: Number of trace entries until IRQ stack starts.
+> + */
+> +unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_e=
+ntries)
+> +{
+> +       unsigned int i;
+> +
+> +       for (i =3D 0; i < nr_entries; i++) {
+> +               if (in_irqentry_text(entries[i])) {
+> +                       /* Include the irqentry function into the stack. =
+*/
+> +                       return i + 1;
+> +               }
+> +       }
+> +       return nr_entries;
+> +}
+> +EXPORT_SYMBOL_GPL(filter_irq_stacks);
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index 69c8c9b0d8d7..b437ae79aca1 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -20,7 +20,6 @@
+>   */
+>
+>  #include <linux/gfp.h>
+> -#include <linux/interrupt.h>
+>  #include <linux/jhash.h>
+>  #include <linux/kernel.h>
+>  #include <linux/mm.h>
+> @@ -417,26 +416,3 @@ depot_stack_handle_t stack_depot_save(unsigned long =
+*entries,
+>         return __stack_depot_save(entries, nr_entries, alloc_flags, true)=
+;
+>  }
+>  EXPORT_SYMBOL_GPL(stack_depot_save);
+> -
+> -static inline int in_irqentry_text(unsigned long ptr)
+> -{
+> -       return (ptr >=3D (unsigned long)&__irqentry_text_start &&
+> -               ptr < (unsigned long)&__irqentry_text_end) ||
+> -               (ptr >=3D (unsigned long)&__softirqentry_text_start &&
+> -                ptr < (unsigned long)&__softirqentry_text_end);
+> -}
+> -
+> -unsigned int filter_irq_stacks(unsigned long *entries,
+> -                                            unsigned int nr_entries)
+> -{
+> -       unsigned int i;
+> -
+> -       for (i =3D 0; i < nr_entries; i++) {
+> -               if (in_irqentry_text(entries[i])) {
+> -                       /* Include the irqentry function into the stack. =
+*/
+> -                       return i + 1;
+> -               }
+> -       }
+> -       return nr_entries;
+> -}
+> -EXPORT_SYMBOL_GPL(filter_irq_stacks);
+> --
+> 2.33.0.464.g1972c5931b-goog
+>
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
