@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E244416299
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1234162A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242369AbhIWQDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:03:38 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:46907 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233772AbhIWQDe (ORCPT
+        id S242414AbhIWQGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242363AbhIWQFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:03:34 -0400
-Received: by mail-lf1-f44.google.com with SMTP id z24so29056385lfu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:02:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=//4vm2Zk0xHX2cAPLBijbFAl7mQX/1oOOmYkGnVPPUY=;
-        b=ao0h/H0TAVX/fw7DmlUj7gUu+4uKl8/z/CJSRzLfFc8/Z8e/NxyeD/RQnjQyyHl7p0
-         IDk6W+1JIx1WA62E16fsVSRQ4ORW6nglgyHgSe/9DNkzRIO0MLx2H8j5BR4QUBtI73ye
-         Le2zKJHZdVclXfFsHjfPtMVLBwyRWVm4cri9MTif1zuV4tfVCFGphwuGHxL+u6RDG4NG
-         LeBbjms7HpDrz/kEltRtNxQVwmLucBO1q4jQTk5Mr1i7FfGmJfp70h7bhyh3m3ecUIsv
-         2WujMp1XMzHM7xTY3Ji2Q9Oh29br1cYCSn3zvH6ae7//kIb18XaI6oyT/tt7ZBJMe6Mk
-         Hvew==
-X-Gm-Message-State: AOAM532/XVNEVoAtclQW858GcXXSDLQIX869X1xdrcgQWKKo+evSj1Qj
-        2IvqKSkXIXgFN/O/v25cvj8yEmwiBJVWHsfW2mo=
-X-Google-Smtp-Source: ABdhPJwyXFii+C3MLVuOkfsZfcjHpJR3wO4JkQCyd1RBao+Xmzm06UEA0/o8wHfPqoeYbvGB6Ch6XsLHCQBK3RXDQAU=
-X-Received: by 2002:a05:6512:128f:: with SMTP id u15mr5061602lfs.528.1632412921227;
- Thu, 23 Sep 2021 09:02:01 -0700 (PDT)
+        Thu, 23 Sep 2021 12:05:54 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAF7C061574;
+        Thu, 23 Sep 2021 09:04:22 -0700 (PDT)
+Message-ID: <20210923153311.225307347@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632413059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HKJ62ec0H3rRqwouVaEOlCdmeDwscUCB9fggww1qtqs=;
+        b=S9Sw4KaTyb9s7Z3KdYbFaJAvUzjpHUVpUTxvyQ3jFIhlWRMGgqgxLk8/cDw3/6XKvUpZZp
+        dhPkgsAfepaag4dai3tsQG8H1SEb6OcdSZOt4ZOJ+L5fXItf38KOz+VqvC3n7RURS0RvCQ
+        AOymsMXCjVfXsiR5+QYlShryPPOPagMf/WTMdP3bCxY4nDARQHkLdyUfBjfybnlnp7aDF4
+        +1FziWh42JVQop5OoCpYLsWFXx4DjgT4Pae3ReQR206O4iu4W5dBMixmm0/zU/iKuBBxQg
+        Lzba969dREamrSViMjsujMdwDyfjxU3YaUi5eaDsZEB1EpwUfhtSN4rB5GULJA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632413059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HKJ62ec0H3rRqwouVaEOlCdmeDwscUCB9fggww1qtqs=;
+        b=qLgcomT0elm/TlKSiEwnkZ3rD3NJKvPZV3pfy2RnYzqCkiviMbALY7urqFmSkwiw4ven3n
+        7eMZvc1fRymbs4Dw==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>, netdev@vger.kernel.org,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Intel Corporation <linuxwwan@intel.com>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx@lists.freedesktop.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [patch 00/11] hrtimers: Cleanup hrtimer_forward() [ab]use
 MIME-Version: 1.0
-References: <20210916001748.1525291-1-namhyung@kernel.org> <20210916135418.GA383600@leoy-ThinkPad-X240s>
- <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com> <20210923142305.GA603008@leoy-ThinkPad-X240s>
-In-Reply-To: <20210923142305.GA603008@leoy-ThinkPad-X240s>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 23 Sep 2021 09:01:49 -0700
-Message-ID: <CAM9d7cixyD6ZmXnBnoB8Zg-JN-tWYXUdqURHGn+2ZMD5x9evew@mail.gmail.com>
-Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        James Clark <james.clark@arm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Thu, 23 Sep 2021 18:04:18 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
-
-On Thu, Sep 23, 2021 at 7:23 AM Leo Yan <leo.yan@linaro.org> wrote:
->
-> Hi Namhyung,
->
-> On Thu, Sep 16, 2021 at 02:01:21PM -0700, Namhyung Kim wrote:
->
-> [...]
->
-> > > Before we had discussion for enabling PID/TID for SPE samples; in the patch
-> > > set [1], patches 07, 08 set sample's pid/tid based on the Arm SPE context
-> > > packets.  To enable hardware tracing context ID, you also needs to enable
-> > > kernel config CONFIG_PID_IN_CONTEXTIDR.
-> >
-> > Thanks for sharing this.
-> >
-> > Yeah I also look at the context info but having a dependency on a kconfig
-> > looks limiting its functionality.  Also the kconfig says it has some overhead
-> > in the critical path (even if perf is not running, right?) - but not sure how
-> > much it can add.
->
-> Yes, after enabled config PID_IN_CONTEXTIDR, the kernel will always
-> write PID into the system register CONTEXTIDR during process context
-> switching.  Please see the flow:
->
->   __switch_to() (arch/arm64/kernel/process.c)
->     `-> contextidr_thread_switch(next)
-
-Thanks for the info.  I assume it's a light-weight operation.
-
-
-> > > We also considered to use PERF_RECORD_SWITCH_CPU_WIDE event for setting
-> > > pid/tid, the Intel PT implementation uses two things to set sample's
-> > > pid/tid: one is PERF_RECORD_SWITCH_CPU_WIDE event and another is to detect
-> > > the branch instruction is the symbol "__switch_to".  Since the trace
-> > > event PERF_RECORD_SWITCH_CPU_WIDE is coarse, so it only uses the new
-> > > pid/tid after the branch instruction for "__switch_to".  Arm SPE is
-> > > 'statistical', thus it cannot promise the trace data must contain the
-> > > branch instruction for "__switch_to", please see details [2].
-> >
-> > I can see the need in the Intel PT as it needs to trace all (branch)
-> > instructions, but is it really needed for ARM SPE too?
-> > Maybe I am missing something, but it seems enough to have a
-> > coarse-grained context switch for sampling events..
->
-> The issue is that the coarse-grained context switch if introduces any
-> inaccuracy in the reported result.  If we can run some workloads and
-> prove the coarse-grained context switch doesn't cause significant bias,
-> it will be great and can give us the confidence for this approach.
->
-> Even enabling PERF_RECORD_SWITCH_CPU_WIDE event, I think it's good to
-> give priority for hardware PID tracing in Arm SPE trace data, if detects
-> the hardware PID tracing is enabled, then we can rollback to use
-> context packets from hardware trace data to set sample's PID.
->
-> How about you think for this?
-
-I think it's good as long as it has a fallback when the context info
-is not available.
-
-Thanks,
-Namhyung
+QSByZWNlbnQgc3l6Ym90IHJlcG9ydCB1bmVhcnRoZWQgYWJ1c2Ugb2YgaHJ0aW1lcl9mb3J3YXJk
+KCkgd2hpY2ggY2FuIGNhdXNlCnJ1bmF3YXkgdGltZXJzIGhvZ2dpbmcgdGhlIENQVSBpbiB0aW1l
+ciBleHBpcnkgY29udGV4dCBieSByZWFybWluZyB0aGUKdGltZXIgaW4gdGhlIHBhc3Qgb3ZlciBh
+bmQgb3Zlci4KClRoaXMgaGFwcGVucyB3aGVuIHRoZSBjYWxsZXIgdXNlcyB0aW1lci0+ZXhwaXJ5
+IGZvciB0aGUgJ25vdycgYXJndW1lbnQgb2YKaHJ0aW1lcl9mb3J3YXJkKCkuIFRoYXQgd29ya3Mg
+YXMgbG9uZyBhcyB0aGUgdGltZXIgZXhwaXJ5IGlzIG9uIHRpbWUsIGJ1dApjYW4gY2F1c2UgYSBs
+b25nIHBlcmlvZCBvZiByZWFybS9maXJlIGxvb3BzIHdoaWNoIGhvZyB0aGUgQ1BVLiBFeHBpcmlu
+ZwpsYXRlIGNhbiBoYXZlIHZhcmlvdXMgY2F1c2VzLCBidXQgb2J2aW91c2x5IHZpcnR1YWxpemF0
+aW9uIGlzIHByb25lIHRvIHRoYXQKZHVlIHRvIFZDUFUgc2NoZWR1bGluZy4KClRoZSBjb3JyZWN0
+IHVzYWdlIG9mIGhydGltZXJfZm9yd2FyZCgpIGlzIHRvIGhhbmQgdGhlIGN1cnJlbnQgdGltZSB0
+byB0aGUKJ25vdycgYXJndW1lbnQgd2hpY2ggZW5zdXJlcyB0aGF0IHRoZSBuZXh0IGV2ZW50IG9u
+IHRoZSBwZXJpb2RpYyB0aW1lIGxpbmUKaXMgcGFzdCBub3cuIFRoaXMgaXMgd2hhdCBocnRpbWVy
+X2ZvcndhcmRfbm93KCkgcHJvdmlkZXMuCgpUaGUgZm9sbG93aW5nIHNlcmllcyBhZGRyZXNzZXMg
+dGhpczoKCiAgICAxKSBBZGQgYSBkZWJ1ZyBtZWNoYW5pc20gdG8gdGhlIGhydGltZXIgZXhwaXJ5
+IGxvb3AKCiAgICAyKSBDb252ZXJ0IGFsbCBocnRpbWVyX2ZvcndhcmQoKSB1c2FnZSBvdXRzaWRl
+IG9mIGtlcm5lbC90aW1lLyB0bwogICAgICAgdXNlIGhydGltZXJfZm9yd2FyZF9ub3coKS4KCiAg
+ICAzKSBDb25maW5lIGhydGltZXJfZm9yd2FyZCgpIHRvIGtlcm5lbC90aW1lLyBjb3JlIGNvZGUu
+CgpUaGUgbWFjODAyMTFfaHdzaW0gcGF0Y2ggaGFzIGFscmVhZHkgYmVlbiBwaWNrZWQgdXAgYnkg
+dGhlIHdpcmVsZXNzCm1haW50YWluZXIgYW5kIGFsbCBvdGhlciBwYXRjaGVzIHdoaWNoIGFmZmVj
+dCB1c2FnZSBvdXRzaWRlIHRoZSBjb3JlIGNvZGUKY2FuIGJlIHBpY2tlZCB1cCBieSB0aGUgcmVs
+ZXZhbnQgc3Vic3lzdGVtcy4gSWYgYSBtYWludGFpbmVyIHdhbnRzIG1lIHRvCnBpY2sgYSBwYXJ0
+aWN1bGFyIHBhdGNoIHVwLCBwbGVhc2UgbGV0IG1lIGtub3cuCgpUaGUgbGFzdCBwYXRjaCB3aGlj
+aCBjb25maW5lcyBocnRpbWVyX2ZvcndhcmQoKSB3aWxsIGJlIHBvc3Rwb25lZCB1bnRpbCBhbGwK
+b3RoZXIgcGF0Y2hlcyBoYXZlIGJlZW4gbWVyZ2VkIGludG8gTGludXMgdHJlZS4KClRoZSBzZXJp
+ZXMgaXMgYWxzbyBhdmFpbGFibGUgZnJvbSBnaXQ6CgogICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcv
+cHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IGhydGltZXIKClRoYW5rcywK
+Cgl0Z2x4Ci0tLQogZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9wbXUuYyAgICAgICAgfCAgICAy
+IC0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL21hYzgwMjExX2h3c2ltLmMgIHwgICAgNCArLQogZHJp
+dmVycy9uZXQvd3dhbi9pb3NtL2lvc21faXBjX2ltZW0uYyAgfCAgICA0ICstCiBkcml2ZXJzL3Bv
+d2VyL3Jlc2V0L2x0YzI5NTItcG93ZXJvZmYuYyB8ICAgIDQgLS0KIGluY2x1ZGUvbGludXgvaHJ0
+aW1lci5oICAgICAgICAgICAgICAgIHwgICAyNiAtLS0tLS0tLS0tLS0tLS0tLQogaW5jbHVkZS9s
+aW51eC9wb3NpeC10aW1lcnMuaCAgICAgICAgICAgfCAgICAzICsrCiBrZXJuZWwvc2lnbmFsLmMg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTQgKy0tLS0tLS0tCiBrZXJuZWwvdGltZS9ocnRp
+bWVyLmMgICAgICAgICAgICAgICAgICB8ICAgNDggKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKystCiBrZXJuZWwvdGltZS9pdGltZXIuYyAgICAgICAgICAgICAgICAgICB8ICAgMTMgKysr
+KysrKysKIGtlcm5lbC90aW1lL3Bvc2l4LXRpbWVycy5jICAgICAgICAgICAgIHwgICA0MiArKysr
+KysrKysrKy0tLS0tLS0tLS0tLS0tLS0tCiBrZXJuZWwvdGltZS90aWNrLWludGVybmFsLmggICAg
+ICAgICAgICB8ICAgIDEgCiBuZXQvY2FuL2JjbS5jICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgIDIgLQogc291bmQvZHJpdmVycy9wY3NwL3Bjc3BfbGliLmMgICAgICAgICAgfCAgICAyIC0K
+IDEzIGZpbGVzIGNoYW5nZWQsIDkyIGluc2VydGlvbnMoKyksIDczIGRlbGV0aW9ucygtKQoK
