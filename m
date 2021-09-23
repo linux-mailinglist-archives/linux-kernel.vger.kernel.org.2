@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3BB415FE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFF5415FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241573AbhIWNc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:32:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44106 "EHLO mail.kernel.org"
+        id S241505AbhIWNc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:32:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241241AbhIWNbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241229AbhIWNbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Sep 2021 09:31:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C65696127A;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C88826127B;
         Thu, 23 Sep 2021 13:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632403814;
-        bh=Iw2fDEKzMDejp/o4wtP5bv8wvrqWKI39WK/zq08eWqI=;
+        bh=sBGl69LRk9kTMahgKDyY3Ok7EDn1glCgjruLEgCUeZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RFzexhLkHpDu74xDsNDoXkaj31xWvjihNAkUu1gw2Uw7hKzb5V2HOyVtBxHRpzvVd
-         Vh3Nm/TZ2ljRDya45Hb4D6/fqED/GcRGWBM+pW4vuMmi5fjtDjhE7QnP9qiuLSO+T2
-         aUc3UeR38oxhXi34754LWXB+Ry6pGczhKdy5OGBPKArGettUghcIhAtVYkSamVfMgs
-         tHguDb1MrHXXtYwDfBrKFHPFnbhbugCLOSKe9NZVZ7n2BRFesJdMgC4vkvx63lXyZ3
-         D3aBxl2gY6ncYFrbCGj4MkELWlkOof5Ih7+GlLNKalvnZSNAxGjMre22bIPvZsYXcp
-         /0+wyVZzLGLeQ==
+        b=OI2HlsjvsNiHnL0ZF++aoQcQ1EcBE9yWuKrML0o07blPunAKsUXra7IZKsuqdRRsL
+         ICtPkbd/pqW9MKyXCyRre/7P3dqA8Web6nMZpEMEf1mNFIwf/CdhAFqXRelvgjMKRV
+         bbacsQmETeGJT4aVHArU7ZzC0/dpm3bO7ZwbWndkBV36MpI3hMLKNlnsIpwfQEjFnP
+         oGw51O3XqE2DQKn25TK38r2gzXw4+uJWe9FUfitYNDt3gS6PXkh01cEX7BxJiWB1cH
+         2am+BkBVVI784fl4+r5bnmHpVarUbHGyHynHks99uYjOVzdx/jFZnKGyZunXb6NE7+
+         PfxBYzC1Oca7w==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mTOnl-000neU-2Y; Thu, 23 Sep 2021 15:30:13 +0200
+        id 1mTOnl-000neY-3l; Thu, 23 Sep 2021 15:30:13 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/13] scripts: get_abi.pl: stop check loop earlier when regex is found
-Date:   Thu, 23 Sep 2021 15:30:09 +0200
-Message-Id: <333efdaa5ccfce1a0d540c266897947d7853b94f.1632402570.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 12/13] scripts: get_abi.pl: precompile what match regexes
+Date:   Thu, 23 Sep 2021 15:30:10 +0200
+Message-Id: <ec38468d86e807f1d6681c14c7ad4a731804adcb.1632402570.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1632402570.git.mchehab+huawei@kernel.org>
 References: <cover.1632402570.git.mchehab+huawei@kernel.org>
@@ -44,44 +44,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, there are two loops used to seek for a regex. Make
-sure that both will be skip when a match is found.
+In order to earn some time during matches, pre-compile regexes.
 
-While here, drop the unused $defined variable.
+Before this patch:
+	$ time ./scripts/get_abi.pl undefined |wc -l
+	6970
+
+	real	0m54,751s
+	user	0m54,022s
+	sys	0m0,592s
+
+Afterwards:
+
+	$ time ./scripts/get_abi.pl undefined |wc -l
+	6970
+
+	real	0m5,888s
+	user	0m5,310s
+	sys	0m0,562s
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/get_abi.pl | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ scripts/get_abi.pl | 38 +++++++++++++++++++++++++++++---------
+ 1 file changed, 29 insertions(+), 9 deletions(-)
 
 diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index 42eb16eb78e9..d45e5ba56f9c 100755
+index d45e5ba56f9c..f2b5efef9c30 100755
 --- a/scripts/get_abi.pl
 +++ b/scripts/get_abi.pl
-@@ -685,7 +685,6 @@ sub check_undefined_symbols {
- 		my @names = @{$$file_ref{"__name"}};
- 		my $file = $names[0];
+@@ -25,6 +25,7 @@ my $search_string;
+ my $dbg_what_parsing = 1;
+ my $dbg_what_open = 2;
+ my $dbg_dump_abi_structs = 4;
++my $dbg_undefined = 8;
  
--		my $defined = 0;
- 		my $exact = 0;
- 		my $found_string;
+ #
+ # If true, assumes that the description is formatted with ReST
+@@ -692,7 +693,8 @@ sub check_undefined_symbols {
+ 		if (!defined($leaf{$leave})) {
+ 			$leave = "others";
+ 		}
+-		my $what = $leaf{$leave};
++		my @expr = @{$leaf{$leave}->{expr}};
++		die ("missing rules for $leave") if (!defined($leaf{$leave}));
  
-@@ -711,13 +710,11 @@ sub check_undefined_symbols {
+ 		my $path = $file;
+ 		$path =~ s,(.*/).*,$1,;
+@@ -702,10 +704,17 @@ sub check_undefined_symbols {
+ 			$found_string = 1;
+ 		}
+ 
+-		foreach my $a (@names) {
+-			print "--> $a\n" if ($found_string && $hint);
+-			foreach my $w (split /\xac/, $what) {
+-				if ($a =~ m#^$w$#) {
++		for (my $i = 0; $i < @names; $i++) {
++			if ($found_string && $hint) {
++				if (!$i) {
++					print "--> $names[$i]\n";
++				} else {
++					print "    $names[$i]\n";
++				}
++			}
++			foreach my $re (@expr) {
++				print "$names[$i] =~ /^$re\$/\n" if ($debug && $dbg_undefined);
++				if ($names[$i] =~ $re) {
+ 					$exact = 1;
  					last;
  				}
- 			}
-+			last if ($exact);
- 		}
--
--		$defined++;
--
+@@ -715,6 +724,7 @@ sub check_undefined_symbols {
  		next if ($exact);
  
--		if ($hint && $defined && (!$search_string || $found_string)) {
-+		if ($hint && (!$search_string || $found_string)) {
+ 		if ($hint && (!$search_string || $found_string)) {
++			my $what = $leaf{$leave}->{what};
  			$what =~ s/\xac/\n\t/g;
  			if ($leave ne "others") {
  				print "    more likely regexes:\n\t$what\n";
+@@ -734,7 +744,7 @@ sub undefined_symbols {
+ 		no_chdir => 1
+ 	     }, $sysfs_prefix);
+ 
+-	$leaf{"others"} = "";
++	$leaf{"others"}->{what} = "";
+ 
+ 	foreach my $w (sort keys %data) {
+ 		foreach my $what (split /\xac/,$w) {
+@@ -792,14 +802,15 @@ sub undefined_symbols {
+ 			$what =~ s/sqrt(.*)/sqrt\(.*\)/;
+ 
+ 			my $leave = get_leave($what);
++
+ 			my $added = 0;
+ 			foreach my $l (split /\|/, $leave) {
+ 				if (defined($leaf{$l})) {
+-					next if ($leaf{$l} =~ m/\b$what\b/);
+-					$leaf{$l} .= "\xac" . $what;
++					next if ($leaf{$l}->{what} =~ m/\b$what\b/);
++					$leaf{$l}->{what} .= "\xac" . $what;
+ 					$added = 1;
+ 				} else {
+-					$leaf{$l} = $what;
++					$leaf{$l}->{what} = $what;
+ 					$added = 1;
+ 				}
+ 			}
+@@ -809,6 +820,15 @@ sub undefined_symbols {
+ 
+ 		}
+ 	}
++	# Compile regexes
++	foreach my $l (keys %leaf) {
++		my @expr;
++		foreach my $w(split /\xac/, $leaf{$l}->{what}) {
++			push @expr, qr /^$w$/;
++		}
++		$leaf{$l}->{expr} = \@expr;
++	}
++
+ 	# Take links into account
+ 	foreach my $link (keys %aliases) {
+ 		my $abs_file = $aliases{$link};
 -- 
 2.31.1
 
