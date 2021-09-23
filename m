@@ -2,143 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D83415796
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DA8415798
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235142AbhIWEff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 00:35:35 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:59286 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhIWEfd (ORCPT
+        id S239076AbhIWEg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 00:36:26 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:16376 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235562AbhIWEgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 00:35:33 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18N4Xp8h080818;
-        Wed, 22 Sep 2021 23:33:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632371631;
-        bh=PEu1m0OtQZTIGJy7M0ri4vULRx7aaNibAq8x1p3ykys=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=xU0q1WSYv4UZuKeHK3get+fip2OY+Kq9GofTMfKAmFEpSMBoAOVKphjWSglrhb45i
-         P33cbunfqZzZdsBL/zXtbzq9JdwIJtWxZAhxUQqnDWhH9hMIhWqoztEiUD6uByFPLA
-         rt6QRV9i/PT5oVdsafjEyR4xXOUfdffqImz3cdDo=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18N4Xpa5052074
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Sep 2021 23:33:51 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 22
- Sep 2021 23:33:50 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 22 Sep 2021 23:33:50 -0500
-Received: from [10.250.234.35] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18N4XkHc080721;
-        Wed, 22 Sep 2021 23:33:47 -0500
-Subject: Re: [PATCH v2 1/3] dt-bindings: PCI: ti,j721e: Add bindings to
- specify legacy interrupts
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>, <linux-omap@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210804132912.30685-1-kishon@ti.com>
- <20210804132912.30685-2-kishon@ti.com> <YRapMFNb63MSPJ1E@robh.at.kernel.org>
- <d0f83129-4c9a-d9ff-380a-cab37a86e29e@ti.com>
-Message-ID: <220bbd3c-304a-ba6a-d20e-634f23f4eed2@ti.com>
-Date:   Thu, 23 Sep 2021 10:03:45 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 23 Sep 2021 00:36:25 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HFMfQ51qXzRMtL;
+        Thu, 23 Sep 2021 12:30:38 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 23 Sep 2021 12:34:51 +0800
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 23 Sep 2021 12:34:50 +0800
+Subject: Re: [PATCH] kernfs: fix the race in the creation of negative dentry
+To:     Ian Kent <raven@themaw.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Miklos Szeredi <mszeredi@redhat.com>
+CC:     <viro@ZenIV.linux.org.uk>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210911021342.3280687-1-houtao1@huawei.com>
+ <7b92b158200567f0bba26a038191156890921f13.camel@themaw.net>
+ <6c8088411523e52fc89b8dd07710c3825366ce64.camel@themaw.net>
+ <747aee3255e7a07168557f29ad962e34e9cb964b.camel@themaw.net>
+ <e3d22860-f2f0-70c1-35ef-35da0c0a44d2@huawei.com>
+ <077362887b4ceeb01c27fbf36fa35adae02967c9.camel@themaw.net>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <8b7d0f46-6975-993c-5d88-7a4e809317ab@huawei.com>
+Date:   Thu, 23 Sep 2021 12:34:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <d0f83129-4c9a-d9ff-380a-cab37a86e29e@ti.com>
+In-Reply-To: <077362887b4ceeb01c27fbf36fa35adae02967c9.camel@themaw.net>
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi,
 
-On 18/08/21 7:28 pm, Kishon Vijay Abraham I wrote:
-> Hi Rob,
-> 
-> On 13/08/21 10:47 pm, Rob Herring wrote:
->> On Wed, Aug 04, 2021 at 06:59:10PM +0530, Kishon Vijay Abraham I wrote:
->>> Add bindings to specify interrupt controller for legacy interrupts.
+On 9/23/2021 10:50 AM, Ian Kent wrote:
+> On Thu, 2021-09-23 at 09:52 +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> On 9/15/2021 10:09 AM, Ian Kent wrote:
+>>> On Wed, 2021-09-15 at 09:35 +0800, Ian Kent wrote:
 >>>
->>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> Sorry for the late reply.
+>>> I think something like this is needed (not even compile tested):
+>>>
+>>> kernfs: dont create a negative dentry if node exists
+>>>
+>>> From: Ian Kent <raven@themaw.net>
+>>>
+>>> In kernfs_iop_lookup() a negative dentry is created if associated
+>>> kernfs
+>>> node is incative which makes it visible to lookups in the VFS path
+>>> walk.
+>>>
+>>> But inactive kernfs nodes are meant to be invisible to the VFS and
+>>> creating a negative for these can have unexpetced side effects.
+>>>
+>>> Signed-off-by: Ian Kent <raven@themaw.net>
 >>> ---
->>>  .../bindings/pci/ti,j721e-pci-host.yaml           | 15 +++++++++++++++
->>>  1 file changed, 15 insertions(+)
+>>>  fs/kernfs/dir.c |    9 ++++++++-
+>>>  1 file changed, 8 insertions(+), 1 deletion(-)
 >>>
->>> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
->>> index cc900202df29..f461d7b4c0cc 100644
->>> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
->>> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
->>> @@ -74,6 +74,11 @@ properties:
->>>  
->>>    msi-map: true
->>>  
->>> +patternProperties:
->>> +  "interrupt-controller":
->>
->> Not a pattern unless you meant for foo-interrupt-controller-bar to be 
->> valid.
->>
->> Anything is allowed in the node?
-> 
-> It's same as whatever is defined in schemas/interrupt-controller.yaml,
-> just that it should be a subnode of pcie@. Should I add whatever is
-> present in schemas/interrupt-controller.yaml here?
-
-Can you suggest how to include this?
-
-Thanks,
-Kishon
-
-> 
-> Thanks
-> Kishon
->>
->>> +    type: object
->>> +    description: interrupt controller to handle legacy interrupts.
->>> +
->>>  required:
->>>    - compatible
->>>    - reg
->>> @@ -97,6 +102,8 @@ unevaluatedProperties: false
->>>  
->>>  examples:
->>>    - |
->>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->>> +    #include <dt-bindings/interrupt-controller/irq.h>
->>>      #include <dt-bindings/soc/ti,sci_pm_domain.h>
->>>      #include <dt-bindings/gpio/gpio.h>
->>>  
->>> @@ -131,5 +138,13 @@ examples:
->>>              ranges = <0x01000000 0x0 0x10001000  0x00 0x10001000  0x0 0x0010000>,
->>>                       <0x02000000 0x0 0x10011000  0x00 0x10011000  0x0 0x7fef000>;
->>>              dma-ranges = <0x02000000 0x0 0x0 0x0 0x0 0x10000 0x0>;
->>> +
->>> +
->>> +            pcie0_intc: interrupt-controller {
->>> +                    interrupt-controller;
->>> +                    #interrupt-cells = <1>;
->>> +                    interrupt-parent = <&gic500>;
->>> +                    interrupts = <GIC_SPI 312 IRQ_TYPE_EDGE_RISING>;
->>> +            };
->>>          };
->>>      };
->>> -- 
->>> 2.17.1
+>>> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+>>> index ba581429bf7b..a957c944cf3a 100644
+>>> --- a/fs/kernfs/dir.c
+>>> +++ b/fs/kernfs/dir.c
+>>> @@ -1111,7 +1111,14 @@ static struct dentry
+>>> *kernfs_iop_lookup(struct inode *dir,
+>>>  
+>>>         kn = kernfs_find_ns(parent, dentry->d_name.name, ns);
+>>>         /* attach dentry and inode */
+>>> -       if (kn && kernfs_active(kn)) {
+>>> +       if (kn) {
+>>> +               /* Inactive nodes are invisible to the VFS so don't
+>>> +                * create a negative.
+>>> +                */
+>>> +               if (!kernfs_active(kn)) {
+>>> +                       up_read(&kernfs_rwsem);
+>>> +                       return NULL;
+>>> +               }
+>>>                 inode = kernfs_get_inode(dir->i_sb, kn);
+>>>                 if (!inode)
+>>>                         inode = ERR_PTR(-ENOMEM);
 >>>
 >>>
+>>> Essentially, the definition a kernfs negative dentry, for the
+>>> cases it is meant to cover, is one that has no kernfs node, so
+>>> one that does have a node should not be created as a negative.
+>>>
+>>> Once activated a subsequent ->lookup() will then create a
+>>> positive dentry for the node so that no invalidation is
+>>> necessary.
+>> I'm fine with the fix which is much simpler.
+> Great, although I was hoping you would check it worked as expected.
+> Did you check?
+> If not could you please do that check?
+Yes, I will test whether or not it fixes the race.
+>>> This distinction is important because we absolutely do not want
+>>> negative dentries created that aren't necessary. We don't want to
+>>> leave any opportunities for negative dentries to accumulate if
+>>> we don't have to.
+>>>     
+>>> I am still thinking about the race you have described.
+>>>
+>>> Given my above comments that race might have (maybe probably)
+>>> been present in the original code before the rwsem change but
+>>> didn't trigger because of the serial nature of the mutex.
+>> I don't think there is such race before the enabling of negative
+>> dentry,
+>> but maybe I misunderstanding something.
+> No, I think you're probably right, it's the introduction of using
+> negative dentries to prevent the expensive dentry alloc/free cycle
+> of frequent lookups of non-existent paths that's exposed the race.
+>
+>>> So it may be wise (perhaps necessary) to at least move the
+>>> activation under the rwsem (as you have done) which covers most
+>>> of the change your proposing and the remaining hunk shouldn't
+>>> do any harm I think but again I need a little more time on that.
+>> After above fix, doing sibling tree operation and activation
+>> atomically
+>> will reduce the unnecessary lookup, but I don't think it is necessary
+>> for the fix of race.
+> Sorry, I don't understand what your saying.
+>
+> Are you saying you did check my suggested patch alone and it
+> resolved the problem. And that you also think the small additional
+> dentry churn is ok too.
+I haven't tested it, but I think it is OK. And moving the activation under
+the rwsem is not necessary for the problem.
+
+Regards,
+Tao
+>
+> If so I agree, and I'll forward the patch to Greg, ;)
+>
+> Ian
+>> Regards,
+>> Tao
+>>> I'm now a little concerned about the invalidation that should
+>>> occur on deactivation so I want to have a look at that too but
+>>> it's separate to this proposal.
+>>> Greg, Tejun, Hou, any further thoughts on this would be most
+>>> welcome.
+>>>
+>>> Ian
+>>> .
+>
+> .
+
