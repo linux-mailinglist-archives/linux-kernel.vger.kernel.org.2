@@ -2,221 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3826416734
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A42B41673B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243263AbhIWVNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243221AbhIWVNt (ORCPT
+        id S243230AbhIWVOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:14:43 -0400
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:40815 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243224AbhIWVOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:13:49 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DB5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:12:17 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id z5so1207933ybj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e4I0eibrZ4QXFLaZnyg/T68NEGU52nG0wW6n1XbQIjQ=;
-        b=dG37ybSuZM/2PWO2WUAlCFTgei4CWvCR+/3V/ba5AqbouIgMtK6R/N88t2fL6e8ES2
-         HXlfmDfLIxlNVt61DT2aeO3iHi1ERInV9PLlsO/SPeZ8qseDFM20DxIJnOXzZymLl5ma
-         Sf4KMe1TIhD6jwCpVfOKcATIO++tuc9tkqgIc=
+        Thu, 23 Sep 2021 17:14:42 -0400
+Received: by mail-oo1-f42.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so2599044ooh.7;
+        Thu, 23 Sep 2021 14:13:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e4I0eibrZ4QXFLaZnyg/T68NEGU52nG0wW6n1XbQIjQ=;
-        b=hkR1mY4N+oSaNMrCCEcjpeqPWF3IBOWCcftN/ur0gO9+kkXhocFCWcmnzCnP4qTZ28
-         RucfsZA3r9AngVG3a3C3wmwlIPybde4M5UKOoX52gELxuwVxYb5RhhAelUsEZ7b9ZOEI
-         NrXdYTxV1v7GXn6Tx+OMR3PesT8zIF7ssgaNc5PbjfXHruOtZZEd85ANKB1GmESOVYZc
-         Om4fsCnLlXolAlGdopIy+vLSQ1ZHnASMIGXXF2GnfPCjpbG4qZUyHZdqVbZ+12QXNX1j
-         idYjAMqZkaSMfEEwEHyBl8hC8ZYvTysXF1geYExWZOg+nxCtJ51c5s2MgiQE59X4o7Ut
-         ensw==
-X-Gm-Message-State: AOAM530VMXArpBejdVdoi9BbjYmKKtwaoiREbM8ztKDz/jckPgSec1e2
-        SzfH3In5PuAF1sjmBhkzFPZon31CSMbGbiqVm++bhQ==
-X-Google-Smtp-Source: ABdhPJzPbZJuTOrMwImBU82x1iGNKaxl7ZrrpRIXcHLQEZ89VXGY0DTN1rpeXB3OFka4syEsC81GUEXozb35nSZ2MSQ=
-X-Received: by 2002:a25:748c:: with SMTP id p134mr7788992ybc.361.1632431536689;
- Thu, 23 Sep 2021 14:12:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J36WTteO3845rl137wT1Wa/oj+6hJoxSWkPDTmTZtZU=;
+        b=N2Kb7r9hMc59Xn+TsafTyQ2r7WzV3PFIqru6c7XhP5JQdwsk4G1sQRe7wwbdE56QPw
+         56PV6l+wBOLBpjElWKOR73spsEeuKcFlN+sqL4pgc9BGCR58fL5khEy7vH0YhW2fk1/M
+         lmUPEeWUNKCH0JjdOluwn2HW1yE/JGVvMjLfniOTfTI5ExYZ4huEJFVjFw6D3VDgUvW9
+         4YI4teVgOGq2BFgk0Toim1y0mo2JIag9mCFaLSpeMeFnZlNtzgYlGZlPLhtY+TvkpRiy
+         IAmKJKlbGZMieJ/WLmCjYjaWcjPG2VQxdNugPsetBBvBrzVaIH9UshK7IyiqhrVFIXcK
+         weug==
+X-Gm-Message-State: AOAM5301+luM+k1nRFSY9wX8ZCFdo0Cea+R+s29GppvAL7y4vnx3D7t8
+        uURRg7olQGRpRNsm9D4xOomat4j+uA==
+X-Google-Smtp-Source: ABdhPJxiqRH/5TBCnwOhhbCgf7gLEhz9iiTXaeQ9JD8ncxcPN3ZYSAmuMbkId4IpxElirK4304kpgQ==
+X-Received: by 2002:a4a:d5d2:: with SMTP id a18mr5568625oot.43.1632431589836;
+        Thu, 23 Sep 2021 14:13:09 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k6sm1521772otf.80.2021.09.23.14.13.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 14:13:09 -0700 (PDT)
+Received: (nullmailer pid 3533203 invoked by uid 1000);
+        Thu, 23 Sep 2021 21:13:08 -0000
+Date:   Thu, 23 Sep 2021 16:13:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jiri Kosina <trivial@kernel.org>, linux-hwmon@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 1/6] dt-bindings: hwmon: lm70: move to trivial devices
+Message-ID: <YUzt5Em2EZyMZK3D@robh.at.kernel.org>
+References: <20210920182114.339419-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-References: <cover.1632420430.git.leonro@nvidia.com> <e7708737fadf4fe6f152afc76145c728c201adad.1632420430.git.leonro@nvidia.com>
-In-Reply-To: <e7708737fadf4fe6f152afc76145c728c201adad.1632420430.git.leonro@nvidia.com>
-From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Thu, 23 Sep 2021 14:11:40 -0700
-Message-ID: <CAKOOJTz4A2ER8MQE1dW27Spocds09SYafjeuLcFDJ0nL6mKyOw@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/6] bnxt_en: Check devlink allocation and
- registration status
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Igor Russkikh <irusskikh@marvell.com>,
-        intel-wired-lan@lists.osuosl.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        netdev <netdev@vger.kernel.org>,
-        Sathya Perla <sathya.perla@broadcom.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920182114.339419-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:13 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> devlink is a software interface that doesn't depend on any hardware
-> capabilities. The failure in SW means memory issues, wrong parameters,
-> programmer error e.t.c.
->
-> Like any other such interface in the kernel, the returned status of
-> devlink APIs should be checked and propagated further and not ignored.
->
-> Fixes: 4ab0c6a8ffd7 ("bnxt_en: add support to enable VF-representors")
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+On Mon, 20 Sep 2021 20:21:09 +0200, Krzysztof Kozlowski wrote:
+> The lm70 thermometer bindings are trivial, so like many other I2C/SPI
+> temperature sensors can be integrated into trivial devices bindings.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->  drivers/net/ethernet/broadcom/bnxt/bnxt.c         |  5 ++++-
->  drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 13 ++++++-------
->  drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h | 13 -------------
->  3 files changed, 10 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> index 037767b370d5..4c483fd91dbe 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> @@ -13370,7 +13370,9 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->         }
->
->         bnxt_inv_fw_health_reg(bp);
-> -       bnxt_dl_register(bp);
-> +       rc = bnxt_dl_register(bp);
-> +       if (rc)
-> +               goto init_err_dl;
->
->         rc = register_netdev(dev);
->         if (rc)
-> @@ -13390,6 +13392,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->
->  init_err_cleanup:
->         bnxt_dl_unregister(bp);
-> +init_err_dl:
->         bnxt_shutdown_tc(bp);
->         bnxt_clear_int_mode(bp);
->
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-> index bf7d3c17049b..dc0851f709f5 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-> @@ -134,7 +134,7 @@ void bnxt_dl_fw_reporters_create(struct bnxt *bp)
->  {
->         struct bnxt_fw_health *health = bp->fw_health;
->
-> -       if (!bp->dl || !health)
-> +       if (!health)
->                 return;
->
->         if (!(bp->fw_cap & BNXT_FW_CAP_HOT_RESET) || health->fw_reset_reporter)
-> @@ -188,7 +188,7 @@ void bnxt_dl_fw_reporters_destroy(struct bnxt *bp, bool all)
->  {
->         struct bnxt_fw_health *health = bp->fw_health;
->
-> -       if (!bp->dl || !health)
-> +       if (!health)
->                 return;
->
->         if ((all || !(bp->fw_cap & BNXT_FW_CAP_HOT_RESET)) &&
-> @@ -781,6 +781,7 @@ int bnxt_dl_register(struct bnxt *bp)
->  {
->         const struct devlink_ops *devlink_ops;
->         struct devlink_port_attrs attrs = {};
-> +       struct bnxt_dl *bp_dl;
->         struct devlink *dl;
->         int rc;
->
-> @@ -795,7 +796,9 @@ int bnxt_dl_register(struct bnxt *bp)
->                 return -ENOMEM;
->         }
->
-> -       bnxt_link_bp_to_dl(bp, dl);
-> +       bp->dl = dl;
-> +       bp_dl = devlink_priv(dl);
-> +       bp_dl->bp = bp;
->
->         /* Add switchdev eswitch mode setting, if SRIOV supported */
->         if (pci_find_ext_capability(bp->pdev, PCI_EXT_CAP_ID_SRIOV) &&
-> @@ -826,7 +829,6 @@ int bnxt_dl_register(struct bnxt *bp)
->  err_dl_port_unreg:
->         devlink_port_unregister(&bp->dl_port);
->  err_dl_free:
-> -       bnxt_link_bp_to_dl(bp, NULL);
->         devlink_free(dl);
->         return rc;
->  }
-> @@ -835,9 +837,6 @@ void bnxt_dl_unregister(struct bnxt *bp)
->  {
->         struct devlink *dl = bp->dl;
->
-> -       if (!dl)
-> -               return;
-> -
+>  .../devicetree/bindings/hwmon/lm70.txt        | 22 -------------------
+>  .../devicetree/bindings/trivial-devices.yaml  |  8 +++++++
+>  2 files changed, 8 insertions(+), 22 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/hwmon/lm70.txt
+> 
 
-minor nit: There's obviously nothing incorrect about doing this (and
-adding the additional error label in the cleanup code above), but bnxt
-has generally adopted a style of having cleanup functions being
-idempotent. It generally makes error handling simpler and less error
-prone.
-
->         if (BNXT_PF(bp)) {
->                 bnxt_dl_params_unregister(bp);
->                 devlink_port_unregister(&bp->dl_port);
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
-> index d889f240da2b..406dc655a5fc 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.h
-> @@ -20,19 +20,6 @@ static inline struct bnxt *bnxt_get_bp_from_dl(struct devlink *dl)
->         return ((struct bnxt_dl *)devlink_priv(dl))->bp;
->  }
->
-> -/* To clear devlink pointer from bp, pass NULL dl */
-> -static inline void bnxt_link_bp_to_dl(struct bnxt *bp, struct devlink *dl)
-> -{
-> -       bp->dl = dl;
-> -
-> -       /* add a back pointer in dl to bp */
-> -       if (dl) {
-> -               struct bnxt_dl *bp_dl = devlink_priv(dl);
-> -
-> -               bp_dl->bp = bp;
-> -       }
-> -}
-> -
->  #define NVM_OFF_MSIX_VEC_PER_PF_MAX    108
->  #define NVM_OFF_MSIX_VEC_PER_PF_MIN    114
->  #define NVM_OFF_IGNORE_ARI             164
-> --
-> 2.31.1
->
-
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-
-Regards,
-Edwin Peer
+Reviewed-by: Rob Herring <robh@kernel.org>
