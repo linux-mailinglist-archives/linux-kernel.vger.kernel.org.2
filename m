@@ -2,187 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F87A415EE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781B5415EF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 14:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241076AbhIWM4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 08:56:38 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:33325 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240787AbhIWM4e (ORCPT
+        id S241119AbhIWM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 08:57:22 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34264 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240787AbhIWM5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:56:34 -0400
-Received: by mail-ot1-f45.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso8464420otu.0;
-        Thu, 23 Sep 2021 05:55:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9cnE91Z/Nvkblt8KBxlBOz53Y6ULkVoI6AYMgns74AQ=;
-        b=yqKS/r8R2nGhZknhJArHXXEPv40WzYB6FXPozTajea7bPtIA+bQ6z5wyphkCLuBZ5i
-         O0Z1mlF4NQI5zqn5G6lnKeI8OeTpQjg7O3r4aQsapkfh+xH8VL3eHmvjXquJo7GSAX9a
-         CMHZa6KJ9fqrgSYt/sD25KzSBY5w/EhdfjkpmjoRKIaoLOrww2KjaU5HqjrT7M/nrvWu
-         eMbK0j9VbRCfVE/IjEIfeAlNiC5es2yymzWf5j6/oOsmYh98mu2yddL+8Q6e+FHrmbEa
-         Q7m99wyuKx+TobKVIDu0QeurvzQEEEz5tcRKU86QEi7vYiJ2fmzCUULv7OG3Tjjpj35s
-         gFAw==
-X-Gm-Message-State: AOAM533uwXCyAOfxV0MraB3X/Vb5Hbz156yxErPdxU7nehAglEn5rNdP
-        fPtu5r6uoc/HswD49JhFSW/O9zN8zRXwwXvT4/k=
-X-Google-Smtp-Source: ABdhPJy+DM/7fT9mdBRiBQ1UqkGSyZLL8dWzJQl/kV0NQnaajz48gdaoaHkrbTe8M5Xt/wAgkOMXK6u6ADeQd59vYFI=
-X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr4285920otr.301.1632401703209;
- Thu, 23 Sep 2021 05:55:03 -0700 (PDT)
+        Thu, 23 Sep 2021 08:57:20 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AEE4C221DF;
+        Thu, 23 Sep 2021 12:55:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632401747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=opZMdRgnVMyNiu+MFOU0EQqrFmIUhJJq8OQ5z1PI4oA=;
+        b=E66CAg9sos3rfNlbhJwD658Wo0QgcLPat1tV+77X2UIjZ5EPOEOAczuZqX2RLjwT7M67Ki
+        t+RlzsQx4+vAVHcldtgmOA91XIhBdiHiCN/DAWiNWfM0Rlw4IDpy1iMPG97AuOeM7EiH2g
+        oDXrk+a12ipyFq3fc4s6d2TF1ee8oLk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632401747;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=opZMdRgnVMyNiu+MFOU0EQqrFmIUhJJq8OQ5z1PI4oA=;
+        b=zNGF0MhJoFkSVI0bHT8cBOp4AmnHn2S4tRNjYqLQ5pW6IN11ASQ6Ya8HhzOXMRE3xpr+3j
+        KKXp3TMVZwtXC6BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 80FC413CD1;
+        Thu, 23 Sep 2021 12:55:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ubfAE1B5TGG8NwAAMHmgww
+        (envelope-from <colyli@suse.de>); Thu, 23 Sep 2021 12:55:44 +0000
+Subject: Re: Too large badblocks sysfs file (was: [PATCH v3 0/7] badblocks
+ improvement for multiple bad block ranges)
+To:     NeilBrown <neilb@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-raid@vger.kernel.org, nvdimm@lists.linux.dev,
+        antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Richard Fan <richard.fan@suse.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael@kernel.org
+References: <20210913163643.10233-1-colyli@suse.de>
+ <a0f7b021-4816-6785-a9a4-507464b55895@suse.de>
+ <163239176137.2580.11220971146920860651@noble.neil.brown.name>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <b0b5c5d0-102b-ba97-98a2-cdbc7e233230@suse.de>
+Date:   Thu, 23 Sep 2021 20:55:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210910122820.26886-1-justin.he@arm.com> <20210910143223.6705-1-justin.he@arm.com>
- <20210922163336.GA24633@lpieralisi> <56147a0b8b9fba46@bloch.sibelius.xs4all.nl>
- <20210923094031.GA6454@lpieralisi> <CAJZ5v0g+OVbhuUUDrLUCfX_mVqY_e8ubgLTU98=jfjTeb4t+Pw@mail.gmail.com>
- <56147c6e73afe9f6@bloch.sibelius.xs4all.nl>
-In-Reply-To: <56147c6e73afe9f6@bloch.sibelius.xs4all.nl>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 23 Sep 2021 14:54:52 +0200
-Message-ID: <CAJZ5v0j7=EGbtGw+FOMwyNWoyRoaeT1cvu6si7nPVVFh307J0g@mail.gmail.com>
-Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jia He <justin.he@arm.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>,
-        Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <163239176137.2580.11220971146920860651@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 2:26 PM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
->
-> > From: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Date: Thu, 23 Sep 2021 13:05:05 +0200
-> >
-> > On Thu, Sep 23, 2021 at 11:40 AM Lorenzo Pieralisi
-> > <lorenzo.pieralisi@arm.com> wrote:
-> > >
-> > > On Thu, Sep 23, 2021 at 01:09:58AM +0200, Mark Kettenis wrote:
-> > > > > Date: Wed, 22 Sep 2021 17:33:36 +0100
-> > > > > From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > > > >
-> > > > > On Fri, Sep 10, 2021 at 10:32:23PM +0800, Jia He wrote:
-> > > > > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> > > > > >
-> > > > > > After this commit, a boot panic is alway hit on an Ampere EMAG server
-> > > > > > with call trace as follows:
-> > > > > >  Internal error: synchronous external abort: 96000410 [#1] SMP
-> > > > > >  Modules linked in:
-> > > > > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
-> > > > > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
-> > > > > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > > > > [...snip...]
-> > > > > >  Call trace:
-> > > > > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
-> > > > > >   acpi_ev_address_space_dispatch+0x228/0x2c4
-> > > > > >   acpi_ex_access_region+0x114/0x268
-> > > > > >   acpi_ex_field_datum_io+0x128/0x1b8
-> > > > > >   acpi_ex_extract_from_field+0x14c/0x2ac
-> > > > > >   acpi_ex_read_data_from_field+0x190/0x1b8
-> > > > > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
-> > > > > >   acpi_ex_resolve_to_value+0x250/0x274
-> > > > > >   acpi_ds_evaluate_name_path+0xac/0x124
-> > > > > >   acpi_ds_exec_end_op+0x90/0x410
-> > > > > >   acpi_ps_parse_loop+0x4ac/0x5d8
-> > > > > >   acpi_ps_parse_aml+0xe0/0x2c8
-> > > > > >   acpi_ps_execute_method+0x19c/0x1ac
-> > > > > >   acpi_ns_evaluate+0x1f8/0x26c
-> > > > > >   acpi_ns_init_one_device+0x104/0x140
-> > > > > >   acpi_ns_walk_namespace+0x158/0x1d0
-> > > > > >   acpi_ns_initialize_devices+0x194/0x218
-> > > > > >   acpi_initialize_objects+0x48/0x50
-> > > > > >   acpi_init+0xe0/0x498
-> > > > > >
-> > > > > > As mentioned by Lorenzo:
-> > > > > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
-> > > > > >   eMAG does not like at all and I'd need to understand why. It looks
-> > > > > >   like the issue happen in SystemMemory Opregion handler."
-> > > > > >
-> > > > > > Hence just revert it before everything is clear.
-> > > > > >
-> > > > > > Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
-> > > > > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > > > > > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > > > > > Cc: Hanjun Guo <guohanjun@huawei.com>
-> > > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > > > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > > > Cc: Harb Abdulhamid <harb@amperecomputing.com>
-> > > > > >
-> > > > > > Signed-off-by: Jia He <justin.he@arm.com>
-> > > > >
-> > > > > Rewrote the commit log, please take the patch below and repost
-> > > > > it as a v3.
-> > > > >
-> > > > > It would still be great if Ampere can help us understand why
-> > > > > the NormalNC attributes trigger a sync abort on the opregion
-> > > > > before merging it.
-> > > >
-> > > > To be honest, I don't think you really need an explanation from Ampere
-> > > > here.  Mapping a part of the address space that doesn't provide memory
-> > > > semantics with NormalNC attributes is wrong and triggering a sync
-> > > > abort in that case is way better than silently ignoring the access.
-> > >
-> > > That's understood and that's what I explained in the revert commit
-> > > log, no question about it.
-> > >
-> > > I was just asking to confirm if that's what's actually happening.
-> > >
-> > > > Putting my OpenBSD hat on (where we have our own ACPI OSPM
-> > > > implementation) I must say that we always interpreted SystemMemory as
-> > > > memory mapped IO and I think that is a logical choice as SystemIO is
-> > > > used for (non-memory mapped) IO.  And I'd say that the ACPI OSPM code
-> > > > should make sure that it uses properly aligned access to any Field
-> > > > object that doesn't use AnyAcc as its access type.  Even on x86!  And
-> > > > I'd say that AML that uses AnyAcc fields for SystemMemory OpRegions on
-> > > > arm64 is buggy.
-> > > >
-> > > > But maybe relaxing this when the EFI memory map indicates that the
-> > > > address space in question does provide memory semantics does make
-> > > > sense.  That should defenitely be documented in the ACPI standard
-> > > > though.
-> > >
-> > > Mapping SystemMemory Opregions as "memory" does not make sense
-> > > at all to me. Still, that's what Linux ACPICA code does (*if*
-> > > that's what acpi_os_map_memory() is supposed to mean).
-> > >
-> > > https://lore.kernel.org/linux-acpi/20210916160827.GA4525@lpieralisi
-> >
-> > It doesn't need to do that, though, if there are good enough arguments
-> > to change the current behavior (and the argument here is that it may
-> > be an MMIO region, so mapping it as memory doesn't really work, but it
-> > also may be a region in memory - there is no rule in the spec by which
-> > SystemMemory Opregions cannot be "memory" AFAICS) and if that change
-> > doesn't introduce regressions in the installed base.
-> >
-> > > Where do we go from here, to be defined, we still have a bug
-> > > to fix after the revert is applied.
-> > >
-> > > drivers/acpi/sysfs.c
-> > >
-> > > maps BERT error regions with acpi_os_map_memory().
-> >
-> > That mechanism is basically used for exporting ACPI tables to user
-> > space and they are known to reside in memory.  Whether or not BERT
-> > regions should be mapped in the same way is a good question.
->
-> It is not inconceivable that BERT regions actually live in memory of
-> the BMC that is exposed over a bus that doesn't implement memory
-> semantics is it?
+On 9/23/21 6:09 PM, NeilBrown wrote:
+> On Thu, 23 Sep 2021, Coly Li wrote:
+>> Hi all the kernel gurus, and folks in mailing lists,
+>>
+>> This is a question about exporting 4KB+ text information via sysfs
+>> interface. I need advice on how to handle the problem.
 
-No, it isn't, which is why I think that mapping them as RAM may not be
-a good idea in general.
+Hi Neil,
 
-At the same time, mapping the ACPI tables like the DSDT etc. as RAM is
-always valid.
+> Why do you think there is a problem?
+> As documented in Documentation/admin-guide/md.rst, the truncation at 1
+> page is expected and by design.
+
+Oh, thanks for letting me know this. Yes this is as-designed, so I will 
+not worry more about this.
+
+>
+> The "unacknowledge-bad-blocks" file is the important one that is needed
+> for correct behaviour.  Being able to read a single block is sufficient,
+> though being able to read more than one could provide better performance
+> in some cases.
+>
+> The "bad-blocks" file primarily exist to provide visibility into the
+> state of the system - useful during development.  It can be written to
+> to add bad blocks.  I never *needs* to be read from.
+
+Thanks for the hint.
+
+>
+> The authoritative source of information about the set of bad blocks is
+> the on-disk data the can be and should be read directly...
+
+The reply is informative. It is more clear for me.
+
+Coly Li
+
+>
+> Except that mdadm does.  That was a mistake.  check_for_cleared_bb() is
+> wrong.  I wonder why it was added.  The commit message doesn't give any
+> justification.
+>
+> NeilBrown
+>
+>
+>> Recently I work on the bad blocks API (block/badblocks.c) improvement,
+>> there is a sysfs file to export the bad block ranges for me raid. E.g
+>> for a md raid1 device, file
+>>       /sys/block/md0/md/rd0/bad_blocks
+>> may contain the following text content,
+>>       64 32
+>>      128 8
+>> The above lines mean there are two bad block ranges, one starts at LBA
+>> 64, length 32 sectors, another one starts at LBA 128 and length 8
+>> sectors. All the content is generated from the internal bad block
+>> records with 512 elements. In my testing the worst case only 185 from
+>> 512 records can be displayed via the sysfs file if the LBA string is
+>> very long, e.g.the following content,
+>>     17668164135030776 512
+>>     17668164135029776 512
+>>     17668164135028776 512
+>>     17668164135027776 512
+>>     ... ...
+>> The bad block ranges stored in internal bad blocks array are correct,
+>> but the output message is truncated. This is the problem I encountered.
+>>
+>> I don't see sysfs has seq_file support (correct me if I am wrong), and I
+>> know it is improper to transfer 4KB+ text via sysfs interface, but the
+>> code is here already for long time.
+>>
+>> There are 2 ideas to fix showing up in my brain,
+>> 1) Do not fix the problem
+>>       Normally it is rare that a storage media has 100+ bad block ranges,
+>> maybe in real world all the existing bad blocks information won't exceed
+>> the page size limitation of sysfs file.
+>> 2) Add seq_file support to sysfs interface if there is no
+>>
+>> It is probably there is other better solution to fix. So I do want to
+>> get hint/advice from you.
+>>
+>> Thanks in advance for any comment :-)
+>>
+>> Coly Li
+>>
+>> On 9/14/21 12:36 AM, Coly Li wrote:
+>>> This is the second effort to improve badblocks code APIs to handle
+>>> multiple ranges in bad block table.
+>>>
+>>> There are 2 changes from previous version,
+>>> - Fixes 2 bugs in front_overwrite() which are detected by the user
+>>>     space testing code.
+>>> - Provide the user space testing code in last patch.
+>>>
+>>> There is NO in-memory or on-disk format change in the whole series, all
+>>> existing API and data structures are consistent. This series just only
+>>> improve the code algorithm to handle more corner cases, the interfaces
+>>> are same and consistency to all existing callers (md raid and nvdimm
+>>> drivers).
+>>>
+>>> The original motivation of the change is from the requirement from our
+>>> customer, that current badblocks routines don't handle multiple ranges.
+>>> For example if the bad block setting range covers multiple ranges from
+>>> bad block table, only the first two bad block ranges merged and rested
+>>> ranges are intact. The expected behavior should be all the covered
+>>> ranges to be handled.
+>>>
+>>> All the patches are tested by modified user space code and the code
+>>> logic works as expected. The modified user space testing code is
+>>> provided in last patch. The testing code detects 2 defects in helper
+>>> front_overwrite() and fixed in this version.
+>>>
+>>> The whole change is divided into 6 patches to make the code review more
+>>> clear and easier. If people prefer, I'd like to post a single large
+>>> patch finally after the code review accomplished.
+>>>
+>>> This version is seriously tested, and so far no more defect observed.
+>>>
+>>>
+>>> Coly Li
+>>>
+>>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>> Cc: Hannes Reinecke <hare@suse.de>
+>>> Cc: Jens Axboe <axboe@kernel.dk>
+>>> Cc: NeilBrown <neilb@suse.de>
+>>> Cc: Richard Fan <richard.fan@suse.com>
+>>> Cc: Vishal L Verma <vishal.l.verma@intel.com>
+>>> ---
+>>> Changelog:
+>>> v3: add tester Richard Fan <richard.fan@suse.com>
+>>> v2: the improved version, and with testing code.
+>>> v1: the first completed version.
+>>>
+>>>
+>>> Coly Li (6):
+>>>     badblocks: add more helper structure and routines in badblocks.h
+>>>     badblocks: add helper routines for badblock ranges handling
+>>>     badblocks: improvement badblocks_set() for multiple ranges handling
+>>>     badblocks: improve badblocks_clear() for multiple ranges handling
+>>>     badblocks: improve badblocks_check() for multiple ranges handling
+>>>     badblocks: switch to the improved badblock handling code
+>>> Coly Li (1):
+>>>     test: user space code to test badblocks APIs
+>>>
+>>>    block/badblocks.c         | 1599 ++++++++++++++++++++++++++++++-------
+>>>    include/linux/badblocks.h |   32 +
+>>>    2 files changed, 1340 insertions(+), 291 deletions(-)
+>>>
+>>
+
