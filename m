@@ -2,201 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE55F416275
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6DB41627E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242177AbhIWPyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242080AbhIWPyN (ORCPT
+        id S242256AbhIWPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:54:56 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:42284 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242238AbhIWPyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:54:13 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6DEC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:42:59 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id 62-20020aed2044000000b002a6aa209efaso16952668qta.18
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:42:59 -0700 (PDT)
+        Thu, 23 Sep 2021 11:54:43 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id E98B682328;
+        Thu, 23 Sep 2021 18:42:57 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=hDRJpwXs+0R0eoksKhPMDicSLgR3CIp6XLHTux6N7rg=;
-        b=EAFBGXgLjGA9GukMEydU6QBSXUC65k0uD0qk8+iOEakYEJWC+Xp0J26Y6kRGuqymZ3
-         JPLoSZ44AdJN9iXui33U4+HiS5yOBGR33BU+C6MEpkiSzoMveaECsMn3gkrO/TGeQHxB
-         Rll4j71Ub2yP6h2iq9ahfjjegjHytvhvtIJiFb+9AhtoSvc+Io4c5HQq2h/myf6Fp03e
-         +NfVBa0KyKbhbekQqZ7ACZWHxqr68NA2WT/VXC3RTTh14NdiBiz4Lmq1ffXim5ED1AIG
-         +46lJTzwQmhJ4L/gpQ+n7IjJVA+fI6HdfVWLArHbvzLeFmVrxMKvsi81kQfECPeYAwmA
-         6YkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=hDRJpwXs+0R0eoksKhPMDicSLgR3CIp6XLHTux6N7rg=;
-        b=sqeySx0F8A6yPKY4cy7ImERdY67jJXgsDXHow6NUgHPnIYudQ9cMztpwdDVubfu9eE
-         NIP9JEw+26rqAGfJVC/4BI6NLXjrqu+X985hO+1+qpHDuOchNZtzysiLqVmIiVe6MhRC
-         QghIcYhBfOnYdY0UUQj6g8KG8XlcbvvzBtdm6cnVTg5okYGycRoxccH3OknxgVv3NCGD
-         o3xmZbzoumcj1ziswhSfeDldJ14ItISXUFYflc7Tmo02ZRMkwS9t5nYUAOXZn4FvHjcr
-         es5atSswE7ZGtjc+VxJffdLzdxWBzJ0/+KSJCgkyo45c0b69UIgZKjLiUaYd0P7APjmB
-         tNnA==
-X-Gm-Message-State: AOAM531B6XVWB3jnt4u1Ut5QadRG01tNXhjrMb/JUs0l5+6PYjK8BHRS
-        aOUaYTZR7IqLZwk4utKaFIw5Xs9GXP5v
-X-Google-Smtp-Source: ABdhPJw0BscPobtjGvad3odDFK0zIfd6nQgILBF4vYOqEFAiFNwx7uvRrJg5KG/GrMMbu3hdYUD+jqOwb9A5
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d3ff:e8f7:11f4:c738])
- (user=irogers job=sendgmr) by 2002:a5b:791:: with SMTP id b17mr6743168ybq.263.1632411778504;
- Thu, 23 Sep 2021 08:42:58 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 08:42:54 -0700
-Message-Id: <20210923154254.737657-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2] perf arm: Fix off-by-one directory paths.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        d=paragon-software.com; s=mail; t=1632411777;
+        bh=AGAk4jUzbizS+IaTUDiD3JKzGN2DMd2TWW71KsQVmt0=;
+        h=Date:Subject:From:To:References:CC:In-Reply-To;
+        b=oZa2EsKEgsLE3gds6ickzdO/+E4rcjOqgKht/Gstf83dRln8Jx79Y9aqaVhdtSV4q
+         CVefcsDlYClzlmBmqWMpbN2/ygY3TppSid6lxiYg5DOXIQx1kHxg8GPkXgMgE0AnJC
+         y785bjqZ/JQ2gldMV/uJrQEAsHqtki86r/wg+Oss=
+Received: from [192.168.211.73] (192.168.211.73) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 23 Sep 2021 18:42:57 +0300
+Message-ID: <3df9fdcb-5941-b2ca-0ba9-65dcad8bce22@paragon-software.com>
+Date:   Thu, 23 Sep 2021 18:42:56 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: [PATCH v2 3/6] fs/ntfs3: Refactor ntfs_get_acl_ex for better
+ readability
+Content-Language: en-US
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+References: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+In-Reply-To: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.73]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Relative path include works in the regular build due to -I paths but may
-fail in other situations.
+We can safely move set_cached_acl because it works with NULL acl too.
 
-v2. Rebase. Comments on v1 were that we should handle include paths
-    differently and it is agreed that can be a sensible refactor but
-    beyond the scope of this change.
-https://lore.kernel.org/lkml/20210504191227.793712-1-irogers@google.com/
-
-Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 ---
- tools/perf/arch/arm/util/auxtrace.c         |  8 +++----
- tools/perf/arch/arm/util/cs-etm.c           | 24 ++++++++++-----------
- tools/perf/arch/arm/util/perf_regs.c        |  2 +-
- tools/perf/arch/arm/util/pmu.c              |  2 +-
- tools/perf/arch/arm/util/unwind-libdw.c     |  6 +++---
- tools/perf/arch/arm/util/unwind-libunwind.c |  4 ++--
- 6 files changed, 23 insertions(+), 23 deletions(-)
+ fs/ntfs3/xattr.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-index c7c7ec0812d5..5fc6a2a3dbc5 100644
---- a/tools/perf/arch/arm/util/auxtrace.c
-+++ b/tools/perf/arch/arm/util/auxtrace.c
-@@ -8,10 +8,10 @@
- #include <linux/coresight-pmu.h>
- #include <linux/zalloc.h>
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 5c7c5c7a5ec1..3795943efc8e 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -518,12 +518,15 @@ static struct posix_acl *ntfs_get_acl_ex(struct user_namespace *mnt_userns,
+ 	/* Translate extended attribute to acl. */
+ 	if (err >= 0) {
+ 		acl = posix_acl_from_xattr(mnt_userns, buf, err);
+-		if (!IS_ERR(acl))
+-			set_cached_acl(inode, type, acl);
++	} else if (err == -ENODATA) {
++		acl = NULL;
+ 	} else {
+-		acl = err == -ENODATA ? NULL : ERR_PTR(err);
++		acl = ERR_PTR(err);
+ 	}
  
--#include "../../util/auxtrace.h"
--#include "../../util/debug.h"
--#include "../../util/evlist.h"
--#include "../../util/pmu.h"
-+#include "../../../util/auxtrace.h"
-+#include "../../../util/debug.h"
-+#include "../../../util/evlist.h"
-+#include "../../../util/pmu.h"
- #include "cs-etm.h"
- #include "arm-spe.h"
++	if (!IS_ERR(acl))
++		set_cached_acl(inode, type, acl);
++
+ 	__putname(buf);
  
-diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index 515aae470e23..293a23bf8be3 100644
---- a/tools/perf/arch/arm/util/cs-etm.c
-+++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -16,19 +16,19 @@
- #include <linux/zalloc.h>
- 
- #include "cs-etm.h"
--#include "../../util/debug.h"
--#include "../../util/record.h"
--#include "../../util/auxtrace.h"
--#include "../../util/cpumap.h"
--#include "../../util/event.h"
--#include "../../util/evlist.h"
--#include "../../util/evsel.h"
--#include "../../util/perf_api_probe.h"
--#include "../../util/evsel_config.h"
--#include "../../util/pmu.h"
--#include "../../util/cs-etm.h"
-+#include "../../../util/debug.h"
-+#include "../../../util/record.h"
-+#include "../../../util/auxtrace.h"
-+#include "../../../util/cpumap.h"
-+#include "../../../util/event.h"
-+#include "../../../util/evlist.h"
-+#include "../../../util/evsel.h"
-+#include "../../../util/perf_api_probe.h"
-+#include "../../../util/evsel_config.h"
-+#include "../../../util/pmu.h"
-+#include "../../../util/cs-etm.h"
- #include <internal/lib.h> // page_size
--#include "../../util/session.h"
-+#include "../../../util/session.h"
- 
- #include <errno.h>
- #include <stdlib.h>
-diff --git a/tools/perf/arch/arm/util/perf_regs.c b/tools/perf/arch/arm/util/perf_regs.c
-index 2864e2e3776d..2833e101a7c6 100644
---- a/tools/perf/arch/arm/util/perf_regs.c
-+++ b/tools/perf/arch/arm/util/perf_regs.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--#include "../../util/perf_regs.h"
-+#include "../../../util/perf_regs.h"
- 
- const struct sample_reg sample_reg_masks[] = {
- 	SMPL_REG_END
-diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
-index bbc297a7e2e3..b8b23b9dc598 100644
---- a/tools/perf/arch/arm/util/pmu.c
-+++ b/tools/perf/arch/arm/util/pmu.c
-@@ -10,7 +10,7 @@
- #include <linux/string.h>
- 
- #include "arm-spe.h"
--#include "../../util/pmu.h"
-+#include "../../../util/pmu.h"
- 
- struct perf_event_attr
- *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
-diff --git a/tools/perf/arch/arm/util/unwind-libdw.c b/tools/perf/arch/arm/util/unwind-libdw.c
-index 36ba4c69c3c5..b7692cb0c733 100644
---- a/tools/perf/arch/arm/util/unwind-libdw.c
-+++ b/tools/perf/arch/arm/util/unwind-libdw.c
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <elfutils/libdwfl.h>
--#include "../../util/unwind-libdw.h"
--#include "../../util/perf_regs.h"
--#include "../../util/event.h"
-+#include "../../../util/unwind-libdw.h"
-+#include "../../../util/perf_regs.h"
-+#include "../../../util/event.h"
- 
- bool libdw__arch_set_initial_registers(Dwfl_Thread *thread, void *arg)
- {
-diff --git a/tools/perf/arch/arm/util/unwind-libunwind.c b/tools/perf/arch/arm/util/unwind-libunwind.c
-index 3a550225dfaf..438906bf0014 100644
---- a/tools/perf/arch/arm/util/unwind-libunwind.c
-+++ b/tools/perf/arch/arm/util/unwind-libunwind.c
-@@ -3,8 +3,8 @@
- #include <errno.h>
- #include <libunwind.h>
- #include "perf_regs.h"
--#include "../../util/unwind.h"
--#include "../../util/debug.h"
-+#include "../../../util/unwind.h"
-+#include "../../../util/debug.h"
- 
- int libunwind__arch_reg_id(int regnum)
- {
+ 	return acl;
 -- 
-2.33.0.464.g1972c5931b-goog
+2.33.0
+
 
