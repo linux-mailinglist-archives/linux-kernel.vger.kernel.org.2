@@ -2,205 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158FC415A84
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD1E415A88
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240113AbhIWJFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:05:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38329 "EHLO
+        id S240117AbhIWJG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:06:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21207 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240105AbhIWJFU (ORCPT
+        by vger.kernel.org with ESMTP id S240063AbhIWJGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:05:20 -0400
+        Thu, 23 Sep 2021 05:06:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632387828;
+        s=mimecast20190719; t=1632387894;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=t2vZx6Tk6VuuMikWnLUs2Mq5yA5lp/FlcON1t/+GITs=;
-        b=E7V9plAGN3YQUB4OJbw0296TnH2SR7uLl0A291A4xLoG2YtBBnADKHniCNywunlDamFy2g
-        7gjWap+NCMoktes4AbBpPIwdpkt3e2icobiwQYLcB6yWttHRdul+rg1WS52H7AYFm43Osg
-        Oa3hEXexnuEFXMcqVmLQV3PazDa7xls=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-Uz_2U-uSNrOXU0TFWOoBSg-1; Thu, 23 Sep 2021 05:03:47 -0400
-X-MC-Unique: Uz_2U-uSNrOXU0TFWOoBSg-1
-Received: by mail-wr1-f72.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so4625048wrh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:03:47 -0700 (PDT)
+        bh=POvmQFHwQedCHQCS5FtuCZbcIW6Qr+1gI9/W1ZBdgLg=;
+        b=fBVdsWsON2J9RWOXd3+OIFz6AjJi3x81DQCNSogbNATeD8Mtya20j9/8w6W/hn9q1nG5a3
+        leZqsX6VJtRctfnFkw52SpBgdYVPZVVhf/ABReSx1KdmekWBEqIcdTSw1u07qR/EuulAcM
+        UqoMQAVfqZFZxwvG2DKFHSmzKoJhrfA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-p1btwL7bPbi_gvl4-IGQOA-1; Thu, 23 Sep 2021 05:04:52 -0400
+X-MC-Unique: p1btwL7bPbi_gvl4-IGQOA-1
+Received: by mail-ed1-f72.google.com with SMTP id b7-20020a50e787000000b003d59cb1a923so6159191edn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:04:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=t2vZx6Tk6VuuMikWnLUs2Mq5yA5lp/FlcON1t/+GITs=;
-        b=sCpdvVQbB6iHFco249y4L6GYMdxzPUXxWwU6HesksIgXyli16t72agRHiO7ZGs+9bs
-         f7ElnqB+KVg1cSyDy+Pn1kV+tNrEje3J0mjvluNrVn6ozKA5qMu1WyyUIlJod7Z+zL42
-         uVHnhqh8SEf7tKEp8VbEdhNFIy7jcR4Mruf2WukJyKFc+kAiZ18ESOVZ8FwXwLVdCQ2a
-         NCTr3dN5Yxu4kP6quTE+VhsAKLXuhtqe3tWt30f2k7PoCJxQHOyY5xtXty61IjgteZsA
-         /jm9SvHHXOdQaN9Y9QA2eSb2MSwjawroOern4oDp0NYKcayINH5KnSqRx0z+OIMjYbb5
-         wp+Q==
-X-Gm-Message-State: AOAM533JO73nnFsVwNrsEXVakF0YCZj9n1t5xO7wa5w6WkfW4zbfh+vq
-        8jXMYFimNUG2wc7G4drMHkuZF7DdJSgNxaethPyQQ38xYGqLJoygxis5aIe87cwKCgnSmtlzngC
-        3sWpQyY6uCp009eJpzmq48/Ls
-X-Received: by 2002:a5d:598c:: with SMTP id n12mr3580690wri.391.1632387826306;
-        Thu, 23 Sep 2021 02:03:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxeRpgN+EL+Z5hNhW1qMdx3/KwVxtgMSwnv4toSVOPPdy+eTVEUuLA9m44ceRboo99Fo1O7RA==
-X-Received: by 2002:a5d:598c:: with SMTP id n12mr3580658wri.391.1632387825997;
-        Thu, 23 Sep 2021 02:03:45 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23e5d.dip0.t-ipconnect.de. [79.242.62.93])
-        by smtp.gmail.com with ESMTPSA id a77sm4539713wme.28.2021.09.23.02.03.44
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=POvmQFHwQedCHQCS5FtuCZbcIW6Qr+1gI9/W1ZBdgLg=;
+        b=gNDFv3rsoOSEBAr9qX2cajTfYrzBrTjISleqi+Qthc7m7KTACeHSm9kd6i6TBc4LmJ
+         RiGchIJOWoa1heYgoUGLmEYcI9NqiD5UyVSneY1MKBGMN0yHpzC3dJybstDfSnW0Kk85
+         8YiW6YJUtoihvbfnjOfeTmrLCcF3hZbxMshLRtRjix5bhILKNA8wEcFrc9hRya9ZdPg+
+         A7DcuaukMOQ5Lj5FihPz7ykdHJq2joJr7/BPh+ANM1Oa+ExTSfXBoKVZP9xyXNMXyvPQ
+         mxx461R9SMulyUK6S+7D3J6ULD+AKUiczEJQ4DNoTjIEHOslwXB0IsM17oK0E89VSAmd
+         rNsQ==
+X-Gm-Message-State: AOAM5320cgi/H2jk8tYwHHFUKtjQH33B1SojnLuBBR4Gtri9VrHL5iTJ
+        673qUi8fO1ebiblJinY3xJnpER5DSyVu1vox7yFPMHUwC+G1sWr1/2bCvV1vZdeW7HHvyanvBKT
+        F99eVU8EP1s+J1vUCZ0CHmRWF
+X-Received: by 2002:a17:906:6a21:: with SMTP id qw33mr3949028ejc.326.1632387891521;
+        Thu, 23 Sep 2021 02:04:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCoJwt7GfyvkgYCYqH43iz6MTmxVRiJkKQBqavUbmbjQFAeRzeRIe5taLYX66NvKp/emPI+A==
+X-Received: by 2002:a17:906:6a21:: with SMTP id qw33mr3949010ejc.326.1632387891320;
+        Thu, 23 Sep 2021 02:04:51 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t19sm2601334ejb.115.2021.09.23.02.04.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 02:03:45 -0700 (PDT)
-To:     Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-References: <YUvWm6G16+ib+Wnb@moria.home.lan>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: Struct page proposal
-Message-ID: <e567ad16-0f2b-940b-a39b-a4d1505bfcb9@redhat.com>
-Date:   Thu, 23 Sep 2021 11:03:44 +0200
+        Thu, 23 Sep 2021 02:04:50 -0700 (PDT)
+Subject: Re: [PATCH v3 0/5] Add general DVSEC/VSEC support
+To:     "David E. Box" <david.e.box@linux.intel.com>, lee.jones@linaro.org,
+        bhelgaas@google.com, andy.shevchenko@gmail.com
+Cc:     mgross@linux.intel.com, srinivas.pandruvada@intel.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+References: <20210922213007.2738388-1-david.e.box@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <da8d9c79-d041-b7fa-6ee3-3abfcfcb0ef6@redhat.com>
+Date:   Thu, 23 Sep 2021 11:04:50 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YUvWm6G16+ib+Wnb@moria.home.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210922213007.2738388-1-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.09.21 03:21, Kent Overstreet wrote:
-> One thing that's come out of the folios discussions with both Matthew and
-> Johannes is that we seem to be thinking along similar lines regarding our end
-> goals for struct page.
-> 
-> The fundamental reason for struct page is that we need memory to be self
-> describing, without any context - we need to be able to go from a generic
-> untyped struct page and figure out what it contains: handling physical memory
-> failure is the most prominent example, but migration and compaction are more
-> common. We need to be able to ask the thing that owns a page of memory "hey,
-> stop using this and move your stuff here".
-> 
-> Matthew's helpfully been coming up with a list of page types:
-> https://kernelnewbies.org/MemoryTypes
-> 
-> But struct page could be a lot smaller than it is now. I think we can get it
-> down to two pointers, which means it'll take up 0.4% of system memory. Both
-> Matthew and Johannes have ideas for getting it down even further - the main
-> thing to note is that virt_to_page() _should_ be an uncommon operation (most of
-> the places we're currently using it are completely unnecessary, look at all the
-> places we're using it on the zero page). Johannes is thinking two layer radix
-> tree, Matthew was thinking about using maple trees - personally, I think that
-> 0.4% of system memory is plenty good enough.
-> 
-> 
-> Ok, but what do we do with the stuff currently in struct page?
-> -------------------------------------------------------------
-> 
-> The main thing to note is that since in normal operation most folios are going
-> to be describing many pages, not just one - and we'll be using _less_ memory
-> overall if we allocate them separately. That's cool.
-> 
-> Of course, for this to make sense, we'll have to get all the other stuff in
-> struct page moved into their own types, but file & anon pages are the big one,
-> and that's already being tackled.
-> 
-> Why two ulongs/pointers, instead of just one?
-> ---------------------------------------------
-> 
-> Because one of the things we really want and don't have now is a clean division
-> between allocator and allocatee state. Allocator meaning either the buddy
-> allocator or slab, allocatee state would be the folio or the network pool state
-> or whatever actually called kmalloc() or alloc_pages().
-> 
-> Right now slab state sits in the same place in struct page where allocatee state
-> does, and the reason this is bad is that slab/slub are a hell of a lot faster
-> than the buddy allocator, and Johannes wants to move the boundary between slab
-> allocations and buddy allocator allocations up to like 64k. If we fix where slab
-> state lives, this will become completely trivial to do.
-> 
-> So if we have this:
-> 
-> struct page {
-> 	unsigned long	allocator;
-> 	unsigned long	allocatee;
-> };
-> 
-> The allocator field would be used for either a pointer to slab/slub's state, if
-> it's a slab page, or if it's a buddy allocator page it'd encode the order of the
-> allocation - like compound order today, and probably whether or not the
-> (compound group of) pages is free.
-> 
-> The allocatee field would be used for a type tagged (using the low bits of the
-> pointer) to one of:
->   - struct folio
->   - struct anon_folio, if that becomes a thing
->   - struct network_pool_page
->   - struct pte_page
->   - struct zone_device_page
-> 
-> Then we can further refactor things until all the stuff that's currently crammed
-> in struct page lives in types where each struct field means one and precisely
-> one thing, and also where we can freely reshuffle and reorganize and add stuff
-> to the various types where we couldn't before because it'd make struct page
-> bigger.
-> 
-> Other notes & potential issues:
->   - page->compound_dtor needs to die
-> 
->   - page->rcu_head moves into the types that actually need it, no issues there
-> 
->   - page->refcount has question marks around it. I think we can also just move it
->     into the types that need it; with RCU derefing the pointer to the folio or
->     whatever and grabing a ref on folio->refcount can happen under a RCU read
->     lock - there's no real question about whether it's technically possible to
->     get it out of struct page, and I think it would be cleaner overall that way.
-> 
->     However, depending on how it's used from code paths that go from generic
->     untyped pages, I could see it turning into more of a hassle than it's worth.
->     More investigation is needed.
-> 
->   - page->memcg_data - I don't know whether that one more properly belongs in
->     struct page or in the page subtypes - I'd love it if Johannes could talk
->     about that one.
-> 
->   - page->flags - dealing with this is going to be a huge hassle but also where
->     we'll find some of the biggest gains in overall sanity and readability of the
->     code. Right now, PG_locked is super special and ad hoc and I have run into
->     situations multiple times (and Johannes was in vehement agreement on this
->     one) where I simply could not figure the behaviour of the current code re:
->     who is responsible for locking pages without instrumenting the code with
->     assertions.
-> 
->     Meaning anything we do to create and enforce module boundaries between
->     different chunks of code is going to suck, but the end result should be
->     really worthwhile.
-> 
-> Matthew Wilcox and David Howells have been having conversations on IRC about
-> what to do about other page bits. It appears we should be able to kill a lot of
-> filesystem usage of both PG_private and PG_private_2 - filesystems in general
-> hang state off of page->private, soon to be folio->private, and PG_private in
-> current use just indicates whether page->private is nonzero - meaning it's
-> completely redundant.
-> 
+Hi,
 
-Don't get me wrong, but before there are answers to some of the very 
-basic questions raised above (especially everything that lives in 
-page->flags, which are not only page flags, refcount, ...) this isn't 
-very tempting to spend more time on, from a reviewer perspective.
+On 9/22/21 11:30 PM, David E. Box wrote:
+> This patch enables general support for Intel defined PCIe VSEC and DVSEC
+> capabilities in the Intel Platform Monitoring Technology (PMT) driver.
+> Though the driver was written exclusively for PMT capabilities, newer DVSEC
+> and VSEC IDs for other capabilities can exist on the same device requiring
+> that the driver handle them.
+> 
+> V3 is mostly a resend of V2. It drops a platform/x86 patch that was picked
+> up separately by Hans in the last cycle. It also adds a new patch to
+> support an upcoming capability.
+> 
+> David E. Box (5):
+>   PCI: Add #defines for accessing PCIE DVSEC fields
+>   MFD: intel_pmt: Support non-PMT capabilities
+>   MFD: intel_pmt: Add support for PCIe VSEC structures
+>   MFD: intel_pmt: Add DG2 support
+>   MFD: intel_extended_cap: Add support for Intel SDSi
 
--- 
-Thanks,
+Since this mostly touches drivers/mfd/intel_pmt.c, I assume this is
+going to get merged through the MFD trees.
 
-David / dhildenb
+For the few small drivers/platform/x86 changes:
+
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
+
+
+> 
+>  drivers/mfd/intel_pmt.c                    | 258 +++++++++++++++------
+>  drivers/platform/x86/intel/pmt/class.c     |   2 +
+>  drivers/platform/x86/intel/pmt/crashlog.c  |   2 +-
+>  drivers/platform/x86/intel/pmt/telemetry.c |   2 +-
+>  include/uapi/linux/pci_regs.h              |   4 +
+>  5 files changed, 191 insertions(+), 77 deletions(-)
+> 
 
