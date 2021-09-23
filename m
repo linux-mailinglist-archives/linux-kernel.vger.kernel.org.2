@@ -2,122 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F36416224
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B4B416226
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241992AbhIWPgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:36:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36415 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241735AbhIWPgY (ORCPT
+        id S242021AbhIWPgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242027AbhIWPga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:36:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632411292;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B6vU7I66Oh4IvVlNoUJK6FShhyszDTfSEBuK0IXxA/U=;
-        b=IYxo3Y+iOYuE5tml4mU0gciEH4eHsQDvX45pUQswaxp++thszBWz9b6OkmcvcUmSA3VrLA
-        izpc+yxLcpbSqBrNQJjHqNU/FB/gBxuqucPQ61Drplq7JDi02BfJ/lRUDDTB6iGST/SokF
-        Q3g5BO1EtfnCZyCurAfSEkgiFAQVBRQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-b7CIvMhvNFKQwmWikgFKgg-1; Thu, 23 Sep 2021 11:34:50 -0400
-X-MC-Unique: b7CIvMhvNFKQwmWikgFKgg-1
-Received: by mail-wr1-f71.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so5547431wrh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:34:50 -0700 (PDT)
+        Thu, 23 Sep 2021 11:36:30 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F687C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:34:58 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id ee50so25207979edb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:34:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=iqFDC5uLqeZQYDiuBDuS55rb4VBnQhsPL0fF4fSTCrI=;
+        b=Gwcd+6jAieIcznWuxfbvn048X7EhL/2ptzJwTjnI+bcqaufwpgJI55zQn0lzvu6IiM
+         Zf9ZpsOA6NJm7M6u/vzyysVWk85EvuIGtMQt047+f788/f2FwrRT8MPxQLQrvPZWjy88
+         NmbHa5PM5r9W+PCt+kNLmiXNRS2c0ysaWwa3bSH9TL1/K37XGjioifu7+HvFk5SVLnkb
+         ykD6NWSkrPapYMC3zQQDDMcPTIfChLdmi2Gp5zKR/7CefOn2sBouB7nrXJkf2M0XYGB6
+         wSxjPTq5qrSYAkps2PGyI5ya7i9tAEPj5EHa8LZ90AvfGqWhzhjnH5KID6d9SYXWRmfL
+         RxGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=B6vU7I66Oh4IvVlNoUJK6FShhyszDTfSEBuK0IXxA/U=;
-        b=lymal6g1o9L/CK+QD/nw/Yy5LKceUXjP/Cu0Cf7gM4l5hMIPfYLDG0b1OcOI93Gdj/
-         cDEM3EF6KD+Wi2e24jeSPkFEuFYGqg+dcmEyXhXKY/fos1X6qEWcHsca7ekT6VDQajkS
-         vpAFCngRgX1729XVM7cZ0xNLsBUZHD47Z8Xv/rOXuNOWVtJeo9ptgLM5DSfcLK5cyDpK
-         Dc7XvLxUsaA4Q8TIa3UwoL2WY3v4MykdvX7MNt9E1lyMYoRmkNTSkPjUwzvAYri+87GD
-         Y6A6w9xQLSzEjmiOeV3WHPpWgqLOxH67iqJnEABfuCFOCzyEc+4sTJ1j5ywBEx+CBI32
-         K35g==
-X-Gm-Message-State: AOAM5305tUMynEfDkdNNP5pQjb82dMnL/Eo+QHo5W9r3BuXRnKOgoejx
-        ypPmFRtc0Rq4iAq9ZaBsnT083B0aMjow2NSoKNRXeaq677J8FzS9RibmdktD6vSnxH22xl6erBV
-        /lGkH2FYvMutB9LNFSUlWU209
-X-Received: by 2002:a05:600c:4a16:: with SMTP id c22mr16730727wmp.72.1632411289512;
-        Thu, 23 Sep 2021 08:34:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBZhyVs/6Bg7XD0uHKGpE7WMvutAt47Dpksuv26PSDqXvvl4mTPp5CHm/1FAbKd+sEANHxSg==
-X-Received: by 2002:a05:600c:4a16:: with SMTP id c22mr16730710wmp.72.1632411289286;
-        Thu, 23 Sep 2021 08:34:49 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23e5d.dip0.t-ipconnect.de. [79.242.62.93])
-        by smtp.gmail.com with ESMTPSA id b187sm9825989wmd.33.2021.09.23.08.34.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 08:34:48 -0700 (PDT)
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-References: <YUvWm6G16+ib+Wnb@moria.home.lan>
- <e567ad16-0f2b-940b-a39b-a4d1505bfcb9@redhat.com>
- <YUybu+OCpCM2lZJu@moria.home.lan>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: Struct page proposal
-Message-ID: <2116e35d-019d-67e3-e163-a0ef0a821a87@redhat.com>
-Date:   Thu, 23 Sep 2021 17:34:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=iqFDC5uLqeZQYDiuBDuS55rb4VBnQhsPL0fF4fSTCrI=;
+        b=PcMRA4qrJx4ZR5HvQ1Du7aK9KXxDyQNdRIv3ABvPOqy2UBvQdb8UxE8wKBGHIXmNEa
+         sx+7Lg0jvQy0PHrPnzMpq5Ahi2mF3VNbrTm0eTkSa6gDOMHDLoNTmMoCpzvX9SyqkpUQ
+         1yv2N/jGaJ2mCG4a81hWvJAAY2gNqNKZyx5UgMqyMTBOYMJ628DGSoWGUNERkwqAIjGw
+         sLSPYa/cFi7IHJ10lnvYEMqpZuOEcebqQhB/SZj680chQ7rJXVMOHaDQVyEddRDXec5x
+         o+P6Ys2J1NOyP+zYPb0ZW5QtJ5Ru5Nj/3+lVq6EVfQcxfBoC+mTJ6M0CUfOaUlcHZNvJ
+         vJig==
+X-Gm-Message-State: AOAM532eRolJrT695x6yqi7DOmbLAx1O8IH4xIRUG204C53DuLfigDDm
+        yjv7ovmv83QSGIZ62jBrC73EmpqAYBGWAMMCVnM=
+X-Google-Smtp-Source: ABdhPJz579uu7LomMYxAm3kPqGRMTSLeAlJItsrkHbg525bMR1gbKVL1zQ6QPzuJ7tX7X2k1WoqYns8saBG3tnRmGV4=
+X-Received: by 2002:a50:9d02:: with SMTP id v2mr4980093ede.105.1632411297024;
+ Thu, 23 Sep 2021 08:34:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YUybu+OCpCM2lZJu@moria.home.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a54:2604:0:0:0:0:0 with HTTP; Thu, 23 Sep 2021 08:34:56
+ -0700 (PDT)
+Reply-To: tracymedicinemed3@gmail.com
+From:   Dr Tracy William <williamsuktracy@gmail.com>
+Date:   Thu, 23 Sep 2021 08:34:56 -0700
+Message-ID: <CAJvyOe1caqc_ff-uywHa0bAMFMONUrXYfeZnvZ5hwHN6YNg6ZQ@mail.gmail.com>
+Subject: From Dr Tracy William from United States
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.09.21 17:22, Kent Overstreet wrote:
-> On Thu, Sep 23, 2021 at 11:03:44AM +0200, David Hildenbrand wrote:
->> Don't get me wrong, but before there are answers to some of the
->> very basic questions raised above (especially everything that lives
->> in page->flags, which are not only page flags, refcount, ...) this
->> isn't very tempting to spend more time on, from a reviewer
->> perspective.
-> 
-> Did you miss the part of the folios discussion where we were talking
-> about how acrimonious it had gotten and why, and talking about (Chris
-> Mason in particular) writing design docs up front and how they'd been
-> pretty successful in other places?
-> 
-> We're trying something new here, and trying to give people an
-> opportunity to discussion what we're trying to do _before_ dumping
-> thousands and thousands of lines of refactoring patches on the list.
-> 
-
-This here is different: the very basic questions haven't been solved.
-Folios compiled. Folios worked. I stopped following the discussion at 
-one point, though.
-
-Again, don't get me wrong, but what I read in this mail was "I don't
-know how to solve most of this but this is what we could do.".
-
-Would we want to reduce the struct page size? Sure! Do we have a
-concrete plan on how all the corner cases would work? No.
-
-IIRC Windows uses exactly one pointer (8 bytes) to track the state of a 
-physical page by linking it into the right list. So what would you say 
-if I proposed that without tackling the hard cases?
-
-Corner cases is what make it hard. Memory holes. Memory hot(un)plug. 
-Page isolation. Memory poisoning. Various memory allocators. Lock-free 
-physical memory walkers. And that's all outside the scope of filesystems.
-
 -- 
-Thanks,
-
-David / dhildenb
-
+Hello Dear,
+My name is Tracy William from United States.I am a French and American national
+(dual)living in the U.S and sometimes in the U.K for the Purpose of Work.
+I hope you consider my friend request and consider me worthy to be your friend.
+I will share some of my pics and more details about my self when i get
+your response
+Thanks
+With love
+Tracy
