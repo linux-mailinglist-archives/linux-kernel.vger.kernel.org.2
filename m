@@ -2,120 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD8F416282
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4A041628F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242238AbhIWPzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242220AbhIWPzE (ORCPT
+        id S242277AbhIWQAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:00:30 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39101 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242216AbhIWQA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:55:04 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C80C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:53:32 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id c33so2633216ljr.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lAIf9S9YD0oFbCvz8QEsqa7/B46ooiou6kW4WrW11es=;
-        b=edcnJ+kYTFajOV6YWgCkDRJ7tuME3jDCu388x+5IygYwj23a8bZILaBVzhLYkO588z
-         ljxnaGKMshQurnuGfYg4HBwiC3Ym6JVEffomTleMBklg9nYJ1H9ODcw++lFapFP+L7Zw
-         y7IPRTqhyiGYRNXvP5nhI306iiITGHRqHb9Nk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lAIf9S9YD0oFbCvz8QEsqa7/B46ooiou6kW4WrW11es=;
-        b=1pujat3c9s9UmayAtYaIW4dItOihErEHNF+XJTAYtADYaiUWBVFPPvCpUGFLDEpT7v
-         cHiVpVAEtoLDEYzT5/p4ql9N1Ih7L20QNhYvqfsjNOrwokb6Q9X/LANbhHmsg5HuO2tT
-         EPrN+5IXytNrcXBT3q1j6rMesuDJSmj2H04ROX9p+NUGOMK5ga7yFplbmgXx3D85WY5E
-         lKKfMtdJwF82UD4k4K8JvET3ykeD2WGPnJuAQULdqju9+vCnKBtCAM7qI5+YB4hMvAc9
-         Ao2mkXFvf6m3eedVWFkLjAV8JaApjHnlEVlEszzDcAEOuUGklm/zEmr38j5Jeq2+Q8rv
-         kA0w==
-X-Gm-Message-State: AOAM531C0QlqxZNrTZXbWGRjWpSPN1tT0/JR+Co36Wec+OhOiF1iRPxu
-        Q94WnLYy7lrwNy69Kipa7whhlaqTp6Qp5HDh2Wo=
-X-Google-Smtp-Source: ABdhPJzo9D0nE2zILdj8p5WY5FaaNYD78NbqGZ5vrVAtimN1N1bdmDJhOXaKnJsG2R7q+ihYwNUedw==
-X-Received: by 2002:a2e:7804:: with SMTP id t4mr6019719ljc.346.1632412410076;
-        Thu, 23 Sep 2021 08:53:30 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id n11sm680416ljg.72.2021.09.23.08.53.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 08:53:29 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id g14so2742405ljk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:53:29 -0700 (PDT)
-X-Received: by 2002:a2e:4e01:: with SMTP id c1mr5757554ljb.31.1632412408652;
- Thu, 23 Sep 2021 08:53:28 -0700 (PDT)
+        Thu, 23 Sep 2021 12:00:27 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4F87B580B62;
+        Thu, 23 Sep 2021 11:58:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 23 Sep 2021 11:58:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=GQm+lTPGhYJNn4ipzUG6VTqMd9N
+        Xez8sQDJ2zFiixKI=; b=tgnoC48Id1WDYUDv9RxeXPUAIYove4djVcPR97Szt1Y
+        DK0HVKKSc7NTw2qWo4kJpXiKasCx3JpmWAfWqLwfwBq4+qlqLiu25ZhMd/neYxIA
+        wAHW8lpC3Wa7Cen5PIdCIpmhTfUApC2BzR8KoGLTgKsY5PUzmv7owKdW8nFPf6v7
+        5Fr/SZDrOM3cKFMbanaM2zUTafLb1qB6rau8PuY+lRCIuB/qcde6Jc90kKb54wh2
+        rvn/FTJbevwWQx1YS8SxGNtDmcANx/pwmWFQUoc+i5P8rugawWainJfD1NNCHFX6
+        zK3j8b7sj6OAgKaBOoPwepis9C2+BKd/VXA0/Y1XNhg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GQm+lT
+        PGhYJNn4ipzUG6VTqMd9NXez8sQDJ2zFiixKI=; b=ombkJ8DHd9cFMT9psLE0Ae
+        0XJMAQw1YGeHdYFXALKuAgtKVM1VRDefvvNPe6Rlc/ioecO+6zF6dlpuFaTUXgJH
+        lmD3oA8bljZpUn0rScMXXKGWNgrzkG4otg4+9R0Th/7G9TELDIcv/f7C5ky7ltvB
+        ClU1SxD9GPDW+sWVRJxIPh7P3TzvsGYi3poSCJZCsjrgtLn8548uAOn1RKvvgylG
+        GdVMB11H2qRg/i/rlObIAl/4oWoqGYwjBEmN5d5gD+CTLkgPQdshde/CzWIlsf3G
+        FKriodbeRu7JuE9CtUIUMHjiSi5QeAmOkepektCDbGgFz3GV6xK83AbffUJPlLsA
+        ==
+X-ME-Sender: <xms:PaRMYcuem_DDG0DoVw2__pmFPN1HFpwX1FyVzoWxdeT6L1ES-hr33Q>
+    <xme:PaRMYZcaB_jTPIxN6Ym8QoxbytBK7txwqx98XYInCJAfhyFYrHruNrGtBhc27Me5p
+    IP6jOQQiRKM3D9YpwQ>
+X-ME-Received: <xmr:PaRMYXxUfmnHlVMTWZCle9FPd4E8KrpEzAc34hdi5tUARtImDn8I3Ms9OnuY58UECPRMu5-ciJ2KqVhKJ_f3cRfgX7AsKFddSHs7>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeiledgleegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
+    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:PaRMYfPM5BnF6AE2eUyZ2napn_laIPuhBSadymRd7FY7LjGJI64sKg>
+    <xmx:PaRMYc9Z1XwxY0g5AexQxh-pq3YWrS7C1pdHOyRK8k1Vrb-wACW-uw>
+    <xmx:PaRMYXXTQaORjvQSR9Jdc9W_9qD1p3xk8nDkVSbBh-2r57b456v50g>
+    <xmx:PqRMYfdIsL1HfDnWlDW14HzSo_zwMsJFoyCpcdBCmwR_Z17fvXKW9g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 23 Sep 2021 11:58:52 -0400 (EDT)
+Date:   Thu, 23 Sep 2021 17:58:51 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Emma Anholt <emma@anholt.net>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Openrisc <openrisc@lists.librecores.org>
+Subject: Re: [PATCH v3 1/6] drm/vc4: select PM (openrisc)
+Message-ID: <20210923155851.dyttkomkza5pxqg3@gilmour>
+References: <20210819135931.895976-1-maxime@cerno.tech>
+ <20210819135931.895976-2-maxime@cerno.tech>
+ <8a5cdcf5-33ed-398f-243a-b8889fd754e3@infradead.org>
+ <20210922084156.xqru5fdjkarbkyew@gilmour>
+ <YUtQnml8FO8BC7sM@archlinux-ax161>
+ <20210923145208.433zaqldird2vnxk@gilmour>
+ <YUyVZCEeRPE8VJ7w@archlinux-ax161>
 MIME-Version: 1.0
-References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
- <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
- <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
- <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com>
- <CAHC9VhSZp1-Qi7ApoQHauaFXDgoNaFTwFEieEFFuBtdPqAtXQg@mail.gmail.com>
- <CAHk-=whoExoB6xGD0as0kpfwr38B=W7GRkO2NXWDRW-tmQS6Qw@mail.gmail.com> <CAHC9VhTtz_aNY6MOCM6ypbz+SHvS30hx42PWjXJhG1Z=t5jpBw@mail.gmail.com>
-In-Reply-To: <CAHC9VhTtz_aNY6MOCM6ypbz+SHvS30hx42PWjXJhG1Z=t5jpBw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 23 Sep 2021 08:53:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wivxthY49NPyPG0QG302dmH_hrioE7NdDKMR1Fus0GHow@mail.gmail.com>
-Message-ID: <CAHk-=wivxthY49NPyPG0QG302dmH_hrioE7NdDKMR1Fus0GHow@mail.gmail.com>
-Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tntwzof3quwqbntb"
+Content-Disposition: inline
+In-Reply-To: <YUyVZCEeRPE8VJ7w@archlinux-ax161>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 8:43 AM Paul Moore <paul@paul-moore.com> wrote:
->
-> However, we have the LSM framework because there is never one way to
-> solve a problem,
 
-The thing is, the lockdown patches were merged because they were allegedly sane.
+--tntwzof3quwqbntb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As far as I can tell, this is purely a SELinux internal bug.
+On Thu, Sep 23, 2021 at 07:55:32AM -0700, Nathan Chancellor wrote:
+> On Thu, Sep 23, 2021 at 04:52:08PM +0200, Maxime Ripard wrote:
+> > Hi Nathan,
+> >=20
+> > On Wed, Sep 22, 2021 at 08:49:50AM -0700, Nathan Chancellor wrote:
+> > > On Wed, Sep 22, 2021 at 10:41:56AM +0200, Maxime Ripard wrote:
+> > > > Hi Randy,
+> > > >=20
+> > > > On Sun, Sep 19, 2021 at 09:40:44AM -0700, Randy Dunlap wrote:
+> > > > > On 8/19/21 6:59 AM, Maxime Ripard wrote:
+> > > > > > We already depend on runtime PM to get the power domains and cl=
+ocks for
+> > > > > > most of the devices supported by the vc4 driver, so let's just =
+select it
+> > > > > > to make sure it's there, and remove the ifdef.
+> > > > > >=20
+> > > > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > > > > > ---
+> > > > > >   drivers/gpu/drm/vc4/Kconfig    | 1 +
+> > > > > >   drivers/gpu/drm/vc4/vc4_hdmi.c | 2 --
+> > > > > >   2 files changed, 1 insertion(+), 2 deletions(-)
+> > > > > >=20
+> > > > > > diff --git a/drivers/gpu/drm/vc4/Kconfig b/drivers/gpu/drm/vc4/=
+Kconfig
+> > > > > > index 118e8a426b1a..f774ab340863 100644
+> > > > > > --- a/drivers/gpu/drm/vc4/Kconfig
+> > > > > > +++ b/drivers/gpu/drm/vc4/Kconfig
+> > > > > > @@ -9,6 +9,7 @@ config DRM_VC4
+> > > > > >   	select DRM_KMS_CMA_HELPER
+> > > > > >   	select DRM_GEM_CMA_HELPER
+> > > > > >   	select DRM_PANEL_BRIDGE
+> > > > > > +	select PM
+> > > > > >   	select SND_PCM
+> > > > > >   	select SND_PCM_ELD
+> > > > > >   	select SND_SOC_GENERIC_DMAENGINE_PCM
+> > > > > > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/v=
+c4/vc4_hdmi.c
+> > > > > > index c2876731ee2d..602203b2d8e1 100644
+> > > > > > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> > > > > > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> > > > > > @@ -2107,7 +2107,6 @@ static int vc5_hdmi_init_resources(struct=
+ vc4_hdmi *vc4_hdmi)
+> > > > > >   	return 0;
+> > > > > >   }
+> > > > > > -#ifdef CONFIG_PM
+> > > > > >   static int vc4_hdmi_runtime_suspend(struct device *dev)
+> > > > > >   {
+> > > > > >   	struct vc4_hdmi *vc4_hdmi =3D dev_get_drvdata(dev);
+> > > > > > @@ -2128,7 +2127,6 @@ static int vc4_hdmi_runtime_resume(struct=
+ device *dev)
+> > > > > >   	return 0;
+> > > > > >   }
+> > > > > > -#endif
+> > > > > >   static int vc4_hdmi_bind(struct device *dev, struct device *m=
+aster, void *data)
+> > > > > >   {
+> > > > > >=20
+> > > > >=20
+> > > > > Hi,
+> > > > >=20
+> > > > > FYI.
+> > > > >=20
+> > > > > This still causes a build error on arch/openrisc/ since it does n=
+ot support
+> > > > > CONFIG_PM (it does not source "kernel/power/Kconfig" like some ot=
+her arches do):
+> > > > >=20
+> > > > > ./arch/riscv/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/x86/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/nds32/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/sh/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/arc/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/arm64/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/xtensa/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/sparc/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/arm/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/mips/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/powerpc/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/um/Kconfig:source "kernel/power/Kconfig"
+> > > > > ./arch/ia64/Kconfig:source "kernel/power/Kconfig"
+> > > > >=20
+> > > > > so with
+> > > > > CONFIG_DRM_VC4=3Dy
+> > > > > # CONFIG_DRM_VC4_HDMI_CEC is not set
+> > > > >=20
+> > > > > I still see
+> > > > > ../drivers/gpu/drm/vc4/vc4_hdmi.c:2139:12: warning: 'vc4_hdmi_run=
+time_suspend' defined but not used [-Wunused-function]
+> > > > >  2139 | static int vc4_hdmi_runtime_suspend(struct device *dev)
+> > > > >       |            ^~~~~~~~~~~~~~~~~~~~~~~~
+> > > >=20
+> > > > With what version did you get that build error? -rc2 shouldn't have=
+ it
+> > > > anymore since the runtime_pm hooks introduction got reverted.
+> > >=20
+> > > -next still contains these patches as Stephen effectively reverted the
+> > > changes in Linus' tree when merging in the drm-misc-fixes tree:
+> > >=20
+> > > https://lore.kernel.org/r/20210920090729.19458953@canb.auug.org.au/
+> >=20
+> > Ah, indeed, thanks.
+> >=20
+> > What's the typical fix for these errors?
+> >=20
+> > I guess adding a depends on ARM || ARM64 || COMPILE_TEST would work?
+>=20
+> I think the typical fix from most people is marking these functions as
+> __maybe_unused so that they are always defined but the compiler does not
+> warn. An alternative would be changing the "select PM" to be
+> "depends on PM" I believe but that is less frequent.
 
-SELinux did something wrong. Stop doing it. Stop sending patches to
-then screw up the generic security layer, and violate the rules under
-which these patches were accepted.
+Thanks for the suggestion. Since those functions are always going to be
+used anyway (but on COMPILE_TEST), I've chosen the opposite approach of
+dropping SET_RUNTIME_PM_OPS instead. You're in CC of that patch so feel
+free to comment there if you think this is wrong.
 
-We have now this week have two discussions about the selinux doing
-completely invalid and incorrect things, and both were related to just
-thinking that it's ok to just randomly access thread data.
+Maxime
 
-At some point, you just have to look at the SELinux code and say
-:"this does something wrong".
+--tntwzof3quwqbntb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Instead of this kind of "no, everybody else is wrong, I will modify
-them to do what I mistakenly did".
+-----BEGIN PGP SIGNATURE-----
 
-IOW, just make the patch be
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUykOwAKCRDj7w1vZxhR
+xXGgAQD3EAxhXlcx5HvILvemGEJLCfFbdWysU0UD8yhxeV+FUAD+P80ZrQ0TxB7l
+QIeyGdWHroAgFhg8vd9TlLujD8BiSgI=
+=ZsrP
+-----END PGP SIGNATURE-----
 
-   diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-   index 6517f221d52c..4e93bf5dc8ef 100644
-   --- a/security/selinux/hooks.c
-   +++ b/security/selinux/hooks.c
-   @@ -7016,7 +7016,8 @@ static void selinux_bpf_prog_free(struct
-bpf_prog_aux *aux)
-    static int selinux_lockdown(enum lockdown_reason what)
-    {
-        struct common_audit_data ad;
-   -    u32 sid = current_sid();
-   +    /* Lockdown requests come in non-thread context, can't use
-'current_sid()' */
-   +    u32 sid = SECINITSID_UNLABELED;
-        int invalid_reason = (what <= LOCKDOWN_NONE) ||
-                             (what == LOCKDOWN_INTEGRITY_MAX) ||
-                             (what >= LOCKDOWN_CONFIDENTIALITY_MAX);
-
-and stop accessing random security ID's from random contexts.
-
-And stop thinking it's ok for SELinux to just do bad things.
-
-               Linus
+--tntwzof3quwqbntb--
