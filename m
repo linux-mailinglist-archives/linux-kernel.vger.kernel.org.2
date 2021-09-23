@@ -2,237 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79D841552E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 03:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96290415532
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 03:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238823AbhIWBqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 21:46:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56614 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238177AbhIWBqm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 21:46:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632361511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=18E7gXRiq8bGHFDdj4pH+TKVPOQ8tZmgGwIjGcp0he8=;
-        b=N6FxWUs48UoV7DsP4CRRCRlzcM14UAvkXUED0M7E5/hl/pp+yERhOZTQH53PlJEaWCMjtb
-        ME8TNL51gnQHznRO/vVJFbzV1Nvuh0i4Gc9e2dX6ypHRfONWpVRLO36y40q71gXZvVcqxU
-        d6sIM4ETvllK9rwAomhm1pBhZr2+Hmg=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-fr4wYtpONKCVIqyrK9yffQ-1; Wed, 22 Sep 2021 21:45:10 -0400
-X-MC-Unique: fr4wYtpONKCVIqyrK9yffQ-1
-Received: by mail-qv1-f72.google.com with SMTP id p12-20020ad4496c000000b0037a535cb8b2so16004326qvy.15
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 18:45:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=18E7gXRiq8bGHFDdj4pH+TKVPOQ8tZmgGwIjGcp0he8=;
-        b=DvbO3HPeI11IuMKh04hcOVFBsJ1G2zmjlrUnwbpUaSe6IIuGTtIbFZTRAnd8qwqT6h
-         wqqZkwbdo9YljIUuUD7cb5xei4RaMH4S9mqg4fpIhb0UO0HfFYqk+/v7OCyNuJdCY7iP
-         smAN3MEnSu3/WgeOGcKeQuARNuc6uqTeaIgaxckKX+rbLVbVg7ujxgyiCx3iSCNvOWWR
-         s18AK7y7A/u+TxEjIfieBbShpBFK8w/i09wnkE6a/AdXnvvG5Ptbtmp8MJJY3K0EXcvZ
-         tCI+mPuW56bpSpqhA8Q6M6f6f1oUmTHA4EjWMrGn3Tuzw9AJVYD9n8tnweeyJhumdzUo
-         0jGQ==
-X-Gm-Message-State: AOAM532UjNCcoDpdu5YWzbF+HfVTuDg+7PH5/Y3gn54ZNuO3qP/sEh5T
-        lG2vvVPlRgQCzEdtP5QIf1LT7F/tG2VWxxRhJCw5S9nweKJwjh1GKVGIhH+lGcpSqMuF4GRTORM
-        hzlD96Ef0pYQgk6laGwas1WyS
-X-Received: by 2002:a0c:9d07:: with SMTP id m7mr2251489qvf.60.1632361510170;
-        Wed, 22 Sep 2021 18:45:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzlrhWqndqojDWMAPYNzVKvmh101pj2sHkY/jdU8wzg9pcKqwyA7lWjVqyMC72ZDp68sAo3Hg==
-X-Received: by 2002:a0c:9d07:: with SMTP id m7mr2251475qvf.60.1632361509936;
-        Wed, 22 Sep 2021 18:45:09 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id m139sm3491766qke.18.2021.09.22.18.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 18:45:09 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [RFC PATCH] locking/rwsem: Add upgrade_read()
-To:     Boqun Feng <boqun.feng@gmail.com>
+        id S238836AbhIWBtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 21:49:33 -0400
+Received: from mout.gmx.net ([212.227.17.22]:49537 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238177AbhIWBtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 21:49:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632361652;
+        bh=9rj0wRbsRka/mqdZWeaS364ql8AvDUlzY/e1FId8R5E=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=a3u3nYov9mr36WNFwmc3Z7fWCnyb9EJJa201Q9NRotDr5qcIEPb1RmvnZCQx+YtRD
+         tKwqfIem+XodvCbQiKl/eV3qFPxOf3/vMbO7zBbYgfyRQnfiHJUgqeuAOGN8NpBM1c
+         VuXO5znnJ/Gxz+FP1GolJ3WmME4/4geWeKNehL4o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.149.175]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MNt0C-1mDjFU0r28-00OFsT; Thu, 23
+ Sep 2021 03:47:32 +0200
+Message-ID: <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Mel Gorman <mgorman@techsingularity.net>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>
-References: <20210922193657.29461-1-longman@redhat.com>
- <YUvVg6OJLIqg/rUZ@boqun-archlinux>
-Message-ID: <bafdd02e-68f8-a55c-68fe-8fe165cfe9d4@redhat.com>
-Date:   Wed, 22 Sep 2021 21:45:08 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 23 Sep 2021 03:47:30 +0200
+In-Reply-To: <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+         <20210920142614.4891-3-mgorman@techsingularity.net>
+         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+         <20210921103621.GM3959@techsingularity.net>
+         <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+         <20210922132002.GX3959@techsingularity.net>
+         <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+         <20210922150457.GA3959@techsingularity.net>
+         <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+         <20210922173853.GB3959@techsingularity.net>
+         <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-In-Reply-To: <YUvVg6OJLIqg/rUZ@boqun-archlinux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:T8IfYZu/IAaSTN9249HczCCLmJcCV9aXk6k4XZsq9bf/NOvbRo1
+ jWaFC9J/X+ce+hJmlaXbVfoxt4sa0mO5Sv9jK6ig3DEQxXtHVq2xdpE+Zd0hARu/EVxrWW8
+ 1tJ9XzgPVMalVi3no0bzi42B4iPEjT0qoUPIaorGjNPNlQIveEpC3nxGnZMt9PuI5qUoPcl
+ r1DOId9pt4BnfNx35OUSg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:V7r5zrQ+5Pc=:TIdvRg8HldsK7eLu6WVo5H
+ FXturr0Qzklf7kmhCo6kV8bfW49Fa3oH1b7L8eIAIWp7vWv9KGkm4T1oeIrf5QTouR5HzIQ3J
+ prd6uI1JLnTR87Kw6S/+mmK6sQylpyhCp7Wd49Ya+/iRl1agUGTBgchu50M0JhTz6qhO3RjZx
+ 3SDz52nCAyx2mdJIyxtZ/luW38jM4WRuCniHNEZF9c1KoBhdk4X819kukrDxcNb+Sh5IWjEn7
+ xMf1tOIMg8648f4Twycgg+nqaXWJXtSTAF84WlEMggPS+HFoDmTJahVMmI+/aBE/XXHzBwK/T
+ f0mqjvn+vMMy77ljmHo6oGlagTVllvPjTaClo4N6STfEW+4ObnZw+k7oJwJb+h6DOsf0NzRw9
+ THh7h/Vcrpej2OKfbkFE/YfYh2ximrugv8LJrWGIj6VQ3r4mSZ5mpav7o3hAKpqPUqZZf4xca
+ iklZilCU6KTt18lcYYdLt/bArs5ykXy/nZcvahnKu7j1MYNx/PlWbYBAf+h8YdiA+qQk5YV91
+ 41nkzjfl5i+PSZuiCFz7B0knVxjJFg6vMgfYqDKAgFQUnJBZQZnqYkNCwF9NriR1feL1HhxMx
+ qMMvIp6wucFSTzBaIZf8ohVwsJpMuRHXu34YFvozw2csk+4LKkWp4cMC+9UEM97j7tgVYp9IQ
+ EvdIGKNCGogOmsi9SCtkvrNfudY/zZVbucmKjFSUk6qEWyTDheON78FEIHT0hM0NaKtFdordQ
+ cqIfUu/XojfMQBa6o7p7aQdLd1YJ6a0eXhdFd6CjdDP4lov34GklBLpTQyOsvpDnD1flNba46
+ Gk1u/7X/wOhvObCfTFyKXczYUhlfKm+PnjBTrF+HrDOQkbhIbeQxhoC1G/B8LrDZIPZu3qZRZ
+ dc02Q4j4vYtoT862piNQzO+4QG790g203jhPkl3Gmk0bw4PD3Ngloukhyc1DSBGdGD0mSvr2S
+ ccoIfnL/tQuEPI+jC01S0IxvG7+pR5VebuYizxFBblfCm01d7FyV2/kwEAYU2gSmw+8LcujQm
+ tE37wad46VjOh/B+x+oTnI1sr/idsAeL5PEU6L/tFl+HDScf5Vyls7tve0/BoVA5ziqRzfDqr
+ 97bQtc8BjTnQOM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 9:16 PM, Boqun Feng wrote:
-> On Wed, Sep 22, 2021 at 03:36:57PM -0400, Waiman Long wrote:
->> Currently there are about 12 instances in the kernel where an up_read()
->> is immediately followed by a down_write() of the same lock. For example,
->>
->>    drivers/tty/n_tty.c:		up_read(&tty->termios_rwsem);
->>    drivers/tty/n_tty.c-		down_write(&tty->termios_rwsem);
->>
->> Since we have already provided a downgrade_write() function, we may as
->> well provide an upgrade_read() function to make the code easier to read
->> and the intention clearer.
->>
->> If the current task is the only reader, the upgrade can be done by a
->> single atomic operation. If not, the upgrade will have to be done by a
->> separate up_read() call followed by a down_write(). In the former case,
->> the handoff bit is not considered and the waiter will have to wait a
->> bit longer to acquire the lock.
->>
->> The new upgrade_read() function returns a value of 0 for safe upgrade
->> where rwsem protected data won't change. Otherwise a value of 1 is
->> returned to indicate unsafe upgrade where rwsem protected data may
->> change during the upgrade process.
->>
->> For PREEMPT_RT, it falls back to up_read() followed by down_write()
->> for simplicity.
->>
->> Some uses of down_write() with long lock hold time may be changed
->> to the following format in the future:
->>
->> 	down_read()
->> 	/* check data */
->> 	if (upgrade_read()) {
->> 		/* unsafe upgrade, recheck data */
->> 	}
->> 	/* update data */
->> 	up_write();
->>
->> As long as the "recheck data" and "update data" parts are relatively
->> short compared with the "check data" part, this conversion may help to
->> improve parallelism and reduce lock contention.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   include/linux/rwsem.h  |  5 ++++
->>   kernel/locking/rwsem.c | 53 ++++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 58 insertions(+)
->>
->> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
->> index 352c6127cb90..8ece58224f25 100644
->> --- a/include/linux/rwsem.h
->> +++ b/include/linux/rwsem.h
->> @@ -207,6 +207,11 @@ extern void up_write(struct rw_semaphore *sem);
->>    */
->>   extern void downgrade_write(struct rw_semaphore *sem);
->>   
->> +/*
->> + * upgrade read lock to write lock
->> + */
->> +extern int upgrade_read(struct rw_semaphore *sem);
->> +
->>   #ifdef CONFIG_DEBUG_LOCK_ALLOC
->>   /*
->>    * nested locking. NOTE: rwsems are not allowed to recurse
->> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
->> index 000e8d5a2884..aeb5b0668304 100644
->> --- a/kernel/locking/rwsem.c
->> +++ b/kernel/locking/rwsem.c
->> @@ -1203,6 +1203,29 @@ static struct rw_semaphore *rwsem_downgrade_wake(struct rw_semaphore *sem)
->>   	return sem;
->>   }
->>   
->> +/*
->> + * Try to upgrade read lock to write lock
->> + */
->> +static inline int __try_upgrade_read(struct rw_semaphore *sem)
->> +{
->> +	long count = atomic_long_read(&sem->count);
->> +
->> +	WARN_ON_ONCE(count & RWSEM_WRITER_LOCKED);
->> +
->> +	/*
->> +	 * When upgrading from shared to exclusive ownership,
->> +	 * anything inside the write-locked region cannot leak
->> +	 * into the read side. Use an ACQUIRE semantics.
->> +	 */
->> +	if (((count & RWSEM_READER_MASK) == RWSEM_READER_BIAS) &&
->> +	     atomic_long_try_cmpxchg_acquire(&sem->count, &count,
->> +			count - RWSEM_READER_BIAS + RWSEM_WRITER_LOCKED)) {
->> +		rwsem_set_owner(sem);
->> +		return 1;
->> +	}
->> +	return 0;
->> +}
->> +
->>   /*
->>    * lock for reading
->>    */
->> @@ -1438,6 +1461,11 @@ static inline void __downgrade_write(struct rw_semaphore *sem)
->>   	rwbase_write_downgrade(&sem->rwbase);
->>   }
->>   
->> +static inline int __try_upgrade_read(struct rw_semaphore *sem)
->> +{
->> +	return 0;
->> +}
->> +
->>   /* Debug stubs for the common API */
->>   #define DEBUG_RWSEMS_WARN_ON(c, sem)
->>   
->> @@ -1581,6 +1609,31 @@ void downgrade_write(struct rw_semaphore *sem)
->>   }
->>   EXPORT_SYMBOL(downgrade_write);
->>   
->> +/*
->> + * Upgrade read lock to write lock
->> + *
->> + * Return: 0 when upgrade is safe, i.e. rwsem protected data do not change;
->> + *         1 when upgrade is unsafe as rwsem protected data may have changed.
->> + */
->> +int upgrade_read(struct rw_semaphore *sem)
->> +{
->> +	if (__try_upgrade_read(sem)) {
->> +		rwsem_release(&sem->dep_map, _RET_IP_);
->> +		rwsem_acquire(&sem->dep_map, 0, 0, _RET_IP_);
->> +		return 0;
->> +	}
->> +
->> +	/*
->> +	 * We cannot directly upgrade to the write lock, just do a regular
->> +	 * up_read() and down_write() sequence. The data protected by the
->> +	 * rwsem may have changed before the write lock is acquired.
->> +	 */
->> +	down_read(sem);
->> +	up_write(sem);
-> Confused, the comment says up_read()+down_write(), however the code is
-> down_read()+up_write().
-Thanks for catching that typo. My bad.
+On Wed, 2021-09-22 at 20:22 +0200, Vincent Guittot wrote:
+> On Wed, 22 Sept 2021 at 19:38, Mel Gorman <mgorman@techsingularity.net> =
+wrote:
+> >
+> >
+> > I'm not seeing an alternative suggestion that could be turned into
+> > an implementation. The current value for sched_wakeup_granularity
+> > was set 12 years ago was exposed for tuning which is no longer
+> > the case. The intent was to allow some dynamic adjustment between
+> > sysctl_sched_wakeup_granularity and sysctl_sched_latency to reduce
+> > over-scheduling in the worst case without disabling preemption entirel=
+y
+> > (which the first version did).
+
+I don't think those knobs were ever _intended_ for general purpose
+tuning, but they did get used that way by some folks.
+
+> >
+> > Should we just ignore this problem and hope it goes away or just let
+> > people keep poking silly values into debugfs via tuned?
 >
-> Besides, I don't like the idea that the value may have changed before
-> the write lock is acquired if we call it "upgrade". Maybe we want api
-> like down_read_upgradable(), which can be held in parallel with other
-> down_read() but no other down_read_upgradable(), and one can only
-> upgrade the read-side critical section created by
-> down_read_upgradable(). For implementation, that means we need to have
-> one extra bit for upgradable. Thoughts?
+> We should certainly not add a bandaid because people will continue to
+> poke silly value at the end. And increasing
+> sysctl_sched_wakeup_granularity based on the number of running threads
+> is not the right solution.
 
-I like your idea. There are spare bits available and we can dedicate one 
-bit for that purpose. After successfully acquire the bit the reader can 
-probably spin a little bit and then insert itself to the head of the 
-wait queue to sleep. The last exiting reader can wake it up to acquire 
-the write lock.
+Watching my desktop box stack up large piles of very short running
+threads, I agree, instantaneous load looks like a non-starter.
 
-I will probably use "try_upgrade_read() to indicate that the attempt may 
-fail.
+>  According to the description of your
+> problem that the current task doesn't get enough time to move forward,
+> sysctl_sched_min_granularity should be part of the solution. Something
+> like below will ensure that current got a chance to move forward
 
-Thanks for the suggestion.
+Nah, progress is guaranteed, the issue is a zillion very similar short
+running threads preempting each other with no win to be had, thus
+spending cycles in the scheduler that are utterly wasted.  It's a valid
+issue, trouble is teaching the scheduler to recognize that situation
+without mucking up other situations where there IS a win for even very
+short running threads say, doing a synchronous handoff; preemption is
+cheaper than scheduling off if the waker is going be awakened again in
+very short order.
 
-Cheers,
-Longman
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 9bf540f04c2d..39d4e4827d3d 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7102,6 +7102,7 @@ static void check_preempt_wakeup(struct rq *rq,
+> struct task_struct *p, int wake_
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int scale =3D cfs_rq->nr_runn=
+ing >=3D sched_nr_latency;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int next_buddy_marked =3D 0;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int cse_is_idle, pse_is_idle;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long delta_exec;
+>
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(se =3D=3D pse))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 return;
+> @@ -7161,6 +7162,13 @@ static void check_preempt_wakeup(struct rq *rq,
+> struct task_struct *p, int wake_
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 return;
+>
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 update_curr(cfs_rq_of(se));
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 delta_exec =3D se->sum_exec_runtim=
+e - se->prev_sum_exec_runtime;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Ensure that current got a =
+chance to move forward
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (delta_exec < sysctl_sched_min_=
+granularity)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return;
+> +
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (wakeup_preempt_entity(se,=
+ pse) =3D=3D 1) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 /*
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 * Bias pick_next to pick the sched entity that is
 
+Yikes!  If you do that, you may as well go the extra nanometer and rip
+wakeup preemption out entirely, same result, impressive diffstat.
 
+	-Mike
