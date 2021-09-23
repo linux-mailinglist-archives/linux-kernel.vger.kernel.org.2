@@ -2,234 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11C0415FB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B703C415FBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241237AbhIWN2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:28:23 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:53061 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241104AbhIWN2W (ORCPT
+        id S241249AbhIWN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:29:28 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:40901 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231380AbhIWN3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:28:22 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1N0F9t-1mp4rW26id-00xJGN; Thu, 23 Sep 2021 15:26:49 +0200
-Received: by mail-wr1-f51.google.com with SMTP id t18so17310353wrb.0;
-        Thu, 23 Sep 2021 06:26:49 -0700 (PDT)
-X-Gm-Message-State: AOAM532XyXmkW+TZQ+Zsb5k5tZspnPX9Bcz88LOW1NqC1XdnGqCUU3wW
-        Q2cR+csHxVSXYvMNEiKBFX9CnpgiTtno0NCLgM4=
-X-Google-Smtp-Source: ABdhPJw4UBkTVB6mvmMc1RQ4ZclrJtxhHJpuF6D7fFM8+8KgqGaZ+oJj0Hxv0wUOvOTVJOoZ48OfTnkS7cg4jdQ6xS0=
-X-Received: by 2002:a05:600c:896:: with SMTP id l22mr15859999wmp.173.1632403609085;
- Thu, 23 Sep 2021 06:26:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
- <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
- <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
- <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
- <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
- <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
- <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
- <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
- <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com>
- <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com> <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com>
-In-Reply-To: <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 23 Sep 2021 15:26:32 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
-Message-ID: <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
-Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Rob Herring <robh@kernel.org>,
+        Thu, 23 Sep 2021 09:29:20 -0400
+Received: by mail-wr1-f42.google.com with SMTP id t28so3821860wra.7;
+        Thu, 23 Sep 2021 06:27:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/wLuOTGOM2923erGAXxPQ9YurX8bSLtQ7+eKGtfZWYs=;
+        b=YKhmK3HcG+Bs+P8lY25OI+CSW1hq2GLyozXvd1c90e4WD7DaiDtVPyPC0QwzLgQqLD
+         HC+S/gxfK9WNmeFwo9KAFu6onf0hRctAmZvWh7vWs4lzERQMTrV4pA6+84RcXe7t45D5
+         0PV/UOlJw7dAOOCGSA4a+EBJCpF/s5VQoKCdepuXt5JcfX8eJ+om1w4P2ZAHShq159C+
+         3K00LQaQr0ClDoUnA9RBoioRosDzFHBQBeTMcusvZDiNRTZ7CGERblo6A2NrVCESvfxE
+         xf0q6woy4WeWlTVs7SEzV+4twTo0+uDzVToMuxneykROThNLhk2OM/Jvn4RNwVCkhOlP
+         uF3w==
+X-Gm-Message-State: AOAM532m2Ye5DBL3A8S2EEDUYEDMzD7MXJY0UgDB/ev4fGinT8AoLjDg
+        YJDWSrG2VKY9nZijnwEzZGA1QrQeo32n4g==
+X-Google-Smtp-Source: ABdhPJxzbpr0WNXSLMFzPeFPqNvzQRU/+GHoYsE1TmQ7rQ7ma/BL93UnfJOiMlt4n1Z+t5zWQUQkAg==
+X-Received: by 2002:adf:f486:: with SMTP id l6mr4929948wro.375.1632403666666;
+        Thu, 23 Sep 2021 06:27:46 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.googlemail.com with ESMTPSA id u1sm2570543wmc.29.2021.09.23.06.27.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 06:27:45 -0700 (PDT)
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:zaXvNWEPrlj1bhL7HkFmMW/Tpvat2zhfOUly+zgxXOlsBTzNBDI
- ttt+rLcon28koaw6AAmRKHpkgmQ2b8r7tkWl6pxARDnJwtD1CKDtq4rSjRO95sjyoZp/Hde
- g0WKHzLNFuT07I9QXMLGVWtkrdT6ukXKknw9Y+1bbp4rvF0x21N5FHtzSYVJV928T19a7NB
- rZKYh9CWB6VIlWjcKvZMQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ebET27t9iSM=:O4JCxyD3aZMWFCqL+xubE/
- B34vPRal4iy0rI02KcuQjd+xcqe+CaLD8V7jWKUPtVBPx3x7+/VeeBqTYr2wkY9UZLdeRQpyb
- lUaJd6jKKo0GVxYcrZ7Ta/nTSU8nvIVDOdGSeruhaYMSBa1F5dEbYG2fcS7Qu3pu7sxnTNJ6m
- Gnli6moCPaJK80ilH+Rmbx9CvbZa1q8QDGn700j4UzIRjyI4bMi0U5HFxTWqgXKuFtWbfnXRU
- 6I7fO7XErK1og+g40McedWNn5g/vddOMDvNtbX1lwZS9/NBwyxhBtj0GxkWJ4AaJ0cffwtSRH
- E9iTvEDTBqUVg/Aij17+ZfVX6+pnGxvjm++fElYn0ps9oLO5prCLnMQNORQjicrXJlezXNC/8
- 2t8tjVi268iRieI6JCFHFJY7m3HLCv3zWlz8KdZj8kb6x3EfUr5QzYB1cLz4ildWs0JOtdsps
- ZHqis+aQEHyOxHYS/SmlfcmWoTK9bH8VZVDTjqFeazxxQAjAFw0E4gbKKZd9RBwVo26KISm12
- gedSr6YabWfPMwfGAiGCUPE+wvwUGxQSTBs9ZsCIrf1053URZhzKOWJMQiaM5ARHdNJUsIebS
- U0HpieouZivY4Oa85GrltjzJNZNWnBuKVWuXkvtrnS8ypolrDrvBdmRlsYWx9wnrHv7IKAA6O
- +84y+tk9Z1XR8AWmvEbYaARsxnnvmsLqyis0Q0tbJ0v/9zW0FXKCCI1CZ8IAU43oUkn38CLEy
- QYGa6iU7n0fsqhqa4lDH0P/+OPj69ESRgqNcrA==
+        Will Deacon <will@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20210920190350.3860821-1-willmcvicker@google.com>
+ <20210920190350.3860821-2-willmcvicker@google.com>
+ <a8d40b96-bcb2-5eb6-b0e5-c20c14471c8a@kernel.org>
+ <CAMuHMdWdHF49qj+qV-DnbDDv14J3y98TPHd_6y_i7o7_azhErg@mail.gmail.com>
+ <2c8a79f7-711a-b075-745f-ea77b82a1117@canonical.com>
+ <CABYd82bzKh=QQHyk-kPXekzCKx+Uy-z2TY5qAQQNfuew=h=O-w@mail.gmail.com>
+ <001cd621-53d1-fe22-0eaa-d13137827297@canonical.com>
+ <YUx5uhKW/Jy2r3lv@google.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v1 1/4] clk: samsung: change COMMON_CLK_SAMSUNG default
+ config logic
+Message-ID: <30a1d0f3-a17c-bf87-2519-542063a7a663@kernel.org>
+Date:   Thu, 23 Sep 2021 15:27:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YUx5uhKW/Jy2r3lv@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ==On Thu, Sep 23, 2021 at 1:09 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
-> On Thu, Sep 23, 2021 at 11:07 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > ()On Thu, Sep 23, 2021 at 8:36 AM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > > On Thu, Sep 23, 2021 at 7:51 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > > I am not really understanding this yet (I think I need a bit of sleep
-> > > > > time :)), but I will test this tomorrow and come back to you again
-> > > > > with results.
-> > > >
-> > > > Both would let devices access the registers, but they are different
-> > > > regarding the bus translations you have to program into the
-> > > > host bridge, and how to access the hardcoded port numbers.
-> > >
-> > > I have tested this and I get initial invalidid BAR value errors on pci
-> > > bus I/O enumeration an also bad addresses in /proc/ioports in the same
-> > > way I got defining PCI_IOBASE as _AC(0xa0000000, UL):
-> > >
-> > > root@gnubee:~# cat /proc/ioports
-> > > 00000000-0000ffff : pcie@1e140000
-> > >   00000000-00000fff : PCI Bus 0000:01
-> > >     00000000-0000000f : 0000:01:00.0
-> > >       00000000-0000000f : ahci
-> > >     00000010-00000017 : 0000:01:00.0
-> > >       00000010-00000017 : ahci
-> > >     00000018-0000001f : 0000:01:00.0
-> > >       00000018-0000001f : ahci
-> >
-> > Ok, These look good to me now.
->
-> This is the behaviour we already had with spaces.h [0] without any
-> other change. See also comments of Thomas [1] about this being wrong
-> which at the end are the motivation for this patch series.
->
-> > > mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x001e160000
-> > > LOGIC PIO: PIO TO CPUADDR: ADDR: 0x1e160000 -  addr HW_START:
-> > > 0x1e160000 + RANGE IO: 0x00000000
->
-> Why is my RANGE IO start transformed here to 0x0? Should not be the
-> one defined in dts 0x001e160000?
+On 23/09/2021 14:57, Lee Jones wrote:
+> On Tue, 21 Sep 2021, Krzysztof Kozlowski wrote:
+> 
+>> On 21/09/2021 19:58, Will McVicker wrote:
+>>> On Tue, Sep 21, 2021 at 1:35 AM Krzysztof Kozlowski
+>>> <krzysztof.kozlowski@canonical.com> wrote:
+>>>>
+>>>> On 21/09/2021 09:50, Geert Uytterhoeven wrote:
+>>>>> On Tue, Sep 21, 2021 at 9:31 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>>>>> On 20/09/2021 21:03, Will McVicker wrote:
+>>>>>>> COMMON_CLK_SAMSUNG is selected by ARCH_EXYNOS which forces this config
+>>>>>>> to be built-in when ARCH_EXYNOS is enabled. Switch the logic to use a
+>>>>>>> "default y if ARCH_EXYNOS" to provide flexibilty for vendors to disable
+>>>>>>> or modularize this driver.
+>>>>>>
+>>>>>> The clock drivers are essential, you cannot disable them for a generic
+>>>>>> kernel supporting ARCH_EXYNOS. Such kernel won't work properly on platforms.
+>>>>>
+>>>>> Obviously it's not gonna work if the clock driver is not enabled
+>>>>> at all.  But does it work if you make the clock driver modular, and
+>>>>> put it with all other essential driver modules in initramfs?  Debugging
+>>>>> would be hard, as the serial console driver also relies on clocks
+>>>>> and PM Domains etc.
+>>>>
+>>>> The kernel could boot without clock drivers (default settings from
+>>>> bootloader), probe clocks from initramfs and proceed with rootfs from
+>>>> eMMC/SD/net.
+>>>>
+>>>> In theory.
+>>>>
+>>>> However I have no reports that it ever worked. If there is such working
+>>>> upstream configuration, I don't mind here. Just please explain this in
+>>>> the commit msg.
+>>>>
+>>>>>
+>>>>> If not, this patch should be NAKed, until it works with a modular
+>>>>> clock driver.
+>>>>>
+>>>>> If yes, perhaps another line should be added (_before_ the other line)?
+>>>>>
+>>>>>   + default m if ARCH_EXYNOS && MODULES
+>>>>>     default y if ARCH_EXYNOS
+>>>>>
+>>>>> However, many developers may want MODULES=y, but not want to bother
+>>>>> with an initramfs.  So perhaps we need a new symbol
+>>>>> MINIMUM_GENERIC_KERNEL or so, protected by EXPERT, and make the
+>>>>> driver default to m if that is enabled?
+>>>>
+>>>> Yeah, that's indeed a problem to solve. For most users (and distros)
+>>>> building kernel for Exynos this should be built-in by default.
+>>>>
+>>>> Anyway, the option is non-selectable so it cannot be converted to "m" or
+>>>> disabled. And this is claimed in the commit msg:
+>>>> "provide flexibilty for vendors to disable or modularize this driver."
+>>>>
+>>>> The commit does not achieve it.
+>>>>
+>>>> Best regards,
+>>>> Krzysztof
+>>>
+>>> Thanks for the reviews! As Lee has explained in his replies, the
+>>> intent of this series is to provide config flexibility to create a
+>>> defconfig that allows us to move out SoC specific drivers in order to
+>>> create a generic kernel that can be used across multiple devices with
+>>> different SoCs.
+>>
+>> That's quite generic statement... or let me put it that way - we already
+>> have this ability to create a generic kernel supporting different SoCs.
+>> Exynos and other ARMv7 and ARMv8 platforms are multiplatform.
+>>
+>> Task is done.
+> 
+> multi_v7_defconfig and ARMv8's defconfig are bloated monoliths which
+> provide limited flexibility.  Good for testing and messing around -
+> not much good for real products.
 
-Can you show the exact property in your device tree? It sounds like the
-problem is an incorrect entry in the ranges, unless the chip is hardwired
-to the bus address in an unusual way.
+I am not saying about defconfigs. I am saying that ARMv8 platform is
+multiplatform so we already solved the problem Will mentioned. :)
 
-> > I think you have to have another #ifdef around the declaration in
-> > this case, or alternatively move the mips definition back to a .c
-> > file and leave only the #define
->
-> Ok, so the following changes:
->
-> diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
-> index 95b00017886c..ee0e0951b800 100644
-> --- a/arch/mips/pci/pci-generic.c
-> +++ b/arch/mips/pci/pci-generic.c
-> @@ -46,3 +46,9 @@ void pcibios_fixup_bus(struct pci_bus *bus)
->  {
->         pci_read_bridge_bases(bus);
->  }
-> +
-> +int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
-> +{
-> +       mips_io_port_base = phys_addr;
-> +       return 0;
-> +}
-...
-> These changes got me to the same behaviour that this patch pretends
-> without the ifdef on this patch. But, this behaviour is wrong
-> according to your explanations since I got
->
-> OF: IO START returned by pci_address_to_pio: 0x1e160000-0x1e16ffff
->
-> and ioports using this range address and not lower 0x0-0xffff.
->
-> So all of these changes seem to be invalid: this patch and the already
-> added to staging-tree two ones: [2] and [3], right?
+> 
+>> Please be more specific about use case and describe what exactly in
+>> current upstream multiplatform kernel is missing, what is not
+>> multiplatform enough.
+> 
+> The use-case is GKI.  A realistic middle-ground between fully open
+> source and real-world usage of the Linux kernel in a competitive
+> technical arena.  GKI aims to be as close to Mainline as possible,
+> whilst allowing hardware vendors to supply their own software
+> containing their perceived competitive edge and/or supporting
+> not-yet-released hardware platforms.
 
-Right, there is probably yet another problem. Patch [2] should
-be harmless here, but patch [3] is wrong as you should not override
-the length of the I/O port window that is in the DT.
+<grumpy mode>
+Therefore the use case is to not contribute anything upstream around
+ARCH_EXYNOS but use it in millions of devices downstream with hundreds
+of out-of-tree modules. The use case is to make life easy for the vendor
+and out-of-tree code, not for the upstream. Instead of promoting
+upstreaming, or leaning towards usptream in some balanced way, the use
+case is to entirely go to out-of-tree.
 
-> Currently, no. But if they were ideally moved to work in the same way
-> mt7621 would be the same case. Mt7621 is device tree based PCI host
-> bridge driver that uses pci core apis but is still mips since it has
-> to properly set IO coherency units which is a mips thing...
+I am not thinking here about edge or not-yet-released platforms but
+"ancient" in terms of current SoC business, e.g. 3-5 years old.
+</grumpy mode>
 
-I don't know what those IO coherency units are, but I would think that
-if you have to do some extra things on MIPS but not ARM, then those
-should be done from the common PCI host bridge code and stubbed out
-on architectures that don't need them.
+> 
+> If you end up over-constraining the ability to configure the kernel in
+> useful/meaningful ways, that makes one of the main (best intention)
+> aims of GKI, (i.e. to have an upstream first ethos in order to be as
+> close to upstream as possible) much more difficult.
 
-> > I realize this is very confusing, but there are indeed at least three
-> > address spaces that you must not confuse here:
-> >
-> > a) I/O port numbers as programmed into BAR registers and
-> >     used in PCIe transactions, normally 0 through 0xffff on each
-> >     bus.
-> > b) Linux I/O port numbers as seen from user space, in the range
-> >      from 0 to IO_SPACE_LIMIT, these correspond to the
-> >      bus addresses from a) if io_offset is zero, but could be
-> >      different with a non-zero value passed into
-> >      pci_add_resource_offset() when the region is probed.
-> >      The offset may be different on each pci host bridge.
->
-> This "offset" is the pci address configured in device tree range,
-> right? This seems the part is not doing properly in my case since all
-> of these changes are needed to at the end got BAR's as
->
-> pci 0000:02:00.0: BAR 4: assigned [io  0x1e161000-0x1e16100f]
-> pci 0000:02:00.0: BAR 0: assigned [io  0x1e161010-0x1e161017]
-> pci 0000:02:00.0: BAR 2: assigned [io  0x1e161018-0x1e16101f]
-> pci 0000:02:00.0: BAR 1: assigned [io  0x1e161020-0x1e161023]
-> pci 0000:02:00.0: BAR 3: assigned [io  0x1e161024-0x1e161027]
->
-> which I understand is correct.
+GKI encourages core kernel changes to be upstreamed but it is
+effectively the nail in the coffin of upstreaming vendor SoC changes.
+There is simply no incentive for less-cooperative vendor to upstream
+it's modules (except usual benefits like code quality and user support
+which are not important for less-cooperative vendors).
 
-The "offset" is between two numbers that can normally both be
-picked freely, so it could literally be anything, but in the most common
-and ideal case, it is zero:
+The kernel should be configured mainly towards mainline platforms. Not
+the other way around. This of course does not stop it for supporting
+out-of-tree code, but I guess you also know that what's out-of-tree, it
+does not exist. :)
 
-The Linux port number gets assigned when probing the host bridge,
-this is purely a software construct and the first bridge should normally
-get range 0-0xffff, the second bridge gets range 0x10000-0x1ffff
-etc. The code assigning these numbers is rather confusing, and I
-can't even find where it is now...
+> 
+> I put in a lot of effort to ensure GKI doesn't end up as just another
+> fork of the Linux kernel.  So far, so good, but flexibility and
+> understanding is key.
+> 
+>>> I'm sorry I added confusion by mentioning
+>>> modularization. All of these drivers that I am modifying in this
+>>> series can be modularized which is an ongoing effort, but is not
+>>> addressed here and I don't believe that modularizing them should be a
+>>> requirement before supporting enabling/disabling them.
+>>
+>> Since the disabling the driver for a kernel supporting Exynos does not
+>> make any sense, then making it at least modular unfortunately it is a
+>> requirement.
+> 
+> I can go with that.
+> 
+>>> I will update the series with my patch that refactors the Samsung SoC
+>>> drivers menuconfig to make these visible as well.
+>>
+>> I would first recommend to really describe your use case because my
+>> questions about this are still unanswered.
+> 
+> Hopefully my replies have helped somewhat.
+> 
+> Happy to discuss further if required.
+> 
+> If all else fails, feel free to ping me on IRC (lag).
 
-The port number on the bus is platform specific. In some cases
-you can set it through a register in the pci host bridge, in other
-cases it is fixed to starting at zero. If the address is programmable,
-it can be either set by the firmware or bootloader and passed down
-to the kernel through the DT ranges property, or the ranges can
-contain a suggested value that then has to be programmed by
-the host bridge driver.
+Thanks Lee, you described the use case. In general I like it and support
+it, except for what I wrote in the other mail.
 
-If the value is not zero, you should try setting it to zero to get
-an identity mapping against the Linux port numbers, to minimize
-the confusion.
+Vendor does not contribute much therefore there is no balance in
+upstreaming. Since none of other vendor's platforms are supported, I am
+looking only at what is supported. From that perspective - the change
+proposed by Will and previous guys, does not have much sense.
 
-It is possible that the hardware (or bootloader) designers
-misunderstood what the window is about, and hardcoded it so
-that the port number on the bus is the same as the physical
-address as seen from the CPU. If this is the case and you
-can't change it to a sane value, you have to put the 1:1
-translation into the DT and would actually get the strange
-port numbers 0x1e161000-0x1e16100f from that nonzero offset.
+My perspective probably would change a lot if vendor did contribute some
+of its non-edge platforms (3-5 years old)... especially that unlike few
+community guys (e.g. PostmarketOS), vendor has shit-tons of money and
+the hardware manuals. :)
 
-This means you can only use PCI devices that can be
-programmed with high port numbers, but not devices with
-hardcoded legacy ports.
+Instead of pushing this change, please let's give some incentive to the
+vendor for upstreaming anything.
 
-> > c) MMIO address used to access ports, offset by PCI_IOBASE
-> >     from the Linux port numbers in b).
-> >     No other registers should be visible between PCI_IOBASE
-> >     and PCI_IOBASE+IO_SPACE_LIMIT
->
-> mips_io_port_base + offset, right? KSEG1 addresses for mips by default.
-
-no, not the offset. As long as mips_io_port_base==PCI_IOBASE,
-the accessible ports will be between mips_io_port_base and
-mips_io_port_base+0xffff.
-
-         Arnd
+Best regards,
+Krzysztof
