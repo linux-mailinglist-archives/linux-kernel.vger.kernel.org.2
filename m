@@ -2,127 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2271416621
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7EF416627
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242989AbhIWTrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 15:47:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10952 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242861AbhIWTrn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 15:47:43 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18NJW36f031236;
-        Thu, 23 Sep 2021 15:45:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=OlfxwL5SxCQJGsEygNnP+Bd9S5CycoibyIwI1T9qbFQ=;
- b=o2g9xUdg4iWokOSpifGukNkZK7jrG3PCnBFvuz4C7oP+gzjHDglARWvYTHBDYKWgrmUN
- nywTanPgUpTOTd5/xMfhi1L+mJwrCvVoKxej3UCLp5sG7C25GVynwAmr4q0nxjw5T5YF
- XfSS+haqO/MAAWW7EoLHEph+pIjpH8koxcOuzA2lkqyOwZ+Lt0jX5schDBGsmjxT7nCn
- nj0KpCKZ1MAIxT1dHKe+ArroeI/VY7R10b19vbUGLmbRaxdWWrC+tHtvcRU2gpGyiZee
- fQz965XLLMlLTgvc9SCxBhiIocufoeoMuCL9s+OrHLUbKOqWsHzC5EoSrMfU3XKh1xK9 Bg== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b8wkuupat-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Sep 2021 15:45:58 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18NJRuDe003688;
-        Thu, 23 Sep 2021 19:45:56 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 3b7q6kd587-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Sep 2021 19:45:56 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18NJjrxv44106172
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Sep 2021 19:45:53 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A19734C04A;
-        Thu, 23 Sep 2021 19:45:53 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 903DC4C05A;
-        Thu, 23 Sep 2021 19:45:51 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.159.121])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 23 Sep 2021 19:45:51 +0000 (GMT)
-Date:   Thu, 23 Sep 2021 22:45:49 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KVM list <kvm@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-usb@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH 0/3] memblock: cleanup memblock_free interface
-Message-ID: <YUzZberbgZE+7HEo@linux.ibm.com>
-References: <20210923074335.12583-1-rppt@kernel.org>
- <CAHk-=wiJB8H5pZz-AKaSJ7ViRtdxQGJT7eOByp8DJx2OwZSYwA@mail.gmail.com>
+        id S243000AbhIWTs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 15:48:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242861AbhIWTs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 15:48:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CC4D60F6F;
+        Thu, 23 Sep 2021 19:46:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632426415;
+        bh=e2cGy5v9Wc5YPLr3GFpQPYFYrEHY3Ve7dQMsppfcNYc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fhr+Uih0+yxcvSfI/HJzO7A6prr76D7TuVjf9n/pje1qLxTXnXaiBzj30IKdtKMbA
+         ygf0+o5esXUyNoqj5CPvGlxmeY3r1zW3umHyFkR22FyKpWo1+0+0OmjK8Ol/a9n4qY
+         mWhRmYLSmrenLHyyoXPcqUX1SKn/96ZCiNPpvL4rbB+nYnMZYIfI//YhZp//v3W2K5
+         zbexF+0YBVdq2emhbvC/kRLB/wsBwnaQC7S5/pb7mZmFKhrdqK/a7BgD+Km+L0xjUs
+         2Vixh+Sb9hW3+3RStS6BiRFQrEyXGufe7mIt6laqcGwVQIJEDWiAaXwIGkojaZwGk3
+         pKfeR5lh3YtcQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [PATCH] misc: gehc: Add SPI ID table
+Date:   Thu, 23 Sep 2021 20:46:09 +0100
+Message-Id: <20210923194609.52647-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiJB8H5pZz-AKaSJ7ViRtdxQGJT7eOByp8DJx2OwZSYwA@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: NmcKtlYbna1qS7iyZ4wr-YnA7UP6mwwQ
-X-Proofpoint-ORIG-GUID: NmcKtlYbna1qS7iyZ4wr-YnA7UP6mwwQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-23_06,2021-09-23_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 suspectscore=0
- mlxlogscore=691 adultscore=0 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2109200000
- definitions=main-2109230115
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1046; h=from:subject; bh=e2cGy5v9Wc5YPLr3GFpQPYFYrEHY3Ve7dQMsppfcNYc=; b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhTNlT7CvtMog4tZf2t21YNIpdnoQ9IoOveeKZIoLl aJ6CfaKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUzZUwAKCRAk1otyXVSH0PuxB/ 9RgEKK3qitLjci35fpOO6RwtE4C4Y5K/mbqHAWekDKmwm+DHQxLy0u4sB6t8FYs/l9Lp6yygB8Rv6N zjo3Q7U4n8AKFVvPrbHBiaXivExySgOM9gBe1VB7PTTJpOjV8T4674ZhZ2Jzvg0Uzp1Ied018Do4Tb EGb/QBpEN8BXURg/6Jpd6RX8dLiEl/+qE9F7LBTK9Pob0ohmA0ikphVEjsG3liO5v2h0eEbPyVvWKX K6iTJXCll2lRWmmtCRWFj20eG6/0d3zWfASVEyNKJYJAxXBqcrtXc9Ej0aDOLHaoGh8GNjGzR+K84C SY6+d+E+ghJNFrQufyGfLB8TnircVk
+X-Developer-Key: i=broonie@kernel.org; a=openpgp; fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding a SPI ID table entry
+for the device name part of the compatible - currently only the full
+compatible is listed which isn't very idiomatic and won't match the
+modalias that is generated.
 
-On Thu, Sep 23, 2021 at 09:01:46AM -0700, Linus Torvalds wrote:
-> On Thu, Sep 23, 2021 at 12:43 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> You need to be a LOT more careful.
-> 
-> From a trivial check - exactly because I looked at doing it with a
-> script, and decided it's not so easy - I found cases like this:
-> 
-> -               memblock_free(__pa(paca_ptrs) + new_ptrs_size,
-> +               memblock_free(paca_ptrs + new_ptrs_size,
-> 
-> which is COMPLETELY wrong.
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/misc/gehc-achc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I did use a coccinelle script that's slightly more robust that a sed you've
-sent, but then I did a manual review, hence the two small patches with
-fixes. Indeed I missed this one, so to be on the safe side I'll rename only
-the obvious cases where coccinelle can be used reliably and leave all the
-rest as it's now. If somebody cares enough they can update it later.
+diff --git a/drivers/misc/gehc-achc.c b/drivers/misc/gehc-achc.c
+index 02f33bc60c56..4c9c5394da6f 100644
+--- a/drivers/misc/gehc-achc.c
++++ b/drivers/misc/gehc-achc.c
+@@ -539,6 +539,7 @@ static int gehc_achc_probe(struct spi_device *spi)
  
-> And no, making the scripting just replace '__pa(x)' with '(void *)(x)'
-
-These were actually manual and they are required for variables that
-used as virtual addresses but have unsigned long type, like e.g.
-initrd_start. So it's either __pa(x) or (void *).
-
+ static const struct spi_device_id gehc_achc_id[] = {
+ 	{ "ge,achc", 0 },
++	{ "achc", 0 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(spi, gehc_achc_id);
 -- 
-Sincerely yours,
-Mike.
+2.20.1
+
