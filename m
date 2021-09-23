@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B553E41677C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542BD416781
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243337AbhIWVbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32958 "EHLO
+        id S243327AbhIWVdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243306AbhIWVbM (ORCPT
+        with ESMTP id S243292AbhIWVdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:31:12 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A195DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:29:40 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 81so4124921pgb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:29:40 -0700 (PDT)
+        Thu, 23 Sep 2021 17:33:10 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96C9C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:31:37 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id b20so31869628lfv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:31:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=akDNRAsaTK+uQtKFIh1ydvOrMyhhLnx/OM5ln2Z5MNk=;
-        b=G2zaNqchvtAWfw4Jj4sXEQH3Rxruj59sBcBHK26bUenW3LAHOm12rDMlvkvu/2+FcZ
-         G6xVVmrEGQskoPPkhckLcf3G2+8mL1TXBchadNnRGz8TN0Fj7xOrO4aOP7b78n4g+Naf
-         Hda0lx7r1brORiS5MkWU4K2OKdGe1Z5QABtAQ=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rSGexge/yTWailPe6Hp1VQxkjzvMXlLhdnN0SKm1jgk=;
+        b=sHXkka97oocc/Avp1+G2WMg9/Kqe44NKcVXC8YurMm1Q5arTOo5d7SR2gd6B1r8KGQ
+         u/j2JVVDjd7ly5+7pexUjhyoYw3zCMTNN52V8f/V4vvVFsLVZsvA6g/ApYzKnvyLyT3t
+         wYJoedt+57XP5OjI9uDm3fzhHhOVPCXmbOZJUkYJ6fXWAOnwi+QCCYi10flo+mOzSS8S
+         5DDRevo5UgdPYGZgjQyhPBVeVHY2UqrDzMR6bTYXos0netmhu+Nx4SdZZG501lTgi3QX
+         ZBRqucDMnx8uDcnfDk5sLD3v7M+mWcBAuosQEmQmNGGhAzRWVFiFacjPHmn42MSpnvJJ
+         zGKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=akDNRAsaTK+uQtKFIh1ydvOrMyhhLnx/OM5ln2Z5MNk=;
-        b=OxzVCcK4Ik/QyMnJy/EaGV3t3iKOIYCUsa9W8ztdOKPpPXwPVUqxKJnOj51kUjOFO8
-         vBiIpk3JF1H1Lq1ZOLwfuki0L41gIn7sMyU8jVi3/v29B7t8MnLJVDfDRYoiwKlGJ6LB
-         xljAkxQBV2P6a8XfjRUmMMiEOahM6lQy+VTqXg+mwu0KdwrWPTQyjKs/n31vod7S5aQJ
-         QQ84ofMp/ILKXPM5tgEY0ViSNBZy9srIQRoYIrbOrR28hQC/aOnCio7nFnMZV+V0vPdt
-         q2eqT+HoKPao7BIKkZEhn9Mm9Od59MKbYDbLYR0utiA+W19DoiNcxNbx0FgsOXa8nADh
-         uvrQ==
-X-Gm-Message-State: AOAM530aFV0i1XIE+GtWTNJf8alvQ2ISpYZZq+FXLrWZmseINBjIfv7n
-        97Gj3PP5QT+ZZcPTMavSLXhAQw==
-X-Google-Smtp-Source: ABdhPJxmeWGw+d3e+reNftFm9QVIN4uPJYjxAGxk/3gd+aiz8C78IF30myFtnICwLuQ1yF0ekbVCbw==
-X-Received: by 2002:aa7:9e0f:0:b0:445:636b:3305 with SMTP id y15-20020aa79e0f000000b00445636b3305mr6442000pfq.38.1632432580235;
-        Thu, 23 Sep 2021 14:29:40 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a4sm6422046pjd.48.2021.09.23.14.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 14:29:39 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Ross Burton <ross.burton@arm.com>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] scripts/gcc-plugins: consistently use HOSTCC
-Date:   Thu, 23 Sep 2021 14:28:49 -0700
-Message-Id: <163243252379.3933826.2645114887075876479.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210923152811.406516-1-ross.burton@arm.com>
-References: <20210923152811.406516-1-ross.burton@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rSGexge/yTWailPe6Hp1VQxkjzvMXlLhdnN0SKm1jgk=;
+        b=DszFqSgSzUbFayfrQNjH56e6WclKM/5JP+UdKjD5Mb/C2uyiMLVZ8Q2aTd615WRoSY
+         zcRD2SJwKy/Tt8S/j6I3aWnitaEewobysI0cNWH8JY4TcO/YkTdLOL2Hme0NJ9UsSvFu
+         cEMP9QNo+CRQ5bYmQv+s1MtsUqZW48/oNKojXLBGfJljVTIoZlfyqWqnOmhpNGF96zmy
+         JGRmIbgy3XTn4EGk7X2yNaeXzhBXig3lucnGVGZPuRdo+fLRVLdzQa6Byo1ici1jDXZN
+         p72zVh7MNFD1r7ZrQ2XyOZeMqoLkSPDYC9FoBZZhUdmMnbNE0YF+Pzk5d3ZPmjia18GS
+         lv9w==
+X-Gm-Message-State: AOAM530L5x80IoMjqoG17GtqYpeKyJhMq1ld2KIYPPJizlF0vHAfH1R6
+        JTD4G2sTecvSKrn96ADW/V8WITo3/ns/gxoBpF0mMg==
+X-Google-Smtp-Source: ABdhPJy2mfR57uNliZEcdzZTcs5ysF9NDOwlJSo6qcE2nsS01XTmcffsKxwYrHi5ZVuTy9LqrP5bV2aG6k/zenW3gho=
+X-Received: by 2002:ac2:4651:: with SMTP id s17mr6179225lfo.584.1632432696061;
+ Thu, 23 Sep 2021 14:31:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210922025640.11600-1-zhiyong.tao@mediatek.com> <CACRpkdYASy3KMm4VXPrMyvVpONK78gwRn6kthK534pjWb5mhvA@mail.gmail.com>
+In-Reply-To: <CACRpkdYASy3KMm4VXPrMyvVpONK78gwRn6kthK534pjWb5mhvA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Sep 2021 23:31:25 +0200
+Message-ID: <CACRpkdbM3hoAxMSaoGDzF84rxmawghHFcSdibs9wANxWn0iynQ@mail.gmail.com>
+Subject: Re: [PATCH v13 0/5] Mediatek pinctrl patch on mt8195
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 16:28:11 +0100, Ross Burton wrote:
-> The GCC plugins are built using HOSTCC, but the path to the GCC plugins
-> headers is obtained using CC.  This can lead to interesting failures if
-> the host compiler and cross compiler are different versions, and the
-> host compiler uses the cross headers.
+On Thu, Sep 23, 2021 at 11:27 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Wed, Sep 22, 2021 at 4:56 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+>
+> > This series includes 5 patches:
+> > 1.add rsel define.
+> > 2.change pull up/down description
+> > 3.fix coding style
+> > 4.support rsel feature for common ICs
+> > 5.add rsel setting on MT8195
+>
+> It appears we have consensus so I have applied this patch set for v5.16!
 
-(I changed this from HOSTCC to HOSTCXX to match the other invocations.)
+Speaking too soon! It appears there was still comments on patch 4.
+I blame my gmail.
 
-Applied to for-next/gcc-plugins, thanks!
+I backed the patches out for now but this is starting to look really
+good, try to make sure the patches also applies on the "devel"
+branch in the pinctrl tree so I don't do any mistakes when merging!
 
-[1/1] scripts/gcc-plugins: consistently use HOSTCC
-      https://git.kernel.org/kees/c/ef5ecb129791
-
--- 
-Kees Cook
-
+Yours,
+Linus Walleij
