@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4E64160CC
+	by mail.lfdr.de (Postfix) with ESMTP id DAFD44160CD
 	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241684AbhIWOMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        id S241725AbhIWOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241707AbhIWOMH (ORCPT
+        with ESMTP id S241710AbhIWOMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:12:07 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C67FC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:10:36 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id m21so6401938pgu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:10:36 -0700 (PDT)
+        Thu, 23 Sep 2021 10:12:14 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE53C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:10:43 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id v19so4548136pjh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:10:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4uC2eWg7aEhw9OQsJm+DyTckWnK1d1EQQKLFN4MrYQw=;
-        b=nZcWLyFX6b4h1Cn/kDTSOUiZYJB63rCYafEeVclmX1skSVyMr5tul8uelIiYPoPQoE
-         qAn6MslpW+m0PQ1NmIdZSCRnuLaIKwBzHQMRIGp89JF6vqOgVHWkvQRzWwx5mY3Z687F
-         1WAtFXZnSPgLjLUHuWOp8+xgBcfW9/XwQ6HMyoornzPYfjc25ncVI84+fJhrmVfa0CeM
-         t2ZUZjFkkp+FJGLgb2rpJ0kGvHQ41li/JhuZSeeAOGrnTM5BxoSqVvT9Z9HasNoP0v4F
-         iaZHqiSZmfjr649EPagTN1+sv7nEvyvzdG45Lb+7pampaxFx/wtw4atEMzDywhsNJLYO
-         +zcw==
+        bh=9ZysB6B1fylvRcmjz+YxzcufocnP0eHTmJAB2LpWg6Q=;
+        b=Vi+vH7BW/f9VkQhaVR+mOMIWqOBrDWTonxYSwBG/fXNPufRSitagCVDzDz26pYzYtD
+         b2IvZv6z0SFcV/PGMFaurJpxqlYyHFqyzqQNSQhMFw6j7XYSV8umsByWG0CJ7/zVtyOJ
+         Tco/fohEUcE0FRCNeCKgMAyZoJUCyal0JCuMhc3wlXFaJpoTK2RCGlRVsSO7QWgJz/1i
+         /pH1+nC3euSXAbTQjIRA2baOFApcIsGzZAoW2A7lT4eUW+vAoh4Pw7Gk+z/URz3RPYsB
+         VRQhRPNe1TdCHH9KwHqLUAk6fZ0mmhAad9SLOx4YZ0hVbJIm3KRWq6wZjcI1onMkZxf6
+         I3hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4uC2eWg7aEhw9OQsJm+DyTckWnK1d1EQQKLFN4MrYQw=;
-        b=BLPsZjIcZw2u4zhX8V3v4YLR43WlSSJUgsU8/uBXqOYkBYfVPWS3VIi+VrlmSzzWcU
-         dRjmqiAE8dg/dLcYFQxHz4fk84tchLnmfnbMAl0dK+FLhR99TY/AQ//57D6MJ2v29H4O
-         N3Ji4eNYNXlyxk+dpQBDov3kTLhEH3VaggrcDdSMzpC9vPDvQ/O28pXKJv4+vkA4/XvD
-         j/O2zCvpcQyX04xjYyZ8js1+mM2HxIRcdZslHmn9j5bdXYpZ8FPjHGa3Cfqg0LMYji7R
-         4+YeDKqvodP9AnEM3W3uy34OVANiUKKVWNztTwFkf8WSkiv0V19RXvGHCXyAKA+Hb+mW
-         iALA==
-X-Gm-Message-State: AOAM53146cYJGQpXJ6vRxvU19lqWtGoWvYiY9U/DJu5vXS0zLSoMCVPG
-        XLoxE29piAuwMmJXJn/KCrvDpCW9dA==
-X-Google-Smtp-Source: ABdhPJwmNSh05Gr/CtxmPWIkNtONd+/aOhaL6bSUzPs/gvjn+O8HsGhBu1NC2ey/m1AQaTZn2uSBCg==
-X-Received: by 2002:a62:1e43:0:b0:447:cb0b:4c6e with SMTP id e64-20020a621e43000000b00447cb0b4c6emr4535184pfe.1.1632406235819;
-        Thu, 23 Sep 2021 07:10:35 -0700 (PDT)
+        bh=9ZysB6B1fylvRcmjz+YxzcufocnP0eHTmJAB2LpWg6Q=;
+        b=x2K3K3yWKrURCiJ3ZqD5aOL8gR3vmIR3msyNK7xuRLJD+IOEzNmMqroUcqBNb+FWdJ
+         dlEwZ98nzdawvVBFF5c3pHvmq18IHbiJn39XgzegTNLwKZXHmpA476Ye2c6kE7/CepZS
+         YwqjM/EyPCNPoqP503yT9scZ5gwYdfuGsit//4YzZfdSKAeExIAYIvmtJcrM2ewqrrVy
+         HeJyicK9N/0RqiCDwAsuMlTybzE0Jhn0Fo6MzDm/OMEkn6JcD6iJ3w0OK3wlb7NlLv21
+         cPpnVGdljLdLFc8yNrt/qdnYOthaCuBtjIlTTB2eNycswt82YQjlJ0TRVA8+Kv6HUcWf
+         tFfw==
+X-Gm-Message-State: AOAM5315w1D9Imc91Hvh5dObGdQNlkwljnhAS/ymXNOWda8eMdHs0DQV
+        ulN/4ZyJu6tRcEqSisCgLg==
+X-Google-Smtp-Source: ABdhPJzjrZs3XaHoleg1SXJxNrF68ViHeoZETQNt13Q41Kiwy9o56HgaZSsQ66w+fanThAzaApD9qA==
+X-Received: by 2002:a17:90a:f2cd:: with SMTP id gt13mr5597806pjb.153.1632406243141;
+        Thu, 23 Sep 2021 07:10:43 -0700 (PDT)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id j6sm5800766pfn.107.2021.09.23.07.10.28
+        by smtp.gmail.com with ESMTPSA id j6sm5800766pfn.107.2021.09.23.07.10.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 07:10:34 -0700 (PDT)
+        Thu, 23 Sep 2021 07:10:42 -0700 (PDT)
 From:   Pingfan Liu <kernelfans@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Pingfan Liu <kernelfans@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -68,10 +68,10 @@ Cc:     Pingfan Liu <kernelfans@gmail.com>,
         Wang Qing <wangqing@vivo.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Santosh Sivaraj <santosh@fossix.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCHv2 3/4] kernel/watchdog: adapt the watchdog_hld interface for async model
-Date:   Thu, 23 Sep 2021 22:09:50 +0800
-Message-Id: <20210923140951.35902-4-kernelfans@gmail.com>
+        linux-kernel@vger.kernel.org
+Subject: [PATCHv2 4/4] arm64: Enable perf events based hard lockup detector
+Date:   Thu, 23 Sep 2021 22:09:51 +0800
+Message-Id: <20210923140951.35902-5-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210923140951.35902-1-kernelfans@gmail.com>
 References: <20210923140951.35902-1-kernelfans@gmail.com>
@@ -81,20 +81,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
-yet. E.g. on arm64, PMU is not ready until
-device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
-with the driver model and cpuhp. Hence it is hard to push this
-initialization before smp_init().
+From: Sumit Garg <sumit.garg@linaro.org>
 
-But it is easy to take an opposite approach by enabling watchdog_hld to
-get the capability of PMU async.
+With the recent feature added to enable perf events to use pseudo NMIs
+as interrupts on platforms which support GICv3 or later, its now been
+possible to enable hard lockup detector (or NMI watchdog) on arm64
+platforms. So enable corresponding support.
 
-The async model is achieved by expanding watchdog_nmi_probe() with
--EBUSY, and a re-initializing work_struct which waits on a wait_queue_head.
+One thing to note here is that normally lockup detector is initialized
+just after the early initcalls but PMU on arm64 comes up much later as
+device_initcall(). So we need to re-initialize lockup detection once
+PMU has been initialized.
 
+[1]: http://lore.kernel.org/linux-arm-kernel/1610712101-14929-1-git-send-email-sumit.garg@linaro.org
+
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+(Pingfan: adapt it to watchdog_hld async model based on [1])
 Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: Sumit Garg <sumit.garg@linaro.org>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -112,90 +115,145 @@ Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Wang Qing <wangqing@vivo.com>
 Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
 Cc: Santosh Sivaraj <santosh@fossix.org>
-Cc: linux-arm-kernel@lists.infradead.org
-To: linux-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
 ---
- include/linux/nmi.h |  3 +++
- kernel/watchdog.c   | 37 +++++++++++++++++++++++++++++++++++--
- 2 files changed, 38 insertions(+), 2 deletions(-)
+ arch/arm64/Kconfig               |  2 ++
+ arch/arm64/kernel/Makefile       |  1 +
+ arch/arm64/kernel/perf_event.c   | 11 ++++++++--
+ arch/arm64/kernel/watchdog_hld.c | 36 ++++++++++++++++++++++++++++++++
+ drivers/perf/arm_pmu.c           |  5 +++++
+ include/linux/perf/arm_pmu.h     |  2 ++
+ 6 files changed, 55 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/kernel/watchdog_hld.c
 
-diff --git a/include/linux/nmi.h b/include/linux/nmi.h
-index b7bcd63c36b4..270d440fe4b7 100644
---- a/include/linux/nmi.h
-+++ b/include/linux/nmi.h
-@@ -118,6 +118,9 @@ static inline int hardlockup_detector_perf_init(void) { return 0; }
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 5c7ae4c3954b..8287e9e1d28d 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -189,6 +189,8 @@ config ARM64
+ 	select HAVE_NMI
+ 	select HAVE_PATA_PLATFORM
+ 	select HAVE_PERF_EVENTS
++	select HAVE_PERF_EVENTS_NMI if ARM64_PSEUDO_NMI
++	select HAVE_HARDLOCKUP_DETECTOR_PERF if PERF_EVENTS && HAVE_PERF_EVENTS_NMI
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+index 3f1490bfb938..789c2fe5bb90 100644
+--- a/arch/arm64/kernel/Makefile
++++ b/arch/arm64/kernel/Makefile
+@@ -46,6 +46,7 @@ obj-$(CONFIG_MODULES)			+= module.o
+ obj-$(CONFIG_ARM64_MODULE_PLTS)		+= module-plts.o
+ obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o perf_callchain.o
+ obj-$(CONFIG_HW_PERF_EVENTS)		+= perf_event.o
++obj-$(CONFIG_HARDLOCKUP_DETECTOR_PERF)	+= watchdog_hld.o
+ obj-$(CONFIG_HAVE_HW_BREAKPOINT)	+= hw_breakpoint.o
+ obj-$(CONFIG_CPU_PM)			+= sleep.o suspend.o
+ obj-$(CONFIG_CPU_IDLE)			+= cpuidle.o
+diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+index b4044469527e..a34343d0f418 100644
+--- a/arch/arm64/kernel/perf_event.c
++++ b/arch/arm64/kernel/perf_event.c
+@@ -23,6 +23,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/sched_clock.h>
+ #include <linux/smp.h>
++#include <linux/nmi.h>
  
- void watchdog_nmi_stop(void);
- void watchdog_nmi_start(void);
-+
-+extern bool hld_detector_delay_initialized;
-+extern struct wait_queue_head hld_detector_wait;
- int watchdog_nmi_probe(void);
- void watchdog_nmi_enable(unsigned int cpu);
- void watchdog_nmi_disable(unsigned int cpu);
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 6e6dd5f0bc3e..bd4ae1839b72 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -103,7 +103,10 @@ void __weak watchdog_nmi_disable(unsigned int cpu)
- 	hardlockup_detector_perf_disable();
- }
+ /* ARMv8 Cortex-A53 specific event types. */
+ #define ARMV8_A53_PERFCTR_PREF_LINEFILL				0xC2
+@@ -1284,10 +1285,16 @@ static struct platform_driver armv8_pmu_driver = {
  
--/* Return 0, if a NMI watchdog is available. Error code otherwise */
-+/*
-+ * Return 0, if a NMI watchdog is available. -EBUSY if not ready.
-+ * Other negative value if not support.
-+ */
- int __weak __init watchdog_nmi_probe(void)
+ static int __init armv8_pmu_driver_init(void)
  {
- 	return hardlockup_detector_perf_init();
-@@ -739,15 +742,45 @@ int proc_watchdog_cpumask(struct ctl_table *table, int write,
- }
- #endif /* CONFIG_SYSCTL */
- 
-+static void lockup_detector_delay_init(struct work_struct *work);
-+bool hld_detector_delay_initialized __initdata;
-+
-+struct wait_queue_head hld_detector_wait __initdata =
-+		__WAIT_QUEUE_HEAD_INITIALIZER(hld_detector_wait);
-+
-+static struct work_struct detector_work __initdata =
-+		__WORK_INITIALIZER(detector_work, lockup_detector_delay_init);
-+
-+static void __init lockup_detector_delay_init(struct work_struct *work)
-+{
 +	int ret;
 +
-+	wait_event(hld_detector_wait, hld_detector_delay_initialized);
-+	ret = watchdog_nmi_probe();
-+	if (!ret) {
-+		nmi_watchdog_available = true;
-+		lockup_detector_setup();
-+	} else {
-+		WARN_ON(ret == -EBUSY);
-+		pr_info("Perf NMI watchdog permanently disabled\n");
-+	}
+ 	if (acpi_disabled)
+-		return platform_driver_register(&armv8_pmu_driver);
++		ret = platform_driver_register(&armv8_pmu_driver);
+ 	else
+-		return arm_pmu_acpi_probe(armv8_pmuv3_init);
++		ret = arm_pmu_acpi_probe(armv8_pmuv3_init);
++
++	hld_detector_delay_initialized = true;
++	wake_up(&hld_detector_wait);
++	return ret;
+ }
+ device_initcall(armv8_pmu_driver_init)
+ 
+diff --git a/arch/arm64/kernel/watchdog_hld.c b/arch/arm64/kernel/watchdog_hld.c
+new file mode 100644
+index 000000000000..379743e0d001
+--- /dev/null
++++ b/arch/arm64/kernel/watchdog_hld.c
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/nmi.h>
++#include <linux/cpufreq.h>
++#include <linux/perf/arm_pmu.h>
++
++/*
++ * Safe maximum CPU frequency in case a particular platform doesn't implement
++ * cpufreq driver. Although, architecture doesn't put any restrictions on
++ * maximum frequency but 5 GHz seems to be safe maximum given the available
++ * Arm CPUs in the market which are clocked much less than 5 GHz. On the other
++ * hand, we can't make it much higher as it would lead to a large hard-lockup
++ * detection timeout on parts which are running slower (eg. 1GHz on
++ * Developerbox) and doesn't possess a cpufreq driver.
++ */
++#define SAFE_MAX_CPU_FREQ	5000000000UL // 5 GHz
++u64 hw_nmi_get_sample_period(int watchdog_thresh)
++{
++	unsigned int cpu = smp_processor_id();
++	unsigned long max_cpu_freq;
++
++	max_cpu_freq = cpufreq_get_hw_max_freq(cpu) * 1000UL;
++	if (!max_cpu_freq)
++		max_cpu_freq = SAFE_MAX_CPU_FREQ;
++
++	return (u64)max_cpu_freq * watchdog_thresh;
 +}
 +
- void __init lockup_detector_init(void)
- {
-+	int ret;
++int __init watchdog_nmi_probe(void)
++{
++	if (!hld_detector_delay_initialized)
++		return -EBUSY;
++	else if (!arm_pmu_irq_is_nmi())
++		return -ENODEV;
 +
- 	if (tick_nohz_full_enabled())
- 		pr_info("Disabling watchdog on nohz_full cores by default\n");
- 
- 	cpumask_copy(&watchdog_cpumask,
- 		     housekeeping_cpumask(HK_FLAG_TIMER));
- 
--	if (!watchdog_nmi_probe())
-+	ret = watchdog_nmi_probe();
-+	if (!ret)
- 		nmi_watchdog_available = true;
-+	else if (ret == -EBUSY)
-+		queue_work_on(smp_processor_id(), system_wq, &detector_work);
-+
- 	lockup_detector_setup();
++	return hardlockup_detector_perf_init();
++}
+diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+index 3cbc3baf087f..2aecb0c34290 100644
+--- a/drivers/perf/arm_pmu.c
++++ b/drivers/perf/arm_pmu.c
+@@ -697,6 +697,11 @@ static int armpmu_get_cpu_irq(struct arm_pmu *pmu, int cpu)
+ 	return per_cpu(hw_events->irq, cpu);
  }
+ 
++bool arm_pmu_irq_is_nmi(void)
++{
++	return has_nmi;
++}
++
+ /*
+  * PMU hardware loses all context when a CPU goes offline.
+  * When a CPU is hotplugged back in, since some hardware registers are
+diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+index 505480217cf1..bf7966776c55 100644
+--- a/include/linux/perf/arm_pmu.h
++++ b/include/linux/perf/arm_pmu.h
+@@ -163,6 +163,8 @@ int arm_pmu_acpi_probe(armpmu_init_fn init_fn);
+ static inline int arm_pmu_acpi_probe(armpmu_init_fn init_fn) { return 0; }
+ #endif
+ 
++bool arm_pmu_irq_is_nmi(void);
++
+ /* Internal functions only for core arm_pmu code */
+ struct arm_pmu *armpmu_alloc(void);
+ struct arm_pmu *armpmu_alloc_atomic(void);
 -- 
 2.31.1
 
