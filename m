@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C7441626D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771B4416266
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242333AbhIWPvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:51:22 -0400
-Received: from mga05.intel.com ([192.55.52.43]:33993 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242288AbhIWPvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:51:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="309431278"
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="309431278"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 08:44:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,316,1624345200"; 
-   d="scan'208";a="455159545"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 23 Sep 2021 08:44:17 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
-        by linux.intel.com (Postfix) with ESMTP id 52936580890;
-        Thu, 23 Sep 2021 08:44:17 -0700 (PDT)
-Message-ID: <49c93d8b83d668873fbe6dd5798db7a7e9fb5b61.camel@linux.intel.com>
-Subject: Re: [PATCH v3 0/5] Add general DVSEC/VSEC support
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Hans de Goede <hdegoede@redhat.com>, lee.jones@linaro.org,
-        bhelgaas@google.com, andy.shevchenko@gmail.com
-Cc:     mgross@linux.intel.com, srinivas.pandruvada@intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Date:   Thu, 23 Sep 2021 08:44:17 -0700
-In-Reply-To: <da8d9c79-d041-b7fa-6ee3-3abfcfcb0ef6@redhat.com>
-References: <20210922213007.2738388-1-david.e.box@linux.intel.com>
-         <da8d9c79-d041-b7fa-6ee3-3abfcfcb0ef6@redhat.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S242204AbhIWPvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:51:05 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:35722 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242143AbhIWPsO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:48:14 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 803F11D99;
+        Thu, 23 Sep 2021 18:44:56 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1632411896;
+        bh=SuD8zN6xNAKrdgxn219w20we7FQ4HvQ5FkLa7M0DkHU=;
+        h=Date:Subject:From:To:References:CC:In-Reply-To;
+        b=G+mHblGnK8rNSp7ONON6k/QvKelb3TjsmJnOmb18XWa1n6tuqMqynrc4i0D5KovGE
+         zet35q7FlpGnH0JfaQLHem3oDnv+7jQF7u5i2Y4vfbxGQyJKHVE3c2hoSh80uDxNbH
+         P3Dtt9xZOXxyZ63uje/ZdIPZJhZP50h45MQ5Go2I=
+Received: from [192.168.211.73] (192.168.211.73) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 23 Sep 2021 18:44:56 +0300
+Message-ID: <22b8b701-e0c0-9b3f-dd58-0e8ab7c54754@paragon-software.com>
+Date:   Thu, 23 Sep 2021 18:44:55 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: [PATCH v2 5/6] fs/ntfs3: Change posix_acl_equiv_mode to
+ posix_acl_update_mode
+Content-Language: en-US
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+References: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+In-Reply-To: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.73]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-23 at 11:04 +0200, Hans de Goede wrote:
-> Hi,
-> 
-> On 9/22/21 11:30 PM, David E. Box wrote:
-> > This patch enables general support for Intel defined PCIe VSEC and DVSEC
-> > capabilities in the Intel Platform Monitoring Technology (PMT) driver.
-> > Though the driver was written exclusively for PMT capabilities, newer DVSEC
-> > and VSEC IDs for other capabilities can exist on the same device requiring
-> > that the driver handle them.
-> > 
-> > V3 is mostly a resend of V2. It drops a platform/x86 patch that was picked
-> > up separately by Hans in the last cycle. It also adds a new patch to
-> > support an upcoming capability.
-> > 
-> > David E. Box (5):
-> >   PCI: Add #defines for accessing PCIE DVSEC fields
-> >   MFD: intel_pmt: Support non-PMT capabilities
-> >   MFD: intel_pmt: Add support for PCIe VSEC structures
-> >   MFD: intel_pmt: Add DG2 support
-> >   MFD: intel_extended_cap: Add support for Intel SDSi
-> 
-> Since this mostly touches drivers/mfd/intel_pmt.c, I assume this is
-> going to get merged through the MFD trees.
+Right now ntfs3 uses posix_acl_equiv_mode instead of
+posix_acl_update_mode like all other fs.
 
-Yes. Thanks.
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+ fs/ntfs3/xattr.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-> 
-> For the few small drivers/platform/x86 changes:
-> 
-> Acked-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
-> 
-> 
-> > 
-> >  drivers/mfd/intel_pmt.c                    | 258 +++++++++++++++------
-> >  drivers/platform/x86/intel/pmt/class.c     |   2 +
-> >  drivers/platform/x86/intel/pmt/crashlog.c  |   2 +-
-> >  drivers/platform/x86/intel/pmt/telemetry.c |   2 +-
-> >  include/uapi/linux/pci_regs.h              |   4 +
-> >  5 files changed, 191 insertions(+), 77 deletions(-)
-> > 
-> 
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 70f2f9eb6b1e..59ec5e61a239 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -559,22 +559,15 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
+ 		if (acl) {
+ 			umode_t mode = inode->i_mode;
+ 
+-			err = posix_acl_equiv_mode(acl, &mode);
+-			if (err < 0)
+-				return err;
++			err = posix_acl_update_mode(mnt_userns, inode, &mode,
++						    &acl);
++			if (err)
++				goto out;
+ 
+ 			if (inode->i_mode != mode) {
+ 				inode->i_mode = mode;
+ 				mark_inode_dirty(inode);
+ 			}
+-
+-			if (!err) {
+-				/*
+-				 * ACL can be exactly represented in the
+-				 * traditional file mode permission bits.
+-				 */
+-				acl = NULL;
+-			}
+ 		}
+ 		name = XATTR_NAME_POSIX_ACL_ACCESS;
+ 		name_len = sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1;
+-- 
+2.33.0
 
 
