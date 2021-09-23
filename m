@@ -2,117 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C594154BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3901F4154C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238733AbhIWAlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 20:41:01 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:33644 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238709AbhIWAlA (ORCPT
+        id S238710AbhIWAow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 20:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238678AbhIWAov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 20:41:00 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AC11CE52;
-        Thu, 23 Sep 2021 02:39:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1632357568;
-        bh=4UEyTbgR066Ho9YbI93ApbZXYxIqsDF3qkQxyZHju14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uBn7ytQjXpMpe88Ll7Fv8HeHmShJbp4daT3UeIbkTxAXIqBxE/r6C1FK4etK+zL5c
-         gdEEB6FzX1mHMlrOeUFJGVrFZgfjIrz4EjcHut7eipe2S0i6X60IK/OWh+kbvqSQye
-         a+qXn04klzLzhRSSMvJnegiqRxa1FwW38Fvp+z9o=
-Date:   Thu, 23 Sep 2021 03:39:27 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
-Message-ID: <YUvMv+Y8tFcWPEHd@pendragon.ideasonboard.com>
-References: <20210811235253.924867-1-robdclark@gmail.com>
- <20210811235253.924867-5-robdclark@gmail.com>
- <YRV10ew/Lr8GPzEv@pendragon.ideasonboard.com>
- <CAD=FV=Xd9fizYdxfXYOkpJ_1fZcHp3-ROJ7k4iPg0g0RQ_+A3Q@mail.gmail.com>
- <CAF6AEGt8K=iy8=dn+GJxt7ybfPtGDPy9w3StqWDwyOv_CKLNVg@mail.gmail.com>
+        Wed, 22 Sep 2021 20:44:51 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A935C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:43:21 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id x124so7218305oix.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 17:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/YzPGdIXUc/n+UBh3Q3cyORP7gAvTv0HxiAeEJD2X/M=;
+        b=o9cAfzvPlxeahlg+EGKgy1FyV3/N+o2QmQ1HklIF0pZG+dic83eqjqpr1UCsFGjUZY
+         g2heg7E3OCpWc/asmqQY5rFyZ+ysANmmp0qK+qHKeXBojcc/pLy4pa51DlWNv/vPYpem
+         7vnxm2RaEpXfZpdIyYC91I7XXpUY2APoDdzLWnIhgeLnNfoatSJvRCwvq/t1VT00KkHk
+         9bOnggMze/BZaZ8oPUf69pu2nIgREXa3ZXmAHqQsGBZjmoBUi5c2CmK0LjLflvv/gDRF
+         fSg+yMyHXwOcnHjvvp0EbRlr3lMHsw2lQQVYlB5ERGMSVXFTVQ/bqHM8JeJHdYm/W/Hr
+         RdkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/YzPGdIXUc/n+UBh3Q3cyORP7gAvTv0HxiAeEJD2X/M=;
+        b=ppZ0qutAsPy9WyyiO3xXkKJx8NmG5dVsw8rVkXEom10GNj9GQMmhSF41SPtPuMGE11
+         eRsbJbqaTR8saMFOsjc34xisun/QPZlP8ZIXhlYDG4fahd2tGN146inNgviPPoAfhF3l
+         2X6DVsC9vQ5/V+3ZE2fKLxWHvSnBaJEkUlbwEHz0hQOWLf68/SPvDHHjQ/W7GJGMAQwW
+         wWC4Xol2jfYzNejqN1ryTouE0a9E3MgWhnYAbwgPIR57y8IlwmZFPGioseKlenYiwcFc
+         FpsWB2waZ+WABhhWzRYmqlLFZXPtPxT1dZTmuub6RlLSQw7uIjRiO3Mozy8ZZIr7h8Sv
+         b4KQ==
+X-Gm-Message-State: AOAM533+Lf9prTVdF0XIn3vdwK1VvzrJDsD30E/ZOPQacq/WqzWgAYh1
+        n8duqjFndxe9jOSvvKclhcb4hMhXLhv954sVTWhzikPJDkN78Q==
+X-Google-Smtp-Source: ABdhPJxOK+CVcYZjH4ildch2fjdVvtzb7hwaN4QxvcaP1yaHV+0zUJ+RxGnAcxkjCSbUISAVEIo7hPbbn2VKH3Xhx4E=
+X-Received: by 2002:aca:af56:: with SMTP id y83mr1656895oie.170.1632357800207;
+ Wed, 22 Sep 2021 17:43:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGt8K=iy8=dn+GJxt7ybfPtGDPy9w3StqWDwyOv_CKLNVg@mail.gmail.com>
+References: <20210917210640.214211-1-bgeffon@google.com> <20210921194336.947226-1-bgeffon@google.com>
+ <YUvFvsyrp86mbjbY@google.com>
+In-Reply-To: <YUvFvsyrp86mbjbY@google.com>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Wed, 22 Sep 2021 20:42:44 -0400
+Message-ID: <CADyq12yaSOdUAE7i9TtFEB-ryDx2kLYCH8eAxrUQGEPizw9ahg@mail.gmail.com>
+Subject: Re: [PATCH v3] zram: Introduce an aged idle interface
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>,
+        Jesse Barnes <jsbarnes@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob and Doug,
+Hi Minchan,
+Thank you for taking a look. I'm happy to make that change, but I
+personally cannot see why userspace would want to do something like
+idle pages older than "0x3C seconds" or "0o250600 seconds," it just
+seems like a strange way to represent seconds. What do you think?
 
-On Mon, Sep 20, 2021 at 11:32:02AM -0700, Rob Clark wrote:
-> On Thu, Aug 12, 2021 at 1:08 PM Doug Anderson wrote:
-> > On Thu, Aug 12, 2021 at 12:26 PM Laurent Pinchart wrote:
-> > > On Wed, Aug 11, 2021 at 04:52:50PM -0700, Rob Clark wrote:
-> > > > From: Rob Clark <robdclark@chromium.org>
-> > > >
-> > > > Slightly awkward to fish out the display_info when we aren't creating
-> > > > own connector.  But I don't see an obvious better way.
-> > >
-> > > We need a bit more than this, to support the NO_CONNECTOR case, the
-> > > bridge has to implement a few extra operations, and set the bridge .ops
-> > > field. I've submitted two patches to do so a while ago:
-> > >
-> > > - [RFC PATCH 08/11] drm/bridge: ti-sn65dsi86: Implement bridge connector operations ([1])
+Brian
+
+On Wed, Sep 22, 2021 at 8:09 PM Minchan Kim <minchan@kernel.org> wrote:
+>
+> On Tue, Sep 21, 2021 at 12:43:36PM -0700, Brian Geffon wrote:
+> > This change introduces an aged idle interface to the existing
+> > idle sysfs file for zram.
 > >
-> > Rob asked me about this over IRC, so if he left it out and it's needed
-> > then it's my fault. However, I don't believe it's needed until your
-> > series making this bridge chip support full DP. For the the eDP case
-> > the bridge chip driver in ToT no longer queries the EDID itself. It
-> > simply provides an AUX bus to the panel driver and the panel driver
-> > queries the EDID. I think that means we don't need to add
-> > DRM_BRIDGE_OP_EDID, right?
-
-That's right.
-
-> > I was also wondering if in the full DP case we should actually model
-> > the physical DP jack as a drm_bridge and have it work the same way. It
-> > would get probed via the DP AUX bus just like a panel. I seem to
-> > remember Stephen Boyd was talking about modeling the DP connector as a
-> > drm_bridge because it would allow us to handle the fact that some TCPC
-> > chips could only support HBR2 whereas others could support HBR3. Maybe
-> > it would end up being a fairly elegant solution?
-
-Physical connectors are already handled as bridges, see
-drivers/gpu/drm/bridge/display-connector.c. I however don't think it
-should handle EDID retrieval, because that's really not an operation
-implemented by the connector itself.
-
-> > > - [RFC PATCH 09/11] drm/bridge: ti-sn65dsi86: Make connector creation optional ([2])
-> > >
-> > > The second patch is similar to the first half of this patch, but misses
-> > > the cleanup code. I'll try to rebase this and resubmit, but it may take
-> > > a bit of time.
+> > When CONFIG_ZRAM_MEMORY_TRACKING is enabled the idle file
+> > now also accepts an integer argument. This integer is the
+> > age (in seconds) of pages to mark as idle. The idle file
+> > still supports 'all' as it always has. This new approach
+> > allows for much more control over which pages get marked
+> > as idle.
 > >
-> > Whoops! You're right that Rob's patch won't work at all because we'll
-> > just hit the "Fix bridge driver to make connector optional!" case. I
-> > should have noticed that. :(
-> 
-> Yes, indeed.. once I fix that, I get no display..
-> 
-> Not sure if Laurent is still working on his series, otherwise I can
-> try to figure out what bridge ops are missing
-
-I am, but too slowly. I don't mind fast-tracking the changes you need
-though.
-
--- 
-Regards,
-
-Laurent Pinchart
+> >   v2 -> v3:
+> >       - Correct unused variable warning when
+> >         CONFIG_ZRAM_MEMORY_TRACKING is not enabled.
+> >   v1 -> v2:
+> >       - Switch to using existing idle file.
+> >       - Dont compare ktime directly.
+> >
+> > Signed-off-by: Brian Geffon <bgeffon@google.com>
+> > ---
+> >  Documentation/admin-guide/blockdev/zram.rst |  8 +++
+> >  drivers/block/zram/zram_drv.c               | 60 +++++++++++++++------
+> >  2 files changed, 52 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
+> > index 700329d25f57..8c8a92e5c00c 100644
+> > --- a/Documentation/admin-guide/blockdev/zram.rst
+> > +++ b/Documentation/admin-guide/blockdev/zram.rst
+> > @@ -328,6 +328,14 @@ as idle::
+> >  From now on, any pages on zram are idle pages. The idle mark
+> >  will be removed until someone requests access of the block.
+> >  IOW, unless there is access request, those pages are still idle pages.
+> > +Additionally, when CONFIG_ZRAM_MEMORY_TRACKING is enabled pages can be
+> > +marked as idle based on how long (in seconds) it's been since they were
+> > +last accessed, in seconds::
+> > +
+> > +        echo 86400 > /sys/block/zramX/idle
+> > +
+> > +In this example all pages which haven't been accessed in more than 86400
+> > +seconds (one day) will be marked idle.
+> >
+> >  Admin can request writeback of those idle pages at right timing via::
+> >
+> > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> > index fcaf2750f68f..2af5cdb8da1a 100644
+> > --- a/drivers/block/zram/zram_drv.c
+> > +++ b/drivers/block/zram/zram_drv.c
+> > @@ -291,22 +291,16 @@ static ssize_t mem_used_max_store(struct device *dev,
+> >       return len;
+> >  }
+> >
+> > -static ssize_t idle_store(struct device *dev,
+> > -             struct device_attribute *attr, const char *buf, size_t len)
+> > +/*
+> > + * Mark all pages which are older than or equal to cutoff as IDLE.
+> > + * Callers should hold the zram init lock in read mode
+> > + **/
+> > +static void mark_idle(struct zram *zram, ktime_t cutoff)
+> >  {
+> > -     struct zram *zram = dev_to_zram(dev);
+> > +     int is_idle = 1;
+> >       unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
+> >       int index;
+> >
+> > -     if (!sysfs_streq(buf, "all"))
+> > -             return -EINVAL;
+> > -
+> > -     down_read(&zram->init_lock);
+> > -     if (!init_done(zram)) {
+> > -             up_read(&zram->init_lock);
+> > -             return -EINVAL;
+> > -     }
+> > -
+> >       for (index = 0; index < nr_pages; index++) {
+> >               /*
+> >                * Do not mark ZRAM_UNDER_WB slot as ZRAM_IDLE to close race.
+> > @@ -314,14 +308,48 @@ static ssize_t idle_store(struct device *dev,
+> >                */
+> >               zram_slot_lock(zram, index);
+> >               if (zram_allocated(zram, index) &&
+> > -                             !zram_test_flag(zram, index, ZRAM_UNDER_WB))
+> > -                     zram_set_flag(zram, index, ZRAM_IDLE);
+> > +                             !zram_test_flag(zram, index, ZRAM_UNDER_WB)) {
+> > +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
+> > +                     is_idle = (!cutoff || ktime_after(cutoff, zram->table[index].ac_time));
+> > +#endif
+> > +                     if (is_idle)
+> > +                             zram_set_flag(zram, index, ZRAM_IDLE);
+> > +             }
+> >               zram_slot_unlock(zram, index);
+> >       }
+> > +}
+> >
+> > -     up_read(&zram->init_lock);
+> > +static ssize_t idle_store(struct device *dev,
+> > +             struct device_attribute *attr, const char *buf, size_t len)
+> > +{
+> > +     struct zram *zram = dev_to_zram(dev);
+> > +     ktime_t cutoff_time = 0;
+> > +     ssize_t rv = -EINVAL;
+> >
+> > -     return len;
+> > +     if (!sysfs_streq(buf, "all")) {
+> > +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
+> > +             u64 age_sec;
+> > +             /* If it did not parse as 'all' try to treat it as an integer */
+> > +             if (!kstrtoull(buf, 10, &age_sec))
+>
+> nit:
+> Do we need such limit base which work with only 10 base?
+> Passing 0 would give more flexibility.
+>
+> Otherwise, looks good to me.
+>
+> Thanks, Brian.
+>
+> > +                     cutoff_time = ktime_sub(ktime_get_boottime(),
+> > +                                     ns_to_ktime(age_sec * NSEC_PER_SEC));
+> > +             else
+> > +#endif
+> > +                     goto out;
+> > +     }
+> > +
+> > +     down_read(&zram->init_lock);
+> > +     if (!init_done(zram))
+> > +             goto out_unlock;
+> > +
+> > +     /* A age_sec of 0 marks everything as idle, this is the "all" behavior */
+> > +     mark_idle(zram, cutoff_time);
+> > +     rv = len;
+> > +
+> > +out_unlock:
+> > +     up_read(&zram->init_lock);
+> > +out:
+> > +     return rv;
+> >  }
+> >
+> >  #ifdef CONFIG_ZRAM_WRITEBACK
+> > --
+> > 2.33.0.464.g1972c5931b-goog
+> >
