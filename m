@@ -2,50 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3ECD415F39
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECCF415F3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241041AbhIWNKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:10:44 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42488 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232333AbhIWNKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:10:43 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 18ND99Uu019984;
-        Thu, 23 Sep 2021 15:09:09 +0200
-Date:   Thu, 23 Sep 2021 15:09:09 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Ken <kennethcelander@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Boot opens CD tray
-Message-ID: <20210923130909.GB19709@1wt.eu>
-Reply-To: linux-kernel@vger.kernel.org
-References: <bbb0df1d-1e40-fbdf-d9aa-281ba77b4b6d@gmail.com>
- <20210923123407.GA19709@1wt.eu>
- <3e2fe30b-4c58-3164-2e2f-283f34ebe396@gmail.com>
+        id S241194AbhIWNLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:11:01 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:42578 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232333AbhIWNLA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:11:00 -0400
+Received: by mail-ot1-f50.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso8371807otc.9;
+        Thu, 23 Sep 2021 06:09:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P+k54S/P1ruPyomATuQ9wpcwPryDuiOzPX+x0uQYZM8=;
+        b=1xzLiOlQIjfL9bj3IExlYyUod8Xy4zBH5Emp6indRSvcgQhRasb7FNOc4IQt6Lakaz
+         CeyD+221GwCgor87H990SRlBfEI5Y01pE7pLXRsHbioz+qKIYR4kB/S3ubBlykMos61h
+         TOe/+o7bsX6LzHJAz9sRIc/7YMMTHS+jy/p4TRthkW4w7GgDHLQn09+G0nmYNcAkexjc
+         Fr9z0LqRrf2Q4WZzPOQer2N0N9nzKYboRvgacB6sntpopY42cWkK1P5zYil9lINugIxu
+         xj7WYYs64i5WU9GkSLTC7B2VCYWqH5EJN1dFu8U4kE5NOXmYOENaSuRV08rsz4JtvGye
+         28Ew==
+X-Gm-Message-State: AOAM531mgmHeBcQtwuLjza2hfucEWVGoScp+XwnMchdzJrNCcqf877o1
+        KvYdu2iGBHmB1/HYChovqA==
+X-Google-Smtp-Source: ABdhPJymvzXngT2wLrig0Tguwcl6rfrs40bQiUrF56ZPa2rCMEXIw+KK1Xc2LiYxMkPV+mz4mNng7A==
+X-Received: by 2002:a9d:a47:: with SMTP id 65mr3860534otg.133.1632402568692;
+        Thu, 23 Sep 2021 06:09:28 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id y84sm1329579oie.16.2021.09.23.06.09.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 06:09:28 -0700 (PDT)
+Received: (nullmailer pid 2858849 invoked by uid 1000);
+        Thu, 23 Sep 2021 13:09:27 -0000
+Date:   Thu, 23 Sep 2021 08:09:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
+Cc:     linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Suman Anna <s-anna@ti.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Ohad Ben-Cohen <ohad@wizery.com>, Nishanth Menon <nm@ti.com>,
+        Sinthu Raja <sinthu.raja@ti.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH V3] dt-bindings: hwlock: omap: Remove redundant binding
+ example
+Message-ID: <YUx8h0MTHg+TMG3z@robh.at.kernel.org>
+References: <20210920123152.32751-1-sinthu.raja@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3e2fe30b-4c58-3164-2e2f-283f34ebe396@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210920123152.32751-1-sinthu.raja@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 08:03:49AM -0500, Ken wrote:
-> The CD/DVD is a SATA ASUS; connected to a ASRock 970A-G/3.1 motherboard.
+On Mon, 20 Sep 2021 18:01:52 +0530, Sinthu Raja wrote:
+> From: Sinthu Raja <sinthu.raja@ti.com>
 > 
-> The changed "driver" has to be in the kernel, if it changed.
+> The example includes a board-specific compatible property, this is wrong
+> as the example should be board agnostic and should represent the particular
+> binding. Also, the file includes two similar examples but with a different
+> compatible. So, drop the entire second example
+> 
+> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+> 
+> ---
+> 
+> Changes in V3:
+> Addressed review comment, that includes adding Suggested By: tag to the
+> commit message
+> 
+> V2: https://lore.kernel.org/all/20210917170805.5079-1-sinthu.raja@ti.com/
+> V1: https://lore.kernel.org/all/20210917094740.18891-1-sinthu.raja@ti.com/
+> 
+>  .../bindings/hwlock/ti,omap-hwspinlock.yaml   | 33 +------------------
+>  1 file changed, 1 insertion(+), 32 deletions(-)
+> 
 
-Sure but I mean that it will help narrow the problem to some subsystems.
-Unfortunately we don't know what patches your distro kernel applied between
-the two versions, but if you can figure that out from their changelogs, it
-may help you narrow this down to just a few patches. These ones would
-typically have "ata" in their subject line (sometimes "sata" or "libata"),
-that could significantly limit the number of possible candidates. If you
-can't find this there, you'll have two possibilities left:
-  - either retry with an official kernel from kernel.org
-  - or report a bug to your distro
-
-Willy
+Reviewed-by: Rob Herring <robh@kernel.org>
