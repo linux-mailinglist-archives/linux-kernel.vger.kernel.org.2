@@ -2,136 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CB641626A
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAE3416269
 	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242164AbhIWPvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242232AbhIWPuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:50:23 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3754DC0613E8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:47:28 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id t2so72449qtx.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:47:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mQ7J4946rPgf21nD+uOWBbdKEn3T7TjKfOLDKhMFyj8=;
-        b=mTZSIMO+GVE3tAo3UxQ/EEydBd45P0gIJQPxkrgTq8B0UZCXkEnrSWUJW6upsdbj4b
-         Q+S46nBbvfjWhrTOs9o+HrBmHAMZFTUytwznDahlXAoqa6qg2MP6vaNyZOuChN1SRFzu
-         Un9VKdQg/TUxiTBWNI0FymudM9q9M79nvZMV18kDxdGSmdlbfEsK04lmbBG3KPQbo3kc
-         erEjMADzPxqjpSJ+2+q9x2dp/eJSDp1B5NrA4Px5JDxD81H+BhV6mFTLHWxar5Xm6nVt
-         ZeIvmSvzBEvV2nEiQKYQ0J1EFw3GxobotbcFK7had7vcG47cyKj4Ykd6r9gH51AEzJqp
-         Oz/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mQ7J4946rPgf21nD+uOWBbdKEn3T7TjKfOLDKhMFyj8=;
-        b=ANceBfLKw85YLGzwIQAP11EwyfO12qXHSxNhkYssn/1/rOxpRzf8MUTScuzNk8uBWK
-         /RiC3dbnr54VMzptRs+zRfuSVYRVXB93oLaCZhBctRDtrz9VMQBhjuohlxZWkXpJryTN
-         1G+UAy5BAsPFtS+CZ3OFaXI8dHBWHta/fxrvcZnAbDItaCEc1sbbS7pOYszsTYdcaS58
-         aqLM+gcYeM7iXiExCwrncmuyv7oCDeeHe6M8oET8z7aOv1Mg6SS0/PyAum0bZJ80XP/u
-         xEiyAEJTgBmwR34Wk1Zh12CYzk11AncgRBBq5yk6Zn9Gc/0dtNfmmaVRKngZPuq56TQ3
-         b4xQ==
-X-Gm-Message-State: AOAM532Zx0Id7vUeiWSNlqi9oQ4v9ZwlMlwXS8UGW2fiwTDz+ppsR9In
-        qqjcAy2b/sxYWWliGP6RM3lYQD22xzCAQqbepDG+UHWNFRo=
-X-Google-Smtp-Source: ABdhPJynQcc8u1IiKdCTBGHiJLmmRjkYQQEfqx/2tsoY0Jci+rVn4TQHwv5aVEvzq1R0nrpz3rCLNrw8sxXrHl0Z4Ik=
-X-Received: by 2002:ac8:7482:: with SMTP id v2mr5389401qtq.235.1632412047701;
- Thu, 23 Sep 2021 08:47:27 -0700 (PDT)
+        id S242145AbhIWPvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:51:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242172AbhIWPuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 11:50:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4853B6008E;
+        Thu, 23 Sep 2021 15:48:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632412124;
+        bh=FI+LxKsIIc2jqDmoLIF3HH4uGPkcIv4DllCKMTlM1lA=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=YrAL3rtByebZdH0B+5sxM2xIMXgYEkp8WRfTrIyZBbIHYt5FSnhvbEO5vzNCj6Mwl
+         0gmUX6PfilnDPVtJnbcWIZxGM6q3PMhNXWwH2IfHsVK9QozPiQO/AajcR90nH8jkwu
+         1lRoy1MX3bs6mLq0z83hDSbsYifaXNgGJwQB1QbOaGDaRUbVXZ7fYMmQHLhkiUuZBo
+         12Z5+daWlV/5E+9WLmdoxXbGELDQBoRnsnfExXr97G1XXVqoLxxK7e/L/vPyPY5iAk
+         5GiFytYxShi2LlFWOaxkpWZ3RnBD/W4aEZpg0S8uKcyIRGmLoaZMxOYTSj+nJOplY/
+         QzmjIsrPlOvjQ==
+Date:   Thu, 23 Sep 2021 08:48:43 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "julien@xen.org" <julien@xen.org>,
+        "jbeulich@suse.com" <jbeulich@suse.com>,
+        Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [PATCH 2/2] xen-pciback: prepare for the split for stub and PV
+In-Reply-To: <98e432f0-6be1-6394-1c06-ac5e726c708d@epam.com>
+Message-ID: <alpine.DEB.2.21.2109230848290.17979@sstabellini-ThinkPad-T480s>
+References: <20210922101422.2319240-1-andr2000@gmail.com> <20210922101422.2319240-2-andr2000@gmail.com> <alpine.DEB.2.21.2109221407350.17979@sstabellini-ThinkPad-T480s> <4552e4b6-21a8-4829-16b4-7cda8ba0c0d1@epam.com> <7880dee9-7372-5a25-db55-018f21e8b08c@suse.com>
+ <98e432f0-6be1-6394-1c06-ac5e726c708d@epam.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210923104803.2620285-1-elver@google.com> <20210923104803.2620285-5-elver@google.com>
-In-Reply-To: <20210923104803.2620285-5-elver@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 23 Sep 2021 17:46:51 +0200
-Message-ID: <CAG_fn=XGFY4kWSzTa4kX4Y0CPOpvQfhBzgZFK184ZptzyC6-CA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] kfence: add note to documentation about skipping
- covered allocations
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="8323329-1873022447-1632412124=:17979"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 12:48 PM Marco Elver <elver@google.com> wrote:
->
-> Add a note briefly mentioning the new policy about "skipping currently
-> covered allocations if pool close to full." Since this has a notable
-> impact on KFENCE's bug-detection ability on systems with large uptimes,
-> it is worth pointing out the feature.
->
-> Signed-off-by: Marco Elver <elver@google.com>
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-Acked-by: Alexander Potapenko <glider@google.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> ---
-> v2:
-> * Rewrite.
-> ---
->  Documentation/dev-tools/kfence.rst | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/Documentation/dev-tools/kfence.rst b/Documentation/dev-tools=
-/kfence.rst
-> index 0fbe3308bf37..d45f952986ae 100644
-> --- a/Documentation/dev-tools/kfence.rst
-> +++ b/Documentation/dev-tools/kfence.rst
-> @@ -269,6 +269,17 @@ tail of KFENCE's freelist, so that the least recentl=
-y freed objects are reused
->  first, and the chances of detecting use-after-frees of recently freed ob=
-jects
->  is increased.
->
-> +If pool utilization reaches 75% (default) or above, to reduce the risk o=
-f the
-> +pool eventually being fully occupied by allocated objects yet ensure div=
-erse
-> +coverage of allocations, KFENCE limits currently covered allocations of =
-the
-> +same source from further filling up the pool. The "source" of an allocat=
-ion is
-> +based on its partial allocation stack trace. A side-effect is that this =
-also
-> +limits frequent long-lived allocations (e.g. pagecache) of the same sour=
-ce
-> +filling up the pool permanently, which is the most common risk for the p=
-ool
-> +becoming full and the sampled allocation rate dropping to zero. The thre=
-shold
-> +at which to start limiting currently covered allocations can be configur=
-ed via
-> +the boot parameter ``kfence.skip_covered_thresh`` (pool usage%).
-> +
->  Interface
->  ---------
->
-> --
-> 2.33.0.464.g1972c5931b-goog
->
+--8323329-1873022447-1632412124=:17979
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
+On Thu, 23 Sep 2021, Oleksandr Andrushchenko wrote:
+> On 23.09.21 12:05, Juergen Gross wrote:
+> > On 23.09.21 11:02, Oleksandr Andrushchenko wrote:
+> >>
+> >> On 23.09.21 00:10, Stefano Stabellini wrote:
+> >>> On Wed, 22 Sep 2021, Oleksandr Andrushchenko wrote:
+> >>>> --- a/drivers/xen/xen-pciback/xenbus.c
+> >>>> +++ b/drivers/xen/xen-pciback/xenbus.c
+> >>>> @@ -743,6 +743,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
+> >>>>       int __init xen_pcibk_xenbus_register(void)
+> >>>>    {
+> >>>> +    if (!xen_pcibk_pv_support())
+> >>>> +        return 0;
+> >>> Is this truly enough to stop the PV backend from initializing? Have you
+> >>> actually tested it to make sure? If it works, amazing! I am quite happy
+> >>> about this approach :-)
+> >>
+> >> Well, I put some logs into the driver and saw nothing obvious pointing
+> >>
+> >> to any backend activities (probably this is also because I don't have any
+> >>
+> >> frontend). I see that the xenbus driver is not registered. In XenStore I see:
+> >>
+> >> root@dom0:~# xenstore-ls -f | grep pci
+> >> /local/domain/0/backend/pci = ""
+> >> /local/domain/0/backend/pci/2 = ""
+> >> /local/domain/0/backend/pci/2/0 = ""
+> >> /local/domain/0/backend/pci/2/0/frontend = "/local/domain/2/device/pci/0"
+> >> /local/domain/0/backend/pci/2/0/frontend-id = "2"
+> >> /local/domain/0/backend/pci/2/0/online = "1"
+> >> /local/domain/0/backend/pci/2/0/state = "1"
+> >> /local/domain/0/backend/pci/2/0/domain = "DomU"
+> >> /local/domain/0/backend/pci/2/0/key-0 = "0000:03:00.0"
+> >> /local/domain/0/backend/pci/2/0/dev-0 = "0000:03:00.0"
+> >> /local/domain/0/backend/pci/2/0/opts-0 = "msitranslate=0,power_mgmt=0,permissive=0,rdm_policy=strict"
+> >> /local/domain/0/backend/pci/2/0/state-0 = "1"
+> >> /local/domain/0/backend/pci/2/0/num_devs = "1"
+> >> /local/domain/2/device/pci = ""
+> >> /local/domain/2/device/pci/0 = ""
+> >> /local/domain/2/device/pci/0/backend = "/local/domain/0/backend/pci/2/0"
+> >> /local/domain/2/device/pci/0/backend-id = "0"
+> >> /local/domain/2/device/pci/0/state = "1"
+> >> /libxl/pci = ""
+> >> /libxl/pci/0000-03-00-0 = ""
+> >> /libxl/pci/0000-03-00-0/domid = "2"
+> >>
+> >> But IIUIC these come from the toolstack
+> >>
+> >> @Juergen, do you know how to check if the backend is indeed not running
+> >>
+> >> or the above should be enough to prove?
+> >
+> > I don't see how the backend could be running without being registered
+> > with xenbus. It won't receive any watches, so there is no way a
+> > connection with a frontend could be established.
+> 
+> This is my understanding too, so the only change I've put in patch I removed
+> 
+> register/unregister. It seems this is just enough and the patch should be ok as is
 
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+Fantastic! Thanks for checking.
+--8323329-1873022447-1632412124=:17979--
