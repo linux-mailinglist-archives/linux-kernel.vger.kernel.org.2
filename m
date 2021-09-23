@@ -2,86 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5A54167BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC0E4167C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243398AbhIWVyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
+        id S243407AbhIWVz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240762AbhIWVyU (ORCPT
+        with ESMTP id S230272AbhIWVz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:54:20 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC39FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:52:47 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id p29so31425305lfa.11
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:52:47 -0700 (PDT)
+        Thu, 23 Sep 2021 17:55:57 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A79AC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:54:25 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id c1so6903636pfp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:54:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OzZoKQDZ72/TIZ5n5PQCjDKZ/aLZJVe4nOu4P+30/t8=;
-        b=n/lKLseJnr+59RI5t6ZUq/unPrDB8OeU5L0NSrqlvqdVaht/rIyOJ+l47gVqFSBNLN
-         TULDgRObSeYnLYtnCHi4BE2TUdA0+8905GPrVjaFaiJFwFbqxXAav5UzzyowNC4NJGWE
-         gDpmC5/UTxJFVH7XhlIgiPohiOtj40dG6M/HUTAyEW5sc6uGjvrSNmNtSpU2TI0AQKwn
-         62JakWCLJWtzNIV86FC86E++eE/jT7+a+IDbpEoj2xweOt00SEoMMGwrllnEuUn0sZS2
-         0708OfzLswSVQ1LFA5c4WLbaXdqe5Tzj/NcsZoQ40YIZLWND+KA526I7usV9wfqAdTiL
-         LszQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rO5fvWaAZTv31oC9ovhV41R9OYan3E5Hn4Me7MlHqao=;
+        b=PdHGDU8L54UaLJCl120uuECenLtn0S4ozb35+4bYoAq1fUqCCwbpP2gBaj0KTFzYTQ
+         Sgrnk3uox0p/1HC8ml/Mld6J4i5VH7np3Dr7QdNEgV9LRr2VpU/g4h+3eiYsdxEdhtfl
+         18ZawluARpGS6r6nmGk5zVdSW1AWolmSZSAMc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OzZoKQDZ72/TIZ5n5PQCjDKZ/aLZJVe4nOu4P+30/t8=;
-        b=Chn+5bkpZdJo7Y1wi2ATLeuWtzoASSWvsfIQ30+3+6OO3eKKlph1daen2g0ocb4cCY
-         XaOASbcacgzhHLnoQZGlBLGWOFh/QkCkamFrBzNSRnvcDSPN6RCPmWoI/tc108i/a1qL
-         uZk2SO9r8K/tb3BTGzT1AwbV1bCZIeK1LD30gjIpb/gtJlvlIbtbm9s1EMHrZPua+n0f
-         T3h/l84BeM7goIh5NrQbDBoYri5u7dI5POEFzixR/8n8pSMIrTS9C2C+gZowOTPiH6PT
-         hKWw9PKWu6QrHP4wnoQFiVF3kzX34Zy2Wfv+TaAyc149hwDVkHO+VbRinzSovnAavssW
-         jftA==
-X-Gm-Message-State: AOAM5335IjrEMQoKYEIxYY69a/uU0cJwaRa/+tW/HgCDgCryQGGUv9Cf
-        OLaznP36RVUV7US/OBVRf6B+djCAcSv2Llg4TxWDEQ==
-X-Google-Smtp-Source: ABdhPJzSavCXS6nxDVN2s1rRJDXqRhNXfyZp30z2Uvc8ETPMwVaX3Qu54L1YIt5i//VPUUTLjJFlzg587HqTLUC8Ruc=
-X-Received: by 2002:a2e:89c9:: with SMTP id c9mr7533345ljk.288.1632433966185;
- Thu, 23 Sep 2021 14:52:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rO5fvWaAZTv31oC9ovhV41R9OYan3E5Hn4Me7MlHqao=;
+        b=CcqAE6Pm1KMtWN4Yaa9zryaJ7tx6m5EoxHuZmWBI5EJwyldSfXDRqxv/POgeJMq+5U
+         wqh6uG3JbkBQxDUO8CSIV2oLr1s6e/wMmhBwdlMCgyCd6d6ijcGrHeJrtWpq3N4kRz35
+         QUHdQJXitX3wnynCXmkvNkr3w6PLR2GQ/YZtJ/5ZwU+hxfcjRsBB17jXq46RZ1wcTz9K
+         xUlYVsW1s7Tz9wEkqksyKQgn7vugTCAL8Lbf6h8cdHmOhsy4/0pF92jYNSi0F/WaitV4
+         49WLJGXtLTb2GVsjB1jpjuNIWZpOH2kBnOnu5SRy4LMbnzfiDnlei1B4vrQoqaYVgFWu
+         GDJA==
+X-Gm-Message-State: AOAM5302/xV8mg5kOAcF8IQillG/c9I0SEBFSV+5x53xb/V2YYmil/P7
+        mVAuBnDln97B7W8y2GAkD/VPfw==
+X-Google-Smtp-Source: ABdhPJz5pVycUAUnPkUoOj5EEeIyMN3UD7MqL9edoLVG3kOmI/4nCNwkI7uYkijol2fWRb/a5DtjVw==
+X-Received: by 2002:a62:b515:0:b0:42c:1d6e:3697 with SMTP id y21-20020a62b515000000b0042c1d6e3697mr6728074pfe.23.1632434064858;
+        Thu, 23 Sep 2021 14:54:24 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s4sm6474569pfw.182.2021.09.23.14.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 14:54:24 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        sparclinux@vger.kernel.org, Nicolas Schier <n.schier@avm.de>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] sparc: Add missing "FORCE" target when using if_changed
+Date:   Thu, 23 Sep 2021 14:54:18 -0700
+Message-Id: <20210923215418.3936726-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210920190350.3860821-1-willmcvicker@google.com> <20210920190350.3860821-4-willmcvicker@google.com>
-In-Reply-To: <20210920190350.3860821-4-willmcvicker@google.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 23 Sep 2021 23:52:35 +0200
-Message-ID: <CACRpkdZAo76iiX2H5Vf_MCjPnzpJyB6H7Ut_Fd11pBx2f9Rb7Q@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] pinctrl: samsung: change PINCTRL_EXYNOS default
- config logic
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1740; h=from:subject; bh=Hi7mcbZQHql8JSSHs4df7iME4Qh5LyRhGPXmEIr0KIM=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhTPeK0F/lnHe1QtyWqYJaRZ7GdQ4iM4IHlTaipc+D HmZ0Y06JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYUz3igAKCRCJcvTf3G3AJpdaD/ 9CSsUqhdMc08Bxkzl4r+hGn7L0dUJO/0ix9wg5V3/6Dbh+mB/eqcwCvq9kGRbvGCWt6O/V62mxv4Vl SbJGH5PTiDVkCArO/liNSHWtJ5KxsK4qyPveSCi2p+yNjgH6kezcnft6x2jUG24XDHund4Go9P06V5 wRlFBaqQFUF6BqnG3vEcKlOir0nAxSE6q6KkBnZc6v8fYp6wpg0Yppe+wZ6IIZN8wNSgoC2SnjirVz nqD6eq/kbu8U9S+SAUP/vDN5W7hoSSBigBmiuMX4hSTjICopx2bUZFLT88rw1MuWtb4+AKbuMkITiW 3WTptPf1hhI2bPayOMW8+whe23hba/Qlrgq0PjuT92CpYAjUB/MFbfaS5fhwhN9w8seCKmxPTCCGJD iDyuIo2oPMwUW6zVP9wsf1HGhmaNmEBVvcN3SzPRR/xkfhJgEnbpFOU/Py1RzDY9yUs/DJ2v1Pu8Bi KnU1plyHY4P/IE0Ai8EZwvY0Lm0p2CTJ/zAcWvEj/yrfZ7Zux+luanfw6lEePxyLQhRgW3wZL/4FMZ 1rH2w/KfbbtU6w9biWSpduSNz+e91L4ftIy+oS33AlRZAXK/CoX1aZtu6CbLvHZozK+vFxkck9pdJw dLNMRNRKGkWUE36n6XVs0vUkPLGAUk0b145ol/m0ssFMO+P4tuSpclAVoQzw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 9:04 PM Will McVicker <willmcvicker@google.com> wrote:
+Fix observed warning:
 
-> Switching the default config logic of PINCTRL_EXYNOS to use "default
-> y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select the config.
-> This gives vendors the flexibility to disable the config or modularize
-> it in the presence of a generic kernel.
->
-> Verified this change doesn't effect the .config.
->
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
+    /builds/linux/arch/sparc/boot/Makefile:35: FORCE prerequisite is missing
 
-Krzysztof is collecting and sending pull requests for the Samsung
-pinctrl portions so I expect him to merge this once you reach consensus.
+Fixes: e1f86d7b4b2a5213 ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and filechk")
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: sparclinux@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+I'm not sure if this should go via sparc or via kbuild. :)
+---
+ arch/sparc/boot/Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/arch/sparc/boot/Makefile b/arch/sparc/boot/Makefile
+index 849236d4eca4..45e5c76d449e 100644
+--- a/arch/sparc/boot/Makefile
++++ b/arch/sparc/boot/Makefile
+@@ -22,7 +22,7 @@ ifeq ($(CONFIG_SPARC64),y)
+ 
+ # Actual linking
+ 
+-$(obj)/zImage: $(obj)/image
++$(obj)/zImage: $(obj)/image FORCE
+ 	$(call if_changed,gzip)
+ 	@echo '  kernel: $@ is ready'
+ 
+@@ -31,7 +31,7 @@ $(obj)/vmlinux.aout: vmlinux FORCE
+ 	@echo '  kernel: $@ is ready'
+ else
+ 
+-$(obj)/zImage: $(obj)/image
++$(obj)/zImage: $(obj)/image FORCE
+ 	$(call if_changed,strip)
+ 	@echo '  kernel: $@ is ready'
+ 
+@@ -44,7 +44,7 @@ OBJCOPYFLAGS_image.bin := -S -O binary -R .note -R .comment
+ $(obj)/image.bin: $(obj)/image FORCE
+ 	$(call if_changed,objcopy)
+ 
+-$(obj)/image.gz: $(obj)/image.bin
++$(obj)/image.gz: $(obj)/image.bin FORCE
+ 	$(call if_changed,gzip)
+ 
+ UIMAGE_LOADADDR = $(CONFIG_UBOOT_LOAD_ADDR)
+@@ -56,7 +56,7 @@ quiet_cmd_uimage.o = UIMAGE.O $@
+                      -r -b binary $@ -o $@.o
+ 
+ targets += uImage
+-$(obj)/uImage: $(obj)/image.gz
++$(obj)/uImage: $(obj)/image.gz FORCE
+ 	$(call if_changed,uimage)
+ 	$(call if_changed,uimage.o)
+ 	@echo '  Image $@ is ready'
+-- 
+2.30.2
+
