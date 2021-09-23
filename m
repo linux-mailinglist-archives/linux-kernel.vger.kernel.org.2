@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6123F41672B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1169D416732
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 23:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243267AbhIWVMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 17:12:53 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:39532 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243209AbhIWVMw (ORCPT
+        id S243279AbhIWVNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 17:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243221AbhIWVNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:12:52 -0400
-Received: by mail-ot1-f45.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so10400055ota.6;
-        Thu, 23 Sep 2021 14:11:20 -0700 (PDT)
+        Thu, 23 Sep 2021 17:13:21 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140A8C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:11:49 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id g41so31325042lfv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 14:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p1Ur9mDQJrxxxKKtvUNbsObnagkgoIKu1zTSJFMJRAI=;
+        b=OWzTBJO0Oxz9T1eiG1HmlQm+jlqfImdO27LbZ/sOl2nug8QeTffpfDP0O7pqzc7ywc
+         VW0Po3SOVCC7sN/1WlP0hLUzJ6oNYgm7uimAdkt/+4DnjqEDzkKfhp0ZPCsq0ytKmpA3
+         ERNs4s+hSSCH/pk1YfRfOpBsQ6YxwPuo1HhxgqfWVsNZwvKYJH+4mOvnCUpmxHGF5x89
+         fXfvMrfbx8jDO3JpYL/h+nJOxMlkn5WmOGicPoSTSdz8F+MIqT14+MPHg2uJeoZIZGqL
+         XmZEquEj7NXUbWSRk6kA4xJst+6DO8iQh5Vi+RVm3MVtJeW0dZzIa7oP3qYiJ4LFLh5+
+         cy3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kk2pWIp+ZoWPPzM2mCzEpeKek3uLHU+wVdCODnRG/3s=;
-        b=rk12b3FgMfSeHGqAXYWSdqKP4Vtshpr/S0SWN0suYsjEKxUxQvSXsFWamUk/nskPk1
-         gG67BMtbPixHWyQzxUwnPR9jbNPDCMMRvXY6FHSHXlaQfP6Kg9pZNKK0WZrwg1tQpCjR
-         PWHUYx8FWW7+mbJBrlRsVvdBz6rVobjmJd2zynjp0VyhD7IkJrguQTjXbuf29Z73w/E0
-         f9qHmUh5RGcGWj5vJ0EwyFBg+uvBftTL2hEbLdZ8QTLm1dig9Po6G+hQS4El84CQmXfS
-         wnOxdhgY3J/oLYUGCf210fHrJn5XU2xPmXL6qDi/X2G7Jf5QFWyxnRFIK8E4hJvmWdiw
-         d4pQ==
-X-Gm-Message-State: AOAM530P0GruAJ1MP/zecnM86vL1ygBkCasulYOh8blXRSwKK5UaU36Y
-        LzzUywiEYL7RblUmPIIJcfTpGHTMyg==
-X-Google-Smtp-Source: ABdhPJwEk6UYHxJutkDB2d7g5wDFFS5qCPolOoSlY4R6tgoeX1XA06QFRPtyZHZMo83BaeFgO3LF/A==
-X-Received: by 2002:a9d:1902:: with SMTP id j2mr736469ota.34.1632431480130;
-        Thu, 23 Sep 2021 14:11:20 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 12sm1333988otg.69.2021.09.23.14.11.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 14:11:19 -0700 (PDT)
-Received: (nullmailer pid 3530309 invoked by uid 1000);
-        Thu, 23 Sep 2021 21:11:18 -0000
-Date:   Thu, 23 Sep 2021 16:11:18 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: lm90: do not require VCC
- supply
-Message-ID: <YUztdj3R95c1E1ZY@robh.at.kernel.org>
-References: <20210920181913.338772-1-krzysztof.kozlowski@canonical.com>
- <20210920181913.338772-2-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p1Ur9mDQJrxxxKKtvUNbsObnagkgoIKu1zTSJFMJRAI=;
+        b=uLdY4z+Gjk03HnPUG5bAD0x73BPak7PXiaQ6C+8tzmVWi9Gc0L4EI7K1ho5f+3KIiH
+         BzXJb5iscO9l90h6DRSqC0fUCib9o/h9Q42SS5gRi/uQH07ejJh+f0pXHWr56m9I94Xl
+         y8KLhatPns/vYDfht7ZColGn+xcKs8txyUGpMZUxE2Ko/Bob5xesuKxxsx2CECxq2GNu
+         yZ1OchX2tm/XY7+vA8CddvHvM2LUcAEzM7CC5jhDTE8dQLFC4Jgm5sccagT9/nBdgYHs
+         znMob68ABgn5IwpI/8a3vQm7qZ50QkyrOekDTvAAHg6LBAJ6/60i/RF7t+ovadON6dUW
+         58yg==
+X-Gm-Message-State: AOAM533DiT9fG89uM90FcG4LatFCG8MGMbmMFgj9iDFxW6WBn9uSzaGi
+        yL0AfM+JoYh9G2lweuZiwYONAScoJ/7PEesbW4ojWw==
+X-Google-Smtp-Source: ABdhPJwPcligFsjGw59I+AviOKzPYmC+dBi5fWpJYxXSCjsw3GvUu/YonGc2AXAegTZ6biPRjBEzt7SUntjsGqIJNew=
+X-Received: by 2002:a05:651c:4ca:: with SMTP id e10mr7750969lji.259.1632431507415;
+ Thu, 23 Sep 2021 14:11:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920181913.338772-2-krzysztof.kozlowski@canonical.com>
+References: <20210923161450.15278-1-konrad.dybcio@somainline.org> <20210923161450.15278-2-konrad.dybcio@somainline.org>
+In-Reply-To: <20210923161450.15278-2-konrad.dybcio@somainline.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Sep 2021 23:11:36 +0200
+Message-ID: <CACRpkdZ5+ZKd0KKRfkhoit5jbwqsBnMq76MnCdtv3tvzCdrOMQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] pinctrl: qcom: Add SM6350 pinctrl driver
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
+        Shevchenko <andy.shevchenko@gmail.com>," 
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        Martin Botka <martin.botka@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 20:19:13 +0200, Krzysztof Kozlowski wrote:
-> The LM90-like sensors usually need VCC supply, however this can be
-> hard-wired to the board main supply (like in SiFive HiFive Unmatched
-> RISC-V board).  Original bindings made VCC supply as required but in
-> practice several other boards skipped it.  Make it optional.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. New patch
-> ---
->  Documentation/devicetree/bindings/hwmon/national,lm90.yaml | 1 -
->  1 file changed, 1 deletion(-)
-> 
+On Thu, Sep 23, 2021 at 6:15 PM Konrad Dybcio
+<konrad.dybcio@somainline.org> wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> This adds pincontrol driver for tlmm block found in SM6350 SoC
+>
+> This patch is based on downstream copyleft code.
+>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Patch applied for v5.16!
+
+Yours,
+Linus Walleij
