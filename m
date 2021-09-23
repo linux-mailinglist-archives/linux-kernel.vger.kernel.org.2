@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BD2416564
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7E7416567
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242795AbhIWSvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
+        id S242821AbhIWSv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242788AbhIWSvv (ORCPT
+        with ESMTP id S242770AbhIWSvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:51:51 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2730BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:19 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id u8so29123642lff.9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:19 -0700 (PDT)
+        Thu, 23 Sep 2021 14:51:55 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EACC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:23 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i4so29884596lfv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=G+xBDmQPXKsiGLr3VFMM2p7CpCvy6Zy6mjF1IkZrEIc=;
-        b=y3X4xo8LVdZMrchYSTb0hQnOCCOXfWzr6tEV4tU2YsVOLgy8fUwLfb1w8hP2yiP2GT
-         ZRjEuMxdtKdzMTw1ktv61HJpmLMtARrXWmld/U1ns3nWx3mn1vPDzi6zUry/stv95Mgj
-         2KYwwNIMeQ9MWVJQwIPAjHowZrMZEFPqcWRwYwBIZepnKm2qC4OeQNRnuFXWo8q3k9SG
-         DT9dDeYx6ajv7y/8OrQ9HdINic5v1tcDb25oKDYb8xSu3GA5AW/eypqW3IttgTkfcAIU
-         3FrnVA+hK5lUYEEMuNwQaqKPRYe3U8l1sPLxhZsuBvTh0mFTH3banaEkmb2Hox8BbWnT
-         LQhg==
+        bh=EC54pajHK/jhlrdoN2LrjDzAGYxPUaeJq5OMKjryfSg=;
+        b=vW/lzrxVF8zErmZtVvjvbsNDCl4vWGKYJu7yJFDL+qpobc/I9BCxGyrJ2EdjukmD2I
+         Wbzy9Fk+OBRM64GbmcRarOBVHwRNWNrQ2f0aTRvO+S6GiOB86XnWUpbcbyfCox71u8Ug
+         jUoN8DKTlDCWcvCldOCEEB8p/iEwO/4dEawwJaW+zMQZtldMUHXdEh2PHFNMoA+ACsig
+         yJ4fclxJ04gN5vx9W1aVh9XwKDYR/356xE5FYlvG3d/bAl0VGIxmCvHb+3Z0rS+negcV
+         58nccCEDPF0qQBZyJGyfd8EUxaFWUMIjsDNePgiZooIjzz7lwvjsGRVJLuETn/VvWrKG
+         LReQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=G+xBDmQPXKsiGLr3VFMM2p7CpCvy6Zy6mjF1IkZrEIc=;
-        b=VKKf/ZzhqiR9SHTTdrt0k4hBCgo5TNeuHY6nYg7m2ZZoxn3VqqD3g9Iw698qoqcHAi
-         soLe6dVZjWCiycokxwUHu2FRUn0IDI8koVSdT03c7u+lUedeE6cQNZ2LITOQIyzOkMkN
-         1JIzHdci0wTVOqr6Fj/zHOnSEMgXjsLD9jUWBykuyewxeOa7ZPN4vr3qMSywFOhX19qS
-         DOJTZLymf6aJhYo4+R+RiaSj7ShCzvHMsUekKvOMSZBcqpZ3benbJj/LiXIL6cBjUadQ
-         WQ7wKo7OlKqjGrHBMWaq9ru0DgP/xJdgcnphD256TY4rbFB6sN+a8agJdSeSWwCJ+6gu
-         YOdg==
-X-Gm-Message-State: AOAM531pjPamSNoede1ZTwitw7PJbGl0ecj21ZymiE+YEgqZLDFKbPvz
-        8AJq8omMiPkESIsd2gitsUgCwpfL9RQU99eAC4eqLu495YM=
-X-Google-Smtp-Source: ABdhPJxmuOPc/eEBZuFHS88X/WSvOdyPLq05/U0zOuP+5xD4VGlhAcmpTse2JIvNDLEh6CKIOgsb+rXfqVJ408et2/8=
-X-Received: by 2002:a05:651c:20b:: with SMTP id y11mr6770656ljn.463.1632423017540;
- Thu, 23 Sep 2021 11:50:17 -0700 (PDT)
+        bh=EC54pajHK/jhlrdoN2LrjDzAGYxPUaeJq5OMKjryfSg=;
+        b=pbbcPxOnvMsHS0ivJ0RaT0BV4Z+Q2w75HYRjutSR7c8r1e76psySb//uOn8aoiUKiS
+         apNMwzwX1usLXPD6Tyn2Qx/sxUev8eUeJMY4Aml9Y/ypJQO02Nh0hcKBHhc6Wc+Rv2xM
+         JLPCKdVc+3+epPBJuJf0ymHNFuq56xTwTpcs530PqPXmSGfGlRIWWeiHQ/OfNfeqiYr7
+         cMkHW8GEDrcWnZSYu5thdLfwCVtY3MBpkt8GhXb1tXKJ1AlgSHP61xWhjfFtkouVIKdn
+         JLk6klqNT6lvKMNBHo+f3EC6DghcQTjsVJCky4WbV5R6UZJqNJ3hyxOunl3cCyTBB1p/
+         sfbA==
+X-Gm-Message-State: AOAM531zpyg+SH1DOnt6ab/1ClWhdRqsGvHAZn3tfcEb5qpakk5JyfBP
+        2wiVOzb4ReZd8XrME1DpfPm2RgcVE+kggTjB19Gs1A==
+X-Google-Smtp-Source: ABdhPJwaj51XOX0RgW7c4TANOs4O5F+IlhNZ0UP2bQGbrs3huRUXqsBMlwEubsE+h6f5RWfZMxc9G94gPkY6z0XV8go=
+X-Received: by 2002:a05:6512:3f9f:: with SMTP id x31mr5891075lfa.233.1632423021793;
+ Thu, 23 Sep 2021 11:50:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1631785820.git.mchehab+huawei@kernel.org> <820bb7a1d7e0e51cbea72c9bee6bce806427d1f3.1631785820.git.mchehab+huawei@kernel.org>
-In-Reply-To: <820bb7a1d7e0e51cbea72c9bee6bce806427d1f3.1631785820.git.mchehab+huawei@kernel.org>
+References: <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 23 Sep 2021 20:49:41 +0200
-Message-ID: <CAPDyKFrZptmXAfJbf7eUyrQ0dMVSZbpdXw=CfK-LSYbEeMayig@mail.gmail.com>
-Subject: Re: [PATCH v2 05/23] dt-bindings: mmc: update mmc-card.yaml reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Cai Huoqing <caihuoqing@baidu.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rob Herring <robh@kernel.org>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>
+Date:   Thu, 23 Sep 2021 20:49:45 +0200
+Message-ID: <CAPDyKFqPfznPznCBaxK8iK+no4rtNOQOxtUFci5grQB2Qx6N0Q@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-s3c: drop unneeded MODULE_ALIAS
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Dooks <ben-linux@fluff.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sept 2021 at 11:55, Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+On Thu, 16 Sept 2021 at 19:05, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> Changeset 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
-> renamed: Documentation/devicetree/bindings/mmc/mmc-card.txt
-> to: Documentation/devicetree/bindings/mmc/mmc-card.yaml.
+> The MODULE_DEVICE_TABLE already creates proper alias for platform
+> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
 >
-> Update its cross-reference accordingly.
->
-> Fixes: 922eefdafc80 ("dt-bindings: mmc: Convert MMC Card binding to a schema")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
 Applied for next, thanks!
 
@@ -85,22 +77,18 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/omap_hsmmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mmc/host/sdhci-s3c.c | 1 -
+>  1 file changed, 1 deletion(-)
 >
-> diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-> index 7a29ad542e4a..9dafcbf969d9 100644
-> --- a/drivers/mmc/host/omap_hsmmc.c
-> +++ b/drivers/mmc/host/omap_hsmmc.c
-> @@ -1510,7 +1510,7 @@ static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
->                  * REVISIT: should be moved to sdio core and made more
->                  * general e.g. by expanding the DT bindings of child nodes
->                  * to provide a mechanism to provide this information:
-> -                * Documentation/devicetree/bindings/mmc/mmc-card.txt
-> +                * Documentation/devicetree/bindings/mmc/mmc-card.yaml
->                  */
->
->                 np = of_get_compatible_child(np, "ti,wl1251");
+> diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
+> index 862f033d235d..9085f3932443 100644
+> --- a/drivers/mmc/host/sdhci-s3c.c
+> +++ b/drivers/mmc/host/sdhci-s3c.c
+> @@ -791,4 +791,3 @@ module_platform_driver(sdhci_s3c_driver);
+>  MODULE_DESCRIPTION("Samsung SDHCI (HSMMC) glue");
+>  MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
+>  MODULE_LICENSE("GPL v2");
+> -MODULE_ALIAS("platform:s3c-sdhci");
 > --
-> 2.31.1
+> 2.30.2
 >
