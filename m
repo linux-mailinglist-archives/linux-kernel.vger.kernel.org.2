@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF9641549D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4781C4154A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 02:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238646AbhIWAbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 20:31:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22028 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233466AbhIWAbb (ORCPT
+        id S238650AbhIWAcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 20:32:33 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33548 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233466AbhIWAcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 20:31:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632357000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GQ4nKO9QLZyOaq5KobOVDwUgQKCMwd+DmtbeAAuRsqo=;
-        b=cu+x/Gxf69z7M6TjT5mLsLhxWLKkqNFWEwSBoaKnBV0xqBIAeI25l8yzxI6dD9mni1bLc5
-        1k51rdAQ5QEJRs8rdOEQ7+07ijNBbTIQvMbYlv4aUVb7QYgFkooJmw0cqbSsswFTfrSe6e
-        D/oQZUR5qr1NDGiejDEDN0fmUkCrc7w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-51W_odj_PrevgNel2Mccng-1; Wed, 22 Sep 2021 20:29:58 -0400
-X-MC-Unique: 51W_odj_PrevgNel2Mccng-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13C77180830E;
-        Thu, 23 Sep 2021 00:29:57 +0000 (UTC)
-Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9644B60BF1;
-        Thu, 23 Sep 2021 00:29:48 +0000 (UTC)
-Date:   Thu, 23 Sep 2021 08:29:57 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, hch@infradead.org,
-        linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [patch v8 3/7] nbd: check sock index in nbd_read_stat()
-Message-ID: <YUvKhQUVp9J+s8WY@T590>
-References: <20210916093350.1410403-1-yukuai3@huawei.com>
- <20210916093350.1410403-4-yukuai3@huawei.com>
+        Wed, 22 Sep 2021 20:32:32 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3241FE52;
+        Thu, 23 Sep 2021 02:31:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632357060;
+        bh=EJ55Z1zJwBfIXFQCU8OpO167gyhJ46bJiR8/jqfwHJo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CNhY2kbC7Vq7vtZtF/mPiDbmQrvjxwkYGEOxqx7o1x5pL9cIGssqCt28BMMVPPgER
+         ciAxR2Js8meqDjQJMbawjJHr08OtwmJBMGH5HaVDFue80m8WSBw8igHW+wiWp+R04N
+         12U3xpzRelxOtBmx0IiIdM6n/w2kANLlVDzhsT7A=
+Date:   Thu, 23 Sep 2021 03:30:58 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] drm/bridge: ti-sn65dsi86: Implement
+ bridge->mode_valid()
+Message-ID: <YUvKwsNS0LQf9PfO@pendragon.ideasonboard.com>
+References: <20210920225801.227211-1-robdclark@gmail.com>
+ <20210920225801.227211-3-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210916093350.1410403-4-yukuai3@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210920225801.227211-3-robdclark@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:33:46PM +0800, Yu Kuai wrote:
-> The sock that clent send request in nbd_send_cmd() and receive reply
-> in nbd_read_stat() should be the same.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/block/nbd.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 614c6ab2b8fe..c724a5bd7fa4 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -746,6 +746,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
->  		ret = -ENOENT;
->  		goto out;
->  	}
-> +	if (cmd->index != index) {
-> +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d from different sock %d (expected %d)",
-> +			tag, index, cmd->index);
-> +	}
->  	if (cmd->cmd_cookie != nbd_handle_to_cookie(handle)) {
->  		dev_err(disk_to_dev(nbd->disk), "Double reply on req %p, cmd_cookie %u, handle cookie %u\n",
->  			req, cmd->cmd_cookie, nbd_handle_to_cookie(handle));
-> -- 
-> 2.31.1
-> 
+Hi Rob,
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Thank you for the patch.
+
+On Mon, Sep 20, 2021 at 03:57:59PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> For the brave new world of bridges not creating their own connectors, we
+> need to implement the max clock limitation via bridge->mode_valid()
+> instead of connector->mode_valid().
+> 
+> v2: Drop unneeded connector->mode_valid()
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 25 +++++++++++++------------
+>  1 file changed, 13 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 41d48a393e7f..6154bed0af5b 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -615,20 +615,8 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+>  	return drm_bridge_get_modes(pdata->next_bridge, connector);
+>  }
+>  
+> -static enum drm_mode_status
+> -ti_sn_bridge_connector_mode_valid(struct drm_connector *connector,
+> -				  struct drm_display_mode *mode)
+> -{
+> -	/* maximum supported resolution is 4K at 60 fps */
+> -	if (mode->clock > 594000)
+> -		return MODE_CLOCK_HIGH;
+> -
+> -	return MODE_OK;
+> -}
+> -
+>  static struct drm_connector_helper_funcs ti_sn_bridge_connector_helper_funcs = {
+>  	.get_modes = ti_sn_bridge_connector_get_modes,
+> -	.mode_valid = ti_sn_bridge_connector_mode_valid,
+>  };
+>  
+>  static const struct drm_connector_funcs ti_sn_bridge_connector_funcs = {
+> @@ -766,6 +754,18 @@ static void ti_sn_bridge_detach(struct drm_bridge *bridge)
+>  	drm_dp_aux_unregister(&bridge_to_ti_sn65dsi86(bridge)->aux);
+>  }
+>  
+> +static enum drm_mode_status
+> +ti_sn_bridge_mode_valid(struct drm_bridge *bridge,
+> +			const struct drm_display_info *info,
+> +			const struct drm_display_mode *mode)
+> +{
+> +	/* maximum supported resolution is 4K at 60 fps */
+> +	if (mode->clock > 594000)
+> +		return MODE_CLOCK_HIGH;
+> +
+> +	return MODE_OK;
+> +}
+> +
+>  static void ti_sn_bridge_disable(struct drm_bridge *bridge)
+>  {
+>  	struct ti_sn65dsi86 *pdata = bridge_to_ti_sn65dsi86(bridge);
+> @@ -1127,6 +1127,7 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
+>  static const struct drm_bridge_funcs ti_sn_bridge_funcs = {
+>  	.attach = ti_sn_bridge_attach,
+>  	.detach = ti_sn_bridge_detach,
+> +	.mode_valid = ti_sn_bridge_mode_valid,
+>  	.pre_enable = ti_sn_bridge_pre_enable,
+>  	.enable = ti_sn_bridge_enable,
+>  	.disable = ti_sn_bridge_disable,
 
 -- 
-Ming
+Regards,
 
+Laurent Pinchart
