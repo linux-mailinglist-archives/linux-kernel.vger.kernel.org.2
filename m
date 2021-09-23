@@ -2,165 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2169B4157A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BF44157A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 06:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239071AbhIWEpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 00:45:47 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:28307 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhIWEpo (ORCPT
+        id S239154AbhIWEqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 00:46:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38400 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238259AbhIWEqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 00:45:44 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210923044411epoutp0228c17d0993862a15c8846e9cc2f86b2c~nWeoKgHv12780527805epoutp02E
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:44:11 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210923044411epoutp0228c17d0993862a15c8846e9cc2f86b2c~nWeoKgHv12780527805epoutp02E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1632372251;
-        bh=AGrDBpsyXrosj3KNIKzP7yWVgAxWzdVkyTGz3tXdgjY=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=AMYbEZNTqSaM4QBN1q1pKmrgbPDIjlovTpPee06t6fegeuWIeTe6HrubZvtUotSl9
-         bYeVvP4TD4hKz9FkkNwkE/IvTCCo5YVsJdFoem+XYLz2eXFwCL+9fjBuOiQY8Bn4WD
-         gn58SlG3gm8CsDVyQBD54bkskf/sY7wsaNR2UqkA=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210923044411epcas1p468b4653ee865f247e05cd33fccc902a4~nWen84qV30315403154epcas1p40;
-        Thu, 23 Sep 2021 04:44:11 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.38.235]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4HFMxv6jYvz4x9Q0; Thu, 23 Sep
-        2021 04:44:03 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5C.F4.62447.F060C416; Thu, 23 Sep 2021 13:43:59 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210923044358epcas1p2fce36ec06ad52a79751233958e7aa47f~nWebsJXut1888718887epcas1p2W;
-        Thu, 23 Sep 2021 04:43:58 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210923044358epsmtrp2eec3876076b9c41dbc18b337bde7fc22~nWebomzSb2224922249epsmtrp2a;
-        Thu, 23 Sep 2021 04:43:58 +0000 (GMT)
-X-AuditID: b6c32a36-3b5ff7000001f3ef-e6-614c060fccc2
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        80.75.08750.E060C416; Thu, 23 Sep 2021 13:43:58 +0900 (KST)
-Received: from [10.113.113.235] (unknown [10.113.113.235]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210923044358epsmtip1da532866bfc8155e20384a207dc2d7bd~nWebdhBDL1492214922epsmtip1I;
-        Thu, 23 Sep 2021 04:43:58 +0000 (GMT)
-Subject: Re: [PATCH] mmc: dw_mmc: Dont wait for DRTO on Write RSP error
-From:   Jaehoon Chung <jh80.chung@samsung.com>
-To:     =?UTF-8?Q?Christian_L=c3=b6hle?= <CLoehle@hyperstone.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <412adf8f-bbec-dabe-d80f-ef33da65a69d@samsung.com>
-Date:   Thu, 23 Sep 2021 13:44:36 +0900
+        Thu, 23 Sep 2021 00:46:23 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C5C5822304;
+        Thu, 23 Sep 2021 04:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632372291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6DS1OShxkN081ActC9VohxvjjWhXQsUmGfkvB+j0Sq4=;
+        b=NxKyAbJyMgEPCr4dSNHUkVYCcpBq8h4ByundRC9cvA4lsE4KPrue+SiaBi7yzhPxl8HhrZ
+        jITXbjboLxn7r1+fA/d5DKm+Zm0Xfc1CWQa4nDujoUZwGkWwpVQayUeMYhV+ZlPw+OjWsd
+        TrSZkpkSTvUiO0G1dTM319PHna12LRo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D2B113DBB;
+        Thu, 23 Sep 2021 04:44:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TWNPHUMGTGHlNwAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 04:44:51 +0000
+Subject: Re: [PATCH v2 1/2] x86/xen: remove xen_have_vcpu_info_placement flag
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210922103102.3589-1-jgross@suse.com>
+ <20210922103102.3589-2-jgross@suse.com>
+ <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <7de79902-e31b-899d-44bb-f9daabb2ecf0@suse.com>
+Date:   Thu, 23 Sep 2021 06:44:50 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
-        Thunderbird/78.13.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <5212d8d7-7e77-b874-8f85-7948c03b5748@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLKsWRmVeSWpSXmKPExsWy7bCmri4/m0+iwcm1fBazb/tbXN41h83i
-        yP9+Rovja8MdWDzOrHvA6HHn2h42j8+b5AKYo7JtMlITU1KLFFLzkvNTMvPSbZW8g+Od403N
-        DAx1DS0tzJUU8hJzU22VXHwCdN0yc4B2KSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVIL
-        UnIKTAv0ihNzi0vz0vXyUkusDA0MjEyBChOyMw6/38pYcJqv4tKMS4wNjDu4uxg5OSQETCT6
-        N39l7mLk4hAS2MEosXLicSYI5xOjxLoL86Eynxklbh9+zwbTMnvSRqjELkaJk9O+M4IkhATe
-        M0qs/68MYgsLuEvM6P7IBGKzCehIbP8GMVZE4B2jxOyrf9hBErwCdhJXl91i7WLk4GARUJVo
-        msEJEhYViJT4e3IXK0SJoMTJmU9YQGxOAXuJLzsngrUyC4hL3HoynwnClpdo3jqbGeK4W+wS
-        rRfiIGwXieNLl7JC2MISr45vYYewpSQ+v9sL9Uy1xK7mM2DPSAh0MErc2tbEBJEwlti/dDIT
-        yG3MApoS63fpQ4QVJXb+nssIsZdP4t3XHrDzJQR4JTrahCBKVCQuvX7JBLPq7pP/UCd4SLxt
-        u80KCbdjjBLnN6xjmcCoMAvJm7OQvDYLyWuzEK5YwMiyilEstaA4Nz212LDACB7byfm5mxjB
-        6VDLbAfjpLcf9A4xMnEwHmKU4GBWEuH9fMMrUYg3JbGyKrUoP76oNCe1+BCjKTDcJzJLiSbn
-        AxNyXkm8oYmlgYmZkbGJhaGZoZI477HXlolCAumJJanZqakFqUUwfUwcnFINTFExvmcF7O+k
-        vGnX/LB6ZlzpTVnu1xrzXB5MSGveJOt7N3hyuvwJdc1zV9f3H+JiY33JU+P080XmvvNNScvk
-        9sZKvjuyIdP7SeedLbp2TJwrxc3m8Jo6hExdqOGrLXKnz3XLL7Z/5iy3t02brC3k26imWbvi
-        YavFb7ULYtZhHzU22eq+3Gt36cPuTpVozxoz+083N/sfcF96dcd6ma5w3nutQX9kGj8FP+/n
-        vXnoxcm+Ztf7DK8Wi+e+UzB9cV/rQuG9LYbWqw++Om31drF4s6ZtQNbrvkWnNwRP2+IXlx4v
-        qhly4rSgTJDM6ooUnWaH6SLFjw9mPhU571Vms/3kP+2OXBvGj4vef+qfFhZoosRSnJFoqMVc
-        VJwIAGI6+4AQBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrALMWRmVeSWpSXmKPExsWy7bCSnC4fm0+iwfNpbBazb/tbXN41h83i
-        yP9+Rovja8MdWDzOrHvA6HHn2h42j8+b5AKYo7hsUlJzMstSi/TtErgyDr/fylhwmq/i0oxL
-        jA2MO7i7GDk5JARMJGZP2sjcxcjFISSwg1HieMMfFoiElMTnp1PZuhg5gGxhicOHiyFq3jJK
-        /F19mRGkRljAXWJG90cmEJtNQEdi+7fjTCBFIgLvGCUOn3rHBNFxjFHiwKnJbCBVvAJ2EleX
-        3WIFmcoioCrRNIMTJCwqECnRdGIrVImgxMmZT8CO4BSwl/iycyI7iM0soC7xZ94lZghbXOLW
-        k/lMELa8RPPW2cwTGAVnIWmfhaRlFpKWWUhaFjCyrGKUTC0ozk3PLTYsMMpLLdcrTswtLs1L
-        10vOz93ECA50La0djHtWfdA7xMjEwXiIUYKDWUmE9/MNr0Qh3pTEyqrUovz4otKc1OJDjNIc
-        LErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamE65PhCzmS7EfVGSu15KMyw8ddPDAyfMlObr
-        To3WVV6VPYld4cvPPbtm3rrko5B23YehQumolO8zkXrvtBJdi4vGt398UrjiwNTP5y58TO/V
-        Q03vcxfXZc92XZiRfymNqYU3r+XdXC1F7fgZfhcKb7X9zLG4F3hnUvm0o2kfCip+3VQJlGyS
-        CWzW5TztYDPP+tsLFadX9/lM/f5vcm1sV0kt1RQ++NvqZu0j3WW/z2ZtMxeJDK/vLHj0ocwg
-        XK523exr8je+On1xfpJxeO1Z2x1/OwXYlFy9I2fNYtKW9Pu22Oqv0rdHklcEu8RL327U23w0
-        2O7AVu9Dfa0ibu7RVbznT8SW2W1vuu3q9OekEktxRqKhFnNRcSIASKHJOuMCAAA=
-X-CMS-MailID: 20210923044358epcas1p2fce36ec06ad52a79751233958e7aa47f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210916055929epcas1p2b5cc839886e68a2f2cec17200a2b6d83
-References: <CGME20210916055929epcas1p2b5cc839886e68a2f2cec17200a2b6d83@epcas1p2.samsung.com>
-        <af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com>
-        <5212d8d7-7e77-b874-8f85-7948c03b5748@samsung.com>
+In-Reply-To: <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="7p42MbmcR2R1URc5b0nLq1zIkTD8u7F9m"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 7:52 AM, Jaehoon Chung wrote:
-> Hi Chritstian,
-> 
-> On 9/16/21 2:59 PM, Christian Löhle wrote:
->> Only wait for DRTO on reads, otherwise the driver hangs.
->>
->> The driver prevents sending CMD12 on response errors like CRCs.
->> According to the comment this is because some cards have problems
->> with this during the UHS tuning sequence.
->> Unfortunately this workaround currently also applies for any command
->> with data.
->> On reads this will set the drto timer which then triggers after a while.
->> On writes this will not set any timer and the tasklet will not be
->> scheduled again.
->> I cannot attest for the UHS workarounds need, but even if so, it should
->> at most apply to reads.
->> I have observed many hangs when CMD25 response contained a CRC error.
->> This patch fixes this without touching the actual UHS tuning workaround.
-> 
-> Sorry for reply too late. I'm checking your patch on my target. 
-> I will share the result.
-> 
-> Best Regards,
-> Jaehoon Chung
-> 
->>
->> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7p42MbmcR2R1URc5b0nLq1zIkTD8u7F9m
+Content-Type: multipart/mixed; boundary="IlXSuJXAwFX31QSGBlKtSGJwPbIgwtFQl";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ xen-devel@lists.xenproject.org, x86@kernel.org, linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org, Stefano Stabellini <sstabellini@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <7de79902-e31b-899d-44bb-f9daabb2ecf0@suse.com>
+Subject: Re: [PATCH v2 1/2] x86/xen: remove xen_have_vcpu_info_placement flag
+References: <20210922103102.3589-1-jgross@suse.com>
+ <20210922103102.3589-2-jgross@suse.com>
+ <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
+In-Reply-To: <212d31cd-650d-27c6-b523-fd4f686872d1@oracle.com>
 
-Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
+--IlXSuJXAwFX31QSGBlKtSGJwPbIgwtFQl
+Content-Type: multipart/mixed;
+ boundary="------------2D82B1FDA2C0BF04A0178389"
+Content-Language: en-US
 
-Best Regards,
-Jaehoon Chung
+This is a multi-part message in MIME format.
+--------------2D82B1FDA2C0BF04A0178389
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
->> ---
->>  drivers/mmc/host/dw_mmc.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
->> index 6578cc64ae9e..22cf13dc799b 100644
->> --- a/drivers/mmc/host/dw_mmc.c
->> +++ b/drivers/mmc/host/dw_mmc.c
->> @@ -2081,7 +2081,8 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
->>  				 * delayed. Allowing the transfer to take place
->>  				 * avoids races and keeps things simple.
->>  				 */
->> -				if (err != -ETIMEDOUT) {
->> +				if (err != -ETIMEDOUT &&
->> +				    host->dir_status == DW_MCI_RECV_STATUS) {
->>  					state = STATE_SENDING_DATA;
->>  					continue;
->>  				}
->>
-> 
-> 
+On 22.09.21 23:43, Boris Ostrovsky wrote:
+>=20
+> On 9/22/21 6:31 AM, Juergen Gross wrote:
+>>  =20
+>> -	if (xen_have_vcpu_info_placement) {
+>> -		vcpup =3D &per_cpu(xen_vcpu_info, cpu);
+>> -		info.mfn =3D arbitrary_virt_to_mfn(vcpup);
+>> -		info.offset =3D offset_in_page(vcpup);
+>> +	vcpup =3D &per_cpu(xen_vcpu_info, cpu);
+>> +	info.mfn =3D arbitrary_virt_to_mfn(vcpup);
+>> +	info.offset =3D offset_in_page(vcpup);
+>>  =20
+>> -		/*
+>> -		 * Check to see if the hypervisor will put the vcpu_info
+>> -		 * structure where we want it, which allows direct access via
+>> -		 * a percpu-variable.
+>> -		 * N.B. This hypercall can _only_ be called once per CPU.
+>> -		 * Subsequent calls will error out with -EINVAL. This is due to
+>> -		 * the fact that hypervisor has no unregister variant and this
+>> -		 * hypercall does not allow to over-write info.mfn and
+>> -		 * info.offset.
+>> -		 */
+>> -		err =3D HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info,
+>> -					 xen_vcpu_nr(cpu), &info);
+>> -
+>> -		if (err) {
+>> -			pr_warn_once("register_vcpu_info failed: cpu=3D%d err=3D%d\n",
+>> -				     cpu, err);
+>> -			xen_have_vcpu_info_placement =3D 0;
+>> -		} else {
+>> -			/*
+>> -			 * This cpu is using the registered vcpu info, even if
+>> -			 * later ones fail to.
+>> -			 */
+>> -			per_cpu(xen_vcpu, cpu) =3D vcpup;
+>> -		}
+>> -	}
+>> -
+>> -	if (!xen_have_vcpu_info_placement)
+>> -		xen_vcpu_info_reset(cpu);
+>> +	/*
+>> +	 * N.B. This hypercall can _only_ be called once per CPU.
+>> +	 * Subsequent calls will error out with -EINVAL. This is due to
+>> +	 * the fact that hypervisor has no unregister variant and this
+>> +	 * hypercall does not allow to over-write info.mfn and
+>> +	 * info.offset.
+>> +	 */
+>> +	err =3D HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cp=
+u),
+>> +				 &info);
+>> +	if (err)
+>> +		panic("register_vcpu_info failed: cpu=3D%d err=3D%d\n", cpu, err);
+>>  =20
+>=20
+>=20
+> This is change in behavior. Before if the hypercall failed we still try=
+ to boot. I am not sure we need to worry about this (since it's not clear=
+ it actually works)=C2=A0 but I'd at least mention this in the commit mes=
+sage.
 
+Hmm, maybe I should have been more explicit saying that the hypercall
+was introduced in Xen 3.4, and only reason of failure is either an
+illegal vcpu, an invalid mapping specification, or a try to reissue the
+hypercall for a vcpu. None of those should ever happen.
+
+
+Juergen
+
+--------------2D82B1FDA2C0BF04A0178389
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------2D82B1FDA2C0BF04A0178389--
+
+--IlXSuJXAwFX31QSGBlKtSGJwPbIgwtFQl--
+
+--7p42MbmcR2R1URc5b0nLq1zIkTD8u7F9m
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMBkIFAwAAAAAACgkQsN6d1ii/Ey/C
+QAf+MW8NU9ZWXXfs6ZXLLjQIV2BF+hUkXZKRQdnZdeNvIr2UQrI40xq5SihwSro9Tnr9vLldkD/y
+2Krat7LKnzMF/MfK5XXm2v9iuTK3Rc/1AYCnovaiDbRJCd+h+3cWWccEyhNEtsjV7m70m9+E9oYV
+zx0iarlETkSzZfilELCEFvgn037PJveprAhaODuxL8h7JV0zFwkGyUOowQz5TiY/iQ3Nmzv2GzF8
+3WS/lzTV8NhJgMqwSVecAUBJkdRG/hCzxBuoTuPuaSp8YBSWwfgCtfWL3Cz1f3aLsBtGH4wi18L5
+Wifa075NKRESCVJDxHEM2tbFJVfYiXXe4Wgxg9LwFw==
+=c79E
+-----END PGP SIGNATURE-----
+
+--7p42MbmcR2R1URc5b0nLq1zIkTD8u7F9m--
