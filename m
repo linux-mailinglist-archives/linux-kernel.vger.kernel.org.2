@@ -2,165 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA896415B8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51F6415B92
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240291AbhIWJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240277AbhIWJ6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:58:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9647B6124C;
-        Thu, 23 Sep 2021 09:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632391036;
-        bh=wZghjeZMmeRhet9HPhnAN6w0LewUCrC6CdWlnBZb/Mc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PcJ/45EPIxi5D0pJE0jiBUxa2jnVJC9G8dc9k3Qf8d/bwY8Z67JIU8ygTClmwULSh
-         uA7HmqIldXbjs1nQw0E1CeQMw3s9O4NtorBJCSK0jaQdlKAgXxE4jFra9zsDPsBjdI
-         1T7Nog4LQswRF/LB5mISAFzaWVgB8+nfNXKbTMic=
-Date:   Thu, 23 Sep 2021 11:57:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Coly Li <colyli@suse.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
-        nvdimm@lists.linux.dev, antlists@youngman.org.uk,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>,
-        Richard Fan <richard.fan@suse.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>, rafael@kernel.org
-Subject: Re: Too large badblocks sysfs file (was: [PATCH v3 0/7] badblocks
- improvement for multiple bad block ranges)
-Message-ID: <YUxPeQR/k5AGO2RH@kroah.com>
-References: <20210913163643.10233-1-colyli@suse.de>
- <a0f7b021-4816-6785-a9a4-507464b55895@suse.de>
- <6bd61a93-6fb6-2bd5-c1a6-b782e87845a4@suse.de>
+        id S240324AbhIWJ7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240306AbhIWJ7T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:59:19 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92517C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:57:47 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id t8so15549605wrq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:57:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/MJxVwGRbg1XNHDbbmS7hPzYeAHYCJbwGGA7R+iY3hA=;
+        b=Rp77Ru0njGFEMH0FEC1SblZEZxv6H00mID60x2gBAsJXZsrh3KOWU8rPHIOlVNxBL0
+         3ZRq07ZNjG7wsnyn5XX1Vj3a9vaCJUJwobD5+UlkffYsIWfnnQeMK5yxqdiqNQeRsL2O
+         09GrDGKL3ImHMcs9KuFU7AEzX4ooYNtIn9Z8EkjjOMTSH9PuRo6HZzpQOPDmhmJTRl8y
+         vlaMq0VUzrNFcZaxefQrMcXHfROfCFKkds0IHSgjQ6llIwKNUUBLZ9xu9tZlevAUMcYi
+         03o+Rh4xWL57/dR4nVffQ6PU3YPqSRjsmyWL79WjrCkLQO1sWH4ChWmPmhmS1pdn9qcd
+         ss4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/MJxVwGRbg1XNHDbbmS7hPzYeAHYCJbwGGA7R+iY3hA=;
+        b=g/bqa1WEBMnMGA/jxVpsVsx9CHRtTlaDGdjlY7myk8t5qBSBCpwDceBy+1iCRDIjKW
+         LjRPUPxY1MOfEVLxJ7Su8qfBRS7nhig/wHNGMaCKik5IOtXxfGyVW5gbXHi1zWfBIzbd
+         ekblpxAUv6AVMHYy5jMjx5sUgcodl/b4Hf4pHglLcSNVqmomrJVRVlADjqVuFYj6BU/a
+         p++bVENPUkDrvJkotxCh52A9iFdIOsl3TlNN9vm0KRydpJ7VouPE29VQwZ+6s3yGhLy4
+         zULbjtlIz7DYl80JFyOXdNgvTlzR9wBUmGQRmFbo8n4FamjOJZ/0tFOmWGQGvldACETJ
+         a6dw==
+X-Gm-Message-State: AOAM533+xCq2fgvV1djYViAzPvkajRG8uOFRpVZQZhMRn6mbV2aWfJi9
+        SHwT0/aNbvY7vEzvTxVuno2a+XQTmiklcWYZQ2v/zQ==
+X-Google-Smtp-Source: ABdhPJy429633mcPj36zJ+Apb9XpxpDQLWxLxkJL3gUdR5i+aJK8o3tcCu6K6BPmar7CN6QU26qCVhqSRQj03KrWFPA=
+X-Received: by 2002:a1c:4d01:: with SMTP id o1mr3471606wmh.61.1632391066056;
+ Thu, 23 Sep 2021 02:57:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6bd61a93-6fb6-2bd5-c1a6-b782e87845a4@suse.de>
+References: <20210923072716.913826-1-guoren@kernel.org> <6d7b1668c1f562a5ef426bb2519f9784@mailhost.ics.forth.gr>
+ <CAAhSdy0YDP3Nk8N9fnrKgS+3Rjt=5tLCh20upmUGK9SK67nNvg@mail.gmail.com>
+ <0861cc74d3886e685e9aa5d13ddcd781@mailhost.ics.forth.gr> <16de95480d279b086cf0c612461e4235@mailhost.ics.forth.gr>
+In-Reply-To: <16de95480d279b086cf0c612461e4235@mailhost.ics.forth.gr>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 23 Sep 2021 15:27:34 +0530
+Message-ID: <CAAhSdy0eu4-iABvTnyU6HSxqbC7d--is3iZfU7Css9KWd_HTYA@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Add RISC-V svpbmt extension
+To:     Nick Kossifidis <mick@ics.forth.gr>
+Cc:     Guo Ren <guoren@kernel.org>, Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Christoph Hellwig <hch@lst.de>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Greg Favor <gfavor@ventanamicro.com>,
+        Andrea Mondelli <andrea.mondelli@huawei.com>,
+        Jonathan Behrens <behrensj@mit.edu>,
+        Xinhaoqu <xinhaoqu@huawei.com>,
+        Bill Huffman <huffman@cadence.com>,
+        Allen Baum <allen.baum@esperantotech.com>,
+        Josh Scheid <jscheid@ventanamicro.com>,
+        Richard Trauben <rtrauben@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:40:30AM +0200, Hannes Reinecke wrote:
-> On 9/23/21 7:59 AM, Coly Li wrote:
-> > Hi all the kernel gurus, and folks in mailing lists,
-> > 
-> > This is a question about exporting 4KB+ text information via sysfs
-> > interface. I need advice on how to handle the problem.
-> > 
-> > Recently I work on the bad blocks API (block/badblocks.c) improvement,
-> > there is a sysfs file to export the bad block ranges for me raid. E.g
-> > for a md raid1 device, file
-> >     /sys/block/md0/md/rd0/bad_blocks
-> > may contain the following text content,
-> >     64 32
-> >    128 8
-> > The above lines mean there are two bad block ranges, one starts at LBA
-> > 64, length 32 sectors, another one starts at LBA 128 and length 8
-> > sectors. All the content is generated from the internal bad block
-> > records with 512 elements. In my testing the worst case only 185 from
-> > 512 records can be displayed via the sysfs file if the LBA string is
-> > very long, e.g.the following content,
-> >   17668164135030776 512
-> >   17668164135029776 512
-> >   17668164135028776 512
-> >   17668164135027776 512
-> >   ... ...
-> > The bad block ranges stored in internal bad blocks array are correct,
-> > but the output message is truncated. This is the problem I encountered.
-> > 
-> > I don't see sysfs has seq_file support (correct me if I am wrong), and I
-> > know it is improper to transfer 4KB+ text via sysfs interface, but the
-> > code is here already for long time.
-> > 
-> > There are 2 ideas to fix showing up in my brain,
-> > 1) Do not fix the problem
-> >     Normally it is rare that a storage media has 100+ bad block ranges,
-> > maybe in real world all the existing bad blocks information won't exceed
-> > the page size limitation of sysfs file.
-> > 2) Add seq_file support to sysfs interface if there is no
-> > 
-> > It is probably there is other better solution to fix. So I do want to
-> > get hint/advice from you.
-> > 
-> > Thanks in advance for any comment :-)
-> > 
-> > Coly Li
-> > 
-> > On 9/14/21 12:36 AM, Coly Li wrote:
-> >> This is the second effort to improve badblocks code APIs to handle
-> >> multiple ranges in bad block table.
+On Thu, Sep 23, 2021 at 3:18 PM Nick Kossifidis <mick@ics.forth.gr> wrote:
+>
+> =CE=A3=CF=84=CE=B9=CF=82 2021-09-23 12:42, Nick Kossifidis =CE=AD=CE=B3=
+=CF=81=CE=B1=CF=88=CE=B5:
+> > =CE=A3=CF=84=CE=B9=CF=82 2021-09-23 12:37, Anup Patel =CE=AD=CE=B3=CF=
+=81=CE=B1=CF=88=CE=B5:
+> >> On Thu, Sep 23, 2021 at 2:55 PM Nick Kossifidis <mick@ics.forth.gr>
+> >> wrote:
+> >>>
+> >>> Hello Guo,
+> >>>
+> >>> =CE=A3=CF=84=CE=B9=CF=82 2021-09-23 10:27, guoren@kernel.org =CE=AD=
+=CE=B3=CF=81=CE=B1=CF=88=CE=B5:
+> >>> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> >>> b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> >>> index e534f6a7cfa1..1825cd8db0de 100644
+> >>> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> >>> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> >>> @@ -56,7 +56,9 @@ properties:
+> >>>       enum:
+> >>>         - riscv,sv32
+> >>>         - riscv,sv39
+> >>> +      - riscv,sv39,svpbmt
+> >>>         - riscv,sv48
+> >>> +      - riscv,sv48,svpbmt
+> >>>         - riscv,none
+> >>>
+> >>> Isn't svpbmt orthogonal to the mmu type ? It's a functionality that
+> >>> can
+> >>> be present on either sv39/48/57 so why not have another "svpbmt"
+> >>> property directly on the cpu node ?
 > >>
-> >> There are 2 changes from previous version,
-> >> - Fixes 2 bugs in front_overwrite() which are detected by the user
-> >>    space testing code.
-> >> - Provide the user space testing code in last patch.
+> >> Actually, "mmu-type" would be a good place because it's page based
+> >> memory attribute and paging can't exist without mmu translation mode.
 > >>
-> >> There is NO in-memory or on-disk format change in the whole series, all
-> >> existing API and data structures are consistent. This series just only
-> >> improve the code algorithm to handle more corner cases, the interfaces
-> >> are same and consistency to all existing callers (md raid and nvdimm
-> >> drivers).
+> >> Also, "svpmbt" is indeed a CPU property so has to be feature
+> >> individual
+> >> CPU node. Hypothetically, a heterogeneous system is possible where
+> >> some CPUs have "svpmbt" and some CPUs don't have "svpmbt". For
+> >> example, a future FUxxx SoC might have a E-core and few S-cores
+> >> where S-cores have Svpmbt whereas E-core does not have Svpmbt
+> >> because it's an embedded core.
 > >>
-> >> The original motivation of the change is from the requirement from our
-> >> customer, that current badblocks routines don't handle multiple ranges.
-> >> For example if the bad block setting range covers multiple ranges from
-> >> bad block table, only the first two bad block ranges merged and rested
-> >> ranges are intact. The expected behavior should be all the covered
-> >> ranges to be handled.
-> >>
-> >> All the patches are tested by modified user space code and the code
-> >> logic works as expected. The modified user space testing code is
-> >> provided in last patch. The testing code detects 2 defects in helper
-> >> front_overwrite() and fixed in this version.
-> >>
-> >> The whole change is divided into 6 patches to make the code review more
-> >> clear and easier. If people prefer, I'd like to post a single large
-> >> patch finally after the code review accomplished.
-> >>
-> >> This version is seriously tested, and so far no more defect observed.
-> >>
-> >>
-> >> Coly Li
-> >>
-> >> Cc: Dan Williams <dan.j.williams@intel.com>
-> >> Cc: Hannes Reinecke <hare@suse.de>
-> >> Cc: Jens Axboe <axboe@kernel.dk>
-> >> Cc: NeilBrown <neilb@suse.de>
-> >> Cc: Richard Fan <richard.fan@suse.com>
-> >> Cc: Vishal L Verma <vishal.l.verma@intel.com>
-> >> ---
-> >> Changelog:
-> >> v3: add tester Richard Fan <richard.fan@suse.com>
-> >> v2: the improved version, and with testing code.
-> >> v1: the first completed version.
-> >>
-> >>
-> >> Coly Li (6):
-> >>    badblocks: add more helper structure and routines in badblocks.h
-> >>    badblocks: add helper routines for badblock ranges handling
-> >>    badblocks: improvement badblocks_set() for multiple ranges handling
-> >>    badblocks: improve badblocks_clear() for multiple ranges handling
-> >>    badblocks: improve badblocks_check() for multiple ranges handling
-> >>    badblocks: switch to the improved badblock handling code
-> >> Coly Li (1):
-> >>    test: user space code to test badblocks APIs
-> >>
-> >>   block/badblocks.c         | 1599 ++++++++++++++++++++++++++++++-------
-> >>   include/linux/badblocks.h |   32 +
-> >>   2 files changed, 1340 insertions(+), 291 deletions(-)
-> >>
-> > 
-> 
-> Please have a look at the patchset 'start switching sysfs attributes to
-> expose the seq_file' from Christoph Hellwig on linux-block; that seems
-> to be the approach you are looking for.
+> >
+> > I should say cpuX node, not the root /cpu node. We can have an svpbmt
+> > property in the same way we have an mmu-type property.
+> >
+>
+> I'm also thinking of future mmu-related extensions, e.g. what about
+> svnapot ? Should we have mmu-type be riscv,sv39,svnapot and e.g.
+> riscv.sv39,svpbmt,svnapot ? It'll become messy.
 
-No, I rejected the seq_file api for sysfs files, as it encourages abuse
-like this, sorry.
+I agree, "mmu-type" can become longer in future but I was thinking
+if all MMU related features can simply be comma-separated values
+of one DT property.
 
-greg k-h
+Alternately, we can have "riscv,svpmbt" bool DT property in each
+CPU node which will keep things simpler as compared to parsing
+comma-separate string in "mmu-type" DT property.
+
+Regards,
+Anup
+
+>
+> Regards,
+> Nick
