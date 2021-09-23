@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B305415A6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12120415A75
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240078AbhIWI7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 04:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
+        id S240080AbhIWJCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239137AbhIWI7r (ORCPT
+        with ESMTP id S240005AbhIWJCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 04:59:47 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB6EC061574;
-        Thu, 23 Sep 2021 01:58:16 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id g14so5155294pfm.1;
-        Thu, 23 Sep 2021 01:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y8D/BUId9p/fF4y2rgtXgkg6y0k6T1zK3JKxwNsMcAQ=;
-        b=ND9VSwwLJTk0sMiDscF2wgLeYcSwPLL0lGtbgmwLG13svSlnsS4a/2rrtuEdxgv+kX
-         pDH0rbV8aTJK5b9liyxHypS3OS2dIrkufksgXf1pcC8ZvTUWus7p/+bser7RDKEEIta+
-         9PRE03cT7+vvW//7trSuE4fU627h5Th8nrPE6YqLR+xjbEnZqU/u2/GYZD6BMrEvR4i6
-         dDze7umDkEOTfh9zC8xVKU50RbiYHxbErXWUc2maFiAljmnR5ODq9nWnSeGJg5F4Edi4
-         8AY5/tMqd7DXXv24VB9T6xOHiU4nvzaq7muidAGbqY7GYJo47rE0c8f0tliNzqSKvGii
-         Lzlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y8D/BUId9p/fF4y2rgtXgkg6y0k6T1zK3JKxwNsMcAQ=;
-        b=BQFJMzxs1U4u8kRfuIZ5s6BiNhOqCa43k24RZx6mVQGKB2M6m5Ygm+n+afMTPcoY0m
-         gM/q09+1ysEhJ+wuMQD+UjJapAOK5GOnYGjVZ+fLDBztnQPdyCyZEkcobqclLB5ywNmO
-         PBNb/6nrhXbCI1dKLr4D+HJx1aDxVb2g62lmQIMFBdnCqgVz6I2lo+BUkT26DMlsXkpp
-         USSMZZPc9VxNuIX4EhleSwDRHBV3pnoRfN4BlLgGTbSNYzgBhzhD6XMMsS2QfzSxa9yj
-         BGu2oBfPAltp5eNl+yB4ZZIP6xGkOcYPqPVJKws4slGQ3YQXYiJJExki96iJ8dZYU+Sn
-         O/FA==
-X-Gm-Message-State: AOAM532JgO5+7SSQZJC8OnwMeLAl9VsnxrrgyE9L2q86vLcS885/SzMs
-        zBcXk6Xd/EHcIE4lgeAguZc=
-X-Google-Smtp-Source: ABdhPJwX3d784LlIOcQawj5hxaOIdE5BKGMUwrNRjybgDmOJYSRYvuk8pje0vn410E78XYsbyY16Eg==
-X-Received: by 2002:a63:3e8b:: with SMTP id l133mr1425974pga.451.1632387495821;
-        Thu, 23 Sep 2021 01:58:15 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id c9sm5534530pgq.58.2021.09.23.01.58.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 01:58:15 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-mmc@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        zhenxiong.lai@unisoc.com, yuelin.tang@unisoc.com,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mmc: sdhci-sprd: Wait until DLL locked after being configured
-Date:   Thu, 23 Sep 2021 16:57:50 +0800
-Message-Id: <20210923085750.71968-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 23 Sep 2021 05:02:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6CEC061574;
+        Thu, 23 Sep 2021 02:00:48 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 09:00:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632387646;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KqDgHp7pC65TYmLcgMpRezFaGOBqgpP9GGW8svCrzOQ=;
+        b=RE0wdvIxHLEuMS6ValV7lR+a5ifepDM7F0Jhkp7nwsloIsaOkeQakhg4Fw5wWuRGeN/bzF
+        sKyvfAJIqnGHN0+HdSbtlauQyPbV6UGqCgoawPgDtK/r4D8SH81lwN7FnvNSho2bld7v1O
+        xWglhrgWIYn2CyaTUlzD3/rYVAdMVtREbtsgX5uWv8l7bECz5iewBIt19ipSPnzV41fYcK
+        0pGin1dfmb8I5VjZF+1ahvjXy+yT1G21oMRH6iNNr39hJ4Tjv2keZb60PQ0aUlt0gMs3L1
+        +BNBKRumaQWE2Qt0X4Zh2kJbsgKcXkOU8l0sH2IQOBgDjeqUpJUM0kWnVBcm6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632387646;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KqDgHp7pC65TYmLcgMpRezFaGOBqgpP9GGW8svCrzOQ=;
+        b=QKKMIsDaXJT7iD2Je3oCYj9zWYmWMfcZpACIdlyM0w/pTgVX8BWwxm6+5F2fpG4HTiQrOe
+        Xs+qLX5jtXXjjsDw==
+From:   "tip-bot2 for Anders Roxell" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/fpu] x86/fpu/signal: Fix missed conversion to correct
+ boolean retval in save_xstate_epilog()
+Cc:     Remi Duraffort <remi.duraffort@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Borislav Petkov <bp@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210922200901.1823741-1-anders.roxell@linaro.org>
+References: <20210922200901.1823741-1-anders.roxell@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <163238764483.25758.11716568924329080028.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
+The following commit has been merged into the x86/fpu branch of tip:
 
-According to the specification, DLL status has to be locked before using it.
+Commit-ID:     724fc0248d450224b19ef5b5ee41e392348f6704
+Gitweb:        https://git.kernel.org/tip/724fc0248d450224b19ef5b5ee41e392348f6704
+Author:        Anders Roxell <anders.roxell@linaro.org>
+AuthorDate:    Wed, 22 Sep 2021 22:09:01 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 23 Sep 2021 10:52:20 +02:00
 
-Signed-off-by: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+x86/fpu/signal: Fix missed conversion to correct boolean retval in save_xstate_epilog()
+
+Fix the missing return code polarity in save_xstate_epilog().
+
+ [ bp: Massage, use the right commit in the Fixes: tag ]
+
+Fixes: 2af07f3a6e9f ("x86/fpu/signal: Change return type of copy_fpregs_to_sigframe() helpers to boolean")
+Reported-by: Remi Duraffort <remi.duraffort@linaro.org>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1461
+Link: https://lkml.kernel.org/r/20210922200901.1823741-1-anders.roxell@linaro.org
 ---
- drivers/mmc/host/sdhci-sprd.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ arch/x86/kernel/fpu/signal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-index 11e375579cfb..83749c7a6db4 100644
---- a/drivers/mmc/host/sdhci-sprd.c
-+++ b/drivers/mmc/host/sdhci-sprd.c
-@@ -39,6 +39,9 @@
- #define  SDHCI_SPRD_BIT_POSRD_DLY_INV		BIT(21)
- #define  SDHCI_SPRD_BIT_NEGRD_DLY_INV		BIT(29)
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 68f03da..39c7bae 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -106,7 +106,7 @@ static inline bool save_xstate_epilog(void __user *buf, int ia32_frame)
+ 	err = __copy_to_user(&x->i387.sw_reserved, sw_bytes, sizeof(*sw_bytes));
  
-+#define SDHCI_SPRD_REG_32_DLL_STS0	0x210
-+#define SDHCI_SPRD_DLL_LOCKED		BIT(18)
-+
- #define SDHCI_SPRD_REG_32_BUSY_POSI		0x250
- #define  SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN	BIT(25)
- #define  SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN	BIT(24)
-@@ -236,7 +239,7 @@ static inline void _sdhci_sprd_set_clock(struct sdhci_host *host,
+ 	if (!use_xsave())
+-		return err;
++		return !err;
  
- static void sdhci_sprd_enable_phy_dll(struct sdhci_host *host)
- {
--	u32 tmp;
-+	u32 tmp, timeout = 1000;
- 
- 	tmp = sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG);
- 	tmp &= ~(SDHCI_SPRD_DLL_EN | SDHCI_SPRD_DLL_ALL_CPST_EN);
-@@ -256,6 +259,21 @@ static void sdhci_sprd_enable_phy_dll(struct sdhci_host *host)
- 	sdhci_writel(host, tmp, SDHCI_SPRD_REG_32_DLL_CFG);
- 	/* wait 1ms */
- 	usleep_range(1000, 1250);
-+
-+	while (--timeout) {
-+		if ((sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_STS0) &
-+		     SDHCI_SPRD_DLL_LOCKED))
-+			break;
-+		usleep_range(1000, 1250);
-+	}
-+
-+	if (!timeout) {
-+		pr_err("%s: DLL locked fail!\n", mmc_hostname(host->mmc));
-+		pr_info("%s: DLL_STS0 : 0x%x, DLL_CFG : 0x%x\n",
-+			 mmc_hostname(host->mmc),
-+			 sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_STS0),
-+			 sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG));
-+	}
- }
- 
- static void sdhci_sprd_set_clock(struct sdhci_host *host, unsigned int clock)
--- 
-2.25.1
-
+ 	err |= __put_user(FP_XSTATE_MAGIC2,
+ 			  (__u32 __user *)(buf + fpu_user_xstate_size));
