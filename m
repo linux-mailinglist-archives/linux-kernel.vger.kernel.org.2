@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D47B415AB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D0B415AB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240133AbhIWJS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:18:29 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:59075 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240011AbhIWJSZ (ORCPT
+        id S240142AbhIWJSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240124AbhIWJS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:18:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1632388614; x=1663924614;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3YMHGIu+GVfd3HsD86oGGNWfnyx0KoPQ7Y7puOM+D3M=;
-  b=LwzIM5wlbKT0Ir9dYXOORb9dwUTFF9z2qzM9ZX/s4oNq1rhD6eKjL9gC
-   fi/54csOojutV/vGfWeWBSTYCY1/Hla4UBhDKWYt7Dp6U+CQhr3yjsmae
-   zHS0uxxGfyLDaCwTeM4pglDxL3EWi31ih2vvTeUVlp9d+RRO3kz3mllr7
-   U=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 23 Sep 2021 02:16:54 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 02:16:53 -0700
-Received: from taozha-gv.ap.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 23 Sep 2021 02:16:49 -0700
-Date:   Thu, 23 Sep 2021 17:16:46 +0800
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        "Leo Yan" <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
-Subject: Re: [PATCH v2 0/2] Add Coresight support for RB5 board
-Message-ID: <20210923091627.GA7576@taozha-gv.ap.qualcomm.com>
-References: <1631515214-13653-1-git-send-email-quic_taozha@quicinc.com>
- <07bba970-2315-4284-cd3e-d69a3028a406@arm.com>
+        Thu, 23 Sep 2021 05:18:27 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0891C061574;
+        Thu, 23 Sep 2021 02:16:55 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id B67B81F44019
+Subject: Re: [PATCH 6/9] iio: common: cros_ec_sensors: simplify getting
+ .driver_data
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>, linux-iio@vger.kernel.org
+References: <20210920090522.23784-1-wsa+renesas@sang-engineering.com>
+ <20210920090522.23784-7-wsa+renesas@sang-engineering.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <716533b5-380d-be72-b45e-d9909f09286b@collabora.com>
+Date:   Thu, 23 Sep 2021 11:16:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <07bba970-2315-4284-cd3e-d69a3028a406@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+In-Reply-To: <20210920090522.23784-7-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 05:31:34PM +0100, Suzuki K Poulose wrote:
-> Hi Tao
+Hi Wolfram,
+
+On 20/9/21 11:05, Wolfram Sang wrote:
+> We should get 'driver_data' from 'struct device' directly. Going via
+> platform_device is an unneeded step back and forth.
 > 
-> On 13/09/2021 07:40, Tao Zhang wrote:
-> >This series adds Coresight support for SM8250 Soc on RB5 board.
-> >It is composed of two elements.
-> >a) Add ETM PID for Kryo-5XX.
-> >b) Add coresight support to DTS for RB5.
-> >
-> >This series applies to coresight/next
-> >https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+I'm fine to pick this patch through chrome-platform tree if Jonathan is fine, or
+can go through his tree.
+
+I plan also to pick patch  "[PATCH 8/9] platform: chrome: cros_ec_sensorhub:
+simplify getting .driver_data"
+
+Thanks,
+  Enric
+
+> ---
 > 
-> Please could you mention what has changed since the previous version
-> in the cover letter ?
+> Build tested only. buildbot is happy.
 > 
-> Kind regards
-> Suzuki
->
-The version 2 of the series add more comments "Cortex-A77" for ETM pid.
-Do I need to rewrite the cover letter and then resubmit it for review?
-> >Tao Zhang (2):
-> >   coresight: etm4x: Add ETM PID for Kryo-5XX
-> >   arm64: dts: qcom: sm8250: Add Coresight support
-> >
-> >  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts      | 442 +++++++++++++++++-
-> >  .../coresight/coresight-etm4x-core.c          |   1 +
-> >  2 files changed, 439 insertions(+), 4 deletions(-)
-> >
+>  drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> index 28bde13003b7..b2725c6adc7f 100644
+> --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> @@ -831,8 +831,7 @@ EXPORT_SYMBOL_GPL(cros_ec_sensors_core_write);
+>  
+>  static int __maybe_unused cros_ec_sensors_resume(struct device *dev)
+>  {
+> -	struct platform_device *pdev = to_platform_device(dev);
+> -	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
+> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+>  	struct cros_ec_sensors_core_state *st = iio_priv(indio_dev);
+>  	int ret = 0;
+>  
 > 
