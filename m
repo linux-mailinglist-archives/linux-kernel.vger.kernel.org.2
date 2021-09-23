@@ -2,93 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FBF4155E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299714155E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238962AbhIWDTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
+        id S239011AbhIWDVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235623AbhIWDTn (ORCPT
+        with ESMTP id S235623AbhIWDVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:19:43 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC3CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 20:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=F+4AaAJAaJGuXoXH+e2tslo3DIIjCFYYsSCWYBRvK3w=; b=I4FwDW3H5ss6QfosC/xYDjMPDq
-        fM9HFGawRuVcUKhzjdy5Bda0DjpdDutHJKfL+xMijYSdZwqA/a9xtNYMlhKbjkkYssa7Td7xn2muG
-        jXmwSDL5qC6IFbjWByw5JJ6TjG+cdldFsbjzOIR4QDuvo7WDLKFxmkH8hFGZKYYfcVVGkIUbMX0yK
-        U7ECPHb2mbdigrGPfYDiE0WhfbFphvyUATIsB2ZyHSZSbPGx2lImft41oxub+50lZZbAA0y5D7Td7
-        ZNknKbDg11l1Bd2VhHZLxHZV++RWtJsKGZk4epJM2CSPgI6jSOEvbAbJ/DypogWjaGoqn2LCrSJlk
-        BSw3s6/w==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTFFT-00A9Hk-B8; Thu, 23 Sep 2021 03:18:11 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        linux-snps-arc@lists.infradead.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] clocksource: arc_timer: eliminate redefined macro error
-Date:   Wed, 22 Sep 2021 20:18:08 -0700
-Message-Id: <20210923031808.5945-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Wed, 22 Sep 2021 23:21:45 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EC4C061574;
+        Wed, 22 Sep 2021 20:20:14 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id i25so20831051lfg.6;
+        Wed, 22 Sep 2021 20:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EaUcazH2tLz6tC0pcoRniTceWE6LRO85tzRxEp+hFWk=;
+        b=gaEEsquodOKjrBe9BDSyY7JXegNEkCAPjEMT57bCkf2kn/91hGZTMDwOj4Y6JTXDUa
+         nd6sLvMyjVrhS47+duGktRRuf9DS9PBHZ9gvRXmK8Ev5Ib9LMMyqbftsxya/VUALCbP/
+         dVtIBz5nlt5GMnxKbTnFaQ/N1PysAgydo1vUBGmgkNxC2sFfiuGTDwECqJ+WdyWxFuaB
+         5oOo7HLia83Yru7PnLJqIKpYOGyhMPtcnLJ1NrfhOeQeu7gMbz6EyX8RdMKMI3dL0a/v
+         UhMYJrWMd0e+AQ5hHnAmcCcXyb4W+7HoQmITL3xCbcp917JdDfo0Z8eTM8usWW8cHip3
+         043g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EaUcazH2tLz6tC0pcoRniTceWE6LRO85tzRxEp+hFWk=;
+        b=E6JGysdV5ClQT6yHd7MrlzebfQLU4Gxj9XBsakPG+8katN6qTXzjGCQ0xFNgXKEbow
+         29eDmr4owEc0P0v8hpSMdH+0cuwfsS8M1Ts9ksWXxpeembAJ2F9TDrQw/2rF/1DET0ib
+         SX7T5IvtE7AcCGiszmQBOalkGPhxiiBlhLlYgdYEYqnfEGtNKTq96wbXHZlPcbi5DhoH
+         w7u/nDdo2rkUe6YIve64qmurH+JBoaE/9AyRhXKNHQN9kCb7kabxbv2OK7nD+rsDj+/1
+         aV1yPGQSl1uJlEm5z/pfWSlt2cgk/nNasNuPTT/iLdFTbSwPVkToB7YzUwoAqWe7be9H
+         akcw==
+X-Gm-Message-State: AOAM533r5o1dPQVitTtF7pPETDyjWIgA7B91KKrz5vAU+osx9HvPmxk8
+        J0UExRHuuCf6cXrYJB0/XRhHOsF0Wy8NLrN8CiZS2zAAuKM=
+X-Google-Smtp-Source: ABdhPJx0Zv4taWuiuhUMJs1lxWE9YoY71IoJ7VVQpDYj4mHcMJWSr9qIX0S2KPyerwZ0QDtYgnzYFaBleB9iQSxsF34=
+X-Received: by 2002:a05:6512:78:: with SMTP id i24mr2092465lfo.595.1632367213035;
+ Wed, 22 Sep 2021 20:20:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
+ <202109221850.003A16EC1@keescook>
+In-Reply-To: <202109221850.003A16EC1@keescook>
+From:   Steve French <smfrench@gmail.com>
+Date:   Wed, 22 Sep 2021 22:20:01 -0500
+Message-ID: <CAH2r5muNG4GvziyMG2unkYNjUiT4V+pz0pWUGkWQNxUZJnBadw@mail.gmail.com>
+Subject: Re: [GIT PULL] ksmbd server security fixes
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In drivers/clocksource/, 3 drivers use "TIMER_CTRL_IE" with 3 different
-values.  Two of them (mps2-timer.c and timer-sp804.c/timer-sp.h) are
-localized and left unmodifed.
+On Wed, Sep 22, 2021 at 9:47 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Sun, Sep 19, 2021 at 09:22:31AM -0500, Steve French wrote:
+> > 3 ksmbd fixes: including an important security fix for path
+> > processing, and a missing buffer overflow check, and a trivial fix for
+> > incorrect header inclusion
+> >
+> > There are three additional patches (and also a patch to improve
+> > symlink checks) for other buffer overflow cases that are being
+> > reviewed and tested.
+>
+> Hi Steve,
+>
+> I was looking through the history[1] of the ksmbd work, and I'm kind
+> of surprised at some of the flaws being found here.
 
-One of them uses a shared header file (<soc/arc/timers.h>), which is
-what is causing the "redefined" warnings, so change the macro name in
-that driver only.
+I was also surprised that a couple of these weren't found by smbtorture,
+although to be fair it is more focused on functional testing of the protocol
+(and is quite detailed).  Most of my analysis of the code had been
+focused on functional coverage, and protocol features (and removing
+older less secure
+dialects, which he did).
 
-In file included from ../drivers/clocksource/timer-sp804.c:24:
-../drivers/clocksource/timer-sp.h:25: error: "TIMER_CTRL_IE" redefined [-Werror]
-   25 | #define TIMER_CTRL_IE           (1 << 5)        /*   VR */
-../include/soc/arc/timers.h:20: note: this is the location of the previous definition
-   20 | #define TIMER_CTRL_IE           (1 << 0) /* Interrupt when Count reaches limit */
+After lots of discussion about areas to review - we created this wiki
+page to track some of the detailed security review ongoing:
 
-Fixes: b26c2e3823ba ("ARC: breakout timer include code into separate header")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vineet Gupta <vgupta@kernel.org>
-Cc: linux-snps-arc@lists.infradead.org
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
----
- drivers/clocksource/arc_timer.c |    2 +-
- include/soc/arc/timers.h        |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+https://wiki.samba.org/index.php/Ksmbd-review
 
---- linux-next-20210917.orig/include/soc/arc/timers.h
-+++ linux-next-20210917/include/soc/arc/timers.h
-@@ -17,7 +17,7 @@
- #define ARC_REG_TIMER1_CNT	0x100	/* timer 1 count */
- 
- /* CTRL reg bits */
--#define TIMER_CTRL_IE	        (1 << 0) /* Interrupt when Count reaches limit */
-+#define TIMER_CTRL_IEN	        (1 << 0) /* Interrupt when Count reaches limit */
- #define TIMER_CTRL_NH	        (1 << 1) /* Count only when CPU NOT halted */
- 
- #define ARC_TIMERN_MAX		0xFFFFFFFF
---- linux-next-20210917.orig/drivers/clocksource/arc_timer.c
-+++ linux-next-20210917/drivers/clocksource/arc_timer.c
-@@ -245,7 +245,7 @@ static void arc_timer_event_setup(unsign
- 	write_aux_reg(ARC_REG_TIMER0_LIMIT, cycles);
- 	write_aux_reg(ARC_REG_TIMER0_CNT, 0);	/* start from 0 */
- 
--	write_aux_reg(ARC_REG_TIMER0_CTRL, TIMER_CTRL_IE | TIMER_CTRL_NH);
-+	write_aux_reg(ARC_REG_TIMER0_CTRL, TIMER_CTRL_IEN | TIMER_CTRL_NH);
- }
- 
- 
+> I'm concerned about code quality here, and I think something needs to
+> change about the review and testing processes.
+
+Yes - we Namjae, Ronnie, Ralph and others have had multiple recent discussions
+ about the review and testing process, and some useful improvements
+have been suggested.
+At a minimum it will include a review of each of the key security
+areas, and additional
+tests added (I added a few functional tests yesterday, but more need
+to be added, perhaps
+using some of Ronnie's libsmb2 libraries that we used to repro some of
+the security problems).
+
+> > Regression test results:
+> > http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/67
+> > and
+> > https://app.travis-ci.com/github/namjaejeon/ksmbd/builds/237919800
+>
+> Can you tell me more about these tests? I'm not immediately
+
+There are basically two types of tests run:
+- xfstests from Linux to Linux (usually from current mainline cifs.ko mounted
+to current ksmbd). These are largely functional tests, more at an
+application level
+- smbtorture is the Samba functional test suite, and is largely at the
+protocol level,
+to show protocol correctness.  There are a few security/overflow
+related tests in
+this, but more need to be added.  The smbtorture runs are automated in github,
+the xfstest runs are semi-automated, but I have to manually trigger them.
+
+The builders for xfstest 'buildbot runs use a Fedora VM on the client,
+that is spun
+up with the standard Linux 'buildbot' testing infrastructure, then the
+kernel is rebbuilt
+and replaced and then the Fedora client VM rebooted to the current
+kernel (in the
+case of the run you are pointing it is was running 5.15-rc2 with one patch
+applied (see below). The patch was added (from one posted on lkml)
+to avoid the build break in current mainline Linux.
+
+"HEAD is now at 1f07f2e... scripts/sorttable: riscv: fix undelcred
+identifier 'EM_RISCV' error"
+
+> I see xfstests and smbtorture getting run. Were these not catching
+> things like "../../../../../" and the buffer overflows? And if not,
+> where are the new tests that make sure these bugs can never recur?
+
+That (adding additional functional tests for smb3 overflows, and
+also it restarts a discussion about creating open source "smb3 fuzzing"
+tools to help Samba and ksmbd both) ... that is a discussion I have
+been having with others on the Samba team as well, some of
+the security bugs could have been found with additions
+to the "smbtorture" set of functional tests (which are hosted in the Samba
+server projects).
+
+> (Also, I see they're being run individually -- why not run the totality?)
+
+You can't run the totality of xfstests (some are not applicable for
+network fs e.g.) nor of smbtorture (some tests aren't applicable).
+
+> And looking at the Coverity report[4] under fs/ksmbd/* for linux-next, I
+> see 12 issues dating back to Mar 17, and 1 from 2 days ago: 5 concurrency,
+> 4 memory corruptions, 1 hang, and 2 resource leaks. Coverity is hardly
+> free from false positives, but those seems worth addressing. (Both you and
+> Namjae have accounts already; thank you for doing that a few months back!)
+
+I completely agree with the importance of Coverity as, even if the majority are
+'false positives' or not high priority - there are plenty that
+Coverity points out that are not.
+I have focused more on Coverity for cifs.ko than for ksmbd, but after
+the security patches
+are merged, it would be good to switch gears to that.
+
+> Anyway, I think my point is: this doesn't look ready for production use.
+> I understand having bugs, growing new features, etc, but I think more
+> work is needed here to really prove this code is ready to expose the
+
+I am pleased with the progress that Namjae et al have been making
+addressing the problems identified, but agree it is not ready for production
+use yet, despite good functional test results - and testing events
+(like the SMB3
+plugfest next week) are going to be important, as well as the security reviews.
+Fortunately the code size is manageable (25KLOC), and without legacy,
+insecure dialects to worry about (SMB1, LANMAN etc.), unlike most servers,
+the reviews should proceed reasonably quickly.
+
+The current patch list which has been reviewed and tested so far (includes
+fixes for some of the issues you mention) is:
+
+ksmbd: add request buffer validation in smb2_set_info
+743d886affeb ksmbd: remove follow symlinks support
+3bee78ad0062 ksmbd: fix invalid request buffer access in compound request
+18a015bccf9e ksmbd: check protocol id in ksmbd_verify_smb_message()
+9f6323311c70 ksmbd: add default data stream name in FILE_STREAM_INFORMATION
+e44fd5081c50 ksmbd: log that server is experimental at module load
+
+But there at least five more under review and testing.  Namjae et al have been
+very responsive.
+
+Good news about these test events, which are held multiple times each year
+for SMB, is that some of the companies participating in the past have run their
+fuzzers against Samba (and now will be able to do the same against ksmbd).
+
+There is some good news (relating to security), once Namjae et al get past
+these buffer overflow etc. patches.
+- he has already implemented the strongest encryption supported in SMB3.1.1
+- he has implemented the man in the middle attack prevention features
+of the protocol
+- strong (Kerberos) authentication is implemented
+- he has removed support for weak older dialects (including SMB1 and
+SMB2) of the protocol
+- he will be removing support for weaker authentication (including NTLMv1)
+
+Any feedback you have on the security list identified in the wiki list
+above, or other
+things you see in Coverity or the mailing list discussions reviewing the patches
+would be helpful.
+
+
+-- 
+Thanks,
+
+Steve
