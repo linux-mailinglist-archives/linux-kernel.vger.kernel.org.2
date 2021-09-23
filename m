@@ -2,215 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299714155E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5454155E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 05:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239011AbhIWDVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 23:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235623AbhIWDVp (ORCPT
+        id S237570AbhIWDWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 23:22:12 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60154
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235623AbhIWDWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:21:45 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EC4C061574;
-        Wed, 22 Sep 2021 20:20:14 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i25so20831051lfg.6;
-        Wed, 22 Sep 2021 20:20:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EaUcazH2tLz6tC0pcoRniTceWE6LRO85tzRxEp+hFWk=;
-        b=gaEEsquodOKjrBe9BDSyY7JXegNEkCAPjEMT57bCkf2kn/91hGZTMDwOj4Y6JTXDUa
-         nd6sLvMyjVrhS47+duGktRRuf9DS9PBHZ9gvRXmK8Ev5Ib9LMMyqbftsxya/VUALCbP/
-         dVtIBz5nlt5GMnxKbTnFaQ/N1PysAgydo1vUBGmgkNxC2sFfiuGTDwECqJ+WdyWxFuaB
-         5oOo7HLia83Yru7PnLJqIKpYOGyhMPtcnLJ1NrfhOeQeu7gMbz6EyX8RdMKMI3dL0a/v
-         UhMYJrWMd0e+AQ5hHnAmcCcXyb4W+7HoQmITL3xCbcp917JdDfo0Z8eTM8usWW8cHip3
-         043g==
+        Wed, 22 Sep 2021 23:22:06 -0400
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A9A2E402DA
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632367233;
+        bh=+y78UmABh7HK9tr/4S4sGTCsj4Mr5ovgzCxdWvhQlG4=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=uNh29KRnZbR8/SoCvkGLKHhi21F46gzpXddgQxLgNCgULNmoyDkZf+eDMDWgsn0bD
+         Qle+q3LTLuci42Bf+CLTCIsExq9sYVuMIO4nlq42XJvTXKkbDfniIZ05BpyiGtwLE/
+         mlQo6sRqbJXnCWhfxR3I7HMSwO/YaBp6Eefpsg7r+5TRtRnZba1dRns34iCvVg4e0r
+         fI7MmQJ7pcdTyItQJdpOKCDI+h9nZSqTEx7HjfAYr/Oih/hdXw8wgwZRUZvHdiY2T6
+         EKZg7cCaLgQE0OPFM16ApS4s6WgynHyyD4dbuy2K4ZVmCHTx5/b9NO2/P6B3nJiaQ7
+         pdolEWpvn5SSg==
+Received: by mail-oo1-f69.google.com with SMTP id z23-20020a4ad597000000b0029174f63d3eso2996352oos.18
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 20:20:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EaUcazH2tLz6tC0pcoRniTceWE6LRO85tzRxEp+hFWk=;
-        b=E6JGysdV5ClQT6yHd7MrlzebfQLU4Gxj9XBsakPG+8katN6qTXzjGCQ0xFNgXKEbow
-         29eDmr4owEc0P0v8hpSMdH+0cuwfsS8M1Ts9ksWXxpeembAJ2F9TDrQw/2rF/1DET0ib
-         SX7T5IvtE7AcCGiszmQBOalkGPhxiiBlhLlYgdYEYqnfEGtNKTq96wbXHZlPcbi5DhoH
-         w7u/nDdo2rkUe6YIve64qmurH+JBoaE/9AyRhXKNHQN9kCb7kabxbv2OK7nD+rsDj+/1
-         aV1yPGQSl1uJlEm5z/pfWSlt2cgk/nNasNuPTT/iLdFTbSwPVkToB7YzUwoAqWe7be9H
-         akcw==
-X-Gm-Message-State: AOAM533r5o1dPQVitTtF7pPETDyjWIgA7B91KKrz5vAU+osx9HvPmxk8
-        J0UExRHuuCf6cXrYJB0/XRhHOsF0Wy8NLrN8CiZS2zAAuKM=
-X-Google-Smtp-Source: ABdhPJx0Zv4taWuiuhUMJs1lxWE9YoY71IoJ7VVQpDYj4mHcMJWSr9qIX0S2KPyerwZ0QDtYgnzYFaBleB9iQSxsF34=
-X-Received: by 2002:a05:6512:78:: with SMTP id i24mr2092465lfo.595.1632367213035;
- Wed, 22 Sep 2021 20:20:13 -0700 (PDT)
+        bh=+y78UmABh7HK9tr/4S4sGTCsj4Mr5ovgzCxdWvhQlG4=;
+        b=Cbku/EvRnVc9Bhpj0m8CeiH8BqTdaXouCC/dVAVtaHH5ThbNHM1oXB7fEvmO2sc+2S
+         sV47qVLmPA3K1whWb2psRcGqtsfSRUZCcoEtckS/rdUH9yS/nZ89xQZMBKY0ZqUI2FIY
+         cQhNwhgLxEy9LaW96Rn5Y033aTwDatRbwkg5ubzqsjA9LMTh0RzwF7CCdsFH8SgjAk+R
+         Icv03MOPWvtWQH3b33nK+uvJakXMJf6eer5ErEN9AP2QDZhVHvBmMRLVqZF5PD2kaSUC
+         LWeqoGam6ssrkr96pPOSyrTWtByhcLTZ+9uv7cMxcN7e56KK53KzBm9Uu5vSU8eiAIzL
+         IcoA==
+X-Gm-Message-State: AOAM533MSt3kdPDHR9iZu7ug1YLZ2MCt2PmTSonYlRyzYKCeVBUDDQjB
+        zMMdY4WssVrfuEZjuDdCzyT0r42HCkqaqFJn8sqQNTu7XYTWrUsGoCt7xae/xK7Mh6X9Yz7KMhE
+        cpmZcDN+6HaN3MUO3tdNMqDwFbthmwc/Y+OfeDn7DkgUEBENx4KFchdkVgQ==
+X-Received: by 2002:aca:2102:: with SMTP id 2mr10887125oiz.98.1632367232285;
+        Wed, 22 Sep 2021 20:20:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyo/AOHrlw7eOB4SMFrUrqCF4z6yGeBZyQ9DCJWkuum5LRKyrbRQIRZgx6p+VovUjqHalCZTcYbTL6gqQfhfKI=
+X-Received: by 2002:aca:2102:: with SMTP id 2mr10887103oiz.98.1632367231968;
+ Wed, 22 Sep 2021 20:20:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
- <202109221850.003A16EC1@keescook>
-In-Reply-To: <202109221850.003A16EC1@keescook>
-From:   Steve French <smfrench@gmail.com>
-Date:   Wed, 22 Sep 2021 22:20:01 -0500
-Message-ID: <CAH2r5muNG4GvziyMG2unkYNjUiT4V+pz0pWUGkWQNxUZJnBadw@mail.gmail.com>
-Subject: Re: [GIT PULL] ksmbd server security fixes
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
+References: <CAAd53p6XdeYcLNctghOi5VPy1YHEOaGoeo9Wc_T9P-RmYTJKzA@mail.gmail.com>
+ <20210917165500.GA1723244@bjorn-Precision-5520>
+In-Reply-To: <20210917165500.GA1723244@bjorn-Precision-5520>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 23 Sep 2021 11:20:20 +0800
+Message-ID: <CAAd53p4raiRuWQ3O9VFpxhtro4YJ-E2sUiDrnFnNEMDyxXDK=w@mail.gmail.com>
+Subject: Re: [PATCH] vgaarb: Use ACPI HID name to find integrated GPU
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        mripard@kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Namjae Jeon <linkinjeon@kernel.org>
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 9:47 PM Kees Cook <keescook@chromium.org> wrote:
+On Sat, Sep 18, 2021 at 12:55 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
 >
-> On Sun, Sep 19, 2021 at 09:22:31AM -0500, Steve French wrote:
-> > 3 ksmbd fixes: including an important security fix for path
-> > processing, and a missing buffer overflow check, and a trivial fix for
-> > incorrect header inclusion
+> On Fri, Sep 17, 2021 at 11:49:45AM +0800, Kai-Heng Feng wrote:
+> > On Fri, Sep 17, 2021 at 12:38 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > >
+> > > [+cc Huacai, linux-pci]
+> > >
+> > > On Wed, May 19, 2021 at 09:57:23PM +0800, Kai-Heng Feng wrote:
+> > > > Commit 3d42f1ddc47a ("vgaarb: Keep adding VGA device in queue") assumes
+> > > > the first device is an integrated GPU. However, on AMD platforms an
+> > > > integrated GPU can have higher PCI device number than a discrete GPU.
+> > > >
+> > > > Integrated GPU on ACPI platform generally has _DOD and _DOS method, so
+> > > > use that as predicate to find integrated GPU. If the new strategy
+> > > > doesn't work, fallback to use the first device as boot VGA.
+> > > >
+> > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > > ---
+> > > >  drivers/gpu/vga/vgaarb.c | 31 ++++++++++++++++++++++++++-----
+> > > >  1 file changed, 26 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/vga/vgaarb.c b/drivers/gpu/vga/vgaarb.c
+> > > > index 5180c5687ee5..949fde433ea2 100644
+> > > > --- a/drivers/gpu/vga/vgaarb.c
+> > > > +++ b/drivers/gpu/vga/vgaarb.c
+> > > > @@ -50,6 +50,7 @@
+> > > >  #include <linux/screen_info.h>
+> > > >  #include <linux/vt.h>
+> > > >  #include <linux/console.h>
+> > > > +#include <linux/acpi.h>
+> > > >
+> > > >  #include <linux/uaccess.h>
+> > > >
+> > > > @@ -1450,9 +1451,23 @@ static struct miscdevice vga_arb_device = {
+> > > >       MISC_DYNAMIC_MINOR, "vga_arbiter", &vga_arb_device_fops
+> > > >  };
+> > > >
+> > > > +#if defined(CONFIG_ACPI)
+> > > > +static bool vga_arb_integrated_gpu(struct device *dev)
+> > > > +{
+> > > > +     struct acpi_device *adev = ACPI_COMPANION(dev);
+> > > > +
+> > > > +     return adev && !strcmp(acpi_device_hid(adev), ACPI_VIDEO_HID);
+> > > > +}
+> > > > +#else
+> > > > +static bool vga_arb_integrated_gpu(struct device *dev)
+> > > > +{
+> > > > +     return false;
+> > > > +}
+> > > > +#endif
+> > > > +
+> > > >  static void __init vga_arb_select_default_device(void)
+> > > >  {
+> > > > -     struct pci_dev *pdev;
+> > > > +     struct pci_dev *pdev, *found = NULL;
+> > > >       struct vga_device *vgadev;
+> > > >
+> > > >  #if defined(CONFIG_X86) || defined(CONFIG_IA64)
+> > > > @@ -1505,20 +1520,26 @@ static void __init vga_arb_select_default_device(void)
+> > > >  #endif
+> > > >
+> > > >       if (!vga_default_device()) {
+> > > > -             list_for_each_entry(vgadev, &vga_list, list) {
+> > > > +             list_for_each_entry_reverse(vgadev, &vga_list, list) {
+> > >
+> > > Hi Kai-Heng, do you remember why you changed the order of this list
+> > > traversal?
 > >
-> > There are three additional patches (and also a patch to improve
-> > symlink checks) for other buffer overflow cases that are being
-> > reviewed and tested.
+> > The descending order is to keep the original behavior.
+> >
+> > Before this patch, it breaks out of the loop as early as possible, so
+> > the lower numbered device is picked.
+> > This patch makes it only break out of the loop when ACPI_VIDEO_HID
+> > device is found.
+> > So if there are more than one device that meet "cmd & (PCI_COMMAND_IO
+> > | PCI_COMMAND_MEMORY)", higher numbered device will be selected.
+> > So the traverse order reversal is to keep the original behavior.
 >
-> Hi Steve,
+> Can you give an example of what you mean?  I don't quite follow how it
+> keeps the original behavior.
 >
-> I was looking through the history[1] of the ksmbd work, and I'm kind
-> of surprised at some of the flaws being found here.
-
-I was also surprised that a couple of these weren't found by smbtorture,
-although to be fair it is more focused on functional testing of the protocol
-(and is quite detailed).  Most of my analysis of the code had been
-focused on functional coverage, and protocol features (and removing
-older less secure
-dialects, which he did).
-
-After lots of discussion about areas to review - we created this wiki
-page to track some of the detailed security review ongoing:
-
-https://wiki.samba.org/index.php/Ksmbd-review
-
-> I'm concerned about code quality here, and I think something needs to
-> change about the review and testing processes.
-
-Yes - we Namjae, Ronnie, Ralph and others have had multiple recent discussions
- about the review and testing process, and some useful improvements
-have been suggested.
-At a minimum it will include a review of each of the key security
-areas, and additional
-tests added (I added a few functional tests yesterday, but more need
-to be added, perhaps
-using some of Ronnie's libsmb2 libraries that we used to repro some of
-the security problems).
-
-> > Regression test results:
-> > http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/67
-> > and
-> > https://app.travis-ci.com/github/namjaejeon/ksmbd/builds/237919800
+> If we have this:
 >
-> Can you tell me more about these tests? I'm not immediately
+>   0  PCI_COMMAND_MEMORY set   ACPI_VIDEO_HID
+>   1  PCI_COMMAND_MEMORY set   ACPI_VIDEO_HID
+>
+> Previously we didn't look for ACPI_VIDEO_HID, so we chose 0, now we
+> choose 1, which seems wrong.  In the absence of other information, I
+> would prefer the lower-numbered device.
+>
+> Or this:
+>
+>   0  PCI_COMMAND_MEMORY set
+>   1  PCI_COMMAND_MEMORY set   ACPI_VIDEO_HID
+>
+> Previously we chose 0; now we choose 1, which does seem right, but
+> we'd choose 1 regardless of the order.
+>
+> Or this:
+>
+>   0  PCI_COMMAND_MEMORY set   ACPI_VIDEO_HID
+>   1  PCI_COMMAND_MEMORY set
+>
+> Previously we chose 0, now we still choose 0, which seems right but
+> again doesn't depend on the order.
+>
+> The first case, where both devices are ACPI_VIDEO_HID, is the only one
+> where the order matters, and I suggest that we should be using the
+> original order, not the reversed order.
 
-There are basically two types of tests run:
-- xfstests from Linux to Linux (usually from current mainline cifs.ko mounted
-to current ksmbd). These are largely functional tests, more at an
-application level
-- smbtorture is the Samba functional test suite, and is largely at the
-protocol level,
-to show protocol correctness.  There are a few security/overflow
-related tests in
-this, but more need to be added.  The smbtorture runs are automated in github,
-the xfstest runs are semi-automated, but I have to manually trigger them.
+Consider this:
+0  PCI_COMMAND_MEMORY set
+1  PCI_COMMAND_MEMORY set
 
-The builders for xfstest 'buildbot runs use a Fedora VM on the client,
-that is spun
-up with the standard Linux 'buildbot' testing infrastructure, then the
-kernel is rebbuilt
-and replaced and then the Fedora client VM rebooted to the current
-kernel (in the
-case of the run you are pointing it is was running 5.15-rc2 with one patch
-applied (see below). The patch was added (from one posted on lkml)
-to avoid the build break in current mainline Linux.
+Originally device 0 will be picked. If the traverse order is kept,
+device 1 will be selected instead, because none of them pass
+vga_arb_integrated_gpu().
 
-"HEAD is now at 1f07f2e... scripts/sorttable: riscv: fix undelcred
-identifier 'EM_RISCV' error"
+Kai-Heng
 
-> I see xfstests and smbtorture getting run. Were these not catching
-> things like "../../../../../" and the buffer overflows? And if not,
-> where are the new tests that make sure these bugs can never recur?
-
-That (adding additional functional tests for smb3 overflows, and
-also it restarts a discussion about creating open source "smb3 fuzzing"
-tools to help Samba and ksmbd both) ... that is a discussion I have
-been having with others on the Samba team as well, some of
-the security bugs could have been found with additions
-to the "smbtorture" set of functional tests (which are hosted in the Samba
-server projects).
-
-> (Also, I see they're being run individually -- why not run the totality?)
-
-You can't run the totality of xfstests (some are not applicable for
-network fs e.g.) nor of smbtorture (some tests aren't applicable).
-
-> And looking at the Coverity report[4] under fs/ksmbd/* for linux-next, I
-> see 12 issues dating back to Mar 17, and 1 from 2 days ago: 5 concurrency,
-> 4 memory corruptions, 1 hang, and 2 resource leaks. Coverity is hardly
-> free from false positives, but those seems worth addressing. (Both you and
-> Namjae have accounts already; thank you for doing that a few months back!)
-
-I completely agree with the importance of Coverity as, even if the majority are
-'false positives' or not high priority - there are plenty that
-Coverity points out that are not.
-I have focused more on Coverity for cifs.ko than for ksmbd, but after
-the security patches
-are merged, it would be good to switch gears to that.
-
-> Anyway, I think my point is: this doesn't look ready for production use.
-> I understand having bugs, growing new features, etc, but I think more
-> work is needed here to really prove this code is ready to expose the
-
-I am pleased with the progress that Namjae et al have been making
-addressing the problems identified, but agree it is not ready for production
-use yet, despite good functional test results - and testing events
-(like the SMB3
-plugfest next week) are going to be important, as well as the security reviews.
-Fortunately the code size is manageable (25KLOC), and without legacy,
-insecure dialects to worry about (SMB1, LANMAN etc.), unlike most servers,
-the reviews should proceed reasonably quickly.
-
-The current patch list which has been reviewed and tested so far (includes
-fixes for some of the issues you mention) is:
-
-ksmbd: add request buffer validation in smb2_set_info
-743d886affeb ksmbd: remove follow symlinks support
-3bee78ad0062 ksmbd: fix invalid request buffer access in compound request
-18a015bccf9e ksmbd: check protocol id in ksmbd_verify_smb_message()
-9f6323311c70 ksmbd: add default data stream name in FILE_STREAM_INFORMATION
-e44fd5081c50 ksmbd: log that server is experimental at module load
-
-But there at least five more under review and testing.  Namjae et al have been
-very responsive.
-
-Good news about these test events, which are held multiple times each year
-for SMB, is that some of the companies participating in the past have run their
-fuzzers against Samba (and now will be able to do the same against ksmbd).
-
-There is some good news (relating to security), once Namjae et al get past
-these buffer overflow etc. patches.
-- he has already implemented the strongest encryption supported in SMB3.1.1
-- he has implemented the man in the middle attack prevention features
-of the protocol
-- strong (Kerberos) authentication is implemented
-- he has removed support for weak older dialects (including SMB1 and
-SMB2) of the protocol
-- he will be removing support for weaker authentication (including NTLMv1)
-
-Any feedback you have on the security list identified in the wiki list
-above, or other
-things you see in Coverity or the mailing list discussions reviewing the patches
-would be helpful.
-
-
--- 
-Thanks,
-
-Steve
+>
+> > > I guess the list_add_tail() in vga_arbiter_add_pci_device() means
+> > > vga_list is generally ordered with small device numbers first and
+> > > large ones last.
+> > >
+> > > So you pick the integrated GPU with the largest device number.  Are
+> > > there systems with more than one integrated GPU?  If so, I would
+> > > naively expect that in the absence of an indication otherwise, we'd
+> > > want the one with the *smallest* device number.
+> >
+> > There's only one integrated GPU on the affected system.
+> >
+> > The approach is to keep the list traversal in one pass.
+> > Is there any regression introduce by this patch?
+> > If that's the case, we can separate the logic and find the
+> > ACPI_VIDEO_HID in second pass.
+>
+> No regression, I'm just looking at Huacai's VGA patches, which affect
+> this area.
