@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E28415C0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1526415C0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240422AbhIWKiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 06:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        id S240443AbhIWKiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhIWKiM (ORCPT
+        with ESMTP id S240434AbhIWKiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:38:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E792FC061574;
-        Thu, 23 Sep 2021 03:36:40 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632393398;
+        Thu, 23 Sep 2021 06:38:23 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904B0C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:36:51 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d6800cf632848c722fe0b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6800:cf63:2848:c722:fe0b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E510D1EC0372;
+        Thu, 23 Sep 2021 12:36:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632393406;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LTguzk40ayGOML5J09jRevoLF7bYg9lkIEwM2+6eZ0w=;
-        b=0S2tAo0/F+o1g7KpAslYegb5ydfD3kdtHL/L2e8pauBb4F7wG9K5m6Irdzv0ZRoYG7Lzxx
-        GOeaLpFzXByXWTABZ9QDe5O/2vYQ/KmJvUw9kmmTcEVtEfZd36LTqZ6o75mlrZLWe3WIZE
-        lz3DgkJZ9xeEQ0yGMB9SlA3Mhzym72TJAZwmyhwL5wKZKYnc9808rx0PZO9dGBhRIfyBgF
-        BFZrCxCwb3SuPjW3tNpyajRkjFmUANBDsFVxZ8F5M+vHEkMhy9RnjeQ8cfNJQ3eweNndMI
-        AvfZIKLlGHaOH6XyPcFpOkSBL0vE9aX9pZz7rWVmbScl5oKXZpCewB92ESgQxQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632393398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LTguzk40ayGOML5J09jRevoLF7bYg9lkIEwM2+6eZ0w=;
-        b=Wbo8ToYQV7/QtJXaqHOhAnemnyibaMe7FhJbZvj1z6S5RnOC0Rm0UgJLr6rFCer+2GQutR
-        A9ebVSMk3OeKkgCQ==
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        akpm@linux-foundation.org, frederic@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, cl@linux.com,
-        juri.lelli@redhat.com, mingo@redhat.com, mtosatti@redhat.com,
-        nilal@redhat.com, mgorman@suse.de, ppandit@redhat.com,
-        williams@redhat.com, bigeasy@linutronix.de,
-        anna-maria@linutronix.de, linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH 0/6] mm: Remote LRU per-cpu pagevec cache/per-cpu page
- list drain support
-In-Reply-To: <efb4a5e1-d64a-38de-97d8-350c3d1b0962@suse.cz>
-References: <20210921161323.607817-1-nsaenzju@redhat.com>
- <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
- <20210922112817.GO4323@worktop.programming.kicks-ass.net>
- <87v92sgt3n.ffs@tglx> <efb4a5e1-d64a-38de-97d8-350c3d1b0962@suse.cz>
-Date:   Thu, 23 Sep 2021 12:36:37 +0200
-Message-ID: <878rznh93e.ffs@tglx>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=lQM5wB25lDMMDo0IZxemDXSvYL4h52fkdvk6t5RH75w=;
+        b=e2sgha3Wc+2qSpZAVRtT40mlaJ3mCb7MzYYwrKZLrxWOtXgSXY15w7R0xCZIbHSwX3/OUe
+        leAcorKJguAVi1nzCohYZdW+HuEhtuPCDf1znxtj4nkz3k4e24lXfLt/c5GDLoFWjO93W6
+        9xQ3drrDLvvw2XXCqT2wxpLv1IL1fMk=
+Date:   Thu, 23 Sep 2021 12:36:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 05/12] x86/tdx: Add TDX guest support to
+ intel_cc_platform_has()
+Message-ID: <YUxYuDyKBjvnfn7T@zn.tnic>
+References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210916183550.15349-6-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210916183550.15349-6-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vlastimil,
+On Thu, Sep 16, 2021 at 11:35:43AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+> index 253f3ea66cd8..e38430e6e396 100644
+> --- a/include/linux/cc_platform.h
+> +++ b/include/linux/cc_platform.h
+> @@ -61,6 +61,15 @@ enum cc_attr {
+>  	 * Examples include SEV-ES.
+>  	 */
+>  	CC_ATTR_GUEST_STATE_ENCRYPT,
+> +
+> +	/**
+> +	 * @CC_ATTR_GUEST_TDX: Trusted Domain Extension Support
+> +	 *
+> +	 * The platform/OS is running as a TDX guest/virtual machine.
+> +	 *
+> +	 * Examples include SEV-ES.
+			    ^^^^^^^
 
-On Thu, Sep 23 2021 at 09:12, Vlastimil Babka wrote:
-> On 9/23/21 00:09, Thomas Gleixner wrote:
->>   local_lock() 		-> preempt_disable()
->>   local_lock_irq()	-> local_irq_disable()
->>   ...
->
-> Yes, to be clean, this would have to be a new primitive, not just an abused
-> local lock. It would just look similar to the RT version (a percpu array of
-> spinlocks), so for this patchset it would allow not to have two such locks
-> side be side (local + spin) while only one is being used. For maximum
-> flexibility the initialization would take a CONFIG_ (or something
-> compile-time bool) that when false would make the !RT version an empty
-> struct and "locking" would rely on preempt/irq disable (just as with !RT
-> local_lock). If compile-time true it would take a static key to decide on
-> boot whether the !RT version only does the preepmt/irq disable or actually
-> takes the lock.
->
-> But as you say below, it's too much complexity for questionable benefit.
->
-> But maybe this can all be avoided anyway, as I recalled what we do for
-> vmstat already (IIUC). See quiet_vmstat() - when cpu enters the nohz mode,
-> it flushes per-cpu vmstat diffs and then there's no reason to further
-> disturb the cpu to do that while it's on NOHZ mode. We could do the same for
-> lru pagevecs and pcplists?
+Copy/paste huh? :)
 
-I'm not sure about this. I like the idea of being able to offload things
-to housekeeping CPUs not only in the full isolation case.
+-- 
+Regards/Gruss,
+    Boris.
 
-A good example is RCU which allows to offload all RCU processing to some
-other CPU(s), which is useful even w/o full isolation.
-
-The synchronous quiescing on entering NOHZ full mode is a cute
-workaround but for one it makes entering NOHZ full more expensive and it
-does not necessarily provide good isolation guarantees under all
-circumstances, while a full remote processing definitely does.
-
-I think it's at least worthwhile to investigate.
-
-Thanks,
-
-        tglx
+https://people.kernel.org/tglx/notes-about-netiquette
