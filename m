@@ -2,176 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1394415CAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A261415CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240602AbhIWLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:19:37 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:33793 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240493AbhIWLTg (ORCPT
+        id S240588AbhIWLUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240493AbhIWLUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:19:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1632395884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J81t8+yaR4LN6D9aRF2BIKOcrCWettxIPfYEDkKGzCQ=;
-        b=OZHFiOoQJqQqVkwG7mXgQtfpFAfaEY6wxtBSWS224ZJFbnyVYE97OmYbP+78Sq/HFG/mC+
-        usxzw7QhkkNmkjfmwVsqNTZ9tBH+SSEI8+XoJdRkhcau5oZ1nh57+mzenFAVwwwykfuD2j
-        vq0jroiukCyKXutq+rwqkYd+435/Pvs=
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-db3eur04lp2057.outbound.protection.outlook.com [104.47.12.57]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-5-H_AUkDNRNbyR7QDuPPWtSQ-1;
- Thu, 23 Sep 2021 13:18:02 +0200
-X-MC-Unique: H_AUkDNRNbyR7QDuPPWtSQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aNgY4my2hahXCig+MMTk5riAbbxuXPnJGe/ebnQoVwl4QkgPjA3H5V/TX8O4QwhFH5akqezB3p0cL7B+4CqN95JHB2fW12YNnqYLNqT/hUiy6NzIIQuSGY0gFNwRKjCxyekzESmtRJsktphqZrtJCJSLR+vRa00DXJLRB2MloXP+gOY+oyoLT9Vjj8J7hxPMNurREuD+KnhEjcRt6I/9Pd8CSeHZEA1I/kAcPcrE1KiAP0HsANN6vR4IrREw/7jhYPKl/qValQ6sRtvV7hDcqFp/xZPu5J63qyRGpo4r+nbwmQWmiHlVdQqZKDiD+SdicZQNCM3FRYqiUpRh1kNolA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=J81t8+yaR4LN6D9aRF2BIKOcrCWettxIPfYEDkKGzCQ=;
- b=aV+fdTy60kq1ziVszaj3rcrxDLnXGUw/Rn9l3oRS0jdQbYloeKC70Idc0Je3ii5L0DsQCDTDCSx8MUSE2QrUfzBur5f9Nl4LeAPTbAOR8LIcaG1+tnHXNZ2d3FfdxJD5vjKEcurvhgKij5tmXczkd3lKKS7K9SQg/JZpUWSp6bKNs8KQvsJzgdJtM78gS9C3BWRPQAs+td3QLwSxPco/932r1rqAo6/HdqduJ5Mx/DZPYkOQ34Orgcau5QS+YypDXhliy2f8olvhInnQeyrJnptyzDL2unJSfN1frzpXlJYrdYyQIf1HnXtQQRWHG7sVSIFt2g+NO9ziMw3cXoJtaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR04MB5741.eurprd04.prod.outlook.com (2603:10a6:803:df::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 23 Sep
- 2021 11:18:00 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4544.013; Thu, 23 Sep 2021
- 11:18:00 +0000
-Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
-To:     Juergen Gross <jgross@suse.com>
-Cc:     boris.ostrovsky@oracle.com, julien@xen.org, sstabellini@kernel.org,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Oleksandr Andrushchenko <andr2000@gmail.com>
-References: <20210923095345.185489-1-andr2000@gmail.com>
- <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
- <478b9175-f21f-b77a-2bc1-ad230bbdf548@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <87bb76ba-c8b4-5ab0-a8c3-13e8ab4af3b9@suse.com>
-Date:   Thu, 23 Sep 2021 13:17:59 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <478b9175-f21f-b77a-2bc1-ad230bbdf548@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR0P264CA0232.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1e::28) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Thu, 23 Sep 2021 07:20:32 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EC6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:19:01 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso7994769ota.8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:19:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s0cPQoIqCHpexQHN8I9O9O1s6hHQIW6w4g54hPahYMY=;
+        b=qHGxCAn7jinjDDPHFQUDloEwU1harzzS5BJHKqqUmOVpa53v56pEb/snjXFueSJQlE
+         WZMN1u9sh2uvDXUP6GghIdBZiXWYudbzoseo76XTZPLqCpV43T609NVrnbOG2TvqkL3q
+         2ror1gzZ3nnY+9tYAphSHWn9VISBGsoQ1v4B5cOf8ORGOMVxH6yzV/bG+JSV6aJJYMfu
+         IiFptphYABB0gZfh4ALTeFjB6cqfEMggokaoTVU9JnKh2a1BO7yzqUi/ynFEeLTWs421
+         9ilYt0reMrZyY2GX9FYNFGB6/gFO4J+Q865FW4+S6qfbywnLuAqXws+KRr+XCocz9sjK
+         s3UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s0cPQoIqCHpexQHN8I9O9O1s6hHQIW6w4g54hPahYMY=;
+        b=wdnNPFdsYwMg9hba27InamVY0S9sulZjhG6ntECT57UQcywt808djljSSki64Rcs9N
+         5HHhsP4g3oWULWIuTCl9bObjPXbIq/bNcMRKGEBZ+PNbRIGdogy3GGANPbC66XHM1HqO
+         dGQGeJgsMy66vp3EqdGanrkQEJ+LC5W2flivAwd/v7OJ+AJL/qw7DtS5wUC+GEY/uhb9
+         eL55xyfFHLAphGKwiTNmiMckOnKPDkKETBxQMnYc9KZqWg//Ey6kISpsQMpe+j9ILfgx
+         JPQZU3bH1gl90I5p5PIQjtqPU520fSPLsRW5oRUCgOEYvgyzJua2YuH9SL6s4nsZ5p4c
+         OGWw==
+X-Gm-Message-State: AOAM531NlLaksiNlNSyeDesYLvoaJjQviUUxWLLx9OoKCrcC5bAltDdo
+        PJmgxNAyVBtvGbJ22jLTo7dACeX8Bgfn5xSuv9CKQg==
+X-Google-Smtp-Source: ABdhPJyV6Gq0lOamTxj0NtSjJE+CiMC+Gbio02ClpLQlVGav8QgwgW3aaEaPL3RpeERBg3iaBCWSk52uC09avgKBb/M=
+X-Received: by 2002:a9d:7244:: with SMTP id a4mr3878121otk.137.1632395940082;
+ Thu, 23 Sep 2021 04:19:00 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0232.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Thu, 23 Sep 2021 11:18:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 38f43355-5a85-49c2-620d-08d97e83cdbc
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5741:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB57412606ADB588077C14D425B3A39@VI1PR04MB5741.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Beeqt/OZ1hyEHduJZDfMjyppdL7+nsSaSSRmO4TE8zqt2lhBKIC6NkkQrX7/mKVKmIoPWItawQ7WKLmmzGY66/5KgMyFHOmkkY6lxrp6X8y+AA4RQ+9gCKb3Rtufi9B88xqOn8b6TKky+IvoLZdcCKF5omxQlOK9ug6ygpul4nAmEPSU7mL/zKzdnYGhul6oo1POB0IAANocScsDgwUzVyH0ls+HL5PPIZba3yGgnrZWUsUOqZXVMXtf48b/0SHDo0VN8fUKzPN/zC7fvEV72u+VJ1zyguIFOduiknYVw+D+4hh3JguAK93Y+YGJZHqcAA8mOMoe8fbyjbqcQM28O0FtvJ07y6ZpcYn+wJHu69/tUngdDQ6z/WxVS5qAeCS0Evn9JjzkqdxnAJFl+AjTchdZ9R1pNnkhh6pNIHehNWHqsz5GsMqArDM3uE77G83P0kaIxO/+2EfpjzDY94JNVPESGZXstsVUYavmSbLaYZzVkrH8qR7O3ET4gbgBxSzIH0u0wSUfQbZt8ZcaOJjXU2uJjM2EjMCUhZcV2Z2t1wMz3UfWLPoiIE1Rys9Zfb2TbvjEvscndutaRDGP5Yks3TFelBp9Ja3IBTARY/Vk8XWrC4745yna+571JqE7KaFT9FgzjJZhW08Sc42A1JArkUlCIEHVk2KhPyAzbX98ZlsnYM18+h3LwiJtbxG5d5nyC89uRkrWeUBnM2+MuhIHOwrdCYPd2/VdNq+PEMSHs5s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6862004)(186003)(36756003)(4326008)(26005)(6486002)(8676002)(2906002)(38100700002)(31696002)(83380400001)(6636002)(31686004)(53546011)(86362001)(508600001)(956004)(5660300002)(66946007)(2616005)(16576012)(37006003)(8936002)(316002)(66556008)(66476007)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUVjdUg5MjdxUXFWQmRSWWVFR0xtRCt4cGFHRDJGZ2pHQUdta1Iyb3V1SXdE?=
- =?utf-8?B?WjZnenZ0YWNZMGFydTRHTmFLaWhjd1BpL053akttRitFZlh2VUoySmRJN2pH?=
- =?utf-8?B?Tk44RUxnOXJXODEycHVPdlpDRzVrR0MvcWVkZVh1T0h3SHBaMFVhZDJxYmZm?=
- =?utf-8?B?YlcydGFoOGZqN01YSndHUDBubEpBa0hmQmY5Nk9rbGZZd3h0Rm9kbVNkdjVh?=
- =?utf-8?B?N2RON0lMeVR1OGpXQTZFdW5KdFBJK2xrZWEwQXdMdkY5cmlVSkdUVW5YM0d2?=
- =?utf-8?B?bjJMU0dtOFpnNEErcXZSUW5pOFBQT1BDTWpzdGJuckFDTUVNTW9VcUpOelVU?=
- =?utf-8?B?YjlVWTBLcnRRR1QxVEh6c1V6TXJFK3hkbXEzYUNtV1lqbGFMaXpEUGMwOXVq?=
- =?utf-8?B?S0pjbDNQMFp1YmR0dTJXbXV5YjRsT25TOW9Xdy9xS1orMnQxUnNGWnpXbDl3?=
- =?utf-8?B?RC9Lb2huUDE0Y1JNVlplNk03NHdvK1ZlcWxZVCtRNlVsK2N6ZDN0NzdoN3U4?=
- =?utf-8?B?cW9BOUN2VHBZdmpQZ01BaVVxcFVQWjJ2aFpHMndqajZxeFlLcEtxanFPNGhC?=
- =?utf-8?B?ejRyclB6MUxDbUdkNVYzSHVRbTVkYjhvZlRlL1dpb1RoQnUrNlBzVUpxWmph?=
- =?utf-8?B?bHZWTjMvRkZxdDJreG4xQ2hvTzg2eXozWk1WWUplKzRPNjlKOUo4bG84ZHht?=
- =?utf-8?B?STJmbXFUWnZpMEtWZzN2MzQvdVdNSS9YVlVLYWxZU2JQNStyWEtRWVcrY2xs?=
- =?utf-8?B?SC80RFh2OXpRcTR4Mk9zSGRoa2NpMDVKTWZ0ZjNjWTh3a2RBdWtIeHFKOEIv?=
- =?utf-8?B?NlZ4cDJyRnp5aWZianRFb0R4a2FuOGRkOVZwSzRQUCs4d3AxOE1xZkJCdFFo?=
- =?utf-8?B?NENCTDAvci9ZT3lWZVFFbmFueXdFd2I1NG03citmRTlMdk5pN2l1MjJvZG1w?=
- =?utf-8?B?YTFPZUZ0RVlHRkpJMFg4d1BHNHpwMSsxSFJublZleThKTVl0OFY1cXlQU3pp?=
- =?utf-8?B?Z2VWWXBGdFI1ai90M1RaVTlMaE54WEF2NUJ1V0VFcnVXWVg1VkZORGt1aVNO?=
- =?utf-8?B?N3UrQWowSXIrRldLQUdnZGI4TnFTK3RaVVl2MXVITlhMb0RVQldhTzgrcXRa?=
- =?utf-8?B?WnBuT3pLMDd0WW03VmV3YTUyZm00RmFLNG1aeGNkSGxxcHlFcEVKUnNheWh1?=
- =?utf-8?B?U1YzczJ4N1NCUmFvY0tKRW5zUUEyaXlubG1QOWNkL05KdnVFSDBVcU4wV3Nt?=
- =?utf-8?B?NVN1UFR2bjU2MnQ0d3ZVOXdNVHZXVDQvaFdZc1pyckt5azFkN3pmMExPREdP?=
- =?utf-8?B?ZkVaR2tGTElWTlJmaDEwbVN1ak9WemV5Nm9GTy9jTlBrb1RXV01IcWw1M0lY?=
- =?utf-8?B?ZjB2SlppSEtyamY3Q2p2RUtKREpKRjRMbjBsbCt2RzczTkdCcmlEUHJ4T0Jq?=
- =?utf-8?B?MXpCcm5jblpzVUlWR0N1a3pYMnIvWHNLMkNJWDd6djY0NEp2UDBGc3lvTTR1?=
- =?utf-8?B?Mm5UUkgxZFJwNGRYaWNKZ0RQUDVmRnlZdElsNVp0Tm56bzE2WjBOVmVjbzVT?=
- =?utf-8?B?a3lZc2pCOENkZ1QySm96UjRSNERabTlITGUyZGd4czJOZEtNN2N5b0VlaDcv?=
- =?utf-8?B?c3N2OW82WWNoc00wbEZmdnFXQlN6V1JTRDgxNEg0K3Q4d0RELzdvYlExeTM1?=
- =?utf-8?B?L08vMlFBZThuV05QWDdySzlFamR3QW5RZUFMcUd3a0xJaDBxZC9LaVBXYUFC?=
- =?utf-8?Q?eLMFKvNIrC9u7gZCLSdcecTpWrkCm4xpNXYIn2c?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38f43355-5a85-49c2-620d-08d97e83cdbc
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2021 11:18:00.7826
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AHFVMvqamEqSEnqY3qQEGHs4J4ja+9HYem0/+C0cBrLIA0BZeVLQJn2gIM3OJ0ZczIOz1B34jlQG5bOcwUdS9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5741
+References: <20210923104803.2620285-1-elver@google.com> <20210923104803.2620285-4-elver@google.com>
+In-Reply-To: <20210923104803.2620285-4-elver@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 23 Sep 2021 13:18:48 +0200
+Message-ID: <CACT4Y+Zvm4dXQY2tCuypso9aU97_6U2dLhfg2NNA8GTvcQoCLQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] kfence: limit currently covered allocations when
+ pool nearly full
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Jann Horn <jannh@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.09.2021 13:12, Juergen Gross wrote:
-> On 23.09.21 13:10, Jan Beulich wrote:
->> On 23.09.2021 11:53, Oleksandr Andrushchenko wrote:
->>> --- a/drivers/xen/Kconfig
->>> +++ b/drivers/xen/Kconfig
->>> @@ -180,10 +180,34 @@ config SWIOTLB_XEN
->>>   	select DMA_OPS
->>>   	select SWIOTLB
->>>   
->>> +config XEN_PCI_STUB
->>> +	bool
->>> +
->>> +config XEN_PCIDEV_STUB
->>> +	tristate "Xen PCI-device stub driver"
->>> +	depends on PCI && !X86 && XEN
->>> +	depends on XEN_BACKEND
->>> +	select XEN_PCI_STUB
->>> +	default m
->>> +	help
->>> +	  The PCI device stub driver provides limited version of the PCI
->>> +	  device backend driver without para-virtualized support for guests.
->>> +	  If you select this to be a module, you will need to make sure no
->>> +	  other driver has bound to the device(s) you want to make visible to
->>> +	  other guests.
->>> +
->>> +	  The "hide" parameter (only applicable if backend driver is compiled
->>> +	  into the kernel) allows you to bind the PCI devices to this module
->>> +	  from the default device drivers. The argument is the list of PCI BDFs:
->>> +	  xen-pciback.hide=(03:00.0)(04:00.0)
->>> +
->>> +	  If in doubt, say m.
->>> +
->>>   config XEN_PCIDEV_BACKEND
->>>   	tristate "Xen PCI-device backend driver"
->>>   	depends on PCI && X86 && XEN
->>>   	depends on XEN_BACKEND
->>> +	select XEN_PCI_STUB
->>
->> Does kconfig not at least warn about this? The selected item has a
->> "depends on !X88" conflicting with the "depends on X86" here.
-> 
-> XEN_PCI_STUB != XEN_PCIDEV_STUB
+On Thu, 23 Sept 2021 at 12:48, Marco Elver <elver@google.com> wrote:
+>
+> One of KFENCE's main design principles is that with increasing uptime,
+> allocation coverage increases sufficiently to detect previously
+> undetected bugs.
+>
+> We have observed that frequent long-lived allocations of the same
+> source (e.g. pagecache) tend to permanently fill up the KFENCE pool
+> with increasing system uptime, thus breaking the above requirement.
+> The workaround thus far had been increasing the sample interval and/or
+> increasing the KFENCE pool size, but is no reliable solution.
+>
+> To ensure diverse coverage of allocations, limit currently covered
+> allocations of the same source once pool utilization reaches 75%
+> (configurable via `kfence.skip_covered_thresh`) or above. The effect is
+> retaining reasonable allocation coverage when the pool is close to full.
+>
+> A side-effect is that this also limits frequent long-lived allocations
+> of the same source filling up the pool permanently.
+>
+> Uniqueness of an allocation for coverage purposes is based on its
+> (partial) allocation stack trace (the source). A Counting Bloom filter
+> is used to check if an allocation is covered; if the allocation is
+> currently covered, the allocation is skipped by KFENCE.
+>
+> Testing was done using:
+>
+>         (a) a synthetic workload that performs frequent long-lived
+>             allocations (default config values; sample_interval=1;
+>             num_objects=63), and
+>
+>         (b) normal desktop workloads on an otherwise idle machine where
+>             the problem was first reported after a few days of uptime
+>             (default config values).
+>
+> In both test cases the sampled allocation rate no longer drops to zero
+> at any point. In the case of (b) we observe (after 2 days uptime) 15%
+> unique allocations in the pool, 77% pool utilization, with 20% "skipped
+> allocations (covered)".
+>
+> Signed-off-by: Marco Elver <elver@google.com>
 
-Oh, sorry.
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
-Jan
-
+> ---
+> v3:
+> * Remove unneeded !alloc_stack_hash checks.
+> * Remove unneeded meta->alloc_stack_hash=0 in kfence_guarded_free().
+>
+> v2:
+> * Switch to counting bloom filter to guarantee currently covered
+>   allocations being skipped.
+> * Use a module param for skip_covered threshold.
+> * Use kfence pool address as hash entropy.
+> * Use filter_irq_stacks().
+> ---
+>  mm/kfence/core.c   | 103 ++++++++++++++++++++++++++++++++++++++++++++-
+>  mm/kfence/kfence.h |   2 +
+>  2 files changed, 103 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index db01814f8ff0..58a0f6f1acc5 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -11,11 +11,13 @@
+>  #include <linux/bug.h>
+>  #include <linux/debugfs.h>
+>  #include <linux/irq_work.h>
+> +#include <linux/jhash.h>
+>  #include <linux/kcsan-checks.h>
+>  #include <linux/kfence.h>
+>  #include <linux/kmemleak.h>
+>  #include <linux/list.h>
+>  #include <linux/lockdep.h>
+> +#include <linux/log2.h>
+>  #include <linux/memblock.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/random.h>
+> @@ -82,6 +84,10 @@ static const struct kernel_param_ops sample_interval_param_ops = {
+>  };
+>  module_param_cb(sample_interval, &sample_interval_param_ops, &kfence_sample_interval, 0600);
+>
+> +/* Pool usage% threshold when currently covered allocations are skipped. */
+> +static unsigned long kfence_skip_covered_thresh __read_mostly = 75;
+> +module_param_named(skip_covered_thresh, kfence_skip_covered_thresh, ulong, 0644);
+> +
+>  /* The pool of pages used for guard pages and objects. */
+>  char *__kfence_pool __ro_after_init;
+>  EXPORT_SYMBOL(__kfence_pool); /* Export for test modules. */
+> @@ -105,6 +111,25 @@ DEFINE_STATIC_KEY_FALSE(kfence_allocation_key);
+>  /* Gates the allocation, ensuring only one succeeds in a given period. */
+>  atomic_t kfence_allocation_gate = ATOMIC_INIT(1);
+>
+> +/*
+> + * A Counting Bloom filter of allocation coverage: limits currently covered
+> + * allocations of the same source filling up the pool.
+> + *
+> + * Assuming a range of 15%-85% unique allocations in the pool at any point in
+> + * time, the below parameters provide a probablity of 0.02-0.33 for false
+> + * positive hits respectively:
+> + *
+> + *     P(alloc_traces) = (1 - e^(-HNUM * (alloc_traces / SIZE)) ^ HNUM
+> + */
+> +#define ALLOC_COVERED_HNUM     2
+> +#define ALLOC_COVERED_SIZE     (1 << (const_ilog2(CONFIG_KFENCE_NUM_OBJECTS) + 2))
+> +#define ALLOC_COVERED_HNEXT(h) (1664525 * (h) + 1013904223)
+> +#define ALLOC_COVERED_MASK     (ALLOC_COVERED_SIZE - 1)
+> +static atomic_t alloc_covered[ALLOC_COVERED_SIZE];
+> +
+> +/* Stack depth used to determine uniqueness of an allocation. */
+> +#define UNIQUE_ALLOC_STACK_DEPTH 8UL
+> +
+>  /* Statistics counters for debugfs. */
+>  enum kfence_counter_id {
+>         KFENCE_COUNTER_ALLOCATED,
+> @@ -114,6 +139,7 @@ enum kfence_counter_id {
+>         KFENCE_COUNTER_BUGS,
+>         KFENCE_COUNTER_SKIP_INCOMPAT,
+>         KFENCE_COUNTER_SKIP_CAPACITY,
+> +       KFENCE_COUNTER_SKIP_COVERED,
+>         KFENCE_COUNTER_COUNT,
+>  };
+>  static atomic_long_t counters[KFENCE_COUNTER_COUNT];
+> @@ -125,11 +151,60 @@ static const char *const counter_names[] = {
+>         [KFENCE_COUNTER_BUGS]           = "total bugs",
+>         [KFENCE_COUNTER_SKIP_INCOMPAT]  = "skipped allocations (incompatible)",
+>         [KFENCE_COUNTER_SKIP_CAPACITY]  = "skipped allocations (capacity)",
+> +       [KFENCE_COUNTER_SKIP_COVERED]   = "skipped allocations (covered)",
+>  };
+>  static_assert(ARRAY_SIZE(counter_names) == KFENCE_COUNTER_COUNT);
+>
+>  /* === Internals ============================================================ */
+>
+> +static inline bool should_skip_covered(void)
+> +{
+> +       unsigned long thresh = (CONFIG_KFENCE_NUM_OBJECTS * kfence_skip_covered_thresh) / 100;
+> +
+> +       return atomic_long_read(&counters[KFENCE_COUNTER_ALLOCATED]) > thresh;
+> +}
+> +
+> +static u32 get_alloc_stack_hash(unsigned long *stack_entries, size_t num_entries)
+> +{
+> +       /* Some randomness across reboots / different machines. */
+> +       u32 seed = (u32)((unsigned long)__kfence_pool >> (BITS_PER_LONG - 32));
+> +
+> +       num_entries = min(num_entries, UNIQUE_ALLOC_STACK_DEPTH);
+> +       num_entries = filter_irq_stacks(stack_entries, num_entries);
+> +       return jhash(stack_entries, num_entries * sizeof(stack_entries[0]), seed);
+> +}
+> +
+> +/*
+> + * Adds (or subtracts) count @val for allocation stack trace hash
+> + * @alloc_stack_hash from Counting Bloom filter.
+> + */
+> +static void alloc_covered_add(u32 alloc_stack_hash, int val)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < ALLOC_COVERED_HNUM; i++) {
+> +               atomic_add(val, &alloc_covered[alloc_stack_hash & ALLOC_COVERED_MASK]);
+> +               alloc_stack_hash = ALLOC_COVERED_HNEXT(alloc_stack_hash);
+> +       }
+> +}
+> +
+> +/*
+> + * Returns true if the allocation stack trace hash @alloc_stack_hash is
+> + * currently contained (non-zero count) in Counting Bloom filter.
+> + */
+> +static bool alloc_covered_contains(u32 alloc_stack_hash)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < ALLOC_COVERED_HNUM; i++) {
+> +               if (!atomic_read(&alloc_covered[alloc_stack_hash & ALLOC_COVERED_MASK]))
+> +                       return false;
+> +               alloc_stack_hash = ALLOC_COVERED_HNEXT(alloc_stack_hash);
+> +       }
+> +
+> +       return true;
+> +}
+> +
+>  static bool kfence_protect(unsigned long addr)
+>  {
+>         return !KFENCE_WARN_ON(!kfence_protect_page(ALIGN_DOWN(addr, PAGE_SIZE), true));
+> @@ -269,7 +344,8 @@ static __always_inline void for_each_canary(const struct kfence_metadata *meta,
+>  }
+>
+>  static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t gfp,
+> -                                 unsigned long *stack_entries, size_t num_stack_entries)
+> +                                 unsigned long *stack_entries, size_t num_stack_entries,
+> +                                 u32 alloc_stack_hash)
+>  {
+>         struct kfence_metadata *meta = NULL;
+>         unsigned long flags;
+> @@ -332,6 +408,8 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+>         /* Pairs with READ_ONCE() in kfence_shutdown_cache(). */
+>         WRITE_ONCE(meta->cache, cache);
+>         meta->size = size;
+> +       meta->alloc_stack_hash = alloc_stack_hash;
+> +
+>         for_each_canary(meta, set_canary_byte);
+>
+>         /* Set required struct page fields. */
+> @@ -344,6 +422,8 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+>
+>         raw_spin_unlock_irqrestore(&meta->lock, flags);
+>
+> +       alloc_covered_add(alloc_stack_hash, 1);
+> +
+>         /* Memory initialization. */
+>
+>         /*
+> @@ -412,6 +492,8 @@ static void kfence_guarded_free(void *addr, struct kfence_metadata *meta, bool z
+>
+>         raw_spin_unlock_irqrestore(&meta->lock, flags);
+>
+> +       alloc_covered_add(meta->alloc_stack_hash, -1);
+> +
+>         /* Protect to detect use-after-frees. */
+>         kfence_protect((unsigned long)addr);
+>
+> @@ -752,6 +834,7 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+>  {
+>         unsigned long stack_entries[KFENCE_STACK_DEPTH];
+>         size_t num_stack_entries;
+> +       u32 alloc_stack_hash;
+>
+>         /*
+>          * Perform size check before switching kfence_allocation_gate, so that
+> @@ -799,7 +882,23 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+>
+>         num_stack_entries = stack_trace_save(stack_entries, KFENCE_STACK_DEPTH, 0);
+>
+> -       return kfence_guarded_alloc(s, size, flags, stack_entries, num_stack_entries);
+> +       /*
+> +        * Do expensive check for coverage of allocation in slow-path after
+> +        * allocation_gate has already become non-zero, even though it might
+> +        * mean not making any allocation within a given sample interval.
+> +        *
+> +        * This ensures reasonable allocation coverage when the pool is almost
+> +        * full, including avoiding long-lived allocations of the same source
+> +        * filling up the pool (e.g. pagecache allocations).
+> +        */
+> +       alloc_stack_hash = get_alloc_stack_hash(stack_entries, num_stack_entries);
+> +       if (should_skip_covered() && alloc_covered_contains(alloc_stack_hash)) {
+> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_COVERED]);
+> +               return NULL;
+> +       }
+> +
+> +       return kfence_guarded_alloc(s, size, flags, stack_entries, num_stack_entries,
+> +                                   alloc_stack_hash);
+>  }
+>
+>  size_t kfence_ksize(const void *addr)
+> diff --git a/mm/kfence/kfence.h b/mm/kfence/kfence.h
+> index c1f23c61e5f9..2a2d5de9d379 100644
+> --- a/mm/kfence/kfence.h
+> +++ b/mm/kfence/kfence.h
+> @@ -87,6 +87,8 @@ struct kfence_metadata {
+>         /* Allocation and free stack information. */
+>         struct kfence_track alloc_track;
+>         struct kfence_track free_track;
+> +       /* For updating alloc_covered on frees. */
+> +       u32 alloc_stack_hash;
+>  };
+>
+>  extern struct kfence_metadata kfence_metadata[CONFIG_KFENCE_NUM_OBJECTS];
+> --
+> 2.33.0.464.g1972c5931b-goog
+>
