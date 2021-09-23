@@ -2,134 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AF74158D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402774158DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 09:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239774AbhIWHJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 03:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239666AbhIWHIu (ORCPT
+        id S239523AbhIWHNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 03:13:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36546 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239358AbhIWHNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 03:08:50 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C56EC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 00:07:19 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id g16so14225040wrb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 00:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=al6aRxBJTHCHmw5L/7ubtKaJ9PdDCptUmmdfzhB20/g=;
-        b=pjlgvB9gpczXyVGy4KGKCkrvML2s1dAaukSFuRttdgOCPKZAanD/dd1hmQIuyb3gbM
-         qkwMmuWRnw0DeczT3AqGL0LvEHNvSNwnj2Shw/BxvO/CYCuVt0qC2FWS96Fn8gDebpdM
-         7up7/y1GKkC0DqEJFl5QX2uqvpIBAJHnlO6K3l3DvZBNCAGBslRSe6arFQqLDbG1GaQ8
-         SuIh2zHWiJ8viXZWhRszlcIcJGWwbSeiLEMloumBnxKEQBf04aSYYp3zZtqiQvdFW/7+
-         ZiQsxB+Ue2vQ43PfiYN3GFtAfgF2jwAuacHLKzXHTXKOGjYpKKmMyz3mof/eYL3E+xNd
-         5T3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=al6aRxBJTHCHmw5L/7ubtKaJ9PdDCptUmmdfzhB20/g=;
-        b=hY6OPBjJY9rtLwKtVkjUx+gBP3lZEfMTRd1xBg+HzHG8n/jfn2npt1WhJiYFNlvwhf
-         +eUC1jQfK40txR2qFrqo7VOn5YjjKW2Gd+teUXHs4f4zgg32xL370PflQzL9hgTam9Jl
-         9hPu/gMjuubea7ZXQdvC2cL1JSu/t9hiwN1MSAOsjiIqVtiUgijYZW/axvex3GViia0f
-         PGJZt68aa80teZbWLNOalYE8E6VWACVRq95H7eTYAeLjFmsh/BPuRv8NyEJQxIbtcC/2
-         wI6uTkARIbKCIlQNIr8/WP1/2y1gQqbaC6EOCJXwpkLaRdcVsAWKAuxRl79AcZm/tbgj
-         SYEA==
-X-Gm-Message-State: AOAM530mgf/hQk8P3TfrZBIZrg0ckGjbz/HXeybL+yUtXap3MdZSly4g
-        EpyeiZz1HuARkkYgfLnvdeQFkQ==
-X-Google-Smtp-Source: ABdhPJwDGSL4J+Y/s/bRsaf1H94n9NXNCXney7KIFYAavTTYcO1DvpjUj20lxmeyvG1IwQ6gCVsLJw==
-X-Received: by 2002:a1c:2313:: with SMTP id j19mr14177832wmj.189.1632380838114;
-        Thu, 23 Sep 2021 00:07:18 -0700 (PDT)
-Received: from apalos.home (ppp-94-66-220-137.home.otenet.gr. [94.66.220.137])
-        by smtp.gmail.com with ESMTPSA id c8sm4522911wru.30.2021.09.23.00.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 00:07:17 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 10:07:14 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        hawk@kernel.org, jonathan.lemon@gmail.com, alobakin@pm.me,
-        willemb@google.com, cong.wang@bytedance.com, pabeni@redhat.com,
-        haokexin@gmail.com, nogikh@google.com, elver@google.com,
-        memxor@gmail.com, edumazet@google.com, alexander.duyck@gmail.com,
-        dsahern@gmail.com
-Subject: Re: [PATCH net-next 0/7] some optimization for page pool
-Message-ID: <YUwnogBl/qbNbQ7X@apalos.home>
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
+        Thu, 23 Sep 2021 03:13:41 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A0E4622307;
+        Thu, 23 Sep 2021 07:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632381129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mmBOGVhFBxLxi8U95qA0irvUWd9BKBad4ey/QHF4OLA=;
+        b=wrogAHCKAfbCKEVzuRb+fVH0a/fcySAs4mGvGXKmz5+zd+NIKCB05mD+xyfeDze1fOLeTx
+        4eZ4yCj5esduI3FmuhopejyyqvSDHZrbSyIBd9oxLO/e5Y7VPUzkywWd3FYiVxCa5nzMrm
+        vMGCstL8ZncY7TnPdo3+aiITtbjQqJY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632381129;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mmBOGVhFBxLxi8U95qA0irvUWd9BKBad4ey/QHF4OLA=;
+        b=ZSYP82rm/oDJjiyKo9rlW2b2VZJoezlrrkQbWMh6Zt4uZ4QpatSCAdq622p2lRz8hrvUuM
+        l8RL90ZAExVrS3BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6307413DC4;
+        Thu, 23 Sep 2021 07:12:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7EpiF8koTGH5cwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 23 Sep 2021 07:12:09 +0000
+Message-ID: <efb4a5e1-d64a-38de-97d8-350c3d1b0962@suse.cz>
+Date:   Thu, 23 Sep 2021 09:12:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922094131.15625-1-linyunsheng@huawei.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        akpm@linux-foundation.org, frederic@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, cl@linux.com,
+        juri.lelli@redhat.com, mingo@redhat.com, mtosatti@redhat.com,
+        nilal@redhat.com, mgorman@suse.de, ppandit@redhat.com,
+        williams@redhat.com, bigeasy@linutronix.de,
+        anna-maria@linutronix.de, linux-rt-users@vger.kernel.org
+References: <20210921161323.607817-1-nsaenzju@redhat.com>
+ <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
+ <20210922112817.GO4323@worktop.programming.kicks-ass.net>
+ <87v92sgt3n.ffs@tglx>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 0/6] mm: Remote LRU per-cpu pagevec cache/per-cpu page
+ list drain support
+In-Reply-To: <87v92sgt3n.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunsheng, 
-
-On Wed, Sep 22, 2021 at 05:41:24PM +0800, Yunsheng Lin wrote:
-> Patch 1: disable dma mapping support for 32-bit arch with 64-bit
->          DMA.
-> Patch 2: support non-split page when PP_FLAG_PAGE_FRAG is set.
-> patch 3: avoid calling compound_head() for skb frag page
-> Patch 4-7: use pp_magic to identify pp page uniquely.
-
-There's some subtle changes in this patchset that might affect XDP.
-
-What I forgot when I proposed removing the recycling bit,  is that it also
-serves as an 'opt-in' mechanism for drivers that want to use page_pool but 
-do the recycling internally.  With that removed we need to make sure
-nothing bad happens to them.  In theory the page refcnt for mlx5
-specifically will be elevated, so we'll just end up unmapping the buffer.
-Arguably we could add a similar mechanism internally into page pool,  
-which would allow us to enable and disable recycling,  but that's
-an extra if per packet allocation and I don't know if we want that on the XDP 
-case.
-A few numbers pre/post patch for XDP would help, but iirc hns3 doesn't have
-XDP support yet?
-
-It's plumbers week so I'll do some testing starting Monday.
-
-Thanks
-/Ilias
-
+On 9/23/21 00:09, Thomas Gleixner wrote:
+> On Wed, Sep 22 2021 at 13:28, Peter Zijlstra wrote:
+>> On Tue, Sep 21, 2021 at 07:59:51PM +0200, Vlastimil Babka wrote:
+>>
+>>> These days the pcplist protection is done by local_lock, which solved
+>>> the RT concerns. Probably a stupid/infeasible idea, but maybe what you
+>>> want to achieve could be more generally solved at the local_lock level?
+>>> That on NOHZ_FULL CPUs, local_locks could have this mode where they
+>>> could synchronize with remote cpus?
+>>
+>> local_lock and spinlock have different rules, local_lock for example can
+>> never cause an irq inversion, unlike a spinlock.
 > 
-> V3:
->     1. add patch 1/4/6/7.
->     2. use pp_magic to identify pp page uniquely too.
->     3. avoid unnecessary compound_head() calling.
+> TBH, I really regret an attempt I made at some point in the RT
+> development to abuse local locks for this kind of cross CPU protections
+> because that led to yet another semantically ill defined construct.
 > 
-> V2: add patch 2, adjust the commit log accroding to the discussion
->     in V1, and fix a compiler error reported by kernel test robot.
+> local locks are as the name says strictly local. IOW, they do not exist
+> for remote access. Just look at the !RT mapping:
 > 
-> Yunsheng Lin (7):
->   page_pool: disable dma mapping support for 32-bit arch with 64-bit DMA
->   page_pool: support non-split page with PP_FLAG_PAGE_FRAG
->   pool_pool: avoid calling compound_head() for skb frag page
->   page_pool: change BIAS_MAX to support incrementing
->   skbuff: keep track of pp page when __skb_frag_ref() is called
->   skbuff: only use pp_magic identifier for a skb' head page
->   skbuff: remove unused skb->pp_recycle
+>   local_lock() 		-> preempt_disable()
+>   local_lock_irq()	-> local_irq_disable()
+>   ...
+
+Yes, to be clean, this would have to be a new primitive, not just an abused
+local lock. It would just look similar to the RT version (a percpu array of
+spinlocks), so for this patchset it would allow not to have two such locks
+side be side (local + spin) while only one is being used. For maximum
+flexibility the initialization would take a CONFIG_ (or something
+compile-time bool) that when false would make the !RT version an empty
+struct and "locking" would rely on preempt/irq disable (just as with !RT
+local_lock). If compile-time true it would take a static key to decide on
+boot whether the !RT version only does the preepmt/irq disable or actually
+takes the lock.
+
+But as you say below, it's too much complexity for questionable benefit.
+
+But maybe this can all be avoided anyway, as I recalled what we do for
+vmstat already (IIUC). See quiet_vmstat() - when cpu enters the nohz mode,
+it flushes per-cpu vmstat diffs and then there's no reason to further
+disturb the cpu to do that while it's on NOHZ mode. We could do the same for
+lru pagevecs and pcplists?
+
+> The only thing local_lock is addressing is the opaque nature of
+> preempt_disable(), local*_disable/save() protected critical sections,
+> which have per CPU BKL, i.e. undefined protection scope, semantics.
 > 
->  .../net/ethernet/hisilicon/hns3/hns3_enet.c   |  6 ---
->  drivers/net/ethernet/marvell/mvneta.c         |  2 -
->  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  4 +-
->  drivers/net/ethernet/marvell/sky2.c           |  2 +-
->  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
->  drivers/net/ethernet/ti/cpsw.c                |  2 -
->  drivers/net/ethernet/ti/cpsw_new.c            |  2 -
->  include/linux/mm_types.h                      | 13 +-----
->  include/linux/skbuff.h                        | 39 ++++++++----------
->  include/net/page_pool.h                       | 31 ++++++++------
->  net/core/page_pool.c                          | 40 +++++++------------
->  net/core/skbuff.c                             | 36 ++++++-----------
->  net/tls/tls_device.c                          |  2 +-
->  13 files changed, 67 insertions(+), 114 deletions(-)
+> If you really want cross CPU protection then using a regular spinlock in
+> a per CPU data structure is the right way to go.
 > 
-> -- 
-> 2.33.0
+> That makes it a bit akward vs. the code at hand which already introduced
+> local locks to replace the opaque preempt/local_irq disabled critical
+> sections with scoped local locks which in turn allows RT to substitute
+> them with strict CPU local spinlocks.
 > 
+> But for clarity sake we really have to look at two different cases now:
+> 
+>    1) Strict per CPU local protection
+> 
+>       That's what the code does today via local lock and this includes
+>       RT where the locality is preserved via the local lock semantics
+> 
+>       I.e. for the !RT case the spinlock overhead is avoided 
+> 
+>    2) Global scoped per CPU protection
+> 
+>       That's what Nicolas is trying to achieve to be able to update
+>       data structures cross CPU for the sake of avoiding smp function
+>       calls or queuing work on remote CPUs for the NOHZ_FULL isolation
+>       use case.
+> 
+> That said, I completely understand Andrew's concerns versus these
+> distinctions and their test coverage.
+> 
+> In consequence the real interesting question here is whether any of
+> these use cases are sensible to the extra overhead of #2.
+> 
+> IOW, does it really matter whether the !RT and !NOHZ_FULL case take an
+> uncontended per CPU spinlock unconditionally instead of just disabling
+> preemption / interrupts?
+> 
+> The same question arises vs. the remote work queuing. Does it really
+> matter? I think that a proper investigation is due to figure out whether
+> delegated work is really superiour vs. doing the same work locked from a
+> remote CPU occasionally.
+> 
+> If you really think about it then the task which is initiating the work
+> is already in a slow path. So what's the tradeoff to make this path a
+> little bit slower due to remote access vs. scheduling work and thereby
+> disturbing the remote CPU which has a performance impact as well and in
+> the NOHZ_FULL case even a correctness impact? That's especially
+> questionable for situations where the initiator has to wait for
+> completion of the remote work.
+> 
+> The changelogs and the cover letter have a distinct void vs. that which
+> means this is just another example of 'scratch my itch' changes w/o
+> proper justification.
+> 
+> I'm well aware that the inital stuff which myself, and in consequence
+> Sebastian and Anna-Maria, were doing back then falls into the same
+> category. IOW, guilty as charged, but that does not make the current
+> approach more palatable than the one from years ago.
+> 
+> Thanks,
+> 
+>         tglx
+> 
+
