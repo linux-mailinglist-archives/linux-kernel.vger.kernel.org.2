@@ -2,252 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420B541617A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD4041617D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241801AbhIWO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:56:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60422 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241794AbhIWO4d (ORCPT
+        id S241809AbhIWO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241735AbhIWO5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:56:33 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EC0512236C;
-        Thu, 23 Sep 2021 14:55:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632408900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=my7VqY53A6e1Wd90ewQAn8Sl1sh3HuXoPlhSNUiEzmI=;
-        b=EO78IeaGVeI9AbNU3/Oo2sIhF+U1+YlUVfZWAr10ZWTMqchVE+WF5xlgvH+WPmnxvW/29R
-        5R0LpnckeK1fJMx5c621/D6rcNYqmo8VRF3RhEyfyJPaYtEUZaoYGmzGcPTjLxQlzNX86X
-        ioKLPIS4JgZMHHq3J0YxGw+7hC85R28=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C73D913E76;
-        Thu, 23 Sep 2021 14:55:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wSNSL0SVTGFnfQAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 14:55:00 +0000
-To:     Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
- <0b7afef6-1c46-ed74-ca83-f1e29f763f4a@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH 6/9] xen/x86: generalize preferred console model from PV
- to PVH Dom0
-Message-ID: <eac38453-a0d9-69ab-8fa2-35b3c55933de@suse.com>
-Date:   Thu, 23 Sep 2021 16:54:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 23 Sep 2021 10:57:01 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7947C061574;
+        Thu, 23 Sep 2021 07:55:29 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id az15so6803199vsb.8;
+        Thu, 23 Sep 2021 07:55:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bvTv2ajxriCYjP0mYei7lj4bkhbVM0Fvo1NAnUQDicE=;
+        b=nNHY8AxyQGcwCktAMim89qjhecxp6BsaVnOR80AcdZTQO+bORXjNSvYV8K6eWOrtWL
+         CttjnX6k341fXjKejoyK58xjoUgD5fRtdav/nbp+GzmRGimTDCFkTuV2+zizDWuuNHUc
+         q8byLF7fmW0FEn2+gnwfwvX4B/jlDRLKRAxRjKSPbGDSTfsP9Gp3dn895iCBrELyBxtH
+         S9XN1JsuZ29FZrdlxZdbCdoTE148dOnRQksCjv4Ckrxycp0Q6ZLJ0KIYx2IwUh6ZA51Q
+         uDMAZoIWgYkA+Kbbd3lOz/AXMa0BgqgH6MlOoYir/a4nTPg+6yekTueHIThipZrvGLZr
+         l7XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bvTv2ajxriCYjP0mYei7lj4bkhbVM0Fvo1NAnUQDicE=;
+        b=5vrw6P/Kd2Tp8eyTUFUEoa05/Byth9ucfX8wejXQgYB2wwrybvScf4yYvDfGc8swZg
+         Z4BQVbz9QTgwPNGuF05fdITyLyy+//p8hsVs7HMZdG6207YU/si92Yp/sPIq21xbPg84
+         kfpLJovP/LsHyIKSIaUjBLIUvjWDE9N/573L6dhqNawXfs6Z5FfhJ6J6ebZZnN/dvAiB
+         xN1xVj3FdEa81VE/FZEiMfLH5uQd3yC8dsFSgZpkOcDsfF0gba7w5brbQQ5riRvUlsfI
+         AGZWSDgz1Xi8xMtt+En7uI9IvcGKV8jl3c3OYrMCc2ZB679DZnK3R+JTSFc1P5AgxpjK
+         JjSA==
+X-Gm-Message-State: AOAM532+L18wS0MFQQ8XEw+225ikXIV2v/FroBVXppkZQC9a8kzR7On8
+        upL+aRy73ygIFeKBTp5ZW28/hsp8COmLmO4/k6JTTbvToDY=
+X-Google-Smtp-Source: ABdhPJxw3EKdt9xPpXWJdIzuOCstA5NGxvXgvDrjsD9iZhVAIl0tB8PP+m4ANpB2HbJFkqBDaBekfrNitIsmO6VRqPE=
+X-Received: by 2002:a67:3204:: with SMTP id y4mr4378863vsy.28.1632408928878;
+ Thu, 23 Sep 2021 07:55:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0b7afef6-1c46-ed74-ca83-f1e29f763f4a@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="91iDXi0U6EUiXy5e5GnMRq1VY3EqTjDTl"
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
+ <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+ <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+ <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
+ <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
+ <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
+ <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
+ <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
+ <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com>
+ <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com>
+ <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com> <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Thu, 23 Sep 2021 16:55:17 +0200
+Message-ID: <CAMhs-H_xdkpinyj-Y1u==ievpGWZ2Ze-_U7aCUcfu0=NKBq2xQ@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---91iDXi0U6EUiXy5e5GnMRq1VY3EqTjDTl
-Content-Type: multipart/mixed; boundary="KJGvBtqHlnedeq33aAE3U0cqUhtZBlVt0";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- lkml <linux-kernel@vger.kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Message-ID: <eac38453-a0d9-69ab-8fa2-35b3c55933de@suse.com>
-Subject: Re: [PATCH 6/9] xen/x86: generalize preferred console model from PV
- to PVH Dom0
-References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
- <0b7afef6-1c46-ed74-ca83-f1e29f763f4a@suse.com>
-In-Reply-To: <0b7afef6-1c46-ed74-ca83-f1e29f763f4a@suse.com>
+Hi Arnd,
 
---KJGvBtqHlnedeq33aAE3U0cqUhtZBlVt0
-Content-Type: multipart/mixed;
- boundary="------------B81120A55C794E6A11CAA6AE"
-Content-Language: en-US
+On Thu, Sep 23, 2021 at 3:26 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+>  ==On Thu, Sep 23, 2021 at 1:09 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> > On Thu, Sep 23, 2021 at 11:07 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > ()On Thu, Sep 23, 2021 at 8:36 AM Sergio Paracuellos
+> > > <sergio.paracuellos@gmail.com> wrote:
+> > > > On Thu, Sep 23, 2021 at 7:51 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > > > I am not really understanding this yet (I think I need a bit of sleep
+> > > > > > time :)), but I will test this tomorrow and come back to you again
+> > > > > > with results.
+> > > > >
+> > > > > Both would let devices access the registers, but they are different
+> > > > > regarding the bus translations you have to program into the
+> > > > > host bridge, and how to access the hardcoded port numbers.
+> > > >
+> > > > I have tested this and I get initial invalidid BAR value errors on pci
+> > > > bus I/O enumeration an also bad addresses in /proc/ioports in the same
+> > > > way I got defining PCI_IOBASE as _AC(0xa0000000, UL):
+> > > >
+> > > > root@gnubee:~# cat /proc/ioports
+> > > > 00000000-0000ffff : pcie@1e140000
+> > > >   00000000-00000fff : PCI Bus 0000:01
+> > > >     00000000-0000000f : 0000:01:00.0
+> > > >       00000000-0000000f : ahci
+> > > >     00000010-00000017 : 0000:01:00.0
+> > > >       00000010-00000017 : ahci
+> > > >     00000018-0000001f : 0000:01:00.0
+> > > >       00000018-0000001f : ahci
+> > >
+> > > Ok, These look good to me now.
+> >
+> > This is the behaviour we already had with spaces.h [0] without any
+> > other change. See also comments of Thomas [1] about this being wrong
+> > which at the end are the motivation for this patch series.
+> >
+> > > > mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x001e160000
+> > > > LOGIC PIO: PIO TO CPUADDR: ADDR: 0x1e160000 -  addr HW_START:
+> > > > 0x1e160000 + RANGE IO: 0x00000000
+> >
+> > Why is my RANGE IO start transformed here to 0x0? Should not be the
+> > one defined in dts 0x001e160000?
 
-This is a multi-part message in MIME format.
---------------B81120A55C794E6A11CAA6AE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+>
+> Can you show the exact property in your device tree? It sounds like the
+> problem is an incorrect entry in the ranges, unless the chip is hardwired
+> to the bus address in an unusual way.
 
-On 07.09.21 12:10, Jan Beulich wrote:
-> Without announcing hvc0 as preferred it won't get used as long as tty0
-> gets registered earlier. This is particularly problematic with there no=
-t
-> being any screen output for PVH Dom0 when the screen is in graphics
-> mode, as the necessary information doesn't get conveyed yet from the
-> hypervisor.
->=20
-> Follow PV's model, but be conservative and do this for Dom0 only for
-> now.
->=20
-> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Here it is:
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+ranges = <0x02000000 0 0x60000000 0x60000000 0 0x10000000>,  /* pci memory */
+               <0x01000000 0 0x1e160000 0x1e160000 0 0x00010000>;  /*
+io space */
 
-> ---
-> Prior to 418492ba40b2 ("x86/virt/xen: Use guest_late_init to detect Xen=
+>
+> > > I think you have to have another #ifdef around the declaration in
+> > > this case, or alternatively move the mips definition back to a .c
+> > > file and leave only the #define
+> >
+> > Ok, so the following changes:
+> >
+> > diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
+> > index 95b00017886c..ee0e0951b800 100644
+> > --- a/arch/mips/pci/pci-generic.c
+> > +++ b/arch/mips/pci/pci-generic.c
+> > @@ -46,3 +46,9 @@ void pcibios_fixup_bus(struct pci_bus *bus)
+> >  {
+> >         pci_read_bridge_bases(bus);
+> >  }
+> > +
+> > +int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
+> > +{
+> > +       mips_io_port_base = phys_addr;
+> > +       return 0;
+> > +}
+> ...
+> > These changes got me to the same behaviour that this patch pretends
+> > without the ifdef on this patch. But, this behaviour is wrong
+> > according to your explanations since I got
+> >
+> > OF: IO START returned by pci_address_to_pio: 0x1e160000-0x1e16ffff
+> >
+> > and ioports using this range address and not lower 0x0-0xffff.
+> >
+> > So all of these changes seem to be invalid: this patch and the already
+> > added to staging-tree two ones: [2] and [3], right?
+>
+> Right, there is probably yet another problem. Patch [2] should
+> be harmless here, but patch [3] is wrong as you should not override
+> the length of the I/O port window that is in the DT.
 
-> PVH guest") x86_init.oem.arch_setup was already used by PVH, so I assum=
-e
-> the use of this hook is acceptable here.
+Understood and makes sense. If I also set the start address for the
+port the length won't be overwritten but I am only setting the end
+limit there since I don't have the io range start address in such
+early probe part of the driver and makes no sense to hardcode it. That
+is the only reason.
 
-Yes, I think so.
+>
+> > Currently, no. But if they were ideally moved to work in the same way
+> > mt7621 would be the same case. Mt7621 is device tree based PCI host
+> > bridge driver that uses pci core apis but is still mips since it has
+> > to properly set IO coherency units which is a mips thing...
+>
+> I don't know what those IO coherency units are, but I would think that
+> if you have to do some extra things on MIPS but not ARM, then those
+> should be done from the common PCI host bridge code and stubbed out
+> on architectures that don't need them.
 
-> Seeing that change, I wonder in how far setting xen_pvh to true only in=
+Simple definition here [0]. And we must adjust them in the driver here
+[1]. Mips code, yes, but cannot be done in another way. Is related
+with address of the memory resource and must be set up. In any other
+case the pci subsystem won't work. I initially submitted this driver
+from staging to arch/mips but I was told that even though it is mips
+code, as it is device tree based and use common pci core apis, it
+would be better to move it to 'drivers/pci/controller'. But I still
+need the mips specific code for the iocu thing.
 
-> xen_hvm_guest_late_init() can really work: This hook, as its name says,=
+>
+> > > I realize this is very confusing, but there are indeed at least three
+> > > address spaces that you must not confuse here:
+> > >
+> > > a) I/O port numbers as programmed into BAR registers and
+> > >     used in PCIe transactions, normally 0 through 0xffff on each
+> > >     bus.
+> > > b) Linux I/O port numbers as seen from user space, in the range
+> > >      from 0 to IO_SPACE_LIMIT, these correspond to the
+> > >      bus addresses from a) if io_offset is zero, but could be
+> > >      different with a non-zero value passed into
+> > >      pci_add_resource_offset() when the region is probed.
+> > >      The offset may be different on each pci host bridge.
+> >
+> > This "offset" is the pci address configured in device tree range,
+> > right? This seems the part is not doing properly in my case since all
+> > of these changes are needed to at the end got BAR's as
+> >
+> > pci 0000:02:00.0: BAR 4: assigned [io  0x1e161000-0x1e16100f]
+> > pci 0000:02:00.0: BAR 0: assigned [io  0x1e161010-0x1e161017]
+> > pci 0000:02:00.0: BAR 2: assigned [io  0x1e161018-0x1e16101f]
+> > pci 0000:02:00.0: BAR 1: assigned [io  0x1e161020-0x1e161023]
+> > pci 0000:02:00.0: BAR 3: assigned [io  0x1e161024-0x1e161027]
+> >
+> > which I understand is correct.
+>
+> The "offset" is between two numbers that can normally both be
+> picked freely, so it could literally be anything, but in the most common
+> and ideal case, it is zero:
+>
+> The Linux port number gets assigned when probing the host bridge,
+> this is purely a software construct and the first bridge should normally
+> get range 0-0xffff, the second bridge gets range 0x10000-0x1ffff
+> etc. The code assigning these numbers is rather confusing, and I
+> can't even find where it is now...
+>
+> The port number on the bus is platform specific. In some cases
+> you can set it through a register in the pci host bridge, in other
+> cases it is fixed to starting at zero. If the address is programmable,
+> it can be either set by the firmware or bootloader and passed down
+> to the kernel through the DT ranges property, or the ranges can
+> contain a suggested value that then has to be programmed by
+> the host bridge driver.
+>
+> If the value is not zero, you should try setting it to zero to get
+> an identity mapping against the Linux port numbers, to minimize
+> the confusion.
+>
+> It is possible that the hardware (or bootloader) designers
+> misunderstood what the window is about, and hardcoded it so
+> that the port number on the bus is the same as the physical
+> address as seen from the CPU. If this is the case and you
+> can't change it to a sane value, you have to put the 1:1
+> translation into the DT and would actually get the strange
+> port numbers 0x1e161000-0x1e16100f from that nonzero offset.
 
-> gets called pretty late; any decision taken earlier might have been
-> wrong. One such wrong decision is what gets added here - preferred
-> consoles won't be registered when taking that path. While adding a 2nd
-> call there might work, aiui they would better be registered prior to
-> parse_early_param(), i.e. before "earlyprintk=3D" gets evaluated.
->=20
-> I also consider tying "detecting" PVH mode to the no-VGA and no-CMOS-RT=
-C
-> FADT flags as problematic looking forward: There may conceivably be
-> "legacy free" HVM guests down the road, yet they shouldn't be mistaken
-> for being PVH. Most of the XEN_X86_EMU_* controlled functionality would=
+Yes, and that pci_add_resource_offset() is called inside
+devm_of_pci_get_host_bridge_resources() after parsing the ranges and
+storing them as resources.  To calculate that offset passed around,
+subtracts: res->start - range.pci_addr [2], so looking into my ranges
+my offset should be zero. And I have added a trace just to confirm and
+there are zero:
 
-> seem unsuitable for the same reason; presence/absence of
-> XENFEAT_hvm_pirqs (tied to XEN_X86_EMU_USE_PIRQ) might be sufficiently
-> reliable an indicator. Question there is whether the separation
-> introduced by Xen commit b96b50004804 ("x86: remove XENFEAT_hvm_pirqs
-> for PVHv2 guests") came early enough in the process of enabling PVHv2.
+mt7621-pci 1e140000.pcie:      MEM 0x0060000000..0x006fffffff -> 0x0060000000
+OF: IO START returned by pci_address_to_pio: 0x60000000-0x6fffffff
+PCI: OF: OFFSET -> RES START 0x60000000 - PCI ADDRESS 0x60000000 -> 0x0
+mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x001e160000
+OF: IO START returned by pci_address_to_pio: 0x1e160000-0x1e16ffff
+PCI: OF: OFFSET -> RES START 0x1e160000 - PCI ADDRESS 0x1e160000 -> 0x0
 
-Yes, it did. The boot path not using the PVH specific entry point was
-enabled with Xen 4.11, while commit b96b50004804 was in 4.9.
+But if I define PCI_IOBASE I get my I/O range start set to zero but
+also the offset?? Why this substract is not getting '0x1e160000' as
+offset here?
+
+LOGIC PIO: PIO TO CPUADDR: ADDR: 0x1e160000 -  addr HW_START:
+0x1e160000 + RANGE IO: 0x00000000
+OF: IO START returned by pci_address_to_pio: 0x0-0xffff
+PCI: OF: OFFSET -> RES START 0x0 - PCI ADDRESS 0x1e160000 -> 0x0
 
 
-Juergen
+>
+> This means you can only use PCI devices that can be
+> programmed with high port numbers, but not devices with
+> hardcoded legacy ports.
 
---------------B81120A55C794E6A11CAA6AE
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+So there is no real sense of having PCI IO working then since this
+such devices is unlikely to exist.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+>
+> > > c) MMIO address used to access ports, offset by PCI_IOBASE
+> > >     from the Linux port numbers in b).
+> > >     No other registers should be visible between PCI_IOBASE
+> > >     and PCI_IOBASE+IO_SPACE_LIMIT
+> >
+> > mips_io_port_base + offset, right? KSEG1 addresses for mips by default.
+>
+> no, not the offset. As long as mips_io_port_base==PCI_IOBASE,
+> the accessible ports will be between mips_io_port_base and
+> mips_io_port_base+0xffff.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+Understood, thanks.
 
---------------B81120A55C794E6A11CAA6AE--
+Best regards,
+    Sergio Paracuellos
 
---KJGvBtqHlnedeq33aAE3U0cqUhtZBlVt0--
+>
+>          Arnd
 
---91iDXi0U6EUiXy5e5GnMRq1VY3EqTjDTl
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMlUQFAwAAAAAACgkQsN6d1ii/Ey8x
-iAf/fgB9XcFj3SYVqzq+hQfPHb/7f8TzC1lVTGPiQA7e9d4ro//aIspKnnpzSujRBBA1vbdcNgqS
-2g2xF8pJkE2idoYXUcIJbGr+/r+3mOjfqjQSCDC6OcoR1qBC8kTWChjjHw8Wufb8nqF7j4ilW30p
-kjVKta6xvUN7hSw6KIvjRrejw8SnjkgeESP8kLKEm71uWuCbR7URli2MI3G2lDORfIlwoRyBfETY
-Ti6vQNgYPU7Ol2i+syUPxhDdnfF96niNSKFyNqzETQMnteuoO+yxBwlAoejaP2zjIXDt2sHRkKvK
-0WcvpWYxl3qY51WgYc1ivB7G2Bk84fAO553ibr4OiA==
-=Xbvv
------END PGP SIGNATURE-----
-
---91iDXi0U6EUiXy5e5GnMRq1VY3EqTjDTl--
+[0]; https://www.linux-mips.org/wiki/IO_Coherence_Unit
+[1]; https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/tree/drivers/staging/mt7621-pci/pci-mt7621.c?h=staging-testing#n211
+[2]: https://elixir.bootlin.com/linux/latest/source/drivers/pci/of.c#L401
