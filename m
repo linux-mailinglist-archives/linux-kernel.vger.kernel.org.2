@@ -2,75 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F274163A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACA44163AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235177AbhIWQ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231982AbhIWQ4I (ORCPT
+        id S242273AbhIWQ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:56:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57906 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242076AbhIWQ4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:56:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BCEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:54:36 -0700 (PDT)
-Message-ID: <20210923164145.466686140@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632416074;
+        Thu, 23 Sep 2021 12:56:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632416082;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=f05Si0mMmtCsJecBRDb7NV/Oz8Bt5X4+rjVIhG9DxYM=;
-        b=jk4Z7b2DUu/ZDE72AbQsz90H/N9mAtfSyJYNAo3iAgQiCgYsGWKEd5jxG90tP/ESV792/Y
-        ZWJianxzBkHDUVB7sBrJfoiJKWXg5Uw/LWfyOfbivyRCVMVYTifW+0PIHWoxzNjsuhBhsE
-        g7YZapoVuv61Ld0DmG8E9rXWE4VaE3H3bMIEtg5kRwv/UDdpfJom0+4Z8bV1zQTD6gY3TJ
-        fkjRn6leQ6bvzd1LjVxx4h83DPEM/cX2vs2uA0bXudOF7Rg3WOyjSwzp/UGxRXNvJ0+5e5
-        0gjQHJlqVE633LTqdFmpjYnxh9spgImcEbwcA4rzcwDBsbi4MltRluNVTv2fww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632416074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=f05Si0mMmtCsJecBRDb7NV/Oz8Bt5X4+rjVIhG9DxYM=;
-        b=hwjXM9ViKbLKH4K6oCgLT2J4McVaEsLV6MjxAqyYoy43H8Uc4nAQ85BX7aVT47+0iGRG2/
-        iEeWnkAh3Tsu4tCA==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
-        Sebastian Siewior <bigeasy@linutronix.de>
-Subject: [patch 0/8] sched: Clean up might_sleep() and make it RT aware
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ReSgcM8F/l+G5HcK9Mo9o/CQ02oO2R9Ng8Sr4/ITM4=;
+        b=HfWutbeU4gg+xxX/Chvgb7Y5MPixcVBCxrsxmbloiYRz2qIOEQM5soArd9goJlwxKKAuA1
+        PMzCUfbEYO5pGJX757xnWLjWHAjyqbUa6aqMCKtRijFfc0jhS6sfRhKk46+dWCwRT17iwc
+        bNoph+x5LsYS5xlkdqYNscFgufoBIbM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-NwUQzdWwMBu5R23lXToZYw-1; Thu, 23 Sep 2021 12:54:41 -0400
+X-MC-Unique: NwUQzdWwMBu5R23lXToZYw-1
+Received: by mail-ed1-f69.google.com with SMTP id 2-20020a508e02000000b003d871759f5dso7336361edw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:54:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0ReSgcM8F/l+G5HcK9Mo9o/CQ02oO2R9Ng8Sr4/ITM4=;
+        b=S5UwFw/id+BbV0k934PkZWAa1MRLNZJtKEOVVXa5dszXDX3Kcm+MqPtsM81AE3I0iL
+         SgQOZBoM2H3CI7vzl6NBG6erO/t4ulSEJQ6YOUyStdZ/9jM6e1msynaOyV15Nxi9l+T2
+         DEdoupRs4fw2KWMCnUDlguiGEth/V9h0vX74EPMKPKhChHoElWeTxmV+PiDatS9rCtin
+         cpkTsRebg2hDRvzyETntz++9ThLKiM/3zeMUx1fCrFSjXqkCkpgwiAYRvb+KvAtwOLNO
+         L3DNpqE1T/SAbOr0NJb6qdkfntGLqWGw0SNh90WRSolQSPgPQK7X2IGQuJ5Ng3/tHVCr
+         rm5Q==
+X-Gm-Message-State: AOAM533VNweTaCP82o8u5LANfvlWiQpnqWK9zotH+TigieVxJZrmJlhN
+        ElRZloS2xbqPXOEgnc9J0lQNK0Kwa9t9ZqhhGQE6Iv7OKLZamhGm0NwWfKPjoSGqItZoyJcjW7W
+        uQYJBprL2UiuplJN9PSrJiHN2
+X-Received: by 2002:a17:906:584:: with SMTP id 4mr6200618ejn.56.1632416077482;
+        Thu, 23 Sep 2021 09:54:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy5UQAxIm6jvDAIEJygeGZF/ewJKdpHxU6OT5aGqbBA5SNslschMbR9eHuS7enkJEmOlKUxtw==
+X-Received: by 2002:a17:906:584:: with SMTP id 4mr6200592ejn.56.1632416077261;
+        Thu, 23 Sep 2021 09:54:37 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b13sm4046822ede.97.2021.09.23.09.54.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 09:54:36 -0700 (PDT)
+Subject: Re: [PATCH 00/14] nSVM fixes and optional features
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, Bandan Das <bsd@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>
+References: <20210914154825.104886-1-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d04eb3d1-9f0c-3b2c-c78f-0f377caadcfc@redhat.com>
+Date:   Thu, 23 Sep 2021 18:54:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Date:   Thu, 23 Sep 2021 18:54:34 +0200 (CEST)
+In-Reply-To: <20210914154825.104886-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlIG1pZ2h0IHNsZWVwIGNoZWNrcyBoYXZlIGdyb3duIHNvbWUgd2FydHMgb3ZlciB0aW1lIGFu
-ZCBlc3BlY2lhbGx5IHRoZQp1bmRlcnNjb3JlIHpvbyBpcyBoYXJkIHRvIGZvbGxvdy4KCkFsc28g
-dGhlIGRlYnVnIG91dHB1dCBpcyBzbGlnaHRseSBjb25mdXNpbmcgZXNwZWNpYWxseSB3aGVuIFBS
-RUVNUFRfUkNVIGlzCmVuYWJsZWQgYXMgaXQgZG9lcyBub3QgcHJvdmlkZSBpbmZvcm1hdGlvbiBh
-Ym91dCB0aGUgUkNVIG5lc3RpbmcgZGVwdGgKd2hpY2ggbWlnaHQgYmUgdGhlIGFjdHVhbCBjdWxw
-cml0LiBJbiBzdWNoIGEgY2FzZSBpdCBtaWdodCBldmVuIHByaW50CmNvbmZ1c2luZyBpbmZvcm1h
-dGlvbiBhYm91dCB0aGUgcGxhY2Ugd2hpY2ggZGlzYWJsZWQgcHJlZW1wdGlvbiBkZXNwaXRlIHRo
-ZQpmYWN0IHRoYXQgcHJlZW1wdGlvbiBpcyBhY3R1YWxseSBlbmFibGVkLgoKUlQgaW4gdHVybiBo
-YWQgaXQncyBvd24gbmFzdHkgaGFjayB0byBpZ25vcmUgUkNVIG5lc3RpbmcgZGVwdGggYmVjYXVz
-ZQp0aGF0J3MgcmVxdWlyZWQgZm9yIHNwaW4vcncgbG9jayBoZWxkIHNlY3Rpb25zLgoKVGhpcyBz
-ZXJpZXMgYWRkcmVzc2VzIHRoaXMgYnk6CgogIC0gQ2xlYW5pbmcgdXAgdGhlIHVuZGVyc2NvcmUg
-em9vCgogIC0gRW5oYW5jaW5nIHRoZSBkZWJ1ZyBvdXRwdXQKCiAgLSBNYWtpbmcgUkNVIG5lc3Qg
-ZGVwdGggYW5kIHByZWVtcHQgY291bnQgY2hlY2tzIGRpc3RpbmN0CgogIC0gRml4aW5nIHVwIHRo
-ZSByZWxldmFudCBwbGFjZXMgdG8gaGFuZCBpbiB0aGUgY29ycmVjdCBleHBlY3RlZCB2YWx1ZXMK
-ICAgIGZvciBSVCBhbmQgIVJUIGtlcm5lbHMuCgpUaGUgc2VyaWVzIGlzIGFsc28gYXZhaWxhYmxl
-IGZyb20KCiAgICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
-dGdseC9kZXZlbC5naXQgc2NoZWQKClRoYW5rcywKCgl0Z2x4Ci0tLQogaW5jbHVkZS9saW51eC9r
-ZXJuZWwuaCAgICAgICB8ICAgMTMgKysrLS0tLS0KIGluY2x1ZGUvbGludXgvcHJlZW1wdC5oICAg
-ICAgfCAgICA1ICstLQogaW5jbHVkZS9saW51eC9zY2hlZC5oICAgICAgICB8ICAgMzkgKysrKysr
-KysrKysrKysrKysrLS0tLS0tLQoga2VybmVsL2xvY2tpbmcvc3BpbmxvY2tfcnQuYyB8ICAgMTcg
-KysrKysrKystLQoga2VybmVsL3NjaGVkL2NvcmUuYyAgICAgICAgICB8ICAgNjcgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLQogbW0vbWVtb3J5LmMgICAgICAgICAg
-ICAgICAgICB8ICAgIDIgLQogNiBmaWxlcyBjaGFuZ2VkLCA5NiBpbnNlcnRpb25zKCspLCA0NyBk
-ZWxldGlvbnMoLSkKCgoK
+On 14/09/21 17:48, Maxim Levitsky wrote:
+> Those are few patches I was working on lately, all somewhat related
+> to the two CVEs that I found recently.
+> 
+> First 7 patches fix various minor bugs that relate to these CVEs.
+> 
+> The rest of the patches implement various optional SVM features,
+> some of which the guest could enable anyway due to incorrect
+> checking of virt_ext field.
+> 
+> Last patch is somewhat an RFC, I would like to hear your opinion
+> on that.
+> 
+> I also implemented nested TSC scaling while at it.
+> 
+> As for other optional SVM features here is my summary of few features
+> I took a look at:
+> 
+> X86_FEATURE_DECODEASSISTS:
+>     this feature should make it easier
+>     for the L1 to emulate an instruction on MMIO access, by not
+>     needing to read the guest memory but rather using the instruction
+>     bytes that the CPU already fetched.
+> 
+>     The challenge of implementing this is that we sometimes inject
+>     #PF and #NPT syntenically and in those cases we must be sure
+>     we set the correct instruction bytes.
+> 
+>     Also this feature adds assists for MOV CR/DR, INTn, and INVLPG,
+>     which aren't that interesting but must be supported as well to
+>     expose this feature to the nested guest.
+> 
+> X86_FEATURE_VGIF
+>     Might allow the L2 to run the L3 a bit faster, but due to crazy complex
+>     logic we already have around int_ctl and vgif probably not worth it.
+> 
+> X86_FEATURE_VMCBCLEAN
+>     Should just be enabled, because otherwise L1 doesn't even attempt
+>     to set the clean bits. But we need to know if we can take an
+>     advantage of these bits first.
+> 
+> X86_FEATURE_FLUSHBYASID
+> X86_FEATURE_AVIC
+>     These two features would be very good to enable, but that
+>     would require lots of work, and will be done eventually.
+> 
+> There are few more nested SVM features that I didn't yet had a
+> chance to take a look at.
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> Maxim Levitsky (14):
+>    KVM: x86: nSVM: restore int_vector in svm_clear_vintr
+>    KVM: x86: selftests: test simultaneous uses of V_IRQ from L1 and L0
+>    KVM: x86: nSVM: test eax for 4K alignment for GP errata workaround
+>    KVM: x86: nSVM: don't copy pause related settings
+>    KVM: x86: nSVM: don't copy virt_ext from vmcb12
+>    KVM: x86: SVM: don't set VMLOAD/VMSAVE intercepts on vCPU reset
+>    KVM: x86: SVM: add warning for CVE-2021-3656
+>    KVM: x86: SVM: add module param to control LBR virtualization
+>    KVM: x86: nSVM: correctly virtualize LBR msrs when L2 is running
+>    KVM: x86: nSVM: implement nested LBR virtualization
+>    KVM: x86: nSVM: implement nested VMLOAD/VMSAVE
+>    KVM: x86: SVM: add module param to control TSC scaling
+>    KVM: x86: nSVM: implement nested TSC scaling
+>    KVM: x86: nSVM: support PAUSE filter threshold and count
+> 
+>   arch/x86/kvm/svm/nested.c                     | 105 +++++++--
+>   arch/x86/kvm/svm/svm.c                        | 218 +++++++++++++++---
+>   arch/x86/kvm/svm/svm.h                        |  20 +-
+>   arch/x86/kvm/vmx/vmx.c                        |   1 +
+>   arch/x86/kvm/x86.c                            |   1 +
+>   tools/testing/selftests/kvm/.gitignore        |   1 +
+>   tools/testing/selftests/kvm/Makefile          |   1 +
+>   .../selftests/kvm/x86_64/svm_int_ctl_test.c   | 128 ++++++++++
+>   8 files changed, 427 insertions(+), 48 deletions(-)
+>   create mode 100644 tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c
+> 
+
+Queued more patches, with 9-10-11-14 left now.
+
+Paolo
+
