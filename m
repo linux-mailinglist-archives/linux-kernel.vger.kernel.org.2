@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE63416143
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46882416145
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241753AbhIWOmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
+        id S241705AbhIWOmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241710AbhIWOmH (ORCPT
+        with ESMTP id S241670AbhIWOm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:42:07 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C518CC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:40:35 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1mTPti-0001xl-9G; Thu, 23 Sep 2021 16:40:26 +0200
-Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1mTPth-0001lR-0r; Thu, 23 Sep 2021 16:40:25 +0200
-Date:   Thu, 23 Sep 2021 16:40:25 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-To:     Harini Katakam <harini.katakam@xilinx.com>
-Cc:     vkoul@kernel.org, romain.perier@gmail.com, allen.lkml@gmail.com,
-        yukuai3@huawei.com, dmaengine@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        harinikatakamlinux@gmail.com, michal.simek@xilinx.com,
-        radhey.shyam.pandey@xilinx.com, shravya.kumbham@xilinx.com,
-        kernel@pengutronix.de
-Subject: Re: [PATCH 3/4] dmaengine: zynqmp_dma: Add conditions for return
- value check
-Message-ID: <20210923144025.GC30905@pengutronix.de>
-References: <20210914082817.22311-1-harini.katakam@xilinx.com>
- <20210914082817.22311-4-harini.katakam@xilinx.com>
+        Thu, 23 Sep 2021 10:42:27 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC6EC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:40:55 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id m21so6507503pgu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZVVMJVPFsNXmZGKzivyU4QHm7thdKZguG8bvbRK2DOs=;
+        b=P7UvALqxYFavU1TphCxKmENJ/2iPpRlOl/QmYzMMvXYOHsDD1dqp/P0ahXgLz0TkI3
+         mHmIkVdLM4katXdOUk41wy6qf+dj/5S4AHHDXa5foihlpS5P/fgozIKDAp4pt4tB7hq1
+         IWOZ3Fwz1SDwMY7BBf5VtWyGsI3ZHEN4rXhDzQJHKdngJ/ywyBG55XBU6u/BoEpxEEoM
+         wE21gZ4l8ZjZwvp4U4N7oxJJtmkKPdzkMQazs8W7Z5qWdK1uHJWbczmN+d0W1vhnzf9/
+         +Axn868G1Plo9aWuipufakzEtdvy47SBkVUq3nxNDDzKeGDpt0/W1coZfclyDom4wlMb
+         HBgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZVVMJVPFsNXmZGKzivyU4QHm7thdKZguG8bvbRK2DOs=;
+        b=jd5XyaqAUbuy5ujaN7d39DSpB3Yb/3Gpi/soF++LKlH5+D1kuDuV/QDxh3/jSv+8Fr
+         WHZkRoMtFKLPPvJZ1k1aXEY1OkkKoOPnhfWeT2SBWgJRkmKPc3b1LK4KW9sEZxLbBMNR
+         iniNwuBtQpyEhb7tYxjmg60klqQcA1SuRUgWUieyMf9Y1PDG/YvQ8BTilaGY9D90Umfo
+         gPcgtRJB5V2wbIOLXfLpefgjdIwa/ZB/82k5KWOYTilvilf1vKI6mCWVy0hLuKjl/XUy
+         wTijygwskbFjqgklUiJDCoy3QrUYeD1Qw4RU6/KHlqgYqwxrBF8gaIIBLQJUwW7q12QK
+         szMw==
+X-Gm-Message-State: AOAM532TeqUor/UxZ3NmsHkuR6w/LVmh+Er3TS5qM6blwKJWEBAYngHt
+        OY5+bDPaZLWQsETFdXi3WqXRWA==
+X-Google-Smtp-Source: ABdhPJxJA0nGspazLI8+ZUM60xIDNYcbqDjq+DbuNpYFOISL1AgZ+BLdMdGRbFWZw3qMvFVrhaKSKg==
+X-Received: by 2002:a63:4301:: with SMTP id q1mr2098898pga.430.1632408055121;
+        Thu, 23 Sep 2021 07:40:55 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([213.173.35.225])
+        by smtp.gmail.com with ESMTPSA id x1sm6212112pfc.53.2021.09.23.07.40.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 07:40:54 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 22:40:48 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+Message-ID: <20210923144048.GB603008@leoy-ThinkPad-X240s>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-4-german.gomez@arm.com>
+ <20210923135016.GG400258@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210914082817.22311-4-harini.katakam@xilinx.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 16:32:19 up 217 days, 17:56, 113 users,  load average: 0.19, 0.24,
- 0.20
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mtr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210923135016.GG400258@leoy-ThinkPad-X240s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 13:58:16 +0530, Harini Katakam wrote:
-> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
-> 
-> Add condition to check the return value of dma_async_device_register
-> and pm_runtime_get_sync functions.
-> 
-> Addresses-Coverity: Event check_return.
-> Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
-> Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-> ---
->  drivers/dma/xilinx/zynqmp_dma.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
-> index d28b9ffb4309..588460e56ab8 100644
-> --- a/drivers/dma/xilinx/zynqmp_dma.c
-> +++ b/drivers/dma/xilinx/zynqmp_dma.c
-> @@ -1080,7 +1080,11 @@ static int zynqmp_dma_probe(struct platform_device *pdev)
->  	pm_runtime_set_autosuspend_delay(zdev->dev, ZDMA_PM_TIMEOUT);
->  	pm_runtime_use_autosuspend(zdev->dev);
->  	pm_runtime_enable(zdev->dev);
-> -	pm_runtime_get_sync(zdev->dev);
-> +	ret = pm_runtime_get_sync(zdev->dev);
-> +	if (ret < 0) {
-> +		dev_err(zdev->dev, "pm_runtime_get_sync() failed\n");
-> +		pm_runtime_disable(zdev->dev);
-> +	}
+On Thu, Sep 23, 2021 at 09:50:16PM +0800, Leo Yan wrote:
 
-Thanks for the patch.
+[...]
 
-You need to call pm_runtime_put() on the error path. Or you could use
-pm_runtime_resume_and_get(), which does this automatically.
-
-I am wondering, if it wouldn't be cleaner to make this dependent on
-pm_runtime_enabled() and avoiding pm_runtime_disable() on the error path
-altogether.
-
-Michael
-
->  	if (!pm_runtime_enabled(zdev->dev)) {
->  		ret = zynqmp_dma_runtime_resume(zdev->dev);
->  		if (ret)
-> @@ -1096,7 +1100,11 @@ static int zynqmp_dma_probe(struct platform_device *pdev)
->  	p->dst_addr_widths = BIT(zdev->chan->bus_width / 8);
->  	p->src_addr_widths = BIT(zdev->chan->bus_width / 8);
->  
-> -	dma_async_device_register(&zdev->common);
-> +	ret = dma_async_device_register(&zdev->common);
-> +	if (ret) {
-> +		dev_err(zdev->dev, "failed to register the dma device\n");
-> +		goto free_chan_resources;
-> +	}
->  
->  	ret = of_dma_controller_register(pdev->dev.of_node,
->  					 of_zynqmp_dma_xlate, zdev);
-> -- 
-> 2.17.1
+> > @@ -336,6 +480,7 @@ struct auxtrace_record *arm_spe_recording_init(int *err,
+> >  	sper->itr.pmu = arm_spe_pmu;
+> >  	sper->itr.snapshot_start = arm_spe_snapshot_start;
+> >  	sper->itr.snapshot_finish = arm_spe_snapshot_finish;
+> > +	sper->itr.find_snapshot = arm_spe_find_snapshot;
 > 
+> If I understand correctly, this patch copies the code from cs-etm for
+> snapshot handling.  About 2 months ago, we removed the Arm cs-etm's
+> specific snapshot callback function and directly use perf's function
+> __auxtrace_mmap__read() to handle 'head' and 'tail' pointers.  Please
+> see the commit for details:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2f01c200d4405c4562e45e8bb4de44a5ce37b217
 > 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+> Before I review more details for snapshot enabling in patches 03 and
+> 04, could you confirm if Arm SPE can use the same way with cs-etm for
+> snapshot handling?  From my understanding, this is a better way to
+> handle AUX buffer's 'head' and 'tail'.
+
+In other words, if we can only apply patch 03 and can pass the testing
+in patch 05, then it would be a very neat implementation.
+
+I will try to verify these patches and will get back result.
+
+Thanks,
+Leo
