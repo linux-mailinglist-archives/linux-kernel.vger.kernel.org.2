@@ -2,113 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE5B41656F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EE6416571
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242807AbhIWSwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
+        id S242768AbhIWSxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242794AbhIWSwr (ORCPT
+        with ESMTP id S242780AbhIWSxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:52:47 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F08C061574;
-        Thu, 23 Sep 2021 11:51:15 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id g184so7263699pgc.6;
-        Thu, 23 Sep 2021 11:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JQGflSQTqqTDCv3KaowX8c30Psro3zRNDRr+HJv+0Q0=;
-        b=aUH2OdABfEQcGDWFNa0+TZtHDhjfOZeVr3FNt/rFCcI0FRBHRryIZJqatuQdZIixzI
-         e/uifJpMfX++BsAMvg9PRJRjGNAcREE3rrHABdx71CHarJNr9LuwMNH9tZj9e1e8UyTL
-         sWn3Tu95lpLyfMAxX15yP5J6Dq1Rzq346qRITXl27RVMPameAQX/qVf71CaS7bs6jOwW
-         uGZSxY2BIwaVXgCsTOlOP3mOHkFxi/+qVUGqWj3jNdM3pWb/FovTIO7+m4rzB0okxt/3
-         wkBwKnvz1i2BdqlVNs36hMZNZe/G5k8KP4LsFc7Bt8RkYhWCroYRCsCZ89imIvMkJVYz
-         bj7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JQGflSQTqqTDCv3KaowX8c30Psro3zRNDRr+HJv+0Q0=;
-        b=t6eeB1t+KYzMHsVF7BJFyp7N6ekQxj6o9ODc+bdK5VCDau7YwbDda6Fs2MIzkS0oNF
-         1ez6AheCyhE3bR/znE9a9fvDOpUF8yi5y6+U9zvmrwktNt7ZPVTxtHl67tESo8FBSv2Q
-         FzqAOOLvgrt3aD8YqXoLYj11IAaPpstDIARp1DjlGBa/jClR22iabQvs6/meNcHCkdpf
-         m5kW//iY6Y4LhukEkzFvcv/F/HOrN5FHSnoIRt/P2AXsgQDO8DtYvoaMM8ArVYZzR2/8
-         fgMhsyKPM4LasnKRgDynic4kyi9IK+DYkai50labJfksxjV50OG/I9/RB3JQue4BzHa5
-         Xspg==
-X-Gm-Message-State: AOAM531N7SzBVG0CBWfNrbClHrf6HlwZbyaKt8JorIiNPId6BRwqOMp/
-        BtcJD/fqY/hRuyK0wUQPQ0Rp+b5pyNc=
-X-Google-Smtp-Source: ABdhPJx8H9TtwN2h/bm3PoOl3LvApUb3/LngUX+eu0Wg0ah/Nx3FGWHQSAedkWY4w9leaby1N+++0A==
-X-Received: by 2002:a63:205:: with SMTP id 5mr154850pgc.433.1632423074841;
-        Thu, 23 Sep 2021 11:51:14 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id h10sm9300294pjs.51.2021.09.23.11.51.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 11:51:14 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        linux-pm@vger.kernel.org (open list:HIBERNATION (aka Software Suspend,
-        aka swsusp))
-Subject: [PATCH] PM / Suspend: Avoid soft lockup warning with suspend_test
-Date:   Thu, 23 Sep 2021 11:51:05 -0700
-Message-Id: <20210923185106.501848-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 23 Sep 2021 14:53:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7ECC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:51:58 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mTTp1-0003IF-UK; Thu, 23 Sep 2021 20:51:51 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mTToo-0007OL-8G; Thu, 23 Sep 2021 20:51:38 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mTToo-0004PU-7E; Thu, 23 Sep 2021 20:51:38 +0200
+Date:   Thu, 23 Sep 2021 20:51:34 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Olivia Mackall <olivia@selenic.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Embedded <linux-embedded@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is
+ obsolete
+Message-ID: <20210923185134.vkokv3kglkjklkkf@pengutronix.de>
+References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
+ <CAMuHMdVAjtF2GKXgHgbmjUnMdWxqSpusKV_EieF2wEWezdqrPQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7rnfxr5b22heuaq6"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVAjtF2GKXgHgbmjUnMdWxqSpusKV_EieF2wEWezdqrPQ@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When testing with a large (>= 22 seconds) pm_test_delay we can see the
-NMI soft lockup barfing at us because a task has been blocked for too
-long. This can be reproduced with:
 
-	echo devices > /sys/power/pm_test
-	echo 30 > /sys/module/suspend/parameters/pm_test_delay
+--7rnfxr5b22heuaq6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Unroll the loop and touch the NMI watchdog every 1s to avoid the lockup
-warnings.
+Hello,
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- kernel/power/suspend.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+On Mon, Sep 20, 2021 at 03:01:25PM +0200, Geert Uytterhoeven wrote:
+> On Mon, Sep 20, 2021 at 11:52 AM Uwe Kleine-K=F6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> > The mails I sent to Matt on September 14 and 20 both were refused by the
+> > MTA responsible for selenic.com (i.e. waste.org) with:
+> >
+> >         554 5.7.1 <mpm@selenic.com>: Recipient address rejected: This i=
+dentity is obsolete
+> >
+> > Also the most recent commit that involved him (ignoring "Cc: Matt
+> > Mackall <mpm@selenic.com>" footers) is commit 330e0a01d54c (MAINTAINERS:
+> > Theodore Ts'o is taking over the random driver) where he was removed
+> > from the entry for random number drivers in 2012.
+> >
+> > So drop him completely from the list of maintainers.
+> >
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > ---
+> >  MAINTAINERS | 2 --
+> >  1 file changed, 2 deletions(-)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index d7b4f32875a9..805630c67a1f 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -6812,7 +6812,6 @@ F:        drivers/media/usb/em28xx/
+> >
+> >  EMBEDDED LINUX
+> >  M:     Paul Gortmaker <paul.gortmaker@windriver.com>
+> > -M:     Matt Mackall <mpm@selenic.com>
+>=20
+> Perhaps this should be replaced by
+> "Olivia Mackall <olivia@selenic.com>" instead?
 
-diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-index eb75f394a059..7441f0011ccd 100644
---- a/kernel/power/suspend.c
-+++ b/kernel/power/suspend.c
-@@ -30,6 +30,7 @@
- #include <trace/events/power.h>
- #include <linux/compiler.h>
- #include <linux/moduleparam.h>
-+#include <linux/nmi.h>
- 
- #include "power.h"
- 
-@@ -324,10 +325,15 @@ MODULE_PARM_DESC(pm_test_delay,
- static int suspend_test(int level)
- {
- #ifdef CONFIG_PM_DEBUG
-+	unsigned int i;
-+
- 	if (pm_test_level == level) {
- 		pr_info("suspend debug: Waiting for %d second(s).\n",
- 				pm_test_delay);
--		mdelay(pm_test_delay * 1000);
-+		for (i = 0; i < pm_test_delay; i++) {
-+			mdelay(1000);
-+			touch_nmi_watchdog();
-+		}
- 		return 1;
- 	}
- #endif /* !CONFIG_PM_DEBUG */
--- 
-2.25.1
+I think we need some feedback from Olivia here? At least I don't know
+more than I wrote in the commit log and so I'm not in a position to
+decide anything here.
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--7rnfxr5b22heuaq6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFMzLMACgkQwfwUeK3K
+7Ak2lAf+KpzyLszB2tlawn0Jr7OKP3tXXdSMb+HQPvRi6UMoYz7qM0PwaaSXmRWQ
+qcbsWUYzZAa/wAldjrQ1vvNnn2AVn/nZ+nxc0zsC36TVPE/q54TxLzOlOhhaoyZS
+zJ7UHyUQ3cv6Lpq7KJ9aM116CLieCa9rIkJHqweVfdZRw1vD8YpNOKfsE3cAXwLb
++8tnEYX4v9enVyiKysf5uYArrDV/ZjAF0fQDf66m/6fvGMpXhsvN5GAtGo2O1VhN
+u+g48E8eP6YJjH5THkeororXKquoNRxZ6j48bfpy/Np4RkfGSlR+D1cVguuR/9o7
+HDvT+ccdZ/ZQahwYy+q+BSj//DNQ6g==
+=6qxm
+-----END PGP SIGNATURE-----
+
+--7rnfxr5b22heuaq6--
