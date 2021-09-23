@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A02415BAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F04415BB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240312AbhIWKEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 06:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40764 "EHLO mail.kernel.org"
+        id S240350AbhIWKEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:04:37 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:51174 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240296AbhIWKEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:04:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10EF961279;
-        Thu, 23 Sep 2021 10:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632391357;
-        bh=HSGgjOkM07hP18XY0Q7ip8XE7xzU+dWwNiaGeoorR+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ezUOH5LwO3C9X8XT2O3wod7/4tozea/MoFSP0eDIzfoREoUL/ofOHPz5zZA4bxVZ9
-         W2aMpWaykopLVUT2RXZXQEFiioNPoayW57JkHrOffhINp4RudJqKPyugUSshE0suKM
-         aEZD0tY8kz/1ryB3nQ0aW7+5A/rk+Ud5RYmFBaWN+kKI/HaOw5c/5TRvL4d03xn3H7
-         HJf2SMOwrOSiHH4Jl3Cj++owGNKQsvhUum/Mp1ccx8xDELF5IpU4Z4nJfL0U1uTvEN
-         s3KlUuWVv8K0RVKSZiImnCg4c2gkTUzFKvOalBEKxOo+SaYGaAiZLXkkVb/nk/XqF5
-         pc+ttDdIUmebg==
-Date:   Thu, 23 Sep 2021 12:02:35 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+        id S240296AbhIWKEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 06:04:36 -0400
+Received: from zn.tnic (p200300ec2f0d6800cf632848c722fe0b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6800:cf63:2848:c722:fe0b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C6CEE1EC0455;
+        Thu, 23 Sep 2021 12:02:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632391379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CO2tuPSUYVCB02aiwRrjOKveOoclk3z9uHMolvPhOCc=;
+        b=Vspo+A4DCy2+2jFfDMfE9clhHW2gfP4y1XPjkpUd76EDiin2fW6OPU/Nk6IzvGFIPmy4VL
+        aBqgHPOZNP/Wta3sGFN0kOuroEsEQi7majLTI4/l02neruDlsyqCakmi/kUbofccPy13fZ
+        ZzJBnTUjHOYgtqG49ffj6WH2k2niZbo=
+Date:   Thu, 23 Sep 2021 12:02:53 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
-Message-ID: <20210923100235.GA113809@lothringen>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-4-valentin.schneider@arm.com>
- <874kae6n3g.ffs@tglx>
- <87pmt163al.ffs@tglx>
- <20210921234518.GB100318@lothringen>
- <20210922063208.ltf7sdou4tr5yrnc@linutronix.de>
- <20210922111012.GA106513@lothringen>
- <20210922112731.dvauvxlhx5suc7qd@linutronix.de>
- <20210922113820.GC106513@lothringen>
- <20210922130232.vm7rgkdszfhejf34@linutronix.de>
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 04/12] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YUxQzRdoH3dLJjL2@zn.tnic>
+References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210916183550.15349-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210922130232.vm7rgkdszfhejf34@linutronix.de>
+In-Reply-To: <20210916183550.15349-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 03:02:32PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2021-09-22 13:38:20 [+0200], Frederic Weisbecker wrote:
-> > > So you rely on some implicit behaviour which breaks with RT such as:
-> > > 
-> > >                               CPU 0
-> > >            -----------------------------------------------
-> > >            RANDOM TASK-A                      RANDOM TASK-B
-> > >            ------                             -----------
-> > >            int *X = &per_cpu(CPUX, 0)         int *X = &per_cpu(CPUX, 0)
-> > >            int A, B;                          
-> > > 					      spin_lock(&D);
-> > >            spin_lock(&C);
-> > > 	   				      WRITE_ONCE(*X, 0);
-> > >            A = READ_ONCE(*X);
-> > >                                               WRITE_ONCE(*X, 1);
-> > >            B = READ_ONCE(*X);
-> > > 
-> > > while spinlock C and D are just random locks not related to CPUX but it
-> > > just happens that they are held at that time. So for !RT you guarantee
-> > > that A == B while it is not the case on RT.
-> > 
-> > Not sure which spinlocks you are referring to here. Also most RCU spinlocks
-> > are raw.
-> 
-> I was bringing an example where you also could rely on implicit locking
-> provided by spin_lock() which breaks on RT.
+On Thu, Sep 16, 2021 at 11:35:42AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> @@ -495,6 +496,8 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
+>  
+>  	copy_bootdata(__va(real_mode_data));
+>  
+> +	tdx_early_init();
+> +
 
-Good point!
+| Changes since v4:
+|  * Moved tdx_early_init() below copy_bootdata() because of
+|    cmdline and IDT dependencies.
+
+
+What "cmdline and IDT dependencies"?
+
+Without a comment explaining why that thing must be there in the boot
+order, you're adding more to the already fragile house of cards.
+
+Explain please.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
