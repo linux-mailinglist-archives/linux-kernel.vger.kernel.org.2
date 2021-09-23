@@ -2,168 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACA44163AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F2A4163A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242273AbhIWQ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:56:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57906 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242076AbhIWQ4O (ORCPT
+        id S238671AbhIWQ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:56:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35966 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233389AbhIWQ4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:56:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632416082;
+        Thu, 23 Sep 2021 12:56:08 -0400
+Message-ID: <20210923165357.928693482@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632416076;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0ReSgcM8F/l+G5HcK9Mo9o/CQ02oO2R9Ng8Sr4/ITM4=;
-        b=HfWutbeU4gg+xxX/Chvgb7Y5MPixcVBCxrsxmbloiYRz2qIOEQM5soArd9goJlwxKKAuA1
-        PMzCUfbEYO5pGJX757xnWLjWHAjyqbUa6aqMCKtRijFfc0jhS6sfRhKk46+dWCwRT17iwc
-        bNoph+x5LsYS5xlkdqYNscFgufoBIbM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-NwUQzdWwMBu5R23lXToZYw-1; Thu, 23 Sep 2021 12:54:41 -0400
-X-MC-Unique: NwUQzdWwMBu5R23lXToZYw-1
-Received: by mail-ed1-f69.google.com with SMTP id 2-20020a508e02000000b003d871759f5dso7336361edw.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:54:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0ReSgcM8F/l+G5HcK9Mo9o/CQ02oO2R9Ng8Sr4/ITM4=;
-        b=S5UwFw/id+BbV0k934PkZWAa1MRLNZJtKEOVVXa5dszXDX3Kcm+MqPtsM81AE3I0iL
-         SgQOZBoM2H3CI7vzl6NBG6erO/t4ulSEJQ6YOUyStdZ/9jM6e1msynaOyV15Nxi9l+T2
-         DEdoupRs4fw2KWMCnUDlguiGEth/V9h0vX74EPMKPKhChHoElWeTxmV+PiDatS9rCtin
-         cpkTsRebg2hDRvzyETntz++9ThLKiM/3zeMUx1fCrFSjXqkCkpgwiAYRvb+KvAtwOLNO
-         L3DNpqE1T/SAbOr0NJb6qdkfntGLqWGw0SNh90WRSolQSPgPQK7X2IGQuJ5Ng3/tHVCr
-         rm5Q==
-X-Gm-Message-State: AOAM533VNweTaCP82o8u5LANfvlWiQpnqWK9zotH+TigieVxJZrmJlhN
-        ElRZloS2xbqPXOEgnc9J0lQNK0Kwa9t9ZqhhGQE6Iv7OKLZamhGm0NwWfKPjoSGqItZoyJcjW7W
-        uQYJBprL2UiuplJN9PSrJiHN2
-X-Received: by 2002:a17:906:584:: with SMTP id 4mr6200618ejn.56.1632416077482;
-        Thu, 23 Sep 2021 09:54:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy5UQAxIm6jvDAIEJygeGZF/ewJKdpHxU6OT5aGqbBA5SNslschMbR9eHuS7enkJEmOlKUxtw==
-X-Received: by 2002:a17:906:584:: with SMTP id 4mr6200592ejn.56.1632416077261;
-        Thu, 23 Sep 2021 09:54:37 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b13sm4046822ede.97.2021.09.23.09.54.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 09:54:36 -0700 (PDT)
-Subject: Re: [PATCH 00/14] nSVM fixes and optional features
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, Bandan Das <bsd@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Wei Huang <wei.huang2@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>
-References: <20210914154825.104886-1-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d04eb3d1-9f0c-3b2c-c78f-0f377caadcfc@redhat.com>
-Date:   Thu, 23 Sep 2021 18:54:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+         references:references; bh=ewd4pU+vwBo7kb7O/Zi1128ArMzkauCl+FkloHOqYe0=;
+        b=jhmvAFq7AAotnBtVTWHvHTcvYtdLjbr5MdpVqwINbgk/Pxl7TY86kUHOoQ+nhLhiDQDF7Z
+        lcI+8k9UnwQE8sZ4psuo+0Y3WXN4pciOdjzuWioXa7iKkoDI3TMVXfY+gtI1Toe9t2nE3e
+        P9JF1yP9bRIhaQSXnEWhiPwK5QUjn8eCTc6a1yj7WBYDyei4OkQmwVlQTCSavMJCEpj543
+        58Ah/LXaTuu+PF5jOvCHi1ynFjuEofW5oju+xEzTYoDTZwXli57L3SABeJ6oYmbPkvB0B7
+        PrtL15orKhZAGldSSyRgpRGuC+9mLAWnytEPKgJCF3DFIQfuxz2hv4SzYwi2tA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632416076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=ewd4pU+vwBo7kb7O/Zi1128ArMzkauCl+FkloHOqYe0=;
+        b=03kNRFRdIf0bGQObGAHR40HfsP/1FEkIkGbuwJxrbKsNyvcpIrkcJasoluwfCFs2qsyjKX
+        6IpiCzbnrt9yiVDw==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Paul McKenney <paulmck@linux.vnet.ibm.com>,
+        Sebastian Siewior <bigeasy@linutronix.de>
+Subject: [patch 1/8] sched: Clean up the might_sleep() underscore zoo
+References: <20210923164145.466686140@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210914154825.104886-1-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 23 Sep 2021 18:54:35 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/21 17:48, Maxim Levitsky wrote:
-> Those are few patches I was working on lately, all somewhat related
-> to the two CVEs that I found recently.
-> 
-> First 7 patches fix various minor bugs that relate to these CVEs.
-> 
-> The rest of the patches implement various optional SVM features,
-> some of which the guest could enable anyway due to incorrect
-> checking of virt_ext field.
-> 
-> Last patch is somewhat an RFC, I would like to hear your opinion
-> on that.
-> 
-> I also implemented nested TSC scaling while at it.
-> 
-> As for other optional SVM features here is my summary of few features
-> I took a look at:
-> 
-> X86_FEATURE_DECODEASSISTS:
->     this feature should make it easier
->     for the L1 to emulate an instruction on MMIO access, by not
->     needing to read the guest memory but rather using the instruction
->     bytes that the CPU already fetched.
-> 
->     The challenge of implementing this is that we sometimes inject
->     #PF and #NPT syntenically and in those cases we must be sure
->     we set the correct instruction bytes.
-> 
->     Also this feature adds assists for MOV CR/DR, INTn, and INVLPG,
->     which aren't that interesting but must be supported as well to
->     expose this feature to the nested guest.
-> 
-> X86_FEATURE_VGIF
->     Might allow the L2 to run the L3 a bit faster, but due to crazy complex
->     logic we already have around int_ctl and vgif probably not worth it.
-> 
-> X86_FEATURE_VMCBCLEAN
->     Should just be enabled, because otherwise L1 doesn't even attempt
->     to set the clean bits. But we need to know if we can take an
->     advantage of these bits first.
-> 
-> X86_FEATURE_FLUSHBYASID
-> X86_FEATURE_AVIC
->     These two features would be very good to enable, but that
->     would require lots of work, and will be done eventually.
-> 
-> There are few more nested SVM features that I didn't yet had a
-> chance to take a look at.
-> 
-> Best regards,
-> 	Maxim Levitsky
-> 
-> Maxim Levitsky (14):
->    KVM: x86: nSVM: restore int_vector in svm_clear_vintr
->    KVM: x86: selftests: test simultaneous uses of V_IRQ from L1 and L0
->    KVM: x86: nSVM: test eax for 4K alignment for GP errata workaround
->    KVM: x86: nSVM: don't copy pause related settings
->    KVM: x86: nSVM: don't copy virt_ext from vmcb12
->    KVM: x86: SVM: don't set VMLOAD/VMSAVE intercepts on vCPU reset
->    KVM: x86: SVM: add warning for CVE-2021-3656
->    KVM: x86: SVM: add module param to control LBR virtualization
->    KVM: x86: nSVM: correctly virtualize LBR msrs when L2 is running
->    KVM: x86: nSVM: implement nested LBR virtualization
->    KVM: x86: nSVM: implement nested VMLOAD/VMSAVE
->    KVM: x86: SVM: add module param to control TSC scaling
->    KVM: x86: nSVM: implement nested TSC scaling
->    KVM: x86: nSVM: support PAUSE filter threshold and count
-> 
->   arch/x86/kvm/svm/nested.c                     | 105 +++++++--
->   arch/x86/kvm/svm/svm.c                        | 218 +++++++++++++++---
->   arch/x86/kvm/svm/svm.h                        |  20 +-
->   arch/x86/kvm/vmx/vmx.c                        |   1 +
->   arch/x86/kvm/x86.c                            |   1 +
->   tools/testing/selftests/kvm/.gitignore        |   1 +
->   tools/testing/selftests/kvm/Makefile          |   1 +
->   .../selftests/kvm/x86_64/svm_int_ctl_test.c   | 128 ++++++++++
->   8 files changed, 427 insertions(+), 48 deletions(-)
->   create mode 100644 tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c
-> 
+__might_sleep() vs. ___might_sleep() is hard to distinguish. Aside of that
+the three underscore variant is exposed to provide a checkpoint for
+rescheduling points which are distinct from blocking points.
 
-Queued more patches, with 9-10-11-14 left now.
+They are semantically a preemption point which means that scheduling is
+state preserving. A real blocking operation, e.g. mutex_lock(), wait*(),
+which cannot preserve a task state which is not equal to RUNNING.
 
-Paolo
+While technically blocking on a "sleeping" spinlock in RT enabled kernels
+falls into the voluntary scheduling category because it has to wait until
+the contended spin/rw lock becomes available, the RT lock substitution code
+can semantically be mapped to a voluntary preemption because the RT lock
+substitution code and the scheduler are providing mechanisms to preserve
+the task state and to take regular non-lock related wakeups into account.
+
+Rename ___might_sleep() to __might_resched() to make the distinction of
+these functions clear.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/kernel.h       |    6 +++---
+ include/linux/sched.h        |    8 ++++----
+ kernel/locking/spinlock_rt.c |    6 +++---
+ kernel/sched/core.c          |    6 +++---
+ 4 files changed, 13 insertions(+), 13 deletions(-)
+
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -111,7 +111,7 @@ static __always_inline void might_resche
+ #endif /* CONFIG_PREEMPT_* */
+ 
+ #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+-extern void ___might_sleep(const char *file, int line, int preempt_offset);
++extern void __might_resched(const char *file, int line, int preempt_offset);
+ extern void __might_sleep(const char *file, int line, int preempt_offset);
+ extern void __cant_sleep(const char *file, int line, int preempt_offset);
+ extern void __cant_migrate(const char *file, int line);
+@@ -168,8 +168,8 @@ extern void __cant_migrate(const char *f
+  */
+ # define non_block_end() WARN_ON(current->non_block_count-- == 0)
+ #else
+-  static inline void ___might_sleep(const char *file, int line,
+-				   int preempt_offset) { }
++  static inline void __might_resched(const char *file, int line,
++				     int preempt_offset) { }
+   static inline void __might_sleep(const char *file, int line,
+ 				   int preempt_offset) { }
+ # define might_sleep() do { might_resched(); } while (0)
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2041,7 +2041,7 @@ static inline int _cond_resched(void) {
+ #endif /* !defined(CONFIG_PREEMPTION) || defined(CONFIG_PREEMPT_DYNAMIC) */
+ 
+ #define cond_resched() ({			\
+-	___might_sleep(__FILE__, __LINE__, 0);	\
++	__might_resched(__FILE__, __LINE__, 0);	\
+ 	_cond_resched();			\
+ })
+ 
+@@ -2049,9 +2049,9 @@ extern int __cond_resched_lock(spinlock_
+ extern int __cond_resched_rwlock_read(rwlock_t *lock);
+ extern int __cond_resched_rwlock_write(rwlock_t *lock);
+ 
+-#define cond_resched_lock(lock) ({				\
+-	___might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);\
+-	__cond_resched_lock(lock);				\
++#define cond_resched_lock(lock) ({					\
++	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
++	__cond_resched_lock(lock);					\
+ })
+ 
+ #define cond_resched_rwlock_read(lock) ({			\
+--- a/kernel/locking/spinlock_rt.c
++++ b/kernel/locking/spinlock_rt.c
+@@ -32,7 +32,7 @@ static __always_inline void rtlock_lock(
+ 
+ static __always_inline void __rt_spin_lock(spinlock_t *lock)
+ {
+-	___might_sleep(__FILE__, __LINE__, 0);
++	__might_resched(__FILE__, __LINE__, 0);
+ 	rtlock_lock(&lock->lock);
+ 	rcu_read_lock();
+ 	migrate_disable();
+@@ -210,7 +210,7 @@ EXPORT_SYMBOL(rt_write_trylock);
+ 
+ void __sched rt_read_lock(rwlock_t *rwlock)
+ {
+-	___might_sleep(__FILE__, __LINE__, 0);
++	__might_resched(__FILE__, __LINE__, 0);
+ 	rwlock_acquire_read(&rwlock->dep_map, 0, 0, _RET_IP_);
+ 	rwbase_read_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
+ 	rcu_read_lock();
+@@ -220,7 +220,7 @@ EXPORT_SYMBOL(rt_read_lock);
+ 
+ void __sched rt_write_lock(rwlock_t *rwlock)
+ {
+-	___might_sleep(__FILE__, __LINE__, 0);
++	__might_resched(__FILE__, __LINE__, 0);
+ 	rwlock_acquire(&rwlock->dep_map, 0, 0, _RET_IP_);
+ 	rwbase_write_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
+ 	rcu_read_lock();
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9446,11 +9446,11 @@ void __might_sleep(const char *file, int
+ 			(void *)current->task_state_change,
+ 			(void *)current->task_state_change);
+ 
+-	___might_sleep(file, line, preempt_offset);
++	__might_resched(file, line, preempt_offset);
+ }
+ EXPORT_SYMBOL(__might_sleep);
+ 
+-void ___might_sleep(const char *file, int line, int preempt_offset)
++void __might_resched(const char *file, int line, int preempt_offset)
+ {
+ 	/* Ratelimiting timestamp: */
+ 	static unsigned long prev_jiffy;
+@@ -9495,7 +9495,7 @@ void ___might_sleep(const char *file, in
+ 	dump_stack();
+ 	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+ }
+-EXPORT_SYMBOL(___might_sleep);
++EXPORT_SYMBOL(__might_resched);
+ 
+ void __cant_sleep(const char *file, int line, int preempt_offset)
+ {
 
