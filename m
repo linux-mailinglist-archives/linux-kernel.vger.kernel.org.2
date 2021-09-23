@@ -2,207 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3599C41662D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A746416631
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 21:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243058AbhIWTtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 15:49:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243023AbhIWTtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 15:49:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CDF360F6F;
-        Thu, 23 Sep 2021 19:47:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632426479;
-        bh=OeWc14n9eipH1NnZQkPVKzOesAfMuGylT40OBED6fnI=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=RHH6bQOPihZRnwDCQoYpuBzKCTvOYtNwF12A6tTkkaZI+OnweE3Aa0ovbwXkx3ySQ
-         d7Tpn0knfTv8BcroVAStQr/okxA1LL15V4LndkFfAf+tETDLmxycdEkTUEcRqJMaBj
-         XduUuUI7F1nMfBGQ1RUJ9fRBoix+6gXrPiji0dQeI+mokdYTJ8Gn+1iCHGeeyUqwC3
-         IUV1lj5TN2TRH0W9KAESVcUkOn2MbB478Xp5MfDdQnF0tNN2aZIB/P05i7JX8OrHIL
-         vOXmDC6+flu3RqIBKnoOYCs04E868thQhVNWWFzXJDIsusfFytfCx8CbHDPsGqc21x
-         u84HlbqSdXufA==
-Date:   Thu, 23 Sep 2021 12:47:58 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Oleksandr Andrushchenko <andr2000@gmail.com>
-cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
-        sstabellini@kernel.org, jbeulich@suse.com,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and
- PV
-In-Reply-To: <20210923095345.185489-1-andr2000@gmail.com>
-Message-ID: <alpine.DEB.2.21.2109231217050.17979@sstabellini-ThinkPad-T480s>
-References: <20210923095345.185489-1-andr2000@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S243036AbhIWTum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 15:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243023AbhIWTuf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 15:50:35 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25387C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 12:49:03 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mTUiF-0000Qq-7x; Thu, 23 Sep 2021 21:48:55 +0200
+Subject: Re: [PATCH] arm64: dts: rockchip: move aliases to rk356x dtsi
+To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Liang Chen <cl@rock-chips.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Simon Xue <xxm@rock-chips.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20210917110528.24454-1-michael.riesch@wolfvision.net>
+ <2397289.mVTDCA6dLn@diego>
+ <ce3f2ece-4c30-ad01-fd51-8a3e46297234@pengutronix.de>
+ <8375423.X1v87zm6sT@diego>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <8a775b61-dc70-aba7-8d23-888851af29a6@pengutronix.de>
+Date:   Thu, 23 Sep 2021 21:48:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <8375423.X1v87zm6sT@diego>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021, Oleksandr Andrushchenko wrote:
-> Currently PCI backend implements multiple functionalities at a time.
-> To name a few:
-> 1. It is used as a database for assignable PCI devices, e.g. xl
->    pci-assignable-{add|remove|list} manipulates that list. So, whenever
->    the toolstack needs to know which PCI devices can be passed through
->    it reads that from the relevant sysfs entries of the pciback.
-> 2. It is used to hold the unbound PCI devices list, e.g. when passing
->    through a PCI device it needs to be unbound from the relevant device
->    driver and bound to pciback (strictly speaking it is not required
->    that the device is bound to pciback, but pciback is again used as a
->    database of the passed through PCI devices, so we can re-bind the
->    devices back to their original drivers when guest domain shuts down)
-> 3. Device reset for the devices being passed through
-> 4. Para-virtualized use-cases support
+Hello Heiko,
+
+On 22.09.21 18:51, Heiko Stübner wrote:
+> Hi Ahmad,
 > 
-> The para-virtualized part of the driver is not always needed as some
-> architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
-> model for PCI device passthrough. For such use-cases make the very
-> first step in splitting the xen-pciback driver into two parts: extended
-> PCI stub and PCI PV backend drivers. At the moment x86 platform will
-> continue using CONFIG_XEN_PCIDEV_BACKEND for the fully featured backend
-> driver and new platforms may build a driver with limited functionality
-> (no PV) by enabling CONFIG_XEN_PCIDEV_STUB.
+> Am Mittwoch, 22. September 2021, 15:40:33 CEST schrieb Ahmad Fatoum:
+>> Hello Heiko,
+>>
+>> On 17.09.21 14:01, Heiko Stübner wrote:
+>>> Hi Michael,
+>>>
+>>> Am Freitag, 17. September 2021, 13:05:28 CEST schrieb Michael Riesch:
+>>>> In order to ensure deterministic probe order over different boards,
+>>>> move the aliases of on-SoC components to the corresponding dtsi
+>>>> files.
+>>>
+>>> please read the git history on the other Rockchip SoCs. We just moved
+>>> the aliases on them _to_ the board-files, as requested by
+>>> arm-soc maintainers ;-)
+>>
+>> [Adding Arnd to CC]
+>>
+>> For old boards, changing the aliases may introduce breakage that outweighs
+>> the benefit of having consistent numbering. This doesn't seem to apply here:
+>> rk3566.dtsi is a new device tree not yet in v5.15-rc2 and rk3568 is new in
+>> v5.14 and has only one board partially supported, so if we were to do this
+>> change we should do it now. Boards will still be free to override the aliases,
+>> but those that don't will have consistent numbering regardless of whether
+>> nodes are enabled, cards are detected or probe order.
 > 
-> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->
-> ---
-> Changes since v2:
->  - swap the patch order
-> New in v2
-> ---
->  drivers/xen/Kconfig               | 24 ++++++++++++++++++++++++
->  drivers/xen/Makefile              |  2 +-
->  drivers/xen/xen-pciback/Makefile  |  1 +
->  drivers/xen/xen-pciback/pciback.h |  5 +++++
->  drivers/xen/xen-pciback/xenbus.c  |  6 +++++-
->  5 files changed, 36 insertions(+), 2 deletions(-)
+> the request from Arnd was actually to move things like mmc aliases _to_
+> board files away from the soc-level dtsi.
+
+Yes, I understood that. But I think for new SoCs, there is a convincing
+case for having them in the SoC dtsi.
+
+> Supposedly to prevent holes in
+> the numbering for example if the sdmmc is mmc0, emmc is mmc1,
+> but sdmmc not used on a board, which would then leave mmc0 empty .
+
+Without aliases, the numbering of the MMC devices in Linux can't be relied
+on. partuuids don't work when you have the same image on e.g. eMMC and SD
+and initramfs may be overkill. I'd thus say it's recommended to have aliases
+for every MMC described in a device tree.
+
+Arguably, the majority of people are fine with the numbering used by the
+SoC vendor and having any numbering will prevent scripts from breaking after
+updates. Board vendors that mind the holes or want to renumber the MMCs can
+just override the aliases on board level.
+
+Cheers,
+Ahmad
+
 > 
-> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
-> index a37eb52fb401..6e92c6be19f1 100644
-> --- a/drivers/xen/Kconfig
-> +++ b/drivers/xen/Kconfig
-> @@ -180,10 +180,34 @@ config SWIOTLB_XEN
->  	select DMA_OPS
->  	select SWIOTLB
->  
-> +config XEN_PCI_STUB
-> +	bool
-> +
-> +config XEN_PCIDEV_STUB
-> +	tristate "Xen PCI-device stub driver"
-> +	depends on PCI && !X86 && XEN
-> +	depends on XEN_BACKEND
-> +	select XEN_PCI_STUB
-> +	default m
-> +	help
-> +	  The PCI device stub driver provides limited version of the PCI
-> +	  device backend driver without para-virtualized support for guests.
-> +	  If you select this to be a module, you will need to make sure no
-> +	  other driver has bound to the device(s) you want to make visible to
-> +	  other guests.
-> +
-> +	  The "hide" parameter (only applicable if backend driver is compiled
-> +	  into the kernel) allows you to bind the PCI devices to this module
-> +	  from the default device drivers. The argument is the list of PCI BDFs:
-> +	  xen-pciback.hide=(03:00.0)(04:00.0)
-> +
-> +	  If in doubt, say m.
-> +
-
-I get this build error on ARM:
-
-drivers/xen/xen-pciback/pci_stub.c:22:10: fatal error: asm/xen/pci.h: No such file or directory
- #include <asm/xen/pci.h>
-          ^~~~~~~~~~~~~~~
-compilation terminated.
-scripts/Makefile.build:277: recipe for target 'drivers/xen/xen-pciback/pci_stub.o' failed
-
-
-I imagine that the second patch is required for the build on ARM. I
-suggest to move the definition of XEN_PCIDEV_STUB to the second patch.
-(keep XEN_PCI_STUB and xen_pcibk_pv_support here.)
-
-Alternatively, just remove "tristate "Xen PCI-device stub driver"" from
-here so that XEN_PCIDEV_STUB becomes non-selectable. You can add the
-tristate property in patch #2.
-
-
-
->  config XEN_PCIDEV_BACKEND
->  	tristate "Xen PCI-device backend driver"
->  	depends on PCI && X86 && XEN
->  	depends on XEN_BACKEND
-> +	select XEN_PCI_STUB
->  	default m
->  	help
->  	  The PCI device backend driver allows the kernel to export arbitrary
-> diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
-> index 3434593455b2..5aae66e638a7 100644
-> --- a/drivers/xen/Makefile
-> +++ b/drivers/xen/Makefile
-> @@ -24,7 +24,7 @@ obj-$(CONFIG_XEN_SYS_HYPERVISOR)	+= sys-hypervisor.o
->  obj-$(CONFIG_XEN_PVHVM_GUEST)		+= platform-pci.o
->  obj-$(CONFIG_SWIOTLB_XEN)		+= swiotlb-xen.o
->  obj-$(CONFIG_XEN_MCE_LOG)		+= mcelog.o
-> -obj-$(CONFIG_XEN_PCIDEV_BACKEND)	+= xen-pciback/
-> +obj-$(CONFIG_XEN_PCI_STUB)	        += xen-pciback/
->  obj-$(CONFIG_XEN_PRIVCMD)		+= xen-privcmd.o
->  obj-$(CONFIG_XEN_ACPI_PROCESSOR)	+= xen-acpi-processor.o
->  obj-$(CONFIG_XEN_EFI)			+= efi.o
-> diff --git a/drivers/xen/xen-pciback/Makefile b/drivers/xen/xen-pciback/Makefile
-> index e8d981d43235..e2cb376444a6 100644
-> --- a/drivers/xen/xen-pciback/Makefile
-> +++ b/drivers/xen/xen-pciback/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_XEN_PCIDEV_BACKEND) += xen-pciback.o
-> +obj-$(CONFIG_XEN_PCIDEV_STUB) += xen-pciback.o
->  
->  xen-pciback-y := pci_stub.o pciback_ops.o xenbus.o
->  xen-pciback-y += conf_space.o conf_space_header.o \
-> diff --git a/drivers/xen/xen-pciback/pciback.h b/drivers/xen/xen-pciback/pciback.h
-> index 95e28ee48d52..9a64196e831d 100644
-> --- a/drivers/xen/xen-pciback/pciback.h
-> +++ b/drivers/xen/xen-pciback/pciback.h
-> @@ -71,6 +71,11 @@ struct pci_dev *pcistub_get_pci_dev(struct xen_pcibk_device *pdev,
->  				    struct pci_dev *dev);
->  void pcistub_put_pci_dev(struct pci_dev *dev);
->  
-> +static inline bool xen_pcibk_pv_support(void)
-> +{
-> +	return IS_ENABLED(CONFIG_XEN_PCIDEV_BACKEND);
-> +}
-> +
->  /* Ensure a device is turned off or reset */
->  void xen_pcibk_reset_device(struct pci_dev *pdev);
->  
-> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
-> index c09c7ebd6968..f8ba2903a3ff 100644
-> --- a/drivers/xen/xen-pciback/xenbus.c
-> +++ b/drivers/xen/xen-pciback/xenbus.c
-> @@ -743,6 +743,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
->  
->  int __init xen_pcibk_xenbus_register(void)
->  {
-> +	if (!xen_pcibk_pv_support())
-> +		return 0;
-> +
->  	xen_pcibk_backend = &xen_pcibk_vpci_backend;
->  	if (passthrough)
->  		xen_pcibk_backend = &xen_pcibk_passthrough_backend;
-> @@ -752,5 +755,6 @@ int __init xen_pcibk_xenbus_register(void)
->  
->  void __exit xen_pcibk_xenbus_unregister(void)
->  {
-> -	xenbus_unregister_driver(&xen_pcibk_driver);
-> +	if (xen_pcibk_pv_support())
-> +		xenbus_unregister_driver(&xen_pcibk_driver);
->  }
-> -- 
-> 2.25.1
 > 
+> Heiko
+> 
+> 
+> 
+>>> Heiko
+>>>
+>>>
+>>>>
+>>>> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+>>>> ---
+>>>>  arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts | 6 ------
+>>>>  arch/arm64/boot/dts/rockchip/rk3566.dtsi           | 4 ++++
+>>>>  arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts   | 7 -------
+>>>>  arch/arm64/boot/dts/rockchip/rk3568.dtsi           | 5 +++++
+>>>>  arch/arm64/boot/dts/rockchip/rk356x.dtsi           | 2 ++
+>>>>  5 files changed, 11 insertions(+), 13 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+>>>> index a244f7b87e38..156bbb8aa4c4 100644
+>>>> --- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+>>>> +++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+>>>> @@ -10,12 +10,6 @@
+>>>>  	model = "Pine64 RK3566 Quartz64-A Board";
+>>>>  	compatible = "pine64,quartz64-a", "rockchip,rk3566";
+>>>>  
+>>>> -	aliases {
+>>>> -		ethernet0 = &gmac1;
+>>>> -		mmc0 = &sdmmc0;
+>>>> -		mmc1 = &sdhci;
+>>>> -	};
+>>>> -
+>>>>  	chosen: chosen {
+>>>>  		stdout-path = "serial2:1500000n8";
+>>>>  	};
+>>>> diff --git a/arch/arm64/boot/dts/rockchip/rk3566.dtsi b/arch/arm64/boot/dts/rockchip/rk3566.dtsi
+>>>> index 3839eef5e4f7..c1b3841caa77 100644
+>>>> --- a/arch/arm64/boot/dts/rockchip/rk3566.dtsi
+>>>> +++ b/arch/arm64/boot/dts/rockchip/rk3566.dtsi
+>>>> @@ -4,6 +4,10 @@
+>>>>  
+>>>>  / {
+>>>>  	compatible = "rockchip,rk3566";
+>>>> +
+>>>> +	aliases {
+>>>> +		ethernet0 = &gmac1;
+>>>> +	};
+>>>>  };
+>>>>  
+>>>>  &power {
+>>>> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+>>>> index 184e2aa2416a..218f85af730c 100644
+>>>> --- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+>>>> +++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+>>>> @@ -13,13 +13,6 @@
+>>>>  	model = "Rockchip RK3568 EVB1 DDR4 V10 Board";
+>>>>  	compatible = "rockchip,rk3568-evb1-v10", "rockchip,rk3568";
+>>>>  
+>>>> -	aliases {
+>>>> -		ethernet0 = &gmac0;
+>>>> -		ethernet1 = &gmac1;
+>>>> -		mmc0 = &sdmmc0;
+>>>> -		mmc1 = &sdhci;
+>>>> -	};
+>>>> -
+>>>>  	chosen: chosen {
+>>>>  		stdout-path = "serial2:1500000n8";
+>>>>  	};
+>>>> diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+>>>> index 2fd313a295f8..dd0e800cf752 100644
+>>>> --- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+>>>> +++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+>>>> @@ -8,6 +8,11 @@
+>>>>  / {
+>>>>  	compatible = "rockchip,rk3568";
+>>>>  
+>>>> +	aliases {
+>>>> +		ethernet0 = &gmac0;
+>>>> +		ethernet1 = &gmac1;
+>>>> +	};
+>>>> +
+>>>>  	qos_pcie3x1: qos@fe190080 {
+>>>>  		compatible = "rockchip,rk3568-qos", "syscon";
+>>>>  		reg = <0x0 0xfe190080 0x0 0x20>;
+>>>> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+>>>> index e42fbac6147b..bb0540d3008c 100644
+>>>> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+>>>> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+>>>> @@ -29,6 +29,8 @@
+>>>>  		i2c3 = &i2c3;
+>>>>  		i2c4 = &i2c4;
+>>>>  		i2c5 = &i2c5;
+>>>> +		mmc0 = &sdmmc0;
+>>>> +		mmc1 = &sdhci;
+>>>>  		serial0 = &uart0;
+>>>>  		serial1 = &uart1;
+>>>>  		serial2 = &uart2;
+>>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> _______________________________________________
+>>> linux-arm-kernel mailing list
+>>> linux-arm-kernel@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>>
+>>
+>>
+>>
+> 
+> 
+> 
+> 
+> 
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
