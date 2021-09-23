@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B50415ADD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5AD415AEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240161AbhIWJ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:26:07 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:19425 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240088AbhIWJ0G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:26:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1632389076; x=1663925076;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=d5etDTXJcluE1LD4LHlvQpKVCamsnqKPJuhKLSUQmkE=;
-  b=VV47LyAoBd/MwNZTplJs2GH9buFqDIy1MXPDyjTTLYEDreyOb/n1/Zb2
-   LzrGIV07Qs5ARUgtAhRDRChIaSoEVzwHHG0p/2uw5SwJd+5ADtFqxQL8R
-   C59x6SBL4gDOYoqcXVWvuFRYk2nUGAqgxulDX8CjjeRudqLDUwf7C8+xZ
-   I=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 23 Sep 2021 02:24:35 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 02:24:35 -0700
-Received: from taozha-gv.ap.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 23 Sep 2021 02:24:31 -0700
-Date:   Thu, 23 Sep 2021 17:24:28 +0800
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        "Leo Yan" <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sm8250: Add Coresight support
-Message-ID: <20210923092428.GA12869@taozha-gv.ap.qualcomm.com>
-References: <1631515214-13653-1-git-send-email-quic_taozha@quicinc.com>
- <1631515214-13653-3-git-send-email-quic_taozha@quicinc.com>
- <57e2a1d8-15ec-0381-2b7d-95bbda7503ae@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <57e2a1d8-15ec-0381-2b7d-95bbda7503ae@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+        id S240168AbhIWJ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:28:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:20540 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240111AbhIWJ2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 05:28:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632389197; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9lAWu7qXiRa6Lg9nIaX5b3wiRkjVA3UvWRrWVenAW08=; b=ST0ZKD64JRTcaPod41vSeG1/aUdW3O8/z+m1RKbjmjJewFHeatx1LD2Vaww/2fhRhQlDWJIi
+ t4m80xtIzdh/oNfVplcx7/OVtcnIo5qhDSL4U0Xt9JVrcTahp+Mf+ZVyXWEyj4s61jIRvteQ
+ MX3WD0wZhJe311NJvWh2zEGRvBE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 614c484cec62f57c9a0c65e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 23 Sep 2021 09:26:36
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B9093C43616; Thu, 23 Sep 2021 09:26:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        SORTED_RECIPS,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6C82C43460;
+        Thu, 23 Sep 2021 09:26:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E6C82C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linus.walleij@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH] pinctrl: qcom: sc7280: Add PM suspend callbacks
+Date:   Thu, 23 Sep 2021 14:56:16 +0530
+Message-Id: <1632389176-7768-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 05:35:37PM +0100, Suzuki K Poulose wrote:
-> Hi Tao
-> 
-> Are there no sinks at all on this platform ? I had this question on the
-> previous series. How is CoreSight useful on this platform otherwise ?
-> 
-> On 13/09/2021 07:40, Tao Zhang wrote:
-ETF/ETR are the sinks on this target. And I have added the ETF to this
-device tree file. Since the ETR needs SMMU support on this target and
-SMMU has not been supported for now. I will add the ETR to device tree
-later if the SMMU is ready for this platform.
-> >Add the basic coresight components found on Qualcomm SM8250 Soc. The
-> >basic coresight components include ETF, ETMs,STM and the related
-> >funnels.
-> >
-> >Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> >---
-> >  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 442 ++++++++++++++++++++++-
-> >  1 file changed, 438 insertions(+), 4 deletions(-)
-> >
-> >diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> >index 8ac96f8e79d4..9c8f87d80afc 100644
-> >--- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> >+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> >@@ -222,11 +222,445 @@
-> >  		regulator-max-microvolt = <1800000>;
-> >  		regulator-always-on;
-> >  	};
-> >-};
-> >-&adsp {
-> >-	status = "okay";
-> >-	firmware-name = "qcom/sm8250/adsp.mbn";
-> 
-> Unrelated change ? Please keep it separate from the CoreSight changes.
-> 
-> Suzuki
-I combined this change and ETM pid change into one seies because the ETM
-pid change validation needs ETM support. If there is no ETM
-configuration in the device tree, ETM pid change can not be verified.
-Do you think it would be better to separate them? Do I need to resubmit
-to separate them into two separate patches?
+Use PM suspend callbacks from msm core, without this the hog_sleep
+pins don't change state in suspend.
 
-Best,
-Tao
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7280-idp2.dts | 6 ++++--
+ drivers/char/mem.c                       | 2 +-
+ drivers/pinctrl/core.c                   | 9 +++++++--
+ drivers/pinctrl/qcom/pinctrl-sc7280.c    | 1 +
+ 4 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+index afddf6d..9017ede 100644
+--- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
++++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+@@ -1496,6 +1496,7 @@ static const struct of_device_id sc7280_pinctrl_of_match[] = {
+ static struct platform_driver sc7280_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "sc7280-pinctrl",
++		.pm = &msm_pinctrl_dev_pm_ops,
+ 		.of_match_table = sc7280_pinctrl_of_match,
+ 	},
+ 	.probe = sc7280_pinctrl_probe,
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
