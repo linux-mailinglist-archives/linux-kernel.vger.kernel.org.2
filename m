@@ -2,244 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016FB4159EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777A64159FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 10:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239906AbhIWIQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 04:16:47 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51426 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237996AbhIWIQq (ORCPT
+        id S239905AbhIWIYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 04:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237996AbhIWIYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 04:16:46 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A60422027D;
-        Thu, 23 Sep 2021 08:15:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632384912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QSLhmvEk1Pq1iiswl5snzLhelQGabqOAvRi47xucKUc=;
-        b=dQkZNFnVmjFTdqDDt9GU9DTIEjBGZRbIA2ofbDcmiIB8bDqVrDggJ8ZwgPcJOAAnibhKSk
-        wohDp1nG/Y0sL0SW/01jfOSBK8tJNu5AzCDV/dTnleWkyjK5RMbnhh0I5Wt/IQmwJHm3zx
-        ZvfeJvE8TpXAAdEAgm6wdTBm9F+eeO8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 13F2613DC7;
-        Thu, 23 Sep 2021 08:15:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ojiaA5A3TGF2FQAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 08:15:12 +0000
-Subject: Re: [PATCH 3/3] memblock: cleanup memblock_free interface
-To:     Mike Rapoport <rppt@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        devicetree@vger.kernel.org, iommu@lists.linux-foundation.org,
-        kasan-dev@googlegroups.com, kvm@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        xen-devel@lists.xenproject.org, Mike Rapoport <rppt@linux.ibm.com>
-References: <20210923074335.12583-1-rppt@kernel.org>
- <20210923074335.12583-4-rppt@kernel.org>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <60c0d0f9-e4c6-ef66-b85b-0d091f8cba15@suse.com>
-Date:   Thu, 23 Sep 2021 10:15:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 23 Sep 2021 04:24:54 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CD4C061574;
+        Thu, 23 Sep 2021 01:23:21 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id s16so5120798pfk.0;
+        Thu, 23 Sep 2021 01:23:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jbUusZdvIJkRgxPTgXKMBldhMK0KK7ftcMsYuV2jtFM=;
+        b=Jl5joixEZCPSyFVUvxnRrF2WFNkXs2MlPoCrOb1FOPfVdCZwqTtq226iZ4lPxveuIH
+         EZma2cGa3un2KyZ7/NCI68nrkLforjPyznXwIrCl4BnBsn3Le9eGf+uxRV+zp4iR0rtz
+         otrCLgRXe8y3vewWHDxqnUlGdGI7tV/57fiBzNuh6q8gKBV/0fyaXyfGlYwgzvJpaGkO
+         ABlOMxJg0gQSDSEICVbrYPe2FF0kqMy68/oFxtnXcop49cPXKPqYYU0aJ6BvzfXFX7/f
+         Z3mILf3IfvhYj0vrehfuOwFoSupOA3saxjUKSI0oWXbl/RndgkyDKtMPog6op0teXF4A
+         MJbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jbUusZdvIJkRgxPTgXKMBldhMK0KK7ftcMsYuV2jtFM=;
+        b=cp+4nutNqCYAWN9tVVOuB+msAhsfFHhIlPTh7hFVEINFeieTpxFg0A9L2VejCoIf5K
+         tVGSvRI3r3+sO8MYnMK2vBRW8WUCUTgJvwZJgNZTdfASW3m6P/9dwuq6ULwkuU8S9/Ki
+         H+O1k14VkZ79IGiABa/mcSg9HKtiK6dzWylnMQBGhxtMv0sooL3FXH4KcyBmEHD6MHw/
+         OZorBWJ608jt9KJl0I11OCACB9GhYCyycyjbj9ntFPHuLNM89ZN2pKHBSvVLW+Xks9PT
+         Jcy6+hU0N9CzWwGqYkwcczLpZKMD8i1RMn8BjaP2xJrNHPtteR2j20o6Sn4JkLKFBEEX
+         CRzg==
+X-Gm-Message-State: AOAM533g4Y/11YgiR2smvq9velUlzwLQeX0xwChP2/A9W0xKtOV2sOZo
+        FqQWwoJtKvfMZefXYV1PiOcPp3czJuk=
+X-Google-Smtp-Source: ABdhPJy+urD331GECfsviosl+NxT1n8wJi9SfQyktfsybFxj3AJLzQ+d1nGG1vNhTxcE1/aiA6FhMw==
+X-Received: by 2002:a63:4b4c:: with SMTP id k12mr3053847pgl.172.1632385400882;
+        Thu, 23 Sep 2021 01:23:20 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id b142sm4970094pfb.17.2021.09.23.01.23.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 01:23:20 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yang.yang29@zte.com.cn
+To:     alexs@kernel.org, siyanteng@loongson.cn
+Cc:     corbet@lwn.net, yang.yang29@zte.com.cn, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] docs/zh_CN: Add zh_CN/accounting/delay-accounting.rst
+Date:   Thu, 23 Sep 2021 08:19:53 +0000
+Message-Id: <20210923081951.261281-1-yang.yang29@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210923074335.12583-4-rppt@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="zppOVwffTjZ5Oe49Vq0wbEbRvLUF4dOID"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zppOVwffTjZ5Oe49Vq0wbEbRvLUF4dOID
-Content-Type: multipart/mixed; boundary="AxmgW1XtM0JJFTzWHwG0o4gfWFl7DFvoM";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Mike Rapoport <rppt@kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, devicetree@vger.kernel.org,
- iommu@lists.linux-foundation.org, kasan-dev@googlegroups.com,
- kvm@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-mm@kvack.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
- linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
- Mike Rapoport <rppt@linux.ibm.com>
-Message-ID: <60c0d0f9-e4c6-ef66-b85b-0d091f8cba15@suse.com>
-Subject: Re: [PATCH 3/3] memblock: cleanup memblock_free interface
-References: <20210923074335.12583-1-rppt@kernel.org>
- <20210923074335.12583-4-rppt@kernel.org>
-In-Reply-To: <20210923074335.12583-4-rppt@kernel.org>
+From: Yang Yang <yang.yang29@zte.com.cn>
 
---AxmgW1XtM0JJFTzWHwG0o4gfWFl7DFvoM
-Content-Type: multipart/mixed;
- boundary="------------CFB99E0866EE66F8CFC01FC3"
-Content-Language: en-US
+Add translation zh_CN/accounting/delay-accounting.rst and links it
+to zh_CN/accounting/index.rst while clean its todo entry.
 
-This is a multi-part message in MIME format.
---------------CFB99E0866EE66F8CFC01FC3
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+---
+v3:
+- add missing period.
+v2:
+- delete useless blackline.
+---
+ .../zh_CN/accounting/delay-accounting.rst     | 112 ++++++++++++++++++
+ .../translations/zh_CN/accounting/index.rst   |   2 +-
+ 2 files changed, 113 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/translations/zh_CN/accounting/delay-accounting.rst
 
-On 23.09.21 09:43, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
->=20
-> For ages memblock_free() interface dealt with physical addresses even
-> despite the existence of memblock_alloc_xx() functions that return a
-> virtual pointer.
->=20
-> Introduce memblock_phys_free() for freeing physical ranges and repurpos=
-e
-> memblock_free() to free virtual pointers to make the following pairing
-> abundantly clear:
->=20
-> 	int memblock_phys_free(phys_addr_t base, phys_addr_t size);
-> 	phys_addr_t memblock_phys_alloc(phys_addr_t base, phys_addr_t size);
->=20
-> 	void *memblock_alloc(phys_addr_t size, phys_addr_t align);
-> 	void memblock_free(void *ptr, size_t size);
->=20
-> Replace intermediate memblock_free_ptr() with memblock_free() and drop
-> unnecessary aliases memblock_free_early() and memblock_free_early_nid()=
-=2E
->=20
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-
-arch/x86/xen/ parts: Reviewed-by: Juergen Gross <jgross@suse.com>
-
-
-Juergen
-
---------------CFB99E0866EE66F8CFC01FC3
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------CFB99E0866EE66F8CFC01FC3--
-
---AxmgW1XtM0JJFTzWHwG0o4gfWFl7DFvoM--
-
---zppOVwffTjZ5Oe49Vq0wbEbRvLUF4dOID
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMN48FAwAAAAAACgkQsN6d1ii/Ey8D
-fwf/WV3EUVWvjXkc64q0a0it6LMGy2AtQrh8KdDecuLV8iH5bKTnqNAZOUoV6sYTeiLsSSnRTLOt
-yKKjkWsC9/gUsyuO0B8Zw/VX/zoXJqp7T57FfmW+37qcslFuLzImqvDxdU65n/jEbme+VExmw6UF
-yy1ATxxxhQIxeTDXB3SfE0f6rX4Fw1DUqQc25bFNpD1wzdp1xG6qhH31/CWUI/V/frEfuzZrrN5F
-Uimkqk3+xjrqqpYh2fb/Pwpd77LFOdIrV4gH0oyl0NA3x3QMNi+67FrbMtuRHZij1jnpwoY1RiUc
-uVxzINJ+LJh0g8836hHAkPh5tQNBjV7C6V7LXddn6g==
-=Fnkp
------END PGP SIGNATURE-----
-
---zppOVwffTjZ5Oe49Vq0wbEbRvLUF4dOID--
+diff --git a/Documentation/translations/zh_CN/accounting/delay-accounting.rst b/Documentation/translations/zh_CN/accounting/delay-accounting.rst
+new file mode 100644
+index 000000000000..065a424d9b2a
+--- /dev/null
++++ b/Documentation/translations/zh_CN/accounting/delay-accounting.rst
+@@ -0,0 +1,112 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: Documentation/accounting/delay-accounting.rst
++:Translator: Yang Yang <yang.yang29@zte.com.cn>
++
++.. _cn_delay-accounting.rst:
++
++========
++延迟计数
++========
++
++任务在等待某些内核资源可用时，会造成延迟。例如一个可运行的任务可能会等待
++一个空闲CPU来运行。
++
++基于每任务的延迟计数功能度量由以下情况造成的任务延迟：
++
++a) 等待一个CPU（任务为可运行）
++b) 完成由该任务发起的块I/O同步请求
++c) 页面交换
++d) 内存回收
++
++并将这些统计信息通过taskstats接口提供给用户空间。
++
++这些延迟信息为适当的调整任务CPU优先级、io优先级、rss限制提供反馈。重要任务
++长期延迟，表示可能需要提高其相关优先级。
++
++通过使用taskstats接口，本功能还可提供一个线程组（对应传统Unix进程）所有任务
++（或线程）的总延迟统计信息。此类汇总往往是需要的，由内核来完成更加高效。
++
++用户空间的实体，特别是资源管理程序，可将延迟统计信息汇总到任意组中。为实现
++这一点，任务的延迟统计信息在其生命周期内和退出时皆可获取，从而确保可进行
++连续、完整的监控。
++
++接口
++----
++
++延迟计数使用taskstats接口，该接口由本目录另一个单独的文档详细描述。Taskstats
++向用户态返回一个通用数据结构，对应每pid或每tgid的统计信息。延迟计数功能填写
++该数据结构的特定字段。见
++
++     include/linux/taskstats.h
++
++其描述了延迟计数相关字段。系统通常以计数器形式返回 CPU、同步块 I/O、交换、内存
++回收等的累积延迟。
++
++取任务某计数器两个连续读数的差值，将得到任务在该时间间隔内等待对应资源的总延迟。
++
++当任务退出时，内核会将包含每任务的统计信息发送给用户空间，而无需额外的命令。
++若其为线程组最后一个退出的任务，内核还会发送每tgid的统计信息。更多详细信息见
++taskstats接口的描述。
++
++tools/accounting目录中的用户空间程序getdelays.c提供了一些简单的命令，用以显示
++延迟统计信息。其也是使用taskstats接口的示例。
++
++用法
++----
++
++使用以下配置编译内核::
++
++	CONFIG_TASK_DELAY_ACCT=y
++	CONFIG_TASKSTATS=y
++
++延迟计数在启动时默认关闭。
++若需开启，在启动参数中增加::
++
++   delayacct
++
++本文后续的说明基于延迟计数已开启。也可在系统运行时，使用sysctl的kernel.task_delayacct
++进行开关。注意，只有在启用延迟计数后启动的任务才会有相关信息。
++
++系统启动后，使用类似getdelays.c的工具获取任务或线程组（tgid）的延迟信息。
++
++getdelays命令的一般格式::
++
++	getdelays [-t tgid] [-p pid] [-c cmd...]
++
++获取pid为10的任务从系统启动后的延迟信息::
++
++	# ./getdelays -p 10
++	（输出信息和下例相似）
++
++获取所有tgid为5的任务从系统启动后的总延迟信息::
++
++	# ./getdelays -t 5
++
++
++	CPU	count	real total	virtual total	delay total
++		7876	92005750	100000000	24001500
++	IO	count	delay total
++		0	0
++	SWAP	count	delay total
++		0	0
++	RECLAIM	count	delay total
++		0	0
++
++获取指定简单命令运行时的延迟信息::
++
++  # ./getdelays -c ls /
++
++  bin   data1  data3  data5  dev  home  media  opt   root  srv        sys  usr
++  boot  data2  data4  data6  etc  lib   mnt    proc  sbin  subdomain  tmp  var
++
++
++  CPU	count	real total	virtual total	delay total
++	6	4000250		4000000		0
++  IO	count	delay total
++	0	0
++  SWAP	count	delay total
++	0	0
++  RECLAIM	count	delay total
++	0	0
++
+diff --git a/Documentation/translations/zh_CN/accounting/index.rst b/Documentation/translations/zh_CN/accounting/index.rst
+index 362e907b41f9..090f93776faa 100644
+--- a/Documentation/translations/zh_CN/accounting/index.rst
++++ b/Documentation/translations/zh_CN/accounting/index.rst
+@@ -16,10 +16,10 @@
+    :maxdepth: 1
+ 
+    psi
++   delay-accounting
+ 
+ Todolist:
+ 
+    cgroupstats
+-   delay-accounting
+    taskstats
+    taskstats-struct
+-- 
+2.25.1
