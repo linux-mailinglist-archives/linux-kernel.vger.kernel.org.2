@@ -2,201 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C23E4167F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E9E4167F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 00:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243478AbhIWWZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 18:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243451AbhIWWZo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S243452AbhIWWZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 23 Sep 2021 18:25:44 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCE6C061756;
-        Thu, 23 Sep 2021 15:24:11 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id u27so28014894edi.9;
-        Thu, 23 Sep 2021 15:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CT7KCr5JzmhOzp1OYQQLzyUDx7iSATgAJPZ9wyLVnkI=;
-        b=o5Xnf0ITeHNqTJoBcm0mowoAq7IDRRWUgZ+GRG1+fnouy0GcArivFUNZ9VpEQsELNl
-         kI3oBEw1GqVfZbjuGr4REvG94qEn59tl9me/BuAZ5dlO4b96KbRT0euPgCEuF/oajemB
-         BasmLrZJWcDc3tHgkzhssHOVk2SCZpaCBMoO6znTgP0uT5Cl0AZxxSBEFN8WpvFn+qJJ
-         GSeVSeWWegawuQFt7uQcpEWgSWUjyEo4fRDxYxFYXXB6KwoeoFR1q/0F6B5sEHbfi4RT
-         Tp/irL1+6RCTSC1dlCIKcEj/u4n7oAyGFoqBthPcIWZwTuZccMcItdQA5gOTGm1/4oQc
-         idDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CT7KCr5JzmhOzp1OYQQLzyUDx7iSATgAJPZ9wyLVnkI=;
-        b=FAj90YCj+5mVdGw2/qPJxAWYJ276fayZmTdhzKgh9J2azzEdr9SBVnePZuue6YgK74
-         WBW+431amRGbyHHO7z+zRTSDwuysvpfAOUIOP2B+SBMhzEp8rvBZUZmJ/65QgThrkP1q
-         PQjBznwh5sP6bFMPAdnLD7pgNpuCazZHmD0wG5d556syGwJZIKyLYQqOUVt6O7BzjmB4
-         mTA3HV3zDlUK4FegDDHHe6SLYZFekxsVWTvY9uGDN/eWBoh4v+gchVJ/6Q4BXfXWpdzz
-         oKfPdm2wJ0SeNCy0apPnakoCIMVdcy7huPWODCBbLZnHsvcBzQarH6nzYTV9soh3hJWA
-         oGmw==
-X-Gm-Message-State: AOAM533vlouHrjhtzBMvZr5sPBiet5SA+saxe59UVtJkLfIFXUSFtQKJ
-        lguUTX8loEZa7RMoaTcPM3Vn/XINbWm1ixBfRvE=
-X-Google-Smtp-Source: ABdhPJw+DXDQzdLXxBE3qxnoYiooEh2Ka+AByTiMPKUDWPoJ1ePyYaBK83sIryPyIHDdOKP4GqFNUMmE/bLFXmifTKU=
-X-Received: by 2002:a50:cd87:: with SMTP id p7mr1547322edi.294.1632435850397;
- Thu, 23 Sep 2021 15:24:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210922102411.34494-1-songmuchun@bytedance.com> <20210922102411.34494-3-songmuchun@bytedance.com>
-In-Reply-To: <20210922102411.34494-3-songmuchun@bytedance.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Fri, 24 Sep 2021 10:23:59 +1200
-Message-ID: <CAGsJ_4zk8KfsByum89PqwNEkez=QUW9YH0tVy5nce2E0RhQ8dw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] mm: hugetlb: replace hugetlb_free_vmemmap_enabled
- with a static_key
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
+Received: from Galois.linutronix.de ([193.142.43.55]:37578 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243436AbhIWWZf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 18:25:35 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632435841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Matoo2OIfdawfGuu3j6hbf2m+pvAyOqko4uRRDDqJ0=;
+        b=N9ssRTZGMxorWOBqZEIQ9Tt2vNTC5I8aj19BMSE9Xssk0QWWtT/+0NICD6ssXGkA5FR8ds
+        7HwcthwHMm5PC2Ku+n2v00I8mpZkiSVyBlEP9litACd8ROqGfpHbiBNt7rpSxNEqPlEYoy
+        0WAbbsoSaHa38BXkXdMOEyhZcgpZeu/OVVG86ipRvJudoV8qZrOLuOHhnH4J38TdHWYzTm
+        k2wC7mCPI2oPu5BiSuRDTc1c4YPpiojnhbSVvtiUjxhC8qtgZkHBzuLSFi9C4zMHQXQui+
+        44GBHIIVFKD1k02kDBFfUkrxVzbrvQND6Rs33SPZqSweYAPfS01ntNPARWGLOg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632435841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Matoo2OIfdawfGuu3j6hbf2m+pvAyOqko4uRRDDqJ0=;
+        b=/7ConpvTXAvFWy6BmvzoZaT07ZxWDyhnP2mIpX3mCcpKyA1zbHQBf+ebCtIwiiVEMqZdvP
+        uR9Iu/xxODMvHjBw==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
         Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 03/13] x86/cpu: Enumerate User Interrupts support
+In-Reply-To: <20210913200132.3396598-4-sohil.mehta@intel.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-4-sohil.mehta@intel.com>
+Date:   Fri, 24 Sep 2021 00:24:00 +0200
+Message-ID: <87lf3nexrz.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:27 PM Muchun Song <songmuchun@bytedance.com> wrote:
+On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+> SENDUIPI is a special ring-3 instruction that makes a supervisor mode
+> memory access to the UPID and UITT memory. Currently, KPTI needs to be
+> off for User IPIs to work.  Processors that support user interrupts are
+> not affected by Meltdown so the auto mode of KPTI will default to off.
 >
-> The page_head_if_fake() is used throughout memory management and the
-> conditional check requires checking a global variable, although the
-> overhead of this check may be small, it increases when the memory
-> cache comes under pressure. Also, the global variable will not be
-> modified after system boot, so it is very appropriate to use static
-> key machanism.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  include/linux/hugetlb.h    | 10 ++++++++--
->  include/linux/page-flags.h |  6 ++++--
->  mm/hugetlb_vmemmap.c       | 12 ++++++------
->  mm/memory_hotplug.c        |  2 +-
->  4 files changed, 19 insertions(+), 11 deletions(-)
->
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 1faebe1cd0ed..4cc647a5dbf8 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -1066,9 +1066,15 @@ static inline void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr
->  #endif /* CONFIG_HUGETLB_PAGE */
->
->  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> -extern bool hugetlb_free_vmemmap_enabled;
-> +static inline bool hugetlb_free_vmemmap_enabled(void)
+> Users who want to force enable KPTI will need to wait for a later
+> version of this patch series that is compatible with KPTI. We need to
+> allocate the UPID and UITT structures from a special memory region that
+> has supervisor access but it is mapped into userspace. The plan is to
+> implement a mechanism similar to LDT.
+
+Seriously?
+
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Signed-off-by: Sohil Mehta <sohil.mehta@intel.com>
+
+This SOB chain is invalid. Ditto in several other patches.
+
+>  
+> +config X86_USER_INTERRUPTS
+> +	bool "User Interrupts (UINTR)"
+> +	depends on X86_LOCAL_APIC && X86_64
+
+X86_64 does not work w/o LOCAL_APIC so this dependency is pointless.
+
+> +	depends on CPU_SUP_INTEL
+> +	help
+> +	  User Interrupts are events that can be delivered directly to
+> +	  userspace without a transition through the kernel. The interrupts
+> +	  could be generated by another userspace application, kernel or a
+> +	  device.
+> +
+> +	  Refer, Documentation/x86/user-interrupts.rst for details.
+
+"Refer, Documentation..." is not a sentence.
+
+>  
+> +/* User Interrupt interface */
+> +#define MSR_IA32_UINTR_RR		0x985
+> +#define MSR_IA32_UINTR_HANDLER		0x986
+> +#define MSR_IA32_UINTR_STACKADJUST	0x987
+> +#define MSR_IA32_UINTR_MISC		0x988	/* 39:32-UINV, 31:0-UITTSZ */
+
+Bah, these tail comments are crap. Please define proper masks/shift
+constants for this instead of using magic numbers in the code.
+
+> +static __always_inline void setup_uintr(struct cpuinfo_x86 *c)
+
+This has to be always inline because it's performance critical or what?
+
 > +{
-> +       return static_key_enabled(&hugetlb_free_vmemmap_enabled_key);
+> +	/* check the boot processor, plus compile options for UINTR. */
 
-could it be
-       if (static_branch_maybe(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-                                &hugetlb_free_vmemmap_enabled_key))
+Sentences start with uppercase letters.
 
-then we are able to remove the duplication in page_fixed_fake_head()?
+> +	if (!cpu_feature_enabled(X86_FEATURE_UINTR))
+> +		goto disable_uintr;
+> +
+> +	/* checks the current processor's cpuid bits: */
+> +	if (!cpu_has(c, X86_FEATURE_UINTR))
+> +		goto disable_uintr;
+> +
+> +	/*
+> +	 * User Interrupts currently doesn't support PTI. For processors that
+> +	 * support User interrupts PTI in auto mode will default to off.  Need
+> +	 * this check only for users who have force enabled PTI.
+> +	 */
+> +	if (boot_cpu_has(X86_FEATURE_PTI)) {
+> +		pr_info_once("x86: User Interrupts (UINTR) not enabled. Please disable PTI using 'nopti' kernel parameter\n");
 
-> +}
->  #else
-> -#define hugetlb_free_vmemmap_enabled   false
-> +static inline bool hugetlb_free_vmemmap_enabled(void)
-> +{
-> +       return false;
-> +}
->  #endif
->
->  static inline spinlock_t *huge_pte_lock(struct hstate *h,
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index b47a7f51d2c3..54e119e44496 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -185,7 +185,8 @@ enum pageflags {
->  #ifndef __GENERATING_BOUNDS_H
->
->  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> -extern bool hugetlb_free_vmemmap_enabled;
-> +DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> +                        hugetlb_free_vmemmap_enabled_key);
->
->  /*
->   * If the feature of freeing some vmemmap pages associated with each HugeTLB
-> @@ -205,7 +206,8 @@ extern bool hugetlb_free_vmemmap_enabled;
->   */
->  static __always_inline const struct page *page_fixed_fake_head(const struct page *page)
->  {
-> -       if (!hugetlb_free_vmemmap_enabled)
-> +       if (!static_branch_maybe(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> +                                &hugetlb_free_vmemmap_enabled_key))
->                 return page;
->         /*
->          * Only addresses aligned with PAGE_SIZE of struct page may be fake head
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 527bcaa44a48..47517e878ed5 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -188,9 +188,9 @@
->  #define RESERVE_VMEMMAP_NR             1U
->  #define RESERVE_VMEMMAP_SIZE           (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
->
-> -bool hugetlb_free_vmemmap_enabled __read_mostly =
-> -       IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON);
-> -EXPORT_SYMBOL(hugetlb_free_vmemmap_enabled);
-> +DEFINE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> +                       hugetlb_free_vmemmap_enabled_key);
-> +EXPORT_SYMBOL(hugetlb_free_vmemmap_enabled_key);
->
->  static int __init early_hugetlb_free_vmemmap_param(char *buf)
->  {
-> @@ -204,9 +204,9 @@ static int __init early_hugetlb_free_vmemmap_param(char *buf)
->                 return -EINVAL;
->
->         if (!strcmp(buf, "on"))
-> -               hugetlb_free_vmemmap_enabled = true;
-> +               static_branch_enable(&hugetlb_free_vmemmap_enabled_key);
->         else if (!strcmp(buf, "off"))
-> -               hugetlb_free_vmemmap_enabled = false;
-> +               static_branch_disable(&hugetlb_free_vmemmap_enabled_key);
->         else
->                 return -EINVAL;
->
-> @@ -284,7 +284,7 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
->         BUILD_BUG_ON(__NR_USED_SUBPAGE >=
->                      RESERVE_VMEMMAP_SIZE / sizeof(struct page));
->
-> -       if (!hugetlb_free_vmemmap_enabled)
-> +       if (!hugetlb_free_vmemmap_enabled())
->                 return;
->
->         vmemmap_pages = (nr_pages * sizeof(struct page)) >> PAGE_SHIFT;
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 0488eed3327c..89c1fde02162 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1341,7 +1341,7 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
->          *       populate a single PMD.
->          */
->         return memmap_on_memory &&
-> -              !hugetlb_free_vmemmap_enabled &&
-> +              !hugetlb_free_vmemmap_enabled() &&
->                IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
->                size == memory_block_size_bytes() &&
->                IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
-> --
-> 2.11.0
->
+That message does not make sense. The admin has explicitly added 'pti'
+to the kernel command line on a CPU which is not affected. So why would
+he now have to add 'nopti' ?
 
-Thanks
-barry
+Thanks,
+
+        tglx
