@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6DB41627E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1325C416277
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 17:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242256AbhIWPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 11:54:56 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:42284 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242238AbhIWPyn (ORCPT
+        id S242138AbhIWPyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 11:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242054AbhIWPyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 11:54:43 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id E98B682328;
-        Thu, 23 Sep 2021 18:42:57 +0300 (MSK)
+        Thu, 23 Sep 2021 11:54:13 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878F5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:43:43 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id s17so6610466edd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 08:43:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632411777;
-        bh=AGAk4jUzbizS+IaTUDiD3JKzGN2DMd2TWW71KsQVmt0=;
-        h=Date:Subject:From:To:References:CC:In-Reply-To;
-        b=oZa2EsKEgsLE3gds6ickzdO/+E4rcjOqgKht/Gstf83dRln8Jx79Y9aqaVhdtSV4q
-         CVefcsDlYClzlmBmqWMpbN2/ygY3TppSid6lxiYg5DOXIQx1kHxg8GPkXgMgE0AnJC
-         y785bjqZ/JQ2gldMV/uJrQEAsHqtki86r/wg+Oss=
-Received: from [192.168.211.73] (192.168.211.73) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 23 Sep 2021 18:42:57 +0300
-Message-ID: <3df9fdcb-5941-b2ca-0ba9-65dcad8bce22@paragon-software.com>
-Date:   Thu, 23 Sep 2021 18:42:56 +0300
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lCqhKC48Ib46nZOgyDtYvMpK1Oh3xFWx5ZwtZeirTi4=;
+        b=DXcsVudKdVqjRNW+msi7GFg4ORsGEDDKrRqhXgtJuErK5Ilgrm9sbmop5lo89WqLW8
+         7Ww7N3T7H2Il4BA9fMcyFhNevAc2sxO6Ntc1FQcqsmld7If6M1BwUK8Vah8z7i6e7bs5
+         bQrV5WEeouOpgHi96i3/PFqes/VhcqyULcMiof0sOUfKCVBAIjww7Ygy1xpxB4Z37fuP
+         S/23MCOVKN5ZVWU8u8Qt/bOM+C7fd5qMknizwVpLWfiDhznd5Hh5U1p4m0XtMApxxvSj
+         f15H3QfCaH9OIRktUMurfDwXjgwMl2yZuzpwoeTTR0PZ/MmKByMQm3OOIIaNBbyUC8i9
+         8tZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lCqhKC48Ib46nZOgyDtYvMpK1Oh3xFWx5ZwtZeirTi4=;
+        b=PtOgD3KxAz8LnRBgMc7tqXurXwPkI3gXBTE/ZFLkaW8BZEUvqxM1zt1mhtlLzd6aCb
+         9TvtLHGh/kKPkCGuHCMCxF5TarxAE/DEAx5XOI6/8b0qhKSCwu1A4bzU22ExCuobObRs
+         dCwPQ1e2AD9s0grWwYse0QpbxDg62Sld6R2ejnxRZ06Nu9TVNl4nTSk1gvcMfTdnJGgu
+         4Lt3h0A7jHbOojXxF3P++mEmRa17mtvinRBbbgf1ahUGUurSbBKGPbYRCvBJJ8gjZcw9
+         91vqeTi2NkgfDGmaVe3aq4elQHcPnFjhaQP/xNIPoMlm+H8seDVPXfCCriR8hwzIUdHW
+         gpWA==
+X-Gm-Message-State: AOAM530a/eD5nARycUfjtfDrK82PS9RAFaodLcEE9YPrO6RJJbTz/e+Y
+        j+QgwgNqsXqXpdIUyMtQE5qjm/kzCOBfH1QpJiDF
+X-Google-Smtp-Source: ABdhPJy83COw5p8Q5Ilg+btpwgWRQxkNonsH+wQ0Nbm+1kO8xf/vOFZ5SX3YI3NhjjmBoolF6ftnlL0sTIDhmYfTnvc=
+X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr6222941edc.362.1632411821608;
+ Thu, 23 Sep 2021 08:43:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: [PATCH v2 3/6] fs/ntfs3: Refactor ntfs_get_acl_ex for better
- readability
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-References: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-In-Reply-To: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
+References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
+ <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
+ <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
+ <CAHk-=winh0gLMqnQipt7VpbsxBL1frJQ-hJpRpe=kbR3U+DRHg@mail.gmail.com>
+ <CAHC9VhSZp1-Qi7ApoQHauaFXDgoNaFTwFEieEFFuBtdPqAtXQg@mail.gmail.com> <CAHk-=whoExoB6xGD0as0kpfwr38B=W7GRkO2NXWDRW-tmQS6Qw@mail.gmail.com>
+In-Reply-To: <CAHk-=whoExoB6xGD0as0kpfwr38B=W7GRkO2NXWDRW-tmQS6Qw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 23 Sep 2021 11:43:30 -0400
+Message-ID: <CAHC9VhTtz_aNY6MOCM6ypbz+SHvS30hx42PWjXJhG1Z=t5jpBw@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.73]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can safely move set_cached_acl because it works with NULL acl too.
+On Wed, Sep 22, 2021 at 7:43 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Wed, Sep 22, 2021 at 2:40 PM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > The basic idea, or problem from a LSM point of view, is that in some
+> > cases you have a user task which is doing the lockdown access check
+> > and in others you have the kernel itself
+>
+> I don't understand. In that case, it would be a boolean for "kernel vs user".
+>
+> But that's not what it is. It literally seems to care about _which_
+> user, and looks at cred_sid().
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/xattr.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Well, yes, it does look at the credential if it is passed; I guess I
+wrongly assumed that was understood.  If it was just a simple
+user/kernel decision then yes, it would be a boolean (or similar).
 
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 5c7c5c7a5ec1..3795943efc8e 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -518,12 +518,15 @@ static struct posix_acl *ntfs_get_acl_ex(struct user_namespace *mnt_userns,
- 	/* Translate extended attribute to acl. */
- 	if (err >= 0) {
- 		acl = posix_acl_from_xattr(mnt_userns, buf, err);
--		if (!IS_ERR(acl))
--			set_cached_acl(inode, type, acl);
-+	} else if (err == -ENODATA) {
-+		acl = NULL;
- 	} else {
--		acl = err == -ENODATA ? NULL : ERR_PTR(err);
-+		acl = ERR_PTR(err);
- 	}
- 
-+	if (!IS_ERR(acl))
-+		set_cached_acl(inode, type, acl);
-+
- 	__putname(buf);
- 
- 	return acl;
--- 
-2.33.0
+> This is what makes no sense to me. If it's about lockdown,. then the
+> user is immaterial. Either it's locked down, or it's not.
 
+If all you have is the lockdown LSM, then yes, lockdown doesn't take
+into account the context of the request, it is simply a test of the
+lockdown threshold: only disclosures on the proper side of the
+lockdown value are allowed.
 
+However, we have the LSM framework because there is never one way to
+solve a problem, and the LSM hooks have always changed to support
+these different approaches to access control.  While the lockdown LSM
+takes a context-free approach to enforcing the lockdown setting, the
+SELinux LSM takes a different enforcement approach which not only
+better integrates with the SELinux policy, but it offers new
+functionality beyond the lockdown LSM:
+
+* Access based on the integrity and confidentiality reasons can be
+specified independently with SELinux.
+
+* Provide the ability to define the lockdown level within the context
+of individual security domains.
+
+It's also worth noting that with LSM stacking and the combination of
+the lockdown and SELinux LSMs, the SELinux lockdown controls would not
+grant any additional disclosures beyond what the lockdown LSM would
+allow, the SELinux controls would only further restrict the disclosure
+of specific security domains as specified in the SELinux policy.
+
+--
+paul moore
+www.paul-moore.com
