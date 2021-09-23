@@ -2,111 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F73416862
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE703416868
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 01:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243562AbhIWXRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 19:17:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47546 "EHLO mail.kernel.org"
+        id S243568AbhIWXTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 19:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236363AbhIWXRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 19:17:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56AA660E05;
-        Thu, 23 Sep 2021 23:16:12 +0000 (UTC)
+        id S243507AbhIWXTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 19:19:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4706A60F6D;
+        Thu, 23 Sep 2021 23:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632438973;
-        bh=/ffRospjLf6815nzAX4J5r7pcOyGGKeM5iEwxXNbnZc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bVYYU2E4Ra2vKENV7uGbE5hTrseofLy5junHt7TELSxNeYh04XVq8eliin1OQDntW
-         rnIHqOkMYOCVQ4lDd7zcyIjVNlCElnsDxAf0PMxkHsC3sDQXDv1Dm75JKUk9jDD2r4
-         8sBW2vPWJkr1w0potE2PF1dcoiULy/awynRFT+5odYCliCseTMn7RQLsqTPsksuAAv
-         bYs8tqMffWKpg5NjeK4SVpfC99hUz4pB6eMQ9zvCut+RGfs90jnoQueEWNhefxsFI+
-         RmsDirQugKJfOip4CgihOzpRxjdNlEAHoe5WMFTEztsZydp0nnjyXoEvqkxCE1GHj8
-         tAqh+94otEF3Q==
-Date:   Fri, 24 Sep 2021 02:16:09 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Igor Russkikh <irusskikh@marvell.com>,
-        intel-wired-lan@lists.osuosl.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        netdev@vger.kernel.org, Sathya Perla <sathya.perla@broadcom.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Subject: Re: [PATCH net-next 0/6] Batch of devlink related fixes
-Message-ID: <YU0KubuG03l8isms@unreal>
-References: <cover.1632420430.git.leonro@nvidia.com>
- <20210923155547.248ab1aa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210923155547.248ab1aa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        s=k20201202; t=1632439049;
+        bh=N1k2L0eFFmHdGQ+536AMWs2lheeHX41QyFl2vSXo2M4=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=t9ccl5QtUK15m/wM43BIsAOFw1IA8KViK0bOPJwMJ0S07INA8FrwGpE/ympA5WrcZ
+         /kkQCkmmg15/BBLNk23jJKHgTfKQdwctzfHTKXH92UBtw6ZjxL5dkboenKN9PyIJF/
+         jDrUly7SOmlwCJIOHSD6SDe9M8reFa/HdzqZd+96e3aT0AKtpkAsEw/Hoetu0UEgTW
+         nzyYUc151SKns+Xh7EK+6q5xgNmdeVWPKuWdou5v2I/8RcIjKYYVjHsTODIebTbllT
+         znJYkMYRk1W+Nfwff7HOOOX9itdwq67XwvQN5UUoc7fjI4xCsyVLm7pDo7LHLo4tqL
+         e9GV6yXCwxrWg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 66FD127C0054;
+        Thu, 23 Sep 2021 19:17:27 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Thu, 23 Sep 2021 19:17:27 -0400
+X-ME-Sender: <xms:BwtNYdT_m3pViJfrKjlQVTv0dFNKlR9IhBAwSuSTDFNk43TigEmOCg>
+    <xme:BwtNYWyBqlMEiKUGi21Up6v3RC-5NgLRLzY9-8QMqBJovb5QS-hwvqWMZO1StpiPg
+    2tbs6g2mTRL6eKSwGI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejtddgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedthfehtedtvdetvdetudfgueeuhfdtudegvdelveelfedvteelfffg
+    fedvkeegfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:BwtNYS170L4EyeRwmu28PTihQxymH_x7P58_9x_tao5ph8i12PLG7A>
+    <xmx:BwtNYVBMzmU_f50ZfqHKmKlxUbeuw5IKzLPF2nC18rQzPNO4C1KJpw>
+    <xmx:BwtNYWgiaqeRoN4nOCIaJsBUZPYN5gFoUg2y51rN4SVliidBgf3a-g>
+    <xmx:BwtNYW43gKI79SYwJ438GRXrWzpWwA6PWkxNFl9DwXTXBq6XTe55YQuwQos>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0B5DE21E0063; Thu, 23 Sep 2021 19:17:26 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1303-gb2406efd75-fm-20210922.002-gb2406efd
+Mime-Version: 1.0
+Message-Id: <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
+In-Reply-To: <20210920192349.2602141-5-fenghua.yu@intel.com>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-5-fenghua.yu@intel.com>
+Date:   Thu, 23 Sep 2021 16:17:05 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Fenghua Yu" <fenghua.yu@intel.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        "Josh Poimboeuf" <jpoimboe@redhat.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Jacob Jun Pan" <jacob.jun.pan@intel.com>,
+        "Raj Ashok" <ashok.raj@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
+Cc:     iommu@lists.linux-foundation.org,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 03:55:47PM -0700, Jakub Kicinski wrote:
-> On Thu, 23 Sep 2021 21:12:47 +0300 Leon Romanovsky wrote:
-> > I'm asking to apply this batch of devlink fixes to net-next and not to
-> > net, because most if not all fixes are for old code or/and can be considered
-> > as cleanup.
-> > 
-> > It will cancel the need to deal with merge conflicts for my next devlink series :).
+
+
+On Mon, Sep 20, 2021, at 12:23 PM, Fenghua Yu wrote:
+> ENQCMD requires the IA32_PASID MSR has a valid PASID value which was
+> allocated to the process during bind. The MSR could be populated eagerly
+> by an IPI after the PASID is allocated in bind. But the method was
+> disabled in commit 9bfecd058339 ("x86/cpufeatures: Force disable
+> X86_FEATURE_ENQCMD and remove update_pasid()")' due to locking and other
+> issues.
+>
+> Since the MSR was cleared in fork()/clone(), the first ENQCMD will
+> generate a #GP fault. The #GP fault handler will initialize the MSR
+> if a PASID has been allocated for this process.
+>
+> The lazy enabling of the PASID MSR in the #GP handler is not an elegant
+> solution. But it has the least complexity that fits with h/w behavior.
+>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/include/asm/fpu/api.h |  6 ++++
+>  arch/x86/include/asm/iommu.h   |  2 ++
+>  arch/x86/kernel/fpu/xstate.c   | 59 ++++++++++++++++++++++++++++++++++
+>  arch/x86/kernel/traps.c        | 12 +++++++
+>  drivers/iommu/intel/svm.c      | 32 ++++++++++++++++++
+>  5 files changed, 111 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/fpu/api.h 
+> b/arch/x86/include/asm/fpu/api.h
+> index ca4d0dee1ecd..f146849e5c8c 100644
+> --- a/arch/x86/include/asm/fpu/api.h
+> +++ b/arch/x86/include/asm/fpu/api.h
+> @@ -106,4 +106,10 @@ extern int cpu_has_xfeatures(u64 xfeatures_mask, 
+> const char **feature_name);
+>   */
+>  #define PASID_DISABLED	0
 > 
-> Not sure how Dave will feel about adding fixes to net-next,
-> we do merge the trees weekly after all.
-
-My almost ready submission queue is:
-➜  kernel git:(m/devlink) git l
-693c1a9ac5b3 (HEAD -> m/devlink) devlink: Delete reload enable/disable interface
-6d39354f8b44 net/mlx5: Register separate reload devlink ops for multiport device
-1ac4e8811fd5 devlink: Allow set specific ops callbacks dynamically
-de1849d3b348 devlink: Allow modification of devlink ops
-7439a45dce72 net: dsa: Move devlink registration to be last devlink command
-7dd23a327395 staging: qlge: Move devlink registration to be last devlink command
-77f074c98b0d ptp: ocp: Move devlink registration to be last devlink command
-fb3f4d40ad49 net: wwan: iosm: Move devlink_register to be last devlink command
-87e95ee9275b netdevsim: Move devlink registration to be last devlink command
-4173205af399 net: ethernet: ti: Move devlink registration to be last devlink command
-bc633a0759f6 qed: Move devlink registration to be last devlink command
-ead4e2027164 ionic: Move devlink registration to be last devlink command
-bc5272ccc378 nfp: Move delink_register to be last command
-a6521bf133d9 net: mscc: ocelot: delay devlink registration to the end
-e0ca9a29cc20 mlxsw: core: Register devlink instance last
-681ac1457516 net/mlx5: Accept devlink user input after driver initialization complete
-9b1a2f4abaef net/mlx4: Move devlink_register to be the last initialization command
-a3b2d9a95a51 net/prestera: Split devlink and traps registrations to separate routines
-bbdf4842432f octeontx2: Move devlink registration to be last devlink command
-5297e23f19e9 ice: Open devlink when device is ready
-18af77a99cea net: hinic: Open device for the user access when it is ready
-91a03cdc92e2 dpaa2-eth: Register devlink instance at the end of probe
-dd5af984e53c liquidio: Overcome missing device lock protection in init/remove flows
-efea109ba32e bnxt_en: Register devlink instance at the end devlink configuration
-6a2b139bcf01 devlink: Notify users when objects are accessible
-
-+ a couple of patches that removes "published" field from devlink parameters
-and fix of old devlink bug where parameters were netlink notifications
-were sent twice.
-
-So it will be very helpful to keep this series in net-next.
-
+> +#ifdef CONFIG_INTEL_IOMMU_SVM
+> +void fpu__pasid_write(u32 pasid);
+> +#else
+> +static inline void fpu__pasid_write(u32 pasid) { }
+> +#endif
+> +
+>  #endif /* _ASM_X86_FPU_API_H */
+> diff --git a/arch/x86/include/asm/iommu.h b/arch/x86/include/asm/iommu.h
+> index bf1ed2ddc74b..9c4bf9b0702f 100644
+> --- a/arch/x86/include/asm/iommu.h
+> +++ b/arch/x86/include/asm/iommu.h
+> @@ -26,4 +26,6 @@ arch_rmrr_sanity_check(struct acpi_dmar_reserved_memory *rmrr)
+>  	return -EINVAL;
+>  }
 > 
-> Otherwise the patches look fine.
+> +bool __fixup_pasid_exception(void);
+> +
+>  #endif /* _ASM_X86_IOMMU_H */
+> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> index c8def1b7f8fb..8a89b2cecd77 100644
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -1289,3 +1289,62 @@ int proc_pid_arch_status(struct seq_file *m, 
+> struct pid_namespace *ns,
+>  	return 0;
+>  }
+>  #endif /* CONFIG_PROC_PID_ARCH_STATUS */
+> +
+> +#ifdef CONFIG_INTEL_IOMMU_SVM
+> +/**
+> + * fpu__pasid_write - Write the current task's PASID state/MSR.
+> + * @pasid:	the PASID
+> + *
+> + * The PASID is written to the IA32_PASID MSR directly if the MSR is 
+> active.
+> + * Otherwise it's written to the PASID. The IA32_PASID MSR should 
+> contain
+> + * the PASID after returning to the user.
+> + *
+> + * This is called only when ENQCMD is enabled.
+> + */
+> +void fpu__pasid_write(u32 pasid)
+> +{
+> +	struct xregs_state *xsave = &current->thread.fpu.state.xsave;
+> +	u64 msr_val = pasid | MSR_IA32_PASID_VALID;
+> +	struct fpu *fpu = &current->thread.fpu;
+> +
+> +	/*
+> +	 * ENQCMD always uses the compacted XSAVE format. Ensure the buffer
+> +	 * has space for the PASID.
+> +	 */
+> +	BUG_ON(!(xsave->header.xcomp_bv & XFEATURE_MASK_PASID));
+> +
+> +	fpregs_lock();
+> +
+> +	/*
+> +	 * If the task's FPU doesn't need to be loaded or is valid, directly
+> +	 * write the IA32_PASID MSR. Otherwise, write the PASID state and
+> +	 * the MSR will be loaded from the PASID state before returning to
+> +	 * the user.
+> +	 */
+> +	if (!test_thread_flag(TIF_NEED_FPU_LOAD) ||
+> +	    fpregs_state_valid(fpu, smp_processor_id())) {
+> +		wrmsrl(MSR_IA32_PASID, msr_val);
 
-Thanks
+Let me try to decode this.
 
+If the current task's FPU state is live or if the state is in memory but the CPU regs just happen to match the copy in memory, then write the MSR.  Else write the value to memory.
+
+This is wrong.  If !TIF_NEED_FPU_LOAD && fpregs_state_valid, you MUST NOT MODIFY FPU STATE.  This is not negotiable -- you will break coherence between CPU regs and the memory image.  The way you modify the current task's state is either you modify it in CPU regs (if the kernel knows that the CPU regs are the one and only source of truth) OR you modify it in memory and invalidate any preserved copies (by zapping last_cpu). 
+
+In any event, that particular bit of logic really doesn't belong in here -- it belongs in some helper that gets it right, once.
+
+> +
+> +/*
+> + * Try to figure out if there is a PASID MSR value to propagate to the
+> + * thread taking the #GP.
+> + */
+> +bool __fixup_pasid_exception(void)
+> +{
+> +	u32 pasid;
+> +
+> +	/*
+> +	 * This function is called only when this #GP was triggered from user
+> +	 * space. So the mm cannot be NULL.
+> +	 */
+> +	pasid = current->mm->pasid;
+> +
+> +	/* If no PASID is allocated, there is nothing to propagate. */
+> +	if (pasid == PASID_DISABLED)
+> +		return false;
+> +
+> +	/*
+> +	 * If the current task already has a valid PASID MSR, then the #GP
+> +	 * fault must be for some non-ENQCMD related reason.
+> +	 */
+> +	if (current->has_valid_pasid)
+> +		return false;
+
+IMO "has_valid_pasid" is a poor name.  An mm can have a PASID.  A task has noticed or it hasn't.
+
+If you really need an in-memory cache, call it "pasid_msr_is_loaded".  Or just read the field out of FPU state, but that might be painfully slow.
