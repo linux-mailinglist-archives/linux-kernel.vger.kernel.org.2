@@ -2,86 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA50415FFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1285A415FD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241318AbhIWNeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241369AbhIWNe2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:34:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6306C061574;
-        Thu, 23 Sep 2021 06:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mRZoFF2Npvi34/71lpu+V+qZDQvPo0l+ydza7SqNuww=; b=RIbeQn55XpDN6/6y2Y/A0Q+cWk
-        HM+UDeWnjFUv/yTm8H088DjFDoiDgl9GYI0hzd+hM7vXT1A5LnbGCNxnyZBNB9ernys47EOenpJby
-        b8V9Xupkzj97rASZKA6g8Fued/tgKBJmGOoUc7D7G6LnjK8+KGfjVTVqjwkC6V2HLbW0aWV4lGbrx
-        e8IvOYCBIDH0YurqeoSUNk/cO+bEtw+lfDxqA1QU55VT3rGGhK8kZqW+cIuMRtc0eh66zCr9+q5VX
-        AjfSbEecDZS7VYxH/f06mBB4jqEphE7yDS+3sTxYhciQyRY6IbOUnb+DM/gDX42fKlR3zi5GDMZgI
-        ITTaNi9Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTOmX-005v1L-UB; Thu, 23 Sep 2021 13:29:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 26C0930031A;
-        Thu, 23 Sep 2021 15:28:57 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0E868201B1264; Thu, 23 Sep 2021 15:28:57 +0200 (CEST)
-Date:   Thu, 23 Sep 2021 15:28:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
-        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org
-Subject: Re: [RFC][PATCH 7/7] livepatch,context_tracking: Avoid disturbing
- NOHZ_FULL tasks
-Message-ID: <YUyBGJGCgrR56C7r@hirez.programming.kicks-ass.net>
-References: <20210922110506.703075504@infradead.org>
- <20210922110836.304335737@infradead.org>
- <YUx9yNfgm4nnd23y@alley>
+        id S241431AbhIWNbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:31:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231974AbhIWNbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 09:31:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAC8B61164;
+        Thu, 23 Sep 2021 13:30:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632403814;
+        bh=3hgRBay+GDZAkBnCzYWJ3psWTN3A28hgXY6M7EBS+vc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=r1Tuli7EuAb9+mP4qApjAk8+ld3C9TDOEpc1BzTyLj4dOizTbhFjdiUkfR85O2kFA
+         NNST9quGmmgmXu7LOLEyicPaWrXVbUAm9XewSLcbVncJIXijs/v35kKK5wnSrLlW4R
+         CrctqxvU2TFt1401HFRtUMknWNxSmwMwsvmsyATUCtuGkbjeRJTfeJGzmUM86qjmLx
+         64sLI7uirj3e0/simdP/0JuVdedMPSkDDkrY2s6MVM7EmkKqcvK5ZuqX1TH2Udky0l
+         wJxlaTUCBQ8skeYJBiLjTVgltqRU0dv0SwKlgvRwAM2LXptU/Ol4XJAVP5qjFVkiyO
+         lKBKeK//jo9EQ==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mTOnk-000ndj-Ln; Thu, 23 Sep 2021 15:30:12 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 00/13] get_abi.pl undefined: improve precision and performance
+Date:   Thu, 23 Sep 2021 15:29:58 +0200
+Message-Id: <cover.1632402570.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUx9yNfgm4nnd23y@alley>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 03:14:48PM +0200, Petr Mladek wrote:
+Hi Greg,
 
-> IMHO, this is not safe:
-> 
-> CPU0				CPU1
-> 
-> klp_check_task(A)
->   if (context_tracking_state_cpu(task_cpu(task)) == CONTEXT_USER)
->      goto complete;
-> 
->   clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
-> 
-> 				# task switching to kernel space
-> 				klp_update_patch_state(A)
-> 				       if (test_and_clear_tsk_thread_flag(task,	TIF_PATCH_PENDING))
-> 				       //false
-> 
-> 				# calling kernel code with old task->patch_state
-> 
-> 	task->patch_state = klp_target_state;
-> 
-> BANG: CPU0 sets task->patch_state when task A is already running
-> 	kernel code on CPU1.
+It follows a series of improvements for get_abi.pl. it is on the top of next-20210923.
 
-Why is that a problem? That is, who actually cares about
-task->patch_state ? I was under the impression that state was purely for
-klp itself, to track which task has observed the new state.
+With such changes, on my development tree, the script is taking 6 seconds to run 
+on my desktop:
+
+	$ !1076
+	$ time ./scripts/get_abi.pl undefined |sort >undefined_after && cat undefined_after| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined_after undefined_symbols
+
+	real	0m6,292s
+	user	0m5,640s
+	sys	0m0,634s
+	  6838 undefined_after
+	   808 undefined_symbols
+	  7646 total
+
+And 7 seconds on a Dell Precision 5820:
+
+	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
+
+	real	0m7.162s
+	user	0m5.836s
+	sys	0m1.329s
+	6548 undefined
+	772 undefined_symbols
+
+Both tests were done against this tree (based on today's linux-next):
+
+	$ https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_abi_undefined-latest
+
+It should be noticed that, as my tree has several ABI fixes,  the time to run the
+script is likely less than if you run on your tree, as there will be less symbols to
+be reported, and the algorithm is optimized to reduce the number of regexes
+when a symbol is found.
+
+Besides optimizing and improving the seek logic, this series also change the
+debug logic. It how receives a bitmap, where "8" means to print the regexes
+that will be used by "undefined" command:
+
+	$ time ./scripts/get_abi.pl undefined --debug 8 >foo
+	real	0m17,189s
+	user	0m13,940s
+	sys	0m2,404s
+
+	$wc -l foo
+	18421939 foo
+
+	$ cat foo
+	...
+	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_voltage.*_scale_available$)$/
+	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_voltage.*_scale_available$)$/
+	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_altvoltage.*_scale_available$)$/
+	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_pressure.*_scale_available$)$/
+	...
+
+On other words, on my desktop, the /sys match is performing >18M regular 
+expression searches, which takes 6,2 seconds (or 17,2 seconds, if debug is 
+enabled and sent to an area on my nvme storage).
+
+Regards,
+Mauro
+
+---
+
+Mauro Carvalho Chehab (13):
+  scripts: get_abi.pl: Better handle multiple What parameters
+  scripts: get_abi.pl: Check for missing symbols at the ABI specs
+  scripts: get_abi.pl: detect softlinks
+  scripts: get_abi.pl: add an option to filter undefined results
+  scripts: get_abi.pl: don't skip what that ends with wildcards
+  scripts: get_abi.pl: Ignore fs/cgroup sysfs nodes earlier
+  scripts: get_abi.pl: add a graph to speedup the undefined algorithm
+  scripts: get_abi.pl: improve debug logic
+  scripts: get_abi.pl: Better handle leaves with wildcards
+  scripts: get_abi.pl: ignore some sysfs nodes earlier
+  scripts: get_abi.pl: stop check loop earlier when regex is found
+  scripts: get_abi.pl: precompile what match regexes
+  scripts: get_abi.pl: ensure that "others" regex will be parsed
+
+ scripts/get_abi.pl | 388 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 372 insertions(+), 16 deletions(-)
+
+-- 
+2.31.1
+
+
