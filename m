@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C627416398
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21022416391
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 18:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235861AbhIWQt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 12:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
+        id S236669AbhIWQtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 12:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242378AbhIWQtv (ORCPT
+        with ESMTP id S230139AbhIWQtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 12:49:51 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C803EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:48:19 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id m4so7292363ilj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 09:48:19 -0700 (PDT)
+        Thu, 23 Sep 2021 12:49:21 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C53C061574;
+        Thu, 23 Sep 2021 09:47:49 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id h3so6932388pgb.7;
+        Thu, 23 Sep 2021 09:47:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kxbhH0FBrH9RlY3GCWj3vHyXUDd29e30TtZJPUe9Ibk=;
-        b=Jtq5H3GPyNn1265DoS44A3ihlFLvNyoVn26DSAjKcXA5NWsF0vQTPeiBtAZfRATOs5
-         jMymN/ac1DO84W/iNoDVqKiAMC/zRn2Q9pXKhqvnc6+gJKIOYF8Eba//Ff9BEsc5sRek
-         AajE1ciWtVU6f2qfm7WHD6gOnMM140hHMC0MsK+iP/WudBEaWtXSlOKAWoye30bO0gWv
-         SjQ6NjfKPtmCwF5Fpxrc3zQH5nYHbEI84ttOgBSmOAcYEcvxofxXTBjuUxpchm6a3JGp
-         +wOIm3osaUk1Gb1wrt9BQpOZH6/aMFtYBqQUydlXMPJM1nhm1IVN9b6khmq5+GOkqCdw
-         bC/g==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XwHjIKgk8eS5XqWT9Kni8aRMXAG2u3vYTTL4J9FiqpA=;
+        b=Ddv64i+ECH4vNrICBPZ6G1kSfCtqM4SyCDR0/CB68ZcWQz+6kFXeawJLWSKKvabO0Z
+         4SIPcnE62VJNJ8ELF4WiUDmaGnC/ehZiogL6JGUpA/nR1liLJSH+pSlS/SsIuSNjV68S
+         o2yz4xMuH9fbvzWarjb9ONY7BgDIxmfFd0+0mY4U3yTY3PXWoieaW+51bJiYA2ejlaVi
+         KTEnFVMiptzuB73V0TkuD5CeoDyT78hr2MRm9LRphRA2ocGdcr/b7R96qChDjhmfpNgE
+         9CyHS/KRZj0tLBeqJFR9Gzmuou3HCmqdAf/XJ/Kp3lWkLY+/VnpeY8AmBnFKJGPAO2xw
+         C8IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kxbhH0FBrH9RlY3GCWj3vHyXUDd29e30TtZJPUe9Ibk=;
-        b=PRea8JjJC1JcxqSJYFpWDgIf1k6ghITf+f2m7IBb2s0KsEfeT73tWNEblK8O8kue8t
-         3vYsI1utiG3IJE0Lvg+6f4SYC/XXZgwez+kE4L3Jb8sGgN05KyqoceNNBFfD7nGnwZJ/
-         agkf02M/66zgKqxz1A+NJXUPqLtjYZsPT7JnBB1a7P1L9NIKyFmJmQT7kBfTz2aCUjG9
-         YIcqtJIZYD4Fd7IyyKjkvrEH6M8nG+UV5Y2G22q0ckDmBmpweHJT9WkTaPbAnEt2wTKc
-         8eRaxw7FnFY2Y8se7ivX/QFp+Ez4oU35uCJvnP2YFb6TldMhGQulHB2RKK+/usyPvSBr
-         8vHw==
-X-Gm-Message-State: AOAM532L8ZaipU5v9BxK/qsu2ZrXK5lnJtlLSVVRX32Vu81Jx5wYSrwI
-        wBBpTbvnHVsjX3IWfEnF3y1PXoeSMVoyfhGfDUaeJA==
-X-Google-Smtp-Source: ABdhPJyNLcJWJ4cf4hRRACEbrYhFMbPyl9v2GI1tCWXExlcI87+rVJkMusdSUtoWRAIYRhGKEpZ/eZeyzBVkt5ln8IQ=
-X-Received: by 2002:a92:db0b:: with SMTP id b11mr4397642iln.275.1632415699032;
- Thu, 23 Sep 2021 09:48:19 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XwHjIKgk8eS5XqWT9Kni8aRMXAG2u3vYTTL4J9FiqpA=;
+        b=xSuRzDLIir690Fh0/hYydSptLOb6+lWkTRXA7Y8uGzKOCJiUZHSjpg0lE1GRMNf7IY
+         iHbxJYD5CkCfkjUiXkRzuoDrtHZdAIkXI+3wCryetS8CKNu7TM8Hz4UQvazGe5z2JQq7
+         /+0EwHRZQnCd474CEmLc39jhaGR1tyF9qMy9HxFqF9F7DBe6MCNPHOZTREtHAJp9z8LW
+         pmnO9NExN6dPKCnDOcgK3OfPQuzRQqPtFsfNmM9xJheiqtbQvbDL6E5BlN+BxpGfxkLd
+         NfaPmMaxAMHHTly0RtrrW8UWnujLbzJznCpiU3dub4fCTfZ58wyzok2vy9N+ICjy/ye2
+         2xGA==
+X-Gm-Message-State: AOAM533gYd+GXTjUoPAe25CzZI3HMz590qQyyasW0dCX0AaPCAGMFj49
+        G4p/zwuLuJv4vbxZxJH1ltM=
+X-Google-Smtp-Source: ABdhPJztvNYbXx+hJkQXjwYRAqDO1gtCE4huaQwLMR/xRNZ9Wm2y9E1wOIhcx6zIY4Ll4am5rasWoA==
+X-Received: by 2002:aa7:9e9a:0:b0:43e:d9b:cd93 with SMTP id p26-20020aa79e9a000000b0043e0d9bcd93mr5515716pfq.50.1632415669453;
+        Thu, 23 Sep 2021 09:47:49 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:5571:502d:54ea:90d6])
+        by smtp.gmail.com with ESMTPSA id j3sm6361857pgn.12.2021.09.23.09.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 09:47:46 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 23 Sep 2021 09:47:44 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>,
+        Jesse Barnes <jsbarnes@google.com>
+Subject: Re: [PATCH v4] zram: Introduce an aged idle interface
+Message-ID: <YUyvsJz+aMCtlRxD@google.com>
+References: <20210917210640.214211-1-bgeffon@google.com>
+ <20210923130115.1344361-1-bgeffon@google.com>
 MIME-Version: 1.0
-References: <20210922175156.130228-1-peterx@redhat.com> <CAJHvVch3g_UY-akMdu0O9413iCb1H83DLhR1Am8WnfUyV=s1=g@mail.gmail.com>
- <YUueOUfoamxOvEyO@t490s> <24224366-293a-879-95db-f69abcb0cb70@google.com>
- <YUu/6lWX92WLUzpt@t490s> <472a3497-ba70-ac6b-5828-bc5c4c93e9ab@google.com> <YUvj9r3Y954pYPnf@xz-m1.local>
-In-Reply-To: <YUvj9r3Y954pYPnf@xz-m1.local>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 23 Sep 2021 09:47:42 -0700
-Message-ID: <CAJHvVcg=oQBcuFjT_RO-_0VMtmyTzkzmUaUv0-zX42CnRWbBAg@mail.gmail.com>
-Subject: Re: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923130115.1344361-1-bgeffon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 7:18 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Wed, Sep 22, 2021 at 06:22:45PM -0700, Hugh Dickins wrote:
-> > No, I think I misunderstood you before: thanks for re-explaining.
-> > (And Axel's !userfaultfd_minor() check before calling do_fault_around()
-> > plays an important part in making sure that it does reach shmem_fault().)
->
-> Still thanks for confirming this, Hugh.
->
-> Said that, Axel, I didn't mean I'm against doing something similar like
-> uffd-wp; it's just a heads-up that maybe you won't find a reproducer with real
-> issues with minor mode.
->
-> Even if I think minor mode should be fine with current code, we could still
-> choose to disable khugepaged from removing the pmd for VM_UFFD_MINOR vmas, just
-> like what we'll do with VM_UFFD_WP.  At least it can still reduce false
-> positives.
->
-> So far in my local branch I queued the patch which I attached, that's required
-> for uffd-wp shmem afaict.  If you think minor mode would like that too, I can
-> post it separately with minor mode added in.
-
-No worries, you can leave the minor fault case to me.
-
-My thinking there was a THP collapse bug was really just based on
-speculation, not a real reproducer, so it's very possible my
-speculation was wrong. It will take some more thinking and reading to
-convince myself one way or the other. :) Thanks to you and Hugh for
-all the details.
-
-I'd prefer not to add this fix "just in case", if it isn't a real
-problem, as it seems like it may confuse future readers of the code.
-
-I'll send out a patch for it if / when I manage to build a real
-reproducer. Or, in the meantime, some of my Google colleagues are
-testing this code via their live migration implementation, so if there
-is a bug here there's a good chance we'll find it that way too.
-
->
-> Note that it's slightly different from what I pasted in reply to Yang Shi - I
-> made it slightly more complicated just to make sure there's no race.  I
-> mentioned the possible race (I think) in the commit log.
->
-> Let me know your preference.
->
-> Thanks,
->
-> --
-> Peter Xu
+On Thu, Sep 23, 2021 at 06:01:15AM -0700, Brian Geffon wrote:
+> This change introduces an aged idle interface to the existing
+> idle sysfs file for zram.
+> 
+> When CONFIG_ZRAM_MEMORY_TRACKING is enabled the idle file
+> now also accepts an integer argument. This integer is the
+> age (in seconds) of pages to mark as idle. The idle file
+> still supports 'all' as it always has. This new approach
+> allows for much more control over which pages get marked
+> as idle.
+> 
+>   v3 -> v4:
+>         - Remove base10 restriction.
+> 
+>   v2 -> v3:
+> 	- Correct unused variable warning when
+> 	  CONFIG_ZRAM_MEMORY_TRACKING is not enabled.
+>   v1 -> v2:
+> 	- Switch to using existing idle file.
+> 	- Dont compare ktime directly.
+> 
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
