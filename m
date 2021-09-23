@@ -2,133 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6DB415B80
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43153415B7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 11:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240304AbhIWJz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 05:55:29 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46536 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240277AbhIWJz2 (ORCPT
+        id S240222AbhIWJzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 05:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240212AbhIWJzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:55:28 -0400
-X-UUID: 368697881e6b494085181473db9362c9-20210923
-X-UUID: 368697881e6b494085181473db9362c9-20210923
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <yee.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 207152649; Thu, 23 Sep 2021 17:53:54 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Thu, 23 Sep 2021 17:53:52 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 23 Sep 2021 17:53:52 +0800
-From:   <yee.lee@mediatek.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <nicholas.Tang@mediatek.com>, <Kuan-Ying.lee@mediatek.com>,
-        <chinwen.chang@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        "Sami Tolvanen" <samitolvanen@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] scs: Release kasan vmalloc poison in scs_free process
-Date:   Thu, 23 Sep 2021 17:53:12 +0800
-Message-ID: <20210923095316.13867-1-yee.lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 23 Sep 2021 05:55:21 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCD8C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:53:49 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id g41so24227186lfv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 02:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XKbdAC9VjfymO1XEcySU7Tw5k0/nPtdPrfAPQBhF/eI=;
+        b=EaN30mIuXR5Rmmhi8XIrA5BIqwjyKhuOJBSAk2VcNeY4K1tBY0tgaHieE/ye2t82+D
+         Q03cnCumMLi3eyVFVEunCZa+oqw1Al+N/71hBirVc4c99EVkX+868M/GTzYZvI8dZIy/
+         hjxq/euJjhLVBUIv3OJL49sbfpCxt0FgRjlhw+iF4Ez3fVC+0hKTSkvMUTIgN8vw5Ghg
+         exH7i1K+rZapglH0iwkb8f4TzuTM4xN4vk3sSWHrBB1NK563LtDR6ftlCG4Q5dDwkoyi
+         YKVysVmkjclfMtAC42KSJRWioQ/Di1EaOWk3Gjwc7plyFZ0kh692M4ttcLFKqiZrSh9s
+         ILuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XKbdAC9VjfymO1XEcySU7Tw5k0/nPtdPrfAPQBhF/eI=;
+        b=EHk/rZue93N9tuV+OVerpdnW7Ht2Uxnorjpt77WCGxgKZ4aHVOfDtKMfDNKHyggMIE
+         eGJykOiPZOxQNQYuj8KqoMsMfb8iAh8T8Ik+OVOieE/G8tolbfI3IrrlTum/ZgQlZD3c
+         gCWXts6xdZx4qxz4Ol79mcHPOAYvUWJjF9OLWFlq9fOpZUd6amojo831NVv41B4RyJ0+
+         JNom3Gi3g0rTOob37WjeffcoSlXIQmh0AMT/Baocc1B1Oy8egrlrbw0JxHzRw4IjRuLK
+         tUh7hqEdc8l84fTi/Zw9CaxoYmMdUNEvqa8kiAhWzzfB+agp83FCMkeGMVs62u9+MmCE
+         udlA==
+X-Gm-Message-State: AOAM530PIdyFzqAjHWzUPK51TWj2jVjT6yxqiZu9WvtjIOpMm1MLHqRp
+        3Tgx+h/OK0Pw/XYw7bgCsh8=
+X-Google-Smtp-Source: ABdhPJw1DwVwjIkSssbPvDibBogq/KzZbYAShfAkUUgv4FoFnDI/9v5+fJ6FluE9vBqLU89rFHQuvA==
+X-Received: by 2002:a05:6512:12c6:: with SMTP id p6mr3288566lfg.271.1632390828064;
+        Thu, 23 Sep 2021 02:53:48 -0700 (PDT)
+Received: from localhost.localdomain ([185.199.97.5])
+        by smtp.gmail.com with ESMTPSA id h8sm582728ljh.27.2021.09.23.02.53.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 02:53:47 -0700 (PDT)
+From:   Oleksandr Andrushchenko <andr2000@gmail.com>
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc:     boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
+        sstabellini@kernel.org, jbeulich@suse.com,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Subject: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
+Date:   Thu, 23 Sep 2021 12:53:44 +0300
+Message-Id: <20210923095345.185489-1-andr2000@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yee Lee <yee.lee@mediatek.com>
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Since scs allocation has been moved to vmalloc region, the
-shadow stack is protected by kasan_posion_vmalloc.
-However, the vfree_atomic operation needs to access
-its context for scs_free process and causes kasan error
-as the dump info below.
+Currently PCI backend implements multiple functionalities at a time.
+To name a few:
+1. It is used as a database for assignable PCI devices, e.g. xl
+   pci-assignable-{add|remove|list} manipulates that list. So, whenever
+   the toolstack needs to know which PCI devices can be passed through
+   it reads that from the relevant sysfs entries of the pciback.
+2. It is used to hold the unbound PCI devices list, e.g. when passing
+   through a PCI device it needs to be unbound from the relevant device
+   driver and bound to pciback (strictly speaking it is not required
+   that the device is bound to pciback, but pciback is again used as a
+   database of the passed through PCI devices, so we can re-bind the
+   devices back to their original drivers when guest domain shuts down)
+3. Device reset for the devices being passed through
+4. Para-virtualized use-cases support
 
-This patch Adds kasan_unpoison_vmalloc() before vfree_atomic,
-which aligns to the prior flow as using kmem_cache.
-The vmalloc region will go back posioned in the following
-vumap() operations.
+The para-virtualized part of the driver is not always needed as some
+architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
+model for PCI device passthrough. For such use-cases make the very
+first step in splitting the xen-pciback driver into two parts: extended
+PCI stub and PCI PV backend drivers. At the moment x86 platform will
+continue using CONFIG_XEN_PCIDEV_BACKEND for the fully featured backend
+driver and new platforms may build a driver with limited functionality
+(no PV) by enabling CONFIG_XEN_PCIDEV_STUB.
 
- ==================================================================
- BUG: KASAN: vmalloc-out-of-bounds in llist_add_batch+0x60/0xd4
- Write of size 8 at addr ffff8000100b9000 by task kthreadd/2
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
- CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.15.0-rc2-11681-(skip)
- Hardware name: linux,dummy-virt (DT)
- Call trace:
-  dump_backtrace+0x0/0x43c
-  show_stack+0x1c/0x2c
-  dump_stack_lvl+0x68/0x84
-  print_address_description+0x80/0x394
-  kasan_report+0x180/0x1dc
-  __asan_report_store8_noabort+0x48/0x58
-  llist_add_batch+0x60/0xd4
-  vfree_atomic+0x60/0xe0
-  scs_free+0x1dc/0x1fc
-  scs_release+0xa4/0xd4
-  free_task+0x30/0xe4
-  __put_task_struct+0x1ec/0x2e0
-  delayed_put_task_struct+0x5c/0xa0
-  rcu_do_batch+0x62c/0x8a0
-  rcu_core+0x60c/0xc14
-  rcu_core_si+0x14/0x24
-  __do_softirq+0x19c/0x68c
-  irq_exit+0x118/0x2dc
-  handle_domain_irq+0xcc/0x134
-  gic_handle_irq+0x7c/0x1bc
-  call_on_irq_stack+0x40/0x70
-  do_interrupt_handler+0x78/0x9c
-  el1_interrupt+0x34/0x60
-  el1h_64_irq_handler+0x1c/0x2c
-  el1h_64_irq+0x78/0x7c
-  _raw_spin_unlock_irqrestore+0x40/0xcc
-  sched_fork+0x4f0/0xb00
-  copy_process+0xacc/0x3648
-  kernel_clone+0x168/0x534
-  kernel_thread+0x13c/0x1b0
-  kthreadd+0x2bc/0x400
-  ret_from_fork+0x10/0x20
-
- Memory state around the buggy address:
-  ffff8000100b8f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-  ffff8000100b8f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- >ffff8000100b9000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                    ^
-  ffff8000100b9080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-  ffff8000100b9100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ==================================================================
-
-CC: Matthias Brugger <matthias.bgg@gmail.com>
-CC: Will Deacon <will@kernel.org>
-CC: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Yee Lee <yee.lee@mediatek.com>
 ---
- kernel/scs.c | 1 +
- 1 file changed, 1 insertion(+)
+Changes since v2:
+ - swap the patch order
+New in v2
+---
+ drivers/xen/Kconfig               | 24 ++++++++++++++++++++++++
+ drivers/xen/Makefile              |  2 +-
+ drivers/xen/xen-pciback/Makefile  |  1 +
+ drivers/xen/xen-pciback/pciback.h |  5 +++++
+ drivers/xen/xen-pciback/xenbus.c  |  6 +++++-
+ 5 files changed, 36 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/scs.c b/kernel/scs.c
-index e2a71fc82fa0..25c0d8e416e6 100644
---- a/kernel/scs.c
-+++ b/kernel/scs.c
-@@ -68,6 +68,7 @@ void scs_free(void *s)
+diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+index a37eb52fb401..6e92c6be19f1 100644
+--- a/drivers/xen/Kconfig
++++ b/drivers/xen/Kconfig
+@@ -180,10 +180,34 @@ config SWIOTLB_XEN
+ 	select DMA_OPS
+ 	select SWIOTLB
  
- 	__scs_account(s, -1);
++config XEN_PCI_STUB
++	bool
++
++config XEN_PCIDEV_STUB
++	tristate "Xen PCI-device stub driver"
++	depends on PCI && !X86 && XEN
++	depends on XEN_BACKEND
++	select XEN_PCI_STUB
++	default m
++	help
++	  The PCI device stub driver provides limited version of the PCI
++	  device backend driver without para-virtualized support for guests.
++	  If you select this to be a module, you will need to make sure no
++	  other driver has bound to the device(s) you want to make visible to
++	  other guests.
++
++	  The "hide" parameter (only applicable if backend driver is compiled
++	  into the kernel) allows you to bind the PCI devices to this module
++	  from the default device drivers. The argument is the list of PCI BDFs:
++	  xen-pciback.hide=(03:00.0)(04:00.0)
++
++	  If in doubt, say m.
++
+ config XEN_PCIDEV_BACKEND
+ 	tristate "Xen PCI-device backend driver"
+ 	depends on PCI && X86 && XEN
+ 	depends on XEN_BACKEND
++	select XEN_PCI_STUB
+ 	default m
+ 	help
+ 	  The PCI device backend driver allows the kernel to export arbitrary
+diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
+index 3434593455b2..5aae66e638a7 100644
+--- a/drivers/xen/Makefile
++++ b/drivers/xen/Makefile
+@@ -24,7 +24,7 @@ obj-$(CONFIG_XEN_SYS_HYPERVISOR)	+= sys-hypervisor.o
+ obj-$(CONFIG_XEN_PVHVM_GUEST)		+= platform-pci.o
+ obj-$(CONFIG_SWIOTLB_XEN)		+= swiotlb-xen.o
+ obj-$(CONFIG_XEN_MCE_LOG)		+= mcelog.o
+-obj-$(CONFIG_XEN_PCIDEV_BACKEND)	+= xen-pciback/
++obj-$(CONFIG_XEN_PCI_STUB)	        += xen-pciback/
+ obj-$(CONFIG_XEN_PRIVCMD)		+= xen-privcmd.o
+ obj-$(CONFIG_XEN_ACPI_PROCESSOR)	+= xen-acpi-processor.o
+ obj-$(CONFIG_XEN_EFI)			+= efi.o
+diff --git a/drivers/xen/xen-pciback/Makefile b/drivers/xen/xen-pciback/Makefile
+index e8d981d43235..e2cb376444a6 100644
+--- a/drivers/xen/xen-pciback/Makefile
++++ b/drivers/xen/xen-pciback/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_XEN_PCIDEV_BACKEND) += xen-pciback.o
++obj-$(CONFIG_XEN_PCIDEV_STUB) += xen-pciback.o
  
-+	kasan_unpoison_vmalloc(s, SCS_SIZE);
- 	/*
- 	 * We cannot sleep as this can be called in interrupt context,
- 	 * so use this_cpu_cmpxchg to update the cache, and vfree_atomic
+ xen-pciback-y := pci_stub.o pciback_ops.o xenbus.o
+ xen-pciback-y += conf_space.o conf_space_header.o \
+diff --git a/drivers/xen/xen-pciback/pciback.h b/drivers/xen/xen-pciback/pciback.h
+index 95e28ee48d52..9a64196e831d 100644
+--- a/drivers/xen/xen-pciback/pciback.h
++++ b/drivers/xen/xen-pciback/pciback.h
+@@ -71,6 +71,11 @@ struct pci_dev *pcistub_get_pci_dev(struct xen_pcibk_device *pdev,
+ 				    struct pci_dev *dev);
+ void pcistub_put_pci_dev(struct pci_dev *dev);
+ 
++static inline bool xen_pcibk_pv_support(void)
++{
++	return IS_ENABLED(CONFIG_XEN_PCIDEV_BACKEND);
++}
++
+ /* Ensure a device is turned off or reset */
+ void xen_pcibk_reset_device(struct pci_dev *pdev);
+ 
+diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
+index c09c7ebd6968..f8ba2903a3ff 100644
+--- a/drivers/xen/xen-pciback/xenbus.c
++++ b/drivers/xen/xen-pciback/xenbus.c
+@@ -743,6 +743,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
+ 
+ int __init xen_pcibk_xenbus_register(void)
+ {
++	if (!xen_pcibk_pv_support())
++		return 0;
++
+ 	xen_pcibk_backend = &xen_pcibk_vpci_backend;
+ 	if (passthrough)
+ 		xen_pcibk_backend = &xen_pcibk_passthrough_backend;
+@@ -752,5 +755,6 @@ int __init xen_pcibk_xenbus_register(void)
+ 
+ void __exit xen_pcibk_xenbus_unregister(void)
+ {
+-	xenbus_unregister_driver(&xen_pcibk_driver);
++	if (xen_pcibk_pv_support())
++		xenbus_unregister_driver(&xen_pcibk_driver);
+ }
 -- 
-2.18.0
+2.25.1
 
