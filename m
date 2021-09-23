@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01829415C9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3A0415CA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240564AbhIWLQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
+        id S240554AbhIWLRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240448AbhIWLQq (ORCPT
+        with ESMTP id S240521AbhIWLRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:16:46 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B83C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:15:14 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id c19so5752350qte.7
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:15:14 -0700 (PDT)
+        Thu, 23 Sep 2021 07:17:32 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B02C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:16:00 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id c7so20926563qka.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 04:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=lqxtxP5+e+pk1U3fha6q3vivDTvYwQzQQPvtliibVDE=;
-        b=L4y/1Lm4ytNJF6JNKYdVL8tcAFh1WWnHlnFZtx8mQFlyjrIPxYhsCO2n1NhBJ1z96f
-         toZvW/UeILZLfvF/s/CmZgWt6xT9FmAtDOlnfIM8UrgJKSTI5CXLLYIraUilr6wMl+kj
-         wpYLx8yY0b0E6xRlwbWKPSz6JGD2DbAG0jnWjv+luUgLxUZqnvBxb0zWBDI/2Y/p/wAb
-         ZTQPfyU1W10X8q5pTuJOa9nes1SdHsi3Fh/ZfjkCYtKMhnOmFAz4l5TmF3VojI4i/Mdq
-         WZWr7lUn3R8zD8uegvHMnHXszFAp0WnbV/73soEd0jWhcF2mNKf2lb1puj5M+TaTfp6u
-         7FCA==
+        bh=WxWyZjqzKABxFGtDm2TtL1V2QPdgvK9G3mFsSj6IZsc=;
+        b=piWpDsjgwmWQA7xP9ZDB/Ul8WwCD5xFDxPy//6xIQXw7lceBSflH3FaboHK2447F25
+         NUKJq+YksT+uzaJp+nxMyG0edltdwjR+nSzPj+G9hEXnvcoYWaxeRP+jcCJz6S096xx8
+         uAH1uinFxJ21t7EljSUxRYVq0G22dTH/RMDTJf7Ml69H+B/Ryge+wk+0FbKdCMSTCNSp
+         u5P8ykRg6BfjLlNnSRwgu1CKx2KdkGbuKP2Mf6WFtokWG5Aav7zNBoQ8RE4Xh24GFeZf
+         vN6GGxaq6MAcgOE+SNM56oRm+Tx5iKDUm4Qhvb7MZLtDUnWaFi3Bet38/GGXdIk+zYB4
+         NwGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lqxtxP5+e+pk1U3fha6q3vivDTvYwQzQQPvtliibVDE=;
-        b=GaXt4joePUANgjEw5tsZZT2tKq3APoq+IyLzFx1y0eJKBT3Q9rlCalTRmEixBBXTOq
-         m5bs3bpAvHU8B6kxUT1ly8vQjC+dJex29qc+cjrWjJnbk8F5th5jP9iCXh4sP7zBsExF
-         JLxHcsL2GM+27cyFqm1aQXsfhPaoCOJMWEG22SfJDAerwPVecn4ak0kDy7nnnzFrlftN
-         MB5GxV2Xg88ke0lKxmsxUZ5GPC++MBxjqNfWkiVvx680lb8GECeLn6EMhAA2koZmFheG
-         LJM4qlkVtYDtbr9vgHoIBJ/C6PmShMij/rTEjfY9y+FQrhG1cWk8kV6f5ofLDJkQBEH0
-         xaKQ==
-X-Gm-Message-State: AOAM532Ph7G3ctqVo0WHUkANkpSh6MP/V+iBi8Qs9R9vahe0pcLMUelK
-        mPzyZFfajQ/P3+TtW2DaZRV4Gh7gEG+Y5PG5BBSjkg==
-X-Google-Smtp-Source: ABdhPJz2u4j3X9ahIq9/HugIftpzeYB9Ri1uDJLz8KEDeMWAQCFa8lxV7bqUe/nJi++C9NGOnPwR6sGUN1fF7d4Qb9c=
-X-Received: by 2002:ac8:5c49:: with SMTP id j9mr4078733qtj.246.1632395713528;
- Thu, 23 Sep 2021 04:15:13 -0700 (PDT)
+        bh=WxWyZjqzKABxFGtDm2TtL1V2QPdgvK9G3mFsSj6IZsc=;
+        b=fCl4EP+aea8udCfZMlRzpBYeNqTuwVo70rvWcP/mGsPZUXMUP7hZJSa70J39ZGgMdK
+         KOyWvROT8lwA94OH/Y7+k8nHvHtYLhEMvkyQqDfB7dAU2tqOE7cL6ceF2WBIuv/pGZ8B
+         jHvyUQHx6qZDscNbZjsLFA2xpvg8Z0xFiQb10l2ECch7OMyUT/30TXyFvxD0+0hV6CiN
+         ffeGSVtxPe3Bgc+Sm941lI7BZHZWJHy1g1samh43X7ULF5nQ+7W633FFZ9mXNxnfMd8T
+         1+vaNSml8tcOb6BhK6C6TeXo9n/GUu8WSXZe140jK4rkk7Ekup/06Nes4Zwq2ScmkQR9
+         XzlQ==
+X-Gm-Message-State: AOAM530vIdJqNlfQHz2kFLcKBdVN1ADRzHSoDlIpSCsQ+ampvok+Wmfa
+        2sjvizGBb9pQV7wNL/YxTTq5CsMngMs1B77whlsgmA==
+X-Google-Smtp-Source: ABdhPJxhcITZ6PzQs9ROBzrhdAxLv7+4se6IcOOumHFfX27SM6St8HdLOtKgwJByCS5yM/LEWYQpdkgB87oZpvCW9So=
+X-Received: by 2002:a37:b483:: with SMTP id d125mr4023411qkf.362.1632395759497;
+ Thu, 23 Sep 2021 04:15:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210923104803.2620285-1-elver@google.com>
-In-Reply-To: <20210923104803.2620285-1-elver@google.com>
+References: <20210923104803.2620285-1-elver@google.com> <20210923104803.2620285-2-elver@google.com>
+In-Reply-To: <20210923104803.2620285-2-elver@google.com>
 From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 23 Sep 2021 13:14:36 +0200
-Message-ID: <CAG_fn=Vr7CJiug+C2LT2U5wdmysG5BbTFwU2-yaz-pe0kvaXPw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] stacktrace: move filter_irq_stacks() to kernel/stacktrace.c
+Date:   Thu, 23 Sep 2021 13:15:23 +0200
+Message-ID: <CAG_fn=Wyd3-yxd3vzX82Q4iTApJr_CsG-gmEq1KenmYYCypP5g@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] kfence: count unexpectedly skipped allocations
 To:     Marco Elver <elver@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Dmitry Vyukov <dvyukov@google.com>,
@@ -68,156 +68,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Sep 23, 2021 at 12:48 PM Marco Elver <elver@google.com> wrote:
 >
-> filter_irq_stacks() has little to do with the stackdepot implementation,
-> except that it is usually used by users (such as KASAN) of stackdepot to
-> reduce the stack trace.
+> Maintain a counter to count allocations that are skipped due to being
+> incompatible (oversized, incompatible gfp flags) or no capacity.
 >
-> However, filter_irq_stacks() itself is not useful without a stack trace
-> as obtained by stack_trace_save() and friends.
->
-> Therefore, move filter_irq_stacks() to kernel/stacktrace.c, so that new
-> users of filter_irq_stacks() do not have to start depending on
-> STACKDEPOT only for filter_irq_stacks().
+> This is to compute the fraction of allocations that could not be
+> serviced by KFENCE, which we expect to be rare.
 >
 > Signed-off-by: Marco Elver <elver@google.com>
-> Acked-by: Dmitry Vyukov <dvyukov@google.com>
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 Acked-by: Alexander Potapenko <glider@google.com>
 
 > ---
-> v3:
-> * Rebase to -next due to conflicting stackdepot changes.
->
 > v2:
-> * New patch.
+> * Do not count deadlock-avoidance skips.
 > ---
->  include/linux/stackdepot.h |  2 --
->  include/linux/stacktrace.h |  1 +
->  kernel/stacktrace.c        | 30 ++++++++++++++++++++++++++++++
->  lib/stackdepot.c           | 24 ------------------------
->  4 files changed, 31 insertions(+), 26 deletions(-)
+>  mm/kfence/core.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
 >
-> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-> index ee03f11bb51a..c34b55a6e554 100644
-> --- a/include/linux/stackdepot.h
-> +++ b/include/linux/stackdepot.h
-> @@ -30,8 +30,6 @@ int stack_depot_snprint(depot_stack_handle_t handle, ch=
-ar *buf, size_t size,
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 7a97db8bc8e7..249d75b7e5ee 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -112,6 +112,8 @@ enum kfence_counter_id {
+>         KFENCE_COUNTER_FREES,
+>         KFENCE_COUNTER_ZOMBIES,
+>         KFENCE_COUNTER_BUGS,
+> +       KFENCE_COUNTER_SKIP_INCOMPAT,
+> +       KFENCE_COUNTER_SKIP_CAPACITY,
+>         KFENCE_COUNTER_COUNT,
+>  };
+>  static atomic_long_t counters[KFENCE_COUNTER_COUNT];
+> @@ -121,6 +123,8 @@ static const char *const counter_names[] =3D {
+>         [KFENCE_COUNTER_FREES]          =3D "total frees",
+>         [KFENCE_COUNTER_ZOMBIES]        =3D "zombie allocations",
+>         [KFENCE_COUNTER_BUGS]           =3D "total bugs",
+> +       [KFENCE_COUNTER_SKIP_INCOMPAT]  =3D "skipped allocations (incompa=
+tible)",
+> +       [KFENCE_COUNTER_SKIP_CAPACITY]  =3D "skipped allocations (capacit=
+y)",
+>  };
+>  static_assert(ARRAY_SIZE(counter_names) =3D=3D KFENCE_COUNTER_COUNT);
 >
->  void stack_depot_print(depot_stack_handle_t stack);
->
-> -unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_e=
-ntries);
-> -
->  #ifdef CONFIG_STACKDEPOT
->  int stack_depot_init(void);
->  #else
-> diff --git a/include/linux/stacktrace.h b/include/linux/stacktrace.h
-> index 9edecb494e9e..bef158815e83 100644
-> --- a/include/linux/stacktrace.h
-> +++ b/include/linux/stacktrace.h
-> @@ -21,6 +21,7 @@ unsigned int stack_trace_save_tsk(struct task_struct *t=
-ask,
->  unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *=
-store,
->                                    unsigned int size, unsigned int skipnr=
-);
->  unsigned int stack_trace_save_user(unsigned long *store, unsigned int si=
-ze);
-> +unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_e=
-ntries);
->
->  /* Internal interfaces. Do not use in generic code */
->  #ifdef CONFIG_ARCH_STACKWALK
-> diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-> index 9f8117c7cfdd..9c625257023d 100644
-> --- a/kernel/stacktrace.c
-> +++ b/kernel/stacktrace.c
-> @@ -13,6 +13,7 @@
->  #include <linux/export.h>
->  #include <linux/kallsyms.h>
->  #include <linux/stacktrace.h>
-> +#include <linux/interrupt.h>
->
->  /**
->   * stack_trace_print - Print the entries in the stack trace
-> @@ -373,3 +374,32 @@ unsigned int stack_trace_save_user(unsigned long *st=
-ore, unsigned int size)
->  #endif /* CONFIG_USER_STACKTRACE_SUPPORT */
->
->  #endif /* !CONFIG_ARCH_STACKWALK */
-> +
-> +static inline bool in_irqentry_text(unsigned long ptr)
-> +{
-> +       return (ptr >=3D (unsigned long)&__irqentry_text_start &&
-> +               ptr < (unsigned long)&__irqentry_text_end) ||
-> +               (ptr >=3D (unsigned long)&__softirqentry_text_start &&
-> +                ptr < (unsigned long)&__softirqentry_text_end);
-> +}
-> +
-> +/**
-> + * filter_irq_stacks - Find first IRQ stack entry in trace
-> + * @entries:   Pointer to stack trace array
-> + * @nr_entries:        Number of entries in the storage array
-> + *
-> + * Return: Number of trace entries until IRQ stack starts.
-> + */
-> +unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_e=
-ntries)
-> +{
-> +       unsigned int i;
-> +
-> +       for (i =3D 0; i < nr_entries; i++) {
-> +               if (in_irqentry_text(entries[i])) {
-> +                       /* Include the irqentry function into the stack. =
-*/
-> +                       return i + 1;
-> +               }
+> @@ -271,8 +275,10 @@ static void *kfence_guarded_alloc(struct kmem_cache =
+*cache, size_t size, gfp_t g
+>                 list_del_init(&meta->list);
+>         }
+>         raw_spin_unlock_irqrestore(&kfence_freelist_lock, flags);
+> -       if (!meta)
+> +       if (!meta) {
+> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_CAPACITY]);
+>                 return NULL;
 > +       }
-> +       return nr_entries;
-> +}
-> +EXPORT_SYMBOL_GPL(filter_irq_stacks);
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 69c8c9b0d8d7..b437ae79aca1 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -20,7 +20,6 @@
->   */
 >
->  #include <linux/gfp.h>
-> -#include <linux/interrupt.h>
->  #include <linux/jhash.h>
->  #include <linux/kernel.h>
->  #include <linux/mm.h>
-> @@ -417,26 +416,3 @@ depot_stack_handle_t stack_depot_save(unsigned long =
-*entries,
->         return __stack_depot_save(entries, nr_entries, alloc_flags, true)=
-;
->  }
->  EXPORT_SYMBOL_GPL(stack_depot_save);
-> -
-> -static inline int in_irqentry_text(unsigned long ptr)
-> -{
-> -       return (ptr >=3D (unsigned long)&__irqentry_text_start &&
-> -               ptr < (unsigned long)&__irqentry_text_end) ||
-> -               (ptr >=3D (unsigned long)&__softirqentry_text_start &&
-> -                ptr < (unsigned long)&__softirqentry_text_end);
-> -}
-> -
-> -unsigned int filter_irq_stacks(unsigned long *entries,
-> -                                            unsigned int nr_entries)
-> -{
-> -       unsigned int i;
-> -
-> -       for (i =3D 0; i < nr_entries; i++) {
-> -               if (in_irqentry_text(entries[i])) {
-> -                       /* Include the irqentry function into the stack. =
-*/
-> -                       return i + 1;
-> -               }
-> -       }
-> -       return nr_entries;
-> -}
-> -EXPORT_SYMBOL_GPL(filter_irq_stacks);
+>         if (unlikely(!raw_spin_trylock_irqsave(&meta->lock, flags))) {
+>                 /*
+> @@ -740,8 +746,10 @@ void *__kfence_alloc(struct kmem_cache *s, size_t si=
+ze, gfp_t flags)
+>          * Perform size check before switching kfence_allocation_gate, so=
+ that
+>          * we don't disable KFENCE without making an allocation.
+>          */
+> -       if (size > PAGE_SIZE)
+> +       if (size > PAGE_SIZE) {
+> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_INCOMPAT]);
+>                 return NULL;
+> +       }
+>
+>         /*
+>          * Skip allocations from non-default zones, including DMA. We can=
+not
+> @@ -749,8 +757,10 @@ void *__kfence_alloc(struct kmem_cache *s, size_t si=
+ze, gfp_t flags)
+>          * properties (e.g. reside in DMAable memory).
+>          */
+>         if ((flags & GFP_ZONEMASK) ||
+> -           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
+> +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32))) {
+> +               atomic_long_inc(&counters[KFENCE_COUNTER_SKIP_INCOMPAT]);
+>                 return NULL;
+> +       }
+>
+>         /*
+>          * allocation_gate only needs to become non-zero, so it doesn't m=
+ake
 > --
 > 2.33.0.464.g1972c5931b-goog
 >
