@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECCF415F3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF87415F44
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 15:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241194AbhIWNLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 09:11:01 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:42578 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbhIWNLA (ORCPT
+        id S241206AbhIWNMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 09:12:32 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:45755 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238588AbhIWNM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 09:11:00 -0400
-Received: by mail-ot1-f50.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso8371807otc.9;
-        Thu, 23 Sep 2021 06:09:29 -0700 (PDT)
+        Thu, 23 Sep 2021 09:12:29 -0400
+Received: by mail-ot1-f53.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso8353404otv.12;
+        Thu, 23 Sep 2021 06:10:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P+k54S/P1ruPyomATuQ9wpcwPryDuiOzPX+x0uQYZM8=;
-        b=1xzLiOlQIjfL9bj3IExlYyUod8Xy4zBH5Emp6indRSvcgQhRasb7FNOc4IQt6Lakaz
-         CeyD+221GwCgor87H990SRlBfEI5Y01pE7pLXRsHbioz+qKIYR4kB/S3ubBlykMos61h
-         TOe/+o7bsX6LzHJAz9sRIc/7YMMTHS+jy/p4TRthkW4w7GgDHLQn09+G0nmYNcAkexjc
-         Fr9z0LqRrf2Q4WZzPOQer2N0N9nzKYboRvgacB6sntpopY42cWkK1P5zYil9lINugIxu
-         xj7WYYs64i5WU9GkSLTC7B2VCYWqH5EJN1dFu8U4kE5NOXmYOENaSuRV08rsz4JtvGye
-         28Ew==
-X-Gm-Message-State: AOAM531mgmHeBcQtwuLjza2hfucEWVGoScp+XwnMchdzJrNCcqf877o1
-        KvYdu2iGBHmB1/HYChovqA==
-X-Google-Smtp-Source: ABdhPJymvzXngT2wLrig0Tguwcl6rfrs40bQiUrF56ZPa2rCMEXIw+KK1Xc2LiYxMkPV+mz4mNng7A==
-X-Received: by 2002:a9d:a47:: with SMTP id 65mr3860534otg.133.1632402568692;
-        Thu, 23 Sep 2021 06:09:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=cFspYBLeURdfYGcovqZnYm0YSY7LeEP/BmbI4nCU0mU=;
+        b=bTjHAvg7WugVnMOfxjH1AtHQF8aXac9RwivmZNXnwWit+zJ3CzEbDfvf+ZsYZyQQzz
+         EDFcATkv6CtbzpCREmPwJ/Af14XIqZNmeccojIykA3pOv0CO8xslocIXN830eYXf8vqF
+         3gAMSVlPhY8e+qMt12J8DPUOok8reC3rNtu7w0118ELW4+l8is9f28k5654fwcwu6Ec2
+         GRAr77zjVTU8HQ4thxTgLiax3U2ZsEXlZT1b1GKJZmdRS1okQ1ONDj3S8YOrYTyArSGb
+         9fzEvT2lOdpzCP5z5IyB2hIyBuj6SymTgkFKy/+qA90HC2okGKQi9HYnETocrzMsT+H2
+         mkmg==
+X-Gm-Message-State: AOAM532ukkdJuRfMx+FAe7JL5ToYklXXWFnw3nShPjW1UmMUKPi6kW+f
+        1lvv+e0fbyLs5+H6fH31NaUmzfUCsQ==
+X-Google-Smtp-Source: ABdhPJybDJ7Lb8fIZU10sfK8nNbiDimDfC7u+ouNEMJmW0a2CScZ5nkLpcBFkUpNYos99iZlSTkXAA==
+X-Received: by 2002:a9d:4604:: with SMTP id y4mr4229176ote.79.1632402657391;
+        Thu, 23 Sep 2021 06:10:57 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id y84sm1329579oie.16.2021.09.23.06.09.27
+        by smtp.gmail.com with ESMTPSA id p8sm1262495oti.15.2021.09.23.06.10.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 06:09:28 -0700 (PDT)
-Received: (nullmailer pid 2858849 invoked by uid 1000);
-        Thu, 23 Sep 2021 13:09:27 -0000
-Date:   Thu, 23 Sep 2021 08:09:27 -0500
+        Thu, 23 Sep 2021 06:10:56 -0700 (PDT)
+Received: (nullmailer pid 2861278 invoked by uid 1000);
+        Thu, 23 Sep 2021 13:10:53 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
-Cc:     linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Suman Anna <s-anna@ti.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Ohad Ben-Cohen <ohad@wizery.com>, Nishanth Menon <nm@ti.com>,
-        Sinthu Raja <sinthu.raja@ti.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH V3] dt-bindings: hwlock: omap: Remove redundant binding
- example
-Message-ID: <YUx8h0MTHg+TMG3z@robh.at.kernel.org>
-References: <20210920123152.32751-1-sinthu.raja@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920123152.32751-1-sinthu.raja@ti.com>
+To:     Dikshita Agarwal <dikshita@codeaurora.org>
+Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        stanimir.varbanov@linaro.org, mchehab@kernel.org,
+        devicetree@vger.kernel.org, vgarodia@codeaurora.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, linux-media@vger.kernel.org
+In-Reply-To: <1632377309-25148-1-git-send-email-dikshita@codeaurora.org>
+References: <1632377309-25148-1-git-send-email-dikshita@codeaurora.org>
+Subject: Re: [RESEND PATCH v3] dt-bindings: media: venus: Add sc7280 dt schema
+Date:   Thu, 23 Sep 2021 08:10:53 -0500
+Message-Id: <1632402653.567694.2861277.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 18:01:52 +0530, Sinthu Raja wrote:
-> From: Sinthu Raja <sinthu.raja@ti.com>
+On Thu, 23 Sep 2021 11:38:29 +0530, Dikshita Agarwal wrote:
+> Add a schema description for the venus video encoder/decoder on the sc7280.
 > 
-> The example includes a board-specific compatible property, this is wrong
-> as the example should be board agnostic and should represent the particular
-> binding. Also, the file includes two similar examples but with a different
-> compatible. So, drop the entire second example
-> 
-> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
-> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
-> 
-> Changes in V3:
-> Addressed review comment, that includes adding Suggested By: tag to the
-> commit message
-> 
-> V2: https://lore.kernel.org/all/20210917170805.5079-1-sinthu.raja@ti.com/
-> V1: https://lore.kernel.org/all/20210917094740.18891-1-sinthu.raja@ti.com/
-> 
->  .../bindings/hwlock/ti,omap-hwspinlock.yaml   | 33 +------------------
->  1 file changed, 1 insertion(+), 32 deletions(-)
+>  .../bindings/media/qcom,sc7280-venus.yaml          | 159 +++++++++++++++++++++
+>  1 file changed, 159 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/media/qcom,sc7280-venus.example.dts:24.31-32 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/media/qcom,sc7280-venus.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1531553
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
