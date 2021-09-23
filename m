@@ -2,159 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45EF415BC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0262415BC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 12:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240316AbhIWKJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 06:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
+        id S240340AbhIWKKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 06:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240186AbhIWKJj (ORCPT
+        with ESMTP id S240186AbhIWKKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 06:09:39 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9583BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:08:07 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id d21so15462563wra.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:08:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vrull-eu.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=i7IsEz0+TmFkryE0xyDQDEXuyo40G1KZMcgl/iAYgo4=;
-        b=q2W+u1f2RRvpTmOehNT9mdT9VyMO5bHBoZ7RGb1K94+Qtr1Ba+ju3E5g3rJq6SXDaa
-         myQ3hGatvAFK1KPtzux15zrB34XK2sBlweuBw/L2F9EpW6dm71BrCx/IkKbIXOYOkCT4
-         PHWbSlBxe1QerHRWGudBQ1FteEWKb5HLgmvRydXFxKC7FOA2DYS7OtMBJ1lASGeisr81
-         KGmfYS7SDcpygf0GzIFuIfbiKUYoCCkrpdNkZWiauSP+6ajDm2/5azk2axruxStN0FLU
-         l5r0tw/TJ/sssCpV3CpAfn1bfdyFwKapBVSkIVNXkmRSh6MHsACHni44GO3gHnp4ljq4
-         j0mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=i7IsEz0+TmFkryE0xyDQDEXuyo40G1KZMcgl/iAYgo4=;
-        b=nAws47/aerTCjq3tMJqfrx48SxCNt7/NqW07owYLfBzhxkRhboCNXJj243f4LmJHag
-         0TRNWpxD4RQX81YvHiqr1zi5kJhOytyfhDp8N3lhTTkzBo+ydBCmfaJsmiHRrqm2Fnhg
-         /PB3e6xTvRecv/IbIyf6TQRtRH+lwG89IKVIn61IzFp7gELrScW4wDXwY3i2RRET2dpt
-         LVJmh0qNmJEzowoxzKyI36ypec3hlpeqj1U2djSCvezAYN3M1LbTdAwu8i4U/1dmCWCV
-         /nhWp5AE0pRPsL+gxCxImvkTz3TACBi6PaKL7gA6ySG4gQa24KfalsTtkXwiB/uwlAZ8
-         MMsg==
-X-Gm-Message-State: AOAM532yW/vXlMPHpcQgcdUmbONywj2fcClmD9yAgCBqqOkqsgDqakZO
-        /AIFuqRpK8UR3Mc0HpltPqk4QQng2qNeov0sEl1yyg==
-X-Google-Smtp-Source: ABdhPJwGNrmZBdCaAuiMHYcDdjm8dp+KCSXZu2axXhUghWj03xWT691jPsqVIga9dNDPzUfTnoHhAPw+J3qSWXCfqa4=
-X-Received: by 2002:adf:eec3:: with SMTP id a3mr4191548wrp.276.1632391686063;
- Thu, 23 Sep 2021 03:08:06 -0700 (PDT)
+        Thu, 23 Sep 2021 06:10:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16DDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 03:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1PpKlPDoBSuaeYeHR/2+8Aixyu6VFnAIgOUGkUJPnsc=; b=lekoeEu5cRUMdgg1iAAtLeAiPd
+        JjupVJ/wGLr36iYK2c3b4d3kHisYTtfWg3MTAewxiHyrLX15pl12jDwNparXBE7X4RMfkUcV4K2KH
+        FmoxOySjbz3ENcLvE+gk6G1HLiTK0guoeDYhNjK4IK5+puoHUkA50F5tUltIjCeEzk5XcnVtCKfrY
+        JqN6Ok+dccU0OW8AM9nbPjsQD1K/6khrpRfVQL1AgnzJnCzlItjlA48mv4y8aI6P5jXGBQepv+0ZA
+        hV5PSUO86Gtr7k11c1+wNZYZHEsve7RM1mQIWN1aUyX/gk+k5HH0P7N+/3LCqDXuRONIZm8ALz54V
+        /uuYhqaA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mTLeu-005Cj0-4r; Thu, 23 Sep 2021 10:08:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D3F7C300250;
+        Thu, 23 Sep 2021 12:08:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BC0662C9B8AB5; Thu, 23 Sep 2021 12:08:50 +0200 (CEST)
+Date:   Thu, 23 Sep 2021 12:08:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     linux-kernel@vger.kernel.org, acme@kernel.org, mingo@redhat.com,
+        kernel-team@fb.com, eranian@google.com,
+        Lucian Grijincu <lucian@fb.com>
+Subject: Re: [PATCH] perf/core: fix userpage->time_enabled of inactive events
+Message-ID: <YUxSMqrJK/rKPZS3@hirez.programming.kicks-ass.net>
+References: <20210922011715.4154119-1-songliubraving@fb.com>
 MIME-Version: 1.0
-References: <20210923072716.913826-1-guoren@kernel.org> <6d7b1668c1f562a5ef426bb2519f9784@mailhost.ics.forth.gr>
- <CAAhSdy0YDP3Nk8N9fnrKgS+3Rjt=5tLCh20upmUGK9SK67nNvg@mail.gmail.com>
- <0861cc74d3886e685e9aa5d13ddcd781@mailhost.ics.forth.gr> <16de95480d279b086cf0c612461e4235@mailhost.ics.forth.gr>
-In-Reply-To: <16de95480d279b086cf0c612461e4235@mailhost.ics.forth.gr>
-From:   Philipp Tomsich <philipp.tomsich@vrull.eu>
-Date:   Thu, 23 Sep 2021 12:07:55 +0200
-Message-ID: <CAAeLtUChjjzG+P8yg45GLZMJy5UR2K5RRBoLFVZhtOaZ5pPtEA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Add RISC-V svpbmt extension
-To:     Nick Kossifidis <mick@ics.forth.gr>
-Cc:     Anup Patel <anup@brainfault.org>, Guo Ren <guoren@kernel.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922011715.4154119-1-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sept 2021 at 11:48, Nick Kossifidis <mick@ics.forth.gr> wrote:
->
-> =CE=A3=CF=84=CE=B9=CF=82 2021-09-23 12:42, Nick Kossifidis =CE=AD=CE=B3=
-=CF=81=CE=B1=CF=88=CE=B5:
-> > =CE=A3=CF=84=CE=B9=CF=82 2021-09-23 12:37, Anup Patel =CE=AD=CE=B3=CF=
-=81=CE=B1=CF=88=CE=B5:
-> >> On Thu, Sep 23, 2021 at 2:55 PM Nick Kossifidis <mick@ics.forth.gr>
-> >> wrote:
-> >>>
-> >>> Hello Guo,
-> >>>
-> >>> =CE=A3=CF=84=CE=B9=CF=82 2021-09-23 10:27, guoren@kernel.org =CE=AD=
-=CE=B3=CF=81=CE=B1=CF=88=CE=B5:
-> >>> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> >>> b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> >>> index e534f6a7cfa1..1825cd8db0de 100644
-> >>> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> >>> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> >>> @@ -56,7 +56,9 @@ properties:
-> >>>       enum:
-> >>>         - riscv,sv32
-> >>>         - riscv,sv39
-> >>> +      - riscv,sv39,svpbmt
-> >>>         - riscv,sv48
-> >>> +      - riscv,sv48,svpbmt
-> >>>         - riscv,none
-> >>>
-> >>> Isn't svpbmt orthogonal to the mmu type ? It's a functionality that
-> >>> can
-> >>> be present on either sv39/48/57 so why not have another "svpbmt"
-> >>> property directly on the cpu node ?
-> >>
-> >> Actually, "mmu-type" would be a good place because it's page based
-> >> memory attribute and paging can't exist without mmu translation mode.
-> >>
-> >> Also, "svpmbt" is indeed a CPU property so has to be feature
-> >> individual
-> >> CPU node. Hypothetically, a heterogeneous system is possible where
-> >> some CPUs have "svpmbt" and some CPUs don't have "svpmbt". For
-> >> example, a future FUxxx SoC might have a E-core and few S-cores
-> >> where S-cores have Svpmbt whereas E-core does not have Svpmbt
-> >> because it's an embedded core.
-> >>
-> >
-> > I should say cpuX node, not the root /cpu node. We can have an svpbmt
-> > property in the same way we have an mmu-type property.
-> >
->
-> I'm also thinking of future mmu-related extensions, e.g. what about
-> svnapot ? Should we have mmu-type be riscv,sv39,svnapot and e.g.
-> riscv.sv39,svpbmt,svnapot ? It'll become messy.
+On Tue, Sep 21, 2021 at 06:17:15PM -0700, Song Liu wrote:
+> Users of rdpmc rely on the mmapped user page to calculate accurate
+> time_enabled. Currently, userpage->time_enabled is only updated when the
+> event is added to the pmu. As a result, inactive event (due to counter
+> multiplexing) does not have accurate userpage->time_enabled. This can
+> be reproduced with something like:
+> 
+>    /* open 20 task perf_event "cycles", to create multiplexing */
+> 
+>    fd = perf_event_open();  /* open task perf_event "cycles" */
+>    userpage = mmap(fd);     /* use mmap and rdmpc */
+> 
+>    while (true) {
+>      time_enabled_mmap = xxx; /* use logic in perf_event_mmap_page */
+>      time_enabled_read = read(fd).time_enabled;
+>      if (time_enabled_mmap > time_enabled_read)
+>          BUG();
+>    }
 
-How if we expand this to a mmu subnode in cpu@x and add a booleans for
-adornments like svnapot and svpbmt?
+*groan*, yes I fear you're right.
 
-The older mmu-type could then treated to indicate a mmu w/o any adornments
-specified.  I am aware that this generates an additional parsing-path
-that will be
-maintained, but it will allow future properties to be grouped.
+> @@ -3807,6 +3816,23 @@ ctx_sched_in(struct perf_event_context *ctx,
+>  	/* Then walk through the lower prio flexible groups */
+>  	if (is_active & EVENT_FLEXIBLE)
+>  		ctx_flexible_sched_in(ctx, cpuctx);
+> +
+> +	/*
+> +	 * Update userpage for inactive events. This is needed for accurate
+> +	 * time_enabled.
+> +	 */
+> +	if (unlikely(ctx->rotate_necessary)) {
+> +		struct perf_event *event;
+> +
+> +		perf_event_groups_for_each(event, &ctx->pinned_groups) {
+> +			if (event->state == PERF_EVENT_STATE_INACTIVE)
+> +				perf_event_update_inactive_userpage(event, ctx);
+> +		}
 
-This could like like the following:
+That's a straight up error, if a pinned event doesn't get scheduled,
+it's game over.
 
-  cpu@0 {
-    ...
-    mmu {
-       type =3D "riscv,sv39";
-       supports-svpbmt;
-    }
-    ...
-  }
+> +		perf_event_groups_for_each(event, &ctx->flexible_groups) {
+> +			if (event->state == PERF_EVENT_STATE_INACTIVE)
+> +				perf_event_update_inactive_userpage(event, ctx);
+> +		}
+> +	}
+>  }
 
-Cheers,
-Philipp.
+That's terrible though, and also wrong I think.
+
+It's wrong because:
+
+ - you should only do this for (is_active & EVENT_TIME)
+ - you should only consider the events visit_groups_merge() would have
+ - you miss updating group-siling events
+
+(I also think it's possible to try harder to avoid the work)
+
+Now, looking at visit_groups_merge() we only terminate the iteration
+when func returns !0, which is merge_sched_in(), and that *never*
+returns !0.
+
+So we already iterate all the right events. So I'm thinking we can do
+something like the below, hmm?
+
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 0c000cb01eeb..4d1e962c2ebe 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3707,6 +3712,28 @@ static noinline int visit_groups_merge(struct perf_cpu_context *cpuctx,
+ 	return 0;
+ }
+ 
++static inline bool event_update_userpage(struct perf_event *event)
++{
++	if (!atomic_read(&event->mmap_count))
++		return false;
++
++	perf_event_update_time(event);
++	perf_set_shadow_time(event, event->ctx);
++	perf_event_update_userpage(event);
++	return true;
++}
++
++static inline void group_update_userpage(struct perf_event *group_event)
++{
++	struct perf_event *event;
++
++	if (!event_update_userpage(group_event))
++		return;
++
++	for_each_sibling_event(event, group_event)
++		event_update_userpage(event);
++}
++
+ static int merge_sched_in(struct perf_event *event, void *data)
+ {
+ 	struct perf_event_context *ctx = event->ctx;
+@@ -3725,14 +3752,18 @@ static int merge_sched_in(struct perf_event *event, void *data)
+ 	}
+ 
+ 	if (event->state == PERF_EVENT_STATE_INACTIVE) {
++		*can_add_hw = 0;
++
+ 		if (event->attr.pinned) {
+ 			perf_cgroup_event_disable(event, ctx);
+ 			perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
+-		}
+ 
+-		*can_add_hw = 0;
+-		ctx->rotate_necessary = 1;
+-		perf_mux_hrtimer_restart(cpuctx);
++		} else {
++			ctx->rotate_necessary = 1;
++			perf_mux_hrtimer_restart(cpuctx);
++
++			group_update_userpage(event);
++		}
+ 	}
+ 
+ 	return 0;
