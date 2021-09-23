@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED2B4160D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0C54160E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 16:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241571AbhIWOSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 10:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        id S241597AbhIWOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 10:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241304AbhIWOSL (ORCPT
+        with ESMTP id S241308AbhIWOTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:18:11 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCFDC061574;
-        Thu, 23 Sep 2021 07:16:40 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id z12so4213869qvx.5;
-        Thu, 23 Sep 2021 07:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o/8kzs9XW2ToHrPrP9iSX9iuHMAFY16yi4FK2DUXBdM=;
-        b=WuiWxD+AoOLYj4nhtmqdbSbDgYdpga2nD02lidCpbMZhbkPLAvd86SQwipKUPyqmM/
-         GE+zCE/vf4bNtkw64RFVBPP+IJ+raj+EM61J7dxw8cbYXrEj6PGa4TdnCLcuB+1S+yrP
-         6J1mPLG45OKbUvZUff67ejbwLK5NqwIbRnSTuk1csc1VI+tFq7gQ1ZEXSofF1HNxypxI
-         gdZEfcDeKmmwQR4cHHaA03A6XGeiZ8+h3clIDrdOXIRS0uDrVH2PhP3JPimwwcanZ85c
-         pZHvIzbKtQ8om5sxUiyvQP3VKFRRA1cNIDj/KrOC/KQ0z3mRu+U7Vsd4cK1ILqkSrUN8
-         DRxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o/8kzs9XW2ToHrPrP9iSX9iuHMAFY16yi4FK2DUXBdM=;
-        b=BYHpSVHHVEvvyIxXMcBTwktR+CZb4Q3qNimZgqF+LfOjf86YC3Y/6x+Ood2nb4eMAK
-         Li9PvxNhHwywbSuwIfK/aYhrf6ri/VF7E8H58/Krk42AYigtAYBQtmAS699dfK0t7/fh
-         6Gn+YoRH5Y+UE/jSm4MZNeZWBx64UmPiOCe+FY1KyvYXFDJm1aiP78DJWDez+4A3bTuY
-         fkBxkpuMsGTw3cMZ561v9b+im/9xM4Ngulofge1FClKlGNWb4sY/bovfUrEFIatgJvw5
-         igKLFg8+fS9M7S2p14+aCVdBoyJN/KkDgr+uhKKNp8CFslzxuS5aAmL57G9kqGSBS/48
-         MdQg==
-X-Gm-Message-State: AOAM532NKLU1Y7CoMf7L8/8UE/oPLF+Yp6GBwuFQPeNLT1n9wLnUA+ss
-        aOdehcwLJqubKlYE29rfTK0Sqasxd8uolG13xjc=
-X-Google-Smtp-Source: ABdhPJy/EdD2Zv1jzU4GZOVRv3NIxA4Aukr2ooCbgzlk4/GtIctl1tCQTmyPiD/jd0WTVa39sFqUaXCygYzf7ZtGERk=
-X-Received: by 2002:ad4:4705:: with SMTP id k5mr4740101qvz.55.1632406599114;
- Thu, 23 Sep 2021 07:16:39 -0700 (PDT)
+        Thu, 23 Sep 2021 10:19:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9613EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 07:18:08 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1mTPXz-0007m8-0V; Thu, 23 Sep 2021 16:17:59 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1mTPXy-0000Xt-8t; Thu, 23 Sep 2021 16:17:58 +0200
+Date:   Thu, 23 Sep 2021 16:17:58 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Harini Katakam <harini.katakam@xilinx.com>
+Cc:     vkoul@kernel.org, romain.perier@gmail.com, allen.lkml@gmail.com,
+        yukuai3@huawei.com, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        harinikatakamlinux@gmail.com, michal.simek@xilinx.com,
+        radhey.shyam.pandey@xilinx.com, shravya.kumbham@xilinx.com,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 4/4] dmaengine: zynqmp_dma: Typecast with enum to fix the
+ coverity warning
+Message-ID: <20210923141758.GB30905@pengutronix.de>
+References: <20210914082817.22311-1-harini.katakam@xilinx.com>
+ <20210914082817.22311-5-harini.katakam@xilinx.com>
 MIME-Version: 1.0
-References: <20210916153418.15105-1-caihuoqing@baidu.com>
-In-Reply-To: <20210916153418.15105-1-caihuoqing@baidu.com>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Thu, 23 Sep 2021 22:17:04 +0800
-Message-ID: <CADBw62qkp-LrHf1MUgPmZ=X24G-gAvsjY1yLFNncT-toUjUyJA@mail.gmail.com>
-Subject: Re: [PATCH] Input: sc27xx-vibra - Make use of the helper function dev_err_probe()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-input@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210914082817.22311-5-harini.katakam@xilinx.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 16:12:10 up 217 days, 17:36, 113 users,  load average: 0.96, 0.50,
+ 0.32
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Sep 16, 2021 at 11:34 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
->
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
->
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+On Tue, 14 Sep 2021 13:58:17 +0530, Harini Katakam wrote:
+> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> 
+> Typecast the flags variable with (enum dma_ctrl_flags) in
+> zynqmp_dma_prep_memcpy function to fix the coverity warning.
+> 
+> Addresses-Coverity: Event mixed_enum_type.
+> Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
 > ---
->  drivers/input/misc/sc27xx-vibra.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/input/misc/sc27xx-vibra.c b/drivers/input/misc/sc27xx-vibra.c
-> index 1478017f0968..7cf0a1354320 100644
-> --- a/drivers/input/misc/sc27xx-vibra.c
-> +++ b/drivers/input/misc/sc27xx-vibra.c
-> @@ -135,10 +135,9 @@ static int sc27xx_vibra_probe(struct platform_device *pdev)
->         }
->
->         error = device_property_read_u32(&pdev->dev, "reg", &info->base);
-> -       if (error) {
-> -               dev_err(&pdev->dev, "failed to get vibrator base address.\n");
-> -               return error;
-> -       }
-> +       if (error)
-> +               return dev_err_probe(&pdev->dev, error,
-> +                                    "failed to get vibrator base address.\n");
+>  drivers/dma/xilinx/zynqmp_dma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
+> index 588460e56ab8..282d01ab402f 100644
+> --- a/drivers/dma/xilinx/zynqmp_dma.c
+> +++ b/drivers/dma/xilinx/zynqmp_dma.c
+> @@ -849,7 +849,7 @@ static struct dma_async_tx_descriptor *zynqmp_dma_prep_memcpy(
+>  
+>  	zynqmp_dma_desc_config_eod(chan, desc);
+>  	async_tx_ack(&first->async_tx);
+> -	first->async_tx.flags = flags;
+> +	first->async_tx.flags = (enum dma_ctrl_flags)flags;
 
-The device_property_read_u32() never returns an EPROBE_DEFER error, so
-how can this function help? IMO, I did not see any benefits in this
-case.
+Thanks for the patch.
 
--- 
-Baolin Wang
+I looked at a few dmaengine drivers, at it looks like all of them have this
+issue. Maybe we should change the signature of the dmaengine_prep_dma_memcpy()
+engine to accept "enum dma_ctrl_flags flags" instead of "unsigned long flags"?
+
+Michael
+
+>  	return &first->async_tx;
+>  }
+>  
+> -- 
+> 2.17.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
