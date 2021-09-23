@@ -2,80 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD5C416476
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726E6416465
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242623AbhIWRbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 13:31:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242543AbhIWRbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:31:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E786360F70;
-        Thu, 23 Sep 2021 17:30:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632418206;
-        bh=SUnd6a35HoB2t5EfEqXfbIPuy+KqrErj97lV9b91p8k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YnTImCMA0G3P5byS+2JNOvvsg97ZgkeC1ALb6pUqG/GifG5I7rHGWbLlQzGzv/LOZ
-         HgD/qFX83eoAJJc7AI8YrgTG9rwcLmdRZOOzp4FMJe1KBAlFd23chg56eC656xu+Kh
-         P7hZKoIzW8GpSCA2qTrI1ohKLYqc03DWB5UPiG1g=
-Date:   Thu, 23 Sep 2021 19:30:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Vladimir Oltean <olteanv@gmail.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] fw_devlink bug fixes
-Message-ID: <YUy5nDMeWMg0sfGI@kroah.com>
-References: <20210915170940.617415-1-saravanak@google.com>
+        id S242575AbhIWR2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238674AbhIWR2x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 13:28:53 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E8BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:27:21 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id t8so19389855wrq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z8P/N3nWO0xQm62MFlmAAZqgDHsYeso9viJ+hbtMyd4=;
+        b=hy7aVkeaLnbUmjeFX+DYjMGNVNYriACYfGZQyjwmls49RYDUYd3/HoBrjRYAUBcP5u
+         WdQnR73JdNER1uCzMJocK1HW91vlAVMxtZcESqP1i97xaJzjUhusfzOq5bZNIb/07u6O
+         PHxp1L2be2L6LFSHWSN2hvDKWp6O/aFYzk04ao59UCgXZo4CfdQEz43ubxVEWZ+YhSyY
+         7DAnjTjddx0gG8gorwAX2HMRpSZH3Xlg2biA8xt0TZ6xAl7dHMTaGxRx/P/jgPE9K9hy
+         Aecwnh8Zc8otTWFXx6czDnJzLZ1teitLwEa8ByCIXrXn0AkpK3BAr9sNL8x0FgN0bPVR
+         X+rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z8P/N3nWO0xQm62MFlmAAZqgDHsYeso9viJ+hbtMyd4=;
+        b=tgwSUdyW1JAXZ+/9JMr+UZ9EQkJl1f3FPkPC5DOsedHs8fMytWp2ER+XFk4un326Ic
+         FRlQZcOSs+74tou0eGnNfHqF4pRO/HSbh2/pLAyzAsPrdst5Q0taYo68UO26r7IBH5Eo
+         4NVML5K75JAoTUAeg/YB1c09KkBywhYHBwJWZBhhxP2dvYezJLbHV5OZV69Cscm4BMXn
+         t3Ued8nBwxCzujuIfDdGVORNpuBowu/Uh66NP8QDSxvAGLZhAdDrlkNV8/uMa0atmYgz
+         xOtxNbN9ukhDQ1Gq/EBXW8pA/PE9Ozji1FURP0syBiDSxt+VaAJezTSP7vDcE4aIGSha
+         TFmw==
+X-Gm-Message-State: AOAM531NQVYF/lUraM3H1gMQHcxdur7D8CNdzcQUATaw0J9ulQ1t3+2J
+        YTjQSrIoBMXG7TCkQABG8zLa2GumU3+NHLRm98s=
+X-Google-Smtp-Source: ABdhPJx6UeLUNJEg4ECtZTPmdRdNxeNfodeUo9giXcpmLiqe3uXJ23JEPIV7y6k3ETipKna4LRADAw7g7juNd7bi/Bg=
+X-Received: by 2002:a1c:2b04:: with SMTP id r4mr5668001wmr.168.1632418040015;
+ Thu, 23 Sep 2021 10:27:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915170940.617415-1-saravanak@google.com>
+References: <20210920225801.227211-1-robdclark@gmail.com> <20210920225801.227211-4-robdclark@gmail.com>
+ <YUvN3j0v+8NMjNte@pendragon.ideasonboard.com>
+In-Reply-To: <YUvN3j0v+8NMjNte@pendragon.ideasonboard.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 23 Sep 2021 10:31:52 -0700
+Message-ID: <CAF6AEGviyfX6+c-CB5gMXqRQfHhvb5L8t++-VkZpvS3r9qDNoA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:09:36AM -0700, Saravana Kannan wrote:
-> Intended for 5.15.
-> 
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Vladimir Oltean <olteanv@gmail.com>
-> 
-> v1->v2:
-> - Added a few Reviewed-by and Tested-by tags
-> - Addressed Geert's comments in patches 3 and 5
-> - Dropped the fw_devlink.debug patch
-> - Added 2 more patches to the series to address other fw_devlink issues
-> 
-> v2->v3:
-> - Split the logging/debug changes into a separate series
+On Wed, Sep 22, 2021 at 5:44 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Rob,
+>
+> Thank you for the patch.
+>
+> On Mon, Sep 20, 2021 at 03:58:00PM -0700, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > Slightly awkward to fish out the display_info when we aren't creating
+> > own connector.  But I don't see an obvious better way.
+> >
+> > v2: Remove error return with NO_CONNECTOR flag
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 39 ++++++++++++++++++++-------
+> >  1 file changed, 29 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > index 6154bed0af5b..94c94cc8a4d8 100644
+> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > @@ -667,11 +667,6 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+> >                                                  .node = NULL,
+> >                                                };
+> >
+> > -     if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
+> > -             DRM_ERROR("Fix bridge driver to make connector optional!");
+> > -             return -EINVAL;
+> > -     }
+> > -
+> >       pdata->aux.drm_dev = bridge->dev;
+> >       ret = drm_dp_aux_register(&pdata->aux);
+> >       if (ret < 0) {
+> > @@ -679,9 +674,11 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+> >               return ret;
+> >       }
+> >
+> > -     ret = ti_sn_bridge_connector_init(pdata);
+> > -     if (ret < 0)
+> > -             goto err_conn_init;
+> > +     if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
+> > +             ret = ti_sn_bridge_connector_init(pdata);
+> > +             if (ret < 0)
+> > +                     goto err_conn_init;
+> > +     }
+> >
+> >       /*
+> >        * TODO: ideally finding host resource and dsi dev registration needs
+> > @@ -743,7 +740,8 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+> >  err_dsi_attach:
+> >       mipi_dsi_device_unregister(dsi);
+> >  err_dsi_host:
+> > -     drm_connector_cleanup(&pdata->connector);
+> > +     if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
+> > +             drm_connector_cleanup(&pdata->connector);
+>
+> I wonder if we actually need this. The connector gets attached to the
+> encoder, won't it be destroyed by the DRM core in the error path ?
 
-I have taken this now into my tree.
+This does not appear to be the case, we leak the connector if I remove
+this (and add a hack to trigger the error path)
 
-It fixes the real problem where drivers were making the wrong assumption
-that if they registered a device, it would be instantly bound to a
-driver.  Drivers that did this were getting lucky, as this was never a
-guarantee of the driver core (think about if you enabled async
-probing, and the mess with the bus specific locks that should be
-preventing much of this)
+> >  err_conn_init:
+> >       drm_dp_aux_unregister(&pdata->aux);
+> >       return ret;
+> > @@ -792,9 +790,30 @@ static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
+> >       regmap_write(pdata->regmap, SN_DSIA_CLK_FREQ_REG, val);
+> >  }
+> >
+> > +/*
+> > + * Find the connector and fish out the bpc from display_info.  It would
+> > + * be nice if we could get this instead from drm_bridge_state, but that
+> > + * doesn't yet appear to be the case.
+>
+> You already have a bus format in the bridge state, from which you can
+> derive the bpp. Could you give it a try ?
 
-With this new flag, we can mark these drivers/busses that have this
-assumption and work to solve correctly over time.  The issue with using
-a "generic vs. specific" driver is a bit related, I'm amazed that a
-subsystem actually implemented it this way, others of us have been
-avoiding this for a very long time due to the complexity involved when
-things are built as modules.
+Possibly the bridge should be converted to ->atomic_enable(), etc..
+I'll leave that for another time
 
-thanks,
+BR,
+-R
 
-greg k-h
+> > + */
+> >  static unsigned int ti_sn_bridge_get_bpp(struct ti_sn65dsi86 *pdata)
+> >  {
+> > -     if (pdata->connector.display_info.bpc <= 6)
+> > +     struct drm_bridge *bridge = &pdata->bridge;
+> > +     struct drm_connector_list_iter conn_iter;
+> > +     struct drm_connector *connector;
+> > +     unsigned bpc = 0;
+> > +
+> > +     drm_connector_list_iter_begin(bridge->dev, &conn_iter);
+> > +     drm_for_each_connector_iter(connector, &conn_iter) {
+> > +             if (drm_connector_has_possible_encoder(connector, bridge->encoder)) {
+> > +                     bpc = connector->display_info.bpc;
+> > +                     break;
+> > +             }
+> > +     }
+> > +     drm_connector_list_iter_end(&conn_iter);
+> > +
+> > +     WARN_ON(bpc == 0);
+> > +
+> > +     if (bpc <= 6)
+> >               return 18;
+> >       else
+> >               return 24;
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
