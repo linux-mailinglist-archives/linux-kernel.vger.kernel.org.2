@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7E7416567
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0EC41656A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 20:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242821AbhIWSv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 14:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        id S242819AbhIWSwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 14:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242770AbhIWSvz (ORCPT
+        with ESMTP id S242818AbhIWSv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 14:51:55 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EACC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:23 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i4so29884596lfv.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:23 -0700 (PDT)
+        Thu, 23 Sep 2021 14:51:59 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14735C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:27 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id b15so29025817lfe.7
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 11:50:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EC54pajHK/jhlrdoN2LrjDzAGYxPUaeJq5OMKjryfSg=;
-        b=vW/lzrxVF8zErmZtVvjvbsNDCl4vWGKYJu7yJFDL+qpobc/I9BCxGyrJ2EdjukmD2I
-         Wbzy9Fk+OBRM64GbmcRarOBVHwRNWNrQ2f0aTRvO+S6GiOB86XnWUpbcbyfCox71u8Ug
-         jUoN8DKTlDCWcvCldOCEEB8p/iEwO/4dEawwJaW+zMQZtldMUHXdEh2PHFNMoA+ACsig
-         yJ4fclxJ04gN5vx9W1aVh9XwKDYR/356xE5FYlvG3d/bAl0VGIxmCvHb+3Z0rS+negcV
-         58nccCEDPF0qQBZyJGyfd8EUxaFWUMIjsDNePgiZooIjzz7lwvjsGRVJLuETn/VvWrKG
-         LReQ==
+        bh=9CBqcEeaNCIzEJmTkQKL3nnjymx6WgZloiotm1WXO5Q=;
+        b=FZGhrTospEri7qgpD9SosYC6mllXRRt1rSBWvIvR7N6iRArrjJ4He4QebBVd+cajfD
+         75fqVz58YQWNarvpFpkkshoUQ62pc/Xe8n6xbmSQJF9zUVNOeKhStA+uKX2UcVm7EVDX
+         Oy2VDS9I5ojFOcoejlAFsjwE2gYhurBMeUudMpVhx8DYuubujSTOjpaah5SevSeFR9fd
+         bJJulkeZTBrwxYSgMoUp91EPJgOSmZmRGChxEzA3RrYPVyj2xVvHy4uAlTZ+3HyF/FLQ
+         DewTEnSJEiN4q72dr569yuFVpZzyGZvKSBiRcBIGcho9zS2k+bcHL8F0ipPMf7u9VYmx
+         kEvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EC54pajHK/jhlrdoN2LrjDzAGYxPUaeJq5OMKjryfSg=;
-        b=pbbcPxOnvMsHS0ivJ0RaT0BV4Z+Q2w75HYRjutSR7c8r1e76psySb//uOn8aoiUKiS
-         apNMwzwX1usLXPD6Tyn2Qx/sxUev8eUeJMY4Aml9Y/ypJQO02Nh0hcKBHhc6Wc+Rv2xM
-         JLPCKdVc+3+epPBJuJf0ymHNFuq56xTwTpcs530PqPXmSGfGlRIWWeiHQ/OfNfeqiYr7
-         cMkHW8GEDrcWnZSYu5thdLfwCVtY3MBpkt8GhXb1tXKJ1AlgSHP61xWhjfFtkouVIKdn
-         JLk6klqNT6lvKMNBHo+f3EC6DghcQTjsVJCky4WbV5R6UZJqNJ3hyxOunl3cCyTBB1p/
-         sfbA==
-X-Gm-Message-State: AOAM531zpyg+SH1DOnt6ab/1ClWhdRqsGvHAZn3tfcEb5qpakk5JyfBP
-        2wiVOzb4ReZd8XrME1DpfPm2RgcVE+kggTjB19Gs1A==
-X-Google-Smtp-Source: ABdhPJwaj51XOX0RgW7c4TANOs4O5F+IlhNZ0UP2bQGbrs3huRUXqsBMlwEubsE+h6f5RWfZMxc9G94gPkY6z0XV8go=
-X-Received: by 2002:a05:6512:3f9f:: with SMTP id x31mr5891075lfa.233.1632423021793;
- Thu, 23 Sep 2021 11:50:21 -0700 (PDT)
+        bh=9CBqcEeaNCIzEJmTkQKL3nnjymx6WgZloiotm1WXO5Q=;
+        b=WS0cxD6ZlBefa0FmW0wlJSCGotNEiyMxMtf5ppYUer4fIK1dxfKP7QnaqsA6uoUluW
+         xOEO2ed6fFqldmKWpfm/27vMuVudEHHS7rCgZBfQ4xPkDvcy5sDCSzsoLYTvaSID3tHr
+         ZFWnvc4sWzzzO0rkT8FdrRQAR5q81TfGN8vklTyntoEcSUTsva2+4pJjnqKDGLNR6Hpa
+         P7VklFFe1LKfixq1fRhcA7TeRSkJggzB3Nx3Zr+JFAtgbDKeJAdmjJBVK+Wgg5N1R8wr
+         QKeGPDfCmDB3RYhLl0XhGrvDugjFGB9w09TJkYMnvI+gXhQPYB4tlDMtsznDhFbmWyFE
+         Barw==
+X-Gm-Message-State: AOAM532jBQHe12ig/pZjFKPOjPwH+nKl6IUQ4TvbLDkErUXyEtC8OJVu
+        OROQ4TgNNsn7xl9TeUFfq0UiAyUAquzPqJBIy7IsuQ==
+X-Google-Smtp-Source: ABdhPJy/jBdtZppzF1VrwwZlD+f66NRxMptTHpqaUXWgpxUCUuKpfe5ziBVMZ1OUWRIIDczx8iHpuWgdHYKaXL61ooA=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr5554685lfb.71.1632423025387;
+ Thu, 23 Sep 2021 11:50:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210916170511.137915-1-krzysztof.kozlowski@canonical.com>
+References: <20210917124803.22871-1-wenbin.mei@mediatek.com>
+In-Reply-To: <20210917124803.22871-1-wenbin.mei@mediatek.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 23 Sep 2021 20:49:45 +0200
-Message-ID: <CAPDyKFqPfznPznCBaxK8iK+no4rtNOQOxtUFci5grQB2Qx6N0Q@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-s3c: drop unneeded MODULE_ALIAS
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Dooks <ben-linux@fluff.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
+Date:   Thu, 23 Sep 2021 20:49:49 +0200
+Message-ID: <CAPDyKFrtrY4qDU7nxynXuvyw32zkHcwMkmJJjftj7EzMcsD9Lg@mail.gmail.com>
+Subject: Re: [RESEND v4 0/3] mmc: mediatek: Add HS400 online tuning support
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Yue Hu <huyue2@yulong.com>, Bean Huo <beanhuo@micron.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sept 2021 at 19:05, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
+On Fri, 17 Sept 2021 at 14:48, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
 >
-> The MODULE_DEVICE_TABLE already creates proper alias for platform
-> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
+> Change in v4:
+> - split driver patch into a core patch and a mtk-sd patch
+> - use mmc_get_ext_csd function
+> - move mmc_get_ext_csd() to include/linux/mmc/host.h
+> - modify some commit message.
 >
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Change in v3:
+> - add detail descripthion for hs400 dly3
+>
+> Change in v2:
+> - remove the check "mmc_can_ext_csd"
+> - change the hs400 tuning condition for "msdc_cmd_done" function and
+> "msdc_cmd_next" function
+> - use "-EIO" instead of "-ERANGE"
+>
+> Wenbin Mei (3):
+>   dt-bindings: mmc: mtk-sd: add hs400 dly3 setting
+>   mmc: core: add tuning support for HS400 mode
+>   mmc: mediatek: Add HS400 online tuning support
+>
+>  .../devicetree/bindings/mmc/mtk-sd.yaml       | 12 +++
+>  drivers/mmc/core/mmc.c                        |  8 ++
+>  drivers/mmc/core/mmc_ops.h                    |  1 -
+>  drivers/mmc/host/mtk-sd.c                     | 79 ++++++++++++++++++-
+>  include/linux/mmc/host.h                      |  4 +
+>  5 files changed, 101 insertions(+), 3 deletions(-)
+>
+> --
+> 2.25.1
+>
 
 Applied for next, thanks!
 
 Kind regards
 Uffe
-
-
-> ---
->  drivers/mmc/host/sdhci-s3c.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
-> index 862f033d235d..9085f3932443 100644
-> --- a/drivers/mmc/host/sdhci-s3c.c
-> +++ b/drivers/mmc/host/sdhci-s3c.c
-> @@ -791,4 +791,3 @@ module_platform_driver(sdhci_s3c_driver);
->  MODULE_DESCRIPTION("Samsung SDHCI (HSMMC) glue");
->  MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
->  MODULE_LICENSE("GPL v2");
-> -MODULE_ALIAS("platform:s3c-sdhci");
-> --
-> 2.30.2
->
