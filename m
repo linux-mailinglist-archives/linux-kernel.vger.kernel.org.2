@@ -2,248 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C448415C94
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851CB415C98
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 13:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240557AbhIWLOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 07:14:17 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54604 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240550AbhIWLOP (ORCPT
+        id S240579AbhIWLPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 07:15:03 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:16286 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240498AbhIWLPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 07:14:15 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9419E1FFA5;
-        Thu, 23 Sep 2021 11:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632395563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aEVPoxQen73SrDxSP+9kD2Kz53XX95G6TqvPawceJl0=;
-        b=aMIMZ3p+NoahC+IwiLLRYLcRvVU9dvfBfQn/9wyv7qpmsc66wjyLirHMsuSYegGl79SY5s
-        7X/s5hh43TI0cvshY647L+Bi+i46ymVBlv985tPGD2kdbgsGwZ9zuaiivCuSe2D8C4fmBp
-        enCX7AFR4JnBcWeS7WwWHxXnsjhFLF0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4AFA313DCD;
-        Thu, 23 Sep 2021 11:12:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +cGmECthTGEpegAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 23 Sep 2021 11:12:43 +0000
-Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
-To:     Jan Beulich <jbeulich@suse.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>
-Cc:     boris.ostrovsky@oracle.com, julien@xen.org, sstabellini@kernel.org,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20210923095345.185489-1-andr2000@gmail.com>
- <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <478b9175-f21f-b77a-2bc1-ad230bbdf548@suse.com>
-Date:   Thu, 23 Sep 2021 13:12:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 23 Sep 2021 07:15:01 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HFXZL6JGPz8tJf;
+        Thu, 23 Sep 2021 19:12:42 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 23 Sep 2021 19:13:12 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Thu, 23 Sep
+ 2021 19:13:12 +0800
+Subject: Re: [PATCH net-next 1/7] page_pool: disable dma mapping support for
+ 32-bit arch with 64-bit DMA
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Jonathan Lemon" <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        "Willem de Bruijn" <willemb@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "Paolo Abeni" <pabeni@redhat.com>, Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, <memxor@gmail.com>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        David Ahern <dsahern@gmail.com>
+References: <20210922094131.15625-1-linyunsheng@huawei.com>
+ <20210922094131.15625-2-linyunsheng@huawei.com>
+ <0ffa15a1-742d-a05d-3ea6-04ff25be6a29@redhat.com>
+ <CAC_iWjJLCQNHxgbQ-mzLC3OC-m2s7qj3YAtw7vPAKGG6WxywpA@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <adb2687f-b501-9324-52b2-33ede1169007@huawei.com>
+Date:   Thu, 23 Sep 2021 19:13:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="2lcwPdRBsDCp1LdWI77itRlY1UcSO1FMi"
+In-Reply-To: <CAC_iWjJLCQNHxgbQ-mzLC3OC-m2s7qj3YAtw7vPAKGG6WxywpA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2lcwPdRBsDCp1LdWI77itRlY1UcSO1FMi
-Content-Type: multipart/mixed; boundary="RabaBlNU167INrkhGG7TimY4gvZhpBVDu";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>,
- Oleksandr Andrushchenko <andr2000@gmail.com>
-Cc: boris.ostrovsky@oracle.com, julien@xen.org, sstabellini@kernel.org,
- Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
- xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Message-ID: <478b9175-f21f-b77a-2bc1-ad230bbdf548@suse.com>
-Subject: Re: [PATCH v3 1/2] xen-pciback: prepare for the split for stub and PV
-References: <20210923095345.185489-1-andr2000@gmail.com>
- <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
-In-Reply-To: <d12b0bcd-e998-d4c5-e673-9c13a864eea4@suse.com>
+On 2021/9/23 18:02, Ilias Apalodimas wrote:
+> Hi Jesper,
+> 
+> On Thu, 23 Sept 2021 at 12:33, Jesper Dangaard Brouer
+> <jbrouer@redhat.com> wrote:
+>>
+>>
+>> On 22/09/2021 11.41, Yunsheng Lin wrote:
+>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>>> index 1a6978427d6c..a65bd7972e37 100644
+>>> --- a/net/core/page_pool.c
+>>> +++ b/net/core/page_pool.c
+>>> @@ -49,6 +49,12 @@ static int page_pool_init(struct page_pool *pool,
+>>>        * which is the XDP_TX use-case.
+>>>        */
+>>>       if (pool->p.flags & PP_FLAG_DMA_MAP) {
+>>> +             /* DMA-mapping is not supported on 32-bit systems with
+>>> +              * 64-bit DMA mapping.
+>>> +              */
+>>> +             if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>>> +                     return -EINVAL;
+>>
+>> As I said before, can we please use another error than EINVAL.
+>> We should give drivers a chance/ability to detect this error, and e.g.
+>> fallback to doing DMA mappings inside driver instead.
+>>
+>> I suggest using EOPNOTSUPP 95 (Operation not supported).
 
---RabaBlNU167INrkhGG7TimY4gvZhpBVDu
-Content-Type: multipart/mixed;
- boundary="------------A604B18524153844DF606DEF"
-Content-Language: en-US
+Will change it to EOPNOTSUPP, thanks.
 
-This is a multi-part message in MIME format.
---------------A604B18524153844DF606DEF
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 23.09.21 13:10, Jan Beulich wrote:
-> On 23.09.2021 11:53, Oleksandr Andrushchenko wrote:
->> --- a/drivers/xen/Kconfig
->> +++ b/drivers/xen/Kconfig
->> @@ -180,10 +180,34 @@ config SWIOTLB_XEN
->>   	select DMA_OPS
->>   	select SWIOTLB
->>  =20
->> +config XEN_PCI_STUB
->> +	bool
->> +
->> +config XEN_PCIDEV_STUB
->> +	tristate "Xen PCI-device stub driver"
->> +	depends on PCI && !X86 && XEN
->> +	depends on XEN_BACKEND
->> +	select XEN_PCI_STUB
->> +	default m
->> +	help
->> +	  The PCI device stub driver provides limited version of the PCI
->> +	  device backend driver without para-virtualized support for guests.=
-
->> +	  If you select this to be a module, you will need to make sure no
->> +	  other driver has bound to the device(s) you want to make visible t=
-o
->> +	  other guests.
->> +
->> +	  The "hide" parameter (only applicable if backend driver is compile=
-d
->> +	  into the kernel) allows you to bind the PCI devices to this module=
-
->> +	  from the default device drivers. The argument is the list of PCI B=
-DFs:
->> +	  xen-pciback.hide=3D(03:00.0)(04:00.0)
->> +
->> +	  If in doubt, say m.
->> +
->>   config XEN_PCIDEV_BACKEND
->>   	tristate "Xen PCI-device backend driver"
->>   	depends on PCI && X86 && XEN
->>   	depends on XEN_BACKEND
->> +	select XEN_PCI_STUB
->=20
-> Does kconfig not at least warn about this? The selected item has a
-> "depends on !X88" conflicting with the "depends on X86" here.
-
-XEN_PCI_STUB !=3D XEN_PCIDEV_STUB
-
-
-Juergen
-
---------------A604B18524153844DF606DEF
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------A604B18524153844DF606DEF--
-
---RabaBlNU167INrkhGG7TimY4gvZhpBVDu--
-
---2lcwPdRBsDCp1LdWI77itRlY1UcSO1FMi
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFMYSoFAwAAAAAACgkQsN6d1ii/Ey9F
-jAf8Dbp2R2HZn0f7rIjof1tX1Os673CwlUaxnI/ciMK9PSwo6nvII9KPwHFeK+STusBQ3uAafvBB
-ztdiA0zYckwVE0zjyvaHJ+oa1IY0b5Nqbbj2bBopu+uKB3ZKnX6JD4AL4ro/RudxQC4FMN8+ILrJ
-rzFTLYN6ErnQztmwnkiJGDlx5xfkyMULySu8S1FDjkdo9nDHZUUZMIorLjT6XD9AWB9oW07yJA+V
-S5ZtbPQL4gSHhsIRKoMLipSy3aZhWKYsqYNtan5wA0uMqKDF36fpJmQwoMMjb+FC1wDkdzv/HsQV
-lJcIiLuHYA8UrA53yoQmVLEPkEaAd4WVg27q/ol6tA==
-=uxBc
------END PGP SIGNATURE-----
-
---2lcwPdRBsDCp1LdWI77itRlY1UcSO1FMi--
+> 
+> I am fine with both.  In any case though the aforementioned driver can
+> just remove PP_FLAG_DMA_MAP and do it's own mappings.
+> 
+> Regards
+> /Ilias
+>>
+>> -Jesper
+>>
+> .
+> 
