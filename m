@@ -2,201 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9EC416470
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD5C416476
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 19:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242591AbhIWRax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 13:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242577AbhIWRaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 13:30:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFC5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 10:29:21 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 19:29:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632418159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Si/vz1d42NUZth7l/PUb8Mgx17FY4PbIXtYbGItefJo=;
-        b=RgfFB21HybwgXpaVSKFI+iKhjH7Rk9VfJ4tDz6rTFIYKaBVSUsXpI+CXDEKrmrb5T0ozvj
-        CXrs0kvLIomF+bArwmdD7neRhf10ZZ5IQkd31SdGoAaRIUWSbknmhuIijw65ZeOBKO0WtP
-        jVAXhaPsPflYk7UVDHB+jxe+l+cpc9dxx2E8Lv5Z0i9NxXJAPACc1aMI0SirVPGESka4LB
-        IdOovzGIJrtYJ9AVBNFziGW0HoeRL/jxTPs9co788YoOY7tr7y9c++8zkYD0Ci7QkfRigl
-        Akf6V2Z81dtSNhYbfJLw6/bqNNIvuBIQUoisbI1d5p5J3LlWm5s0rKZgpDvSCg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632418159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Si/vz1d42NUZth7l/PUb8Mgx17FY4PbIXtYbGItefJo=;
-        b=IO5S33yV3iBB7UsNEUsvKDme5B7NwrSpNCKfXWxy0vDcmw1khIfIRbW833EV+HcK3z+IDz
-        tBEXqPBxDhWWHRCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Stefani Seibold <stefani@seibold.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] samples/kfifo: Rename read_lock/write_lock
-Message-ID: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
+        id S242623AbhIWRbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 13:31:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242543AbhIWRbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 13:31:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E786360F70;
+        Thu, 23 Sep 2021 17:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632418206;
+        bh=SUnd6a35HoB2t5EfEqXfbIPuy+KqrErj97lV9b91p8k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YnTImCMA0G3P5byS+2JNOvvsg97ZgkeC1ALb6pUqG/GifG5I7rHGWbLlQzGzv/LOZ
+         HgD/qFX83eoAJJc7AI8YrgTG9rwcLmdRZOOzp4FMJe1KBAlFd23chg56eC656xu+Kh
+         P7hZKoIzW8GpSCA2qTrI1ohKLYqc03DWB5UPiG1g=
+Date:   Thu, 23 Sep 2021 19:30:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] fw_devlink bug fixes
+Message-ID: <YUy5nDMeWMg0sfGI@kroah.com>
+References: <20210915170940.617415-1-saravanak@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210915170940.617415-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variables names read_lock and write_lock can clash with functions used for
-read/writer locks.
+On Wed, Sep 15, 2021 at 10:09:36AM -0700, Saravana Kannan wrote:
+> Intended for 5.15.
+> 
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Vladimir Oltean <olteanv@gmail.com>
+> 
+> v1->v2:
+> - Added a few Reviewed-by and Tested-by tags
+> - Addressed Geert's comments in patches 3 and 5
+> - Dropped the fw_devlink.debug patch
+> - Added 2 more patches to the series to address other fw_devlink issues
+> 
+> v2->v3:
+> - Split the logging/debug changes into a separate series
 
-Rename read_lock to read_access and write_lock to write_access to avoid a name
-collision.
+I have taken this now into my tree.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lkml.kernel.org/r/20210806152551.qio7c3ho6pexezup@linutronix.de
----
+It fixes the real problem where drivers were making the wrong assumption
+that if they registered a device, it would be instantly bound to a
+driver.  Drivers that did this were getting lucky, as this was never a
+guarantee of the driver core (think about if you enabled async
+probing, and the mess with the bus specific locks that should be
+preventing much of this)
 
-Repost.
+With this new flag, we can mark these drivers/busses that have this
+assumption and work to solve correctly over time.  The issue with using
+a "generic vs. specific" driver is a bit related, I'm amazed that a
+subsystem actually implemented it this way, others of us have been
+avoiding this for a very long time due to the complexity involved when
+things are built as modules.
 
- samples/kfifo/bytestream-example.c |   12 ++++++------
- samples/kfifo/inttype-example.c    |   12 ++++++------
- samples/kfifo/record-example.c     |   12 ++++++------
- 3 files changed, 18 insertions(+), 18 deletions(-)
----
---- a/samples/kfifo/bytestream-example.c
-+++ b/samples/kfifo/bytestream-example.c
-@@ -22,10 +22,10 @@
- #define	PROC_FIFO	"bytestream-fifo"
- 
- /* lock for procfs read access */
--static DEFINE_MUTEX(read_lock);
-+static DEFINE_MUTEX(read_access);
- 
- /* lock for procfs write access */
--static DEFINE_MUTEX(write_lock);
-+static DEFINE_MUTEX(write_access);
- 
- /*
-  * define DYNAMIC in this example for a dynamically allocated fifo.
-@@ -116,12 +116,12 @@ static ssize_t fifo_write(struct file *f
- 	int ret;
- 	unsigned int copied;
- 
--	if (mutex_lock_interruptible(&write_lock))
-+	if (mutex_lock_interruptible(&write_access))
- 		return -ERESTARTSYS;
- 
- 	ret = kfifo_from_user(&test, buf, count, &copied);
- 
--	mutex_unlock(&write_lock);
-+	mutex_unlock(&write_access);
- 	if (ret)
- 		return ret;
- 
-@@ -134,12 +134,12 @@ static ssize_t fifo_read(struct file *fi
- 	int ret;
- 	unsigned int copied;
- 
--	if (mutex_lock_interruptible(&read_lock))
-+	if (mutex_lock_interruptible(&read_access))
- 		return -ERESTARTSYS;
- 
- 	ret = kfifo_to_user(&test, buf, count, &copied);
- 
--	mutex_unlock(&read_lock);
-+	mutex_unlock(&read_access);
- 	if (ret)
- 		return ret;
- 
---- a/samples/kfifo/inttype-example.c
-+++ b/samples/kfifo/inttype-example.c
-@@ -22,10 +22,10 @@
- #define	PROC_FIFO	"int-fifo"
- 
- /* lock for procfs read access */
--static DEFINE_MUTEX(read_lock);
-+static DEFINE_MUTEX(read_access);
- 
- /* lock for procfs write access */
--static DEFINE_MUTEX(write_lock);
-+static DEFINE_MUTEX(write_access);
- 
- /*
-  * define DYNAMIC in this example for a dynamically allocated fifo.
-@@ -109,12 +109,12 @@ static ssize_t fifo_write(struct file *f
- 	int ret;
- 	unsigned int copied;
- 
--	if (mutex_lock_interruptible(&write_lock))
-+	if (mutex_lock_interruptible(&write_access))
- 		return -ERESTARTSYS;
- 
- 	ret = kfifo_from_user(&test, buf, count, &copied);
- 
--	mutex_unlock(&write_lock);
-+	mutex_unlock(&write_access);
- 	if (ret)
- 		return ret;
- 
-@@ -127,12 +127,12 @@ static ssize_t fifo_read(struct file *fi
- 	int ret;
- 	unsigned int copied;
- 
--	if (mutex_lock_interruptible(&read_lock))
-+	if (mutex_lock_interruptible(&read_access))
- 		return -ERESTARTSYS;
- 
- 	ret = kfifo_to_user(&test, buf, count, &copied);
- 
--	mutex_unlock(&read_lock);
-+	mutex_unlock(&read_access);
- 	if (ret)
- 		return ret;
- 
---- a/samples/kfifo/record-example.c
-+++ b/samples/kfifo/record-example.c
-@@ -22,10 +22,10 @@
- #define	PROC_FIFO	"record-fifo"
- 
- /* lock for procfs read access */
--static DEFINE_MUTEX(read_lock);
-+static DEFINE_MUTEX(read_access);
- 
- /* lock for procfs write access */
--static DEFINE_MUTEX(write_lock);
-+static DEFINE_MUTEX(write_access);
- 
- /*
-  * define DYNAMIC in this example for a dynamically allocated fifo.
-@@ -123,12 +123,12 @@ static ssize_t fifo_write(struct file *f
- 	int ret;
- 	unsigned int copied;
- 
--	if (mutex_lock_interruptible(&write_lock))
-+	if (mutex_lock_interruptible(&write_access))
- 		return -ERESTARTSYS;
- 
- 	ret = kfifo_from_user(&test, buf, count, &copied);
- 
--	mutex_unlock(&write_lock);
-+	mutex_unlock(&write_access);
- 	if (ret)
- 		return ret;
- 
-@@ -141,12 +141,12 @@ static ssize_t fifo_read(struct file *fi
- 	int ret;
- 	unsigned int copied;
- 
--	if (mutex_lock_interruptible(&read_lock))
-+	if (mutex_lock_interruptible(&read_access))
- 		return -ERESTARTSYS;
- 
- 	ret = kfifo_to_user(&test, buf, count, &copied);
- 
--	mutex_unlock(&read_lock);
-+	mutex_unlock(&read_access);
- 	if (ret)
- 		return ret;
- 
+thanks,
+
+greg k-h
