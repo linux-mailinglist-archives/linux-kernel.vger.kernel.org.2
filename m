@@ -2,126 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB5D416931
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818D6416935
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243729AbhIXBD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 21:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243660AbhIXBD0 (ORCPT
+        id S243737AbhIXBD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 21:03:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38524 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243676AbhIXBDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 21:03:26 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8937C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 18:01:53 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id r2so8154600pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 18:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R0TVEFcTo2DWYNC/Ty6kIV1DRidb4aV2ukSxlWruSY0=;
-        b=Cc6bMFq/ABedDQ1YzC/XdDZv/spMWPp/hh2aQu0AWPUtdFU+pDQ2RfUJcArNTuc3L9
-         YpvOF13QFoVaXT/zT7J7wQkyQYbwvtRMnut5ixcpE36ZNymppWEwd2zsKT3GYU3t8vL7
-         NY+q/rhK2I15ufekXaQLQpuxl65puFdTvPnwA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R0TVEFcTo2DWYNC/Ty6kIV1DRidb4aV2ukSxlWruSY0=;
-        b=P5pt3YIH+vGErTg3rLY3VoE5j/SlnmU0JEW0G3ND5mncXkeDK33sPieezFWF0F8n24
-         GbiukxG/GUoBR/NaUKwnflspfcW/3M3c2ARSFODxpTSR0sBzOMfIxqglp7o6F1yXzlXK
-         M02q+k7bAfl1WUvUW1aHU6FlmAGboPElWM0NoMy4jbof/pUFeXf0KIqrM9zi7FwifmRv
-         ZsZOYMh36VwO5jrIU5DFM6X55pusb/SZg1X50QiaUWbx33qMA6K7NmVE4GRgernT/X4a
-         otZAeZXROtvZLFdtZT1jI3Q4CHWz3SSINkoasAVQ3TnQwlNTyNFmq2sH9VRoueusPeyA
-         jpGQ==
-X-Gm-Message-State: AOAM5327qa+nJr1XQ8JaIXlFP9Y2yP7wua3TYfTtcrAqjw0lA5OyKM4R
-        fgs78vtnsuTcnq3uTH4GgscmQg==
-X-Google-Smtp-Source: ABdhPJwMFns0SIvz1MLq43HUOigRve27DNoneF2kjwjje+necuiiSQxwV3fefmt7ZBxJihxs7+TLEQ==
-X-Received: by 2002:a62:4dc5:0:b0:438:8133:fcef with SMTP id a188-20020a624dc5000000b004388133fcefmr7089386pfb.44.1632445313339;
-        Thu, 23 Sep 2021 18:01:53 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g12sm10204673pja.28.2021.09.23.18.01.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 18:01:52 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 18:01:51 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Jann Horn <jannh@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, stable@vger.kernel.org
-Subject: /proc/$pid/chan kernel address exposures (was Re: [proc/wchan]
- 30a3a19273:
- leaking-addresses.proc.wchan./proc/bus/input/devices:B:KEY=1000000000007ff980000000007fffebeffdfffeffffffffffffffffffffe)
-Message-ID: <202109231746.7B4C306CEC@keescook>
-References: <20210103142726.GC30643@xsang-OptiPlex-9020>
- <d15378c8-8702-47ba-65b7-450f728793ed@gmx.de>
+        Thu, 23 Sep 2021 21:03:55 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632445341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kQk2GihfSjtSeZUWZy1F+u7jfH25EFIJlwAQfvaVLi0=;
+        b=1LVRE8MVY421IfWRt9am8QgddckQOV4Jq+7iSes11mrYMdt7vzrInJeEr6W26CgBOyBS4H
+        /RNeRYnri1xJRRPY6UNmkCEvfjCzg+7BhrQBPKRKHnzZ/kCxnP0r0c3mIC4NxKLvlkXHTO
+        KfxwvHyJ1p//1O8yyGqtqmfEwXE3d/k6az+MZpjj0UJ30/0Y8cyjaIHl65G2W7j90AGvGy
+        Rqf7VO1KMMTxOReGXUy63pSN/JYBmV24Grclj6m44UfAlGsmDP72hORGFXPt2NDBpQxqhP
+        AkKRshaPbCTMuhFlT1gSLa6k70JxRKI53wf3I2tbuxYy04xqm9IOTacD2qBnvw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632445341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kQk2GihfSjtSeZUWZy1F+u7jfH25EFIJlwAQfvaVLi0=;
+        b=3aPjjZKeE1+jA9HmIhDpgs4l8/mPEyArvUVFnsXiH/YzTv7WWpGSUEXQQP5L73JRWfFD2F
+        fgGmIXzaeL/EpKBg==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 08/13] x86/process/64: Clean up uintr task fork and
+ exit paths
+In-Reply-To: <20210913200132.3396598-9-sohil.mehta@intel.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-9-sohil.mehta@intel.com>
+Date:   Fri, 24 Sep 2021 03:02:21 +0200
+Message-ID: <8735pug50i.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d15378c8-8702-47ba-65b7-450f728793ed@gmx.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 07:25:36PM +0100, Helge Deller wrote:
-> On 1/3/21 3:27 PM, kernel test robot wrote:
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: 30a3a192730a997bc4afff5765254175b6fb64f3 ("[PATCH] proc/wchan: Use printk format instead of lookup_symbol_name()")
-> > url: https://github.com/0day-ci/linux/commits/Helge-Deller/proc-wchan-Use-printk-format-instead-of-lookup_symbol_name/20201218-010048
-> > base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 09162bc32c880a791c6c0668ce0745cf7958f576
-> >
-> > in testcase: leaking-addresses
-> > version: leaking-addresses-x86_64-4f19048-1_20201111
-> > [...]
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> I don't see anything wrong with the wchan patch (30a3a192730a997bc4afff5765254175b6fb64f3),
-> or that it could have leaked anything.
-> 
-> Maybe the kernel test robot picked up the wchan patch by mistake ?
+On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+
+> The user interrupt MSRs and the user interrupt state is task specific.
+> During task fork and exit clear the task state, clear the MSRs and
+> dereference the shared resources.
 >
-> > [...]
-> > [2 wchan] 0xffffc9000000003c
-       ^^^^^
+> Some of the memory resources like the UPID are referenced in the file
+> descriptor and could be in use while the uintr_fd is still valid.
+> Instead of freeing up  the UPID just dereference it.
 
-As the root cause of a kernel address exposure, Jann pointed out[2]
-commit 152c432b128c, which I've tracked to here, only to discover this
-regression was, indeed, reported. :(
+Derefencing the UPID, i.e. accessing task->upid->foo helps in which way?
 
-So, we have a few things:
+You want to drop the reference count I assume. Then please write that
+so. 
 
-1) wchan has been reporting "0" in the default x86 config (ORC unwinder)
-   for 4 years now.
+> Eventually when every user releases the reference the memory resource
+> will be freed up.
 
-2) non-x86 or non-ORC, wchan has been leaking raw kernel addresses since
-   commit 152c432b128c (v5.12).
+Yeah, eventually or not...
 
-3) the output of scripts/leaking_addresses.pl is hard to read. :)
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
 
-We can fix 1 and 2 with:
-   https://lore.kernel.org/lkml/20210923233105.4045080-1-keescook@chromium.org/
-(though that will need a Cc: stable now...)
+> @@ -260,6 +260,7 @@ int fpu_clone(struct task_struct *dst)
+>  {
+>  	struct fpu *src_fpu = &current->thread.fpu;
+>  	struct fpu *dst_fpu = &dst->thread.fpu;
+> +	struct uintr_state *uintr_state;
+>  
+>  	/* The new task's FPU state cannot be valid in the hardware. */
+>  	dst_fpu->last_cpu = -1;
+> @@ -284,6 +285,14 @@ int fpu_clone(struct task_struct *dst)
+>  
+>  	else
+>  		save_fpregs_to_fpstate(dst_fpu);
+> +
+> +	/* UINTR state is not expected to be inherited (in the current design). */
+> +	if (static_cpu_has(X86_FEATURE_UINTR)) {
+> +		uintr_state = get_xsave_addr(&dst_fpu->state.xsave, XFEATURE_UINTR);
+> +		if (uintr_state)
+> +			memset(uintr_state, 0, sizeof(*uintr_state));
+> +	}
 
-If we don't do that, we still need to revert 152c432b128c in v5.12 and
-later.
+1) If the FPU registers are up to date then this can be completely
+   avoided by excluding the UINTR component from XSAVES
 
-We should likely make leaking_addresses.pl a little more readable while
-we're at it.
+2) If the task never used that muck then UINTR is in init state and
+   clearing that memory is a redunant exercise because it has been
+   cleared already
 
--Kees
+So yes, this clearly is evidence how this is enhancing performance.
 
-[1] https://lore.kernel.org/lkml/20210921193249.el476vlhg5k6lfcq@shells.gnugeneration.com/
-[2] https://lore.kernel.org/lkml/CAG48ez2zC=+PuNgezH53HBPZ8CXU5H=vkWx7nJs60G8RXt3w0Q@mail.gmail.com/
+> +/*
+> + * This should only be called from exit_thread().
 
--- 
-Kees Cook
+Should? Would? Maybe or what?
+
+> + * exit_thread() can happen in current context when the current thread is
+> + * exiting or it can happen for a new thread that is being created.
+
+A right that makes sense. If a new thread is created then it can call
+exit_thread(), right?
+
+> + * For new threads is_uintr_receiver() should fail.
+
+Should fail?
+
+> + */
+> +void uintr_free(struct task_struct *t)
+> +{
+> +	struct uintr_receiver *ui_recv;
+> +	struct fpu *fpu;
+> +
+> +	if (!static_cpu_has(X86_FEATURE_UINTR) || !is_uintr_receiver(t))
+> +		return;
+> +
+> +	if (WARN_ON_ONCE(t != current))
+> +		return;
+> +
+> +	fpu = &t->thread.fpu;
+> +
+> +	fpregs_lock();
+> +
+> +	if (fpregs_state_valid(fpu, smp_processor_id())) {
+> +		wrmsrl(MSR_IA32_UINTR_MISC, 0ULL);
+> +		wrmsrl(MSR_IA32_UINTR_PD, 0ULL);
+> +		wrmsrl(MSR_IA32_UINTR_RR, 0ULL);
+> +		wrmsrl(MSR_IA32_UINTR_STACKADJUST, 0ULL);
+> +		wrmsrl(MSR_IA32_UINTR_HANDLER, 0ULL);
+> +	} else {
+> +		struct uintr_state *p;
+> +
+> +		p = get_xsave_addr(&fpu->state.xsave, XFEATURE_UINTR);
+> +		if (p) {
+> +			p->handler = 0;
+> +			p->uirr = 0;
+> +			p->upid_addr = 0;
+> +			p->stack_adjust = 0;
+> +			p->uinv = 0;
+> +		}
+> +	}
+> +
+> +	/* Check: Can a thread be context switched while it is exiting? */
+
+This looks like a question which should be answered _before_ writing
+such code.
+
+> +	ui_recv = t->thread.ui_recv;
+> +
+> +	/*
+> +	 * Suppress notifications so that no further interrupts are
+> +	 * generated based on this UPID.
+> +	 */
+> +	set_bit(UPID_SN, (unsigned long *)&ui_recv->upid_ctx->upid->nc.status);
+> +	put_upid_ref(ui_recv->upid_ctx);
+> +	kfree(ui_recv);
+> +	t->thread.ui_recv = NULL;
+
+Again, why needs all this put/kfree muck be within the fpregs locked section?
+
+> +	fpregs_unlock();
+> +}
+
+Thanks,
+
+        tglx
