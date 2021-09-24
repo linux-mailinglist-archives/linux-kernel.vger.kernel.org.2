@@ -2,163 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CE9417C52
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063A4417C54
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347283AbhIXUYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 16:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346799AbhIXUYG (ORCPT
+        id S1348412AbhIXUYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 16:24:14 -0400
+Received: from mail.efficios.com ([167.114.26.124]:56612 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348406AbhIXUYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 16:24:06 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A60FC061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:22:33 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id r23so5535222wra.6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P6UjX46EgO1JdvaA1S99BM8bVjWyLM+0KRRhsNVfqrc=;
-        b=hNilYYi9DfGN1Dx6/MtN058s8ZQ30CNP0PCqpqvXCmeNiuOhFNazMI2RkNfZif6nAu
-         rGIBi3W2uxP6WNpia+1cWs6TX03mE6nmeXC+3L1ns31tp1llFuebuAA/v7XkUejdwrwh
-         V845bcchNr9ZOJjCFBOLaVkMIQCvhHcHNVA0BWSfr3cb4pSvlkXIrj0zYGbj6eBeE3Pt
-         zGHYlYYrUxJJNdVUDPgyAaFeOV7d6ouoZgJXW5xwoMszebmsbXDdOg4LAWDzhss5Tnm2
-         r1TtraxcgioXJZ3Y+EpqAFcp2mmQi0NNeJNQ+tXpLR/y+DgFSipRMQNc/YZLV9BYxfj9
-         ye/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P6UjX46EgO1JdvaA1S99BM8bVjWyLM+0KRRhsNVfqrc=;
-        b=edPzaZJXng7vvIx+LBbSPQDlF5nXF69/UXmiq+PBcrSf8C1mYMI/jW22jz2e1buy9D
-         VAKgpHpE7lPwx8Sj3rn4HyCqPvvUJEEoFBdCx6wiemzAy4P97d4L0fmI8cXwUOI1VyBa
-         4V36NGORLtkrYi5T8PVO5ahTZNm7IMGL15hybjTFNClO1tXwGJHZlj3ZhRY2QhYK72Ga
-         1CCdSYJxC9tU3vHecBUnQRSAsXtNZ6f40WseQM5EMJes2ERhW5t5ggF97SpQAHgeE8IJ
-         ZSIDoFlbKABEuXWcZiSDa48bdfVeFs2INeG9Fds4NFmxtkZRpFb6IOdpgL6AfPMRRDeO
-         J6rg==
-X-Gm-Message-State: AOAM530LfV34SSvsrQmcwnp/sOGsQgxKG02kv5aJ30/JT4R0bBVtRgJU
-        f+Flpz0JkPJq2zlAXpTY1hVfl508pTCJotWdBpPyKw==
-X-Google-Smtp-Source: ABdhPJwmZTsxjXTVscp7BYpW00OnOGQJJcYUcorRFaAk4dC1Hn0zxo5UNELpTtJfZBek6h0ROSX+WX77q3jllKbjarY=
-X-Received: by 2002:adf:f48e:: with SMTP id l14mr13662271wro.109.1632514951618;
- Fri, 24 Sep 2021 13:22:31 -0700 (PDT)
+        Fri, 24 Sep 2021 16:24:11 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4F88B32A286;
+        Fri, 24 Sep 2021 16:22:37 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ubnydGavbSbG; Fri, 24 Sep 2021 16:22:36 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 9519632A046;
+        Fri, 24 Sep 2021 16:22:36 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9519632A046
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1632514956;
+        bh=YOIiaTIjSWSIDVY7x919ScLocg4hGeXlWAaaAgSsT3g=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=EcWiwkWHgCbolkPK54UoSOGHyBh7sLnqQysFiJ6LBzQqRavhhHJEFqSHcv6uz7Q7D
+         eAs2k9d5EKD3DPviyLjnW3+3SRYGZZ+yXFMGyGOQRNEzuJlM+EMy/KS+qGIjVOBSbe
+         ourNAhWdTdzxTLT6RhoCDtrTnf42fvy8oIVOLcc3+OLQVuDTi1qLAawaxDehGXjNEJ
+         zR0WxyEA4dPzKj2Znh6Nx841pM4iNBXk4IRbRFkQNJCdqwBNC9ajNV8DNipmpw2OLU
+         DS3yRuh1fGM9rwl0Z/QGb4+RNq/glWZwWXXa2NWleakxIIPNSYY4GGdiyFjWFcVht6
+         aqkXxS6x+fLDQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6uiIKt2BVKzp; Fri, 24 Sep 2021 16:22:36 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 7FB4032A30A;
+        Fri, 24 Sep 2021 16:22:36 -0400 (EDT)
+Date:   Fri, 24 Sep 2021 16:22:36 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        j alglave <j.alglave@ucl.ac.uk>,
+        luc maranget <luc.maranget@inria.fr>, akiyks@gmail.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Message-ID: <1103437077.37428.1632514956401.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210924195223.GA287835@rowland.harvard.edu>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net> <20210924183858.GA25901@localhost> <20210924195223.GA287835@rowland.harvard.edu>
+Subject: Re: [RFC] LKMM: Add volatile_if()
 MIME-Version: 1.0
-References: <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
- <YUp438W5p5VHL1Ch@t490s> <CAJHvVciZc0mpcw8OSPk71YsVzCTajY+ikymcD3+zBJKsZynYkg@mail.gmail.com>
- <YUtoyNic4Jxfv9f7@t490s> <CAJHvVcg6PRCK_JcYEhRqq2vPyypnc+ySOtLhtFf5GrcQjimsJQ@mail.gmail.com>
- <YUulep3+YADkwlUu@t490s> <CAJHvVcijQdS_hfUnasz7BhhQeiHmNu=C5j8xfX=uWsfVO9-+Eg@mail.gmail.com>
- <YUvBEXV1Qs5wC+Jc@t490s> <CADrL8HUhV9ag6n3=MT2pNhtfrp8xH1Y-9zgispubzLy0ye6frw@mail.gmail.com>
- <CAPcxDJ6E3c2gcnJ8pDeQidf-yHDP7S=Knah_b3hy+FL1kOObqA@mail.gmail.com> <YU4wgSmStmkxxSt5@t490s>
-In-Reply-To: <YU4wgSmStmkxxSt5@t490s>
-From:   Jue Wang <juew@google.com>
-Date:   Fri, 24 Sep 2021 13:22:19 -0700
-Message-ID: <CAPcxDJ41OrRk5AyYK+3XtMB17ycuw3g3PR4njrZQfXnbQtsZfA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
-To:     Peter Xu <peterx@redhat.com>
-Cc:     James Houghton <jthoughton@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
+Thread-Topic: LKMM: Add volatile_if()
+Thread-Index: gKJxIHbLtmSI3npLIydDVLk94GMdmg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 1:09 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Wed, Sep 22, 2021 at 10:43:40PM -0700, Jue Wang wrote:
->
-> [...]
->
-> > > > Could I know what's the workaround?  Normally if the workaround works solidly,
-> > > > then there's less need to introduce a kernel interface for that.  Otherwise I'm
-> > > > glad to look into such a formal proposal.
-> > >
-> > > The workaround is, for the region that you want to zap, run through
-> > > this sequence of syscalls: mumap, mmap, and re-register with
-> > > userfaultfd if it was registered before. If we're using tmpfs, we can
-> > > use madvise(DONTNEED) instead, but this is kind of an abuse of the
-> > > API. I don't think there's a guarantee that the PTEs will get zapped,
-> > > but currently they will always get zapped if we're using tmpfs. I
-> > > really like the idea of adding a new madvise() mode that is guaranteed
-> > > to zap the PTEs.
->
-> I see.
->
-> > >
-> > > >
-> > > > > It's also useful for memory poisoning, I think, if the host
-> > > > > decides some page(s) are "bad" and wants to intercept any future guest
-> > > > > accesses to those page(s).
-> > > >
-> > > > Curious: isn't hwpoison information come from MCEs; or say, host kernel side?
-> > > > Then I thought the host kernel will have full control of it already.
-> > > >
-> > > > Or there's other way that the host can try to detect some pages are going to be
-> > > > rotten?  So the userspace can do something before the kernel handles those
-> > > > exceptions?
-> > >
-> > > Here's a general idea of how we would like to use userfaultfd to support MPR:
-> > >
-> > > If a guest accesses a poisoned page for the first time, we will get an
-> > > MCE through the host kernel and send an MCE to the guest. The guest
-> > > will now no longer be able to access this page, and we have to enforce
-> > > this. After a live migration, the pages that were poisoned before
-> > > probably won't still be poisoned (from the host's perspective), so we
-> > > can't rely on the host kernel's MCE handling path. This is where
-> > > userfaultfd and this new madvise mode come in: we can just
-> > > madvise(MADV_ZAP) the poisoned page(s) on the target during a
-> > > migration. Now all accesses will be routed to the VMM and we can
-> > > inject an MCE. We don't *need* the new madvise mode, as we can also
-> > > use fallocate(PUNCH_HOLE) (works for tmpfs and hugetlbfs), but it
-> > > would be more convenient if we didn't have to use fallocate.
-> > >
-> > > Jue Wang can provide more context here, so I've cc'd him. There may be
-> > > some things I'm wrong about, so Jue feel free to correct me.
-> > >
-> > James is right.
-> >
-> > The page is marked PG_HWPoison in the source VM host's kernel. The need
-> > of intercepting guest accesses to it exist on the target VM host, where
-> > the same physical page is no longer poisoned.
-> >
-> > On the target host, the hypervisor needs to intercept all guest accesses
-> > to pages poisoned from the source VM host.
->
-> Thanks for these information, James, Jue, Axel.  I'm not familiar with memory
-> failures yet, so please bare with me with a few naive questions.
->
-> So now I can undertand that hw-poisonsed pages on src host do not mean these
-> pages will be hw-poisoned on dest host too, but I may have missed the reason on
-> why dest host needs to trap it with pgtable removed.
->
-> AFAIU after pages got hw-poisoned on src, and after vmm injects MCEs into the
-> guest, the guest shouldn't be accessing these pages any more, am I right?  Then
+----- On Sep 24, 2021, at 3:52 PM, Alan Stern stern@rowland.harvard.edu wrote:
 
-This is also our hope for the guest to behave but there is no guarantee on
-guest behavior.
+> On Fri, Sep 24, 2021 at 02:38:58PM -0400, Mathieu Desnoyers wrote:
+>> Hi,
+>> 
+>> Following the LPC2021 BoF about control dependency, I re-read the kernel
+>> documentation about control dependency, and ended up thinking that what
+>> we have now is utterly fragile.
+>> 
+>> Considering that the goal here is to prevent the compiler from being able to
+>> optimize a conditional branch into something which lacks the control
+>> dependency, while letting the compiler choose the best conditional
+>> branch in each case, how about the following approach ?
+>> 
+>> #define ctrl_dep_eval(x)        ({ BUILD_BUG_ON(__builtin_constant_p((_Bool)
+>> x)); x; })
+>> #define ctrl_dep_emit_loop(x)   ({ __label__ l_dummy; l_dummy: asm volatile goto
+>> ("" : : : "cc", "memory" : l_dummy); (x); })
+>> #define ctrl_dep_if(x)          if ((ctrl_dep_eval(x) && ctrl_dep_emit_loop(1))
+>> || ctrl_dep_emit_loop(0))
+>> 
+>> The idea is to forbid the compiler from considering the two branches as
+>> identical by adding a dummy loop in each branch with an empty asm goto.
+>> Considering that the compiler should not assume anything about the
+>> contents of the asm goto (it's been designed so the generated assembly
+>> can be modified at runtime), then the compiler can hardly know whether
+>> each branch will trigger an infinite loop or not, which should prevent
+>> unwanted optimisations.
+>> 
+>> With this approach, the following code now keeps the control dependency:
+>> 
+>> 	z = READ_ONCE(var1);
+>>         ctrl_dep_if (z)
+>>                 WRITE_ONCE(var2, 5);
+>>         else
+>>                 WRITE_ONCE(var2, 5);
+>> 
+>> And the ctrl_dep_eval() checking the constant triggers a build error
+>> for:
+>> 
+>>         y = READ_ONCE(var1);
+>>         ctrl_dep_if (y % 1)
+>>                 WRITE_ONCE(var2, 5);
+>>         else
+>>                 WRITE_ONCE(var2, 6);
+>> 
+>> Which is good to have to ensure the compiler don't end up removing the
+>> conditional branch because the resulting evaluation ends up evaluating a
+>> constant.
+>> 
+>> Thoughts ?
+> 
+> As I remember the earlier discussion, Linus felt that the kernel doesn't
+> really need any sort of explicit control dependency (although we called
+> it "volatile if").  In many cases there is an actual semantic
+> dependency, so it doesn't matter what the compiler does -- the hardware
+> will enforce the actual dependency.  In other cases, we can work around
+> the issue by using acquire loads or release stores.
 
-The goal here is to have the hypervisor provide consistent behavior
-aligned to native
-hardware, i.e., a guest page with "memory errors" stay persistently in
-that state
-no matter on source or target.
+IMHO, having to chase down what the instruction selection does on every
+architecture for every supported compiler for each control dependency in
+order to confirm that the control dependency is still present in the resulting
+assembly is fragile. If the kernel really doesn't need explicit control
+dependency, then maybe the whole notion of "control dependency"-based
+ordering should be removed in favor of explicit acquire loads/release stores
+and barriers.
 
-> after migration completes, IIUC the guest shouldn't be accessing these pages
-> too.  My current understanding is, instead of trapping these pages on dest, we
-> should just (somehow, which I have no real idea...) un-hw-poison these pages
-> after migration because these pages are very possibly normal pages there.  When
-> there's real hw-poisoned pages reported on dst host, we should re-inject MCE
-> errors to guest with another set of pages.
->
-> Could you tell me where did I miss?
->
-> Thanks,
->
-> --
-> Peter Xu
->
+> In fact, Linus's biggest wish was to have a weak form of compiler
+> barrier, one which would block the compiler from reordering accesses
+> across the barrier but wouldn't invalidate the compiler's knowledge
+> about the values of earlier reads (which barrier() would do).
+
+Then maybe we could simply tweak the ctrl_dep_emit_loop() implementation and
+remove the "memory" clobber. Then its only effect is to prevent the compiler
+from knowing whether there is an infinite loop, thus preventing reordering
+accesses across the conditional branch without requiring the compiler to
+discard earlier reads:
+
+#define ctrl_dep_emit_loop(x)   ({ __label__ l_dummy; l_dummy: asm_volatile_goto ("" : : : : l_dummy); (x); })
+
+and for the records, the ctrl_dep_eval(x) implementation needs extra parentheses:
+
+#define ctrl_dep_eval(x)        ({ BUILD_BUG_ON(__builtin_constant_p((_Bool) (x))); (x); })
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
