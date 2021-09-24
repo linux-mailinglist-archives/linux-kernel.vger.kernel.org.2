@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B052A417466
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A634173E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345787AbhIXNFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:05:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33206 "EHLO mail.kernel.org"
+        id S1345338AbhIXNA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346212AbhIXNDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:03:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 128DE6127A;
-        Fri, 24 Sep 2021 12:54:57 +0000 (UTC)
+        id S1344956AbhIXMzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:55:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2DBF6124F;
+        Fri, 24 Sep 2021 12:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488098;
-        bh=qdIPaW6ag/Li33VUPZ+fKmew2a7KNEm384xhvom0p/U=;
+        s=korg; t=1632487872;
+        bh=cHB/GLRWYlEG6alymObPpp6whcfSEBCn3AdLU1CnI5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0uq9yiXjBfSoO/Bql/nbDGQC5SWtuFu6eOarnyNbCO/fp+cxVT7kH3B5YBTJ3yKkg
-         1eYCTuQAxE9FP/3fZkC5FWxvbvNm3wWT4DPjCgwgRUyedPr57yZeDxnZsQ3yeVBIpT
-         5OpSv8JPnqxKv3xAInO9kSt9CxuXe/pyG615N1UE=
+        b=S8TKty0OiwdifzPmyN0uARtQGdKbtrqGlNq9IIvXjPjc31C5/inHzKjg+b4tZUmsW
+         6AmWtwBx5YcASiRbMU54k7HrwSgCLZhp+jLgOGiKMqKwiAK5o+7SQqWIlik5QtV3T4
+         MR9Ijd9fMxqEGYt6RyxY1TZrxLBV7EIl/+ymvE9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ofir Bitton <obitton@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 084/100] habanalabs: add validity check for event ID received from F/W
-Date:   Fri, 24 Sep 2021 14:44:33 +0200
-Message-Id: <20210924124344.277199418@linuxfoundation.org>
+Subject: [PATCH 5.4 45/50] pwm: img: Dont modify HW state in .remove() callback
+Date:   Fri, 24 Sep 2021 14:44:34 +0200
+Message-Id: <20210924124333.762781467@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit a6c849012b0f51c674f52384bd9a4f3dc0a33c31 ]
+[ Upstream commit c68eb29c8e9067c08175dd0414f6984f236f719d ]
 
-Currently there is no validity check for event ID received from F/W,
-Thus exposing driver to memory overrun.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 6 ++++++
- drivers/misc/habanalabs/goya/goya.c   | 6 ++++++
- 2 files changed, 12 insertions(+)
+ drivers/pwm/pwm-img.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index aa8a0ca5aca2..409f05c962f2 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -7809,6 +7809,12 @@ static void gaudi_handle_eqe(struct hl_device *hdev,
- 	u8 cause;
- 	bool reset_required;
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index 22c002e685b3..37f9b688661d 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -329,23 +329,7 @@ err_pm_disable:
+ static int img_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct img_pwm_chip *pwm_chip = platform_get_drvdata(pdev);
+-	u32 val;
+-	unsigned int i;
+-	int ret;
+-
+-	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (ret < 0) {
+-		pm_runtime_put(&pdev->dev);
+-		return ret;
+-	}
+-
+-	for (i = 0; i < pwm_chip->chip.npwm; i++) {
+-		val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
+-		val &= ~BIT(i);
+-		img_pwm_writel(pwm_chip, PWM_CTRL_CFG, val);
+-	}
  
-+	if (event_type >= GAUDI_EVENT_SIZE) {
-+		dev_err(hdev->dev, "Event type %u exceeds maximum of %u",
-+				event_type, GAUDI_EVENT_SIZE - 1);
-+		return;
-+	}
-+
- 	gaudi->events_stat[event_type]++;
- 	gaudi->events_stat_aggregate[event_type]++;
- 
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 755e08cf2ecc..bfb22f96c1a3 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -4797,6 +4797,12 @@ void goya_handle_eqe(struct hl_device *hdev, struct hl_eq_entry *eq_entry)
- 				>> EQ_CTL_EVENT_TYPE_SHIFT);
- 	struct goya_device *goya = hdev->asic_specific;
- 
-+	if (event_type >= GOYA_ASYNC_EVENT_ID_SIZE) {
-+		dev_err(hdev->dev, "Event type %u exceeds maximum of %u",
-+				event_type, GOYA_ASYNC_EVENT_ID_SIZE - 1);
-+		return;
-+	}
-+
- 	goya->events_stat[event_type]++;
- 	goya->events_stat_aggregate[event_type]++;
- 
+-	pm_runtime_put(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		img_pwm_runtime_suspend(&pdev->dev);
 -- 
 2.33.0
 
