@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235C941735F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDA14172E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344550AbhIXMzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49170 "EHLO mail.kernel.org"
+        id S1344565AbhIXMwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:52:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344934AbhIXMxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:53:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29ADE6134F;
-        Fri, 24 Sep 2021 12:50:12 +0000 (UTC)
+        id S1344566AbhIXMu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:50:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A3546128A;
+        Fri, 24 Sep 2021 12:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487812;
-        bh=gENb3+P6z9ffyMx/K5k7xzOvlZBidAjaC3mlcw3bPgI=;
+        s=korg; t=1632487705;
+        bh=VD6fSfNA7spBicbIVz8xxrBQDuTPphwK3kHX3ZUXDcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qliYmNE1Q8FX+nQLdpFF2t9AdNwTOjqNaRKkylBDVPAqciKQlhNqO6NbZ251ApPFL
-         +Yq5pvwNQoanllph6YbhCH8seY52Aj82b15KsF8Njgykpy+whErImAKJUmQlP+AIDm
-         UJbsoq+Iq7pXv+gbQ+vWMCHX35/7iTdY5WAqOx5s=
+        b=jUzSTd5tVwIJQr6SA40ggWzT5u7ZRy9WdCoPBmp4NoL6oSWQFO5MDc5u/Rclcaxvj
+         j8ELj6QhOaTUn2a3I3nD0kY7PGZ3+4bDYI+HnYC4uTrc2h2KyKY/br9OtrO5shUr9Y
+         WYjeFzK8TKuyREq6R8ABBR4RZNthu5gp/iztYcio=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH 5.4 21/50] 9p/trans_virtio: Remove sysfs file on probe failure
+        stable@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: [PATCH 4.19 16/34] pwm: mxs: Dont modify HW state in .probe() after the PWM chip was registered
 Date:   Fri, 24 Sep 2021 14:44:10 +0200
-Message-Id: <20210924124332.949638167@linuxfoundation.org>
+Message-Id: <20210924124330.492622344@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-commit f997ea3b7afc108eb9761f321b57de2d089c7c48 upstream.
+commit 020162d6f49f2963062229814a56a89c86cbeaa8 upstream.
 
-This ensures we don't leak the sysfs file if we failed to
-allocate chan->vc_wq during probe.
+This fixes a race condition: After pwmchip_add() is called there might
+already be a consumer and then modifying the hardware behind the
+consumer's back is bad. So reset before calling pwmchip_add().
 
-Link: http://lkml.kernel.org/r/20210517083557.172-1-xieyongji@bytedance.com
-Fixes: 86c8437383ac ("net/9p: Add sysfs mount_tag file for virtio 9P device")
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Note that reseting the hardware isn't the right thing to do if the PWM
+is already running as it might e.g. disable (or even enable) a backlight
+that is supposed to be on (or off).
+
+Fixes: 4dce82c1e840 ("pwm: add pwm-mxs support")
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/9p/trans_virtio.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/pwm/pwm-mxs.c |   13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
---- a/net/9p/trans_virtio.c
-+++ b/net/9p/trans_virtio.c
-@@ -605,7 +605,7 @@ static int p9_virtio_probe(struct virtio
- 	chan->vc_wq = kmalloc(sizeof(wait_queue_head_t), GFP_KERNEL);
- 	if (!chan->vc_wq) {
- 		err = -ENOMEM;
--		goto out_free_tag;
-+		goto out_remove_file;
+--- a/drivers/pwm/pwm-mxs.c
++++ b/drivers/pwm/pwm-mxs.c
+@@ -152,6 +152,11 @@ static int mxs_pwm_probe(struct platform
+ 		return ret;
  	}
- 	init_waitqueue_head(chan->vc_wq);
- 	chan->ring_bufs_avail = 1;
-@@ -623,6 +623,8 @@ static int p9_virtio_probe(struct virtio
  
++	/* FIXME: Only do this if the PWM isn't already running */
++	ret = stmp_reset_block(mxs->base);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret, "failed to reset PWM\n");
++
+ 	ret = pwmchip_add(&mxs->chip);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to add pwm chip %d\n", ret);
+@@ -160,15 +165,7 @@ static int mxs_pwm_probe(struct platform
+ 
+ 	platform_set_drvdata(pdev, mxs);
+ 
+-	ret = stmp_reset_block(mxs->base);
+-	if (ret)
+-		goto pwm_remove;
+-
  	return 0;
+-
+-pwm_remove:
+-	pwmchip_remove(&mxs->chip);
+-	return ret;
+ }
  
-+out_remove_file:
-+	sysfs_remove_file(&vdev->dev.kobj, &dev_attr_mount_tag.attr);
- out_free_tag:
- 	kfree(tag);
- out_free_vq:
+ static int mxs_pwm_remove(struct platform_device *pdev)
 
 
