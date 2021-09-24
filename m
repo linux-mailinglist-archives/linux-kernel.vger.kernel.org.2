@@ -2,121 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A1E4176C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BE14176CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346194AbhIXO16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
+        id S1346659AbhIXObS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233427AbhIXO15 (ORCPT
+        with ESMTP id S231627AbhIXObQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:27:57 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4280C061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:26:24 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id y5so4136206pll.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:26:24 -0700 (PDT)
+        Fri, 24 Sep 2021 10:31:16 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D42C061613
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:29:43 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so13425200otj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:29:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=oGzzGbeOeLEORaxwOD7BLDmEH+a0amSJ/nYoDh8OWO0=;
-        b=FGOqdb8Wc6HM1sjK/2fbXMNHDvLwKPUuowC529hVtm8I6s3/4QxQ1YBVBPiENwD5cf
-         MLK8nggL/D+kCwp/GZZaFYbBbBGuqWUwxJeHpm+2nwMZzck6aP11onhvZEBmpcVEVK8c
-         YOS4HwQtsAu3rZGTzfjU2+fJz4DuOZxiWFrE0=
+        bh=/HUdMFtSIgoDC8oIDLutFI0kXoCcazheaXJ199ftm9g=;
+        b=aXxY4VUYQrGrb+hPUPt171rF7ZoorniSwGe2E4HTBrAkPzlbS/JkVWAJ0jufnLCdL8
+         iwxiEweiMD5hpDUOcfs2WOovGWeBpLHVrqqXHl9WA6ojcQFjDbJyp2bKejo2NPTClxfJ
+         hG3aCAfuOLoq7fWUY88c3I7QFz8FYaJGyzTjGYi6ede+vj4ZVhD4OT1mMOYpgbECpHsX
+         Eu7hr8YTMjLSlcIkW5r92gwT7jDakW1i3QDiUTxg5awGkEWxpFEJxSNSHY+tCXMsZuwG
+         YVxv9qPmUK+5uhbw1Jb3fWng7Xuk8jQSgLSYy02Ecp9dIrmx/xzA3tjEMGBrEED7T4Ub
+         VeFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=oGzzGbeOeLEORaxwOD7BLDmEH+a0amSJ/nYoDh8OWO0=;
-        b=x6+yt2sYFwWA+pq054A4wfZWEmS43ZK4OeGTc1PUNKVsVYev3TywpsLmtmsxO4RpA3
-         MU09IAi2pIUPE3gNb11qfixHu2urFMcEQWbWbnBkPP0Dd8cvj6DvYldW8fIqE3yncuZS
-         fRfCXaJq3SMPxT1W7K0wwHxmxkVpoWraA2liWsT8/+WiTJzhPQktba3fk9rhTwMhzUTT
-         gctjb1amsLU+mOdPwXus68DNTuZgaut4qwXDzK/aWNNYwizWrm5rXZUP93l6ghS8u6r0
-         NoozJkNGMx0p0+s4+LJ46sEj+RyhMV5K0R0H8R8nwfdbinOYu6qzhfEPu3AOn1cCVigb
-         QevA==
-X-Gm-Message-State: AOAM533Ti/KoPQphd/DBc9qspR4UVWAMJdDIduytZpJDbvDhrhAhKZx9
-        76g8sJmk6pkzKHL+7F1lDmpMAw==
-X-Google-Smtp-Source: ABdhPJz07BWVVjhirIskBAi83rmTvlhUeoG7P547BlYgytzb5ayVQrWhQOHZumT2qg1rFa/0cZwbEw==
-X-Received: by 2002:a17:902:c948:b0:13a:345c:917c with SMTP id i8-20020a170902c94800b0013a345c917cmr9245252pla.61.1632493584372;
-        Fri, 24 Sep 2021 07:26:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k15sm8893038pfh.213.2021.09.24.07.26.23
+        bh=/HUdMFtSIgoDC8oIDLutFI0kXoCcazheaXJ199ftm9g=;
+        b=frCVuJDctlfGAakVKm9trs2F5WplgyHoSZ3eutjtc74H1ogvOk5pTi/hlbX7jXWoxN
+         zFmiS7hFbzmXSpmpYq7mmTldxvo+CoPXxFGNGpbfY05jTbtA7dqHoWlcmy2fRts+TaVr
+         J0y6fte8/sLceAoIYHzAlgqOCdv7zkEyQjmN/G3K2kYUcXiRvvKFAQIVEfUI8SZZSiDt
+         /JmM8TLyN07+MDyiJs5RQjyzAVQkNVkXCeG5uWWrVgBvdQ0JPqUJUoyGZkMa6g57kplr
+         RQ8j6h84Uiu7f//RLAUm0tQ/zbUxnOqwsRVWCc9V/SyFjSrAI8sm9I5OziGJnu+uTAqj
+         YxAA==
+X-Gm-Message-State: AOAM531YUua+2p9hEUg5cC3otmT5PSAj5q5FZjr6UXNYZ1vYCGYe/mv5
+        e4R32Vh7+/9XlzZBt3gjzaSR4A==
+X-Google-Smtp-Source: ABdhPJzv7ZLmAjdY7QEBnhVbHV9uXR3NPTSGFDmN2meB1pCWCEzM5B7NDpR1KtO4BLg6jokSeq1YvA==
+X-Received: by 2002:a9d:6192:: with SMTP id g18mr4321765otk.314.1632493781163;
+        Fri, 24 Sep 2021 07:29:41 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j4sm2121137oia.56.2021.09.24.07.29.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 07:26:23 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 07:26:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Vito Caputo <vcaputo@pengaru.com>, Jann Horn <jannh@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
-Message-ID: <202109240716.A0792BE46@keescook>
-References: <20210923233105.4045080-1-keescook@chromium.org>
- <20210923234917.pqrxwoq7yqnvfpwu@shells.gnugeneration.com>
- <CAG48ez0Rtv5kqHWw368Ym3GkKodPA+JETOAN+=c2KPa3opENSA@mail.gmail.com>
- <20210924002230.sijoedia65hf5bj7@shells.gnugeneration.com>
- <202109231814.FD09DBAD3@keescook>
- <20210924135424.GA33573@C02TD0UTHF1T.local>
+        Fri, 24 Sep 2021 07:29:40 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 07:30:19 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, Doug Anderson <dianders@google.com>
+Subject: Re: [PATCH v5 1/2] pwm: Introduce single-PWM of_xlate function
+Message-ID: <YU3g+8Rwfyq3yp5S@ripper>
+References: <20210924021225.846197-1-bjorn.andersson@linaro.org>
+ <20210924071652.skkx2jgeivg4uiht@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210924135424.GA33573@C02TD0UTHF1T.local>
+In-Reply-To: <20210924071652.skkx2jgeivg4uiht@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 02:54:24PM +0100, Mark Rutland wrote:
-> On Thu, Sep 23, 2021 at 06:16:16PM -0700, Kees Cook wrote:
-> > On Thu, Sep 23, 2021 at 05:22:30PM -0700, Vito Caputo wrote:
-> > > Instead of unwinding stacks maybe the kernel should be sticking an
-> > > entrypoint address in the current task struct for get_wchan() to
-> > > access, whenever userspace enters the kernel?
+On Fri 24 Sep 00:16 PDT 2021, Uwe Kleine-K?nig wrote:
+
+> On Thu, Sep 23, 2021 at 09:12:24PM -0500, Bjorn Andersson wrote:
+> > The existing pxa driver and the upcoming addition of PWM support in the
+> > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
+> > thereby a need for a of_xlate function with the period as its single
+> > argument.
 > > 
-> > wchan is supposed to show where the kernel is at the instant the
-> > get_wchan() happens. (i.e. recording it at syscall entry would just
-> > always show syscall entry.)
+> > Introduce a common helper function in the core that can be used as
+> > of_xlate by such drivers and migrate the pxa driver to use this.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> > 
+> > Changes since v4:
+> > - None
+> > 
+> >  drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
+> >  drivers/pwm/pwm-pxa.c | 16 +---------------
+> >  include/linux/pwm.h   |  2 ++
+> >  3 files changed, 29 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> > index 4527f09a5c50..2c6b155002a2 100644
+> > --- a/drivers/pwm/core.c
+> > +++ b/drivers/pwm/core.c
+> > @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const struct of_phandle_args *args)
+> >  }
+> >  EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
+> >  
+> > +struct pwm_device *
+> > +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args *args)
+> > +{
+> > +	struct pwm_device *pwm;
+> > +
+> > +	if (pc->of_pwm_n_cells < 1)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	/* validate that one cell is specified, optionally with flags */
+> > +	if (args->args_count != 1 && args->args_count != 2)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	pwm = pwm_request_from_chip(pc, 0, NULL);
+> > +	if (IS_ERR(pwm))
+> > +		return pwm;
+> > +
+> > +	pwm->args.period = args->args[0];
+> > +	pwm->args.polarity = PWM_POLARITY_NORMAL;
+> > +
+> > +	if (args->args_count == 2 && args->args[2] & PWM_POLARITY_INVERTED)
+> > +		pwm->args.polarity = PWM_POLARITY_INVERSED;
 > 
-> It's supposed to show where a blocked task is blocked; the "wait
-> channel".
+> of_pwm_xlate_with_flags is a bit more complicated. Translating
+> accordingly this would yield:
 > 
-> I'd wanted to remove get_wchan since it requires cross-task stack
-> walking, which is generally painful.
+> 	if (pc->of_pwm_n_cells >= 2) {
+> 		if (args->args_count > 1 && args->args[1] & PWM_POLARITY_INVERTED)
+> 			pwm->args.polarity = PWM_POLARITY_INVERSED;
+> 	}
+> 
+> Given that pc->of_pwm_n_cells isn't used when a phandle is parsed (in
+> of_pwm_get()) I think your variant is fine.
+> 
 
-Right -- this is the "fragile" part I'm worried about.
+Right, the difference from of_pwm_xlate_with_flags is that this version
+will pick up the flags even if the driver says it has n_cells = 1.
 
-> We could instead have the scheduler entrypoints snapshot their caller
-> into a field in task_struct. If there are sufficiently few callers, that
-> could be an inline wrapper that passes a __func__ string. Otherwise, we
-> still need to symbolize.
+I didn't see a strong reason for doing the extra check and the drawback
+with it is that if I then write in my dts that my channel should be
+INVERTED the driver won't be able to bump the n_cells to 2, because that
+would cause a regression.
 
-Hmm. Does PREEMPT break this?
+Would you like me to add this extra check? Or perhaps ensure that the
+commit message captures my reasoning here?
 
-Can we actually use __builtin_return_address(0) in __schedule?
+> So I think technically the patch is good, for me the question is if we
+> want to make new drivers of_pwm_xlate_with_flags for consistency even
+> though this would mean that the first argument has to be 0 for all
+> phandles. Thierry? Lee?
+> 
 
--- 
-Kees Cook
+I find it typical for single entity providers to be defined with
+#foo-cells = <0> (or 1 if you have flags) and not pass a "dummy" 0.
+
+We did talk about this with Rob in a previous version of this patch and
+came to the conclusion that this was the appropriate thing to do...
+
+Thanks,
+Bjorn
