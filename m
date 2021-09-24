@@ -2,180 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC1B416D11
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733DB416D0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244485AbhIXHq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
+        id S244468AbhIXHqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244473AbhIXHq4 (ORCPT
+        with ESMTP id S244458AbhIXHq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:46:56 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048ADC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:45:24 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id j195so3915332ybj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:45:23 -0700 (PDT)
+        Fri, 24 Sep 2021 03:46:29 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E49CC061574;
+        Fri, 24 Sep 2021 00:44:56 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id t10so36775330lfd.8;
+        Fri, 24 Sep 2021 00:44:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VzEkKbf+8GOBCumwF0wyu+zgn/fR7q1MOGRVll1HpEE=;
-        b=Y4P3G7O2QPVN5NTdV1SLpb3F6rsE77Q7DZp7bz5/ghgXpm1L8BiISMMeszO9RShG29
-         k+a7Wd4hRf1OuhxIIdG26DoE1veD+Tpmd20jFu68xmkzC+xgexUn1QSEf2lAJpxEi+Dm
-         0OaTyuACM1HcEmaLo3jc/eeWvSbKLl5TmOZ0gRVBi9gjAW/8CwQQ0oUuTXmBsib0P4Ib
-         pDrm3nvOUHgF0HttyvGzrwuncLxJR3ZX9FcfgqOG1/J1umDFy2aKgKxjNBRpFucPoTFI
-         xqnJqgE6uGvgvNZ4VPyHT8dXteYjvgFFZ/N+Uh8Gma01qEs/6b79FsP+3yuBagHr31B4
-         FQgQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SGdLlRItT9HMu96BAD8a7OY3ZGKubujAFhPYgAErkms=;
+        b=d6GUSAJsbjJc/qbMbnUyizAd9nEk60s0QaDgmzrBsR282R6g9c57nRxdDw/rVCLKUx
+         oneJH04MhOiYPj8WV4e28g1HzwFUE1aAr/GRR8iIMT6RqKCeidkfSRGFwR2iJr/ZTF7V
+         0MjjtAOp73B1NnWFUmwWg6P42M2/fl4DDy5zOhYcqZ46lbQmHAcPCcqs+K+f2DOEKj2r
+         R4I3scbwxKgYJmdwiOyhREF0gEODIDGzjmeBQvcZ/DB9SoE/8AadkbhaQaMSVmSHBi8x
+         O5kLVniSt741WyefIAQ0iu2BJUrh1QIsqGPuGqyChsBhZr/+5/67JS6/e6+ZcDbSalZ4
+         50+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VzEkKbf+8GOBCumwF0wyu+zgn/fR7q1MOGRVll1HpEE=;
-        b=1F3x0Z2etFmNQFY1FCs90Wzygbi3e9IX/uGSHWL0NuH8g2ah1d0JnoXL8X2SGkL/zD
-         jI5PQqqiOHgqcMY3E5X9LT4MHOYxMiCH4h3mTuP5NhPOVR9CQj3K1FIjVQTCX9/WAGwj
-         npRVDD+sFb9VwrdKf7RKEeCKRDNFPXsrOEcNvTxjRsLyDnYos2lewvm+R3PxWUjmd6yF
-         2kQH/1Pg/HXrPpSGQu/82z5w971qd20aCXeet2I1MuqI7HdtETZp1jt3r7zDQ2CA8rpF
-         9lQOq8YcrUdHXl0nFBr/39Yw4c3FgYKQ8ftms6OoofAkLITEY/Rg94eNrwcH/dMV/eJu
-         PIfw==
-X-Gm-Message-State: AOAM531LxwgZ+POGOLvUouQ9psVAJBtFMqIdUjdLIThXGtEa81pOUoFa
-        DE+s7VYfSVK7GQDXZyWkdaPvFWVSvFxjp+MAPtBf6g==
-X-Google-Smtp-Source: ABdhPJzS21gGDa1XBNNlPYyGIxrKBMF97rw5pxVDQdnj0H1xCXPrLQGbc4IMIgQBPmOHfOa0VImDVu73XqtR/pCZr4g=
-X-Received: by 2002:a25:2f48:: with SMTP id v69mr10662491ybv.339.1632469523150;
- Fri, 24 Sep 2021 00:45:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SGdLlRItT9HMu96BAD8a7OY3ZGKubujAFhPYgAErkms=;
+        b=qG310KneyZUR3U79fRC2ikwXwpoBWEB8Z+DrhswHEcIbYcsD6Hk9wDrhyRbAJom3sU
+         T2Zw6Zxr4S0Q8LP7Un/ThwBWnhUAZ2L54W3bNgZCETMvajna89AefdL34PWXOpYt6wm4
+         MehRAy82h8/tVYUDVNEBuaSnaX8jzsR0cPGyhLvu5KhYv9esuaX+Ij7+OBasZL0lELvi
+         5+OcHAIRyaSGhfQwSMKVlBzqU0awKy9MTux940sEf6VTcMhU9AA6CAzOCVmatGXS/OtA
+         LEZEA2WudBeQAFom1qZ/0rkrntR/+YeDCoiN+3UpKr6ZCqcwilJugAy1Je0TtOeuweeE
+         g5ig==
+X-Gm-Message-State: AOAM532JIq0RmcblLKKt9KTeli4GokyxpRoqDOBsbU6BX1lv1jzO+4mc
+        LaHitkr/JyZY3gamel4lRX8dtyN760I=
+X-Google-Smtp-Source: ABdhPJyuO54rgCfKAPBtpJfgCZE3pjnkn//1Lj3fDNG0b7QopNcC4OIjrN3XB1EKIqxtl+7LgGJ7KA==
+X-Received: by 2002:a05:6512:114c:: with SMTP id m12mr8141692lfg.4.1632469494760;
+        Fri, 24 Sep 2021 00:44:54 -0700 (PDT)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id s4sm833782ljp.115.2021.09.24.00.44.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 00:44:53 -0700 (PDT)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 18O7ipBE025738;
+        Fri, 24 Sep 2021 10:44:52 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 18O7ioYt025737;
+        Fri, 24 Sep 2021 10:44:50 +0300
+Date:   Fri, 24 Sep 2021 10:44:50 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] hwmon: tmp421: handle I2C errors
+Message-ID: <20210924074450.GU23326@home.paul.comp>
+References: <20210922155323.GA3205709@roeck-us.net>
+ <20210923094801.23332-1-fercerpav@gmail.com>
+ <20210924022020.GA3032273@roeck-us.net>
 MIME-Version: 1.0
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <20210922094131.15625-4-linyunsheng@huawei.com> <YUw78q4IrfR0D2/J@apalos.home>
- <b2779d81-4cb3-5ccc-8e36-02cd633383f3@huawei.com> <CAC_iWj+yv8+=MaxtqLFkQh1Qb75vNZw30xcz2VTD-m37-RVp8A@mail.gmail.com>
- <39e62727-6d9f-a0db-39b2-296ebd6972b3@huawei.com>
-In-Reply-To: <39e62727-6d9f-a0db-39b2-296ebd6972b3@huawei.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Fri, 24 Sep 2021 10:44:47 +0300
-Message-ID: <CAC_iWj+utC54sGFKfOMFx34Jk1SQWANxbkBRD_E2TeSLKkZRUg@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/7] pool_pool: avoid calling compound_head() for
- skb frag page
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org, Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, memxor@gmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924022020.GA3032273@roeck-us.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sept 2021 at 10:33, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2021/9/23 19:47, Ilias Apalodimas wrote:
-> > On Thu, 23 Sept 2021 at 14:24, Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> >>
-> >> On 2021/9/23 16:33, Ilias Apalodimas wrote:
-> >>> On Wed, Sep 22, 2021 at 05:41:27PM +0800, Yunsheng Lin wrote:
-> >>>> As the pp page for a skb frag is always a head page, so make
-> >>>> sure skb_pp_recycle() passes a head page to avoid calling
-> >>>> compound_head() for skb frag page case.
-> >>>
-> >>> Doesn't that rely on the driver mostly (i.e what's passed in skb_frag_set_page() ?
-> >>> None of the current netstack code assumes bv_page is the head page of a
-> >>> compound page.  Since our page_pool allocator can will allocate compound
-> >>> pages for order > 0,  why should we rely on it ?
-> >>
-> >> As the page pool alloc function return 'struct page *' to the caller, which
-> >> is the head page of a compound pages for order > 0, so I assume the caller
-> >> will pass that to skb_frag_set_page().
-> >
-> > Yea that's exactly the assumption I was afraid of.
-> > Sure not passing the head page might seem weird atm and the assumption
-> > stands, but the point is we shouldn't blow up the entire network stack
-> > if someone does that eventually.
-> >
-> >>
-> >> For non-pp page, I assume it is ok whether the page is a head page or tail
-> >> page, as the pp_magic for both of them are not set with PP_SIGNATURE.
-> >
-> > Yea that's true, although we removed the checking for coalescing
-> > recyclable and non-recyclable SKBs,   the next patch first checks the
-> > signature before trying to do anything with the skb.
-> >
-> >>
-> >> Or should we play safe here, and do the trick as skb_free_head() does in
-> >> patch 6?
-> >
-> > I don't think the &1 will even be measurable,  so I'd suggest just
-> > dropping this and play safe?
->
-> I am not sure what does '&1' mean above.
+Hello Guenter,
 
-I meant the check compound_head() is doing before deciding on the head page.
+On Thu, Sep 23, 2021 at 07:20:20PM -0700, Guenter Roeck wrote:
+> > --- a/drivers/hwmon/tmp421.c
+> > +++ b/drivers/hwmon/tmp421.c
+> > @@ -93,7 +93,7 @@ struct tmp421_data {
+> >  	struct hwmon_channel_info temp_info;
+> >  	const struct hwmon_channel_info *info[2];
+> >  	struct hwmon_chip_info chip;
+> > -	char valid;
+> > +	bool valid;
+> 
+> This is a cleanup, not a bug fix, and it isn't even mentioned
+> in the patch description.
 
->
-> The one thing I am not sure about the trick done in patch 6 is that
-> if __page_frag_cache_drain() is right API to use here, I used it because
-> it is the only API that is expecting a head page.
+For the bug fix I needed to add a line setting data->valid to false
+and was reluctant to assign 0 instead as it would be adding more wrong
+(type-wise) code. But since you say that's the way to go, sure, will
+do.
 
-Yea seemed a bit funny to me in the first place, until I figured out
-what exactly it was doing.
+Regarding the cleanup, I see hwmon has many examples of "char valid"
+and so it might make sense to do them all at once. What would be the
+procedure here, is that a desired change at all and if yes, how to
+approach doing it? 
 
-Regards
-/Ilias
->
-> >
-> > Cheers
-> > /Ilias
-> >>
-> >>>
-> >>> Thanks
-> >>> /Ilias
-> >>>>
-> >>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >>>> ---
-> >>>>  include/linux/skbuff.h | 2 +-
-> >>>>  net/core/page_pool.c   | 2 --
-> >>>>  2 files changed, 1 insertion(+), 3 deletions(-)
-> >>>>
-> >>>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> >>>> index 6bdb0db3e825..35eebc2310a5 100644
-> >>>> --- a/include/linux/skbuff.h
-> >>>> +++ b/include/linux/skbuff.h
-> >>>> @@ -4722,7 +4722,7 @@ static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
-> >>>>  {
-> >>>>      if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
-> >>>>              return false;
-> >>>> -    return page_pool_return_skb_page(virt_to_page(data));
-> >>>> +    return page_pool_return_skb_page(virt_to_head_page(data));
-> >>>>  }
-> >>>>
-> >>>>  #endif      /* __KERNEL__ */
-> >>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> >>>> index f7e71dcb6a2e..357fb53343a0 100644
-> >>>> --- a/net/core/page_pool.c
-> >>>> +++ b/net/core/page_pool.c
-> >>>> @@ -742,8 +742,6 @@ bool page_pool_return_skb_page(struct page *page)
-> >>>>  {
-> >>>>      struct page_pool *pp;
-> >>>>
-> >>>> -    page = compound_head(page);
-> >>>> -
-> >>>>      /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
-> >>>>       * in order to preserve any existing bits, such as bit 0 for the
-> >>>>       * head page of compound page and bit 1 for pfmemalloc page, so
-> >>>> --
-> >>>> 2.33.0
-> >>>>
-> >>> .
-> >>>
-> > .
-> >
+-- 
+Be free, use free (http://www.gnu.org/philosophy/free-sw.html) software!
+mailto:fercerpav@gmail.com
