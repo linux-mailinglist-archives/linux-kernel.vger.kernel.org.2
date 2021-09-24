@@ -2,74 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89660416A5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC09A416A67
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244014AbhIXDUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 23:20:41 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:37644 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231680AbhIXDUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 23:20:41 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-01 (Coremail) with SMTP id qwCowACnrQmRQ01hNyXQAA--.62110S2;
-        Fri, 24 Sep 2021 11:18:41 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     dhowells@redhat.com, marc.dionne@auristor.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH 3/3] rxrpc: Fix _usecs_to_jiffies() by using usecs_to_jiffies()
-Date:   Fri, 24 Sep 2021 03:18:37 +0000
-Message-Id: <1632453517-782538-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: qwCowACnrQmRQ01hNyXQAA--.62110S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr1xtr43Gr4xWr4DZFyrZwb_yoWfZFb_ZF
-        WkJF17WayayFZ3uF42yr4rA3s8ury3uryFvr1SkFZrK3yY9rySy3y7WFn5Gr1YgrW2qFnx
-        ua1jva4xKr1fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
-        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUnQ6pDUUUU
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S243966AbhIXD1z convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Sep 2021 23:27:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235369AbhIXD1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 23:27:54 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 315B161211;
+        Fri, 24 Sep 2021 03:26:21 +0000 (UTC)
+Date:   Thu, 23 Sep 2021 23:26:19 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] trace: prevent preemption in
+ perf_ftrace_function_call()
+Message-ID: <20210923232619.50103473@oasis.local.home>
+In-Reply-To: <7f4dfb4a-d271-b3c5-f603-06cc789ba9e9@linux.alibaba.com>
+References: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
+        <20210923093359.30da8ba6@gandalf.local.home>
+        <7f4dfb4a-d271-b3c5-f603-06cc789ba9e9@linux.alibaba.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Directly using _usecs_to_jiffies() might be unsafe, so it's
-better to use usecs_to_jiffies() instead.
-Because we can see that the result of _usecs_to_jiffies()
-could be larger than MAX_JIFFY_OFFSET values without the
-check of the input.
+On Fri, 24 Sep 2021 10:08:10 +0800
+王贇 <yun.wang@linux.alibaba.com> wrote:
 
-Fixes: c410bf01933e ("Fix the excessive initial retransmission timeout")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- net/rxrpc/rtt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I found the rcu tree implementation of rcu_is_watching() will check
+> this_cpu_ptr(&rcu_data.dynticks), and after that enable the preemption.
+> 
+> If preemption happened after that and before we disable here, there are
+> still possibility that the CPU changed and make the dynticks checking
+> invalid, isn't it?
 
-diff --git a/net/rxrpc/rtt.c b/net/rxrpc/rtt.c
-index 4e565ee..be61d6f 100644
---- a/net/rxrpc/rtt.c
-+++ b/net/rxrpc/rtt.c
-@@ -22,7 +22,7 @@ static u32 rxrpc_rto_min_us(struct rxrpc_peer *peer)
- 
- static u32 __rxrpc_set_rto(const struct rxrpc_peer *peer)
- {
--	return _usecs_to_jiffies((peer->srtt_us >> 3) + peer->rttvar_us);
-+	return usecs_to_jiffies((peer->srtt_us >> 3) + peer->rttvar_us);
- }
- 
- static u32 rxrpc_bound_rto(u32 rto)
--- 
-2.7.4
+If it can be scheduled, then RCU is definitely watching ;-)
 
+The rcu_is_watching() is a safe guard for places that are in between
+context switches. Not task context switches, but transitioning between
+kernel and user space, or going into or out of idle, or transitioning
+in and out of an interrupt.  There are small critical sections that RCU
+is not watching, and we are actually working on making those locations
+disable instrumentation (like tracing), where rcu_is_watching() will no
+longer be needed.
+
+-- Steve
