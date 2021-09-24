@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387BD416CEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588EB416CF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244408AbhIXHlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244369AbhIXHlN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:41:13 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D340C061574;
-        Fri, 24 Sep 2021 00:39:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=cEZSJ10iclaK2zD479RKOFFGF6rgm0+z22w18oPYM+k=;
-        t=1632469181; x=1633678781; b=LIIYAVxZR2PXkk8FFyfdIrYPt+Jfw+k3rHblUyRJ/v98pmC
-        yUTapuYO0IthKPc3+eNd5DC7a+bgKHUX2mfZ8eG/+Vjd0cCRBxgvO2AHPV/J21Cl3GvXNmgK7Jlu7
-        qZBjvHiCCjU8J83zrAqKJimda5Tfn2bxW4XCcP4m+1XFWE/MZKsDduKu7jEbyvIMziQHI2AhpOEL5
-        KpJfY3LIoNCLV7rM0nbftq/FzbUgiNjKyURWBVHRwWiLzmet8uyprWWvqFOuAAWOq5w4dqFNiPpoi
-        rrudqntLQqrh8KoVMAL8059gtbTSJ21PAIhEqMFOoty7q8gkuAMVuzT/Vn8ShsEg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95-RC2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mTfnx-00B6Hj-BH;
-        Fri, 24 Sep 2021 09:39:33 +0200
-Message-ID: <5826123db4731bde01594212101ed5dbbea4d54f.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/3] mac80211: Add support to trigger sta disconnect on
- hardware restart
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Youghandhar Chintala <youghand@codeaurora.org>
-Cc:     Abhishek Kumar <kuabhs@chromium.org>, Felix Fietkau <nbd@nbd.name>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Rakesh Pillai <pillair@codeaurora.org>,
-        Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Date:   Fri, 24 Sep 2021 09:39:32 +0200
-In-Reply-To: <66ba0f836dba111b8c7692f78da3f079@codeaurora.org>
-References: <20201215172352.5311-1-youghand@codeaurora.org>
-         <f2089f3c-db96-87bc-d678-199b440c05be@nbd.name>
-         <ba0e6a3b783722c22715ae21953b1036@codeaurora.org>
-         <CACTWRwt0F24rkueS9Ydq6gY3M-oouKGpaL3rhWngQ7cTP0xHMA@mail.gmail.com>
-         (sfid-20210205_225202_513086_43C9BBC9) <d5cfad1543f31b3e0d8e7a911d3741f3d5446c57.camel@sipsolutions.net>
-         <66ba0f836dba111b8c7692f78da3f079@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S244423AbhIXHmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:42:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244166AbhIXHmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 03:42:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B026E61241;
+        Fri, 24 Sep 2021 07:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632469244;
+        bh=KGRj7zaejQRrquDHEGdmDBrND00o4l+yU9h0flV46Z4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dgu/0u00F3ZN/pGr1CoFex5HXIH7CJSuYbqxOiBI3lA5kJxwmhWb9zk4H8oyEcYV5
+         tfCn4wfZCl2pL53xc+7W+4Qv/1I9Z/tGDBIfw2PJ3RDMHLhWhuthpvw887k/854D2M
+         Tq24/Dvw0RbH4tjnKy+bAOM/y24qiNCepcrwNtOXrpGzteBFT/KkazNbgpPWQY7wOB
+         63qMvkaUUT5TVmFUqt35Cv8irliOSigoIIgWwKa1EyCditTS8uPN1YjHxR+1KUOYOP
+         cWOG3WaznesWD6ajPPK9RQmUMISCC4hnICGafGRk0KVZwjmR1bWjvgrcnrA1ykHE8M
+         yERY4Sk7uacIQ==
+Received: by mail-pf1-f173.google.com with SMTP id w14so8194999pfu.2;
+        Fri, 24 Sep 2021 00:40:44 -0700 (PDT)
+X-Gm-Message-State: AOAM531Nq1QEO6UPdn5W++kOVqd6Dp9cQ4hcFIPqR/Si+PLrd2d3y/1Z
+        sxpfiC9DmecWvHZ+lxub5MUuYfrOCRm9PYEyWWU=
+X-Google-Smtp-Source: ABdhPJwVgzUBS1jHmBlN/QYv+cZQGCKyob4lgApPFYtL28AzyMCWAHFnBA9HQ+3su5wUoPJk+PurbKDWJIV+pEY/PuQ=
+X-Received: by 2002:a62:ce0d:0:b0:438:71f1:4442 with SMTP id
+ y13-20020a62ce0d000000b0043871f14442mr8511406pfg.21.1632469244329; Fri, 24
+ Sep 2021 00:40:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+References: <20210921174434.4839-1-bbiswas@nvidia.com> <YU0Bbc4lqtENJ5WF@robh.at.kernel.org>
+In-Reply-To: <YU0Bbc4lqtENJ5WF@robh.at.kernel.org>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 24 Sep 2021 09:40:32 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfVb0WybiF4T4cEh4ukCQWTB2+qwbOBAhCSyp+w1uBdiQ@mail.gmail.com>
+Message-ID: <CAJKOXPfVb0WybiF4T4cEh4ukCQWTB2+qwbOBAhCSyp+w1uBdiQ@mail.gmail.com>
+Subject: Re: [PATCH V1 0/3] Add tegra header license and dt-bindings Copyright
+To:     Rob Herring <robh@kernel.org>
+Cc:     Bitan Biswas <bbiswas@nvidia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        rostedt@goodmis.org, mingo@redhat.com, jassisinghbrar@gmail.com,
+        p.zabel@pengutronix.de, skomatineni@nvidia.com, broonie@kernel.org,
+        linus.walleij@linaro.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-24 at 13:07 +0530, Youghandhar Chintala wrote:
-> Hi Johannes and felix,
-> 
-> We have tested with DELBA experiment during post SSR, DUT packet seq 
-> number and tx pn is resetting to 0 as expected but AP(Netgear R8000) is 
-> not honoring the tx pn from DUT.
-> Whereas when we tested with DELBA experiment by making Linux android 
-> device as SAP and DUT as STA with which we don’t see any issue. Ping got 
-> resumed post SSR without disconnect.
+On Fri, 24 Sept 2021 at 00:36, Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, Sep 21, 2021 at 10:44:31AM -0700, Bitan Biswas wrote:
+> > Few Tegra header file are missing license text.
+> > Some Tegra dt-bindings header do not have Copyright.
+> > Add license and Copyright for such Tegra header files.
+>
+> Who do you expect to merge this? Tegra maintainers or I can apply
+> patches 1 and 3.
+>
+> Series should be for 1 maintainer clearly, separate series per
+> maintainer if there's no dependencies (this case), or clearly state who
+> you think should take a series if it has cross tree dependencies.
 
-Hm. That's a lot of data, and not a lot of explanation :)
+Please wait with applying these. I had comments for patches 1 and 3,
+but the set was sent three times, so maybe you don't see my questions
+in this thread.
 
-I don't understand how DelBA and PN are related?
-
-johannes
-
+Best regards,
+Krzysztof
