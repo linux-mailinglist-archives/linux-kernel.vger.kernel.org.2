@@ -2,189 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160B2417766
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1637A417768
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347053AbhIXPWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 11:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
+        id S1347075AbhIXPW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 11:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346995AbhIXPWV (ORCPT
+        with ESMTP id S233132AbhIXPW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:22:21 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3D5C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:20:47 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id s16so6475127ybe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:20:47 -0700 (PDT)
+        Fri, 24 Sep 2021 11:22:57 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AFCC061571;
+        Fri, 24 Sep 2021 08:21:23 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 81so6632973pgb.0;
+        Fri, 24 Sep 2021 08:21:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eJczbxCTLgMN762FoZK7X7EA0STDgnqYogdOaHtE9u8=;
-        b=QhlCin+yArkYZSWzZFKZqB8RGHyWfqjFekguOJfvRv/YwbcIGWM+4VAedrIQUheoFM
-         sMvZYJldiRa0+JN7esyHyy191nNcor49uWafVWFXV/B1jhSzwKUR9fKq/qcrqTpIbhXO
-         3zzHuMk4xz+JdibriRjhnZBmJx2r1PMaJfC/xsfDliXCgGirAH0l9FuF8kSWj8SG4u6n
-         PDQnuddYbriIP4CAj7I2jPTaHL00nj6Mumwa2Ogqxgq4Zd74uTGqR4+B8JP1dKnY0mz+
-         1MSiCbGwycjDZ2W4vcV8Enhf7G60h2caNrRtgh637c3H4tjy7KPIUD5RzYCG8Ml6u7rv
-         Xlww==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IWRHE1IksF7N6nES1jMNs1UVooFjxKrNMdCiqYqknKk=;
+        b=UDZUjjkUoxBjfAQ4BcGh4zDS6QNQMedJm0c91MDS4B53lfGBP9hGwV9ieWJBUDrTmP
+         qiSULABKykEaSMPub+/ykJ+xFAhIFg33dF5IfSUeIwMU+fgKn+dVt5+345rOe/v7v9vF
+         yrZO+2N2Gy+eoy5nrHcyzePL3ShWtfm6R2q2LyfMwe9kW1TetvHPgCs4+gQUZZ6kIAyV
+         GHHeXQlN9PrCyn5NNn2SGwoxTONbk5Pb6XSBIJ7AwMOTb5mzGqr/GDHJU+NZFZLXTW74
+         QzV+R1/l01RJacrzEcTvnwVL5MAhxkawdgzfhBj5BiggvEesd1jjuKbgKKfr6PegH/9s
+         qeyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eJczbxCTLgMN762FoZK7X7EA0STDgnqYogdOaHtE9u8=;
-        b=JI4ZTd2mPO5UmtEl+r5tOaA4qwXgPChQzb8iX65xXkwZx+4v56VMrooZ1oCFUKQdx2
-         3lIkuqnskvrPBj6ok3LnMlcC664Jxkz4P9r0F/7hoASOaOn8G+hmWOgui7m/zXIuZoQ6
-         pDHdg4A0krb9dSUKyi2gAFUC3dn/2vLmTynLlfkKmWhJ6VJ224LKHWAoIvdVw92jZ0Oa
-         y9PmZ/7P/LHfnsV7LbM5xPPMFugeFvI1tOWdEZwOpvvb1HWMVOof/Rgmfp8T0aObepTV
-         cRVIK9l4N44yqz2vsvupII4t10xuLIcpuQ3HNIZS23n1PqUhoiR8SeijTGgT4FQ0ReCm
-         BgjQ==
-X-Gm-Message-State: AOAM530GMUVxQk4p3RhOQ/kYL/xck0Y6laAKcjwWWwSAawgwdW36gbJ2
-        Z9diNzD5E88VU/kQafiRiN29ERUMd9gNcRnZlnDNYA==
-X-Google-Smtp-Source: ABdhPJyW+soE/vaScO/YpE8pprQf8Ce57Qx9ho4y22I2gY4sVqkgOf7gKmmsaCQkX+tTZROZ26YBKj5dOdcys9GSC6w=
-X-Received: by 2002:a25:d2ce:: with SMTP id j197mr14249240ybg.160.1632496846776;
- Fri, 24 Sep 2021 08:20:46 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IWRHE1IksF7N6nES1jMNs1UVooFjxKrNMdCiqYqknKk=;
+        b=z5Dy0W7lHsktvjTyV+vuO1UTTO1sHofPsKC4040sI+dGIGniApAHMN5GnBHJSKBK9Z
+         Dd1l1ZKtbGNArQD54puOgX8RQbZlaQqcfYqRUVgcdmp9h/kuvQpWvkJhda7/+mzP8MAf
+         +qyZ6waB//df2K3H8eD8C3dDDgofMBj50CRtCUum6ztpKj8uA/VG2KJ4nIkbMNX+psAI
+         6Nj/sToKasK7nyENjC6WrIA6N4KPRlgrml2kFBYWAfWyEhJyGShDFMMlxhxQxLMcMg4/
+         Y3Qqd7XaszIX/WTwDJOVf0F+vlre9ezXLtRhdoRZp2tYpyH7JFwj0dkN7lZX5dmixkAg
+         zghg==
+X-Gm-Message-State: AOAM531HodKi5mvkzdrjWZf8DEck4MtgXmbME9jKUS3XUsg6aUgAF8jV
+        j/jBTd8ZyMkeFHniUh7j/f30fQ3JBeIUlA==
+X-Google-Smtp-Source: ABdhPJztuTTCd9H3MpAGQ3cfglzf1jqB8RVKpKosmZw6gUd4JSHLxUQa0SZYZqQ/j8o9+PTszHpRQw==
+X-Received: by 2002:a63:d34f:: with SMTP id u15mr4232594pgi.200.1632496883270;
+        Fri, 24 Sep 2021 08:21:23 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.114])
+        by smtp.gmail.com with ESMTPSA id g8sm9004444pfv.51.2021.09.24.08.21.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 08:21:21 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mem_cgroup: optimize the atomic count of
+ wb_completion
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+References: <1632465983-30525-1-git-send-email-brookxu.cn@gmail.com>
+ <YU2boTZhfbo0h/Xi@dhcp22.suse.cz>
+ <03145735-7764-4cd4-e15b-60402f4b447e@gmail.com>
+ <YU3aT7i2vBNxewam@dhcp22.suse.cz>
+From:   "brookxu.cn" <brookxu.cn@gmail.com>
+Message-ID: <df9c2c8e-bc28-d929-c2e1-18f6f91ca336@gmail.com>
+Date:   Fri, 24 Sep 2021 23:21:19 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210923170908.2184404-1-kaleshsingh@google.com>
-In-Reply-To: <20210923170908.2184404-1-kaleshsingh@google.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Fri, 24 Sep 2021 08:20:35 -0700
-Message-ID: <CABCJKucTiHDitevf1U97eCV1KdxAyui+fWvD1i7c8piVMnmjoQ@mail.gmail.com>
-Subject: Re: [PATCH] tracing/cfi: Fix cmp_entries_* functions signature mismatch
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, Hridya Valsaraju <hridya@google.com>,
-        namhyung@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YU3aT7i2vBNxewam@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kalesh,
+Thanks for your time.
 
-On Thu, Sep 23, 2021 at 10:09 AM Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> If CONFIG_CFI_CLANG=y, attempting to read an event histogram will cause
-> the kernel to panic due to failed CFI check.
->
->     1. echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
->     2. cat >> events/sched/sched_switch/hist
->     3. kernel panices on attempting to read hist
->
-> This happens because the sort() function expects a generic
-> int (*)(const void *, const void *) pointer for the compare function.
-> To prevent this CFI failure, change tracing map cmp_entries_* function
-> signatures to match this.
->
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> ---
->  kernel/trace/tracing_map.c | 40 ++++++++++++++++++++++----------------
->  1 file changed, 23 insertions(+), 17 deletions(-)
->
-> diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
-> index d6bddb157ef2..a8c80ebbf9da 100644
-> --- a/kernel/trace/tracing_map.c
-> +++ b/kernel/trace/tracing_map.c
-> @@ -834,19 +834,21 @@ int tracing_map_init(struct tracing_map *map)
->         return err;
->  }
->
-> -static int cmp_entries_dup(const struct tracing_map_sort_entry **a,
-> -                          const struct tracing_map_sort_entry **b)
-> +static int cmp_entries_dup(const void *__a, const void *__b)
->  {
->         int ret = 0;
-> +       const struct tracing_map_sort_entry *a
-> +               = *(const struct tracing_map_sort_entry **)__a;
-> +       const struct tracing_map_sort_entry *b
-> +               = *(const struct tracing_map_sort_entry **)__b;
->
-> -       if (memcmp((*a)->key, (*b)->key, (*a)->elt->map->key_size))
-> +       if (memcmp(a->key, b->key, a->elt->map->key_size))
->                 ret = 1;
->
->         return ret;
->  }
->
-> -static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
-> -                          const struct tracing_map_sort_entry **b)
-> +static int cmp_entries_sum(const void *__a, const void *__b)
->  {
->         const struct tracing_map_elt *elt_a, *elt_b;
->         struct tracing_map_sort_key *sort_key;
-> @@ -854,9 +856,13 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
->         tracing_map_cmp_fn_t cmp_fn;
->         void *val_a, *val_b;
->         int ret = 0;
-> +       const struct tracing_map_sort_entry *a
-> +               = *(const struct tracing_map_sort_entry **)__a;
-> +       const struct tracing_map_sort_entry *b
-> +               = *(const struct tracing_map_sort_entry **)__b;
->
-> -       elt_a = (*a)->elt;
-> -       elt_b = (*b)->elt;
-> +       elt_a = a->elt;
-> +       elt_b = b->elt;
->
->         sort_key = &elt_a->map->sort_key;
->
-> @@ -873,8 +879,7 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
->         return ret;
->  }
->
-> -static int cmp_entries_key(const struct tracing_map_sort_entry **a,
-> -                          const struct tracing_map_sort_entry **b)
-> +static int cmp_entries_key(const void *__a, const void *__b)
->  {
->         const struct tracing_map_elt *elt_a, *elt_b;
->         struct tracing_map_sort_key *sort_key;
-> @@ -882,9 +887,13 @@ static int cmp_entries_key(const struct tracing_map_sort_entry **a,
->         tracing_map_cmp_fn_t cmp_fn;
->         void *val_a, *val_b;
->         int ret = 0;
-> +       const struct tracing_map_sort_entry *a
-> +               = *(const struct tracing_map_sort_entry **)__a;
-> +       const struct tracing_map_sort_entry *b
-> +               = *(const struct tracing_map_sort_entry **)__b;
->
-> -       elt_a = (*a)->elt;
-> -       elt_b = (*b)->elt;
-> +       elt_a = a->elt;
-> +       elt_b = b->elt;
->
->         sort_key = &elt_a->map->sort_key;
->
-> @@ -989,10 +998,8 @@ static void sort_secondary(struct tracing_map *map,
->                            struct tracing_map_sort_key *primary_key,
->                            struct tracing_map_sort_key *secondary_key)
->  {
-> -       int (*primary_fn)(const struct tracing_map_sort_entry **,
-> -                         const struct tracing_map_sort_entry **);
-> -       int (*secondary_fn)(const struct tracing_map_sort_entry **,
-> -                           const struct tracing_map_sort_entry **);
-> +       int (*primary_fn)(const void *, const void *);
-> +       int (*secondary_fn)(const void *, const void *);
->         unsigned i, start = 0, n_sub = 1;
->
->         if (is_key(map, primary_key->field_idx))
-> @@ -1061,8 +1068,7 @@ int tracing_map_sort_entries(struct tracing_map *map,
->                              unsigned int n_sort_keys,
->                              struct tracing_map_sort_entry ***sort_entries)
->  {
-> -       int (*cmp_entries_fn)(const struct tracing_map_sort_entry **,
-> -                             const struct tracing_map_sort_entry **);
-> +       int (*cmp_entries_fn)(const void *, const void *);
->         struct tracing_map_sort_entry *sort_entry, **entries;
->         int i, n_entries, ret;
->
->
+On 2021/9/24 10:01 PM, Michal Hocko wrote:
+> On Fri 24-09-21 21:02:52, brookxu wrote:
+>> Thanks for your time.
+>>
+>> Michal Hocko wrote on 2021/9/24 17:34:
+>>> On Fri 24-09-21 14:46:22, brookxu wrote:
+>>>> From: Chunguang Xu <brookxu@tencent.com>
+>>>>
+>>>> In order to track inflight foreign writeback, we init
+>>>> wb_completion.cnt to 1. For normal writeback, this cause
+>>>> wb_wait_for_completion() to perform meaningless atomic
+>>>> operations. Since foreign writebacks rarely occur in most
+>>>> scenarios, we can init wb_completion.cnt to 0 and set
+>>>> frn.done.cnt to 1. In this way we can avoid unnecessary
+>>>> atomic operations.
+>>>
+>>> Does this lead to any measurable differences?
+>>
+>> I created multiple cgroups that performed IO on multiple disks,
+>> then flushed the cache with sync command, and no measurable
+>> differences have been observed so far.
+> 
+> OK, so why do we want to optimize this code?
 
-Thanks for the patch! This looks correct to me and fixes the function
-type mismatch that trips CFI.
+Just a optimization point discovered during the diagnosis, no
+behavior change.
 
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-
-Sami
+> 
