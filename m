@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5F041746A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3EA741752C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345174AbhIXNFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:05:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33458 "EHLO mail.kernel.org"
+        id S1346219AbhIXNPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:15:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344249AbhIXNDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:03:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF75561423;
-        Fri, 24 Sep 2021 12:55:02 +0000 (UTC)
+        id S1345513AbhIXNLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:11:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95C55613A7;
+        Fri, 24 Sep 2021 12:58:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488103;
-        bh=t6Z3enAqwHwMvkrL5+4T1jz9TrJJwxTIErdIbY99Spc=;
+        s=korg; t=1632488309;
+        bh=StOf3lEvnsQOOCh9H403OBa8x/t16Iky64plNO3R4o4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=02Mo9asjgUYkOPNUjqi0Yr4cB/Lvys3GmV0TfdlIB88knZreWxclOZO56ncw2CgQ3
-         4ZL6m1ilK259WjWQhK6hxZrc7bLM/xx7Cs+VzSLwb8tq06JKcggoFRF6lKn2bn2I4X
-         sP1PQ4Be7UJzbg05Xf9WP4FTj0ttwG8XjOjSolcY=
+        b=Pe8Fte6E87cODd+kPFATbcC62VWn4hfqniGLz8EY47VkLyZLc+j34M90KRljcWylI
+         vhDJLGJ5zSOMdxPzaf8oCRQy0QpEQbbW+w97GTUt4I1uS5Umznc5FxHPzAFoYRFlv8
+         dX4/lcPKL2Y2/swj+2z9qdA/XR2vvT/6mEZB8qF0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Omer Shpigelman <oshpigelman@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 086/100] habanalabs: add "in device creation" status
-Date:   Fri, 24 Sep 2021 14:44:35 +0200
-Message-Id: <20210924124344.351280791@linuxfoundation.org>
+Subject: [PATCH 5.10 36/63] drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
+Date:   Fri, 24 Sep 2021 14:44:36 +0200
+Message-Id: <20210924124335.516951348@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,152 +42,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 71731090ab17a208a58020e4b342fdfee280458a ]
+[ Upstream commit 4b92d4add5f6dcf21275185c997d6ecb800054cd ]
 
-On init, the disabled state is cleared right before hw_init and that
-causes the device to report on "Operational" state before the device
-initialization is finished. Although the char device is not yet exposed
-to the user at this stage, the sysfs entries are exposed.
+DEFINE_SMP_CALL_CACHE_FUNCTION() was usefel before the CPU hotplug rework
+to ensure that the cache related functions are called on the upcoming CPU
+because the notifier itself could run on any online CPU.
 
-This can cause errors in monitoring applications that use the sysfs
-entries.
+The hotplug state machine guarantees that the callbacks are invoked on the
+upcoming CPU. So there is no need to have this SMP function call
+obfuscation. That indirection was missed when the hotplug notifiers were
+converted.
 
-In order to avoid this, a new state "in device creation" is introduced
-to ne reported when the device is not disabled but is still in init
-flow.
+This also solves the problem of ARM64 init_cache_level() invoking ACPI
+functions which take a semaphore in that context. That's invalid as SMP
+function calls run with interrupts disabled. Running it just from the
+callback in context of the CPU hotplug thread solves this.
 
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Fixes: 8571890e1513 ("arm64: Add support for ACPI based firmware tables")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Will Deacon <will@kernel.org>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/871r69ersb.ffs@tglx
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/device.c       |  3 +++
- drivers/misc/habanalabs/common/habanalabs.h   |  2 +-
- .../misc/habanalabs/common/habanalabs_drv.c   |  8 ++++++--
- drivers/misc/habanalabs/common/sysfs.c        | 20 +++++++------------
- include/uapi/misc/habanalabs.h                |  4 +++-
- 5 files changed, 20 insertions(+), 17 deletions(-)
+ arch/arm64/kernel/cacheinfo.c   |  7 ++-----
+ arch/mips/kernel/cacheinfo.c    |  7 ++-----
+ arch/riscv/kernel/cacheinfo.c   |  7 ++-----
+ arch/x86/kernel/cpu/cacheinfo.c |  7 ++-----
+ include/linux/cacheinfo.h       | 18 ------------------
+ 5 files changed, 8 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 0a788a13f2c1..846a7e78582c 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -23,6 +23,8 @@ enum hl_device_status hl_device_status(struct hl_device *hdev)
- 		status = HL_DEVICE_STATUS_NEEDS_RESET;
- 	else if (hdev->disabled)
- 		status = HL_DEVICE_STATUS_MALFUNCTION;
-+	else if (!hdev->init_done)
-+		status = HL_DEVICE_STATUS_IN_DEVICE_CREATION;
- 	else
- 		status = HL_DEVICE_STATUS_OPERATIONAL;
+diff --git a/arch/arm64/kernel/cacheinfo.c b/arch/arm64/kernel/cacheinfo.c
+index 7fa6828bb488..587543c6c51c 100644
+--- a/arch/arm64/kernel/cacheinfo.c
++++ b/arch/arm64/kernel/cacheinfo.c
+@@ -43,7 +43,7 @@ static void ci_leaf_init(struct cacheinfo *this_leaf,
+ 	this_leaf->type = type;
+ }
  
-@@ -44,6 +46,7 @@ bool hl_device_operational(struct hl_device *hdev,
- 	case HL_DEVICE_STATUS_NEEDS_RESET:
- 		return false;
- 	case HL_DEVICE_STATUS_OPERATIONAL:
-+	case HL_DEVICE_STATUS_IN_DEVICE_CREATION:
- 	default:
- 		return true;
+-static int __init_cache_level(unsigned int cpu)
++int init_cache_level(unsigned int cpu)
+ {
+ 	unsigned int ctype, level, leaves, fw_level;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+@@ -78,7 +78,7 @@ static int __init_cache_level(unsigned int cpu)
+ 	return 0;
+ }
+ 
+-static int __populate_cache_leaves(unsigned int cpu)
++int populate_cache_leaves(unsigned int cpu)
+ {
+ 	unsigned int level, idx;
+ 	enum cache_type type;
+@@ -97,6 +97,3 @@ static int __populate_cache_leaves(unsigned int cpu)
  	}
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index c63e26da5135..c48d130a9049 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -1798,7 +1798,7 @@ struct hl_dbg_device_entry {
+ 	return 0;
+ }
+-
+-DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+-DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
+index 47312c529410..529dab855aac 100644
+--- a/arch/mips/kernel/cacheinfo.c
++++ b/arch/mips/kernel/cacheinfo.c
+@@ -17,7 +17,7 @@ do {								\
+ 	leaf++;							\
+ } while (0)
  
- #define HL_STR_MAX	32
- 
--#define HL_DEV_STS_MAX (HL_DEVICE_STATUS_NEEDS_RESET + 1)
-+#define HL_DEV_STS_MAX (HL_DEVICE_STATUS_LAST + 1)
- 
- /* Theoretical limit only. A single host can only contain up to 4 or 8 PCIe
-  * x16 cards. In extreme cases, there are hosts that can accommodate 16 cards.
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index 4194cda2d04c..536451a9a16c 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -318,12 +318,16 @@ int create_hdev(struct hl_device **dev, struct pci_dev *pdev,
- 		hdev->asic_prop.fw_security_enabled = false;
- 
- 	/* Assign status description string */
--	strncpy(hdev->status[HL_DEVICE_STATUS_MALFUNCTION],
--					"disabled", HL_STR_MAX);
-+	strncpy(hdev->status[HL_DEVICE_STATUS_OPERATIONAL],
-+					"operational", HL_STR_MAX);
- 	strncpy(hdev->status[HL_DEVICE_STATUS_IN_RESET],
- 					"in reset", HL_STR_MAX);
-+	strncpy(hdev->status[HL_DEVICE_STATUS_MALFUNCTION],
-+					"disabled", HL_STR_MAX);
- 	strncpy(hdev->status[HL_DEVICE_STATUS_NEEDS_RESET],
- 					"needs reset", HL_STR_MAX);
-+	strncpy(hdev->status[HL_DEVICE_STATUS_IN_DEVICE_CREATION],
-+					"in device creation", HL_STR_MAX);
- 
- 	hdev->major = hl_major;
- 	hdev->reset_on_lockup = reset_on_lockup;
-diff --git a/drivers/misc/habanalabs/common/sysfs.c b/drivers/misc/habanalabs/common/sysfs.c
-index db72df282ef8..34f9f2779962 100644
---- a/drivers/misc/habanalabs/common/sysfs.c
-+++ b/drivers/misc/habanalabs/common/sysfs.c
-@@ -9,8 +9,7 @@
- 
- #include <linux/pci.h>
- 
--long hl_get_frequency(struct hl_device *hdev, u32 pll_index,
--								bool curr)
-+long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr)
+-static int __init_cache_level(unsigned int cpu)
++int init_cache_level(unsigned int cpu)
  {
- 	struct cpucp_packet pkt;
- 	u32 used_pll_idx;
-@@ -44,8 +43,7 @@ long hl_get_frequency(struct hl_device *hdev, u32 pll_index,
- 	return (long) result;
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+@@ -69,7 +69,7 @@ static void fill_cpumask_cluster(int cpu, cpumask_t *cpu_map)
+ 			cpumask_set_cpu(cpu1, cpu_map);
  }
  
--void hl_set_frequency(struct hl_device *hdev, u32 pll_index,
--								u64 freq)
-+void hl_set_frequency(struct hl_device *hdev, u32 pll_index, u64 freq)
+-static int __populate_cache_leaves(unsigned int cpu)
++int populate_cache_leaves(unsigned int cpu)
  {
- 	struct cpucp_packet pkt;
- 	u32 used_pll_idx;
-@@ -285,16 +283,12 @@ static ssize_t status_show(struct device *dev, struct device_attribute *attr,
- 				char *buf)
- {
- 	struct hl_device *hdev = dev_get_drvdata(dev);
--	char *str;
-+	char str[HL_STR_MAX];
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+@@ -98,6 +98,3 @@ static int __populate_cache_leaves(unsigned int cpu)
  
--	if (atomic_read(&hdev->in_reset))
--		str = "In reset";
--	else if (hdev->disabled)
--		str = "Malfunction";
--	else if (hdev->needs_reset)
--		str = "Needs Reset";
--	else
--		str = "Operational";
-+	strscpy(str, hdev->status[hl_device_status(hdev)], HL_STR_MAX);
-+
-+	/* use uppercase for backward compatibility */
-+	str[0] = 'A' + (str[0] - 'a');
- 
- 	return sprintf(buf, "%s\n", str);
+ 	return 0;
  }
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index a47a731e4527..b4b681b81df8 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -276,7 +276,9 @@ enum hl_device_status {
- 	HL_DEVICE_STATUS_OPERATIONAL,
- 	HL_DEVICE_STATUS_IN_RESET,
- 	HL_DEVICE_STATUS_MALFUNCTION,
--	HL_DEVICE_STATUS_NEEDS_RESET
-+	HL_DEVICE_STATUS_NEEDS_RESET,
-+	HL_DEVICE_STATUS_IN_DEVICE_CREATION,
-+	HL_DEVICE_STATUS_LAST = HL_DEVICE_STATUS_IN_DEVICE_CREATION
+-
+-DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+-DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
+index d86781357044..90deabfe63ea 100644
+--- a/arch/riscv/kernel/cacheinfo.c
++++ b/arch/riscv/kernel/cacheinfo.c
+@@ -113,7 +113,7 @@ static void fill_cacheinfo(struct cacheinfo **this_leaf,
+ 	}
+ }
+ 
+-static int __init_cache_level(unsigned int cpu)
++int init_cache_level(unsigned int cpu)
+ {
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+ 	struct device_node *np = of_cpu_device_node_get(cpu);
+@@ -155,7 +155,7 @@ static int __init_cache_level(unsigned int cpu)
+ 	return 0;
+ }
+ 
+-static int __populate_cache_leaves(unsigned int cpu)
++int populate_cache_leaves(unsigned int cpu)
+ {
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+ 	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
+@@ -187,6 +187,3 @@ static int __populate_cache_leaves(unsigned int cpu)
+ 
+ 	return 0;
+ }
+-
+-DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+-DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
+index f9ac682e75e7..b458b0fd98bf 100644
+--- a/arch/x86/kernel/cpu/cacheinfo.c
++++ b/arch/x86/kernel/cpu/cacheinfo.c
+@@ -985,7 +985,7 @@ static void ci_leaf_init(struct cacheinfo *this_leaf,
+ 	this_leaf->priv = base->nb;
+ }
+ 
+-static int __init_cache_level(unsigned int cpu)
++int init_cache_level(unsigned int cpu)
+ {
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+ 
+@@ -1014,7 +1014,7 @@ static void get_cache_id(int cpu, struct _cpuid4_info_regs *id4_regs)
+ 	id4_regs->id = c->apicid >> index_msb;
+ }
+ 
+-static int __populate_cache_leaves(unsigned int cpu)
++int populate_cache_leaves(unsigned int cpu)
+ {
+ 	unsigned int idx, ret;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+@@ -1033,6 +1033,3 @@ static int __populate_cache_leaves(unsigned int cpu)
+ 
+ 	return 0;
+ }
+-
+-DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+-DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/include/linux/cacheinfo.h b/include/linux/cacheinfo.h
+index 4f72b47973c3..2f909ed084c6 100644
+--- a/include/linux/cacheinfo.h
++++ b/include/linux/cacheinfo.h
+@@ -79,24 +79,6 @@ struct cpu_cacheinfo {
+ 	bool cpu_map_populated;
  };
  
- /* Opcode for management ioctl
+-/*
+- * Helpers to make sure "func" is executed on the cpu whose cache
+- * attributes are being detected
+- */
+-#define DEFINE_SMP_CALL_CACHE_FUNCTION(func)			\
+-static inline void _##func(void *ret)				\
+-{								\
+-	int cpu = smp_processor_id();				\
+-	*(int *)ret = __##func(cpu);				\
+-}								\
+-								\
+-int func(unsigned int cpu)					\
+-{								\
+-	int ret;						\
+-	smp_call_function_single(cpu, _##func, &ret, true);	\
+-	return ret;						\
+-}
+-
+ struct cpu_cacheinfo *get_cpu_cacheinfo(unsigned int cpu);
+ int init_cache_level(unsigned int cpu);
+ int populate_cache_leaves(unsigned int cpu);
 -- 
 2.33.0
 
