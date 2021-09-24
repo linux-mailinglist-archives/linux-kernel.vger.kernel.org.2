@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBC2416F0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3067D416F0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245231AbhIXJhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:37:20 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:37793 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237056AbhIXJhS (ORCPT
+        id S245249AbhIXJi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:38:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36496 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245054AbhIXJiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:37:18 -0400
-Received: by mail-wr1-f54.google.com with SMTP id t8so25513133wrq.4;
-        Fri, 24 Sep 2021 02:35:45 -0700 (PDT)
+        Fri, 24 Sep 2021 05:38:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632476210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ySa8i5QKxO2R8AtKn1wzOUGI7jeTVD2yq0IrP5uOcwo=;
+        b=GMEqXhDaz2ncPZR8Hi8/0Vc60+OA1J6MnJWGky2IGJOqFGcOzEmkKfq7FVPnENg9IA0007
+        1l2RHk1FWSZL6qbYQxK5r/rt8+vROILmosXSj31KDdNx2O2Mm76F3977QSdG/tL56qQvMA
+        JH9SFvXR0QfYG6Hw6dODIuk2/QUZ3Bs=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-yuguzHENPz-mpbsRWLVjxQ-1; Fri, 24 Sep 2021 05:36:49 -0400
+X-MC-Unique: yuguzHENPz-mpbsRWLVjxQ-1
+Received: by mail-wr1-f71.google.com with SMTP id a17-20020adfed11000000b00160525e875aso30857wro.23
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:36:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KRYfypNkuIY9emLZqiqldN/0eSszJL/L7hkS9k8gfkA=;
-        b=m5D0Vh0cSXUgya5uLyJUhldGjVydqzfU3oy3qz7rf+XJnpR7JiA9dEWUESA6BXNVJE
-         2UpENO7SBZnyDHF8+W+I2i2iiZxzhrw5c+tEjSZri+gk5i52myIffmCc6KSGCPxiXn4u
-         v+WF0H4BYk8lAPNgCfnyPP1NdI5iJXLgdueS3MVNX89OANwge56ixJiLvXRQGw9I5Yxj
-         nw+dOfBRPR19Gn0fMZ/HuU9c1QT1RYRumJxoXMgvizzBpeTg11d0jGQpiVfcr/Yckr6t
-         0gYmCqc0jqcF0LXyug1beOzx9dpIzjtbK4Erlp0eeEKQIdqivRrfCZZc4O7vt7ezKvLR
-         oNQA==
-X-Gm-Message-State: AOAM530IzVGQ3xjtA6qr4xPQsPQJlqI4oZswI4r8Qh1ABSd3M1SNRPri
-        +EbCIyRkM2IW5KXqTZbgA28=
-X-Google-Smtp-Source: ABdhPJxZFbl9E73RZActKtG/s6A/AvgOlwsJt9fpLYANe1VVnKWPpjD/wU6IN4dT5t+LO4BrDjlYjA==
-X-Received: by 2002:a1c:4b15:: with SMTP id y21mr1002172wma.183.1632476144529;
-        Fri, 24 Sep 2021 02:35:44 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id j21sm7505008wrd.48.2021.09.24.02.35.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 02:35:44 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 09:35:42 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     longli@linuxonhyperv.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, Long Li <longli@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [Patch v2] PCI: hv: Fix sleep while in non-sleep context when
- removing child devices from the bus
-Message-ID: <20210924093542.dac76ugni4cqtsum@liuwe-devbox-debian-v2>
-References: <1630365207-20616-1-git-send-email-longli@linuxonhyperv.com>
- <20210831131607.vsjvmr43eei4dsie@liuwe-devbox-debian-v2>
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ySa8i5QKxO2R8AtKn1wzOUGI7jeTVD2yq0IrP5uOcwo=;
+        b=yFJf2t/K7ZD7DK5yb00AnBHLx0vdAeO6/oZ2EZlXvO0kDU16VdP+5H+mHZrrk/og1n
+         kz6TQu0vp7Kjq0UfLLnacqY1MhlqcYKEYk1syWr+bK5TFcxF8Pw1sGd+SUMX8CSJOzxJ
+         a6SFA+DeABrDnUO7SBrXp+eJF6mPXgmjQhwOt7bn1SADnwlb6PT7rTdiKwGu4AsrPGkC
+         EtkKXDg0Kk0srlACFGJWqur2pwgmW5s15mriHgw5pskG506i1gdeQNI/PlZLkL7Zf1TO
+         iBkfObi0FcoTfbIb8YiWdAxhuJPJIMx59NEbc+AI1O63X6R50Hng0MJgHr+KnjNAL5ZL
+         8aIQ==
+X-Gm-Message-State: AOAM531DK49qiKH02ZIV/0g+R9EjR9X7ZexF5YoWnQi2fjgHV+ThFLxX
+        ooICcAwyt/7GabI3GRfzzyAz70Ud4/1LyyHBP392duNrn+c8rRpCMBZGzWmbs8ptisxsiao8Ad1
+        FkKoSbfpy/qIP4+dty1vBualQ
+X-Received: by 2002:adf:fe49:: with SMTP id m9mr1679256wrs.295.1632476208368;
+        Fri, 24 Sep 2021 02:36:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxiDgGkC+y2exmKyjLmDjth7Ee3YImPUpNjeQRQF8Jooc7hxtHt0XQieNQWjef0RhAxQF9iXA==
+X-Received: by 2002:adf:fe49:: with SMTP id m9mr1679236wrs.295.1632476208206;
+        Fri, 24 Sep 2021 02:36:48 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c61fc.dip0.t-ipconnect.de. [91.12.97.252])
+        by smtp.gmail.com with ESMTPSA id m4sm12020908wml.28.2021.09.24.02.36.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 02:36:47 -0700 (PDT)
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
+        Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210923175347.10727-1-mike.kravetz@oracle.com>
+ <20210923175347.10727-3-mike.kravetz@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 2/4] hugetlb: add HPageCma flag and code to free
+ non-gigantic pages in CMA
+Message-ID: <7ab7690d-aa21-0fd9-75f1-f3a23b892853@redhat.com>
+Date:   Fri, 24 Sep 2021 11:36:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210923175347.10727-3-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210831131607.vsjvmr43eei4dsie@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 01:16:07PM +0000, Wei Liu wrote:
-> On Mon, Aug 30, 2021 at 04:13:27PM -0700, longli@linuxonhyperv.com wrote:
-> > From: Long Li <longli@microsoft.com>
-> > 
-> > In hv_pci_bus_exit, the code is holding a spinlock while calling
-> > pci_destroy_slot(), which takes a mutex.
-> > 
-> > This is not safe for spinlock. Fix this by moving the children to be
-> > deleted to a list on the stack, and removing them after spinlock is
-> > released.
-> > 
-> > Fixes: 94d22763207a ("PCI: hv: Fix a race condition when removing the device")
-> > 
-> > Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-> > Cc: Haiyang Zhang <haiyangz@microsoft.com>
-> > Cc: Stephen Hemminger <sthemmin@microsoft.com>
-> > Cc: Wei Liu <wei.liu@kernel.org>
-> > Cc: Dexuan Cui <decui@microsoft.com>
-> > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > Cc: Rob Herring <robh@kernel.org>
-> > Cc: "Krzysztof Wilczyński" <kw@linux.com>
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: Michael Kelley <mikelley@microsoft.com>
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Link: https://lore.kernel.org/linux-hyperv/20210823152130.GA21501@kili/
-> > Signed-off-by: Long Li <longli@microsoft.com>
+On 23.09.21 19:53, Mike Kravetz wrote:
+> When huge page demotion is fully implemented, gigantic pages can be
+> demoted to a smaller huge page size.  For example, on x86 a 1G page
+> can be demoted to 512 2M pages.  However, gigantic pages can potentially
+> be allocated from CMA.  If a gigantic page which was allocated from CMA
+> is demoted, the corresponding demoted pages needs to be returned to CMA.
 > 
-> Reviewed-by: Wei Liu <wei.liu@kernel.org>
+> In order to track hugetlb pages that need to be returned to CMA, add the
+> hugetlb specific flag HPageCma.  Flag is set when a huge page is
+> allocated from CMA and transferred to any demoted pages.  Non-gigantic
+> huge page freeing code checks for the flag and takes appropriate action.
 
-Applied to hyperv-fixes.
+Do we really need that flag or couldn't we simply always try 
+cma_release() and fallback to out ordinary freeing-path?
+
+IIRC, cma knows exactly if something was allocated via a CMA are and can 
+be free via it. No need for additional tracking usually.
+
+-- 
+Thanks,
+
+David / dhildenb
+
