@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBE1417E07
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 01:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F6D417E09
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 01:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346031AbhIXXGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 19:06:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344410AbhIXXGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 19:06:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B060661039;
-        Fri, 24 Sep 2021 23:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632524683;
-        bh=8Gn10cKU7CtsiOEauZx4GtwUoFgLAEPG53mOJzrLlVQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=c5LlWTMhpUHgddMSAfJ9CrzhXWk/JnAM0D6mRTT/nPazU9tINDA0upOAoZ12580Je
-         yDyeEBhLNDG47sJDpa7WHSp2oTjp9huYh8GajlG0YfWGug0h6M6T6RxRKJDhs4yKa1
-         pDewtrQZGTrzQVNsChGQWOvzz/DDS+G6/zJ8N38LImu9Uw+iOLU5uZg9zzWi2zes8q
-         GzhoDpcj00urKgSs2OoJguzzuE+UqqAqPXcz1dFRSar5QmXhBDSV8SKpz+NXAcbXYE
-         MIbc0Qe+NL4cafFPf4ajhreoaYuFzBOPWQEs8OuXnvzytnRTkMHafjh7Tv/CKc5t4s
-         MepQjuEVvT87g==
-Message-ID: <b7390542-ea4a-de12-7567-734f6dbf488d@kernel.org>
-Date:   Fri, 24 Sep 2021 16:04:39 -0700
+        id S1346063AbhIXXGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 19:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231674AbhIXXGn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 19:06:43 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0459C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:05:09 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id g41so46444723lfv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QeB/QlIkVc1HaPnxXOxXzZA9RrsagX4tww0bEUkv5O4=;
+        b=QHFaZY0zUtpimbNKGHO1HkSh2M2muQMq1XJ3mPWhBKWPCmDd0eRiRNkYay1Zi1Qgc7
+         bYf4q/QP1eziQ3PbH1gXrdHcCpGYyU3NyphmUMGtZ5fzJRZY8LbC7Tlf3GN02I+iSAOZ
+         PtKM2w1HHSMoyL13G4mqrbVzviCP+S42UYrIQ4bf5HsOpLFIB1t0Kg6NlFVd+o2SRqPW
+         rWbJ8aIdU56Jpz/4sWJoM2P485ppEfhJOnoh2bynyWNYJUDIQzYYG7rENC7ux7JygphD
+         SPHR9WxqgEJrK+vA3fYQQHCvgf/adfSv4O1QifhO+ii2WZ7rzcnpn3vmERRux1tjcjO9
+         a8zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QeB/QlIkVc1HaPnxXOxXzZA9RrsagX4tww0bEUkv5O4=;
+        b=SCTmCo5QyO1YrxFOh3O0F5Z6Uur7MAoIq4OhakJQo5bGkUmtgnDKnjRZExfnn7afAH
+         Vpf8t+QCAI1G3fm1pRTNApHo+/Z7Ntg/5WgGIhfEB1QqjnIuGQxcdEhlJiYgTmcZ5XRz
+         /QxBGwtvxoRC2unmWq76PySgyj9zYWNOtAaWdDLZS+ctwu/g0GTs27EGngE4uPAy+fKm
+         WXiOHYGlgsqLWjyU0P7cZQicAXKKpIfwPAZKvJgDzPpK2AissGhiMN5HrWinhX/3MFjP
+         Xe1syN9n9qALx5mwroVLG4JLGErG+X2X1t0Kz1wVBiZrsnpLUIqxQ9NwygbBiBLNvvnU
+         BQeg==
+X-Gm-Message-State: AOAM532etFy9pqOfaW69L7Zgal3cmdktv8RNHEW9eeiHDM5BGvp4E8Yp
+        eDtVok7gsdbbPSJg6/OGvXbHPA==
+X-Google-Smtp-Source: ABdhPJyABEn2XeZ/MdEk0AnHAYoFB7lLkWh75SgVQ/M/bCH1ThvH6y+h6j84xhJLr4fbYzmt8DXaoQ==
+X-Received: by 2002:a2e:9e4c:: with SMTP id g12mr13602346ljk.433.1632524708253;
+        Fri, 24 Sep 2021 16:05:08 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id s7sm964001lfi.130.2021.09.24.16.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 16:05:07 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 7CDA6102FC4; Sat, 25 Sep 2021 02:05:05 +0300 (+03)
+Date:   Sat, 25 Sep 2021 02:05:05 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: Mapcount of subpages
+Message-ID: <20210924230505.vlql2mdjfcotkuqj@box.shutemov.name>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan>
+ <YUvzINep9m7G0ust@casper.infradead.org>
+ <YUwNZFPGDj4Pkspx@moria.home.lan>
+ <YUxnnq7uFBAtJ3rT@casper.infradead.org>
+ <20210923124502.nxfdaoiov4sysed4@box.shutemov.name>
+ <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC] Expose request_module via syscall
-Content-Language: en-US
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <thomas@t-8ch.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jessica Yu <jeyu@kernel.org>
-References: <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
- <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
- <CALCETrWA1TBvbknH1Jzt=newTd4sHzNFm0RPuRxazjuRQRsR7w@mail.gmail.com>
- <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de>
- <YUi95tFDWS7oceYP@bombadil.infradead.org>
- <CALCETrX9keVFxEZYUkKr7_dWb9Ubo9q4E2aTY_ZOWGSHyRph8g@mail.gmail.com>
- <20210922122523.72ypzg4pm2x6nkod@wittgenstein>
- <59e230b3-0e85-42ff-84a8-6b30ad0719d8@www.fastmail.com>
- <20210922155253.nj5dorsyv7loduws@wittgenstein>
- <0f209e1c-3d5c-46be-b5e7-323970112a8e@www.fastmail.com>
- <20210924131939.4jaou665fodiziml@wittgenstein>
-From:   Andy Lutomirski <luto@kernel.org>
-In-Reply-To: <20210924131939.4jaou665fodiziml@wittgenstein>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/21 06:19, Christian Brauner wrote:
-> On Wed, Sep 22, 2021 at 01:06:49PM -0700, Andy Lutomirski wrote:
+On Thu, Sep 23, 2021 at 02:10:13PM -0700, Hugh Dickins wrote:
+> But you have a different point in mind when you refer to superfluous
+> CoW and GUP: I don't know the score there (and I think we are still in
+> that halfway zone, since pte CoW was changed to depend on page_count,
+> but THP CoW still depending on mapcount).
 
-> I just meant that the programs in the container can see the modules
-> available on the host. Simplest thing could be bind-mounting in the
-> host's module folder with suitable protection (locked read-only mount).
-> But yeah, it can likely be as simple as allowing it to ask for a module
-> and not bother telling it about what is available.
-> 
+I didn't pay enough attention to the topic when the change to depend on
+page_count was made. I need to catch up.
 
-If the container gets to see host modules, interesting races when 
-containers are migrated CRIU-style will result.
+I look at what direction Andrea went in his patchset and so far I *feel*
+he has a point[1]. I have not read the whole thing yet and I don't have a
+firm position here, but maybe we need to get to the bottom of the topic
+before considering ditching per-subpage mapcount.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/andrea/aa.git/tree/mm/memory.c?h=mapcount_deshare&id=e1cb3108d4131c2a7da03fbd37c3230cf082bfd9#n3153
+
+-- 
+ Kirill A. Shutemov
