@@ -2,80 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241754186A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 07:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4997641873D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhIZGAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 02:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhIZF77 (ORCPT
+        id S231301AbhIZICG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 04:02:06 -0400
+Received: from ssh248.corpemail.net ([210.51.61.248]:62440 "EHLO
+        ssh248.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231285AbhIZICF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 01:59:59 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09651C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 22:58:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=NesuuJY3vozxbCQASUdwIUQuhXe+PrX0BhoDdriym0Q=; b=tPC96cXqNSgFvj1cvcFOq7H+6U
-        J97M7rXnVxNhBVbv5tTuP5LRduDKmsYW0PgXHBZNQDdq2HT+IxBhYbzGa/YKTHyDdeFnWcgNpHJbH
-        IyZq/wpZj5O6rag5q/pBUtvJ5v+AG2k9MkoYFZNaXLl19uPfMxvz+UUVrcSCRLfjgXsjm00uVeTJD
-        LFtgC7J7Y2s1Hez14IHF3HVgQmaZmBmRiri4FT8XZtplhWTGVurFLRB7XLUas2S1j1/6l8h8d+Qz0
-        4tyNJWxdgFr+JgSyI8acVh37M3DvKJ4wiiEKmgtXFRjIJw4Ct0cT7VTdMr1mjZ7FZ8vIhO26NMe3x
-        xbsmgfbA==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mUNB4-0003XG-Ga; Sun, 26 Sep 2021 05:58:18 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Nickhu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Subject: [PATCH] NDS32: perf_event_cpu: fix 2 build errors
-Date:   Sat, 25 Sep 2021 22:58:17 -0700
-Message-Id: <20210926055817.24352-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sun, 26 Sep 2021 04:02:05 -0400
+Received: from ([60.208.111.195])
+        by ssh248.corpemail.net ((LNX1044)) with ASMTP (SSL) id UJB00124;
+        Sun, 26 Sep 2021 16:00:24 +0800
+Received: from localhost.localdomain (10.200.104.119) by
+ jtjnmail201608.home.langchao.com (10.100.2.8) with Microsoft SMTP Server id
+ 15.1.2308.14; Sun, 26 Sep 2021 16:00:25 +0800
+From:   Kai Song <songkai01@inspur.com>
+To:     <john.stultz@linaro.org>, <tglx@linutronix.de>, <sboyd@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Kai Song <songkai01@inspur.com>
+Subject: [PATCH] time:Fix an incorrect function name in the comment
+Date:   Sat, 25 Sep 2021 01:43:23 +0800
+Message-ID: <20210924174323.20770-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.200.104.119]
+tUid:   20219261600240cb5621c8e94d41cac0fab88de25d525
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-../arch/nds32/kernel/perf_event_cpu.c: In function 'unwind_frame_kernel':
-../arch/nds32/include/asm/current.h:10:13: error: '$r25' undeclared (first use in this function)
-   10 | #define tsk $r25
-../arch/nds32/kernel/perf_event_cpu.c:1255:50: note: in expansion of macro 'tsk'
- 1255 |                                                 (tsk, &graph, frame->lp, NULL);
+We fix the following warning when building kernel with W=1:
+kernel/time/time.c:479: warning: expecting prototype for set_normalized_timespec(). Prototype was for set_normalized_timespec64() instead
 
-../arch/nds32/kernel/perf_event_cpu.c:1257:27: error: assignment to 'long unsigned int' from 'long unsigned int *' makes integer from pointer without a cast [-Werror=int-conversion]
- 1257 |                 frame->sp = ((unsigned long *)frame->sp) + 1;
-
-For $r25, use the register function for current() instead.
-
-Fixes: c8b34461705e ("nds32: Add perf call-graph support.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Nickhu <nickhu@andestech.com>
-Cc: Greentime Hu <green.hu@gmail.com>
-Cc: Vincent Chen <deanbo422@gmail.com>
+Signed-off-by: Kai Song <songkai01@inspur.com>
 ---
-Please check the frame->sp cast/arithmetic.
+ kernel/time/time.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/nds32/kernel/perf_event_cpu.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+diff --git a/kernel/time/time.c b/kernel/time/time.c
+index 29923b20e0e4..77bac462b7da 100644
+--- a/kernel/time/time.c
++++ b/kernel/time/time.c
+@@ -462,7 +462,7 @@ struct __kernel_old_timeval ns_to_kernel_old_timeval(const s64 nsec)
+ EXPORT_SYMBOL(ns_to_kernel_old_timeval);
+ 
+ /**
+- * set_normalized_timespec - set timespec sec and nsec parts and normalize
++ * set_normalized_timespec64 - set timespec sec and nsec parts and normalize
+  *
+  * @ts:		pointer to timespec variable to be set
+  * @sec:	seconds to set
+-- 
+2.27.0
 
---- linux-next-20210917.orig/arch/nds32/kernel/perf_event_cpu.c
-+++ linux-next-20210917/arch/nds32/kernel/perf_event_cpu.c
-@@ -1252,9 +1252,9 @@ static int unwind_frame_kernel(struct st
- 		 */
- 		if (__kernel_text_address(frame->lp))
- 			frame->lp = ftrace_graph_ret_addr
--						(tsk, &graph, frame->lp, NULL);
-+					(current, &graph, frame->lp, NULL);
- 
--		frame->sp = ((unsigned long *)frame->sp) + 1;
-+		frame->sp = (unsigned long)(((unsigned long *)frame->sp)) + 1;
- 
- 		return 0;
- 	} else {
