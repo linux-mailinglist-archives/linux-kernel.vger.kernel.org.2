@@ -2,108 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BD84169BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D452E4169C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243880AbhIXCAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 22:00:03 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:35517 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243848AbhIXB76 (ORCPT
+        id S243822AbhIXCED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 22:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243792AbhIXCEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 21:59:58 -0400
-Received: by mail-il1-f199.google.com with SMTP id f4-20020a056e0204c400b0022dbd3f8b18so7967677ils.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 18:58:26 -0700 (PDT)
+        Thu, 23 Sep 2021 22:04:02 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33778C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:02:30 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id c21so29679843edj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:02:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=dgpwPCQznEmVXGZRT9a+ot3RVGNTTHbl31G3nps7wKQ=;
+        b=mgPpbP9aF381f5/bN4qtkHP939PGhcj90yUZsl1VfUXihpaTI2OEitivScQAZI84IR
+         8I6An1StEtMYrFFZZj9hGvt0mijwOLvGBxCDk8CVgSbvq9Z7C5S/Z7OTWFDs5th9bJgS
+         aHy55nmFGrq22bmL6i3zH36/BtRtA07Fs4T+88nM6graF2FGed7Q8AXzSFUF5U9Fh7sE
+         qJTzzVch65WkR0jNkKiYaosEWl/LDRqcsVE/SMtX+wQIqEh68E51O1btylXJyaVmuCv6
+         YNqiyKysp6Xb+H0aHJ+jJ4cgRd7HkEfgXBTkvjKlMTxjZTJNWrxKTHRKCTa/pTHantWi
+         lr+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=TsotylzfZ4kF4vvNWaiSjvWOLTgdeqLefI9Wml5Hx/Q=;
-        b=ZNPmnoy1XoZp/00kVOFnaWKUCgvrOhZ4xk4maw99pK6coeWTevd62vSgsIxEWPudmP
-         PBT+eqRtSuG2gSzErCYe0BAGLqYFoOrVw7nCkvw0hxWsAvEhBJEkCHJYZUSRsanOEDKk
-         0xHZgmuwXOHNC0uaomjkLt5uM/TTlXpQopGOAqwL6iVgPm/NXNxHH+XWMNaLW7R6xBdV
-         8QlLt2M39s7GDUHCg+J87I24u7k3EvZmM6fbcKpgPae2QnTAaJUXKmGY+H9F0MnM2oYo
-         0/90pEhJ4ZVFCz8eVrbMfEvklWT9wqnfs1NU+lSRVw3HAqaXnGEZAHsjKD+W8Peqqif8
-         pCwg==
-X-Gm-Message-State: AOAM532LKXr+IKWCRIL/AyIVfWWP4S6tSYdaCVzXir9cB0k7GONdX9me
-        LSWOLo9Oa06fFShgiE8CnRabEV/KOFvUqTfqYnTctwrJ9Ywn
-X-Google-Smtp-Source: ABdhPJzJIXaySQWzFZzgDD7O9/7f3/H7x74KQr/lvK9SKbKnfmRllnN7R6YVpJVvNEKJ5dab38hRVxQqVLRwR9ntEyRb+G0bJ9Nt
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=dgpwPCQznEmVXGZRT9a+ot3RVGNTTHbl31G3nps7wKQ=;
+        b=XY4i4MCJpFlLf/ts4IYILhWXdAMtUcWldG9cFKBKyUS/drWxmlv4VaItbbF8P3uubr
+         FrjNDK+yJTBWVwvCPpgfcenyjFeCdixXIUwkBLomLGXtXbpIoQJqHe4VI9qzjo7pZCnp
+         0DAXVrkyjTX973lc0pJn12uFUVZ0dCjq+z7SXLYMDNuRHMUQ8JlKXPTv4nty88mK3JA3
+         QAep9acv1gV3CZscYRHcwsrEjsfR+Tv7vfD5TdcECt3J2g0HZrumi5Cti8P5LdP02ro+
+         DcqlwzP7tNLFfppIZoxu1TcyYtQYoaB0hwLOt0ID7WJMQ8KxGAboa7lsbQHQ+WtmczuL
+         PPIw==
+X-Gm-Message-State: AOAM5329SCAujfaSCQOZfHCCi0PbwhDSJmL+n5EcVuf5eHJDHe/Tm+ch
+        g6R4/N1ls/mG6DukssDeIZLwafjXcdJuv29FLxo=
+X-Google-Smtp-Source: ABdhPJxET9d3co3mX5K9wVkBpKztPPpaWkhRImGEH2n1V49NpPJAnXVUybIPSdyEcXM5G4RflQP1FBiUQeCXdfTyg4w=
+X-Received: by 2002:a17:906:9aca:: with SMTP id ah10mr8403321ejc.471.1632448948390;
+ Thu, 23 Sep 2021 19:02:28 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5d10:: with SMTP id r16mr6564779iob.148.1632448705742;
- Thu, 23 Sep 2021 18:58:25 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 18:58:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000384c7f05ccb415b0@google.com>
-Subject: [syzbot] UBSAN: array-index-out-of-bounds in qfq_update_agg (3)
-From:   syzbot <syzbot+ed284664846fc47b6300@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
+Received: by 2002:a17:906:5615:0:0:0:0 with HTTP; Thu, 23 Sep 2021 19:02:24
+ -0700 (PDT)
+Reply-To: michaelrachid7@gmail.com
+From:   Michael Rachid <sammyhamidou93@gmail.com>
+Date:   Fri, 24 Sep 2021 03:02:24 +0100
+Message-ID: <CAOO_Zf_CW=RAO3urxYOASd-XNaLvWwba=jA4LuJyUAtNom+AFw@mail.gmail.com>
+Subject: =?UTF-8?B?7KCc7JWIIGplYW4vUHJvcG9zYWw=?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    b3f98404bd62 Merge branch 'dsa-devres'
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=17838dab300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
-dashboard link: https://syzkaller.appspot.com/bug?extid=ed284664846fc47b6300
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ed284664846fc47b6300@syzkaller.appspotmail.com
-
-netlink: 52 bytes leftover after parsing attributes in process `syz-executor.1'.
-================================================================================
-UBSAN: array-index-out-of-bounds in net/sched/sch_qfq.c:300:24
-index 29 is out of range for type 'qfq_group [25]'
-CPU: 1 PID: 2911 Comm: syz-executor.1 Not tainted 5.15.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
- qfq_update_agg+0x6e6/0x700 net/sched/sch_qfq.c:300
- qfq_add_to_agg+0x75/0x500 net/sched/sch_qfq.c:317
- qfq_change_class+0x6f0/0x17a0 net/sched/sch_qfq.c:507
- tc_ctl_tclass+0x52f/0xe60 net/sched/sch_api.c:2107
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fc9a0bdb739
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc99e110188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fc9a0ce00f0 RCX: 00007fc9a0bdb739
-RDX: 0000000000000000 RSI: 0000000020000380 RDI: 0000000000000004
-RBP: 00007fc9a0c35cc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fc9a0ce00f0
-R13: 00007ffed233187f R14: 00007fc99e110300 R15: 0000000000022000
-================================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+7Lmc6rWs7JeQ6rKMLA0KDQrrgpjripQg64u57Iug6rO8IO2VqOq7mCDsspjrpqztlZjqs6Ag7Iu2
+7J2AIOyCrOyXhSDsoJzslYjsl5Ag64yA7ZW0IOyVjOumrOq4sCDsnITtlbQg6riA7J2EIOyUgeuL
+iOuLpC4NCjXsspzrp4wg64us65+s6rCAIO2IrOyeheuQqeuLiOuLpC4g66qo65OgIOqyg+ydtCDt
+lanrspXsoIHsnbTqs6Ag7JyE7ZeY7ZWY7KeAIOyViuycvOuLiCDslYjsi6ztlZjsi63si5zsmKQu
+DQrqtIDsi6zsnYQg7ZGc7Iuc7ZW0IOyjvOyLreyLnOyYpC4NCg0K66eI7J207YG0IOudvOyLnOuT
+nC4NCg0KY2hpbmd1ZWdlLA0KDQpuYW5ldW4gZGFuZ3Npbmd3YSBoYW1ra2UgY2hlb2xpaGFnbyBz
+aXAtZXVuIHNhLWVvYiBqZWFuLWUgZGFlaGFlDQphbGxpZ2kgd2loYWUgZ2V1bC1ldWwgc3NldWJu
+aWRhLg0KNWNoZW9ubWFuIGRhbGxlb2dhIHR1LWliZG9lYm5pZGEuIG1vZGV1biBnZW9zLWkgaGFi
+YmVvYmplb2ctaWdvDQp3aWhlb21oYWppIGFuaC1ldW5pIGFuc2ltaGFzaWJzaW8uDQpnd2Fuc2lt
+LWV1bCBweW9zaWhhZSBqdXNpYnNpby4NCg0KbWFpa2V1bCBsYXNpZGV1Lg0KDQoNCkRlYXIgZnJp
+ZW5kLA0KDQpJIHdyaXRlIHRvIGluZm9ybSB5b3UgYWJvdXQgYSBidXNpbmVzcyBwcm9wb3NhbCBJ
+IGhhdmUgd2hpY2ggSSB3b3VsZA0KbGlrZSB0byBoYW5kbGUgd2l0aCB5b3UuDQpGaWZ0eSBtaWxs
+aW9uIGRvbGxhcnMgaXMgaW52b2x2ZWQuIEJlIHJlc3QgYXNzdXJlZCB0aGF0IGV2ZXJ5dGhpbmcg
+aXMNCmxlZ2FsIGFuZCByaXNrIGZyZWUuDQpLaW5kbHkgaW5kaWNhdGUgeW91ciBpbnRlcmVzdC4N
+Cg0KTWljaGFlbCBSYWNoaWQuDQo=
