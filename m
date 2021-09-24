@@ -2,220 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59504417191
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B36417659
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245315AbhIXMOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:14:39 -0400
-Received: from mail-mw2nam10on2054.outbound.protection.outlook.com ([40.107.94.54]:2016
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239965AbhIXMOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:14:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j+kdMSwZJ7MEPuehwi7e84OsrfEDqhtdHuwyHOx2iGfnAdssLQwj1AW/D8gA374e8mb2ECJBGmTviuTGja7Fmlp4C5Vh/VKAniznazuTR0f3VNpuDUreXe9EK9u7fQt+YJLbX5GVVFY9SFJVM7NpfKAhl855b16gH76HdCYnA7BpZBtGgBDncMsipxRo01MNLCNni+mRLEom49eGzRbWDPZll05tkYGOnY7NmcKo8vvXiOYsLE/2VpaTXo5zJmK3BNl4LY4SREmjZohIXhzXXq8Foo8V0TkJ9BD3mEVGnglBdwX3O1JpDm3e9hApm+BiwedXLPOXNO3/mQJiQDfjyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=qc6wboP26sOHt/GGyn8QI+3PhQQ0D7isIzmCJJ1XZA0=;
- b=gjiQFavCvE5bhZXgvLgZxyq5xm/4gFmmSAsqZzv3IwSqN0AysI9yp5+w6nc1BB+pTdQaFFfcKm9uQkaalzHAmNZnthpBQnh+Re3uaCyypAYn1VF8m7J+G6QRGQgXAiDsNcotj1RQF2MWqslWaN8g1sssYsxjwC0KOLy9EWOfeSjS8klAVGzhJU1KNM36sYtPNlr/P2tD5sDyqaDJoPPdmpP152UPYpR63KqpZYhs8x3ewLBnVWI9UAmGxfCHWekG/V22zUe9OxBpW8eR5PYyj55FbsRMpCFlOa+rmidfEZZEANLrznzbgGRywhfG8SiZuS7XSYF0ixvzUoWEHcNlBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=nigauri.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qc6wboP26sOHt/GGyn8QI+3PhQQ0D7isIzmCJJ1XZA0=;
- b=Tfct7Nm8wbyCL+ffbkgXrm08x8jGc7hkxfgQkeccjk/UDd7ecqBzyUxyjvH/vOj46YJGoAg2J5r/EwMuzacGccvN6iE21Cr6MS2i3F8eUwUuwO9duaq8oJM3xwO30y3J5xc5clRXL+1b8GFoHJ39ak2LNVhhNVpO1qPDW12mhRc=
-Received: from SN7PR04CA0116.namprd04.prod.outlook.com (2603:10b6:806:122::31)
- by SN4PR0201MB8837.namprd02.prod.outlook.com (2603:10b6:806:204::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Fri, 24 Sep
- 2021 12:13:01 +0000
-Received: from SN1NAM02FT0057.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:122:cafe::2) by SN7PR04CA0116.outlook.office365.com
- (2603:10b6:806:122::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Fri, 24 Sep 2021 12:13:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; nigauri.org; dkim=none (message not signed)
- header.d=none;nigauri.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0057.mail.protection.outlook.com (10.97.4.123) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 12:13:01 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 24 Sep 2021 05:13:00 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 24 Sep 2021 05:13:00 -0700
-Envelope-to: git@xilinx.com,
- iwamatsu@nigauri.org,
- arnd@arndb.de,
- saikrishna12468@gmail.com,
- linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- p.yadav@ti.com,
- robh+dt@kernel.org,
- broonie@kernel.org,
- gregkh@linuxfoundation.org
-Received: from [10.254.241.49] (port=58506)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1mTk4Z-000Cos-3j; Fri, 24 Sep 2021 05:12:59 -0700
-Subject: Re: [PATCH 1/4] firmware: xilinx: Add OSPI Mux selection support
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-CC:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <git@xilinx.com>,
-        <saikrishna12468@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-References: <1632478031-12242-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1632478031-12242-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <YU24KEoXQOw/1uZV@kroah.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <c588c9c4-df4b-a617-35d1-23c32654d5ff@xilinx.com>
-Date:   Fri, 24 Sep 2021 14:12:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <YU24KEoXQOw/1uZV@kroah.com>
+        id S1346585AbhIXN50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:57:26 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:31267 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346569AbhIXN5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:57:24 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210924135549epoutp026860defe5a44dd4f375ec4c51fc4a3b7~nxpjM486n2409424094epoutp02S
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:55:49 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210924135549epoutp026860defe5a44dd4f375ec4c51fc4a3b7~nxpjM486n2409424094epoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1632491749;
+        bh=mNQhFy+0EiS+QFcEKoyz6Gg5CkSs9cKnhKzNpsJdN6Y=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=LUFa8tWWuJ3QsitRJZIkoHZ7waYbvAmvaatQPxkOKiNPxbaUi7CO7J5XOeR7kOP+V
+         ZJRwnAZbdwD3kdlMlEh5GB97G+mQla8KI8HfUz9F9L0lkffkcj/WYJlyqsHEnbwf6C
+         xy7FJ1VS8+2URU2+rSr+BNTJH3xRf6pKTYuY6vCE=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20210924135548epcas5p114c5dca6c0cb260a1e30d3bde0962b39~nxph5DVLr1707317073epcas5p1g;
+        Fri, 24 Sep 2021 13:55:48 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        80.22.59762.3E8DD416; Fri, 24 Sep 2021 22:55:47 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a~nwRe_0fYE1848718487epcas5p3u;
+        Fri, 24 Sep 2021 12:14:57 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210924121457epsmtrp21f242e919d84fda83da496006302ee51~nwRe_AMG82712327123epsmtrp2B;
+        Fri, 24 Sep 2021 12:14:57 +0000 (GMT)
+X-AuditID: b6c32a49-10fff7000000e972-97-614dd8e38bdf
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AB.6D.09091.141CD416; Fri, 24 Sep 2021 21:14:57 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.109.224.44]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210924121455epsmtip2923d25f8bf1e960d7c28e1c1f758c3bc~nwRc95v331682016820epsmtip2a;
+        Fri, 24 Sep 2021 12:14:55 +0000 (GMT)
+From:   Manjeet Pawar <manjeet.p@samsung.com>
+To:     glider@google.com, elver@google.com, dvyukov@google.com,
+        akpm@linux-foundation.org, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     r.thapliyal@samsung.com, a.sahrawat@samsung.com,
+        v.narang@samsung.com, Manjeet Pawar <manjeet.p@samsung.com>
+Subject: [PATCH] mm/kfence: Null check is added for return value of
+ addr_to_metadata
+Date:   Fri, 24 Sep 2021 17:44:02 +0530
+Message-Id: <1632485642-20625-1-git-send-email-manjeet.p@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrAIsWRmVeSWpSXmKPExsWy7bCmpu7jG76JBkt6bCwu7k61mLN+DZvF
+        hIdt7BZtZ7azWrR/3MtsseLZfSaLy7vmsFncW/Of1eJe61o2i433si0OnZzL6MDtsWBTqcee
+        iSfZPDZ9msTucWLGbxaPvi2rGD0+b5ILYIvisklJzcksSy3St0vgyujeeoC9oJmt4tjeZYwN
+        jJ9Zuhg5OSQETCR6tq9l7GLk4hAS2M0oMWfaNFaQhJDAJ0aJjx+dIBLfGCW+zO5khOn49+YL
+        VMdeRomeDVPYIJwvjBIvFi0Dq2IT0JbY86ONHSQhIrCCUWLWifdMIAlmgSKJ97+Xs4PYwgJh
+        Eh2HF4DFWQRUJY5f2gq2m1fAVeLYxbvsEOvkJG6e62QGGSQhcIpd4uDUj6wQCReJ3w/+s0HY
+        whKvjm+BapCS+PxuL1S8XmLzhs1QzT2MEj/P/oRK2Es8ubgQaBAH0EWaEut36UOEZSWmnloH
+        dSifRO/vJ0wQcV6JHfNgbGWJZec3Q9mSErPPHGWGsD0kNt94xQwJvFiJyR9amCYwys5C2LCA
+        kXEVo2RqQXFuemqxaYFhXmq5XnFibnFpXrpecn7uJkZwotDy3MF498EHvUOMTByMhxglOJiV
+        RHg/3/BKFOJNSaysSi3Kjy8qzUktPsQozcGiJM778bVlopBAemJJanZqakFqEUyWiYNTqoGp
+        /1Dko7KdWw/uuDax9KSaZ6fU/GIHu7CJjX9e3z7bk5eU5ZEXclKzU52v916l6q+by4/wn+H8
+        HDorTP6OL+NXzb7XqZlmE57rSTldqxBbf+3vlYil+vrHor4dDJHcKD55yn+lbdNt/m5LaW2M
+        4Y1YxLp6kbi36+1dqR+O/snMvf3m6oETzad5FApr29+9Fn/e6tP+hXm95aIDHlVvnVhrXy6s
+        vLTBKEWma3OHwS6+o1Flp/azM8ld6rwVeO6q4PWi76YnN9xb9Nv0nJjSpALW/7U7HhTYpO9l
+        OjaLj831KU+bg0dqx6+7HYdSTtm8PePpHTI3f4r7k8i1YvobP1wIdP32fb1YxyktfnGj25v2
+        KLEUZyQaajEXFScCAFiuq3aDAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprELMWRmVeSWpSXmKPExsWy7bCSvK7jQd9Eg/7rwhYXd6dazFm/hs1i
+        wsM2dou2M9tZLdo/7mW2WPHsPpPF5V1z2CzurfnPanGvdS2bxcZ72RaHTs5ldOD2WLCp1GPP
+        xJNsHps+TWL3ODHjN4tH35ZVjB6fN8kFsEVx2aSk5mSWpRbp2yVwZXRvPcBe0MxWcWzvMsYG
+        xs8sXYycHBICJhL/3nxhBLGFBHYzSjyeogsRl5ToXzcVqkZYYuW/5+wQNZ8YJba1poDYbALa
+        Ent+tIHFRQQ2MEqseefdxcjBwSxQJtHwWQAkLCwQIjFh4XpmEJtFQFXi+KWtrCA2r4CrxLGL
+        d9khxstJ3DzXyTyBkWcBI8MqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzgYNPS3MG4
+        fdUHvUOMTByMhxglOJiVRHg/3/BKFOJNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJ
+        anZqakFqEUyWiYNTqoHJbXHGqX+Jk57xvSx7/+JT1xXZm891IjdVnRCXYLVfvvby65jfs+1Z
+        MwoDg7+mSPdnTfn1JTdpo/uUuVV3dsQocwh9uGsUWHovvcdrv4HWgVUek6+z39ZJ/W11zkLW
+        KLnqT9+Pa1zfeSKP/Hz2vztB3DTkytG+K9m7xSuVDiza5Xeapym0O+Jq3luDiRtz8x+IPrj/
+        +26trXyeetpWRdP4rT8NPkXX7NH2eTCjlYXvkenLD4YWGX+O+SzY/+DJ0v9SWUmJ3o+aF/H/
+        9jWUecxofPl97EtjY0v2Z/8bG3V1hJ89TCudoM94d6dup3+qbRani/CyU7v+Ja6eenJT89me
+        hHfsC9gixdylVv1a0DZHiaU4I9FQi7moOBEAT32yLaUCAAA=
+X-CMS-MailID: 20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9a25f979-cd11-4063-74b4-08d97f54a78c
-X-MS-TrafficTypeDiagnostic: SN4PR0201MB8837:
-X-Microsoft-Antispam-PRVS: <SN4PR0201MB88374287E79B24C9CB664822C6A49@SN4PR0201MB8837.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: x82gKwMHuZdDoVMKjoKgrhZ/mldefBrKSltVgec7SpVXnHqeYvI3zYmcBGfMH8RwIyTc5ylkBxQo4BWvxbwiff2XFhbDdLAbdB+EhqwW6SFUFGKt7J257ExDk3u7KxjqrfvKbHvk5KXmajo0ZWmWrPxjSSFIIlt1RPsmUJjbgRzriIlLGo1RLeJEfjEsMLNTZ+Q5rIuSRT+dTSgQ7cfvqil089ORoqx8M9MbB2GsTkEoZMOVxlmaCfO1Ukvv9l1zrOCp5Di8aHf8ZGbYgezM44PL3H0hdtoxi9bnQ+p4pP+9r52luF0GSY9GsIzerZq4hBwNK+fZCrl9Z/m8beptGdQZCBeDHsyrIomDjoez7jHnXiyG+cGTODJyLT8IMRi79scvo52jsToOKcpfn8JwxZ3cCyVA8nIObLos3DrTqVJmTlnl/nHpzMUmBEWTp5VjAL59CNXVDnx+OQ59if3qegSC7zVNm1/SEodPC7e1AoPPbOo2mDnMv2IqAmeVaHBSV5OF9p3mpGbxIek0pOn4PHTKgkiuloh0Wk3lpj1PHo5m0FyupbLDgzR+IzLn80ekPYps9vpveJLyE1OMHgAcwqEBWRoonkZKlPoE6vHBDr01tsItM7dVO+TgciDNoQyF7P4WmXI+lESUup3oIHNC1JGs1GQpHTGoOfjhp07r7zWL58tOhdUdTvMKZa2KfkYZMsnMwgDcSWbOwK13X2eHVQ1EqXlnPxw7YcLO8l8/QYIqC3cS7QR0UL2UthkFWWLr
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(53546011)(316002)(110136005)(508600001)(54906003)(7416002)(70586007)(9786002)(6666004)(36906005)(47076005)(8676002)(4326008)(6636002)(44832011)(36756003)(336012)(83380400001)(2906002)(26005)(8936002)(36860700001)(186003)(70206006)(5660300002)(2616005)(82310400003)(356005)(426003)(31686004)(7636003)(31696002)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 12:13:01.3806
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a25f979-cd11-4063-74b4-08d97f54a78c
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0057.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0201MB8837
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a
+References: <CGME20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a@epcas5p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch add null check for return value of addr_to_metadata().
+currently 'meta' is geting accessed without any NULL check but it is
+usually checked for this function.
 
+Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+---
+ mm/kfence/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On 9/24/21 1:36 PM, Greg Kroah-Hartman wrote:
-> On Fri, Sep 24, 2021 at 03:37:08PM +0530, Sai Krishna Potthuri wrote:
->> Add OSPI Mux selection API support to select the AXI interface to OSPI.
->>
->> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
->> ---
->>  drivers/firmware/xilinx/zynqmp.c     | 17 +++++++++++++++++
->>  include/linux/firmware/xlnx-zynqmp.h | 12 ++++++++++++
->>  2 files changed, 29 insertions(+)
->>
->> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
->> index 15b138326ecc..43c3b5a9eef7 100644
->> --- a/drivers/firmware/xilinx/zynqmp.c
->> +++ b/drivers/firmware/xilinx/zynqmp.c
->> @@ -647,6 +647,23 @@ int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
->>  }
->>  EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
->>  
->> +/**
->> + * zynqmp_pm_ospi_mux_select() - OSPI Mux selection
->> + *
->> + * @dev_id:	Device Id of the OSPI device.
->> + * @select:	OSPI Mux select value.
->> + *
->> + * This function select the OSPI Mux.
->> + *
->> + * Return:	Returns status, either success or error+reason
->> + */
->> +int zynqmp_pm_ospi_mux_select(u32 dev_id, u32 select)
->> +{
->> +	return zynqmp_pm_invoke_fn(PM_IOCTL, dev_id, IOCTL_OSPI_MUX_SELECT,
->> +				   select, 0, NULL);
->> +}
->> +EXPORT_SYMBOL_GPL(zynqmp_pm_ospi_mux_select);
->> +
->>  /**
->>   * zynqmp_pm_write_ggs() - PM API for writing global general storage (ggs)
->>   * @index:	GGS register index
->> diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
->> index 9d1a5c175065..6979a79f553a 100644
->> --- a/include/linux/firmware/xlnx-zynqmp.h
->> +++ b/include/linux/firmware/xlnx-zynqmp.h
->> @@ -119,6 +119,7 @@ enum pm_ioctl_id {
->>  	IOCTL_READ_PGGS = 15,
->>  	/* Set healthy bit value */
->>  	IOCTL_SET_BOOT_HEALTH_STATUS = 17,
->> +	IOCTL_OSPI_MUX_SELECT = 21,
-> 
-> Why the gap?  What are the commands in the middle for?
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index 575c685aa642..9b953cfa7fee 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -802,6 +802,9 @@ void __kfence_free(void *addr)
+ {
+ 	struct kfence_metadata *meta = addr_to_metadata((unsigned long)addr);
+ 
++	if (unlikely(!meta))
++		return;
++
+ 	/*
+ 	 * If the objects of the cache are SLAB_TYPESAFE_BY_RCU, defer freeing
+ 	 * the object, as the object page may be recycled for other-typed
+-- 
+2.17.1
 
-Below is the full list. Not everything has been upstream yet. There was
-an attempt on AFI which one colleague is working on and should send new
-version soon. I don't think anybody has started with upstreaming probe
-counters.
-Every part has different owner with unfortunately own upstreaming plan.
-
-Thanks,
-Michal
-
-enum pm_ioctl_id {
-	IOCTL_GET_RPU_OPER_MODE = 0,
-	IOCTL_SET_RPU_OPER_MODE = 1,
-	IOCTL_RPU_BOOT_ADDR_CONFIG = 2,
-	IOCTL_TCM_COMB_CONFIG = 3,
-	IOCTL_SET_TAPDELAY_BYPASS = 4,
-	IOCTL_SET_SGMII_MODE = 5,
-	IOCTL_SD_DLL_RESET = 6,
-	IOCTL_SET_SD_TAPDELAY = 7,
-	IOCTL_SET_PLL_FRAC_MODE = 8,
-	IOCTL_GET_PLL_FRAC_MODE = 9,
-	IOCTL_SET_PLL_FRAC_DATA = 10,
-	IOCTL_GET_PLL_FRAC_DATA = 11,
-	IOCTL_WRITE_GGS = 12,
-	IOCTL_READ_GGS = 13,
-	IOCTL_WRITE_PGGS = 14,
-	IOCTL_READ_PGGS = 15,
-	/* IOCTL for ULPI reset */
-	IOCTL_ULPI_RESET = 16,
-	/* Set healthy bit value */
-	IOCTL_SET_BOOT_HEALTH_STATUS = 17,
-	IOCTL_AFI = 18,
-	/* Probe counter read/write */
-	IOCTL_PROBE_COUNTER_READ = 19,
-	IOCTL_PROBE_COUNTER_WRITE = 20,
-	IOCTL_OSPI_MUX_SELECT = 21,
-	/* IOCTL for USB power request */
-	IOCTL_USB_SET_STATE = 22,
-	/* IOCTL to get last reset reason */
-	IOCTL_GET_LAST_RESET_REASON = 23,
-	/* AI engine NPI ISR clear */
-	IOCTL_AIE_ISR_CLEAR = 24,
-	/* Register SGI to ATF */
-	IOCTL_REGISTER_SGI = 25,
-	/* Runtime feature configuration */
-	IOCTL_SET_FEATURE_CONFIG = 26,
-	IOCTL_GET_FEATURE_CONFIG = 27,
-};
