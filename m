@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4014173AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E72F417510
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345800AbhIXM70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:59:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53950 "EHLO mail.kernel.org"
+        id S1346822AbhIXNOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344957AbhIXMzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:55:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77B646137E;
-        Fri, 24 Sep 2021 12:51:14 +0000 (UTC)
+        id S1346628AbhIXNKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:10:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4E4261360;
+        Fri, 24 Sep 2021 12:57:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487875;
-        bh=oR1hmfRHT/13dYK8FGabYDayc9y+noLO88wEHsa5ynY=;
+        s=korg; t=1632488280;
+        bh=g4zTBLj4GtKp+Zcq7VKszBIKPxf51ywCi+Eo8ZI2vos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=snatp12EXjT1e18B1tmEKgmzZGDHOi5jL0yT7n9vca6psoB8Rscd3DHZDB+fE7SMh
-         n4cZssJ65Gim9waV+DfJQ1CcBqZWi3kK1L7oaFA02khDglwcyeZzQWHFLypaPuClgD
-         9EyU31OWZqG6+HAem0A32/eYvjzRPnhjiJWaij84=
+        b=Pkjs/kpXoj41MbhfClfwAKzmofpgljf8sFB1IiB4fADN30yG9OYq6VP6Ctmd9Eg4l
+         xZtuoLV7bMQsFThI+4LcqLTGF2fkOFKzZTuX8YIT9vKH2mFQbRHYwJrWL+gVMriPvs
+         STRT0oE3VJ/rqEmkzUF32BWQj+moqN0LKIOy5t0Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Koba Ko <koba.ko@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 46/50] pwm: rockchip: Dont modify HW state in .remove() callback
+Subject: [PATCH 5.10 35/63] drm/amdgpu: Disable PCIE_DPM on Intel RKL Platform
 Date:   Fri, 24 Sep 2021 14:44:35 +0200
-Message-Id: <20210924124333.792944078@linuxfoundation.org>
+Message-Id: <20210924124335.485250616@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Koba Ko <koba.ko@canonical.com>
 
-[ Upstream commit 9d768cd7fd42bb0be16f36aec48548fca5260759 ]
+[ Upstream commit b3dc549986eb7b38eba4a144e979dc93f386751f ]
 
-A consumer is expected to disable a PWM before calling pwm_put(). And if
-they didn't there is hopefully a good reason (or the consumer needs
-fixing). Also if disabling an enabled PWM was the right thing to do,
-this should better be done in the framework instead of in each low level
-driver.
+Due to high latency in PCIE clock switching on RKL platforms,
+switching the PCIE clock dynamically at runtime can lead to HDMI/DP
+audio problems. On newer asics this is handled in the SMU firmware.
+For SMU7-based asics, disable PCIE clock switching to avoid the issue.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+AMD provide a parameter to disable PICE_DPM.
+
+modprobe amdgpu ppfeaturemask=0xfff7bffb
+
+It's better to contorl PCIE_DPM in amd gpu driver,
+switch PCI_DPM by determining intel RKL platform for SMU7-based asics.
+
+Fixes: 1a31474cdb48 ("drm/amd/pm: workaround for audio noise issue")
+Ref: https://lists.freedesktop.org/archives/amd-gfx/2021-August/067413.html
+Signed-off-by: Koba Ko <koba.ko@canonical.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-rockchip.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ .../gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
-index 6ad6aad215cf..8c0af705c5ae 100644
---- a/drivers/pwm/pwm-rockchip.c
-+++ b/drivers/pwm/pwm-rockchip.c
-@@ -383,20 +383,6 @@ static int rockchip_pwm_remove(struct platform_device *pdev)
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+index b76425164e29..7931528bc864 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+@@ -27,6 +27,9 @@
+ #include <linux/pci.h>
+ #include <linux/slab.h>
+ #include <asm/div64.h>
++#if IS_ENABLED(CONFIG_X86_64)
++#include <asm/intel-family.h>
++#endif
+ #include <drm/amdgpu_drm.h>
+ #include "ppatomctrl.h"
+ #include "atombios.h"
+@@ -1606,6 +1609,17 @@ static int smu7_disable_dpm_tasks(struct pp_hwmgr *hwmgr)
+ 	return result;
+ }
+ 
++static bool intel_core_rkl_chk(void)
++{
++#if IS_ENABLED(CONFIG_X86_64)
++	struct cpuinfo_x86 *c = &cpu_data(0);
++
++	return (c->x86 == 6 && c->x86_model == INTEL_FAM6_ROCKETLAKE);
++#else
++	return false;
++#endif
++}
++
+ static void smu7_init_dpm_defaults(struct pp_hwmgr *hwmgr)
  {
- 	struct rockchip_pwm_chip *pc = platform_get_drvdata(pdev);
+ 	struct smu7_hwmgr *data = (struct smu7_hwmgr *)(hwmgr->backend);
+@@ -1629,7 +1643,8 @@ static void smu7_init_dpm_defaults(struct pp_hwmgr *hwmgr)
  
--	/*
--	 * Disable the PWM clk before unpreparing it if the PWM device is still
--	 * running. This should only happen when the last PWM user left it
--	 * enabled, or when nobody requested a PWM that was previously enabled
--	 * by the bootloader.
--	 *
--	 * FIXME: Maybe the core should disable all PWM devices in
--	 * pwmchip_remove(). In this case we'd only have to call
--	 * clk_unprepare() after pwmchip_remove().
--	 *
--	 */
--	if (pwm_is_enabled(pc->chip.pwms))
--		clk_disable(pc->clk);
--
- 	clk_unprepare(pc->pclk);
- 	clk_unprepare(pc->clk);
- 
+ 	data->mclk_dpm_key_disabled = hwmgr->feature_mask & PP_MCLK_DPM_MASK ? false : true;
+ 	data->sclk_dpm_key_disabled = hwmgr->feature_mask & PP_SCLK_DPM_MASK ? false : true;
+-	data->pcie_dpm_key_disabled = hwmgr->feature_mask & PP_PCIE_DPM_MASK ? false : true;
++	data->pcie_dpm_key_disabled =
++		intel_core_rkl_chk() || !(hwmgr->feature_mask & PP_PCIE_DPM_MASK);
+ 	/* need to set voltage control types before EVV patching */
+ 	data->voltage_control = SMU7_VOLTAGE_CONTROL_NONE;
+ 	data->vddci_control = SMU7_VOLTAGE_CONTROL_NONE;
 -- 
 2.33.0
 
