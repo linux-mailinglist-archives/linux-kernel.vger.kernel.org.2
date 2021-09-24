@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA3D4168F9
+	by mail.lfdr.de (Postfix) with ESMTP id F3E834168FA
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 02:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243680AbhIXAfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 20:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S243677AbhIXAfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 20:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243664AbhIXAfj (ORCPT
+        with ESMTP id S243672AbhIXAfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 20:35:39 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378BDC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:34:07 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id me1so5592966pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:34:07 -0700 (PDT)
+        Thu, 23 Sep 2021 20:35:42 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F18C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:34:09 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id 203so7187918pfy.13
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:34:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GXGQzd3Jce1GxoSPTZ2A43YJGDeYWsQ75s4W02haYwg=;
-        b=nHwKrm85EJLFa5o7M8uboJTdffKYHc0HAPbo3aMjs0nIRAAEQp51SzW5Tn2rOV9ahi
-         DbLzOsPVZiZFExYUpwFk7ktyoXgqDnjK2flS57f+8nttDDjahC3E5VDqvLS6EHj4OBau
-         u7LVZGfmSPr93DyP9F0j+5DYfLwErGThZmnMA=
+        bh=yEiQvpP90gfZjBo9eARQA/dGO0k9EVx8RLJE4fBEffo=;
+        b=iR0mGqFCRUve5BCBSrrRcCdy8Dh8jyvq9GbxxKiMzpchO1ZIxZb+bU3DDa8VjY75qD
+         aP79hLfIzswYkIp/Lq5ReRkVdZiGpLFR0q6LI+w1MVPOGcx8B2kVGMmAtwlsIaGLFHtm
+         1gM/Mh8A0kxKQFbL1vfPtfs69DXNEF02mUmOU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GXGQzd3Jce1GxoSPTZ2A43YJGDeYWsQ75s4W02haYwg=;
-        b=ocryh1W5LtCjGAODich0tN4BKV3wlDOKoo+3TgWAdV2Kfm98vUdC0ERVXuqOoRNRQo
-         uoTl7rmBXxlft75jd2MQPirtpRrVEVIZGfUFX+PwkvEKSdMK5fzNAqiQNphpwvRB4uFc
-         5nm8beEpZqSznvZuZsTykbq96qoMV6YxcrvaYoCxi9grPK6zP2scUnnqVUNwanFysDaY
-         /RfQqeVpZStIWEPaSetss+i8hrmpMZ+0GcCPtYZhCeoqUn/9xpJqOgfE8QO7NA8+Qxx3
-         GRDVGe9P7KfAEmS95s/M0f6hoLnziE01avhzDeJqKSOzSdtCpgujpQctEEKK5haT2/95
-         c4vQ==
-X-Gm-Message-State: AOAM533d+u54tADHVIsmizwJPPkwXvxtudB88zx1wEVoHkNa8ZrEK2O8
-        qNosst6HE44zWCIa+dCkr96IsA==
-X-Google-Smtp-Source: ABdhPJx1E98jD2DkQdaawUmqRlzLrAbBO7749cZgFl3tEU29OWh4NKQSpueGR38+XSYRfWHElUfPlA==
-X-Received: by 2002:a17:90b:1102:: with SMTP id gi2mr8456536pjb.43.1632443646797;
-        Thu, 23 Sep 2021 17:34:06 -0700 (PDT)
+        bh=yEiQvpP90gfZjBo9eARQA/dGO0k9EVx8RLJE4fBEffo=;
+        b=VaRzJu7VdB/pnvRBPqHF9gFhUc6L5RYl5kZCN6ymrF8VVtq/iaOnBh7VJ91IwS+V2/
+         QIvWYPaCHERJ8dlhIjMfeEr4z8JRAy3+DLfmsP8c42G24ZO9+pjOXl86C4HzBAQSLuDa
+         4Ci6ZNSF82Sa3JkPJrtf6FctIaCa0ZRimFfj85OaYjNA5NBqgN8BtYXtdTu1u8oCK3Y7
+         +8lLXROMyyCSEnPDAIcTyA6TCDO0J9LSzrtwrmZr4kXBCuIQKnY00ImbDaKwoZxBFP75
+         8KecNd+7eLkpG3JFMjhnQ/krK06DUy6j/BOd6VyaIBFs5Gsa1e5RJbFkQm/3/mkBOoEk
+         QDuw==
+X-Gm-Message-State: AOAM533GJLdaJOa/T28vlbO24kBbLylWPjZtiL0mWP45GpKWkBM8CjZ8
+        B7zC3YSt3PWP1YXNJEWBSQyo4w==
+X-Google-Smtp-Source: ABdhPJwi1hDYHJLiTqVsQKo2Qj1wDbfpdCAQz2Fk7pGYUTkrXOEnn2izG27x7hKRaxz+DtaCR3lmDw==
+X-Received: by 2002:a05:6a00:1944:b0:438:d002:6e35 with SMTP id s4-20020a056a00194400b00438d0026e35mr7047397pfk.20.1632443648891;
+        Thu, 23 Sep 2021 17:34:08 -0700 (PDT)
 Received: from localhost ([2620:15c:202:201:74de:c8b7:3a35:1063])
-        by smtp.gmail.com with UTF8SMTPSA id c3sm7465375pgn.76.2021.09.23.17.34.05
+        by smtp.gmail.com with UTF8SMTPSA id z17sm6932766pfj.185.2021.09.23.17.34.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 17:34:06 -0700 (PDT)
+        Thu, 23 Sep 2021 17:34:08 -0700 (PDT)
 From:   Brian Norris <briannorris@chromium.org>
 To:     Sam Ravnborg <sam@ravnborg.org>,
         Thierry Reding <thierry.reding@gmail.com>
@@ -53,9 +53,9 @@ Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         Sumit Semwal <sumit.semwal@linaro.org>,
         Jagan Teki <jagan@amarulasolutions.com>,
         Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 1/3] drm/panel: kingdisplay-kd097d04: Delete panel on attach() failure
-Date:   Thu, 23 Sep 2021 17:33:53 -0700
-Message-Id: <20210923173336.1.Icb4d9dbc1817f4e826361a4f1cea7461541668f0@changeid>
+Subject: [PATCH 2/3] drm/panel: innolux-p079zca: Delete panel on attach() failure
+Date:   Thu, 23 Sep 2021 17:33:54 -0700
+Message-Id: <20210923173336.2.I9023cf8811a3abf4964ed84eb681721d8bb489d6@changeid>
 X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
 In-Reply-To: <20210924003355.2071543-1-briannorris@chromium.org>
 References: <20210924003355.2071543-1-briannorris@chromium.org>
@@ -69,32 +69,45 @@ If we fail to attach (e.g., because 1 of 2 dual-DSI controllers aren't
 ready), we leave a dangling drm_panel reference to freed memory. Clean
 that up on failure.
 
-Fixes: 2a994cbed6b2 ("drm/panel: Add Kingdisplay KD097D04 panel driver")
+This problem exists since the driver's introduction, but is especially
+relevant after refactored for dual-DSI variants.
+
+Fixes: 14c8f2e9f8ea ("drm/panel: add Innolux P079ZCA panel driver")
+Fixes: 7ad4e4636c54 ("drm/panel: p079zca: Refactor panel driver to support multiple panels")
 Signed-off-by: Brian Norris <briannorris@chromium.org>
 ---
 
- drivers/gpu/drm/panel/panel-kingdisplay-kd097d04.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/panel/panel-innolux-p079zca.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-kingdisplay-kd097d04.c b/drivers/gpu/drm/panel/panel-kingdisplay-kd097d04.c
-index 86e4213e8bb1..daccb1fd5fda 100644
---- a/drivers/gpu/drm/panel/panel-kingdisplay-kd097d04.c
-+++ b/drivers/gpu/drm/panel/panel-kingdisplay-kd097d04.c
-@@ -406,7 +406,13 @@ static int kingdisplay_panel_probe(struct mipi_dsi_device *dsi)
+diff --git a/drivers/gpu/drm/panel/panel-innolux-p079zca.c b/drivers/gpu/drm/panel/panel-innolux-p079zca.c
+index aea316225391..f194b62e290c 100644
+--- a/drivers/gpu/drm/panel/panel-innolux-p079zca.c
++++ b/drivers/gpu/drm/panel/panel-innolux-p079zca.c
+@@ -484,6 +484,7 @@ static void innolux_panel_del(struct innolux_panel *innolux)
+ static int innolux_panel_probe(struct mipi_dsi_device *dsi)
+ {
+ 	const struct panel_desc *desc;
++	struct innolux_panel *innolux;
+ 	int err;
+ 
+ 	desc = of_device_get_match_data(&dsi->dev);
+@@ -495,7 +496,14 @@ static int innolux_panel_probe(struct mipi_dsi_device *dsi)
  	if (err < 0)
  		return err;
  
 -	return mipi_dsi_attach(dsi);
 +	err = mipi_dsi_attach(dsi);
 +	if (err < 0) {
-+		kingdisplay_panel_del(kingdisplay);
++		innolux = mipi_dsi_get_drvdata(dsi);
++		innolux_panel_del(innolux);
 +		return err;
 +	}
 +
 +	return 0;
  }
  
- static int kingdisplay_panel_remove(struct mipi_dsi_device *dsi)
+ static int innolux_panel_remove(struct mipi_dsi_device *dsi)
 -- 
 2.33.0.685.g46640cef36-goog
 
