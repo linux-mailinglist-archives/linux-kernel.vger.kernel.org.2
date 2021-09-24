@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1EE4172C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D616E41726E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344627AbhIXMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45988 "EHLO mail.kernel.org"
+        id S1343956AbhIXMsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:48:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344349AbhIXMtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:49:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E4F66124B;
-        Fri, 24 Sep 2021 12:47:52 +0000 (UTC)
+        id S1343965AbhIXMrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:47:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 334D96127A;
+        Fri, 24 Sep 2021 12:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487672;
-        bh=tp9Rs2YYa8tGFsE1HQguKml2q//FxLuvQGATZiMcmYk=;
+        s=korg; t=1632487569;
+        bh=Z6Ujq7sp7GYLn+d4h4DJCUe2L/oGXECweW/7zKdY00I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yRMJpqdW9SXx7BRWWp7OPaMfq63zeeuCe4iwtbvitFVZOurxXBaj/Utd3koZGUPEC
-         A1xo4wztYytIVrSDPfyiUbkCBQqO/AB0vpr7/amFGgXwmPtzrHvjBdfB9BHp8S4ZOx
-         +vTroO4i4kdIxMZErSdVedRehvBys3Hc/KfrZS3s=
+        b=gakaw+47G1xRY9OR7ahPbNmkXeHaS4+qibx8ZEE4wSOzuWxhi1DXDcgQGFd/lwPQv
+         1SPekauPhOlwb+/jivIuDv5xcs16J6EBt0ZoI0qHJLUTODrR1pGsRnf7opcDdJojG5
+         qCeQrhZMTIhoIk4TmAPNHdI4pJi852qzncFa0t6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH 4.14 09/27] 9p/trans_virtio: Remove sysfs file on probe failure
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 15/26] dmaengine: ioat: depends on !UML
 Date:   Fri, 24 Sep 2021 14:44:03 +0200
-Message-Id: <20210924124329.487898660@linuxfoundation.org>
+Message-Id: <20210924124328.847594264@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
+References: <20210924124328.336953942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit f997ea3b7afc108eb9761f321b57de2d089c7c48 upstream.
+[ Upstream commit bbac7a92a46f0876e588722ebe552ddfe6fd790f ]
 
-This ensures we don't leak the sysfs file if we failed to
-allocate chan->vc_wq during probe.
+Now that UML has PCI support, this driver must depend also on
+!UML since it pokes at X86_64 architecture internals that don't
+exist on ARCH=um.
 
-Link: http://lkml.kernel.org/r/20210517083557.172-1-xieyongji@bytedance.com
-Fixes: 86c8437383ac ("net/9p: Add sysfs mount_tag file for virtio 9P device")
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-by: Dave Jiang <dave.jiang@intel.com>
+Link: https://lore.kernel.org/r/20210809112409.a3a0974874d2.I2ffe3d11ed37f735da2f39884a74c953b258b995@changeid
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/9p/trans_virtio.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/dma/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/9p/trans_virtio.c
-+++ b/net/9p/trans_virtio.c
-@@ -602,7 +602,7 @@ static int p9_virtio_probe(struct virtio
- 	chan->vc_wq = kmalloc(sizeof(wait_queue_head_t), GFP_KERNEL);
- 	if (!chan->vc_wq) {
- 		err = -ENOMEM;
--		goto out_free_tag;
-+		goto out_remove_file;
- 	}
- 	init_waitqueue_head(chan->vc_wq);
- 	chan->ring_bufs_avail = 1;
-@@ -620,6 +620,8 @@ static int p9_virtio_probe(struct virtio
+diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+index b0f798244a89..9a6da9b2dad3 100644
+--- a/drivers/dma/Kconfig
++++ b/drivers/dma/Kconfig
+@@ -238,7 +238,7 @@ config INTEL_IDMA64
  
- 	return 0;
- 
-+out_remove_file:
-+	sysfs_remove_file(&vdev->dev.kobj, &dev_attr_mount_tag.attr);
- out_free_tag:
- 	kfree(tag);
- out_free_vq:
+ config INTEL_IOATDMA
+ 	tristate "Intel I/OAT DMA support"
+-	depends on PCI && X86_64
++	depends on PCI && X86_64 && !UML
+ 	select DMA_ENGINE
+ 	select DMA_ENGINE_RAID
+ 	select DCA
+-- 
+2.33.0
+
 
 
