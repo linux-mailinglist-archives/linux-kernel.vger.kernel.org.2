@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C143416D35
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF4E416D45
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244514AbhIXH4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:56:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58268 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244495AbhIXH4o (ORCPT
+        id S244523AbhIXIBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:01:43 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:51171 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244482AbhIXIBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:56:44 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 41DDE22416;
-        Fri, 24 Sep 2021 07:55:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632470111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+5dT0e/LVnNHHcl0ABQyeUOLyC28rt8o7MtGQJ16Wk=;
-        b=KWiNL3UHQbuoAkuBsiy3YSQftN/E2jhVDCGJVJ4SuDi14ga6EYTPLdskYk6XwXRICZFsXG
-        bEWK+3mJ2tb2wipT9UFRw4dJv04b+FFJK7rjY3eOiFx60uVYVav5B3hKKV06bppDfRyf6C
-        q8TEmpzdS0lmOTDDH+ryD1WOMtFlK0k=
-Received: from suse.cz (unknown [10.100.201.86])
+        Fri, 24 Sep 2021 04:01:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632470408; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=TSws/164fiyq3oktWfzcBH/e+yGW2wBhhF/5uUAH+OQ=; b=ohpMaCMT9xB+3PGmbW5nwPG3NB3jnJY57Mpy9E1+1KBCZqafbc8YYANc4MDhE5/r2EFXPjiQ
+ 4Mas7Wf/MzK8tf8anw9An8oqGond+M3Aj1Dj09Dwj/5U5zxTvqwRmymIa1Lv9ezES2PDZ6G8
+ pRsGDOo185miwLA2iFGIjLyH1EY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 614d857b648642cc1c339f70 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Sep 2021 07:59:55
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AC15DC43617; Fri, 24 Sep 2021 07:59:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay1.suse.de (Postfix) with ESMTPS id C507B25CCD;
-        Fri, 24 Sep 2021 07:55:10 +0000 (UTC)
-Date:   Fri, 24 Sep 2021 09:55:08 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
-Message-ID: <YU2EXP5wrSKv+b/8@dhcp22.suse.cz>
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
- <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
- <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
- <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3E77C4338F;
+        Fri, 24 Sep 2021 07:59:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B3E77C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     pillair@codeaurora.org, ath10k@lists.infradead.org,
+        govinds@codeaurora.org, kuabhs@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        youghand@codeaurora.org
+Subject: Re: [PATCH] ath10k: Don't always treat modem stop events as crashes
+References: <002501d7af73$ae0a7620$0a1f6260$@codeaurora.org>
+        <CAE-0n52DcCwcdR07fvMLrj=RJFtNthy0FdWmt1gBWiD9eLrOvQ@mail.gmail.com>
+Date:   Fri, 24 Sep 2021 10:59:47 +0300
+In-Reply-To: <CAE-0n52DcCwcdR07fvMLrj=RJFtNthy0FdWmt1gBWiD9eLrOvQ@mail.gmail.com>
+        (Stephen Boyd's message of "Wed, 22 Sep 2021 15:20:07 -0700")
+Message-ID: <87bl4itnd8.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 23-09-21 09:49:57, Vasily Averin wrote:
-[...]
-> I'm agree that vmalloc callers should expect and handle single vnalloc failures.
-> I think it is acceptable to enable fatal_signal_pending check to quickly
-> detect such kind of iussues.
-> However fatal_signal_pending check can cause serial vmalloc failures
-> and I doubt it is acceptable. 
-> 
-> Rollback after failed vmalloc can call new vmalloc calls that will be failed too, 
-> even properly handled such serial failures can cause troubles.
+Stephen Boyd <swboyd@chromium.org> writes:
 
-Could you be more specific? Also how would this be any different from
-similar failures for an oom victim? Except that the later is less likely
-so (as already mentioend) any potential bugs would be just lurking there
-for a longer time.
+> Quoting pillair@codeaurora.org (2021-09-21 22:35:34)
+>> On 9/5/21 4:04 PM, Stephen Boyd wrote:
+>>
+>> > +static int ath10k_snoc_modem_notify(struct notifier_block *nb, unsigned long
+> [...]
+>>
+>> > +
+>>
+>> > +          return NOTIFY_OK;
+>>
+>> > +}
+>>
+>>
+>>
+>> Thanks for posting the patch. It would be preferable to use a different flag
+>> instead of ATH10K_SNOC_FLAG_UNREGISTERING,
+>>
+>> since we are not unloading the ath10k driver.
 
-> Hypothetically, cancelled vmalloc called inside some filesystem's transaction
-> forces its rollback, that in own turn it can call own vmalloc.
+Weird, I don't see pillair's email on patchwork[1] and not in the ath10k
+list either. Was it sent as HTML or something?
 
-Do you have any specific example?
+[1] https://patchwork.kernel.org/project/linux-wireless/patch/20210905210400.1157870-1-swboyd@chromium.org/
 
-> Any failures on this path can break the filesystem.
-> I doubt it is acceptable, especially for non-OOM fatal signals.
-> On the other hand I cannot say that it is a 100% bug.
-> 
-> Another scenario:
-> as you know failed vmalloc calls pr_warn. According message should be sent
-> to remote terminal or netconsole. I'm not sure about execution context,
-> however if this is done in task context it may call vmalloc either in terminal
-> or in network subsystems. Even handled, such failures are not fatal,
-> but this behaviour is at least unexpected.
-
-I do not think we want to shape the vmalloc bahavior based on
-printk/console behavior.
-
-> Should we perhaps interrupt the first vmalloc only?
-
-This doesn't make much sense to me TBH. It doesn't address the very
-problem you are describing in the changelog.
 -- 
-Michal Hocko
-SUSE Labs
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
