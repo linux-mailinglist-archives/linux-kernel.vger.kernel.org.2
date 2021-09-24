@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E81416FDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2AC416FE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245511AbhIXKEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245408AbhIXKEj (ORCPT
+        id S245517AbhIXKFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:05:41 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:41214 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245408AbhIXKFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:04:39 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B50C061574;
-        Fri, 24 Sep 2021 03:03:06 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id f133so4595038yba.11;
-        Fri, 24 Sep 2021 03:03:06 -0700 (PDT)
+        Fri, 24 Sep 2021 06:05:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QVejgvgIUbivqyF/zB9MH9U5S0LClVfNnIpvUNItikM=;
-        b=pwOwbiLfIOsD1XcZjiRAJrF33ma579B98sVu1DU2oquPgI92sJVZWWLbqaV28FzjaB
-         dcjmbeze6xncXnmOrNxCyAj3IyFdLg/ZjsIPNIz8ccMvPeqQFTSzUoe19txujG6gbQQa
-         Du+pGkoNj1I2q5+w0+hpZQ1mOSELvm6XLHLa8x8U3pgfS0v3YUyZfpGiD7zum4xsXzUS
-         /94rJdeSBxkwtwrrDoSjgIYBAA+BiqvrgppICl+iNuGspqiZHwkTkyRd7hRF/weRQLQN
-         ZJpR5a9qLD7CwaLrnlEo6C3qKWA1jFGWuMe2q6kgnzBMXrlrbN73Eyqp43/diKS10aLr
-         BA8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QVejgvgIUbivqyF/zB9MH9U5S0LClVfNnIpvUNItikM=;
-        b=tBMemGmLrwPIFobHntwD9ApxcVtySSeraeZ/tH7FwAS49A/RJ49dysEDL7qlL33gAP
-         aJmnc6L3yYUNgamc7DCG8bPoZvsQOWwCwOl+JijXTuCFQD57m5ZlzTwZzFj29+CRqf+r
-         SVfHEuul+Pa7lAJ3QFDtsa1aj423cFQU3gq81+HRhWloZuDRdcVYyCnEfAhqDwfKohIT
-         kVr2aEUfHlKeNxMc5kYi1WnJ2hxY7rkSWqraOnQO//U4IenP2zJGNtRTxe9HWPio6gIc
-         zTLVEaTOY+oPVjb6+yNMEFfe++QIRR6C865EX4/Ms1Q6MFFLBSCJpv3b0dNBwjVRQo2n
-         V3hA==
-X-Gm-Message-State: AOAM531VCnEglTF6IOI4F2f5+VrHoNIBeA68gcRRFhYAginRTB1gPAKe
-        1yiKULRBWAegI032+g8Kmnp1iSVKSpv0yXHIioG3H4g+Yh57rw==
-X-Google-Smtp-Source: ABdhPJx7+assTM0fM2QmlRjFZOu+MuBmwOysciOarH0pW/5VTVCe6BBumlJ8phLGSftAI7jMOHMKUZ9yZXMo2yWN+ZM=
-X-Received: by 2002:a25:3086:: with SMTP id w128mr12171475ybw.139.1632477784123;
- Fri, 24 Sep 2021 03:03:04 -0700 (PDT)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1632477848; x=1664013848;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZZELcawGMEhGBmqKIMHdWQDvBzpBI3IfZNheEWzMpKw=;
+  b=OcWVY5js+aCCL1453HbTwmiPa8n/9FCyZP3UAuFm6FtQdHUa6Xu6Y975
+   4vtvTkH3OlsubVvAlGjN2x7gucRwwBB5+JmaYmbivGZWkUO71TcEG6mvc
+   Vmzr0IAZRn5RkiJJdO+IJfh/oP0e6ck0CBvizchSbWKSeMAvTyykYQJAY
+   A=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 24 Sep 2021 03:04:08 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 03:04:06 -0700
+Received: from taozha-gv.ap.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Fri, 24 Sep 2021 03:04:03 -0700
+Date:   Fri, 24 Sep 2021 18:04:00 +0800
+From:   Tao Zhang <quic_taozha@quicinc.com>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        "Leo Yan" <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sm8250: Add Coresight support
+Message-ID: <20210924100359.GA10261@taozha-gv.ap.qualcomm.com>
+References: <1631515214-13653-1-git-send-email-quic_taozha@quicinc.com>
+ <1631515214-13653-3-git-send-email-quic_taozha@quicinc.com>
+ <57e2a1d8-15ec-0381-2b7d-95bbda7503ae@arm.com>
+ <20210923092428.GA12869@taozha-gv.ap.qualcomm.com>
+ <c9dea7c5-79c9-90a8-ad72-caa4c728a4b0@arm.com>
 MIME-Version: 1.0
-References: <CAFcO6XOvGQrRTaTkaJ0p3zR7y7nrAWD79r48=L_BbOyrK9X-vA@mail.gmail.com>
- <CAK8P3a0kG_gdpaOoLb5H2qeq-T7orQ+2n19NNWQaRKgVNotDkw@mail.gmail.com>
-In-Reply-To: <CAK8P3a0kG_gdpaOoLb5H2qeq-T7orQ+2n19NNWQaRKgVNotDkw@mail.gmail.com>
-From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date:   Fri, 24 Sep 2021 18:02:53 +0800
-Message-ID: <CAFcO6XOgtizsTQbeWcD14yiMAaRp82QomNhSehCJ4t=d2CRx+g@mail.gmail.com>
-Subject: Re: There is an array-index-out-bounds bug in detach_capi_ctr in drivers/isdn/capi/kcapi.c
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Karsten Keil <isdn@linux-pingi.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c9dea7c5-79c9-90a8-ad72-caa4c728a4b0@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> When I last touched the capi code, I tried to remove it all, but we then
-> left it in the kernel because the bluetooth cmtp code can still theoretically
-> use it.
->
-> May I ask how you managed to run into this? Did you find the bug through
-> inspection first and then produce it using cmtp, or did you actually use
-> cmtp?
+On Thu, Sep 23, 2021 at 10:36:28AM +0100, Suzuki K Poulose wrote:
+> On 23/09/2021 10:24, Tao Zhang wrote:
+> >On Tue, Sep 21, 2021 at 05:35:37PM +0100, Suzuki K Poulose wrote:
+> >>Hi Tao
+> >>
+> >>Are there no sinks at all on this platform ? I had this question on the
+> >>previous series. How is CoreSight useful on this platform otherwise ?
+> >>
+> >>On 13/09/2021 07:40, Tao Zhang wrote:
+> >ETF/ETR are the sinks on this target. And I have added the ETF to this
+> >device tree file. Since the ETR needs SMMU support on this target and
+> >SMMU has not been supported for now. I will add the ETR to device tree
+> >later if the SMMU is ready for this platform.
+> 
+> Thanks. That is fine. Btw, these sort of additional information could be
+> added to the cover letter to give a better picture of what you are trying to
+> do and why.
+> 
+Sure. I will update this to the cover letter.
+> >>>Add the basic coresight components found on Qualcomm SM8250 Soc. The
+> >>>basic coresight components include ETF, ETMs,STM and the related
+> >>>funnels.
+> >>>
+> >>>Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+> >>>---
+> >>>  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 442 ++++++++++++++++++++++-
+> >>>  1 file changed, 438 insertions(+), 4 deletions(-)
+> >>>
+> >>>diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> >>>index 8ac96f8e79d4..9c8f87d80afc 100644
+> >>>--- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> >>>+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> >>>@@ -222,11 +222,445 @@
+> >>>  		regulator-max-microvolt = <1800000>;
+> >>>  		regulator-always-on;
+> >>>  	};
+> >>>-};
+> >>>-&adsp {
+> >>>-	status = "okay";
+> >>>-	firmware-name = "qcom/sm8250/adsp.mbn";
+> >>
+> >>Unrelated change ? Please keep it separate from the CoreSight changes.
+> >>
+> >>Suzuki
+> >I combined this change and ETM pid change into one seies because the ETM
+> >pid change validation needs ETM support. If there is no ETM
+> >configuration in the device tree, ETM pid change can not be verified.
+> >Do you think it would be better to separate them? Do I need to resubmit
+> >to separate them into two separate patches?
+> 
+> No, I am asking about the lines removed above. i.e,
+> 
+>  -&adsp {
+>  -	status = "okay";
+>  -	firmware-name = "qcom/sm8250/adsp.mbn";
+> 
+> It doesn't seem to be added back in the patch. So that means, the DT
+> lost those lines, without any mention of that in the description of
+> the patch. Moreover, the lines do not look like they were anything to
+> do with CoreSight. This is why I mentioned they look like "unrelated".
+> 
+> Suzuki
+Yes, you are right. This is a mistake. This part of code should not be removed.
+I will update the patch and resubmit it.
 
-I fuzz the bluez system and find a crash to analyze it and reproduce it.
-
-> If the only purpose of cmtp is now to be a target for exploits, then I
-> would suggest we consider removing both cmtp and capi for
-> good after backporting your fix to stable kernels. Obviously
-> if it turns out that someone actually uses cmtp and/or capi, we
-> should not remove it.
->
-Yes, I think this should be feasible.
-
-Regards
-  butt3rflyh4ck.
-
-
--- 
-Active Defense Lab of Venustech
+Best,
+Tao
