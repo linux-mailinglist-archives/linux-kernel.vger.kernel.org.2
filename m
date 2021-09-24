@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373EE4171C6
+	by mail.lfdr.de (Postfix) with ESMTP id B37C34171C7
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245143AbhIXM3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        id S245727AbhIXM3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244406AbhIXM3A (ORCPT
+        with ESMTP id S245437AbhIXM3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:29:00 -0400
+        Fri, 24 Sep 2021 08:29:02 -0400
 Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F6CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:27:27 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g8so35413322edt.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:27:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3C8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:27:28 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id u27so34851831edi.9
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:27:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=85DTZ6nXXMkHYkD5g7M203wU5w8Lip8La1SQcqg9VRc=;
-        b=XagkbawzKJSEQu/Q77LA6GGoDxjpbG+5t01DsRVVIxvNGmn4OUsCo53S7uDQrd7YRj
-         U55rBK2ohU4l2yYIseAAf4iKZCVyTfq70moWQtCYNrY/0TmDS0Vu8LlmlHYyYmyrcFbK
-         7DnKn1ujLcBLQ4HeHPGOV1RbAGYKcL/3EKgHecJhaAptFeJu3pieDjP41Un4EnaUOpms
-         nnvflgIopU87wtjjLWGlZlM9E0mpdR7R+EfpLz09x8gc2G4mVhzcNuieKriVWMcOiJVS
-         8jrL1p0t+X1M7V6eZVFmPN9S6gGdCohexWnw6+5LRlX0oRerUsgD2rxc3A+CgBoV1RhL
-         HfRA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jdEHukJFI5KLXKseovA8chBIFpkWExbdPtIweTTcHKQ=;
+        b=ULs1YJiv33WySPCHQ3PhUxwaBmGj4OrzmnV5Vck4pOybn+iO6d/ar5GS1+IZs2lkmS
+         j+MDfa6epXFwOetF5r57uL92hV6g9gpkx+mvMX9bBxGN5lvjeTWBbcvl6A0kqc0wwK5e
+         WPpwEGwNRGNdh82+xr3R4WpiHB/uoRz9HANj4NuxIuDbXSGTY89goXGGQZSejdbHxkQm
+         UnaWx3Tsca6nLx2EWGschA7KoIHFeMxLqzt1agF6gf2QxsRiOO21DshK8zTt1RR3eEEL
+         GhFZe0jJgwbcYCovxv7v3AIQPQf6hn15tVpj2OHW7C4G9riauyYFWxMz5ehXW5OwmN4u
+         G8jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=85DTZ6nXXMkHYkD5g7M203wU5w8Lip8La1SQcqg9VRc=;
-        b=Q6F2KA1ISTKaZAPMcQ7eCouPyTVvD8oVx0ex01I9xTHTMWV6PtDhPPx4SXlW+pxeaq
-         LO2PT+fm9uCE9BRsmvgqR+NzGUcOzS0jjiJinwL/LTlzo+te+SnjvV2kJ3H/gAG/OfQI
-         K0SsfQzxNqficBdtOgYYzpmTRX0nSqd74b1g2/7kDExQUWRsS23l0x79zpJAVYgrnf/x
-         syI5XacFZXU2TgWzSJpaGXPQ6F03ZkCNK00AMABgoTJxm+IsrUFibwHuT2XRYKTgXysj
-         Gf9I/VQ+cFqG8Yup5RaRDJClJ0X7soWi38hfDuaU9WDg/wgPr4/Q33XNbySnsSUS1WDM
-         WW0w==
-X-Gm-Message-State: AOAM533S2Vwgnxz9k+ioy8HS47FVMpD7+RSpNU0LbVrrGV1BNHG1WSAE
-        GIqeihQ6SbQavpCK1pjNdk4=
-X-Google-Smtp-Source: ABdhPJxcYmuRrQ5asMufJRFVuU9Dumund7oIJBhU0oVtx1iDRNdOpR2iJNrga3vCebp/TMNIga+dMA==
-X-Received: by 2002:a17:906:8151:: with SMTP id z17mr10669181ejw.468.1632486446175;
-        Fri, 24 Sep 2021 05:27:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jdEHukJFI5KLXKseovA8chBIFpkWExbdPtIweTTcHKQ=;
+        b=xh+/4RExV/t7mMGR3E9YJLDcM4zzuEdmyggOiylDvDNVr334+KbHzQuy+cdG/8/WaU
+         ZtH/y1bHN6UgQNRFKXMeBeJn7vovmKg4bxCZlVqfeHJ3xNT9VidZZ5iPEl2sZpMScPGT
+         esr2Rpwsl3HRlNqOEWW0pIibqqJZ2QOwUSVr0oibpNm2+zVcQDN0n9iAb3AOvn7tlnlR
+         cUcPMxBTnwf2yQuQNJrqIqwW5ldhBfBdRAeG48+w6SNJNeGBXaO7e7u0nxoz9il/Z6ES
+         eMBrqG+VbDxEZXPSSVHK0aBz6CTcaJeTVm4Al6ckf2Sqfr/o/WwlBMFydbfAaWpcwZNv
+         z1zg==
+X-Gm-Message-State: AOAM530q9wUgVbC7AM0dpyda9Lfx/yQQWVL5HHAVGXjeVit1kj0I0NC5
+        r1Y1jwN+JjQmojZM6V6SLuc=
+X-Google-Smtp-Source: ABdhPJzvVLw9WxxkagswZ54HrpkkgftJs8TOWMcpr6ws5/JT0RzEpDzgUSPgub+ZuQdJ20dG/CPcDg==
+X-Received: by 2002:a17:906:584b:: with SMTP id h11mr11287202ejs.209.1632486447558;
+        Fri, 24 Sep 2021 05:27:27 -0700 (PDT)
 Received: from localhost.localdomain.it (host-212-171-30-160.retail.telecomitalia.it. [212.171.30.160])
-        by smtp.gmail.com with ESMTPSA id v13sm4882522ejh.62.2021.09.24.05.27.24
+        by smtp.gmail.com with ESMTPSA id v13sm4882522ejh.62.2021.09.24.05.27.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 05:27:25 -0700 (PDT)
+        Fri, 24 Sep 2021 05:27:27 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Larry Finger <Larry.Finger@lwfinger.net>,
@@ -59,213 +59,107 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Straube <straube.linux@gmail.com>,
         Martin Kaiser <martin@kaiser.cx>
 Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v9 10/16] staging: r8188eu: shorten and simplify calls chains
-Date:   Fri, 24 Sep 2021 14:26:49 +0200
-Message-Id: <20210924122705.3781-1-fmdefrancesco@gmail.com>
+Subject: [PATCH v10 01/16] staging: r8188eu: clean up symbols in usbctrl_vendorreq()
+Date:   Fri, 24 Sep 2021 14:26:50 +0200
+Message-Id: <20210924122705.3781-2-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210924122705.3781-1-fmdefrancesco@gmail.com>
+References: <20210924122705.3781-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---- Preface ---
+Clean up symbol names in usbctrl_vendorreq():
 
-This is v10 of "shorten and simplify calls chain". The 14 (v7) + 2 (v8) 
-patches have already been applied to staging-testing, so we have been 
-requested to reset the numbering of the remaining patches to 01/16, while 
-discarding from v9 the above-mentioned 16 patches (otherwise we would
-have submitted a series containing 32 patches, that is 1 patch less than
-v8 because it has been dropped by us in what we considered it
-unnecessary - it was about fixing a misspelled word in a comment).
+	pdata => data;
+	pio_priv => io_priv;
+	pintfhdl => intf.
 
-The following commit message is provided as it was in v8, both for the
-purpose of presenting the whole picture to Maintainers, Reviewers, and to
-anybody else who may be interested in knowing the entire design and the
-evolution since v1 to the current v10.
+Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/r8188eu/hal/usb_ops_linux.c | 28 ++++++++++-----------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
---- Commit message ---
-
-io_ops abstraction is useless in this driver, since there is only one ops
-registration. Without io_ops we can get rid of indirect calls mess and
-shorten the calls chain.
-
-Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
-For this purpose unify the three usb_read8/16/32 into the new
-usb_read(); make the latter parameterizable with 'size'; embed most of
-the code of usbctrl_vendorreq() into usb_read() and use in it the new
-usb_control_msg_recv() API of USB Core.
-
-Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
-For this purpose unify the four usb_write8/16/32/N() into the new
-usb_write(); make the latter parameterizable with 'size'; embed most of
-the code of usbctrl_vendorreq() into usb_write() and use in it the new
-usb_control_msg_send() API of USB Core.
-
-The code with the modifications was thoroughly tested by Pavel Skripkin
-using a TP-Link TL-WN722N v2 / v3 [Realtek RTL8188EUS] and by Fabio M.
-De Francesco using a ASUSTek Computer, Inc. Realtek 8188EUS [USB-N10 Nano].
-
---- Changelog ---
-
-v9-v10:
-	- 1-15: 
-		No changes;
-	- 16:
-		Fix a bug inadvertently introduced in v8.
-
-v8->v9 (after numbering reset in v8):
-	- 1-7,9,10,12:
-		Clean-up patches with no significant changes in code.
-		We've applied some fixes required by Greg Kroah-Hartman:
-		(1) rename of an argument (intfhdl => intf), (2)
-		explanation of why "!io_buf" test is redundant and
-		unnecessary, (3) deletion of comments for single line
-		'if' statements, (4) fix of a coding style issue by
-		removing unnecessary braces;
-	- 8,11:
-		Add more detailed motivation in support of changing the
-		type of two variables, one in rtw_read16() and the other
-		in rtw_write16();
-	- 13,14:
-		No significant changes in the code; just rebase on top of
-		minor changes introduced by the patches 1-12;
-	- 15,16:
-		No changes.
-
-v7->v8 (old numbering):
-        - 1-14:
-                Patches applied to staging-testing, so they are dropped
-                from the current v8;
-
-        - 15-19:
-                Split into 19 patches. Numbering reset to 01. After this
-                reset, 15-19/19 become 01-19/19 (so we have a total of 33
-                patches in this series.
-
-v7->v8 (new numbering for the old 15-19/19):
-        - 1-15:
-                Old 15/19 and 16/19 are split into 15 patches (as it is
-                required by Greg Kroah-Hartman) in order to make them
-                more easily reviewable and for checking that the logic
-                is not broken; no significant changes to the resulting
-                code;
-        - 16-17:
-                Old 17/19 and 18/19 become 16/19 and 17/19: There are
-                no significant changes to the code, with the sole
-                exception of moving the acquiring of a mutex before
-                the test for "bSurpriseRemoved" being 'true';
-        - 18-19:
-                Old 19/19 is split into new 18/19 and 19/19. The changes
-                are split into a first patch that remove a shared buffer
-                and a second that remove the mutex protecting the receiving
-                (in usb_read()) and sending (in usb_write()) of the
-                USB control messages.
-
-v6->v7:
-        - 1-14:
-                Add Dan Carpenter's "Reviewed-by" tag. No code changes;
-        - 15:
-                Add a list of clean-up changes to the commit messages
-                and restore an empty line inadvertently deleted in a
-                previous version;
-        - 16:
-                Add a list of clean-up changes to the commit messages;
-        - 17-18:
-                No changes;
-        - 19:
-                Delete an unnecessary test.
-
-v5->v6:
-        - 1-14:
-                Minimal changes to patch subjects to achieve consistent
-                style;
-        - 15:
-                Fix a mistake in the checks of values returned by
-                usb_control_msg();
-        - 16-19:
-                No changes.
-
-v4->v5:
-        - 1-14:
-                No changes;
-        - 15-16:
-                Fix minor formatting issues and use "Reverse Xmas Tree" style,
-	        according to suggestions by David Laight and Dan Carpenter;
-        - 17-18:
-                Pavel Skripkin found logical errors in the checks of the
-                values returned by usb_control_msg_{recv,send}(), so fix them;
-                Dan Carpenter suggested to do error handling before success
-                handling, so change the code accordingly;
-        - 19:
-                Add this patch in order to get rid of the shared buffer in
-                usb_read() and usb_write() and remove this field from struct
-                "dvobj_priv".
-
-v3->v4:
-        - 1-14:
-                Split a patch into fourteen;
-        - 15-16:
-                Add these patches for clean-ups of the code that is going to be
-                reused in 17-18/18;
-        - 17-18:
-                Make some changes according to a first review of Greg
-                Kroah-Hartman; furthermore, remove the unnecessary while loop
-                and a couple of if' test; handle the errors returned by
-                usb_control_msg_recv().
-
-v2->v3:
-        - 1-2:
-                No changes;
-        - 3:
-                Fix the version number of the patch.
-
-v1->v2:
-        - 1-2:
-                No changes;
-        - 3:
-                Replace parameter REALTEK_USB_VENQT_READ with REALTEK_USB_VENQT_WRITE
-                in usb_control_msg_send().
-
---- List of links to previous versions of the cover letters ---
-
-v1: https://lore.kernel.org/lkml/20210904150447.14659-1-fmdefrancesco@gmail.com/
-v2: https://lore.kernel.org/lkml/20210904212719.11426-1-fmdefrancesco@gmail.com/
-v3: https://lore.kernel.org/lkml/20210904220048.12822-1-fmdefrancesco@gmail.com/
-v4: https://lore.kernel.org/lkml/20210913181002.16651-1-fmdefrancesco@gmail.com/
-v5: https://lore.kernel.org/lkml/20210915124149.27543-1-fmdefrancesco@gmail.com/
-v6: https://lore.kernel.org/lkml/20210915211103.18001-1-fmdefrancesco@gmail.com/
-v7: https://lore.kernel.org/lkml/20210917071837.10926-1-fmdefrancesco@gmail.com/
-v8: https://lore.kernel.org/lkml/20210919235356.4151-1-fmdefrancesco@gmail.com/
-v9: https://lore.kernel.org/lkml/20210921181834.29677-1-fmdefrancesco@gmail.com/
-
---- List of patches not yet applied, authorship, diff stats ---
-
-Fabio M. De Francesco (14):
-  staging: r8188eu: clean up symbols in usbctrl_vendorreq()
-  staging: r8188eu: reorder declarations in usbctrl_vendorreq()
-  staging: r8188eu: remove unnecessary test in usbctrl_vendorreq()
-  staging: r8188eu: reorder comments in usbctrl_vendorreq()
-  staging: r8188eu: remove a comment from usbctrl_vendorreq()
-  staging: r8188eu: rename symbols in rtw_read*() and rtw_write*()
-  staging: r8188eu: remove casts from rtw_{read,write}*()
-  staging: r8188eu: change the type of a variable in rtw_write16()
-  staging: r8188eu: remove an buffer from rtw_writeN()
-  staging: r8188eu: remove a bitwise AND from rtw_writeN()
-  staging: r8188eu: change the type of a variable in rtw_read16()
-  staging: r8188eu: Remove a test from usbctrl_vendorreq()
-  staging: r8188eu: call new usb_read() from rtw_read{8,16,32}()
-  staging: r8188eu: call new usb_write() from rtw_write{8,16,32,N}()
-
-Pavel Skripkin (2):
-  staging: r8188eu: remove shared buffer for USB requests
-  staging: r8188eu: remove usb_vendor_req_mutex
-
- drivers/staging/r8188eu/hal/usb_ops_linux.c | 213 ++++++++++----------
- drivers/staging/r8188eu/include/drv_types.h |   3 -
- drivers/staging/r8188eu/os_dep/usb_intf.c   |  36 ----
- 3 files changed, 107 insertions(+), 145 deletions(-)
-
---
+diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+index 6de99079e117..3e7bc510197e 100644
+--- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+@@ -8,14 +8,14 @@
+ #include "../include/recv_osdep.h"
+ #include "../include/rtl8188e_hal.h"
+ 
+-static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata, u16 len, u8 requesttype)
++static int usbctrl_vendorreq(struct intf_hdl *intf, u16 value, void *data, u16 len, u8 requesttype)
+ {
+-	struct adapter	*adapt = pintfhdl->padapter;
+-	struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
++	struct adapter *adapt = intf->padapter;
++	struct dvobj_priv *dvobjpriv = adapter_to_dvobj(adapt);
+ 	struct usb_device *udev = dvobjpriv->pusbdev;
+ 	unsigned int pipe;
+ 	int status = 0;
+-	u8 *pIo_buf;
++	u8 *io_buf;
+ 	int vendorreq_times = 0;
+ 
+ 	if ((adapt->bSurpriseRemoved) || (adapt->pwrctrlpriv.pnp_bstop_trx)) {
+@@ -32,10 +32,10 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
+ 
+ 	/*  Acquire IO memory for vendorreq */
+-	pIo_buf = dvobjpriv->usb_vendor_req_buf;
++	io_buf = dvobjpriv->usb_vendor_req_buf;
+ 
+-	if (!pIo_buf) {
+-		DBG_88E("[%s] pIo_buf == NULL\n", __func__);
++	if (!io_buf) {
++		DBG_88E("[%s] io_buf == NULL\n", __func__);
+ 		status = -ENOMEM;
+ 		goto release_mutex;
+ 	}
+@@ -47,22 +47,22 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 
+ 	while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
+ 		if (requesttype == REALTEK_USB_VENQT_READ)
+-			memset(pIo_buf, 0, len);
++			memset(io_buf, 0, len);
+ 		else
+-			memcpy(pIo_buf, pdata, len);
++			memcpy(io_buf, data, len);
+ 
+ 		status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+ 					 requesttype, value, REALTEK_USB_VENQT_CMD_IDX,
+-					 pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
++					 io_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
+ 
+ 		if (status == len) {   /*  Success this control transfer. */
+ 			rtw_reset_continual_urb_error(dvobjpriv);
+ 			if (requesttype == REALTEK_USB_VENQT_READ)
+-				memcpy(pdata, pIo_buf,  len);
++				memcpy(data, io_buf,  len);
+ 		} else { /*  error cases */
+ 			DBG_88E("reg 0x%x, usb %s %u fail, status:%d value=0x%x, vendorreq_times:%d\n",
+ 				value, (requesttype == REALTEK_USB_VENQT_READ) ? "read" : "write",
+-				len, status, *(u32 *)pdata, vendorreq_times);
++				len, status, *(u32 *)data, vendorreq_times);
+ 
+ 			if (status < 0) {
+ 				if (status == -ESHUTDOWN || status == -ENODEV) {
+@@ -74,8 +74,8 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 			} else { /*  status != len && status >= 0 */
+ 				if (status > 0) {
+ 					if (requesttype == REALTEK_USB_VENQT_READ) {
+-						/*  For Control read transfer, we have to copy the read data from pIo_buf to pdata. */
+-						memcpy(pdata, pIo_buf,  len);
++						/*  For Control read transfer, we have to copy the read data from io_buf to data. */
++						memcpy(data, io_buf,  len);
+ 					}
+ 				}
+ 			}
+-- 
 2.33.0
 
