@@ -2,163 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F91417888
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7C141788E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347402AbhIXQbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:31:03 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57642 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244892AbhIXQbC (ORCPT
+        id S1347414AbhIXQdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:33:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49109 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233833AbhIXQd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:31:02 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18OGTL2r108832;
-        Fri, 24 Sep 2021 11:29:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632500961;
-        bh=VTW26QISeUHwM/qRyY199/5lvvf3mRE4t9mjRGV1MHs=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=o+eNGW8g4FUnvb6hMc8Zs/kpXpFjrkftMyW5K+eopGXa0rKDBcfT08U4nx41nMBQo
-         YpY+DXGXWjsughe0ZuISMbLTjCW1LKwOoeO46q8VanpwahavGN+Y3QdhHoDh8nDU5W
-         XfKvb/F7lnhIl/CJiwDtDmKm68w1XQApyWMqwXus=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18OGTL7W040181
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 24 Sep 2021 11:29:21 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 24
- Sep 2021 11:29:20 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 24 Sep 2021 11:29:20 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18OGTKZA086642;
-        Fri, 24 Sep 2021 11:29:20 -0500
-Date:   Fri, 24 Sep 2021 11:29:20 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Suman Anna <s-anna@ti.com>
-CC:     Sinthu Raja <sinthu.raja@mistralsolutions.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        Sinthu Raja <sinthu.raja@ti.com>,
-        "Nagalla, Hari" <hnagalla@ti.com>
-Subject: Re: [PATCH V3 2/2] dt-bindings: remoteproc: k3-dsp: Remove
- board-specific compatible from DT example
-Message-ID: <20210924162920.mvnzcibfm7s265us@boxing>
-References: <20210917095426.19277-1-sinthu.raja@ti.com>
- <20210917095426.19277-3-sinthu.raja@ti.com>
- <4d43e927-3998-e9a9-87a6-6036b769a975@ti.com>
+        Fri, 24 Sep 2021 12:33:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632501116;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=U2Y5/PxeGrVOyJwkORaGRMrwQ31fo9+n2UjUMf0sONY=;
+        b=Ae5swvANWwmSsb7EYuIJWDbIsC0mDKl+DzmDdmqddfDFzJhntloBsZeXSzhza5nZO//jTV
+        K+LOU+j0o+Lwa23C6P4ZEcbAQdOYBFzSsp56HKsR0WkTlbLfHCEfj8TEWNl0PaPZTBAY48
+        cJq5+QsCY2AdBipkU8grmDdMlVbn0qw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-rCwcw5UbOVazqux64Zzpxw-1; Fri, 24 Sep 2021 12:31:54 -0400
+X-MC-Unique: rCwcw5UbOVazqux64Zzpxw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91EE191272;
+        Fri, 24 Sep 2021 16:31:53 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 29F305FCAE;
+        Fri, 24 Sep 2021 16:31:53 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     dmatlack@google.com, seanjc@google.com
+Subject: [PATCH v3 00/31] KVM: x86: pass arguments on the page fault path via struct kvm_page_fault
+Date:   Fri, 24 Sep 2021 12:31:21 -0400
+Message-Id: <20210924163152.289027-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4d43e927-3998-e9a9-87a6-6036b769a975@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11:10-20210924, Suman Anna wrote:
-> Hi Sinthu,
-> 
-> On 9/17/21 4:54 AM, Sinthu Raja wrote:
-> > From: Sinthu Raja <sinthu.raja@ti.com>
-> > 
-> > The example includes a board-specific compatible property, this is
-> > wrong as the example should be board agnostic and gets in the way of
-> > additions for newer platforms. Replace the same with a generic soc
-> > node.
-> 
-> What board specific property? This description looks wrong.
+The current kvm page fault handlers passes around many arguments to the
+functions.  To simplify those arguments and local variables, introduce
+a data structure, struct kvm_page_fault, to hold those arguments and
+variables.  struct kvm_page_fault is allocated on stack on the caller
+of kvm fault handler, kvm_mmu_do_page_fault(), and passed around.
 
-See https://lore.kernel.org/all/1631794913.472895.1119414.nullmailer@robh.at.kernel.org/
+Later in the series, my patches are interleaved with David's work to
+add the memory slot to the struct and avoid repeated lookups.  Along the
+way you will find some cleanups of functions with a ludicrous number of
+arguments, so that they use struct kvm_page_fault as much as possible
+or at least receive related information from a single argument.  make_spte
+in particular goes from 11 to 10 arguments (yeah I know) despite gaining
+two for kvm_mmu_page and kvm_memory_slot.
 
-> 
-> > 
-> > Fixes: 2a2180206ab6 ("dt-bindings: remoteproc: Add bindings for C66x DSPs on TI K3 SoCs")
-> 
-> What error are you trying to fix exactly? The example used below is actually how
-> it exactly appears in the J721E dts files, and there are no errors with
-> dt_binding_check.
+This can be sometimes a bit debatable (for example struct kvm_mmu_page
+is used a little more on the TDP MMU paths), but overall I think the
+result is an improvement.  For example the SET_SPTE_* constants go
+away, and they absolutely didn't belong in the TDP MMU.  But if you
+disagree with some of the changes, please speak up loudly!
 
-The rproc binding should have nothing to do with j721e SoC node
-description. it should describe the rproc node that is described in
-binding.
+Testing: survives kvm-unit-tests on Intel with all of ept=0, ept=1
+tdp_mmu=0, ept=1.  Will do more before committing to it in kvm/next of
+course.
 
-> 
-> This is more a cleanup than a fix.  You can look through the original binding
-> submission patches to see why it is done like this.
+Paolo
 
-This is blocking any updates we would want to do in k3.yaml.
-> 
-> If this is triggered by the changes you are making to k3.yaml file as part of
-> the J721E EAIK changes, then you probably may want to look at how you are doing
+David Matlack (5):
+  KVM: x86/mmu: Fold rmap_recycle into rmap_add
+  KVM: x86/mmu: Pass the memslot around via struct kvm_page_fault
+  KVM: x86/mmu: Avoid memslot lookup in page_fault_handle_page_track
+  KVM: x86/mmu: Avoid memslot lookup in rmap_add
+  KVM: x86/mmu: Avoid memslot lookup in make_spte and
+    mmu_try_to_unsync_pages
 
-> that again. Looks like the k3.yaml file is being modified now to enforce
-> "board-compatible", "soc-compatible" which may have triggered an error in this file.
-> 
-> Please evaluate if you need to modify it to support just the "soc-compatible" as
-> one of the items.
+Paolo Bonzini (25):
+  KVM: MMU: pass unadulterated gpa to direct_page_fault
+  KVM: MMU: Introduce struct kvm_page_fault
+  KVM: MMU: change mmu->page_fault() arguments to kvm_page_fault
+  KVM: MMU: change direct_page_fault() arguments to kvm_page_fault
+  KVM: MMU: change page_fault_handle_page_track() arguments to
+    kvm_page_fault
+  KVM: MMU: change kvm_faultin_pfn() arguments to kvm_page_fault
+  KVM: MMU: change handle_abnormal_pfn() arguments to kvm_page_fault
+  KVM: MMU: change __direct_map() arguments to kvm_page_fault
+  KVM: MMU: change FNAME(fetch)() arguments to kvm_page_fault
+  KVM: MMU: change kvm_tdp_mmu_map() arguments to kvm_page_fault
+  KVM: MMU: change tdp_mmu_map_handle_target_level() arguments to
+    kvm_page_fault
+  KVM: MMU: change fast_page_fault() arguments to kvm_page_fault
+  KVM: MMU: change kvm_mmu_hugepage_adjust() arguments to kvm_page_fault
+  KVM: MMU: change disallowed_hugepage_adjust() arguments to
+    kvm_page_fault
+  KVM: MMU: change tracepoints arguments to kvm_page_fault
+  KVM: MMU: mark page dirty in make_spte
+  KVM: MMU: unify tdp_mmu_map_set_spte_atomic and
+    tdp_mmu_set_spte_atomic_no_dirty_log
+  KVM: MMU: inline set_spte in mmu_set_spte
+  KVM: MMU: inline set_spte in FNAME(sync_page)
+  KVM: MMU: clean up make_spte return value
+  KVM: MMU: remove unnecessary argument to mmu_set_spte
+  KVM: MMU: set ad_disabled in TDP MMU role
+  KVM: MMU: pass kvm_mmu_page struct to make_spte
+  KVM: MMU: pass struct kvm_page_fault to mmu_set_spte
+  KVM: MMU: make spte an in-out argument in make_spte
 
-See above link. This is not to do with eaik / sk. I am trying to
-standardize the board definitions in yaml for k3 and this binding
-specifically is getting in the way.
+Sean Christopherson (1):
+  KVM: x86/mmu: Verify shadow walk doesn't terminate early in page
+    faults
 
+ arch/x86/include/asm/kvm_host.h       |   4 +-
+ arch/x86/include/asm/kvm_page_track.h |   4 +-
+ arch/x86/kvm/mmu.h                    |  84 +++++-
+ arch/x86/kvm/mmu/mmu.c                | 408 +++++++++++---------------
+ arch/x86/kvm/mmu/mmu_internal.h       |  22 +-
+ arch/x86/kvm/mmu/mmutrace.h           |  18 +-
+ arch/x86/kvm/mmu/page_track.c         |   6 +-
+ arch/x86/kvm/mmu/paging_tmpl.h        | 137 +++++----
+ arch/x86/kvm/mmu/spte.c               |  29 +-
+ arch/x86/kvm/mmu/spte.h               |  14 +-
+ arch/x86/kvm/mmu/tdp_mmu.c            | 123 +++-----
+ arch/x86/kvm/mmu/tdp_mmu.h            |   4 +-
+ 12 files changed, 390 insertions(+), 463 deletions(-)
 
-I still don't understand what your contention is here. Are you arguing
-that the binding example is correct and should be tied to a platform?
-
-
-Yes, I know I can introduce oneOf and a little more intricate solution,
-	but besides that, i disagree that a rproc binding should even
-	have SoC specific top level node description in it.
-a) rproc.yaml does'nt even describe the SoC. soc.yaml does.
-b) The node property examples are supposed to be examples not tied to a
-   specific SoC.
-
-> > Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
-> > ---
-> > 
-> > Changes since V2:
-> > * review comment updates, including simplifying the changes, commit
-> >   message and $subject updates.
-> > 
-> > V2: https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
-> > V1: https://lore.kernel.org/all/20210817152005.21575-1-sinthu.raja@ti.com/
-> > 
-> >  .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml       | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> > index 6070456a7b67..5ec6505ac408 100644
-> > --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> > +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> > @@ -133,9 +133,7 @@ unevaluatedProperties: false
-> >  
-> >  examples:
-> >    - |
-> > -    / {
-> > -        model = "Texas Instruments K3 J721E SoC";
-> > -        compatible = "ti,j721e";
-> > +    soc {
-> 
-> While this may be resolving the dt_bindings_check you might be seeing with the
-> modified k3.yaml, note that "soc" property is not used on K3 dts files, you
-> might be creating confusion for people who look at this example and the actual
-> usage.
-
-
-It is a common usage model. NOTE: these are example nodes and NOT meant
-as SoC representation. I dont see the confusion.
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.27.0
+
