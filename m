@@ -2,164 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F136417824
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38406417834
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347302AbhIXQFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:05:06 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:37770
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347267AbhIXQFF (ORCPT
+        id S233859AbhIXQMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:12:35 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54652 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233752AbhIXQM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:05:05 -0400
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 356B540833
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:03:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632499411;
-        bh=XSnJxfEBt5YWoJGVTt7uPSu776tBxvxqT4EkYhJhjIo=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=IYNSuk1j1yr+CtfY5Xham51abCzKx7pjG+badrdDeTJd/hpLGsnfGWGT9b3/7AUkO
-         z7xi+r3Kn6oJM9K5msyvau+LjdNJ4LeaJo7k8GAJo93roWwDkEa69sEGN/y4/qTWg+
-         3X34zwLk9xgbFudV77uUKNzrjeFL4wLW/Wvb8Yi+RY6UMHUw29+cOBILFD3acs/Aqg
-         cA1LRCyx3z/PH4pK7kLBKfjc/Casrcjvgbeyb8R/EC8b4EmyNX/NEA/oZhDxedrac8
-         vCLL+jR7maoCweBi8nqu8L+pLuWKETUTRJb42ROVH3KBiu077WyeQa8du1FpHVscho
-         LqCh1mTuRlVQA==
-Received: by mail-pf1-f200.google.com with SMTP id m26-20020a62a21a000000b0041361973ba7so6380364pff.15
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 09:03:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XSnJxfEBt5YWoJGVTt7uPSu776tBxvxqT4EkYhJhjIo=;
-        b=7jzIB0cN5x3D6thUQyTbtffmIebfryHYZ0jHVDTiKskMCHutLUm8Xdl6ej0ATH3efM
-         6aY9mr7+sK0Z6pxtHJ6HNsKTUmYKBPVjUAauII5yYdaj+9mGl45sef0Abhyk+1OGTNXp
-         fJF1y2pEMGz53VJFihlDUADx3N980z6vFeKYUgqkkh6dyCd5ENwhp1zOyysf2ZhW1kj7
-         xOVMnDUxAVbPmUiUQBCHzotA3X01jRkqot26o72eesfFP5xxRI/7oyP6elSHJxvmZF15
-         AV7KjMgwrWtybdzphX+ieMXQDQD4q4l5xCEiSfXWcYvfeakJbnLHUP1EI2aSYXrb30Sn
-         Hcsg==
-X-Gm-Message-State: AOAM530uS1McJhFiGdlf1G6Ju9YnVxT+MzAJy0K6lNmn5kHUBc7CmVEb
-        feYIvjEwY0p0YaS++Kh1AM2vbUqFBv+qU1yeAvOBqPPUJcM6K3IpsXMCC1G8QA+LOlq8V/mbt4/
-        biao0zkoWU4KLyxKmeF8c65YnocwBQsqlgw5lT604Pg==
-X-Received: by 2002:a17:903:234c:b0:13c:7a6e:4b43 with SMTP id c12-20020a170903234c00b0013c7a6e4b43mr9721655plh.29.1632499409579;
-        Fri, 24 Sep 2021 09:03:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbq17OedBYOqqvHCiyPf1GcC81qSNLHfVaTfFKuYJaYW2V/CpDG52XQo9+c/uPpJZRP3liTQ==
-X-Received: by 2002:a17:903:234c:b0:13c:7a6e:4b43 with SMTP id c12-20020a170903234c00b0013c7a6e4b43mr9721620plh.29.1632499409308;
-        Fri, 24 Sep 2021 09:03:29 -0700 (PDT)
-Received: from [192.168.1.124] ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id c199sm9747942pfb.152.2021.09.24.09.03.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 09:03:28 -0700 (PDT)
-Subject: Re: [PATCH] drm/bridge: parade-ps8640: check return values in
- ps8640_aux_transfer()
-To:     dri-devel@lists.freedesktop.org
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210924152607.28580-1-tim.gardner@canonical.com>
-From:   Tim Gardner <tim.gardner@canonical.com>
-Message-ID: <8cdae251-f75e-bde8-a53d-27c77ac624c3@canonical.com>
-Date:   Fri, 24 Sep 2021 10:03:27 -0600
+        Fri, 24 Sep 2021 12:12:26 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18OGAhPV102811;
+        Fri, 24 Sep 2021 11:10:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632499843;
+        bh=9Pop6oXiHVPFX2sciva/YG9DSuUyCmsf/YRPoCW7xjw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=YtkIYS+011vlOBa52SP5+7lT3ZV6uxBHBh5TXBo5GPudnXjq/+jPcqyl4vJg79BQr
+         CtTOA1OwZ/WEZt13z3y5+eAUC8Q4qOnQzRHBdyZ2Vt6DtYCbcBeQr/DxXpPSa2g0CE
+         CTEj+m9arI82s79NY60Yjt1Oc3mKDOFCxwPO87nw=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18OGAhNF116842
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 24 Sep 2021 11:10:43 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 24
+ Sep 2021 11:10:42 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 24 Sep 2021 11:10:42 -0500
+Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18OGAglw000461;
+        Fri, 24 Sep 2021 11:10:42 -0500
+Subject: Re: [PATCH V3 2/2] dt-bindings: remoteproc: k3-dsp: Remove
+ board-specific compatible from DT example
+To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>, Nishanth Menon <nm@ti.com>,
+        Sinthu Raja <sinthu.raja@ti.com>,
+        "Nagalla, Hari" <hnagalla@ti.com>
+References: <20210917095426.19277-1-sinthu.raja@ti.com>
+ <20210917095426.19277-3-sinthu.raja@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <4d43e927-3998-e9a9-87a6-6036b769a975@ti.com>
+Date:   Fri, 24 Sep 2021 11:10:42 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210924152607.28580-1-tim.gardner@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210917095426.19277-3-sinthu.raja@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sinthu,
+
+On 9/17/21 4:54 AM, Sinthu Raja wrote:
+> From: Sinthu Raja <sinthu.raja@ti.com>
+> 
+> The example includes a board-specific compatible property, this is
+> wrong as the example should be board agnostic and gets in the way of
+> additions for newer platforms. Replace the same with a generic soc
+> node.
+
+What board specific property? This description looks wrong.
+
+> 
+> Fixes: 2a2180206ab6 ("dt-bindings: remoteproc: Add bindings for C66x DSPs on TI K3 SoCs")
+
+What error are you trying to fix exactly? The example used below is actually how
+it exactly appears in the J721E dts files, and there are no errors with
+dt_binding_check.
+
+This is more a cleanup than a fix.  You can look through the original binding
+submission patches to see why it is done like this.
+
+If this is triggered by the changes you are making to k3.yaml file as part of
+the J721E EAIK changes, then you probably may want to look at how you are doing
+that again. Looks like the k3.yaml file is being modified now to enforce
+"board-compatible", "soc-compatible" which may have triggered an error in this file.
+
+Please evaluate if you need to modify it to support just the "soc-compatible" as
+one of the items.
 
 
-On 9/24/21 9:26 AM, Tim Gardner wrote:
-> Coverity complains of an unused return code:
-> 
-> CID 120459 (#1 of 1): Unchecked return value (CHECKED_RETURN)
-> 7. check_return: Calling regmap_bulk_write without checking return value (as is
-> done elsewhere 199 out of 291 times).
-> 204        regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
-> 205                          ARRAY_SIZE(addr_len));
-> 
-> While I was at it I noticed 2 other places where return codes were not being
-> used, or used incorrectly (which is a real bug).
-> 
-> Fix these errors by correctly using the returned error codes.
-> 
-> Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Cc: Andrzej Hajda <a.hajda@samsung.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Robert Foss <robert.foss@linaro.org>
-> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> Cc: Jonas Karlman <jonas@kwiboo.se>
-> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
 > ---
->   drivers/gpu/drm/bridge/parade-ps8640.c | 14 +++++++++++---
->   1 file changed, 11 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> index 3aaa90913bf8..591da962970a 100644
-> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> @@ -201,8 +201,12 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
->   	addr_len[PAGE0_SWAUX_LENGTH - base] = (len == 0) ? SWAUX_NO_PAYLOAD :
->   					      ((len - 1) & SWAUX_LENGTH_MASK);
->   
-> -	regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
-> +	ret = regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
->   			  ARRAY_SIZE(addr_len));
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dev, "failed to bulk write ADDR_7_0: %d\n", ret);
-> +		return ret;
-> +	}
->   
->   	if (len && (request == DP_AUX_NATIVE_WRITE ||
->   		    request == DP_AUX_I2C_WRITE)) {
-> @@ -218,13 +222,17 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
->   		}
->   	}
->   
-> -	regmap_write(map, PAGE0_SWAUX_CTRL, SWAUX_SEND);
-> +	ret = regmap_write(map, PAGE0_SWAUX_CTRL, SWAUX_SEND);
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dev, "failed to write SEND: %d\n", ret);
-> +		return ret;
-> +	}
->   
->   	/* Zero delay loop because i2c transactions are slow already */
->   	regmap_read_poll_timeout(map, PAGE0_SWAUX_CTRL, data,
->   				 !(data & SWAUX_SEND), 0, 50 * 1000);
->   
-> -	regmap_read(map, PAGE0_SWAUX_STATUS, &data);
-> +	ret = regmap_read(map, PAGE0_SWAUX_STATUS, &data);
->   	if (ret) {
->   		DRM_DEV_ERROR(dev, "failed to read PAGE0_SWAUX_STATUS: %d\n",
->   			      ret);
+> Changes since V2:
+> * review comment updates, including simplifying the changes, commit
+>   message and $subject updates.
+> 
+> V2: https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
+> V1: https://lore.kernel.org/all/20210817152005.21575-1-sinthu.raja@ti.com/
+> 
+>  .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml       | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> index 6070456a7b67..5ec6505ac408 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> @@ -133,9 +133,7 @@ unevaluatedProperties: false
+>  
+>  examples:
+>    - |
+> -    / {
+> -        model = "Texas Instruments K3 J721E SoC";
+> -        compatible = "ti,j721e";
+> +    soc {
+
+While this may be resolving the dt_bindings_check you might be seeing with the
+modified k3.yaml, note that "soc" property is not used on K3 dts files, you
+might be creating confusion for people who look at this example and the actual
+usage.
+
+regards
+Suman
+
+>          #address-cells = <2>;
+>          #size-cells = <2>;
+>  
 > 
 
-I forgot to mention this patch is for linux-next next-20210924.
-
------------
-Tim Gardner
-Canonical, Inc
