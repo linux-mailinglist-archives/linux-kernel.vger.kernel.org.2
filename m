@@ -2,120 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD595416F5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD39416F62
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245272AbhIXJp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245377AbhIXJps (ORCPT
+        id S245332AbhIXJqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:46:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45725 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245350AbhIXJqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:45:48 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CC0C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:43:59 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id b20so38204062lfv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:43:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4gC2MA1kaMM1U9IpPCmK8iL7sHRAzGczxEav4KBXmlg=;
-        b=wx9RrcuEoObEevTHeX+zAy5eWZlSts/ilq9UQKzeEE0dgRMf2gNPzyh7eTSEkcLQ0z
-         QmVjMGzn4btdg4LJd11HDTj1n5kv7t7upBG/NsHatsWBimUFkP+4xW+svXV1egWAk6ic
-         Jr4t0ZwOitWcfCMGMajLfPPeGZIslyywMNWw4AVFBZ4LD8NV1sRCw6xYCvjNtqQnB6ml
-         PiOSzneKtaajrpYYS+fD8CGqy2u9fRUZIjcTFbfO9fuzLc4RzHaOHGByovC8sUNPlWXw
-         osaMYUgCjrOJY09dRrjamHNBtQ8zOZFDBEO+ZTlCNfwyzD6RDUP0kVMAY1JqVlKZZ/7b
-         w0SA==
+        Fri, 24 Sep 2021 05:46:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632476667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wNWsaIW5r8Ia/jf0bDP1uX9hKz27LYVjBxSxbvymjgk=;
+        b=LyqXKLiwrbvyy05brh/me8eFhv+MQmEqRzSHXo3JdkWT2Oyx27eI9LDQmY86APRmALLA8W
+        XDu8ASp4FVcRe3ZggWDnfw5O+ASJQFMgit9r0wImZC0BZFXunlheRLXtzEeX9DNVcWVHSO
+        uWX0xeBGuREO/cXgON1Ssta2Ai/L3XM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-GvHIgBkXO4atxYzzzW15gw-1; Fri, 24 Sep 2021 05:44:26 -0400
+X-MC-Unique: GvHIgBkXO4atxYzzzW15gw-1
+Received: by mail-wr1-f70.google.com with SMTP id h5-20020a5d6885000000b0015e21e37523so7567851wru.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:44:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4gC2MA1kaMM1U9IpPCmK8iL7sHRAzGczxEav4KBXmlg=;
-        b=ubWwFaSlywpJFqlSPIPzPeq+l3v7wbF5tRLugt8QXYl15J+K82OCDMFQ+3nVI3e0B9
-         LQuZmip7AoYCJfDJevgIrkIrfKesEm2PHxJxN0MQ6f3hWeQRD7yDyOSU32Sx1Hiv6SJ2
-         KDg4fDkUUzcbK+Iu1GGafSXPLbwGUB36BXxGvHA2+YO5UJFoyhYd1pBr0gHSCEZrt2Jk
-         ukCfGP+KJ+TGJiA2TR5tqYxarBO0/bNNln1pBUrjn00fOsbZKsjwAu4uY9enBVe6C06z
-         ylNlBNYqOZMDWg9Gn/vgSw01g2tDOD6SMDJohXwIwIFax8lL0PDm1XEpofNe6KkQAh2g
-         0M3Q==
-X-Gm-Message-State: AOAM531MMyPfSHUHQk7z71v8vme38R3y7kNMsL+hyTlG73GKt0Sr9M/E
-        ysFaalURO7ggsdqAQXXBL6zYRQ==
-X-Google-Smtp-Source: ABdhPJyQhXCTUlC+4LY0eq44s/Z+Q4swG0TDMT2NhkxrM7M5GF20e93zcFHPufHWo2hngq3plLCGMA==
-X-Received: by 2002:a05:6512:3f16:: with SMTP id y22mr948743lfa.499.1632476638179;
-        Fri, 24 Sep 2021 02:43:58 -0700 (PDT)
-Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
-        by smtp.gmail.com with ESMTPSA id q5sm702069lfo.225.2021.09.24.02.43.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 02:43:57 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 11:43:57 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Subject: Re: [PATCH] media: rcar-csi2: fix R8A77980 support
-Message-ID: <YU2d3Qlh/qExaRBD@oden.dyn.berto.se>
-References: <20210924090244.3459-1-nikita.yoush@cogentembedded.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wNWsaIW5r8Ia/jf0bDP1uX9hKz27LYVjBxSxbvymjgk=;
+        b=g19ZUaPMDp6m9aYtxp8tDw3jpXoWUXMvcfOd+I9T6dBDT1NN6jboaRsHxv3f0QBynq
+         7IUqSubmD9xNJ/346wzdmPgfD4CDKCQ8BKMgbxzbQY36rVchqX0ID8WQKVABxrs8iU0Y
+         fJ1RNuVaPdKxjXXBFCvBzUrusFabX9fgbjSKIiOuTrIRXuJNyc5rTTLhiRd8cra7RtAx
+         zWeV6oUw97HO4EBxoyfhlGX4jJMB+VofShZveMia1CiTTOt0oDzCSXVsjCxaAtoNAqDt
+         NhJ2+R6I7eNFFmY70PsOZ38e3xKCw+KGQ2KVHP4mxSQborI5QBRPFJxrTL9hDJLsAMyD
+         Qikg==
+X-Gm-Message-State: AOAM530mHYEK25jviNHUo2aKyHWDY9R8xLdkaLQaX+TjrQHkhutHsb8t
+        FkLap7VsQjWtFl4EMhKgOsv8TgkwEXt4mriec4fVG+k/q0ghjKUC9pNkKO2IVHgnbTw3M9VEyAT
+        NpAEVXGGW8NnWEYTPdK6uPJPE
+X-Received: by 2002:a7b:c8d0:: with SMTP id f16mr354457wml.124.1632476665448;
+        Fri, 24 Sep 2021 02:44:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzdW7sWPgbbBwY9n5QOJ/gMNSMpTCj1JwaIK9DIeDuWdOR19QGhwBMDORZZwrtO17Jpp8mfkw==
+X-Received: by 2002:a7b:c8d0:: with SMTP id f16mr354438wml.124.1632476665259;
+        Fri, 24 Sep 2021 02:44:25 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c61fc.dip0.t-ipconnect.de. [91.12.97.252])
+        by smtp.gmail.com with ESMTPSA id h125sm8132304wmh.9.2021.09.24.02.44.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 02:44:24 -0700 (PDT)
+Subject: Re: [PATCH v2 4/4] hugetlb: add hugetlb demote page support
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
+        Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210923175347.10727-1-mike.kravetz@oracle.com>
+ <20210923175347.10727-5-mike.kravetz@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <9f469308-3c1c-dd9e-2c47-fcbd26b197df@redhat.com>
+Date:   Fri, 24 Sep 2021 11:44:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210924090244.3459-1-nikita.yoush@cogentembedded.com>
+In-Reply-To: <20210923175347.10727-5-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita and Vladimir,
-
-Thanks for your work.
-
-On 2021-09-24 12:02:45 +0300, Nikita Yushchenko wrote:
-> From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+On 23.09.21 19:53, Mike Kravetz wrote:
+> Demote page functionality will split a huge page into a number of huge
+> pages of a smaller size.  For example, on x86 a 1GB huge page can be
+> demoted into 512 2M huge pages.  Demotion is done 'in place' by simply
+> splitting the huge page.
 > 
-> Add missing initialization of num_channels field.
-
-The num_channels field is intentionally left out here, and therefore 
-initialized to 0.
-
-The reason for this is that tho even if the VCDT and VCDT2 register 
-exists on V3H the datasheet states that the value written to them should 
-always be 0. As the only usage of num_channels is to create the content 
-to write to these registers in rcsi2_start_receiver() setting it to 0 
-does the correct thing for V3H.
-
-Nacked-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-
+> Added '*_for_demote' wrappers for remove_hugetlb_page,
+> destroy_compound_gigantic_page and prep_compound_gigantic_page for use
+> by demote code.
 > 
-> Fixes: 3ba37c2bcb0c ("media: rcar-csi2: add R8A77980 support")
-> Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 > ---
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 1 +
->  1 file changed, 1 insertion(+)
+>   mm/hugetlb.c | 79 +++++++++++++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 75 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index e28eff039688..f4d3c6dead30 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -1146,6 +1146,7 @@ static const struct rcar_csi2_info rcar_csi2_info_r8a77980 = {
->  	.init_phtw = rcsi2_init_phtw_h3_v3h_m3n,
->  	.hsfreqrange = hsfreqrange_h3_v3h_m3n,
->  	.csi0clkfreqrange = 0x20,
-> +	.num_channels = 4,
->  	.clear_ulps = true,
->  };
->  
-> -- 
-> 2.30.2
-> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 2317d411243d..ab7bd0434057 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1260,7 +1260,7 @@ static int hstate_next_node_to_free(struct hstate *h, nodemask_t *nodes_allowed)
+>   		((node = hstate_next_node_to_free(hs, mask)) || 1);	\
+>   		nr_nodes--)
+>   
+> -#ifdef CONFIG_ARCH_HAS_GIGANTIC_PAGE
+> +/* used to demote non-gigantic_huge pages as well */
+>   static void __destroy_compound_gigantic_page(struct page *page,
+>   					unsigned int order, bool demote)
+>   {
+> @@ -1283,6 +1283,13 @@ static void __destroy_compound_gigantic_page(struct page *page,
+>   	__ClearPageHead(page);
+>   }
+>   
+> +static void destroy_compound_gigantic_page_for_demote(struct page *page,
+> +					unsigned int order)
+> +{
+> +	__destroy_compound_gigantic_page(page, order, true);
+> +}
+> +
+> +#ifdef CONFIG_ARCH_HAS_GIGANTIC_PAGE
+>   static void destroy_compound_gigantic_page(struct page *page,
+>   					unsigned int order)
+>   {
+> @@ -1428,6 +1435,12 @@ static void remove_hugetlb_page(struct hstate *h, struct page *page,
+>   	__remove_hugetlb_page(h, page, adjust_surplus, false);
+>   }
+>   
+> +static void remove_hugetlb_page_for_demote(struct hstate *h, struct page *page,
+> +							bool adjust_surplus)
+> +{
+> +	__remove_hugetlb_page(h, page, adjust_surplus, true);
+> +}
+> +
+>   static void add_hugetlb_page(struct hstate *h, struct page *page,
+>   			     bool adjust_surplus)
+>   {
+> @@ -1777,6 +1790,12 @@ static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
+>   	return __prep_compound_gigantic_page(page, order, false);
+>   }
+>   
+> +static bool prep_compound_gigantic_page_for_demote(struct page *page,
+> +							unsigned int order)
+> +{
+> +	return __prep_compound_gigantic_page(page, order, true);
+> +}
+> +
+>   /*
+>    * PageHuge() only returns true for hugetlbfs pages, but not for normal or
+>    * transparent huge pages.  See the PageTransHuge() documentation for more
+> @@ -3298,9 +3317,55 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>   	return 0;
+>   }
+>   
+> +static int demote_free_huge_page(struct hstate *h, struct page *page)
+> +{
+> +	int i, nid = page_to_nid(page);
+> +	struct hstate *target_hstate;
+> +	bool cma_page = HPageCma(page);
+> +
+> +	target_hstate = size_to_hstate(PAGE_SIZE << h->demote_order);
+> +
+> +	remove_hugetlb_page_for_demote(h, page, false);
+> +	spin_unlock_irq(&hugetlb_lock);
+> +
+> +	if (alloc_huge_page_vmemmap(h, page)) {
+> +		/* Allocation of vmemmmap failed, we can not demote page */
+> +		spin_lock_irq(&hugetlb_lock);
+> +		set_page_refcounted(page);
+> +		add_hugetlb_page(h, page, false);
+
+I dislike using 0/1 as return values as it will just hide the actual issue.
+
+This here would be -ENOMEM, right?
+
+
 
 -- 
-Regards,
-Niklas Söderlund
+Thanks,
+
+David / dhildenb
+
