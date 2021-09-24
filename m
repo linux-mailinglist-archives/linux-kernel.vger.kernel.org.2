@@ -2,163 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3490C4178A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC9841788A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347721AbhIXQeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:34:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31581 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347492AbhIXQdk (ORCPT
+        id S1347405AbhIXQdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:33:19 -0400
+Received: from smtprelay0206.hostedemail.com ([216.40.44.206]:46988 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S244892AbhIXQdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:33:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632501126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hw+46V2kp7V9u3BUcpOCTGAvfZpCc2Plm2dlZMhbjLw=;
-        b=OaPfRwK+7tWjTo1D/eBrjsA0rWILQbGe39B5oqSRYXWnnay33qJ3SOmuHVa82Zuu6TuYJ2
-        wqgK1OzqQvfnfNCCxGTfevKzpkofAij5UjSSP6cp50Uu7mwMp8xqQerxxEItm6lYunrLuB
-        koJNj6UKs+XcreWuTSw0/xrj0wMCaOU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-484-hNoy6Ag1MjKNUKE75M5QsA-1; Fri, 24 Sep 2021 12:32:05 -0400
-X-MC-Unique: hNoy6Ag1MjKNUKE75M5QsA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35329802921;
-        Fri, 24 Sep 2021 16:32:04 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C8DD660E1C;
-        Fri, 24 Sep 2021 16:32:03 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     dmatlack@google.com, seanjc@google.com
-Subject: [PATCH v3 19/31] KVM: MMU: unify tdp_mmu_map_set_spte_atomic and tdp_mmu_set_spte_atomic_no_dirty_log
-Date:   Fri, 24 Sep 2021 12:31:40 -0400
-Message-Id: <20210924163152.289027-20-pbonzini@redhat.com>
-In-Reply-To: <20210924163152.289027-1-pbonzini@redhat.com>
-References: <20210924163152.289027-1-pbonzini@redhat.com>
+        Fri, 24 Sep 2021 12:33:18 -0400
+Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 8671F183E9A69;
+        Fri, 24 Sep 2021 16:31:44 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id DA7302550F1;
+        Fri, 24 Sep 2021 16:31:42 +0000 (UTC)
+Message-ID: <4ec51e7e259aef975626edf95107fea4736ea8e8.camel@perches.com>
+Subject: Re: [PATCH 3/3] fs/ntfs3: Refactoring of ntfs_set_ea
+From:   Joe Perches <joe@perches.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Date:   Fri, 24 Sep 2021 09:31:41 -0700
+In-Reply-To: <cb84627e-ff9c-1945-ea53-89d66e13406b@paragon-software.com>
+References: <eb131ee0-3e89-da58-650c-5b84dd792a49@paragon-software.com>
+         <cb84627e-ff9c-1945-ea53-89d66e13406b@paragon-software.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 3ij1nfqzkxzszfdp7pe6gjy6g4mzb7t7
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: DA7302550F1
+X-Spam-Status: No, score=2.60
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19Z45sQdHU0BFqVzOnaeLWa9AURy1wUmRQ=
+X-HE-Tag: 1632501102-150301
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tdp_mmu_map_set_spte_atomic is not taking care of dirty logging anymore,
-the only difference that remains is that it takes a vCPU instead of
-the struct kvm.  Merge the two functions.
+On Fri, 2021-09-24 at 19:16 +0300, Konstantin Komarov wrote:
+> Make code more readable.
+> Don't try to read zero bytes.
+> Add warning when size of exteneded attribute exceeds limit.
+[]
+> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+[]
+> @@ -366,21 +368,22 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
+[]
+> +	ea_info.size = cpu_to_le32(size);
+> +
+> +	/*
+> +	 * 1. Check ea_info.size_pack for overflow.
+> +	 * 2. New attibute size must fit value from $AttrDef
+> +	 */
+> +	if (new_pack > 0xffff || size > sbi->ea_max_size) {
+> +		ntfs_inode_warn(
+> +			inode,
+> +			"The size of exteneded attributes must not exceed 64K");
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/tdp_mmu.c | 40 ++++++++++----------------------------
- 1 file changed, 10 insertions(+), 30 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index b41b6f5ea82b..2d92a5b54ded 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -489,8 +489,8 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- }
- 
- /*
-- * tdp_mmu_set_spte_atomic_no_dirty_log - Set a TDP MMU SPTE atomically
-- * and handle the associated bookkeeping, but do not mark the page dirty
-+ * tdp_mmu_set_spte_atomic - Set a TDP MMU SPTE atomically
-+ * and handle the associated bookkeeping.  Do not mark the page dirty
-  * in KVM's dirty bitmaps.
-  *
-  * @kvm: kvm instance
-@@ -499,9 +499,9 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
-  * Returns: true if the SPTE was set, false if it was not. If false is returned,
-  *	    this function will have no side-effects.
-  */
--static inline bool tdp_mmu_set_spte_atomic_no_dirty_log(struct kvm *kvm,
--							struct tdp_iter *iter,
--							u64 new_spte)
-+static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
-+					   struct tdp_iter *iter,
-+					   u64 new_spte)
- {
- 	lockdep_assert_held_read(&kvm->mmu_lock);
- 
-@@ -527,24 +527,6 @@ static inline bool tdp_mmu_set_spte_atomic_no_dirty_log(struct kvm *kvm,
- 	return true;
- }
- 
--/*
-- * tdp_mmu_map_set_spte_atomic - Set a leaf TDP MMU SPTE atomically to resolve a
-- * TDP page fault.
-- *
-- * @vcpu: The vcpu instance that took the TDP page fault.
-- * @iter: a tdp_iter instance currently on the SPTE that should be set
-- * @new_spte: The value the SPTE should be set to
-- *
-- * Returns: true if the SPTE was set, false if it was not. If false is returned,
-- *	    this function will have no side-effects.
-- */
--static inline bool tdp_mmu_map_set_spte_atomic(struct kvm_vcpu *vcpu,
--					       struct tdp_iter *iter,
--					       u64 new_spte)
--{
--	return tdp_mmu_set_spte_atomic_no_dirty_log(vcpu->kvm, iter, new_spte);
--}
--
- static inline bool tdp_mmu_zap_spte_atomic(struct kvm *kvm,
- 					   struct tdp_iter *iter)
- {
-@@ -554,7 +536,7 @@ static inline bool tdp_mmu_zap_spte_atomic(struct kvm *kvm,
- 	 * immediately installing a present entry in its place
- 	 * before the TLBs are flushed.
- 	 */
--	if (!tdp_mmu_set_spte_atomic_no_dirty_log(kvm, iter, REMOVED_SPTE))
-+	if (!tdp_mmu_set_spte_atomic(kvm, iter, REMOVED_SPTE))
- 		return false;
- 
- 	kvm_flush_remote_tlbs_with_address(kvm, iter->gfn,
-@@ -928,7 +910,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
- 
- 	if (new_spte == iter->old_spte)
- 		ret = RET_PF_SPURIOUS;
--	else if (!tdp_mmu_map_set_spte_atomic(vcpu, iter, new_spte))
-+	else if (!tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
- 		return RET_PF_RETRY;
- 
- 	/*
-@@ -1020,7 +1002,7 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
- 			new_spte = make_nonleaf_spte(child_pt,
- 						     !shadow_accessed_mask);
- 
--			if (tdp_mmu_set_spte_atomic_no_dirty_log(vcpu->kvm, &iter, new_spte)) {
-+			if (tdp_mmu_set_spte_atomic(vcpu->kvm, &iter, new_spte)) {
- 				tdp_mmu_link_page(vcpu->kvm, sp,
- 						  fault->huge_page_disallowed &&
- 						  fault->req_level >= iter.level);
-@@ -1208,8 +1190,7 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 
- 		new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
- 
--		if (!tdp_mmu_set_spte_atomic_no_dirty_log(kvm, &iter,
--							  new_spte)) {
-+		if (!tdp_mmu_set_spte_atomic(kvm, &iter, new_spte)) {
- 			/*
- 			 * The iter must explicitly re-read the SPTE because
- 			 * the atomic cmpxchg failed.
-@@ -1277,8 +1258,7 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 				continue;
- 		}
- 
--		if (!tdp_mmu_set_spte_atomic_no_dirty_log(kvm, &iter,
--							  new_spte)) {
-+		if (!tdp_mmu_set_spte_atomic(kvm, &iter, new_spte)) {
- 			/*
- 			 * The iter must explicitly re-read the SPTE because
- 			 * the atomic cmpxchg failed.
--- 
-2.27.0
+trivial typo of extended.  Pedants might suggest KiB.
 
 
