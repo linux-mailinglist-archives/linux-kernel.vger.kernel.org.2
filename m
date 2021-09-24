@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926CB417CDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B54E417CDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348602AbhIXVNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 17:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
+        id S1348529AbhIXVN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 17:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348520AbhIXVNX (ORCPT
+        with ESMTP id S233562AbhIXVNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 17:13:23 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB992C061760;
-        Fri, 24 Sep 2021 14:11:49 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id d21so31081110wra.12;
-        Fri, 24 Sep 2021 14:11:49 -0700 (PDT)
+        Fri, 24 Sep 2021 17:13:55 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C197CC061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:12:21 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id v10so36389196edj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:12:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iEHoU21DH841tx0qtRTz5FbDxLZko2mQ4Z33po9e6hg=;
-        b=ajfY7Ymmr+7cnGhJOtrjT2wVcAV/rxDc7B6NaEreAvLHCKzEacArwdGGhIes3F+dnH
-         754KCqC0DrJT4Guxwjfq02g08n5JTWpJhxggEebDGVe4iAJEWjBOKlTrwOnDoES05n1s
-         gi1tikCyks6F3pFbBEIqjzccnHxiruwRzYma9kwvIup0ywxIdtp2quLZwk+LOC4umEOm
-         SymSBx4WkYfbtbEfxyFHPvXb6wbWLlExxXEmIoZcwc8rZqUGz468JTdlL9hBX0JTlrQc
-         4ppqYtW2JKAPOpazd9Zhkcdy946u4ZpSArcYgW/WA42qqI1K3O/QFTayYuSRleMmNGOK
-         reUA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fln/GmzM5DcyRx7UwX874sUGXeT/rIbA9LYWk0Uly7s=;
+        b=Tz5laGboS2hQTVSuQZSQjRHkiVrCRzF837aWkMY2kE3Ijyoe494iuXfPDCcX8bho4p
+         cUPamznVW0ev+K+mE1b0/xLP2MMbngsmO5TOeIiPOcWxrXR/s3pTYYMblqVN2/1i27Ao
+         nQ+GqDY1at7vfhx8+0+e35ImaDIJeLTIHYvzH1zP+R9hSynhB7jn52M1bCEQTGyGus+R
+         e45MsyaFuR/6ZcuTEOeqZB8BXWCUpfnSFax1kOOx7KlbRV1dVG0Lbx1Mi78pfr272yhs
+         3M0oCCxpeYo0WIAAqnNiry6XQ24wLSV0CfeJoEEsREmIQNSjGVbNEJ6k4bVM5qrHNDCH
+         h3hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iEHoU21DH841tx0qtRTz5FbDxLZko2mQ4Z33po9e6hg=;
-        b=wyQ2pw6A2ymruPQNM82snjBLoItxMBoAT2tuPIuo1WA6Hks6k8QzQqHUsVt+pp1os7
-         fKV7eLousH9wHqTzJi618VpcL6YVSLzgBpESNQm1Be6As9L3BcTptrrzVcSlv3P4Buyd
-         T7J08Y+COswCRrzgJ7mp9fkt5SYp9oWGjrb6OVs61gl125ErfvGZlzAvLaskMpF9kGnx
-         vrJlD6fNJ6Z8Wc5HKce8YcMiTz444xqeDq4TP8p5MwyVuiIsqteE5XHpCqt3hg02SQDa
-         bBgpGa1XmE3BGDbFblXecmNTrkMyXAgewTLCxdVkpcw26xFJsHl1aCywAf/+lU6KUT4X
-         PWgg==
-X-Gm-Message-State: AOAM530yMPocuLyX9/kyKA/dYsMuFbC/TcPQtWAAeeCsDMpQm5CUGmB/
-        b1PeLlf0BHKVU9tsa/luajI=
-X-Google-Smtp-Source: ABdhPJxlUEJPYCJsNzawytHIOiH/45imW9bnZmTk3fyUFhDaECmpAeFTIfch/BNrkh6Bn7sAykByHg==
-X-Received: by 2002:adf:a549:: with SMTP id j9mr2799424wrb.353.1632517908646;
-        Fri, 24 Sep 2021 14:11:48 -0700 (PDT)
-Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
-        by smtp.gmail.com with ESMTPSA id y64sm10344297wmc.38.2021.09.24.14.11.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Sep 2021 14:11:48 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     tsbogend@alpha.franken.de
-Cc:     robh@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        Liviu.Dudau@arm.com, bhelgaas@google.com, matthias.bgg@gmail.com,
-        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-staging@lists.linux.dev,
-        neil@brown.name, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] staging: mt7621-pci: properly adjust base address for the IO window
-Date:   Fri, 24 Sep 2021 23:11:39 +0200
-Message-Id: <20210924211139.3477-7-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210924211139.3477-1-sergio.paracuellos@gmail.com>
-References: <20210924211139.3477-1-sergio.paracuellos@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fln/GmzM5DcyRx7UwX874sUGXeT/rIbA9LYWk0Uly7s=;
+        b=NPe4/nWYWmCru5qSsongYBBUcevxBfowjqG4iV7lYEQqb40/hLjXyg+McZHZwd6Qfj
+         EOVs7th4YEfLEgya3wApKmhuk5DxtMAS6QaRgw6EV5LeM4q3Z9LHsbdvLtXZWAEhCR0V
+         wVryYRGAyFbdOjq0Li6iU+0TArBP/8qGLUgtN1X+QSK8yOh4RJen436mfISZU3+Q01W8
+         kRes1XFMyGT4mWtbbVfTV6A4HWE7iVfFJQwf8I9NeSG/oyC0WqwVI+i7EksOmz97GucV
+         vwHqNW8s3oqOqJpookXLXk+MSwKesAvJkFYhZ1w3HP1mx9j5WfHQHej478rh3gq4iZVg
+         YJAQ==
+X-Gm-Message-State: AOAM531hnQBkPBk34fVgA/iYGrF2QL6WCWUhiRedRrYSiCcarKg/zBwX
+        ifvFRy9AIyJ3+GkBJz7ldYg=
+X-Google-Smtp-Source: ABdhPJwhWCtAI9yRPrnORDj5ikTTLnZOAUjz0nP5i3BAGeMcZDOyzLfM4iEHZ9cQecZKSiaEnZWq1A==
+X-Received: by 2002:a17:906:19d8:: with SMTP id h24mr14009510ejd.490.1632517940373;
+        Fri, 24 Sep 2021 14:12:20 -0700 (PDT)
+Received: from tom-desktop (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
+        by smtp.gmail.com with ESMTPSA id e13sm5589833eje.95.2021.09.24.14.12.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 14:12:19 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 23:12:17 +0200
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Edmundo Carmona Antoranz <eantoranz@gmail.com>,
+        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: vt6655: Replace camel case variable name
+Message-ID: <20210924211217.GC10906@tom-desktop>
+References: <20210922220802.584952-1-tomm.merciai@gmail.com>
+ <4972337.8pBPQsAWaL@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4972337.8pBPQsAWaL@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value to adjust in the bridge register RALINK_PCI_IOBASE must take into
-account the raw value from DT, not only the translated linux port number.
-As long as io_offset is zero, the two are the same, but if you were to use
-multiple host bridge in the system, or pick a different bus address in DT,
-you can have a nonzero io_offset. At this means to take into account the
-bus address which is used to calculate this offset, substracting it from
-the IO resource start address.
+On Thu, Sep 23, 2021 at 09:54:12PM +0200, Fabio M. De Francesco wrote:
+> On Thursday, September 23, 2021 12:07:49 AM CEST Tommaso Merciai wrote:
+> > Work in progress: replace camel case variables
+> > 
+> > PortOffset -> port_off_set
+> > 
+> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > ---
+> >  drivers/staging/vt6655/baseband.c    |   6 +-
+> >  drivers/staging/vt6655/card.c        |  88 ++++++++--------
+> >  drivers/staging/vt6655/channel.c     |  10 +-
+> >  drivers/staging/vt6655/device.h      |   2 +-
+> >  drivers/staging/vt6655/device_main.c | 144 +++++++++++++--------------
+> >  drivers/staging/vt6655/mac.c         |  46 ++++-----
+> >  drivers/staging/vt6655/power.c       |  24 ++---
+> >  drivers/staging/vt6655/rf.c          |  12 +--
+> >  drivers/staging/vt6655/rxtx.c        |  12 +--
+> >  9 files changed, 172 insertions(+), 172 deletions(-)
+> 
+> If you split "Offset" into "Off set", you convey the message that something 
+> is "Off the set". Probably that's not what you want to express.
+> 
+> Regards,
+> 
+> Fabio
+  
+  Thanks, you're right. Resend V2.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- drivers/staging/mt7621-pci/pci-mt7621.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
-index 6acfc94a16e7..503cb1fca2e0 100644
---- a/drivers/staging/mt7621-pci/pci-mt7621.c
-+++ b/drivers/staging/mt7621-pci/pci-mt7621.c
-@@ -482,7 +482,7 @@ static int mt7621_pcie_enable_ports(struct pci_host_bridge *host)
- 
- 	/* Setup MEMWIN and IOWIN */
- 	pcie_write(pcie, 0xffffffff, RALINK_PCI_MEMBASE);
--	pcie_write(pcie, entry->res->start, RALINK_PCI_IOBASE);
-+	pcie_write(pcie, entry->res->start - entry->offset, RALINK_PCI_IOBASE);
- 
- 	list_for_each_entry(port, &pcie->ports, list) {
- 		if (port->enabled) {
--- 
-2.25.1
-
+  Tommaso
+> 
+> 
