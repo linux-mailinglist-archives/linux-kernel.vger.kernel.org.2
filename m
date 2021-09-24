@@ -2,374 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC38C41771B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3D7417733
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346918AbhIXOzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346805AbhIXOzV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:55:21 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF52C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:53:48 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so7707205pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ALjz8wrBXPr8FWbSlYV+271EeBonEE1NQvNWCXZyYXs=;
-        b=nU21q28NCQgtsfejxXOFTM47wEQL+kmN01CzpueLTr8oirBWfJwuTVEmSGdmJP3HKb
-         Nuxi5DInsCllpkCG3LeZjkOLKA/QPepPyjFdt4pJ+v4IXRcEV6H0GN3wreDXnqjGzGhn
-         lnZt41mJEogEkrGTwAzAUsDxul3caOB/+4zp0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ALjz8wrBXPr8FWbSlYV+271EeBonEE1NQvNWCXZyYXs=;
-        b=EHBIHtlrdy1rVeNptAtJwfdYNSFTc3SpjeVz6mf/w1jRTPRLQXtFWkl+o3xLxPxrhj
-         cxgA4yNX3KcvH9+cULQF0zBm5lNvRIQjRTTwCa7DdJk1T2c+tctFMfjAErPHu8wLOAsU
-         lHqnFF/+OSLCFbp9mdeMGrIkKPEpMcJSxDN0M2UG48kXw/VXhmCB8yaJCBBNSQiKYKyN
-         kKfZ1Ia23nHfNzDdQi9abFToSONlXZKffCEZ2R0zIiNRkCiZ0q4dYAlXg5yONLT+98eF
-         rlut24TzansPLeN4bTMIXt0gQ4ftnu/QvpGE5dLj3TxwgL0eeaKKaSpXvJ8iTb5MUtZ8
-         sfcg==
-X-Gm-Message-State: AOAM530/jZwQ7mojAEoMyo8Y5Hlz0WnZcSW1LCwZmEDVsNrGdvm3XxQV
-        d8aZroUvv4U/0kyZbMsCYf8vTw==
-X-Google-Smtp-Source: ABdhPJxuioR5dP73NT+cBDAvr0wEzUFY03cfpo7frwd1WpKOQvwQBLzeDSNG4JcvPj++iKmuQagGbg==
-X-Received: by 2002:a17:902:e88d:b0:13b:8ed2:9f42 with SMTP id w13-20020a170902e88d00b0013b8ed29f42mr9532326plg.67.1632495228085;
-        Fri, 24 Sep 2021 07:53:48 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:4de4:f47f:9d40:cc05])
-        by smtp.gmail.com with ESMTPSA id y13sm12023005pjr.1.2021.09.24.07.53.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 07:53:47 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     dri-devel@lists.freedesktop.org
-Cc:     a.hajda@samsung.com, smyakam@microsoft.com,
-        jani.nikula@linux.intel.com, linus.walleij@linaro.org,
-        stanislav.lisovskiy@intel.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/edid: Fix EDID quirk compile error on older compilers
-Date:   Fri, 24 Sep 2021 07:53:21 -0700
-Message-Id: <20210924075317.1.I1e58d74d501613f1fe7585958f451160d11b8a98@changeid>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+        id S1346960AbhIXPCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 11:02:13 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43191 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346927AbhIXPCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 11:02:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="211164279"
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="211164279"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 08:00:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="703878218"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Sep 2021 08:00:24 -0700
+Date:   Fri, 24 Sep 2021 22:53:38 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v16 5/5] fpga: image-load: enable cancel of image upload
+Message-ID: <20210924145338.GA1342075@yilunxu-OptiPlex-7050>
+References: <20210923001056.282790-1-russell.h.weight@intel.com>
+ <20210923001056.282790-6-russell.h.weight@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923001056.282790-6-russell.h.weight@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apparently some compilers [1] cannot handle doing math on dereferenced
-string constants at compile time. This has led to reports [2] of
-compile errors like:
+On Wed, Sep 22, 2021 at 05:10:56PM -0700, Russ Weight wrote:
+> Extend the FPGA Image Load framework to include a cancel IOCTL that can be
+> used to request that an image upload be canceled. The IOCTL may return
+> EBUSY if it cannot be canceled by software or ENODEV if there is no update
+> in progress.
+> 
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+> v16:
+>  - This was previously patch 6/6
+>  - Amend fpga_image_load_release() to request cancellation of an ongoing
+>    update when possible.
+> v15:
+>  - Compare to previous patch:
+>      [PATCH v14 6/6] fpga: sec-mgr: enable cancel of secure update
+>  - Changed file, symbol, and config names to reflect the new driver name
+>  - Cancel is now initiated by IOCT instead of sysfs
+>  - Removed signed-off/reviewed-by tags
+> v14:
+>  - Updated ABI documentation date and kernel version
+> v13:
+>   - No change
+> v12:
+>   - Updated Date and KernelVersion fields in ABI documentation
+> v11:
+>   - No change
+> v10:
+>   - Rebased to 5.12-rc2 next
+>   - Updated Date and KernelVersion in ABI documentation
+> v9:
+>   - Updated Date and KernelVersion in ABI documentation
+> v8:
+>   - No change
+> v7:
+>   - Changed Date in documentation file to December 2020
+> v6:
+>   - No change
+> v5:
+>   - No change
+> v4:
+>   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+>     and removed unnecessary references to "Intel".
+>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+> v3:
+>   - No change
+> v2:
+>   - Bumped documentation date and version
+>   - Minor code cleanup per review comments
+> ---
+>  Documentation/fpga/fpga-image-load.rst |  6 ++++
+>  drivers/fpga/fpga-image-load.c         | 49 +++++++++++++++++++++++---
+>  include/linux/fpga/fpga-image-load.h   |  1 +
+>  include/uapi/linux/fpga-image-load.h   |  2 ++
+>  4 files changed, 53 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
+> index 572e18afebb9..21fa85f18680 100644
+> --- a/Documentation/fpga/fpga-image-load.rst
+> +++ b/Documentation/fpga/fpga-image-load.rst
+> @@ -40,3 +40,9 @@ FPGA_IMAGE_LOAD_STATUS:
+>  Collect status for an on-going image upload. The status returned includes
+>  how much data remains to be transferred, the progress of the image load,
+>  and error information in the case of a failure.
+> +
+> +FPGA_IMAGE_LOAD_CANCEL:
+> +
+> +Request that a on-going image upload be cancelled. This IOCTL may return
 
-  In file included from drivers/gpu/drm/drm_edid.c:42:0:
-  ./include/drm/drm_edid.h:525:2: error: initializer element is not constant
-    ((((u32)((vend)[0]) - '@') & 0x1f) << 26 | \
+		an
 
-Go back to the syntax I used in v4 of the patch series [3] that added
-this code instead of what landed (v5). This syntax is slightly uglier
-but should be much more compatible with varied compilers.
+> +EBUSY if it cannot be cancelled by software or ENODEV if there is no update
 
-[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69960#c18
-[2] https://lore.kernel.org/r/874kaabdt5.fsf@intel.com/
-[3] https://lore.kernel.org/r/20210909135838.v4.4.I6103ce2b16e5e5a842b14c7022a034712b434609@changeid/
+   -EBUSY					 -ENODEV
 
-Fixes: d9f91a10c3e8 ("drm/edid: Allow querying/working with the panel ID from the EDID")
-Reported-by: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
-Reported-by: Srikanth Myakam <smyakam@microsoft.com>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+> +in progress.
+> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
+> index 2e9a5a041535..a95d18077d58 100644
+> --- a/drivers/fpga/fpga-image-load.c
+> +++ b/drivers/fpga/fpga-image-load.c
+> @@ -46,6 +46,24 @@ static void fpga_image_dev_error(struct fpga_image_load *imgld, u32 err_code)
+>  	imgld->ops->cancel(imgld);
+>  }
+>  
+> +static int fpga_image_prog_transition(struct fpga_image_load *imgld,
+> +				      u32 new_progress)
+> +{
+> +	int ret = 0;
+> +
+> +	mutex_lock(&imgld->lock);
+> +	if (imgld->request_cancel) {
+> +		imgld->err_progress = imgld->progress;
+> +		imgld->err_code = FPGA_IMAGE_ERR_CANCELED;
+> +		imgld->ops->cancel(imgld);
 
- drivers/gpu/drm/drm_edid.c        | 121 +++++++++++++++---------------
- drivers/gpu/drm/panel/panel-edp.c |  23 +++---
- include/drm/drm_edid.h            |  14 ++--
- 3 files changed, 81 insertions(+), 77 deletions(-)
+We could only cancel in 2 conditions.
+This is the first one: on progress transition.
 
-diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 53b342c058be..9b19eee0e1b4 100644
---- a/drivers/gpu/drm/drm_edid.c
-+++ b/drivers/gpu/drm/drm_edid.c
-@@ -100,9 +100,10 @@ struct detailed_mode_closure {
- #define LEVEL_GTF2	2
- #define LEVEL_CVT	3
- 
--#define EDID_QUIRK(vend, product_id, _quirks) \
-+#define EDID_QUIRK(vend_chr_0, vend_chr_1, vend_chr_2, product_id, _quirks) \
- { \
--	.panel_id = drm_edid_encode_panel_id(vend, product_id), \
-+	.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
-+					     product_id), \
- 	.quirks = _quirks \
- }
- 
-@@ -111,116 +112,116 @@ static const struct edid_quirk {
- 	u32 quirks;
- } edid_quirk_list[] = {
- 	/* Acer AL1706 */
--	EDID_QUIRK("ACR", 44358, EDID_QUIRK_PREFER_LARGE_60),
-+	EDID_QUIRK('A', 'C', 'R', 44358, EDID_QUIRK_PREFER_LARGE_60),
- 	/* Acer F51 */
--	EDID_QUIRK("API", 0x7602, EDID_QUIRK_PREFER_LARGE_60),
-+	EDID_QUIRK('A', 'P', 'I', 0x7602, EDID_QUIRK_PREFER_LARGE_60),
- 
- 	/* AEO model 0 reports 8 bpc, but is a 6 bpc panel */
--	EDID_QUIRK("AEO", 0, EDID_QUIRK_FORCE_6BPC),
-+	EDID_QUIRK('A', 'E', 'O', 0, EDID_QUIRK_FORCE_6BPC),
- 
- 	/* BOE model on HP Pavilion 15-n233sl reports 8 bpc, but is a 6 bpc panel */
--	EDID_QUIRK("BOE", 0x78b, EDID_QUIRK_FORCE_6BPC),
-+	EDID_QUIRK('B', 'O', 'E', 0x78b, EDID_QUIRK_FORCE_6BPC),
- 
- 	/* CPT panel of Asus UX303LA reports 8 bpc, but is a 6 bpc panel */
--	EDID_QUIRK("CPT", 0x17df, EDID_QUIRK_FORCE_6BPC),
-+	EDID_QUIRK('C', 'P', 'T', 0x17df, EDID_QUIRK_FORCE_6BPC),
- 
- 	/* SDC panel of Lenovo B50-80 reports 8 bpc, but is a 6 bpc panel */
--	EDID_QUIRK("SDC", 0x3652, EDID_QUIRK_FORCE_6BPC),
-+	EDID_QUIRK('S', 'D', 'C', 0x3652, EDID_QUIRK_FORCE_6BPC),
- 
- 	/* BOE model 0x0771 reports 8 bpc, but is a 6 bpc panel */
--	EDID_QUIRK("BOE", 0x0771, EDID_QUIRK_FORCE_6BPC),
-+	EDID_QUIRK('B', 'O', 'E', 0x0771, EDID_QUIRK_FORCE_6BPC),
- 
- 	/* Belinea 10 15 55 */
--	EDID_QUIRK("MAX", 1516, EDID_QUIRK_PREFER_LARGE_60),
--	EDID_QUIRK("MAX", 0x77e, EDID_QUIRK_PREFER_LARGE_60),
-+	EDID_QUIRK('M', 'A', 'X', 1516, EDID_QUIRK_PREFER_LARGE_60),
-+	EDID_QUIRK('M', 'A', 'X', 0x77e, EDID_QUIRK_PREFER_LARGE_60),
- 
- 	/* Envision Peripherals, Inc. EN-7100e */
--	EDID_QUIRK("EPI", 59264, EDID_QUIRK_135_CLOCK_TOO_HIGH),
-+	EDID_QUIRK('E', 'P', 'I', 59264, EDID_QUIRK_135_CLOCK_TOO_HIGH),
- 	/* Envision EN2028 */
--	EDID_QUIRK("EPI", 8232, EDID_QUIRK_PREFER_LARGE_60),
-+	EDID_QUIRK('E', 'P', 'I', 8232, EDID_QUIRK_PREFER_LARGE_60),
- 
- 	/* Funai Electronics PM36B */
--	EDID_QUIRK("FCM", 13600, EDID_QUIRK_PREFER_LARGE_75 |
-+	EDID_QUIRK('F', 'C', 'M', 13600, EDID_QUIRK_PREFER_LARGE_75 |
- 				       EDID_QUIRK_DETAILED_IN_CM),
- 
- 	/* LGD panel of HP zBook 17 G2, eDP 10 bpc, but reports unknown bpc */
--	EDID_QUIRK("LGD", 764, EDID_QUIRK_FORCE_10BPC),
-+	EDID_QUIRK('L', 'G', 'D', 764, EDID_QUIRK_FORCE_10BPC),
- 
- 	/* LG Philips LCD LP154W01-A5 */
--	EDID_QUIRK("LPL", 0, EDID_QUIRK_DETAILED_USE_MAXIMUM_SIZE),
--	EDID_QUIRK("LPL", 0x2a00, EDID_QUIRK_DETAILED_USE_MAXIMUM_SIZE),
-+	EDID_QUIRK('L', 'P', 'L', 0, EDID_QUIRK_DETAILED_USE_MAXIMUM_SIZE),
-+	EDID_QUIRK('L', 'P', 'L', 0x2a00, EDID_QUIRK_DETAILED_USE_MAXIMUM_SIZE),
- 
- 	/* Samsung SyncMaster 205BW.  Note: irony */
--	EDID_QUIRK("SAM", 541, EDID_QUIRK_DETAILED_SYNC_PP),
-+	EDID_QUIRK('S', 'A', 'M', 541, EDID_QUIRK_DETAILED_SYNC_PP),
- 	/* Samsung SyncMaster 22[5-6]BW */
--	EDID_QUIRK("SAM", 596, EDID_QUIRK_PREFER_LARGE_60),
--	EDID_QUIRK("SAM", 638, EDID_QUIRK_PREFER_LARGE_60),
-+	EDID_QUIRK('S', 'A', 'M', 596, EDID_QUIRK_PREFER_LARGE_60),
-+	EDID_QUIRK('S', 'A', 'M', 638, EDID_QUIRK_PREFER_LARGE_60),
- 
- 	/* Sony PVM-2541A does up to 12 bpc, but only reports max 8 bpc */
--	EDID_QUIRK("SNY", 0x2541, EDID_QUIRK_FORCE_12BPC),
-+	EDID_QUIRK('S', 'N', 'Y', 0x2541, EDID_QUIRK_FORCE_12BPC),
- 
- 	/* ViewSonic VA2026w */
--	EDID_QUIRK("VSC", 5020, EDID_QUIRK_FORCE_REDUCED_BLANKING),
-+	EDID_QUIRK('V', 'S', 'C', 5020, EDID_QUIRK_FORCE_REDUCED_BLANKING),
- 
- 	/* Medion MD 30217 PG */
--	EDID_QUIRK("MED", 0x7b8, EDID_QUIRK_PREFER_LARGE_75),
-+	EDID_QUIRK('M', 'E', 'D', 0x7b8, EDID_QUIRK_PREFER_LARGE_75),
- 
- 	/* Lenovo G50 */
--	EDID_QUIRK("SDC", 18514, EDID_QUIRK_FORCE_6BPC),
-+	EDID_QUIRK('S', 'D', 'C', 18514, EDID_QUIRK_FORCE_6BPC),
- 
- 	/* Panel in Samsung NP700G7A-S01PL notebook reports 6bpc */
--	EDID_QUIRK("SEC", 0xd033, EDID_QUIRK_FORCE_8BPC),
-+	EDID_QUIRK('S', 'E', 'C', 0xd033, EDID_QUIRK_FORCE_8BPC),
- 
- 	/* Rotel RSX-1058 forwards sink's EDID but only does HDMI 1.1*/
--	EDID_QUIRK("ETR", 13896, EDID_QUIRK_FORCE_8BPC),
-+	EDID_QUIRK('E', 'T', 'R', 13896, EDID_QUIRK_FORCE_8BPC),
- 
- 	/* Valve Index Headset */
--	EDID_QUIRK("VLV", 0x91a8, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b0, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b1, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b2, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b3, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b4, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b5, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b6, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b7, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b8, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91b9, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91ba, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91bb, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91bc, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91bd, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91be, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("VLV", 0x91bf, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91a8, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b0, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b1, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b2, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b3, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b4, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b5, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b6, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b7, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b8, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91b9, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91ba, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91bb, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91bc, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91bd, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91be, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('V', 'L', 'V', 0x91bf, EDID_QUIRK_NON_DESKTOP),
- 
- 	/* HTC Vive and Vive Pro VR Headsets */
--	EDID_QUIRK("HVR", 0xaa01, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("HVR", 0xaa02, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('H', 'V', 'R', 0xaa01, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('H', 'V', 'R', 0xaa02, EDID_QUIRK_NON_DESKTOP),
- 
- 	/* Oculus Rift DK1, DK2, CV1 and Rift S VR Headsets */
--	EDID_QUIRK("OVR", 0x0001, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("OVR", 0x0003, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("OVR", 0x0004, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("OVR", 0x0012, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('O', 'V', 'R', 0x0001, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('O', 'V', 'R', 0x0003, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('O', 'V', 'R', 0x0004, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('O', 'V', 'R', 0x0012, EDID_QUIRK_NON_DESKTOP),
- 
- 	/* Windows Mixed Reality Headsets */
--	EDID_QUIRK("ACR", 0x7fce, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("HPN", 0x3515, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("LEN", 0x0408, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("LEN", 0xb800, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("FUJ", 0x1970, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("DEL", 0x7fce, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("SEC", 0x144a, EDID_QUIRK_NON_DESKTOP),
--	EDID_QUIRK("AUS", 0xc102, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('A', 'C', 'R', 0x7fce, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('H', 'P', 'N', 0x3515, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('L', 'E', 'N', 0x0408, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('L', 'E', 'N', 0xb800, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('F', 'U', 'J', 0x1970, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('D', 'E', 'L', 0x7fce, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('S', 'E', 'C', 0x144a, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('A', 'U', 'S', 0xc102, EDID_QUIRK_NON_DESKTOP),
- 
- 	/* Sony PlayStation VR Headset */
--	EDID_QUIRK("SNY", 0x0704, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('S', 'N', 'Y', 0x0704, EDID_QUIRK_NON_DESKTOP),
- 
- 	/* Sensics VR Headsets */
--	EDID_QUIRK("SEN", 0x1019, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('S', 'E', 'N', 0x1019, EDID_QUIRK_NON_DESKTOP),
- 
- 	/* OSVR HDK and HDK2 VR Headsets */
--	EDID_QUIRK("SVR", 0x1019, EDID_QUIRK_NON_DESKTOP),
-+	EDID_QUIRK('S', 'V', 'R', 0x1019, EDID_QUIRK_NON_DESKTOP),
- };
- 
- /*
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index 4c37c4f6d26c..fc03046de134 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -1745,10 +1745,11 @@ static const struct panel_delay delay_200_500_e50 = {
- 	.enable = 50,
- };
- 
--#define EDP_PANEL_ENTRY(vend, product_id, _delay, _name) \
-+#define EDP_PANEL_ENTRY(vend_chr_0, vend_chr_1, vend_chr_2, product_id, _delay, _name) \
- { \
- 	.name = _name, \
--	.panel_id = drm_edid_encode_panel_id(vend, product_id), \
-+	.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
-+					     product_id), \
- 	.delay = _delay \
- }
- 
-@@ -1760,19 +1761,19 @@ static const struct panel_delay delay_200_500_e50 = {
-  * Sort first by vendor, then by product ID.
-  */
- static const struct edp_panel_entry edp_panels[] = {
--	EDP_PANEL_ENTRY("AUO", 0x405c, &auo_b116xak01.delay, "B116XAK01"),
--	EDP_PANEL_ENTRY("AUO", 0x615c, &delay_200_500_e50, "B116XAN06.1"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1"),
- 
--	EDP_PANEL_ENTRY("BOE", 0x0786, &delay_200_500_p2e80, "NV116WHM-T01"),
--	EDP_PANEL_ENTRY("BOE", 0x07d1, &boe_nv133fhm_n61.delay, "NV133FHM-N61"),
--	EDP_PANEL_ENTRY("BOE", 0x082d, &boe_nv133fhm_n61.delay, "NV133FHM-N62"),
--	EDP_PANEL_ENTRY("BOE", 0x098d, &boe_nv110wtm_n61.delay, "NV110WTM-N61"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0786, &delay_200_500_p2e80, "NV116WHM-T01"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x07d1, &boe_nv133fhm_n61.delay, "NV133FHM-N61"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x082d, &boe_nv133fhm_n61.delay, "NV133FHM-N62"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x098d, &boe_nv110wtm_n61.delay, "NV110WTM-N61"),
- 
--	EDP_PANEL_ENTRY("CMN", 0x114c, &innolux_n116bca_ea1.delay, "N116BCA-EA1"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x114c, &innolux_n116bca_ea1.delay, "N116BCA-EA1"),
- 
--	EDP_PANEL_ENTRY("KDB", 0x0624, &kingdisplay_kd116n21_30nv_a010.delay, "116N21-30NV-A010"),
-+	EDP_PANEL_ENTRY('K', 'D', 'B', 0x0624, &kingdisplay_kd116n21_30nv_a010.delay, "116N21-30NV-A010"),
- 
--	EDP_PANEL_ENTRY("SHP", 0x154c, &delay_200_500_p2e100, "LQ116M1JW10"),
-+	EDP_PANEL_ENTRY('S', 'H', 'P', 0x154c, &delay_200_500_p2e100, "LQ116M1JW10"),
- 
- 	{ /* sentinal */ }
- };
-diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-index ccc80cb7f86a..4d17cd04fff7 100644
---- a/include/drm/drm_edid.h
-+++ b/include/drm/drm_edid.h
-@@ -510,21 +510,23 @@ static inline u8 drm_eld_get_conn_type(const uint8_t *eld)
- 
- /**
-  * drm_edid_encode_panel_id - Encode an ID for matching against drm_edid_get_panel_id()
-- * @vend: 3-character vendor string
-+ * @vend_chr_0: First character of the vendor string.
-+ * @vend_chr_2: Second character of the vendor string.
-+ * @vend_chr_3: Third character of the vendor string.
-  * @product_id: The 16-bit product ID.
-  *
-  * This is a macro so that it can be calculated at compile time and used
-  * as an initializer.
-  *
-  * For instance:
-- *   drm_edid_encode_panel_id("BOE", 0x2d08) => 0x09e52d08
-+ *   drm_edid_encode_panel_id('B', 'O', 'E', 0x2d08) => 0x09e52d08
-  *
-  * Return: a 32-bit ID per panel.
-  */
--#define drm_edid_encode_panel_id(vend, product_id) \
--	((((u32)((vend)[0]) - '@') & 0x1f) << 26 | \
--	 (((u32)((vend)[1]) - '@') & 0x1f) << 21 | \
--	 (((u32)((vend)[2]) - '@') & 0x1f) << 16 | \
-+#define drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, product_id) \
-+	((((u32)(vend_chr_0) - '@') & 0x1f) << 26 | \
-+	 (((u32)(vend_chr_1) - '@') & 0x1f) << 21 | \
-+	 (((u32)(vend_chr_2) - '@') & 0x1f) << 16 | \
- 	 ((product_id) & 0xffff))
- 
- /**
--- 
-2.33.0.685.g46640cef36-goog
+> +		ret = -ECANCELED;
+> +	} else {
+> +		imgld->progress = new_progress;
+> +	}
+> +	mutex_unlock(&imgld->lock);
+> +	return ret;
+> +}
+> +
+>  static void fpga_image_prog_complete(struct fpga_image_load *imgld)
+>  {
+>  	mutex_lock(&imgld->lock);
+> @@ -79,8 +97,10 @@ static void fpga_image_do_load(struct work_struct *work)
+>  		goto modput_exit;
+>  	}
+>  
+> -	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_WRITING);
+> -	while (imgld->remaining_size) {
+> +	if (fpga_image_prog_transition(imgld, FPGA_IMAGE_PROG_WRITING))
+> +		goto done;
+> +
+> +	while (imgld->remaining_size && !imgld->request_cancel) {
 
+This is the second condition: when we finished a block write. But if the
+low level driver accepts the whole block size, we cannot cancel in
+between.
+
+Actually the framework doesn't know when to successfully cancel an
+update. It depends on the hardware.
+
+So maybe the framework just calls cancel() immediately in IOCTL,
+let the low level driver decides if it is feasible and how to cancel.
+
+Thanks,
+Yilun
+
+>  		/*
+>  		 * The write_blk() op has the option to use the blk_size
+>  		 * value provided here, or to modify it to something more
+> @@ -105,7 +125,9 @@ static void fpga_image_do_load(struct work_struct *work)
+>  		cond_resched();
+>  	}
+>  
+> -	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_PROGRAMMING);
+> +	if (fpga_image_prog_transition(imgld, FPGA_IMAGE_PROG_PROGRAMMING))
+> +		goto done;
+> +
+>  	ret = imgld->ops->poll_complete(imgld);
+>  	if (ret != FPGA_IMAGE_ERR_NONE)
+>  		fpga_image_dev_error(imgld, ret);
+> @@ -178,8 +200,8 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
+>  	imgld->remaining_size = wb.size;
+>  	imgld->err_code = FPGA_IMAGE_ERR_NONE;
+>  	imgld->progress = FPGA_IMAGE_PROG_STARTING;
+> +	imgld->request_cancel = false;
+>  	queue_work(system_unbound_wq, &imgld->work);
+> -
+>  	return 0;
+>  
+>  exit_free:
+> @@ -208,7 +230,7 @@ static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
+>  				  unsigned long arg)
+>  {
+>  	struct fpga_image_load *imgld = filp->private_data;
+> -	int ret = -ENOTTY;
+> +	int ret = 0;
+>  
+>  	mutex_lock(&imgld->lock);
+>  
+> @@ -219,6 +241,17 @@ static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
+>  	case FPGA_IMAGE_LOAD_STATUS:
+>  		ret = fpga_image_load_ioctl_status(imgld, arg);
+>  		break;
+> +	case FPGA_IMAGE_LOAD_CANCEL:
+> +		if (imgld->progress == FPGA_IMAGE_PROG_PROGRAMMING)
+> +			ret = -EBUSY;
+> +		else if (imgld->progress == FPGA_IMAGE_PROG_IDLE)
+> +			ret = -ENODEV;
+> +		else
+> +			imgld->request_cancel = true;
+> +		break;
+> +	default:
+> +		ret = -ENOTTY;
+> +		break;
+>  	}
+>  
+>  	mutex_unlock(&imgld->lock);
+> @@ -249,6 +282,9 @@ static int fpga_image_load_release(struct inode *inode, struct file *filp)
+>  		goto close_exit;
+>  	}
+>  
+> +	if (imgld->progress != FPGA_IMAGE_PROG_PROGRAMMING)
+> +		imgld->request_cancel = true;
+> +
+>  	mutex_unlock(&imgld->lock);
+>  	flush_work(&imgld->work);
+>  
+> @@ -363,6 +399,9 @@ void fpga_image_load_unregister(struct fpga_image_load *imgld)
+>  		goto unregister;
+>  	}
+>  
+> +	if (imgld->progress != FPGA_IMAGE_PROG_PROGRAMMING)
+> +		imgld->request_cancel = true;
+> +
+>  	mutex_unlock(&imgld->lock);
+>  	flush_work(&imgld->work);
+>  
+> diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
+> index 8b58365893fc..8ba39d3299d9 100644
+> --- a/include/linux/fpga/fpga-image-load.h
+> +++ b/include/linux/fpga/fpga-image-load.h
+> @@ -53,6 +53,7 @@ struct fpga_image_load {
+>  	u32 progress;
+>  	u32 err_progress;		/* progress at time of error */
+>  	u32 err_code;			/* image load error code */
+> +	bool request_cancel;
+>  	bool driver_unload;
+>  	struct eventfd_ctx *finished;
+>  	void *priv;
+> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
+> index dc0c9f1d78b1..da8a7452c29a 100644
+> --- a/include/uapi/linux/fpga-image-load.h
+> +++ b/include/uapi/linux/fpga-image-load.h
+> @@ -70,4 +70,6 @@ struct fpga_image_status {
+>  
+>  #define FPGA_IMAGE_LOAD_STATUS	_IOR(FPGA_IMAGE_LOAD_MAGIC, 1, struct fpga_image_status)
+>  
+> +#define FPGA_IMAGE_LOAD_CANCEL	_IO(FPGA_IMAGE_LOAD_MAGIC, 2)
+> +
+>  #endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
+> -- 
+> 2.25.1
