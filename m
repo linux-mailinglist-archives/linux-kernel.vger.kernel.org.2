@@ -2,132 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39476417D8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD94417DAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345077AbhIXWMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 18:12:16 -0400
-Received: from mail-bn1nam07on2050.outbound.protection.outlook.com ([40.107.212.50]:2631
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1344932AbhIXWMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 18:12:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=laFfCi9YhqMG9BeapNX1EaL/1/HWCDldd8RJLt1PY9zWOXIDa7c3UUG9XMWRbxrdxpTCgHESJA95PFTPtf4eUmKkUDi2tkm3JeBE96MbwwYy+RbVSfthgiWVVQ6arsG9O0aWJiZ6+x/7INqQpz1+3Nvev5Nuvh4MCSCknPLmaS1y+1JfCGEene0EdNjAjUg19BaXQkiJEP6BR6ob7t1nQbzWBBA8Kr80ORPKyX3xqe5bt+CLRMGeYY8YsMaaxMNa3DUfmlnLdejC1Krf6erJRcjZ45g/0vYF0JWVVKPTY52ADYu3c2qmMBMxmgOVr2mL/bPbjjIU4JTyx5WoJr5/6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=NICH0hm8La+WhyDrjC7LFMW4ROO8IPTXE94mcJD1BW4=;
- b=LFiK4mQn6Xxb6UvQ/qZkwaHzhb9JGAE6ktXDw8bIkznPlMC/NaExExBEyaoHvjZfFGPfrZPgKjztyqyYvy1V9Jjp1FSH6mPj4WQYx+cWSx6glW9NXcqlazTcDbgS938eh9MacvPZWpmw26wFsqv2cFu1nZAv16LtApSTeX6jgv4sOfQzj4XIBOfXln5V+CiolKSId1jqDO/DNy3Gf/XyvNU/gh8NPkEmUSXU+oRDDYdD3eq4JGfFYTzWMNtuw4iulmkOHsBr5/v4ADgeqdMAKza0VAv0HZ8G13SLoq0abtSz4i7PJuM1Opo8uyO21gote2QmwuSKNTULLG91W07iQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NICH0hm8La+WhyDrjC7LFMW4ROO8IPTXE94mcJD1BW4=;
- b=iE//0MWM9peVDnEkSu/v+M+pZVKi9E8used6ruJIavooXfbMXWx/6LLTC4rPJnMG6EESgsi7XdLxm727W8cqaDp16VaA2WZQQmLsvQ8TAJQOTttdIrnQnAIxaKkpu2He7Sxfx9z1U2SxDIP1P8cUVou4npYlpsd6kBxHouw72i3AKr7qNBR8KXubQx8h5jU6/tExjdDy3gAbdhaEuqfsOQDVms6uN/BVbIKbj2TM076C/9tdijJ0FXVkM1fAsubfV+uX669oeAn2iQzTrbnxwF2uzdDt/+ZjsFZMb9T94yS4fg2i0HaiYLVNrBkLxN25ux94yDHFz86tUYqJt5JNfw==
-Received: from DM5PR1101CA0006.namprd11.prod.outlook.com (2603:10b6:4:4c::16)
- by MN2PR12MB4288.namprd12.prod.outlook.com (2603:10b6:208:1d2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Fri, 24 Sep
- 2021 22:10:39 +0000
-Received: from DM6NAM11FT052.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:4c:cafe::e1) by DM5PR1101CA0006.outlook.office365.com
- (2603:10b6:4:4c::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Fri, 24 Sep 2021 22:10:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- DM6NAM11FT052.mail.protection.outlook.com (10.13.172.111) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 22:10:39 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 24 Sep
- 2021 15:10:39 -0700
-Received: from [10.19.66.38] (172.20.187.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 24 Sep
- 2021 22:10:35 +0000
-Subject: Re: [PATCH V1 1/3] dt-bindings: tegra: memory,bpmp-thermal: add SPDX
- license
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        <robh+dt@kernel.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <rostedt@goodmis.org>, <mingo@redhat.com>,
-        <jassisinghbrar@gmail.com>, <p.zabel@pengutronix.de>
-CC:     <skomatineni@nvidia.com>, <broonie@kernel.org>,
-        <linus.walleij@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>
-References: <20210921174434.4839-1-bbiswas@nvidia.com>
- <20210921174434.4839-2-bbiswas@nvidia.com>
- <195c460c-9fb9-f435-4fa8-6d5632f62a5a@canonical.com>
-From:   Bitan Biswas <bbiswas@nvidia.com>
-Message-ID: <73bb6df4-2059-a8c5-a83d-a4b35538871e@nvidia.com>
-Date:   Fri, 24 Sep 2021 15:10:02 -0700
+        id S1347600AbhIXWNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 18:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347788AbhIXWNc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 18:13:32 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D4EC061786;
+        Fri, 24 Sep 2021 15:11:54 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id k26so5473404pfi.5;
+        Fri, 24 Sep 2021 15:11:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FfH8lhELlbCk3djwYKIHgmWllSZaKRJ0hhr+YDTEAN0=;
+        b=I+ISSNCpNMaW1hA4pb8MfQ6EByPDYcTOkA0bLrlSgIx3HNr6A03KI24SJakX/21UrA
+         /KWQeC1YvR8/ns2mOGnnVY0jIPpNIBRYXB8HohlgW0mGtcR76s8q39vSeuNLoIw59bFR
+         VKEAt8Fq/k/lkI6P2LwDo6urVDeD/v0AK8Mmli/U/hyeTez67+SnyxoLTxmd0DGuueNQ
+         Ld87a80NK3LZ7xyuSW12b3eWS5XCGG29Z0rXTD26bd7PMLJcwMuH9+wXHu62If8E1GhN
+         2Ticq3HEs3vvGFyxXJvdY0pE0+DRagnEbYPiFq9eR5PW/yRO8xsd+HoW4c/2Vu2EUVPM
+         lpkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FfH8lhELlbCk3djwYKIHgmWllSZaKRJ0hhr+YDTEAN0=;
+        b=bLtpVeEXKTg1KNhfkcfAmi/kIddbAeDZIkWwjI9sxCd2wiRBvtAz1J4DGXAAcdM4S7
+         7lMXAFE9Wsk0QKt2qc3HXMnWcv9rlLdQIuIYorMsfE2QiaLk/FkP/gUeWrzUz4CI4saJ
+         tD7btWSABAtVIZc7h/vWhKQjcZgEUgppXaGLKO4wv2HyjubhHtS4VBK03I9XNJxF4PU9
+         qnjVxedhm657Kq1TBME45hKT9O5tN0gZNTjPvtJ2s9fBP88tK6arXNarF97vkVV4j5pB
+         XuL09ce8PCja8mpckLduY3X77ie5UbB7XC6DDoNN3/GOBoDViDnrusu+IDV7Pxy/PP/1
+         dxSQ==
+X-Gm-Message-State: AOAM532Ug4AELi8P4ZMDdtPDtcp6bMtNy/2Zynyaw3sddbdpPGrzvVwf
+        KvAhZiLbp22CgTL7PyhYPzA=
+X-Google-Smtp-Source: ABdhPJyUN2P6h0s4erzCGCMBW+1t1Tb41jqYnjkw7XBmrFL083QnqcBbZoqaeM4aF58FNodFNT6qIA==
+X-Received: by 2002:a05:6a00:43:b0:43d:f06e:4f4a with SMTP id i3-20020a056a00004300b0043df06e4f4amr11142400pfk.20.1632521513942;
+        Fri, 24 Sep 2021 15:11:53 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id u12sm9952092pjr.2.2021.09.24.15.11.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 15:11:53 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/63] 5.10.69-rc1 review
+To:     =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <20210924124334.228235870@linuxfoundation.org>
+ <c7a38a76-18b0-efaa-efed-f73e53e58277@linaro.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c8f6c650-8b6b-cfc2-c9f6-f32fce74aa3d@gmail.com>
+Date:   Fri, 24 Sep 2021 15:11:51 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <195c460c-9fb9-f435-4fa8-6d5632f62a5a@canonical.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <c7a38a76-18b0-efaa-efed-f73e53e58277@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0846ee15-6cc0-4ab6-6448-08d97fa824cb
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4288:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB428877803B1DA27F0E682398D7A49@MN2PR12MB4288.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iRYguHbq7krkUMPIqYR9ABlcFTPhhJpRAFZEjhRhJgDjv7WSyvWY6mreCSs/nmNbIFd/gr49tuYOISsEruAh2ZwsdvO1vqw56A/EaJUDN7vu02HwQp6Xxt/DC1Ux8Zr1dnr/kW7vSft/pnLkf2OWW2hTFOmJdcP4Ge1HO/YYBGMbUR9D7BJr6fBB9TXhklXG3g8Wkj+4Qr7eeEb9If1VwGpEqxFTI+GMeqY/176oeEoFuEMqkQ3SWA2WchDqtAfvinAeUrAKCBKMVsN6Xx4EIR1IASsNLEIm2RAYNzP8fi592NMb8r7FyEnj/ahHgWTwBfuBlM0vxYfuXIbAYIyuK9v9KVknYfGVsh4t6tdbr4w0Cucq3n9rACrHZD+KCZUqybvxIU54N2bBNYpEHPcaY7DrKOIMFZMTyeT7dkwZj8Ev3Qcc6jwyUWfLBQ5TQI2rDkVr6i1RihrMqGC3gT8Iy+yQR9Vf5au/LcNqoyCs3LEcv+DVjnUmJH/bu2Lzk72NSXty4SskblsSpUEtWOAJ1gIDlDr5lUCx9QYJEWQUBdAnAqB6kpjAKrVV1JLZvePg2wDqLFkysizCzfU+ageNKoH456EOhagFRUylUneh2S6NGnIUVSG7bdJGU0ES3Y9qpoFnsQPx6Di3cIysQS3r1WEkl6g6+rpOSFDNgmCqn4ywyu8AGA+ntNCUCwNwhLCrR7IlIT0l+VfZ3GnPj7tE8U8mWfXWnD9V3BqQU7YRpKWjv7v7WDxw//4yCZBBsXVG4dPqd6Hc8uepy1LuAL8/Dah5vmSDmRL9Dtxnd3iQN7UrXnIIooPmH+qi3BCnAvlC
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(4744005)(356005)(508600001)(86362001)(7636003)(966005)(36860700001)(53546011)(6666004)(7416002)(426003)(4326008)(5660300002)(316002)(16576012)(336012)(47076005)(82310400003)(31686004)(54906003)(31696002)(70206006)(70586007)(110136005)(8676002)(8936002)(16526019)(2906002)(2616005)(26005)(186003)(36756003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 22:10:39.6959
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0846ee15-6cc0-4ab6-6448-08d97fa824cb
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT052.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4288
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On 9/21/21 10:59 AM, Krzysztof Kozlowski wrote:
-> External email: Use caution opening links or attachments
+On 9/24/21 7:12 AM, Daniel Díaz wrote:
+> Hello!
 > 
-> 
-> On 21/09/2021 19:44, Bitan Biswas wrote:
->> Add Dual licensing SPDX license identifier for tegra186,tegra194
->> memory and bpmp-thermal headers.
+> On 9/24/21 7:44 AM, Greg Kroah-Hartman wrote:
+>> This is the start of the stable review cycle for the 5.10.69 release.
+>> There are 63 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
 >>
->> Signed-off-by: Bitan Biswas <bbiswas@nvidia.com>
->> ---
->>   4 files changed, 4 insertions(+)
+>> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
+>> Anything received after that time might be too late.
 >>
+>> The whole patch series can be found in one patch at:
+>>     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.69-rc1.gz
+>>
+>> or in the git tree and branch at:
+>>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>> linux-5.10.y
+>> and the diffstat can be found below.
+>>
+>> thanks,
+>>
+>> greg k-h
 > 
-> Now we got the same v1 patchset for the third time. I think you need to
-> check your mail agent...
+> Regressions detected.
 > 
-> https://lore.kernel.org/lkml/?q=bbiswas%40nvidia.com
+> While building Perf for arm, arm64, i386 and x86, all with GCC 11, the
+> following error was encountered:
 > 
-> 
+>   util/dso.c: In function 'dso__build_id_equal':
+>   util/dso.c:1345:26: error: implicit declaration of function
+> 'memchr_inv'; did you mean 'memchr'?
+> [-Werror=implicit-function-declaration]
+>    1345 |                         !memchr_inv(&dso->bid.data[bid->size], 0,
+>         |                          ^~~~~~~~~~
+>         |                          memchr
+>   cc1: all warnings being treated as errors
+>   make[4]: *** [/builds/linux/tools/build/Makefile.build:96:
+> /home/tuxbuild/.cache/tuxmake/builds/current/util/dso.o] Error 1
 
-I realize the oversight and apologize. Plan to take care of comments in 
-v1 patchset.
+Confirmed, with GCC 8.3 the warning is not a fatal error but we will
+fail linking eventually anyway:
 
--regards,
-  Bitan
+/local/stbopt_p/toolchains_303/stbgcc-8.3-0.3/bin/../lib/gcc/aarch64-unknown-linux-gnu/8.3.0/../../../../aarch64-unknown-linux-gnu/bin/ld:
+/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/perf-in.o:
+in function `dso__build_id_equal':
+/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/util/dso.c:1345:
+undefined reference to `memchr_inv'
+collect2: error: ld returned 1 exit status
+make[4]: *** [Makefile.perf:655:
+/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/perf]
+Error 1
+make[3]: *** [Makefile.perf:229: sub-make] Error 2
+make[2]: *** [Makefile:70: all] Error 2
+make[1]: *** [package/pkg-generic.mk:271:
+/local/users/fainelli/buildroot/output/arm64/build/linux-tools/.stamp_built]
+Error 2
+make: *** [Makefile:27: _all] Error 2
 
+-- 
+Florian
