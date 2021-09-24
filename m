@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDFD417DD9
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B349417DE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344853AbhIXWpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 18:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43554 "EHLO mail.kernel.org"
+        id S1345461AbhIXWpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 18:45:20 -0400
+Received: from mga03.intel.com ([134.134.136.65]:22795 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243488AbhIXWpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 18:45:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 572A361260;
-        Fri, 24 Sep 2021 22:43:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632523417;
-        bh=jnWK7gX36RAGkOy4wGOmDoUB/ZEQWFwYpNwggV9fzGE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NuIi6eJiqCdtxgQI15zGb2Z5pI2D/gTQCf8sTJ+XboOIRjpoDcScUqwwo21mDy1Mh
-         p9NPXDk88fTPpiQq4vfyCPpzS8akSE6+jiqk+vNwHRyrtkMA0UD2EyduuIGLlHJeBf
-         SL2czuXabJCnAFlYc59QZWmRPXutvfS4BzQKws4thpHsQxHE8+mAmYCas99RxwhnY7
-         34GOErjntbj5UnY4khMb011buAwuWbyQUhAn+E+8945GwsDkuGlz+FZQDCmf4NwC6r
-         o+UsBAk8WzKopFELLbcMEmHhyOOz07yH4n7J3EgAffivnozstTg/JIMXSA1yar0OXg
-         0ARtqGA5g8C+g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2B7D15C0800; Fri, 24 Sep 2021 15:43:37 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 15:43:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        boqun.feng@gmail.com, linux-kernel@vger.kernel.org, richard@nod.at
-Subject: Re: Confusing lockdep splat
-Message-ID: <20210924224337.GL880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210924210247.GA3877322@paulmck-ThinkPad-P17-Gen-1>
- <d8cb4445-cb01-4405-8800-a3eefa253af1@redhat.com>
+        id S1345228AbhIXWpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 18:45:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10117"; a="224233866"
+X-IronPort-AV: E=Sophos;i="5.85,321,1624345200"; 
+   d="scan'208";a="224233866"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 15:43:43 -0700
+X-IronPort-AV: E=Sophos;i="5.85,321,1624345200"; 
+   d="scan'208";a="704339730"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.251.20.113]) ([10.251.20.113])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 15:43:41 -0700
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210824053830-mutt-send-email-mst@kernel.org>
+ <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
+ <20210829112105-mutt-send-email-mst@kernel.org>
+ <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
+ <20210829181635-mutt-send-email-mst@kernel.org>
+ <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
+ <20210830163723-mutt-send-email-mst@kernel.org>
+ <69fc30f4-e3e2-add7-ec13-4db3b9cc0cbd@linux.intel.com>
+ <20210910054044-mutt-send-email-mst@kernel.org>
+ <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
+ <20210911195006-mutt-send-email-mst@kernel.org>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <ad1e41d1-3f4e-8982-16ea-18a3b2c04019@linux.intel.com>
+Date:   Fri, 24 Sep 2021 15:43:40 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8cb4445-cb01-4405-8800-a3eefa253af1@redhat.com>
+In-Reply-To: <20210911195006-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 05:41:17PM -0400, Waiman Long wrote:
-> On 9/24/21 5:02 PM, Paul E. McKenney wrote:
-> > Hello!
-> > 
-> > I got the lockdep splat below from an SRCU-T rcutorture run, which uses
-> > a !SMP !PREEMPT kernel.  This is a random event, and about half the time
-> > it happens within an hour or two.  My reproducer (on current -rcu "dev"
-> > branch for a 16-CPU system) is:
-> > 
-> > 	tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 16 --configs "16*SRCU-T" --duration 7200
-> > 
-> > My points of confusion are as follows:
-> > 
-> > 1.	The locks involved in this deadlock cycle are irq-disabled
-> > 	raw spinlocks.	The claimed deadlock cycle uses two CPUs.
-> > 	There is only one CPU.	There is no possibility of preemption
-> > 	or interrupts.	So how can this deadlock actually happen?
-> > 
-> > 2.	If there was more than one CPU, then yes, there would be
-> > 	a deadlock.  The PI lock is acquired by the wakeup code after
-> > 	acquiring the workqueue lock, and rcutorture tests the new ability
-> > 	of the scheduler to hold the PI lock across rcu_read_unlock(),
-> > 	and while it is at it, across the rest of the unlock primitives.
-> > 
-> > 	But if there was more than one CPU, Tree SRCU would be used
-> > 	instead of Tiny SRCU, and there would be no wakeup invoked from
-> > 	srcu_read_unlock().
-> > 
-> > 	Given only one CPU, there is no way to complete the deadlock
-> > 	cycle.
-> > 
-> > For now, I am working around this by preventing rcutorture from holding
-> > the PI lock across Tiny srcu_read_unlock().
-> > 
-> > Am I missing something subtle here?
-> 
-> I would say that the lockdep code just doesn't have enough intelligence to
-> identify that deadlock is not possible in this special case. There are
-> certainly false positives, and it can be hard to get rid of them.
 
-Would it make sense for lockdep to filter out reports involving more
-than one CPU unless there is at least one sleeplock in the cycle?
+>> Hmm, yes that's true. I guess we can make it default to opt-in for
+>> pci_iomap.
+>>
+>> It only really matters for device less ioremaps.
+> OK. And same thing for other things with device, such as
+> devm_platform_ioremap_resource.
+> If we agree on all that, this will basically remove virtio
+> changes from the picture ;)
 
-Of course, it gets more complicated when interrupts are involved...
+Hi we revisited this now. One problem with removing the ioremap opt-in 
+is that it's still possible for drivers to get at devices without going 
+through probe. For example they can walk the PCI device list. Some 
+drivers do that for various reasons. So if we remove the opt-in we would 
+need to audit and possibly fix all that, which would be potentially a 
+lot of churn. That's why I think it's better to keep the opt-in.
 
-							Thanx, Paul
+
+-Andi
+
+
