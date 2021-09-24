@@ -2,179 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63D141761D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D200641761F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345013AbhIXNpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:45:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231174AbhIXNpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:45:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0159C6103B;
-        Fri, 24 Sep 2021 13:44:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632491045;
-        bh=MkaD2FygRcZx0Rg+MtxQ5EnHT9a/ENSlx57cMPZCWvo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KyTUrrEPkNrwx7i6/ut93jV5izltrshVLEmAuBRY2rXYWkwFdgoeiqfWyAoNvnr2p
-         UvwCFGIhvpkf6DcoBnK/IT3hhYoFJNYBce/7QNTY4cGwaKKPRMkYgQwnPWnOQdvUHW
-         d5TCeCiKf3Az6omtWaVXQOPqq2m/QJrlp6sGheks=
-Date:   Fri, 24 Sep 2021 15:44:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        git@xilinx.com, saikrishna12468@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Subject: Re: [PATCH 1/4] firmware: xilinx: Add OSPI Mux selection support
-Message-ID: <YU3WIzwzFIiGCikA@kroah.com>
-References: <1632478031-12242-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1632478031-12242-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <YU24KEoXQOw/1uZV@kroah.com>
- <c588c9c4-df4b-a617-35d1-23c32654d5ff@xilinx.com>
- <YU3C7y833i9f0+yB@kroah.com>
- <18d730a5-cec1-d699-a7cc-da8270a5dfe6@xilinx.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18d730a5-cec1-d699-a7cc-da8270a5dfe6@xilinx.com>
+        id S1345753AbhIXNqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345359AbhIXNqN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:46:13 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5C5C061571;
+        Fri, 24 Sep 2021 06:44:40 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id w8so9926527pgf.5;
+        Fri, 24 Sep 2021 06:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id;
+        bh=C1qOcUv37x/aaV73V8Kv4uQFgD37HZdVWZKX5cd1Pnk=;
+        b=nfd9Owc88HKGgehebXgCJr67ojOZM1yqCQzTr98bMufXc/0LgwVS7BnbHzNNhEJpBt
+         3qbdd5XKWGxa4nYrhDO+Z/uHKASWxlzW8I0r6jitV/he2yVkhwwGEgb21kbP93X/PrTc
+         PTsSb62GSsi4elOHlMxnSnSLmSVWgi9WEu59a2L79Bf9SZXlxgu3ACMfFL5KSXpux915
+         XaDGo484m6SXrBYzy5YJ9kAnSk2gKuI1/QMjC+A5bpooa9Ro3oRB12RRNGzTK7xTZLc1
+         pmxhmGWd07S/CXMnG3bjoTyzR8c2UGLwYhPB8h8xX+ejtFUUmJwfC+WTUd4hVow0CprV
+         gYzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=C1qOcUv37x/aaV73V8Kv4uQFgD37HZdVWZKX5cd1Pnk=;
+        b=zistHWOrPukmFUf3zopthyaU704NK31TTlAKiWNLw1arOEX48vTVkS2gUKxgxALHCv
+         8nR5xNTbaQrQMlaOzBBmlC2EFBXe9XRkyeeURqmwGOTxaySfRs80wr0FL+W4BLiJMKYz
+         WKoQPp/DG2O1Ss7N2RZ0beO/UirQVSkYFoEwjURFSjMf5uoKJzWwuwrLIsn8iv9TNfC/
+         WG7WO2FDz2fngrVKDH6RPQZ2YtoPRayJelQR9Gp/imJD5sFbXeO2EBM1x15h6l8CcSJX
+         AGUBmNcERAd3mH5etxOd+FxkwqKFQNRRJkowWGxPej+lMJaeJiY3yhdeimrCRAON6MTW
+         KoSw==
+X-Gm-Message-State: AOAM532LAfdl5XXQtAxJse/8ebACJMiO1WDEEgk7/VslioETJLeVHl73
+        1TkxHBWnCEo7LzBK2IVNV5s=
+X-Google-Smtp-Source: ABdhPJzQumP3YVWkVIm0f8wxVRflW+gOVlCHImrqp1o9AjGWTi4Ls/KGC0BGlSBKwAN8rAV2kqvGMA==
+X-Received: by 2002:a63:ef57:: with SMTP id c23mr3891486pgk.60.1632491079845;
+        Fri, 24 Sep 2021 06:44:39 -0700 (PDT)
+Received: from localhost.localdomain ([171.221.148.237])
+        by smtp.gmail.com with ESMTPSA id t13sm12299968pjj.31.2021.09.24.06.44.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Sep 2021 06:44:39 -0700 (PDT)
+From:   yongw.pur@gmail.com
+X-Google-Original-From: wang.yong12@zte.com.cn
+To:     tj@kernel.org, mhocko@suse.com, peterz@infradead.org,
+        wang.yong12@zte.com.cn, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        yang.yang29@zte.com.cn
+Subject: [PATCH v3] vmpressure: wake up work only when there is registration event
+Date:   Fri, 24 Sep 2021 06:44:25 -0700
+Message-Id: <1632491065-10785-1-git-send-email-wang.yong12@zte.com.cn>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 02:49:09PM +0200, Michal Simek wrote:
-> 
-> 
-> On 9/24/21 2:22 PM, Greg Kroah-Hartman wrote:
-> > On Fri, Sep 24, 2021 at 02:12:55PM +0200, Michal Simek wrote:
-> >>
-> >>
-> >> On 9/24/21 1:36 PM, Greg Kroah-Hartman wrote:
-> >>> On Fri, Sep 24, 2021 at 03:37:08PM +0530, Sai Krishna Potthuri wrote:
-> >>>> Add OSPI Mux selection API support to select the AXI interface to OSPI.
-> >>>>
-> >>>> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-> >>>> ---
-> >>>>  drivers/firmware/xilinx/zynqmp.c     | 17 +++++++++++++++++
-> >>>>  include/linux/firmware/xlnx-zynqmp.h | 12 ++++++++++++
-> >>>>  2 files changed, 29 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-> >>>> index 15b138326ecc..43c3b5a9eef7 100644
-> >>>> --- a/drivers/firmware/xilinx/zynqmp.c
-> >>>> +++ b/drivers/firmware/xilinx/zynqmp.c
-> >>>> @@ -647,6 +647,23 @@ int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
-> >>>>  }
-> >>>>  EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
-> >>>>  
-> >>>> +/**
-> >>>> + * zynqmp_pm_ospi_mux_select() - OSPI Mux selection
-> >>>> + *
-> >>>> + * @dev_id:	Device Id of the OSPI device.
-> >>>> + * @select:	OSPI Mux select value.
-> >>>> + *
-> >>>> + * This function select the OSPI Mux.
-> >>>> + *
-> >>>> + * Return:	Returns status, either success or error+reason
-> >>>> + */
-> >>>> +int zynqmp_pm_ospi_mux_select(u32 dev_id, u32 select)
-> >>>> +{
-> >>>> +	return zynqmp_pm_invoke_fn(PM_IOCTL, dev_id, IOCTL_OSPI_MUX_SELECT,
-> >>>> +				   select, 0, NULL);
-> >>>> +}
-> >>>> +EXPORT_SYMBOL_GPL(zynqmp_pm_ospi_mux_select);
-> >>>> +
-> >>>>  /**
-> >>>>   * zynqmp_pm_write_ggs() - PM API for writing global general storage (ggs)
-> >>>>   * @index:	GGS register index
-> >>>> diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-> >>>> index 9d1a5c175065..6979a79f553a 100644
-> >>>> --- a/include/linux/firmware/xlnx-zynqmp.h
-> >>>> +++ b/include/linux/firmware/xlnx-zynqmp.h
-> >>>> @@ -119,6 +119,7 @@ enum pm_ioctl_id {
-> >>>>  	IOCTL_READ_PGGS = 15,
-> >>>>  	/* Set healthy bit value */
-> >>>>  	IOCTL_SET_BOOT_HEALTH_STATUS = 17,
-> >>>> +	IOCTL_OSPI_MUX_SELECT = 21,
-> >>>
-> >>> Why the gap?  What are the commands in the middle for?
-> >>
-> >> Below is the full list. Not everything has been upstream yet. There was
-> >> an attempt on AFI which one colleague is working on and should send new
-> >> version soon. I don't think anybody has started with upstreaming probe
-> >> counters.
-> >> Every part has different owner with unfortunately own upstreaming plan.
-> >>
-> >> Thanks,
-> >> Michal
-> >>
-> >> enum pm_ioctl_id {
-> >> 	IOCTL_GET_RPU_OPER_MODE = 0,
-> >> 	IOCTL_SET_RPU_OPER_MODE = 1,
-> >> 	IOCTL_RPU_BOOT_ADDR_CONFIG = 2,
-> >> 	IOCTL_TCM_COMB_CONFIG = 3,
-> >> 	IOCTL_SET_TAPDELAY_BYPASS = 4,
-> >> 	IOCTL_SET_SGMII_MODE = 5,
-> >> 	IOCTL_SD_DLL_RESET = 6,
-> >> 	IOCTL_SET_SD_TAPDELAY = 7,
-> >> 	IOCTL_SET_PLL_FRAC_MODE = 8,
-> >> 	IOCTL_GET_PLL_FRAC_MODE = 9,
-> >> 	IOCTL_SET_PLL_FRAC_DATA = 10,
-> >> 	IOCTL_GET_PLL_FRAC_DATA = 11,
-> >> 	IOCTL_WRITE_GGS = 12,
-> >> 	IOCTL_READ_GGS = 13,
-> >> 	IOCTL_WRITE_PGGS = 14,
-> >> 	IOCTL_READ_PGGS = 15,
-> >> 	/* IOCTL for ULPI reset */
-> >> 	IOCTL_ULPI_RESET = 16,
-> >> 	/* Set healthy bit value */
-> >> 	IOCTL_SET_BOOT_HEALTH_STATUS = 17,
-> >> 	IOCTL_AFI = 18,
-> >> 	/* Probe counter read/write */
-> >> 	IOCTL_PROBE_COUNTER_READ = 19,
-> >> 	IOCTL_PROBE_COUNTER_WRITE = 20,
-> >> 	IOCTL_OSPI_MUX_SELECT = 21,
-> >> 	/* IOCTL for USB power request */
-> >> 	IOCTL_USB_SET_STATE = 22,
-> >> 	/* IOCTL to get last reset reason */
-> >> 	IOCTL_GET_LAST_RESET_REASON = 23,
-> >> 	/* AI engine NPI ISR clear */
-> >> 	IOCTL_AIE_ISR_CLEAR = 24,
-> >> 	/* Register SGI to ATF */
-> >> 	IOCTL_REGISTER_SGI = 25,
-> >> 	/* Runtime feature configuration */
-> >> 	IOCTL_SET_FEATURE_CONFIG = 26,
-> >> 	IOCTL_GET_FEATURE_CONFIG = 27,
-> >> };
-> > 
-> > Odd mix of comments and no comments...
-> > 
-> > Anyway, that's fine, just curious as to why there was a gap.  No real
-> > reason why you can't just add them all now right?
-> 
-> Code is firstly integrated to soc tree and then upstream. I would love
-> to see this happen vise versa but still marketing wants to deliver
-> features first to customers. On the other hand customers care about
-> getting features on the first place and they are fine with not having
-> upstream solution first.
-> Back to your comment. It can also happen while upstreaming that some
-> numbers are simply not used because design is changed. That's why that
-> numbers can be skipped because it was just temporary solution or not
-> proper design.
-> It doesn't mean that these numbers can't be listed but on the other hand
-> why they should be listed if they shouldn't/can't be used.
-> That's why over time we are just adding number which are used by that
-> patchset.
+From: wangyong <wang.yong12@zte.com.cn>
 
-Ok, that makes sense to keep this in sync with the newly added features,
-that way you don't have the "temporary number" problem.
+Use the global variable num_events to record the number of vmpressure
+events registered by the system, and wake up work only when there
+is registration event.
+Usually, the vmpressure event is not registered in the system, this patch
+can avoid waking up work and doing nothing.
 
-thanks,
+Test with 5.14.0-rc5-next-20210813 on x86_64 4G ram.
+Consume cgroup memory until it is about to be reclaimed, then execute
+"perf stat -I 2000 malloc.out" command to trigger memory reclamation
+and get performance results.
+The context-switches is reduced by about 20 times.
 
-greg k-h
+unpatched:
+Average of 10 test results
+582.4674048     task-clock(msec)
+19910.8         context-switches
+0               cpu-migrations
+1292.9          page-faults
+414784733.1     cycles
+580070698.4     instructions
+125572244.7     branches
+2073541.2       branch-misses
+
+patched:
+Average of 10 test results
+973.6174796     task-clock(msec)
+988.6           context-switches
+0               cpu-migrations
+1785.2          page-faults
+772883602.4     cycles
+1360280911      instructions
+290519434.9     branches
+3378378.2       branch-misses
+
+Signed-off-by: wangyong <wang.yong12@zte.com.cn>
+---
+
+Changlogs in v3:
+  -Use static inline helper to know whether there
+   is registration event.
+  -Add necessary description.
+  -The location of the helper is based on that the else
+   branch will modify the socket_pressure and will not
+   wake up the work, and it is necessary to judge the tree
+   parameters at the same time.
+
+Changlogs in v2:
+  -Use static_key type data as global variable.
+  -Make event registration judgment earlier.
+
+ mm/vmpressure.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+index 76518e4..1f53ced 100644
+--- a/mm/vmpressure.c
++++ b/mm/vmpressure.c
+@@ -67,6 +67,16 @@ static const unsigned int vmpressure_level_critical = 95;
+  */
+ static const unsigned int vmpressure_level_critical_prio = ilog2(100 / 10);
+ 
++/*
++ * Count the number of vmpressure events registered in the system.
++ */
++DEFINE_STATIC_KEY_FALSE(num_events);
++
++static __always_inline bool vmpressure_unregistered(void)
++{
++	return !static_branch_unlikely(&num_events);
++}
++
+ static struct vmpressure *work_to_vmpressure(struct work_struct *work)
+ {
+ 	return container_of(work, struct vmpressure, work);
+@@ -272,6 +282,12 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+ 		return;
+ 
+ 	if (tree) {
++		/* If there is no registered event, return directly.
++		 * We wake up work only when there is registration event.
++		 */
++		if (vmpressure_unregistered())
++			return;
++
+ 		spin_lock(&vmpr->sr_lock);
+ 		scanned = vmpr->tree_scanned += scanned;
+ 		vmpr->tree_reclaimed += reclaimed;
+@@ -407,6 +423,7 @@ int vmpressure_register_event(struct mem_cgroup *memcg,
+ 	mutex_lock(&vmpr->events_lock);
+ 	list_add(&ev->node, &vmpr->events);
+ 	mutex_unlock(&vmpr->events_lock);
++	static_branch_inc(&num_events);
+ 	ret = 0;
+ out:
+ 	kfree(spec_orig);
+@@ -435,6 +452,7 @@ void vmpressure_unregister_event(struct mem_cgroup *memcg,
+ 		if (ev->efd != eventfd)
+ 			continue;
+ 		list_del(&ev->node);
++		static_branch_dec(&num_events);
+ 		kfree(ev);
+ 		break;
+ 	}
+-- 
+2.7.4
+
