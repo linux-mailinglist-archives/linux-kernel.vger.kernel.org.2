@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B39F41742E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7262E4172D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345364AbhIXNDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54096 "EHLO mail.kernel.org"
+        id S1344692AbhIXMvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:51:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345168AbhIXNA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:00:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72A38613D2;
-        Fri, 24 Sep 2021 12:53:51 +0000 (UTC)
+        id S1344019AbhIXMuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:50:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2194161263;
+        Fri, 24 Sep 2021 12:48:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488032;
-        bh=Fe0u47UtFxmHHLPrc9Z6tjunTngUMbu/DcOtnGOPw1Y=;
+        s=korg; t=1632487693;
+        bh=ouAl9kHT6zBoIB9XgltFj93veoII8CkLD8fdgp3Ux2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MrkBvva/k02A2E46bOQjRdHTwu81OldGZWaEopMOKKju7nAHC88uSEn42NCvI9Cej
-         /Zr9ijP6Ekjc7iHlgb+i+roslzdOSpZQSUdQ832pDTrmVqdqlATreTIt4JU8TUc12J
-         usYxKySCorcdwVvvnB/sTwY8rrsEW+JkB/f0j9eM=
+        b=ZVujgrmduN5KqDaf8ys1FSQtWfjlzr+JRTPoxx9z6gUfesVJMAEdAXvJ4S9eE249F
+         frQhQuRqkqZKWlPsUqUcLIkCmVjkqFDOF1moX6XQIo3fRmp0xCrgBNZyr1gbvwiLtB
+         1SC4kqZXMvo07vh+sbwCajy5IABjg1uieS0aA9kI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 056/100] dmaengine: sprd: Add missing MODULE_DEVICE_TABLE
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 4.19 11/34] 9p/trans_virtio: Remove sysfs file on probe failure
 Date:   Fri, 24 Sep 2021 14:44:05 +0200
-Message-Id: <20210924124343.308012761@linuxfoundation.org>
+Message-Id: <20210924124330.333180805@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit 4faee8b65ec32346f8096e64c5fa1d5a73121742 ]
+commit f997ea3b7afc108eb9761f321b57de2d089c7c48 upstream.
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+This ensures we don't leak the sysfs file if we failed to
+allocate chan->vc_wq during probe.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-Link: https://lore.kernel.org/r/1620094977-70146-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: http://lkml.kernel.org/r/20210517083557.172-1-xieyongji@bytedance.com
+Fixes: 86c8437383ac ("net/9p: Add sysfs mount_tag file for virtio 9P device")
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/sprd-dma.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/9p/trans_virtio.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
-index 0ef5ca81ba4d..4357d2395e6b 100644
---- a/drivers/dma/sprd-dma.c
-+++ b/drivers/dma/sprd-dma.c
-@@ -1265,6 +1265,7 @@ static const struct of_device_id sprd_dma_match[] = {
- 	{ .compatible = "sprd,sc9860-dma", },
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, sprd_dma_match);
+--- a/net/9p/trans_virtio.c
++++ b/net/9p/trans_virtio.c
+@@ -620,7 +620,7 @@ static int p9_virtio_probe(struct virtio
+ 	chan->vc_wq = kmalloc(sizeof(wait_queue_head_t), GFP_KERNEL);
+ 	if (!chan->vc_wq) {
+ 		err = -ENOMEM;
+-		goto out_free_tag;
++		goto out_remove_file;
+ 	}
+ 	init_waitqueue_head(chan->vc_wq);
+ 	chan->ring_bufs_avail = 1;
+@@ -638,6 +638,8 @@ static int p9_virtio_probe(struct virtio
  
- static int __maybe_unused sprd_dma_runtime_suspend(struct device *dev)
- {
--- 
-2.33.0
-
+ 	return 0;
+ 
++out_remove_file:
++	sysfs_remove_file(&vdev->dev.kobj, &dev_attr_mount_tag.attr);
+ out_free_tag:
+ 	kfree(tag);
+ out_free_vq:
 
 
