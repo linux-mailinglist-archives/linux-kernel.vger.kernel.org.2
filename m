@@ -2,225 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2FB417993
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD60E41799F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344344AbhIXRTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 13:19:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25604 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343923AbhIXRTl (ORCPT
+        id S1347694AbhIXRTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 13:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347468AbhIXRTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 13:19:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632503887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=eQGrOpfP233mFmIfFg/o+cJ+c+v9gOkxJH/IeGmKkL0=;
-        b=e+PZJzbKUbJpvK7/HxyUWIM9ij9ihZEKckbN7tVDrpdIDGRUAXFdcIXzatrAMIUcSy1U2J
-        b3jHxHxacDmtBMhoGxKuyGwLT14nfCvFSucmghzrpY5LOFqb9rEELwZqh6XPzq6z1dMgFr
-        aAc8PJDXykAKghtPfxKXz6lRLTrsgwY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-POZdDApVPBmG1-VdzFXypg-1; Fri, 24 Sep 2021 13:18:05 -0400
-X-MC-Unique: POZdDApVPBmG1-VdzFXypg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED37B8015C7;
-        Fri, 24 Sep 2021 17:17:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B39FD19D9B;
-        Fri, 24 Sep 2021 17:17:53 +0000 (UTC)
-Subject: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-From:   David Howells <dhowells@redhat.com>
-To:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
-        Bob Liu <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Seth Jennings <sjenning@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
-        Dan Magenheimer <dan.magenheimer@oracle.com>,
-        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        linux-btrfs@vger.kernel.org, dhowells@redhat.com,
-        dhowells@redhat.com, darrick.wong@oracle.com,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 24 Sep 2021 18:17:52 +0100
-Message-ID: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 24 Sep 2021 13:19:44 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A026C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:18:11 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id m70so7252586ybm.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:18:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QMNH1n+J9Sdp/Dhc4InVJUy+tIIlUR+ChPt/tLgskEw=;
+        b=aLE0RcKB98oARudLo8/YXOn4Q6uewwPUUzHKjKmNvi27bu83jqBw7XkYFRQjhjhSjF
+         CmWoUrwGv4OPfvNRARxDJ2tYg4esu97zljUEruRbbT6d1d+7ocUYQY0NkIi6pHpoto09
+         bZgkYxQrIHVUWdRxrDHWOLKfwh8WGEdZSXqpapmHU3/CB7k+P2tkUh6GBmMKVfUXV7AC
+         dRnd5HgoCUET/dQhsYo1aVEUvpEvSRgfmga0bn4HOmyKkrZiv+BUuqn+q72H0NKAC3GV
+         z3b+SxR7Qm/7K3rg6L/j+RMJ88eLPSQpYq5Mi4mGkTCV3Pnowd6c3NqmkrhwHZBSZedn
+         va1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QMNH1n+J9Sdp/Dhc4InVJUy+tIIlUR+ChPt/tLgskEw=;
+        b=THvWopwoiDcliFu5bujli+H6EBScSY9mIiMxNbjH3Ayi8JqQ4McleY94uBxth8bsY5
+         +chweLhM8MeYNSzvBxUMJ0dwoApRw9nqHHa+x27NDZcZqn5zMNuizRd/xgX7k+UugxC7
+         6PI3Ca64mM5+/la9HU3aHeGJH13QJLVJBAaBi089Oa5QRWWIhbuJzZybhz5f9AJi97jT
+         NC+UbwJmOOWo64JN/IU/0IeXO8J+/otSGzR3X5E8Qn0aUYRm4EkpVqJnE7IJdTY5oHcF
+         Xcc258OMz9qTmdgen9S17F0Y3Sy2fmagv3Bs5YAfTZtybhXhDZ0nrb7cqP+wHH+0/NHk
+         wDaA==
+X-Gm-Message-State: AOAM533qptL9QKn0zqcT/3EMMs/8WzPUcurQjAGfMc6b1NuAxQ0jcMO7
+        MkYFmMNLban0gIlWyZ1aKd8MMokF625kqR9oD3ih5A==
+X-Google-Smtp-Source: ABdhPJzyKdCVKSFCibtqbyhxpBaijFfu673x+3GDeHkRohDZ3CDX23jeamrsn3495406nZjIQd9iKS2aGoduBpo5j1c=
+X-Received: by 2002:a25:3545:: with SMTP id c66mr14231452yba.317.1632503889886;
+ Fri, 24 Sep 2021 10:18:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210903021326.206548-1-keescook@chromium.org>
+ <20210904175511.oijbn4f2tzghwk7l@treble> <20210905165738.7e40d6e2cba3dd0724f85f3a@kernel.org>
+In-Reply-To: <20210905165738.7e40d6e2cba3dd0724f85f3a@kernel.org>
+From:   Marios Pomonis <pomonis@google.com>
+Date:   Fri, 24 Sep 2021 10:17:58 -0700
+Message-ID: <CAKXAmdgS3SL_qyjzjY32_DXe3WVTN+O=wYwJ9vkUXKhjmt87fA@mail.gmail.com>
+Subject: Re: [PATCH] x86/unwind/orc: Handle kretprobes_trampoline
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Kristen C Accardi <kristen.c.accardi@intel.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 5, 2021 at 12:57 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> On Sat, 4 Sep 2021 10:55:11 -0700
+> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> > On Thu, Sep 02, 2021 at 07:13:26PM -0700, Kees Cook wrote:
+> > > From: Marios Pomonis <pomonis@google.com>
+> > >
+> > > Fix a bug in the ORC unwinder when kretprobes has replaced a return
+> > > address with the address of `kretprobes_trampoline'. ORC mistakenly
+> > > assumes that the address in the stack is a return address and decrements
+> > > it by 1 in order to find the proper depth of the next frame.
+> > >
+> > > This issue was discovered while testing the FG-KASLR series[0][1] and
+> > > running the live patching test[2] that was originally failing[3].
+> > >
+> > > [0] https://lore.kernel.org/kernel-hardening/20200923173905.11219-1-kristen@linux.intel.com/
+> > > [1] https://github.com/KSPP/linux/issues/132
+> > > [2] https://github.com/lpechacek/qa_test_klp
+> > > [3] https://lore.kernel.org/lkml/alpine.LSU.2.21.2009251450260.13615@pobox.suse.cz/
+> > >
+> > > Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
+> > > Signed-off-by: Marios Pomonis <pomonis@google.com>
+> > > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > > Cc: Kristen C Accardi <kristen.c.accardi@intel.com>
+> > > Cc: Sami Tolvanen <samitolvanen@google.com>
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> >
+> > I suspect this is fixed by:
+> >
+> >   https://lkml.kernel.org/r/162756755600.301564.4957591913842010341.stgit@devnote2
+>
+> I think this can be a bit different issue. As far as I ran my test code
+> (same one in the above cover mail) with this fix, the stacktrace wasn't
+> fixed.
+>
+> ffffffff812b7c80  r  vfs_read+0x0    [FTRACE]
+> ffffffff813b4cc0  r  full_proxy_read+0x0    [FTRACE]
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>              cat-138     [002] ...1     9.488727: r_full_proxy_read_0: (vfs_read+0x99/0x190 <- full_proxy_read)
+>              cat-138     [002] ...1     9.488732: <stack trace>
+>  => kretprobe_trace_func+0x209/0x300
+>  => kretprobe_dispatcher+0x9d/0xb0
+>  => __kretprobe_trampoline_handler+0xc5/0x160
+>  => trampoline_handler+0x44/0x60
+>  => kretprobe_trampoline+0x25/0x50
+>              cat-138     [002] ...1     9.488733: r_vfs_read_0: (ksys_read+0x68/0xe0 <- vfs_read)
+>
+> Kees, can you also try to test with my series?
+> It should be able to be checked out with;
+>
+> git clone git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git -b kprobes/kretprobe-stackfix-v10
+>
+> Thank you,
 
-Hi Willy, Trond, Christoph,
+I tested this series in conjunction with FG-KASLR and klp_tc_12 fails.
+Therefore the patch of the cover mail fixes a different issue than the
+one of this series.
 
-Here's v3 of a change to make reads and writes from the swapfile use async
-DIO, adding a new ->swap_rw() address_space method, rather than readpage()
-or direct_IO(), as requested by Willy.  This allows NFS to bypass the write
-checks that prevent swapfiles from working, plus a bunch of other checks
-that may or may not be necessary.
-
-Whilst trying to make this work, I found that NFS's support for swapfiles
-seems to have been non-functional since Aug 2019 (I think), so the first
-patch fixes that.  Question is: do we actually *want* to keep this
-functionality, given that it seems that no one's tested it with an upstream
-kernel in the last couple of years?
-
-There are additional patches to get rid of noop_direct_IO and replace it
-with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use the
-new ->swap_rw method and thence remove the direct BIO submission paths from
-swap.
-
-I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure if
-that's necessary, but it seems accounting related.
-
-The synchronous DIO I/O code on NFS, raw blockdev, ext4 swapfile and xfs
-swapfile all seem to work fine.  Btrfs refuses to swapon because the file
-might be CoW'd.  I've tried doing "chattr +C", but that didn't help.
-
-The async DIO paths fail spectacularly (from I/O errors to ATA failure
-messages on the test disk using a normal swapspace); NFS just hangs.
-
-My patches can be found here also:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=swap-dio
-
-I tested this using the procedure and program outlined in the NFS patch.
-
-I also encountered occasional instances of the following warning with NFS, so
-I'm wondering if there's a scheduling problem somewhere:
-
-BUG: workqueue lockup - pool cpus=0-3 flags=0x5 nice=0 stuck for 34s!
-Showing busy workqueues and worker pools:
-workqueue events: flags=0x0
-  pwq 6: cpus=3 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-    in-flight: 1565:fill_page_cache_func
-workqueue events_highpri: flags=0x10
-  pwq 3: cpus=1 node=0 flags=0x1 nice=-20 active=1/256 refcnt=2
-    in-flight: 1547:fill_page_cache_func
-  pwq 1: cpus=0 node=0 flags=0x0 nice=-20 active=1/256 refcnt=2
-    in-flight: 1811:fill_page_cache_func
-workqueue events_unbound: flags=0x2
-  pwq 8: cpus=0-3 flags=0x5 nice=0 active=3/512 refcnt=5
-    pending: fsnotify_connector_destroy_workfn, fsnotify_mark_destroy_workfn, cleanup_offline_cgwbs_workfn
-workqueue events_power_efficient: flags=0x82
-  pwq 8: cpus=0-3 flags=0x5 nice=0 active=4/256 refcnt=6
-    pending: neigh_periodic_work, neigh_periodic_work, check_lifetime, do_cache_clean
-workqueue writeback: flags=0x4a
-  pwq 8: cpus=0-3 flags=0x5 nice=0 active=1/256 refcnt=4
-    in-flight: 433(RESCUER):wb_workfn
-workqueue rpciod: flags=0xa
-  pwq 8: cpus=0-3 flags=0x5 nice=0 active=38/256 refcnt=40
-    in-flight: 7:rpc_async_schedule, 1609:rpc_async_schedule, 1610:rpc_async_schedule, 912:rpc_async_schedule, 1613:rpc_async_schedule, 1631:rpc_async_schedule, 34:rpc_async_schedule, 44:rpc_async_schedule
-    pending: rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule
-workqueue ext4-rsv-conversion: flags=0x2000a
-pool 1: cpus=0 node=0 flags=0x0 nice=-20 hung=59s workers=2 idle: 6
-pool 3: cpus=1 node=0 flags=0x1 nice=-20 hung=43s workers=2 manager: 20
-pool 6: cpus=3 node=0 flags=0x0 nice=0 hung=0s workers=3 idle: 498 29
-pool 8: cpus=0-3 flags=0x5 nice=0 hung=34s workers=9 manager: 1623
-pool 9: cpus=0-3 flags=0x5 nice=-20 hung=0s workers=2 manager: 5224 idle: 859
-
-Note that this is due to DIO writes to NFS only, as far as I can tell, and
-that no reads had happened yet.
-
-Changes:
-========
-ver #3:
-   - Introduced a new ->swap_rw() method.
-   - Added feature support flags to the address_space_operations struct and
-     got rid of the checks for ->direct_() and noop_direct_IO() and
-     similar.
-   - Implemented swap_rw for nfs, adjusting the direct I/O code paths.
-   - Implemented swap_rw for blockdev, btrfs, ext4 and xfs.
-   - Got rid of the return value on swap_readpage() as it's never checked.
-
-ver #2:
-   - Remove the callback param to __swap_writepage() as it's invariant.
-   - Allocate the kiocb on the stack in sync mode.
-   - Do an async DIO write if WB_SYNC_ALL isn't set.
-   - Try to remove the BIO submission paths.
-
-David
-
-Link: https://lore.kernel.org/r/162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/162879971699.3306668.8977537647318498651.stgit@warthog.procyon.org.uk/ # v2
----
-David Howells (9):
-      mm: Remove the callback func argument from __swap_writepage()
-      mm: Add 'supports' field to the address_space_operations to list features
-      mm: Make swap_readpage() void
-      Introduce IOCB_SWAP kiocb flag to trigger REQ_SWAP
-      mm: Make swap_readpage() for SWP_FS_OPS use ->swap_rw() not ->readpage()
-      mm: Make __swap_writepage() do async DIO if asked for it
-      nfs: Fix write to swapfile failure due to generic_write_checks()
-      block, btrfs, ext4, xfs: Implement swap_rw
-      mm: Remove swap BIO paths and only use DIO paths
-
-
- Documentation/filesystems/vfs.rst |   8 +
- block/fops.c                      |   2 +
- drivers/block/loop.c              |   6 +-
- fs/9p/vfs_addr.c                  |   1 +
- fs/affs/file.c                    |   1 +
- fs/btrfs/inode.c                  |  14 +-
- fs/ceph/addr.c                    |  13 +-
- fs/cifs/file.c                    |  21 +-
- fs/direct-io.c                    |   2 +
- fs/erofs/data.c                   |   2 +-
- fs/exfat/inode.c                  |   1 +
- fs/ext2/inode.c                   |   4 +-
- fs/ext4/inode.c                   |  17 +-
- fs/f2fs/data.c                    |   1 +
- fs/fat/inode.c                    |   1 +
- fs/fcntl.c                        |   2 +-
- fs/fuse/dax.c                     |   2 +-
- fs/fuse/file.c                    |   1 +
- fs/gfs2/aops.c                    |   2 +-
- fs/hfs/inode.c                    |   1 +
- fs/hfsplus/inode.c                |   1 +
- fs/jfs/inode.c                    |   1 +
- fs/libfs.c                        |  12 -
- fs/nfs/direct.c                   |  28 +--
- fs/nfs/file.c                     |  15 +-
- fs/nilfs2/inode.c                 |   1 +
- fs/ntfs3/inode.c                  |   1 +
- fs/ocfs2/aops.c                   |   1 +
- fs/open.c                         |   3 +-
- fs/orangefs/inode.c               |   1 +
- fs/overlayfs/file.c               |   2 +-
- fs/overlayfs/inode.c              |   3 +-
- fs/reiserfs/inode.c               |   1 +
- fs/udf/file.c                     |   1 +
- fs/udf/inode.c                    |   1 +
- fs/xfs/xfs_aops.c                 |  13 +-
- fs/zonefs/super.c                 |   2 +-
- include/linux/bio.h               |   2 +
- include/linux/fs.h                |   7 +-
- include/linux/nfs_fs.h            |   2 +-
- include/linux/swap.h              |   2 +-
- mm/page_io.c                      | 356 +++++++++++++++---------------
- mm/swapfile.c                     |   4 +-
- 43 files changed, 275 insertions(+), 287 deletions(-)
-
-
+Thanks,
+Marios
+> >
+> >
+> > > ---
+> > >  arch/x86/kernel/unwind_orc.c | 12 +++++++++++-
+> > >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+> > > index a1202536fc57..8c5038b3b707 100644
+> > > --- a/arch/x86/kernel/unwind_orc.c
+> > > +++ b/arch/x86/kernel/unwind_orc.c
+> > > @@ -7,6 +7,7 @@
+> > >  #include <asm/unwind.h>
+> > >  #include <asm/orc_types.h>
+> > >  #include <asm/orc_lookup.h>
+> > > +#include <asm/kprobes.h>
+> > >
+> > >  #define orc_warn(fmt, ...) \
+> > >     printk_deferred_once(KERN_WARNING "WARNING: " fmt, ##__VA_ARGS__)
+> > > @@ -414,6 +415,15 @@ static bool get_reg(struct unwind_state *state, unsigned int reg_off,
+> > >     return false;
+> > >  }
+> > >
+> > > +static bool is_kretprobe_trampoline(unsigned long ip)
+> > > +{
+> > > +#ifdef     CONFIG_KRETPROBES
+> > > +   if (ip == (unsigned long)&kretprobe_trampoline)
+> > > +           return true;
+> > > +#endif
+> > > +   return false;
+> > > +}
+> > > +
+> > >  bool unwind_next_frame(struct unwind_state *state)
+> > >  {
+> > >     unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
+> > > @@ -540,7 +550,7 @@ bool unwind_next_frame(struct unwind_state *state)
+> > >             state->sp = sp;
+> > >             state->regs = NULL;
+> > >             state->prev_regs = NULL;
+> > > -           state->signal = false;
+> > > +           state->signal = is_kretprobe_trampoline(state->ip);
+> > >             break;
+> > >
+> > >     case UNWIND_HINT_TYPE_REGS:
+> > > --
+> > > 2.30.2
+> > >
+> >
+> > --
+> > Josh
+> >
+>
+>
+> --
+> Masami Hiramatsu <mhiramat@kernel.org>
