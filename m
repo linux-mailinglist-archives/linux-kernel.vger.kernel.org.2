@@ -2,165 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BE14176CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4EA4176CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346659AbhIXObS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S1346773AbhIXOeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbhIXObQ (ORCPT
+        with ESMTP id S231627AbhIXOeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:31:16 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D42C061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:29:43 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so13425200otj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:29:43 -0700 (PDT)
+        Fri, 24 Sep 2021 10:34:04 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18800C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:32:31 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id h2so6180013ybi.13
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:32:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/HUdMFtSIgoDC8oIDLutFI0kXoCcazheaXJ199ftm9g=;
-        b=aXxY4VUYQrGrb+hPUPt171rF7ZoorniSwGe2E4HTBrAkPzlbS/JkVWAJ0jufnLCdL8
-         iwxiEweiMD5hpDUOcfs2WOovGWeBpLHVrqqXHl9WA6ojcQFjDbJyp2bKejo2NPTClxfJ
-         hG3aCAfuOLoq7fWUY88c3I7QFz8FYaJGyzTjGYi6ede+vj4ZVhD4OT1mMOYpgbECpHsX
-         Eu7hr8YTMjLSlcIkW5r92gwT7jDakW1i3QDiUTxg5awGkEWxpFEJxSNSHY+tCXMsZuwG
-         YVxv9qPmUK+5uhbw1Jb3fWng7Xuk8jQSgLSYy02Ecp9dIrmx/xzA3tjEMGBrEED7T4Ub
-         VeFg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PCjQZcVJmjPWZioCoH0GfM/uPKlpTelBzg4TO/HnFhI=;
+        b=UYF+YUVwUcVhe3APQrnO15JByJbbU4EgOO2uJm9IYny9sOz2Wp3B4ktp3/XRxtjVA8
+         LBLncoyj+R0eNm3k6f5LScAiuSvA2alqziPikFWG5qzp8NiIki0ikLwVXSHI7SEEvj9N
+         YHxy21e6PDoCCr+vpzcgFuicZxW9Dgb5vzRVF15J2YkqQ3D3NL/6Z9DD/oVISSgYzRxr
+         NQI8iiMp/cm5D2D6dCMqhGzcOT2lus24afyFKjnYVae+V88oThBgR2fuwpgZfIVnsZmo
+         PGj6j4m6SaiFEMr+vPK3ozX2nHJG445XF08IdhB+bOwbScZc4KcdXDWqnz+asjRexSNY
+         SYsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/HUdMFtSIgoDC8oIDLutFI0kXoCcazheaXJ199ftm9g=;
-        b=frCVuJDctlfGAakVKm9trs2F5WplgyHoSZ3eutjtc74H1ogvOk5pTi/hlbX7jXWoxN
-         zFmiS7hFbzmXSpmpYq7mmTldxvo+CoPXxFGNGpbfY05jTbtA7dqHoWlcmy2fRts+TaVr
-         J0y6fte8/sLceAoIYHzAlgqOCdv7zkEyQjmN/G3K2kYUcXiRvvKFAQIVEfUI8SZZSiDt
-         /JmM8TLyN07+MDyiJs5RQjyzAVQkNVkXCeG5uWWrVgBvdQ0JPqUJUoyGZkMa6g57kplr
-         RQ8j6h84Uiu7f//RLAUm0tQ/zbUxnOqwsRVWCc9V/SyFjSrAI8sm9I5OziGJnu+uTAqj
-         YxAA==
-X-Gm-Message-State: AOAM531YUua+2p9hEUg5cC3otmT5PSAj5q5FZjr6UXNYZ1vYCGYe/mv5
-        e4R32Vh7+/9XlzZBt3gjzaSR4A==
-X-Google-Smtp-Source: ABdhPJzv7ZLmAjdY7QEBnhVbHV9uXR3NPTSGFDmN2meB1pCWCEzM5B7NDpR1KtO4BLg6jokSeq1YvA==
-X-Received: by 2002:a9d:6192:: with SMTP id g18mr4321765otk.314.1632493781163;
-        Fri, 24 Sep 2021 07:29:41 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j4sm2121137oia.56.2021.09.24.07.29.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 07:29:40 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 07:30:19 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, Doug Anderson <dianders@google.com>
-Subject: Re: [PATCH v5 1/2] pwm: Introduce single-PWM of_xlate function
-Message-ID: <YU3g+8Rwfyq3yp5S@ripper>
-References: <20210924021225.846197-1-bjorn.andersson@linaro.org>
- <20210924071652.skkx2jgeivg4uiht@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PCjQZcVJmjPWZioCoH0GfM/uPKlpTelBzg4TO/HnFhI=;
+        b=2ySzJKuTTRRsHJu9L0MJmiuAUFD3ZmeeGmd78e4uhGLrGsZU3uSDPCT3Tqol8A0P5x
+         r2B4uayVGVjoH/097G6NC5oj8kLdaWe/uIujL6q1QL02h65HYXiIhcFHsse+B7HS2HbK
+         0uZ9mJYMDx0u6l/oQG3eecrP4e3X006OOb7I/1ONiHypm1mdAdDTlWdJcuV6mJYjS50C
+         iC8TQyWe9sP3UAiGWTx865TZGyLYyZwL49ObBrjaOBnCuNNSuVTOrEuM8qqxR3g8jkj0
+         /16rhfXGfVYsjFAtzDQgYkLZHtIAnpIjIGb7Zvw3Q7hkDVm/cZeSAhUKquiubjRcByRC
+         +UeA==
+X-Gm-Message-State: AOAM533ryYLfn22QQWqnAG5fc8nzh2ILFZZvWB3+/wUkv8v4qfmHNC67
+        QA2X8uaramx78sFjl+pVTD5vRVJAXX0O9n8DZDBYkNALp2k=
+X-Google-Smtp-Source: ABdhPJzIlLF34YGWfPvgQ9nBPguvg4Rp0wtZnARw0kUV7S/YfbpAZoEuMNhdGf3E0DXLWY87heVqiceD4P05RLyXKcU=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr12728856ybl.59.1632493950045;
+ Fri, 24 Sep 2021 07:32:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924071652.skkx2jgeivg4uiht@pengutronix.de>
+References: <20210923095316.13867-1-yee.lee@mediatek.com>
+In-Reply-To: <20210923095316.13867-1-yee.lee@mediatek.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 24 Sep 2021 07:32:19 -0700
+Message-ID: <CABCJKudkcxtDX89hXRTv7osFOxqMsvv=OK5BpcO4-xPHrQB9dg@mail.gmail.com>
+Subject: Re: [PATCH] scs: Release kasan vmalloc poison in scs_free process
+To:     yee.lee@mediatek.com
+Cc:     LKML <linux-kernel@vger.kernel.org>, nicholas.Tang@mediatek.com,
+        Kuan-Ying.lee@mediatek.com, chinwen.chang@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 24 Sep 00:16 PDT 2021, Uwe Kleine-K?nig wrote:
+Hi,
 
-> On Thu, Sep 23, 2021 at 09:12:24PM -0500, Bjorn Andersson wrote:
-> > The existing pxa driver and the upcoming addition of PWM support in the
-> > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
-> > thereby a need for a of_xlate function with the period as its single
-> > argument.
-> > 
-> > Introduce a common helper function in the core that can be used as
-> > of_xlate by such drivers and migrate the pxa driver to use this.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > Changes since v4:
-> > - None
-> > 
-> >  drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
-> >  drivers/pwm/pwm-pxa.c | 16 +---------------
-> >  include/linux/pwm.h   |  2 ++
-> >  3 files changed, 29 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> > index 4527f09a5c50..2c6b155002a2 100644
-> > --- a/drivers/pwm/core.c
-> > +++ b/drivers/pwm/core.c
-> > @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const struct of_phandle_args *args)
-> >  }
-> >  EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
-> >  
-> > +struct pwm_device *
-> > +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args *args)
-> > +{
-> > +	struct pwm_device *pwm;
-> > +
-> > +	if (pc->of_pwm_n_cells < 1)
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> > +	/* validate that one cell is specified, optionally with flags */
-> > +	if (args->args_count != 1 && args->args_count != 2)
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> > +	pwm = pwm_request_from_chip(pc, 0, NULL);
-> > +	if (IS_ERR(pwm))
-> > +		return pwm;
-> > +
-> > +	pwm->args.period = args->args[0];
-> > +	pwm->args.polarity = PWM_POLARITY_NORMAL;
-> > +
-> > +	if (args->args_count == 2 && args->args[2] & PWM_POLARITY_INVERTED)
-> > +		pwm->args.polarity = PWM_POLARITY_INVERSED;
-> 
-> of_pwm_xlate_with_flags is a bit more complicated. Translating
-> accordingly this would yield:
-> 
-> 	if (pc->of_pwm_n_cells >= 2) {
-> 		if (args->args_count > 1 && args->args[1] & PWM_POLARITY_INVERTED)
-> 			pwm->args.polarity = PWM_POLARITY_INVERSED;
-> 	}
-> 
-> Given that pc->of_pwm_n_cells isn't used when a phandle is parsed (in
-> of_pwm_get()) I think your variant is fine.
-> 
+On Thu, Sep 23, 2021 at 2:53 AM <yee.lee@mediatek.com> wrote:
+>
+> From: Yee Lee <yee.lee@mediatek.com>
+>
+> Since scs allocation has been moved to vmalloc region, the
+> shadow stack is protected by kasan_posion_vmalloc.
+> However, the vfree_atomic operation needs to access
+> its context for scs_free process and causes kasan error
+> as the dump info below.
+>
+> This patch Adds kasan_unpoison_vmalloc() before vfree_atomic,
+> which aligns to the prior flow as using kmem_cache.
+> The vmalloc region will go back posioned in the following
+> vumap() operations.
+>
+>  ==================================================================
+>  BUG: KASAN: vmalloc-out-of-bounds in llist_add_batch+0x60/0xd4
+>  Write of size 8 at addr ffff8000100b9000 by task kthreadd/2
+>
+>  CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.15.0-rc2-11681-(skip)
+>  Hardware name: linux,dummy-virt (DT)
+>  Call trace:
+>   dump_backtrace+0x0/0x43c
+>   show_stack+0x1c/0x2c
+>   dump_stack_lvl+0x68/0x84
+>   print_address_description+0x80/0x394
+>   kasan_report+0x180/0x1dc
+>   __asan_report_store8_noabort+0x48/0x58
+>   llist_add_batch+0x60/0xd4
+>   vfree_atomic+0x60/0xe0
+>   scs_free+0x1dc/0x1fc
+>   scs_release+0xa4/0xd4
+>   free_task+0x30/0xe4
+>   __put_task_struct+0x1ec/0x2e0
+>   delayed_put_task_struct+0x5c/0xa0
+>   rcu_do_batch+0x62c/0x8a0
+>   rcu_core+0x60c/0xc14
+>   rcu_core_si+0x14/0x24
+>   __do_softirq+0x19c/0x68c
+>   irq_exit+0x118/0x2dc
+>   handle_domain_irq+0xcc/0x134
+>   gic_handle_irq+0x7c/0x1bc
+>   call_on_irq_stack+0x40/0x70
+>   do_interrupt_handler+0x78/0x9c
+>   el1_interrupt+0x34/0x60
+>   el1h_64_irq_handler+0x1c/0x2c
+>   el1h_64_irq+0x78/0x7c
+>   _raw_spin_unlock_irqrestore+0x40/0xcc
+>   sched_fork+0x4f0/0xb00
+>   copy_process+0xacc/0x3648
+>   kernel_clone+0x168/0x534
+>   kernel_thread+0x13c/0x1b0
+>   kthreadd+0x2bc/0x400
+>   ret_from_fork+0x10/0x20
+>
+>  Memory state around the buggy address:
+>   ffff8000100b8f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>   ffff8000100b8f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>  >ffff8000100b9000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>                     ^
+>   ffff8000100b9080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>   ffff8000100b9100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>  ==================================================================
+>
+> CC: Matthias Brugger <matthias.bgg@gmail.com>
+> CC: Will Deacon <will@kernel.org>
+> CC: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Yee Lee <yee.lee@mediatek.com>
+> ---
+>  kernel/scs.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/scs.c b/kernel/scs.c
+> index e2a71fc82fa0..25c0d8e416e6 100644
+> --- a/kernel/scs.c
+> +++ b/kernel/scs.c
+> @@ -68,6 +68,7 @@ void scs_free(void *s)
+>
+>         __scs_account(s, -1);
+>
+> +       kasan_unpoison_vmalloc(s, SCS_SIZE);
 
-Right, the difference from of_pwm_xlate_with_flags is that this version
-will pick up the flags even if the driver says it has n_cells = 1.
+Thanks for the patch! I believe I had this in the original vmap SCS
+series, but Will pointed out that unpoisoning shouldn't be necessary
+before vfree_atomic() and I don't remember seeing this KASAN error
+back then. I wonder if something changed there? Either way, the patch
+looks good to me.
 
-I didn't see a strong reason for doing the extra check and the drawback
-with it is that if I then write in my dts that my channel should be
-INVERTED the driver won't be able to bump the n_cells to 2, because that
-would cause a regression.
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 
-Would you like me to add this extra check? Or perhaps ensure that the
-commit message captures my reasoning here?
-
-> So I think technically the patch is good, for me the question is if we
-> want to make new drivers of_pwm_xlate_with_flags for consistency even
-> though this would mean that the first argument has to be 0 for all
-> phandles. Thierry? Lee?
-> 
-
-I find it typical for single entity providers to be defined with
-#foo-cells = <0> (or 1 if you have flags) and not pass a "dummy" 0.
-
-We did talk about this with Rob in a previous version of this patch and
-came to the conclusion that this was the appropriate thing to do...
-
-Thanks,
-Bjorn
+Sami
