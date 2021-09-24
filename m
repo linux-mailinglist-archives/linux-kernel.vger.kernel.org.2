@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2B2417231
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB9C4172F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343825AbhIXMq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41548 "EHLO mail.kernel.org"
+        id S1344647AbhIXMw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:52:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343810AbhIXMqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:46:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D31F26124B;
-        Fri, 24 Sep 2021 12:44:34 +0000 (UTC)
+        id S1344614AbhIXMvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:51:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9425C61284;
+        Fri, 24 Sep 2021 12:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487475;
-        bh=nVvIbY3IOyoMH581Afmu+44iYE0L2gN3H5W2W9bGVbo=;
+        s=korg; t=1632487726;
+        bh=nsnzZd4ajgOpxYl+PuhIkoBQILawStDEbi7Bo5ncsnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SYhERdUP690U0M9/tlEqVdL8b9/judkABI7ppE7YgYzABJmuakvY3xnowt6gJWxmO
-         maVhqxnwb1x6njfksjKnh6akYaM/wNVt+RtfGc9ZDii0+nQrly3BBhx9LUm5JLu8Rs
-         9zBIdX93Lv0eonHl6so4CKXC19lKDVf1yzxSs220=
+        b=g6SKipcAgzhDgm3pvufPxw4gx1khC1hhHoQVtlBrKMke2LFykq9po46xQ9NHCB5UQ
+         ByCmM1N5DSnMopXHmT7VzTee81atAyQnFI3KICBuFNIObGxyDxEInnxeIP81WQa7XT
+         JMbgNidwFmFB8Qty9f9Nc4KP1h9FfpB/+0BcRCSs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn " <serge@hallyn.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 17/23] nilfs2: fix memory leak in nilfs_sysfs_create_##name##_group
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.19 04/34] apparmor: remove duplicate macro list_entry_is_head()
 Date:   Fri, 24 Sep 2021 14:43:58 +0200
-Message-Id: <20210924124328.382986788@linuxfoundation.org>
+Message-Id: <20210924124330.109526391@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
-References: <20210924124327.816210800@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nanyong Sun <sunnanyong@huawei.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 24f8cb1ed057c840728167dab33b32e44147c86f ]
+commit 9801ca279ad37f72f71234fa81722afd95a3f997 upstream.
 
-If kobject_init_and_add return with error, kobject_put() is needed here to
-avoid memory leak, because kobject_init_and_add may return error without
-freeing the memory associated with the kobject it allocated.
+Strangely I hadn't had noticed the existence of the list_entry_is_head()
+in apparmor code when added the same one in the list.h.  Luckily it's
+fully identical and didn't break builds.  In any case we don't need a
+duplicate anymore, thus remove it from apparmor code.
 
-Link: https://lkml.kernel.org/r/20210629022556.3985106-4-sunnanyong@huawei.com
-Link: https://lkml.kernel.org/r/1625651306-10829-4-git-send-email-konishi.ryusuke@gmail.com
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Link: https://lkml.kernel.org/r/20201208100639.88182-1-andriy.shevchenko@linux.intel.com
+Fixes: e130816164e244 ("include/linux/list.h: add a macro to test if entry is pointing to the head")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: John Johansen <john.johansen@canonical.com>
+Cc: James Morris <jmorris@namei.org>
+Cc: "Serge E . Hallyn " <serge@hallyn.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nilfs2/sysfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ security/apparmor/apparmorfs.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index d7d6791c408e..e8d4828287c3 100644
---- a/fs/nilfs2/sysfs.c
-+++ b/fs/nilfs2/sysfs.c
-@@ -101,8 +101,8 @@ static int nilfs_sysfs_create_##name##_group(struct the_nilfs *nilfs) \
- 	err = kobject_init_and_add(kobj, &nilfs_##name##_ktype, parent, \
- 				    #name); \
- 	if (err) \
--		return err; \
--	return 0; \
-+		kobject_put(kobj); \
-+	return err; \
- } \
- static void nilfs_sysfs_delete_##name##_group(struct the_nilfs *nilfs) \
- { \
--- 
-2.33.0
-
+--- a/security/apparmor/apparmorfs.c
++++ b/security/apparmor/apparmorfs.c
+@@ -1960,9 +1960,6 @@ fail2:
+ 	return error;
+ }
+ 
+-
+-#define list_entry_is_head(pos, head, member) (&pos->member == (head))
+-
+ /**
+  * __next_ns - find the next namespace to list
+  * @root: root namespace to stop search at (NOT NULL)
 
 
