@@ -2,191 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491684175A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67784175A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345182AbhIXN1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        id S1345895AbhIXN2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346173AbhIXN1l (ORCPT
+        with ESMTP id S1344885AbhIXN2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:27:41 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93754C09CE64
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:02:04 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id t7so27164784wrw.13
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:02:04 -0700 (PDT)
+        Fri, 24 Sep 2021 09:28:02 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F0EC0A888B;
+        Fri, 24 Sep 2021 06:02:55 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id q23so8810095pfs.9;
+        Fri, 24 Sep 2021 06:02:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/nem774aIDIH449b+9j/jMCwWdjaEqBhcPs9HQ8+G6o=;
-        b=fZaJHWBqGkwZz0UXD65mS+PAixFja2Jpl9NKfHk8AKi5+3i8IZ0Xfmol5mIc6qfTzK
-         F0gOWKIALZ1alJoxeR2+7ANTY8qpK/ZxTnXg682Rmmozlg4tpHZhkPzD9uwOqASVhFfm
-         jXuHWh8hDCVg2Gdr+dU4Ddg+riaKzPv86GY/Y8JE+QhNaO4s2/wwTX7PZQCKlhskrq/h
-         j2ivl8aXZcNbMjQufiu7bMB1DuqeS5Qok0vgAix+AYnOr+3OZDNpzSRwnq7a7CyN4vsQ
-         M1KPzPpB8+vhSrIN6O8bl2SX4wtgzGOawqa5Lvdek8K579bzXMR1DEPCCTvyn6izI7RJ
-         huKQ==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0k4GidOpDOZlh4Z8G1WDVmPhA4Roxd0DMwZbEhyIkW0=;
+        b=HmA3vYJrpvO5HCGcY/nOKAYXKJu2tMpAza2IwZBLmiwaBi3bpCiqGsRD2YiJi0Wpqd
+         HQxVniQ+PdUJ/RcQQCVgacoFTkaDXsyLkbZ+huAdUO3/QrK756amHJ17LFNDSGW3M6Hf
+         pr74o52t++xDu6/0SgJAwWwOuFtCGZzhpKHMCdt9rPK2l9t1f1Q0paQk1c6tjmZbW6Qo
+         Fu+3/LqZIprNu82Ub/Appl8ZvLQjaOigNzq+sFA9+BIo4QKiqmEoJCwpIXYe9oX4pCG9
+         RNPJPnUKD8MtfuCabWGyYSveEl1ShulzpiXzOk9zZcQsNdyftKW76tGLtf2BG1OFoGbO
+         AUgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/nem774aIDIH449b+9j/jMCwWdjaEqBhcPs9HQ8+G6o=;
-        b=YRwM4L0xtPx1KERzM0E1GQJAS61vpLTsCIk0XzLEEkNYwOEOxYS+xjBwiQNTgBbIDA
-         niuGWegCCY87b95nsW4yZTU9lqKSqnDODAQJRp16as9wxBq0s8fN1HeWQ89w/OUhdJeP
-         X6pXm705Tm8pku1FjNg8GP+e8EoIoXpqiAqhaEKBDIpX2U+WRlSC6RYyh7vgDplF5pIG
-         Ua2NyoQMPVCbIpa/oYHqStK2nZ3ky6LVICcLsoVaehmUcSttWqQEwibwFc2GVIDTlPc4
-         YqYk0TxmYhwqdAS2/Nqoi7UW+o+Ngo9ClPZcjxPXbn+6zuRGlsODZOO54ZK2EdVUcfsC
-         qgmw==
-X-Gm-Message-State: AOAM533gSKS5cz1G6R8rKSiwt87MJGpzpuTnD2JgB1XR+zugwWZOD1qb
-        zUYpBPP5xJuV2LKSGrMO5YcmHQ==
-X-Google-Smtp-Source: ABdhPJyPnlcEV6+SsMvvV1vzwVBA0hOU/vlgmzUxlOoHeJiko66yykXceA9Ima5H1fwRF5KrCmI+IA==
-X-Received: by 2002:a7b:c453:: with SMTP id l19mr1935567wmi.7.1632488522987;
-        Fri, 24 Sep 2021 06:02:02 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:594c:8b31:64da:f783])
-        by smtp.gmail.com with ESMTPSA id n66sm8235632wmn.2.2021.09.24.06.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 06:02:02 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 15:01:56 +0200
-From:   Marco Elver <elver@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH v3 4/5] kfence: limit currently covered allocations when
- pool nearly full
-Message-ID: <YU3MRGaCaJiYht5g@elver.google.com>
-References: <20210923104803.2620285-1-elver@google.com>
- <20210923104803.2620285-4-elver@google.com>
- <CACT4Y+Zvm4dXQY2tCuypso9aU97_6U2dLhfg2NNA8GTvcQoCLQ@mail.gmail.com>
- <CAG_fn=V31jEBeEVh0H2+uPAd2AhV9y6hYJmcP0P_i05UJ+MiTg@mail.gmail.com>
- <CANpmjNOh0ugPq90cVRPAbR-6qr=Q4CsQ_R1Qxk_Bi4TocgwUQA@mail.gmail.com>
- <20210923162811.3cc8188d6a30d9eed2375468@linux-foundation.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0k4GidOpDOZlh4Z8G1WDVmPhA4Roxd0DMwZbEhyIkW0=;
+        b=qnf1o0ReVuGVgAkO1FXZpaF/2zqk5V/9BnIwmScwlQcQz00CrhbLBGg34ikw+/4HIL
+         0O6Z7BXzQIgochqJKmqbWHqUOcFQmYy1QosnmZIsencEGR9hQYwKVj190Hgp8ThZgPkr
+         I8vwrVOgfckrOINH6tXl0mdDwJ5BTODPTl9Otske8pkHweKnRjTBepSA0jsFWARZDuzA
+         PacGLnsNGafBL0yFTWZS1Fah5NjbKRyYL7lByS66PmBXtiXhJkuF3YJT1yYemx/qophN
+         tyW7u6BrUXFHu/FXVgJ6mMkvGdalBKQMzxBoHgQH69RSr/BRwuOg7HaudyPQZt+q3nx7
+         puCg==
+X-Gm-Message-State: AOAM533UAOaCZ+vqbYaagMntP8KF6q62F6w9ePUzFcwW2kSz4p+YaMp0
+        xdiBsjy1cppqjbW+87K1DQKe3eCjGkeE0g==
+X-Google-Smtp-Source: ABdhPJz9zpVB4OsMX45ZrXC1ocVLVZ3gIGIp3sQBJS7/mWuhM3iTWdSyzvklHfx99GufppPE7an5nw==
+X-Received: by 2002:a62:4dc5:0:b0:438:8133:fcef with SMTP id a188-20020a624dc5000000b004388133fcefmr9646405pfb.44.1632488574952;
+        Fri, 24 Sep 2021 06:02:54 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.113])
+        by smtp.gmail.com with ESMTPSA id x15sm9955227pgt.34.2021.09.24.06.02.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 06:02:54 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mem_cgroup: optimize the atomic count of
+ wb_completion
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+References: <1632465983-30525-1-git-send-email-brookxu.cn@gmail.com>
+ <YU2boTZhfbo0h/Xi@dhcp22.suse.cz>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <03145735-7764-4cd4-e15b-60402f4b447e@gmail.com>
+Date:   Fri, 24 Sep 2021 21:02:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923162811.3cc8188d6a30d9eed2375468@linux-foundation.org>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <YU2boTZhfbo0h/Xi@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 04:28PM -0700, Andrew Morton wrote:
-> On Thu, 23 Sep 2021 15:44:10 +0200 Marco Elver <elver@google.com> wrote:
-[...]
-> > I'm worried about next_pseudo_random32() changing their implementation
-> > to longer be deterministic or change in other ways that break our
-> > usecase. In this case we want pseudorandomness, but we're not
-> > implementing a PRNG.
-> > 
-> > Open-coding the constants (given they are from "Numerical Recipes") is
-> > more reliable and doesn't introduce unwanted reliance on
-> > next_pseudo_random32()'s behaviour.
+Thanks for your time.
+
+Michal Hocko wrote on 2021/9/24 17:34:
+> On Fri 24-09-21 14:46:22, brookxu wrote:
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> In order to track inflight foreign writeback, we init
+>> wb_completion.cnt to 1. For normal writeback, this cause
+>> wb_wait_for_completion() to perform meaningless atomic
+>> operations. Since foreign writebacks rarely occur in most
+>> scenarios, we can init wb_completion.cnt to 0 and set
+>> frn.done.cnt to 1. In this way we can avoid unnecessary
+>> atomic operations.
 > 
-> Perhaps we could summarize this in an additional comment?
+> Does this lead to any measurable differences?
 
-Hmm, on second thought, while trying to write the comment realized it's
-unnecessary altogether. I've switched to just using hash_32() which is
-probably better suited.
+I created multiple cgroups that performed IO on multiple disks, 
+then flushed the cache with sync command, and no measurable
+differences have been observed so far.
 
-> Also, this:
 > 
-> +static u32 get_alloc_stack_hash(unsigned long *stack_entries, size_t num_entries)
-> +{
-> +	/* Some randomness across reboots / different machines. */
-> +	u32 seed = (u32)((unsigned long)__kfence_pool >> (BITS_PER_LONG - 32));
-> 
-> seems a bit weak.  Would it be better to seed this at boot time with
-> a randomish number?
-
-Sure, makes sense.
-
-Both fixes are included in the below fixup. (Let me know if resending as
-v4 is better, but I've seen the patches already appeared in -mm.)
-
-Thank you!
-
--- Marco
-
------- >8 ------
-
-From: Marco Elver <elver@google.com>
-Date: Fri, 24 Sep 2021 14:17:38 +0200
-Subject: [PATCH] fixup! kfence: limit currently covered allocations when pool
- nearly full
-
-* Simplify and just use hash_32().
-* Use more random stack_hash_seed.
-
-Signed-off-by: Marco Elver <elver@google.com>
----
- mm/kfence/core.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 58a0f6f1acc5..545999d04af4 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -10,6 +10,7 @@
- #include <linux/atomic.h>
- #include <linux/bug.h>
- #include <linux/debugfs.h>
-+#include <linux/hash.h>
- #include <linux/irq_work.h>
- #include <linux/jhash.h>
- #include <linux/kcsan-checks.h>
-@@ -122,14 +123,21 @@ atomic_t kfence_allocation_gate = ATOMIC_INIT(1);
-  *	P(alloc_traces) = (1 - e^(-HNUM * (alloc_traces / SIZE)) ^ HNUM
-  */
- #define ALLOC_COVERED_HNUM	2
--#define ALLOC_COVERED_SIZE	(1 << (const_ilog2(CONFIG_KFENCE_NUM_OBJECTS) + 2))
--#define ALLOC_COVERED_HNEXT(h)	(1664525 * (h) + 1013904223)
-+#define ALLOC_COVERED_ORDER	(const_ilog2(CONFIG_KFENCE_NUM_OBJECTS) + 2)
-+#define ALLOC_COVERED_SIZE	(1 << ALLOC_COVERED_ORDER)
-+#define ALLOC_COVERED_HNEXT(h)	hash_32(h, ALLOC_COVERED_ORDER)
- #define ALLOC_COVERED_MASK	(ALLOC_COVERED_SIZE - 1)
- static atomic_t alloc_covered[ALLOC_COVERED_SIZE];
- 
- /* Stack depth used to determine uniqueness of an allocation. */
- #define UNIQUE_ALLOC_STACK_DEPTH 8UL
- 
-+/*
-+ * Randomness for stack hashes, making the same collisions across reboots and
-+ * different machines less likely.
-+ */
-+static u32 stack_hash_seed __ro_after_init;
-+
- /* Statistics counters for debugfs. */
- enum kfence_counter_id {
- 	KFENCE_COUNTER_ALLOCATED,
-@@ -166,12 +174,9 @@ static inline bool should_skip_covered(void)
- 
- static u32 get_alloc_stack_hash(unsigned long *stack_entries, size_t num_entries)
- {
--	/* Some randomness across reboots / different machines. */
--	u32 seed = (u32)((unsigned long)__kfence_pool >> (BITS_PER_LONG - 32));
--
- 	num_entries = min(num_entries, UNIQUE_ALLOC_STACK_DEPTH);
- 	num_entries = filter_irq_stacks(stack_entries, num_entries);
--	return jhash(stack_entries, num_entries * sizeof(stack_entries[0]), seed);
-+	return jhash(stack_entries, num_entries * sizeof(stack_entries[0]), stack_hash_seed);
- }
- 
- /*
-@@ -759,6 +764,7 @@ void __init kfence_init(void)
- 	if (!kfence_sample_interval)
- 		return;
- 
-+	stack_hash_seed = (u32)random_get_entropy();
- 	if (!kfence_init_pool()) {
- 		pr_err("%s failed\n", __func__);
- 		return;
--- 
-2.33.0.685.g46640cef36-goog
-
