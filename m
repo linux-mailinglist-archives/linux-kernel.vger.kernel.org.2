@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87D74174AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718AB4172BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346243AbhIXNJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:09:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34548 "EHLO mail.kernel.org"
+        id S1344304AbhIXMu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345876AbhIXNG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:06:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AE2E61356;
-        Fri, 24 Sep 2021 12:56:21 +0000 (UTC)
+        id S1344317AbhIXMtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:49:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FA8B61279;
+        Fri, 24 Sep 2021 12:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488181;
-        bh=CCyhTQtobcN7EKoDmnU3O1vyCCjGnk1CJNHGd1xgJic=;
+        s=korg; t=1632487651;
+        bh=hygdbZQxndPijkhMmO2cgmgW8R0wL4wxeue330chHTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZkovgoCR/LrVbC6Q7w3MRtg3cDz+VpNUIUESmhZJUWVY4Zpp/oKROI+1oibW+kRR/
-         erNcrbEuVriPAUuTu7OTa8IsK+2CKzVnnNrLwvqMVBkh5kiLPn1p05xQMGlMRqWrzp
-         /R3peYyXBtvK3dLZM9Hr1Ogp6XhqYZGjzsLb/kSw=
+        b=Ttbr3Qhiget/6ktJEdxTkhu5QK1grNx1rHcPnFXsXV6W5uvd6zpzWjfYaB5en3Idc
+         T8FHohAq+ODx7dn3RbXrJSAvMByMa0sgNLPR7lJWkXRLX+R6LBqd2YP6TIkV2yx+dP
+         stia/XOdvt8oU7EJjGJpHSWy3JzKFmQXLqsWvXZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.10 16/63] dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
-Date:   Fri, 24 Sep 2021 14:44:16 +0200
-Message-Id: <20210924124334.811372633@linuxfoundation.org>
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 23/27] nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
+Date:   Fri, 24 Sep 2021 14:44:17 +0200
+Message-Id: <20210924124329.947794759@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit 67db87dc8284070adb15b3c02c1c31d5cf51c5d6 upstream.
+[ Upstream commit b2fe39c248f3fa4bbb2a20759b4fdd83504190f7 ]
 
-Currently the CRST parsing relies on the fact that on most of x86 devices
-the IRQ mapping is 1:1 with Linux vIRQ. However, it may be not true for
-some. Fix this by converting GSI to Linux vIRQ before checking it.
+If kobject_init_and_add returns with error, kobject_put() is needed here
+to avoid memory leak, because kobject_init_and_add may return error
+without freeing the memory associated with the kobject it allocated.
 
-Fixes: ee8209fd026b ("dma: acpi-dma: parse CSRT to extract additional resources")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210730202715.24375-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-6-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-6-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/acpi-dma.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ fs/nilfs2/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/dma/acpi-dma.c
-+++ b/drivers/dma/acpi-dma.c
-@@ -70,10 +70,14 @@ static int acpi_dma_parse_resource_group
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 31eed118d0ce..28f5572c6aae 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -217,9 +217,9 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
+ 	}
  
- 	si = (const struct acpi_csrt_shared_info *)&grp[1];
+ 	if (err)
+-		return err;
++		kobject_put(&root->snapshot_kobj);
  
--	/* Match device by MMIO and IRQ */
-+	/* Match device by MMIO */
- 	if (si->mmio_base_low != lower_32_bits(mem) ||
--	    si->mmio_base_high != upper_32_bits(mem) ||
--	    si->gsi_interrupt != irq)
-+	    si->mmio_base_high != upper_32_bits(mem))
-+		return 0;
-+
-+	/* Match device by Linux vIRQ */
-+	ret = acpi_register_gsi(NULL, si->gsi_interrupt, si->interrupt_mode, si->interrupt_polarity);
-+	if (ret != irq)
- 		return 0;
+-	return 0;
++	return err;
+ }
  
- 	dev_dbg(&adev->dev, "matches with %.4s%04X (rev %u)\n",
+ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
+-- 
+2.33.0
+
 
 
