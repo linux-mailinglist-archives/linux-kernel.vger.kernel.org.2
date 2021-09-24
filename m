@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762F0417844
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8B6417849
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347351AbhIXQOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:14:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:43629 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347338AbhIXQO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:14:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="220906298"
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
-   d="scan'208";a="220906298"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 09:12:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
-   d="scan'208";a="551865386"
-Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.28.105])
-  by FMSMGA003.fm.intel.com with ESMTP; 24 Sep 2021 09:12:55 -0700
-Subject: [PATCH 2/2] mm/migrate: add CPU hotplug to demotion #ifdef
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        ying.huang@intel.com, mhocko@suse.com, weixugc@google.com,
-        osalvador@suse.de, rientjes@google.com, dan.j.williams@intel.com,
-        david@redhat.com, gthelen@google.com, yang.shi@linux.alibaba.com,
-        akpm@linux-foundation.org
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Fri, 24 Sep 2021 09:12:55 -0700
-References: <20210924161251.093CCD06@davehans-spike.ostc.intel.com>
-In-Reply-To: <20210924161251.093CCD06@davehans-spike.ostc.intel.com>
-Message-Id: <20210924161255.E5FE8F7E@davehans-spike.ostc.intel.com>
+        id S1347353AbhIXQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:15:16 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:34635 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347280AbhIXQPO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 12:15:14 -0400
+Received: by mail-ot1-f42.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so8112528otb.1;
+        Fri, 24 Sep 2021 09:13:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZC1EsaX6wL9yAIaslJ+DDFzcPPT/Y6p1NPh5ojVAeNQ=;
+        b=jbiAyrW2gdcd6B7LThjfje/H/jPuaLEcVBln34uxnnBI8Cbn+v7cZTnTQhjmh86ifT
+         iYHZcHCw1N/jtAegV2liq7Ot/Gzo5vaHPf3kyxQmHxLkXs7qRh3LSCtT62/hZY/xXwgT
+         cCIkURK4SLpCJFUgDi8wkXZRD2G1YRM9xaysKxfsYXQPfWScsUTt8dFDhy+cxtEH2FOD
+         TN50ruyBtVuyUwhBqfOLGEevvyT525usSP7VnVSheh9WoGlc4z/eGvtuUu+9xd4xuuDj
+         rHtEpasVwn7odWX5M8NxmnRKTo/DIuLfBTLd33Fvf5jLY5j4Op0w6t4wMdPYh5vwh1+u
+         T0kA==
+X-Gm-Message-State: AOAM532V/qBwij4/+2y3fo4La3voL2coloall/SEy5RFltzcUF070SJ+
+        +HCzosaEUiCUcc+LxOKdh44pVoPpVuvFKqEo4Fs=
+X-Google-Smtp-Source: ABdhPJyDmk32YSUnR4jaxOpngtEpUVlNAQbbQN6VQfqSURZRXjSvfaW8NMxlUVFCefrC+4cm6RdlM+vRJJSgqXQipr0=
+X-Received: by 2002:a05:6830:2784:: with SMTP id x4mr4892011otu.86.1632500021144;
+ Fri, 24 Sep 2021 09:13:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210916170054.136790-1-krzysztof.kozlowski@canonical.com>
+ <20210916170054.136790-2-krzysztof.kozlowski@canonical.com>
+ <f78523c5-df88-a768-3b9a-d542bbd73a1c@redhat.com> <CAJZ5v0gBZUrvX+w2oz-tmvDrHz_tFvzyzVGe4iz2wc3-V_9qPg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gBZUrvX+w2oz-tmvDrHz_tFvzyzVGe4iz2wc3-V_9qPg@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 24 Sep 2021 18:13:30 +0200
+Message-ID: <CAJZ5v0j03SLpmJhX1jBHcsrVyt+kecmfE8n8-1quCVZBN+4RvQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] acpi: pnp: remove duplicated BRI0A49 and BDP3336 entries
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Matan Ziv-Av <matan@svgalib.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 21, 2021 at 3:08 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Tue, Sep 21, 2021 at 2:52 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> >
+> > Hi,
+> >
+> > On 9/16/21 7:00 PM, Krzysztof Kozlowski wrote:
+> > > BRI0A49 and BDP3336 are already on the list.
+> > >
+> > > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> >
+> > Thanks, patch looks good to me:
+> >
+> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> >
+> > Rafael, I've picked up 1/2 since that applies to a drivers/platform/x86
+> > driver. I'll leave picking this one up to you.
+>
+> I'll pick it up, thanks!
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+Applied as 5.16 material now, thanks!
 
-Once upon a time, the node demotion updates were driven solely by
-memory hotplug events.  But now, there are  handlers for both CPU
-and memory hotplug.
-
-However, the #ifdef around the code checks only memory hotplug.
-A system that has HOTPLUG_CPU=y but MEMORY_HOTPLUG=n would miss
-CPU hotplug events.
-
-Update the #ifdef around the common code.  Add memory and
-CPU-specific #ifdefs for their handlers.  These memory/CPU
-#ifdefs avoid unused function warnings when their Kconfig option
-is off.
-
-Fixes: 884a6e5d1f93 ("mm/migrate: update node demotion order on hotplug events")
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Wei Xu <weixugc@google.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Greg Thelen <gthelen@google.com>
-Cc: Yang Shi <yang.shi@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
-
- b/mm/migrate.c |   46 +++++++++++++++++++++++++---------------------
- 1 file changed, 25 insertions(+), 21 deletions(-)
-
-diff -puN mm/migrate.c~add-cpu-hotplug-config mm/migrate.c
---- a/mm/migrate.c~add-cpu-hotplug-config	2021-09-24 09:12:31.308377810 -0700
-+++ b/mm/migrate.c	2021-09-24 09:12:31.308377810 -0700
-@@ -3066,7 +3066,7 @@ void migrate_vma_finalize(struct migrate
- EXPORT_SYMBOL(migrate_vma_finalize);
- #endif /* CONFIG_DEVICE_PRIVATE */
- 
--#if defined(CONFIG_MEMORY_HOTPLUG)
-+#if defined(CONFIG_MEMORY_HOTPLUG) || defined(CONFIG_HOTPLUG_CPU)
- /* Disable reclaim-based migration. */
- static void __disable_all_migrate_targets(void)
- {
-@@ -3208,25 +3208,7 @@ static void set_migration_target_nodes(v
- 	put_online_mems();
- }
- 
--/*
-- * React to hotplug events that might affect the migration targets
-- * like events that online or offline NUMA nodes.
-- *
-- * The ordering is also currently dependent on which nodes have
-- * CPUs.  That means we need CPU on/offline notification too.
-- */
--static int migration_online_cpu(unsigned int cpu)
--{
--	set_migration_target_nodes();
--	return 0;
--}
--
--static int migration_offline_cpu(unsigned int cpu)
--{
--	set_migration_target_nodes();
--	return 0;
--}
--
-+#if defined(CONFIG_MEMORY_HOTPLUG)
- /*
-  * This leaves migrate-on-reclaim transiently disabled between
-  * the MEM_GOING_OFFLINE and MEM_OFFLINE events.  This runs
-@@ -3283,6 +3265,27 @@ static int __meminit migrate_on_reclaim_
- 
- 	return notifier_from_errno(0);
- }
-+#endif /* CONFIG_MEMORY_HOTPLUG */
-+
-+#ifdef CONFIG_HOTPLUG_CPU
-+/*
-+ * React to hotplug events that might affect the migration targets
-+ * like events that online or offline NUMA nodes.
-+ *
-+ * The ordering is also currently dependent on which nodes have
-+ * CPUs.  That means we need CPU on/offline notification too.
-+ */
-+static int migration_online_cpu(unsigned int cpu)
-+{
-+	set_migration_target_nodes();
-+	return 0;
-+}
-+
-+static int migration_offline_cpu(unsigned int cpu)
-+{
-+	set_migration_target_nodes();
-+	return 0;
-+}
- 
- static int __init migrate_on_reclaim_init(void)
- {
-@@ -3303,4 +3306,5 @@ static int __init migrate_on_reclaim_ini
- 	return 0;
- }
- late_initcall(migrate_on_reclaim_init);
--#endif /* CONFIG_MEMORY_HOTPLUG */
-+#endif /* CONFIG_HOTPLUG_CPU */
-+#endif /* CONFIG_MEMORY_HOTPLUG || CONFIG_HOTPLUG_CPU */
-_
+> > > ---
+> > >  drivers/acpi/acpi_pnp.c | 2 --
+> > >  1 file changed, 2 deletions(-)
+> > >
+> > > diff --git a/drivers/acpi/acpi_pnp.c b/drivers/acpi/acpi_pnp.c
+> > > index 8f2dc176bb41..ffdcfcd4a10d 100644
+> > > --- a/drivers/acpi/acpi_pnp.c
+> > > +++ b/drivers/acpi/acpi_pnp.c
+> > > @@ -156,8 +156,6 @@ static const struct acpi_device_id acpi_pnp_device_ids[] = {
+> > >       {"BRI0A49"},            /* Boca Complete Ofc Communicator 14.4 Data-FAX */
+> > >       {"BRI1400"},            /* Boca Research 33,600 ACF Modem */
+> > >       {"BRI3400"},            /* Boca 33.6 Kbps Internal FD34FSVD */
+> > > -     {"BRI0A49"},            /* Boca 33.6 Kbps Internal FD34FSVD */
+> > > -     {"BDP3336"},            /* Best Data Products Inc. Smart One 336F PnP Modem */
+> > >       {"CPI4050"},            /* Computer Peripherals Inc. EuroViVa CommCenter-33.6 SP PnP */
+> > >       {"CTL3001"},            /* Creative Labs Phone Blaster 28.8 DSVD PnP Voice */
+> > >       {"CTL3011"},            /* Creative Labs Modem Blaster 28.8 DSVD PnP Voice */
+> > >
+> >
