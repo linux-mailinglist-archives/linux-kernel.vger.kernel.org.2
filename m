@@ -2,246 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CBE416997
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A014741699A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243786AbhIXBt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 21:49:27 -0400
-Received: from mail-eopbgr70078.outbound.protection.outlook.com ([40.107.7.78]:13981
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240863AbhIXBt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 21:49:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GawNRSbqzboaa2RZ5+QcvZfCHTTTa5HU7EaXx+S3p2hJxhBGdLqr8JJLdmbORNLOs7DZMnTzFHjLgJjpLNT3T5xosyXpycPe2Hhm+2pL6spLbKsKNw7V/PQhVjMwZIwRe11IDE/CEqHkA27VbIqOHB+HeiJAx7mFnlLvm59Bt2TIrOiELiq8Rt1mIm1qlenUYDKMfr9CYtMmfoRr9X8rHRWCMQtz48pUoNk1SHGt6fv1oNadcF5S3xsy+Q5YwtIhvSKbgTue73FgZPleUZqqcQcvMOy+hF4iZyilbhJjEplKBYwPhE7zTUxttLVaX8Ht+hTZM3glpt+lKspBgZTvwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=qLaIAP3cSzgDzivnfbn2nhSkd/fr5zE/ocJSPxrA2zU=;
- b=J4FbmnzHIueZwTW0e7BxHnl3DuT5hjesD2ZLC4VD1WLHSZZGlAX1lEwHNKVkHa0H7LmfpKwmLISLpCeCxIXV4HjNtHXKoYJwYA6dT2yJ9IdOCHTwJYjkpT8m/wkbNGSSOvAM7VaQe+U53Je5v8BWyDkx6LhNd8S0q9wagu0se9BpzFsIEbvsItu+C7PSrtHPNdbmemSCr8HGN9VJqqQahCcy7holsAwb/6+ETv17i3q+rOqjq+3bmLcxq2xZR11fphnoKgsUuz+LVCpPfrCu9QD0ayzF//y84Zjlm2H6uZ3WgLIy4FGy4safc6cS3SX8zKxQgRrj7EdzAAt7r3QJMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qLaIAP3cSzgDzivnfbn2nhSkd/fr5zE/ocJSPxrA2zU=;
- b=lIoSK1syaKO8arlK/DLIH3EQ8G4H0SkuziiPZCLl28lHRdQU6uU0lPplAW2Zky7dg/zl5HBzsMtW50mfMm19nvpUNEYCfSVT0tmfa6bSY+BEgKbqq/HvXMYb4l1blxkFTjx64e7TYQmhaatSnC2+mygEpjMIXB01YcC2+FldFBM=
-Received: from AM6PR04MB6341.eurprd04.prod.outlook.com (2603:10a6:20b:d8::14)
- by AM6PR04MB4071.eurprd04.prod.outlook.com (2603:10a6:209:47::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Fri, 24 Sep
- 2021 01:47:52 +0000
-Received: from AM6PR04MB6341.eurprd04.prod.outlook.com
- ([fe80::998c:7f25:6d75:d5f4]) by AM6PR04MB6341.eurprd04.prod.outlook.com
- ([fe80::998c:7f25:6d75:d5f4%7]) with mapi id 15.20.4523.021; Fri, 24 Sep 2021
- 01:47:51 +0000
-From:   Ming Qian <ming.qian@nxp.com>
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-CC:     "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [EXT] Re: [PATCH v9 07/13] media: amphion: add v4l2 m2m vpu
- encoder stateful driver
-Thread-Topic: [EXT] Re: [PATCH v9 07/13] media: amphion: add v4l2 m2m vpu
- encoder stateful driver
-Thread-Index: AQHXqHsPw4ZkAjhGc0+9RfYHlaE+MKuxu+4AgAC/G2A=
-Date:   Fri, 24 Sep 2021 01:47:51 +0000
-Message-ID: <AM6PR04MB6341F798765924998642258BE7A49@AM6PR04MB6341.eurprd04.prod.outlook.com>
-References: <cover.1631521295.git.ming.qian@nxp.com>
-         <aab3d7bd0632dab4c41ee9be3eb49c2a4f9de31d.1631521295.git.ming.qian@nxp.com>
- <f39555c5f6ef46eed95462fec80012767e0cb136.camel@ndufresne.ca>
-In-Reply-To: <f39555c5f6ef46eed95462fec80012767e0cb136.camel@ndufresne.ca>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ndufresne.ca; dkim=none (message not signed)
- header.d=none;ndufresne.ca; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a504df4d-4f41-4f48-746f-08d97efd5216
-x-ms-traffictypediagnostic: AM6PR04MB4071:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB40711512C717ED41D38FEF96E7A49@AM6PR04MB4071.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2201;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wL6aD6NCanIyeASneVcN7/IfG9Pu+sKoj/3mq256UVR8U48o3TFvqhGbChMiCyZFylmGc01wbCaU3PPyQ8m0o4gmub3lIIPopfPYzOv5vXP/S91oUaOIUrW5ujJFZkGTym1hGWSIGISlL5EjN3/EhfF9Xhyg1pc79/eEPScecHwQr0qFYvFLNS6kQ3LXyuUn5sxizZOHls4jeQPL2dwdGMkdQVoigvnIBR3HMFrUZGMicGyyumC1J1VKCgadGCXr0FcGdYZGb8Vz8fi/3vocRaE90HY65//Aw5SDJ6Xv1bqiA68ztHktRxsVmsihgBYJXMeUDa3GeiMAtKJiW62nYYTuUyhdMiPoViTq+B0+EwdPb0P/8Zd6+/cI6pFkkDRpGV3QizYrTdyoQ+Qwb8Xf8Tt1duP/zwAufyTJPGk0jl6ZTBS/AdIXtR3XxY1UBpK5FynBsbhiF9oOWwqGlYN1NE5QGmWh19Q+ivJmPb1sN164oBGx1m2r3gRiM2hVDFBTQVz3kmMRmMHN+Mt054nT3R51FobCu1+Ec751b0i8CR1RTpat+VkvFbSZCKS0YDHAvcur+lsQ07B10NPqHxrrpLYvQQIYEWFcebqDe/ElKJ2k6E0l2g4a/bnGu0sUqHpF3zOanFsBMpJnoghoGT+qAUMwIOTNAoTgSttRGbbN00/gOAN3drlZTB3dQphnn7PiDAPsA9FoW2fgIhwl+hwheiQnN0nAaNWVX/+4y4Lx7bq9WCApnE6sfz5CC7XNpjyKG0RWE5eYGkBFq5946/Y6IqIlbIgCByT07dORlJzPwZc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6341.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(508600001)(8936002)(44832011)(55016002)(966005)(76116006)(66446008)(66946007)(66476007)(66556008)(64756008)(8676002)(45080400002)(83380400001)(4326008)(66574015)(122000001)(2906002)(52536014)(54906003)(110136005)(26005)(86362001)(186003)(7696005)(316002)(6506007)(38100700002)(38070700005)(7416002)(33656002)(5660300002)(9686003)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?QtMwCLNKq/nXokQouUG02qOffBBE0NS6XtJeltNCI15tP/KCwyaLxHBgZc?=
- =?iso-8859-1?Q?1RJDahghjmj/S2u/kV0RkrR4O78SuXU2q+2cmeStnUedu/JPtzQ3C15MFb?=
- =?iso-8859-1?Q?g7bYLOwnKLCXD3oWWUBfI9ogOuDDyuAtCa4eoAXMDZ50ZtEpGaNOiwwQwm?=
- =?iso-8859-1?Q?fs7FSjVm/xTLRZMPT/nbYNvwyC9ZGJN3WWOMsclB79AJHVR/+q3NO59ZiB?=
- =?iso-8859-1?Q?QlxS59norXZyB34udbIxPVfOzsdgMX5RgRwprSM5+I9ZSrXO/QKQRAu1Lw?=
- =?iso-8859-1?Q?rbqgPKcG99M26Gyxxls1/ZCM12OWF1phfcaSqRSNI3v/s6ERoGWPOZHD5/?=
- =?iso-8859-1?Q?aSPrQJmO+35hLBl21B5LiE6ah8vYMDAonBnQT+q0VMXm8aF3GzPe/kSsHF?=
- =?iso-8859-1?Q?yNWTXmey3cjJb4yjeGlOwTOezf+h+5ywusg2Ih82NWW2U4xweczk5hun+i?=
- =?iso-8859-1?Q?9Zy45TMhLuj5ddkmBXoZdJQzgSEHLxPGT+8PppySWtEkkbHr9EuWylm56X?=
- =?iso-8859-1?Q?X+zBRFLnq95QhgOSesM5aH0E5mJWcm/4XTV2Wtu5OtcwVZEYR7sTNF+02e?=
- =?iso-8859-1?Q?ZRefgqa9Ssr2yvZV8mVIrFyWFz4LjiHL+TETCPeJeYvsA4HUbaEobVDjco?=
- =?iso-8859-1?Q?lhdr/U1qzqo6c4gqbO42r6CQQe3Qq0HwwKRPHUSPIOsbK2hWIPhd4mbKPz?=
- =?iso-8859-1?Q?HH3ZtwVwOzPvedWMum49xfgwKqa1b7qNZxnt8gO5xgF9DbWWLrJfkxDtTo?=
- =?iso-8859-1?Q?XNlhSv4YUJpZ18HPegD+yEWIEZgmP69v7YvRDKk3tRWWsa1zEvjrRmM7HH?=
- =?iso-8859-1?Q?chtLr4Mts9ZBtRlGE18wk6LM9J0a3ws9J8cXPP4mBPe01MFkBCcmV9Zb1M?=
- =?iso-8859-1?Q?FaFfFhwD6FBEndz/De4ILJ4BUBBlNAhhB1psQ3E3PKzhaP/e8QhnwgsuN1?=
- =?iso-8859-1?Q?JEVJItunOBLs+yVoT/kiLlcjfVIrZt8e1ZOpj8zSskpOhrprvDcMRAUEzf?=
- =?iso-8859-1?Q?qzAY7qgaweC/LFEvtmzNm6rdRllF7dq2VNJbpelH8MZtvmHU0UdTVyEmZj?=
- =?iso-8859-1?Q?cGVTJRtggofcdESY2ho3oS1CN+FNCtYCVKlabpt1ibjlmhcPlqzDmEOJ6L?=
- =?iso-8859-1?Q?XsqwlZ1vFtiUh/KMQIUsvq5MzQUCoi8Ejf8liD7lMzj44kPN2y+knZgLUQ?=
- =?iso-8859-1?Q?d2ThOzpJgbYDV6iUDN3A8iTL+DQFIhqD0xHj415e/v65YBuEzelSjfSZZ5?=
- =?iso-8859-1?Q?lHWMnEYAPNoxFGXNusHJTFoyaUET3JfAKlVt5FFybBJTXPTN/3bMJN1sYN?=
- =?iso-8859-1?Q?QbFg93jfaXeyejSZaTOvJ9E0kH7nZK3cfvUzB+NXIr0evx+Vo/UXdOlvpv?=
- =?iso-8859-1?Q?fJ66pI8NCR?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S243751AbhIXBvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 21:51:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49556 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240863AbhIXBvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 21:51:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632448179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DL1+kESrk1j8K5IwTf6rhTlHGoskKagkfZx81J+DjeU=;
+        b=GfTdN8HunUUtSohKOT5pe56KZBOU9+lJSNUMZUVSzV541bS3Z7u3qrI3RYa3QvyUJu8LcM
+        Z0Kr8gXo3IRpWzQPb2MR9aia+3HnPSwqmyCwq21qzF60KHkhA5U0aen82ZTba4nP0C0VBe
+        tmTLjh7pe6yB5D9mmMKRqkHiGaZcank=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-70-mpwajqDfOTa1PG3dsUcorw-1; Thu, 23 Sep 2021 21:49:38 -0400
+X-MC-Unique: mpwajqDfOTa1PG3dsUcorw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36E941084684;
+        Fri, 24 Sep 2021 01:49:37 +0000 (UTC)
+Received: from T590 (ovpn-8-18.pek2.redhat.com [10.72.8.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1777F19733;
+        Fri, 24 Sep 2021 01:49:29 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 09:49:42 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, tj@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH 6/6] rq-qos: fix uaf in rq_qos_done_io()
+Message-ID: <YU0utuB17kA+wcON@T590>
+References: <20210923134631.105719-1-yukuai3@huawei.com>
+ <20210923134631.105719-7-yukuai3@huawei.com>
+ <YU0epdo2khkNmJTN@T590>
+ <a33376ce-6f23-89be-ac77-454b9227b62d@huawei.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6341.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a504df4d-4f41-4f48-746f-08d97efd5216
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2021 01:47:51.7285
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 03AiIcPZv2McGDM3vazlN8m0h1uGkAMBSAEDeRwPd3DGAwIuVaTqUSo23FVDyvPXiFzu2acNWItXWF41UH3qkA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4071
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a33376ce-6f23-89be-ac77-454b9227b62d@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Nicolas Dufresne [mailto:nicolas@ndufresne.ca]
-> Sent: Thursday, September 23, 2021 10:23 PM
-> To: Ming Qian <ming.qian@nxp.com>; mchehab@kernel.org;
-> shawnguo@kernel.org; robh+dt@kernel.org; s.hauer@pengutronix.de
-> Cc: hverkuil-cisco@xs4all.nl; kernel@pengutronix.de; festevam@gmail.com;
-> dl-linux-imx <linux-imx@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>;
-> linux-media@vger.kernel.org; linux-kernel@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> Subject: [EXT] Re: [PATCH v9 07/13] media: amphion: add v4l2 m2m vpu
-> encoder stateful driver
->=20
-> Caution: EXT Email
->=20
-> Le lundi 13 septembre 2021 =E0 17:11 +0800, Ming Qian a =E9crit :
-> > This consists of video encoder implementation plus encoder controls.
-> >
-> > Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> > Signed-off-by: Shijie Qin <shijie.qin@nxp.com>
-> > Signed-off-by: Zhou Peng <eagle.zhou@nxp.com>
-> > ---
-> >  drivers/media/platform/amphion/venc.c | 1382
-> > +++++++++++++++++++++++++
-> >  1 file changed, 1382 insertions(+)
-> >  create mode 100644 drivers/media/platform/amphion/venc.c
-> >
-> > diff --git a/drivers/media/platform/amphion/venc.c
-> > b/drivers/media/platform/amphion/venc.c
-> > new file mode 100644
-> > index 000000000000..fdc9a59009ba
-> > --- /dev/null
-> > +++ b/drivers/media/platform/amphion/venc.c
-> > @@ -0,0 +1,1382 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright 2020-2021 NXP
-> > + */
-> > +
-> > +#define TAG          "ENC"
-> > +
-> > +#include <linux/init.h>
-> > +#include <linux/interconnect.h>
-> > +#include <linux/ioctl.h>
-> > +#include <linux/list.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/videodev2.h>
-> > +#include <linux/ktime.h>
-> > +#include <media/v4l2-device.h>
-> > +#include <media/v4l2-event.h>
-> > +#include <media/v4l2-mem2mem.h>
-> > +#include <media/v4l2-ioctl.h>
-> > +#include <media/videobuf2-v4l2.h>
-> > +#include <media/videobuf2-dma-contig.h> #include
-> > +<media/videobuf2-vmalloc.h> #include "vpu.h"
-> > +#include "vpu_defs.h"
-> > +#include "vpu_core.h"
-> > +#include "vpu_helpers.h"
-> > +#include "vpu_v4l2.h"
-> > +#include "vpu_cmds.h"
-> > +#include "vpu_rpc.h"
-> > +#include "vpu_log.h"
-> > +
-> > +#define VENC_OUTPUT_ENABLE   (1 << 0)
-> > +#define VENC_CAPTURE_ENABLE  (1 << 1)
-> > +#define VENC_ENABLE_MASK     (VENC_OUTPUT_ENABLE |
-> VENC_CAPTURE_ENABLE)
-> > +#define VENC_MAX_BUF_CNT     8
-> > +
-> > +struct venc_t {
-> > +     struct vpu_encode_params params;
-> > +     u32 request_key_frame;
-> > +     u32 input_ready;
-> > +     u32 cpb_size;
-> > +     bool bitrate_change;
-> > +
-> > +     struct vpu_buffer enc[VENC_MAX_BUF_CNT];
-> > +     struct vpu_buffer ref[VENC_MAX_BUF_CNT];
-> > +     struct vpu_buffer act[VENC_MAX_BUF_CNT];
-> > +     struct list_head frames;
-> > +     u32 frame_count;
-> > +     u32 encode_count;
-> > +     u32 ready_count;
-> > +     u32 enable;
-> > +     u32 stopped;
-> > +
-> > +     u32 skipped_count;
-> > +     u32 skipped_bytes;
-> > +
-> > +     wait_queue_head_t wq;
-> > +};
-> > +
-> > +struct venc_frame_t {
-> > +     struct list_head list;
-> > +     struct vpu_enc_pic_info info;
-> > +     u32 bytesused;
-> > +     s64 timestamp;
-> > +};
-> > +
-> > +static const struct vpu_format venc_formats[] =3D {
-> > +     {
-> > +             .pixfmt =3D V4L2_PIX_FMT_NV12,
-> > +             .num_planes =3D 2,
-> > +             .type =3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE,
->=20
-> pixmp->num_planes is the number of allocation. V4L2_PIX_FMT_NV12 must
-> pixmp->come with
-> 1 allocation and [0] V4L2_PIX_FMT_NV12M must come with 2 allocations.
->=20
-> [0]
-> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.k=
-e
-> rnel.org%2Fdoc%2Fhtml%2Fv4.10%2Fmedia%2Fuapi%2Fv4l%2Fpixfmt-nv12m
-> .html&amp;data=3D04%7C01%7Cming.qian%40nxp.com%7Cb1b9aac4f17a446f1
-> cf008d97e9d975d%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C6
-> 37680037585331278%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwM
-> DAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata
-> =3DAlH44y9iNomGKenkm4%2F1sfowhqX%2Fivc3z4FTlCgilfA%3D&amp;reserved
-> =3D0
->=20
-> This currently confuses GStreamer and prevent encoding.
->=20
-OK, I'll try to support V4L2_PIX_FMT_NV12M in the next version
+On Fri, Sep 24, 2021 at 09:23:42AM +0800, yukuai (C) wrote:
+> On 2021/09/24 8:41, Ming Lei wrote:
+> > On Thu, Sep 23, 2021 at 09:46:31PM +0800, Yu Kuai wrote:
+> > > our test report a uaf:
+> > > 
+> > > [  142.925504] ==================================================================
+> > > [  142.929084] BUG: KASAN: use-after-free in __rq_qos_done_bio+0x57/0x90
+> > > [  142.931131] Read of size 8 at addr ffff88810306d858 by task blkdiscard/858
+> > > [  142.933289]
+> > > [  142.933798] CPU: 1 PID: 858 Comm: blkdiscard Not tainted 5.15.0-rc1-00004-g18bc2dec41ab-d4
+> > > [  142.936580] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_0738364
+> > > [  142.939318] Call Trace:
+> > > [  142.939662]  ? dump_stack_lvl+0x73/0x9f
+> > > [  142.940197]  ? print_address_description.constprop.0+0x2f/0x250
+> > > [  142.941004]  ? __rq_qos_done_bio+0x57/0x90
+> > > [  142.941564]  ? __rq_qos_done_bio+0x57/0x90
+> > > [  142.942132]  ? kasan_report.cold+0x81/0x165
+> > > [  142.942710]  ? __rq_qos_done_bio+0x57/0x90
+> > > [  142.943282]  ? __asan_load8+0x74/0x110
+> > > [  142.943798]  ? __rq_qos_done_bio+0x57/0x90
+> > > [  142.944365]  ? bio_endio+0x142/0x430
+> > > [  142.944864]  ? submit_bio_checks+0x178/0xef0
+> > > [  142.945456]  ? trace_event_raw_event_block_rq_requeue+0x300/0x300
+> > > [  142.946283]  ? mempool_alloc+0xe9/0x2f0
+> > > [  142.946812]  ? remove_element+0x130/0x130
+> > > [  142.947371]  ? init_timer_key+0x83/0x1b0
+> > > [  142.947917]  ? submit_bio_noacct+0x86/0x9c0
+> > > [  142.948496]  ? blk_queue_enter+0x6d0/0x6d0
+> > > [  142.949066]  ? bio_alloc_bioset+0x1b2/0x3a0
+> > > [  142.949649]  ? __rcu_read_unlock+0x45/0x370
+> > > [  142.950227]  ? bvec_alloc+0x120/0x120
+> > > [  142.950732]  ? submit_bio+0x60/0x230
+> > > [  142.951230]  ? blk_next_bio+0x4f/0x70
+> > > [  142.951740]  ? __blkdev_issue_discard+0x257/0x520
+> > > [  142.952387]  ? __blkdev_issue_write_zeroes+0x270/0x270
+> > > [  142.953089]  ? bd_abort_claiming+0x70/0x70
+> > > [  142.953652]  ? __kasan_check_write+0x20/0x30
+> > > [  142.954236]  ? _raw_spin_lock+0xaf/0x130
+> > > [  142.954769]  ? _raw_read_lock_bh+0xa0/0xa0
+> > > [  142.955328]  ? __get_locked_pte+0x1b3/0x310
+> > > [  142.955897]  ? _raw_spin_unlock+0x3b/0x80
+> > > [  142.956444]  ? blkdev_issue_discard+0xd3/0x1a0
+> > > [  142.957051]  ? blkdev_issue_write_same+0x540/0x540
+> > > [  142.957708]  ? _raw_spin_lock+0xaf/0x130
+> > > [  142.958244]  ? bd_abort_claiming+0x70/0x70
+> > > [  142.958805]  ? wake_up_bit+0x46/0x50
+> > > [  142.959302]  ? preempt_count_sub+0x14/0x160
+> > > [  142.959877]  ? _raw_spin_unlock+0x3b/0x80
+> > > [  142.960428]  ? bd_abort_claiming+0x65/0x70
+> > > [  142.960993]  ? blk_ioctl_discard+0x1bd/0x240
+> > > [  142.961582]  ? blkdev_bszset+0x1c0/0x1c0
+> > > [  142.962118]  ? special_mapping_fault+0x6f/0x200
+> > > [  142.962743]  ? __do_fault+0x80/0x410
+> > > [  142.963241]  ? blkdev_common_ioctl+0x6c9/0x1190
+> > > [  142.963877]  ? ioctl_file_clone+0x110/0x110
+> > > [  142.964457]  ? blk_ioctl_discard+0x240/0x240
+> > > [  142.965038]  ? copy_page_range+0x2b60/0x2b60
+> > > [  142.965623]  ? vfs_getattr_nosec+0x177/0x190
+> > > [  142.966214]  ? __ia32_compat_sys_newfstat+0x40/0x40
+> > > [  142.966885]  ? blkdev_ioctl+0x180/0x4b0
+> > > [  142.967409]  ? blkdev_common_ioctl+0x1190/0x1190
+> > > [  142.968033]  ? handle_mm_fault+0x3c2/0x660
+> > > [  142.968590]  ? __kasan_check_write+0x20/0x30
+> > > [  142.969172]  ? block_ioctl+0x7d/0xa0
+> > > [  142.969666]  ? __x64_sys_ioctl+0xd5/0x150
+> > > [  142.970224]  ? do_syscall_64+0x35/0x80
+> > > [  142.970733]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > [  142.971441]
+> > > [  142.971653] Allocated by task 283:
+> > > [  142.972117]  kasan_save_stack+0x23/0x60
+> > > [  142.972637]  set_alloc_info+0x46/0x70
+> > > [  142.973136]  __kasan_kmalloc+0x8d/0xd0
+> > > [  142.973639]  kmem_cache_alloc_trace+0x3e7/0x820
+> > > [  142.974254]  wbt_init+0x40/0x430
+> > > [  142.974694]  wbt_enable_default+0xbb/0x100
+> > > [  142.975248]  blk_register_queue+0x216/0x3e0
+> > > [  142.975812]  device_add_disk+0x4ac/0x880
+> > > [  142.976358]  sd_probe+0x690/0x910
+> > > [  142.976809]  really_probe+0x5c3/0x800
+> > > [  142.977306]  __driver_probe_device+0x233/0x330
+> > > [  142.977907]  driver_probe_device+0x69/0x140
+> > > [  142.978466]  __device_attach_driver+0x125/0x210
+> > > [  142.979081]  bus_for_each_drv+0x10e/0x1b0
+> > > [  142.979615]  __device_attach_async_helper+0x175/0x230
+> > > [  142.980302]  async_run_entry_fn+0x7b/0x310
+> > > [  142.980859]  process_one_work+0x46a/0xa80
+> > > [  142.981400]  worker_thread+0x33d/0x8d0
+> > > [  142.981917]  kthread+0x282/0x300
+> > > [  142.982363]  ret_from_fork+0x1f/0x30
+> > > [  142.982862]
+> > > [  142.983077] Freed by task 863:
+> > > [  142.983501]  kasan_save_stack+0x23/0x60
+> > > [  142.984029]  kasan_set_track+0x24/0x40
+> > > [  142.984547]  kasan_set_free_info+0x30/0x60
+> > > [  142.985115]  __kasan_slab_free+0x137/0x210
+> > > [  142.985678]  kfree+0x10b/0x570
+> > > [  142.986106]  wbt_exit+0x68/0x80
+> > > [  142.986535]  rq_qos_exit+0x5f/0x80
+> > > [  142.987002]  blk_cleanup_queue+0xdb/0x250
+> > > [  142.987546]  __scsi_remove_device+0xb1/0x2e0
+> > > [  142.988131]  scsi_remove_device+0x38/0x60
+> > > [  142.988676]  sdev_store_delete+0x73/0x100
+> > > [  142.989230]  dev_attr_store+0x40/0x70
+> > > [  142.989730]  sysfs_kf_write+0x89/0xc0
+> > > [  142.990233]  kernfs_fop_write_iter+0x21d/0x340
+> > > [  142.990839]  new_sync_write+0x27e/0x3a0
+> > > [  142.991362]  vfs_write+0x46e/0x630
+> > > [  142.991834]  ksys_write+0xcd/0x1e0
+> > > [  142.992300]  __x64_sys_write+0x46/0x60
+> > > [  142.992814]  do_syscall_64+0x35/0x80
+> > > [  142.993311]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > [  142.994213] The buggy address belongs to the object at ffff88810306d800
+> > > [  142.994213]  which belongs to the cache kmalloc-256 of size 256
+> > > [  142.995889] The buggy address is located 88 bytes inside of
+> > > [  142.995889]  256-byte region [ffff88810306d800, ffff88810306d900)
+> > > [  142.997448] The buggy address belongs to the page:
+> > > [  142.998102] page:0000000069471149 refcount:1 mapcount:0 mapping:0000000000000000 index:0xc
+> > > [  142.999372] head:0000000069471149 order:2 compound_mapcount:0 compound_pincount:0
+> > > [  143.000375] flags: 0x2fffff80010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> > > [  143.001403] raw: 002fffff80010200 0000000000000000 0000000100000001 ffff88810004cb40
+> > > [  143.002455] raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+> > > [  143.003477] page dumped because: kasan: bad access detected
+> > > [  143.004222]
+> > > [  143.004433] Memory state around the buggy address:
+> > > [  143.005077]  ffff88810306d700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> > > [  143.006040]  ffff88810306d780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> > > [  143.007012] >ffff88810306d800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > > [  143.007981]                                                     ^
+> > > [  143.008795]  ffff88810306d880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > > [  143.009764]  ffff88810306d900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> > > [  143.010731] ==================================================================
+> > > 
+> > > This is because 'q_usage_counter' will not hold when bio_endio() is
+> > > called from error path, thus bio_endio() can concurrent with
+> > > blk_cleanup_queue():
+> > 
+> > What is the exact error path? We actually grabs one ref of q_usage_counter
+> > during submitting bio, so the issue should have been fixed by not
+> > releasing the refcount early in the error path? Or the refcnt isn't grabbed
+> > yet when handling the error?
+> > 
+> 
+> Hi,
+> 
+> We found at least two places:
+> 
+> The first is error path from submit_bio_checks(), and we succeed to
+> construct repoducer here.
+> 
+> The second is from bio_queue_enter(), bio_endio() will be called if
+> blk_queue_enter() failed.
+
+OK, both should be addressed by the following simple patch:
+
+
+diff --git a/block/bio.c b/block/bio.c
+index 5df3dd282e40..a6fb6a0b4295 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1466,7 +1466,7 @@ void bio_endio(struct bio *bio)
+ 	if (!bio_integrity_endio(bio))
+ 		return;
+ 
+-	if (bio->bi_bdev)
++	if (bio->bi_bdev && bio_flagged(bio, BIO_TRACKED))
+ 		rq_qos_done_bio(bio->bi_bdev->bd_disk->queue, bio);
+ 
+ 	if (bio->bi_bdev && bio_flagged(bio, BIO_TRACE_COMPLETION)) {
+
+-- 
+Ming
+
