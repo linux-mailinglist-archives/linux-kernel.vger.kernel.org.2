@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB9C4172F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9DC417260
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344647AbhIXMw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
+        id S1344024AbhIXMrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:47:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344614AbhIXMvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9425C61284;
-        Fri, 24 Sep 2021 12:48:45 +0000 (UTC)
+        id S1343884AbhIXMqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:46:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D403C61107;
+        Fri, 24 Sep 2021 12:45:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487726;
-        bh=nsnzZd4ajgOpxYl+PuhIkoBQILawStDEbi7Bo5ncsnw=;
+        s=korg; t=1632487517;
+        bh=K/MHxVjz3gOqMQyd2AGiJFitdA8BkTxuQse7yV5UCwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g6SKipcAgzhDgm3pvufPxw4gx1khC1hhHoQVtlBrKMke2LFykq9po46xQ9NHCB5UQ
-         ByCmM1N5DSnMopXHmT7VzTee81atAyQnFI3KICBuFNIObGxyDxEInnxeIP81WQa7XT
-         JMbgNidwFmFB8Qty9f9Nc4KP1h9FfpB/+0BcRCSs=
+        b=Yycqwn3l79t6b47pbAMl6tQzIPV43+4oKvSncYmO1nINX0rI/ieG1G9Yh9myUN6D2
+         EQZutmTgswZ/n9BhpwbHTG/vtGX9OxyAoJdhdFnWSMPmuTD3UFQR0KNqpDqbcvmdPX
+         f8roxOwVy7FKP6RcCR4xQA2L6IqN/FsSC2kwXPcQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn " <serge@hallyn.com>,
+        stable@vger.kernel.org, Cyrill Gorcunov <gorcunov@gmail.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Andrey Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.19 04/34] apparmor: remove duplicate macro list_entry_is_head()
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 10/26] prctl: allow to setup brk for et_dyn executables
 Date:   Fri, 24 Sep 2021 14:43:58 +0200
-Message-Id: <20210924124330.109526391@linuxfoundation.org>
+Message-Id: <20210924124328.686047911@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
+References: <20210924124328.336953942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +47,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Cyrill Gorcunov <gorcunov@gmail.com>
 
-commit 9801ca279ad37f72f71234fa81722afd95a3f997 upstream.
+commit e1fbbd073137a9d63279f6bf363151a938347640 upstream.
 
-Strangely I hadn't had noticed the existence of the list_entry_is_head()
-in apparmor code when added the same one in the list.h.  Luckily it's
-fully identical and didn't break builds.  In any case we don't need a
-duplicate anymore, thus remove it from apparmor code.
+Keno Fischer reported that when a binray loaded via ld-linux-x the
+prctl(PR_SET_MM_MAP) doesn't allow to setup brk value because it lays
+before mm:end_data.
 
-Link: https://lkml.kernel.org/r/20201208100639.88182-1-andriy.shevchenko@linux.intel.com
-Fixes: e130816164e244 ("include/linux/list.h: add a macro to test if entry is pointing to the head")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: John Johansen <john.johansen@canonical.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: "Serge E . Hallyn " <serge@hallyn.com>
+For example a test program shows
+
+ | # ~/t
+ |
+ | start_code      401000
+ | end_code        401a15
+ | start_stack     7ffce4577dd0
+ | start_data	   403e10
+ | end_data        40408c
+ | start_brk	   b5b000
+ | sbrk(0)         b5b000
+
+and when executed via ld-linux
+
+ | # /lib64/ld-linux-x86-64.so.2 ~/t
+ |
+ | start_code      7fc25b0a4000
+ | end_code        7fc25b0c4524
+ | start_stack     7fffcc6b2400
+ | start_data	   7fc25b0ce4c0
+ | end_data        7fc25b0cff98
+ | start_brk	   55555710c000
+ | sbrk(0)         55555710c000
+
+This of course prevent criu from restoring such programs.  Looking into
+how kernel operates with brk/start_brk inside brk() syscall I don't see
+any problem if we allow to setup brk/start_brk without checking for
+end_data.  Even if someone pass some weird address here on a purpose then
+the worst possible result will be an unexpected unmapping of existing vma
+(own vma, since prctl works with the callers memory) but test for
+RLIMIT_DATA is still valid and a user won't be able to gain more memory in
+case of expanding VMAs via new values shipped with prctl call.
+
+Link: https://lkml.kernel.org/r/20210121221207.GB2174@grain
+Fixes: bbdc6076d2e5 ("binfmt_elf: move brk out of mmap when doing direct loader exec")
+Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
+Reported-by: Keno Fischer <keno@juliacomputing.com>
+Acked-by: Andrey Vagin <avagin@gmail.com>
+Tested-by: Andrey Vagin <avagin@gmail.com>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/apparmor/apparmorfs.c |    3 ---
- 1 file changed, 3 deletions(-)
+ kernel/sys.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/security/apparmor/apparmorfs.c
-+++ b/security/apparmor/apparmorfs.c
-@@ -1960,9 +1960,6 @@ fail2:
- 	return error;
- }
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1775,13 +1775,6 @@ static int validate_prctl_map(struct prc
+ 	error = -EINVAL;
  
+ 	/*
+-	 * @brk should be after @end_data in traditional maps.
+-	 */
+-	if (prctl_map->start_brk <= prctl_map->end_data ||
+-	    prctl_map->brk <= prctl_map->end_data)
+-		goto out;
 -
--#define list_entry_is_head(pos, head, member) (&pos->member == (head))
--
- /**
-  * __next_ns - find the next namespace to list
-  * @root: root namespace to stop search at (NOT NULL)
+-	/*
+ 	 * Neither we should allow to override limits if they set.
+ 	 */
+ 	if (check_data_rlimit(rlimit(RLIMIT_DATA), prctl_map->brk,
 
 
