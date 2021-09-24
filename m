@@ -2,130 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDD7416A26
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732EA416A29
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243941AbhIXCuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 22:50:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233314AbhIXCus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 22:50:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D98F61090;
-        Fri, 24 Sep 2021 02:49:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632451756;
-        bh=h9Ozz3onH53Wx9sbbp5hIuCfRgkzuUNhUWFdHodSYZQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=WsVVVdUfq7kYVuyeI9RYbZ0bYrV8v67rjnjdFiP0UzUxbE/+KrpwB1+KZ0Ji0likR
-         FS/zeyDY2WmIj4NY8MTC1wQ9R3bzjRuTkgorFfY6ddX77rMN1qGjVbm1kYCBNiTeYB
-         7YdeVpsQ6e1qCldh0hbA6QKVyuVbotcW+0+uZuOqdk61kO3vwzGehZHBrY3tKrinSp
-         VUNKsPkSvy7Lb+mfbN7DbBqxgebTvO9eRLWoxPani00QvsfNkLcUgBFsWl1QODjaBy
-         FvRDLbMYEG83xn+mrrC84ZFX09P7moYk+aS1HLjt55vhCtWOwmNA+iKEiJvvloQeNc
-         2LYwiv4qZEgpA==
-Subject: Re: [PATCH v2] clocksource: arc_timer: eliminate redefined macro
- error
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Vineet Gupta <vgupta@kernel.org>,
-        linux-snps-arc@lists.infradead.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shahab Vahedi <Shahab.Vahedi@synopsys.com>
-References: <20210924020825.20317-1-rdunlap@infradead.org>
-From:   Vineet Gupta <vgupta@kernel.org>
-Message-ID: <1557caaa-9f90-7613-4627-5c5f59d047fa@kernel.org>
-Date:   Thu, 23 Sep 2021 19:49:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S243973AbhIXCv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 22:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234930AbhIXCv0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 22:51:26 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9D0C061574;
+        Thu, 23 Sep 2021 19:49:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210924020825.20317-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1632451792;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pPZqGRw1WwCLIpDnX3mQU1v67yD75RIgM3v4q/TSB/Q=;
+        b=j9qTNzSjHAn1oA/KTXxgG36McukCNyD9HCcYZg/6jPnQsLDnldIpH8mQpNWIuv+2vBbpV9
+        2XrmBkEdTH0qMhUB4QqMIKHoZO8Xfk/VnePWOXMZDuBKioByrteKiZrumeRHUL7a7sO5yZ
+        X68+P9Lkyg9k1ZwaPYdwwDNDAOcaD1Q=
+Date:   Fri, 24 Sep 2021 02:49:51 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   yajun.deng@linux.dev
+Message-ID: <836595da2ba742cb790b8dd2a3c14ae4@linux.dev>
+Subject: Re: [PATCH net-next] net: socket: integrate sockfd_lookup() and
+ sockfd_lookup_light()
+To:     "Eric Dumazet" <eric.dumazet@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <b6263d35-0d31-e4a8-a955-494ce2b36ad6@gmail.com>
+References: <b6263d35-0d31-e4a8-a955-494ce2b36ad6@gmail.com>
+ <20210922063106.4272-1-yajun.deng@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/23/21 7:08 PM, Randy Dunlap wrote:
-> In drivers/clocksource/, 3 drivers use "TIMER_CTRL_IE" with 3 different
-> values.  Two of them (mps2-timer.c and timer-sp804.c/timer-sp.h) are
-> localized and left unmodifed.
->
-> One of them uses a shared header file (<soc/arc/timers.h>), which is
-> what is causing the "redefined" warnings, so change the macro name in
-> that driver only. Also change the TIMER_CTRL_NH macro name.
-> Both macro names are prefixed with "ARC_" to reduce the likelihood
-> of future name collisions.
->
-> In file included from ../drivers/clocksource/timer-sp804.c:24:
-> ../drivers/clocksource/timer-sp.h:25: error: "TIMER_CTRL_IE" redefined [-Werror]
->     25 | #define TIMER_CTRL_IE           (1 << 5)        /*   VR */
-> ../include/soc/arc/timers.h:20: note: this is the location of the previous definition
->     20 | #define TIMER_CTRL_IE           (1 << 0) /* Interrupt when Count reaches limit */
->
-> Fixes: b26c2e3823ba ("ARC: breakout timer include code into separate header")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Vineet Gupta <vgupta@kernel.org>
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Shahab Vahedi <Shahab.Vahedi@synopsys.com>
-
-Acked-by: Vineet Gupta <vgupta@kernel.org>
-
-Thx,
--Vineet
-
-> ---
-> v2: prefix both TIMER_CTRL_xx macros with ARC_ (suggested by
->      Shahab Vahedi <Shahab.Vahedi@synopsys.com>
->
->   drivers/clocksource/arc_timer.c |    6 +++---
->   include/soc/arc/timers.h        |    4 ++--
->   2 files changed, 5 insertions(+), 5 deletions(-)
->
-> --- linux-next-20210917.orig/include/soc/arc/timers.h
-> +++ linux-next-20210917/include/soc/arc/timers.h
-> @@ -17,8 +17,8 @@
->   #define ARC_REG_TIMER1_CNT	0x100	/* timer 1 count */
->   
->   /* CTRL reg bits */
-> -#define TIMER_CTRL_IE	        (1 << 0) /* Interrupt when Count reaches limit */
-> -#define TIMER_CTRL_NH	        (1 << 1) /* Count only when CPU NOT halted */
-> +#define ARC_TIMER_CTRL_IE	(1 << 0) /* Interrupt when Count reaches limit */
-> +#define ARC_TIMER_CTRL_NH	(1 << 1) /* Count only when CPU NOT halted */
->   
->   #define ARC_TIMERN_MAX		0xFFFFFFFF
->   
-> --- linux-next-20210917.orig/drivers/clocksource/arc_timer.c
-> +++ linux-next-20210917/drivers/clocksource/arc_timer.c
-> @@ -225,7 +225,7 @@ static int __init arc_cs_setup_timer1(st
->   
->   	write_aux_reg(ARC_REG_TIMER1_LIMIT, ARC_TIMERN_MAX);
->   	write_aux_reg(ARC_REG_TIMER1_CNT, 0);
-> -	write_aux_reg(ARC_REG_TIMER1_CTRL, TIMER_CTRL_NH);
-> +	write_aux_reg(ARC_REG_TIMER1_CTRL, ARC_TIMER_CTRL_NH);
->   
->   	sched_clock_register(arc_timer1_clock_read, 32, arc_timer_freq);
->   
-> @@ -245,7 +245,7 @@ static void arc_timer_event_setup(unsign
->   	write_aux_reg(ARC_REG_TIMER0_LIMIT, cycles);
->   	write_aux_reg(ARC_REG_TIMER0_CNT, 0);	/* start from 0 */
->   
-> -	write_aux_reg(ARC_REG_TIMER0_CTRL, TIMER_CTRL_IE | TIMER_CTRL_NH);
-> +	write_aux_reg(ARC_REG_TIMER0_CTRL, ARC_TIMER_CTRL_IE | ARC_TIMER_CTRL_NH);
->   }
->   
->   
-> @@ -294,7 +294,7 @@ static irqreturn_t timer_irq_handler(int
->   	 *      explicitly clears IP bit
->   	 * 2. Re-arm interrupt if periodic by writing to IE bit [0]
->   	 */
-> -	write_aux_reg(ARC_REG_TIMER0_CTRL, irq_reenable | TIMER_CTRL_NH);
-> +	write_aux_reg(ARC_REG_TIMER0_CTRL, irq_reenable | ARC_TIMER_CTRL_NH);
->   
->   	evt->event_handler(evt);
->   
-
+September 24, 2021 12:49 AM, "Eric Dumazet" <eric.dumazet@gmail.com> wrot=
+e:=0A=0A> On 9/21/21 11:31 PM, Yajun Deng wrote:=0A> =0A>> As commit 6cb1=
+53cab92a("[NET]: use fget_light() in net/socket.c") said,=0A>> sockfd_loo=
+kup_light() is lower load than sockfd_lookup(). So we can=0A>> remove soc=
+kfd_lookup() but keep the name. As the same time, move flags=0A>> to sock=
+fd_put().=0A> =0A> ???=0A> =0A>> Signed-off-by: Yajun Deng <yajun.deng@li=
+nux.dev>=0A>> ---=0A>> include/linux/net.h | 8 +++-=0A>> net/socket.c | 1=
+01 +++++++++++++++++---------------------------=0A>> 2 files changed, 46 =
+insertions(+), 63 deletions(-)=0A>> =0A>> diff --git a/include/linux/net.=
+h b/include/linux/net.h=0A>> index ba736b457a06..63a179d4f760 100644=0A>>=
+ --- a/include/linux/net.h=0A>> +++ b/include/linux/net.h=0A>> @@ -238,8 =
++238,14 @@ int sock_recvmsg(struct socket *sock, struct msghdr *msg, int =
+flags);=0A>> struct file *sock_alloc_file(struct socket *sock, int flags,=
+ const char *dname);=0A>> struct socket *sockfd_lookup(int fd, int *err);=
+=0A>> struct socket *sock_from_file(struct file *file);=0A>> -#define soc=
+kfd_put(sock) fput(sock->file)=0A>> int net_ratelimit(void);=0A>> +#defin=
+e sockfd_put(sock) \=0A>> +do { \=0A>> + struct fd *fd =3D (struct fd *)&=
+sock->file; \=0A>> + \=0A>> + if (fd->flags & FDPUT_FPUT) \=0A>> + fput(s=
+ock->file); \=0A>> +} while (0)=0A> =0A> Really ?=0A> =0A> I wonder how w=
+as this tested ?=0A> =0A> We can not store FDPUT_FPUT in the sock itself,=
+ for obvious reasons.=0A> Each thread needs to keep this information priv=
+ate.=0A=0AThe sockfd_lookup() already changed in this patch. FDPUT_FPUT s=
+tored in fdget(), precisely in __fget_light().
