@@ -2,101 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDE5417846
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3717417842
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347348AbhIXQOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:14:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42870 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347338AbhIXQOf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:14:35 -0400
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632499980;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4lapy/yC4f0UhAYwV/k1tU4YZt1iWY92d7YZyKJuqHw=;
-        b=JbyC+OlidjI0bqR3NOw41YIYvpK0Kbd1bk5TZtNrYrDN+KfgnL/uEubVB1FEklkVfdiYxb
-        +mxiqydzxMy87DCgfyT3muuQOD1u0z5VQ4lqlQY8FOYnmufpdHgvMN5/CRTzoSixWdrZqw
-        E9SwqsO2Uut1IQ09Rs+/bF5Ak/3ee5YNrr3qAjrTiU+ING1LOGbAKuGQwQCZD1qUUxe4bt
-        ozywP9ntFAbwhw5lzyqcWE56QDK5j8IqeZBxYRo66u9anYGm3wTluh07TH6dL3I/wiO6C/
-        wi4dEv45ZfgJpNRNEMN7/xDEqF2p+wMDkVcigR53Qw1jbaPyRIZvl9mYVtiQbw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632499980;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4lapy/yC4f0UhAYwV/k1tU4YZt1iWY92d7YZyKJuqHw=;
-        b=+Zu8diImx10D1c9u+hg/sTgnigU0c4fvG00m2XDG227ogJR4s382X0v3kAlHhvlV5WW+yb
-        GC0478WQi5XCz4Dw==
+        id S1347343AbhIXQO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:14:29 -0400
+Received: from mga11.intel.com ([192.55.52.93]:43617 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347225AbhIXQOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 12:14:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="220906285"
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="220906285"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 09:12:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="551865357"
+Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.28.105])
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Sep 2021 09:12:51 -0700
+Subject: [PATCH 0/2] [v2] mm/migrate: 5.15 fixes for automatic demotion
 To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH] x86/softirq: Disable softirq stacks on PREEMPT_RT
-Date:   Fri, 24 Sep 2021 18:12:45 +0200
-Message-Id: <20210924161245.2357247-1-bigeasy@linutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        ying.huang@intel.com, mhocko@suse.com, weixugc@google.com,
+        osalvador@suse.de, rientjes@google.com, dan.j.williams@intel.com,
+        david@redhat.com, gthelen@google.com, yang.shi@linux.alibaba.com,
+        akpm@linux-foundation.org
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Fri, 24 Sep 2021 09:12:51 -0700
+Message-Id: <20210924161251.093CCD06@davehans-spike.ostc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Changes from v1:
+ * Use memory_notify->status_change_nid to detect node online/offline
+   events instead of building a new mechanism.
 
-PREEMPT_RT preempts softirqs and the current implementation avoids
-do_softirq_own_stack() and only uses __do_softirq().
+--
 
-Disable the unused softirqs stacks on PREEMPT_RT to safe some memory and
-ensure that do_softirq_own_stack() is not used which is not expected.
+This contains two fixes for the "automatic demotion" code which was
+merged into 5.15:
 
-[bigeasy: commit description.]
+ * Fix memory hotplug performance regression by watching
+   suppressing any real action on irrelevant hotplug events.
+ * Ensure CPU hotplug handler is registered when memory hotplug
+   is disabled.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- arch/x86/include/asm/irq_stack.h |    3 +++
- arch/x86/kernel/irq_32.c         |    2 ++
- 2 files changed, 5 insertions(+)
-
---- a/arch/x86/include/asm/irq_stack.h
-+++ b/arch/x86/include/asm/irq_stack.h
-@@ -185,6 +185,7 @@
- 			      IRQ_CONSTRAINTS, regs, vector);		\
- }
-=20
-+#ifndef CONFIG_PREEMPT_RT
- #define ASM_CALL_SOFTIRQ						\
- 	"call %P[__func]				\n"
-=20
-@@ -201,6 +202,8 @@
- 	__this_cpu_write(hardirq_stack_inuse, false);			\
- }
-=20
-+#endif
-+
- #else /* CONFIG_X86_64 */
- /* System vector handlers always run on the stack they interrupted. */
- #define run_sysvec_on_irqstack_cond(func, regs)				\
---- a/arch/x86/kernel/irq_32.c
-+++ b/arch/x86/kernel/irq_32.c
-@@ -132,6 +132,7 @@ int irq_init_percpu_irqstack(unsigned in
- 	return 0;
- }
-=20
-+#ifndef CONFIG_PREEMPT_RT
- void do_softirq_own_stack(void)
- {
- 	struct irq_stack *irqstk;
-@@ -148,6 +149,7 @@ void do_softirq_own_stack(void)
-=20
- 	call_on_stack(__do_softirq, isp);
- }
-+#endif
-=20
- void __handle_irq(struct irq_desc *desc, struct pt_regs *regs)
- {
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
