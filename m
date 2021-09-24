@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3133041774C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D6D417751
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347014AbhIXPQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 11:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346962AbhIXPQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:16:19 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46A0C061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:14:46 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso13537980otc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=yJHZ3sg9OYAXsiosM9p6nRV9mloK5ex9UJw6r21ze6c=;
-        b=VLGZkj6JJ86r3VyUy8DUYcP08LGBL6lFIq9lT8uSJLiecDTOZ21zizO7ZwMscfXW5L
-         dbCIOEP2PKXm0ICuPq6MD1cNf/vesQF/9Rjz2fD8ZTHaifM4YSrrIkUc/MlK0aW8o4qJ
-         bFH28sndACcOP17xEY2XkQRAvJo7iJ7+ZVpQ2H4fm/2Uf+pX4iNTWye3m4JAedOY6VjW
-         13cv5TWFDOYtpB7GqY0OvFFzv+QfXmR/wbo+2KsT3bvqjIZ9wX1y7x5j/CkW4cflD5Ts
-         s3pVqocTc19vswuy49kRuHgrWHsiBA3uls/jCzNzidX/7PnJrnzEq4DPPu9sp9HOsDQC
-         nVgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=yJHZ3sg9OYAXsiosM9p6nRV9mloK5ex9UJw6r21ze6c=;
-        b=2DKSD3TSgZNpNiSkstG6BTRM8Bxg18crtdsMmWpswAinXbVepsbBMWwWqZS+ViyTLn
-         wS6AUOi5yvnhM3ld4riHHwq38a2pvvLiMmku6Fy1ieMXkrvR0p0/LPMyWFyJEpRO+Mf2
-         VdK5eHNSk55vKlb6QV8vZUK/EcQlcR+VxZKCfK9ML56gwORstZ88GZv9A20nGp6lL3jZ
-         ntJ7AU3O0fKa/I+IKWVI98u0iTGu9qdQGClSWJx2LYAg7lQQpuAxpo712DlEH8ihaT5W
-         cd/DolMrJd3ZUeScCzX5yLfyYQNwzxqqPF6xDTQyUlzem3weNSLHSryHMyx25PN4uK7C
-         nHiQ==
-X-Gm-Message-State: AOAM530x5OQHHpRzGnQFHsh/qduhgnWv4KLLHFUh9TSY/SHIwyfloGYD
-        qg8WRDsLXVY/R8UPqbBkv1qf5B8ErHdF/Wt+lvQ=
-X-Google-Smtp-Source: ABdhPJwVW28Olin85tqXRG9cwgbC5oSxUMte7px4QCuIfoWCGAv/PJL9Plt1Jw7+ML24B6bliB4xv39rO3Lez+/67Jg=
-X-Received: by 2002:a05:6830:2481:: with SMTP id u1mr4465134ots.378.1632496486035;
- Fri, 24 Sep 2021 08:14:46 -0700 (PDT)
+        id S1347032AbhIXPRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 11:17:49 -0400
+Received: from muru.com ([72.249.23.125]:36942 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346962AbhIXPRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 11:17:46 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id C9FB380EE;
+        Fri, 24 Sep 2021 15:16:40 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 18:16:10 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] serial: 8250: Implement prep_tx for power management
+Message-ID: <YU3ruj32L/iaZS1h@atomide.com>
+References: <20210921103346.64824-1-tony@atomide.com>
+ <20210921103346.64824-5-tony@atomide.com>
+ <YUx399WBrMiZDhno@hovoldconsulting.com>
+ <YUyXwJnmPhm1940B@atomide.com>
+ <YU3kPHg2qLr//HEF@hovoldconsulting.com>
 MIME-Version: 1.0
-Sender: elenaantonioerik715@gmail.com
-Received: by 2002:ac9:6406:0:0:0:0:0 with HTTP; Fri, 24 Sep 2021 08:14:45
- -0700 (PDT)
-From:   Elena Antonio Erik <manuellawarlordibrahim@gmail.com>
-Date:   Fri, 24 Sep 2021 08:14:45 -0700
-X-Google-Sender-Auth: YvJ9Do0WVo6EREHwq8j9wyT5ahE
-Message-ID: <CAOr_tmqYCEhc5QLZtHgsUXzSczjZGgoFWwZKYg6ppb8fHW+S1A@mail.gmail.com>
-Subject: i will wait to read from you !!!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YU3kPHg2qLr//HEF@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dearest,
+* Johan Hovold <johan@kernel.org> [210924 14:44]:
+> On Thu, Sep 23, 2021 at 06:05:36PM +0300, Tony Lindgren wrote:
+> > * Johan Hovold <johan@kernel.org> [210923 12:50]:
+> > > On Tue, Sep 21, 2021 at 01:33:44PM +0300, Tony Lindgren wrote:
+> > > > +static int serial8250_prep_tx(struct uart_port *port)
+> > > > +{
+> > > > +	struct uart_8250_port *up = up_to_u8250p(port);
+> > > > +	struct device *dev = up->port.dev;
+> > > > +	int err;
+> > > > +
+> > > > +	if (!(up->capabilities & UART_CAP_RPM))
+> > > > +		return 0;
+> > > > +
+> > > > +	if (!pm_runtime_suspended(dev)) {
+> > > > +		pm_runtime_mark_last_busy(dev);
+> > > > +		return 0;
+> > > > +	}
+> > > > +
+> > > > +	err = pm_request_resume(dev);
+> > > > +	if (err < 0) {
+> > > > +		dev_warn(dev, "prep_tx wakeup failed: %d\n", err);
+> > > > +		return err;
+> > > > +	}
+> > > 
+> > > How is this supposed to work without a runtime PM usage-counter
+> > > increment? What's to prevent the port from suspending again while it's
+> > > transmitting?
+> > 
+> > Hmm yeah we should at pm_runtime_get() and pm_runtime_put() to write()
+> > unless serial8250_rpm_get() and serial8250_rpm_put() are doing it.
+> 
+> If you do the put after just buffering the data it doesn't really solve
+> anything.
 
-I know this mail will come to you as a surprise since we haven't known
-or come across each other before considering the fact that I sourced
-your email contact through the Internet in search of trusted person
-who can assist me.
+Right, sounds like we currently rely on the autosuspend_timeout
+there.
 
-I am Miss Manuella Warlord Ibrahim Coulibaly 24 years old female from
-the Republic of Ivory Coast,West Africa ,am the Daughter of Late Chief
-Sgt.Warlord Ibrahim Coulibaly (a.k.a General IB ). My late father was
-a well known Ivory Coast militia leader . He died on Thursday 28 April
-2011 following a fight with the Republican Forces of Ivory
-Coast(FRCI). I am constrained to contact you because of the
-maltreatment which I am receiving from my step mother.
+> > Or pair prep with finish and deal with the usage count there.
+> 
+> Problem is where to call it from. How do you tell the device is done
+> transmitting? And how should we deal with flow control? Etc.
 
-She planned to take away all my late father's treasury and properties
-from me since the unexpected death of my beloved Father. Meanwhile I
-wanted to travel to Europe, but she hide away my international
-passport and other valuable documents. Luckily she did not discover
-where I kept my father's File which contained important documents. Now
-I am presently staying in the Mission in Ghana.
+Maybe if the device driver needs to call uart_start() also from runtime
+PM idle function and if no data allow suspend. Then if there is
+more data, uart_write() calls uart_start() again, device wakes up
+and so on.
 
-I am seeking for long term relationship and investment assistance. My
-father of blessed memory deposited the sum of US$ 27.5 Million in one
-bank in Accra Ghana with my name as the next of kin. I had contacted
-the Bank to clear the deposit but the Branch Manager told me that
-being a refugee, my status according to the local law does not
-authorize me to carry out the operation. However, he advised me to
-provide a trustee who will stand on my behalf. I had wanted to inform
-my stepmother about this deposit but I am afraid that she will not
-offer me anything after the release of the money.
+Regards,
 
-Therefore, I decide to seek for your help in transferring the money
-into your bank account while I will relocate to your country and
-settle down with you. As you indicated your interest to help me I will
-give you the account number and the contact of the bank where my late
-beloved father deposited the money with my name as the next of kin. It
-is my intention to compensate you with 40% of the total money for your
-assistance and the balance shall be my investment in any profitable
-venture which you will recommend to me as have no any idea about
-foreign investment. Please all communications should be through this
-email address for confidential purposes
-(manuellawarlordibrahimw715@gmail.com).
-
-Thanking you a lot in anticipation of your quick response. I will give
-you details in my next mail after receiving your acceptance mail to
-help me ,
-
-Yours sincerely
-Miss manuella Warlord Ibrahim Coulibaly
-(manuellawarlordibrahimw715@gmail.com)
+Tony
