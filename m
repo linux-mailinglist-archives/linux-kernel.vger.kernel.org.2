@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE496417454
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2312A417263
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345401AbhIXNEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:04:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34414 "EHLO mail.kernel.org"
+        id S1344170AbhIXMsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345778AbhIXNCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:02:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0481C6140A;
-        Fri, 24 Sep 2021 12:54:35 +0000 (UTC)
+        id S1343982AbhIXMrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:47:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 704666125F;
+        Fri, 24 Sep 2021 12:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488076;
-        bh=sqTcy2seHEKG6QAJiouvlqUKC11aL+xP7CYmMHZOD6I=;
+        s=korg; t=1632487528;
+        bh=eBvX5QyY1bI9Ko81iScI6S9Yy/M+DYth0rNiIhw9Dis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RG2rG63/vjryqZbSHGvw39WEMeBWpd1ywzxPsgvCGNg7Vswlzn88m0gwGJuGsNgxX
-         ZtgTFm0Yarg4/Cc5FA5HiJCcM98aMBaKe4ObtcRQQzTrLdF+m85jcS6AG0PzyLrQlz
-         H46Cn+g1vZ4A61oOUVGG1QQ0DPEGKUfLfmVZJifI=
+        b=h6Lg1IWGLrte0dea7BRZrRXd6flE8Bh4pbYb8Hs102BheW7qvduNUc4KRtPiIapJ+
+         JO3Arg6PvlsxwH08E9c5tMNRwH4joe7VfYfZnRr6YIUaco0eC6AlMy/XvhJDHSYUn0
+         M6nUxMptIF1NBQQsy7l+nuXBU4fkFJpfbQOtobsQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 043/100] drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
+        stable@vger.kernel.org,
+        "stable@vger.kernel.org, Cheng Chao" <cs.os.kernel@gmail.com>,
+        Cheng Chao <cs.os.kernel@gmail.com>
+Subject: [PATCH 4.9 04/26] staging: android: ion: fix page is NULL
 Date:   Fri, 24 Sep 2021 14:43:52 +0200
-Message-Id: <20210924124342.896449215@linuxfoundation.org>
+Message-Id: <20210924124328.494200946@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
+References: <20210924124328.336953942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,187 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Cheng Chao <cs.os.kernel@gmail.com>
 
-[ Upstream commit 4b92d4add5f6dcf21275185c997d6ecb800054cd ]
+Fixes: commit e7f63771b60e ("ION: Sys_heap: Add cached pool to spead up cached buffer alloc")
+the commit e7f63771b60e introduced the bug which didn't test page which maybe NULL.
+and previous logic was right.
 
-DEFINE_SMP_CALL_CACHE_FUNCTION() was usefel before the CPU hotplug rework
-to ensure that the cache related functions are called on the upcoming CPU
-because the notifier itself could run on any online CPU.
+the e7f63771b60e has been merged in v4.8-rc3, only longterm 4.9.x has this bug,
+and other longterm/stable version have not.
 
-The hotplug state machine guarantees that the callbacks are invoked on the
-upcoming CPU. So there is no need to have this SMP function call
-obfuscation. That indirection was missed when the hotplug notifiers were
-converted.
+kernel panic is here when page is NULL:
 
-This also solves the problem of ARM64 init_cache_level() invoking ACPI
-functions which take a semaphore in that context. That's invalid as SMP
-function calls run with interrupts disabled. Running it just from the
-callback in context of the CPU hotplug thread solves this.
+Unable to handle kernel paging request at virtual address b0380000
+pgd = d9d94000
+[b0380000] *pgd=00000000
+Internal error: Oops: 2805 [#1] PREEMPT SMP ARM
+...
+task: daa2dd00 task.stack: da194000
+PC is at v7_dma_clean_range+0x1c/0x34
+LR is at arm_dma_sync_single_for_device+0x44/0x58
+pc : [<c011aa0c>]    lr : [<c011645c>]    psr: 200f0013
+sp : da195da0  ip : dc1f9000  fp : c1043dc4
+r10: 00000000  r9 : c16f1f58  r8 : 00000001
+r7 : c1621f94  r6 : c0116418  r5 : 00000000  r4 : c011aa58
+r3 : 0000003f  r2 : 00000040  r1 : b0480000  r0 : b0380000
+Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+Control: 10c5383d  Table: 19d9406a  DAC: 00000051
+...
+[<c011aa0c>] (v7_dma_clean_range) from [<c011645c>] (arm_dma_sync_single_for_device+0x44/0x58)
+[<c011645c>] (arm_dma_sync_single_for_device) from [<c0117088>] (arm_dma_sync_sg_for_device+0x50/0x7c)
+[<c0117088>] (arm_dma_sync_sg_for_device) from [<c0c033c4>] (ion_pages_sync_for_device+0xb0/0xec)
+[<c0c033c4>] (ion_pages_sync_for_device) from [<c0c054ac>] (ion_system_heap_allocate+0x2a0/0x2e0)
+[<c0c054ac>] (ion_system_heap_allocate) from [<c0c02c78>] (ion_alloc+0x12c/0x494)
+[<c0c02c78>] (ion_alloc) from [<c0c03eac>] (ion_ioctl+0x510/0x63c)
+[<c0c03eac>] (ion_ioctl) from [<c027c4b0>] (do_vfs_ioctl+0xa8/0x9b4)
+[<c027c4b0>] (do_vfs_ioctl) from [<c027ce28>] (SyS_ioctl+0x6c/0x7c)
+[<c027ce28>] (SyS_ioctl) from [<c0108a40>] (ret_fast_syscall+0x0/0x48)
+Code: e3a02004 e1a02312 e2423001 e1c00003 (ee070f3a)
+---[ end trace 89278304932c0e87 ]---
+Kernel panic - not syncing: Fatal exception
 
-Fixes: 8571890e1513 ("arm64: Add support for ACPI based firmware tables")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Will Deacon <will@kernel.org>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/871r69ersb.ffs@tglx
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Cheng Chao <cs.os.kernel@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/cacheinfo.c   |  7 ++-----
- arch/mips/kernel/cacheinfo.c    |  7 ++-----
- arch/riscv/kernel/cacheinfo.c   |  7 ++-----
- arch/x86/kernel/cpu/cacheinfo.c |  7 ++-----
- include/linux/cacheinfo.h       | 18 ------------------
- 5 files changed, 8 insertions(+), 38 deletions(-)
+ drivers/staging/android/ion/ion_system_heap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/cacheinfo.c b/arch/arm64/kernel/cacheinfo.c
-index 7fa6828bb488..587543c6c51c 100644
---- a/arch/arm64/kernel/cacheinfo.c
-+++ b/arch/arm64/kernel/cacheinfo.c
-@@ -43,7 +43,7 @@ static void ci_leaf_init(struct cacheinfo *this_leaf,
- 	this_leaf->type = type;
- }
+--- a/drivers/staging/android/ion/ion_system_heap.c
++++ b/drivers/staging/android/ion/ion_system_heap.c
+@@ -75,7 +75,7 @@ static struct page *alloc_buffer_page(st
  
--static int __init_cache_level(unsigned int cpu)
-+int init_cache_level(unsigned int cpu)
- {
- 	unsigned int ctype, level, leaves, fw_level;
- 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-@@ -78,7 +78,7 @@ static int __init_cache_level(unsigned int cpu)
- 	return 0;
- }
+ 	page = ion_page_pool_alloc(pool);
  
--static int __populate_cache_leaves(unsigned int cpu)
-+int populate_cache_leaves(unsigned int cpu)
- {
- 	unsigned int level, idx;
- 	enum cache_type type;
-@@ -97,6 +97,3 @@ static int __populate_cache_leaves(unsigned int cpu)
- 	}
- 	return 0;
- }
--
--DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
--DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
-diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
-index 53d8ea7d36e6..495dd058231d 100644
---- a/arch/mips/kernel/cacheinfo.c
-+++ b/arch/mips/kernel/cacheinfo.c
-@@ -17,7 +17,7 @@ do {								\
- 	leaf++;							\
- } while (0)
- 
--static int __init_cache_level(unsigned int cpu)
-+int init_cache_level(unsigned int cpu)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-@@ -74,7 +74,7 @@ static void fill_cpumask_cluster(int cpu, cpumask_t *cpu_map)
- 			cpumask_set_cpu(cpu1, cpu_map);
- }
- 
--static int __populate_cache_leaves(unsigned int cpu)
-+int populate_cache_leaves(unsigned int cpu)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-@@ -114,6 +114,3 @@ static int __populate_cache_leaves(unsigned int cpu)
- 
- 	return 0;
- }
--
--DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
--DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
-diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
-index d86781357044..90deabfe63ea 100644
---- a/arch/riscv/kernel/cacheinfo.c
-+++ b/arch/riscv/kernel/cacheinfo.c
-@@ -113,7 +113,7 @@ static void fill_cacheinfo(struct cacheinfo **this_leaf,
- 	}
- }
- 
--static int __init_cache_level(unsigned int cpu)
-+int init_cache_level(unsigned int cpu)
- {
- 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
- 	struct device_node *np = of_cpu_device_node_get(cpu);
-@@ -155,7 +155,7 @@ static int __init_cache_level(unsigned int cpu)
- 	return 0;
- }
- 
--static int __populate_cache_leaves(unsigned int cpu)
-+int populate_cache_leaves(unsigned int cpu)
- {
- 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
- 	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
-@@ -187,6 +187,3 @@ static int __populate_cache_leaves(unsigned int cpu)
- 
- 	return 0;
- }
--
--DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
--DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
-diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
-index d66af2950e06..b5e36bd0425b 100644
---- a/arch/x86/kernel/cpu/cacheinfo.c
-+++ b/arch/x86/kernel/cpu/cacheinfo.c
-@@ -985,7 +985,7 @@ static void ci_leaf_init(struct cacheinfo *this_leaf,
- 	this_leaf->priv = base->nb;
- }
- 
--static int __init_cache_level(unsigned int cpu)
-+int init_cache_level(unsigned int cpu)
- {
- 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
- 
-@@ -1014,7 +1014,7 @@ static void get_cache_id(int cpu, struct _cpuid4_info_regs *id4_regs)
- 	id4_regs->id = c->apicid >> index_msb;
- }
- 
--static int __populate_cache_leaves(unsigned int cpu)
-+int populate_cache_leaves(unsigned int cpu)
- {
- 	unsigned int idx, ret;
- 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-@@ -1033,6 +1033,3 @@ static int __populate_cache_leaves(unsigned int cpu)
- 
- 	return 0;
- }
--
--DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
--DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
-diff --git a/include/linux/cacheinfo.h b/include/linux/cacheinfo.h
-index 4f72b47973c3..2f909ed084c6 100644
---- a/include/linux/cacheinfo.h
-+++ b/include/linux/cacheinfo.h
-@@ -79,24 +79,6 @@ struct cpu_cacheinfo {
- 	bool cpu_map_populated;
- };
- 
--/*
-- * Helpers to make sure "func" is executed on the cpu whose cache
-- * attributes are being detected
-- */
--#define DEFINE_SMP_CALL_CACHE_FUNCTION(func)			\
--static inline void _##func(void *ret)				\
--{								\
--	int cpu = smp_processor_id();				\
--	*(int *)ret = __##func(cpu);				\
--}								\
--								\
--int func(unsigned int cpu)					\
--{								\
--	int ret;						\
--	smp_call_function_single(cpu, _##func, &ret, true);	\
--	return ret;						\
--}
--
- struct cpu_cacheinfo *get_cpu_cacheinfo(unsigned int cpu);
- int init_cache_level(unsigned int cpu);
- int populate_cache_leaves(unsigned int cpu);
--- 
-2.33.0
-
+-	if (cached)
++	if (page && cached)
+ 		ion_pages_sync_for_device(NULL, page, PAGE_SIZE << order,
+ 					  DMA_BIDIRECTIONAL);
+ 	return page;
 
 
