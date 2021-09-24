@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542BA41736F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4524174BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345144AbhIXM4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:56:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46134 "EHLO mail.kernel.org"
+        id S1346341AbhIXNKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:10:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344644AbhIXMyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:54:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BB3961242;
-        Fri, 24 Sep 2021 12:50:32 +0000 (UTC)
+        id S1345477AbhIXNGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CFC36136F;
+        Fri, 24 Sep 2021 12:56:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487833;
-        bh=pSv2sUgaZGiJHNxxpDyXx6TbPfbeejSaKRVTpeHJUN4=;
+        s=korg; t=1632488187;
+        bh=i50Q+2odLvoFw3UCo6bLvVHGv28CMrkLdVV9jE1sgjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uGcfuWO9316RpwpPe2at/jgZNrEjy7chUYpasg2gkvA4b1hf5phSFl/WzELChg+49
-         2VeLUVUZ+cWg2rAolWfYPL8fdfw/vn9DTXdEOMPDhV93m7PU7Susiiw2YpVgDOrXir
-         s7BrKypw2fnUfeM2YwlM0Wf97TVTCpvkmQj6XdJ0=
+        b=qnzA4vKfPvCr0wH2L92RCHdSG50qGFsI2/6RSpIBXnl1qqdV9QkuksyLaCeGssZWu
+         Hd5iC2IGSi2/I85IknuY44ZORp/V0JYKpXPHBEVUR1+ICB4D2M22+BEQqvSpARpe9a
+         MTU+548laqa9AXHCqHJJjIcpNNB2VSLKd9yE+CIQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Babu Moger <babu.moger@oracle.com>,
-        Don Zickus <dzickus@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 29/50] Kconfig.debug: drop selecting non-existing HARDLOCKUP_DETECTOR_ARCH
+        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.10 18/63] perf tools: Allow build-id with trailing zeros
 Date:   Fri, 24 Sep 2021 14:44:18 +0200
-Message-Id: <20210924124333.225541752@linuxfoundation.org>
+Message-Id: <20210924124334.879177912@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,49 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
 
-[ Upstream commit 6fe26259b4884b657cbc233fb9cdade9d704976e ]
+commit 4a86d41404005a3c7e7b6065e8169ac6202887a9 upstream.
 
-Commit 05a4a9527931 ("kernel/watchdog: split up config options") adds a
-new config HARDLOCKUP_DETECTOR, which selects the non-existing config
-HARDLOCKUP_DETECTOR_ARCH.
+Currently perf saves a build-id with size but old versions assumes the
+size of 20.  In case the build-id is less than 20 (like for MD5), it'd
+fill the rest with 0s.
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+I saw a problem when old version of perf record saved a binary in the
+build-id cache and new version of perf reads the data.  The symbols
+should be read from the build-id cache (as the path no longer has the
+same binary) but it failed due to mismatch in the build-id.
 
-HARDLOCKUP_DETECTOR_ARCH Referencing files: lib/Kconfig.debug
+  symsrc__init: build id mismatch for /home/namhyung/.debug/.build-id/53/e4c2f42a4c61a2d632d92a72afa08f00000000/elf.
 
-Simply drop selecting the non-existing HARDLOCKUP_DETECTOR_ARCH.
+The build-id event in the data has 20 byte build-ids, but it saw a
+different size (16) when it reads the build-id of the elf file in the
+build-id cache.
 
-Link: https://lkml.kernel.org/r/20210806115618.22088-1-lukas.bulwahn@gmail.com
-Fixes: 05a4a9527931 ("kernel/watchdog: split up config options")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Babu Moger <babu.moger@oracle.com>
-Cc: Don Zickus <dzickus@redhat.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  $ readelf -n ~/.debug/.build-id/53/e4c2f42a4c61a2d632d92a72afa08f00000000/elf
+
+  Displaying notes found in: .note.gnu.build-id
+    Owner                Data size 	Description
+    GNU                  0x00000010	NT_GNU_BUILD_ID (unique build ID bitstring)
+      Build ID: 53e4c2f42a4c61a2d632d92a72afa08f
+
+Let's fix this by allowing trailing zeros if the size is different.
+
+Fixes: 39be8d0115b321ed ("perf tools: Pass build_id object to dso__build_id_equal()")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20210910224630.1084877-1-namhyung@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/Kconfig.debug | 1 -
- 1 file changed, 1 deletion(-)
+ tools/perf/util/dso.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index ee00c6c8a373..a846f03901db 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -868,7 +868,6 @@ config HARDLOCKUP_DETECTOR
- 	depends on HAVE_HARDLOCKUP_DETECTOR_PERF || HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	select LOCKUP_DETECTOR
- 	select HARDLOCKUP_DETECTOR_PERF if HAVE_HARDLOCKUP_DETECTOR_PERF
--	select HARDLOCKUP_DETECTOR_ARCH if HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	help
- 	  Say Y here to enable the kernel to act as a watchdog to detect
- 	  hard lockups.
--- 
-2.33.0
-
+--- a/tools/perf/util/dso.c
++++ b/tools/perf/util/dso.c
+@@ -1336,6 +1336,16 @@ void dso__set_build_id(struct dso *dso,
+ 
+ bool dso__build_id_equal(const struct dso *dso, struct build_id *bid)
+ {
++	if (dso->bid.size > bid->size && dso->bid.size == BUILD_ID_SIZE) {
++		/*
++		 * For the backward compatibility, it allows a build-id has
++		 * trailing zeros.
++		 */
++		return !memcmp(dso->bid.data, bid->data, bid->size) &&
++			!memchr_inv(&dso->bid.data[bid->size], 0,
++				    dso->bid.size - bid->size);
++	}
++
+ 	return dso->bid.size == bid->size &&
+ 	       memcmp(dso->bid.data, bid->data, dso->bid.size) == 0;
+ }
 
 
