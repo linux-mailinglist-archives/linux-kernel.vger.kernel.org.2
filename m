@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF89416A1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9665C416A20
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243935AbhIXCpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 22:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243948AbhIXCpV (ORCPT
+        id S243943AbhIXCsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 22:48:33 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:40735 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234930AbhIXCsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 22:45:21 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B8FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:43:48 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id m11so10752828ioo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=jNFV9KO3ralVqp4Wd7niMG35JvXLR+iQVqVzf0CGirI=;
-        b=EGG4MHj7Tiz5rEQ1HlKdAihTpb0A5zbW1OrHw3V7x/bkzVTOOMHwWjiuHCegqIaEWs
-         jPO+9PrqiDaGXDtQdYRA4B3INAh3MCXa4x+bkxNGebhcAPgOu3aeSy2vORxq9J5DWvd7
-         bL14awuetbiijQqKQxiA2zk2C7eHsC0w4Rvh8Y2fcg/XqqbrweBIvsSfnotfOKtZqJax
-         G1AsMniQi+y2ni1hSbDOeNQ0gwIWaPCrHmA9Wcb3cDxEafDeQV0whahVvP/zp1ABVVwR
-         iUDrBejLtbM24OWeW/XkTYNbTfEOzV0x6pkpGE3wPr7Fmi2Z+d7BT7WoFNAkzrtsDyK5
-         FXtA==
+        Thu, 23 Sep 2021 22:48:32 -0400
+Received: by mail-pl1-f177.google.com with SMTP id j15so4015434plh.7;
+        Thu, 23 Sep 2021 19:47:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=jNFV9KO3ralVqp4Wd7niMG35JvXLR+iQVqVzf0CGirI=;
-        b=y4Sgt4WvqX3dEK+AzNYa3eUKelMJMZcviPmLyurVcr5POkjw7lPK2EWaSBxcTLUyqH
-         T5+ZN6pQe0kXIQCVNhp1VoOqPz32Lgw1rBQZaQHfxLWN4SoJYC+jF4/igr9mvbzerw8S
-         lXpN2hrusPMQVFOVfojh92eKzCoP7bkbHUO53/2/Fky5+hAEwTVKVPZEM99z1BFixaAO
-         quTYxnzk0E9mREbg6YSki8GeMsWIkHPaSnr+dwK/284p11Mpb97GBn9xmHKJW2iaaVI9
-         78jQVFU5h8D/gjFPSAX9zcou6YzPX6EQhxHy8HhgnCOjiWMuw5gbO2I673Ny4sHRYAU4
-         1LLA==
-X-Gm-Message-State: AOAM531tepeXcnbEbzMPQ2IUL1XkJyLQhMxVUYFgNZ/+zGT35lGbWNV3
-        +J68cRXbvLMctLoKF36as9mAgA==
-X-Google-Smtp-Source: ABdhPJw0TxbQoYO6X2WauMDduwfWqOIN9yQ5KvcohyP1JVEiIGwBqiwoB0SI7LkCGgoyJxtMJbyWMw==
-X-Received: by 2002:a5d:9c0a:: with SMTP id 10mr768337ioe.76.1632451427745;
-        Thu, 23 Sep 2021 19:43:47 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id v17sm3437970ilh.67.2021.09.23.19.43.46
+        bh=Ez9AZhmbkqgjmKUjZFTyGc3YPzKzZZ/EAaN5J8pQEd4=;
+        b=3YYEsB1qAGcjW1MPTBAAGE/skn1YVeb1dIIa0c2CpxDgbUiDiP2joudQHF0cxnP2uX
+         dD09QKc8SjBFMEXaGsntzlf7VbNuDiHeIkqzJ5Kpkl3ftK306YJSKrnWt+ntWpvTq5xB
+         YnKXIvLjNm+U0+G+zddzqzqWE/cy8WJZZngClQX84MgwDk3hnPCXim1FZpNLa7Gr1Ey6
+         iMW8dKDGQIxVC8PCNJ8nvD6ahDOcrkt92N9vMtFI1BFgxXmudz6zeVimZ2/XlFwrBg95
+         q2Ks9qXVCL/c8+2bgkEjOyLtmzHjcGr1pNLlyJRSNR59iNeENWu3D8BMueKfU0F99dmv
+         zUQA==
+X-Gm-Message-State: AOAM53378jNE8Ges7cIvUQuzbrUbxHmJ2eo738UgNim9VoWjRVXKillt
+        /4xKXX6M+BYlweKg8tHjVHY=
+X-Google-Smtp-Source: ABdhPJyqURa1kHq2oz+fi/L296+n+h2t3Q/HL1nhe6p81CuXq452zeLFzqpeDpb3um15BwbCwaESeg==
+X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr9233637pjl.150.1632451619389;
+        Thu, 23 Sep 2021 19:46:59 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:cbba:97c1:e6a:66d5? ([2601:647:4000:d7:cbba:97c1:e6a:66d5])
+        by smtp.gmail.com with ESMTPSA id i8sm7009301pfq.22.2021.09.23.19.46.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 19:43:46 -0700 (PDT)
-Subject: Re: [syzbot] INFO: task hung in io_uring_del_tctx_node
-To:     syzbot <syzbot+111d2a03f51f5ae73775@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000064b6b405ccb41113@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5b3f8081-fbdd-ea2c-eddb-292d02be98a8@kernel.dk>
-Date:   Thu, 23 Sep 2021 20:43:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 23 Sep 2021 19:46:58 -0700 (PDT)
+Message-ID: <9cda0704-0e63-39b2-7874-fd679314eb2b@acm.org>
+Date:   Thu, 23 Sep 2021 19:46:57 -0700
 MIME-Version: 1.0
-In-Reply-To: <00000000000064b6b405ccb41113@google.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
 Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
+ <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
+ <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org> <YUwin2cn8X5GGjyY@unreal>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <YUwin2cn8X5GGjyY@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 7:57 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    92477dd1faa6 Merge tag 's390-5.15-ebpf-jit-fixes' of git:/..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1471785b300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e917f3dfc452c977
-> dashboard link: https://syzkaller.appspot.com/bug?extid=111d2a03f51f5ae73775
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1511c4f7300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132d1d1d300000
+On 9/22/21 23:45, Leon Romanovsky wrote:
+> Isn't kptr_restrict sysctl is for that?
+
+Hi Leon,
+
+After I sent my email I discovered the following commit: 5ead723a20e0
+("lib/vsprintf: no_hash_pointers prints all addresses as unhashed"; v5.12).
+I think that commit does what we need?
+
+Thanks,
+
+Bart.
 
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index fe5e613b960f..efb244deb081 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -9636,8 +9641,10 @@ static void io_uring_clean_tctx(struct io_uring_task *tctx)
- 	struct io_tctx_node *node;
- 	unsigned long index;
- 
--	xa_for_each(&tctx->xa, index, node)
-+	xa_for_each(&tctx->xa, index, node) {
- 		io_uring_del_tctx_node(index);
-+		cond_resched();
-+	}
- 	if (wq) {
- 		/*
- 		 * Must be after io_uring_del_task_file() (removes nodes under
+commit 5ead723a20e0447bc7db33dc3070b420e5f80aa6
+Author: Timur Tabi <timur@kernel.org>
+Date:   Sun Feb 14 10:13:48 2021 -0600
 
--- 
-Jens Axboe
+     lib/vsprintf: no_hash_pointers prints all addresses as unhashed
 
+     If the no_hash_pointers command line parameter is set, then
+     printk("%p") will print pointers as unhashed, which is useful for
+     debugging purposes.  This change applies to any function that uses
+     vsprintf, such as print_hex_dump() and seq_buf_printf().
+
+     A large warning message is displayed if this option is enabled.
+     Unhashed pointers expose kernel addresses, which can be a security
+     risk.
+
+     Also update test_printf to skip the hashed pointer tests if the
+     command-line option is set.
+
+     Signed-off-by: Timur Tabi <timur@kernel.org>
+     Acked-by: Petr Mladek <pmladek@suse.com>
+     Acked-by: Randy Dunlap <rdunlap@infradead.org>
+     Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+     Acked-by: Vlastimil Babka <vbabka@suse.cz>
+     Acked-by: Marco Elver <elver@google.com>
+     Signed-off-by: Petr Mladek <pmladek@suse.com>
+     Link: https://lore.kernel.org/r/20210214161348.369023-4-timur@kernel.org
