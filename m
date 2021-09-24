@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E7F417219
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A591417235
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343676AbhIXMps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:45:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
+        id S1343821AbhIXMqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:46:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343624AbhIXMpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:45:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 738B361107;
-        Fri, 24 Sep 2021 12:44:11 +0000 (UTC)
+        id S1343841AbhIXMqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:46:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 148D66124D;
+        Fri, 24 Sep 2021 12:44:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487452;
-        bh=PeiV8zTx/PgaUjytJMDBPHz9Cv69NlgVuWOluF+furM=;
+        s=korg; t=1632487480;
+        bh=VG+frtPWR7Hugbx58zvTwHatZg/pksRVcznDr+TupUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DGeGvvAG0Nat4/tG7ppMrFrMUSNwOBAfjLf/V+IqaGcW0qDRcu7aZDRsGO9pqnhbU
-         PLBvat4sU/kYYSL1LKfb8R/ZKbetn2+RgDSl6eSulOiUaUcxqknKvNlEK5BmzMKTuJ
-         mP4KF52zIURehWaFog0r+GGbQhtDSA8WAWv2ADNk=
+        b=L2SHg4gJw7RZfZlJTb96Hw3hr6f5N4aFJsLncsEXrLwSCM0v4WOrgX3GMITA/YtqN
+         5j6FEoPkCLeo6NlREuSqb5dVUzU0Y2q50fv8ANADX4cKg0KuUSnObdQXdbtWNEUwQM
+         5pARwEuT6LGWN9D7CzlzsKqIrbCyt4UqDB0CZdfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.4 01/23] s390/bpf: Fix optimizing out zero-extensions
-Date:   Fri, 24 Sep 2021 14:43:42 +0200
-Message-Id: <20210924124327.869013869@linuxfoundation.org>
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.4 02/23] PM / wakeirq: Fix unbalanced IRQ enable for wakeirq
+Date:   Fri, 24 Sep 2021 14:43:43 +0200
+Message-Id: <20210924124327.901559315@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
 References: <20210924124327.816210800@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,128 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit db7bee653859ef7179be933e7d1384644f795f26 upstream.
+commit 69728051f5bf15efaf6edfbcfe1b5a49a2437918 upstream.
 
-Currently the JIT completely removes things like `reg32 += 0`,
-however, the BPF_ALU semantics requires the target register to be
-zero-extended in such cases.
+If a device is runtime PM suspended when we enter suspend and has
+a dedicated wake IRQ, we can get the following warning:
 
-Fix by optimizing out only the arithmetic operation, but not the
-subsequent zero-extension.
+WARNING: CPU: 0 PID: 108 at kernel/irq/manage.c:526 enable_irq+0x40/0x94
+[  102.087860] Unbalanced enable for IRQ 147
+...
+(enable_irq) from [<c06117a8>] (dev_pm_arm_wake_irq+0x4c/0x60)
+(dev_pm_arm_wake_irq) from [<c0618360>]
+ (device_wakeup_arm_wake_irqs+0x58/0x9c)
+(device_wakeup_arm_wake_irqs) from [<c0615948>]
+(dpm_suspend_noirq+0x10/0x48)
+(dpm_suspend_noirq) from [<c01ac7ac>]
+(suspend_devices_and_enter+0x30c/0xf14)
+(suspend_devices_and_enter) from [<c01adf20>]
+(enter_state+0xad4/0xbd8)
+(enter_state) from [<c01ad3ec>] (pm_suspend+0x38/0x98)
+(pm_suspend) from [<c01ab3e8>] (state_store+0x68/0xc8)
 
-Reported-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+This is because the dedicated wake IRQ for the device may have been
+already enabled earlier by dev_pm_enable_wake_irq_check().  Fix the
+issue by checking for runtime PM suspended status.
+
+This issue can be easily reproduced by setting serial console log level
+to zero, letting the serial console idle, and suspend the system from
+an ssh terminal.  On resume, dmesg will have the warning above.
+
+The reason why I have not run into this issue earlier has been that I
+typically run my PM test cases from on a serial console instead over ssh.
+
+Fixes: c84345597558 (PM / wakeirq: Enable dedicated wakeirq for suspend)
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/s390/net/bpf_jit_comp.c |   50 ++++++++++++++++++++++---------------------
- 1 file changed, 26 insertions(+), 24 deletions(-)
+ drivers/base/power/wakeirq.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -596,10 +596,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT4(0xb9080000, dst_reg, src_reg);
- 		break;
- 	case BPF_ALU | BPF_ADD | BPF_K: /* dst = (u32) dst + (u32) imm */
--		if (!imm)
--			break;
--		/* alfi %dst,imm */
--		EMIT6_IMM(0xc20b0000, dst_reg, imm);
-+		if (imm != 0) {
-+			/* alfi %dst,imm */
-+			EMIT6_IMM(0xc20b0000, dst_reg, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_ADD | BPF_K: /* dst = dst + imm */
-@@ -621,10 +621,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT4(0xb9090000, dst_reg, src_reg);
- 		break;
- 	case BPF_ALU | BPF_SUB | BPF_K: /* dst = (u32) dst - (u32) imm */
--		if (!imm)
--			break;
--		/* alfi %dst,-imm */
--		EMIT6_IMM(0xc20b0000, dst_reg, -imm);
-+		if (imm != 0) {
-+			/* alfi %dst,-imm */
-+			EMIT6_IMM(0xc20b0000, dst_reg, -imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_SUB | BPF_K: /* dst = dst - imm */
-@@ -651,10 +651,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT4(0xb90c0000, dst_reg, src_reg);
- 		break;
- 	case BPF_ALU | BPF_MUL | BPF_K: /* dst = (u32) dst * (u32) imm */
--		if (imm == 1)
--			break;
--		/* msfi %r5,imm */
--		EMIT6_IMM(0xc2010000, dst_reg, imm);
-+		if (imm != 1) {
-+			/* msfi %r5,imm */
-+			EMIT6_IMM(0xc2010000, dst_reg, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_MUL | BPF_K: /* dst = dst * imm */
-@@ -715,6 +715,8 @@ static noinline int bpf_jit_insn(struct
- 			if (BPF_OP(insn->code) == BPF_MOD)
- 				/* lhgi %dst,0 */
- 				EMIT4_IMM(0xa7090000, dst_reg, 0);
-+			else
-+				EMIT_ZERO(dst_reg);
- 			break;
- 		}
- 		/* lhi %w0,0 */
-@@ -807,10 +809,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT4(0xb9820000, dst_reg, src_reg);
- 		break;
- 	case BPF_ALU | BPF_XOR | BPF_K: /* dst = (u32) dst ^ (u32) imm */
--		if (!imm)
--			break;
--		/* xilf %dst,imm */
--		EMIT6_IMM(0xc0070000, dst_reg, imm);
-+		if (imm != 0) {
-+			/* xilf %dst,imm */
-+			EMIT6_IMM(0xc0070000, dst_reg, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_XOR | BPF_K: /* dst = dst ^ imm */
-@@ -831,10 +833,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT6_DISP_LH(0xeb000000, 0x000d, dst_reg, dst_reg, src_reg, 0);
- 		break;
- 	case BPF_ALU | BPF_LSH | BPF_K: /* dst = (u32) dst << (u32) imm */
--		if (imm == 0)
--			break;
--		/* sll %dst,imm(%r0) */
--		EMIT4_DISP(0x89000000, dst_reg, REG_0, imm);
-+		if (imm != 0) {
-+			/* sll %dst,imm(%r0) */
-+			EMIT4_DISP(0x89000000, dst_reg, REG_0, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_LSH | BPF_K: /* dst = dst << imm */
-@@ -856,10 +858,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT6_DISP_LH(0xeb000000, 0x000c, dst_reg, dst_reg, src_reg, 0);
- 		break;
- 	case BPF_ALU | BPF_RSH | BPF_K: /* dst = (u32) dst >> (u32) imm */
--		if (imm == 0)
--			break;
--		/* srl %dst,imm(%r0) */
--		EMIT4_DISP(0x88000000, dst_reg, REG_0, imm);
-+		if (imm != 0) {
-+			/* srl %dst,imm(%r0) */
-+			EMIT4_DISP(0x88000000, dst_reg, REG_0, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_RSH | BPF_K: /* dst = dst >> imm */
+--- a/drivers/base/power/wakeirq.c
++++ b/drivers/base/power/wakeirq.c
+@@ -320,7 +320,8 @@ void dev_pm_arm_wake_irq(struct wake_irq
+ 		return;
+ 
+ 	if (device_may_wakeup(wirq->dev)) {
+-		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED)
++		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED &&
++		    !pm_runtime_status_suspended(wirq->dev))
+ 			enable_irq(wirq->irq);
+ 
+ 		enable_irq_wake(wirq->irq);
+@@ -342,7 +343,8 @@ void dev_pm_disarm_wake_irq(struct wake_
+ 	if (device_may_wakeup(wirq->dev)) {
+ 		disable_irq_wake(wirq->irq);
+ 
+-		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED)
++		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED &&
++		    !pm_runtime_status_suspended(wirq->dev))
+ 			disable_irq_nosync(wirq->irq);
+ 	}
+ }
 
 
