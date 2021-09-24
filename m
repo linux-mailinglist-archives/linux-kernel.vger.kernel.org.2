@@ -2,121 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CE3416AC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 06:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202D0416B64
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 08:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244111AbhIXERf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 00:17:35 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:17512 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244133AbhIXERb (ORCPT
+        id S229727AbhIXGEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 02:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231675AbhIXGEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 00:17:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1632456958; x=1663992958;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2k79zXBKe+geEQxWRKze+mGukdAFu5VeVYDnouJpkdg=;
-  b=WNORyVp0ps4vQZ4iffeZc6MiflqNauVSqImTvaus0oq7RCyzzWH1VUyr
-   auJuU7+sRd2WrI5w3fc8keuOZHIV9/jeZ1Td2NzvHvMCx33B/qcd3aWQ3
-   uOo/mh+Snydddmj9MCiC1CJBUcMOZREnnVMRff1BoLDW5LqcJCue2CzzV
-   NX6gACqrGwd+deipQqa7BFuX0ZzYNZ7xwtOnYfoljRelWo2FMh1MADKft
-   jwbwNl+Kvb8c7Akk7aicTK0/ployY+ResNV7i1BIMtPCpQzJpn9OiSxDe
-   CkU/7Yc0BRCopls2HUYt8h+mS88OveSYJ5nkBWgcnXphJsR+PKrfVaL9e
-   Q==;
-IronPort-SDR: Q8tyVuWjAyH0PqpRvy5Qo+NShe+sejcA9B9uTl47yFkfPFy/jSWzDyJxlPp1TS9ymlvvVsoiRj
- cA45xuo+OdrymoSVKT62n7FkWgWROLW+aZX4YQ1g9AUiSOPb6Ucn7aHCfb0rtq4FR+SmFfLrIy
- MTmiZP0tthR/5yn45lt5KKGYIlme8ZlnJGKjAnGUWSJHEnUPfRt/lGm4X8E2TajJ5/ALBiOhvV
- K/pcfwJw+lKfqbu20P2yDtRbdvogd/tdxPp9aEhaDJ9EjYd1ZwKYUhUu8n17dXI0ZfO7w/yN4K
- cCiWL+bBxSopsMFKWrRZ2/KT
-X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
-   d="scan'208";a="70411614"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Sep 2021 21:15:57 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 23 Sep 2021 21:15:54 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 23 Sep 2021 21:15:54 -0700
-From:   <kelvin.cao@microchip.com>
-To:     <kurt.schwemmer@microsemi.com>, <logang@deltatee.com>,
-        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <kelvin.cao@microchip.com>, <kelvincao@outlook.com>
-Subject: [PATCH 5/5] PCI/switchtec: Add check of event support
-Date:   Fri, 24 Sep 2021 11:08:42 +0000
-Message-ID: <20210924110842.6323-6-kelvin.cao@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210924110842.6323-1-kelvin.cao@microchip.com>
-References: <20210924110842.6323-1-kelvin.cao@microchip.com>
+        Fri, 24 Sep 2021 02:04:21 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3010C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 23:02:48 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id h129so11268181iof.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 23:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8EJ8DYKndFK+5So2UKuINw0ckdpPba90RU7+1mo4Kbs=;
+        b=goM+/0IhsvZrgtKeDDt9Vf1dhntj9ubEcOhxssAViO9HXfNYHBiR2kxsdKngsoJbO/
+         sam8qudQ26QM/0N1lAudAKMR9Ude3eGQ9LeUR5xodwMVVkGX4re5b1Zzz9sZyzBfiMKb
+         aZlnk4uX4VQR5+6mto1fM38ZynAE1pRX52Niw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8EJ8DYKndFK+5So2UKuINw0ckdpPba90RU7+1mo4Kbs=;
+        b=0kz+0fwwkuYHxFOh1lohvNWk8w+0ING1qbQ7pLbMkvtxEytUMZXsRG26VJ9GRYT7WA
+         N3UnMateLa/uLsp+kwtrVPfaBPh/4RIeT81A8RoQTDyR2fTubjPjnxCQeFTE2uWBWByD
+         h3sr7sdj4Nb+18+R58+q0H1nKp2endg1CGkRb2H653TIhx1uIuOSYaVw3fU52ArlofFi
+         4FsxYGDU01spKYUx8yU08wf1UzNplAs77KHduiDkyHI51qSjPz5XEzxqzQejWR/+Usq/
+         r66H3ZQEZ8imvNPnzEfbQROKnBZDME8S3M4QBFM2MfngIMfuqzDOuu4sHrAV0N7YOSZf
+         qOpA==
+X-Gm-Message-State: AOAM531F43xXO3JfQh4+hK45fNzhFT83Pa3ZssQONxnkXCwWtY9C0Suy
+        qTDvND4mtDfws5GY9aKTq8c37q5zBelK7stMzFmWFA==
+X-Google-Smtp-Source: ABdhPJxUsO5lNgbt/bn3O3IzyVReZBGY0xZnLoXmOtAktRYLOyTdzdcKibiIFq5TZwe27oZ3V2EJI4+RTaoqcsq75eA=
+X-Received: by 2002:a05:6602:180e:: with SMTP id t14mr7228927ioh.204.1632463368083;
+ Thu, 23 Sep 2021 23:02:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20210702102304.3346429-1-hsinyi@chromium.org>
+In-Reply-To: <20210702102304.3346429-1-hsinyi@chromium.org>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Fri, 24 Sep 2021 14:02:22 +0800
+Message-ID: <CAJMQK-h090rkRJdzfq_4YkRqwwaU7Wn-p3i0Zc+8-7hVzx+8sA@mail.gmail.com>
+Subject: Re: [PATCH v5 RESEND 1/3] dt-bindings: mediatek: convert mtk jpeg
+ decoder/encoder to yaml
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Logan Gunthorpe <logang@deltatee.com>
+On Fri, Jul 2, 2021 at 6:23 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> Convert mediatek jpeg decoder and encoder bindings to yaml.
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Not all events are supported by every gen/variant of the Switchtec
-firmware. To solve this, since Gen4, a new bit in each event header
-is introduced to indicate if an event is supported by the firmware.
+Kindly ping on these patches.
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Kelvin Cao <kelvin.cao@microchip.com>
----
- drivers/pci/switch/switchtec.c | 8 +++++++-
- include/linux/switchtec.h      | 1 +
- 2 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index 20cec2367084..739e063a6b85 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -1016,6 +1016,9 @@ static int event_ctl(struct switchtec_dev *stdev,
- 		return PTR_ERR(reg);
- 
- 	hdr = ioread32(reg);
-+	if (hdr & SWITCHTEC_EVENT_NOT_SUPP)
-+		return -EOPNOTSUPP;
-+
- 	for (i = 0; i < ARRAY_SIZE(ctl->data); i++)
- 		ctl->data[i] = ioread32(&reg[i + 1]);
- 
-@@ -1088,7 +1091,7 @@ static int ioctl_event_ctl(struct switchtec_dev *stdev,
- 		for (ctl.index = 0; ctl.index < nr_idxs; ctl.index++) {
- 			ctl.flags = event_flags;
- 			ret = event_ctl(stdev, &ctl);
--			if (ret < 0)
-+			if (ret < 0 && ret != -EOPNOTSUPP)
- 				return ret;
- 		}
- 	} else {
-@@ -1395,6 +1398,9 @@ static int mask_event(struct switchtec_dev *stdev, int eid, int idx)
- 	hdr_reg = event_regs[eid].map_reg(stdev, off, idx);
- 	hdr = ioread32(hdr_reg);
- 
-+	if (hdr & SWITCHTEC_EVENT_NOT_SUPP)
-+		return 0;
-+
- 	if (!(hdr & SWITCHTEC_EVENT_OCCURRED && hdr & SWITCHTEC_EVENT_EN_IRQ))
- 		return 0;
- 
-diff --git a/include/linux/switchtec.h b/include/linux/switchtec.h
-index 082f1d51957a..be24056ac00f 100644
---- a/include/linux/switchtec.h
-+++ b/include/linux/switchtec.h
-@@ -19,6 +19,7 @@
- #define SWITCHTEC_EVENT_EN_CLI   BIT(2)
- #define SWITCHTEC_EVENT_EN_IRQ   BIT(3)
- #define SWITCHTEC_EVENT_FATAL    BIT(4)
-+#define SWITCHTEC_EVENT_NOT_SUPP BIT(31)
- 
- #define SWITCHTEC_DMA_MRPC_EN	BIT(0)
- 
--- 
-2.25.1
-
+> ---
+>  .../bindings/media/mediatek-jpeg-decoder.txt  | 38 --------
+>  .../bindings/media/mediatek-jpeg-decoder.yaml | 89 +++++++++++++++++++
+>  .../bindings/media/mediatek-jpeg-encoder.txt  | 35 --------
+>  .../bindings/media/mediatek-jpeg-encoder.yaml | 80 +++++++++++++++++
+>  4 files changed, 169 insertions(+), 73 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
+> deleted file mode 100644
+> index 39c1028b2dfb4..0000000000000
+> --- a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
+> +++ /dev/null
+> @@ -1,38 +0,0 @@
+> -* Mediatek JPEG Decoder
+> -
+> -Mediatek JPEG Decoder is the JPEG decode hardware present in Mediatek SoCs
+> -
+> -Required properties:
+> -- compatible : must be one of the following string:
+> -       "mediatek,mt8173-jpgdec"
+> -       "mediatek,mt7623-jpgdec", "mediatek,mt2701-jpgdec"
+> -       "mediatek,mt2701-jpgdec"
+> -- reg : physical base address of the jpeg decoder registers and length of
+> -  memory mapped region.
+> -- interrupts : interrupt number to the interrupt controller.
+> -- clocks: device clocks, see
+> -  Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+> -- clock-names: must contain "jpgdec-smi" and "jpgdec".
+> -- power-domains: a phandle to the power domain, see
+> -  Documentation/devicetree/bindings/power/power_domain.txt for details.
+> -- mediatek,larb: must contain the local arbiters in the current Socs, see
+> -  Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+> -  for details.
+> -- iommus: should point to the respective IOMMU block with master port as
+> -  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+> -  for details.
+> -
+> -Example:
+> -       jpegdec: jpegdec@15004000 {
+> -               compatible = "mediatek,mt2701-jpgdec";
+> -               reg = <0 0x15004000 0 0x1000>;
+> -               interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW>;
+> -               clocks =  <&imgsys CLK_IMG_JPGDEC_SMI>,
+> -                         <&imgsys CLK_IMG_JPGDEC>;
+> -               clock-names = "jpgdec-smi",
+> -                             "jpgdec";
+> -               power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
+> -               mediatek,larb = <&larb2>;
+> -               iommus = <&iommu MT2701_M4U_PORT_JPGDEC_WDMA>,
+> -                        <&iommu MT2701_M4U_PORT_JPGDEC_BSDMA>;
+> -       };
+> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+> new file mode 100644
+> index 0000000000000..9b87f036f1785
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+> @@ -0,0 +1,89 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/mediatek-jpeg-decoder.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek JPEG Decoder Device Tree Bindings
+> +
+> +maintainers:
+> +  - Xia Jiang <xia.jiang@mediatek.com>
+> +
+> +description: |-
+> +  Mediatek JPEG Decoder is the JPEG decode hardware present in Mediatek SoCs
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt8173-jpgdec
+> +              - mediatek,mt2701-jpgdec
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt7623-jpgdec
+> +          - const: mediatek,mt2701-jpgdec
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 2
+> +    minItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: jpgdec-smi
+> +      - const: jpgdec
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  mediatek,larb:
+> +    $ref: '/schemas/types.yaml#/definitions/phandle'
+> +    description: |
+> +      Must contain the local arbiters in the current Socs, see
+> +      Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+> +      for details.
+> +
+> +  iommus:
+> +    maxItems: 2
+> +    description: |
+> +      Points to the respective IOMMU block with master port as argument, see
+> +      Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml for details.
+> +      Ports are according to the HW.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +  - mediatek,larb
+> +  - iommus
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt2701-clk.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/memory/mt2701-larb-port.h>
+> +    #include <dt-bindings/power/mt2701-power.h>
+> +    jpegdec: jpegdec@15004000 {
+> +      compatible = "mediatek,mt2701-jpgdec";
+> +      reg = <0x15004000 0x1000>;
+> +      interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW>;
+> +      clocks =  <&imgsys CLK_IMG_JPGDEC_SMI>,
+> +                <&imgsys CLK_IMG_JPGDEC>;
+> +      clock-names = "jpgdec-smi",
+> +                    "jpgdec";
+> +      power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
+> +      mediatek,larb = <&larb2>;
+> +      iommus = <&iommu MT2701_M4U_PORT_JPGDEC_WDMA>,
+> +               <&iommu MT2701_M4U_PORT_JPGDEC_BSDMA>;
+> +    };
+> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
+> deleted file mode 100644
+> index 5e53c6ab52d01..0000000000000
+> --- a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
+> +++ /dev/null
+> @@ -1,35 +0,0 @@
+> -* MediaTek JPEG Encoder
+> -
+> -MediaTek JPEG Encoder is the JPEG encode hardware present in MediaTek SoCs
+> -
+> -Required properties:
+> -- compatible : "mediatek,mt2701-jpgenc"
+> -  followed by "mediatek,mtk-jpgenc"
+> -- reg : physical base address of the JPEG encoder registers and length of
+> -  memory mapped region.
+> -- interrupts : interrupt number to the interrupt controller.
+> -- clocks: device clocks, see
+> -  Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+> -- clock-names: must contain "jpgenc". It is the clock of JPEG encoder.
+> -- power-domains: a phandle to the power domain, see
+> -  Documentation/devicetree/bindings/power/power_domain.txt for details.
+> -- mediatek,larb: must contain the local arbiters in the current SoCs, see
+> -  Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+> -  for details.
+> -- iommus: should point to the respective IOMMU block with master port as
+> -  argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+> -  for details.
+> -
+> -Example:
+> -       jpegenc: jpegenc@1500a000 {
+> -               compatible = "mediatek,mt2701-jpgenc",
+> -                            "mediatek,mtk-jpgenc";
+> -               reg = <0 0x1500a000 0 0x1000>;
+> -               interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_LOW>;
+> -               clocks =  <&imgsys CLK_IMG_VENC>;
+> -               clock-names = "jpgenc";
+> -               power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
+> -               mediatek,larb = <&larb2>;
+> -               iommus = <&iommu MT2701_M4U_PORT_JPGENC_RDMA>,
+> -                        <&iommu MT2701_M4U_PORT_JPGENC_BSDMA>;
+> -       };
+> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+> new file mode 100644
+> index 0000000000000..5e35ecfd21f1b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/mediatek-jpeg-encoder.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek JPEG Encoder Device Tree Bindings
+> +
+> +maintainers:
+> +  - Xia Jiang <xia.jiang@mediatek.com>
+> +
+> +description: |-
+> +  MediaTek JPEG Encoder is the JPEG encode hardware present in MediaTek SoCs
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - mediatek,mt2701-jpgenc
+> +      - const: mediatek,mtk-jpgenc
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: jpgenc
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  mediatek,larb:
+> +    $ref: '/schemas/types.yaml#/definitions/phandle'
+> +    description: |
+> +      Must contain the local arbiters in the current Socs, see
+> +      Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+> +      for details.
+> +
+> +  iommus:
+> +    maxItems: 2
+> +    description: |
+> +      Points to the respective IOMMU block with master port as argument, see
+> +      Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml for details.
+> +      Ports are according to the HW.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +  - mediatek,larb
+> +  - iommus
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt2701-clk.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/memory/mt2701-larb-port.h>
+> +    #include <dt-bindings/power/mt2701-power.h>
+> +    jpegenc: jpegenc@1500a000 {
+> +      compatible = "mediatek,mt2701-jpgenc",
+> +                   "mediatek,mtk-jpgenc";
+> +      reg = <0x1500a000 0x1000>;
+> +      interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_LOW>;
+> +      clocks =  <&imgsys CLK_IMG_VENC>;
+> +      clock-names = "jpgenc";
+> +      power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
+> +      mediatek,larb = <&larb2>;
+> +      iommus = <&iommu MT2701_M4U_PORT_JPGENC_RDMA>,
+> +               <&iommu MT2701_M4U_PORT_JPGENC_BSDMA>;
+> +    };
+> --
+> 2.32.0.93.g670b81a890-goog
+>
