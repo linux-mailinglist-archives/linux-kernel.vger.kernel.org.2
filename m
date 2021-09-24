@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAF84176ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771434176F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346800AbhIXOjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:39:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346731AbhIXOjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:39:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E40660F9C;
-        Fri, 24 Sep 2021 14:37:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632494254;
-        bh=BK3v+VyNJVPw8v2HTHk9VkzAkGeHSOjxEF6PdFPg4/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mNnuhKLE1smaILowt3dkpobiGHmOMHiNuhHKko1SGVbJaNUflMK9ORhkRTs7AfYsP
-         ysKoEoeeUSgsSHgOre+kfomjyb3+c5/BtWie8oLdgwyYMii6JZn7r2g3AZ+XSj3nly
-         jrC7SIxTXdnYozdluz/AkaLO5V4g3wKnqhBm8wTJNP6SJ9yXpyKLB5PXmXvNMwLvEP
-         23u0kJT2Pd5qeULtU31rAsS9shI8qBPCC9ZHLqKdtDOuPJ5Qz799tlf/Ja9SAz2E/4
-         ys/dy+V2cufXUmoi9lu+kQ4Rltd9np4+X6Sy6sGsdBcJ+qPOx/nXOI7EhDhY1izzsZ
-         QjlxREaYvIJyw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mTmKW-0001Ow-4y; Fri, 24 Sep 2021 16:37:36 +0200
-Date:   Fri, 24 Sep 2021 16:37:36 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] serial: core: Add new prep_tx for power management
-Message-ID: <YU3isENYUb+aE4qi@hovoldconsulting.com>
-References: <20210921103346.64824-1-tony@atomide.com>
- <20210921103346.64824-4-tony@atomide.com>
- <YUx3AkT4Du/PT+V5@hovoldconsulting.com>
- <YUyXA5UStMHGQDZZ@atomide.com>
+        id S1346797AbhIXOj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346185AbhIXOj1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 10:39:27 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C179CC061571;
+        Fri, 24 Sep 2021 07:37:53 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id r23so2843146wra.6;
+        Fri, 24 Sep 2021 07:37:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b+6Mk3O7LpVdzp5Jb5p0whL8l/VrfgCZuRXRsXVkwZE=;
+        b=i3qU+iuA/ReBGuS0SfEgPyfrdU1H6FQ4xyvt+bVxEWVdN7UT7vrM4IB5kz7OrGAPRm
+         PMWQ2t6ZB8uyRoZtmb16UVO6GcVr6MFEGzfpphgsoOJN3Ql+bLjpHG4puHuWU34Ye689
+         cQrtVbxsExeSl3h3wnYC3AYDthfsD5rAaIV6mJE/SBiWLgFJeUPUvgHOzhTgZsN9MlFy
+         uspPCYUPAazmxKd8r7kH4NAHOiaNgrPbqdIGOy3mJjD2s/p0gEFXwlixTPTeNYBir9U2
+         VC6OVNZmE11lRgwXX11CMMqQKEZjENKONNzhvwNqSyhUt4dXnBwi/EfsfnyTbTSw0C6i
+         0UsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b+6Mk3O7LpVdzp5Jb5p0whL8l/VrfgCZuRXRsXVkwZE=;
+        b=dZa88oJpxqGQzzDJSSh80h3anUkbYlB6N2Tik/aO4000j8CnWLrGXwaIKTOnIrADas
+         DIayDtoPkl3f2SEHHfFoZKXX6vRmRjtznlye+GRT1wlkV4pJSA6zlQZmRamYEkOcL0nk
+         Cr85HQDfY1NdtAdeD65/Xr31orDe8AZnA53aASy9Gokq88WvWUIc1DDdvPF1bcV3g4vD
+         v9/zvnGzKYs8tnKTNbSgCyqOOhIzZbVA/nR7NlW1DNKfKD07vPAR6W11erBRn1YjDn08
+         U+LxhhbMMmU00QIwAX+fbpDtKUzxZ/gMGN6BhOBEQEShdC6qgPsXgkcuf46u85ImFfS5
+         u3Pw==
+X-Gm-Message-State: AOAM530bfvKJ1OBJFD5PAgQyFmU7NZpRr9lQNLpfr6fB0EzSnJWSAxS0
+        6r8JcecFAkjhaLgoPcGovGPDbI+rj1M=
+X-Google-Smtp-Source: ABdhPJzy0zekgBXJ6u39ExWd89d/LJ97M4KvnMkSsWSgjsAFIrlfRK2lJNuShJDhodXLGAoDsAuGAQ==
+X-Received: by 2002:a7b:ce93:: with SMTP id q19mr2489521wmj.195.1632494272206;
+        Fri, 24 Sep 2021 07:37:52 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id u25sm9751265wmm.5.2021.09.24.07.37.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 07:37:51 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 16:37:49 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Prathamesh Shete <pshete@nvidia.com>
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        jonathanh@nvidia.com, linux-gpio@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        smangipudi@nvidia.com
+Subject: Re: [PATCH v3 2/2] arm64: tegra: GPIO Interrupt entries
+Message-ID: <YU3ivcSPEo9sf0ux@orome.fritz.box>
+References: <YTWeSJ7jGamxx9Uu@orome.fritz.box>
+ <20210907073224.3070-1-pshete@nvidia.com>
+ <20210907073224.3070-3-pshete@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/wSlbaGMGvM3Cnsl"
 Content-Disposition: inline
-In-Reply-To: <YUyXA5UStMHGQDZZ@atomide.com>
+In-Reply-To: <20210907073224.3070-3-pshete@nvidia.com>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 06:02:27PM +0300, Tony Lindgren wrote:
-> * Johan Hovold <johan@kernel.org> [210923 12:46]:
-> > On Tue, Sep 21, 2021 at 01:33:43PM +0300, Tony Lindgren wrote:
-> > > If the serial driver implements PM runtime with autosuspend, the port may
-> > > be powered off for TX. To wake up the port, let's add new prep_tx() call
-> > > for serial drivers to implement as needed. We call it from serial
-> > > write_room() and write() functions. If the serial port is not enabled,
-> > > we just return 0.
-> > 
-> > This isn't right. If there's room in the driver buffer, there's no
-> > reason to not accept those characters.
-> 
-> Maybe. We might get away with returning zero bytes written in write().
-> But to me it seems better to stop things early when write is known
-> to not succeed.
 
-But you shouldn't return zero from write() either. If there's room in
-the write buffer we accept the data.
- 
-> > It's the drivers responsibility to resume writing when write() is
-> > called and that me need to be done in a runtime resume callback in case
-> > the device is suspended.
-> 
-> I think we currently need to return zero bytes written from write()
-> when the serial port is not usable.
-> 
-> I don't think we can return a fake number of bytes written from write().
+--/wSlbaGMGvM3Cnsl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's not a fake number. It's similar to if you have a port that is
-stalled due to flow control. We buffer the data and continue writing
-when the other end is ready to accept more.
+On Tue, Sep 07, 2021 at 01:02:24PM +0530, Prathamesh Shete wrote:
+> From: pshete <pshete@nvidia.com>
+>=20
+> Tegra19x supports 8 entries for GPIO controller.
+> This change adds the required interrupt entires for all GPIO controllers.
+>=20
+> Signed-off-by: Prathamesh Shete <pshete@nvidia.com>
+> ---
+>  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 49 +++++++++++++++++++++++-
+>  1 file changed, 47 insertions(+), 2 deletions(-)
 
-> And even if we could return a fake number of bytes written, we could
-> run into issues doing the real write to the serial port.
->
-> > No need to be patching line disciplines for this.
-> 
-> Do you see issues with handling the errors in line disciplines?
+I've applied this now to the Tegra tree, thanks.
 
-It's just conceptually wrong to push retrying up the stack, possible all
-the way to user space in case of non-blocking opens, just because the
-device isn't already runtime active.
+Thierry
 
-Johan
+--/wSlbaGMGvM3Cnsl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFN4r0ACgkQ3SOs138+
+s6EOlxAAhG2mBwZxm8ebPAcd2JAcutuyLwtTVU2fNk7MhbxnNsU4XtNZsc4s0cB1
+GzUqyiafMVBZ0fTsEQYNsP56M2akjLy7eU/W7sMb2Gh42nJ4+iSGq3BplBXFYMEY
+pFQogzsvFm7CIkWMh7jXEBtzM2ipg52tcBRwOHRj/YAkV5a5ASdIJdq/C+/JNFg5
+wIFWuT5gbWZBmTfgh6g5oIPj5+I6OnnFzxCq6yqUzlVzHIhhrs0Sd88u3USPefeC
+WhV4XDowiS2csNKHVOfcZI91tssC55sSy5OzturyqA+Dh4ojzniqLzmv43AR5Zie
+4GeW0HhNxWFZgAxYPBzAYy0EIE/5gJLdGFbw1V2S5iV+alIP+iFMU27iNzLnXKg1
+YMluPpcSyZMs4lVYO50fWEOKsXB2C6Vph0yCBRlwUPLXKh/0cOwIjrpI051muU5O
+OepyODSmjjfIosTquGIIlxrcDJEmClw7OKL5/RS5d+irBmjlBc65Crd+RdKta2Am
+SDVFm88jsE9OLA5K32Bi6XW0qIxNDRQZUr3oEyyN6aVI6gT373+6NkVU/qsYCYH5
+PRwSdVIPsxbdwO+eGsH0g5RblzlZBtzi4KH/L7QEPdNHxNwosd+A/07RrkRhU4G9
+hxpnatgLfnecj+DtMY8c/PEZGr0dYnk/QoBi8w8ijn8GuYO6WqU=
+=XpD7
+-----END PGP SIGNATURE-----
+
+--/wSlbaGMGvM3Cnsl--
