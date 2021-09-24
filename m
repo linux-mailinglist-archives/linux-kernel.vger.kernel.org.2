@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B61416947
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C528E41694B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243747AbhIXBOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 21:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54626 "EHLO
+        id S243699AbhIXBRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 21:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240863AbhIXBOK (ORCPT
+        with ESMTP id S240863AbhIXBRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 21:14:10 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F291C061574;
-        Thu, 23 Sep 2021 18:12:38 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so8989714ota.13;
-        Thu, 23 Sep 2021 18:12:38 -0700 (PDT)
+        Thu, 23 Sep 2021 21:17:51 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEDAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 18:16:18 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id j15so3785665plh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 18:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=jZSX2L+ZaMKOPBuw6sCq8F1naptzLxLKZ6KKLxO+i+4=;
-        b=kHAMhU1Oto8cAlmPrPpHprpOjYC2lIbMTDHkRW+9bErTMh9HJv71Xu0iy1cCi6nPNX
-         Ioo/105yktlRy2B8cPNQYivKteMDQZdVkZYQ3MDiSY1Pwaipuzqr4TPBaCtIr+Z6H69E
-         SwHetJcp7n73bcAujWxYhubRObnvNU/j9pYF1oLFzz4iaNwtun9ivoiR0W02+u3Mkm3D
-         QxAS2zpUsmvms8f6B07JU69csKC2JtYanWR+5UrYWpTW7tZ6cz/b5iXK+gIC4nBG13zJ
-         qXS8+gtxun3wMdq8xEUt89FD4B44YSGu40qK7lRVTfmx2c6UqXzQTU5puMDi3zriLe1s
-         Eb+Q==
+        bh=w5B8w4boy04cb2C9FnPWt5iQ9AQtwNvlUApWzI3TT6E=;
+        b=fk/zXO6APsjQP2fh5wykxBplb9piOvz3CNMHFIPkMPwFt20Rurof4KpK+RCED8KfWg
+         awr2VaO0bwCNMi6PCTnWMa1XeV3bxdLEGfMljXtedJWuUaehsap1a9+fq0dBtHOHqhrd
+         VG1ySMWoZXdd4KZu0XVMzt+HO6rkK8NokbFFE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jZSX2L+ZaMKOPBuw6sCq8F1naptzLxLKZ6KKLxO+i+4=;
-        b=xrSfsWHNY0XYglZN5nvf5iNzAqKjukfJrLQZ+Kysx8FDItMknJ/vHX4XfIw0hu826g
-         7j3SA/+WaW5wgLCxEQMjBKXrjmkIzs2fzZJs9SkgyrPipuAA5tPBfwszgP63maysC9a7
-         1GrkoQq3/gYdLQhd/EUyrxMnr84XZOKDmGooaWkN3HhvRSoNDF/8lQ9Vuw3a6AQrlqj6
-         Dy4Z1nXmwAYQZOM6LqYhm5+Q25UWaiTcieCr6hjLUOeePpuBczjthVlGdCixRzzw45Tc
-         /fNP1Z86yFwCLi95/S6wwwOEbWWTwMkiYsXX2wDk08TV7BckgrqKhoNpNcW9DejemWIY
-         GhKA==
-X-Gm-Message-State: AOAM531+DYreYCecqWX4BWDooVDtGIoHFjjnv+5pMYDORG1j9eVXdHkI
-        TPappRj+AiuVqB9jOK0ibdB/3T2PAIQ=
-X-Google-Smtp-Source: ABdhPJyPRwR+WThRfBelo3wHwUJs+OwT1JNHrGN+FTwMPv2PF4pPG295gmxKx4qNWxcwiP8o9nHF4w==
-X-Received: by 2002:a05:6830:13c5:: with SMTP id e5mr1496794otq.374.1632445958006;
-        Thu, 23 Sep 2021 18:12:38 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bk40sm1760724oib.8.2021.09.23.18.12.37
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w5B8w4boy04cb2C9FnPWt5iQ9AQtwNvlUApWzI3TT6E=;
+        b=cQbwJqaceDIYhb14qtgsSEjSR9/5HFhoarQ9wXoyxU93aqEh065eekLtdjFUYqFCyG
+         8l20QOq67N6BC9a3Yg7aKOOAipZO8sswD+GuUlUBp22l5zr/2xW2nMQ5bvoHgvW+7Yf8
+         1mkKslsalEOdKQznj8liEYSyuK/sGapcCpEroBJ8x10W14DjK8gcDdb+Tg5155oOR3Kq
+         qXbiiiZpGdFZyHx3vh0rDWS7QUfeX9j85VClBP9gzr8wg3qqz7FtgJFa10K22m5xiom7
+         hVshrYw0ODJUGFiyrEImPPII8sqH9I5ACf2LUGMkUMTmCT/kzWva96WCAUJ7LnWumw1+
+         3mDw==
+X-Gm-Message-State: AOAM533ahjquK5yJlUyxVvg0ru/yXMydVAd2UwhuRWMnSSxDvKFkDdHv
+        nYbpcfGj2oUy4kwAnnoeRCrYiA==
+X-Google-Smtp-Source: ABdhPJxoF8k/yHeE9qADjZViLo/daJ+jbNYuOpCagSw2t25LlmK7gyi40AMK5wwRJHKxrmnGmfYBDw==
+X-Received: by 2002:a17:902:e153:b0:13b:63ba:7288 with SMTP id d19-20020a170902e15300b0013b63ba7288mr6270393pla.33.1632446178067;
+        Thu, 23 Sep 2021 18:16:18 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e14sm6519648pfv.127.2021.09.23.18.16.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 18:12:37 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 23 Sep 2021 18:12:36 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: lm90: do not require VCC
- supply
-Message-ID: <20210924011236.GA3029882@roeck-us.net>
-References: <20210920181913.338772-1-krzysztof.kozlowski@canonical.com>
- <20210920181913.338772-2-krzysztof.kozlowski@canonical.com>
+        Thu, 23 Sep 2021 18:16:17 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 18:16:16 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vito Caputo <vcaputo@pengaru.com>
+Cc:     Jann Horn <jannh@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Michael =?iso-8859-1?Q?Wei=DF?= 
+        <michael.weiss@aisec.fraunhofer.de>,
+        Anand K Mistry <amistry@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
+Message-ID: <202109231814.FD09DBAD3@keescook>
+References: <20210923233105.4045080-1-keescook@chromium.org>
+ <20210923234917.pqrxwoq7yqnvfpwu@shells.gnugeneration.com>
+ <CAG48ez0Rtv5kqHWw368Ym3GkKodPA+JETOAN+=c2KPa3opENSA@mail.gmail.com>
+ <20210924002230.sijoedia65hf5bj7@shells.gnugeneration.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210920181913.338772-2-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210924002230.sijoedia65hf5bj7@shells.gnugeneration.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 08:19:13PM +0200, Krzysztof Kozlowski wrote:
-> The LM90-like sensors usually need VCC supply, however this can be
-> hard-wired to the board main supply (like in SiFive HiFive Unmatched
-> RISC-V board).  Original bindings made VCC supply as required but in
-> practice several other boards skipped it.  Make it optional.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+On Thu, Sep 23, 2021 at 05:22:30PM -0700, Vito Caputo wrote:
+> Instead of unwinding stacks maybe the kernel should be sticking an
+> entrypoint address in the current task struct for get_wchan() to
+> access, whenever userspace enters the kernel?
 
-Applied.
+wchan is supposed to show where the kernel is at the instant the
+get_wchan() happens. (i.e. recording it at syscall entry would just
+always show syscall entry.)
 
-Thanks,
-Guenter
-
-> ---
-> 
-> Changes since v1:
-> 1. New patch
-> ---
->  Documentation/devicetree/bindings/hwmon/national,lm90.yaml | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/national,lm90.yaml b/Documentation/devicetree/bindings/hwmon/national,lm90.yaml
-> index e712117da3df..6e1d54ff5d5b 100644
-> --- a/Documentation/devicetree/bindings/hwmon/national,lm90.yaml
-> +++ b/Documentation/devicetree/bindings/hwmon/national,lm90.yaml
-> @@ -55,7 +55,6 @@ properties:
->  required:
->    - compatible
->    - reg
-> -  - vcc-supply
->  
->  additionalProperties: false
->  
+-- 
+Kees Cook
