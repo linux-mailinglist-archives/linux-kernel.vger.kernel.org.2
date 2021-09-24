@@ -2,161 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66574175A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5564175B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345960AbhIXN3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:29:20 -0400
-Received: from mail-eopbgr100138.outbound.protection.outlook.com ([40.107.10.138]:6417
-        "EHLO GBR01-LO2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1345878AbhIXN2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:28:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nsofP+kX1LoKCAfOb72J2pHDHFGxhId4y+H21nPuXzcVRqQKz+masvMgXPNkcX3Phzmhhtstz+PPQhUNqy8XLiDxbV+aH8dL7YXDgFWAQIYC2Oh2Q/m332BJPFB21RwqX1oQyxJwJjCjNOUwlFwtTR07OaflW4IYyfTt6eFPStIVKop9jF6j6kj8E0IC29eBXpXdc3yiuadm3DkBWF4ZIwk1UYRBfCUGd246KIoaE25eA/AHwNK1aO3hpXqrrMigD55XwRdU7uRIGeenKXV2V06ltIpeCgpmYEZgNDGu/HUwijAWYwtuqKX7TS6vC3WVIwafND5TZ03cVJPYsT16bQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=77p0ikCdmzuRz3qbBEfKfTNm2e54iN+dBkfc5XWLdVE=;
- b=WY/d7RbCtrpw4hqNWabv/1ijc4lXVYWsg4YvyjvOJ41MMEkRqPOdiAUn3r3o5zajd9RBaur2Vg5DMqHvC7f3QRI2/k3hq75qakDsGKa3yPzcJYzBm9YY/Ftq9twkiDTV/bUbHEacb7xZPaxXaqOtzuB3byA5XYQBCWaxLxpK9DS+pRSeSK2rkHafh580hfVF4h3nDH2Hw0HoMGCPaGAKHkl5CI85q/xSRVB0S5rk8mbGE3sd5i7Snk3kf91JkZCW1OyYExnUBT2CKjgLkeu7HXEnlwv4THHsU9DBkvyNC/+u+dK/VFJ47g6gPuV+bhIXmp/anz6VIqCGeWjyEoVhbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=purelifi.com; dmarc=pass action=none header.from=purelifi.com;
- dkim=pass header.d=purelifi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=purevlc.onmicrosoft.com; s=selector2-purevlc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=77p0ikCdmzuRz3qbBEfKfTNm2e54iN+dBkfc5XWLdVE=;
- b=u4Bb4tJwvOZSpCs9lmBLqLFRiyulvHoEmU6bACmocSJ3ZIbYVoHqkf+GmXXftFAoOg2ZWzT702+gvCCmed12t6FL08ssnp5F7iWHPBqBYDYF7q6QsIwvAP2/dTYKH14GnbjMwgsQjUeO02rblOGQ/JqiLNtZUjPUbvrGXH2+IYc=
-Received: from CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:bb::9) by
- CWXP265MB2117.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:7d::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.15; Fri, 24 Sep 2021 13:27:15 +0000
-Received: from CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
- ([fe80::7c2a:fab0:33ec:20b6]) by CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
- ([fe80::7c2a:fab0:33ec:20b6%6]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
- 13:27:15 +0000
-From:   Srinivasan Raju <srini.raju@purelifi.com>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>
-CC:     Mostafa Afgani <mostafa.afgani@purelifi.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] [v15] wireless: Initial
- driver submission for pureLiFi STA devices
-Thread-Topic: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] [v15] wireless: Initial
- driver submission for pureLiFi STA devices
-Thread-Index: AQHXlDtMPQ6mbpowvECz4xZspmG0nautGLMEgAFQdYWAADiTt4ABPjQAgAOEzcc=
-Date:   Fri, 24 Sep 2021 13:27:15 +0000
-Message-ID: <CWLP265MB32175E7DE6201F5958510A17E0A49@CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM>
-References: <20210226130810.119216-1-srini.raju@purelifi.com>
-         <20210818141343.7833-1-srini.raju@purelifi.com>
-         <87o88nwg74.fsf@codeaurora.org>
-         <CWLP265MB3217BB5AA5F102629A3AD204E0A19@CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM>
-         <87ee9iun4o.fsf@codeaurora.org>
- <e0522c7845390a71203744d209a9516cb8a562e6.camel@sipsolutions.net>
-In-Reply-To: <e0522c7845390a71203744d209a9516cb8a562e6.camel@sipsolutions.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-suggested_attachment_session_id: 1a08920e-7142-5f43-2e9d-e773062a2c15
-authentication-results: sipsolutions.net; dkim=none (message not signed)
- header.d=none;sipsolutions.net; dmarc=none action=none
- header.from=purelifi.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 157af14e-d0f2-4d8b-2193-08d97f5f0635
-x-ms-traffictypediagnostic: CWXP265MB2117:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CWXP265MB21172318B09F4CA33893C27EE0A49@CWXP265MB2117.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +mK3sKgWt4BmWblFs/3Qu7AytkBSszj4VjUO5BMLd7sIbxl8jh/x0Wib79ozFefTQAObG5D1iBs9R1VYb7lzPfso/442Z7J7X2yWKPuWqrJ6lvfycqCd9hH7dZL0iEbZs6pAXbd9UdxK/Bx2j9ISdCprWv39+99i0w7EVg73dPaLWmLW06lWqPZ6UavEM9YXgeiTQbGRi6nbebK83AxZ/KM/at7oBNsmp7oSPID75Ew+Zx8Y4u9T7Ew221NroCVWOnFvHAFNuLVbmCl865mPuSgoQl5NJDPt6iUYmlWBFFkv8LJptXxkT+D6p0XKTEen2m3Ab4E47WL57eSJvjE0tCE2tPao9kYaMmQUmugH4NRNWKJmzqgFVbOrpmIu4ULzdVKJb3Xs1PpULw79GYjJoKef+BcmA6IiqQdX4tp8eD9i+/BgLqGLuoI+B+j0FMZ+fdhsuG/WdxeFHXBQ9ptfL9qtPhUX9pT3gCGqLaonZfMcc+hpYrexTLSAcESyUc5pBZuqY8MtlnAmeuhsDnaFC72Sg04TLgk2Te23CphCIsgR0g8X6C9YV3+UwHRYAlabruFUYz9Bp+hFbAFfl2496x36vLs7il+hZCyu6a69Pe3nQhhTthLxrWMdl1FR3ppaTbzUc1t2wnyohbmd7Qo/1fZv/84lqklhjwcNBfmItUuTPCt5FCdVGBp6W2jlPn/CuBFRjjgEMV/bXb8qK0jDew==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(6029001)(4636009)(136003)(366004)(39840400004)(376002)(346002)(396003)(110136005)(508600001)(54906003)(6506007)(8936002)(5660300002)(66476007)(38070700005)(86362001)(7696005)(55016002)(71200400001)(186003)(83380400001)(316002)(91956017)(2906002)(66946007)(38100700002)(76116006)(122000001)(66556008)(64756008)(9686003)(66446008)(4326008)(33656002)(8676002)(26005)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?gZkXfe6MwSbjqPYIs81LfNw2BaxPs3XfLyJcCCkQ8oDI5r9lJeZzEFNi+k?=
- =?iso-8859-1?Q?+kKeqaYmmxCKkvCaOAJz2bciAEn8SWI7/Jh3JxCeUHxAE+zDv85kRxN/yr?=
- =?iso-8859-1?Q?WVf/z8mwPfJNkJ6O5yulwf40xKJSwgyGkEFdGAK50D7UVCYuetu9gwFYoo?=
- =?iso-8859-1?Q?GLlyjGNTUccT53uHpMnDaMCk3vDo+TKh6aWL1IOpCti32EFb+RwjRLNr6o?=
- =?iso-8859-1?Q?ia8bcz7Cs7YfyQmRU1wb6KCUJR+1BnVDINSZPkdnY/sA6hLMf/O/s7+FD3?=
- =?iso-8859-1?Q?dY3pcfwMMmP7C+AWH0GyZ7rSIDR4IspJGZZWROSnUZGKnVbZQwCfzW75cT?=
- =?iso-8859-1?Q?CFQ15HeZ8rLhKJYmHSgBpW4NiLJAvs0xZnW+0ESUrb8ZRdjS3vySO3zVqZ?=
- =?iso-8859-1?Q?tueQJK2MBfgFilw5UrSK67Oj6MtbcZd7izoPRT9zVK0EeooBqaBEayyO07?=
- =?iso-8859-1?Q?5KDUSyWNy7W0faXFtFjkBy2Pz5kBWMN3dfGA9Bf8AOreWVYJWA/6BOxW4s?=
- =?iso-8859-1?Q?D9lL1I0LbY2NuDfnYywYvRyDRJ3ERdkB7Sq1SXaok4FNOZl54IyRbxWiri?=
- =?iso-8859-1?Q?yYcaxm2FJBMntbo2nbL9iKgWcz6WT8yyoPOJ8ExKum1C/CHtVZ+8Bdns6n?=
- =?iso-8859-1?Q?neGLiJlp2AafrcGqH5dijdGkAwJa8v8iaJgZ8pJY5TLoPqVsT+8/QDEvEX?=
- =?iso-8859-1?Q?d1TyNjOomLOALusH7/ZVmz52sfbPDXL8hgFlB6Q6oEn4HROMaODmc5/+xl?=
- =?iso-8859-1?Q?OCn/kVyETf+adJlyGjbLNbu0iAahGhSqH5WHgv86c239xh9FsqJtRairU0?=
- =?iso-8859-1?Q?OkI6B3aEq8y78hz1tULUyrax/ybR/aB0/COjFxS1VctEIhFGHmuLRmQXkA?=
- =?iso-8859-1?Q?TzGn8cNztbhzM++/wlokSyaCZ6IlAfOypTIz1R33wYJHufFX57OUfjwzYN?=
- =?iso-8859-1?Q?aUNbjQ1/1oUcLOkO1hacTrMcI+v3dV54JjIxH0KA6OPaEN3o9cMCHEe0SO?=
- =?iso-8859-1?Q?oj9HNjkLGW3JG2quLh4rbFhZfcwYMED4EXZQtK2aAyO1JuxHRx9K6/lW1c?=
- =?iso-8859-1?Q?GE3R6oPI5OoTWlG0hGTH3LLJK48Hl+UsiPRxKqZCo85yKL9Bf8TVvs+oJt?=
- =?iso-8859-1?Q?NbGl9jaMxNACkIuqBAodJSnFMuQFq2Ac0n+Kpx8hS1wv1YAxtelGds9qlQ?=
- =?iso-8859-1?Q?iPUNoKxxInIesN1YZkeNgVH4idVWPy+AxPKuZIK9T8cZ1uND5z+JOYOePb?=
- =?iso-8859-1?Q?hZlr1l20zlTlyDmcyFewTvYzrEqh5vVvqOAS8INkENgujsrQTT0BrSUHpW?=
- =?iso-8859-1?Q?JWaIYwf/VTLhaEsdfIxlRf4RVO+a5BFdSmCPZoeo8+wN91U=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1345970AbhIXNaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:30:46 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:41313 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346336AbhIXN3v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:29:51 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MAOa3-1mag3W2lER-00BpjM; Fri, 24 Sep 2021 15:28:09 +0200
+Received: by mail-wr1-f48.google.com with SMTP id g16so27553301wrb.3;
+        Fri, 24 Sep 2021 06:28:09 -0700 (PDT)
+X-Gm-Message-State: AOAM531JzVzegRlpxGPH+wyu4hsB4T/Y0BeOINPthGOku+n4r/l3o70s
+        AG8Mscyc1ZR2OVTeqEQYJ1E0pVDdhAXahOMyN3w=
+X-Google-Smtp-Source: ABdhPJzM3QVWlDWl9O9PVMbkk54ItVxgQmlG7vgvUmkivSCUC8cK58oe7WVemGT0uxg3hhg7v6G/Qeb1GuFgaELom84=
+X-Received: by 2002:a05:600c:3209:: with SMTP id r9mr2123128wmp.35.1632490089268;
+ Fri, 24 Sep 2021 06:28:09 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: purelifi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 157af14e-d0f2-4d8b-2193-08d97f5f0635
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2021 13:27:15.1874
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5cf4eba2-7b8f-4236-bed4-a2ac41f1a6dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VHkwoYnL6r92e9Fm1ul3Hru3P0faTuNz8rj9iwnrjUnHVb5EfkOVR37f57hvdcOWN0Ei9kxEWlpjgO7u3h4cyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2117
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
+ <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+ <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+ <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
+ <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
+ <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
+ <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
+ <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
+ <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com>
+ <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com>
+ <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com>
+ <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
+ <CAMhs-H_xdkpinyj-Y1u==ievpGWZ2Ze-_U7aCUcfu0=NKBq2xQ@mail.gmail.com>
+ <CAK8P3a0OWyW9Wk0kHXsj_7qTd0fVXQnszzun+HacHeTKYETXhw@mail.gmail.com>
+ <CAMhs-H9xrXgbuwYe2STzuq0aBwj0onJGc0Oka6+pzgoHb0j8rA@mail.gmail.com>
+ <CAK8P3a1AwaSi_J9p4tKwNKxENHhwofDu=Ma=F29ajSmMXoC7RA@mail.gmail.com>
+ <CAMhs-H_wxoJC7ZVnkhXNfAcP-P9BNN99ogszM_iJhErHLq8Rdg@mail.gmail.com>
+ <CAK8P3a3dvhWT=Xq22xTNn_VbX29s3t9wrw1DbffPbWuHxtTTmg@mail.gmail.com> <CAMhs-H9OhXHA3_mq2PSoaPvYCstqqHL7TfL0zf=OFNeFmWVTRQ@mail.gmail.com>
+In-Reply-To: <CAMhs-H9OhXHA3_mq2PSoaPvYCstqqHL7TfL0zf=OFNeFmWVTRQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 24 Sep 2021 15:27:53 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a36jiomsqSr0rP8_BL8HwceKvV78bT2Ym+iomSGyYuOGA@mail.gmail.com>
+Message-ID: <CAK8P3a36jiomsqSr0rP8_BL8HwceKvV78bT2Ym+iomSGyYuOGA@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:lafR+mO3UZb1YFf+DrI3x6jjpqg0gsuDBWVFOntUdysQu4jUaNT
+ HUg/svMo25P89YNMWtnNiZMXQFJnn0JUy3wglGpIFqvxGELqhliEaLruxgEa3t7CqOD1k37
+ GpAKsZsWCiylcfefuoC90ZxbE82hJ/gIneCakStAs+yk46Sl/s72kjuyldEF/mH4uiiD1IQ
+ EArmwrdA/ILo1Pu5/Iw1A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0E6B8r4kG2k=:3c/e4aHr09h+pBC2sA5ipf
+ Z3j/Wyj+hvUZyXq5AxVBrHZkHEJCKf+lHwQjsC++hCtxXNiOty0IFk21PAXsy/T5gE0jzw2eL
+ 73UfFZo6HdVFtBxpku8zh+O7OJ7obzgZjOPhe2xMSG5JO3d3kKQb5KOb4cdj75bNBCQh8P3eF
+ Ir3uyEPYZk5XKadIK1Y2XTDTF21WGZo6t+5gpXvJrJcbo3UQA0U4QDI1UrKhtxThwog328YvK
+ CZFZnrgpDhLp7GthjF2aaXbWrakMQcCO2EtlNj7vgSlNLRqxGavsBYZGx9PZcnJ9cxk36faZw
+ oOkOgYg/W/divhpT10Mk3UH9hc/pW8rYzqoEJ9dEDIsLM/NbEd1JMMNgscwNBRc2kl5wcxxrI
+ MtapDA5INo5cI6KDcT0l4RPWf6Dwqr9SLmEPlMNwfZ/vy4PkRGtb9sdkIX5QH3lIknVoXg7R5
+ /r7RAch+9fsI9VSAhDkM9AeUkyRqmhGGMn7/JjG5D0SV+5iYtgMt1NDmXxUpDSCPlCodazMv0
+ z3aY5Ag6CFj1mhTex4ycVYDIT7AdDCQjKd3BpjmUcWc6P8GuBbrGm1hPb9w0oB3Xs7fYw/Y9A
+ wxMZ6vl0tlVTWkPteCh+bQrjXfu5Po9D5w1rE0ppz4pXnjjOScJvcjaHIPHkqYaN/LHT8u5R4
+ eq5ZUBi2YBbvoE2PYHS7bHYlBNjuBE45GY7P1x9SHZlz9QasssgVu+frsM75IrmUe6OVp5K0v
+ QmGw4XnQO0K+gGKeaxoeepVSen1RCKG1VBeR7g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >=0A=
-> > Yes, I agree, As LiFi is not standardized yet we are using the=0A=
-> > existing wireless frameworks. For now, piggy backing with 2.4GHz is=0A=
-> > seamless for users. We will undertake band and other wider change once=
-=0A=
-> > IEEE 802.11bb is standardized.=0A=
->=0A=
-> I don't see why the IEEE standard needs to be final before adding the=0A=
-> band. Much better to add a band which is in draft stage compared to=0A=
-> giving false information to the user space.=0A=
-=0A=
-> I tend to agree, but looking at the current draft (D0.6), that's ...=0A=
-> vague? Maybe it's obvious to somebody familiar with the technology, but=
-=0A=
-> I really don't understand how 800-1000nm infrared band maps to 21 MHz +=
-=0A=
-> channel offset? Isn't the frequency there a couple hundred THz?=0A=
-=0A=
-> Regardless, if the channelisation plan says 21 MHz + n_ch * 5 MHz, then=
-=0A=
-> I think we can just define NL80211_BAND_LC and the driver advertises=0A=
-> those channels - that even gets you easy access to all the defined=0A=
-> channels (apparently today all the odd channels from 1-61, split into=0A=
-> 20/40/80/160 MHz bandwidth).=0A=
-=0A=
-> I guess I'm really not sure how that maps to the actual infrared, but=0A=
-> reusing all the 20/40/80/160 machinery from VHT means we can actually do=
-=0A=
-> a lot of things in mac80211/etc. without much changes, which isn't bad.=
-=0A=
-=0A=
-> Anyway, I'd feel more comfortable defining an LC band here, even if it=0A=
-> potentially changes later. Or maybe especially if the actual channels=0A=
-> there change later.=0A=
-=0A=
-Thanks, I have submitted next version of the patch. I will study how to def=
-ine NL80211_BAND_LC and other changes/tests required.=0A=
-I will also consider other points mentioned and will reply / update the pat=
-ch (or send addional pathces).=0A=
-=0A=
---Srini=
+On Fri, Sep 24, 2021 at 2:46 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> On Fri, Sep 24, 2021 at 1:39 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Fri, Sep 24, 2021 at 12:15 PM Sergio Paracuellos
+>
+> > I meant RALINK_PCI_IOBASE. We do need to write both, to clarify:
+> >
+> > RALINK_PCI_IOBASE must be set to match the *bus* address in DT,
+> > so ideally '0', but any value should work as long as these two match.
+> >
+> > PCI_IOBASE/mips_io_port_base must be set to the *CPU* address
+> > in DT, so that must be 0x1e160000, possibly converted from
+> > physical to a virtual __iomem address (this is where my MIPS
+> > knowledge ends).
+>
+> Understood. I have tried the following:
+>
+> I have added the following at the beggining of the pci host driver to
+> match what you are describing above:
+>
+> unsigned long vaddr = (unsigned long)ioremap(PCI_IOBASE, 0x10000);
+> set_io_port_base(vaddr);
+>
+> dev_info(dev, "Setting base to PCI_IOBASE: 0x%x -> mips_io_port_base
+> 0x%lx", PCI_IOBASE, mips_io_port_base);
+>
+> PCI_IOBASE is the physical cpu address. Hence, 0x1e160000
+> set_io_port_base sets 'mips_io_port_base' to the virtual address where
+> 'PCI_IOBASE' has been mapped (vaddr).
+
+Ok, sounds good. I would still suggest using
+"#define PCI_IOBASE mips_io_port_base", so it has the same meaning
+as on other architectures (the virtual address of port 0), and replace
+the hardcoded base with the CPU address you read from DT to
+make that code more portable. As a general rule, DT-enabled drivers
+should contain no hardcoded addresses.
+
+> However, nothing seems to change:
+>
+> mt7621-pci 1e140000.pcie: Setting base to PCI_IOBASE: 0x1e160000 ->
+> mips_io_port_base 0xbe160000
+>                                                 ^^^
+>                                                  This seems aligned
+> with what you are saying. mips_io_port_base have now a proper virtual
+> addr for 0x1e160000
+
+Ok.
+
+            Arnd
