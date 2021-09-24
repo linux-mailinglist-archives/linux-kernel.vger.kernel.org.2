@@ -2,134 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5CD4171EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98FC4171F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245457AbhIXMgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:36:33 -0400
-Received: from esa3.mentor.iphmx.com ([68.232.137.180]:51811 "EHLO
-        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245237AbhIXMga (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:36:30 -0400
-IronPort-SDR: uU89ZFB6Ed7Q5THICXc5nycibMV7v+B0X7hQZT8znO+97q08Y9hFmX+82pZaky/jET5QBNsYdc
- 7TezG07UuxgQmsPTuZ2iR1rwSBso0dltigtB8/ihyenlemPHeltDDht57bdkxqZ0J45FPFdDBK
- 8N8EiXOx0ChMMbrFlDJP42qycVdUll/0IVHifTWd2RjDMWMqWuFf3wWcJuq5HvyYBChzsMR51z
- CIXM+y71LbGuzS4BKz9EVWwm/NJJJCEBKay9yPBE9thLqf1lbM2ax52gHn834kt5CNh9P0SyHZ
- I5wku0RFjsyFoWyB9EOJmlP6
-X-IronPort-AV: E=Sophos;i="5.85,319,1624348800"; 
-   d="scan'208";a="66253282"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
-  by esa3.mentor.iphmx.com with ESMTP; 24 Sep 2021 04:34:56 -0800
-IronPort-SDR: xJHQK2n3h7tqvyXc7nOmtGNylGyAFjKdbX5O88VXREyZ7l1k5j0m/j/NZ01MKOFRLJ1FhjenPV
- KjBnYCCECG8mEUfphDr9+XsvOnFgeHaD6sQaehBZcLj1PhswpNEUDl07F3kydewKB688R+CJdv
- hASLtScXr/ce6aciQoBHrOS601zmrYkGO74orEvoG3FReKN0ab4ihXi6AlbNJSv2q6lYOuxt+u
- 8ISj2Y2x6QW7qZn7WqUAooYxLfw88nJH8wVeLwzWRZib9mo8yjQiiWIVOgmQcp16XbEXJ+07pN
- CkQ=
-From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To:     'Krzysztof Kozlowski' <krzysztof.kozlowski@canonical.com>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        id S245725AbhIXMhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:37:12 -0400
+Received: from www.zeus03.de ([194.117.254.33]:50140 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245265AbhIXMhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:37:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=JalfDMXF3NmfGlLDe7ItYlmatpp0
+        M3ZXEfuT22l8kF8=; b=3qoOWwi2E5ZYDt7U8rAXtPzRJPbGyJearPuOvjrVg03T
+        7E2/H0/nAT7Y74cs7frQzGAbfVfvAxeNCtzhlOqwpr3V8BMfAPjaGib4SkNJuUZr
+        EAGErJ3L+rxSxTFmvvx3qZxdV8aXyZIY3N6WnRJlEAejFb7hpZM0EAV+8ICuAic=
+Received: (qmail 4024565 invoked from network); 24 Sep 2021 14:35:36 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 24 Sep 2021 14:35:36 +0200
+X-UD-Smtp-Session: l3s3148p1@BQi6+7zMZK8gAwDPXw1LAJ+FoAZ06vRo
+Date:   Fri, 24 Sep 2021 14:35:32 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Duc Nguyen <duc.nguyen.ub@renesas.com>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-References: <20210922184830.29147-1-andrew_gabbasov@mentor.com> <c6de6ec0-fd06-14bc-c483-52a2d0a4590a@canonical.com>
-In-Reply-To: <c6de6ec0-fd06-14bc-c483-52a2d0a4590a@canonical.com>
-Subject: RE: [PATCH] memory: renesas-rpc-if: Avoid unaligned bus access for HyperFlash
-Date:   Fri, 24 Sep 2021 15:34:42 +0300
-Organization: Mentor Graphics Corporation
-Message-ID: <000001d7b140$91e0a180$b5a1e480$@mentor.com>
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [RFC PATCH] memory: renesas-rpc-if: Correct QSPI data transfer
+ in Manual mode
+Message-ID: <YU3GFMmCjjG3eS+L@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Duc Nguyen <duc.nguyen.ub@renesas.com>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210922091007.5516-1-wsa+renesas@sang-engineering.com>
+ <11355367-8d20-5a17-70da-618d87301407@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHXsTUXhFdr88sfGEGUtgyCIuCyuauzFHzQ
-Content-Language: en-us
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-06.mgc.mentorg.com (139.181.222.6) To
- svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3GmlKcnzAGOYltn1"
+Content-Disposition: inline
+In-Reply-To: <11355367-8d20-5a17-70da-618d87301407@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Sent: Friday, September 24, 2021 2:13 PM
-> To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>; linux-renesas-soc@vger.kernel.org; linux-
-> kernel@vger.kernel.org; Sergei Shtylyov <sergei.shtylyov@gmail.com>; Geert Uytterhoeven <geert+renesas@glider.be>
-> Subject: Re: [PATCH] memory: renesas-rpc-if: Avoid unaligned bus access for HyperFlash
-> 
-> On 22/09/2021 20:48, Andrew Gabbasov wrote:
-> > HyperFlash devices in Renesas SoCs use 2-bytes addressing, according
-> > to HW manual paragraph 62.3.3 (which officially describes Serial Flash
-> > access, but seems to be applicable to HyperFlash too). And 1-byte bus
-> > read operations to 2-bytes unaligned addresses in external address space
-> > read mode work incorrectly (returns the other byte from the same word).
-> >
-> > Function memcpy_fromio(), used by the driver to read data from the bus,
-> > in ARM64 architecture (to which Renesas cores belong) uses 8-bytes
-> > bus accesses for appropriate aligned addresses, and 1-bytes accesses
-> > for other addresses. This results in incorrect data read from HyperFlash
-> > in unaligned cases.
-> >
-> > This issue can be reproduced using something like the following commands
-> > (where mtd1 is a parition on Hyperflash storage, defined properly
-> > in a device tree):
-> >
-> > [Correct fragment, read from Hyperflash]
-> >
-> >     root@rcar-gen3:~# dd if=/dev/mtd1 of=/tmp/zz bs=32 count=1
-> >     1+0 records in
-> >     1+0 records out
-> >     root@rcar-gen3:~# hexdump -C /tmp/zz
-> >     00000000  f4 03 00 aa f5 03 01 aa  f6 03 02 aa f7 03 03 aa  |................|
-> >     00000010  00 00 80 d2 40 20 18 d5  00 06 81 d2 a0 18 a6 f2  |....@ ..........|
-> >     00000020
-> >
-> > [Incorrect read of the same fragment: see the difference at offsets 8-11]
-> >
-> >     root@rcar-gen3:~# dd if=/dev/mtd1 of=/tmp/zz bs=12 count=1
-> >     1+0 records in
-> >     1+0 records out
-> >     root@rcar-gen3:~# hexdump -C /tmp/zz
-> >     00000000  f4 03 00 aa f5 03 01 aa  03 03 aa aa              |............|
-> >     0000000c
-> >
-> > Fix this issue by creating a local replacement of the copying function,
-> > that performs only properly aligned bus accesses, and is used for reading
-> > from HyperFlash.
-> >
-> > Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
-> > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> > ---
-> >  drivers/memory/renesas-rpc-if.c | 47 ++++++++++++++++++++++++++++++++-
-> >  1 file changed, 46 insertions(+), 1 deletion(-)
-> >
-> 
-> Thanks for the patch.
-> 
-> Please rebase and test on a recent Linux kernel. This looks like work on
-> something slightly older or stable kernel, since you Cc not the address
-> from maintainers.
+--3GmlKcnzAGOYltn1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The patch is already against the recent kernel versions.
-Sorry for using wrong address, I have probably taken it from some
-older mailing lists.
+Hi Krzysztof,
 
-> The patch came slightly after Wolfram's and I wonder whether you hit
-> similar issue:
-> https://lore.kernel.org/lkml/20210922091007.5516-1-wsa+renesas@sang-engineering.com/
+> > So, in 16-bit transfer (SPIDE[3:0]=3Db'1100), SMWDR0 should be
+> > accessed by 16-bit width.
+> > Similar to SMWDR1, SMDDR0/1 registers.
+> > In current code, SMWDR0 register is accessed by regmap_write()
+> > that only set up to do 32-bit width.
+>=20
+> Is this part something worth splitting to its own patch?
 
-If I correctly understand, the underlying issue looks similar (improperly aligned
-memory/register accesses), but the affected areas are different, even non-intersecting:
-Wolfram fixes register access, affecting manual mode reads/writes, having problems
-with QSPI devices, while my fix is related to external address space reads (mapped
-memory access) with Hyperflash devices.
+I don't think so because it is related. The patch ensures that a) only
+8, 4, 2, or 1 byte blocks are used and b) whatever is used, the access
+width to the data registers is proper. Only the combination of both
+fixes the data corruption. Also, for backporting, it would be good to
+not introduce dependencies, I think.
 
-Thanks.
+> You sent the patch just slightly after this one:
+> https://lore.kernel.org/lkml/20210922184830.29147-1-andrew_gabbasov@mento=
+r.com/
+>=20
+> Are you solving similar problem?
 
-Best regards,
-Andrew
+Unlikely. I do not have HyperFlash on my board, so I can't test. But as
+I understand the docs, HyperFlash in deed doubles the granularity from 8
+to 16 bits when using memcpy. But I am dealing with MMIO register
+accesses in manual mode here.
 
+Thanks for the review,
+
+   Wolfram
+
+
+--3GmlKcnzAGOYltn1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFNxg0ACgkQFA3kzBSg
+KbYQmg//UVJyBjn+24BPvQRf4wI1rjv/D6e5dNrdkQ3DaIG8hQ1OcwcWIU+AKI+N
+9GJ8TvChdTF571hoFNVcjHbGcZNaatQ4W7Cq01pvKUKJPJQ+DfBypMw2gV3XWTHB
+LTmUGZeaKcy6m6xEpChVP0hUJ1+Uajr27WcFhnE2H808JXz/6t2Xdl4K+Cmw47zN
+wPgpQGv8vRQqqSKkYaKN+Rr+pGx0ddxLOA8dMGx7Seg+QAdPDYeDcqOTUKo/wrvt
+xC2XsbXAjpPIr2THflQ3/6GaxPNh6NT41UbZitrXKimu8jb0/O8JdP1kzHT9874e
+i+/91IYLlKS3amPJ5j4EQrr+qxadLRptpghtfYrUSBXuS1qjkjXI5uQgTZ+wZf2i
+gtVzKbxFvGPB7z0hekXfTW/Xh+tjbKukm3TyCojm+js79QBKM6ofuduJKJoBsLbP
+mPAXn6/uh6gwzaV9Ou+a6Y95DXusW3vqtmuWItSIH046xrQwmL+Jf4l6AYK0P2hj
+IRKk74cicYRI/Zl8X4Yy1eQjZwoZpbtiUdx+wp9ypY+pWIgRiYElYiHbg32xNk41
+WF5rlk0te//MEkcfeHifaMxE4q0bazyUu+zsxfPsbFPyU6O8ix7myYtOS9h1U7d8
+CM7R4UX//IjlqJ5qq2NDg8NQFqUrnbXhpE+6cLJOs93S6Ov7+iM=
+=lQS+
+-----END PGP SIGNATURE-----
+
+--3GmlKcnzAGOYltn1--
