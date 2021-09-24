@@ -2,90 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41964170AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D9A4170B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245211AbhIXLNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:13:13 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:36356 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244801AbhIXLNM (ORCPT
+        id S245101AbhIXLOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 07:14:10 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60902
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244448AbhIXLOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 07:13:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632481899; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=OO5yLeJqM+0SMrJ0zB79rpa6oeUuxvezAhLL60DqOIk=; b=Rj3inO0MV+fhK8OkQuKPd/YbMy7UQOhWKfpNOkUs3rtvOvuokkTn9RS6TwliAloL0gj1Tbzz
- Cfv9YIgohtmCLPLI57PVUKDNCAIgonyZ4EKwNOOUHKTfpf9Ene4LedqSQrmTqMRMIwWQ0khS
- igz9FXPvnhoeZRQw86cQMVA8kvk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 614db259b585cc7d24b51fec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Sep 2021 11:11:21
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5DE23C43616; Fri, 24 Sep 2021 11:11:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 24 Sep 2021 07:14:06 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0DEAC4338F;
-        Fri, 24 Sep 2021 11:11:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org F0DEAC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Subject: Re: [PATCH] [v15] wireless: Initial driver submission for pureLiFi STA devices
-References: <20210226130810.119216-1-srini.raju@purelifi.com>
-        <20210818141343.7833-1-srini.raju@purelifi.com>
-Date:   Fri, 24 Sep 2021 14:11:16 +0300
-In-Reply-To: <20210818141343.7833-1-srini.raju@purelifi.com> (Srinivasan
-        Raju's message of "Wed, 18 Aug 2021 15:13:00 +0100")
-Message-ID: <87y27mrzxn.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id F171E40192
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632481952;
+        bh=T9o6pyPTAwyXjaj9IKJIIkkYu0EcijNstrWhBloVkIM=;
+        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=oaJjFS+zdUwHBKwA3tqnJjKCbbfDu08R8esWQP9/8vwnHN6HSPTT+DkedMk1diQMt
+         2YKfYjo27HfrLCUJHLj1LmR2djhElpOt/m0VzRblLtgFCUBXIXEDnBNsOfZE+oPOjg
+         AmXwj7Ar55t15ZqHV3uJdDE6LeMzET7rfvI7YNy42PIM3uVFUknqvZY1t2g8gCgwEW
+         y73moDDA2Q9R9ITlD9Puj7+AiDjl3vPP6u7C3MaW+4XJFddcf1aAT2ycSN2xl0Pbgx
+         6yXnBkyLk+aXDduDgB+Ao8q94OIYeo5jVrPIwAeHzW6a9ARZuliY/5aN+GNv2gFNEU
+         ekecalXHzINvw==
+Received: by mail-wr1-f69.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so7763305wrt.9
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 04:12:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T9o6pyPTAwyXjaj9IKJIIkkYu0EcijNstrWhBloVkIM=;
+        b=tZKX0CV7o1BH36T9H39prr6qRaG/ouGq5q9PDZcjZmVVmEgtJ1uQJ2S9yWhsBLU6pl
+         SrRAVc/OuG7GIQxeINSw+uBc4+8lQGVsolQlxjUvV67KIYffuV0c6T+8Xnpz0velWI4F
+         FGVqYGGGRfNmtjBzQXPfnnNeump2LV8hh9or3FjLGybtrjfNjT6QmiVkxSY77w7YLGoJ
+         OmMhZOLU8ZW8Lhnhx9ylwp1iqdLfYOTef+L0tPzY+DX9K9S/aF+z4BU2DWxLITipSuW7
+         xTZc6iEW4dENLdlARmXZ4w5g4xShoVWYppJggH4nO811ExbwOpVOUF1oRvHwVskvNKHR
+         jIwA==
+X-Gm-Message-State: AOAM532KNxAplpsg1fIo+CYm740cMrLhix/DE+TmG1DjhS5JhAZnfA3C
+        UoIjFlyALxVMuWsKCxeYfzVmdw6MNnapdYu8P1AkoAVteRXn9IYBWMf4N9OG1m3c+8eAtkLYIo8
+        rp1Ly5Tme0EaaT/VVLBiuvV4DDgQMwfN9jYfOwH2Llg==
+X-Received: by 2002:a1c:9851:: with SMTP id a78mr1432591wme.107.1632481952595;
+        Fri, 24 Sep 2021 04:12:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwF9z6IBsr8Sd/ad2WwWktRj5c9dwwwnXwUG6I9Lqvm4jEvrorUlgQ3efPSEZjSlnhUXcId+g==
+X-Received: by 2002:a1c:9851:: with SMTP id a78mr1432575wme.107.1632481952412;
+        Fri, 24 Sep 2021 04:12:32 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id k4sm7939100wrv.24.2021.09.24.04.12.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 04:12:32 -0700 (PDT)
+Subject: Re: [PATCH] memory: renesas-rpc-if: Avoid unaligned bus access for
+ HyperFlash
+To:     Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+References: <20210922184830.29147-1-andrew_gabbasov@mentor.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <c6de6ec0-fd06-14bc-c483-52a2d0a4590a@canonical.com>
+Date:   Fri, 24 Sep 2021 13:12:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210922184830.29147-1-andrew_gabbasov@mentor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srinivasan Raju <srini.raju@purelifi.com> writes:
+On 22/09/2021 20:48, Andrew Gabbasov wrote:
+> HyperFlash devices in Renesas SoCs use 2-bytes addressing, according
+> to HW manual paragraph 62.3.3 (which officially describes Serial Flash
+> access, but seems to be applicable to HyperFlash too). And 1-byte bus
+> read operations to 2-bytes unaligned addresses in external address space
+> read mode work incorrectly (returns the other byte from the same word).
+> 
+> Function memcpy_fromio(), used by the driver to read data from the bus,
+> in ARM64 architecture (to which Renesas cores belong) uses 8-bytes
+> bus accesses for appropriate aligned addresses, and 1-bytes accesses
+> for other addresses. This results in incorrect data read from HyperFlash
+> in unaligned cases.
+> 
+> This issue can be reproduced using something like the following commands
+> (where mtd1 is a parition on Hyperflash storage, defined properly
+> in a device tree):
+> 
+> [Correct fragment, read from Hyperflash]
+> 
+>     root@rcar-gen3:~# dd if=/dev/mtd1 of=/tmp/zz bs=32 count=1
+>     1+0 records in
+>     1+0 records out
+>     root@rcar-gen3:~# hexdump -C /tmp/zz
+>     00000000  f4 03 00 aa f5 03 01 aa  f6 03 02 aa f7 03 03 aa  |................|
+>     00000010  00 00 80 d2 40 20 18 d5  00 06 81 d2 a0 18 a6 f2  |....@ ..........|
+>     00000020
+> 
+> [Incorrect read of the same fragment: see the difference at offsets 8-11]
+> 
+>     root@rcar-gen3:~# dd if=/dev/mtd1 of=/tmp/zz bs=12 count=1
+>     1+0 records in
+>     1+0 records out
+>     root@rcar-gen3:~# hexdump -C /tmp/zz
+>     00000000  f4 03 00 aa f5 03 01 aa  03 03 aa aa              |............|
+>     0000000c
+> 
+> Fix this issue by creating a local replacement of the copying function,
+> that performs only properly aligned bus accesses, and is used for reading
+> from HyperFlash.
+> 
+> Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
+> Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+> ---
+>  drivers/memory/renesas-rpc-if.c | 47 ++++++++++++++++++++++++++++++++-
+>  1 file changed, 46 insertions(+), 1 deletion(-)
+> 
 
-> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
-> and LiFi-XL USB devices.
->
-> This driver implementation has been based on the zd1211rw driver.
->
-> Driver is based on 802.11 softMAC Architecture and uses
-> native 802.11 for configuration and management.
->
-> The driver is compiled and tested in ARM, x86 architectures and
-> compiled in powerpc architecture.
->
-> Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
+Thanks for the patch.
 
-I applied this to the pending branch for build testing and so far one
-issue was found:
+Please rebase and test on a recent Linux kernel. This looks like work on
+something slightly older or stable kernel, since you Cc not the address
+from maintainers.
 
-https://lkml.kernel.org/r/202109210010.Ph7Wxg7N-lkp@intel.com
+The patch came slightly after Wolfram's and I wonder whether you hit
+similar issue:
+https://lore.kernel.org/lkml/20210922091007.5516-1-wsa+renesas@sang-engineering.com/
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Best regards,
+Krzysztof
