@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718AB4172BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D329441736D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344304AbhIXMu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:50:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44324 "EHLO mail.kernel.org"
+        id S1344735AbhIXM4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:56:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344317AbhIXMtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:49:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FA8B61279;
-        Fri, 24 Sep 2021 12:47:31 +0000 (UTC)
+        id S1344329AbhIXMxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:53:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 207B66135E;
+        Fri, 24 Sep 2021 12:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487651;
-        bh=hygdbZQxndPijkhMmO2cgmgW8R0wL4wxeue330chHTA=;
+        s=korg; t=1632487830;
+        bh=f5djH18sAfJGfX1xLADVRV1uMnIQz+uabTcfLgsWY6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ttbr3Qhiget/6ktJEdxTkhu5QK1grNx1rHcPnFXsXV6W5uvd6zpzWjfYaB5en3Idc
-         T8FHohAq+ODx7dn3RbXrJSAvMByMa0sgNLPR7lJWkXRLX+R6LBqd2YP6TIkV2yx+dP
-         stia/XOdvt8oU7EJjGJpHSWy3JzKFmQXLqsWvXZM=
+        b=vN1ClE/avcdLHyq4cc35oD70bsD6z8iw7b5wZRUgzgM06X31Fxf1+4J0nVK8S1CdO
+         OeeAb5s7UkEQmlARhRyGJikxoIh9RZzvBXo513S5m+JtUwuztiX7GMVvrMvg+LJghV
+         +a+pv03/0UYM12i0m5h+5Mwi9Ul2UgZnueGLpilQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 23/27] nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
+        stable@vger.kernel.org, Jongsung Kim <neidhard.kim@lge.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: [PATCH 5.4 28/50] net: stmmac: reset Tx desc base address before restarting Tx
 Date:   Fri, 24 Sep 2021 14:44:17 +0200
-Message-Id: <20210924124329.947794759@linuxfoundation.org>
+Message-Id: <20210924124333.192785639@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nanyong Sun <sunnanyong@huawei.com>
+From: Jongsung Kim <neidhard.kim@lge.com>
 
-[ Upstream commit b2fe39c248f3fa4bbb2a20759b4fdd83504190f7 ]
+commit f421031e3ff0dd288a6e1bbde9aa41a25bb814e6 upstream.
 
-If kobject_init_and_add returns with error, kobject_put() is needed here
-to avoid memory leak, because kobject_init_and_add may return error
-without freeing the memory associated with the kobject it allocated.
+Refer to the databook of DesignWare Cores Ethernet MAC Universal:
 
-Link: https://lkml.kernel.org/r/20210629022556.3985106-6-sunnanyong@huawei.com
-Link: https://lkml.kernel.org/r/1625651306-10829-6-git-send-email-konishi.ryusuke@gmail.com
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+6.2.1.5 Register 4 (Transmit Descriptor List Address Register
+
+If this register is not changed when the ST bit is set to 0, then
+the DMA takes the descriptor address where it was stopped earlier.
+
+The stmmac_tx_err() does zero indices to Tx descriptors, but does
+not reset HW current Tx descriptor address. To fix inconsistency,
+the base address of the Tx descriptors should be rewritten before
+restarting Tx.
+
+Signed-off-by: Jongsung Kim <neidhard.kim@lge.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Macpaul Lin <macpaul.lin@mediatek.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nilfs2/sysfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index 31eed118d0ce..28f5572c6aae 100644
---- a/fs/nilfs2/sysfs.c
-+++ b/fs/nilfs2/sysfs.c
-@@ -217,9 +217,9 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
- 	}
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -1987,6 +1987,8 @@ static void stmmac_tx_err(struct stmmac_
+ 	tx_q->cur_tx = 0;
+ 	tx_q->mss = 0;
+ 	netdev_tx_reset_queue(netdev_get_tx_queue(priv->dev, chan));
++	stmmac_init_tx_chan(priv, priv->ioaddr, priv->plat->dma_cfg,
++			    tx_q->dma_tx_phy, chan);
+ 	stmmac_start_tx_dma(priv, chan);
  
- 	if (err)
--		return err;
-+		kobject_put(&root->snapshot_kobj);
- 
--	return 0;
-+	return err;
- }
- 
- void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
--- 
-2.33.0
-
+ 	priv->dev->stats.tx_errors++;
 
 
