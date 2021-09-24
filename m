@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C521941746C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC9E417470
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345969AbhIXNFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:05:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35224 "EHLO mail.kernel.org"
+        id S1345992AbhIXNGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:06:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344740AbhIXNDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D7E461354;
-        Fri, 24 Sep 2021 12:55:05 +0000 (UTC)
+        id S1345553AbhIXNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:03:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 810BB61440;
+        Fri, 24 Sep 2021 12:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488105;
-        bh=kwa2jfCqOoKbuuYs9rnYeJBV4EoiYzPzJ+ohGP7H+BQ=;
+        s=korg; t=1632488111;
+        bh=We5d3vjX/hYgAgI3u66Pms2A99mgXfTUuNKNZRgLKCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TcPHUdGRZD+6vCuOvhJB4ZOF3GbZV+MywsbGLFZQ/GSJMJEu1fuJO/4FVlXObumh6
-         xQz2MlE66aTjPJpuYVhObOsipvnlZp6XgifW84/X7oypY9NI4wKPrrLsoyb/AmcsZA
-         5NFlxm5CHucR0nJC7dmlk2J5M0Ir5bmPBhal61Y8=
+        b=ilOHcIm02e3+24ookZNnYtn6ZXMMjvFlTE8lCtkSMU2Z/rpNfGrJjehJxxn5Yv3iv
+         hI1Ev2OrOULVe5uwiAnKAkLx8UH4Oi7csAj34n+PfV1VE2fEIwEReEKMjNyYw4TwKL
+         ZPAV6IwfQ7n1ILce4bwqrk5TMpmzAvLB43KsKGlU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        farah kassabri <fkassabri@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 087/100] habanalabs: cannot sleep while holding spinlock
-Date:   Fri, 24 Sep 2021 14:44:36 +0200
-Message-Id: <20210924124344.383259129@linuxfoundation.org>
+Subject: [PATCH 5.14 088/100] pwm: img: Dont modify HW state in .remove() callback
+Date:   Fri, 24 Sep 2021 14:44:37 +0200
+Message-Id: <20210924124344.417529820@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
 References: <20210924124341.214446495@linuxfoundation.org>
@@ -41,49 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: farah kassabri <fkassabri@habana.ai>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 607b1468c2263e082d74c1a3e71399a9026b41ce ]
+[ Upstream commit c68eb29c8e9067c08175dd0414f6984f236f719d ]
 
-Fix 2 areas in the code where it's possible the code will
-go to sleep while holding a spinlock.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: farah kassabri <fkassabri@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/command_buffer.c | 2 --
- drivers/misc/habanalabs/common/memory.c         | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ drivers/pwm/pwm-img.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/command_buffer.c b/drivers/misc/habanalabs/common/command_buffer.c
-index 719168c980a4..402ac2395fc8 100644
---- a/drivers/misc/habanalabs/common/command_buffer.c
-+++ b/drivers/misc/habanalabs/common/command_buffer.c
-@@ -314,8 +314,6 @@ int hl_cb_create(struct hl_device *hdev, struct hl_cb_mgr *mgr,
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index 11b16ecc4f96..18d8e34d0d08 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -326,23 +326,7 @@ err_pm_disable:
+ static int img_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct img_pwm_chip *pwm_chip = platform_get_drvdata(pdev);
+-	u32 val;
+-	unsigned int i;
+-	int ret;
+-
+-	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (ret < 0) {
+-		pm_runtime_put(&pdev->dev);
+-		return ret;
+-	}
+-
+-	for (i = 0; i < pwm_chip->chip.npwm; i++) {
+-		val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
+-		val &= ~BIT(i);
+-		img_pwm_writel(pwm_chip, PWM_CTRL_CFG, val);
+-	}
  
- 	spin_lock(&mgr->cb_lock);
- 	rc = idr_alloc(&mgr->cb_handles, cb, 1, 0, GFP_ATOMIC);
--	if (rc < 0)
--		rc = idr_alloc(&mgr->cb_handles, cb, 1, 0, GFP_KERNEL);
- 	spin_unlock(&mgr->cb_lock);
- 
- 	if (rc < 0) {
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index af339ce1ab4f..fcadde594a58 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -124,7 +124,7 @@ static int alloc_device_memory(struct hl_ctx *ctx, struct hl_mem_in *args,
- 
- 	spin_lock(&vm->idr_lock);
- 	handle = idr_alloc(&vm->phys_pg_pack_handles, phys_pg_pack, 1, 0,
--				GFP_KERNEL);
-+				GFP_ATOMIC);
- 	spin_unlock(&vm->idr_lock);
- 
- 	if (handle < 0) {
+-	pm_runtime_put(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		img_pwm_runtime_suspend(&pdev->dev);
 -- 
 2.33.0
 
