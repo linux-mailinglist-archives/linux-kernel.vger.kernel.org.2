@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A5A4172F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FC3417230
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344358AbhIXMw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:52:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45988 "EHLO mail.kernel.org"
+        id S1343813AbhIXMq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:46:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344610AbhIXMvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15C8361268;
-        Fri, 24 Sep 2021 12:48:42 +0000 (UTC)
+        id S1343669AbhIXMqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:46:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17D1E61107;
+        Fri, 24 Sep 2021 12:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487723;
-        bh=JY6hxvivT5MrWbBnVusMY3Nk4zVUu3MPkPJBaDZVmTA=;
+        s=korg; t=1632487472;
+        bh=zn8WpHVepoirdltvJ7tBqjLNDNUS/wCrFRIIdFm/37I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w1FQXDXY/hOWF9nW6kqi1zSVPC2o5IFF6YkV59oaXLkcCUYgLSHi2frYGB2K+lqk+
-         EZkXouvjhBrGM+9ZbASGLw9pkKCHbe9eJZ377tTfTSiSqjSeYsqSFPMKJXv7Tjzcow
-         iLr+lbe975Msaip+p77wwi3gA+KrU1GfMFdZN89w=
+        b=KG+usEMY0/pmUYWjCmVD6eh5z0d0Q2RYx4F+3fl3yqcMZ8D2DmqHuGl4d+W2/GPza
+         3X6I1/FrP9Owcq3y7SK/UMh4EBjwoStPEBuDGi6Xy4oox2goMnPnEgbldT/7yCdJ9q
+         9lQHrfc7E2mTgP/0RaRLhCXK2rgu4T06eQ62MMBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        David Chen <david.chen@nutanix.com>
-Subject: [PATCH 4.19 03/34] rcu: Fix missed wakeup of exp_wq waiters
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 16/23] nilfs2: fix NULL pointer in nilfs_##name##_attr_release
 Date:   Fri, 24 Sep 2021 14:43:57 +0200
-Message-Id: <20210924124330.079218750@linuxfoundation.org>
+Message-Id: <20210924124328.352000483@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
+References: <20210924124327.816210800@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,99 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit fd6bc19d7676a060a171d1cf3dcbf6fd797eb05f upstream.
+[ Upstream commit dbc6e7d44a514f231a64d9d5676e001b660b6448 ]
 
-Tasks waiting within exp_funnel_lock() for an expedited grace period to
-elapse can be starved due to the following sequence of events:
+In nilfs_##name##_attr_release, kobj->parent should not be referenced
+because it is a NULL pointer.  The release() method of kobject is always
+called in kobject_put(kobj), in the implementation of kobject_put(), the
+kobj->parent will be assigned as NULL before call the release() method.
+So just use kobj to get the subgroups, which is more efficient and can fix
+a NULL pointer reference problem.
 
-1.	Tasks A and B both attempt to start an expedited grace
-	period at about the same time.	This grace period will have
-	completed when the lower four bits of the rcu_state structure's
-	->expedited_sequence field are 0b'0100', for example, when the
-	initial value of this counter is zero.	Task A wins, and thus
-	does the actual work of starting the grace period, including
-	acquiring the rcu_state structure's .exp_mutex and sets the
-	counter to 0b'0001'.
-
-2.	Because task B lost the race to start the grace period, it
-	waits on ->expedited_sequence to reach 0b'0100' inside of
-	exp_funnel_lock(). This task therefore blocks on the rcu_node
-	structure's ->exp_wq[1] field, keeping in mind that the
-	end-of-grace-period value of ->expedited_sequence (0b'0100')
-	is shifted down two bits before indexing the ->exp_wq[] field.
-
-3.	Task C attempts to start another expedited grace period,
-	but blocks on ->exp_mutex, which is still held by Task A.
-
-4.	The aforementioned expedited grace period completes, so that
-	->expedited_sequence now has the value 0b'0100'.  A kworker task
-	therefore acquires the rcu_state structure's ->exp_wake_mutex
-	and starts awakening any tasks waiting for this grace period.
-
-5.	One of the first tasks awakened happens to be Task A.  Task A
-	therefore releases the rcu_state structure's ->exp_mutex,
-	which allows Task C to start the next expedited grace period,
-	which causes the lower four bits of the rcu_state structure's
-	->expedited_sequence field to become 0b'0101'.
-
-6.	Task C's expedited grace period completes, so that the lower four
-	bits of the rcu_state structure's ->expedited_sequence field now
-	become 0b'1000'.
-
-7.	The kworker task from step 4 above continues its wakeups.
-	Unfortunately, the wake_up_all() refetches the rcu_state
-	structure's .expedited_sequence field:
-
-	wake_up_all(&rnp->exp_wq[rcu_seq_ctr(rcu_state.expedited_sequence) & 0x3]);
-
-	This results in the wakeup being applied to the rcu_node
-	structure's ->exp_wq[2] field, which is unfortunate given that
-	Task B is instead waiting on ->exp_wq[1].
-
-On a busy system, no harm is done (or at least no permanent harm is done).
-Some later expedited grace period will redo the wakeup.  But on a quiet
-system, such as many embedded systems, it might be a good long time before
-there was another expedited grace period.  On such embedded systems,
-this situation could therefore result in a system hang.
-
-This issue manifested as DPM device timeout during suspend (which
-usually qualifies as a quiet time) due to a SCSI device being stuck in
-_synchronize_rcu_expedited(), with the following stack trace:
-
-	schedule()
-	synchronize_rcu_expedited()
-	synchronize_rcu()
-	scsi_device_quiesce()
-	scsi_bus_suspend()
-	dpm_run_callback()
-	__device_suspend()
-
-This commit therefore prevents such delays, timeouts, and hangs by
-making rcu_exp_wait_wake() use its "s" argument consistently instead of
-refetching from rcu_state.expedited_sequence.
-
-Fixes: 3b5f668e715b ("rcu: Overlap wakeups with next expedited grace period")
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: David Chen <david.chen@nutanix.com>
-Acked-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-3-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-3-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree_exp.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nilfs2/sysfs.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -613,7 +613,7 @@ static void rcu_exp_wait_wake(struct rcu
- 			spin_unlock(&rnp->exp_lock);
- 		}
- 		smp_mb(); /* All above changes before wakeup. */
--		wake_up_all(&rnp->exp_wq[rcu_seq_ctr(rsp->expedited_sequence) & 0x3]);
-+		wake_up_all(&rnp->exp_wq[rcu_seq_ctr(s) & 0x3]);
- 	}
- 	trace_rcu_exp_grace_period(rsp->name, s, TPS("endwake"));
- 	mutex_unlock(&rsp->exp_wake_mutex);
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 69a8f302170e..d7d6791c408e 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -73,11 +73,9 @@ static const struct sysfs_ops nilfs_##name##_attr_ops = { \
+ #define NILFS_DEV_INT_GROUP_TYPE(name, parent_name) \
+ static void nilfs_##name##_attr_release(struct kobject *kobj) \
+ { \
+-	struct nilfs_sysfs_##parent_name##_subgroups *subgroups; \
+-	struct the_nilfs *nilfs = container_of(kobj->parent, \
+-						struct the_nilfs, \
+-						ns_##parent_name##_kobj); \
+-	subgroups = nilfs->ns_##parent_name##_subgroups; \
++	struct nilfs_sysfs_##parent_name##_subgroups *subgroups = container_of(kobj, \
++						struct nilfs_sysfs_##parent_name##_subgroups, \
++						sg_##name##_kobj); \
+ 	complete(&subgroups->sg_##name##_kobj_unregister); \
+ } \
+ static struct kobj_type nilfs_##name##_ktype = { \
+-- 
+2.33.0
+
 
 
