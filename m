@@ -2,162 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08CB416926
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1473641692A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243700AbhIXBB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 21:01:58 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:42500 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243678AbhIXBB5 (ORCPT
+        id S243717AbhIXBCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 21:02:19 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:41920 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243678AbhIXBCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 21:01:57 -0400
-Received: by mail-oi1-f173.google.com with SMTP id x124so12237425oix.9;
-        Thu, 23 Sep 2021 18:00:25 -0700 (PDT)
+        Thu, 23 Sep 2021 21:02:18 -0400
+Received: by mail-ot1-f52.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso10999451ota.8;
+        Thu, 23 Sep 2021 18:00:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GasIhLti856Ga5HeR4f+cGNysCxF+XCkHYY1M/ZuBiw=;
-        b=4mVsfYxG8qdry4qRKnb+PrIMsa+n4O9bja5YsRRWWi5Y0PlAxw0S3Op6hurzGa4Ebn
-         nBe0Li0u4rlHuBuYKB41IN15Y9ZXNpx1rj3EDY/ObbdJDuY30PODF8jsCwI1LTDfApsE
-         YVEQtnOdwjxAiA8XJhvTVEZOert/hJE0IZFfObMlG28nBpwu/z1IOSGFkNt5I6IQoXx3
-         Q8sgYlKeEGWUiDQDXwWTv5WTd6YBOrGuyElNnzCJTazAC05qnoLYMHnqgpwjOtcMzGL0
-         7U040FWSlIdxsk1XqRsuB3xblE/+mJM4og3naOEybWLJFOFhkjtEUtGFuZDCyJ+wIb98
-         kALg==
-X-Gm-Message-State: AOAM533LTPlqTtbBGYiCw+Wx+XyUYBnrDCZAZVTKbWUpbqw7uFqXish7
-        HSNz40CdeOj+crd5CLWcmA==
-X-Google-Smtp-Source: ABdhPJy3EwyotTQdzk+VORpqXwWszcJ9ggeJI7ThwmlybV4Y5HuNAm/UZzWsGRrWkehKfWCCmXAX7w==
-X-Received: by 2002:a05:6808:ec8:: with SMTP id q8mr7842887oiv.94.1632445224741;
-        Thu, 23 Sep 2021 18:00:24 -0700 (PDT)
+        bh=1TJzWuj8+bzZyndMFx8jWebrZeVJyh9b45P01OYgrS0=;
+        b=a6oyX5d0Hnn3N8vk5AFBGXZQd8V/H+zY7v/zjLTGoMHqDOFAtqA9r/WglvrYx+AUnl
+         3RArUfTPtRq861De5YO1zxZWf59wAVAd0JZWGmG68ZtZ0WWC+TdPBxVjs1fVwd2UjHMV
+         CsBzcB2GJsInKG5zMt8fG1x4srOsrIDxGVUFu9qD9Ngmc+0n8Qfh2akQyVezVRPKwjTs
+         +Wa6r9okNZ3otoR1O+AyJh/krimZZbWRWvBePjrLtstPDFEIxHBOmpC/XA3HZm2ZUaTX
+         41UlP6JJiCvif2meSbd6OgB8sygaSEhfWdPdonEGoHsKK/IRHN9or/+Hg2ITODewxpSu
+         pYlA==
+X-Gm-Message-State: AOAM5309/AK8ns8k+qN3ldBwFoXfGcUguV1v/gF9xor+bFU528SToV2I
+        FTDH3fo0pzHSPatv77woQw==
+X-Google-Smtp-Source: ABdhPJy6eZWrOh3pu2S52LgzkkluFsXiIOwPaK+twomhoKwxx8iDuMQGB6Skfx8n3hZ7uN4MzzzDMw==
+X-Received: by 2002:a05:6830:4411:: with SMTP id q17mr1429613otv.67.1632445245965;
+        Thu, 23 Sep 2021 18:00:45 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id a23sm1676644otp.44.2021.09.23.18.00.23
+        by smtp.gmail.com with ESMTPSA id l28sm1739449oof.30.2021.09.23.18.00.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 18:00:24 -0700 (PDT)
-Received: (nullmailer pid 3848448 invoked by uid 1000);
-        Fri, 24 Sep 2021 01:00:23 -0000
-Date:   Thu, 23 Sep 2021 20:00:23 -0500
+        Thu, 23 Sep 2021 18:00:45 -0700 (PDT)
+Received: (nullmailer pid 3849035 invoked by uid 1000);
+        Fri, 24 Sep 2021 01:00:44 -0000
+Date:   Thu, 23 Sep 2021 20:00:44 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     linus.walleij@linaro.org, mark.rutland@arm.com,
-        matthias.bgg@gmail.com, sean.wang@kernel.org,
-        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
-        light.hsieh@mediatek.com, biao.huang@mediatek.com,
-        hongzhou.yang@mediatek.com, sean.wang@mediatek.com,
-        seiya.wang@mediatek.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v13 2/5] dt-bindings: pinctrl: mt8195: change pull
- up/down description
-Message-ID: <YU0jJxr0OJoqahHr@robh.at.kernel.org>
-References: <20210922025640.11600-1-zhiyong.tao@mediatek.com>
- <20210922025640.11600-3-zhiyong.tao@mediatek.com>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        skakit@codeaurora.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        mka@chromium.org, saiprakash.ranjan@codeaurora.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, msavaliy@qti.qualcomm.com, dianders@chromium.org
+Subject: Re: [PATCH V10 1/8] dt-bindings: spi: Add sc7280 support
+Message-ID: <YU0jPOsvzUbEPShy@robh.at.kernel.org>
+References: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
+ <1632399378-12229-2-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922025640.11600-3-zhiyong.tao@mediatek.com>
+In-Reply-To: <1632399378-12229-2-git-send-email-rajpat@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:56:37AM +0800, Zhiyong Tao wrote:
-> For supporting SI units in "bias-pull-down" & "bias-pull-up",
-> Change pull up/down description
+On Thu, 23 Sep 2021 17:46:11 +0530, Rajesh Patil wrote:
+> Add compatible for sc7280 SoC.
 > 
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> Reviewed-by: Doug Anderson <dianders@chromium.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  .../bindings/pinctrl/pinctrl-mt8195.yaml      | 65 ++++++++++++++++++-
->  1 file changed, 63 insertions(+), 2 deletions(-)
+> Change in V10:
+>  - As per Stephen's comments,
+>    sorted compatible names in alphabet order
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> index 2f12ec59eee5..2f2afabbe4fc 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> @@ -85,9 +85,70 @@ patternProperties:
->            2/4/6/8/10/12/14/16mA in mt8195.
->          enum: [0, 1, 2, 3, 4, 5, 6, 7]
->  
-> -      bias-pull-down: true
-> +      bias-pull-down:
-> +        description: |
-> +          For pull down type is normal, it don't need add RSEL & R1R0 define
-> +          and resistance value.
-> +          For pull down type is PUPD/R0/R1 type, it can add R1R0 define to
-> +          set different resistance. It can support "MTK_PUPD_SET_R1R0_00" &
-> +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" & "MTK_PUPD_SET_R1R0_11"
-> +          define in mt8195.
-> +          For pull down type is RSEL, it can add RSEL define & resistance value(ohm)
-> +          to set different resistance by identifying property "mediatek,rsel_resistance_in_si_unit".
-> +          It can support "MTK_PULL_SET_RSEL_000" & "MTK_PULL_SET_RSEL_001"
-> +          & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" & "MTK_PULL_SET_RSEL_100"
-> +          & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" & "MTK_PULL_SET_RSEL_111"
-> +          define in mt8195. It can also support resistance value(ohm) "75000" & "5000" in mt8195.
-
-Please make a schema:
-
-oneOf:
-  - enum: [ 0, 1, ...7 ]
-  - description: MT8195...
-    enum: [ 5000, 75000 ]
-
-> +          An example of using RSEL define:
-> +          pincontroller {
-> +            i2c0_pin {
-> +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
-> +              bias-pull-down = <MTK_PULL_SET_RSEL_001>;
-> +            };
-> +          };
-> +          An example of using si unit resistance value(ohm):
-> +          &pio {
-> +            mediatek,rsel_resistance_in_si_unit;
-> +          }
-> +          pincontroller {
-> +            i2c0_pin {
-> +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
-> +              bias-pull-down = <75000>;
-> +            };
-> +          };
->  
-> -      bias-pull-up: true
-> +      bias-pull-up:
-> +        description: |
-> +          For pull up type is normal, it don't need add RSEL & R1R0 define
-> +          and resistance value.
-> +          For pull up type is PUPD/R0/R1 type, it can add R1R0 define to
-> +          set different resistance. It can support "MTK_PUPD_SET_R1R0_00" &
-> +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" & "MTK_PUPD_SET_R1R0_11"
-> +          define in mt8195.
-> +          For pull up type is RSEL, it can add RSEL define & resistance value(ohm)
-> +          to set different resistance by identifying property "mediatek,rsel_resistance_in_si_unit".
-> +          It can support "MTK_PULL_SET_RSEL_000" & "MTK_PULL_SET_RSEL_001"
-> +          & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" & "MTK_PULL_SET_RSEL_100"
-> +          & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" & "MTK_PULL_SET_RSEL_111"
-> +          define in mt8195. It can also support resistance value(ohm)
-> +          "1000" & "1500" & "2000" & "3000" & "4000" & "5000" & "10000" & "75000" in mt8195.
-
-Same here.
-
-> +          An example of using RSEL define:
-> +          pincontroller {
-> +            i2c0_pin {
-> +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
-> +              bias-pull-up = <MTK_PULL_SET_RSEL_001>;
-> +            };
-> +          };
-> +          An example of using si unit resistance value(ohm):
-> +          &pio {
-> +            mediatek,rsel_resistance_in_si_unit;
-> +          }
-> +          pincontroller {
-> +            i2c0_pin {
-> +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
-> +              bias-pull-up = <1000>;
-> +            };
-> +          };
->  
->        bias-disable: true
->  
-> -- 
-> 2.25.1
+> Changes in V9:
+>  - No changes
 > 
+> Changes in V8:
+>  - As per Doug's comments, added "qcom,sc7280-qspi" compatible
 > 
+>  Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
