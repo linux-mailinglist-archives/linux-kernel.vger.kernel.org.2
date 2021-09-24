@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6215417286
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5043941741B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344325AbhIXMtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:49:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43984 "EHLO mail.kernel.org"
+        id S1346000AbhIXNCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:02:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344147AbhIXMsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:48:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 576876124F;
-        Fri, 24 Sep 2021 12:46:27 +0000 (UTC)
+        id S1345815AbhIXM7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:59:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3D6861371;
+        Fri, 24 Sep 2021 12:53:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487587;
-        bh=qJCZf8z0SKfO4BYhVd4fDfO5qs/mt0fSlBiITh6dTkU=;
+        s=korg; t=1632488003;
+        bh=BGaO2d5KMqAdaiWzfa1+0RVyVlGMslFN3ltylz4C+zY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ujwUDKsX7B64++8YKKng1Zbx02ds7iXMxjZkJ7wn/j9Ko5hDAjuJ92+sbG4897r8
-         mO48fVJ0H3cHz/hQWVLAM55Jxc32wwEKYH+DY4Qa1x42s9NB+nHovlnt7VdvL4kZx+
-         fvTl3i65cErptMlkT+9eXQFVVBSbNueg/6WUm5LU=
+        b=cyGYajhcBXGtgMw7bgkzYrqvyMESnrH+YbTr9KnQ95WRv9A3zYagLYmDl79SMSHkM
+         k2bCXsaU4gKQnC7aI+c3N8hyGtLxqbM453d8EHs3qg4/c5M03gcDyivNIQC13i3EpL
+         EsNhzq5HzBGB4BsxK/+0xXn1ewynstFxBqy1iWGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 4.9 07/26] dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 046/100] parisc: Move pci_dev_is_behind_card_dino to where it is used
 Date:   Fri, 24 Sep 2021 14:43:55 +0200
-Message-Id: <20210924124328.585096049@linuxfoundation.org>
+Message-Id: <20210924124342.990271626@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
-References: <20210924124328.336953942@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 67db87dc8284070adb15b3c02c1c31d5cf51c5d6 upstream.
+[ Upstream commit 907872baa9f1538eed02ec737b8e89eba6c6e4b9 ]
 
-Currently the CRST parsing relies on the fact that on most of x86 devices
-the IRQ mapping is 1:1 with Linux vIRQ. However, it may be not true for
-some. Fix this by converting GSI to Linux vIRQ before checking it.
+parisc build test images fail to compile with the following error.
 
-Fixes: ee8209fd026b ("dma: acpi-dma: parse CSRT to extract additional resources")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210730202715.24375-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+drivers/parisc/dino.c:160:12: error:
+	'pci_dev_is_behind_card_dino' defined but not used
+
+Move the function just ahead of its only caller to avoid the error.
+
+Fixes: 5fa1659105fa ("parisc: Disable HP HSC-PCI Cards to prevent kernel crash")
+Cc: Helge Deller <deller@gmx.de>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/acpi-dma.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/parisc/dino.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/drivers/dma/acpi-dma.c
-+++ b/drivers/dma/acpi-dma.c
-@@ -72,10 +72,14 @@ static int acpi_dma_parse_resource_group
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index 889d7ce282eb..952a92504df6 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -156,15 +156,6 @@ static inline struct dino_device *DINO_DEV(struct pci_hba_data *hba)
+ 	return container_of(hba, struct dino_device, hba);
+ }
  
- 	si = (const struct acpi_csrt_shared_info *)&grp[1];
+-/* Check if PCI device is behind a Card-mode Dino. */
+-static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
+-{
+-	struct dino_device *dino_dev;
+-
+-	dino_dev = DINO_DEV(parisc_walk_tree(dev->bus->bridge));
+-	return is_card_dino(&dino_dev->hba.dev->id);
+-}
+-
+ /*
+  * Dino Configuration Space Accessor Functions
+  */
+@@ -447,6 +438,15 @@ static void quirk_cirrus_cardbus(struct pci_dev *dev)
+ DECLARE_PCI_FIXUP_ENABLE(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_6832, quirk_cirrus_cardbus );
  
--	/* Match device by MMIO and IRQ */
-+	/* Match device by MMIO */
- 	if (si->mmio_base_low != lower_32_bits(mem) ||
--	    si->mmio_base_high != upper_32_bits(mem) ||
--	    si->gsi_interrupt != irq)
-+	    si->mmio_base_high != upper_32_bits(mem))
-+		return 0;
+ #ifdef CONFIG_TULIP
++/* Check if PCI device is behind a Card-mode Dino. */
++static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
++{
++	struct dino_device *dino_dev;
 +
-+	/* Match device by Linux vIRQ */
-+	ret = acpi_register_gsi(NULL, si->gsi_interrupt, si->interrupt_mode, si->interrupt_polarity);
-+	if (ret != irq)
- 		return 0;
- 
- 	dev_dbg(&adev->dev, "matches with %.4s%04X (rev %u)\n",
++	dino_dev = DINO_DEV(parisc_walk_tree(dev->bus->bridge));
++	return is_card_dino(&dino_dev->hba.dev->id);
++}
++
+ static void pci_fixup_tulip(struct pci_dev *dev)
+ {
+ 	if (!pci_dev_is_behind_card_dino(dev))
+-- 
+2.33.0
+
 
 
