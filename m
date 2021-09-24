@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD25C41748B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820FC417491
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345524AbhIXNHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:07:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33458 "EHLO mail.kernel.org"
+        id S1344929AbhIXNI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:08:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345976AbhIXNFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:05:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DFCC61425;
-        Fri, 24 Sep 2021 12:55:52 +0000 (UTC)
+        id S1344214AbhIXNFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:05:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1C3C6137C;
+        Fri, 24 Sep 2021 12:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488153;
-        bh=Sp9F3hUIYAkae3++XJ8TXnq0ktiIcedGcvRsshFrNjU=;
+        s=korg; t=1632488156;
+        bh=dZyw6Uoy4RGe4dBWteIlcPfiJnxJXehlGyDg07iOMwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Aw5UjGcK25NACN6C3AaelyW3MqN1vJdxSL2KV9pc51h7Fl5csT4Wn1IzjWlaoS1WE
-         mjhW5uzObW1Hh67U0V2cMCL3AvyEf7ca1Pl1jbQToCAEderp9pRp6fYsdFiQEXMvhS
-         yxuWiwfq9CPg+1XrDebN1WsQWltQ6HY/eVC0WRM4=
+        b=vRjC3JbZBGLGcAUplY5k58HrcHdH3lT+bFpReMHMFIgN9ehrl2UnogTSVWt49k2lj
+         k0KZefFGK8BV/F9Uunvyo/UXdtO+fnut51S6CvoWs263oUT32D2FY7eaYz1i0ASBn8
+         6PGRsP+bPj4yeu+W1sjNLuJNMp0Ca7D7JVxgJOIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 075/100] nilfs2: fix memory leak in nilfs_sysfs_delete_##name##_group
-Date:   Fri, 24 Sep 2021 14:44:24 +0200
-Message-Id: <20210924124343.961066153@linuxfoundation.org>
+Subject: [PATCH 5.14 076/100] nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
+Date:   Fri, 24 Sep 2021 14:44:25 +0200
+Message-Id: <20210924124344.002409283@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
 References: <20210924124341.214446495@linuxfoundation.org>
@@ -44,36 +44,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nanyong Sun <sunnanyong@huawei.com>
 
-[ Upstream commit a3e181259ddd61fd378390977a1e4e2316853afa ]
+[ Upstream commit b2fe39c248f3fa4bbb2a20759b4fdd83504190f7 ]
 
-The kobject_put() should be used to cleanup the memory associated with the
-kobject instead of kobject_del.  See the section "Kobject removal" of
-"Documentation/core-api/kobject.rst".
+If kobject_init_and_add returns with error, kobject_put() is needed here
+to avoid memory leak, because kobject_init_and_add may return error
+without freeing the memory associated with the kobject it allocated.
 
-Link: https://lkml.kernel.org/r/20210629022556.3985106-5-sunnanyong@huawei.com
-Link: https://lkml.kernel.org/r/1625651306-10829-5-git-send-email-konishi.ryusuke@gmail.com
+Link: https://lkml.kernel.org/r/20210629022556.3985106-6-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-6-git-send-email-konishi.ryusuke@gmail.com
 Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
 Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nilfs2/sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nilfs2/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index 6305e4ef7e39..d989e6500bd7 100644
+index d989e6500bd7..5ba87573ad3b 100644
 --- a/fs/nilfs2/sysfs.c
 +++ b/fs/nilfs2/sysfs.c
-@@ -84,7 +84,7 @@ static int nilfs_sysfs_create_##name##_group(struct the_nilfs *nilfs) \
- } \
- static void nilfs_sysfs_delete_##name##_group(struct the_nilfs *nilfs) \
- { \
--	kobject_del(&nilfs->ns_##parent_name##_subgroups->sg_##name##_kobj); \
-+	kobject_put(&nilfs->ns_##parent_name##_subgroups->sg_##name##_kobj); \
+@@ -195,9 +195,9 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
+ 	}
+ 
+ 	if (err)
+-		return err;
++		kobject_put(&root->snapshot_kobj);
+ 
+-	return 0;
++	return err;
  }
  
- /************************************************************************
+ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
 -- 
 2.33.0
 
