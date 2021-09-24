@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55026417C60
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DACF417C66
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348413AbhIXU27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 16:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
+        id S1348446AbhIXUgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 16:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344335AbhIXU25 (ORCPT
+        with ESMTP id S1346385AbhIXUge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 16:28:57 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C84C061571;
-        Fri, 24 Sep 2021 13:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=skD/cZCNH8R8F4DM7qf42ZhB6cHTkIJXOzzw79kAsi0=; b=A/gY15IL7NXln2jUBwDOMDRjCB
-        9ZUi+IA1PiY01O2ZsoVDzjFrdxYcu+1gB2NLC5Qjnmof4COu3glftgq6qoqBzYRWnCWvhV4w7QrPC
-        f1mQgXDULuUhimPxIy6tV1VOsKm7rpecIJEYBuYYdsMLd+zTg9V9puR0XIRwZes3HFWwhm/ZHhGdI
-        Dt+dEpvNVKWLZbYzhu/wj3fpjnFskx51WKRgg54kWDOzWs8wCawi6AddtWQzuA/xS0akkkNSggeNe
-        cZwpYqgI/oIlmYb3T/a7kwtKrK8qwuP+m+ui4mW51OtCxWBKaq7DFvKuk1QBovavtZwxxAWIBGgRV
-        fpq1v1Cg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTrn0-00FTAn-Dv; Fri, 24 Sep 2021 20:27:22 +0000
-Subject: Re: [PATCH] docs: Explain the desired position of function attributes
-To:     Kees Cook <keescook@chromium.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210924202302.2335542-1-keescook@chromium.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <053717cf-e1b3-15a4-97e6-e72848f6d7bd@infradead.org>
-Date:   Fri, 24 Sep 2021 13:27:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 24 Sep 2021 16:36:34 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B838AC061613
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:35:00 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id c4so7289366pls.6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K0QGfXbDo/9jSYc9oFGWVgMEDWdPMfRJtz7Klt7Okmk=;
+        b=oOyHBBZDhLSsYFR5G5wMFH9vsp2Eek7ZwpIf0x0xkvI52/9u8q4RDsIm4GTYKAGqhs
+         0/KYkaeYQITIshlellRFX4R+BpGOT+UuI3VV6EKq29s4YcEl05nTlIpGt8dhIBzFdD9u
+         2jkQZvLZQqHep8HXidiPnowSvZhpNqH2RLJyo+6EWoZqwjUB0kFycg3h1vdF065X0yiY
+         wnZIxKSh/MyGgdEdv3lV3dCXqaLuyUCgIi+d0m+LslxSXcYpVIK/z2qW1W7nXzUmxto4
+         ACeD7A2aXRXiR7G46JAh3Eoup9eqNtOi/Ttx0pxR06nG1y9yiLjJWjZ2LIPHGItsx5fW
+         qdHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K0QGfXbDo/9jSYc9oFGWVgMEDWdPMfRJtz7Klt7Okmk=;
+        b=GrCz1MnQuHB2oIMn7rEJxReqqqCshU5ioHpFpuYakdmRSUnEGbo8BpuPhClNpHrKrP
+         Zo2jCh73/o4DBnRRLY71EXuoq8QCwcD6TcsQWYxLOyZmPUkmLU0cr+J8ZbWr4PSFVtoQ
+         dXBo7L80p8IgURe82YUP9/RMGg2A/C7uWi7Nykb6HAeI5rjnNDn2S/UlQRbNnBrqkbIe
+         uPmRap5PQt0Uj7d9tkxhXL0aYMeLI6G/N3X0/oYIROR+fUrephSlXD9Afrbyp3nno/SR
+         eX1m062AviNggOY4JNwmpouXCdjPMxBA4PggmYRBKpJaAuO3P1oQ15MGjAjo3jCVAwY+
+         AQ6A==
+X-Gm-Message-State: AOAM5316tmVpJUr2VoCFE1ulA/T3iBguQGuOWdCURhJejeeAHxFibZGs
+        5FhLi6ws38AFPpFbfpvqZCVLLg==
+X-Google-Smtp-Source: ABdhPJyG2CvQBu3oBk64yqmXJnoPnykVy0sI58Kt4Zp/AyhpldzSAdl6lanCBzbZLyYgwyAwJSvBHA==
+X-Received: by 2002:a17:902:db0a:b0:13b:b984:8094 with SMTP id m10-20020a170902db0a00b0013bb9848094mr10729592plx.43.1632515699798;
+        Fri, 24 Sep 2021 13:34:59 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v12sm675255pjl.1.2021.09.24.13.34.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 13:34:58 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 20:34:55 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     kvm@vger.kernel.org, pbonzini@redhat.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, joe.jin@oracle.com
+Subject: Re: [PATCH RFC 1/1] kvm: export per-vcpu exits to userspace
+Message-ID: <YU42b1iwIpZS0iCp@google.com>
+References: <20210908000824.28063-1-dongli.zhang@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210924202302.2335542-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908000824.28063-1-dongli.zhang@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/21 1:23 PM, Kees Cook wrote:
-> While discussing how to format the addition of various function
-> attributes, some "unwritten rules" of ordering surfaced[1]. Capture a
-> synthesized version of Linus's, Joe's, and Rasmus's recommendations on
-> this subject for future reference.
+On Tue, Sep 07, 2021, Dongli Zhang wrote:
+> People sometimes may blame KVM scheduling if there is softlockup/rcu_stall
+> in VM kernel. The KVM developers are required to prove that a specific VCPU
+> is being regularly scheduled by KVM hypervisor.
 > 
-> [1] https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->   Documentation/process/coding-style.rst | 27 ++++++++++++++++++++++++++
->   1 file changed, 27 insertions(+)
-> 
-> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-> index 42969ab37b34..3559c34a9281 100644
-> --- a/Documentation/process/coding-style.rst
-> +++ b/Documentation/process/coding-style.rst
-> @@ -487,6 +487,33 @@ because it is a simple way to add valuable information for the reader.
->   Do not use the ``extern`` keyword with function prototypes as this makes
->   lines longer and isn't strictly necessary.
->   
-> +When writing a function prototype, please keep the `order of elements regular
-> +<https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com>`_. For example::
-> +
-> +	__must_check __printf(4, 5) __malloc __init
-> +	static __always_inline void *action(enum magic value, size_t size,
-> +					    u8 count, char *fmt, ...)
-> +	{
-> +		...
-> +	}
-> +
-> +The preferred order of elements for a function prototype is:
-> +
-> +- attributes on the preceding lines
-> +
+> So far we use "pidstat -p <qemu-pid> -t 1" or
+> "cat /proc/<pid>/task/<tid>/stat", but 'exits' is more fine-grained.
 
-I thought that idea was already nacked: (it's more of a BSD thing AFAIK)
-(and I would NAK it if I could :)
+Sort of?  Yes, counts _almost_ every VM-Exit, but it's also measuring something
+completely different.
 
-"""
-> Attributes should be on their own line, they can be quite lengthy.
+> Therefore, the 'exits' is exported to userspace to verify if a VCPU is
+> being scheduled regularly.
 
-No, no no. They really shouldn't.
-""
+The number of VM-Exits seems like a very cumbersome and potentially misinterpreted
+indicator, e.g. userspace could naively think that a guest that is generating a
+high number of exits is getting more runtime.  With posted interrupts and other
+hardware features, that doesn't necessarily hold true.
 
-from: https://lore.kernel.org/mm-commits/CAHk-=wjS-Jg7sGMwUPpDsjv392nDOOs0CtUtVkp=S6Q7JzFJRw@mail.gmail.com/
+I'm not saying don't count exits, they absolutely can be a good triage tool, but
+they're not the right tool to verify tasks are getting scheduled.
 
-> +  - return type attributes (here, ``__must_check``)
-> +  - function parameter attributes (here, ``__printf(4,5)``)
-> +  - function behavior attributes (here, ``__malloc``)
-> +  - storage class attributes (here, ``__init``)
-> +
-> +- main function prototype on the next lines
-> +
-> +  - storage class (here, ``static __always_inline`` -- even though
-> +    ``__always_inline`` is technically an attribute, it is treated like
-> +    ``inline``)
-> +  - return type (here, ``void *``)
-> +  - function name (here, ``action``)
-> +  - function parameters (as described earlier: each with type and name)
->   
->   7) Centralized exiting of functions
->   -----------------------------------
-> 
+> I was going to export 'exits', until there was binary stats available.
+> Unfortunately, QEMU does not support binary stats and we will need to
+> read via debugfs temporarily. This patch can also be backported to prior
+> versions that do not support binary stats.
 
-
--- 
-~Randy
+Adding temporary code to the _upstream_ kernel to work around lack of support in
+the userspace VMM does not seem right to me.  Especially in debugfs, which is
+very explicitly not intended to be used for thing like monitoring in production.
