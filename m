@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71444176FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406444176FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346835AbhIXOpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:45:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231627AbhIXOpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:45:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CE9060F39;
-        Fri, 24 Sep 2021 14:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632494649;
-        bh=HaXdsYXMR1rKuirPTHI25kms2F3oSSEEkJuWdfagNIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RkKPYwfVdsTPbMnQtRbBwAXJYAcGu19rLewUX3LIXYujJaTZWel0+Y0+mdqYMds3U
-         LUxiyqos5L6e8nP8TQQneAq66mX5HNME9Wzx8KjFY+CL4EHmKclYcsfX8ZopPvH2v9
-         wMTBwHxeBDweZ3r2W60DWJh9HMJiYYX9VefwWS7Qq1xGkWq0Z8D0Bw28aKqLp2LjPg
-         pWvbjbLi2Gcw/wcKlwrCN/GAFCZdMwSpfV8frqG4S4vt3wsON5VY7evxUaBnsk+u4g
-         +89QW71H4g4Dl5mkhvC+IV7TuYavnKbtRzCGtbG3Po5J9dYEW7inBQX9YwCzd2l35n
-         WjJ2rqOarrxJA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mTmQu-0001RU-4e; Fri, 24 Sep 2021 16:44:12 +0200
-Date:   Fri, 24 Sep 2021 16:44:12 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        id S1346848AbhIXOrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231627AbhIXOrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 10:47:17 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF77C061571;
+        Fri, 24 Sep 2021 07:45:43 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id t8so28396643wri.1;
+        Fri, 24 Sep 2021 07:45:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Av3zDDdFclAJ+F3cYjMxG9S2t2QZDbTVI1TKO+ZOq0U=;
+        b=qzTQPLx2pQ7IPYH1fZk3RYVZ3m7w1uxl01fD8LeZpjwMoKzjli/RQialtHZFNgDBiT
+         9iSSG91zp0kgluN17z8mmZd/TkYJ9O1MzEbgOWZmz0tuBJWn7Eu+wlVqUW11+walr7y9
+         knysK4Xj+CyJbap2IbmEEphC0Oxs+Gm8pLTND5/hgt6gsPVmMr1nuoWBATURPSjBM8PA
+         0hu1wtLgIXJUuMCUtE7hN/Gov6jAAGyY9gnnb+J5L5xTxwCZqZUVVX2oYv3Am6Jx/ElD
+         +crwwzJg3koza9y7be5aDwo5iDch8I4Rdczd8PrdmA8IlUNPdfKNuvTkzVmCXZZN2OXB
+         2ACQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Av3zDDdFclAJ+F3cYjMxG9S2t2QZDbTVI1TKO+ZOq0U=;
+        b=0R6xeQw+fLa3fY5Kf/qmcnw7AUA0cgNR1QBBlN7+/v6Lykjgl2yI0QELoSM/l7MQPj
+         Nug0jwcs30OifJC5iQ/p/Njl4JiADmIvK5+7qXHunfk/uEobDyBr1kdXzWtGjAANR9j9
+         lSiM5Y7WUDbw7fkttb6tEu+Y/DVzrQ3Qfc6sZeK+na5A6yyc1Iu1uTVwdjEqu4udGZN3
+         KYC9BHxfyLhUlCW4mramaYOQDyKhpOO2Q9WHDF4Kuo2YT7nMceLfPkRglV40S9yDCu1f
+         33yS/X4ji9wVIYAdwn3M1RsIlYF0FTevjIgOFRf1d8lL1K0yWZ1lEoDE8Q7uLkYOntyb
+         174g==
+X-Gm-Message-State: AOAM530XCzJBsNQFCwBVU1rhky87i1wYsq6qE7TzhNI8W9QXRFcHzzql
+        wN0+YZsVsSYtpz2A4PboNxU=
+X-Google-Smtp-Source: ABdhPJwHjtoFD+Em8zF6DgZZeR4AHAuHQ16zsehQw1pH91pQnp/t+obC1c5ieSc6Ox36UZ4ogR2Z+g==
+X-Received: by 2002:a05:6000:1889:: with SMTP id a9mr12076973wri.300.1632494742467;
+        Fri, 24 Sep 2021 07:45:42 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id 131sm12249784wmc.20.2021.09.24.07.45.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 07:45:41 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 16:45:40 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     robh+dt@kernel.org, jonathanh@nvidia.com,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] serial: 8250: Implement prep_tx for power management
-Message-ID: <YU3kPHg2qLr//HEF@hovoldconsulting.com>
-References: <20210921103346.64824-1-tony@atomide.com>
- <20210921103346.64824-5-tony@atomide.com>
- <YUx399WBrMiZDhno@hovoldconsulting.com>
- <YUyXwJnmPhm1940B@atomide.com>
+Subject: Re: [PATCH 0/2] Audio support on Jetson TX2 NX
+Message-ID: <YU3klOTbfIeUzw6W@orome.fritz.box>
+References: <1629809770-7456-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dVMhuQ+ZlCXbwm9U"
 Content-Disposition: inline
-In-Reply-To: <YUyXwJnmPhm1940B@atomide.com>
+In-Reply-To: <1629809770-7456-1-git-send-email-spujar@nvidia.com>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 06:05:36PM +0300, Tony Lindgren wrote:
-> * Johan Hovold <johan@kernel.org> [210923 12:50]:
-> > On Tue, Sep 21, 2021 at 01:33:44PM +0300, Tony Lindgren wrote:
-> > > +static int serial8250_prep_tx(struct uart_port *port)
-> > > +{
-> > > +	struct uart_8250_port *up = up_to_u8250p(port);
-> > > +	struct device *dev = up->port.dev;
-> > > +	int err;
-> > > +
-> > > +	if (!(up->capabilities & UART_CAP_RPM))
-> > > +		return 0;
-> > > +
-> > > +	if (!pm_runtime_suspended(dev)) {
-> > > +		pm_runtime_mark_last_busy(dev);
-> > > +		return 0;
-> > > +	}
-> > > +
-> > > +	err = pm_request_resume(dev);
-> > > +	if (err < 0) {
-> > > +		dev_warn(dev, "prep_tx wakeup failed: %d\n", err);
-> > > +		return err;
-> > > +	}
-> > 
-> > How is this supposed to work without a runtime PM usage-counter
-> > increment? What's to prevent the port from suspending again while it's
-> > transmitting?
-> 
-> Hmm yeah we should at pm_runtime_get() and pm_runtime_put() to write()
-> unless serial8250_rpm_get() and serial8250_rpm_put() are doing it.
 
-If you do the put after just buffering the data it doesn't really solve
-anything.
+--dVMhuQ+ZlCXbwm9U
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Or pair prep with finish and deal with the usage count there.
+On Tue, Aug 24, 2021 at 06:26:08PM +0530, Sameer Pujar wrote:
+> Add support for APE (Audio Processing Engine) audio on Jetson TX2 NX.
+> As part of this exposed I/O interfaces of I2S and DMIC are enabled.
+> Similar to previous generations of Jetson platforms, audio-graph based
+> sound card driver is used.
+>=20
+> HDA sound card is already enaled. Update the sound card name as part
+> of this series to be consistent with other Jetson platforms.
+>=20
+> Sameer Pujar (2):
+>   arm64: tegra: Audio graph sound card for Jetson TX2 NX
+>   arm64: tegra: Update HDA card name on TX2 NX
+>=20
+>  .../dts/nvidia/tegra186-p3509-0000+p3636-0001.dts  | 506 +++++++++++++++=
++++++-
+>  1 file changed, 505 insertions(+), 1 deletion(-)
 
-Problem is where to call it from. How do you tell the device is done
-transmitting? And how should we deal with flow control? Etc.
+Both patches applied, thanks.
 
-Johan
+Thierry
+
+--dVMhuQ+ZlCXbwm9U
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFN5JMACgkQ3SOs138+
+s6HPUg//bpmXGozlR4xs+n2kA19SbxK0oc7LsiYh7o9c6R81QMedLmRfdDo3Sb7r
+XvwpXBdxTG5BWUmnmlMwIg8gmHACZQ9lZKj1sk3HeuNMhezdmrkVGquybFSMP4Vh
+5B1DiSQdaQLX0rRgDKnQLYWDiIOXI5PvOUAeLP01CW9Hg2I8c+hxcb9I1Dg/ldNx
+YXNbCS4Mm3JKuIBTRjCsa6F+OafjzwPXh0g/gBO6VyZ7+dzJHEO8AbB2UEeEjde5
+o0r/dxA6RhCAvFr9GxioLYNo8j13nqpJ14y6l3mLj5HjeWLZ7Z6K3eDzMPMxNvcZ
+5CxQ74OqO8dALV/JPlQkGQR1q1vqxwVe35aCvGzGygzJ0nuGendU9XstuwpON3Qf
+J0kmJIf10WyTmVmJ5uI9kBK0Kx4A5ejEdwse5JXSeHWoYLSwv4i8AcAl5iZraQuR
+6/tVrjrw7LMqn+nt0cGmauK06qoSYWed1dbN6SqPEePw9PGMccj60nwD0OR5EY2B
+WZ6/D4m7qF3gB6DDcsf3P9lx5ZTdrW2QFqtQW/FfdZGAIZ6uAZZpBqEekuMLHz3/
+wXCyZvz1xia/KogCZZsIxs6X1+LGKEUj4ah96S8g3kpseobyJ/EJeAzlRB4Cjr1C
+NeqUkuHGpVDNKz1hwxklJY+cVuhC7XXF70KqyH+JyOILlYU1jM8=
+=ImHS
+-----END PGP SIGNATURE-----
+
+--dVMhuQ+ZlCXbwm9U--
