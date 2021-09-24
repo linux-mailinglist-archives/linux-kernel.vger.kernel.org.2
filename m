@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25CC4172FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E27F4174D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344690AbhIXMxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:53:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45020 "EHLO mail.kernel.org"
+        id S1345168AbhIXNLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:11:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344476AbhIXMvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35AA161279;
-        Fri, 24 Sep 2021 12:48:59 +0000 (UTC)
+        id S1346794AbhIXNIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:08:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 045BF61355;
+        Fri, 24 Sep 2021 12:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487739;
-        bh=qJCZf8z0SKfO4BYhVd4fDfO5qs/mt0fSlBiITh6dTkU=;
+        s=korg; t=1632488221;
+        bh=MkrdtIH2tS8XG0eBj1UFlhZwfdyBh43wnnktnB7k6IU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zJpEC+kPBQ1f4UzgtMU8aGVm/TU3DP3wRfOdj4rV7/LIR/aluIeP1astEYwEU06uR
-         WHuD2+Bqsqd2ivV1cMS2EXSpxJiQShokdDZ3tFL/Q5AHszPdbz68Kjq3kdcezKU7gd
-         sDJRKFMR7k/s8gNLMGdPcvg4thEKYigiZu2agSdI=
+        b=mg4gpNzPEX19rN7Fg/AjEsuudEid15QJyK7qsFxunqQVJyLR4msmEAWNmXvEa6dNT
+         /lmk0s/lkjAsEBUBjfxF5E9tXQu+uaKzfBHdBSBDZrvtTyyYSkUOA19FrZRsH7uXr7
+         K7RojbTPrzuBu8kBVbIFpY+bk0GktuODQnwXKemg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 4.19 09/34] dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
+        stable@vger.kernel.org, nick black <dankamongmen@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 03/63] console: consume APC, DM, DCS
 Date:   Fri, 24 Sep 2021 14:44:03 +0200
-Message-Id: <20210924124330.270739357@linuxfoundation.org>
+Message-Id: <20210924124334.341478612@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +42,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: nick black <dankamongmen@gmail.com>
 
-commit 67db87dc8284070adb15b3c02c1c31d5cf51c5d6 upstream.
+commit 3a2b2eb55681158d3e3ef464fbf47574cf0c517c upstream.
 
-Currently the CRST parsing relies on the fact that on most of x86 devices
-the IRQ mapping is 1:1 with Linux vIRQ. However, it may be not true for
-some. Fix this by converting GSI to Linux vIRQ before checking it.
+The Linux console's VT102 implementation already consumes OSC
+("Operating System Command") sequences, probably because that's how
+palette changes are transmitted.
 
-Fixes: ee8209fd026b ("dma: acpi-dma: parse CSRT to extract additional resources")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210730202715.24375-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+In addition to OSC, there are three other major clases of ANSI control
+strings: APC ("Application Program Command"), PM ("Privacy Message"),
+and DCS ("Device Control String").  They are handled similarly to OSC in
+terms of termination.
+
+Source: vt100.net
+
+Add three new enumerated states, one for each of these types.  All three
+are handled the same way right now--they simply consume input until
+terminated.  I hope to expand upon this firmament in the future.  Add
+new predicate ansi_control_string(), returning true for any of these
+states.  Replace explicit checks against ESosc with calls to this
+function.  Transition to these states appropriately from the escape
+initiation (ESesc) state.
+
+This was motivated by the following Notcurses bugs:
+
+ https://github.com/dankamongmen/notcurses/issues/2050
+ https://github.com/dankamongmen/notcurses/issues/1828
+ https://github.com/dankamongmen/notcurses/issues/2069
+
+where standard VT sequences are not consumed by the Linux console.  It's
+not necessary that the Linux console *support* these sequences, but it
+ought *consume* these well-specified classes of sequences.
+
+Tested by sending a variety of escape sequences to the console, and
+verifying that they still worked, or were now properly consumed.
+Verified that the escapes were properly terminated at a generic level.
+Verified that the Notcurses tools continued to show expected output on
+the Linux console, except now without escape bleedthrough.
+
+Link: https://lore.kernel.org/lkml/YSydL0q8iaUfkphg@schwarzgerat.orthanc/
+Signed-off-by: nick black <dankamongmen@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/acpi-dma.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/tty/vt/vt.c |   31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
---- a/drivers/dma/acpi-dma.c
-+++ b/drivers/dma/acpi-dma.c
-@@ -72,10 +72,14 @@ static int acpi_dma_parse_resource_group
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -2060,7 +2060,7 @@ static void restore_cur(struct vc_data *
  
- 	si = (const struct acpi_csrt_shared_info *)&grp[1];
+ enum { ESnormal, ESesc, ESsquare, ESgetpars, ESfunckey,
+ 	EShash, ESsetG0, ESsetG1, ESpercent, EScsiignore, ESnonstd,
+-	ESpalette, ESosc };
++	ESpalette, ESosc, ESapc, ESpm, ESdcs };
  
--	/* Match device by MMIO and IRQ */
-+	/* Match device by MMIO */
- 	if (si->mmio_base_low != lower_32_bits(mem) ||
--	    si->mmio_base_high != upper_32_bits(mem) ||
--	    si->gsi_interrupt != irq)
-+	    si->mmio_base_high != upper_32_bits(mem))
-+		return 0;
+ /* console_lock is held (except via vc_init()) */
+ static void reset_terminal(struct vc_data *vc, int do_clear)
+@@ -2134,20 +2134,28 @@ static void vc_setGx(struct vc_data *vc,
+ 		vc->vc_translate = set_translate(*charset, vc);
+ }
+ 
++/* is this state an ANSI control string? */
++static bool ansi_control_string(unsigned int state)
++{
++	if (state == ESosc || state == ESapc || state == ESpm || state == ESdcs)
++		return true;
++	return false;
++}
 +
-+	/* Match device by Linux vIRQ */
-+	ret = acpi_register_gsi(NULL, si->gsi_interrupt, si->interrupt_mode, si->interrupt_polarity);
-+	if (ret != irq)
- 		return 0;
- 
- 	dev_dbg(&adev->dev, "matches with %.4s%04X (rev %u)\n",
+ /* console_lock is held */
+ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+ {
+ 	/*
+ 	 *  Control characters can be used in the _middle_
+-	 *  of an escape sequence.
++	 *  of an escape sequence, aside from ANSI control strings.
+ 	 */
+-	if (vc->vc_state == ESosc && c>=8 && c<=13) /* ... except for OSC */
++	if (ansi_control_string(vc->vc_state) && c >= 8 && c <= 13)
+ 		return;
+ 	switch (c) {
+ 	case 0:
+ 		return;
+ 	case 7:
+-		if (vc->vc_state == ESosc)
++		if (ansi_control_string(vc->vc_state))
+ 			vc->vc_state = ESnormal;
+ 		else if (vc->vc_bell_duration)
+ 			kd_mksound(vc->vc_bell_pitch, vc->vc_bell_duration);
+@@ -2208,6 +2216,12 @@ static void do_con_trol(struct tty_struc
+ 		case ']':
+ 			vc->vc_state = ESnonstd;
+ 			return;
++		case '_':
++			vc->vc_state = ESapc;
++			return;
++		case '^':
++			vc->vc_state = ESpm;
++			return;
+ 		case '%':
+ 			vc->vc_state = ESpercent;
+ 			return;
+@@ -2225,6 +2239,9 @@ static void do_con_trol(struct tty_struc
+ 			if (vc->state.x < VC_TABSTOPS_COUNT)
+ 				set_bit(vc->state.x, vc->vc_tab_stop);
+ 			return;
++		case 'P':
++			vc->vc_state = ESdcs;
++			return;
+ 		case 'Z':
+ 			respond_ID(tty);
+ 			return;
+@@ -2521,8 +2538,14 @@ static void do_con_trol(struct tty_struc
+ 		vc_setGx(vc, 1, c);
+ 		vc->vc_state = ESnormal;
+ 		return;
++	case ESapc:
++		return;
+ 	case ESosc:
+ 		return;
++	case ESpm:
++		return;
++	case ESdcs:
++		return;
+ 	default:
+ 		vc->vc_state = ESnormal;
+ 	}
 
 
