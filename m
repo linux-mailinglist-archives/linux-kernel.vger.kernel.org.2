@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC964171DB
+	by mail.lfdr.de (Postfix) with ESMTP id DB9DC4171DC
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343700AbhIXMaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        id S245733AbhIXMaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343615AbhIXM3V (ORCPT
+        with ESMTP id S1343681AbhIXM3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:29:21 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DD4C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:27:48 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id u27so34855117edi.9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:27:48 -0700 (PDT)
+        Fri, 24 Sep 2021 08:29:23 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F285C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:27:50 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id y89so24667883ede.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:27:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IucAc/qAxnfh7vVamv7kHUvrKnYQaxRt5IMV6QC88mw=;
-        b=B2kX3FL+aGyOauUiu/vIIbwzQE9ZXy84fQXOTWBZP7oL32MO20DUhaCG/RbBzmHpMz
-         e71kO7lh4yRzhcD0IufPSrJdUAz+qrbdoJv3bJJh77MJmoLow/FxxhS+uIbDOU1CySDH
-         qm0wjZE03sgSyVVJKBPhd4Zqt0n0lR6oO6mRjZ3/7pexatErWSPVx0uLIWbFpTPpdUri
-         gvydRqil7WzKlI+Bcdj8ti2HfZScw46gJGlRb89mstAk26BKkcd6jSmwGy38mzHjjChl
-         itqzZIQQX9AR4zzcjq4M77vI8lewmZ4Ln1kPgUSC2DNIHRi7y8qvJT7e3PEsc3iyfXGE
-         py9A==
+        bh=sBjmp+TdyCNRpmkBBM6vbsQ1ywbXn3Qo6qFKStjh4lE=;
+        b=oU0NVcP9eafIOjc22+oWqAFJVOIm3vWT69oEKuBqNFdBkdNa8HD20hg65xm6kWO/GO
+         xcRY2z0iwPhfYWxFXdrY7BKgdtn8FhuBbbEzwBRMJGmdnF/fo4OybwymemoLAK+CWog4
+         bXN5XT5OwBXc/Uhu26/EZeGtuQzUALLq4WC1RgUrbJ/PRRfMm8poh1FfR1HZpWMB37z4
+         sWEOdK0+OD260W72/lVo13tmwVHzs2u06iGXazR9j3haiQyfWPN/BkGL3tHzKxBmlL3K
+         C6V/rg+ycpP1rW0GyR73upUsFnvJywHFwQFXWHilzCD12v32Zr4OSaAWJ3ecUPXOM/mn
+         WaOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IucAc/qAxnfh7vVamv7kHUvrKnYQaxRt5IMV6QC88mw=;
-        b=TMq1gyJ3Ze6mYuIcrWSgVUTmFQ+6bXdEflQ2mQlzx9p3udHET2DYldA9Qf95iAbXpj
-         kSkD9SUr4h69eVM8RiC1Y30dKu7ghxcw8uvNJtFjxqTnVUeaskiymghZQA03cD2u0+Q1
-         Yk2XTianrfGQiNs7EEqmQ+qXHw5STsI3BpuWJDa2tJvaYZDHpFP7YKC11g3qxjCNBMOU
-         xexVAyxjcTs7pVULGjTvUHp3Pp/gUByv6x3gCG3c5Wb3dfa9ASeLIvQUD16ndgocgJK+
-         8TkLs8S1kCG4Nmh20ukobxNJ3owK+4Wf2EcwAF5vnDki++QHzONbV9oLHTjSfRKzGok0
-         pucQ==
-X-Gm-Message-State: AOAM531j4Zm1D8AO/GUX3ToD7egDr/4cz4pX49S+FH11SRuXjBZHC9wM
-        KKOJFrdPWUxweN9v0XF1WmA=
-X-Google-Smtp-Source: ABdhPJxyYRJzrJl8qPDYmMnAzYHDbDvywzH2jwohNcbUoFBqFG4m74xQtA9yZw4GUuOqIZCQB5N9kw==
-X-Received: by 2002:aa7:c459:: with SMTP id n25mr4596171edr.29.1632486467191;
-        Fri, 24 Sep 2021 05:27:47 -0700 (PDT)
+        bh=sBjmp+TdyCNRpmkBBM6vbsQ1ywbXn3Qo6qFKStjh4lE=;
+        b=4HCp6ddP3pzuxpbiyf2+M7RmB8Tt+McPCXiJkokW1URtMYPK2FuHTciPCcDBh2YGgM
+         zPcA85+Dqzo9+4TOAWiZad9xZXL6BquasijUrTtsYh+xRiSI0Al7DuFc5NYvsOuKt4du
+         uFKdJZKiOfxZ5C513zA8YNXVDuse2pvxQqNzYe655tC57vokmUfkh3/UmwBTIdJQFz1f
+         YyHWCqToepB79rXrji2Vx2UrePWN/D7NQXK6r9QV//dHWbL19jHGVuEoaRXYYEBa1i6e
+         eGpTlj1cjlVATcFgnKR1rjOeKNay1jPek9JxXq0+ap9nPdJ02i2vxlmwEXxgoMxgbQxs
+         jjog==
+X-Gm-Message-State: AOAM532RqJsS12tCx9osG4zlHkZCBuAkmjF69Y+qWeBW15a3j5bZmK79
+        b/ECPH7vMu0ijyyRYqEaTfg=
+X-Google-Smtp-Source: ABdhPJwIJeZ61yVikAO01doJXhH+drHjzLX5Mdlp5hVh2z9OYb2PC1kkMxP+2wUPfXF8Fn0Q92XmoQ==
+X-Received: by 2002:a50:bec8:: with SMTP id e8mr4738289edk.231.1632486468586;
+        Fri, 24 Sep 2021 05:27:48 -0700 (PDT)
 Received: from localhost.localdomain.it (host-212-171-30-160.retail.telecomitalia.it. [212.171.30.160])
-        by smtp.gmail.com with ESMTPSA id v13sm4882522ejh.62.2021.09.24.05.27.45
+        by smtp.gmail.com with ESMTPSA id v13sm4882522ejh.62.2021.09.24.05.27.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 05:27:46 -0700 (PDT)
+        Fri, 24 Sep 2021 05:27:48 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Larry Finger <Larry.Finger@lwfinger.net>,
@@ -59,9 +59,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Straube <straube.linux@gmail.com>,
         Martin Kaiser <martin@kaiser.cx>
 Cc:     "Fabio M . De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v10 15/16] staging: r8188eu: remove shared buffer for USB requests
-Date:   Fri, 24 Sep 2021 14:27:04 +0200
-Message-Id: <20210924122705.3781-16-fmdefrancesco@gmail.com>
+Subject: [PATCH v10 16/16] staging: r8188eu: remove mutex 'usb_vendor_req_mutex'
+Date:   Fri, 24 Sep 2021 14:27:05 +0200
+Message-Id: <20210924122705.3781-17-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210924122705.3781-1-fmdefrancesco@gmail.com>
 References: <20210924122705.3781-1-fmdefrancesco@gmail.com>
@@ -73,105 +73,165 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-Remove the shared buffer for USB requests because it is not necessary
-and use a local on stack variable since the new Core USB API does not
-have the constraints of usb_control_msg().
+Remove mutex 'usb_vendor_req_mutex'.
+
+It was used to protect a shared buffer for USB requests and, since that
+buffer is removed in previous patch, this mutex is now useless.
+
+Furthermore, because it was used to serialize the calls to the Core USB
+API, we thoroughly tested the enabling of concurrent firing of USB requests
+without the mutex and found no problems of any kind in common use cases.
 
 Co-developed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- drivers/staging/r8188eu/hal/usb_ops_linux.c | 15 ++++++---------
- drivers/staging/r8188eu/include/drv_types.h |  3 ---
- drivers/staging/r8188eu/os_dep/usb_intf.c   | 14 +-------------
- 3 files changed, 7 insertions(+), 25 deletions(-)
+ drivers/staging/r8188eu/hal/usb_ops_linux.c | 30 ++++++---------------
+ drivers/staging/r8188eu/os_dep/usb_intf.c   | 24 -----------------
+ 2 files changed, 8 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-index 88db7488b3a2..3ede93cd68d6 100644
+index 3ede93cd68d6..c15a75513c8c 100644
 --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
 +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-@@ -14,7 +14,7 @@ static int usb_read(struct intf_hdl *intf, u16 value, void *data, u8 size)
- 	struct dvobj_priv *dvobjpriv = adapter_to_dvobj(adapt);
- 	struct usb_device *udev = dvobjpriv->pusbdev;
+@@ -16,12 +16,8 @@ static int usb_read(struct intf_hdl *intf, u16 value, void *data, u8 size)
  	int status;
--	u8 *io_buf; /* Pointer to I/O buffer */
-+	u8 io_buf[4];
+ 	u8 io_buf[4];
  
- 	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
- 
-@@ -23,9 +23,6 @@ static int usb_read(struct intf_hdl *intf, u16 value, void *data, u8 size)
- 		goto mutex_unlock;
- 	}
- 
--	/*  Acquire IO memory for vendorreq */
--	io_buf = dvobjpriv->usb_vendor_req_buf;
+-	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
 -
+-	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx) {
+-		status = -EPERM;
+-		goto mutex_unlock;
+-	}
++	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx)
++		return -EPERM;
+ 
  	status = usb_control_msg_recv(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
  				      REALTEK_USB_VENQT_READ, value,
- 				      REALTEK_USB_VENQT_CMD_IDX, io_buf,
-@@ -70,14 +67,14 @@ static int usb_write(struct intf_hdl *intf, u16 value, void *data, u8 size)
- 	struct dvobj_priv *dvobjpriv = adapter_to_dvobj(adapt);
- 	struct usb_device *udev = dvobjpriv->pusbdev;
- 	int status;
--	u8 *io_buf; /* Pointer to I/O buffer */
-+	u8 io_buf[VENDOR_CMD_MAX_DATA_LEN];
+@@ -39,7 +35,7 @@ static int usb_read(struct intf_hdl *intf, u16 value, void *data, u8 size)
+ 		 * exist or is not enabled.
+ 		 */
+ 		adapt->bSurpriseRemoved = true;
+-		goto mutex_unlock;
++		return status;
+ 	}
  
- 	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
+ 	if (status < 0) {
+@@ -49,15 +45,12 @@ static int usb_read(struct intf_hdl *intf, u16 value, void *data, u8 size)
+ 		if (rtw_inc_and_chk_continual_urb_error(dvobjpriv))
+ 			adapt->bSurpriseRemoved = true;
  
--	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx)
--		return -EPERM;
+-		goto mutex_unlock;
++		return status;
+ 	}
+ 
+ 	rtw_reset_continual_urb_error(dvobjpriv);
+ 	memcpy(data, io_buf, size);
+ 
+-mutex_unlock:
+-	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
 -
--	io_buf = dvobjpriv->usb_vendor_req_buf;
-+	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx) {
-+		status = -EPERM;
-+		goto mutex_unlock;
-+	}
+ 	return status;
+ }
+ 
+@@ -69,12 +62,8 @@ static int usb_write(struct intf_hdl *intf, u16 value, void *data, u8 size)
+ 	int status;
+ 	u8 io_buf[VENDOR_CMD_MAX_DATA_LEN];
+ 
+-	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
+-
+-	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx) {
+-		status = -EPERM;
+-		goto mutex_unlock;
+-	}
++	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx)
++		return -EPERM;
  
  	memcpy(io_buf, data, size);
  	status = usb_control_msg_send(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
-diff --git a/drivers/staging/r8188eu/include/drv_types.h b/drivers/staging/r8188eu/include/drv_types.h
-index c96a33c8c621..6d63429d06c6 100644
---- a/drivers/staging/r8188eu/include/drv_types.h
-+++ b/drivers/staging/r8188eu/include/drv_types.h
-@@ -168,9 +168,6 @@ struct dvobj_priv {
- 	struct semaphore usb_suspend_sema;
- 	struct mutex  usb_vendor_req_mutex;
+@@ -93,7 +82,7 @@ static int usb_write(struct intf_hdl *intf, u16 value, void *data, u8 size)
+ 		 * exist or is not enabled.
+ 		 */
+ 		adapt->bSurpriseRemoved = true;
+-		goto mutex_unlock;
++		return status;
+ 	}
  
--	u8 *usb_alloc_vendor_req_buf;
--	u8 *usb_vendor_req_buf;
+ 	if (status < 0) {
+@@ -103,14 +92,11 @@ static int usb_write(struct intf_hdl *intf, u16 value, void *data, u8 size)
+ 		if (rtw_inc_and_chk_continual_urb_error(dvobjpriv))
+ 			adapt->bSurpriseRemoved = true;
+ 
+-		goto mutex_unlock;
++		return status;
+ 	}
+ 
+ 	rtw_reset_continual_urb_error(dvobjpriv);
+ 
+-mutex_unlock:
+-	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
 -
- 	struct usb_interface *pusbintf;
- 	struct usb_device *pusbdev;
+ 	return status;
+ }
  
 diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index 11a584cbe9d8..5ab42d55207f 100644
+index 5ab42d55207f..1f51f96e4dfe 100644
 --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
 +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -75,24 +75,12 @@ static struct rtw_usb_drv *usb_drv = &rtl8188e_usb_drv;
+@@ -73,21 +73,9 @@ static struct rtw_usb_drv rtl8188e_usb_drv = {
  
- static u8 rtw_init_intf_priv(struct dvobj_priv *dvobj)
+ static struct rtw_usb_drv *usb_drv = &rtl8188e_usb_drv;
+ 
+-static u8 rtw_init_intf_priv(struct dvobj_priv *dvobj)
+-{
+-	mutex_init(&dvobj->usb_vendor_req_mutex);
+-	return _SUCCESS;
+-}
+-
+-static void rtw_deinit_intf_priv(struct dvobj_priv *dvobj)
+-{
+-	mutex_destroy(&dvobj->usb_vendor_req_mutex);
+-}
+-
+ static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf)
  {
--	u8 rst = _SUCCESS;
+ 	int	i;
+-	int	status = _FAIL;
+ 	struct dvobj_priv *pdvobjpriv;
+ 	struct usb_host_config		*phost_conf;
+ 	struct usb_config_descriptor	*pconf_desc;
+@@ -146,23 +134,12 @@ static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf)
+ 		DBG_88E("NON USB_SPEED_HIGH\n");
+ 	}
+ 
+-	if (rtw_init_intf_priv(pdvobjpriv) == _FAIL)
+-		goto free_dvobj;
 -
- 	mutex_init(&dvobj->usb_vendor_req_mutex);
+ 	/* 3 misc */
+ 	sema_init(&pdvobjpriv->usb_suspend_sema, 0);
+ 	rtw_reset_continual_urb_error(pdvobjpriv);
+ 
+ 	usb_get_dev(pusbd);
+ 
+-	status = _SUCCESS;
 -
--	dvobj->usb_alloc_vendor_req_buf = kzalloc(MAX_USB_IO_CTL_SIZE, GFP_KERNEL);
--	if (!dvobj->usb_alloc_vendor_req_buf) {
--		DBG_88E("alloc usb_vendor_req_buf failed... /n");
--		rst = _FAIL;
--		goto exit;
+-free_dvobj:
+-	if (status != _SUCCESS && pdvobjpriv) {
+-		usb_set_intfdata(usb_intf, NULL);
+-		kfree(pdvobjpriv);
+-		pdvobjpriv = NULL;
 -	}
--	dvobj->usb_vendor_req_buf = (u8 *)N_BYTE_ALIGMENT((size_t)(dvobj->usb_alloc_vendor_req_buf), ALIGNMENT_UNIT);
--exit:
--	return rst;
-+	return _SUCCESS;
+ exit:
+ 	return pdvobjpriv;
  }
- 
- static void rtw_deinit_intf_priv(struct dvobj_priv *dvobj)
- {
--	kfree(dvobj->usb_alloc_vendor_req_buf);
- 	mutex_destroy(&dvobj->usb_vendor_req_mutex);
- }
+@@ -188,7 +165,6 @@ static void usb_dvobj_deinit(struct usb_interface *usb_intf)
+ 				usb_reset_device(interface_to_usbdev(usb_intf));
+ 			}
+ 		}
+-		rtw_deinit_intf_priv(dvobj);
+ 		kfree(dvobj);
+ 	}
  
 -- 
 2.33.0
