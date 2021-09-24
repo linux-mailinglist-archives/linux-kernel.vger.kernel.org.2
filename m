@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA738417431
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6CB4172C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345560AbhIXNDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:03:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
+        id S1344247AbhIXMvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:51:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345078AbhIXNAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:00:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6979613DB;
-        Fri, 24 Sep 2021 12:53:56 +0000 (UTC)
+        id S1344434AbhIXMtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:49:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EDD961288;
+        Fri, 24 Sep 2021 12:48:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488037;
-        bh=XUVhVo4A4eEuM7B5tin370iO4K7v/2vjryGHJCGTxFA=;
+        s=korg; t=1632487683;
+        bh=l1gzoSs4ajRaNO/iXl96GbK9WlpuKTQmAaQln8y91Ig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VeecC/lBRmBq0eA6bX1nxy+qQZlrCrGDBwKDSWbp4UAhzhEcKGdbnS0ycvIhgAxo/
-         qOjr/LkBXEUrLFHKfo+CCmhneMoFcnV6XslnjmkrG6uONAs2ck5WAXPmIaHXbtIh6N
-         S7mm0gS48ArNC0Hz4ZsE2azHUIAXwO08wgFhUDkM=
+        b=X7jjDs4FB5DN9uTCXDAwKOBPO/gUVpbbg6zWnel8Go/bxrEWZACEBz/eudls5o0lO
+         RkEGsN/BkoNGiA4+G+jK5CALRzeEiCTKK1V1zKxec3XXuDCBzzE/vwXlQnGPF4l//F
+         9f/NpalIsZ1EeD5XMHhFoGAVHk2d+IYqCl/Obeq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Widawsky <ben.widawsky@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 058/100] cxl/pci: Introduce cdevm_file_operations
+        stable@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: [PATCH 4.14 13/27] pwm: mxs: Dont modify HW state in .probe() after the PWM chip was registered
 Date:   Fri, 24 Sep 2021 14:44:07 +0200
-Message-Id: <20210924124343.370217419@linuxfoundation.org>
+Message-Id: <20210924124329.614067239@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,197 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 9cc238c7a526dba9ee8c210fa2828886fc65db66 ]
+commit 020162d6f49f2963062229814a56a89c86cbeaa8 upstream.
 
-In preparation for moving cxl_memdev allocation to the core, introduce
-cdevm_file_operations to coordinate file operations shutdown relative to
-driver data release.
+This fixes a race condition: After pwmchip_add() is called there might
+already be a consumer and then modifying the hardware behind the
+consumer's back is bad. So reset before calling pwmchip_add().
 
-The motivation for moving cxl_memdev allocation to the core (beyond
-better file organization of sysfs attributes in core/ and drivers in
-cxl/), is that device lifetime is longer than module lifetime. The cxl_pci
-module should be free to come and go without needing to coordinate with
-devices that need the text associated with cxl_memdev_release() to stay
-resident. The move will fix a use after free bug when looping driver
-load / unload with CONFIG_DEBUG_KOBJECT_RELEASE=y.
+Note that reseting the hardware isn't the right thing to do if the PWM
+is already running as it might e.g. disable (or even enable) a backlight
+that is supposed to be on (or off).
 
-Another motivation for passing in file_operations to the core cxl_memdev
-creation flow is to allow for alternate drivers, like unit test code, to
-define their own ioctl backends.
-
-Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Link: https://lore.kernel.org/r/162792539962.368511.2962268954245340288.stgit@dwillia2-desk3.amr.corp.intel.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 4dce82c1e840 ("pwm: add pwm-mxs support")
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cxl/cxlmem.h | 15 ++++++++++
- drivers/cxl/pci.c    | 65 ++++++++++++++++++++++++++------------------
- 2 files changed, 53 insertions(+), 27 deletions(-)
+ drivers/pwm/pwm-mxs.c |   13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index 8f02d02b26b4..0cd463de1342 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -34,6 +34,21 @@
-  */
- #define CXL_MEM_MAX_DEVS 65536
+--- a/drivers/pwm/pwm-mxs.c
++++ b/drivers/pwm/pwm-mxs.c
+@@ -158,6 +158,11 @@ static int mxs_pwm_probe(struct platform
+ 		return ret;
+ 	}
  
-+/**
-+ * struct cdevm_file_operations - devm coordinated cdev file operations
-+ * @fops: file operations that are synchronized against @shutdown
-+ * @shutdown: disconnect driver data
-+ *
-+ * @shutdown is invoked in the devres release path to disconnect any
-+ * driver instance data from @dev. It assumes synchronization with any
-+ * fops operation that requires driver data. After @shutdown an
-+ * operation may only reference @device data.
-+ */
-+struct cdevm_file_operations {
-+	struct file_operations fops;
-+	void (*shutdown)(struct device *dev);
-+};
++	/* FIXME: Only do this if the PWM isn't already running */
++	ret = stmp_reset_block(mxs->base);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret, "failed to reset PWM\n");
 +
- /**
-  * struct cxl_memdev - CXL bus object representing a Type-3 Memory Device
-  * @dev: driver core device object
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index e7ee148ad7ee..e809596049b6 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -806,13 +806,30 @@ static int cxl_memdev_release_file(struct inode *inode, struct file *file)
+ 	ret = pwmchip_add(&mxs->chip);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to add pwm chip %d\n", ret);
+@@ -166,15 +171,7 @@ static int mxs_pwm_probe(struct platform
+ 
+ 	platform_set_drvdata(pdev, mxs);
+ 
+-	ret = stmp_reset_block(mxs->base);
+-	if (ret)
+-		goto pwm_remove;
+-
  	return 0;
- }
- 
--static const struct file_operations cxl_memdev_fops = {
--	.owner = THIS_MODULE,
--	.unlocked_ioctl = cxl_memdev_ioctl,
--	.open = cxl_memdev_open,
--	.release = cxl_memdev_release_file,
--	.compat_ioctl = compat_ptr_ioctl,
--	.llseek = noop_llseek,
-+static struct cxl_memdev *to_cxl_memdev(struct device *dev)
-+{
-+	return container_of(dev, struct cxl_memdev, dev);
-+}
-+
-+static void cxl_memdev_shutdown(struct device *dev)
-+{
-+	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-+
-+	down_write(&cxl_memdev_rwsem);
-+	cxlmd->cxlm = NULL;
-+	up_write(&cxl_memdev_rwsem);
-+}
-+
-+static const struct cdevm_file_operations cxl_memdev_fops = {
-+	.fops = {
-+		.owner = THIS_MODULE,
-+		.unlocked_ioctl = cxl_memdev_ioctl,
-+		.open = cxl_memdev_open,
-+		.release = cxl_memdev_release_file,
-+		.compat_ioctl = compat_ptr_ioctl,
-+		.llseek = noop_llseek,
-+	},
-+	.shutdown = cxl_memdev_shutdown,
- };
- 
- static inline struct cxl_mem_command *cxl_mem_find_command(u16 opcode)
-@@ -1161,11 +1178,6 @@ free_maps:
- 	return ret;
- }
- 
--static struct cxl_memdev *to_cxl_memdev(struct device *dev)
--{
--	return container_of(dev, struct cxl_memdev, dev);
--}
 -
- static void cxl_memdev_release(struct device *dev)
- {
- 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-@@ -1281,24 +1293,22 @@ static const struct device_type cxl_memdev_type = {
- 	.groups = cxl_memdev_attribute_groups,
- };
- 
--static void cxl_memdev_shutdown(struct cxl_memdev *cxlmd)
--{
--	down_write(&cxl_memdev_rwsem);
--	cxlmd->cxlm = NULL;
--	up_write(&cxl_memdev_rwsem);
--}
--
- static void cxl_memdev_unregister(void *_cxlmd)
- {
- 	struct cxl_memdev *cxlmd = _cxlmd;
- 	struct device *dev = &cxlmd->dev;
-+	struct cdev *cdev = &cxlmd->cdev;
-+	const struct cdevm_file_operations *cdevm_fops;
-+
-+	cdevm_fops = container_of(cdev->ops, typeof(*cdevm_fops), fops);
-+	cdevm_fops->shutdown(dev);
- 
- 	cdev_device_del(&cxlmd->cdev, dev);
--	cxl_memdev_shutdown(cxlmd);
- 	put_device(dev);
+-pwm_remove:
+-	pwmchip_remove(&mxs->chip);
+-	return ret;
  }
  
--static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm)
-+static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm,
-+					   const struct file_operations *fops)
- {
- 	struct pci_dev *pdev = cxlm->pdev;
- 	struct cxl_memdev *cxlmd;
-@@ -1324,7 +1334,7 @@ static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm)
- 	device_set_pm_not_required(dev);
- 
- 	cdev = &cxlmd->cdev;
--	cdev_init(cdev, &cxl_memdev_fops);
-+	cdev_init(cdev, fops);
- 	return cxlmd;
- 
- err:
-@@ -1332,15 +1342,16 @@ err:
- 	return ERR_PTR(rc);
- }
- 
--static struct cxl_memdev *devm_cxl_add_memdev(struct device *host,
--					      struct cxl_mem *cxlm)
-+static struct cxl_memdev *
-+devm_cxl_add_memdev(struct device *host, struct cxl_mem *cxlm,
-+		    const struct cdevm_file_operations *cdevm_fops)
- {
- 	struct cxl_memdev *cxlmd;
- 	struct device *dev;
- 	struct cdev *cdev;
- 	int rc;
- 
--	cxlmd = cxl_memdev_alloc(cxlm);
-+	cxlmd = cxl_memdev_alloc(cxlm, &cdevm_fops->fops);
- 	if (IS_ERR(cxlmd))
- 		return cxlmd;
- 
-@@ -1370,7 +1381,7 @@ err:
- 	 * The cdev was briefly live, shutdown any ioctl operations that
- 	 * saw that state.
- 	 */
--	cxl_memdev_shutdown(cxlmd);
-+	cdevm_fops->shutdown(dev);
- 	put_device(dev);
- 	return ERR_PTR(rc);
- }
-@@ -1611,7 +1622,7 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (rc)
- 		return rc;
- 
--	cxlmd = devm_cxl_add_memdev(&pdev->dev, cxlm);
-+	cxlmd = devm_cxl_add_memdev(&pdev->dev, cxlm, &cxl_memdev_fops);
- 	if (IS_ERR(cxlmd))
- 		return PTR_ERR(cxlmd);
- 
--- 
-2.33.0
-
+ static int mxs_pwm_remove(struct platform_device *pdev)
 
 
