@@ -2,161 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB4E41711E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091C2417126
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343601AbhIXLrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
+        id S1343640AbhIXLsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 07:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343592AbhIXLra (ORCPT
+        with ESMTP id S240270AbhIXLsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 07:47:30 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF31C061756;
-        Fri, 24 Sep 2021 04:45:56 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id i23so26701848wrb.2;
-        Fri, 24 Sep 2021 04:45:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=/0j9nbgsdZbL0omEY1qL679LVqCMTV/VffKv5oBSsjU=;
-        b=aSa45hd+S3Fv4JUSFQ+a3kgyKy5NX9AGa0CJIDVYWneSLwqkbiGb/QdRzY0bbT5fCx
-         I5O4NVZz0Uu5SXECHchsCiEDV+0pF1h0jDRjGsHHd/MMUIcEO2XWJ0sgaG+TVFCHJlbA
-         LLN0zDYzeBL8vywSI/Lv/8QqoeQIQxcLsdqRdvAYHEs8WJggfxFMXa4dFgl4w4H1sZ1E
-         x/gqlahyDWoB8y9TvhZM5C6tp7AK5IHa3ZR+468h9O+WQjC1vNg+c+pJH31tebmvMgir
-         RkFo3J81bVSyJa2ikn2M/7W76P6DXmnBIoUh/vomkTMw77kg74sfka5XJ4newu0u3Kvo
-         F/gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=/0j9nbgsdZbL0omEY1qL679LVqCMTV/VffKv5oBSsjU=;
-        b=yxJLI5/irlzxY5WDCwWHocLWI6EP+5B5thoRGTGDKYPgEd31kZv3dYWdDqEr9FEk2u
-         TAWyfqLUv9A39Gn0mPGmK/L7QP5L/mXvswQugSHM7eRfw06gZXn4aJrtME/0d+Re4ozj
-         B9pXLnokHdQCxAbD0y/clkBy/TorALK5fbqNlHySsQBi2CFPkT5w6cIQEo2jU2XX4pHC
-         P2VyPsW/OjN/WF22a6+c2VyD21gvnKB8W/5eUGaExDpx8ebroXOn1nX7PNdLxdk4uUjS
-         jwfM+zisZA5iaAuJLieUdiaR4xeraU3IgHzgllgOme+AygEdIE9vW+JsTbrIe1adFNps
-         Y0Lg==
-X-Gm-Message-State: AOAM533o3+2ITK6K5cm5tthd48oKCmxpGFZZvccGnHx1nHCZgy3KcIoO
-        5bGRqDBuOn9NkS1Zf6GTJXOz45LHOtnaiQ==
-X-Google-Smtp-Source: ABdhPJzb83WVQz4xAx2zTEdtFMOpdwV8pBiewli/yezfwpfrrb9fSHQRbv32+HAgzGOsiDEBNZ8JnA==
-X-Received: by 2002:a05:600c:298:: with SMTP id 24mr1645157wmk.116.1632483955458;
-        Fri, 24 Sep 2021 04:45:55 -0700 (PDT)
-Received: from p200300e94717cfc52fe6da3ec1ed0822.dip0.t-ipconnect.de (p200300e94717cfc52fe6da3ec1ed0822.dip0.t-ipconnect.de. [2003:e9:4717:cfc5:2fe6:da3e:c1ed:822])
-        by smtp.googlemail.com with ESMTPSA id c4sm8157259wrt.23.2021.09.24.04.45.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 04:45:55 -0700 (PDT)
-Message-ID: <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
- cannot meet the timeout value required by the device
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 24 Sep 2021 13:45:54 +0200
-In-Reply-To: <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
-References: <20210917172727.26834-1-huobean@gmail.com>
-         <20210917172727.26834-3-huobean@gmail.com>
-         <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
-         <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
-         <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Fri, 24 Sep 2021 07:48:06 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B167C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 04:46:33 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1mTjej-0003Uj-Tv; Fri, 24 Sep 2021 13:46:17 +0200
+Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1mTjeh-00065F-Rv; Fri, 24 Sep 2021 13:46:15 +0200
+Date:   Fri, 24 Sep 2021 13:46:15 +0200
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm, phone-devel@vger.kernel.org
+Subject: Re: [PATCH] media: imx: Fix rounding
+Message-ID: <20210924114615.GA21343@pengutronix.de>
+References: <20210924120631.7060da0f.dorota.czaplejewicz@puri.sm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924120631.7060da0f.dorota.czaplejewicz@puri.sm>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 13:34:50 up 218 days, 14:58, 111 users,  load average: 0.12, 0.18,
+ 0.17
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: pza@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-24 at 13:07 +0300, Adrian Hunter wrote:
-> On 24/09/21 12:17 pm, Bean Huo wrote:
-> > On Fri, 2021-09-24 at 08:29 +0300, Adrian Hunter wrote:
-> > > > If the data transmission timeout value required by the device
-> > > > exceeds
-> > > > the maximum timeout value of the host HW timer, we still use
-> > > > the HW
-> > > > timer with the maximum timeout value of the HW timer. This
-> > > > setting
-> > > > is
-> > > > suitable for most R/W situations. But sometimes, the device
-> > > > will
-> > > > complete
-> > > > the R/W task within its required timeout value (greater than
-> > > > the HW
-> > > > timer).
-> > > > In this case, the HW timer for data transmission will time out.
-> > > > Currently, in this condition, we  disable the HW timer and use
-> > > > the
-> > > > SW
-> > > > timer only when the SDHCI_QUIRK2_DISABLE_HW_TIMEOUT quirk is
-> > > > set by
-> > > > the
-> > > > host driver. The patch is to remove this if statement
-> > > > restriction
-> > > > and
-> > > > allow data transmission to use the SW timer when the hardware
-> > > > timer
-> > > > cannot
-> > > > meet the required timeout value.
-> > > 
-> > > The reason it is a quirk is because it does not work for all
-> > > hardware.
-> > > 
-> > > For some controllers the timeout cannot really be disabled, only
-> > > the
-> > > 
-> > > interrupt is disabled, and then the controller never indicates
-> > > completion
-> > > 
-> > > if the timeout is exceeded.
-> > 
-> > Hi Adrian,
-> > Thanks for your review.
-> > 
-> > Yes, you are right. But this quirk prevents disabling the hardware
-> > timeoutIRQ. The purpose of this patch is to disable the hardware
-> > timeout IRQ and
-> > select the software timeout.
-> > 
-> > void __sdhci_set_timeout(struct sdhci_host *host, struct
-> > mmc_command
-> > *cmd)
-> > {
-> >         bool too_big = false;
-> >         u8 count = sdhci_calc_timeout(host, cmd, &too_big);
-> > 
-> >         if (too_big) {
-> >                 sdhci_calc_sw_timeout(host, cmd);
-> >                 sdhci_set_data_timeout_irq(host, false); // disable
-> > IRQ
-> >         } else if (!(host->ier & SDHCI_INT_DATA_TIMEOUT)) {
-> >                 sdhci_set_data_timeout_irq(host, true);
-> >         }
-> > 
-> >         sdhci_writeb(host, count, SDHCI_TIMEOUT_CONTROL);
-> > }
-> > 
-> > 
-> > The driver has detected that the hardware timer cannot meet the
-> > timeout
-> > requirements of the device, but we still use the hardware timer,
-> > which will
-> > allow potential timeout issuea . Rather than allowing a potential
-> > problem to exist, why can’t software timing be used to avoid this
-> > problem?
+Hi Dorota,
+
+On Fri, Sep 24, 2021 at 12:06:31PM +0200, Dorota Czaplejewicz wrote:
+> Change rounding to the minimal burst size from 2^n to n.
 > 
-> Timeouts aren't that accurate.  The maximum is assumed still to work.
-> mmc->max_busy_timeout is used to tell the core what the maximum is.
+> This fixes images with sizes that are a multiple of 8 pixels.
+
+Could you elaborate on what is currently wrong with images that are a
+multiple of 8 pixels wide? Or are you rather trying to add support
+for images that are not a multiple of 8 pixels wide?
 
 > 
+> See section 13.7.6.13 CSI Image Parameter Register of the
+> i.MX 8M Quad Applications Processors Reference Manual.
+> 
+> Fixes: 451a7b7815d0b ("media: imx: lift CSI and PRP ENC/VF width
+> alignment restriction")
+> Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+> ---
+> Hi,
+> 
+> I tested this patch on the Librem 5 with the main camera.
+> 
+> --Dorota
+>  drivers/staging/media/imx/imx-media-utils.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/media/imx/imx-media-utils.c
+> index 5128915a5d6f..a2d8fab32a39 100644
+> --- a/drivers/staging/media/imx/imx-media-utils.c
+> +++ b/drivers/staging/media/imx/imx-media-utils.c
+> @@ -545,13 +545,13 @@ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
+>  	}
+>  
+>  	/* Round up width for minimum burst size */
+> -	width = round_up(mbus->width, 8);
+> +	width = round_up(mbus->width, 3);
 
+That is not a valid use of the round_up() macro anymore.
+The second parameter must be a power of 2.
 
-
-mmc->max_busy_timeout is still a representation of Host HW timer
-maximum timeout count, isn't it? 
-
-Bean
-
+regards
+Philipp
