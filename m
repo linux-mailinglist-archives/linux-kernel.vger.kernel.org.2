@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A5041762D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5500941763C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346133AbhIXNux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:50:53 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:41017 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231510AbhIXNuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:50:51 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HGD0X5vB8z9sVt;
-        Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id j5VNJ9feyuFZ; Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HGD0X4sfyz9sVq;
-        Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8A49E8B781;
-        Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id D0X0hp1BLVGj; Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.215])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 49A808B763;
-        Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18ODn6DW1293064
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 24 Sep 2021 15:49:06 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18ODn6eg1293063;
-        Fri, 24 Sep 2021 15:49:06 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Andrew Morton <akpm@linux-foundation.org>, arnd@arndb.de
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Subject: [PATCH 3/3] s390: Use generic version of arch_is_kernel_initmem_freed()
-Date:   Fri, 24 Sep 2021 15:48:47 +0200
-Message-Id: <8e7f31b51ce62c9c495f71845f29a6d825d6e852.1632491308.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
-References: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
+        id S1346430AbhIXNwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346452AbhIXNv4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:51:56 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01C5C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:50:23 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso13183983otc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sV48vw6IGcklWlbZIMl7FtX9z0T8teXN1HpyIu8i14Y=;
+        b=hVazJjBI2vd2tVbUtrb1neOgJi7sHqSNkXAjm7bkHX+s+3kAY0M5kOw7ImmU0cSLfX
+         IK7ZaGcKhrDOsv8Wtbp+We/x0ahwJM13jLfihrDG0Vs9gySlONjrDHeUqBt91VgjAGZM
+         zvwnswrSkRH3btYmKzZqM2/1/243IgtM6q6DJOJTRGcvEcnhbJwKleqolYT8+NHgEQQm
+         kYdA1LtAlGvutfm1K+5ulg35zL55C+ZDN/x8e8PtLjg5W6Zj7ZR3ElR02b9tv6g+hVrr
+         sJv0GNu7VSVvTcq3g6j6gG9MnmozAgpi5hFxHx7B+lhTOnFe2DOb32PJjH+eZq826BW1
+         SvPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sV48vw6IGcklWlbZIMl7FtX9z0T8teXN1HpyIu8i14Y=;
+        b=mMR9mQPlf6OUVDl/Ru6J5H5ZbWO6W+/fprNJ5xSw0veUqnPN5t532OypXuLfZg7YDg
+         XfySoB/kfOBjlIHeMmG/eOHmjFsfyTXu9gMZy2XiNrGKrqVJS8rsFmLfekgomvihGghc
+         DegVfpSHtVP2fVdo7yPQPRATPrqMpddsNPptYsqvldZX8f0U8wssWcpYz1Izx3+yICPu
+         mhJ7Shlta/X6fhRIhaVPoMOgch/p4V88Jp/+rv3wMHcndBvy6w4EJ/Ltu18T3VrDlj/R
+         dCP0qOlomjfSA87VWtc7jXEWkL1izYXwcmG0NnNI/ieDlV6T+2lo3tOQfw5FvJbJhJSQ
+         wtWQ==
+X-Gm-Message-State: AOAM531llge2qOAINhB7aCGV8cyD3u6VhKLnGTP/WSU00YAiG/0FiuZA
+        cP7AoUgug5wWlrJxUJitvxVz7Q==
+X-Google-Smtp-Source: ABdhPJxCYVrRHdxpr631i085QY22e+9JoSprHypM05PMHQ86XTbakTpALxVLafCEWh03nqxr9XyKVg==
+X-Received: by 2002:a9d:6a95:: with SMTP id l21mr4114113otq.330.1632491423185;
+        Fri, 24 Sep 2021 06:50:23 -0700 (PDT)
+Received: from [192.168.17.16] ([189.219.73.83])
+        by smtp.gmail.com with ESMTPSA id 9sm2084286oir.10.2021.09.24.06.50.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 06:50:22 -0700 (PDT)
+Subject: Re: [PATCH 4.4 00/23] 4.4.285-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210924124327.816210800@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <eab2f99b-8be2-2ca3-27de-d98cb36b327c@linaro.org>
+Date:   Fri, 24 Sep 2021 08:50:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generic version of arch_is_kernel_initmem_freed() now does the same
-as s390 version.
+Hello!
 
-Remove the s390 version.
+On 9/24/21 7:43 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.285 release.
+> There are 23 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.285-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/s390/include/asm/sections.h | 12 ------------
- arch/s390/mm/init.c              |  3 ---
- 2 files changed, 15 deletions(-)
+Regressions detected.
 
-diff --git a/arch/s390/include/asm/sections.h b/arch/s390/include/asm/sections.h
-index 85881dd48022..3fecaa4e8b74 100644
---- a/arch/s390/include/asm/sections.h
-+++ b/arch/s390/include/asm/sections.h
-@@ -2,20 +2,8 @@
- #ifndef _S390_SECTIONS_H
- #define _S390_SECTIONS_H
- 
--#define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
--
- #include <asm-generic/sections.h>
- 
--extern bool initmem_freed;
--
--static inline int arch_is_kernel_initmem_freed(unsigned long addr)
--{
--	if (!initmem_freed)
--		return 0;
--	return addr >= (unsigned long)__init_begin &&
--	       addr < (unsigned long)__init_end;
--}
--
- /*
-  * .boot.data section contains variables "shared" between the decompressor and
-  * the decompressed kernel. The decompressor will store values in them, and
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index a04faf49001a..8c6f258a6183 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -58,8 +58,6 @@ unsigned long empty_zero_page, zero_page_mask;
- EXPORT_SYMBOL(empty_zero_page);
- EXPORT_SYMBOL(zero_page_mask);
- 
--bool initmem_freed;
--
- static void __init setup_zero_pages(void)
- {
- 	unsigned int order;
-@@ -214,7 +212,6 @@ void __init mem_init(void)
- 
- void free_initmem(void)
- {
--	initmem_freed = true;
- 	__set_memory((unsigned long)_sinittext,
- 		     (unsigned long)(_einittext - _sinittext) >> PAGE_SHIFT,
- 		     SET_MEMORY_RW | SET_MEMORY_NX);
--- 
-2.31.1
+While building mxs_defconfig for arm, the following error was encountered:
 
+   /builds/linux/arch/arm/mach-mxs/mach-mxs.c:285:26: warning: duplicate 'const' declaration specifier [-Wduplicate-decl-specifier]
+     285 | static const struct gpio const tx28_gpios[] __initconst = {
+         |                          ^~~~~
+   /builds/linux/drivers/pwm/pwm-mxs.c: In function 'mxs_pwm_probe':
+   /builds/linux/drivers/pwm/pwm-mxs.c:164:24: error: implicit declaration of function 'dev_err_probe'; did you mean 'device_reprobe'? [-Werror=implicit-function-declaration]
+     164 |                 return dev_err_probe(&pdev->dev, ret, "failed to reset PWM\n");
+         |                        ^~~~~~~~~~~~~
+         |                        device_reprobe
+   cc1: some warnings being treated as errors
+   make[3]: *** [/builds/linux/scripts/Makefile.build:280: drivers/pwm/pwm-mxs.o] Error 1
+
+This is also seen in other branches (from 4.4 to 5.4). To reproduce this build locally:
+
+   tuxmake \
+     --target-arch=arm \
+     --kconfig=mxs_defconfig \
+     --toolchain=gcc-11 \
+     --runtime=podman \
+     config default kernel xipkernel modules dtbs dtbs-legacy debugkernel headers
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
