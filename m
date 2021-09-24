@@ -2,156 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ED94178C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6AB41788C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348051AbhIXQem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:34:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40452 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347576AbhIXQdq (ORCPT
+        id S240857AbhIXQda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:33:30 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:40480 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233640AbhIXQd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:33:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632501132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NpwC6c5NDCljwZYCew7GNN1KVUMlsp4jxSAuaDjFF1g=;
-        b=A0DSbMBl95ssB4c4CK3BJwdQD2ngcD21Z28xy3XXRmDibFhiXHLgX8O3OqsfbgPtAUnXeE
-        JZGjp6ccWU5dRoHACIuH+8sjsq2THSk1qibtl+BUYI6yv5rxSCZx1okgVMmXsNFQTzequY
-        KzK1QF8WQiPKsnx/CQP2W5I11TDywpQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-L0QToi1XNkGdv1lxgYm8tQ-1; Fri, 24 Sep 2021 12:32:08 -0400
-X-MC-Unique: L0QToi1XNkGdv1lxgYm8tQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 489949F955;
-        Fri, 24 Sep 2021 16:32:07 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 769C97B6F3;
-        Fri, 24 Sep 2021 16:32:06 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     dmatlack@google.com, seanjc@google.com
-Subject: [PATCH v3 23/31] KVM: MMU: inline set_spte in FNAME(sync_page)
-Date:   Fri, 24 Sep 2021 12:31:44 -0400
-Message-Id: <20210924163152.289027-24-pbonzini@redhat.com>
-In-Reply-To: <20210924163152.289027-1-pbonzini@redhat.com>
-References: <20210924163152.289027-1-pbonzini@redhat.com>
+        Fri, 24 Sep 2021 12:33:29 -0400
+Received: by mail-oi1-f182.google.com with SMTP id t189so15189926oie.7;
+        Fri, 24 Sep 2021 09:31:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YbjRBqRzb8KYpNgRLaEYJ6jgr0RlWe+czyRscPGcjD0=;
+        b=vQ8fNfvhglnjgzhvbOGPxDRQ4pYLPj8ikgo+0d0NY4TN4SIt1eX8BadPXrd1Q9ScAS
+         M12UULALO0gi+rp/zpoPhavPPcRkY3bfe8YwRTr6B+/SrJJZf90AW5ZEzD8jPUW245Qz
+         +KwNkb6N5qBoTJp1cEBCL/ncHCq13/zQxo05g+WGIw1zXvrLl5u2sYblzv+12aTKT4Qg
+         sYv0kxeeplOkdPbbYf22fLaduPyall9SYIelvE9NYYVL9bM3NTdA71KhS7t1ijccvOmS
+         Xg3XxeNbeGDzgB7ZkdNWg2dO/cHmrwL986ROB280Jt/Ypm1jOTPx/EFra8/Mq6vjqqsl
+         YZrg==
+X-Gm-Message-State: AOAM531w71GdH9hFcJqYRCsScMnRsFb5EOAxWs6aSQ63SkDn3alBWSPP
+        C1SwxrEP/EiwvFmffEUMc1Sl4BCXCtYu0Xkq0MD9EmqF
+X-Google-Smtp-Source: ABdhPJzb32RBBISpIOFuSg5Fy97JJQ3/0Sf57fxliPmdq5zXsL/R1LO+oIeHtCS6qF58K2GkM5o+xcoC7218A2BmOEY=
+X-Received: by 2002:a05:6808:10ce:: with SMTP id s14mr2287514ois.157.1632501115801;
+ Fri, 24 Sep 2021 09:31:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210922133116.102-1-richard.gong@amd.com>
+In-Reply-To: <20210922133116.102-1-richard.gong@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 24 Sep 2021 18:31:44 +0200
+Message-ID: <CAJZ5v0jpOzNS5TFdJNXdxa_p2D_5QQMwwRcSMe8JmjOaTjR8gg@mail.gmail.com>
+Subject: Re: [PATCHv1] ACPI: processor idle: Allow playing dead in C3 state
+To:     Richard Gong <richard.gong@amd.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lijo.lazar@amd.com, Mario Limonciello <mario.limonciello@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the two callers of set_spte do different things with the results,
-inlining it actually makes the code simpler to reason about.  For example,
-FNAME(sync_page) already has a struct kvm_mmu_page *, but set_spte had to
-fish it back out of sptep's private page data.
+On Wed, Sep 22, 2021 at 3:31 PM Richard Gong <richard.gong@amd.com> wrote:
+>
+> When some cores are disabled on AMD platforms, the system will no longer
+> be able to enter suspend-to-idle s0ix.
+>
+> Update to allow playing dead in C3 state so that the CPUs can enter the
+> deepest state on AMD platforms.
+>
+> BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1708
+> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
+> Signed-off-by: Richard Gong <richard.gong@amd.com>
+> ---
+>  drivers/acpi/processor_idle.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index f37fba9e5ba0..61d5a72d218e 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -789,7 +789,8 @@ static int acpi_processor_setup_cstates(struct acpi_processor *pr)
+>                 state->enter = acpi_idle_enter;
+>
+>                 state->flags = 0;
+> -               if (cx->type == ACPI_STATE_C1 || cx->type == ACPI_STATE_C2) {
+> +               if (cx->type == ACPI_STATE_C1 || cx->type == ACPI_STATE_C2
+> +                       || cx->type == ACPI_STATE_C3) {
+>                         state->enter_dead = acpi_idle_play_dead;
+>                         drv->safe_state_index = count;
+>                 }
+> --
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c         | 21 ---------------------
- arch/x86/kvm/mmu/paging_tmpl.h | 21 ++++++++++++---------
- 2 files changed, 12 insertions(+), 30 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6ba7c60bd4f8..19c2fd2189a3 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2674,27 +2674,6 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync,
- 	return 0;
- }
- 
--static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
--		    unsigned int pte_access, int level,
--		    gfn_t gfn, kvm_pfn_t pfn, bool speculative,
--		    bool can_unsync, bool host_writable)
--{
--	u64 spte;
--	struct kvm_mmu_page *sp;
--	int ret;
--
--	sp = sptep_to_sp(sptep);
--
--	ret = make_spte(vcpu, pte_access, level, gfn, pfn, *sptep, speculative,
--			can_unsync, host_writable, sp_ad_disabled(sp), &spte);
--
--	if (*sptep == spte)
--		ret |= SET_SPTE_SPURIOUS;
--	else if (mmu_spte_update(sptep, spte))
--		ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
--	return ret;
--}
--
- static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 			unsigned int pte_access, bool write_fault, int level,
- 			gfn_t gfn, kvm_pfn_t pfn, bool speculative,
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index e4c7bf3deac8..500962dceda0 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -1061,7 +1061,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
- 	int i;
- 	bool host_writable;
- 	gpa_t first_pte_gpa;
--	int set_spte_ret = 0;
-+	bool flush = false;
- 
- 	/*
- 	 * Ignore various flags when verifying that it's safe to sync a shadow
-@@ -1091,6 +1091,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
- 	first_pte_gpa = FNAME(get_level1_sp_gpa)(sp);
- 
- 	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
-+		u64 *sptep, spte;
- 		unsigned pte_access;
- 		pt_element_t gpte;
- 		gpa_t pte_gpa;
-@@ -1106,7 +1107,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
- 			return -1;
- 
- 		if (FNAME(prefetch_invalid_gpte)(vcpu, sp, &sp->spt[i], gpte)) {
--			set_spte_ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
-+			flush = true;
- 			continue;
- 		}
- 
-@@ -1120,19 +1121,21 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
- 
- 		if (gfn != sp->gfns[i]) {
- 			drop_spte(vcpu->kvm, &sp->spt[i]);
--			set_spte_ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
-+			flush = true;
- 			continue;
- 		}
- 
--		host_writable = sp->spt[i] & shadow_host_writable_mask;
-+		sptep = &sp->spt[i];
-+		spte = *sptep;
-+		host_writable = spte & shadow_host_writable_mask;
-+		make_spte(vcpu, pte_access, PG_LEVEL_4K, gfn,
-+			  spte_to_pfn(spte), spte, true, false,
-+			  host_writable, sp_ad_disabled(sp), &spte);
- 
--		set_spte_ret |= set_spte(vcpu, &sp->spt[i],
--					 pte_access, PG_LEVEL_4K,
--					 gfn, spte_to_pfn(sp->spt[i]),
--					 true, false, host_writable);
-+		flush |= mmu_spte_update(sptep, spte);
- 	}
- 
--	return set_spte_ret & SET_SPTE_NEED_REMOTE_TLB_FLUSH;
-+	return flush;
- }
- 
- #undef pt_element_t
--- 
-2.27.0
-
-
+Tentatively applied as 5.16 material, but have you done any research
+on why this restriction has been there in the first place?
