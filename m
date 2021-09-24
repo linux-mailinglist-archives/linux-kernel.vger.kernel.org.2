@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA2B417296
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A339B417383
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344238AbhIXMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
+        id S1344665AbhIXM5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344202AbhIXMs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:48:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A501661265;
-        Fri, 24 Sep 2021 12:46:53 +0000 (UTC)
+        id S1344686AbhIXMzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:55:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE01261284;
+        Fri, 24 Sep 2021 12:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487614;
-        bh=Tw8L4eNK+wEDD2yEgfOy+r9A0710sZt+eZjAbK7IZ5Y=;
+        s=korg; t=1632487857;
+        bh=0GZFCYYfQx/uxXebFTqgT3chQ9BHTb+Sr/l66d5Bsus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KqLgtgpVhSbA+QRnyrny707xQCYIvNJOAKOYInnN45PiQGl290/YbYKIKvjTkEK+I
-         muKKjF6JiaSDqqOygWLRiiOt+Tw+wpb4ifEDZjUJ5oUssx4xF73XXR/gTO+hXzrRzu
-         ST7L5WsHGUlb3sLDTX2KH12HrxNIiEWrSgSK6Keo=
+        b=Y4keuPpv2la7qbrW15v2e/jXwQNlqAXTimCDYK9BB3sJtNgjL52an0DkSOSerDDMh
+         Fi/91vuMoP8+Tqod0+lbHWc5wFzDtoejYtqVbcwjemOjC/t8hhe7UOp9Bh3UDiAn0X
+         /r6b5C/QzUMfLgLEIKqzx8Jlh/rwJeeNUplxJlpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.14 01/27] s390/bpf: Fix optimizing out zero-extensions
-Date:   Fri, 24 Sep 2021 14:43:55 +0200
-Message-Id: <20210924124329.226243340@linuxfoundation.org>
+        stable@vger.kernel.org, nick black <dankamongmen@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 07/50] console: consume APC, DM, DCS
+Date:   Fri, 24 Sep 2021 14:43:56 +0200
+Message-Id: <20210924124332.483866705@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,128 +42,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: nick black <dankamongmen@gmail.com>
 
-commit db7bee653859ef7179be933e7d1384644f795f26 upstream.
+commit 3a2b2eb55681158d3e3ef464fbf47574cf0c517c upstream.
 
-Currently the JIT completely removes things like `reg32 += 0`,
-however, the BPF_ALU semantics requires the target register to be
-zero-extended in such cases.
+The Linux console's VT102 implementation already consumes OSC
+("Operating System Command") sequences, probably because that's how
+palette changes are transmitted.
 
-Fix by optimizing out only the arithmetic operation, but not the
-subsequent zero-extension.
+In addition to OSC, there are three other major clases of ANSI control
+strings: APC ("Application Program Command"), PM ("Privacy Message"),
+and DCS ("Device Control String").  They are handled similarly to OSC in
+terms of termination.
 
-Reported-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Source: vt100.net
+
+Add three new enumerated states, one for each of these types.  All three
+are handled the same way right now--they simply consume input until
+terminated.  I hope to expand upon this firmament in the future.  Add
+new predicate ansi_control_string(), returning true for any of these
+states.  Replace explicit checks against ESosc with calls to this
+function.  Transition to these states appropriately from the escape
+initiation (ESesc) state.
+
+This was motivated by the following Notcurses bugs:
+
+ https://github.com/dankamongmen/notcurses/issues/2050
+ https://github.com/dankamongmen/notcurses/issues/1828
+ https://github.com/dankamongmen/notcurses/issues/2069
+
+where standard VT sequences are not consumed by the Linux console.  It's
+not necessary that the Linux console *support* these sequences, but it
+ought *consume* these well-specified classes of sequences.
+
+Tested by sending a variety of escape sequences to the console, and
+verifying that they still worked, or were now properly consumed.
+Verified that the escapes were properly terminated at a generic level.
+Verified that the Notcurses tools continued to show expected output on
+the Linux console, except now without escape bleedthrough.
+
+Link: https://lore.kernel.org/lkml/YSydL0q8iaUfkphg@schwarzgerat.orthanc/
+Signed-off-by: nick black <dankamongmen@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/s390/net/bpf_jit_comp.c |   50 ++++++++++++++++++++++---------------------
- 1 file changed, 26 insertions(+), 24 deletions(-)
+ drivers/tty/vt/vt.c |   31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -592,10 +592,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT4(0xb9080000, dst_reg, src_reg);
- 		break;
- 	case BPF_ALU | BPF_ADD | BPF_K: /* dst = (u32) dst + (u32) imm */
--		if (!imm)
--			break;
--		/* alfi %dst,imm */
--		EMIT6_IMM(0xc20b0000, dst_reg, imm);
-+		if (imm != 0) {
-+			/* alfi %dst,imm */
-+			EMIT6_IMM(0xc20b0000, dst_reg, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_ADD | BPF_K: /* dst = dst + imm */
-@@ -617,10 +617,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT4(0xb9090000, dst_reg, src_reg);
- 		break;
- 	case BPF_ALU | BPF_SUB | BPF_K: /* dst = (u32) dst - (u32) imm */
--		if (!imm)
--			break;
--		/* alfi %dst,-imm */
--		EMIT6_IMM(0xc20b0000, dst_reg, -imm);
-+		if (imm != 0) {
-+			/* alfi %dst,-imm */
-+			EMIT6_IMM(0xc20b0000, dst_reg, -imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_SUB | BPF_K: /* dst = dst - imm */
-@@ -647,10 +647,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT4(0xb90c0000, dst_reg, src_reg);
- 		break;
- 	case BPF_ALU | BPF_MUL | BPF_K: /* dst = (u32) dst * (u32) imm */
--		if (imm == 1)
--			break;
--		/* msfi %r5,imm */
--		EMIT6_IMM(0xc2010000, dst_reg, imm);
-+		if (imm != 1) {
-+			/* msfi %r5,imm */
-+			EMIT6_IMM(0xc2010000, dst_reg, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_MUL | BPF_K: /* dst = dst * imm */
-@@ -711,6 +711,8 @@ static noinline int bpf_jit_insn(struct
- 			if (BPF_OP(insn->code) == BPF_MOD)
- 				/* lhgi %dst,0 */
- 				EMIT4_IMM(0xa7090000, dst_reg, 0);
-+			else
-+				EMIT_ZERO(dst_reg);
- 			break;
- 		}
- 		/* lhi %w0,0 */
-@@ -803,10 +805,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT4(0xb9820000, dst_reg, src_reg);
- 		break;
- 	case BPF_ALU | BPF_XOR | BPF_K: /* dst = (u32) dst ^ (u32) imm */
--		if (!imm)
--			break;
--		/* xilf %dst,imm */
--		EMIT6_IMM(0xc0070000, dst_reg, imm);
-+		if (imm != 0) {
-+			/* xilf %dst,imm */
-+			EMIT6_IMM(0xc0070000, dst_reg, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_XOR | BPF_K: /* dst = dst ^ imm */
-@@ -827,10 +829,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT6_DISP_LH(0xeb000000, 0x000d, dst_reg, dst_reg, src_reg, 0);
- 		break;
- 	case BPF_ALU | BPF_LSH | BPF_K: /* dst = (u32) dst << (u32) imm */
--		if (imm == 0)
--			break;
--		/* sll %dst,imm(%r0) */
--		EMIT4_DISP(0x89000000, dst_reg, REG_0, imm);
-+		if (imm != 0) {
-+			/* sll %dst,imm(%r0) */
-+			EMIT4_DISP(0x89000000, dst_reg, REG_0, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_LSH | BPF_K: /* dst = dst << imm */
-@@ -852,10 +854,10 @@ static noinline int bpf_jit_insn(struct
- 		EMIT6_DISP_LH(0xeb000000, 0x000c, dst_reg, dst_reg, src_reg, 0);
- 		break;
- 	case BPF_ALU | BPF_RSH | BPF_K: /* dst = (u32) dst >> (u32) imm */
--		if (imm == 0)
--			break;
--		/* srl %dst,imm(%r0) */
--		EMIT4_DISP(0x88000000, dst_reg, REG_0, imm);
-+		if (imm != 0) {
-+			/* srl %dst,imm(%r0) */
-+			EMIT4_DISP(0x88000000, dst_reg, REG_0, imm);
-+		}
- 		EMIT_ZERO(dst_reg);
- 		break;
- 	case BPF_ALU64 | BPF_RSH | BPF_K: /* dst = dst >> imm */
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -2070,7 +2070,7 @@ static void restore_cur(struct vc_data *
+ 
+ enum { ESnormal, ESesc, ESsquare, ESgetpars, ESfunckey,
+ 	EShash, ESsetG0, ESsetG1, ESpercent, EScsiignore, ESnonstd,
+-	ESpalette, ESosc };
++	ESpalette, ESosc, ESapc, ESpm, ESdcs };
+ 
+ /* console_lock is held (except via vc_init()) */
+ static void reset_terminal(struct vc_data *vc, int do_clear)
+@@ -2124,20 +2124,28 @@ static void reset_terminal(struct vc_dat
+ 	    csi_J(vc, 2);
+ }
+ 
++/* is this state an ANSI control string? */
++static bool ansi_control_string(unsigned int state)
++{
++	if (state == ESosc || state == ESapc || state == ESpm || state == ESdcs)
++		return true;
++	return false;
++}
++
+ /* console_lock is held */
+ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+ {
+ 	/*
+ 	 *  Control characters can be used in the _middle_
+-	 *  of an escape sequence.
++	 *  of an escape sequence, aside from ANSI control strings.
+ 	 */
+-	if (vc->vc_state == ESosc && c>=8 && c<=13) /* ... except for OSC */
++	if (ansi_control_string(vc->vc_state) && c >= 8 && c <= 13)
+ 		return;
+ 	switch (c) {
+ 	case 0:
+ 		return;
+ 	case 7:
+-		if (vc->vc_state == ESosc)
++		if (ansi_control_string(vc->vc_state))
+ 			vc->vc_state = ESnormal;
+ 		else if (vc->vc_bell_duration)
+ 			kd_mksound(vc->vc_bell_pitch, vc->vc_bell_duration);
+@@ -2196,6 +2204,12 @@ static void do_con_trol(struct tty_struc
+ 		case ']':
+ 			vc->vc_state = ESnonstd;
+ 			return;
++		case '_':
++			vc->vc_state = ESapc;
++			return;
++		case '^':
++			vc->vc_state = ESpm;
++			return;
+ 		case '%':
+ 			vc->vc_state = ESpercent;
+ 			return;
+@@ -2212,6 +2226,9 @@ static void do_con_trol(struct tty_struc
+ 		case 'H':
+ 			vc->vc_tab_stop[7 & (vc->vc_x >> 5)] |= (1 << (vc->vc_x & 31));
+ 			return;
++		case 'P':
++			vc->vc_state = ESdcs;
++			return;
+ 		case 'Z':
+ 			respond_ID(tty);
+ 			return;
+@@ -2531,8 +2548,14 @@ static void do_con_trol(struct tty_struc
+ 			vc->vc_translate = set_translate(vc->vc_G1_charset, vc);
+ 		vc->vc_state = ESnormal;
+ 		return;
++	case ESapc:
++		return;
+ 	case ESosc:
+ 		return;
++	case ESpm:
++		return;
++	case ESdcs:
++		return;
+ 	default:
+ 		vc->vc_state = ESnormal;
+ 	}
 
 
