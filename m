@@ -2,129 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABBD417A8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931DA417AC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347940AbhIXSJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 14:09:02 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48834 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347867AbhIXSJB (ORCPT
+        id S1348016AbhIXSSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 14:18:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42936 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230479AbhIXSSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 14:09:01 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18OI7A5G012410;
-        Fri, 24 Sep 2021 13:07:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632506830;
-        bh=XCO0SGn6EFVz7qEBim1aa+y//pbJCMPKkkRQzolDxdc=;
-        h=From:To:CC:Subject:Date;
-        b=onhGpHZ5ODS7GJmAHmhlTXDB54XTIyW4ZsSB8Y1uxpdqTM9v0FdrmkLt6+nrWp8nF
-         yLLRwsssUTfrIuZFDz6g0utsQMIy54WJFZdho6uRXBQ2tr8zuENhdvHS/4Fw2HmcIv
-         1ALLar00KI7Ky8VJFIk/aH7mg7edm7KGYUBVNOf8=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18OI7Avr046883
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 24 Sep 2021 13:07:10 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 24
- Sep 2021 13:07:10 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 24 Sep 2021 13:07:10 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18OI76Ei009629;
-        Fri, 24 Sep 2021 13:07:07 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-CC:     Michael Walle <michael@walle.cc>, Apurva Nandan <a-nandan@ti.com>,
-        Nishanth Menon <nm@ti.com>, <linux-spi@vger.kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>
-Subject: [PATCH v1] dt-bindings: mtd: spi-nor: use unevaluatedProperties: false
-Date:   Fri, 24 Sep 2021 23:37:05 +0530
-Message-ID: <20210924180705.14021-1-p.yadav@ti.com>
-X-Mailer: git-send-email 2.33.0
+        Fri, 24 Sep 2021 14:18:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632507406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/XZTO3hQwEUw1n5k6UDpdYw7oKmrhKHOCU0IGHqWWG0=;
+        b=Q/donNFbF5j55ft1sBW0Ggd4ZeidXuvdrOrqtoKLtHq19ZqRjaAkuPUcDKtEWUaxQbvGF/
+        H/cu1G0SVUCD1owlvefNfMMtTIqQ6qQuqlVsH9uIZ3SL3EltDDYKvA5qxWwJWnunzKbFpU
+        x7nws+gaqVriG9f2ngqbBL0+yaalgsg=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-AnhPpDhuNc27L3nkjyXTuA-1; Fri, 24 Sep 2021 14:16:45 -0400
+X-MC-Unique: AnhPpDhuNc27L3nkjyXTuA-1
+Received: by mail-qv1-f69.google.com with SMTP id h25-20020a0cab19000000b0037a49d15c93so35745303qvb.22
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:16:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=/XZTO3hQwEUw1n5k6UDpdYw7oKmrhKHOCU0IGHqWWG0=;
+        b=SDk+UUrCiSWPnIB6nJDdrzUv0Ka4/86R9wxE2G3MKTBx6blVpWiBMXrC9tu20h8H79
+         ArHom9XU+qd1nHf22Y9Hjh/wZ4djUkE0/7qJWgG/AiF/BGg0aW72QmdA5kSLei7imbIV
+         Ds8ZsuVv7AQdo8Rsl92tPT0TPwCL75GryNGNhAp2F8TgyV5E/Xyb5L06jkE1QFgAlFK8
+         Iv2iYlH0KcrVEg0RcdNDtfChhvmj4HOnOqFZGEWVUxWS3f3Ic+vvKCpsulAvDyzxTEJK
+         bkyoURVt2NLpofv/tF31m3gKkpEKKhbMKdg9di6yAiM9BlwjlRUtH0kMYnZ8Z+Q3z7k5
+         c2wA==
+X-Gm-Message-State: AOAM530heQ21ItZk2nKCLtCppXZ/3uBaWIjNLghsHPvg5AjofffqFwNs
+        dDw9gjncVW7hEOnbC54Hmh/vqxX0kXDa+JI1I5vGUwdhJIZF6u7jKk8AfaCdQ2kByPQn1xH8gU4
+        AH6Jk8bACD9ypGB6umwjxNL5x
+X-Received: by 2002:a05:622a:1a9f:: with SMTP id s31mr5659451qtc.381.1632507404613;
+        Fri, 24 Sep 2021 11:16:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzlyHyj1JScPlhqV3UkuuS2rTtoAfyZvwyso8AYDYCQEtFhSw4UVAZGBacOTk5lMLbtnXHfhA==
+X-Received: by 2002:a05:622a:1a9f:: with SMTP id s31mr5659421qtc.381.1632507404374;
+        Fri, 24 Sep 2021 11:16:44 -0700 (PDT)
+Received: from [192.168.8.206] (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id l7sm6250919qtr.87.2021.09.24.11.16.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 11:16:43 -0700 (PDT)
+Message-ID: <7d19a626299fcc23e10678faea95b76d71c26b23.camel@redhat.com>
+Subject: Re: [RFC PATCH] drm/print: Add deprecation notes to DRM_...()
+ functions
+From:   Lyude Paul <lyude@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org
+Cc:     sam@ravnborg.org, daniel.vetter@ffwll.ch, jani.nikula@intel.com,
+        swboyd@chromium.org, airlied@redhat.com,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 24 Sep 2021 14:16:42 -0400
+In-Reply-To: <2b957783-aa5c-33a5-7fe3-475d5a80bacc@suse.de>
+References: <20210921082757.RFC.1.Ibd82d98145615fa55f604947dc6a696cc82e8e43@changeid>
+         <2b957783-aa5c-33a5-7fe3-475d5a80bacc@suse.de>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many SPI controllers need to add properties to slave devices. This could
-be the delay in clock or data lines, etc. These properties are
-controller specific but need to be defined in the slave node because
-they are per-slave and there can be multiple slaves attached to a
-controller.
+Acked-by: Lyude Paul <lyude@redhat.com>
 
-If these properties are not added to the slave binding, then the dtbs
-check emits a warning. But these properties do not make much sense in
-the slave binding because they are controller-specific and they will
-just pollute every slave binding.
+On Wed, 2021-09-22 at 09:12 +0200, Thomas Zimmermann wrote:
+> Hi
+> 
+> Am 21.09.21 um 17:28 schrieb Douglas Anderson:
+> > It's hard for someone (like me) who's not following closely to know
+> > what the suggested best practices are for error printing in DRM
+> > drivers. Add some hints to the header file.
+> > 
+> > In general, my understanding is that:
+> > * When possible we should be using a `struct drm_device` for logging
+> >    and recent patches have tried to make it more possible to access a
+> >    relevant `struct drm_device` in more places.
+> > * For most cases when we don't have a `struct drm_device`, we no
+> >    longer bother with DRM-specific wrappers on the dev_...() functions
+> >    or pr_...() functions and just encourage drivers to use the normal
+> >    functions.
+> > * For debug-level functions where we might want filtering based on a
+> >    category we'll still have DRM-specific wrappers, but we'll only
+> >    support passing a `struct drm_device`, not a `struct
+> >    device`. Presumably most of the cases where we want the filtering
+> >    are messages that happen while the system is in a normal running
+> >    state (AKA not during probe time) and we should have a `struct
+> >    drm_device` then. If we absolutely can't get a `struct drm_device`
+> >    then these functions begrudgingly accept NULL for the `struct
+> >    drm_device` and hopefully the awkwardness of having to manually pass
+> >    NULL will keep people from doing this unless absolutely necessary.
+> > 
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> 
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+> 
+> Thanks a lot.
+> 
+> > ---
+> > 
+> >   include/drm/drm_print.h | 30 ++++++++++++++++++++++++++++++
+> >   1 file changed, 30 insertions(+)
+> > 
+> > diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
+> > index 15a089a87c22..22fabdeed297 100644
+> > --- a/include/drm/drm_print.h
+> > +++ b/include/drm/drm_print.h
+> > @@ -340,6 +340,8 @@ void drm_dev_dbg(const struct device *dev, enum
+> > drm_debug_category category,
+> >   /**
+> >    * DRM_DEV_ERROR() - Error output.
+> >    *
+> > + * NOTE: this is deprecated in favor of drm_err() or dev_err().
+> > + *
+> >    * @dev: device pointer
+> >    * @fmt: printf() like format string.
+> >    */
+> > @@ -349,6 +351,9 @@ void drm_dev_dbg(const struct device *dev, enum
+> > drm_debug_category category,
+> >   /**
+> >    * DRM_DEV_ERROR_RATELIMITED() - Rate limited error output.
+> >    *
+> > + * NOTE: this is deprecated in favor of drm_err_ratelimited() or
+> > + * dev_err_ratelimited().
+> > + *
+> >    * @dev: device pointer
+> >    * @fmt: printf() like format string.
+> >    *
+> > @@ -364,9 +369,11 @@ void drm_dev_dbg(const struct device *dev, enum
+> > drm_debug_category category,
+> >                 DRM_DEV_ERROR(dev, fmt, ##__VA_ARGS__);                 \
+> >   })
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_info() or dev_info(). */
+> >   #define DRM_DEV_INFO(dev, fmt, ...)                           \
+> >         drm_dev_printk(dev, KERN_INFO, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_info_once() or
+> > dev_info_once(). */
+> >   #define DRM_DEV_INFO_ONCE(dev, fmt, ...)                              \
+> >   ({                                                                    \
+> >         static bool __print_once __read_mostly;                         \
+> > @@ -379,6 +386,8 @@ void drm_dev_dbg(const struct device *dev, enum
+> > drm_debug_category category,
+> >   /**
+> >    * DRM_DEV_DEBUG() - Debug output for generic drm code
+> >    *
+> > + * NOTE: this is deprecated in favor of drm_dbg_core().
+> > + *
+> >    * @dev: device pointer
+> >    * @fmt: printf() like format string.
+> >    */
+> > @@ -387,6 +396,8 @@ void drm_dev_dbg(const struct device *dev, enum
+> > drm_debug_category category,
+> >   /**
+> >    * DRM_DEV_DEBUG_DRIVER() - Debug output for vendor specific part of the
+> > driver
+> >    *
+> > + * NOTE: this is deprecated in favor of drm_dbg() or dev_dbg().
+> > + *
+> >    * @dev: device pointer
+> >    * @fmt: printf() like format string.
+> >    */
+> > @@ -395,6 +406,8 @@ void drm_dev_dbg(const struct device *dev, enum
+> > drm_debug_category category,
+> >   /**
+> >    * DRM_DEV_DEBUG_KMS() - Debug output for modesetting code
+> >    *
+> > + * NOTE: this is deprecated in favor of drm_dbg_kms().
+> > + *
+> >    * @dev: device pointer
+> >    * @fmt: printf() like format string.
+> >    */
+> > @@ -480,47 +493,63 @@ void __drm_err(const char *format, ...);
+> >   #define _DRM_PRINTK(once, level, fmt, ...)                            \
+> >         printk##once(KERN_##level "[" DRM_NAME "] " fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of pr_info(). */
+> >   #define DRM_INFO(fmt, ...)                                            \
+> >         _DRM_PRINTK(, INFO, fmt, ##__VA_ARGS__)
+> > +/* NOTE: this is deprecated in favor of pr_notice(). */
+> >   #define DRM_NOTE(fmt, ...)                                            \
+> >         _DRM_PRINTK(, NOTICE, fmt, ##__VA_ARGS__)
+> > +/* NOTE: this is deprecated in favor of pr_warn(). */
+> >   #define DRM_WARN(fmt, ...)                                            \
+> >         _DRM_PRINTK(, WARNING, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of pr_info_once(). */
+> >   #define DRM_INFO_ONCE(fmt,
+> > ...)                                               \
+> >         _DRM_PRINTK(_once, INFO, fmt, ##__VA_ARGS__)
+> > +/* NOTE: this is deprecated in favor of pr_notice_once(). */
+> >   #define DRM_NOTE_ONCE(fmt,
+> > ...)                                               \
+> >         _DRM_PRINTK(_once, NOTICE, fmt, ##__VA_ARGS__)
+> > +/* NOTE: this is deprecated in favor of pr_warn_once(). */
+> >   #define DRM_WARN_ONCE(fmt,
+> > ...)                                               \
+> >         _DRM_PRINTK(_once, WARNING, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of pr_err(). */
+> >   #define DRM_ERROR(fmt, ...)                                           \
+> >         __drm_err(fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of pr_err_ratelimited(). */
+> >   #define DRM_ERROR_RATELIMITED(fmt,
+> > ...)                                       \
+> >         DRM_DEV_ERROR_RATELIMITED(NULL, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg_core(NULL, ...). */
+> >   #define DRM_DEBUG(fmt, ...)                                           \
+> >         __drm_dbg(DRM_UT_CORE, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg(NULL, ...). */
+> >   #define DRM_DEBUG_DRIVER(fmt, ...)                                    \
+> >         __drm_dbg(DRM_UT_DRIVER, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg_kms(NULL, ...). */
+> >   #define DRM_DEBUG_KMS(fmt,
+> > ...)                                               \
+> >         __drm_dbg(DRM_UT_KMS, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg_prime(NULL, ...). */
+> >   #define DRM_DEBUG_PRIME(fmt, ...)                                     \
+> >         __drm_dbg(DRM_UT_PRIME, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg_atomic(NULL, ...). */
+> >   #define DRM_DEBUG_ATOMIC(fmt, ...)                                    \
+> >         __drm_dbg(DRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg_vbl(NULL, ...). */
+> >   #define DRM_DEBUG_VBL(fmt,
+> > ...)                                               \
+> >         __drm_dbg(DRM_UT_VBL, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg_lease(NULL, ...). */
+> >   #define DRM_DEBUG_LEASE(fmt, ...)                                     \
+> >         __drm_dbg(DRM_UT_LEASE, fmt, ##__VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg_dp(NULL, ...). */
+> >   #define DRM_DEBUG_DP(fmt,
+> > ...)                                                \
+> >         __drm_dbg(DRM_UT_DP, fmt, ## __VA_ARGS__)
+> >   
+> > @@ -536,6 +565,7 @@ void __drm_err(const char *format, ...);
+> >   #define drm_dbg_kms_ratelimited(drm, fmt, ...) \
+> >         __DRM_DEFINE_DBG_RATELIMITED(KMS, drm, fmt, ## __VA_ARGS__)
+> >   
+> > +/* NOTE: this is deprecated in favor of drm_dbg_kms_ratelimited(NULL,
+> > ...). */
+> >   #define DRM_DEBUG_KMS_RATELIMITED(fmt, ...)
+> > drm_dbg_kms_ratelimited(NULL, fmt, ## __VA_ARGS__)
+> >   
+> >   /*
+> > 
+> 
+> -- 
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 Nürnberg, Germany
+> (HRB 36809, AG Nürnberg)
+> Geschäftsführer: Felix Imendörffer
 
-One option is to add a separate schema that collects all such properties
-from all such controllers. Slave bindings can simply refer to this
-binding and they should be rid of the warnings.
-
-There are some limitations with this approach:
-
-1. There is no way to specify required properties. The schema would
-contain properties for all controllers and there would be no way to know
-which controller is being used.
-
-2. There would be no way to restrict additional properties. Since this
-schema will be used with an allOf operator, additionalProperties would
-need to be true. In addition, the slave schema will have to set
-unevaluatedProperties: false.
-
-A much simpler option would be to make controller schemas specify those
-properties in patternProperties and set unevaluatedProperties to false
-on slave schemas, which is done in the previous approach anyway. This
-approach would have the same limitations as the 2nd limitation in the
-previous approach. But it does not have the 1st limitation since the
-properties of all controllers are not collected in a single schema, but
-instead reside in the same schema as the controller. It also has the
-added benefit of being much simpler.
-
-The SPI NOR binding is taken as the first one to follow this. Other
-bindings like SPI NAND can follow in later patches.
-
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-
----
-I sent the first approach mentioned in the commit message some time ago
-[0]. When re-rolling this series I realized that if we are going to use
-unevaluatedProperties: false, then it would be much simpler to just keep
-everything else as-is. This has clear positives with no negatives
-relative to [0], as explained in the commit message.
-
-[0] https://lore.kernel.org/all/20210609111707.9555-1-p.yadav@ti.com/T/#u
-
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-index ed590d7c6e37..81be0620b264 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -88,7 +88,7 @@ patternProperties:
-   "^otp(-[0-9]+)?$":
-     type: object
-
--additionalProperties: false
-+unevaluatedProperties: false
-
- examples:
-   - |
---
-2.33.0
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
