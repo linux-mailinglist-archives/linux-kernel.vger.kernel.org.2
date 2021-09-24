@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1810D417294
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A55A4172AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344370AbhIXMta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:49:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44452 "EHLO mail.kernel.org"
+        id S1344144AbhIXMuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:50:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343934AbhIXMsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:48:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CF3A61251;
-        Fri, 24 Sep 2021 12:46:48 +0000 (UTC)
+        id S1344045AbhIXMs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:48:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C12D61268;
+        Fri, 24 Sep 2021 12:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487608;
-        bh=cxH5tFD7r1Kz2FjW7qzGM8lC10WyjahiyZjbszVcCjc=;
+        s=korg; t=1632487644;
+        bh=Tc0qgXQDV1joMKbWIUK2H191+x1ht29LejlaixOcPSQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HLlJUxg3apWI4AdYzUYJvjp0bOkywNZcm+InM6h+OGf5FZchhB2B0Y4qqyWbN9z4g
-         vkv0eRIjXLmiaIKX7asZ/6Mw9w4gZfh3N3f5nwI/Uff+6Hwtp3wZPcQs/4TgTiYAyS
-         f5ATDOQBUSoHYapjDALsThueV5pK5EeMldqGyrTo=
+        b=C4vmtxm6zV7WW3xrOXhZydSgnHwlAFp4ZJDVUeQrn1Wko/0HjADAOlpmLkAr6+Pqb
+         xqjUIORjJMor5i8y1Y8pyMbEVM8C/a6FN8WezZvMVJwhPDdncLERm6KIg1vDMedXkw
+         2OyLAYLI3HuTE0Am0u6/zItoBmaa/m5LsP43GELY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ilja Van Sprundel <ivansprundel@ioactive.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 26/26] sctp: validate from_addr_param return
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 20/27] nilfs2: fix NULL pointer in nilfs_##name##_attr_release
 Date:   Fri, 24 Sep 2021 14:44:14 +0200
-Message-Id: <20210924124329.210487794@linuxfoundation.org>
+Message-Id: <20210924124329.845303550@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
-References: <20210924124328.336953942@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,223 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit 0c5dc070ff3d6246d22ddd931f23a6266249e3db upstream.
+[ Upstream commit dbc6e7d44a514f231a64d9d5676e001b660b6448 ]
 
-Ilja reported that, simply putting it, nothing was validating that
-from_addr_param functions were operating on initialized memory. That is,
-the parameter itself was being validated by sctp_walk_params, but it
-doesn't check for types and their specific sizes and it could be a 0-length
-one, causing from_addr_param to potentially work over the next parameter or
-even uninitialized memory.
+In nilfs_##name##_attr_release, kobj->parent should not be referenced
+because it is a NULL pointer.  The release() method of kobject is always
+called in kobject_put(kobj), in the implementation of kobject_put(), the
+kobj->parent will be assigned as NULL before call the release() method.
+So just use kobj to get the subgroups, which is more efficient and can fix
+a NULL pointer reference problem.
 
-The fix here is to, in all calls to from_addr_param, check if enough space
-is there for the wanted IP address type.
-
-Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-3-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-3-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sctp/structs.h |    2 +-
- net/sctp/bind_addr.c       |   20 +++++++++++---------
- net/sctp/input.c           |    6 ++++--
- net/sctp/ipv6.c            |    7 ++++++-
- net/sctp/protocol.c        |    7 ++++++-
- net/sctp/sm_make_chunk.c   |   29 ++++++++++++++++-------------
- 6 files changed, 44 insertions(+), 27 deletions(-)
+ fs/nilfs2/sysfs.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---- a/include/net/sctp/structs.h
-+++ b/include/net/sctp/structs.h
-@@ -470,7 +470,7 @@ struct sctp_af {
- 					 int saddr);
- 	void		(*from_sk)	(union sctp_addr *,
- 					 struct sock *sk);
--	void		(*from_addr_param) (union sctp_addr *,
-+	bool		(*from_addr_param) (union sctp_addr *,
- 					    union sctp_addr_param *,
- 					    __be16 port, int iif);
- 	int		(*to_addr_param) (const union sctp_addr *,
---- a/net/sctp/bind_addr.c
-+++ b/net/sctp/bind_addr.c
-@@ -285,20 +285,16 @@ int sctp_raw_to_bind_addrs(struct sctp_b
- 		rawaddr = (union sctp_addr_param *)raw_addr_list;
- 
- 		af = sctp_get_af_specific(param_type2af(param->type));
--		if (unlikely(!af)) {
-+		if (unlikely(!af) ||
-+		    !af->from_addr_param(&addr, rawaddr, htons(port), 0)) {
- 			retval = -EINVAL;
--			sctp_bind_addr_clean(bp);
--			break;
-+			goto out_err;
- 		}
- 
--		af->from_addr_param(&addr, rawaddr, htons(port), 0);
- 		retval = sctp_add_bind_addr(bp, &addr, sizeof(addr),
- 					    SCTP_ADDR_SRC, gfp);
--		if (retval) {
--			/* Can't finish building the list, clean up. */
--			sctp_bind_addr_clean(bp);
--			break;
--		}
-+		if (retval)
-+			goto out_err;
- 
- 		len = ntohs(param->length);
- 		addrs_len -= len;
-@@ -306,6 +302,12 @@ int sctp_raw_to_bind_addrs(struct sctp_b
- 	}
- 
- 	return retval;
-+
-+out_err:
-+	if (retval)
-+		sctp_bind_addr_clean(bp);
-+
-+	return retval;
- }
- 
- /********************************************************************
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -1051,7 +1051,8 @@ static struct sctp_association *__sctp_r
- 		if (!af)
- 			continue;
- 
--		af->from_addr_param(paddr, params.addr, sh->source, 0);
-+		if (!af->from_addr_param(paddr, params.addr, sh->source, 0))
-+			continue;
- 
- 		asoc = __sctp_lookup_association(net, laddr, paddr, transportp);
- 		if (asoc)
-@@ -1097,7 +1098,8 @@ static struct sctp_association *__sctp_r
- 	if (unlikely(!af))
- 		return NULL;
- 
--	af->from_addr_param(&paddr, param, peer_port, 0);
-+	if (af->from_addr_param(&paddr, param, peer_port, 0))
-+		return NULL;
- 
- 	return __sctp_lookup_association(net, laddr, &paddr, transportp);
- }
---- a/net/sctp/ipv6.c
-+++ b/net/sctp/ipv6.c
-@@ -490,15 +490,20 @@ static void sctp_v6_to_sk_daddr(union sc
- }
- 
- /* Initialize a sctp_addr from an address parameter. */
--static void sctp_v6_from_addr_param(union sctp_addr *addr,
-+static bool sctp_v6_from_addr_param(union sctp_addr *addr,
- 				    union sctp_addr_param *param,
- 				    __be16 port, int iif)
- {
-+	if (ntohs(param->v6.param_hdr.length) < sizeof(struct sctp_ipv6addr_param))
-+		return false;
-+
- 	addr->v6.sin6_family = AF_INET6;
- 	addr->v6.sin6_port = port;
- 	addr->v6.sin6_flowinfo = 0; /* BUG */
- 	addr->v6.sin6_addr = param->v6.addr;
- 	addr->v6.sin6_scope_id = iif;
-+
-+	return true;
- }
- 
- /* Initialize an address parameter from a sctp_addr and return the length
---- a/net/sctp/protocol.c
-+++ b/net/sctp/protocol.c
-@@ -274,14 +274,19 @@ static void sctp_v4_to_sk_daddr(union sc
- }
- 
- /* Initialize a sctp_addr from an address parameter. */
--static void sctp_v4_from_addr_param(union sctp_addr *addr,
-+static bool sctp_v4_from_addr_param(union sctp_addr *addr,
- 				    union sctp_addr_param *param,
- 				    __be16 port, int iif)
- {
-+	if (ntohs(param->v4.param_hdr.length) < sizeof(struct sctp_ipv4addr_param))
-+		return false;
-+
- 	addr->v4.sin_family = AF_INET;
- 	addr->v4.sin_port = port;
- 	addr->v4.sin_addr.s_addr = param->v4.addr.s_addr;
- 	memset(addr->v4.sin_zero, 0, sizeof(addr->v4.sin_zero));
-+
-+	return true;
- }
- 
- /* Initialize an address parameter from a sctp_addr and return the length
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -2342,11 +2342,13 @@ int sctp_process_init(struct sctp_associ
- 
- 	/* Process the initialization parameters.  */
- 	sctp_walk_params(param, peer_init, init_hdr.params) {
--		if (!src_match && (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
--		    param.p->type == SCTP_PARAM_IPV6_ADDRESS)) {
-+		if (!src_match &&
-+		    (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
-+		     param.p->type == SCTP_PARAM_IPV6_ADDRESS)) {
- 			af = sctp_get_af_specific(param_type2af(param.p->type));
--			af->from_addr_param(&addr, param.addr,
--					    chunk->sctp_hdr->source, 0);
-+			if (!af->from_addr_param(&addr, param.addr,
-+						 chunk->sctp_hdr->source, 0))
-+				continue;
- 			if (sctp_cmp_addr_exact(sctp_source(chunk), &addr))
- 				src_match = 1;
- 		}
-@@ -2540,7 +2542,8 @@ static int sctp_process_param(struct sct
- 			break;
- do_addr_param:
- 		af = sctp_get_af_specific(param_type2af(param.p->type));
--		af->from_addr_param(&addr, param.addr, htons(asoc->peer.port), 0);
-+		if (!af->from_addr_param(&addr, param.addr, htons(asoc->peer.port), 0))
-+			break;
- 		scope = sctp_scope(peer_addr);
- 		if (sctp_in_scope(net, &addr, scope))
- 			if (!sctp_assoc_add_peer(asoc, &addr, gfp, SCTP_UNCONFIRMED))
-@@ -2633,15 +2636,13 @@ do_addr_param:
- 		addr_param = param.v + sizeof(sctp_addip_param_t);
- 
- 		af = sctp_get_af_specific(param_type2af(addr_param->p.type));
--		if (af == NULL)
-+		if (!af)
- 			break;
- 
--		af->from_addr_param(&addr, addr_param,
--				    htons(asoc->peer.port), 0);
-+		if (!af->from_addr_param(&addr, addr_param,
-+					 htons(asoc->peer.port), 0))
-+			break;
- 
--		/* if the address is invalid, we can't process it.
--		 * XXX: see spec for what to do.
--		 */
- 		if (!af->addr_valid(&addr, NULL, NULL))
- 			break;
- 
-@@ -3053,7 +3054,8 @@ static __be16 sctp_process_asconf_param(
- 	if (unlikely(!af))
- 		return SCTP_ERROR_DNS_FAILED;
- 
--	af->from_addr_param(&addr, addr_param, htons(asoc->peer.port), 0);
-+	if (!af->from_addr_param(&addr, addr_param, htons(asoc->peer.port), 0))
-+		return SCTP_ERROR_DNS_FAILED;
- 
- 	/* ADDIP 4.2.1  This parameter MUST NOT contain a broadcast
- 	 * or multicast address.
-@@ -3318,7 +3320,8 @@ static void sctp_asconf_param_success(st
- 
- 	/* We have checked the packet before, so we do not check again.	*/
- 	af = sctp_get_af_specific(param_type2af(addr_param->p.type));
--	af->from_addr_param(&addr, addr_param, htons(bp->port), 0);
-+	if (!af->from_addr_param(&addr, addr_param, htons(bp->port), 0))
-+		return;
- 
- 	switch (asconf_param->param_hdr.type) {
- 	case SCTP_PARAM_ADD_IP:
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index a35978bf8395..027a50bc0765 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -73,11 +73,9 @@ static const struct sysfs_ops nilfs_##name##_attr_ops = { \
+ #define NILFS_DEV_INT_GROUP_TYPE(name, parent_name) \
+ static void nilfs_##name##_attr_release(struct kobject *kobj) \
+ { \
+-	struct nilfs_sysfs_##parent_name##_subgroups *subgroups; \
+-	struct the_nilfs *nilfs = container_of(kobj->parent, \
+-						struct the_nilfs, \
+-						ns_##parent_name##_kobj); \
+-	subgroups = nilfs->ns_##parent_name##_subgroups; \
++	struct nilfs_sysfs_##parent_name##_subgroups *subgroups = container_of(kobj, \
++						struct nilfs_sysfs_##parent_name##_subgroups, \
++						sg_##name##_kobj); \
+ 	complete(&subgroups->sg_##name##_kobj_unregister); \
+ } \
+ static struct kobj_type nilfs_##name##_ktype = { \
+-- 
+2.33.0
+
 
 
