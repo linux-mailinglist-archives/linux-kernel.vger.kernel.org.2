@@ -2,141 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608EB417C1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32384417C21
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348317AbhIXUGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 16:06:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345661AbhIXUF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 16:05:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DC2B61107;
-        Fri, 24 Sep 2021 20:04:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632513862;
-        bh=5g6F24eAkfUrluLlmCOMkaLhZyk84IZGlaFRfiC0LOE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=lmDBZ9oIyS3njcFNZoPha7UcobA4aS2FQkVoccD3LUilnqmsyJrUfNqkmWR8yOB3t
-         8gbmOYvaF43D55psInmqaApM29ibqVjCF3q0iWMhNWZejhTBf16LlT8XDlYP/fnHMX
-         Dt5XOweabDGODl/B+KyIhLcaXT+S08vFjV90vk2cmsrtWNdgwXvWuviwLz/6byzySc
-         BeG8mbo13ZAdxU/T9llrJzg8G4nbQgevNASLL/ys8+F0tTqo6BRrzQP0D9Q5NZqahq
-         SaQeX5Hw8NIojx1AZbVFK0OufMlA62FfoHWWQ6n3vY5YqOehQqRG4GQEEnOAz6Uo7J
-         NFCZmDQbtjK2w==
-Date:   Fri, 24 Sep 2021 13:04:21 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>
-Subject: Re: [PATCH v3 2/2] xen-pciback: allow compiling on other archs than
- x86
-In-Reply-To: <7310d23e-4193-3f4c-06da-606b30e73f24@epam.com>
-Message-ID: <alpine.DEB.2.21.2109241258190.17979@sstabellini-ThinkPad-T480s>
-References: <20210923095345.185489-1-andr2000@gmail.com> <20210923095345.185489-2-andr2000@gmail.com> <alpine.DEB.2.21.2109231252270.17979@sstabellini-ThinkPad-T480s> <f62a1e2c-4253-c998-c206-6bb0681a84fb@epam.com>
- <7310d23e-4193-3f4c-06da-606b30e73f24@epam.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1348336AbhIXUGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 16:06:51 -0400
+Received: from mail-bn7nam10on2060.outbound.protection.outlook.com ([40.107.92.60]:21785
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1348341AbhIXUGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 16:06:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tr7YWsTKAYt+q/ppxpPAMcoseNXM766yjZcx0GlkrlrPwVPSDIsmTOjP1pkPgO+iMQBeObjDb/AM4IoQjdYTMPqyF5FvuFtSORLmqbzQRxoo9dPJXCa++vDajJX61AsR9qPMELrVAgAj/4g4wPeovft/xuYn6lPnJqSrPDSk0xI9C8WngYr/pLwzKq8JjBEPC3JJlTrQ9pYnyPjFZzjYy/w2BTKki20Y2AadOHoW0m79Ijgsy7kIpzDwHVeLDF1v5NKXcZhYEWAzbkfnLcfu7cWcHxLvyQ12t4NwMqo5uuWejgs5Vmgl9TaSvGRrzObzf4aC9Iox5IE+aWhOo0J+4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=e/Y9SFnmdMI0wtTp7WVgUBzg+JKl9ZYn1b2FLeMcGoE=;
+ b=g1fbjpsdPOXyrr2L7fL5bFLpn5cp+ceyEVs7jQujqIg1dk5wJ8dTSmaeddpqRSVzFKkXJHi7uIIOAT4doAbh9rECsI6laEAsKiBHE/gsrqqkTApgYhuLeLvoACzX11vfVQ3KkYZhM6VVu+LiO6Ic7NbfBGnZLGl25x/x6v7CsUmhl/+afx0o263iPQMseVJBuE3U4TFP0RlYLP5NR/Yg5BD/l2EgWiSBEqtwH7KvLgdDyie5TyEgtnb/tMm09VCBm8CAY2eQ7+DTMSJMn3zr94Sr/dB/keoFMP7Z01QuENyytNuDQ9MzPoe4BX3VicJtBtw2FFQSDwGouc1OZ5GBfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e/Y9SFnmdMI0wtTp7WVgUBzg+JKl9ZYn1b2FLeMcGoE=;
+ b=woKneT0L441QFU5MWa+Ap0/iI3FngCd5qy405eJUxdZ7yD9Qha8zi/0fZDmhj73h1sXhN4iHP4YPP2VrWdchhZ29MnyO6rEhNS9ThQNSK6suQbzTnFfdynDyp2LxW2OB8jHLnVszTPQl0JmGcA5XX7rx6QyODWWmHC3ILhlNfok=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN8PR12MB2947.namprd12.prod.outlook.com (2603:10b6:408:6c::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Fri, 24 Sep
+ 2021 20:05:04 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::fd41:979d:a3e1:d958]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::fd41:979d:a3e1:d958%4]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
+ 20:05:04 +0000
+Date:   Fri, 24 Sep 2021 20:04:49 +0000
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] x86/mce: Get rid of the ->quirk_no_way_out()
+ indirect call
+Message-ID: <YU4vYSKnfdxzJFgZ@yaz-ubuntu>
+References: <20210917105355.2368-1-bp@alien8.de>
+ <20210917105355.2368-5-bp@alien8.de>
+ <YUyUhfTfY/3KtDTZ@yaz-ubuntu>
+ <YUyZDAGloQB/M4ts@zn.tnic>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUyZDAGloQB/M4ts@zn.tnic>
+X-ClientProxiedBy: BN8PR04CA0049.namprd04.prod.outlook.com
+ (2603:10b6:408:d4::23) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-2142721594-1632513512=:17979"
-Content-ID: <alpine.DEB.2.21.2109241258500.17979@sstabellini-ThinkPad-T480s>
+Received: from yaz-ubuntu (165.204.25.250) by BN8PR04CA0049.namprd04.prod.outlook.com (2603:10b6:408:d4::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 20:05:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c7229d70-cbd5-4e6a-f650-08d97f969925
+X-MS-TrafficTypeDiagnostic: BN8PR12MB2947:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB294756353448473684F710F6F8A49@BN8PR12MB2947.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VCt6I2adWj5SVsFZciz55G3x+BW/ftsXxYB25CwzejihT9GQGy/4ZHoKBbwgTz4a8uQ9u4s79IhQWTZCS5vCZnrZOdCfrXi+ITnNo6AngwUmkq+KmR8IXAizB8InlsxKkqDe1f5J5sGgDnVvuzO99fl4XtIjteTDO/XOgqfYNepcMeFGEX3BGPCchj+giQpDclqJztwEGIETQOdd6clLT9tspzRiA7jV6XNzI6znQCfx12YIerM9jraj3iZGTfjAx5vAYpQg06x+Pev3f0Dr5O+rWIbr8eodsCZk+zk6Xy/xJnHEPvGiPFR0/A3Fv11pYYro2HrdAidzRqWurWTJLa6pXbkG3e7voBU/3LwV/hOeRIqwHFsjW1yUxx7bplE9HL+p9ntkXkTDXe3p1upcXknsfv6eY2wVGaY5rDJP9T6GdSPUzPegrMsh2SCShZAiF6LZj4siDbFYAAeCd+HUUPedKdwGf3BVoTLbOIT0cLkXhWG+saeIfHPeLr+baTLBI9+TXJB2lSxyqy+x1ZYV3x8HqNtzct34cA0lkNKu/W5A7YDHzl5tq33SM3Uene73ljUV1jPCPrX0Na+K3P7jahA9qKMuq8MplawckjqUSbeSZ1eYjU1ImoAeuCvncONfv3G8rIm3VcSwuSjuo70ssrFAsiWZyd7CORUT0QEHXQ2M83sf4DxvAMPUe7tjr3sI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(54906003)(508600001)(4744005)(5660300002)(186003)(6916009)(956004)(316002)(8936002)(6666004)(9686003)(44832011)(6496006)(66946007)(66476007)(33716001)(66556008)(86362001)(55016002)(8676002)(4326008)(38100700002)(2906002)(26583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FE75Fsfh72Tj4kUPvcACXvj73S6KkBvNahPX83BU+MiIDA1ph7vHj6bxSd/J?=
+ =?us-ascii?Q?gbVTugP0vJ/JVM6XT9lLstCYm+Vi8e0eXHn5ZhT9/tvc6OTxWh5e9iDE8C48?=
+ =?us-ascii?Q?8XFRyYBmO18K9jNcI/swHDL1jG0+koZ45+Ssmzz4nGMEC68ppZHu/Njfy4sp?=
+ =?us-ascii?Q?Ic0R6Jz7Z6CH9OOeV2WSqH4llKR42vlZU8d0kAcEWHnupmzvnXhvh7wai4Tl?=
+ =?us-ascii?Q?fTfvGhaAOhNXvof185Zre7TAth2F9Z6//P/sOUE6VG0gmaZaVXoGckw6YNs8?=
+ =?us-ascii?Q?zAWgiwETDWJFGN04OUwmU9ygTJ4fqYWGbQ4ocfU+9QVz5ddBejVDC942/pOQ?=
+ =?us-ascii?Q?pLPyYLRJWcocmT5HU4Xn08lr5q98OgQi8Y1ulqwaR70r1ax+NcMYsXnVhjzo?=
+ =?us-ascii?Q?6P3vLIjRAQ4DQBULoTwPK3VPwgfPjSyypZ8y5ikxuqJuwj9QPwYyNMCdSE0J?=
+ =?us-ascii?Q?WR6PMUGu9Gq+BRbDHHaXt2sDIq+h/eGm+TwppQi9RtZLUZeKn1sgg2t9tJZ2?=
+ =?us-ascii?Q?5v9hxH0a8dqHY+kZfGa87NCCGlcW7I7oI9Qmuwb+DvM4rBhPkj+Ln/DlDR5w?=
+ =?us-ascii?Q?njjQzBtV6dyPZbFEsZKcyjb/w+HeLNEi4K+bAOPYVAZlrH7sXq64KiCCnYhW?=
+ =?us-ascii?Q?ER8UMOjCLQa107Bwmc5Jg6ZfUVhXLNe/LaCXTWfFdn2mrWRk5ZSMrexpBGUz?=
+ =?us-ascii?Q?So89ie9ssntCFCW9VLfAxcC9CPIGWfvfoXTjwd32FTjLoZkNrAES8ETDR2em?=
+ =?us-ascii?Q?jAflgJukgh17Ab+Ohdj5UHg34GE/yfL+2V6PL9fJNkpmrPrxXzNSPXeDlOXJ?=
+ =?us-ascii?Q?5qk3V0K9T1tcqB36BzzhpEFyZvg66Hu/ihEOOszgyLUWvElBKF/bDryC1LBQ?=
+ =?us-ascii?Q?t13msuYK511j2SSL7Bpt/LZB4i2mdeyQFtBJNif41ThmUHRnJB7b1iAIx40n?=
+ =?us-ascii?Q?bWC5Q9SjlD23kablpFiKgD4eMq/w4ePvcxY6SD+iwlnMOg0QoaRvubInvchq?=
+ =?us-ascii?Q?auGCyLi4drJnO4YgZZzD0oFB7FrpzbnZwJssx1zAsqpjSDYNGUwWT4gkoQ+1?=
+ =?us-ascii?Q?URM0GcP9X2hZDA7Z8+DSlOKTlQ+dH+m7WlNICoXDptM9SfzanAgQyuHFQs6a?=
+ =?us-ascii?Q?KrZWczawXaR3k6SvZD5QD4mSGx/xOzeRjy/xNTGzh9P1XyzB48Wk7nb9Ms/A?=
+ =?us-ascii?Q?oXZzGgFjXn7Q6DWy5VnNxHOf8Ew0ksMqTZ2jUwfJXnpt3vxLyqbySvT9SA5d?=
+ =?us-ascii?Q?0QJASWw1Cpc6uW1Dr5ieR2I+CbORQTVDvjhuC5VSxTsy5gVQ8xnHx/9Kh6li?=
+ =?us-ascii?Q?7iUZN4Qado6JlxbYDaj3iJoF?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7229d70-cbd5-4e6a-f650-08d97f969925
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 20:05:04.2888
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wiNQUN6LfVmMs1BxzQ9Qc4soRlxB4ry831ZOix8j1bDcNQHyTp8Frp/Tle7atml4S8tLp7OuX6z/UyN+0Cn2ZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2947
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, Sep 23, 2021 at 05:11:08PM +0200, Borislav Petkov wrote:
+> On Thu, Sep 23, 2021 at 02:51:49PM +0000, Yazen Ghannam wrote:
 
---8323329-2142721594-1632513512=:17979
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-ID: <alpine.DEB.2.21.2109241258501.17979@sstabellini-ThinkPad-T480s>
+...
 
-On Fri, 24 Sep 2021, Oleksandr Andrushchenko wrote:
-> On 24.09.21 08:46, Oleksandr Andrushchenko wrote:
-> > On 23.09.21 23:00, Stefano Stabellini wrote:
-> >> On Thu, 23 Sep 2021, Oleksandr Andrushchenko wrote:
-> >>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> >>>
-> >>> Xen-pciback driver was designed to be built for x86 only. But it
-> >>> can also be used by other architectures, e.g. Arm.
-> >>> Re-structure the driver in a way that it can be built for other
-> >>> platforms as well.
-> >>>
-> >>> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> >>> Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-> >> The patch looks good to me. Only one thing: on ARM32 I get:
-> > WE do not yet support Xen PCI passthrough for ARM32
-
-Keep in mind that it is possible to run ARM32 guests on an ARM64
-hypervisor.
-
-
-> >> drivers/xen/xen-pciback/conf_space_header.c: In function ‘bar_init’:
-> >> drivers/xen/xen-pciback/conf_space_header.c:239:34: warning: right shift count >= width of type [-Wshift-count-overflow]
-> >>       bar->val = res[pos - 1].start >> 32;
-> >>                                     ^~
-> >> drivers/xen/xen-pciback/conf_space_header.c:240:49: warning: right shift count >= width of type [-Wshift-count-overflow]
-> >>       bar->len_val = -resource_size(&res[pos - 1]) >> 32;
-> >>    
-> >>    
-> >> resource_size_t is defined as phys_addr_t and it can be 32bit on arm32.
-> >>
-> >>
-> >> One fix is to surround:
-> >>
-> >> 		if (pos && (res[pos - 1].flags & IORESOURCE_MEM_64)) {
-> >> 			bar->val = res[pos - 1].start >> 32;
-> >> 			bar->len_val = -resource_size(&res[pos - 1]) >> 32;
-> >> 			return bar;
-> >> 		}
-> >>
-> >> with #ifdef PHYS_ADDR_T_64BIT
-> >>
-> > This might not be correct. We are dealing here with a 64-bit BAR on a 32-bit OS.
-> >
-> > I think that this can still be valid use-case if BAR64.hi == 0. So, not sure
-> >
-> > we can just skip it with ifdef.
-> >
-> > Instead, to be on the safe side, we can have:
-> >
-> > config XEN_PCIDEV_STUB
-> >          tristate "Xen PCI-device stub driver"
-> >          depends on PCI && ARM64 && XEN
-> > e.g. only allow building the "stub" for ARM64 for now.
-
-This is a pretty drastic solution. I would be OK with it but I prefer
-the solution below >> 16 >> 16.
-
-
-> Or... there are couple of places in the kernel where PCI deals with the 32 bit shift as:
+> > Do you recommend this create another quirk flag and follow this patch? Or
+> > should the quirks be grouped together somehow?
 > 
-> drivers/pci/setup-res.c:108:        new = region.start >> 16 >> 16;
-> drivers/pci/iov.c:949:        new = region.start >> 16 >> 16;
+> Does that quirk match machines with mce_flags.smca=1 per chance?
 > 
-> commit cf7bee5a0bf270a4eace0be39329d6ac0136cc47
-> Date:   Sun Aug 7 13:49:59 *2005* +0400
+> :-)
 > 
-> [snip]
+
+Yes, at the moment it does. So I'll use that. Thanks!
+
+> Also, your test:
 > 
->      Also make sure to write high bits - use "x >> 16 >> 16" (rather than the
->      simpler ">> 32") to avoid warnings on 32-bit architectures where we're
->      not going to have any high bits.
-
-I think this is the best option
-
-
-> This might not be(?) immediately correct in case of LPAE though, e.g.
+> +	if ((m->mcgstatus & (MCG_STATUS_EIPV|MCG_STATUS_RIPV)) != 0)
+> +		return;
 > 
-> 64-bit BAR may tolerate 40-bit address in some use-cases?
+> should be
+> 
+> +	if ((m->mcgstatus & (MCG_STATUS_EIPV|MCG_STATUS_RIPV)) ==
+> 			    (MCG_STATUS_EIPV|MCG_STATUS_RIPV))
+> +		return;
+> 
+> methinks.
+> 
+> Unless I'm misunderstanding the erratum ofc...
+> 
+> --
 
-It is correct for LPAE too, it is just that with LPAE it would be
-unnecessary.
+The check is intended to catch the case where both bits are 0. But I'll
+double-check with the hardware folks.
 
---8323329-2142721594-1632513512=:17979--
+Thanks,
+Yazen 
