@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA35541727E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4074172D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344151AbhIXMs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:48:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43882 "EHLO mail.kernel.org"
+        id S1344381AbhIXMvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:51:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344040AbhIXMr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:47:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FABD61268;
-        Fri, 24 Sep 2021 12:46:22 +0000 (UTC)
+        id S1344534AbhIXMuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:50:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 797576134F;
+        Fri, 24 Sep 2021 12:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487583;
-        bh=99iT1YQlddgkg3SenzL3nGhyp1J+2Z3+i02f5WYHIBE=;
+        s=korg; t=1632487701;
+        bh=1Yee01YOa6CqWiZK9ouQScFRToVKWvCJRIJUdRJVjAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LhdcRrvdN6/lfOdRh3HYaXj7e1vVtTFYfX0L4MyibYVVon2T/YpEg3vOoTbbhaLie
-         St1AcVAxFVA/lR3NRuIIT4wmaKep9nILiGdK2S7QeNXqA1z4eS5Bm61HUsEKWTG62P
-         piYITN4ioTsY/I3SDbaWGlxdS59vU8a6dbQLZRdI=
+        b=ULQcADGAnOowoKtiKmLfE1PJiTUFDoR/hAsGnNsYLbIFwyNhhRdUZk4DdWlWHELxz
+         tgk7zLnq6LEHhqU9GHMHo8yTaOoaKO6lf4onmRSyggb170OU0BmJsNNPShiqxhplYr
+         3wGFlp3Pxe4maDwWoRSigmj+xgw6NMS05074rOfA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        stable@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 20/26] nilfs2: fix memory leak in nilfs_sysfs_create_##name##_group
+        syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 14/34] profiling: fix shift-out-of-bounds bugs
 Date:   Fri, 24 Sep 2021 14:44:08 +0200
-Message-Id: <20210924124329.016045308@linuxfoundation.org>
+Message-Id: <20210924124330.431710043@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
-References: <20210924124328.336953942@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +45,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nanyong Sun <sunnanyong@huawei.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 24f8cb1ed057c840728167dab33b32e44147c86f ]
+commit 2d186afd04d669fe9c48b994c41a7405a3c9f16d upstream.
 
-If kobject_init_and_add return with error, kobject_put() is needed here to
-avoid memory leak, because kobject_init_and_add may return error without
-freeing the memory associated with the kobject it allocated.
+Syzbot reported shift-out-of-bounds bug in profile_init().
+The problem was in incorrect prof_shift. Since prof_shift value comes from
+userspace we need to clamp this value into [0, BITS_PER_LONG -1]
+boundaries.
 
-Link: https://lkml.kernel.org/r/20210629022556.3985106-4-sunnanyong@huawei.com
-Link: https://lkml.kernel.org/r/1625651306-10829-4-git-send-email-konishi.ryusuke@gmail.com
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Second possible shiht-out-of-bounds was found by Tetsuo:
+sample_step local variable in read_profile() had "unsigned int" type,
+but prof_shift allows to make a BITS_PER_LONG shift. So, to prevent
+possible shiht-out-of-bounds sample_step type was changed to
+"unsigned long".
+
+Also, "unsigned short int" will be sufficient for storing
+[0, BITS_PER_LONG] value, that's why there is no need for
+"unsigned long" prof_shift.
+
+Link: https://lkml.kernel.org/r/20210813140022.5011-1-paskripkin@gmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+Suggested-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nilfs2/sysfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/profile.c |   21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index 027a50bc0765..eab7bd68da12 100644
---- a/fs/nilfs2/sysfs.c
-+++ b/fs/nilfs2/sysfs.c
-@@ -101,8 +101,8 @@ static int nilfs_sysfs_create_##name##_group(struct the_nilfs *nilfs) \
- 	err = kobject_init_and_add(kobj, &nilfs_##name##_ktype, parent, \
- 				    #name); \
- 	if (err) \
--		return err; \
--	return 0; \
-+		kobject_put(kobj); \
-+	return err; \
- } \
- static void nilfs_sysfs_delete_##name##_group(struct the_nilfs *nilfs) \
- { \
--- 
-2.33.0
-
+--- a/kernel/profile.c
++++ b/kernel/profile.c
+@@ -40,7 +40,8 @@ struct profile_hit {
+ #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
+ 
+ static atomic_t *prof_buffer;
+-static unsigned long prof_len, prof_shift;
++static unsigned long prof_len;
++static unsigned short int prof_shift;
+ 
+ int prof_on __read_mostly;
+ EXPORT_SYMBOL_GPL(prof_on);
+@@ -66,8 +67,8 @@ int profile_setup(char *str)
+ 		if (str[strlen(sleepstr)] == ',')
+ 			str += strlen(sleepstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
+-		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
++			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
++		pr_info("kernel sleep profiling enabled (shift: %u)\n",
+ 			prof_shift);
+ #else
+ 		pr_warn("kernel sleep profiling requires CONFIG_SCHEDSTATS\n");
+@@ -77,21 +78,21 @@ int profile_setup(char *str)
+ 		if (str[strlen(schedstr)] == ',')
+ 			str += strlen(schedstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
+-		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
++			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
++		pr_info("kernel schedule profiling enabled (shift: %u)\n",
+ 			prof_shift);
+ 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
+ 		prof_on = KVM_PROFILING;
+ 		if (str[strlen(kvmstr)] == ',')
+ 			str += strlen(kvmstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
+-		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
++			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
++		pr_info("kernel KVM profiling enabled (shift: %u)\n",
+ 			prof_shift);
+ 	} else if (get_option(&str, &par)) {
+-		prof_shift = par;
++		prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+ 		prof_on = CPU_PROFILING;
+-		pr_info("kernel profiling enabled (shift: %ld)\n",
++		pr_info("kernel profiling enabled (shift: %u)\n",
+ 			prof_shift);
+ 	}
+ 	return 1;
+@@ -467,7 +468,7 @@ read_profile(struct file *file, char __u
+ 	unsigned long p = *ppos;
+ 	ssize_t read;
+ 	char *pnt;
+-	unsigned int sample_step = 1 << prof_shift;
++	unsigned long sample_step = 1UL << prof_shift;
+ 
+ 	profile_flip_buffers();
+ 	if (p >= (prof_len+1)*sizeof(unsigned int))
 
 
