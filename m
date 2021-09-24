@@ -2,115 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FC4416919
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 02:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8799841691E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 02:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243685AbhIXA5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 20:57:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40881 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232143AbhIXA5S (ORCPT
+        id S243701AbhIXA67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 20:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243693AbhIXA66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 20:57:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632444946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mg9KP+cx438j5wC5hpIXMnDuPlwL4JuEjwLmUyo/e+c=;
-        b=LOL66o13Ukc81+svZ1x9GrMlYPWhjz+o6BZnOX/zbFzdOzv9tBsmwdI5rOTProRVrAU9L7
-        rrPEwLXe8YmPkjYpsdVmX3hFFZt5JfDP75+cVhQ85z260NFYae1CqFRD8PGs1T2FvX3jg8
-        VBFfTzIWResC4AYS9f333yg9DDUiEQs=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-G8C96YNaObO11MRFno3n1A-1; Thu, 23 Sep 2021 20:55:44 -0400
-X-MC-Unique: G8C96YNaObO11MRFno3n1A-1
-Received: by mail-pf1-f199.google.com with SMTP id 3-20020a620603000000b0042aea40c2ddso5100296pfg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:55:44 -0700 (PDT)
+        Thu, 23 Sep 2021 20:58:58 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A58DC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:57:26 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id j13so8032356qtq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=yOg+nzwKS/Xe9boE1XYCVEvuo4RAHMroRl1PMQiLGaE=;
+        b=UdSi8cTqG77oru82hEmJklps5D805r9qSr9pTi5SYcSwhasEbm9rWVspjcCQSnRf8Q
+         oX8CtlqZO7VNdTkw/JeNVrL4ZAJDGwNEL54yb43mYHbxLf94ZzRljWHYkVJj6/LZUIw4
+         6ZAG6NTAVbHoPcQCdj2m5GcMHAt1TNFWi3i7J0CDS9W39XJDpK3YH7T2NXD7OvWggs8T
+         ofMDlCmiLCJT7MWrlO0+jgNkRRgpFqZC5t5cbYoiHrx38fpoY25TgBNELp+8xoLOUpYU
+         DzRGKPLbppIUwv3bQZGzMtW+dY4LJxp/H4wNNf7gQFX4cHFxnEH4RP/74F4affCg0oyy
+         rEUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Mg9KP+cx438j5wC5hpIXMnDuPlwL4JuEjwLmUyo/e+c=;
-        b=MSqcBUGzC96pfFGlbPoavPKq8fNTibkQtfN2HYebiMTWEMdmOlRPbj2NkS5wEXJteB
-         YpHw/IQpkR6+Ws+uxZSteLAZEuYh4CNBbmO/9uMPWu407PRFb3mZJqFM4TzL3BCmqMY/
-         4pU53oDTqs3Y9CGBShC8aEO+kUNPuEfpW0K8gwVML0VQLeSQtKef0ANVy7YN5Qo68mZb
-         fjhUvMONb56/sa27L7JLbYgLXsN/vORUXHO55bg6ycQoxGG7HkteAUvILWAVt4ZStmWp
-         TIyKuUGpaspaeAwZYqA4BNUP4t3MqHzHQqQoJfXPvEgR/jmoczJHtPqhMkCEdfFno7Rp
-         UYww==
-X-Gm-Message-State: AOAM531FTByKOVRXUt9djbN6a6OzKqKVLfzMoPh0pp6gtKjwW307ZwuC
-        VyWOxIlyI7yrN1+Rk7a46s0GXLjRUOUm7VU3dK0fr2Mgk6edRkL2xOBFyFI5WSiY6TpTpB2H1Ym
-        y3G+oCbxm/QRuM34Fef2Rs4Cu
-X-Received: by 2002:a17:90a:cb84:: with SMTP id a4mr8794386pju.137.1632444943559;
-        Thu, 23 Sep 2021 17:55:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyW0w8hKU+ZiQxzdVApOFafHdkV0+crvkHEidtTlEIsVkstLZwGWrB5bzXHvaiYkJe4KeySrQ==
-X-Received: by 2002:a17:90a:cb84:: with SMTP id a4mr8794357pju.137.1632444943271;
-        Thu, 23 Sep 2021 17:55:43 -0700 (PDT)
-Received: from treble ([50.231.97.170])
-        by smtp.gmail.com with ESMTPSA id b11sm7822920pge.57.2021.09.23.17.55.41
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=yOg+nzwKS/Xe9boE1XYCVEvuo4RAHMroRl1PMQiLGaE=;
+        b=LeMkbf1Yjk3i1MdzmNeDfazC6QmOkC+BJR5Fo0SsB3vSnrfMXdKdHzF98TInGG2nIN
+         msm89uOUggyRm+VYd3oMynCCUWmHkbWJ7K+NWC1+G+z5i389kqBQOvpHXC25M/Fx9qTR
+         dPj4QsbKPTxrIu5Evm1zleKiGClwCUIAG7jghifvzoipus1SshhyHzHySmW1jW9X1Q0N
+         24ooK+qESL7I6k8m2b76KilSsuXuw1BiFMx6ziAiLgAzsMrNpRfqMpORwLXUjmLeulyn
+         tcFKXEai8hoFMlXKt6ZF0uyU7LnOhdEKoN4Mg459+fC0NIZ+y3sRan4wg6XrE56ja5zq
+         KL/w==
+X-Gm-Message-State: AOAM532YMJUR9w1AUijZ1D7xjC54iEC0IS6pwxjbDTrAfq+/OGTBUxll
+        qzT1456yjJfVarrH0oFKZJefSw==
+X-Google-Smtp-Source: ABdhPJxKZbP06lKD6aeiNcFdgQv2031ZYnZqb+thvCaZxx9HD9ZRTfzF1jKNdAdawTbHh2lJoH/5Hw==
+X-Received: by 2002:ac8:4755:: with SMTP id k21mr1730713qtp.150.1632445045392;
+        Thu, 23 Sep 2021 17:57:25 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g22sm5530005qkk.87.2021.09.23.17.57.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 17:55:42 -0700 (PDT)
-Date:   Thu, 23 Sep 2021 17:55:40 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/8] tools/objtool: Check for use of the ENQCMD
- instruction in the kernel
-Message-ID: <20210924005540.kunsfif7hdta6dlp@treble>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-8-fenghua.yu@intel.com>
- <20210922210343.GU4323@worktop.programming.kicks-ass.net>
- <YUu/6YPYwvaDwthy@otcwcpicx3.sc.intel.com>
- <YUwp7VkjApRQr/pb@hirez.programming.kicks-ass.net>
- <YUycliX+lPSMhWfR@otcwcpicx3.sc.intel.com>
+        Thu, 23 Sep 2021 17:57:24 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 17:57:11 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Zi Yan <ziy@nvidia.com>
+cc:     Hugh Dickins <hughd@google.com>, Yang Shi <shy828301@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: Mapcount of subpages
+In-Reply-To: <24B432CB-5CBB-4309-A9D0-6E1C4395A013@nvidia.com>
+Message-ID: <63e1cfcc-b7dd-ca55-39b2-7a9d2f6ff7eb@google.com>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan> <YUvzINep9m7G0ust@casper.infradead.org> <YUwNZFPGDj4Pkspx@moria.home.lan> <YUxnnq7uFBAtJ3rT@casper.infradead.org> <20210923124502.nxfdaoiov4sysed4@box.shutemov.name> <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
+ <CAHbLzkrELUKR2saOkA9_EeAyZwdboSq0HN6rhmCg2qxwSjdzbg@mail.gmail.com> <2A311B26-8B33-458E-B2C1-8BA2CF3484AA@nvidia.com> <77b59314-5593-1a2e-293c-b66e8235ad@google.com> <24B432CB-5CBB-4309-A9D0-6E1C4395A013@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YUycliX+lPSMhWfR@otcwcpicx3.sc.intel.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 03:26:14PM +0000, Fenghua Yu wrote:
-> > > +		} else if (op2 == 0x38 && op3 == 0xf8) {
-> > > +			if (insn.prefixes.nbytes == 1 &&
-> > > +			    insn.prefixes.bytes[0] == 0xf2) {
-> > > +				/* ENQCMD cannot be used in the kernel. */
-> > > +				WARN("ENQCMD instruction at %s:%lx", sec->name,
-> > > +				     offset);
-> > > +
-> > > +				return -1;
-> > > +			}
-> > 
-> > The only concern here is if we want it to be fatal or not. But otherwise
-> > this seems to be all that's required.
+On Thu, 23 Sep 2021, Zi Yan wrote:
+> On 23 Sep 2021, at 19:48, Hugh Dickins wrote:
+> > On Thu, 23 Sep 2021, Zi Yan wrote:
+> >> On 23 Sep 2021, at 17:54, Yang Shi wrote:
+> >>> On Thu, Sep 23, 2021 at 2:10 PM Hugh Dickins <hughd@google.com> wrote:
+> >>>>
+> >>>> NR_FILE_MAPPED being used for /proc/meminfo's "Mapped:" and a couple
+> >>>> of other such stats files, and for a reclaim heuristic in mm/vmscan.c.
+> >>>>
+> >>>> Allow ourselves more slack in NR_FILE_MAPPED accounting (either count
+> >>>> each pte as if it mapped the whole THP, or don't count a THP's ptes
+> >>>> at all - you opted for the latter in the "Mlocked:" accounting),
+> >>>> and I suspect subpage _mapcount could be abandoned.
+> >>>
+> >>> AFAIK, partial THP unmap may need the _mapcount information of every
+> >>> subpage otherwise the deferred split can't know what subpages could be
+> >>> freed.
+> >
+> > I believe Yang Shi is right insofar as the decision on whether it's worth
+> > queuing for deferred split is being done based on those subpage _mapcounts.
+> > That is a use I had not considered, and I've given no thought to how
+> > important or not it is.
+> >
+> >>
+> >> Could we just scan page tables of a THP during deferred split process
+> >> instead? Deferred split is a slow path already, so maybe it can afford
+> >> the extra work.
+> >
+> > But unless I misunderstand, actually carrying out the deferred split
+> > already unmaps, uses migration entries, and remaps the remaining ptes:
+> > needing no help from subpage _mapcounts to do those, and free the rest.
 > 
-> objtool doesn't fail kernel build on this fatal warning.
+> You are right. unmap_page() during THP split is scanning the page tables
+> already.
 > 
-> Returning -1 here stops checking the rest of the file and won't report any
-> further warnings unless this ENQCMD warning is fixed. Not returning -1
-> continues checking the rest of the file and may report more warnings.
-> Seems that's the only difference b/w them.
+> For deciding whether to queue a THP for deferred split, we probably can
+> keep PageDoubleMap bit to indicate if any subpage is PTE mapped.
+
+Maybe, maybe not.
+
 > 
-> Should I keep this "return -1" or not? Please advice.
+> But without subpage _mapcount, detecting extra pins to a THP before split
+> might be not as easy as with it. This means every THP split will need to
+> perform unmap_page(), then check the remaining page_count to see if
+> THP split is possible. That would also introduce extra system-wide overheads
+> from unmapping pages. Am I missing anything?
 
-I'd say remove the "return -1" since it's not a fatal-type analysis
-error and there's nothing to prevent objtool from analyzing the rest of
-the file.
+I did not explain clearly enough: a subpage's ptes must still be counted
+in total_mapcount(); but I'm suggesting that perhaps they can be counted
+all together (either in the head page's _mapcount, or in a separate field
+if that works better), instead of being distributed amongst the separate
+subpages' _mapcounts.
 
--- 
-Josh
+And this would lower the system-wide overheads inside total_mapcount()
+and page_mapped() (and maybe others).
 
+Hugh
