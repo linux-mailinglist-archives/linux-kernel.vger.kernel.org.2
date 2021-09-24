@@ -2,139 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC68E417857
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEC9417875
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347357AbhIXQTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:19:07 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38382
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347297AbhIXQTG (ORCPT
+        id S233702AbhIXQXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:23:40 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:41584 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347172AbhIXQXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:19:06 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8E23740291
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:17:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632500252;
-        bh=KBx9ZIG9pk67r6r2VuWSGeMfVxfkgdUANVfh9snsj/w=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=thmtv8WZyn11cCz9dHHMJRlNnbznN8wfo3yKe377RyYPr/E4Odd/D1SVArTJuaTDh
-         ErLEmvDdS5FX5tqvX2fdfzTBB1Clu+ROjtlpffHQnZf3WNkalD+wiorUJpdfyatV4o
-         aeY9/EzcThEBrpiZW2g4k8Eg2RonvcypXlkEAg27SaU0bnZ8Gbcu6xC8DbdLvLhwux
-         1R5ieKIEusPj8E6qZFUwMO1lxIvQt3FpyU5OhGmcQ+FMOdEN+rsMIO8QasXmIpfIbN
-         C49xQSd7Z9l7VxBjFARsvrGS4ajdhpPtADC+hwlWvkB97YYR8nTf2Vso7qs/BQnz0B
-         0OFK2mnAL9vSw==
-Received: by mail-ed1-f70.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so10756946edy.14
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 09:17:32 -0700 (PDT)
+        Fri, 24 Sep 2021 12:23:37 -0400
+Received: by mail-ot1-f49.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso13805912ota.8;
+        Fri, 24 Sep 2021 09:22:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KBx9ZIG9pk67r6r2VuWSGeMfVxfkgdUANVfh9snsj/w=;
-        b=B6ufP3RXE2nAdQwYSCawabo1vOHU8VWHw46HmtMtyubo0ARj7BSyN0e0UFbatTuNiY
-         uAukBVXneKyQsjxV503I1s3g5ZkkZ/DaNH2yuKpUn7Cqc6mQgD/awudLN6w3LYGjRjqf
-         wMjqF/1g0eShyyMx7Djf/qkELDD1T2DwSQbwPF3hpKVXLo4Fdp7p/KhD9DMSgJXNHmtG
-         I1OnAieQulbm/aTZIY6zQn695v1zU+EibldflmAelzsfRAchHTOyk7e3UqQvLRF8fnf8
-         wsvm3NjH43pzW3n9nwIQanS25/1Ji7h8/AKMoq2VPI8leefoyULbAW0NhHsLppgxMBcz
-         /PRg==
-X-Gm-Message-State: AOAM532F8QzX3tkXl4IZqzji+F5IUU2hFYXu0pc7rQb4LRcE44kVd9AJ
-        KH0eZPDQZB1F6vZ6SgFyb2ZqEC5qH3cxxo7n6MkhR+Ycw72+qBTV0aec31Q2doiR6Ye6KHn64Co
-        uxwKW2Tyc2IWXewzbbpccS8BeBv2VvL7orrUS4lOBu+dpO5X3bvXesq7eUw==
-X-Received: by 2002:a17:906:6d9a:: with SMTP id h26mr1977395ejt.96.1632500250644;
-        Fri, 24 Sep 2021 09:17:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwku+XUwuiLJ01GyS7qt08lWT0BlPKeGf2p9ERVpv0HQ7csZAV1Ggp34V7Bt8BIK//306rSX3iJJt7v7/BJKo8=
-X-Received: by 2002:a17:906:6d9a:: with SMTP id h26mr1977374ejt.96.1632500250436;
- Fri, 24 Sep 2021 09:17:30 -0700 (PDT)
+        bh=YcKXSgBtoVcxtHCKOtPHnRdujaEI6ZLYYWV1g18BTr8=;
+        b=Lr/U/Ma205yjlXaM0Q7YccOIBZrpkkX4OEJXiguhRHjeGd/m9nvFyEMhHYpI/xCy15
+         ZNwvNo6fGInC/kY04QuvnlXLL+PmxrsaLIb7/5CY5m/C5B8izVMSBf8lcwpuFNbqKrIT
+         xlzF12jTGJZuga0SSzuTxMzgNl9hE+bCoBe1wivej9dM8ke+rckqTUQI+0we7Mj3/6BY
+         dN9PdnQ4JLKUeZ5odPQQvT3XkbxOfkoTzTXe7HUhGo3qGRprIy0aWPnjH3eymsHjNGs2
+         mcUohMxIXpksmWpvHtl/vLlb9xRxTliur0obBr6S/7zIA6OpCcARBxtl9+aVjxOENGKv
+         dcBg==
+X-Gm-Message-State: AOAM531UYPgj+kcbtaM4XS08JqYvh14Ch1nMAE42InMCp5B7kUQFWAcW
+        G1I5XYa7uijo4gJG+9JpybkcRA55cqV8xbAJJ0c=
+X-Google-Smtp-Source: ABdhPJxjjGGJ3jArOANw1ZAOou2DF9Wa1ntjMZBW0pdESRYxjxL0t/0yjAeEoYELHdGqUVIAPcTvF4Gn/qtQ1rGAcEM=
+X-Received: by 2002:a05:6830:82b:: with SMTP id t11mr4806932ots.319.1632500524066;
+ Fri, 24 Sep 2021 09:22:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com> <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Date:   Fri, 24 Sep 2021 18:17:19 +0200
-Message-ID: <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com>
-Subject: Re: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     Support Opensource <Support.Opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210920185028.18738-1-colin.king@canonical.com>
+In-Reply-To: <20210920185028.18738-1-colin.king@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 24 Sep 2021 18:21:53 +0200
+Message-ID: <CAJZ5v0jH9PXm-abLj7MzC--OH+2kgwR8TBF0EcV8=Xh87215Xw@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: ACPI: Fix spelling mistake "Millenium" -> "Millennium"
+To:     Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-On Fri, Sep 24, 2021 at 5:04 PM Adam Thomson
-<Adam.Thomson.Opensource@diasemi.com> wrote:
+On Mon, Sep 20, 2021 at 8:50 PM Colin King <colin.king@canonical.com> wrote:
 >
-> On 21 September 2021 06:34, Alexandre Ghiti wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 >
-> > The SiFive Unmatched board uses the da9063 PMIC for reset: add a restart
-> > notifier that will execute a small i2c sequence allowing to reset the
-> > board.
-> >
-> > The original implementation comes from Marcus Comstedt and Anders
-> > Montonen
-> > (https://forums.sifive.com/t/reboot-command/4721/28).
-> >
-> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
-> > ---
-> >  drivers/mfd/da9063-core.c       | 25 +++++++++++++++++++++++++
-> >  include/linux/mfd/da9063/core.h |  3 +++
-> >  2 files changed, 28 insertions(+)
-> >
-> > diff --git a/drivers/mfd/da9063-core.c b/drivers/mfd/da9063-core.c
-> > index df407c3afce3..c87b8d611f20 100644
-> > --- a/drivers/mfd/da9063-core.c
-> > +++ b/drivers/mfd/da9063-core.c
-> > @@ -20,6 +20,7 @@
-> >  #include <linux/mutex.h>
-> >  #include <linux/mfd/core.h>
-> >  #include <linux/regmap.h>
-> > +#include <linux/reboot.h>
-> >
-> >  #include <linux/mfd/da9063/core.h>
-> >  #include <linux/mfd/da9063/registers.h>
-> > @@ -158,6 +159,18 @@ static int da9063_clear_fault_log(struct da9063 *da9063)
-> >       return ret;
-> >  }
-> >
-> > +static int da9063_restart_notify(struct notifier_block *this,
-> > +                              unsigned long mode, void *cmd)
-> > +{
-> > +     struct da9063 *da9063 = container_of(this, struct da9063,
-> > restart_handler);
-> > +
-> > +     regmap_write(da9063->regmap, DA9063_REG_PAGE_CON, 0x00);
-> > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_F, 0x04);
-> > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_A, 0x68);
-> > +
-> > +     return NOTIFY_DONE;
-> > +}
+> There is a spelling mistake in the documentation with the Windows
+> Millennium edition. Fix it.
 >
-> I will talk with our HW team to clarify, but this sequence looks to be very
-> specific to the needs of the platform in question which doesn't feel right to
-> me. As was mentioned on another thread as well, the watchdog driver already has
-> a restart function to reset the device (and thus the system), so I don't believe
-> we should have multiple of these.
-
-From the discussion that happened here
-https://www.dialog-semiconductor.com/products/pmics?post_id=10052#tab-support_tab_content,
-it does not seem possible to use the watchdog on a chip whose OTP does
-not set AUTOBOOT. But anyway, I'm looking forward to hearing from the
-HW team :)
-
-Thanks,
-
-Alex
-
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  Documentation/firmware-guide/acpi/osi.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> For board specific sequences, there are machine quirks I believe which can be
-> used to handle stuff like this, if this really isn't a generic solution to fit
-> all cases.
+> diff --git a/Documentation/firmware-guide/acpi/osi.rst b/Documentation/firmware-guide/acpi/osi.rst
+> index 29e9ef79ebc0..05869c0045d7 100644
+> --- a/Documentation/firmware-guide/acpi/osi.rst
+> +++ b/Documentation/firmware-guide/acpi/osi.rst
+> @@ -74,7 +74,7 @@ The ACPI BIOS flow would include an evaluation of _OS, and the AML
+>  interpreter in the kernel would return to it a string identifying the OS:
 >
+>  Windows 98, SE: "Microsoft Windows"
+> -Windows ME: "Microsoft WindowsME:Millenium Edition"
+> +Windows ME: "Microsoft WindowsME:Millennium Edition"
+>  Windows NT: "Microsoft Windows NT"
+>
+>  The idea was on a platform tasked with running multiple OS's,
+> --
+
+Applied as 5.16 material, thanks!
