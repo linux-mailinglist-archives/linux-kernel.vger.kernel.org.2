@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6275441744D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A40E41729E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346021AbhIXNEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32810 "EHLO mail.kernel.org"
+        id S1344109AbhIXMt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:49:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345450AbhIXNA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:00:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B73AE6125F;
-        Fri, 24 Sep 2021 12:54:01 +0000 (UTC)
+        id S1344098AbhIXMsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:48:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59E2061278;
+        Fri, 24 Sep 2021 12:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488042;
-        bh=MttgVfBZJOJGROVAEP0HvF2aSDxjxJpNzJXreEieucQ=;
+        s=korg; t=1632487630;
+        bh=IoU9t2HsCnVcrqarEjYyykrlTBr7BBMfj3jiU4ZGOp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YEBgM/9JXlh2ZflvCM5RDUC4jEZearInyQbvlJmW6n7FBAwEuCUBCSdD7Onlna6iR
-         wbC3kpPv406VtAVrlRHiBPP/iavx+s+UEEAn7hBuj8gZOKBQC2lqjg/qk4wp4//FiJ
-         HyJtld65Q1+E1/h3Ntzmjfu7hxc1al0D2mwZydv0=
+        b=ZgVjdUq6XjhhLIeyK+Kn6yHft2WAiFMAUJpkQgS9x8dj8qW0MYMFm8VTXEDxGR6e5
+         1hF3y26irYqYAmwFQjeFUjQYy9S/0obWC3kpQmuE9y4Fs/Jr9L4JPKdJHSwN4Duirb
+         02ocnvAEylI7U4SaKEGRJyhXA+dWw+moXx4KJEro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Harini Katakam <harini.katakam@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 060/100] dmaengine: xilinx_dma: Set DMA mask for coherent APIs
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 15/27] parisc: Move pci_dev_is_behind_card_dino to where it is used
 Date:   Fri, 24 Sep 2021 14:44:09 +0200
-Message-Id: <20210924124343.434771761@linuxfoundation.org>
+Message-Id: <20210924124329.677795679@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit aac6c0f90799d66b8989be1e056408f33fd99fe6 ]
+[ Upstream commit 907872baa9f1538eed02ec737b8e89eba6c6e4b9 ]
 
-The xilinx dma driver uses the consistent allocations, so for correct
-operation also set the DMA mask for coherent APIs. It fixes the below
-kernel crash with dmatest client when DMA IP is configured with 64-bit
-address width and linux is booted from high (>4GB) memory.
+parisc build test images fail to compile with the following error.
 
-Call trace:
-[  489.531257]  dma_alloc_from_pool+0x8c/0x1c0
-[  489.535431]  dma_direct_alloc+0x284/0x330
-[  489.539432]  dma_alloc_attrs+0x80/0xf0
-[  489.543174]  dma_pool_alloc+0x160/0x2c0
-[  489.547003]  xilinx_cdma_prep_memcpy+0xa4/0x180
-[  489.551524]  dmatest_func+0x3cc/0x114c
-[  489.555266]  kthread+0x124/0x130
-[  489.558486]  ret_from_fork+0x10/0x3c
-[  489.562051] ---[ end trace 248625b2d596a90a ]---
+drivers/parisc/dino.c:160:12: error:
+	'pci_dev_is_behind_card_dino' defined but not used
 
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Reviewed-by: Harini Katakam <harini.katakam@xilinx.com>
-Link: https://lore.kernel.org/r/1629363528-30347-1-git-send-email-radhey.shyam.pandey@xilinx.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Move the function just ahead of its only caller to avoid the error.
+
+Fixes: 5fa1659105fa ("parisc: Disable HP HSC-PCI Cards to prevent kernel crash")
+Cc: Helge Deller <deller@gmx.de>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/xilinx/xilinx_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/parisc/dino.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
-index 4b9530a7bf65..434b1ff22e31 100644
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -3077,7 +3077,7 @@ static int xilinx_dma_probe(struct platform_device *pdev)
- 		xdev->ext_addr = false;
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index 8bed46630857..c11515bdac83 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -160,15 +160,6 @@ struct dino_device
+ 	(struct dino_device *)__pdata; })
  
- 	/* Set the dma mask bits */
--	dma_set_mask(xdev->dev, DMA_BIT_MASK(addr_width));
-+	dma_set_mask_and_coherent(xdev->dev, DMA_BIT_MASK(addr_width));
  
- 	/* Initialize the DMA engine */
- 	xdev->common.dev = &pdev->dev;
+-/* Check if PCI device is behind a Card-mode Dino. */
+-static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
+-{
+-	struct dino_device *dino_dev;
+-
+-	dino_dev = DINO_DEV(parisc_walk_tree(dev->bus->bridge));
+-	return is_card_dino(&dino_dev->hba.dev->id);
+-}
+-
+ /*
+  * Dino Configuration Space Accessor Functions
+  */
+@@ -452,6 +443,15 @@ static void quirk_cirrus_cardbus(struct pci_dev *dev)
+ DECLARE_PCI_FIXUP_ENABLE(PCI_VENDOR_ID_CIRRUS, PCI_DEVICE_ID_CIRRUS_6832, quirk_cirrus_cardbus );
+ 
+ #ifdef CONFIG_TULIP
++/* Check if PCI device is behind a Card-mode Dino. */
++static int pci_dev_is_behind_card_dino(struct pci_dev *dev)
++{
++	struct dino_device *dino_dev;
++
++	dino_dev = DINO_DEV(parisc_walk_tree(dev->bus->bridge));
++	return is_card_dino(&dino_dev->hba.dev->id);
++}
++
+ static void pci_fixup_tulip(struct pci_dev *dev)
+ {
+ 	if (!pci_dev_is_behind_card_dino(dev))
 -- 
 2.33.0
 
