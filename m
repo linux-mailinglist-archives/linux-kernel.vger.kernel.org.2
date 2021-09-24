@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A43417469
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4014173AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345892AbhIXNFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:05:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57332 "EHLO mail.kernel.org"
+        id S1345800AbhIXM70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:59:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346229AbhIXNDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:03:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5185D613E8;
-        Fri, 24 Sep 2021 12:55:00 +0000 (UTC)
+        id S1344957AbhIXMzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:55:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77B646137E;
+        Fri, 24 Sep 2021 12:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488100;
-        bh=ztyZNbZOV7a4EjyoOiFCn8eUzuDvK9xolYB4ExY21P4=;
+        s=korg; t=1632487875;
+        bh=oR1hmfRHT/13dYK8FGabYDayc9y+noLO88wEHsa5ynY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rtzlwCs/lQRK5wdtfKeo8U3Zk1n5OoqzPMBy3c6KCFxNwrVmaWb+piJ/xeSI4AEMs
-         Xt6k8UkZFORJUYpJJGvM11aZPboc6aUjIu2/pjbB2UI7QCI2wxWXDHK8P92PNsQQD7
-         6i8cKtgwG8p3k4BSqE2rQy7h0umtweJqP/E4w7Mg=
+        b=snatp12EXjT1e18B1tmEKgmzZGDHOi5jL0yT7n9vca6psoB8Rscd3DHZDB+fE7SMh
+         n4cZssJ65Gim9waV+DfJQ1CcBqZWi3kK1L7oaFA02khDglwcyeZzQWHFLypaPuClgD
+         9EyU31OWZqG6+HAem0A32/eYvjzRPnhjiJWaij84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuri Nudelman <ynudelman@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 085/100] habanalabs: fix mmu node address resolution in debugfs
-Date:   Fri, 24 Sep 2021 14:44:34 +0200
-Message-Id: <20210924124344.318323110@linuxfoundation.org>
+Subject: [PATCH 5.4 46/50] pwm: rockchip: Dont modify HW state in .remove() callback
+Date:   Fri, 24 Sep 2021 14:44:35 +0200
+Message-Id: <20210924124333.792944078@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuri Nudelman <ynudelman@habana.ai>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 09ae43043c748423a5dcdc7bb1e63e4dcabe9bd6 ]
+[ Upstream commit 9d768cd7fd42bb0be16f36aec48548fca5260759 ]
 
-The address resolution via debugfs was not taking into consideration the
-page offset, resulting in a wrong address.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-Signed-off-by: Yuri Nudelman <ynudelman@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pwm/pwm-rockchip.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
-index 703d79fb6f3f..379529bffc70 100644
---- a/drivers/misc/habanalabs/common/debugfs.c
-+++ b/drivers/misc/habanalabs/common/debugfs.c
-@@ -349,7 +349,7 @@ static int mmu_show(struct seq_file *s, void *data)
- 		return 0;
- 	}
+diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
+index 6ad6aad215cf..8c0af705c5ae 100644
+--- a/drivers/pwm/pwm-rockchip.c
++++ b/drivers/pwm/pwm-rockchip.c
+@@ -383,20 +383,6 @@ static int rockchip_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct rockchip_pwm_chip *pc = platform_get_drvdata(pdev);
  
--	phys_addr = hops_info.hop_info[hops_info.used_hops - 1].hop_pte_val;
-+	hl_mmu_va_to_pa(ctx, virt_addr, &phys_addr);
+-	/*
+-	 * Disable the PWM clk before unpreparing it if the PWM device is still
+-	 * running. This should only happen when the last PWM user left it
+-	 * enabled, or when nobody requested a PWM that was previously enabled
+-	 * by the bootloader.
+-	 *
+-	 * FIXME: Maybe the core should disable all PWM devices in
+-	 * pwmchip_remove(). In this case we'd only have to call
+-	 * clk_unprepare() after pwmchip_remove().
+-	 *
+-	 */
+-	if (pwm_is_enabled(pc->chip.pwms))
+-		clk_disable(pc->clk);
+-
+ 	clk_unprepare(pc->pclk);
+ 	clk_unprepare(pc->clk);
  
- 	if (hops_info.scrambled_vaddr &&
- 		(dev_entry->mmu_addr != hops_info.scrambled_vaddr))
 -- 
 2.33.0
 
