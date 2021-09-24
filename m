@@ -2,156 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26750416CA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D76B416CA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244325AbhIXHTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
+        id S244346AbhIXHS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244324AbhIXHTE (ORCPT
+        with ESMTP id S244321AbhIXHSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:19:04 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620AAC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:17:31 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mTfSX-0001C5-1y; Fri, 24 Sep 2021 09:17:25 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mTfSJ-0000Br-JT; Fri, 24 Sep 2021 09:17:11 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mTfSJ-0007OO-I4; Fri, 24 Sep 2021 09:17:11 +0200
-Date:   Fri, 24 Sep 2021 09:16:52 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, Doug Anderson <dianders@google.com>
-Subject: Re: [PATCH v5 1/2] pwm: Introduce single-PWM of_xlate function
-Message-ID: <20210924071652.skkx2jgeivg4uiht@pengutronix.de>
-References: <20210924021225.846197-1-bjorn.andersson@linaro.org>
+        Fri, 24 Sep 2021 03:18:47 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B15C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:17:14 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:5dd8:9bc4:3752:5710])
+        by michel.telenet-ops.be with bizsmtp
+        id xjHD2500C2gynNa06jHD1y; Fri, 24 Sep 2021 09:17:13 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mTfSL-008VhM-0i; Fri, 24 Sep 2021 09:17:13 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mTfSK-007LTR-Hf; Fri, 24 Sep 2021 09:17:12 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] Input: gpio-keys - convert to dev_err_probe()
+Date:   Fri, 24 Sep 2021 09:17:11 +0200
+Message-Id: <5cc045d789a71f5c2896b7c11eb79ea75a9fabf8.1632467778.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="czfclota4l3jcmxr"
-Content-Disposition: inline
-In-Reply-To: <20210924021225.846197-1-bjorn.andersson@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use the dev_err_probe() helper, instead of open-coding the same
+operation.
 
---czfclota4l3jcmxr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+While at it, invert the error checking logic to simplify code flow.
 
-On Thu, Sep 23, 2021 at 09:12:24PM -0500, Bjorn Andersson wrote:
-> The existing pxa driver and the upcoming addition of PWM support in the
-> TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
-> thereby a need for a of_xlate function with the period as its single
-> argument.
->=20
-> Introduce a common helper function in the core that can be used as
-> of_xlate by such drivers and migrate the pxa driver to use this.
->=20
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->=20
-> Changes since v4:
-> - None
->=20
->  drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
->  drivers/pwm/pwm-pxa.c | 16 +---------------
->  include/linux/pwm.h   |  2 ++
->  3 files changed, 29 insertions(+), 15 deletions(-)
->=20
-> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> index 4527f09a5c50..2c6b155002a2 100644
-> --- a/drivers/pwm/core.c
-> +++ b/drivers/pwm/core.c
-> @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const s=
-truct of_phandle_args *args)
->  }
->  EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
-> =20
-> +struct pwm_device *
-> +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args *a=
-rgs)
-> +{
-> +	struct pwm_device *pwm;
-> +
-> +	if (pc->of_pwm_n_cells < 1)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	/* validate that one cell is specified, optionally with flags */
-> +	if (args->args_count !=3D 1 && args->args_count !=3D 2)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	pwm =3D pwm_request_from_chip(pc, 0, NULL);
-> +	if (IS_ERR(pwm))
-> +		return pwm;
-> +
-> +	pwm->args.period =3D args->args[0];
-> +	pwm->args.polarity =3D PWM_POLARITY_NORMAL;
-> +
-> +	if (args->args_count =3D=3D 2 && args->args[2] & PWM_POLARITY_INVERTED)
-> +		pwm->args.polarity =3D PWM_POLARITY_INVERSED;
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/input/keyboard/gpio_keys.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
-of_pwm_xlate_with_flags is a bit more complicated. Translating
-accordingly this would yield:
+diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
+index 8dbf1e69c90ac92f..0f2250c6aa4978d5 100644
+--- a/drivers/input/keyboard/gpio_keys.c
++++ b/drivers/input/keyboard/gpio_keys.c
+@@ -523,18 +523,15 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
+ 						     NULL, GPIOD_IN, desc);
+ 		if (IS_ERR(bdata->gpiod)) {
+ 			error = PTR_ERR(bdata->gpiod);
+-			if (error == -ENOENT) {
+-				/*
+-				 * GPIO is optional, we may be dealing with
+-				 * purely interrupt-driven setup.
+-				 */
+-				bdata->gpiod = NULL;
+-			} else {
+-				if (error != -EPROBE_DEFER)
+-					dev_err(dev, "failed to get gpio: %d\n",
+-						error);
+-				return error;
+-			}
++			if (error != -ENOENT)
++				return dev_err_probe(dev, error,
++						     "failed to get gpio\n");
++
++			/*
++			 * GPIO is optional, we may be dealing with
++			 * purely interrupt-driven setup.
++			 */
++			bdata->gpiod = NULL;
+ 		}
+ 	} else if (gpio_is_valid(button->gpio)) {
+ 		/*
+-- 
+2.25.1
 
-	if (pc->of_pwm_n_cells >=3D 2) {
-		if (args->args_count > 1 && args->args[1] & PWM_POLARITY_INVERTED)
-			pwm->args.polarity =3D PWM_POLARITY_INVERSED;
-	}
-
-Given that pc->of_pwm_n_cells isn't used when a phandle is parsed (in
-of_pwm_get()) I think your variant is fine.
-
-So I think technically the patch is good, for me the question is if we
-want to make new drivers of_pwm_xlate_with_flags for consistency even
-though this would mean that the first argument has to be 0 for all
-phandles. Thierry? Lee?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---czfclota4l3jcmxr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFNe2AACgkQwfwUeK3K
-7AkJigf/dCcK+ArZLHg6H2J5WGPyvuN0gQ4thd04H9zv04pknzDifSMUFGzifhEw
-hScmzm52aAKcyqGxGrNXpbGd277DQxZMJV36LUTuoqfUQQ2iaZipZdt4vkSWXa50
-0jSmKPKc7wvmzekUlTv83QTlARSY0oVjRVSgm4bQZR4xLwh9N0hpgEyirHXlxdQm
-GQUoeeMn5mcs0hlFsD3Zqyc3YJNuoKryMbg4DGryIAkHtrwGyFFqrzQteFrZPR6D
-suQ9hhKNPDoWCmu9NLCU9dEoZQpbWwUIjdDTaOkqTagYGPT+SwwN8ylZv257OOj/
-g714raZN4M1l6watMBW3FlXL4VBkPw==
-=Df4T
------END PGP SIGNATURE-----
-
---czfclota4l3jcmxr--
