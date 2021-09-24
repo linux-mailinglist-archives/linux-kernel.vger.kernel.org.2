@@ -2,121 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA7F41765F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1226417672
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346583AbhIXN7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
+        id S1346661AbhIXOB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhIXN7d (ORCPT
+        with ESMTP id S1346604AbhIXOBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:59:33 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E09C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:58:00 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so13279971otx.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:58:00 -0700 (PDT)
+        Fri, 24 Sep 2021 10:01:03 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0195C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:59:30 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id q3so12630201iot.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:59:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1RcBO3ZwhRNQkUwWNcFC7SDhJcoyZAxAM430ZrG87ms=;
-        b=rrBBzseRPWIWqPREa3EHzm4fUrYBTti+FuqgMmysyOmazXKbAdX+iIHoUEw3fSpck/
-         ksSYrOSbX2/X/3GQ2YtFfvok5xwlURxtQEXrtD+dpSny+4oubqqucb9Fe4kTSOfbORXE
-         RfVMYL2USHgwlwMn8Nsy62wWaNVZpj14yQAV+EkzjpsGj1pXLcbCllcKJFdG9y8iGY+P
-         ZSDatBymPS+HFv6lMxNoxCJHlNUhcZuDjKdMDk5EFeYlSjudcsMG4bKEHf/SWPnDmNZS
-         JTvncV5uC/xkauDY9pplhvtNw5DXhZ3AB9Pdcm9IPWncXgXWmNifUZ6x0OuWtKtWhbG1
-         U28w==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vH2YhvPec36tzF9CqFvv48FWCLMK8cS6dcfU+nnIHyY=;
+        b=MULBtZwJXLYw882PNkC1wdIC6xsntlfC3Jqk68hXwFyDrHTB+5MPik7dimveBvicK9
+         czoHkx9kG9TCx/Q0u/mXNOVOnge0HpxCKoo9h1TN4Th3MREoijDCtzjsI9IzhTeV8JJL
+         vRiuoKD8opz3Gwxmjxn7QjH6rynmXpiiqOlLM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1RcBO3ZwhRNQkUwWNcFC7SDhJcoyZAxAM430ZrG87ms=;
-        b=bqhUJBaKI1hqNQZI3RemjHMqfXIIoWOdipYNL6leWMrVKOfsN7UVxzdsMO2IZHwEso
-         LVF7H3SgBPyVFtU/h9DfrXbyYSdQbpcECXieUbra87Je1oUxrMY3SXjf0l/EucgovaoJ
-         EzHKXa8Mvmfh4pm2wVYlZxdjUoKN9Qnp6fwQuLdDueodgXsINKW5MdINq+1w2DdXwOWd
-         b0JxKVnPF6ZaArRpO4E0D8Lc/JGAvDosRzBfnovr72Hr93pILFRcrYQM/O36yoBEw7fw
-         pJ4r9vfEbcfZqfQzvxxQ6KbGCG9B4dLH6Oe9jPqSVYHN+8uiZirkJanuvooWkNePMFSA
-         eYFQ==
-X-Gm-Message-State: AOAM532qxZunduQz/BarR9hvLxl6ueFt+pe/k7ezMm9lvDjZOmJhxmIu
-        rFrQZ/TPYE+KF/L+jeUGXeUtcM9cwonpi5+HLvY=
-X-Google-Smtp-Source: ABdhPJydKy3JnZHwlx58C/M9tbjbC9mXQ2MOWBPDY3sQOikfhnSRVyfkCcgPDg+2eB6jFPeg9MJKRA==
-X-Received: by 2002:a05:6830:1557:: with SMTP id l23mr2778759otp.154.1632491879751;
-        Fri, 24 Sep 2021 06:57:59 -0700 (PDT)
-Received: from [192.168.17.16] ([189.219.73.83])
-        by smtp.gmail.com with ESMTPSA id d23sm2146304ook.47.2021.09.24.06.57.58
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vH2YhvPec36tzF9CqFvv48FWCLMK8cS6dcfU+nnIHyY=;
+        b=UKLxb67Z23JpUWsxGJ17x7Ln2YGARD94s8L91ar7mPLkSNqvz4Kx5i8137XRLfiUN/
+         ljcv3XbNVLs3lys2hR3EAFq6A8ch6UXcmWQZ6z+kd7IvmXShg9nOeEnvvuOwfAwpaauS
+         kCHn9Wx6CXPNffRqzoVDobDYfJSDA1p7huYzFoh+cUQyL73C/hzMMUKj8uDkAQmWkcn8
+         W1fUV5F+AiRyGOpjW1twXd7NodqOJF759RJu3OjKcDa2wt3tPfZgU5sHMUW9tgUVwd6k
+         gLuGy3N78DeVYVIyV/6EJwx6jgPJl4l8zayMi2jaNF+4QYm3NfCP3Wv8dTmY99uWOyZl
+         5fqg==
+X-Gm-Message-State: AOAM5333MA86ngkuvFVF/2hCKZrdNUGKOFK5D/7hVKrbI8mFrPcjGCrA
+        ob2LAf8u0j2+5zBxq3qEoycCnkQSbjzaZg==
+X-Google-Smtp-Source: ABdhPJwIrI+1XvuTvkCoIFBy3dylUS4uvtwsH94cahtmRscaGiykiLOhnUVCfEc5Ey9OcgoBKGcUcQ==
+X-Received: by 2002:a05:6638:16d4:: with SMTP id g20mr9405765jat.22.1632491970005;
+        Fri, 24 Sep 2021 06:59:30 -0700 (PDT)
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com. [209.85.166.172])
+        by smtp.gmail.com with ESMTPSA id o11sm4107991ilq.12.2021.09.24.06.59.28
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 06:57:59 -0700 (PDT)
-Subject: Re: [PATCH 4.19 00/34] 4.19.208-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210924124329.965218583@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <05f5f22f-f83d-cce1-3d40-a8bdb030472b@linaro.org>
-Date:   Fri, 24 Sep 2021 08:57:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 24 Sep 2021 06:59:29 -0700 (PDT)
+Received: by mail-il1-f172.google.com with SMTP id x2so10487890ilm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:59:28 -0700 (PDT)
+X-Received: by 2002:a05:6e02:1bad:: with SMTP id n13mr8008800ili.142.1632491957963;
+ Fri, 24 Sep 2021 06:59:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210914202202.1702601-1-dianders@chromium.org>
+ <CACRpkdaTb4_UfFzCqw=fiAnQhHD+1sDDua529KdGQbgMVfjYBw@mail.gmail.com>
+ <CAD=FV=VPgFRBLgOGvt4a4afDr80aQL64L7=H3kqeRf2ffiusPg@mail.gmail.com>
+ <CGME20210924080417eucas1p209819b105dc64faf1f2a7140c5c1389b@eucas1p2.samsung.com>
+ <874kaabdt5.fsf@intel.com> <68c3f798-a18d-fe8d-2925-2686716a985b@samsung.com>
+In-Reply-To: <68c3f798-a18d-fe8d-2925-2686716a985b@samsung.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 24 Sep 2021 06:59:05 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XEb-jx81inK8hGvdJeRqTLmmBKz7U-m+9=CHbNRSa16g@mail.gmail.com>
+Message-ID: <CAD=FV=XEb-jx81inK8hGvdJeRqTLmmBKz7U-m+9=CHbNRSa16g@mail.gmail.com>
+Subject: Re: [PATCH v5 00/15] eDP: Support probing eDP panels dynamically
+ instead of hardcoding
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        smyakam@microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi,
 
-On 9/24/21 7:43 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.208 release.
-> There are 34 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.208-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Fri, Sep 24, 2021 at 2:10 AM Andrzej Hajda <a.hajda@samsung.com> wrote:
+>
+> Hi
+>
+> removed most cc, due to server limitation
+>
+>
+> W dniu 24.09.2021 o 10:03, Jani Nikula pisze:
+> > On Mon, 20 Sep 2021, Doug Anderson <dianders@chromium.org> wrote:
+> >> Pushed all 15 to drm-misc-next.
+> > ...
+> >> e8de4d55c259 drm/edid: Use new encoded panel id style for quirks matching
+> >> d9f91a10c3e8 drm/edid: Allow querying/working with the panel ID from
+> >> the EDID
+> > Hi Doug, Stan's reporting "initializer element is not constant" issues
+> > here that were discussed before [1]. I wonder what gives, you said you'd
+> > hit them on a draft version, but not with what was merged, and I can't
+> > reproduce this either. Curious.
+>
+>
+> Apparently this is grey area of unclear specification.
+>
+> gcc version below 8 reports error, above 8.1+ should work [1]. I am not
+> sure if there is nice workaround for older gcc.
+>
+>
+> [1]: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69960#c18
 
-Regressions detected.
+So I think the only solution is to go back to the character-at-a-time
+version. It's slightly uglier but functionality trumps form.
 
-While building mxs_defconfig for arm with GCC 8, 9, 10 and 11, the following error was encountered:
+I'll post something today though it might need to wait a few hours
+before I can manage it.
 
-   /builds/linux/arch/arm/mach-mxs/mach-mxs.c:285:26: warning: duplicate 'const' declaration specifier [-Wduplicate-decl-specifier]
-     285 | static const struct gpio const tx28_gpios[] __initconst = {
-         |                          ^~~~~
-   /builds/linux/drivers/pwm/pwm-mxs.c: In function 'mxs_pwm_probe':
-   /builds/linux/drivers/pwm/pwm-mxs.c:164:24: error: implicit declaration of function 'dev_err_probe'; did you mean 'device_reprobe'? [-Werror=implicit-function-declaration]
-     164 |                 return dev_err_probe(&pdev->dev, ret, "failed to reset PWM\n");
-         |                        ^~~~~~~~~~~~~
-         |                        device_reprobe
-   cc1: some warnings being treated as errors
-   make[3]: *** [/builds/linux/scripts/Makefile.build:280: drivers/pwm/pwm-mxs.o] Error 1
-
-This is also seen in other branches (from 4.4 to 5.4). To reproduce this build locally:
-
-   tuxmake \
-     --target-arch=arm \
-     --kconfig=mxs_defconfig \
-     --toolchain=gcc-11 \
-     --runtime=podman \
-     config default kernel xipkernel modules dtbs dtbs-legacy debugkernel headers
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
+-Doug
