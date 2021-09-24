@@ -2,122 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF1F417909
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BD741790A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343839AbhIXQqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:46:53 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:58756 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343764AbhIXQqw (ORCPT
+        id S1343878AbhIXQrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:47:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59431 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245680AbhIXQrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:46:52 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:41616)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mToK4-00DD1A-6l; Fri, 24 Sep 2021 10:45:16 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:48876 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mToK2-00GHdg-8U; Fri, 24 Sep 2021 10:45:15 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     Alexander Mihalicyn <alexander@mihalicyn.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Milton Miller <miltonm@bga.com>,
-        Jack Miller <millerjo@us.ibm.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Christian Brauner <christian@brauner.io>
-References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
-        <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
-        <CAJqdLrpx+xEMGQLZo7jS5BTAw-k2sWPrv9fCt0x8t=6Nbn7u+w@mail.gmail.com>
-        <CALgW_8VUk0us_umLncUv2DUMkOi3qixmT+YkHV4Dhpt_nNMZHw@mail.gmail.com>
-        <CAJqdLrofd76x_hziq7F3wY3jqZfE1LNZbQ8sD6MUFXbPHVcdVw@mail.gmail.com>
-        <CALgW_8WHq051ifcYPta5reoVZ10=fA5Rb1EZuyaievK+OUw99Q@mail.gmail.com>
-        <CAJqdLrpxnMThqersqiVsTNr1Y25V8jmDcW_sKWi0ziJXCsi2gw@mail.gmail.com>
-        <87y2ab9w8u.fsf@disp2133>
-        <00ce7bff-e432-8244-1765-12460817baab@colorfullife.com>
-Date:   Fri, 24 Sep 2021 11:45:07 -0500
-In-Reply-To: <00ce7bff-e432-8244-1765-12460817baab@colorfullife.com> (Manfred
-        Spraul's message of "Thu, 23 Sep 2021 18:36:16 +0200")
-Message-ID: <87pmsxorcc.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 24 Sep 2021 12:47:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632501929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ig1qXwYYJ1Io94fZ4ATHrf6EpK7gmAjJE8Ln9sGX3Dc=;
+        b=WIyEKP51Ga3N/0d+WwLdkTRLKEx+qOpj8EcSJ9tqZawnC3uEf9Y9tN2ipmznY0zJyAiHid
+        rTVTXHfK5tWQJaH1ED18TfgVzGvm1ad0phHHM4Sk8CkhGKvC1B6QmDHnTExgWFsIClgQod
+        cwUrTboRpIB4gmcQOOryKCJbaAxUTfc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-iyhM27qfMUyGh2Q2nXXH5w-1; Fri, 24 Sep 2021 12:45:28 -0400
+X-MC-Unique: iyhM27qfMUyGh2Q2nXXH5w-1
+Received: by mail-wr1-f69.google.com with SMTP id r9-20020a5d4989000000b0015d0fbb8823so8551930wrq.18
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 09:45:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ig1qXwYYJ1Io94fZ4ATHrf6EpK7gmAjJE8Ln9sGX3Dc=;
+        b=yT49kNn8069J6gh+bMZOjn0FdSzXqPf712+Wqr1YJYoS6XL4gHEEfWxLZzQQ4iye5s
+         ndNVuPwH9zexzxRRrMMt5uPh1yNzUIMIYYo/mBqQnzmd1sT4dqwnU4yJde/FqgxC3C/C
+         FlyI8qtiPD91vRAjF1vs/avFgeM3YApuBuh7U95rWk7CegqbwwLFysbGARLeXXwjEzbG
+         WZUb753Lldw4SI/cxCAHiAgYCZLLTkFDBLqwcnZ7eFboUiI0Xz1yEfLyuciwM4nr2Iq3
+         kXmZTtlXhYpxMti++kfI0Jc2ckqJFEqdIv3/jdoy6wTspwdXTQBed0g/CKluwi3Da5XG
+         rAbQ==
+X-Gm-Message-State: AOAM530NnODS9Hc1Y0m/9Ey5nGn7gVVvDVpW1XaGZMhxRkWcv5e4Htnp
+        IBdk3VC1XyeRXrkPhzPtjiEndwW++m4rt9KIaZ0300Ogt2x4204SvMskUGEoIQNxyjfnxMy0FiH
+        Vi5ACiUM9UM6mLQICcES6VJwU
+X-Received: by 2002:a1c:2d6:: with SMTP id 205mr3152498wmc.101.1632501927431;
+        Fri, 24 Sep 2021 09:45:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxeK/CEJNWF7tmBJ+3orunp2QGfRYrewO5FXWod4Yzr5bcOJj4rTxMbuz+PsEwYoPXBuHf2sA==
+X-Received: by 2002:a1c:2d6:: with SMTP id 205mr3152471wmc.101.1632501927167;
+        Fri, 24 Sep 2021 09:45:27 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c61fc.dip0.t-ipconnect.de. [91.12.97.252])
+        by smtp.gmail.com with ESMTPSA id l26sm12837674wmi.25.2021.09.24.09.45.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 09:45:26 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mm/migrate: optimize hotplug-time demotion order
+ updates
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, oliver.sang@intel.com, ying.huang@intel.com,
+        mhocko@suse.com, weixugc@google.com, osalvador@suse.de,
+        rientjes@google.com, dan.j.williams@intel.com, gthelen@google.com,
+        yang.shi@linux.alibaba.com, akpm@linux-foundation.org
+References: <20210924161251.093CCD06@davehans-spike.ostc.intel.com>
+ <20210924161253.D7673E31@davehans-spike.ostc.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <3d9eb91d-eb2c-84e7-fd79-a860bfda7be7@redhat.com>
+Date:   Fri, 24 Sep 2021 18:45:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mToK2-00GHdg-8U;;;mid=<87pmsxorcc.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18aWtGQ0imt7CbQjqrTDEas2KQJw3Y/wn8=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_00,
-        XMNoVowels,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3287]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_00 obfuscated drug references
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Manfred Spraul <manfred@colorfullife.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1321 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.6 (0.3%), b_tie_ro: 2.4 (0.2%), parse: 0.65
-        (0.0%), extract_message_metadata: 8 (0.6%), get_uri_detail_list: 0.68
-        (0.1%), tests_pri_-1000: 4.1 (0.3%), tests_pri_-950: 1.04 (0.1%),
-        tests_pri_-900: 0.83 (0.1%), tests_pri_-90: 86 (6.5%), check_bayes: 85
-        (6.4%), b_tokenize: 4.6 (0.4%), b_tok_get_all: 6 (0.4%), b_comp_prob:
-        1.51 (0.1%), b_tok_touch_all: 71 (5.4%), b_finish: 0.65 (0.0%),
-        tests_pri_0: 1207 (91.4%), check_dkim_signature: 0.36 (0.0%),
-        check_dkim_adsp: 2.3 (0.2%), poll_dns_idle: 0.60 (0.0%), tests_pri_10:
-        1.74 (0.1%), tests_pri_500: 6 (0.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 0/2] shm: omit forced shm destroy if task IPC namespace was changed
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20210924161253.D7673E31@davehans-spike.ostc.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Manfred Spraul <manfred@colorfullife.com> writes:
+On 24.09.21 18:12, Dave Hansen wrote:
+> 
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+> == tl;dr ==
+> 
+> Automatic demotion opted for a simple, lazy approach to handling
+> hotplug events.  This noticeably slows down memory hotplug[1].
+> Optimize away updates to the demotion order when memory hotplug
+> events should have no effect.
+> 
+> This has no effect on CPU hotplug.  There is no known problem on
+> the CPU side and any work there will be in a separate series.
+> 
+> == Background ==
+> 
+> Automatic demotion is a memory migration strategy to ensure that
+> new allocations have room in faster memory tiers on tiered memory
+> systems.  The kernel maintains an array (node_demotion[]) to
+> drive these migrations.
+> 
+> The node_demotion[] path is calculated by starting at nodes with
+> CPUs and then "walking" to nodes with memory.  Only hotplug
+> events which online or offline a node with memory (N_ONLINE) or
+> CPUs (N_CPU) will actually affect the migration order.
+> 
+> == Problem ==
+> 
+> However, the current code is lazy.  It completely regenerates the
+> migration order on *any* CPU or memory hotplug event.  The logic
+> was that these events are extremely rare and that the overhead
+> from indiscriminate order regeneration is minimal.
+> 
+> Part of the update logic involves a synchronize_rcu(), which is a
+> pretty big hammer.  Its overhead was large enough to be detected
+> by some 0day tests that watch memory hotplug performance[1].
+> 
+> == Solution ==
+> 
+> Add a new helper (node_demotion_topo_changed()) which can
+> differentiate between superfluous and impactful hotplug events.
+> Skip the expensive update operation for superfluous events.
+> 
+> == Aside: Locking ==
+> 
+> It took me a few moments to declare the locking to be safe enough
+> for node_demotion_topo_changed() to work.  It all hinges on the
+> memory hotplug lock:
+> 
+> During memory hotplug events, 'mem_hotplug_lock' is held for
+> write.  This ensures that two memory hotplug events can not be
+> called simultaneously.
+> 
+> CPU hotplug has a similar lock (cpuhp_state_mutex) which also
+> provides mutual exclusion between CPU hotplug events.  In
+> addition, the demotion code acquire and hold the mem_hotplug_lock
+> for read during its CPU hotplug handlers.  This provides mutual
+> exclusion between the demotion memory hotplug callbacks and the
+> CPU hotplug callbacks.
+> 
+> This effectively allows treating the migration target generation
+> code to act as if it is single-threaded.
+> 
+> 1. https://lore.kernel.org/all/20210905135932.GE15026@xsang-OptiPlex-9020/
+> 
+> Fixes: 884a6e5d1f93 ("mm/migrate: update node demotion order on hotplug events")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Wei Xu <weixugc@google.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Greg Thelen <gthelen@google.com>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> 
+>   b/mm/migrate.c |   12 +++++++++++-
+>   1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff -puN mm/migrate.c~faster-node-order mm/migrate.c
+> --- a/mm/migrate.c~faster-node-order	2021-09-24 09:12:30.988377798 -0700
+> +++ b/mm/migrate.c	2021-09-24 09:12:30.988377798 -0700
+> @@ -3239,8 +3239,18 @@ static int migration_offline_cpu(unsigne
+>    * set_migration_target_nodes().
+>    */
+>   static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
+> -						 unsigned long action, void *arg)
+> +						 unsigned long action, void *_arg)
+>   {
+> +	struct memory_notify *arg = _arg;
+> +
+> +	/*
+> +	 * Only update the node migration order when a node is
+> +	 * changing status, like online->offline.  This avoids
+> +	 * the overhead of synchronize_rcu() in most cases.
+> +	 */
+> +	if (arg->status_change_nid < 0)
+> +		return notifier_from_errno(0);
+> +
+>   	switch (action) {
+>   	case MEM_GOING_OFFLINE:
+>   		/*
+> _
+> 
 
-> Hi Eric,
->
-> I'd like to restart the discussion, the issue should be fixed.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Agreed.
+-- 
+Thanks,
 
-I am going to come right out and say having read through everything
-my suggests were confused and wrong.
+David / dhildenb
 
-Somehow I thought the cleanups I was suggesting world result in
-shm_clist only being modified from the task that owns the list.
-Which would result in no need to use a per-task list.
-
-Having looked through my suggestions again I was completely wrong.
-
-The only useful bit I have to contribute from that original suggestion
-is let's please have smallish patches that change one thing at a time.
-
-That code is sufficiently interesting that it is way too easy to get
-lost in big patches.
-
-
-I am not going to discuss my broken suggestions right now because every
-time I look into them I go into a rabbit hole and I don't get anything
-productive done on fixing these issues, just something close and
-frustrating.  Apologies if I derailed your patch.
-
-Eric
