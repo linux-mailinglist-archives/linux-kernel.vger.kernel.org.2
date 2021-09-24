@@ -2,217 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4DE416E8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21B5416E91
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245131AbhIXJLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244533AbhIXJLC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:11:02 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39731C061574;
-        Fri, 24 Sep 2021 02:09:29 -0700 (PDT)
-Received: from [IPv6:2a01:e0a:4cb:a870:c58e:ea8f:b5a4:d24f] (unknown [IPv6:2a01:e0a:4cb:a870:c58e:ea8f:b5a4:d24f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S245139AbhIXJLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:11:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245142AbhIXJLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 05:11:11 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B2DDB1F449D7;
-        Fri, 24 Sep 2021 10:09:26 +0100 (BST)
-Subject: Re: [PATCH v5 08/10] media: hantro: Prepare for other G2 codecs
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
-References: <20210922101146.13762-1-andrzej.p@collabora.com>
- <20210922101146.13762-9-andrzej.p@collabora.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <61875214-d059-8105-6f5f-a0c7c37cb64f@collabora.com>
-Date:   Fri, 24 Sep 2021 11:09:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D29C6103B;
+        Fri, 24 Sep 2021 09:09:39 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mThD7-00CiS2-45; Fri, 24 Sep 2021 10:09:37 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Aditya Srivastava <yashsri421@gmail.com>,
+        Aleksandar Markovic <aleksandar.markovic@mips.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Goran Ferenc <goran.ferenc@mips.com>,
+        Kaige Fu <kaige.fu@linux.alibaba.com>,
+        kernel test robot <lkp@intel.com>,
+        Miodrag Dinic <miodrag.dinic@mips.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ulrich Hecht <uli+renesas@fpond.eu>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Yun Wu <wuyun.wu@huawei.com>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: [GIT PULL] irqchip fixes for 5.15, take #1
+Date:   Fri, 24 Sep 2021 10:09:33 +0100
+Message-Id: <20210924090933.2766857-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210922101146.13762-9-andrzej.p@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, yashsri421@gmail.com, aleksandar.markovic@mips.com, bgolaszewski@baylibre.com, cuibixuan@huawei.com, geert@linux-m68k.org, geert+renesas@glider.be, goran.ferenc@mips.com, kaige.fu@linux.alibaba.com, lkp@intel.com, miodrag.dinic@mips.com, rdunlap@infradead.org, s.trumtrar@pengutronix.de, sfr@canb.auug.org.au, uli+renesas@fpond.eu, valentin.schneider@arm.com, wuyun.wu@huawei.com, linux-kernel@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Thomas,
 
-Le 22/09/2021 à 12:11, Andrzej Pietrasiewicz a écrit :
-> VeriSilicon Hantro G2 core supports other codecs besides hevc.
-> Factor out some common code in preparation for vp9 support.
+Here's a handful of irqchip/irqdomain fixes for 5.15. The biggest
+items here are a fix for a regression on the Armada 370-XP platform,
+as well as a workaround for an odd Renesas platform.
 
-Reviewed-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+The rest of the usual set of cleanups and documentation update.
 
->
-> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> ---
->   drivers/staging/media/hantro/Makefile         |  1 +
->   drivers/staging/media/hantro/hantro.h         |  7 +++++
->   drivers/staging/media/hantro/hantro_g2.c      | 27 ++++++++++++++++
->   .../staging/media/hantro/hantro_g2_hevc_dec.c | 31 -------------------
->   drivers/staging/media/hantro/hantro_g2_regs.h |  7 +++++
->   drivers/staging/media/hantro/hantro_hw.h      |  2 ++
->   6 files changed, 44 insertions(+), 31 deletions(-)
->   create mode 100644 drivers/staging/media/hantro/hantro_g2.c
->
-> diff --git a/drivers/staging/media/hantro/Makefile b/drivers/staging/media/hantro/Makefile
-> index 90036831fec4..fe6d84871d07 100644
-> --- a/drivers/staging/media/hantro/Makefile
-> +++ b/drivers/staging/media/hantro/Makefile
-> @@ -12,6 +12,7 @@ hantro-vpu-y += \
->   		hantro_g1_mpeg2_dec.o \
->   		hantro_g2_hevc_dec.o \
->   		hantro_g1_vp8_dec.o \
-> +		hantro_g2.o \
->   		rockchip_vpu2_hw_jpeg_enc.o \
->   		rockchip_vpu2_hw_h264_dec.o \
->   		rockchip_vpu2_hw_mpeg2_dec.o \
-> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
-> index dd5e56765d4e..d91eb2b1c509 100644
-> --- a/drivers/staging/media/hantro/hantro.h
-> +++ b/drivers/staging/media/hantro/hantro.h
-> @@ -369,6 +369,13 @@ static inline void vdpu_write(struct hantro_dev *vpu, u32 val, u32 reg)
->   	writel(val, vpu->dec_base + reg);
->   }
->   
-> +static inline void hantro_write_addr(struct hantro_dev *vpu,
-> +				     unsigned long offset,
-> +				     dma_addr_t addr)
-> +{
-> +	vdpu_write(vpu, addr & 0xffffffff, offset);
-> +}
-> +
->   static inline u32 vdpu_read(struct hantro_dev *vpu, u32 reg)
->   {
->   	u32 val = readl(vpu->dec_base + reg);
-> diff --git a/drivers/staging/media/hantro/hantro_g2.c b/drivers/staging/media/hantro/hantro_g2.c
-> new file mode 100644
-> index 000000000000..5f7bb27913de
-> --- /dev/null
-> +++ b/drivers/staging/media/hantro/hantro_g2.c
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Hantro VPU codec driver
-> + *
-> + * Copyright (C) 2021 Collabora Ltd, Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> + */
-> +
-> +#include "hantro_hw.h"
-> +#include "hantro_g2_regs.h"
-> +
-> +void hantro_g2_check_idle(struct hantro_dev *vpu)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < 3; i++) {
-> +		u32 status;
-> +
-> +		/* Make sure the VPU is idle */
-> +		status = vdpu_read(vpu, G2_REG_INTERRUPT);
-> +		if (status & G2_REG_INTERRUPT_DEC_E) {
-> +			dev_warn(vpu->dev, "device still running, aborting");
-> +			status |= G2_REG_INTERRUPT_DEC_ABORT_E | G2_REG_INTERRUPT_DEC_IRQ_DIS;
-> +			vdpu_write(vpu, status, G2_REG_INTERRUPT);
-> +		}
-> +	}
-> +}
-> +
-> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> index 340efb57fd18..226cecda9495 100644
-> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> @@ -8,20 +8,6 @@
->   #include "hantro_hw.h"
->   #include "hantro_g2_regs.h"
->   
-> -#define HEVC_DEC_MODE	0xC
-> -
-> -#define BUS_WIDTH_32		0
-> -#define BUS_WIDTH_64		1
-> -#define BUS_WIDTH_128		2
-> -#define BUS_WIDTH_256		3
-> -
-> -static inline void hantro_write_addr(struct hantro_dev *vpu,
-> -				     unsigned long offset,
-> -				     dma_addr_t addr)
-> -{
-> -	vdpu_write(vpu, addr & 0xffffffff, offset);
-> -}
-> -
->   static void prepare_tile_info_buffer(struct hantro_ctx *ctx)
->   {
->   	struct hantro_dev *vpu = ctx->dev;
-> @@ -516,23 +502,6 @@ static void set_buffers(struct hantro_ctx *ctx)
->   	hantro_write_addr(vpu, G2_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
->   }
->   
-> -static void hantro_g2_check_idle(struct hantro_dev *vpu)
-> -{
-> -	int i;
-> -
-> -	for (i = 0; i < 3; i++) {
-> -		u32 status;
-> -
-> -		/* Make sure the VPU is idle */
-> -		status = vdpu_read(vpu, G2_REG_INTERRUPT);
-> -		if (status & G2_REG_INTERRUPT_DEC_E) {
-> -			dev_warn(vpu->dev, "device still running, aborting");
-> -			status |= G2_REG_INTERRUPT_DEC_ABORT_E | G2_REG_INTERRUPT_DEC_IRQ_DIS;
-> -			vdpu_write(vpu, status, G2_REG_INTERRUPT);
-> -		}
-> -	}
-> -}
-> -
->   int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
->   {
->   	struct hantro_dev *vpu = ctx->dev;
-> diff --git a/drivers/staging/media/hantro/hantro_g2_regs.h b/drivers/staging/media/hantro/hantro_g2_regs.h
-> index bb22fa921914..0ac0ba375e80 100644
-> --- a/drivers/staging/media/hantro/hantro_g2_regs.h
-> +++ b/drivers/staging/media/hantro/hantro_g2_regs.h
-> @@ -27,6 +27,13 @@
->   #define G2_REG_INTERRUPT_DEC_IRQ_DIS	BIT(4)
->   #define G2_REG_INTERRUPT_DEC_E		BIT(0)
->   
-> +#define HEVC_DEC_MODE			0xc
-> +
-> +#define BUS_WIDTH_32			0
-> +#define BUS_WIDTH_64			1
-> +#define BUS_WIDTH_128			2
-> +#define BUS_WIDTH_256			3
-> +
->   #define g2_strm_swap		G2_DEC_REG(2, 28, 0xf)
->   #define g2_dirmv_swap		G2_DEC_REG(2, 20, 0xf)
->   
-> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-> index 4323e63dfbfc..42b3f3961f75 100644
-> --- a/drivers/staging/media/hantro/hantro_hw.h
-> +++ b/drivers/staging/media/hantro/hantro_hw.h
-> @@ -308,4 +308,6 @@ void hantro_vp8_dec_exit(struct hantro_ctx *ctx);
->   void hantro_vp8_prob_update(struct hantro_ctx *ctx,
->   			    const struct v4l2_ctrl_vp8_frame *hdr);
->   
-> +void hantro_g2_check_idle(struct hantro_dev *vpu);
-> +
->   #endif /* HANTRO_HW_H_ */
+Please pull,
+
+	M.
+
+The following changes since commit 6e3b473ee06445d4eae2f8b1e143db70ed66f519:
+
+  Merge branch irq/qcom-pdc-nowake-cleanup into irq/irqchip-next (2021-08-23 09:50:46 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.15-1
+
+for you to fetch changes up to b78f26926b17cc289e4f16b63363abe0aa2e8efc:
+
+  irqchip/gic: Work around broken Renesas integration (2021-09-22 14:44:25 +0100)
+
+----------------------------------------------------------------
+irqchip fixes for 5.15, take #1
+
+- Work around a bad GIC integration on a Renesas platform, where the
+  interconnect cannot deal with byte-sized MMIO accesses
+
+- Cleanup another Renesas driver abusing the comma operator
+
+- Fix a potential GICv4 memory leak on an error path
+
+- Make the type of 'size' consistent with the rest of the code in
+  __irq_domain_add()
+
+- Fix a regression in the Armada 370-XP IPI path
+
+- Fix the build for the obviously unloved goldfish-pic
+
+- Some documentation fixes
+
+----------------------------------------------------------------
+Bixuan Cui (1):
+      irqdomain: Change the type of 'size' in __irq_domain_add() to be consistent
+
+Geert Uytterhoeven (1):
+      irqchip/renesas-rza1: Use semicolons instead of commas
+
+Kaige Fu (1):
+      irqchip/gic-v3-its: Fix potential VPE leak on error
+
+Marc Zyngier (3):
+      Documentation: Fix irq-domain.rst build warning
+      irqchip/armada-370-xp: Fix ack/eoi breakage
+      irqchip/gic: Work around broken Renesas integration
+
+Randy Dunlap (2):
+      irqchip/mbigen: Repair non-kernel-doc notation
+      irqchip/goldfish-pic: Select GENERIC_IRQ_CHIP to fix build
+
+ Documentation/core-api/irq/irq-domain.rst |  5 +--
+ drivers/irqchip/Kconfig                   |  1 +
+ drivers/irqchip/irq-armada-370-xp.c       |  4 +--
+ drivers/irqchip/irq-gic-v3-its.c          |  2 +-
+ drivers/irqchip/irq-gic.c                 | 52 ++++++++++++++++++++++++++++++-
+ drivers/irqchip/irq-mbigen.c              |  6 ++--
+ drivers/irqchip/irq-renesas-rza1.c        | 12 +++----
+ include/linux/irqdomain.h                 |  2 +-
+ kernel/irq/irqdomain.c                    |  2 +-
+ 9 files changed, 69 insertions(+), 17 deletions(-)
