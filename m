@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971AA416B03
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 06:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1ECC416B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 06:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244080AbhIXEg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 00:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237144AbhIXEgz (ORCPT
+        id S241325AbhIXEkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 00:40:19 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49732 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237144AbhIXEkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 00:36:55 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD713C061756;
-        Thu, 23 Sep 2021 21:35:22 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id h129so11064216iof.1;
-        Thu, 23 Sep 2021 21:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xcH9wYSR91fpt+5IhR8QHq5X+wHLKfuvWgni3VmGpiU=;
-        b=IwQPPQ10h/E5e/e7b49Tir8b5B9hgs/Wi9m4wHV/tEVRB3SijM3j5dbrNfI70GEMmU
-         cRwjbjssjw6ODT3JN0RVWcjCh8cD0Y+CxXu3DS242Uo98NLw5U6yKDmaKI7w92iroixP
-         FNFPWVZtRff9VniJ6HRtLlhtjP1A+XGYVlKmmehI+WDSy6N3Vhs8UeQdDjtQZonRdhi8
-         NccqO+MnV+D0g4F3ZApPzqWM7HOzosTHlI2dmcTR6jmCvjmofQQJgJHaNMaP24vhKiM1
-         tuejb39zHQw4ELgt9h8JAtObelmIa1RCFZ/C+W07FW94J8bAun/3aAZVQ5CkoS+Bfp+h
-         hSGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xcH9wYSR91fpt+5IhR8QHq5X+wHLKfuvWgni3VmGpiU=;
-        b=KjlNPy0yesaK44qSP1YnU2cmfJfcsHWJd86BKd69e+M2whkZN1x8r6cMNSCeVnOLlW
-         VM4Fmn8CmljUb9fIUO0Heeoy9qNBRLPArARCk7nXkrXm6GNcxm07VJYOLUGdhE6TuwAT
-         x8G0e29eTZcbRQoIS17B9PKeKEC8bJhlCTSMd1m9SXkFiUoT7QPINwAcvxZc3f/W5mfc
-         C+svIHS3/o50Z8Xwmt/aQt7yvK8EjRnuLpT1TIaOyibTKlffyAKozpYTh/scPqMpRron
-         JY6onrWhXuZvYSxa6p7SNGd01gLc4FXGKd7FPC0MF+2WqhZ4VJa2qtmYoE4/6GoAZuwt
-         7tig==
-X-Gm-Message-State: AOAM5325IbH5CCw/+9yfTRGaaRyF0UNjpiEpD+oJUW8TATyUgBfzK76i
-        ALdFQ1lsCgAHMewhVdSVWLGrWdsPM6paj4jVKB0=
-X-Google-Smtp-Source: ABdhPJw0PKpy4KqW5zF42c4Or1B+70c7jdEyFtPXZxvh0z0enU/YbxlqfhfU5mkG+k5Ewtfp3z2GHTvrCk4/ot0G2y4=
-X-Received: by 2002:a02:2124:: with SMTP id e36mr7336788jaa.35.1632458122367;
- Thu, 23 Sep 2021 21:35:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
- <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
- <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com> <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
-In-Reply-To: <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Fri, 24 Sep 2021 14:34:56 +1000
-Message-ID: <CAKmqyKM3vy_Ob1a0=cEi_Efi6_VVAa8YfMb6+rOt3fQK_TTcmw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
- 64-bit time_t
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
-        Alistair Francis <alistair.francis@opensource.wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Fri, 24 Sep 2021 00:40:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UpOvKbg_1632458324;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UpOvKbg_1632458324)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 24 Sep 2021 12:38:44 +0800
+Subject: [PATCH v2] trace: prevent preemption in perf_ftrace_function_call()
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        open list <linux-kernel@vger.kernel.org>
+References: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
+Message-ID: <31910a08-fc37-29fc-5801-77e8fb634873@linux.alibaba.com>
+Date:   Fri, 24 Sep 2021 12:38:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 6:08 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Sep 21, 2021 at 12:47 AM Andr=C3=A9 Almeida
-> <andrealmeid@collabora.com> wrote:
-> >
-> > #if defined(__i386__) || __TIMESIZE =3D=3D 32
-> > # define NR_gettime64 __NR_clock_gettime64
-> > #else
-> > # define NR_gettime64 __NR_clock_gettime
-> > #endif
-> >
-> > struct timespec64 {
-> >         long long tv_sec;       /* seconds */
-> >         long long tv_nsec;      /* nanoseconds */
-> > };
-> >
-> > int gettime64(clock_t clockid, struct timespec64 *tv)
-> > {
-> >         return syscall(NR_gettime64, clockid, tv);
-> > }
-> >
-> > Then we can just use &timeout at __NR_futex_time64 for 32bit arch and a=
-t
-> > __NR_futex for 64bit arch.
->
-> This is still broken when you disable CONFIG_COMPAT_32BIT_TIME,
-> which disables all system calls that take time32 arguments.
->
-> > This might be a simpler solution to the problem that you are facing but
-> > I'm not entirely sure. Also, futex's selftests do use the timeout
-> > argument and I think that they also won't compile in 32-bit RISC-V, so
-> > maybe we can start from there so we can actually test the timeout
-> > argument and check if it's working.
->
-> I would love to see the wrapper that Alistair wrote as part of some kerne=
-l
-> uapi header provided to user space. futex is used by tons of applications=
-,
-> and we never had a library abstraction for it, so everyone has to do thes=
-e
-> by hand, and they all get them slightly wrong in different ways.
->
-> We normally don't do this in kernel headers, but I think the benefits
-> would be far greater compared to today's situation.
+With CONFIG_DEBUG_PREEMPT we observed reports like:
 
-I'm happy to prepare a patch, if others are on board with it being accepted=
-.
+  BUG: using smp_processor_id() in preemptible
+  caller is perf_ftrace_function_call+0x6f/0x2e0
+  CPU: 1 PID: 680 Comm: a.out Not tainted
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x8d/0xcf
+   check_preemption_disabled+0x104/0x110
+   ? optimize_nops.isra.7+0x230/0x230
+   ? text_poke_bp_batch+0x9f/0x310
+   perf_ftrace_function_call+0x6f/0x2e0
+   ...
+   __text_poke+0x5/0x620
+   text_poke_bp_batch+0x9f/0x310
 
-Alistair
+This telling us the CPU could be changed after task is preempted, and
+the checking on CPU before preemption will be invalid.
 
->
->       Arnd
+This patch just turn off preemption in perf_ftrace_function_call()
+to prevent CPU changing.
+
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ kernel/trace/trace_event_perf.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index 6aed10e..dcbefdf 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -441,12 +441,19 @@ void perf_trace_buf_update(void *record, u16 type)
+ 	if (!rcu_is_watching())
+ 		return;
+
++	/*
++	 * Prevent CPU changing from now on. rcu must
++	 * be in watching if the task was migrated and
++	 * scheduled.
++	 */
++	preempt_disable_notrace();
++
+ 	if ((unsigned long)ops->private != smp_processor_id())
+-		return;
++		goto out;
+
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+-		return;
++		goto out;
+
+ 	event = container_of(ops, struct perf_event, ftrace_ops);
+
+@@ -468,16 +475,18 @@ void perf_trace_buf_update(void *record, u16 type)
+
+ 	entry = perf_trace_buf_alloc(ENTRY_SIZE, NULL, &rctx);
+ 	if (!entry)
+-		goto out;
++		goto unlock;
+
+ 	entry->ip = ip;
+ 	entry->parent_ip = parent_ip;
+ 	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, TRACE_FN,
+ 			      1, &regs, &head, NULL);
+
+-out:
++unlock:
+ 	ftrace_test_recursion_unlock(bit);
+ #undef ENTRY_SIZE
++out:
++	preempt_enable_notrace();
+ }
+
+ static int perf_ftrace_function_register(struct perf_event *event)
+-- 
+1.8.3.1
+
+
