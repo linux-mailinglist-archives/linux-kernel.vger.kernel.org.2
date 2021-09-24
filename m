@@ -2,163 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8587B41749A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DD34172F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345780AbhIXNIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346353AbhIXNFu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:05:50 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9929C06114E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:47:52 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 81so6232246pgb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:47:52 -0700 (PDT)
+        id S1344392AbhIXMxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:53:01 -0400
+Received: from mail-bn8nam11on2052.outbound.protection.outlook.com ([40.107.236.52]:3168
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1344338AbhIXMvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:51:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i7ACMsrikQ1zKRVWd31w+nLaQeh7/xjvPrv57phwKk3elGuZV3ngNMebg3NJKVTlN48RRSP9C9+U29qkW2mVB9fcNHBICRUDOr7X2fK6z1dM4xxNguEUROeH/p4E0HeJYVaqjMoKaMQuWT8Vl2StiGvQJWw2l7RcCZb9NA/wlvf3E9MZcixQNozcU/H4sHOufIMqiGsSg2OJtG1tyVVeYwr1JQJO1pLMHG/UJdatTuVuaaMPTUxE02I/QfjYk/YMdIqoCXzIHHVHo27o2B7t3X1X8fsl1R80sceatmfVQCF1BtCWx2VBRb6INJnvERxoNJIMpw5Cfbv5LeHTWR0rfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=fbv2O8pr/+EyAUNEurRPCQ/oIo1ql9LxpTamT8leQpg=;
+ b=LhGvDbn1ny1wylCfCTVlXN/xfAhJD/+KfwNTnKpZXHuAZcTy5T+w3DJmfE2CteNirOArkxdymsGC1Ka1XUxeDUPYrH4hoyDp141STdf06/Uy/h13K0ljM5lJR2l+H/qcjhs5lr7c6H1iug1j/M/ufoTIOE74naRPXm74aRNnXRFv8J4L6p3LuOWqmkoG8u8FQQ24OzqhCBV4UAAQKaQTihzik2Xv9Nd8vIrBKQ4kEm65dn31D33SvHj9r/+jwtSOeLqbKNRqodm/TStyEGNCx4gMnOBUiZTYEA6GxaVBBlKVLXbCQP/pl7ixRr37Z0jKeP0gMN4Zf+WRUqS1ujj//w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=nigauri.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=4gPE6yuV641TUFz9oaQeWtbPkGh3Bp4kiLo+CYHmDH8=;
-        b=aO9Gxmb7Mp9ZTlHNhiTP8lCJ1qQRBgBdGlbYFNXFAR0vRLS7xdtBHaYvqzzbQpmxAh
-         1nVKsqVonV0qbiLyKcu862uUQ81C8F33QqanrMbuYR3Z2FzNTfymO1vGzYTme3MFPXQo
-         5L2gbhIjG4fNzu2GgWy2vEHPjw8oB5ixzIqWY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=4gPE6yuV641TUFz9oaQeWtbPkGh3Bp4kiLo+CYHmDH8=;
-        b=foYofPdOz5X69wiiWuEcPMxUVqXTo5cAb9X/nRs6uQqea0wGWNJs76R1jQS2/hDb6x
-         fLUP8h2oDnxKy0GQxr3sAsUjlt6eVyTyzkj7yYaFVzR1E8qzv4JCd3pcrfrRrGqGQX4j
-         kLyfeYrxnJN4nNbV9P6rAViyzVjnzI1NrBGWa1lGaEiTK99RyZnVTbLqxUziaOcxk7Ic
-         0Tc6Fk/jh7547xCIdDWElIScOA/bbn/tHhHdwooVErhBwvPlG8tm2UVJPryRA2l3QH09
-         pko/Awa+N+fcBB5uGiBATEGdWxORKbtF4Y2+llOlD0dfnTOesq/B+WIvu8UNMtnsPNPa
-         Rk4g==
-X-Gm-Message-State: AOAM530p6mDs5p7vDAziHufDnk2w2Ee/66tLHUFWHuJBoBDZyD0wlVVB
-        HmkzuOMgSu7U4kfQFDzUFpAm/g==
-X-Google-Smtp-Source: ABdhPJxOhFXFGobTo1ScxpufyAH6iXMr4p/Di77RU3XXpVK9CjV3r1AJwPJfzlNsdz5QNOug2QnK9A==
-X-Received: by 2002:a62:7696:0:b0:44b:4b19:6417 with SMTP id r144-20020a627696000000b0044b4b196417mr5628235pfc.5.1632487672401;
-        Fri, 24 Sep 2021 05:47:52 -0700 (PDT)
-Received: from [127.0.0.1] (173-164-112-133-Oregon.hfc.comcastbusiness.net. [173.164.112.133])
-        by smtp.gmail.com with ESMTPSA id x15sm9914465pgt.34.2021.09.24.05.47.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 05:47:51 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 05:47:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>
-CC:     linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] firewire: cdev: Fix function cast error
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210924105733.GA78013@embeddedor>
-References: <20210924105733.GA78013@embeddedor>
-Message-ID: <5BB921B7-9D3C-460F-98D1-F277D31DC849@chromium.org>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fbv2O8pr/+EyAUNEurRPCQ/oIo1ql9LxpTamT8leQpg=;
+ b=TKkzBDAx6v8fj6uczrgwghST9lLDyAPxKWTpQyKfrRAwSLV5uTsYnTScR3BXEfWR95d+Vlron76qoBcRET/0J/uisk169U8oLPbAmx4Z8UsBXDQbHxb0Xapb2SOC/hFZq2fd5LEZI5sgk5AJWWqBgHZ2mHmhnEofy4uu1gpDJPo=
+Received: from DM5PR21CA0033.namprd21.prod.outlook.com (2603:10b6:3:ed::19) by
+ MWHPR02MB2431.namprd02.prod.outlook.com (2603:10b6:300:3f::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4544.18; Fri, 24 Sep 2021 12:49:24 +0000
+Received: from DM3NAM02FT056.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:ed:cafe::12) by DM5PR21CA0033.outlook.office365.com
+ (2603:10b6:3:ed::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.0 via Frontend
+ Transport; Fri, 24 Sep 2021 12:49:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; nigauri.org; dkim=none (message not signed)
+ header.d=none;nigauri.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT056.mail.protection.outlook.com (10.13.4.177) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 12:49:24 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 24 Sep 2021 05:49:14 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 24 Sep 2021 05:49:14 -0700
+Envelope-to: git@xilinx.com,
+ iwamatsu@nigauri.org,
+ arnd@arndb.de,
+ saikrishna12468@gmail.com,
+ linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ p.yadav@ti.com,
+ robh+dt@kernel.org,
+ broonie@kernel.org,
+ gregkh@linuxfoundation.org
+Received: from [10.254.241.49] (port=33344)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1mTkdc-000GdM-VZ; Fri, 24 Sep 2021 05:49:13 -0700
+Subject: Re: [PATCH 1/4] firmware: xilinx: Add OSPI Mux selection support
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <git@xilinx.com>,
+        <saikrishna12468@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+References: <1632478031-12242-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1632478031-12242-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <YU24KEoXQOw/1uZV@kroah.com>
+ <c588c9c4-df4b-a617-35d1-23c32654d5ff@xilinx.com>
+ <YU3C7y833i9f0+yB@kroah.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <18d730a5-cec1-d699-a7cc-da8270a5dfe6@xilinx.com>
+Date:   Fri, 24 Sep 2021 14:49:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YU3C7y833i9f0+yB@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f9c37bb5-10d9-468b-1e3b-08d97f59bcb2
+X-MS-TrafficTypeDiagnostic: MWHPR02MB2431:
+X-Microsoft-Antispam-PRVS: <MWHPR02MB24312A9E445FA280651097DFC6A49@MWHPR02MB2431.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NynRwZJqWGxHkICFEIDjHxMRDCetU1R/Nm7rgQ6i9wJiWYraisjXFubd9wxT0Q1e81rOnTdmPuv7lmcyuW/fNtlZmILmzfp2TLM9XrZ1lqLdqo8tE0H54ct+/eZU8KT2bAt5gGdJfjAemENeb/fPI3x+5gkC17+x8LqqzWaoNQPapVWkp+RGeYtPTTYpFQM/4wAFm0Tr6eVcKUCmsj2AO4XClk1hhdLLfMxkXbKm1GNUiXLvF65t/qUzIEtM9+ZxdR3gJ4fAPkbh1Q3sk0B58BKpyLDQH0I2zGyZF5i4kY4sTzoTgZYq4tjKQMRQj6mU7EO51qBGsPaCMXFjv3NUhi8po+ljNAfVpIYBQQyHM2FZmXFzPCxA8X08XzS9s8TrkRw+gl44duv2YWYmdevl2oj6KMKY5v6gV6SAlTCqIyiBMmNeCs4jsA77nFNWsccE7iWbUR0xPiAc4exAapWRgSbN8oqgNWnBY2Awew8Cd1lU5P+dDBiUdSlMglJBE1qgyp0ZzkM2Du0XcuOKW+ZGvOMWLS+1RHfnG7pEKLgLwn6ic7s7X52Wm4PPsjaT67E17zs2YgCd/HjPi4Mozs3tkBLmKc6ooLcpHaL9bWFtqfGu7VHme4oI2/8jy5kvdGhwcL2gdlz36o1HQi2E/8KDCu0PZTgSV3vmi3ChDDxOzbKVjAtGeVsBLnsZ9kp9+uGVyegdIxMfqbzyp0VGqZYIxwTmVGFXisdiaa5ZDWlUmsI15TI6s8Q23mVLt/ti7KTT
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(4326008)(6666004)(7416002)(31696002)(53546011)(9786002)(2906002)(186003)(70586007)(70206006)(8676002)(336012)(44832011)(82310400003)(47076005)(26005)(36860700001)(31686004)(7636003)(2616005)(426003)(36756003)(8936002)(508600001)(5660300002)(83380400001)(316002)(110136005)(54906003)(36906005)(356005)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 12:49:24.3342
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9c37bb5-10d9-468b-1e3b-08d97f59bcb2
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT056.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB2431
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On September 24, 2021 3:57:33 AM PDT, "Gustavo A=2E R=2E Silva" <gustavoar=
-s@kernel=2Eorg> wrote:
->Fix the following function cast error when building with
->-Wcast-function-type:
->
->drivers/firewire/core-cdev=2Ec: In function =E2=80=98ioctl_create_iso_con=
-text=E2=80=99:
->drivers/firewire/core-cdev=2Ec:985:8: error: cast between incompatible fu=
-nction types from =E2=80=98void (*)(struct fw_iso_context *, dma_addr_t,  v=
-oid *)=E2=80=99 {aka =E2=80=98void (*)(struct fw_iso_context *, long long u=
-nsigned int,  void *)=E2=80=99} to =E2=80=98void (*)(struct fw_iso_context =
-*, u32,  size_t,  void *, void *)=E2=80=99 {aka =E2=80=98void (*)(struct fw=
-_iso_context *, unsigned int,  long unsigned int,  void *, void *)=E2=80=99=
-} [-Werror=3Dcast-function-type]
->  985 |   cb =3D (fw_iso_callback_t)iso_mc_callback;
->      |        ^
->cc1: all warnings being treated as errors
->
->This helps with the ongoing efforts to globally enable -Wcast-function-ty=
-pe,
->so when Control Flow Integrity checking lands in the kernel, incompatible
->function type casting doesn't interfere with it=2E
->
->Link: https://github=2Ecom/KSPP/linux/issues/20
->Link: https://github=2Ecom/KSPP/linux/issues/102
->Signed-off-by: Gustavo A=2E R=2E Silva <gustavoars@kernel=2Eorg>
+On 9/24/21 2:22 PM, Greg Kroah-Hartman wrote:
+> On Fri, Sep 24, 2021 at 02:12:55PM +0200, Michal Simek wrote:
+>>
+>>
+>> On 9/24/21 1:36 PM, Greg Kroah-Hartman wrote:
+>>> On Fri, Sep 24, 2021 at 03:37:08PM +0530, Sai Krishna Potthuri wrote:
+>>>> Add OSPI Mux selection API support to select the AXI interface to OSPI.
+>>>>
+>>>> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+>>>> ---
+>>>>  drivers/firmware/xilinx/zynqmp.c     | 17 +++++++++++++++++
+>>>>  include/linux/firmware/xlnx-zynqmp.h | 12 ++++++++++++
+>>>>  2 files changed, 29 insertions(+)
+>>>>
+>>>> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+>>>> index 15b138326ecc..43c3b5a9eef7 100644
+>>>> --- a/drivers/firmware/xilinx/zynqmp.c
+>>>> +++ b/drivers/firmware/xilinx/zynqmp.c
+>>>> @@ -647,6 +647,23 @@ int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
+>>>>  }
+>>>>  EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
+>>>>  
+>>>> +/**
+>>>> + * zynqmp_pm_ospi_mux_select() - OSPI Mux selection
+>>>> + *
+>>>> + * @dev_id:	Device Id of the OSPI device.
+>>>> + * @select:	OSPI Mux select value.
+>>>> + *
+>>>> + * This function select the OSPI Mux.
+>>>> + *
+>>>> + * Return:	Returns status, either success or error+reason
+>>>> + */
+>>>> +int zynqmp_pm_ospi_mux_select(u32 dev_id, u32 select)
+>>>> +{
+>>>> +	return zynqmp_pm_invoke_fn(PM_IOCTL, dev_id, IOCTL_OSPI_MUX_SELECT,
+>>>> +				   select, 0, NULL);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(zynqmp_pm_ospi_mux_select);
+>>>> +
+>>>>  /**
+>>>>   * zynqmp_pm_write_ggs() - PM API for writing global general storage (ggs)
+>>>>   * @index:	GGS register index
+>>>> diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
+>>>> index 9d1a5c175065..6979a79f553a 100644
+>>>> --- a/include/linux/firmware/xlnx-zynqmp.h
+>>>> +++ b/include/linux/firmware/xlnx-zynqmp.h
+>>>> @@ -119,6 +119,7 @@ enum pm_ioctl_id {
+>>>>  	IOCTL_READ_PGGS = 15,
+>>>>  	/* Set healthy bit value */
+>>>>  	IOCTL_SET_BOOT_HEALTH_STATUS = 17,
+>>>> +	IOCTL_OSPI_MUX_SELECT = 21,
+>>>
+>>> Why the gap?  What are the commands in the middle for?
+>>
+>> Below is the full list. Not everything has been upstream yet. There was
+>> an attempt on AFI which one colleague is working on and should send new
+>> version soon. I don't think anybody has started with upstreaming probe
+>> counters.
+>> Every part has different owner with unfortunately own upstreaming plan.
+>>
+>> Thanks,
+>> Michal
+>>
+>> enum pm_ioctl_id {
+>> 	IOCTL_GET_RPU_OPER_MODE = 0,
+>> 	IOCTL_SET_RPU_OPER_MODE = 1,
+>> 	IOCTL_RPU_BOOT_ADDR_CONFIG = 2,
+>> 	IOCTL_TCM_COMB_CONFIG = 3,
+>> 	IOCTL_SET_TAPDELAY_BYPASS = 4,
+>> 	IOCTL_SET_SGMII_MODE = 5,
+>> 	IOCTL_SD_DLL_RESET = 6,
+>> 	IOCTL_SET_SD_TAPDELAY = 7,
+>> 	IOCTL_SET_PLL_FRAC_MODE = 8,
+>> 	IOCTL_GET_PLL_FRAC_MODE = 9,
+>> 	IOCTL_SET_PLL_FRAC_DATA = 10,
+>> 	IOCTL_GET_PLL_FRAC_DATA = 11,
+>> 	IOCTL_WRITE_GGS = 12,
+>> 	IOCTL_READ_GGS = 13,
+>> 	IOCTL_WRITE_PGGS = 14,
+>> 	IOCTL_READ_PGGS = 15,
+>> 	/* IOCTL for ULPI reset */
+>> 	IOCTL_ULPI_RESET = 16,
+>> 	/* Set healthy bit value */
+>> 	IOCTL_SET_BOOT_HEALTH_STATUS = 17,
+>> 	IOCTL_AFI = 18,
+>> 	/* Probe counter read/write */
+>> 	IOCTL_PROBE_COUNTER_READ = 19,
+>> 	IOCTL_PROBE_COUNTER_WRITE = 20,
+>> 	IOCTL_OSPI_MUX_SELECT = 21,
+>> 	/* IOCTL for USB power request */
+>> 	IOCTL_USB_SET_STATE = 22,
+>> 	/* IOCTL to get last reset reason */
+>> 	IOCTL_GET_LAST_RESET_REASON = 23,
+>> 	/* AI engine NPI ISR clear */
+>> 	IOCTL_AIE_ISR_CLEAR = 24,
+>> 	/* Register SGI to ATF */
+>> 	IOCTL_REGISTER_SGI = 25,
+>> 	/* Runtime feature configuration */
+>> 	IOCTL_SET_FEATURE_CONFIG = 26,
+>> 	IOCTL_GET_FEATURE_CONFIG = 27,
+>> };
+> 
+> Odd mix of comments and no comments...
+> 
+> Anyway, that's fine, just curious as to why there was a gap.  No real
+> reason why you can't just add them all now right?
 
-I thought this looked familiar=2E=2E=2E
+Code is firstly integrated to soc tree and then upstream. I would love
+to see this happen vise versa but still marketing wants to deliver
+features first to customers. On the other hand customers care about
+getting features on the first place and they are fine with not having
+upstream solution first.
+Back to your comment. It can also happen while upstreaming that some
+numbers are simply not used because design is changed. That's why that
+numbers can be skipped because it was just temporary solution or not
+proper design.
+It doesn't mean that these numbers can't be listed but on the other hand
+why they should be listed if they shouldn't/can't be used.
+That's why over time we are just adding number which are used by that
+patchset.
+I can't see any problem to send all of them if that's fine for you.
 
-https://lore=2Ekernel=2Eorg/lkml/20200530090839=2E7895-1-oscar=2Ecarter@gm=
-x=2Ecom/
-
-I think someone just needs to pick this up since it got past review, etc=
-=2E
-
--Kees
-
-
->---
-> drivers/firewire/core-cdev=2Ec | 13 ++++++++-----
-> 1 file changed, 8 insertions(+), 5 deletions(-)
->
->diff --git a/drivers/firewire/core-cdev=2Ec b/drivers/firewire/core-cdev=
-=2Ec
->index fb6c651214f3=2E=2Efd2923599667 100644
->--- a/drivers/firewire/core-cdev=2Ec
->+++ b/drivers/firewire/core-cdev=2Ec
->@@ -957,7 +957,10 @@ static int ioctl_create_iso_context(struct client *c=
-lient, union ioctl_arg *arg)
-> {
-> 	struct fw_cdev_create_iso_context *a =3D &arg->create_iso_context;
-> 	struct fw_iso_context *context;
->-	fw_iso_callback_t cb;
->+	union callback {
->+		fw_iso_callback_t sc;
->+		fw_iso_mc_callback_t mc;
->+	} cb;
-> 	int ret;
->=20
-> 	BUILD_BUG_ON(FW_CDEV_ISO_CONTEXT_TRANSMIT !=3D FW_ISO_CONTEXT_TRANSMIT =
-||
->@@ -970,7 +973,7 @@ static int ioctl_create_iso_context(struct client *cl=
-ient, union ioctl_arg *arg)
-> 		if (a->speed > SCODE_3200 || a->channel > 63)
-> 			return -EINVAL;
->=20
->-		cb =3D iso_callback;
->+		cb=2Esc =3D iso_callback;
-> 		break;
->=20
-> 	case FW_ISO_CONTEXT_RECEIVE:
->@@ -978,11 +981,11 @@ static int ioctl_create_iso_context(struct client *=
-client, union ioctl_arg *arg)
-> 		    a->channel > 63)
-> 			return -EINVAL;
->=20
->-		cb =3D iso_callback;
->+		cb=2Esc =3D iso_callback;
-> 		break;
->=20
-> 	case FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL:
->-		cb =3D (fw_iso_callback_t)iso_mc_callback;
->+		cb=2Emc =3D iso_mc_callback;
-> 		break;
->=20
-> 	default:
->@@ -990,7 +993,7 @@ static int ioctl_create_iso_context(struct client *cl=
-ient, union ioctl_arg *arg)
-> 	}
->=20
-> 	context =3D fw_iso_context_create(client->device->card, a->type,
->-			a->channel, a->speed, a->header_size, cb, client);
->+			a->channel, a->speed, a->header_size, cb=2Esc, client);
-> 	if (IS_ERR(context))
-> 		return PTR_ERR(context);
-> 	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
+Thanks,
+Michal
