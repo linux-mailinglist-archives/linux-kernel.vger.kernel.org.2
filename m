@@ -2,63 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F372241753D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848AE417540
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347216AbhIXNSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:18:04 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:52254 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346975AbhIXNQN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:16:13 -0400
-Received: from localhost (cpc147930-brnt3-2-0-cust60.4-2.cable.virginm.net [86.15.196.61])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 050B74F7CC988;
-        Fri, 24 Sep 2021 06:14:32 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 14:14:26 +0100 (BST)
-Message-Id: <20210924.141426.1767931642845359040.davem@davemloft.net>
-To:     leon@kernel.org
-Cc:     kuba@kernel.org, leonro@nvidia.com, alobakin@pm.me,
-        anirudh.venkataramanan@intel.com, aelior@marvell.com,
-        GR-everest-linux-l2@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, irusskikh@marvell.com,
-        intel-wired-lan@lists.osuosl.org, jejb@linux.ibm.com,
-        jhasan@marvell.com, jeffrey.t.kirsher@intel.com,
-        jesse.brandeburg@intel.com, jiri@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, michael.chan@broadcom.com,
-        michal.kalderon@marvell.com, netdev@vger.kernel.org,
-        sathya.perla@broadcom.com, skashyap@marvell.com,
-        anthony.l.nguyen@intel.com, vasundhara-v.volam@broadcom.com
-Subject: Re: [PATCH net-next 0/6] Batch of devlink related fixes
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <cover.1632420430.git.leonro@nvidia.com>
-References: <cover.1632420430.git.leonro@nvidia.com>
-X-Mailer: Mew version 6.8 on Emacs 27.2
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 24 Sep 2021 06:14:38 -0700 (PDT)
+        id S1345876AbhIXNSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:18:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345482AbhIXNQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:16:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0CF060F4C;
+        Fri, 24 Sep 2021 13:14:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632489291;
+        bh=VSbgQFvXId/bgojPS2ErFjSgYOZUoEfsMFPutOlktNc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EAIk84cpvdk8reOq2pmVxfcgut1ZB6Ck35pFoWppmWzA+O4iP5nFyIY5F1tGoIrGP
+         LeNaGYa5vd54q3aFlVhi/mU9WO2MUGDA5C1+sXyTMtVtIvdsOgKB63zlagZQ/iw5ym
+         I7+ZBEW/RsT68AGwlcJHayYKUiVAjHEAP3NJtQT++qUUtV9wu1/VGS8NSiaKEOkseV
+         29ZesYYU57+3J7gc5mHZIyR6YtVEIiLZN/Chb1tHUXULkXaNVB+l/otRt9sJWP9Hz1
+         4fHeQ5s5CoZkNnNJcPKyHR9NMyqLpB03qbEr28hX6AZUNVne54Z4np04PpeaSDYHsH
+         KT7FfXGoVnYDA==
+From:   Georgi Djakov <djakov@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        djakov@kernel.org
+Subject: [GIT PULL] interconnect fixes for 5.15-rc
+Date:   Fri, 24 Sep 2021 16:14:51 +0300
+Message-Id: <20210924131451.31371-1-djakov@kernel.org>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leon@kernel.org>
-Date: Thu, 23 Sep 2021 21:12:47 +0300
+Hello Greg,
 
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Hi,
-> 
-> I'm asking to apply this batch of devlink fixes to net-next and not to
-> net, because most if not all fixes are for old code or/and can be considered
-> as cleanup.
-> 
-> It will cancel the need to deal with merge conflicts for my next devlink series :).
+This pull request contains interconnect driver fixes for 5.15-rc.
+The details are in the signed tag. Please pull them into char-misc-linus
+when possible. The patches have been in linux-next during the last few
+days.
 
-ok, but just this one time.
+Thanks,
+Georgi
 
-I much rather this kind of stuff goes to net and we deal with the merge
-conflicts that arise.
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-Thsnks!
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.15-rc3
+
+for you to fetch changes up to 13404ac8882f5225af07545215f4975a564c3740:
+
+  interconnect: qcom: sdm660: Add missing a2noc qos clocks (2021-09-13 15:49:55 +0300)
+
+----------------------------------------------------------------
+interconnect fixes for v5.15
+
+This contains a few fixes for the sdm660 driver:
+- sdm660: Fix id of slv_cnoc_mnoc_cfg
+- sdm660: Correct NOC_QOS_PRIORITY shift and mask
+- sdm660: Add missing a2noc qos clocks
+
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
+
+----------------------------------------------------------------
+Shawn Guo (4):
+      interconnect: qcom: sdm660: Fix id of slv_cnoc_mnoc_cfg
+      interconnect: qcom: sdm660: Correct NOC_QOS_PRIORITY shift and mask
+      dt-bindings: interconnect: sdm660: Add missing a2noc qos clocks
+      interconnect: qcom: sdm660: Add missing a2noc qos clocks
+
+ Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml | 46 +++++++-
+ drivers/interconnect/qcom/sdm660.c                              | 25 +++-
+ 2 files changed, 61 insertions(+), 10 deletions(-)
