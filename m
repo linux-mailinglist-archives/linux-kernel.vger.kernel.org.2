@@ -2,524 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92034416FEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F335F416FF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245553AbhIXKIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:08:30 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:34974 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245546AbhIXKI1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:08:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1632478015; x=1664014015;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=psiLeBF7Pg6BvF9RE4/TBeT2/e8C5wcEkvKeLh0RAL8=;
-  b=yY7UMX/3H455Fx9iAQbawDvHO2AjGAYgKNVH1n5pyxupbkudiuqrPpdf
-   IU4dGwIcmaHm0ZMK+hpJOqbgHG8tl+jVJ+9xYF6x7MUjYDDWbBeov6+X+
-   aco0uYGNab/ludRqlGxemk3i2nwY0RZXRdt01S4kFdXknOMOZOOf/v8zS
-   c=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 24 Sep 2021 03:06:55 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 03:06:54 -0700
-Received: from taozha-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 24 Sep 2021 03:06:50 -0700
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-CC:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
+        id S245585AbhIXKIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:08:45 -0400
+Received: from comms.puri.sm ([159.203.221.185]:34686 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245565AbhIXKIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 06:08:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id A7B1DDF4E2;
+        Fri, 24 Sep 2021 03:06:38 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id K32DZ-SiYatL; Fri, 24 Sep 2021 03:06:38 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 12:06:31 +0200
+From:   Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+To:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: sm8250: Add Coresight support
-Date:   Fri, 24 Sep 2021 18:06:21 +0800
-Message-ID: <1632477981-13632-3-git-send-email-quic_taozha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1632477981-13632-1-git-send-email-quic_taozha@quicinc.com>
-References: <1632477981-13632-1-git-send-email-quic_taozha@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kernel@puri.sm, phone-devel@vger.kernel.org
+Subject: [PATCH] media: imx: Fix rounding
+Message-ID: <20210924120631.7060da0f.dorota.czaplejewicz@puri.sm>
+Organization: Purism
+Content-Type: multipart/signed; boundary="Sig_/UUZqa0L2d=8613N2HL_AjKP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the basic coresight components found on Qualcomm SM8250 Soc. The
-basic coresight components include ETF, ETMs,STM and the related
-funnels.
+--Sig_/UUZqa0L2d=8613N2HL_AjKP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+Change rounding to the minimal burst size from 2^n to n.
+
+This fixes images with sizes that are a multiple of 8 pixels.
+
+See section 13.7.6.13 CSI Image Parameter Register of the
+i.MX 8M Quad Applications Processors Reference Manual.
+
+Fixes: 451a7b7815d0b ("media: imx: lift CSI and PRP ENC/VF width
+alignment restriction")
+Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
 ---
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 439 +++++++++++++++++++++++++++++++
- 1 file changed, 439 insertions(+)
+Hi,
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index 5f41de2..1e1579a 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -223,6 +223,445 @@
- 		regulator-max-microvolt = <1800000>;
- 		regulator-always-on;
- 	};
-+
-+	stm@6002000 {
-+		compatible = "arm,coresight-stm", "arm,primecell";
-+		reg = <0 0x06002000 0 0x1000>,
-+		      <0 0x16280000 0 0x180000>;
-+		reg-names = "stm-base", "stm-stimulus-base";
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				stm_out: endpoint {
-+					remote-endpoint =
-+					  <&funnel0_in7>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6041000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06041000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				funnel0_out: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_in0>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@7 {
-+				reg = <7>;
-+				funnel0_in7: endpoint {
-+					remote-endpoint = <&stm_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6042000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06042000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				funnel2_out: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_in2>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@4 {
-+				reg = <4>;
-+				funnel2_in5: endpoint {
-+					remote-endpoint =
-+					  <&apss_merge_funnel_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6b04000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		arm,primecell-periphid = <0x000bb908>;
-+
-+		reg = <0 0x6b04000 0 0x1000>;
-+		reg-names = "funnel-base";
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				merge_funnel_out: endpoint {
-+					remote-endpoint =
-+						<&etf_in>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@7 {
-+				reg = <7>;
-+				swao_funnel_in7: endpoint {
-+					slave-mode;
-+					remote-endpoint=
-+						<&merg_funnel_out>;
-+				};
-+			};
-+		};
-+
-+	};
-+
-+	funnel@6045000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06045000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				merg_funnel_out: endpoint {
-+					remote-endpoint = <&swao_funnel_in7>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				merge_funnel_in0: endpoint {
-+					remote-endpoint =
-+					  <&funnel0_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				merge_funnel_in2: endpoint {
-+					remote-endpoint =
-+					  <&funnel2_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etf@6b05000 {
-+		compatible = "arm,coresight-tmc", "arm,primecell";
-+		reg = <0 0x06b05000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		in-ports {
-+			port {
-+				etf_in: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7040000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07040000 0 0x1000>;
-+
-+		cpu = <&CPU0>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm0_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in0>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7140000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07140000 0 0x1000>;
-+
-+		cpu = <&CPU1>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm1_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in1>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7240000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07240000 0 0x1000>;
-+
-+		cpu = <&CPU2>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm2_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in2>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7340000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07340000 0 0x1000>;
-+
-+		cpu = <&CPU3>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm3_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in3>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7440000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07440000 0 0x1000>;
-+
-+		cpu = <&CPU4>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm4_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in4>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7540000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07540000 0 0x1000>;
-+
-+		cpu = <&CPU5>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm5_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in5>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7640000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07640000 0 0x1000>;
-+
-+		cpu = <&CPU6>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm6_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in6>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7740000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07740000 0 0x1000>;
-+
-+		cpu = <&CPU7>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm7_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in7>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@7800000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x07800000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				apss_funnel_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_merge_funnel_in>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				apss_funnel_in0: endpoint {
-+					remote-endpoint =
-+					  <&etm0_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				apss_funnel_in1: endpoint {
-+					remote-endpoint =
-+					  <&etm1_out>;
-+				};
-+			};
-+
-+			port@2 {
-+				reg = <2>;
-+				apss_funnel_in2: endpoint {
-+					remote-endpoint =
-+					  <&etm2_out>;
-+				};
-+			};
-+
-+			port@3 {
-+				reg = <3>;
-+				apss_funnel_in3: endpoint {
-+					remote-endpoint =
-+					  <&etm3_out>;
-+				};
-+			};
-+
-+			port@4 {
-+				reg = <4>;
-+				apss_funnel_in4: endpoint {
-+					remote-endpoint =
-+					  <&etm4_out>;
-+				};
-+			};
-+
-+			port@5 {
-+				reg = <5>;
-+				apss_funnel_in5: endpoint {
-+					remote-endpoint =
-+					  <&etm5_out>;
-+				};
-+			};
-+
-+			port@6 {
-+				reg = <6>;
-+				apss_funnel_in6: endpoint {
-+					remote-endpoint =
-+					  <&etm6_out>;
-+				};
-+			};
-+
-+			port@7 {
-+				reg = <7>;
-+				apss_funnel_in7: endpoint {
-+					remote-endpoint =
-+					  <&etm7_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@7810000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x07810000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				apss_merge_funnel_out: endpoint {
-+					remote-endpoint =
-+					  <&funnel2_in5>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			port {
-+				apss_merge_funnel_in: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_out>;
-+				};
-+			};
-+		};
-+	};
- };
- 
- &adsp {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I tested this patch on the Librem 5 with the main camera.
 
+--Dorota
+ drivers/staging/media/imx/imx-media-utils.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/=
+media/imx/imx-media-utils.c
+index 5128915a5d6f..a2d8fab32a39 100644
+--- a/drivers/staging/media/imx/imx-media-utils.c
++++ b/drivers/staging/media/imx/imx-media-utils.c
+@@ -545,13 +545,13 @@ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_for=
+mat *pix,
+ 	}
+=20
+ 	/* Round up width for minimum burst size */
+-	width =3D round_up(mbus->width, 8);
++	width =3D round_up(mbus->width, 3);
+=20
+ 	/* Round up stride for IDMAC line start address alignment */
+ 	if (cc->planar)
+-		stride =3D round_up(width, 16);
++		stride =3D round_up(width, 4);
+ 	else
+-		stride =3D round_up((width * cc->bpp) >> 3, 8);
++		stride =3D round_up((width * cc->bpp) >> 3, 3);
+=20
+ 	pix->width =3D width;
+ 	pix->height =3D mbus->height;
+--=20
+2.31.1
+
+
+--Sig_/UUZqa0L2d=8613N2HL_AjKP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEExKRqtqfFqmh+lu1oADBpX4S8ZncFAmFNoycACgkQADBpX4S8
+ZnfWxQ/7Bsgm4pW+bgC74d2aR9/Qr3fJvkaOaUvTwkTzUCFpgmYKVXSCMSDHAJfY
+akNsFylqSMo5s0KfaKZnhvqSuH/7USaOdETm2K79AitzY1dyTWNZ/SD3ef8hrCe0
+LEkCdX0LIU6z0o3bTFnVo1Sq5uN0LZ2rrZ66CPaapqe8W6Fhn2FRy0CoB2m+vwII
+MiwsE/kZnaXSyhN+QpkMD+f1RuvVBtg8iYN3vNxLVdo3s1KBqKYy2M8Q0xy7hOWx
+JQ2WNVZtv8V4m193HwEUKmhQt9Pa4G4Ds4bwvX1qr4dv7kJCVjK6xYAo83Qptnjy
+otkyky3FcKN2hs6lkuw1Z5nQWM3iEVykqX43APqiiUrZEOHkLuO11PZfFoK173g7
+953xofK7fxCyWWYghzoOBFNJZApUFRd30yCye7HGLtAeLCOmw0DgVd47kp24E58E
+9DCiP/zNtEqxWzYwlt5ZoJZvvXmlZmhEHeQps4CBV/QVz9oIfEvrUzr/1pCBp+1e
+aXG6gaLwm1xRyZbWmxVJC3/+rQ8SjCETLbg6+Bykm4tfQi9xq0qwuMcqsCkX8O9N
+UkA0wkx9krr36h7cWXfEIuOZVb91yrL3K4c12IeJOw9DKeqDom+XS4vtZNCztuIa
+3AFQNbZ/BpC3GYbhbSNxMESJERl0gKB0DJ0InhWpdc4NdXrkhto=
+=FBdR
+-----END PGP SIGNATURE-----
+
+--Sig_/UUZqa0L2d=8613N2HL_AjKP--
