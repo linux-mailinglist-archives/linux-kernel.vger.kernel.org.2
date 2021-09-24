@@ -2,511 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A488B416D32
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F910416D38
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244508AbhIXH4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
+        id S244494AbhIXH4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244467AbhIXH4l (ORCPT
+        with ESMTP id S244518AbhIXH4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:56:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E225C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:55:08 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mTg2x-0005bN-In; Fri, 24 Sep 2021 09:55:03 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mTg2m-0000G3-4Q; Fri, 24 Sep 2021 09:54:52 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mTg2m-0007Y5-31; Fri, 24 Sep 2021 09:54:52 +0200
-Date:   Fri, 24 Sep 2021 09:54:33 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, Doug Anderson <dianders@google.com>
-Subject: Re: [PATCH v5 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <20210924075433.apkdkwur5ar67ge2@pengutronix.de>
-References: <20210924021225.846197-1-bjorn.andersson@linaro.org>
- <20210924021225.846197-2-bjorn.andersson@linaro.org>
+        Fri, 24 Sep 2021 03:56:50 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47533C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:55:17 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i25so37194159lfg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JGmW9C+VJgClTUsrZKCeV0/J9rVWIZQmzpXvw/rQpIk=;
+        b=Ahrt2ozoHr1F1XaGJc8UFWICEWx8gXzt2P8DnqE+76I7f+qcZ4PJLWcuYI7YYLRuRF
+         295dBHmchEjQ+f5oiSMLwpl0RZfub+JdzvYGDp7mjQ8AaIXLVPfVNgYDTMO7EVOxbxg1
+         dGIlLtwfrbge+SQVQC4xuZMPe1HxIqWieoegc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JGmW9C+VJgClTUsrZKCeV0/J9rVWIZQmzpXvw/rQpIk=;
+        b=lhonrOMKuxjqRlUDSf53Xo2jkNDRShggXzlh2WF5FV0s/PEfXNlfymEWqFd8UwEVyN
+         Ag4EODKR5x11n/O6BCB71jCRj4tX+H9Sh2l/Xa9s46GzJHBi26wcY6iHGp/geV0D740X
+         sl70D0/N1xPl07ujWaxjRvklMUs5zrT83n1ZzVl/2j9zJVTg9XDPbB0KVp1dpNA2gTGH
+         TzY4ky40srrfTkpgMncASu1uiTd+wX8QLgjTb79MwWe217L0z5pBA6vpa3u1RkSwQ7E1
+         elFRkPlQ42f1i3NQNvl1PsbfbZAU0nbXfEuV5e9jwI6qlr301xaNck34wyHCG6/2xc6Y
+         VMdw==
+X-Gm-Message-State: AOAM533XT3VG5hidywiH4qF1BWrOKuiWAlVazOdn9bvWVL7VutZOtx1Z
+        9GsXDOEybqGc76+fjVEMqkJtGQduS3fkw1cCvv/pS4TabYo=
+X-Google-Smtp-Source: ABdhPJzkFv7HLV5oiZBfchGG412aWLIODM5Pu3aEuCwVKvIU5JXdh28L0/JBma6qNUvVyNbpJPJPjk4Mep/rE15SXIc=
+X-Received: by 2002:a05:651c:1505:: with SMTP id e5mr9964384ljf.9.1632470115670;
+ Fri, 24 Sep 2021 00:55:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="x5w35vkbqjq7z26x"
-Content-Disposition: inline
-In-Reply-To: <20210924021225.846197-2-bjorn.andersson@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <1632469543-27345-1-git-send-email-kyrie.wu@mediatek.com>
+In-Reply-To: <1632469543-27345-1-git-send-email-kyrie.wu@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Fri, 24 Sep 2021 15:55:04 +0800
+Message-ID: <CAGXv+5H3MRhSi=x0UA2vsXheDjVR0Cdig0DmEvS5dLLgSBCnvA@mail.gmail.com>
+Subject: Re: [PATCH V4,0/5] Support jpeg encoder for MT8195
+To:     "kyrie.wu" <kyrie.wu@mediatek.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, xia.jiang@mediatek.com,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Irui Wang <irui.wang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 24, 2021 at 3:46 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
+>
+> MT8195 has two jpeg encoding HW, each one has its own
+> power-domain, clock, interrupt, register base.
+> The two jpeg encoding HW can work together to
+> achieve higher performance.
+>
+> Generally, one HW needs to register one device node,
+> and the APP operates the HW through the device node.
+> If there are multiple HWs, the multiple device node
+> needs to be registered. At this time, the app needs
+> to design software logic to use multiple HWs in parallel,
+> which will undoubtedly increase the difficulty of
+> app development and weaken its compatibility.
+>
+> These serial patches use the component framework
+> to achieve the purpose of using multiple HWs
+> through only one device node. About the component
+> framework Block Diagram, please check below:
+>
+>                 Master(device node)
+>         ________|_________________________
+>         |                      |             |
+> component0(HW0) component1(HW1) component2(HW2) ......
+>
+> As above, the component framework is similar to a
+> master-component two level architecture.
+> Both master and component have the compatible
+> attribute in the device tree, and the corresponding
+> platform driver structure is defined in the driver.
+> Therefore, when the compatible attribute matches,
+> the corresponding probe function will be called.
+>
+> In the probe function of component, operations
+> such as initialization clock, remmap register base,
+> registration interrupt will be performed.
+> And add the component to a component linked
+> list to find the corresponding master.
+>
+> In the probe function of the master, the device
+> node will be registered, and the master will be
+> added to a master linked list to find the
+> corresponding component.
+>
+> After the master matches the component,
+> it will obtain the clock, interrupt, register base
+> and other resources in the component,
+> and operate the HW through these resources.
+> At the same time, multiple HWs software function
+> interfaces are designed in the master driver.
 
---x5w35vkbqjq7z26x
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Please include a changelog with your cover letter (or in each patch).
+This is the fourth version of the series, and it's unclear what has
+changed between the versions.
 
-On Thu, Sep 23, 2021 at 09:12:25PM -0500, Bjorn Andersson wrote:
-> The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
-> with the primary purpose of controlling the backlight of the attached
-> panel. Add an implementation that exposes this using the standard PWM
-> framework, to allow e.g. pwm-backlight to expose this to the user.
->=20
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->=20
-> Changes since v4:
-> - Rebased the patch
-> - Turned ti_sn65dsi86_write_u16 into using regmap bulk write
-> - Moved pwm_refclk_freq out of the #if CONFIG_PWM, to allow removing the =
-guard
->   from ti_sn_bridge_set_refclk_freq()
-> - Updates "Limitations" text
-> - pm_runtime_put_sync() on pm_runtime_get_sync() failure
-> - Added parenthesis around (scale + 1) in the PWM_FREQ formula and thereby
->   redid all the math
-> - Rewrote the comments related to the math
-> - Rewrote the math for calculating the backlight (duty cycle) register va=
-lue
-> - Dropped some !! on already boolean state->enabled
-> - Dropped a spurious newline
-> - Rewrote comment in ti_sn65dsi86_probe() talking about future PWM work
->=20
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 369 +++++++++++++++++++++++++-
->  1 file changed, 361 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/brid=
-ge/ti-sn65dsi86.c
-> index 41d48a393e7f..857a53dc6c75 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -4,7 +4,9 @@
->   * datasheet: https://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
->   */
-> =20
-> +#include <linux/atomic.h>
->  #include <linux/auxiliary_bus.h>
-> +#include <linux/bitfield.h>
->  #include <linux/bits.h>
->  #include <linux/clk.h>
->  #include <linux/debugfs.h>
-> @@ -15,6 +17,7 @@
->  #include <linux/module.h>
->  #include <linux/of_graph.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/pwm.h>
->  #include <linux/regmap.h>
->  #include <linux/regulator/consumer.h>
-> =20
-> @@ -91,6 +94,13 @@
->  #define SN_ML_TX_MODE_REG			0x96
->  #define  ML_TX_MAIN_LINK_OFF			0
->  #define  ML_TX_NORMAL_MODE			BIT(0)
-> +#define SN_PWM_PRE_DIV_REG			0xA0
-> +#define SN_BACKLIGHT_SCALE_REG			0xA1
-> +#define  BACKLIGHT_SCALE_MAX			0xFFFF
-> +#define SN_BACKLIGHT_REG			0xA3
-> +#define SN_PWM_EN_INV_REG			0xA5
-> +#define  SN_PWM_INV_MASK			BIT(0)
-> +#define  SN_PWM_EN_MASK				BIT(1)
->  #define SN_AUX_CMD_STATUS_REG			0xF4
->  #define  AUX_IRQ_STATUS_AUX_RPLY_TOUT		BIT(3)
->  #define  AUX_IRQ_STATUS_AUX_SHORT		BIT(5)
-> @@ -113,11 +123,14 @@
-> =20
->  #define SN_LINK_TRAINING_TRIES		10
-> =20
-> +#define SN_PWM_GPIO_IDX			3 /* 4th GPIO */
-> +
->  /**
->   * struct ti_sn65dsi86 - Platform data for ti-sn65dsi86 driver.
->   * @bridge_aux:   AUX-bus sub device for MIPI-to-eDP bridge functionalit=
-y.
->   * @gpio_aux:     AUX-bus sub device for GPIO controller functionality.
->   * @aux_aux:      AUX-bus sub device for eDP AUX channel functionality.
-> + * @pwm_aux:      AUX-bus sub device for PWM controller functionality.
->   *
->   * @dev:          Pointer to the top level (i2c) device.
->   * @regmap:       Regmap for accessing i2c.
-> @@ -145,11 +158,17 @@
->   *                bitmap so we can do atomic ops on it without an extra
->   *                lock so concurrent users of our 4 GPIOs don't stomp on
->   *                each other's read-modify-write.
-> + *
-> + * @pchip:        pwm_chip if the PWM is exposed.
-> + * @pwm_enabled:  Used to track if the PWM signal is currently enabled.
-> + * @pwm_pin_busy: Track if GPIO4 is currently requested for GPIO or PWM.
-> + * @pwm_refclk_freq: Cache for the reference clock input to the PWM.
->   */
->  struct ti_sn65dsi86 {
->  	struct auxiliary_device		bridge_aux;
->  	struct auxiliary_device		gpio_aux;
->  	struct auxiliary_device		aux_aux;
-> +	struct auxiliary_device		pwm_aux;
-> =20
->  	struct device			*dev;
->  	struct regmap			*regmap;
-> @@ -172,6 +191,12 @@ struct ti_sn65dsi86 {
->  	struct gpio_chip		gchip;
->  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
->  #endif
-> +#if defined(CONFIG_PWM)
-> +	struct pwm_chip			pchip;
-> +	bool				pwm_enabled;
-> +	atomic_t			pwm_pin_busy;
-> +#endif
-> +	unsigned int			pwm_refclk_freq;
->  };
-> =20
->  static const struct regmap_range ti_sn65dsi86_volatile_ranges[] =3D {
-> @@ -190,11 +215,31 @@ static const struct regmap_config ti_sn65dsi86_regm=
-ap_config =3D {
->  	.cache_type =3D REGCACHE_NONE,
->  };
-> =20
-> +static int ti_sn65dsi86_read_u16(struct ti_sn65dsi86 *pdata,
-> +				 unsigned int reg, u16 *val)
-> +{
-> +	unsigned int tmp;
-> +	int ret;
-> +
-> +	ret =3D regmap_read(pdata->regmap, reg, &tmp);
-> +	if (ret)
-> +		return ret;
-> +	*val =3D tmp;
-> +
-> +	ret =3D regmap_read(pdata->regmap, reg + 1, &tmp);
-> +	if (ret)
-> +		return ret;
-> +	*val |=3D tmp << 8;
-> +
-> +	return 0;
-> +}
-> +
->  static void ti_sn65dsi86_write_u16(struct ti_sn65dsi86 *pdata,
->  				   unsigned int reg, u16 val)
->  {
-> -	regmap_write(pdata->regmap, reg, val & 0xFF);
-> -	regmap_write(pdata->regmap, reg + 1, val >> 8);
-> +	u8 buf[2] =3D { val & 0xff, val >> 8 };
-> +
-> +	regmap_bulk_write(pdata->regmap, reg, &buf, ARRAY_SIZE(buf));
 
-Given that ti_sn65dsi86_write_u16 uses regmap_bulk_write I wonder why
-ti_sn65dsi86_read_u16 doesn't use regmap_bulk_read.
+ChenYu
 
->  }
-> =20
->  static u32 ti_sn_bridge_get_dsi_freq(struct ti_sn65dsi86 *pdata)
-> @@ -253,6 +298,12 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_s=
-n65dsi86 *pdata)
-> =20
->  	regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
->  			   REFCLK_FREQ(i));
-> +
-> +	/*
-> +	 * The PWM refclk is based on the value written to SN_DPPLL_SRC_REG,
-> +	 * regardless of its actual sourcing.
-> +	 */
-> +	pdata->pwm_refclk_freq =3D ti_sn_bridge_refclk_lut[i];
->  }
-> =20
->  static void ti_sn65dsi86_enable_comms(struct ti_sn65dsi86 *pdata)
-> @@ -1259,9 +1310,283 @@ static struct auxiliary_driver ti_sn_bridge_drive=
-r =3D {
->  };
-> =20
->  /* ---------------------------------------------------------------------=
---------
-> - * GPIO Controller
-> + * PWM Controller
-> + */
-> +#if defined(CONFIG_PWM)
-> +static int ti_sn_pwm_pin_request(struct ti_sn65dsi86 *pdata)
-> +{
-> +	return atomic_xchg(&pdata->pwm_pin_busy, 1) ? -EBUSY : 0;
-> +}
-> +
-> +static void ti_sn_pwm_pin_release(struct ti_sn65dsi86 *pdata)
-> +{
-> +	atomic_set(&pdata->pwm_pin_busy, 0);
-> +}
-> +
-> +static struct ti_sn65dsi86 *pwm_chip_to_ti_sn_bridge(struct pwm_chip *ch=
-ip)
-> +{
-> +	return container_of(chip, struct ti_sn65dsi86, pchip);
-> +}
-> +
-> +static int ti_sn_pwm_request(struct pwm_chip *chip, struct pwm_device *p=
-wm)
-> +{
-> +	struct ti_sn65dsi86 *pdata =3D pwm_chip_to_ti_sn_bridge(chip);
-> +
-> +	return ti_sn_pwm_pin_request(pdata);
-> +}
-> +
-> +static void ti_sn_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
-> +{
-> +	struct ti_sn65dsi86 *pdata =3D pwm_chip_to_ti_sn_bridge(chip);
-> +
-> +	ti_sn_pwm_pin_release(pdata);
-> +}
-> +
-> +/*
-> + * Limitations:
-> + * - The PWM signal is not driven when the chip is powered down, or in i=
-ts
-> + *   reset state and the driver does not implement the "suspend state"
-> + *   described in the documentation. In order to save power, state->enab=
-led is
-> + *   interpreted as denoting if the signal is expected to be valid, and =
-is used
-> + *   to determine if the chip needs to be kept powered.
-> + * - Changing both period and duty_cycle is not done atomically, neither=
- is the
-> + *   multi-byte register updates, so the output might briefly be undefin=
-ed
-> + *   during update.
->   */
-> +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> +			   const struct pwm_state *state)
-> +{
-> +	struct ti_sn65dsi86 *pdata =3D pwm_chip_to_ti_sn_bridge(chip);
-> +	unsigned int pwm_en_inv;
-> +	unsigned int backlight;
-> +	unsigned int pre_div;
-> +	unsigned int scale;
-> +	u64 period_max;
-> +	u64 period;
-> +	int ret;
-> +
-> +	if (!pdata->pwm_enabled) {
-> +		ret =3D pm_runtime_get_sync(pdata->dev);
-> +		if (ret < 0) {
-> +			pm_runtime_put_sync(pdata->dev);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (state->enabled) {
-> +		if (!pdata->pwm_enabled) {
-> +			/*
-> +			 * The chip might have been powered down while we
-> +			 * didn't hold a PM runtime reference, so mux in the
-> +			 * PWM function on the GPIO pin again.
-> +			 */
-> +			ret =3D regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> +						 SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO_IDX),
-> +						 SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO_IDX));
-> +			if (ret) {
-> +				dev_err(pdata->dev, "failed to mux in PWM function\n");
-> +				goto out;
-> +			}
-> +		}
-> +
-> +		/*
-> +		 * Per the datasheet the PWM frequency is given by:
-> +		 *
-> +		 *                          REFCLK_FREQ
-> +		 *   PWM_FREQ =3D -----------------------------------
-> +		 *               PWM_PRE_DIV * BACKLIGHT_SCALE + 1
-> +		 *
-> +		 * Unfortunately the math becomes overly complex unless we
-> +		 * assume that this formula is missing parenthesis around
-> +		 * BACKLIGHT_SCALE + 1.
-
-We shouldn't assume a different formula than the reference manual
-describes because it's complex. The reasoning should be that the
-reference manual is wrong and that someone has convinced themselves the
-assumed formula is the right one instead.
-
-With the assumed formula: What happens if PWM_PRE_DIV is 0?
-
-> +		 * With that the formula can be written:
-> +		 *
-> +		 *   T_pwm * REFCLK_FREQ =3D PWM_PRE_DIV * (BACKLIGHT_SCALE + 1)
-> +		 *
-> +		 * In order to keep BACKLIGHT_SCALE within its 16 bits,
-> +		 * PWM_PRE_DIV must be:
-> +		 *
-> +		 *                     T_pwm * REFCLK_FREQ
-> +		 *   PWM_PRE_DIV >=3D -------------------------
-> +		 *                   BACKLIGHT_SCALE_MAX + 1
-> +		 *
-> +		 * To simplify the search and optimize the resolution of the
-> +		 * PWM, the lowest possible PWM_PRE_DIV is used. Finally the
-> +		 * scale is calculated as:
-> +		 *
-> +		 *                      T_pwm * REFCLK_FREQ
-> +		 *   BACKLIGHT_SCALE =3D ---------------------- - 1
-> +		 *                          PWM_PRE_DIV
-> +		 *
-> +		 * Here T_pwm is represented in seconds, so appropriate scaling
-> +		 * to nanoseconds is necessary.
-> +		 */
-> +
-> +		/* Minimum T_pwm is (0 * 1) / REFCLK_FREQ */
-
-So the minimal T_pwm (which corresponds to .period, right?) is 0? That
-sounds wrong.
-
-> +		if (state->period <=3D NSEC_PER_SEC / pdata->pwm_refclk_freq) {
-
-The implemented check assumes 1 / REFCLK_FREQ, which looks more reasonable.
-
-> +			ret =3D -EINVAL;
-> +			goto out;
-> +		}
-> +
-> +		/*
-> +		 * Maximum T_pwm is 255 * (65535 + 1) / REFCLK_FREQ
-> +		 * Limit period to this to avoid overflows
-> +		 */
-> +		period_max =3D div_u64((u64)NSEC_PER_SEC * 255 * (65535 + 1), pdata->p=
-wm_refclk_freq);
-> +		if (period > period_max)
-> +			period =3D period_max;
-> +		else
-> +			period =3D state->period;
-> +
-> +		pre_div =3D DIV64_U64_ROUND_UP(period * pdata->pwm_refclk_freq,
-> +					     (u64)NSEC_PER_SEC * (BACKLIGHT_SCALE_MAX + 1));
-> +		scale =3D div64_u64(period * pdata->pwm_refclk_freq, (u64)NSEC_PER_SEC=
- * pre_div) - 1;
-
-You're loosing precision here as you divide by the result of a division.
-
-> +
-> +		/*
-> +		 * The documentation has the duty ratio given as:
-> +		 *
-> +		 *     duty          BACKLIGHT
-> +		 *   ------- =3D ---------------------
-> +		 *    period    BACKLIGHT_SCALE + 1
-> +		 *
-> +		 * Solve for BACKLIGHT, substituting BACKLIGHT_SCALE according
-> +		 * to definition above and adjusting for nanosecond
-> +		 * representation of duty cycle gives us:
-> +		 */
-> +		backlight =3D div64_u64(state->duty_cycle * pdata->pwm_refclk_freq, (u=
-64)NSEC_PER_SEC * pre_div);
-> +		if (backlight > scale)
-> +			backlight =3D scale;
-> +
-> +		ret =3D regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
-> +		if (ret) {
-> +			dev_err(pdata->dev, "failed to update PWM_PRE_DIV\n");
-> +			goto out;
-> +		}
-> =20
-> +		ti_sn65dsi86_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, scale);
-> +		ti_sn65dsi86_write_u16(pdata, SN_BACKLIGHT_REG, backlight);
-> +	}
-> +
-> +	pwm_en_inv =3D FIELD_PREP(SN_PWM_EN_MASK, state->enabled) |
-> +		     FIELD_PREP(SN_PWM_INV_MASK, state->polarity =3D=3D PWM_POLARITY_I=
-NVERSED);
-> +	ret =3D regmap_write(pdata->regmap, SN_PWM_EN_INV_REG, pwm_en_inv);
-> +	if (ret) {
-> +		dev_err(pdata->dev, "failed to update PWM_EN/PWM_INV\n");
-> +		goto out;
-> +	}
-> +
-> +	pdata->pwm_enabled =3D state->enabled;
-> +out:
-> +
-> +	if (!pdata->pwm_enabled)
-> +		pm_runtime_put_sync(pdata->dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static void ti_sn_pwm_get_state(struct pwm_chip *chip, struct pwm_device=
- *pwm,
-> +				struct pwm_state *state)
-> +{
-> +	struct ti_sn65dsi86 *pdata =3D pwm_chip_to_ti_sn_bridge(chip);
-> +	unsigned int pwm_en_inv;
-> +	unsigned int pre_div;
-> +	u16 backlight;
-> +	u16 scale;
-> +	int ret;
-> +
-> +	ret =3D regmap_read(pdata->regmap, SN_PWM_EN_INV_REG, &pwm_en_inv);
-> +	if (ret)
-> +		return;
-> +
-> +	ret =3D ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_SCALE_REG, &scale);
-> +	if (ret)
-> +		return;
-> +
-> +	ret =3D ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_REG, &backlight);
-> +	if (ret)
-> +		return;
-> +
-> +	ret =3D regmap_read(pdata->regmap, SN_PWM_PRE_DIV_REG, &pre_div);
-> +	if (ret)
-> +		return;
-> +
-> +	state->enabled =3D FIELD_GET(SN_PWM_EN_MASK, pwm_en_inv);
-> +	if (FIELD_GET(SN_PWM_INV_MASK, pwm_en_inv))
-> +		state->polarity =3D PWM_POLARITY_INVERSED;
-> +	else
-> +		state->polarity =3D PWM_POLARITY_NORMAL;
-> +
-> +	state->period =3D DIV_ROUND_UP_ULL((u64)NSEC_PER_SEC * pre_div * (scale=
- + 1),
-> +					 pdata->pwm_refclk_freq);
-> +	state->duty_cycle =3D DIV_ROUND_UP_ULL((u64)NSEC_PER_SEC * pre_div * ba=
-cklight,
-> +					     pdata->pwm_refclk_freq);
-
-What happens if scale + 1 < backlight?
-
-> +}
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---x5w35vkbqjq7z26x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFNhDQACgkQwfwUeK3K
-7AkqhAf/QGHZ9fpQZbnxfyKO17nMpDKirQu7ItO+w7qDabwD/oJnHRwVGJuDWuF+
-yjbTStUYIdGJT2dTgNuCeDV0lrf4lLn/LIstrauAPCXG+5wThmw0BSpskZBAgNUx
-yHqC1OigWRKUARff+Nw8B4m2W+shSuiwfNIs5hrjIw0xLmoQwkMnQVCefLQYCVmH
-p4ef/C55rv2FRfCwrC+btHWRnhFFSumy/UGJSJ+Zv+pERWisfoajiyqU8qkEO0mF
-5HMm6FX71CKAmIkBBtANDZy3433kYFe5FM5DO1nBcmt3R7U163hATaQhllcNUQ1q
-Fz9gLvQI043lp7uqgrkoe28vUzaNoA==
-=ZcGL
------END PGP SIGNATURE-----
-
---x5w35vkbqjq7z26x--
+> kyrie.wu (5):
+>   dt-bindings: mediatek: Add mediatek, mt8195-jpgenc compatible
+>   media: mtk-jpegenc: Use component framework to manage each hardware
+>   media: mtk-jpegenc: add jpegenc timeout func interface
+>   media: mtk-jpegenc: add jpeg encode worker interface
+>   media: mtk-jpegenc: add output pic reorder interface
+>
+>  .../bindings/media/mediatek-jpeg-encoder.yaml      |   3 +
+>  drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c    | 395 ++++++++++++++++++---
+>  drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h    |  79 +++++
+>  drivers/media/platform/mtk-jpeg/mtk_jpeg_enc_hw.c  | 298 ++++++++++++++++
+>  4 files changed, 730 insertions(+), 45 deletions(-)
+>
+> --
+> 2.6.4
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
