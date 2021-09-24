@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE796416EB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F96416EBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244456AbhIXJQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50234 "EHLO
+        id S244870AbhIXJSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245176AbhIXJQU (ORCPT
+        with ESMTP id S244462AbhIXJSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:16:20 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E7AC061574;
-        Fri, 24 Sep 2021 02:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Wkc6S9e/fnO2kcJG5mRsdS7XOKUTu7Z8TExyB8W3lIY=; b=cgI1raXMDn/Gg8sWhF+W5LGHYl
-        rIk3QMeWPyBHQkQgjqpb2GPcp0VrYw5+i9FSQa+96rVUsMT+b/fApdeg/pGcY4BTuuYbb1V2Ee36W
-        EKzVQhQCzbd07K40sd9yQ8vvUaueWWWTnwCuN1mdgg6eb8WkMocVZLe1tHgMtrW+9ba0=;
-Received: from p200300ccff0ce8001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0c:e800:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mThI4-0002PU-IK; Fri, 24 Sep 2021 11:14:44 +0200
-Received: from andi by aktux with local (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mThI4-00AkUe-3q; Fri, 24 Sep 2021 11:14:44 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Andreas Kemnade <andreas@kemnade.info>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH v2 5/5] ARM: dts: imx6sll: fix mmc compatibles
-Date:   Fri, 24 Sep 2021 11:14:39 +0200
-Message-Id: <20210924091439.2561931-6-andreas@kemnade.info>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210924091439.2561931-1-andreas@kemnade.info>
-References: <20210924091439.2561931-1-andreas@kemnade.info>
+        Fri, 24 Sep 2021 05:18:40 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C8EC061574;
+        Fri, 24 Sep 2021 02:17:07 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id t7so25174229wrw.13;
+        Fri, 24 Sep 2021 02:17:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=KmHJWAfs9pjed5mRaYoAGE9AN2TP/56P8NVpQ0/fMVg=;
+        b=QgVOGerfe2rJpKOqgpTTsb2dQxu7nwmEUppkBfdvLl7CgWRvpapJZiaBrblorwInO/
+         ovQ3g5sxuGHKvRv4c/F233/lfxxygwva8yxyhC1wOrJB0QOgCK7sOYaj2dOTJCroOnS6
+         fpUFhdM6PUAI4j8j5Dq1hpwLBchO6xnIPXOATuUYiTSD+1VzROVeKitxLFVzaR2gDnm5
+         eJz8HJTebnTPEsL8bID5F+pclIDgQ1mbM1nACLG071flLIUHVoj3JtHfjsuT7107HoDw
+         fDHvp95OfC+sixakJKiBJ1kE0QTaXY4FauYQl3fBjl0JCf3hdqlktjRW9TQNUJ19Ck36
+         ZEpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=KmHJWAfs9pjed5mRaYoAGE9AN2TP/56P8NVpQ0/fMVg=;
+        b=g8iM8u7qeL37b6TW+sD4MJXTZFWB179tf0XPnDxwxewrCae9lpNWEHcRWHKT3Sr3/F
+         ICeh/tAWRgvH7xNQ4C/+Xjhrs2B5HSrkoddI2qN833eF2T49laP3Yt64UlBD3Z3gn7Zf
+         YyJ+tTiPrKk+3MfrYDMRf+Ig51cOoeB1wm4XXPdP3+tsluA1/1vtjgZplH+LMUPrIqxf
+         luBRPjCyRc69B4U3hpHlb0G9Y8+6Pmo/a66qD+ZMvF5gePx8Me5qDPpXwK/1V212LwR4
+         fE1gnKiXfGbxgJZYtbPRdQ8cp/qaaL/WttNtMG/mF9NuSBlnPXdCQiyFQM0qhbBrb3Qu
+         w9XA==
+X-Gm-Message-State: AOAM533CtLdN0do0rSFNBIVUz7asTZ4gWFclNY9AqvQ9ZxdZUCIi+AIe
+        nptG40mNSk8iY85YHQdH92s=
+X-Google-Smtp-Source: ABdhPJxG3ibjirvmMpd1Hf0QkJm63b7qA2fp0KKkO5LWFs5GiBkGS+/LxijE0526PlkLQn5jWgcd4A==
+X-Received: by 2002:adf:f208:: with SMTP id p8mr10086633wro.379.1632475026082;
+        Fri, 24 Sep 2021 02:17:06 -0700 (PDT)
+Received: from p200300e94717cfc52fe6da3ec1ed0822.dip0.t-ipconnect.de (p200300e94717cfc52fe6da3ec1ed0822.dip0.t-ipconnect.de. [2003:e9:4717:cfc5:2fe6:da3e:c1ed:822])
+        by smtp.googlemail.com with ESMTPSA id x5sm9596511wmk.32.2021.09.24.02.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 02:17:05 -0700 (PDT)
+Message-ID: <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
+Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
+ cannot meet the timeout value required by the device
+From:   Bean Huo <huobean@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 24 Sep 2021 11:17:05 +0200
+In-Reply-To: <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
+References: <20210917172727.26834-1-huobean@gmail.com>
+         <20210917172727.26834-3-huobean@gmail.com>
+         <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Binding specification only allows one compatible here.
+On Fri, 2021-09-24 at 08:29 +0300, Adrian Hunter wrote:
+> > If the data transmission timeout value required by the device
+> > exceeds
+> > the maximum timeout value of the host HW timer, we still use the HW
+> > timer with the maximum timeout value of the HW timer. This setting
+> > is
+> > suitable for most R/W situations. But sometimes, the device will
+> > complete
+> > the R/W task within its required timeout value (greater than the HW
+> > timer).
+> > In this case, the HW timer for data transmission will time out.
+> > Currently, in this condition, we  disable the HW timer and use the
+> > SW
+> > timer only when the SDHCI_QUIRK2_DISABLE_HW_TIMEOUT quirk is set by
+> > the
+> > host driver. The patch is to remove this if statement restriction
+> > and
+> > allow data transmission to use the SW timer when the hardware timer
+> > cannot
+> > meet the required timeout value.
+> 
+> 
+> The reason it is a quirk is because it does not work for all
+> hardware.
+> 
+> For some controllers the timeout cannot really be disabled, only the
+> 
+> interrupt is disabled, and then the controller never indicates
+> completion
+> 
+> if the timeout is exceeded.
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/arm/boot/dts/imx6sll.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hi Adrian,
+Thanks for your review.
 
-diff --git a/arch/arm/boot/dts/imx6sll.dtsi b/arch/arm/boot/dts/imx6sll.dtsi
-index d4a000c3dde7..5c4088893106 100644
---- a/arch/arm/boot/dts/imx6sll.dtsi
-+++ b/arch/arm/boot/dts/imx6sll.dtsi
-@@ -709,7 +709,7 @@ usbmisc: usbmisc@2184800 {
- 			};
- 
- 			usdhc1: mmc@2190000 {
--				compatible = "fsl,imx6sll-usdhc", "fsl,imx6sx-usdhc";
-+				compatible = "fsl,imx6sll-usdhc";
- 				reg = <0x02190000 0x4000>;
- 				interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX6SLL_CLK_USDHC1>,
-@@ -723,7 +723,7 @@ usdhc1: mmc@2190000 {
- 			};
- 
- 			usdhc2: mmc@2194000 {
--				compatible = "fsl,imx6sll-usdhc", "fsl,imx6sx-usdhc";
-+				compatible = "fsl,imx6sll-usdhc";
- 				reg = <0x02194000 0x4000>;
- 				interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX6SLL_CLK_USDHC2>,
-@@ -737,7 +737,7 @@ usdhc2: mmc@2194000 {
- 			};
- 
- 			usdhc3: mmc@2198000 {
--				compatible = "fsl,imx6sll-usdhc", "fsl,imx6sx-usdhc";
-+				compatible = "fsl,imx6sll-usdhc";
- 				reg = <0x02198000 0x4000>;
- 				interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX6SLL_CLK_USDHC3>,
--- 
-2.30.2
+Yes, you are right. But this quirk prevents disabling the hardware timeoutIRQ. The purpose of this patch is to disable the hardware timeout IRQ and
+select the software timeout.
+
+void __sdhci_set_timeout(struct sdhci_host *host, struct mmc_command
+*cmd)
+{
+        bool too_big = false;
+        u8 count = sdhci_calc_timeout(host, cmd, &too_big);
+
+        if (too_big) {
+                sdhci_calc_sw_timeout(host, cmd);
+                sdhci_set_data_timeout_irq(host, false); // disable IRQ
+        } else if (!(host->ier & SDHCI_INT_DATA_TIMEOUT)) {
+                sdhci_set_data_timeout_irq(host, true);
+        }
+
+        sdhci_writeb(host, count, SDHCI_TIMEOUT_CONTROL);
+}
+
+
+The driver has detected that the hardware timer cannot meet the timeout
+requirements of the device, but we still use the hardware timer, which will
+allow potential timeout issuea . Rather than allowing a potential
+problem to exist, why can’t software timing be used to avoid this
+problem?
+
+
+Kind regards,
+Bean
 
