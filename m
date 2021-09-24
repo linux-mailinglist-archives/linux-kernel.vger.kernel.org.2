@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7504174A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3327A41743E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345583AbhIXNJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34418 "EHLO mail.kernel.org"
+        id S1345595AbhIXNEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:04:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346418AbhIXNGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:06:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B14E06124F;
-        Fri, 24 Sep 2021 12:56:18 +0000 (UTC)
+        id S1345598AbhIXNBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:01:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E446127C;
+        Fri, 24 Sep 2021 12:54:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488179;
-        bh=0oFXmb1PiySXKj8yKb4GMJK0zD2bsQWZzTnGzjHOgC0=;
+        s=korg; t=1632488059;
+        bh=5xk2MWteNNzH+ggzlLLEbrT1vuPHYQX7eeWTtH2ibMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SanSSmoWUVkotlI97CNv9ZL/AJ1YDRqVh0A7A6QwsF+5Irq4t4Tm4okHEM6v/CSbt
-         ny8ogS9PQ3iQMWNlZ2sLr2wcOC0uCg2Wepg1HCkjEX10MWAyE7G9eiyIF2nYvZCr4V
-         LHGW/DnVxhhsNzrt0QublxUBMs0TJYOCpnbPwbOo=
+        b=WaX41up4huJeA/DxsCTCH9K8yvTyg74NcHvd2rAyDHSWhPuqnZSO3aHMtdp36TA09
+         JeeOXnKKTZuRd18gYjADhlIqT7KU1w6+VFAwTYWU+f6BZcK4H/ePzHDkWFzK1VYPJm
+         J08MRHCbE2o8zo2I0Q7jVgZPCwK1kOdgkm7wRZ9o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.10 15/63] um: virtio_uml: fix memory leak on init failures
+        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 066/100] ceph: remove the capsnaps when removing caps
 Date:   Fri, 24 Sep 2021 14:44:15 +0200
-Message-Id: <20210924124334.771760200@linuxfoundation.org>
+Message-Id: <20210924124343.641451541@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,218 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Xiubo Li <xiubli@redhat.com>
 
-commit 7ad28e0df7ee9dbcb793bb88dd81d4d22bb9a10e upstream.
+[ Upstream commit a6d37ccdd240e80f26aaea0e62cda310e0e184d7 ]
 
-If initialization fails, e.g. because the connection failed,
-we leak the 'vu_dev'. Fix that. Reported by smatch.
+capsnaps will take inode references via ihold when queueing to flush.
+When force unmounting, the client will just close the sessions and
+may never get a flush reply, causing a leak and inode ref leak.
 
-Fixes: 5d38f324993f ("um: drivers: Add virtio vhost-user driver")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by removing the capsnaps for an inode when removing the caps.
+
+URL: https://tracker.ceph.com/issues/52295
+Signed-off-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/virtio_uml.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/ceph/caps.c       | 68 +++++++++++++++++++++++++++++++++-----------
+ fs/ceph/mds_client.c | 31 +++++++++++++++++++-
+ fs/ceph/super.h      |  6 ++++
+ 3 files changed, 87 insertions(+), 18 deletions(-)
 
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -1113,7 +1113,7 @@ static int virtio_uml_probe(struct platf
- 		rc = os_connect_socket(pdata->socket_path);
- 	} while (rc == -EINTR);
- 	if (rc < 0)
--		return rc;
-+		goto error_free;
- 	vu_dev->sock = rc;
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index 1f3d67133958..c619a926dc18 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -3117,7 +3117,16 @@ void ceph_put_wrbuffer_cap_refs(struct ceph_inode_info *ci, int nr,
+ 				break;
+ 			}
+ 		}
+-		BUG_ON(!found);
++
++		if (!found) {
++			/*
++			 * The capsnap should already be removed when removing
++			 * auth cap in the case of a forced unmount.
++			 */
++			WARN_ON_ONCE(ci->i_auth_cap);
++			goto unlock;
++		}
++
+ 		capsnap->dirty_pages -= nr;
+ 		if (capsnap->dirty_pages == 0) {
+ 			complete_capsnap = true;
+@@ -3139,6 +3148,7 @@ void ceph_put_wrbuffer_cap_refs(struct ceph_inode_info *ci, int nr,
+ 		     complete_capsnap ? " (complete capsnap)" : "");
+ 	}
  
- 	spin_lock_init(&vu_dev->sock_lock);
-@@ -1132,6 +1132,8 @@ static int virtio_uml_probe(struct platf
++unlock:
+ 	spin_unlock(&ci->i_ceph_lock);
  
- error_init:
- 	os_close_file(vu_dev->sock);
-+error_free:
-+	kfree(vu_dev);
- 	return rc;
+ 	if (last) {
+@@ -3609,6 +3619,43 @@ out:
+ 		iput(inode);
  }
  
++void __ceph_remove_capsnap(struct inode *inode, struct ceph_cap_snap *capsnap,
++			   bool *wake_ci, bool *wake_mdsc)
++{
++	struct ceph_inode_info *ci = ceph_inode(inode);
++	struct ceph_mds_client *mdsc = ceph_sb_to_client(inode->i_sb)->mdsc;
++	bool ret;
++
++	lockdep_assert_held(&ci->i_ceph_lock);
++
++	dout("removing capsnap %p, inode %p ci %p\n", capsnap, inode, ci);
++
++	list_del_init(&capsnap->ci_item);
++	ret = __detach_cap_flush_from_ci(ci, &capsnap->cap_flush);
++	if (wake_ci)
++		*wake_ci = ret;
++
++	spin_lock(&mdsc->cap_dirty_lock);
++	if (list_empty(&ci->i_cap_flush_list))
++		list_del_init(&ci->i_flushing_item);
++
++	ret = __detach_cap_flush_from_mdsc(mdsc, &capsnap->cap_flush);
++	if (wake_mdsc)
++		*wake_mdsc = ret;
++	spin_unlock(&mdsc->cap_dirty_lock);
++}
++
++void ceph_remove_capsnap(struct inode *inode, struct ceph_cap_snap *capsnap,
++			 bool *wake_ci, bool *wake_mdsc)
++{
++	struct ceph_inode_info *ci = ceph_inode(inode);
++
++	lockdep_assert_held(&ci->i_ceph_lock);
++
++	WARN_ON_ONCE(capsnap->dirty_pages || capsnap->writing);
++	__ceph_remove_capsnap(inode, capsnap, wake_ci, wake_mdsc);
++}
++
+ /*
+  * Handle FLUSHSNAP_ACK.  MDS has flushed snap data to disk and we can
+  * throw away our cap_snap.
+@@ -3646,23 +3693,10 @@ static void handle_cap_flushsnap_ack(struct inode *inode, u64 flush_tid,
+ 			     capsnap, capsnap->follows);
+ 		}
+ 	}
+-	if (flushed) {
+-		WARN_ON(capsnap->dirty_pages || capsnap->writing);
+-		dout(" removing %p cap_snap %p follows %lld\n",
+-		     inode, capsnap, follows);
+-		list_del(&capsnap->ci_item);
+-		wake_ci |= __detach_cap_flush_from_ci(ci, &capsnap->cap_flush);
+-
+-		spin_lock(&mdsc->cap_dirty_lock);
+-
+-		if (list_empty(&ci->i_cap_flush_list))
+-			list_del_init(&ci->i_flushing_item);
+-
+-		wake_mdsc |= __detach_cap_flush_from_mdsc(mdsc,
+-							  &capsnap->cap_flush);
+-		spin_unlock(&mdsc->cap_dirty_lock);
+-	}
++	if (flushed)
++		ceph_remove_capsnap(inode, capsnap, &wake_ci, &wake_mdsc);
+ 	spin_unlock(&ci->i_ceph_lock);
++
+ 	if (flushed) {
+ 		ceph_put_snap_context(capsnap->context);
+ 		ceph_put_cap_snap(capsnap);
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index dc98de0acd28..52b3ddc5f199 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -1583,14 +1583,39 @@ out:
+ 	return ret;
+ }
+ 
++static int remove_capsnaps(struct ceph_mds_client *mdsc, struct inode *inode)
++{
++	struct ceph_inode_info *ci = ceph_inode(inode);
++	struct ceph_cap_snap *capsnap;
++	int capsnap_release = 0;
++
++	lockdep_assert_held(&ci->i_ceph_lock);
++
++	dout("removing capsnaps, ci is %p, inode is %p\n", ci, inode);
++
++	while (!list_empty(&ci->i_cap_snaps)) {
++		capsnap = list_first_entry(&ci->i_cap_snaps,
++					   struct ceph_cap_snap, ci_item);
++		__ceph_remove_capsnap(inode, capsnap, NULL, NULL);
++		ceph_put_snap_context(capsnap->context);
++		ceph_put_cap_snap(capsnap);
++		capsnap_release++;
++	}
++	wake_up_all(&ci->i_cap_wq);
++	wake_up_all(&mdsc->cap_flushing_wq);
++	return capsnap_release;
++}
++
+ static int remove_session_caps_cb(struct inode *inode, struct ceph_cap *cap,
+ 				  void *arg)
+ {
+ 	struct ceph_fs_client *fsc = (struct ceph_fs_client *)arg;
++	struct ceph_mds_client *mdsc = fsc->mdsc;
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+ 	LIST_HEAD(to_remove);
+ 	bool dirty_dropped = false;
+ 	bool invalidate = false;
++	int capsnap_release = 0;
+ 
+ 	dout("removing cap %p, ci is %p, inode is %p\n",
+ 	     cap, ci, &ci->vfs_inode);
+@@ -1598,7 +1623,6 @@ static int remove_session_caps_cb(struct inode *inode, struct ceph_cap *cap,
+ 	__ceph_remove_cap(cap, false);
+ 	if (!ci->i_auth_cap) {
+ 		struct ceph_cap_flush *cf;
+-		struct ceph_mds_client *mdsc = fsc->mdsc;
+ 
+ 		if (READ_ONCE(fsc->mount_state) >= CEPH_MOUNT_SHUTDOWN) {
+ 			if (inode->i_data.nrpages > 0)
+@@ -1662,6 +1686,9 @@ static int remove_session_caps_cb(struct inode *inode, struct ceph_cap *cap,
+ 			list_add(&ci->i_prealloc_cap_flush->i_list, &to_remove);
+ 			ci->i_prealloc_cap_flush = NULL;
+ 		}
++
++		if (!list_empty(&ci->i_cap_snaps))
++			capsnap_release = remove_capsnaps(mdsc, inode);
+ 	}
+ 	spin_unlock(&ci->i_ceph_lock);
+ 	while (!list_empty(&to_remove)) {
+@@ -1678,6 +1705,8 @@ static int remove_session_caps_cb(struct inode *inode, struct ceph_cap *cap,
+ 		ceph_queue_invalidate(inode);
+ 	if (dirty_dropped)
+ 		iput(inode);
++	while (capsnap_release--)
++		iput(inode);
+ 	return 0;
+ }
+ 
+diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+index b1a363641beb..2200ed76b123 100644
+--- a/fs/ceph/super.h
++++ b/fs/ceph/super.h
+@@ -1163,6 +1163,12 @@ extern void ceph_put_cap_refs_no_check_caps(struct ceph_inode_info *ci,
+ 					    int had);
+ extern void ceph_put_wrbuffer_cap_refs(struct ceph_inode_info *ci, int nr,
+ 				       struct ceph_snap_context *snapc);
++extern void __ceph_remove_capsnap(struct inode *inode,
++				  struct ceph_cap_snap *capsnap,
++				  bool *wake_ci, bool *wake_mdsc);
++extern void ceph_remove_capsnap(struct inode *inode,
++				struct ceph_cap_snap *capsnap,
++				bool *wake_ci, bool *wake_mdsc);
+ extern void ceph_flush_snaps(struct ceph_inode_info *ci,
+ 			     struct ceph_mds_session **psession);
+ extern bool __ceph_should_report_size(struct ceph_inode_info *ci);
+-- 
+2.33.0
+
 
 
