@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3342417161
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08445417163
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245046AbhIXL6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:58:35 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:56530
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244681AbhIXL6c (ORCPT
+        id S244924AbhIXMAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:00:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239965AbhIXMAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 07:58:32 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0240B40784
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632484619;
-        bh=GX1knPnuUXedW7zKBIwh7buu4qnYLP5gHJJI8M92Q5Y=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=pOggI9vERhZL87htktEobI/vThl+wGmNIC2N5XlC0hIoeJtAU9CHFmZ6PJBspqCVY
-         JNzmto5f4/BtRIP659XfUR+DYCEv8Kfllx7iDjEoocBjrgr1aLdohV+Jsd0V8MQR4S
-         9ieO/58uoEqfxNtwGYL7DEE4cesK2x2Yh6r56LgffZxDVjwA4BzTDFXsVbEKjyngnD
-         8GyUTO5tgfHW+IQAciLKJzv7vTJJug8/paMsi6W5xpjWuzQaaJPRkk8zv6/N7sGQ4R
-         vRejfoB6H6T7lWawfBvLijA0KxB8ou0L+Fvsa2xOc/n+hH2s1IlcnlICIhU57/6k1A
-         ySljgXikgaISw==
-Received: by mail-wr1-f70.google.com with SMTP id a17-20020adfed11000000b00160525e875aso317809wro.23
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 04:56:59 -0700 (PDT)
+        Fri, 24 Sep 2021 08:00:00 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FCAC061574;
+        Fri, 24 Sep 2021 04:58:27 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id m21so9600076pgu.13;
+        Fri, 24 Sep 2021 04:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XUkoX7ayRenN07dB5QBsOD3RtV0frJpcKE347BjmU20=;
+        b=C/yol8vv2Ws0HzYoLwnlcIbEZG10a98YfobvCap0kKq94rVm1XewqT7SxAdcJWLJYW
+         dwq4eIvvGkZeO42iO9qV7mpE5CxYmWIHjWbIO8G/QkwHC6/U6PzriwZSr5uHbZCa3Bzo
+         hfMOKjnph6fQrVu7raRygQriqQ7ZFly510utm/W2oHCkdeR0xzi68pXvbfRBWpBrBfjC
+         A20Ass1hfVmwvMlYq+vt4X9B6ultaOuDaEtWWrzLRue9RwTIceEqKSwjk0r4EtC+XP5g
+         AmKP/s/E28GN3I+llmgd9mVLrPYAyvnekkzKw60IbKiBN5phh+kZKN/SZszkKP7lywhX
+         I8zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GX1knPnuUXedW7zKBIwh7buu4qnYLP5gHJJI8M92Q5Y=;
-        b=St9LwsVJ5SQ9iBV/Kwfvj2n43/SnejPwFbGhZvx0SUFu6XPkgdTp8mQa3hcC1feZhw
-         3CUsUTggGXEcaHMBJSOk3D4Wzy7Nv1T1yVx/iJv5ISOTcrVWCellmDbEw+Ya1cTjvUyw
-         fAmQ3jX6GOTD88yuwuK0suSzOb0InR0umZf+CYWTXoJzE+39yUswG2NzWCoWdJZsX5Gb
-         9YL16hF0U2LeimrmephDjjuwfIkxa4KpDp53WhtUyJSyPAQ37C945BZVeoG3Jh/mn43H
-         be760+rstTkp5w3WjBLAsGz+ibT+vkvWbLkQYe+R+9C9USogTb8+su+7pIKieq1iHDIa
-         iW1Q==
-X-Gm-Message-State: AOAM530DGPXyQ1319WGiRfUAKZHWhhvYKl5hAgd7sv9ljq8G0bvtd99C
-        YyDAyzCtlhOum4ieF/f5fhIqT6527Re6PKx5G2YdR24qfcVahFJx/Ur+3yKLHQUPXGdbLW2WruH
-        STEgffii+VVtwxgOPmpNMfbdfLe49R7xtwgrny3qQKA==
-X-Received: by 2002:a1c:770d:: with SMTP id t13mr1634139wmi.77.1632484618754;
-        Fri, 24 Sep 2021 04:56:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzXJb4pwOnliV1jgLnmbC3kFVKrJQ1Obb4/nVSeDv38AOCQxLVJrgwBjsv3xE4VMIzLKHTqNQ==
-X-Received: by 2002:a1c:770d:: with SMTP id t13mr1634127wmi.77.1632484618628;
-        Fri, 24 Sep 2021 04:56:58 -0700 (PDT)
-Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id z17sm8076664wrr.49.2021.09.24.04.56.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 04:56:58 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Iskren Chernev <iskren.chernev@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matheus Castello <matheus@castello.eng.br>,
-        Sebastian Reichel <sre@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] MAINTAINERS: power: supply: max17040: add entry with reviewers
-Date:   Fri, 24 Sep 2021 13:56:19 +0200
-Message-Id: <20210924115619.52927-2-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210924115619.52927-1-krzysztof.kozlowski@canonical.com>
-References: <20210924115619.52927-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XUkoX7ayRenN07dB5QBsOD3RtV0frJpcKE347BjmU20=;
+        b=waZM+OL5rOZJkNysOAXdBCIYsHP7HGA07po2BmIsmBzbSJy7ZCIt6n2u1zZtWI9nEN
+         F8QuCzKVQaq+B9S6IKBlEo3dzD108QohUY3E/IoWEPe8b0qUbvRaL334kbHB3wTjDmT3
+         JVOsK4Y8xiVnh8dEq/3nTjrWubDgHROcXI57Stb+0JNZepxLhgDD9ebDBUdd6cW0sXpE
+         6MO6dtMTkxDIOtgJMpdv+q7xO746JW8q0RKF/Vorn1zHIWbRChGA4USTIqeTVXETudKO
+         ex+mBqeWTZiPDkvo5h6LtIyXO/1CHCu7TxT9BXmr4jYieIHakHEIzvwnQ3hkNLuNtPyY
+         pKQQ==
+X-Gm-Message-State: AOAM5320cG5ov9S0GuIalQUWgk8S2OwNbs4619wB4jVUpQnX2hYYKzbD
+        E6Twa5SMCYOfC4/2vfYbq104HEjxMjOvN48YUA8=
+X-Google-Smtp-Source: ABdhPJzSZZIyTBH75s85toleFuWdnD/0DLUif4ivwgQ9Cc8Hd6pSjuiHWrVaHRN8ByfD0N5LzcjMBA==
+X-Received: by 2002:a65:428b:: with SMTP id j11mr3401089pgp.301.1632484707103;
+        Fri, 24 Sep 2021 04:58:27 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id i8sm11628353pjg.6.2021.09.24.04.58.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Sep 2021 04:58:26 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf config: Refine error message to eliminate confusion
+Date:   Fri, 24 Sep 2021 19:58:17 +0800
+Message-Id: <20210924115817.58689-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Maxim max17040 fuel gauge driver supports several devices used on
-multiple different boards.  The driver is incomplete and has few known
-issues.  Fixing these might break other platforms so mention recent
-contributors who can provide feedback.  This way most of interested
-parties might help reviewing the patches.
+From: Like Xu <likexu@tencent.com>
 
-Cc: Iskren Chernev <iskren.chernev@gmail.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Matheus Castello <matheus@castello.eng.br>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+If there is no configuration file at first, the user can
+write any pair of "key.subkey=value" to the newly created
+configuration file, while value validation against a valid
+configurable key is *deferred* until the next execution or
+the implied execution of "perf config ... ".
+
+For example:
+
+ $ rm ~/.perfconfig
+ $ perf config call-graph.dump-size=65529
+ $ cat ~/.perfconfig
+ # this file is auto-generated.
+ [call-graph]
+ 	dump-size = 65529
+ $ perf config call-graph.dump-size=2048
+ callchain: Incorrect stack dump size (max 65528): 65529
+ Error: wrong config key-value pair call-graph.dump-size=65529
+
+The user might expect that the second value 2048 is valid
+and can be updated to the configuration file, but the error
+message is very confusing because the first value 65529 is
+not reported as an error during the last configuration.
+
+It is recommended not to change the current behavior of
+delayed validation (as more effort is needed), but to refine
+the original error message to *clearly indicate* that the
+cause of the error is the configuration file.
+
+Signed-off-by: Like Xu <likexu@tencent.com>
 ---
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ tools/perf/util/config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index da9d5383af04..9f925d0f8a3c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11429,6 +11429,16 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/iio/proximity/maxbotix,mb1232.yaml
- F:	drivers/iio/proximity/mb1232.c
- 
-+MAXIM MAX17040 FAMILY FUEL GAUGE DRIVERS
-+R:	Iskren Chernev <iskren.chernev@gmail.com>
-+R:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+R:	Marek Szyprowski <m.szyprowski@samsung.com>
-+R:	Matheus Castello <matheus@castello.eng.br>
-+L:	linux-pm@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
-+F:	drivers/power/supply/max17040_battery.c
-+
- MAXIM MAX17042 FAMILY FUEL GAUGE DRIVERS
- R:	Hans de Goede <hdegoede@redhat.com>
- R:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
+index 4fb5e90d7a57..60ce5908c664 100644
+--- a/tools/perf/util/config.c
++++ b/tools/perf/util/config.c
+@@ -801,7 +801,7 @@ int perf_config_set(struct perf_config_set *set,
+ 				  section->name, item->name);
+ 			ret = fn(key, value, data);
+ 			if (ret < 0) {
+-				pr_err("Error: wrong config key-value pair %s=%s\n",
++				pr_err("Error in the given config file: wrong config key-value pair %s=%s\n",
+ 				       key, value);
+ 				/*
+ 				 * Can't be just a 'break', as perf_config_set__for_each_entry()
 -- 
-2.30.2
+2.32.0
 
