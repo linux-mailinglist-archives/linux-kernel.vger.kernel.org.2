@@ -2,111 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E36941703A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A1841703B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238904AbhIXKXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:23:09 -0400
-Received: from comms.puri.sm ([159.203.221.185]:35400 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhIXKWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:22:52 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id A6EB5E119D;
-        Fri, 24 Sep 2021 03:21:19 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wtAukYPPuay0; Fri, 24 Sep 2021 03:21:18 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     abel.vesa@nxp.com
-Cc:     a.fatoum@pengutronix.de, adrian.hunter@intel.com,
-        aisheng.dong@nxp.com, catalin.marinas@arm.com,
-        cw00.choi@samsung.com, devicetree@vger.kernel.org,
-        djakov@kernel.org, festevam@gmail.com, kernel@pengutronix.de,
-        kyungmin.park@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
-        myungjoo.ham@samsung.com, robh@kernel.org, s.hauer@pengutronix.de,
-        shawnguo@kernel.org, ulf.hansson@linaro.org, will.deacon@arm.com,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: Re: [RFC 00/19] Add interconnect and devfreq support for i.MX8MQ
-Date:   Fri, 24 Sep 2021 12:20:26 +0200
-Message-Id: <20210924102026.2679952-1-martin.kepplinger@puri.sm>
-In-Reply-To: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
-References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
-Content-Transfer-Encoding: 8bit
+        id S240231AbhIXKXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238899AbhIXKXH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 06:23:07 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DBFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 03:21:34 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id p4so27629942qki.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 03:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=OhrrxA0+VtUH2OMYp4JdnIujQjBusCdPTL4Hk4sQ+XM=;
+        b=cxLyo/tI1HlNImJt+cJmfX+orazenHMSYOQ2rBJerrH0+fA0y4MPclyq5R1tc/6F5F
+         0A1Ryjwa6B/hT1/BwRle3s5L1ZdJ/F/m4fFfg3oSZvB35/UNLWNoNh9amH2Y1bwaFUGP
+         2RyNegpCCcVE/BevAOJH0wjTzA6Vv5VCUvK956bgfKSy/o+asp1jeriTYX2SjQuQea4N
+         0Y7WMZp7I9MXoeFcwFyzaTm0iP541VyOa7UmFphTS+uFWKI8+c5QBf4yF9ZeXqP85ww1
+         IR8hNWhJd/YHxcvMiZjNPswJwFiIdApt682xOVUb6w4PGTYkrU6/KJGOeHqTGspBYWxW
+         ihSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=OhrrxA0+VtUH2OMYp4JdnIujQjBusCdPTL4Hk4sQ+XM=;
+        b=i//hB5nPuYJvbOU9tgZiWDHGkRJfnvcRpUEI4Ctd/mdIIUAtBgcHVvU75w1qfS96+P
+         A6wJmJXBDIsi4Sz6f8Xlz7qxk1+ySIAnE73jo9CGICGXZPcjnY8IEmPsYNodqODuy7gU
+         SNZKf3BlF9rngGuEKXkR7Lk3gVltMHnhLGiJLTbkr5SsNTJ2lnRdHAT0esnB7vdrxCk6
+         X01Pe6fwcc8XxGB52kLoLTi8z116e0SASznndTFADQ1NXCb13xBTQ/lZpFYH8GIg4oR3
+         XHXEF/stMnRKLgP7ZhNIsrNkr5KeMCdbqLYgecSjRytEX/KzFfXEnpMtWjbgavNbbwZW
+         bedw==
+X-Gm-Message-State: AOAM532xB9lZUeFfIpv/cq4Q6J9ze+wQmpZLbg63zZsyZf9l+9sE7e+z
+        TImmj9ywwrigXIplA8LPxhjPHnQQqN7++Q8TGKk=
+X-Google-Smtp-Source: ABdhPJx01qFBD/RWGT9jks2UNWDW/pcvilhVNebE4WsWoSji3eUcGIptMN4IVJ2AItY5Qlo1uBf/nBClaQ5pvcztx+w=
+X-Received: by 2002:a37:b045:: with SMTP id z66mr8779575qke.271.1632478893724;
+ Fri, 24 Sep 2021 03:21:33 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ad4:54ec:0:0:0:0:0 with HTTP; Fri, 24 Sep 2021 03:21:33
+ -0700 (PDT)
+Reply-To: franca.rose3@yahoo.com
+From:   Franca Rose <miraxarmstrong@gmail.com>
+Date:   Fri, 24 Sep 2021 11:21:33 +0100
+Message-ID: <CAOtj583n9b2i++N-mo5vfyMpaXaoUrku6GOj9eK7FhugVf=tKA@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Abel,
-
-thank you for the update (this is actually v2 of this RFC right?)!
-
-all in all this runs fine on the imx8mq (Librem 5 and devkit) I use. For all
-the pl301 nodes I'm not yet sure what I can actually test / switch frequencies.
-
-But I still have one problem: lcdif/mxfb already has the interconnect dram
-DT property and I use the following call to request bandwidth:
-https://source.puri.sm/martin.kepplinger/linux-next/-/commit/d690e4c021293f938eb2253607f92f5a64f15688
-(mainlining this is on our todo list).
-
-With your patchset, I get:
-
-[    0.792960] genirq: Flags mismatch irq 30. 00000004 (mxsfb-drm) vs. 00000004 (mxsfb-drm)
-[    0.801143] mxsfb 30320000.lcd-controller: Failed to install IRQ handler
-[    0.808058] mxsfb: probe of 30320000.lcd-controller failed with error -16
-
-so the main devfreq user (mxsfb) is not there :) why?
-
-and when I remove the interconnect property from the lcdif DT node, mxsfb
-probes again, but of course it doesn't lower dram freq as needed.
-
-Do I do the icc calls wrong in mxsfb despite it working without your
-patchset, or may there be something wrong on your side that breaks
-the mxsfb IRQ?
-
-again thanks a lot for working on this! I'm always happy to test.
-
-                          martin
-
-
-
----
- .../boot/dts/freescale/imx8mq-librem5.dtsi    | 20 -------------------
- 1 file changed, 20 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-index 6fac6676f412..8496a90f23bf 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-@@ -381,26 +381,6 @@ &A53_3 {
- 	cpu-supply = <&buck2_reg>;
- };
- 
--&ddrc {
--	operating-points-v2 = <&ddrc_opp_table>;
--
--	ddrc_opp_table: ddrc-opp-table {
--		compatible = "operating-points-v2";
--
--		opp-25M {
--			opp-hz = /bits/ 64 <25000000>;
--		};
--
--		opp-100M {
--			opp-hz = /bits/ 64 <100000000>;
--		};
--
--		opp-800M {
--			opp-hz = /bits/ 64 <800000000>;
--		};
--	};
--};
--
- &dphy {
- 	status = "okay";
- };
 -- 
-2.30.2
+Hello,
 
+i am trying to reach you hope this message get to
+you.from Franca Rose
