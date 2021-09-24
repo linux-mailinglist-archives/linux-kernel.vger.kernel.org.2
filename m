@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C5E417044
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4198C417047
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240203AbhIXKZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:25:20 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:4596 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229911AbhIXKZT (ORCPT
+        id S241037AbhIXKZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:25:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35968 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240310AbhIXKZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:25:19 -0400
-X-IronPort-AV: E=Sophos;i="5.85,319,1624287600"; 
-   d="scan'208";a="94920609"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 24 Sep 2021 19:23:44 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id D21AF401070E;
-        Fri, 24 Sep 2021 19:23:42 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2] arm64: dts: renesas: rzg2l-smarc: Enable CANFD
-Date:   Fri, 24 Sep 2021 11:23:38 +0100
-Message-Id: <20210924102338.11595-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 24 Sep 2021 06:25:29 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3117222428;
+        Fri, 24 Sep 2021 10:23:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632479035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cdj+MChX4WpMa83LUp1k/Esc7Eco7Cg2FeFEGab5+Ek=;
+        b=pv2YhabYU/ytTd6fBQH7+j4RkgAtmgFmNovZGGs/+P36zRZwVqjrJBktgV4POBQ12oYZzx
+        4N/jiMGIKPNCunjG3Nk6BDfd/loRPqRDo9ei426Xx0CU+R24/ABucJ3RcR5DGCw+Czb9Zw
+        OzXRkMwb3kOD6neRWn7EyfiL5gaVQ4E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632479035;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cdj+MChX4WpMa83LUp1k/Esc7Eco7Cg2FeFEGab5+Ek=;
+        b=6NUJqaIS7y8JdVBp6wmwnzYXCVi5O0aNUJB644YMQLY/T+EtDHvwzLAXLTbQ1RaMhmEAxb
+        XwSscH6gaWUH6tBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06D4313AB5;
+        Fri, 24 Sep 2021 10:23:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0xGDADunTWEGTwAAMHmgww
+        (envelope-from <hare@suse.de>); Fri, 24 Sep 2021 10:23:55 +0000
+Subject: Re: [PATCH v4 12/13] blk-mq: Use shared tags for shared sbitmap
+ support
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, ming.lei@redhat.com
+References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
+ <1632472110-244938-13-git-send-email-john.garry@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <9dd771bb-9e45-ecd2-d8e4-93c6e9cb9b59@suse.de>
+Date:   Fri, 24 Sep 2021 12:23:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <1632472110-244938-13-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CANFD on RZ/G2L SMARC platform.
+On 9/24/21 10:28 AM, John Garry wrote:
+> Currently we use separate sbitmap pairs and active_queues atomic_t for
+> shared sbitmap support.
+> 
+> However a full sets of static requests are used per HW queue, which is
+> quite wasteful, considering that the total number of requests usable at
+> any given time across all HW queues is limited by the shared sbitmap depth.
+> 
+> As such, it is considerably more memory efficient in the case of shared
+> sbitmap to allocate a set of static rqs per tag set or request queue, and
+> not per HW queue.
+> 
+> So replace the sbitmap pairs and active_queues atomic_t with a shared
+> tags per tagset and request queue, which will hold a set of shared static
+> rqs.
+> 
+> Since there is now no valid HW queue index to be passed to the blk_mq_ops
+> .init and .exit_request callbacks, pass an invalid index token. This
+> changes the semantics of the APIs, such that the callback would need to
+> validate the HW queue index before using it. Currently no user of shared
+> sbitmap actually uses the HW queue index (as would be expected).
+> 
+> Continue to use term "shared sbitmap" for now, as the meaning is known.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>   block/blk-mq-sched.c   | 82 ++++++++++++++++++-------------------
+>   block/blk-mq-tag.c     | 61 ++++++++++------------------
+>   block/blk-mq-tag.h     |  6 +--
+>   block/blk-mq.c         | 91 +++++++++++++++++++++++-------------------
+>   block/blk-mq.h         |  5 ++-
+>   include/linux/blk-mq.h | 15 ++++---
+>   include/linux/blkdev.h |  3 +-
+>   7 files changed, 125 insertions(+), 138 deletions(-)
+> 
+The overall idea to keep the full request allocation per queue was to 
+ensure memory locality for the requests themselves.
+When moving to a shared request structure we obviously loose that feature.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
--> Corrected STB pin states
----
- arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi | 40 ++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+But I'm not sure if that matters here; the performance impact might be 
+too small to be measurable, seeing that we'll be most likely bound by 
+hardware latencies anyway.
 
-diff --git a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-index e895f6e7fa28..a02784fab46a 100644
---- a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-+++ b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-@@ -80,6 +80,20 @@
- 	clock-frequency = <12288000>;
- };
- 
-+&canfd {
-+	pinctrl-0 = <&can0_pins &can1_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	channel0 {
-+		status = "okay";
-+	};
-+
-+	channel1 {
-+		status = "okay";
-+	};
-+};
-+
- &ehci0 {
- 	dr_mode = "otg";
- 	status = "okay";
-@@ -139,6 +153,32 @@
- 	pinctrl-0 = <&sound_clk_pins>;
- 	pinctrl-names = "default";
- 
-+	can0_pins: can0 {
-+		pinmux = <RZG2L_PORT_PINMUX(10, 1, 2)>, /* TX */
-+			 <RZG2L_PORT_PINMUX(11, 0, 2)>; /* RX */
-+	};
-+
-+	/* SW7 should be at position 2->3 so that GPIO8_CAN0_STB line is activated */
-+	can0-stb {
-+		gpio-hog;
-+		gpios = <RZG2L_GPIO(42, 2) GPIO_ACTIVE_HIGH>;
-+		output-low;
-+		line-name = "can0_stb";
-+	};
-+
-+	can1_pins: can1 {
-+		pinmux = <RZG2L_PORT_PINMUX(12, 1, 2)>, /* TX */
-+			 <RZG2L_PORT_PINMUX(13, 0, 2)>; /* RX */
-+	};
-+
-+	/* SW8 should be at position 2->3 so that GPIO9_CAN1_STB line is activated */
-+	can1-stb {
-+		gpio-hog;
-+		gpios = <RZG2L_GPIO(42, 3) GPIO_ACTIVE_HIGH>;
-+		output-low;
-+		line-name = "can1_stb";
-+	};
-+
- 	i2c0_pins: i2c0 {
- 		pins = "RIIC0_SDA", "RIIC0_SCL";
- 		input-enable;
+Nevertheless: have you tested for performance regressions with this 
+patchset?
+I'm especially thinking of Kashyaps high-IOPS megaraid setup; if there 
+is a performance impact that'll be likely scenario where we can measure it.
+
+But even if there is a performance impact this patchset might be 
+worthwhile, seeing that it'll reduce the memory footprint massively.
+
+Cheers,
+
+Hannes
 -- 
-2.17.1
-
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
