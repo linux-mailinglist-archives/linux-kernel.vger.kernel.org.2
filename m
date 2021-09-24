@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34A1417155
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FAF41715B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244860AbhIXLxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:53:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230238AbhIXLxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 07:53:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F29760FA0;
-        Fri, 24 Sep 2021 11:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632484332;
-        bh=wZ7JvLbW6/CccQC7u8oTZoyuiNApc1cmhBoRk7LItGI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cEzoVkd6fMFdfl4pHJVhO355zwb+8jFkAzNMa/HzeG8UXOspqCAJem81cSioMwIVQ
-         2H3XEbHdJCro16tMu74Ks3Jfy5JGrdiHup/26axU0FhTdpEh/QpHSWdVO1SRlDgq20
-         0wA4Hvd5ZhagBdB68AtzgIHLmT3RLabPIAN0471kaQK1HxYg7AjYGsjMaleymo9kNx
-         4Z1kcUqh9X/flHc8ox3YGmViTqc9dMjVjFT2Pt79lTbg+HuKvcdKA63AWhrFd1UACJ
-         mq10GtCH+Y9yCsuInwjVsA0quoHfmS0vnC4iG06J8c5lbU9d4xP5HaQ3HBOMy9AFjl
-         ym/uoKo5BhbKQ==
-Date:   Fri, 24 Sep 2021 07:52:11 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alex Sverdlin <alexander.sverdlin@nokia.com>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH stable 4.9 v2 0/4] ARM: ftrace MODULE_PLTS warning
-Message-ID: <YU2769mOr3lb8jFi@sashalap>
-References: <20210922170246.190499-1-f.fainelli@gmail.com>
- <YUxYV/m36iPuxdoe@kroah.com>
+        id S244563AbhIXL5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 07:57:04 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:43686 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhIXL5E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 07:57:04 -0400
+Received: by mail-vs1-f48.google.com with SMTP id n17so9687132vsr.10;
+        Fri, 24 Sep 2021 04:55:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=njhF2fjmzlPu4MUjW05N7XqVTAmx4mOJ8Egu47QXE5o=;
+        b=VgIbMasfCJBJQJF11xkFcDs3tiZpx4j+L38ADsN4dbo4BwK/gXReuEIGxgZ5E+kJuf
+         wY42xuCx9JlokW/d8N3E6NviJrvthrdmHLVI8V80B9Wf1dB4kd8mXtOhvGR4i/k1aWKG
+         uTkmVB53HvI8ilJsCchLIVqmTUMdpPLtWvJyIK5mjywK/0VH0GaxEMjkDGBCMGpKPUIx
+         HHZ66xcZlAqYCAifo8sNMjyDNx1OkRQ3OrUv3JbfWNgT0pIEDpNshZmBi5kCuMZKbvS7
+         rxewUFfP45503rIknaQP2kanpTukwNmRgL5X8negz6wvuNlbHG9dG7WzR9RhvOukQJv5
+         SWXQ==
+X-Gm-Message-State: AOAM530+UQjZ55SCk4p1ZJHQynSVvZC82OY0GxJ4rDHqArv/0eLJe4BQ
+        xiq0BgHcgAQ8mW/0fdd6m23Nofd63KaGGcDSG/8=
+X-Google-Smtp-Source: ABdhPJzl+L13oorihQMmbMpIpFTxmVqwwX3DNXl/5J5pOstztN8S+XS5g6nVujeVyw+wQEoi5sGupJ6416iQyupzeQE=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr9066913vsl.9.1632484530477;
+ Fri, 24 Sep 2021 04:55:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YUxYV/m36iPuxdoe@kroah.com>
+References: <20210922085831.5375-1-wsa+renesas@sang-engineering.com> <75713e8e-f675-240e-b503-99618d07afda@canonical.com>
+In-Reply-To: <75713e8e-f675-240e-b503-99618d07afda@canonical.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 24 Sep 2021 13:55:19 +0200
+Message-ID: <CAMuHMdVgfeHt9At7qh7syttN-2HcHg8bhi85FK3CGTevtSs9yw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: rpc: renesas-rpc-if: Add support for the
+ R8A779A0 RPC-IF
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 12:35:03PM +0200, Greg Kroah-Hartman wrote:
->On Wed, Sep 22, 2021 at 10:02:42AM -0700, Florian Fainelli wrote:
->> This patch series is present in v5.14 and fixes warnings seen at insmod
->> with FTRACE and MODULE_PLTS enabled on ARM/Linux.
+Hi Krzysztof,
+
+On Fri, Sep 24, 2021 at 1:48 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+> On 22/09/2021 10:58, Wolfram Sang wrote:
+> > --- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+> > +++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+> > @@ -33,6 +33,7 @@ properties:
+> >            - renesas,r8a77970-rpc-if       # R-Car V3M
+> >            - renesas,r8a77980-rpc-if       # R-Car V3H
+> >            - renesas,r8a77995-rpc-if       # R-Car D3
+> > +          - renesas,r8a779a0-rpc-if       # R-Car V3U
+> >        - const: renesas,rcar-gen3-rpc-if   # a generic R-Car gen3 or RZ/G2 device
 >
->All now queued up, thanks.
+> Where is the driver or DTS using these compatibles? The bindings can
+> come even without users, but are you sure this is what you want?
+> Changing them later, if ever needed, will be more difficult.
 
-Looks like 4.19 and older break the build:
+Driver:
+    drivers/memory/renesas-rpc-if.c:        { .compatible =
+"renesas,rcar-gen3-rpc-if", },
 
-arch/arm/kernel/ftrace.c: In function 'ftrace_update_ftrace_func':
-arch/arm/kernel/ftrace.c:157:9: error: too few arguments to function 'ftrace_call_replace'
-   157 |   new = ftrace_call_replace(pc, (unsigned long)func);
-       |         ^~~~~~~~~~~~~~~~~~~
-arch/arm/kernel/ftrace.c:99:22: note: declared here
-    99 | static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr,
-       |                      ^~~~~~~~~~~~~~~~~~~
-arch/arm/kernel/ftrace.c: In function 'ftrace_make_nop':
-arch/arm/kernel/ftrace.c:240:9: error: too few arguments to function 'ftrace_call_replace'
-   240 |   old = ftrace_call_replace(ip, adjust_address(rec, addr));
-       |         ^~~~~~~~~~~~~~~~~~~
-arch/arm/kernel/ftrace.c:99:22: note: declared here
-    99 | static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr,
-       |                      ^~~~~~~~~~~~~~~~~~~
-make[2]: *** [scripts/Makefile.build:303: arch/arm/kernel/ftrace.o] Error 1
+DTS:
+    [RFC PATCH 3/4] arm64: dts: renesas: r8a779a0: Add RPC node
+    https://lore.kernel.org/linux-renesas-soc/20210913065317.2297-4-wsa+renesas@sang-engineering.com/
 
-I've dropped them.
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Thanks,
-Sasha
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
