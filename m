@@ -2,85 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA591416989
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA22841698D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243779AbhIXBlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 21:41:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243687AbhIXBlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 21:41:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D219261211;
-        Fri, 24 Sep 2021 01:39:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632447598;
-        bh=wS1vTfdanTeolFqG6+BwOprrXt9fA9ocCesCstsfaz8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MZOniup1k2WBdEvqe0zUTShI/0nU7LP+azNYTosMus0zFLH7Fq6fcCZ8wnsf79Pa+
-         wBmx2Pqc2RaBXMCWDhaKXskn4qMGz2TQTy295735OXxCfQ0t7vWXmNiFkwUpBzakar
-         AXEiT86ORr+UbhUTdPLHbhy9EYHzjIrOEY0DQgXzoLZ49ngS3mdqy6hv65XMSTmO8B
-         DWHRAUGrr8hHPHGug+/N/Cfpdyc8vv+GKhFNYUR2hkMbP4IZXgS4DGw0O+xcQP52j+
-         +DImiTrG6bdT1W3TUJWEQr2WOfxBqlbt1unriLklN5+HLo5ewI9oCWBSS3P8pS9H16
-         PmZZpnYCCtf2Q==
-Date:   Thu, 23 Sep 2021 18:39:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Edwin Peer <edwin.peer@broadcom.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Igor Russkikh <irusskikh@marvell.com>,
-        intel-wired-lan@lists.osuosl.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        netdev <netdev@vger.kernel.org>,
-        Sathya Perla <sathya.perla@broadcom.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Subject: Re: [PATCH net-next 1/6] bnxt_en: Check devlink allocation and
- registration status
-Message-ID: <20210923183956.506bfde2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YU0JlzFOa7kpKgnd@unreal>
-References: <cover.1632420430.git.leonro@nvidia.com>
-        <e7708737fadf4fe6f152afc76145c728c201adad.1632420430.git.leonro@nvidia.com>
-        <CAKOOJTz4A2ER8MQE1dW27Spocds09SYafjeuLcFDJ0nL6mKyOw@mail.gmail.com>
-        <YU0JlzFOa7kpKgnd@unreal>
+        id S243782AbhIXBnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 21:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240863AbhIXBnj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 21:43:39 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF155C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 18:42:06 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id s11so8249971pgr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 18:42:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3ORLoDwYkLfIrLpsZJ93a9BMaEAtpfd6ZNV/QACoSGM=;
+        b=kGn+VnYOFLKDNYQeIdVs1vsyuMRKxXM32mjCOAMwPXQ6CSr1cDCpnJ2/cvTVFo64el
+         xKogHaE4lyyLC5ohZ8i4RZg/DXDkVmfJqSQW2tVU0guYN/jus4j9Iffq2r1XVBm9O2kR
+         TjWxFQxoruek/4j1purIlGktRuFRW6CB1M5zw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3ORLoDwYkLfIrLpsZJ93a9BMaEAtpfd6ZNV/QACoSGM=;
+        b=iQ8Y1N64x4kluMuq63c7UIsYxraLs9zKc6mviG4x+bpeXI0U4XcV9vQXzdSR1y1sCT
+         DfBapqTExmRvVgn3rLMerI9UKaszBZc1l7Jm4M/5N9pYtmodb8FR0CluK4ZUKnvE+QMd
+         9WiYj5O2hsIGKRCU9bdqc/pcquvwosRvN6hfj+6mEOpYXWZjdTn+Q7CjaR2TkOp9Wux3
+         x18HDT5J1Bvj4djmirGMgiy58fW7It3TUDsYWMa+q0AI5RQ6Hx2TlK3PwlAx2RAd/Rdl
+         ZKYOmGu33W/++loVcsYJFzSfjqmM9L4M9tl2j8XU6DrMufovVdXvhHuGUFSWFV69munk
+         wMXA==
+X-Gm-Message-State: AOAM5320r2S+1zdrtcIUL/5wLmP0JpAYH8vgVk1l6/c46pLu9x+hn5ON
+        ijyRLD2pym5ou1x7uxCmkLCLnA==
+X-Google-Smtp-Source: ABdhPJw1YIgvBZx0VZcCKhFUeMoCnW/1b5IFR30q00vXp1qtIjJqmzAs4GJ46rjwV6eKs/sQMcOiOw==
+X-Received: by 2002:a63:7807:: with SMTP id t7mr1604036pgc.474.1632447726198;
+        Thu, 23 Sep 2021 18:42:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n41sm7023117pfv.108.2021.09.23.18.42.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 18:42:05 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 18:42:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vito Caputo <vcaputo@pengaru.com>
+Cc:     Jann Horn <jannh@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Michael =?iso-8859-1?Q?Wei=DF?= 
+        <michael.weiss@aisec.fraunhofer.de>,
+        Anand K Mistry <amistry@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
+Message-ID: <202109231839.33EF45C785@keescook>
+References: <20210923233105.4045080-1-keescook@chromium.org>
+ <20210923234917.pqrxwoq7yqnvfpwu@shells.gnugeneration.com>
+ <CAG48ez0Rtv5kqHWw368Ym3GkKodPA+JETOAN+=c2KPa3opENSA@mail.gmail.com>
+ <20210924002230.sijoedia65hf5bj7@shells.gnugeneration.com>
+ <202109231814.FD09DBAD3@keescook>
+ <20210924013408.mqw42x4lhqeq5ios@shells.gnugeneration.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924013408.mqw42x4lhqeq5ios@shells.gnugeneration.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sep 2021 02:11:19 +0300 Leon Romanovsky wrote:
-> > > @@ -835,9 +837,6 @@ void bnxt_dl_unregister(struct bnxt *bp)
-> > >  {
-> > >         struct devlink *dl = bp->dl;
-> > >
-> > > -       if (!dl)
-> > > -               return;
-> > > -  
+On Thu, Sep 23, 2021 at 06:34:08PM -0700, Vito Caputo wrote:
+> On Thu, Sep 23, 2021 at 06:16:16PM -0700, Kees Cook wrote:
+> > On Thu, Sep 23, 2021 at 05:22:30PM -0700, Vito Caputo wrote:
+> > > Instead of unwinding stacks maybe the kernel should be sticking an
+> > > entrypoint address in the current task struct for get_wchan() to
+> > > access, whenever userspace enters the kernel?
 > > 
-> > minor nit: There's obviously nothing incorrect about doing this (and
-> > adding the additional error label in the cleanup code above), but bnxt
-> > has generally adopted a style of having cleanup functions being
-> > idempotent. It generally makes error handling simpler and less error
-> > prone.  
+> > wchan is supposed to show where the kernel is at the instant the
+> > get_wchan() happens. (i.e. recording it at syscall entry would just
+> > always show syscall entry.)
+> > 
 > 
-> I would argue that opposite is true. Such "impossible" checks hide unwind
-> flow errors, missing releases e.t.c.
+> And you have the syscall # onhand when performing the syscall entry,
+> no?
+> 
+> The point is, if the alternative is to always get 0 from
+> /proc/PID/wchan when a process is sitting in ioctl(), I'd be perfectly
+> happy to get back sys_ioctl.  I'm under the impression there's quite a
+> bit of vendor-specific flexibility here in terms of how precise WCHAN
+> is.
 
-+1, fwiw
+Oh, yeah, if you're happy with syscall-level granularity, that'd be
+totally fine by me too.
+
+> If it's possible to preserve the old WCHAN precision I'm all for it.
+> But if we've become so paranoid about leaking anything about the
+> kernel to userspace that this is untenable, even if it just spits out
+> the syscall being performed that has value.
+
+I'd like to find a middle ground -- wchan has always seemed like a info
+leak, even with only symbols. And it doesn't help that walking the stack
+from outside the current task is difficult. :)
+
+-Kees
+
+-- 
+Kees Cook
