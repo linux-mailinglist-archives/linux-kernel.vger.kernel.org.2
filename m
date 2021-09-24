@@ -2,106 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B54E417CDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D199417CEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348529AbhIXVN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 17:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
+        id S1347266AbhIXVSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 17:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233562AbhIXVNz (ORCPT
+        with ESMTP id S233640AbhIXVSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 17:13:55 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C197CC061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:12:21 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id v10so36389196edj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:12:21 -0700 (PDT)
+        Fri, 24 Sep 2021 17:18:47 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0076EC061571;
+        Fri, 24 Sep 2021 14:17:13 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id bx4so41143920edb.4;
+        Fri, 24 Sep 2021 14:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fln/GmzM5DcyRx7UwX874sUGXeT/rIbA9LYWk0Uly7s=;
-        b=Tz5laGboS2hQTVSuQZSQjRHkiVrCRzF837aWkMY2kE3Ijyoe494iuXfPDCcX8bho4p
-         cUPamznVW0ev+K+mE1b0/xLP2MMbngsmO5TOeIiPOcWxrXR/s3pTYYMblqVN2/1i27Ao
-         nQ+GqDY1at7vfhx8+0+e35ImaDIJeLTIHYvzH1zP+R9hSynhB7jn52M1bCEQTGyGus+R
-         e45MsyaFuR/6ZcuTEOeqZB8BXWCUpfnSFax1kOOx7KlbRV1dVG0Lbx1Mi78pfr272yhs
-         3M0oCCxpeYo0WIAAqnNiry6XQ24wLSV0CfeJoEEsREmIQNSjGVbNEJ6k4bVM5qrHNDCH
-         h3hQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Ku0F7ZGp1w78UA6g0SI9hawfp+gfs+pURjPXFl7geYU=;
+        b=JlQHJJ2tAqd8BdbaypXAsBY1tTTf0C/lg4WwxGfNzuNeOJFeIEDFQkFmklHRYPcWe8
+         gooXdDYK6jfjHqhWt6hJGGULMxpq0WVHa478sWAxGezE63gxe1qDXbj6dRYnuR+cSonU
+         PfWweSWXSw1gg9MKsxaTHhM9pSyLlLXkAh/0fT8xEMD9himCtUG9XYRo4uVeHXC5tbAj
+         OO4GaatYaWzeFe83ek3TmOsAmI3XydjKLc7lksMrQreqK1GXOS6bKY1Dscj6gWBVIoLD
+         lkMfF1JM7adKNIDxKB0loL5qoYbI0li/xBcFlAurr6qrMEZIonlAPLFo9NwO5pfIu1HZ
+         8Fgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fln/GmzM5DcyRx7UwX874sUGXeT/rIbA9LYWk0Uly7s=;
-        b=NPe4/nWYWmCru5qSsongYBBUcevxBfowjqG4iV7lYEQqb40/hLjXyg+McZHZwd6Qfj
-         EOVs7th4YEfLEgya3wApKmhuk5DxtMAS6QaRgw6EV5LeM4q3Z9LHsbdvLtXZWAEhCR0V
-         wVryYRGAyFbdOjq0Li6iU+0TArBP/8qGLUgtN1X+QSK8yOh4RJen436mfISZU3+Q01W8
-         kRes1XFMyGT4mWtbbVfTV6A4HWE7iVfFJQwf8I9NeSG/oyC0WqwVI+i7EksOmz97GucV
-         vwHqNW8s3oqOqJpookXLXk+MSwKesAvJkFYhZ1w3HP1mx9j5WfHQHej478rh3gq4iZVg
-         YJAQ==
-X-Gm-Message-State: AOAM531hnQBkPBk34fVgA/iYGrF2QL6WCWUhiRedRrYSiCcarKg/zBwX
-        ifvFRy9AIyJ3+GkBJz7ldYg=
-X-Google-Smtp-Source: ABdhPJwhWCtAI9yRPrnORDj5ikTTLnZOAUjz0nP5i3BAGeMcZDOyzLfM4iEHZ9cQecZKSiaEnZWq1A==
-X-Received: by 2002:a17:906:19d8:: with SMTP id h24mr14009510ejd.490.1632517940373;
-        Fri, 24 Sep 2021 14:12:20 -0700 (PDT)
-Received: from tom-desktop (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
-        by smtp.gmail.com with ESMTPSA id e13sm5589833eje.95.2021.09.24.14.12.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 14:12:19 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 23:12:17 +0200
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Edmundo Carmona Antoranz <eantoranz@gmail.com>,
-        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: vt6655: Replace camel case variable name
-Message-ID: <20210924211217.GC10906@tom-desktop>
-References: <20210922220802.584952-1-tomm.merciai@gmail.com>
- <4972337.8pBPQsAWaL@localhost.localdomain>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Ku0F7ZGp1w78UA6g0SI9hawfp+gfs+pURjPXFl7geYU=;
+        b=gQelQJnb7CYq37BBaFd7s6fXZGczLtHMujZcnQTSiDgfL5cx9+Ipq6Qn789vPKYeUu
+         6Gf5bv2q3vEBVWiWrvY05y36WU1y7KFy4w1cdIWBJsovsUCXvQdlWW+NJqcOrLP4+Jju
+         NjsAZ0W4vmqgR6thh+KhLB5/qIf7+gcF0gKgvAPKyq24RgWidbXLkWe+TPdckW4vw3tL
+         GMQ9tm0n+JoyxdpnIFiAfi7xDcEjVH2azeir2cmqoJ2qljSQ517MF8X3K3e9ksF2E1dZ
+         Fk4iH0ZEpNSVUddRXK/c7jTxXgRdtQm9u1tEsPUI4lWOi+7917FVRPS5jDe6mx9cy3Xn
+         F0SQ==
+X-Gm-Message-State: AOAM532uqcQus6HvaR+wLPnlbQHfAsgq+pXNkN1Zqp1uD59CIvpc9AH0
+        cjt2tUdom6t4v/yDbYDum2s=
+X-Google-Smtp-Source: ABdhPJwLh8fBAVl8cLd3lk44YVX7BtGY0V3leOMvx1GTyirzhLVSR3stKmqPdzLdam/pV4snR3HmZg==
+X-Received: by 2002:a17:906:3fc8:: with SMTP id k8mr13286423ejj.217.1632518232534;
+        Fri, 24 Sep 2021 14:17:12 -0700 (PDT)
+Received: from ?IPv6:2001:981:6fec:1:aeed:20a8:8105:9a95? ([2001:981:6fec:1:aeed:20a8:8105:9a95])
+        by smtp.gmail.com with ESMTPSA id u14sm6020442edx.52.2021.09.24.14.17.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 14:17:12 -0700 (PDT)
+Subject: Re: [PATCH v2 2/7] PCI: ACPI: PM: Do not use pci_platform_pm_ops for
+ ACPI
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <1800633.tdWV9SEqCh@kreacher> <8879480.rMLUfLXkoz@kreacher>
+ <069444f7-d623-fae2-5cd0-83cbbc919aff@gmail.com>
+ <CAJZ5v0gpodPPXTagy5gFFf6mp_jCAdc864CE_giaue72ke7UyQ@mail.gmail.com>
+ <ab803fb5-045d-98dd-2754-688a916f8944@gmail.com>
+ <d151c91c-cb65-2830-2453-a02057137400@gmail.com>
+ <CAJZ5v0howP_PudCf-43_HqgW48ydc29SeFVRC-wCm_RNKPBMtA@mail.gmail.com>
+From:   Ferry Toth <fntoth@gmail.com>
+Message-ID: <24c2c653-4087-fba1-5745-a62a8ae715c6@gmail.com>
+Date:   Fri, 24 Sep 2021 23:17:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4972337.8pBPQsAWaL@localhost.localdomain>
+In-Reply-To: <CAJZ5v0howP_PudCf-43_HqgW48ydc29SeFVRC-wCm_RNKPBMtA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 09:54:12PM +0200, Fabio M. De Francesco wrote:
-> On Thursday, September 23, 2021 12:07:49 AM CEST Tommaso Merciai wrote:
-> > Work in progress: replace camel case variables
-> > 
-> > PortOffset -> port_off_set
-> > 
-> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > ---
-> >  drivers/staging/vt6655/baseband.c    |   6 +-
-> >  drivers/staging/vt6655/card.c        |  88 ++++++++--------
-> >  drivers/staging/vt6655/channel.c     |  10 +-
-> >  drivers/staging/vt6655/device.h      |   2 +-
-> >  drivers/staging/vt6655/device_main.c | 144 +++++++++++++--------------
-> >  drivers/staging/vt6655/mac.c         |  46 ++++-----
-> >  drivers/staging/vt6655/power.c       |  24 ++---
-> >  drivers/staging/vt6655/rf.c          |  12 +--
-> >  drivers/staging/vt6655/rxtx.c        |  12 +--
-> >  9 files changed, 172 insertions(+), 172 deletions(-)
-> 
-> If you split "Offset" into "Off set", you convey the message that something 
-> is "Off the set". Probably that's not what you want to express.
-> 
-> Regards,
-> 
-> Fabio
-  
-  Thanks, you're right. Resend V2.
+Hi
 
-  Tommaso
-> 
-> 
+Op 24-09-2021 om 14:02 schreef Rafael J. Wysocki:
+> On Thu, Sep 23, 2021 at 10:32 PM Ferry Toth <fntoth@gmail.com> wrote:
+>> Hi
+>>
+>> Op 23-09-2021 om 15:51 schreef Ferry Toth:
+>>> Repost (with formatting removed, sorry for the noise)
+>>> Op 23-09-2021 om 13:30 schreef Rafael J. Wysocki:
+>>>> On Wed, Sep 22, 2021 at 11:31 PM Ferry Toth<fntoth@gmail.com>  wrote:
+>>>>> Hi,
+>>>>> Op 20-09-2021 om 21:17 schreef Rafael J. Wysocki:
+>>>>>> From: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+>>>>>>
+>>>>>> Using struct pci_platform_pm_ops for ACPI adds unnecessary
+>>>>>> indirection to the interactions between the PCI core and ACPI PM,
+>>>>>> which is also subject to retpolines.
+>>>>>>
+>>>>>> Moreover, it is not particularly clear from the current code that,
+>>>>>> as far as PCI PM is concerned, "platform" really means just ACPI
+>>>>>> except for the special casess when Intel MID PCI PM is used or when
+>>>>>> ACPI support is disabled (through the kernel config or command line,
+>>>>>> or because there are no usable ACPI tables on the system).
+>>>>>>
+>>>>>> To address the above, rework the PCI PM code to invoke ACPI PM
+>>>>>> functions directly as needed and drop the acpi_pci_platform_pm
+>>>>>> object that is not necessary any more.
+>>>>>>
+>>>>>> Accordingly, update some of the ACPI PM functions in question to do
+>>>>>> extra checks in case the ACPI support is disabled (which previously
+>>>>>> was taken care of by avoiding to set the pci_platform_ops pointer
+>>>>>> in those cases).
+>>>>>>
+>>>>>> Signed-off-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+>>>>>> ---
+>>>>>>
+>>>>>> v1 -> v2:
+>>>>>>        * Rebase on top of the new [1/7] and move dropping struct
+>>>>>>          pci_platform_pm_ops to a separate patch.
+>>>>> I wanted to test this series on 5.15-rc2 but this patch 2/7 doesn't
+>>>>> apply (after 1/7 applied). Should I apply this on another tree?
+>>>> This is on top of
+>>>> https://patchwork.kernel.org/project/linux-acpi/patch/2793105.e9J7NaK4W3@kreacher/
+>>>>
+>>>> which is not yet in any tree.
+>>>>
+>>>> Sorry for the confusion.
+>>> No problem at all. If I can I will try to report back tonight. Else,
+>>> will be delayed 2 due to a short break.
+>> With those 3 extra patches followed by 7 from this series it builds. But
+>> on boot I get:
+>> dwc3 dwc3.0.auto: this is not a DesignWare USB3 DRD Core
+>> Then after this it reboots. Nothing in the logs. Nothing else on
+>> console, I guess something goes wrong early.
+> It appears so.
+>
+> Can you please try just the 3 extra patches this series is on top of?
+> The problem is more likely to be located in one of them.
+Boots fine with just the 3 so up to and including "ACPI: glue: Look for 
+ACPI bus type only if ACPI companion is not known". From the log I get:
+
+
+Intel MID platform detected, using MID PCI ops
+PCI: Using configuration type 1 for base access
+..
+PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs" 
+and report a bug
+..
+PCI: Probing PCI hardware
+PCI: root bus 00: using default resources
+PCI: Probing PCI hardware (bus 00)
+PCI: pci_cache_line_size set to 64 bytes
+..
+pnp: PnP ACPI init
+..
+pnp: PnP ACPI: found 2 devices
+..
+xhci-hcd xhci-hcd.1.auto: xHCI Host Controller
+xhci-hcd xhci-hcd.1.auto: new USB bus registered, assigned bus number 1
+xhci-hcd xhci-hcd.1.auto: hcc params 0x0220f06c hci version 0x100 quirks 
+0x0000000002010010
+xhci-hcd xhci-hcd.1.auto: irq 14, io mem 0xf9100000
+usb usb1: New USB device found, idVendor=1d6b, idProduct=0002, 
+bcdDevice= 5.15
+usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb1: Product: xHCI Host Controller
+usb usb1: Manufacturer: Linux 5.15.0-rc2-edison-acpi-standard xhci-hcd
+usb usb1: SerialNumber: xhci-hcd.1.auto
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 1 port detected
+
+I continued up to "PCI: ACPI: PM: Do not use pci_platform_pm_ops for 
+ACPI", still boots.
+
+In the logs I still see "Intel MID platform detected, using MID PCI ops".
+
+Unfortunately no more time today, and tomorrow short holiday starts. I 
+will continue after returning next Sat.
+
+
