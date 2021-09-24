@@ -2,197 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C02416E4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728BE416E3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244988AbhIXI6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:58:16 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47196 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244621AbhIXI6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:58:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="285043107"
-X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
-   d="scan'208";a="285043107"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 01:56:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
-   d="scan'208";a="514535476"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Sep 2021 01:56:32 -0700
-Date:   Fri, 24 Sep 2021 16:49:47 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v16 3/5] fpga: image-load: signal eventfd when complete
-Message-ID: <20210924084947.GC806603@yilunxu-OptiPlex-7050>
-References: <20210923001056.282790-1-russell.h.weight@intel.com>
- <20210923001056.282790-4-russell.h.weight@intel.com>
+        id S244889AbhIXIxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244871AbhIXIxF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:53:05 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A519C061574;
+        Fri, 24 Sep 2021 01:51:32 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id q23so8287765pfs.9;
+        Fri, 24 Sep 2021 01:51:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/lh0PhdMB4mUJ1U71AlvzrKsulNEKVtBA4jA9nNVlp8=;
+        b=aq30uJKRB6NwfSJA9zBe3J0fh0gYBxL/BJxvPB6z4LuNg7yJxdZO1AoHVAfHgkoBOc
+         4gekuuMOliZ2XMKr+PHboonew2BX1xurBkC9QcfPcw1W2KjpNiaJsF6aA9sw5ozuZLYM
+         n1yaRvphEz+Sb7Hnb2MFgLnL4t4vflRzmKDZ7oCTUVdlcS2FJOB4Lrr5WzXe7cgd63AR
+         JERv8DH/f+NYJnn/fPZ/mXWY48Ryn81pTMmQHduzMqsYoFo0k4lr8qIDpr/5IO42PdMb
+         yMxW7uaknELGMAaz/F+Pz2h4x1oQaoukDeiGnShdOqYDealMEL2j3oSNGarr6ffggFvL
+         kLUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/lh0PhdMB4mUJ1U71AlvzrKsulNEKVtBA4jA9nNVlp8=;
+        b=NFEcNZoKovGfGD0Ug6vGR5q+sKgJP8rseQrzvdmzYm4/QEw2slS4l44Ld9WQws+wkt
+         CHvLXIzJ6JDxJAP1hiajmCmzxAqnzE7rk1BqFTD9DCxH8SwknKZiFwo5eFrDcrk0v4mS
+         yDBPofoF5yirZDmPS/j7VqP1SdT1QXxReEV2idpY+mLz+NEPHmqSv6txna0GLyXlWn31
+         wIzGV3X11VBrPlUXq9fQLqKWSB4sFSNXiOHwPG6VYhw5Z52JLPuFQ5yTHW+T6Ei4ZJfd
+         vZMvJ4exf1pOM9Z4M4HGaFlrDjpAEghOsJvkAL8NmWBbHX9f/hLEGBwHn0bNrqAu9W/F
+         rQ9A==
+X-Gm-Message-State: AOAM530bvMtT4IW9U4fCB0gs4TK/pg6Pu3BH+GmiljXGqPWBPO6Ze1wb
+        Nu9HgkT0D36Ne2ugd7EaXgY=
+X-Google-Smtp-Source: ABdhPJx0gAA7flFVnvUm8oFV6A+UegkJQM8Rnl2Ujvha5BjEKwW2Lai3YZndG2P7PRVYYJiDXUFDqw==
+X-Received: by 2002:a63:3748:: with SMTP id g8mr2846222pgn.102.1632473491902;
+        Fri, 24 Sep 2021 01:51:31 -0700 (PDT)
+Received: from localhost.localdomain ([2407:7000:8916:5000:cad3:ec9e:d66f:102d])
+        by smtp.gmail.com with ESMTPSA id t15sm9188362pgi.80.2021.09.24.01.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 01:51:31 -0700 (PDT)
+From:   Barry Song <21cnbao@gmail.com>
+To:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+Cc:     aubrey.li@linux.intel.com, bp@alien8.de, bristot@redhat.com,
+        bsegall@google.com, catalin.marinas@arm.com,
+        gregkh@linuxfoundation.org, guodong.xu@linaro.org, hpa@zytor.com,
+        jonathan.cameron@huawei.com, juri.lelli@redhat.com,
+        lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com,
+        mark.rutland@arm.com, mgorman@suse.de, msys.mizuma@gmail.com,
+        prime.zeng@hisilicon.com, rjw@rjwysocki.net, rostedt@goodmis.org,
+        song.bao.hua@hisilicon.com, sudeep.holla@arm.com,
+        tglx@linutronix.de, rafael@kernel.org, tim.c.chen@linux.intel.com,
+        valentin.schneider@arm.com, will@kernel.org, x86@kernel.org,
+        yangyicong@huawei.com
+Subject: [PATCH RESEND 0/3] Represent cluster topology and enable load balance between clusters
+Date:   Fri, 24 Sep 2021 20:51:01 +1200
+Message-Id: <20210924085104.44806-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923001056.282790-4-russell.h.weight@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 05:10:54PM -0700, Russ Weight wrote:
-> Amend the FPGA_IMAGE_LOAD_WRITE IOCTL implementation to include an
-> eventfd file descriptor as a parameter. The eventfd will be triggered
-> when the image upload completes.
-> 
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> ---
-> v16:
->  - Some cleanup of documentation for the FPGA_IMAGE_LOAD_WRITE IOCTL.
-> v15:
->  - This patch is new to the patch-set, and adds an eventfd to the
->    FPGA_IMAGE_LOAD_WRITE IOCTL. The eventfd is signalled upon completion
->    of an update.
-> ---
->  Documentation/fpga/fpga-image-load.rst | 12 +++++++-----
->  drivers/fpga/fpga-image-load.c         | 22 ++++++++++++++++++++--
->  include/linux/fpga/fpga-image-load.h   |  2 ++
->  include/uapi/linux/fpga-image-load.h   |  3 ++-
->  4 files changed, 31 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
-> index ba371c7c0ca0..22a455421bb4 100644
-> --- a/Documentation/fpga/fpga-image-load.rst
-> +++ b/Documentation/fpga/fpga-image-load.rst
-> @@ -27,8 +27,10 @@ ioctl
->  
->  FPGA_IMAGE_LOAD_WRITE:
->  
-> -Start an image upload with the provided image buffer. This IOCTL returns
-> -immediately after starting a kernel worker thread to process the image
-> -upload which could take as long a 40 minutes depending on the actual device
-> -being updated. This is an exclusive operation; an attempt to start
-> -concurrent image uploads for the same device will fail with EBUSY.
-> +Start an image upload with the provided image buffer. This IOCTL returns
-> +immediately after starting a kernel worker thread to process the image
-> +upload which could take as long a 40 minutes depending on the actual device
-> +being updated. This is an exclusive operation; an attempt to start
+From: Barry Song <song.bao.hua@hisilicon.com>
 
-Just curious, there are marks here but seems no change.
+ARM64 machines like kunpeng920 and x86 machines like Jacobsville have a
+level of hardware topology in which some CPU cores, typically 4 cores,
+share L3 tags or L2 cache.
 
-> +concurrent image loads for the same device will fail with EBUSY. An eventfd
+That means spreading those tasks between clusters will bring more memory
+bandwidth and decrease cache contention. But packing tasks might help
+decrease the latency of cache synchronization.
 
-You want to fix "uploads" to "loads"? But there are many other "upload(s)".
+We have three series to bring up cluster level scheduler in kernel.
+This is the first series.
 
-Others look good to me.
+1st series(this one): make kernel aware of cluster, expose cluster to sysfs
+ABI and add SCHED_CLUSTER which can make load balance between clusters to
+benefit lots of workload.
+Testing shows this can hugely boost the performance, for example, this
+can increase 25.1% of SPECrate mcf on Jacobsville and 13.574% of mcf
+on kunpeng920.
 
-> +file descriptor parameter is provided to this IOCTL. It will be signalled
-> +at the completion of the image upload.
-> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
-> index 65f553b59011..09164a0258a5 100644
-> --- a/drivers/fpga/fpga-image-load.c
-> +++ b/drivers/fpga/fpga-image-load.c
-> @@ -34,6 +34,7 @@ static void fpga_image_prog_complete(struct fpga_image_load *imgld)
->  {
->  	mutex_lock(&imgld->lock);
->  	imgld->progress = FPGA_IMAGE_PROG_IDLE;
-> +	eventfd_signal(imgld->finished, 1);
->  	mutex_unlock(&imgld->lock);
->  }
->  
-> @@ -112,6 +113,8 @@ static void fpga_image_do_load(struct work_struct *work)
->  	vfree(imgld->data);
->  	imgld->data = NULL;
->  	fpga_image_prog_complete(imgld);
-> +	eventfd_ctx_put(imgld->finished);
-> +	imgld->finished = NULL;
->  }
->  
->  static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
-> @@ -119,6 +122,7 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
->  {
->  	struct fpga_image_write wb;
->  	unsigned long minsz;
-> +	int ret;
->  	u8 *buf;
->  
->  	if (imgld->driver_unload || imgld->progress != FPGA_IMAGE_PROG_IDLE)
-> @@ -135,13 +139,23 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
->  	if (wb.size & 0x3)
->  		return -EINVAL;
->  
-> +	if (wb.evtfd < 0)
-> +		return -EINVAL;
-> +
->  	buf = vzalloc(wb.size);
->  	if (!buf)
->  		return -ENOMEM;
->  
->  	if (copy_from_user(buf, u64_to_user_ptr(wb.buf), wb.size)) {
-> -		vfree(buf);
-> -		return -EFAULT;
-> +		ret = -EFAULT;
-> +		goto exit_free;
-> +	}
-> +
-> +	imgld->finished = eventfd_ctx_fdget(wb.evtfd);
-> +	if (IS_ERR(imgld->finished)) {
-> +		ret = PTR_ERR(imgld->finished);
-> +		imgld->finished = NULL;
-> +		goto exit_free;
->  	}
->  
->  	imgld->data = buf;
-> @@ -151,6 +165,10 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
->  	queue_work(system_unbound_wq, &imgld->work);
->  
->  	return 0;
-> +
-> +exit_free:
-> +	vfree(buf);
-> +	return ret;
->  }
->  
->  static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
-> diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
-> index 41ab63cf7b20..7d39daa4d921 100644
-> --- a/include/linux/fpga/fpga-image-load.h
-> +++ b/include/linux/fpga/fpga-image-load.h
-> @@ -9,6 +9,7 @@
->  
->  #include <linux/cdev.h>
->  #include <linux/device.h>
-> +#include <linux/eventfd.h>
->  #include <linux/mutex.h>
->  #include <linux/types.h>
->  #include <uapi/linux/fpga-image-load.h>
-> @@ -52,6 +53,7 @@ struct fpga_image_load {
->  	u32 progress;
->  	u32 err_code;			/* image load error code */
->  	bool driver_unload;
-> +	struct eventfd_ctx *finished;
->  	void *priv;
->  };
->  
-> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
-> index 0382078c5a6c..152a8e1c031f 100644
-> --- a/include/uapi/linux/fpga-image-load.h
-> +++ b/include/uapi/linux/fpga-image-load.h
-> @@ -38,7 +38,7 @@
->   *				struct fpga_image_write)
->   *
->   * Upload a data buffer to the target device. The user must provide the
-> - * data buffer and size.
-> + * data buffer, size, and an eventfd file descriptor.
->   *
->   * Return: 0 on success, -errno on failure.
->   */
-> @@ -46,6 +46,7 @@ struct fpga_image_write {
->  	/* Input */
->  	__u32 flags;		/* Zero for now */
->  	__u32 size;		/* Data size (in bytes) to be written */
-> +	__s32 evtfd;		/* File descriptor for completion signal */
->  	__u64 buf;		/* User space address of source data */
->  };
->  
-> -- 
-> 2.25.1
+2nd series(wake_affine): modify the wake_affine and let kernel select CPUs
+within cluster first before scanning the whole LLC so that we can benefit
+from the lower latency of cache coherence within one single cluster. This
+series is much more tricky. so we would like to send it after we build
+the base of cluster by the 1st series. Prototype for 2nd series is here:
+https://op-lists.linaro.org/pipermail/linaro-open-discussions/2021-June/000219.html
+
+3rd series: a sysctl to permit users to enable or disable cluster scheduler
+from Tim Chen. Prototype here:
+Add run time sysctl to enable/disable cluster scheduling
+https://op-lists.linaro.org/pipermail/linaro-open-discussions/2021-July/000258.html
+
+This series is resent and rebased on 5.15-rc2.
+
+-V1:
+ differences with RFC v6 
+ * removed wake_affine path modifcation, which will be separately second series
+ * cluster_id is gotten by detecting valid ID before falling back to use offset
+ * lots of benchmark data from both x86 Jacobsville and ARM64 kunpeng920
+
+-RFC v6:
+https://lore.kernel.org/lkml/20210420001844.9116-1-song.bao.hua@hisilicon.com/
+
+Barry Song (1):
+  scheduler: Add cluster scheduler level in core and related Kconfig for
+    ARM64
+
+Jonathan Cameron (1):
+  topology: Represent clusters of CPUs within a die
+
+Tim Chen (1):
+  scheduler: Add cluster scheduler level for x86
+
+ Documentation/ABI/stable/sysfs-devices-system-cpu | 15 +++++
+ Documentation/admin-guide/cputopology.rst         | 12 ++--
+ arch/arm64/Kconfig                                |  7 +++
+ arch/arm64/kernel/topology.c                      |  2 +
+ arch/x86/Kconfig                                  |  8 +++
+ arch/x86/include/asm/smp.h                        |  7 +++
+ arch/x86/include/asm/topology.h                   |  3 +
+ arch/x86/kernel/cpu/cacheinfo.c                   |  1 +
+ arch/x86/kernel/cpu/common.c                      |  3 +
+ arch/x86/kernel/smpboot.c                         | 44 ++++++++++++++-
+ drivers/acpi/pptt.c                               | 67 +++++++++++++++++++++++
+ drivers/base/arch_topology.c                      | 14 +++++
+ drivers/base/topology.c                           | 10 ++++
+ include/linux/acpi.h                              |  5 ++
+ include/linux/arch_topology.h                     |  5 ++
+ include/linux/sched/topology.h                    |  7 +++
+ include/linux/topology.h                          | 13 +++++
+ kernel/sched/topology.c                           |  5 ++
+ 18 files changed, 223 insertions(+), 5 deletions(-)
+
+-- 
+1.8.3.1
+
