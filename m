@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B494173B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8E9417301
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345812AbhIXM73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:59:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52416 "EHLO mail.kernel.org"
+        id S1344836AbhIXMxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:53:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344788AbhIXM4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:56:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8D446138B;
-        Fri, 24 Sep 2021 12:51:29 +0000 (UTC)
+        id S1344499AbhIXMvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:51:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC55961350;
+        Fri, 24 Sep 2021 12:49:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487890;
-        bh=dTSZ1GSvL2VCXDfHrK1x4xeU9uhucsyjzcXzZv+PTr4=;
+        s=korg; t=1632487747;
+        bh=nwzhawqdqPT2PH9pvNzYyhOTxCZZE4xkl5NIeI7XJaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=twOqgdA8K+SiIByXSFolnrSZOBhVzmSjpL5RkJj02gjYsa+jA0s3cq67UrWm5Yhqo
-         wk81VXTkjqwbHLQXNVBPm4H9YUbPeuazErFwmu3ssp9XB6z2L0zBZtuyfY4rf9LKJW
-         lFEsYUV/wEG/h0wxb/0Bp5/DfKkmJHdN04eLcok8=
+        b=Tc/1pb2p7gUQQgqfrJj5wTeznDYv3iSk66HdmBLZoURoNEKdWzXq8neQYn4llYNY6
+         yBI7MPH5xCUsD8EMN2l2F4L3MKksIIvcbtFWrExkbZuqLOUwck6/D5KZE1hAlcHvAk
+         J5JuGb7r5PLcsl0+b3NdHmO3k1+acis/XH7yvumo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 37/50] ceph: lockdep annotations for try_nonblocking_invalidate
+Subject: [PATCH 4.19 32/34] pwm: stm32-lp: Dont modify HW state in .remove() callback
 Date:   Fri, 24 Sep 2021 14:44:26 +0200
-Message-Id: <20210924124333.503932249@linuxfoundation.org>
+Message-Id: <20210924124331.017963129@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,31 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 3eaf5aa1cfa8c97c72f5824e2e9263d6cc977b03 ]
+[ Upstream commit d44084c93427bb0a9261432db1a8ca76a42d805e ]
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/caps.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pwm/pwm-stm32-lp.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index a49bf1fbaea8..0fad044a5752 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -1775,6 +1775,8 @@ static u64 __mark_caps_flushing(struct inode *inode,
-  * try to invalidate mapping pages without blocking.
-  */
- static int try_nonblocking_invalidate(struct inode *inode)
-+	__releases(ci->i_ceph_lock)
-+	__acquires(ci->i_ceph_lock)
+diff --git a/drivers/pwm/pwm-stm32-lp.c b/drivers/pwm/pwm-stm32-lp.c
+index 28e1f6413476..e92a14007422 100644
+--- a/drivers/pwm/pwm-stm32-lp.c
++++ b/drivers/pwm/pwm-stm32-lp.c
+@@ -224,8 +224,6 @@ static int stm32_pwm_lp_remove(struct platform_device *pdev)
  {
- 	struct ceph_inode_info *ci = ceph_inode(inode);
- 	u32 invalidating_gen = ci->i_rdcache_gen;
+ 	struct stm32_pwm_lp *priv = platform_get_drvdata(pdev);
+ 
+-	pwm_disable(&priv->chip.pwms[0]);
+-
+ 	return pwmchip_remove(&priv->chip);
+ }
+ 
 -- 
 2.33.0
 
