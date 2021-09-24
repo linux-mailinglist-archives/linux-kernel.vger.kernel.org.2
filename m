@@ -2,223 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BEC417685
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832C3417686
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346697AbhIXOFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346508AbhIXOFs (ORCPT
+        id S1346705AbhIXOGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:06:20 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:36396 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346508AbhIXOGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:05:48 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7EDC061571;
-        Fri, 24 Sep 2021 07:04:14 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0dd6008eddcbd152a1c1b1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d600:8edd:cbd1:52a1:c1b1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0122D1EC0541;
-        Fri, 24 Sep 2021 16:04:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632492249;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=HHrCbHtfMapdgdHCywxiLt5xWw+NugbzfPjFHMI1IsA=;
-        b=izZgEa0Nz5w/sF+dYGp81sHbvdgjXfqEv4hReEWlibBKbHN5yf3biZcl359Jjb8C1slTp2
-        9TCezwSIRcGAgAdIIzYHCFDPGt0B7TGKaK37szg8jY+26PmviIwjwYRDRmg6QfSXtWTAiP
-        2U9NKFoADRHb0CpQ/y1xb1NeV2e/FGg=
-Date:   Fri, 24 Sep 2021 16:04:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 05/45] x86/sev: Add helper functions for
- RMPUPDATE and PSMASH instruction
-Message-ID: <YU3a0N2EfZIGP2IR@zn.tnic>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-6-brijesh.singh@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-6-brijesh.singh@amd.com>
+        Fri, 24 Sep 2021 10:06:20 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210924140445epoutp04ed424ad388daac11640bd4134516f46f~nxxWMsm7Z3152931529epoutp041
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:04:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210924140445epoutp04ed424ad388daac11640bd4134516f46f~nxxWMsm7Z3152931529epoutp041
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1632492285;
+        bh=q/PUuhuvYBUXBqIqSskeFpdKmkneorz9MDlFxCuImqU=;
+        h=Date:Subject:Reply-To:From:To:CC:In-Reply-To:References:From;
+        b=QlVH4m/4YFpGIYAvYTAOVyAFMg3vHWsOHxIYQUXp969/07cNd7/VbSds65VEQGRKb
+         QSjzOnfeCdlEclNPFeJ5d7/eSFZe2yZVGCZgQuS9qDp9basJ074eP3auIY5BnjqaRT
+         HF5NPBqA6+mrMHv+8/3/Lq6esFrG9jBtr5JRV0Uw=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20210924140444epcas5p2a8f5e46bb991371c26cf32969c3f8947~nxxVZPM5t0443904439epcas5p26;
+        Fri, 24 Sep 2021 14:04:44 +0000 (GMT)
+X-AuditID: b6c32a49-10fff7000000e972-8a-614ddafc70c4
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        53.13.59762.CFADD416; Fri, 24 Sep 2021 23:04:44 +0900 (KST)
+Date:   Fri, 24 Sep 2021 19:34:43 +0530
+Message-ID: <1062227969.4242453.1632492283698@mail-kr5-0>
+Mime-Version: 1.0
+Subject: RE:(2) [Issue] timer callback registered with mod_timer is getting
+ called beforetime
+Reply-To: maninder1.s@samsung.com
+Sender: Maninder Singh <maninder1.s@samsung.com>
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+CC:     "fweisbec@gmail.com" <fweisbec@gmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vaneet Narang <v.narang@samsung.com>,
+        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
+        Chung-Ki Woo <chungki0201.woo@samsung.com>,
+        Vishal Goel <vishal.goel@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210924103812.GA142770@lothringen>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+X-CMS-MailID: 20210924140443epcms5p22d9d28335c2d6988b509e01ee4cc2f51
+Content-Type: multipart/mixed;
+        boundary="----=_Part_4242452_2101301166.1632492283698"
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLKsWRmVeSWpSXmKPExsWy7bCmhu6fW76JBo3XRC0u7k61OP39CrvF
+        gqa9rBYzX3czWVzeNYfNYvW/U4wWmzdNZbY4dHIuo8W626cZHTg9ds66y+6xaVUnm8e7c+fY
+        Pfq2rGL0+LxJLoA1issmJTUnsyy1SN8ugStjWsNy9oJbShWPT15ka2C8ItfFyMkhIWAi8eHy
+        LaYuRi4OIYHdjBJ73q9nAkmwCKhK9P/sBrN5BSwlnvy/zdLFyAFkC0r83SEMYgoLxEtc+h0F
+        UiEkoChxYcYaRoiwgcSvrRogYTYBPYlVu/awgNgiAroSy69tYAfZxCzwnEli+vlNrBAn8ErM
+        aH/KAmFLS2xfvpURxOYUMJRYMeEYVI2oxM3Vb9lh7PfH5jNC2CISrffOMkPYghIPfu6GistI
+        rN7cywKyTEKgm1Fi/bu9UM4MRomeR9OgOswl1i9ZxQ5ytYSAi8SfPguQMLNAuMT6rmesEDaf
+        RO/vJ0wwh+6YB2OrSrTc3MAKc/Tnjx+hHvCQ2PK9lR0SnnsYJWac38w2gVFuFiLoZiFZAWHL
+        S2x/O4cZpIRZQFNi/S59iLCaxJT+L2wQtplEQ/tUFghbUWJK90P2BYzsqxglUwuKc9NTi00L
+        DPNSy/WKE3OLS/PS9ZLzczcxglOVlucOxrsPPugdYmTiYDzEqALU/mjD6guMUix5+XmpSiK8
+        n294JQrxpiRWVqUW5ccXleakFh9ilOZgURLn/fjaMlFIID2xJDU7NbUgtQgmy8TBKdXA1Bhy
+        kr9+SfTdsotvp62e8vKJK1PdgrTyTkuByXfSzyo2fYusuHZFa7K6ksZ99fJ7LOYs5S7vqpN8
+        77zp7WNccyz42+T7r+Xnzt69/2OWWKSeMI+st+H7NXFy7AHNsb/0Vi2o85RYG3nO6Jruid7S
+        dtmy/t51U9j2p93YGmE7N1/4vc78pQd1lSzS09yTzOOCMq9OOF/sOGXWLDd9d64la9KLVl/0
+        FmCfcErIz/9qz9btN86mlN2ujU25LSsXmbbBdf/qHW8f6hz0Ff1de4TBiWGtQYO+lvsGuXCP
+        bfyr2rdy+fyZJxy41+u6qFDm3mPaM31KUy/22Jp+6hf44JG5qdWkaMKBKNtX2tEaLreVWIoz
+        Eg21mIuKEwEKuGfc0AMAAA==
+X-CMS-RootMailID: 20210924065310epcms5p69dd47a510faaa6bf68c243e02f2d0186
+References: <20210924103812.GA142770@lothringen>
+        <20210924065310epcms5p69dd47a510faaa6bf68c243e02f2d0186@epcms5p6>
+        <CGME20210924065310epcms5p69dd47a510faaa6bf68c243e02f2d0186@epcms5p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:58:38AM -0500, Brijesh Singh wrote:
-> The RMPUPDATE instruction writes a new RMP entry in the RMP Table. The
-> hypervisor will use the instruction to add pages to the RMP table. See
-> APM3 for details on the instruction operations.
-> 
-> The PSMASH instruction expands a 2MB RMP entry into a corresponding set of
-> contiguous 4KB-Page RMP entries. The hypervisor will use this instruction
-> to adjust the RMP entry without invalidating the previous RMP entry.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/asm/sev.h | 11 ++++++
->  arch/x86/kernel/sev.c      | 72 ++++++++++++++++++++++++++++++++++++++
->  2 files changed, 83 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> index 5b1a6a075c47..92ced9626e95 100644
-> --- a/arch/x86/include/asm/sev.h
-> +++ b/arch/x86/include/asm/sev.h
-> @@ -78,7 +78,9 @@ extern bool handle_vc_boot_ghcb(struct pt_regs *regs);
+------=_Part_4242452_2101301166.1632492283698
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+
+
+Hi Frederic,
+
+
+> > Is it known behaviour for timers?
+> > because only 1 CPU is assigned to update jiffies work to call do_timer utill unless it goes to idle state and pass ownership to other CPU.
+> > 
+> > we tried by making all CPU to handle code for jiffies updation (it will add performance hit)
+> > but then no issue of abrupt jiffies change occured on system.
 >  
->  /* RMP page size */
->  #define RMP_PG_SIZE_4K			0
-> +#define RMP_PG_SIZE_2M			1
->  #define RMP_TO_X86_PG_LEVEL(level)	(((level) == RMP_PG_SIZE_4K) ? PG_LEVEL_4K : PG_LEVEL_2M)
-> +#define X86_TO_RMP_PG_LEVEL(level)	(((level) == PG_LEVEL_4K) ? RMP_PG_SIZE_4K : RMP_PG_SIZE_2M)
+> First of all, are you meeting this issue specifically on NOHZ_FULL? Because
+> there is a pending fix for a related matter there:
+
+No, this is not our case.
+
 >  
->  /*
->   * The RMP entry format is not architectural. The format is defined in PPR
-> @@ -107,6 +109,15 @@ struct __packed rmpentry {
+>       https://lore.kernel.org/lkml/20210915142303.24297-1-frederic@kernel.org/
 >  
->  #define RMPADJUST_VMSA_PAGE_BIT		BIT(16)
+> As for what you're reporting here, I think the core problem is the fact that the
+> timekeeper (jiffies updater) is stuck with IRQs disabled for way too long. Even
+> one millisecond is too much to tolerate. Do you have any idea about the source of
+> that situation?
 >  
-> +struct rmpupdate {
 
-Function is called the same way - maybe this should be called
-rmpupdate_desc or so.
+Yes, definately interrupts should not be disabled for so long,
+but sometimes there are 3rd party drivers/vendors module code can cause issue,
+and it can be the same case and we are trying to reproduce issue again and check code path.
 
-> +	u64 gpa;
-> +	u8 assigned;
-> +	u8 pagesize;
-> +	u8 immutable;
-> +	u8 rsvd;
-> +	u32 asid;
-> +} __packed;
-> +
->  #ifdef CONFIG_AMD_MEM_ENCRYPT
->  extern struct static_key_false sev_es_enable_key;
->  extern void __sev_es_ist_enter(struct pt_regs *regs);
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index f383d2a89263..8627c49666c9 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -2419,3 +2419,75 @@ int snp_lookup_rmpentry(u64 pfn, int *level)
->  	return !!rmpentry_assigned(e);
->  }
->  EXPORT_SYMBOL_GPL(snp_lookup_rmpentry);
-> +
+So we had 2 doubts:
+(1) In this explained case timer callback will be called early right? 
+(2) What if jiffies updation can be done by any of the CPU rather that making one
+CPU owner? can it cause any side effectes? one we know is performance, there will be redundant calls
+from other CPUs.
 
-<--- kernel-doc comment.
+        /* Check, if the jiffies need an update */
+        if (tick_do_timer_cpu == cpu)
+                tick_do_update_jiffies64(now);
 
-> +int psmash(u64 pfn)
-> +{
-> +	unsigned long paddr = pfn << PAGE_SHIFT;
-> +	int ret;
-> +
-> +	if (!pfn_valid(pfn))
-> +		return -EINVAL;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return -ENXIO;
 
-Make that the first check pls.
+On our target, there is a race condition when irq_disable code path scheduled on same CPU
+which is responsible for jiffies updation and in parallel CPU1 registers evet callback for 20/30 ms.
+and due to abrupt jiffies change callback triggered within 1 ms of actual time, which cause actual
+issue.
 
-> +
-> +	/* Binutils version 2.36 supports the PSMASH mnemonic. */
-> +	asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
-> +		      : "=a"(ret)
-> +		      : "a"(paddr)
-> +		      : "memory", "cc");
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(psmash);
+Thanks
+Maninder Singh
+ 
+ 
+------=_Part_4242452_2101301166.1632492283698
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename="rcptInfo.txt"
+Content-Transfer-Encoding: base64
 
-That's for kvm?
+DQogICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT0NCiAgICAgIFN1YmplY3QgICAgOiBSZTogW0lzc3VlXSB0aW1l
+ciBjYWxsYmFjayByZWdpc3RlcmVkIHdpdGggbW9kX3RpbWVyIGlzIGdldHRpbmcgY2FsbGVkIGJl
+Zm9yZXRpbWUNCiAgICAgIEZyb20gICAgICAgOiBudWxsDQogICAgICBTZW50IERhdGUgIDogMjAy
+MS0wOS0yNCAxNjowOCAgR01UKzU6MzANCiAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KICAgICAgICAgICAg
+ICAgICAgTmFtZSAgICAgICAgICAgICAgICBUeXBlICAgICAgICAgIEpvYiBUaXRsZSAgICAgICAg
+ICAgICAgICAgICAgICAgRGVwdC4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ29tcGFu
+eSAgICAgICAgICAgICAgICANCiAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KICAgICAgTWFuaW5kZXIgU2lu
+Z2ggICAgICAgICAgICAgICAgIFRPICAgICAgICAgU3RhZmYgRW5naW5lZXIgICAgICAgICAgICAg
+U3lzdGVtIFMvVyBHcm91cCAvU1JJLURlbGhpICAgICAgICAgICAgICAgU2Ftc3VuZ8KgRWxlY3Ry
+b25pY3PCoA0KICAgICAgZndlaXNiZWNAZ21haWwuY29tICAgICAgICAgICAgIENDDQogICAgICB0
+Z2x4QGxpbnV0cm9uaXguZGUgICAgICAgICAgICAgQ0MNCiAgICAgIG1pbmdvQGtlcm5lbC5vcmcg
+ICAgICAgICAgICAgICBDQw0KICAgICAgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyAgIEND
+DQogICAgICBWYW5lZXQgTmFyYW5nICAgICAgICAgICAgICAgICAgQ0MgICAgICAgICBTdGFmZiBF
+bmdpbmVlciAgICAgICAgICAgICBTeXN0ZW0gUy9XIEdyb3VwIC9TUkktRGVsaGkgICAgICAgICAg
+ICAgICBTYW1zdW5nIEVsZWN0cm9uaWNzDQogICAgICBBTUlUIFNBSFJBV0FUICAgICAgICAgICAg
+ICAgICAgQ0MgICAgICAgICBTdGFmZiBFbmdpbmVlci9IZWFkIG8uLi4gICBTeXN0ZW0gUy9XIEdy
+b3VwIC9TUkktRGVsaGkgICAgICAgICAgICAgICBTYW1zdW5nwqBFbGVjdHJvbmljcw0KICAgICAg
+Q2h1bmctS2kgV29vICAgICAgICAgICAgICAgICAgIENDICAgICAgICAgUHJpbmNpcGFsIEVuZ2lu
+ZWVyICAgICAgICAgUy9XIFBsYXRmb3JtIFImRCBMYWIuICAgICAgICAgICAgICAgICAgICAgU2Ft
+c3VuZyBFbGVjdHJvbmljcw0KICAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo=
 
-> +static int rmpupdate(u64 pfn, struct rmpupdate *val)
-> +{
-> +	unsigned long paddr = pfn << PAGE_SHIFT;
-> +	int ret;
-> +
-> +	if (!pfn_valid(pfn))
-> +		return -EINVAL;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return -ENXIO;
-
-Also first check.
-
-> +
-> +	/* Binutils version 2.36 supports the RMPUPDATE mnemonic. */
-> +	asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFE"
-> +		     : "=a"(ret)
-> +		     : "a"(paddr), "c"((unsigned long)val)
-> +		     : "memory", "cc");
-> +	return ret;
-> +}
-> +
-> +int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable)
-> +{
-> +	struct rmpupdate val;
-> +
-> +	if (!pfn_valid(pfn))
-> +		return -EINVAL;
-
-rmpupdate() does that check too so choose one place please and kill the
-other.
-
-> +	memset(&val, 0, sizeof(val));
-> +	val.assigned = 1;
-> +	val.asid = asid;
-> +	val.immutable = immutable;
-> +	val.gpa = gpa;
-> +	val.pagesize = X86_TO_RMP_PG_LEVEL(level);
-> +
-> +	return rmpupdate(pfn, &val);
-> +}
-> +EXPORT_SYMBOL_GPL(rmp_make_private);
-> +
-> +int rmp_make_shared(u64 pfn, enum pg_level level)
-> +{
-> +	struct rmpupdate val;
-> +
-> +	if (!pfn_valid(pfn))
-> +		return -EINVAL;
-> +
-> +	memset(&val, 0, sizeof(val));
-> +	val.pagesize = X86_TO_RMP_PG_LEVEL(level);
-> +
-> +	return rmpupdate(pfn, &val);
-> +}
-> +EXPORT_SYMBOL_GPL(rmp_make_shared);
-
-Both exports for kvm I assume?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+------=_Part_4242452_2101301166.1632492283698--
