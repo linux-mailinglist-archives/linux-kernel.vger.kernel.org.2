@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF25417109
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7289141710F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343540AbhIXLmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:42:40 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:43376 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S244321AbhIXLmc (ORCPT
+        id S1343561AbhIXLob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 07:44:31 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40882 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244321AbhIXLob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 07:42:32 -0400
-X-UUID: 7962f5f4ad3e4869b5981a4d187a8b80-20210924
-X-UUID: 7962f5f4ad3e4869b5981a4d187a8b80-20210924
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <sam.shih@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 720220876; Fri, 24 Sep 2021 19:40:55 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 24 Sep 2021 19:40:54 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 24 Sep 2021 19:40:54 +0800
-From:   Sam Shih <sam.shih@mediatek.com>
-To:     <matthias.bgg@gmail.com>
-CC:     <Ryder.Lee@mediatek.com>, <devicetree@vger.kernel.org>,
-        <enric.balletbo@collabora.com>, <fparent@baylibre.com>,
-        <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>,
-        <hsinyi@chromium.org>, <john@phrozen.org>,
-        <linus.walleij@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-clk@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <linux@roeck-us.net>, <mpm@selenic.com>, <mturquette@baylibre.com>,
-        <robh+dt@kernel.org>, <sam.shih@mediatek.com>, <sboyd@kernel.org>,
-        <sean.wang@kernel.org>, <seiya.wang@mediatek.com>,
-        <wim@linux-watchdog.org>
-Subject: [v3,7/9] dt-bindings: arm64: dts: mediatek: Add mt7986 series
-Date:   Fri, 24 Sep 2021 19:40:46 +0800
-Message-ID: <20210924114046.26070-1-sam.shih@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <9552b0dc-337f-7edc-2997-50603dfe8bcd@gmail.com>
-References: <9552b0dc-337f-7edc-2997-50603dfe8bcd@gmail.com>
+        Fri, 24 Sep 2021 07:44:31 -0400
+Received: from [192.168.1.87] (unknown [223.184.74.135])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B7EE420A3A05;
+        Fri, 24 Sep 2021 04:42:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B7EE420A3A05
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1632483778;
+        bh=6J74lWd/6CyVUNTeXTJr/cLogZniLMul6d8MzGOSJS0=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=jRWNVqsKRfiizxQADhHcgkJDxWAl8h/Iy1IJ0/sHZD9c3lSCsnHBXM747S10ga9ZT
+         n4HG4MIut8vWrigJRFqcAqmZq5TRU94qLdsxwfxQAA5cLc3Fgl0gYXqQDUUdnbvWPO
+         HMaRuqMjcUzG8Q37AxbMgUz/ROMzZL9KaiDsR1t8=
+Subject: Re: [PATCH] media: atomisp: restore missing 'return' statement
+From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210802143820.1150099-1-arnd@kernel.org>
+ <a472d0f0-2be4-5f95-7106-5d580b28cac6@linux.microsoft.com>
+Message-ID: <ccc76c85-b6ee-aafb-b4dc-801dc10ef001@linux.microsoft.com>
+Date:   Fri, 24 Sep 2021 17:12:50 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <a472d0f0-2be4-5f95-7106-5d580b28cac6@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MT7986 series is Mediatek's new 4-core SoC, which is mainly for
-wifi-router application. The difference between mt7986a and mt7986b
-is that some pins do not exist on mt7986b.
+On 24-09-2021 17:01, Praveen Kumar wrote:
+> On 02-08-2021 20:08, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> The input_system_configure_channel_sensor() function lost its final
+>> return code in a previous patch:
+>>
+>> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function 'input_system_configure_channel_sensor':
+>> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+>>
+>> Restore what was there originally.
+>>
+>> Fixes: 728a5c64ae5f ("media: atomisp: remove dublicate code")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>  .../media/atomisp/pci/hive_isp_css_common/host/input_system.c   | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+>> index 8e085dda0c18..712e01c37870 100644
+>> --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+>> +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+>> @@ -1646,6 +1646,8 @@ static input_system_err_t input_system_configure_channel_sensor(
+>>  	default:
+>>  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+>>  	}
+>> +
+>> +	return INPUT_SYSTEM_ERR_NO_ERROR;
+> 
+> I would recommend to return "status" instead of INPUT_SYSTEM_ERR_NO_ERROR,
+> this will take care of sending correct return code, we encounter in different case statements.
+> Something like below would be better. Thanks.
+> 
+> -               return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> +               status = INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+>         }
+> +       return status;
 
-Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Please ignore this comment. My bad, we don't reach anytime here during failure.
 
----
-v3: changed 'MT7986' to 'MT7986 series' in the commit message
-v2: added an Acked-by tag
----
- Documentation/devicetree/bindings/arm/mediatek.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Regards,
 
-diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-index 80a05f6fee85..a9a778269684 100644
---- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-+++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-@@ -76,6 +76,14 @@ properties:
-           - enum:
-               - mediatek,mt7629-rfb
-           - const: mediatek,mt7629
-+      - items:
-+          - enum:
-+              - mediatek,mt7986a-rfb
-+          - const: mediatek,mt7986a
-+      - items:
-+          - enum:
-+              - mediatek,mt7986b-rfb
-+          - const: mediatek,mt7986b
-       - items:
-           - enum:
-               - mediatek,mt8127-moose
--- 
-2.29.2
+~Praveen.
 
