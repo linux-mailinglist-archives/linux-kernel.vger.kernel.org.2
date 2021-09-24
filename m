@@ -2,150 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6A041777B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35124417779
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347108AbhIXP2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 11:28:01 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:42604
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347103AbhIXP2A (ORCPT
+        id S1347099AbhIXP1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 11:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233132AbhIXP1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:28:00 -0400
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id F3F5440192
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632497185;
-        bh=BJQ1tcf/UkpkN508ynAJCoG+ggl8X9aVGCS6hw5OEH0=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=Rt21dhzExhu4+UP+H8ni8+xlIZve3UVePPYd6S2dXYBx+E3lgNYKjUC/Ly6sp+5ys
-         tp6kwemrl0gZ/TPqbBAZR7PwjUWkIQD8LjRLCibS82bgt6lTlu4pSkFzVQjb6tlodw
-         v39HPN4ts59DEm6jdexIqQ+dYgy+PjjieL1wQgZLZ5NHFX4jcMy0niGMIidk8gRf+v
-         4vU++k7e2XfLnOrH+aWbvzlKCuuEx0c08DKxm5krWWATdYFecG28cr0RIdtXIytGrP
-         BPoF5QGd1LzFIaq8B7o0jg2D0eR7FFy2z5ICjkarOR99EmjqI33cCQC/B10sLIKClu
-         D3S7vg8Rv11yg==
-Received: by mail-pj1-f72.google.com with SMTP id j18-20020a17090aeb1200b0019cd0887ea3so6308370pjz.6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:26:24 -0700 (PDT)
+        Fri, 24 Sep 2021 11:27:45 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8521AC061613
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:26:12 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id lp9-20020a17090b4a8900b0019ea2b54b61so442368pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MFsXEmVyTegWQH6W88YQhCSi/9+3lbq3dBNBziZp+Dk=;
+        b=dBuBDyVpQXHImVg5rYV1FEdH2wEdXzT9u1NW4PbHEA0Fn7b4tNBB60JsQbdMuAHmBo
+         zmwctt+UzrWdVDgHqv76IBJ7S4YE8ChQuebBl9+Ul8UrsPEvjL1+5GFRVeb0mQrYkUsa
+         1VbBymQzRXCzL2A4Gwu1b/vV3dIi2SIVQ10SY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BJQ1tcf/UkpkN508ynAJCoG+ggl8X9aVGCS6hw5OEH0=;
-        b=foAnnrljz55tnysa6URmSPqKIsSs4I7rgwzlLDHP/pdScLHkfT4HhLzWBv5hs9nmwK
-         w33YptSHLr91XePMgrWY5Qle0mJceOHAZvVVVtleWTL6L/bjLnz/hL4qso7z7R0Q7grI
-         DmhmbVyqck/OG5nH2gV8tkVMXwXkfITy3Jtkc3ioC/31GC3LjQg0CuSznV3EmjF+SZly
-         auvSleTqv9Rkxm/h2VtpH5TjdtI3mQQwPwcK4KaFeTiVCAX0TBbl8V7wxohyCH/JnHz5
-         aM20KREgks9tOQ6Z+P2vy698wWrUT6k2HcntTQvdYlCoArCGCzTC80nzGbwj7mYA/RoS
-         +5BQ==
-X-Gm-Message-State: AOAM533eVbNr+ZwBXpPcXTA5G72PkFX/6nniCrX5oL2+ym9/bRaJH5WA
-        SUS9//FtulZ/V5S9YrQ+fQpC3g4flxbdMzMKaIbNlyEkqmoxKkqIIujdEoJLRzV+Ape790DrqwA
-        8lgFLTomkBd78Qk1BCk7SYnsmM0/CtBE4Ss1xWE1aDg==
-X-Received: by 2002:a17:902:76c3:b0:13c:957d:561f with SMTP id j3-20020a17090276c300b0013c957d561fmr9407107plt.27.1632497183529;
-        Fri, 24 Sep 2021 08:26:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxE5/Uiux7+1UFrhzHCKhGu2VwGC7ehLwJsokzC6lOe3qr+QDJLo84y2if8gaO2xS6nvRF6pw==
-X-Received: by 2002:a17:902:76c3:b0:13c:957d:561f with SMTP id j3-20020a17090276c300b0013c957d561fmr9407087plt.27.1632497183286;
-        Fri, 24 Sep 2021 08:26:23 -0700 (PDT)
-Received: from localhost.localdomain ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id f16sm9190541pfk.110.2021.09.24.08.26.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MFsXEmVyTegWQH6W88YQhCSi/9+3lbq3dBNBziZp+Dk=;
+        b=E7U4u7QRma/lWuWnQ7L+fuHinNKTj9XprUUDxmySRNbDWIOHbO/whNT14N37p2OQge
+         gEM1iOaci0yE/HblTtSRcVwwtc9vHWT6AAz+0s8lLXuzlSXOqMisbZ++9F771hxEXI0m
+         ZsiSVgymvHiANDepIDeD/Ioy3/MrwhOFBNsRf+6hTZjeFcAKSMfPO+ZlXFn9nyX3mdL/
+         /VM3g5G3GSw5EcW5KBcfAOpU0XAMVRCjIfpFlIte4mqTBMfM+iFTAcYJY+FpELUv2cU+
+         hBAVPfcwGWSAeYfeuEzb6aeS6wiNHvrK8s9AVKIP0+nzSvFcia27JRSA+cG+wPCQ4lUj
+         06Rg==
+X-Gm-Message-State: AOAM531z23hzfZAqVXIwN+jGVmNueg1Hc5aKD1NqxMweScdlaWrqx5FG
+        eRQG2Zk2B9ujAcAZ5BnFEY91/g==
+X-Google-Smtp-Source: ABdhPJyxRi7Ak+F9An1oBXL8/KlJq5fERwKh4kRN1IsbglsNdz7gd30ahoQaaexWy3Ji4mH1O7JY9A==
+X-Received: by 2002:a17:90b:1b0f:: with SMTP id nu15mr2912364pjb.181.1632497171999;
+        Fri, 24 Sep 2021 08:26:11 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j7sm9361281pfh.168.2021.09.24.08.26.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 08:26:22 -0700 (PDT)
-From:   Tim Gardner <tim.gardner@canonical.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     tim.gardner@canonical.com,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/bridge: parade-ps8640: check return values in ps8640_aux_transfer()
-Date:   Fri, 24 Sep 2021 09:26:07 -0600
-Message-Id: <20210924152607.28580-1-tim.gardner@canonical.com>
-X-Mailer: git-send-email 2.33.0
+        Fri, 24 Sep 2021 08:26:11 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 08:26:10 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-api@vger.kernel.org
+Subject: Re: [PATCH 2/6] ptrace: Remove the unnecessary arguments from
+ arch_ptrace_stop
+Message-ID: <202109240824.2B4C0B7EC@keescook>
+References: <87v92qx2c6.fsf@disp2133>
+ <87lf3mx290.fsf@disp2133>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lf3mx290.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coverity complains of an unused return code:
+On Thu, Sep 23, 2021 at 07:10:03PM -0500, Eric W. Biederman wrote:
+> 
+> Both arch_ptrace_stop_needed and arch_ptrace_stop are called with an
+> exit_code and a siginfo structure.  Neither argument is used by any of
+> the implementations so just remove the unneeded arguments.
+> 
+> The two arechitectures that implement arch_ptrace_stop are ia64 and
+> sparc.  Both architectures flush their register stacks before a
+> ptrace_stack so that all of the register information can be accessed
+> by debuggers.
+> 
+> As the question of if a register stack needs to be flushed is
+> independent of why ptrace is stopping not needing arguments make sense.
+> 
+> Cc: David Miller <davem@davemloft.net>
+> Cc: sparclinux@vger.kernel.org
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-CID 120459 (#1 of 1): Unchecked return value (CHECKED_RETURN)
-7. check_return: Calling regmap_bulk_write without checking return value (as is
-done elsewhere 199 out of 291 times).
-204        regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
-205                          ARRAY_SIZE(addr_len));
+Yeah, this is a no-op change. No one is using the arguments, as you say.
 
-While I was at it I noticed 2 other places where return codes were not being
-used, or used incorrectly (which is a real bug).
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Fix these errors by correctly using the returned error codes.
+-Kees
 
-Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-Cc: Andrzej Hajda <a.hajda@samsung.com>
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Robert Foss <robert.foss@linaro.org>
-Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc: Jonas Karlman <jonas@kwiboo.se>
-Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-iio@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
----
- drivers/gpu/drm/bridge/parade-ps8640.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index 3aaa90913bf8..591da962970a 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -201,8 +201,12 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
- 	addr_len[PAGE0_SWAUX_LENGTH - base] = (len == 0) ? SWAUX_NO_PAYLOAD :
- 					      ((len - 1) & SWAUX_LENGTH_MASK);
- 
--	regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
-+	ret = regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
- 			  ARRAY_SIZE(addr_len));
-+	if (ret) {
-+		DRM_DEV_ERROR(dev, "failed to bulk write ADDR_7_0: %d\n", ret);
-+		return ret;
-+	}
- 
- 	if (len && (request == DP_AUX_NATIVE_WRITE ||
- 		    request == DP_AUX_I2C_WRITE)) {
-@@ -218,13 +222,17 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
- 		}
- 	}
- 
--	regmap_write(map, PAGE0_SWAUX_CTRL, SWAUX_SEND);
-+	ret = regmap_write(map, PAGE0_SWAUX_CTRL, SWAUX_SEND);
-+	if (ret) {
-+		DRM_DEV_ERROR(dev, "failed to write SEND: %d\n", ret);
-+		return ret;
-+	}
- 
- 	/* Zero delay loop because i2c transactions are slow already */
- 	regmap_read_poll_timeout(map, PAGE0_SWAUX_CTRL, data,
- 				 !(data & SWAUX_SEND), 0, 50 * 1000);
- 
--	regmap_read(map, PAGE0_SWAUX_STATUS, &data);
-+	ret = regmap_read(map, PAGE0_SWAUX_STATUS, &data);
- 	if (ret) {
- 		DRM_DEV_ERROR(dev, "failed to read PAGE0_SWAUX_STATUS: %d\n",
- 			      ret);
 -- 
-2.33.0
-
+Kees Cook
