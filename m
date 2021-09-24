@@ -2,243 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D7641707E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E720417081
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhIXK4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45166 "EHLO
+        id S245676AbhIXK5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245662AbhIXKzs (ORCPT
+        with ESMTP id S244430AbhIXK5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:55:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8023C061756;
-        Fri, 24 Sep 2021 03:54:15 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632480853;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/7ACTzCKCJ8fwwf3NKIamkJEmGqQfZ3neuf/bUWLhh4=;
-        b=WxF8rGiwvf1wvxuvzyKyMSchqrD0yZKbzEfkzG0wI6AOaPBxJ/jeiXwxvJ94Eg/E9cYxmf
-        3FgatXPU71L+df75qc2V1eebCNqphQZjW+VTS855o3tzG/ah0wQWrwYxpQ1/ldSqvvcIwm
-        YoN5DPycOsKS/UZ5LtkI4FXY3DhVDUrQSn+uUfEMF2LpfBVeJPgsyw53T9qMi9vUn51Dz4
-        9eOBavCSJ5NDNpLsgy2O2/1kT+oewcOf0EXmCJlb9hOuchF7+BwfM314xtIawEv7XOR/Aj
-        +f4DgFZTTVrf2LrcEEpgykcudT1UhjmHVgzkjW6VL/lbZxJ9wYf8yH2nVFYjFg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632480853;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/7ACTzCKCJ8fwwf3NKIamkJEmGqQfZ3neuf/bUWLhh4=;
-        b=F3HUGypPhoXARUuEk506nAxHNIZzPBZIIK5AavJ/nhx9YV+Pe2P8r2P1/l/9fazJhebx0u
-        l4ESm1OK9zEbocDQ==
-To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
-Cc:     Sohil Mehta <sohil.mehta@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 10/13] x86/uintr: Introduce user IPI sender syscalls
-In-Reply-To: <20210913200132.3396598-11-sohil.mehta@intel.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-11-sohil.mehta@intel.com>
-Date:   Fri, 24 Sep 2021 12:54:12 +0200
-Message-ID: <87tuiadz1n.ffs@tglx>
+        Fri, 24 Sep 2021 06:57:05 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242AFC061574;
+        Fri, 24 Sep 2021 03:55:32 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id y28so38387889lfb.0;
+        Fri, 24 Sep 2021 03:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C1UBVPOiBxrna2psdGW428HQ/0SgnTjldU3JVfQAMiY=;
+        b=DZzI1AGDITTPQpxlthD3ayqCJmxAJUiKSO7VEi2DpHZBKHsotDCFkRE6+OAE+uJNBB
+         11pghz1YV3RlBEjFwykumFLnhaEsVjrVPWJYNAztZ8lRyGgVfdTpFCHO3S1Pv0/PkAwL
+         h/eLoSciW0bYQ0xKc2Q6hRdsyRfFXi6QX2Gabo5yHWJaiXT4ph4L7505uDQctdCvvjZv
+         zghzWxzqPpGGwRS7Iz9eFkrhPDI9Ec2uxnSNmfnuSJi38gYd+cREBXN+YWbmKdJSpbFv
+         nL7tJwSRhjYiQvg41mxZBhtya6Fv9IGAfMP94Qv34MW+BkBYLqZJ/XbZ4pRhDAWcvn+D
+         w8QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C1UBVPOiBxrna2psdGW428HQ/0SgnTjldU3JVfQAMiY=;
+        b=TrcuXl2GEgGo4NkY3Z0ngymA7I26WY2bpC1ZDsxpAickL5QhN7PH2PxUSmCliX5DTC
+         7iHqeHkjYd2FD+O4lbgqyFsKw+I2yXyRk2HuFtg7W7zCwd+cTLLnFWWGtqiXyA20rYF0
+         tiliSPNxr4xP/nLK/mXmDSipms6r46IkdORfG+phxek22SrS0ck01PluW4V1Jhs6Pkao
+         xTbf0LxQlvviGyIFLQRoyJUsTAm7BkAQcqLIYijcJB2F8J/bMC81YQOQtna538K4KXm0
+         Y3Zw2L7HLWfInGvrVxzGXqFnN8c2QVPFdKPYAwpxTBQmedS/RUvIGV9cByutTTRYm1pB
+         qLAQ==
+X-Gm-Message-State: AOAM5317lR3/vmjn2F6OyK9g1go3ziWrZITlH6Q8ZbKhMhJMzJ02akbX
+        gtfp9An6wv92IL0ywTPdk0AI5S4RKhY=
+X-Google-Smtp-Source: ABdhPJwqm+uYTYU4i9EkoBcCk6+LGCDKH63n5uC3W8iI1OcK2F9rkWW1p8OM+mLLkE+dxZVjJ+1GEw==
+X-Received: by 2002:a05:6512:39ca:: with SMTP id k10mr8785134lfu.54.1632480930437;
+        Fri, 24 Sep 2021 03:55:30 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id bj40sm127996ljb.106.2021.09.24.03.55.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 03:55:29 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 13:55:27 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] fs/ntfs3: Change posix_acl_equiv_mode to
+ posix_acl_update_mode
+Message-ID: <20210924105527.srf7bimnfwmqb4mp@kari-VirtualBox>
+References: <a740b507-40d5-0712-af7c-9706d0b11706@paragon-software.com>
+ <22b8b701-e0c0-9b3f-dd58-0e8ab7c54754@paragon-software.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22b8b701-e0c0-9b3f-dd58-0e8ab7c54754@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
-> +/*
-> + * No lock is needed to read the active flag. Writes only happen from
-> + * r_info->task that owns the UPID. Everyone else would just read this flag.
-> + *
-> + * This only provides a static check. The receiver may become inactive right
-> + * after this check. The primary reason to have this check is to prevent future
-> + * senders from connecting with this UPID, since the receiver task has already
-> + * made this UPID inactive.
-
-How is that not racy?
-
-> +static void free_uitt(struct uintr_uitt_ctx *uitt_ctx)
-> +{
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&uitt_ctx->uitt_lock, flags);
-> +	kfree(uitt_ctx->uitt);
-
-Again. Please move kfree() outside of the lock held region. But aside of
-that what is this lock protecting here?
-
-> +	uitt_ctx->uitt = NULL;
-> +	spin_unlock_irqrestore(&uitt_ctx->uitt_lock, flags);
-
-If there is concurrency then the other task which is blocked on
-uitt_lock will operate on uitt_ctx while the same is freed.
-
-Again, this lacks any life time and serialization rules. Just sprinkling
-locks all over the place does not make it magically correct.
-
-> +	kfree(uitt_ctx);
-> +}
-
-> +static void put_uitt_ref(struct uintr_uitt_ctx *uitt_ctx)
-> +{
-> +	if (refcount_dec_and_test(&uitt_ctx->refs))
-> +		free_uitt(uitt_ctx);
-> +}
-
-
-> +static struct uintr_uitt_ctx *get_uitt_ref(struct uintr_uitt_ctx *uitt_ctx)
-> +{
-> +	refcount_inc(&uitt_ctx->refs);
-> +	return uitt_ctx;
-> +}
-> +
-> +static inline void mark_uitte_invalid(struct uintr_sender_info *s_info)
-> +{
-> +	struct uintr_uitt_entry *uitte;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&s_info->uitt_ctx->uitt_lock, flags);
-> +	uitte = &s_info->uitt_ctx->uitt[s_info->uitt_index];
-> +	uitte->valid = 0;
-> +	spin_unlock_irqrestore(&s_info->uitt_ctx->uitt_lock, flags);
-> +}
-> +
->  static void __clear_vector_from_upid(u64 uvec, struct uintr_upid *upid)
->  {
->  	clear_bit(uvec, (unsigned long *)&upid->puir);
-> @@ -175,6 +290,210 @@ static void receiver_clear_uvec(struct callback_head *head)
->  	kfree(r_info);
->  }
+On Thu, Sep 23, 2021 at 06:44:55PM +0300, Konstantin Komarov wrote:
+> Right now ntfs3 uses posix_acl_equiv_mode instead of
+> posix_acl_update_mode like all other fs.
+> 
+> Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/xattr.c | 15 ++++-----------
+>  1 file changed, 4 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+> index 70f2f9eb6b1e..59ec5e61a239 100644
+> --- a/fs/ntfs3/xattr.c
+> +++ b/fs/ntfs3/xattr.c
+> @@ -559,22 +559,15 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
+>  		if (acl) {
+>  			umode_t mode = inode->i_mode;
 >  
-> +static void teardown_uitt(void)
-> +{
-> +	struct task_struct *t = current;
-> +	struct fpu *fpu = &t->thread.fpu;
-> +	u64 msr64;
-> +
-> +	put_uitt_ref(t->thread.ui_send->uitt_ctx);
-> +	kfree(t->thread.ui_send);
-> +	t->thread.ui_send = NULL;
-> +
-> +	fpregs_lock();
-> +
-> +	if (fpregs_state_valid(fpu, smp_processor_id())) {
-> +		/* Modify only the relevant bits of the MISC MSR */
-> +		rdmsrl(MSR_IA32_UINTR_MISC, msr64);
-> +		msr64 &= GENMASK_ULL(63, 32);
+> -			err = posix_acl_equiv_mode(acl, &mode);
+> -			if (err < 0)
+> -				return err;
+> +			err = posix_acl_update_mode(mnt_userns, inode, &mode,
+> +						    &acl);
+> +			if (err)
+> +				goto out;
 
-More magic numbers.
+Small nit. Maybe just straight
+				return err;
 
-> +		wrmsrl(MSR_IA32_UINTR_MISC, msr64);
-> +		wrmsrl(MSR_IA32_UINTR_TT, 0ULL);
+Put you can choose if you feel changing it.
 
-> +static void __free_uitt_entry(unsigned int entry)
-> +{
-> +	struct task_struct *t = current;
-> +	unsigned long flags;
-> +
-> +	if (entry >= UINTR_MAX_UITT_NR)
-> +		return;
-> +
-> +	if (!is_uintr_sender(t))
-> +		return;
-> +
-> +	pr_debug("send: Freeing UITTE entry %d for task=%d\n", entry, t->pid);
-> +
-> +	spin_lock_irqsave(&t->thread.ui_send->uitt_ctx->uitt_lock, flags);
-> +	memset(&t->thread.ui_send->uitt_ctx->uitt[entry], 0,
-> +	       sizeof(struct uintr_uitt_entry));
-> +	spin_unlock_irqrestore(&t->thread.ui_send->uitt_ctx->uitt_lock,
-> flags);
-
-What's the spinlock protecting here?
-
-> +	clear_bit(entry, (unsigned long *)t->thread.ui_send->uitt_mask);
-> +
-> +	if (is_uitt_empty(t)) {
-> +		pr_debug("send: UITT mask is empty. Dereference and teardown UITT\n");
-> +		teardown_uitt();
-> +	}
-> +}
-
-> +void do_uintr_unregister_sender(struct uintr_receiver_info *r_info,
-> +				struct uintr_sender_info *s_info)
-> +{
-> +	int ret;
-> +
-> +	/*
-> +	 * To make sure any new senduipi result in a #GP fault.
-> +	 * The task work might take non-zero time to kick the process out.
-
--ENOPARSE
-
-> +	 */
-> +	mark_uitte_invalid(s_info);
-> +
-> +	pr_debug("send: Adding Free UITTE %d task work for task=%d\n",
-> +		 s_info->uitt_index, s_info->task->pid);
-> +
-> +	init_task_work(&s_info->twork, sender_free_uitte);
-> +	ret = task_work_add(s_info->task, &s_info->twork, true);
-> +	if (ret) {
-> +		/*
-> +		 * Dereferencing the UITT and UPID here since the task has
-> +		 * exited.
-> +		 */
-> +		pr_debug("send: Free UITTE %d task=%d has already exited\n",
-> +			 s_info->uitt_index, s_info->task->pid);
-> +		put_upid_ref(s_info->r_upid_ctx);
-> +		put_uitt_ref(s_info->uitt_ctx);
-> +		put_task_struct(s_info->task);
-> +		kfree(s_info);
-> +		return;
-> +	}
-> +}
-> +
-> +int do_uintr_register_sender(struct uintr_receiver_info *r_info,
-> +			     struct uintr_sender_info *s_info)
-> +{
-> +	struct uintr_uitt_entry *uitte = NULL;
-> +	struct uintr_sender *ui_send;
-> +	struct task_struct *t = current;
-> +	unsigned long flags;
-> +	int entry;
-> +	int ret;
-> +
-> +	/*
-> +	 * Only a static check. Receiver could exit anytime after this check.
-> +	 * This check only prevents connections using uintr_fd after the
-> +	 * receiver has already exited/unregistered.
-> +	 */
-> +	if (!uintr_is_receiver_active(r_info))
-> +		return -ESHUTDOWN;
-
-How is this safe against a concurrent unregister/exit operation?
-
-Thanks,
-
-        tglx
+>  
+>  			if (inode->i_mode != mode) {
+>  				inode->i_mode = mode;
+>  				mark_inode_dirty(inode);
+>  			}
+> -
+> -			if (!err) {
+> -				/*
+> -				 * ACL can be exactly represented in the
+> -				 * traditional file mode permission bits.
+> -				 */
+> -				acl = NULL;
+> -			}
+>  		}
+>  		name = XATTR_NAME_POSIX_ACL_ACCESS;
+>  		name_len = sizeof(XATTR_NAME_POSIX_ACL_ACCESS) - 1;
+> -- 
+> 2.33.0
+> 
+> 
+> 
