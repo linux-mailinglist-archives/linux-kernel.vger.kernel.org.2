@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1054176AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2735E4176AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345971AbhIXOPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhIXOPk (ORCPT
+        id S1346702AbhIXOQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:16:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52023 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231683AbhIXOP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:15:40 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C19C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:14:07 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so6419150otv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:14:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8K4PrtN7OiONQx5lRLM4t8rDUMaxWp8v0q/xipOZJhQ=;
-        b=Xi0XuivaEIrO+GSXqPZiG2AVUrhMgxq5Xd2mrvhBXmLL1K2Ra8+1Pj5uVCYrWJPl5a
-         J6103kv3+tewtdVyIFABqogT3WJU0zD/45S6WSn5WSyxh+AnN4piAT7OJDzLiPH72RYr
-         bHG6C9MVWldKDhuSag4yWOY7+bYlZA2w+BrBEvAu1FzM0brOsDdPi4oVv7tA+QlhSCam
-         DS2z2oyuqmJwA3KPnuObgokqdzssdMVZnP2S7Y3L2zCjzojwH1TuQZgjYLzwY6opkaJZ
-         4VWbWC2AdvyLPGg/DYo+8hfeOye7cXbZijjh+xHTrYiCqa0qeewghb+hk+fhwJhFhyyO
-         UT4w==
+        Fri, 24 Sep 2021 10:15:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632492865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vURCDQqb490vrVUUKxyIgtPmCzQpFb9HmiIOhgqiCwU=;
+        b=UYmyaoLgsmAzsp/Eb2U649hatWDPnLmfyVI/zMBHA2OMkVYWNbO2VJDxcr4J7zytk6z6o4
+        Sd4GfhtPQYBToBGNvZ+ojw+LNCwvfBUdkA2wtlCN8UWEHY1FNlBRNEj3rgUTHIOdzsSTL5
+        l/DGXS5JYO82VAYEh3Y9sVJFRgDdS4c=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-0yeAb8DMMuW31PVzB0l4Ng-1; Fri, 24 Sep 2021 10:14:24 -0400
+X-MC-Unique: 0yeAb8DMMuW31PVzB0l4Ng-1
+Received: by mail-qt1-f199.google.com with SMTP id 62-20020aed2044000000b002a6aa209efaso28603204qta.18
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:14:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8K4PrtN7OiONQx5lRLM4t8rDUMaxWp8v0q/xipOZJhQ=;
-        b=ag308PsfH5/QUaOoPB1j8MwTw1qb1kf6fDdCnmlNNxyGHRkS+5pbLgngpCj3pt5/pb
-         sPZJ/rcsE0VBsnNwiG1FnUJ7stANJhI0mgOWxCObKgwap6G6Wu/khE1pDLP9hN7YsyHR
-         6o789JQEhY9gQjmuCmjm6UwXGyWkGqgwmGProTpYuhlxgaco7QgeT0hSqd5S+k4N/x2m
-         kHVkrulwovhZHfo4ChXAWsRvm2Qk4WOLOpjaj1IQdHZpIqd1ILJnoic98kW4XxsJaS9o
-         8prwZU5eYDrz1wLisfqpsWzpJ+CbyKyZlGBUTlAEiu4FXZyPeR8dkU2xuvYBQerZshUN
-         25zg==
-X-Gm-Message-State: AOAM530qFlX24TAQr6X63qMSLjQ4rQoqyQmRBe0oA4SUuSn2TdEmc03m
-        F1UfxC+Q5kllPmYMLhUCYJSsXjIWpqF14HefMjvsSQ==
-X-Google-Smtp-Source: ABdhPJwbJUHVLc9n11N5tQ+Sx1J70AO6/auS7KX7WvVSqARGdj7zxIcuHgPjpLy7waUrdkpGiU1JBpADebK25fFigLo=
-X-Received: by 2002:a05:6830:791:: with SMTP id w17mr4311950ots.108.1632492846701;
- Fri, 24 Sep 2021 07:14:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vURCDQqb490vrVUUKxyIgtPmCzQpFb9HmiIOhgqiCwU=;
+        b=MO2UkrWuqs6MrmDVAipyGdzjjpBYDy9/igu4OJVwFcr08xC/vC6diaSsU/tvrP9fiU
+         To9LvOyJiZCHei2xaGD+lGrFyoAUdlsQJrM+aOnkI18AnbhhGrMG4KHGIXwUIHaGoRWP
+         GepnxG4nAsH7nzi89Vx1DnR4OIeHit0FezOjUv+5iR2PrKI5do2bMNIqL1MecDSE6Mff
+         ABcc1kAedv4MBhRKiLuINPnR6ded8M+wsloYrvux6kAgwIKgULze25P5+RMmMPiBhivK
+         XPx6ahOqmBNkTBskFuRbrGbqZEtoNmBXE+pZ9gGYSagq85ecr2nWD6OrOfbrPieOKm+A
+         HxLg==
+X-Gm-Message-State: AOAM530IxvjeunPRnISsHvFj31KXhf2uwU6Duhw2f2RY/KJRnUP/aPwV
+        QqDMCscdvkye6GsZf0coQmQw8mk30rLsVAj7Vxgrs5+xmAEPluul2OEPYkf6eKoO84r4ftTjIF4
+        p1K5iSXwLDypD8L3WLL2avK2J
+X-Received: by 2002:a37:6658:: with SMTP id a85mr10875028qkc.34.1632492863541;
+        Fri, 24 Sep 2021 07:14:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/FAo093naG96wtcJ0fkUoyMpB/ZaTO5SeisakJVzb4CYFdg7k3z6NELRzuk4IUhVd9yK71g==
+X-Received: by 2002:a37:6658:: with SMTP id a85mr10874997qkc.34.1632492863209;
+        Fri, 24 Sep 2021 07:14:23 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id v8sm5214030qtk.49.2021.09.24.07.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 07:14:22 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 10:14:21 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
+Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with
+ thp enabled
+Message-ID: <YU3dPTsNWVhEo/5y@t490s>
+References: <20210923232512.210092-1-peterx@redhat.com>
+ <20210923191941.da28da4400c11a3241a07acf@linux-foundation.org>
 MIME-Version: 1.0
-References: <CGME20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a@epcas5p3.samsung.com>
- <1632485642-20625-1-git-send-email-manjeet.p@samsung.com>
-In-Reply-To: <1632485642-20625-1-git-send-email-manjeet.p@samsung.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 24 Sep 2021 16:13:55 +0200
-Message-ID: <CANpmjNMcgUsdvXrvQHn+-y1w-z-6QAS+WJ27RB2DCnVxORRcuw@mail.gmail.com>
-Subject: Re: [PATCH] mm/kfence: Null check is added for return value of addr_to_metadata
-To:     Manjeet Pawar <manjeet.p@samsung.com>
-Cc:     glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, r.thapliyal@samsung.com,
-        a.sahrawat@samsung.com, v.narang@samsung.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210923191941.da28da4400c11a3241a07acf@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sept 2021 at 15:55, Manjeet Pawar <manjeet.p@samsung.com> wrote:
-> This patch add null check for return value of addr_to_metadata().
-> currently 'meta' is geting accessed without any NULL check but it is
-> usually checked for this function.
->
-> Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+On Thu, Sep 23, 2021 at 07:19:41PM -0700, Andrew Morton wrote:
+> On Thu, 23 Sep 2021 19:25:12 -0400 Peter Xu <peterx@redhat.com> wrote:
+> 
+> > In RHEL's gating selftests we've encountered memory corruption in the uffd
+> > event test even with upstream kernel:
+> > 
+> > ...
+> >
+> > 
+> > We can mark the Fixes tag upon 0db282ba2c12 as it's reported to only happen
+> > there, however the real "Fixes" IMHO should be 8ba6e8640844, as before that
+> > commit we'll always do explicit release_pages() before registration of uffd,
+> > and 8ba6e8640844 changed that logic by adding extra unmap/map and we didn't
+> > release the pages at the right place.  Meanwhile I don't have a solid glue
+> > anyway on whether posix_memalign() could always avoid triggering this bug,
+> > hence it's safer to attach this fix to commit 8ba6e8640844.
+> > 
+> 
+> Thanks.  I added a cc:stable to this.  I don't think we want selftests
+> in older kernels to be falsely reporting kernel bugs?
 
-Your commit message does not make sense -- what bug did you encounter?
+Not sure how we normally handle such case for selftests, but I agree.
 
-"usually checked for this function" is not a reason to add the check.
-Adding a check like this could also hide genuine bugs, as meta should
-never be NULL in __kfence_free(). If it is, we'd like to see a crash.
-
-Did you read kfence_free() in include/linux/kfence.h? It already
-prevents __kfence_free() being called with a non-KFENCE address.
-
-Without a more thorough explanation, Nack.
+Btw, 8ba6e8640844 is merged in 5.14, so the only stable branch that will need
+it will be 5.14.y; it can be applied cleanly there.
 
 Thanks,
--- Marco
+
+-- 
+Peter Xu
+
