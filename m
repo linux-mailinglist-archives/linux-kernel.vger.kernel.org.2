@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6D441796F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6246417937
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347659AbhIXRJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 13:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46892 "EHLO
+        id S245661AbhIXRHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 13:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344944AbhIXRIx (ORCPT
+        with ESMTP id S244626AbhIXRHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 13:08:53 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D1AC061766;
-        Fri, 24 Sep 2021 10:07:14 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id t4so6972191plo.0;
-        Fri, 24 Sep 2021 10:07:14 -0700 (PDT)
+        Fri, 24 Sep 2021 13:07:31 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB87C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:05:57 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id u18so29522951wrg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cvv2iZxij6FWrFEEKivGkcFAPGtCwuGKeJ0S/lB+6EU=;
-        b=eY7PxDSo+innYXsmEeVZ1M879ZBBKPDcxIA7HrdKVgBTq/ryR5ec6Eb5ByJ6CMVWWk
-         axLyq1G9Odppw6jMwFnpuEoFasQvoiqyRE+e+9Z1/+BfQmtxBE0QZexGN8Bd3BaH8Td5
-         xZbkMArEFUMAnSSvGKvX3hflhkeZehH4uGzMuvezVzYfKfS6BM2FztS+lIkqEDDvp4ZR
-         5ewIfXGDIePcS3AWOz8qlh4nQ974X+tOtX61dCl0HfMtpCIVLDWBYVxUU+v2zPTaw+K8
-         WfC+TXBzDriWg0+ZuKmzTSoPEkimqphNoGsUjAJzkl9wWQVXJ8xN1GwVNCMcehMSWb2j
-         ah/w==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=PY4KsopAnhFuuxcCGlkV29I1qc5kit5PQGjKdrKsIBI=;
+        b=PZXQUf5V1LcDI72rtn5I4icEufwVsEW7f3qY0d6NJEyiuv0En6/eUQFnfi7kJapB47
+         uVYnaynBcHNYSa99wRNhcKVn1vZzZFo7bKgGc9IBywCBznCF63y2W3f9RGjUgukI3H6G
+         YGPnVXQrYUWob+uNPzfDwrPXbubpGM7bdzl8yOuFDjIVIKn1S6A3GQV7LfmkcNPFHLit
+         HlYLvOJszVVYXOFxxauLesUxAdq55Vd1AJuhix8LFa2P4rKD0g3vQS/J3uKzH6ab/Kif
+         2Xpc/9U0/iimSrPTNMpXF6kM0hAFwQJKZD76QhfNbrFJioIA9iSd2MjcmhtJ0guoFACX
+         8x8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cvv2iZxij6FWrFEEKivGkcFAPGtCwuGKeJ0S/lB+6EU=;
-        b=bGQOKK890ZSQygRnBQrQeH3brIaD53FSrg3WcEUyLXhvMnHipLGfi5XnTUKs31dlk6
-         gGK/f8m+A29+p4dp7k+kRDYq6OUUO0wR3vvYokOa/2LyCLXQx5pfngJ6pm+9DUqRLxkK
-         yAJ0FmGCjXmHHXtMllvC+6Hbj24EvHCV/OuIEGbUJv5NCs5HpgXGxQqDUdj3vLf6whuF
-         x57UhivkKiTiPtKb6itMPPm85iRCfRZ6UZ1bmMrX557gTgQf5PiFm5dlxcsJB4Y2AddU
-         3OdGeHH63HZ966DMZq0Iwy1o0TTfU6XZNQ68jHt/enupFo/ddKCkhJ+OnzNbD17sdGw9
-         DG2A==
-X-Gm-Message-State: AOAM5328fwCkRPsYrtp9ZF7jEbC84pY7XZF0cTd+wdFboq/g4/ZuT3qn
-        J1QAfzWY2CDi7I19pz6TYUGXUz2/1BE=
-X-Google-Smtp-Source: ABdhPJzL+MvDPKqHl5Hx+/hujrgjmq9BtR78Dg+QhCGNwAs4BmCA7Wq9ztKm/O2zR7jvrKDo/0lfAw==
-X-Received: by 2002:a17:90b:1c0f:: with SMTP id oc15mr3519053pjb.1.1632503233477;
-        Fri, 24 Sep 2021 10:07:13 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k22sm9659312pfi.149.2021.09.24.10.07.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 10:07:13 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
-        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        linux-sh@vger.kernel.org (open list:SUPERH),
-        linux-mips@vger.kernel.org (open list:BROADCOM BMIPS MIPS ARCHITECTURE),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE)
-Subject: [PATCH 11/11] ARM: bcm: Removed forced select of interrupt controllers
-Date:   Fri, 24 Sep 2021 10:05:46 -0700
-Message-Id: <20210924170546.805663-12-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210924170546.805663-1-f.fainelli@gmail.com>
-References: <20210924170546.805663-1-f.fainelli@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=PY4KsopAnhFuuxcCGlkV29I1qc5kit5PQGjKdrKsIBI=;
+        b=CU089cnnmX7cuvptnxDeBRATKmI3wWSSwhuOSdNpomiVMCcD7OzyWkE6/L2x8AKpuR
+         OyLYaNrF5yp6U2Snhn61QOuO7jfqP/MBt1LRnDXEL/cf8zxud0EHEFA9WxHiRrylXGJN
+         tYqxMCrzyjdmky1YUWOEKS6zom5yjfkA0D6AVy5+kIHMaOh0eF1U0/IEm158azsi7oUa
+         3ncmZ+sPlSDANXF6Pn1flU+cmbmXEd95/O6DH8xXVLLV4gbkweCYygSFm8Mtawm+KHXy
+         cwlZliq4gh50BeiYZgm/ruajE4ljJg2OSA0i9Ug4Taj50uEtO1aVNIYoe6P8AHQuUnbf
+         BrSw==
+X-Gm-Message-State: AOAM532n9RwtG6fZCyV93ErGdMuGK4mvY6ox3dMg26A85zdYsn5Ue3jE
+        tMOpa54zwnRtj/JUN+yaSSfNYZGwhq/Mfg==
+X-Google-Smtp-Source: ABdhPJzg2xGoR/EOMzF98e/e3XNtLAJyiGcJrpcpxL1Itovxb7ER/nfMoDcS9i4dXQcnAjdKw6zfnw==
+X-Received: by 2002:a05:600c:206:: with SMTP id 6mr3318450wmi.114.1632503156361;
+        Fri, 24 Sep 2021 10:05:56 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::cde? ([2a02:8108:96c0:3b88::cde])
+        by smtp.gmail.com with ESMTPSA id r27sm7767173wrr.70.2021.09.24.10.05.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 10:05:55 -0700 (PDT)
+Message-ID: <29184a95-c676-79d6-bb9a-88d37d44a80c@gmail.com>
+Date:   Fri, 24 Sep 2021 19:05:55 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] Remove blank lines and whitespaces
+Content-Language: en-US
+To:     Michael Estner <michaelestner@web.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210924144750.6020-1-michaelestner@web.de>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20210924144750.6020-1-michaelestner@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the various second level interrupt controllers have been moved
-to IRQCHIP_PLATFORM_DRIVER and they do default to ARCH_BRCMSTB and
-ARCH_BCM2835 where relevant, remove their forced selection from the
-machine entry to allow an user to build them as modules.
+On 9/24/21 16:47, Michael Estner wrote:
+> Removed blank lines and whitespaces to clean up code.
+> 
+> Signed-off-by: Michael Estner <michaelestner@web.de>
+> ---
+>   drivers/staging/r8188eu/core/rtw_io.c | 65 ++++++++++-----------------
+>   1 file changed, 24 insertions(+), 41 deletions(-)
+> 
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm/mach-bcm/Kconfig | 4 ----
- 1 file changed, 4 deletions(-)
+Hi Michael,
 
-diff --git a/arch/arm/mach-bcm/Kconfig b/arch/arm/mach-bcm/Kconfig
-index 2890e61b2b46..bd3f82788ebc 100644
---- a/arch/arm/mach-bcm/Kconfig
-+++ b/arch/arm/mach-bcm/Kconfig
-@@ -161,7 +161,6 @@ config ARCH_BCM2835
- 	select ARM_TIMER_SP804
- 	select HAVE_ARM_ARCH_TIMER if ARCH_MULTI_V7
- 	select BCM2835_TIMER
--	select BRCMSTB_L2_IRQ
- 	select PINCTRL
- 	select PINCTRL_BCM2835
- 	select MFD_CORE
-@@ -209,9 +208,6 @@ config ARCH_BRCMSTB
- 	select ARM_GIC
- 	select ARM_ERRATA_798181 if SMP
- 	select HAVE_ARM_ARCH_TIMER
--	select BCM7038_L1_IRQ
--	select BRCMSTB_L2_IRQ
--	select BCM7120_L2_IRQ
- 	select ZONE_DMA if ARM_LPAE
- 	select SOC_BRCMSTB
- 	select SOC_BUS
--- 
-2.25.1
+the file rtw_io.c was removed entirely with commit
+06c38fef11bc ("staging: r8188eu: remove core/rtw_io.c").
 
+You should work against the latest staging-next tree.
+
+Best regards,
+Michael
