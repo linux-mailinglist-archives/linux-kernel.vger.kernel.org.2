@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8BD41722E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130DE4172E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343858AbhIXMqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:46:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41406 "EHLO mail.kernel.org"
+        id S1344207AbhIXMwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:52:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343600AbhIXMqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:46:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 928236124C;
-        Fri, 24 Sep 2021 12:44:29 +0000 (UTC)
+        id S1344085AbhIXMu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:50:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 851AB61353;
+        Fri, 24 Sep 2021 12:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487470;
-        bh=xXnzvx7OFzD6jG4NKJatbdRpBTvNsLVByywVPSjGvFI=;
+        s=korg; t=1632487716;
+        bh=N5MwUvgWxQdrJCN28OEATBP4uZ5gUFM9nNCmBfCt9Qg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=myAH8giosTNS0AlLC6NyUj127JhqRE6jS73nK5MrpGoGFQHGw73Nbkw88ZW7ChQvY
-         j+nxNKeD1GzbQRKyi4EBYUIn2K8kLYqt1zhbXSU4IenFpw8zfBYC6JZWs6rWsA5/aW
-         +7gO2OCoZuU+M9tJCkob3LGG7LPKlhirDwpQfHqk=
+        b=g4MMJZzJa8K7kvZzPzd4mrs+mH0ASvA/qlFn9pTz1JBA5NBHSnygj5FFc3D6s4+WK
+         tmf7Kwk0BsaBNRuU75ocXzY4f3PAsK5tQBMdu0Ke903HmhMbqIbaST6zkYRA0dUZql
+         lcQUCTSMRm10l1LVdvv9J1eHtZvIul6BVegsj9D4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Nanyong Sun <sunnanyong@huawei.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 15/23] nilfs2: fix memory leak in nilfs_sysfs_create_device_group
+        stable@vger.kernel.org,
+        =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: [PATCH 4.19 02/34] KVM: remember position in kvm->vcpus array
 Date:   Fri, 24 Sep 2021 14:43:56 +0200
-Message-Id: <20210924124328.311971742@linuxfoundation.org>
+Message-Id: <20210924124330.046505137@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
-References: <20210924124327.816210800@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,97 +42,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nanyong Sun <sunnanyong@huawei.com>
+From: Radim Krčmář <rkrcmar@redhat.com>
 
-[ Upstream commit 5f5dec07aca7067216ed4c1342e464e7307a9197 ]
+commit 8750e72a79dda2f665ce17b62049f4d62130d991 upstream.
 
-Patch series "nilfs2: fix incorrect usage of kobject".
+Fetching an index for any vcpu in kvm->vcpus array by traversing
+the entire array everytime is costly.
+This patch remembers the position of each vcpu in kvm->vcpus array
+by storing it in vcpus_idx under kvm_vcpu structure.
 
-This patchset from Nanyong Sun fixes memory leak issues and a NULL
-pointer dereference issue caused by incorrect usage of kboject in nilfs2
-sysfs implementation.
-
-This patch (of 6):
-
-Reported by syzkaller:
-
-  BUG: memory leak
-  unreferenced object 0xffff888100ca8988 (size 8):
-  comm "syz-executor.1", pid 1930, jiffies 4294745569 (age 18.052s)
-  hex dump (first 8 bytes):
-  6c 6f 6f 70 31 00 ff ff loop1...
-  backtrace:
-    kstrdup+0x36/0x70 mm/util.c:60
-    kstrdup_const+0x35/0x60 mm/util.c:83
-    kvasprintf_const+0xf1/0x180 lib/kasprintf.c:48
-    kobject_set_name_vargs+0x56/0x150 lib/kobject.c:289
-    kobject_add_varg lib/kobject.c:384 [inline]
-    kobject_init_and_add+0xc9/0x150 lib/kobject.c:473
-    nilfs_sysfs_create_device_group+0x150/0x7d0 fs/nilfs2/sysfs.c:986
-    init_nilfs+0xa21/0xea0 fs/nilfs2/the_nilfs.c:637
-    nilfs_fill_super fs/nilfs2/super.c:1046 [inline]
-    nilfs_mount+0x7b4/0xe80 fs/nilfs2/super.c:1316
-    legacy_get_tree+0x105/0x210 fs/fs_context.c:592
-    vfs_get_tree+0x8e/0x2d0 fs/super.c:1498
-    do_new_mount fs/namespace.c:2905 [inline]
-    path_mount+0xf9b/0x1990 fs/namespace.c:3235
-    do_mount+0xea/0x100 fs/namespace.c:3248
-    __do_sys_mount fs/namespace.c:3456 [inline]
-    __se_sys_mount fs/namespace.c:3433 [inline]
-    __x64_sys_mount+0x14b/0x1f0 fs/namespace.c:3433
-    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    do_syscall_64+0x3b/0x90 arch/x86/entry/common.c:80
-    entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-If kobject_init_and_add return with error, then the cleanup of kobject
-is needed because memory may be allocated in kobject_init_and_add
-without freeing.
-
-And the place of cleanup_dev_kobject should use kobject_put to free the
-memory associated with the kobject.  As the section "Kobject removal" of
-"Documentation/core-api/kobject.rst" says, kobject_del() just makes the
-kobject "invisible", but it is not cleaned up.  And no more cleanup will
-do after cleanup_dev_kobject, so kobject_put is needed here.
-
-Link: https://lkml.kernel.org/r/1625651306-10829-1-git-send-email-konishi.ryusuke@gmail.com
-Link: https://lkml.kernel.org/r/1625651306-10829-2-git-send-email-konishi.ryusuke@gmail.com
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Link: https://lkml.kernel.org/r/20210629022556.3985106-2-sunnanyong@huawei.com
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Radim Krčmář <rkrcmar@redhat.com>
+Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[borntraeger@de.ibm.com]: backport to 4.19 (also fits for 5.4)
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nilfs2/sysfs.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/linux/kvm_host.h |   11 +++--------
+ virt/kvm/kvm_main.c      |    5 +++--
+ 2 files changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index c3b629eec294..69a8f302170e 100644
---- a/fs/nilfs2/sysfs.c
-+++ b/fs/nilfs2/sysfs.c
-@@ -1008,7 +1008,7 @@ int nilfs_sysfs_create_device_group(struct super_block *sb)
- 	err = kobject_init_and_add(&nilfs->ns_dev_kobj, &nilfs_dev_ktype, NULL,
- 				    "%s", sb->s_id);
- 	if (err)
--		goto free_dev_subgroups;
-+		goto cleanup_dev_kobject;
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -248,7 +248,8 @@ struct kvm_vcpu {
+ 	struct preempt_notifier preempt_notifier;
+ #endif
+ 	int cpu;
+-	int vcpu_id;
++	int vcpu_id; /* id given by userspace at creation */
++	int vcpu_idx; /* index in kvm->vcpus array */
+ 	int srcu_idx;
+ 	int mode;
+ 	u64 requests;
+@@ -551,13 +552,7 @@ static inline struct kvm_vcpu *kvm_get_v
  
- 	err = nilfs_sysfs_create_mounted_snapshots_group(nilfs);
- 	if (err)
-@@ -1045,9 +1045,7 @@ delete_mounted_snapshots_group:
- 	nilfs_sysfs_delete_mounted_snapshots_group(nilfs);
- 
- cleanup_dev_kobject:
--	kobject_del(&nilfs->ns_dev_kobj);
+ static inline int kvm_vcpu_get_idx(struct kvm_vcpu *vcpu)
+ {
+-	struct kvm_vcpu *tmp;
+-	int idx;
 -
--free_dev_subgroups:
-+	kobject_put(&nilfs->ns_dev_kobj);
- 	kfree(nilfs->ns_dev_subgroups);
+-	kvm_for_each_vcpu(idx, tmp, vcpu->kvm)
+-		if (tmp == vcpu)
+-			return idx;
+-	BUG();
++	return vcpu->vcpu_idx;
+ }
  
- failed_create_device_group:
--- 
-2.33.0
-
+ #define kvm_for_each_memslot(memslot, slots)	\
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -2751,7 +2751,8 @@ static int kvm_vm_ioctl_create_vcpu(stru
+ 		goto unlock_vcpu_destroy;
+ 	}
+ 
+-	BUG_ON(kvm->vcpus[atomic_read(&kvm->online_vcpus)]);
++	vcpu->vcpu_idx = atomic_read(&kvm->online_vcpus);
++	BUG_ON(kvm->vcpus[vcpu->vcpu_idx]);
+ 
+ 	/* Now it's all set up, let userspace reach it */
+ 	kvm_get_kvm(kvm);
+@@ -2761,7 +2762,7 @@ static int kvm_vm_ioctl_create_vcpu(stru
+ 		goto unlock_vcpu_destroy;
+ 	}
+ 
+-	kvm->vcpus[atomic_read(&kvm->online_vcpus)] = vcpu;
++	kvm->vcpus[vcpu->vcpu_idx] = vcpu;
+ 
+ 	/*
+ 	 * Pairs with smp_rmb() in kvm_get_vcpu.  Write kvm->vcpus
 
 
