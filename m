@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E24041773F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813DF417742
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346981AbhIXPJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 11:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346962AbhIXPJ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:09:56 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE89C061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:08:22 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id t28so15056971wra.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ddIdnJJQzt6KCE2sdls+EVKfN4Fpq3cgwiHva/iq2vo=;
-        b=R07NzMnHXoImrOjylse2riaepm/fUDAG6H+3urNsYdy7DtyR6DQLKlKLEryebJ9hTw
-         BnGIM1bREVyCNihA2LIgeARwZg0qYezxMAdT5cz6pvSPIP6mDnqhAOTTccrTbvEhx2IP
-         ThaFyWXNsXx95VbGwDuF0xHXDAk8KXTCKBJoNs8tMp7BJp4g009Pc6sGt1JTtKM+Q9JQ
-         2dMNua+oLsL4AwBizsawN7FfHmhVBlLAyAD9lV1rEbMXnqbOONm3q8EGzo9j8KZHLHxh
-         pvzEKziLd/NvU5V2phm4PyE+FozUQH38irfN7asU0uaxV8i5RGA/FxeWS7YQnBuMAwQM
-         YXiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ddIdnJJQzt6KCE2sdls+EVKfN4Fpq3cgwiHva/iq2vo=;
-        b=hS6l/XiYXzyfRkSq4oDUWIb7LeUHnUCkPscktUvvzIxvY2f5ufEhNpTMu98fxv7xa/
-         +mOvtY7MjyLelVb/1Ghuti4bxdzhYKTbim5xHKDoTnr3Ay+Cpq1Hu2rh9m+f4NTa8UCy
-         LCgw2mP7BzCeTYqUsITVu5v+grbGg0119iVRjwaQtfuyfFBF9CpW+zUNgv/vteahZ+7J
-         TrMLGQ2YXQhWHmX+fZ8Lo4vaGcmxgDexBcQjhiUYLycNvvcCYaZrENQtiSTARTA52eKt
-         cT6EfSpqsbBZF23LjY4WrBAZtQDhe/6qNMC+oM9i2QS9kiFqzBAijHYtumfyIfpK5tHv
-         1wfw==
-X-Gm-Message-State: AOAM533xSH0TY0urt8QpNuxy++cABsiXqaOySahOw6wmdWsGvSYXv93s
-        /mr09jqr3/UfbQGxuhr/O+5Mb1wNpK0c7npQ327ghA==
-X-Google-Smtp-Source: ABdhPJyr4VODmsi8x1Q4P6qhekNJlvK9Ik/fVMP470V1zoNi6TDT90zRMm+XDKBECfyZ8uByjbOF1JkmHjTvUKWhKtQ=
-X-Received: by 2002:adf:fe08:: with SMTP id n8mr12114792wrr.246.1632496101043;
- Fri, 24 Sep 2021 08:08:21 -0700 (PDT)
+        id S1346987AbhIXPKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 11:10:55 -0400
+Received: from muru.com ([72.249.23.125]:36928 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346962AbhIXPKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 11:10:54 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 967E880EE;
+        Fri, 24 Sep 2021 15:09:48 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 18:09:18 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] serial: core: Add new prep_tx for power management
+Message-ID: <YU3qHiMNHVz/JX/y@atomide.com>
+References: <20210921103346.64824-1-tony@atomide.com>
+ <20210921103346.64824-4-tony@atomide.com>
+ <YUx3AkT4Du/PT+V5@hovoldconsulting.com>
+ <YUyXA5UStMHGQDZZ@atomide.com>
+ <YU3isENYUb+aE4qi@hovoldconsulting.com>
 MIME-Version: 1.0
-References: <20210924115817.58689-1-likexu@tencent.com>
-In-Reply-To: <20210924115817.58689-1-likexu@tencent.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 24 Sep 2021 08:08:07 -0700
-Message-ID: <CAP-5=fW+Wn+_OcQWR8-UHQ42CsG6koZVw-UWBptQY8oYLsW=Vg@mail.gmail.com>
-Subject: Re: [PATCH] perf config: Refine error message to eliminate confusion
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YU3isENYUb+aE4qi@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 4:58 AM Like Xu <like.xu.linux@gmail.com> wrote:
->
-> From: Like Xu <likexu@tencent.com>
->
-> If there is no configuration file at first, the user can
-> write any pair of "key.subkey=value" to the newly created
-> configuration file, while value validation against a valid
-> configurable key is *deferred* until the next execution or
-> the implied execution of "perf config ... ".
->
-> For example:
->
->  $ rm ~/.perfconfig
->  $ perf config call-graph.dump-size=65529
->  $ cat ~/.perfconfig
->  # this file is auto-generated.
->  [call-graph]
->         dump-size = 65529
->  $ perf config call-graph.dump-size=2048
->  callchain: Incorrect stack dump size (max 65528): 65529
->  Error: wrong config key-value pair call-graph.dump-size=65529
->
-> The user might expect that the second value 2048 is valid
-> and can be updated to the configuration file, but the error
-> message is very confusing because the first value 65529 is
-> not reported as an error during the last configuration.
->
-> It is recommended not to change the current behavior of
-> delayed validation (as more effort is needed), but to refine
-> the original error message to *clearly indicate* that the
-> cause of the error is the configuration file.
->
-> Signed-off-by: Like Xu <likexu@tencent.com>
+* Johan Hovold <johan@kernel.org> [210924 14:38]:
+> On Thu, Sep 23, 2021 at 06:02:27PM +0300, Tony Lindgren wrote:
+> > * Johan Hovold <johan@kernel.org> [210923 12:46]:
+> > > On Tue, Sep 21, 2021 at 01:33:43PM +0300, Tony Lindgren wrote:
+> > > > If the serial driver implements PM runtime with autosuspend, the port may
+> > > > be powered off for TX. To wake up the port, let's add new prep_tx() call
+> > > > for serial drivers to implement as needed. We call it from serial
+> > > > write_room() and write() functions. If the serial port is not enabled,
+> > > > we just return 0.
+> > > 
+> > > This isn't right. If there's room in the driver buffer, there's no
+> > > reason to not accept those characters.
+> > 
+> > Maybe. We might get away with returning zero bytes written in write().
+> > But to me it seems better to stop things early when write is known
+> > to not succeed.
+> 
+> But you shouldn't return zero from write() either. If there's room in
+> the write buffer we accept the data.
 
-Acked-by: Ian Rogers <irogers@google.com>
+And then waking up the serial port takes several tens of ms and the
+buffer is full and we still need to deal with it :) But yeah I see
+your point for the write buffer.
 
-Thanks,
-Ian
+> > > It's the drivers responsibility to resume writing when write() is
+> > > called and that me need to be done in a runtime resume callback in case
+> > > the device is suspended.
+> > 
+> > I think we currently need to return zero bytes written from write()
+> > when the serial port is not usable.
+> > 
+> > I don't think we can return a fake number of bytes written from write().
+> 
+> It's not a fake number. It's similar to if you have a port that is
+> stalled due to flow control. We buffer the data and continue writing
+> when the other end is ready to accept more.
 
-> ---
->  tools/perf/util/config.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-> index 4fb5e90d7a57..60ce5908c664 100644
-> --- a/tools/perf/util/config.c
-> +++ b/tools/perf/util/config.c
-> @@ -801,7 +801,7 @@ int perf_config_set(struct perf_config_set *set,
->                                   section->name, item->name);
->                         ret = fn(key, value, data);
->                         if (ret < 0) {
-> -                               pr_err("Error: wrong config key-value pair %s=%s\n",
-> +                               pr_err("Error in the given config file: wrong config key-value pair %s=%s\n",
->                                        key, value);
->                                 /*
->                                  * Can't be just a 'break', as perf_config_set__for_each_entry()
-> --
-> 2.32.0
->
+OK. So based on what you suggested earlier I'll take a look at moving
+the wake-up to __uart_start(), then have the device driver runtime PM
+resume call uart_start() again. Looks like uart_start() is a void
+function anyways.. If you have some better ideas there, please let me
+know.
+
+> > > No need to be patching line disciplines for this.
+> > 
+> > Do you see issues with handling the errors in line disciplines?
+> 
+> It's just conceptually wrong to push retrying up the stack, possible all
+> the way to user space in case of non-blocking opens, just because the
+> device isn't already runtime active.
+
+Yes, I don't see a way around that currently. Maybe if we start making
+use of uart_tx_stopped() or something similar that could be simplified.
+And we'll be still hit these line discipline error handling cases
+anyways depending on how long the serial port wake up takes.
+
+Regards,
+
+Tony
