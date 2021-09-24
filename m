@@ -2,153 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F910416D38
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C143416D35
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244494AbhIXH4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244518AbhIXH4u (ORCPT
+        id S244514AbhIXH4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:56:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58268 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244495AbhIXH4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:56:50 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47533C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:55:17 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id i25so37194159lfg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JGmW9C+VJgClTUsrZKCeV0/J9rVWIZQmzpXvw/rQpIk=;
-        b=Ahrt2ozoHr1F1XaGJc8UFWICEWx8gXzt2P8DnqE+76I7f+qcZ4PJLWcuYI7YYLRuRF
-         295dBHmchEjQ+f5oiSMLwpl0RZfub+JdzvYGDp7mjQ8AaIXLVPfVNgYDTMO7EVOxbxg1
-         dGIlLtwfrbge+SQVQC4xuZMPe1HxIqWieoegc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JGmW9C+VJgClTUsrZKCeV0/J9rVWIZQmzpXvw/rQpIk=;
-        b=lhonrOMKuxjqRlUDSf53Xo2jkNDRShggXzlh2WF5FV0s/PEfXNlfymEWqFd8UwEVyN
-         Ag4EODKR5x11n/O6BCB71jCRj4tX+H9Sh2l/Xa9s46GzJHBi26wcY6iHGp/geV0D740X
-         sl70D0/N1xPl07ujWaxjRvklMUs5zrT83n1ZzVl/2j9zJVTg9XDPbB0KVp1dpNA2gTGH
-         TzY4ky40srrfTkpgMncASu1uiTd+wX8QLgjTb79MwWe217L0z5pBA6vpa3u1RkSwQ7E1
-         elFRkPlQ42f1i3NQNvl1PsbfbZAU0nbXfEuV5e9jwI6qlr301xaNck34wyHCG6/2xc6Y
-         VMdw==
-X-Gm-Message-State: AOAM533XT3VG5hidywiH4qF1BWrOKuiWAlVazOdn9bvWVL7VutZOtx1Z
-        9GsXDOEybqGc76+fjVEMqkJtGQduS3fkw1cCvv/pS4TabYo=
-X-Google-Smtp-Source: ABdhPJzkFv7HLV5oiZBfchGG412aWLIODM5Pu3aEuCwVKvIU5JXdh28L0/JBma6qNUvVyNbpJPJPjk4Mep/rE15SXIc=
-X-Received: by 2002:a05:651c:1505:: with SMTP id e5mr9964384ljf.9.1632470115670;
- Fri, 24 Sep 2021 00:55:15 -0700 (PDT)
+        Fri, 24 Sep 2021 03:56:44 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 41DDE22416;
+        Fri, 24 Sep 2021 07:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632470111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6+5dT0e/LVnNHHcl0ABQyeUOLyC28rt8o7MtGQJ16Wk=;
+        b=KWiNL3UHQbuoAkuBsiy3YSQftN/E2jhVDCGJVJ4SuDi14ga6EYTPLdskYk6XwXRICZFsXG
+        bEWK+3mJ2tb2wipT9UFRw4dJv04b+FFJK7rjY3eOiFx60uVYVav5B3hKKV06bppDfRyf6C
+        q8TEmpzdS0lmOTDDH+ryD1WOMtFlK0k=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay1.suse.de (Postfix) with ESMTPS id C507B25CCD;
+        Fri, 24 Sep 2021 07:55:10 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 09:55:08 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
+Message-ID: <YU2EXP5wrSKv+b/8@dhcp22.suse.cz>
+References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+ <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
+ <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
+ <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
 MIME-Version: 1.0
-References: <1632469543-27345-1-git-send-email-kyrie.wu@mediatek.com>
-In-Reply-To: <1632469543-27345-1-git-send-email-kyrie.wu@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Fri, 24 Sep 2021 15:55:04 +0800
-Message-ID: <CAGXv+5H3MRhSi=x0UA2vsXheDjVR0Cdig0DmEvS5dLLgSBCnvA@mail.gmail.com>
-Subject: Re: [PATCH V4,0/5] Support jpeg encoder for MT8195
-To:     "kyrie.wu" <kyrie.wu@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, xia.jiang@mediatek.com,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Irui Wang <irui.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 3:46 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
->
-> MT8195 has two jpeg encoding HW, each one has its own
-> power-domain, clock, interrupt, register base.
-> The two jpeg encoding HW can work together to
-> achieve higher performance.
->
-> Generally, one HW needs to register one device node,
-> and the APP operates the HW through the device node.
-> If there are multiple HWs, the multiple device node
-> needs to be registered. At this time, the app needs
-> to design software logic to use multiple HWs in parallel,
-> which will undoubtedly increase the difficulty of
-> app development and weaken its compatibility.
->
-> These serial patches use the component framework
-> to achieve the purpose of using multiple HWs
-> through only one device node. About the component
-> framework Block Diagram, please check below:
->
->                 Master(device node)
->         ________|_________________________
->         |                      |             |
-> component0(HW0) component1(HW1) component2(HW2) ......
->
-> As above, the component framework is similar to a
-> master-component two level architecture.
-> Both master and component have the compatible
-> attribute in the device tree, and the corresponding
-> platform driver structure is defined in the driver.
-> Therefore, when the compatible attribute matches,
-> the corresponding probe function will be called.
->
-> In the probe function of component, operations
-> such as initialization clock, remmap register base,
-> registration interrupt will be performed.
-> And add the component to a component linked
-> list to find the corresponding master.
->
-> In the probe function of the master, the device
-> node will be registered, and the master will be
-> added to a master linked list to find the
-> corresponding component.
->
-> After the master matches the component,
-> it will obtain the clock, interrupt, register base
-> and other resources in the component,
-> and operate the HW through these resources.
-> At the same time, multiple HWs software function
-> interfaces are designed in the master driver.
+On Thu 23-09-21 09:49:57, Vasily Averin wrote:
+[...]
+> I'm agree that vmalloc callers should expect and handle single vnalloc failures.
+> I think it is acceptable to enable fatal_signal_pending check to quickly
+> detect such kind of iussues.
+> However fatal_signal_pending check can cause serial vmalloc failures
+> and I doubt it is acceptable. 
+> 
+> Rollback after failed vmalloc can call new vmalloc calls that will be failed too, 
+> even properly handled such serial failures can cause troubles.
 
+Could you be more specific? Also how would this be any different from
+similar failures for an oom victim? Except that the later is less likely
+so (as already mentioend) any potential bugs would be just lurking there
+for a longer time.
 
-Please include a changelog with your cover letter (or in each patch).
-This is the fourth version of the series, and it's unclear what has
-changed between the versions.
+> Hypothetically, cancelled vmalloc called inside some filesystem's transaction
+> forces its rollback, that in own turn it can call own vmalloc.
 
+Do you have any specific example?
 
-ChenYu
+> Any failures on this path can break the filesystem.
+> I doubt it is acceptable, especially for non-OOM fatal signals.
+> On the other hand I cannot say that it is a 100% bug.
+> 
+> Another scenario:
+> as you know failed vmalloc calls pr_warn. According message should be sent
+> to remote terminal or netconsole. I'm not sure about execution context,
+> however if this is done in task context it may call vmalloc either in terminal
+> or in network subsystems. Even handled, such failures are not fatal,
+> but this behaviour is at least unexpected.
 
-> kyrie.wu (5):
->   dt-bindings: mediatek: Add mediatek, mt8195-jpgenc compatible
->   media: mtk-jpegenc: Use component framework to manage each hardware
->   media: mtk-jpegenc: add jpegenc timeout func interface
->   media: mtk-jpegenc: add jpeg encode worker interface
->   media: mtk-jpegenc: add output pic reorder interface
->
->  .../bindings/media/mediatek-jpeg-encoder.yaml      |   3 +
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c    | 395 ++++++++++++++++++---
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h    |  79 +++++
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_enc_hw.c  | 298 ++++++++++++++++
->  4 files changed, 730 insertions(+), 45 deletions(-)
->
-> --
-> 2.6.4
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+I do not think we want to shape the vmalloc bahavior based on
+printk/console behavior.
+
+> Should we perhaps interrupt the first vmalloc only?
+
+This doesn't make much sense to me TBH. It doesn't address the very
+problem you are describing in the changelog.
+-- 
+Michal Hocko
+SUSE Labs
