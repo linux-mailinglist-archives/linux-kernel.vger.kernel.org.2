@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959C7417381
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA2B417296
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344589AbhIXM5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:57:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50730 "EHLO mail.kernel.org"
+        id S1344238AbhIXMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:49:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345076AbhIXMzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:55:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 839B861268;
-        Fri, 24 Sep 2021 12:50:54 +0000 (UTC)
+        id S1344202AbhIXMs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:48:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A501661265;
+        Fri, 24 Sep 2021 12:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487855;
-        bh=3Dsulu7ppbW/0IoQ+ds6k1avbRsBrYijcpyFPSf7VbA=;
+        s=korg; t=1632487614;
+        bh=Tw8L4eNK+wEDD2yEgfOy+r9A0710sZt+eZjAbK7IZ5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jP90OCkze+hyEKQSEal91sovAVoxublSjPy8MVFTaIq1Bd6NfllFbs2iyNr/8RB0G
-         Vob/KXh7w9Of0SpOSH/HruxEF/mq8YlxwD+ehB61HSqGzjqR0x+ON5V+rSufafcY0X
-         A4+YiGqWceM6k7twU2Uwowo3UQZzwHIs7g8PpNzM=
+        b=KqLgtgpVhSbA+QRnyrny707xQCYIvNJOAKOYInnN45PiQGl290/YbYKIKvjTkEK+I
+         muKKjF6JiaSDqqOygWLRiiOt+Tw+wpb4ifEDZjUJ5oUssx4xF73XXR/gTO+hXzrRzu
+         ST7L5WsHGUlb3sLDTX2KH12HrxNIiEWrSgSK6Keo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH 5.4 06/50] KVM: remember position in kvm->vcpus array
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.14 01/27] s390/bpf: Fix optimizing out zero-extensions
 Date:   Fri, 24 Sep 2021 14:43:55 +0200
-Message-Id: <20210924124332.450747933@linuxfoundation.org>
+Message-Id: <20210924124329.226243340@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,74 +44,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Radim Krčmář <rkrcmar@redhat.com>
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-commit 8750e72a79dda2f665ce17b62049f4d62130d991 upstream.
+commit db7bee653859ef7179be933e7d1384644f795f26 upstream.
 
-Fetching an index for any vcpu in kvm->vcpus array by traversing
-the entire array everytime is costly.
-This patch remembers the position of each vcpu in kvm->vcpus array
-by storing it in vcpus_idx under kvm_vcpu structure.
+Currently the JIT completely removes things like `reg32 += 0`,
+however, the BPF_ALU semantics requires the target register to be
+zero-extended in such cases.
 
-Signed-off-by: Radim Krčmář <rkrcmar@redhat.com>
-Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[borntraeger@de.ibm.com]: backport to 4.19 (also fits for 5.4)
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Fix by optimizing out only the arithmetic operation, but not the
+subsequent zero-extension.
+
+Reported-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/kvm_host.h |   11 +++--------
- virt/kvm/kvm_main.c      |    5 +++--
- 2 files changed, 6 insertions(+), 10 deletions(-)
 
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -266,7 +266,8 @@ struct kvm_vcpu {
- 	struct preempt_notifier preempt_notifier;
- #endif
- 	int cpu;
--	int vcpu_id;
-+	int vcpu_id; /* id given by userspace at creation */
-+	int vcpu_idx; /* index in kvm->vcpus array */
- 	int srcu_idx;
- 	int mode;
- 	u64 requests;
-@@ -571,13 +572,7 @@ static inline struct kvm_vcpu *kvm_get_v
- 
- static inline int kvm_vcpu_get_idx(struct kvm_vcpu *vcpu)
- {
--	struct kvm_vcpu *tmp;
--	int idx;
--
--	kvm_for_each_vcpu(idx, tmp, vcpu->kvm)
--		if (tmp == vcpu)
--			return idx;
--	BUG();
-+	return vcpu->vcpu_idx;
- }
- 
- #define kvm_for_each_memslot(memslot, slots)	\
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2864,7 +2864,8 @@ static int kvm_vm_ioctl_create_vcpu(stru
- 		goto unlock_vcpu_destroy;
- 	}
- 
--	BUG_ON(kvm->vcpus[atomic_read(&kvm->online_vcpus)]);
-+	vcpu->vcpu_idx = atomic_read(&kvm->online_vcpus);
-+	BUG_ON(kvm->vcpus[vcpu->vcpu_idx]);
- 
- 	/* Now it's all set up, let userspace reach it */
- 	kvm_get_kvm(kvm);
-@@ -2874,7 +2875,7 @@ static int kvm_vm_ioctl_create_vcpu(stru
- 		goto unlock_vcpu_destroy;
- 	}
- 
--	kvm->vcpus[atomic_read(&kvm->online_vcpus)] = vcpu;
-+	kvm->vcpus[vcpu->vcpu_idx] = vcpu;
- 
- 	/*
- 	 * Pairs with smp_rmb() in kvm_get_vcpu.  Write kvm->vcpus
+---
+ arch/s390/net/bpf_jit_comp.c |   50 ++++++++++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 24 deletions(-)
+
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -592,10 +592,10 @@ static noinline int bpf_jit_insn(struct
+ 		EMIT4(0xb9080000, dst_reg, src_reg);
+ 		break;
+ 	case BPF_ALU | BPF_ADD | BPF_K: /* dst = (u32) dst + (u32) imm */
+-		if (!imm)
+-			break;
+-		/* alfi %dst,imm */
+-		EMIT6_IMM(0xc20b0000, dst_reg, imm);
++		if (imm != 0) {
++			/* alfi %dst,imm */
++			EMIT6_IMM(0xc20b0000, dst_reg, imm);
++		}
+ 		EMIT_ZERO(dst_reg);
+ 		break;
+ 	case BPF_ALU64 | BPF_ADD | BPF_K: /* dst = dst + imm */
+@@ -617,10 +617,10 @@ static noinline int bpf_jit_insn(struct
+ 		EMIT4(0xb9090000, dst_reg, src_reg);
+ 		break;
+ 	case BPF_ALU | BPF_SUB | BPF_K: /* dst = (u32) dst - (u32) imm */
+-		if (!imm)
+-			break;
+-		/* alfi %dst,-imm */
+-		EMIT6_IMM(0xc20b0000, dst_reg, -imm);
++		if (imm != 0) {
++			/* alfi %dst,-imm */
++			EMIT6_IMM(0xc20b0000, dst_reg, -imm);
++		}
+ 		EMIT_ZERO(dst_reg);
+ 		break;
+ 	case BPF_ALU64 | BPF_SUB | BPF_K: /* dst = dst - imm */
+@@ -647,10 +647,10 @@ static noinline int bpf_jit_insn(struct
+ 		EMIT4(0xb90c0000, dst_reg, src_reg);
+ 		break;
+ 	case BPF_ALU | BPF_MUL | BPF_K: /* dst = (u32) dst * (u32) imm */
+-		if (imm == 1)
+-			break;
+-		/* msfi %r5,imm */
+-		EMIT6_IMM(0xc2010000, dst_reg, imm);
++		if (imm != 1) {
++			/* msfi %r5,imm */
++			EMIT6_IMM(0xc2010000, dst_reg, imm);
++		}
+ 		EMIT_ZERO(dst_reg);
+ 		break;
+ 	case BPF_ALU64 | BPF_MUL | BPF_K: /* dst = dst * imm */
+@@ -711,6 +711,8 @@ static noinline int bpf_jit_insn(struct
+ 			if (BPF_OP(insn->code) == BPF_MOD)
+ 				/* lhgi %dst,0 */
+ 				EMIT4_IMM(0xa7090000, dst_reg, 0);
++			else
++				EMIT_ZERO(dst_reg);
+ 			break;
+ 		}
+ 		/* lhi %w0,0 */
+@@ -803,10 +805,10 @@ static noinline int bpf_jit_insn(struct
+ 		EMIT4(0xb9820000, dst_reg, src_reg);
+ 		break;
+ 	case BPF_ALU | BPF_XOR | BPF_K: /* dst = (u32) dst ^ (u32) imm */
+-		if (!imm)
+-			break;
+-		/* xilf %dst,imm */
+-		EMIT6_IMM(0xc0070000, dst_reg, imm);
++		if (imm != 0) {
++			/* xilf %dst,imm */
++			EMIT6_IMM(0xc0070000, dst_reg, imm);
++		}
+ 		EMIT_ZERO(dst_reg);
+ 		break;
+ 	case BPF_ALU64 | BPF_XOR | BPF_K: /* dst = dst ^ imm */
+@@ -827,10 +829,10 @@ static noinline int bpf_jit_insn(struct
+ 		EMIT6_DISP_LH(0xeb000000, 0x000d, dst_reg, dst_reg, src_reg, 0);
+ 		break;
+ 	case BPF_ALU | BPF_LSH | BPF_K: /* dst = (u32) dst << (u32) imm */
+-		if (imm == 0)
+-			break;
+-		/* sll %dst,imm(%r0) */
+-		EMIT4_DISP(0x89000000, dst_reg, REG_0, imm);
++		if (imm != 0) {
++			/* sll %dst,imm(%r0) */
++			EMIT4_DISP(0x89000000, dst_reg, REG_0, imm);
++		}
+ 		EMIT_ZERO(dst_reg);
+ 		break;
+ 	case BPF_ALU64 | BPF_LSH | BPF_K: /* dst = dst << imm */
+@@ -852,10 +854,10 @@ static noinline int bpf_jit_insn(struct
+ 		EMIT6_DISP_LH(0xeb000000, 0x000c, dst_reg, dst_reg, src_reg, 0);
+ 		break;
+ 	case BPF_ALU | BPF_RSH | BPF_K: /* dst = (u32) dst >> (u32) imm */
+-		if (imm == 0)
+-			break;
+-		/* srl %dst,imm(%r0) */
+-		EMIT4_DISP(0x88000000, dst_reg, REG_0, imm);
++		if (imm != 0) {
++			/* srl %dst,imm(%r0) */
++			EMIT4_DISP(0x88000000, dst_reg, REG_0, imm);
++		}
+ 		EMIT_ZERO(dst_reg);
+ 		break;
+ 	case BPF_ALU64 | BPF_RSH | BPF_K: /* dst = dst >> imm */
 
 
