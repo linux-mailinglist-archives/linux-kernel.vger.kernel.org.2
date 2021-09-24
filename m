@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D924175CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BBA41760C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346664AbhIXNd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:33:27 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37714
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346646AbhIXNdW (ORCPT
+        id S1345347AbhIXNkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344482AbhIXNkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:33:22 -0400
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        Fri, 24 Sep 2021 09:40:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523B0C0614ED;
+        Fri, 24 Sep 2021 06:38:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5eUm/3BocFnd6jqw8ryBk2FLBZ1MGOAGbJXeqs1dooA=; b=BjCdxAtrap7UL9wsq/2CwCsa67
+        +ukKcoaDAqitwzOvAeOc6RHcdzo2P0AI2VV6yMliXQjzK/ZNnVikF1Ea0ohyOxLld/H5gnHBL5Ld7
+        oOLXqUG+NvkrCV4NAk9/00veGCfGKXNfOJ+Cw3Ijcg76dBS241OzsvjhsVX8kvqxjMy7ua+cih6CT
+        N/k/u/UMwWGeSnUofEdTBXnvrYefFp+RGje4X6pepKKyNym5uZ+mKxJx3N2Wj0iao/OSqxR66ANvG
+        kdbr9bcr3vgtg5IT7S6aieRH3K3huMnV4iMvn6mZuORnochk5lChpBLXDBpEwbs0KePGts+kamAHo
+        DHvN/YmQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mTlIn-007Edy-Sv; Fri, 24 Sep 2021 13:32:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D2E794019A
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:31:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632490308;
-        bh=RftmjF1qZSv6klWcASBW873Ilh1kdlTIzs3Yp04z5B0=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=XnDGiqk6VfJ5ibYcRtcRF2eFoPjnR+VQ7/0lqs3JNw7TI2yGFUasu6Hmg0x36oCKV
-         5XqLZ+Ig0YLKvKO62ZWfMaesZ3K+Ej+NtjiKYqLWvjsRbOVDxcaXRJFS9Ao2NfLQd4
-         in+23fJ3LO4tw7mUH7B08hluvz/NdIUPDGKMYuwFCTqFu2D0uIhi4trGMsxyqbaxQF
-         eXQRxpByivBzUohLvgaVuNGq4eGa2BU4nSLtwFgKgeLtejnokYsr3dOAnd6dJIxoIz
-         S4VB4vhi1xNaDacO/ZnVpVf92XLjzTOXo7Tdej66YuxKP6u0QfcA1lx+w4yxEj6S02
-         jwxdligdxN/0A==
-Received: by mail-wr1-f69.google.com with SMTP id s13-20020a5d69cd000000b00159d49442cbso8078422wrw.13
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:31:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RftmjF1qZSv6klWcASBW873Ilh1kdlTIzs3Yp04z5B0=;
-        b=vs5n9GveDXLxJw7VDb/QBEeI/rHxNJ1IqaXvrzb5CtBVpvuw2Hjf9smQxmWB7fHGjM
-         2L9wU88kxKp4J+aRy+Wuvj4fTLs++cGvMQPel9IBd/nmKTvBbA8P99tc9dkzCVPuBUhO
-         3Oe4gvzpZ+fziWkLpMhVu4I99LmwfUkGQyjVgDAKJcS+x1biUXv88+2NkMnp0yCS76nD
-         S8vtBQCpbKOADeft0YHowzWJ8eymf4HxrD1BEMhMheHRbJ3SrrMVgvcyiSgNT8yyUC+E
-         Yr4veUqKEbugAS6BJyoCABE//2MFWJ6cwaZnboMCV/VllP1D+vS99+SIk1LD9nvuzwqX
-         XoqQ==
-X-Gm-Message-State: AOAM530VY/hnS+3yM60AVHL6Qmhyaxz4tWFWMdcb4XT9ErzBhjEvTSy1
-        P67FJEuyHDQ7HkPOeo2YjgANNkCiqACdgVTnWzF4lLSW+t8o66PUaS9LJndx07pRV6J9ZK1AUWs
-        FqKpFGwD70LvEdzZ905fSw90WFn+vjs6Xatblh9iztQ==
-X-Received: by 2002:a7b:c923:: with SMTP id h3mr2206198wml.28.1632490308541;
-        Fri, 24 Sep 2021 06:31:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydXBlQtFfnaiO3/Jj1ihFUm30hEdDJWLlsLaaeE+RNi9Ds1tVr6UL5QwkjiPuJ4jdaXffJHg==
-X-Received: by 2002:a7b:c923:: with SMTP id h3mr2206188wml.28.1632490308410;
-        Fri, 24 Sep 2021 06:31:48 -0700 (PDT)
-Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id u13sm8240290wrt.41.2021.09.24.06.31.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 06:31:48 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH] spi: s3c64xx: describe driver in KConfig
-Date:   Fri, 24 Sep 2021 15:31:14 +0200
-Message-Id: <20210924133114.111777-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 068E0300273;
+        Fri, 24 Sep 2021 15:31:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E201D2C5DFD92; Fri, 24 Sep 2021 15:31:44 +0200 (CEST)
+Date:   Fri, 24 Sep 2021 15:31:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stefan Metzmacher <metze@samba.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Michael =?iso-8859-1?Q?Wei=DF?= 
+        <michael.weiss@aisec.fraunhofer.de>,
+        Anand K Mistry <amistry@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
+Message-ID: <YU3TQBIBnrbzWS30@hirez.programming.kicks-ass.net>
+References: <20210923233105.4045080-1-keescook@chromium.org>
+ <202109231636.C233D6D82@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202109231636.C233D6D82@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe better which driver applies to which SoC, to make configuring
-kernel for Samsung SoC easier.
+On Thu, Sep 23, 2021 at 04:38:26PM -0700, Kees Cook wrote:
+> On Thu, Sep 23, 2021 at 04:31:05PM -0700, Kees Cook wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/spi/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> If the fair scheduler would actually benefit from still using get_wchan,
+> I think this patch:
+> https://lore.kernel.org/all/20210831083625.59554-1-zhengqi.arch@bytedance.com/
+> should still be applied too.
+> 
+> If not, we can rip get_wchan() out completely (across all
+> architectures).
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index ea824b0012c6..c1c8e15c01a2 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -747,10 +747,11 @@ config SPI_S3C24XX_FIQ
- 	  TX and RX data paths.
- 
- config SPI_S3C64XX
--	tristate "Samsung S3C64XX series type SPI"
-+	tristate "Samsung S3C64XX/Exynos SoC series type SPI"
- 	depends on (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST)
- 	help
--	  SPI driver for Samsung S3C64XX and newer SoCs.
-+	  SPI driver for Samsung S3C64XX, S5Pv210 and Exynos SoCs.
-+	  Choose Y/M here only if you build for such Samsung SoC.
- 
- config SPI_SC18IS602
- 	tristate "NXP SC18IS602/602B/603 I2C to SPI bridge"
--- 
-2.30.2
-
+The scheduler doesn't care, it's kernel/profile.c and please kill that
+right along with wchan, good riddance.
