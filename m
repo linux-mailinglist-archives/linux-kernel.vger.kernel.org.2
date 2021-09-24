@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA324173C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6BC417316
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345177AbhIXM7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:59:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53310 "EHLO mail.kernel.org"
+        id S1344608AbhIXMyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:54:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344654AbhIXM5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:57:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B55256138E;
-        Fri, 24 Sep 2021 12:51:47 +0000 (UTC)
+        id S1344586AbhIXMwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:52:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A81D610CF;
+        Fri, 24 Sep 2021 12:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487908;
-        bh=FZtH0RuinN/7nYXpmBC0mu9iiQ93NmtsrgRxUsdePec=;
+        s=korg; t=1632487770;
+        bh=lrw5VuysEtvhvv3KIILgqW21209M0KZA9cRbMYnP3Lg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pswroZmf5GC9Y7AlMed8yb3/we6sXk+UNtpqcmIDKRI3EmX2fWNiL3AWXj9AK2/a+
-         UAcK1EklLJT4CZe8iirB9CzIJI3pS0y18Ti6q57+cIraHskWISHOYNOp0CDFKDCwXE
-         jEdn0LRO30RgLe8+sphEK9qELOpGD+HxJLAAV9QM=
+        b=bo/9YrlNByAomp+GaQOdTfjdg7i7z9HmXA2xW1YovJVDUELteI+QzgpPBIzozRIoA
+         qLXw8jOaV8U1KZAXl+LnlQqsZCtgDV+w/EXPR3Zvw/WpRRCpw1QIGgV3XT7yjwrdCe
+         6bLwdEr7EL7MrMorsiSmgJahc+f9y/Xxs7uwFzrw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 34/50] dmaengine: ioat: depends on !UML
-Date:   Fri, 24 Sep 2021 14:44:23 +0200
-Message-Id: <20210924124333.396606076@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 30/34] pwm: img: Dont modify HW state in .remove() callback
+Date:   Fri, 24 Sep 2021 14:44:24 +0200
+Message-Id: <20210924124330.952649700@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit bbac7a92a46f0876e588722ebe552ddfe6fd790f ]
+[ Upstream commit c68eb29c8e9067c08175dd0414f6984f236f719d ]
 
-Now that UML has PCI support, this driver must depend also on
-!UML since it pokes at X86_64 architecture internals that don't
-exist on ARCH=um.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20210809112409.a3a0974874d2.I2ffe3d11ed37f735da2f39884a74c953b258b995@changeid
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pwm/pwm-img.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index a32d0d715247..1322461f1f3c 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -276,7 +276,7 @@ config INTEL_IDMA64
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index 3b0a097ce2ab..6111e8848b07 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -332,23 +332,7 @@ err_pm_disable:
+ static int img_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct img_pwm_chip *pwm_chip = platform_get_drvdata(pdev);
+-	u32 val;
+-	unsigned int i;
+-	int ret;
+-
+-	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (ret < 0) {
+-		pm_runtime_put(&pdev->dev);
+-		return ret;
+-	}
+-
+-	for (i = 0; i < pwm_chip->chip.npwm; i++) {
+-		val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
+-		val &= ~BIT(i);
+-		img_pwm_writel(pwm_chip, PWM_CTRL_CFG, val);
+-	}
  
- config INTEL_IOATDMA
- 	tristate "Intel I/OAT DMA support"
--	depends on PCI && X86_64
-+	depends on PCI && X86_64 && !UML
- 	select DMA_ENGINE
- 	select DMA_ENGINE_RAID
- 	select DCA
+-	pm_runtime_put(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		img_pwm_runtime_suspend(&pdev->dev);
 -- 
 2.33.0
 
