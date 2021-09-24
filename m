@@ -2,172 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832C3417686
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCAB417696
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346705AbhIXOGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:06:20 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:36396 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346508AbhIXOGU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:06:20 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210924140445epoutp04ed424ad388daac11640bd4134516f46f~nxxWMsm7Z3152931529epoutp041
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:04:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210924140445epoutp04ed424ad388daac11640bd4134516f46f~nxxWMsm7Z3152931529epoutp041
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1632492285;
-        bh=q/PUuhuvYBUXBqIqSskeFpdKmkneorz9MDlFxCuImqU=;
-        h=Date:Subject:Reply-To:From:To:CC:In-Reply-To:References:From;
-        b=QlVH4m/4YFpGIYAvYTAOVyAFMg3vHWsOHxIYQUXp969/07cNd7/VbSds65VEQGRKb
-         QSjzOnfeCdlEclNPFeJ5d7/eSFZe2yZVGCZgQuS9qDp9basJ074eP3auIY5BnjqaRT
-         HF5NPBqA6+mrMHv+8/3/Lq6esFrG9jBtr5JRV0Uw=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20210924140444epcas5p2a8f5e46bb991371c26cf32969c3f8947~nxxVZPM5t0443904439epcas5p26;
-        Fri, 24 Sep 2021 14:04:44 +0000 (GMT)
-X-AuditID: b6c32a49-10fff7000000e972-8a-614ddafc70c4
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        53.13.59762.CFADD416; Fri, 24 Sep 2021 23:04:44 +0900 (KST)
-Date:   Fri, 24 Sep 2021 19:34:43 +0530
-Message-ID: <1062227969.4242453.1632492283698@mail-kr5-0>
-Mime-Version: 1.0
-Subject: RE:(2) [Issue] timer callback registered with mod_timer is getting
- called beforetime
-Reply-To: maninder1.s@samsung.com
-Sender: Maninder Singh <maninder1.s@samsung.com>
-From:   Maninder Singh <maninder1.s@samsung.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-CC:     "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Vaneet Narang <v.narang@samsung.com>,
-        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
-        Chung-Ki Woo <chungki0201.woo@samsung.com>,
-        Vishal Goel <vishal.goel@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20210924103812.GA142770@lothringen>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-X-CMS-MailID: 20210924140443epcms5p22d9d28335c2d6988b509e01ee4cc2f51
-Content-Type: multipart/mixed;
-        boundary="----=_Part_4242452_2101301166.1632492283698"
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLKsWRmVeSWpSXmKPExsWy7bCmhu6fW76JBo3XRC0u7k61OP39CrvF
-        gqa9rBYzX3czWVzeNYfNYvW/U4wWmzdNZbY4dHIuo8W626cZHTg9ds66y+6xaVUnm8e7c+fY
-        Pfq2rGL0+LxJLoA1issmJTUnsyy1SN8ugStjWsNy9oJbShWPT15ka2C8ItfFyMkhIWAi8eHy
-        LaYuRi4OIYHdjBJ73q9nAkmwCKhK9P/sBrN5BSwlnvy/zdLFyAFkC0r83SEMYgoLxEtc+h0F
-        UiEkoChxYcYaRoiwgcSvrRogYTYBPYlVu/awgNgiAroSy69tYAfZxCzwnEli+vlNrBAn8ErM
-        aH/KAmFLS2xfvpURxOYUMJRYMeEYVI2oxM3Vb9lh7PfH5jNC2CISrffOMkPYghIPfu6GistI
-        rN7cywKyTEKgm1Fi/bu9UM4MRomeR9OgOswl1i9ZxQ5ytYSAi8SfPguQMLNAuMT6rmesEDaf
-        RO/vJ0wwh+6YB2OrSrTc3MAKc/Tnjx+hHvCQ2PK9lR0SnnsYJWac38w2gVFuFiLoZiFZAWHL
-        S2x/O4cZpIRZQFNi/S59iLCaxJT+L2wQtplEQ/tUFghbUWJK90P2BYzsqxglUwuKc9NTi00L
-        DPNSy/WKE3OLS/PS9ZLzczcxglOVlucOxrsPPugdYmTiYDzEqALU/mjD6guMUix5+XmpSiK8
-        n294JQrxpiRWVqUW5ccXleakFh9ilOZgURLn/fjaMlFIID2xJDU7NbUgtQgmy8TBKdXA1Bhy
-        kr9+SfTdsotvp62e8vKJK1PdgrTyTkuByXfSzyo2fYusuHZFa7K6ksZ99fJ7LOYs5S7vqpN8
-        77zp7WNccyz42+T7r+Xnzt69/2OWWKSeMI+st+H7NXFy7AHNsb/0Vi2o85RYG3nO6Jruid7S
-        dtmy/t51U9j2p93YGmE7N1/4vc78pQd1lSzS09yTzOOCMq9OOF/sOGXWLDd9d64la9KLVl/0
-        FmCfcErIz/9qz9btN86mlN2ujU25LSsXmbbBdf/qHW8f6hz0Ff1de4TBiWGtQYO+lvsGuXCP
-        bfyr2rdy+fyZJxy41+u6qFDm3mPaM31KUy/22Jp+6hf44JG5qdWkaMKBKNtX2tEaLreVWIoz
-        Eg21mIuKEwEKuGfc0AMAAA==
-X-CMS-RootMailID: 20210924065310epcms5p69dd47a510faaa6bf68c243e02f2d0186
-References: <20210924103812.GA142770@lothringen>
-        <20210924065310epcms5p69dd47a510faaa6bf68c243e02f2d0186@epcms5p6>
-        <CGME20210924065310epcms5p69dd47a510faaa6bf68c243e02f2d0186@epcms5p2>
+        id S1346701AbhIXOLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:11:45 -0400
+Received: from mail-bn8nam08on2050.outbound.protection.outlook.com ([40.107.100.50]:64113
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231683AbhIXOLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 10:11:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nz3sOQNtR79+o2BKP3vrC1Oy3BpMp2CVS6HiIcZS3yUTGVG47+m505CVZdbM/5VxMLwLYvA9O784mVH9puAd5WMqoeI/rsMjePsRlp5Gh4KWZLej7CgXC74wk8rAKo9AGFWIOd7+SDZgsTX29EP6oy9Q3URUzXKI/RguHKZ1g4apksFZ/6rjb8qfl0hRHnUf7pAIE9MWiwXUEU8CFsg1M98yZ/CbmHBor1zkwxNv64xycxx9795X12rBMLlGdaVakDwBS5pZB10GzUW9mXKgrGKySGCLnMsWhx/+R1MD6vV8DXQVnnr5c+18u7VTe8ewzySp3BtgMoppq75sCxsGCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=fFIIiSt4bZzW8MsXWk9abxhLHHzzTzKjE2fZpv3F5lg=;
+ b=jX6hTrP+ybjEF0Gs8hG1D+0hHuTd9TXsmMyMknJo8tkQxo/kiYCOwjHpT7q4FuZyxZKuzun2PClDcF2tgXxR25XbX99mGCOK+9W8HS9rB1f/XTuoH9McrzShFB4c6lmNNPbxv8EE4dRYJYSAG7ENK+cfFaeAFFqbh139NWx3sQkUM6UcxB8Jin7USEPtYOgUUeTP4HMhKiDXmAixsnVLmUyGJiJy4BiqP4iiECpo0yDhzu81bPfnQAlCkq/Htb5WTyBz03cBKw7UoWaSFNg8OVQVY1/m4jwBH75grFWsEuJ0677l/SWTGzL1Gfs5vvjmiuDzHCpfllOZLxWCm/4E/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fFIIiSt4bZzW8MsXWk9abxhLHHzzTzKjE2fZpv3F5lg=;
+ b=kFkw+8pP2H2RSnyoCbxnq4IK94I5p/Ea5U+QMjyQRUe6y88RxJRhySXBh0KulrRZQfzkOe9GKa4h55Y5wMFcqH37Thf7q/Jn/lNL/ZPEmx6zp/9C+WZw1pwqDcXPTE8b2+PkuNI7u3l/3mXxGgNkRSkOP/VOP51w9HaER52UZ4vFWTNu6JEU1AaYrKxMZKsJnDh0kQREOmfG5SpnuxBXCnw02b+PBiUpuu+RSSOOW5MgsBX8EakzA9W1PZE5xOrmu7sjq4ptTZeJKODSQUmXT03b2Uhg/1wuhx2w1+iD2gwG2DkON1yPjhwcq7MMpCs96pnJBpADYvnA13YA0q7oRg==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5112.namprd12.prod.outlook.com (2603:10b6:208:316::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Fri, 24 Sep
+ 2021 14:10:06 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
+ 14:10:06 +0000
+Date:   Fri, 24 Sep 2021 11:10:04 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dave Ertman <david.m.ertman@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, yongxin.liu@windriver.com,
+        shiraz.saleem@intel.com, anthony.l.nguyen@intel.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jesse.brandeburg@intel.com, intel-wired-lan@lists.osuosl.org,
+        leon@kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RESEND net] ice: Correctly deal with PFs that do not
+ support RDMA
+Message-ID: <20210924141004.GA1237721@nvidia.com>
+References: <20210909151223.572918-1-david.m.ertman@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909151223.572918-1-david.m.ertman@intel.com>
+X-ClientProxiedBy: BL1PR13CA0356.namprd13.prod.outlook.com
+ (2603:10b6:208:2c6::31) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0356.namprd13.prod.outlook.com (2603:10b6:208:2c6::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.8 via Frontend Transport; Fri, 24 Sep 2021 14:10:05 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mTlts-005C75-Ug; Fri, 24 Sep 2021 11:10:04 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ff3869d1-c19a-4708-dc56-08d97f650270
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5112:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51121B8646F67E720F34A043C2A49@BL1PR12MB5112.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4mdJwUVunVpUI332J+0nD0Cz9JA/1Njjj7PrcCb0MkK9DuEVW094M6xmn+iaBrZWNbBQmgLUcG0MqTrg3O6rLmuVta5kx6V9hYjpq02/FYD6mwGeTuj6Dz8az74wUaw6ycUPripfSpshsm23CpCLi8QtJqpd57VAj0U4JXR972tD4lI5BY482M1hv6LmgClxREXlP874JLtf4t5kmKg/0BKmL+9DYE8fNeDNviewW1LBGgW1AiGy+usVJQnDxumkgLxYyAu5LV5YwIe9a142UH+Pfblgs4wEZEvwjS5WNoL8oVCq7UpSsyeR/sd+tkZL4cpGPMgDTHhW/Oj8n1wrw2WCcDfMPXU5opkA2VLf2rq31LPbjwQ9FH6a8sTYBsIOd7VO2A4JKOW+X2BJMbgTiIdEpRi3r1popbGezFHnTQluvc9JWpWQV/apttqbyVan/CX1s4PUbRddxROCFtn+lWGJ+NSgHp12ZY5l0aLbdi7n+fbf2Zwhu3vYPOpqekKaEtbphqPNTE8wTpD4Y0BMlyoTQ33v+FTq+JPvYs5zhWFG7kljs1hc3KYR69PbeI7jEl8cUGhCkwb2lkmF6cYuJB/NN5YgbIvi79BJDJg6dU0ZwEkI5mOY4vlBJkMIQ+MMtht5l7e332hMV2WArIwkcQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(6916009)(26005)(9746002)(66476007)(86362001)(66556008)(36756003)(5660300002)(33656002)(2906002)(4326008)(186003)(1076003)(316002)(8936002)(66946007)(38100700002)(83380400001)(508600001)(426003)(7416002)(9786002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cHj1hn4REdQ23Ua8yEGB0/ZkmssLqtXjTADonzM9invMSBP2DdTE3VUItGcC?=
+ =?us-ascii?Q?f+tQyFZk7Oq5sT4wwkn1Oa8I+EuRj2iUyfCFhwAWoD40sm2HRrOaTvjVixkf?=
+ =?us-ascii?Q?a6IL7H7MUMQNJuxfGpO+n18WiFjtI7ehIkTOClIciEFiZvwuC26YVnUN+nwz?=
+ =?us-ascii?Q?+nslbb106KZ7Np7xIoDNzfKSmVQq4Kn4xUN9ffGAuQWeFZW552sLVIITjd6a?=
+ =?us-ascii?Q?ddUbqobGbfqB9l9SM3bU5wtpCMEuNib50UF4l26TbmpFPeWUhKP/lys3liBg?=
+ =?us-ascii?Q?gvWWzL0DezehLJzG2mmHw+Tofz1svNpnu05yhK0pidHzGOOzp+kxwEiXoDEC?=
+ =?us-ascii?Q?pUPUZeZIbbCOTgfm3XZuZWkwryFYv4J8L6945cG2nTPx/xhmekeQAq084sWy?=
+ =?us-ascii?Q?fLp92YiCdK0UeAOOV+XXzpQhT1jlratoGu/YTpmiOJcNvYm5qndL3teGcvZL?=
+ =?us-ascii?Q?m5LlzmGSlMFIWSfSdBvM2+igpsW6e8wLXuT0Cdtr3AIK0PYpYa5IYfXfHXxx?=
+ =?us-ascii?Q?DXIlKCkUDLtY9AQvPm4q71UUHmca9RmAbfe8wun6WfrCQtdeAsq3ZrQTrieD?=
+ =?us-ascii?Q?xsxYlh/lKPCXCYgcEU30mN5oG9mFjb18zlWy3EJCkKHjC5Au52ECCv410EPM?=
+ =?us-ascii?Q?qd2HF3QNDxL+uaMSmim/+MK9SClQ/Jm2H5VIhrAwf0Jv7vFZ8CR5FP4aO/sf?=
+ =?us-ascii?Q?+8QjzCzQzOEK2n5gKcfM8hIKm3UR9Yet/iirZp1gYt7FikFG+D/QTcHOprcy?=
+ =?us-ascii?Q?SUxWmkawDkiE4eIhwp8vXtVhpH0y+J9FrSY4soJNOH8ykv9K2aPQQrpRqoY3?=
+ =?us-ascii?Q?JdYa5nsP7aARhwHxcJJvHZ+7MlpsLc/80JcAHnOiCplfmtGEGjhpVMsRjNv+?=
+ =?us-ascii?Q?yO23Vv9wU8CEnYmiSbWpx66NxSPNkTaLyP+Jtm9Z9rtFIpCy7J37BDst6wE/?=
+ =?us-ascii?Q?gJvTupIEI9bwNi9i+kdik01ZoiDUlgvvEkL1YfagiyqSUiT6z2ZGhZTibFsj?=
+ =?us-ascii?Q?8yZAPB12vAgV7VdKmfyqAp7GlQzicQwS6XVHLFRzau92QzdmvEBfUXqKdjr+?=
+ =?us-ascii?Q?Sp64MipqYr3Gr838HP+SRX9mH8exko2/adhM7dED18k9ceQzb4RARq38vpId?=
+ =?us-ascii?Q?nkHzPqord0sOVITVbo7Ak/0WOnX2WfhowNUoX+Blb7RObuK5+WaYjaE5JSyL?=
+ =?us-ascii?Q?pr5357C5ys1p7pJKmMkT2pYOYX/fJdooglwq1gc9BMf9BycSVwwXC10X261t?=
+ =?us-ascii?Q?lOzn6aBhty+nDyN51mi1KLccYgpokJ83FHS05JD+W07FvRDIK9CBxcvgIGmF?=
+ =?us-ascii?Q?al7XHP7tP0NLztDIi81N1FXv?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff3869d1-c19a-4708-dc56-08d97f650270
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 14:10:06.1609
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: isEF8Hb1gvmEFAmZCc3iYzwGBVDKUo573WXUaiBefiQdjV6MK/CBHRyHlciUZoWt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------=_Part_4242452_2101301166.1632492283698
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
+On Thu, Sep 09, 2021 at 08:12:23AM -0700, Dave Ertman wrote:
+> There are two cases where the current PF does not support RDMA
+> functionality.  The first is if the NVM loaded on the device is set
+> to not support RDMA (common_caps.rdma is false).  The second is if
+> the kernel bonding driver has included the current PF in an active
+> link aggregate.
+> 
+> When the driver has determined that this PF does not support RDMA, then
+> auxiliary devices should not be created on the auxiliary bus.  Without
+> a device on the auxiliary bus, even if the irdma driver is present, there
+> will be no RDMA activity attempted on this PF.
+> 
+> Currently, in the reset flow, an attempt to create auxiliary devices is
+> performed without regard to the ability of the PF.  There needs to be a
+> check in ice_aux_plug_dev (as the central point that creates auxiliary
+> devices) to see if the PF is in a state to support the functionality.
+> 
+> When disabling and re-enabling RDMA due to the inclusion/removal of the PF
+> in a link aggregate, we also need to set/clear the bit which controls
+> auxiliary device creation so that a reset recovery in a link aggregate
+> situation doesn't try to create auxiliary devices when it shouldn't.
+> 
+> Fixes: f9f5301e7e2d ("ice: Register auxiliary device to provide RDMA")
+> Reported-by: Yongxin Liu <yongxin.liu@windriver.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+>  drivers/net/ethernet/intel/ice/ice.h     | 2 ++
+>  drivers/net/ethernet/intel/ice/ice_idc.c | 6 ++++++
+>  2 files changed, 8 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+> index eadcb9958346..3c4f08d20414 100644
+> +++ b/drivers/net/ethernet/intel/ice/ice.h
+> @@ -695,6 +695,7 @@ static inline void ice_set_rdma_cap(struct ice_pf *pf)
+>  {
+>  	if (pf->hw.func_caps.common_cap.rdma && pf->num_rdma_msix) {
+>  		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+> +		set_bit(ICE_FLAG_AUX_ENA, pf->flags);
+>  		ice_plug_aux_dev(pf);
 
+I agree with Leon, there shouldn't be a flag for "aux en". aux is
+enabled when a device on the aux bus is required. It should all be
+rdma en, which already seems to have a bit.
 
-Hi Frederic,
+Th only existing place that uses aux_ena immediately calls
 
+		err = ice_init_rdma(pf);
 
-> > Is it known behaviour for timers?
-> > because only 1 CPU is assigned to update jiffies work to call do_timer utill unless it goes to idle state and pass ownership to other CPU.
-> > 
-> > we tried by making all CPU to handle code for jiffies updation (it will add performance hit)
-> > but then no issue of abrupt jiffies change occured on system.
->  
-> First of all, are you meeting this issue specifically on NOHZ_FULL? Because
-> there is a pending fix for a related matter there:
+So I'd just delete the whole thing and use rdma_ena. Frankly it looks
+structured confusingly, the mlx implementation is better where this is
+one function that synchronizes the aux bus with the current state of
+the driver - adding/removing as required
 
-No, this is not our case.
-
->  
->       https://lore.kernel.org/lkml/20210915142303.24297-1-frederic@kernel.org/
->  
-> As for what you're reporting here, I think the core problem is the fact that the
-> timekeeper (jiffies updater) is stuck with IRQs disabled for way too long. Even
-> one millisecond is too much to tolerate. Do you have any idea about the source of
-> that situation?
->  
-
-Yes, definately interrupts should not be disabled for so long,
-but sometimes there are 3rd party drivers/vendors module code can cause issue,
-and it can be the same case and we are trying to reproduce issue again and check code path.
-
-So we had 2 doubts:
-(1) In this explained case timer callback will be called early right? 
-(2) What if jiffies updation can be done by any of the CPU rather that making one
-CPU owner? can it cause any side effectes? one we know is performance, there will be redundant calls
-from other CPUs.
-
-        /* Check, if the jiffies need an update */
-        if (tick_do_timer_cpu == cpu)
-                tick_do_update_jiffies64(now);
-
-
-On our target, there is a race condition when irq_disable code path scheduled on same CPU
-which is responsible for jiffies updation and in parallel CPU1 registers evet callback for 20/30 ms.
-and due to abrupt jiffies change callback triggered within 1 ms of actual time, which cause actual
-issue.
-
-Thanks
-Maninder Singh
- 
- 
-------=_Part_4242452_2101301166.1632492283698
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="rcptInfo.txt"
-Content-Transfer-Encoding: base64
-
-DQogICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT0NCiAgICAgIFN1YmplY3QgICAgOiBSZTogW0lzc3VlXSB0aW1l
-ciBjYWxsYmFjayByZWdpc3RlcmVkIHdpdGggbW9kX3RpbWVyIGlzIGdldHRpbmcgY2FsbGVkIGJl
-Zm9yZXRpbWUNCiAgICAgIEZyb20gICAgICAgOiBudWxsDQogICAgICBTZW50IERhdGUgIDogMjAy
-MS0wOS0yNCAxNjowOCAgR01UKzU6MzANCiAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KICAgICAgICAgICAg
-ICAgICAgTmFtZSAgICAgICAgICAgICAgICBUeXBlICAgICAgICAgIEpvYiBUaXRsZSAgICAgICAg
-ICAgICAgICAgICAgICAgRGVwdC4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ29tcGFu
-eSAgICAgICAgICAgICAgICANCiAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KICAgICAgTWFuaW5kZXIgU2lu
-Z2ggICAgICAgICAgICAgICAgIFRPICAgICAgICAgU3RhZmYgRW5naW5lZXIgICAgICAgICAgICAg
-U3lzdGVtIFMvVyBHcm91cCAvU1JJLURlbGhpICAgICAgICAgICAgICAgU2Ftc3VuZ8KgRWxlY3Ry
-b25pY3PCoA0KICAgICAgZndlaXNiZWNAZ21haWwuY29tICAgICAgICAgICAgIENDDQogICAgICB0
-Z2x4QGxpbnV0cm9uaXguZGUgICAgICAgICAgICAgQ0MNCiAgICAgIG1pbmdvQGtlcm5lbC5vcmcg
-ICAgICAgICAgICAgICBDQw0KICAgICAgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyAgIEND
-DQogICAgICBWYW5lZXQgTmFyYW5nICAgICAgICAgICAgICAgICAgQ0MgICAgICAgICBTdGFmZiBF
-bmdpbmVlciAgICAgICAgICAgICBTeXN0ZW0gUy9XIEdyb3VwIC9TUkktRGVsaGkgICAgICAgICAg
-ICAgICBTYW1zdW5nIEVsZWN0cm9uaWNzDQogICAgICBBTUlUIFNBSFJBV0FUICAgICAgICAgICAg
-ICAgICAgQ0MgICAgICAgICBTdGFmZiBFbmdpbmVlci9IZWFkIG8uLi4gICBTeXN0ZW0gUy9XIEdy
-b3VwIC9TUkktRGVsaGkgICAgICAgICAgICAgICBTYW1zdW5nwqBFbGVjdHJvbmljcw0KICAgICAg
-Q2h1bmctS2kgV29vICAgICAgICAgICAgICAgICAgIENDICAgICAgICAgUHJpbmNpcGFsIEVuZ2lu
-ZWVyICAgICAgICAgUy9XIFBsYXRmb3JtIFImRCBMYWIuICAgICAgICAgICAgICAgICAgICAgU2Ft
-c3VuZyBFbGVjdHJvbmljcw0KICAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo=
-
-------=_Part_4242452_2101301166.1632492283698--
+Jason
