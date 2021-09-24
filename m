@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8D0417264
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74C3417281
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344068AbhIXMsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:48:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42988 "EHLO mail.kernel.org"
+        id S1344052AbhIXMtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:49:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344014AbhIXMrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:47:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E89561260;
-        Fri, 24 Sep 2021 12:45:29 +0000 (UTC)
+        id S1344138AbhIXMr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:47:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0E336124B;
+        Fri, 24 Sep 2021 12:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487530;
-        bh=jPrAIjOnE9U32AaHjKoe+pTOn1XGU5OSULffrCeTEmk=;
+        s=korg; t=1632487585;
+        bh=FMO3oLYtRxQ6cAkIhT+2cRiJYTR5Ur5HVQPUjaYr3H0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OKjz24yZJG9xwg5JQnJKK77ZH3Fenl7qBeda2gyq/H9rpI5eoboFwgveGolappSrn
-         3B5JE2SgdGlAP75DUxun+CIM0tbOQZFURZG0f4mnp27cfHXSVU0K4FZUh82LWj+RhJ
-         NWer/7t0yTfMklnY/3lz6tBlYH4BTVwO9EmBADSw=
+        b=BEB8iLwmhb2CdNmH8Lsat4M2ZsthbGK5lSzI65hiu3cwqTrwB+I207ctXPXa98i8a
+         X4AKVa2vwTX7E/Vws6t1oJQA+UrTuLFVcpfQWQ+iCRRpC71PbR6rOUtuyOzaomN5Q0
+         0VlCNMAO6ue6lPPRS+oXEQH3zfuE5D3XP1QJeq9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 05/26] sctp: validate chunk size in __rcv_asconf_lookup
-Date:   Fri, 24 Sep 2021 14:43:53 +0200
-Message-Id: <20210924124328.526180315@linuxfoundation.org>
+Subject: [PATCH 4.9 06/26] sctp: add param size validation for SCTP_PARAM_SET_PRIMARY
+Date:   Fri, 24 Sep 2021 14:43:54 +0200
+Message-Id: <20210924124328.556217209@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
 References: <20210924124328.336953942@linuxfoundation.org>
@@ -42,35 +42,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-commit b6ffe7671b24689c09faa5675dd58f93758a97ae upstream.
+commit ef6c8d6ccf0c1dccdda092ebe8782777cd7803c9 upstream.
 
-In one of the fallbacks that SCTP has for identifying an association for an
-incoming packet, it looks for AddIp chunk (from ASCONF) and take a peek.
-Thing is, at this stage nothing was validating that the chunk actually had
-enough content for that, allowing the peek to happen over uninitialized
-memory.
+When SCTP handles an INIT chunk, it calls for example:
+sctp_sf_do_5_1B_init
+  sctp_verify_init
+    sctp_verify_param
+  sctp_process_init
+    sctp_process_param
+      handling of SCTP_PARAM_SET_PRIMARY
 
-Similar check already exists in actual asconf handling in
-sctp_verify_asconf().
+sctp_verify_init() wasn't doing proper size validation and neither the
+later handling, allowing it to work over the chunk itself, possibly being
+uninitialized memory.
 
 Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/input.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/sctp/sm_make_chunk.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -1087,6 +1087,9 @@ static struct sctp_association *__sctp_r
- 	union sctp_addr_param *param;
- 	union sctp_addr paddr;
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -2155,9 +2155,16 @@ static sctp_ierror_t sctp_verify_param(s
+ 		break;
  
-+	if (ntohs(ch->length) < sizeof(*asconf) + sizeof(struct sctp_paramhdr))
-+		return NULL;
+ 	case SCTP_PARAM_SET_PRIMARY:
+-		if (net->sctp.addip_enable)
+-			break;
+-		goto fallthrough;
++		if (!net->sctp.addip_enable)
++			goto fallthrough;
 +
- 	/* Skip over the ADDIP header and find the Address parameter */
- 	param = (union sctp_addr_param *)(asconf + 1);
++		if (ntohs(param.p->length) < sizeof(struct sctp_addip_param) +
++					     sizeof(struct sctp_paramhdr)) {
++			sctp_process_inv_paramlength(asoc, param.p,
++						     chunk, err_chunk);
++			retval = SCTP_IERROR_ABORT;
++		}
++		break;
  
+ 	case SCTP_PARAM_HOST_NAME_ADDRESS:
+ 		/* Tell the peer, we won't support this param.  */
 
 
