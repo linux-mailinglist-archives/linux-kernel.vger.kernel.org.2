@@ -2,158 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56155416CDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EE9416CDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244379AbhIXHf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:35:29 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:16291 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbhIXHf2 (ORCPT
+        id S244348AbhIXHfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:35:40 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54446 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244396AbhIXHfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:35:28 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HG3fV6Yr0z8tQ3;
-        Fri, 24 Sep 2021 15:33:06 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 24 Sep 2021 15:33:50 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Fri, 24 Sep
- 2021 15:33:49 +0800
-Subject: Re: [PATCH net-next 3/7] pool_pool: avoid calling compound_head() for
- skb frag page
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Kevin Hao" <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, <memxor@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <20210922094131.15625-4-linyunsheng@huawei.com>
- <YUw78q4IrfR0D2/J@apalos.home>
- <b2779d81-4cb3-5ccc-8e36-02cd633383f3@huawei.com>
- <CAC_iWj+yv8+=MaxtqLFkQh1Qb75vNZw30xcz2VTD-m37-RVp8A@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <39e62727-6d9f-a0db-39b2-296ebd6972b3@huawei.com>
-Date:   Fri, 24 Sep 2021 15:33:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 24 Sep 2021 03:35:34 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 62E6622391;
+        Fri, 24 Sep 2021 07:34:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632468840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fvFiisWdco37z/Q3AS4GjLyjOeGMuTmzt8oyl+4CCz0=;
+        b=Wgf8kYS+7poxsMXO/r1kjgjdFqNiNIknOVDfobej88OcQxfwfySs7up/v69EDk/ZhmAsrJ
+        jUVfsY85r3wn1KZYjWqwcZZu1PHOLW3VCE15PWH8KVurOWV3Rpt6iZ4d/7mXJSFW8Lv3LA
+        AYYKyOwZpgA3K50w/xBxQGWnJIFG200=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay1.suse.de (Postfix) with ESMTPS id 35D5025CCD;
+        Fri, 24 Sep 2021 07:34:00 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 09:33:59 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org
+Subject: Re: [RFC][PATCH 7/7] livepatch,context_tracking: Avoid disturbing
+ NOHZ_FULL tasks
+Message-ID: <YU1/Z/+IviZXog5w@alley>
+References: <20210922110506.703075504@infradead.org>
+ <20210922110836.304335737@infradead.org>
+ <YUx9yNfgm4nnd23y@alley>
+ <YUyBGJGCgrR56C7r@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWj+yv8+=MaxtqLFkQh1Qb75vNZw30xcz2VTD-m37-RVp8A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUyBGJGCgrR56C7r@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/23 19:47, Ilias Apalodimas wrote:
-> On Thu, 23 Sept 2021 at 14:24, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2021/9/23 16:33, Ilias Apalodimas wrote:
->>> On Wed, Sep 22, 2021 at 05:41:27PM +0800, Yunsheng Lin wrote:
->>>> As the pp page for a skb frag is always a head page, so make
->>>> sure skb_pp_recycle() passes a head page to avoid calling
->>>> compound_head() for skb frag page case.
->>>
->>> Doesn't that rely on the driver mostly (i.e what's passed in skb_frag_set_page() ?
->>> None of the current netstack code assumes bv_page is the head page of a
->>> compound page.  Since our page_pool allocator can will allocate compound
->>> pages for order > 0,  why should we rely on it ?
->>
->> As the page pool alloc function return 'struct page *' to the caller, which
->> is the head page of a compound pages for order > 0, so I assume the caller
->> will pass that to skb_frag_set_page().
+On Thu 2021-09-23 15:28:56, Peter Zijlstra wrote:
+> On Thu, Sep 23, 2021 at 03:14:48PM +0200, Petr Mladek wrote:
 > 
-> Yea that's exactly the assumption I was afraid of.
-> Sure not passing the head page might seem weird atm and the assumption
-> stands, but the point is we shouldn't blow up the entire network stack
-> if someone does that eventually.
+> > IMHO, this is not safe:
+> > 
+> > CPU0				CPU1
+> > 
+> > klp_check_task(A)
+> >   if (context_tracking_state_cpu(task_cpu(task)) == CONTEXT_USER)
+> >      goto complete;
+> > 
+> >   clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+> > 
+> > 				# task switching to kernel space
+> > 				klp_update_patch_state(A)
+> > 				       if (test_and_clear_tsk_thread_flag(task,	TIF_PATCH_PENDING))
+> > 				       //false
+> > 
+> > 				# calling kernel code with old task->patch_state
+> > 
+> > 	task->patch_state = klp_target_state;
+> > 
+> > BANG: CPU0 sets task->patch_state when task A is already running
+> > 	kernel code on CPU1.
 > 
->>
->> For non-pp page, I assume it is ok whether the page is a head page or tail
->> page, as the pp_magic for both of them are not set with PP_SIGNATURE.
-> 
-> Yea that's true, although we removed the checking for coalescing
-> recyclable and non-recyclable SKBs,   the next patch first checks the
-> signature before trying to do anything with the skb.
-> 
->>
->> Or should we play safe here, and do the trick as skb_free_head() does in
->> patch 6?
-> 
-> I don't think the &1 will even be measurable,  so I'd suggest just
-> dropping this and play safe?
+> Why is that a problem? That is, who actually cares about
+> task->patch_state ? I was under the impression that state was purely for
+> klp itself, to track which task has observed the new state.
 
-I am not sure what does '&1' mean above.
+It is the other way. The patch_state is used in klp_ftrace_handler()
+to decide which code must be used (old or new).
 
-The one thing I am not sure about the trick done in patch 6 is that
-if __page_frag_cache_drain() is right API to use here, I used it because
-it is the only API that is expecting a head page.
+The state must change only when the given task is _not_ using
+any patched function. Hence we do it when:
 
-> 
-> Cheers
-> /Ilias
->>
->>>
->>> Thanks
->>> /Ilias
->>>>
->>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>>> ---
->>>>  include/linux/skbuff.h | 2 +-
->>>>  net/core/page_pool.c   | 2 --
->>>>  2 files changed, 1 insertion(+), 3 deletions(-)
->>>>
->>>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
->>>> index 6bdb0db3e825..35eebc2310a5 100644
->>>> --- a/include/linux/skbuff.h
->>>> +++ b/include/linux/skbuff.h
->>>> @@ -4722,7 +4722,7 @@ static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
->>>>  {
->>>>      if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
->>>>              return false;
->>>> -    return page_pool_return_skb_page(virt_to_page(data));
->>>> +    return page_pool_return_skb_page(virt_to_head_page(data));
->>>>  }
->>>>
->>>>  #endif      /* __KERNEL__ */
->>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->>>> index f7e71dcb6a2e..357fb53343a0 100644
->>>> --- a/net/core/page_pool.c
->>>> +++ b/net/core/page_pool.c
->>>> @@ -742,8 +742,6 @@ bool page_pool_return_skb_page(struct page *page)
->>>>  {
->>>>      struct page_pool *pp;
->>>>
->>>> -    page = compound_head(page);
->>>> -
->>>>      /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
->>>>       * in order to preserve any existing bits, such as bit 0 for the
->>>>       * head page of compound page and bit 1 for pfmemalloc page, so
->>>> --
->>>> 2.33.0
->>>>
->>> .
->>>
-> .
-> 
+     + no patched function is on the stack  (needed primary for kthreads)
+     + entering/leaving kernel              (reliable way for user space)
+
+See "Consistency model" in Documentation/livepatch/livepatch.rst
+for more details.
+
+Best Regards,
+Petr
