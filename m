@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CB54172B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4AE417309
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344081AbhIXMux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44798 "EHLO mail.kernel.org"
+        id S1344571AbhIXMxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:53:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343975AbhIXMtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:49:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D71F6124D;
-        Fri, 24 Sep 2021 12:47:39 +0000 (UTC)
+        id S1344557AbhIXMvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:51:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C4E86124D;
+        Fri, 24 Sep 2021 12:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487660;
-        bh=BkISNqFHSRmUOB9cYBFY3T37xo5rngboc71OMME0GQc=;
+        s=korg; t=1632487757;
+        bh=vvMHbaGr6fiwNtWWcVDXG+eal44ko7TI9VqLB8pA98g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QmKo5VbvX/Zjt/0X0eE8f31xKCJ8GwMhde5jOPA9ogBsmmgqt/ChOWAszX2CKMPPU
-         8/IU046o4LNLEB7WD1QzhfCvmbSETUlPdn0ngHPynEK/sjFMrctAT6yd1uSxgh9m3X
-         XJv4bMS3bJ8+MEuOC0bQK6APMoCIWQshdPUrN11k=
+        b=AhWVyojIhv8EiDli/gICqQynXdlCDXEaOjQ9diPFzA+HoVHgwtpNP740vNgx6tEa9
+         ji2y2E1xUq1zBhsL5TzYjHXtkVEQeTH2K6fQiacbmKWSffjrqKNFjt/Rg5aXEuVNUU
+         JeJabiWkyO+ySbzfsFohwEXbKiL419d6dgh3tnq4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 25/27] pwm: rockchip: Dont modify HW state in .remove() callback
+Subject: [PATCH 4.19 25/34] nilfs2: fix NULL pointer in nilfs_##name##_attr_release
 Date:   Fri, 24 Sep 2021 14:44:19 +0200
-Message-Id: <20210924124330.020177157@linuxfoundation.org>
+Message-Id: <20210924124330.783018296@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-[ Upstream commit 9d768cd7fd42bb0be16f36aec48548fca5260759 ]
+[ Upstream commit dbc6e7d44a514f231a64d9d5676e001b660b6448 ]
 
-A consumer is expected to disable a PWM before calling pwm_put(). And if
-they didn't there is hopefully a good reason (or the consumer needs
-fixing). Also if disabling an enabled PWM was the right thing to do,
-this should better be done in the framework instead of in each low level
-driver.
+In nilfs_##name##_attr_release, kobj->parent should not be referenced
+because it is a NULL pointer.  The release() method of kobject is always
+called in kobject_put(kobj), in the implementation of kobject_put(), the
+kobj->parent will be assigned as NULL before call the release() method.
+So just use kobj to get the subgroups, which is more efficient and can fix
+a NULL pointer reference problem.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-3-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-3-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-rockchip.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ fs/nilfs2/sysfs.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
-index 48bcc853d57a..cf34fb00c054 100644
---- a/drivers/pwm/pwm-rockchip.c
-+++ b/drivers/pwm/pwm-rockchip.c
-@@ -392,20 +392,6 @@ static int rockchip_pwm_remove(struct platform_device *pdev)
- {
- 	struct rockchip_pwm_chip *pc = platform_get_drvdata(pdev);
- 
--	/*
--	 * Disable the PWM clk before unpreparing it if the PWM device is still
--	 * running. This should only happen when the last PWM user left it
--	 * enabled, or when nobody requested a PWM that was previously enabled
--	 * by the bootloader.
--	 *
--	 * FIXME: Maybe the core should disable all PWM devices in
--	 * pwmchip_remove(). In this case we'd only have to call
--	 * clk_unprepare() after pwmchip_remove().
--	 *
--	 */
--	if (pwm_is_enabled(pc->chip.pwms))
--		clk_disable(pc->clk);
--
- 	clk_unprepare(pc->pclk);
- 	clk_unprepare(pc->clk);
- 
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index cbfc132206e8..ca720d958315 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -64,11 +64,9 @@ static const struct sysfs_ops nilfs_##name##_attr_ops = { \
+ #define NILFS_DEV_INT_GROUP_TYPE(name, parent_name) \
+ static void nilfs_##name##_attr_release(struct kobject *kobj) \
+ { \
+-	struct nilfs_sysfs_##parent_name##_subgroups *subgroups; \
+-	struct the_nilfs *nilfs = container_of(kobj->parent, \
+-						struct the_nilfs, \
+-						ns_##parent_name##_kobj); \
+-	subgroups = nilfs->ns_##parent_name##_subgroups; \
++	struct nilfs_sysfs_##parent_name##_subgroups *subgroups = container_of(kobj, \
++						struct nilfs_sysfs_##parent_name##_subgroups, \
++						sg_##name##_kobj); \
+ 	complete(&subgroups->sg_##name##_kobj_unregister); \
+ } \
+ static struct kobj_type nilfs_##name##_ktype = { \
 -- 
 2.33.0
 
