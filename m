@@ -2,233 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A07416AA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DB9416AA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244071AbhIXD43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 23:56:29 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:42624 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S244018AbhIXD42 (ORCPT
+        id S244079AbhIXD6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 23:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244053AbhIXD6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 23:56:28 -0400
-X-UUID: b851e1b912fa409f8efbb1af59898d1b-20210924
-X-UUID: b851e1b912fa409f8efbb1af59898d1b-20210924
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 74977654; Fri, 24 Sep 2021 11:54:51 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 24 Sep 2021 11:54:50 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 24 Sep
- 2021 11:54:49 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 24 Sep 2021 11:54:49 +0800
-Message-ID: <1d7fe7455a054819daf05d41ab3658afdc1caced.camel@mediatek.com>
-Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8195: add machine driver with
- mt6359, rt1011 and rt5682
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <aaronyu@google.com>,
-        <linux-arm-kernel@lists.infradead.org>, <trevor.wu@mediatek.com>
-Date:   Fri, 24 Sep 2021 11:54:49 +0800
-In-Reply-To: <4d703c5f7cf27ddc8b9886b111ffeeba0c4aa08b.camel@mediatek.com>
-References: <20210910104405.11420-1-trevor.wu@mediatek.com>
-         <20210910104405.11420-2-trevor.wu@mediatek.com>
-         <10fc49fa-9791-0225-365d-e3074680596c@linux.intel.com>
-         <4d703c5f7cf27ddc8b9886b111ffeeba0c4aa08b.camel@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 23 Sep 2021 23:58:19 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDC1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 20:56:46 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id 138so26296991qko.10
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 20:56:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=T5ADzI1en+YNAAEohrN23QUrZld4cBrYp9ozDzunpR4=;
+        b=NnJX5JHW9yz4l0kRzGcspC0ezBt/AAfd1RF760dKV1skI7k4vUi3HnJRseYnNU7N2z
+         yW/wNZVO9qdllvrtpr/g3Fswl67xuUfnNAqSJwuC84/bOUdGV8KW2fXm8UQaBeXj0zl3
+         +dT1tunmrfdARc1CYn5P3DmGFTOpHFTh0I4Z3H6j0dVQpc3qHVZ1xWbyNJP0yEDAru3C
+         QEE7EAfKyPdKJuZ92W1oaZ34kNNkBgccIrUYsKGYJDd0ADs7d2v2Xx0+oaw0i0C9rBZu
+         NaBgEBSMkAmtA3nGUKu7rfShAYpuEIcrJ9RDAX5H/02zkKF4hx1nZowupUkH2SBf7PoR
+         qsLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=T5ADzI1en+YNAAEohrN23QUrZld4cBrYp9ozDzunpR4=;
+        b=nKgqm/Gv7Yx04IjS7yUDamdYbWKVjJ/cMQlUJvSJxvOH8n2eMSiEuMQNU3BPRinwiB
+         39mxYsjwhZ8MUTLgg1hjORrZmVfpGx5A2j4VpJH9XQPmrUZdZ8LD+htSYRy2hBbyInn3
+         JD70dcL6+n7e+2N4l+L+lLAoMG65R+FwrpS/B09p3tPnWz1ap9CwwKwQAAIEMjlfyB/O
+         9zmk5DEaVQf2cbVmd74weo4gVlRDz7nVGNNK0gG3Nk+w9zz54RnMeA5Eq2gyTRnWB1lw
+         VJISMzclmb00MiX76lFjhZDlLna0qIBwWa0Mu5v7e8iX5mzhjynKa42pt5toRUogm7Ml
+         RbWg==
+X-Gm-Message-State: AOAM5328CV7BnZLw54Nu8jtjarlaofIrsPwY1h4p4zRGEsl4dq7n/RSA
+        TI2xFVn7cikSu4rUHmeqYTOXzw==
+X-Google-Smtp-Source: ABdhPJwxCwPy6uCxI8Dl35dqUTg1+YhaXVWGZRboWOidkejvRGBO6taET3IT+SOPd4hc8zg2BvHbaQ==
+X-Received: by 2002:a37:b94:: with SMTP id 142mr8461074qkl.390.1632455804912;
+        Thu, 23 Sep 2021 20:56:44 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id u13sm5281885qki.38.2021.09.23.20.56.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 20:56:44 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 20:56:33 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Peter Xu <peterx@redhat.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Subject: Re: [PATCH v4 1/4] mm/shmem: Unconditionally set pte dirty in
+ mfill_atomic_install_pte
+In-Reply-To: <20210915181456.10739-2-peterx@redhat.com>
+Message-ID: <49fddb9a-4a52-1df-8b7c-dde2a89330bf@google.com>
+References: <20210915181456.10739-1-peterx@redhat.com> <20210915181456.10739-2-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre-Louis,
+On Wed, 15 Sep 2021, Peter Xu wrote:
 
-On Mon, 2021-09-13 at 18:24 +0800, Trevor Wu wrote:
-> On Fri, 2021-09-10 at 11:47 -0500, Pierre-Louis Bossart wrote:
-> > > 
+> It was conditionally done previously, as there's one shmem special case that we
+> use SetPageDirty() instead.  However that's not necessary and it should be
+> easier and cleaner to do it unconditionally in mfill_atomic_install_pte().
 > 
-> > > +
-> > > +	param->mtkaif_calibration_ok = false;
-> > > +	for (i = 0; i < MT8195_MTKAIF_MISO_NUM; i++) {
-> > > +		param->mtkaif_chosen_phase[i] = -1;
-> > > +		param->mtkaif_phase_cycle[i] = 0;
-> > > +		mtkaif_chosen_phase[i] = -1;
-> > > +		mtkaif_phase_cycle[i] = 0;
-> > > +	}
-> > > +
-> > > +	if (IS_ERR(afe_priv->topckgen)) {
-> > > +		dev_info(afe->dev, "%s() Cannot find topckgen
-> > > controller\n",
-> > > +			 __func__);
-> > > +		return 0;
-> > 
-> > is this not an error? Why not dev_err() and return -EINVAL or
-> > something?
-> > 
+> The most recent discussion about this is here, where Hugh explained the history
+> of SetPageDirty() and why it's possible that it's not required at all:
 > 
-> Should I still return an error, even if the caller didn't check it?
+> https://lore.kernel.org/lkml/alpine.LSU.2.11.2104121657050.1097@eggly.anvils/
 > 
-> Based on my understanding, the calibration function is used to make
-> the
-> signal more stable. 
-> Most of the time, mtkaif still works, even though the calibration
-> fails.
-> I guess that's why the caller(I refered to the implementation of
-> mt8192.) didn't check the return value of calibration function.
+> Currently mfill_atomic_install_pte() has three callers:
 > 
+>         1. shmem_mfill_atomic_pte
+>         2. mcopy_atomic_pte
+>         3. mcontinue_atomic_pte
 > 
-> > > +	}
-> > > +
-> > > +	pm_runtime_get_sync(afe->dev);
-> > 
-> > test if this worked?
-> > 
+> After the change: case (1) should have its SetPageDirty replaced by the dirty
+> bit on pte (so we unify them together, finally), case (2) should have no
+> functional change at all as it has page_in_cache==false, case (3) may add a
+> dirty bit to the pte.  However since case (3) is UFFDIO_CONTINUE for shmem,
+> it's merely 100% sure the page is dirty after all because UFFDIO_CONTINUE
+> normally requires another process to modify the page cache and kick the faulted
+> thread, so should not make a real difference either.
 > 
-> Yes, if I didn't add pm_runtime_get_sync here, the calibration
-> failed.
+> This should make it much easier to follow on which case will set dirty for
+> uffd, as we'll simply set it all now for all uffd related ioctls.  Meanwhile,
+> no special handling of SetPageDirty() if there's no need.
 > 
-> > > +	mt6359_mtkaif_calibration_enable(cmpnt_codec);
-> > > +
-> > > 
-[...]
-> > > +	mt6359_set_mtkaif_calibration_phase(cmpnt_codec,
-> > > +					    chosen_phase_1,
-> > > +					    chosen_phase_2,
-> > > +					    chosen_phase_3);
-> > > +
-> > > +	mt6359_mtkaif_calibration_disable(cmpnt_codec);
-> > > +	pm_runtime_put(afe->dev);
-> > > +
-> > > +	param->mtkaif_calibration_ok = mtkaif_calibration_ok;
-> > > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_0] =
-> > > chosen_phase_1;
-> > > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_1] =
-> > > chosen_phase_2;
-> > > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_2] =
-> > > chosen_phase_3;
-> > > +	for (i = 0; i < MT8195_MTKAIF_MISO_NUM; i++)
-> > > +		param->mtkaif_phase_cycle[i] = mtkaif_phase_cycle[i];
-> > > +
-> > > +	dev_info(afe->dev, "%s(), end, calibration ok %d\n",
-> > > +		 __func__, param->mtkaif_calibration_ok);
-> > 
-> > dev_dbg?
-> > 
-> 
-> Because we don't regard calibration failure as an error, it is a hint
-> to show the calibration result.
-> I prefer to keep dev_info here.
-> Is it OK?
-> 
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int mt8195_hdmitx_dptx_startup(struct snd_pcm_substream
-> > > *substream)
-> > > +{
-> > > +	static const unsigned int rates[] = {
-> > > +		48000
-> > > +	};
-> > > +	static const unsigned int channels[] = {
-> > > +		2, 4, 6, 8
-> > > +	};
-> > > +	static const struct snd_pcm_hw_constraint_list
-> > > constraints_rates = {
-> > > +		.count = ARRAY_SIZE(rates),
-> > > +		.list  = rates,
-> > > +		.mask = 0,
-> > > +	};
-> > > +	static const struct snd_pcm_hw_constraint_list
-> > > constraints_channels = {
-> > > +		.count = ARRAY_SIZE(channels),
-> > > +		.list  = channels,
-> > > +		.mask = 0,
-> > > +	};
-> > 
-> > you use the same const tables several times, move to a higher scope
-> > and
-> > reuse?
-> > 
-> 
-> There is little difference in channels between these startup ops.
-> 
-> > > +	struct snd_soc_pcm_runtime *rtd =
-> > > asoc_substream_to_rtd(substream);
-> > > +	struct snd_pcm_runtime *runtime = substream->runtime;
-> > > +	int ret;
-> > > +
-> > > +	ret = snd_pcm_hw_constraint_list(runtime, 0,
-> > > +					 SNDRV_PCM_HW_PARAM_RATE,
-> > > +					 &constraints_rates);
-> > > +	if (ret < 0) {
-> > > +		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret = snd_pcm_hw_constraint_list(runtime, 0,
-> > > +					 SNDRV_PCM_HW_PARAM_CHANNELS,
-> > > +					 &constraints_channels);
-> > > +	if (ret < 0) {
-> > > +		dev_err(rtd->dev, "hw_constraint_list channel
-> > > failed\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > 
-> > > +
-> > > +static struct platform_driver mt8195_mt6359_rt1011_rt5682_driver
-> > > =
-> > > {
-> > > +	.driver = {
-> > > +		.name = "mt8195_mt6359_rt1011_rt5682",
-> > > +#ifdef CONFIG_OF
-> > > +		.of_match_table = mt8195_mt6359_rt1011_rt5682_dt_match,
-> > > +#endif
-> > > +		.pm = &mt8195_mt6359_rt1011_rt5682_pm_ops,
-> > > +	},
-> > > +	.probe = mt8195_mt6359_rt1011_rt5682_dev_probe,
-> > > +};
-> > > +
-> > > +module_platform_driver(mt8195_mt6359_rt1011_rt5682_driver);
-> > > +
-> > > +/* Module information */
-> > > +MODULE_DESCRIPTION("MT8195-MT6359-RT1011-RT5682 ALSA SoC machine
-> > > driver");
-> > > +MODULE_AUTHOR("Trevor Wu <trevor.wu@mediatek.com>");
-> > > +MODULE_LICENSE("GPL v2");
-> > 
-> > "GPL" is enough
-> > 
-> 
-> I see many projects use GPL v2 here, and all mediatek projects use
-> GPL
-> v2, too.
-> I'm not sure which one is better.
-> Do I need to modify this?
-> 
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Axel Rasmussen <axelrasmussen@google.com>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
 
+I'm not going to NAK this, but you and I have different ideas of
+"very nice cleanups".  Generally, you appear (understandably) to be
+trying to offload pieces of work from your larger series, but often
+I don't see the sense of them, here in isolation anyway.
+
+Is this a safe transformation of the existing code? Yes, I believe so
+(at least until someone adds some PTESAN checker which looks to see
+if any ptes are dirty in vmas to which user never had write access).
+But it took quite a lot of lawyering to arrive at that conclusion.
+
+Is this a cleanup? No, it's a dirtyup.
+
+shmem_mfill_atomic_pte() does SetPageDirty (before unlocking page)
+because that's where the page contents are made dirty.  You could
+criticise it for doing SetPageDirty even in the zeropage case:
+yes, we've been lazy there; but that's a different argument.
+
+If someone is faulting this page into a read-only vma, it's
+surprising to make the pte dirty there.  What would be most correct
+would be to keep the SetPageDirty in shmem_mfill_atomic_pte()
+(with or without zeropage optimization), and probably SetPageDirty
+in some other places in mm/userfaultfd.c (I didn't look where) when
+the page is filled with supplied data, and mfill_atomic_install_pte()
+only do that pte_mkdirty() when it's serving a FAULT_FLAG_WRITE.
+
+I haven't looked again (I have a pile of mails to respond to!),
+but when I looked before I think I found that the vmf flags are
+not available to the userfaultfd ioctler.  If so, then it would
+be more appropriate to just leave the mkdirty to the hardware on
+return from fault (except - and again I cannot spend time researching
+this - perhaps I'm too x86-centric, and there are other architectures
+on which the software *must* do the mkdirty fixup to avoid refaulting
+forever - though probably userfaultfd state would itself prevent that).
+
+But you seem to think that doing the dirtying in an unnatural place
+helps somehow; and for all I know, that may be so in your larger
+series, though this change certainly raises suspicions of that.
+
+I'm sorry to be so discouraging, but you have asked for my opinion,
+and here at last you have it.  Not a NAK, but no enthusiasm at all.
+
+Hugh
+
+> ---
+>  mm/shmem.c       | 1 -
+>  mm/userfaultfd.c | 3 +--
+>  2 files changed, 1 insertion(+), 3 deletions(-)
 > 
-> > > +MODULE_ALIAS("mt8195_mt6359_rt1011_rt5682 soc card");
-> > > 
-
-Gentle ping.
-
-Thanks,
-Trevor
-
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 88742953532c..96ccf6e941aa 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2424,7 +2424,6 @@ int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+>  	shmem_recalc_inode(inode);
+>  	spin_unlock_irq(&info->lock);
+>  
+> -	SetPageDirty(page);
+>  	unlock_page(page);
+>  	return 0;
+>  out_delete_from_cache:
+> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+> index 7a9008415534..caf6dfff2a60 100644
+> --- a/mm/userfaultfd.c
+> +++ b/mm/userfaultfd.c
+> @@ -69,10 +69,9 @@ int mfill_atomic_install_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+>  	pgoff_t offset, max_off;
+>  
+>  	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+> +	_dst_pte = pte_mkdirty(_dst_pte);
+>  	if (page_in_cache && !vm_shared)
+>  		writable = false;
+> -	if (writable || !page_in_cache)
+> -		_dst_pte = pte_mkdirty(_dst_pte);
+>  	if (writable) {
+>  		if (wp_copy)
+>  			_dst_pte = pte_mkuffd_wp(_dst_pte);
+> -- 
+> 2.31.1
