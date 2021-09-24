@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0EC417387
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BFD4172CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344798AbhIXM5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51296 "EHLO mail.kernel.org"
+        id S1343782AbhIXMvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:51:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344800AbhIXMzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:55:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 099E461107;
-        Fri, 24 Sep 2021 12:51:01 +0000 (UTC)
+        id S1343995AbhIXMuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:50:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2516A6128E;
+        Fri, 24 Sep 2021 12:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487862;
-        bh=1E3rpQWxKiZTxXGpPvptV8BtqPwPaouT2/KeUgxNOto=;
+        s=korg; t=1632487685;
+        bh=+os6h3+603k8KxKhCv8nCdcFOo2nH+zYn1AAiuUodKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xNouj73WXEdUn4U+y8tLKdy1s6p/V5uI33dWP8yDkBWgNpq4r7lKCkvehugxHHXrd
-         T7Q6i3xJ2IKPKoreuTehRaMZV8p0S7D7LdGp13B9tklmJ4mqR6Z2ey9xBQv1e5cxua
-         VWI5A2TGcmgd49E1zt2Auiy116gfMSr4Llt71pV4=
+        b=i6E1cdG6PsACiKbPd11a4RSyB99ZEsElQPqBP/lQO4dV9SkiYAXerIvFIZRxrtvwu
+         qBbl4HMfwPEE5VpYPA3V1klv/Zl+kZtx5dnqknl/xqdNieaPjkHGrvGAQLgoZBvaN6
+         87qRGvI8ywnCM3vbG7Zs3GhgGOWCcV7UTklCzN5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: [PATCH 5.4 09/50] ARM: Qualify enabling of swiotlb_init()
+        stable@vger.kernel.org,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.14 04/27] crypto: talitos - fix max key size for sha384 and sha512
 Date:   Fri, 24 Sep 2021 14:43:58 +0200
-Message-Id: <20210924124332.547892561@linuxfoundation.org>
+Message-Id: <20210924124329.323456478@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-commit fcf044891c84e38fc90eb736b818781bccf94e38 upstream.
+commit 192125ed5ce62afba24312d8e7a0314577565b4a upstream.
 
-We do not need a SWIOTLB unless we have DRAM that is addressable beyond
-the arm_dma_limit. Compare max_pfn with arm_dma_pfn_limit to determine
-whether we do need a SWIOTLB to be initialized.
+Below commit came with a typo in the CONFIG_ symbol, leading
+to a permanently reduced max key size regarless of the driver
+capabilities.
 
-Fixes: ad3c7b18c5b3 ("arm: use swiotlb for bounce buffering on LPAE configs")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Reported-by: Horia Geantă <horia.geanta@nxp.com>
+Fixes: b8fbdc2bc4e7 ("crypto: talitos - reduce max key size for SEC1")
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/mm/init.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/crypto/talitos.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -469,7 +469,11 @@ static void __init free_highpages(void)
- void __init mem_init(void)
- {
- #ifdef CONFIG_ARM_LPAE
--	swiotlb_init(1);
-+	if (swiotlb_force == SWIOTLB_FORCE ||
-+	    max_pfn > arm_dma_pfn_limit)
-+		swiotlb_init(1);
-+	else
-+		swiotlb_force = SWIOTLB_NO_FORCE;
- #endif
- 
- 	set_max_mapnr(pfn_to_page(max_pfn) - mem_map);
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -816,7 +816,7 @@ static void talitos_unregister_rng(struc
+  * HMAC_SNOOP_NO_AFEA (HSNA) instead of type IPSEC_ESP
+  */
+ #define TALITOS_CRA_PRIORITY_AEAD_HSNA	(TALITOS_CRA_PRIORITY - 1)
+-#ifdef CONFIG_CRYPTO_DEV_TALITOS_SEC2
++#ifdef CONFIG_CRYPTO_DEV_TALITOS2
+ #define TALITOS_MAX_KEY_SIZE		(AES_MAX_KEY_SIZE + SHA512_BLOCK_SIZE)
+ #else
+ #define TALITOS_MAX_KEY_SIZE		(AES_MAX_KEY_SIZE + SHA256_BLOCK_SIZE)
 
 
