@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCCA417262
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C565941731A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344155AbhIXMsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:48:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
+        id S1344244AbhIXMyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:54:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343984AbhIXMqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:46:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 438F96124B;
-        Fri, 24 Sep 2021 12:45:22 +0000 (UTC)
+        id S1344721AbhIXMwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:52:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2B7F6124C;
+        Fri, 24 Sep 2021 12:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487522;
-        bh=VG+frtPWR7Hugbx58zvTwHatZg/pksRVcznDr+TupUc=;
+        s=korg; t=1632487778;
+        bh=El6RrObEra+TgvnnROtLU9sKOQy/hyp6Ou5WZ2aQziA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U4sR+070Qzs4lze3TX+jptruSkPS6moEed3OZKlssDq7fxEnAN3zxXcUC9Uom9LjF
-         RS+2iW4ypNtgV6r9wJHr7+MzdmNGFnCCOH+D8Sq7l/BQfwVnyu0jVYOslQR4gUe9vs
-         ZL4Ak7wANv3rPkmiOFdX+I0XyQHhWr/OihXEXqoA=
+        b=07nr7V9tzfU7obUAj1OqaQycS/20sdLwI09YR4eMnYDknr/ymr0xYpf5yXUnG4942
+         w3U7WI6W/zQHq/UbBvyZoRI1yLoOqxOLHwEzkqTEJgLuTmqrLLy7Bcr5EAs5U+JHhL
+         Jby8xN3v2XFcB1QA1xxmkvuvpgvZ8Z4UJFMeHYkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.9 02/26] PM / wakeirq: Fix unbalanced IRQ enable for wakeirq
+        stable@vger.kernel.org, Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 5.4 01/50] PCI: pci-bridge-emul: Fix big-endian support
 Date:   Fri, 24 Sep 2021 14:43:50 +0200
-Message-Id: <20210924124328.421778398@linuxfoundation.org>
+Message-Id: <20210924124332.279325483@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
-References: <20210924124328.336953942@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,69 +41,222 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Grzegorz Jaszczyk <jaz@semihalf.com>
 
-commit 69728051f5bf15efaf6edfbcfe1b5a49a2437918 upstream.
+commit e0d9d30b73548fbfe5c024ed630169bdc9a08aee upstream.
 
-If a device is runtime PM suspended when we enter suspend and has
-a dedicated wake IRQ, we can get the following warning:
+Perform conversion to little-endian before every write to configuration
+space and convert it back to CPU endianness on reads.
 
-WARNING: CPU: 0 PID: 108 at kernel/irq/manage.c:526 enable_irq+0x40/0x94
-[  102.087860] Unbalanced enable for IRQ 147
-...
-(enable_irq) from [<c06117a8>] (dev_pm_arm_wake_irq+0x4c/0x60)
-(dev_pm_arm_wake_irq) from [<c0618360>]
- (device_wakeup_arm_wake_irqs+0x58/0x9c)
-(device_wakeup_arm_wake_irqs) from [<c0615948>]
-(dpm_suspend_noirq+0x10/0x48)
-(dpm_suspend_noirq) from [<c01ac7ac>]
-(suspend_devices_and_enter+0x30c/0xf14)
-(suspend_devices_and_enter) from [<c01adf20>]
-(enter_state+0xad4/0xbd8)
-(enter_state) from [<c01ad3ec>] (pm_suspend+0x38/0x98)
-(pm_suspend) from [<c01ab3e8>] (state_store+0x68/0xc8)
+Additionally, initialise every multiple byte field of config space with
+the cpu_to_le* macro, which is required since the structure describing
+config space of emulated bridge assumes little-endian convention.
 
-This is because the dedicated wake IRQ for the device may have been
-already enabled earlier by dev_pm_enable_wake_irq_check().  Fix the
-issue by checking for runtime PM suspended status.
-
-This issue can be easily reproduced by setting serial console log level
-to zero, letting the serial console idle, and suspend the system from
-an ssh terminal.  On resume, dmesg will have the warning above.
-
-The reason why I have not run into this issue earlier has been that I
-typically run my PM test cases from on a serial console instead over ssh.
-
-Fixes: c84345597558 (PM / wakeirq: Enable dedicated wakeirq for suspend)
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Grzegorz Jaszczyk <jaz@semihalf.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/power/wakeirq.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/pci/pci-bridge-emul.c |   25 +++++++------
+ drivers/pci/pci-bridge-emul.h |   78 +++++++++++++++++++++---------------------
+ 2 files changed, 52 insertions(+), 51 deletions(-)
 
---- a/drivers/base/power/wakeirq.c
-+++ b/drivers/base/power/wakeirq.c
-@@ -320,7 +320,8 @@ void dev_pm_arm_wake_irq(struct wake_irq
- 		return;
+--- a/drivers/pci/pci-bridge-emul.c
++++ b/drivers/pci/pci-bridge-emul.c
+@@ -270,10 +270,10 @@ static const struct pci_bridge_reg_behav
+ int pci_bridge_emul_init(struct pci_bridge_emul *bridge,
+ 			 unsigned int flags)
+ {
+-	bridge->conf.class_revision |= PCI_CLASS_BRIDGE_PCI << 16;
++	bridge->conf.class_revision |= cpu_to_le32(PCI_CLASS_BRIDGE_PCI << 16);
+ 	bridge->conf.header_type = PCI_HEADER_TYPE_BRIDGE;
+ 	bridge->conf.cache_line_size = 0x10;
+-	bridge->conf.status = PCI_STATUS_CAP_LIST;
++	bridge->conf.status = cpu_to_le16(PCI_STATUS_CAP_LIST);
+ 	bridge->pci_regs_behavior = kmemdup(pci_regs_behavior,
+ 					    sizeof(pci_regs_behavior),
+ 					    GFP_KERNEL);
+@@ -284,8 +284,9 @@ int pci_bridge_emul_init(struct pci_brid
+ 		bridge->conf.capabilities_pointer = PCI_CAP_PCIE_START;
+ 		bridge->pcie_conf.cap_id = PCI_CAP_ID_EXP;
+ 		/* Set PCIe v2, root port, slot support */
+-		bridge->pcie_conf.cap = PCI_EXP_TYPE_ROOT_PORT << 4 | 2 |
+-			PCI_EXP_FLAGS_SLOT;
++		bridge->pcie_conf.cap =
++			cpu_to_le16(PCI_EXP_TYPE_ROOT_PORT << 4 | 2 |
++				    PCI_EXP_FLAGS_SLOT);
+ 		bridge->pcie_cap_regs_behavior =
+ 			kmemdup(pcie_cap_regs_behavior,
+ 				sizeof(pcie_cap_regs_behavior),
+@@ -327,7 +328,7 @@ int pci_bridge_emul_conf_read(struct pci
+ 	int reg = where & ~3;
+ 	pci_bridge_emul_read_status_t (*read_op)(struct pci_bridge_emul *bridge,
+ 						 int reg, u32 *value);
+-	u32 *cfgspace;
++	__le32 *cfgspace;
+ 	const struct pci_bridge_reg_behavior *behavior;
  
- 	if (device_may_wakeup(wirq->dev)) {
--		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED)
-+		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED &&
-+		    !pm_runtime_status_suspended(wirq->dev))
- 			enable_irq(wirq->irq);
- 
- 		enable_irq_wake(wirq->irq);
-@@ -342,7 +343,8 @@ void dev_pm_disarm_wake_irq(struct wake_
- 	if (device_may_wakeup(wirq->dev)) {
- 		disable_irq_wake(wirq->irq);
- 
--		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED)
-+		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED &&
-+		    !pm_runtime_status_suspended(wirq->dev))
- 			disable_irq_nosync(wirq->irq);
+ 	if (bridge->has_pcie && reg >= PCI_CAP_PCIE_END) {
+@@ -343,11 +344,11 @@ int pci_bridge_emul_conf_read(struct pci
+ 	if (bridge->has_pcie && reg >= PCI_CAP_PCIE_START) {
+ 		reg -= PCI_CAP_PCIE_START;
+ 		read_op = bridge->ops->read_pcie;
+-		cfgspace = (u32 *) &bridge->pcie_conf;
++		cfgspace = (__le32 *) &bridge->pcie_conf;
+ 		behavior = bridge->pcie_cap_regs_behavior;
+ 	} else {
+ 		read_op = bridge->ops->read_base;
+-		cfgspace = (u32 *) &bridge->conf;
++		cfgspace = (__le32 *) &bridge->conf;
+ 		behavior = bridge->pci_regs_behavior;
  	}
- }
+ 
+@@ -357,7 +358,7 @@ int pci_bridge_emul_conf_read(struct pci
+ 		ret = PCI_BRIDGE_EMUL_NOT_HANDLED;
+ 
+ 	if (ret == PCI_BRIDGE_EMUL_NOT_HANDLED)
+-		*value = cfgspace[reg / 4];
++		*value = le32_to_cpu(cfgspace[reg / 4]);
+ 
+ 	/*
+ 	 * Make sure we never return any reserved bit with a value
+@@ -387,7 +388,7 @@ int pci_bridge_emul_conf_write(struct pc
+ 	int mask, ret, old, new, shift;
+ 	void (*write_op)(struct pci_bridge_emul *bridge, int reg,
+ 			 u32 old, u32 new, u32 mask);
+-	u32 *cfgspace;
++	__le32 *cfgspace;
+ 	const struct pci_bridge_reg_behavior *behavior;
+ 
+ 	if (bridge->has_pcie && reg >= PCI_CAP_PCIE_END)
+@@ -414,11 +415,11 @@ int pci_bridge_emul_conf_write(struct pc
+ 	if (bridge->has_pcie && reg >= PCI_CAP_PCIE_START) {
+ 		reg -= PCI_CAP_PCIE_START;
+ 		write_op = bridge->ops->write_pcie;
+-		cfgspace = (u32 *) &bridge->pcie_conf;
++		cfgspace = (__le32 *) &bridge->pcie_conf;
+ 		behavior = bridge->pcie_cap_regs_behavior;
+ 	} else {
+ 		write_op = bridge->ops->write_base;
+-		cfgspace = (u32 *) &bridge->conf;
++		cfgspace = (__le32 *) &bridge->conf;
+ 		behavior = bridge->pci_regs_behavior;
+ 	}
+ 
+@@ -431,7 +432,7 @@ int pci_bridge_emul_conf_write(struct pc
+ 	/* Clear the W1C bits */
+ 	new &= ~((value << shift) & (behavior[reg / 4].w1c & mask));
+ 
+-	cfgspace[reg / 4] = new;
++	cfgspace[reg / 4] = cpu_to_le32(new);
+ 
+ 	if (write_op)
+ 		write_op(bridge, reg, old, new, mask);
+--- a/drivers/pci/pci-bridge-emul.h
++++ b/drivers/pci/pci-bridge-emul.h
+@@ -6,65 +6,65 @@
+ 
+ /* PCI configuration space of a PCI-to-PCI bridge. */
+ struct pci_bridge_emul_conf {
+-	u16 vendor;
+-	u16 device;
+-	u16 command;
+-	u16 status;
+-	u32 class_revision;
++	__le16 vendor;
++	__le16 device;
++	__le16 command;
++	__le16 status;
++	__le32 class_revision;
+ 	u8 cache_line_size;
+ 	u8 latency_timer;
+ 	u8 header_type;
+ 	u8 bist;
+-	u32 bar[2];
++	__le32 bar[2];
+ 	u8 primary_bus;
+ 	u8 secondary_bus;
+ 	u8 subordinate_bus;
+ 	u8 secondary_latency_timer;
+ 	u8 iobase;
+ 	u8 iolimit;
+-	u16 secondary_status;
+-	u16 membase;
+-	u16 memlimit;
+-	u16 pref_mem_base;
+-	u16 pref_mem_limit;
+-	u32 prefbaseupper;
+-	u32 preflimitupper;
+-	u16 iobaseupper;
+-	u16 iolimitupper;
++	__le16 secondary_status;
++	__le16 membase;
++	__le16 memlimit;
++	__le16 pref_mem_base;
++	__le16 pref_mem_limit;
++	__le32 prefbaseupper;
++	__le32 preflimitupper;
++	__le16 iobaseupper;
++	__le16 iolimitupper;
+ 	u8 capabilities_pointer;
+ 	u8 reserve[3];
+-	u32 romaddr;
++	__le32 romaddr;
+ 	u8 intline;
+ 	u8 intpin;
+-	u16 bridgectrl;
++	__le16 bridgectrl;
+ };
+ 
+ /* PCI configuration space of the PCIe capabilities */
+ struct pci_bridge_emul_pcie_conf {
+ 	u8 cap_id;
+ 	u8 next;
+-	u16 cap;
+-	u32 devcap;
+-	u16 devctl;
+-	u16 devsta;
+-	u32 lnkcap;
+-	u16 lnkctl;
+-	u16 lnksta;
+-	u32 slotcap;
+-	u16 slotctl;
+-	u16 slotsta;
+-	u16 rootctl;
+-	u16 rsvd;
+-	u32 rootsta;
+-	u32 devcap2;
+-	u16 devctl2;
+-	u16 devsta2;
+-	u32 lnkcap2;
+-	u16 lnkctl2;
+-	u16 lnksta2;
+-	u32 slotcap2;
+-	u16 slotctl2;
+-	u16 slotsta2;
++	__le16 cap;
++	__le32 devcap;
++	__le16 devctl;
++	__le16 devsta;
++	__le32 lnkcap;
++	__le16 lnkctl;
++	__le16 lnksta;
++	__le32 slotcap;
++	__le16 slotctl;
++	__le16 slotsta;
++	__le16 rootctl;
++	__le16 rsvd;
++	__le32 rootsta;
++	__le32 devcap2;
++	__le16 devctl2;
++	__le16 devsta2;
++	__le32 lnkcap2;
++	__le16 lnkctl2;
++	__le16 lnksta2;
++	__le32 slotcap2;
++	__le16 slotctl2;
++	__le16 slotsta2;
+ };
+ 
+ struct pci_bridge_emul;
 
 
