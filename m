@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613A4417295
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C128B41735C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344374AbhIXMtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:49:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43434 "EHLO mail.kernel.org"
+        id S1344838AbhIXMzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:55:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344009AbhIXMsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:48:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E3F61164;
-        Fri, 24 Sep 2021 12:46:50 +0000 (UTC)
+        id S1344305AbhIXMxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:53:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4186A61278;
+        Fri, 24 Sep 2021 12:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487611;
-        bh=fAtWr3YnQewUqGl7Wpx+8AbgCl1EMOkpmYVR4cR5bho=;
+        s=korg; t=1632487809;
+        bh=7JkoLnTqFRGSu4CDuG7Hv+/U1pOyGjfpqqP4FJJVrg4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQOEzwqU/AMunSKE2+rjz2R6FYKVAskla3Twghhbhsq7II5PhdgcOlYGkDSiLlbAK
-         tI4ZnjtVdEsxU22KmhrKFs/ZznXetmxRH6zj/fCBTT5mccAYP/iJVTa7dRH3lh7XBQ
-         XeFNHSYT8xmGSg+b5Eke7R1jYoxhj+E9/yfKd5wE=
+        b=UVIG+LhEevmAvNZabZeNOXSgx8T4pYg+RAy0MKohYIQs1F/QGSuS5OpUwN8JX4wUO
+         J9Ja1/saq+KA3LZ9iZgB0OZZQNWgJyIFJFoEjQxWwK8mP62IIxpgA4HlHcODu+X3Bs
+         ezelAmiroA2+f/m6oNScBdb0EfY5EBq9oq8Tpou8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 21/26] nilfs2: fix memory leak in nilfs_sysfs_delete_##name##_group
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 5.4 20/50] thermal/drivers/exynos: Fix an error code in exynos_tmu_probe()
 Date:   Fri, 24 Sep 2021 14:44:09 +0200
-Message-Id: <20210924124329.051372383@linuxfoundation.org>
+Message-Id: <20210924124332.914944338@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
-References: <20210924124328.336953942@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nanyong Sun <sunnanyong@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit a3e181259ddd61fd378390977a1e4e2316853afa ]
+commit 02d438f62c05f0d055ceeedf12a2f8796b258c08 upstream.
 
-The kobject_put() should be used to cleanup the memory associated with the
-kobject instead of kobject_del.  See the section "Kobject removal" of
-"Documentation/core-api/kobject.rst".
+This error path return success but it should propagate the negative
+error code from devm_clk_get().
 
-Link: https://lkml.kernel.org/r/20210629022556.3985106-5-sunnanyong@huawei.com
-Link: https://lkml.kernel.org/r/1625651306-10829-5-git-send-email-konishi.ryusuke@gmail.com
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 6c247393cfdd ("thermal: exynos: Add TMU support for Exynos7 SoC")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210810084413.GA23810@kili
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nilfs2/sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thermal/samsung/exynos_tmu.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index eab7bd68da12..31eed118d0ce 100644
---- a/fs/nilfs2/sysfs.c
-+++ b/fs/nilfs2/sysfs.c
-@@ -106,7 +106,7 @@ static int nilfs_sysfs_create_##name##_group(struct the_nilfs *nilfs) \
- } \
- static void nilfs_sysfs_delete_##name##_group(struct the_nilfs *nilfs) \
- { \
--	kobject_del(&nilfs->ns_##parent_name##_subgroups->sg_##name##_kobj); \
-+	kobject_put(&nilfs->ns_##parent_name##_subgroups->sg_##name##_kobj); \
- }
- 
- /************************************************************************
--- 
-2.33.0
-
+--- a/drivers/thermal/samsung/exynos_tmu.c
++++ b/drivers/thermal/samsung/exynos_tmu.c
+@@ -1070,6 +1070,7 @@ static int exynos_tmu_probe(struct platf
+ 		data->sclk = devm_clk_get(&pdev->dev, "tmu_sclk");
+ 		if (IS_ERR(data->sclk)) {
+ 			dev_err(&pdev->dev, "Failed to get sclk\n");
++			ret = PTR_ERR(data->sclk);
+ 			goto err_clk;
+ 		} else {
+ 			ret = clk_prepare_enable(data->sclk);
 
 
