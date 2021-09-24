@@ -2,194 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818D6416935
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7EB416939
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243737AbhIXBD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 21:03:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38524 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243676AbhIXBDz (ORCPT
+        id S243711AbhIXBHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 21:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240863AbhIXBHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 21:03:55 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632445341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kQk2GihfSjtSeZUWZy1F+u7jfH25EFIJlwAQfvaVLi0=;
-        b=1LVRE8MVY421IfWRt9am8QgddckQOV4Jq+7iSes11mrYMdt7vzrInJeEr6W26CgBOyBS4H
-        /RNeRYnri1xJRRPY6UNmkCEvfjCzg+7BhrQBPKRKHnzZ/kCxnP0r0c3mIC4NxKLvlkXHTO
-        KfxwvHyJ1p//1O8yyGqtqmfEwXE3d/k6az+MZpjj0UJ30/0Y8cyjaIHl65G2W7j90AGvGy
-        Rqf7VO1KMMTxOReGXUy63pSN/JYBmV24Grclj6m44UfAlGsmDP72hORGFXPt2NDBpQxqhP
-        AkKRshaPbCTMuhFlT1gSLa6k70JxRKI53wf3I2tbuxYy04xqm9IOTacD2qBnvw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632445341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kQk2GihfSjtSeZUWZy1F+u7jfH25EFIJlwAQfvaVLi0=;
-        b=3aPjjZKeE1+jA9HmIhDpgs4l8/mPEyArvUVFnsXiH/YzTv7WWpGSUEXQQP5L73JRWfFD2F
-        fgGmIXzaeL/EpKBg==
-To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
-Cc:     Sohil Mehta <sohil.mehta@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 08/13] x86/process/64: Clean up uintr task fork and
- exit paths
-In-Reply-To: <20210913200132.3396598-9-sohil.mehta@intel.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-9-sohil.mehta@intel.com>
-Date:   Fri, 24 Sep 2021 03:02:21 +0200
-Message-ID: <8735pug50i.ffs@tglx>
+        Thu, 23 Sep 2021 21:07:39 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBD3C061574;
+        Thu, 23 Sep 2021 18:06:07 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id u22so12298194oie.5;
+        Thu, 23 Sep 2021 18:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ArpQncnpQmSaNPsbvlT3rEkygRJSB+QsZ3dkPtwwBe0=;
+        b=l+T916tq9xQJB1u3pK0jVjmfnXOhPhvuzGNUTDtKTHwjA6ySKT+1StK1eCjmhvFtOe
+         LWDA8cuobfhzOuoBi7FKPc4+76w9poAX0MhV4Fueq9s77sZgGVk5Bpoc5wRxxj8PGiZC
+         RwVeHludygeeX8h1X5UPloDg5Rzmus7SInQQLTz/fQtiGdTvf3SNxGL74jVW6zwXzVCQ
+         XmzYKsTX8aStPGN1/OS7IuGysIQNTowl9bhKOb1MGgY4NX8ZkSZyDzc8uzH0HHUfSBCc
+         ab4V/CFjkiPkvpCuwu7zY3ti2MkILVX45jXce4c5JEL7SS2W2aKCWD3rKUZuyEjZMYKs
+         AavQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ArpQncnpQmSaNPsbvlT3rEkygRJSB+QsZ3dkPtwwBe0=;
+        b=uuxTvGvE3BAER1O7y6xwG2ZG9jzv+hcQtI33Qp7NTVVMQSVRVSMejZ/PQWqFNjDLvo
+         uFKPlFeoJaS8UvKTKW30q7yrHeXEinD9oEFIRwokdRg2QCUKmbaDoDsOfk0Go8DQhLl5
+         9wtOzHVUAKJOmAAxTgTBOhkmrS7pI98f8Z2Je4tD3sO+8NbGXvyJ8mdNWG8Eekmisn4P
+         MwU6otq255OIe2YKYfSmaYUas9JdpAdxprVJKb68tzb085rT7JZOMTUJtr264PjSlMpj
+         mBhxyEPJwrJhta8MArKAIT5TC4cHxSqdk4ZEV47Vo3jz11RVFMDbWEJVXrk2zjS3/EqA
+         Oi2Q==
+X-Gm-Message-State: AOAM531R7xt6xeL7Debo+G+aem4n7jdEEseXqtmOiMGrJ1LSim3AUJy7
+        6aULWBQhyLfQNR4XRSq2g5A=
+X-Google-Smtp-Source: ABdhPJzGDid0sKGbfIBrtk3UGtAEmAdTGjUMbRnzidj0RpdRfT61NKAidIg//pXt0Je0+1zTi84QVg==
+X-Received: by 2002:aca:645:: with SMTP id 66mr6054976oig.145.1632445566502;
+        Thu, 23 Sep 2021 18:06:06 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 37sm667324oti.7.2021.09.23.18.06.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 18:06:05 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 23 Sep 2021 18:06:04 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        linux-hwmon@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] hwmon: (mlxreg-fan): Fix out of bounds read on
+ array fan->pwm
+Message-ID: <20210924010604.GA3029410@roeck-us.net>
+References: <20210920180921.16246-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920180921.16246-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+On Mon, Sep 20, 2021 at 07:09:21PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Array fan->pwm[] is MLXREG_FAN_MAX_PWM elements in size, however the
+> for-loop has a off-by-one error causing index i to be out of range
+> causing an out of bounds read on the array. Fix this by replacing
+> the <= operator with < in the for-loop.
+> 
+> Addresses-Coverity: ("Out-of-bounds read")
+> Fixes: 35edbaab3bbf ("hwmon: (mlxreg-fan) Extend driver to support multiply cooling devices")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-> The user interrupt MSRs and the user interrupt state is task specific.
-> During task fork and exit clear the task state, clear the MSRs and
-> dereference the shared resources.
->
-> Some of the memory resources like the UPID are referenced in the file
-> descriptor and could be in use while the uintr_fd is still valid.
-> Instead of freeing up  the UPID just dereference it.
-
-Derefencing the UPID, i.e. accessing task->upid->foo helps in which way?
-
-You want to drop the reference count I assume. Then please write that
-so. 
-
-> Eventually when every user releases the reference the memory resource
-> will be freed up.
-
-Yeah, eventually or not...
-
-> --- a/arch/x86/kernel/fpu/core.c
-> +++ b/arch/x86/kernel/fpu/core.c
-
-> @@ -260,6 +260,7 @@ int fpu_clone(struct task_struct *dst)
->  {
->  	struct fpu *src_fpu = &current->thread.fpu;
->  	struct fpu *dst_fpu = &dst->thread.fpu;
-> +	struct uintr_state *uintr_state;
->  
->  	/* The new task's FPU state cannot be valid in the hardware. */
->  	dst_fpu->last_cpu = -1;
-> @@ -284,6 +285,14 @@ int fpu_clone(struct task_struct *dst)
->  
->  	else
->  		save_fpregs_to_fpstate(dst_fpu);
-> +
-> +	/* UINTR state is not expected to be inherited (in the current design). */
-> +	if (static_cpu_has(X86_FEATURE_UINTR)) {
-> +		uintr_state = get_xsave_addr(&dst_fpu->state.xsave, XFEATURE_UINTR);
-> +		if (uintr_state)
-> +			memset(uintr_state, 0, sizeof(*uintr_state));
-> +	}
-
-1) If the FPU registers are up to date then this can be completely
-   avoided by excluding the UINTR component from XSAVES
-
-2) If the task never used that muck then UINTR is in init state and
-   clearing that memory is a redunant exercise because it has been
-   cleared already
-
-So yes, this clearly is evidence how this is enhancing performance.
-
-> +/*
-> + * This should only be called from exit_thread().
-
-Should? Would? Maybe or what?
-
-> + * exit_thread() can happen in current context when the current thread is
-> + * exiting or it can happen for a new thread that is being created.
-
-A right that makes sense. If a new thread is created then it can call
-exit_thread(), right?
-
-> + * For new threads is_uintr_receiver() should fail.
-
-Should fail?
-
-> + */
-> +void uintr_free(struct task_struct *t)
-> +{
-> +	struct uintr_receiver *ui_recv;
-> +	struct fpu *fpu;
-> +
-> +	if (!static_cpu_has(X86_FEATURE_UINTR) || !is_uintr_receiver(t))
-> +		return;
-> +
-> +	if (WARN_ON_ONCE(t != current))
-> +		return;
-> +
-> +	fpu = &t->thread.fpu;
-> +
-> +	fpregs_lock();
-> +
-> +	if (fpregs_state_valid(fpu, smp_processor_id())) {
-> +		wrmsrl(MSR_IA32_UINTR_MISC, 0ULL);
-> +		wrmsrl(MSR_IA32_UINTR_PD, 0ULL);
-> +		wrmsrl(MSR_IA32_UINTR_RR, 0ULL);
-> +		wrmsrl(MSR_IA32_UINTR_STACKADJUST, 0ULL);
-> +		wrmsrl(MSR_IA32_UINTR_HANDLER, 0ULL);
-> +	} else {
-> +		struct uintr_state *p;
-> +
-> +		p = get_xsave_addr(&fpu->state.xsave, XFEATURE_UINTR);
-> +		if (p) {
-> +			p->handler = 0;
-> +			p->uirr = 0;
-> +			p->upid_addr = 0;
-> +			p->stack_adjust = 0;
-> +			p->uinv = 0;
-> +		}
-> +	}
-> +
-> +	/* Check: Can a thread be context switched while it is exiting? */
-
-This looks like a question which should be answered _before_ writing
-such code.
-
-> +	ui_recv = t->thread.ui_recv;
-> +
-> +	/*
-> +	 * Suppress notifications so that no further interrupts are
-> +	 * generated based on this UPID.
-> +	 */
-> +	set_bit(UPID_SN, (unsigned long *)&ui_recv->upid_ctx->upid->nc.status);
-> +	put_upid_ref(ui_recv->upid_ctx);
-> +	kfree(ui_recv);
-> +	t->thread.ui_recv = NULL;
-
-Again, why needs all this put/kfree muck be within the fpregs locked section?
-
-> +	fpregs_unlock();
-> +}
+Applied.
 
 Thanks,
+Guenter
 
-        tglx
+> ---
+>  drivers/hwmon/mlxreg-fan.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/mlxreg-fan.c b/drivers/hwmon/mlxreg-fan.c
+> index 35228ed112d7..feab9ec6a6ca 100644
+> --- a/drivers/hwmon/mlxreg-fan.c
+> +++ b/drivers/hwmon/mlxreg-fan.c
+> @@ -554,7 +554,7 @@ static int mlxreg_fan_cooling_config(struct device *dev, struct mlxreg_fan *fan)
+>  {
+>  	int i, j;
+>  
+> -	for (i = 0; i <= MLXREG_FAN_MAX_PWM; i++) {
+> +	for (i = 0; i < MLXREG_FAN_MAX_PWM; i++) {
+>  		struct mlxreg_fan_pwm *pwm = &fan->pwm[i];
+>  
+>  		if (!pwm->connected)
