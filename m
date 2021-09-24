@@ -2,149 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B723C416B52
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 07:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDBE416B59
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 07:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244156AbhIXFuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 01:50:11 -0400
-Received: from mail-dm6nam11on2071.outbound.protection.outlook.com ([40.107.223.71]:58625
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229727AbhIXFuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 01:50:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=URklQYXHgCGwdRZoIiZHy9r8/qxHMv+zQ1HEzZApAZxVA3Dv2bmV8gwUp/0jUg9S2H2iVIR6lnQa/cmIz/Q077+3Dvf+U6tiZhldHeH5uvFlxCDb8tPo/ivdTND1gTg4OplOgwixOZKK3/wxII+Xy5eMFTbQwX2CuJvVxwxgeFk5moQwl/e5R1YUNC1pt8rja/xkd0mzhCTj09vg7q+oGyg48S1kqh6ETuZtt+xjaMhvD2qNjzl+SuzTZXNjv7QxYyrnlTX7X8gr6EGnmts6jC2FrZXysLcGDEr31OcWCfX6IZZ7t4BSoKsf21uyAqBejBEHJ/5bl34Nx4Vc0XJ2uw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=HtCtGjpvoqhvnVevPhb0a6ckdCdbFOIhRfoZZtXq74s=;
- b=PXkRk4zjLECPqoorVCzur/N598a535K6kuswINTCFDbtSETDL6M7UyRug8w3l3nDJwI3DI95RWftziRaIDnZTDDNbexnionfMtxJbU7X+JJTjk8JtLxmMJJAqsLy1rPZdbscLsNnIer25J8murijnIruDuugCZ7E1t+vna3BVzv1pAuSpVP8G17BJzW9NYuf9yIU/5lFf7DsoFVipjOJ2SwU6OHCjfcekwQou5jYqakJepHX0+TO8k+s45XUfanQZw+fYmHRgKhhgH+WJcSKVQi2Z2Zt4hS4yGOvTArNJ4HArC5MneoCkImh2eTXk8Vs0kBJDz4SEiEMOelHPW6akw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HtCtGjpvoqhvnVevPhb0a6ckdCdbFOIhRfoZZtXq74s=;
- b=PqPBKiNSk/bpWRCznbcvGesE+qTEzFfczpTpFd6stYRHWcQwPB5mPuWpBQ+B3TZ789gnjSGIpvudtB4NyIVF3Sjz7j+wnM3/hywDswqpa3R2TQ6KMY2CwmO8b1lc6lLaVWFL7l4SK4EmuiRHj2UBZtelsx4CkHoC86tq2L6mYBrJCEYtsqOrLvE5kLFD9Nrxf/rAeFnnHhtPh6wSqfIWfaaTUrvYhJAI9z1/avBxi1tPe/xlcZJ4BcOz8cg1pSl3qv26ekO/iS8fkT/JkGG539aSSlNJmqG7yrN8VRe6HycmrhGAfsx0Cfsqr+U6iO0oIA/Fwi39+ERxgTZeEP65Zg==
-Received: from BN9PR03CA0408.namprd03.prod.outlook.com (2603:10b6:408:111::23)
- by DM8PR12MB5464.namprd12.prod.outlook.com (2603:10b6:8:3d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Fri, 24 Sep
- 2021 05:48:35 +0000
-Received: from BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:111:cafe::6d) by BN9PR03CA0408.outlook.office365.com
- (2603:10b6:408:111::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Fri, 24 Sep 2021 05:48:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- BN8NAM11FT048.mail.protection.outlook.com (10.13.177.117) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 05:48:34 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Sep
- 2021 22:48:33 -0700
-Received: from [172.27.4.177] (172.20.187.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 24 Sep
- 2021 05:48:30 +0000
-Subject: Re: [PATCH mlx5-next 4/7] net/mlx5: Introduce migration bits and
- structures
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yishai Hadas <yishaih@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <be4ea343f1afd0d49afce7dccaa8fcadebd3fe8d.1632305919.git.leonro@nvidia.com>
-From:   Mark Zhang <markzhang@nvidia.com>
-Message-ID: <77a12336-ec18-2791-b7b1-744a44eb2e72@nvidia.com>
-Date:   Fri, 24 Sep 2021 13:48:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S244159AbhIXFxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 01:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229727AbhIXFxX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 01:53:23 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34212C061574;
+        Thu, 23 Sep 2021 22:51:51 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so3601093pjw.0;
+        Thu, 23 Sep 2021 22:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UK43SGKijJtA3EFYHtOEdO01kvNoWX55bdi7RqCfAyM=;
+        b=MWAsJG+BWWjrwLl4jGn8Eck1HlcdZtTLfn/EUL15PTlcG2l76YM+MmOBKclv6Yc10z
+         7SUJhxHAH0oFsl3wbdoWTzzCF1oHvN45S/+xYAlVLG0cUSaKANLY9FykndvIOBd2ogWK
+         d7XukgoV7jbbwhW/QjcbDAPohIepU4z6aEp2N0HzgP7ToCbuL0VZUeKcYe+mDDIcghhq
+         IoNsq0s18kCS38YOFsyx2Gpxvt0emrsqBOG0CEss11GKBErlsDD9aBXfo6DqI+LdoMqy
+         /Npk8PuIs69nj5zsX7Gd2gFPPwIT57ELPIKXig2L49YYUoa7gSdWqoa7H+vXMYN9umsH
+         Q37A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UK43SGKijJtA3EFYHtOEdO01kvNoWX55bdi7RqCfAyM=;
+        b=wcePXIAYPxwsEv76jX4tdDWMVhZtSet25yDsinYhSa/Gm7GKf8VsoX0hOFt+Bx2dYg
+         FUbyWmzABvtmzztUxCjLIG9lnstViiv75sYzB2b057XWBmXGDe4O8k0yn4jb8rcXZTp1
+         uTEZvSDoTK2Sfb44ZVNokNYZB+JZajA7jxXDHrM/dC4PuCQ/lAeQSdfLXGlF0hh0NNY6
+         MEcmKXmHvCji3JQtGsL9Osues1nknVbVjIPo6xTm3+CJd3aPP9S43Oqtdc8sFEX5e0AP
+         85Hwh0mlyCPLqkOr7MgBSHQK2+yqMyeleGItLHHz4VSTd079dvl1Qz8CKGtU31x9EldP
+         AaBA==
+X-Gm-Message-State: AOAM532snvQcoqMd+Iwu6zS0n2sfTT7jiDS5OIcW2xswxdUekuwKT83i
+        VOrDfOijSWVKNDuXCYiTfTbJkAlD5yc=
+X-Google-Smtp-Source: ABdhPJzu1iSvpdRxE9NEFNTozTipjf4Eh2AmW2zsj4/OXNCsoJpYT+6DwlFBlWSavRGSabp62dMP7w==
+X-Received: by 2002:a17:90b:3143:: with SMTP id ip3mr160444pjb.50.1632462710634;
+        Thu, 23 Sep 2021 22:51:50 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id l14sm11033229pjq.13.2021.09.23.22.51.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 22:51:50 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yang.yang29@zte.com.cn
+To:     alexs@kernel.org, siyanteng@loongson.cn
+Cc:     corbet@lwn.net, yang.yang29@zte.com.cn, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] docs/zh_CN: Add zh_CN/accounting/delay-accounting.rst
+Date:   Fri, 24 Sep 2021 05:51:36 +0000
+Message-Id: <20210924055135.262327-1-yang.yang29@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <be4ea343f1afd0d49afce7dccaa8fcadebd3fe8d.1632305919.git.leonro@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ecc9c766-8556-4edc-f10c-08d97f1ef2ea
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5464:
-X-Microsoft-Antispam-PRVS: <DM8PR12MB546407D272EDBB86F5C7AE63C7A49@DM8PR12MB5464.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3B2ozKG32auxied2gVpjsg+z6n30AplYD/sTxQT0AOhopnvcXkqiZg5nbeJg8EUxdxpjU+poYL7p1GpZICnjqZQsZw86XPBJHw/8bNiAHEJqinlV6AU1HucJBpI2UwU0LmoxHIDzKclK1reoo2A0CwKhToZ3SazjVQGMZL0lIuu5zIZZJTXyQQgNV3eAIBOA91VBbIKJKyWFNhRGbLsd1XNbuGupka3SpKedaHBkjsVuVOEv+Wt7jtP3rwrtqyFTcFftCuKLfdCNnEnULdeLDTSo9ex4ehzgKVbByjCdQGrjB8L0w3WIC9nXWAzuaeGBZ5IOSBMElB9o8ExER4Gc0cF5gfeoS1fYf4y2F1Jc/5aPaRfji628Jd9BPBx+aimnPd0HxaT6Uj1ANQnxwYdEjNu1pcYpfzTNkhf2ojEJQeCk0Y+2Tz4Z+uLr2861NqE5BXh32W4jtLJvovX6kWtsUZz8yn+lmkfSkXy9DHQd8eYKAn6zKzdqvRmSr/EretyAJNzj4W9C98AYcZx1URLyOPLByPid2rTd3Y2gaWU3l/016aufcUTFhXlKBNpeV0lOLti3X67dB9aUX69KjvQvMmPzHX4SBzK/D8+1boaHR68ssgc11xreSCZUUtoYAI7S1RzbtWS5dQFSq7B55NvI44fXHP7eGy2v1CLb39MxLnUb18h42QjnOBf9XQFMuFmNZ2xl/ZR8JvgNdcc2fu625iwKK7sYoHQR+Xn0ydhfH2U=
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(508600001)(16526019)(4326008)(26005)(186003)(8676002)(7416002)(86362001)(16576012)(36860700001)(5660300002)(6636002)(316002)(107886003)(82310400003)(426003)(6666004)(31696002)(2906002)(31686004)(54906003)(47076005)(53546011)(110136005)(2616005)(8936002)(356005)(36756003)(83380400001)(336012)(7636003)(70586007)(70206006)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 05:48:34.9116
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecc9c766-8556-4edc-f10c-08d97f1ef2ea
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5464
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/2021 6:38 PM, Leon Romanovsky wrote:
-> From: Yishai Hadas <yishaih@nvidia.com>
-> 
-> Introduce migration IFC related stuff to enable migration commands.
-> 
-> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->   include/linux/mlx5/mlx5_ifc.h | 145 +++++++++++++++++++++++++++++++++-
->   1 file changed, 144 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-> index d90a65b6824f..366c7b030eb7 100644
-> --- a/include/linux/mlx5/mlx5_ifc.h
-> +++ b/include/linux/mlx5/mlx5_ifc.h
-> @@ -126,6 +126,11 @@ enum {
->   	MLX5_CMD_OP_QUERY_SF_PARTITION            = 0x111,
->   	MLX5_CMD_OP_ALLOC_SF                      = 0x113,
->   	MLX5_CMD_OP_DEALLOC_SF                    = 0x114,
-> +	MLX5_CMD_OP_SUSPEND_VHCA                  = 0x115,
-> +	MLX5_CMD_OP_RESUME_VHCA                   = 0x116,
-> +	MLX5_CMD_OP_QUERY_VHCA_MIGRATION_STATE    = 0x117,
-> +	MLX5_CMD_OP_SAVE_VHCA_STATE               = 0x118,
-> +	MLX5_CMD_OP_LOAD_VHCA_STATE               = 0x119,
->   	MLX5_CMD_OP_CREATE_MKEY                   = 0x200,
->   	MLX5_CMD_OP_QUERY_MKEY                    = 0x201,
->   	MLX5_CMD_OP_DESTROY_MKEY                  = 0x202,
-> @@ -1719,7 +1724,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
->   	u8         reserved_at_682[0x1];
->   	u8         log_max_sf[0x5];
->   	u8         apu[0x1];
-> -	u8         reserved_at_689[0x7];
-> +	u8         reserved_at_689[0x4];
-> +	u8         migration[0x1];
-> +	u8         reserved_at_68d[0x2];
+From: Yang Yang <yang.yang29@zte.com.cn>
 
-Should it be "reserved_at_68e[0x2]"?
+Add translation zh_CN/accounting/delay-accounting.rst and links it
+to zh_CN/accounting/index.rst while clean its todo entry.
 
->   	u8         log_min_sf_size[0x8];
->   	u8         max_num_sf_partitions[0x8];
->   
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+Reviewed-by: Alex Shi <alexs@kernel.org>
+Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
+---
+v4:
+- add Reviewed-by.
+v3:
+- add missing period.
+v2:
+- delete useless blackline.
+---
+ .../zh_CN/accounting/delay-accounting.rst     | 112 ++++++++++++++++++
+ .../translations/zh_CN/accounting/index.rst   |   2 +-
+ 2 files changed, 113 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/translations/zh_CN/accounting/delay-accounting.rst
+
+diff --git a/Documentation/translations/zh_CN/accounting/delay-accounting.rst b/Documentation/translations/zh_CN/accounting/delay-accounting.rst
+new file mode 100644
+index 000000000000..065a424d9b2a
+--- /dev/null
++++ b/Documentation/translations/zh_CN/accounting/delay-accounting.rst
+@@ -0,0 +1,112 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: Documentation/accounting/delay-accounting.rst
++:Translator: Yang Yang <yang.yang29@zte.com.cn>
++
++.. _cn_delay-accounting.rst:
++
++========
++延迟计数
++========
++
++任务在等待某些内核资源可用时，会造成延迟。例如一个可运行的任务可能会等待
++一个空闲CPU来运行。
++
++基于每任务的延迟计数功能度量由以下情况造成的任务延迟：
++
++a) 等待一个CPU（任务为可运行）
++b) 完成由该任务发起的块I/O同步请求
++c) 页面交换
++d) 内存回收
++
++并将这些统计信息通过taskstats接口提供给用户空间。
++
++这些延迟信息为适当的调整任务CPU优先级、io优先级、rss限制提供反馈。重要任务
++长期延迟，表示可能需要提高其相关优先级。
++
++通过使用taskstats接口，本功能还可提供一个线程组（对应传统Unix进程）所有任务
++（或线程）的总延迟统计信息。此类汇总往往是需要的，由内核来完成更加高效。
++
++用户空间的实体，特别是资源管理程序，可将延迟统计信息汇总到任意组中。为实现
++这一点，任务的延迟统计信息在其生命周期内和退出时皆可获取，从而确保可进行
++连续、完整的监控。
++
++接口
++----
++
++延迟计数使用taskstats接口，该接口由本目录另一个单独的文档详细描述。Taskstats
++向用户态返回一个通用数据结构，对应每pid或每tgid的统计信息。延迟计数功能填写
++该数据结构的特定字段。见
++
++     include/linux/taskstats.h
++
++其描述了延迟计数相关字段。系统通常以计数器形式返回 CPU、同步块 I/O、交换、内存
++回收等的累积延迟。
++
++取任务某计数器两个连续读数的差值，将得到任务在该时间间隔内等待对应资源的总延迟。
++
++当任务退出时，内核会将包含每任务的统计信息发送给用户空间，而无需额外的命令。
++若其为线程组最后一个退出的任务，内核还会发送每tgid的统计信息。更多详细信息见
++taskstats接口的描述。
++
++tools/accounting目录中的用户空间程序getdelays.c提供了一些简单的命令，用以显示
++延迟统计信息。其也是使用taskstats接口的示例。
++
++用法
++----
++
++使用以下配置编译内核::
++
++	CONFIG_TASK_DELAY_ACCT=y
++	CONFIG_TASKSTATS=y
++
++延迟计数在启动时默认关闭。
++若需开启，在启动参数中增加::
++
++   delayacct
++
++本文后续的说明基于延迟计数已开启。也可在系统运行时，使用sysctl的kernel.task_delayacct
++进行开关。注意，只有在启用延迟计数后启动的任务才会有相关信息。
++
++系统启动后，使用类似getdelays.c的工具获取任务或线程组（tgid）的延迟信息。
++
++getdelays命令的一般格式::
++
++	getdelays [-t tgid] [-p pid] [-c cmd...]
++
++获取pid为10的任务从系统启动后的延迟信息::
++
++	# ./getdelays -p 10
++	（输出信息和下例相似）
++
++获取所有tgid为5的任务从系统启动后的总延迟信息::
++
++	# ./getdelays -t 5
++
++
++	CPU	count	real total	virtual total	delay total
++		7876	92005750	100000000	24001500
++	IO	count	delay total
++		0	0
++	SWAP	count	delay total
++		0	0
++	RECLAIM	count	delay total
++		0	0
++
++获取指定简单命令运行时的延迟信息::
++
++  # ./getdelays -c ls /
++
++  bin   data1  data3  data5  dev  home  media  opt   root  srv        sys  usr
++  boot  data2  data4  data6  etc  lib   mnt    proc  sbin  subdomain  tmp  var
++
++
++  CPU	count	real total	virtual total	delay total
++	6	4000250		4000000		0
++  IO	count	delay total
++	0	0
++  SWAP	count	delay total
++	0	0
++  RECLAIM	count	delay total
++	0	0
++
+diff --git a/Documentation/translations/zh_CN/accounting/index.rst b/Documentation/translations/zh_CN/accounting/index.rst
+index 362e907b41f9..090f93776faa 100644
+--- a/Documentation/translations/zh_CN/accounting/index.rst
++++ b/Documentation/translations/zh_CN/accounting/index.rst
+@@ -16,10 +16,10 @@
+    :maxdepth: 1
+ 
+    psi
++   delay-accounting
+ 
+ Todolist:
+ 
+    cgroupstats
+-   delay-accounting
+    taskstats
+    taskstats-struct
+-- 
+2.25.1
 
