@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9262B4172C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C20417422
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344650AbhIXMvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45856 "EHLO mail.kernel.org"
+        id S1346160AbhIXNDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:03:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344343AbhIXMtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:49:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C76F061251;
-        Fri, 24 Sep 2021 12:47:46 +0000 (UTC)
+        id S1344832AbhIXNAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:00:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 017C4613BD;
+        Fri, 24 Sep 2021 12:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487667;
-        bh=qJCZf8z0SKfO4BYhVd4fDfO5qs/mt0fSlBiITh6dTkU=;
+        s=korg; t=1632488018;
+        bh=HFyDbrDTMZFx3zThDMJHdKI66wVixn7evMzn/DJ5jDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2fU2s2DiLAFb5KEZI0t6rnu2/kSh5w5UCxD1KC1JhKHIn2sfbV1A8nI4G0WZOn8Hu
-         uOFCkDElZb3PRDfhEoNxdnSrk6a9alwoxepSCbw4t6RoDiSgnZT6SZUiEnL5n/Wl5F
-         FpGfj6kZTlKWIYmYP1DYRk5TOe2Se2V+CeCV00Sc=
+        b=gvbrXS/sb2mgn/7Lknt4qiVr052OgF6qGapPGQcM72UE9b0UTpmZJMyWnGpAFMnGS
+         UjcUYLpwT0nRUFc/P2MXS5TMlzQ4h3HOFYXSQzBl9lpLmdSG/K8TLRTHBL0K0Jkk23
+         alAoSvMIDfL6xpMxCC3XV9mNlngWANyTlL/yFAmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 4.14 07/27] dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
+        stable@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
+        Andre Muller <andre.muller@web.de>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 052/100] of: property: Disable fw_devlink DT support for X86
 Date:   Fri, 24 Sep 2021 14:44:01 +0200
-Message-Id: <20210924124329.418770180@linuxfoundation.org>
+Message-Id: <20210924124343.182273832@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Saravana Kannan <saravanak@google.com>
 
-commit 67db87dc8284070adb15b3c02c1c31d5cf51c5d6 upstream.
+[ Upstream commit 4a48b66b3f52aa1a8aaa8a8863891eed35769731 ]
 
-Currently the CRST parsing relies on the fact that on most of x86 devices
-the IRQ mapping is 1:1 with Linux vIRQ. However, it may be not true for
-some. Fix this by converting GSI to Linux vIRQ before checking it.
+Andre reported fw_devlink=on breaking OLPC XO-1.5 [1].
 
-Fixes: ee8209fd026b ("dma: acpi-dma: parse CSRT to extract additional resources")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210730202715.24375-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+OLPC XO-1.5 is an X86 system that uses a mix of ACPI and OF to populate
+devices. The root cause seems to be ISA devices not setting their fwnode
+field. But trying to figure out how to fix that doesn't seem worth the
+trouble because the OLPC devicetree is very sparse/limited and fw_devlink
+only adds the links causing this issue. Considering that there aren't many
+users of OF in an X86 system, simply fw_devlink DT support for X86.
+
+[1] - https://lore.kernel.org/lkml/3c1f2473-92ad-bfc4-258e-a5a08ad73dd0@web.de/
+
+Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=on by default""")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Cc: Andre Muller <andre.muller@web.de>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Tested-by: Andre Müller <andre.muller@web.de>
+Link: https://lore.kernel.org/r/20210910011446.3208894-1-saravanak@google.com
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/acpi-dma.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/of/property.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/dma/acpi-dma.c
-+++ b/drivers/dma/acpi-dma.c
-@@ -72,10 +72,14 @@ static int acpi_dma_parse_resource_group
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index 6c028632f425..0b9c2fb843e7 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1434,6 +1434,9 @@ static int of_fwnode_add_links(struct fwnode_handle *fwnode)
+ 	struct property *p;
+ 	struct device_node *con_np = to_of_node(fwnode);
  
- 	si = (const struct acpi_csrt_shared_info *)&grp[1];
- 
--	/* Match device by MMIO and IRQ */
-+	/* Match device by MMIO */
- 	if (si->mmio_base_low != lower_32_bits(mem) ||
--	    si->mmio_base_high != upper_32_bits(mem) ||
--	    si->gsi_interrupt != irq)
-+	    si->mmio_base_high != upper_32_bits(mem))
++	if (IS_ENABLED(CONFIG_X86))
 +		return 0;
 +
-+	/* Match device by Linux vIRQ */
-+	ret = acpi_register_gsi(NULL, si->gsi_interrupt, si->interrupt_mode, si->interrupt_polarity);
-+	if (ret != irq)
- 		return 0;
+ 	if (!con_np)
+ 		return -EINVAL;
  
- 	dev_dbg(&adev->dev, "matches with %.4s%04X (rev %u)\n",
+-- 
+2.33.0
+
 
 
