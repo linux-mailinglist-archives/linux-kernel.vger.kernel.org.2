@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B33416FA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188A0416FB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245359AbhIXJzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        id S245383AbhIXJ54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245306AbhIXJzw (ORCPT
+        with ESMTP id S245370AbhIXJ5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:55:52 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C72DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:54:19 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id i4so38097838lfv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:54:19 -0700 (PDT)
+        Fri, 24 Sep 2021 05:57:51 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67856C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:56:18 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id d6so25520825wrc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:56:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wcxpbY+epMaoT0lwiHeUpX8tLc7nUpHe7LhF3U6sUnU=;
-        b=I/Cd4NSdwJtmjhA8DEbeaz0quiEmF4Cjd9gKskAR/UcjQAah159V9NnEiIM7JS+VbE
-         CLNsyCEsMoKRy30Zu8+ew7L73lUrGN+NDHkpv5yizE86uGsIPFvIY7C2s/eOAAfD+9cZ
-         75otQf3GjxFVBB1lXIsMIwzW6pyt/hL3eiWsBLnUSvfU5P72K60TpvZORdkx/ogkpKo/
-         FFi4oaOr3PNw7jMrXZDyypAaFplKI7f1GjmAqWP3SxvC8lURLTbNVG0IlelaVw4RW+IL
-         cnlR68nvcfPUvN9l1asq26zICbUnGe71a8PFXRI2w/psk/VCIKlxtnk0bgWf9XX/ieN5
-         Esfw==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3h7c0XVFr6N3jiF/U6QxDBsNOiGNhPsYCa4Km18D0Hc=;
+        b=vKOH360OkdUSeBBmWUFXZK8VGjn3L5JmXcL6+bqa2xj579UoV2NU1xzoSlFrm708mm
+         h5Jt8GHJe3mtqjujsS/u/O/LAfckAQvQGenJ/qLfLVMgl12xKd1MKcLBy/7EFiXXmBoL
+         69vXNFZ3z7kgjYILbRfdlOFB2Q/ewIENfeeLg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wcxpbY+epMaoT0lwiHeUpX8tLc7nUpHe7LhF3U6sUnU=;
-        b=GE1e316Saw1opO2qB1qyGyDzfd7aWHFvWjSoSDoaJ+NhZVcGzGFI57oaHDzylBf39w
-         RrSL1HEntn7m1fxiJBZcVF6QdhwdGbgklFLuroqG7gRiGPIXf6rlPBo8l9aQ4mdpE2Kr
-         n5KusQvP2PVU0FsNLJQWqjbe86P2+iht8i4aVD7yHy2KVfdTquxLeyDSjTa/NqI/prA/
-         VQ96pNswHNJoLSxvVQK7e+aNpZhx23TFSng593UOvghKxAh578asFYCNmEVqc52s4+BN
-         rmnI4UXaWKma5J3NNsCUmXtaeC4GH/UudQ8NUyv8zukqFhbvibnDL9s94Qc0WL5SfW42
-         vgag==
-X-Gm-Message-State: AOAM532xS5YHe0TLxwyD50cawgmRkDga8LgftEBylmwqvgloFy4xSRpE
-        RIeR9aDUw0s8WgP3MvL8rgunmA==
-X-Google-Smtp-Source: ABdhPJyJlNxVycHvyLvUe2rVi3VFfOPgeBJexve8zpPNl82obU8S49/FJDSfT8b75rb0i6pkXYKmrQ==
-X-Received: by 2002:a05:6512:33c2:: with SMTP id d2mr8410461lfg.18.1632477257760;
-        Fri, 24 Sep 2021 02:54:17 -0700 (PDT)
-Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
-        by smtp.gmail.com with ESMTPSA id r12sm871285ljp.15.2021.09.24.02.54.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3h7c0XVFr6N3jiF/U6QxDBsNOiGNhPsYCa4Km18D0Hc=;
+        b=N1Dh+PaqVNQ+x7aqdDC/0tgn32TQRqACxtW6B+cqDOS9uoXNSrUsMlUgsA/2ZbIjIy
+         WqPgGIbgQJHPW60yTu+lHxz9T7jUeIHMSMeDtRMUQIdynGWGFrlM4XzVynBg1Wh82a9G
+         J6YD1oWcdwOiALxs8T1Z5nVFtotyjffbmNiPRZsmoSa4g2qpUtXXm/NSkpAGLUxc9Cj8
+         65KhEQgiL/iBKpC2gRk0/JqG1Y37QN0mKz915zO20Ni6R9DVFMQmhQriBhq3uRJcG4GS
+         tmuqyi5hWSiFfqe4l2RwzjRSGlOvTer1o9WSPTJjT+BWfppHGGoRtg45TmH8cQykG51/
+         Msrw==
+X-Gm-Message-State: AOAM531lGV9AJmW9uyeClGTbScy8TpqOyy8xhDZB0OnV0NeGXUVbGU26
+        XaPV/Tfkd3EXOh2cto9PnF15og==
+X-Google-Smtp-Source: ABdhPJxtHe+PjtTgQIuOLwSiU1zls++8SImNRIUOHlY0ZtTilLz8T0M+r62uqddhxQXzeoDR4eMiBA==
+X-Received: by 2002:a05:6000:1379:: with SMTP id q25mr10131509wrz.280.1632477376986;
+        Fri, 24 Sep 2021 02:56:16 -0700 (PDT)
+Received: from antares.. (1.8.8.f.e.b.b.b.5.6.9.e.c.8.5.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:58c:e965:bbbe:f881])
+        by smtp.gmail.com with ESMTPSA id v20sm7871106wra.73.2021.09.24.02.56.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 02:54:17 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 11:54:16 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Subject: Re: [PATCH] media: rcar-vin: add G/S_PARM ioctls
-Message-ID: <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
-References: <20210924084115.2340-1-nikita.yoush@cogentembedded.com>
+        Fri, 24 Sep 2021 02:56:16 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 1/4] bpf: define bpf_jit_alloc_exec_limit for riscv JIT
+Date:   Fri, 24 Sep 2021 10:55:39 +0100
+Message-Id: <20210924095542.33697-2-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210924095542.33697-1-lmb@cloudflare.com>
+References: <20210924095542.33697-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210924084115.2340-1-nikita.yoush@cogentembedded.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita and Vladimir,
+Expose the maximum amount of useable memory from the sparcv JIT.
 
-Thanks for your patch.
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ arch/riscv/net/bpf_jit_core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-On 2021-09-24 11:41:15 +0300, Nikita Yushchenko wrote:
-> From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-> 
-> This adds g/s_parm ioctls for parallel interface.
-
-I would like to ask your use-case for this. I'm trying to make up the 
-courage to move Gen2 inline with Gen3, that is move Gen2 to use the 
-media graph interface to allow it more complex use-cases, including 
-controlling parameters on the subdevice level.
-
-So I'm curious if this solve a particular problem for you or if it's 
-done "just" for completeness. If it solves a real problem then I think 
-we should move a head with a v2 (with the small comment below fixed) if 
-not I would like to try and reduce the non media graph usage of the API 
-as much as possible.
-
-> 
-> Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-> ---
->  drivers/media/platform/rcar-vin/rcar-v4l2.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> index bdeff51bf768..de9f8dd55a30 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> @@ -527,6 +527,24 @@ static int rvin_s_selection(struct file *file, void *fh,
->  	return 0;
->  }
->  
-> +static int rvin_g_parm(struct file *file, void *priv,
-> +		       struct v4l2_streamparm *parm)
-> +{
-> +	struct rvin_dev *vin = video_drvdata(file);
-> +	struct v4l2_subdev *sd = vin_to_source(vin);
-> +
-> +	return v4l2_g_parm_cap(video_devdata(file), sd, parm);
-
-Please use &vin->vdev instead of video_devdata(file). 
-
-> +}
-> +
-> +static int rvin_s_parm(struct file *file, void *priv,
-> +		       struct v4l2_streamparm *parm)
-> +{
-> +	struct rvin_dev *vin = video_drvdata(file);
-> +	struct v4l2_subdev *sd = vin_to_source(vin);
-> +
-> +	return v4l2_s_parm_cap(video_devdata(file), sd, parm);
-
-Please use &vin->vdev instead of video_devdata(file). 
-
-> +}
-> +
->  static int rvin_g_pixelaspect(struct file *file, void *priv,
->  			      int type, struct v4l2_fract *f)
->  {
-> @@ -743,6 +761,9 @@ static const struct v4l2_ioctl_ops rvin_ioctl_ops = {
->  	.vidioc_g_selection		= rvin_g_selection,
->  	.vidioc_s_selection		= rvin_s_selection,
->  
-> +	.vidioc_g_parm			= rvin_g_parm,
-> +	.vidioc_s_parm			= rvin_s_parm,
-> +
->  	.vidioc_g_pixelaspect		= rvin_g_pixelaspect,
->  
->  	.vidioc_enum_input		= rvin_enum_input,
-> -- 
-> 2.30.2
-> 
-
+diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+index fed86f42dfbe..0fee2cbaaf53 100644
+--- a/arch/riscv/net/bpf_jit_core.c
++++ b/arch/riscv/net/bpf_jit_core.c
+@@ -166,6 +166,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 	return prog;
+ }
+ 
++u64 bpf_jit_alloc_exec_limit(void)
++{
++	return BPF_JIT_REGION_SIZE;
++}
++
+ void *bpf_jit_alloc_exec(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
 -- 
-Regards,
-Niklas Söderlund
+2.30.2
+
