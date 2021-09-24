@@ -2,228 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F53416E24
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999FE416E26
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244799AbhIXIqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244324AbhIXIqG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:46:06 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF5CC061574;
-        Fri, 24 Sep 2021 01:44:33 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id m70so4197318ybm.5;
-        Fri, 24 Sep 2021 01:44:33 -0700 (PDT)
+        id S244851AbhIXIqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:46:16 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:36725 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244324AbhIXIqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:46:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=TQ2y+MNEKFl1FfzcJujHyxozgri5qKCx4YByzp7xgiU=;
-        b=J7wtD/+k7DAMfaOmbXAuU0BEpoNvqkEm09fpsEVlcFqZi8mmBxiPiYdv0+gV1I8z0O
-         I8tb8NTzqQ19LrE2e/YpZaMa4aDUM2YXqGDJXo8bkqcrqitWYu1jdVrHDsZqTW1mUMsY
-         wEv3IY31ig22u7K5WvRlQj+cHSbL6kiyzvcQ/kT+DHqJ+3m/3hb6zwGUhdp/Xd/pCAm1
-         VwH9ldW5qjtpwTZjOAYsF5KR6JU0EJSJOwfoXxNyqPzSfFGBrZbT2/84w8RgtFy7qz8h
-         M1avQb1W7fRSNK0in0adyJzmaGLFcltn6X5w8aLlz3Dz2y8kOg3pPzMJwq8sE9FfYjcA
-         qFUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=TQ2y+MNEKFl1FfzcJujHyxozgri5qKCx4YByzp7xgiU=;
-        b=m8flpcZQYs7Mj19mogUF3bMjeYTu3WOOvCxc/Ycge1jd9UrqPRRr5IIwO0L/ysAEQv
-         n6aA0AKty3yc9kdOhKJjQkSdheeh+mW7nbucE4ZAS3j+yQUcURSqf9l6s7p6qiCDvFgw
-         0d8QVmMlwlLo9w6pIjNO9b5k4B6TMwO7eDxBXLoTJ8JCNR2PyOVnVoLbHTh6yGiAxxRW
-         vtzoy3PXU+AUdH9X+97UoVqP0ESUrupPDydOzsPCH762H+4B3wq1uNKNm8TK3tOw2S0k
-         HOPdEqgOugIl+TzOyYIpfw/Zu1Cwi5y0Pyd5OURc4WVtC8IZu8OKL2nb0r57wcFaepg9
-         7ZrQ==
-X-Gm-Message-State: AOAM533jiF6BOaNbdi7c2K+sTcsFtE+T5pGA1bMlG2r9OV3VrgGRH6u9
-        r1HMBLjE7tqPxwBQVNCIndnUPjQUDd/4i0hZzkUSJmMeY+z0JA==
-X-Google-Smtp-Source: ABdhPJxnNobNwdgAEJIIVk25wkubAzkCRAPFhMMbUONe3QvvUv0etUigMY/MQMCZ5wE7Ln/k1ZP67yRD94g7+jf35T0=
-X-Received: by 2002:a25:eb0b:: with SMTP id d11mr10315661ybs.101.1632473072846;
- Fri, 24 Sep 2021 01:44:32 -0700 (PDT)
-MIME-Version: 1.0
-From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date:   Fri, 24 Sep 2021 16:44:21 +0800
-Message-ID: <CAFcO6XOvGQrRTaTkaJ0p3zR7y7nrAWD79r48=L_BbOyrK9X-vA@mail.gmail.com>
-Subject: There is an array-index-out-bounds bug in detach_capi_ctr in drivers/isdn/capi/kcapi.c
-To:     isdn@linux-pingi.de, arnd@arndb.de,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1632473082; x=1664009082;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=1iwHj/7kKYaT2c05Biw6Zk5KtJgJkJaqovYlaXfwR5Q=;
+  b=Sbygbtg3s6XW02h/5wEAkOnaTbzoK1FIfmDvOq+IymSCF3kszLCTpPuR
+   92K+Wt9xXoVt0wErSUFZ1fLJjTyMBgug6kfmQEQJIVa4IEvsm3nEW8OKD
+   qH6w/gE2xTYi1RYrsyn29sEzxEmNBjmDhYfdwBiYDqBG8BhK1+eG82BNQ
+   GjLd4vyIz6JXzgmKt2STnmB+cTIwnHXfdnfFX34H9RVM5Mp3OtwA33Fuo
+   PM/XWNhkqAReyChrEVSC7HfFAoAWyd4RfEg1UFZ6PtcyJFlscNDkETKdl
+   gMyU9VdSkYW2tV8SnaIhXLZy5bi5DuxIjhwtqLVQSJR6/ubKKwtpNSzfu
+   A==;
+X-IronPort-AV: E=Sophos;i="5.85,319,1624312800"; 
+   d="scan'208";a="19690235"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 24 Sep 2021 10:44:41 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Fri, 24 Sep 2021 10:44:41 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Fri, 24 Sep 2021 10:44:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1632473081; x=1664009081;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=1iwHj/7kKYaT2c05Biw6Zk5KtJgJkJaqovYlaXfwR5Q=;
+  b=qC/KtDgci/6HIDWIY3A6ZDicLunVI54M2GePOIBCh1e0nyG9QheWArl9
+   bgCtSflk0QydKYnLX6jNpPPJ21ed1N9N6231aL3cUwHfTypDO1KZnTOit
+   HiWYCikKjh5v4iWo/OsosuB7lUWRPjwSWZaauHj8P4eL2K3pJttBGpEZY
+   Fz12MSd1l/iVIwqkzk+nks5r/LBg0CuTbvYfR5YXTRZKLYaOtfJ6IAuA3
+   aI2EuDv8WU5sJif8yus3R3kMVKhK19sg1FfRO8AyjK0CeFX4/e2X26QcC
+   cDkBssU9ieJpIQPDykG2gwKKdaAP+zlTxMSDmPCGQSMeJrzYTEVszuL+p
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.85,319,1624312800"; 
+   d="scan'208";a="19690234"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 24 Sep 2021 10:44:41 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 059C1280070;
+        Fri, 24 Sep 2021 10:44:41 +0200 (CEST)
+Message-ID: <b4b4955e7aa3a0566840f5ae1f15f8c27874d13d.camel@ew.tq-group.com>
+Subject: Re: [RFC] PCI: imx6: add support for internal oscillator on i.MX7D
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Markus Niebel <Markus.Niebel@ew.tq-group.com>
+Date:   Fri, 24 Sep 2021 10:44:40 +0200
+In-Reply-To: <64913eca4ded0803a7e839902ff6d70c924c71c8.camel@pengutronix.de>
+References: <81c77a29362433fc5629ada442f0489046ce1051.1632319151.git.matthias.schiffer@ew.tq-group.com>
+         <64913eca4ded0803a7e839902ff6d70c924c71c8.camel@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, there is an array-index-out-bounds bug in detach_capi_ctr in
-drivers/isdn/capi/kcapi.c and I reproduce it on 5.15.0-rc2+.
+On Fri, 2021-09-24 at 10:24 +0200, Lucas Stach wrote:
+> Hi Matthias,
+> 
+> Am Freitag, dem 24.09.2021 um 10:05 +0200 schrieb Matthias Schiffer:
+> > Adds support for a DT property fsl,internal-osc to select the internal
+> > oscillator for the PCIe PHY.
+> > 
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > Cc: Markus Niebel <Markus.Niebel@ew.tq-group.com>
+> > ---
+> > 
+> > Okay, so while this patch is nice and short, I'm note sure if it's a good
+> > solution, hence I submit it as an RFC. It is roughly based on code from
+> > older linux-imx versions [1] - although it seems this feature was never
+> > supported on i.MX7D even by linux-imx (possibly because of compliance
+> > issues with the internal clock, however I haven't found a definitive
+> > erratum backing this), but only on other SoC like i.MX6QP.
+> > 
+> > The device tree binding docs of the driver are somewhat lacking, but
+> > looking at [1] it seems that an external reference clock takes the place of
+> > the "pcie_bus" clock - various pieces of the driver skip enabling/disabling
+> > this clock when an external clock is configured.
+> > 
+> > From this I've come to the conclusion that the clock settings in
+> > imx7d.dtsi do not really make sense: The pcie_bus clock is configured to
+> > PLL_ENET_MAIN_100M_CLK, but this seems wrong for both internal and
+> > external reference clocks:
+> > 
+> > - For the internal clock, the correct clock should be PCIE_PHY_ROOT_CLK
+> >   according to the reference manual
+> 
+> The pcie_bus clock should be the reference clock for the peripherals
+> and depends on the board design. I don't think it would typically be
+> the PCIE_PHY_ROOT_CLK, but a clock derived from the same parent PLL, if
+> a SoC clock is used for that purpose.
 
-###Analyze
- we can call CMTPCONNADD ioctl and it would invoke
-do_cmtp_sock_ioctl(), it would call cmtp_add_connection().
-the chain of call is as follows.
-ioctl(CMTPCONNADD)
-   ->cmtp_sock_ioctl()
-         -->do_cmtp_sock_ioctl()
-            --->cmtp_add_connection()
-                ---->kthread_run()
-                ---->cmtp_attach_device()
-the function would add a cmtp session to a controller. Let us see the code.
-```
-int cmtp_add_connection(struct cmtp_connadd_req *req, struct socket *sock)
-{
-u32 valid_flags = BIT(CMTP_LOOPBACK);
-struct cmtp_session *session, *s;
-int i, err;
+The i.MX7D reference manual states the following:
 
-BT_DBG("");
+- IMX7D_GPR12_PCIE_PHY_REFCLK_SEL enables internal sourcing of the PHY
+  reference clock from a signal with the somewhat confusing name
+  REFCLK_EXT
+- The root of pcie_phy.REFCLK_EXT is PCIE_PHY_CLK_ROOT
 
-if (!l2cap_is_socket(sock))
-return -EBADFD;
-
-if (req->flags & ~valid_flags)
-return -EINVAL;
-
-session = kzalloc(sizeof(struct cmtp_session), GFP_KERNEL);   ///
-alloc and clear struct cmtp_session 'session' by kzalloc().
-if (!session)
-return -ENOMEM;
-
-[...]
-
-session->task = kthread_run(cmtp_session, session,
-"kcmtpd_ctr_%d",session->num); ///  create and run a kernel thread
-invoke cmtp_session() and the args is 'session'
-
-[...]
-
-if (!(session->flags & BIT(CMTP_LOOPBACK))) {
-err = cmtp_attach_device(session);   ///   invoke cmtp_attach_device()
-to attach a session with a controller.
-if (err < 0) {
-/* Caller will call fput in case of failure, and so
-* will cmtp_session kthread.
-*/
-get_file(session->sock->file);
-
-atomic_inc(&session->terminate);
-wake_up_interruptible(sk_sleep(session->sock->sk));
-up_write(&cmtp_session_sem);
-return err;
-}
-}
-[...]
-
-```
-the struct cmtp_session have a member named struct capi_ctr 'ctrl'.
-struct capi_ctr have a member named 'cnr', it is controller number.
-
-the kernel thread would invoke cmtp_session(), it would call
-cmtp_detach_device() to detach a session and the registration of a
-controller.
-cmtp_session()
-     ->cmtp_detach_device()
-          ->detach_capi_ctr()
-let us see detach_capi_ctr() function implement.
-```
-int detach_capi_ctr(struct capi_ctr *ctr)
-{
-int err = 0;
-
-mutex_lock(&capi_controller_lock);
-
-ctr_down(ctr, CAPI_CTR_DETACHED);
-
-if (capi_controller[ctr->cnr - 1] != ctr) {   /// use
-cmtp_session->capi_ctr->cnr
-err = -EINVAL;
-goto unlock_out;
-}
-capi_controller[ctr->cnr - 1] = NULL;
-ncontrollers--;
-
-[...]
-
-```
-If the cmtp_add_connection() call cmtp_attach_device() not yet, the
-cmtp_session->capi_ctr->cnr just is an ZERO.
-
-The capi_controller[-1] make no sense. so should check that the
-cmtp_session->capi_ctr->cnr is not an ZERO.
+As I understand it, "internal reference clock" means precisely that
+this is handled entirely internal to the SoC and does not depend on the
+board design. It may differ between different SoCs implementing this
+PCIe controller though.
 
 
-###Crash
-root@syzkaller:/home/user# ./detach_capi_ctr
-[   41.829295][    C1] random: crng init done
-[   41.829769][    C1] random: 7 urandom warning(s) missed due to ratelimiting
-[   43.904027][ T2627] Bluetooth: hci0: command 0x0409 tx timeout
-[   45.984105][ T2911] Bluetooth: hci0: command 0x041b tx timeout
-[   46.863815][ T6447] Bluetooth: Found 0 CAPI controller(s) on device
-10:aa:aa:aa:aa:aa
-[   46.864775][ T6479]
-================================================================================
-[   46.866069][ T6479] UBSAN: array-index-out-of-bounds in
-drivers/isdn/capi/kcapi.c:483:21
-[   46.867196][ T6479] index -1 is out of range for type 'capi_ctr *[32]'
-[   46.867982][ T6479] CPU: 1 PID: 6479 Comm: kcmtpd_ctr_0 Not tainted
-5.15.0-rc2+ #8
-[   46.869002][ T6479] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.14.0-2 04/01/2014
-[   46.870107][ T6479] Call Trace:
-[   46.870473][ T6479]  dump_stack_lvl+0x57/0x7d
-[   46.870974][ T6479]  ubsan_epilogue+0x5/0x40
-[   46.871458][ T6479]  __ubsan_handle_out_of_bounds.cold+0x43/0x48
-[   46.872135][ T6479]  detach_capi_ctr+0x64/0xc0
-[   46.872639][ T6479]  cmtp_session+0x5c8/0x5d0
-[   46.873131][ T6479]  ? __init_waitqueue_head+0x60/0x60
-[   46.873712][ T6479]  ? cmtp_add_msgpart+0x120/0x120
-[   46.874256][ T6479]  kthread+0x147/0x170
-[   46.874709][ T6479]  ? set_kthread_struct+0x40/0x40
-[   46.875248][ T6479]  ret_from_fork+0x1f/0x30
-[   46.875773][ T6479]
-================================================================================
-[   46.876799][ T6479] Kernel panic - not syncing: panic_on_warn set ...
-[   46.877541][ T6479] CPU: 1 PID: 6479 Comm: kcmtpd_ctr_0 Not tainted
-5.15.0-rc2+ #8
-[   46.878384][ T6479] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.14.0-2 04/01/2014
-[   46.879377][ T6479] Call Trace:
-[   46.879742][ T6479]  dump_stack_lvl+0x57/0x7d
-[   46.880251][ T6479]  panic+0x139/0x302
-[   46.880699][ T6479]  ubsan_epilogue+0x3f/0x40
-[   46.881199][ T6479]  __ubsan_handle_out_of_bounds.cold+0x43/0x48
-[   46.881890][ T6479]  detach_capi_ctr+0x64/0xc0
-[   46.882389][ T6479]  cmtp_session+0x5c8/0x5d0
-[   46.882881][ T6479]  ? __init_waitqueue_head+0x60/0x60
-[   46.883448][ T6479]  ? cmtp_add_msgpart+0x120/0x120
-[   46.883989][ T6479]  kthread+0x147/0x170
-[   46.884435][ T6479]  ? set_kthread_struct+0x40/0x40
-[   46.884989][ T6479]  ret_from_fork+0x1f/0x30
-[   46.885561][ T6479] Kernel Offset: disabled
-[   46.886043][ T6479] Rebooting in 86400 seconds..
+> 
+> > - The external clocks, this should refer to an actual external clock, or
+> >   possibly a fixed-clock node
+> > 
+> 
+> That's correct and the i.MX8MQ board DTs all point to a external clock
+> node, as we currently default to external clocking there.
+> 
+> > I would be great if someone with more insight into this could chime in
+> > and tell me if my reasoning here is correct or not.
+> > 
+> > Unfortunately I only have our MBa7x at my disposal for further
+> > experimentation. This board does not have an external reference clock for
+> > the PCIe PHY, so I cannot test the behaviour for settings that use an
+> > external clock. Without this patch (and adding the new flag to the MBa7x
+> > DTS), the boot will hang while waiting for the PCIe link to come up.
+> > 
+> > So, for the actual question (given that my thoughts above make any sense):
+> > How do we want to implement this?
+> > 
+> > 1. A simple boolean flag, like this patch provides
+> > 2. Allow Device Trees not to specify a "pcie_bus" clock at all, meaning
+> >    it should use the internal clock
+> 
+> The internal clock is a bus clock that needs to be enabled as all other
+> clocks, so this is not an option.
+> 
+> > 3. Special handling when the "pcie_bus" clock is configured to
+> >    PCIE_PHY_ROOT_CLK - is such a thing even possible, or is this
+> >    breaking the clock driver's abstraction too much?
+> > 4. Something more involved, with a proper clock sel as the source for
+> >    "pcie_bus"
+> > 
+> > Solution 4. seems difficult to implement nicely, as the PCIe driver
+> > also fiddles with IMX7D_GPR12_PCIE_PHY_REFCLK_SEL for power management:
+> > the clock selection is switched back to the internal clock in
+> > imx6_pcie_clk_disable(), which also disables its source PCIE_PHY_ROOT_CLK,
+> > effectively gating the clock.
+> > 
+> 
+> There is currently work under way to support this case properly. The
+> first step is to actually abstract the PCIe PHY in the right way,
+> Richard has already sent some patches for this.
+> 
+> Then we can add support for the different possibilities of using the
+> refclock pad, as this isn't a simple choice between using the internal
+> clock or a externally supplied one. The options are:
+> 
+> 1. Use internal clock to drive the PHY, if there isn't some other path
+> to output this clock to the board this is effectively a split clocking
+> setup.
+> 2. Use externally supplied clock provided to the PHY via the refclock
+> pad.
+> 3. Use internal clock to driver the PHY, but output this clock on the
+> refclock pad, which is known to be possible with the i.MX8MM PCIe PHY.
 
-###Patch
-Should check the cmtp_session->capi_ctr->cnr is not an ZERO.
-
-```
-diff --git a/drivers/isdn/capi/kcapi.c b/drivers/isdn/capi/kcapi.c
-index cb0afe897162..38502a955f13 100644
---- a/drivers/isdn/capi/kcapi.c
-+++ b/drivers/isdn/capi/kcapi.c
-@@ -480,7 +480,7 @@ int detach_capi_ctr(struct capi_ctr *ctr)
-
-        ctr_down(ctr, CAPI_CTR_DETACHED);
-
--       if (capi_controller[ctr->cnr - 1] != ctr) {
-+       if (!ctr->cnr || capi_controller[ctr->cnr - 1] != ctr) {
-                err = -EINVAL;
-                goto unlock_out;
-        }
-```
+What is the plan here for configuring which of these options to use?
 
 
-Regards,
-  butt3rflyh4ck.
+> 
+> Regards,
+> Lucas
+> 
+> > Regards,
+> > Matthias
+> > 
+> > 
+> > [1] https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/pci/host/pci-imx6.c?h=imx_4.1.15_2.0.0_ga
+> > 
+> >  drivers/pci/controller/dwc/pci-imx6.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> > index 80fc98acf097..021499b9ee7c 100644
+> > --- a/drivers/pci/controller/dwc/pci-imx6.c
+> > +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> > @@ -83,6 +83,7 @@ struct imx6_pcie {
+> >  	struct regulator	*vpcie;
+> >  	struct regulator	*vph;
+> >  	void __iomem		*phy_base;
+> > +	bool			internal_osc;
+> >  
+> >  	/* power domain for pcie */
+> >  	struct device		*pd_pcie;
+> > @@ -637,7 +638,9 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
+> >  		break;
+> >  	case IMX7D:
+> >  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+> > -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL, 0);
+> > +				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
+> > +				   imx6_pcie->internal_osc ?
+> > +					IMX7D_GPR12_PCIE_PHY_REFCLK_SEL : 0);
+> >  		break;
+> >  	case IMX6SX:
+> >  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+> > @@ -1130,6 +1133,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+> >  				 &imx6_pcie->tx_swing_low))
+> >  		imx6_pcie->tx_swing_low = 127;
+> >  
+> > +	if (of_property_read_bool(node, "fsl,internal-osc"))
+> > +		imx6_pcie->internal_osc = true;
+> > +
+> >  	/* Limit link speed */
+> >  	pci->link_gen = 1;
+> >  	ret = of_property_read_u32(node, "fsl,max-link-speed", &pci->link_gen);
+> 
+> 
 
--- 
-Active Defense Lab of Venustech
