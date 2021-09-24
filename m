@@ -2,91 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9854D41691F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 02:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08CB416926
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 03:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243709AbhIXA7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 20:59:20 -0400
-Received: from mga09.intel.com ([134.134.136.24]:32524 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243693AbhIXA7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 20:59:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="224004327"
-X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
-   d="scan'208";a="224004327"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 17:57:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
-   d="scan'208";a="514332940"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 17:57:46 -0700
-Date:   Fri, 24 Sep 2021 00:57:40 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/8] tools/objtool: Check for use of the ENQCMD
- instruction in the kernel
-Message-ID: <YU0ihC6EYBZCSylV@otcwcpicx3.sc.intel.com>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-8-fenghua.yu@intel.com>
- <20210922210343.GU4323@worktop.programming.kicks-ass.net>
- <YUu/6YPYwvaDwthy@otcwcpicx3.sc.intel.com>
- <YUwp7VkjApRQr/pb@hirez.programming.kicks-ass.net>
- <YUycliX+lPSMhWfR@otcwcpicx3.sc.intel.com>
- <20210924005540.kunsfif7hdta6dlp@treble>
+        id S243700AbhIXBB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 21:01:58 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:42500 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243678AbhIXBB5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 21:01:57 -0400
+Received: by mail-oi1-f173.google.com with SMTP id x124so12237425oix.9;
+        Thu, 23 Sep 2021 18:00:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GasIhLti856Ga5HeR4f+cGNysCxF+XCkHYY1M/ZuBiw=;
+        b=4mVsfYxG8qdry4qRKnb+PrIMsa+n4O9bja5YsRRWWi5Y0PlAxw0S3Op6hurzGa4Ebn
+         nBe0Li0u4rlHuBuYKB41IN15Y9ZXNpx1rj3EDY/ObbdJDuY30PODF8jsCwI1LTDfApsE
+         YVEQtnOdwjxAiA8XJhvTVEZOert/hJE0IZFfObMlG28nBpwu/z1IOSGFkNt5I6IQoXx3
+         Q8sgYlKeEGWUiDQDXwWTv5WTd6YBOrGuyElNnzCJTazAC05qnoLYMHnqgpwjOtcMzGL0
+         7U040FWSlIdxsk1XqRsuB3xblE/+mJM4og3naOEybWLJFOFhkjtEUtGFuZDCyJ+wIb98
+         kALg==
+X-Gm-Message-State: AOAM533LTPlqTtbBGYiCw+Wx+XyUYBnrDCZAZVTKbWUpbqw7uFqXish7
+        HSNz40CdeOj+crd5CLWcmA==
+X-Google-Smtp-Source: ABdhPJy3EwyotTQdzk+VORpqXwWszcJ9ggeJI7ThwmlybV4Y5HuNAm/UZzWsGRrWkehKfWCCmXAX7w==
+X-Received: by 2002:a05:6808:ec8:: with SMTP id q8mr7842887oiv.94.1632445224741;
+        Thu, 23 Sep 2021 18:00:24 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id a23sm1676644otp.44.2021.09.23.18.00.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 18:00:24 -0700 (PDT)
+Received: (nullmailer pid 3848448 invoked by uid 1000);
+        Fri, 24 Sep 2021 01:00:23 -0000
+Date:   Thu, 23 Sep 2021 20:00:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     linus.walleij@linaro.org, mark.rutland@arm.com,
+        matthias.bgg@gmail.com, sean.wang@kernel.org,
+        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
+        light.hsieh@mediatek.com, biao.huang@mediatek.com,
+        hongzhou.yang@mediatek.com, sean.wang@mediatek.com,
+        seiya.wang@mediatek.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v13 2/5] dt-bindings: pinctrl: mt8195: change pull
+ up/down description
+Message-ID: <YU0jJxr0OJoqahHr@robh.at.kernel.org>
+References: <20210922025640.11600-1-zhiyong.tao@mediatek.com>
+ <20210922025640.11600-3-zhiyong.tao@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210924005540.kunsfif7hdta6dlp@treble>
+In-Reply-To: <20210922025640.11600-3-zhiyong.tao@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Josh,
-
-On Thu, Sep 23, 2021 at 05:55:40PM -0700, Josh Poimboeuf wrote:
-> On Thu, Sep 23, 2021 at 03:26:14PM +0000, Fenghua Yu wrote:
-> > > > +		} else if (op2 == 0x38 && op3 == 0xf8) {
-> > > > +			if (insn.prefixes.nbytes == 1 &&
-> > > > +			    insn.prefixes.bytes[0] == 0xf2) {
-> > > > +				/* ENQCMD cannot be used in the kernel. */
-> > > > +				WARN("ENQCMD instruction at %s:%lx", sec->name,
-> > > > +				     offset);
-> > > > +
-> > > > +				return -1;
-> > > > +			}
-> > > 
-> > > The only concern here is if we want it to be fatal or not. But otherwise
-> > > this seems to be all that's required.
-> > 
-> > objtool doesn't fail kernel build on this fatal warning.
-> > 
-> > Returning -1 here stops checking the rest of the file and won't report any
-> > further warnings unless this ENQCMD warning is fixed. Not returning -1
-> > continues checking the rest of the file and may report more warnings.
-> > Seems that's the only difference b/w them.
-> > 
-> > Should I keep this "return -1" or not? Please advice.
+On Wed, Sep 22, 2021 at 10:56:37AM +0800, Zhiyong Tao wrote:
+> For supporting SI units in "bias-pull-down" & "bias-pull-up",
+> Change pull up/down description
 > 
-> I'd say remove the "return -1" since it's not a fatal-type analysis
-> error and there's nothing to prevent objtool from analyzing the rest of
-> the file.
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> ---
+>  .../bindings/pinctrl/pinctrl-mt8195.yaml      | 65 ++++++++++++++++++-
+>  1 file changed, 63 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+> index 2f12ec59eee5..2f2afabbe4fc 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+> @@ -85,9 +85,70 @@ patternProperties:
+>            2/4/6/8/10/12/14/16mA in mt8195.
+>          enum: [0, 1, 2, 3, 4, 5, 6, 7]
+>  
+> -      bias-pull-down: true
+> +      bias-pull-down:
+> +        description: |
+> +          For pull down type is normal, it don't need add RSEL & R1R0 define
+> +          and resistance value.
+> +          For pull down type is PUPD/R0/R1 type, it can add R1R0 define to
+> +          set different resistance. It can support "MTK_PUPD_SET_R1R0_00" &
+> +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" & "MTK_PUPD_SET_R1R0_11"
+> +          define in mt8195.
+> +          For pull down type is RSEL, it can add RSEL define & resistance value(ohm)
+> +          to set different resistance by identifying property "mediatek,rsel_resistance_in_si_unit".
+> +          It can support "MTK_PULL_SET_RSEL_000" & "MTK_PULL_SET_RSEL_001"
+> +          & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" & "MTK_PULL_SET_RSEL_100"
+> +          & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" & "MTK_PULL_SET_RSEL_111"
+> +          define in mt8195. It can also support resistance value(ohm) "75000" & "5000" in mt8195.
 
-Sure. It does make sense to remove "return -1". I will remove it.
+Please make a schema:
 
-Thanks.
+oneOf:
+  - enum: [ 0, 1, ...7 ]
+  - description: MT8195...
+    enum: [ 5000, 75000 ]
 
--Fenghua
+> +          An example of using RSEL define:
+> +          pincontroller {
+> +            i2c0_pin {
+> +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
+> +              bias-pull-down = <MTK_PULL_SET_RSEL_001>;
+> +            };
+> +          };
+> +          An example of using si unit resistance value(ohm):
+> +          &pio {
+> +            mediatek,rsel_resistance_in_si_unit;
+> +          }
+> +          pincontroller {
+> +            i2c0_pin {
+> +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
+> +              bias-pull-down = <75000>;
+> +            };
+> +          };
+>  
+> -      bias-pull-up: true
+> +      bias-pull-up:
+> +        description: |
+> +          For pull up type is normal, it don't need add RSEL & R1R0 define
+> +          and resistance value.
+> +          For pull up type is PUPD/R0/R1 type, it can add R1R0 define to
+> +          set different resistance. It can support "MTK_PUPD_SET_R1R0_00" &
+> +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" & "MTK_PUPD_SET_R1R0_11"
+> +          define in mt8195.
+> +          For pull up type is RSEL, it can add RSEL define & resistance value(ohm)
+> +          to set different resistance by identifying property "mediatek,rsel_resistance_in_si_unit".
+> +          It can support "MTK_PULL_SET_RSEL_000" & "MTK_PULL_SET_RSEL_001"
+> +          & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" & "MTK_PULL_SET_RSEL_100"
+> +          & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" & "MTK_PULL_SET_RSEL_111"
+> +          define in mt8195. It can also support resistance value(ohm)
+> +          "1000" & "1500" & "2000" & "3000" & "4000" & "5000" & "10000" & "75000" in mt8195.
+
+Same here.
+
+> +          An example of using RSEL define:
+> +          pincontroller {
+> +            i2c0_pin {
+> +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
+> +              bias-pull-up = <MTK_PULL_SET_RSEL_001>;
+> +            };
+> +          };
+> +          An example of using si unit resistance value(ohm):
+> +          &pio {
+> +            mediatek,rsel_resistance_in_si_unit;
+> +          }
+> +          pincontroller {
+> +            i2c0_pin {
+> +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
+> +              bias-pull-up = <1000>;
+> +            };
+> +          };
+>  
+>        bias-disable: true
+>  
+> -- 
+> 2.25.1
+> 
+> 
