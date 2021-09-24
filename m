@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091C2417126
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9794417124
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343640AbhIXLsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240270AbhIXLsG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343633AbhIXLsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 24 Sep 2021 07:48:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B167C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 04:46:33 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1mTjej-0003Uj-Tv; Fri, 24 Sep 2021 13:46:17 +0200
-Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1mTjeh-00065F-Rv; Fri, 24 Sep 2021 13:46:15 +0200
-Date:   Fri, 24 Sep 2021 13:46:15 +0200
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
-Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm, phone-devel@vger.kernel.org
-Subject: Re: [PATCH] media: imx: Fix rounding
-Message-ID: <20210924114615.GA21343@pengutronix.de>
-References: <20210924120631.7060da0f.dorota.czaplejewicz@puri.sm>
+Received: from vps0.lunn.ch ([185.16.172.187]:58340 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343616AbhIXLsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 07:48:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=UzsLt3xZrcdCbRMw2FzE9HC9AeBbekuzTOT8ERCqy/8=; b=WVNMLEeUfb0kxmL4bPEipwM3GB
+        kJTy+hyt7NAoSACpY2RyhR8MvcOqJSgCPjNLHyQP7pCCBrqd7V5/2wYoszrhaYanmZL0Tn/F7UjuW
+        +rRxBvsShYrY0Sq0vTVcrSgRbq0HrlsTRAJQsGRSjocQ+HJSYkf+B9wbs1S3s2u0WhCY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mTjeu-0085Ih-P6; Fri, 24 Sep 2021 13:46:28 +0200
+Date:   Fri, 24 Sep 2021 13:46:28 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     andy.shevchenko@gmail.com, linux-gpio@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, kuba@kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        davem@davemloft.net, rjw@rjwysocki.net, davthompson@nvidia.com
+Subject: Re: [PATCH v3 1/2] gpio: mlxbf2: Introduce IRQ support
+Message-ID: <YU26lIUayYXU/x9l@lunn.ch>
+References: <20210923202216.16091-1-asmaa@nvidia.com>
+ <20210923202216.16091-2-asmaa@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210924120631.7060da0f.dorota.czaplejewicz@puri.sm>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 13:34:50 up 218 days, 14:58, 111 users,  load average: 0.12, 0.18,
- 0.17
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: pza@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210923202216.16091-2-asmaa@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dorota,
+> +static int
+> +mlxbf2_gpio_irq_set_type(struct irq_data *irqd, unsigned int type)
+> +{
+> +	struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
+> +	struct mlxbf2_gpio_context *gs = gpiochip_get_data(gc);
+> +	int offset = irqd_to_hwirq(irqd);
+> +	unsigned long flags;
+> +	bool fall = false;
+> +	bool rise = false;
+> +	u32 val;
+> +
+> +	switch (type & IRQ_TYPE_SENSE_MASK) {
+> +	case IRQ_TYPE_EDGE_BOTH:
+> +	case IRQ_TYPE_LEVEL_MASK:
+> +		fall = true;
+> +		rise = true;
+> +		break;
+> +	case IRQ_TYPE_EDGE_RISING:
+> +	case IRQ_TYPE_LEVEL_HIGH:
+> +		rise = true;
+> +		break;
+> +	case IRQ_TYPE_EDGE_FALLING:
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		fall = true;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
 
-On Fri, Sep 24, 2021 at 12:06:31PM +0200, Dorota Czaplejewicz wrote:
-> Change rounding to the minimal burst size from 2^n to n.
-> 
-> This fixes images with sizes that are a multiple of 8 pixels.
+I'm still not convinced this is correct. Rising edge is different to
+high. Rising edge only ever interrupts once, level keeps interrupting
+until the source is cleared. You cannot store the four different
+options in two bits.
 
-Could you elaborate on what is currently wrong with images that are a
-multiple of 8 pixels wide? Or are you rather trying to add support
-for images that are not a multiple of 8 pixels wide?
+Linus, have you seen anything like this before?
 
-> 
-> See section 13.7.6.13 CSI Image Parameter Register of the
-> i.MX 8M Quad Applications Processors Reference Manual.
-> 
-> Fixes: 451a7b7815d0b ("media: imx: lift CSI and PRP ENC/VF width
-> alignment restriction")
-> Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
-> ---
-> Hi,
-> 
-> I tested this patch on the Librem 5 with the main camera.
-> 
-> --Dorota
->  drivers/staging/media/imx/imx-media-utils.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/media/imx/imx-media-utils.c
-> index 5128915a5d6f..a2d8fab32a39 100644
-> --- a/drivers/staging/media/imx/imx-media-utils.c
-> +++ b/drivers/staging/media/imx/imx-media-utils.c
-> @@ -545,13 +545,13 @@ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
->  	}
->  
->  	/* Round up width for minimum burst size */
-> -	width = round_up(mbus->width, 8);
-> +	width = round_up(mbus->width, 3);
-
-That is not a valid use of the round_up() macro anymore.
-The second parameter must be a power of 2.
-
-regards
-Philipp
+       Andrew
