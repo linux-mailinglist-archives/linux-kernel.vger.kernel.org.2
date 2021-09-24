@@ -2,85 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7D2417706
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E7E41770A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346889AbhIXOsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:48:05 -0400
-Received: from mga12.intel.com ([192.55.52.136]:51674 "EHLO mga12.intel.com"
+        id S1346892AbhIXOtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:49:46 -0400
+Received: from mout.web.de ([212.227.15.3]:54515 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346185AbhIXOsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:48:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="203580780"
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
-   d="scan'208";a="203580780"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 07:46:31 -0700
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
-   d="scan'208";a="551835095"
-Received: from bordone-mobl1.amr.corp.intel.com (HELO [10.209.164.235]) ([10.209.164.235])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 07:46:30 -0700
-Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8195: add machine driver with
- mt6359, rt1011 and rt5682
-To:     Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
-        tiwai@suse.com, robh+dt@kernel.org, matthias.bgg@gmail.com
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        aaronyu@google.com, linux-arm-kernel@lists.infradead.org
-References: <20210910104405.11420-1-trevor.wu@mediatek.com>
- <20210910104405.11420-2-trevor.wu@mediatek.com>
- <10fc49fa-9791-0225-365d-e3074680596c@linux.intel.com>
- <4d703c5f7cf27ddc8b9886b111ffeeba0c4aa08b.camel@mediatek.com>
- <1d7fe7455a054819daf05d41ab3658afdc1caced.camel@mediatek.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c34d03ff-f349-724e-0dcf-7893f3622cd9@linux.intel.com>
-Date:   Fri, 24 Sep 2021 09:46:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S231627AbhIXOto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 10:49:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+        s=dbaedf251592; t=1632494881;
+        bh=BzlUt9Xoxf80BIN5jJgcV7RyKPyglvJA26rX64Gy8AY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=TxtoO8zAxYLvTaDlISzulZfUT10zN0elorBXW+icGQvnYHxisv9vOV2AqREvk8NBI
+         9X0F6GxpNhX8FAMSlVNB2twUMMbnw+MfuEIu+kVl2SbFh0hbDbB/0wz5xu5+XQrw+2
+         knfFqXj3VuBu6d5VM3Rv6fXHrZuT3wfze9iMAAY0=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from michael-LIFEBOOK-E751.fritz.box ([94.134.119.126]) by
+ smtp.web.de (mrweb003 [213.165.67.108]) with ESMTPSA (Nemesis) id
+ 0M6V2p-1mnfzu0l0V-00yUPN; Fri, 24 Sep 2021 16:48:01 +0200
+From:   Michael Estner <michaelestner@web.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     michaelestner@web.de, Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] Remove blank lines and whitespaces
+Date:   Fri, 24 Sep 2021 16:47:41 +0200
+Message-Id: <20210924144750.6020-1-michaelestner@web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1d7fe7455a054819daf05d41ab3658afdc1caced.camel@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:AaLzsh9OHcYP5E4RKRwkDx295xrdUB93/YjatXKYnKQuMdIYAqC
+ zqp24oZqMz1yQ2Mu3nDzQPXZJn8GjNZgBicPXLNfJLmLd2dxcKpqdpoDvjrhf0n0DOUCsps
+ qs5OEX1poS2s2Byo0FFaFH+UCc1W+BrZKMfVlKP4EXV7Expy7xSIYuFRXtnqd5F6Nbv5+M8
+ iiyhKTNEGGBcQOitlmIiQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uj7yb3oyG6s=:Fli+c8cgpf9zJ9vHAzyM5j
+ VYCEvEfuyLTyNnR7r8CvGKmdZTMF7aE3+uSuQZ+80/oOpRX0t0nlVZbOEAFSpEgIm6IrbCgJ8
+ XMLO85BdPE1XLQ3PKJP99hx0kypzoi7HLtcmAU/7bjIupnn7NFMZLAg0gVLLSk4wF74ABhSmA
+ zt7c6oMyLIlff8clMVXF5m4j12a3AvML7kyLtywD7h3qY5T4lL9G+D29Kx4nYCx4edh3AvTa3
+ f5hi7ELTziMimh8h6kzWRU4a4CLk4UE5fx/85kxPUvwNcEN+4XWgeRN/mKuurDtwFmmsezZdH
+ 8/k7c6NPLI6KX/ki9Wd+KJ93WmOr/Ifbo3DXQTdMe4ZRnjnxMfWCYNCKJ88s2zNGAjVg7pYgs
+ rnZtprfddSxcdFZaXAQvwF34oGBOCFD29U6l5o26vYizc6cHO20VTBoGjbyNLLTS68C6h5vrV
+ IgKriehpOb8C3Ye5g14DAVx5Yr/gBd0msRFYR4EZOG480b7z31wZhUTGM2D5p77UV2UWaYt5P
+ 4XiK51KwojRsqxGdeR+i++MsjBDo5Dship9jqtzugORjSTFQoymuY4BsWBLzYTcg0RD9YA19q
+ kL3fEUCxxmDkSixGvjCr7hf9KW8HliFjWVpu3nI+hjadg9a9k5Rs/rVqdlZtxEtu4NvdSLTs+
+ hL4nYs3RiIhjYFgZsVnk5QtrjXKd83zBVm8+GC26Nmh4oPQ6+y7JZn6h6C/U2PkFfLJQPxAtE
+ dBS0UYvqKu3Zv9ENFpGOfL5yNdHTd3jSbdWHziqRaGZFz2VBmoXmxlu23nnp5iKMKgYTszT1e
+ dghk4pHf0NH9A4Yefa5BxCaoj5utSSjALxZ0FKFegxWGRqP8X2DFHcilmRpxi/qnYwrmWLx22
+ AFAnqHPb8xqwomiihFzSzPttxQ8P686SIhw7/hgoVO6P5uusbx9cg8IbHCFkw4h36ojW8SVgx
+ HPjc+ZdEnPN5BRZ7wTSEATPYVFlrjGDdy44XvkjacBkCr7u7Jz47zoFEUfxAhlDwhPWCFUK5J
+ dXgWlYd4vVx+fl4xv4aq8NekZuXycWQ3Y1oC+K1IHI0EUKVaEQV5PR0hFWvCyZ/jwrGMOkCkg
+ 9SFpBihIrVfKQM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Removed blank lines and whitespaces to clean up code.
 
->>>> +/* Module information */
->>>> +MODULE_DESCRIPTION("MT8195-MT6359-RT1011-RT5682 ALSA SoC machine
->>>> driver");
->>>> +MODULE_AUTHOR("Trevor Wu <trevor.wu@mediatek.com>");
->>>> +MODULE_LICENSE("GPL v2");
->>>
->>> "GPL" is enough
->>>
->>
->> I see many projects use GPL v2 here, and all mediatek projects use
->> GPL
->> v2, too.
->> I'm not sure which one is better.
->> Do I need to modify this?
+Signed-off-by: Michael Estner <michaelestner@web.de>
+=2D--
+ drivers/staging/r8188eu/core/rtw_io.c | 65 ++++++++++-----------------
+ 1 file changed, 24 insertions(+), 41 deletions(-)
 
-See
-https://www.kernel.org/doc/html/latest/process/license-rules.html?highlight=module_license#id1
+diff --git a/drivers/staging/r8188eu/core/rtw_io.c b/drivers/staging/r8188=
+eu/core/rtw_io.c
+index cde0205816b1..4abbd551db81 100644
+=2D-- a/drivers/staging/r8188eu/core/rtw_io.c
++++ b/drivers/staging/r8188eu/core/rtw_io.c
+@@ -2,25 +2,25 @@
+ /* Copyright(c) 2007 - 2011 Realtek Corporation. */
 
-Loadable kernel modules also require a MODULE_LICENSE() tag. This tag is
-neither a replacement for proper source code license information
-(SPDX-License-Identifier) nor in any way relevant for expressing or
-determining the exact license under which the source code of the module
-is provided.
+ /*
+-
+-The purpose of rtw_io.c
+-
+-a. provides the API
+-
+-b. provides the protocol engine
+-
+-c. provides the software interface between caller and the hardware interf=
+ace
+-
+-Compiler Flag Option:
+-
+-USB:
+-   a. USE_ASYNC_IRP: Both sync/async operations are provided.
+-
+-Only sync read/rtw_write_mem operations are provided.
+-
+-jackson@realtek.com.tw
+-
+-*/
++ *
++ * The purpose of rtw_io.c
++ *
++ * a. provides the API
++ *
++ * b. provides the protocol engine
++ *
++ * c. provides the software interface between caller and the hardware int=
+erface
++ *
++ * Compiler Flag Option:
++ *
++ * USB:
++ *    a. USE_ASYNC_IRP: Both sync/async operations are provided.
++ *
++ * Only sync read/rtw_write_mem operations are provided.
++ *
++ * jackson@realtek.com.tw
++ *
++ */
 
-“GPL”
+ #define _RTW_IO_C_
+ #include "../include/osdep_service.h"
+@@ -41,7 +41,6 @@ u8 _rtw_read8(struct adapter *adapter, u32 addr)
+ 	struct	intf_hdl *pintfhdl =3D &pio_priv->intf;
+ 	u8 (*_read8)(struct intf_hdl *pintfhdl, u32 addr);
 
-Module is licensed under GPL version 2. This does not express any
-distinction between GPL-2.0-only or GPL-2.0-or-later. The exact license
-information can only be determined via the license information in the
-corresponding source files.
+-
+ 	_read8 =3D pintfhdl->io_ops._read8;
+ 	r_val =3D _read8(pintfhdl, addr);
 
-“GPL v2”
+@@ -87,7 +86,6 @@ int _rtw_write8(struct adapter *adapter, u32 addr, u8 va=
+l)
 
-Same as “GPL”. It exists for historic reasons.
+ 	ret =3D _write8(pintfhdl, addr, val);
 
-So "GPL v2" is not incorrect but for new contributions you might as well
-use the recommended tag.
+-
+ 	return RTW_STATUS_CODE(ret);
+ }
+
+@@ -102,9 +100,9 @@ int _rtw_write16(struct adapter *adapter, u32 addr, u1=
+6 val)
+
+ 	ret =3D _write16(pintfhdl, addr, val);
+
+-
+ 	return RTW_STATUS_CODE(ret);
+ }
++
+ int _rtw_write32(struct adapter *adapter, u32 addr, u32 val)
+ {
+ 	struct io_priv *pio_priv =3D &adapter->iopriv;
+@@ -116,7 +114,6 @@ int _rtw_write32(struct adapter *adapter, u32 addr, u3=
+2 val)
+
+ 	ret =3D _write32(pintfhdl, addr, val);
+
+-
+ 	return RTW_STATUS_CODE(ret);
+ }
+
+@@ -131,9 +128,9 @@ int _rtw_writeN(struct adapter *adapter, u32 addr, u32=
+ length, u8 *pdata)
+
+ 	ret =3D _writeN(pintfhdl, addr, length, pdata);
+
+-
+ 	return RTW_STATUS_CODE(ret);
+ }
++
+ int _rtw_write8_async(struct adapter *adapter, u32 addr, u8 val)
+ {
+ 	struct io_priv *pio_priv =3D &adapter->iopriv;
+@@ -145,7 +142,6 @@ int _rtw_write8_async(struct adapter *adapter, u32 add=
+r, u8 val)
+
+ 	ret =3D _write8_async(pintfhdl, addr, val);
+
+-
+ 	return RTW_STATUS_CODE(ret);
+ }
+
+@@ -181,12 +177,11 @@ void _rtw_read_mem(struct adapter *adapter, u32 addr=
+, u32 cnt, u8 *pmem)
+ 	struct io_priv *pio_priv =3D &adapter->iopriv;
+ 	struct	intf_hdl		*pintfhdl =3D &pio_priv->intf;
+
+-
+ 	if (adapter->bDriverStopped || adapter->bSurpriseRemoved)
+-	     return;
++		return;
++
+ 	_read_mem =3D pintfhdl->io_ops._read_mem;
+ 	_read_mem(pintfhdl, addr, cnt, pmem);
+-
+ }
+
+ void _rtw_write_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+@@ -195,13 +190,9 @@ void _rtw_write_mem(struct adapter *adapter, u32 addr=
+, u32 cnt, u8 *pmem)
+ 	struct io_priv *pio_priv =3D &adapter->iopriv;
+ 	struct	intf_hdl		*pintfhdl =3D &pio_priv->intf;
+
+-
+-
+ 	_write_mem =3D pintfhdl->io_ops._write_mem;
+
+ 	_write_mem(pintfhdl, addr, cnt, pmem);
+-
+-
+ }
+
+ void _rtw_read_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+@@ -210,16 +201,12 @@ void _rtw_read_port(struct adapter *adapter, u32 add=
+r, u32 cnt, u8 *pmem)
+ 	struct io_priv *pio_priv =3D &adapter->iopriv;
+ 	struct	intf_hdl		*pintfhdl =3D &pio_priv->intf;
+
+-
+-
+ 	if (adapter->bDriverStopped || adapter->bSurpriseRemoved)
+-	     return;
++		return;
+
+ 	_read_port =3D pintfhdl->io_ops._read_port;
+
+ 	_read_port(pintfhdl, addr, cnt, pmem);
+-
+-
+ }
+
+ void _rtw_read_port_cancel(struct adapter *adapter)
+@@ -241,14 +228,10 @@ u32 _rtw_write_port(struct adapter *adapter, u32 add=
+r, u32 cnt, u8 *pmem)
+ 	struct	intf_hdl		*pintfhdl =3D &pio_priv->intf;
+ 	u32 ret =3D _SUCCESS;
+
+-
+-
+ 	_write_port =3D pintfhdl->io_ops._write_port;
+
+ 	ret =3D _write_port(pintfhdl, addr, cnt, pmem);
+
+-
+-
+ 	return ret;
+ }
+
+=2D-
+2.25.1
+
