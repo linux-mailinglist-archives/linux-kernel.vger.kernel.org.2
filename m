@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD715416C8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C231F416C97
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244297AbhIXHK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:10:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27740 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231415AbhIXHK2 (ORCPT
+        id S244349AbhIXHOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244191AbhIXHOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:10:28 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18O78hc6004099;
-        Fri, 24 Sep 2021 03:08:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=gekK1Ey3BsVMUva1NOyE8x7YSwJQ2QyivMqpVGpAWYE=;
- b=R24ZCJxUNi+oKVQemjeq9EZNAU1h3BFtSDwPlaq/RSHsJW01Zut4fxTiTFndewwJUG8M
- XC9JUz2KUAsx+EAUKcb7Z42q+HqnY9EoJTswcZcAPz3o6RDKq9tasSGcJMC/wbtTXlD8
- zP1KmC7BXGcuapilzScTSjX/Tut/WwXWbCH6KSF5MfKmgnbg5eIUWmEPyAnmw0/h1u8s
- bwIZoVQcHhcB7ws8MWDXrqcDKwsYGQq/gCmW8Vio1aZUV+sJRqytfoWhtjIplOPhxrKI
- 7YX3PvVxF00tEmNthngWyUW+MhT9pH1wJcUEA+5wXtR2VQ1IwypoY3sthJhbbCwM6fjS Jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b979uumqe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Sep 2021 03:08:43 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18O78g6Y031357;
-        Fri, 24 Sep 2021 03:08:42 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b979uumpy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Sep 2021 03:08:42 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18O77bBM001509;
-        Fri, 24 Sep 2021 07:08:41 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma04dal.us.ibm.com with ESMTP id 3b93g1yep2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Sep 2021 07:08:41 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18O78e7f13238702
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Sep 2021 07:08:40 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D042E28067;
-        Fri, 24 Sep 2021 07:08:40 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2145528060;
-        Fri, 24 Sep 2021 07:08:37 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.43.56.34])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 24 Sep 2021 07:08:36 +0000 (GMT)
-X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>, Zi Yan <ziy@nvidia.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v2 1/4] hugetlb: add demote hugetlb page sysfs interfaces
-In-Reply-To: <20210923175347.10727-2-mike.kravetz@oracle.com>
-References: <20210923175347.10727-1-mike.kravetz@oracle.com>
- <20210923175347.10727-2-mike.kravetz@oracle.com>
-Date:   Fri, 24 Sep 2021 12:38:33 +0530
-Message-ID: <878rzma1se.fsf@linux.ibm.com>
+        Fri, 24 Sep 2021 03:14:11 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E81C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:12:38 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:5dd8:9bc4:3752:5710])
+        by laurent.telenet-ops.be with bizsmtp
+        id xjCa250062gynNa01jCa9H; Fri, 24 Sep 2021 09:12:36 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mTfNp-008Vbt-Qj; Fri, 24 Sep 2021 09:12:33 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mTfNp-007LLw-BV; Fri, 24 Sep 2021 09:12:33 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Scott Wood <oss@buserror.net>
+Cc:     linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 1/2] serial: 8250: SERIAL_8250_FSL should not default to y when compile-testing
+Date:   Fri, 24 Sep 2021 09:12:30 +0200
+Message-Id: <6421f256407262afd658ffa74ec9430581528a7d.1632467477.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jVg9Jfb5GYPIrwfpw4F3tf4-SV-YVcde
-X-Proofpoint-ORIG-GUID: -V9dfMZYkHiG2u7vVoEA14SBaEqmmkj_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-24_02,2021-09-23_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- malwarescore=0 adultscore=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2109240041
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike Kravetz <mike.kravetz@oracle.com> writes:
+Commit b1442c55ce8977aa ("serial: 8250: extend compile-test coverage")
+added compile-test support to the Freescale 16550 driver.  However, as
+SERIAL_8250_FSL is an invisible symbol, merely enabling compile-testing
+now enables this driver.
 
-> Two new sysfs files are added to demote hugtlb pages.  These files are
-> both per-hugetlb page size and per node.  Files are:
->   demote_size - The size in Kb that pages are demoted to. (read-write)
->   demote - The number of huge pages to demote. (write-only)
->
-> By default, demote_size is the next smallest huge page size.  Valid huge
-> page sizes less than huge page size may be written to this file.  When
-> huge pages are demoted, they are demoted to this size.
->
-> Writing a value to demote will result in an attempt to demote that
-> number of hugetlb pages to an appropriate number of demote_size pages.
->
-> NOTE: Demote interfaces are only provided for huge page sizes if there
-> is a smaller target demote huge page size.  For example, on x86 1GB huge
-> pages will have demote interfaces.  2MB huge pages will not have demote
-> interfaces.
+Fix this by dropping the COMPILE_TEST default again, but making the
+SERIAL_8250_FSL symbol visible instead.
 
-Should we also check if the platform allows for
-gigantic_page_runtime_supported() ? 
+Fixes: b1442c55ce8977aa ("serial: 8250: extend compile-test coverage")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - Split in two parts.
+---
+ drivers/tty/serial/8250/Kconfig | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
--aneesh
+diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
+index 808268edd2e82a45..0af96f3adab517f6 100644
+--- a/drivers/tty/serial/8250/Kconfig
++++ b/drivers/tty/serial/8250/Kconfig
+@@ -361,9 +361,12 @@ config SERIAL_8250_BCM2835AUX
+ 	  If unsure, say N.
+ 
+ config SERIAL_8250_FSL
+-	bool
++	bool "Freescale 16550-style UART support (8250 based driver)"
+ 	depends on SERIAL_8250_CONSOLE
+-	default PPC || ARM || ARM64 || COMPILE_TEST
++	default PPC || ARM || ARM64
++	help
++	  Selecting this option will add support for the 16550-style serial
++	  port hardware found on Freescale SoCs.
+ 
+ config SERIAL_8250_DW
+ 	tristate "Support for Synopsys DesignWare 8250 quirks"
+-- 
+2.25.1
 
