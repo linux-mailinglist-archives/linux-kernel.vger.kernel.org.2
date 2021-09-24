@@ -2,98 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F6D417E09
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 01:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76C4417E0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 01:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346063AbhIXXGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 19:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhIXXGn (ORCPT
+        id S235974AbhIXXLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 19:11:40 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:36206
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230021AbhIXXLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 19:06:43 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0459C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:05:09 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id g41so46444723lfv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QeB/QlIkVc1HaPnxXOxXzZA9RrsagX4tww0bEUkv5O4=;
-        b=QHFaZY0zUtpimbNKGHO1HkSh2M2muQMq1XJ3mPWhBKWPCmDd0eRiRNkYay1Zi1Qgc7
-         bYf4q/QP1eziQ3PbH1gXrdHcCpGYyU3NyphmUMGtZ5fzJRZY8LbC7Tlf3GN02I+iSAOZ
-         PtKM2w1HHSMoyL13G4mqrbVzviCP+S42UYrIQ4bf5HsOpLFIB1t0Kg6NlFVd+o2SRqPW
-         rWbJ8aIdU56Jpz/4sWJoM2P485ppEfhJOnoh2bynyWNYJUDIQzYYG7rENC7ux7JygphD
-         SPHR9WxqgEJrK+vA3fYQQHCvgf/adfSv4O1QifhO+ii2WZ7rzcnpn3vmERRux1tjcjO9
-         a8zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QeB/QlIkVc1HaPnxXOxXzZA9RrsagX4tww0bEUkv5O4=;
-        b=SCTmCo5QyO1YrxFOh3O0F5Z6Uur7MAoIq4OhakJQo5bGkUmtgnDKnjRZExfnn7afAH
-         Vpf8t+QCAI1G3fm1pRTNApHo+/Z7Ntg/5WgGIhfEB1QqjnIuGQxcdEhlJiYgTmcZ5XRz
-         /QxBGwtvxoRC2unmWq76PySgyj9zYWNOtAaWdDLZS+ctwu/g0GTs27EGngE4uPAy+fKm
-         WXiOHYGlgsqLWjyU0P7cZQicAXKKpIfwPAZKvJgDzPpK2AissGhiMN5HrWinhX/3MFjP
-         Xe1syN9n9qALx5mwroVLG4JLGErG+X2X1t0Kz1wVBiZrsnpLUIqxQ9NwygbBiBLNvvnU
-         BQeg==
-X-Gm-Message-State: AOAM532etFy9pqOfaW69L7Zgal3cmdktv8RNHEW9eeiHDM5BGvp4E8Yp
-        eDtVok7gsdbbPSJg6/OGvXbHPA==
-X-Google-Smtp-Source: ABdhPJyABEn2XeZ/MdEk0AnHAYoFB7lLkWh75SgVQ/M/bCH1ThvH6y+h6j84xhJLr4fbYzmt8DXaoQ==
-X-Received: by 2002:a2e:9e4c:: with SMTP id g12mr13602346ljk.433.1632524708253;
-        Fri, 24 Sep 2021 16:05:08 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id s7sm964001lfi.130.2021.09.24.16.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 16:05:07 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 7CDA6102FC4; Sat, 25 Sep 2021 02:05:05 +0300 (+03)
-Date:   Sat, 25 Sep 2021 02:05:05 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: Mapcount of subpages
-Message-ID: <20210924230505.vlql2mdjfcotkuqj@box.shutemov.name>
-References: <YUvWm6G16+ib+Wnb@moria.home.lan>
- <YUvzINep9m7G0ust@casper.infradead.org>
- <YUwNZFPGDj4Pkspx@moria.home.lan>
- <YUxnnq7uFBAtJ3rT@casper.infradead.org>
- <20210923124502.nxfdaoiov4sysed4@box.shutemov.name>
- <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
+        Fri, 24 Sep 2021 19:11:38 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id B44B640189;
+        Fri, 24 Sep 2021 23:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632525003;
+        bh=MMj9XYGRAUjX3duA0tNbIp1LXgRy3RovsJqNaSyyQsQ=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=l/oBghUcWofCXKBBLGS+d1d1Wsqr08VyP5+xGKT2Qt5ZwjNLAui/2iu+q7M0cSYeZ
+         3+gY9hQOg71JQFBSQfAV7MaLs7d/tODV2zct8dqLd8ZQGZhxJL7GIOQ6iyODJhQbqW
+         LQas497Wi0cRtWGcVmbq8vc/tVHPCCE1qKPVf5zOohptAlJfXLbY/1NAQA9oVeBMae
+         hh8krdC/NXQRR/yKN98PA5Pgv42lsZpXbuxuXMrhxcZcXvr+2IJ3FFl0W0haHAnIEy
+         20iQRbZLz/NGQT2K6Q+7FL9wwW4+z4MmEkcx24jRMSYF+IfvCeU3d0OYNnnJt+bTAH
+         35fy8XI/A8Daw==
+From:   Colin King <colin.king@canonical.com>
+To:     Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: codecs: Fix spelling mistake "Unsupport" -> "Unsupported"
+Date:   Sat, 25 Sep 2021 00:10:03 +0100
+Message-Id: <20210924231003.144502-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72cc2691-5ebe-8b56-1fe8-eeb4eb4a4c74@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 02:10:13PM -0700, Hugh Dickins wrote:
-> But you have a different point in mind when you refer to superfluous
-> CoW and GUP: I don't know the score there (and I think we are still in
-> that halfway zone, since pte CoW was changed to depend on page_count,
-> but THP CoW still depending on mapcount).
+From: Colin Ian King <colin.king@canonical.com>
 
-I didn't pay enough attention to the topic when the change to depend on
-page_count was made. I need to catch up.
+There are spelling mistakes in dev_err error messages. Fix them.
 
-I look at what direction Andrea went in his patchset and so far I *feel*
-he has a point[1]. I have not read the whole thing yet and I don't have a
-firm position here, but maybe we need to get to the bottom of the topic
-before considering ditching per-subpage mapcount.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/codecs/rt1015.c | 2 +-
+ sound/soc/codecs/rt1016.c | 2 +-
+ sound/soc/codecs/rt1019.c | 2 +-
+ sound/soc/codecs/rt1305.c | 2 +-
+ sound/soc/codecs/rt1308.c | 2 +-
+ sound/soc/codecs/rt5514.c | 2 +-
+ sound/soc/codecs/rt5616.c | 2 +-
+ sound/soc/codecs/rt5640.c | 2 +-
+ sound/soc/codecs/rt5645.c | 2 +-
+ sound/soc/codecs/rt5651.c | 2 +-
+ sound/soc/codecs/rt5659.c | 2 +-
+ sound/soc/codecs/rt5660.c | 2 +-
+ sound/soc/codecs/rt5663.c | 2 +-
+ sound/soc/codecs/rt5665.c | 2 +-
+ sound/soc/codecs/rt5668.c | 2 +-
+ sound/soc/codecs/rt5670.c | 2 +-
+ sound/soc/codecs/rt5677.c | 2 +-
+ sound/soc/codecs/rt5682.c | 6 +++---
+ 18 files changed, 20 insertions(+), 20 deletions(-)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/andrea/aa.git/tree/mm/memory.c?h=mapcount_deshare&id=e1cb3108d4131c2a7da03fbd37c3230cf082bfd9#n3153
-
+diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
+index c0c5952cdff7..6a27dfacd81c 100644
+--- a/sound/soc/codecs/rt1015.c
++++ b/sound/soc/codecs/rt1015.c
+@@ -864,7 +864,7 @@ static int rt1015_set_component_pll(struct snd_soc_component *component,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt1016.c b/sound/soc/codecs/rt1016.c
+index 7561d202274c..9845cdddcb4c 100644
+--- a/sound/soc/codecs/rt1016.c
++++ b/sound/soc/codecs/rt1016.c
+@@ -490,7 +490,7 @@ static int rt1016_set_component_pll(struct snd_soc_component *component,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out * 4, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt1019.c b/sound/soc/codecs/rt1019.c
+index 8c0b00242bb8..80b7ca0e4e1e 100644
+--- a/sound/soc/codecs/rt1019.c
++++ b/sound/soc/codecs/rt1019.c
+@@ -359,7 +359,7 @@ static int rt1019_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt1305.c b/sound/soc/codecs/rt1305.c
+index 7a0094578e46..a9c473537a91 100644
+--- a/sound/soc/codecs/rt1305.c
++++ b/sound/soc/codecs/rt1305.c
+@@ -841,7 +841,7 @@ static int rt1305_set_component_pll(struct snd_soc_component *component,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt1308.c b/sound/soc/codecs/rt1308.c
+index b4e5546e2e21..c555b77b3c5c 100644
+--- a/sound/soc/codecs/rt1308.c
++++ b/sound/soc/codecs/rt1308.c
+@@ -664,7 +664,7 @@ static int rt1308_set_component_pll(struct snd_soc_component *component,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 4b1ad5054e8d..577680df7052 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -936,7 +936,7 @@ static int rt5514_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
+index fd0d3a08e9dd..8e6414468a87 100644
+--- a/sound/soc/codecs/rt5616.c
++++ b/sound/soc/codecs/rt5616.c
+@@ -1133,7 +1133,7 @@ static int rt5616_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index cd1db5caabad..d01fe73ab9c8 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1909,7 +1909,7 @@ static int rt5640_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9408ee63cb26..197c56047947 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2969,7 +2969,7 @@ static int rt5645_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index fc0c83b73f09..e78ea101bc8d 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1487,7 +1487,7 @@ static int rt5651_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index 4a50b169fe03..e1503c2eee81 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -3509,7 +3509,7 @@ static int rt5659_set_component_pll(struct snd_soc_component *component, int pll
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
+index 33ff9156358b..3b50fb29864e 100644
+--- a/sound/soc/codecs/rt5660.c
++++ b/sound/soc/codecs/rt5660.c
+@@ -1046,7 +1046,7 @@ static int rt5660_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index be9fc58ff681..0389b2bb360e 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -2941,7 +2941,7 @@ static int rt5663_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index e59323fd5bf2..33e889802ff8 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4374,7 +4374,7 @@ static int rt5665_set_component_pll(struct snd_soc_component *component, int pll
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
+index 6ab1a8bc3735..fb09715bf932 100644
+--- a/sound/soc/codecs/rt5668.c
++++ b/sound/soc/codecs/rt5668.c
+@@ -2171,7 +2171,7 @@ static int rt5668_set_component_pll(struct snd_soc_component *component,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index ecbaf129a6e3..ce7684752bb0 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2577,7 +2577,7 @@ static int rt5670_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index f655228c8c4b..4a8c267d4fbc 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -4557,7 +4557,7 @@ static int rt5677_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 
+ 	ret = rt5677_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 4a64cab99c55..12113c2dcae2 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2327,7 +2327,7 @@ static int rt5682_set_component_pll(struct snd_soc_component *component,
+ 		pll2_fout1 = 3840000;
+ 		ret = rl6231_pll_calc(freq_in, pll2_fout1, &pll2f_code);
+ 		if (ret < 0) {
+-			dev_err(component->dev, "Unsupport input clock %d\n",
++			dev_err(component->dev, "Unsupported input clock %d\n",
+ 				freq_in);
+ 			return ret;
+ 		}
+@@ -2339,7 +2339,7 @@ static int rt5682_set_component_pll(struct snd_soc_component *component,
+ 
+ 		ret = rl6231_pll_calc(pll2_fout1, freq_out, &pll2b_code);
+ 		if (ret < 0) {
+-			dev_err(component->dev, "Unsupport input clock %d\n",
++			dev_err(component->dev, "Unsupported input clock %d\n",
+ 				pll2_fout1);
+ 			return ret;
+ 		}
+@@ -2390,7 +2390,7 @@ static int rt5682_set_component_pll(struct snd_soc_component *component,
+ 
+ 		ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 		if (ret < 0) {
+-			dev_err(component->dev, "Unsupport input clock %d\n",
++			dev_err(component->dev, "Unsupported input clock %d\n",
+ 				freq_in);
+ 			return ret;
+ 		}
 -- 
- Kirill A. Shutemov
+2.32.0
+
