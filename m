@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4EA417249
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEC1417323
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344048AbhIXMr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:47:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42204 "EHLO mail.kernel.org"
+        id S1345033AbhIXMyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343913AbhIXMqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:46:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A69A61263;
-        Fri, 24 Sep 2021 12:45:00 +0000 (UTC)
+        id S1344835AbhIXMwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:52:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C72F961371;
+        Fri, 24 Sep 2021 12:49:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487501;
-        bh=vZWHKSv42FCaUR+GqF5uloDitBwgn08r9izr/hJ+XqY=;
+        s=korg; t=1632487786;
+        bh=FCAekm/4vJUVBd6f5wT1m5Xu+qvHAegYllC9+H9cdUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=goyfwgfj3NB7Eehau/sW9GXHGPtDQIz077YBbIDWjObB1JivJut83i1j52cMeCwUa
-         lj503uPtC/Q+Zd7p4sZW/D3RQc5ZtEOwJPO/95dUW2R1kXEQfg6YXliRGGTCohYOie
-         26aSk5QxOqtXELPmraKQJacfIraMLyW+cWmMya6g=
+        b=YnxLWLVjM5+tYL/wjFbjS2rk0q7KSmlLgW4c9D5R+It9MghYRnMxUqMrCht7xHwAZ
+         hKYR1PUspSm7kUGAeL0d5BbczfRk4l6JChc+r6olOTdGYzXlvnIgJBbKk2v2G+AeWF
+         843E8CmYDhQbGfocPRIcDjB8dT5spFQpIDLBohqI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 20/23] nilfs2: fix memory leak in nilfs_sysfs_delete_snapshot_group
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 5.4 12/50] ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
 Date:   Fri, 24 Sep 2021 14:44:01 +0200
-Message-Id: <20210924124328.478548409@linuxfoundation.org>
+Message-Id: <20210924124332.651349004@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
-References: <20210924124327.816210800@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +41,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nanyong Sun <sunnanyong@huawei.com>
+From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-[ Upstream commit 17243e1c3072b8417a5ebfc53065d0a87af7ca77 ]
+commit 890cb057a46d323fd8c77ebecb6485476614cd21 upstream
 
-kobject_put() should be used to cleanup the memory associated with the
-kobject instead of kobject_del().  See the section "Kobject removal" of
-"Documentation/core-api/kobject.rst".
+Will be used in the following patch. No functional change.
 
-Link: https://lkml.kernel.org/r/20210629022556.3985106-7-sunnanyong@huawei.com
-Link: https://lkml.kernel.org/r/1625651306-10829-7-git-send-email-konishi.ryusuke@gmail.com
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nilfs2/sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/include/asm/insn.h |    8 ++++----
+ arch/arm/kernel/ftrace.c    |    2 +-
+ arch/arm/kernel/insn.c      |   19 ++++++++++---------
+ 3 files changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index 73d872a24a21..49a148ebbcda 100644
---- a/fs/nilfs2/sysfs.c
-+++ b/fs/nilfs2/sysfs.c
-@@ -224,7 +224,7 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
- 
- void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
- {
--	kobject_del(&root->snapshot_kobj);
-+	kobject_put(&root->snapshot_kobj);
+--- a/arch/arm/include/asm/insn.h
++++ b/arch/arm/include/asm/insn.h
+@@ -13,18 +13,18 @@ arm_gen_nop(void)
  }
  
- /************************************************************************
--- 
-2.33.0
-
+ unsigned long
+-__arm_gen_branch(unsigned long pc, unsigned long addr, bool link);
++__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn);
+ 
+ static inline unsigned long
+ arm_gen_branch(unsigned long pc, unsigned long addr)
+ {
+-	return __arm_gen_branch(pc, addr, false);
++	return __arm_gen_branch(pc, addr, false, true);
+ }
+ 
+ static inline unsigned long
+-arm_gen_branch_link(unsigned long pc, unsigned long addr)
++arm_gen_branch_link(unsigned long pc, unsigned long addr, bool warn)
+ {
+-	return __arm_gen_branch(pc, addr, true);
++	return __arm_gen_branch(pc, addr, true, warn);
+ }
+ 
+ #endif
+--- a/arch/arm/kernel/ftrace.c
++++ b/arch/arm/kernel/ftrace.c
+@@ -73,7 +73,7 @@ int ftrace_arch_code_modify_post_process
+ 
+ static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
+ {
+-	return arm_gen_branch_link(pc, addr);
++	return arm_gen_branch_link(pc, addr, true);
+ }
+ 
+ static int ftrace_modify_code(unsigned long pc, unsigned long old,
+--- a/arch/arm/kernel/insn.c
++++ b/arch/arm/kernel/insn.c
+@@ -3,8 +3,9 @@
+ #include <linux/kernel.h>
+ #include <asm/opcodes.h>
+ 
+-static unsigned long
+-__arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
++static unsigned long __arm_gen_branch_thumb2(unsigned long pc,
++					     unsigned long addr, bool link,
++					     bool warn)
+ {
+ 	unsigned long s, j1, j2, i1, i2, imm10, imm11;
+ 	unsigned long first, second;
+@@ -12,7 +13,7 @@ __arm_gen_branch_thumb2(unsigned long pc
+ 
+ 	offset = (long)addr - (long)(pc + 4);
+ 	if (offset < -16777216 || offset > 16777214) {
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(warn);
+ 		return 0;
+ 	}
+ 
+@@ -33,8 +34,8 @@ __arm_gen_branch_thumb2(unsigned long pc
+ 	return __opcode_thumb32_compose(first, second);
+ }
+ 
+-static unsigned long
+-__arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
++static unsigned long __arm_gen_branch_arm(unsigned long pc, unsigned long addr,
++					  bool link, bool warn)
+ {
+ 	unsigned long opcode = 0xea000000;
+ 	long offset;
+@@ -44,7 +45,7 @@ __arm_gen_branch_arm(unsigned long pc, u
+ 
+ 	offset = (long)addr - (long)(pc + 8);
+ 	if (unlikely(offset < -33554432 || offset > 33554428)) {
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(warn);
+ 		return 0;
+ 	}
+ 
+@@ -54,10 +55,10 @@ __arm_gen_branch_arm(unsigned long pc, u
+ }
+ 
+ unsigned long
+-__arm_gen_branch(unsigned long pc, unsigned long addr, bool link)
++__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn)
+ {
+ 	if (IS_ENABLED(CONFIG_THUMB2_KERNEL))
+-		return __arm_gen_branch_thumb2(pc, addr, link);
++		return __arm_gen_branch_thumb2(pc, addr, link, warn);
+ 	else
+-		return __arm_gen_branch_arm(pc, addr, link);
++		return __arm_gen_branch_arm(pc, addr, link, warn);
+ }
 
 
