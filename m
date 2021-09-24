@@ -2,227 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A644168FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 02:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01DB41690F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 02:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243671AbhIXAfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 20:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243679AbhIXAfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 20:35:43 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45668C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:34:11 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id s11so8051639pgr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 17:34:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=brQvCkiWnm8n1ZB3+QwJJqLl2orjJJoMuam9WVOZX4g=;
-        b=K25XKNh0Or3/qOoxYeoOlHUvqywO8dnTxSdrH/WVKQLJornC5fyEEbxtBNm/cEv5/s
-         kcWEzvLXYAi72EQvNhqsl0I0ImLdedR/GGTNR5neJdBqn5C4Ep9Ll7tke1ngn7umRQeF
-         P87WQWko3lyiyaqbq410TJmewbH9g0DWZe9p0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=brQvCkiWnm8n1ZB3+QwJJqLl2orjJJoMuam9WVOZX4g=;
-        b=J9g+kAM06O7V1g2rl6fiyfOqvYBXfQJQ4WnvKKA0X9Iuo+LqpLbshqAl8LBt9eKGas
-         5i2P+m2TnVXNulkyxprnluuNQgtHn6W+Acyyvu/rHTT1mB+p2aF4xJNDh/pr3mW7z3h9
-         8NO6AtV9rPC5JfUMhBBZVFpq/JTgVje5ItHCqMciMIWZXdH9yGFSFbNNP0ZvVX/P5yDV
-         C+0uFpA2OBbvwws5uxlzqKJUz2ooL1asWs9EOjv47A8g+bZx4Rt3C1YQae6sawLETRai
-         B/uHVbGt3+a/ngBhzJwhE6gwI3/Sce0KQpmUhPM05cy/tKtGevNJn1/fCwvrR1nrv71w
-         pfbw==
-X-Gm-Message-State: AOAM530VqvCl8RQUXrnd+aLgFZsvGemfBLHeE6P6L70uGM4Hw/0P4QaS
-        xyanb8/XOyoNK621jI2MQ2/hkw==
-X-Google-Smtp-Source: ABdhPJwiOv/whqWReLlPFjTjV+JRvxrOQXUtYwqh/IUV6UK0b2Dt+OIIMph8lD/YY0/3wB4idEEIWw==
-X-Received: by 2002:a05:6a00:16ca:b0:413:d3f7:646f with SMTP id l10-20020a056a0016ca00b00413d3f7646fmr7204222pfc.7.1632443650783;
-        Thu, 23 Sep 2021 17:34:10 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:74de:c8b7:3a35:1063])
-        by smtp.gmail.com with UTF8SMTPSA id m2sm8070878pgd.70.2021.09.23.17.34.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 17:34:10 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 3/3] drm/panel: Delete panel on mipi_dsi_attach() failure
-Date:   Thu, 23 Sep 2021 17:33:55 -0700
-Message-Id: <20210923173336.3.If9e74fa9b1d6eaa9e0e5b95b2b957b992740251c@changeid>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-In-Reply-To: <20210924003355.2071543-1-briannorris@chromium.org>
-References: <20210924003355.2071543-1-briannorris@chromium.org>
+        id S243719AbhIXAmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 20:42:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243693AbhIXAmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 20:42:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8760F61211;
+        Fri, 24 Sep 2021 00:41:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632444071;
+        bh=w0GBfErQ2aTLMNU7MDbkr19hVOoBE4VSCb6WE1FDNFs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FNR0L83CHbAFSSH1kLjeBq8tE0mhgTnfxWGcbaE1u1xATurc6v+3Ka7Dnbns+7QrD
+         eVdagUtQm3ra73abNhMI7MhUW2+DfkRQAtAGtkt0+MFIO19kA0YlRJQErA65Y5ZFqD
+         0iAlUqOm6ifcjxqaFB/vHYKnx5T+DWa1hqMN3j1NNa02HTkmEhPrw4aqdermaxxSva
+         ocIFXwuN6E7d//AL6Q816GzhSFoMLrQS5q2q3uSkdfr9zVLSk5u504LWHccVBdSJnN
+         Z4K6fioH8v8ODnHVNW9iBqztkbl8osT8qcStveHH6TaORSWGnWFyghXTv7ImaMvSs7
+         5a31rKwNnY+3g==
+Received: by mail-ed1-f43.google.com with SMTP id bx4so29673906edb.4;
+        Thu, 23 Sep 2021 17:41:11 -0700 (PDT)
+X-Gm-Message-State: AOAM533T7ZL3xSDj2FPpuaEsviXn4vBr1DbzqItB2c8ErXqbFBBPGooM
+        GtMOtB1FVQQ6zjIkVR59BnJ14JrGcO8hVWRiLg==
+X-Google-Smtp-Source: ABdhPJzhZwH0p9jFCOmLP9w41n0VLtNWGcOCwUOqyMCgwSje8U7p3EsOppth0SNuzc2Ga2Usb1Sp5HVORFqK/3M2n/s=
+X-Received: by 2002:a17:906:fa8a:: with SMTP id lt10mr8147008ejb.320.1632444070144;
+ Thu, 23 Sep 2021 17:41:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
+ <1632399378-12229-2-git-send-email-rajpat@codeaurora.org> <1632436663.381520.3653405.nullmailer@robh.at.kernel.org>
+ <CAD=FV=WOJiKUjGTYW0GmqOMqd_8+Y_tRmynuhZpaenwbTiG_9g@mail.gmail.com>
+In-Reply-To: <CAD=FV=WOJiKUjGTYW0GmqOMqd_8+Y_tRmynuhZpaenwbTiG_9g@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 23 Sep 2021 19:40:56 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJhRG7XsvMVNptRXrVREh3Vew+bZ4v+EgBUn4qKeRMWuw@mail.gmail.com>
+Message-ID: <CAL_JsqJhRG7XsvMVNptRXrVREh3Vew+bZ4v+EgBUn4qKeRMWuw@mail.gmail.com>
+Subject: Re: [PATCH V10 1/8] dt-bindings: spi: Add sc7280 support
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rajesh Patil <rajpat@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>, msavaliy@qti.qualcomm.com,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        satya priya <skakit@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many DSI panel drivers fail to clean up their panel references on
-mipi_dsi_attach() failure, so we're leaving a dangling drm_panel
-reference to freed memory. Clean that up on failure.
+On Thu, Sep 23, 2021 at 5:45 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Thu, Sep 23, 2021 at 3:37 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Thu, 23 Sep 2021 17:46:11 +0530, Rajesh Patil wrote:
+> > > Add compatible for sc7280 SoC.
+> > >
+> > > Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> > > Reviewed-by: Doug Anderson <dianders@chromium.org>
+> > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> > > ---
+> > > Change in V10:
+> > >  - As per Stephen's comments,
+> > >    sorted compatible names in alphabet order
+> > >
+> > > Changes in V9:
+> > >  - No changes
+> > >
+> > > Changes in V8:
+> > >  - As per Doug's comments, added "qcom,sc7280-qspi" compatible
+> > >
+> > >  Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > >
+> >
+> > Running 'make dtbs_check' with the schema in this patch gives the
+> > following warnings. Consider if they are expected or the schema is
+> > incorrect. These may not be new warnings.
+> >
+> > Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> > This will change in the future.
+> >
+> > Full log is available here: https://patchwork.ozlabs.org/patch/1531702
+> >
+> >
+> > spi@88dc000: compatible:0: 'qcom,qspi-v1' is not one of ['qcom,sc7280-qspi', 'qcom,sdm845-qspi']
+> >         arch/arm64/boot/dts/qcom/sc7180-idp.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r4.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-kb.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-kb.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1-lte.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-r1-lte.dt.yaml
+> >
+> > spi@88dc000: compatible: ['qcom,qspi-v1'] is too short
+> >         arch/arm64/boot/dts/qcom/sc7180-idp.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dt.yaml
+> >         arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dt.yaml
+>
+> Right. I mentioned this in earlier review feedback and Rajesh said
+> he'd do a follow-up patch to add sc7180 to the list here and also add
+> the proper compatible in the sc7180.dtsi file. That's not a new error
+> and (IMO) shouldn't block this patch from moving forward, though it
+> should be nearly trivial to do.
 
-Noticed by inspection, after seeing similar problems on other drivers.
-Therefore, I'm not marking Fixes/stable.
+To repeat:
 
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
+> > Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> > This will change in the future.
 
- drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c    | 8 +++++++-
- drivers/gpu/drm/panel/panel-jdi-lt070me05000.c           | 8 +++++++-
- drivers/gpu/drm/panel/panel-novatek-nt36672a.c           | 8 +++++++-
- drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c     | 8 +++++++-
- drivers/gpu/drm/panel/panel-ronbo-rb070d30.c             | 8 +++++++-
- drivers/gpu/drm/panel/panel-samsung-s6e88a0-ams452ef01.c | 1 +
- drivers/gpu/drm/panel/panel-samsung-sofef00.c            | 1 +
- drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c          | 8 +++++++-
- 8 files changed, 44 insertions(+), 6 deletions(-)
+But I think it is useful information to make an informed decision
+whether the schema is missing something or not, so I'm adding these to
+my semi-automated emails.
 
-diff --git a/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c b/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c
-index 581661b506f8..f9c1f7bc8218 100644
---- a/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c
-+++ b/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c
-@@ -227,7 +227,13 @@ static int feiyang_dsi_probe(struct mipi_dsi_device *dsi)
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->lanes = 4;
- 
--	return mipi_dsi_attach(dsi);
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		drm_panel_remove(&ctx->panel);
-+		return ret;
-+	}
-+
-+	return 0;
- }
- 
- static int feiyang_dsi_remove(struct mipi_dsi_device *dsi)
-diff --git a/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c b/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-index 733010b5e4f5..3c86ad262d5e 100644
---- a/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-+++ b/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-@@ -473,7 +473,13 @@ static int jdi_panel_probe(struct mipi_dsi_device *dsi)
- 	if (ret < 0)
- 		return ret;
- 
--	return mipi_dsi_attach(dsi);
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		jdi_panel_del(jdi);
-+		return ret;
-+	}
-+
-+	return 0;
- }
- 
- static int jdi_panel_remove(struct mipi_dsi_device *dsi)
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36672a.c b/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-index 533cd3934b8b..839b263fb3c0 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-@@ -656,7 +656,13 @@ static int nt36672a_panel_probe(struct mipi_dsi_device *dsi)
- 	if (err < 0)
- 		return err;
- 
--	return mipi_dsi_attach(dsi);
-+	err = mipi_dsi_attach(dsi);
-+	if (err < 0) {
-+		drm_panel_remove(&pinfo->base);
-+		return err;
-+	}
-+
-+	return 0;
- }
- 
- static int nt36672a_panel_remove(struct mipi_dsi_device *dsi)
-diff --git a/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c b/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c
-index 3c20beeb1781..3991f5d950af 100644
---- a/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c
-+++ b/drivers/gpu/drm/panel/panel-panasonic-vvx10f034n00.c
-@@ -241,7 +241,13 @@ static int wuxga_nt_panel_probe(struct mipi_dsi_device *dsi)
- 	if (ret < 0)
- 		return ret;
- 
--	return mipi_dsi_attach(dsi);
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		wuxga_nt_panel_del(wuxga_nt);
-+		return ret;
-+	}
-+
-+	return 0;
- }
- 
- static int wuxga_nt_panel_remove(struct mipi_dsi_device *dsi)
-diff --git a/drivers/gpu/drm/panel/panel-ronbo-rb070d30.c b/drivers/gpu/drm/panel/panel-ronbo-rb070d30.c
-index a3782830ae3c..1fb579a574d9 100644
---- a/drivers/gpu/drm/panel/panel-ronbo-rb070d30.c
-+++ b/drivers/gpu/drm/panel/panel-ronbo-rb070d30.c
-@@ -199,7 +199,13 @@ static int rb070d30_panel_dsi_probe(struct mipi_dsi_device *dsi)
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->lanes = 4;
- 
--	return mipi_dsi_attach(dsi);
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		drm_panel_remove(&ctx->panel);
-+		return ret;
-+	}
-+
-+	return 0;
- }
- 
- static int rb070d30_panel_dsi_remove(struct mipi_dsi_device *dsi)
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e88a0-ams452ef01.c b/drivers/gpu/drm/panel/panel-samsung-s6e88a0-ams452ef01.c
-index ea63799ff2a1..29fde3823212 100644
---- a/drivers/gpu/drm/panel/panel-samsung-s6e88a0-ams452ef01.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6e88a0-ams452ef01.c
-@@ -247,6 +247,7 @@ static int s6e88a0_ams452ef01_probe(struct mipi_dsi_device *dsi)
- 	ret = mipi_dsi_attach(dsi);
- 	if (ret < 0) {
- 		dev_err(dev, "Failed to attach to DSI host: %d\n", ret);
-+		drm_panel_remove(&ctx->panel);
- 		return ret;
- 	}
- 
-diff --git a/drivers/gpu/drm/panel/panel-samsung-sofef00.c b/drivers/gpu/drm/panel/panel-samsung-sofef00.c
-index 8cb1853574bb..6d107e14fcc5 100644
---- a/drivers/gpu/drm/panel/panel-samsung-sofef00.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-sofef00.c
-@@ -302,6 +302,7 @@ static int sofef00_panel_probe(struct mipi_dsi_device *dsi)
- 	ret = mipi_dsi_attach(dsi);
- 	if (ret < 0) {
- 		dev_err(dev, "Failed to attach to DSI host: %d\n", ret);
-+		drm_panel_remove(&ctx->panel);
- 		return ret;
- 	}
- 
-diff --git a/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c b/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
-index b937e24dac8e..25829a0a8e80 100644
---- a/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
-+++ b/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
-@@ -296,7 +296,13 @@ static int sharp_nt_panel_probe(struct mipi_dsi_device *dsi)
- 	if (ret < 0)
- 		return ret;
- 
--	return mipi_dsi_attach(dsi);
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		sharp_nt_panel_del(sharp_nt);
-+		return ret;
-+	}
-+
-+	return 0;
- }
- 
- static int sharp_nt_panel_remove(struct mipi_dsi_device *dsi)
--- 
-2.33.0.685.g46640cef36-goog
-
+Rob
