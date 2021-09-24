@@ -2,183 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA95D416E57
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A94416E59
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245015AbhIXI7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:59:49 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39176 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244621AbhIXI7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:59:47 -0400
-Received: from zn.tnic (p200300ec2f0dd600c2485b7778a62ff5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d600:c248:5b77:78a6:2ff5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9AB971EC0301;
-        Fri, 24 Sep 2021 10:58:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632473889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=zbrXJ+Aq13n8UVfal2GI8gct0tLpzbzh+GqS6QUuaMw=;
-        b=aFqyiPJTWFX5uUkQhS+kBmP+bUUPiLH8EjyILF4GTVdoFvA6b2u+Fv6jA7UrmTcZtlIX5Q
-        4iumgmzRgLKaqra0iHWdvpo5TmojDNzXZzOw02VdVjtF8sF2j1qAGy4+Xp/2xHgrNCj+d5
-        reS24NO3h3kwUNszgz2e0/+E0rMt9nE=
-Date:   Fri, 24 Sep 2021 10:58:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 03/45] x86/sev: Add the host SEV-SNP
- initialization support
-Message-ID: <YU2TGxrpwMD8QLnk@zn.tnic>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-4-brijesh.singh@amd.com>
+        id S245022AbhIXJAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:00:00 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:43637 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244621AbhIXI77 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:59:59 -0400
+Received: by mail-il1-f199.google.com with SMTP id s8-20020a92cbc8000000b002582a281a7bso5943052ilq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:58:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=8npiF/jDNr/jkDotYVsh3O09j4eaE43P0hOP/9Ipagw=;
+        b=MLL6HxhxDsPOFo9VM0cuqC0elIuHNt68zyWhP0fWzu2IHnKeZtUeK/e1EGGyzj56tW
+         +3AKXQHJppPRlQgeeDeraKglGkcb4EeAhrR5iX2oNATwo1yHNZ3R1fSV9vqNBNNy8UgR
+         vJwzqOBExKHiSl0eQdVjzEyFhbtl8n9n/foGDoTWAb/a5CCcl2oclMKABhIACcZP0Wk4
+         6BeaSuqxZMVudjdHA0hmzPa5afhdRug/sCMyap2NDGhOP0+TBkSui7uixRNCudd+dChT
+         kG/68t9pPAd73FOPjGGP/0tZ29fOozPV1iqO67erBeY79S4UDKeBfNturCZGuzhdGFtZ
+         wEhg==
+X-Gm-Message-State: AOAM532DLqkhkwyjxzCCcxTSCwERrmRfuUOZWbeJsR2xRajJTHfpkhaX
+        qqTWHCU79XLmChC30W1BtgceYGFoSNwD0Hg+XdCA4xOhr/qS
+X-Google-Smtp-Source: ABdhPJzuAfXhZDMEaHvtLrVXHZVHFI359ZJSDK1BbS6qwQMvli/fg9gKolr6ohoKmJqo2bLB9YkLFZbP5xI7RoC8cl1cSmv/xn+K
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-4-brijesh.singh@amd.com>
+X-Received: by 2002:a92:280f:: with SMTP id l15mr6929859ilf.74.1632473906530;
+ Fri, 24 Sep 2021 01:58:26 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 01:58:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004dcddc05ccb9f3a2@google.com>
+Subject: [syzbot] riscv/fixes test error: BUG: soft lockup in corrupted
+From:   syzbot <syzbot+bc48e05449f37d40eccf@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:58:36AM -0500, Brijesh Singh wrote:
-> @@ -542,6 +544,10 @@
->  #define MSR_AMD64_SYSCFG		0xc0010010
->  #define MSR_AMD64_SYSCFG_MEM_ENCRYPT_BIT	23
->  #define MSR_AMD64_SYSCFG_MEM_ENCRYPT	BIT_ULL(MSR_AMD64_SYSCFG_MEM_ENCRYPT_BIT)
-> +#define MSR_AMD64_SYSCFG_SNP_EN_BIT		24
-> +#define MSR_AMD64_SYSCFG_SNP_EN		BIT_ULL(MSR_AMD64_SYSCFG_SNP_EN_BIT)
-> +#define MSR_AMD64_SYSCFG_SNP_VMPL_EN_BIT	25
-> +#define MSR_AMD64_SYSCFG_SNP_VMPL_EN	BIT_ULL(MSR_AMD64_SYSCFG_SNP_VMPL_EN_BIT)
+Hello,
 
-While you're here, move all defines that belong to that MSR which
-we decided it is architectural after all, above the definition of
-MSR_AMD64_NB_CFG above.
+syzbot found the following issue on:
 
->  #define MSR_K8_INT_PENDING_MSG		0xc0010055
->  /* C1E active bits in int pending message */
->  #define K8_INTP_C1E_ACTIVE_MASK		0x18000000
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index ab17c93634e9..7936c8139c74 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -24,6 +24,8 @@
->  #include <linux/sev-guest.h>
->  #include <linux/platform_device.h>
->  #include <linux/io.h>
-> +#include <linux/cpumask.h>
-> +#include <linux/iommu.h>
->  
->  #include <asm/cpu_entry_area.h>
->  #include <asm/stacktrace.h>
-> @@ -40,11 +42,19 @@
->  #include <asm/efi.h>
->  #include <asm/cpuid.h>
->  #include <asm/setup.h>
-> +#include <asm/apic.h>
-> +#include <asm/iommu.h>
->  
->  #include "sev-internal.h"
->  
->  #define DR7_RESET_VALUE        0x400
->  
-> +/*
-> + * The first 16KB from the RMP_BASE is used by the processor for the
+HEAD commit:    7d2a07b76933 Linux 5.14
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=1021b1f3300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8211b06020972e8
+dashboard link: https://syzkaller.appspot.com/bug?extid=bc48e05449f37d40eccf
+compiler:       riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+userspace arch: riscv64
 
-s/for the/for/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bc48e05449f37d40eccf@syzkaller.appspotmail.com
 
-> + * bookkeeping, the range need to be added during the RMP entry lookup.
+watchdog: BUG: soft lockup - CPU#0 stuck for 430s! [kworker/0:3:3301]
+Modules linked in:
+irq event stamp: 128499
+hardirqs last  enabled at (128498): [<ffffffff800051a0>] restore_all+0x12/0x6e
+hardirqs last disabled at (128499): [<ffffffff80005094>] _save_context+0x80/0x90
+softirqs last  enabled at (45742): [<ffffffff82ba5a08>] softirq_handle_end kernel/softirq.c:401 [inline]
+softirqs last  enabled at (45742): [<ffffffff82ba5a08>] __do_softirq+0x628/0x90c kernel/softirq.c:587
+softirqs last disabled at (45749): [<ffffffff800369a0>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
+softirqs last disabled at (45749): [<ffffffff800369a0>] invoke_softirq kernel/softirq.c:439 [inline]
+softirqs last disabled at (45749): [<ffffffff800369a0>] __irq_exit_rcu kernel/softirq.c:636 [inline]
+softirqs last disabled at (45749): [<ffffffff800369a0>] irq_exit+0x1a0/0x1b6 kernel/softirq.c:660
+CPU: 0 PID: 3301 Comm: kworker/0:3 Not tainted 5.14.0-syzkaller #0
+Hardware name: riscv-virtio,qemu (DT)
+Workqueue: events nsim_dev_trap_report_work
+epc : arch_static_branch arch/riscv/include/asm/jump_label.h:20 [inline]
+epc : kfence_alloc include/linux/kfence.h:120 [inline]
+epc : slab_alloc_node mm/slub.c:2884 [inline]
+epc : __kmalloc_node_track_caller+0xaa/0x3d2 mm/slub.c:4653
+ ra : slab_pre_alloc_hook mm/slab.h:494 [inline]
+ ra : slab_alloc_node mm/slub.c:2880 [inline]
+ ra : __kmalloc_node_track_caller+0x70/0x3d2 mm/slub.c:4653
+epc : ffffffff803e2a1a ra : ffffffff803e29e0 sp : ffffffe00e97f4d0
+ gp : ffffffff83f967d8 tp : ffffffe0081a2f80 t0 : ffffffe008c0e728
+ t1 : ffffffc7f07f2d69 t2 : 000000000545de2b s0 : ffffffe00e97f570
+ s1 : ffffffe005601c80 a0 : 0000000000000000 a1 : 0000000000000007
+ a2 : 1ffffffff07aa51f a3 : ffffffff80a9711a a4 : 0000000004000000
+ a5 : 0000000000000000 a6 : 0000000000f00000 a7 : 7126f9b37a026000
+ s2 : ffffffff83f96adc s3 : 0000000000082a20 s4 : 0000000000000200
+ s5 : ffffffffffffffff s6 : ffffffff827d9302 s7 : ffffffff83f9a0d0
+ s8 : 0000000000000000 s9 : 0000000000082a20 s10: ffffffffffffffff
+ s11: 0000000000000000 t3 : 7126f9b37a026000 t4 : ffffffc7f07f2d69
+ t5 : ffffffc7f07f2d6a t6 : ffffffe009428026
+status: 0000000000000120 badaddr: 0000000000000000 cause: 8000000000000005
+[<ffffffff803e2a1a>] slab_alloc_node mm/slub.c:2881 [inline]
+[<ffffffff803e2a1a>] __kmalloc_node_track_caller+0xaa/0x3d2 mm/slub.c:4653
+[<ffffffff821a8952>] kmalloc_reserve net/core/skbuff.c:355 [inline]
+[<ffffffff821a8952>] __alloc_skb+0xee/0x2e2 net/core/skbuff.c:426
+[<ffffffff827d9302>] alloc_skb include/linux/skbuff.h:1112 [inline]
+[<ffffffff827d9302>] ndisc_alloc_skb+0x9e/0x1a0 net/ipv6/ndisc.c:420
+[<ffffffff827e09d8>] ndisc_send_rs+0x24c/0x378 net/ipv6/ndisc.c:686
+[<ffffffff8279c322>] addrconf_rs_timer+0x2ac/0x4c4 net/ipv6/addrconf.c:3877
+[<ffffffff80123b68>] call_timer_fn+0x10e/0x654 kernel/time/timer.c:1421
+[<ffffffff8012448e>] expire_timers kernel/time/timer.c:1466 [inline]
+[<ffffffff8012448e>] __run_timers.part.0+0x3e0/0x442 kernel/time/timer.c:1734
+[<ffffffff80124566>] __run_timers kernel/time/timer.c:1715 [inline]
+[<ffffffff80124566>] run_timer_softirq+0x76/0xe0 kernel/time/timer.c:1747
+[<ffffffff82ba5650>] __do_softirq+0x270/0x90c kernel/softirq.c:558
+[<ffffffff800369a0>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
+[<ffffffff800369a0>] invoke_softirq kernel/softirq.c:439 [inline]
+[<ffffffff800369a0>] __irq_exit_rcu kernel/softirq.c:636 [inline]
+[<ffffffff800369a0>] irq_exit+0x1a0/0x1b6 kernel/softirq.c:660
+[<ffffffff800e88dc>] handle_domain_irq+0x106/0x178 kernel/irq/irqdesc.c:705
+[<ffffffff80af3486>] riscv_intc_irq+0x80/0xca drivers/irqchip/irq-riscv-intc.c:40
+[<ffffffff8000515e>] ret_from_exception+0x0/0x14
+[<ffffffff803e29e0>] slab_pre_alloc_hook mm/slab.h:494 [inline]
+[<ffffffff803e29e0>] slab_alloc_node mm/slub.c:2880 [inline]
+[<ffffffff803e29e0>] __kmalloc_node_track_caller+0x70/0x3d2 mm/slub.c:4653
 
-s/need/needs/ ... s/during the/during /
 
-> + */
-> +#define RMPTABLE_CPU_BOOKKEEPING_SZ	0x4000
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Too long: just call it RMP_BASE_OFFSET.
-
-> +static bool get_rmptable_info(u64 *start, u64 *len)
-> +{
-> +	u64 calc_rmp_sz, rmp_sz, rmp_base, rmp_end, nr_pages;
-> +
-> +	rdmsrl(MSR_AMD64_RMP_BASE, rmp_base);
-> +	rdmsrl(MSR_AMD64_RMP_END, rmp_end);
-> +
-> +	if (!rmp_base || !rmp_end) {
-> +		pr_info("Memory for the RMP table has not been reserved by BIOS\n");
-> +		return false;
-> +	}
-> +
-> +	rmp_sz = rmp_end - rmp_base + 1;
-> +
-> +	/*
-> +	 * Calculate the amount the memory that must be reserved by the BIOS to
-> +	 * address the full system RAM. The reserved memory should also cover the
-> +	 * RMP table itself.
-> +	 *
-> +	 * See PPR Family 19h Model 01h, Revision B1 section 2.1.5.2 for more
-> +	 * information on memory requirement.
-> +	 */
-> +	nr_pages = totalram_pages();
-> +	calc_rmp_sz = (((rmp_sz >> PAGE_SHIFT) + nr_pages) << 4) + RMPTABLE_CPU_BOOKKEEPING_SZ;
-
-use totalram_pages() directly here - nr_pages is assigned to only once.
-
-> +
-> +	if (calc_rmp_sz > rmp_sz) {
-> +		pr_info("Memory reserved for the RMP table does not cover full system RAM (expected 0x%llx got 0x%llx)\n",
-> +			calc_rmp_sz, rmp_sz);
-> +		return false;
-> +	}
-> +
-> +	*start = rmp_base;
-> +	*len = rmp_sz;
-> +
-> +	pr_info("RMP table physical address 0x%016llx - 0x%016llx\n", rmp_base, rmp_end);
-
-		"RMP table physical address range: [ ... - ... ]\n", ...
-
-...
-
-> +/*
-> + * This must be called after the PCI subsystem. This is because before enabling
-> + * the SNP feature we need to ensure that IOMMU supports the SEV-SNP feature.
-
-"... it needs to be ensured that... "
-
-> + * The iommu_sev_snp_support() is used for checking the feature, and it is
-> + * available after subsys_initcall().
-> + */
-> +fs_initcall(snp_rmptable_init);
-> -- 
-> 2.17.1
-> 
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
