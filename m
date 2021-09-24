@@ -2,163 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FD2417E20
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 01:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FD0417E22
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 01:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344219AbhIXXYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 19:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
+        id S1344383AbhIXXZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 19:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343764AbhIXXYt (ORCPT
+        with ESMTP id S1343764AbhIXXZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 19:24:49 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762CEC06161E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:23:15 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 24so16747470oix.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:23:15 -0700 (PDT)
+        Fri, 24 Sep 2021 19:25:02 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E402AC061571;
+        Fri, 24 Sep 2021 16:23:27 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id g41so46597043lfv.1;
+        Fri, 24 Sep 2021 16:23:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I+3/OaDuhI5pjIMPop3s/uZ1XCPBr1j1NL0ouxoZ0gM=;
-        b=S91I40xC00oQdUpaFG4GcBFUQyEUVCQHyAuv9yqrOusPXyyxN7+SgE3pw+PTWMV47S
-         UvsrUT8r9g+fuvWcYxjERKY9b68GqYPAm4jrzbfZrQVLXKa0KSDfDA8fRpR3mFZTr0IH
-         1lRR4pnjinWbUq2QUiqucVBQIoRkVztYIG5B3WkBWrV33eYSr8C4HRnpGX3+kefxhjNT
-         yY/XPZYJXLhxJoBOciADz6DT1UVPgd5zb72+L+OOewv4rjXr7cu6lJn6Oe3d8CrBoiCT
-         s0Yktyw3tyw6rP4D/tDREaRBjrztNF6o4gyQve2f3yjVUkA4b4nNr9g0ChThgseFXK1R
-         fuZw==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=pnGNv82mcjDLNEw7T3SnDlIiLho+ZHsLnxO6mqL7FKw=;
+        b=FYjZOynLJIuVZUSSi/fmecdqHQ09h0iebTVrAXMqGPjl4XlkgMZFO+o3ESnxIAieef
+         mSW7CH3oj+IEquYOr6C21drpaCARzBT4WbJXAVfeLhTk4hUkTThCLPXkRV/xBjXNvOH6
+         dQ1wXJYtboOz1tIJGK7TjfgWcn8oNBCxztEM2mojwa1NhSt0hlp/e35HA5tA2C1eRf0Z
+         eW7HC9ZLjZ6He4mhFbB/3sTsuoDiOjR8lPZ+JpwKFrLm58u582nuUMIn7ROF7uhzF+tO
+         vE8dn4OREs79PF17axPlwDgifuFstC/VGvoB/5Xm8DnWeZyq+SziwRxGz3zpF+U11n/Z
+         H/fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I+3/OaDuhI5pjIMPop3s/uZ1XCPBr1j1NL0ouxoZ0gM=;
-        b=b0clPcqOLJVkWuyF0k8w8/bMTsoBl0eh4jtbCVc00mwQOfTuwFNVL1q4CHBFYzamMp
-         TVtIuRxNlroYFYOyxlVlWA34KbH/STEBZDqUcZsqRws0sk6j0eaAC5Tz2yeO2Qt4II4A
-         QJNGu2BQw3BgScGy9jNqYeS7Fnj7JCIYbQV+22ceuWj1X+ZK+L3IZpScQqrsulAPWXNe
-         65HkDYg6Pc2h3MZxBlUPnnx4OaOdaNy28B2o4asZnoi9LbkgbLPBmnYMJ4BOlCWN4OZB
-         WclRQ/UALPUMhuyS9090A+Tz9lmaK1X2i4ME74P/IIVCNzFbysk5OlCcy/9hBamr4OKN
-         ScCA==
-X-Gm-Message-State: AOAM533KbY5+WmP02auFzX822IarFESZj4GhQGBYY4ykB3hB/J/Zaehp
-        Bnh19AKqu/JXZaF1oA7XvhH3Lw==
-X-Google-Smtp-Source: ABdhPJylGhExA23SHB9J+GJqA01IVv93OAddQoG2deBurYRJPBnEjud1LmbKzO47llhrTZt1JFlGzw==
-X-Received: by 2002:aca:abc7:: with SMTP id u190mr3459765oie.159.1632525794724;
-        Fri, 24 Sep 2021 16:23:14 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id k23sm2661698ook.45.2021.09.24.16.23.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 16:23:14 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 18:23:12 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        devicetree@vger.kernel.org, Lina Iyer <ilina@codeaurora.org>
-Subject: Re: [PATCH v9 1/5] dt-bindings: Introduce SoC sleep stats bindings
-Message-ID: <YU5d4PhKRvF3wzGX@builder.lan>
-References: <1630906083-32194-1-git-send-email-mkshah@codeaurora.org>
- <1630906083-32194-2-git-send-email-mkshah@codeaurora.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=pnGNv82mcjDLNEw7T3SnDlIiLho+ZHsLnxO6mqL7FKw=;
+        b=Bg7hhWMm2+xUCXQIHr3Fl++3fAJNATX9KtLUXXIX1XTQPG6TT8GDL8McLw4MzUlH79
+         F8p5HEel1So1MDTdQcEUmg94qsTboipp+xIJKIvd+jed/KrUQcpPy2cCjvB1mygRYlc8
+         XmAm+ggNTgxZTBk9ASZImHg/pUcZZbAw8C2KuTijJJpQzCSt6OyB0jAjc242a+0VdMWb
+         Lfor9ZXDma430BuvzD4wNyGANXaWHwgqdcGKnEScWh3iJRpZbMrLEgfhqf2vpMvOpTkW
+         25puGqfAuX3kRvfd5XNxg9BmWGSPrgTac0RlYZ4/dwDkTJgxuSzEXhmYJkjFibBeMfkz
+         5zJg==
+X-Gm-Message-State: AOAM530oFr1BisRyqAXHwMWjQAphJJPJJ6XPZvdfvU1J1IR1Z3cEfIkT
+        IHsNw0oNo4PxLdVKGviPdoIsEuAdKGMuF1ZUHFD7gFy+kDg=
+X-Google-Smtp-Source: ABdhPJyk8J77hCfVH7U2ceD9PkDOUWO+vA1WSGdHqoSQcEm/3p0ufjBVVB8ru4UR0FTinZv9RvZbDSO0I0WA74CBnto=
+X-Received: by 2002:a05:6512:3d93:: with SMTP id k19mr12421847lfv.545.1632525805552;
+ Fri, 24 Sep 2021 16:23:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1630906083-32194-2-git-send-email-mkshah@codeaurora.org>
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 24 Sep 2021 18:23:14 -0500
+Message-ID: <CAH2r5msXrOGB1_JC-4jg0F4jbq5G33bGE8-uvdO6Doyw79E_mA@mail.gmail.com>
+Subject: [GIT PULL] cifs/smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 06 Sep 00:27 CDT 2021, Maulik Shah wrote:
+Please pull the following changes since commit
+fdf5078458793fca9e9c0fb5e58a1a970ca0fdef:
 
-> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> 
-> Add device binding documentation for Qualcomm Technologies, Inc. (QTI)
-> SoC sleep stats driver. The driver is used for displaying SoC sleep
-> statistic maintained by Always On Processor or Resource Power Manager.
-> 
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  .../bindings/soc/qcom/soc-sleep-stats.yaml         | 48 ++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml b/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
-> new file mode 100644
-> index 0000000..4161156
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/qcom/soc-sleep-stats.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. (QTI) SoC sleep stats bindings
-> +
-> +maintainers:
-> +  - Maulik Shah <mkshah@codeaurora.org>
-> +  - Lina Iyer <ilina@codeaurora.org>
+  Merge tag '5.15-rc1-smb3' of git://git.samba.org/sfrench/cifs-2.6
+(2021-09-20 15:30:29 -0700)
 
-Lina's address is no longer valid.
+are available in the Git repository at:
 
-> +
-> +description:
-> +  Always On Processor/Resource Power Manager maintains statistics of the SoC
-> +  sleep modes involving powering down of the rails and oscillator clock.
-> +
-> +  Statistics includes SoC sleep mode type, number of times low power mode were
-> +  entered, time of last entry, time of last exit and accumulated sleep duration.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,rpmh-sleep-stats
-> +      - qcom,rpm-sleep-stats
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  # Example of rpmh sleep stats
-> +  - |
-> +    aop_msgram@c3f0048 {
-> +      compatible = "qcom,rpmh-sleep-stats";
-> +      reg = <0x0c3f0048 0x400>;
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc2-smb3-fixes
 
-As I tested this series I did find it quite odd that the start address
-of this block is $48 bytes into a page and still the length is an even
-$400.
+for you to fetch changes up to 9ed38fd4a15417cac83967360cf20b853bfab9b6:
 
-Is there any single platform where qcom,rpmh-sleep-stats doesn't start
-at an offset of $48 from the beginning of its msgram? Could we move this
-number to the driver?
+  cifs: fix incorrect check for null pointer in header_assemble
+(2021-09-23 21:12:53 -0500)
 
-Regards,
-Bjorn
+----------------------------------------------------------------
+Six small cifs/smb3 fixes, 2 for stable
+- important fix for deferred close (found by a git functional test)
+related to attribute caching on close.
+- four (two cosmetic, two more serious) small fixes for problems
+pointed out by smatch via Dan Carpenter
+- fix for comment formatting problems pointed out by W=1
 
-> +    };
-> +  # Example of rpm sleep stats
-> +  - |
-> +    rpm_msgram@4690000 {
-> +      compatible = "qcom,rpm-sleep-stats";
-> +      reg = <0x04690000 0x400>;
-> +    };
-> +...
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+regression test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/805
+----------------------------------------------------------------
+Dan Carpenter (1):
+      cifs: fix a sign extension bug
+
+David Howells (1):
+      cifs: Deal with some warnings from W=1
+
+Steve French (4):
+      cifs: Clear modified attribute bit from inode flags
+      smb3: correct smb3 ACL security descriptor
+      smb3: correct server pointer dereferencing check to be more consistent
+      cifs: fix incorrect check for null pointer in header_assemble
+
+ fs/cifs/connect.c |  5 +++--
+ fs/cifs/file.c    |  4 ++--
+ fs/cifs/misc.c    | 17 ++++++++++++++---
+ fs/cifs/smb2pdu.c |  4 ++--
+ 4 files changed, 21 insertions(+), 9 deletions(-)
+
+--
+Thanks,
+
+Steve
