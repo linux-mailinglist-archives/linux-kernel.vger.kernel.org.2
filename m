@@ -2,138 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4871417855
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC68E417857
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347380AbhIXQSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:18:10 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:37422 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233727AbhIXQSJ (ORCPT
+        id S1347357AbhIXQTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:19:07 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38382
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347297AbhIXQTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:18:09 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 96C9C82359;
-        Fri, 24 Sep 2021 19:16:33 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632500193;
-        bh=TTvlWZtjHHzxwQJsZkX9U6WZp22CRR8+Jp8dht0zajs=;
-        h=Date:Subject:From:To:References:CC:In-Reply-To;
-        b=UUmaQiQ+z2zI5TVYOMyer3CYOGluk1LNH3wEgVR345ssy5n+dkkajHqi+IIIcHSx0
-         y/298qdAKvr5z0i2LEul7cxH73avE7UAJ0EJZ0ilvkiT/mC4piLgI1qy5CPiP7C+PW
-         YjRj60OZNGOUt6DtOQhBpG3dSUCqJjIUwiHN2D58=
-Received: from [192.168.211.101] (192.168.211.101) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 24 Sep 2021 19:16:33 +0300
-Message-ID: <cb84627e-ff9c-1945-ea53-89d66e13406b@paragon-software.com>
-Date:   Fri, 24 Sep 2021 19:16:32 +0300
+        Fri, 24 Sep 2021 12:19:06 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8E23740291
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:17:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632500252;
+        bh=KBx9ZIG9pk67r6r2VuWSGeMfVxfkgdUANVfh9snsj/w=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=thmtv8WZyn11cCz9dHHMJRlNnbznN8wfo3yKe377RyYPr/E4Odd/D1SVArTJuaTDh
+         ErLEmvDdS5FX5tqvX2fdfzTBB1Clu+ROjtlpffHQnZf3WNkalD+wiorUJpdfyatV4o
+         aeY9/EzcThEBrpiZW2g4k8Eg2RonvcypXlkEAg27SaU0bnZ8Gbcu6xC8DbdLvLhwux
+         1R5ieKIEusPj8E6qZFUwMO1lxIvQt3FpyU5OhGmcQ+FMOdEN+rsMIO8QasXmIpfIbN
+         C49xQSd7Z9l7VxBjFARsvrGS4ajdhpPtADC+hwlWvkB97YYR8nTf2Vso7qs/BQnz0B
+         0OFK2mnAL9vSw==
+Received: by mail-ed1-f70.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so10756946edy.14
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 09:17:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KBx9ZIG9pk67r6r2VuWSGeMfVxfkgdUANVfh9snsj/w=;
+        b=B6ufP3RXE2nAdQwYSCawabo1vOHU8VWHw46HmtMtyubo0ARj7BSyN0e0UFbatTuNiY
+         uAukBVXneKyQsjxV503I1s3g5ZkkZ/DaNH2yuKpUn7Cqc6mQgD/awudLN6w3LYGjRjqf
+         wMjqF/1g0eShyyMx7Djf/qkELDD1T2DwSQbwPF3hpKVXLo4Fdp7p/KhD9DMSgJXNHmtG
+         I1OnAieQulbm/aTZIY6zQn695v1zU+EibldflmAelzsfRAchHTOyk7e3UqQvLRF8fnf8
+         wsvm3NjH43pzW3n9nwIQanS25/1Ji7h8/AKMoq2VPI8leefoyULbAW0NhHsLppgxMBcz
+         /PRg==
+X-Gm-Message-State: AOAM532F8QzX3tkXl4IZqzji+F5IUU2hFYXu0pc7rQb4LRcE44kVd9AJ
+        KH0eZPDQZB1F6vZ6SgFyb2ZqEC5qH3cxxo7n6MkhR+Ycw72+qBTV0aec31Q2doiR6Ye6KHn64Co
+        uxwKW2Tyc2IWXewzbbpccS8BeBv2VvL7orrUS4lOBu+dpO5X3bvXesq7eUw==
+X-Received: by 2002:a17:906:6d9a:: with SMTP id h26mr1977395ejt.96.1632500250644;
+        Fri, 24 Sep 2021 09:17:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwku+XUwuiLJ01GyS7qt08lWT0BlPKeGf2p9ERVpv0HQ7csZAV1Ggp34V7Bt8BIK//306rSX3iJJt7v7/BJKo8=
+X-Received: by 2002:a17:906:6d9a:: with SMTP id h26mr1977374ejt.96.1632500250436;
+ Fri, 24 Sep 2021 09:17:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: [PATCH 3/3] fs/ntfs3: Refactoring of ntfs_set_ea
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-References: <eb131ee0-3e89-da58-650c-5b84dd792a49@paragon-software.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-In-Reply-To: <eb131ee0-3e89-da58-650c-5b84dd792a49@paragon-software.com>
+References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com> <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Fri, 24 Sep 2021 18:17:19 +0200
+Message-ID: <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com>
+Subject: Re: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     Support Opensource <Support.Opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.101]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make code more readable.
-Don't try to read zero bytes.
-Add warning when size of exteneded attribute exceeds limit.
+Hi Adam,
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/xattr.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+On Fri, Sep 24, 2021 at 5:04 PM Adam Thomson
+<Adam.Thomson.Opensource@diasemi.com> wrote:
+>
+> On 21 September 2021 06:34, Alexandre Ghiti wrote:
+>
+> > The SiFive Unmatched board uses the da9063 PMIC for reset: add a restart
+> > notifier that will execute a small i2c sequence allowing to reset the
+> > board.
+> >
+> > The original implementation comes from Marcus Comstedt and Anders
+> > Montonen
+> > (https://forums.sifive.com/t/reboot-command/4721/28).
+> >
+> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+> > ---
+> >  drivers/mfd/da9063-core.c       | 25 +++++++++++++++++++++++++
+> >  include/linux/mfd/da9063/core.h |  3 +++
+> >  2 files changed, 28 insertions(+)
+> >
+> > diff --git a/drivers/mfd/da9063-core.c b/drivers/mfd/da9063-core.c
+> > index df407c3afce3..c87b8d611f20 100644
+> > --- a/drivers/mfd/da9063-core.c
+> > +++ b/drivers/mfd/da9063-core.c
+> > @@ -20,6 +20,7 @@
+> >  #include <linux/mutex.h>
+> >  #include <linux/mfd/core.h>
+> >  #include <linux/regmap.h>
+> > +#include <linux/reboot.h>
+> >
+> >  #include <linux/mfd/da9063/core.h>
+> >  #include <linux/mfd/da9063/registers.h>
+> > @@ -158,6 +159,18 @@ static int da9063_clear_fault_log(struct da9063 *da9063)
+> >       return ret;
+> >  }
+> >
+> > +static int da9063_restart_notify(struct notifier_block *this,
+> > +                              unsigned long mode, void *cmd)
+> > +{
+> > +     struct da9063 *da9063 = container_of(this, struct da9063,
+> > restart_handler);
+> > +
+> > +     regmap_write(da9063->regmap, DA9063_REG_PAGE_CON, 0x00);
+> > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_F, 0x04);
+> > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_A, 0x68);
+> > +
+> > +     return NOTIFY_DONE;
+> > +}
+>
+> I will talk with our HW team to clarify, but this sequence looks to be very
+> specific to the needs of the platform in question which doesn't feel right to
+> me. As was mentioned on another thread as well, the watchdog driver already has
+> a restart function to reset the device (and thus the system), so I don't believe
+> we should have multiple of these.
 
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 1ab109723b10..395e71291e28 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -75,6 +75,7 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
- 			size_t add_bytes, const struct EA_INFO **info)
- {
- 	int err;
-+	struct ntfs_sb_info *sbi = ni->mi.sbi;
- 	struct ATTR_LIST_ENTRY *le = NULL;
- 	struct ATTRIB *attr_info, *attr_ea;
- 	void *ea_p;
-@@ -99,10 +100,10 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
- 
- 	/* Check Ea limit. */
- 	size = le32_to_cpu((*info)->size);
--	if (size > ni->mi.sbi->ea_max_size)
-+	if (size > sbi->ea_max_size)
- 		return -EFBIG;
- 
--	if (attr_size(attr_ea) > ni->mi.sbi->ea_max_size)
-+	if (attr_size(attr_ea) > sbi->ea_max_size)
- 		return -EFBIG;
- 
- 	/* Allocate memory for packed Ea. */
-@@ -110,15 +111,16 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
- 	if (!ea_p)
- 		return -ENOMEM;
- 
--	if (attr_ea->non_res) {
-+	if (!size) {
-+		;
-+	} else if (attr_ea->non_res) {
- 		struct runs_tree run;
- 
- 		run_init(&run);
- 
- 		err = attr_load_runs(attr_ea, ni, &run, NULL);
- 		if (!err)
--			err = ntfs_read_run_nb(ni->mi.sbi, &run, 0, ea_p, size,
--					       NULL);
-+			err = ntfs_read_run_nb(sbi, &run, 0, ea_p, size, NULL);
- 		run_close(&run);
- 
- 		if (err)
-@@ -366,21 +368,22 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
- 	new_ea->name[name_len] = 0;
- 	memcpy(new_ea->name + name_len + 1, value, val_size);
- 	new_pack = le16_to_cpu(ea_info.size_pack) + packed_ea_size(new_ea);
--
--	/* Should fit into 16 bits. */
--	if (new_pack > 0xffff) {
--		err = -EFBIG; // -EINVAL?
--		goto out;
--	}
- 	ea_info.size_pack = cpu_to_le16(new_pack);
--
- 	/* New size of ATTR_EA. */
- 	size += add;
--	if (size > sbi->ea_max_size) {
-+	ea_info.size = cpu_to_le32(size);
-+
-+	/*
-+	 * 1. Check ea_info.size_pack for overflow.
-+	 * 2. New attibute size must fit value from $AttrDef
-+	 */
-+	if (new_pack > 0xffff || size > sbi->ea_max_size) {
-+		ntfs_inode_warn(
-+			inode,
-+			"The size of exteneded attributes must not exceed 64K");
- 		err = -EFBIG; // -EINVAL?
- 		goto out;
- 	}
--	ea_info.size = cpu_to_le32(size);
- 
- update_ea:
- 
--- 
-2.33.0
+From the discussion that happened here
+https://www.dialog-semiconductor.com/products/pmics?post_id=10052#tab-support_tab_content,
+it does not seem possible to use the watchdog on a chip whose OTP does
+not set AUTOBOOT. But anyway, I'm looking forward to hearing from the
+HW team :)
 
+Thanks,
 
+Alex
+
+>
+> For board specific sequences, there are machine quirks I believe which can be
+> used to handle stuff like this, if this really isn't a generic solution to fit
+> all cases.
+>
