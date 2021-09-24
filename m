@@ -2,113 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771434176F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8178F4176F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346797AbhIXOj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346185AbhIXOj1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:39:27 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C179CC061571;
-        Fri, 24 Sep 2021 07:37:53 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id r23so2843146wra.6;
-        Fri, 24 Sep 2021 07:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=b+6Mk3O7LpVdzp5Jb5p0whL8l/VrfgCZuRXRsXVkwZE=;
-        b=i3qU+iuA/ReBGuS0SfEgPyfrdU1H6FQ4xyvt+bVxEWVdN7UT7vrM4IB5kz7OrGAPRm
-         PMWQ2t6ZB8uyRoZtmb16UVO6GcVr6MFEGzfpphgsoOJN3Ql+bLjpHG4puHuWU34Ye689
-         cQrtVbxsExeSl3h3wnYC3AYDthfsD5rAaIV6mJE/SBiWLgFJeUPUvgHOzhTgZsN9MlFy
-         uspPCYUPAazmxKd8r7kH4NAHOiaNgrPbqdIGOy3mJjD2s/p0gEFXwlixTPTeNYBir9U2
-         VC6OVNZmE11lRgwXX11CMMqQKEZjENKONNzhvwNqSyhUt4dXnBwi/EfsfnyTbTSw0C6i
-         0UsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=b+6Mk3O7LpVdzp5Jb5p0whL8l/VrfgCZuRXRsXVkwZE=;
-        b=dZa88oJpxqGQzzDJSSh80h3anUkbYlB6N2Tik/aO4000j8CnWLrGXwaIKTOnIrADas
-         DIayDtoPkl3f2SEHHfFoZKXX6vRmRjtznlye+GRT1wlkV4pJSA6zlQZmRamYEkOcL0nk
-         Cr85HQDfY1NdtAdeD65/Xr31orDe8AZnA53aASy9Gokq88WvWUIc1DDdvPF1bcV3g4vD
-         v9/zvnGzKYs8tnKTNbSgCyqOOhIzZbVA/nR7NlW1DNKfKD07vPAR6W11erBRn1YjDn08
-         U+LxhhbMMmU00QIwAX+fbpDtKUzxZ/gMGN6BhOBEQEShdC6qgPsXgkcuf46u85ImFfS5
-         u3Pw==
-X-Gm-Message-State: AOAM530bfvKJ1OBJFD5PAgQyFmU7NZpRr9lQNLpfr6fB0EzSnJWSAxS0
-        6r8JcecFAkjhaLgoPcGovGPDbI+rj1M=
-X-Google-Smtp-Source: ABdhPJzy0zekgBXJ6u39ExWd89d/LJ97M4KvnMkSsWSgjsAFIrlfRK2lJNuShJDhodXLGAoDsAuGAQ==
-X-Received: by 2002:a7b:ce93:: with SMTP id q19mr2489521wmj.195.1632494272206;
-        Fri, 24 Sep 2021 07:37:52 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id u25sm9751265wmm.5.2021.09.24.07.37.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 07:37:51 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 16:37:49 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Prathamesh Shete <pshete@nvidia.com>
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        jonathanh@nvidia.com, linux-gpio@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        smangipudi@nvidia.com
-Subject: Re: [PATCH v3 2/2] arm64: tegra: GPIO Interrupt entries
-Message-ID: <YU3ivcSPEo9sf0ux@orome.fritz.box>
-References: <YTWeSJ7jGamxx9Uu@orome.fritz.box>
- <20210907073224.3070-1-pshete@nvidia.com>
- <20210907073224.3070-3-pshete@nvidia.com>
+        id S1346788AbhIXOnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:43:37 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47633 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231627AbhIXOng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 10:43:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="211326172"
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="211326172"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 07:42:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="614520387"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 24 Sep 2021 07:41:57 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 24 Sep 2021 17:41:56 +0300
+Date:   Fri, 24 Sep 2021 17:41:56 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alexander Graf <graf@amazon.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Subject: Re: [PATCH v2 4/6] usb: typec: tipd: Add support for Apple CD321X
+Message-ID: <YU3jtIvYOk/IHUWn@kuha.fi.intel.com>
+References: <20210923181321.3044-1-sven@svenpeter.dev>
+ <20210923181321.3044-5-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/wSlbaGMGvM3Cnsl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210907073224.3070-3-pshete@nvidia.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <20210923181321.3044-5-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---/wSlbaGMGvM3Cnsl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+One more question below.
 
-On Tue, Sep 07, 2021 at 01:02:24PM +0530, Prathamesh Shete wrote:
-> From: pshete <pshete@nvidia.com>
->=20
-> Tegra19x supports 8 entries for GPIO controller.
-> This change adds the required interrupt entires for all GPIO controllers.
->=20
-> Signed-off-by: Prathamesh Shete <pshete@nvidia.com>
+On Thu, Sep 23, 2021 at 08:13:19PM +0200, Sven Peter wrote:
+> Apple CD321x chips are a variant of the TI TPS 6598x chips.
+> The major differences are the changed interrupt numbers and
+> the concurrent connection to the SMC which we must not disturb.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
 > ---
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 49 +++++++++++++++++++++++-
->  1 file changed, 47 insertions(+), 2 deletions(-)
+> changes since v1:
+>   - new commit since Heikki suggested to just add a separate irq handler
+> 
+>  drivers/usb/typec/tipd/core.c     | 86 ++++++++++++++++++++++++++++++-
+>  drivers/usb/typec/tipd/tps6598x.h |  6 +++
+>  drivers/usb/typec/tipd/trace.h    | 23 +++++++++
+>  3 files changed, 113 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index cd1e37eb8a0c..6c9c8f19a1cf 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/i2c.h>
+>  #include <linux/acpi.h>
+>  #include <linux/module.h>
+> +#include <linux/of_device.h>
+>  #include <linux/power_supply.h>
+>  #include <linux/regmap.h>
+>  #include <linux/interrupt.h>
+> @@ -76,6 +77,16 @@ static const char *const modes[] = {
+>  /* Unrecognized commands will be replaced with "!CMD" */
+>  #define INVALID_CMD(_cmd_)		(_cmd_ == 0x444d4321)
+>  
+> +enum tipd_hw_type {
+> +	HW_TPS6598X,
+> +	HW_CD321X
+> +};
+> +
+> +struct tipd_hw {
+> +	enum tipd_hw_type type;
+> +	irq_handler_t irq_handler;
+> +};
+> +
+>  struct tps6598x {
+>  	struct device *dev;
+>  	struct regmap *regmap;
+> @@ -458,6 +469,51 @@ static void tps6598x_handle_plug_event(struct tps6598x *tps, u32 status)
+>  	}
+>  }
+>  
+> +static irqreturn_t cd321x_interrupt(int irq, void *data)
+> +{
+> +	struct tps6598x *tps = data;
+> +	u64 event = 0;
+> +	u32 status;
+> +	int ret;
+> +
+> +	mutex_lock(&tps->lock);
+> +
+> +	ret = tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event);
+> +	if (ret) {
+> +		dev_err(tps->dev, "%s: failed to read events\n", __func__);
+> +		goto err_unlock;
+> +	}
+> +	trace_cd321x_irq(event);
+> +
+> +	if (!event)
+> +		goto err_unlock;
+> +
+> +	if (!tps6598x_read_status(tps, &status))
+> +		goto err_clear_ints;
+> +
+> +	if (event & APPLE_CD_REG_INT_POWER_STATUS_UPDATE)
+> +		if (!tps6598x_read_power_status(tps))
+> +			goto err_clear_ints;
+> +
+> +	if (event & APPLE_CD_REG_INT_DATA_STATUS_UPDATE)
+> +		if (!tps6598x_read_data_status(tps))
+> +			goto err_clear_ints;
+> +
+> +	/* Handle plug insert or removal */
+> +	if (event & APPLE_CD_REG_INT_PLUG_EVENT)
+> +		tps6598x_handle_plug_event(tps, status);
+> +
+> +err_clear_ints:
+> +	tps6598x_write64(tps, TPS_REG_INT_CLEAR1, event);
+> +
+> +err_unlock:
+> +	mutex_unlock(&tps->lock);
+> +
+> +	if (event)
+> +		return IRQ_HANDLED;
+> +	return IRQ_NONE;
+> +}
+> +
+>  static irqreturn_t tps6598x_interrupt(int irq, void *data)
+>  {
+>  	struct tps6598x *tps = data;
+> @@ -615,8 +671,19 @@ static int devm_tps6598_psy_register(struct tps6598x *tps)
+>  	return PTR_ERR_OR_ZERO(tps->psy);
+>  }
+>  
+> +static const struct tipd_hw ti_tps6598x_data = {
+> +	.type = HW_TPS6598X,
+> +	.irq_handler = tps6598x_interrupt,
+> +};
+> +
+> +static const struct tipd_hw apple_cd321x_data = {
+> +	.type = HW_CD321X,
+> +	.irq_handler = cd321x_interrupt,
+> +};
+> +
+>  static int tps6598x_probe(struct i2c_client *client)
+>  {
+> +	const struct tipd_hw *hw;
+>  	struct typec_capability typec_cap = { };
+>  	struct tps6598x *tps;
+>  	struct fwnode_handle *fwnode;
+> @@ -629,6 +696,10 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	if (!tps)
+>  		return -ENOMEM;
+>  
+> +	hw = of_device_get_match_data(&client->dev);
+> +	if (!hw)
+> +		hw = &ti_tps6598x_data;
+> +
+>  	mutex_init(&tps->lock);
+>  	tps->dev = &client->dev;
+>  
+> @@ -655,6 +726,16 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (hw->type == HW_CD321X) {
+> +		/* CD321X chips have all interrupts masked initially */
+> +		ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
+> +					APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
+> +					APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
+> +					APPLE_CD_REG_INT_PLUG_EVENT);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -736,7 +817,7 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	}
+>  
+>  	ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+> -					tps6598x_interrupt,
+> +					hw->irq_handler,
+>  					IRQF_SHARED | IRQF_ONESHOT,
+>  					dev_name(&client->dev), tps);
 
-I've applied this now to the Tegra tree, thanks.
+Couldn't you just use the compatible property and local variable here?
 
-Thierry
+        irq_handler_t irq_handler = tps6598x_interrupt;
+        struct device_node *np = client->dev.of_node;
 
---/wSlbaGMGvM3Cnsl
-Content-Type: application/pgp-signature; name="signature.asc"
+        if (np && of_device_is_compatible(np, "apple,cd321x")) {
+                /* CD321X chips have all interrupts masked initially */
+                ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
+                                        APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
+                                        APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
+                                        APPLE_CD_REG_INT_PLUG_EVENT);
+                if (ret)
+                        return ret;
 
------BEGIN PGP SIGNATURE-----
+                irq_handler = cd321x_interrupt;
+        }
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFN4r0ACgkQ3SOs138+
-s6EOlxAAhG2mBwZxm8ebPAcd2JAcutuyLwtTVU2fNk7MhbxnNsU4XtNZsc4s0cB1
-GzUqyiafMVBZ0fTsEQYNsP56M2akjLy7eU/W7sMb2Gh42nJ4+iSGq3BplBXFYMEY
-pFQogzsvFm7CIkWMh7jXEBtzM2ipg52tcBRwOHRj/YAkV5a5ASdIJdq/C+/JNFg5
-wIFWuT5gbWZBmTfgh6g5oIPj5+I6OnnFzxCq6yqUzlVzHIhhrs0Sd88u3USPefeC
-WhV4XDowiS2csNKHVOfcZI91tssC55sSy5OzturyqA+Dh4ojzniqLzmv43AR5Zie
-4GeW0HhNxWFZgAxYPBzAYy0EIE/5gJLdGFbw1V2S5iV+alIP+iFMU27iNzLnXKg1
-YMluPpcSyZMs4lVYO50fWEOKsXB2C6Vph0yCBRlwUPLXKh/0cOwIjrpI051muU5O
-OepyODSmjjfIosTquGIIlxrcDJEmClw7OKL5/RS5d+irBmjlBc65Crd+RdKta2Am
-SDVFm88jsE9OLA5K32Bi6XW0qIxNDRQZUr3oEyyN6aVI6gT373+6NkVU/qsYCYH5
-PRwSdVIPsxbdwO+eGsH0g5RblzlZBtzi4KH/L7QEPdNHxNwosd+A/07RrkRhU4G9
-hxpnatgLfnecj+DtMY8c/PEZGr0dYnk/QoBi8w8ijn8GuYO6WqU=
-=XpD7
------END PGP SIGNATURE-----
+	ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+					irq_handler,
+					IRQF_SHARED | IRQF_ONESHOT,
+					dev_name(&client->dev), tps);
 
---/wSlbaGMGvM3Cnsl--
+I did not go over the whole series yet, so I may have missed
+something.
+
+thanks,
+
+-- 
+heikki
