@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6EF41716E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88144417173
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245614AbhIXMBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245069AbhIXMBd (ORCPT
+        id S245668AbhIXMD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:03:29 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34682
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244925AbhIXMDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:01:33 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B844C061574;
-        Fri, 24 Sep 2021 05:00:00 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so12820874ota.6;
-        Fri, 24 Sep 2021 05:00:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gaw8hq1tP5dFMMFBJGf09r+9kBtQt8HO+1SL++A5V4w=;
-        b=XLAuCVry5neZjaz6bhGYS8n3Dcffaosa/A5/Kt2OIj7WPDqyzsoBf3azQZQQZ9MpPG
-         eDVul+SKHKWmwZqd/Sy0gmfkypXqXB5ngtmdgHtH4MwUTBeudVy75fTFTbWu3UmGvkmm
-         TykqUajoYG1iJ7QyiX/vW6ynaMxOlho8l12SCzrjcP5TGqG9xvtGcUGfAGg2/7ijdUWz
-         NENu7OH/wsfFH+ycPOwHmD9ksnBog9qH9vMLHXYMn2AItsymzKvVjDi3RrzV28DkvH5N
-         U7K0w5ktkw9i55K41PShTKYhoJviortNeQ2ZlNqEOcIsa1/GmM/tAUlsD79YbWZN6l08
-         AzmA==
+        Fri, 24 Sep 2021 08:03:25 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A45DB4019A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 12:01:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632484911;
+        bh=TKyRV9O1Y/ljz5T9kCOw405tGOgzBL0k1lCSjTA1wYI=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=L9HjsOhFCpjV5nJxzwpdhvyGToD7aFtNO2XR0c5uP3t3dWhCjDpO/cMZoD5mPLMRb
+         kb4J/cQ7OMudK8bk5MeEJ3ZVfNWYhDLuvdlde/fAa2WIjkwF7jEanKpXwlqC5tGUy+
+         TurNDf8oFF0Ssjze/OtyH3iPpm4vnsoimmEM1QW0vuS9diwUv4r2ucGRMspLeupCRl
+         Kxks8MMChTA87dgtNfg9AXXCOf+H76g0ybWFOVk57gKOWIlbCNfu7TayxqwNqqMqVa
+         nFy81nGJ3FF0dkXgHkbfy5Q+0BFcM+Dx9va1AOs2JDuY7AkBiqz1B3J0fTTVh3H11b
+         cPW6T6gngurlA==
+Received: by mail-wr1-f70.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so7844982wrg.17
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:01:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=gaw8hq1tP5dFMMFBJGf09r+9kBtQt8HO+1SL++A5V4w=;
-        b=SL/zLSK4Bx73Fc6l4gsoZDj4HQF1NN04Oxv0Z4jIXQRPCc+RbE5hZqw6aavhfjhLgh
-         YZbxDYSok10y9oJZi7FvAH+YqDCz70JIkG63Tnu6yabIFaCL8/EDfvvrMsWBlglGgTOw
-         Ou+i2Bs4Ym/3viHXVnJDd7+j0ogwP9qhGAUVcEv+w6dL99YnG+zjiPIICFXhesr3kQ9+
-         Vqkbs9kbZWYLNbAGsVOt/mvcRlloqlbE5qScDLna8LP3mPF68e7N8SFQwiamZGNznl1U
-         Oeq3YCgrrQJ3CsuxnTNQYvzzEJiuCzGqgVTGhJ+qsxt3llTHEGiDxqqLVM8iFyz6g38o
-         f4+A==
-X-Gm-Message-State: AOAM532mWjWxkIdLuTEQbEeV6lBQLg41LffGWIfZb6SjH+I2cNYBEUjF
-        WxZz4vsrVcuXPa4fpunGrtozeg+wD4Q=
-X-Google-Smtp-Source: ABdhPJwV6KDoOL4dJobE5iEtEYDFPM40hBhSDcRGQuodsm2FiwCPKNGDoPT+pRNqKHZ/7YTcDP7h6g==
-X-Received: by 2002:a9d:654b:: with SMTP id q11mr3570243otl.184.1632484799865;
-        Fri, 24 Sep 2021 04:59:59 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v16sm2046200oiv.23.2021.09.24.04.59.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TKyRV9O1Y/ljz5T9kCOw405tGOgzBL0k1lCSjTA1wYI=;
+        b=FM47lEwXZIv3kygWwnizYCyZzP0YnKR+bV68JXeE9mSuDNdD4ToKkPOJwtN+R98fJq
+         4VNj+qREHua7EvWzyJbc9JAM+btHoLzW+1QYpFbMCCcaVhlMyJz4OBrPBes1C7/giTsT
+         2zFczVlgoZjMHzX/tkhSZ1B1ZV+Q97zNMsFHZ2imTIL4WeUgxaSgAZLyMIKB9kIaUrru
+         RXs3kivt/syLTbOuOk2oELBs9b2G+RgzGrLs0wuRQghmdGZ+EhZnVi9LE03hiumG4kHe
+         aMk3j+UilMHXeJ6eGzvHOMXTLWNdAoSX1UDhtLTn/ipK9sRxh1Gs/jc4/beIRpc0VsHT
+         JZlg==
+X-Gm-Message-State: AOAM533IJEArctiipgy2tLRLWT6d1pJyJfAzzavY+Fog3GyqdEek2aSA
+        FHdpBmjcjEqTj5aA8sHvtvjSScMoS5fhPC+OHufpiFru+Oiq2dVCBfmPYshVX/ifJpFbdMWD0kw
+        VOzLYp+I5vJC+xsqUxyiUpsiYwpu5hOUeBuTlTPguRw==
+X-Received: by 2002:a05:6000:14d:: with SMTP id r13mr11212092wrx.420.1632484911240;
+        Fri, 24 Sep 2021 05:01:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzquSMRBcbVZ+YVahWJFTiZdrKlthMmH22osg55fb8riVZxx8aZY78k3Bx0kxcH0Mf93sm1aw==
+X-Received: by 2002:a05:6000:14d:: with SMTP id r13mr11212062wrx.420.1632484911102;
+        Fri, 24 Sep 2021 05:01:51 -0700 (PDT)
+Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id o7sm10100619wro.45.2021.09.24.05.01.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 04:59:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 24 Sep 2021 04:59:58 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Paul Fertser <fercerpav@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] hwmon: tmp421: report /PVLD condition as fault
-Message-ID: <20210924115958.GA2695448@roeck-us.net>
-References: <20210924022020.GA3032273@roeck-us.net>
- <20210924093011.26083-1-fercerpav@gmail.com>
- <20210924093011.26083-2-fercerpav@gmail.com>
+        Fri, 24 Sep 2021 05:01:50 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-kernel@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH] dt-bindings: rpc: renesas-rpc-if: Add support for the R8A779A0 RPC-IF
+Date:   Fri, 24 Sep 2021 14:01:12 +0200
+Message-Id: <163248485488.53812.2936557522765718572.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210922085831.5375-1-wsa+renesas@sang-engineering.com>
+References: <20210922085831.5375-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924093011.26083-2-fercerpav@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 12:30:10PM +0300, Paul Fertser wrote:
-> For both local and remote sensors all the supported ICs can report an
-> "undervoltage lockout" condition which means the conversion wasn't
-> properly performed due to insufficient power supply voltage and so the
-> measurement results can't be trusted.
+On Wed, 22 Sep 2021 10:58:31 +0200, Wolfram Sang wrote:
 > 
-> Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
-> Signed-off-by: Paul Fertser <fercerpav@gmail.com>
 
-Applied.
 
-Thanks,
-Guenter
+Applied with added simple commit msg, thanks!
 
-> ---
-> 
-> Changes from v2:
->  - Add Fixes: tag
-> 
-> Changes from v1:
->  - Trivial rebase
-> 
->  drivers/hwmon/tmp421.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
-> index e6b2b31d17c8..3a789f21188c 100644
-> --- a/drivers/hwmon/tmp421.c
-> +++ b/drivers/hwmon/tmp421.c
-> @@ -182,10 +182,10 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
->  		return 0;
->  	case hwmon_temp_fault:
->  		/*
-> -		 * The OPEN bit signals a fault. This is bit 0 of the temperature
-> -		 * register (low byte).
-> +		 * Any of OPEN or /PVLD bits indicate a hardware mulfunction
-> +		 * and the conversion result may be incorrect
->  		 */
-> -		*val = tmp421->temp[channel] & 0x01;
-> +		*val = !!(tmp421->temp[channel] & 0x03);
->  		return 0;
->  	default:
->  		return -EOPNOTSUPP;
-> @@ -198,9 +198,6 @@ static umode_t tmp421_is_visible(const void *data, enum hwmon_sensor_types type,
->  {
->  	switch (attr) {
->  	case hwmon_temp_fault:
-> -		if (channel == 0)
-> -			return 0;
-> -		return 0444;
->  	case hwmon_temp_input:
->  		return 0444;
->  	default:
+[1/1] dt-bindings: rpc: renesas-rpc-if: Add support for the R8A779A0 RPC-IF
+      commit: 797f082738b10ff397c8d3b7804b747d766e62e6
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
