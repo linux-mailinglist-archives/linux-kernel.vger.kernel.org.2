@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D7E4174F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613A4417295
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346841AbhIXNL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:11:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36370 "EHLO mail.kernel.org"
+        id S1344374AbhIXMtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:49:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346968AbhIXNI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:08:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8562613A0;
-        Fri, 24 Sep 2021 12:57:24 +0000 (UTC)
+        id S1344009AbhIXMsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:48:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E3F61164;
+        Fri, 24 Sep 2021 12:46:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488245;
-        bh=Q3Vo6pTXuVHVwb706DthbkAooh7AzXwUWh5eDPwGPUE=;
+        s=korg; t=1632487611;
+        bh=fAtWr3YnQewUqGl7Wpx+8AbgCl1EMOkpmYVR4cR5bho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gMhHv1PCIiB6McUQR+NmRq93RDzVURE+eBevdIlBzVen5qYzL/FFfrVMUiiplF6eZ
-         GNLvgF5XNJbn2fwPdR5jnoqdWVOXBA+6e1/07ndBSe9bip81zy1jlpk6Qa3m3kIIJx
-         TqSYrqW37GUHdtL22ciesY695nWu7Ffm4MyKFxsU=
+        b=eQOEzwqU/AMunSKE2+rjz2R6FYKVAskla3Twghhbhsq7II5PhdgcOlYGkDSiLlbAK
+         tI4ZnjtVdEsxU22KmhrKFs/ZznXetmxRH6zj/fCBTT5mccAYP/iJVTa7dRH3lh7XBQ
+         XeFNHSYT8xmGSg+b5Eke7R1jYoxhj+E9/yfKd5wE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 5.10 09/63] ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 21/26] nilfs2: fix memory leak in nilfs_sysfs_delete_##name##_group
 Date:   Fri, 24 Sep 2021 14:44:09 +0200
-Message-Id: <20210924124334.565414522@linuxfoundation.org>
+Message-Id: <20210924124329.051372383@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
+References: <20210924124328.336953942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit 6fa630bf473827aee48cbf0efbbdf6f03134e890 upstream
+[ Upstream commit a3e181259ddd61fd378390977a1e4e2316853afa ]
 
-FTRACE_ADDR is only defined when CONFIG_DYNAMIC_FTRACE is defined, the
-latter is even stronger requirement than CONFIG_FUNCTION_TRACER (which is
-enough for MCOUNT_ADDR).
+The kobject_put() should be used to cleanup the memory associated with the
+kobject instead of kobject_del.  See the section "Kobject removal" of
+"Documentation/core-api/kobject.rst".
 
-Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
-
-Fixes: 1f12fb25c5c5d22f ("ARM: 9079/1: ftrace: Add MODULE_PLTS support")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-5-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-5-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/module-plts.c |    2 +-
+ fs/nilfs2/sysfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -22,7 +22,7 @@
- #endif
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index eab7bd68da12..31eed118d0ce 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -106,7 +106,7 @@ static int nilfs_sysfs_create_##name##_group(struct the_nilfs *nilfs) \
+ } \
+ static void nilfs_sysfs_delete_##name##_group(struct the_nilfs *nilfs) \
+ { \
+-	kobject_del(&nilfs->ns_##parent_name##_subgroups->sg_##name##_kobj); \
++	kobject_put(&nilfs->ns_##parent_name##_subgroups->sg_##name##_kobj); \
+ }
  
- static const u32 fixed_plts[] = {
--#ifdef CONFIG_FUNCTION_TRACER
-+#ifdef CONFIG_DYNAMIC_FTRACE
- 	FTRACE_ADDR,
- 	MCOUNT_ADDR,
- #endif
+ /************************************************************************
+-- 
+2.33.0
+
 
 
