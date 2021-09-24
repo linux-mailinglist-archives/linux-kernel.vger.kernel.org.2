@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7482416AA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A07416AA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244062AbhIXDyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 23:54:13 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56794 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S244018AbhIXDyM (ORCPT
+        id S244071AbhIXD43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 23:56:29 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:42624 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S244018AbhIXD42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 23:54:12 -0400
-X-UUID: 4a8690e3f2044dd78a95883ff4827230-20210924
-X-UUID: 4a8690e3f2044dd78a95883ff4827230-20210924
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <ed.tsai@mediatek.com>)
+        Thu, 23 Sep 2021 23:56:28 -0400
+X-UUID: b851e1b912fa409f8efbb1af59898d1b-20210924
+X-UUID: b851e1b912fa409f8efbb1af59898d1b-20210924
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1719271118; Fri, 24 Sep 2021 11:52:38 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Fri, 24 Sep 2021 11:52:36 +0800
+        with ESMTP id 74977654; Fri, 24 Sep 2021 11:54:51 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 24 Sep 2021 11:54:50 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 24 Sep
+ 2021 11:54:49 +0800
 Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 24 Sep 2021 11:52:36 +0800
-Message-ID: <07c5f2f1e10671bc462f88717f84aae9ee1e4d2b.camel@mediatek.com>
-Subject: Re: [PATCH] [fuse] alloc_page nofs avoid deadlock
-From:   Ed Tsai <ed.tsai@mediatek.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        chenguanyou <chenguanyou@xiaomi.com>,
-        chenguanyou <chenguanyou9338@gmail.com>,
-        "Stanley Chu =?UTF-8?Q?=28=E6=9C=B1=E5=8E=9F=E9=99=9E=29?=" 
-        <stanley.chu@mediatek.com>
-Date:   Fri, 24 Sep 2021 11:52:36 +0800
-In-Reply-To: <CAJfpegsOSWZpKHqDNE_B489dGCzLr-RVAhimVOsFkxJwMYmj9A@mail.gmail.com>
-References: <20210603125242.31699-1-chenguanyou@xiaomi.com>
-         <CAJfpegsEkRnU26Vvo4BTQUmx89Hahp6=RTuyEcPm=rqz8icwUQ@mail.gmail.com>
-         <1fabb91167a86990f4723e9036a0e006293518f4.camel@mediatek.com>
-         <CAJfpegsOSWZpKHqDNE_B489dGCzLr-RVAhimVOsFkxJwMYmj9A@mail.gmail.com>
+ Transport; Fri, 24 Sep 2021 11:54:49 +0800
+Message-ID: <1d7fe7455a054819daf05d41ab3658afdc1caced.camel@mediatek.com>
+Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8195: add machine driver with
+ mt6359, rt1011 and rt5682
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <aaronyu@google.com>,
+        <linux-arm-kernel@lists.infradead.org>, <trevor.wu@mediatek.com>
+Date:   Fri, 24 Sep 2021 11:54:49 +0800
+In-Reply-To: <4d703c5f7cf27ddc8b9886b111ffeeba0c4aa08b.camel@mediatek.com>
+References: <20210910104405.11420-1-trevor.wu@mediatek.com>
+         <20210910104405.11420-2-trevor.wu@mediatek.com>
+         <10fc49fa-9791-0225-365d-e3074680596c@linux.intel.com>
+         <4d703c5f7cf27ddc8b9886b111ffeeba0c4aa08b.camel@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
@@ -50,127 +53,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-18 at 17:24 +0800, Miklos Szeredi wrote:
-> On Tue, 13 Jul 2021 at 04:42, Ed Tsai <ed.tsai@mediatek.com> wrote:
-> > 
-> > On Tue, 2021-06-08 at 17:30 +0200, Miklos Szeredi wrote:
-> > > On Thu, 3 Jun 2021 at 14:52, chenguanyou <
-> > > chenguanyou9338@gmail.com>
-> > > wrote:
-> > > > 
-> > > > ABA deadlock
-> > > > 
-> > > > PID: 17172 TASK: ffffffc0c162c000 CPU: 6 COMMAND: "Thread-21"
-> > > > 0 [ffffff802d16b400] __switch_to at ffffff8008086a4c
-> > > > 1 [ffffff802d16b470] __schedule at ffffff80091ffe58
-> > > > 2 [ffffff802d16b4d0] schedule at ffffff8009200348
-> > > > 3 [ffffff802d16b4f0] bit_wait at ffffff8009201098
-> > > > 4 [ffffff802d16b510] __wait_on_bit at ffffff8009200a34
-> > > > 5 [ffffff802d16b5b0] inode_wait_for_writeback at
-> > > > ffffff800830e1e8
-> > > > 6 [ffffff802d16b5e0] evict at ffffff80082fb15c
-> > > > 7 [ffffff802d16b620] iput at ffffff80082f9270
-> > > > 8 [ffffff802d16b680] dentry_unlink_inode at ffffff80082f4c90
-> > > > 9 [ffffff802d16b6a0] __dentry_kill at ffffff80082f1710
-> > > > 10 [ffffff802d16b6d0] shrink_dentry_list at ffffff80082f1c34
-> > > > 11 [ffffff802d16b750] prune_dcache_sb at ffffff80082f18a8
-> > > > 12 [ffffff802d16b770] super_cache_scan at ffffff80082d55ac
-> > > > 13 [ffffff802d16b860] shrink_slab at ffffff8008266170
-> > > > 14 [ffffff802d16b900] shrink_node at ffffff800826b420
-> > > > 15 [ffffff802d16b980] do_try_to_free_pages at ffffff8008268460
-> > > > 16 [ffffff802d16ba60] try_to_free_pages at ffffff80082680d0
-> > > > 17 [ffffff802d16bbe0] __alloc_pages_nodemask at
-> > > > ffffff8008256514
-> > > > 18 [ffffff802d16bc60] fuse_copy_fill at ffffff8008438268
-> > > > 19 [ffffff802d16bd00] fuse_dev_do_read at ffffff8008437654
-> > > > 20 [ffffff802d16bdc0] fuse_dev_splice_read at ffffff8008436f40
-> > > > 21 [ffffff802d16be60] sys_splice at ffffff8008315d18
-> > > > 22 [ffffff802d16bff0] __sys_trace at ffffff8008084014
-> > > > 
-> > > > PID: 9652 TASK: ffffffc0c9ce0000 CPU: 4 COMMAND:
-> > > > "kworker/u16:8"
-> > > > 0 [ffffff802e793650] __switch_to at ffffff8008086a4c
-> > > > 1 [ffffff802e7936c0] __schedule at ffffff80091ffe58
-> > > > 2 [ffffff802e793720] schedule at ffffff8009200348
-> > > > 3 [ffffff802e793770] __fuse_request_send at ffffff8008435760
-> > > > 4 [ffffff802e7937b0] fuse_simple_request at ffffff8008435b14
-> > > > 5 [ffffff802e793930] fuse_flush_times at ffffff800843a7a0
-> > > > 6 [ffffff802e793950] fuse_write_inode at ffffff800843e4dc
-> > > > 7 [ffffff802e793980] __writeback_single_inode at
-> > > > ffffff8008312740
-> > > > 8 [ffffff802e793aa0] writeback_sb_inodes at ffffff80083117e4
-> > > > 9 [ffffff802e793b00] __writeback_inodes_wb at ffffff8008311d98
-> > > > 10 [ffffff802e793c00] wb_writeback at ffffff8008310cfc
-> > > > 11 [ffffff802e793d00] wb_workfn at ffffff800830e4a8
-> > > > 12 [ffffff802e793d90] process_one_work at ffffff80080e4fac
-> > > > 13 [ffffff802e793e00] worker_thread at ffffff80080e5670
-> > > > 14 [ffffff802e793e60] kthread at ffffff80080eb650
-> > > 
-> > > The issue is real.
-> > > 
-> > > The fix, however, is not the right one.  The fundamental problem
-> > > is
-> > > that fuse_write_inode() blocks on a request to userspace.
-> > > 
-> > > This is the same issue that fuse_writepage/fuse_writepages
-> > > face.  In
-> > > that case the solution was to copy the page contents to a
-> > > temporary
-> > > buffer and return immediately as if the writeback already
-> > > completed.
-> > > 
-> > > Something similar needs to be done here: send the FUSE_SETATTR
-> > > request
-> > > asynchronously and return immediately from
-> > > fuse_write_inode().  The
-> > > tricky part is to make sure that multiple time updates for the
-> > > same
-> > > inode aren't mixed up...
-> > > 
-> > > Thanks,
-> > > Miklos
-> > 
-> > Dear Szeredi,
-> > 
-> > Writeback thread calls fuse_write_inode() and wait for user Daemon
-> > to
-> > complete this write inode request. The user daemon will
-> > alloc_page()
-> > after taking this request, and a deadlock could happen when we try
-> > to
-> > shrink dentry list under memory pressure.
-> > 
-> > We (Mediatek) glad to work on this issue for mainline and also LTS.
-> > So
-> > another problem is that we should not change the protocol or
-> > feature
-> > for stable kernel.
-> > 
-> > Use GFP_NOFS | __GFP_HIGHMEM can really avoid this by skip the
-> > dentry
-> > shirnker. It works but degrade the alloc_page success rate. In a
-> > more
-> > fundamental way, we could cache the contents and return
-> > immediately.
-> > But how to ensure the request will be done successfully, e.g.,
-> > always
-> > retry if it fails from daemon.
-> 
-> Key is where the the dirty metadata is flushed.  To prevent deadlock
-> it must not be flushed from memory reclaim, so must make sure that it
-> is flushed on close(2) and munmap(2) and not dirtied after that.
-> 
-> I'm working on this currently and hope to get it ready for the next
-> merge window.
-> 
-> Thanks,
-> Miklos
+Hi Pierre-Louis,
 
-Hi Miklos,
+On Mon, 2021-09-13 at 18:24 +0800, Trevor Wu wrote:
+> On Fri, 2021-09-10 at 11:47 -0500, Pierre-Louis Bossart wrote:
+> > > 
+> 
+> > > +
+> > > +	param->mtkaif_calibration_ok = false;
+> > > +	for (i = 0; i < MT8195_MTKAIF_MISO_NUM; i++) {
+> > > +		param->mtkaif_chosen_phase[i] = -1;
+> > > +		param->mtkaif_phase_cycle[i] = 0;
+> > > +		mtkaif_chosen_phase[i] = -1;
+> > > +		mtkaif_phase_cycle[i] = 0;
+> > > +	}
+> > > +
+> > > +	if (IS_ERR(afe_priv->topckgen)) {
+> > > +		dev_info(afe->dev, "%s() Cannot find topckgen
+> > > controller\n",
+> > > +			 __func__);
+> > > +		return 0;
+> > 
+> > is this not an error? Why not dev_err() and return -EINVAL or
+> > something?
+> > 
+> 
+> Should I still return an error, even if the caller didn't check it?
+> 
+> Based on my understanding, the calibration function is used to make
+> the
+> signal more stable. 
+> Most of the time, mtkaif still works, even though the calibration
+> fails.
+> I guess that's why the caller(I refered to the implementation of
+> mt8192.) didn't check the return value of calibration function.
+> 
+> 
+> > > +	}
+> > > +
+> > > +	pm_runtime_get_sync(afe->dev);
+> > 
+> > test if this worked?
+> > 
+> 
+> Yes, if I didn't add pm_runtime_get_sync here, the calibration
+> failed.
+> 
+> > > +	mt6359_mtkaif_calibration_enable(cmpnt_codec);
+> > > +
+> > > 
+[...]
+> > > +	mt6359_set_mtkaif_calibration_phase(cmpnt_codec,
+> > > +					    chosen_phase_1,
+> > > +					    chosen_phase_2,
+> > > +					    chosen_phase_3);
+> > > +
+> > > +	mt6359_mtkaif_calibration_disable(cmpnt_codec);
+> > > +	pm_runtime_put(afe->dev);
+> > > +
+> > > +	param->mtkaif_calibration_ok = mtkaif_calibration_ok;
+> > > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_0] =
+> > > chosen_phase_1;
+> > > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_1] =
+> > > chosen_phase_2;
+> > > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_2] =
+> > > chosen_phase_3;
+> > > +	for (i = 0; i < MT8195_MTKAIF_MISO_NUM; i++)
+> > > +		param->mtkaif_phase_cycle[i] = mtkaif_phase_cycle[i];
+> > > +
+> > > +	dev_info(afe->dev, "%s(), end, calibration ok %d\n",
+> > > +		 __func__, param->mtkaif_calibration_ok);
+> > 
+> > dev_dbg?
+> > 
+> 
+> Because we don't regard calibration failure as an error, it is a hint
+> to show the calibration result.
+> I prefer to keep dev_info here.
+> Is it OK?
+> 
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int mt8195_hdmitx_dptx_startup(struct snd_pcm_substream
+> > > *substream)
+> > > +{
+> > > +	static const unsigned int rates[] = {
+> > > +		48000
+> > > +	};
+> > > +	static const unsigned int channels[] = {
+> > > +		2, 4, 6, 8
+> > > +	};
+> > > +	static const struct snd_pcm_hw_constraint_list
+> > > constraints_rates = {
+> > > +		.count = ARRAY_SIZE(rates),
+> > > +		.list  = rates,
+> > > +		.mask = 0,
+> > > +	};
+> > > +	static const struct snd_pcm_hw_constraint_list
+> > > constraints_channels = {
+> > > +		.count = ARRAY_SIZE(channels),
+> > > +		.list  = channels,
+> > > +		.mask = 0,
+> > > +	};
+> > 
+> > you use the same const tables several times, move to a higher scope
+> > and
+> > reuse?
+> > 
+> 
+> There is little difference in channels between these startup ops.
+> 
+> > > +	struct snd_soc_pcm_runtime *rtd =
+> > > asoc_substream_to_rtd(substream);
+> > > +	struct snd_pcm_runtime *runtime = substream->runtime;
+> > > +	int ret;
+> > > +
+> > > +	ret = snd_pcm_hw_constraint_list(runtime, 0,
+> > > +					 SNDRV_PCM_HW_PARAM_RATE,
+> > > +					 &constraints_rates);
+> > > +	if (ret < 0) {
+> > > +		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	ret = snd_pcm_hw_constraint_list(runtime, 0,
+> > > +					 SNDRV_PCM_HW_PARAM_CHANNELS,
+> > > +					 &constraints_channels);
+> > > +	if (ret < 0) {
+> > > +		dev_err(rtd->dev, "hw_constraint_list channel
+> > > failed\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > 
+> > > +
+> > > +static struct platform_driver mt8195_mt6359_rt1011_rt5682_driver
+> > > =
+> > > {
+> > > +	.driver = {
+> > > +		.name = "mt8195_mt6359_rt1011_rt5682",
+> > > +#ifdef CONFIG_OF
+> > > +		.of_match_table = mt8195_mt6359_rt1011_rt5682_dt_match,
+> > > +#endif
+> > > +		.pm = &mt8195_mt6359_rt1011_rt5682_pm_ops,
+> > > +	},
+> > > +	.probe = mt8195_mt6359_rt1011_rt5682_dev_probe,
+> > > +};
+> > > +
+> > > +module_platform_driver(mt8195_mt6359_rt1011_rt5682_driver);
+> > > +
+> > > +/* Module information */
+> > > +MODULE_DESCRIPTION("MT8195-MT6359-RT1011-RT5682 ALSA SoC machine
+> > > driver");
+> > > +MODULE_AUTHOR("Trevor Wu <trevor.wu@mediatek.com>");
+> > > +MODULE_LICENSE("GPL v2");
+> > 
+> > "GPL" is enough
+> > 
+> 
+> I see many projects use GPL v2 here, and all mediatek projects use
+> GPL
+> v2, too.
+> I'm not sure which one is better.
+> Do I need to modify this?
+> 
 
-I'm not sure whether it has already been resolved in mainline.
-If it still WIP, please cc me on future emails.
+> 
+> > > +MODULE_ALIAS("mt8195_mt6359_rt1011_rt5682 soc card");
+> > > 
 
-Best regards,
-Ed Tsai
+Gentle ping.
+
+Thanks,
+Trevor
 
