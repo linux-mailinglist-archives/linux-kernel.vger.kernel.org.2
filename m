@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8704175E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AB64175E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346587AbhIXNei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
+        id S1346469AbhIXNem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346549AbhIXNe2 (ORCPT
+        with ESMTP id S1346558AbhIXNe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:34:28 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0986CC08E8BB
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:28:59 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id h3so9862122pgb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:28:59 -0700 (PDT)
+        Fri, 24 Sep 2021 09:34:29 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D48C08E9AD
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:29:07 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id e7so9893030pgk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:29:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KM6OpafNDbs5gC7AhwUIhQlXXaIlZMI4KerHz+Wd/II=;
-        b=W8dKLKjMyGZdP4ZKFty5vBxQDsRnRPYKTyDI3rKgGPBBIcDH+d3mwjYE5zUc2tIRBD
-         cNN33F4x4VFcdRJz/H6V7SPtKnlFjfSND0dj5e1ia0E4QFNvkQ2BoJvwm/1P2hFLO7no
-         C9rZjjbuxNfwojHLvsjiOzUMiE4kzb+ySCW02XPvAgVoezjyuVg02/TDJ1AX/4qOfOuD
-         Gf6r3gwD2q5R4GJOKs5R1tYuc1wh7nWQ1YA/HZKYUUzqtGkY8uiUe9iF/b1C7HbQHADo
-         FhMLwDtVb5gnPPV4K/jG7YhfMNJ/UPemcqBk5yd8qWbLZhKT0kOYzUgcWtcVWbAOt0rW
-         DJog==
+        bh=E2re79r/KMQm8fC1r1C1DX1MnLIusIxSofGmOWtOLv8=;
+        b=pu20CDJ63FPAZYqTMiqLBsWmahvQuNVWq+rjQjOyUIBcwGDWU1xS6o7oUh56yY0iFi
+         xhgEyY4QuwLAfHjCCLCp8GBGg2+LKvg6R2tsyDOBY3eA4tjgPP3KQerr6HIKfD2VBWJg
+         OlJIKFhMDIUXEJQKOyAqnhsj4PdEQ2FtQY193GAu9BP6wgkJkJ3VI9+7RkjLmFIoqi2M
+         J93vY5xWBxYgSl8YLQTL/pzpbFR1Qu7XYy9q/NQzPIeDAv+oF/IQGpk/ZvTJWAKy69a1
+         mcaPPZFQcwwrX2x1hbaWRLFUmGPWH1/Oid+oy6m1yMhGMoOkFB0okrWaNcrTdW9c/S8p
+         k08w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KM6OpafNDbs5gC7AhwUIhQlXXaIlZMI4KerHz+Wd/II=;
-        b=aNt6DRSs+k18l1YkhDzpx4uXjPk3ZMX/ZgI2BlK/+pTgixgVj0IqWYy8rU/R058GCq
-         FyWxlrKScoD8ZgoVMbzOBfr+TgmH6HL5pALmHZbCEJOh96kJCnIaGqt7rGE70Vh3jf60
-         1kT868Ucm01B2Z06ssJrHDK+LVn1xm8CViOR0CHiAehMMml0Yai7yvaNClMN1OZBO2bG
-         GkeLdBmKzuHVBxmIUqoJ/CJ3neigTKEXAw3iVjv60G5gYDcWDdKTe7YnCUJgZ5WmJlhG
-         Xr2ZGoN315LquOV+5Ln1maCQwkdNObudtAKtMhfO7oHw8W5vDwSA6wvdbLepoRmSUz4a
-         SMxw==
-X-Gm-Message-State: AOAM5301ygGsj+lGlDC9JTAbQuMUBN5bcmeQeRxZbPX13D2uniMTnUVf
-        3vtGkMAtsOLxqpreFK23VQ==
-X-Google-Smtp-Source: ABdhPJwMVXMC/ZxnaF+ueP2XXMs36pJoqLmeGnmtD8aWkjTW+JtZpZTjYn8ik4EF9vAznSNty9fE3g==
-X-Received: by 2002:a63:5902:: with SMTP id n2mr3787246pgb.305.1632490138549;
-        Fri, 24 Sep 2021 06:28:58 -0700 (PDT)
+        bh=E2re79r/KMQm8fC1r1C1DX1MnLIusIxSofGmOWtOLv8=;
+        b=ENvpP9r754DtsaxrUlmcbZyOxHZ04PQPxPpXAaY09x/KxIps2rFs6qjPmlBlQ/yWVY
+         n26jnVZxE4AWNtCahGXLxD00M1ZxgPPjgdBrsHAh77Soy9mUogxZfBliz1zN/ZUXToKC
+         76ZTzCg/to/0Ni1uDKlTZ2bcpfpl01mDryGbMK1e5J7SFHvJsUzV6OzrgO2/8n69T8LC
+         UyAr5Huvc/JwsZJ2O62H9mfB1YLPFh4Q3i7X34WM+3641oHZPw6RQyeZ36XYszHBNbOO
+         Uy3xu5gD1CMFbw9w/n5jzmoQp5ubz03iK5DSOy2v5Us+6JTKj6NzsUzdcg+OwyXVaTsh
+         wuIg==
+X-Gm-Message-State: AOAM533PgIbeqrEX1FlX7l6lfkXI/ts8LywcBhpK80Cgrtmmy28aJQNZ
+        aSdPD4llBokN1it6GnjH7Q==
+X-Google-Smtp-Source: ABdhPJyVLf2VBROoVBckvGi5mCtdHnpZ3wBEsV++tAn/ln2TpuxIAOv5tUd/N6zOk8DqvUq47PzLdQ==
+X-Received: by 2002:a63:ef01:: with SMTP id u1mr3784992pgh.336.1632490146668;
+        Fri, 24 Sep 2021 06:29:06 -0700 (PDT)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 26sm11756573pgx.72.2021.09.24.06.28.54
+        by smtp.gmail.com with ESMTPSA id 26sm11756573pgx.72.2021.09.24.06.28.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 06:28:58 -0700 (PDT)
+        Fri, 24 Sep 2021 06:29:06 -0700 (PDT)
 From:   Pingfan Liu <kernelfans@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Pingfan Liu <kernelfans@gmail.com>,
@@ -60,9 +60,9 @@ Cc:     Pingfan Liu <kernelfans@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Yuichi Ito <ito-yuichi@fujitsu.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCHv2 1/5] arm64/entry-common: push the judgement of nmi ahead
-Date:   Fri, 24 Sep 2021 21:28:33 +0800
-Message-Id: <20210924132837.45994-2-kernelfans@gmail.com>
+Subject: [PATCHv2 2/5] irqchip/GICv3: expose handle_nmi() directly
+Date:   Fri, 24 Sep 2021 21:28:34 +0800
+Message-Id: <20210924132837.45994-3-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210924132837.45994-1-kernelfans@gmail.com>
 References: <20210924132837.45994-1-kernelfans@gmail.com>
@@ -72,12 +72,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In enter_el1_irq_or_nmi(), it can be the case which NMI interrupts an
-irq, which makes the condition !interrupts_enabled(regs) fail to detect
-the NMI. This will cause a mistaken account for irq.
-
-Introducing two interfaces: handle_arch_nmi and interrupt_is_nmi to
-judge NMI at this stage.
+With the previous patch, the NMI should be dispatched at irqentry level.
+Accordingly adjust GICv3 to utilize the hooks, so NMI handler can be
+dispatched.
 
 Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -92,177 +89,113 @@ Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
 Cc: linux-kernel@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org
 ---
- arch/arm64/include/asm/irq.h     |  5 ++++
- arch/arm64/kernel/entry-common.c | 45 ++++++++++++++++++++++----------
- arch/arm64/kernel/irq.c          | 29 ++++++++++++++++++++
- 3 files changed, 65 insertions(+), 14 deletions(-)
+ arch/arm64/include/asm/irq.h |  2 ++
+ drivers/irqchip/irq-gic-v3.c | 53 +++++++++++++++++++-----------------
+ 2 files changed, 30 insertions(+), 25 deletions(-)
 
 diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
-index fac08e18bcd5..a59b1745f458 100644
+index a59b1745f458..c39627290a60 100644
 --- a/arch/arm64/include/asm/irq.h
 +++ b/arch/arm64/include/asm/irq.h
-@@ -12,6 +12,11 @@ int set_handle_irq(void (*handle_irq)(struct pt_regs *));
+@@ -11,6 +11,8 @@ struct pt_regs;
+ int set_handle_irq(void (*handle_irq)(struct pt_regs *));
  #define set_handle_irq	set_handle_irq
  int set_handle_fiq(void (*handle_fiq)(struct pt_regs *));
++int set_handle_nmi(void (*handle_nmi)(struct pt_regs *));
++int set_nmi_discriminator(bool (*discriminator)(void));
  
-+extern void (*handle_arch_irq)(struct pt_regs *regs);
-+extern void (*handle_arch_fiq)(struct pt_regs *regs);
-+extern void (*handle_arch_nmi)(struct pt_regs *regs);
-+extern bool (*interrupt_is_nmi)(void);
-+
- static inline int nr_legacy_irqs(void)
- {
- 	return 0;
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 32f9796c4ffe..69a8cc082712 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -24,6 +24,7 @@
- #include <asm/stacktrace.h>
- #include <asm/sysreg.h>
- #include <asm/system_misc.h>
-+#include <asm/irq.h>
- 
- /*
-  * Handle IRQ/context state management when entering from kernel mode.
-@@ -219,17 +220,28 @@ static void noinstr arm64_exit_el1_dbg(struct pt_regs *regs)
- 		lockdep_hardirqs_on(CALLER_ADDR0);
+ extern void (*handle_arch_irq)(struct pt_regs *regs);
+ extern void (*handle_arch_fiq)(struct pt_regs *regs);
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index fd4e9a37fea6..89dcec902a82 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -644,28 +644,12 @@ static void gic_deactivate_unhandled(u32 irqnr)
+ 	}
  }
  
--static void noinstr enter_el1_irq_or_nmi(struct pt_regs *regs)
-+static inline bool arm64_in_nmi(struct pt_regs *regs)
+-static inline void gic_handle_nmi(u32 irqnr, struct pt_regs *regs)
++static bool gic_is_in_nmi(void)
  {
--	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
-+	if (!interrupts_enabled(regs) || (*interrupt_is_nmi)())
-+		return true;
-+	return false;
-+}
-+
-+/* return true if in irq, otherwise in nmi */
-+static bool noinstr enter_el1_irq_or_nmi(struct pt_regs *regs)
-+{
-+	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && arm64_in_nmi(regs)) {
- 		arm64_enter_nmi(regs);
--	else
-+		return false;
-+	} else {
- 		enter_from_kernel_mode(regs);
-+		return true;
-+	}
- }
- 
--static void noinstr exit_el1_irq_or_nmi(struct pt_regs *regs)
-+static void noinstr exit_el1_irq_or_nmi(struct pt_regs *regs, bool in_irq)
- {
--	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
-+	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !in_irq)
- 		arm64_exit_nmi(regs);
- 	else
- 		exit_to_kernel_mode(regs);
-@@ -269,9 +281,6 @@ static void do_interrupt_handler(struct pt_regs *regs,
- 		handler(regs);
- }
- 
--extern void (*handle_arch_irq)(struct pt_regs *);
--extern void (*handle_arch_fiq)(struct pt_regs *);
+-	bool irqs_enabled = interrupts_enabled(regs);
+-	int err;
 -
- static void noinstr __panic_unhandled(struct pt_regs *regs, const char *vector,
- 				      unsigned int esr)
- {
-@@ -433,12 +442,20 @@ asmlinkage void noinstr el1h_64_sync_handler(struct pt_regs *regs)
- }
+-	if (irqs_enabled)
+-		nmi_enter();
+-
+-	if (static_branch_likely(&supports_deactivate_key))
+-		gic_write_eoir(irqnr);
+-	/*
+-	 * Leave the PSR.I bit set to prevent other NMIs to be
+-	 * received while handling this one.
+-	 * PSR.I will be restored when we ERET to the
+-	 * interrupted context.
+-	 */
+-	err = handle_domain_nmi(gic_data.domain, irqnr, regs);
+-	if (err)
+-		gic_deactivate_unhandled(irqnr);
++	if (gic_supports_nmi() && unlikely(gic_read_rpr() == GICD_INT_NMI_PRI))
++		return true;
  
- static void noinstr el1_interrupt(struct pt_regs *regs,
--				  void (*handler)(struct pt_regs *))
-+				  void (*handler)(struct pt_regs *),
-+				  void (*nmi_handler)(struct pt_regs *))
- {
-+	bool in_irq;
-+	void (*h)(struct pt_regs *regs);
-+
- 	write_sysreg(DAIF_PROCCTX_NOIRQ, daif);
- 
--	enter_el1_irq_or_nmi(regs);
--	do_interrupt_handler(regs, handler);
-+	in_irq = enter_el1_irq_or_nmi(regs);
-+	if (in_irq)
-+		h = handler;
-+	else
-+		h = nmi_handler;
-+	do_interrupt_handler(regs, h);
- 
- 	/*
- 	 * Note: thread_info::preempt_count includes both thread_info::count
-@@ -449,17 +466,17 @@ static void noinstr el1_interrupt(struct pt_regs *regs,
- 	    READ_ONCE(current_thread_info()->preempt_count) == 0)
- 		arm64_preempt_schedule_irq();
- 
--	exit_el1_irq_or_nmi(regs);
-+	exit_el1_irq_or_nmi(regs, in_irq);
- }
- 
- asmlinkage void noinstr el1h_64_irq_handler(struct pt_regs *regs)
- {
--	el1_interrupt(regs, handle_arch_irq);
-+	el1_interrupt(regs, handle_arch_irq, handle_arch_nmi);
- }
- 
- asmlinkage void noinstr el1h_64_fiq_handler(struct pt_regs *regs)
- {
--	el1_interrupt(regs, handle_arch_fiq);
-+	el1_interrupt(regs, handle_arch_fiq, handle_arch_nmi);
- }
- 
- asmlinkage void noinstr el1h_64_error_handler(struct pt_regs *regs)
-diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
-index bda49430c9ea..e67435eb4cba 100644
---- a/arch/arm64/kernel/irq.c
-+++ b/arch/arm64/kernel/irq.c
-@@ -81,8 +81,19 @@ static void default_handle_fiq(struct pt_regs *regs)
- 	panic("FIQ taken without a root FIQ handler\n");
- }
- 
-+static void default_handle_nmi(struct pt_regs *unused)
-+{
-+}
-+
-+static bool default_nmi_discriminator(void)
-+{
+-	if (irqs_enabled)
+-		nmi_exit();
 +	return false;
-+}
-+
- void (*handle_arch_irq)(struct pt_regs *) __ro_after_init = default_handle_irq;
- void (*handle_arch_fiq)(struct pt_regs *) __ro_after_init = default_handle_fiq;
-+void (*handle_arch_nmi)(struct pt_regs *) __ro_after_init = default_handle_nmi;
-+bool (*interrupt_is_nmi)(void) __ro_after_init = default_nmi_discriminator;
- 
- int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
- {
-@@ -104,6 +115,24 @@ int __init set_handle_fiq(void (*handle_fiq)(struct pt_regs *))
- 	return 0;
  }
  
-+int __init set_handle_nmi(void (*handle_nmi)(struct pt_regs *))
-+{
-+	if (handle_arch_nmi != default_handle_nmi)
-+		return -EBUSY;
-+
-+	handle_arch_nmi = handle_nmi;
-+	return 0;
-+}
-+
-+int __init set_nmi_discriminator(bool (*discriminator)(void))
-+{
-+	if (interrupt_is_nmi != default_nmi_discriminator)
-+		return -EBUSY;
-+
-+	interrupt_is_nmi = discriminator;
-+	return 0;
-+}
-+
- void __init init_IRQ(void)
+ static u32 do_read_iar(struct pt_regs *regs)
+@@ -702,21 +686,38 @@ static u32 do_read_iar(struct pt_regs *regs)
+ 	return iar;
+ }
+ 
+-static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
++static void gic_handle_nmi(struct pt_regs *regs)
  {
- 	init_irq_stacks();
+ 	u32 irqnr;
++	int err;
+ 
+ 	irqnr = do_read_iar(regs);
+ 
+ 	/* Check for special IDs first */
+ 	if ((irqnr >= 1020 && irqnr <= 1023))
+ 		return;
++	if (static_branch_likely(&supports_deactivate_key))
++		gic_write_eoir(irqnr);
++	/*
++	 * Leave the PSR.I bit set to prevent other NMIs to be
++	 * received while handling this one.
++	 * PSR.I will be restored when we ERET to the
++	 * interrupted context.
++	 */
++	err = handle_domain_nmi(gic_data.domain, irqnr, regs);
++	if (err)
++		gic_deactivate_unhandled(irqnr);
++}
+ 
+-	if (gic_supports_nmi() &&
+-	    unlikely(gic_read_rpr() == GICD_INT_RPR_PRI(GICD_INT_NMI_PRI))) {
+-		gic_handle_nmi(irqnr, regs);
++static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
++{
++	u32 irqnr;
++
++	irqnr = do_read_iar(regs);
++
++	/* Check for special IDs first */
++	if ((irqnr >= 1020 && irqnr <= 1023))
+ 		return;
+-	}
+ 
+ 	if (gic_prio_masking_enabled()) {
+ 		gic_pmr_mask_irqs();
+@@ -1791,6 +1792,8 @@ static int __init gic_init_bases(void __iomem *dist_base,
+ 	}
+ 
+ 	set_handle_irq(gic_handle_irq);
++	set_handle_nmi(gic_handle_nmi);
++	set_nmi_discriminator(gic_is_in_nmi);
+ 
+ 	gic_update_rdist_properties();
+ 
 -- 
 2.31.1
 
