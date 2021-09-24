@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE3C4174BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C205B41738B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346360AbhIXNKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:10:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38210 "EHLO mail.kernel.org"
+        id S1344940AbhIXM53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:57:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345764AbhIXNHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:07:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC9F761260;
-        Fri, 24 Sep 2021 12:56:44 +0000 (UTC)
+        id S1344900AbhIXMzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:55:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBAC46137C;
+        Fri, 24 Sep 2021 12:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488205;
-        bh=N20MLf36DgCPu5d6xWGURqHVe4zsJzisTII6DkueNnA=;
+        s=korg; t=1632487867;
+        bh=Jbxau38A3fI6OzG8TEAO1/JO90P9NxznFWXFDb+p74Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WeClcsTHxQzhi2PkUTeFKhW3/6Q6QE098IEfk+pMoszAEcenLOV/v9Sx8PA3ka6xY
-         Qo0tZDrkPXMf51l5wcgsaU97GO1b63/yh6v17NjZdaREWdyfp7/A4OD14rH8xotStt
-         E0SKS6c2RLHxj9p7U2BJkFLlhpUfV8pIRqJgR9CE=
+        b=ISBKXJipxjdyvSzcgXHiaYMdtFeiGeLWsue3OpWr+/t4e2GoZeEmM9XZg0Tv8uS5I
+         +pLeUHIrJSkFj/DQ87f5tlGE1bEkQEGqV9Oumy/5VkHFOjJUbKF6WRX4cUFP9Zmj2U
+         Ievt1UkZYTj7jBuWEenKOVBiTmJNbMXB1jCC2fnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prasad Sodagudi <psodagud@codeaurora.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.10 24/63] PM: sleep: core: Avoid setting power.must_resume to false
+        stable@vger.kernel.org,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Harini Katakam <harini.katakam@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 35/50] dmaengine: xilinx_dma: Set DMA mask for coherent APIs
 Date:   Fri, 24 Sep 2021 14:44:24 +0200
-Message-Id: <20210924124335.095797975@linuxfoundation.org>
+Message-Id: <20210924124333.427391902@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prasad Sodagudi <psodagud@codeaurora.org>
+From: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
 
-commit 4a9344cd0aa4499beb3772bbecb40bb78888c0e1 upstream.
+[ Upstream commit aac6c0f90799d66b8989be1e056408f33fd99fe6 ]
 
-There are variables(power.may_skip_resume and dev->power.must_resume)
-and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
-a system wide suspend transition.
+The xilinx dma driver uses the consistent allocations, so for correct
+operation also set the DMA mask for coherent APIs. It fixes the below
+kernel crash with dmatest client when DMA IP is configured with 64-bit
+address width and linux is booted from high (>4GB) memory.
 
-Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
-its "noirq" and "early" resume callbacks to be skipped if the device
-can be left in suspend after a system-wide transition into the working
-state. PM core determines that the driver's "noirq" and "early" resume
-callbacks should be skipped or not with dev_pm_skip_resume() function by
-checking power.may_skip_resume variable.
+Call trace:
+[  489.531257]  dma_alloc_from_pool+0x8c/0x1c0
+[  489.535431]  dma_direct_alloc+0x284/0x330
+[  489.539432]  dma_alloc_attrs+0x80/0xf0
+[  489.543174]  dma_pool_alloc+0x160/0x2c0
+[  489.547003]  xilinx_cdma_prep_memcpy+0xa4/0x180
+[  489.551524]  dmatest_func+0x3cc/0x114c
+[  489.555266]  kthread+0x124/0x130
+[  489.558486]  ret_from_fork+0x10/0x3c
+[  489.562051] ---[ end trace 248625b2d596a90a ]---
 
-power.must_resume variable is getting set to false in __device_suspend()
-function without checking device's DPM_FLAG_MAY_SKIP_RESUME settings.
-In problematic scenario, where all the devices in the suspend_late
-stage are successful and some device can fail to suspend in
-suspend_noirq phase. So some devices successfully suspended in suspend_late
-stage are not getting chance to execute __device_suspend_noirq()
-to set dev->power.must_resume variable to true and not getting
-resumed in early_resume phase.
-
-Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
-setting power.must_resume variable in __device_suspend function.
-
-Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
-Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Reviewed-by: Harini Katakam <harini.katakam@xilinx.com>
+Link: https://lore.kernel.org/r/1629363528-30347-1-git-send-email-radhey.shyam.pandey@xilinx.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/power/main.c |    2 +-
+ drivers/dma/xilinx/xilinx_dma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -1644,7 +1644,7 @@ static int __device_suspend(struct devic
- 	}
+diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
+index ce18bca45ff2..7729b8d22553 100644
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -2703,7 +2703,7 @@ static int xilinx_dma_probe(struct platform_device *pdev)
+ 		xdev->ext_addr = false;
  
- 	dev->power.may_skip_resume = true;
--	dev->power.must_resume = false;
-+	dev->power.must_resume = !dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME);
+ 	/* Set the dma mask bits */
+-	dma_set_mask(xdev->dev, DMA_BIT_MASK(addr_width));
++	dma_set_mask_and_coherent(xdev->dev, DMA_BIT_MASK(addr_width));
  
- 	dpm_watchdog_set(&wd, dev);
- 	device_lock(dev);
+ 	/* Initialize the DMA engine */
+ 	xdev->common.dev = &pdev->dev;
+-- 
+2.33.0
+
 
 
