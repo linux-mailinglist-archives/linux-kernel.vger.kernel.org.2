@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DA4416A09
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D903A416A08
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243923AbhIXCee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 22:34:34 -0400
-Received: from mga07.intel.com ([134.134.136.100]:50275 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243917AbhIXCee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 22:34:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="287656264"
-X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
-   d="scan'208";a="287656264"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 19:33:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
-   d="scan'208";a="475054299"
-Received: from allen-box.sh.intel.com ([10.239.159.118])
-  by orsmga007.jf.intel.com with ESMTP; 23 Sep 2021 19:32:59 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Kevin Tian <kevin.tian@intel.com>, Ashok Raj <ashok.raj@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Use second level for GPA->HPA translation
-Date:   Fri, 24 Sep 2021 10:29:31 +0800
-Message-Id: <20210924022931.780963-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S243910AbhIXCdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 22:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233314AbhIXCdN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 22:33:13 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D76AC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:31:40 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id u22so12527575oie.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mUT08plGeX5Emeo2aNwfpHriiLePv2VUKF/wr4V45A4=;
+        b=sqYzhYg+Ulp8TBwx9adVjRHj/KNWs7rlZDXD4VnySjt623ezTRNvAUs7UL7HW4VCXP
+         dH7doOcHndpJp3vwcDERzePVSQrvl+6U2TOnkQbL/HK83i8hCNCYofcI9PGwnM72jWig
+         s/e6zBQ4aO72/i1e96VEeE4ZpGBDIeYFZlp7BohsfCJtOsC8n3cFxziP2b00umiQlEPM
+         zBNwpbHJsP1+hspTSGwQPShz0Ld8WpExtoGu+7lrlUQs0sCZBjY5mHn4QnDP+uE5CRMa
+         a2XNx35ojB95RNdopiQHiIt4+KIlSAGi8KlTqV6HEgU8/P5kTcUE+e/JCabG+yZnKMD0
+         h3Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mUT08plGeX5Emeo2aNwfpHriiLePv2VUKF/wr4V45A4=;
+        b=i62nEzElnfABczkXcZvd/zn+GBYlRcPRcpLQy1BP1u/mYDu0pyhsI0NIwmiHLIaCZ+
+         axIn/sPPe+IwQoS5l58B8D9Gy6G9Wu1kFjL8aajv7NhevXBuoR9Ng9z3/4tmQEECMfFM
+         cy6I/WRQgF1xxFlG9taRe+JRsJiOZIggwiioPJHk5OWvaLrQm73gsFnv9g82VmQ0xQWq
+         OdvVX4cNMtfB9/iEYeT1lnc7dSB26MwrEXzjK70dI3NFYqQ/yVA3eEv7wxRUbVHwAGeK
+         R4QcAwBAUUgRsVQabayb360RgF6ZyiPk6/XPL5cEhlk0VMLSdfUbiK0GdGloWnpbTyGm
+         vLGA==
+X-Gm-Message-State: AOAM533bBowDnNcyw4a9vuxsiBKrft65PeWYjwHEFP92WFMRtiZk/FlT
+        fMGvwgz9iOovVkPD3HDFEjHmVw==
+X-Google-Smtp-Source: ABdhPJz3QwP0wn1WvFU+lYK8ASSvDCaN6bpC7MiDbLK/Vw6f/bvs68cMHru3V41xh7uAZSh17Xfhjw==
+X-Received: by 2002:aca:ac50:: with SMTP id v77mr9147446oie.15.1632450698812;
+        Thu, 23 Sep 2021 19:31:38 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w7sm1112108oic.12.2021.09.23.19.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Sep 2021 19:31:38 -0700 (PDT)
+Date:   Thu, 23 Sep 2021 21:31:36 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Elliot Berman <quic_eberman@quicinc.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Prasad Sodagudi <quic_psodagud@quicinc.com>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/1] firmware: smccc: Add tracepoints when SMCCC calls
+ are made
+Message-ID: <YU04iNTYB1IblIKI@builder.lan>
+References: <20210922223701.17521-1-quic_eberman@quicinc.com>
+ <20210923112058.GA14893@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923112058.GA14893@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IOMMU VT-d implementation uses the first level for GPA->HPA translation
-by default. Although both the first level and the second level could handle
-the DMA translation, they are different in some way. For example, the second
-level translation has separate controls for the Access/Dirty page tracking
-and the page-level forcing snoop. With first level translation, there're
-no such controls. This uses the second level for GPA->HPA translation so
-that it could provide a consistent hardware interface for use cases like
-dirty page tracking during the VM live migration.
+On Thu 23 Sep 06:21 CDT 2021, Mark Rutland wrote:
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- include/linux/intel-iommu.h |  7 ++-----
- drivers/iommu/intel/iommu.c | 21 +++++++++++++--------
- 2 files changed, 15 insertions(+), 13 deletions(-)
+> On Wed, Sep 22, 2021 at 03:37:00PM -0700, Elliot Berman wrote:
+> > Add trace events for SMCCC calls. These traces allow for convenient
+> > mechanism for kernel to log SMC/HVC instructions without requiring
+> > extracting traces from firmware. SMCCC spec currently [1] allows for 7
+> > argument registers and 4 result registers.
+> 
+> I think you've missed additions in recent versions of the spec. Since
+> SMCCCv1.2 (which is described in version of the document you've linked),
+> SMC64 calls may pass up to 17 argument registers (x1-x17) and receive up
+> to 18 result registers (x0-x17). SMC32 calls have up to 7 argument
+> registers (r1-r7) and up to 8 return registers (r0-r7).
+> 
+> What do you want to use this for? What specifically do you want to
+> trace.
+> 
+> I'm worried that this is a very low level transport, and hooking this
+> means tracing a bunch of unrelated users (e.g. PSCI, ARCH_WORKAROUND*
+> calls, vendor-specific SMC interfaces), and potentially gets in the way
+> of some of those use-cases (e.g. tracng this means it cannot be used
+> from noinstr code, which we likely need to be able to do in future).
+> 
+> Generally I'd prefer to have tracepoints in specific drivers rather than
+> in the SMCCC transport.
+> 
 
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 05a65eb155f7..a5fb20702201 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -517,22 +517,19 @@ struct context_entry {
- 	u64 hi;
- };
- 
--/* si_domain contains mulitple devices */
--#define DOMAIN_FLAG_STATIC_IDENTITY		BIT(0)
--
- /*
-  * When VT-d works in the scalable mode, it allows DMA translation to
-  * happen through either first level or second level page table. This
-  * bit marks that the DMA translation for the domain goes through the
-  * first level page table, otherwise, it goes through the second level.
-  */
--#define DOMAIN_FLAG_USE_FIRST_LEVEL		BIT(1)
-+#define DOMAIN_FLAG_USE_FIRST_LEVEL		BIT(0)
- 
- /*
-  * Domain represents a virtual machine which demands iommu nested
-  * translation mode support.
-  */
--#define DOMAIN_FLAG_NESTING_MODE		BIT(2)
-+#define DOMAIN_FLAG_NESTING_MODE		BIT(1)
- 
- struct dmar_domain {
- 	int	nid;			/* node id */
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d75f59ae28e6..c814fea0522e 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -522,7 +522,7 @@ static inline void free_devinfo_mem(void *vaddr)
- 
- static inline int domain_type_is_si(struct dmar_domain *domain)
- {
--	return domain->flags & DOMAIN_FLAG_STATIC_IDENTITY;
-+	return domain->domain.type == IOMMU_DOMAIN_IDENTITY;
- }
- 
- static inline bool domain_use_first_level(struct dmar_domain *domain)
-@@ -1874,12 +1874,18 @@ static void free_dmar_iommu(struct intel_iommu *iommu)
-  * Check and return whether first level is used by default for
-  * DMA translation.
-  */
--static bool first_level_by_default(void)
-+static bool first_level_by_default(unsigned int type)
- {
--	return scalable_mode_support() && intel_cap_flts_sanity();
-+	if (type == IOMMU_DOMAIN_UNMANAGED)
-+		return false;
-+
-+	if (!scalable_mode_support() || !intel_cap_flts_sanity())
-+		return false;
-+
-+	return true;
- }
- 
--static struct dmar_domain *alloc_domain(int flags)
-+static struct dmar_domain *alloc_domain(unsigned int type)
- {
- 	struct dmar_domain *domain;
- 
-@@ -1889,8 +1895,7 @@ static struct dmar_domain *alloc_domain(int flags)
- 
- 	memset(domain, 0, sizeof(*domain));
- 	domain->nid = NUMA_NO_NODE;
--	domain->flags = flags;
--	if (first_level_by_default())
-+	if (first_level_by_default(type))
- 		domain->flags |= DOMAIN_FLAG_USE_FIRST_LEVEL;
- 	domain->has_iotlb_device = false;
- 	INIT_LIST_HEAD(&domain->devices);
-@@ -2708,7 +2713,7 @@ static int __init si_domain_init(int hw)
- 	struct device *dev;
- 	int i, nid, ret;
- 
--	si_domain = alloc_domain(DOMAIN_FLAG_STATIC_IDENTITY);
-+	si_domain = alloc_domain(IOMMU_DOMAIN_IDENTITY);
- 	if (!si_domain)
- 		return -EFAULT;
- 
-@@ -4517,7 +4522,7 @@ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
- 	case IOMMU_DOMAIN_DMA:
- 	case IOMMU_DOMAIN_DMA_FQ:
- 	case IOMMU_DOMAIN_UNMANAGED:
--		dmar_domain = alloc_domain(0);
-+		dmar_domain = alloc_domain(type);
- 		if (!dmar_domain) {
- 			pr_err("Can't allocate dmar_domain\n");
- 			return NULL;
--- 
-2.25.1
+I agree, putting the tracepoint at this low level will essentially
+provide us with a hexdump of all SMC operations and one would more or
+less need to so some post processing to get something useful out of it.
+And in the few cases where the arguments are references to data buffers
+there's no way to trace that content (e.g. qcom_scm_assign_mem()).
 
+If we move it one step up we can provide trace data that's directly
+useful to a human, provide insights in the data, allow for proper
+filtering etc.
+
+Regards,
+Bjorn
