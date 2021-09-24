@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C577F4172D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA738417431
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343971AbhIXMvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44098 "EHLO mail.kernel.org"
+        id S1345560AbhIXNDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:03:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344519AbhIXMuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:50:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D51261269;
-        Fri, 24 Sep 2021 12:48:17 +0000 (UTC)
+        id S1345078AbhIXNAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:00:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6979613DB;
+        Fri, 24 Sep 2021 12:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487698;
-        bh=NNo86zli0Ni0K4VtLcvHdGW7IMx+1jIwUw4zq+mrWsU=;
+        s=korg; t=1632488037;
+        bh=XUVhVo4A4eEuM7B5tin370iO4K7v/2vjryGHJCGTxFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KxTycC+1sXVUXMqvyZojVpv1Z1cQJNi/HZ6Kao3B7X43CUVL0/Av6dXrUJEtKwISB
-         AnUJOhj5rc7n5HPBXZMpV3+NGmnprSJSUgSfwOpqah7Vkm+qg33yNFVy0mfVPh7lY2
-         2+knkoOUgT73OVCHs/9GBQ/U+l48fBcSnFeBpxAw=
+        b=VeecC/lBRmBq0eA6bX1nxy+qQZlrCrGDBwKDSWbp4UAhzhEcKGdbnS0ycvIhgAxo/
+         qOjr/LkBXEUrLFHKfo+CCmhneMoFcnV6XslnjmkrG6uONAs2ck5WAXPmIaHXbtIh6N
+         S7mm0gS48ArNC0Hz4ZsE2azHUIAXwO08wgFhUDkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 13/34] nilfs2: use refcount_dec_and_lock() to fix potential UAF
+        stable@vger.kernel.org, Ben Widawsky <ben.widawsky@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 058/100] cxl/pci: Introduce cdevm_file_operations
 Date:   Fri, 24 Sep 2021 14:44:07 +0200
-Message-Id: <20210924124330.398744232@linuxfoundation.org>
+Message-Id: <20210924124343.370217419@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,98 +41,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Dan Williams <dan.j.williams@intel.com>
 
-commit 98e2e409e76ef7781d8511f997359e9c504a95c1 upstream.
+[ Upstream commit 9cc238c7a526dba9ee8c210fa2828886fc65db66 ]
 
-When the refcount is decreased to 0, the resource reclamation branch is
-entered.  Before CPU0 reaches the race point (1), CPU1 may obtain the
-spinlock and traverse the rbtree to find 'root', see
-nilfs_lookup_root().
+In preparation for moving cxl_memdev allocation to the core, introduce
+cdevm_file_operations to coordinate file operations shutdown relative to
+driver data release.
 
-Although CPU1 will call refcount_inc() to increase the refcount, it is
-obviously too late.  CPU0 will release 'root' directly, CPU1 then
-accesses 'root' and triggers UAF.
+The motivation for moving cxl_memdev allocation to the core (beyond
+better file organization of sysfs attributes in core/ and drivers in
+cxl/), is that device lifetime is longer than module lifetime. The cxl_pci
+module should be free to come and go without needing to coordinate with
+devices that need the text associated with cxl_memdev_release() to stay
+resident. The move will fix a use after free bug when looping driver
+load / unload with CONFIG_DEBUG_KOBJECT_RELEASE=y.
 
-Use refcount_dec_and_lock() to ensure that both the operations of
-decrease refcount to 0 and link deletion are lock protected eliminates
-this risk.
+Another motivation for passing in file_operations to the core cxl_memdev
+creation flow is to allow for alternate drivers, like unit test code, to
+define their own ioctl backends.
 
-	     CPU0                      CPU1
-	nilfs_put_root():
-		    <-------- (1)
-				spin_lock(&nilfs->ns_cptree_lock);
-				rb_erase(&root->rb_node, &nilfs->ns_cptree);
-				spin_unlock(&nilfs->ns_cptree_lock);
-
-	kfree(root);
-		    <-------- use-after-free
-
-  refcount_t: underflow; use-after-free.
-  WARNING: CPU: 2 PID: 9476 at lib/refcount.c:28 \
-  refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
-  Modules linked in:
-  CPU: 2 PID: 9476 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
-  RIP: 0010:refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
-  ... ...
-  Call Trace:
-     __refcount_sub_and_test include/linux/refcount.h:283 [inline]
-     __refcount_dec_and_test include/linux/refcount.h:315 [inline]
-     refcount_dec_and_test include/linux/refcount.h:333 [inline]
-     nilfs_put_root+0xc1/0xd0 fs/nilfs2/the_nilfs.c:795
-     nilfs_segctor_destroy fs/nilfs2/segment.c:2749 [inline]
-     nilfs_detach_log_writer+0x3fa/0x570 fs/nilfs2/segment.c:2812
-     nilfs_put_super+0x2f/0xf0 fs/nilfs2/super.c:467
-     generic_shutdown_super+0xcd/0x1f0 fs/super.c:464
-     kill_block_super+0x4a/0x90 fs/super.c:1446
-     deactivate_locked_super+0x6a/0xb0 fs/super.c:335
-     deactivate_super+0x85/0x90 fs/super.c:366
-     cleanup_mnt+0x277/0x2e0 fs/namespace.c:1118
-     __cleanup_mnt+0x15/0x20 fs/namespace.c:1125
-     task_work_run+0x8e/0x110 kernel/task_work.c:151
-     tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-     exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
-     exit_to_user_mode_prepare+0x13c/0x170 kernel/entry/common.c:191
-     syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
-     do_syscall_64+0x45/0x80 arch/x86/entry/common.c:56
-     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-There is no reproduction program, and the above is only theoretical
-analysis.
-
-Link: https://lkml.kernel.org/r/1629859428-5906-1-git-send-email-konishi.ryusuke@gmail.com
-Fixes: ba65ae4729bf ("nilfs2: add checkpoint tree to nilfs object")
-Link: https://lkml.kernel.org/r/20210723012317.4146-1-thunder.leizhen@huawei.com
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Link: https://lore.kernel.org/r/162792539962.368511.2962268954245340288.stgit@dwillia2-desk3.amr.corp.intel.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nilfs2/the_nilfs.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/cxl/cxlmem.h | 15 ++++++++++
+ drivers/cxl/pci.c    | 65 ++++++++++++++++++++++++++------------------
+ 2 files changed, 53 insertions(+), 27 deletions(-)
 
---- a/fs/nilfs2/the_nilfs.c
-+++ b/fs/nilfs2/the_nilfs.c
-@@ -797,14 +797,13 @@ nilfs_find_or_create_root(struct the_nil
+diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+index 8f02d02b26b4..0cd463de1342 100644
+--- a/drivers/cxl/cxlmem.h
++++ b/drivers/cxl/cxlmem.h
+@@ -34,6 +34,21 @@
+  */
+ #define CXL_MEM_MAX_DEVS 65536
  
- void nilfs_put_root(struct nilfs_root *root)
- {
--	if (refcount_dec_and_test(&root->count)) {
--		struct the_nilfs *nilfs = root->nilfs;
-+	struct the_nilfs *nilfs = root->nilfs;
- 
--		nilfs_sysfs_delete_snapshot_group(root);
--
--		spin_lock(&nilfs->ns_cptree_lock);
-+	if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
- 		rb_erase(&root->rb_node, &nilfs->ns_cptree);
- 		spin_unlock(&nilfs->ns_cptree_lock);
++/**
++ * struct cdevm_file_operations - devm coordinated cdev file operations
++ * @fops: file operations that are synchronized against @shutdown
++ * @shutdown: disconnect driver data
++ *
++ * @shutdown is invoked in the devres release path to disconnect any
++ * driver instance data from @dev. It assumes synchronization with any
++ * fops operation that requires driver data. After @shutdown an
++ * operation may only reference @device data.
++ */
++struct cdevm_file_operations {
++	struct file_operations fops;
++	void (*shutdown)(struct device *dev);
++};
 +
-+		nilfs_sysfs_delete_snapshot_group(root);
- 		iput(root->ifile);
+ /**
+  * struct cxl_memdev - CXL bus object representing a Type-3 Memory Device
+  * @dev: driver core device object
+diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+index e7ee148ad7ee..e809596049b6 100644
+--- a/drivers/cxl/pci.c
++++ b/drivers/cxl/pci.c
+@@ -806,13 +806,30 @@ static int cxl_memdev_release_file(struct inode *inode, struct file *file)
+ 	return 0;
+ }
  
- 		kfree(root);
+-static const struct file_operations cxl_memdev_fops = {
+-	.owner = THIS_MODULE,
+-	.unlocked_ioctl = cxl_memdev_ioctl,
+-	.open = cxl_memdev_open,
+-	.release = cxl_memdev_release_file,
+-	.compat_ioctl = compat_ptr_ioctl,
+-	.llseek = noop_llseek,
++static struct cxl_memdev *to_cxl_memdev(struct device *dev)
++{
++	return container_of(dev, struct cxl_memdev, dev);
++}
++
++static void cxl_memdev_shutdown(struct device *dev)
++{
++	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
++
++	down_write(&cxl_memdev_rwsem);
++	cxlmd->cxlm = NULL;
++	up_write(&cxl_memdev_rwsem);
++}
++
++static const struct cdevm_file_operations cxl_memdev_fops = {
++	.fops = {
++		.owner = THIS_MODULE,
++		.unlocked_ioctl = cxl_memdev_ioctl,
++		.open = cxl_memdev_open,
++		.release = cxl_memdev_release_file,
++		.compat_ioctl = compat_ptr_ioctl,
++		.llseek = noop_llseek,
++	},
++	.shutdown = cxl_memdev_shutdown,
+ };
+ 
+ static inline struct cxl_mem_command *cxl_mem_find_command(u16 opcode)
+@@ -1161,11 +1178,6 @@ free_maps:
+ 	return ret;
+ }
+ 
+-static struct cxl_memdev *to_cxl_memdev(struct device *dev)
+-{
+-	return container_of(dev, struct cxl_memdev, dev);
+-}
+-
+ static void cxl_memdev_release(struct device *dev)
+ {
+ 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+@@ -1281,24 +1293,22 @@ static const struct device_type cxl_memdev_type = {
+ 	.groups = cxl_memdev_attribute_groups,
+ };
+ 
+-static void cxl_memdev_shutdown(struct cxl_memdev *cxlmd)
+-{
+-	down_write(&cxl_memdev_rwsem);
+-	cxlmd->cxlm = NULL;
+-	up_write(&cxl_memdev_rwsem);
+-}
+-
+ static void cxl_memdev_unregister(void *_cxlmd)
+ {
+ 	struct cxl_memdev *cxlmd = _cxlmd;
+ 	struct device *dev = &cxlmd->dev;
++	struct cdev *cdev = &cxlmd->cdev;
++	const struct cdevm_file_operations *cdevm_fops;
++
++	cdevm_fops = container_of(cdev->ops, typeof(*cdevm_fops), fops);
++	cdevm_fops->shutdown(dev);
+ 
+ 	cdev_device_del(&cxlmd->cdev, dev);
+-	cxl_memdev_shutdown(cxlmd);
+ 	put_device(dev);
+ }
+ 
+-static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm)
++static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm,
++					   const struct file_operations *fops)
+ {
+ 	struct pci_dev *pdev = cxlm->pdev;
+ 	struct cxl_memdev *cxlmd;
+@@ -1324,7 +1334,7 @@ static struct cxl_memdev *cxl_memdev_alloc(struct cxl_mem *cxlm)
+ 	device_set_pm_not_required(dev);
+ 
+ 	cdev = &cxlmd->cdev;
+-	cdev_init(cdev, &cxl_memdev_fops);
++	cdev_init(cdev, fops);
+ 	return cxlmd;
+ 
+ err:
+@@ -1332,15 +1342,16 @@ err:
+ 	return ERR_PTR(rc);
+ }
+ 
+-static struct cxl_memdev *devm_cxl_add_memdev(struct device *host,
+-					      struct cxl_mem *cxlm)
++static struct cxl_memdev *
++devm_cxl_add_memdev(struct device *host, struct cxl_mem *cxlm,
++		    const struct cdevm_file_operations *cdevm_fops)
+ {
+ 	struct cxl_memdev *cxlmd;
+ 	struct device *dev;
+ 	struct cdev *cdev;
+ 	int rc;
+ 
+-	cxlmd = cxl_memdev_alloc(cxlm);
++	cxlmd = cxl_memdev_alloc(cxlm, &cdevm_fops->fops);
+ 	if (IS_ERR(cxlmd))
+ 		return cxlmd;
+ 
+@@ -1370,7 +1381,7 @@ err:
+ 	 * The cdev was briefly live, shutdown any ioctl operations that
+ 	 * saw that state.
+ 	 */
+-	cxl_memdev_shutdown(cxlmd);
++	cdevm_fops->shutdown(dev);
+ 	put_device(dev);
+ 	return ERR_PTR(rc);
+ }
+@@ -1611,7 +1622,7 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (rc)
+ 		return rc;
+ 
+-	cxlmd = devm_cxl_add_memdev(&pdev->dev, cxlm);
++	cxlmd = devm_cxl_add_memdev(&pdev->dev, cxlm, &cxl_memdev_fops);
+ 	if (IS_ERR(cxlmd))
+ 		return PTR_ERR(cxlmd);
+ 
+-- 
+2.33.0
+
 
 
