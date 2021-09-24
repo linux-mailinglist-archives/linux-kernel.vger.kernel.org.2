@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2040B417644
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60ED41764C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhIXNyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233156AbhIXNyS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:54:18 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0096C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:52:45 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id s36-20020a05683043a400b0054d4c88353dso2338905otv.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:52:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KTIuoQqH1Vy3dCBY6a9nnkey5cnkk5Mif6A0d0BSJyI=;
-        b=mCgD1D5+GYMiCnwixla4vwbLU3t7TJwLB3FsaWHwALGK134+CpQZT8RgyRYmZUacTz
-         N7mNW3H6E0vrmR7R+kl4abMdK14B4BvL4924n22FltgkL0feyEGMr0/IbTF2JaM6Ay8P
-         a5n6S6HlEc7EYxO6lAIJP39/yuN8Y1Igl4F5Wp+WtdgR09CNGhQwzBjZhLG1H+Mz0Y6/
-         87KfBoogWiE3ea7BmGRb+ewdgWMCni4L7JARBBsxtWNvU8B886Ii5GF3mAycqu+Zszd9
-         JJlPiNYogrd2kdYlZoER5X9ERczFQwUcdBhtsgA6IoPsxDCcN2zWwPdA84asuaXcEDDs
-         83rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KTIuoQqH1Vy3dCBY6a9nnkey5cnkk5Mif6A0d0BSJyI=;
-        b=iXObs9dbJm9s2Y11aJ8A0S7J85GZy4N2gEgEodvwXheXu5ZtjiZMEG+h88kcxZPano
-         S4gtoI4yRuY/P4B3XDV+JKd4c3upfeAHCm9AXkqC7gz+R74H7eC3llpuU95iJpERcIBm
-         s0RMeZYx+rwUNrHHjnRUTpO6kY2GNB4VEXqNYQjwQfRWWd4DzQxzBEmvRR3CX5SOr7/5
-         oP2H11xcBhu43WjAEzh9Ju0z5rpCsRspOhdDRXYKrt2hfPr9WldrAxxdCCKB5zHke/VB
-         6UF7giqEU09LZ6mc19asAJNfLTMufSeE0JP5YGALCI6OU/DXQ4pSkPlgu5rXciR7yeMG
-         TFIA==
-X-Gm-Message-State: AOAM533iZJRq32HOn3QFNdJ9zXG+WfjA1PRAosZvQNsZHAmV0WlHmsIU
-        p2/tqI6WxkYDSthc5GulqA7lag==
-X-Google-Smtp-Source: ABdhPJyAGoKMZ2Cs6f/OCkft9gHx0t0E+UZmTkjVr3S7OT9MrduPIk7vI8GlZ7NwWMqxKDnHgm8+8w==
-X-Received: by 2002:a9d:24c3:: with SMTP id z61mr4287869ota.214.1632491565172;
-        Fri, 24 Sep 2021 06:52:45 -0700 (PDT)
-Received: from [192.168.17.16] ([189.219.73.83])
-        by smtp.gmail.com with ESMTPSA id v16sm2110591oiv.23.2021.09.24.06.52.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 06:52:44 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/26] 4.9.284-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210924124328.336953942@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <6afcb65a-bf4f-7990-c7aa-21bc0cd66520@linaro.org>
-Date:   Fri, 24 Sep 2021 08:52:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238117AbhIXN4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:56:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:50004 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231174AbhIXN4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:56:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F197D6E;
+        Fri, 24 Sep 2021 06:54:37 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.20.247])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF8D43F719;
+        Fri, 24 Sep 2021 06:54:30 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 14:54:24 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Vito Caputo <vcaputo@pengaru.com>, Jann Horn <jannh@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
+        Anand K Mistry <amistry@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
+Message-ID: <20210924135424.GA33573@C02TD0UTHF1T.local>
+References: <20210923233105.4045080-1-keescook@chromium.org>
+ <20210923234917.pqrxwoq7yqnvfpwu@shells.gnugeneration.com>
+ <CAG48ez0Rtv5kqHWw368Ym3GkKodPA+JETOAN+=c2KPa3opENSA@mail.gmail.com>
+ <20210924002230.sijoedia65hf5bj7@shells.gnugeneration.com>
+ <202109231814.FD09DBAD3@keescook>
 MIME-Version: 1.0
-In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202109231814.FD09DBAD3@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 9/24/21 7:43 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.284 release.
-> There are 26 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Sep 23, 2021 at 06:16:16PM -0700, Kees Cook wrote:
+> On Thu, Sep 23, 2021 at 05:22:30PM -0700, Vito Caputo wrote:
+> > Instead of unwinding stacks maybe the kernel should be sticking an
+> > entrypoint address in the current task struct for get_wchan() to
+> > access, whenever userspace enters the kernel?
 > 
-> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.284-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> wchan is supposed to show where the kernel is at the instant the
+> get_wchan() happens. (i.e. recording it at syscall entry would just
+> always show syscall entry.)
 
-Regressions detected.
+It's supposed to show where a blocked task is blocked; the "wait
+channel".
 
-While building mxs_defconfig for arm with GCC 8, 9, 10 and 11, the following error was encountered:
+I'd wanted to remove get_wchan since it requires cross-task stack
+walking, which is generally painful. 
 
-   /builds/linux/arch/arm/mach-mxs/mach-mxs.c:285:26: warning: duplicate 'const' declaration specifier [-Wduplicate-decl-specifier]
-     285 | static const struct gpio const tx28_gpios[] __initconst = {
-         |                          ^~~~~
-   /builds/linux/drivers/pwm/pwm-mxs.c: In function 'mxs_pwm_probe':
-   /builds/linux/drivers/pwm/pwm-mxs.c:164:24: error: implicit declaration of function 'dev_err_probe'; did you mean 'device_reprobe'? [-Werror=implicit-function-declaration]
-     164 |                 return dev_err_probe(&pdev->dev, ret, "failed to reset PWM\n");
-         |                        ^~~~~~~~~~~~~
-         |                        device_reprobe
-   cc1: some warnings being treated as errors
-   make[3]: *** [/builds/linux/scripts/Makefile.build:280: drivers/pwm/pwm-mxs.o] Error 1
+We could instead have the scheduler entrypoints snapshot their caller
+into a field in task_struct. If there are sufficiently few callers, that
+could be an inline wrapper that passes a __func__ string. Otherwise, we
+still need to symbolize.
 
-This is also seen in other branches (from 4.4 to 5.4). To reproduce this build locally:
-
-   tuxmake \
-     --target-arch=arm \
-     --kconfig=mxs_defconfig \
-     --toolchain=gcc-11 \
-     --runtime=podman \
-     config default kernel xipkernel modules dtbs dtbs-legacy debugkernel headers
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
+Thanks,
+Mark.
