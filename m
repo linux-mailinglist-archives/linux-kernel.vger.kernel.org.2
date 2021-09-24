@@ -2,88 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999294171A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666814171A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239449AbhIXMUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:20:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41780 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhIXMUM (ORCPT
+        id S245700AbhIXMVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:21:05 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:54009 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhIXMVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:20:12 -0400
-Date:   Fri, 24 Sep 2021 12:18:37 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632485918;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZUKnLTnBgXcQgH9joaZ/AUNwsjfzp2yh3/6UtniDmvY=;
-        b=fgv4eCu/a7tUDSNOBKAdDTM1WmcwliqJ/bLlykNPVfLG0WmZPAqS/y8EtD3pSow0yCC7mC
-        YNGhOQRm3HzRks6/11J3bgKnnNrS2V8Jh3BQP8M3J6L2rF24ks/lXFbwZGukFP3bXxfFcS
-        /RnBUwB8e2iCfGnHPChWYdTZvqRFzlvlWJx7GBLlUKII8hw126+jqZSR82f1FVk1pju7/b
-        vbvD5wDLE3IjaXVuCnLfKg+YPysItT/wxvK3NBwYh55b/dJJ8PG+1HsUSMkPA8kR+LfOpW
-        CgkwUE3hHM8BAoZsk8h/TBdZnK4ltepDHpYBcKImjL7b/uCgQydmT/uh5fo/7Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632485918;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZUKnLTnBgXcQgH9joaZ/AUNwsjfzp2yh3/6UtniDmvY=;
-        b=mibxwUVAHCUwEXpZ4Zb9smpJiDnIPLW91OkNMAKLXVXLJj06wL+wHMmsv9fMxuOuZvrT8+
-        GwQV2eSsuOCi7PCw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] Merge tag 'irqchip-fixes-5.15-1' of
- git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into
- irq/urgent
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210924090933.2766857-1-maz@kernel.org>
-References: <20210924090933.2766857-1-maz@kernel.org>
-MIME-Version: 1.0
-Message-ID: <163248591729.25758.12136481276210509832.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Fri, 24 Sep 2021 08:21:00 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 24 Sep 2021 05:19:27 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Sep 2021 05:19:26 -0700
+X-QCInternal: smtphost
+Received: from ekangupt-linux.qualcomm.com ([10.204.67.11])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 24 Sep 2021 17:49:15 +0530
+Received: by ekangupt-linux.qualcomm.com (Postfix, from userid 2319895)
+        id 303484307; Fri, 24 Sep 2021 17:49:14 +0530 (IST)
+From:   Jeya R <jeyr@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
+Cc:     Jeya R <jeyr@codeaurora.org>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: [PATCH 0/4] Add secure domains support
+Date:   Fri, 24 Sep 2021 17:49:07 +0530
+Message-Id: <1632485951-13473-1-git-send-email-jeyr@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+This patch series adds secure domains support. All DSP domains other
+than CDSP are set as secure by default and CDSP is set as secure domain
+if fastrpc DT node carries secure domains property. If any process is
+getting initialized using non-secure device and the dsp channel is
+secure, then the session gets rejected. 
 
-Commit-ID:     f9bfed3ad5b1662426479be2c7b26a608560b7d4
-Gitweb:        https://git.kernel.org/tip/f9bfed3ad5b1662426479be2c7b26a608560b7d4
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 24 Sep 2021 14:11:04 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 24 Sep 2021 14:11:04 +02:00
+Jeya R (4):
+  dt-bindings: devicetree documentation for secure domain
+  misc: fastrpc: Add secure device node support
+  misc: fastrpc: Set channel as secure
+  misc: fastrpc: reject non-secure node for secure domain
 
-Merge tag 'irqchip-fixes-5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
+ .../devicetree/bindings/misc/qcom,fastrpc.txt      |  6 ++
+ drivers/misc/fastrpc.c                             | 64 +++++++++++++++++++++-
+ 2 files changed, 68 insertions(+), 2 deletions(-)
 
-Pull irqchip fixes from Marc Zyngier:
+-- 
+2.7.4
 
- - Work around a bad GIC integration on a Renesas platform, where the
-   interconnect cannot deal with byte-sized MMIO accesses
-
- - Cleanup another Renesas driver abusing the comma operator
-
- - Fix a potential GICv4 memory leak on an error path
-
- - Make the type of 'size' consistent with the rest of the code in
-   __irq_domain_add()
-
- - Fix a regression in the Armada 370-XP IPI path
-
- - Fix the build for the obviously unloved goldfish-pic
-
- - Some documentation fixes
-
-Link: https://lore.kernel.org/r/20210924090933.2766857-1-maz@kernel.org
----
