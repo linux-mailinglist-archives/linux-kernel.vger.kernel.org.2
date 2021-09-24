@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A164A4172BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA0B4174C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344217AbhIXMvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45816 "EHLO mail.kernel.org"
+        id S1345481AbhIXNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:10:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343871AbhIXMtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:49:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 654DA610CF;
-        Fri, 24 Sep 2021 12:47:44 +0000 (UTC)
+        id S1346523AbhIXNHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:07:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCC8361261;
+        Fri, 24 Sep 2021 12:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487664;
-        bh=ckDzZx/F0M8XMpGOU1duiUOy/wn6eUR0XqvN7lA37a4=;
+        s=korg; t=1632488200;
+        bh=US1Omre+0OppzrwiBEjlxOnQ6BKcyf3o5ZKXFClkw2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QBB+SNGpCQ2kcEjb/OaJXp36iiuGgAB8peD01DRqNRMoO7FrZMRNME+JWIgwFeeUu
-         gCS6M9caIrE1lLbKd+bxRQ8rTjtXerIgmc9uG7WmsgKiPk4z+2ikRW7S77Bx3EKc8v
-         AQsbwJ+5g4HJitiM4VXZwNNJLoOidR6ZnV0xQvCg=
+        b=c3yxMhkqpcQ6Bw99MGl3agfSgLe9Cq08GaM0YqqNwIHKiGVbA3qFoqUA1UZU+EJKH
+         /S4cHCwfQGTbOJzozFMx/KIQz2UdLzwpMV09c4JLAkDrE/NtR90j1wHM3m0S6/w84v
+         HznMT1C7EFXBP5seYVmhBvVOlDsXYD99xcGiI8Io=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 27/27] drm/nouveau/nvkm: Replace -ENOSYS with -ENODEV
-Date:   Fri, 24 Sep 2021 14:44:21 +0200
-Message-Id: <20210924124330.085401985@linuxfoundation.org>
+Subject: [PATCH 5.10 22/63] nilfs2: use refcount_dec_and_lock() to fix potential UAF
+Date:   Fri, 24 Sep 2021 14:44:22 +0200
+Message-Id: <20210924124335.023479218@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-commit e8f71f89236ef82d449991bfbc237e3cb6ea584f upstream.
+commit 98e2e409e76ef7781d8511f997359e9c504a95c1 upstream.
 
-nvkm test builds fail with the following error.
+When the refcount is decreased to 0, the resource reclamation branch is
+entered.  Before CPU0 reaches the race point (1), CPU1 may obtain the
+spinlock and traverse the rbtree to find 'root', see
+nilfs_lookup_root().
 
-  drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c: In function 'nvkm_control_mthd_pstate_info':
-  drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c:60:35: error: overflow in conversion from 'int' to '__s8' {aka 'signed char'} changes value from '-251' to '5'
+Although CPU1 will call refcount_inc() to increase the refcount, it is
+obviously too late.  CPU0 will release 'root' directly, CPU1 then
+accesses 'root' and triggers UAF.
 
-The code builds on most architectures, but fails on parisc where ENOSYS
-is defined as 251.
+Use refcount_dec_and_lock() to ensure that both the operations of
+decrease refcount to 0 and link deletion are lock protected eliminates
+this risk.
 
-Replace the error code with -ENODEV (-19).  The actual error code does
-not really matter and is not passed to userspace - it just has to be
-negative.
+	     CPU0                      CPU1
+	nilfs_put_root():
+		    <-------- (1)
+				spin_lock(&nilfs->ns_cptree_lock);
+				rb_erase(&root->rb_node, &nilfs->ns_cptree);
+				spin_unlock(&nilfs->ns_cptree_lock);
 
-Fixes: 7238eca4cf18 ("drm/nouveau: expose pstate selection per-power source in sysfs")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
+	kfree(root);
+		    <-------- use-after-free
+
+  refcount_t: underflow; use-after-free.
+  WARNING: CPU: 2 PID: 9476 at lib/refcount.c:28 \
+  refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
+  Modules linked in:
+  CPU: 2 PID: 9476 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
+  RIP: 0010:refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
+  ... ...
+  Call Trace:
+     __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+     __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+     refcount_dec_and_test include/linux/refcount.h:333 [inline]
+     nilfs_put_root+0xc1/0xd0 fs/nilfs2/the_nilfs.c:795
+     nilfs_segctor_destroy fs/nilfs2/segment.c:2749 [inline]
+     nilfs_detach_log_writer+0x3fa/0x570 fs/nilfs2/segment.c:2812
+     nilfs_put_super+0x2f/0xf0 fs/nilfs2/super.c:467
+     generic_shutdown_super+0xcd/0x1f0 fs/super.c:464
+     kill_block_super+0x4a/0x90 fs/super.c:1446
+     deactivate_locked_super+0x6a/0xb0 fs/super.c:335
+     deactivate_super+0x85/0x90 fs/super.c:366
+     cleanup_mnt+0x277/0x2e0 fs/namespace.c:1118
+     __cleanup_mnt+0x15/0x20 fs/namespace.c:1125
+     task_work_run+0x8e/0x110 kernel/task_work.c:151
+     tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+     exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+     exit_to_user_mode_prepare+0x13c/0x170 kernel/entry/common.c:191
+     syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
+     do_syscall_64+0x45/0x80 arch/x86/entry/common.c:56
+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+There is no reproduction program, and the above is only theoretical
+analysis.
+
+Link: https://lkml.kernel.org/r/1629859428-5906-1-git-send-email-konishi.ryusuke@gmail.com
+Fixes: ba65ae4729bf ("nilfs2: add checkpoint tree to nilfs object")
+Link: https://lkml.kernel.org/r/20210723012317.4146-1-thunder.leizhen@huawei.com
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nilfs2/the_nilfs.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c
-@@ -57,7 +57,7 @@ nvkm_control_mthd_pstate_info(struct nvk
- 		args->v0.count = 0;
- 		args->v0.ustate_ac = NVIF_CONTROL_PSTATE_INFO_V0_USTATE_DISABLE;
- 		args->v0.ustate_dc = NVIF_CONTROL_PSTATE_INFO_V0_USTATE_DISABLE;
--		args->v0.pwrsrc = -ENOSYS;
-+		args->v0.pwrsrc = -ENODEV;
- 		args->v0.pstate = NVIF_CONTROL_PSTATE_INFO_V0_PSTATE_UNKNOWN;
- 	}
+--- a/fs/nilfs2/the_nilfs.c
++++ b/fs/nilfs2/the_nilfs.c
+@@ -792,14 +792,13 @@ nilfs_find_or_create_root(struct the_nil
  
+ void nilfs_put_root(struct nilfs_root *root)
+ {
+-	if (refcount_dec_and_test(&root->count)) {
+-		struct the_nilfs *nilfs = root->nilfs;
++	struct the_nilfs *nilfs = root->nilfs;
+ 
+-		nilfs_sysfs_delete_snapshot_group(root);
+-
+-		spin_lock(&nilfs->ns_cptree_lock);
++	if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
+ 		rb_erase(&root->rb_node, &nilfs->ns_cptree);
+ 		spin_unlock(&nilfs->ns_cptree_lock);
++
++		nilfs_sysfs_delete_snapshot_group(root);
+ 		iput(root->ifile);
+ 
+ 		kfree(root);
 
 
