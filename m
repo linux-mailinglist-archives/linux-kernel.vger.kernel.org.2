@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DB5417334
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C97241729D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344752AbhIXMzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:55:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1344501AbhIXMt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:49:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344779AbhIXMxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:53:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD3C661374;
-        Fri, 24 Sep 2021 12:50:03 +0000 (UTC)
+        id S1344080AbhIXMsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:48:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B52F361263;
+        Fri, 24 Sep 2021 12:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487804;
-        bh=CCyhTQtobcN7EKoDmnU3O1vyCCjGnk1CJNHGd1xgJic=;
+        s=korg; t=1632487628;
+        bh=zXfFRyfYyAp7NTKlRijMpSZHiOrhBezwzfycXWgKBbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zvnGHYwchrD3LA4OP63JfNbhBn3yVu/x3o56019zJXp8yy0ogOSUAObTHxUQ33jXD
-         aMcKGHNGswGZfDz3FsNqS8x+Dn+ECqahhmkwBAVM7mPLF1pPEPc8crDQFbJLjB/77s
-         nBONWi79zjtJwp0NnuCf7bNFrv0E7Npd4yDL0+70=
+        b=sAySPps5Obv+CsHxJ3BSl4KCraJg5eHaFn0VbWnVnc4807JtKbMXYyWUU37+QdmCA
+         F61jzg8836Ad0UX34fnynRglfG4G4FcIUagcf+/If1Uutu0SaxoOjZ46UmLfRTTpDR
+         hbNazoIx85wscTam6aVXLn8ITwAzwYwKh3BfmBYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.4 19/50] dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
+        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Babu Moger <babu.moger@oracle.com>,
+        Don Zickus <dzickus@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 14/27] Kconfig.debug: drop selecting non-existing HARDLOCKUP_DETECTOR_ARCH
 Date:   Fri, 24 Sep 2021 14:44:08 +0200
-Message-Id: <20210924124332.883061158@linuxfoundation.org>
+Message-Id: <20210924124329.646208137@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +46,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-commit 67db87dc8284070adb15b3c02c1c31d5cf51c5d6 upstream.
+[ Upstream commit 6fe26259b4884b657cbc233fb9cdade9d704976e ]
 
-Currently the CRST parsing relies on the fact that on most of x86 devices
-the IRQ mapping is 1:1 with Linux vIRQ. However, it may be not true for
-some. Fix this by converting GSI to Linux vIRQ before checking it.
+Commit 05a4a9527931 ("kernel/watchdog: split up config options") adds a
+new config HARDLOCKUP_DETECTOR, which selects the non-existing config
+HARDLOCKUP_DETECTOR_ARCH.
 
-Fixes: ee8209fd026b ("dma: acpi-dma: parse CSRT to extract additional resources")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210730202715.24375-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hence, ./scripts/checkkconfigsymbols.py warns:
+
+HARDLOCKUP_DETECTOR_ARCH Referencing files: lib/Kconfig.debug
+
+Simply drop selecting the non-existing HARDLOCKUP_DETECTOR_ARCH.
+
+Link: https://lkml.kernel.org/r/20210806115618.22088-1-lukas.bulwahn@gmail.com
+Fixes: 05a4a9527931 ("kernel/watchdog: split up config options")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Babu Moger <babu.moger@oracle.com>
+Cc: Don Zickus <dzickus@redhat.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/acpi-dma.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ lib/Kconfig.debug | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/dma/acpi-dma.c
-+++ b/drivers/dma/acpi-dma.c
-@@ -70,10 +70,14 @@ static int acpi_dma_parse_resource_group
- 
- 	si = (const struct acpi_csrt_shared_info *)&grp[1];
- 
--	/* Match device by MMIO and IRQ */
-+	/* Match device by MMIO */
- 	if (si->mmio_base_low != lower_32_bits(mem) ||
--	    si->mmio_base_high != upper_32_bits(mem) ||
--	    si->gsi_interrupt != irq)
-+	    si->mmio_base_high != upper_32_bits(mem))
-+		return 0;
-+
-+	/* Match device by Linux vIRQ */
-+	ret = acpi_register_gsi(NULL, si->gsi_interrupt, si->interrupt_mode, si->interrupt_polarity);
-+	if (ret != irq)
- 		return 0;
- 
- 	dev_dbg(&adev->dev, "matches with %.4s%04X (rev %u)\n",
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index e1df563cdfe7..428eaf16a1d2 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -816,7 +816,6 @@ config HARDLOCKUP_DETECTOR
+ 	depends on HAVE_HARDLOCKUP_DETECTOR_PERF || HAVE_HARDLOCKUP_DETECTOR_ARCH
+ 	select LOCKUP_DETECTOR
+ 	select HARDLOCKUP_DETECTOR_PERF if HAVE_HARDLOCKUP_DETECTOR_PERF
+-	select HARDLOCKUP_DETECTOR_ARCH if HAVE_HARDLOCKUP_DETECTOR_ARCH
+ 	help
+ 	  Say Y here to enable the kernel to act as a watchdog to detect
+ 	  hard lockups.
+-- 
+2.33.0
+
 
 
