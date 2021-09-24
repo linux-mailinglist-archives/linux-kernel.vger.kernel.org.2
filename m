@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB229416D9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB2A416DA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244718AbhIXIVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:21:41 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:54122
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244707AbhIXIVf (ORCPT
+        id S244691AbhIXIXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:23:40 -0400
+Received: from mail-vs1-f54.google.com ([209.85.217.54]:33371 "EHLO
+        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244581AbhIXIXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:21:35 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C1A32402DA
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632471601;
-        bh=/FpPJ6HUKh570GzSsZQ+WyAXS4zfQoVYPICEt0qHWjE=;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=YJd1yfmuovSX2k/Ro1Cu5/LhLvCugxS10ZBC+yBTMJKi90gH1cXnZam779S1055bw
-         /2M+7m7khj0gXtU5dDHyqq2GRv/W7HKAx6t3PYs9W7SPShoHCKTGlfexrXQuPdhEgl
-         x7DMfs0JP4ArIAkPkcNeYIJl3QVplOCyXtS8gOp2HxRJXwGKJW8xqB/VEcl7DbLGW6
-         kW02gzVJgf/LuRWa4vWDFYntwX98BpN8mneyLx8Mtp/WlgqqSq1M1ri69iZPAB4Y0Z
-         ecV4JypSoFboDRBQvIt77epegKQhnK6I5+y57YhZS3Q0VNR1Ez5cFZDSvJndMcAGYl
-         P+zFcNW2MusqA==
-Received: by mail-wr1-f71.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso7352319wrb.20
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:20:01 -0700 (PDT)
+        Fri, 24 Sep 2021 04:23:37 -0400
+Received: by mail-vs1-f54.google.com with SMTP id 188so8195662vsv.0;
+        Fri, 24 Sep 2021 01:22:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/FpPJ6HUKh570GzSsZQ+WyAXS4zfQoVYPICEt0qHWjE=;
-        b=DKs7PhF/EkoHevGwSz085p235K6jShlZdZPzPEPVWjrL/8H+RbJLK+u9EfYyGZz/V/
-         glCysOG2H5EPkHRWc/SohuyHZlLtyAkLsSWTXAGUq6sGYqcMcojEO4t2A1OjZT2lr2qA
-         7NKHB+onGs2SNvuDndPRGXy4Q0lynUqZfQ51L90m1A+F5YQR6eedhMXUuMy7wOSNe3gD
-         JngnUlNMHuDco4f918hvWyyDynhnhwxH1gDFXTKNLs0GbPP4SdkygXzkQyqLdZ7gnZeE
-         c4qFkwxI/bEWXC9m1SuLwXTfcG2Bial08uh7WD53zxHYe2TH9gd7XF3PmT+VV7hSQnGt
-         49AQ==
-X-Gm-Message-State: AOAM533rQCdWzMs+op2dS+AwyJsKWDkp5BuiJF4hoJqgHo6IMcbazYEx
-        n0rCDNcjyX8yGy/oTy2KaEu9+Gda3oRlQ8W7PyNo85vUOYxGiKkbIK3d59qUkHwZJ+XuzP3o6v2
-        DHrhlaccr3jePzUOlW8R1qSVGUroUikiw1vGDYWfxXA==
-X-Received: by 2002:a05:600c:22d4:: with SMTP id 20mr667842wmg.177.1632471601562;
-        Fri, 24 Sep 2021 01:20:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyovs07/NpPqs+7EX8hqtEtUX7GPNasLzXOlMR532keOm9gCjirjHV0aIV/QaKqpQCZ0XtFTQ==
-X-Received: by 2002:a05:600c:22d4:: with SMTP id 20mr667818wmg.177.1632471601360;
-        Fri, 24 Sep 2021 01:20:01 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id c135sm11874595wme.6.2021.09.24.01.20.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 01:20:01 -0700 (PDT)
-Subject: Re: [PATCH 5/5] ARM: dts: imx6sll: fix mmc compatibles
-To:     Andreas Kemnade <andreas@kemnade.info>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210923201238.2516844-1-andreas@kemnade.info>
- <20210923201238.2516844-6-andreas@kemnade.info>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <c4723e89-a6aa-ab0b-f55a-0d6734a19c34@canonical.com>
-Date:   Fri, 24 Sep 2021 10:20:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i2/k9vkfsXP1Rjvll2XmK4TRdZrKCTIiIGnciENfOsY=;
+        b=HDKDVK3QNFAXV1h/mM5dzOn0t48pvVCLqWdTDzCNiVyfwM0HboD6glSwvInueK3KEg
+         vCh1IvbMpXJ2pprxDS6MhMwn3OjbfTEQ/YtILcQJwyCVftQThKlBHQHj7DL3SEUg+4ij
+         6HMJvTT1ailA+VEz8l/oMb5s34o6JCacwlf3I919lCMadAGYxaaFCLOsswewj9Albstm
+         uTtWnzEu3VOEAkCNLMW10wJSy3VSY7i9rebdkyTL36rCmupBPxSLreCHuYbmZzOHeW2k
+         RmeCX4ZUyPdRbDcsozhFYI8PZWyAlZrHCf6oyprXZjLliJP9whFCof66V9qvK4bhRYyk
+         Ds6A==
+X-Gm-Message-State: AOAM5339xBUoeIP8UerY0D5FzFIiqFf82TWarQYxRucGlTDHLjru66ci
+        aroLQb2HIZhBs4TR/69XZkCfYTsNZZr84sNuwsNZ2OdB9nE=
+X-Google-Smtp-Source: ABdhPJxz16u7JxuVVUcCiKKkliF3/HilP0UErr+bEdP9p710cgOuqzTeGl1XB7+LoP6m8VvFvIste3K6jAZ+Wfon5T4=
+X-Received: by 2002:a05:6102:2086:: with SMTP id h6mr8032662vsr.50.1632471724192;
+ Fri, 24 Sep 2021 01:22:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210923201238.2516844-6-andreas@kemnade.info>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210924145436.5ff73179@canb.auug.org.au> <dfd54a2f-d1db-8897-ae49-5c681a99b281@infradead.org>
+ <20210924074857.qbwdammzfujk4ozi@gilmour>
+In-Reply-To: <20210924074857.qbwdammzfujk4ozi@gilmour>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 24 Sep 2021 10:21:52 +0200
+Message-ID: <CAMuHMdWieEsVUuGT9_jG92=PFssihNxtx-+k50cGEUu=10fs4A@mail.gmail.com>
+Subject: Re: linux-next: Tree for Sep 24 (m68k allmodconfig & drm/vc4/)
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2021 22:12, Andreas Kemnade wrote:
-> Binding specification only allows one compatible here.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
->  arch/arm/boot/dts/imx6sll.dtsi | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
+Hi Maxime,
 
+On Fri, Sep 24, 2021 at 9:49 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> On Thu, Sep 23, 2021 at 10:54:49PM -0700, Randy Dunlap wrote:
+> > On 9/23/21 9:54 PM, Stephen Rothwell wrote:
+> > > Hi all,
+> > >
+> > > Changes since 20210923:
+> > >
+> >
+> > from commit 36e9bcb8edfc in linux-next:
+> >
+> >
+> > m68k allmodconfig:
+> >
+> > WARNING: unmet direct dependencies detected for PM
+> >   Depends on [n]: !MMU [=y]
+> >   Selected by [m]:
+> >   - DRM_VC4 [=m] && HAS_IOMEM [=y] && (ARCH_BCM || ARCH_BCM2835 || COMPILE_TEST [=y]) && DRM [=m] && SND [=m] && SND_SOC [=m] && COMMON_CLK [=y]
+>
+> I don't really know how to fix this one, should we move that select to
+> the ARCH_* symbol, or something else?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+You cannot select PM from drivers, only from platform symbols, as the
+former lack the knowledge if the platform supports PM or not.
 
+IIf it builds without PM, drop the select.
+If it does not build without PM, add a dependency on PM.
 
-Best regards,
-Krzysztof
+Do ARCH_BCM || ARCH_BCM2835 always imply PM?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
