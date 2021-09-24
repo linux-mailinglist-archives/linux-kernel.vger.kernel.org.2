@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14E74172DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8154D41728F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344100AbhIXMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42502 "EHLO mail.kernel.org"
+        id S1344211AbhIXMtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:49:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344567AbhIXMu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:50:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBABD61351;
-        Fri, 24 Sep 2021 12:48:22 +0000 (UTC)
+        id S1344166AbhIXMsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:48:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46E7A61241;
+        Fri, 24 Sep 2021 12:46:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487703;
-        bh=Z4McYNiEwNXxv/YA7HLEkflslNkWA+CMHTq3Ka3jd28=;
+        s=korg; t=1632487597;
+        bh=hygdbZQxndPijkhMmO2cgmgW8R0wL4wxeue330chHTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GVeJSGfDukwGoMSHW6amVGdtOUTH98qnBIYWGzilJJVK0kfDiu/zUNO6BSwlFBNid
-         k3KQojmnwWPSFrmQ1VOtA9r92DsW6uo4tpMhhKyzLwAVUnxHGWVUs61xfNLZ+XJGDe
-         2RbGpRroZ6ZfTkcK6u+EGm4ltE/JmfepBPhTNGyg=
+        b=xFJCwUCfSgI4b5X8CIfjSRf8zyjjWN8jEg47YcbC/TP6cJ/H2+7JnB3bEt4mX0GZA
+         u+tuqZr3bNWtnpQL7jycB2ZL4PymmjLc+VIhr3qNVeRnD0phOwH74/jF8qff13Lt3A
+         WML5Mw75sRpj+BghrUiBRSAYy2d1zgua6Kn9PHbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sylvain Lemieux <slemieux@tycoint.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: [PATCH 4.19 15/34] pwm: lpc32xx: Dont modify HW state in .probe() after the PWM chip was registered
-Date:   Fri, 24 Sep 2021 14:44:09 +0200
-Message-Id: <20210924124330.461535778@linuxfoundation.org>
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 22/26] nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
+Date:   Fri, 24 Sep 2021 14:44:10 +0200
+Message-Id: <20210924124329.083378112@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
+References: <20210924124328.336953942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit 3d2813fb17e5fd0d73c1d1442ca0192bde4af10e upstream.
+[ Upstream commit b2fe39c248f3fa4bbb2a20759b4fdd83504190f7 ]
 
-This fixes a race condition: After pwmchip_add() is called there might
-already be a consumer and then modifying the hardware behind the
-consumer's back is bad. So set the default before.
+If kobject_init_and_add returns with error, kobject_put() is needed here
+to avoid memory leak, because kobject_init_and_add may return error
+without freeing the memory associated with the kobject it allocated.
 
-(Side-note: I don't know what this register setting actually does, if
-this modifies the polarity there is an inconsistency because the
-inversed polarity isn't considered if the PWM is already running during
-.probe().)
-
-Fixes: acfd92fdfb93 ("pwm: lpc32xx: Set PWM_PIN_LEVEL bit to default value")
-Cc: Sylvain Lemieux <slemieux@tycoint.com>
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-6-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-6-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-lpc32xx.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/nilfs2/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/pwm/pwm-lpc32xx.c
-+++ b/drivers/pwm/pwm-lpc32xx.c
-@@ -124,17 +124,17 @@ static int lpc32xx_pwm_probe(struct plat
- 	lpc32xx->chip.npwm = 1;
- 	lpc32xx->chip.base = -1;
- 
-+	/* If PWM is disabled, configure the output to the default value */
-+	val = readl(lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
-+	val &= ~PWM_PIN_LEVEL;
-+	writel(val, lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
-+
- 	ret = pwmchip_add(&lpc32xx->chip);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to add PWM chip, error %d\n", ret);
- 		return ret;
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 31eed118d0ce..28f5572c6aae 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -217,9 +217,9 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
  	}
  
--	/* When PWM is disable, configure the output to the default value */
--	val = readl(lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
--	val &= ~PWM_PIN_LEVEL;
--	writel(val, lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
--
- 	platform_set_drvdata(pdev, lpc32xx);
+ 	if (err)
+-		return err;
++		kobject_put(&root->snapshot_kobj);
  
- 	return 0;
+-	return 0;
++	return err;
+ }
+ 
+ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
+-- 
+2.33.0
+
 
 
