@@ -2,97 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DACF417C66
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D52B417C6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348446AbhIXUgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 16:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346385AbhIXUge (ORCPT
+        id S236478AbhIXUl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 16:41:29 -0400
+Received: from mail.efficios.com ([167.114.26.124]:34274 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhIXUl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 16:36:34 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B838AC061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:35:00 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id c4so7289366pls.6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K0QGfXbDo/9jSYc9oFGWVgMEDWdPMfRJtz7Klt7Okmk=;
-        b=oOyHBBZDhLSsYFR5G5wMFH9vsp2Eek7ZwpIf0x0xkvI52/9u8q4RDsIm4GTYKAGqhs
-         0/KYkaeYQITIshlellRFX4R+BpGOT+UuI3VV6EKq29s4YcEl05nTlIpGt8dhIBzFdD9u
-         2jkQZvLZQqHep8HXidiPnowSvZhpNqH2RLJyo+6EWoZqwjUB0kFycg3h1vdF065X0yiY
-         wnZIxKSh/MyGgdEdv3lV3dCXqaLuyUCgIi+d0m+LslxSXcYpVIK/z2qW1W7nXzUmxto4
-         ACeD7A2aXRXiR7G46JAh3Eoup9eqNtOi/Ttx0pxR06nG1y9yiLjJWjZ2LIPHGItsx5fW
-         qdHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K0QGfXbDo/9jSYc9oFGWVgMEDWdPMfRJtz7Klt7Okmk=;
-        b=GrCz1MnQuHB2oIMn7rEJxReqqqCshU5ioHpFpuYakdmRSUnEGbo8BpuPhClNpHrKrP
-         Zo2jCh73/o4DBnRRLY71EXuoq8QCwcD6TcsQWYxLOyZmPUkmLU0cr+J8ZbWr4PSFVtoQ
-         dXBo7L80p8IgURe82YUP9/RMGg2A/C7uWi7Nykb6HAeI5rjnNDn2S/UlQRbNnBrqkbIe
-         uPmRap5PQt0Uj7d9tkxhXL0aYMeLI6G/N3X0/oYIROR+fUrephSlXD9Afrbyp3nno/SR
-         eX1m062AviNggOY4JNwmpouXCdjPMxBA4PggmYRBKpJaAuO3P1oQ15MGjAjo3jCVAwY+
-         AQ6A==
-X-Gm-Message-State: AOAM5316tmVpJUr2VoCFE1ulA/T3iBguQGuOWdCURhJejeeAHxFibZGs
-        5FhLi6ws38AFPpFbfpvqZCVLLg==
-X-Google-Smtp-Source: ABdhPJyG2CvQBu3oBk64yqmXJnoPnykVy0sI58Kt4Zp/AyhpldzSAdl6lanCBzbZLyYgwyAwJSvBHA==
-X-Received: by 2002:a17:902:db0a:b0:13b:b984:8094 with SMTP id m10-20020a170902db0a00b0013bb9848094mr10729592plx.43.1632515699798;
-        Fri, 24 Sep 2021 13:34:59 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id v12sm675255pjl.1.2021.09.24.13.34.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 13:34:58 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 20:34:55 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     kvm@vger.kernel.org, pbonzini@redhat.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, joe.jin@oracle.com
-Subject: Re: [PATCH RFC 1/1] kvm: export per-vcpu exits to userspace
-Message-ID: <YU42b1iwIpZS0iCp@google.com>
-References: <20210908000824.28063-1-dongli.zhang@oracle.com>
+        Fri, 24 Sep 2021 16:41:26 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 96B60329F35;
+        Fri, 24 Sep 2021 16:39:52 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id r6s0b8el7Rjs; Fri, 24 Sep 2021 16:39:51 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7B7D232A2B7;
+        Fri, 24 Sep 2021 16:39:51 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7B7D232A2B7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1632515991;
+        bh=Sws5lA1IFN0zp8685BKV31a4BrnnEG9iUEWcApJh6iw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=ujovmJkHnvVURsFyIuEAEDyP8aUQtQ7aF0b6gMGl2LDhHPsq6CInltE7fMkonLpRF
+         8KjwP8+lmDNazKYamxSeZLBfrnYWDeNDprPLzV1tTrSSiUutBID34qLMOY7QdMigY7
+         q2X099s87NepWDgkVyVPjSijr8uYWzALawac//rAbBOPpeZzCj9v7UKfNqKaYaBX53
+         MMhRjcQTgwJ2ZPYGBAHcgiDLv9m5CeEfPF8hMkCiROL2QQPe69knQfYea/6J4Q0JaJ
+         T6KPIPn9UiKL21T3pSmqmsd/UL7CG/xOzuEq+1U6Q5Lq6p11pX49bXRCwpbcKJtB80
+         dqOtL2H4DlIGQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id CwesmnkeM1ZT; Fri, 24 Sep 2021 16:39:51 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 64AD932A073;
+        Fri, 24 Sep 2021 16:39:51 -0400 (EDT)
+Date:   Fri, 24 Sep 2021 16:39:51 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        j alglave <j.alglave@ucl.ac.uk>,
+        luc maranget <luc.maranget@inria.fr>,
+        akiyks <akiyks@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Message-ID: <1059471848.37444.1632515991273.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210924195535.GC17780@gate.crashing.org>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net> <20210924183858.GA25901@localhost> <20210924195535.GC17780@gate.crashing.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908000824.28063-1-dongli.zhang@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
+Thread-Topic: LKMM: Add volatile_if()
+Thread-Index: gKOgxiK5EKp+gxCUYVb9i+alyPg8kw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021, Dongli Zhang wrote:
-> People sometimes may blame KVM scheduling if there is softlockup/rcu_stall
-> in VM kernel. The KVM developers are required to prove that a specific VCPU
-> is being regularly scheduled by KVM hypervisor.
+----- On Sep 24, 2021, at 3:55 PM, Segher Boessenkool segher@kernel.crashing.org wrote:
+
+> Hi!
 > 
-> So far we use "pidstat -p <qemu-pid> -t 1" or
-> "cat /proc/<pid>/task/<tid>/stat", but 'exits' is more fine-grained.
+> On Fri, Sep 24, 2021 at 02:38:58PM -0400, Mathieu Desnoyers wrote:
+>> Following the LPC2021 BoF about control dependency, I re-read the kernel
+>> documentation about control dependency, and ended up thinking that what
+>> we have now is utterly fragile.
+>> 
+>> Considering that the goal here is to prevent the compiler from being able to
+>> optimize a conditional branch into something which lacks the control
+>> dependency, while letting the compiler choose the best conditional
+>> branch in each case, how about the following approach ?
+>> 
+>> #define ctrl_dep_eval(x)        ({ BUILD_BUG_ON(__builtin_constant_p((_Bool)
+>> x)); x; })
+>> #define ctrl_dep_emit_loop(x)   ({ __label__ l_dummy; l_dummy: asm volatile goto
+>> ("" : : : "cc", "memory" : l_dummy); (x); })
+>> #define ctrl_dep_if(x)          if ((ctrl_dep_eval(x) && ctrl_dep_emit_loop(1))
+>> || ctrl_dep_emit_loop(0))
+> 
+> [The "cc" clobber only pessimises things: the asm doesn't actually
+> clobber the default condition code register (which is what "cc" means),
+> and you can have conditional branches using other condition code
+> registers, or on other registers even (general purpose registers is
+> common.]
 
-Sort of?  Yes, counts _almost_ every VM-Exit, but it's also measuring something
-completely different.
+I'm currently considering removing both "memory" and "cc" clobbers from
+the asm goto.
 
-> Therefore, the 'exits' is exported to userspace to verify if a VCPU is
-> being scheduled regularly.
+> 
+>> The idea is to forbid the compiler from considering the two branches as
+>> identical by adding a dummy loop in each branch with an empty asm goto.
+>> Considering that the compiler should not assume anything about the
+>> contents of the asm goto (it's been designed so the generated assembly
+>> can be modified at runtime), then the compiler can hardly know whether
+>> each branch will trigger an infinite loop or not, which should prevent
+>> unwanted optimisations.
+> 
+> The compiler looks if the code is identical, nothing more, nothing less.
+> There are no extra guarantees.  In principle the compiler could see both
+> copies are empty asms looping to self, and so consider them equal.
 
-The number of VM-Exits seems like a very cumbersome and potentially misinterpreted
-indicator, e.g. userspace could naively think that a guest that is generating a
-high number of exits is getting more runtime.  With posted interrupts and other
-hardware features, that doesn't necessarily hold true.
+I would expect the compiler not to attempt combining asm goto based on their
+similarity because it has been made clear starting from the original requirements
+from the kernel community to the gcc developers that one major use-case of asm
+goto involves self-modifying code (patching between nops and jumps).
 
-I'm not saying don't count exits, they absolutely can be a good triage tool, but
-they're not the right tool to verify tasks are getting scheduled.
+If this happens to be a real possibility, then we may need to work-around this for
+other uses of asm goto as well.
 
-> I was going to export 'exits', until there was binary stats available.
-> Unfortunately, QEMU does not support binary stats and we will need to
-> read via debugfs temporarily. This patch can also be backported to prior
-> versions that do not support binary stats.
+If there is indeed a scenario where the compiler can combine similar asm goto statements,
+then I suspect we may want to emit unique dummy code in the assembly which gets placed in a
+discarded section, e.g.:
 
-Adding temporary code to the _upstream_ kernel to work around lack of support in
-the userspace VMM does not seem right to me.  Especially in debugfs, which is
-very explicitly not intended to be used for thing like monitoring in production.
+#define ctrl_dep_emit_loop(x)   ({ __label__ l_dummy; l_dummy: asm goto (       \
+                ".pushsection .discard.ctrl_dep\n\t"                            \
+                ".long " __stringify(__COUNTER__) "\n\t"                        \
+                ".popsection\n\t"                                               \
+                "" : : : : l_dummy); (x); })
+
+But then a similar trick would be needed for jump labels as well.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
