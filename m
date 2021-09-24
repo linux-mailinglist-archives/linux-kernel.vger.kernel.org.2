@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E581B41743C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2E7417266
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345972AbhIXNCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:02:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57332 "EHLO mail.kernel.org"
+        id S1344193AbhIXMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:48:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345304AbhIXM7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:59:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 092A6613CD;
-        Fri, 24 Sep 2021 12:53:19 +0000 (UTC)
+        id S1344027AbhIXMrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:47:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A582C61268;
+        Fri, 24 Sep 2021 12:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488000;
-        bh=rpNRGVigFN3f4Bpb1M9tyiVKZ4yIse1JFWgkBeeFs7w=;
+        s=korg; t=1632487533;
+        bh=FMO3oLYtRxQ6cAkIhT+2cRiJYTR5Ur5HVQPUjaYr3H0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Q6i5rGD0VhthYcWKZzSZOqHoGS/WlSYkD4AY8u4fVZxBIPw36vPdc4T+pykwjrc4
-         Xrox6gWWjqCAtFcoZ9rZzmlvWHO/GWdS6HENjg9jb4I5O9pIuY7/fU2b5Tn30BuSrQ
-         ePemFBcnERwNeEu1GMjZTR7OB3YQ+N+Z6ONgNwyI=
+        b=MlzEowW0yGbTO7xYaAz0Hxzg09uNz4xWP7DhH403yjrkJ2MlrAiurRZqNLCOpyjIN
+         3+2o80i5vJ6Hawm0l0D+B7ihH0f0Sq0L23LyW97LsAHQBeNQxDZW8Yx4fxYqtVEta+
+         NjeoFGvrT5KMWUqSl3DzdgSwV4ZuYppTiMzWQOLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 045/100] dma-buf: DMABUF_DEBUG should depend on DMA_SHARED_BUFFER
+        stable@vger.kernel.org,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 06/26] sctp: add param size validation for SCTP_PARAM_SET_PRIMARY
 Date:   Fri, 24 Sep 2021 14:43:54 +0200
-Message-Id: <20210924124342.959729678@linuxfoundation.org>
+Message-Id: <20210924124328.556217209@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
+References: <20210924124328.336953942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-[ Upstream commit cca62758ebdd71fcfb6d589d6487a7f26398d50d ]
+commit ef6c8d6ccf0c1dccdda092ebe8782777cd7803c9 upstream.
 
-DMA-BUF debug checks are an option of DMA-BUF.  Enabling DMABUF_DEBUG
-without DMA_SHARED_BUFFER does not have any impact, as drivers/dma-buf/
-is not entered during the build when DMA_SHARED_BUFFER is disabled.
+When SCTP handles an INIT chunk, it calls for example:
+sctp_sf_do_5_1B_init
+  sctp_verify_init
+    sctp_verify_param
+  sctp_process_init
+    sctp_process_param
+      handling of SCTP_PARAM_SET_PRIMARY
 
-Fixes: 84335675f2223cbd ("dma-buf: Add debug option")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210902124913.2698760-3-geert@linux-m68k.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+sctp_verify_init() wasn't doing proper size validation and neither the
+later handling, allowing it to work over the chunk itself, possibly being
+uninitialized memory.
+
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma-buf/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ net/sctp/sm_make_chunk.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dma-buf/Kconfig b/drivers/dma-buf/Kconfig
-index 6e13cc941cd2..6eb4d13f426e 100644
---- a/drivers/dma-buf/Kconfig
-+++ b/drivers/dma-buf/Kconfig
-@@ -53,6 +53,7 @@ config DMABUF_MOVE_NOTIFY
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -2155,9 +2155,16 @@ static sctp_ierror_t sctp_verify_param(s
+ 		break;
  
- config DMABUF_DEBUG
- 	bool "DMA-BUF debug checks"
-+	depends on DMA_SHARED_BUFFER
- 	default y if DMA_API_DEBUG
- 	help
- 	  This option enables additional checks for DMA-BUF importers and
--- 
-2.33.0
-
+ 	case SCTP_PARAM_SET_PRIMARY:
+-		if (net->sctp.addip_enable)
+-			break;
+-		goto fallthrough;
++		if (!net->sctp.addip_enable)
++			goto fallthrough;
++
++		if (ntohs(param.p->length) < sizeof(struct sctp_addip_param) +
++					     sizeof(struct sctp_paramhdr)) {
++			sctp_process_inv_paramlength(asoc, param.p,
++						     chunk, err_chunk);
++			retval = SCTP_IERROR_ABORT;
++		}
++		break;
+ 
+ 	case SCTP_PARAM_HOST_NAME_ADDRESS:
+ 		/* Tell the peer, we won't support this param.  */
 
 
