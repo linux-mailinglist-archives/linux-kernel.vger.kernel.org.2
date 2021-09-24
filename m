@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620C4417AD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAD1417AFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348075AbhIXSVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 14:21:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38124 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348057AbhIXSVQ (ORCPT
+        id S1348135AbhIXS0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 14:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348141AbhIXS0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 14:21:16 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18OHtRuX030663;
-        Fri, 24 Sep 2021 14:19:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=DCB4ZcC2apNQaN2mSRaE8wUmEftiZ+pRER0r/dypdTY=;
- b=hryLBPy7ncXL1F/sERfRvVtn1mkVNVt7QySLXFpJsbBt9Zg4mhrzrclNt2VtdrqAjleb
- IHfOf1G7LyRsyYvePQmPEPb8l/S9mjMmoAtkmJO8S74wkStUaK3cZ5LUagHaYYQVikfF
- TtsWvWu/2QhZF5gpEVEh3H+eRYSmE8puxwab/ywDXyaQERPNK4DbRvwAa+Pk4CYsQbuN
- 58qvff0Mh2Np8IdXXwkT6/mzhQE1IP0Ye4w0O+nAMcRpKplg9DnIzkIHYtovK/c3B6ap
- hxSDqvtRI5sGuyzI2pOa/54PuLD3JIthy9jXbgSS2jra+gX2LZy5z241/WId0NNm+0DX gA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b9duq9xnx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Sep 2021 14:19:25 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18OHqPkh008458;
-        Fri, 24 Sep 2021 18:19:23 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 3b93ga8fv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Sep 2021 18:19:23 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18OIETPq61276636
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Sep 2021 18:14:29 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 340EB5204F;
-        Fri, 24 Sep 2021 18:19:21 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id DB14D52051;
-        Fri, 24 Sep 2021 18:19:20 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] kprobes: convert tests to kunit
-References: <20210914070816.3516994-1-svens@linux.ibm.com>
-        <202109150545.FABUL0Nv-lkp@intel.com>
-Date:   Fri, 24 Sep 2021 20:19:20 +0200
-In-Reply-To: <202109150545.FABUL0Nv-lkp@intel.com> (kernel test robot's
-        message of "Wed, 15 Sep 2021 05:56:05 +0800")
-Message-ID: <yt9dlf3ln8ev.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Fri, 24 Sep 2021 14:26:33 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4E2C06173F
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:24:59 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id l6so7037915plh.9
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EP6W0vCV7VcCce2x/TM6UlI/+w3odhYij8dAWhkxhMI=;
+        b=YMGHnaA/QZw6ZKa/+vjlDAM7oxvtvPbnihzCpr3uaLFIXyjVA5gYfyzMNdXSeYTGFu
+         nHUrQm3jQchTZI7ZInkcZzjP/dLhj6Pm5cDonjfmXDN2VnF4lvKjnqWMeZgcJClWzpMa
+         O+tQCrZewlEAiLhYB2sigsDNnWIthCJ8syZUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EP6W0vCV7VcCce2x/TM6UlI/+w3odhYij8dAWhkxhMI=;
+        b=YoYvWM6onXaLxBFjHmEcWd00Nfih5un9PjqOC5wfrhE7/u8zSTEcYnrzmyClsPDBE8
+         UZLqe97S+BAuR+Yj8R2SmRw62GW5FVh5LSqMpvvRP1UmN/YYesXkeXGk7j3SvUcVBIuv
+         l3AFWCbQVERUy/r7lK8WOGsyIUoQKsce8GlI9wK5dpjx1T/+nTdm5qj/S5ZvMBeK1wXK
+         7IUdJZL6Hr1Uir6ZqxA6/4mKCgzXl/09xBH3Aj7mMXwHrf6/0i3yABtqx9k75hx7+j7T
+         6R1icNenxHiOyF8g6rqnB8ozkS2nqsnTlF0frB5jY54KIbDtXxAQ0ddIFO7JaiThTHfy
+         NXcQ==
+X-Gm-Message-State: AOAM532RRylgKsJp1H4N4c7WuGtMRk+6WHsZp3OJGwBGcoGhVzP9vBQ+
+        PQ3TIaeP9QI9Y1DF4dL8wwvPLg==
+X-Google-Smtp-Source: ABdhPJwQEXsZUJWmec8W7daR+8cixMG9ht80xnAs+Z3lg833vui4wbCsw1k1sco9vou06/mSZM+vjw==
+X-Received: by 2002:a17:90b:4f4d:: with SMTP id pj13mr3876535pjb.47.1632507899355;
+        Fri, 24 Sep 2021 11:24:59 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:ce0f:b846:1471:cf7e])
+        by smtp.gmail.com with UTF8SMTPSA id a10sm9431081pfn.48.2021.09.24.11.24.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 11:24:58 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 11:24:57 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Base homestar's power
+ coefficients in reality
+Message-ID: <YU4X+QH2X00ah7Gh@google.com>
+References: <20210923081352.1.I2a2ee0ac428a63927324d65022929565aa7d8361@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6LmtHjFjezNfB7CUQomx7JUgJzQd1xpb
-X-Proofpoint-GUID: 6LmtHjFjezNfB7CUQomx7JUgJzQd1xpb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-24_05,2021-09-24_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- suspectscore=0 bulkscore=0 phishscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=679 spamscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2109240113
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210923081352.1.I2a2ee0ac428a63927324d65022929565aa7d8361@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <lkp@intel.com> writes:
-
-> Hi Sven,
+On Thu, Sep 23, 2021 at 08:14:04AM -0700, Douglas Anderson wrote:
+> The commit 82ea7d411d43 ("arm64: dts: qcom: sc7180: Base dynamic CPU
+> power coefficients in reality") and the commit be0416a3f917 ("arm64:
+> dts: qcom: Add sc7180-trogdor-homestar") passed each other in the
+> tubes that make up the Internet. Despite the fact the patches didn't
+> cause a merge conflict, they need to account for each other. Do that.
+> 
+> Fixes: 82ea7d411d43 ("arm64: dts: qcom: sc7180: Base dynamic CPU power coefficients in reality")
+> Fixes: be0416a3f917 ("arm64: dts: qcom: Add sc7180-trogdor-homestar")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 >
-> Thank you for the patch! Yet something to improve:
->
-[..]
->    ia64-linux-ld: kernel/test_kprobes.o: in function `entry_handler':
->>> test_kprobes.c:(.text+0x150): undefined reference to `kunit_unary_assert_format'
->>> ia64-linux-ld: test_kprobes.c:(.text+0x212): undefined reference to `kunit_do_assertion'
->    ia64-linux-ld: kernel/test_kprobes.o: in function `return_handler2':
->>> test_kprobes.c:(.text+0x2f0): undefined reference to `kunit_binary_assert_format'
->    ia64-linux-ld: test_kprobes.c:(.text+0x452): undefined reference to `kunit_do_assertion'
->    ia64-linux-ld: test_kprobes.c:(.text+0x522): undefined reference to `kunit_do_assertion'
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
+> index cd3054226865..382f8c6f1576 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
+> @@ -51,7 +51,7 @@ skin_temp_thermal: skin-temp-thermal {
+>  			polling-delay = <0>;
+>  
+>  			thermal-sensors = <&pm6150_adc_tm 1>;
+> -			sustainable-power = <814>;
+> +			sustainable-power = <965>;
 
-I missed that kunit can be built as module. I'll fix it an send a v3.
+Just as a note: the original values corresponded to the modelled power
+consumption of two big cores at 1.55 GHz. The value was based on
+'/sys/kernel/debug/energy_model/pd6/cs:1555200/power' and multiplied
+by two. So the new values could be determined in the same manner.
+
+In any case these values are approximations, it's not really important
+that they match exactly those of the energy model, as long as they stay
+in the right ballpark, which the new ones do.
+
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
