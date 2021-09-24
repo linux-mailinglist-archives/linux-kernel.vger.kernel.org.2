@@ -2,128 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A13417B35
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34ADA417B50
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346472AbhIXSmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 14:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40654 "EHLO
+        id S1344680AbhIXSxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 14:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbhIXSmg (ORCPT
+        with ESMTP id S230025AbhIXSxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 14:42:36 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2274DC061571;
-        Fri, 24 Sep 2021 11:41:03 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id dj4so39650294edb.5;
-        Fri, 24 Sep 2021 11:41:03 -0700 (PDT)
+        Fri, 24 Sep 2021 14:53:04 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C33FC061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:51:31 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id s11so10660083pgr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:51:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZdpXNyxjoguw4SpG2ToQxddz4vS+H2dKBr6zzskz8BY=;
-        b=QlA7TV3BczZSC4oZ/+haPZxDqtjl2zAjUXwQSXTdywWWnnvAyYdIesW5m1HQWsi3jD
-         jMk9N5hDS9bgdW58Mbo5NISkKLIiBSxKE/1/fjjGjeOqqX30OK59YOuUitwrJbfnVjk4
-         gM7+xVc5SiMEjiXkHq2MdDDTyl1SOvBEVHvAwFZAcqxk+J1uTlnYYmz3OwWzQUH+cGcU
-         XwRNojpmhCXWAVKIuWZZ4NBsN/TR9Py3Pt/6Mq/M+/nirA4jEfJtmYcXq2Pq2vkD8O+X
-         kQXphIBE3n8e0VOlvlWhW4hR+BkZkJ8tATcRL5fCQP6AiIwh3YUITadKRXdWK9u1umBm
-         UIyw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TAVnXc0nms8n7fIN2yXfZYjRn1YNEO4XXoVuRCnkQP0=;
+        b=hjVSGmqQZY77x8GN05wghbbgxmYt+ZzQwcOZWL4wLmQjX7fdgMzeVdCMKGKN5EPBGD
+         ayGZAG17jhHtKqzgz0XZK10sE95PBUYD0dg9kshFHiOs2tynL8hlwgpOAd6+Yg8vGLed
+         faiG8KbBUHkOLdwlZoLv3vfeB3YFb1zf9b1eE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZdpXNyxjoguw4SpG2ToQxddz4vS+H2dKBr6zzskz8BY=;
-        b=2Is+LXuuPrSyF2J1+9OqJduXo9/nZEMSEkSXlWinpAJ6Ur/symM9tx+ofMnNTMufsk
-         pDK1YCZnFhlp9GT23oFKXyI0tAdA30MQM+GDvqkJJsNKxZeG/fdGlDsvdZIi3BR3hzlq
-         L7IqhLxaZrNBF9fMOhqfeuRMiK7/jyVRgl+eJEcOHCEY82DMwwx4dKq0JH9Rtx4JYiDH
-         UOFvS67HSb5u6+VNJvz2wlU3hZro5CKqkVnMWz+hKlBjyPqkbXC9UEjcl0PeTNdeR/o0
-         K/ME3oKG5sKoWvk7JjFcFG6kpgMRYmIJYD1HYXwChKFDR6V9qnGz1tUUXQOWvNbPkBqy
-         RopQ==
-X-Gm-Message-State: AOAM532uEVG3t0l/1A+mniH5Vr+ntRl+MNMZlIi7kE/D62J+4d7ZoylV
-        qfCuxeefIWAqIEyp4lArWxrV7zDZAyc67rGkdxs=
-X-Google-Smtp-Source: ABdhPJwABf/T3PdSYk0saA/5ZkQz8dyRLJ5s8cOMK4m7Z1EkeupEm1vNk62mM/QBkPsvGB276XnLipls40B0gQZNNxk=
-X-Received: by 2002:a17:906:608e:: with SMTP id t14mr13157211ejj.441.1632508861453;
- Fri, 24 Sep 2021 11:41:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TAVnXc0nms8n7fIN2yXfZYjRn1YNEO4XXoVuRCnkQP0=;
+        b=8Re8ub10lJrDn240SRyjJMkBD5CeJ2voCA3YCP+2IvEJWCG7IbgqN1O+GJ8sex3un1
+         Fh2f5PsqH9sjk3ThUORPCazEGbXl4U0shUuvBZuAtOC3kcCEc2cvtx5IabMegSup6BHm
+         vpZm1IV3r3UnMq6rx+vN3y23fgiyFKFbLzUZ+pzCFIoOaD2J4WMC1/L3wG3RjNkzR/WH
+         K5acvwMBft+VnpjjJaR83yzJZfHkOEF0aoHWlDa9gCqKFRkTixmnS34xoFOpxVMMp/jp
+         qdAXCErTeu3XkhUcLFLlcqlGCmGTHztJTG3j2dJSEWZFZKcCzsIrHjNdHWp4WjMPAxh0
+         oPrA==
+X-Gm-Message-State: AOAM5328T+FZ/Qeo3qIaQJqtHcYGEPg+QUsRfB+eSpurx+pPf0iJRjae
+        bWJCIlU1sHwioAcADT8NOqr43SyOtv0mmg==
+X-Google-Smtp-Source: ABdhPJzuKiRhbaVns0VLiUSt+SK8E0CLC+N2x7hv3DOVNEhnI6OfGnntuCXPLcyntdmBmCC+YpQRaw==
+X-Received: by 2002:a63:b34a:: with SMTP id x10mr4986221pgt.473.1632509489436;
+        Fri, 24 Sep 2021 11:51:29 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e15sm13177223pjl.11.2021.09.24.11.51.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 11:51:28 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 11:51:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-api@vger.kernel.org
+Subject: Re: [PATCH 5/6] coredump:  Don't perform any cleanups before dumping
+ core
+Message-ID: <202109241135.A683423@keescook>
+References: <87v92qx2c6.fsf@disp2133>
+ <874kaax26c.fsf@disp2133>
 MIME-Version: 1.0
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com> <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com> <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com> <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com> <YUmOGFUFONR/ynfW@atomide.com>
- <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com> <7C582E1F-13F6-4432-AE99-FF9B7EE9B06D@goldelico.com>
- <9c80c7af-daf5-c521-fe59-1f0c222a23e1@fi.rohmeurope.com>
-In-Reply-To: <9c80c7af-daf5-c521-fe59-1f0c222a23e1@fi.rohmeurope.com>
-From:   Robert Nelson <robertcnelson@gmail.com>
-Date:   Fri, 24 Sep 2021 13:40:35 -0500
-Message-ID: <CAOCHtYhC7f43wz+G-mxwutzoJDm8rhZWxf4Jd9+VHAbxPfPjTw@mail.gmail.com>
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874kaax26c.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 4:28 AM Vaittinen, Matti
-<Matti.Vaittinen@fi.rohmeurope.com> wrote:
->
-> On 9/21/21 19:40, H. Nikolaus Schaller wrote:
-> > Hi Matti, Tony,
-> >
-> >> Am 21.09.2021 um 18:07 schrieb Suman Anna <s-anna@ti.com>:
-> >>
-> >> Hi Matti, Tony,
-> >>
-> >> On 9/21/21 2:47 AM, Tony Lindgren wrote:
-> >>> * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
-> >>>> Finally, adding the udelay(100); (as Tony suggested) at the end of the
-> >>>> omap_reset_deassert() did make the oops go away even when pruss_tm was
-> >>>> enabled. I don't know what would be a proper fix though.
-> >>
-> >> I have been able to boot v5.15-rc1 just fine on my BBB without any additional
-> >> changes [1].
-> >
-> > Same for me with a v5.15-rc1 based kernel.
-> >
-> >> May I ask what is your BBB board version? My board is rev.A5C.
-> >
-> > I have an Rev B6 with EXP41 display attached. I think Matti reported a Rev C board?
->
-> Oops. Yes I did. I _thought_ I have Rev-C (3?) boards. Not exactly sure
-> why I think so - perhaps that was what I ordered... And I really think
-> the ones connected to automated test setup at the office are Rev-C.
->
-> Now that I tried to verify this - The one which I used to reproduce this
-> issue (and now verify the patch from Tony) at home, seems to have say
-> "PCB Rev6B" on PCB. However the u-boot says:
->
-> =>  printenv board_rev
-> board_rev=00C0
-> =>
->
-> but I have no idea where the environment variable comes from...
->
-> Maybe a stupid question - how to find out the exact revision?
+On Thu, Sep 23, 2021 at 07:11:39PM -0500, Eric W. Biederman wrote:
+> 
+> Rename coredump_exit_mm to coredump_task_exit and call it from do_exit
+> before PTRACE_EVENT_EXIT, and before any cleanup work for a task
+> happens.  This ensures that an accurate copy of the process can be
+> captured in the coredump as no cleanup for the process happens before
+> the coredump completes.  This also ensures that PTRACE_EVENT_EXIT
+> will not be visited by any thread until the coredump is complete.
+> 
+> Add a new flag PF_POSTCOREDUMP so that tasks that have passed through
+> coredump_task_exit can be recognized and ignored in zap_process.
+> 
+> Now that all of the coredumping happens before exit_mm remove code to
+> test for a coredump in progress from mm_release.
+> 
+> Replace "may_ptrace_stop()" with a simple test of "current->ptrace".
+> The other tests in may_ptrace_stop all concern avoiding stopping
+> during a coredump.  These tests are no longer necessary as it is now
+> guaranteed that fatal_signal_pending will be set if the code enters
+> ptrace_stop during a coredump.  The code in ptrace_stop is guaranteed
+> not to stop if fatal_signal_pending returns true.
+> 
+> Until this change "ptrace_event(PTRACE_EVENT_EXIT)" could call
+> ptrace_stop without fatal_signal_pending being true, as signals are
+> dequeued in get_signal before calling do_exit.  This is no longer
+> an issue as "ptrace_event(PTRACE_EVENT_EXIT)" is no longer reached
+> until after the coredump completes.
+> 
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  fs/coredump.c         |  8 ++++----
+>  include/linux/sched.h |  1 +
+>  kernel/exit.c         | 19 ++++++++++++-------
+>  kernel/fork.c         |  3 +--
+>  kernel/signal.c       | 27 +--------------------------
+>  mm/oom_kill.c         |  2 +-
+>  6 files changed, 20 insertions(+), 40 deletions(-)
+> 
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index 5e0e08a7fb9b..d576287fb88b 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -359,7 +359,7 @@ static int zap_process(struct task_struct *start, int exit_code, int flags)
+>  
+>  	for_each_thread(start, t) {
+>  		task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
+> -		if (t != current && t->mm) {
+> +		if (t != current && !(t->flags & PF_POSTCOREDUMP)) {
 
-Run:
+PF_POSTCOREDUMP is "my exit path is done with anything associated with
+coredumping, including not having dumped core", yes? i.e. it's a task
+lifetime mark, not a "did this actually dump core" mark?
 
-hexdump -e '8/1 "%c"' /sys/bus/i2c/devices/0-0050/eeprom -n 28 | cut -b 5-28
+>  			sigaddset(&t->pending.signal, SIGKILL);
+>  			signal_wake_up(t, 1);
+>  			nr++;
+> @@ -404,8 +404,8 @@ static int zap_threads(struct task_struct *tsk, struct mm_struct *mm,
+>  	 *
+>  	 * do_exit:
+>  	 *	The caller holds mm->mmap_lock. This means that the task which
+> -	 *	uses this mm can't pass coredump_exit_mm(), so it can't exit or
+> -	 *	clear its ->mm.
+> +	 *	uses this mm can't pass coredump_task_exit(), so it can't exit
+> +	 *	or clear its ->mm.
+>  	 *
+>  	 * de_thread:
+>  	 *	It does list_replace_rcu(&leader->tasks, &current->tasks),
+> @@ -500,7 +500,7 @@ static void coredump_finish(struct mm_struct *mm, bool core_dumped)
+>  		next = curr->next;
+>  		task = curr->task;
+>  		/*
+> -		 * see coredump_exit_mm(), curr->task must not see
+> +		 * see coredump_task_exit(), curr->task must not see
+>  		 * ->task == NULL before we read ->next.
+>  		 */
+>  		smp_mb();
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index e12b524426b0..f3741f23935e 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1664,6 +1664,7 @@ extern struct pid *cad_pid;
+>  #define PF_VCPU			0x00000001	/* I'm a virtual CPU */
+>  #define PF_IDLE			0x00000002	/* I am an IDLE thread */
+>  #define PF_EXITING		0x00000004	/* Getting shut down */
+> +#define PF_POSTCOREDUMP		0x00000008	/* Coredumps should ignore this task */
 
-Then lookup:
+This might need some bikeshedding. It happens that the coredump code
+(zap_process(), actually) will ignore it, but I think what's being
+described is "this process has reached an point-of-no-return on the exit
+path, where coredumping is either done or never happened".
 
-https://github.com/beagleboard/image-builder/blob/master/readme.md
+>  #define PF_IO_WORKER		0x00000010	/* Task is an IO worker */
+>  #define PF_WQ_WORKER		0x00000020	/* I'm a workqueue worker */
+>  #define PF_FORKNOEXEC		0x00000040	/* Forked but didn't exec */
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index cb1619d8fd64..774e6b5061b8 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -339,23 +339,29 @@ kill_orphaned_pgrp(struct task_struct *tsk, struct task_struct *parent)
+>  	}
+>  }
+>  
+> -static void coredump_exit_mm(struct mm_struct *mm)
+> +static void coredump_task_exit(struct task_struct *tsk)
+>  {
+>  	struct core_state *core_state;
+> +	struct mm_struct *mm;
+> +
+> +	mm = tsk->mm;
+> +	if (!mm)
+> +		return;
+>  
+>  	/*
+>  	 * Serialize with any possible pending coredump.
+>  	 * We must hold mmap_lock around checking core_state
+> -	 * and clearing tsk->mm.  The core-inducing thread
+> +	 * and setting PF_POSTCOREDUMP.  The core-inducing thread
+>  	 * will increment ->nr_threads for each thread in the
+> -	 * group with ->mm != NULL.
+> +	 * group without PF_POSTCOREDUMP set.
+>  	 */
+> +	mmap_read_lock(mm);
+> +	tsk->flags |= PF_POSTCOREDUMP;
 
-Regards,
+What are the races possible here?
+
+- 2 threads exiting, but neither have core_state, so no change, looks ok
+- 1 thread exiting, 1 thread has dumped. core_state exists, in which
+  case this starts a loop to wait for wakeup?
+	if dumping thread enters zap_process, gets to sigaddset/signal_wake_up
+	then the exiting thread sets PF_POSTCOREDUMP and goes to sleep,
+	will it wait forever? (I can't tell if sighand locking prevents
+	this ordering problem...)
+- 2 threads dumping -- similar race to above? I suspect I'm missing
+  something, as I'd expect this case to already be handled.
+
+-Kees
+
+>  	core_state = mm->core_state;
+> +	mmap_read_unlock(mm);
+>  	if (core_state) {
+>  		struct core_thread self;
+>  
+> -		mmap_read_unlock(mm);
+> -
+>  		self.task = current;
+>  		if (self.task->flags & PF_SIGNALED)
+>  			self.next = xchg(&core_state->dumper.next, &self);
+> @@ -375,7 +381,6 @@ static void coredump_exit_mm(struct mm_struct *mm)
+>  			freezable_schedule();
+>  		}
+>  		__set_current_state(TASK_RUNNING);
+> -		mmap_read_lock(mm);
+>  	}
+>  }
+>  
+> @@ -480,7 +485,6 @@ static void exit_mm(void)
+>  		return;
+>  	sync_mm_rss(mm);
+>  	mmap_read_lock(mm);
+> -	coredump_exit_mm(mm);
+>  	mmgrab(mm);
+>  	BUG_ON(mm != current->active_mm);
+>  	/* more a memory barrier than a real lock */
+> @@ -768,6 +772,7 @@ void __noreturn do_exit(long code)
+>  	profile_task_exit(tsk);
+>  	kcov_task_exit(tsk);
+>  
+> +	coredump_task_exit(tsk);
+>  	ptrace_event(PTRACE_EVENT_EXIT, code);
+>  
+>  	validate_creds_for_do_exit(tsk);
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 38681ad44c76..9bd9f2da9e41 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1392,8 +1392,7 @@ static void mm_release(struct task_struct *tsk, struct mm_struct *mm)
+>  	 * purposes.
+>  	 */
+>  	if (tsk->clear_child_tid) {
+> -		if (!(tsk->signal->flags & SIGNAL_GROUP_COREDUMP) &&
+> -		    atomic_read(&mm->mm_users) > 1) {
+> +		if (atomic_read(&mm->mm_users) > 1) {
+>  			/*
+>  			 * We don't check the error code - if userspace has
+>  			 * not set up a proper pointer then tough luck.
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index c9759ff2cb43..b0db80acc6ef 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -2158,31 +2158,6 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
+>  	spin_unlock_irqrestore(&sighand->siglock, flags);
+>  }
+>  
+> -static inline bool may_ptrace_stop(void)
+> -{
+> -	if (!likely(current->ptrace))
+> -		return false;
+> -	/*
+> -	 * Are we in the middle of do_coredump?
+> -	 * If so and our tracer is also part of the coredump stopping
+> -	 * is a deadlock situation, and pointless because our tracer
+> -	 * is dead so don't allow us to stop.
+> -	 * If SIGKILL was already sent before the caller unlocked
+> -	 * ->siglock we must see ->core_state != NULL. Otherwise it
+> -	 * is safe to enter schedule().
+> -	 *
+> -	 * This is almost outdated, a task with the pending SIGKILL can't
+> -	 * block in TASK_TRACED. But PTRACE_EVENT_EXIT can be reported
+> -	 * after SIGKILL was already dequeued.
+> -	 */
+> -	if (unlikely(current->mm->core_state) &&
+> -	    unlikely(current->mm == current->parent->mm))
+> -		return false;
+> -
+> -	return true;
+> -}
+> -
+> -
+>  /*
+>   * This must be called with current->sighand->siglock held.
+>   *
+> @@ -2263,7 +2238,7 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
+>  
+>  	spin_unlock_irq(&current->sighand->siglock);
+>  	read_lock(&tasklist_lock);
+> -	if (may_ptrace_stop()) {
+> +	if (likely(current->ptrace)) {
+>  		/*
+>  		 * Notify parents of the stop.
+>  		 *
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 295c8bdfd6c8..7877c755ab37 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -788,7 +788,7 @@ static inline bool __task_will_free_mem(struct task_struct *task)
+>  
+>  	/*
+>  	 * A coredumping process may sleep for an extended period in
+> -	 * coredump_exit_mm(), so the oom killer cannot assume that
+> +	 * coredump_task_exit(), so the oom killer cannot assume that
+>  	 * the process will promptly exit and release memory.
+>  	 */
+>  	if (sig->flags & SIGNAL_GROUP_COREDUMP)
+> -- 
+> 2.20.1
+> 
 
 -- 
-Robert Nelson
-https://rcn-ee.com/
+Kees Cook
