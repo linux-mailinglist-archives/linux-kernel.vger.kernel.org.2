@@ -2,196 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBD6417908
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF1F417909
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343728AbhIXQqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245680AbhIXQqm (ORCPT
+        id S1343839AbhIXQqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:46:53 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:58756 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343764AbhIXQqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:46:42 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDBBC061571;
-        Fri, 24 Sep 2021 09:45:09 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id eg28so38608811edb.1;
-        Fri, 24 Sep 2021 09:45:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MZmwKu0BUurwbUnTZVEh8wLwYpJ31RDmtunI9Xt7VQk=;
-        b=MJTNfFuYrmCv9ju452FVisH0MLHZx2gtJbWytFi6qbSQwa5/GUIo3uXp/gwJGOfZbG
-         5XF1ppxhhT1aHn8g6IvZrysMrlpdAEzms8cwBBCuNSuDa9AvWLHWV1nOOa/AaF6QPZy+
-         ljogh8W7YfWZP7c744Un/Ku7OEh89zaQrp78ItxjT68WM1LU+IyxDvwDm1LRVYw6ANHZ
-         +EEgy4zLBc4OZShFJyj9oWHOJqF8a1hfs5N7uKVdVvJYySdyj+0O0gIErYdtugQ+D4xz
-         qG52JEAGO9Ch3EEfQ/g4CAh6bzAo0XnUtTXE0BjOZwrv5PtapQ8ug2BVazV3I/PEXAEY
-         iciw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MZmwKu0BUurwbUnTZVEh8wLwYpJ31RDmtunI9Xt7VQk=;
-        b=M3bWtkRYt4zcAwkI9MhtfeysNXX9089hqDkINwgzwmbqmrwzsP/Wd8zUqUjHkDRqGS
-         s2xidH4kNAmhhTLRiWuJgJ+TWFe8gx3jmttZfJhk1ZdmiAaGyXubLDhNxy+gy9HBvG+7
-         RdgodiLKdjNFsfwyrkclP+KYvGvloH0YusjQDKptA0wWntl2K/04FWLr2XaulZWA+O/M
-         Cv6g0rnteQ//EGx/iq8aE7mwaFkTQCcdgDDiV+i2zPYj90/SfHcJuhoopMTz9IkK+K4W
-         y5oWU4PygO9SR/hXR0WB5yuCbGcN5EydhQgjnmOn8WzHxSRc97cSDHRAx9j816PPR2cM
-         Hzjw==
-X-Gm-Message-State: AOAM5327x44Jp7B3M0tRqspTrmRZWaJ9xRt4H7et+XoUS+lqAcfZsIoB
-        siUtQHKPU1ZOQJsvwpImZJys+0wtqHsvjDS29d8=
-X-Google-Smtp-Source: ABdhPJxY++oM8nSkIUfZpogdOZRn3Gd6ZYVjB9ICFpuA9aiCmV0nXei8lYBE+aMHq8pqbb5gNE68Rl2zQAlYHrG/CBE=
-X-Received: by 2002:a17:906:680c:: with SMTP id k12mr12322522ejr.85.1632501907474;
- Fri, 24 Sep 2021 09:45:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210923032830.314328-1-shy828301@gmail.com> <20210923032830.314328-2-shy828301@gmail.com>
- <20210923143901.mdc6rejuh7hmr5vh@box.shutemov.name> <CAHbLzkqb-6a7c=C8WF0G0X2yCey=t7OoL-oW2Y0CpM0MpgJbBg@mail.gmail.com>
- <CAHbLzkr5YkpuFpnZguDb46naLc3MXw0DmjkttbGU4Nmm=yX8gg@mail.gmail.com> <20210924092621.kbg4byfidfzgjk3g@box>
-In-Reply-To: <20210924092621.kbg4byfidfzgjk3g@box>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 24 Sep 2021 09:44:55 -0700
-Message-ID: <CAHbLzkpXm4Si5u-uWvgAine3bb9N5os7=hcYRTQAtsakxB5YWw@mail.gmail.com>
-Subject: Re: [v2 PATCH 1/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
+        Fri, 24 Sep 2021 12:46:52 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:41616)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mToK4-00DD1A-6l; Fri, 24 Sep 2021 10:45:16 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:48876 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mToK2-00GHdg-8U; Fri, 24 Sep 2021 10:45:15 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     Alexander Mihalicyn <alexander@mihalicyn.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milton Miller <miltonm@bga.com>,
+        Jack Miller <millerjo@us.ibm.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Christian Brauner <christian@brauner.io>
+References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
+        <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
+        <CAJqdLrpx+xEMGQLZo7jS5BTAw-k2sWPrv9fCt0x8t=6Nbn7u+w@mail.gmail.com>
+        <CALgW_8VUk0us_umLncUv2DUMkOi3qixmT+YkHV4Dhpt_nNMZHw@mail.gmail.com>
+        <CAJqdLrofd76x_hziq7F3wY3jqZfE1LNZbQ8sD6MUFXbPHVcdVw@mail.gmail.com>
+        <CALgW_8WHq051ifcYPta5reoVZ10=fA5Rb1EZuyaievK+OUw99Q@mail.gmail.com>
+        <CAJqdLrpxnMThqersqiVsTNr1Y25V8jmDcW_sKWi0ziJXCsi2gw@mail.gmail.com>
+        <87y2ab9w8u.fsf@disp2133>
+        <00ce7bff-e432-8244-1765-12460817baab@colorfullife.com>
+Date:   Fri, 24 Sep 2021 11:45:07 -0500
+In-Reply-To: <00ce7bff-e432-8244-1765-12460817baab@colorfullife.com> (Manfred
+        Spraul's message of "Thu, 23 Sep 2021 18:36:16 +0200")
+Message-ID: <87pmsxorcc.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1mToK2-00GHdg-8U;;;mid=<87pmsxorcc.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18aWtGQ0imt7CbQjqrTDEas2KQJw3Y/wn8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_00,
+        XMNoVowels,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3287]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_00 obfuscated drug references
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Manfred Spraul <manfred@colorfullife.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1321 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.6 (0.3%), b_tie_ro: 2.4 (0.2%), parse: 0.65
+        (0.0%), extract_message_metadata: 8 (0.6%), get_uri_detail_list: 0.68
+        (0.1%), tests_pri_-1000: 4.1 (0.3%), tests_pri_-950: 1.04 (0.1%),
+        tests_pri_-900: 0.83 (0.1%), tests_pri_-90: 86 (6.5%), check_bayes: 85
+        (6.4%), b_tokenize: 4.6 (0.4%), b_tok_get_all: 6 (0.4%), b_comp_prob:
+        1.51 (0.1%), b_tok_touch_all: 71 (5.4%), b_finish: 0.65 (0.0%),
+        tests_pri_0: 1207 (91.4%), check_dkim_signature: 0.36 (0.0%),
+        check_dkim_adsp: 2.3 (0.2%), poll_dns_idle: 0.60 (0.0%), tests_pri_10:
+        1.74 (0.1%), tests_pri_500: 6 (0.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 0/2] shm: omit forced shm destroy if task IPC namespace was changed
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 2:26 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+Manfred Spraul <manfred@colorfullife.com> writes:
+
+> Hi Eric,
 >
-> On Thu, Sep 23, 2021 at 01:39:49PM -0700, Yang Shi wrote:
-> > On Thu, Sep 23, 2021 at 10:15 AM Yang Shi <shy828301@gmail.com> wrote:
-> > >
-> > > On Thu, Sep 23, 2021 at 7:39 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
-> > > >
-> > > > On Wed, Sep 22, 2021 at 08:28:26PM -0700, Yang Shi wrote:
-> > > > > When handling shmem page fault the THP with corrupted subpage could be PMD
-> > > > > mapped if certain conditions are satisfied.  But kernel is supposed to
-> > > > > send SIGBUS when trying to map hwpoisoned page.
-> > > > >
-> > > > > There are two paths which may do PMD map: fault around and regular fault.
-> > > > >
-> > > > > Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault() codepaths")
-> > > > > the thing was even worse in fault around path.  The THP could be PMD mapped as
-> > > > > long as the VMA fits regardless what subpage is accessed and corrupted.  After
-> > > > > this commit as long as head page is not corrupted the THP could be PMD mapped.
-> > > > >
-> > > > > In the regulat fault path the THP could be PMD mapped as long as the corrupted
-> > > >
-> > > > s/regulat/regular/
-> > > >
-> > > > > page is not accessed and the VMA fits.
-> > > > >
-> > > > > This loophole could be fixed by iterating every subpage to check if any
-> > > > > of them is hwpoisoned or not, but it is somewhat costly in page fault path.
-> > > > >
-> > > > > So introduce a new page flag called HasHWPoisoned on the first tail page.  It
-> > > > > indicates the THP has hwpoisoned subpage(s).  It is set if any subpage of THP
-> > > > > is found hwpoisoned by memory failure and cleared when the THP is freed or
-> > > > > split.
-> > > > >
-> > > > > Cc: <stable@vger.kernel.org>
-> > > > > Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > > > ---
-> > > >
-> > > > ...
-> > > >
-> > > > > diff --git a/mm/filemap.c b/mm/filemap.c
-> > > > > index dae481293b5d..740b7afe159a 100644
-> > > > > --- a/mm/filemap.c
-> > > > > +++ b/mm/filemap.c
-> > > > > @@ -3195,12 +3195,14 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
-> > > > >       }
-> > > > >
-> > > > >       if (pmd_none(*vmf->pmd) && PageTransHuge(page)) {
-> > > > > -         vm_fault_t ret = do_set_pmd(vmf, page);
-> > > > > -         if (!ret) {
-> > > > > -                 /* The page is mapped successfully, reference consumed. */
-> > > > > -                 unlock_page(page);
-> > > > > -                 return true;
-> > > > > -         }
-> > > > > +             vm_fault_t ret = do_set_pmd(vmf, page);
-> > > > > +             if (ret == VM_FAULT_FALLBACK)
-> > > > > +                     goto out;
-> > > >
-> > > > Hm.. What? I don't get it. Who will establish page table in the pmd then?
-> > >
-> > > Aha, yeah. It should jump to the below PMD populate section. Will fix
-> > > it in the next version.
-> > >
-> > > >
-> > > > > +             if (!ret) {
-> > > > > +                     /* The page is mapped successfully, reference consumed. */
-> > > > > +                     unlock_page(page);
-> > > > > +                     return true;
-> > > > > +             }
-> > > > >       }
-> > > > >
-> > > > >       if (pmd_none(*vmf->pmd)) {
-> > > > > @@ -3220,6 +3222,7 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
-> > > > >               return true;
-> > > > >       }
-> > > > >
-> > > > > +out:
-> > > > >       return false;
-> > > > >  }
-> > > > >
-> > > > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > > > > index 5e9ef0fc261e..0574b1613714 100644
-> > > > > --- a/mm/huge_memory.c
-> > > > > +++ b/mm/huge_memory.c
-> > > > > @@ -2426,6 +2426,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
-> > > > >       /* lock lru list/PageCompound, ref frozen by page_ref_freeze */
-> > > > >       lruvec = lock_page_lruvec(head);
-> > > > >
-> > > > > +     ClearPageHasHWPoisoned(head);
-> > > > > +
-> > > >
-> > > > Do we serialize the new flag with lock_page() or what? I mean what
-> > > > prevents the flag being set again after this point, but before
-> > > > ClearPageCompound()?
-> > >
-> > > No, not in this patch. But I think we could use refcount. THP split
-> > > would freeze refcount and the split is guaranteed to succeed after
-> > > that point, so refcount can be checked in memory failure. The
-> > > SetPageHasHWPoisoned() call could be moved to __get_hwpoison_page()
-> > > when get_unless_page_zero() bumps the refcount successfully. If the
-> > > refcount is zero it means the THP is under split or being freed, we
-> > > don't care about these two cases.
-> >
-> > Setting the flag in __get_hwpoison_page() would make this patch depend
-> > on patch #3. However, this patch probably will be backported to older
-> > versions. To ease the backport, I'd like to have the refcount check in
-> > the same place where THP is checked. So, something like "if
-> > (PageTransHuge(hpage) && page_count(hpage) != 0)".
-> >
-> > Then the call to set the flag could be moved to __get_hwpoison_page()
-> > in the following patch (after patch #3). Does this sound good to you?
->
-> Could you show the code I'm not sure I follow. page_count(hpage) check
-> looks racy to me. What if split happens just after the check?
+> I'd like to restart the discussion, the issue should be fixed.
 
-Yes, it is racy. The flag has to be set after get_page_unless_zero().
-Did some archeology, it seems patch #3 is also applicable to v4.9+.
-So, the simplest way may be to have both patch #3 and this patch
-backport to stable.
+Agreed.
+
+I am going to come right out and say having read through everything
+my suggests were confused and wrong.
+
+Somehow I thought the cleanups I was suggesting world result in
+shm_clist only being modified from the task that owns the list.
+Which would result in no need to use a per-task list.
+
+Having looked through my suggestions again I was completely wrong.
+
+The only useful bit I have to contribute from that original suggestion
+is let's please have smallish patches that change one thing at a time.
+
+That code is sufficiently interesting that it is way too easy to get
+lost in big patches.
 
 
+I am not going to discuss my broken suggestions right now because every
+time I look into them I go into a rabbit hole and I don't get anything
+productive done on fixing these issues, just something close and
+frustrating.  Apologies if I derailed your patch.
 
->
-> --
->  Kirill A. Shutemov
+Eric
