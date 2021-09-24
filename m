@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544D3416B94
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 08:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514CD416B9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 08:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244202AbhIXG1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 02:27:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:58839 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244191AbhIXG1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 02:27:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632464739; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=QlR56ZIA9jMdRCNZViamyRPbdHO9b5RbsDdO6yIrMAE=;
- b=vmRfk1S3sFqR9jPpPAZNrIYHN3TGgTRLZfHLzu9gUQK9FAQPihZba09poCY3QSdl3ZFhlVlE
- bi8ow1u5TQz+9ywv6IDxHyfSjIxSOd37LRGaNpGuuT46nJkh33Olx+6K6iMnoAGazT+6N59f
- +GMkLSboSbewoqIonJ7yQ672W1Y=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 614d6f5ee0480a7d6f53555b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Sep 2021 06:25:34
- GMT
-Sender: jeyr=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 80BFCC4360D; Fri, 24 Sep 2021 06:25:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jeyr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDCD1C4338F;
-        Fri, 24 Sep 2021 06:25:32 +0000 (UTC)
+        id S244193AbhIXGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 02:33:54 -0400
+Received: from mga11.intel.com ([192.55.52.93]:1855 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244176AbhIXGdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 02:33:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="220811716"
+X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
+   d="scan'208";a="220811716"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 23:32:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
+   d="scan'208";a="703332305"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.84]) ([10.237.72.84])
+  by fmsmga006.fm.intel.com with ESMTP; 23 Sep 2021 23:32:11 -0700
+Subject: Re: [PATCH v1 1/2] mmc: sdhci: Return true only when timeout exceeds
+ capacity of the HW timer
+To:     Bean Huo <huobean@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210917172727.26834-1-huobean@gmail.com>
+ <20210917172727.26834-2-huobean@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <8abc1138-9192-fe7a-8e51-3939181a4992@intel.com>
+Date:   Fri, 24 Sep 2021 09:32:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210917172727.26834-2-huobean@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 24 Sep 2021 11:55:32 +0530
-From:   jeyr@codeaurora.org
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: Re: [PATCH] misc: fastrpc: copy to user only for non-DMA-BUF heap
- buffers
-In-Reply-To: <YUy8vuEjuams8TCV@kroah.com>
-References: <1632386272-18139-1-git-send-email-jeyr@codeaurora.org>
- <YUw/k1PdjfYmufQP@kroah.com>
- <f3333ba748b0b7aacfa6ec87888ccb6c@codeaurora.org>
- <YUy8vuEjuams8TCV@kroah.com>
-Message-ID: <c59a764c653569e2ca74b60ae952f749@codeaurora.org>
-X-Sender: jeyr@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-23 23:13, Greg KH wrote:
-> On Thu, Sep 23, 2021 at 03:54:15PM +0530, jeyr@codeaurora.org wrote:
->> On 2021-09-23 14:19, Greg KH wrote:
->> > On Thu, Sep 23, 2021 at 02:07:52PM +0530, Jeya R wrote:
->> > > fastrpc_put_args is copying all the output buffers to user. For large
->> > > number of output context buffers, this might cause performance
->> > > degradation. Copying is not needed for DMA-BUF heap buffers.
->> >
->> > What does "performance degradation" really mean?
->> 
->> Unnecessary copying for large number of buffers would cause some
->> additional time which would get added to overall fastrpc call cost.
->> 
->> >
->> > >
->> > > Signed-off-by: Jeya R <jeyr@codeaurora.org>
->> > > ---
->> > >  drivers/misc/fastrpc.c | 18 ++++++++++--------
->> > >  1 file changed, 10 insertions(+), 8 deletions(-)
->> > >
->> > > diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
->> > > index beda610..536eabf 100644
->> > > --- a/drivers/misc/fastrpc.c
->> > > +++ b/drivers/misc/fastrpc.c
->> > > @@ -890,15 +890,17 @@ static int fastrpc_put_args(struct
->> > > fastrpc_invoke_ctx *ctx,
->> > >  	inbufs = REMOTE_SCALARS_INBUFS(ctx->sc);
->> > >
->> > >  	for (i = inbufs; i < ctx->nbufs; ++i) {
->> > > -		void *src = (void *)(uintptr_t)rpra[i].pv;
->> > > -		void *dst = (void *)(uintptr_t)ctx->args[i].ptr;
->> > > -		u64 len = rpra[i].len;
->> > > +		if (!ctx->maps[i]) {
->> > > +			void *src = (void *)(uintptr_t)rpra[i].pv;
->> > > +			void *dst = (void *)(uintptr_t)ctx->args[i].ptr;
->> >
->> > uintptr_t is not a kernel variable type.  Please use the real kernel
->> > type for this as you are touching these lines.
->> >
->> 
->> Sure, thanks for pointing this. Will update this in the next patch.
->> 
->> > > +			u64 len = rpra[i].len;
->> > >
->> > > -		if (!kernel) {
->> > > -			if (copy_to_user((void __user *)dst, src, len))
->> > > -				return -EFAULT;
->> > > -		} else {
->> > > -			memcpy(dst, src, len);
->> > > +			if (!kernel) {
->> > > +				if (copy_to_user((void __user *)dst, src, len))
->> > > +					return -EFAULT;
->> > > +			} else {
->> > > +				memcpy(dst, src, len);
->> > > +			}
->> >
->> > So you were copying buffers that didn't need to be copied?  So you are
->> > now doing less work?  Or is this fixing a bug where you were copying
->> > things that you should not have been copying?
->> >
->> > What commit does this fix?  Does this need to go to the stable kernel
->> > trees?
->> >
->> 
->> Yes, not all buffer needs to be copied. This change would avoid 
->> unnecessary
->> copying of buffers. Not adding fix tag as it's not exactly fixing any 
->> bug.
->> This should go to stable kernel trees.
+On 17/09/21 8:27 pm, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
 > 
-> If it's not fixing a bug, why should it go into the stable trees?
+> Clean up sdhci_calc_timeout() a bit,  and let it set too_big to be true only
+> when the timeout value required by the eMMC device exceeds the capability of
+> the host hardware timer.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-This is not a bug fix, it can be considered as an enhancement and it can 
-go in
-to new release.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> ---
+>  drivers/mmc/host/sdhci.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 7ae398f8d4d3..357b365bf0ec 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -930,7 +930,7 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+>  	struct mmc_data *data;
+>  	unsigned target_timeout, current_timeout;
+>  
+> -	*too_big = true;
+> +	*too_big = false;
+>  
+>  	/*
+>  	 * If the host controller provides us with an incorrect timeout
+> @@ -941,7 +941,7 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+>  	if (host->quirks & SDHCI_QUIRK_BROKEN_TIMEOUT_VAL)
+>  		return host->max_timeout_count;
+>  
+> -	/* Unspecified command, asume max */
+> +	/* Unspecified command, assume max */
+>  	if (cmd == NULL)
+>  		return host->max_timeout_count;
+>  
+> @@ -968,17 +968,14 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+>  	while (current_timeout < target_timeout) {
+>  		count++;
+>  		current_timeout <<= 1;
+> -		if (count > host->max_timeout_count)
+> +		if (count > host->max_timeout_count) {
+> +			if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
+> +				DBG("Too large timeout 0x%x requested for CMD%d!\n",
+> +				    count, cmd->opcode);
+> +			count = host->max_timeout_count;
+> +			*too_big = true;
+>  			break;
+> -	}
+> -
+> -	if (count > host->max_timeout_count) {
+> -		if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
+> -			DBG("Too large timeout 0x%x requested for CMD%d!\n",
+> -			    count, cmd->opcode);
+> -		count = host->max_timeout_count;
+> -	} else {
+> -		*too_big = false;
+> +		}
+>  	}
+>  
+>  	return count;
+> 
+
