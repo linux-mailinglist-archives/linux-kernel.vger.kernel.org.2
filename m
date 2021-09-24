@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A634173E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9894174FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345338AbhIXNA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:00:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53948 "EHLO mail.kernel.org"
+        id S1347058AbhIXNMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344956AbhIXMzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:55:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2DBF6124F;
-        Fri, 24 Sep 2021 12:51:11 +0000 (UTC)
+        id S1346168AbhIXNJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:09:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35E0B61164;
+        Fri, 24 Sep 2021 12:57:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487872;
-        bh=cHB/GLRWYlEG6alymObPpp6whcfSEBCn3AdLU1CnI5E=;
+        s=korg; t=1632488250;
+        bh=14e0PiiUK3wBz8iI4PjAaXON4iD6D4KwaYFhAGFMPdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S8TKty0OiwdifzPmyN0uARtQGdKbtrqGlNq9IIvXjPjc31C5/inHzKjg+b4tZUmsW
-         6AmWtwBx5YcASiRbMU54k7HrwSgCLZhp+jLgOGiKMqKwiAK5o+7SQqWIlik5QtV3T4
-         MR9Ijd9fMxqEGYt6RyxY1TZrxLBV7EIl/+ymvE9k=
+        b=R1zRLqyMp4eJW9mHPvYmf/7A1wNryBlZYRIZ88Ev67UJqC7dZ5LAZddC2o3UgnYz6
+         iKO1rK2us8pSajxMWU8NUb9nQq0lka+XQ/+CiowXniBeDVlcfdm2IKzHYLvMDJAaHM
+         sa7dcD0JLjuNQn5WWO+irQTKhFXXqZ9Sch4PYc/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 45/50] pwm: img: Dont modify HW state in .remove() callback
+Subject: [PATCH 5.10 34/63] thermal/core: Fix thermal_cooling_device_register() prototype
 Date:   Fri, 24 Sep 2021 14:44:34 +0200
-Message-Id: <20210924124333.762781467@linuxfoundation.org>
+Message-Id: <20210924124335.443998105@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit c68eb29c8e9067c08175dd0414f6984f236f719d ]
+[ Upstream commit fb83610762dd5927212aa62a468dd3b756b57a88 ]
 
-A consumer is expected to disable a PWM before calling pwm_put(). And if
-they didn't there is hopefully a good reason (or the consumer needs
-fixing). Also if disabling an enabled PWM was the right thing to do,
-this should better be done in the framework instead of in each low level
-driver.
+There are two pairs of declarations for thermal_cooling_device_register()
+and thermal_of_cooling_device_register(), and only one set was changed
+in a recent patch, so the other one now causes a compile-time warning:
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+drivers/net/wireless/mediatek/mt76/mt7915/init.c: In function 'mt7915_thermal_init':
+drivers/net/wireless/mediatek/mt76/mt7915/init.c:134:48: error: passing argument 1 of 'thermal_cooling_device_register' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]
+  134 |         cdev = thermal_cooling_device_register(wiphy_name(wiphy), phy,
+      |                                                ^~~~~~~~~~~~~~~~~
+In file included from drivers/net/wireless/mediatek/mt76/mt7915/init.c:7:
+include/linux/thermal.h:407:39: note: expected 'char *' but argument is of type 'const char *'
+  407 | thermal_cooling_device_register(char *type, void *devdata,
+      |                                 ~~~~~~^~~~
+
+Change the dummy helper functions to have the same arguments as the
+normal version.
+
+Fixes: f991de53a8ab ("thermal: make device_register's type argument const")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210722090717.1116748-1-arnd@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-img.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ include/linux/thermal.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
-index 22c002e685b3..37f9b688661d 100644
---- a/drivers/pwm/pwm-img.c
-+++ b/drivers/pwm/pwm-img.c
-@@ -329,23 +329,7 @@ err_pm_disable:
- static int img_pwm_remove(struct platform_device *pdev)
- {
- 	struct img_pwm_chip *pwm_chip = platform_get_drvdata(pdev);
--	u32 val;
--	unsigned int i;
--	int ret;
--
--	ret = pm_runtime_get_sync(&pdev->dev);
--	if (ret < 0) {
--		pm_runtime_put(&pdev->dev);
--		return ret;
--	}
--
--	for (i = 0; i < pwm_chip->chip.npwm; i++) {
--		val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
--		val &= ~BIT(i);
--		img_pwm_writel(pwm_chip, PWM_CTRL_CFG, val);
--	}
- 
--	pm_runtime_put(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		img_pwm_runtime_suspend(&pdev->dev);
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index d07ea27e72a9..176d9454e8f3 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -410,12 +410,13 @@ static inline void thermal_zone_device_unregister(
+ 	struct thermal_zone_device *tz)
+ { }
+ static inline struct thermal_cooling_device *
+-thermal_cooling_device_register(char *type, void *devdata,
++thermal_cooling_device_register(const char *type, void *devdata,
+ 	const struct thermal_cooling_device_ops *ops)
+ { return ERR_PTR(-ENODEV); }
+ static inline struct thermal_cooling_device *
+ thermal_of_cooling_device_register(struct device_node *np,
+-	char *type, void *devdata, const struct thermal_cooling_device_ops *ops)
++	const char *type, void *devdata,
++	const struct thermal_cooling_device_ops *ops)
+ { return ERR_PTR(-ENODEV); }
+ static inline struct thermal_cooling_device *
+ devm_thermal_of_cooling_device_register(struct device *dev,
 -- 
 2.33.0
 
