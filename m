@@ -2,94 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C62416A55
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F8B416A57
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243971AbhIXDQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 23:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhIXDQk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 23:16:40 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AE4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 20:15:07 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id bj3-20020a17090b088300b0019e6603fe89so5039507pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 20:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H6fS1DVa+oGMJZcW6Uz3T+yOtBK6Lvc/2ZNbTXLJgz0=;
-        b=Ze6NHDvtiRMdTKWjXCMz1w+dhfGXV7s3sIb6YWRzKHHMVBFKMxLvhu0oRSnrykO9gk
-         fO6B9nuhnAXlw6X7vm0UDNaBPfaie06CFbVgUCimbrGf1+1mrMBPVOGxCKJ8afV3728Q
-         hkXPwP5Q3i+iYfo9Um8aio0JP1Iox+3Fe3wMEhltStefR1T/Et6IMOY4fECVcbNIrgkt
-         l4h4JBHJnuiMnvafyJwqFg7FTcUjZnHtsfP4fr3NaXX5C3TFu5TPvtUAVnuhPmBqxjV3
-         9+PYzaXN299ceGHb1EM3ohy2QKqf40RDoWE9DsktqVPUC+WsobzU+6qIxCI+gjgtJ0y8
-         ka8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H6fS1DVa+oGMJZcW6Uz3T+yOtBK6Lvc/2ZNbTXLJgz0=;
-        b=T92SF/eZs9Of2QkRf3AdQO8wp9PnD2GZ/sjW3WYVRg9p8ZxaJ1QN6iS8f+MxMehDdx
-         JoBKUuQER0CWa54JyHrgE3iKAgNnWUg4D949UuXoLzSMdONw1Hyw/5T97K7pD4tQC4lY
-         zk5RHrsIl9c9dHpKYwDDB083tar//NNKpEuXyC2hJfWXUm62yi0lBtgMDWeHqsRu2ZlG
-         F8A0kmmaODBIMVMraifD+jm1AX10z9UBt5f+MtFZslmMFlHIUrAKDBtpNQX/IKTt3c6q
-         EhlgVGmsqZzNSZhe8b3ZAcAp7E5t1w8iEyup9yJzVyht2QPfllW00OJ6GdqBcMNFyy0f
-         lreQ==
-X-Gm-Message-State: AOAM531ZhmItye30xUk85iZzt0Bnt5PLznB05rH7CbX4w53DUyg4aSnu
-        zz8f18C0AMx0w+ZzXvXrlqol/NCQQiU=
-X-Google-Smtp-Source: ABdhPJyHOt5JYruQ/YJX8Dtw9HlMFSAo6RvNET7t4nd72ymNfrnwu5HAEeBvzhiLwGchfZuPAfnDmQ==
-X-Received: by 2002:a17:90b:3890:: with SMTP id mu16mr22224281pjb.78.1632453306979;
-        Thu, 23 Sep 2021 20:15:06 -0700 (PDT)
-Received: from 7YHHR73.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id gp11sm9880532pjb.2.2021.09.23.20.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Sep 2021 20:15:06 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM STB DPFE
-        DRIVER), Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM STB DPFE
-        DRIVER)
-Subject: [PATCH] memory: Allow building Broadcom STB DPFE as module
-Date:   Thu, 23 Sep 2021 20:14:59 -0700
-Message-Id: <20210924031459.8911-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S243992AbhIXDSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 23:18:02 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52909 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231680AbhIXDSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 23:18:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="287661181"
+X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
+   d="scan'208";a="287661181"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 20:16:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,318,1624345200"; 
+   d="scan'208";a="475064076"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by orsmga007.jf.intel.com with ESMTP; 23 Sep 2021 20:16:28 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 23 Sep 2021 20:16:27 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Thu, 23 Sep 2021 20:16:27 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.175)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Thu, 23 Sep 2021 20:16:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ev4tj8Geg6oCXCOcRaA3H10YqgHHSG965+P0U5FvpfiuVcZdKoz4VMWKj33MzXJUT16AovzA2Y5u0BwMqjoOeNg+zURdx7ZX1eKICtdjd7a8Wr2uy6AA/to8tgeulZ+OK08l/LNmtGz0fTQ5ccXchGZsYN+PNKBgMahhdUtRfZuglKLDg39xX2ea2qa3/WsT6lYtw6kT4sclu4ZchHgca1enXdSgXDrRbSw+MZ1w9vzq0lInAdyxMXppCEA0lYDopq43Mcb9w7mQi31J0nXRLuvoBUoE04mQMDa5XgnawES/NAV/io6Aru0IMLDnvLuoPiVTWof89lhCocM7CMCQcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=gzusgcPVvAImnluZpjyOni2VC89k3s7OMZ6yDnhyIyA=;
+ b=h2IKpU/Be6/G8WGRTzRaFP7+sgBsSxbkdlSxhDTiAnILmau2mxILMtc258gK6/BkHwAvD0gwn3nEV+kD36HxNte2ddTyJkDTIOrR357KLt1QOKdyTIUv7FdH6R5sv1Q4wMwoG4ylRElwjitINzpMpzqwxPM3qO3lRNYpwGdLyaI/y3EsVP/zTai1nVR8vUvUE2ZeNlE/cYd779dnEIay/E4VFC0e2eu3xBqhcVXN87Pm5zuOshsqdhKg+vns4G2aRTiJMQSRDJlD00DzARoCTkNDgZmm89M7c13tp2slhjwiFkApnnGt9UMEs8vz7pjc7jo/+Vh4md5qAyaH5TWbIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gzusgcPVvAImnluZpjyOni2VC89k3s7OMZ6yDnhyIyA=;
+ b=Kyxtd6knUezL81uUJzskuWWX2uX6pu3SfeNHGO4FGFdlx+2z2kLeYNOKqOqLvWOOvgAkZczgqIQEWIfxCS1FMzQu8RuQIMeb08iITUv0BLkySSTaDVBzw2Q7cERWVeDYCv7mJ+qvndmbul/jaThQiRNGCjPRhax5XezpVGccNh8=
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
+ by BN7PR11MB2691.namprd11.prod.outlook.com (2603:10b6:406:b3::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Fri, 24 Sep
+ 2021 03:16:00 +0000
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ddb7:fa7f:2cc:45df]) by BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ddb7:fa7f:2cc:45df%8]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
+ 03:16:00 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>
+CC:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/1] iommu/vt-d: Use second level for GPA->HPA translation
+Thread-Topic: [PATCH 1/1] iommu/vt-d: Use second level for GPA->HPA
+ translation
+Thread-Index: AQHXsOyCAYyPfoq/mkGWmB+Da+Ps0quygFqA
+Date:   Fri, 24 Sep 2021 03:16:00 +0000
+Message-ID: <BN9PR11MB54338F4F946F5E9BD3D4D5388CA49@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <20210924022931.780963-1-baolu.lu@linux.intel.com>
+In-Reply-To: <20210924022931.780963-1-baolu.lu@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4c47e03d-1bb9-427b-0899-08d97f09a28d
+x-ms-traffictypediagnostic: BN7PR11MB2691:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN7PR11MB2691B3FDCEC7D62FC60E03578CA49@BN7PR11MB2691.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:174;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XxWaxoUae+u+NNgFIgVJSxCo8AIM9MV68EbC3GLOSCRPz4FfprVIw9Cx1ARlYc0nSmTrZdqXsJ6KJ+v587hGA+YG9wPfFgHLOt5oukoH8Zv7HlCfD9kod1w46f7Iu3K4bM6oXV4v9fCzt2WR2OfuBXCRZTItDbR1Pqe+jr1Vk0piq5+dFVCs9d0s6/X9zmi/P+o2DL+8v5y/nuwc4L5JZoLfTc/nGQQ8Mw4bcgC7YBvfOB+REKzO53dR8IauaodB6hWypGyJMPwzy0nybpcMdt6xQgHHINy0T/a2M4l/OCo6NWNtaI52SrZq20eVmYX8mRbXd6Q3WU9jLxGBxGMWJI0pEASJiEFalvfxSb9R/l4UOIjUcBtb00NEEizyt2VplPLMS2xuoWogjOEq7hldsLHFbG5muwaGW9Rev4iTLxHmyTGfqOmIKqsKHY3KYUZltDnsN+Ciw+igJPwhIOqn7UvvG+HabslCt5hOXnjezV9ccyxLVsLEuNVsx8ZR+mVWuxORheeOKjn9Wzh4kMI78LoCX16Wwq7X7ZwCMUwCenaTXUagETfSMbpU77kUwc8aji6pwiJ7AXxEXnPHM92ydO3oZ3gOW6p0v28g29RQSm6dh8JVWkk6IvKDoSMl1WioPmFFyLhoYKvdcWqKZBtufiK4w1KZU4b81fZLS7L8rFnmSjysKpV3daUWVSEyEEMJY0G5kKXtr1aulkNkXNIo3A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(64756008)(66446008)(66476007)(8676002)(71200400001)(66556008)(66946007)(110136005)(54906003)(76116006)(4326008)(6506007)(83380400001)(38100700002)(186003)(38070700005)(2906002)(55016002)(52536014)(86362001)(8936002)(33656002)(122000001)(7696005)(5660300002)(508600001)(26005)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?KhyOGuh+XU2JqITmWCXSDtpiOTsyeahGC3lOab9MCNBoBdvH5ja8HoDVdznp?=
+ =?us-ascii?Q?NLzNicOpfy6+6N/AjxVHwTUrfqKYdcGUg4kn7ncFOKw1oSzrBQI8t4JOdVuR?=
+ =?us-ascii?Q?yQNMzG3y3mZwpmOqEWbdJ/KLftT/9j3veHvjI0UXRasm4kVKIuKtxJ4P/4E2?=
+ =?us-ascii?Q?KiooZMceDkqjEm5lm923F+xuNqw8+dfwMiX6Epnvskiq4r+g5KYRzH/Mr3Q8?=
+ =?us-ascii?Q?LYEyE+jgK0laYBJKBCG0/AJHVq9AKwqbG1hawL/3iJzVhphHqcgf36G+8nJq?=
+ =?us-ascii?Q?7t42zVAiyEuZ821YHi5rtwO82w9oR1gVeXzNwPfxy8D7fOJngEeiQEgITouu?=
+ =?us-ascii?Q?Fq2HQHyj6e+Oou+MYKNaRTww8NhJmLO972DG6YppVmUjWMdOHm09irRh/91N?=
+ =?us-ascii?Q?pAUmqbC0xbE3nnQqMDE94MVvU0vxfABMDk9DJDdE00LKnaA3NLXNlBpB+7TX?=
+ =?us-ascii?Q?iB3kEnH3K9j9024bcYJ6DQ0a0nvXfWv825k9qwFeW0eltvCogvMOszXWZA5b?=
+ =?us-ascii?Q?msqZrPi3J48eqZioUt9dXV/wwqToUfWO3y9s+bovnFth8+AEdxd+ch2jDvHV?=
+ =?us-ascii?Q?HWC/93PvEPOe5NgqO5FCytjRdkucCFNC9Gerk8GAeCr8mazMJWjPeisRG45a?=
+ =?us-ascii?Q?EMKuRs44rPdO/pgE+QuKq0Bcp0XELMsqD/lkPJ5CZBOwj6bZvf/d4DlDa7zV?=
+ =?us-ascii?Q?1ni1BvJC/cWMA+1Ul9qBEDHeNWL3c03MxS6AKOeUwkTGvHj5WeOyxzDLK7Ft?=
+ =?us-ascii?Q?J+EjsTEcq9oc622oRkVFEmrAEGqI3fu1e0jF+P55EONNLXES2cnBAQnzbC8Q?=
+ =?us-ascii?Q?M2cdMKgPW4FmjXJA3ARIPo1WcnbCwOwBRzuqph9mwWXEk1KZKZmZ6qCZHy6c?=
+ =?us-ascii?Q?R+EjNRb+S5u4NMMSmL+HByEQwvbeQxWdfwiIS6tNdQzjvqyDXI3zgcge3h2P?=
+ =?us-ascii?Q?wCnXKdi/tHRlHIqA0kxhV+tD9T9y4GIhoxkQ6QFJ0wVa1zj6gRsnIOxTy8xr?=
+ =?us-ascii?Q?klRWY9hNNUZ3L5cpLhMJMV/DN1ZZcL/EFs9pZhhCnoY8Qr00s4i+R2sNtmxn?=
+ =?us-ascii?Q?0J1C68uDTjF+fowhDfy1JwyOJkKzKZ06ol+anZKjRs+cp/T6zuO7n5xT5g60?=
+ =?us-ascii?Q?whodnILI8w+F/jw8pzrYesF1SOa1cnDOovfFHbOSzu/2V1AU3zfDX+SQFeWR?=
+ =?us-ascii?Q?he93bDnzEbwywV9VWbhzBNg38AoZNvIxOhfwQnaNihvINEUD1S16rgJilZ1p?=
+ =?us-ascii?Q?Enge7umsJEOcTbpMzWDteFTyRBr3tm7/7bJ55zvvVmC1BVLaroiBGAKSxtBM?=
+ =?us-ascii?Q?N1u/cum2ogqRB2v7bhQDTGXt?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c47e03d-1bb9-427b-0899-08d97f09a28d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2021 03:16:00.6717
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5FYWVUB0sqml/ldH4ssL0dSGf6nV+GowcfzKk6mfl5OM95Uv9kqbXOYXanN76C2xEJCRNoTEZPWg2ulm1FxFgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR11MB2691
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow building the Broadcom STB DPFE driver as a module, it is already a
-platform driver proper with all of the resource releasing device
-managed.
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+> Sent: Friday, September 24, 2021 10:30 AM
+>=20
+> The IOMMU VT-d implementation uses the first level for GPA->HPA
+> translation
+> by default. Although both the first level and the second level could hand=
+le
+> the DMA translation, they are different in some way. For example, the
+> second
+> level translation has separate controls for the Access/Dirty page trackin=
+g
+> and the page-level forcing snoop. With first level translation, there're
+> no such controls. This uses the second level for GPA->HPA translation so
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/memory/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+first-level has no page-granular snoop control, but has a global control
+in pasid entry.
 
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 72c0df129d5c..0ebb83b35a64 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -55,8 +55,8 @@ config ATMEL_EBI
- 	  SRAMs, ATA devices, etc.
- 
- config BRCMSTB_DPFE
--	bool "Broadcom STB DPFE driver" if COMPILE_TEST
--	default y if ARCH_BRCMSTB
-+	tristate "Broadcom STB DPFE driver"
-+	default ARCH_BRCMSTB
- 	depends on ARCH_BRCMSTB || COMPILE_TEST
- 	help
- 	  This driver provides access to the DPFE interface of Broadcom
--- 
-2.25.1
+> that it could provide a consistent hardware interface for use cases like
+> dirty page tracking during the VM live migration.
+>=20
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  include/linux/intel-iommu.h |  7 ++-----
+>  drivers/iommu/intel/iommu.c | 21 +++++++++++++--------
+>  2 files changed, 15 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> index 05a65eb155f7..a5fb20702201 100644
+> --- a/include/linux/intel-iommu.h
+> +++ b/include/linux/intel-iommu.h
+> @@ -517,22 +517,19 @@ struct context_entry {
+>  	u64 hi;
+>  };
+>=20
+> -/* si_domain contains mulitple devices */
+> -#define DOMAIN_FLAG_STATIC_IDENTITY		BIT(0)
+
+this is a separate cleanup. better mention it in the commit msg or
+put in another patch.
+
+> -
+>  /*
+>   * When VT-d works in the scalable mode, it allows DMA translation to
+>   * happen through either first level or second level page table. This
+>   * bit marks that the DMA translation for the domain goes through the
+>   * first level page table, otherwise, it goes through the second level.
+>   */
+> -#define DOMAIN_FLAG_USE_FIRST_LEVEL		BIT(1)
+> +#define DOMAIN_FLAG_USE_FIRST_LEVEL		BIT(0)
+>=20
+>  /*
+>   * Domain represents a virtual machine which demands iommu nested
+>   * translation mode support.
+>   */
+> -#define DOMAIN_FLAG_NESTING_MODE		BIT(2)
+> +#define DOMAIN_FLAG_NESTING_MODE		BIT(1)
+>=20
+>  struct dmar_domain {
+>  	int	nid;			/* node id */
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index d75f59ae28e6..c814fea0522e 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -522,7 +522,7 @@ static inline void free_devinfo_mem(void *vaddr)
+>=20
+>  static inline int domain_type_is_si(struct dmar_domain *domain)
+>  {
+> -	return domain->flags & DOMAIN_FLAG_STATIC_IDENTITY;
+> +	return domain->domain.type =3D=3D IOMMU_DOMAIN_IDENTITY;
+>  }
+>=20
+>  static inline bool domain_use_first_level(struct dmar_domain *domain)
+> @@ -1874,12 +1874,18 @@ static void free_dmar_iommu(struct
+> intel_iommu *iommu)
+>   * Check and return whether first level is used by default for
+>   * DMA translation.
+>   */
+> -static bool first_level_by_default(void)
+> +static bool first_level_by_default(unsigned int type)
+>  {
+> -	return scalable_mode_support() && intel_cap_flts_sanity();
+> +	if (type =3D=3D IOMMU_DOMAIN_UNMANAGED)
+> +		return false;
+> +
+
+I think the order is not correct. what about 2nd level is even not
+present?
+
+
+> +	if (!scalable_mode_support() || !intel_cap_flts_sanity())
+> +		return false;
+> +
+> +	return true;
+>  }
+>=20
+> -static struct dmar_domain *alloc_domain(int flags)
+> +static struct dmar_domain *alloc_domain(unsigned int type)
+>  {
+>  	struct dmar_domain *domain;
+>=20
+> @@ -1889,8 +1895,7 @@ static struct dmar_domain *alloc_domain(int flags)
+>=20
+>  	memset(domain, 0, sizeof(*domain));
+>  	domain->nid =3D NUMA_NO_NODE;
+> -	domain->flags =3D flags;
+> -	if (first_level_by_default())
+> +	if (first_level_by_default(type))
+>  		domain->flags |=3D DOMAIN_FLAG_USE_FIRST_LEVEL;
+>  	domain->has_iotlb_device =3D false;
+>  	INIT_LIST_HEAD(&domain->devices);
+> @@ -2708,7 +2713,7 @@ static int __init si_domain_init(int hw)
+>  	struct device *dev;
+>  	int i, nid, ret;
+>=20
+> -	si_domain =3D alloc_domain(DOMAIN_FLAG_STATIC_IDENTITY);
+> +	si_domain =3D alloc_domain(IOMMU_DOMAIN_IDENTITY);
+>  	if (!si_domain)
+>  		return -EFAULT;
+>=20
+> @@ -4517,7 +4522,7 @@ static struct iommu_domain
+> *intel_iommu_domain_alloc(unsigned type)
+>  	case IOMMU_DOMAIN_DMA:
+>  	case IOMMU_DOMAIN_DMA_FQ:
+>  	case IOMMU_DOMAIN_UNMANAGED:
+> -		dmar_domain =3D alloc_domain(0);
+> +		dmar_domain =3D alloc_domain(type);
+>  		if (!dmar_domain) {
+>  			pr_err("Can't allocate dmar_domain\n");
+>  			return NULL;
+> --
+> 2.25.1
 
