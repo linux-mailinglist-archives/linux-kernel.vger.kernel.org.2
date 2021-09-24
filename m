@@ -2,92 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99710417627
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFAE417633
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346045AbhIXNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245027AbhIXNuF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:50:05 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46561C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:48:32 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id b15so39719899lfe.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NRFXtODeBa3SkSCafztgkw2bK8xqC1z8hM0PTHXmUWs=;
-        b=Xyr8Cq0ulXVujwfhCVr4s71c0ETd4kCS2Bvmae0GAAdaUYj7QoTj1cOTuxwqA6TmdD
-         4P38xm1B/MRzQsHjxACFVtbmb7jJg2fxiTRX3QdZ3I1dQaiYhVjy4nMowLTVX7autNuK
-         MGaJ+4QLoVGdHpEg5uzcxkj2VBi4OZ2fKk9yYWvzHZ9Yr9oygqDzt93/x8vSQTLiTwlX
-         +Qe6fyDFDvcseNL3XM+U0adQDEnPeCmYrPxJlhCOhoAG9hWIlztDOcu5TkFVKfd61+Zr
-         LG6Zuh51xL6Y1LZkGhSyilt8HFgyltmZOajeZ6jecF+E/IbQsruoqpKP3jAykoPB71D8
-         xDiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NRFXtODeBa3SkSCafztgkw2bK8xqC1z8hM0PTHXmUWs=;
-        b=qjy5VuLBsD6vW/UZpYHiuXXv4x6FhLbqPSPeQA7EiWKW1jcRMeqcg0npSkRUWJPTlz
-         7iI9eOAfTfztjZPlM3W8cn0aexjl5pmBvojwFtQb3eXF70icl1kd38q7AygWDygPqQCk
-         X/EaIw7AJXg82sEJ1koQAYaZL5QWjS3EPYloIOMrpkmJuXuGcngmMR9W6/XFQ/jLA3UK
-         sYqWg2XnsVTMjZ8xNZNj5x6L9FHyotv+wggiOS+xx73oOkW6kROy3yUBy9nUqB8Ouw4P
-         VU0hsEnMjBdH6XH0kbi0m9+kc4F9o+TiJgoidJNeVY6Y4I7G7uclyMQPd4E4X5SWT+oB
-         3ffQ==
-X-Gm-Message-State: AOAM533jTAwTVwjJyH2ZYJ6F6mKFwCtvPa1SghAqJW+YCfeTfjAcN1cf
-        2hDkPugCdRmKvC1uDsLW8hRTEg==
-X-Google-Smtp-Source: ABdhPJwdCnswAKXZYhPqPEnGLLiwGYtezdP3+QV+/tgwrzDMmQpSw3SOKDIKHvz0CEMmtP4UvFxHbg==
-X-Received: by 2002:a05:651c:206:: with SMTP id y6mr11209139ljn.98.1632491310631;
-        Fri, 24 Sep 2021 06:48:30 -0700 (PDT)
-Received: from [192.168.112.17] (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id r7sm761470lfc.106.2021.09.24.06.48.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 06:48:30 -0700 (PDT)
-Subject: Re: [PATCH] media: rcar-vin: add G/S_PARM ioctls
-To:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-References: <20210924084115.2340-1-nikita.yoush@cogentembedded.com>
- <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Message-ID: <c90a960f-4c4d-7e9c-5f85-2931d1530550@cogentembedded.com>
-Date:   Fri, 24 Sep 2021 16:48:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1345422AbhIXNu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:50:58 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:48661 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346246AbhIXNu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:50:56 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HGD0Z2Ghmz9sVr;
+        Fri, 24 Sep 2021 15:49:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Sr-aHIJnT2hD; Fri, 24 Sep 2021 15:49:18 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HGD0X5JDkz9sVs;
+        Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9AEDD8B77E;
+        Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id uoZyYyvOfIn5; Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.215])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5359E8B780;
+        Fri, 24 Sep 2021 15:49:16 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18ODn5pO1293056
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 24 Sep 2021 15:49:05 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18ODn4Zl1293054;
+        Fri, 24 Sep 2021 15:49:04 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Andrew Morton <akpm@linux-foundation.org>, arnd@arndb.de
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Subject: [PATCH 1/3] mm: Make generic arch_is_kernel_initmem_freed() do what it says
+Date:   Fri, 24 Sep 2021 15:48:45 +0200
+Message-Id: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I would like to ask your use-case for this. I'm trying to make up the
-> courage to move Gen2 inline with Gen3, that is move Gen2 to use the
-> media graph interface to allow it more complex use-cases, including
-> controlling parameters on the subdevice level.
-> 
-> So I'm curious if this solve a particular problem for you or if it's
-> done "just" for completeness. If it solves a real problem then I think
-> we should move a head with a v2 (with the small comment below fixed) if
-> not I would like to try and reduce the non media graph usage of the API
-> as much as possible.
+Commit 7a5da02de8d6 ("locking/lockdep: check for freed initmem in
+static_obj()") added arch_is_kernel_initmem_freed() which is supposed
+to report whether an object is part of already freed init memory.
 
-I believe parallel camera - such as ov5642 - connected to Kingfisher's parallel interface still has to 
-be controlled over v4l operations on vin device. And, to control frame rate of such cameras [which is 
-the usecase we have here at Cogent], the operations that this patch adds are requied.
+For the time being, the generic version of arch_is_kernel_initmem_freed()
+always reports 'false', allthough free_initmem() is generically called
+on all architectures.
 
-> Please use &vin->vdev instead of video_devdata(file).
+Therefore, change the generic version of arch_is_kernel_initmem_freed()
+to check whether free_initmem() has been called. If so, then check
+if a given address falls into init memory.
 
-Preparing v2 now.
+In order to use function init_section_contains(), the fonction is
+moved at the end of asm-generic/section.h
 
-Nikita
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ include/asm-generic/sections.h | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+index d16302d3eb59..d1e5bb2c6b72 100644
+--- a/include/asm-generic/sections.h
++++ b/include/asm-generic/sections.h
+@@ -80,20 +80,6 @@ static inline int arch_is_kernel_data(unsigned long addr)
+ }
+ #endif
+ 
+-/*
+- * Check if an address is part of freed initmem. This is needed on architectures
+- * with virt == phys kernel mapping, for code that wants to check if an address
+- * is part of a static object within [_stext, _end]. After initmem is freed,
+- * memory can be allocated from it, and such allocations would then have
+- * addresses within the range [_stext, _end].
+- */
+-#ifndef arch_is_kernel_initmem_freed
+-static inline int arch_is_kernel_initmem_freed(unsigned long addr)
+-{
+-	return 0;
+-}
+-#endif
+-
+ /**
+  * memory_contains - checks if an object is contained within a memory region
+  * @begin: virtual address of the beginning of the memory region
+@@ -172,4 +158,21 @@ static inline bool is_kernel_rodata(unsigned long addr)
+ 	       addr < (unsigned long)__end_rodata;
+ }
+ 
++/*
++ * Check if an address is part of freed initmem. This is needed on architectures
++ * with virt == phys kernel mapping, for code that wants to check if an address
++ * is part of a static object within [_stext, _end]. After initmem is freed,
++ * memory can be allocated from it, and such allocations would then have
++ * addresses within the range [_stext, _end].
++ */
++#ifndef arch_is_kernel_initmem_freed
++static inline int arch_is_kernel_initmem_freed(unsigned long addr)
++{
++	if (system_state < SYSTEM_RUNNING)
++		return 0;
++
++	return init_section_contains((void *)addr, 1);
++}
++#endif
++
+ #endif /* _ASM_GENERIC_SECTIONS_H_ */
+-- 
+2.31.1
+
