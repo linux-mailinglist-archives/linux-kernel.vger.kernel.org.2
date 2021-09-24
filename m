@@ -2,64 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA9B417C31
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC35C417C2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348373AbhIXUM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 16:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
+        id S1348365AbhIXUME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 16:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344434AbhIXUMy (ORCPT
+        with ESMTP id S1344434AbhIXUMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 16:12:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34CAC061571;
-        Fri, 24 Sep 2021 13:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7ncpmpQORtbSOxGAPueW+IXlEjJ+gZin6hmVmI/YRoo=; b=dGGkic4Lh01v+IinitCaZlfNiX
-        d4rAidh/lyoGoYykLzOH+ZqCCDk8Rd9+U2sykPbWJ+M502s992XVMWRrHJybdQSfooRjBHScy+C1w
-        OKKUm9gLECJ+3AVuiglpMi9jdz+DFjznSAMmp8qs0tMCPqwAVo2apHHBTTjQGk78PJMJcQgV5QCuD
-        43CmIgXIofEmyz19muuu45gg72RzzbAl5/IYVPVZIGoGw8CxVNi+llf3/o2l4nVRu5wzKaB7dmwJs
-        DD954+B29YKp0MmWLo+gVjrbEzcCft43S2m0mnbwZnG0i4qYwWdQX6OaYnUHOrOWvtoK4Chx6PpaF
-        VimTJydw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mTrWC-007YNw-EY; Fri, 24 Sep 2021 20:10:11 +0000
-Date:   Fri, 24 Sep 2021 21:10:00 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     hch@lst.de, trond.myklebust@primarydata.com,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
-        Steve French <sfrench@samba.org>, linux-cifs@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, darrick.wong@oracle.com,
-        viro@zeniv.linux.org.uk, torvalds@linux-foundation.org,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/9] mm: Add 'supports' field to the
- address_space_operations to list features
-Message-ID: <YU4wmPyEoOZZfP3l@casper.infradead.org>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <163250389458.2330363.17234460134406104577.stgit@warthog.procyon.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163250389458.2330363.17234460134406104577.stgit@warthog.procyon.org.uk>
+        Fri, 24 Sep 2021 16:12:03 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA1FC061571;
+        Fri, 24 Sep 2021 13:10:30 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id k23-20020a17090a591700b001976d2db364so8362906pji.2;
+        Fri, 24 Sep 2021 13:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=pY53J6SXWT5V6xE2we80W3IIiuZtCduCwpjLlsn7WK8=;
+        b=T1QyNAp5c870WWLwKxhxAT4pZNAS4aD6Tbr8FBa5EBp/cwLdk+ijjzLiZG5kWRVdzp
+         e80MaEkQ7bshtW5pBgzdATCl4cL6vlfYz7PzgxgRr4+1iL8hakFt9yFARK+tXDovD8Dl
+         GlRxiWS/2UeUmS2VUgmZYcvoen6MUjJ1wtZGRxO0AT/09XIeFDmID05gzvxR22t5UVqx
+         Xx9mNnrFXxZNL2PvnuBKBaUazxtKUIQPEr3BqccQcIwKPNdFZpV7sNELLaa0q1Z6VqNJ
+         PucnSgri+4EyVMgEsuPci36jo7vqkyVB1BayK79BkEMwKgeIwrApGIAGqPigwwPskBTx
+         AVPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=pY53J6SXWT5V6xE2we80W3IIiuZtCduCwpjLlsn7WK8=;
+        b=cfOO0QLK3hGO5VsXpFwWbsZ+EehT3j5adPUf2NAaosBqhSE9BcSuCXdS4Fi5tBvAAa
+         wVzbXLPG+uMJXjE0bTHc9VFrkyhYRI2InVkjsplr+ZQNEGu8NfG2Lavnjp/2wPvLXvts
+         vtdyqi1atABqyuokH5sO7w5q8yP7VHGtgFYGwrqTjF84462DstF6dzhY3EbcTWqsLNXA
+         gkoMMAeW4J8bhCxJS/aAo7WuVvaF7JeqjfSEs9zGmPJI6c2x7h1xhQpVzgB/ZTkHA8aR
+         yYdfIS9gs8wPfHR6DJD6K42axWvOidQsUdGmbq8h3U7eE9dd2IceA0pxJkdsTCFQHwbt
+         Bokw==
+X-Gm-Message-State: AOAM5320lZCJcxlGajUY1oCJGLjPgWkXXiBANUp6F6+Ib9rgMbjGSbGD
+        JqQ3jIdu1uI7nrkcRG1KVciVfIFSg7XfZizJ4fE=
+X-Google-Smtp-Source: ABdhPJyas6ik1zrMNRQ6SZtznibyfClgIPaszD/fnpGC3dLcNzkOBtDYeorYojYQYJB8yszCGPpKdg==
+X-Received: by 2002:a17:90b:1b43:: with SMTP id nv3mr4340333pjb.222.1632514228966;
+        Fri, 24 Sep 2021 13:10:28 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id h6sm9794995pfr.121.2021.09.24.13.10.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 13:10:28 -0700 (PDT)
+Message-ID: <614e30b4.1c69fb81.45515.dd45@mx.google.com>
+Date:   Fri, 24 Sep 2021 13:10:28 -0700 (PDT)
+X-Google-Original-Date: Fri, 24 Sep 2021 20:10:25 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 000/100] 5.14.8-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 06:18:14PM +0100, David Howells wrote:
-> Rather than depending on .direct_IO to point to something to indicate that
-> direct I/O is supported, add a 'supports' bitmask that we can test, since
-> we only need one bit.
+On Fri, 24 Sep 2021 14:43:09 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.8 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.8-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Why would you add mapping->aops->supports instead of using one of the free
-bits in mapping->flags?  enum mapping_flags in pagemap.h.
-
-It could also be a per-fs flag, or per-sb flag, but it's fewer
-dereferences at check time if it's in mapping->flags.
+5.14.8-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
