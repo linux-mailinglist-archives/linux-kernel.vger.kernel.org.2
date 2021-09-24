@@ -2,288 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C72C41722A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7D0417389
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343816AbhIXMqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:46:08 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:41943 "EHLO m43-7.mailgun.net"
+        id S1345088AbhIXM5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343675AbhIXMp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:45:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632487466; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=9CbCvskKuDN3LtnFmQRSEEkhEIbmeMHlb+lt1YHeMjI=;
- b=uLLCnepFgH5uKKvmzKH7nRa24xWljw2aCYaYlCIh5YgJuOyFbW8dR/jAOMyCV9AbiuTtzFqQ
- JHeZXXv3bSdCuD/tAfaAIiMpNywhVIQPK6W6hC6j133K5Oxk4vH3KfDgbIPERemCLS9PZeQi
- S8gRlW+BaNfJYS1Snb3fBVcIEn4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 614dc80644830700e154ab7d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Sep 2021 12:43:50
- GMT
-Sender: youghand=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D17BBC43616; Fri, 24 Sep 2021 12:43:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: youghand)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9956EC4338F;
-        Fri, 24 Sep 2021 12:43:48 +0000 (UTC)
+        id S1344810AbhIXMzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:55:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E9C661351;
+        Fri, 24 Sep 2021 12:51:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632487864;
+        bh=x09bA/RdVHB8WdDYaiGd7H1inQyVRPDkCENondkoyVo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QTn0mQUm0P8cBUZQp9nlt/h78JZ+Pa1gVE0fQHtH4M999Pk3LXjZSfHVZIefsq8YJ
+         zZXqxujyfB0UEWixoiltJmHY5POX1AI22VukzapovHgI5+b+JacVBklhxQFsI7NXue
+         bDehpSUMqo77KMKVW1xlWH7bNrV7w3s91zFzFNow=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.4 00/50] 5.4.149-rc1 review
+Date:   Fri, 24 Sep 2021 14:43:49 +0200
+Message-Id: <20210924124332.229289734@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 24 Sep 2021 18:13:48 +0530
-From:   Youghandhar Chintala <youghand@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Abhishek Kumar <kuabhs@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rakesh Pillai <pillair@codeaurora.org>
-Subject: Re: [PATCH v3] ath10k: Don't always treat modem stop events as
- crashes
-In-Reply-To: <20210922233341.182624-1-swboyd@chromium.org>
-References: <20210922233341.182624-1-swboyd@chromium.org>
-Message-ID: <98706efc03c88b54bfb44161566c8e4b@codeaurora.org>
-X-Sender: youghand@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.149-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.149-rc1
+X-KernelTest-Deadline: 2021-09-26T12:43+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I pulled the latest patch changes and tested them on SC7180. Which works 
-as expected.
-Do not see this error message during reboot and can be seen while doing 
-SSR.
+This is the start of the stable review cycle for the 5.4.149 release.
+There are 50 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Tested-By: Youghandhar Chintala <youghand@codeaurora.org>
+Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
+Anything received after that time might be too late.
 
-On 2021-09-23 05:03, Stephen Boyd wrote:
-> When rebooting on sc7180 Trogdor devices I see the following crash from
-> the wifi driver.
-> 
->  ath10k_snoc 18800000.wifi: firmware crashed! (guid
-> 83493570-29a2-4e98-a83e-70048c47669c)
-> 
-> This is because a modem stop event looks just like a firmware crash to
-> the driver, the qmi connection is closed in both cases. Use the qcom 
-> ssr
-> notifier block to stop treating the qmi connection close event as a
-> firmware crash signal when the modem hasn't actually crashed. See
-> ath10k_qmi_event_server_exit() for more details.
-> 
-> This silences the crash message seen during every reboot.
-> 
-> Fixes: 3f14b73c3843 ("ath10k: Enable MSA region dump support for 
-> WCN3990")
-> Cc: Youghandhar Chintala <youghand@codeaurora.org>
-> Cc: Abhishek Kumar <kuabhs@chromium.org>
-> Cc: Steev Klimaszewski <steev@kali.org>
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Cc: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
-> 
-> Changes since v2
-> (https://lore.kernel.org/r/20210913205313.3420049-1-swboyd@chromium.org):
->  * Use a new bit instead of overloading unregistering
-> 
-> Changes since v1
-> (https://lore.kernel.org/r/20210905210400.1157870-1-swboyd@chromium.org):
->  * Push error message into function instead of checking at callsite
-> 
->  drivers/net/wireless/ath/ath10k/qmi.c  |  3 +-
->  drivers/net/wireless/ath/ath10k/snoc.c | 77 ++++++++++++++++++++++++++
->  drivers/net/wireless/ath/ath10k/snoc.h |  5 ++
->  3 files changed, 84 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c
-> b/drivers/net/wireless/ath/ath10k/qmi.c
-> index 07e478f9a808..80fcb917fe4e 100644
-> --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> @@ -864,7 +864,8 @@ static void ath10k_qmi_event_server_exit(struct
-> ath10k_qmi *qmi)
-> 
->  	ath10k_qmi_remove_msa_permission(qmi);
->  	ath10k_core_free_board_files(ar);
-> -	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags))
-> +	if (!test_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags) &&
-> +	    !test_bit(ATH10K_SNOC_FLAG_MODEM_STOPPED, &ar_snoc->flags))
->  		ath10k_snoc_fw_crashed_dump(ar);
-> 
->  	ath10k_snoc_fw_indication(ar, ATH10K_QMI_EVENT_FW_DOWN_IND);
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c
-> b/drivers/net/wireless/ath/ath10k/snoc.c
-> index ea00fbb15601..9513ab696fff 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -12,6 +12,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/property.h>
->  #include <linux/regulator/consumer.h>
-> +#include <linux/remoteproc/qcom_rproc.h>
->  #include <linux/of_address.h>
->  #include <linux/iommu.h>
-> 
-> @@ -1477,6 +1478,74 @@ void ath10k_snoc_fw_crashed_dump(struct ath10k 
-> *ar)
->  	mutex_unlock(&ar->dump_mutex);
->  }
-> 
-> +static int ath10k_snoc_modem_notify(struct notifier_block *nb,
-> unsigned long action,
-> +				    void *data)
-> +{
-> +	struct ath10k_snoc *ar_snoc = container_of(nb, struct ath10k_snoc, 
-> nb);
-> +	struct ath10k *ar = ar_snoc->ar;
-> +	struct qcom_ssr_notify_data *notify_data = data;
-> +
-> +	switch (action) {
-> +	case QCOM_SSR_BEFORE_POWERUP:
-> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem starting event\n");
-> +		clear_bit(ATH10K_SNOC_FLAG_MODEM_STOPPED, &ar_snoc->flags);
-> +		break;
-> +
-> +	case QCOM_SSR_AFTER_POWERUP:
-> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem running event\n");
-> +		break;
-> +
-> +	case QCOM_SSR_BEFORE_SHUTDOWN:
-> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem %s event\n",
-> +			   notify_data->crashed ? "crashed" : "stopping");
-> +		if (!notify_data->crashed)
-> +			set_bit(ATH10K_SNOC_FLAG_MODEM_STOPPED, &ar_snoc->flags);
-> +		else
-> +			clear_bit(ATH10K_SNOC_FLAG_MODEM_STOPPED, &ar_snoc->flags);
-> +		break;
-> +
-> +	case QCOM_SSR_AFTER_SHUTDOWN:
-> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem offline event\n");
-> +		break;
-> +
-> +	default:
-> +		ath10k_err(ar, "received unrecognized event %lu\n", action);
-> +		break;
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static int ath10k_modem_init(struct ath10k *ar)
-> +{
-> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-> +	void *notifier;
-> +	int ret;
-> +
-> +	ar_snoc->nb.notifier_call = ath10k_snoc_modem_notify;
-> +
-> +	notifier = qcom_register_ssr_notifier("mpss", &ar_snoc->nb);
-> +	if (IS_ERR(notifier)) {
-> +		ret = PTR_ERR(notifier);
-> +		ath10k_err(ar, "failed to initialize modem notifier: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ar_snoc->notifier = notifier;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ath10k_modem_deinit(struct ath10k *ar)
-> +{
-> +	int ret;
-> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-> +
-> +	ret = qcom_unregister_ssr_notifier(ar_snoc->notifier, &ar_snoc->nb);
-> +	if (ret)
-> +		ath10k_err(ar, "error %d unregistering notifier\n", ret);
-> +}
-> +
->  static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
->  {
->  	struct device *dev = ar->dev;
-> @@ -1740,10 +1809,17 @@ static int ath10k_snoc_probe(struct
-> platform_device *pdev)
->  		goto err_fw_deinit;
->  	}
-> 
-> +	ret = ath10k_modem_init(ar);
-> +	if (ret)
-> +		goto err_qmi_deinit;
-> +
->  	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
-> 
->  	return 0;
-> 
-> +err_qmi_deinit:
-> +	ath10k_qmi_deinit(ar);
-> +
->  err_fw_deinit:
->  	ath10k_fw_deinit(ar);
-> 
-> @@ -1771,6 +1847,7 @@ static int ath10k_snoc_free_resources(struct 
-> ath10k *ar)
->  	ath10k_fw_deinit(ar);
->  	ath10k_snoc_free_irq(ar);
->  	ath10k_snoc_release_resource(ar);
-> +	ath10k_modem_deinit(ar);
->  	ath10k_qmi_deinit(ar);
->  	ath10k_core_destroy(ar);
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.h
-> b/drivers/net/wireless/ath/ath10k/snoc.h
-> index 5095d1893681..d4bce1707696 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.h
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.h
-> @@ -6,6 +6,8 @@
->  #ifndef _SNOC_H_
->  #define _SNOC_H_
-> 
-> +#include <linux/notifier.h>
-> +
->  #include "hw.h"
->  #include "ce.h"
->  #include "qmi.h"
-> @@ -45,6 +47,7 @@ struct ath10k_snoc_ce_irq {
->  enum ath10k_snoc_flags {
->  	ATH10K_SNOC_FLAG_REGISTERED,
->  	ATH10K_SNOC_FLAG_UNREGISTERING,
-> +	ATH10K_SNOC_FLAG_MODEM_STOPPED,
->  	ATH10K_SNOC_FLAG_RECOVERY,
->  	ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK,
->  };
-> @@ -75,6 +78,8 @@ struct ath10k_snoc {
->  	struct clk_bulk_data *clks;
->  	size_t num_clks;
->  	struct ath10k_qmi *qmi;
-> +	struct notifier_block nb;
-> +	void *notifier;
->  	unsigned long flags;
->  	bool xo_cal_supported;
->  	u32 xo_cal_data;
-> 
-> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.149-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.149-rc1
+
+Guenter Roeck <linux@roeck-us.net>
+    drm/nouveau/nvkm: Replace -ENOSYS with -ENODEV
+
+Yu-Tung Chang <mtwget@gmail.com>
+    rtc: rx8010: select REGMAP_I2C
+
+Li Jinlin <lijinlin3@huawei.com>
+    blk-throttle: fix UAF by deleteing timer in blk_throtl_exit()
+
+Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+    pwm: stm32-lp: Don't modify HW state in .remove() callback
+
+Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+    pwm: rockchip: Don't modify HW state in .remove() callback
+
+Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+    pwm: img: Don't modify HW state in .remove() callback
+
+Nanyong Sun <sunnanyong@huawei.com>
+    nilfs2: fix memory leak in nilfs_sysfs_delete_snapshot_group
+
+Nanyong Sun <sunnanyong@huawei.com>
+    nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
+
+Nanyong Sun <sunnanyong@huawei.com>
+    nilfs2: fix memory leak in nilfs_sysfs_delete_##name##_group
+
+Nanyong Sun <sunnanyong@huawei.com>
+    nilfs2: fix memory leak in nilfs_sysfs_create_##name##_group
+
+Nanyong Sun <sunnanyong@huawei.com>
+    nilfs2: fix NULL pointer in nilfs_##name##_attr_release
+
+Nanyong Sun <sunnanyong@huawei.com>
+    nilfs2: fix memory leak in nilfs_sysfs_create_device_group
+
+Anand Jain <anand.jain@oracle.com>
+    btrfs: fix lockdep warning while mounting sprout fs
+
+Jeff Layton <jlayton@kernel.org>
+    ceph: lockdep annotations for try_nonblocking_invalidate
+
+Jeff Layton <jlayton@kernel.org>
+    ceph: request Fw caps before updating the mtime in ceph_write_iter
+
+Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+    dmaengine: xilinx_dma: Set DMA mask for coherent APIs
+
+Johannes Berg <johannes.berg@intel.com>
+    dmaengine: ioat: depends on !UML
+
+Zou Wei <zou_wei@huawei.com>
+    dmaengine: sprd: Add missing MODULE_DEVICE_TABLE
+
+Guenter Roeck <linux@roeck-us.net>
+    parisc: Move pci_dev_is_behind_card_dino to where it is used
+
+Thomas Gleixner <tglx@linutronix.de>
+    drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
+
+Arnd Bergmann <arnd@arndb.de>
+    thermal/core: Fix thermal_cooling_device_register() prototype
+
+Lukas Bulwahn <lukas.bulwahn@gmail.com>
+    Kconfig.debug: drop selecting non-existing HARDLOCKUP_DETECTOR_ARCH
+
+Jongsung Kim <neidhard.kim@lge.com>
+    net: stmmac: reset Tx desc base address before restarting Tx
+
+Petr Oros <poros@redhat.com>
+    phy: avoid unnecessary link-up delay in polling mode
+
+Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+    pwm: mxs: Don't modify HW state in .probe() after the PWM chip was registered
+
+Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+    pwm: lpc32xx: Don't modify HW state in .probe() after the PWM chip was registered
+
+Pavel Skripkin <paskripkin@gmail.com>
+    profiling: fix shift-out-of-bounds bugs
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    nilfs2: use refcount_dec_and_lock() to fix potential UAF
+
+Cyrill Gorcunov <gorcunov@gmail.com>
+    prctl: allow to setup brk for et_dyn executables
+
+Xie Yongji <xieyongji@bytedance.com>
+    9p/trans_virtio: Remove sysfs file on probe failure
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    thermal/drivers/exynos: Fix an error code in exynos_tmu_probe()
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
+
+Johannes Berg <johannes.berg@intel.com>
+    um: virtio_uml: fix memory leak on init failures
+
+Nathan Chancellor <nathan@kernel.org>
+    staging: rtl8192u: Fix bitwise vs logical operator in TranslateRxSignalStuff819xUsb()
+
+Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+    sctp: add param size validation for SCTP_PARAM_SET_PRIMARY
+
+Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+    sctp: validate chunk size in __rcv_asconf_lookup
+
+Alex Sverdlin <alexander.sverdlin@nokia.com>
+    ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE
+
+Alex Sverdlin <alexander.sverdlin@nokia.com>
+    ARM: 9079/1: ftrace: Add MODULE_PLTS support
+
+Alex Sverdlin <alexander.sverdlin@nokia.com>
+    ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
+
+Alex Sverdlin <alexander.sverdlin@nokia.com>
+    ARM: 9077/1: PLT: Move struct plt_entries definition to header
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    apparmor: remove duplicate macro list_entry_is_head()
+
+Florian Fainelli <f.fainelli@gmail.com>
+    ARM: Qualify enabling of swiotlb_init()
+
+David Hildenbrand <david@redhat.com>
+    s390/pci_mmio: fully validate the VMA before calling follow_pte()
+
+nick black <dankamongmen@gmail.com>
+    console: consume APC, DM, DCS
+
+Radim Krčmář <rkrcmar@redhat.com>
+    KVM: remember position in kvm->vcpus array
+
+Tuan Phan <tuanphan@os.amperecomputing.com>
+    PCI/ACPI: Add Ampere Altra SOC MCFG quirk
+
+Pali Rohár <pali@kernel.org>
+    PCI: aardvark: Fix reporting CRS value
+
+Pali Rohár <pali@kernel.org>
+    PCI: pci-bridge-emul: Add PCIe Root Capabilities Register
+
+Pali Rohár <pali@kernel.org>
+    PCI: aardvark: Indicate error in 'val' when config read fails
+
+Grzegorz Jaszczyk <jaz@semihalf.com>
+    PCI: pci-bridge-emul: Fix big-endian support
 
 
-Regards,
-Youghandhar
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+-------------
+
+Diffstat:
+
+ Makefile                                          |  4 +-
+ arch/arm/include/asm/ftrace.h                     |  3 +
+ arch/arm/include/asm/insn.h                       |  8 +--
+ arch/arm/include/asm/module.h                     | 10 +++
+ arch/arm/kernel/ftrace.c                          | 46 ++++++++++---
+ arch/arm/kernel/insn.c                            | 19 +++---
+ arch/arm/kernel/module-plts.c                     | 49 ++++++++++----
+ arch/arm/mm/init.c                                |  6 +-
+ arch/arm64/kernel/cacheinfo.c                     |  7 +-
+ arch/mips/kernel/cacheinfo.c                      |  7 +-
+ arch/riscv/kernel/cacheinfo.c                     |  7 +-
+ arch/s390/pci/pci_mmio.c                          |  2 +-
+ arch/um/drivers/virtio_uml.c                      |  4 +-
+ arch/x86/kernel/cpu/cacheinfo.c                   |  7 +-
+ block/blk-throttle.c                              |  1 +
+ drivers/acpi/pci_mcfg.c                           | 20 ++++++
+ drivers/dma/Kconfig                               |  2 +-
+ drivers/dma/acpi-dma.c                            | 10 ++-
+ drivers/dma/sprd-dma.c                            |  1 +
+ drivers/dma/xilinx/xilinx_dma.c                   |  2 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |  2 +
+ drivers/net/phy/phy-c45.c                         |  5 +-
+ drivers/net/phy/phy_device.c                      |  5 +-
+ drivers/parisc/dino.c                             | 18 +++---
+ drivers/pci/controller/pci-aardvark.c             | 71 +++++++++++++++++++--
+ drivers/pci/ecam.c                                | 10 +++
+ drivers/pci/pci-bridge-emul.c                     | 25 ++++----
+ drivers/pci/pci-bridge-emul.h                     | 78 +++++++++++------------
+ drivers/pwm/pwm-img.c                             | 16 -----
+ drivers/pwm/pwm-lpc32xx.c                         | 10 +--
+ drivers/pwm/pwm-mxs.c                             | 13 ++--
+ drivers/pwm/pwm-rockchip.c                        | 14 ----
+ drivers/pwm/pwm-stm32-lp.c                        |  2 -
+ drivers/rtc/Kconfig                               |  1 +
+ drivers/staging/rtl8192u/r8192U_core.c            |  2 +-
+ drivers/thermal/samsung/exynos_tmu.c              |  1 +
+ drivers/tty/vt/vt.c                               | 31 +++++++--
+ fs/btrfs/volumes.c                                |  7 +-
+ fs/ceph/caps.c                                    |  2 +
+ fs/ceph/file.c                                    | 32 +++++-----
+ fs/nilfs2/sysfs.c                                 | 26 ++++----
+ fs/nilfs2/the_nilfs.c                             |  9 ++-
+ include/linux/cacheinfo.h                         | 18 ------
+ include/linux/kvm_host.h                          | 11 +---
+ include/linux/pci-ecam.h                          |  1 +
+ include/linux/thermal.h                           |  5 +-
+ kernel/profile.c                                  | 21 +++---
+ kernel/sys.c                                      |  7 --
+ lib/Kconfig.debug                                 |  1 -
+ net/9p/trans_virtio.c                             |  4 +-
+ net/sctp/input.c                                  |  3 +
+ net/sctp/sm_make_chunk.c                          | 13 +++-
+ security/apparmor/apparmorfs.c                    |  3 -
+ virt/kvm/kvm_main.c                               |  5 +-
+ 55 files changed, 414 insertions(+), 275 deletions(-)
+
+
