@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AA641737C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EE4417314
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345172AbhIXM4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:56:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52818 "EHLO mail.kernel.org"
+        id S1344208AbhIXMx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344437AbhIXMyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:54:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C65461353;
-        Fri, 24 Sep 2021 12:50:46 +0000 (UTC)
+        id S1344313AbhIXMwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:52:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E11A161359;
+        Fri, 24 Sep 2021 12:49:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487847;
-        bh=s9AFFSU76Tc7byx5Fnxe3gcbcaQzNB8UlIPYom6Yna8=;
+        s=korg; t=1632487765;
+        bh=wuMnN238CAYwXN0qwKHd5Or0KpuSkE7Av/lZb/7bzdM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e7LMIWGJp3TiWv4lDSF0iVLla8MQQK4qF2VzXCJT1TRoch40l8kXEJnkdh8TZ4u5g
-         dMS9oPmT9TXkgLPSJZNOEKL2Wn9ugG9vhm6Gq3XhictDqyZlUR7a1d++izWCL+rhVu
-         snpx94nE3Nlb6nxjT2TnhfrkoiCt9/o4Lc33jLbE=
+        b=YOqVMx0CKhCpsktkULoIrzqOzoaqpzlnImFIAVnEoadl8ap4Vh3W7IOW2dBBPTI0y
+         7EkKtcDBx7F9dovGTvkuYuP95IOOvwh+ReZW4THjdi7nkR26/p09D4hgVxLsqKRMok
+         LivNiZz5Xnbhthr46wO2Y4a3yu/sROWtP6Seefos=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 33/50] dmaengine: sprd: Add missing MODULE_DEVICE_TABLE
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 28/34] nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
 Date:   Fri, 24 Sep 2021 14:44:22 +0200
-Message-Id: <20210924124333.364776155@linuxfoundation.org>
+Message-Id: <20210924124330.888108507@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-[ Upstream commit 4faee8b65ec32346f8096e64c5fa1d5a73121742 ]
+[ Upstream commit b2fe39c248f3fa4bbb2a20759b4fdd83504190f7 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+If kobject_init_and_add returns with error, kobject_put() is needed here
+to avoid memory leak, because kobject_init_and_add may return error
+without freeing the memory associated with the kobject it allocated.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-Link: https://lore.kernel.org/r/1620094977-70146-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-6-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-6-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/sprd-dma.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/nilfs2/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
-index 8546ad034720..b966115bfad1 100644
---- a/drivers/dma/sprd-dma.c
-+++ b/drivers/dma/sprd-dma.c
-@@ -1230,6 +1230,7 @@ static const struct of_device_id sprd_dma_match[] = {
- 	{ .compatible = "sprd,sc9860-dma", },
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, sprd_dma_match);
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 195f42192a15..6c92ac314b06 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -208,9 +208,9 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
+ 	}
  
- static int __maybe_unused sprd_dma_runtime_suspend(struct device *dev)
- {
+ 	if (err)
+-		return err;
++		kobject_put(&root->snapshot_kobj);
+ 
+-	return 0;
++	return err;
+ }
+ 
+ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
 -- 
 2.33.0
 
