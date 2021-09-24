@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E52417320
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D9A41729B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344803AbhIXMy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:54:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46134 "EHLO mail.kernel.org"
+        id S1344446AbhIXMtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:49:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344759AbhIXMwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:52:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8132161265;
-        Fri, 24 Sep 2021 12:49:40 +0000 (UTC)
+        id S1344223AbhIXMsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:48:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFD316124C;
+        Fri, 24 Sep 2021 12:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487781;
-        bh=nsnzZd4ajgOpxYl+PuhIkoBQILawStDEbi7Bo5ncsnw=;
+        s=korg; t=1632487624;
+        bh=SzRhX6bMighsIpJi2KT6RB9G710ii7c0AsCpSyB7/us=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y3/GwaDbi29ZJfzhdbXlxatbAxs0hFMgaJJlMraOYpfysohQYiXhYc16G9hwZCO1E
-         WWrIFCQyY7AUkblwVcgm5ihHk2/iCtxysiyVYNCLD9LAvqwX2g3HO78BNfslxX8UAR
-         UNOfNadDS4eFfGYWWdV/7q/HvQCBOUrMQUVZ2PhY=
+        b=JVxeJ2Q6JzSdOrb5KTfaPndi8Karxn8egGIe3hxfixyimj3lgXSs6GhpHORdC8UiB
+         9YL5U296Y8JrE6GcKaw7o2fuNtn1en2Cp6VWLlfpHV6Iu6wQEQL23ujjll8qE4CUPV
+         EEDfEBisKUlA4K2ss11ndTQxTVYKKuMoy45EE6lY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn " <serge@hallyn.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 5.4 10/50] apparmor: remove duplicate macro list_entry_is_head()
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 05/27] sctp: validate chunk size in __rcv_asconf_lookup
 Date:   Fri, 24 Sep 2021 14:43:59 +0200
-Message-Id: <20210924124332.587647783@linuxfoundation.org>
+Message-Id: <20210924124329.355681505@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-commit 9801ca279ad37f72f71234fa81722afd95a3f997 upstream.
+commit b6ffe7671b24689c09faa5675dd58f93758a97ae upstream.
 
-Strangely I hadn't had noticed the existence of the list_entry_is_head()
-in apparmor code when added the same one in the list.h.  Luckily it's
-fully identical and didn't break builds.  In any case we don't need a
-duplicate anymore, thus remove it from apparmor code.
+In one of the fallbacks that SCTP has for identifying an association for an
+incoming packet, it looks for AddIp chunk (from ASCONF) and take a peek.
+Thing is, at this stage nothing was validating that the chunk actually had
+enough content for that, allowing the peek to happen over uninitialized
+memory.
 
-Link: https://lkml.kernel.org/r/20201208100639.88182-1-andriy.shevchenko@linux.intel.com
-Fixes: e130816164e244 ("include/linux/list.h: add a macro to test if entry is pointing to the head")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: John Johansen <john.johansen@canonical.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: "Serge E . Hallyn " <serge@hallyn.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+Similar check already exists in actual asconf handling in
+sctp_verify_asconf().
+
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/apparmor/apparmorfs.c |    3 ---
- 1 file changed, 3 deletions(-)
+ net/sctp/input.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/security/apparmor/apparmorfs.c
-+++ b/security/apparmor/apparmorfs.c
-@@ -1960,9 +1960,6 @@ fail2:
- 	return error;
- }
+--- a/net/sctp/input.c
++++ b/net/sctp/input.c
+@@ -1118,6 +1118,9 @@ static struct sctp_association *__sctp_r
+ 	union sctp_addr_param *param;
+ 	union sctp_addr paddr;
  
--
--#define list_entry_is_head(pos, head, member) (&pos->member == (head))
--
- /**
-  * __next_ns - find the next namespace to list
-  * @root: root namespace to stop search at (NOT NULL)
++	if (ntohs(ch->length) < sizeof(*asconf) + sizeof(struct sctp_paramhdr))
++		return NULL;
++
+ 	/* Skip over the ADDIP header and find the Address parameter */
+ 	param = (union sctp_addr_param *)(asconf + 1);
+ 
 
 
