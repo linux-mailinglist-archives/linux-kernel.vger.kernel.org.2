@@ -2,73 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C8B4175FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27A64175FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346218AbhIXNhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:37:18 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:33364 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346319AbhIXNhK (ORCPT
+        id S1346521AbhIXNhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:37:12 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37956
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346428AbhIXNgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:37:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UpRWw2x_1632490534;
-Received: from 30.15.218.30(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UpRWw2x_1632490534)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 24 Sep 2021 21:35:35 +0800
-Subject: Re: [PATCH] firmware: arm_sdei: pass sdei_api_event_register right
- parameters
-To:     James Morse <james.morse@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210910040117.98736-1-zhangliguang@linux.alibaba.com>
-From:   =?UTF-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Message-ID: <f0dac2f4-60f5-b200-47f1-0b845cfa02a6@linux.alibaba.com>
-Date:   Fri, 24 Sep 2021 21:34:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 24 Sep 2021 09:36:49 -0400
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 894E14027C
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632490515;
+        bh=v0f97v842v9qYVokMipR6acxJb0mTvy8VEiat1GXDFk=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=ce8C7P9jVwUn+jtdegCxntPN8raVAx3eLU09lsXvfwRuarIIXKHLOF6DlkkOFzXhp
+         J6DLCXvw5qkCBLrf4qefcTB0wzmYzsAuRca/pmCx379cp6tCAMhIGc8zKkYoO+NPl3
+         SBn+369iVUIrdjjn7n3dt9BS9MFyybJirxTod0RJjNxYF5yiFSdFWnALdoXgRmEnOT
+         e1biCM0AnkdOtM2eo5Y/dYjgz8jra0yfJL7BvH2zjZcDB4NHYZkmTIlqJ6KO2MjKfL
+         pqlkq+sK0PyqEZrrhEKEd8/clI0CiwL3KSAGwyjaBokKwCvbnHXyJUowmsjzlQdUom
+         OnK00eDMkbAYw==
+Received: by mail-wr1-f71.google.com with SMTP id a17-20020adfed11000000b00160525e875aso568578wro.23
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:35:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v0f97v842v9qYVokMipR6acxJb0mTvy8VEiat1GXDFk=;
+        b=trSQFPYVJx7Jvm1Xg+2+i7gF68ZSFj4cMkgpfkYqkp7prkC7tisCqC66MDGEpwl+JA
+         Clwt5hwW870PgHNRCEX6VkjPm2Lm6sq6JJCDwuLyC4UoOdrEspp4KC3/Yu0yF+gjaAnX
+         sIMygwbYSmpJk/WaXBrvYSnQ0MZfRcxDO7GwxrJtalGqoHbqGlhHdmJlUaLBWlJbbcma
+         MnS1+1tbWSPIOYRkp4YBWNasNOe8LXcsirnFT6TyN//ZjyGcXPb2D1FDZ2FCrU7K9tVj
+         wiW8buvrdjV9IcBQH4AR5rBSul/HmDayt+G9pBogqG5+dDVIO8BXbBvIF+T8IE5V6USK
+         uYow==
+X-Gm-Message-State: AOAM5319VqM8XUXDeWvOdctz7sAg7QwKA8WCLjW76S8nQhz+1PoHMbhV
+        K+SPvAxtg6MLfkXoCML4Juc4/Vcx16BzMd+kWcd6i0EQ9W9dnN76QkEY6R8LcP6KKl3Efqbgiem
+        2WO9VfvEtWqjRa6mbVZPW4rvqvyIk8CFIQv9YgRJvog==
+X-Received: by 2002:adf:f4c6:: with SMTP id h6mr866974wrp.397.1632490515240;
+        Fri, 24 Sep 2021 06:35:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwi7xEv8Tz6BmCOASozjNG+54R6CSmRxyu2Kax3cZe6Cg23rAYqOmgddnFPEdP4Opy5ulirIw==
+X-Received: by 2002:adf:f4c6:: with SMTP id h6mr866952wrp.397.1632490515106;
+        Fri, 24 Sep 2021 06:35:15 -0700 (PDT)
+Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id 5sm8709997wmb.37.2021.09.24.06.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 06:35:14 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?q?Artur=20=C5=9Awigo=C5=84?= <a.swigon@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH] interconnect: samsung: describe drivers in KConfig
+Date:   Fri, 24 Sep 2021 15:34:40 +0200
+Message-Id: <20210924133441.112263-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210910040117.98736-1-zhangliguang@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Describe better which driver applies to which SoC, to make configuring
+kernel for Samsung SoC easier.
 
-Gentle ping! Any comments on this patch?
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/interconnect/samsung/Kconfig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/interconnect/samsung/Kconfig b/drivers/interconnect/samsung/Kconfig
+index 6820e4f772cc..fbee87e379d0 100644
+--- a/drivers/interconnect/samsung/Kconfig
++++ b/drivers/interconnect/samsung/Kconfig
+@@ -6,8 +6,10 @@ config INTERCONNECT_SAMSUNG
+ 	  Interconnect drivers for Samsung SoCs.
+ 
+ config INTERCONNECT_EXYNOS
+-	tristate "Exynos generic interconnect driver"
++	tristate "Exynos SoC generic interconnect driver"
+ 	depends on INTERCONNECT_SAMSUNG
+ 	default y if ARCH_EXYNOS
+ 	help
+-	  Generic interconnect driver for Exynos SoCs.
++	  Generic interconnect driver for Samsung Exynos SoCs (e.g. Exynos3250,
++	  Exynos4210, Exynos4412, Exynos542x, Exynos5433).
++	  Choose Y here only if you build for such Samsung SoC.
+-- 
+2.30.2
 
-ÔÚ 2021/9/10 12:01, Liguang Zhang Ð´µÀ:
-> Function _local_event_enable is used for private sdei event
-> registeration called by sdei_event_register. We should pass
-> sdei_api_event_register right flag and mpidr parameters, otherwise atf
-> may trigger assert errors.
->
-> Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
-> ---
->   drivers/firmware/arm_sdei.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
-> index a7e762c352f9..0736752dadde 100644
-> --- a/drivers/firmware/arm_sdei.c
-> +++ b/drivers/firmware/arm_sdei.c
-> @@ -558,14 +558,16 @@ static int sdei_api_event_register(u32 event_num, unsigned long entry_point,
->   static void _local_event_register(void *data)
->   {
->   	int err;
-> +	u64 mpidr;
->   	struct sdei_registered_event *reg;
->   	struct sdei_crosscall_args *arg = data;
->   
->   	WARN_ON(preemptible());
->   
-> +	mpidr = read_cpuid_mpidr();
->   	reg = per_cpu_ptr(arg->event->private_registered, smp_processor_id());
->   	err = sdei_api_event_register(arg->event->event_num, sdei_entry_point,
-> -				      reg, 0, 0);
-> +				      reg, SDEI_EVENT_REGISTER_RM_PE, mpidr);
->   
->   	sdei_cross_call_return(arg, err);
->   }
