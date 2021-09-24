@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A339B417383
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C190341741C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344665AbhIXM5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:57:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53310 "EHLO mail.kernel.org"
+        id S1346029AbhIXNCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:02:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344686AbhIXMzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:55:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE01261284;
-        Fri, 24 Sep 2021 12:50:56 +0000 (UTC)
+        id S1344849AbhIXM7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:59:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E58961283;
+        Fri, 24 Sep 2021 12:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487857;
-        bh=0GZFCYYfQx/uxXebFTqgT3chQ9BHTb+Sr/l66d5Bsus=;
+        s=korg; t=1632488005;
+        bh=pNEvi4tY0qEvOUmY2GRGxyqS8i4BY84ocPzDov3hEI4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y4keuPpv2la7qbrW15v2e/jXwQNlqAXTimCDYK9BB3sJtNgjL52an0DkSOSerDDMh
-         Fi/91vuMoP8+Tqod0+lbHWc5wFzDtoejYtqVbcwjemOjC/t8hhe7UOp9Bh3UDiAn0X
-         /r6b5C/QzUMfLgLEIKqzx8Jlh/rwJeeNUplxJlpw=
+        b=BohiU9jZM2uXgvIu1HpLN+K4sMq5eWparBFDMHDsWSSuLXPZRzfkgIobDH4iktTOy
+         7SlFMkh7+rgH4LPXhFZucin1P8HSR/XmOlLSOpldm1C2pv5BSdCdMq0IbKNGUIrBuo
+         znTXG1+Uw2eaUnkV/kqP9FGl7gXcV35usce5Tipg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, nick black <dankamongmen@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 07/50] console: consume APC, DM, DCS
+        stable@vger.kernel.org, Wei Huang <wei.huang2@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 047/100] iommu/amd: Relocate GAMSup check to early_enable_iommus
 Date:   Fri, 24 Sep 2021 14:43:56 +0200
-Message-Id: <20210924124332.483866705@linuxfoundation.org>
+Message-Id: <20210924124343.022637791@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,137 +40,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: nick black <dankamongmen@gmail.com>
+From: Wei Huang <wei.huang2@amd.com>
 
-commit 3a2b2eb55681158d3e3ef464fbf47574cf0c517c upstream.
+[ Upstream commit c3811a50addd23b9bb5a36278609ee1638debcf6 ]
 
-The Linux console's VT102 implementation already consumes OSC
-("Operating System Command") sequences, probably because that's how
-palette changes are transmitted.
+Currently, iommu_init_ga() checks and disables IOMMU VAPIC support
+(i.e. AMD AVIC support in IOMMU) when GAMSup feature bit is not set.
+However it forgets to clear IRQ_POSTING_CAP from the previously set
+amd_iommu_irq_ops.capability.
 
-In addition to OSC, there are three other major clases of ANSI control
-strings: APC ("Application Program Command"), PM ("Privacy Message"),
-and DCS ("Device Control String").  They are handled similarly to OSC in
-terms of termination.
+This triggers an invalid page fault bug during guest VM warm reboot
+if AVIC is enabled since the irq_remapping_cap(IRQ_POSTING_CAP) is
+incorrectly set, and crash the system with the following kernel trace.
 
-Source: vt100.net
+    BUG: unable to handle page fault for address: 0000000000400dd8
+    RIP: 0010:amd_iommu_deactivate_guest_mode+0x19/0xbc
+    Call Trace:
+     svm_set_pi_irte_mode+0x8a/0xc0 [kvm_amd]
+     ? kvm_make_all_cpus_request_except+0x50/0x70 [kvm]
+     kvm_request_apicv_update+0x10c/0x150 [kvm]
+     svm_toggle_avic_for_irq_window+0x52/0x90 [kvm_amd]
+     svm_enable_irq_window+0x26/0xa0 [kvm_amd]
+     vcpu_enter_guest+0xbbe/0x1560 [kvm]
+     ? avic_vcpu_load+0xd5/0x120 [kvm_amd]
+     ? kvm_arch_vcpu_load+0x76/0x240 [kvm]
+     ? svm_get_segment_base+0xa/0x10 [kvm_amd]
+     kvm_arch_vcpu_ioctl_run+0x103/0x590 [kvm]
+     kvm_vcpu_ioctl+0x22a/0x5d0 [kvm]
+     __x64_sys_ioctl+0x84/0xc0
+     do_syscall_64+0x33/0x40
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Add three new enumerated states, one for each of these types.  All three
-are handled the same way right now--they simply consume input until
-terminated.  I hope to expand upon this firmament in the future.  Add
-new predicate ansi_control_string(), returning true for any of these
-states.  Replace explicit checks against ESosc with calls to this
-function.  Transition to these states appropriately from the escape
-initiation (ESesc) state.
+Fixes by moving the initializing of AMD IOMMU interrupt remapping mode
+(amd_iommu_guest_ir) earlier before setting up the
+amd_iommu_irq_ops.capability with appropriate IRQ_POSTING_CAP flag.
 
-This was motivated by the following Notcurses bugs:
+[joro:	Squashed the two patches and limited
+	check_features_on_all_iommus() to CONFIG_IRQ_REMAP
+	to fix a compile warning.]
 
- https://github.com/dankamongmen/notcurses/issues/2050
- https://github.com/dankamongmen/notcurses/issues/1828
- https://github.com/dankamongmen/notcurses/issues/2069
-
-where standard VT sequences are not consumed by the Linux console.  It's
-not necessary that the Linux console *support* these sequences, but it
-ought *consume* these well-specified classes of sequences.
-
-Tested by sending a variety of escape sequences to the console, and
-verifying that they still worked, or were now properly consumed.
-Verified that the escapes were properly terminated at a generic level.
-Verified that the Notcurses tools continued to show expected output on
-the Linux console, except now without escape bleedthrough.
-
-Link: https://lore.kernel.org/lkml/YSydL0q8iaUfkphg@schwarzgerat.orthanc/
-Signed-off-by: nick black <dankamongmen@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Wei Huang <wei.huang2@amd.com>
+Co-developed-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Link: https://lore.kernel.org/r/20210820202957.187572-2-suravee.suthikulpanit@amd.com
+Link: https://lore.kernel.org/r/20210820202957.187572-3-suravee.suthikulpanit@amd.com
+Fixes: 8bda0cfbdc1a ("iommu/amd: Detect and initialize guest vAPIC log")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/vt/vt.c |   31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
+ drivers/iommu/amd/init.c | 31 ++++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
 
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -2070,7 +2070,7 @@ static void restore_cur(struct vc_data *
- 
- enum { ESnormal, ESesc, ESsquare, ESgetpars, ESfunckey,
- 	EShash, ESsetG0, ESsetG1, ESpercent, EScsiignore, ESnonstd,
--	ESpalette, ESosc };
-+	ESpalette, ESosc, ESapc, ESpm, ESdcs };
- 
- /* console_lock is held (except via vc_init()) */
- static void reset_terminal(struct vc_data *vc, int do_clear)
-@@ -2124,20 +2124,28 @@ static void reset_terminal(struct vc_dat
- 	    csi_J(vc, 2);
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 46280e6e1535..5c21f1ee5098 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -298,6 +298,22 @@ int amd_iommu_get_num_iommus(void)
+ 	return amd_iommus_present;
  }
  
-+/* is this state an ANSI control string? */
-+static bool ansi_control_string(unsigned int state)
++#ifdef CONFIG_IRQ_REMAP
++static bool check_feature_on_all_iommus(u64 mask)
 +{
-+	if (state == ESosc || state == ESapc || state == ESpm || state == ESdcs)
-+		return true;
-+	return false;
-+}
++	bool ret = false;
++	struct amd_iommu *iommu;
 +
- /* console_lock is held */
- static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
- {
- 	/*
- 	 *  Control characters can be used in the _middle_
--	 *  of an escape sequence.
-+	 *  of an escape sequence, aside from ANSI control strings.
- 	 */
--	if (vc->vc_state == ESosc && c>=8 && c<=13) /* ... except for OSC */
-+	if (ansi_control_string(vc->vc_state) && c >= 8 && c <= 13)
- 		return;
- 	switch (c) {
- 	case 0:
- 		return;
- 	case 7:
--		if (vc->vc_state == ESosc)
-+		if (ansi_control_string(vc->vc_state))
- 			vc->vc_state = ESnormal;
- 		else if (vc->vc_bell_duration)
- 			kd_mksound(vc->vc_bell_pitch, vc->vc_bell_duration);
-@@ -2196,6 +2204,12 @@ static void do_con_trol(struct tty_struc
- 		case ']':
- 			vc->vc_state = ESnonstd;
- 			return;
-+		case '_':
-+			vc->vc_state = ESapc;
-+			return;
-+		case '^':
-+			vc->vc_state = ESpm;
-+			return;
- 		case '%':
- 			vc->vc_state = ESpercent;
- 			return;
-@@ -2212,6 +2226,9 @@ static void do_con_trol(struct tty_struc
- 		case 'H':
- 			vc->vc_tab_stop[7 & (vc->vc_x >> 5)] |= (1 << (vc->vc_x & 31));
- 			return;
-+		case 'P':
-+			vc->vc_state = ESdcs;
-+			return;
- 		case 'Z':
- 			respond_ID(tty);
- 			return;
-@@ -2531,8 +2548,14 @@ static void do_con_trol(struct tty_struc
- 			vc->vc_translate = set_translate(vc->vc_G1_charset, vc);
- 		vc->vc_state = ESnormal;
- 		return;
-+	case ESapc:
-+		return;
- 	case ESosc:
- 		return;
-+	case ESpm:
-+		return;
-+	case ESdcs:
-+		return;
- 	default:
- 		vc->vc_state = ESnormal;
++	for_each_iommu(iommu) {
++		ret = iommu_feature(iommu, mask);
++		if (!ret)
++			return false;
++	}
++
++	return true;
++}
++#endif
++
+ /*
+  * For IVHD type 0x11/0x40, EFR is also available via IVHD.
+  * Default to IVHD EFR since it is available sooner
+@@ -854,13 +870,6 @@ static int iommu_init_ga(struct amd_iommu *iommu)
+ 	int ret = 0;
+ 
+ #ifdef CONFIG_IRQ_REMAP
+-	/* Note: We have already checked GASup from IVRS table.
+-	 *       Now, we need to make sure that GAMSup is set.
+-	 */
+-	if (AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) &&
+-	    !iommu_feature(iommu, FEATURE_GAM_VAPIC))
+-		amd_iommu_guest_ir = AMD_IOMMU_GUEST_IR_LEGACY_GA;
+-
+ 	ret = iommu_init_ga_log(iommu);
+ #endif /* CONFIG_IRQ_REMAP */
+ 
+@@ -2477,6 +2486,14 @@ static void early_enable_iommus(void)
  	}
+ 
+ #ifdef CONFIG_IRQ_REMAP
++	/*
++	 * Note: We have already checked GASup from IVRS table.
++	 *       Now, we need to make sure that GAMSup is set.
++	 */
++	if (AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) &&
++	    !check_feature_on_all_iommus(FEATURE_GAM_VAPIC))
++		amd_iommu_guest_ir = AMD_IOMMU_GUEST_IR_LEGACY_GA;
++
+ 	if (AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir))
+ 		amd_iommu_irq_ops.capability |= (1 << IRQ_POSTING_CAP);
+ #endif
+-- 
+2.33.0
+
 
 
