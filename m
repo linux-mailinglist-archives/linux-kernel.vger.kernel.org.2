@@ -2,127 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85328416C79
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD715416C8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244290AbhIXHFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:05:44 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:20005 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244244AbhIXHFn (ORCPT
+        id S244297AbhIXHK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:10:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27740 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231415AbhIXHK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:05:43 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HG2wB5l1Czbmny;
-        Fri, 24 Sep 2021 14:59:54 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 24 Sep 2021 15:04:07 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Fri, 24 Sep
- 2021 15:04:07 +0800
-Subject: Re: [PATCH net-next 1/7] page_pool: disable dma mapping support for
- 32-bit arch with 64-bit DMA
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Jesper Dangaard Brouer" <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Kevin Hao" <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, <memxor@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <20210922094131.15625-2-linyunsheng@huawei.com>
- <0ffa15a1-742d-a05d-3ea6-04ff25be6a29@redhat.com>
- <CAC_iWjJLCQNHxgbQ-mzLC3OC-m2s7qj3YAtw7vPAKGG6WxywpA@mail.gmail.com>
- <adb2687f-b501-9324-52b2-33ede1169007@huawei.com>
- <YUx8KZS5NPdTRkPS@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <27bc803a-1687-a583-fa6b-3691fef7552e@huawei.com>
-Date:   Fri, 24 Sep 2021 15:04:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 24 Sep 2021 03:10:28 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18O78hc6004099;
+        Fri, 24 Sep 2021 03:08:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=gekK1Ey3BsVMUva1NOyE8x7YSwJQ2QyivMqpVGpAWYE=;
+ b=R24ZCJxUNi+oKVQemjeq9EZNAU1h3BFtSDwPlaq/RSHsJW01Zut4fxTiTFndewwJUG8M
+ XC9JUz2KUAsx+EAUKcb7Z42q+HqnY9EoJTswcZcAPz3o6RDKq9tasSGcJMC/wbtTXlD8
+ zP1KmC7BXGcuapilzScTSjX/Tut/WwXWbCH6KSF5MfKmgnbg5eIUWmEPyAnmw0/h1u8s
+ bwIZoVQcHhcB7ws8MWDXrqcDKwsYGQq/gCmW8Vio1aZUV+sJRqytfoWhtjIplOPhxrKI
+ 7YX3PvVxF00tEmNthngWyUW+MhT9pH1wJcUEA+5wXtR2VQ1IwypoY3sthJhbbCwM6fjS Jw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b979uumqe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Sep 2021 03:08:43 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18O78g6Y031357;
+        Fri, 24 Sep 2021 03:08:42 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b979uumpy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Sep 2021 03:08:42 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18O77bBM001509;
+        Fri, 24 Sep 2021 07:08:41 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma04dal.us.ibm.com with ESMTP id 3b93g1yep2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Sep 2021 07:08:41 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18O78e7f13238702
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Sep 2021 07:08:40 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D042E28067;
+        Fri, 24 Sep 2021 07:08:40 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2145528060;
+        Fri, 24 Sep 2021 07:08:37 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.43.56.34])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 24 Sep 2021 07:08:36 +0000 (GMT)
+X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH v2 1/4] hugetlb: add demote hugetlb page sysfs interfaces
+In-Reply-To: <20210923175347.10727-2-mike.kravetz@oracle.com>
+References: <20210923175347.10727-1-mike.kravetz@oracle.com>
+ <20210923175347.10727-2-mike.kravetz@oracle.com>
+Date:   Fri, 24 Sep 2021 12:38:33 +0530
+Message-ID: <878rzma1se.fsf@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <YUx8KZS5NPdTRkPS@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jVg9Jfb5GYPIrwfpw4F3tf4-SV-YVcde
+X-Proofpoint-ORIG-GUID: -V9dfMZYkHiG2u7vVoEA14SBaEqmmkj_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-24_02,2021-09-23_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
+ mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2109240041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/23 21:07, Ilias Apalodimas wrote:
-> On Thu, Sep 23, 2021 at 07:13:11PM +0800, Yunsheng Lin wrote:
->> On 2021/9/23 18:02, Ilias Apalodimas wrote:
->>> Hi Jesper,
->>>
->>> On Thu, 23 Sept 2021 at 12:33, Jesper Dangaard Brouer
->>> <jbrouer@redhat.com> wrote:
->>>>
->>>>
->>>> On 22/09/2021 11.41, Yunsheng Lin wrote:
->>>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->>>>> index 1a6978427d6c..a65bd7972e37 100644
->>>>> --- a/net/core/page_pool.c
->>>>> +++ b/net/core/page_pool.c
->>>>> @@ -49,6 +49,12 @@ static int page_pool_init(struct page_pool *pool,
->>>>>        * which is the XDP_TX use-case.
->>>>>        */
->>>>>       if (pool->p.flags & PP_FLAG_DMA_MAP) {
->>>>> +             /* DMA-mapping is not supported on 32-bit systems with
->>>>> +              * 64-bit DMA mapping.
->>>>> +              */
->>>>> +             if (sizeof(dma_addr_t) > sizeof(unsigned long))
->>>>> +                     return -EINVAL;
->>>>
->>>> As I said before, can we please use another error than EINVAL.
->>>> We should give drivers a chance/ability to detect this error, and e.g.
->>>> fallback to doing DMA mappings inside driver instead.
->>>>
->>>> I suggest using EOPNOTSUPP 95 (Operation not supported).
->>
->> Will change it to EOPNOTSUPP, thanks.
-> 
-> Mind sending this one separately (and you can keep my reviewed-by).  It
-> fits nicely on it's own and since I am not sure about the rest of the
-> changes yet, it would be nice to get this one in.
+Mike Kravetz <mike.kravetz@oracle.com> writes:
 
-I am not sure sending this one separately really makes sense, as it is
-mainly used to make supporting the "keep track of pp page when __skb_frag_ref()
-is called" in patch 5 easier.
+> Two new sysfs files are added to demote hugtlb pages.  These files are
+> both per-hugetlb page size and per node.  Files are:
+>   demote_size - The size in Kb that pages are demoted to. (read-write)
+>   demote - The number of huge pages to demote. (write-only)
+>
+> By default, demote_size is the next smallest huge page size.  Valid huge
+> page sizes less than huge page size may be written to this file.  When
+> huge pages are demoted, they are demoted to this size.
+>
+> Writing a value to demote will result in an attempt to demote that
+> number of hugetlb pages to an appropriate number of demote_size pages.
+>
+> NOTE: Demote interfaces are only provided for huge page sizes if there
+> is a smaller target demote huge page size.  For example, on x86 1GB huge
+> pages will have demote interfaces.  2MB huge pages will not have demote
+> interfaces.
 
-> 
-> Cheers
-> /Ilias
->>
->>>
->>> I am fine with both.  In any case though the aforementioned driver can
->>> just remove PP_FLAG_DMA_MAP and do it's own mappings.
->>>
->>> Regards
->>> /Ilias
->>>>
->>>> -Jesper
->>>>
->>> .
->>>
-> .
-> 
+Should we also check if the platform allows for
+gigantic_page_runtime_supported() ? 
+
+-aneesh
+
