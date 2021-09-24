@@ -2,128 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8606F41764E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0917417650
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243066AbhIXN4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57966 "EHLO
+        id S1346222AbhIXN4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234616AbhIXN4K (ORCPT
+        with ESMTP id S233156AbhIXN4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:56:10 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D53C061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:54:37 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id pf3-20020a17090b1d8300b0019e081aa87bso7644906pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:54:37 -0700 (PDT)
+        Fri, 24 Sep 2021 09:56:52 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32420C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:55:18 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id w19so14511509oik.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:55:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Kz5TrqcLU+ze8Yfi6qwiX1dvpIqN0ksd5g5a+3awDeg=;
-        b=IGX6xsmxueczgFJR3x6mOdbU7KRPAnhnANNs+jc6CmAmQjVc2LlFTYhDk4c5eY9WSO
-         mZxc+Uhoyr/PuybtyIxgtyOFIw/cTdm5nzqbZ1rcuPlv4TBJgI2cgl+cg3k3P85+5xqL
-         UxeH7QhnVUDCEyORBzEnNLgW3IfN/8p+/hpcQ=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HgMsMM12ambgjasVHiwyMyFy+XML39ZEZewyFh9rPw4=;
+        b=qRhMKtVK8ucMXnLTDuWt9+oa8HmAZU3NpzuLxZI2oEqYMj9np3rh/NL6x6Xmty4KB6
+         g70481O46js8+1ODJb50/9WjOraE4VUDheZcEpGuu+crkRxsknirDDynfPqlHaAOUda2
+         KaBi+M6y0GlyeFokX09QZe2oXnnBldGwnJ2+hNjuM65GKp9/50oAfdYBSVnhJ7YgYlyQ
+         N6RzsrarCUHZpfUVr4v/QZmhKiz7nyyWYM608C36cnlB2TDKrJisYQ+/RrLkHMvy9ZGi
+         /W2BwR1wy9y06jTx/CuERf+LVB8dp3+uASEdwy7Ds2vw7/XtIC3Ra8bVKOeZHhn1FxO6
+         Akww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Kz5TrqcLU+ze8Yfi6qwiX1dvpIqN0ksd5g5a+3awDeg=;
-        b=IyXlkS9hs2lC5mMfBoa+4/xW5W/MEGCMy3W85cg6Pf1cjiTrrz38VGV5eWbpXGSWZM
-         pHutDdNHrYceMIdbP8Jaj3UVR3kZIfFqOBN0K+f5KJvgSVLOV9GuuEBl+c1tYjtttCgP
-         q1hBdvpjxmiTKaQY0dKfVHec3jyvx0G7rthCf+qizxQ/xZQQPieFPzGoea77hSGP1ljc
-         6j2r9aRbEbGCKKrInB8jC88XuJPsI6xKZ4azuFiA/WxFhG5FugBYoImT7r2rwEp/gxsP
-         S3H/xOQ3BPqpa1X1vnwyR393x8dpmxJrBXP8TJq0XDXwz53D1x6TADnaSuJP/ThEP6tW
-         NSgQ==
-X-Gm-Message-State: AOAM530CWxtWpeqvFsF9jDmKlQqskXVndoJmUjvn0HWPH5aPUiS3nOO/
-        85wz6cOSpLmcwgJFDUAQHhf+jw==
-X-Google-Smtp-Source: ABdhPJx/Dtx19wxdYEYlyQ/SP788dP1lFmKMoyuYgE00j90jxbMh3uBJ6+huVy4ts0WEaSERoq/ERg==
-X-Received: by 2002:a17:90a:130f:: with SMTP id h15mr2428449pja.183.1632491677501;
-        Fri, 24 Sep 2021 06:54:37 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:973:9109:7e32:e4da])
-        by smtp.gmail.com with UTF8SMTPSA id n26sm9509706pfo.19.2021.09.24.06.54.36
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HgMsMM12ambgjasVHiwyMyFy+XML39ZEZewyFh9rPw4=;
+        b=C//YZxFBKRFpGORDhHu/fyGGz/kwgwIRNxA4qRn030njx7WOpw1tgDAyEpKQXnAY2H
+         XT9GM/F4woRpdHCSNts/4ucNolZ+kxz+TxjgFDpLIgHIjIzjH/2Fjm81z9OkH+4CP755
+         /VLcbCUtfz1Q8dKtO1rS4yGzzbBNyoAVCSNaZ2X9y1NdA5XhAykoRb2WM5T0kuSXQdyI
+         hZaVwUzuF96dbWHIFP0CYb5npgthGZf/u7HrIOnqyAu1TNu6DcKy37EQrwGtQ+hXZIlH
+         XMAuH5kCX8iZkltnU8wDGFMLhxAfuXxl4u30gpxxJHXQeKeuEQPapU8Th2KmUz+4jABd
+         6lUg==
+X-Gm-Message-State: AOAM533CKnI0N5w4cTiOosP5DB0oIu9DvDd6ptV51S2AOZBv+NbHYkuk
+        S5Sk1rhpk3k3+P4vklpXZXs+0w==
+X-Google-Smtp-Source: ABdhPJxMUWVvrysy6yHMhSZN34dYLdW4eACOQNZUynEuyE89yHiGF60SvMJfXidFDNd/tp9fgihDhA==
+X-Received: by 2002:a05:6808:1187:: with SMTP id j7mr1571141oil.135.1632491717550;
+        Fri, 24 Sep 2021 06:55:17 -0700 (PDT)
+Received: from [192.168.17.16] ([189.219.73.83])
+        by smtp.gmail.com with ESMTPSA id a24sm955776otq.42.2021.09.24.06.55.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 06:54:37 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 06:54:35 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Zijun Hu <zijuhu@codeaurora.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        rjliao@codeaurora.org, tjiang@codeaurora.org
-Subject: Re: [PATCH v10] Bluetooth: btusb: Add support using different nvm
- for variant WCN6855 controller
-Message-ID: <YU3Ym8Oa9yJVqN44@google.com>
-References: <1631614096-24613-1-git-send-email-zijuhu@codeaurora.org>
- <C7D16218-F9EF-4CF3-AFE1-C8589A8810D5@holtmann.org>
+        Fri, 24 Sep 2021 06:55:17 -0700 (PDT)
+Subject: Re: [PATCH 4.14 00/27] 4.14.248-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210924124329.173674820@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <4bd73a4e-e606-0054-e4b1-9d6c89a81186@linaro.org>
+Date:   Fri, 24 Sep 2021 08:55:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <C7D16218-F9EF-4CF3-AFE1-C8589A8810D5@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 12:10:41PM +0200, Marcel Holtmann wrote:
-> Hi Zijun,
-> 
-> > the RF performance of wcn6855 soc chip from different foundries will be
-> > difference, so we should use different nvm to configure them.
-> > 
-> > Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
-> > ---
-> > drivers/bluetooth/btusb.c | 50 +++++++++++++++++++++++++++++++++++------------
-> > 1 file changed, 37 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> > index 928cbfa4c42d..6dc645698e30 100644
-> > --- a/drivers/bluetooth/btusb.c
-> > +++ b/drivers/bluetooth/btusb.c
-> > @@ -3161,6 +3161,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
-> > #define QCA_DFU_TIMEOUT		3000
-> > #define QCA_FLAG_MULTI_NVM      0x80
-> > 
-> > +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-> > +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-> > +
-> > struct qca_version {
-> > 	__le32	rom_version;
-> > 	__le32	patch_version;
-> > @@ -3192,6 +3195,7 @@ static const struct qca_device_info qca_devices_table[] = {
-> > 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
-> > 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
-> > 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-> > +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
-> > };
-> > 
-> > static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-> > @@ -3346,6 +3350,31 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
-> > 	return err;
-> > }
-> > 
-> > +static void btusb_generate_qca_nvm_name(char *fwname,
-> > +					size_t max_size,
-> > +					struct qca_version *ver,
-> > +					char *variant)
-> > +{
-> 
-> you are really not listening to review feedback. Use “const char *variant”.
+Hello!
 
-Yeah, also as I mentioned earlier, this function has all the information
-to determine the variant itself, there is no need to clutter
-btusb_setup_qca_load_nvm() and the interface of this function with
-variant stuff, it should be internal business of btusb_generate_qca_nvm_name().
-
+On 9/24/21 7:43 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.248 release.
+> There are 27 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > +	char *sep = (strlen(variant) == 0) ? "" : "_";
+> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
+> Anything received after that time might be too late.
 > 
-> This is crazy.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.248-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-It can also go away if the function determines the variant itself.
+Regressions detected.
+
+While building mxs_defconfig for arm with GCC 8, 9, 10 and 11, the following error was encountered:
+
+   /builds/linux/arch/arm/mach-mxs/mach-mxs.c:285:26: warning: duplicate 'const' declaration specifier [-Wduplicate-decl-specifier]
+     285 | static const struct gpio const tx28_gpios[] __initconst = {
+         |                          ^~~~~
+   /builds/linux/drivers/pwm/pwm-mxs.c: In function 'mxs_pwm_probe':
+   /builds/linux/drivers/pwm/pwm-mxs.c:164:24: error: implicit declaration of function 'dev_err_probe'; did you mean 'device_reprobe'? [-Werror=implicit-function-declaration]
+     164 |                 return dev_err_probe(&pdev->dev, ret, "failed to reset PWM\n");
+         |                        ^~~~~~~~~~~~~
+         |                        device_reprobe
+   cc1: some warnings being treated as errors
+   make[3]: *** [/builds/linux/scripts/Makefile.build:280: drivers/pwm/pwm-mxs.o] Error 1
+
+This is also seen in other branches (from 4.4 to 5.4). To reproduce this build locally:
+
+   tuxmake \
+     --target-arch=arm \
+     --kconfig=mxs_defconfig \
+     --toolchain=gcc-11 \
+     --runtime=podman \
+     config default kernel xipkernel modules dtbs dtbs-legacy debugkernel headers
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
