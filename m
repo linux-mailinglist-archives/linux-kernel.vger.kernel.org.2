@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB894172D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23F04172C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343837AbhIXMvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45232 "EHLO mail.kernel.org"
+        id S1344236AbhIXMvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:51:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343757AbhIXMuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79D4F61278;
-        Fri, 24 Sep 2021 12:48:15 +0000 (UTC)
+        id S1344412AbhIXMtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:49:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E19D561283;
+        Fri, 24 Sep 2021 12:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487696;
-        bh=RiH5aUM0FXMA342fAyBhQhYAmjfHfwpOr7j/9drsde8=;
+        s=korg; t=1632487680;
+        bh=Z4McYNiEwNXxv/YA7HLEkflslNkWA+CMHTq3Ka3jd28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2FACEM3mmvZWA/b/Wuc7X5EvBNEE1+k5EUWJTzzam5FdKasC7QRMLsVpjuTbaQJVk
-         p3zdFww8GMshM1W1oqJQBcD1KH7oGldjIaQN9ab/NRZSyi5zHUKrp8Sls/sjWY5Tb2
-         eOx62XqE2DUlF5yn4FQhc+2QItS+FOmrNPDlwAVM=
+        b=Ca20TL78qKOFI0RADhqj2BwLb6ZwDj5n42LE0hstTyUsj1fdUAqnRoNXK06zyt3Kx
+         u9v8JGnsJ3qC8tcdNYmIivSBgOtAyDW5XtggPKJd5rMn5IOj+2TOhXsbHTCl02sQRX
+         1+034t+A1fTbp0vE2dlAtXXNQtdz/HhZ8MlrK/QM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cyrill Gorcunov <gorcunov@gmail.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Andrey Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 12/34] prctl: allow to setup brk for et_dyn executables
+        stable@vger.kernel.org, Sylvain Lemieux <slemieux@tycoint.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: [PATCH 4.14 12/27] pwm: lpc32xx: Dont modify HW state in .probe() after the PWM chip was registered
 Date:   Fri, 24 Sep 2021 14:44:06 +0200
-Message-Id: <20210924124330.365493782@linuxfoundation.org>
+Message-Id: <20210924124329.583402422@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,80 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cyrill Gorcunov <gorcunov@gmail.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-commit e1fbbd073137a9d63279f6bf363151a938347640 upstream.
+commit 3d2813fb17e5fd0d73c1d1442ca0192bde4af10e upstream.
 
-Keno Fischer reported that when a binray loaded via ld-linux-x the
-prctl(PR_SET_MM_MAP) doesn't allow to setup brk value because it lays
-before mm:end_data.
+This fixes a race condition: After pwmchip_add() is called there might
+already be a consumer and then modifying the hardware behind the
+consumer's back is bad. So set the default before.
 
-For example a test program shows
+(Side-note: I don't know what this register setting actually does, if
+this modifies the polarity there is an inconsistency because the
+inversed polarity isn't considered if the PWM is already running during
+.probe().)
 
- | # ~/t
- |
- | start_code      401000
- | end_code        401a15
- | start_stack     7ffce4577dd0
- | start_data	   403e10
- | end_data        40408c
- | start_brk	   b5b000
- | sbrk(0)         b5b000
-
-and when executed via ld-linux
-
- | # /lib64/ld-linux-x86-64.so.2 ~/t
- |
- | start_code      7fc25b0a4000
- | end_code        7fc25b0c4524
- | start_stack     7fffcc6b2400
- | start_data	   7fc25b0ce4c0
- | end_data        7fc25b0cff98
- | start_brk	   55555710c000
- | sbrk(0)         55555710c000
-
-This of course prevent criu from restoring such programs.  Looking into
-how kernel operates with brk/start_brk inside brk() syscall I don't see
-any problem if we allow to setup brk/start_brk without checking for
-end_data.  Even if someone pass some weird address here on a purpose then
-the worst possible result will be an unexpected unmapping of existing vma
-(own vma, since prctl works with the callers memory) but test for
-RLIMIT_DATA is still valid and a user won't be able to gain more memory in
-case of expanding VMAs via new values shipped with prctl call.
-
-Link: https://lkml.kernel.org/r/20210121221207.GB2174@grain
-Fixes: bbdc6076d2e5 ("binfmt_elf: move brk out of mmap when doing direct loader exec")
-Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
-Reported-by: Keno Fischer <keno@juliacomputing.com>
-Acked-by: Andrey Vagin <avagin@gmail.com>
-Tested-by: Andrey Vagin <avagin@gmail.com>
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Cc: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: acfd92fdfb93 ("pwm: lpc32xx: Set PWM_PIN_LEVEL bit to default value")
+Cc: Sylvain Lemieux <slemieux@tycoint.com>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sys.c |    7 -------
- 1 file changed, 7 deletions(-)
+ drivers/pwm/pwm-lpc32xx.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1932,13 +1932,6 @@ static int validate_prctl_map(struct prc
- 	error = -EINVAL;
+--- a/drivers/pwm/pwm-lpc32xx.c
++++ b/drivers/pwm/pwm-lpc32xx.c
+@@ -124,17 +124,17 @@ static int lpc32xx_pwm_probe(struct plat
+ 	lpc32xx->chip.npwm = 1;
+ 	lpc32xx->chip.base = -1;
  
- 	/*
--	 * @brk should be after @end_data in traditional maps.
--	 */
--	if (prctl_map->start_brk <= prctl_map->end_data ||
--	    prctl_map->brk <= prctl_map->end_data)
--		goto out;
++	/* If PWM is disabled, configure the output to the default value */
++	val = readl(lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
++	val &= ~PWM_PIN_LEVEL;
++	writel(val, lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
++
+ 	ret = pwmchip_add(&lpc32xx->chip);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to add PWM chip, error %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	/* When PWM is disable, configure the output to the default value */
+-	val = readl(lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
+-	val &= ~PWM_PIN_LEVEL;
+-	writel(val, lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
 -
--	/*
- 	 * Neither we should allow to override limits if they set.
- 	 */
- 	if (check_data_rlimit(rlimit(RLIMIT_DATA), prctl_map->brk,
+ 	platform_set_drvdata(pdev, lpc32xx);
+ 
+ 	return 0;
 
 
