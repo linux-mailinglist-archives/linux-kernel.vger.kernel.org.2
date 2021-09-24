@@ -2,121 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5500941763C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4531417641
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346430AbhIXNwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
+        id S1346319AbhIXNxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346452AbhIXNv4 (ORCPT
+        with ESMTP id S1345930AbhIXNxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:51:56 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01C5C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:50:23 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso13183983otc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:50:23 -0700 (PDT)
+        Fri, 24 Sep 2021 09:53:46 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FC3C0614ED
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:52:12 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id e15so40709138lfr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:52:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sV48vw6IGcklWlbZIMl7FtX9z0T8teXN1HpyIu8i14Y=;
-        b=hVazJjBI2vd2tVbUtrb1neOgJi7sHqSNkXAjm7bkHX+s+3kAY0M5kOw7ImmU0cSLfX
-         IK7ZaGcKhrDOsv8Wtbp+We/x0ahwJM13jLfihrDG0Vs9gySlONjrDHeUqBt91VgjAGZM
-         zvwnswrSkRH3btYmKzZqM2/1/243IgtM6q6DJOJTRGcvEcnhbJwKleqolYT8+NHgEQQm
-         kYdA1LtAlGvutfm1K+5ulg35zL55C+ZDN/x8e8PtLjg5W6Zj7ZR3ElR02b9tv6g+hVrr
-         sJv0GNu7VSVvTcq3g6j6gG9MnmozAgpi5hFxHx7B+lhTOnFe2DOb32PJjH+eZq826BW1
-         SvPw==
+        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OTJRT+uzM0lAz165RqeTd1Tx4KIJ3Eki8evDEIFClkc=;
+        b=jozqt8pupd8eRYq2mgkuTKUGaUkT9MKLgTv1jddpEfLiIVzs9Hoket0uZiVA0Og3/w
+         Ztru2V8mUx4x2/kLUzudFglpVO1URBuD+Wewe3SF44w4JmnieXP0uvPWIWdrN04fineg
+         DlxlbDjPOyehZeIKRMuF2NQt377JuWhAGrD/7vVs5Pmezu8IE+HtgurwSvN/lcpzNIHo
+         slYQpKTSN2jhxkXrPFyi3aEHB+tmIsUmlgNmST2rUEcobGlGcQAscFoKGUy1GGewZP8n
+         C71mbtm7rkkmFK5ciZtrbeIN0xJzi/qDfRGmI/2dw6DNoWwLDAxl6DFMfLTtM1sVwJMx
+         UkTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sV48vw6IGcklWlbZIMl7FtX9z0T8teXN1HpyIu8i14Y=;
-        b=mMR9mQPlf6OUVDl/Ru6J5H5ZbWO6W+/fprNJ5xSw0veUqnPN5t532OypXuLfZg7YDg
-         XfySoB/kfOBjlIHeMmG/eOHmjFsfyTXu9gMZy2XiNrGKrqVJS8rsFmLfekgomvihGghc
-         DegVfpSHtVP2fVdo7yPQPRATPrqMpddsNPptYsqvldZX8f0U8wssWcpYz1Izx3+yICPu
-         mhJ7Shlta/X6fhRIhaVPoMOgch/p4V88Jp/+rv3wMHcndBvy6w4EJ/Ltu18T3VrDlj/R
-         dCP0qOlomjfSA87VWtc7jXEWkL1izYXwcmG0NnNI/ieDlV6T+2lo3tOQfw5FvJbJhJSQ
-         wtWQ==
-X-Gm-Message-State: AOAM531llge2qOAINhB7aCGV8cyD3u6VhKLnGTP/WSU00YAiG/0FiuZA
-        cP7AoUgug5wWlrJxUJitvxVz7Q==
-X-Google-Smtp-Source: ABdhPJxCYVrRHdxpr631i085QY22e+9JoSprHypM05PMHQ86XTbakTpALxVLafCEWh03nqxr9XyKVg==
-X-Received: by 2002:a9d:6a95:: with SMTP id l21mr4114113otq.330.1632491423185;
-        Fri, 24 Sep 2021 06:50:23 -0700 (PDT)
-Received: from [192.168.17.16] ([189.219.73.83])
-        by smtp.gmail.com with ESMTPSA id 9sm2084286oir.10.2021.09.24.06.50.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 06:50:22 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/23] 4.4.285-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210924124327.816210800@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <eab2f99b-8be2-2ca3-27de-d98cb36b327c@linaro.org>
-Date:   Fri, 24 Sep 2021 08:50:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OTJRT+uzM0lAz165RqeTd1Tx4KIJ3Eki8evDEIFClkc=;
+        b=YWatPraxWQs811gAkXNhnH24Kw0K0Lg5eBLwDdqrTiFRicWVw142AxMoiArmR3Tznz
+         XYHn2Ybtoss1EjbYkUuy1oUFGfs3iderRB8CkkwCN/GkzvsTGnzTyMmJronVt54VtPHm
+         a/a6H5D47Zl03opsdD5XOzGD+4M+ExYNDkZYdgjhswG4FwdxYXNtlyzGIT5N5+6s8e6W
+         UchlyrxfU1v2Dj8x7w/SBR7Y5VRfeVW4dYuFN2F6HPlTZeQtBOGGMN/y0ebLzD2v92cx
+         2OsQpiTcV0QaIvySiN5VonCXuvZp0HAx2jekecWNj7OJkRKWQQ0Ev+nwJwk75227BstZ
+         tETw==
+X-Gm-Message-State: AOAM531AWgZ5gVpRtLja5aelkno6ABfK1gGKRxcpyGHkk0SZtghi+1pB
+        IKZHoXSOAT+Cca2UEGoEaB+L4g==
+X-Google-Smtp-Source: ABdhPJyWzwcC1XcXoAGJaMgHSbn8NtSkr56EHdy25/3nTAqZoPx+MAIUjgb5uVUj4onaErxUKqiwFg==
+X-Received: by 2002:a2e:814d:: with SMTP id t13mr11696803ljg.237.1632491530606;
+        Fri, 24 Sep 2021 06:52:10 -0700 (PDT)
+Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
+        by smtp.gmail.com with ESMTPSA id v27sm761214lfd.127.2021.09.24.06.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 06:52:10 -0700 (PDT)
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
+        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: [PATCH v2] media: rcar-vin: add G/S_PARM ioctls
+Date:   Fri, 24 Sep 2021 16:51:38 +0300
+Message-Id: <20210924135138.29950-1-nikita.yoush@cogentembedded.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
+References: <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
 MIME-Version: 1.0
-In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 
-On 9/24/21 7:43 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.285 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.285-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+This adds g/s_parm ioctls for parallel interface.
 
-Regressions detected.
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+---
+Changes from v1:
+- use &vin->vdev to access vin's struct video_device
 
-While building mxs_defconfig for arm, the following error was encountered:
+ drivers/media/platform/rcar-vin/rcar-v4l2.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-   /builds/linux/arch/arm/mach-mxs/mach-mxs.c:285:26: warning: duplicate 'const' declaration specifier [-Wduplicate-decl-specifier]
-     285 | static const struct gpio const tx28_gpios[] __initconst = {
-         |                          ^~~~~
-   /builds/linux/drivers/pwm/pwm-mxs.c: In function 'mxs_pwm_probe':
-   /builds/linux/drivers/pwm/pwm-mxs.c:164:24: error: implicit declaration of function 'dev_err_probe'; did you mean 'device_reprobe'? [-Werror=implicit-function-declaration]
-     164 |                 return dev_err_probe(&pdev->dev, ret, "failed to reset PWM\n");
-         |                        ^~~~~~~~~~~~~
-         |                        device_reprobe
-   cc1: some warnings being treated as errors
-   make[3]: *** [/builds/linux/scripts/Makefile.build:280: drivers/pwm/pwm-mxs.o] Error 1
+diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+index bdeff51bf768..a5bfa76fdac6 100644
+--- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
++++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+@@ -527,6 +527,24 @@ static int rvin_s_selection(struct file *file, void *fh,
+ 	return 0;
+ }
+ 
++static int rvin_g_parm(struct file *file, void *priv,
++		       struct v4l2_streamparm *parm)
++{
++	struct rvin_dev *vin = video_drvdata(file);
++	struct v4l2_subdev *sd = vin_to_source(vin);
++
++	return v4l2_g_parm_cap(&vin->vdev, sd, parm);
++}
++
++static int rvin_s_parm(struct file *file, void *priv,
++		       struct v4l2_streamparm *parm)
++{
++	struct rvin_dev *vin = video_drvdata(file);
++	struct v4l2_subdev *sd = vin_to_source(vin);
++
++	return v4l2_s_parm_cap(&vin->vdev, sd, parm);
++}
++
+ static int rvin_g_pixelaspect(struct file *file, void *priv,
+ 			      int type, struct v4l2_fract *f)
+ {
+@@ -743,6 +761,9 @@ static const struct v4l2_ioctl_ops rvin_ioctl_ops = {
+ 	.vidioc_g_selection		= rvin_g_selection,
+ 	.vidioc_s_selection		= rvin_s_selection,
+ 
++	.vidioc_g_parm			= rvin_g_parm,
++	.vidioc_s_parm			= rvin_s_parm,
++
+ 	.vidioc_g_pixelaspect		= rvin_g_pixelaspect,
+ 
+ 	.vidioc_enum_input		= rvin_enum_input,
+-- 
+2.30.2
 
-This is also seen in other branches (from 4.4 to 5.4). To reproduce this build locally:
-
-   tuxmake \
-     --target-arch=arm \
-     --kconfig=mxs_defconfig \
-     --toolchain=gcc-11 \
-     --runtime=podman \
-     config default kernel xipkernel modules dtbs dtbs-legacy debugkernel headers
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
