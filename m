@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EE34174B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D791417426
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346297AbhIXNJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:09:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37286 "EHLO mail.kernel.org"
+        id S1344530AbhIXNDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:03:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345977AbhIXNFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F558614C8;
-        Fri, 24 Sep 2021 12:56:03 +0000 (UTC)
+        id S1345264AbhIXNAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:00:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E185F6128E;
+        Fri, 24 Sep 2021 12:53:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488163;
-        bh=JwazT0upXtaVCAO3l47ZXkhH6LyNxROHxQpNEN8phiA=;
+        s=korg; t=1632488021;
+        bh=yR7i2vPpuJOZKQF1r18UGjDnhdFcH20ce3w5vWdmXo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oAQ/jeuzK3HgXuRXjWXe19uSVd+wHJxrr9hVudbVODgX4McgnVQcJO6Kh9d5Dbteu
-         1KT9GD6zmUnVNzvkf3b9XYbgMX8MVJQambRrNbSO7ibA/zIumR9IpNdvIVLzBHyKAJ
-         kieqGq/vRRGnPiRCoMPu8Zhj1ncrS9FM5myrp3aE=
+        b=EidnCE0bhYMuCzrIzy3igOyVwE45rkqkzYSqLoEAX3qMmqCQUyEKf3eCeRO4+SpvE
+         P1rM3fhG+TXS90xiDXG1q9mD2s0J8WVft9fT7BLqIYEOJOWlzBtIFzW44AxVZzI6Cs
+         I9UEvOdPc7LJkVuxYGQEJQW+Z3A7bzPqPis8Fv8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.10 01/63] PCI: pci-bridge-emul: Add PCIe Root Capabilities Register
-Date:   Fri, 24 Sep 2021 14:44:01 +0200
-Message-Id: <20210924124334.277543764@linuxfoundation.org>
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 053/100] riscv: dts: microchip: mpfs-icicle: Fix serial console
+Date:   Fri, 24 Sep 2021 14:44:02 +0200
+Message-Id: <20210924124343.212634492@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,32 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-commit e902bb7c24a7099d0eb0eb4cba06f2d91e9299f3 upstream.
+[ Upstream commit cbba17870881cd17bca24673ccb72859431da5bd ]
 
-The 16-bit Root Capabilities register is at offset 0x1e in the PCIe
-Capability. Rename current 'rsvd' struct member to 'rootcap'.
+Currently, nothing is output on the serial console, unless
+"console=ttyS0,115200n8" or "earlycon" are appended to the kernel
+command line.  Enable automatic console selection using
+chosen/stdout-path by adding a proper alias, and configure the expected
+serial rate.
 
-Link: https://lore.kernel.org/r/20210722144041.12661-4-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+While at it, add aliases for the other three serial ports, which are
+provided on the same micro-USB connector as the first one.
+
+Fixes: 0fa6107eca4186ad ("RISC-V: Initial DTS for Microchip ICICLE board")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci-bridge-emul.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/pci/pci-bridge-emul.h
-+++ b/drivers/pci/pci-bridge-emul.h
-@@ -54,7 +54,7 @@ struct pci_bridge_emul_pcie_conf {
- 	__le16 slotctl;
- 	__le16 slotsta;
- 	__le16 rootctl;
--	__le16 rsvd;
-+	__le16 rootcap;
- 	__le32 rootsta;
- 	__le32 devcap2;
- 	__le16 devctl2;
+diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+index baea7d204639..b254c60589a1 100644
+--- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
++++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+@@ -16,10 +16,14 @@
+ 
+ 	aliases {
+ 		ethernet0 = &emac1;
++		serial0 = &serial0;
++		serial1 = &serial1;
++		serial2 = &serial2;
++		serial3 = &serial3;
+ 	};
+ 
+ 	chosen {
+-		stdout-path = &serial0;
++		stdout-path = "serial0:115200n8";
+ 	};
+ 
+ 	cpus {
+-- 
+2.33.0
+
 
 
