@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C565941731A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1865041745A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344244AbhIXMyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:54:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
+        id S1345299AbhIXNFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344721AbhIXMwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:52:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2B7F6124C;
-        Fri, 24 Sep 2021 12:49:37 +0000 (UTC)
+        id S1345491AbhIXNCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:02:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12B1961452;
+        Fri, 24 Sep 2021 12:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487778;
-        bh=El6RrObEra+TgvnnROtLU9sKOQy/hyp6Ou5WZ2aQziA=;
+        s=korg; t=1632488071;
+        bh=m1Kujgook1PbYh+KRb/Tnz6OmjVPOuTODtLuTsMfw3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=07nr7V9tzfU7obUAj1OqaQycS/20sdLwI09YR4eMnYDknr/ymr0xYpf5yXUnG4942
-         w3U7WI6W/zQHq/UbBvyZoRI1yLoOqxOLHwEzkqTEJgLuTmqrLLy7Bcr5EAs5U+JHhL
-         Jby8xN3v2XFcB1QA1xxmkvuvpgvZ8Z4UJFMeHYkg=
+        b=nLkEwL4Ofvt1i+yA15/yDiNfjj0EsWfHI349TP2L2FsoE9d85ANQ06ivy5v66y+1E
+         Ckm1p5ls0W+K0OTmJYfPB612+Zrt4uGF12KWCxfHaAgiveCHeXM2O+cSejfaCSLCU+
+         BGKsolbUtnbosCTdVe3j0oSMNoFkTXwj4JWN59p8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 5.4 01/50] PCI: pci-bridge-emul: Fix big-endian support
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 041/100] thermal/core: Fix thermal_cooling_device_register() prototype
 Date:   Fri, 24 Sep 2021 14:43:50 +0200
-Message-Id: <20210924124332.279325483@linuxfoundation.org>
+Message-Id: <20210924124342.832465960@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,222 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Jaszczyk <jaz@semihalf.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit e0d9d30b73548fbfe5c024ed630169bdc9a08aee upstream.
+[ Upstream commit fb83610762dd5927212aa62a468dd3b756b57a88 ]
 
-Perform conversion to little-endian before every write to configuration
-space and convert it back to CPU endianness on reads.
+There are two pairs of declarations for thermal_cooling_device_register()
+and thermal_of_cooling_device_register(), and only one set was changed
+in a recent patch, so the other one now causes a compile-time warning:
 
-Additionally, initialise every multiple byte field of config space with
-the cpu_to_le* macro, which is required since the structure describing
-config space of emulated bridge assumes little-endian convention.
+drivers/net/wireless/mediatek/mt76/mt7915/init.c: In function 'mt7915_thermal_init':
+drivers/net/wireless/mediatek/mt76/mt7915/init.c:134:48: error: passing argument 1 of 'thermal_cooling_device_register' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]
+  134 |         cdev = thermal_cooling_device_register(wiphy_name(wiphy), phy,
+      |                                                ^~~~~~~~~~~~~~~~~
+In file included from drivers/net/wireless/mediatek/mt76/mt7915/init.c:7:
+include/linux/thermal.h:407:39: note: expected 'char *' but argument is of type 'const char *'
+  407 | thermal_cooling_device_register(char *type, void *devdata,
+      |                                 ~~~~~~^~~~
 
-Signed-off-by: Grzegorz Jaszczyk <jaz@semihalf.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Change the dummy helper functions to have the same arguments as the
+normal version.
+
+Fixes: f991de53a8ab ("thermal: make device_register's type argument const")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210722090717.1116748-1-arnd@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci-bridge-emul.c |   25 +++++++------
- drivers/pci/pci-bridge-emul.h |   78 +++++++++++++++++++++---------------------
- 2 files changed, 52 insertions(+), 51 deletions(-)
+ include/linux/thermal.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/pci/pci-bridge-emul.c
-+++ b/drivers/pci/pci-bridge-emul.c
-@@ -270,10 +270,10 @@ static const struct pci_bridge_reg_behav
- int pci_bridge_emul_init(struct pci_bridge_emul *bridge,
- 			 unsigned int flags)
- {
--	bridge->conf.class_revision |= PCI_CLASS_BRIDGE_PCI << 16;
-+	bridge->conf.class_revision |= cpu_to_le32(PCI_CLASS_BRIDGE_PCI << 16);
- 	bridge->conf.header_type = PCI_HEADER_TYPE_BRIDGE;
- 	bridge->conf.cache_line_size = 0x10;
--	bridge->conf.status = PCI_STATUS_CAP_LIST;
-+	bridge->conf.status = cpu_to_le16(PCI_STATUS_CAP_LIST);
- 	bridge->pci_regs_behavior = kmemdup(pci_regs_behavior,
- 					    sizeof(pci_regs_behavior),
- 					    GFP_KERNEL);
-@@ -284,8 +284,9 @@ int pci_bridge_emul_init(struct pci_brid
- 		bridge->conf.capabilities_pointer = PCI_CAP_PCIE_START;
- 		bridge->pcie_conf.cap_id = PCI_CAP_ID_EXP;
- 		/* Set PCIe v2, root port, slot support */
--		bridge->pcie_conf.cap = PCI_EXP_TYPE_ROOT_PORT << 4 | 2 |
--			PCI_EXP_FLAGS_SLOT;
-+		bridge->pcie_conf.cap =
-+			cpu_to_le16(PCI_EXP_TYPE_ROOT_PORT << 4 | 2 |
-+				    PCI_EXP_FLAGS_SLOT);
- 		bridge->pcie_cap_regs_behavior =
- 			kmemdup(pcie_cap_regs_behavior,
- 				sizeof(pcie_cap_regs_behavior),
-@@ -327,7 +328,7 @@ int pci_bridge_emul_conf_read(struct pci
- 	int reg = where & ~3;
- 	pci_bridge_emul_read_status_t (*read_op)(struct pci_bridge_emul *bridge,
- 						 int reg, u32 *value);
--	u32 *cfgspace;
-+	__le32 *cfgspace;
- 	const struct pci_bridge_reg_behavior *behavior;
- 
- 	if (bridge->has_pcie && reg >= PCI_CAP_PCIE_END) {
-@@ -343,11 +344,11 @@ int pci_bridge_emul_conf_read(struct pci
- 	if (bridge->has_pcie && reg >= PCI_CAP_PCIE_START) {
- 		reg -= PCI_CAP_PCIE_START;
- 		read_op = bridge->ops->read_pcie;
--		cfgspace = (u32 *) &bridge->pcie_conf;
-+		cfgspace = (__le32 *) &bridge->pcie_conf;
- 		behavior = bridge->pcie_cap_regs_behavior;
- 	} else {
- 		read_op = bridge->ops->read_base;
--		cfgspace = (u32 *) &bridge->conf;
-+		cfgspace = (__le32 *) &bridge->conf;
- 		behavior = bridge->pci_regs_behavior;
- 	}
- 
-@@ -357,7 +358,7 @@ int pci_bridge_emul_conf_read(struct pci
- 		ret = PCI_BRIDGE_EMUL_NOT_HANDLED;
- 
- 	if (ret == PCI_BRIDGE_EMUL_NOT_HANDLED)
--		*value = cfgspace[reg / 4];
-+		*value = le32_to_cpu(cfgspace[reg / 4]);
- 
- 	/*
- 	 * Make sure we never return any reserved bit with a value
-@@ -387,7 +388,7 @@ int pci_bridge_emul_conf_write(struct pc
- 	int mask, ret, old, new, shift;
- 	void (*write_op)(struct pci_bridge_emul *bridge, int reg,
- 			 u32 old, u32 new, u32 mask);
--	u32 *cfgspace;
-+	__le32 *cfgspace;
- 	const struct pci_bridge_reg_behavior *behavior;
- 
- 	if (bridge->has_pcie && reg >= PCI_CAP_PCIE_END)
-@@ -414,11 +415,11 @@ int pci_bridge_emul_conf_write(struct pc
- 	if (bridge->has_pcie && reg >= PCI_CAP_PCIE_START) {
- 		reg -= PCI_CAP_PCIE_START;
- 		write_op = bridge->ops->write_pcie;
--		cfgspace = (u32 *) &bridge->pcie_conf;
-+		cfgspace = (__le32 *) &bridge->pcie_conf;
- 		behavior = bridge->pcie_cap_regs_behavior;
- 	} else {
- 		write_op = bridge->ops->write_base;
--		cfgspace = (u32 *) &bridge->conf;
-+		cfgspace = (__le32 *) &bridge->conf;
- 		behavior = bridge->pci_regs_behavior;
- 	}
- 
-@@ -431,7 +432,7 @@ int pci_bridge_emul_conf_write(struct pc
- 	/* Clear the W1C bits */
- 	new &= ~((value << shift) & (behavior[reg / 4].w1c & mask));
- 
--	cfgspace[reg / 4] = new;
-+	cfgspace[reg / 4] = cpu_to_le32(new);
- 
- 	if (write_op)
- 		write_op(bridge, reg, old, new, mask);
---- a/drivers/pci/pci-bridge-emul.h
-+++ b/drivers/pci/pci-bridge-emul.h
-@@ -6,65 +6,65 @@
- 
- /* PCI configuration space of a PCI-to-PCI bridge. */
- struct pci_bridge_emul_conf {
--	u16 vendor;
--	u16 device;
--	u16 command;
--	u16 status;
--	u32 class_revision;
-+	__le16 vendor;
-+	__le16 device;
-+	__le16 command;
-+	__le16 status;
-+	__le32 class_revision;
- 	u8 cache_line_size;
- 	u8 latency_timer;
- 	u8 header_type;
- 	u8 bist;
--	u32 bar[2];
-+	__le32 bar[2];
- 	u8 primary_bus;
- 	u8 secondary_bus;
- 	u8 subordinate_bus;
- 	u8 secondary_latency_timer;
- 	u8 iobase;
- 	u8 iolimit;
--	u16 secondary_status;
--	u16 membase;
--	u16 memlimit;
--	u16 pref_mem_base;
--	u16 pref_mem_limit;
--	u32 prefbaseupper;
--	u32 preflimitupper;
--	u16 iobaseupper;
--	u16 iolimitupper;
-+	__le16 secondary_status;
-+	__le16 membase;
-+	__le16 memlimit;
-+	__le16 pref_mem_base;
-+	__le16 pref_mem_limit;
-+	__le32 prefbaseupper;
-+	__le32 preflimitupper;
-+	__le16 iobaseupper;
-+	__le16 iolimitupper;
- 	u8 capabilities_pointer;
- 	u8 reserve[3];
--	u32 romaddr;
-+	__le32 romaddr;
- 	u8 intline;
- 	u8 intpin;
--	u16 bridgectrl;
-+	__le16 bridgectrl;
- };
- 
- /* PCI configuration space of the PCIe capabilities */
- struct pci_bridge_emul_pcie_conf {
- 	u8 cap_id;
- 	u8 next;
--	u16 cap;
--	u32 devcap;
--	u16 devctl;
--	u16 devsta;
--	u32 lnkcap;
--	u16 lnkctl;
--	u16 lnksta;
--	u32 slotcap;
--	u16 slotctl;
--	u16 slotsta;
--	u16 rootctl;
--	u16 rsvd;
--	u32 rootsta;
--	u32 devcap2;
--	u16 devctl2;
--	u16 devsta2;
--	u32 lnkcap2;
--	u16 lnkctl2;
--	u16 lnksta2;
--	u32 slotcap2;
--	u16 slotctl2;
--	u16 slotsta2;
-+	__le16 cap;
-+	__le32 devcap;
-+	__le16 devctl;
-+	__le16 devsta;
-+	__le32 lnkcap;
-+	__le16 lnkctl;
-+	__le16 lnksta;
-+	__le32 slotcap;
-+	__le16 slotctl;
-+	__le16 slotsta;
-+	__le16 rootctl;
-+	__le16 rsvd;
-+	__le32 rootsta;
-+	__le32 devcap2;
-+	__le16 devctl2;
-+	__le16 devsta2;
-+	__le32 lnkcap2;
-+	__le16 lnkctl2;
-+	__le16 lnksta2;
-+	__le32 slotcap2;
-+	__le16 slotctl2;
-+	__le16 slotsta2;
- };
- 
- struct pci_bridge_emul;
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index d296f3b88fb9..8050d929a5b4 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -404,12 +404,13 @@ static inline void thermal_zone_device_unregister(
+ 	struct thermal_zone_device *tz)
+ { }
+ static inline struct thermal_cooling_device *
+-thermal_cooling_device_register(char *type, void *devdata,
++thermal_cooling_device_register(const char *type, void *devdata,
+ 	const struct thermal_cooling_device_ops *ops)
+ { return ERR_PTR(-ENODEV); }
+ static inline struct thermal_cooling_device *
+ thermal_of_cooling_device_register(struct device_node *np,
+-	char *type, void *devdata, const struct thermal_cooling_device_ops *ops)
++	const char *type, void *devdata,
++	const struct thermal_cooling_device_ops *ops)
+ { return ERR_PTR(-ENODEV); }
+ static inline struct thermal_cooling_device *
+ devm_thermal_of_cooling_device_register(struct device *dev,
+-- 
+2.33.0
+
 
 
