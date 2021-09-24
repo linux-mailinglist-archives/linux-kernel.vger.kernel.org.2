@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A397C416E69
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E7D416E6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244579AbhIXJCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        id S245043AbhIXJEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244555AbhIXJCp (ORCPT
+        with ESMTP id S237187AbhIXJEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:02:45 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B19C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:01:12 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id n2so5995189plk.12
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:01:12 -0700 (PDT)
+        Fri, 24 Sep 2021 05:04:34 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A6FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:03:01 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u18so36442081lfd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:03:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=N33O/jKwx1/k7vQIGoBJU3vb76C/gdsxbsKwqC4sYls=;
-        b=YXJldS4amcDjJYuwv2bcpJ7XyOA9FJQqB5WdGnqLDTTA91dcXGPJ2gb5W83qLJJAFu
-         /EvWkBl80iVjDd/m+kUnPBHyNxQ3drSIA072GXDPYaPwRDJNVgEW43afoU5IPfbg2cRh
-         qujLb0MEJm3qW8LGXLx23WuLDHtfAyhpUXFvR4DRTWsfr/4lXNWH2unArpA6b9240KK9
-         MniBHbUzNw+iOG3sncGiYz0clVvmg8knRQzYZRuuU7HyWveLXPh3wNm6CBuugexQIoNW
-         wgtX0ar22j0z2OsM25pxuEiP6dlys39H1v3193xFjz4C+gukS5tvJu0q4GyN0OHWcjpT
-         28pw==
+        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=llwuQxMnfqimzNJJvFgIveLT6522ylZK2Dd9XgPpNOs=;
+        b=voXNnwR32rEsIYJzAi81MedAUopUk+yolmiw1vzuy5IjDyfqTLyqzMNftv+57FOd/+
+         TuscLfoKLwbzeFU6coohOl2y2+4nEbZtVrzVOfsd9gmNRPW+MhmfmgpnwwycjJ0YEWso
+         bZcH2Cnm4fXGMa9bgXLs9DXVDjLvrsT/LiWdVzLMTKSxzpqeCZStWTFOuUaBPmonzDwP
+         b581pQ4FaQfA4BOVF5oxP9wHVKTn5UDthUFSfudLBTAjLJUFqnRgkcSKC2nZqMbpyJ7E
+         TjnBJ2kDImn/CFj0UJezzp4TmnB86FQdcbkpwv3OU2rgKKjiJlwWfEwks22KEau6E38P
+         n0eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=N33O/jKwx1/k7vQIGoBJU3vb76C/gdsxbsKwqC4sYls=;
-        b=QWWlCozh8/ufc7NWbBJtfruPo7LW+hSDCDVPRhFvw/F7PitVASk7KtlqG2mRzWNxg3
-         94tqTVgMDFulnSRuSR9CKvg0xoqo/6r1Tng4X3Mj0qXF8Co8purOY+kl5VRz6jdJ5lqq
-         80AnSVGfUUW10ctjmsXXwoDh8Bm08YbcIYVDCSHF6V+IitgdM+f6MpewpRdfTYF9kqWE
-         me5JD18Oq+Y+zREFD3deCLXLH5Ozr4YaFAWqFum87nnjByNfZTXdGRfTUtwBBOSqIGkc
-         5EP5iEhubO1/TkeQGbIOgHpgx+deu7mDj4Bo2cAGJOpCkAl+KP2zmp9+U2vE0W+FBSIX
-         lUeA==
-X-Gm-Message-State: AOAM530JA2xIyHeIF2fDuA/7QalTDT5eD5/yO1wkaNrnxfzzbMRocnwZ
-        4wMK1HaGuQdJ0qkwV9visDg=
-X-Google-Smtp-Source: ABdhPJyaWHESTzqq6ZcM7drgTMPa+u6iLdm9UzjoGLHzNYMAh3mvYNc5WE7b5yo7vsPBH6gHdG+ixQ==
-X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr937005pju.227.1632474072089;
-        Fri, 24 Sep 2021 02:01:12 -0700 (PDT)
-Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id b142sm8501848pfb.17.2021.09.24.02.01.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Sep 2021 02:01:11 -0700 (PDT)
-From:   Zhenguo Zhao <zhenguo6858@gmail.com>
-To:     nianfu.bai@unisoc.com, keescook@chromium.org, anton@enomsg.org,
-        ccross@android.com, tony.luck@intel.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] pstore: Modify kconfig to align text
-Date:   Fri, 24 Sep 2021 16:59:22 +0800
-Message-Id: <1632473962-29686-3-git-send-email-zhenguo6858@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1632473962-29686-1-git-send-email-zhenguo6858@gmail.com>
-References: <1632473962-29686-1-git-send-email-zhenguo6858@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=llwuQxMnfqimzNJJvFgIveLT6522ylZK2Dd9XgPpNOs=;
+        b=P4VvJlCYlXygMwWUAzHzB2JvXE4obQvWy3+pHzZ1WO8qC9dAcPk+R6vtKSN39QKIpz
+         m8eqem0NMvUspBItyGM00TC+Ep1JWO9+501S3tiicYj9gNPxYETLyZvy3UmDT+rn+oPi
+         bmKywXCLPfeGN9YVVQ8TTqNw5cAGRO4RHYIi5TXu4MEk7KbUlgEL74Al/tGa8+IeUUML
+         zf7YdLJuNqj7DX+tEKcC4ZhjZm5ilmizYuTr3YOB7RHT9n76Pwl9tkT942DfpGeHIYYG
+         HrryjSOJaXEOnYa0IneHlVUi9WVbOlXc1N7egOqpRYNp6z6Let06nqRkXNIG4IL6iZD9
+         2YBg==
+X-Gm-Message-State: AOAM532gayKsakEkPrB2tLNCB/KV8DRAYrTKsAZYBH6bf9wglCpIdVyI
+        om3UKeN1+xrZb/+RoQvY2NMf6w==
+X-Google-Smtp-Source: ABdhPJxCYyMKdaffGxCHyszJqKodq6Upo7VtTwjbiOpw/Im9sn5dk9YHQ1eOSUgqX25G0ah5uvfV1g==
+X-Received: by 2002:a05:651c:211a:: with SMTP id a26mr9933964ljq.305.1632474180010;
+        Fri, 24 Sep 2021 02:03:00 -0700 (PDT)
+Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
+        by smtp.gmail.com with ESMTPSA id d19sm689572lfa.252.2021.09.24.02.02.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 02:02:59 -0700 (PDT)
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
+        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: [PATCH] media: rcar-csi2: fix R8A77980 support
+Date:   Fri, 24 Sep 2021 12:02:45 +0300
+Message-Id: <20210924090244.3459-1-nikita.yoush@cogentembedded.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 
-Modify kconfig help for text consistency
+Add missing initialization of num_channels field.
 
-Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+Fixes: 3ba37c2bcb0c ("media: rcar-csi2: add R8A77980 support")
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 ---
- fs/pstore/Kconfig | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/media/platform/rcar-vin/rcar-csi2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index 288ed3c..008ce38 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -4,15 +4,15 @@ config PSTORE
- 	select CRYPTO if PSTORE_COMPRESS
- 	default n
- 	help
--	   This option enables generic access to platform level
--	   persistent storage via "pstore" filesystem that can
--	   be mounted as /dev/pstore.  Only useful if you have
--	   a platform level driver that registers with pstore to
--	   provide the data, so you probably should just go say "Y"
--	   (or "M") to a platform specific persistent store driver
--	   (e.g. ACPI_APEI on X86) which will select this for you.
--	   If you don't have a platform persistent store driver,
--	   say N.
-+	  This option enables generic access to platform level
-+	  persistent storage via "pstore" filesystem that can
-+	  be mounted as /dev/pstore.  Only useful if you have
-+	  a platform level driver that registers with pstore to
-+	  provide the data, so you probably should just go say "Y"
-+	  (or "M") to a platform specific persistent store driver
-+	  (e.g. ACPI_APEI on X86) which will select this for you.
-+	  If you don't have a platform persistent store driver,
-+	  say N.
+diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
+index e28eff039688..f4d3c6dead30 100644
+--- a/drivers/media/platform/rcar-vin/rcar-csi2.c
++++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+@@ -1146,6 +1146,7 @@ static const struct rcar_csi2_info rcar_csi2_info_r8a77980 = {
+ 	.init_phtw = rcsi2_init_phtw_h3_v3h_m3n,
+ 	.hsfreqrange = hsfreqrange_h3_v3h_m3n,
+ 	.csi0clkfreqrange = 0x20,
++	.num_channels = 4,
+ 	.clear_ulps = true,
+ };
  
- config PSTORE_DEFAULT_KMSG_BYTES
- 	int "Default kernel log storage space" if EXPERT
 -- 
-1.9.1
+2.30.2
 
