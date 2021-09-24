@@ -2,126 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3144169FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB22416A00
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243911AbhIXCZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 22:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        id S243889AbhIXC1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 22:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243850AbhIXCZn (ORCPT
+        with ESMTP id S243813AbhIXC1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 22:25:43 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126B1C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:24:11 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id c1so7495594pfp.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=DBLPQkg/kO5ASFtfk+t/XeZTp3dTZPnTRFF3O4rADL4=;
-        b=OeuIzFZdiPEedGDiO7PxecdOHaoDHoTfxluMloCmEd90h+Z9DyM5f2FZgVh5QNeyCe
-         0qcVxQtpMNz4GE7zwUPnwtd0fITYQXT8qttxxDOu3ZZxSb7OETT0cm/EvrJ2M8oB5X/b
-         8sojVxAqPBXbkki2p7e82AZx0EFik2lyIXgG4QqdI0puJIXfUCw5BQ0XIhO7r80bKLwX
-         hqRqwnh24DK7qT5QOJCTX7i1nGo8KrRZ+W4luPiB4YxvJTWZVchK6ufD2jiwCwIlzDVq
-         nk3E4JcR7Mem3HQOr+wHqlvGVlnViAaLOr0hWGRYMtNqTh35huChocYJQ37R8GDFYlvd
-         ru9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=DBLPQkg/kO5ASFtfk+t/XeZTp3dTZPnTRFF3O4rADL4=;
-        b=faYl1MCZwjKETza9pUo/0rGz+7R5cyGG2zVVx0yn/s+UUB4NjmTPSvy0YcjlKRUVkP
-         s9wuFFXExOiSWTe7rbnK7lOGYalOLhZGnHu8c6Q4YtjNLmExJdpp1sDZvg9WELSefIM7
-         sldFZAG5RGlEqWcPyy3JyAH9bZLWWwJgYc1LVyfSvZxL5NVK+ukfyQ/WMbI8BoWCCKJq
-         WPbmDM5lGeVEiJO/C4P1RB9T8YHcl2doXSwThtERfaYIpRKqx1Ei1pPMnfiO2Sz/Jdv4
-         8roRF2e2v1i0opUGFvhXgsKq1Nf9Hf6RmLtA3Lbkl1/iq4uyt1yycEplqdHAk6HZZFGl
-         Wz3w==
-X-Gm-Message-State: AOAM533XC68oYAlRgNM4LCVqdHfW5iyJXG8P/ZniN08suteawNGZ6Plg
-        GXphYUeKW4Gv0mkcsiIRSyvfvQ==
-X-Google-Smtp-Source: ABdhPJwrZpmVouPmoXMnwC2oolb/vsvPAPc9nLZvI0gmbK4/alFFziPzIc437ps2DG64MtjpEKOW1w==
-X-Received: by 2002:a63:ed17:: with SMTP id d23mr1703047pgi.29.1632450250572;
-        Thu, 23 Sep 2021 19:24:10 -0700 (PDT)
-Received: from [10.255.74.217] ([139.177.225.249])
-        by smtp.gmail.com with ESMTPSA id q2sm10249656pjo.27.2021.09.23.19.24.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 19:24:10 -0700 (PDT)
-Subject: Re: [PATCH] mm/memory_failure: Fix the missing pte_unmap() call
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     naoya.horiguchi@nec.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
-References: <20210923122642.4999-1-zhengqi.arch@bytedance.com>
- <20210923161738.990b61933c96df78bc1bf96d@linux-foundation.org>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-Message-ID: <2eca94ce-4e26-aff6-240d-39baf1a9cc36@bytedance.com>
-Date:   Fri, 24 Sep 2021 10:24:06 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Thu, 23 Sep 2021 22:27:33 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8549FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:26:00 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C17E458B;
+        Fri, 24 Sep 2021 04:25:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632450358;
+        bh=45e1RdVipct+ZYgoBCG59Y1r2CqJIiDZM00tNcmo9cw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lSWHnGvkX11Tky0znlaLjMETSaEQ7jIikpeUFmvnDesmOwI8Jp14TnLq9qdo1Aja9
+         Hvgw/Y8YwpLOU+SK4X2IHk1RTVHw6kUnKVbG2r+h/j4xg1rdUF/Zaar9xTnEUIC3Nc
+         nczMoz4hMNDQu045FhKIcOhUdXZKSjfnJVw3/PWw=
+Date:   Fri, 24 Sep 2021 05:25:55 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
+Message-ID: <YU03M+CXJ+ALi8De@pendragon.ideasonboard.com>
+References: <20210920225801.227211-1-robdclark@gmail.com>
+ <20210920225801.227211-4-robdclark@gmail.com>
+ <YUvN3j0v+8NMjNte@pendragon.ideasonboard.com>
+ <CAF6AEGviyfX6+c-CB5gMXqRQfHhvb5L8t++-VkZpvS3r9qDNoA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210923161738.990b61933c96df78bc1bf96d@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGviyfX6+c-CB5gMXqRQfHhvb5L8t++-VkZpvS3r9qDNoA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
+On Thu, Sep 23, 2021 at 10:31:52AM -0700, Rob Clark wrote:
+> On Wed, Sep 22, 2021 at 5:44 PM Laurent Pinchart wrote:
+> > On Mon, Sep 20, 2021 at 03:58:00PM -0700, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > Slightly awkward to fish out the display_info when we aren't creating
+> > > own connector.  But I don't see an obvious better way.
+> > >
+> > > v2: Remove error return with NO_CONNECTOR flag
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > ---
+> > >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 39 ++++++++++++++++++++-------
+> > >  1 file changed, 29 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > index 6154bed0af5b..94c94cc8a4d8 100644
+> > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > @@ -667,11 +667,6 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+> > >                                                  .node = NULL,
+> > >                                                };
+> > >
+> > > -     if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
+> > > -             DRM_ERROR("Fix bridge driver to make connector optional!");
+> > > -             return -EINVAL;
+> > > -     }
+> > > -
+> > >       pdata->aux.drm_dev = bridge->dev;
+> > >       ret = drm_dp_aux_register(&pdata->aux);
+> > >       if (ret < 0) {
+> > > @@ -679,9 +674,11 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+> > >               return ret;
+> > >       }
+> > >
+> > > -     ret = ti_sn_bridge_connector_init(pdata);
+> > > -     if (ret < 0)
+> > > -             goto err_conn_init;
+> > > +     if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
+> > > +             ret = ti_sn_bridge_connector_init(pdata);
+> > > +             if (ret < 0)
+> > > +                     goto err_conn_init;
+> > > +     }
+> > >
+> > >       /*
+> > >        * TODO: ideally finding host resource and dsi dev registration needs
+> > > @@ -743,7 +740,8 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+> > >  err_dsi_attach:
+> > >       mipi_dsi_device_unregister(dsi);
+> > >  err_dsi_host:
+> > > -     drm_connector_cleanup(&pdata->connector);
+> > > +     if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
+> > > +             drm_connector_cleanup(&pdata->connector);
+> >
+> > I wonder if we actually need this. The connector gets attached to the
+> > encoder, won't it be destroyed by the DRM core in the error path ?
+> 
+> This does not appear to be the case, we leak the connector if I remove
+> this (and add a hack to trigger the error path)
 
-On 9/24/21 7:17 AM, Andrew Morton wrote:
-> On Thu, 23 Sep 2021 20:26:42 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
-> 
->> The paired pte_unmap() call is missing before the
->> dev_pagemap_mapping_shift() returns. So fix it.
->>
->> ...
->>
->> --- a/mm/memory-failure.c
->> +++ b/mm/memory-failure.c
->> @@ -306,6 +306,7 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
->>   		struct vm_area_struct *vma)
->>   {
->>   	unsigned long address = vma_address(page, vma);
->> +	unsigned long ret = 0;
->>   	pgd_t *pgd;
->>   	p4d_t *p4d;
->>   	pud_t *pud;
->> @@ -330,10 +331,12 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
->>   		return PMD_SHIFT;
->>   	pte = pte_offset_map(pmd, address);
->>   	if (!pte_present(*pte))
->> -		return 0;
->> +		goto unmap;
->>   	if (pte_devmap(*pte))
->> -		return PAGE_SHIFT;
->> -	return 0;
->> +		ret = PAGE_SHIFT;
->> +unmap:
->> +	pte_unmap(pte);
->> +	return ret;
->>   }
->>   
-> 
-> This is neater?
+OK.
 
-Yes, and I see this neater version has merged into your mm tree,
-thanks. :)
+> > >  err_conn_init:
+> > >       drm_dp_aux_unregister(&pdata->aux);
+> > >       return ret;
+> > > @@ -792,9 +790,30 @@ static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
+> > >       regmap_write(pdata->regmap, SN_DSIA_CLK_FREQ_REG, val);
+> > >  }
+> > >
+> > > +/*
+> > > + * Find the connector and fish out the bpc from display_info.  It would
+> > > + * be nice if we could get this instead from drm_bridge_state, but that
+> > > + * doesn't yet appear to be the case.
+> >
+> > You already have a bus format in the bridge state, from which you can
+> > derive the bpp. Could you give it a try ?
+> 
+> Possibly the bridge should be converted to ->atomic_enable(), etc..
+> I'll leave that for another time
 
-> 
-> +++ a/mm/memory-failure.c
-> @@ -330,11 +330,8 @@ static unsigned long dev_pagemap_mapping
->   	if (pmd_devmap(*pmd))
->   		return PMD_SHIFT;
->   	pte = pte_offset_map(pmd, address);
-> -	if (!pte_present(*pte))
-> -		goto unmap;
-> -	if (pte_devmap(*pte))
-> +	if (pte_present(*pte) && pte_devmap(*pte))
->   		ret = PAGE_SHIFT;
-> -unmap:
->   	pte_unmap(pte);
->   	return ret;
->   }
-> _
-> 
+It should be fairly straightforward, and would avoid the hack below.
+
+> > > + */
+> > >  static unsigned int ti_sn_bridge_get_bpp(struct ti_sn65dsi86 *pdata)
+> > >  {
+> > > -     if (pdata->connector.display_info.bpc <= 6)
+> > > +     struct drm_bridge *bridge = &pdata->bridge;
+> > > +     struct drm_connector_list_iter conn_iter;
+> > > +     struct drm_connector *connector;
+> > > +     unsigned bpc = 0;
+> > > +
+> > > +     drm_connector_list_iter_begin(bridge->dev, &conn_iter);
+> > > +     drm_for_each_connector_iter(connector, &conn_iter) {
+> > > +             if (drm_connector_has_possible_encoder(connector, bridge->encoder)) {
+> > > +                     bpc = connector->display_info.bpc;
+> > > +                     break;
+> > > +             }
+> > > +     }
+> > > +     drm_connector_list_iter_end(&conn_iter);
+> > > +
+> > > +     WARN_ON(bpc == 0);
+> > > +
+> > > +     if (bpc <= 6)
+> > >               return 18;
+> > >       else
+> > >               return 24;
+
+-- 
+Regards,
+
+Laurent Pinchart
