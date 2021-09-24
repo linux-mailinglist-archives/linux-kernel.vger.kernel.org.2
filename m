@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B349417DE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C628F417DE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345461AbhIXWpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 18:45:20 -0400
-Received: from mga03.intel.com ([134.134.136.65]:22795 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345228AbhIXWpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 18:45:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10117"; a="224233866"
-X-IronPort-AV: E=Sophos;i="5.85,321,1624345200"; 
-   d="scan'208";a="224233866"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 15:43:43 -0700
-X-IronPort-AV: E=Sophos;i="5.85,321,1624345200"; 
-   d="scan'208";a="704339730"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.251.20.113]) ([10.251.20.113])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 15:43:41 -0700
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-References: <20210824053830-mutt-send-email-mst@kernel.org>
- <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
- <20210829112105-mutt-send-email-mst@kernel.org>
- <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
- <20210829181635-mutt-send-email-mst@kernel.org>
- <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
- <20210830163723-mutt-send-email-mst@kernel.org>
- <69fc30f4-e3e2-add7-ec13-4db3b9cc0cbd@linux.intel.com>
- <20210910054044-mutt-send-email-mst@kernel.org>
- <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
- <20210911195006-mutt-send-email-mst@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <ad1e41d1-3f4e-8982-16ea-18a3b2c04019@linux.intel.com>
-Date:   Fri, 24 Sep 2021 15:43:40 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1345673AbhIXWp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 18:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345479AbhIXWpz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 18:45:55 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8BFC061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:44:22 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id c6-20020a9d2786000000b005471981d559so15161381otb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:44:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7gyAp11GVy3k0igMDf0mWwOpAwqokrDaJ8vtHbGpMaY=;
+        b=jwtSoWFN7eT/+6F7TkV+rnDt3whdvugsXoSs2Le3Sz9bTNBHHRRO7+f7XMFOvrAVVt
+         J4RXXtld9IhS6tffti6wADOFhHmgLFdpU+PX0C65E17VE2aCLwgs7wbMHJPT6kMUkJuH
+         SYWO3TkVsRjM0hglRb1panwV5OuvjEXtLZQ7YMbDWS9qxgC1KW89CWspIp/Ii71yM9/q
+         VNsh7cKPCfX3KqBNEOxemhkn4fTTzbiPQf9GqKOUJsG92LYsCOOFBWY2W56X9lTC9h1M
+         kx5wDDJzuoBPetvuh7WuPEdjQoP1AOEfUNlpQJGARQG0Y1Snr4W1g8/qkPcrT2jiyLSL
+         yTiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7gyAp11GVy3k0igMDf0mWwOpAwqokrDaJ8vtHbGpMaY=;
+        b=SJImmLmX4kCMqaZp74xOlUWGBmHC2HRnYqQey1ldj6M42Eh3Sm8zxm8ug9PDJ2yZh/
+         iiVrQFD5++IWO/mbiyCz0CPsYMokVF5DKwnK6uKABOKzJH6mrwFFwLT2ogPSmSzQsH/q
+         43MPItBw3UoazldraXq1a89JX2VZXsfJmxz8iEIOeLyeeQ2cRuDiIlDZpVxYb3O5NJQ7
+         i4eLwIpxwKP8+otZvLXHVTh1boXKnBJbeL8bilzzKJKDAf7LDkrcyQC313rdYQ+SZjKC
+         Yx6PySiWO8GKKl/ee9zFgK7ksZQxP5VaVeScOw/tTf0LJHWSspEHvKzwyy8v7dXoOYaB
+         tJOQ==
+X-Gm-Message-State: AOAM530sN8oH1pcXumhXjav+QLR7PvFLi9q+/2hyVHmxw/6BNt7tcp3j
+        Cn619TX2mvfjSxE46zZAP5wJeQ==
+X-Google-Smtp-Source: ABdhPJz2K2HvjPfjNvJQV+nwwKIJsuIByaxemSpdOIRViuYY0V41ni1py8I/1OUye2lrALIOsNHhCQ==
+X-Received: by 2002:a05:6830:708:: with SMTP id y8mr6179443ots.77.1632523461522;
+        Fri, 24 Sep 2021 15:44:21 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a23sm2374956otp.44.2021.09.24.15.44.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 15:44:21 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     dianders@chromium.org, skakit@codeaurora.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        mka@chromium.org, msavaliy@qti.qualcomm.com,
+        linux-arm-msm@vger.kernel.org, saiprakash.ranjan@codeaurora.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V10 0/8] Add QSPI and QUPv3 DT nodes for SC7280 SoC
+Date:   Fri, 24 Sep 2021 17:44:19 -0500
+Message-Id: <163252328671.1213592.16550436828870710723.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
+References: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210911195006-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 23 Sep 2021 17:46:10 +0530, Rajesh Patil wrote:
+> Changes in V10:
+>  - As per Stephen's comments, Removed <&qup_spiN_cs_gpio> in all spi ports.
+>  - Added "&qupv3_id_1" in sc7280-idp.dtsi file  because EC and TPM
+>    are using "qupv3_id_1" node.
+> 
+> Changes in V9:
+>  - As per Stephen's comments,
+>    1. Moved back qup_opp_table from /soc@0/geniqup@9c0000 to /
+>    2. changed node names to "qup_spi0_cs_gpio: qup-spi0-cs-gpio" because
+>       node names should have dashes instead of underscores.
+> 
+> [...]
 
->> Hmm, yes that's true. I guess we can make it default to opt-in for
->> pci_iomap.
->>
->> It only really matters for device less ioremaps.
-> OK. And same thing for other things with device, such as
-> devm_platform_ioremap_resource.
-> If we agree on all that, this will basically remove virtio
-> changes from the picture ;)
+Applied, thanks!
 
-Hi we revisited this now. One problem with removing the ioremap opt-in 
-is that it's still possible for drivers to get at devices without going 
-through probe. For example they can walk the PCI device list. Some 
-drivers do that for various reasons. So if we remove the opt-in we would 
-need to audit and possibly fix all that, which would be potentially a 
-lot of churn. That's why I think it's better to keep the opt-in.
-
-
--Andi
+[2/8] arm64: dts: sc7280: Add QSPI node
+      commit: 7720ea001b528d88cdb7980cb9c97327f95a815d
+[3/8] arm64: dts: sc7280: Configure SPI-NOR FLASH for sc7280-idp
+      commit: df0174b13d3f6e744a5a3dfdfc1853bb60533fdb
+[4/8] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+      commit: bf6f37a3086bec4c103dc4a478b25c9adf8dd671
+[5/8] arm64: dts: sc7280: Update QUPv3 UART5 DT node
+      commit: 38cd93f413fd946fa39b83d3283a6a2a21ca0789
+[6/8] arm64: dts: sc7280: Configure uart7 to support bluetooth on sc7280-idp
+      commit: e3bc6fec5aaa67b8147a422d8d88a36d46827f0f
+[7/8] arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes
+      commit: 4e8e7648ae645d1113649a7b9a781fdb4b2701f5
+[8/8] arm64: dts: sc7280: Add aliases for I2C and SPI
+      commit: 5f65408d9bfcc418353c8cd4dd17f60ba60d61a0
 
 
+That said, all but a single commit to arch/arm64/boot/dts/qcom/sc7280* has the
+prefix "arm64: dts: qcom: sc7280: ", so I would be happy if you could follow
+this and include "qcom" in the future.
+
+Best regards,
+-- 
+Bjorn Andersson <bjorn.andersson@linaro.org>
