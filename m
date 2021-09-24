@@ -2,169 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98713417621
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99710417627
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345945AbhIXNq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:46:59 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:57705 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344509AbhIXNq6 (ORCPT
+        id S1346045AbhIXNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245027AbhIXNuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:46:58 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 5A2EE3200E51;
-        Fri, 24 Sep 2021 09:45:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 24 Sep 2021 09:45:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=0xALbrCxQCROpU5+x8EgRKlZBK
-        WTfMALPXyRDOAxCr4=; b=VnuyIgvggL0YMShzDdbe8hSDD34m0SART0ebAL8UzT
-        cg7z1n1sD9ccvlQSgsLSp65bK1KoWWQ2ijOWJ8zs3PGa4K684BkYSRzqnJxeuDSs
-        ubC3cwdele7bR7wOEf4NIvcL/nVLs8uVGYVjDobrxK4nTI+Y+9NXWvevn/MNk1CL
-        yOoWnv3TP6Bgb6h841immwEJrTBcDkXzyQH4Exmo1AYvQGfZgkWkmpanyMv43h91
-        h5UWiPaydJr5S3Pls7Q2W7juWBOVj/h0L11sFef/aGxIV5Z1QHozupQjlGY6dw2y
-        DAv74FRtIRIW6ZXOxtY5s524nKMfThrzYSiLrbFqP15w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=0xALbrCxQCROpU5+x
-        8EgRKlZBKWTfMALPXyRDOAxCr4=; b=nUfvGCN54DACYQaThUj9os043+JD9B7G/
-        aNB63AWPJ8p/xP6nRgjzsoOxJWAKLm8D7718eh7UwFWKAEmcVuN68m3Qi5NHLKfp
-        8F+P8PrKHCMbXmC3Lzlv6ITQpSnKEtzq90iXHFvO/Wcy35vml/LjSOck+7lhJ/Xm
-        JmfKB0UQY4TqYXhPJKrB/WGiDA+4HRUlz0pZns0iQpf97oKaZ6w+xrotfAwrcsWf
-        8S67hMmLa29KIe4nAYb8RPZ1JqS+7inneo0asusrB/mjqwm9FGWZIFv4ls1X1RJ0
-        fba3kCi2uX2WYoA/Nd/1/TMvZbgX/yYe/tqkF1FmyNhVZjS6Q+N0w==
-X-ME-Sender: <xms:c9ZNYdfQlQXL4uYZoplGvIY6zoo30dIF0V7lZ-9VDU2LyUV8_-JWPw>
-    <xme:c9ZNYbMxlTrKtGJPrZmTSj7JWuN8K4VuYxs6O8mmdLnjL2UIqk-j5oPgqiIp3BvFr
-    mAwbten_dB_aEOcpuM>
-X-ME-Received: <xmr:c9ZNYWhTkf4XtSLODz1izmssfdZQSVMR58N_Xuvh4dk8K2qpZze8_fgJzncKsB0cxjy3On3czIwj3sY-3OnXpNIMIXJBrPJ8_6LyNFaX9KvRGZEgfn1p1rU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejuddgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcurfgv
-    thgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvghrnh
-    epuefgleekvddtjefffeejheevleefveekgfduudfhgefhfeegtdehveejfefffffgnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvghnse
-    hsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:c9ZNYW9fk00QsqHDbM_jfh7vp9WEfr9gvOcIb3x86JuYEkTlIaCZIQ>
-    <xmx:c9ZNYZsgFegatREIOHxNwreBpcCKYfHSc0Jg0E2Zg-hqMYK2QwVPLA>
-    <xmx:c9ZNYVHAFMbKT9LR98QKBqlqnP5WUsFLnim08br1LQcD9X118PkeLQ>
-    <xmx:c9ZNYTLmV6RDBCM5KtPdi_Ho9DCo1SQ-R4wHSSjZzgKwJ1eoPyFXQg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 24 Sep 2021 09:45:22 -0400 (EDT)
-From:   Sven Peter <sven@svenpeter.dev>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iommu/dart: Clear sid2group entry when a group is freed
-Date:   Fri, 24 Sep 2021 15:45:02 +0200
-Message-Id: <20210924134502.15589-1-sven@svenpeter.dev>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        Fri, 24 Sep 2021 09:50:05 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46561C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:48:32 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id b15so39719899lfe.7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NRFXtODeBa3SkSCafztgkw2bK8xqC1z8hM0PTHXmUWs=;
+        b=Xyr8Cq0ulXVujwfhCVr4s71c0ETd4kCS2Bvmae0GAAdaUYj7QoTj1cOTuxwqA6TmdD
+         4P38xm1B/MRzQsHjxACFVtbmb7jJg2fxiTRX3QdZ3I1dQaiYhVjy4nMowLTVX7autNuK
+         MGaJ+4QLoVGdHpEg5uzcxkj2VBi4OZ2fKk9yYWvzHZ9Yr9oygqDzt93/x8vSQTLiTwlX
+         +Qe6fyDFDvcseNL3XM+U0adQDEnPeCmYrPxJlhCOhoAG9hWIlztDOcu5TkFVKfd61+Zr
+         LG6Zuh51xL6Y1LZkGhSyilt8HFgyltmZOajeZ6jecF+E/IbQsruoqpKP3jAykoPB71D8
+         xDiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NRFXtODeBa3SkSCafztgkw2bK8xqC1z8hM0PTHXmUWs=;
+        b=qjy5VuLBsD6vW/UZpYHiuXXv4x6FhLbqPSPeQA7EiWKW1jcRMeqcg0npSkRUWJPTlz
+         7iI9eOAfTfztjZPlM3W8cn0aexjl5pmBvojwFtQb3eXF70icl1kd38q7AygWDygPqQCk
+         X/EaIw7AJXg82sEJ1koQAYaZL5QWjS3EPYloIOMrpkmJuXuGcngmMR9W6/XFQ/jLA3UK
+         sYqWg2XnsVTMjZ8xNZNj5x6L9FHyotv+wggiOS+xx73oOkW6kROy3yUBy9nUqB8Ouw4P
+         VU0hsEnMjBdH6XH0kbi0m9+kc4F9o+TiJgoidJNeVY6Y4I7G7uclyMQPd4E4X5SWT+oB
+         3ffQ==
+X-Gm-Message-State: AOAM533jTAwTVwjJyH2ZYJ6F6mKFwCtvPa1SghAqJW+YCfeTfjAcN1cf
+        2hDkPugCdRmKvC1uDsLW8hRTEg==
+X-Google-Smtp-Source: ABdhPJwdCnswAKXZYhPqPEnGLLiwGYtezdP3+QV+/tgwrzDMmQpSw3SOKDIKHvz0CEMmtP4UvFxHbg==
+X-Received: by 2002:a05:651c:206:: with SMTP id y6mr11209139ljn.98.1632491310631;
+        Fri, 24 Sep 2021 06:48:30 -0700 (PDT)
+Received: from [192.168.112.17] (nikaet.starlink.ru. [94.141.168.29])
+        by smtp.gmail.com with ESMTPSA id r7sm761470lfc.106.2021.09.24.06.48.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 06:48:30 -0700 (PDT)
+Subject: Re: [PATCH] media: rcar-vin: add G/S_PARM ioctls
+To:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+References: <20210924084115.2340-1-nikita.yoush@cogentembedded.com>
+ <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Message-ID: <c90a960f-4c4d-7e9c-5f85-2931d1530550@cogentembedded.com>
+Date:   Fri, 24 Sep 2021 16:48:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sid2groups keeps track of which stream id combinations belong to a
-iommu_group to assign those correctly to devices.
-When a iommu_group is freed a stale pointer will however remain in
-sid2groups. This prevents devices with the same stream id combination
-to ever be attached again (see below).
-Fix that by creating a shadow copy of the stream id configuration
-when a group is allocated for the first time and clear the sid2group
-entry when that group is freed.
+> I would like to ask your use-case for this. I'm trying to make up the
+> courage to move Gen2 inline with Gen3, that is move Gen2 to use the
+> media graph interface to allow it more complex use-cases, including
+> controlling parameters on the subdevice level.
+> 
+> So I'm curious if this solve a particular problem for you or if it's
+> done "just" for completeness. If it solves a real problem then I think
+> we should move a head with a v2 (with the small comment below fixed) if
+> not I would like to try and reduce the non media graph usage of the API
+> as much as possible.
 
-  # echo 1 >/sys/bus/pci/devices/0000\:03\:00.0/remove
-  pci 0000:03:00.0: Removing from iommu group 1
-  # echo 1 >/sys/bus/pci/rescan
-  [...]
-  pci 0000:03:00.0: BAR 0: assigned [mem 0x6a0000000-0x6a000ffff 64bit pref]
-  pci 0000:03:00.0: BAR 2: assigned [mem 0x6a0010000-0x6a001ffff 64bit pref]
-  pci 0000:03:00.0: BAR 6: assigned [mem 0x6c0100000-0x6c01007ff pref]
-  tg3 0000:03:00.0: Failed to add to iommu group 1: -2
-  [...]
+I believe parallel camera - such as ov5642 - connected to Kingfisher's parallel interface still has to 
+be controlled over v4l operations on vin device. And, to control frame rate of such cameras [which is 
+the usecase we have here at Cogent], the operations that this patch adds are requied.
 
-Fixes: 46d1fb072e76b161 ("iommu/dart: Add DART iommu driver")
-Reported-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
----
- drivers/iommu/apple-dart.c | 38 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 35 insertions(+), 3 deletions(-)
+> Please use &vin->vdev instead of video_devdata(file).
 
-diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-index 47ffe9e49abb..f82b2c46493a 100644
---- a/drivers/iommu/apple-dart.c
-+++ b/drivers/iommu/apple-dart.c
-@@ -636,16 +636,34 @@ static int apple_dart_of_xlate(struct device *dev, struct of_phandle_args *args)
- 	return -EINVAL;
- }
- 
-+static DEFINE_MUTEX(apple_dart_groups_lock);
-+
-+static void apple_dart_release_group(void *iommu_data)
-+{
-+	int i, sid;
-+	struct apple_dart_stream_map *stream_map;
-+	struct apple_dart_master_cfg *group_master_cfg = iommu_data;
-+
-+	mutex_lock(&apple_dart_groups_lock);
-+
-+	for_each_stream_map(i, group_master_cfg, stream_map)
-+		for_each_set_bit(sid, &stream_map->sidmap, DART_MAX_STREAMS)
-+			stream_map->dart->sid2group[sid] = NULL;
-+
-+	kfree(iommu_data);
-+	mutex_unlock(&apple_dart_groups_lock);
-+}
-+
- static struct iommu_group *apple_dart_device_group(struct device *dev)
- {
--	static DEFINE_MUTEX(lock);
- 	int i, sid;
- 	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
- 	struct apple_dart_stream_map *stream_map;
-+	struct apple_dart_master_cfg *group_master_cfg;
- 	struct iommu_group *group = NULL;
- 	struct iommu_group *res = ERR_PTR(-EINVAL);
- 
--	mutex_lock(&lock);
-+	mutex_lock(&apple_dart_groups_lock);
- 
- 	for_each_stream_map(i, cfg, stream_map) {
- 		for_each_set_bit(sid, &stream_map->sidmap, DART_MAX_STREAMS) {
-@@ -673,6 +691,20 @@ static struct iommu_group *apple_dart_device_group(struct device *dev)
- #endif
- 		group = generic_device_group(dev);
- 
-+	res = ERR_PTR(-ENOMEM);
-+	if (!group)
-+		goto out;
-+
-+	group_master_cfg = kzalloc(sizeof(*group_master_cfg), GFP_KERNEL);
-+	if (!group_master_cfg) {
-+		iommu_group_put(group);
-+		goto out;
-+	}
-+
-+	memcpy(group_master_cfg, cfg, sizeof(*group_master_cfg));
-+	iommu_group_set_iommudata(group, group_master_cfg,
-+		apple_dart_release_group);
-+
- 	for_each_stream_map(i, cfg, stream_map)
- 		for_each_set_bit(sid, &stream_map->sidmap, DART_MAX_STREAMS)
- 			stream_map->dart->sid2group[sid] = group;
-@@ -680,7 +712,7 @@ static struct iommu_group *apple_dart_device_group(struct device *dev)
- 	res = group;
- 
- out:
--	mutex_unlock(&lock);
-+	mutex_unlock(&apple_dart_groups_lock);
- 	return res;
- }
- 
--- 
-2.25.1
+Preparing v2 now.
 
+Nikita
