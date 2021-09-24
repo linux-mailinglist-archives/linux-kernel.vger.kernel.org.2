@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAD0416C74
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85328416C79
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244256AbhIXHCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244191AbhIXHCV (ORCPT
+        id S244290AbhIXHFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:05:44 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:20005 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244244AbhIXHFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:02:21 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6488BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:00:49 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so8937406pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zDO4S6rhDP5VVHCExmtlE8+OqL7NPCZ3JyHHEHL0gNg=;
-        b=BCGpatXOcynBQLUnV0XoIPZGp3+d0c1gk+xpJpwtGrFIJBPI+Cl3FTAZE9/JH/ujnP
-         hbaqewvL++xY1zTQtij8SvinUfBdkfJS25tiL4CW1tY+kraCQfiBtv4K9PpIrHBvJ3Wn
-         KrrV7IwmniqbY+NHaJTfyjr+waydGztYxCFC7nwh5kI27IV7dY1FFSNmlxVfumM9qMKd
-         ccxSf9lWwCJOjfh5lX+F3GhkYFTwoke/+PDdBThjmfMrHF1oL2cHAJdbzudRUAdxeVbQ
-         kKsq8mvPFgQCybaiEkOLqIvTghGc1Wzv7ApiO83AJffBGer7qYyvS6O/hbUN42/Q3j6c
-         qd/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zDO4S6rhDP5VVHCExmtlE8+OqL7NPCZ3JyHHEHL0gNg=;
-        b=RMv8AgOPagYJWz0N1Rg+ZoPRN2ynq6M4sEXpsu2U7zfnUr1zoogeu0h5qJyx3YeK+v
-         uL9Bhpm5VBThup0qNA+2Km91+1AEoowiChSbXClZUzPrQeM9zZhiYmJpl2JStpyIQjAy
-         jDwa8J6jrm3+CriraJJzoe7Yfa7K7SSzQV3k6LV7YtvC2AZh1wxQ+dVXpzRXq48NjHF8
-         UWJT1OCvKGwLC8lyrtWodxT+lgbw4ZN8y6YRIb4QUorBmFSvEukQYYNXjnW/XUP8DjlD
-         6sdfHryb+3nnxKpZhHPDI6gAQS6ozm46ksF42428VLMGEoa3sejFxoNx/JKoLOZgPZE2
-         wx/Q==
-X-Gm-Message-State: AOAM530CUWMYrMua0T0hkf5rKsTztO79pf+wHBsq2BRZ95wLsRBuSKgV
-        zS6e6mguFNdReSYeRejILy4=
-X-Google-Smtp-Source: ABdhPJzllHwyKiN66Yfh2p5fqetnOVAFhp733UjsF2pHyH643tnAMR67KuRDcIYqXSuuMMnn3N+9CA==
-X-Received: by 2002:a17:90a:1944:: with SMTP id 4mr430388pjh.45.1632466848765;
-        Fri, 24 Sep 2021 00:00:48 -0700 (PDT)
-Received: from masabert ([202.12.244.3])
-        by smtp.gmail.com with ESMTPSA id e5sm7893859pfj.181.2021.09.24.00.00.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 00:00:48 -0700 (PDT)
-Received: by masabert (Postfix, from userid 1000)
-        id 26D4323606C7; Fri, 24 Sep 2021 16:00:46 +0900 (JST)
-From:   Masanari Iida <standby24x7@gmail.com>
-To:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        broonie@kernel.org, tiwai@suse.com
-Cc:     Masanari Iida <standby24x7@gmail.com>
-Subject: [PATCH] ASoC: q6afe: q6asm: Fix typos in qcom,q6afe.txt and qcom,q6asm.txt
-Date:   Fri, 24 Sep 2021 16:00:44 +0900
-Message-Id: <20210924070044.569541-1-standby24x7@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        Fri, 24 Sep 2021 03:05:43 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HG2wB5l1Czbmny;
+        Fri, 24 Sep 2021 14:59:54 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 24 Sep 2021 15:04:07 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Fri, 24 Sep
+ 2021 15:04:07 +0800
+Subject: Re: [PATCH net-next 1/7] page_pool: disable dma mapping support for
+ 32-bit arch with 64-bit DMA
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Jesper Dangaard Brouer" <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Kevin Hao" <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, <memxor@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        David Ahern <dsahern@gmail.com>
+References: <20210922094131.15625-1-linyunsheng@huawei.com>
+ <20210922094131.15625-2-linyunsheng@huawei.com>
+ <0ffa15a1-742d-a05d-3ea6-04ff25be6a29@redhat.com>
+ <CAC_iWjJLCQNHxgbQ-mzLC3OC-m2s7qj3YAtw7vPAKGG6WxywpA@mail.gmail.com>
+ <adb2687f-b501-9324-52b2-33ede1169007@huawei.com>
+ <YUx8KZS5NPdTRkPS@apalos.home>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <27bc803a-1687-a583-fa6b-3691fef7552e@huawei.com>
+Date:   Fri, 24 Sep 2021 15:04:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YUx8KZS5NPdTRkPS@apalos.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes two spelling typos in qcom,q6afe.txt
-and qcom,q6asm.txt
+On 2021/9/23 21:07, Ilias Apalodimas wrote:
+> On Thu, Sep 23, 2021 at 07:13:11PM +0800, Yunsheng Lin wrote:
+>> On 2021/9/23 18:02, Ilias Apalodimas wrote:
+>>> Hi Jesper,
+>>>
+>>> On Thu, 23 Sept 2021 at 12:33, Jesper Dangaard Brouer
+>>> <jbrouer@redhat.com> wrote:
+>>>>
+>>>>
+>>>> On 22/09/2021 11.41, Yunsheng Lin wrote:
+>>>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>>>>> index 1a6978427d6c..a65bd7972e37 100644
+>>>>> --- a/net/core/page_pool.c
+>>>>> +++ b/net/core/page_pool.c
+>>>>> @@ -49,6 +49,12 @@ static int page_pool_init(struct page_pool *pool,
+>>>>>        * which is the XDP_TX use-case.
+>>>>>        */
+>>>>>       if (pool->p.flags & PP_FLAG_DMA_MAP) {
+>>>>> +             /* DMA-mapping is not supported on 32-bit systems with
+>>>>> +              * 64-bit DMA mapping.
+>>>>> +              */
+>>>>> +             if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>>>>> +                     return -EINVAL;
+>>>>
+>>>> As I said before, can we please use another error than EINVAL.
+>>>> We should give drivers a chance/ability to detect this error, and e.g.
+>>>> fallback to doing DMA mappings inside driver instead.
+>>>>
+>>>> I suggest using EOPNOTSUPP 95 (Operation not supported).
+>>
+>> Will change it to EOPNOTSUPP, thanks.
+> 
+> Mind sending this one separately (and you can keep my reviewed-by).  It
+> fits nicely on it's own and since I am not sure about the rest of the
+> changes yet, it would be nice to get this one in.
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
----
- Documentation/devicetree/bindings/sound/qcom,q6afe.txt | 2 +-
- Documentation/devicetree/bindings/sound/qcom,q6asm.txt | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I am not sure sending this one separately really makes sense, as it is
+mainly used to make supporting the "keep track of pp page when __skb_frag_ref()
+is called" in patch 5 easier.
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-index 2d6fb2ea75a0..1677448347da 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-@@ -12,7 +12,7 @@ used by all apr services. Must contain the following properties.
- 		  from DSP.
- 		  example "qcom,q6afe"
- 
--= AFE DAIs (Digial Audio Interface)
-+= AFE DAIs (Digital Audio Interface)
- "dais" subnode of the AFE node. It represents afe dais, each afe dai is a
- subnode of "dais" representing board specific dai setup.
- "dais" node should have following properties followed by dai children.
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-index 8c4883becae9..0d0075125243 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-@@ -14,7 +14,7 @@ used by the apr service device.
- 		    from DSP.
- 		    example "qcom,q6asm-v2.0"
- 
--= ASM DAIs (Digial Audio Interface)
-+= ASM DAIs (Digital Audio Interface)
- "dais" subnode of the ASM node represents dai specific configuration
- 
- - compatible:
--- 
-2.25.0
-
+> 
+> Cheers
+> /Ilias
+>>
+>>>
+>>> I am fine with both.  In any case though the aforementioned driver can
+>>> just remove PP_FLAG_DMA_MAP and do it's own mappings.
+>>>
+>>> Regards
+>>> /Ilias
+>>>>
+>>>> -Jesper
+>>>>
+>>> .
+>>>
+> .
+> 
