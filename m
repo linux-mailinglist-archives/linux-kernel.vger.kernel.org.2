@@ -2,316 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34ADA417B50
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BC0417B56
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344680AbhIXSxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 14:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbhIXSxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 14:53:04 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C33FC061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:51:31 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id s11so10660083pgr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:51:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TAVnXc0nms8n7fIN2yXfZYjRn1YNEO4XXoVuRCnkQP0=;
-        b=hjVSGmqQZY77x8GN05wghbbgxmYt+ZzQwcOZWL4wLmQjX7fdgMzeVdCMKGKN5EPBGD
-         ayGZAG17jhHtKqzgz0XZK10sE95PBUYD0dg9kshFHiOs2tynL8hlwgpOAd6+Yg8vGLed
-         faiG8KbBUHkOLdwlZoLv3vfeB3YFb1zf9b1eE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TAVnXc0nms8n7fIN2yXfZYjRn1YNEO4XXoVuRCnkQP0=;
-        b=8Re8ub10lJrDn240SRyjJMkBD5CeJ2voCA3YCP+2IvEJWCG7IbgqN1O+GJ8sex3un1
-         Fh2f5PsqH9sjk3ThUORPCazEGbXl4U0shUuvBZuAtOC3kcCEc2cvtx5IabMegSup6BHm
-         vpZm1IV3r3UnMq6rx+vN3y23fgiyFKFbLzUZ+pzCFIoOaD2J4WMC1/L3wG3RjNkzR/WH
-         K5acvwMBft+VnpjjJaR83yzJZfHkOEF0aoHWlDa9gCqKFRkTixmnS34xoFOpxVMMp/jp
-         qdAXCErTeu3XkhUcLFLlcqlGCmGTHztJTG3j2dJSEWZFZKcCzsIrHjNdHWp4WjMPAxh0
-         oPrA==
-X-Gm-Message-State: AOAM5328T+FZ/Qeo3qIaQJqtHcYGEPg+QUsRfB+eSpurx+pPf0iJRjae
-        bWJCIlU1sHwioAcADT8NOqr43SyOtv0mmg==
-X-Google-Smtp-Source: ABdhPJzuKiRhbaVns0VLiUSt+SK8E0CLC+N2x7hv3DOVNEhnI6OfGnntuCXPLcyntdmBmCC+YpQRaw==
-X-Received: by 2002:a63:b34a:: with SMTP id x10mr4986221pgt.473.1632509489436;
-        Fri, 24 Sep 2021 11:51:29 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e15sm13177223pjl.11.2021.09.24.11.51.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 11:51:28 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 11:51:27 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-api@vger.kernel.org
-Subject: Re: [PATCH 5/6] coredump:  Don't perform any cleanups before dumping
- core
-Message-ID: <202109241135.A683423@keescook>
-References: <87v92qx2c6.fsf@disp2133>
- <874kaax26c.fsf@disp2133>
+        id S1345327AbhIXSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 14:55:15 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38283 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345024AbhIXSzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 14:55:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10117"; a="224171142"
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="224171142"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 11:53:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="559725180"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP; 24 Sep 2021 11:53:39 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 24 Sep 2021 11:53:38 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 24 Sep 2021 11:53:38 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 24 Sep 2021 11:53:38 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.44) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 24 Sep 2021 11:53:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PFgnCbTtfsMgS0gmVgWEy3UJfNpkg5tMnrKB46cuVChrGOSoGSfCC4pTwxxbEpL+yZxqiNkYNQ8WxwpBzPQnfC+pCi3ziWr+gQeUT8rEKMRFWp2n912GszGbCCJB2KGjX1OPPFHsGz378JsQgAjx1xpAwQleJGis3Iw9c/okme9ki6N2ynbmFneq9b5M3smWyvvVFY9C4k8aiArMvIYrRlZ3VizlV2O7bybYYL7hEzPfgKugw/pwiB9mj6s+g9XD1ZY379OI/HQKT2zK6U3NbmOzbx+0FDkamRTNKHih8PlFu75hbeuzblEKbLoSfeZDczVgL6HrXhNvNtXYn3uneQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=h7RtAntem3OXBwIfAn9Kmgo31Pkbh56WB/Eb9VXUe0U=;
+ b=Mtx5b8vr+0noAH8tU2hC4dP6HhPotzzO+BhIU+kttUoG6PPfg6vXNIFh1b7Hix7peN12chSvJd7vb0PUDb+QqGKMSFh4RznpvkBi+MNrHJOcPoPdQL+2PlJ2GU0My+uNRJjeUQ3r0K6UlIerKtqPOEWPCfXVgrzAnydOk6LliLvaiBytXUawhURrN6bNw2N6AcQElY5bxwUPcPMYhsZSRKT7+0V5eHNbtcqnkjU0bSLyaegt3J2Hdopt2VSyuA59w+/o8AgpMHjYA4jPlpdn7yOQa8DjfNc0p50bD1yarqbX5jEaTpECClZWAcEJJPqs0IQhbCqMi09cvys7TA9twA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h7RtAntem3OXBwIfAn9Kmgo31Pkbh56WB/Eb9VXUe0U=;
+ b=fan5ZkX3gUGduCVv996BwFCpDI7jjTAiB04ij/FKQ8kLaYFeZaJyuyiGw0yTW/SMgtO3YbjqyJGnqCNjqM/cSqMZ3hSdHL0px+oVnTsmoZlaFAGfbehWX4we+vbbDRxwFWSNlpGoIkTPGOOnyuPcpOlp7r052TpXv4/0ccz2I8M=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
+Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
+ by BN7PR11MB2737.namprd11.prod.outlook.com (2603:10b6:406:b0::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Fri, 24 Sep
+ 2021 18:53:33 +0000
+Received: from BN0PR11MB5744.namprd11.prod.outlook.com
+ ([fe80::d47c:525:2aef:f6a]) by BN0PR11MB5744.namprd11.prod.outlook.com
+ ([fe80::d47c:525:2aef:f6a%3]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
+ 18:53:33 +0000
+Subject: Re: [PATCH] x86/resctrl: Fix return code in mkdir_rdt_prepare()
+To:     Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20210924081713.502039-1-tan.shaopeng@jp.fujitsu.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <600c2857-8a5f-df1e-0edc-65fea2aae078@intel.com>
+Date:   Fri, 24 Sep 2021 11:53:29 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+In-Reply-To: <20210924081713.502039-1-tan.shaopeng@jp.fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR12CA0058.namprd12.prod.outlook.com
+ (2603:10b6:300:103::20) To BN0PR11MB5744.namprd11.prod.outlook.com
+ (2603:10b6:408:166::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874kaax26c.fsf@disp2133>
+Received: from [192.168.1.221] (71.238.111.198) by MWHPR12CA0058.namprd12.prod.outlook.com (2603:10b6:300:103::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend Transport; Fri, 24 Sep 2021 18:53:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 898a5d2d-b743-46eb-89ee-08d97f8c9b75
+X-MS-TrafficTypeDiagnostic: BN7PR11MB2737:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN7PR11MB2737D5F9C67F7F0850FD7B6CF8A49@BN7PR11MB2737.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xrRofvy4MFJ4eblpa++BNTCjw5DaKEB2+mi8DOk8NBXDQ6X6H4bNVrpwGhpU+T0hYRZdDhzI4jP6BKw7mP5o1Jl3MTFrwF2IgHu1DZ0AQeeg4tyWQCtOsemzEJOuvnbiL/FKdljiJ0ZK5FXIv4Hhdr9AsYpnfEoeWsV9ZqG0YQOrm7vtkWZcYabjIsWypE+yr0SSVdNZ92oA7jUm/3GEfk+iUryvGkzGfXO5jd1+PgvItplIgf11wn/9ldh8knbXc/CB5409iPHcLCT+JGdVTxbglg8BDqsqAUEXT8gp3cIhdVDo8RSTOMS3JICw1dxVb96VO7V/y9vnegcCqrsXfnLfkuUChKpgSXQ1CnlTT7CE4oD4KXPCmnRQYKM5zdOKfdZ+RsaZCmTmP1U/DF9S2HQmMp8E/8SjuVGGAK9CYJXqH5j5LK99uQ+Fk7xA+Mx0TqmMSRQS4K+GVNcFNHnKGmRoGsX9+/nyCuJYDMF9tXmRSS0eSuhLSwyMm5MzJxT59it1xxSTHrJKT56Y3uTLFAwShiuXlUxWgdenzoA7GRuElAqLmbRNQqG6AdR925+bdtRZA67/tJIiXruANqYFSr6e+nAzYsz+WnN4DuasbGA/COt15Jikkj7HtLC8BEuO1MlJFPNkNgo6D5nh+mixrP16xTr79ft0n4mo5eun8FV+x2sYIVMLaVCy+VMGsgVVQyZ3rLmCs+c5Lp6ZEqjvFDpizA3QdvNdGg/UcebPtCc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31696002)(4326008)(186003)(66556008)(44832011)(66476007)(2906002)(316002)(8676002)(6486002)(86362001)(8936002)(31686004)(83380400001)(2616005)(956004)(6666004)(53546011)(36756003)(66946007)(26005)(508600001)(38100700002)(110136005)(54906003)(16576012)(6636002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cUdGMk5qTnpvTG1RZysrcEJLaVhLWGZ5aVpqV0hSNVRWdG1Bb2doZXJ5Zms4?=
+ =?utf-8?B?SzdoSEQxSHlwZ1hVMGZrY0VTU1cyaTdRSXVmZzVoWGMrcUM3R2Z5elBSUndO?=
+ =?utf-8?B?OTNjeVl2Y05Nd2hYVnMyNEdiaXhJQTRPQ1lBZjhmazBHMldNRGxreEVIR1hS?=
+ =?utf-8?B?Y05RblNFMm5mRkpmMy9DQlhuQWZoeStlZXNxbHJJMkhFSDhBeTgyMVl6QklO?=
+ =?utf-8?B?ZG5WSzFrNFJMTHl1bXZVSGlvUzdaSldTRW5tZ3h3WnBRcmVoRVdTZ2twYzkw?=
+ =?utf-8?B?R1o2OVlvRTlmTzFNVTVZQzVLMWE0YzF4cFJwL0xjK200bEplZTg1RDlsdmUz?=
+ =?utf-8?B?bXFtZEhFL0dnbUJ2OUJoaWRVMlJvYkh6YnQrNTR2cU13dW5MdGlZY2F1Y2tu?=
+ =?utf-8?B?STdBbGVIS2dEQkpWbVRtQ0ZHOU5yM2dMdTlMNlIwcXNQRlRYalU5ZldZK2pL?=
+ =?utf-8?B?TElTcjdVZnZQUzdlWTBrREhVR1kwQjV0eFpjMDJEUWYrQXNCNGNnYjh4ZVhT?=
+ =?utf-8?B?RW4yMTN2NElPWEdES1ZVa2RTclVVRVoxZDR6ZjV2L0pRVGl1cUl6ZU5kM3Fl?=
+ =?utf-8?B?ajFIc2YzaVN3cmFJaStwM0NMblBGZHhQOVkzK1dwanNwWEFrN0MzMjJsNU1w?=
+ =?utf-8?B?SWR6c3BGYjVUb0puZnZoZkZ6eDN1Q2hyUCtCZGhqOFlZN2hRTVZYUUhaYWdj?=
+ =?utf-8?B?L2xIT1ROQjZuWU01MDhiZFlaT3FLT21mcDVYU3diT092YUJFUmVpQkxreTZu?=
+ =?utf-8?B?dldaaEQrNDM3TTY3YzM0R2QwRWRaT0FobVVqT09ZREZCT0x1aFJWZG43YTdo?=
+ =?utf-8?B?eW5HOURBNTBnaWI5MkhzMHovcXdFY1YyYWJEdGNvbFFmZ2lQMW5FUjNyODdu?=
+ =?utf-8?B?L3d3UlZrQ1EzRW92c0Y4QlhoQU9ZWGdFNWNWS3J0ZWlHWVZmanhaUnRVVW5q?=
+ =?utf-8?B?Nm1jajhNOVNXdnJjcjNJVnBQWmU2NWVGdFJTcUVEb1FOWjYxdmFQbU1PdnFi?=
+ =?utf-8?B?Ymp5Qm1JeFNMc016YWh1TGlhUkU1c3NjbGVlU2FNWjJqcWxWZVBOUnkxb2Zj?=
+ =?utf-8?B?Vkh5aVVVUXM4dkR0OWxGbkltdFA4MjNQRDhZV1pVUHZkRWE4ektramhKaWRl?=
+ =?utf-8?B?UERsM25hd1dZdHZqaW8zOTFYSm03azc1TWtEQ1pCN0ZBS3lreTEwN0V6TzN1?=
+ =?utf-8?B?c2Y2QUpZRVAzbS90VU9ldnJ3bE03MEwxVGs4SUxQZVVuTCtpTXJvZVlNVTNB?=
+ =?utf-8?B?VHZFR05sTjROQURpbXlJWFNvaFlGelFGc3ArOFN4SG9sZW5SckZTc01pQkJv?=
+ =?utf-8?B?WXREellkR3FzVnlvdTM1c2ZyVXB5NmtNSVJBMEJrbWpMdEpJL3BPOW1yRmVG?=
+ =?utf-8?B?eXREbHBWekFLaUszazI5L0h5cUVWWHJ6dWUyTnhaVmo2ZlJyOS9iZ0tNaldR?=
+ =?utf-8?B?T1JuYW8xMFZMMWloWk1KdjZBYXRQUzIvR1VkQ0VncXdxMWpoTmJLc1VjdFo4?=
+ =?utf-8?B?K0xjZW9iZjFQWG12WXBPci84UWpVcUJKcEVWMWZlazVUL3dUb1dQWWczSmdM?=
+ =?utf-8?B?cmhYZUhqajVPajFvQ1Q1N1MrYzlsbHpWaGZJTFdGbHhTZUQwTEpQMnN0a1I3?=
+ =?utf-8?B?TVRLLzk1MGpFRHhUallwdnAyajF1aU1rbVNKbE4rNXJWQjR2VG9sUzZjTmpH?=
+ =?utf-8?B?RzVjNUVTN0VkaUNJenkvUHB4a0tUbWI3RXZWcHdYK3RXanRuNk16U3lGa24z?=
+ =?utf-8?Q?AbVK/v8Y8IditaKaaVEUeE2lbR6HEBGpb2kQ7tu?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 898a5d2d-b743-46eb-89ee-08d97f8c9b75
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 18:53:33.1051
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9swevt+37PGwSpUT3JXBsdkByi7eNzj8JvemGEngXWP8nyvjeYIjfb4L7agzwZ57KeCujVU+zWz1vo4X5KzMa9iBG5CbEVc1Io1otCVK6/A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR11MB2737
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 07:11:39PM -0500, Eric W. Biederman wrote:
+Hi Shaopeng Tan,
+
+On 9/24/2021 1:17 AM, Shaopeng Tan wrote:
+> When kzalloc fails, we should return ENOMEM instead of ENOSPC.
 > 
-> Rename coredump_exit_mm to coredump_task_exit and call it from do_exit
-> before PTRACE_EVENT_EXIT, and before any cleanup work for a task
-> happens.  This ensures that an accurate copy of the process can be
-> captured in the coredump as no cleanup for the process happens before
-> the coredump completes.  This also ensures that PTRACE_EVENT_EXIT
-> will not be visited by any thread until the coredump is complete.
-> 
-> Add a new flag PF_POSTCOREDUMP so that tasks that have passed through
-> coredump_task_exit can be recognized and ignored in zap_process.
-> 
-> Now that all of the coredumping happens before exit_mm remove code to
-> test for a coredump in progress from mm_release.
-> 
-> Replace "may_ptrace_stop()" with a simple test of "current->ptrace".
-> The other tests in may_ptrace_stop all concern avoiding stopping
-> during a coredump.  These tests are no longer necessary as it is now
-> guaranteed that fatal_signal_pending will be set if the code enters
-> ptrace_stop during a coredump.  The code in ptrace_stop is guaranteed
-> not to stop if fatal_signal_pending returns true.
-> 
-> Until this change "ptrace_event(PTRACE_EVENT_EXIT)" could call
-> ptrace_stop without fatal_signal_pending being true, as signals are
-> dequeued in get_signal before calling do_exit.  This is no longer
-> an issue as "ptrace_event(PTRACE_EVENT_EXIT)" is no longer reached
-> until after the coredump completes.
-> 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> Signed-off-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
 > ---
->  fs/coredump.c         |  8 ++++----
->  include/linux/sched.h |  1 +
->  kernel/exit.c         | 19 ++++++++++++-------
->  kernel/fork.c         |  3 +--
->  kernel/signal.c       | 27 +--------------------------
->  mm/oom_kill.c         |  2 +-
->  6 files changed, 20 insertions(+), 40 deletions(-)
+> Hello,
 > 
-> diff --git a/fs/coredump.c b/fs/coredump.c
-> index 5e0e08a7fb9b..d576287fb88b 100644
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -359,7 +359,7 @@ static int zap_process(struct task_struct *start, int exit_code, int flags)
->  
->  	for_each_thread(start, t) {
->  		task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
-> -		if (t != current && t->mm) {
-> +		if (t != current && !(t->flags & PF_POSTCOREDUMP)) {
-
-PF_POSTCOREDUMP is "my exit path is done with anything associated with
-coredumping, including not having dumped core", yes? i.e. it's a task
-lifetime mark, not a "did this actually dump core" mark?
-
->  			sigaddset(&t->pending.signal, SIGKILL);
->  			signal_wake_up(t, 1);
->  			nr++;
-> @@ -404,8 +404,8 @@ static int zap_threads(struct task_struct *tsk, struct mm_struct *mm,
->  	 *
->  	 * do_exit:
->  	 *	The caller holds mm->mmap_lock. This means that the task which
-> -	 *	uses this mm can't pass coredump_exit_mm(), so it can't exit or
-> -	 *	clear its ->mm.
-> +	 *	uses this mm can't pass coredump_task_exit(), so it can't exit
-> +	 *	or clear its ->mm.
->  	 *
->  	 * de_thread:
->  	 *	It does list_replace_rcu(&leader->tasks, &current->tasks),
-> @@ -500,7 +500,7 @@ static void coredump_finish(struct mm_struct *mm, bool core_dumped)
->  		next = curr->next;
->  		task = curr->task;
->  		/*
-> -		 * see coredump_exit_mm(), curr->task must not see
-> +		 * see coredump_task_exit(), curr->task must not see
->  		 * ->task == NULL before we read ->next.
->  		 */
->  		smp_mb();
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index e12b524426b0..f3741f23935e 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1664,6 +1664,7 @@ extern struct pid *cad_pid;
->  #define PF_VCPU			0x00000001	/* I'm a virtual CPU */
->  #define PF_IDLE			0x00000002	/* I am an IDLE thread */
->  #define PF_EXITING		0x00000004	/* Getting shut down */
-> +#define PF_POSTCOREDUMP		0x00000008	/* Coredumps should ignore this task */
-
-This might need some bikeshedding. It happens that the coredump code
-(zap_process(), actually) will ignore it, but I think what's being
-described is "this process has reached an point-of-no-return on the exit
-path, where coredumping is either done or never happened".
-
->  #define PF_IO_WORKER		0x00000010	/* Task is an IO worker */
->  #define PF_WQ_WORKER		0x00000020	/* I'm a workqueue worker */
->  #define PF_FORKNOEXEC		0x00000040	/* Forked but didn't exec */
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index cb1619d8fd64..774e6b5061b8 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -339,23 +339,29 @@ kill_orphaned_pgrp(struct task_struct *tsk, struct task_struct *parent)
->  	}
->  }
->  
-> -static void coredump_exit_mm(struct mm_struct *mm)
-> +static void coredump_task_exit(struct task_struct *tsk)
->  {
->  	struct core_state *core_state;
-> +	struct mm_struct *mm;
-> +
-> +	mm = tsk->mm;
-> +	if (!mm)
-> +		return;
->  
->  	/*
->  	 * Serialize with any possible pending coredump.
->  	 * We must hold mmap_lock around checking core_state
-> -	 * and clearing tsk->mm.  The core-inducing thread
-> +	 * and setting PF_POSTCOREDUMP.  The core-inducing thread
->  	 * will increment ->nr_threads for each thread in the
-> -	 * group with ->mm != NULL.
-> +	 * group without PF_POSTCOREDUMP set.
->  	 */
-> +	mmap_read_lock(mm);
-> +	tsk->flags |= PF_POSTCOREDUMP;
-
-What are the races possible here?
-
-- 2 threads exiting, but neither have core_state, so no change, looks ok
-- 1 thread exiting, 1 thread has dumped. core_state exists, in which
-  case this starts a loop to wait for wakeup?
-	if dumping thread enters zap_process, gets to sigaddset/signal_wake_up
-	then the exiting thread sets PF_POSTCOREDUMP and goes to sleep,
-	will it wait forever? (I can't tell if sighand locking prevents
-	this ordering problem...)
-- 2 threads dumping -- similar race to above? I suspect I'm missing
-  something, as I'd expect this case to already be handled.
-
--Kees
-
->  	core_state = mm->core_state;
-> +	mmap_read_unlock(mm);
->  	if (core_state) {
->  		struct core_thread self;
->  
-> -		mmap_read_unlock(mm);
-> -
->  		self.task = current;
->  		if (self.task->flags & PF_SIGNALED)
->  			self.next = xchg(&core_state->dumper.next, &self);
-> @@ -375,7 +381,6 @@ static void coredump_exit_mm(struct mm_struct *mm)
->  			freezable_schedule();
->  		}
->  		__set_current_state(TASK_RUNNING);
-> -		mmap_read_lock(mm);
->  	}
->  }
->  
-> @@ -480,7 +485,6 @@ static void exit_mm(void)
->  		return;
->  	sync_mm_rss(mm);
->  	mmap_read_lock(mm);
-> -	coredump_exit_mm(mm);
->  	mmgrab(mm);
->  	BUG_ON(mm != current->active_mm);
->  	/* more a memory barrier than a real lock */
-> @@ -768,6 +772,7 @@ void __noreturn do_exit(long code)
->  	profile_task_exit(tsk);
->  	kcov_task_exit(tsk);
->  
-> +	coredump_task_exit(tsk);
->  	ptrace_event(PTRACE_EVENT_EXIT, code);
->  
->  	validate_creds_for_do_exit(tsk);
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 38681ad44c76..9bd9f2da9e41 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1392,8 +1392,7 @@ static void mm_release(struct task_struct *tsk, struct mm_struct *mm)
->  	 * purposes.
->  	 */
->  	if (tsk->clear_child_tid) {
-> -		if (!(tsk->signal->flags & SIGNAL_GROUP_COREDUMP) &&
-> -		    atomic_read(&mm->mm_users) > 1) {
-> +		if (atomic_read(&mm->mm_users) > 1) {
->  			/*
->  			 * We don't check the error code - if userspace has
->  			 * not set up a proper pointer then tough luck.
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index c9759ff2cb43..b0db80acc6ef 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -2158,31 +2158,6 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
->  	spin_unlock_irqrestore(&sighand->siglock, flags);
->  }
->  
-> -static inline bool may_ptrace_stop(void)
-> -{
-> -	if (!likely(current->ptrace))
-> -		return false;
-> -	/*
-> -	 * Are we in the middle of do_coredump?
-> -	 * If so and our tracer is also part of the coredump stopping
-> -	 * is a deadlock situation, and pointless because our tracer
-> -	 * is dead so don't allow us to stop.
-> -	 * If SIGKILL was already sent before the caller unlocked
-> -	 * ->siglock we must see ->core_state != NULL. Otherwise it
-> -	 * is safe to enter schedule().
-> -	 *
-> -	 * This is almost outdated, a task with the pending SIGKILL can't
-> -	 * block in TASK_TRACED. But PTRACE_EVENT_EXIT can be reported
-> -	 * after SIGKILL was already dequeued.
-> -	 */
-> -	if (unlikely(current->mm->core_state) &&
-> -	    unlikely(current->mm == current->parent->mm))
-> -		return false;
-> -
-> -	return true;
-> -}
-> -
-> -
->  /*
->   * This must be called with current->sighand->siglock held.
->   *
-> @@ -2263,7 +2238,7 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
->  
->  	spin_unlock_irq(&current->sighand->siglock);
->  	read_lock(&tasklist_lock);
-> -	if (may_ptrace_stop()) {
-> +	if (likely(current->ptrace)) {
->  		/*
->  		 * Notify parents of the stop.
->  		 *
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 295c8bdfd6c8..7877c755ab37 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -788,7 +788,7 @@ static inline bool __task_will_free_mem(struct task_struct *task)
->  
->  	/*
->  	 * A coredumping process may sleep for an extended period in
-> -	 * coredump_exit_mm(), so the oom killer cannot assume that
-> +	 * coredump_task_exit(), so the oom killer cannot assume that
->  	 * the process will promptly exit and release memory.
->  	 */
->  	if (sig->flags & SIGNAL_GROUP_COREDUMP)
-> -- 
-> 2.20.1
+> I just noticed this when I read the code.
+> 
+> Thanks,
+> 
+>   arch/x86/kernel/cpu/resctrl/rdtgroup.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index b57b3db9a6a7..a92d047476f6 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -2854,7 +2854,7 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
+>   	/* allocate the rdtgroup. */
+>   	rdtgrp = kzalloc(sizeof(*rdtgrp), GFP_KERNEL);
+>   	if (!rdtgrp) {
+> -		ret = -ENOSPC;
+> +		ret = -ENOMEM;
+>   		rdt_last_cmd_puts("Kernel out of memory\n");
+>   		goto out_unlock;
+>   	}
 > 
 
--- 
-Kees Cook
+I do not know the original motivation for using ENOSPC but from what I 
+can tell this error is propagated all the way to user space. This change 
+thus has the consequence that any interface built on top of resctrl 
+could be impacted.
+
+Is there a specific issue that you are aiming to fix here?
+
+Reinette
