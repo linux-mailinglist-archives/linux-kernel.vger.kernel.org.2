@@ -2,119 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08445417163
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DEB417166
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244924AbhIXMAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        id S245096AbhIXMAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239965AbhIXMAA (ORCPT
+        with ESMTP id S245273AbhIXMAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:00:00 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FCAC061574;
-        Fri, 24 Sep 2021 04:58:27 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id m21so9600076pgu.13;
-        Fri, 24 Sep 2021 04:58:27 -0700 (PDT)
+        Fri, 24 Sep 2021 08:00:07 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552B9C061574;
+        Fri, 24 Sep 2021 04:58:34 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so5907895otv.4;
+        Fri, 24 Sep 2021 04:58:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XUkoX7ayRenN07dB5QBsOD3RtV0frJpcKE347BjmU20=;
-        b=C/yol8vv2Ws0HzYoLwnlcIbEZG10a98YfobvCap0kKq94rVm1XewqT7SxAdcJWLJYW
-         dwq4eIvvGkZeO42iO9qV7mpE5CxYmWIHjWbIO8G/QkwHC6/U6PzriwZSr5uHbZCa3Bzo
-         hfMOKjnph6fQrVu7raRygQriqQ7ZFly510utm/W2oHCkdeR0xzi68pXvbfRBWpBrBfjC
-         A20Ass1hfVmwvMlYq+vt4X9B6ultaOuDaEtWWrzLRue9RwTIceEqKSwjk0r4EtC+XP5g
-         AmKP/s/E28GN3I+llmgd9mVLrPYAyvnekkzKw60IbKiBN5phh+kZKN/SZszkKP7lywhX
-         I8zA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=l6AwaPqrmW+gQUvFl7RM/Ev8GqbFQ1KL/qy37HA9sEY=;
+        b=d+c6BKURhDjKntMYaLv/yTwoA+3XE09C8Ytnrrr8il8M/IU0uMrvnr7LrNbrU2ahZq
+         WqBdFevYLH8vd3oKF+lJs9PuHnGuE5jWM8txyQCcprWsbk++M6XGFHLxPWX6zmK9/bFg
+         AhBu1tb2lOBsJCS3ffGWf/iQoIQSoCzkYAUWhPL5zhJLVxUQdh8vyZqIFrQCN7xYnwmf
+         qOi5W/8iI14yIXH+1tLU8HwsnHvrw0XhC4tg1y39Oj3pzOFvPfAjp+B80KiHqVaUCfz4
+         c7vHrx0ESJks9W/VCdMWb1qBlLMIvqMqMyBUOMK67ARdiUI2uKpTlbbXsPU73Vb+bRPS
+         wuLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XUkoX7ayRenN07dB5QBsOD3RtV0frJpcKE347BjmU20=;
-        b=waZM+OL5rOZJkNysOAXdBCIYsHP7HGA07po2BmIsmBzbSJy7ZCIt6n2u1zZtWI9nEN
-         F8QuCzKVQaq+B9S6IKBlEo3dzD108QohUY3E/IoWEPe8b0qUbvRaL334kbHB3wTjDmT3
-         JVOsK4Y8xiVnh8dEq/3nTjrWubDgHROcXI57Stb+0JNZepxLhgDD9ebDBUdd6cW0sXpE
-         6MO6dtMTkxDIOtgJMpdv+q7xO746JW8q0RKF/Vorn1zHIWbRChGA4USTIqeTVXETudKO
-         ex+mBqeWTZiPDkvo5h6LtIyXO/1CHCu7TxT9BXmr4jYieIHakHEIzvwnQ3hkNLuNtPyY
-         pKQQ==
-X-Gm-Message-State: AOAM5320cG5ov9S0GuIalQUWgk8S2OwNbs4619wB4jVUpQnX2hYYKzbD
-        E6Twa5SMCYOfC4/2vfYbq104HEjxMjOvN48YUA8=
-X-Google-Smtp-Source: ABdhPJzSZZIyTBH75s85toleFuWdnD/0DLUif4ivwgQ9Cc8Hd6pSjuiHWrVaHRN8ByfD0N5LzcjMBA==
-X-Received: by 2002:a65:428b:: with SMTP id j11mr3401089pgp.301.1632484707103;
-        Fri, 24 Sep 2021 04:58:27 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id i8sm11628353pjg.6.2021.09.24.04.58.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Sep 2021 04:58:26 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] perf config: Refine error message to eliminate confusion
-Date:   Fri, 24 Sep 2021 19:58:17 +0800
-Message-Id: <20210924115817.58689-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=l6AwaPqrmW+gQUvFl7RM/Ev8GqbFQ1KL/qy37HA9sEY=;
+        b=xy53nmKcv7kppG4uXWhUDSiw/Qg85xbEFoKd2dJAMqalI532sVfMQcWWeq59CuZqee
+         HzbvJg+pnD104GDEEPc2VXbZ0l/oVFI/870YMGDM6P29k9LGWE7HHe2qcttMu7WAvD2Y
+         lPCcmFKc3Kswc6y/yEUxJ3kuIm337pNpU6p0owtawMxGFsjfOHQIzYOxA2knxvBnsIon
+         XdPTAHK/bFzMMVLYf1FrCkz2zHwhh/GBQo0RKguWzAaDTQI76HgF4tuO8H6yryHDWHhT
+         Ls89dza6p+wZUvvmI432yoPvGlBIdOeSo77z/iXK7jlGIpsgiHzy1VF1pD2pQi8epv6B
+         od8w==
+X-Gm-Message-State: AOAM533syrBPBRxzY1SWOeXfORvZB99GSWFQ0Me2qpUv3hrziof1qI2v
+        TlyVZA29jTso0KMACdYmPAdM/xJgmYc=
+X-Google-Smtp-Source: ABdhPJw0kFXfbe6u/G5ac+M9nSxcDyOiFBhdXP40cIkv5Xwuyhnqz5cMN3xmDH/gjPozEBU78pQ/VA==
+X-Received: by 2002:a9d:6143:: with SMTP id c3mr3566086otk.124.1632484713730;
+        Fri, 24 Sep 2021 04:58:33 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k23sm2130435ood.12.2021.09.24.04.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 04:58:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 24 Sep 2021 04:58:31 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Paul Fertser <fercerpav@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] hwmon: tmp421: handle I2C errors
+Message-ID: <20210924115831.GA2695099@roeck-us.net>
+References: <20210924022020.GA3032273@roeck-us.net>
+ <20210924093011.26083-1-fercerpav@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924093011.26083-1-fercerpav@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+On Fri, Sep 24, 2021 at 12:30:09PM +0300, Paul Fertser wrote:
+> Function i2c_smbus_read_byte_data() can return a negative error number
+> instead of the data read if I2C transaction failed for whatever reason.
+> 
+> Lack of error checking can lead to serious issues on production
+> hardware, e.g. errors treated as temperatures produce spurious critical
+> temperature-crossed-threshold errors in BMC logs for OCP server
+> hardware. The patch was tested with Mellanox OCP Mezzanine card
+> emulating TMP421 protocol for temperature sensing which sometimes leads
+> to I2C protocol error during early boot up stage.
+> 
+> Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Paul Fertser <fercerpav@gmail.com>
 
-If there is no configuration file at first, the user can
-write any pair of "key.subkey=value" to the newly created
-configuration file, while value validation against a valid
-configurable key is *deferred* until the next execution or
-the implied execution of "perf config ... ".
+Applied.
 
-For example:
+Thanks,
+Guenter
 
- $ rm ~/.perfconfig
- $ perf config call-graph.dump-size=65529
- $ cat ~/.perfconfig
- # this file is auto-generated.
- [call-graph]
- 	dump-size = 65529
- $ perf config call-graph.dump-size=2048
- callchain: Incorrect stack dump size (max 65528): 65529
- Error: wrong config key-value pair call-graph.dump-size=65529
-
-The user might expect that the second value 2048 is valid
-and can be updated to the configuration file, but the error
-message is very confusing because the first value 65529 is
-not reported as an error during the last configuration.
-
-It is recommended not to change the current behavior of
-delayed validation (as more effort is needed), but to refine
-the original error message to *clearly indicate* that the
-cause of the error is the configuration file.
-
-Signed-off-by: Like Xu <likexu@tencent.com>
----
- tools/perf/util/config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-index 4fb5e90d7a57..60ce5908c664 100644
---- a/tools/perf/util/config.c
-+++ b/tools/perf/util/config.c
-@@ -801,7 +801,7 @@ int perf_config_set(struct perf_config_set *set,
- 				  section->name, item->name);
- 			ret = fn(key, value, data);
- 			if (ret < 0) {
--				pr_err("Error: wrong config key-value pair %s=%s\n",
-+				pr_err("Error in the given config file: wrong config key-value pair %s=%s\n",
- 				       key, value);
- 				/*
- 				 * Can't be just a 'break', as perf_config_set__for_each_entry()
--- 
-2.32.0
-
+> ---
+> 
+> Changes from v2:
+>  - Do not change data->valid type as that's an unrelated cleanup
+>  - Add Fixes: tag
+>  - Remove clutter from the commit message
+> 
+> Changes from v1:
+>  - Reorganise code following excellent suggestion by Guenter Roeck
+>    to use tagged errors consistently
+> 
+>  drivers/hwmon/tmp421.c | 41 +++++++++++++++++++++++++++++++----------
+>  1 file changed, 31 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
+> index ede66ea6a730..e6b2b31d17c8 100644
+> --- a/drivers/hwmon/tmp421.c
+> +++ b/drivers/hwmon/tmp421.c
+> @@ -119,38 +119,59 @@ static int temp_from_u16(u16 reg)
+>  	return (temp * 1000 + 128) / 256;
+>  }
+>  
+> -static struct tmp421_data *tmp421_update_device(struct device *dev)
+> +static int tmp421_update_device(struct tmp421_data *data)
+>  {
+> -	struct tmp421_data *data = dev_get_drvdata(dev);
+>  	struct i2c_client *client = data->client;
+> +	int ret = 0;
+>  	int i;
+>  
+>  	mutex_lock(&data->update_lock);
+>  
+>  	if (time_after(jiffies, data->last_updated + (HZ / 2)) ||
+>  	    !data->valid) {
+> -		data->config = i2c_smbus_read_byte_data(client,
+> -			TMP421_CONFIG_REG_1);
+> +		ret = i2c_smbus_read_byte_data(client,
+> +					       TMP421_CONFIG_REG_1);
+> +		if (ret < 0)
+> +			goto exit;
+> +		data->config = ret;
+>  
+>  		for (i = 0; i < data->channels; i++) {
+> -			data->temp[i] = i2c_smbus_read_byte_data(client,
+> -				TMP421_TEMP_MSB[i]) << 8;
+> -			data->temp[i] |= i2c_smbus_read_byte_data(client,
+> -				TMP421_TEMP_LSB[i]);
+> +			ret = i2c_smbus_read_byte_data(client,
+> +						       TMP421_TEMP_MSB[i]);
+> +			if (ret < 0)
+> +				goto exit;
+> +			data->temp[i] = ret << 8;
+> +
+> +			ret = i2c_smbus_read_byte_data(client,
+> +						       TMP421_TEMP_LSB[i]);
+> +			if (ret < 0)
+> +				goto exit;
+> +			data->temp[i] |= ret;
+>  		}
+>  		data->last_updated = jiffies;
+>  		data->valid = 1;
+>  	}
+>  
+> +exit:
+>  	mutex_unlock(&data->update_lock);
+>  
+> -	return data;
+> +	if (ret < 0) {
+> +		data->valid = 0;
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
+>  		       u32 attr, int channel, long *val)
+>  {
+> -	struct tmp421_data *tmp421 = tmp421_update_device(dev);
+> +	struct tmp421_data *tmp421 = dev_get_drvdata(dev);
+> +	int ret = 0;
+> +
+> +	ret = tmp421_update_device(tmp421);
+> +	if (ret)
+> +		return ret;
+>  
+>  	switch (attr) {
+>  	case hwmon_temp_input:
