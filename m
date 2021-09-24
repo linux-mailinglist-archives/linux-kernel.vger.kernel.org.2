@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BFD4172CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9838F4172F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343782AbhIXMvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43882 "EHLO mail.kernel.org"
+        id S1344175AbhIXMxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:53:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343995AbhIXMuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:50:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2516A6128E;
-        Fri, 24 Sep 2021 12:48:04 +0000 (UTC)
+        id S1344641AbhIXMvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:51:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 404D161107;
+        Fri, 24 Sep 2021 12:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487685;
-        bh=+os6h3+603k8KxKhCv8nCdcFOo2nH+zYn1AAiuUodKY=;
+        s=korg; t=1632487728;
+        bh=jrjvXwCNyzrf+6GLumuw2fpsKIqRhFKljhQcag2ywzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i6E1cdG6PsACiKbPd11a4RSyB99ZEsElQPqBP/lQO4dV9SkiYAXerIvFIZRxrtvwu
-         qBbl4HMfwPEE5VpYPA3V1klv/Zl+kZtx5dnqknl/xqdNieaPjkHGrvGAQLgoZBvaN6
-         87qRGvI8ywnCM3vbG7Zs3GhgGOWCcV7UTklCzN5Q=
+        b=qNUxDga8mPIF2RBfz3R/ukuXyhCvPwK//UGcDvFrdkLv3Sp/wFmHMaUIBzaMfDZLf
+         1Bh2F2aKR133225IsJcyL93nUuYTalwG/ErbdT0IhNgi0klZi++QEVMYssApZV2BDX
+         apVzF59FKn6eGmcABsIvnRtRFfyZk8n1xiwmel6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christophe Leroy <christophe.leroy@c-s.fr>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.14 04/27] crypto: talitos - fix max key size for sha384 and sha512
-Date:   Fri, 24 Sep 2021 14:43:58 +0200
-Message-Id: <20210924124329.323456478@linuxfoundation.org>
+Subject: [PATCH 4.19 05/34] crypto: talitos - fix max key size for sha384 and sha512
+Date:   Fri, 24 Sep 2021 14:43:59 +0200
+Message-Id: <20210924124330.141564530@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,7 +63,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/crypto/talitos.c
 +++ b/drivers/crypto/talitos.c
-@@ -816,7 +816,7 @@ static void talitos_unregister_rng(struc
+@@ -853,7 +853,7 @@ static void talitos_unregister_rng(struc
   * HMAC_SNOOP_NO_AFEA (HSNA) instead of type IPSEC_ESP
   */
  #define TALITOS_CRA_PRIORITY_AEAD_HSNA	(TALITOS_CRA_PRIORITY - 1)
