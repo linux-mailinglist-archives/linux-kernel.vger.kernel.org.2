@@ -2,140 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4730741719D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999294171A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245451AbhIXMSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:18:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:39088 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239965AbhIXMSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:18:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="204217693"
-X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
-   d="scan'208";a="204217693"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 05:17:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
-   d="scan'208";a="559288776"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.84]) ([10.237.72.84])
-  by fmsmga002.fm.intel.com with ESMTP; 24 Sep 2021 05:17:05 -0700
-Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
- cannot meet the timeout value required by the device
-To:     Bean Huo <huobean@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210917172727.26834-1-huobean@gmail.com>
- <20210917172727.26834-3-huobean@gmail.com>
- <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
- <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
- <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
- <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
-Date:   Fri, 24 Sep 2021 15:17:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S239449AbhIXMUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:20:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41780 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhIXMUM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:20:12 -0400
+Date:   Fri, 24 Sep 2021 12:18:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632485918;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZUKnLTnBgXcQgH9joaZ/AUNwsjfzp2yh3/6UtniDmvY=;
+        b=fgv4eCu/a7tUDSNOBKAdDTM1WmcwliqJ/bLlykNPVfLG0WmZPAqS/y8EtD3pSow0yCC7mC
+        YNGhOQRm3HzRks6/11J3bgKnnNrS2V8Jh3BQP8M3J6L2rF24ks/lXFbwZGukFP3bXxfFcS
+        /RnBUwB8e2iCfGnHPChWYdTZvqRFzlvlWJx7GBLlUKII8hw126+jqZSR82f1FVk1pju7/b
+        vbvD5wDLE3IjaXVuCnLfKg+YPysItT/wxvK3NBwYh55b/dJJ8PG+1HsUSMkPA8kR+LfOpW
+        CgkwUE3hHM8BAoZsk8h/TBdZnK4ltepDHpYBcKImjL7b/uCgQydmT/uh5fo/7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632485918;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZUKnLTnBgXcQgH9joaZ/AUNwsjfzp2yh3/6UtniDmvY=;
+        b=mibxwUVAHCUwEXpZ4Zb9smpJiDnIPLW91OkNMAKLXVXLJj06wL+wHMmsv9fMxuOuZvrT8+
+        GwQV2eSsuOCi7PCw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] Merge tag 'irqchip-fixes-5.15-1' of
+ git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into
+ irq/urgent
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20210924090933.2766857-1-maz@kernel.org>
+References: <20210924090933.2766857-1-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Message-ID: <163248591729.25758.12136481276210509832.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/21 2:45 pm, Bean Huo wrote:
-> On Fri, 2021-09-24 at 13:07 +0300, Adrian Hunter wrote:
->> On 24/09/21 12:17 pm, Bean Huo wrote:
->>> On Fri, 2021-09-24 at 08:29 +0300, Adrian Hunter wrote:
->>>>> If the data transmission timeout value required by the device
->>>>> exceeds
->>>>> the maximum timeout value of the host HW timer, we still use
->>>>> the HW
->>>>> timer with the maximum timeout value of the HW timer. This
->>>>> setting
->>>>> is
->>>>> suitable for most R/W situations. But sometimes, the device
->>>>> will
->>>>> complete
->>>>> the R/W task within its required timeout value (greater than
->>>>> the HW
->>>>> timer).
->>>>> In this case, the HW timer for data transmission will time out.
->>>>> Currently, in this condition, we  disable the HW timer and use
->>>>> the
->>>>> SW
->>>>> timer only when the SDHCI_QUIRK2_DISABLE_HW_TIMEOUT quirk is
->>>>> set by
->>>>> the
->>>>> host driver. The patch is to remove this if statement
->>>>> restriction
->>>>> and
->>>>> allow data transmission to use the SW timer when the hardware
->>>>> timer
->>>>> cannot
->>>>> meet the required timeout value.
->>>>
->>>> The reason it is a quirk is because it does not work for all
->>>> hardware.
->>>>
->>>> For some controllers the timeout cannot really be disabled, only
->>>> the
->>>>
->>>> interrupt is disabled, and then the controller never indicates
->>>> completion
->>>>
->>>> if the timeout is exceeded.
->>>
->>> Hi Adrian,
->>> Thanks for your review.
->>>
->>> Yes, you are right. But this quirk prevents disabling the hardware
->>> timeoutIRQ. The purpose of this patch is to disable the hardware
->>> timeout IRQ and
->>> select the software timeout.
->>>
->>> void __sdhci_set_timeout(struct sdhci_host *host, struct
->>> mmc_command
->>> *cmd)
->>> {
->>>         bool too_big = false;
->>>         u8 count = sdhci_calc_timeout(host, cmd, &too_big);
->>>
->>>         if (too_big) {
->>>                 sdhci_calc_sw_timeout(host, cmd);
->>>                 sdhci_set_data_timeout_irq(host, false); // disable
->>> IRQ
->>>         } else if (!(host->ier & SDHCI_INT_DATA_TIMEOUT)) {
->>>                 sdhci_set_data_timeout_irq(host, true);
->>>         }
->>>
->>>         sdhci_writeb(host, count, SDHCI_TIMEOUT_CONTROL);
->>> }
->>>
->>>
->>> The driver has detected that the hardware timer cannot meet the
->>> timeout
->>> requirements of the device, but we still use the hardware timer,
->>> which will
->>> allow potential timeout issuea . Rather than allowing a potential
->>> problem to exist, why can’t software timing be used to avoid this
->>> problem?
->>
->> Timeouts aren't that accurate.  The maximum is assumed still to work.
->> mmc->max_busy_timeout is used to tell the core what the maximum is.
-> 
->>
-> 
-> 
-> 
-> mmc->max_busy_timeout is still a representation of Host HW timer
-> maximum timeout count, isn't it? 
+The following commit has been merged into the irq/urgent branch of tip:
 
-Not necessarily.  For SDHCI_QUIRK2_DISABLE_HW_TIMEOUT it would be
-set to zero to indicate no maximum.
+Commit-ID:     f9bfed3ad5b1662426479be2c7b26a608560b7d4
+Gitweb:        https://git.kernel.org/tip/f9bfed3ad5b1662426479be2c7b26a608560b7d4
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Fri, 24 Sep 2021 14:11:04 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 24 Sep 2021 14:11:04 +02:00
 
+Merge tag 'irqchip-fixes-5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
+
+Pull irqchip fixes from Marc Zyngier:
+
+ - Work around a bad GIC integration on a Renesas platform, where the
+   interconnect cannot deal with byte-sized MMIO accesses
+
+ - Cleanup another Renesas driver abusing the comma operator
+
+ - Fix a potential GICv4 memory leak on an error path
+
+ - Make the type of 'size' consistent with the rest of the code in
+   __irq_domain_add()
+
+ - Fix a regression in the Armada 370-XP IPI path
+
+ - Fix the build for the obviously unloved goldfish-pic
+
+ - Some documentation fixes
+
+Link: https://lore.kernel.org/r/20210924090933.2766857-1-maz@kernel.org
+---
