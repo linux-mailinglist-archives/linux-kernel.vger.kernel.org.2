@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61C84174EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C577F4172D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345616AbhIXNLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38898 "EHLO mail.kernel.org"
+        id S1343971AbhIXMvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346911AbhIXNIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:08:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 912EC613A1;
-        Fri, 24 Sep 2021 12:57:19 +0000 (UTC)
+        id S1344519AbhIXMuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:50:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D51261269;
+        Fri, 24 Sep 2021 12:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488240;
-        bh=9o10XxgUpxVyGoxJmv83SD2N9YKJAa+SJ0iAAXf1MD0=;
+        s=korg; t=1632487698;
+        bh=NNo86zli0Ni0K4VtLcvHdGW7IMx+1jIwUw4zq+mrWsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cEaiTumyl15fOsGmZpPEx07M1zdM6rjvbKcl2hHne1baGeHnijBa75LvhFLJFLO6d
-         luQtBV52DBazR1mWYkHkLx/imCcbEbOYp5Pb3D6TeITuDo1I7JKQ5R1MOryF2IzxIs
-         IGKuoti5pRlRYlXqbCgCYVXEmHPIhOik1XM5scgA=
+        b=KxTycC+1sXVUXMqvyZojVpv1Z1cQJNi/HZ6Kao3B7X43CUVL0/Av6dXrUJEtKwISB
+         AnUJOhj5rc7n5HPBXZMpV3+NGmnprSJSUgSfwOpqah7Vkm+qg33yNFVy0mfVPh7lY2
+         2+knkoOUgT73OVCHs/9GBQ/U+l48fBcSnFeBpxAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 5.10 07/63] ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
+        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 13/34] nilfs2: use refcount_dec_and_lock() to fix potential UAF
 Date:   Fri, 24 Sep 2021 14:44:07 +0200
-Message-Id: <20210924124334.492226652@linuxfoundation.org>
+Message-Id: <20210924124330.398744232@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,114 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-commit 890cb057a46d323fd8c77ebecb6485476614cd21 upstream
+commit 98e2e409e76ef7781d8511f997359e9c504a95c1 upstream.
 
-Will be used in the following patch. No functional change.
+When the refcount is decreased to 0, the resource reclamation branch is
+entered.  Before CPU0 reaches the race point (1), CPU1 may obtain the
+spinlock and traverse the rbtree to find 'root', see
+nilfs_lookup_root().
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Although CPU1 will call refcount_inc() to increase the refcount, it is
+obviously too late.  CPU0 will release 'root' directly, CPU1 then
+accesses 'root' and triggers UAF.
+
+Use refcount_dec_and_lock() to ensure that both the operations of
+decrease refcount to 0 and link deletion are lock protected eliminates
+this risk.
+
+	     CPU0                      CPU1
+	nilfs_put_root():
+		    <-------- (1)
+				spin_lock(&nilfs->ns_cptree_lock);
+				rb_erase(&root->rb_node, &nilfs->ns_cptree);
+				spin_unlock(&nilfs->ns_cptree_lock);
+
+	kfree(root);
+		    <-------- use-after-free
+
+  refcount_t: underflow; use-after-free.
+  WARNING: CPU: 2 PID: 9476 at lib/refcount.c:28 \
+  refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
+  Modules linked in:
+  CPU: 2 PID: 9476 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
+  RIP: 0010:refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
+  ... ...
+  Call Trace:
+     __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+     __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+     refcount_dec_and_test include/linux/refcount.h:333 [inline]
+     nilfs_put_root+0xc1/0xd0 fs/nilfs2/the_nilfs.c:795
+     nilfs_segctor_destroy fs/nilfs2/segment.c:2749 [inline]
+     nilfs_detach_log_writer+0x3fa/0x570 fs/nilfs2/segment.c:2812
+     nilfs_put_super+0x2f/0xf0 fs/nilfs2/super.c:467
+     generic_shutdown_super+0xcd/0x1f0 fs/super.c:464
+     kill_block_super+0x4a/0x90 fs/super.c:1446
+     deactivate_locked_super+0x6a/0xb0 fs/super.c:335
+     deactivate_super+0x85/0x90 fs/super.c:366
+     cleanup_mnt+0x277/0x2e0 fs/namespace.c:1118
+     __cleanup_mnt+0x15/0x20 fs/namespace.c:1125
+     task_work_run+0x8e/0x110 kernel/task_work.c:151
+     tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+     exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+     exit_to_user_mode_prepare+0x13c/0x170 kernel/entry/common.c:191
+     syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
+     do_syscall_64+0x45/0x80 arch/x86/entry/common.c:56
+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+There is no reproduction program, and the above is only theoretical
+analysis.
+
+Link: https://lkml.kernel.org/r/1629859428-5906-1-git-send-email-konishi.ryusuke@gmail.com
+Fixes: ba65ae4729bf ("nilfs2: add checkpoint tree to nilfs object")
+Link: https://lkml.kernel.org/r/20210723012317.4146-1-thunder.leizhen@huawei.com
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/include/asm/insn.h |    8 ++++----
- arch/arm/kernel/ftrace.c    |    2 +-
- arch/arm/kernel/insn.c      |   19 ++++++++++---------
- 3 files changed, 15 insertions(+), 14 deletions(-)
+ fs/nilfs2/the_nilfs.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/arch/arm/include/asm/insn.h
-+++ b/arch/arm/include/asm/insn.h
-@@ -13,18 +13,18 @@ arm_gen_nop(void)
- }
+--- a/fs/nilfs2/the_nilfs.c
++++ b/fs/nilfs2/the_nilfs.c
+@@ -797,14 +797,13 @@ nilfs_find_or_create_root(struct the_nil
  
- unsigned long
--__arm_gen_branch(unsigned long pc, unsigned long addr, bool link);
-+__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn);
- 
- static inline unsigned long
- arm_gen_branch(unsigned long pc, unsigned long addr)
+ void nilfs_put_root(struct nilfs_root *root)
  {
--	return __arm_gen_branch(pc, addr, false);
-+	return __arm_gen_branch(pc, addr, false, true);
- }
+-	if (refcount_dec_and_test(&root->count)) {
+-		struct the_nilfs *nilfs = root->nilfs;
++	struct the_nilfs *nilfs = root->nilfs;
  
- static inline unsigned long
--arm_gen_branch_link(unsigned long pc, unsigned long addr)
-+arm_gen_branch_link(unsigned long pc, unsigned long addr, bool warn)
- {
--	return __arm_gen_branch(pc, addr, true);
-+	return __arm_gen_branch(pc, addr, true, warn);
- }
+-		nilfs_sysfs_delete_snapshot_group(root);
+-
+-		spin_lock(&nilfs->ns_cptree_lock);
++	if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
+ 		rb_erase(&root->rb_node, &nilfs->ns_cptree);
+ 		spin_unlock(&nilfs->ns_cptree_lock);
++
++		nilfs_sysfs_delete_snapshot_group(root);
+ 		iput(root->ifile);
  
- #endif
---- a/arch/arm/kernel/ftrace.c
-+++ b/arch/arm/kernel/ftrace.c
-@@ -70,7 +70,7 @@ int ftrace_arch_code_modify_post_process
- 
- static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
- {
--	return arm_gen_branch_link(pc, addr);
-+	return arm_gen_branch_link(pc, addr, true);
- }
- 
- static int ftrace_modify_code(unsigned long pc, unsigned long old,
---- a/arch/arm/kernel/insn.c
-+++ b/arch/arm/kernel/insn.c
-@@ -3,8 +3,9 @@
- #include <linux/kernel.h>
- #include <asm/opcodes.h>
- 
--static unsigned long
--__arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
-+static unsigned long __arm_gen_branch_thumb2(unsigned long pc,
-+					     unsigned long addr, bool link,
-+					     bool warn)
- {
- 	unsigned long s, j1, j2, i1, i2, imm10, imm11;
- 	unsigned long first, second;
-@@ -12,7 +13,7 @@ __arm_gen_branch_thumb2(unsigned long pc
- 
- 	offset = (long)addr - (long)(pc + 4);
- 	if (offset < -16777216 || offset > 16777214) {
--		WARN_ON_ONCE(1);
-+		WARN_ON_ONCE(warn);
- 		return 0;
- 	}
- 
-@@ -33,8 +34,8 @@ __arm_gen_branch_thumb2(unsigned long pc
- 	return __opcode_thumb32_compose(first, second);
- }
- 
--static unsigned long
--__arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
-+static unsigned long __arm_gen_branch_arm(unsigned long pc, unsigned long addr,
-+					  bool link, bool warn)
- {
- 	unsigned long opcode = 0xea000000;
- 	long offset;
-@@ -44,7 +45,7 @@ __arm_gen_branch_arm(unsigned long pc, u
- 
- 	offset = (long)addr - (long)(pc + 8);
- 	if (unlikely(offset < -33554432 || offset > 33554428)) {
--		WARN_ON_ONCE(1);
-+		WARN_ON_ONCE(warn);
- 		return 0;
- 	}
- 
-@@ -54,10 +55,10 @@ __arm_gen_branch_arm(unsigned long pc, u
- }
- 
- unsigned long
--__arm_gen_branch(unsigned long pc, unsigned long addr, bool link)
-+__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn)
- {
- 	if (IS_ENABLED(CONFIG_THUMB2_KERNEL))
--		return __arm_gen_branch_thumb2(pc, addr, link);
-+		return __arm_gen_branch_thumb2(pc, addr, link, warn);
- 	else
--		return __arm_gen_branch_arm(pc, addr, link);
-+		return __arm_gen_branch_arm(pc, addr, link, warn);
- }
+ 		kfree(root);
 
 
