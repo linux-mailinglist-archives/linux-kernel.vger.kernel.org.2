@@ -2,96 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F48B416D57
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1960A416D5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244552AbhIXIGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244561AbhIXIGL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:06:11 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC82C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:04:38 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id q125so12523242qkd.12
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:04:38 -0700 (PDT)
+        id S244566AbhIXIHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:07:11 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:5931 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244511AbhIXIHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:07:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=OegvdVXk3FJfVMqX2OZETOO33iopqMCtYCkDH+o+tIU=;
-        b=HQjd4GUWGUTYGS9oujyVrD148fFozDFPS0K+Y9M5EFucjE2zizey8gBiDtNjbPTLyO
-         /03PFdb5j087zV9ErZKmfyyxu9umJBcIO3K7uGDi0kRA+5PQkHoUwqaWMMS5z6GdstfB
-         pHJetJHE5nbf+Ex6z/u9H0ob0a7XiYA7FkrfploSsR+tDXLOJsNJGypTziV6CQvefMpg
-         xrrBLpLuN+4D+fd+gtLwGJa7IK0Nm9ou+dYOCNORlh+DZ8kQGsVAQdIwTKXvnpxkWk5z
-         S7zYYN6nONhc5aX2dvv4U9D8E4jpeIln/JlGGWyESQER3ND4O8s4YdPGyJbL9zyE+w2v
-         cNeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=OegvdVXk3FJfVMqX2OZETOO33iopqMCtYCkDH+o+tIU=;
-        b=6bu/PKyRX20j44zQMDQlN3qD6U2SDWmkszvD+DJNkEEolej/KnO/vgAXxpT2itlUFP
-         2ks/yJ5kpUBYH4f1ozdNNlg9Yc3FV3LxoOLP2iOCsL4C2POTK37QlOgzRTWmQBXQubpJ
-         7ftFy7ln9V/Ws6svWORzxs39/tG4OwZRXG0K0Jdd8pICUBXeaqaPSRYU4t8I2Vqj0Nuh
-         qmk7ySaOzJh77BG95Nl+C5ZE+mYbQ83Vp8kf4p+97DU/3uVHfAEb23XhKkkb6JPbeNLD
-         6Cgs2bNCcu1gjSxychJZNAwpteBiVbuzgz9J+MY8Xx9rIywh/oynfM+ycvb7seWpSbzy
-         Go6g==
-X-Gm-Message-State: AOAM531ro2qeKGQODTknOBk4ytsUFYD1+rtXC7ZLAS/BDnRa5LZTSgI6
-        lntegNgBMalHRvvX253QHm2Grs/NAy+bxSez3zE=
-X-Google-Smtp-Source: ABdhPJwNCsPTesaIJyTXcTVCuEAGjKDSKkMgZmsyNvp0NwXadx82mHXmARcxaAUeghiVP56v0bF7Cbg+pHcVFbKNIIU=
-X-Received: by 2002:a37:b586:: with SMTP id e128mr9212267qkf.43.1632470677992;
- Fri, 24 Sep 2021 01:04:37 -0700 (PDT)
-MIME-Version: 1.0
-Sender: mrsmelaniat@gmail.com
-Received: by 2002:ae9:e713:0:0:0:0:0 with HTTP; Fri, 24 Sep 2021 01:04:37
- -0700 (PDT)
-From:   Alary Jean Claude <claudealaryjean@gmail.com>
-Date:   Fri, 24 Sep 2021 08:04:37 +0000
-X-Google-Sender-Auth: t6YK1G_IWg-FIEXKCqmFrlq8_dw
-Message-ID: <CANL8XDuw5yozxBz=ZHXDn0LYoSeSA7T10KgYV9o0RoGoA3aHyQ@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1632470738; x=1664006738;
+  h=from:to:cc:subject:date:message-id;
+  bh=qJ9EaKrEBGYgsWxnX3MhIVjCcoom979TP/eYeQZJVsI=;
+  b=dJ2+Pp2lMKoiCCHRn1ofzbKR8J4qrCAhjFjyGakW07tBSrKdwrrWC1LG
+   8NLhDtno1o/gpF0xeqeBbxMLbAWf1poG26ByJzs2HMPfr4g17waO+eLGt
+   G89b+i9RkP4iilloT0YI8pLn12hjrdKbxnuHFUeqF0Zxbk254q/pGi45U
+   QLyzTgGYk+427mMNE73NAc3XQyI6URx7OYvWafs9NXneRAftyJ7s0QtON
+   AW5b5yGYFEuRuZn6ZqzzExXh/yJM5FU3XPGxP2mupAbOvo6ouAGy0tN2O
+   f3GIdvXQD2LCJjaqlKOegtX6ECdilzOh4vY6Vrz3ky3zKpyYdtaQhL/Ki
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.85,319,1624312800"; 
+   d="scan'208";a="19688819"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 24 Sep 2021 10:05:36 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Fri, 24 Sep 2021 10:05:36 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Fri, 24 Sep 2021 10:05:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1632470736; x=1664006736;
+  h=from:to:cc:subject:date:message-id;
+  bh=qJ9EaKrEBGYgsWxnX3MhIVjCcoom979TP/eYeQZJVsI=;
+  b=G+K+9oePcnlrWNSApGGgorKYm/XRgB96idXqguVWevM+PMP/4j5VT+sp
+   wupae+BbV1GttIDMJFizskDq/22u2gqBEHql24nn5xtwq3Btb/9nZR494
+   OZRv9KG0l4mpJiZai0FCPc7HmpJ8k87rJM0eGHf7Lt9WWkoSszw+UduOY
+   GES2xpzhrfOM3mF8GRrcuTw1p8yB64o2gBE9JKbeX9TexfzDuNdgfbB3o
+   gzkI570Rg9pE+kWE5BCN1o//itdZTPhhdvjevbI+ALNIVzjWRFGgqWt7A
+   W/lMzbAnyfpF0c462Cd2GA+sZw3MnNGmCATAnHL8tKCh/y2Ou3/Kgsslh
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,319,1624312800"; 
+   d="scan'208";a="19688818"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 24 Sep 2021 10:05:36 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 3DC38280070;
+        Fri, 24 Sep 2021 10:05:36 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Markus Niebel <Markus.Niebel@ew.tq-group.com>
+Subject: [RFC] PCI: imx6: add support for internal oscillator on i.MX7D
+Date:   Fri, 24 Sep 2021 10:05:15 +0200
+Message-Id: <81c77a29362433fc5629ada442f0489046ce1051.1632319151.git.matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-With due respect to your person and much sincerity of purpose I wish
-to write to you today, seeking for your urgent assistance in this
-humanitarian investment project to be established in your country for
-the mutual benefit of the orphans and the less privileged ones. My
-names are Mrs.Alary Jean Claude, a dying widow hospitalized undergoing
-treatment for brain tumor disease, I hope that you will not expose or
-betray this belief and confidence that I am about to delegate to you
-for the mutual benefit of the orphans and the less privileged ones. My
-late husband made a substantial deposit with the Bank which I have
-Strong-Willed to hand over and entrust the sum of ($
-12,000.000,Dollar) in the account under your guardianship for you to
-invest it into any social charitable project in your country. Based on
-my present health status I am permanently indisposed to handle
-finances or any financial related project.
+Adds support for a DT property fsl,internal-osc to select the internal
+oscillator for the PCIe PHY.
 
-With this intention, I am determined to contact you in order to
-sustain and assist me as my rightful beneficiary and claim the money
-for humanitarian purposes for the mutual benefits of the less
-privileged ones. Because If the fund remains unclaimed with the bank I
-pass away, those gluttonous bank executives will place the fund as an
-unclaimed Fund and share it among themselves for their selfish and
-worthless ventures. In this regard, I will be grateful for your kind
-acceptance to carry out this transaction and fulfill my final wish in
-implementing the charitable project in your country as it requires
-absolute trust and devotion without any failure. Meanwhile It will be
-my pleasure to compensate you as my Investment Manager/Partner with
-40% percent of the total amount as commission/share just for you to
-take this charitable project serious and handle it with sincerity of
-mind, showing honesty and attention in our communication and in every
-aspect of this project, While 60% of the money will be invested into
-the charity project.
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc: Markus Niebel <Markus.Niebel@ew.tq-group.com>
+---
 
-Thank you very much for your kind consideration and I will be happy to
-receive your prompt response for further correspondence.
-May the peace of God be with you.
-Yours beloved Sister in Christ Mrs.Alary Jean Claude.
+Okay, so while this patch is nice and short, I'm note sure if it's a good
+solution, hence I submit it as an RFC. It is roughly based on code from
+older linux-imx versions [1] - although it seems this feature was never
+supported on i.MX7D even by linux-imx (possibly because of compliance
+issues with the internal clock, however I haven't found a definitive
+erratum backing this), but only on other SoC like i.MX6QP.
+
+The device tree binding docs of the driver are somewhat lacking, but
+looking at [1] it seems that an external reference clock takes the place of
+the "pcie_bus" clock - various pieces of the driver skip enabling/disabling
+this clock when an external clock is configured.
+
+From this I've come to the conclusion that the clock settings in
+imx7d.dtsi do not really make sense: The pcie_bus clock is configured to
+PLL_ENET_MAIN_100M_CLK, but this seems wrong for both internal and
+external reference clocks:
+
+- For the internal clock, the correct clock should be PCIE_PHY_ROOT_CLK
+  according to the reference manual
+- The external clocks, this should refer to an actual external clock, or
+  possibly a fixed-clock node
+
+I would be great if someone with more insight into this could chime in
+and tell me if my reasoning here is correct or not.
+
+Unfortunately I only have our MBa7x at my disposal for further
+experimentation. This board does not have an external reference clock for
+the PCIe PHY, so I cannot test the behaviour for settings that use an
+external clock. Without this patch (and adding the new flag to the MBa7x
+DTS), the boot will hang while waiting for the PCIe link to come up.
+
+So, for the actual question (given that my thoughts above make any sense):
+How do we want to implement this?
+
+1. A simple boolean flag, like this patch provides
+2. Allow Device Trees not to specify a "pcie_bus" clock at all, meaning
+   it should use the internal clock
+3. Special handling when the "pcie_bus" clock is configured to
+   PCIE_PHY_ROOT_CLK - is such a thing even possible, or is this
+   breaking the clock driver's abstraction too much?
+4. Something more involved, with a proper clock sel as the source for
+   "pcie_bus"
+
+Solution 4. seems difficult to implement nicely, as the PCIe driver
+also fiddles with IMX7D_GPR12_PCIE_PHY_REFCLK_SEL for power management:
+the clock selection is switched back to the internal clock in
+imx6_pcie_clk_disable(), which also disables its source PCIE_PHY_ROOT_CLK,
+effectively gating the clock.
+
+Regards,
+Matthias
+
+
+[1] https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/pci/host/pci-imx6.c?h=imx_4.1.15_2.0.0_ga
+
+ drivers/pci/controller/dwc/pci-imx6.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+index 80fc98acf097..021499b9ee7c 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -83,6 +83,7 @@ struct imx6_pcie {
+ 	struct regulator	*vpcie;
+ 	struct regulator	*vph;
+ 	void __iomem		*phy_base;
++	bool			internal_osc;
+ 
+ 	/* power domain for pcie */
+ 	struct device		*pd_pcie;
+@@ -637,7 +638,9 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
+ 		break;
+ 	case IMX7D:
+ 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+-				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL, 0);
++				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
++				   imx6_pcie->internal_osc ?
++					IMX7D_GPR12_PCIE_PHY_REFCLK_SEL : 0);
+ 		break;
+ 	case IMX6SX:
+ 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+@@ -1130,6 +1133,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+ 				 &imx6_pcie->tx_swing_low))
+ 		imx6_pcie->tx_swing_low = 127;
+ 
++	if (of_property_read_bool(node, "fsl,internal-osc"))
++		imx6_pcie->internal_osc = true;
++
+ 	/* Limit link speed */
+ 	pci->link_gen = 1;
+ 	ret = of_property_read_u32(node, "fsl,max-link-speed", &pci->link_gen);
+-- 
+2.17.1
+
