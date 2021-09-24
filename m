@@ -2,129 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5564175B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7894175E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345970AbhIXNaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:30:46 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:41313 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346336AbhIXN3v (ORCPT
+        id S1346308AbhIXNeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346546AbhIXNe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:29:51 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MAOa3-1mag3W2lER-00BpjM; Fri, 24 Sep 2021 15:28:09 +0200
-Received: by mail-wr1-f48.google.com with SMTP id g16so27553301wrb.3;
-        Fri, 24 Sep 2021 06:28:09 -0700 (PDT)
-X-Gm-Message-State: AOAM531JzVzegRlpxGPH+wyu4hsB4T/Y0BeOINPthGOku+n4r/l3o70s
-        AG8Mscyc1ZR2OVTeqEQYJ1E0pVDdhAXahOMyN3w=
-X-Google-Smtp-Source: ABdhPJzM3QVWlDWl9O9PVMbkk54ItVxgQmlG7vgvUmkivSCUC8cK58oe7WVemGT0uxg3hhg7v6G/Qeb1GuFgaELom84=
-X-Received: by 2002:a05:600c:3209:: with SMTP id r9mr2123128wmp.35.1632490089268;
- Fri, 24 Sep 2021 06:28:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
- <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
- <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
- <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
- <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
- <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
- <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
- <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
- <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com>
- <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com>
- <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com>
- <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
- <CAMhs-H_xdkpinyj-Y1u==ievpGWZ2Ze-_U7aCUcfu0=NKBq2xQ@mail.gmail.com>
- <CAK8P3a0OWyW9Wk0kHXsj_7qTd0fVXQnszzun+HacHeTKYETXhw@mail.gmail.com>
- <CAMhs-H9xrXgbuwYe2STzuq0aBwj0onJGc0Oka6+pzgoHb0j8rA@mail.gmail.com>
- <CAK8P3a1AwaSi_J9p4tKwNKxENHhwofDu=Ma=F29ajSmMXoC7RA@mail.gmail.com>
- <CAMhs-H_wxoJC7ZVnkhXNfAcP-P9BNN99ogszM_iJhErHLq8Rdg@mail.gmail.com>
- <CAK8P3a3dvhWT=Xq22xTNn_VbX29s3t9wrw1DbffPbWuHxtTTmg@mail.gmail.com> <CAMhs-H9OhXHA3_mq2PSoaPvYCstqqHL7TfL0zf=OFNeFmWVTRQ@mail.gmail.com>
-In-Reply-To: <CAMhs-H9OhXHA3_mq2PSoaPvYCstqqHL7TfL0zf=OFNeFmWVTRQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 24 Sep 2021 15:27:53 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a36jiomsqSr0rP8_BL8HwceKvV78bT2Ym+iomSGyYuOGA@mail.gmail.com>
-Message-ID: <CAK8P3a36jiomsqSr0rP8_BL8HwceKvV78bT2Ym+iomSGyYuOGA@mail.gmail.com>
-Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Rob Herring <robh@kernel.org>,
+        Fri, 24 Sep 2021 09:34:28 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E821C08E8A8
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:28:54 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 145so8868213pfz.11
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bp1QhDTRs5+iIrkEymnf+wtmNaVnCHkCBBZigTiyxqc=;
+        b=DjZI8Pwzt3OkpHorB5kvWv1DXeyXMYWUeeLxJvzd8WvJrGtWMX6Y0HAisoL8YjwC7e
+         13DBSmsAg4r7wJlUkJD68+Pb+1Do3sirrcn1fP19PLRNUfPfXTXu2Gd+Sl2k5NVnPG8o
+         cOjByLZK9sIZ6XgFGuVxSB4grcruSsHmjXSInYwqwV8XZmKmh3gXZvDKT3it/1ucDXE5
+         CMkNH7DoR0Gz6JrLlgZgd7wkk2k7dBqN94orz0MDp67GWF1J2SXTeAb+PFcFZPcFrgmj
+         6Gp3RfXz5Zg+KaAoJFYNNX3++ga0JEbxajTDVOjK6ue5wsezL84mgKpZedjRBtu/tLKt
+         ed2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bp1QhDTRs5+iIrkEymnf+wtmNaVnCHkCBBZigTiyxqc=;
+        b=I6pu1Xvx5Q+RmY8xbGexwkTBT7kL5uCFVyD1Og9ZTsx2mwp+XbLCRBM5nc9c4SpGPb
+         naMArvJhq18SAC60Ie92ZG60FFwyc+hp4SveiM3P4sDff0ygwJ/r9S0LTbP+5x0fZ+1s
+         IfUg3Vz7OjcZQKI8WNBnLRnNB4dZH/QYDfxJAERR9vQUkXwlR2pwBeUhOCuouhWiAOQt
+         1tEVuQiTFwsAfju771+zTessbW3iaQMowOQEzAAoBz1t5FHYsN3ZR3c0xxBMud3n5nNY
+         3mjHUOB2mz4DmODiltuWj6pOOoZSkoiC86DmJeWTML/GwP2CHbr5F21ZECeLMZ/AJQaP
+         lnrQ==
+X-Gm-Message-State: AOAM5327mKp3XIpSYt3FQvfOSGGuL0w/+8ufoVMdc6ZDPj19xqhB1BZ3
+        rdkiFPEZHWNxTT210NrM2A==
+X-Google-Smtp-Source: ABdhPJyEtAq+e5WMvP9Nyi+DR0/To34+31ApTR0KVDKgfaJeXLAi6DKATboOAWu95m16Gi4O6bvBZA==
+X-Received: by 2002:a63:f050:: with SMTP id s16mr3793900pgj.258.1632490133628;
+        Fri, 24 Sep 2021 06:28:53 -0700 (PDT)
+Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 26sm11756573pgx.72.2021.09.24.06.28.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 06:28:53 -0700 (PDT)
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:lafR+mO3UZb1YFf+DrI3x6jjpqg0gsuDBWVFOntUdysQu4jUaNT
- HUg/svMo25P89YNMWtnNiZMXQFJnn0JUy3wglGpIFqvxGELqhliEaLruxgEa3t7CqOD1k37
- GpAKsZsWCiylcfefuoC90ZxbE82hJ/gIneCakStAs+yk46Sl/s72kjuyldEF/mH4uiiD1IQ
- EArmwrdA/ILo1Pu5/Iw1A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0E6B8r4kG2k=:3c/e4aHr09h+pBC2sA5ipf
- Z3j/Wyj+hvUZyXq5AxVBrHZkHEJCKf+lHwQjsC++hCtxXNiOty0IFk21PAXsy/T5gE0jzw2eL
- 73UfFZo6HdVFtBxpku8zh+O7OJ7obzgZjOPhe2xMSG5JO3d3kKQb5KOb4cdj75bNBCQh8P3eF
- Ir3uyEPYZk5XKadIK1Y2XTDTF21WGZo6t+5gpXvJrJcbo3UQA0U4QDI1UrKhtxThwog328YvK
- CZFZnrgpDhLp7GthjF2aaXbWrakMQcCO2EtlNj7vgSlNLRqxGavsBYZGx9PZcnJ9cxk36faZw
- oOkOgYg/W/divhpT10Mk3UH9hc/pW8rYzqoEJ9dEDIsLM/NbEd1JMMNgscwNBRc2kl5wcxxrI
- MtapDA5INo5cI6KDcT0l4RPWf6Dwqr9SLmEPlMNwfZ/vy4PkRGtb9sdkIX5QH3lIknVoXg7R5
- /r7RAch+9fsI9VSAhDkM9AeUkyRqmhGGMn7/JjG5D0SV+5iYtgMt1NDmXxUpDSCPlCodazMv0
- z3aY5Ag6CFj1mhTex4ycVYDIT7AdDCQjKd3BpjmUcWc6P8GuBbrGm1hPb9w0oB3Xs7fYw/Y9A
- wxMZ6vl0tlVTWkPteCh+bQrjXfu5Po9D5w1rE0ppz4pXnjjOScJvcjaHIPHkqYaN/LHT8u5R4
- eq5ZUBi2YBbvoE2PYHS7bHYlBNjuBE45GY7P1x9SHZlz9QasssgVu+frsM75IrmUe6OVp5K0v
- QmGw4XnQO0K+gGKeaxoeepVSen1RCKG1VBeR7g==
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCHv2 0/5] arm64/irqentry: remove duplicate housekeeping of
+Date:   Fri, 24 Sep 2021 21:28:32 +0800
+Message-Id: <20210924132837.45994-1-kernelfans@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 2:46 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
-> On Fri, Sep 24, 2021 at 1:39 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Fri, Sep 24, 2021 at 12:15 PM Sergio Paracuellos
->
-> > I meant RALINK_PCI_IOBASE. We do need to write both, to clarify:
-> >
-> > RALINK_PCI_IOBASE must be set to match the *bus* address in DT,
-> > so ideally '0', but any value should work as long as these two match.
-> >
-> > PCI_IOBASE/mips_io_port_base must be set to the *CPU* address
-> > in DT, so that must be 0x1e160000, possibly converted from
-> > physical to a virtual __iomem address (this is where my MIPS
-> > knowledge ends).
->
-> Understood. I have tried the following:
->
-> I have added the following at the beggining of the pci host driver to
-> match what you are describing above:
->
-> unsigned long vaddr = (unsigned long)ioremap(PCI_IOBASE, 0x10000);
-> set_io_port_base(vaddr);
->
-> dev_info(dev, "Setting base to PCI_IOBASE: 0x%x -> mips_io_port_base
-> 0x%lx", PCI_IOBASE, mips_io_port_base);
->
-> PCI_IOBASE is the physical cpu address. Hence, 0x1e160000
-> set_io_port_base sets 'mips_io_port_base' to the virtual address where
-> 'PCI_IOBASE' has been mapped (vaddr).
+After introducing arm64/kernel/entry_common.c which is akin to
+kernel/entry/common.c , the housekeeping of rcu/trace are done twice as
+the following:
+    enter_from_kernel_mode()->rcu_irq_enter().
+And
+    gic_handle_irq()->...->handle_domain_irq()->irq_enter()->rcu_irq_enter()
 
-Ok, sounds good. I would still suggest using
-"#define PCI_IOBASE mips_io_port_base", so it has the same meaning
-as on other architectures (the virtual address of port 0), and replace
-the hardcoded base with the CPU address you read from DT to
-make that code more portable. As a general rule, DT-enabled drivers
-should contain no hardcoded addresses.
+Besides redundance, based on code analysis, the redundance also raise
+some mistake, e.g.  rcu_data->dynticks_nmi_nesting inc 2, which causes
+rcu_is_cpu_rrupt_from_idle() unexpected.
 
-> However, nothing seems to change:
->
-> mt7621-pci 1e140000.pcie: Setting base to PCI_IOBASE: 0x1e160000 ->
-> mips_io_port_base 0xbe160000
->                                                 ^^^
->                                                  This seems aligned
-> with what you are saying. mips_io_port_base have now a proper virtual
-> addr for 0x1e160000
+Nmi also faces duplicate accounts. This series aims to address these
+duplicate issues.
+[1-2/5]: address nmi account duplicate
+[3-4/5]: address rcu housekeeping duplicate in irq
+[5/5]: as a natural result of [3-4/5], address a history issue. [1]
 
-Ok.
 
-            Arnd
+History:
+v1 -> v2:
+    change the subject as the motivation varies.
+    add the fix for nmi account duplicate
+
+The subject of v1 is "[PATCH 1/3] kernel/irq: __handle_domain_irq()
+makes irq_enter/exit arch optional". [2] It is brought up to fix [1].
+
+There have been some tries to enable crash-stop-NMI on arm64, one by me,
+the other by Yuichi's [4].  I hope after this series, they can advance,
+as Marc said in [3] "No additional NMI patches will make it until we
+have resolved the issues"
+
+[1] https://lore.kernel.org/linux-arm-kernel/87lfewnmdz.fsf@nanos.tec.linutronix.de/
+[2] https://lore.kernel.org/linux-arm-kernel/1607912752-12481-1-git-send-email-kernelfans@gmail.com
+[3] https://lore.kernel.org/linux-arm-kernel/afd82be798cb55fd2f96940db7be78c0@kernel.org
+[4] https://lore.kernel.org/linux-arm-kernel/20201104080539.3205889-1-ito-yuichi@fujitsu.com
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Joey Gouly <joey.gouly@arm.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Julien Thierry <julien.thierry@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
+Cc: linux-kernel@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+
+
+Pingfan Liu (5):
+  arm64/entry-common: push the judgement of nmi ahead
+  irqchip/GICv3: expose handle_nmi() directly
+  kernel/irq: make irq_{enter,exit}() in handle_domain_irq() arch
+    optional
+  irqchip/GICv3: let gic_handle_irq() utilize irqentry on arm64
+  irqchip/GICv3: make reschedule-ipi light weight
+
+ arch/arm64/Kconfig               |  1 +
+ arch/arm64/include/asm/irq.h     |  7 ++++
+ arch/arm64/kernel/entry-common.c | 45 +++++++++++++++-------
+ arch/arm64/kernel/irq.c          | 29 ++++++++++++++
+ drivers/irqchip/irq-gic-v3.c     | 66 ++++++++++++++++++++------------
+ kernel/irq/Kconfig               |  3 ++
+ kernel/irq/irqdesc.c             |  4 ++
+ 7 files changed, 116 insertions(+), 39 deletions(-)
+
+-- 
+2.31.1
+
