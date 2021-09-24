@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4524174BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E983F4172B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346341AbhIXNKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:10:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34644 "EHLO mail.kernel.org"
+        id S1344316AbhIXMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:50:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345477AbhIXNGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:06:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CFC36136F;
-        Fri, 24 Sep 2021 12:56:26 +0000 (UTC)
+        id S1343835AbhIXMtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:49:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAFD56127B;
+        Fri, 24 Sep 2021 12:47:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488187;
-        bh=i50Q+2odLvoFw3UCo6bLvVHGv28CMrkLdVV9jE1sgjc=;
+        s=korg; t=1632487657;
+        bh=++umCRSuxlWmq48O8JKZesWDRekEYk/wFJnvb483FrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qnzA4vKfPvCr0wH2L92RCHdSG50qGFsI2/6RSpIBXnl1qqdV9QkuksyLaCeGssZWu
-         Hd5iC2IGSi2/I85IknuY44ZORp/V0JYKpXPHBEVUR1+ICB4D2M22+BEQqvSpARpe9a
-         MTU+548laqa9AXHCqHJJjIcpNNB2VSLKd9yE+CIQ=
+        b=G3LipBSCDJiX0FEyGdC34jJ5jEoTMFn/CxowFYcAMjf9Qg3UhIjlIGV7K+wZB+gt5
+         N4u610tk9IHP0KuN9hD59sK9xaY/ebf5Cvq/0IGWrBHq+qXHB4e8ssa41SGaIoTvaD
+         dyu1xNZvYwSG/evNzU8/H7ngmW7dt8+jjHrLW2ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.10 18/63] perf tools: Allow build-id with trailing zeros
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 24/27] nilfs2: fix memory leak in nilfs_sysfs_delete_snapshot_group
 Date:   Fri, 24 Sep 2021 14:44:18 +0200
-Message-Id: <20210924124334.879177912@linuxfoundation.org>
+Message-Id: <20210924124329.987870790@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit 4a86d41404005a3c7e7b6065e8169ac6202887a9 upstream.
+[ Upstream commit 17243e1c3072b8417a5ebfc53065d0a87af7ca77 ]
 
-Currently perf saves a build-id with size but old versions assumes the
-size of 20.  In case the build-id is less than 20 (like for MD5), it'd
-fill the rest with 0s.
+kobject_put() should be used to cleanup the memory associated with the
+kobject instead of kobject_del().  See the section "Kobject removal" of
+"Documentation/core-api/kobject.rst".
 
-I saw a problem when old version of perf record saved a binary in the
-build-id cache and new version of perf reads the data.  The symbols
-should be read from the build-id cache (as the path no longer has the
-same binary) but it failed due to mismatch in the build-id.
-
-  symsrc__init: build id mismatch for /home/namhyung/.debug/.build-id/53/e4c2f42a4c61a2d632d92a72afa08f00000000/elf.
-
-The build-id event in the data has 20 byte build-ids, but it saw a
-different size (16) when it reads the build-id of the elf file in the
-build-id cache.
-
-  $ readelf -n ~/.debug/.build-id/53/e4c2f42a4c61a2d632d92a72afa08f00000000/elf
-
-  Displaying notes found in: .note.gnu.build-id
-    Owner                Data size 	Description
-    GNU                  0x00000010	NT_GNU_BUILD_ID (unique build ID bitstring)
-      Build ID: 53e4c2f42a4c61a2d632d92a72afa08f
-
-Let's fix this by allowing trailing zeros if the size is different.
-
-Fixes: 39be8d0115b321ed ("perf tools: Pass build_id object to dso__build_id_equal()")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20210910224630.1084877-1-namhyung@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-7-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-7-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/dso.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/nilfs2/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -1336,6 +1336,16 @@ void dso__set_build_id(struct dso *dso,
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 28f5572c6aae..33fba75aa9f3 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -224,7 +224,7 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
  
- bool dso__build_id_equal(const struct dso *dso, struct build_id *bid)
+ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
  {
-+	if (dso->bid.size > bid->size && dso->bid.size == BUILD_ID_SIZE) {
-+		/*
-+		 * For the backward compatibility, it allows a build-id has
-+		 * trailing zeros.
-+		 */
-+		return !memcmp(dso->bid.data, bid->data, bid->size) &&
-+			!memchr_inv(&dso->bid.data[bid->size], 0,
-+				    dso->bid.size - bid->size);
-+	}
-+
- 	return dso->bid.size == bid->size &&
- 	       memcmp(dso->bid.data, bid->data, dso->bid.size) == 0;
+-	kobject_del(&root->snapshot_kobj);
++	kobject_put(&root->snapshot_kobj);
  }
+ 
+ /************************************************************************
+-- 
+2.33.0
+
 
 
