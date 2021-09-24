@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D42141742B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8443D41723B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345237AbhIXND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:03:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53950 "EHLO mail.kernel.org"
+        id S1343889AbhIXMqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:46:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345279AbhIXNAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:00:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A92C61374;
-        Fri, 24 Sep 2021 12:53:43 +0000 (UTC)
+        id S1343883AbhIXMqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:46:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9EA36124C;
+        Fri, 24 Sep 2021 12:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488024;
-        bh=q43d9dHE/JmL9up6SwWESpl+Xc+kWdvnCoQBNXlFneM=;
+        s=korg; t=1632487488;
+        bh=Dgofh8tSSc35rV9tFdQX8r0iW5bDB8dS7yOc5CNHVV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oUIz5xtaInDdSxHqr/eXuHC/aLZR1bX/tz+tuIOV+6tcvkWxPqxdbtN2mP2drS2kt
-         +kJ7RA5ZoBztvYo+RNvbV3ePR6aso1b9in8ZXHkTwCfYjcm/SLdXLlosUhkjeYAg6k
-         +4cYTsCrNpFItJjmSgWNKKonCO9KKLkdwOZDGG6k=
+        b=Ii6ouERqqsFhmISN+GBap01ckF5D22j3dbJSKbuLuCwmS6A8alVZk9CmWXsbDv7MT
+         zU7uGQWzmYE2qRtVhuQTTiwRmhufv1HZx4plyWf8kBbg5kgCkH7MGaEJoPKetixcDN
+         cQ/mWsRtqYVOUGDfEsBDBX+/TIUuBU18iD1B7kHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Trent Piepho <tpiepho@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 036/100] math: RATIONAL_KUNIT_TEST should depend on RATIONAL instead of selecting it
-Date:   Fri, 24 Sep 2021 14:43:45 +0200
-Message-Id: <20210924124342.670318956@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 4.4 05/23] thermal/drivers/exynos: Fix an error code in exynos_tmu_probe()
+Date:   Fri, 24 Sep 2021 14:43:46 +0200
+Message-Id: <20210924124328.001025476@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
+References: <20210924124327.816210800@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 8ba739ede49dec361ddcb70afe24986b4b8cfe17 ]
+commit 02d438f62c05f0d055ceeedf12a2f8796b258c08 upstream.
 
-RATIONAL_KUNIT_TEST selects RATIONAL, thus enabling an optional feature
-the user may not want to have enabled.  Fix this by making the test depend
-on RATIONAL instead.
+This error path return success but it should propagate the negative
+error code from devm_clk_get().
 
-Link: https://lkml.kernel.org/r/20210706100945.3803694-3-geert@linux-m68k.org
-Fixes: b6c75c4afceb8bc0 ("lib/math/rational: add Kunit test cases")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: Colin Ian King <colin.king@canonical.com>
-Cc: Trent Piepho <tpiepho@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 6c247393cfdd ("thermal: exynos: Add TMU support for Exynos7 SoC")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210810084413.GA23810@kili
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/Kconfig.debug | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/thermal/samsung/exynos_tmu.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 5ddd575159fb..021bc9cd43da 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2460,8 +2460,7 @@ config SLUB_KUNIT_TEST
- 
- config RATIONAL_KUNIT_TEST
- 	tristate "KUnit test for rational.c" if !KUNIT_ALL_TESTS
--	depends on KUNIT
--	select RATIONAL
-+	depends on KUNIT && RATIONAL
- 	default KUNIT_ALL_TESTS
- 	help
- 	  This builds the rational math unit test.
--- 
-2.33.0
-
+--- a/drivers/thermal/samsung/exynos_tmu.c
++++ b/drivers/thermal/samsung/exynos_tmu.c
+@@ -1347,6 +1347,7 @@ static int exynos_tmu_probe(struct platf
+ 		data->sclk = devm_clk_get(&pdev->dev, "tmu_sclk");
+ 		if (IS_ERR(data->sclk)) {
+ 			dev_err(&pdev->dev, "Failed to get sclk\n");
++			ret = PTR_ERR(data->sclk);
+ 			goto err_clk;
+ 		} else {
+ 			ret = clk_prepare_enable(data->sclk);
 
 
