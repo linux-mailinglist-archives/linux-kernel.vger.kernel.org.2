@@ -2,217 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CA14172FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DD241737F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344787AbhIXMxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:53:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45114 "EHLO mail.kernel.org"
+        id S1345070AbhIXM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:57:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343831AbhIXMvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:51:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E0C56127B;
-        Fri, 24 Sep 2021 12:49:01 +0000 (UTC)
+        id S1344450AbhIXMzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:55:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FF52613A3;
+        Fri, 24 Sep 2021 12:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487742;
-        bh=LyC84B081b8/x+h1ppkHgaEdmqSSOPOfDR3EHWLQfoQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cxr7BQwAs4Oyg2VYWbXZZm5oS/Ges409JU19LmNoaappV/NWkTdodYOmC2isHrxBA
-         nSYqNnniHNWBGd3JU3suoe0vo1JFJkYGo9mk2APC+YftrblF7p2HaW97r/BD5q+FZK
-         xO46cEldPFKc2wJvJWpmjTNi24BaFkyM8OpQHiZo=
+        s=korg; t=1632487852;
+        bh=WLLtukK5s2B5j/CTdls1eQsed9a0wt9nyzPJt/PMd4c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SQusAtqU9AsU0O7A36HDskuuyWGFS7VihXsXi+M+vZ5MwS8i8/LaI6wpiRHV5Ycgw
+         9YVm09EcFgxt+tbrJjZe+5EM8V53ZAtB9VqZtNmaU3u/yMYyz2N4eftC32CP/6AGJ4
+         4AV2+DVtKJyiSWM2x8QJNG7Bhodx9IHdZSdofMbU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.19 00/34] 4.19.208-rc1 review
+        stable@vger.kernel.org,
+        Tuan Phan <tuanphan@os.amperecomputing.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        dann frazier <dann.frazier@canonical.com>
+Subject: [PATCH 5.4 05/50] PCI/ACPI: Add Ampere Altra SOC MCFG quirk
 Date:   Fri, 24 Sep 2021 14:43:54 +0200
-Message-Id: <20210924124329.965218583@linuxfoundation.org>
+Message-Id: <20210924124332.419622318@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.208-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.19.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.19.208-rc1
-X-KernelTest-Deadline: 2021-09-26T12:43+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.19.208 release.
-There are 34 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Tuan Phan <tuanphan@os.amperecomputing.com>
 
-Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
-Anything received after that time might be too late.
+commit 877c1a5f79c6984bbe3f2924234c08e2f4f1acd5 upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.208-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-and the diffstat can be found below.
+Ampere Altra SOC supports only 32-bit ECAM reads.  Add an MCFG quirk for
+the platform.
 
-thanks,
+Link: https://lore.kernel.org/r/1596751055-12316-1-git-send-email-tuanphan@os.amperecomputing.com
+Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+[ dannf: backport drops const qualifier from pci_32b_read_ops for
+  consistency with the other quirks that weren't yet constified in v5.4 ]
+Signed-off-by: dann frazier <dann.frazier@canonical.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-greg k-h
+---
+ drivers/acpi/pci_mcfg.c  |   20 ++++++++++++++++++++
+ drivers/pci/ecam.c       |   10 ++++++++++
+ include/linux/pci-ecam.h |    1 +
+ 3 files changed, 31 insertions(+)
 
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.19.208-rc1
-
-Guenter Roeck <linux@roeck-us.net>
-    drm/nouveau/nvkm: Replace -ENOSYS with -ENODEV
-
-Li Jinlin <lijinlin3@huawei.com>
-    blk-throttle: fix UAF by deleteing timer in blk_throtl_exit()
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    pwm: stm32-lp: Don't modify HW state in .remove() callback
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    pwm: rockchip: Don't modify HW state in .remove() callback
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    pwm: img: Don't modify HW state in .remove() callback
-
-Nanyong Sun <sunnanyong@huawei.com>
-    nilfs2: fix memory leak in nilfs_sysfs_delete_snapshot_group
-
-Nanyong Sun <sunnanyong@huawei.com>
-    nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
-
-Nanyong Sun <sunnanyong@huawei.com>
-    nilfs2: fix memory leak in nilfs_sysfs_delete_##name##_group
-
-Nanyong Sun <sunnanyong@huawei.com>
-    nilfs2: fix memory leak in nilfs_sysfs_create_##name##_group
-
-Nanyong Sun <sunnanyong@huawei.com>
-    nilfs2: fix NULL pointer in nilfs_##name##_attr_release
-
-Nanyong Sun <sunnanyong@huawei.com>
-    nilfs2: fix memory leak in nilfs_sysfs_create_device_group
-
-Jeff Layton <jlayton@kernel.org>
-    ceph: lockdep annotations for try_nonblocking_invalidate
-
-Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-    dmaengine: xilinx_dma: Set DMA mask for coherent APIs
-
-Johannes Berg <johannes.berg@intel.com>
-    dmaengine: ioat: depends on !UML
-
-Zou Wei <zou_wei@huawei.com>
-    dmaengine: sprd: Add missing MODULE_DEVICE_TABLE
-
-Guenter Roeck <linux@roeck-us.net>
-    parisc: Move pci_dev_is_behind_card_dino to where it is used
-
-Thomas Gleixner <tglx@linutronix.de>
-    drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
-
-Lukas Bulwahn <lukas.bulwahn@gmail.com>
-    Kconfig.debug: drop selecting non-existing HARDLOCKUP_DETECTOR_ARCH
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    pwm: mxs: Don't modify HW state in .probe() after the PWM chip was registered
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    pwm: lpc32xx: Don't modify HW state in .probe() after the PWM chip was registered
-
-Pavel Skripkin <paskripkin@gmail.com>
-    profiling: fix shift-out-of-bounds bugs
-
-Zhen Lei <thunder.leizhen@huawei.com>
-    nilfs2: use refcount_dec_and_lock() to fix potential UAF
-
-Cyrill Gorcunov <gorcunov@gmail.com>
-    prctl: allow to setup brk for et_dyn executables
-
-Xie Yongji <xieyongji@bytedance.com>
-    9p/trans_virtio: Remove sysfs file on probe failure
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    thermal/drivers/exynos: Fix an error code in exynos_tmu_probe()
-
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-    dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
-
-Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-    sctp: add param size validation for SCTP_PARAM_SET_PRIMARY
-
-Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-    sctp: validate chunk size in __rcv_asconf_lookup
-
-Li Huafei <lihuafei1@huawei.com>
-    tracing/kprobe: Fix kprobe_on_func_entry() modification
-
-Christophe Leroy <christophe.leroy@c-s.fr>
-    crypto: talitos - fix max key size for sha384 and sha512
-
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-    apparmor: remove duplicate macro list_entry_is_head()
-
-Neeraj Upadhyay <neeraju@codeaurora.org>
-    rcu: Fix missed wakeup of exp_wq waiters
-
-Radim Krčmář <rkrcmar@redhat.com>
-    KVM: remember position in kvm->vcpus array
-
-Ilya Leoshkevich <iii@linux.ibm.com>
-    s390/bpf: Fix optimizing out zero-extensions
-
-
--------------
-
-Diffstat:
-
- Makefile                                          |  4 +-
- arch/arm64/kernel/cacheinfo.c                     |  7 +---
- arch/mips/kernel/cacheinfo.c                      |  7 +---
- arch/riscv/kernel/cacheinfo.c                     |  7 +---
- arch/s390/net/bpf_jit_comp.c                      | 50 ++++++++++++-----------
- arch/x86/kernel/cpu/cacheinfo.c                   |  7 +---
- block/blk-throttle.c                              |  1 +
- drivers/crypto/talitos.c                          |  2 +-
- drivers/dma/Kconfig                               |  2 +-
- drivers/dma/acpi-dma.c                            | 10 +++--
- drivers/dma/sprd-dma.c                            |  1 +
- drivers/dma/xilinx/xilinx_dma.c                   |  2 +-
- drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c |  2 +-
- drivers/parisc/dino.c                             | 18 ++++----
- drivers/pwm/pwm-img.c                             | 16 --------
- drivers/pwm/pwm-lpc32xx.c                         | 10 ++---
- drivers/pwm/pwm-mxs.c                             | 13 +++---
- drivers/pwm/pwm-rockchip.c                        | 14 -------
- drivers/pwm/pwm-stm32-lp.c                        |  2 -
- drivers/thermal/samsung/exynos_tmu.c              |  1 +
- fs/ceph/caps.c                                    |  2 +
- fs/nilfs2/sysfs.c                                 | 26 +++++-------
- fs/nilfs2/the_nilfs.c                             |  9 ++--
- include/linux/cacheinfo.h                         | 18 --------
- include/linux/kvm_host.h                          | 11 ++---
- kernel/profile.c                                  | 21 +++++-----
- kernel/rcu/tree_exp.h                             |  2 +-
- kernel/sys.c                                      |  7 ----
- kernel/trace/trace_kprobe.c                       |  3 +-
- lib/Kconfig.debug                                 |  1 -
- net/9p/trans_virtio.c                             |  4 +-
- net/sctp/input.c                                  |  3 ++
- net/sctp/sm_make_chunk.c                          | 13 ++++--
- security/apparmor/apparmorfs.c                    |  3 --
- virt/kvm/kvm_main.c                               |  5 ++-
- 35 files changed, 122 insertions(+), 182 deletions(-)
+--- a/drivers/acpi/pci_mcfg.c
++++ b/drivers/acpi/pci_mcfg.c
+@@ -142,6 +142,26 @@ static struct mcfg_fixup mcfg_quirks[] =
+ 	XGENE_V2_ECAM_MCFG(4, 0),
+ 	XGENE_V2_ECAM_MCFG(4, 1),
+ 	XGENE_V2_ECAM_MCFG(4, 2),
++
++#define ALTRA_ECAM_QUIRK(rev, seg) \
++	{ "Ampere", "Altra   ", rev, seg, MCFG_BUS_ANY, &pci_32b_read_ops }
++
++	ALTRA_ECAM_QUIRK(1, 0),
++	ALTRA_ECAM_QUIRK(1, 1),
++	ALTRA_ECAM_QUIRK(1, 2),
++	ALTRA_ECAM_QUIRK(1, 3),
++	ALTRA_ECAM_QUIRK(1, 4),
++	ALTRA_ECAM_QUIRK(1, 5),
++	ALTRA_ECAM_QUIRK(1, 6),
++	ALTRA_ECAM_QUIRK(1, 7),
++	ALTRA_ECAM_QUIRK(1, 8),
++	ALTRA_ECAM_QUIRK(1, 9),
++	ALTRA_ECAM_QUIRK(1, 10),
++	ALTRA_ECAM_QUIRK(1, 11),
++	ALTRA_ECAM_QUIRK(1, 12),
++	ALTRA_ECAM_QUIRK(1, 13),
++	ALTRA_ECAM_QUIRK(1, 14),
++	ALTRA_ECAM_QUIRK(1, 15),
+ };
+ 
+ static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
+--- a/drivers/pci/ecam.c
++++ b/drivers/pci/ecam.c
+@@ -164,4 +164,14 @@ struct pci_ecam_ops pci_32b_ops = {
+ 		.write		= pci_generic_config_write32,
+ 	}
+ };
++
++/* ECAM ops for 32-bit read only (non-compliant) */
++struct pci_ecam_ops pci_32b_read_ops = {
++	.bus_shift	= 20,
++	.pci_ops	= {
++		.map_bus	= pci_ecam_map_bus,
++		.read		= pci_generic_config_read32,
++		.write		= pci_generic_config_write,
++	}
++};
+ #endif
+--- a/include/linux/pci-ecam.h
++++ b/include/linux/pci-ecam.h
+@@ -51,6 +51,7 @@ extern struct pci_ecam_ops pci_generic_e
+ 
+ #if defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS)
+ extern struct pci_ecam_ops pci_32b_ops;		/* 32-bit accesses only */
++extern struct pci_ecam_ops pci_32b_read_ops; /* 32-bit read only */
+ extern struct pci_ecam_ops hisi_pcie_ops;	/* HiSilicon */
+ extern struct pci_ecam_ops thunder_pem_ecam_ops; /* Cavium ThunderX 1.x & 2.x */
+ extern struct pci_ecam_ops pci_thunder_ecam_ops; /* Cavium ThunderX 1.x */
 
 
