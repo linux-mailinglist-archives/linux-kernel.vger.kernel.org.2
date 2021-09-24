@@ -2,211 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560CC417B77
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 21:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6304E417B78
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 21:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346237AbhIXTIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 15:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhIXTIQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 15:08:16 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D80DC061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 12:06:43 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id me1so7611454pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 12:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QQbXTp9jwktw89AtddwoXiRRXvT8q44fMgRU+kpBvAs=;
-        b=hBT2094Q4KVQXKdAcY4LmJQYGAi98KaiZtil0A1jpS1bLDBgk9TcwJnTG2A01kZ5bg
-         SJUY9OTGwlTCsKmBvVQe2Ftu0EdsEdtzn2QRd7ZYieqsS36uKU6KPPZ/aPUafZ7nntEf
-         8+eEObucgDEbSrBWSI04DzobWanfxDZXhUFUM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QQbXTp9jwktw89AtddwoXiRRXvT8q44fMgRU+kpBvAs=;
-        b=lPrrrOwvVpr0FwP0I6toakVScKc3D3AnzDII0jTxnuSg0Amg65fqST+3uNLN6Y5v3q
-         zfqWmiCg/zSJJFQBwI9Wt58pGVVcMTRubvU069ZaxLgERZ2AhAtNQbPKLF6wu+7DlHdJ
-         jzOaLqWGqo7HVKE8dYA8XUNrWxts9QQX2fJinKGnrD5aLzL5//spnDAE9zG91+oBwj78
-         DWZ8aHRmlFmnnM5J5zt+tW2An9bv3Twgoic0uIMzVv3Us3On5t3HjLs2yfssNXwXY663
-         1LxS6foSFJ9BrCk9SarFHlRSS05sQ5Yo6xv2HWomfp6E9VE/sKvSL0oEDauOWIVlTiUd
-         xADA==
-X-Gm-Message-State: AOAM531TBIKOcnMC1boU+OdjpW/XGT3XaJfrrTNxOMglZxsfsh97CFYt
-        AjI4VQQgQKu4dfznY29Z3aARGCRXx7AHtA==
-X-Google-Smtp-Source: ABdhPJz0Cmr2FruFvG3V3BsomRdJH/fcunLCf5Ac+KO5P7m6yIHEkK69BsHG2AwYfGqnjGfbR7IWMA==
-X-Received: by 2002:a17:90a:a584:: with SMTP id b4mr4076791pjq.70.1632510402841;
-        Fri, 24 Sep 2021 12:06:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h17sm9748992pfk.66.2021.09.24.12.06.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 12:06:42 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 12:06:41 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-api@vger.kernel.org
-Subject: Re: [PATCH 1/6] signal: Remove the bogus sigkill_pending in
- ptrace_stop
-Message-ID: <202109241159.950557F64@keescook>
-References: <87v92qx2c6.fsf@disp2133>
- <87pmsyx29t.fsf@disp2133>
- <202109240804.BC44773A@keescook>
- <87tuiaotz1.fsf@disp2133>
+        id S1346351AbhIXTIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 15:08:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346272AbhIXTIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 15:08:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA4F1610FD;
+        Fri, 24 Sep 2021 19:06:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632510409;
+        bh=LvsTbVneJYaTCR+Ilv4DwkAJIZ7Ldm6fuKKu6q0I2CY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=psw+nBuX2BHGqJa5zZkFa3SBHDKBijqzOk17skzM0TDRupe+2YuX++BTjCid1jfeI
+         PQyt5LZ7jbgFy/T5Z9Gni65CZDktKXufPUfsuTTDpqBXfIj031wUB2jlrZbTQnDOXr
+         lo3m9sTF1n2QTk1cX2DAjYYAFoSs5Ld5eq7l4TCLNB+N+nJsiqyz7TWq1aPgJjF/Ym
+         1IqtU13s/N/DFIvbT04uC33oJt6P3BkzfbHYgtNBnFMHuHAARIVVEIWkHoBe1nSYdc
+         FLVzNFGTcitCXiXa3Og/GZ3UPTt/q+QfDrktJn3pAnUFhQgdRJvYDpetHUGM4kbZEU
+         GjdIZVHwX4EPQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AB27C410A1; Fri, 24 Sep 2021 16:06:47 -0300 (-03)
+Date:   Fri, 24 Sep 2021 16:06:47 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Like Xu <like.xu.linux@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf config: Refine error message to eliminate confusion
+Message-ID: <YU4hx4jRhYLYnPiM@kernel.org>
+References: <20210924115817.58689-1-likexu@tencent.com>
+ <CAP-5=fW+Wn+_OcQWR8-UHQ42CsG6koZVw-UWBptQY8oYLsW=Vg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87tuiaotz1.fsf@disp2133>
+In-Reply-To: <CAP-5=fW+Wn+_OcQWR8-UHQ42CsG6koZVw-UWBptQY8oYLsW=Vg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 10:48:18AM -0500, Eric W. Biederman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> 
-> > On Thu, Sep 23, 2021 at 07:09:34PM -0500, Eric W. Biederman wrote:
-> >> 
-> >> The existence of sigkill_pending is a little silly as it is
-> >> functionally a duplicate of fatal_signal_pending that is used in
-> >> exactly one place.
+Em Fri, Sep 24, 2021 at 08:08:07AM -0700, Ian Rogers escreveu:
+> On Fri, Sep 24, 2021 at 4:58 AM Like Xu <like.xu.linux@gmail.com> wrote:
 > >
-> > sigkill_pending() checks for &tsk->signal->shared_pending.signal but
-> > fatal_signal_pending() doesn't.
+> > From: Like Xu <likexu@tencent.com>
+> >
+> > If there is no configuration file at first, the user can
+> > write any pair of "key.subkey=value" to the newly created
+> > configuration file, while value validation against a valid
+> > configurable key is *deferred* until the next execution or
+> > the implied execution of "perf config ... ".
+> >
+> > For example:
+> >
+> >  $ rm ~/.perfconfig
+> >  $ perf config call-graph.dump-size=65529
+> >  $ cat ~/.perfconfig
+> >  # this file is auto-generated.
+> >  [call-graph]
+> >         dump-size = 65529
+> >  $ perf config call-graph.dump-size=2048
+> >  callchain: Incorrect stack dump size (max 65528): 65529
+> >  Error: wrong config key-value pair call-graph.dump-size=65529
+> >
+> > The user might expect that the second value 2048 is valid
+> > and can be updated to the configuration file, but the error
+> > message is very confusing because the first value 65529 is
+> > not reported as an error during the last configuration.
+> >
+> > It is recommended not to change the current behavior of
+> > delayed validation (as more effort is needed), but to refine
+> > the original error message to *clearly indicate* that the
+> > cause of the error is the configuration file.
+> >
+> > Signed-off-by: Like Xu <likexu@tencent.com>
 > 
-> The extra test is unnecessary as all SIGKILL's visit complete_signal
-> immediately run the loop:
-> 
-> 			/*
-> 			 * Start a group exit and wake everybody up.
-> 			 * This way we don't have other threads
-> 			 * running and doing things after a slower
-> 			 * thread has the fatal signal pending.
-> 			 */
-> 			signal->flags = SIGNAL_GROUP_EXIT;
-> 			signal->group_exit_code = sig;
-> 			signal->group_stop_count = 0;
-> 			t = p;
-> 			do {
-> 				task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
-> 				sigaddset(&t->pending.signal, SIGKILL);
-> 				signal_wake_up(t, 1);
-> 			} while_each_thread(p, t);
-> 			return;
-> 
-> Which sets SIGKILL in the task specific queue.  Which means only the
-> non-shared queue needs to be tested.  Further fatal_signal_pending would
-> be buggy if this was not the case.
+> Acked-by: Ian Rogers <irogers@google.com>
 
-Okay, so SIGKILL is special from the perspective of shared_pending. Why
-was it tested for before? Or rather: how could SIGKILL ever have gotten
-set in shared_pending?
+Thanks, applied.
 
-Oh, I think I see what you mean about complete_signal() now: that's just
-looking at sig, and doesn't care where it got written. i.e. SIGKILL gets
-immediately written to pending, even if the prior path through
-__send_signal() only wrote it to shared_pending.
+- Arnaldo
 
+ 
+> Thanks,
+> Ian
 > 
-> >> Checking for pending fatal signals and returning early in ptrace_stop
-> >> is actively harmful.  It casues the ptrace_stop called by
-> >> ptrace_signal to return early before setting current->exit_code.
-> >> Later when ptrace_signal reads the signal number from
-> >> current->exit_code is undefined, making it unpredictable what will
-> >> happen.
-> >> 
-> >> Instead rely on the fact that schedule will not sleep if there is a
-> >> pending signal that can awaken a task.
+> > ---
+> >  tools/perf/util/config.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > This reasoning sound fine, but I can't see where it's happening.
-> > It looks like recalc_sigpending() is supposed to happen at the start
-> > of scheduling? I see it at the end of ptrace_stop(), though, so it looks
-> > like it's reasonable to skip checking shared_pending.
+> > diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
+> > index 4fb5e90d7a57..60ce5908c664 100644
+> > --- a/tools/perf/util/config.c
+> > +++ b/tools/perf/util/config.c
+> > @@ -801,7 +801,7 @@ int perf_config_set(struct perf_config_set *set,
+> >                                   section->name, item->name);
+> >                         ret = fn(key, value, data);
+> >                         if (ret < 0) {
+> > -                               pr_err("Error: wrong config key-value pair %s=%s\n",
+> > +                               pr_err("Error in the given config file: wrong config key-value pair %s=%s\n",
+> >                                        key, value);
+> >                                 /*
+> >                                  * Can't be just a 'break', as perf_config_set__for_each_entry()
+> > --
+> > 2.32.0
 > >
-> > (Does the scheduler deal with shared_pending directly?)
-> 
-> In the call of signal_pending_state from kernel/core/.c:__schedule().
-> 
-> ptrace_stop would actually be badly broken today if that was not the
-> case as several places enter into ptrace_event without testing signals
-> first.
-> 
-> >> Removing the explict sigkill_pending test fixes fixes ptrace_signal
-> >> when ptrace_stop does not stop because current->exit_code is always
-> >> set to to signr.
-> >> 
-> >> Cc: stable@vger.kernel.org
-> >> Fixes: 3d749b9e676b ("ptrace: simplify ptrace_stop()->sigkill_pending() path")
-> >> Fixes: 1a669c2f16d4 ("Add arch_ptrace_stop")
-> >> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> >> ---
-> >>  kernel/signal.c | 18 ++++--------------
-> >>  1 file changed, 4 insertions(+), 14 deletions(-)
-> >> 
-> >> diff --git a/kernel/signal.c b/kernel/signal.c
-> >> index 952741f6d0f9..9f2dc9cf3208 100644
-> >> --- a/kernel/signal.c
-> >> +++ b/kernel/signal.c
-> >> @@ -2182,15 +2182,6 @@ static inline bool may_ptrace_stop(void)
-> >>  	return true;
-> >>  }
-> >>  
-> >> -/*
-> >> - * Return non-zero if there is a SIGKILL that should be waking us up.
-> >> - * Called with the siglock held.
-> >> - */
-> >> -static bool sigkill_pending(struct task_struct *tsk)
-> >> -{
-> >> -	return sigismember(&tsk->pending.signal, SIGKILL) ||
-> >> -	       sigismember(&tsk->signal->shared_pending.signal, SIGKILL);
-> >> -}
-> >>  
-> >>  /*
-> >>   * This must be called with current->sighand->siglock held.
-> >> @@ -2217,17 +2208,16 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
-> >>  		 * calling arch_ptrace_stop, so we must release it now.
-> >>  		 * To preserve proper semantics, we must do this before
-> >>  		 * any signal bookkeeping like checking group_stop_count.
-> >> -		 * Meanwhile, a SIGKILL could come in before we retake the
-> >> -		 * siglock.  That must prevent us from sleeping in TASK_TRACED.
-> >> -		 * So after regaining the lock, we must check for SIGKILL.
-> >
-> > Where is the sleep this comment is talking about?
-> >
-> > i.e. will recalc_sigpending() have been called before the above sleep
-> > would happen? I assume it's after ptrace_stop() returns... But I want to
-> > make sure the sleep isn't in ptrace_stop() itself somewhere I can't see.
-> > I *do* see freezable_schedule() called, and that dumps us into
-> > __schedule(), and I don't see a recalc before it checks
-> > signal_pending_state().
-> >
-> > Does a recalc need to happen in plce of the old sigkill_pending()
-> > call?
-> 
-> You read that correctly freezable_schedule is where ptrace_stop sleeps.
-> 
-> The call chain you are looking for looks something like:
-> send_signal
->   complete_signal
->      signal_wake_up
->        signal_wake_up_state
->          set_tsk_thread_flag(t, TIF_SIGPENDING)
-> 
-> That is to say complete_signal sets TIF_SIGPENDING and
-> the per task siqueue SIGKILL entry.
-> 
-> Calling recalc_sigpending is only needed when a signal is removed from
-> the queues, not when a signal is added.
-
-Got it; thanks! Yeah, it was mainly I didn't see where SIGKILL got
-handled specially, and now I do. :)
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Kees Cook
+
+- Arnaldo
