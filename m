@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78241417371
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073DC41741A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344799AbhIXM4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:56:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50038 "EHLO mail.kernel.org"
+        id S1345947AbhIXNCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344788AbhIXMy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:54:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5E7A61378;
-        Fri, 24 Sep 2021 12:50:35 +0000 (UTC)
+        id S1344249AbhIXM7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:59:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59F9E613D1;
+        Fri, 24 Sep 2021 12:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487836;
-        bh=JwazT0upXtaVCAO3l47ZXkhH6LyNxROHxQpNEN8phiA=;
+        s=korg; t=1632487997;
+        bh=Bf/aeYIkEm1YHA3Aw9sMLTbcN04JZS2bgcX2uMOo5R4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b//jsECk5FElx9VhX+LaxD5HGs7SB9pZ7HfjQWkvwyJl85BpeIoie/7nzFzzCgsH2
-         3GD4R5dLPenkPjzt40Tr/uzzMfCehMvxWgBwM3j0WY20WfXeNxqo5MwVJPDc00V61i
-         oJFLdi6TNuh005U6IG+weiK+wdS2kDa14ov3RqPg=
+        b=F+XZfpUF4eP5y7BWeF76kE+qzWBLyaAXgKqR9EPC/w2oLZdWD5PBGy38b6fSvKhiD
+         ToBzqgs84j3YtvCmxDsEi1Tw1OGDjhOlmv1oZc4KPuOFk/61SPnHXtwtSZro6Shphk
+         FaFJ1gcIQzBeSuA/As57MxWkOC72dACb15KKFHJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.4 03/50] PCI: pci-bridge-emul: Add PCIe Root Capabilities Register
-Date:   Fri, 24 Sep 2021 14:43:52 +0200
-Message-Id: <20210924124332.345572713@linuxfoundation.org>
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 044/100] dma-buf: DMABUF_MOVE_NOTIFY should depend on DMA_SHARED_BUFFER
+Date:   Fri, 24 Sep 2021 14:43:53 +0200
+Message-Id: <20210924124342.927019465@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-commit e902bb7c24a7099d0eb0eb4cba06f2d91e9299f3 upstream.
+[ Upstream commit c4f3a3460a5daebc772d9263500e4099b11e7300 ]
 
-The 16-bit Root Capabilities register is at offset 0x1e in the PCIe
-Capability. Rename current 'rsvd' struct member to 'rootcap'.
+Move notify between drivers is an option of DMA-BUF.  Enabling
+DMABUF_MOVE_NOTIFY without DMA_SHARED_BUFFER does not have any impact,
+as drivers/dma-buf/ is not entered during the build when
+DMA_SHARED_BUFFER is disabled.
 
-Link: https://lore.kernel.org/r/20210722144041.12661-4-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bb42df4662a44765 ("dma-buf: add dynamic DMA-buf handling v15")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210902124913.2698760-2-geert@linux-m68k.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci-bridge-emul.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma-buf/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/pci/pci-bridge-emul.h
-+++ b/drivers/pci/pci-bridge-emul.h
-@@ -54,7 +54,7 @@ struct pci_bridge_emul_pcie_conf {
- 	__le16 slotctl;
- 	__le16 slotsta;
- 	__le16 rootctl;
--	__le16 rsvd;
-+	__le16 rootcap;
- 	__le32 rootsta;
- 	__le32 devcap2;
- 	__le16 devctl2;
+diff --git a/drivers/dma-buf/Kconfig b/drivers/dma-buf/Kconfig
+index 4e16c71c24b7..6e13cc941cd2 100644
+--- a/drivers/dma-buf/Kconfig
++++ b/drivers/dma-buf/Kconfig
+@@ -42,6 +42,7 @@ config UDMABUF
+ config DMABUF_MOVE_NOTIFY
+ 	bool "Move notify between drivers (EXPERIMENTAL)"
+ 	default n
++	depends on DMA_SHARED_BUFFER
+ 	help
+ 	  Don't pin buffers if the dynamic DMA-buf interface is available on
+ 	  both the exporter as well as the importer. This fixes a security
+-- 
+2.33.0
+
 
 
