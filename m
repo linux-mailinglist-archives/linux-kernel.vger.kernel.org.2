@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3D54175EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8D24175F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345594AbhIXNfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:35:30 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37882
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346709AbhIXNfG (ORCPT
+        id S1346634AbhIXNgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345857AbhIXNg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:35:06 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 2219A4019A
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:33:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632490412;
-        bh=XKzcwZuGjS/78EnzwfC5NLVDtJ4nskm07UNCWnFZuVI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=vGBJYhCRiA7zVmNnSG0ktqTG3xgW4SN9ZyiulTA5inQ/1YPM+AmmdD+YnEa2QAvxN
-         0AExaOdRY4rnhp6GnG8oymNhAMRj94w4liJQiPsIaBoLmSiiMaXi4MkvgRuaMyPMqD
-         IO1WjdTqfFMmSItio2BQI2/XuaU6e0Qy2TC56Jic7dO4nd9bblW/fPF+P5Sh8SUrJq
-         +v89xKglXwYjw8bNT2jVdPv7E1Pfhuixvm4/pZIKsmjmyH/puSEWKFWf34lPJpYwtk
-         y8T/2Er8uyNkCYz9y2D7cD6Sj7gQupvfwmtG6/C0+fx39NSzQxpnBE4nYMhSRyT901
-         kfQI2tcrp9H2g==
-Received: by mail-wr1-f72.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso8047983wrb.20
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:33:32 -0700 (PDT)
+        Fri, 24 Sep 2021 09:36:27 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F76FC06129D
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:33:23 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id x9so9470761qtv.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f7PJQ49f2XQNsVpC/1cTituVVFDqoofyOlji1lyJ65Y=;
+        b=MPJHXJSK62fiV7bY72s9psPD0qwrmH4+DSCY4SIpcq1V/qq7c2BkdfsmcaxbnZE5i3
+         /DvF7FLnGlJFR6hfvLptQEy4IBMwpL963K/d7znelDInDKeXM0ZsyLxMQZHM7JZs5Ip0
+         QynG3Y2Jovo34yHzcQ+gjUZ5rgopklx4kDUOC5yH5h4IbzUe6HYE4oTChIK1TS04Y5NT
+         05EQCx9I1GD+unY3XX8rWaoIWbDoqEkxUd6D+SCxH47Tkt5pmURs2/PItpfgV9dwkNrl
+         HYwRyR7RVlx5RtzLQAja7xmQJ5bm/9tbwJEXxjUi5kS/Fr4IkllyvWCWlP3oDNzBjA/6
+         0qnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XKzcwZuGjS/78EnzwfC5NLVDtJ4nskm07UNCWnFZuVI=;
-        b=gmIFkV9FAfJS2/hbANqMABzjGcEujDpBmyG+++RI7mXsAgv48PyxO2WvsMMcIZDLd6
-         6ivv1LCXpKGRsaJF3S378ApMRSSLVOFMpeDAoHtfBgsXS3c5BUWe8M2hPbEGOlzbmQ/r
-         sh/ByTBsAeUrzKrRVR1ladz2lBGIXZuzH++wn8OD6wPPL/+ALBPv+4Phg8s6X4swfY9f
-         4ISPbC90zHYBUeK9iFymHdeXjR6O2ZHqozv5R16cyJNDOJNdjLBVt/VwsFOXavjG8Nxu
-         pLFmP8MDxbg63Vh0EYCAA3H973SHoqSxAm/kPk0hRg+A+o54JxtNsw5fSQPAEpESmCeK
-         q43w==
-X-Gm-Message-State: AOAM531c4+p9OcGaFVT+ILGyeTFse85esJGlMcuIGaet7LmphllkC+xj
-        kcKIM/sd8ugoia4hr99cFuoPPqvSBlt1j6ftX0k2RRuXuyPErO+YOy30B0UT71sgrUVT5H40d1a
-        l7z5GirDvci4kE8rB3/vJYsNgNCxEWeYfLFVOCd1h0g==
-X-Received: by 2002:a05:6000:1567:: with SMTP id 7mr11418484wrz.84.1632490411880;
-        Fri, 24 Sep 2021 06:33:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwejRfNkpbo05/gq3EhCAin4mt4r31Piv7+agmXlRHuJktohhgGDajWxZvlAJGT9ZJUgdgE0g==
-X-Received: by 2002:a05:6000:1567:: with SMTP id 7mr11418468wrz.84.1632490411764;
-        Fri, 24 Sep 2021 06:33:31 -0700 (PDT)
-Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id n7sm8259677wra.37.2021.09.24.06.33.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f7PJQ49f2XQNsVpC/1cTituVVFDqoofyOlji1lyJ65Y=;
+        b=eAhS7h+dlBVfXMh5FTBQdZ5edrp5NGpfKsk2rR5SQBJ9VhamBNkWTMKBiya3x7kEcf
+         o2yojAEBzNgp5rFVgMZrcfoRIrDqQvmYeIAt8GY7+T+TI4tbB0GkkFkUvm7GhDf5rlSh
+         aR8Z4sjZfgtKcWIBO0Ll12ZB99AhueQKB/UEcL6AqwXQlzdaj0BCFJiCne7jUbQgWUIp
+         O1GXHEOF7joL2QfEhFlBFgrqHSuLxWhxn2PkDfGKJurgliMnzDQ43/zZGQ795wWS+WhV
+         PT2uOz7Sc2C1uDHJuAW3IHZyub0HZLpgorAfnJ7FrxCcvluloUUJqJzX5cQnW+yPJVDH
+         rdJQ==
+X-Gm-Message-State: AOAM530BJSeo0YPzI3T4mxdvcgfD5kah741mPVrHeQsz+JkM3ar5DYiM
+        dFvI9oabyyO5s1c6lYtvrp8M3w==
+X-Google-Smtp-Source: ABdhPJzGALBkia0iPtmjNoAr7JPtYRFEawKuGcqgeqOKn7YKM4EhxGhO7qWobDM3jezsg5ZghKh7lA==
+X-Received: by 2002:ac8:687:: with SMTP id f7mr4255449qth.165.1632490402674;
+        Fri, 24 Sep 2021 06:33:22 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id d11sm862534qtb.39.2021.09.24.06.33.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 06:33:31 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Subject: [PATCH] mmc: sdhci-s3c: Describe driver in KConfig
-Date:   Fri, 24 Sep 2021 15:32:57 +0200
-Message-Id: <20210924133257.112017-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 24 Sep 2021 06:33:21 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mTlKL-005A7W-6H; Fri, 24 Sep 2021 10:33:21 -0300
+Date:   Fri, 24 Sep 2021 10:33:21 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, peterhuewe@gmx.de,
+        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] tpm: fix potential NULL pointer access in
+ tpm_del_char_device()
+Message-ID: <20210924133321.GX3544071@ziepe.ca>
+References: <20210910180451.19314-1-LinoSanfilippo@gmx.de>
+ <204a438b6db54060d03689389d6663b0d4ca815d.camel@kernel.org>
+ <trinity-27f56ffd-504a-4c34-9cda-0953ccc459a3-1631566430623@3c-app-gmx-bs69>
+ <c22d2878f9816000c33f5349e7256cadae22b400.camel@kernel.org>
+ <50bd6224-0f01-ca50-af0e-f79b933e7998@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50bd6224-0f01-ca50-af0e-f79b933e7998@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe better which driver applies to which SoC, to make configuring
-kernel for Samsung SoC easier.
+On Fri, Sep 24, 2021 at 03:29:46PM +0200, Lino Sanfilippo wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/mmc/host/Kconfig | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> So this bug is triggered when the bcm2835 drivers shutdown() function is called since this
+> driver does something quite unusual: it unregisters the spi controller in its shutdown()
+> handler.
 
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 71313961cc54..e4c1648e364e 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -315,15 +315,17 @@ config MMC_SDHCI_TEGRA
- 	  If unsure, say N.
- 
- config MMC_SDHCI_S3C
--	tristate "SDHCI support on Samsung S3C SoC"
-+	tristate "SDHCI support on Samsung S3C/S5P/Exynos SoC"
- 	depends on MMC_SDHCI
- 	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
- 	help
- 	  This selects the Secure Digital Host Controller Interface (SDHCI)
- 	  often referrered to as the HSMMC block in some of the Samsung S3C
--	  range of SoC.
-+	  (S3C2416, S3C2443, S3C6410), S5Pv210 and Exynos (Exynso4210,
-+	  Exynos4412) SoCs.
- 
--	  If you have a controller with this interface, say Y or M here.
-+	  If you have a controller with this interface (thereforeyou build for
-+	  such Samsung SoC), say Y or M here.
- 
- 	  If unsure, say N.
- 
--- 
-2.30.2
+This seems wrong
 
+Jason
