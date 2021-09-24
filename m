@@ -2,628 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5652F417056
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A154941705E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245617AbhIXKbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238886AbhIXKbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:31:42 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BBCA6124C;
-        Fri, 24 Sep 2021 10:30:09 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mTiT2-003KTw-7V; Fri, 24 Sep 2021 06:30:08 -0400
-Message-ID: <20210924103008.068947192@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Fri, 24 Sep 2021 06:29:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-trace-devel@vger.kernel.org
-Subject: [PATCH 2/2 v2] tracing: Create a sparse bitmask for pid filtering
-References: <20210924102917.106053441@goodmis.org>
+        id S245570AbhIXKfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:35:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41134 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229911AbhIXKfX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 06:35:23 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632479629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=3qlwpik2ZScVioRdtjZP8dq5+cHoEHM42Y3IpVn8O9Q=;
+        b=AvrQWPehTUVeCLggZJeZ3UYEa+fnpn39vXJdpbQqIG/r6Rui1EN4hlJBV8UQ3zBeDSB3BQ
+        BKkOHaQ+yVzL/HOgB+9iWi5Lz8GXpxPAUhdUHWPcTQSpFVcCqywiA78Ymd32UcKZNbt9fx
+        +LRZJgrq/4BtoDPDFofUuyLpwpSG2ggTdIRBAQ5joeXEfvlBBs/38u7pJvrCmbtzys8/Nl
+        9ZRYAuD2f7OWTC2rwXKqv47ryeVecQ/PxQqhrpNbghize7ara9fFRGmibIfxomh1lqQUxy
+        Q/Wqpk+OIJuQGgSPMcaw7+fnBIA+HNrXLpVtvtGVAeq9qpFI2qFZNrxGZ2IB4w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632479629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=3qlwpik2ZScVioRdtjZP8dq5+cHoEHM42Y3IpVn8O9Q=;
+        b=ne6ljzK1+lXK4uvd1YB/lXPIykpTmY7pn0htgpsCu3j7Zq1g8CpGd2UYATKTaqbfUhth9B
+        EEY3Lsa/5HpuihBQ==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 09/13] x86/uintr: Introduce vector registration and
+ uintr_fd syscall
+In-Reply-To: <20210913200132.3396598-10-sohil.mehta@intel.com>
+Date:   Fri, 24 Sep 2021 12:33:48 +0200
+Message-ID: <87wnn6dzzn.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+>  static void free_upid(struct uintr_upid_ctx *upid_ctx)
+>  {
+> +	put_task_struct(upid_ctx->task);
 
-When the trace_pid_list was created, the default pid max was 32768.
-Creating a bitmask that can hold one bit for all 32768 took up 4096 (one
-page). Having a one page bitmask was not much of a problem, and that was
-used for mapping pids. But today, systems are bigger and can run more
-tasks, and now the default pid_max is usually set to 4194304. Which means
-to handle that many pids requires 524288 bytes. Worse yet, the pid_max can
-be set to 2^30 (1073741824 or 1G) which would take 134217728 (128M) of
-memory to store this array.
+That's current, right?
 
-Since the pid_list array is very sparsely populated, it is a huge waste of
-memory to store all possible bits for each pid when most will not be set.
+>  	kfree(upid_ctx->upid);
+>  	upid_ctx->upid = NULL;
+>  	kfree(upid_ctx);
+> @@ -93,6 +93,7 @@ static struct uintr_upid_ctx *alloc_upid(void)
+>  
+>  	upid_ctx->upid = upid;
+>  	refcount_set(&upid_ctx->refs, 1);
+> +	upid_ctx->task = get_task_struct(current);
 
-Instead, use a page table scheme to store the array, and allow this to
-handle up to 30 bit pids.
+Current takes a refcount on it's own task struct when allocating upid,
+and releases it at some point when freeing upid, right?
 
-The pid_mask will start out with 256 entries for the first 8 MSB bits.
-This will cost 1K for 32 bit architectures and 2K for 64 bit. Each of
-these will have a 256 array to store the next 8 bits of the pid (another
-1 or 2K). These will hold an 2K byte bitmask (which will cover the LSB
-14 bits or 16384 pids).
+What for? Comments are overrated, except for comments describing
+the obvious in the wrong way.
 
-When the trace_pid_list is allocated, it will have the 1/2K upper bits
-allocated, and then it will allocate a cache for the next upper chunks and
-the lower chunks (default 6 of each). Then when a bit is "set", these
-chunks will be pulled from the free list and added to the array. If the
-free list gets down to a lever (default 2), it will trigger an irqwork
-that will refill the cache back up.
+If this ever comes back in some form, then I pretty please want the life
+time rules of this documented properly. The current state is
+unreviewable.
 
-On clearing a bit, if the clear causes the bitmask to be zero, that chunk
-will then be placed back into the free cache for later use, keeping the
-need to allocate more down to a minimum.
+>  	return upid_ctx;
+>  }
+> @@ -103,6 +104,77 @@ static void put_upid_ref(struct uintr_upid_ctx *upid_ctx)
+>  		free_upid(upid_ctx);
+>  }
+>  
+> +static struct uintr_upid_ctx *get_upid_ref(struct uintr_upid_ctx *upid_ctx)
+> +{
+> +	refcount_inc(&upid_ctx->refs);
+> +	return upid_ctx;
+> +}
+> +
+> +static void __clear_vector_from_upid(u64 uvec, struct uintr_upid *upid)
+> +{
+> +	clear_bit(uvec, (unsigned long *)&upid->puir);
+> +}
+> +
+> +static void __clear_vector_from_task(u64 uvec)
+> +{
+> +	struct task_struct *t = current;
+> +
+> +	pr_debug("recv: task=%d free vector %llu\n", t->pid, uvec);
+> +
+> +	if (!(BIT_ULL(uvec) & t->thread.ui_recv->uvec_mask))
+> +		return;
+> +
+> +	clear_bit(uvec, (unsigned long *)&t->thread.ui_recv->uvec_mask);
+> +
+> +	if (!t->thread.ui_recv->uvec_mask)
+> +		pr_debug("recv: task=%d unregistered all user vectors\n", t->pid);
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/pid_list.c | 464 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 428 insertions(+), 36 deletions(-)
+Once you are done debugging this complex function can you please turn it
+into an unconditional clear_bit(...) at the call site?
 
-diff --git a/kernel/trace/pid_list.c b/kernel/trace/pid_list.c
-index b78c80d7f396..82a2866806fa 100644
---- a/kernel/trace/pid_list.c
-+++ b/kernel/trace/pid_list.c
-@@ -2,15 +2,185 @@
- /*
-  * Copyright (C) 2021 VMware Inc, Steven Rostedt <rostedt@goodmis.org>
-  */
--#include <linux/vmalloc.h>
-+#include <linux/spinlock.h>
-+#include <linux/irq_work.h>
- #include <linux/slab.h>
- #include "trace.h"
- 
-+/*
-+ * In order to keep track of what pids to trace, a tree is created much
-+ * like page tables are used. This creates a sparse bit map, where
-+ * the tree is filled in when needed. A PID is at most 30 bits (see
-+ * linux/thread.h), and is broken up into 3 sections based on the bit map
-+ * of the bits. The 8 MSB is the "upper1" section. The next 8 MSB is the
-+ * "upper2" section and the 14 LSB is the "lower" section.
-+ *
-+ * A trace_pid_list structure holds the "upper1" section, in an
-+ * array of 256 pointers (1 or 2K in size) to "upper_chunk" unions, where
-+ * each has an array of 256 pointers (1 or 2K in size) to the "lower_chunk"
-+ * structures, where each has an array of size 2K bytes representing a bitmask
-+ * of the 14 LSB of the PID (256 * 8 = 2048)
-+ *
-+ * When a trace_pid_list is allocated, it includes the 256 pointer array
-+ * of the upper1 unions. Then a "cache" of upper and lower is allocated
-+ * where these will be assigned as needed.
-+ *
-+ * When a bit is set in the pid_list bitmask, the pid to use has
-+ * the 8 MSB masked, and this is used to index the array in the
-+ * pid_list to find the next upper union. If the element is NULL,
-+ * then one is retrieved from the upper_list cache. If none is
-+ * available, then -ENOMEM is returned.
-+ *
-+ * The next 8 MSB is used to index into the "upper2" section. If this
-+ * element is NULL, then it is retrieved from the lower_list cache.
-+ * Again, if one is not available -ENOMEM is returned.
-+ *
-+ * Finally the 14 LSB of the PID is used to set the bit in the 16384
-+ * bitmask (made up of 2K bytes).
-+ *
-+ * When the second upper section or the lower section has their last
-+ * bit cleared, they are added back to the free list to be reused
-+ * when needed.
-+ */
-+
-+#define UPPER_BITS	8
-+#define UPPER_MAX	(1 << UPPER_BITS)
-+#define UPPER1_SIZE	(1 << UPPER_BITS)
-+#define UPPER2_SIZE	(1 << UPPER_BITS)
-+
-+#define LOWER_BITS	14
-+#define LOWER_MAX	(1 << LOWER_BITS)
-+#define LOWER_SIZE	(LOWER_MAX / BITS_PER_LONG)
-+
-+#define UPPER1_SHIFT	(LOWER_BITS + UPPER_BITS)
-+#define UPPER2_SHIFT	LOWER_BITS
-+#define LOWER_MASK	(LOWER_MAX - 1)
-+
-+#define UPPER_MASK	(UPPER_MAX - 1)
-+
-+/* Just keep 6 chunks of both upper and lower in the cache on alloc */
-+#define CHUNK_ALLOC 6
-+
-+/* Have 2 chunks free, trigger a refill of the cache */
-+#define CHUNK_REALLOC 2
-+
-+union lower_chunk {
-+	union lower_chunk		*next;
-+	unsigned long			data[LOWER_SIZE]; // 2K in size
-+};
-+
-+union upper_chunk {
-+	union upper_chunk		*next;
-+	union lower_chunk		*data[UPPER2_SIZE]; // 1 or 2K in size
-+};
-+
- struct trace_pid_list {
--	int			pid_max;
--	unsigned long		*pids;
-+	raw_spinlock_t			lock;
-+	struct irq_work			refill_irqwork;
-+	union upper_chunk		*upper[UPPER1_SIZE]; // 1 or 2K in size
-+	union upper_chunk		*upper_list;
-+	union lower_chunk		*lower_list;
-+	int				free_upper_chunks;
-+	int				free_lower_chunks;
- };
- 
-+static inline union lower_chunk *get_lower_chunk(struct trace_pid_list *pid_list)
-+{
-+	union lower_chunk *chunk;
-+
-+	lockdep_assert_held(&pid_list->lock);
-+
-+	if (!pid_list->lower_list)
-+		return NULL;
-+
-+	chunk = pid_list->lower_list;
-+	pid_list->lower_list = chunk->next;
-+	pid_list->free_lower_chunks--;
-+	WARN_ON_ONCE(pid_list->free_lower_chunks < 0);
-+	chunk->next = NULL;
-+	/*
-+	 * If a refill needs to happen, it can not happen here
-+	 * as the scheduler run queue locks are held.
-+	 */
-+	if (pid_list->free_lower_chunks <= CHUNK_REALLOC)
-+		irq_work_queue(&pid_list->refill_irqwork);
-+
-+	return chunk;
-+}
-+
-+static inline union upper_chunk *get_upper_chunk(struct trace_pid_list *pid_list)
-+{
-+	union upper_chunk *chunk;
-+
-+	lockdep_assert_held(&pid_list->lock);
-+
-+	if (!pid_list->upper_list)
-+		return NULL;
-+
-+	chunk = pid_list->upper_list;
-+	pid_list->upper_list = chunk->next;
-+	pid_list->free_upper_chunks--;
-+	WARN_ON_ONCE(pid_list->free_upper_chunks < 0);
-+	chunk->next = NULL;
-+	/*
-+	 * If a refill needs to happen, it can not happen here
-+	 * as the scheduler run queue locks are held.
-+	 */
-+	if (pid_list->free_upper_chunks <= CHUNK_REALLOC)
-+		irq_work_queue(&pid_list->refill_irqwork);
-+
-+	return chunk;
-+}
-+
-+static inline void put_lower_chunk(struct trace_pid_list *pid_list,
-+				   union lower_chunk *chunk)
-+{
-+	lockdep_assert_held(&pid_list->lock);
-+
-+	chunk->next = pid_list->lower_list;
-+	pid_list->lower_list = chunk;
-+	pid_list->free_lower_chunks++;
-+}
-+
-+static inline void put_upper_chunk(struct trace_pid_list *pid_list,
-+				   union upper_chunk *chunk)
-+{
-+	lockdep_assert_held(&pid_list->lock);
-+
-+	chunk->next = pid_list->upper_list;
-+	pid_list->upper_list = chunk;
-+	pid_list->free_upper_chunks++;
-+}
-+
-+static inline bool upper_empty(union upper_chunk *chunk)
-+{
-+	/*
-+	 * If chunk->data has no lower chunks, it will be the same
-+	 * as a zeroed bitmask. Use find_first_bit() to test it
-+	 * and if it doesn't find any bits set, then the array
-+	 * is empty.
-+	 */
-+	int bit = find_first_bit((unsigned long *)chunk->data,
-+				 sizeof(chunk->data) * 8);
-+	return bit >= sizeof(chunk->data) * 8;
-+}
-+
-+static inline void pid_split(unsigned int pid, unsigned int *upper1,
-+			     unsigned int *upper2, unsigned int *lower)
-+{
-+	*upper1 = (pid >> UPPER1_SHIFT) & UPPER_MASK;
-+	*upper2 = (pid >> UPPER2_SHIFT) & UPPER_MASK;
-+	*lower = pid & LOWER_MASK;
-+}
-+
-+static inline unsigned int pid_join(unsigned int upper1,
-+				    unsigned int upper2, unsigned int lower)
-+{
-+	return ((upper1 & UPPER_MASK) << UPPER1_SHIFT) |
-+		((upper2 & UPPER_MASK) << UPPER2_SHIFT) |
-+		(lower & LOWER_MASK);
-+}
-+
- /**
-  * trace_pid_list_is_set - test if the pid is set in the list
-  * @pid_list: The pid list to test
-@@ -24,14 +194,29 @@ struct trace_pid_list {
-  */
- bool trace_pid_list_is_set(struct trace_pid_list *pid_list, unsigned int pid)
- {
--	/*
--	 * If pid_max changed after filtered_pids was created, we
--	 * by default ignore all pids greater than the previous pid_max.
--	 */
--	if (pid >= pid_list->pid_max)
-+	union upper_chunk *upper_chunk;
-+	union lower_chunk *lower_chunk;
-+	unsigned long flags;
-+	unsigned int upper1;
-+	unsigned int upper2;
-+	unsigned int lower;
-+	bool ret = false;
-+
-+	if (!pid_list)
- 		return false;
- 
--	return test_bit(pid, pid_list->pids);
-+	pid_split(pid, &upper1, &upper2, &lower);
-+
-+	raw_spin_lock_irqsave(&pid_list->lock, flags);
-+	upper_chunk = pid_list->upper[upper1];
-+	if (upper_chunk) {
-+		lower_chunk = upper_chunk->data[upper2];
-+		if (lower_chunk)
-+			ret = test_bit(lower, lower_chunk->data);
-+	}
-+	raw_spin_unlock_irqrestore(&pid_list->lock, flags);
-+
-+	return ret;
- }
- 
- /**
-@@ -47,13 +232,43 @@ bool trace_pid_list_is_set(struct trace_pid_list *pid_list, unsigned int pid)
-  */
- int trace_pid_list_set(struct trace_pid_list *pid_list, unsigned int pid)
- {
--	/* Sorry, but we don't support pid_max changing after setting */
--	if (pid >= pid_list->pid_max)
--		return -EINVAL;
-+	union upper_chunk *upper_chunk;
-+	union lower_chunk *lower_chunk;
-+	unsigned long flags;
-+	unsigned int upper1;
-+	unsigned int upper2;
-+	unsigned int lower;
-+	int ret;
-+
-+	if (!pid_list)
-+		return -ENODEV;
- 
--	set_bit(pid, pid_list->pids);
-+	pid_split(pid, &upper1, &upper2, &lower);
- 
--	return 0;
-+	raw_spin_lock_irqsave(&pid_list->lock, flags);
-+	upper_chunk = pid_list->upper[upper1];
-+	if (!upper_chunk) {
-+		upper_chunk = get_upper_chunk(pid_list);
-+		if (!upper_chunk) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		pid_list->upper[upper1] = upper_chunk;
-+	}
-+	lower_chunk = upper_chunk->data[upper2];
-+	if (!lower_chunk) {
-+		lower_chunk = get_lower_chunk(pid_list);
-+		if (!lower_chunk) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		upper_chunk->data[upper2] = lower_chunk;
-+	}
-+	set_bit(lower, lower_chunk->data);
-+	ret = 0;
-+ out:
-+	raw_spin_unlock_irqrestore(&pid_list->lock, flags);
-+	return ret;
- }
- 
- /**
-@@ -69,12 +284,40 @@ int trace_pid_list_set(struct trace_pid_list *pid_list, unsigned int pid)
-  */
- int trace_pid_list_clear(struct trace_pid_list *pid_list, unsigned int pid)
- {
--	/* Sorry, but we don't support pid_max changing after setting */
--	if (pid >= pid_list->pid_max)
--		return -EINVAL;
-+	union upper_chunk *upper_chunk;
-+	union lower_chunk *lower_chunk;
-+	unsigned long flags;
-+	unsigned int upper1;
-+	unsigned int upper2;
-+	unsigned int lower;
-+
-+	if (!pid_list)
-+		return -ENODEV;
-+
-+	pid_split(pid, &upper1, &upper2, &lower);
-+
-+	raw_spin_lock_irqsave(&pid_list->lock, flags);
-+	upper_chunk = pid_list->upper[upper1];
-+	if (!upper_chunk)
-+		goto out;
-+
-+	lower_chunk = upper_chunk->data[upper2];
-+	if (!lower_chunk)
-+		goto out;
- 
--	clear_bit(pid, pid_list->pids);
-+	clear_bit(lower, lower_chunk->data);
- 
-+	/* if there's no more bits set, add it to the free list */
-+	if (find_first_bit(lower_chunk->data, LOWER_MAX) >= LOWER_MAX) {
-+		put_lower_chunk(pid_list, lower_chunk);
-+		upper_chunk->data[upper2] = NULL;
-+		if (upper_empty(upper_chunk)) {
-+			put_upper_chunk(pid_list, upper_chunk);
-+			pid_list->upper[upper1] = NULL;
-+		}
-+	}
-+ out:
-+	raw_spin_unlock_irqrestore(&pid_list->lock, flags);
- 	return 0;
- }
- 
-@@ -93,13 +336,44 @@ int trace_pid_list_clear(struct trace_pid_list *pid_list, unsigned int pid)
- int trace_pid_list_next(struct trace_pid_list *pid_list, unsigned int pid,
- 			unsigned int *next)
- {
--	pid = find_next_bit(pid_list->pids, pid_list->pid_max, pid);
-+	union upper_chunk *upper_chunk;
-+	union lower_chunk *lower_chunk;
-+	unsigned long flags;
-+	unsigned int upper1;
-+	unsigned int upper2;
-+	unsigned int lower;
-+
-+	if (!pid_list)
-+		return -ENODEV;
-+
-+	pid_split(pid, &upper1, &upper2, &lower);
- 
--	if (pid < pid_list->pid_max) {
--		*next = pid;
--		return 0;
-+	raw_spin_lock_irqsave(&pid_list->lock, flags);
-+	for (; upper1 <= UPPER_MASK; upper1++, upper2 = 0) {
-+		upper_chunk = pid_list->upper[upper1];
-+
-+		if (!upper_chunk)
-+			continue;
-+
-+		for (; upper2 <= UPPER_MASK; upper2++, lower = 0) {
-+			lower_chunk = upper_chunk->data[upper2];
-+			if (!lower_chunk)
-+				continue;
-+
-+			lower = find_next_bit(lower_chunk->data, LOWER_MAX,
-+					    lower);
-+			if (lower < LOWER_MAX)
-+				goto found;
-+		}
- 	}
--	return -1;
-+
-+ found:
-+	raw_spin_unlock_irqrestore(&pid_list->lock, flags);
-+	if (upper1 > UPPER_MASK)
-+		return -1;
-+
-+	*next = pid_join(upper1, upper2, lower);
-+	return 0;
- }
- 
- /**
-@@ -114,15 +388,79 @@ int trace_pid_list_next(struct trace_pid_list *pid_list, unsigned int pid,
-  */
- int trace_pid_list_first(struct trace_pid_list *pid_list, unsigned int *pid)
- {
--	unsigned int first;
-+	return trace_pid_list_next(pid_list, 0, pid);
-+}
-+
-+static void pid_list_refill_irq(struct irq_work *iwork)
-+{
-+	struct trace_pid_list *pid_list = container_of(iwork, struct trace_pid_list,
-+						       refill_irqwork);
-+	union upper_chunk *upper;
-+	union lower_chunk *lower;
-+	union upper_chunk **upper_next = &upper;
-+	union lower_chunk **lower_next = &lower;
-+	int upper_count;
-+	int lower_count;
-+	int ucnt = 0;
-+	int lcnt = 0;
-+
-+ again:
-+	raw_spin_lock(&pid_list->lock);
-+	upper_count = CHUNK_ALLOC - pid_list->free_upper_chunks;
-+	lower_count = CHUNK_ALLOC - pid_list->free_lower_chunks;
-+	raw_spin_unlock(&pid_list->lock);
-+
-+	if (upper_count <= 0 && lower_count <= 0)
-+		return;
-+
-+	while (upper_count-- > 0) {
-+		union upper_chunk *chunk;
-+
-+		chunk = kzalloc(sizeof(*chunk), GFP_KERNEL);
-+		if (!chunk)
-+			break;
-+		*upper_next = chunk;
-+		upper_next = &chunk->next;
-+		ucnt++;
-+	}
- 
--	first = find_first_bit(pid_list->pids, pid_list->pid_max);
-+	while (lower_count-- > 0) {
-+		union lower_chunk *chunk;
- 
--	if (first < pid_list->pid_max) {
--		*pid = first;
--		return 0;
-+		chunk = kzalloc(sizeof(*chunk), GFP_KERNEL);
-+		if (!chunk)
-+			break;
-+		*lower_next = chunk;
-+		lower_next = &chunk->next;
-+		lcnt++;
- 	}
--	return -1;
-+
-+	raw_spin_lock(&pid_list->lock);
-+	if (upper) {
-+		*upper_next = pid_list->upper_list;
-+		pid_list->upper_list = upper;
-+		pid_list->free_upper_chunks += ucnt;
-+	}
-+	if (lower) {
-+		*lower_next = pid_list->lower_list;
-+		pid_list->lower_list = lower;
-+		pid_list->free_lower_chunks += lcnt;
-+	}
-+	raw_spin_unlock(&pid_list->lock);
-+
-+	/*
-+	 * On success of allocating all the chunks, both counters
-+	 * will be less than zero. If they are not, then an allocation
-+	 * failed, and we should not try again.
-+	 */
-+	if (upper_count >= 0 || lower_count >= 0)
-+		return;
-+	/*
-+	 * When the locks were released, free chunks could have
-+	 * been used and allocation needs to be done again. Might as
-+	 * well allocate it now.
-+	 */
-+	goto again;
- }
- 
- /**
-@@ -135,18 +473,41 @@ int trace_pid_list_first(struct trace_pid_list *pid_list, unsigned int *pid)
- struct trace_pid_list *trace_pid_list_alloc(void)
- {
- 	struct trace_pid_list *pid_list;
-+	int i;
-+
-+	/* According to linux/thread.h, pids can be no bigger that 30 bits */
-+	WARN_ON_ONCE(pid_max > (1 << 30));
- 
--	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
-+	pid_list = kzalloc(sizeof(*pid_list), GFP_KERNEL);
- 	if (!pid_list)
- 		return NULL;
- 
--	pid_list->pid_max = READ_ONCE(pid_max);
-+	init_irq_work(&pid_list->refill_irqwork, pid_list_refill_irq);
- 
--	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
--	if (!pid_list->pids) {
--		kfree(pid_list);
--		return NULL;
-+	raw_spin_lock_init(&pid_list->lock);
-+
-+	for (i = 0; i < CHUNK_ALLOC; i++) {
-+		union upper_chunk *chunk;
-+
-+		chunk = kzalloc(sizeof(*chunk), GFP_KERNEL);
-+		if (!chunk)
-+			break;
-+		chunk->next = pid_list->upper_list;
-+		pid_list->upper_list = chunk;
-+		pid_list->free_upper_chunks++;
-+	}
-+
-+	for (i = 0; i < CHUNK_ALLOC; i++) {
-+		union lower_chunk *chunk;
-+
-+		chunk = kzalloc(sizeof(*chunk), GFP_KERNEL);
-+		if (!chunk)
-+			break;
-+		chunk->next = pid_list->lower_list;
-+		pid_list->lower_list = chunk;
-+		pid_list->free_lower_chunks++;
- 	}
-+
- 	return pid_list;
- }
- 
-@@ -157,9 +518,40 @@ struct trace_pid_list *trace_pid_list_alloc(void)
-  */
- void trace_pid_list_free(struct trace_pid_list *pid_list)
- {
-+	union upper_chunk *upper;
-+	union lower_chunk *lower;
-+	int i, j;
-+
- 	if (!pid_list)
- 		return;
- 
--	vfree(pid_list->pids);
-+	irq_work_sync(&pid_list->refill_irqwork);
-+
-+	while (pid_list->lower_list) {
-+		union lower_chunk *chunk;
-+
-+		chunk = pid_list->lower_list;
-+		pid_list->lower_list = pid_list->lower_list->next;
-+		kfree(chunk);
-+	}
-+
-+	while (pid_list->upper_list) {
-+		union upper_chunk *chunk;
-+
-+		chunk = pid_list->upper_list;
-+		pid_list->upper_list = pid_list->upper_list->next;
-+		kfree(chunk);
-+	}
-+
-+	for (i = 0; i < UPPER1_SIZE; i++) {
-+		upper = pid_list->upper[i];
-+		if (upper) {
-+			for (j = 0; j < UPPER2_SIZE; j++) {
-+				lower = upper->data[j];
-+				kfree(lower);
-+			}
-+			kfree(upper);
-+		}
-+	}
- 	kfree(pid_list);
- }
--- 
-2.32.0
+> +/* Callback to clear the vector structures when a vector is unregistered. */
+> +static void receiver_clear_uvec(struct callback_head *head)
+> +{
+> +	struct uintr_receiver_info *r_info;
+> +	struct uintr_upid_ctx *upid_ctx;
+> +	struct task_struct *t = current;
+> +	u64 uvec;
+> +
+> +	r_info = container_of(head, struct uintr_receiver_info, twork);
+> +	uvec = r_info->uvec;
+> +	upid_ctx = r_info->upid_ctx;
+> +
+> +	/*
+> +	 * If a task has unregistered the interrupt handler the vector
+> +	 * structures would have already been cleared.
+
+would ? No. They must have been cleared already, anything else is a bug.
+
+> +	 */
+> +	if (is_uintr_receiver(t)) {
+> +		/*
+> +		 * The UPID context in the callback might differ from the one
+> +		 * on the task if the task unregistered its interrupt handler
+> +		 * and then registered itself again. The vector structures
+> +		 * related to the previous UPID would have already been cleared
+> +		 * in that case.
+> +		 */
+> +		if (t->thread.ui_recv->upid_ctx != upid_ctx) {
+> +			pr_debug("recv: task %d is now using a different UPID\n",
+> +				 t->pid);
+> +			goto out_free;
+> +		}
+> +
+> +		/*
+> +		 * If the vector has been recognized in the UIRR don't modify
+> +		 * it. We need to disable User Interrupts before modifying the
+> +		 * UIRR. It might be better to just let that interrupt get
+> +		 * delivered.
+
+Might be better? Please provide coherent explanations why this is correct.
+
+> +		 */
+> +		__clear_vector_from_upid(uvec, upid_ctx->upid);
+> +		__clear_vector_from_task(uvec);
+> +	}
+> +
+> +out_free:
+> +	put_upid_ref(upid_ctx);
+> +	kfree(r_info);
+> +}
+> +
+>  int do_uintr_unregister_handler(void)
+>  {
+>  	struct task_struct *t = current;
+> @@ -239,6 +311,53 @@ int do_uintr_register_handler(u64 handler)
+>  	return 0;
+>  }
+>  
+> +void do_uintr_unregister_vector(struct uintr_receiver_info *r_info)
+> +{
+> +	int ret;
+> +
+> +	pr_debug("recv: Adding task work to clear vector %llu added for task=%d\n",
+> +		 r_info->uvec, r_info->upid_ctx->task->pid);
+> +
+> +	init_task_work(&r_info->twork, receiver_clear_uvec);
+
+How is this safe? Reinitialization has to be serialized against other
+usage. Again: Document the life time and serialization rules. Your
+pr_debugs sprinkled all over the place are not a replacement for that.
+
+> +	ret = task_work_add(r_info->upid_ctx->task, &r_info->twork, true);
+
+Care to look at the type of the third argument of task_work_add()?
+
+> +struct uintrfd_ctx {
+> +	struct uintr_receiver_info *r_info;
+
+Yet another wrapper struct? What for?
+
+> +/*
+> + * sys_uintr_create_fd - Create a uintr_fd for the registered interrupt vector.
+
+So this creates a file descriptor for a vector which is already
+allocated and then it calls do_uintr_register_vector() which allocates
+the vector?
+
+> + */
+> +SYSCALL_DEFINE2(uintr_create_fd, u64, vector, unsigned int, flags)
+> +{
+
+Thanks,
+
+        tglx
