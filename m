@@ -2,122 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB062417B6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 21:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560CC417B77
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 21:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346198AbhIXTEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 15:04:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346035AbhIXTEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 15:04:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32BE060E97;
-        Fri, 24 Sep 2021 19:02:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632510156;
-        bh=4NxIqTflfhfqaUe2RRhcz/Q/LBzaoiPooJpvQFfcryU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MPFZfxfLd/csjrEKgFH3vmou92f1gYHFt5SbX+JcGDiMjWrDWDhjU3TAoVa1Pe2uG
-         yB/KAd1f6QnK0Kf+2gEUb+cTM9NwLpUEZJV3PeA6FlGjRrFcPw+2Z9DNplNcpKfFqn
-         IQlr2jyMTeUY/PyAK7IJN4179R9pOc6RLCF8Tq8PqVr7fX768aF7p6Z5JPnvdOcbVW
-         /Yg/W0TtJMYXgDegI7jOQszqFLq4bkAc2tR3jknESXgVThMi7HiDoqbjUDIdAsvYC6
-         pH70cixcpBM2NZfxq/1wdf2fJyM9slnw3GEDLTVL9P8YuAcQacQQUBypB5sZQJyc/R
-         bZuygnwbV9KKg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BB923410A1; Fri, 24 Sep 2021 16:02:33 -0300 (-03)
-Date:   Fri, 24 Sep 2021 16:02:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        David Laight <David.Laight@aculab.com>,
-        Numfor Mbiziwo-Tiapo <nums@google.com>
-Subject: Re: [PATCH v4] x86/insn, tools/x86: Fix some potential undefined
- behavior.
-Message-ID: <YU4gyQg1ntTeTL98@kernel.org>
-References: <20210923161843.751834-1-irogers@google.com>
+        id S1346237AbhIXTIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 15:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhIXTIQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 15:08:16 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D80DC061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 12:06:43 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id me1so7611454pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 12:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QQbXTp9jwktw89AtddwoXiRRXvT8q44fMgRU+kpBvAs=;
+        b=hBT2094Q4KVQXKdAcY4LmJQYGAi98KaiZtil0A1jpS1bLDBgk9TcwJnTG2A01kZ5bg
+         SJUY9OTGwlTCsKmBvVQe2Ftu0EdsEdtzn2QRd7ZYieqsS36uKU6KPPZ/aPUafZ7nntEf
+         8+eEObucgDEbSrBWSI04DzobWanfxDZXhUFUM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QQbXTp9jwktw89AtddwoXiRRXvT8q44fMgRU+kpBvAs=;
+        b=lPrrrOwvVpr0FwP0I6toakVScKc3D3AnzDII0jTxnuSg0Amg65fqST+3uNLN6Y5v3q
+         zfqWmiCg/zSJJFQBwI9Wt58pGVVcMTRubvU069ZaxLgERZ2AhAtNQbPKLF6wu+7DlHdJ
+         jzOaLqWGqo7HVKE8dYA8XUNrWxts9QQX2fJinKGnrD5aLzL5//spnDAE9zG91+oBwj78
+         DWZ8aHRmlFmnnM5J5zt+tW2An9bv3Twgoic0uIMzVv3Us3On5t3HjLs2yfssNXwXY663
+         1LxS6foSFJ9BrCk9SarFHlRSS05sQ5Yo6xv2HWomfp6E9VE/sKvSL0oEDauOWIVlTiUd
+         xADA==
+X-Gm-Message-State: AOAM531TBIKOcnMC1boU+OdjpW/XGT3XaJfrrTNxOMglZxsfsh97CFYt
+        AjI4VQQgQKu4dfznY29Z3aARGCRXx7AHtA==
+X-Google-Smtp-Source: ABdhPJz0Cmr2FruFvG3V3BsomRdJH/fcunLCf5Ac+KO5P7m6yIHEkK69BsHG2AwYfGqnjGfbR7IWMA==
+X-Received: by 2002:a17:90a:a584:: with SMTP id b4mr4076791pjq.70.1632510402841;
+        Fri, 24 Sep 2021 12:06:42 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h17sm9748992pfk.66.2021.09.24.12.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 12:06:42 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 12:06:41 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-api@vger.kernel.org
+Subject: Re: [PATCH 1/6] signal: Remove the bogus sigkill_pending in
+ ptrace_stop
+Message-ID: <202109241159.950557F64@keescook>
+References: <87v92qx2c6.fsf@disp2133>
+ <87pmsyx29t.fsf@disp2133>
+ <202109240804.BC44773A@keescook>
+ <87tuiaotz1.fsf@disp2133>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210923161843.751834-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <87tuiaotz1.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Sep 23, 2021 at 09:18:43AM -0700, Ian Rogers escreveu:
-> From: Numfor Mbiziwo-Tiapo <nums@google.com>
+On Fri, Sep 24, 2021 at 10:48:18AM -0500, Eric W. Biederman wrote:
+> Kees Cook <keescook@chromium.org> writes:
 > 
-> Don't perform unaligned loads in __get_next and __peek_nbyte_next as
-> these are forms of undefined behavior.
+> > On Thu, Sep 23, 2021 at 07:09:34PM -0500, Eric W. Biederman wrote:
+> >> 
+> >> The existence of sigkill_pending is a little silly as it is
+> >> functionally a duplicate of fatal_signal_pending that is used in
+> >> exactly one place.
+> >
+> > sigkill_pending() checks for &tsk->signal->shared_pending.signal but
+> > fatal_signal_pending() doesn't.
 > 
-> These problems were identified using the undefined behavior sanitizer
-> (ubsan) with the tools version of the code and perf test. Part of this
-> patch was previously posted here:
-> https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
+> The extra test is unnecessary as all SIGKILL's visit complete_signal
+> immediately run the loop:
+> 
+> 			/*
+> 			 * Start a group exit and wake everybody up.
+> 			 * This way we don't have other threads
+> 			 * running and doing things after a slower
+> 			 * thread has the fatal signal pending.
+> 			 */
+> 			signal->flags = SIGNAL_GROUP_EXIT;
+> 			signal->group_exit_code = sig;
+> 			signal->group_stop_count = 0;
+> 			t = p;
+> 			do {
+> 				task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
+> 				sigaddset(&t->pending.signal, SIGKILL);
+> 				signal_wake_up(t, 1);
+> 			} while_each_thread(p, t);
+> 			return;
+> 
+> Which sets SIGKILL in the task specific queue.  Which means only the
+> non-shared queue needs to be tested.  Further fatal_signal_pending would
+> be buggy if this was not the case.
 
-Masami, if you're ok, just process it including the tools/ bit.
+Okay, so SIGKILL is special from the perspective of shared_pending. Why
+was it tested for before? Or rather: how could SIGKILL ever have gotten
+set in shared_pending?
 
-- Arnaldo
- 
-> v4. Fixes a typo.
+Oh, I think I see what you mean about complete_signal() now: that's just
+looking at sig, and doesn't care where it got written. i.e. SIGKILL gets
+immediately written to pending, even if the prior path through
+__send_signal() only wrote it to shared_pending.
+
 > 
-> v3. Is a rebase picking up a fix for big endian architectures.
+> >> Checking for pending fatal signals and returning early in ptrace_stop
+> >> is actively harmful.  It casues the ptrace_stop called by
+> >> ptrace_signal to return early before setting current->exit_code.
+> >> Later when ptrace_signal reads the signal number from
+> >> current->exit_code is undefined, making it unpredictable what will
+> >> happen.
+> >> 
+> >> Instead rely on the fact that schedule will not sleep if there is a
+> >> pending signal that can awaken a task.
+> >
+> > This reasoning sound fine, but I can't see where it's happening.
+> > It looks like recalc_sigpending() is supposed to happen at the start
+> > of scheduling? I see it at the end of ptrace_stop(), though, so it looks
+> > like it's reasonable to skip checking shared_pending.
+> >
+> > (Does the scheduler deal with shared_pending directly?)
 > 
-> v2. removes the validate_next check and merges the 2 changes into one as
-> requested by Masami Hiramatsu <mhiramat@kernel.org>
+> In the call of signal_pending_state from kernel/core/.c:__schedule().
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  arch/x86/lib/insn.c       | 4 ++--
->  tools/arch/x86/lib/insn.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> ptrace_stop would actually be badly broken today if that was not the
+> case as several places enter into ptrace_event without testing signals
+> first.
 > 
-> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-> index 058f19b20465..c565def611e2 100644
-> --- a/arch/x86/lib/insn.c
-> +++ b/arch/x86/lib/insn.c
-> @@ -37,10 +37,10 @@
->  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
->  
->  #define __get_next(t, insn)	\
-> -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-> +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
->  
->  #define __peek_nbyte_next(t, insn, n)	\
-> -	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-> +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
->  
->  #define get_next(t, insn)	\
->  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-> index c41f95815480..797699462cd8 100644
-> --- a/tools/arch/x86/lib/insn.c
-> +++ b/tools/arch/x86/lib/insn.c
-> @@ -37,10 +37,10 @@
->  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
->  
->  #define __get_next(t, insn)	\
-> -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-> +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
->  
->  #define __peek_nbyte_next(t, insn, n)	\
-> -	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-> +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
->  
->  #define get_next(t, insn)	\
->  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-> -- 
-> 2.33.0.464.g1972c5931b-goog
+> >> Removing the explict sigkill_pending test fixes fixes ptrace_signal
+> >> when ptrace_stop does not stop because current->exit_code is always
+> >> set to to signr.
+> >> 
+> >> Cc: stable@vger.kernel.org
+> >> Fixes: 3d749b9e676b ("ptrace: simplify ptrace_stop()->sigkill_pending() path")
+> >> Fixes: 1a669c2f16d4 ("Add arch_ptrace_stop")
+> >> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> >> ---
+> >>  kernel/signal.c | 18 ++++--------------
+> >>  1 file changed, 4 insertions(+), 14 deletions(-)
+> >> 
+> >> diff --git a/kernel/signal.c b/kernel/signal.c
+> >> index 952741f6d0f9..9f2dc9cf3208 100644
+> >> --- a/kernel/signal.c
+> >> +++ b/kernel/signal.c
+> >> @@ -2182,15 +2182,6 @@ static inline bool may_ptrace_stop(void)
+> >>  	return true;
+> >>  }
+> >>  
+> >> -/*
+> >> - * Return non-zero if there is a SIGKILL that should be waking us up.
+> >> - * Called with the siglock held.
+> >> - */
+> >> -static bool sigkill_pending(struct task_struct *tsk)
+> >> -{
+> >> -	return sigismember(&tsk->pending.signal, SIGKILL) ||
+> >> -	       sigismember(&tsk->signal->shared_pending.signal, SIGKILL);
+> >> -}
+> >>  
+> >>  /*
+> >>   * This must be called with current->sighand->siglock held.
+> >> @@ -2217,17 +2208,16 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
+> >>  		 * calling arch_ptrace_stop, so we must release it now.
+> >>  		 * To preserve proper semantics, we must do this before
+> >>  		 * any signal bookkeeping like checking group_stop_count.
+> >> -		 * Meanwhile, a SIGKILL could come in before we retake the
+> >> -		 * siglock.  That must prevent us from sleeping in TASK_TRACED.
+> >> -		 * So after regaining the lock, we must check for SIGKILL.
+> >
+> > Where is the sleep this comment is talking about?
+> >
+> > i.e. will recalc_sigpending() have been called before the above sleep
+> > would happen? I assume it's after ptrace_stop() returns... But I want to
+> > make sure the sleep isn't in ptrace_stop() itself somewhere I can't see.
+> > I *do* see freezable_schedule() called, and that dumps us into
+> > __schedule(), and I don't see a recalc before it checks
+> > signal_pending_state().
+> >
+> > Does a recalc need to happen in plce of the old sigkill_pending()
+> > call?
+> 
+> You read that correctly freezable_schedule is where ptrace_stop sleeps.
+> 
+> The call chain you are looking for looks something like:
+> send_signal
+>   complete_signal
+>      signal_wake_up
+>        signal_wake_up_state
+>          set_tsk_thread_flag(t, TIF_SIGPENDING)
+> 
+> That is to say complete_signal sets TIF_SIGPENDING and
+> the per task siqueue SIGKILL entry.
+> 
+> Calling recalc_sigpending is only needed when a signal is removed from
+> the queues, not when a signal is added.
+
+Got it; thanks! Yeah, it was mainly I didn't see where SIGKILL got
+handled specially, and now I do. :)
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-
-- Arnaldo
+Kees Cook
