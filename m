@@ -2,182 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BC0417B56
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A36417B55
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345327AbhIXSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 14:55:15 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38283 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345024AbhIXSzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345087AbhIXSzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 24 Sep 2021 14:55:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10117"; a="224171142"
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
-   d="scan'208";a="224171142"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 11:53:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
-   d="scan'208";a="559725180"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga002.fm.intel.com with ESMTP; 24 Sep 2021 11:53:39 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 24 Sep 2021 11:53:38 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 24 Sep 2021 11:53:38 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Fri, 24 Sep 2021 11:53:38 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.44) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Fri, 24 Sep 2021 11:53:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PFgnCbTtfsMgS0gmVgWEy3UJfNpkg5tMnrKB46cuVChrGOSoGSfCC4pTwxxbEpL+yZxqiNkYNQ8WxwpBzPQnfC+pCi3ziWr+gQeUT8rEKMRFWp2n912GszGbCCJB2KGjX1OPPFHsGz378JsQgAjx1xpAwQleJGis3Iw9c/okme9ki6N2ynbmFneq9b5M3smWyvvVFY9C4k8aiArMvIYrRlZ3VizlV2O7bybYYL7hEzPfgKugw/pwiB9mj6s+g9XD1ZY379OI/HQKT2zK6U3NbmOzbx+0FDkamRTNKHih8PlFu75hbeuzblEKbLoSfeZDczVgL6HrXhNvNtXYn3uneQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=h7RtAntem3OXBwIfAn9Kmgo31Pkbh56WB/Eb9VXUe0U=;
- b=Mtx5b8vr+0noAH8tU2hC4dP6HhPotzzO+BhIU+kttUoG6PPfg6vXNIFh1b7Hix7peN12chSvJd7vb0PUDb+QqGKMSFh4RznpvkBi+MNrHJOcPoPdQL+2PlJ2GU0My+uNRJjeUQ3r0K6UlIerKtqPOEWPCfXVgrzAnydOk6LliLvaiBytXUawhURrN6bNw2N6AcQElY5bxwUPcPMYhsZSRKT7+0V5eHNbtcqnkjU0bSLyaegt3J2Hdopt2VSyuA59w+/o8AgpMHjYA4jPlpdn7yOQa8DjfNc0p50bD1yarqbX5jEaTpECClZWAcEJJPqs0IQhbCqMi09cvys7TA9twA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h7RtAntem3OXBwIfAn9Kmgo31Pkbh56WB/Eb9VXUe0U=;
- b=fan5ZkX3gUGduCVv996BwFCpDI7jjTAiB04ij/FKQ8kLaYFeZaJyuyiGw0yTW/SMgtO3YbjqyJGnqCNjqM/cSqMZ3hSdHL0px+oVnTsmoZlaFAGfbehWX4we+vbbDRxwFWSNlpGoIkTPGOOnyuPcpOlp7r052TpXv4/0ccz2I8M=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
- by BN7PR11MB2737.namprd11.prod.outlook.com (2603:10b6:406:b0::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Fri, 24 Sep
- 2021 18:53:33 +0000
-Received: from BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::d47c:525:2aef:f6a]) by BN0PR11MB5744.namprd11.prod.outlook.com
- ([fe80::d47c:525:2aef:f6a%3]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
- 18:53:33 +0000
-Subject: Re: [PATCH] x86/resctrl: Fix return code in mkdir_rdt_prepare()
-To:     Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20210924081713.502039-1-tan.shaopeng@jp.fujitsu.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <600c2857-8a5f-df1e-0edc-65fea2aae078@intel.com>
-Date:   Fri, 24 Sep 2021 11:53:29 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
-In-Reply-To: <20210924081713.502039-1-tan.shaopeng@jp.fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR12CA0058.namprd12.prod.outlook.com
- (2603:10b6:300:103::20) To BN0PR11MB5744.namprd11.prod.outlook.com
- (2603:10b6:408:166::16)
+Received: from mail.kernel.org ([198.145.29.99]:48500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230025AbhIXSzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 14:55:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C8DC61241;
+        Fri, 24 Sep 2021 18:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632509618;
+        bh=HruFkRlruI3SA2YWxa1uOXIg2FOBJWsIAbQdkNVsclw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cfO2E95sz37VoXgEJb0VicOBlEzpeL9kPwbLmKgK73sibjQ1K2z1ES3fZppSbOw3Y
+         O3mJCtbTC8IV+aI0/8MqjBodZNP65TVzC6RCO9d62CRzNjKidmvCgfaw7LZQno30Pq
+         3rgnyyVTtVpuYwhyyY006Y4HGB7hampEQvBBWIVEnpGckAGMnHbObSjrIaq3MokcHi
+         uIEZUZFAYXvFME7wwpiXvnIJUxJIfNbERor1YPeC8JHnLiqoXZ2eO9QRKL3pVjI7RN
+         J9aeXej5jEKksXFfSrDN7Ar3UFIH+5yechs2gI84iSmJLqBL3KlzEZgsO+hW0AnYTd
+         Vhj0hN1NkZZGQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 92F46410A1; Fri, 24 Sep 2021 15:53:35 -0300 (-03)
+Date:   Fri, 24 Sep 2021 15:53:35 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf tests: Fix flaky test 'Object code reading'
+Message-ID: <YU4er4mzHfa4+7Jg@kernel.org>
+References: <20210906152238.3415467-1-james.clark@arm.com>
 MIME-Version: 1.0
-Received: from [192.168.1.221] (71.238.111.198) by MWHPR12CA0058.namprd12.prod.outlook.com (2603:10b6:300:103::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend Transport; Fri, 24 Sep 2021 18:53:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 898a5d2d-b743-46eb-89ee-08d97f8c9b75
-X-MS-TrafficTypeDiagnostic: BN7PR11MB2737:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN7PR11MB2737D5F9C67F7F0850FD7B6CF8A49@BN7PR11MB2737.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xrRofvy4MFJ4eblpa++BNTCjw5DaKEB2+mi8DOk8NBXDQ6X6H4bNVrpwGhpU+T0hYRZdDhzI4jP6BKw7mP5o1Jl3MTFrwF2IgHu1DZ0AQeeg4tyWQCtOsemzEJOuvnbiL/FKdljiJ0ZK5FXIv4Hhdr9AsYpnfEoeWsV9ZqG0YQOrm7vtkWZcYabjIsWypE+yr0SSVdNZ92oA7jUm/3GEfk+iUryvGkzGfXO5jd1+PgvItplIgf11wn/9ldh8knbXc/CB5409iPHcLCT+JGdVTxbglg8BDqsqAUEXT8gp3cIhdVDo8RSTOMS3JICw1dxVb96VO7V/y9vnegcCqrsXfnLfkuUChKpgSXQ1CnlTT7CE4oD4KXPCmnRQYKM5zdOKfdZ+RsaZCmTmP1U/DF9S2HQmMp8E/8SjuVGGAK9CYJXqH5j5LK99uQ+Fk7xA+Mx0TqmMSRQS4K+GVNcFNHnKGmRoGsX9+/nyCuJYDMF9tXmRSS0eSuhLSwyMm5MzJxT59it1xxSTHrJKT56Y3uTLFAwShiuXlUxWgdenzoA7GRuElAqLmbRNQqG6AdR925+bdtRZA67/tJIiXruANqYFSr6e+nAzYsz+WnN4DuasbGA/COt15Jikkj7HtLC8BEuO1MlJFPNkNgo6D5nh+mixrP16xTr79ft0n4mo5eun8FV+x2sYIVMLaVCy+VMGsgVVQyZ3rLmCs+c5Lp6ZEqjvFDpizA3QdvNdGg/UcebPtCc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31696002)(4326008)(186003)(66556008)(44832011)(66476007)(2906002)(316002)(8676002)(6486002)(86362001)(8936002)(31686004)(83380400001)(2616005)(956004)(6666004)(53546011)(36756003)(66946007)(26005)(508600001)(38100700002)(110136005)(54906003)(16576012)(6636002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cUdGMk5qTnpvTG1RZysrcEJLaVhLWGZ5aVpqV0hSNVRWdG1Bb2doZXJ5Zms4?=
- =?utf-8?B?SzdoSEQxSHlwZ1hVMGZrY0VTU1cyaTdRSXVmZzVoWGMrcUM3R2Z5elBSUndO?=
- =?utf-8?B?OTNjeVl2Y05Nd2hYVnMyNEdiaXhJQTRPQ1lBZjhmazBHMldNRGxreEVIR1hS?=
- =?utf-8?B?Y05RblNFMm5mRkpmMy9DQlhuQWZoeStlZXNxbHJJMkhFSDhBeTgyMVl6QklO?=
- =?utf-8?B?ZG5WSzFrNFJMTHl1bXZVSGlvUzdaSldTRW5tZ3h3WnBRcmVoRVdTZ2twYzkw?=
- =?utf-8?B?R1o2OVlvRTlmTzFNVTVZQzVLMWE0YzF4cFJwL0xjK200bEplZTg1RDlsdmUz?=
- =?utf-8?B?bXFtZEhFL0dnbUJ2OUJoaWRVMlJvYkh6YnQrNTR2cU13dW5MdGlZY2F1Y2tu?=
- =?utf-8?B?STdBbGVIS2dEQkpWbVRtQ0ZHOU5yM2dMdTlMNlIwcXNQRlRYalU5ZldZK2pL?=
- =?utf-8?B?TElTcjdVZnZQUzdlWTBrREhVR1kwQjV0eFpjMDJEUWYrQXNCNGNnYjh4ZVhT?=
- =?utf-8?B?RW4yMTN2NElPWEdES1ZVa2RTclVVRVoxZDR6ZjV2L0pRVGl1cUl6ZU5kM3Fl?=
- =?utf-8?B?ajFIc2YzaVN3cmFJaStwM0NMblBGZHhQOVkzK1dwanNwWEFrN0MzMjJsNU1w?=
- =?utf-8?B?SWR6c3BGYjVUb0puZnZoZkZ6eDN1Q2hyUCtCZGhqOFlZN2hRTVZYUUhaYWdj?=
- =?utf-8?B?L2xIT1ROQjZuWU01MDhiZFlaT3FLT21mcDVYU3diT092YUJFUmVpQkxreTZu?=
- =?utf-8?B?dldaaEQrNDM3TTY3YzM0R2QwRWRaT0FobVVqT09ZREZCT0x1aFJWZG43YTdo?=
- =?utf-8?B?eW5HOURBNTBnaWI5MkhzMHovcXdFY1YyYWJEdGNvbFFmZ2lQMW5FUjNyODdu?=
- =?utf-8?B?L3d3UlZrQ1EzRW92c0Y4QlhoQU9ZWGdFNWNWS3J0ZWlHWVZmanhaUnRVVW5q?=
- =?utf-8?B?Nm1jajhNOVNXdnJjcjNJVnBQWmU2NWVGdFJTcUVEb1FOWjYxdmFQbU1PdnFi?=
- =?utf-8?B?Ymp5Qm1JeFNMc016YWh1TGlhUkU1c3NjbGVlU2FNWjJqcWxWZVBOUnkxb2Zj?=
- =?utf-8?B?Vkh5aVVVUXM4dkR0OWxGbkltdFA4MjNQRDhZV1pVUHZkRWE4ektramhKaWRl?=
- =?utf-8?B?UERsM25hd1dZdHZqaW8zOTFYSm03azc1TWtEQ1pCN0ZBS3lreTEwN0V6TzN1?=
- =?utf-8?B?c2Y2QUpZRVAzbS90VU9ldnJ3bE03MEwxVGs4SUxQZVVuTCtpTXJvZVlNVTNB?=
- =?utf-8?B?VHZFR05sTjROQURpbXlJWFNvaFlGelFGc3ArOFN4SG9sZW5SckZTc01pQkJv?=
- =?utf-8?B?WXREellkR3FzVnlvdTM1c2ZyVXB5NmtNSVJBMEJrbWpMdEpJL3BPOW1yRmVG?=
- =?utf-8?B?eXREbHBWekFLaUszazI5L0h5cUVWWHJ6dWUyTnhaVmo2ZlJyOS9iZ0tNaldR?=
- =?utf-8?B?T1JuYW8xMFZMMWloWk1KdjZBYXRQUzIvR1VkQ0VncXdxMWpoTmJLc1VjdFo4?=
- =?utf-8?B?K0xjZW9iZjFQWG12WXBPci84UWpVcUJKcEVWMWZlazVUL3dUb1dQWWczSmdM?=
- =?utf-8?B?cmhYZUhqajVPajFvQ1Q1N1MrYzlsbHpWaGZJTFdGbHhTZUQwTEpQMnN0a1I3?=
- =?utf-8?B?TVRLLzk1MGpFRHhUallwdnAyajF1aU1rbVNKbE4rNXJWQjR2VG9sUzZjTmpH?=
- =?utf-8?B?RzVjNUVTN0VkaUNJenkvUHB4a0tUbWI3RXZWcHdYK3RXanRuNk16U3lGa24z?=
- =?utf-8?Q?AbVK/v8Y8IditaKaaVEUeE2lbR6HEBGpb2kQ7tu?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 898a5d2d-b743-46eb-89ee-08d97f8c9b75
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 18:53:33.1051
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9swevt+37PGwSpUT3JXBsdkByi7eNzj8JvemGEngXWP8nyvjeYIjfb4L7agzwZ57KeCujVU+zWz1vo4X5KzMa9iBG5CbEVc1Io1otCVK6/A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR11MB2737
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210906152238.3415467-1-james.clark@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shaopeng Tan,
-
-On 9/24/2021 1:17 AM, Shaopeng Tan wrote:
-> When kzalloc fails, we should return ENOMEM instead of ENOSPC.
+Em Mon, Sep 06, 2021 at 04:22:38PM +0100, James Clark escreveu:
+> This test occasionally fails on aarch64 when a sample is taken in
+> free@plt and it fails with "Bytes read differ from those read by
+> objdump". This is because that symbol is near a section boundary in the
+> elf file. Despite the -z option to always output zeros, objdump uses
+> bfd_map_over_sections() to iterate through the elf file so it doesn't
+> see outside of the sections where these zeros are and can't print them.
 > 
-> Signed-off-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+> For example this boundary proceeds free@plt in libc with a gap of 48
+> bytes between .plt and .text:
+> 
+>   objdump -d -z --start-address=0x23cc8 --stop-address=0x23d08 libc-2.30.so
+> 
+>   libc-2.30.so:     file format elf64-littleaarch64
+> 
+>   Disassembly of section .plt:
+> 
+>   0000000000023cc8 <*ABS*+0x7fd00@plt+0x8>:
+>      23cc8:	91018210 	add	x16, x16, #0x60
+>      23ccc:	d61f0220 	br	x17
+> 
+>   Disassembly of section .text:
+> 
+>   0000000000023d00 <abort@@GLIBC_2.17-0x98>:
+>      23d00:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+>      23d04:	910003fd 	mov	x29, sp
+> 
+> Taking a sample in free@plt is very rare because it is so small, but the
+> test can be forced to fail almost every time on any platform by linking
+> the test with a shared library that has a single empty function and
+> calling it in a loop.
+> 
+> The fix is to zero the buffers so that when there is a jump in the
+> addresses output by objdump, zeros are already filled in between.
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
-> Hello,
+>  tools/perf/tests/code-reading.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> I just noticed this when I read the code.
-> 
-> Thanks,
-> 
->   arch/x86/kernel/cpu/resctrl/rdtgroup.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index b57b3db9a6a7..a92d047476f6 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -2854,7 +2854,7 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
->   	/* allocate the rdtgroup. */
->   	rdtgrp = kzalloc(sizeof(*rdtgrp), GFP_KERNEL);
->   	if (!rdtgrp) {
-> -		ret = -ENOSPC;
-> +		ret = -ENOMEM;
->   		rdt_last_cmd_puts("Kernel out of memory\n");
->   		goto out_unlock;
->   	}
-> 
+> diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
+> index 9866cddebf23..9b4a765e4b73 100644
+> --- a/tools/perf/tests/code-reading.c
+> +++ b/tools/perf/tests/code-reading.c
+> @@ -229,8 +229,8 @@ static int read_object_code(u64 addr, size_t len, u8 cpumode,
+>  			    struct thread *thread, struct state *state)
+>  {
+>  	struct addr_location al;
+> -	unsigned char buf1[BUFSZ];
+> -	unsigned char buf2[BUFSZ];
+> +	unsigned char buf1[BUFSZ] = {0};
+> +	unsigned char buf2[BUFSZ] = {0};
+>  	size_t ret_len;
+>  	u64 objdump_addr;
+>  	const char *objdump_name;
+> -- 
+> 2.28.0
 
-I do not know the original motivation for using ENOSPC but from what I 
-can tell this error is propagated all the way to user space. This change 
-thus has the consequence that any interface built on top of resctrl 
-could be impacted.
+-- 
 
-Is there a specific issue that you are aiming to fix here?
-
-Reinette
+- Arnaldo
