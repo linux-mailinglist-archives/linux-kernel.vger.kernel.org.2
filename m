@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C8941797F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690D9417980
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343836AbhIXRPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 13:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343767AbhIXRO7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 13:14:59 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13151C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:13:22 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id m3so43310950lfu.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9HO1ShFyKTyu7+kkITpSnYVObom9GeBnJLEEdXJMAPc=;
-        b=BzaXwFs2mAqfL90plsQdr0Opk5Ife/Nn0Nz/x570+v5yPCDrVDsVn3yIXX2m6fGFJ5
-         3UHuPOwWMBwkQrP8LZdovcVHqGqDCRFJcpAmjap4a9wSD2kRLMnMH/cebAVCCusbNRSC
-         2dyTKY0tJBui7ClS/YdPqErVxUfg5uw0jroWg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9HO1ShFyKTyu7+kkITpSnYVObom9GeBnJLEEdXJMAPc=;
-        b=bUDPfb6QBmi9M0uEICDyac7PkdsTPYsen2hBPU/l7TdVhR1/IcR52O4029mSUNKqcb
-         PzebsegXkkpLqoMjDzpeM7bx++LMRs96Oga0ZeOCHLmkKIp8kyl6mm+80gZyU55UkLAJ
-         9dyLynY7upXckwec65u/tdS/njgsI1m62b83E2JaJTVkiYMWsbV6P65ZMHnyHZM8BiRI
-         2stpXGyku39Ect0L4CrHT2qa2Tn9zUbK5qhQoCfOj0tA5slQj5ifH6+luPD627XliKvE
-         QZB1Q029LsLnIBS+U4rYPJ4Wu1hSa/vCeo2e5OjU3O9ULU6SqZbZpEQuDehHpyxV/ySK
-         it0g==
-X-Gm-Message-State: AOAM530DpBHJn4kn9hfxZzNtn6bQbI6udNUC8xr06KP0o8S7vjAG02Vj
-        qgyiqQIeFy97lJtmZ83pjDMfMctRS3aET39i
-X-Google-Smtp-Source: ABdhPJxIJHqCv/3R8VSTQLPPSHAoJ/6GcZyRd1UvxJRaHa8cCM5v7OAgyi+ZQ1DNY19ipVR2I98r7Q==
-X-Received: by 2002:ac2:547a:: with SMTP id e26mr11020578lfn.582.1632503599966;
-        Fri, 24 Sep 2021 10:13:19 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id b21sm804465lff.158.2021.09.24.10.13.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 10:13:19 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id y28so42618436lfb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:13:19 -0700 (PDT)
-X-Received: by 2002:a19:ef01:: with SMTP id n1mr10818829lfh.150.1632503598816;
- Fri, 24 Sep 2021 10:13:18 -0700 (PDT)
+        id S1344017AbhIXRPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 13:15:44 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:51679 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244773AbhIXRPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 13:15:43 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HGJXw46ttz9sW1;
+        Fri, 24 Sep 2021 19:14:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id WieYpIoaJD3j; Fri, 24 Sep 2021 19:14:08 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HGJXw3234z9sW0;
+        Fri, 24 Sep 2021 19:14:08 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3D8BF8B77E;
+        Fri, 24 Sep 2021 19:14:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id jVw6Wv7Xqqrs; Fri, 24 Sep 2021 19:14:08 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.215])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EE74D8B763;
+        Fri, 24 Sep 2021 19:14:07 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18OHDuKh1302144
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 24 Sep 2021 19:13:57 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18OHDt7W1302143;
+        Fri, 24 Sep 2021 19:13:55 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH] powerpc: Activate CONFIG_STRICT_KERNEL_RWX by default
+Date:   Fri, 24 Sep 2021 19:13:53 +0200
+Message-Id: <057c40164084bfc7d77c0b2ff78d95dbf6a2a21b.1632503622.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <89481e37-6723-6dd5-3549-85d1aa9fccbe@paragon-software.com>
-In-Reply-To: <89481e37-6723-6dd5-3549-85d1aa9fccbe@paragon-software.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 24 Sep 2021 10:13:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgaM64246C-Jz3a4eZtvez6-O83YGHT7j2CP3QCZifD=A@mail.gmail.com>
-Message-ID: <CAHk-=wgaM64246C-Jz3a4eZtvez6-O83YGHT7j2CP3QCZifD=A@mail.gmail.com>
-Subject: Re: Question about ntfs3 git pull request
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 9:47 AM Konstantin Komarov
-<almaz.alexandrovich@paragon-software.com> wrote:
->
->
-> Right now my github repo still based on 5.14-rc7.
-> Do I need to update it with git merge up to 5.15-rcX?
+CONFIG_STRICT_KERNEL_RWX should be set by default on every
+architectures (See https://github.com/KSPP/linux/issues/4)
 
-Oh, keep your previous base, and just send me a pull request with your
-changes and no merge.
+On PPC32 we have to find a compromise between performance and/or
+memory wasting and selection of strict_kernel_rwx, because it implies
+either smaller memory chunks or larger alignment between RO memory
+and RW memory.
 
-In fact, the best workflow is generally to avoid merging from me as
-much as humanly possible, but then if you notice that we're all in
-sync, and you have nothing pending in your tree, you can basically
-fast-forward and start any new development at some new point.
+For instance the 8xx maps memory with 8M pages. So either the limit
+between RO and RW must be 8M aligned or it falls back or 512k pages
+which implies more pressure on the TLB.
 
-But even then, it's a good idea to make that new point be something
-well-defined - like a full release, or at least an rc release (usually
-avoiding rc1 is good, since rc1 can be a bit experimental).
+book3s/32 maps memory with BATs as much as possible. BATS can have
+any power-of-two size between 128k and 256M but we have only 4 to 8
+BATs so the alignment must be good enough to allow efficient use of
+the BATs and avoid falling back on standard page mapping which would
+kill performance.
 
-But I have no problems pulling from a git tree that is based on older
-kernels. I much prefer than to having  people rebase their work overly
-aggressively, or having people do lots of merges of my tree.
+So let's go one step forward and make it the default but still allow
+users to unset it when wanted.
 
-At some point, if you end up being multiple releases behind, it ends
-up being inconvenient for both of us just because some infrastructure
-has changed, so _occasionally_ syncing up is just a good idea.
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-In my experience, people tend to do it too much, rather than too
-little. Don't worry too much about it.
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index ba5b66189358..79332f51185d 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -148,6 +148,7 @@ config PPC
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+ 	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	select ARCH_OPTIONAL_KERNEL_RWX		if ARCH_HAS_STRICT_KERNEL_RWX
++	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+ 	select ARCH_STACKWALK
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
+-- 
+2.31.1
 
-               Linus
