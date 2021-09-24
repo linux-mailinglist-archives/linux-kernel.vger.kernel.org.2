@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963C7417603
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A466A417600
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346199AbhIXNiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:38:23 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:38014
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346705AbhIXNh7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:37:59 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 43B584019A
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632490585;
-        bh=S6Kt/t1TSGyeiJtJgoFpkmvIPh9xU6Dr0xsilHYx1x4=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=YVu1wkd3juuiuIsSYlHezkrgIfTumH6d03suWRQzi/Ldjf8fNK6Ys9pQO8QW8cmMi
-         P8tI4YKBIP6m9zZ3UaCg1OFzzV0vJqzN5v7LTIeVs6j6HpwcF5ZRKLs3DlnhrBuvUy
-         BRm0z3vjHV3mS/8lIdklSgzfArHwSri1eYW5z2nr2kFkRQ+cDFOZtYhS3oS7A7GR9L
-         kPJjk60gP1P7cp+wr44lwhqxW2PUUQwq21M4if6Pt4UlfifuW9GpbluP1o9TzEqjMT
-         0kxM/ehz4TYcC7p08L2pJqJnpjoFArPC11DZuvcpOBtspd1f1JVjVAZcuKJyzZ6PzX
-         lFNZB/D2bCeTA==
-Received: by mail-wr1-f70.google.com with SMTP id u10-20020adfae4a000000b0016022cb0d2bso8062527wrd.19
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:36:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S6Kt/t1TSGyeiJtJgoFpkmvIPh9xU6Dr0xsilHYx1x4=;
-        b=Rw37fb/qC2RfI3KV6P4kfyD5IC/7zOH6EH5KxlO7dxEVZu/MqwqjOf1dzzMzW7J3A0
-         q8UgDb0zkDSEg2X91HQn5zkG7GaGA798ZqWtleHYAqW/yhWuUT7RS2MjRFY9pt2oibr2
-         kx1raNVCt1HveGvUKXNBIgbSA8/cf7mBIy7w7gt4lH7qnewJ/vbIYEo7qsQoiqq7cXCZ
-         27FM1qKkfxF5V5X/eYRUtJ6u3ixC5yTC5BnUbMZAzVPQTDgRkTKpLrGtANUkfaNynvAD
-         nAT9CwsHr355bRXr6j4G7AA6OA8RBsUFwrRA/HvNq+NbHHAt/M3FbGkyUfVQ3WVI4xhd
-         bW3w==
-X-Gm-Message-State: AOAM5330mkv0+U80ppH+e1UeZS7cEHwxwY2lWp4HZx9f/MeHNkiyCa3z
-        Y7852dTVL7jnTxDmwyf5N591xfkGxaUmujkF+JyRz8pqxS0eO0xiIrUXLGgdbplARSXtm92DEzx
-        +wXciQ2WC0jApekJGVhKoE5JgRsc16Aj2ZY5ndMLYcQ==
-X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr2117095wml.167.1632490584117;
-        Fri, 24 Sep 2021 06:36:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwI1yh/i/veV4CX3x/B+5KadPo5GhYE/87Z36LyePhdH5qhrHtk2EOcRVEL6+fCnuWBNcRmpA==
-X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr2117071wml.167.1632490583780;
-        Fri, 24 Sep 2021 06:36:23 -0700 (PDT)
-Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id d70sm8377400wmd.3.2021.09.24.06.36.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 06:36:23 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-i2c@vger.kernel.org
-Subject: [PATCH] i2c: exynos: describe drivers in KConfig
-Date:   Fri, 24 Sep 2021 15:35:49 +0200
-Message-Id: <20210924133550.112488-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1346636AbhIXNhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:37:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346184AbhIXNhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:37:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F045C6103D;
+        Fri, 24 Sep 2021 13:35:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632490552;
+        bh=1fmoLsZWNjPb0beZKghe3dr53sI70mX59svjbU6NF7s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IXt7juzlRuhLwMN7F4U1599smBRu8ztpPKuuGoIbe5jK08Y26k6mDnxz8kEL1QpmQ
+         nmykxLZLFgGFByIOpqmYesOYkPmKEiTS4v4rjUbBOhAbLvohLXdysso2/jntLZdTiH
+         vCXJbIVtWhoiMhGydD2Mx8NcHaLckhhMaLAhz4uGFyepa9eINXmygkxLZmeitcCtY7
+         qYZwC73BJMMXEihkTBLTO+B4/b4cBxNwMMC+/dRrlPJHuz330Dz1e7Vj7qPaXGtmUU
+         oLlLqUgDSFFZnr/GCJBOU1uVFcZDeTch65pD8kMqgDd1y2prneZud8tRmCNpdT0QAV
+         iEihUkmOGMBig==
+Date:   Fri, 24 Sep 2021 22:35:49 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Eugene Syromyatnikov <evgsyr@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 0/2] tracing: Have trace_pid_list be a sparse array
+Message-Id: <20210924223549.c41a89befe11534dfd56f01c@kernel.org>
+In-Reply-To: <20210924091627.645a8fd3@gandalf.local.home>
+References: <20210924033547.939554938@goodmis.org>
+        <20210924000717.310b492a@rorschach.local.home>
+        <CACGkJdtsHWBstw_Gzb-Dq4Xs_eAW1jsARr5wbh0yE_=NsPA5bw@mail.gmail.com>
+        <20210924091627.645a8fd3@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe better which driver applies to which SoC, to make configuring
-kernel for Samsung SoC easier.
+On Fri, 24 Sep 2021 09:16:27 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/i2c/busses/Kconfig | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> On Fri, 24 Sep 2021 12:51:07 +0200
+> Eugene Syromyatnikov <evgsyr@gmail.com> wrote:
+> 
+> Hi Eugene,
+> 
+> > Note that there is only one top-level chunk (so its size doesn't
+> > matter much), (usually) about one middle-tier chunk (except for some
+> > heavy cases, since pids are allocated linearly), and quite some
+> > lower-tier bitset leaves.  So I'd optimise towards smaller leaves at
+> > the expense of middle-tier (and especially top-tier) chunk size
+> > (especially considering the fact that in the kernel, buddy allocator
+> > is used), like 12-8-12 or something like that, but I have no factual
+> 
+> What I really like about my 8 8 14 split I have, it makes everything 2K in
+> size on 64 bit machines (1K 1K 2K for 32 bit, but who cares ;-)
+> 
+>  1 << 8 * 8 bytes = 2K   // top tiers are pointers to lower tiers
+>  1 << 14 bits = 2K       // lower tier only cares about bits
+> 
+> This means they will likely all be allocated in the same slab.
+> 
+> I'm optimizing the top tiers for size, because they are likely to be empty.
+> Why add memory for something that will never be used, and can't be removed.
+> Note, the middle and lower tiers can be reused when they go empty, which is
+> a likely use case (at least when I test this using hackbench).
+> 
+> > basis for arguing about specific split.  Also, I cannot resist from
+> > noticing that this reminds me an awful lot of XArray and [1].  Maybe,
+> > some wrapper around XArray would do?
+> > 
+> > [1] https://gitlab.com/strace/strace/-/raw/master/src/trie.h
+> > 
+> 
+> I looked into xarray and it appears to be optimized for storing something,
+> where as I'm just interested in a sparse bitmask.
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index e17790fe35a7..1df19ccc310b 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -615,7 +615,10 @@ config I2C_EXYNOS5
- 	depends on ARCH_EXYNOS || COMPILE_TEST
- 	default y if ARCH_EXYNOS
- 	help
--	  High-speed I2C controller on Exynos5 and newer Samsung SoCs.
-+	  High-speed I2C controller on Samsung Exynos5 and newer Samsung SoCs:
-+	  Exynos5250, Exynos5260, Exynos5410, Exynos542x, Exynos5800,
-+	  Exynos5433 and Exynos7.
-+	  Choose Y here only if you build for such Samsung SoC.
- 
- config I2C_GPIO
- 	tristate "GPIO-based bitbanging I2C"
+I guess he suggested that store the bitmask in xarray. Anyway, both are
+OK to me. This is needed for reducing the memory.
+
+Thank you,
+
+> 
+> Thanks for the review.
+> 
+> Note, I'll be posting a v3 soon because I found if I echo 1<<30 into
+> set_event_pid, it adds 0 (because it only looks at the bottom 30 bits).
+> It should really return -EINVAL.
+> 
+> -- Steve
+
+
 -- 
-2.30.2
-
+Masami Hiramatsu <mhiramat@kernel.org>
