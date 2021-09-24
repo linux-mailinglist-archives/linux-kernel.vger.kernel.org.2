@@ -2,124 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B36417659
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4730741719D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346585AbhIXN50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:57:26 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:31267 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346569AbhIXN5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:57:24 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210924135549epoutp026860defe5a44dd4f375ec4c51fc4a3b7~nxpjM486n2409424094epoutp02S
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:55:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210924135549epoutp026860defe5a44dd4f375ec4c51fc4a3b7~nxpjM486n2409424094epoutp02S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1632491749;
-        bh=mNQhFy+0EiS+QFcEKoyz6Gg5CkSs9cKnhKzNpsJdN6Y=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=LUFa8tWWuJ3QsitRJZIkoHZ7waYbvAmvaatQPxkOKiNPxbaUi7CO7J5XOeR7kOP+V
-         ZJRwnAZbdwD3kdlMlEh5GB97G+mQla8KI8HfUz9F9L0lkffkcj/WYJlyqsHEnbwf6C
-         xy7FJ1VS8+2URU2+rSr+BNTJH3xRf6pKTYuY6vCE=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210924135548epcas5p114c5dca6c0cb260a1e30d3bde0962b39~nxph5DVLr1707317073epcas5p1g;
-        Fri, 24 Sep 2021 13:55:48 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        80.22.59762.3E8DD416; Fri, 24 Sep 2021 22:55:47 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a~nwRe_0fYE1848718487epcas5p3u;
-        Fri, 24 Sep 2021 12:14:57 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210924121457epsmtrp21f242e919d84fda83da496006302ee51~nwRe_AMG82712327123epsmtrp2B;
-        Fri, 24 Sep 2021 12:14:57 +0000 (GMT)
-X-AuditID: b6c32a49-10fff7000000e972-97-614dd8e38bdf
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AB.6D.09091.141CD416; Fri, 24 Sep 2021 21:14:57 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.44]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210924121455epsmtip2923d25f8bf1e960d7c28e1c1f758c3bc~nwRc95v331682016820epsmtip2a;
-        Fri, 24 Sep 2021 12:14:55 +0000 (GMT)
-From:   Manjeet Pawar <manjeet.p@samsung.com>
-To:     glider@google.com, elver@google.com, dvyukov@google.com,
-        akpm@linux-foundation.org, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     r.thapliyal@samsung.com, a.sahrawat@samsung.com,
-        v.narang@samsung.com, Manjeet Pawar <manjeet.p@samsung.com>
-Subject: [PATCH] mm/kfence: Null check is added for return value of
- addr_to_metadata
-Date:   Fri, 24 Sep 2021 17:44:02 +0530
-Message-Id: <1632485642-20625-1-git-send-email-manjeet.p@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrAIsWRmVeSWpSXmKPExsWy7bCmpu7jG76JBkt6bCwu7k61mLN+DZvF
-        hIdt7BZtZ7azWrR/3MtsseLZfSaLy7vmsFncW/Of1eJe61o2i433si0OnZzL6MDtsWBTqcee
-        iSfZPDZ9msTucWLGbxaPvi2rGD0+b5ILYIvisklJzcksSy3St0vgyujeeoC9oJmt4tjeZYwN
-        jJ9Zuhg5OSQETCR6tq9l7GLk4hAS2M0oMWfaNFaQhJDAJ0aJjx+dIBLfGCW+zO5khOn49+YL
-        VMdeRomeDVPYIJwvjBIvFi0Dq2IT0JbY86ONHSQhIrCCUWLWifdMIAlmgSKJ97+Xs4PYwgJh
-        Eh2HF4DFWQRUJY5f2gq2m1fAVeLYxbvsEOvkJG6e62QGGSQhcIpd4uDUj6wQCReJ3w/+s0HY
-        whKvjm+BapCS+PxuL1S8XmLzhs1QzT2MEj/P/oRK2Es8ubgQaBAH0EWaEut36UOEZSWmnloH
-        dSifRO/vJ0wQcV6JHfNgbGWJZec3Q9mSErPPHGWGsD0kNt94xQwJvFiJyR9amCYwys5C2LCA
-        kXEVo2RqQXFuemqxaYFhXmq5XnFibnFpXrpecn7uJkZwotDy3MF498EHvUOMTByMhxglOJiV
-        RHg/3/BKFOJNSaysSi3Kjy8qzUktPsQozcGiJM778bVlopBAemJJanZqakFqEUyWiYNTqoGp
-        /1Dko7KdWw/uuDax9KSaZ6fU/GIHu7CJjX9e3z7bk5eU5ZEXclKzU52v916l6q+by4/wn+H8
-        HDorTP6OL+NXzb7XqZlmE57rSTldqxBbf+3vlYil+vrHor4dDJHcKD55yn+lbdNt/m5LaW2M
-        4Y1YxLp6kbi36+1dqR+O/snMvf3m6oETzad5FApr29+9Fn/e6tP+hXm95aIDHlVvnVhrXy6s
-        vLTBKEWma3OHwS6+o1Flp/azM8ld6rwVeO6q4PWi76YnN9xb9Nv0nJjSpALW/7U7HhTYpO9l
-        OjaLj831KU+bg0dqx6+7HYdSTtm8PePpHTI3f4r7k8i1YvobP1wIdP32fb1YxyktfnGj25v2
-        KLEUZyQaajEXFScCAFiuq3aDAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprELMWRmVeSWpSXmKPExsWy7bCSvK7jQd9Eg/7rwhYXd6dazFm/hs1i
-        wsM2dou2M9tZLdo/7mW2WPHsPpPF5V1z2CzurfnPanGvdS2bxcZ72RaHTs5ldOD2WLCp1GPP
-        xJNsHps+TWL3ODHjN4tH35ZVjB6fN8kFsEVx2aSk5mSWpRbp2yVwZXRvPcBe0MxWcWzvMsYG
-        xs8sXYycHBICJhL/3nxhBLGFBHYzSjyeogsRl5ToXzcVqkZYYuW/5+wQNZ8YJba1poDYbALa
-        Ent+tIHFRQQ2MEqseefdxcjBwSxQJtHwWQAkLCwQIjFh4XpmEJtFQFXi+KWtrCA2r4CrxLGL
-        d9khxstJ3DzXyTyBkWcBI8MqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzgYNPS3MG4
-        fdUHvUOMTByMhxglOJiVRHg/3/BKFOJNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJ
-        anZqakFqEUyWiYNTqoHJbXHGqX+Jk57xvSx7/+JT1xXZm891IjdVnRCXYLVfvvby65jfs+1Z
-        MwoDg7+mSPdnTfn1JTdpo/uUuVV3dsQocwh9uGsUWHovvcdrv4HWgVUek6+z39ZJ/W11zkLW
-        KLnqT9+Pa1zfeSKP/Hz2vztB3DTkytG+K9m7xSuVDiza5Xeapym0O+Jq3luDiRtz8x+IPrj/
-        +26trXyeetpWRdP4rT8NPkXX7NH2eTCjlYXvkenLD4YWGX+O+SzY/+DJ0v9SWUmJ3o+aF/H/
-        9jWUecxofPl97EtjY0v2Z/8bG3V1hJ89TCudoM94d6dup3+qbRani/CyU7v+Ja6eenJT89me
-        hHfsC9gixdylVv1a0DZHiaU4I9FQi7moOBEAT32yLaUCAAA=
-X-CMS-MailID: 20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a
-References: <CGME20210924121457epcas5p39266266f9cef79177f2301a6a4f7d79a@epcas5p3.samsung.com>
+        id S245451AbhIXMSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:18:49 -0400
+Received: from mga17.intel.com ([192.55.52.151]:39088 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239965AbhIXMSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:18:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="204217693"
+X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
+   d="scan'208";a="204217693"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 05:17:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
+   d="scan'208";a="559288776"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.84]) ([10.237.72.84])
+  by fmsmga002.fm.intel.com with ESMTP; 24 Sep 2021 05:17:05 -0700
+Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
+ cannot meet the timeout value required by the device
+To:     Bean Huo <huobean@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210917172727.26834-1-huobean@gmail.com>
+ <20210917172727.26834-3-huobean@gmail.com>
+ <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
+ <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
+ <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
+ <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
+Date:   Fri, 24 Sep 2021 15:17:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add null check for return value of addr_to_metadata().
-currently 'meta' is geting accessed without any NULL check but it is
-usually checked for this function.
+On 24/09/21 2:45 pm, Bean Huo wrote:
+> On Fri, 2021-09-24 at 13:07 +0300, Adrian Hunter wrote:
+>> On 24/09/21 12:17 pm, Bean Huo wrote:
+>>> On Fri, 2021-09-24 at 08:29 +0300, Adrian Hunter wrote:
+>>>>> If the data transmission timeout value required by the device
+>>>>> exceeds
+>>>>> the maximum timeout value of the host HW timer, we still use
+>>>>> the HW
+>>>>> timer with the maximum timeout value of the HW timer. This
+>>>>> setting
+>>>>> is
+>>>>> suitable for most R/W situations. But sometimes, the device
+>>>>> will
+>>>>> complete
+>>>>> the R/W task within its required timeout value (greater than
+>>>>> the HW
+>>>>> timer).
+>>>>> In this case, the HW timer for data transmission will time out.
+>>>>> Currently, in this condition, we  disable the HW timer and use
+>>>>> the
+>>>>> SW
+>>>>> timer only when the SDHCI_QUIRK2_DISABLE_HW_TIMEOUT quirk is
+>>>>> set by
+>>>>> the
+>>>>> host driver. The patch is to remove this if statement
+>>>>> restriction
+>>>>> and
+>>>>> allow data transmission to use the SW timer when the hardware
+>>>>> timer
+>>>>> cannot
+>>>>> meet the required timeout value.
+>>>>
+>>>> The reason it is a quirk is because it does not work for all
+>>>> hardware.
+>>>>
+>>>> For some controllers the timeout cannot really be disabled, only
+>>>> the
+>>>>
+>>>> interrupt is disabled, and then the controller never indicates
+>>>> completion
+>>>>
+>>>> if the timeout is exceeded.
+>>>
+>>> Hi Adrian,
+>>> Thanks for your review.
+>>>
+>>> Yes, you are right. But this quirk prevents disabling the hardware
+>>> timeoutIRQ. The purpose of this patch is to disable the hardware
+>>> timeout IRQ and
+>>> select the software timeout.
+>>>
+>>> void __sdhci_set_timeout(struct sdhci_host *host, struct
+>>> mmc_command
+>>> *cmd)
+>>> {
+>>>         bool too_big = false;
+>>>         u8 count = sdhci_calc_timeout(host, cmd, &too_big);
+>>>
+>>>         if (too_big) {
+>>>                 sdhci_calc_sw_timeout(host, cmd);
+>>>                 sdhci_set_data_timeout_irq(host, false); // disable
+>>> IRQ
+>>>         } else if (!(host->ier & SDHCI_INT_DATA_TIMEOUT)) {
+>>>                 sdhci_set_data_timeout_irq(host, true);
+>>>         }
+>>>
+>>>         sdhci_writeb(host, count, SDHCI_TIMEOUT_CONTROL);
+>>> }
+>>>
+>>>
+>>> The driver has detected that the hardware timer cannot meet the
+>>> timeout
+>>> requirements of the device, but we still use the hardware timer,
+>>> which will
+>>> allow potential timeout issuea . Rather than allowing a potential
+>>> problem to exist, why can’t software timing be used to avoid this
+>>> problem?
+>>
+>> Timeouts aren't that accurate.  The maximum is assumed still to work.
+>> mmc->max_busy_timeout is used to tell the core what the maximum is.
+> 
+>>
+> 
+> 
+> 
+> mmc->max_busy_timeout is still a representation of Host HW timer
+> maximum timeout count, isn't it? 
 
-Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
----
- mm/kfence/core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 575c685aa642..9b953cfa7fee 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -802,6 +802,9 @@ void __kfence_free(void *addr)
- {
- 	struct kfence_metadata *meta = addr_to_metadata((unsigned long)addr);
- 
-+	if (unlikely(!meta))
-+		return;
-+
- 	/*
- 	 * If the objects of the cache are SLAB_TYPESAFE_BY_RCU, defer freeing
- 	 * the object, as the object page may be recycled for other-typed
--- 
-2.17.1
+Not necessarily.  For SDHCI_QUIRK2_DISABLE_HW_TIMEOUT it would be
+set to zero to indicate no maximum.
 
