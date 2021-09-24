@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB8A417363
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133B84172E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344210AbhIXMzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:55:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45754 "EHLO mail.kernel.org"
+        id S1344576AbhIXMwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:52:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344992AbhIXMxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:53:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BDEF61269;
-        Fri, 24 Sep 2021 12:50:16 +0000 (UTC)
+        id S1344307AbhIXMup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:50:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1830D61242;
+        Fri, 24 Sep 2021 12:48:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487817;
-        bh=NNo86zli0Ni0K4VtLcvHdGW7IMx+1jIwUw4zq+mrWsU=;
+        s=korg; t=1632487711;
+        bh=97BEcLR+uG1fxriTA6b7SfiP+EezFE1mzZSvFQB8v44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=goQAjE767eS/7wDOBOsmywrhYItFkDQkhB6GxyEdHiNbD0sxVw5JxrgwPol/qPOb1
-         A39wWyKlDreppLgBceecIjTLOaWT5P90qq7LRL91/oNmGT8OIjwtbrN1mdZhORTlQf
-         LdASt6qEv4t1XRsx3eik8L+Krf7TWL1fMWkMa11o=
+        b=oxGgrkg4EtOrYkLymyFixdVfonTObM16g3unJERopZsJHt3UCIbTdNJScRfUL8j7s
+         4VXxwIq4SMjZrzJ/x/Gy6inAECHlRyYG9cFbZtzbc6z0bJPCcYumIvC7TyEn4iGA9d
+         4CdvWFxatjoLyUbgS0ILJtFhyGHwktznzqlTWi2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 23/50] nilfs2: use refcount_dec_and_lock() to fix potential UAF
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 18/34] drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
 Date:   Fri, 24 Sep 2021 14:44:12 +0200
-Message-Id: <20210924124333.022946666@linuxfoundation.org>
+Message-Id: <20210924124330.560223475@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,98 +42,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 98e2e409e76ef7781d8511f997359e9c504a95c1 upstream.
+[ Upstream commit 4b92d4add5f6dcf21275185c997d6ecb800054cd ]
 
-When the refcount is decreased to 0, the resource reclamation branch is
-entered.  Before CPU0 reaches the race point (1), CPU1 may obtain the
-spinlock and traverse the rbtree to find 'root', see
-nilfs_lookup_root().
+DEFINE_SMP_CALL_CACHE_FUNCTION() was usefel before the CPU hotplug rework
+to ensure that the cache related functions are called on the upcoming CPU
+because the notifier itself could run on any online CPU.
 
-Although CPU1 will call refcount_inc() to increase the refcount, it is
-obviously too late.  CPU0 will release 'root' directly, CPU1 then
-accesses 'root' and triggers UAF.
+The hotplug state machine guarantees that the callbacks are invoked on the
+upcoming CPU. So there is no need to have this SMP function call
+obfuscation. That indirection was missed when the hotplug notifiers were
+converted.
 
-Use refcount_dec_and_lock() to ensure that both the operations of
-decrease refcount to 0 and link deletion are lock protected eliminates
-this risk.
+This also solves the problem of ARM64 init_cache_level() invoking ACPI
+functions which take a semaphore in that context. That's invalid as SMP
+function calls run with interrupts disabled. Running it just from the
+callback in context of the CPU hotplug thread solves this.
 
-	     CPU0                      CPU1
-	nilfs_put_root():
-		    <-------- (1)
-				spin_lock(&nilfs->ns_cptree_lock);
-				rb_erase(&root->rb_node, &nilfs->ns_cptree);
-				spin_unlock(&nilfs->ns_cptree_lock);
-
-	kfree(root);
-		    <-------- use-after-free
-
-  refcount_t: underflow; use-after-free.
-  WARNING: CPU: 2 PID: 9476 at lib/refcount.c:28 \
-  refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
-  Modules linked in:
-  CPU: 2 PID: 9476 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
-  RIP: 0010:refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
-  ... ...
-  Call Trace:
-     __refcount_sub_and_test include/linux/refcount.h:283 [inline]
-     __refcount_dec_and_test include/linux/refcount.h:315 [inline]
-     refcount_dec_and_test include/linux/refcount.h:333 [inline]
-     nilfs_put_root+0xc1/0xd0 fs/nilfs2/the_nilfs.c:795
-     nilfs_segctor_destroy fs/nilfs2/segment.c:2749 [inline]
-     nilfs_detach_log_writer+0x3fa/0x570 fs/nilfs2/segment.c:2812
-     nilfs_put_super+0x2f/0xf0 fs/nilfs2/super.c:467
-     generic_shutdown_super+0xcd/0x1f0 fs/super.c:464
-     kill_block_super+0x4a/0x90 fs/super.c:1446
-     deactivate_locked_super+0x6a/0xb0 fs/super.c:335
-     deactivate_super+0x85/0x90 fs/super.c:366
-     cleanup_mnt+0x277/0x2e0 fs/namespace.c:1118
-     __cleanup_mnt+0x15/0x20 fs/namespace.c:1125
-     task_work_run+0x8e/0x110 kernel/task_work.c:151
-     tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-     exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
-     exit_to_user_mode_prepare+0x13c/0x170 kernel/entry/common.c:191
-     syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
-     do_syscall_64+0x45/0x80 arch/x86/entry/common.c:56
-     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-There is no reproduction program, and the above is only theoretical
-analysis.
-
-Link: https://lkml.kernel.org/r/1629859428-5906-1-git-send-email-konishi.ryusuke@gmail.com
-Fixes: ba65ae4729bf ("nilfs2: add checkpoint tree to nilfs object")
-Link: https://lkml.kernel.org/r/20210723012317.4146-1-thunder.leizhen@huawei.com
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8571890e1513 ("arm64: Add support for ACPI based firmware tables")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Will Deacon <will@kernel.org>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/871r69ersb.ffs@tglx
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nilfs2/the_nilfs.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/arm64/kernel/cacheinfo.c   |  7 ++-----
+ arch/mips/kernel/cacheinfo.c    |  7 ++-----
+ arch/riscv/kernel/cacheinfo.c   |  7 ++-----
+ arch/x86/kernel/cpu/cacheinfo.c |  7 ++-----
+ include/linux/cacheinfo.h       | 18 ------------------
+ 5 files changed, 8 insertions(+), 38 deletions(-)
 
---- a/fs/nilfs2/the_nilfs.c
-+++ b/fs/nilfs2/the_nilfs.c
-@@ -797,14 +797,13 @@ nilfs_find_or_create_root(struct the_nil
+diff --git a/arch/arm64/kernel/cacheinfo.c b/arch/arm64/kernel/cacheinfo.c
+index 0bf0a835122f..d17414cbb89a 100644
+--- a/arch/arm64/kernel/cacheinfo.c
++++ b/arch/arm64/kernel/cacheinfo.c
+@@ -45,7 +45,7 @@ static void ci_leaf_init(struct cacheinfo *this_leaf,
+ 	this_leaf->type = type;
+ }
  
- void nilfs_put_root(struct nilfs_root *root)
+-static int __init_cache_level(unsigned int cpu)
++int init_cache_level(unsigned int cpu)
  {
--	if (refcount_dec_and_test(&root->count)) {
--		struct the_nilfs *nilfs = root->nilfs;
-+	struct the_nilfs *nilfs = root->nilfs;
+ 	unsigned int ctype, level, leaves, fw_level;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+@@ -80,7 +80,7 @@ static int __init_cache_level(unsigned int cpu)
+ 	return 0;
+ }
  
--		nilfs_sysfs_delete_snapshot_group(root);
+-static int __populate_cache_leaves(unsigned int cpu)
++int populate_cache_leaves(unsigned int cpu)
+ {
+ 	unsigned int level, idx;
+ 	enum cache_type type;
+@@ -99,6 +99,3 @@ static int __populate_cache_leaves(unsigned int cpu)
+ 	}
+ 	return 0;
+ }
 -
--		spin_lock(&nilfs->ns_cptree_lock);
-+	if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
- 		rb_erase(&root->rb_node, &nilfs->ns_cptree);
- 		spin_unlock(&nilfs->ns_cptree_lock);
-+
-+		nilfs_sysfs_delete_snapshot_group(root);
- 		iput(root->ifile);
+-DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+-DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
+index 3ea95568ece4..1c19a0698308 100644
+--- a/arch/mips/kernel/cacheinfo.c
++++ b/arch/mips/kernel/cacheinfo.c
+@@ -28,7 +28,7 @@ do {								\
+ 	leaf++;							\
+ } while (0)
  
- 		kfree(root);
+-static int __init_cache_level(unsigned int cpu)
++int init_cache_level(unsigned int cpu)
+ {
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+@@ -80,7 +80,7 @@ static void fill_cpumask_cluster(int cpu, cpumask_t *cpu_map)
+ 			cpumask_set_cpu(cpu1, cpu_map);
+ }
+ 
+-static int __populate_cache_leaves(unsigned int cpu)
++int populate_cache_leaves(unsigned int cpu)
+ {
+ 	struct cpuinfo_mips *c = &current_cpu_data;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+@@ -109,6 +109,3 @@ static int __populate_cache_leaves(unsigned int cpu)
+ 
+ 	return 0;
+ }
+-
+-DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+-DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
+index 0bc86e5f8f3f..9d46c8575a61 100644
+--- a/arch/riscv/kernel/cacheinfo.c
++++ b/arch/riscv/kernel/cacheinfo.c
+@@ -31,7 +31,7 @@ static void ci_leaf_init(struct cacheinfo *this_leaf,
+ 		| CACHE_WRITE_ALLOCATE;
+ }
+ 
+-static int __init_cache_level(unsigned int cpu)
++int init_cache_level(unsigned int cpu)
+ {
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+ 	struct device_node *np = of_cpu_device_node_get(cpu);
+@@ -67,7 +67,7 @@ static int __init_cache_level(unsigned int cpu)
+ 	return 0;
+ }
+ 
+-static int __populate_cache_leaves(unsigned int cpu)
++int populate_cache_leaves(unsigned int cpu)
+ {
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+ 	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
+@@ -99,6 +99,3 @@ static int __populate_cache_leaves(unsigned int cpu)
+ 
+ 	return 0;
+ }
+-
+-DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+-DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
+index 9d863e8f9b3f..4a393023f5ac 100644
+--- a/arch/x86/kernel/cpu/cacheinfo.c
++++ b/arch/x86/kernel/cpu/cacheinfo.c
+@@ -956,7 +956,7 @@ static void ci_leaf_init(struct cacheinfo *this_leaf,
+ 	this_leaf->priv = base->nb;
+ }
+ 
+-static int __init_cache_level(unsigned int cpu)
++int init_cache_level(unsigned int cpu)
+ {
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+ 
+@@ -985,7 +985,7 @@ static void get_cache_id(int cpu, struct _cpuid4_info_regs *id4_regs)
+ 	id4_regs->id = c->apicid >> index_msb;
+ }
+ 
+-static int __populate_cache_leaves(unsigned int cpu)
++int populate_cache_leaves(unsigned int cpu)
+ {
+ 	unsigned int idx, ret;
+ 	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+@@ -1004,6 +1004,3 @@ static int __populate_cache_leaves(unsigned int cpu)
+ 
+ 	return 0;
+ }
+-
+-DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+-DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/include/linux/cacheinfo.h b/include/linux/cacheinfo.h
+index 70e19bc6cc9f..66654e6f9605 100644
+--- a/include/linux/cacheinfo.h
++++ b/include/linux/cacheinfo.h
+@@ -76,24 +76,6 @@ struct cpu_cacheinfo {
+ 	bool cpu_map_populated;
+ };
+ 
+-/*
+- * Helpers to make sure "func" is executed on the cpu whose cache
+- * attributes are being detected
+- */
+-#define DEFINE_SMP_CALL_CACHE_FUNCTION(func)			\
+-static inline void _##func(void *ret)				\
+-{								\
+-	int cpu = smp_processor_id();				\
+-	*(int *)ret = __##func(cpu);				\
+-}								\
+-								\
+-int func(unsigned int cpu)					\
+-{								\
+-	int ret;						\
+-	smp_call_function_single(cpu, _##func, &ret, true);	\
+-	return ret;						\
+-}
+-
+ struct cpu_cacheinfo *get_cpu_cacheinfo(unsigned int cpu);
+ int init_cache_level(unsigned int cpu);
+ int populate_cache_leaves(unsigned int cpu);
+-- 
+2.33.0
+
 
 
