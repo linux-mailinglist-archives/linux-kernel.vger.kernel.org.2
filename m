@@ -2,186 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F88417D81
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39476417D8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344920AbhIXWJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 18:09:18 -0400
-Received: from mail.efficios.com ([167.114.26.124]:39060 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344504AbhIXWJR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 18:09:17 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 5D29F32AC16;
-        Fri, 24 Sep 2021 18:07:43 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id huf4Uqv36A61; Fri, 24 Sep 2021 18:07:42 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 9820632AB39;
-        Fri, 24 Sep 2021 18:07:42 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9820632AB39
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1632521262;
-        bh=+J8gyCSUPm6OhBHWrLdZOCcHvTo8ECONJ4VqhmzD0kg=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=PifoYLwz6XEEB/n/YJ4pidMrRRsL/XHatCTKsdVXEsNGc5PxTB9zfN6HdABpOpw0A
-         KnjQNN33Ytgo9tRqt6lgF1S7Srfg14koq49W5Wr2p0zsKodjdwIw6w3l3qmjrt7ESv
-         CTEVkFDqWS2SJmGpItk8DFvPzqdiVaVykeIBjTB8gvmgY8iEPl0GOrEBBg+9WjidB2
-         bxkmDWYh+68gPTUWjGMwmxVXtGdCnEde3Zx2qEcram2rG4YA4f8Aj8yJDxImlgXkDR
-         5iYufnDmk6U4F2zeFCsNPTzHPaZhChttrN+ZgLDrchvjBQfIcxlGHgDmQkfsrjUINo
-         2ACHfckpUDILA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id FzyTiaanLWXC; Fri, 24 Sep 2021 18:07:42 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 80EEF32ABA2;
-        Fri, 24 Sep 2021 18:07:42 -0400 (EDT)
-Date:   Fri, 24 Sep 2021 18:07:42 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        j alglave <j.alglave@ucl.ac.uk>,
-        luc maranget <luc.maranget@inria.fr>,
-        akiyks <akiyks@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-toolchains <linux-toolchains@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Message-ID: <1956843171.37546.1632521262378.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1059471848.37444.1632515991273.JavaMail.zimbra@efficios.com>
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net> <20210924183858.GA25901@localhost> <20210924195535.GC17780@gate.crashing.org> <1059471848.37444.1632515991273.JavaMail.zimbra@efficios.com>
-Subject: Re: [RFC] LKMM: Add volatile_if()
+        id S1345077AbhIXWMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 18:12:16 -0400
+Received: from mail-bn1nam07on2050.outbound.protection.outlook.com ([40.107.212.50]:2631
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1344932AbhIXWMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 18:12:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=laFfCi9YhqMG9BeapNX1EaL/1/HWCDldd8RJLt1PY9zWOXIDa7c3UUG9XMWRbxrdxpTCgHESJA95PFTPtf4eUmKkUDi2tkm3JeBE96MbwwYy+RbVSfthgiWVVQ6arsG9O0aWJiZ6+x/7INqQpz1+3Nvev5Nuvh4MCSCknPLmaS1y+1JfCGEene0EdNjAjUg19BaXQkiJEP6BR6ob7t1nQbzWBBA8Kr80ORPKyX3xqe5bt+CLRMGeYY8YsMaaxMNa3DUfmlnLdejC1Krf6erJRcjZ45g/0vYF0JWVVKPTY52ADYu3c2qmMBMxmgOVr2mL/bPbjjIU4JTyx5WoJr5/6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=NICH0hm8La+WhyDrjC7LFMW4ROO8IPTXE94mcJD1BW4=;
+ b=LFiK4mQn6Xxb6UvQ/qZkwaHzhb9JGAE6ktXDw8bIkznPlMC/NaExExBEyaoHvjZfFGPfrZPgKjztyqyYvy1V9Jjp1FSH6mPj4WQYx+cWSx6glW9NXcqlazTcDbgS938eh9MacvPZWpmw26wFsqv2cFu1nZAv16LtApSTeX6jgv4sOfQzj4XIBOfXln5V+CiolKSId1jqDO/DNy3Gf/XyvNU/gh8NPkEmUSXU+oRDDYdD3eq4JGfFYTzWMNtuw4iulmkOHsBr5/v4ADgeqdMAKza0VAv0HZ8G13SLoq0abtSz4i7PJuM1Opo8uyO21gote2QmwuSKNTULLG91W07iQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NICH0hm8La+WhyDrjC7LFMW4ROO8IPTXE94mcJD1BW4=;
+ b=iE//0MWM9peVDnEkSu/v+M+pZVKi9E8used6ruJIavooXfbMXWx/6LLTC4rPJnMG6EESgsi7XdLxm727W8cqaDp16VaA2WZQQmLsvQ8TAJQOTttdIrnQnAIxaKkpu2He7Sxfx9z1U2SxDIP1P8cUVou4npYlpsd6kBxHouw72i3AKr7qNBR8KXubQx8h5jU6/tExjdDy3gAbdhaEuqfsOQDVms6uN/BVbIKbj2TM076C/9tdijJ0FXVkM1fAsubfV+uX669oeAn2iQzTrbnxwF2uzdDt/+ZjsFZMb9T94yS4fg2i0HaiYLVNrBkLxN25ux94yDHFz86tUYqJt5JNfw==
+Received: from DM5PR1101CA0006.namprd11.prod.outlook.com (2603:10b6:4:4c::16)
+ by MN2PR12MB4288.namprd12.prod.outlook.com (2603:10b6:208:1d2::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Fri, 24 Sep
+ 2021 22:10:39 +0000
+Received: from DM6NAM11FT052.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:4c:cafe::e1) by DM5PR1101CA0006.outlook.office365.com
+ (2603:10b6:4:4c::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
+ Transport; Fri, 24 Sep 2021 22:10:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT052.mail.protection.outlook.com (10.13.172.111) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 22:10:39 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 24 Sep
+ 2021 15:10:39 -0700
+Received: from [10.19.66.38] (172.20.187.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 24 Sep
+ 2021 22:10:35 +0000
+Subject: Re: [PATCH V1 1/3] dt-bindings: tegra: memory,bpmp-thermal: add SPDX
+ license
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        <robh+dt@kernel.org>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <rostedt@goodmis.org>, <mingo@redhat.com>,
+        <jassisinghbrar@gmail.com>, <p.zabel@pengutronix.de>
+CC:     <skomatineni@nvidia.com>, <broonie@kernel.org>,
+        <linus.walleij@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>
+References: <20210921174434.4839-1-bbiswas@nvidia.com>
+ <20210921174434.4839-2-bbiswas@nvidia.com>
+ <195c460c-9fb9-f435-4fa8-6d5632f62a5a@canonical.com>
+From:   Bitan Biswas <bbiswas@nvidia.com>
+Message-ID: <73bb6df4-2059-a8c5-a83d-a4b35538871e@nvidia.com>
+Date:   Fri, 24 Sep 2021 15:10:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <195c460c-9fb9-f435-4fa8-6d5632f62a5a@canonical.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
-Thread-Topic: LKMM: Add volatile_if()
-Thread-Index: gKOgxiK5EKp+gxCUYVb9i+alyPg8k0J8RSVX
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0846ee15-6cc0-4ab6-6448-08d97fa824cb
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4288:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB428877803B1DA27F0E682398D7A49@MN2PR12MB4288.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iRYguHbq7krkUMPIqYR9ABlcFTPhhJpRAFZEjhRhJgDjv7WSyvWY6mreCSs/nmNbIFd/gr49tuYOISsEruAh2ZwsdvO1vqw56A/EaJUDN7vu02HwQp6Xxt/DC1Ux8Zr1dnr/kW7vSft/pnLkf2OWW2hTFOmJdcP4Ge1HO/YYBGMbUR9D7BJr6fBB9TXhklXG3g8Wkj+4Qr7eeEb9If1VwGpEqxFTI+GMeqY/176oeEoFuEMqkQ3SWA2WchDqtAfvinAeUrAKCBKMVsN6Xx4EIR1IASsNLEIm2RAYNzP8fi592NMb8r7FyEnj/ahHgWTwBfuBlM0vxYfuXIbAYIyuK9v9KVknYfGVsh4t6tdbr4w0Cucq3n9rACrHZD+KCZUqybvxIU54N2bBNYpEHPcaY7DrKOIMFZMTyeT7dkwZj8Ev3Qcc6jwyUWfLBQ5TQI2rDkVr6i1RihrMqGC3gT8Iy+yQR9Vf5au/LcNqoyCs3LEcv+DVjnUmJH/bu2Lzk72NSXty4SskblsSpUEtWOAJ1gIDlDr5lUCx9QYJEWQUBdAnAqB6kpjAKrVV1JLZvePg2wDqLFkysizCzfU+ageNKoH456EOhagFRUylUneh2S6NGnIUVSG7bdJGU0ES3Y9qpoFnsQPx6Di3cIysQS3r1WEkl6g6+rpOSFDNgmCqn4ywyu8AGA+ntNCUCwNwhLCrR7IlIT0l+VfZ3GnPj7tE8U8mWfXWnD9V3BqQU7YRpKWjv7v7WDxw//4yCZBBsXVG4dPqd6Hc8uepy1LuAL8/Dah5vmSDmRL9Dtxnd3iQN7UrXnIIooPmH+qi3BCnAvlC
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(4744005)(356005)(508600001)(86362001)(7636003)(966005)(36860700001)(53546011)(6666004)(7416002)(426003)(4326008)(5660300002)(316002)(16576012)(336012)(47076005)(82310400003)(31686004)(54906003)(31696002)(70206006)(70586007)(110136005)(8676002)(8936002)(16526019)(2906002)(2616005)(26005)(186003)(36756003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 22:10:39.6959
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0846ee15-6cc0-4ab6-6448-08d97fa824cb
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT052.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4288
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 24, 2021, at 4:39 PM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
+Hi Krzysztof,
 
-> ----- On Sep 24, 2021, at 3:55 PM, Segher Boessenkool segher@kernel.crashing.org
-> wrote:
+On 9/21/21 10:59 AM, Krzysztof Kozlowski wrote:
+> External email: Use caution opening links or attachments
 > 
->> Hi!
->> 
->> On Fri, Sep 24, 2021 at 02:38:58PM -0400, Mathieu Desnoyers wrote:
->>> Following the LPC2021 BoF about control dependency, I re-read the kernel
->>> documentation about control dependency, and ended up thinking that what
->>> we have now is utterly fragile.
->>> 
->>> Considering that the goal here is to prevent the compiler from being able to
->>> optimize a conditional branch into something which lacks the control
->>> dependency, while letting the compiler choose the best conditional
->>> branch in each case, how about the following approach ?
->>> 
->>> #define ctrl_dep_eval(x)        ({ BUILD_BUG_ON(__builtin_constant_p((_Bool)
->>> x)); x; })
->>> #define ctrl_dep_emit_loop(x)   ({ __label__ l_dummy; l_dummy: asm volatile goto
->>> ("" : : : "cc", "memory" : l_dummy); (x); })
->>> #define ctrl_dep_if(x)          if ((ctrl_dep_eval(x) && ctrl_dep_emit_loop(1))
->>> || ctrl_dep_emit_loop(0))
->> 
->> [The "cc" clobber only pessimises things: the asm doesn't actually
->> clobber the default condition code register (which is what "cc" means),
->> and you can have conditional branches using other condition code
->> registers, or on other registers even (general purpose registers is
->> common.]
 > 
-> I'm currently considering removing both "memory" and "cc" clobbers from
-> the asm goto.
+> On 21/09/2021 19:44, Bitan Biswas wrote:
+>> Add Dual licensing SPDX license identifier for tegra186,tegra194
+>> memory and bpmp-thermal headers.
+>>
+>> Signed-off-by: Bitan Biswas <bbiswas@nvidia.com>
+>> ---
+>>   4 files changed, 4 insertions(+)
+>>
 > 
->> 
->>> The idea is to forbid the compiler from considering the two branches as
->>> identical by adding a dummy loop in each branch with an empty asm goto.
->>> Considering that the compiler should not assume anything about the
->>> contents of the asm goto (it's been designed so the generated assembly
->>> can be modified at runtime), then the compiler can hardly know whether
->>> each branch will trigger an infinite loop or not, which should prevent
->>> unwanted optimisations.
->> 
->> The compiler looks if the code is identical, nothing more, nothing less.
->> There are no extra guarantees.  In principle the compiler could see both
->> copies are empty asms looping to self, and so consider them equal.
+> Now we got the same v1 patchset for the third time. I think you need to
+> check your mail agent...
 > 
-> I would expect the compiler not to attempt combining asm goto based on their
-> similarity because it has been made clear starting from the original
-> requirements
-> from the kernel community to the gcc developers that one major use-case of asm
-> goto involves self-modifying code (patching between nops and jumps).
+> https://lore.kernel.org/lkml/?q=bbiswas%40nvidia.com
 > 
-> If this happens to be a real possibility, then we may need to work-around this
-> for
-> other uses of asm goto as well.
-
-Now that I page back this stuff into my brain (I last looked at it in details some
-12 years ago), I recall that letting compilers combine asm goto statements which
-happen to match CSE was actually something we wanted to permit, because we don't care
-about editing the nops into jumps for each individual asm goto if they happen
-to have the same effect when modified.
-
-> 
-> If there is indeed a scenario where the compiler can combine similar asm goto
-> statements,
-> then I suspect we may want to emit unique dummy code in the assembly which gets
-> placed in a
-> discarded section, e.g.:
-> 
-> #define ctrl_dep_emit_loop(x)   ({ __label__ l_dummy; l_dummy: asm goto (
-> \
->                ".pushsection .discard.ctrl_dep\n\t"                            \
->                ".long " __stringify(__COUNTER__) "\n\t"                        \
->                ".popsection\n\t"                                               \
->                "" : : : : l_dummy); (x); })
 > 
 
-So I think your point is very much valid: we need some way to make the content of the asm goto
-different between the two branches. I think the __COUNTER__ approach is overkill though:
-we don't care about making each of the asm goto loop unique within the entire file;
-we just don't want them to match between the two legs of the branch.
+I realize the oversight and apologize. Plan to take care of comments in 
+v1 patchset.
 
-So something like this should be enough:
+-regards,
+  Bitan
 
-#define ctrl_dep_emit_loop(x)   ({ __label__ l_dummy; l_dummy: asm goto (       \
-                ".pushsection .discard.ctrl_dep\n\t"                            \
-                ".long " __stringify(x) "\n\t"                                  \
-                ".popsection\n\t"                                               \
-                "" : : : : l_dummy); (x); })
-
-So we emit respectively a 0 and 1 into the discarded section.
-
-Thoughts ?
-
-Thanks,
-
-Mathieu
-
-
-> But then a similar trick would be needed for jump labels as well.
-> 
-> Thanks,
-> 
-> Mathieu
-> 
-> --
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
