@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9605E417160
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3342417161
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244813AbhIXL6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:58:33 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34434
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238892AbhIXL6b (ORCPT
+        id S245046AbhIXL6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 07:58:35 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:56530
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244681AbhIXL6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 07:58:31 -0400
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        Fri, 24 Sep 2021 07:58:32 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 36CE6402DF
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:56:58 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0240B40784
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:56:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632484618;
-        bh=ARyvKwpOwSuiUpVOkf7zpHxJ+2c4Kjgdb/Wzd5PouHw=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=l2gs4VrNMHFhKxiZf+GMstyEsu4hDr9cuVdxOU9a+I4m4Xn5uAEsMpyQFwaW6ivpv
-         9ssVE6rO7AoxrNOK9CjV+cYjlqEuBapoTqIyr2y+69NzqrC+A892aPWarOjNdbeK4p
-         Q91sT1mXlrN5fGUnO7PcB11wBF+djCAgiwF8/bbCRCyc+QNRnQb8365Iqj20gI4pd4
-         Y5/VAWbrlC0Wd0aGg9LV8kyGVxE+TxZthjV7eBGk8xNOb1JigguCeIw3fhZ23zesrz
-         g/EmOusn5Yz4WVonztXHCdLAXQBSyVH3prz1y9WqpGWvKMFX7ygrNsxWkwoewn1lve
-         R+TVB7B7+GN3Q==
-Received: by mail-wr1-f69.google.com with SMTP id s14-20020adff80e000000b001601b124f50so7851700wrp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 04:56:58 -0700 (PDT)
+        s=20210705; t=1632484619;
+        bh=GX1knPnuUXedW7zKBIwh7buu4qnYLP5gHJJI8M92Q5Y=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=pOggI9vERhZL87htktEobI/vThl+wGmNIC2N5XlC0hIoeJtAU9CHFmZ6PJBspqCVY
+         JNzmto5f4/BtRIP659XfUR+DYCEv8Kfllx7iDjEoocBjrgr1aLdohV+Jsd0V8MQR4S
+         9ieO/58uoEqfxNtwGYL7DEE4cesK2x2Yh6r56LgffZxDVjwA4BzTDFXsVbEKjyngnD
+         8GyUTO5tgfHW+IQAciLKJzv7vTJJug8/paMsi6W5xpjWuzQaaJPRkk8zv6/N7sGQ4R
+         vRejfoB6H6T7lWawfBvLijA0KxB8ou0L+Fvsa2xOc/n+hH2s1IlcnlICIhU57/6k1A
+         ySljgXikgaISw==
+Received: by mail-wr1-f70.google.com with SMTP id a17-20020adfed11000000b00160525e875aso317809wro.23
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 04:56:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ARyvKwpOwSuiUpVOkf7zpHxJ+2c4Kjgdb/Wzd5PouHw=;
-        b=xDAuH0JFF/Ouwzqm97L0al2owL3+3VUAVKc76TiTtUtCQDi092MMEfjAkofvuwpqLt
-         RVTgY5DFIbNo5f7cNBCsm7fuQfSB0PF4uw7GD9y7tx3/wbuOSrrOjJzwaSDpAFDCUrqk
-         auj1l4XK1fJcTm+uOPyxk7zQI8I7dOEKJUhVf0Dh9O384ukWqAl5WjF1MKs8tO9lZ63C
-         uvrhkkjHZzc1G89U/ynQG8t/Ul6+PguiNvZU5/pZKeTpmZcZJdPNxqQIXIEqadWyNbaB
-         fs0FYxDLL8vleQN/v2LJzJHyDxS9y8o+RIAsE96KM6sIPZFKgo+6IJ2bDslyTPS+AWOR
-         YH8w==
-X-Gm-Message-State: AOAM532O+HCadSgU+0Atmgqj9w9ZIC7UPeweMu6NN36EKxFGl2V8gIco
-        wy+FF8taLtjIzbgGQ7j56GaM4/7q6tXJ+teCgZuhfm/OQcscoyuBazeef3+RzZypipmXM05jEwI
-        u/1j8cstcmKKwyPKcsctHliUeJ1/ib+V7CqPl9+OeuQ==
-X-Received: by 2002:a1c:9d07:: with SMTP id g7mr1678066wme.76.1632484617867;
-        Fri, 24 Sep 2021 04:56:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzAP9ST6zQ1L5728PFPK87ArxIRKDMZ9f48OHvhZiFhPWivfsZH1BiFhMn7AFYmkPN+KMGgIw==
-X-Received: by 2002:a1c:9d07:: with SMTP id g7mr1678058wme.76.1632484617722;
-        Fri, 24 Sep 2021 04:56:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GX1knPnuUXedW7zKBIwh7buu4qnYLP5gHJJI8M92Q5Y=;
+        b=St9LwsVJ5SQ9iBV/Kwfvj2n43/SnejPwFbGhZvx0SUFu6XPkgdTp8mQa3hcC1feZhw
+         3CUsUTggGXEcaHMBJSOk3D4Wzy7Nv1T1yVx/iJv5ISOTcrVWCellmDbEw+Ya1cTjvUyw
+         fAmQ3jX6GOTD88yuwuK0suSzOb0InR0umZf+CYWTXoJzE+39yUswG2NzWCoWdJZsX5Gb
+         9YL16hF0U2LeimrmephDjjuwfIkxa4KpDp53WhtUyJSyPAQ37C945BZVeoG3Jh/mn43H
+         be760+rstTkp5w3WjBLAsGz+ibT+vkvWbLkQYe+R+9C9USogTb8+su+7pIKieq1iHDIa
+         iW1Q==
+X-Gm-Message-State: AOAM530DGPXyQ1319WGiRfUAKZHWhhvYKl5hAgd7sv9ljq8G0bvtd99C
+        YyDAyzCtlhOum4ieF/f5fhIqT6527Re6PKx5G2YdR24qfcVahFJx/Ur+3yKLHQUPXGdbLW2WruH
+        STEgffii+VVtwxgOPmpNMfbdfLe49R7xtwgrny3qQKA==
+X-Received: by 2002:a1c:770d:: with SMTP id t13mr1634139wmi.77.1632484618754;
+        Fri, 24 Sep 2021 04:56:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzXJb4pwOnliV1jgLnmbC3kFVKrJQ1Obb4/nVSeDv38AOCQxLVJrgwBjsv3xE4VMIzLKHTqNQ==
+X-Received: by 2002:a1c:770d:: with SMTP id t13mr1634127wmi.77.1632484618628;
+        Fri, 24 Sep 2021 04:56:58 -0700 (PDT)
 Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id z17sm8076664wrr.49.2021.09.24.04.56.56
+        by smtp.gmail.com with ESMTPSA id z17sm8076664wrr.49.2021.09.24.04.56.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 04:56:57 -0700 (PDT)
+        Fri, 24 Sep 2021 04:56:58 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Iskren Chernev <iskren.chernev@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -62,51 +63,53 @@ To:     Iskren Chernev <iskren.chernev@gmail.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
         linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] MAINTAINERS: power: supply: max17042: add entry with reviewers
-Date:   Fri, 24 Sep 2021 13:56:18 +0200
-Message-Id: <20210924115619.52927-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/2] MAINTAINERS: power: supply: max17040: add entry with reviewers
+Date:   Fri, 24 Sep 2021 13:56:19 +0200
+Message-Id: <20210924115619.52927-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210924115619.52927-1-krzysztof.kozlowski@canonical.com>
+References: <20210924115619.52927-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Maxim max17042 fuel gauge driver supports several devices used on
-multiple different boards - both devicetree and ACPI based.  The driver
-is incomplete and has few known issues.  Fixing these might break other
-platforms so mention recent contributors who can provide feedback.  This
-way most of interested parties might help reviewing the patches.
+The Maxim max17040 fuel gauge driver supports several devices used on
+multiple different boards.  The driver is incomplete and has few known
+issues.  Fixing these might break other platforms so mention recent
+contributors who can provide feedback.  This way most of interested
+parties might help reviewing the patches.
 
-Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Iskren Chernev <iskren.chernev@gmail.com>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+Cc: Matheus Castello <matheus@castello.eng.br>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
  MAINTAINERS | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 329d3a0a9fdb..da9d5383af04 100644
+index da9d5383af04..9f925d0f8a3c 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -11429,6 +11429,16 @@ S:	Maintained
  F:	Documentation/devicetree/bindings/iio/proximity/maxbotix,mb1232.yaml
  F:	drivers/iio/proximity/mb1232.c
  
-+MAXIM MAX17042 FAMILY FUEL GAUGE DRIVERS
-+R:	Hans de Goede <hdegoede@redhat.com>
++MAXIM MAX17040 FAMILY FUEL GAUGE DRIVERS
++R:	Iskren Chernev <iskren.chernev@gmail.com>
 +R:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 +R:	Marek Szyprowski <m.szyprowski@samsung.com>
-+R:	Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
++R:	Matheus Castello <matheus@castello.eng.br>
 +L:	linux-pm@vger.kernel.org
 +S:	Maintained
-+F:	Documentation/devicetree/bindings/power/supply/maxim,max17042.yaml
-+F:	drivers/power/supply/max17042_battery.c
++F:	Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
++F:	drivers/power/supply/max17040_battery.c
 +
- MAXIM MAX77650 PMIC MFD DRIVER
- M:	Bartosz Golaszewski <bgolaszewski@baylibre.com>
- L:	linux-kernel@vger.kernel.org
+ MAXIM MAX17042 FAMILY FUEL GAUGE DRIVERS
+ R:	Hans de Goede <hdegoede@redhat.com>
+ R:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 -- 
 2.30.2
 
