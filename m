@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188264175E6
+	by mail.lfdr.de (Postfix) with ESMTP id 6174C4175E7
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346520AbhIXNeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
+        id S1346530AbhIXNe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346566AbhIXNec (ORCPT
+        with ESMTP id S1346282AbhIXNed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:34:32 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B6AC08E9BA
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:29:17 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id v19so6991875pjh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:29:17 -0700 (PDT)
+        Fri, 24 Sep 2021 09:34:33 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550CBC061A15
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:29:22 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id t4so6533280plo.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/Uue+yztpX5IM7kP0vfiTVA2GtP2LIyQitnNsalGpdo=;
-        b=ICWjXmDPNT7mP37H9Ct+Iwt9gOslgCNFdX+RO8yQAQFsW+YFBsIU8abgsW5964B2PM
-         +kglcXD+s5Zt37TzAT+FIY6wJbJ32W2Rru2aJq8g9M29AVokeJSZHEyvbs7HysaReRDz
-         XFVcYvAgfPCpH2LUVdyJh0mWRv6IIR0swoEBSgOaCn9uwxhWukDLDTsd4CzhBcEHa13Q
-         5AW14pdksgsVq5r/p5qzNrQxr+fk3kHYr35k1JdCFTPxxySav3G7QmMSuGsP8rjdgyiS
-         qEtI217++EolPYTaGeUrgq5t2E9uYLUKUkyI5jdm8AljOjOjuML4SCv/VAzqGycXn69K
-         pe+w==
+        bh=EPqUASWwyNuUhMior37hMo+yqFA/0CFRmHFpRpWedHU=;
+        b=jXd4h1P5tG3/KArfkSmvmYJXBb6aKx5mKYkgNooa6owTVly6XeFrlShLn/IKEikiTK
+         WuSSDdkdb5CgOwivKMKLoWx15Vmqf2dk30u2oP0KyTfnabjWFX79lwcaNhQRAL8o2QHh
+         WBTF0mJXYwd8h1CIXUaj9ZBN8iYqYU1LA7XAelBRsLG580OII2hvCSJeLrkR/12RFSmt
+         RGSQ7bbGY522F+kcyr7J7nw9UwXb6ILp9hFeLpJ1fJfzmZFSGc2fDVgeYBieNmri4gQz
+         kKfLoZ1HRe9bz59jH26aC52N7CadjXU8x4dY9R8aon5YWDHDmg7hydn0/sjPAzoub5Dq
+         ut6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/Uue+yztpX5IM7kP0vfiTVA2GtP2LIyQitnNsalGpdo=;
-        b=3SJiKagy04+g1AWkypkfGv34dlQAzfRD0E2Ok98FwitC7VzBE1BWFB6djgecigNLHF
-         lPSl7vYUPfe6b4d6mog6Qeuihatz0fzJgy/Vy7ReYHb1xty4hrOz32ZCffB2ROi1NVrD
-         /efL0ZGirdTfGdBI8hR8oZaytz29bnkDMPr92ylJBPVmIw180qfrkO0xnKH5wIcsxQ1j
-         pEAcPnmYtoU57lcHGxu3BXH+2QKo81x3BEuelZnA5TqToxJNrvzJh2cG/1MRdWMMSskj
-         3W4BNxtvAPNB+ZcABNKailOwGjYe2lnKc4zDRuTlwg2lHzAedUL9xfP7hJy8sPfT0JvB
-         BZFQ==
-X-Gm-Message-State: AOAM5322xZjtUh/dxc65bS3lhXO4xbnR8k6DzYI5VWEOQErC7TOg884D
-        HdacCo3F5WwWDFDpnrxQIg==
-X-Google-Smtp-Source: ABdhPJydAbj296V1R49Fk2kv5TFPlIv5RgcrNJwUoCYjkaac0cwhj428TdO8RO/PFkKoS6MFkrVV+A==
-X-Received: by 2002:a17:90b:3715:: with SMTP id mg21mr2297406pjb.186.1632490156639;
-        Fri, 24 Sep 2021 06:29:16 -0700 (PDT)
+        bh=EPqUASWwyNuUhMior37hMo+yqFA/0CFRmHFpRpWedHU=;
+        b=tgcyr6cx/tMa3Bsh1Cqjr4VUvfCERB1mKofV1LHmCm0yCPMNd/bxLaC0LjN15rEgu+
+         9ziejJ1I7zMFBe7rbQJm3QihVPeNhCim7J92cD/X2dXuWk6JsMtv2qWEZ21dwAV1uvoo
+         EDZFkSGMRtXeGWw/gLnMRarKgAMzWLqO+sh6aw7GxiDe5elheS4VqYsfMj6NyQrYUIQZ
+         EeYI/EoOiNcesKhPq+Q9dVzYTZkkMf1NG7t2vuyQzF8G39YPubnzxZLah5pZUlELFGNR
+         5x9DklyF105iE6KN2dU+WbaI/uQInk99hLL1n2dS/g/vbgN3GS5Lg06/bf/jnuGpdPxq
+         FVzw==
+X-Gm-Message-State: AOAM533TnR/gI4eW71OLHyQY5WrTOS7j02AIKQzVWT+VNp98peKAs6Rz
+        gFQ2mFnyEbig2JcBl8wCow==
+X-Google-Smtp-Source: ABdhPJyQ1WXP2tX0QuZxhDZ5p5kDJty62Fr2t/SIdOFtZmPHAVPyEc7Cgby/F951HIOQL+ltoiSLzA==
+X-Received: by 2002:a17:902:a50f:b029:11a:b033:e158 with SMTP id s15-20020a170902a50fb029011ab033e158mr9345901plq.26.1632490161936;
+        Fri, 24 Sep 2021 06:29:21 -0700 (PDT)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 26sm11756573pgx.72.2021.09.24.06.29.11
+        by smtp.gmail.com with ESMTPSA id 26sm11756573pgx.72.2021.09.24.06.29.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 06:29:16 -0700 (PDT)
+        Fri, 24 Sep 2021 06:29:21 -0700 (PDT)
 From:   Pingfan Liu <kernelfans@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Pingfan Liu <kernelfans@gmail.com>,
@@ -60,9 +60,9 @@ Cc:     Pingfan Liu <kernelfans@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Yuichi Ito <ito-yuichi@fujitsu.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCHv2 4/5] irqchip/GICv3: let gic_handle_irq() utilize irqentry on arm64
-Date:   Fri, 24 Sep 2021 21:28:36 +0800
-Message-Id: <20210924132837.45994-5-kernelfans@gmail.com>
+Subject: [PATCHv2 5/5] irqchip/GICv3: make reschedule-ipi light weight
+Date:   Fri, 24 Sep 2021 21:28:37 +0800
+Message-Id: <20210924132837.45994-6-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210924132837.45994-1-kernelfans@gmail.com>
 References: <20210924132837.45994-1-kernelfans@gmail.com>
@@ -72,16 +72,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The call to rcu_irq_enter() originated from gic_handle_irq() is
-redundant now, since arm64 has enter_from_kernel_mode() akin to
-irqenter_entry(), which has already called rcu_irq_enter().
-
-Based on code analysis, the redundant can raise some mistake, e.g.
-rcu_data->dynticks_nmi_nesting inc 2, which causes
-rcu_is_cpu_rrupt_from_idle() unexpected.
-
-So eliminate the call to irq_enter() in handle_domain_irq(). And
-accordingly supplementing irq_enter_rcu().
+To achieve the light weight as
+DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_reschedule_ipi) on x86, it had
+better treat irqnr differently at the frontend. And let IPI_RESCHEDULE
+call __irq_enter_raw() instead of irq_enter_rcu().
 
 Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -96,36 +90,43 @@ Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
 Cc: linux-kernel@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org
 ---
- arch/arm64/Kconfig           | 1 +
- drivers/irqchip/irq-gic-v3.c | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/irqchip/irq-gic-v3.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5c7ae4c3954b..d29bae38a951 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -98,6 +98,7 @@ config ARM64
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARM_AMBA
- 	select ARM_ARCH_TIMER
-+	select HAVE_ARCH_IRQENTRY
- 	select ARM_GIC
- 	select AUDIT_ARCH_COMPAT_GENERIC
- 	select ARM_GIC_V2M if PCI
 diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 89dcec902a82..906538fa8771 100644
+index 906538fa8771..593d4539a209 100644
 --- a/drivers/irqchip/irq-gic-v3.c
 +++ b/drivers/irqchip/irq-gic-v3.c
-@@ -729,10 +729,12 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
+@@ -709,6 +709,9 @@ static void gic_handle_nmi(struct pt_regs *regs)
+ 		gic_deactivate_unhandled(irqnr);
+ }
+ 
++/* RESCHEDULE IPI hwirq nr is 0, and the only raw one */
++static unsigned long raw_interrupt_mask = 1;
++
+ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
+ {
+ 	u32 irqnr;
+@@ -729,12 +732,20 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
  	else
  		isb();
  
-+	irq_enter_rcu();
+-	irq_enter_rcu();
++	if (raw_interrupt_mask & 1 << irqnr)
++		__irq_enter_raw();
++	else
++		irq_enter_rcu();
++
  	if (handle_domain_irq(gic_data.domain, irqnr, regs)) {
  		WARN_ONCE(true, "Unexpected interrupt received!\n");
  		gic_deactivate_unhandled(irqnr);
  	}
-+	irq_exit_rcu();
+-	irq_exit_rcu();
++
++	if (raw_interrupt_mask & 1 << irqnr)
++		__irq_exit_raw();
++	else
++		irq_exit_rcu();
  }
  
  static u32 gic_get_pribits(void)
