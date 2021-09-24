@@ -2,63 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A1841703B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C26341705A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240231AbhIXKXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238899AbhIXKXH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:23:07 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DBFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 03:21:34 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id p4so27629942qki.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 03:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=OhrrxA0+VtUH2OMYp4JdnIujQjBusCdPTL4Hk4sQ+XM=;
-        b=cxLyo/tI1HlNImJt+cJmfX+orazenHMSYOQ2rBJerrH0+fA0y4MPclyq5R1tc/6F5F
-         0A1Ryjwa6B/hT1/BwRle3s5L1ZdJ/F/m4fFfg3oSZvB35/UNLWNoNh9amH2Y1bwaFUGP
-         2RyNegpCCcVE/BevAOJH0wjTzA6Vv5VCUvK956bgfKSy/o+asp1jeriTYX2SjQuQea4N
-         0Y7WMZp7I9MXoeFcwFyzaTm0iP541VyOa7UmFphTS+uFWKI8+c5QBf4yF9ZeXqP85ww1
-         IR8hNWhJd/YHxcvMiZjNPswJwFiIdApt682xOVUb6w4PGTYkrU6/KJGOeHqTGspBYWxW
-         ihSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=OhrrxA0+VtUH2OMYp4JdnIujQjBusCdPTL4Hk4sQ+XM=;
-        b=i//hB5nPuYJvbOU9tgZiWDHGkRJfnvcRpUEI4Ctd/mdIIUAtBgcHVvU75w1qfS96+P
-         A6wJmJXBDIsi4Sz6f8Xlz7qxk1+ySIAnE73jo9CGICGXZPcjnY8IEmPsYNodqODuy7gU
-         SNZKf3BlF9rngGuEKXkR7Lk3gVltMHnhLGiJLTbkr5SsNTJ2lnRdHAT0esnB7vdrxCk6
-         X01Pe6fwcc8XxGB52kLoLTi8z116e0SASznndTFADQ1NXCb13xBTQ/lZpFYH8GIg4oR3
-         XHXEF/stMnRKLgP7ZhNIsrNkr5KeMCdbqLYgecSjRytEX/KzFfXEnpMtWjbgavNbbwZW
-         bedw==
-X-Gm-Message-State: AOAM532xB9lZUeFfIpv/cq4Q6J9ze+wQmpZLbg63zZsyZf9l+9sE7e+z
-        TImmj9ywwrigXIplA8LPxhjPHnQQqN7++Q8TGKk=
-X-Google-Smtp-Source: ABdhPJx01qFBD/RWGT9jks2UNWDW/pcvilhVNebE4WsWoSji3eUcGIptMN4IVJ2AItY5Qlo1uBf/nBClaQ5pvcztx+w=
-X-Received: by 2002:a37:b045:: with SMTP id z66mr8779575qke.271.1632478893724;
- Fri, 24 Sep 2021 03:21:33 -0700 (PDT)
+        id S242880AbhIXKdZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Sep 2021 06:33:25 -0400
+Received: from pout.email.it ([77.93.251.230]:46064 "EHLO pout.email.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229911AbhIXKdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 06:33:24 -0400
+X-Greylist: delayed 499 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Sep 2021 06:33:24 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by pout.email.it (Postfix) with ESMTP id 9F8BCCE381;
+        Fri, 24 Sep 2021 12:23:30 +0200 (CEST)
+Received: from pout.email.it ([127.0.0.1])
+        by localhost (ir-mtaout02.email.it [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 9CKuUfwyWPdf; Fri, 24 Sep 2021 12:23:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by pout.email.it (Postfix) with ESMTP id 24558CE1CF;
+        Fri, 24 Sep 2021 12:23:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at ir-mtaout02.email.it
+Received: from pout.email.it ([127.0.0.1])
+        by localhost (ir-mtaout02.email.it [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id WupZ5Wsvxoei; Fri, 24 Sep 2021 12:23:20 +0200 (CEST)
+Received: from ir-zstore42.email.it (unknown [192.168.25.42])
+        by pout.email.it (Postfix) with ESMTP id 276B9CD180;
+        Fri, 24 Sep 2021 12:23:18 +0200 (CEST)
+Date:   Fri, 24 Sep 2021 12:23:18 +0200 (CEST)
+From:   blinkin@email.it
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org
+Message-ID: <1811728383.1384020.1632478998559.JavaMail.zimbra@email.it>
+In-Reply-To: <87tujwhxl2.ffs@tglx>
+References: <629765464.1655403.1628264743080.JavaMail.zimbra@email.it> <87tujxssp2.ffs@tglx> <217397770.2008922.1628604301644.JavaMail.zimbra@email.it> <877dgtql9v.ffs@tglx> <1437097118.2114098.1628689870926.JavaMail.zimbra@email.it> <87tujwhxl2.ffs@tglx>
+Subject: Re: Bug report for kernel v4.15-rc8+
 MIME-Version: 1.0
-Received: by 2002:ad4:54ec:0:0:0:0:0 with HTTP; Fri, 24 Sep 2021 03:21:33
- -0700 (PDT)
-Reply-To: franca.rose3@yahoo.com
-From:   Franca Rose <miraxarmstrong@gmail.com>
-Date:   Fri, 24 Sep 2021 11:21:33 +0100
-Message-ID: <CAOtj583n9b2i++N-mo5vfyMpaXaoUrku6GOj9eK7FhugVf=tKA@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [109.118.219.53]
+X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - GC92 (Linux)/8.8.15_GA_4059)
+Thread-Topic: Bug report for kernel v4.15-rc8+
+Thread-Index: Y6D5gTTm9munIF0vbJIxXTKah8PVWg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello,
+hello, any news on this?
 
-i am trying to reach you hope this message get to
-you.from Franca Rose
+----- Messaggio originale -----
+Da: "Thomas Gleixner" <tglx@linutronix.de>
+A: blinkin@email.it
+Cc: "linux-kernel" <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, "Len Brown" <lenb@kernel.org>, linux-acpi@vger.kernel.org
+Inviato: Mercoledì, 11 agosto 2021 16:20:41
+Oggetto: Re: Bug report for kernel v4.15-rc8+
+
+On Wed, Aug 11 2021 at 15:51, blinkin@email.it wrote:
+> 1) You're booting with an out of tree module
+>
+>   Uninstalled virtualbox, reproduced same behavior without the module.
+>   dmesg outputs attached with and without the workaround
+>   (dmesg_novboxdrv_clean.txt and dmesg_novboxdrv_irqaffinity0.txt)
+
+Ok.
+
+> 2) Please provide information what is consuming 90% of a CPU
+>
+>   top shows a kworker process consistently at 50% without the
+>   workaround, 60% with the workaround. No significant activity amounts
+>   from other processes.  Sometimes that 50% is split between two
+>   kworker processes for a short time.  CPU core #0 activity is a
+>   constant 60% without the workaround, 90% with the workaround
+
+That's broken. /proc/interrupts gives some hint:
+
+1) Stock kernel
+
+>             CPU0       CPU1       CPU2       CPU3       
+>    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
+>    1:          0          0          0          9  IR-IO-APIC    1-edge      i8042
+>    8:          0          1          0          0  IR-IO-APIC    8-edge      rtc0
+>    9:          0     923411          0          0  IR-IO-APIC    9-fasteoi   acpi
+
+900k ACPI interrupts right after boot
+
+>             CPU0       CPU1       CPU2       CPU3       
+>    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
+>    1:          0          0          0         11  IR-IO-APIC    1-edge      i8042
+>    8:          0          1          0          0  IR-IO-APIC    8-edge      rtc0
+>    9:          0    4869059          0          0  IR-IO-APIC    9-fasteoi   acpi
+
+One minute later it's 4.8M
+
+With affinity forced to CPU0 it's even more:
+
+>             CPU0       CPU1       CPU2       CPU3       
+>    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
+>    1:          9          0          0          0  IR-IO-APIC    1-edge      i8042
+>    8:          1          0          0          0  IR-IO-APIC    8-edge      rtc0
+>    9:    7576456          0          0          0  IR-IO-APIC    9-fasteoi   acpi
+
+7.5M right after boot
+
+>             CPU0       CPU1       CPU2       CPU3       
+>    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
+>    1:         11          0          0          0  IR-IO-APIC    1-edge      i8042
+>    8:          1          0          0          0  IR-IO-APIC    8-edge      rtc0
+>    9:   10992420          0          0          0  IR-IO-APIC    9-fasteoi   acpi
+
+10.9M after one minute. Though the delta between right after boot and 1
+minute later is in the same ballpark.
+
+Cc'ed the ACPI people for clues.
+
+Thanks,
+
+        tglx
