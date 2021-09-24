@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6BC417316
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE3C4174BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344608AbhIXMyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:54:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45884 "EHLO mail.kernel.org"
+        id S1346360AbhIXNKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:10:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344586AbhIXMwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:52:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A81D610CF;
-        Fri, 24 Sep 2021 12:49:29 +0000 (UTC)
+        id S1345764AbhIXNHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:07:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC9F761260;
+        Fri, 24 Sep 2021 12:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487770;
-        bh=lrw5VuysEtvhvv3KIILgqW21209M0KZA9cRbMYnP3Lg=;
+        s=korg; t=1632488205;
+        bh=N20MLf36DgCPu5d6xWGURqHVe4zsJzisTII6DkueNnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bo/9YrlNByAomp+GaQOdTfjdg7i7z9HmXA2xW1YovJVDUELteI+QzgpPBIzozRIoA
-         qLXw8jOaV8U1KZAXl+LnlQqsZCtgDV+w/EXPR3Zvw/WpRRCpw1QIGgV3XT7yjwrdCe
-         6bLwdEr7EL7MrMorsiSmgJahc+f9y/Xxs7uwFzrw=
+        b=WeClcsTHxQzhi2PkUTeFKhW3/6Q6QE098IEfk+pMoszAEcenLOV/v9Sx8PA3ka6xY
+         Qo0tZDrkPXMf51l5wcgsaU97GO1b63/yh6v17NjZdaREWdyfp7/A4OD14rH8xotStt
+         E0SKS6c2RLHxj9p7U2BJkFLlhpUfV8pIRqJgR9CE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 30/34] pwm: img: Dont modify HW state in .remove() callback
+        stable@vger.kernel.org, Prasad Sodagudi <psodagud@codeaurora.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.10 24/63] PM: sleep: core: Avoid setting power.must_resume to false
 Date:   Fri, 24 Sep 2021 14:44:24 +0200
-Message-Id: <20210924124330.952649700@linuxfoundation.org>
+Message-Id: <20210924124335.095797975@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Prasad Sodagudi <psodagud@codeaurora.org>
 
-[ Upstream commit c68eb29c8e9067c08175dd0414f6984f236f719d ]
+commit 4a9344cd0aa4499beb3772bbecb40bb78888c0e1 upstream.
 
-A consumer is expected to disable a PWM before calling pwm_put(). And if
-they didn't there is hopefully a good reason (or the consumer needs
-fixing). Also if disabling an enabled PWM was the right thing to do,
-this should better be done in the framework instead of in each low level
-driver.
+There are variables(power.may_skip_resume and dev->power.must_resume)
+and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
+a system wide suspend transition.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+its "noirq" and "early" resume callbacks to be skipped if the device
+can be left in suspend after a system-wide transition into the working
+state. PM core determines that the driver's "noirq" and "early" resume
+callbacks should be skipped or not with dev_pm_skip_resume() function by
+checking power.may_skip_resume variable.
+
+power.must_resume variable is getting set to false in __device_suspend()
+function without checking device's DPM_FLAG_MAY_SKIP_RESUME settings.
+In problematic scenario, where all the devices in the suspend_late
+stage are successful and some device can fail to suspend in
+suspend_noirq phase. So some devices successfully suspended in suspend_late
+stage are not getting chance to execute __device_suspend_noirq()
+to set dev->power.must_resume variable to true and not getting
+resumed in early_resume phase.
+
+Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
+setting power.must_resume variable in __device_suspend function.
+
+Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
+Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pwm/pwm-img.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ drivers/base/power/main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
-index 3b0a097ce2ab..6111e8848b07 100644
---- a/drivers/pwm/pwm-img.c
-+++ b/drivers/pwm/pwm-img.c
-@@ -332,23 +332,7 @@ err_pm_disable:
- static int img_pwm_remove(struct platform_device *pdev)
- {
- 	struct img_pwm_chip *pwm_chip = platform_get_drvdata(pdev);
--	u32 val;
--	unsigned int i;
--	int ret;
--
--	ret = pm_runtime_get_sync(&pdev->dev);
--	if (ret < 0) {
--		pm_runtime_put(&pdev->dev);
--		return ret;
--	}
--
--	for (i = 0; i < pwm_chip->chip.npwm; i++) {
--		val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
--		val &= ~BIT(i);
--		img_pwm_writel(pwm_chip, PWM_CTRL_CFG, val);
--	}
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -1644,7 +1644,7 @@ static int __device_suspend(struct devic
+ 	}
  
--	pm_runtime_put(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		img_pwm_runtime_suspend(&pdev->dev);
--- 
-2.33.0
-
+ 	dev->power.may_skip_resume = true;
+-	dev->power.must_resume = false;
++	dev->power.must_resume = !dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME);
+ 
+ 	dpm_watchdog_set(&wd, dev);
+ 	device_lock(dev);
 
 
