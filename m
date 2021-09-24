@@ -2,123 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE46417B94
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 21:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB97D417BD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 21:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346449AbhIXTMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 15:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346404AbhIXTMP (ORCPT
+        id S1346867AbhIXThq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 15:37:46 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3875 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345195AbhIXThp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 15:12:15 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8625BC061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 12:10:42 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id r2so10739925pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 12:10:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A9KldzmUy+AxgQS3kHRwtBzCyG9bYataJekQ7vF2DSA=;
-        b=TB3H8TAGL+32tFmG+zxP9tk+qgqb1eLM9zpAcLGJZPn6lVaVY2QDT8Wrj76GUE/mV5
-         aKFEs41RGpmL2eWrWqf/x3Cjnq6AbFdHJsyQI0djmNFkg1hEHWg+ewnxDSCR5mJBQFTA
-         r0E1GbiJ2wUvR6qT6iLurNF7sxAWPWXzuVY67sn4NxdngRr6HgpI9NpnMBrRNY13p32y
-         Ig35Dkp+zuUoUrKqDR8y28gW3eWfIrM6iD+OuH6m0Iy2ZMYqvveZ19ib7yR49m9VBrO4
-         voAo7ztbVIiDKMV7yTq12kKj+/1ijSMIzjPGVxg2hollQlDe0MCm7BO8kUzR/u6lFmGx
-         uB6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A9KldzmUy+AxgQS3kHRwtBzCyG9bYataJekQ7vF2DSA=;
-        b=HSjfEOiV32ssB7DUu4hlKf6HgmIy01xTIvrKvBwdWgE4V6wq7U3QHRYPaCqIeaM8v0
-         UbZKcrDVCOjNKieDN8y3Fe5HG7viWiTkzkhb5AeqSQ+a0waP1um9K1750j7d5vg2n9dF
-         j6Ip6UtMCGhljKiRcjyZq30Kmf+zLtaDrMDuKvllXpXpeRiOQxlI185WjdN2UCo2tC8Y
-         4pAWGG4Y/hVc2Twtb/5/Ws7o6B4djUh+8AQji1o1AZ8qSVvyvp/PjvAbXBV2V5zDsz89
-         8nDq2jHaglMr2ERlIE3TdxNv+Gsnt/A4M5lNflK7Lxb6aaSGZiU2C6Wm4HJ/DhwabBH7
-         TlTA==
-X-Gm-Message-State: AOAM5318oGuJnDuObC1YZmyeocJmL5JwfY1u/VTQG/B3vW70Hf4nliCs
-        rOOvcCDOZjVfwAvvUeEekpA=
-X-Google-Smtp-Source: ABdhPJxdPGeNjKgiA5vWhO6rtJ1xKOHDM83oseTCyR0EAALGJnXJ2Q4aF7gSdY5uV2d9rAiqsQtF8w==
-X-Received: by 2002:a62:4ecb:0:b0:447:a583:ce8f with SMTP id c194-20020a624ecb000000b00447a583ce8fmr11432326pfb.59.1632510641776;
-        Fri, 24 Sep 2021 12:10:41 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x13sm9550025pfp.133.2021.09.24.12.10.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 12:10:41 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@lists.infradead.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM7XXX ARM
-        ARCHITECTURE), Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE)
-Subject: [PATCH] bus: brcmstb_gisb: Allow building as module
-Date:   Fri, 24 Sep 2021 12:10:34 -0700
-Message-Id: <20210924191035.1032106-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 24 Sep 2021 15:37:45 -0400
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HGMdR5wM2z67bZV;
+        Sat, 25 Sep 2021 03:33:15 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 24 Sep 2021 21:36:09 +0200
+Received: from [10.47.85.198] (10.47.85.198) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 24 Sep
+ 2021 20:36:08 +0100
+Subject: Re: [PATCH v3 1/2] perf test: Workload test of metric and
+ metricgroups
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eranian@google.com>
+References: <20210917184240.2181186-1-irogers@google.com>
+ <YU4iVcVc6uYAWft4@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <ea23f319-49df-5905-758e-478baf44bdc9@huawei.com>
+Date:   Fri, 24 Sep 2021 20:39:18 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YU4iVcVc6uYAWft4@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.85.198]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow building the Broadcom STB GISB arbiter driver as a module, however
-similar to interrupt controller drivers, don't allow its unbind/removal
-since it is not quite prepared for that and we want it to catch bus
-errors all the time.
+On 24/09/2021 20:09, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Sep 17, 2021 at 11:42:39AM -0700, Ian Rogers escreveu:
+>> Test every metric and metricgroup with 'true' as a workload. For
+>> metrics, check that we see the metric printed or get unsupported. If the
+>> 'true' workload executes too quickly retry with 'perf bench internals
+>> synthesize'.
+>>
+>> v3. Fix test condition (thanks to Paul A. Clarke<pc@us.ibm.com>). Add a
+>>      fallback case of a larger workload so that we don't ignore "<not
+>>      counted>".
+>> v2. Switched the workload to something faster.
+> Hi John, does your Reviewed-by stands for v3 too?
+> 
+> - Arnaldo
+>   
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/bus/Kconfig        | 2 +-
- drivers/bus/brcmstb_gisb.c | 7 ++++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+Yeah,
 
-diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-index a5b96f3aad67..9cfeae3fc244 100644
---- a/drivers/bus/Kconfig
-+++ b/drivers/bus/Kconfig
-@@ -30,7 +30,7 @@ config ARM_INTEGRATOR_LM
- 	  found on the ARM Integrator AP (Application Platform)
- 
- config BRCMSTB_GISB_ARB
--	bool "Broadcom STB GISB bus arbiter"
-+	tristate "Broadcom STB GISB bus arbiter"
- 	depends on ARM || ARM64 || MIPS
- 	default ARCH_BRCMSTB || BMIPS_GENERIC
- 	help
-diff --git a/drivers/bus/brcmstb_gisb.c b/drivers/bus/brcmstb_gisb.c
-index 6551286a60cc..4c2f7d61cb9b 100644
---- a/drivers/bus/brcmstb_gisb.c
-+++ b/drivers/bus/brcmstb_gisb.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright (C) 2014-2017 Broadcom
-+ * Copyright (C) 2014-2021 Broadcom
-  */
- 
- #include <linux/init.h>
-@@ -536,6 +536,7 @@ static struct platform_driver brcmstb_gisb_arb_driver = {
- 		.name	= "brcm-gisb-arb",
- 		.of_match_table = brcmstb_gisb_arb_of_match,
- 		.pm	= &brcmstb_gisb_arb_pm_ops,
-+		.suppress_bind_attrs = true,
- 	},
- };
- 
-@@ -546,3 +547,7 @@ static int __init brcm_gisb_driver_init(void)
- }
- 
- module_init(brcm_gisb_driver_init);
-+
-+MODULE_AUTHOR("Broadcom");
-+MODULE_DESCRIPTION("Broadcom STB GISB arbiter driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
+Reviewed-by: John Garry <john.garry@huawei.com>
 
+
+Thanks
