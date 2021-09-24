@@ -2,164 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4639417E24
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 01:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684B9417E27
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 01:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344522AbhIXXZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 19:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
+        id S1346121AbhIXXZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 19:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343764AbhIXXZb (ORCPT
+        with ESMTP id S1346092AbhIXXZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 19:25:31 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584FBC061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:23:58 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id bj3-20020a17090b088300b0019e6603fe89so7199912pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:23:58 -0700 (PDT)
+        Fri, 24 Sep 2021 19:25:34 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339EAC061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:24:00 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id f129so11339941pgc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:24:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tZGh0IJWufh01powSTdVx5YAdtheJ5mkv5nCF0lb+5k=;
-        b=Bdypi4AoRYyPQV/WrOBQVtgF+UF/fI2bXzxtvauSLQOCVb5r0rfFvfICzo4AoUNQxp
-         mmCTqJk4sH469ZT8FEzHZE5VPXYygqhS2HTnQ0HkQQMt6rEQcQqsC46gRqemwGhWM7Y4
-         e8OF69jqXcNw3uI9AdlSAi5V7GO9lh6g/Un5g=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1xurLATt1ex61qvV7KZiCU51/9V6GkfxwxIS9VeD8VA=;
+        b=M0iBjYKc31rwburlfMZhx8Oipce7pYY2b5Wpof8qmfYNDOvUxojzCbPVRom/Yf98BS
+         U2aMO7VEjPmHKfCPKRqp6w1QdDDg/lnJZL7ZZEi2aaExAU7LgRYJwhNBFrc6Qvq3CExX
+         nLwe3BAxUsOGADFUJj40SReGj/U7+suX8cfR8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tZGh0IJWufh01powSTdVx5YAdtheJ5mkv5nCF0lb+5k=;
-        b=dEygqD0uxemsc6hFnEsuLb8ElkIb4k+q5bI7C6A7Vv4Uh3Ts97XMpeX8VX3CDlwVfa
-         Yk3rCigozARqv+37B8lem5779nwWRx+nSUwwmTFeuSPDQTrNB2oNMzg5WqMnyJhIV2kg
-         wRrCF6n+Dt4l6uVX5Kh+9/xxruVSBTnZVMnJ++tbEvwxp7Le3KV4J3w0o16rN/Au8IaQ
-         xbwXEmbKwxV8nf6HgCUVx9L4jcXzxSv97HugdLRRjv0SZHo+kmQIgJ3eNxUoZIMW2AoW
-         1AEH9AtPuJXM0WRAj3ueohsAf7CUkCKS1Ym64ib/ywprPcQYujechxRxxwyIzHASFean
-         OICg==
-X-Gm-Message-State: AOAM533j6+NOpO6VCqvm2QIQs/0c3CE4EV6ZY/PHWJzAB2dehbtTN6OY
-        mg5+g1ICMeUNfU1mJ1toMKiBhA==
-X-Google-Smtp-Source: ABdhPJyj7C/w++WE5M0qMOoytO2CFEADcDfViRtt1xg+ksq9CtCLBoM8O3bLexZsO3TOlq4YFbWnuQ==
-X-Received: by 2002:a17:902:7144:b0:13c:8d49:fc46 with SMTP id u4-20020a170902714400b0013c8d49fc46mr11073502plm.45.1632525837863;
-        Fri, 24 Sep 2021 16:23:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1xurLATt1ex61qvV7KZiCU51/9V6GkfxwxIS9VeD8VA=;
+        b=GFl6XzMb2UXSnFwy57jxhUN/jJTfA4o2B+NsI8jbdTfQp2Q+qlPvzFxo+VXWRxCrE9
+         7JKJZwBJWqEIDQr+n2mmusJFwrxlGwDxk1b8gKdN3cHh2xhXqnTEBvSKUJzBa11nuOiC
+         IPJNiXIVn9hLHETlj7TTghB/YJFepu19drb4j6KxwqV9BR7hlNtq5b7ZDjHrv2Ppj3dH
+         l1KabHv/J9hI5ruQ9euoySQ2tCB1IlaQhSNXLffNFwXocXtp/1+wBH0JmSLrApJVQLDz
+         q5nK0FnHinNleUnrvNrkHV7Yg1ziK3GoDh+/ucJFHUQ6Yc1Kd7yyTYzp4NytTbKDxn/d
+         9pvA==
+X-Gm-Message-State: AOAM531ykFo16rJf8lpxP4vq1kUElFZN7xARZ36DoVT+cEJyZvfDfkD5
+        Y+yV+bPsSkYJuXSigX5kdh+0ew==
+X-Google-Smtp-Source: ABdhPJxSkNCeRzwyQ3fSmMMMaH7U8DCIuSFSDDP6SFmH8mr0k4mDFzipSj7Tc0UW0PwqVpy2bX58+Q==
+X-Received: by 2002:a63:555d:: with SMTP id f29mr5911472pgm.33.1632525839778;
+        Fri, 24 Sep 2021 16:23:59 -0700 (PDT)
 Received: from localhost ([2620:15c:202:201:74de:c8b7:3a35:1063])
-        by smtp.gmail.com with UTF8SMTPSA id b12sm9792028pfp.5.2021.09.24.16.23.56
+        by smtp.gmail.com with UTF8SMTPSA id 18sm9916476pfh.115.2021.09.24.16.23.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 16:23:57 -0700 (PDT)
+        Fri, 24 Sep 2021 16:23:59 -0700 (PDT)
 From:   Brian Norris <briannorris@chromium.org>
 To:     =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Sandy Huang <hjc@rock-chips.com>,
         linux-rockchip@lists.infradead.org,
         Thomas Hebb <tommyhebb@gmail.com>,
-        Brian Norris <briannorris@chromium.org>,
-        aleksandr.o.makarov@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 1/2] drm/rockchip: dsi: hold pm-runtime across bind/unbind
-Date:   Fri, 24 Sep 2021 16:23:45 -0700
-Message-Id: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
+        Brian Norris <briannorris@chromium.org>
+Subject: [PATCH 2/2] drm/rockchip: dsi: Fix unbalanced clock on probe error
+Date:   Fri, 24 Sep 2021 16:23:46 -0700
+Message-Id: <20210924162321.2.Ie8ceefb51ab6065a1151869b6fcda41a467d4d2c@changeid>
 X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+In-Reply-To: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
+References: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 59eb7193bef2, we moved most HW configuration to bind(), but we
-didn't move the runtime PM management. Therefore, depending on initial
-boot state, runtime-PM workqueue delays, and other timing factors, we
-may disable our power domain in between the hardware configuration
-(bind()) and when we enable the display. This can cause us to lose
-hardware state and fail to configure our display. For example:
+Our probe() function never enabled this clock, so we shouldn't disable
+it if we fail to probe the bridge.
 
-  dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
-  panel-innolux-p079zca ff960000.mipi.0: failed to write command 0
+Noted by inspection.
 
-or:
-
-  dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
-  panel-kingdisplay-kd097d04 ff960000.mipi.0: failed write init cmds: -110
-
-We should match the runtime PM to the lifetime of the bind()/unbind()
-cycle.
-
-Tested on Acer Chrometab 10 (RK3399 Gru-Scarlet), with panel drivers
-built either as modules or built-in.
-
-Side notes: it seems one is more likely to see this problem when the
-panel driver is built into the kernel. I've also seen this problem
-bisect down to commits that simply changed Kconfig dependencies, because
-it changed the order in which driver init functions were compiled into
-the kernel, and therefore the ordering and timing of built-in device
-probe.
-
-Fixes: 59eb7193bef2 ("drm/rockchip: dsi: move all lane config except LCDC mux to bind()")
-Link: https://lore.kernel.org/linux-rockchip/9aedfb528600ecf871885f7293ca4207c84d16c1.camel@gmail.com/
-Reported-by: <aleksandr.o.makarov@gmail.com>
-Cc: <stable@vger.kernel.org>
+Fixes: 2d4f7bdafd70 ("drm/rockchip: dsi: migrate to use dw-mipi-dsi bridge driver")
 Signed-off-by: Brian Norris <briannorris@chromium.org>
 ---
 
- .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 22 +++++++------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-index a2262bee5aa4..4340a99edb97 100644
+index 4340a99edb97..0886a5dee58c 100644
 --- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
 +++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-@@ -773,10 +773,6 @@ static void dw_mipi_dsi_encoder_enable(struct drm_encoder *encoder)
- 	if (mux < 0)
- 		return;
- 
--	pm_runtime_get_sync(dsi->dev);
--	if (dsi->slave)
--		pm_runtime_get_sync(dsi->slave->dev);
--
- 	/*
- 	 * For the RK3399, the clk of grf must be enabled before writing grf
- 	 * register. And for RK3288 or other soc, this grf_clk must be NULL,
-@@ -795,20 +791,10 @@ static void dw_mipi_dsi_encoder_enable(struct drm_encoder *encoder)
- 	clk_disable_unprepare(dsi->grf_clk);
- }
- 
--static void dw_mipi_dsi_encoder_disable(struct drm_encoder *encoder)
--{
--	struct dw_mipi_dsi_rockchip *dsi = to_dsi(encoder);
--
--	if (dsi->slave)
--		pm_runtime_put(dsi->slave->dev);
--	pm_runtime_put(dsi->dev);
--}
--
- static const struct drm_encoder_helper_funcs
- dw_mipi_dsi_encoder_helper_funcs = {
- 	.atomic_check = dw_mipi_dsi_encoder_atomic_check,
- 	.enable = dw_mipi_dsi_encoder_enable,
--	.disable = dw_mipi_dsi_encoder_disable,
- };
- 
- static int rockchip_dsi_drm_create_encoder(struct dw_mipi_dsi_rockchip *dsi,
-@@ -938,6 +924,10 @@ static int dw_mipi_dsi_rockchip_bind(struct device *dev,
- 		put_device(second);
+@@ -1391,14 +1391,10 @@ static int dw_mipi_dsi_rockchip_probe(struct platform_device *pdev)
+ 		if (ret != -EPROBE_DEFER)
+ 			DRM_DEV_ERROR(dev,
+ 				      "Failed to probe dw_mipi_dsi: %d\n", ret);
+-		goto err_clkdisable;
++		return ret;
  	}
  
-+	pm_runtime_get_sync(dsi->dev);
-+	if (dsi->slave)
-+		pm_runtime_get_sync(dsi->slave->dev);
-+
- 	ret = clk_prepare_enable(dsi->pllref_clk);
- 	if (ret) {
- 		DRM_DEV_ERROR(dev, "Failed to enable pllref_clk: %d\n", ret);
-@@ -989,6 +979,10 @@ static void dw_mipi_dsi_rockchip_unbind(struct device *dev,
- 	dw_mipi_dsi_unbind(dsi->dmd);
- 
- 	clk_disable_unprepare(dsi->pllref_clk);
-+
-+	pm_runtime_put(dsi->dev);
-+	if (dsi->slave)
-+		pm_runtime_put(dsi->slave->dev);
+ 	return 0;
+-
+-err_clkdisable:
+-	clk_disable_unprepare(dsi->pllref_clk);
+-	return ret;
  }
  
- static const struct component_ops dw_mipi_dsi_rockchip_ops = {
+ static int dw_mipi_dsi_rockchip_remove(struct platform_device *pdev)
 -- 
 2.33.0.685.g46640cef36-goog
 
