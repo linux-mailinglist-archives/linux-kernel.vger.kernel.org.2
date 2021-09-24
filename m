@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C29D41743D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2F641741F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346076AbhIXNCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59408 "EHLO mail.kernel.org"
+        id S1346132AbhIXNC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:02:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345873AbhIXM7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344515AbhIXM7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Sep 2021 08:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E49C2613B3;
-        Fri, 24 Sep 2021 12:53:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44B6A6136A;
+        Fri, 24 Sep 2021 12:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488013;
-        bh=FOmoSz92b510kDvBvOC+BOpveMVp2GSYEVGd4Z96iAU=;
+        s=korg; t=1632488015;
+        bh=Y0ifqwM0ik/0txa17mlwIy+/Fc1YXrdfnwMXOUfSEUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Im6SZrsQXmuOh2mRYN+iPaSiTkxCPkbz8N0X07X+HiAO6y4BKamrG0gAetTWBEQEG
-         8cN9qBo5lh8xcqSN9K/BMRucNPoLRnl//pDaiWpglsWiNFwb/SJk9T0GbdOCj/xC92
-         qsQUjfb5Aa5rT14L/9CFEAzYQX09bMx7CxNjWPnk=
+        b=IrRSOT5xZLgRkMvxLMWErqyjDG3kXT3LzmoVxxIkhHvzj5GPgL34Mi9fnXQMR0bSw
+         0vZnvnBY1mJc+yoNqWFzAO/8y8wgcRwFu4EJsSu2YMOBupEnavlJqUQ2b5Av9eOFNE
+         ccgt0PvQFVre2jS+kluukK0t/rECSrSs/YQFBMds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 050/100] arm64: mm: limit linear region to 51 bits for KVM in nVHE mode
-Date:   Fri, 24 Sep 2021 14:43:59 +0200
-Message-Id: <20210924124343.119361789@linuxfoundation.org>
+Subject: [PATCH 5.14 051/100] drm/ttm: Fix a deadlock if the target BO is not idle during swap
+Date:   Fri, 24 Sep 2021 14:44:00 +0200
+Message-Id: <20210924124343.150751601@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
 References: <20210924124341.214446495@linuxfoundation.org>
@@ -40,65 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: xinhui pan <xinhui.pan@amd.com>
 
-[ Upstream commit 88053ec8cb1b91df566353cd3116470193797e00 ]
+[ Upstream commit 70982eef4d7eebb47a3b1ef25ec1bc742f3a21cf ]
 
-KVM in nVHE mode divides up its VA space into two equal halves, and
-picks the half that does not conflict with the HYP ID map to map its
-linear region. This worked fine when the kernel's linear map itself was
-guaranteed to cover precisely as many bits of VA space, but this was
-changed by commit f4693c2716b35d08 ("arm64: mm: extend linear region for
-52-bit VA configurations").
+The ret value might be -EBUSY, caller will think lru lock is still
+locked but actually NOT. So return -ENOSPC instead. Otherwise we hit
+list corruption.
 
-The result is that, depending on the placement of the ID map, kernel-VA
-to hyp-VA translations may produce addresses that either conflict with
-other HYP mappings (including the ID map itself) or generate addresses
-outside of the 52-bit addressable range, neither of which is likely to
-lead to anything useful.
+ttm_bo_cleanup_refs might fail too if BO is not idle. If we return 0,
+caller(ttm_tt_populate -> ttm_global_swapout ->ttm_device_swapout) will
+be stuck as we actually did not free any BO memory. This usually happens
+when the fence is not signaled for a long time.
 
-Given that 52-bit capable cores are guaranteed to implement VHE, this
-only affects configurations such as pKVM where we opt into non-VHE mode
-even if the hardware is VHE capable. So just for these configurations,
-let's limit the kernel linear map to 51 bits and work around the
-problem.
-
-Fixes: f4693c2716b3 ("arm64: mm: extend linear region for 52-bit VA configurations")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Link: https://lore.kernel.org/r/20210826165613.60774-1-ardb@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Fixes: ebd59851c796 ("drm/ttm: move swapout logic around v3")
+Link: https://patchwork.freedesktop.org/patch/msgid/20210907040832.1107747-1-xinhui.pan@amd.com
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Dave Airlie <airlied@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/mm/init.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/ttm/ttm_bo.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 1fdb7bb7c198..0ad4afc9359b 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -319,7 +319,21 @@ static void __init fdt_enforce_memory_region(void)
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index 32202385073a..b47a5053eb85 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -1157,9 +1157,9 @@ int ttm_bo_swapout(struct ttm_buffer_object *bo, struct ttm_operation_ctx *ctx,
+ 	}
  
- void __init arm64_memblock_init(void)
- {
--	const s64 linear_region_size = PAGE_END - _PAGE_OFFSET(vabits_actual);
-+	s64 linear_region_size = PAGE_END - _PAGE_OFFSET(vabits_actual);
-+
-+	/*
-+	 * Corner case: 52-bit VA capable systems running KVM in nVHE mode may
-+	 * be limited in their ability to support a linear map that exceeds 51
-+	 * bits of VA space, depending on the placement of the ID map. Given
-+	 * that the placement of the ID map may be randomized, let's simply
-+	 * limit the kernel's linear map to 51 bits as well if we detect this
-+	 * configuration.
-+	 */
-+	if (IS_ENABLED(CONFIG_KVM) && vabits_actual == 52 &&
-+	    is_hyp_mode_available() && !is_kernel_in_hyp_mode()) {
-+		pr_info("Capping linear region to 51 bits for KVM in nVHE mode on LVA capable hardware.\n");
-+		linear_region_size = min_t(u64, linear_region_size, BIT(51));
-+	}
+ 	if (bo->deleted) {
+-		ttm_bo_cleanup_refs(bo, false, false, locked);
++		ret = ttm_bo_cleanup_refs(bo, false, false, locked);
+ 		ttm_bo_put(bo);
+-		return 0;
++		return ret == -EBUSY ? -ENOSPC : ret;
+ 	}
  
- 	/* Handle linux,usable-memory-range property */
- 	fdt_enforce_memory_region();
+ 	ttm_bo_del_from_lru(bo);
+@@ -1213,7 +1213,7 @@ out:
+ 	if (locked)
+ 		dma_resv_unlock(bo->base.resv);
+ 	ttm_bo_put(bo);
+-	return ret;
++	return ret == -EBUSY ? -ENOSPC : ret;
+ }
+ 
+ void ttm_bo_tt_destroy(struct ttm_buffer_object *bo)
 -- 
 2.33.0
 
