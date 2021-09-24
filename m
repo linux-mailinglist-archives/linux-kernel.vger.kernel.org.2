@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789ED4174AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0998E417433
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344948AbhIXNJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:09:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34414 "EHLO mail.kernel.org"
+        id S1344285AbhIXNDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346233AbhIXNGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:06:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E05F561504;
-        Fri, 24 Sep 2021 12:56:10 +0000 (UTC)
+        id S1345646AbhIXNBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:01:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 205D96134F;
+        Fri, 24 Sep 2021 12:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488171;
-        bh=D0ni0eWgaFtzuxhiadba7ZWnFQE2IaPsz3CfcXmufRY=;
+        s=korg; t=1632488049;
+        bh=1PT5m1YrfvB1GNQkRl4aS1FMIUI9LKT6EXmG6KWYb94=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rn16K1u5plQvzzTyOIau7nP9SGSRw39FPNNUJu6ZceSJZGTxu7PTAFKhAmzU9Pd9X
-         TYRh/Y77dkBOctvqhtezx7Foi2bXoqUjLAvBSImkiVJ1k/9HqS3tATRX8d8lFCIx9Q
-         HdutIHUkNvzkDISPjWYs0BCyHqdpETnnMPy9YIcw=
+        b=jOD+ddA1OLF5xX8Nf+uGojPLLQ2Y6AT0JROCG4NmCOMDztOKq7jk24L0EhVml54HJ
+         zioTqLl/GSV3YtLUARw1M1t/hCXyTPiNXzhZSOdC9JjmeHCIbtofebnaKqOC55EYZR
+         Vmr9JVSu18cTPBl1goPpICXRZ8L1ZBYBYAAfZU/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 12/63] sctp: add param size validation for SCTP_PARAM_SET_PRIMARY
+        stable@vger.kernel.org, Maxwell Beck <max@ryt.one>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 063/100] ACPI: PM: s2idle: Run both AMD and Microsoft methods if both are supported
 Date:   Fri, 24 Sep 2021 14:44:12 +0200
-Message-Id: <20210924124334.664861742@linuxfoundation.org>
+Message-Id: <20210924124343.529991570@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +41,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
 
-commit ef6c8d6ccf0c1dccdda092ebe8782777cd7803c9 upstream.
+[ Upstream commit fa209644a7124b3f4cf811ced55daef49ae39ac6 ]
 
-When SCTP handles an INIT chunk, it calls for example:
-sctp_sf_do_5_1B_init
-  sctp_verify_init
-    sctp_verify_param
-  sctp_process_init
-    sctp_process_param
-      handling of SCTP_PARAM_SET_PRIMARY
+It was reported that on "HP ENVY x360" that power LED does not come
+back, certain keys like brightness controls do not work, and the fan
+never spins up, even under load on 5.14 final.
 
-sctp_verify_init() wasn't doing proper size validation and neither the
-later handling, allowing it to work over the chunk itself, possibly being
-uninitialized memory.
+In analysis of the SSDT it's clear that the Microsoft UUID doesn't
+provide functional support, but rather the AMD UUID should be
+supporting this system.
 
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Because this is a gap in the expected logic, we checked back with
+internal team.  The conclusion was that on Windows AMD uPEP *does*
+run even when Microsoft UUID present, but most OEM systems have
+adopted value of "0x3" for supported functions and hence nothing
+runs.
+
+Henceforth add support for running both Microsoft and AMD methods.
+This approach will also allow the same logic on Intel systems if
+desired at a future time as well by pulling the evaluation of
+`lps0_dsm_func_mask_microsoft` out of the `if` block for
+`acpi_s2idle_vendor_amd`.
+
+Link: https://gitlab.freedesktop.org/drm/amd/uploads/9fbcd7ec3a385cc6949c9bacf45dc41b/acpi-f.20.bin
+BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1691
+Reported-by: Maxwell Beck <max@ryt.one>
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+[ rjw: Edits of the new comments ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/sm_make_chunk.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/acpi/x86/s2idle.c | 67 +++++++++++++++++++++++----------------
+ 1 file changed, 39 insertions(+), 28 deletions(-)
 
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -2150,9 +2150,16 @@ static enum sctp_ierror sctp_verify_para
- 		break;
+diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
+index 3a308461246a..bd92b549fd5a 100644
+--- a/drivers/acpi/x86/s2idle.c
++++ b/drivers/acpi/x86/s2idle.c
+@@ -449,25 +449,30 @@ int acpi_s2idle_prepare_late(void)
+ 	if (pm_debug_messages_on)
+ 		lpi_check_constraints();
  
- 	case SCTP_PARAM_SET_PRIMARY:
--		if (ep->asconf_enable)
--			break;
--		goto unhandled;
-+		if (!ep->asconf_enable)
-+			goto unhandled;
+-	if (lps0_dsm_func_mask_microsoft > 0) {
++	/* Screen off */
++	if (lps0_dsm_func_mask > 0)
++		acpi_sleep_run_lps0_dsm(acpi_s2idle_vendor_amd() ?
++					ACPI_LPS0_SCREEN_OFF_AMD :
++					ACPI_LPS0_SCREEN_OFF,
++					lps0_dsm_func_mask, lps0_dsm_guid);
 +
-+		if (ntohs(param.p->length) < sizeof(struct sctp_addip_param) +
-+					     sizeof(struct sctp_paramhdr)) {
-+			sctp_process_inv_paramlength(asoc, param.p,
-+						     chunk, err_chunk);
-+			retval = SCTP_IERROR_ABORT;
-+		}
-+		break;
++	if (lps0_dsm_func_mask_microsoft > 0)
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF,
+ 				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_MS_ENTRY,
+-				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
++
++	/* LPS0 entry */
++	if (lps0_dsm_func_mask > 0)
++		acpi_sleep_run_lps0_dsm(acpi_s2idle_vendor_amd() ?
++					ACPI_LPS0_ENTRY_AMD :
++					ACPI_LPS0_ENTRY,
++					lps0_dsm_func_mask, lps0_dsm_guid);
++	if (lps0_dsm_func_mask_microsoft > 0) {
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY,
+ 				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
+-	} else if (acpi_s2idle_vendor_amd()) {
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF_AMD,
+-				lps0_dsm_func_mask, lps0_dsm_guid);
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY_AMD,
+-				lps0_dsm_func_mask, lps0_dsm_guid);
+-	} else {
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF,
+-				lps0_dsm_func_mask, lps0_dsm_guid);
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY,
+-				lps0_dsm_func_mask, lps0_dsm_guid);
++		/* modern standby entry */
++		acpi_sleep_run_lps0_dsm(ACPI_LPS0_MS_ENTRY,
++				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
+ 	}
+-
+ 	return 0;
+ }
  
- 	case SCTP_PARAM_HOST_NAME_ADDRESS:
- 		/* Tell the peer, we won't support this param.  */
+@@ -476,24 +481,30 @@ void acpi_s2idle_restore_early(void)
+ 	if (!lps0_device_handle || sleep_no_lps0)
+ 		return;
+ 
+-	if (lps0_dsm_func_mask_microsoft > 0) {
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT,
+-				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
++	/* Modern standby exit */
++	if (lps0_dsm_func_mask_microsoft > 0)
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_MS_EXIT,
+ 				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_ON,
+-				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
+-	} else if (acpi_s2idle_vendor_amd()) {
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT_AMD,
+-				lps0_dsm_func_mask, lps0_dsm_guid);
+-		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_ON_AMD,
+-				lps0_dsm_func_mask, lps0_dsm_guid);
+-	} else {
++
++	/* LPS0 exit */
++	if (lps0_dsm_func_mask > 0)
++		acpi_sleep_run_lps0_dsm(acpi_s2idle_vendor_amd() ?
++					ACPI_LPS0_EXIT_AMD :
++					ACPI_LPS0_EXIT,
++					lps0_dsm_func_mask, lps0_dsm_guid);
++	if (lps0_dsm_func_mask_microsoft > 0)
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT,
+-				lps0_dsm_func_mask, lps0_dsm_guid);
++				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
++
++	/* Screen on */
++	if (lps0_dsm_func_mask_microsoft > 0)
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_ON,
+-				lps0_dsm_func_mask, lps0_dsm_guid);
+-	}
++				lps0_dsm_func_mask_microsoft, lps0_dsm_guid_microsoft);
++	if (lps0_dsm_func_mask > 0)
++		acpi_sleep_run_lps0_dsm(acpi_s2idle_vendor_amd() ?
++					ACPI_LPS0_SCREEN_ON_AMD :
++					ACPI_LPS0_SCREEN_ON,
++					lps0_dsm_func_mask, lps0_dsm_guid);
+ }
+ 
+ static const struct platform_s2idle_ops acpi_s2idle_ops_lps0 = {
+-- 
+2.33.0
+
 
 
