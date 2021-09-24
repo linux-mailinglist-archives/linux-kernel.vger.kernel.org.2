@@ -2,486 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9AB417331
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE5541737A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344280AbhIXMzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
+        id S1343862AbhIXM4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344306AbhIXMxJ (ORCPT
+        with ESMTP id S1344632AbhIXMyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:53:09 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CA7C0612A2;
-        Fri, 24 Sep 2021 05:46:27 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id me1so6893660pjb.4;
-        Fri, 24 Sep 2021 05:46:27 -0700 (PDT)
+        Fri, 24 Sep 2021 08:54:52 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6838AC0612AD;
+        Fri, 24 Sep 2021 05:46:46 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id 66so5875236vsd.11;
+        Fri, 24 Sep 2021 05:46:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Lqd7h9NywXccf8XtnK0QEW4j6LuoiNegC5mQz0RmR54=;
-        b=bN34KVn1OT/A7Hezgm97NZ00X9eJQXcXEdXcI00oKYO2jXhMJH3RDFjPg+ZuscPtn2
-         oYu+jYFNW8hmnPoK3/LEOnPS0jGgnIDRb1KwsZBpsMBfpAfs13M8xdSiWwE4PabqyBKP
-         +TuHTQQZVLv+kRDxJ0IaKlrDkQgCyPyIHqn+QQflTtbl/GJB9rWyJmrjZmrSHeozVxlo
-         /wFygvcIF6M9TKDqMtoXUKijHFBo8/z8V8nYAYdpvs07vEodSWY9iqX4LTkQVPHibwZU
-         3pSRZhLe5nBPvgTXzpUJeO9gco/y4eCRVXvCXD31U8Rd4F7cN93FSmmZZTjvC2EHFu4b
-         9kNw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WuP0laZ66Ah8I7V2LTy6RZMaEP9qELs6uptNq8t1B1U=;
+        b=Pi1k75MEdIHKAcMkuPq4WdQAUZMHGvGcZNklqUxvwd5kKVOL2USUfcoxibmoVoqTK/
+         1vW1/Kbz91ZgteyUt7eVsbnwCuNOXDltN4/AJQjP5f7pLQHdvVTN8MukFZxzCslGmabt
+         m5CNrQ2pjNEltbChOJnvxv20SZS9O25NpI08W/BxFllQsojlYdUwxcUh0GGF2jAh4maZ
+         D5dNNmblBtvkP7IsSGIo6o7YjuGy0AWI0XEbCJqJSOu0T4L3nxlci6ULQrIzQGkavYO3
+         CCxeSyO5BTZSTAFQn622p2GPPICeC0r6Z8Ma5Mf+Yf+DqVipLhdILTkamK5N4mvJ6Vn4
+         NB6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Lqd7h9NywXccf8XtnK0QEW4j6LuoiNegC5mQz0RmR54=;
-        b=fMCGyZiQLjiirokQJqL3SzQgnylo0dEm0TyLk9SpJbIBdh8P5Il81sO+1IifvczH3H
-         MdIjW0yGrk8U5UgpJ6x5s0uZ7ilBW3O1dFgRrQLlm/rR0nE2pkCGl2Szj5jZQzVVp4W3
-         G+/hUSC0RCfneAWUXGJxPd4t/Bw5rxQOHP2W+Si1+dQnvLH/3fqTkwWBimMzRh1Y98hL
-         dB6sCVWKvy7N3ZzJwtympYJTqkNPTw4XJmvMrMgUtmVh5sks9oJ87n7pniEPVALo6Q5K
-         U3F6GA1ZX2rBd7IelR50/91uJUZ7LbsciuBRgT6zkGHvabBhcEB20jGq7oKfBai4MlVl
-         QGSA==
-X-Gm-Message-State: AOAM5328IQLp37RpfGEWZRAJBCgpUa0QO51dp83qdh9s2DnVa0butUhW
-        K6+DbsWeKiTbm1IeeQD6ghc=
-X-Google-Smtp-Source: ABdhPJynFgbjP6Oq7tPpPl8EJebEPGKRQzza8PjS5DbkPyBPG5Fpcwiorco01WfvXkhSCNTsDPzofA==
-X-Received: by 2002:a17:90a:cb14:: with SMTP id z20mr2020628pjt.230.1632487587252;
-        Fri, 24 Sep 2021 05:46:27 -0700 (PDT)
-Received: from localhost.localdomain ([137.116.162.235])
-        by smtp.gmail.com with ESMTPSA id u24sm9448961pfm.85.2021.09.24.05.46.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Sep 2021 05:46:26 -0700 (PDT)
-From:   yaozhenguo <yaozhenguo1@gmail.com>
-To:     mike.kravetz@oracle.com
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        corbet@lwn.net, rppt@kernel.org, akpm@linux-foundation.org,
-        yaozhenguo@jd.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, yaozhenguo <yaozhenguo1@gmail.com>
-Subject: [PATCH v6] hugetlbfs: Extend the definition of hugepages parameter to support node allocation
-Date:   Fri, 24 Sep 2021 20:45:59 +0800
-Message-Id: <20210924124559.95510-1-yaozhenguo1@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WuP0laZ66Ah8I7V2LTy6RZMaEP9qELs6uptNq8t1B1U=;
+        b=516qfyt/5jchzRKE4txBzgp7t67mWsPKa2VQqae72uTCn07MQGBXMD0CnYeyc3z03C
+         RIUAiJGQLy6FqjAgZnob2quLYF9e78MqOumMH/trdOrqA9OHtq+cvjdqdswKYcNFDtH/
+         X2r2JEWrfe2QDBf3qZZWyE3EtZtN8eHDCZKIwk/lvtqP9HGaHxQCX8OvI1+IQICVHHoc
+         jEU1X6IHH+8TQ6CDNGiw3sdLFexkrm0leF+jEZpw/bMPN1Bt7U4FGOf9+HYNv1oH2+vh
+         h1jnUzhEuCJPd7H4Uek4M2FsWjSkYeqxq9xMyjd6/9/vg4sEcyPYkTPsv5Ns49vfqrm3
+         jSog==
+X-Gm-Message-State: AOAM531QSCAF5LAcYwxVC+6wZzq+3Qhea1W4JCZSpQEM6ZU2KZpO1ouC
+        zU5HsYl8oO+921f2uSx2lo+BNWDLz1ZiOA1aFIk=
+X-Google-Smtp-Source: ABdhPJxOdfbbhBjwQLmHrKi4ZtqosfKOpZkAdCfkdyJ1bKdymP78anFgyiYS1npnOZP0lUryjK29udWrRGMJh9wxvXY=
+X-Received: by 2002:a67:42c2:: with SMTP id p185mr9094529vsa.41.1632487605296;
+ Fri, 24 Sep 2021 05:46:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
+ <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
+ <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+ <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
+ <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
+ <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
+ <CAMhs-H_hZk3hruCaWRjKjUSj6vhVE+JZfk9nT7v1=mcc-H9wnw@mail.gmail.com>
+ <CAK8P3a3C0rG_JWWCU6T4B=+j2-+6S6Gq+aw_9e6XeVun9LoF0w@mail.gmail.com>
+ <CAMhs-H8kH7CMXENqDW_6GLTjeMMyk+ynehMmyBr=kFZPFHpM0A@mail.gmail.com>
+ <CAK8P3a2WmNsV9fhSEjqwHZAGkwGc9HOurhQsza7JOM2Scts2XQ@mail.gmail.com>
+ <CAMhs-H8fRnLavLfdw7jZO0tb8rWqdF81cGHhYT6gGp4UY1gChg@mail.gmail.com>
+ <CAK8P3a2MJO--xmAZ_71h1QQ5_b8WXgyo-=LaT7r7yMMBUHoPfQ@mail.gmail.com>
+ <CAMhs-H_xdkpinyj-Y1u==ievpGWZ2Ze-_U7aCUcfu0=NKBq2xQ@mail.gmail.com>
+ <CAK8P3a0OWyW9Wk0kHXsj_7qTd0fVXQnszzun+HacHeTKYETXhw@mail.gmail.com>
+ <CAMhs-H9xrXgbuwYe2STzuq0aBwj0onJGc0Oka6+pzgoHb0j8rA@mail.gmail.com>
+ <CAK8P3a1AwaSi_J9p4tKwNKxENHhwofDu=Ma=F29ajSmMXoC7RA@mail.gmail.com>
+ <CAMhs-H_wxoJC7ZVnkhXNfAcP-P9BNN99ogszM_iJhErHLq8Rdg@mail.gmail.com> <CAK8P3a3dvhWT=Xq22xTNn_VbX29s3t9wrw1DbffPbWuHxtTTmg@mail.gmail.com>
+In-Reply-To: <CAK8P3a3dvhWT=Xq22xTNn_VbX29s3t9wrw1DbffPbWuHxtTTmg@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Fri, 24 Sep 2021 14:46:33 +0200
+Message-ID: <CAMhs-H9OhXHA3_mq2PSoaPvYCstqqHL7TfL0zf=OFNeFmWVTRQ@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can specify the number of hugepages to allocate at boot. But the
-hugepages is balanced in all nodes at present. In some scenarios,
-we only need hugepages in one node. For example: DPDK needs hugepages
-which are in the same node as NIC. if DPDK needs four hugepages of 1G
-size in node1 and system has 16 numa nodes. We must reserve 64 hugepages
-in kernel cmdline. But, only four hugepages are used. The others should
-be free after boot. If the system memory is low(for example: 64G), it will
-be an impossible task. So, Extending hugepages parameter to support
-specifying hugepages at a specific node.
-For example add following parameter:
+On Fri, Sep 24, 2021 at 1:39 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Sep 24, 2021 at 12:15 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> > On Fri, Sep 24, 2021 at 10:53 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Thu, Sep 23, 2021 at 10:33 PM Sergio Paracuellos
+> > >
+> > > Oops, my mistake, I mixed up the CPU address and the PCI address.
+> > >
+> > > The correct notation should be
+> > >
+> > > <0x01000000 0 0  0 0x1e160000 0x00010000>;
+> > >
+> > > i.e. bus address 0 to cpu address 0x1e160000, rather than the other
+> > > way around as I wrote it.
+> >
+> > Mmmm... Do you mean <0x01000000 0 0  0x1e160000 0 0x00010000>; instead?
+>
+> Yes, sorry for getting it wrong again.
+>
+> > In any case both of them ends up in a similar trace (the one listed
+> > here is using your last range as it is):
+> >
+> > mt7621-pci 1e140000.pcie: host bridge /pcie@1e140000 ranges:
+> > mt7621-pci 1e140000.pcie:   No bus range found for /pcie@1e140000,
+> > using [bus 00-ff]
+> > mt7621-pci 1e140000.pcie:      MEM 0x0060000000..0x006fffffff -> 0x0060000000
+> > mt7621-pci 1e140000.pcie:       IO 0x0000000000..0x1e1600000000ffff ->
+> > 0x0000000000
+> >                                                    ^^^^
+> >                                                     This is the part
+> > that change between both traces (t7621-pci 1e140000.pcie:       IO
+> >
+> > 0x001e160000..0x001e16ffff -> 0x0000000000 in the one I have just put
+> > above)
+>
+> Yes, the latter is the expected output.
 
-hugepagesz=1G hugepages=0:1,1:3
+Perfect, thanks.
 
-It will allocate 1 hugepage in node0 and 3 hugepages in node1.
+>
+> > mt7621-pci 1e140000.pcie: Writing 0x0 in RALINK_PCI_IOBASE
+> >                                                   ^^^
+> >                                                      This is the
+> > current value written in bridge register as IOBASE for the window
+> > which is IORESOURCE_IO -> res.start address (in both traces).
+>
+> The value is correct, but strictly speaking this must be the
+> raw value from DT, not the translated Linux port number.
+>
+> As long as io_offset is zero, the two are the same, but if you were
+> to use multiple host bridge in the system, or pick a different bus
+> address in DT, you can have a nonzero io_offset. I think this means
+>
+>    pcie_write(pcie, entry->res->start, RALINK_PCI_IOBASE);
+>
+> should become
+>
+>    pcie_write(pcie, entry->res->start + entry->offset, RALINK_PCI_IOBASE);
+>
+> Try setting some other value as the bus address in DT and see if that
+> is what gets written to the register.
+> (I may have the polarity of offset wrong, so this may need to be '-' instead
+> of '+').
 
-Signed-off-by: yaozhenguo <yaozhenguo1@gmail.com>
----
-v5->v6 changes:
-	- Remove v5 codes: using return value to disable node specific alloc.
-	- Add node_specific_alloc_support weak function to disable node
-	  specific alloc when arch can't support it.
-	- Remove useless variable addr in alloc_bootmem_huge_page.
-	- Add powerpc version of node_specific_alloc_support when
-	  CONFIG_PPC_BOOK3S_64 is defined.
-v4->v5 changes:
-	- remove BUG_ON in __alloc_bootmem_huge_page.
-	- add nid parameter in __alloc_bootmem_huge_page to support
-	  called in both specific node alloc and normal alloc.
-	- do normal alloc if architecture can't support node specific alloc.
-	- return -1 in powerpc version of alloc_bootmem_huge_page when
-	  nid is not NUMA_NO_NODE.
-v3->v4 changes:
-	- fix wrong behavior for parameter:
-	  hugepages=0:1,1:3 default_hugepagesz=1G
-	- make the change of documentation more reasonable.
-v2->v3 changes:
-	- Skip gigantic hugepages allocation if hugetlb_cma is enabled.
-	- Fix wrong behavior for parameter:
-	  hugepagesz=2M hugepages=2 hugepages=5.
-	- Update hugetlbpage.rst.
-	- Fix side effects which v2 brings in.
-	- add cond_resched in hugetlb_hstate_alloc_pages_onenode.
-v1->v2 changes:
-	- add checking for max node to avoid array out of bounds.
-	- fix wrong max_huge_pages after failed allocation.
-	- fix wrong behavior when parsing parameter: hugepages=0:1,2,3:4.
-	- return 0 when parsing invalid parameter in hugepages_setup
----
- .../admin-guide/kernel-parameters.txt         |   8 +-
- Documentation/admin-guide/mm/hugetlbpage.rst  |  12 +-
- arch/powerpc/mm/hugetlbpage.c                 |   9 +-
- include/linux/hugetlb.h                       |   6 +-
- mm/hugetlb.c                                  | 154 +++++++++++++++---
- 5 files changed, 158 insertions(+), 31 deletions(-)
+Ok, polarity is inverted. Correct one is:
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index bdb22006f..a2046b2c5 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1588,9 +1588,11 @@
- 			the number of pages of hugepagesz to be allocated.
- 			If this is the first HugeTLB parameter on the command
- 			line, it specifies the number of pages to allocate for
--			the default huge page size.  See also
--			Documentation/admin-guide/mm/hugetlbpage.rst.
--			Format: <integer>
-+			the default huge page size. If using node format, the
-+			number of pages to allocate per-node can be specified.
-+			See also Documentation/admin-guide/mm/hugetlbpage.rst.
-+			Format: <integer> or (node format)
-+				<node>:<integer>[,<node>:<integer>]
- 
- 	hugepagesz=
- 			[HW] The size of the HugeTLB pages.  This is used in
-diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
-index 8abaeb144..d70828c07 100644
---- a/Documentation/admin-guide/mm/hugetlbpage.rst
-+++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-@@ -128,7 +128,9 @@ hugepages
- 	implicitly specifies the number of huge pages of default size to
- 	allocate.  If the number of huge pages of default size is implicitly
- 	specified, it can not be overwritten by a hugepagesz,hugepages
--	parameter pair for the default size.
-+	parameter pair for the default size.  This parameter also has a
-+	node format.  The node format specifies the number of huge pages
-+	to allocate on specific nodes.
- 
- 	For example, on an architecture with 2M default huge page size::
- 
-@@ -138,6 +140,14 @@ hugepages
- 	indicating that the hugepages=512 parameter is ignored.  If a hugepages
- 	parameter is preceded by an invalid hugepagesz parameter, it will
- 	be ignored.
-+
-+	Node format example::
-+
-+		hugepagesz=2M hugepages=0:1,1:2
-+
-+	It will allocate 1 2M hugepage on node0 and 2 2M hugepages on node1.
-+	If the node number is invalid,  the parameter will be ignored.
-+
- default_hugepagesz
- 	Specify the default huge page size.  This parameter can
- 	only be specified once on the command line.  default_hugepagesz can
-diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-index 9a75ba078..dd40ce6e7 100644
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -229,17 +229,22 @@ static int __init pseries_alloc_bootmem_huge_page(struct hstate *hstate)
- 	m->hstate = hstate;
- 	return 1;
- }
-+
-+bool __init node_specific_alloc_support(void)
-+{
-+	return false;
-+}
- #endif
- 
- 
--int __init alloc_bootmem_huge_page(struct hstate *h)
-+int __init alloc_bootmem_huge_page(struct hstate *h, int nid)
- {
- 
- #ifdef CONFIG_PPC_BOOK3S_64
- 	if (firmware_has_feature(FW_FEATURE_LPAR) && !radix_enabled())
- 		return pseries_alloc_bootmem_huge_page(h);
- #endif
--	return __alloc_bootmem_huge_page(h);
-+	return __alloc_bootmem_huge_page(h, nid);
- }
- 
- #ifndef CONFIG_PPC_BOOK3S_64
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index f7ca1a387..72308208e 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -605,6 +605,7 @@ struct hstate {
- 	unsigned long nr_overcommit_huge_pages;
- 	struct list_head hugepage_activelist;
- 	struct list_head hugepage_freelists[MAX_NUMNODES];
-+	unsigned int max_huge_pages_node[MAX_NUMNODES];
- 	unsigned int nr_huge_pages_node[MAX_NUMNODES];
- 	unsigned int free_huge_pages_node[MAX_NUMNODES];
- 	unsigned int surplus_huge_pages_node[MAX_NUMNODES];
-@@ -637,8 +638,9 @@ void restore_reserve_on_error(struct hstate *h, struct vm_area_struct *vma,
- 				unsigned long address, struct page *page);
- 
- /* arch callback */
--int __init __alloc_bootmem_huge_page(struct hstate *h);
--int __init alloc_bootmem_huge_page(struct hstate *h);
-+int __init __alloc_bootmem_huge_page(struct hstate *h, int nid);
-+int __init alloc_bootmem_huge_page(struct hstate *h, int nid);
-+bool __init node_specific_alloc_support(void);
- 
- void __init hugetlb_add_hstate(unsigned order);
- bool __init arch_hugetlb_valid_size(unsigned long size);
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index dfc940d52..2037dc8f9 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -66,6 +66,7 @@ static struct hstate * __initdata parsed_hstate;
- static unsigned long __initdata default_hstate_max_huge_pages;
- static bool __initdata parsed_valid_hugepagesz = true;
- static bool __initdata parsed_default_hugepagesz;
-+static unsigned int default_hugepages_in_node[MAX_NUMNODES] __initdata;
- 
- /*
-  * Protects updates to hugepage_freelists, hugepage_activelist, nr_huge_pages,
-@@ -2775,33 +2776,41 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
- 	return ERR_PTR(-ENOSPC);
- }
- 
--int alloc_bootmem_huge_page(struct hstate *h)
-+int alloc_bootmem_huge_page(struct hstate *h, int nid)
- 	__attribute__ ((weak, alias("__alloc_bootmem_huge_page")));
--int __alloc_bootmem_huge_page(struct hstate *h)
-+int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- {
- 	struct huge_bootmem_page *m;
- 	int nr_nodes, node;
- 
-+	if (nid >= nodes_weight(node_states[N_MEMORY]))
-+		return 0;
-+	/* do node specific alloc */
-+	if (nid != NUMA_NO_NODE) {
-+		m = memblock_alloc_try_nid_raw(huge_page_size(h), huge_page_size(h),
-+				0, MEMBLOCK_ALLOC_ACCESSIBLE, nid);
-+		if (m)
-+			goto found;
-+		else
-+			return 0;
-+	}
-+	/* do all node balanced alloc */
- 	for_each_node_mask_to_alloc(h, nr_nodes, node, &node_states[N_MEMORY]) {
--		void *addr;
--
--		addr = memblock_alloc_try_nid_raw(
-+		m = memblock_alloc_try_nid_raw(
- 				huge_page_size(h), huge_page_size(h),
- 				0, MEMBLOCK_ALLOC_ACCESSIBLE, node);
--		if (addr) {
--			/*
--			 * Use the beginning of the huge page to store the
--			 * huge_bootmem_page struct (until gather_bootmem
--			 * puts them into the mem_map).
--			 */
--			m = addr;
-+		/*
-+		 * Use the beginning of the huge page to store the
-+		 * huge_bootmem_page struct (until gather_bootmem
-+		 * puts them into the mem_map).
-+		 */
-+		if (m)
- 			goto found;
--		}
-+		else
-+			return 0;
- 	}
--	return 0;
- 
- found:
--	BUG_ON(!IS_ALIGNED(virt_to_phys(m), huge_page_size(h)));
- 	/* Put them into a private list first because mem_map is not up yet */
- 	INIT_LIST_HEAD(&m->list);
- 	list_add(&m->list, &huge_boot_pages);
-@@ -2841,12 +2850,61 @@ static void __init gather_bootmem_prealloc(void)
- 		cond_resched();
- 	}
- }
-+static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
-+{
-+	unsigned long i;
-+	char buf[32];
-+
-+	for (i = 0; i < h->max_huge_pages_node[nid]; ++i) {
-+		if (hstate_is_gigantic(h)) {
-+			if (!alloc_bootmem_huge_page(h, nid))
-+				break;
-+		} else {
-+			struct page *page;
-+			gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
-+
-+			page = alloc_fresh_huge_page(h, gfp_mask, nid,
-+					&node_states[N_MEMORY], NULL);
-+			if (!page)
-+				break;
-+			put_page(page); /* free it into the hugepage allocator */
-+		}
-+		cond_resched();
-+	}
-+	if (i == h->max_huge_pages_node[nid])
-+		return;
-+
-+	string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
-+	pr_warn("HugeTLB: allocating %u of page size %s failed node%d.  Only allocated %lu hugepages.\n",
-+		h->max_huge_pages_node[nid], buf, nid, i);
-+	h->max_huge_pages -= (h->max_huge_pages_node[nid] - i);
-+	h->max_huge_pages_node[nid] = i;
-+}
- 
- static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- {
- 	unsigned long i;
- 	nodemask_t *node_alloc_noretry;
-+	bool node_specific_alloc = false;
-+
-+	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
-+	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
-+		pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
-+		return;
-+	}
-+
-+	/* do node specific alloc */
-+	for (i = 0; i < nodes_weight(node_states[N_MEMORY]); i++) {
-+		if (h->max_huge_pages_node[i] > 0) {
-+			hugetlb_hstate_alloc_pages_onenode(h, i);
-+			node_specific_alloc = true;
-+		}
-+	}
- 
-+	if (node_specific_alloc)
-+		return;
-+
-+	/* bellow will do all node balanced alloc */
- 	if (!hstate_is_gigantic(h)) {
- 		/*
- 		 * Bit mask controlling how hard we retry per-node allocations.
-@@ -2867,11 +2925,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 
- 	for (i = 0; i < h->max_huge_pages; ++i) {
- 		if (hstate_is_gigantic(h)) {
--			if (hugetlb_cma_size) {
--				pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
--				goto free;
--			}
--			if (!alloc_bootmem_huge_page(h))
-+			if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
- 				break;
- 		} else if (!alloc_pool_huge_page(h,
- 					 &node_states[N_MEMORY],
-@@ -2887,7 +2941,6 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 			h->max_huge_pages, buf, i);
- 		h->max_huge_pages = i;
- 	}
--free:
- 	kfree(node_alloc_noretry);
- }
- 
-@@ -3578,6 +3631,11 @@ static int __init hugetlb_init(void)
- 			}
- 			default_hstate.max_huge_pages =
- 				default_hstate_max_huge_pages;
-+
-+			for (i = 0; i < nodes_weight(node_states[N_MEMORY]); i++)
-+				if (default_hugepages_in_node[i] > 0)
-+					default_hstate.max_huge_pages_node[i] =
-+						default_hugepages_in_node[i];
- 		}
- 	}
- 
-@@ -3638,6 +3696,10 @@ void __init hugetlb_add_hstate(unsigned int order)
- 	parsed_hstate = h;
- }
- 
-+bool __init __weak node_specific_alloc_support(void)
-+{
-+	return true;
-+}
- /*
-  * hugepages command line processing
-  * hugepages normally follows a valid hugepagsz or default_hugepagsz
-@@ -3649,6 +3711,10 @@ static int __init hugepages_setup(char *s)
- {
- 	unsigned long *mhp;
- 	static unsigned long *last_mhp;
-+	int node = NUMA_NO_NODE;
-+	int count;
-+	unsigned long tmp;
-+	char *p = s;
- 
- 	if (!parsed_valid_hugepagesz) {
- 		pr_warn("HugeTLB: hugepages=%s does not follow a valid hugepagesz, ignoring\n", s);
-@@ -3672,8 +3738,41 @@ static int __init hugepages_setup(char *s)
- 		return 0;
- 	}
- 
--	if (sscanf(s, "%lu", mhp) <= 0)
--		*mhp = 0;
-+	while (*p) {
-+		count = 0;
-+		if (sscanf(p, "%lu%n", &tmp, &count) != 1)
-+			goto invalid;
-+		/* Parameter is node format */
-+		if (p[count] == ':') {
-+			if (!node_specific_alloc_support()) {
-+				pr_warn("HugeTLB: architecture can't support node specific alloc, ignoring!\n");
-+				return 0;
-+			}
-+			node = tmp;
-+			p += count + 1;
-+			if (node < 0 ||
-+				node >= nodes_weight(node_states[N_MEMORY]))
-+				goto invalid;
-+			/* Parse hugepages */
-+			if (sscanf(p, "%lu%n", &tmp, &count) != 1)
-+				goto invalid;
-+			if (!hugetlb_max_hstate)
-+				default_hugepages_in_node[node] = tmp;
-+			else
-+				parsed_hstate->max_huge_pages_node[node] = tmp;
-+			*mhp += tmp;
-+			/* Go to parse next node*/
-+			if (p[count] == ',')
-+				p += count + 1;
-+			else
-+				break;
-+		} else {
-+			if (p != s)
-+				goto invalid;
-+			*mhp = tmp;
-+			break;
-+		}
-+	}
- 
- 	/*
- 	 * Global state is always initialized later in hugetlb_init.
-@@ -3686,6 +3785,10 @@ static int __init hugepages_setup(char *s)
- 	last_mhp = mhp;
- 
- 	return 1;
-+
-+invalid:
-+	pr_warn("HugeTLB: Invalid hugepages parameter %s\n", p);
-+	return 0;
- }
- __setup("hugepages=", hugepages_setup);
- 
-@@ -3747,6 +3850,7 @@ __setup("hugepagesz=", hugepagesz_setup);
- static int __init default_hugepagesz_setup(char *s)
- {
- 	unsigned long size;
-+	int i;
- 
- 	parsed_valid_hugepagesz = false;
- 	if (parsed_default_hugepagesz) {
-@@ -3775,6 +3879,10 @@ static int __init default_hugepagesz_setup(char *s)
- 	 */
- 	if (default_hstate_max_huge_pages) {
- 		default_hstate.max_huge_pages = default_hstate_max_huge_pages;
-+		for (i = 0; i < nodes_weight(node_states[N_MEMORY]); i++)
-+			if (default_hugepages_in_node[i] > 0)
-+				default_hstate.max_huge_pages_node[i] =
-+					default_hugepages_in_node[i];
- 		if (hstate_is_gigantic(&default_hstate))
- 			hugetlb_hstate_alloc_pages(&default_hstate);
- 		default_hstate_max_huge_pages = 0;
--- 
-2.27.0
+pcie_write(pcie, entry->res->start - entry->offset, RALINK_PCI_IOBASE);
 
+>
+> > Also, I noticed that all of these messages have disappeared from the trace:
+> >
+> > pci 0000:03:00.0: reg 0x20: initial BAR value 0x00000000 invalid
+> >
+> > and now the first tested value seems to be valid....
+>
+> This just means that the power-on default value of '0' is now within
+> the configured range of 0...fffff. It's still slightly odd that it warns about
+> those in the first place if it is going to reassign everything, but that
+> should be harmless either way.
+
+I see. Thanks for clarification.
+
+>
+> > > If my assumption is correct here, then you must write the value
+> > > that you have read from the DT property, which would be
+> > > 0x001e160000 or 0 in the two versions of the DT property we
+> > > have listed, but in theory any (properly aligned) number ought
+> > > to work here, as long as the BAR values, the RALINK_PCI_IOBASE
+> > > and the io_offset all agree what it is.
+> >
+> > RALINK_PCI_IOBASE in that line, is the bridge register you write with
+> > value from the IO resource created from DT property, yes. So I guess
+> > you meant PCI_IOBASE for ralink in this sentence, right?
+> >
+> > (Prototype of the function -> static inline void pcie_write(struct
+> > mt7621_pcie *pcie, u32 val, u32 reg))
+>
+> I meant RALINK_PCI_IOBASE. We do need to write both, to clarify:
+>
+> RALINK_PCI_IOBASE must be set to match the *bus* address in DT,
+> so ideally '0', but any value should work as long as these two match.
+>
+> PCI_IOBASE/mips_io_port_base must be set to the *CPU* address
+> in DT, so that must be 0x1e160000, possibly converted from
+> physical to a virtual __iomem address (this is where my MIPS
+> knowledge ends).
+
+Understood. I have tried the following:
+
+I have added the following at the beggining of the pci host driver to
+match what you are describing above:
+
+unsigned long vaddr = (unsigned long)ioremap(PCI_IOBASE, 0x10000);
+set_io_port_base(vaddr);
+
+dev_info(dev, "Setting base to PCI_IOBASE: 0x%x -> mips_io_port_base
+0x%lx", PCI_IOBASE, mips_io_port_base);
+
+PCI_IOBASE is the physical cpu address. Hence, 0x1e160000
+set_io_port_base sets 'mips_io_port_base' to the virtual address where
+'PCI_IOBASE' has been mapped (vaddr).
+
+However, nothing seems to change:
+
+mt7621-pci 1e140000.pcie: Setting base to PCI_IOBASE: 0x1e160000 ->
+mips_io_port_base 0xbe160000
+                                                ^^^
+                                                 This seems aligned
+with what you are saying. mips_io_port_base have now a proper virtual
+addr for 0x1e160000
+mt7621-pci 1e140000.pcie: host bridge /pcie@1e140000 ranges:
+mt7621-pci 1e140000.pcie:   No bus range found for /pcie@1e140000,
+using [bus 00-ff]
+mt7621-pci 1e140000.pcie:      MEM 0x0060000000..0x006fffffff -> 0x0060000000
+mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x0000000000
+mt7621-pci 1e140000.pcie: Writting 0x0 in RALINK_PCI_IOBASE
+                                               ^^^
+                                               PCI Bus address is zero
+and linux port number too, so this also looks good
+mt7621-pci 1e140000.pcie: PCIE0 enabled
+mt7621-pci 1e140000.pcie: PCIE1 enabled
+mt7621-pci 1e140000.pcie: PCIE2 enabled
+mt7621-pci 1e140000.pcie: PCI coherence region base: 0x60000000,
+mask/settings: 0xf0000002
+mt7621-pci 1e140000.pcie: PCI host bridge to bus 0000:00
+pci_bus 0000:00: root bus resource [bus 00-ff]
+pci_bus 0000:00: root bus resource [mem 0x60000000-0x6fffffff]
+pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
+pci 0000:00:00.0: [0e8d:0801] type 01 class 0x060400
+pci 0000:00:00.0: reg 0x10: [mem 0x00000000-0x7fffffff]
+pci 0000:00:00.0: reg 0x14: [mem 0x00000000-0x0000ffff]
+pci 0000:00:00.0: supports D1
+pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+pci 0000:00:01.0: [0e8d:0801] type 01 class 0x060400
+pci 0000:00:01.0: reg 0x10: [mem 0x00000000-0x7fffffff]
+pci 0000:00:01.0: reg 0x14: [mem 0x00000000-0x0000ffff]
+pci 0000:00:01.0: supports D1
+pci 0000:00:01.0: PME# supported from D0 D1 D3hot
+pci 0000:00:02.0: [0e8d:0801] type 01 class 0x060400
+pci 0000:00:02.0: reg 0x10: [mem 0x00000000-0x7fffffff]
+pci 0000:00:02.0: reg 0x14: [mem 0x00000000-0x0000ffff]
+pci 0000:00:02.0: supports D1
+pci 0000:00:02.0: PME# supported from D0 D1 D3hot
+pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]), reconfiguring
+pci 0000:00:01.0: bridge configuration invalid ([bus 00-00]), reconfiguring
+pci 0000:00:02.0: bridge configuration invalid ([bus 00-00]), reconfiguring
+pci 0000:01:00.0: [1b21:0611] type 00 class 0x010185
+pci 0000:01:00.0: reg 0x10: [io  0x0000-0x0007]
+pci 0000:01:00.0: reg 0x14: [io  0x0000-0x0003]
+pci 0000:01:00.0: reg 0x18: [io  0x0000-0x0007]
+pci 0000:01:00.0: reg 0x1c: [io  0x0000-0x0003]
+pci 0000:01:00.0: reg 0x20: [io  0x0000-0x000f]
+pci 0000:01:00.0: reg 0x24: [mem 0x00000000-0x000001ff]
+pci 0000:01:00.0: 2.000 Gb/s available PCIe bandwidth, limited by 2.5
+GT/s PCIe x1 link at 0000:00:00.0 (capable of 4.000 Gb/s with 5.0 GT/s
+PCIe x1 link)
+pci 0000:00:00.0: PCI bridge to [bus 01-ff]
+pci 0000:00:00.0:   bridge window [io  0x0000-0x0fff]
+pci 0000:00:00.0:   bridge window [mem 0x00000000-0x000fffff]
+pci 0000:00:00.0:   bridge window [mem 0x00000000-0x000fffff pref]
+pci_bus 0000:01: busn_res: [bus 01-ff] end is updated to 01
+pci 0000:02:00.0: [1b21:0611] type 00 class 0x010185
+pci 0000:02:00.0: reg 0x10: [io  0x0000-0x0007]
+pci 0000:02:00.0: reg 0x14: [io  0x0000-0x0003]
+pci 0000:02:00.0: reg 0x18: [io  0x0000-0x0007]
+pci 0000:02:00.0: reg 0x1c: [io  0x0000-0x0003]
+pci 0000:02:00.0: reg 0x20: [io  0x0000-0x000f]
+pci 0000:02:00.0: reg 0x24: [mem 0x00000000-0x000001ff]
+pci 0000:02:00.0: 2.000 Gb/s available PCIe bandwidth, limited by 2.5
+GT/s PCIe x1 link at 0000:00:01.0 (capable of 4.000 Gb/s with 5.0 GT/s
+PCIe x1 link)
+pci 0000:00:01.0: PCI bridge to [bus 02-ff]
+pci 0000:00:01.0:   bridge window [io  0x0000-0x0fff]
+pci 0000:00:01.0:   bridge window [mem 0x00000000-0x000fffff]
+pci 0000:00:01.0:   bridge window [mem 0x00000000-0x000fffff pref]
+pci_bus 0000:02: busn_res: [bus 02-ff] end is updated to 02
+pci 0000:03:00.0: [1b21:0611] type 00 class 0x010185
+pci 0000:03:00.0: reg 0x10: [io  0x0000-0x0007]
+pci 0000:03:00.0: reg 0x14: [io  0x0000-0x0003]
+pci 0000:03:00.0: reg 0x18: [io  0x0000-0x0007]
+pci 0000:03:00.0: reg 0x1c: [io  0x0000-0x0003]
+pci 0000:03:00.0: reg 0x20: [io  0x0000-0x000f]
+pci 0000:03:00.0: reg 0x24: [mem 0x00000000-0x000001ff]
+pci 0000:03:00.0: 2.000 Gb/s available PCIe bandwidth, limited by 2.5
+GT/s PCIe x1 link at 0000:00:02.0 (capable of 4.000 Gb/s with 5.0 GT/s
+PCIe x1 link)
+pci 0000:00:02.0: PCI bridge to [bus 03-ff]
+pci 0000:00:02.0:   bridge window [io  0x0000-0x0fff]
+pci 0000:00:02.0:   bridge window [mem 0x00000000-0x000fffff]
+pci 0000:00:02.0:   bridge window [mem 0x00000000-0x000fffff pref]
+pci_bus 0000:03: busn_res: [bus 03-ff] end is updated to 03
+pci 0000:00:00.0: BAR 0: no space for [mem size 0x80000000]
+pci 0000:00:00.0: BAR 0: failed to assign [mem size 0x80000000]
+pci 0000:00:01.0: BAR 0: no space for [mem size 0x80000000]
+pci 0000:00:01.0: BAR 0: failed to assign [mem size 0x80000000]
+pci 0000:00:02.0: BAR 0: no space for [mem size 0x80000000]
+pci 0000:00:02.0: BAR 0: failed to assign [mem size 0x80000000]
+pci 0000:00:00.0: BAR 8: assigned [mem 0x60000000-0x600fffff]
+pci 0000:00:00.0: BAR 9: assigned [mem 0x60100000-0x601fffff pref]
+pci 0000:00:01.0: BAR 8: assigned [mem 0x60200000-0x602fffff]
+pci 0000:00:01.0: BAR 9: assigned [mem 0x60300000-0x603fffff pref]
+pci 0000:00:02.0: BAR 8: assigned [mem 0x60400000-0x604fffff]
+pci 0000:00:02.0: BAR 9: assigned [mem 0x60500000-0x605fffff pref]
+pci 0000:00:00.0: BAR 1: assigned [mem 0x60600000-0x6060ffff]
+pci 0000:00:01.0: BAR 1: assigned [mem 0x60610000-0x6061ffff]
+pci 0000:00:02.0: BAR 1: assigned [mem 0x60620000-0x6062ffff]
+pci 0000:00:00.0: BAR 7: assigned [io  0x0000-0x0fff]
+pci 0000:00:01.0: BAR 7: assigned [io  0x1000-0x1fff]
+pci 0000:00:02.0: BAR 7: assigned [io  0x2000-0x2fff]
+pci 0000:01:00.0: BAR 5: assigned [mem 0x60000000-0x600001ff]
+pci 0000:01:00.0: BAR 4: assigned [io  0x0000-0x000f]
+pci 0000:01:00.0: BAR 0: assigned [io  0x0010-0x0017]
+pci 0000:01:00.0: BAR 2: assigned [io  0x0018-0x001f]
+pci 0000:01:00.0: BAR 1: assigned [io  0x0020-0x0023]
+pci 0000:01:00.0: BAR 3: assigned [io  0x0024-0x0027]
+pci 0000:00:00.0: PCI bridge to [bus 01]
+pci 0000:00:00.0:   bridge window [io  0x0000-0x0fff]
+pci 0000:00:00.0:   bridge window [mem 0x60000000-0x600fffff]
+pci 0000:00:00.0:   bridge window [mem 0x60100000-0x601fffff pref]
+pci 0000:02:00.0: BAR 5: assigned [mem 0x60200000-0x602001ff]
+pci 0000:02:00.0: BAR 4: assigned [io  0x1000-0x100f]
+pci 0000:02:00.0: BAR 0: assigned [io  0x1010-0x1017]
+pci 0000:02:00.0: BAR 2: assigned [io  0x1018-0x101f]
+pci 0000:02:00.0: BAR 1: assigned [io  0x1020-0x1023]
+pci 0000:02:00.0: BAR 3: assigned [io  0x1024-0x1027]
+pci 0000:00:01.0: PCI bridge to [bus 02]
+pci 0000:00:01.0:   bridge window [io  0x1000-0x1fff]
+pci 0000:00:01.0:   bridge window [mem 0x60200000-0x602fffff]
+pci 0000:00:01.0:   bridge window [mem 0x60300000-0x603fffff pref]
+pci 0000:03:00.0: BAR 5: assigned [mem 0x60400000-0x604001ff]
+pci 0000:03:00.0: BAR 4: assigned [io  0x2000-0x200f]
+pci 0000:03:00.0: BAR 0: assigned [io  0x2010-0x2017]
+pci 0000:03:00.0: BAR 2: assigned [io  0x2018-0x201f]
+pci 0000:03:00.0: BAR 1: assigned [io  0x2020-0x2023]
+pci 0000:03:00.0: BAR 3: assigned [io  0x2024-0x2027]
+pci 0000:00:02.0: PCI bridge to [bus 03]
+pci 0000:00:02.0:   bridge window [io  0x2000-0x2fff]
+pci 0000:00:02.0:   bridge window [mem 0x60400000-0x604fffff]
+pci 0000:00:02.0:   bridge window [mem 0x60500000-0x605fffff pref]
+
+No changes also here:
+
+root@gnubee:~# cat /proc/ioports
+00000000-0000ffff : pcie@1e140000
+  00000000-00000fff : PCI Bus 0000:01
+    00000000-0000000f : 0000:01:00.0
+      00000000-0000000f : ahci
+    00000010-00000017 : 0000:01:00.0
+      00000010-00000017 : ahci
+    00000018-0000001f : 0000:01:00.0
+      00000018-0000001f : ahci
+    00000020-00000023 : 0000:01:00.0
+      00000020-00000023 : ahci
+    00000024-00000027 : 0000:01:00.0
+      00000024-00000027 : ahci
+  00001000-00001fff : PCI Bus 0000:02
+    00001000-0000100f : 0000:02:00.0
+      00001000-0000100f : ahci
+    00001010-00001017 : 0000:02:00.0
+      00001010-00001017 : ahci
+    00001018-0000101f : 0000:02:00.0
+      00001018-0000101f : ahci
+    00001020-00001023 : 0000:02:00.0
+      00001020-00001023 : ahci
+    00001024-00001027 : 0000:02:00.0
+      00001024-00001027 : ahci
+  00002000-00002fff : PCI Bus 0000:03
+    00002000-0000200f : 0000:03:00.0
+      00002000-0000200f : ahci
+    00002010-00002017 : 0000:03:00.0
+      00002010-00002017 : ahci
+    00002018-0000201f : 0000:03:00.0
+      00002018-0000201f : ahci
+    00002020-00002023 : 0000:03:00.0
+      00002020-00002023 : ahci
+    00002024-00002027 : 0000:03:00.0
+      00002024-00002027 : ahci
+
+>
+> > > pcie_write(pcie, 0xffffffff, RALINK_PCI_MEMBASE)
+> > >
+> > > Can you clarify what this does? I would have expected an
+> > > identity-map for the memory space, which would mean writing
+> > > the third cell from the ranges property (0x60000000)
+> > > into this. Is -1 a special value for identity mapping, or does
+> > > this register do something else?
+> >
+> > That was also my understanding at first when I took this code and
+> > started playing with it since the register is the base address for the
+> > memory space window. Setting the value you pointed out worked for me
+> > (and makes sense), but some people seem to have problems with some
+> > cards when accessing PCI memory resources. That's the only reason I
+> > have maintained the original value but I don't really understand what
+> > it means. The same value is used in mt7620 which has a pretty similar
+> > topology but with one only virtual bridge behind the host-bridge [0].
+> > However there is no documentation for mt7621 PCI subsystem and the one
+> > that exists for mt7620 PCI does not clarify much more [1].
+>
+> Ok, fair enough.
+>
+>           Arnd
+
+Thanks,
+     Sergio Paracuellos
