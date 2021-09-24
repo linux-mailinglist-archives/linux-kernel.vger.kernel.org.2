@@ -2,83 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB8B417546
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD1B417548
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346440AbhIXNTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:19:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45246 "EHLO mail.kernel.org"
+        id S1346435AbhIXNT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:19:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:48362 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347215AbhIXNSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:18:03 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 005B760F4C;
-        Fri, 24 Sep 2021 13:16:28 +0000 (UTC)
-Date:   Fri, 24 Sep 2021 09:16:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Eugene Syromyatnikov <evgsyr@gmail.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 0/2] tracing: Have trace_pid_list be a sparse array
-Message-ID: <20210924091627.645a8fd3@gandalf.local.home>
-In-Reply-To: <CACGkJdtsHWBstw_Gzb-Dq4Xs_eAW1jsARr5wbh0yE_=NsPA5bw@mail.gmail.com>
-References: <20210924033547.939554938@goodmis.org>
-        <20210924000717.310b492a@rorschach.local.home>
-        <CACGkJdtsHWBstw_Gzb-Dq4Xs_eAW1jsARr5wbh0yE_=NsPA5bw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1346306AbhIXNTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:19:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 626B3113E;
+        Fri, 24 Sep 2021 06:17:31 -0700 (PDT)
+Received: from [10.57.95.68] (unknown [10.57.95.68])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 980EC3F719;
+        Fri, 24 Sep 2021 06:17:29 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] coresight: etm4x: Add ETM PID for Kryo-5XX
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>
+References: <1632477981-13632-1-git-send-email-quic_taozha@quicinc.com>
+ <1632477981-13632-2-git-send-email-quic_taozha@quicinc.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <dfe21692-ff04-5c17-8bb3-369fc5ff504e@arm.com>
+Date:   Fri, 24 Sep 2021 14:17:28 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1632477981-13632-2-git-send-email-quic_taozha@quicinc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sep 2021 12:51:07 +0200
-Eugene Syromyatnikov <evgsyr@gmail.com> wrote:
-
-Hi Eugene,
-
-> Note that there is only one top-level chunk (so its size doesn't
-> matter much), (usually) about one middle-tier chunk (except for some
-> heavy cases, since pids are allocated linearly), and quite some
-> lower-tier bitset leaves.  So I'd optimise towards smaller leaves at
-> the expense of middle-tier (and especially top-tier) chunk size
-> (especially considering the fact that in the kernel, buddy allocator
-> is used), like 12-8-12 or something like that, but I have no factual
-
-What I really like about my 8 8 14 split I have, it makes everything 2K in
-size on 64 bit machines (1K 1K 2K for 32 bit, but who cares ;-)
-
- 1 << 8 * 8 bytes = 2K   // top tiers are pointers to lower tiers
- 1 << 14 bits = 2K       // lower tier only cares about bits
-
-This means they will likely all be allocated in the same slab.
-
-I'm optimizing the top tiers for size, because they are likely to be empty.
-Why add memory for something that will never be used, and can't be removed.
-Note, the middle and lower tiers can be reused when they go empty, which is
-a likely use case (at least when I test this using hackbench).
-
-> basis for arguing about specific split.  Also, I cannot resist from
-> noticing that this reminds me an awful lot of XArray and [1].  Maybe,
-> some wrapper around XArray would do?
+On 24/09/2021 11:06, Tao Zhang wrote:
+> Add ETM PID for Kryo-5XX to the list of supported ETMs.
+> Otherwise, Kryo-5XX ETMs will not be initialized successfully.
+> e.g.
+> This change can be verified on qrb5165-rb5 board. ETM4-ETM7 nodes
+> will not be visible without this change.
 > 
-> [1] https://gitlab.com/strace/strace/-/raw/master/src/trie.h
-> 
+> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
 
-I looked into xarray and it appears to be optimized for storing something,
-where as I'm just interested in a sparse bitmask.
+I have queued this one.
 
-Thanks for the review.
-
-Note, I'll be posting a v3 soon because I found if I echo 1<<30 into
-set_event_pid, it adds 0 (because it only looks at the bottom 30 bits).
-It should really return -EINVAL.
-
--- Steve
+Suzuki
