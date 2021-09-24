@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6174174EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0ED4173E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346511AbhIXNL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:11:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
+        id S1344985AbhIXNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346844AbhIXNIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:08:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A0E460F39;
-        Fri, 24 Sep 2021 12:57:05 +0000 (UTC)
+        id S1345199AbhIXM5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:57:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3247460F39;
+        Fri, 24 Sep 2021 12:51:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488226;
-        bh=lx1LhdKj95FfU9ceJD3dWpyV9B7g4S1HDUpYyQ475KI=;
+        s=korg; t=1632487905;
+        bh=wuMnN238CAYwXN0qwKHd5Or0KpuSkE7Av/lZb/7bzdM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t9uKMnI2Io81hMqXOXsRpRzXDfFhXLzxAj/P6yCH/e/VworbE2RYk8n9kIOhoPMyP
-         qiabrJFkwBwHcNF2w4iSNiGRA3DWLPOI2vVhpm2IpzGGolHB+CxaUEhB2izwKpHYFQ
-         4h798r5SOurIVIfPKATH1gFhtr31z1WdyBO42V8w=
+        b=xNU9wjWud5UDtSHyDdTBxpNdxOh+vwgkV0xNOZyRPlF1tBN9who3A230L+CrVTMJm
+         ihDGA69ZXkM0BoLFcJtwTH1uQDSE43OPv7HQLkWHAdB3ikWtMZOgtdlrNICm2acgM4
+         2mj50VjasBZASNzvrPf8e4n+faBgo6B27cgV9T5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 31/63] ceph: cancel delayed work instead of flushing on mdsc teardown
-Date:   Fri, 24 Sep 2021 14:44:31 +0200
-Message-Id: <20210924124335.340513745@linuxfoundation.org>
+Subject: [PATCH 5.4 43/50] nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
+Date:   Fri, 24 Sep 2021 14:44:32 +0200
+Message-Id: <20210924124333.700675527@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-[ Upstream commit b4002173b7989588b6feaefc42edaf011b596782 ]
+[ Upstream commit b2fe39c248f3fa4bbb2a20759b4fdd83504190f7 ]
 
-The first thing metric_delayed_work does is check mdsc->stopping,
-and then return immediately if it's set. That's good since we would
-have already torn down the metric structures at this point, otherwise,
-but there is no locking around mdsc->stopping.
+If kobject_init_and_add returns with error, kobject_put() is needed here
+to avoid memory leak, because kobject_init_and_add may return error
+without freeing the memory associated with the kobject it allocated.
 
-It's possible that the ceph_metric_destroy call could race with the
-delayed_work, in which case we could end up with the delayed_work
-accessing destroyed percpu variables.
-
-At this point in the mdsc teardown, the "stopping" flag has already been
-set, so there's no benefit to flushing the work. Move the work
-cancellation in ceph_metric_destroy ahead of the percpu variable
-destruction, and eliminate the flush_delayed_work call in
-ceph_mdsc_destroy.
-
-Fixes: 18f473b384a6 ("ceph: periodically send perf metrics to MDSes")
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-6-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-6-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/mds_client.c | 1 -
- fs/ceph/metric.c     | 4 ++--
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ fs/nilfs2/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-index 8cbbb611e0ca..46606fb5b886 100644
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -4859,7 +4859,6 @@ void ceph_mdsc_destroy(struct ceph_fs_client *fsc)
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 195f42192a15..6c92ac314b06 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -208,9 +208,9 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
+ 	}
  
- 	ceph_metric_destroy(&mdsc->metric);
+ 	if (err)
+-		return err;
++		kobject_put(&root->snapshot_kobj);
  
--	flush_delayed_work(&mdsc->metric.delayed_work);
- 	fsc->mdsc = NULL;
- 	kfree(mdsc);
- 	dout("mdsc_destroy %p done\n", mdsc);
-diff --git a/fs/ceph/metric.c b/fs/ceph/metric.c
-index 3b2ef8ee544e..9e0a0e26294e 100644
---- a/fs/ceph/metric.c
-+++ b/fs/ceph/metric.c
-@@ -224,6 +224,8 @@ void ceph_metric_destroy(struct ceph_client_metric *m)
- 	if (!m)
- 		return;
- 
-+	cancel_delayed_work_sync(&m->delayed_work);
-+
- 	percpu_counter_destroy(&m->total_inodes);
- 	percpu_counter_destroy(&m->opened_inodes);
- 	percpu_counter_destroy(&m->i_caps_mis);
-@@ -231,8 +233,6 @@ void ceph_metric_destroy(struct ceph_client_metric *m)
- 	percpu_counter_destroy(&m->d_lease_mis);
- 	percpu_counter_destroy(&m->d_lease_hit);
- 
--	cancel_delayed_work_sync(&m->delayed_work);
--
- 	ceph_put_mds_session(m->session);
+-	return 0;
++	return err;
  }
  
+ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
 -- 
 2.33.0
 
