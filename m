@@ -2,146 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E5A417A5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B1A417A5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345555AbhIXSCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 14:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344663AbhIXSBz (ORCPT
+        id S1347717AbhIXSCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 14:02:20 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:36722 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345563AbhIXSCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 14:01:55 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC67EC061571;
-        Fri, 24 Sep 2021 11:00:21 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id y12so2995534edo.9;
-        Fri, 24 Sep 2021 11:00:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=QJ7e9nuJLnIMNj0wcEbeYYc98wFrfVbCv9B0BoHfkj4=;
-        b=ahZgJgZ5bhBmQ3I6bw9edXWdA8rJco//L2jgEjh7QRz6xfZxd5RgeRG5OnA612xpkc
-         TQtYjHoyIXBxCDD+6ZkHjx7GLyU5ag9vLtMO/ipC41B+GP16uHkJQbX9Ubww8r65e266
-         MiAi3f3lO0kDA06MtlAnmCR3oyHifMGM/cThvM4mTcnX1JevGQLmTdR4jhJGn1Z+ViR7
-         IpRfAK91K1yHR7xmWwXmzuWjH5E3e9wOr7ZnxtIfa8kmiAeghv/dZkQWH0B3XDZbdwDE
-         8M8KF73x4TEyxaP08Lf63wRQfZZJZXCUtm1Le5YgAVVb3dEPon5d2VAz1aLELsOojSOl
-         CUQA==
+        Fri, 24 Sep 2021 14:02:09 -0400
+Received: by mail-oi1-f169.google.com with SMTP id y201so15575355oie.3;
+        Fri, 24 Sep 2021 11:00:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=QJ7e9nuJLnIMNj0wcEbeYYc98wFrfVbCv9B0BoHfkj4=;
-        b=aY15EJv2DpjCZ3rhRz4T9GTDJgPfs+x/deMgZiI/M4RztqsK9RZw5uXqVQMH1TTvkd
-         hRSKVbhGBnf0PRJ899+9UjVQ4mAYEXqfpXA+zhRh2yZwS4PKZGjVxbaU4y0Ls/+BQr0D
-         jiYRERzw06UF4StX4JrQgMwxgvVXC40zF48RDfphLG63CLfHHZxY60QAx3rgtnMnEbFR
-         W5Yu2vkjDgzzT/L8qFVplfUqKJ9QcUtFcRjyOEhJCkGtlBmH+nB4hQnUD0iq1AMEJ8mE
-         dt3bN2R73WKSM1az+0mF0yoT125NR7iyGDZ+y4HFukpH5D/4czhJL0Z4vCyfIYx1ERyE
-         yTvQ==
-X-Gm-Message-State: AOAM533YZbCic3mr+rHCGu1ffif60o+lVcoKhNp7zFOau6BNL471tUy8
-        ZuYbqaoWlpt3JbWJVmf5U95UUpUl1Ic4BQ==
-X-Google-Smtp-Source: ABdhPJzX4kmWqD12aDXuBBCNm7LwiByNB8lSaLMx8CHvW93R+j/enX/2t2YvfA+J4iQ2klZ71xFGBg==
-X-Received: by 2002:a50:d0d1:: with SMTP id g17mr6744184edf.96.1632506420179;
-        Fri, 24 Sep 2021 11:00:20 -0700 (PDT)
-Received: from [192.168.1.42] ([147.235.73.50])
-        by smtp.gmail.com with ESMTPSA id u19sm6373456edv.40.2021.09.24.11.00.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 11:00:19 -0700 (PDT)
-Subject: Re: [PATCH v2] kconfig: Create links to main menu items in search
-To:     masahiroy@kernel.org
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210913164514.437972-1-arielmarcovitch@gmail.com>
-From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
-Message-ID: <be481cb5-cfe0-6e23-2c27-c2e0aed69c6c@gmail.com>
-Date:   Fri, 24 Sep 2021 21:00:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=h1NtlTiZy6ayHV+iS5R5lx5yE7zPiiaIupfYhP7Z+ro=;
+        b=tmf1PK4oBQLHKEh++3lEO151WsoC34x/B+O8yPr4c0PXSzNgAezQWO/d/Jx4UVoDno
+         F3QMgwz0ki0b9j7grS3orneqo4jWj6ubegi0+62f48YUtwrADqMD5vud02NaYVLY0WEQ
+         cwZJJ8I3yCqiAPIcWM8c9Twa6aaH+fo5nuo5ptUb7T+EJ8QgNtDLcm0bKnoUhB80qsFH
+         WJdFptiEEm4z8PtcXjTBrLavqJChg4PpJnWY93Jjh20FX8riY+SWmI69LW9SHLp0Ph9e
+         6ViCHeOEW0Yhinr4FxWPYxnuRJTqOAYnUKTkPi2k3kQF4aDfc6956Oq5cXR+XNr47H2D
+         T6NA==
+X-Gm-Message-State: AOAM533ZLyN5Vjyc5P70TRx+Ru7s/9VmFFU8Dr/YSDjMWI7HRXAM9EKF
+        fNhz1/kxyDUQEAMNRsZcTp15wIIYUM29OUpkEJR0YvCmXz0=
+X-Google-Smtp-Source: ABdhPJz7TfCATXdxY6RCb/IDohxyBUtA8QbORH8fdTQbEMfgzahSCP+HASsRrIFMbKVPep5bmtLm7HW3oVdyVnE/bII=
+X-Received: by 2002:a54:4f15:: with SMTP id e21mr2546573oiy.71.1632506436180;
+ Fri, 24 Sep 2021 11:00:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210913164514.437972-1-arielmarcovitch@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 24 Sep 2021 20:00:25 +0200
+Message-ID: <CAJZ5v0j+VDWvzoH1iuTqYm6epwhBf6R6JdxkoCZvzs6835AcWQ@mail.gmail.com>
+Subject: [GIT PULL] ACPI fix for v5.15-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2021 19:45, Ariel Marcovitch wrote:
-> When one searches for a main menu item, links aren't created for it like
-> with the rest of the symbols.
->
-> This happens because we trace the item until we get to the rootmenu, but
-> we don't include it in the path of the item. The rationale was probably
-> that we don't want to show the main menu in the path of all items,
-> because it is redundant.
->
-> However, when an item has only the rootmenu in its path it should be
-> included, because this way the user can jump to its location.
->
-> Add a 'Main menu' entry in the 'Location:' section for the kconfig
-> items.
->
-> This makes the 'if (i > 0)' superfluous because each item with prompt
-> will have at least one menu in its path.
->
-> Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
-> ---
->   scripts/kconfig/menu.c | 33 ++++++++++++++++++---------------
->   1 file changed, 18 insertions(+), 15 deletions(-)
->
-> diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
-> index 606ba8a63c24..3d6f7cba8846 100644
-> --- a/scripts/kconfig/menu.c
-> +++ b/scripts/kconfig/menu.c
-> @@ -728,7 +728,7 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
->   		get_dep_str(r, prop->visible.expr, "  Visible if: ");
->   
->   	menu = prop->menu->parent;
-> -	for (i = 0; menu != &rootmenu && i < 8; menu = menu->parent) {
-> +	for (i = 0; menu && i < 8; menu = menu->parent) {
->   		bool accessible = menu_is_visible(menu);
->   
->   		submenu[i++] = menu;
-> @@ -758,21 +758,24 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
->   		list_add_tail(&jump->entries, head);
->   	}
->   
-> -	if (i > 0) {
-> -		str_printf(r, "  Location:\n");
-> -		for (j = 4; --i >= 0; j += 2) {
-> -			menu = submenu[i];
-> -			if (jump && menu == location)
-> -				jump->offset = strlen(r->s);
-> -			str_printf(r, "%*c-> %s", j, ' ',
-> -				   menu_get_prompt(menu));
-> -			if (menu->sym) {
-> -				str_printf(r, " (%s [=%s])", menu->sym->name ?
-> -					menu->sym->name : "<choice>",
-> -					sym_get_string_value(menu->sym));
-> -			}
-> -			str_append(r, "\n");
-> +	str_printf(r, "  Location:\n");
-> +	for (j = 4; --i >= 0; j += 2) {
-> +		menu = submenu[i];
-> +		if (jump && menu == location)
-> +			jump->offset = strlen(r->s);
-> +
-> +		if (menu == &rootmenu)
-> +			/* The real rootmenu prompt is ugly */
-> +			str_printf(r, "%*cMain menu", j, ' ');
-> +		else
-> +			str_printf(r, "%*c-> %s", j, ' ', menu_get_prompt(menu));
-> +
-> +		if (menu->sym) {
-> +			str_printf(r, " (%s [=%s])", menu->sym->name ?
-> +				menu->sym->name : "<choice>",
-> +				sym_get_string_value(menu->sym));
->   		}
-> +		str_append(r, "\n");
->   	}
->   }
->   
->
-> base-commit: a9086b878b7fd65894eb8cb1fa395dd469970566
-A friendly ping :)
+Hi Linus,
+
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.15-rc3
+
+with top-most commit 12064c1768439fa0882547010afae6b52aafa7af
+
+ Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+
+on top of commit e4e737bb5c170df6135a127739a9e6148ee3da82
+
+ Linux 5.15-rc2
+
+to receive an ACPI fix for 5.15-rc3.
+
+This reverts a recent commit related to memory management that
+turned out to be problematic (Jia He).
+
+Thanks!
+
+
+---------------
+
+Jia He (1):
+      Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+
+---------------
+
+ arch/arm64/include/asm/acpi.h |  3 ---
+ arch/arm64/kernel/acpi.c      | 19 +++----------------
+ drivers/acpi/osl.c            | 23 +++++++----------------
+ include/acpi/acpi_io.h        |  8 --------
+ 4 files changed, 10 insertions(+), 43 deletions(-)
