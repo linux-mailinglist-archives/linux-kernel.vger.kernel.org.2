@@ -2,82 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9963F416D1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920D9416D23
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239742AbhIXHwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:52:30 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:58391 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235134AbhIXHwW (ORCPT
+        id S239699AbhIXHyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236429AbhIXHyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:52:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632469849; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=6zccmjdrHo+ekRUZS+8j7DEY4Vf+wTOSBKi2rSCaWBE=; b=WEVSNJX8j9VcSojMsF7+sq7b+iRxmz4RN4Zej88oRYWQ+6kuLR13nDxkIoLQM0EiIz/mbJQh
- DbC/Xmf8ztlGQP0bLnOF0kF2UhAg95WoxFlNTFqRJY0lyLDN1UfuSZN4i+fRLiLD1/8X3Mse
- zPtU6vhyp1Y5W7s03OUm3J71oZ0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 614d8345096ba46b979ff0e8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Sep 2021 07:50:29
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 499F4C4360C; Fri, 24 Sep 2021 07:50:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17429C4338F;
-        Fri, 24 Sep 2021 07:50:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 17429C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Ramon Fontes <ramonreisfontes@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, davem@davemloft.net
-Subject: Re: [PATCH] mac80211_hwsim: enable 6GHz channels
-References: <20210922142803.192601-1-ramonreisfontes@gmail.com>
-        <167f632eb19944b5711a584218e57b51da85df96.camel@sipsolutions.net>
-Date:   Fri, 24 Sep 2021 10:50:24 +0300
-In-Reply-To: <167f632eb19944b5711a584218e57b51da85df96.camel@sipsolutions.net>
-        (Johannes Berg's message of "Wed, 22 Sep 2021 16:29:37 +0200")
-Message-ID: <87fstutnsv.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 24 Sep 2021 03:54:19 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088E8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:52:47 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id 188so8128086vsv.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:52:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VSJZmHK0rplfigbPe+OyKXUHoTZu2Oxr/dp2dPbeXZo=;
+        b=gzdj3NyHgGcEz58DMDOm/sT9vAZs2CQ3rGsecE3NrrgqEQrFX51p1OawYEUl+SmcFz
+         smDK/jFK/w8Ow81y9XEHT5KpxvjVzsquJZf2Z8fUGkkZSBrZ9vstgLEDHQV+cF0XGBAX
+         PpU0SEjtJJBfnNM+cnAQf70lv8EZsUQsyDcpE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VSJZmHK0rplfigbPe+OyKXUHoTZu2Oxr/dp2dPbeXZo=;
+        b=1LnWVUTTeoz0z8TKOjQ0ECuherj9fKzNd36WY4ZdxbLQ4OKug/dKu8BzU9LNxLVic3
+         +jw6VZAxVBqfIdxmuIorKI9F5/CsZP34cTLieq5YrLF0ldaGGbygGtzXebz3vUdA12Kc
+         LfpLo89BRawV5YM4kLncfdRrA8fRhgRFAAC8Ov7ukYzd8OACZtfXTtJDSonOweI/uHvU
+         AEDkXi9itZO7RR/ZG4H3cMTZuHPUomFLIRkG/tNFvqm1PC12Z9jyz6zKJGx1d3vNDMsF
+         JW3s7MnAZpN3QITGj1qxmtPOSiHdXtPBwhpRSVFKmriljUIafZ27rZ/dv2rEZnNPsqM1
+         tjRA==
+X-Gm-Message-State: AOAM532OtOjSQZK394KCO0fEtwt92IOZVYvEM92PT1mea/rCRF/7/ErS
+        BV433SU4aD9iu8WuhJYqVJewqAc112hSSdsAgAG3lQ==
+X-Google-Smtp-Source: ABdhPJwDpBjRRXRiJacMYJzUYvFonwF3nBGDAW3BV0jqMOOgQDGXDVMWU78DPW/qR7gyp7DE3wLUXlbdkW6EWv3kkCk=
+X-Received: by 2002:a05:6102:3c3:: with SMTP id n3mr8041807vsq.19.1632469966191;
+ Fri, 24 Sep 2021 00:52:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210603125242.31699-1-chenguanyou@xiaomi.com>
+ <CAJfpegsEkRnU26Vvo4BTQUmx89Hahp6=RTuyEcPm=rqz8icwUQ@mail.gmail.com>
+ <1fabb91167a86990f4723e9036a0e006293518f4.camel@mediatek.com>
+ <CAJfpegsOSWZpKHqDNE_B489dGCzLr-RVAhimVOsFkxJwMYmj9A@mail.gmail.com> <07c5f2f1e10671bc462f88717f84aae9ee1e4d2b.camel@mediatek.com>
+In-Reply-To: <07c5f2f1e10671bc462f88717f84aae9ee1e4d2b.camel@mediatek.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 24 Sep 2021 09:52:35 +0200
+Message-ID: <CAJfpegvAJS=An+hyAshkNcTS8A2TM28V2UP4SYycXUw3awOR+g@mail.gmail.com>
+Subject: Re: [PATCH] [fuse] alloc_page nofs avoid deadlock
+To:     Ed Tsai <ed.tsai@mediatek.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        chenguanyou <chenguanyou@xiaomi.com>,
+        chenguanyou <chenguanyou9338@gmail.com>,
+        =?UTF-8?B?U3RhbmxleSBDaHUgKOacseWOn+mZnik=?= 
+        <stanley.chu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Berg <johannes@sipsolutions.net> writes:
-
-> On Wed, 2021-09-22 at 11:28 -0300, Ramon Fontes wrote:
->> This adds 6 GHz capabilities and reject HT/VHT
->> 
+On Fri, 24 Sept 2021 at 05:52, Ed Tsai <ed.tsai@mediatek.com> wrote:
 >
-> It'd be nice to add a version to the subject, with -vN on the git-send-
-> email commandline :)
+> On Wed, 2021-08-18 at 17:24 +0800, Miklos Szeredi wrote:
+> > On Tue, 13 Jul 2021 at 04:42, Ed Tsai <ed.tsai@mediatek.com> wrote:
+> > >
+> > > On Tue, 2021-06-08 at 17:30 +0200, Miklos Szeredi wrote:
+> > > > On Thu, 3 Jun 2021 at 14:52, chenguanyou <
+> > > > chenguanyou9338@gmail.com>
+> > > > wrote:
+> > > > >
+> > > > > ABA deadlock
+> > > > >
+> > > > > PID: 17172 TASK: ffffffc0c162c000 CPU: 6 COMMAND: "Thread-21"
+> > > > > 0 [ffffff802d16b400] __switch_to at ffffff8008086a4c
+> > > > > 1 [ffffff802d16b470] __schedule at ffffff80091ffe58
+> > > > > 2 [ffffff802d16b4d0] schedule at ffffff8009200348
+> > > > > 3 [ffffff802d16b4f0] bit_wait at ffffff8009201098
+> > > > > 4 [ffffff802d16b510] __wait_on_bit at ffffff8009200a34
+> > > > > 5 [ffffff802d16b5b0] inode_wait_for_writeback at
+> > > > > ffffff800830e1e8
+> > > > > 6 [ffffff802d16b5e0] evict at ffffff80082fb15c
+> > > > > 7 [ffffff802d16b620] iput at ffffff80082f9270
+> > > > > 8 [ffffff802d16b680] dentry_unlink_inode at ffffff80082f4c90
+> > > > > 9 [ffffff802d16b6a0] __dentry_kill at ffffff80082f1710
+> > > > > 10 [ffffff802d16b6d0] shrink_dentry_list at ffffff80082f1c34
+> > > > > 11 [ffffff802d16b750] prune_dcache_sb at ffffff80082f18a8
+> > > > > 12 [ffffff802d16b770] super_cache_scan at ffffff80082d55ac
+> > > > > 13 [ffffff802d16b860] shrink_slab at ffffff8008266170
+> > > > > 14 [ffffff802d16b900] shrink_node at ffffff800826b420
+> > > > > 15 [ffffff802d16b980] do_try_to_free_pages at ffffff8008268460
+> > > > > 16 [ffffff802d16ba60] try_to_free_pages at ffffff80082680d0
+> > > > > 17 [ffffff802d16bbe0] __alloc_pages_nodemask at
+> > > > > ffffff8008256514
+> > > > > 18 [ffffff802d16bc60] fuse_copy_fill at ffffff8008438268
+> > > > > 19 [ffffff802d16bd00] fuse_dev_do_read at ffffff8008437654
+> > > > > 20 [ffffff802d16bdc0] fuse_dev_splice_read at ffffff8008436f40
+> > > > > 21 [ffffff802d16be60] sys_splice at ffffff8008315d18
+> > > > > 22 [ffffff802d16bff0] __sys_trace at ffffff8008084014
+> > > > >
+> > > > > PID: 9652 TASK: ffffffc0c9ce0000 CPU: 4 COMMAND:
+> > > > > "kworker/u16:8"
+> > > > > 0 [ffffff802e793650] __switch_to at ffffff8008086a4c
+> > > > > 1 [ffffff802e7936c0] __schedule at ffffff80091ffe58
+> > > > > 2 [ffffff802e793720] schedule at ffffff8009200348
+> > > > > 3 [ffffff802e793770] __fuse_request_send at ffffff8008435760
+> > > > > 4 [ffffff802e7937b0] fuse_simple_request at ffffff8008435b14
+> > > > > 5 [ffffff802e793930] fuse_flush_times at ffffff800843a7a0
+> > > > > 6 [ffffff802e793950] fuse_write_inode at ffffff800843e4dc
+> > > > > 7 [ffffff802e793980] __writeback_single_inode at
+> > > > > ffffff8008312740
+> > > > > 8 [ffffff802e793aa0] writeback_sb_inodes at ffffff80083117e4
+> > > > > 9 [ffffff802e793b00] __writeback_inodes_wb at ffffff8008311d98
+> > > > > 10 [ffffff802e793c00] wb_writeback at ffffff8008310cfc
+> > > > > 11 [ffffff802e793d00] wb_workfn at ffffff800830e4a8
+> > > > > 12 [ffffff802e793d90] process_one_work at ffffff80080e4fac
+> > > > > 13 [ffffff802e793e00] worker_thread at ffffff80080e5670
+> > > > > 14 [ffffff802e793e60] kthread at ffffff80080eb650
+> > > >
+> > > > The issue is real.
+> > > >
+> > > > The fix, however, is not the right one.  The fundamental problem
+> > > > is
+> > > > that fuse_write_inode() blocks on a request to userspace.
+> > > >
+> > > > This is the same issue that fuse_writepage/fuse_writepages
+> > > > face.  In
+> > > > that case the solution was to copy the page contents to a
+> > > > temporary
+> > > > buffer and return immediately as if the writeback already
+> > > > completed.
+> > > >
+> > > > Something similar needs to be done here: send the FUSE_SETATTR
+> > > > request
+> > > > asynchronously and return immediately from
+> > > > fuse_write_inode().  The
+> > > > tricky part is to make sure that multiple time updates for the
+> > > > same
+> > > > inode aren't mixed up...
+> > > >
+> > > > Thanks,
+> > > > Miklos
+> > >
+> > > Dear Szeredi,
+> > >
+> > > Writeback thread calls fuse_write_inode() and wait for user Daemon
+> > > to
+> > > complete this write inode request. The user daemon will
+> > > alloc_page()
+> > > after taking this request, and a deadlock could happen when we try
+> > > to
+> > > shrink dentry list under memory pressure.
+> > >
+> > > We (Mediatek) glad to work on this issue for mainline and also LTS.
+> > > So
+> > > another problem is that we should not change the protocol or
+> > > feature
+> > > for stable kernel.
+> > >
+> > > Use GFP_NOFS | __GFP_HIGHMEM can really avoid this by skip the
+> > > dentry
+> > > shirnker. It works but degrade the alloc_page success rate. In a
+> > > more
+> > > fundamental way, we could cache the contents and return
+> > > immediately.
+> > > But how to ensure the request will be done successfully, e.g.,
+> > > always
+> > > retry if it fails from daemon.
+> >
+> > Key is where the the dirty metadata is flushed.  To prevent deadlock
+> > it must not be flushed from memory reclaim, so must make sure that it
+> > is flushed on close(2) and munmap(2) and not dirtied after that.
+> >
+> > I'm working on this currently and hope to get it ready for the next
+> > merge window.
+> >
+> > Thanks,
+> > Miklos
+>
+> Hi Miklos,
+>
+> I'm not sure whether it has already been resolved in mainline.
+> If it still WIP, please cc me on future emails.
 
-And don't forge the changelog either:
+Hi,
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#changelog_missing
+This is taking a bit longer, unfortunately, but I already have
+something in testing and currently cleaning it up for review.  Hope to
+post a series today or early next week.
 
-One day I'll write a bot to send these wiki links :)
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Thanks,
+Miklos
