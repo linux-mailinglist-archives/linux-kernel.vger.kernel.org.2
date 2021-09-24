@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D616E41726E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DA4417270
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbhIXMsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:48:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43512 "EHLO mail.kernel.org"
+        id S1343898AbhIXMsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:48:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343965AbhIXMrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:47:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 334D96127A;
-        Fri, 24 Sep 2021 12:46:09 +0000 (UTC)
+        id S1343887AbhIXMrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:47:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3E86124C;
+        Fri, 24 Sep 2021 12:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487569;
-        bh=Z6Ujq7sp7GYLn+d4h4DJCUe2L/oGXECweW/7zKdY00I=;
+        s=korg; t=1632487572;
+        bh=YT5UNhE0ZTa2wh2kk99kXuUGRghbCAfpUtgUcNBigpo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gakaw+47G1xRY9OR7ahPbNmkXeHaS4+qibx8ZEE4wSOzuWxhi1DXDcgQGFd/lwPQv
-         1SPekauPhOlwb+/jivIuDv5xcs16J6EBt0ZoI0qHJLUTODrR1pGsRnf7opcDdJojG5
-         qCeQrhZMTIhoIk4TmAPNHdI4pJi852qzncFa0t6M=
+        b=nMsId4a0RK97dfMvyFao2z/eoS/i+Ct+KMwHghbgXjafn3arZBdRRP42BLw3uEp8c
+         250lXJq1lxN8IccEJ/2Rb3mYjblB+JnkDnfIa+FZox7XPgBwvHRi9vmktH/1/sbqXz
+         qew21vfQMElXg5rit2EZdV3gwCz+2k6akggxzZFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
+        stable@vger.kernel.org,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Harini Katakam <harini.katakam@xilinx.com>,
         Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 15/26] dmaengine: ioat: depends on !UML
-Date:   Fri, 24 Sep 2021 14:44:03 +0200
-Message-Id: <20210924124328.847594264@linuxfoundation.org>
+Subject: [PATCH 4.9 16/26] dmaengine: xilinx_dma: Set DMA mask for coherent APIs
+Date:   Fri, 24 Sep 2021 14:44:04 +0200
+Message-Id: <20210924124328.885748749@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
 References: <20210924124328.336953942@linuxfoundation.org>
@@ -41,37 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
 
-[ Upstream commit bbac7a92a46f0876e588722ebe552ddfe6fd790f ]
+[ Upstream commit aac6c0f90799d66b8989be1e056408f33fd99fe6 ]
 
-Now that UML has PCI support, this driver must depend also on
-!UML since it pokes at X86_64 architecture internals that don't
-exist on ARCH=um.
+The xilinx dma driver uses the consistent allocations, so for correct
+operation also set the DMA mask for coherent APIs. It fixes the below
+kernel crash with dmatest client when DMA IP is configured with 64-bit
+address width and linux is booted from high (>4GB) memory.
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20210809112409.a3a0974874d2.I2ffe3d11ed37f735da2f39884a74c953b258b995@changeid
+Call trace:
+[  489.531257]  dma_alloc_from_pool+0x8c/0x1c0
+[  489.535431]  dma_direct_alloc+0x284/0x330
+[  489.539432]  dma_alloc_attrs+0x80/0xf0
+[  489.543174]  dma_pool_alloc+0x160/0x2c0
+[  489.547003]  xilinx_cdma_prep_memcpy+0xa4/0x180
+[  489.551524]  dmatest_func+0x3cc/0x114c
+[  489.555266]  kthread+0x124/0x130
+[  489.558486]  ret_from_fork+0x10/0x3c
+[  489.562051] ---[ end trace 248625b2d596a90a ]---
+
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Reviewed-by: Harini Katakam <harini.katakam@xilinx.com>
+Link: https://lore.kernel.org/r/1629363528-30347-1-git-send-email-radhey.shyam.pandey@xilinx.com
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/Kconfig | 2 +-
+ drivers/dma/xilinx/xilinx_dma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index b0f798244a89..9a6da9b2dad3 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -238,7 +238,7 @@ config INTEL_IDMA64
+diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
+index f00652585ee3..d88c53ff7bb6 100644
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -2578,7 +2578,7 @@ static int xilinx_dma_probe(struct platform_device *pdev)
+ 		xdev->ext_addr = false;
  
- config INTEL_IOATDMA
- 	tristate "Intel I/OAT DMA support"
--	depends on PCI && X86_64
-+	depends on PCI && X86_64 && !UML
- 	select DMA_ENGINE
- 	select DMA_ENGINE_RAID
- 	select DCA
+ 	/* Set the dma mask bits */
+-	dma_set_mask(xdev->dev, DMA_BIT_MASK(addr_width));
++	dma_set_mask_and_coherent(xdev->dev, DMA_BIT_MASK(addr_width));
+ 
+ 	/* Initialize the DMA engine */
+ 	xdev->common.dev = &pdev->dev;
 -- 
 2.33.0
 
