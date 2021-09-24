@@ -2,119 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B82C417839
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E91341783C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347315AbhIXQNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
+        id S233336AbhIXQNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347289AbhIXQNA (ORCPT
+        with ESMTP id S1347289AbhIXQNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:13:00 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB7AC061571;
-        Fri, 24 Sep 2021 09:11:27 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so7874547pjb.5;
-        Fri, 24 Sep 2021 09:11:27 -0700 (PDT)
+        Fri, 24 Sep 2021 12:13:20 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284B1C06161E
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 09:11:47 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id 13-20020ac8560d000000b0029f69548889so31314688qtr.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 09:11:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0YfQ2zBxgksg+2Nskeom4iZ9y4gZMYBwdBh+RnSeLrE=;
-        b=D/UN2KRJLanA8Tv5NPi/h+nQS4a/S4wPewaIv94UADb1wZji1oiq48A4Y4Q93SxnLU
-         AGBg8vBAhynuNwBXA5ttZW0qUBny5KFN8sNbQk9/omWPoO2RQRs+YcXxiWhn8XEr6293
-         CI7vI+FYxUG/GJhRzfvgH1oZDBUTwmuxEwNEv/qdCxmy8oHxs2P19xwVJyyCcXzNDTGe
-         lv4FzzLhiyrlEJ6TFavpBM7p06SPqgUXUlYTJMDvIj7iZwBo2olc5C2uB5hys4bqGBoE
-         44WeDM+O8uv9N5p06sAS9Bh/u8wEWJ8pnJnLWXj8UimuzkP0m1i0+I7LnIcKYHjtFLSO
-         DhJw==
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=h/BzDykRlB6GOyA2BcmGWRmoSP3v2KwlwqsQH6GthJ0=;
+        b=s097uqR1pTgijhwOq0jlwx+Q2b2NZ+PCa5o+adbYM7F93XKYGLPfqkd4v/iLqpvD0V
+         CxbmhuaDNwo5V8KrPZig96VwdD5xKZl+Fby4Px9Zl5fV9qfYQSABO9qRSvPpWcRWnsGt
+         yJcwYZlySBuH126e2RBVNAysxJIS7n2NnvtO0JwQow0roBBJQtaNHmKl6Jwkw9Ho8v0N
+         UyVmB27QDbgb+KGzyEOW/xMSDGc5HTb8Crvk+B9fTHDLiuCtYpIFDr+DF5xPMXHOnqHu
+         fP3/k2TYo63Z87Z/778QS7eR37Ha/DGG73iVFl7xVzBovqiOpGGBfQFkD5J/65tiOzWr
+         duXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0YfQ2zBxgksg+2Nskeom4iZ9y4gZMYBwdBh+RnSeLrE=;
-        b=Qk/uKjAp/M2OXFgLVl0lDL/R3rdEo/S0+56mk7LrdwO+9ZgmPkKcN0MeSMPV0ix4yn
-         OYJJn8JeiTK1yDui1R3xkNBqgOldXTqG/7j+FhHRQfWe473MdKsGVPNawW1BiPrz2dgL
-         sz/DfvJqsa/2qi0UeFu8aLB87ozqAPcbdsQrdmBBga/HxFPkXVihCgx4clb0eX/lBwB+
-         Jpd9xPd79LtlkptCRFZdFyVAD5govP7P4rAlEWzWuOeqLaMfrUTm3pzpIQCTlqWPqKf0
-         615iLETLGvQQANSQOyVD0FAs/lzhhq09MY8xTdYqwy/Ugapf3/1IyctM5bVUn/fF17wh
-         9Ahg==
-X-Gm-Message-State: AOAM533R9ubi14nS4KNMl/ADdiDsQSFRNN5gb2udi+S2v7QN1/QrG3Mr
-        eJdVaNpFP1WMBW+tcOIJjOY=
-X-Google-Smtp-Source: ABdhPJzrM/8wvP4Z2JYad3PsfXWq5EEyrAQmrfchjQltvkGtLcQZB3kT43/43GIE3okA9/+ng3XSUw==
-X-Received: by 2002:a17:90a:300c:: with SMTP id g12mr3149919pjb.37.1632499886793;
-        Fri, 24 Sep 2021 09:11:26 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 126sm11697724pgi.86.2021.09.24.09.11.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 09:11:26 -0700 (PDT)
-Subject: Re: [PATCH stable 4.9 v2 0/4] ARM: ftrace MODULE_PLTS warning
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>
-References: <20210922170246.190499-1-f.fainelli@gmail.com>
- <YUxYV/m36iPuxdoe@kroah.com> <YU2769mOr3lb8jFi@sashalap>
- <bb9fde7d-3644-6d30-c238-73427ab200e6@nokia.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <34ae79e3-f109-bc4b-341a-f05d95cf15e3@gmail.com>
-Date:   Fri, 24 Sep 2021 09:11:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <bb9fde7d-3644-6d30-c238-73427ab200e6@nokia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=h/BzDykRlB6GOyA2BcmGWRmoSP3v2KwlwqsQH6GthJ0=;
+        b=dclhuEiG5PFJwJff/9e3JvdZCy0DPvNv4hdVuq9nnmwMoNaJQjAGI8JOsSDTrdBmOa
+         wRt7uOr7qiMBDuVq6N4p4KZ+zNjKkIvmXzNZkYblBx/VVbmgxtZrBvusTjF6H1mvaDGf
+         GbOc6+JErZ1Y3nc4lBCMW2mmDC7/buRAXlQ7DXfIi4NZX2ieMc3dpqXduNz+Pa9VAW2x
+         wCAdxEOwMldiv6SL28eNBAjS2Sh65NSr65U8i7Up7GvzeFcAAtIpCAyrpriNq+uHkhZq
+         hhwNjKv32ZaYlkssANniAyJzBdM5UhyamHPeOeJRDHI2XqOT6EUlLQbSGJjqJhL9Ufxc
+         Gnlw==
+X-Gm-Message-State: AOAM5304Rx/57vaH9N29qQBX6yUFPSJPNPC+0tRbeBG688+kgdHlqwiN
+        5YZy41E8NeYOCI7kMdS/hCKy10E/E4Nv
+X-Google-Smtp-Source: ABdhPJw34MswgTp2VNuMhvwGOr41NrkDRg6aw14eaPbHovMNQpUoWHD9mf7BIT4LQ/zZ6bjgF/O9UohxCDBl
+X-Received: from bg.sfo.corp.google.com ([2620:15c:11a:202:20fb:24e3:1670:2a67])
+ (user=bgeffon job=sendgmr) by 2002:a0c:ab51:: with SMTP id
+ i17mr10455643qvb.39.1632499906312; Fri, 24 Sep 2021 09:11:46 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 09:11:28 -0700
+In-Reply-To: <20210917210640.214211-1-bgeffon@google.com>
+Message-Id: <20210924161128.1508015-1-bgeffon@google.com>
+Mime-Version: 1.0
+References: <20210917210640.214211-1-bgeffon@google.com>
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+Subject: [PATCH v5] zram: Introduce an aged idle interface
+From:   Brian Geffon <bgeffon@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Brian Geffon <bgeffon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/21 8:27 AM, Alexander Sverdlin wrote:
-> Hi Sasha,
-> 
-> On 24/09/2021 13:52, Sasha Levin wrote:
->>>> This patch series is present in v5.14 and fixes warnings seen at insmod
->>>> with FTRACE and MODULE_PLTS enabled on ARM/Linux.
->>>
->>> All now queued up, thanks.
->>
->> Looks like 4.19 and older break the build:
->>
->> arch/arm/kernel/ftrace.c: In function 'ftrace_update_ftrace_func':
->> arch/arm/kernel/ftrace.c:157:9: error: too few arguments to function 'ftrace_call_replace'
->>   157 |   new = ftrace_call_replace(pc, (unsigned long)func);
->>       |         ^~~~~~~~~~~~~~~~~~~
-> 
-> in principle you can add ", true" as a third argument in all these ftrace_call_replace()
-> call-sites which still have two args.
+This change introduces an aged idle interface to the existing
+idle sysfs file for zram.
 
-Sasha, what configuration failed to build? I build tested with
-mutli_v7_defconfig which does enable FTRACE by default and then ensured
-that CONFIG_ARM_MODULE_PLTS was enabled. From there I will re-submit,
-sorry about that.
+When CONFIG_ZRAM_MEMORY_TRACKING is enabled the idle file
+now also accepts an integer argument. This integer is the
+age (in seconds) of pages to mark as idle. The idle file
+still supports 'all' as it always has. This new approach
+allows for much more control over which pages get marked
+as idle.
 
-> 
->> arch/arm/kernel/ftrace.c:99:22: note: declared here
->>    99 | static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr,
->>       |                      ^~~~~~~~~~~~~~~~~~~
->> arch/arm/kernel/ftrace.c: In function 'ftrace_make_nop':
->> arch/arm/kernel/ftrace.c:240:9: error: too few arguments to function 'ftrace_call_replace'
->>   240 |   old = ftrace_call_replace(ip, adjust_address(rec, addr));
->>       |         ^~~~~~~~~~~~~~~~~~~
->> arch/arm/kernel/ftrace.c:99:22: note: declared here
->>    99 | static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr,
->>       |                      ^~~~~~~~~~~~~~~~~~~
->> make[2]: *** [scripts/Makefile.build:303: arch/arm/kernel/ftrace.o] Error 1
->>
->> I've dropped them.
-> 
+  v4 -> v5:
+	- Andrew's suggestions to use IS_ENABLED and
+	  cleanup comment.
 
+  v3 -> v4:
+        - Remove base10 restriction.
 
+  v2 -> v3:
+        - Correct unused variable warning when
+          CONFIG_ZRAM_MEMORY_TRACKING is not enabled.
+  v1 -> v2:
+        - Switch to using existing idle file.
+        - Dont compare ktime directly.
+
+Signed-off-by: Brian Geffon <bgeffon@google.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
+---
+ Documentation/admin-guide/blockdev/zram.rst |  8 +++
+ drivers/block/zram/zram_drv.c               | 61 +++++++++++++++------
+ 2 files changed, 53 insertions(+), 16 deletions(-)
+
+diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
+index a6fd1f9b5faf..c66efb2eeac3 100644
+--- a/Documentation/admin-guide/blockdev/zram.rst
++++ b/Documentation/admin-guide/blockdev/zram.rst
+@@ -327,6 +327,14 @@ as idle::
+ From now on, any pages on zram are idle pages. The idle mark
+ will be removed until someone requests access of the block.
+ IOW, unless there is access request, those pages are still idle pages.
++Additionally, when CONFIG_ZRAM_MEMORY_TRACKING is enabled pages can be
++marked as idle based on how long (in seconds) it's been since they were
++last accessed::
++
++        echo 86400 > /sys/block/zramX/idle
++
++In this example all pages which haven't been accessed in more than 86400
++seconds (one day) will be marked idle.
+ 
+ Admin can request writeback of those idle pages at right timing via::
+ 
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index d291bedeef8e..33282f04ea32 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -291,22 +291,16 @@ static ssize_t mem_used_max_store(struct device *dev,
+ 	return len;
+ }
+ 
+-static ssize_t idle_store(struct device *dev,
+-		struct device_attribute *attr, const char *buf, size_t len)
++/*
++ * Mark all pages which are older than or equal to cutoff as IDLE.
++ * Callers should hold the zram init lock in read mode
++ */
++static void mark_idle(struct zram *zram, ktime_t cutoff)
+ {
+-	struct zram *zram = dev_to_zram(dev);
++	int is_idle = 1;
+ 	unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
+ 	int index;
+ 
+-	if (!sysfs_streq(buf, "all"))
+-		return -EINVAL;
+-
+-	down_read(&zram->init_lock);
+-	if (!init_done(zram)) {
+-		up_read(&zram->init_lock);
+-		return -EINVAL;
+-	}
+-
+ 	for (index = 0; index < nr_pages; index++) {
+ 		/*
+ 		 * Do not mark ZRAM_UNDER_WB slot as ZRAM_IDLE to close race.
+@@ -314,14 +308,49 @@ static ssize_t idle_store(struct device *dev,
+ 		 */
+ 		zram_slot_lock(zram, index);
+ 		if (zram_allocated(zram, index) &&
+-				!zram_test_flag(zram, index, ZRAM_UNDER_WB))
+-			zram_set_flag(zram, index, ZRAM_IDLE);
++				!zram_test_flag(zram, index, ZRAM_UNDER_WB)) {
++#ifdef CONFIG_ZRAM_MEMORY_TRACKING
++				is_idle = (!cutoff || ktime_after(cutoff, zram->table[index].ac_time));
++#endif
++			if (is_idle)
++				zram_set_flag(zram, index, ZRAM_IDLE);
++		}
+ 		zram_slot_unlock(zram, index);
+ 	}
++}
+ 
+-	up_read(&zram->init_lock);
++static ssize_t idle_store(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t len)
++{
++	struct zram *zram = dev_to_zram(dev);
++	ktime_t cutoff_time = 0;
++	ssize_t rv = -EINVAL;
+ 
+-	return len;
++	if (!sysfs_streq(buf, "all")) {
++		/*
++		 * If it did not parse as 'all' try to treat it as an integer when
++		 * we have memory tracking enabled.
++		 */
++		u64 age_sec;
++		if (IS_ENABLED(CONFIG_ZRAM_MEMORY_TRACKING) && !kstrtoull(buf, 0, &age_sec))
++			cutoff_time = ktime_sub(ktime_get_boottime(),
++					ns_to_ktime(age_sec * NSEC_PER_SEC));
++		else
++			goto out;
++	}
++
++	down_read(&zram->init_lock);
++	if (!init_done(zram))
++		goto out_unlock;
++
++	/* A age_sec of 0 marks everything as idle, this is the "all" behavior */
++	mark_idle(zram, cutoff_time);
++	rv = len;
++
++out_unlock:
++	up_read(&zram->init_lock);
++out:
++	return rv;
+ }
+ 
+ #ifdef CONFIG_ZRAM_WRITEBACK
 -- 
-Florian
+2.33.0.685.g46640cef36-goog
+
