@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2E7417266
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3D041722C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344193AbhIXMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43022 "EHLO mail.kernel.org"
+        id S1343826AbhIXMqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:46:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344027AbhIXMrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:47:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A582C61268;
-        Fri, 24 Sep 2021 12:45:32 +0000 (UTC)
+        id S1343749AbhIXMp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:45:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D7126124B;
+        Fri, 24 Sep 2021 12:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487533;
-        bh=FMO3oLYtRxQ6cAkIhT+2cRiJYTR5Ur5HVQPUjaYr3H0=;
+        s=korg; t=1632487464;
+        bh=1ERUE2qwSuzrQh3pIu/00NfYePDNzkEtMzTelhXYXvQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MlzEowW0yGbTO7xYaAz0Hxzg09uNz4xWP7DhH403yjrkJ2MlrAiurRZqNLCOpyjIN
-         3+2o80i5vJ6Hawm0l0D+B7ihH0f0Sq0L23LyW97LsAHQBeNQxDZW8Yx4fxYqtVEta+
-         NjeoFGvrT5KMWUqSl3DzdgSwV4ZuYppTiMzWQOLg=
+        b=tKxMRWMbzWqbEEIW26WxrJVYPrLT7UBcuAwdbikEfON/TA9blkbJoYCIgmCzO9PrF
+         5SgKJeppgB9p5zEPtcImrl032ThaguvSWddIyGLXhhspE1Aji7dKbW8rNpLx4rNsTL
+         Q4iaJKZwgH4dytP4+cMHpmPiiSkm7X64QjLRdR28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 06/26] sctp: add param size validation for SCTP_PARAM_SET_PRIMARY
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 13/23] dmaengine: ioat: depends on !UML
 Date:   Fri, 24 Sep 2021 14:43:54 +0200
-Message-Id: <20210924124328.556217209@linuxfoundation.org>
+Message-Id: <20210924124328.250057148@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
-References: <20210924124328.336953942@linuxfoundation.org>
+In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
+References: <20210924124327.816210800@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit ef6c8d6ccf0c1dccdda092ebe8782777cd7803c9 upstream.
+[ Upstream commit bbac7a92a46f0876e588722ebe552ddfe6fd790f ]
 
-When SCTP handles an INIT chunk, it calls for example:
-sctp_sf_do_5_1B_init
-  sctp_verify_init
-    sctp_verify_param
-  sctp_process_init
-    sctp_process_param
-      handling of SCTP_PARAM_SET_PRIMARY
+Now that UML has PCI support, this driver must depend also on
+!UML since it pokes at X86_64 architecture internals that don't
+exist on ARCH=um.
 
-sctp_verify_init() wasn't doing proper size validation and neither the
-later handling, allowing it to work over the chunk itself, possibly being
-uninitialized memory.
-
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-by: Dave Jiang <dave.jiang@intel.com>
+Link: https://lore.kernel.org/r/20210809112409.a3a0974874d2.I2ffe3d11ed37f735da2f39884a74c953b258b995@changeid
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/sm_make_chunk.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/dma/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -2155,9 +2155,16 @@ static sctp_ierror_t sctp_verify_param(s
- 		break;
+diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+index e6cd1a32025a..f450f3d8f63a 100644
+--- a/drivers/dma/Kconfig
++++ b/drivers/dma/Kconfig
+@@ -239,7 +239,7 @@ config INTEL_IDMA64
  
- 	case SCTP_PARAM_SET_PRIMARY:
--		if (net->sctp.addip_enable)
--			break;
--		goto fallthrough;
-+		if (!net->sctp.addip_enable)
-+			goto fallthrough;
-+
-+		if (ntohs(param.p->length) < sizeof(struct sctp_addip_param) +
-+					     sizeof(struct sctp_paramhdr)) {
-+			sctp_process_inv_paramlength(asoc, param.p,
-+						     chunk, err_chunk);
-+			retval = SCTP_IERROR_ABORT;
-+		}
-+		break;
- 
- 	case SCTP_PARAM_HOST_NAME_ADDRESS:
- 		/* Tell the peer, we won't support this param.  */
+ config INTEL_IOATDMA
+ 	tristate "Intel I/OAT DMA support"
+-	depends on PCI && X86_64
++	depends on PCI && X86_64 && !UML
+ 	select DMA_ENGINE
+ 	select DMA_ENGINE_RAID
+ 	select DCA
+-- 
+2.33.0
+
 
 
