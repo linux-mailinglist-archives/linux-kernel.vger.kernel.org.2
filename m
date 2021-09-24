@@ -2,342 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F2C41714D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E465417153
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343733AbhIXLwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
+        id S245673AbhIXLx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 07:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245673AbhIXLwT (ORCPT
+        with ESMTP id S244430AbhIXLx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 07:52:19 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF0DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 04:50:47 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mTjiu-0003ym-DY; Fri, 24 Sep 2021 13:50:36 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mTjis-0007je-3j; Fri, 24 Sep 2021 13:50:34 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, David Jander <david@protonic.nl>
-Subject: [PATCH v1 1/1] thermal: imx: implement runtime PM support
-Date:   Fri, 24 Sep 2021 13:50:32 +0200
-Message-Id: <20210924115032.29684-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        Fri, 24 Sep 2021 07:53:27 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBBEC061574;
+        Fri, 24 Sep 2021 04:51:54 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso12715124otb.11;
+        Fri, 24 Sep 2021 04:51:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fUTn9iZOV2L7vaasO2TvIVEOR1E4a/e8kh4KjyXUp8Q=;
+        b=KHgReeP8DTmsfqxZB+2xN2OSSDzFTr/hPrH70aVjESNdaOJDqhPIGxTHydzwmg10D5
+         mmdZtEf0DqZsGTm0h1DgDKztBE1YYbmU1HIyQUNXB88R7Ix6VG3Z1kaTueRCAKoZm87W
+         DvlNwllul5Ck6d5R71ZLz5BiG1zajCyOqto6Qw2qWJXFkhHli3M9Cqtl9b7HZU8UlPs0
+         Pq5y3UUkJ3W2qR+KPNexQaAy5AGytf4G/5RPXJl0aUR93+kyDMIbny2kt7AzDdDiw0aA
+         CdAjJhzyqgg/5+zaJdPczsJDHU4YwtdfXwKyh3knxhcPoACCYvKrvnL7pfVjnukMMGle
+         r8rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=fUTn9iZOV2L7vaasO2TvIVEOR1E4a/e8kh4KjyXUp8Q=;
+        b=Lsrgki8p8oh27U2VeB07q5IeB7tsInEaYzmSNAfvO7HF4o5P/c6kxQuHT4dwHdYm+G
+         qzdWIeJrzRxUDnJnYGxYYmvZ6ceA55Pyobk/JzAX/XDmfrVs2zyq8kS0Va1HIPr4pXey
+         gmIwIEcAdfp59UydBiIHr+rZbE/rihzNrSWZoFAbZHy+8BJEIKglfR1ql5z/HMUfAyqC
+         WRgfnA8NJIuhp3blPaIs96KarpH5t78gDy5Ad3+cmKOWsLUPgtTYhdK5RmM6+WhWO6IZ
+         iCE3iT+kgzMaOt5n/p8He6eF5kzdwMKwQGybwAcrlzJYxr1mUWlE8XoGsNq9YUEd1881
+         Su2w==
+X-Gm-Message-State: AOAM532B/N+D/BzIb/F9iBbJnz7H7oJwFcu6RB8oOD4wE2Q+kWWK5R01
+        +4Bd3JIODdZHhdl8nTOViFA=
+X-Google-Smtp-Source: ABdhPJwg0PQxk/rq5OHl8Gjab/6RaZbWE/kpE/Meh+vlmmbJG3C/ofPfu1vkjUNij6g29RdZePGIFw==
+X-Received: by 2002:a9d:7019:: with SMTP id k25mr3609123otj.350.1632484313698;
+        Fri, 24 Sep 2021 04:51:53 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d26sm2006568oij.49.2021.09.24.04.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 04:51:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 24 Sep 2021 04:51:52 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] dt-bindings: hwmon: jedec,jc42: add nxp,se97b
+Message-ID: <20210924115152.GC2694238@roeck-us.net>
+References: <20210920182114.339419-1-krzysztof.kozlowski@canonical.com>
+ <20210920182114.339419-6-krzysztof.kozlowski@canonical.com>
+ <YUzuyG3e7sHlMHAJ@robh.at.kernel.org>
+ <8871dd77-f9f1-bf25-78ad-48f97efcf7d9@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8871dd77-f9f1-bf25-78ad-48f97efcf7d9@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with commit d92ed2c9d3ff ("thermal: imx: Use driver's local
-data to decide whether to run a measurement") this driver stared using
-irq_enabled flag to make decision to power on/off the thermal core. This
-triggered a regression, where after reaching critical temperature, alarm
-IRQ handler set irq_enabled to false,  disabled thermal core and was not
-able read temperature and disable cooling sequence.
+On Fri, Sep 24, 2021 at 08:57:44AM +0200, Krzysztof Kozlowski wrote:
+> On 23/09/2021 23:16, Rob Herring wrote:
+> > On Mon, Sep 20, 2021 at 08:21:14PM +0200, Krzysztof Kozlowski wrote:
+> >> Document bindings for NXP SE97B, a DDR memory module temperature sensor
+> >> with integrated SPD and EEPROM via Atmel's AT24 interface.
+> >>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> >> ---
+> >>  Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml | 9 +++++++++
+> >>  1 file changed, 9 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml b/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> >> index a7bb4e3a1c46..0e49b3901161 100644
+> >> --- a/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> >> +++ b/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> >> @@ -10,6 +10,14 @@ maintainers:
+> >>    - Jean Delvare <jdelvare@suse.com>
+> >>    - Guenter Roeck <linux@roeck-us.net>
+> >>  
+> >> +select:
+> >> +  properties:
+> >> +    compatible:
+> >> +      const: jedec,jc-42.4-temp
+> >> +
+> >> +  required:
+> >> +    - compatible
+> >> +
+> > 
+> > Is this supposed to be in the last patch? And why is it needed?
+> 
+> Yes, this is here on purpose because of nxp,se97b which is sensor with
+> at24-compatible EEPROM.
+> 
+> arch/arm/boot/dts/at91-nattis-2-natte-2.dts:
+> 169         temp@18 {
+> 170                 compatible = "nxp,se97b", "jedec,jc-42.4-temp";
+> 
+> 171                 reg = <0x18>;
+> 172                 smbus-timeout-disable;
+> 173         };
+> 174
+> 175         eeprom@50 {
+> 176                 compatible = "nxp,se97b", "atmel,24c02";
 
-In case the cooling device is "CPU/GPU freq", the system will run with
-reduce performance until next reboot.
+How would that be handled anyway ? Yes, the chip includes both a temperature
+sensor and an eeprom, but this node should most definitely not instantiate as
+temperature sensor.
 
-To solve this issue, we need to move all parts implementing hand made
-runtime power management and let it handle actual runtime PM framework.
+Guenter
 
-Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/thermal/imx_thermal.c | 145 +++++++++++++++++++++-------------
- 1 file changed, 91 insertions(+), 54 deletions(-)
-
-diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
-index 2c7473d86a59..1db7ce6221b1 100644
---- a/drivers/thermal/imx_thermal.c
-+++ b/drivers/thermal/imx_thermal.c
-@@ -15,6 +15,7 @@
- #include <linux/regmap.h>
- #include <linux/thermal.h>
- #include <linux/nvmem-consumer.h>
-+#include <linux/pm_runtime.h>
- 
- #define REG_SET		0x4
- #define REG_CLR		0x8
-@@ -194,6 +195,7 @@ static struct thermal_soc_data thermal_imx7d_data = {
- };
- 
- struct imx_thermal_data {
-+	struct device *dev;
- 	struct cpufreq_policy *policy;
- 	struct thermal_zone_device *tz;
- 	struct thermal_cooling_device *cdev;
-@@ -252,44 +254,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
- 	const struct thermal_soc_data *soc_data = data->socdata;
- 	struct regmap *map = data->tempmon;
- 	unsigned int n_meas;
--	bool wait, run_measurement;
- 	u32 val;
-+	int ret;
- 
--	run_measurement = !data->irq_enabled;
--	if (!run_measurement) {
--		/* Check if a measurement is currently in progress */
--		regmap_read(map, soc_data->temp_data, &val);
--		wait = !(val & soc_data->temp_valid_mask);
--	} else {
--		/*
--		 * Every time we measure the temperature, we will power on the
--		 * temperature sensor, enable measurements, take a reading,
--		 * disable measurements, power off the temperature sensor.
--		 */
--		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
--			    soc_data->power_down_mask);
--		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
--			    soc_data->measure_temp_mask);
--
--		wait = true;
--	}
--
--	/*
--	 * According to the temp sensor designers, it may require up to ~17us
--	 * to complete a measurement.
--	 */
--	if (wait)
--		usleep_range(20, 50);
-+	ret = pm_runtime_resume_and_get(data->dev);
-+	if (ret < 0)
-+		return ret;
- 
- 	regmap_read(map, soc_data->temp_data, &val);
- 
--	if (run_measurement) {
--		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
--			     soc_data->measure_temp_mask);
--		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
--			     soc_data->power_down_mask);
--	}
--
- 	if ((val & soc_data->temp_valid_mask) == 0) {
- 		dev_dbg(&tz->device, "temp measurement never finished\n");
- 		return -EAGAIN;
-@@ -328,6 +301,8 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
- 		enable_irq(data->irq);
- 	}
- 
-+	pm_runtime_put(data->dev);
-+
- 	return 0;
- }
- 
-@@ -335,24 +310,16 @@ static int imx_change_mode(struct thermal_zone_device *tz,
- 			   enum thermal_device_mode mode)
- {
- 	struct imx_thermal_data *data = tz->devdata;
--	struct regmap *map = data->tempmon;
--	const struct thermal_soc_data *soc_data = data->socdata;
- 
- 	if (mode == THERMAL_DEVICE_ENABLED) {
--		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
--			     soc_data->power_down_mask);
--		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
--			     soc_data->measure_temp_mask);
-+		pm_runtime_get(data->dev);
- 
- 		if (!data->irq_enabled) {
- 			data->irq_enabled = true;
- 			enable_irq(data->irq);
- 		}
- 	} else {
--		regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
--			     soc_data->measure_temp_mask);
--		regmap_write(map, soc_data->sensor_ctrl + REG_SET,
--			     soc_data->power_down_mask);
-+		pm_runtime_put(data->dev);
- 
- 		if (data->irq_enabled) {
- 			disable_irq(data->irq);
-@@ -393,6 +360,11 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
- 			     int temp)
- {
- 	struct imx_thermal_data *data = tz->devdata;
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(data->dev);
-+	if (ret < 0)
-+		return ret;
- 
- 	/* do not allow changing critical threshold */
- 	if (trip == IMX_TRIP_CRITICAL)
-@@ -406,6 +378,8 @@ static int imx_set_trip_temp(struct thermal_zone_device *tz, int trip,
- 
- 	imx_set_alarm_temp(data, temp);
- 
-+	pm_runtime_put(data->dev);
-+
- 	return 0;
- }
- 
-@@ -681,6 +655,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
- 	if (!data)
- 		return -ENOMEM;
- 
-+	data->dev = &pdev->dev;
-+
- 	map = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "fsl,tempmon");
- 	if (IS_ERR(map)) {
- 		ret = PTR_ERR(map);
-@@ -801,6 +777,14 @@ static int imx_thermal_probe(struct platform_device *pdev)
- 	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
- 		     data->socdata->measure_temp_mask);
- 
-+	/* the core was configured and enabled just before */
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(data->dev);
-+
-+	ret = pm_runtime_resume_and_get(data->dev);
-+	if (ret < 0)
-+		goto disable_runtime_pm;
-+
- 	data->irq_enabled = true;
- 	ret = thermal_zone_device_enable(data->tz);
- 	if (ret)
-@@ -814,10 +798,17 @@ static int imx_thermal_probe(struct platform_device *pdev)
- 		goto thermal_zone_unregister;
- 	}
- 
-+	ret = pm_runtime_put(data->dev);
-+	if (ret < 0)
-+		goto disable_runtime_pm;
-+
- 	return 0;
- 
- thermal_zone_unregister:
- 	thermal_zone_device_unregister(data->tz);
-+disable_runtime_pm:
-+	pm_runtime_put_noidle(data->dev);
-+	pm_runtime_disable(data->dev);
- clk_disable:
- 	clk_disable_unprepare(data->thermal_clk);
- legacy_cleanup:
-@@ -829,13 +820,9 @@ static int imx_thermal_probe(struct platform_device *pdev)
- static int imx_thermal_remove(struct platform_device *pdev)
- {
- 	struct imx_thermal_data *data = platform_get_drvdata(pdev);
--	struct regmap *map = data->tempmon;
- 
--	/* Disable measurements */
--	regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
--		     data->socdata->power_down_mask);
--	if (!IS_ERR(data->thermal_clk))
--		clk_disable_unprepare(data->thermal_clk);
-+	pm_runtime_put_noidle(data->dev);
-+	pm_runtime_disable(data->dev);
- 
- 	thermal_zone_device_unregister(data->tz);
- 	imx_thermal_unregister_legacy_cooling(data);
-@@ -858,29 +845,79 @@ static int __maybe_unused imx_thermal_suspend(struct device *dev)
- 	ret = thermal_zone_device_disable(data->tz);
- 	if (ret)
- 		return ret;
-+
-+	return pm_runtime_force_suspend(data->dev);
-+}
-+
-+static int __maybe_unused imx_thermal_resume(struct device *dev)
-+{
-+	struct imx_thermal_data *data = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = pm_runtime_force_resume(data->dev);
-+	if (ret)
-+		return ret;
-+	/* Enabled thermal sensor after resume */
-+	return thermal_zone_device_enable(data->tz);
-+}
-+
-+static int __maybe_unused imx_thermal_runtime_suspend(struct device *dev)
-+{
-+	struct imx_thermal_data *data = dev_get_drvdata(dev);
-+	const struct thermal_soc_data *socdata = data->socdata;
-+	struct regmap *map = data->tempmon;
-+	int ret;
-+
-+	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
-+			   socdata->measure_temp_mask);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
-+			   socdata->power_down_mask);
-+	if (ret)
-+		return ret;
-+
- 	clk_disable_unprepare(data->thermal_clk);
- 
- 	return 0;
- }
- 
--static int __maybe_unused imx_thermal_resume(struct device *dev)
-+static int __maybe_unused imx_thermal_runtime_resume(struct device *dev)
- {
- 	struct imx_thermal_data *data = dev_get_drvdata(dev);
-+	const struct thermal_soc_data *socdata = data->socdata;
-+	struct regmap *map = data->tempmon;
- 	int ret;
- 
- 	ret = clk_prepare_enable(data->thermal_clk);
- 	if (ret)
- 		return ret;
--	/* Enabled thermal sensor after resume */
--	ret = thermal_zone_device_enable(data->tz);
-+
-+	ret = regmap_write(map, socdata->sensor_ctrl + REG_CLR,
-+			   socdata->power_down_mask);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(map, socdata->sensor_ctrl + REG_SET,
-+			   socdata->measure_temp_mask);
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * According to the temp sensor designers, it may require up to ~17us
-+	 * to complete a measurement.
-+	 */
-+	usleep_range(20, 50);
-+
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(imx_thermal_pm_ops,
--			 imx_thermal_suspend, imx_thermal_resume);
-+static const struct dev_pm_ops imx_thermal_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(imx_thermal_suspend, imx_thermal_resume)
-+	SET_RUNTIME_PM_OPS(imx_thermal_runtime_suspend,
-+			   imx_thermal_runtime_resume, NULL)
-+};
- 
- static struct platform_driver imx_thermal = {
- 	.driver = {
--- 
-2.30.2
-
+> 177                 reg = <0x50>;
+> 178                 pagesize = <16>;
+> 
+> Without the select, dtbs_check was complaining about the second node:
+> 
+> eeprom@50: compatible: 'oneOf' conditional failed, one must be fixed:
+> 	['nxp,se97b', 'atmel,24c02'] is too long
+> 	Additional items are not allowed ('atmel,24c02' was unexpected)
+> 	'jedec,jc-42.4-temp' was expected
+> 	From schema:
+> /home/dev/linux/linux/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> 
+> eeprom@50: 'pagesize' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	From schema:
+> /home/dev/linux/linux/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> 
+> 
+> >>  properties:
+> >>    compatible:
+> >>      oneOf:
+> >> @@ -31,6 +39,7 @@ properties:
+> >>                - microchip,mcp98244
+> >>                - microchip,mcp9843
+> >>                - nxp,se97
+> >> +              - nxp,se97b
+> >>                - nxp,se98
+> >>                - onnn,cat6095
+> >>                - onnn,cat34ts02
+> >> -- 
+> >> 2.30.2
+> >>
+> >>
+> 
+> 
+> Best regards,
+> Krzysztof
