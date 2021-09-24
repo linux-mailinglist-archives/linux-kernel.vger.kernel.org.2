@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B35641706E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB249417073
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245629AbhIXKq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:46:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41190 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhIXKqx (ORCPT
+        id S245646AbhIXKw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244877AbhIXKw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:46:53 -0400
-Date:   Fri, 24 Sep 2021 10:45:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632480319;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QC1Zmi/OXCL9LTXdUwZ7DHvcDGZgdrX8haxzTkA8RnM=;
-        b=zRbG4TzktzzZuNLhdEbGasFOXx0MSxfWAnlZ9MivNZqIK27Vv3WPyJi10I8jgWtCEiOF8f
-        A7EMSVTKsEk5p3FQuvJwSmBfqRC1gSZ18obzzWOHeDjTropRP3f69cD7kmD8eFRERrG0pr
-        dj6/vi4eocnplYEvQBSS8ULLAhxv6DpaSw2M5QtWf5O0oKOW16CPs99AQChRTXl4k/E3Tu
-        cBKZK6wqnjeNAI9ph7KqZgYgzXIgmZH7rDFG3UiVHQYUCyDU7HnMkEnxhhb5k2twRU97Sa
-        KS0g8mGaoMXeSpL84H7l2To3Xwo64AfRIV7bwpPdrhH01kElZFGZ2vUSNBhT4A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632480319;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QC1Zmi/OXCL9LTXdUwZ7DHvcDGZgdrX8haxzTkA8RnM=;
-        b=GHloRE7zfaNW3c3G4BO+DaW1aGgh7ylNIyjPMwhBPbaTdvKfXn4SUjFz2n/27RBLAsC/72
-        ngBvHFKXmNAXt6AA==
-From:   "tip-bot2 for Numfor Mbiziwo-Tiapo" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/insn, tools/x86: Fix undefined behavior due to
- potential unaligned accesses
-Cc:     "Numfor Mbiziwo-Tiapo" <nums@google.com>,
-        Ian Rogers <irogers@google.com>, Borislav Petkov <bp@suse.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210923161843.751834-1-irogers@google.com>
-References: <20210923161843.751834-1-irogers@google.com>
+        Fri, 24 Sep 2021 06:52:58 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AC4C061574;
+        Fri, 24 Sep 2021 03:51:25 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id v22so33694913edd.11;
+        Fri, 24 Sep 2021 03:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+twz7xKPCaRunuTxRINFpzWiUTbchcGRYSuBzbIOSmo=;
+        b=HY31ST0y+HiXEYCTwV1rZkRHKeNqguq/BX9aJcwou20huoO3PJyFoPuTgEuMcMgXSM
+         SAE/EpmQSU8BJmEdq6H3M/UC7gWZoWQE9/w5QRjuUJ4S8pyAh3/bMceOLHt3udN3LswF
+         T++X9g8ozweHwA27lNKiHcyRgLBo5FIqvzo7o22ykVO7pq0KgViQ6yYYchTNG02hNRHd
+         6yD/4ET+irP8nOQJLCkz8iER2zRmFbngWfGRCELMOu4x7Rd77lPEh7Q9mu050+cUlkOz
+         u1gvC3QxH9LzvLf9d0cuVOrkmtxPDGmKcX9iCTE2LB/29M28Ky82y+iwLLanii3VGBxI
+         kc1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+twz7xKPCaRunuTxRINFpzWiUTbchcGRYSuBzbIOSmo=;
+        b=jWrmatQZQA8dEAjtiST2Eh4B0Dl0pTndWMvK9+HTZqpzj684qT70JHuTqutE5Y/94F
+         nW9FjfssuPdY50tzY/hf3xOanrBpshwEm5LK2LLr/6DIdMxiERIU5EPfKn/sFGlzTLRD
+         NAmYdFoYktVi7jgy+3RG+iqRiy7fFqMjpws90x/6QW92b77G3vb4eTTRR2p6clZlgW9F
+         rAWveRDcFkzXC1spb5JCRDkRZZgYIA7UyUjN5rJSj1oeMZPgnfkx+u0ApWB7TgTfNFR+
+         C+BjLQppmA2/H5NdX4bEBcwFuMCOMXPyYnGb/F2NGMu513OU7SaL/q1hhIyL8EuO/uiA
+         C97g==
+X-Gm-Message-State: AOAM533NN7gSAkpUHuF3lQG7j0USWBdpcWVPlcqnr30zO8UNl1P+wBOH
+        241mdal/vRUmwbjiItoId/kxWAo4PbV+IW1+ocHVQ2Zf
+X-Google-Smtp-Source: ABdhPJw/XN8LzCFhJbsRtkJPqhNDeBOIWif89XJ+aXSnIudxvRfqx3R2olJRXxcT2tVKTMt0eHRH6doICE3Tvb0fsEg=
+X-Received: by 2002:a17:906:4544:: with SMTP id s4mr10553731ejq.102.1632480683787;
+ Fri, 24 Sep 2021 03:51:23 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <163248031804.25758.7658032205520387028.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210924033547.939554938@goodmis.org> <20210924000717.310b492a@rorschach.local.home>
+In-Reply-To: <20210924000717.310b492a@rorschach.local.home>
+From:   Eugene Syromyatnikov <evgsyr@gmail.com>
+Date:   Fri, 24 Sep 2021 12:51:07 +0200
+Message-ID: <CACGkJdtsHWBstw_Gzb-Dq4Xs_eAW1jsARr5wbh0yE_=NsPA5bw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] tracing: Have trace_pid_list be a sparse array
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Fri, Sep 24, 2021 at 6:07 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 23 Sep 2021 23:35:47 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> > The pid_mask will start out with 1024 entries for the first 10 MSB bits.
+> > This will cost 4K for 32 bit architectures and 8K for 64 bit. Each of
+> > these will have a 1024 array to store the next 10 bits of the pid (another
+> > 4 or 8K). These will hold an 512 byte bitmask (which will cover the LSB 12
+> >   bits or 4096 bits).
+>
+> Thinking about this more, I should adjust this split.
+>
+> Currently, this is a 10,10,12 split, but since the upper chunks are
+> arrays of pointers, and the lower chunk is a bitmask, and that pids
+> tend to be close together, I should make the lower split bigger.
+>
+> As a 4K page is 32768 bits (2^15), the lower split should be 15 bits,
+> not 12. This will probably allocate better.
+>
+> Of course 32 - 15 is 17. So maybe to keep it simple, by having the two
+> upper chunks still the same in size, I could have it be 14 bits for the
+> lower (2048 bytes). And since pid_max can only be 2^30, we don't even
+> need to cover the full 32 bits.
+>
+> 30 - 14 = 16 = 8 * 2.
+>
+> Then I can make the upper chunks cover 8 bits (arrays of 256 pointers)
+> and the lower chunks cove 14 bits. This would coincidentally make all
+> chunks 2K in size (on 64 bit machines).
+>
+> Hmm, in that case, I can make the lower and upper chunks use the same
+> memory and not separate them. They are unions after all. But that may
+> be unfair for 32 bit machines, as the upper chunks are only going to be
+> 1K in size for them (256 * 4).
 
-Commit-ID:     5ba1071f7554c4027bdbd712a146111de57918de
-Gitweb:        https://git.kernel.org/tip/5ba1071f7554c4027bdbd712a146111de57918de
-Author:        Numfor Mbiziwo-Tiapo <nums@google.com>
-AuthorDate:    Thu, 23 Sep 2021 09:18:43 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 24 Sep 2021 12:37:38 +02:00
+Note that there is only one top-level chunk (so its size doesn't
+matter much), (usually) about one middle-tier chunk (except for some
+heavy cases, since pids are allocated linearly), and quite some
+lower-tier bitset leaves.  So I'd optimise towards smaller leaves at
+the expense of middle-tier (and especially top-tier) chunk size
+(especially considering the fact that in the kernel, buddy allocator
+is used), like 12-8-12 or something like that, but I have no factual
+basis for arguing about specific split.  Also, I cannot resist from
+noticing that this reminds me an awful lot of XArray and [1].  Maybe,
+some wrapper around XArray would do?
 
-x86/insn, tools/x86: Fix undefined behavior due to potential unaligned accesses
+[1] https://gitlab.com/strace/strace/-/raw/master/src/trie.h
 
-Don't perform unaligned loads in __get_next() and __peek_nbyte_next() as
-these are forms of undefined behavior:
+>
+> -- Steve
+>
 
-"A pointer to an object or incomplete type may be converted to a pointer
-to a different object or incomplete type. If the resulting pointer
-is not correctly aligned for the pointed-to type, the behavior is
-undefined."
 
-(from http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf)
 
-These problems were identified using the undefined behavior sanitizer
-(ubsan) with the tools version of the code and perf test.
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
-Signed-off-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lkml.kernel.org/r/20210923161843.751834-1-irogers@google.com
----
- arch/x86/lib/insn.c       | 4 ++--
- tools/arch/x86/lib/insn.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index 058f19b..c565def 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -37,10 +37,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index c41f958..7976994 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -37,10 +37,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+--
+Eugene Syromyatnikov
+mailto:evgsyr@gmail.com
+xmpp:esyr@jabber.{ru|org}
