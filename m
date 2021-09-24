@@ -2,80 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736FC4178FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBD6417908
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245265AbhIXQnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:43:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233969AbhIXQnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:43:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7C9260EE7;
-        Fri, 24 Sep 2021 16:41:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632501718;
-        bh=H423tEhL4STBIrStMHc+PhfbtwH8UWS0A41glaA+Nl4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AD1A1IDaA7kbGa5je+K+I6q33oR96VpWsUQJmPi4SDadXyUKmTxvCX4wkaXt4Ww0s
-         zcdzOXuqCsfEDdbjhiefCfK6MTXQ49HZyBWn9xERTLwIKUG9nQ+UinMez/YEy4j25j
-         395etTNWCWl7s3X0+L2NOYf1LaOq1vROR6q7WyafXG9D0k5V6prMgR2mgUHBuqI+N6
-         sIXFlHulGnT11e3O7BtsIZjyjuS1FdBA8XRWK1VhAl60ER8SKwqfAefbcG7S9J2rh+
-         VZxpGPgJ1oNDiTiOJWbUUeEduvJ80v4DQ3RVZVuOrIJZl0ron98N8sylPrXCNecj6U
-         8FBuwO8BD5pJw==
-Date:   Fri, 24 Sep 2021 12:41:56 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH stable 4.9 v2 0/4] ARM: ftrace MODULE_PLTS warning
-Message-ID: <YU3/1I7BfyINCb9W@sashalap>
-References: <20210922170246.190499-1-f.fainelli@gmail.com>
- <YUxYV/m36iPuxdoe@kroah.com>
- <YU2769mOr3lb8jFi@sashalap>
- <bb9fde7d-3644-6d30-c238-73427ab200e6@nokia.com>
- <34ae79e3-f109-bc4b-341a-f05d95cf15e3@gmail.com>
+        id S1343728AbhIXQqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245680AbhIXQqm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 12:46:42 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDBBC061571;
+        Fri, 24 Sep 2021 09:45:09 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id eg28so38608811edb.1;
+        Fri, 24 Sep 2021 09:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MZmwKu0BUurwbUnTZVEh8wLwYpJ31RDmtunI9Xt7VQk=;
+        b=MJTNfFuYrmCv9ju452FVisH0MLHZx2gtJbWytFi6qbSQwa5/GUIo3uXp/gwJGOfZbG
+         5XF1ppxhhT1aHn8g6IvZrysMrlpdAEzms8cwBBCuNSuDa9AvWLHWV1nOOa/AaF6QPZy+
+         ljogh8W7YfWZP7c744Un/Ku7OEh89zaQrp78ItxjT68WM1LU+IyxDvwDm1LRVYw6ANHZ
+         +EEgy4zLBc4OZShFJyj9oWHOJqF8a1hfs5N7uKVdVvJYySdyj+0O0gIErYdtugQ+D4xz
+         qG52JEAGO9Ch3EEfQ/g4CAh6bzAo0XnUtTXE0BjOZwrv5PtapQ8ug2BVazV3I/PEXAEY
+         iciw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MZmwKu0BUurwbUnTZVEh8wLwYpJ31RDmtunI9Xt7VQk=;
+        b=M3bWtkRYt4zcAwkI9MhtfeysNXX9089hqDkINwgzwmbqmrwzsP/Wd8zUqUjHkDRqGS
+         s2xidH4kNAmhhTLRiWuJgJ+TWFe8gx3jmttZfJhk1ZdmiAaGyXubLDhNxy+gy9HBvG+7
+         RdgodiLKdjNFsfwyrkclP+KYvGvloH0YusjQDKptA0wWntl2K/04FWLr2XaulZWA+O/M
+         Cv6g0rnteQ//EGx/iq8aE7mwaFkTQCcdgDDiV+i2zPYj90/SfHcJuhoopMTz9IkK+K4W
+         y5oWU4PygO9SR/hXR0WB5yuCbGcN5EydhQgjnmOn8WzHxSRc97cSDHRAx9j816PPR2cM
+         Hzjw==
+X-Gm-Message-State: AOAM5327x44Jp7B3M0tRqspTrmRZWaJ9xRt4H7et+XoUS+lqAcfZsIoB
+        siUtQHKPU1ZOQJsvwpImZJys+0wtqHsvjDS29d8=
+X-Google-Smtp-Source: ABdhPJxY++oM8nSkIUfZpogdOZRn3Gd6ZYVjB9ICFpuA9aiCmV0nXei8lYBE+aMHq8pqbb5gNE68Rl2zQAlYHrG/CBE=
+X-Received: by 2002:a17:906:680c:: with SMTP id k12mr12322522ejr.85.1632501907474;
+ Fri, 24 Sep 2021 09:45:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <34ae79e3-f109-bc4b-341a-f05d95cf15e3@gmail.com>
+References: <20210923032830.314328-1-shy828301@gmail.com> <20210923032830.314328-2-shy828301@gmail.com>
+ <20210923143901.mdc6rejuh7hmr5vh@box.shutemov.name> <CAHbLzkqb-6a7c=C8WF0G0X2yCey=t7OoL-oW2Y0CpM0MpgJbBg@mail.gmail.com>
+ <CAHbLzkr5YkpuFpnZguDb46naLc3MXw0DmjkttbGU4Nmm=yX8gg@mail.gmail.com> <20210924092621.kbg4byfidfzgjk3g@box>
+In-Reply-To: <20210924092621.kbg4byfidfzgjk3g@box>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 24 Sep 2021 09:44:55 -0700
+Message-ID: <CAHbLzkpXm4Si5u-uWvgAine3bb9N5os7=hcYRTQAtsakxB5YWw@mail.gmail.com>
+Subject: Re: [v2 PATCH 1/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 09:11:18AM -0700, Florian Fainelli wrote:
->On 9/24/21 8:27 AM, Alexander Sverdlin wrote:
->> Hi Sasha,
->>
->> On 24/09/2021 13:52, Sasha Levin wrote:
->>>>> This patch series is present in v5.14 and fixes warnings seen at insmod
->>>>> with FTRACE and MODULE_PLTS enabled on ARM/Linux.
->>>>
->>>> All now queued up, thanks.
->>>
->>> Looks like 4.19 and older break the build:
->>>
->>> arch/arm/kernel/ftrace.c: In function 'ftrace_update_ftrace_func':
->>> arch/arm/kernel/ftrace.c:157:9: error: too few arguments to function 'ftrace_call_replace'
->>>   157 |   new = ftrace_call_replace(pc, (unsigned long)func);
->>>       |         ^~~~~~~~~~~~~~~~~~~
->>
->> in principle you can add ", true" as a third argument in all these ftrace_call_replace()
->> call-sites which still have two args.
+On Fri, Sep 24, 2021 at 2:26 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
 >
->Sasha, what configuration failed to build? I build tested with
->mutli_v7_defconfig which does enable FTRACE by default and then ensured
->that CONFIG_ARM_MODULE_PLTS was enabled. From there I will re-submit,
->sorry about that.
+> On Thu, Sep 23, 2021 at 01:39:49PM -0700, Yang Shi wrote:
+> > On Thu, Sep 23, 2021 at 10:15 AM Yang Shi <shy828301@gmail.com> wrote:
+> > >
+> > > On Thu, Sep 23, 2021 at 7:39 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+> > > >
+> > > > On Wed, Sep 22, 2021 at 08:28:26PM -0700, Yang Shi wrote:
+> > > > > When handling shmem page fault the THP with corrupted subpage could be PMD
+> > > > > mapped if certain conditions are satisfied.  But kernel is supposed to
+> > > > > send SIGBUS when trying to map hwpoisoned page.
+> > > > >
+> > > > > There are two paths which may do PMD map: fault around and regular fault.
+> > > > >
+> > > > > Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault() codepaths")
+> > > > > the thing was even worse in fault around path.  The THP could be PMD mapped as
+> > > > > long as the VMA fits regardless what subpage is accessed and corrupted.  After
+> > > > > this commit as long as head page is not corrupted the THP could be PMD mapped.
+> > > > >
+> > > > > In the regulat fault path the THP could be PMD mapped as long as the corrupted
+> > > >
+> > > > s/regulat/regular/
+> > > >
+> > > > > page is not accessed and the VMA fits.
+> > > > >
+> > > > > This loophole could be fixed by iterating every subpage to check if any
+> > > > > of them is hwpoisoned or not, but it is somewhat costly in page fault path.
+> > > > >
+> > > > > So introduce a new page flag called HasHWPoisoned on the first tail page.  It
+> > > > > indicates the THP has hwpoisoned subpage(s).  It is set if any subpage of THP
+> > > > > is found hwpoisoned by memory failure and cleared when the THP is freed or
+> > > > > split.
+> > > > >
+> > > > > Cc: <stable@vger.kernel.org>
+> > > > > Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > > > ---
+> > > >
+> > > > ...
+> > > >
+> > > > > diff --git a/mm/filemap.c b/mm/filemap.c
+> > > > > index dae481293b5d..740b7afe159a 100644
+> > > > > --- a/mm/filemap.c
+> > > > > +++ b/mm/filemap.c
+> > > > > @@ -3195,12 +3195,14 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
+> > > > >       }
+> > > > >
+> > > > >       if (pmd_none(*vmf->pmd) && PageTransHuge(page)) {
+> > > > > -         vm_fault_t ret = do_set_pmd(vmf, page);
+> > > > > -         if (!ret) {
+> > > > > -                 /* The page is mapped successfully, reference consumed. */
+> > > > > -                 unlock_page(page);
+> > > > > -                 return true;
+> > > > > -         }
+> > > > > +             vm_fault_t ret = do_set_pmd(vmf, page);
+> > > > > +             if (ret == VM_FAULT_FALLBACK)
+> > > > > +                     goto out;
+> > > >
+> > > > Hm.. What? I don't get it. Who will establish page table in the pmd then?
+> > >
+> > > Aha, yeah. It should jump to the below PMD populate section. Will fix
+> > > it in the next version.
+> > >
+> > > >
+> > > > > +             if (!ret) {
+> > > > > +                     /* The page is mapped successfully, reference consumed. */
+> > > > > +                     unlock_page(page);
+> > > > > +                     return true;
+> > > > > +             }
+> > > > >       }
+> > > > >
+> > > > >       if (pmd_none(*vmf->pmd)) {
+> > > > > @@ -3220,6 +3222,7 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
+> > > > >               return true;
+> > > > >       }
+> > > > >
+> > > > > +out:
+> > > > >       return false;
+> > > > >  }
+> > > > >
+> > > > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > > > > index 5e9ef0fc261e..0574b1613714 100644
+> > > > > --- a/mm/huge_memory.c
+> > > > > +++ b/mm/huge_memory.c
+> > > > > @@ -2426,6 +2426,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+> > > > >       /* lock lru list/PageCompound, ref frozen by page_ref_freeze */
+> > > > >       lruvec = lock_page_lruvec(head);
+> > > > >
+> > > > > +     ClearPageHasHWPoisoned(head);
+> > > > > +
+> > > >
+> > > > Do we serialize the new flag with lock_page() or what? I mean what
+> > > > prevents the flag being set again after this point, but before
+> > > > ClearPageCompound()?
+> > >
+> > > No, not in this patch. But I think we could use refcount. THP split
+> > > would freeze refcount and the split is guaranteed to succeed after
+> > > that point, so refcount can be checked in memory failure. The
+> > > SetPageHasHWPoisoned() call could be moved to __get_hwpoison_page()
+> > > when get_unless_page_zero() bumps the refcount successfully. If the
+> > > refcount is zero it means the THP is under split or being freed, we
+> > > don't care about these two cases.
+> >
+> > Setting the flag in __get_hwpoison_page() would make this patch depend
+> > on patch #3. However, this patch probably will be backported to older
+> > versions. To ease the backport, I'd like to have the refcount check in
+> > the same place where THP is checked. So, something like "if
+> > (PageTransHuge(hpage) && page_count(hpage) != 0)".
+> >
+> > Then the call to set the flag could be moved to __get_hwpoison_page()
+> > in the following patch (after patch #3). Does this sound good to you?
+>
+> Could you show the code I'm not sure I follow. page_count(hpage) check
+> looks racy to me. What if split happens just after the check?
 
-allmodconfig seemed to have hit that.
+Yes, it is racy. The flag has to be set after get_page_unless_zero().
+Did some archeology, it seems patch #3 is also applicable to v4.9+.
+So, the simplest way may be to have both patch #3 and this patch
+backport to stable.
 
--- 
-Thanks,
-Sasha
+
+
+>
+> --
+>  Kirill A. Shutemov
