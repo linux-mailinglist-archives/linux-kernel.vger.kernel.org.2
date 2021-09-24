@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1ECC416B06
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 06:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E82416B0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 06:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241325AbhIXEkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 00:40:19 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49732 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237144AbhIXEkS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 00:40:18 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UpOvKbg_1632458324;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UpOvKbg_1632458324)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 24 Sep 2021 12:38:44 +0800
-Subject: [PATCH v2] trace: prevent preemption in perf_ftrace_function_call()
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
-Message-ID: <31910a08-fc37-29fc-5801-77e8fb634873@linux.alibaba.com>
-Date:   Fri, 24 Sep 2021 12:38:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S242581AbhIXEqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 00:46:53 -0400
+Received: from mail.avm.de ([212.42.244.94]:55920 "EHLO mail.avm.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231256AbhIXEqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 00:46:52 -0400
+X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Sep 2021 00:46:52 EDT
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+        by mail.avm.de (Postfix) with ESMTPS;
+        Fri, 24 Sep 2021 06:38:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+        t=1632458338; bh=hrS2vruFomzG2zzj3THpUoYTXKDp+n82KQpCxTdYZhQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dc4cUut2J/4Siq+MOHgo+gPhzZLqw3LR3Eq2c4wEMOx5G02sKdmLFTGMcuczynMZ0
+         Ro38BrBI2SlVwP92vC6uWVJJpvWWTwuzKXV4xEpq09OTDVux6kEVnEBHnZlzF1B1UH
+         xGG3FeGEa1A3VQg5yjCxE04EwSjKLfv6jLh+o+D8=
+Received: from deb-nschier.ads.avm.de (unknown [172.17.24.144])
+        by mail-auth.avm.de (Postfix) with ESMTPSA id CE3328048F;
+        Fri, 24 Sep 2021 06:38:57 +0200 (CEST)
+Date:   Fri, 24 Sep 2021 06:38:56 +0200
+From:   Nicolas Schier <n.schier@avm.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] sparc: Add missing "FORCE" target when using if_changed
+Message-ID: <YU1WYLN4eptJhuIX@deb-nschier.ads.avm.de>
+References: <20210923215418.3936726-1-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <2470f39b-aed1-4e19-9982-206007eb0c6a@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210923215418.3936726-1-keescook@chromium.org>
+X-purgate-ID: 149429::1632458338-000004DC-899091C6/0/0
+X-purgate-type: clean
+X-purgate-size: 1966
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_DEBUG_PREEMPT we observed reports like:
+On Thu, Sep 23, 2021 at 02:54:18PM -0700, Kees Cook wrote:
+> Fix observed warning:
+> 
+>     /builds/linux/arch/sparc/boot/Makefile:35: FORCE prerequisite is missing
+> 
+> Fixes: e1f86d7b4b2a5213 ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and filechk")
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: sparclinux@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-  BUG: using smp_processor_id() in preemptible
-  caller is perf_ftrace_function_call+0x6f/0x2e0
-  CPU: 1 PID: 680 Comm: a.out Not tainted
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x8d/0xcf
-   check_preemption_disabled+0x104/0x110
-   ? optimize_nops.isra.7+0x230/0x230
-   ? text_poke_bp_batch+0x9f/0x310
-   perf_ftrace_function_call+0x6f/0x2e0
-   ...
-   __text_poke+0x5/0x620
-   text_poke_bp_batch+0x9f/0x310
+Acked-by: Nicolas Schier <n.schier@avm.de>
 
-This telling us the CPU could be changed after task is preempted, and
-the checking on CPU before preemption will be invalid.
-
-This patch just turn off preemption in perf_ftrace_function_call()
-to prevent CPU changing.
-
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
----
- kernel/trace/trace_event_perf.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index 6aed10e..dcbefdf 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -441,12 +441,19 @@ void perf_trace_buf_update(void *record, u16 type)
- 	if (!rcu_is_watching())
- 		return;
-
-+	/*
-+	 * Prevent CPU changing from now on. rcu must
-+	 * be in watching if the task was migrated and
-+	 * scheduled.
-+	 */
-+	preempt_disable_notrace();
-+
- 	if ((unsigned long)ops->private != smp_processor_id())
--		return;
-+		goto out;
-
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
--		return;
-+		goto out;
-
- 	event = container_of(ops, struct perf_event, ftrace_ops);
-
-@@ -468,16 +475,18 @@ void perf_trace_buf_update(void *record, u16 type)
-
- 	entry = perf_trace_buf_alloc(ENTRY_SIZE, NULL, &rctx);
- 	if (!entry)
--		goto out;
-+		goto unlock;
-
- 	entry->ip = ip;
- 	entry->parent_ip = parent_ip;
- 	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, TRACE_FN,
- 			      1, &regs, &head, NULL);
-
--out:
-+unlock:
- 	ftrace_test_recursion_unlock(bit);
- #undef ENTRY_SIZE
-+out:
-+	preempt_enable_notrace();
- }
-
- static int perf_ftrace_function_register(struct perf_event *event)
--- 
-1.8.3.1
-
-
+> ---
+> I'm not sure if this should go via sparc or via kbuild. :)
+> ---
+>  arch/sparc/boot/Makefile | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/sparc/boot/Makefile b/arch/sparc/boot/Makefile
+> index 849236d4eca4..45e5c76d449e 100644
+> --- a/arch/sparc/boot/Makefile
+> +++ b/arch/sparc/boot/Makefile
+> @@ -22,7 +22,7 @@ ifeq ($(CONFIG_SPARC64),y)
+>  
+>  # Actual linking
+>  
+> -$(obj)/zImage: $(obj)/image
+> +$(obj)/zImage: $(obj)/image FORCE
+>  	$(call if_changed,gzip)
+>  	@echo '  kernel: $@ is ready'
+>  
+> @@ -31,7 +31,7 @@ $(obj)/vmlinux.aout: vmlinux FORCE
+>  	@echo '  kernel: $@ is ready'
+>  else
+>  
+> -$(obj)/zImage: $(obj)/image
+> +$(obj)/zImage: $(obj)/image FORCE
+>  	$(call if_changed,strip)
+>  	@echo '  kernel: $@ is ready'
+>  
+> @@ -44,7 +44,7 @@ OBJCOPYFLAGS_image.bin := -S -O binary -R .note -R .comment
+>  $(obj)/image.bin: $(obj)/image FORCE
+>  	$(call if_changed,objcopy)
+>  
+> -$(obj)/image.gz: $(obj)/image.bin
+> +$(obj)/image.gz: $(obj)/image.bin FORCE
+>  	$(call if_changed,gzip)
+>  
+>  UIMAGE_LOADADDR = $(CONFIG_UBOOT_LOAD_ADDR)
+> @@ -56,7 +56,7 @@ quiet_cmd_uimage.o = UIMAGE.O $@
+>                       -r -b binary $@ -o $@.o
+>  
+>  targets += uImage
+> -$(obj)/uImage: $(obj)/image.gz
+> +$(obj)/uImage: $(obj)/image.gz FORCE
+>  	$(call if_changed,uimage)
+>  	$(call if_changed,uimage.o)
+>  	@echo '  Image $@ is ready'
+> -- 
+> 2.30.2
+> 
