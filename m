@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002F3416CCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F69D416CD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244403AbhIXH1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244372AbhIXH1i (ORCPT
+        id S237158AbhIXHcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:32:43 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42439 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231921AbhIXHcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:27:38 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3A9C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:26:05 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id r1so3808086ybo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 00:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iXmaLP0QITpXmUm0I4qZk9+8cjo3bJJq44r9iD2yvFA=;
-        b=djWo2A2huCziuE3vkw6Kcd//eh6jk9/htSdh4LjU1JGjEtSHvS8QRtXEW2KkpnKL2+
-         DwEROspQZQ12JY53NJq8OwDShZTVt1MVxwUEL965Q/6TRpYiz73CJd4/e25+WxrVN+Az
-         Bhy2MgjEoJV3aYMdbFmdQCcEBtBl3Xiy6vza1/BMk40/rhl/S16nepKly03vmAVwGWqb
-         7R5Dc587Z0zyZ+vDDWfesGBUHj6uZuXywqVPzuTyU2Rkt06rx5G4XEV+0tKxtwwHW8Og
-         5jCjir894lkBHcCNlzahg8gvGek+mfCiPHWnCf61zgaemcNuPIHcvCnwuJOFJHsxDPxL
-         vtEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iXmaLP0QITpXmUm0I4qZk9+8cjo3bJJq44r9iD2yvFA=;
-        b=MyP5YoY/5KSQCvdghm8yEOHum8vhc1QrO5fg1qwdcpo176MKIGbgHYdwAx8nPXUYh5
-         LO1SPB6/1+2gdOAYv4LkP56IJXN8k2dLRrCX8RBt2PJn+m1frv2lbtshkPvOejz0QQA9
-         UWvmHKeGM8T/cucoeFMM9lNFaoHAaY93Fc2KOYKBBYuR/pINSuXrPF7u0aH2PHVEojU1
-         L8DqSFoUSbY5yvemMILzTTjC6kfE5s1GcoaO3av/ObJaaZtNfzSo7msvOhbc2Ytwl/Rz
-         6ZNMaQBIUSqjIwd6hlQJIngv+qJiENhFvW70IU3Kz2Two0SONMD0ncDWLVLachwgelPk
-         wfZA==
-X-Gm-Message-State: AOAM531sSGAzh3wCjc4p82lw26nLbmXo6+9LpG7OOp8G6boJfOppAZom
-        28w4u1deNd8aDzdFdrmVTQJUY3L7Iuk7pahbLkEk+g==
-X-Google-Smtp-Source: ABdhPJx5lIljPuPkjF8AMt4OtZuAOPUJkxe0u7+wY9bLo39zNtO4ofyyMv+1yoKSHxceJs+i9Nc6DbrxH1Vdwc6rP9g=
-X-Received: by 2002:a25:2f48:: with SMTP id v69mr10584955ybv.339.1632468364546;
- Fri, 24 Sep 2021 00:26:04 -0700 (PDT)
+        Fri, 24 Sep 2021 03:32:42 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 37A6B5C00CF;
+        Fri, 24 Sep 2021 03:31:09 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 24 Sep 2021 03:31:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
+        WRE4Vc8es5gBLC69CH2rv/GotbTtWvdm553PxD4y3N0=; b=ncAUJ2uWWrB1I/9U
+        AhxGaInplJFQGALBrZIoJEckkOeCe9bWz0u6/DrYeJD8DqVGgcBg1WPxRpfcW/uF
+        8/E+TDy1aW+nqd+BtCjbUlwzLYJdUvDt0ikcVWEs8ybDt2T4qs4uMHbLjp9FvkmL
+        F7CnaSLYiUCGaZJad0aLBiyZLUuymUkPRahSiy2ZIZY4WEeHtjGPV0jPp4X+aOYD
+        6I0Yh3HaSIAELYHVNQ/oEPbeZJN8YeNNee+C+nm7U9wBJJ3VQ0Cjv40I/iUuUu3b
+        7pj7/7kaoTYHbCTw2oYphc/sEymf+dAmLubSN40N0HfrSCgRHk3MNJK3RuTRN5o1
+        zaJjAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=WRE4Vc8es5gBLC69CH2rv/GotbTtWvdm553PxD4y3
+        N0=; b=Qpit1ne4KVJlVFy46eMfvI/eZF5G/J60h+XFmmt2L9QdnOhJOte35PPbF
+        EifcOfBx8C+I5SQOGMx+UtNGOVoJmvdKaieQCCfk5+OD+uuPUT6ac2AQFufv458H
+        Oezd2LZIBZ6iyNV2VVF0N6cr6raUf1CCygt6G9oHiOBSzWeUHD9/Alf4I2svO8UC
+        8xFUmmG6fDzglG2af5+LiaRelOhCCVrYUOogC10FL750vHtLpiXViXc0Jg0HGSu2
+        BFX/iw8NRy++4FYrLIiAGlPIkDJzrbUhTbYJN+ql8WmWFIfga0hQ9AWrenJiWXri
+        Zv4eu475jFgaAYpcVaaYSCUqoVUjg==
+X-ME-Sender: <xms:vX5NYctPEdzqsbwiDXaDC96_ErtrPx7F3Pnb2VIo2QJxiTWxIHdaHw>
+    <xme:vX5NYZd3KSK1uJINw9lH0thmnMuZ1-n5IcoSuc9jKnrnBr4vURhRN5QOLDKwppDO6
+    bArh1c2WU5env0auAk>
+X-ME-Received: <xmr:vX5NYXztrfX4RRHmWqHopmzSmpxAAZw0uKIsHX7yH45JWnqscqSITB9meyC4UY0spz_ZEiLrq8RV5M-Yamc8uByfb8uWM55T5Wt9>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejtddguddukecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgig
+    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
+    grthhtvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfef
+    geeikeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:vX5NYfPxnpmezvNHCxoyHzVQeM66CUXVnxMo2_P7Kr3EikHuxk_ncg>
+    <xmx:vX5NYc8aVTjC32YXqFYEEXFm2_7Laz5elzS4D01VA1ZGvdjfGNsaiQ>
+    <xmx:vX5NYXUADSw0lFGtMmJGp78IDGFr5fisUh2bC98xn3i1rv7-N7jn9Q>
+    <xmx:vX5NYQQt4xCzgaeZ0tvzf_7Mp3XjVlpsjRwPN8OU4oQg4lwIhmrXPQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 24 Sep 2021 03:31:08 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     roucaries.bastien@gmail.com, Chen-Yu Tsai <wens@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        =?UTF-8?q?Bastien=20Roucari=C3=A8s?= <rouca@debian.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH] [PATCH] ARM: dts: sun7i: A20-olinuxino-lime2: Fix ethernet phy-mode
+Date:   Fri, 24 Sep 2021 09:31:00 +0200
+Message-Id: <163246857205.870206.2699530855804252485.b4-ty@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210916081721.237137-1-rouca@debian.org>
+References: <20210916081721.237137-1-rouca@debian.org>
 MIME-Version: 1.0
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <20210922094131.15625-2-linyunsheng@huawei.com> <0ffa15a1-742d-a05d-3ea6-04ff25be6a29@redhat.com>
- <CAC_iWjJLCQNHxgbQ-mzLC3OC-m2s7qj3YAtw7vPAKGG6WxywpA@mail.gmail.com>
- <adb2687f-b501-9324-52b2-33ede1169007@huawei.com> <YUx8KZS5NPdTRkPS@apalos.home>
- <27bc803a-1687-a583-fa6b-3691fef7552e@huawei.com>
-In-Reply-To: <27bc803a-1687-a583-fa6b-3691fef7552e@huawei.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Fri, 24 Sep 2021 10:25:28 +0300
-Message-ID: <CAC_iWj+dandMsja0qh4CYG1Wwhgg=MriL2O74T7=1hXeEKcfXA@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/7] page_pool: disable dma mapping support for
- 32-bit arch with 64-bit DMA
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org, Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, memxor@gmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sept 2021 at 10:04, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2021/9/23 21:07, Ilias Apalodimas wrote:
-> > On Thu, Sep 23, 2021 at 07:13:11PM +0800, Yunsheng Lin wrote:
-> >> On 2021/9/23 18:02, Ilias Apalodimas wrote:
-> >>> Hi Jesper,
-> >>>
-> >>> On Thu, 23 Sept 2021 at 12:33, Jesper Dangaard Brouer
-> >>> <jbrouer@redhat.com> wrote:
-> >>>>
-> >>>>
-> >>>> On 22/09/2021 11.41, Yunsheng Lin wrote:
-> >>>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> >>>>> index 1a6978427d6c..a65bd7972e37 100644
-> >>>>> --- a/net/core/page_pool.c
-> >>>>> +++ b/net/core/page_pool.c
-> >>>>> @@ -49,6 +49,12 @@ static int page_pool_init(struct page_pool *pool,
-> >>>>>        * which is the XDP_TX use-case.
-> >>>>>        */
-> >>>>>       if (pool->p.flags & PP_FLAG_DMA_MAP) {
-> >>>>> +             /* DMA-mapping is not supported on 32-bit systems with
-> >>>>> +              * 64-bit DMA mapping.
-> >>>>> +              */
-> >>>>> +             if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> >>>>> +                     return -EINVAL;
-> >>>>
-> >>>> As I said before, can we please use another error than EINVAL.
-> >>>> We should give drivers a chance/ability to detect this error, and e.g.
-> >>>> fallback to doing DMA mappings inside driver instead.
-> >>>>
-> >>>> I suggest using EOPNOTSUPP 95 (Operation not supported).
-> >>
-> >> Will change it to EOPNOTSUPP, thanks.
-> >
-> > Mind sending this one separately (and you can keep my reviewed-by).  It
-> > fits nicely on it's own and since I am not sure about the rest of the
-> > changes yet, it would be nice to get this one in.
->
-> I am not sure sending this one separately really makes sense, as it is
-> mainly used to make supporting the "keep track of pp page when __skb_frag_ref()
-> is called" in patch 5 easier.
+On Thu, 16 Sep 2021 08:17:21 +0000, roucaries.bastien@gmail.com wrote:
+> From: Bastien Roucariès <rouca@debian.org>
+> 
+> Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
+> config") sets the RX/TX delay according to the phy-mode property in the
+> device tree. For the A20-olinuxino-lime2 board this is "rgmii", which is the
+> wrong setting.
+> 
+> [...]
 
-It rips out support for devices that are 32bit and have 64bit dma and
-make the whole code easier to follow.  I thought we agreed on removing
-the support for those devices regardless didn't we?
+Applied, thanks!
 
-Regards
-/Ilias
+[1/1] ARM: dts: sun7i: A20-olinuxino-lime2: Fix ethernet phy-mode
+      commit: 55dd7e059098ce4bd0a55c251cb78e74604abb57
+
+Best regards,
+-- 
+Maxime Ripard <maxime@cerno.tech>
