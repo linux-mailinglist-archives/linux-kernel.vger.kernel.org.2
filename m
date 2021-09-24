@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3365E417770
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA516417773
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347090AbhIXPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 11:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
+        id S1347045AbhIXPZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 11:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347052AbhIXPX4 (ORCPT
+        with ESMTP id S233132AbhIXPZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:23:56 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0222C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:22:22 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id j15so5279849plh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MoAStGlkm8JafyxsSKRaE9chixbqEn2aLPHW3knObUM=;
-        b=EiaPGplPuy87PxxspGRXkVjI4qy/bDpYDlOHeg52JcCe+X9hxiMsRybnqBAdI3ZvF7
-         Bxj91H7vVoMNz3YkQdOR0ucTBqyYxBtkxQGEOZPhpnhW8eHb8WBYDY0gdh3sWKxtrHDA
-         G2VWmnwu1vwhZt8C7SOOiAC86rocjq7oRbe5U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MoAStGlkm8JafyxsSKRaE9chixbqEn2aLPHW3knObUM=;
-        b=V3+RdFpDj/scyR2JkFhaTykL6UsJ//48mlMx+QWruv/2wpv/2s7TQJ4gQBEuj04qOe
-         WmjrNjpoAOSLpLKSGFKdEh8z1c/khA37csJ2GmBWvCT00bfMyX8ZvFPqK97KuJ5k4FtT
-         kpWzOZzllZNoY2uhVhMQLatlHH4B7Jd0WjHB/8VeqhMX53RsgHM4ZPgfcwXpg7TCnJ3Z
-         pxgmGzVmO2NIUJj0rpUZDEKarV+wfdT679DpjCBCVQlrn3iA4yiB61XzR6qEVaaBur5X
-         qLzt2Ok+Yl9qIveqZfL2ecgXkF3jY+CZsaICsSMODVsFU3xltIeKeiW9Fxk+XJCOIr+O
-         GkOg==
-X-Gm-Message-State: AOAM531g39UHgi+RyYYond12oOu7rbAKkMAMUwsTxvbfL6ucmrKJbnlH
-        zR5KPNQt765AbcAzqBJUoSZ3sFmq7H29UA==
-X-Google-Smtp-Source: ABdhPJzr75h5r2OSi1hEn63xdaArzKIyncQf40M3Q3xeZO1rzFG4ooPspT/sHxKXuLkWIDkAMtqG5g==
-X-Received: by 2002:a17:90a:1a11:: with SMTP id 17mr2884401pjk.234.1632496942188;
-        Fri, 24 Sep 2021 08:22:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s69sm9986041pgc.35.2021.09.24.08.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 08:22:21 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 08:22:20 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-api@vger.kernel.org
-Subject: Re: [PATCH 1/6] signal: Remove the bogus sigkill_pending in
- ptrace_stop
-Message-ID: <202109240804.BC44773A@keescook>
-References: <87v92qx2c6.fsf@disp2133>
- <87pmsyx29t.fsf@disp2133>
+        Fri, 24 Sep 2021 11:25:37 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65743C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:24:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=w/RM/8BO7l8xctNYRjJvsYUrVn8YVpOUoLpdN3in2KY=; b=d0XKonSq79aq4Y7rBB9oWbf/L8
+        fR8k4wS6hdbutVD5x0nvLdA8Gx8OUEPjWvvr8Yi3QYvaCCUcBTbjHsKn0ArsN2By+ls2JJqkQtnh5
+        SSi7f+W79H4S9lkzXSnekMt5mCvEQNT6iTzLnv6kK0GyIvgpkyh7A+gwXZdTmjBWf8rL6nDgy3jws
+        C4RWN8RDxlbTh0AZPAEp81+kiMhlguW6q1L92etJWKMGzVii7ETEalqCXhZg5uBfXKYVaoIwqAfkF
+        02dpt+wt3BRajk/w3z6wmWTHWDmIkc0IlnggACvARm00wxr9Ff5TYrf5R+LPvENdfRnJCr49Jys/u
+        ffMrQRWw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mTn3M-00Ewqi-CI; Fri, 24 Sep 2021 15:23:56 +0000
+Subject: Re: [PATCH] drm/edid: Fix EDID quirk compile error on older compilers
+To:     Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org
+Cc:     a.hajda@samsung.com, smyakam@microsoft.com,
+        jani.nikula@linux.intel.com, linus.walleij@linaro.org,
+        stanislav.lisovskiy@intel.com, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+References: <20210924075317.1.I1e58d74d501613f1fe7585958f451160d11b8a98@changeid>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fe48df3f-a6ec-d787-4672-254c8bd4c313@infradead.org>
+Date:   Fri, 24 Sep 2021 08:23:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmsyx29t.fsf@disp2133>
+In-Reply-To: <20210924075317.1.I1e58d74d501613f1fe7585958f451160d11b8a98@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 07:09:34PM -0500, Eric W. Biederman wrote:
+On 9/24/21 7:53 AM, Douglas Anderson wrote:
+> Apparently some compilers [1] cannot handle doing math on dereferenced
+> string constants at compile time. This has led to reports [2] of
+> compile errors like:
 > 
-> The existence of sigkill_pending is a little silly as it is
-> functionally a duplicate of fatal_signal_pending that is used in
-> exactly one place.
-
-sigkill_pending() checks for &tsk->signal->shared_pending.signal but
-fatal_signal_pending() doesn't.
-
-> Checking for pending fatal signals and returning early in ptrace_stop
-> is actively harmful.  It casues the ptrace_stop called by
-> ptrace_signal to return early before setting current->exit_code.
-> Later when ptrace_signal reads the signal number from
-> current->exit_code is undefined, making it unpredictable what will
-> happen.
+>    In file included from drivers/gpu/drm/drm_edid.c:42:0:
+>    ./include/drm/drm_edid.h:525:2: error: initializer element is not constant
+>      ((((u32)((vend)[0]) - '@') & 0x1f) << 26 | \
 > 
-> Instead rely on the fact that schedule will not sleep if there is a
-> pending signal that can awaken a task.
-
-This reasoning sound fine, but I can't see where it's happening.
-It looks like recalc_sigpending() is supposed to happen at the start
-of scheduling? I see it at the end of ptrace_stop(), though, so it looks
-like it's reasonable to skip checking shared_pending.
-
-(Does the scheduler deal with shared_pending directly?)
-
-> Removing the explict sigkill_pending test fixes fixes ptrace_signal
-> when ptrace_stop does not stop because current->exit_code is always
-> set to to signr.
+> Go back to the syntax I used in v4 of the patch series [3] that added
+> this code instead of what landed (v5). This syntax is slightly uglier
+> but should be much more compatible with varied compilers.
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 3d749b9e676b ("ptrace: simplify ptrace_stop()->sigkill_pending() path")
-> Fixes: 1a669c2f16d4 ("Add arch_ptrace_stop")
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69960#c18
+> [2] https://lore.kernel.org/r/874kaabdt5.fsf@intel.com/
+> [3] https://lore.kernel.org/r/20210909135838.v4.4.I6103ce2b16e5e5a842b14c7022a034712b434609@changeid/
+> 
+> Fixes: d9f91a10c3e8 ("drm/edid: Allow querying/working with the panel ID from the EDID")
+> Reported-by: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
+> Reported-by: Srikanth Myakam <smyakam@microsoft.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  kernel/signal.c | 18 ++++--------------
->  1 file changed, 4 insertions(+), 14 deletions(-)
 > 
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index 952741f6d0f9..9f2dc9cf3208 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -2182,15 +2182,6 @@ static inline bool may_ptrace_stop(void)
->  	return true;
->  }
->  
-> -/*
-> - * Return non-zero if there is a SIGKILL that should be waking us up.
-> - * Called with the siglock held.
-> - */
-> -static bool sigkill_pending(struct task_struct *tsk)
-> -{
-> -	return sigismember(&tsk->pending.signal, SIGKILL) ||
-> -	       sigismember(&tsk->signal->shared_pending.signal, SIGKILL);
-> -}
->  
->  /*
->   * This must be called with current->sighand->siglock held.
-> @@ -2217,17 +2208,16 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
->  		 * calling arch_ptrace_stop, so we must release it now.
->  		 * To preserve proper semantics, we must do this before
->  		 * any signal bookkeeping like checking group_stop_count.
-> -		 * Meanwhile, a SIGKILL could come in before we retake the
-> -		 * siglock.  That must prevent us from sleeping in TASK_TRACED.
-> -		 * So after regaining the lock, we must check for SIGKILL.
+>   drivers/gpu/drm/drm_edid.c        | 121 +++++++++++++++---------------
+>   drivers/gpu/drm/panel/panel-edp.c |  23 +++---
+>   include/drm/drm_edid.h            |  14 ++--
+>   3 files changed, 81 insertions(+), 77 deletions(-)
+> 
 
-Where is the sleep this comment is talking about?
+Works for me. Thanks.
 
-i.e. will recalc_sigpending() have been called before the above sleep
-would happen? I assume it's after ptrace_stop() returns... But I want to
-make sure the sleep isn't in ptrace_stop() itself somewhere I can't see.
-I *do* see freezable_schedule() called, and that dumps us into
-__schedule(), and I don't see a recalc before it checks
-signal_pending_state().
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Does a recalc need to happen in plce of the old sigkill_pending()
-call?
 
 -- 
-Kees Cook
+~Randy
