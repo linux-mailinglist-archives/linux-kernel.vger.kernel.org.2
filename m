@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53BDC417439
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5F04172F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345660AbhIXNEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:04:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57368 "EHLO mail.kernel.org"
+        id S1344448AbhIXMxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:53:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345661AbhIXNBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:01:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B4F16128B;
-        Fri, 24 Sep 2021 12:54:16 +0000 (UTC)
+        id S1344606AbhIXMvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:51:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECA8C61260;
+        Fri, 24 Sep 2021 12:48:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488056;
-        bh=+sBRaDgBpQSWEczgoQDk4xMzfBJdeRSTCGZ5EgcfCks=;
+        s=korg; t=1632487718;
+        bh=OFTyZiwxhjOwkWAhCaChcnKPiPlqBDqJt0iNUf6+S4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ph5YEOb8qhH4jrIGhAPjNVjEDCCUKg12iTpQcdlG5zZ5lqJaL3t1RHL7CUQPTA66t
-         UPWAGORZqe7K2P5G22JGtZum/QpL5kAN4BGAP0fQbKe8PpF0RcRrBKH5A5nfUpeUTg
-         6scXZqp+TfA2In7r6zFgaVTS9e5260H1k0bAYDco=
+        b=mHhXnfK1tIZExDzJd12yWZRp0yBnGfL4gfpgq0fMNnoVOg1suuqYDfs0NdpTFKPge
+         wzJh1q2DNVFsFb8P+ncOjZy1kJsdZGd5sj4o+D3b74F2wSF0JyLAWKFMM5UKE8qA2y
+         DltRC1LuyxMzHixN0p3Ick0/zrzrPDxa3+mPsGR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jozef=20Kov=C3=A1=C4=8D?= <kovac@firma.zoznam.sk>,
-        Jeff Layton <jlayton@kernel.org>, Xiubo Li <xiubli@redhat.com>,
-        Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 065/100] ceph: request Fw caps before updating the mtime in ceph_write_iter
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 20/34] dmaengine: sprd: Add missing MODULE_DEVICE_TABLE
 Date:   Fri, 24 Sep 2021 14:44:14 +0200
-Message-Id: <20210924124343.598996659@linuxfoundation.org>
+Message-Id: <20210924124330.623539788@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
-References: <20210924124341.214446495@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,103 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit b11ed50346683a749632ea664959b28d524d7395 ]
+[ Upstream commit 4faee8b65ec32346f8096e64c5fa1d5a73121742 ]
 
-The current code will update the mtime and then try to get caps to
-handle the write. If we end up having to request caps from the MDS, then
-the mtime in the cap grant will clobber the updated mtime and it'll be
-lost.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-This is most noticable when two clients are alternately writing to the
-same file. Fw caps are continually being granted and revoked, and the
-mtime ends up stuck because the updated mtimes are always being
-overwritten with the old one.
-
-Fix this by changing the order of operations in ceph_write_iter to get
-the caps before updating the times. Also, make sure we check the pool
-full conditions before even getting any caps or uninlining.
-
-URL: https://tracker.ceph.com/issues/46574
-Reported-by: Jozef Kováč <kovac@firma.zoznam.sk>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
-Reviewed-by: Luis Henriques <lhenriques@suse.de>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+Link: https://lore.kernel.org/r/1620094977-70146-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/file.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ drivers/dma/sprd-dma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-index d1755ac1d964..3daebfaec8c6 100644
---- a/fs/ceph/file.c
-+++ b/fs/ceph/file.c
-@@ -1722,32 +1722,26 @@ retry_snap:
- 		goto out;
- 	}
+diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+index 9e8ce56a83d8..0fadf6a08494 100644
+--- a/drivers/dma/sprd-dma.c
++++ b/drivers/dma/sprd-dma.c
+@@ -1016,6 +1016,7 @@ static const struct of_device_id sprd_dma_match[] = {
+ 	{ .compatible = "sprd,sc9860-dma", },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, sprd_dma_match);
  
--	err = file_remove_privs(file);
--	if (err)
-+	down_read(&osdc->lock);
-+	map_flags = osdc->osdmap->flags;
-+	pool_flags = ceph_pg_pool_flags(osdc->osdmap, ci->i_layout.pool_id);
-+	up_read(&osdc->lock);
-+	if ((map_flags & CEPH_OSDMAP_FULL) ||
-+	    (pool_flags & CEPH_POOL_FLAG_FULL)) {
-+		err = -ENOSPC;
- 		goto out;
-+	}
- 
--	err = file_update_time(file);
-+	err = file_remove_privs(file);
- 	if (err)
- 		goto out;
- 
--	inode_inc_iversion_raw(inode);
--
- 	if (ci->i_inline_version != CEPH_INLINE_NONE) {
- 		err = ceph_uninline_data(file, NULL);
- 		if (err < 0)
- 			goto out;
- 	}
- 
--	down_read(&osdc->lock);
--	map_flags = osdc->osdmap->flags;
--	pool_flags = ceph_pg_pool_flags(osdc->osdmap, ci->i_layout.pool_id);
--	up_read(&osdc->lock);
--	if ((map_flags & CEPH_OSDMAP_FULL) ||
--	    (pool_flags & CEPH_POOL_FLAG_FULL)) {
--		err = -ENOSPC;
--		goto out;
--	}
--
- 	dout("aio_write %p %llx.%llx %llu~%zd getting caps. i_size %llu\n",
- 	     inode, ceph_vinop(inode), pos, count, i_size_read(inode));
- 	if (fi->fmode & CEPH_FILE_MODE_LAZY)
-@@ -1759,6 +1753,12 @@ retry_snap:
- 	if (err < 0)
- 		goto out;
- 
-+	err = file_update_time(file);
-+	if (err)
-+		goto out_caps;
-+
-+	inode_inc_iversion_raw(inode);
-+
- 	dout("aio_write %p %llx.%llx %llu~%zd got cap refs on %s\n",
- 	     inode, ceph_vinop(inode), pos, count, ceph_cap_string(got));
- 
-@@ -1842,6 +1842,8 @@ retry_snap:
- 	}
- 
- 	goto out_unlocked;
-+out_caps:
-+	ceph_put_cap_refs(ci, got);
- out:
- 	if (direct_lock)
- 		ceph_end_io_direct(inode);
+ static int __maybe_unused sprd_dma_runtime_suspend(struct device *dev)
+ {
 -- 
 2.33.0
 
