@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4074172D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DB5417334
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344381AbhIXMvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:47 -0400
+        id S1344752AbhIXMzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:55:16 -0400
 Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344534AbhIXMuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:50:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 797576134F;
-        Fri, 24 Sep 2021 12:48:20 +0000 (UTC)
+        id S1344779AbhIXMxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:53:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD3C661374;
+        Fri, 24 Sep 2021 12:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487701;
-        bh=1Yee01YOa6CqWiZK9ouQScFRToVKWvCJRIJUdRJVjAs=;
+        s=korg; t=1632487804;
+        bh=CCyhTQtobcN7EKoDmnU3O1vyCCjGnk1CJNHGd1xgJic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ULQcADGAnOowoKtiKmLfE1PJiTUFDoR/hAsGnNsYLbIFwyNhhRdUZk4DdWlWHELxz
-         tgk7zLnq6LEHhqU9GHMHo8yTaOoaKO6lf4onmRSyggb170OU0BmJsNNPShiqxhplYr
-         3wGFlp3Pxe4maDwWoRSigmj+xgw6NMS05074rOfA=
+        b=zvnGHYwchrD3LA4OP63JfNbhBn3yVu/x3o56019zJXp8yy0ogOSUAObTHxUQ33jXD
+         aMcKGHNGswGZfDz3FsNqS8x+Dn+ECqahhmkwBAVM7mPLF1pPEPc8crDQFbJLjB/77s
+         nBONWi79zjtJwp0NnuCf7bNFrv0E7Npd4yDL0+70=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 14/34] profiling: fix shift-out-of-bounds bugs
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.4 19/50] dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
 Date:   Fri, 24 Sep 2021 14:44:08 +0200
-Message-Id: <20210924124330.431710043@linuxfoundation.org>
+Message-Id: <20210924124332.883061158@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,98 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 2d186afd04d669fe9c48b994c41a7405a3c9f16d upstream.
+commit 67db87dc8284070adb15b3c02c1c31d5cf51c5d6 upstream.
 
-Syzbot reported shift-out-of-bounds bug in profile_init().
-The problem was in incorrect prof_shift. Since prof_shift value comes from
-userspace we need to clamp this value into [0, BITS_PER_LONG -1]
-boundaries.
+Currently the CRST parsing relies on the fact that on most of x86 devices
+the IRQ mapping is 1:1 with Linux vIRQ. However, it may be not true for
+some. Fix this by converting GSI to Linux vIRQ before checking it.
 
-Second possible shiht-out-of-bounds was found by Tetsuo:
-sample_step local variable in read_profile() had "unsigned int" type,
-but prof_shift allows to make a BITS_PER_LONG shift. So, to prevent
-possible shiht-out-of-bounds sample_step type was changed to
-"unsigned long".
-
-Also, "unsigned short int" will be sufficient for storing
-[0, BITS_PER_LONG] value, that's why there is no need for
-"unsigned long" prof_shift.
-
-Link: https://lkml.kernel.org/r/20210813140022.5011-1-paskripkin@gmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
-Suggested-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: ee8209fd026b ("dma: acpi-dma: parse CSRT to extract additional resources")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210730202715.24375-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/profile.c |   21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ drivers/dma/acpi-dma.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -40,7 +40,8 @@ struct profile_hit {
- #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
+--- a/drivers/dma/acpi-dma.c
++++ b/drivers/dma/acpi-dma.c
+@@ -70,10 +70,14 @@ static int acpi_dma_parse_resource_group
  
- static atomic_t *prof_buffer;
--static unsigned long prof_len, prof_shift;
-+static unsigned long prof_len;
-+static unsigned short int prof_shift;
+ 	si = (const struct acpi_csrt_shared_info *)&grp[1];
  
- int prof_on __read_mostly;
- EXPORT_SYMBOL_GPL(prof_on);
-@@ -66,8 +67,8 @@ int profile_setup(char *str)
- 		if (str[strlen(sleepstr)] == ',')
- 			str += strlen(sleepstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel sleep profiling enabled (shift: %u)\n",
- 			prof_shift);
- #else
- 		pr_warn("kernel sleep profiling requires CONFIG_SCHEDSTATS\n");
-@@ -77,21 +78,21 @@ int profile_setup(char *str)
- 		if (str[strlen(schedstr)] == ',')
- 			str += strlen(schedstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel schedule profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
- 		prof_on = KVM_PROFILING;
- 		if (str[strlen(kvmstr)] == ',')
- 			str += strlen(kvmstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel KVM profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	} else if (get_option(&str, &par)) {
--		prof_shift = par;
-+		prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
- 		prof_on = CPU_PROFILING;
--		pr_info("kernel profiling enabled (shift: %ld)\n",
-+		pr_info("kernel profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	}
- 	return 1;
-@@ -467,7 +468,7 @@ read_profile(struct file *file, char __u
- 	unsigned long p = *ppos;
- 	ssize_t read;
- 	char *pnt;
--	unsigned int sample_step = 1 << prof_shift;
-+	unsigned long sample_step = 1UL << prof_shift;
+-	/* Match device by MMIO and IRQ */
++	/* Match device by MMIO */
+ 	if (si->mmio_base_low != lower_32_bits(mem) ||
+-	    si->mmio_base_high != upper_32_bits(mem) ||
+-	    si->gsi_interrupt != irq)
++	    si->mmio_base_high != upper_32_bits(mem))
++		return 0;
++
++	/* Match device by Linux vIRQ */
++	ret = acpi_register_gsi(NULL, si->gsi_interrupt, si->interrupt_mode, si->interrupt_polarity);
++	if (ret != irq)
+ 		return 0;
  
- 	profile_flip_buffers();
- 	if (p >= (prof_len+1)*sizeof(unsigned int))
+ 	dev_dbg(&adev->dev, "matches with %.4s%04X (rev %u)\n",
 
 
