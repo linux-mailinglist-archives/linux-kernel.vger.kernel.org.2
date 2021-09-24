@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0854E4177F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B47A4177F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347209AbhIXPkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 11:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347187AbhIXPkR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:40:17 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D53C06161E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:38:43 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id j14so6746294plx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:38:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5AhDSP7B56c2gjHAftAo6mg6wD5b+oWdPPF0jeXrR90=;
-        b=RnyB0Ynyudwej3vwBU/THN/k/d77zsjvlxs8kFutZKNT2xhgozEi/OzF4IkDBD1npA
-         y1/pSzyb531DXANjDxMZonl73Ilfn0QoU99eie8t3xSlDK0O2aP3JHJMoi/5EnrrVJO+
-         1W1THM3Ak8Z07rYF3Y9dIU4iBt92zlKbYxtg4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5AhDSP7B56c2gjHAftAo6mg6wD5b+oWdPPF0jeXrR90=;
-        b=A8ufKJmchJFi57sFI16EVbU2jeSE+6+4gPEhRaKUzL8bLgMSgEKjQkUgxXGFuL5SVc
-         iBGq1AE/Uk2VhRNdYsRqt2OYNEyzDQlbw4ETolWehTu806+2aYswLfPY6JIfGIPYsk8f
-         7DgRWcbRre1bh7nrGYHKtOFGym3uWofUgVizGdCtRuecOvzYWe4beFI1BETx2oqGWDe6
-         3QUVUFAHoHaPP5I8S6ZKzPqUCQgNRE0GdiK77kVBaNqC7tQYWxtBeqWPFu+B/1J1H0rE
-         Q+DsH7P/U1S6fr830W8fy1qSJ3IZPwpT9YsK8Qxs5d0bqCh/dN0D6O3QEGvhyUoFqaR3
-         aEpg==
-X-Gm-Message-State: AOAM532RSn9ZxaTHy6hM1if8J2fG5nQXnN/Z2w4zVX3TNNi+KpVIRX1l
-        gwdQ2xRWyaC3UfNjsbKiixhgvA==
-X-Google-Smtp-Source: ABdhPJzpKwKKx0xqyyX4MCqAqyAb6w99J8bx3cPKERCKizzY88B8wpEJlXkXjCgoe1AjFigVzxYV3w==
-X-Received: by 2002:a17:90a:4d4e:: with SMTP id l14mr3028156pjh.4.1632497923393;
-        Fri, 24 Sep 2021 08:38:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 198sm9172997pfy.6.2021.09.24.08.38.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 08:38:42 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 08:38:41 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-api@vger.kernel.org
-Subject: Re: [PATCH 3/6] exec: Check for a pending fatal signal instead of
- core_state
-Message-ID: <202109240834.8D3A18AC32@keescook>
-References: <87v92qx2c6.fsf@disp2133>
- <87fstux27w.fsf@disp2133>
+        id S1347269AbhIXPlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 11:41:08 -0400
+Received: from mga07.intel.com ([134.134.136.100]:16216 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347246AbhIXPlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 11:41:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="287766991"
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="287766991"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 08:39:30 -0700
+X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
+   d="scan'208";a="551854501"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 08:39:28 -0700
+Date:   Fri, 24 Sep 2021 08:39:24 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Message-ID: <YU3xLNJsSjIEpocT@agluck-desk2.amr.corp.intel.com>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-5-fenghua.yu@intel.com>
+ <20210922210722.GV4323@worktop.programming.kicks-ass.net>
+ <YUy2AmabA4ODOgAC@agluck-desk2.amr.corp.intel.com>
+ <YU3UkvNdzCqAANSY@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87fstux27w.fsf@disp2133>
+In-Reply-To: <YU3UkvNdzCqAANSY@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 07:10:43PM -0500, Eric W. Biederman wrote:
+On Fri, Sep 24, 2021 at 03:37:22PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 23, 2021 at 10:14:42AM -0700, Luck, Tony wrote:
+> > On Wed, Sep 22, 2021 at 11:07:22PM +0200, Peter Zijlstra wrote:
+> > > On Mon, Sep 20, 2021 at 07:23:45PM +0000, Fenghua Yu wrote:
+> > > > @@ -538,6 +547,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+> > > >  
+> > > >  	cond_local_irq_enable(regs);
+> > > >  
+> > > > +	if (user_mode(regs) && fixup_pasid_exception())
+> > > > +		goto exit;
+> > > > +
+> > 
+> > > So you're eating any random #GP that might or might not be PASID
+> > > related. And all that witout a comment... Enlighten?
+> > 
+> > This is moderately well commented inside the fixup_pasid_exception()
+> > function. Another copy of the comments here at the call-site seems
+> > overkill.
 > 
-> Prevent exec continuing when a fatal signal is pending by replacing
-> mmap_read_lock with mmap_read_lock_killable.  This is always the right
-> thing to do as userspace will never observe an exec complete when
-> there is a fatal signal pending.
+> +static bool fixup_pasid_exception(void)
+> +{
+> +       if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
+> +               return false;
+> +
+> +       return __fixup_pasid_exception();
+> +}
 > 
-> With that change it becomes unnecessary to explicitly test for a core
-> dump in progress.  In coredump_wait zap_threads arranges under
-> mmap_write_lock for all tasks that use a mm to also have SIGKILL
-> pending, which means mmap_read_lock_killable will always return -EINTR
-> when old_mm->core_state is present.
-> 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->  fs/exec.c | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index a098c133d8d7..b6079f1a098e 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -987,16 +987,14 @@ static int exec_mmap(struct mm_struct *mm)
->  
->  	if (old_mm) {
->  		/*
-> -		 * Make sure that if there is a core dump in progress
-> -		 * for the old mm, we get out and die instead of going
-> -		 * through with the exec.  We must hold mmap_lock around
-> -		 * checking core_state and changing tsk->mm.
-> +		 * If there is a pending fatal signal perhaps a signal
-> +		 * whose default action is to create a coredump get
-> +		 * out and die instead of going through with the exec.
->  		 */
-> -		mmap_read_lock(old_mm);
-> -		if (unlikely(old_mm->core_state)) {
-> -			mmap_read_unlock(old_mm);
-> +		ret = mmap_read_lock_killable(old_mm);
+> /me goes looking for comments in that function, lemme get out the
+> electron microscope, because I can't seem to spot them with the naked
+> eye.
 
-This appears to ultimately call into rwsem_down_read_slowpath(), which
-checks signal_pending_state() (and returns the EINTR from before),
-so this looks right to me.
+If you have ctags installed then a ctrl-] on that
+__fixup_pasid_exception() will take you to the function with
+the comments. No electron microscope needed.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
++
++/*
++ * Try to figure out if there is a PASID MSR value to propagate to the
++ * thread taking the #GP.
++ */
++bool __fixup_pasid_exception(void)
++{
++       u32 pasid;
++
++       /*
++        * This function is called only when this #GP was triggered from user
++        * space. So the mm cannot be NULL.
++        */
++       pasid = current->mm->pasid;
++
++       /* If no PASID is allocated, there is nothing to propagate. */
++       if (pasid == PASID_DISABLED)
++               return false;
++
++       /*
++        * If the current task already has a valid PASID MSR, then the #GP
++        * fault must be for some non-ENQCMD related reason.
++        */
++       if (current->has_valid_pasid)
++               return false;
++
++       /* Fix up the MSR by the PASID in the mm. */
++       fpu__pasid_write(pasid);
++       current->has_valid_pasid = 1;
++
++       return true;
++}
 
--Kees
-
-> +		if (ret) {
->  			up_write(&tsk->signal->exec_update_lock);
-> -			return -EINTR;
-> +			return ret;
->  		}
->  	}
->  
-> -- 
-> 2.20.1
-> 
-
--- 
-Kees Cook
+-Tony
