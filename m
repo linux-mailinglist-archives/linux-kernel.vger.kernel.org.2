@@ -2,105 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579C6416A9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7482416AA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244063AbhIXDur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 23:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244019AbhIXDuq (ORCPT
+        id S244062AbhIXDyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 23:54:13 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:56794 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S244018AbhIXDyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 23:50:46 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C689C061574;
-        Thu, 23 Sep 2021 20:49:14 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id e16so5746717qts.4;
-        Thu, 23 Sep 2021 20:49:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aeqPl8lRAJi/jngCXcVyekAXBb4CJKVOEfw9KCRibJE=;
-        b=bL87uALhnZQ7xyPEXWDW+jMNYZp8S1nxJnEOCde4kDE2gW+iIKz1JpNCa8ITDhxB4+
-         vxSC6lBz8iFjEU1lWVimNSvB70bTO+uHyq/8juHZ2lM9KnsmHh+ntXKCa9cowFJ7mciB
-         gKG7YAO2bN9c2+K1TtAvImHkI6wTRX8tVt7pM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aeqPl8lRAJi/jngCXcVyekAXBb4CJKVOEfw9KCRibJE=;
-        b=kIpC0SBcacuOl+gwWKyYmMdt+I6ieYmCwNVv5gSDFBXAL1sIrf9xkpQr+Jo3huBKyw
-         mPi8rwO2ZMWPTBvFjLy51CXF86XNI2sZgODUYqIN40nUyHWIr3aVlYJiOvfJ/9mvVxFE
-         MmYIMQmnHUyo54LSv/Top9Q6OEYAlzrkIavYDIhEr/uCfWCOzXJCHRuoQ33dCfuxbiEF
-         kEgtoP/ATekzUANQn3hNA4tnqJIyD/l53ogcqdUhH/1eoSQH954AUV53FcjhyM+FKxg9
-         YLFvxi5jyZtZ6Op+LuRuJe4I0GQPvsDso/K6MDcEs/EQMAoL495fKOVcqB2/kdAEdXH2
-         Il1g==
-X-Gm-Message-State: AOAM532ouypu7V3Yno0EfGpNegMtXJawkMJkOlUJmoN0wHFgS+QVAFZ5
-        mx2y7uDXHR657I7G2Al+L8k4p44IpAmWEmFVeVI=
-X-Google-Smtp-Source: ABdhPJxpnTgNiXHwv0NhWyHlGgi4NFqri8IWBT5HGvaXlbmezTaEoOzlqXTHAWdP3EPM4UyatB9FeyfhDIuRLao8CAU=
-X-Received: by 2002:a05:622a:45:: with SMTP id y5mr2109484qtw.145.1632455352824;
- Thu, 23 Sep 2021 20:49:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210921043936.468001-1-andrew@aj.id.au>
-In-Reply-To: <20210921043936.468001-1-andrew@aj.id.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 24 Sep 2021 03:49:01 +0000
-Message-ID: <CACPK8XdTCfXVqDnBHcmbp4Zy=UKW5pZGAi1eiiDsUwu6=_+sig@mail.gmail.com>
-Subject: Re: [PATCH 0/2] leds: pca955x: Expose GPIOs for all pins
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     linux-leds@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
+        Thu, 23 Sep 2021 23:54:12 -0400
+X-UUID: 4a8690e3f2044dd78a95883ff4827230-20210924
+X-UUID: 4a8690e3f2044dd78a95883ff4827230-20210924
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <ed.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1719271118; Fri, 24 Sep 2021 11:52:38 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Fri, 24 Sep 2021 11:52:36 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 24 Sep 2021 11:52:36 +0800
+Message-ID: <07c5f2f1e10671bc462f88717f84aae9ee1e4d2b.camel@mediatek.com>
+Subject: Re: [PATCH] [fuse] alloc_page nofs avoid deadlock
+From:   Ed Tsai <ed.tsai@mediatek.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        chenguanyou <chenguanyou@xiaomi.com>,
+        chenguanyou <chenguanyou9338@gmail.com>,
+        "Stanley Chu =?UTF-8?Q?=28=E6=9C=B1=E5=8E=9F=E9=99=9E=29?=" 
+        <stanley.chu@mediatek.com>
+Date:   Fri, 24 Sep 2021 11:52:36 +0800
+In-Reply-To: <CAJfpegsOSWZpKHqDNE_B489dGCzLr-RVAhimVOsFkxJwMYmj9A@mail.gmail.com>
+References: <20210603125242.31699-1-chenguanyou@xiaomi.com>
+         <CAJfpegsEkRnU26Vvo4BTQUmx89Hahp6=RTuyEcPm=rqz8icwUQ@mail.gmail.com>
+         <1fabb91167a86990f4723e9036a0e006293518f4.camel@mediatek.com>
+         <CAJfpegsOSWZpKHqDNE_B489dGCzLr-RVAhimVOsFkxJwMYmj9A@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sept 2021 at 04:39, Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> Hello,
->
-> This is a rework of a Rube Goldberg-inspired RFC I posted previously:
->
-> https://lore.kernel.org/lkml/20210723075858.376378-1-andrew@aj.id.au/
->
-> This time around there's a lot less Rube - the series:
->
-> 1. Contains no (ab)use of pinctrl
-> 2. Always exposes all pins as GPIOs
-> 3. Internally tracks the active pins
->
-> Without these patches the driver limits the number of pins exposed on
-> the gpiochip to the number of pins specified as GPIO in the devicetree,
-> but doesn't map between the GPIO and pin number spaces. The result is
-> that specifying offset or interleaved GPIOs in the devicetree gives
-> unexpected behaviour in userspace.
->
-> By always exposing all pins as GPIOs the patches resolve the lack of
-> mapping between GPIO offsets and pins on the package in the driver by
-> ensuring we always have a 1-to-1 mapping.
->
-> The issue is primarily addressed by patch 1/2. Patch 2/2 makes it
-> possible to not expose any pins as LEDs (and therefore make them all
-> accessible as GPIOs). This has a follow-on effect of allowing the driver
-> to bind to a device instantiated at runtime without requiring a
-> description in the devicetree.
->
-> I've tested the series under qemu to inspect the various interactions
-> between LEDs vs GPIOs as well as conflicting GPIO requests.
->
-> Please review!
+On Wed, 2021-08-18 at 17:24 +0800, Miklos Szeredi wrote:
+> On Tue, 13 Jul 2021 at 04:42, Ed Tsai <ed.tsai@mediatek.com> wrote:
+> > 
+> > On Tue, 2021-06-08 at 17:30 +0200, Miklos Szeredi wrote:
+> > > On Thu, 3 Jun 2021 at 14:52, chenguanyou <
+> > > chenguanyou9338@gmail.com>
+> > > wrote:
+> > > > 
+> > > > ABA deadlock
+> > > > 
+> > > > PID: 17172 TASK: ffffffc0c162c000 CPU: 6 COMMAND: "Thread-21"
+> > > > 0 [ffffff802d16b400] __switch_to at ffffff8008086a4c
+> > > > 1 [ffffff802d16b470] __schedule at ffffff80091ffe58
+> > > > 2 [ffffff802d16b4d0] schedule at ffffff8009200348
+> > > > 3 [ffffff802d16b4f0] bit_wait at ffffff8009201098
+> > > > 4 [ffffff802d16b510] __wait_on_bit at ffffff8009200a34
+> > > > 5 [ffffff802d16b5b0] inode_wait_for_writeback at
+> > > > ffffff800830e1e8
+> > > > 6 [ffffff802d16b5e0] evict at ffffff80082fb15c
+> > > > 7 [ffffff802d16b620] iput at ffffff80082f9270
+> > > > 8 [ffffff802d16b680] dentry_unlink_inode at ffffff80082f4c90
+> > > > 9 [ffffff802d16b6a0] __dentry_kill at ffffff80082f1710
+> > > > 10 [ffffff802d16b6d0] shrink_dentry_list at ffffff80082f1c34
+> > > > 11 [ffffff802d16b750] prune_dcache_sb at ffffff80082f18a8
+> > > > 12 [ffffff802d16b770] super_cache_scan at ffffff80082d55ac
+> > > > 13 [ffffff802d16b860] shrink_slab at ffffff8008266170
+> > > > 14 [ffffff802d16b900] shrink_node at ffffff800826b420
+> > > > 15 [ffffff802d16b980] do_try_to_free_pages at ffffff8008268460
+> > > > 16 [ffffff802d16ba60] try_to_free_pages at ffffff80082680d0
+> > > > 17 [ffffff802d16bbe0] __alloc_pages_nodemask at
+> > > > ffffff8008256514
+> > > > 18 [ffffff802d16bc60] fuse_copy_fill at ffffff8008438268
+> > > > 19 [ffffff802d16bd00] fuse_dev_do_read at ffffff8008437654
+> > > > 20 [ffffff802d16bdc0] fuse_dev_splice_read at ffffff8008436f40
+> > > > 21 [ffffff802d16be60] sys_splice at ffffff8008315d18
+> > > > 22 [ffffff802d16bff0] __sys_trace at ffffff8008084014
+> > > > 
+> > > > PID: 9652 TASK: ffffffc0c9ce0000 CPU: 4 COMMAND:
+> > > > "kworker/u16:8"
+> > > > 0 [ffffff802e793650] __switch_to at ffffff8008086a4c
+> > > > 1 [ffffff802e7936c0] __schedule at ffffff80091ffe58
+> > > > 2 [ffffff802e793720] schedule at ffffff8009200348
+> > > > 3 [ffffff802e793770] __fuse_request_send at ffffff8008435760
+> > > > 4 [ffffff802e7937b0] fuse_simple_request at ffffff8008435b14
+> > > > 5 [ffffff802e793930] fuse_flush_times at ffffff800843a7a0
+> > > > 6 [ffffff802e793950] fuse_write_inode at ffffff800843e4dc
+> > > > 7 [ffffff802e793980] __writeback_single_inode at
+> > > > ffffff8008312740
+> > > > 8 [ffffff802e793aa0] writeback_sb_inodes at ffffff80083117e4
+> > > > 9 [ffffff802e793b00] __writeback_inodes_wb at ffffff8008311d98
+> > > > 10 [ffffff802e793c00] wb_writeback at ffffff8008310cfc
+> > > > 11 [ffffff802e793d00] wb_workfn at ffffff800830e4a8
+> > > > 12 [ffffff802e793d90] process_one_work at ffffff80080e4fac
+> > > > 13 [ffffff802e793e00] worker_thread at ffffff80080e5670
+> > > > 14 [ffffff802e793e60] kthread at ffffff80080eb650
+> > > 
+> > > The issue is real.
+> > > 
+> > > The fix, however, is not the right one.  The fundamental problem
+> > > is
+> > > that fuse_write_inode() blocks on a request to userspace.
+> > > 
+> > > This is the same issue that fuse_writepage/fuse_writepages
+> > > face.  In
+> > > that case the solution was to copy the page contents to a
+> > > temporary
+> > > buffer and return immediately as if the writeback already
+> > > completed.
+> > > 
+> > > Something similar needs to be done here: send the FUSE_SETATTR
+> > > request
+> > > asynchronously and return immediately from
+> > > fuse_write_inode().  The
+> > > tricky part is to make sure that multiple time updates for the
+> > > same
+> > > inode aren't mixed up...
+> > > 
+> > > Thanks,
+> > > Miklos
+> > 
+> > Dear Szeredi,
+> > 
+> > Writeback thread calls fuse_write_inode() and wait for user Daemon
+> > to
+> > complete this write inode request. The user daemon will
+> > alloc_page()
+> > after taking this request, and a deadlock could happen when we try
+> > to
+> > shrink dentry list under memory pressure.
+> > 
+> > We (Mediatek) glad to work on this issue for mainline and also LTS.
+> > So
+> > another problem is that we should not change the protocol or
+> > feature
+> > for stable kernel.
+> > 
+> > Use GFP_NOFS | __GFP_HIGHMEM can really avoid this by skip the
+> > dentry
+> > shirnker. It works but degrade the alloc_page success rate. In a
+> > more
+> > fundamental way, we could cache the contents and return
+> > immediately.
+> > But how to ensure the request will be done successfully, e.g.,
+> > always
+> > retry if it fails from daemon.
+> 
+> Key is where the the dirty metadata is flushed.  To prevent deadlock
+> it must not be flushed from memory reclaim, so must make sure that it
+> is flushed on close(2) and munmap(2) and not dirtied after that.
+> 
+> I'm working on this currently and hope to get it ready for the next
+> merge window.
+> 
+> Thanks,
+> Miklos
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Hi Miklos,
 
-Cheers,
+I'm not sure whether it has already been resolved in mainline.
+If it still WIP, please cc me on future emails.
 
-Joel
+Best regards,
+Ed Tsai
+
