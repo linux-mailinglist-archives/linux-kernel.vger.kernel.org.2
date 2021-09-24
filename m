@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE994172EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7504174A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344737AbhIXMwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:52:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45884 "EHLO mail.kernel.org"
+        id S1345583AbhIXNJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:09:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344605AbhIXMvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:51:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FD9B61267;
-        Fri, 24 Sep 2021 12:48:40 +0000 (UTC)
+        id S1346418AbhIXNGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:06:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B14E06124F;
+        Fri, 24 Sep 2021 12:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487721;
-        bh=LAf6IzOOzjxdsLPg39cVEW/B3C6fNmMHAn+wXXxCdX4=;
+        s=korg; t=1632488179;
+        bh=0oFXmb1PiySXKj8yKb4GMJK0zD2bsQWZzTnGzjHOgC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mWnMKIn2TvtjXj3WRqGtUjTlxBCZu1eC7Tbp4nqwpVaJVorKP8kwaNkqh7AlGM5Qo
-         vpH9dhuJh9rC0s9oOrfjrp75bsEebhY9v/OvcZ05SC/MscIF/oeo04qeqJ4muDoMqp
-         69qilPwVHgs20HO1zVRrux8YV8/hs1a1f9xwNEqk=
+        b=SanSSmoWUVkotlI97CNv9ZL/AJ1YDRqVh0A7A6QwsF+5Irq4t4Tm4okHEM6v/CSbt
+         ny8ogS9PQ3iQMWNlZ2sLr2wcOC0uCg2Wepg1HCkjEX10MWAyE7G9eiyIF2nYvZCr4V
+         LHGW/DnVxhhsNzrt0QublxUBMs0TJYOCpnbPwbOo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/34] dmaengine: ioat: depends on !UML
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.10 15/63] um: virtio_uml: fix memory leak on init failures
 Date:   Fri, 24 Sep 2021 14:44:15 +0200
-Message-Id: <20210924124330.655265659@linuxfoundation.org>
+Message-Id: <20210924124334.771760200@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +42,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit bbac7a92a46f0876e588722ebe552ddfe6fd790f ]
+commit 7ad28e0df7ee9dbcb793bb88dd81d4d22bb9a10e upstream.
 
-Now that UML has PCI support, this driver must depend also on
-!UML since it pokes at X86_64 architecture internals that don't
-exist on ARCH=um.
+If initialization fails, e.g. because the connection failed,
+we leak the 'vu_dev'. Fix that. Reported by smatch.
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Fixes: 5d38f324993f ("um: drivers: Add virtio vhost-user driver")
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20210809112409.a3a0974874d2.I2ffe3d11ed37f735da2f39884a74c953b258b995@changeid
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/drivers/virtio_uml.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 52dd4bd7c209..e5f31af65aab 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -266,7 +266,7 @@ config INTEL_IDMA64
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -1113,7 +1113,7 @@ static int virtio_uml_probe(struct platf
+ 		rc = os_connect_socket(pdata->socket_path);
+ 	} while (rc == -EINTR);
+ 	if (rc < 0)
+-		return rc;
++		goto error_free;
+ 	vu_dev->sock = rc;
  
- config INTEL_IOATDMA
- 	tristate "Intel I/OAT DMA support"
--	depends on PCI && X86_64
-+	depends on PCI && X86_64 && !UML
- 	select DMA_ENGINE
- 	select DMA_ENGINE_RAID
- 	select DCA
--- 
-2.33.0
-
+ 	spin_lock_init(&vu_dev->sock_lock);
+@@ -1132,6 +1132,8 @@ static int virtio_uml_probe(struct platf
+ 
+ error_init:
+ 	os_close_file(vu_dev->sock);
++error_free:
++	kfree(vu_dev);
+ 	return rc;
+ }
+ 
 
 
