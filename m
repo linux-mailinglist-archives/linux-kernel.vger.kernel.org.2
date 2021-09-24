@@ -2,136 +2,544 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B36417D72
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D281B417D6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344656AbhIXWGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 18:06:51 -0400
-Received: from mail-bn8nam12on2047.outbound.protection.outlook.com ([40.107.237.47]:23649
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1344595AbhIXWGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 18:06:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K4SuW0ekt69OiwYzZWvrYBUu1U78JugIihtkz/Vty9Tb24CsLF5/d9fUq4ul0tRCbw8Acy2LbvLUnGH0mibhknUE+OIREC25T8pZmKSOG9UtvzWoqlVT/I82fL+pJ04JyUCr7lfLddZd/VLl4dVKK6WuArvweKnGbOeygGneIEz6B9DQ2R0CK8l/hERUfdXQgPKsBSiCsNywfn0KOa040qb1hnnkpLkgfKbfjHisd1W5IH2DrGg2zkHO5+gzlVi3TyWkqhUHJUNbvwgzrVZRonhuLtaAyAZthccQ5QFeQKZhHMAquRhvQbuiW4FbV4plHntdBb3z+nGskeLZxv+ULw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=cr2FkibpDATaSm6YKOpNxJlPYPaHj+Wu4Mstmn7RGjo=;
- b=X2pxYSnqmsGeWOZCrlOImkjMA9NnFjqVO7mCqyF0DygpkLe5+MKW+6oXCOmi6d77+2T2sZXrE7jW0qM3TOvy9Otpq7q5sEgUxevjLEurqbjzTQ7r2Tzgz3KNeErGkdrFUI8L/XFmwYj8X8T+OIkMFZ0GiZm7nULDzUiJJ1gj5R2M4DdGN9vTLsj3UoNp2jr1dLk9sU41htgd1PU63TebfhMpc11fvfq22WBua6GhLKyuUwwS005G0noKTw998FM7fvd0fE3HPT7m4TptVIXecdN5x+JGMVkiMiKrktv0JOgMZZr4xkr3stVqsnDjImOw3h5YhLDmbfAvE6ZBaOBoIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cr2FkibpDATaSm6YKOpNxJlPYPaHj+Wu4Mstmn7RGjo=;
- b=VqEDBtfR8O/dn3Qx5+Rq3dt5O5G7ZXKNknbG4fLPRXmvsQz924BnK6leAfZam0Nu2ZIFGFZ/ivso2efG1AqSgtu2jvcYH5Hh9HXu/vqviB5Z7IOAU3jKaBhj9X2CLbQtP2xbvrEbwV+fyi+h+uYtntG4vda+lDTxgCP6od9GNNU/P5cOk3ZvHqEUQH2OCqH/j7b/lLBfRUMqZEP3Kgw7DTTQ6LmGFT+SbqUVfhdlIxx3neatYEcviC422IzAbbzUIIYvMCH88rbZVjYtqzcggcyxaa2OGhLpffLXln+W9z2tUHZVCO1OVVwQQKgEP0G4eRN8gogbQGPQnTFJHh3lEw==
-Received: from DM5PR13CA0031.namprd13.prod.outlook.com (2603:10b6:3:7b::17) by
- MWHPR12MB1454.namprd12.prod.outlook.com (2603:10b6:301:11::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.15; Fri, 24 Sep 2021 22:05:13 +0000
-Received: from DM6NAM11FT003.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:7b:cafe::a3) by DM5PR13CA0031.outlook.office365.com
- (2603:10b6:3:7b::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.7 via Frontend
- Transport; Fri, 24 Sep 2021 22:05:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- DM6NAM11FT003.mail.protection.outlook.com (10.13.173.162) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 22:05:13 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 24 Sep
- 2021 22:05:12 +0000
-Received: from [10.19.66.38] (172.20.187.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 24 Sep
- 2021 22:05:08 +0000
-Subject: Re: [PATCH V1 1/3] dt-bindings: tegra: memory,bpmp-thermal: add SPDX
- license
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        <robh+dt@kernel.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <rostedt@goodmis.org>, <mingo@redhat.com>,
-        <jassisinghbrar@gmail.com>, <p.zabel@pengutronix.de>
-CC:     <skomatineni@nvidia.com>, <broonie@kernel.org>,
-        <linus.walleij@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>
-References: <20210921112716.3007-1-bbiswas@nvidia.com>
- <20210921112716.3007-2-bbiswas@nvidia.com>
- <c2ec765c-f881-17ea-3f9c-cf83ea0313f5@canonical.com>
-From:   Bitan Biswas <bbiswas@nvidia.com>
-Message-ID: <9fe647c0-3be8-8bff-cbfb-46ef10fb0b1f@nvidia.com>
-Date:   Fri, 24 Sep 2021 15:04:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1344563AbhIXWGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 18:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232853AbhIXWGS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 18:06:18 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91C2C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:04:44 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 24so16510502oix.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XBLqgfVNdsrWmIwa9/gDDxqQEr3G/K1n0rpQlHMzRQo=;
+        b=W6EjcgPb7WfYfZG4mD09oDjaFuGLOgheGj1J1XDv7NDnwR97Enu93wSb6MDZZA/pfC
+         VXqieEGcpQiz3AEnYZD/rWEcJuuFI7C/Lo2gDksv16Cnez7CLYHk9x9hYkkSiWaGwvwz
+         xb4A+bhwS/Q0eS0Z1Jht58xla8E1vpl2SZhxH8XWzkIQ/IqNb6G0Hk1pTbvM7ApTEDQ1
+         w1/tnNjnZHXfDBjyPfPyVreTuBs7y94f1+2SOmDMrRSgdE7wIBnxELC/ebudBDLfCfIA
+         vujexrT4JrymMzjD4xpoAcI8cmLhOlq3cAaT21q4z//hU04HsA8vw8W5D65rCNLEEHEW
+         AtVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XBLqgfVNdsrWmIwa9/gDDxqQEr3G/K1n0rpQlHMzRQo=;
+        b=303aEuLL6inoSJ7TxXBdjb1FX7OrK15qXEcXr73sZsm1XwhEPMWcGcXX85Vf+DCuw2
+         qgyW8ZHOOp14HpMymgY8LZ/pdnB1P0sdisnmmSZbT1iT8zmXXqDLmZUgPtC38mTH3bdo
+         ZJ7ai2pULSLP+EWjlBI4hc62ptaSoOwvGFHaI5tiMOglQ4oUykySw9xWhF6BIVJvUE1H
+         Uo8Yxpwv80l1iVcghy74+xBO9qTyvT/35I0eu47m7rsVAU6Er812HL/rrBH6YiLbRPLC
+         xbkhNq1zu7U/etNRFXpNM38/B9GgwxXEaRKHNVEOj1CM1L/cjd3ZZK38vBGxSMWZYQd9
+         e4nA==
+X-Gm-Message-State: AOAM532b083JH7Yyub7S3B9/yoGkjWn9J8QYBh+lJvEb8B0egCKsNQ93
+        fdXNlTOxwUh580AZr9mcQ4MZbg==
+X-Google-Smtp-Source: ABdhPJz8yTPoleILefGTZF0pMerrD/z4exdfQ8M5rfhJSR6PPdy1uE1N3AEpLZrHiZE6YQbSC+0Htg==
+X-Received: by 2002:a05:6808:2128:: with SMTP id r40mr3326332oiw.24.1632521083920;
+        Fri, 24 Sep 2021 15:04:43 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k6sm2342629otf.80.2021.09.24.15.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 15:04:43 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 17:04:41 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, Doug Anderson <dianders@google.com>
+Subject: Re: [PATCH v5 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
+Message-ID: <YU5LeQlSANlt1/jk@builder.lan>
+References: <20210924021225.846197-1-bjorn.andersson@linaro.org>
+ <20210924021225.846197-2-bjorn.andersson@linaro.org>
+ <20210924075433.apkdkwur5ar67ge2@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <c2ec765c-f881-17ea-3f9c-cf83ea0313f5@canonical.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd7cc83c-4651-46fa-e8d9-08d97fa76221
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1454:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB14547F5BEB5A8A2F8E343035D7A49@MWHPR12MB1454.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1148;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4A7Z8WxcX1rMTKsht8iK2R0QUmB0iYYp6+NL9WienE7iGqwxAkksuNjbmUZIf+B7x1gyj6AEI1+WY+nV7ylBYlvjYpQE5qxkhtfY4WHbA109I+ioMhfAltUkZL4US3tYrB84BA0ZKXiT2WkutP0CIAKvo5lHGfONUprOkCI603JLBpulm7hgNLEPYGTP3Vnh6Q/TcctG3aVCKUWtqTgJsJA3SFDSsd9UnellQKNAv5qNaZDdTDtbzIwHpAlnEdMXcAhJPU8vCFkTZv7D6rkhGpuVNCKazQWt6FAOQ9CVcoYrZB0V3CdoAlA4ejilvQrffStE/uRfj4+/oA1Zgd58zoeJuDLjXCw+VAseLeYNzhyl07YJT2kYlZOarRMPOVZYVcnBJArNG30s3TOF4RF+5xqR2lp/00kiSYgpPx5F00yu6N4EBwe72wWQymIigX1CrbbOk2jC9N97uxqN5O3H+CBHgmMQijoMyeD5uWhkOiBTlGK+seKyCZogn0QRjNPfl9yLrl9c193lHL46XOqga2h+6aTE/P7Vre47iyEP4EhDav6h5hBp8mfjkIwEiyfn6205dpNuF+3s669WNGACsusQcVHB2PulO9/jzwozWpEAXyUYdBvfnSswc9XqrEkn0LJez031dSI8O7ZnzeMcVuFbTEgUSBhdFVAxXNVQZFgYSy8vOyOHD5sZ7c0Ndwc3B/ux/B2PXfTVOqmUCqrtwREGHZs2uVr/ZKqVfKiebcs=
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(36756003)(86362001)(508600001)(36860700001)(16526019)(2616005)(31696002)(7416002)(26005)(82310400003)(83380400001)(31686004)(7636003)(426003)(6666004)(336012)(186003)(54906003)(70586007)(70206006)(8676002)(47076005)(8936002)(53546011)(36906005)(356005)(316002)(16576012)(2906002)(110136005)(4326008)(5660300002)(4744005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 22:05:13.1301
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd7cc83c-4651-46fa-e8d9-08d97fa76221
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT003.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1454
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924075433.apkdkwur5ar67ge2@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Fri 24 Sep 02:54 CDT 2021, Uwe Kleine-K?nig wrote:
 
-On 9/21/21 4:34 AM, Krzysztof Kozlowski wrote:
-> External email: Use caution opening links or attachments
+> Hello,
 > 
+> On Thu, Sep 23, 2021 at 09:12:25PM -0500, Bjorn Andersson wrote:
+> > The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
+> > with the primary purpose of controlling the backlight of the attached
+> > panel. Add an implementation that exposes this using the standard PWM
+> > framework, to allow e.g. pwm-backlight to expose this to the user.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> > 
+> > Changes since v4:
+> > - Rebased the patch
+> > - Turned ti_sn65dsi86_write_u16 into using regmap bulk write
+> > - Moved pwm_refclk_freq out of the #if CONFIG_PWM, to allow removing the guard
+> >   from ti_sn_bridge_set_refclk_freq()
+> > - Updates "Limitations" text
+> > - pm_runtime_put_sync() on pm_runtime_get_sync() failure
+> > - Added parenthesis around (scale + 1) in the PWM_FREQ formula and thereby
+> >   redid all the math
+> > - Rewrote the comments related to the math
+> > - Rewrote the math for calculating the backlight (duty cycle) register value
+> > - Dropped some !! on already boolean state->enabled
+> > - Dropped a spurious newline
+> > - Rewrote comment in ti_sn65dsi86_probe() talking about future PWM work
+> > 
+> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 369 +++++++++++++++++++++++++-
+> >  1 file changed, 361 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > index 41d48a393e7f..857a53dc6c75 100644
+> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > @@ -4,7 +4,9 @@
+> >   * datasheet: https://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
+> >   */
+> >  
+> > +#include <linux/atomic.h>
+> >  #include <linux/auxiliary_bus.h>
+> > +#include <linux/bitfield.h>
+> >  #include <linux/bits.h>
+> >  #include <linux/clk.h>
+> >  #include <linux/debugfs.h>
+> > @@ -15,6 +17,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/of_graph.h>
+> >  #include <linux/pm_runtime.h>
+> > +#include <linux/pwm.h>
+> >  #include <linux/regmap.h>
+> >  #include <linux/regulator/consumer.h>
+> >  
+> > @@ -91,6 +94,13 @@
+> >  #define SN_ML_TX_MODE_REG			0x96
+> >  #define  ML_TX_MAIN_LINK_OFF			0
+> >  #define  ML_TX_NORMAL_MODE			BIT(0)
+> > +#define SN_PWM_PRE_DIV_REG			0xA0
+> > +#define SN_BACKLIGHT_SCALE_REG			0xA1
+> > +#define  BACKLIGHT_SCALE_MAX			0xFFFF
+> > +#define SN_BACKLIGHT_REG			0xA3
+> > +#define SN_PWM_EN_INV_REG			0xA5
+> > +#define  SN_PWM_INV_MASK			BIT(0)
+> > +#define  SN_PWM_EN_MASK				BIT(1)
+> >  #define SN_AUX_CMD_STATUS_REG			0xF4
+> >  #define  AUX_IRQ_STATUS_AUX_RPLY_TOUT		BIT(3)
+> >  #define  AUX_IRQ_STATUS_AUX_SHORT		BIT(5)
+> > @@ -113,11 +123,14 @@
+> >  
+> >  #define SN_LINK_TRAINING_TRIES		10
+> >  
+> > +#define SN_PWM_GPIO_IDX			3 /* 4th GPIO */
+> > +
+> >  /**
+> >   * struct ti_sn65dsi86 - Platform data for ti-sn65dsi86 driver.
+> >   * @bridge_aux:   AUX-bus sub device for MIPI-to-eDP bridge functionality.
+> >   * @gpio_aux:     AUX-bus sub device for GPIO controller functionality.
+> >   * @aux_aux:      AUX-bus sub device for eDP AUX channel functionality.
+> > + * @pwm_aux:      AUX-bus sub device for PWM controller functionality.
+> >   *
+> >   * @dev:          Pointer to the top level (i2c) device.
+> >   * @regmap:       Regmap for accessing i2c.
+> > @@ -145,11 +158,17 @@
+> >   *                bitmap so we can do atomic ops on it without an extra
+> >   *                lock so concurrent users of our 4 GPIOs don't stomp on
+> >   *                each other's read-modify-write.
+> > + *
+> > + * @pchip:        pwm_chip if the PWM is exposed.
+> > + * @pwm_enabled:  Used to track if the PWM signal is currently enabled.
+> > + * @pwm_pin_busy: Track if GPIO4 is currently requested for GPIO or PWM.
+> > + * @pwm_refclk_freq: Cache for the reference clock input to the PWM.
+> >   */
+> >  struct ti_sn65dsi86 {
+> >  	struct auxiliary_device		bridge_aux;
+> >  	struct auxiliary_device		gpio_aux;
+> >  	struct auxiliary_device		aux_aux;
+> > +	struct auxiliary_device		pwm_aux;
+> >  
+> >  	struct device			*dev;
+> >  	struct regmap			*regmap;
+> > @@ -172,6 +191,12 @@ struct ti_sn65dsi86 {
+> >  	struct gpio_chip		gchip;
+> >  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
+> >  #endif
+> > +#if defined(CONFIG_PWM)
+> > +	struct pwm_chip			pchip;
+> > +	bool				pwm_enabled;
+> > +	atomic_t			pwm_pin_busy;
+> > +#endif
+> > +	unsigned int			pwm_refclk_freq;
+> >  };
+> >  
+> >  static const struct regmap_range ti_sn65dsi86_volatile_ranges[] = {
+> > @@ -190,11 +215,31 @@ static const struct regmap_config ti_sn65dsi86_regmap_config = {
+> >  	.cache_type = REGCACHE_NONE,
+> >  };
+> >  
+> > +static int ti_sn65dsi86_read_u16(struct ti_sn65dsi86 *pdata,
+> > +				 unsigned int reg, u16 *val)
+> > +{
+> > +	unsigned int tmp;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(pdata->regmap, reg, &tmp);
+> > +	if (ret)
+> > +		return ret;
+> > +	*val = tmp;
+> > +
+> > +	ret = regmap_read(pdata->regmap, reg + 1, &tmp);
+> > +	if (ret)
+> > +		return ret;
+> > +	*val |= tmp << 8;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static void ti_sn65dsi86_write_u16(struct ti_sn65dsi86 *pdata,
+> >  				   unsigned int reg, u16 val)
+> >  {
+> > -	regmap_write(pdata->regmap, reg, val & 0xFF);
+> > -	regmap_write(pdata->regmap, reg + 1, val >> 8);
+> > +	u8 buf[2] = { val & 0xff, val >> 8 };
+> > +
+> > +	regmap_bulk_write(pdata->regmap, reg, &buf, ARRAY_SIZE(buf));
 > 
-> On 21/09/2021 13:27, Bitan Biswas wrote:
->> Add Dual licensing SPDX license identifier for tegra186,tegra194
->> memory and bpmp-thermal headers.
->>
->> Signed-off-by: Bitan Biswas <bbiswas@nvidia.com>
->> ---
->>   include/dt-bindings/memory/tegra186-mc.h            | 1 +
->>   include/dt-bindings/memory/tegra194-mc.h            | 1 +
->>   include/dt-bindings/thermal/tegra186-bpmp-thermal.h | 1 +
->>   include/dt-bindings/thermal/tegra194-bpmp-thermal.h | 1 +
->>   4 files changed, 4 insertions(+)
->>
-> 
-> Hi,
-> 
-> It seems you sent the same patchset twice. I already responded to all
-> three patches.
+> Given that ti_sn65dsi86_write_u16 uses regmap_bulk_write I wonder why
+> ti_sn65dsi86_read_u16 doesn't use regmap_bulk_read.
 > 
 
-Apologize for causing the confusion. I shall update the patch next as 
-suggested.
+Seems reasonable to make that use the bulk interface as well and this
+would look better in its own patch.
 
--regards,
-  Bitan
+> >  }
+> >  
+> >  static u32 ti_sn_bridge_get_dsi_freq(struct ti_sn65dsi86 *pdata)
+> > @@ -253,6 +298,12 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_sn65dsi86 *pdata)
+> >  
+> >  	regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
+> >  			   REFCLK_FREQ(i));
+> > +
+> > +	/*
+> > +	 * The PWM refclk is based on the value written to SN_DPPLL_SRC_REG,
+> > +	 * regardless of its actual sourcing.
+> > +	 */
+> > +	pdata->pwm_refclk_freq = ti_sn_bridge_refclk_lut[i];
+> >  }
+> >  
+> >  static void ti_sn65dsi86_enable_comms(struct ti_sn65dsi86 *pdata)
+> > @@ -1259,9 +1310,283 @@ static struct auxiliary_driver ti_sn_bridge_driver = {
+> >  };
+> >  
+> >  /* -----------------------------------------------------------------------------
+> > - * GPIO Controller
+> > + * PWM Controller
+> > + */
+> > +#if defined(CONFIG_PWM)
+> > +static int ti_sn_pwm_pin_request(struct ti_sn65dsi86 *pdata)
+> > +{
+> > +	return atomic_xchg(&pdata->pwm_pin_busy, 1) ? -EBUSY : 0;
+> > +}
+> > +
+> > +static void ti_sn_pwm_pin_release(struct ti_sn65dsi86 *pdata)
+> > +{
+> > +	atomic_set(&pdata->pwm_pin_busy, 0);
+> > +}
+> > +
+> > +static struct ti_sn65dsi86 *pwm_chip_to_ti_sn_bridge(struct pwm_chip *chip)
+> > +{
+> > +	return container_of(chip, struct ti_sn65dsi86, pchip);
+> > +}
+> > +
+> > +static int ti_sn_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+> > +{
+> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
+> > +
+> > +	return ti_sn_pwm_pin_request(pdata);
+> > +}
+> > +
+> > +static void ti_sn_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+> > +{
+> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
+> > +
+> > +	ti_sn_pwm_pin_release(pdata);
+> > +}
+> > +
+> > +/*
+> > + * Limitations:
+> > + * - The PWM signal is not driven when the chip is powered down, or in its
+> > + *   reset state and the driver does not implement the "suspend state"
+> > + *   described in the documentation. In order to save power, state->enabled is
+> > + *   interpreted as denoting if the signal is expected to be valid, and is used
+> > + *   to determine if the chip needs to be kept powered.
+> > + * - Changing both period and duty_cycle is not done atomically, neither is the
+> > + *   multi-byte register updates, so the output might briefly be undefined
+> > + *   during update.
+> >   */
+> > +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> > +			   const struct pwm_state *state)
+> > +{
+> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
+> > +	unsigned int pwm_en_inv;
+> > +	unsigned int backlight;
+> > +	unsigned int pre_div;
+> > +	unsigned int scale;
+> > +	u64 period_max;
+> > +	u64 period;
+> > +	int ret;
+> > +
+> > +	if (!pdata->pwm_enabled) {
+> > +		ret = pm_runtime_get_sync(pdata->dev);
+> > +		if (ret < 0) {
+> > +			pm_runtime_put_sync(pdata->dev);
+> > +			return ret;
+> > +		}
+> > +	}
+> > +
+> > +	if (state->enabled) {
+> > +		if (!pdata->pwm_enabled) {
+> > +			/*
+> > +			 * The chip might have been powered down while we
+> > +			 * didn't hold a PM runtime reference, so mux in the
+> > +			 * PWM function on the GPIO pin again.
+> > +			 */
+> > +			ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
+> > +						 SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO_IDX),
+> > +						 SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO_IDX));
+> > +			if (ret) {
+> > +				dev_err(pdata->dev, "failed to mux in PWM function\n");
+> > +				goto out;
+> > +			}
+> > +		}
+> > +
+> > +		/*
+> > +		 * Per the datasheet the PWM frequency is given by:
+> > +		 *
+> > +		 *                          REFCLK_FREQ
+> > +		 *   PWM_FREQ = -----------------------------------
+> > +		 *               PWM_PRE_DIV * BACKLIGHT_SCALE + 1
+> > +		 *
+> > +		 * Unfortunately the math becomes overly complex unless we
+> > +		 * assume that this formula is missing parenthesis around
+> > +		 * BACKLIGHT_SCALE + 1.
+> 
+> We shouldn't assume a different formula than the reference manual
+> describes because it's complex. The reasoning should be that the
+> reference manual is wrong and that someone has convinced themselves the
+> assumed formula is the right one instead.
+> 
 
+Given the effort put in to conclude that there must be some parenthesis
+there, I agree that "assume" might be to weak of a word...
 
+> With the assumed formula: What happens if PWM_PRE_DIV is 0?
+> 
 
+Looking at the specification again and I don't see anything prohibiting
+from writing 0 in the PRE_DIV register, and writing a 0 to the register
+causes no visual on my backlight from writing 1.
+
+Per our new understanding this should probably have resulted in a period
+of 0. That said, if the formula from the datasheet was correct then we'd
+have a period T_pwm (given T_ref as refclk pulse length) of:
+
+  T_pwm = T_ref * (div * scale + 1)
+
+And with div = 0 we'd have:
+
+  T_pwm = T_ref * 1
+
+Which wouldn't give any room for adjusting the duty cycle, and I can
+still do that. So that's not correct either.
+
+Unfortunately I still don't want to dismantle my working laptop, so I
+don't know if I can do any better than this. Perhaps they do the typical
+trick of encoding prediv off-by-1 and the PWM duty is off by a factor
+of 2. Perhaps the comparator for the prediv counter trips at 1 even
+though the register is configured at 0...
+
+> > +		 * With that the formula can be written:
+> > +		 *
+> > +		 *   T_pwm * REFCLK_FREQ = PWM_PRE_DIV * (BACKLIGHT_SCALE + 1)
+> > +		 *
+> > +		 * In order to keep BACKLIGHT_SCALE within its 16 bits,
+> > +		 * PWM_PRE_DIV must be:
+> > +		 *
+> > +		 *                     T_pwm * REFCLK_FREQ
+> > +		 *   PWM_PRE_DIV >= -------------------------
+> > +		 *                   BACKLIGHT_SCALE_MAX + 1
+> > +		 *
+> > +		 * To simplify the search and optimize the resolution of the
+> > +		 * PWM, the lowest possible PWM_PRE_DIV is used. Finally the
+> > +		 * scale is calculated as:
+> > +		 *
+> > +		 *                      T_pwm * REFCLK_FREQ
+> > +		 *   BACKLIGHT_SCALE = ---------------------- - 1
+> > +		 *                          PWM_PRE_DIV
+> > +		 *
+> > +		 * Here T_pwm is represented in seconds, so appropriate scaling
+> > +		 * to nanoseconds is necessary.
+> > +		 */
+> > +
+> > +		/* Minimum T_pwm is (0 * 1) / REFCLK_FREQ */
+> 
+> So the minimal T_pwm (which corresponds to .period, right?) is 0? That
+> sounds wrong.
+> 
+
+Yes, that seems more likely.
+
+> > +		if (state->period <= NSEC_PER_SEC / pdata->pwm_refclk_freq) {
+> 
+> The implemented check assumes 1 / REFCLK_FREQ, which looks more reasonable.
+> 
+
+I agree.
+
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +		}
+> > +
+> > +		/*
+> > +		 * Maximum T_pwm is 255 * (65535 + 1) / REFCLK_FREQ
+> > +		 * Limit period to this to avoid overflows
+> > +		 */
+> > +		period_max = div_u64((u64)NSEC_PER_SEC * 255 * (65535 + 1), pdata->pwm_refclk_freq);
+> > +		if (period > period_max)
+> > +			period = period_max;
+> > +		else
+> > +			period = state->period;
+> > +
+> > +		pre_div = DIV64_U64_ROUND_UP(period * pdata->pwm_refclk_freq,
+> > +					     (u64)NSEC_PER_SEC * (BACKLIGHT_SCALE_MAX + 1));
+> > +		scale = div64_u64(period * pdata->pwm_refclk_freq, (u64)NSEC_PER_SEC * pre_div) - 1;
+> 
+> You're loosing precision here as you divide by the result of a division.
+> 
+
+As described above, I'm trying to find suitable values for PRE_DIV and
+BACKLIGHT_SCALE in:
+
+  T_pwm * refclk_freq
+ --------------------- = PRE_DIV * (BACKLIGHT_SCALE + 1)
+     NSEC_PER_SEC
+
+BACKLIGHT_SCALE must fit in 16 bits and in order to be useful for
+driving the backlight control be large enough that the resolution
+(BACKLIGTH = [0..BACKLIGHT_SCALE]) covers whatever resolution
+pwm-backlight might expose.
+
+For the intended use case this seems pretty good, but I presume you
+could pick better values to get closer to the requested period.
+
+Do you have a better suggestion for how to pick PRE_DIV and
+BACKLIGHT_SCALE?
+
+> > +
+> > +		/*
+> > +		 * The documentation has the duty ratio given as:
+> > +		 *
+> > +		 *     duty          BACKLIGHT
+> > +		 *   ------- = ---------------------
+> > +		 *    period    BACKLIGHT_SCALE + 1
+> > +		 *
+> > +		 * Solve for BACKLIGHT, substituting BACKLIGHT_SCALE according
+> > +		 * to definition above and adjusting for nanosecond
+> > +		 * representation of duty cycle gives us:
+> > +		 */
+> > +		backlight = div64_u64(state->duty_cycle * pdata->pwm_refclk_freq, (u64)NSEC_PER_SEC * pre_div);
+> > +		if (backlight > scale)
+> > +			backlight = scale;
+> > +
+> > +		ret = regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
+> > +		if (ret) {
+> > +			dev_err(pdata->dev, "failed to update PWM_PRE_DIV\n");
+> > +			goto out;
+> > +		}
+> >  
+> > +		ti_sn65dsi86_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, scale);
+> > +		ti_sn65dsi86_write_u16(pdata, SN_BACKLIGHT_REG, backlight);
+> > +	}
+> > +
+> > +	pwm_en_inv = FIELD_PREP(SN_PWM_EN_MASK, state->enabled) |
+> > +		     FIELD_PREP(SN_PWM_INV_MASK, state->polarity == PWM_POLARITY_INVERSED);
+> > +	ret = regmap_write(pdata->regmap, SN_PWM_EN_INV_REG, pwm_en_inv);
+> > +	if (ret) {
+> > +		dev_err(pdata->dev, "failed to update PWM_EN/PWM_INV\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	pdata->pwm_enabled = state->enabled;
+> > +out:
+> > +
+> > +	if (!pdata->pwm_enabled)
+> > +		pm_runtime_put_sync(pdata->dev);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static void ti_sn_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+> > +				struct pwm_state *state)
+> > +{
+> > +	struct ti_sn65dsi86 *pdata = pwm_chip_to_ti_sn_bridge(chip);
+> > +	unsigned int pwm_en_inv;
+> > +	unsigned int pre_div;
+> > +	u16 backlight;
+> > +	u16 scale;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(pdata->regmap, SN_PWM_EN_INV_REG, &pwm_en_inv);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	ret = ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_SCALE_REG, &scale);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	ret = ti_sn65dsi86_read_u16(pdata, SN_BACKLIGHT_REG, &backlight);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	ret = regmap_read(pdata->regmap, SN_PWM_PRE_DIV_REG, &pre_div);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	state->enabled = FIELD_GET(SN_PWM_EN_MASK, pwm_en_inv);
+> > +	if (FIELD_GET(SN_PWM_INV_MASK, pwm_en_inv))
+> > +		state->polarity = PWM_POLARITY_INVERSED;
+> > +	else
+> > +		state->polarity = PWM_POLARITY_NORMAL;
+> > +
+> > +	state->period = DIV_ROUND_UP_ULL((u64)NSEC_PER_SEC * pre_div * (scale + 1),
+> > +					 pdata->pwm_refclk_freq);
+> > +	state->duty_cycle = DIV_ROUND_UP_ULL((u64)NSEC_PER_SEC * pre_div * backlight,
+> > +					     pdata->pwm_refclk_freq);
+> 
+> What happens if scale + 1 < backlight?
+> 
+
+When we write the backlight register above, we cap it at scale, so for
+the typical case that shouldn't happen.
+
+So I guess the one case when this could happen is if we get_state()
+before pwm_apply(), when someone else has written broken values
+(reset values are scale = 0xff and backlight = 0)
+
+Thanks,
+Bjorn
