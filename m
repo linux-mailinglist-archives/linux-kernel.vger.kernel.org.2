@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3C6417714
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDDD417719
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346910AbhIXOwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:52:01 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:58734 "EHLO vps0.lunn.ch"
+        id S1346902AbhIXOx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:53:58 -0400
+Received: from smtp.radex.nl ([178.250.146.7]:34377 "EHLO radex-web.radex.nl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346847AbhIXOv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:51:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=5TIp+jvOSKncRqk5PW16MyMZMoU58Ut9aKPAaTdYe2I=; b=GG
-        D5LoUwPkC0fmN1cwGJgWlBkTtYXaOtmfeVUQES1tCDz+jkUw9sx2mmkRF8adU4T3VRl4Q/kdJZAxM
-        EMCy6yMympATD3URl3jIbmE7vSahrm6Px6AYI6TaqQ8GOsFb+6c10xu/c5huZAGHyDb+vQV4ri52k
-        ynZsocV3zgn68u0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mTmWq-0086fH-11; Fri, 24 Sep 2021 16:50:20 +0200
-Date:   Fri, 24 Sep 2021 16:50:20 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     robh+dt@kernel.org, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3] arm64: dts: marvell: add Globalscale MOCHAbin
-Message-ID: <YU3lrIbRKLU21z/F@lunn.ch>
-References: <20210923181830.3449602-1-robert.marko@sartura.hr>
+        id S1346845AbhIXOx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 10:53:57 -0400
+Received: from [192.168.1.35] (cust-178-250-146-69.breedbanddelft.nl [178.250.146.69])
+        by radex-web.radex.nl (Postfix) with ESMTPS id C8F902406A;
+        Fri, 24 Sep 2021 16:52:21 +0200 (CEST)
+Subject: Re: [PATCH v2 2/7] PCI: ACPI: PM: Do not use pci_platform_pm_ops for
+ ACPI
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <1800633.tdWV9SEqCh@kreacher> <8879480.rMLUfLXkoz@kreacher>
+ <069444f7-d623-fae2-5cd0-83cbbc919aff@gmail.com>
+ <CAJZ5v0gpodPPXTagy5gFFf6mp_jCAdc864CE_giaue72ke7UyQ@mail.gmail.com>
+ <ab803fb5-045d-98dd-2754-688a916f8944@gmail.com>
+ <d151c91c-cb65-2830-2453-a02057137400@gmail.com>
+ <CAJZ5v0howP_PudCf-43_HqgW48ydc29SeFVRC-wCm_RNKPBMtA@mail.gmail.com>
+From:   Ferry Toth <fntoth@gmail.com>
+Message-ID: <f04d0f93-64d8-d6c8-3742-13f7a6eef739@gmail.com>
+Date:   Fri, 24 Sep 2021 16:52:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210923181830.3449602-1-robert.marko@sartura.hr>
+In-Reply-To: <CAJZ5v0howP_PudCf-43_HqgW48ydc29SeFVRC-wCm_RNKPBMtA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 08:18:30PM +0200, Robert Marko wrote:
-> Globalscale MOCHAbin is a Armada 7040 based development board.
-> 
-> Specifications:
-> * Armada 7040 Quad core ARMv8 Cortex A-72 @ 1.4GHz
-> * 2 / 4 / 8 GB of DDR4 DRAM
-> * 16 GB eMMC
-> * 4MB SPI-NOR (Bootloader)
-> * 1x M.2-2280 B-key socket (for SSD expansion, SATA3 only)
-> * 1x M.2-2250 B-key socket (for modems, USB2.0 and I2C only)
-> * 1x Mini-PCIe 3.0 (x1, USB2.0 and I2C)
-> * 1x SATA 7+15 socket (SATA3)
-> * 1x 16-pin (2×8) MikroBus Connector
-> * 1x SIM card slot (Connected to the mini-PCIe and both M.2 slots)
-> * 2x USB3.0 Type-A ports via SMSC USB5434B hub
-> * Cortex 2x5 JTAG
-> * microUSB port for UART (PL2303GL/PL2303SA onboard)
-> * 1x 10G SFP+
-> * 1x 1G SFP (Connected to 88E1512 PHY)
-> * 1x 1G RJ45 with PoE PD (Connected to 88E1512 PHY)
-> * 4x 1G RJ45 ports via Topaz 88E6141 switch
-> * RTC with battery holder (SoC provided, requires CR2032 battery)
-> * 1x 12V DC IN
-> * 1x Power switch
-> * 1x 12V fan header (3-pin, power only)
-> * 1x mini-PCIe LED header (2x0.1" pins)
-> * 1x M.2-2280 LED header (2x0.1" pins)
-> * 6x Bootstrap jumpers
-> * 1x Power LED (Green)
-> * 3x Tri-color RGB LEDs (Controllable)
-> * 1x Microchip ATECC608B secure element
-> 
-> Note that 1G SFP and 1G WAN cannot be used at the same time as they are in
-> parallel connected to the same PHY.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Hi,
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+Op 24-09-2021 om 14:02 schreef Rafael J. Wysocki:
+> On Thu, Sep 23, 2021 at 10:32 PM Ferry Toth <fntoth@gmail.com> wrote:
+>> Hi
+>>
+>> Op 23-09-2021 om 15:51 schreef Ferry Toth:
+>>> Repost (with formatting removed, sorry for the noise)
+>>> Op 23-09-2021 om 13:30 schreef Rafael J. Wysocki:
+>>>> On Wed, Sep 22, 2021 at 11:31 PM Ferry Toth<fntoth@gmail.com>  wrote:
+>>>>> Hi,
+>>>>> Op 20-09-2021 om 21:17 schreef Rafael J. Wysocki:
+>>>>>> From: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+>>>>>>
+>>>>>> Using struct pci_platform_pm_ops for ACPI adds unnecessary
+>>>>>> indirection to the interactions between the PCI core and ACPI PM,
+>>>>>> which is also subject to retpolines.
+>>>>>>
+>>>>>> Moreover, it is not particularly clear from the current code that,
+>>>>>> as far as PCI PM is concerned, "platform" really means just ACPI
+>>>>>> except for the special casess when Intel MID PCI PM is used or when
+>>>>>> ACPI support is disabled (through the kernel config or command line,
+>>>>>> or because there are no usable ACPI tables on the system).
+>>>>>>
+>>>>>> To address the above, rework the PCI PM code to invoke ACPI PM
+>>>>>> functions directly as needed and drop the acpi_pci_platform_pm
+>>>>>> object that is not necessary any more.
+>>>>>>
+>>>>>> Accordingly, update some of the ACPI PM functions in question to do
+>>>>>> extra checks in case the ACPI support is disabled (which previously
+>>>>>> was taken care of by avoiding to set the pci_platform_ops pointer
+>>>>>> in those cases).
+>>>>>>
+>>>>>> Signed-off-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+>>>>>> ---
+>>>>>>
+>>>>>> v1 -> v2:
+>>>>>>        * Rebase on top of the new [1/7] and move dropping struct
+>>>>>>          pci_platform_pm_ops to a separate patch.
+>>>>> I wanted to test this series on 5.15-rc2 but this patch 2/7 doesn't
+>>>>> apply (after 1/7 applied). Should I apply this on another tree?
+>>>> This is on top of
+>>>> https://patchwork.kernel.org/project/linux-acpi/patch/2793105.e9J7NaK4W3@kreacher/
+>>>>
+>>>> which is not yet in any tree.
+>>>>
+>>>> Sorry for the confusion.
+>>> No problem at all. If I can I will try to report back tonight. Else,
+>>> will be delayed 2 due to a short break.
+>> With those 3 extra patches followed by 7 from this series it builds. But
+>> on boot I get:
+>> dwc3 dwc3.0.auto: this is not a DesignWare USB3 DRD Core
+>> Then after this it reboots. Nothing in the logs. Nothing else on
+>> console, I guess something goes wrong early.
+> It appears so.
+>
+> Can you please try just the 3 extra patches this series is on top of?
+> The problem is more likely to be located in one of them.
+Yes, I hope to be able to that this evening.
