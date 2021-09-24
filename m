@@ -2,130 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687A3416FBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C8F416FBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245506AbhIXJ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245440AbhIXJ5z (ORCPT
+        id S245501AbhIXJ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:58:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245516AbhIXJ6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:57:55 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA5EC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:56:22 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id g16so25673141wrb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QzgR0BqQv/FPhfZPF5T0qfZHuwykiaSgdLA+aUJj4v4=;
-        b=NXWVy3Jr0UbQxas9exfy/W4mG5xTI82Js+uuM1UUbejUWm8M1FxV6s1tTFwVbs+IKm
-         UQPSTwVg6pj4ZlPnkONB3VfiCPDELulXSdKQEGpEDXu+KGR7RsEuz7O83y1HMbhcurxd
-         XnP6EKcWoTaYS/8gZMJ7eGfVPtt4rXJxKduqg=
+        Fri, 24 Sep 2021 05:58:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632477391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WVyfoPUAjI4ViCHo+gUhfDLFvOKlEdycoa2FgP4WzVo=;
+        b=RxFj8YNfWfxEPOK82Yw8u5eUKWFKXJ4Xbr1CMoKKfYhnV9v17AF1VeGL6u96T5d2g28CTQ
+        LLZkSZCyK+tT3LWIsjPo2izRcDDI7RtjwvfeWXme5qV/sCD2jUvg3G84KNILKb04GLD607
+        H+RCx4CHkJB0GWqvRJZw8jg+8vO0Yig=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-0f9wjM9qMXW7qfKRTWpEaQ-1; Fri, 24 Sep 2021 05:56:30 -0400
+X-MC-Unique: 0f9wjM9qMXW7qfKRTWpEaQ-1
+Received: by mail-ed1-f70.google.com with SMTP id 14-20020a508e4e000000b003d84544f33eso9747694edx.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:56:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QzgR0BqQv/FPhfZPF5T0qfZHuwykiaSgdLA+aUJj4v4=;
-        b=BFs7BI1ZfNqCXkqWVheqc4WaF7D6mmlEccqj+VTrcfNdVy9r5bHg0BZXuPpVUl2rrT
-         8MkWS8t6qD58gr1Zi3Txjp+t3nY9yp9ts9ceT88+BldL9ajXhChQSJ8pmI2lGZ4dEhpB
-         lFqtU4FCo9cPybCv+jblVNDUklY691seE0MoF65HMObUzTlHCjnouVa8CFen6xbaweml
-         kMY9gh3A+CwPTYja33DQz34M37Mp7MCvQh+NDVAYsxSzuDlR2mzJT402D0vECvQNLei3
-         iYDZ+gLhDgwKiTOuF0/x0Nb5ORF9Fsbebus6YT8kI8zjYpIr7ZK2J1qoWxLd5BZkU2tP
-         mqLg==
-X-Gm-Message-State: AOAM532qXZz9zrhHDboJhFrPnIW3jr8kb+R1EahmW99Sp5q/3w9+RQ57
-        dpNYyf3CQbI0XktfMTlZczk4qg==
-X-Google-Smtp-Source: ABdhPJw9dKmwRCKWobc24inKFMURnJ/SXNNtMuE6CNiKmo4sm+L1ffxQuSZ6reyd8y/eaSRhTDq3Eg==
-X-Received: by 2002:a05:600c:4f54:: with SMTP id m20mr1161495wmq.96.1632477380954;
-        Fri, 24 Sep 2021 02:56:20 -0700 (PDT)
-Received: from antares.. (1.8.8.f.e.b.b.b.5.6.9.e.c.8.5.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:58c:e965:bbbe:f881])
-        by smtp.gmail.com with ESMTPSA id v20sm7871106wra.73.2021.09.24.02.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 02:56:20 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 4/4] bpf: export bpf_jit_current
-Date:   Fri, 24 Sep 2021 10:55:42 +0100
-Message-Id: <20210924095542.33697-5-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210924095542.33697-1-lmb@cloudflare.com>
-References: <20210924095542.33697-1-lmb@cloudflare.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=WVyfoPUAjI4ViCHo+gUhfDLFvOKlEdycoa2FgP4WzVo=;
+        b=lDyyhqt/PXfV4oP36YJ4TcLL6TQMs7blhRfSv4mzrZXkFjGQ+A4MHkJn79lOmBLeRO
+         S/VriVjIUbF48EeKQ7heFbCfh0sm0epwVIIdTjpaGRc6m4epVgiQam1sl5hBlrq5jRJZ
+         YZo/r+tf14sEJiS2P5u2NAi1LRmGwsR65EJYRBkSOmyVWJRnGSV/9kNKBInoqcyO8YAG
+         8BzWJpJNkWv8QWJir8vfQMzs6zuSscXEsvlyMppwG43SvH8WdKfaxZzr8iIW1pntZmDl
+         wPwJ0vNibyfbzACwOl7xXI4E72l3PZacWVbxknDq0dsXIbbJTyos/wZkf6UoxWEep8d0
+         0WJA==
+X-Gm-Message-State: AOAM531Vak1f/e9cpnlgpTHuJWmQvR/fjUme41KG5vQTxN2SHkLmhDFX
+        N179eRNStJ85JD7DEoEg60BQXPX9BsJk8+sG0IbQ8yxTkgdcL2Jx+Z6XQtgGcyRB27A1mJ3H8CL
+        6X5U0K/OpTo09gdmLlCaiwKpY
+X-Received: by 2002:a50:9d83:: with SMTP id w3mr3940188ede.305.1632477389512;
+        Fri, 24 Sep 2021 02:56:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyDjmMD9CVLHQdEu7vQ5KM2Yw3E/kP1qYaTPrxc1Lm2b1XmlJC/yclfrfrE8Oy7wVD7FDnM4g==
+X-Received: by 2002:a50:9d83:: with SMTP id w3mr3940164ede.305.1632477389296;
+        Fri, 24 Sep 2021 02:56:29 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id ck10sm5526275edb.43.2021.09.24.02.56.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 02:56:28 -0700 (PDT)
+Message-ID: <4743aa1d-cae7-11a0-03f1-160617ae9a89@redhat.com>
+Date:   Fri, 24 Sep 2021 11:56:23 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH V3 2/2] KVM: X86: Move PTE present check from loop body to
+ __shadow_walk_next()
+Content-Language: en-US
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <YTE3bRcZv2BiVxzH@google.com>
+ <20210906122547.263316-1-jiangshanlai@gmail.com>
+ <20210906122547.263316-2-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20210906122547.263316-2-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expose bpf_jit_current as a read only value via sysctl.
+On 06/09/21 14:25, Lai Jiangshan wrote:
+> But checking pte present in __shadow_walk_next() is a more prudent way of
+> programing and loop bodies will not need to always check it. It allows us
+> removing unneeded is_shadow_present_pte() in the loop bodies.
+> 
+> Terminating on !is_shadow_present_pte() is 100% the correct behavior, as
+> walking past a !PRESENT SPTE would lead to attempting to read a the next
+> level SPTE from a garbage iter->shadow_addr.  Even some paths that do_not_
+> currently have a !is_shadow_present_pte() in the loop body is Ok since
+> they will install present non-leaf SPTEs and the additional present check
+> is just an NOP.
+> 
+> The checking result in __shadow_walk_next() will be propagated to
+> shadow_walk_okay() for being used in any for(;;) loop.
+> 
+> Reviewed-by: Sean Christopherson<seanjc@google.com>
+> Signed-off-by: Lai Jiangshan<laijs@linux.alibaba.com>
+> ---
+> Changed from V2:
+> 	Fix typo in the changelog reported by Sean
+> 	Add Reviewed-by from Sean
+> Changed from V1:
+> 	Merge the two patches
+> 	Update changelog
+> 	Remove !is_shadow_present_pte() in FNAME(invlpg)
+>   arch/x86/kvm/mmu/mmu.c         | 13 ++-----------
+>   arch/x86/kvm/mmu/paging_tmpl.h |  2 +-
+>   2 files changed, 3 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 538be037549d..26f6bd238a77 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2223,7 +2223,7 @@ static bool shadow_walk_okay(struct kvm_shadow_walk_iterator *iterator)
+>   static void __shadow_walk_next(struct kvm_shadow_walk_iterator *iterator,
+>   			       u64 spte)
+>   {
+> -	if (is_last_spte(spte, iterator->level)) {
+> +	if (!is_shadow_present_pte(spte) || is_last_spte(spte, iterator->level)) {
+>   		iterator->level = 0;
+>   		return;
+>   	}
+> @@ -3159,9 +3159,6 @@ static u64 *fast_pf_get_last_sptep(struct kvm_vcpu *vcpu, gpa_t gpa, u64 *spte)
+>   	for_each_shadow_entry_lockless(vcpu, gpa, iterator, old_spte) {
+>   		sptep = iterator.sptep;
+>   		*spte = old_spte;
+> -
+> -		if (!is_shadow_present_pte(old_spte))
+> -			break;
+>   	}
+>   
+>   	return sptep;
+> @@ -3721,9 +3718,6 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
+>   		spte = mmu_spte_get_lockless(iterator.sptep);
+>   
+>   		sptes[leaf] = spte;
+> -
+> -		if (!is_shadow_present_pte(spte))
+> -			break;
+>   	}
+>   
+>   	return leaf;
+> @@ -3838,11 +3832,8 @@ static void shadow_page_table_clear_flood(struct kvm_vcpu *vcpu, gva_t addr)
+>   	u64 spte;
+>   
+>   	walk_shadow_page_lockless_begin(vcpu);
+> -	for_each_shadow_entry_lockless(vcpu, addr, iterator, spte) {
+> +	for_each_shadow_entry_lockless(vcpu, addr, iterator, spte)
+>   		clear_sp_write_flooding_count(iterator.sptep);
+> -		if (!is_shadow_present_pte(spte))
+> -			break;
+> -	}
+>   	walk_shadow_page_lockless_end(vcpu);
+>   }
+>   
+> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> index 4d559d2d4d66..72f358613786 100644
+> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> @@ -982,7 +982,7 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
+>   			FNAME(update_pte)(vcpu, sp, sptep, &gpte);
+>   		}
+>   
+> -		if (!is_shadow_present_pte(*sptep) || !sp->unsync_children)
+> +		if (!sp->unsync_children)
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- include/linux/filter.h     | 1 +
- kernel/bpf/core.c          | 3 +--
- net/core/sysctl_net_core.c | 7 +++++++
- 3 files changed, 9 insertions(+), 2 deletions(-)
+Queued both, thanks.
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index ef03ff34234d..b2143ad5ce00 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1052,6 +1052,7 @@ extern int bpf_jit_harden;
- extern int bpf_jit_kallsyms;
- extern long bpf_jit_limit;
- extern long bpf_jit_limit_max;
-+extern atomic_long_t bpf_jit_current;
- 
- typedef void (*bpf_jit_fill_hole_t)(void *area, unsigned int size);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index e844a2a4c99a..93f95e9ee8be 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -525,6 +525,7 @@ int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
- int bpf_jit_harden   __read_mostly;
- long bpf_jit_limit   __read_mostly;
- long bpf_jit_limit_max __read_mostly;
-+atomic_long_t bpf_jit_current __read_mostly;
- 
- static void
- bpf_prog_ksym_set_addr(struct bpf_prog *prog)
-@@ -800,8 +801,6 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
- 	return slot;
- }
- 
--static atomic_long_t bpf_jit_current;
--
- /* Can be overridden by an arch's JIT compiler if it has a custom,
-  * dedicated BPF backend memory area, or if neither of the two
-  * below apply.
-diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-index 5f88526ad61c..674aac163b84 100644
---- a/net/core/sysctl_net_core.c
-+++ b/net/core/sysctl_net_core.c
-@@ -421,6 +421,13 @@ static struct ctl_table net_core_table[] = {
- 		.extra1		= &long_one,
- 		.extra2		= &bpf_jit_limit_max,
- 	},
-+	{
-+		.procname	= "bpf_jit_current",
-+		.data		= &bpf_jit_current,
-+		.maxlen		= sizeof(long),
-+		.mode		= 0400,
-+		.proc_handler	= proc_dolongvec_minmax_bpf_restricted,
-+	},
- #endif
- 	{
- 		.procname	= "netdev_tstamp_prequeue",
--- 
-2.30.2
+Paolo
 
