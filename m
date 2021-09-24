@@ -2,126 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A94416E59
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8373416E60
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245022AbhIXJAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:00:00 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:43637 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244621AbhIXI77 (ORCPT
+        id S245050AbhIXJAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244621AbhIXJAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:59:59 -0400
-Received: by mail-il1-f199.google.com with SMTP id s8-20020a92cbc8000000b002582a281a7bso5943052ilq.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:58:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=8npiF/jDNr/jkDotYVsh3O09j4eaE43P0hOP/9Ipagw=;
-        b=MLL6HxhxDsPOFo9VM0cuqC0elIuHNt68zyWhP0fWzu2IHnKeZtUeK/e1EGGyzj56tW
-         +3AKXQHJppPRlQgeeDeraKglGkcb4EeAhrR5iX2oNATwo1yHNZ3R1fSV9vqNBNNy8UgR
-         vJwzqOBExKHiSl0eQdVjzEyFhbtl8n9n/foGDoTWAb/a5CCcl2oclMKABhIACcZP0Wk4
-         6BeaSuqxZMVudjdHA0hmzPa5afhdRug/sCMyap2NDGhOP0+TBkSui7uixRNCudd+dChT
-         kG/68t9pPAd73FOPjGGP/0tZ29fOozPV1iqO67erBeY79S4UDKeBfNturCZGuzhdGFtZ
-         wEhg==
-X-Gm-Message-State: AOAM532DLqkhkwyjxzCCcxTSCwERrmRfuUOZWbeJsR2xRajJTHfpkhaX
-        qqTWHCU79XLmChC30W1BtgceYGFoSNwD0Hg+XdCA4xOhr/qS
-X-Google-Smtp-Source: ABdhPJzuAfXhZDMEaHvtLrVXHZVHFI359ZJSDK1BbS6qwQMvli/fg9gKolr6ohoKmJqo2bLB9YkLFZbP5xI7RoC8cl1cSmv/xn+K
+        Fri, 24 Sep 2021 05:00:16 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290F4C061574;
+        Fri, 24 Sep 2021 01:58:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=SI/cOAtE1Wcg3NmVZ4SKRLLHEGol1UY9HS1ApBErzyE=; b=Vv512Iu7hpYDJYSUgY2Sy7rBtf
+        vVMq70xpGjXddxlKc/aQjgMI9dYNmWfyF+0pwwWqYJiCVnsCs++rYYe0cZAR+8ARv8mOamTPFKZK/
+        Dhs/F3QGrlvMvT311rbRt03ySId27bHByuGwtwwPJoksRfeKaC9Fi4c0i1/9Bp3bncRs=;
+Received: from p200300ccff0ce8001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0c:e800:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mTh2R-00024c-29; Fri, 24 Sep 2021 10:58:35 +0200
+Received: from andi by aktux with local (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mTh2Q-00Ak4I-Jz; Fri, 24 Sep 2021 10:58:34 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     robh+dt@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, krzk@kernel.org,
+        leoyang.li@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v2 0/4] ARM: dts: add E70K02 based eBook readers
+Date:   Fri, 24 Sep 2021 10:58:28 +0200
+Message-Id: <20210924085832.2560317-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:280f:: with SMTP id l15mr6929859ilf.74.1632473906530;
- Fri, 24 Sep 2021 01:58:26 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 01:58:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004dcddc05ccb9f3a2@google.com>
-Subject: [syzbot] riscv/fixes test error: BUG: soft lockup in corrupted
-From:   syzbot <syzbot+bc48e05449f37d40eccf@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add devicetrees for E70K02 based ebook readers. 
+Name on mainboard is: 37NB-E70K0M+6A3
+Serials start with: E70K02 (a number also seen in vendor kernel
+sources).
 
-syzbot found the following issue on:
+These boards are found in the Kobo Libra H2O with an i.MX6SLL and
+in the Tolino Vision 5 with an i.MX6SL.
 
-HEAD commit:    7d2a07b76933 Linux 5.14
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=1021b1f3300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8211b06020972e8
-dashboard link: https://syzkaller.appspot.com/bug?extid=bc48e05449f37d40eccf
-compiler:       riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-userspace arch: riscv64
+Work is based on code from the vendor kernel at
+https://github.com/kobolabs/Kobo-Reader/blob/master/hw/imx6sll-librah2o/kernel.tar.bz2
+but things need to be heavily reworked due to
+incompatible bindings.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bc48e05449f37d40eccf@syzkaller.appspotmail.com
+Changes in v2:
 
-watchdog: BUG: soft lockup - CPU#0 stuck for 430s! [kworker/0:3:3301]
-Modules linked in:
-irq event stamp: 128499
-hardirqs last  enabled at (128498): [<ffffffff800051a0>] restore_all+0x12/0x6e
-hardirqs last disabled at (128499): [<ffffffff80005094>] _save_context+0x80/0x90
-softirqs last  enabled at (45742): [<ffffffff82ba5a08>] softirq_handle_end kernel/softirq.c:401 [inline]
-softirqs last  enabled at (45742): [<ffffffff82ba5a08>] __do_softirq+0x628/0x90c kernel/softirq.c:587
-softirqs last disabled at (45749): [<ffffffff800369a0>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
-softirqs last disabled at (45749): [<ffffffff800369a0>] invoke_softirq kernel/softirq.c:439 [inline]
-softirqs last disabled at (45749): [<ffffffff800369a0>] __irq_exit_rcu kernel/softirq.c:636 [inline]
-softirqs last disabled at (45749): [<ffffffff800369a0>] irq_exit+0x1a0/0x1b6 kernel/softirq.c:660
-CPU: 0 PID: 3301 Comm: kworker/0:3 Not tainted 5.14.0-syzkaller #0
-Hardware name: riscv-virtio,qemu (DT)
-Workqueue: events nsim_dev_trap_report_work
-epc : arch_static_branch arch/riscv/include/asm/jump_label.h:20 [inline]
-epc : kfence_alloc include/linux/kfence.h:120 [inline]
-epc : slab_alloc_node mm/slub.c:2884 [inline]
-epc : __kmalloc_node_track_caller+0xaa/0x3d2 mm/slub.c:4653
- ra : slab_pre_alloc_hook mm/slab.h:494 [inline]
- ra : slab_alloc_node mm/slub.c:2880 [inline]
- ra : __kmalloc_node_track_caller+0x70/0x3d2 mm/slub.c:4653
-epc : ffffffff803e2a1a ra : ffffffff803e29e0 sp : ffffffe00e97f4d0
- gp : ffffffff83f967d8 tp : ffffffe0081a2f80 t0 : ffffffe008c0e728
- t1 : ffffffc7f07f2d69 t2 : 000000000545de2b s0 : ffffffe00e97f570
- s1 : ffffffe005601c80 a0 : 0000000000000000 a1 : 0000000000000007
- a2 : 1ffffffff07aa51f a3 : ffffffff80a9711a a4 : 0000000004000000
- a5 : 0000000000000000 a6 : 0000000000f00000 a7 : 7126f9b37a026000
- s2 : ffffffff83f96adc s3 : 0000000000082a20 s4 : 0000000000000200
- s5 : ffffffffffffffff s6 : ffffffff827d9302 s7 : ffffffff83f9a0d0
- s8 : 0000000000000000 s9 : 0000000000082a20 s10: ffffffffffffffff
- s11: 0000000000000000 t3 : 7126f9b37a026000 t4 : ffffffc7f07f2d69
- t5 : ffffffc7f07f2d6a t6 : ffffffe009428026
-status: 0000000000000120 badaddr: 0000000000000000 cause: 8000000000000005
-[<ffffffff803e2a1a>] slab_alloc_node mm/slub.c:2881 [inline]
-[<ffffffff803e2a1a>] __kmalloc_node_track_caller+0xaa/0x3d2 mm/slub.c:4653
-[<ffffffff821a8952>] kmalloc_reserve net/core/skbuff.c:355 [inline]
-[<ffffffff821a8952>] __alloc_skb+0xee/0x2e2 net/core/skbuff.c:426
-[<ffffffff827d9302>] alloc_skb include/linux/skbuff.h:1112 [inline]
-[<ffffffff827d9302>] ndisc_alloc_skb+0x9e/0x1a0 net/ipv6/ndisc.c:420
-[<ffffffff827e09d8>] ndisc_send_rs+0x24c/0x378 net/ipv6/ndisc.c:686
-[<ffffffff8279c322>] addrconf_rs_timer+0x2ac/0x4c4 net/ipv6/addrconf.c:3877
-[<ffffffff80123b68>] call_timer_fn+0x10e/0x654 kernel/time/timer.c:1421
-[<ffffffff8012448e>] expire_timers kernel/time/timer.c:1466 [inline]
-[<ffffffff8012448e>] __run_timers.part.0+0x3e0/0x442 kernel/time/timer.c:1734
-[<ffffffff80124566>] __run_timers kernel/time/timer.c:1715 [inline]
-[<ffffffff80124566>] run_timer_softirq+0x76/0xe0 kernel/time/timer.c:1747
-[<ffffffff82ba5650>] __do_softirq+0x270/0x90c kernel/softirq.c:558
-[<ffffffff800369a0>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
-[<ffffffff800369a0>] invoke_softirq kernel/softirq.c:439 [inline]
-[<ffffffff800369a0>] __irq_exit_rcu kernel/softirq.c:636 [inline]
-[<ffffffff800369a0>] irq_exit+0x1a0/0x1b6 kernel/softirq.c:660
-[<ffffffff800e88dc>] handle_domain_irq+0x106/0x178 kernel/irq/irqdesc.c:705
-[<ffffffff80af3486>] riscv_intc_irq+0x80/0xca drivers/irqchip/irq-riscv-intc.c:40
-[<ffffffff8000515e>] ret_from_exception+0x0/0x14
-[<ffffffff803e29e0>] slab_pre_alloc_hook mm/slab.h:494 [inline]
-[<ffffffff803e29e0>] slab_alloc_node mm/slub.c:2880 [inline]
-[<ffffffff803e29e0>] __kmalloc_node_track_caller+0x70/0x3d2 mm/slub.c:4653
+Node names style cleanup, mainly mmc stuff, s/_/-/
 
+Andreas Kemnade (4):
+  dt-bindings: arm: fsl: Add E70K02 based ebook readers
+  ARM: dts: add Netronix E70K02 board common file
+  ARM: dts: imx: add devicetree for Kobo Libra H2O
+  ARM: dts: imx: add devicetree for Tolino Vision 5
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../devicetree/bindings/arm/fsl.yaml          |   2 +
+ arch/arm/boot/dts/Makefile                    |   4 +-
+ arch/arm/boot/dts/e70k02.dtsi                 | 320 ++++++++++++++++
+ arch/arm/boot/dts/imx6sl-tolino-vision5.dts   | 349 ++++++++++++++++++
+ arch/arm/boot/dts/imx6sll-kobo-librah2o.dts   | 339 +++++++++++++++++
+ 5 files changed, 1013 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/e70k02.dtsi
+ create mode 100644 arch/arm/boot/dts/imx6sl-tolino-vision5.dts
+ create mode 100644 arch/arm/boot/dts/imx6sll-kobo-librah2o.dts
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+2.30.2
+
