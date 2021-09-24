@@ -2,221 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3817416D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7EC416D6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244582AbhIXIIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:08:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53812 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S244586AbhIXII2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:08:28 -0400
-X-UUID: 578dbc2607ef492780789f63237f3cf7-20210924
-X-UUID: 578dbc2607ef492780789f63237f3cf7-20210924
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 813848825; Fri, 24 Sep 2021 16:06:51 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 24 Sep 2021 16:06:50 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 24 Sep 2021 16:06:49 +0800
-From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
-To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
-        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
-        <sean.wang@kernel.org>
-CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
-        <hui.liu@mediatek.com>, <light.hsieh@mediatek.com>,
-        <biao.huang@mediatek.com>, <hongzhou.yang@mediatek.com>,
-        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-        Chen-Yu Tsai <wenst@chromium.org>
-Subject: [PATCH v14 5/5] pinctrl: mediatek: add rsel setting on MT8195
-Date:   Fri, 24 Sep 2021 16:06:32 +0800
-Message-ID: <20210924080632.28410-6-zhiyong.tao@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
-References: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
+        id S244601AbhIXIJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:09:09 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55464 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244515AbhIXIJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:09:08 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mTgF1-000836-6U; Fri, 24 Sep 2021 16:07:31 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mTgEv-0003Rj-1S; Fri, 24 Sep 2021 16:07:25 +0800
+Date:   Fri, 24 Sep 2021 16:07:25 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-crypto@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: Re: [PATCH] x86/crypto/sm4: Fix frame pointer stack corruption
+Message-ID: <20210924080724.GA13213@gondor.apana.org.au>
+References: <2010f60571abe6fe53d89189ab6da7e641cb027b.1632289099.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2010f60571abe6fe53d89189ab6da7e641cb027b.1632289099.git.jpoimboe@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I2C pins's resistance value can be controlled by rsel register.
-This patch provides rsel (resistance selection) setting on MT8195
+On Tue, Sep 21, 2021 at 10:40:26PM -0700, Josh Poimboeuf wrote:
+> sm4_aesni_avx_crypt8() sets up the frame pointer (which includes pushing
+> RBP) before doing a conditional sibling call to sm4_aesni_avx_crypt4(),
+> which sets up an additional frame pointer.  Things will not go well when
+> sm4_aesni_avx_crypt4() pops only the innermost single frame pointer and
+> then tries to return to the outermost frame pointer.
+> 
+> Sibling calls need to occur with an empty stack frame.  Do the
+> conditional sibling call *before* setting up the stack pointer.
+> 
+> This fixes the following warning:
+> 
+>   arch/x86/crypto/sm4-aesni-avx-asm_64.o: warning: objtool: sm4_aesni_avx_crypt8()+0x8: sibling call from callable instruction with modified stack frame
+> 
+> Fixes: a7ee22ee1445 ("crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Arnd Bergmann <arnd@kernel.org>
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> ---
+>  arch/x86/crypto/sm4-aesni-avx-asm_64.S | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 
-Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
----
- drivers/pinctrl/mediatek/pinctrl-mt8195.c | 133 ++++++++++++++++++++++
- 1 file changed, 133 insertions(+)
-
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8195.c b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-index a7500e18bb1d..9ba86c80c07a 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-@@ -779,6 +779,135 @@ static const struct mtk_pin_field_calc mt8195_pin_drv_adv_range[] = {
- 	PIN_FIELD_BASE(45, 45, 1, 0x040, 0x10, 9, 3),
- };
- 
-+static const struct mtk_pin_field_calc mt8195_pin_rsel_range[] = {
-+	PIN_FIELD_BASE(8, 8, 4, 0x0c0, 0x10, 15, 3),
-+	PIN_FIELD_BASE(9, 9, 4, 0x0c0, 0x10, 0, 3),
-+	PIN_FIELD_BASE(10, 10, 4, 0x0c0, 0x10, 18, 3),
-+	PIN_FIELD_BASE(11, 11, 4, 0x0c0, 0x10, 3, 3),
-+	PIN_FIELD_BASE(12, 12, 4, 0x0c0, 0x10, 21, 3),
-+	PIN_FIELD_BASE(13, 13, 4, 0x0c0, 0x10, 6, 3),
-+	PIN_FIELD_BASE(14, 14, 4, 0x0c0, 0x10, 24, 3),
-+	PIN_FIELD_BASE(15, 15, 4, 0x0c0, 0x10, 9, 3),
-+	PIN_FIELD_BASE(16, 16, 4, 0x0c0, 0x10, 27, 3),
-+	PIN_FIELD_BASE(17, 17, 4, 0x0c0, 0x10, 12, 3),
-+	PIN_FIELD_BASE(29, 29, 2, 0x080, 0x10, 0, 3),
-+	PIN_FIELD_BASE(30, 30, 2, 0x080, 0x10, 3, 3),
-+	PIN_FIELD_BASE(34, 34, 1, 0x0e0, 0x10, 0, 3),
-+	PIN_FIELD_BASE(35, 35, 1, 0x0e0, 0x10, 3, 3),
-+	PIN_FIELD_BASE(44, 44, 1, 0x0e0, 0x10, 6, 3),
-+	PIN_FIELD_BASE(45, 45, 1, 0x0e0, 0x10, 9, 3),
-+};
-+
-+static const struct mtk_pin_rsel mt8195_pin_rsel_val_range[] = {
-+	PIN_RSEL(8, 17, 0x0, 75000, 75000),
-+	PIN_RSEL(8, 17, 0x1, 10000, 5000),
-+	PIN_RSEL(8, 17, 0x2, 5000, 75000),
-+	PIN_RSEL(8, 17, 0x3, 4000, 5000),
-+	PIN_RSEL(8, 17, 0x4, 3000, 75000),
-+	PIN_RSEL(8, 17, 0x5, 2000, 5000),
-+	PIN_RSEL(8, 17, 0x6, 1500, 75000),
-+	PIN_RSEL(8, 17, 0x7, 1000, 5000),
-+	PIN_RSEL(29, 30, 0x0, 75000, 75000),
-+	PIN_RSEL(29, 30, 0x1, 10000, 5000),
-+	PIN_RSEL(29, 30, 0x2, 5000, 75000),
-+	PIN_RSEL(29, 30, 0x3, 4000, 5000),
-+	PIN_RSEL(29, 30, 0x4, 3000, 75000),
-+	PIN_RSEL(29, 30, 0x5, 2000, 5000),
-+	PIN_RSEL(29, 30, 0x6, 1500, 75000),
-+	PIN_RSEL(29, 30, 0x7, 1000, 5000),
-+	PIN_RSEL(34, 35, 0x0, 75000, 75000),
-+	PIN_RSEL(34, 35, 0x1, 10000, 5000),
-+	PIN_RSEL(34, 35, 0x2, 5000, 75000),
-+	PIN_RSEL(34, 35, 0x3, 4000, 5000),
-+	PIN_RSEL(34, 35, 0x4, 3000, 75000),
-+	PIN_RSEL(34, 35, 0x5, 2000, 5000),
-+	PIN_RSEL(34, 35, 0x6, 1500, 75000),
-+	PIN_RSEL(34, 35, 0x7, 1000, 5000),
-+	PIN_RSEL(44, 45, 0x0, 75000, 75000),
-+	PIN_RSEL(44, 45, 0x1, 10000, 5000),
-+	PIN_RSEL(44, 45, 0x2, 5000, 75000),
-+	PIN_RSEL(44, 45, 0x3, 4000, 5000),
-+	PIN_RSEL(44, 45, 0x4, 3000, 75000),
-+	PIN_RSEL(44, 45, 0x5, 2000, 5000),
-+	PIN_RSEL(44, 45, 0x6, 1500, 75000),
-+	PIN_RSEL(44, 45, 0x7, 1000, 5000),
-+};
-+
-+static const unsigned int mt8195_pull_type[] = {
-+	MTK_PULL_PUPD_R1R0_TYPE /* 0 */, MTK_PULL_PUPD_R1R0_TYPE /* 1 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 2 */, MTK_PULL_PUPD_R1R0_TYPE /* 3 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 4 */, MTK_PULL_PUPD_R1R0_TYPE /* 5 */,
-+	MTK_PULL_PU_PD_TYPE /* 6 */, MTK_PULL_PU_PD_TYPE /* 7 */,
-+	MTK_PULL_PU_PD_RSEL_TYPE /* 8 */, MTK_PULL_PU_PD_RSEL_TYPE /* 9 */,
-+	MTK_PULL_PU_PD_RSEL_TYPE /* 10 */, MTK_PULL_PU_PD_RSEL_TYPE /* 11 */,
-+	MTK_PULL_PU_PD_RSEL_TYPE /* 12 */, MTK_PULL_PU_PD_RSEL_TYPE /* 13 */,
-+	MTK_PULL_PU_PD_RSEL_TYPE /* 14 */, MTK_PULL_PU_PD_RSEL_TYPE /* 15 */,
-+	MTK_PULL_PU_PD_RSEL_TYPE /* 16 */, MTK_PULL_PU_PD_RSEL_TYPE /* 17 */,
-+	MTK_PULL_PU_PD_TYPE /* 18 */, MTK_PULL_PU_PD_TYPE /* 19 */,
-+	MTK_PULL_PU_PD_TYPE /* 20 */, MTK_PULL_PU_PD_TYPE /* 21 */,
-+	MTK_PULL_PU_PD_TYPE /* 22 */, MTK_PULL_PU_PD_TYPE /* 23 */,
-+	MTK_PULL_PU_PD_TYPE /* 24 */, MTK_PULL_PU_PD_TYPE /* 25 */,
-+	MTK_PULL_PU_PD_TYPE /* 26 */, MTK_PULL_PU_PD_TYPE /* 27 */,
-+	MTK_PULL_PU_PD_TYPE /* 28 */, MTK_PULL_PU_PD_RSEL_TYPE /* 29 */,
-+	MTK_PULL_PU_PD_RSEL_TYPE /* 30 */, MTK_PULL_PU_PD_TYPE /* 31 */,
-+	MTK_PULL_PU_PD_TYPE /* 32 */, MTK_PULL_PU_PD_TYPE /* 33 */,
-+	MTK_PULL_PU_PD_RSEL_TYPE /* 34 */, MTK_PULL_PU_PD_RSEL_TYPE /* 35 */,
-+	MTK_PULL_PU_PD_TYPE /* 36 */, MTK_PULL_PU_PD_TYPE /* 37 */,
-+	MTK_PULL_PU_PD_TYPE /* 38 */, MTK_PULL_PU_PD_TYPE /* 39 */,
-+	MTK_PULL_PU_PD_TYPE /* 40 */, MTK_PULL_PU_PD_TYPE /* 41 */,
-+	MTK_PULL_PU_PD_TYPE /* 42 */, MTK_PULL_PU_PD_TYPE /* 43 */,
-+	MTK_PULL_PU_PD_RSEL_TYPE /* 44 */, MTK_PULL_PU_PD_RSEL_TYPE /* 45 */,
-+	MTK_PULL_PU_PD_TYPE /* 46 */, MTK_PULL_PU_PD_TYPE /* 47 */,
-+	MTK_PULL_PU_PD_TYPE /* 48 */, MTK_PULL_PU_PD_TYPE /* 49 */,
-+	MTK_PULL_PU_PD_TYPE /* 50 */, MTK_PULL_PU_PD_TYPE /* 51 */,
-+	MTK_PULL_PU_PD_TYPE /* 52 */, MTK_PULL_PU_PD_TYPE /* 53 */,
-+	MTK_PULL_PU_PD_TYPE /* 54 */, MTK_PULL_PU_PD_TYPE /* 55 */,
-+	MTK_PULL_PU_PD_TYPE /* 56 */, MTK_PULL_PU_PD_TYPE /* 57 */,
-+	MTK_PULL_PU_PD_TYPE /* 58 */, MTK_PULL_PU_PD_TYPE /* 59 */,
-+	MTK_PULL_PU_PD_TYPE /* 60 */, MTK_PULL_PU_PD_TYPE /* 61 */,
-+	MTK_PULL_PU_PD_TYPE /* 62 */, MTK_PULL_PU_PD_TYPE /* 63 */,
-+	MTK_PULL_PU_PD_TYPE /* 64 */, MTK_PULL_PU_PD_TYPE /* 65 */,
-+	MTK_PULL_PU_PD_TYPE /* 66 */, MTK_PULL_PU_PD_TYPE /* 67 */,
-+	MTK_PULL_PU_PD_TYPE /* 68 */, MTK_PULL_PU_PD_TYPE /* 69 */,
-+	MTK_PULL_PU_PD_TYPE /* 70 */, MTK_PULL_PU_PD_TYPE /* 71 */,
-+	MTK_PULL_PU_PD_TYPE /* 72 */, MTK_PULL_PU_PD_TYPE /* 73 */,
-+	MTK_PULL_PU_PD_TYPE /* 74 */, MTK_PULL_PU_PD_TYPE /* 75 */,
-+	MTK_PULL_PU_PD_TYPE /* 76 */, MTK_PULL_PUPD_R1R0_TYPE /* 77 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 78 */, MTK_PULL_PUPD_R1R0_TYPE /* 79 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 80 */, MTK_PULL_PUPD_R1R0_TYPE /* 81 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 82 */, MTK_PULL_PUPD_R1R0_TYPE /* 83 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 84 */, MTK_PULL_PUPD_R1R0_TYPE /* 85 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 86 */, MTK_PULL_PUPD_R1R0_TYPE /* 87 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 88 */, MTK_PULL_PUPD_R1R0_TYPE /* 89 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 90 */, MTK_PULL_PUPD_R1R0_TYPE /* 91 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 92 */, MTK_PULL_PUPD_R1R0_TYPE /* 93 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 94 */, MTK_PULL_PUPD_R1R0_TYPE /* 95 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 96 */, MTK_PULL_PU_PD_TYPE /* 97 */,
-+	MTK_PULL_PU_PD_TYPE /* 98 */, MTK_PULL_PU_PD_TYPE /* 99 */,
-+	MTK_PULL_PU_PD_TYPE /* 100 */, MTK_PULL_PU_PD_TYPE /* 101 */,
-+	MTK_PULL_PU_PD_TYPE /* 102 */, MTK_PULL_PU_PD_TYPE /* 103 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 104 */, MTK_PULL_PUPD_R1R0_TYPE /* 105 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 106 */, MTK_PULL_PUPD_R1R0_TYPE /* 107 */,
-+	MTK_PULL_PU_PD_TYPE /* 108 */, MTK_PULL_PU_PD_TYPE /* 109 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 110 */, MTK_PULL_PUPD_R1R0_TYPE /* 111 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 112 */, MTK_PULL_PUPD_R1R0_TYPE /* 113 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 114 */, MTK_PULL_PUPD_R1R0_TYPE /* 115 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 116 */, MTK_PULL_PUPD_R1R0_TYPE /* 117 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 118 */, MTK_PULL_PUPD_R1R0_TYPE /* 119 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 120 */, MTK_PULL_PUPD_R1R0_TYPE /* 121 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 122 */, MTK_PULL_PUPD_R1R0_TYPE /* 123 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 124 */, MTK_PULL_PUPD_R1R0_TYPE /* 125 */,
-+	MTK_PULL_PUPD_R1R0_TYPE /* 126 */, MTK_PULL_PUPD_R1R0_TYPE /* 127 */,
-+	MTK_PULL_PU_PD_TYPE /* 128 */, MTK_PULL_PU_PD_TYPE /* 129 */,
-+	MTK_PULL_PU_PD_TYPE /* 130 */, MTK_PULL_PU_PD_TYPE /* 131 */,
-+	MTK_PULL_PU_PD_TYPE /* 132 */, MTK_PULL_PU_PD_TYPE /* 133 */,
-+	MTK_PULL_PU_PD_TYPE /* 134 */, MTK_PULL_PU_PD_TYPE /* 135 */,
-+	MTK_PULL_PU_PD_TYPE /* 136 */, MTK_PULL_PU_PD_TYPE /* 137 */,
-+	MTK_PULL_PU_PD_TYPE /* 138 */, MTK_PULL_PU_PD_TYPE /* 139 */,
-+	MTK_PULL_PU_PD_TYPE /* 140 */, MTK_PULL_PU_PD_TYPE /* 141 */,
-+	MTK_PULL_PU_PD_TYPE /* 142 */, MTK_PULL_PU_PD_TYPE /* 143 */,
-+};
-+
- static const struct mtk_pin_reg_calc mt8195_reg_cals[PINCTRL_PIN_REG_MAX] = {
- 	[PINCTRL_PIN_REG_MODE] = MTK_RANGE(mt8195_pin_mode_range),
- 	[PINCTRL_PIN_REG_DIR] = MTK_RANGE(mt8195_pin_dir_range),
-@@ -793,6 +922,7 @@ static const struct mtk_pin_reg_calc mt8195_reg_cals[PINCTRL_PIN_REG_MAX] = {
- 	[PINCTRL_PIN_REG_R0] = MTK_RANGE(mt8195_pin_r0_range),
- 	[PINCTRL_PIN_REG_R1] = MTK_RANGE(mt8195_pin_r1_range),
- 	[PINCTRL_PIN_REG_DRV_ADV] = MTK_RANGE(mt8195_pin_drv_adv_range),
-+	[PINCTRL_PIN_REG_RSEL] = MTK_RANGE(mt8195_pin_rsel_range),
- };
- 
- static const char * const mt8195_pinctrl_register_base_names[] = {
-@@ -817,6 +947,9 @@ static const struct mtk_pin_soc mt8195_data = {
- 	.gpio_m = 0,
- 	.base_names = mt8195_pinctrl_register_base_names,
- 	.nbase_names = ARRAY_SIZE(mt8195_pinctrl_register_base_names),
-+	.pull_type = mt8195_pull_type,
-+	.pin_rsel = mt8195_pin_rsel_val_range,
-+	.npin_rsel = ARRAY_SIZE(mt8195_pin_rsel_val_range),
- 	.bias_set_combo = mtk_pinconf_bias_set_combo,
- 	.bias_get_combo = mtk_pinconf_bias_get_combo,
- 	.drive_set = mtk_pinconf_drive_set_rev1,
+Patch applied.  Thanks.
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
