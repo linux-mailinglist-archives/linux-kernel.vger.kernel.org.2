@@ -2,176 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D521416FCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF514416FF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245366AbhIXKCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245440AbhIXKBz (ORCPT
+        id S245546AbhIXKIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:08:38 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3868 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245423AbhIXKIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:01:55 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FD4C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 03:00:22 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id g41so38006895lfv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 03:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9spe2BT8WYhxoMB5PWx9SyNtZ6j20UIUeNEeZtSy4lI=;
-        b=agnRw4hPbQTzGV9rKZRfn9MBqDfI7I2IPjL9dwDGzo7i0qYi2HQD/SXCFBtHzg3EJw
-         jDJiurFSHVWTZ9hsJ57HjtfSKRksZYbXx7vtRuGCLsSAGGaGwcHvy17XC54cKSc7XO4M
-         TR9r3a+guTq8SfiTwFX7vbIXRg8gn7LSYOo1xwNVme4ZJjZBlDJ1idrl0xCNrLCZCEvP
-         cHwf/wTcdEz+mAWjcFEPvWefU2FwYO1HFyC1y+GwFsisopnn34E336cNqSCAATaths9b
-         8nBhLTYaDEQOHXa528iGxP7BpP8eg/kpcJdo9YVbX5n+x2nw1pNINCBl08m3xBzd1u3/
-         hPMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9spe2BT8WYhxoMB5PWx9SyNtZ6j20UIUeNEeZtSy4lI=;
-        b=2tGWticRESRlJ0Lm5mvE1egs4+Exm0rwbxjl/0toerUKmPqM9sN9Hu7R9/ppJtJiUk
-         PhMDI/6brddjdIbae0seAI37+E15M5aXbMl/GGkykJsyDgulJzrMre8hCYmyacanD7lS
-         hcwjQQzglqxr8UoafB3PWi9eJEIkrh0HIlUc7WKDooMnEImtDSKYZl9Da6aJoPk9g6+h
-         K7mXFSbRNR9JAsttvYIy6Ov8tGPf7x2ynAfL+/ooJzOlpTOe9Xm2u2tJTPLOLBKIG0zK
-         CR0hIC8/5s3DHRoL8sL2U9bgd3SOvrslJNM65lJoMlOf+jfDzSgiRIs/sUpnJRoHQluT
-         oDug==
-X-Gm-Message-State: AOAM530OhlI2LF82bsCN1AWo8dzeOuohHBImPpv+KJfMieRWHWF6T3kI
-        V3xUY2jpSmnLtWjGaDWd0L1wWA==
-X-Google-Smtp-Source: ABdhPJydHkaU9EFSFsIwIQelHVAe3kif1c9lzLcXuKl1YmahZZmr6lOaVUHMmY73S3Ip6hxeGSHtzA==
-X-Received: by 2002:a2e:a4ba:: with SMTP id g26mr10314516ljm.254.1632477621131;
-        Fri, 24 Sep 2021 03:00:21 -0700 (PDT)
-Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
-        by smtp.gmail.com with ESMTPSA id l11sm700284lfg.39.2021.09.24.03.00.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 03:00:20 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 12:00:20 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Subject: Re: [PATCH] media: rcar-vin: add support for GREY format
-Message-ID: <YU2htCDCbedXi4ai@oden.dyn.berto.se>
-References: <20210924081938.30230-1-nikita.yoush@cogentembedded.com>
+        Fri, 24 Sep 2021 06:08:37 -0400
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HG71613Mlz67b9b;
+        Fri, 24 Sep 2021 18:04:26 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 24 Sep 2021 12:07:02 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 24 Sep 2021 11:06:58 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <joro@8bytes.org>, <will@kernel.org>, <mst@redhat.com>,
+        <jasowang@redhat.com>, <robin.murphy@arm.com>
+CC:     <xieyongji@bytedance.com>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>,
+        <virtualization@lists.linux-foundation.org>, <linuxarm@huawei.com>,
+        <thunder.leizhen@huawei.com>, <baolu.lu@linux.intel.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 0/5] iommu: Some IOVA code reorganisation
+Date:   Fri, 24 Sep 2021 18:01:52 +0800
+Message-ID: <1632477717-5254-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210924081938.30230-1-nikita.yoush@cogentembedded.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita and Vladimir,
+The IOVA domain structure is a bit overloaded, holding:
+- IOVA tree management
+- FQ control
+- IOVA rcache memories
 
-Thanks for your work.
+Indeed only a couple of IOVA users use the rcache, and only dma-iommu.c
+uses the FQ feature.
 
-On 2021-09-24 11:19:39 +0300, Nikita Yushchenko wrote:
-> From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-> 
-> This adds support for MEDIA_BUS_FMT_Y8_1X8 input and V4L2_PIX_FMT_GREY
-> output format.
+This series separates out that structure. In addition, it moves the FQ
+code into dma-iommu.c . This is not strictly necessary, but it does make
+it easier for the FQ domain lookup the rcache domain.
 
-Thanks for this, I'm happy to see this code!
+The rcache code stays where it is, as it may be reworked in future, so
+there is not much point in relocating and then discarding.
 
-I been wrestling a while with this as I have no sensor where I could 
-test it with I always put it off. May I ask what sensor and platform was 
-used to test this?
+This topic was initially discussed and suggested (I think) by Robin here:
+https://lore.kernel.org/linux-iommu/1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com/
 
-The code looks good and I truest that it's tested and produce a good 
-image, one small nit below.
+I also added in another old patch to avoid double-negatives now that
+the error handling is a bit better for IOVA init code:
+https://lore.kernel.org/linux-iommu/YAVeDOiKBEKZ2Tdq@myrica/
 
-> 
-> Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-> ---
->  drivers/media/platform/rcar-vin/rcar-dma.c  | 14 ++++++++++++++
->  drivers/media/platform/rcar-vin/rcar-v4l2.c |  4 ++++
->  2 files changed, 18 insertions(+)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
-> index f5f722ab1d4e..d2bfd3e575fa 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-dma.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
-> @@ -114,6 +114,7 @@
->  /* Video n Data Mode Register bits */
->  #define VNDMR_A8BIT(n)		(((n) & 0xff) << 24)
->  #define VNDMR_A8BIT_MASK	(0xff << 24)
-> +#define VNDMR_YMODE_Y8		(1 << 12)
->  #define VNDMR_EXRGB		(1 << 8)
->  #define VNDMR_BPSM		(1 << 4)
->  #define VNDMR_ABIT		(1 << 2)
-> @@ -603,6 +604,7 @@ void rvin_crop_scale_comp(struct rvin_dev *vin)
->  	case V4L2_PIX_FMT_SGBRG8:
->  	case V4L2_PIX_FMT_SGRBG8:
->  	case V4L2_PIX_FMT_SRGGB8:
-> +	case V4L2_PIX_FMT_GREY:
->  		stride /= 2;
->  		break;
->  	default:
-> @@ -695,6 +697,7 @@ static int rvin_setup(struct rvin_dev *vin)
->  	case MEDIA_BUS_FMT_SGBRG8_1X8:
->  	case MEDIA_BUS_FMT_SGRBG8_1X8:
->  	case MEDIA_BUS_FMT_SRGGB8_1X8:
-> +	case MEDIA_BUS_FMT_Y8_1X8:
->  		vnmc |= VNMC_INF_RAW8;
->  		break;
->  	default:
-> @@ -774,6 +777,13 @@ static int rvin_setup(struct rvin_dev *vin)
->  	case V4L2_PIX_FMT_SRGGB8:
->  		dmr = 0;
->  		break;
-> +	case V4L2_PIX_FMT_GREY:
-> +		if (input_is_yuv) {
-> +			dmr = VNDMR_DTMD_YCSEP | VNDMR_YMODE_Y8;
-> +			output_is_yuv = true;
-> +		} else
-> +			dmr = 0;
+Baseline is v5.15-rc2
 
-Please encapsulate the else clause in { } if the corresponding if clause 
-body uses { }.
+John Garry (5):
+  iova: Move fast alloc size roundup into alloc_iova_fast()
+  iommu: Separate flush queue memories from IOVA domain structure
+  iommu: Move IOVA flush queue code to dma-iommu
+  iommu: Separate IOVA rcache memories from iova_domain structure
+  iommu/iova: Avoid double-negatives in magazine helpers
 
-> +		break;
->  	default:
->  		vin_err(vin, "Invalid pixelformat (0x%x)\n",
->  			vin->format.pixelformat);
-> @@ -1145,6 +1155,10 @@ static int rvin_mc_validate_format(struct rvin_dev *vin, struct v4l2_subdev *sd,
->  		if (vin->format.pixelformat != V4L2_PIX_FMT_SRGGB8)
->  			return -EPIPE;
->  		break;
-> +	case MEDIA_BUS_FMT_Y8_1X8:
-> +		if (vin->format.pixelformat != V4L2_PIX_FMT_GREY)
-> +			return -EPIPE;
-> +		break;
->  	default:
->  		return -EPIPE;
->  	}
-> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> index 0d141155f0e3..bdeff51bf768 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> @@ -82,6 +82,10 @@ static const struct rvin_video_format rvin_formats[] = {
->  		.fourcc			= V4L2_PIX_FMT_SRGGB8,
->  		.bpp			= 1,
->  	},
-> +	{
-> +		.fourcc			= V4L2_PIX_FMT_GREY,
-> +		.bpp			= 1,
-> +	},
->  };
->  
->  const struct rvin_video_format *rvin_format_from_pixel(struct rvin_dev *vin,
-> -- 
-> 2.30.2
-> 
+ drivers/iommu/dma-iommu.c            | 341 +++++++++++++++++++++++---
+ drivers/iommu/iova.c                 | 343 ++++++++-------------------
+ drivers/vdpa/vdpa_user/iova_domain.c |  61 ++---
+ drivers/vdpa/vdpa_user/iova_domain.h |   4 +-
+ include/linux/iova.h                 |  82 +------
+ 5 files changed, 451 insertions(+), 380 deletions(-)
 
 -- 
-Regards,
-Niklas Söderlund
+2.26.2
+
