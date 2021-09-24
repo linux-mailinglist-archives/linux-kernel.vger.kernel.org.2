@@ -2,141 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A6E416F57
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B33416FA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245503AbhIXJo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:44:58 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:55412 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245352AbhIXJoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:44:37 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B22492030C9;
-        Fri, 24 Sep 2021 11:43:03 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4D9D12030C5;
-        Fri, 24 Sep 2021 11:43:03 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 865B8183AC89;
-        Fri, 24 Sep 2021 17:43:00 +0800 (+08)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
-        UNGLinuxDriver@microchip.com, vinicius.gomes@intel.com,
-        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
-        jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, kuba@kernel.org,
-        xiaoliang.yang_1@nxp.com, po.liu@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, f.fainelli@gmail.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, claudiu.manoil@nxp.com,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, matthias.bgg@gmail.com,
-        horatiu.vultur@microchip.com
-Subject: [PATCH v5 net-next 9/9] net: dsa: felix: use vcap policer to set flow meter for psfp
-Date:   Fri, 24 Sep 2021 17:52:26 +0800
-Message-Id: <20210924095226.38079-10-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210924095226.38079-1-xiaoliang.yang_1@nxp.com>
-References: <20210924095226.38079-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S245359AbhIXJzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245306AbhIXJzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 05:55:52 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C72DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:54:19 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i4so38097838lfv.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 02:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wcxpbY+epMaoT0lwiHeUpX8tLc7nUpHe7LhF3U6sUnU=;
+        b=I/Cd4NSdwJtmjhA8DEbeaz0quiEmF4Cjd9gKskAR/UcjQAah159V9NnEiIM7JS+VbE
+         CLNsyCEsMoKRy30Zu8+ew7L73lUrGN+NDHkpv5yizE86uGsIPFvIY7C2s/eOAAfD+9cZ
+         75otQf3GjxFVBB1lXIsMIwzW6pyt/hL3eiWsBLnUSvfU5P72K60TpvZORdkx/ogkpKo/
+         FFi4oaOr3PNw7jMrXZDyypAaFplKI7f1GjmAqWP3SxvC8lURLTbNVG0IlelaVw4RW+IL
+         cnlR68nvcfPUvN9l1asq26zICbUnGe71a8PFXRI2w/psk/VCIKlxtnk0bgWf9XX/ieN5
+         Esfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wcxpbY+epMaoT0lwiHeUpX8tLc7nUpHe7LhF3U6sUnU=;
+        b=GE1e316Saw1opO2qB1qyGyDzfd7aWHFvWjSoSDoaJ+NhZVcGzGFI57oaHDzylBf39w
+         RrSL1HEntn7m1fxiJBZcVF6QdhwdGbgklFLuroqG7gRiGPIXf6rlPBo8l9aQ4mdpE2Kr
+         n5KusQvP2PVU0FsNLJQWqjbe86P2+iht8i4aVD7yHy2KVfdTquxLeyDSjTa/NqI/prA/
+         VQ96pNswHNJoLSxvVQK7e+aNpZhx23TFSng593UOvghKxAh578asFYCNmEVqc52s4+BN
+         rmnI4UXaWKma5J3NNsCUmXtaeC4GH/UudQ8NUyv8zukqFhbvibnDL9s94Qc0WL5SfW42
+         vgag==
+X-Gm-Message-State: AOAM532xS5YHe0TLxwyD50cawgmRkDga8LgftEBylmwqvgloFy4xSRpE
+        RIeR9aDUw0s8WgP3MvL8rgunmA==
+X-Google-Smtp-Source: ABdhPJyJlNxVycHvyLvUe2rVi3VFfOPgeBJexve8zpPNl82obU8S49/FJDSfT8b75rb0i6pkXYKmrQ==
+X-Received: by 2002:a05:6512:33c2:: with SMTP id d2mr8410461lfg.18.1632477257760;
+        Fri, 24 Sep 2021 02:54:17 -0700 (PDT)
+Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
+        by smtp.gmail.com with ESMTPSA id r12sm871285ljp.15.2021.09.24.02.54.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 02:54:17 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 11:54:16 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Subject: Re: [PATCH] media: rcar-vin: add G/S_PARM ioctls
+Message-ID: <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
+References: <20210924084115.2340-1-nikita.yoush@cogentembedded.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210924084115.2340-1-nikita.yoush@cogentembedded.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add police action to set flow meter table which is defined
-in IEEE802.1Qci. Flow metering is two rates two buckets and three color
-marker to policing the frames, we only enable one rate one bucket in
-this patch.
+Hello Nikita and Vladimir,
 
-Flow metering shares a same policer pool with VCAP policers, so the PSFP
-policer calls ocelot_vcap_policer_add() and ocelot_vcap_policer_del() to
-set flow meter police.
+Thanks for your patch.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
----
- drivers/net/dsa/ocelot/felix_vsc9959.c | 32 +++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+On 2021-09-24 11:41:15 +0300, Nikita Yushchenko wrote:
+> From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+> 
+> This adds g/s_parm ioctls for parallel interface.
 
-diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-index 25e132afd621..e6c3ccc17fe6 100644
---- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-+++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-@@ -1343,6 +1343,7 @@ static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
- 
- #define VSC9959_PSFP_SFID_MAX			175
- #define VSC9959_PSFP_GATE_ID_MAX		183
-+#define VSC9959_PSFP_POLICER_BASE		63
- #define VSC9959_PSFP_POLICER_MAX		383
- #define VSC9959_PSFP_GATE_LIST_NUM		4
- #define VSC9959_PSFP_GATE_CYCLETIME_MIN		5000
-@@ -1850,7 +1851,10 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 	struct felix_stream stream = {0};
- 	struct felix_stream_gate *sgi;
- 	struct ocelot_psfp_list *psfp;
-+	struct ocelot_policer pol;
- 	int ret, i, size;
-+	u64 rate, burst;
-+	u32 index;
- 
- 	psfp = &ocelot->psfp;
- 
-@@ -1869,13 +1873,33 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 			ret = vsc9959_psfp_sgi_table_add(ocelot, sgi);
- 			if (ret) {
- 				kfree(sgi);
--				return ret;
-+				goto err;
- 			}
- 			sfi.sg_valid = 1;
- 			sfi.sgid = sgi->index;
- 			kfree(sgi);
- 			break;
- 		case FLOW_ACTION_POLICE:
-+			index = a->police.index + VSC9959_PSFP_POLICER_BASE;
-+			if (index > VSC9959_PSFP_POLICER_MAX) {
-+				ret = -EINVAL;
-+				goto err;
-+			}
-+
-+			rate = a->police.rate_bytes_ps;
-+			burst = rate * PSCHED_NS2TICKS(a->police.burst);
-+			pol = (struct ocelot_policer) {
-+				.burst = div_u64(burst, PSCHED_TICKS_PER_SEC),
-+				.rate = div_u64(rate, 1000) * 8,
-+			};
-+			ret = ocelot_vcap_policer_add(ocelot, index, &pol);
-+			if (ret)
-+				goto err;
-+
-+			sfi.fm_valid = 1;
-+			sfi.fmid = index;
-+			sfi.maxsdu = a->police.mtu;
-+			break;
- 		default:
- 			return -EOPNOTSUPP;
- 		}
-@@ -1912,6 +1936,9 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 	if (sfi.sg_valid)
- 		vsc9959_psfp_sgi_table_del(ocelot, sfi.sgid);
- 
-+	if (sfi.fm_valid)
-+		ocelot_vcap_policer_del(ocelot, sfi.fmid);
-+
- 	return ret;
- }
- 
-@@ -1935,6 +1962,9 @@ static int vsc9959_psfp_filter_del(struct ocelot *ocelot,
- 	if (sfi->sg_valid)
- 		vsc9959_psfp_sgi_table_del(ocelot, sfi->sgid);
- 
-+	if (sfi->fm_valid)
-+		ocelot_vcap_policer_del(ocelot, sfi->fmid);
-+
- 	vsc9959_psfp_sfi_table_del(ocelot, stream->sfid);
- 
- 	stream->sfid_valid = 0;
+I would like to ask your use-case for this. I'm trying to make up the 
+courage to move Gen2 inline with Gen3, that is move Gen2 to use the 
+media graph interface to allow it more complex use-cases, including 
+controlling parameters on the subdevice level.
+
+So I'm curious if this solve a particular problem for you or if it's 
+done "just" for completeness. If it solves a real problem then I think 
+we should move a head with a v2 (with the small comment below fixed) if 
+not I would like to try and reduce the non media graph usage of the API 
+as much as possible.
+
+> 
+> Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+> ---
+>  drivers/media/platform/rcar-vin/rcar-v4l2.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> index bdeff51bf768..de9f8dd55a30 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
+> @@ -527,6 +527,24 @@ static int rvin_s_selection(struct file *file, void *fh,
+>  	return 0;
+>  }
+>  
+> +static int rvin_g_parm(struct file *file, void *priv,
+> +		       struct v4l2_streamparm *parm)
+> +{
+> +	struct rvin_dev *vin = video_drvdata(file);
+> +	struct v4l2_subdev *sd = vin_to_source(vin);
+> +
+> +	return v4l2_g_parm_cap(video_devdata(file), sd, parm);
+
+Please use &vin->vdev instead of video_devdata(file). 
+
+> +}
+> +
+> +static int rvin_s_parm(struct file *file, void *priv,
+> +		       struct v4l2_streamparm *parm)
+> +{
+> +	struct rvin_dev *vin = video_drvdata(file);
+> +	struct v4l2_subdev *sd = vin_to_source(vin);
+> +
+> +	return v4l2_s_parm_cap(video_devdata(file), sd, parm);
+
+Please use &vin->vdev instead of video_devdata(file). 
+
+> +}
+> +
+>  static int rvin_g_pixelaspect(struct file *file, void *priv,
+>  			      int type, struct v4l2_fract *f)
+>  {
+> @@ -743,6 +761,9 @@ static const struct v4l2_ioctl_ops rvin_ioctl_ops = {
+>  	.vidioc_g_selection		= rvin_g_selection,
+>  	.vidioc_s_selection		= rvin_s_selection,
+>  
+> +	.vidioc_g_parm			= rvin_g_parm,
+> +	.vidioc_s_parm			= rvin_s_parm,
+> +
+>  	.vidioc_g_pixelaspect		= rvin_g_pixelaspect,
+>  
+>  	.vidioc_enum_input		= rvin_enum_input,
+> -- 
+> 2.30.2
+> 
+
 -- 
-2.17.1
-
+Regards,
+Niklas Söderlund
