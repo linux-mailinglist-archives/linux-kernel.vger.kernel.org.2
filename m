@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2735E4176AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E7F4176B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346702AbhIXOQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:16:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52023 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231683AbhIXOP6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:15:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632492865;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vURCDQqb490vrVUUKxyIgtPmCzQpFb9HmiIOhgqiCwU=;
-        b=UYmyaoLgsmAzsp/Eb2U649hatWDPnLmfyVI/zMBHA2OMkVYWNbO2VJDxcr4J7zytk6z6o4
-        Sd4GfhtPQYBToBGNvZ+ojw+LNCwvfBUdkA2wtlCN8UWEHY1FNlBRNEj3rgUTHIOdzsSTL5
-        l/DGXS5JYO82VAYEh3Y9sVJFRgDdS4c=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-0yeAb8DMMuW31PVzB0l4Ng-1; Fri, 24 Sep 2021 10:14:24 -0400
-X-MC-Unique: 0yeAb8DMMuW31PVzB0l4Ng-1
-Received: by mail-qt1-f199.google.com with SMTP id 62-20020aed2044000000b002a6aa209efaso28603204qta.18
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:14:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vURCDQqb490vrVUUKxyIgtPmCzQpFb9HmiIOhgqiCwU=;
-        b=MO2UkrWuqs6MrmDVAipyGdzjjpBYDy9/igu4OJVwFcr08xC/vC6diaSsU/tvrP9fiU
-         To9LvOyJiZCHei2xaGD+lGrFyoAUdlsQJrM+aOnkI18AnbhhGrMG4KHGIXwUIHaGoRWP
-         GepnxG4nAsH7nzi89Vx1DnR4OIeHit0FezOjUv+5iR2PrKI5do2bMNIqL1MecDSE6Mff
-         ABcc1kAedv4MBhRKiLuINPnR6ded8M+wsloYrvux6kAgwIKgULze25P5+RMmMPiBhivK
-         XPx6ahOqmBNkTBskFuRbrGbqZEtoNmBXE+pZ9gGYSagq85ecr2nWD6OrOfbrPieOKm+A
-         HxLg==
-X-Gm-Message-State: AOAM530IxvjeunPRnISsHvFj31KXhf2uwU6Duhw2f2RY/KJRnUP/aPwV
-        QqDMCscdvkye6GsZf0coQmQw8mk30rLsVAj7Vxgrs5+xmAEPluul2OEPYkf6eKoO84r4ftTjIF4
-        p1K5iSXwLDypD8L3WLL2avK2J
-X-Received: by 2002:a37:6658:: with SMTP id a85mr10875028qkc.34.1632492863541;
-        Fri, 24 Sep 2021 07:14:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/FAo093naG96wtcJ0fkUoyMpB/ZaTO5SeisakJVzb4CYFdg7k3z6NELRzuk4IUhVd9yK71g==
-X-Received: by 2002:a37:6658:: with SMTP id a85mr10874997qkc.34.1632492863209;
-        Fri, 24 Sep 2021 07:14:23 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id v8sm5214030qtk.49.2021.09.24.07.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 07:14:22 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 10:14:21 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
-Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with
- thp enabled
-Message-ID: <YU3dPTsNWVhEo/5y@t490s>
-References: <20210923232512.210092-1-peterx@redhat.com>
- <20210923191941.da28da4400c11a3241a07acf@linux-foundation.org>
+        id S1346515AbhIXOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:19:33 -0400
+Received: from mout.gmx.net ([212.227.17.20]:39995 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344675AbhIXOTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 10:19:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+        s=badeba3b8450; t=1632493072;
+        bh=pr0RZOMzxXrMHFBdCZaR3+l8sas8VDW0nrMQnd+FOgM=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=dzR2B3PvydKfjx4kez0+Shf+7KWXKBoI85+xrYcqvfoXDa0xDrdbwgWDk1ZHmIwY5
+         XXWayzjA9LBRtIMuUQbGdLckIoNEM+Zx+v9Vn8lKbw0VnXSY8zy9rSXopAF+hfNlmi
+         Gv0ltwrNM8zRwqGnvwmLPpamOWIEvrR+V0IdfxEc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([46.223.119.124]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEm27-1mf3V52q67-00GJ9w; Fri, 24
+ Sep 2021 16:17:52 +0200
+Subject: Re: [PATCH] tpm: fix potential NULL pointer access in
+ tpm_del_char_device()
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, peterhuewe@gmx.de,
+        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20210910180451.19314-1-LinoSanfilippo@gmx.de>
+ <204a438b6db54060d03689389d6663b0d4ca815d.camel@kernel.org>
+ <trinity-27f56ffd-504a-4c34-9cda-0953ccc459a3-1631566430623@3c-app-gmx-bs69>
+ <c22d2878f9816000c33f5349e7256cadae22b400.camel@kernel.org>
+ <50bd6224-0f01-ca50-af0e-f79b933e7998@gmx.de>
+ <20210924133321.GX3544071@ziepe.ca>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <b49f4b52-44c4-8cb8-a102-689e9f788177@gmx.de>
+Date:   Fri, 24 Sep 2021 16:17:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210924133321.GX3544071@ziepe.ca>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210923191941.da28da4400c11a3241a07acf@linux-foundation.org>
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oWjlOrtiKQPng30WZ0cwBATS5seyB+BK20TFO6LvBOAyir8R5v0
+ 83Q0Zh73oZzZHgMBZIG+V+Y6zSE8TqfzIwG12mo++4SYVd2P0bRprVMnUPHrGb7KnpdkaOE
+ aMTMeQJB9zucxFSLJVR+/UTWa3I/yLvOb9SN54sS2wV6/NpadaXABr2andOHvzFxCVgodLQ
+ oaeWXGfHRQpLvCVaALcBg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:np5Jp9L7dRg=:tAasIpqrbfKwrh1T4UY/mT
+ o2J2BaBJKO197LSAo6f9u9dtC/fhmmIibqKTKe+08EhWtWpoAZ2WjlYAqOmk7CtcrIE+QtlVq
+ DQ65i4aF/eWrnIim+tlMP50KS0tZKvGXRQ9H+295hnRKBvWZMvld2g/Vio0jBpr9/6f1pmLW8
+ rFrH8o3DW9kMROp+eId5DtVW+pr5dEr3d70Uvloi5Le+TUfly1OEWexf4jrzx5BO4CDdMyJZx
+ 7PuBEY9iDo7heUtuuINqgscc28FkDc7lomQDU6mQoC/+EYY767ClpfSh77GKQgITb0je2iR11
+ fxRcKWizG8damtp7fJ92iLtIcXldnsQpzB3X04avNhN2rrnLnnz1r9dOWTr8xA/ogBRDPfDCv
+ W6jE7nK0EkPOp6wF/K9tAJJMQODjKpythWP4d81Dw8rFbdbxZe7LGRYuKUhBSs5K5tYmZ9D1+
+ UB4OO7JzNkr7SHt3+ghiAiFUnsuSvHkHAdqOVkiMnfprhm95X135QjUycbc0BMfefpbD0oWa4
+ pTEEos+nF0hyfteV8hvDkmqT+ROII82Mlkra+0h7Ehar3M/AXSP1eUs4bHgX45sEt3WNtO2AV
+ 3auDMEGMoBWLLdzoJRDLCPtXGWJCHd3rp7WUNuftHSsjjOwofNOdEoOj1oXj2/8Ti+nCBjb6p
+ p/6YNzQP/C6gvDqrp62HpPT7fhAdQQRdw4ozlbvsxazi0hmGGwo6EY+dQPp5lLPG/CXWpAZnM
+ O/Z6PnNK9ASXvuxr6LroVMYQo0SemrL+R/qFv6u2/Av15Gdwb8vYF5AG1uwey2naFBlX2yxZS
+ PICnZRiF/omlDvkYlQbFKJHwJtIUvCAn+xjP5EMPDyUSsAlkTXMxZxnBMfHySdRK2vIBHN9gF
+ Q6J0QPe7xgk8PgdrCNjPZ2T4LpoY0zWq9oA13X4jtH1hI5oe+kHZUwn3xM86tHtEa3EalqF9S
+ ODkoUcWm6PbPNu4f0JvKzQ6DbiU+XUkdMywCLRreo6BDhAKvLDnXHfHO8K+SF08ABcYnWA6o0
+ eF0Q29K1vA4lhMoY3SRGUMRKpfd90LcA0flXGmKs0ECMTHWRW5Y2IpVq/wYRBFuNi+KDyIZU8
+ rsTchXeancK3ZI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 07:19:41PM -0700, Andrew Morton wrote:
-> On Thu, 23 Sep 2021 19:25:12 -0400 Peter Xu <peterx@redhat.com> wrote:
-> 
-> > In RHEL's gating selftests we've encountered memory corruption in the uffd
-> > event test even with upstream kernel:
-> > 
-> > ...
-> >
-> > 
-> > We can mark the Fixes tag upon 0db282ba2c12 as it's reported to only happen
-> > there, however the real "Fixes" IMHO should be 8ba6e8640844, as before that
-> > commit we'll always do explicit release_pages() before registration of uffd,
-> > and 8ba6e8640844 changed that logic by adding extra unmap/map and we didn't
-> > release the pages at the right place.  Meanwhile I don't have a solid glue
-> > anyway on whether posix_memalign() could always avoid triggering this bug,
-> > hence it's safer to attach this fix to commit 8ba6e8640844.
-> > 
-> 
-> Thanks.  I added a cc:stable to this.  I don't think we want selftests
-> in older kernels to be falsely reporting kernel bugs?
+On 24.09.21 at 15:33, Jason Gunthorpe wrote:
+> On Fri, Sep 24, 2021 at 03:29:46PM +0200, Lino Sanfilippo wrote:
+>
+>> So this bug is triggered when the bcm2835 drivers shutdown() function i=
+s called since this
+>> driver does something quite unusual: it unregisters the spi controller =
+in its shutdown()
+>> handler.
+>
+> This seems wrong
+>
+> Jason
+>
 
-Not sure how we normally handle such case for selftests, but I agree.
 
-Btw, 8ba6e8640844 is merged in 5.14, so the only stable branch that will need
-it will be 5.14.y; it can be applied cleanly there.
+Unregistering the SPI controller during shutdown is only a side-effect of =
+calling
+bcm2835_spi_remove() in the shutdown handler:
 
-Thanks,
+static void bcm2835_spi_shutdown(struct platform_device *pdev)
+{
+	int ret;
 
--- 
-Peter Xu
+	ret =3D bcm2835_spi_remove(pdev);
+	if (ret)
+		dev_err(&pdev->dev, "failed to shutdown\n");
+}
 
+
+Regards,
+Lino
