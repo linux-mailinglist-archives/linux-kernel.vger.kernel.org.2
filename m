@@ -2,75 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792D6417C16
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608EB417C1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348301AbhIXUBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 16:01:43 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47424 "EHLO mga04.intel.com"
+        id S1348317AbhIXUGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 16:06:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345980AbhIXUBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 16:01:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10117"; a="222267531"
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
-   d="scan'208";a="222267531"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 13:00:05 -0700
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; 
-   d="scan'208";a="654135527"
-Received: from tlane-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.166.194])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 13:00:04 -0700
-Subject: Re: [PATCH v7 08/12] x86/tdx: Add HLT support for TDX guest
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210916183550.15349-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210916183550.15349-9-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YUzC7N8/MHI++y/G@zn.tnic>
- <5b728681-39e3-1399-2b01-53c950f9c6a5@linux.intel.com>
-Message-ID: <479fb072-5d98-53e8-5c12-e085f5e2bb18@linux.intel.com>
-Date:   Fri, 24 Sep 2021 13:00:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1345661AbhIXUF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 16:05:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DC2B61107;
+        Fri, 24 Sep 2021 20:04:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632513862;
+        bh=5g6F24eAkfUrluLlmCOMkaLhZyk84IZGlaFRfiC0LOE=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=lmDBZ9oIyS3njcFNZoPha7UcobA4aS2FQkVoccD3LUilnqmsyJrUfNqkmWR8yOB3t
+         8gbmOYvaF43D55psInmqaApM29ibqVjCF3q0iWMhNWZejhTBf16LlT8XDlYP/fnHMX
+         Dt5XOweabDGODl/B+KyIhLcaXT+S08vFjV90vk2cmsrtWNdgwXvWuviwLz/6byzySc
+         BeG8mbo13ZAdxU/T9llrJzg8G4nbQgevNASLL/ys8+F0tTqo6BRrzQP0D9Q5NZqahq
+         SaQeX5Hw8NIojx1AZbVFK0OufMlA62FfoHWWQ6n3vY5YqOehQqRG4GQEEnOAz6Uo7J
+         NFCZmDQbtjK2w==
+Date:   Fri, 24 Sep 2021 13:04:21 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "julien@xen.org" <julien@xen.org>,
+        "jbeulich@suse.com" <jbeulich@suse.com>,
+        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>
+Subject: Re: [PATCH v3 2/2] xen-pciback: allow compiling on other archs than
+ x86
+In-Reply-To: <7310d23e-4193-3f4c-06da-606b30e73f24@epam.com>
+Message-ID: <alpine.DEB.2.21.2109241258190.17979@sstabellini-ThinkPad-T480s>
+References: <20210923095345.185489-1-andr2000@gmail.com> <20210923095345.185489-2-andr2000@gmail.com> <alpine.DEB.2.21.2109231252270.17979@sstabellini-ThinkPad-T480s> <f62a1e2c-4253-c998-c206-6bb0681a84fb@epam.com>
+ <7310d23e-4193-3f4c-06da-606b30e73f24@epam.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <5b728681-39e3-1399-2b01-53c950f9c6a5@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; BOUNDARY="8323329-2142721594-1632513512=:17979"
+Content-ID: <alpine.DEB.2.21.2109241258500.17979@sstabellini-ThinkPad-T480s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-2142721594-1632513512=:17979
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-ID: <alpine.DEB.2.21.2109241258501.17979@sstabellini-ThinkPad-T480s>
+
+On Fri, 24 Sep 2021, Oleksandr Andrushchenko wrote:
+> On 24.09.21 08:46, Oleksandr Andrushchenko wrote:
+> > On 23.09.21 23:00, Stefano Stabellini wrote:
+> >> On Thu, 23 Sep 2021, Oleksandr Andrushchenko wrote:
+> >>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> >>>
+> >>> Xen-pciback driver was designed to be built for x86 only. But it
+> >>> can also be used by other architectures, e.g. Arm.
+> >>> Re-structure the driver in a way that it can be built for other
+> >>> platforms as well.
+> >>>
+> >>> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> >>> Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
+> >> The patch looks good to me. Only one thing: on ARM32 I get:
+> > WE do not yet support Xen PCI passthrough for ARM32
+
+Keep in mind that it is possible to run ARM32 guests on an ARM64
+hypervisor.
 
 
-On 9/23/21 12:33 PM, Kuppuswamy, Sathyanarayanan wrote:
->> Is that explained in the comment in _tdx_halt() where irqs_disabled
->> tells the VMM what to do with the guest - to wake it up or to keep it in
->> virtual halt?
+> >> drivers/xen/xen-pciback/conf_space_header.c: In function ‘bar_init’:
+> >> drivers/xen/xen-pciback/conf_space_header.c:239:34: warning: right shift count >= width of type [-Wshift-count-overflow]
+> >>       bar->val = res[pos - 1].start >> 32;
+> >>                                     ^~
+> >> drivers/xen/xen-pciback/conf_space_header.c:240:49: warning: right shift count >= width of type [-Wshift-count-overflow]
+> >>       bar->len_val = -resource_size(&res[pos - 1]) >> 32;
+> >>    
+> >>    
+> >> resource_size_t is defined as phys_addr_t and it can be 32bit on arm32.
+> >>
+> >>
+> >> One fix is to surround:
+> >>
+> >> 		if (pos && (res[pos - 1].flags & IORESOURCE_MEM_64)) {
+> >> 			bar->val = res[pos - 1].start >> 32;
+> >> 			bar->len_val = -resource_size(&res[pos - 1]) >> 32;
+> >> 			return bar;
+> >> 		}
+> >>
+> >> with #ifdef PHYS_ADDR_T_64BIT
+> >>
+> > This might not be correct. We are dealing here with a 64-bit BAR on a 32-bit OS.
+> >
+> > I think that this can still be valid use-case if BAR64.hi == 0. So, not sure
+> >
+> > we can just skip it with ifdef.
+> >
+> > Instead, to be on the safe side, we can have:
+> >
+> > config XEN_PCIDEV_STUB
+> >          tristate "Xen PCI-device stub driver"
+> >          depends on PCI && ARM64 && XEN
+> > e.g. only allow building the "stub" for ARM64 for now.
+
+This is a pretty drastic solution. I would be OK with it but I prefer
+the solution below >> 16 >> 16.
+
+
+> Or... there are couple of places in the kernel where PCI deals with the 32 bit shift as:
 > 
-> I think it is left in halt state. Sean, any comment?
+> drivers/pci/setup-res.c:108:        new = region.start >> 16 >> 16;
+> drivers/pci/iov.c:949:        new = region.start >> 16 >> 16;
+> 
+> commit cf7bee5a0bf270a4eace0be39329d6ac0136cc47
+> Date:   Sun Aug 7 13:49:59 *2005* +0400
+> 
+> [snip]
+> 
+>      Also make sure to write high bits - use "x >> 16 >> 16" (rather than the
+>      simpler ">> 32") to avoid warnings on 32-bit architectures where we're
+>      not going to have any high bits.
 
-I inquired about it and found that the guest will be left in halt
-state after non-safe halt call. It is mainly used in CPU off-lining
-process.
+I think this is the best option
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+
+> This might not be(?) immediately correct in case of LPAE though, e.g.
+> 
+> 64-bit BAR may tolerate 40-bit address in some use-cases?
+
+It is correct for LPAE too, it is just that with LPAE it would be
+unnecessary.
+
+--8323329-2142721594-1632513512=:17979--
