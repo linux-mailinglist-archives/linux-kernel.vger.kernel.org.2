@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B92D416DBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15D2416DCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244744AbhIXI2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:28:36 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:52902 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244692AbhIXI2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:28:35 -0400
-Received: from zn.tnic (p200300ec2f0dd600c2485b7778a62ff5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d600:c248:5b77:78a6:2ff5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5679F1EC0301;
-        Fri, 24 Sep 2021 10:26:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632472017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=bHMJS/aYXU9qw9zIv9pZZwDh/cCLOLB5X5GoNoeX9vo=;
-        b=W4yJdlgqBzi5H0z5kuAc7jGN3hOJFaAm3WA1VGMNO5mXT1u6rQbb3Y6o7vKGhHYy+DlBWc
-        1z+DDpJme5HKDHBaqCfOW6De4mvGO74oqOiF9aKiel8SKG2+az6tV6r1TtJFI8h7V1dYTv
-        WCCAQe23QdWh9+yzlMEAbnCg1loyf70=
-Date:   Fri, 24 Sep 2021 10:26:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
-Subject: Re: [PATCH 5/5] x86/mce/mce-inject: Return error code to userspace
- from mce-inject module
-Message-ID: <YU2LzwNm4CNZ8fT8@zn.tnic>
-References: <20210915232739.6367-1-Smita.KoralahalliChannabasappa@amd.com>
- <20210915232739.6367-6-Smita.KoralahalliChannabasappa@amd.com>
+        id S244750AbhIXIfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:35:06 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3854 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244633AbhIXIfF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:35:05 -0400
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HG4xM1Vtsz67lqG;
+        Fri, 24 Sep 2021 16:31:03 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 24 Sep 2021 10:33:30 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 24 Sep 2021 09:33:28 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <ming.lei@redhat.com>,
+        <hare@suse.de>, "John Garry" <john.garry@huawei.com>
+Subject: [PATCH v4 00/13] blk-mq: Reduce static requests memory footprint for shared sbitmap
+Date:   Fri, 24 Sep 2021 16:28:17 +0800
+Message-ID: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210915232739.6367-6-Smita.KoralahalliChannabasappa@amd.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 06:27:39PM -0500, Smita Koralahalli wrote:
-> Currently, the mce-inject module fails silently and user must look for
-> kernel logs to determine if the injection has succeeded.
-> 
-> Save time for the user and return error code from the module if error
-> injection fails.
-> 
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> ---
->  arch/x86/kernel/cpu/mce/inject.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
-> index c7d1564f244b..0ef9ff921c6a 100644
-> --- a/arch/x86/kernel/cpu/mce/inject.c
-> +++ b/arch/x86/kernel/cpu/mce/inject.c
-> @@ -549,8 +549,10 @@ static void do_inject(void)
->  	}
->  
->  	cpus_read_lock();
-> -	if (!cpu_online(cpu))
-> +	if (!cpu_online(cpu)) {
-> +		mce_err.err = -ENODEV;
+Currently a full set of static requests are allocated per hw queue per
+tagset when shared sbitmap is used.
 
-You could issue a pr_err() here too. That ENODEV probably turns into
-"write failed" but that doesn't say why.
+However, only tagset->queue_depth number of requests may be active at
+any given time. As such, only tagset->queue_depth number of static
+requests are required.
+
+The same goes for using an IO scheduler, which allocates a full set of
+static requests per hw queue per request queue.
+
+This series changes shared sbitmap support by using a shared tags per
+tagset and request queue. Ming suggested something along those lines in
+v1 review. But we'll keep name "shared sbitmap" name as it is familiar. In
+using a shared tags, the static rqs also become shared, reducing the
+number of sets of static rqs, reducing memory usage.
+
+Patch "blk-mq: Use shared tags for shared sbitmap support" is a bit big,
+and could potentially be broken down. But then maintaining ability to
+bisect becomes harder and each sub-patch would get more convoluted.
+
+For megaraid sas driver on my 128-CPU arm64 system with 1x SATA disk, we
+save approx. 300MB(!) [370MB -> 60MB]
+
+Baseline is v5.15-rc2
+
+Changes since v3:
+- Fix transient error handling issue in  05/13
+- Add Hannes RB tags (thanks!)
+
+Changes since v2:
+- Make blk_mq_clear_rq_mapping() static again
+- Various function renaming for conciseness and consistency
+- Add/refactor alloc/free map and rqs function
+- Drop the new blk_mq_ops init_request method in favour of passing an
+  invalid HW queue index for shared sbitmap
+- Add patch to not clear rq mapping for driver tags
+- Remove blk_mq_init_bitmap_tags()
+- Add some more RB tags (thanks!)
+
+Changes since v1:
+- Switch to use blk_mq_tags for shared sbitmap
+- Add new blk_mq_ops init request callback
+- Add some RB tags (thanks!)
+
+
+John Garry (13):
+  blk-mq: Change rqs check in blk_mq_free_rqs()
+  block: Rename BLKDEV_MAX_RQ -> BLKDEV_DEFAULT_RQ
+  blk-mq: Relocate shared sbitmap resize in blk_mq_update_nr_requests()
+  blk-mq: Invert check in blk_mq_update_nr_requests()
+  blk-mq-sched: Rename blk_mq_sched_alloc_{tags -> map_and_rqs}()
+  blk-mq-sched: Rename blk_mq_sched_free_{requests -> rqs}()
+  blk-mq: Pass driver tags to blk_mq_clear_rq_mapping()
+  blk-mq: Don't clear driver tags own mapping
+  blk-mq: Add blk_mq_tag_update_sched_shared_sbitmap()
+  blk-mq: Add blk_mq_alloc_map_and_rqs()
+  blk-mq: Refactor and rename blk_mq_free_map_and_{requests->rqs}()
+  blk-mq: Use shared tags for shared sbitmap support
+  blk-mq: Stop using pointers for blk_mq_tags bitmap tags
+
+ block/bfq-iosched.c    |   4 +-
+ block/blk-core.c       |   4 +-
+ block/blk-mq-debugfs.c |   8 +-
+ block/blk-mq-sched.c   | 116 +++++++++++------------
+ block/blk-mq-sched.h   |   4 +-
+ block/blk-mq-tag.c     | 125 +++++++++----------------
+ block/blk-mq-tag.h     |  14 +--
+ block/blk-mq.c         | 208 ++++++++++++++++++++++++-----------------
+ block/blk-mq.h         |  18 ++--
+ block/blk.h            |   2 +-
+ block/kyber-iosched.c  |   4 +-
+ block/mq-deadline.c    |   2 +-
+ drivers/block/rbd.c    |   2 +-
+ include/linux/blk-mq.h |  15 ++-
+ include/linux/blkdev.h |   5 +-
+ 15 files changed, 255 insertions(+), 276 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.26.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
