@@ -2,127 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4198C417047
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86208417055
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241037AbhIXKZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:25:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35968 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240310AbhIXKZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:25:29 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S243380AbhIXKbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:31:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231140AbhIXKbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 06:31:41 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3117222428;
-        Fri, 24 Sep 2021 10:23:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632479035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cdj+MChX4WpMa83LUp1k/Esc7Eco7Cg2FeFEGab5+Ek=;
-        b=pv2YhabYU/ytTd6fBQH7+j4RkgAtmgFmNovZGGs/+P36zRZwVqjrJBktgV4POBQ12oYZzx
-        4N/jiMGIKPNCunjG3Nk6BDfd/loRPqRDo9ei426Xx0CU+R24/ABucJ3RcR5DGCw+Czb9Zw
-        OzXRkMwb3kOD6neRWn7EyfiL5gaVQ4E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632479035;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cdj+MChX4WpMa83LUp1k/Esc7Eco7Cg2FeFEGab5+Ek=;
-        b=6NUJqaIS7y8JdVBp6wmwnzYXCVi5O0aNUJB644YMQLY/T+EtDHvwzLAXLTbQ1RaMhmEAxb
-        XwSscH6gaWUH6tBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06D4313AB5;
-        Fri, 24 Sep 2021 10:23:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0xGDADunTWEGTwAAMHmgww
-        (envelope-from <hare@suse.de>); Fri, 24 Sep 2021 10:23:55 +0000
-Subject: Re: [PATCH v4 12/13] blk-mq: Use shared tags for shared sbitmap
- support
-To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, ming.lei@redhat.com
-References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
- <1632472110-244938-13-git-send-email-john.garry@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <9dd771bb-9e45-ecd2-d8e4-93c6e9cb9b59@suse.de>
-Date:   Fri, 24 Sep 2021 12:23:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <1632472110-244938-13-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        by mail.kernel.org (Postfix) with ESMTPSA id 02A0061164;
+        Fri, 24 Sep 2021 10:30:09 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mTiT1-003KSl-RS; Fri, 24 Sep 2021 06:30:07 -0400
+Message-ID: <20210924102917.106053441@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Fri, 24 Sep 2021 06:29:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-trace-devel@vger.kernel.org
+Subject: [PATCH 0/2 v2] tracing: Have trace_pid_list be a sparse array
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/21 10:28 AM, John Garry wrote:
-> Currently we use separate sbitmap pairs and active_queues atomic_t for
-> shared sbitmap support.
-> 
-> However a full sets of static requests are used per HW queue, which is
-> quite wasteful, considering that the total number of requests usable at
-> any given time across all HW queues is limited by the shared sbitmap depth.
-> 
-> As such, it is considerably more memory efficient in the case of shared
-> sbitmap to allocate a set of static rqs per tag set or request queue, and
-> not per HW queue.
-> 
-> So replace the sbitmap pairs and active_queues atomic_t with a shared
-> tags per tagset and request queue, which will hold a set of shared static
-> rqs.
-> 
-> Since there is now no valid HW queue index to be passed to the blk_mq_ops
-> .init and .exit_request callbacks, pass an invalid index token. This
-> changes the semantics of the APIs, such that the callback would need to
-> validate the HW queue index before using it. Currently no user of shared
-> sbitmap actually uses the HW queue index (as would be expected).
-> 
-> Continue to use term "shared sbitmap" for now, as the meaning is known.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->   block/blk-mq-sched.c   | 82 ++++++++++++++++++-------------------
->   block/blk-mq-tag.c     | 61 ++++++++++------------------
->   block/blk-mq-tag.h     |  6 +--
->   block/blk-mq.c         | 91 +++++++++++++++++++++++-------------------
->   block/blk-mq.h         |  5 ++-
->   include/linux/blk-mq.h | 15 ++++---
->   include/linux/blkdev.h |  3 +-
->   7 files changed, 125 insertions(+), 138 deletions(-)
-> 
-The overall idea to keep the full request allocation per queue was to 
-ensure memory locality for the requests themselves.
-When moving to a shared request structure we obviously loose that feature.
+When the trace_pid_list was created, the default pid max was 32768.
+Creating a bitmask that can hold one bit for all 32768 took up 4096 (one
+page). Having a one page bitmask was not much of a problem, and that was
+used for mapping pids. But today, systems are bigger and can run more
+tasks, and now the default pid_max is usually set to 4194304. Which means
+to handle that many pids requires 524288 bytes. Worse yet, the pid_max can
+be set to 2^30 (1073741824 or 1G) which would take 134217728 (128M) of
+memory to store this array.
 
-But I'm not sure if that matters here; the performance impact might be 
-too small to be measurable, seeing that we'll be most likely bound by 
-hardware latencies anyway.
+Since the pid_list array is very sparsely populated, it is a huge waste of
+memory to store all possible bits for each pid when most will not be set.
 
-Nevertheless: have you tested for performance regressions with this 
-patchset?
-I'm especially thinking of Kashyaps high-IOPS megaraid setup; if there 
-is a performance impact that'll be likely scenario where we can measure it.
+Instead, use a page table scheme to store the array, and allow this to
+handle up to 30 bit pids.
 
-But even if there is a performance impact this patchset might be 
-worthwhile, seeing that it'll reduce the memory footprint massively.
+The pid_mask will start out with 256 entries for the first 8 MSB bits.
+This will cost 1K for 32 bit architectures and 2K for 64 bit. Each of
+these will have a 256 array to store the next 8 bits of the pid (another
+1 or 2K). These will hold an 2K byte bitmask (which will cover the LSB
+14 bits or 16384 pids).
+ 
+When the trace_pid_list is allocated, it will have the 1/2K upper bits
+allocated, and then it will allocate a cache for the next upper chunks and
+the lower chunks (default 6 of each). Then when a bit is "set", these
+chunks will be pulled from the free list and added to the array. If the
+free list gets down to a lever (default 2), it will trigger an irqwork
+that will refill the cache back up.
 
-Cheers,
+On clearing a bit, if the clear causes the bitmask to be zero, that chunk
+will then be placed back into the free cache for later use, keeping the
+need to allocate more down to a minimum.
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Changes since v1: https://lore.kernel.org/all/20210924033547.939554938@goodmis.org/
+
+ - Changed the bit split from 10,10,12 to 8,8,14 and only check the
+   30 bits of the pid, as according to linux/thread.h a pid may only
+   be at most 30 bits.
+
+ - Added a WARN_ON_ONCE(pid_max > (1 << 30)) to be sure.
+
+Steven Rostedt (VMware) (2):
+      tracing: Place trace_pid_list logic into abstract functions
+      tracing: Create a sparse bitmask for pid filtering
+
+----
+ kernel/trace/Makefile       |   1 +
+ kernel/trace/ftrace.c       |   6 +-
+ kernel/trace/pid_list.c     | 557 ++++++++++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace.c        |  78 +++----
+ kernel/trace/trace.h        |  14 +-
+ kernel/trace/trace_events.c |   6 +-
+ 6 files changed, 601 insertions(+), 61 deletions(-)
+ create mode 100644 kernel/trace/pid_list.c
