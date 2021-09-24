@@ -2,126 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AACF4179D2
+	by mail.lfdr.de (Postfix) with ESMTP id BBAD44179D4
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347829AbhIXRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 13:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
+        id S1344433AbhIXRX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 13:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348010AbhIXRWn (ORCPT
+        with ESMTP id S1343834AbhIXRXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 13:22:43 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2036BC06161E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:21:10 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id h2so7275836ybi.13
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:21:10 -0700 (PDT)
+        Fri, 24 Sep 2021 13:23:41 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6AFC061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:22:08 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id i13so11209326ilm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 10:22:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s4aBU9hVptJACVXCGvcssMyH4GtcIwSagpPyw2kwXkY=;
-        b=Qg8lIckWZ6QdcUhs3oi3WYUQvebJvsPzGz4Ggd06zDmyXsPv09i+j1hxlq89HJeAJ4
-         jpzTkzF0TfKy2qFxodY3KTvJRuSt14izCkjmyfQkjMz+JRK0lD5W9hrdCB7i8GvS3DTy
-         RueUXWzAodwjLjwYjQgS7Igq2UQlJAOrDs2Uc=
+        bh=NF6KMebTrcnE6ZDlGZIxVRvDYdCDvqX/Fd5kEH/etjc=;
+        b=Q/BgLeJ/XyR2TTP/o2QVcP5SNne657H5JPm0IiO7gO6CCW/F3LoWtko68GXTn+9fXJ
+         fjWl818E3xECobWQZd6PE3t3NCKFoUiBmJdcmuvwulTe5crlxKHvUesdwqJYnhjbhm9E
+         bMgb1XsApuGY2gqrYEo/iGaEZ62GIu3K0WD7W/Sn/lH/DEJYs6LUEXFNIhigOv+zBrAK
+         HvEYk3Il+ux4Bl8KlTKOvc36n1Y+4RvRl7GBVgoGBlrofdc9G+d0ARm7YvhXcFh1ZaaD
+         CG48tHPwKFZBtce2YdZ2OyFFGfcHFH+tiK0DTHOu0ADPuuTUA3sNXxwVzMX1+jrHDZRE
+         sLRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s4aBU9hVptJACVXCGvcssMyH4GtcIwSagpPyw2kwXkY=;
-        b=MEUQCGvCHbz3KdajX8FV6k4jCsZYto7IYgg/wVh0pRqmXvmEFuAwLX1lvCZiBHC/Rm
-         qroWuCacdQCZ6XNTUn/ba0YN0yn3IBNjYkBml1f0I6YYf/qTP7dGRjjBd+30rPGx4LoK
-         zZ3p4jIOsdmgNnElK90ILo/9tf2b9OByDqUg/6gyGrwQL5rNmCbK3DjovxTwzpkpcSU9
-         pPB9w9jDQVBTMbfx0lW0+CbNrYaJICoRugwljjJWJS+Jvx9RtSY1PQ+dMkGni8rU8vV/
-         Ca1JUgyCMAyZVMlCYVXWUt8pcJ1BZqC50z7IwLrmPEefWTOFp6yRaEskLY1LSTdKQ5/Y
-         CAxA==
-X-Gm-Message-State: AOAM532a6ARumG0zTv58ww1lktpFfaQLTD3a3XIZz5dHrvdrTqVIXTRk
-        oScN2QQ3yNH86KkHXhpFC/TY7dS/AUT+kZiqWhSTqQ==
-X-Google-Smtp-Source: ABdhPJw7sidVyzpxBf4Z23QuW71wp38GW2fuO1RQ+xJSKeJDQqvrm+cVUNF71j/yXC17knITQy0pQ0WvIe2Kt0WgTO0=
-X-Received: by 2002:a05:6902:1248:: with SMTP id t8mr14318420ybu.85.1632504069110;
- Fri, 24 Sep 2021 10:21:09 -0700 (PDT)
+        bh=NF6KMebTrcnE6ZDlGZIxVRvDYdCDvqX/Fd5kEH/etjc=;
+        b=Ja7uZk1X8Qp7zGc75I6dmIk5c7bfZmQBSs7fWu2uePWy+FjxyhxrQWoSnppDoFlUml
+         MqAa7uesSyeTW3P9s3/Td3afdZ0ML6QkapUYEI9o9WIfedxO3KMsOE0GbCSb8QJtwEAo
+         LGscH2QsCP43sut1+z846k5edj57gv+/HBrXzBPsP7Wtbgv40GAhDEuJoCed3uxX6SJx
+         isC7//NDrBmqwfJFyFaDVrFhY6JA0eaNHiLdJ7llayGm+oFThOALSvpyoKd5zWwPOGtu
+         x+jOMLRQ1NgMx6SQXSIVuMC5K/dmK6aG8I17CaUhu9AcJbd6n0shAYRqZdnPc14OyZpf
+         vSEQ==
+X-Gm-Message-State: AOAM531lxOUvileGDqTdW8Lv0Ym9odTziGZ5eKqRgx3F4aayxsxHeaK/
+        C0ryzTi1koWiWDwtjbvthYi6wDiTM5ZId5JtMfeK5A==
+X-Google-Smtp-Source: ABdhPJy2wtjGitvpd9vw+AdFGxitMROC+03E/OCri7/nbib4kFh9+M1zI/wb30Ym//Md/tQaoyDkS6S7q68N0TETXHI=
+X-Received: by 2002:a05:6e02:13d4:: with SMTP id v20mr9413856ilj.247.1632504127283;
+ Fri, 24 Sep 2021 10:22:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1632420430.git.leonro@nvidia.com> <e7708737fadf4fe6f152afc76145c728c201adad.1632420430.git.leonro@nvidia.com>
- <CAKOOJTz4A2ER8MQE1dW27Spocds09SYafjeuLcFDJ0nL6mKyOw@mail.gmail.com>
- <YU0JlzFOa7kpKgnd@unreal> <20210923183956.506bfde2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210923183956.506bfde2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Fri, 24 Sep 2021 10:20:32 -0700
-Message-ID: <CAKOOJTwh6TnNM4uSM2rbaij=xO92UzF2hs11pgOFUniOb3HAkA@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/6] bnxt_en: Check devlink allocation and
- registration status
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Igor Russkikh <irusskikh@marvell.com>,
-        intel-wired-lan@lists.osuosl.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        netdev <netdev@vger.kernel.org>,
-        Sathya Perla <sathya.perla@broadcom.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+References: <20210923232512.210092-1-peterx@redhat.com>
+In-Reply-To: <20210923232512.210092-1-peterx@redhat.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Fri, 24 Sep 2021 10:21:30 -0700
+Message-ID: <CAJHvVci8ig4WCY2aK-GvmHP=Uw3s8DrGahk-Yh37GX2kR35kww@mail.gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with thp enabled
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 6:39 PM Jakub Kicinski <kuba@kernel.org> wrote:
-
-> On Fri, 24 Sep 2021 02:11:19 +0300 Leon Romanovsky wrote:
-> > > minor nit: There's obviously nothing incorrect about doing this (and
-> > > adding the additional error label in the cleanup code above), but bnxt
-> > > has generally adopted a style of having cleanup functions being
-> > > idempotent. It generally makes error handling simpler and less error
-> > > prone.
-> >
-> > I would argue that opposite is true. Such "impossible" checks hide unwind
-> > flow errors, missing releases e.t.c.
+On Thu, Sep 23, 2021 at 4:25 PM Peter Xu <peterx@redhat.com> wrote:
 >
-> +1, fwiw
+> In RHEL's gating selftests we've encountered memory corruption in the uffd
+> event test even with upstream kernel:
+>
+>         # ./userfaultfd anon 128 4
+>         nr_pages: 32768, nr_pages_per_cpu: 32768
+>         bounces: 3, mode: rnd racing read, userfaults: 6240 missing (6240) 14729 wp (14729)
+>         bounces: 2, mode: racing read, userfaults: 1444 missing (1444) 28877 wp (28877)
+>         bounces: 1, mode: rnd read, userfaults: 6055 missing (6055) 14699 wp (14699)
+>         bounces: 0, mode: read, userfaults: 82 missing (82) 25196 wp (25196)
+>         testing uffd-wp with pagemap (pgsize=4096): done
+>         testing uffd-wp with pagemap (pgsize=2097152): done
+>         testing events (fork, remap, remove): ERROR: nr 32427 memory corruption 0 1 (errno=0, line=963)
+>         ERROR: faulting process failed (errno=0, line=1117)
+>
+> It can be easily reproduced when global thp enabled, which is the default for
+> RHEL.
+>
+> It's also known as a side effect of commit 0db282ba2c12 ("selftest: use mmap
+> instead of posix_memalign to allocate memory", 2021-07-23), which is imho right
+> itself on using mmap() to make sure the addresses will be untagged even on arm.
+>
+> The problem is, for each test we allocate buffers using two allocate_area()
+> calls.  We assumed these two buffers won't affect each other, however they
+> could, because mmap() could have found that the two buffers are near each other
+> and having the same VMA flags, so they got merged into one VMA.
+>
+> It won't be a big problem if thp is not enabled, but when thp is agressively
+> enabled it means when initializing the src buffer it could accidentally setup
+> part of the dest buffer too when there's a shared THP that overlaps the two
+> regions.  Then some of the dest buffer won't be able to be trapped by
+> userfaultfd missing mode, then it'll cause memory corruption as described.
+>
+> To fix it, do release_pages() after initializing the src buffer.
 
-I appreciate that being more explicit can improve visibility, but it
-does not make error handling inherently less error prone, nor is it
-simpler (ie. the opposite isn't true). Idempotency is orthogonal to
-unwind flow or the presence or not of a particular unwind handler (one
-can still enforce either in review). But, if release handlers are
-independent (most in bnxt are), then permitting other orderings can be
-perfectly valid and places less burden on achieving the canonical form
-for correctness (ie. usage is simpler and less error prone). That's
-not to say we should throw caution to the wind and allow arbitrary
-unwind flows, but it does mean certain mistakes don't result in actual
-bugs. There are other flexibility benefits too. A single, unwind
-everything, handler can be reused in more than one context.
+But, if I understand correctly, release_pages() will just free the
+physical pages, but not touch the VMA(s). So, with the right
+max_ptes_none setting, why couldn't khugepaged just decide to
+re-collapse (with zero pages) immediately after we release the pages,
+causing the same problem? It seems to me this change just
+significantly narrows the race window (which explains why we see less
+of the issue), but doesn't fix it fundamentally.
 
-That said, isn't the more important question what style and
-assumptions the surrounding code has adopted? In this particular case,
-I checked that this change wouldn't introduce the possibility of a
-double unwind, but in other contexts in this driver code base,
-changing error handling in this piecemeal way might actually introduce
-a bug in contexts where the caller has assumed the overall function is
-idempotent. Isn't local consistency of style a more important concern,
-especially given that you are not predominantly responsible for
-maintenance of this driver? Dealing with this exception to the norm in
-our driver certainly places an additional burden on us to remember to
-treat this particular case with special care. We should either rework
-all of bnxt error handling to adopt the more accepted canonical form,
-or we should adopt the surrounding conventions. What we shouldn't do
-is mix approaches in one driver.
-
-Regards,
-Edwin Peer
+>
+> Since the previous two release_pages() calls are after uffd_test_ctx_clear()
+> which will unmap all the buffers anyway (which is stronger than release pages;
+> as unmap() also tear town pgtables), drop them as they shouldn't really be
+> anything useful.
+>
+> We can mark the Fixes tag upon 0db282ba2c12 as it's reported to only happen
+> there, however the real "Fixes" IMHO should be 8ba6e8640844, as before that
+> commit we'll always do explicit release_pages() before registration of uffd,
+> and 8ba6e8640844 changed that logic by adding extra unmap/map and we didn't
+> release the pages at the right place.  Meanwhile I don't have a solid glue
+> anyway on whether posix_memalign() could always avoid triggering this bug,
+> hence it's safer to attach this fix to commit 8ba6e8640844.
+>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Axel Rasmussen <axelrasmussen@google.com>
+> Cc: Nadav Amit <nadav.amit@gmail.com>
+> Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1994931
+> Fixes: 8ba6e8640844 ("userfaultfd/selftests: reinitialize test context in each test")
+> Reported-by: Li Wang <liwan@redhat.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  tools/testing/selftests/vm/userfaultfd.c | 23 ++++++++++++++++++++---
+>  1 file changed, 20 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+> index 10ab56c2484a..60aa1a4fc69b 100644
+> --- a/tools/testing/selftests/vm/userfaultfd.c
+> +++ b/tools/testing/selftests/vm/userfaultfd.c
+> @@ -414,9 +414,6 @@ static void uffd_test_ctx_init_ext(uint64_t *features)
+>         uffd_test_ops->allocate_area((void **)&area_src);
+>         uffd_test_ops->allocate_area((void **)&area_dst);
+>
+> -       uffd_test_ops->release_pages(area_src);
+> -       uffd_test_ops->release_pages(area_dst);
+> -
+>         userfaultfd_open(features);
+>
+>         count_verify = malloc(nr_pages * sizeof(unsigned long long));
+> @@ -437,6 +434,26 @@ static void uffd_test_ctx_init_ext(uint64_t *features)
+>                 *(area_count(area_src, nr) + 1) = 1;
+>         }
+>
+> +       /*
+> +        * After initialization of area_src, we must explicitly release pages
+> +        * for area_dst to make sure it's fully empty.  Otherwise we could have
+> +        * some area_dst pages be errornously initialized with zero pages,
+> +        * hence we could hit memory corruption later in the test.
+> +        *
+> +        * One example is when THP is globally enabled, above allocate_area()
+> +        * calls could have the two areas merged into a single VMA (as they
+> +        * will have the same VMA flags so they're mergeable).  When we
+> +        * initialize the area_src above, it's possible that some part of
+> +        * area_dst could have been faulted in via one huge THP that will be
+> +        * shared between area_src and area_dst.  It could cause some of the
+> +        * area_dst won't be trapped by missing userfaults.
+> +        *
+> +        * This release_pages() will guarantee even if that happened, we'll
+> +        * proactively split the thp and drop any accidentally initialized
+> +        * pages within area_dst.
+> +        */
+> +       uffd_test_ops->release_pages(area_dst);
+> +
+>         pipefd = malloc(sizeof(int) * nr_cpus * 2);
+>         if (!pipefd)
+>                 err("pipefd");
+> --
+> 2.31.1
+>
