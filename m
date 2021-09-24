@@ -2,204 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8283E416D7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625E6416D7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244529AbhIXIPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:15:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21096 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234880AbhIXIPU (ORCPT
+        id S244561AbhIXISD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236281AbhIXISA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:15:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632471226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XdA4VPBfW58lxxwN3+MJcHR/jkRy1EQ63OMWAHFug08=;
-        b=T7cuAU4hlO4ryOw1ZPx4oFjla2O8RKCMRQfGia1EilIS0GraPK/lZYU6t5/5tj4TqDGyKd
-        u8174YVTQ+cwsy0CoPZFdbOYqbAOCPEFNQvbd8WoA9tAMnp5C+oHeWPaYqRwpekN1xxeqA
-        nTAfTNF3X7FDBiqqcax25B7fDbPtbNI=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-nxYYgYwkPp2qp1MYkb4Z_w-1; Fri, 24 Sep 2021 04:13:45 -0400
-X-MC-Unique: nxYYgYwkPp2qp1MYkb4Z_w-1
-Received: by mail-ed1-f71.google.com with SMTP id s12-20020a05640217cc00b003cde58450f1so9492441edy.9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:13:45 -0700 (PDT)
+        Fri, 24 Sep 2021 04:18:00 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F726C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:16:27 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso12060392otb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e+yqtLlmqcFfu91J3c6ogGc+y73qtKXPHmt46fo0y6E=;
+        b=EYUDuuEoFN9e8BRqPu9TqbhHtJuVTrpaTgglJwtTGl/a3z7anrFxbHJzPJE+LbFAE7
+         YU+XoMLfcR1ghoIz9DsmFLHqbKUGY9Jj8QViMsBSTHCDWl7xhqY0pvL+5KF56/OL+eRN
+         /61bsmrzvl8mZ5cB8PrAK2gMAJtmFkdLh8JXa85pnZroCtffEOEw9lXGteV+FdmK4oYY
+         IgPVMIEczVPurUflC0FYh4NtrIEFEHX78caTv9y7gO+Q/qXm1W5wE0PC7/mj3h/r4/zK
+         qUPd5cYBUEH7xTCHrEJmXR7eHbEpnzJeFcTN+JZxnCDRI0jQYTaLvwQb+SoQ1r0dc2Am
+         3/mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XdA4VPBfW58lxxwN3+MJcHR/jkRy1EQ63OMWAHFug08=;
-        b=RcKw6vkv2Tk0N68Sjn7O8Eyj0DzhiQzr7h1ZIi0i6n3s5EWKg66YFQkKhK1LeQO9+f
-         /zKGOW5Mb6xkghokZvXWbQRCaY7gp53TqOFw5BCGrEoCR0Ssaf4OkYutP4+YPnXvmJPk
-         QByqJHjNkhwgniWJe4PC8PTMVjVyMdT0+mO1MltDXAco8F6PmFH3VfZ84x1roXeKafne
-         X6FrL6pscKznR5veDppKip3aomnc08R5qhFANIw1tSucgvJH5Jwx6ArPGbgvKANdK3Vn
-         +K3hdK58C8z/otZLoJU8VsYrm300Jf7fUxpotmxD+S/IcWUt8S5I8GKOl4+kOlsYa98n
-         6/eA==
-X-Gm-Message-State: AOAM530e7GetCgzaQyW4eY2SLQgZ+4fQPNTvH3I33TiI67H7Eyok7lly
-        CJYhauZQGz+ugaA1uuvBWlmb8o3p0O6+NvlTxC4hLJ+jia/5MSxuQXUbSu5pru4iYx6NXn+6RWf
-        EnQLTRls4R3K3bT74EteOp6EL
-X-Received: by 2002:aa7:ca45:: with SMTP id j5mr3694132edt.6.1632471224410;
-        Fri, 24 Sep 2021 01:13:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9FnvhU56K8X4WQjS4suIQp16LYGQI22BlIEKnZzGb0Y6IpWys38jsZ0skzmpU0R5jsfbmBA==
-X-Received: by 2002:aa7:ca45:: with SMTP id j5mr3694110edt.6.1632471224179;
-        Fri, 24 Sep 2021 01:13:44 -0700 (PDT)
-Received: from [192.168.1.173] ([78.157.137.28])
-        by smtp.gmail.com with ESMTPSA id b14sm5280694edy.56.2021.09.24.01.13.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 01:13:43 -0700 (PDT)
-Subject: Re: [RFC PATCH] x86, vmlinux.lds: Add debug option to force all data
- sections aligned
-To:     Feng Tang <feng.tang@intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>
-References: <1627456900-42743-1-git-send-email-feng.tang@intel.com>
- <20210922185137.ivdp4yoalv4qdbe2@treble>
- <20210923145720.GA28463@shbuild999.sh.intel.com>
-From:   Denys Vlasenko <dvlasenk@redhat.com>
-Message-ID: <5ac33795-9402-43e6-9595-d6c07f3250bc@redhat.com>
-Date:   Fri, 24 Sep 2021 10:13:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e+yqtLlmqcFfu91J3c6ogGc+y73qtKXPHmt46fo0y6E=;
+        b=qNNWnDNt/DyCZWUBYhQP3jPHtdhKWnmBvx2VY6C+pBmAJ6PVIZcEjoahXh/uDXcJsr
+         iuCZ+/95lNG5zcku4vdMHxCQY3hPNSGZFmjb22H67B/Rt3oaqR5fINPlYsuyV7CeXDBA
+         JwkS1ie0zYqdAgD6NTVe97MjwHKjIxbGO9RkdeR0s43XGQteijXoRTbZZu34OudlNVA1
+         a1TwKa/7C5e58wETO8B+3FYzXGtpdyatFUEGSSAUDNZLZYVrOO+pCDtF6o9bVKWhMGZo
+         pkxhVRKZFUe+BuhPe/DJ9+nbJ6tU554SuU1I7HniKHleAc+nTr7lULH7VSxyxQ5BJ5uk
+         NEBw==
+X-Gm-Message-State: AOAM532/AgwMVFX5fO9vDY2CDz1NGaMrJJZ80qPzkO0N0UqdOMkUv/Az
+        QaYc0XOuPPKDTiuyDlzsT+qTwml+jagallr6Qelmizawaeyfrg==
+X-Google-Smtp-Source: ABdhPJyb3HGvHncuLK2vnCKHE1y2AFUJkV048oTAyg0uRDwb8kSLvUyx5cx5qkyBSBdS3yKZfy93EMnIYODrim8lr8g=
+X-Received: by 2002:a9d:7244:: with SMTP id a4mr2950091otk.137.1632471386455;
+ Fri, 24 Sep 2021 01:16:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210923145720.GA28463@shbuild999.sh.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210923153311.225307347@linutronix.de> <20210923153339.437521634@linutronix.de>
+In-Reply-To: <20210923153339.437521634@linutronix.de>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 24 Sep 2021 10:16:15 +0200
+Message-ID: <CACT4Y+aOFxbm6qny_FO0rz0_iSZw04W3Sdqe-zPtGYdvNNzHbw@mail.gmail.com>
+Subject: Re: [patch 01/11] hrtimer: Add a mechanism to catch runaway timers
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 4:57 PM, Feng Tang wrote:
-> On Wed, Sep 22, 2021 at 11:51:37AM -0700, Josh Poimboeuf wrote:
->> Hi Feng,
->>
->> Thanks for the interesting LPC presentation about alignment-related
->> performance issues (which mentioned this patch).
->>   
->>    https://linuxplumbersconf.org/event/11/contributions/895/
->>
->> I wonder if we can look at enabling some kind of data section alignment
->> unconditionally instead of just making it a debug option.  Have you done
->> any performance and binary size comparisons?
->   
-> Thanks for reviewing this!
-> 
-> For binary size, I just tested 5.14 kernel with a default desktop
-> config from Ubuntu (I didn't use the normal rhel-8.3 config used
-> by 0Day, which is more for server):
-> 
-> v5.14
-> ------------------------
-> text		data		bss	    dec		hex	filename
-> 16010221	14971391	6098944	37080556	235cdec	vmlinux
-> 
-> v5.14 + 64B-function-align
-> --------------------------
-> text		data		bss	    dec		hex	filename
-> 18107373	14971391	6098944	39177708	255cdec	vmlinux
-> 
-> v5.14 + data-align(THREAD_SIZE 16KB)
-> --------------------------
-> text		data		bss	    dec		hex	filename
-> 16010221	57001791	6008832	79020844	4b5c32c	vmlinux
-> 
-> So for the text-align, we see 13.1% increase for text. And for data-align,
-> there is 280.8% increase for data.
+On Thu, 23 Sept 2021 at 18:04, Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> A recent report from syzbot unearthed a problem with self rearming timers
+> which fire late and try to catch up to now with a short period. That causes
+> the timer to be rearmed in the past until it eventually catches up with
+> now. If that rearming happens from the timer callback the hard or soft
+> interrupt expiry loop can run for a long time with either interrupts or
+> bottom halves disabled which causes RCU stalls and other lockups.
+>
+> There is no safety net to stop or at least identify such runaway timers.
+>
+> Detection is trivial. Cache the pointer to the last expired timer. The next
+> invocation from the same loop compares the pointer with the next expiring
+> hrtimer pointer and if they match 10 times in a row (in the same hard or
+> soft interrupt expiry instance) then it's reasonable to declare it as a
+> runaway.
+>
+> In that case emit a warning and skip the callback invocation which stops
+> the misbehaving timer right there.
+>
+> It's obviously incomplete, but it's definitely better than nothing and would
+> have caught the reported issue in mac80211_hwsim.
+>
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  kernel/time/hrtimer.c |   25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> --- a/kernel/time/hrtimer.c
+> +++ b/kernel/time/hrtimer.c
+> @@ -1714,6 +1714,13 @@ static void __run_hrtimer(struct hrtimer
+>         base->running = NULL;
+>  }
+>
+> +static void hrtimer_del_runaway(struct hrtimer_clock_base *base,
+> +                               struct hrtimer *timer)
+> +{
+> +       __remove_hrtimer(timer, base, HRTIMER_STATE_INACTIVE, 0);
+> +       pr_warn("Runaway hrtimer %p %ps stopped\n", timer, timer->function);
 
-Page-size alignment of all data is WAY too much. At most, alignment
-to cache line size should work to make timings stable.
-(In your case with "adjacent cache line prefetcher",
-it may need to be 128 bytes. But definitely not 4096 bytes).
+Thanks for implementing this, Thomas.
+Please use some standard kernel bug reporting facility here, e.g. WARN
+I think will be appropriate. The ad-hoc format won't be recognized by
+any testing system.
+Otherwise looks good to me.
 
-
-> Performance wise, I have done some test with the force-32bytes-text-align
-> option before (v5.8 time), for benchmark will-it-scale, fsmark, hackbench,
-> netperf and kbuild:
-> * no obvious change for will-it-scale/fsmark/kbuild
-> * see both regression/improvement for different hackbench case
-> * see both regression/improvement for netperf, from -20% to +98%
-
-What usually happens here is that testcases are crafted to measure
-how well some workloads scale, and to measure that efficiently,
-testcases were intentionally written to cause congestion -
-this way, benefits of better algorithms are easily seen.
-
-However, this also means that in the congested scenario (e.g.
-cache bouncing), small changes in CPU architecture are also
-easily visible - including cases where optimizations are going awry.
-
-In your presentation, you stumbled upon one such case:
-the "adjacent cache line prefetcher" is counter-productive here,
-it pulls unrelated cache into the CPU, not knowing that
-this is in fact harmful - other CPUs will need this cache line,
-not this one!
-
-Since this particular case was a change in structure layout,
-increasing alignment of .data sections won't help here.
-
-My opinion is that we shouldn't worry about this too much.
-Diagnose the observed slow downs, if they are "real"
-(there is a way to improve), fix that, else if they are spurious,
-just let them be.
-
-Even when some CPU optimizations are unintentionally hurting some
-benchmarks, on the average they are usually a win:
-CPU makers have hundreds of people looking at that as their
-full-time jobs. With your example of "adjacent cache line prefetcher",
-CPU people might be looking at ways to detect when these
-speculatively pulled-in cache lines are bouncing.
-
-
-> For data-alignment, it has huge impact for the size, and occupies more
-> cache/TLB, plus it hurts some normal function like dynamic-debug. So
-> I'm afraid it can only be used as a debug option.
-> 
->> On a similar vein I think we should re-explore permanently enabling
->> cacheline-sized function alignment i.e. making something like
->> CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B the default.  Ingo did some
->> research on that a while back:
->>
->>     https://lkml.kernel.org/r/20150519213820.GA31688@gmail.com
-> 
-> Thanks for sharing this, from which I learned a lot, and I hope I
-> knew this thread when we first check strange regressions in 2019 :)
-> 
->> At the time, the main reported drawback of -falign-functions=64 was that
->> even small functions got aligned.  But now I think that can be mitigated
->> with some new options like -flimit-function-alignment and/or
->> -falign-functions=64,X (for some carefully-chosen value of X).
-
--falign-functions=64,7 should be about right, I guess.
-
-http://lkml.iu.edu/hypermail/linux/kernel/1505.2/03292.html
-
-"""
-defconfig vmlinux (w/o FRAME_POINTER) has 42141 functions.
-6923 of them have 1st insn 5 or more bytes long,
-5841 of them have 1st insn 6 or more bytes long,
-5095 of them have 1st insn 7 or more bytes long,
-786 of them have 1st insn 8 or more bytes long,
-548 of them have 1st insn 9 or more bytes long,
-375 of them have 1st insn 10 or more bytes long,
-73 of them have 1st insn 11 or more bytes long,
-one of them has 1st insn 12 bytes long:
-this "heroic" instruction is in local_touch_nmi()
-   65 48 c7 05 44 3c 00 7f 00 00 00 00
-   movq $0x0,%gs:0x7f003c44(%rip)
-
-Thus ensuring that at least seven first bytes do not cross
-64-byte boundary would cover >98% of all functions.
-"""
-
+> +}
+> +
+>  static void __hrtimer_run_queues(struct hrtimer_cpu_base *cpu_base, ktime_t now,
+>                                  unsigned long flags, unsigned int active_mask)
+>  {
+> @@ -1722,6 +1729,8 @@ static void __hrtimer_run_queues(struct
+>
+>         for_each_active_base(base, cpu_base, active) {
+>                 struct timerqueue_node *node;
+> +               struct hrtimer *last = NULL;
+> +               unsigned int cnt = 0;
+>                 ktime_t basenow;
+>
+>                 basenow = ktime_add(now, base->offset);
+> @@ -1732,6 +1741,22 @@ static void __hrtimer_run_queues(struct
+>                         timer = container_of(node, struct hrtimer, node);
+>
+>                         /*
+> +                        * Catch timers which rearm themself with a expiry
+> +                        * time in the past over and over which makes this
+> +                        * loop run forever.
+> +                        */
+> +                       if (IS_ENABLED(CONFIG_DEBUG_OBJECTS_TIMERS)) {
+> +                               if (unlikely(last == timer)) {
+> +                                       if (++cnt == 10) {
+> +                                               hrtimer_del_runaway(base, timer);
+> +                                               continue;
+> +                                       }
+> +                               }
+> +                               last = timer;
+> +                               cnt = 0;
+> +                       }
+> +
+> +                       /*
+>                          * The immediate goal for using the softexpires is
+>                          * minimizing wakeups, not running timers at the
+>                          * earliest interrupt after their soft expiration.
+>
