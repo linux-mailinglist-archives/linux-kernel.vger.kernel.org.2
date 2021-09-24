@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D329441736D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B548E417300
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344735AbhIXM4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
+        id S1344823AbhIXMx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:53:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344329AbhIXMxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:53:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 207B66135E;
-        Fri, 24 Sep 2021 12:50:29 +0000 (UTC)
+        id S1344496AbhIXMvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:51:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84AFD6126A;
+        Fri, 24 Sep 2021 12:49:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487830;
-        bh=f5djH18sAfJGfX1xLADVRV1uMnIQz+uabTcfLgsWY6A=;
+        s=korg; t=1632487745;
+        bh=aP2m9S4NFq2ZKk6+JqTZ1+DwPsp4AhJtBNs/7Fp1gIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vN1ClE/avcdLHyq4cc35oD70bsD6z8iw7b5wZRUgzgM06X31Fxf1+4J0nVK8S1CdO
-         OeeAb5s7UkEQmlARhRyGJikxoIh9RZzvBXo513S5m+JtUwuztiX7GMVvrMvg+LJghV
-         +a+pv03/0UYM12i0m5h+5Mwi9Ul2UgZnueGLpilQ=
+        b=rixUeS9HD0Tr5oD/aiV20BspyPZfoh256+eRWYDzUq1kBgHPNe5T1RDPg5uADUDj6
+         Hzkx9nNhWQKcXGMRj4AFHtING42t07A/XgwYDjIbg30oYPCmX92j+yVNwnRD+GrFde
+         s5hyov6opGGYtW4D+XVhfa7vHILcjFeHsjMk4lT8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jongsung Kim <neidhard.kim@lge.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Macpaul Lin <macpaul.lin@mediatek.com>
-Subject: [PATCH 5.4 28/50] net: stmmac: reset Tx desc base address before restarting Tx
+        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 23/34] ceph: lockdep annotations for try_nonblocking_invalidate
 Date:   Fri, 24 Sep 2021 14:44:17 +0200
-Message-Id: <20210924124333.192785639@linuxfoundation.org>
+Message-Id: <20210924124330.719900642@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jongsung Kim <neidhard.kim@lge.com>
+From: Jeff Layton <jlayton@kernel.org>
 
-commit f421031e3ff0dd288a6e1bbde9aa41a25bb814e6 upstream.
+[ Upstream commit 3eaf5aa1cfa8c97c72f5824e2e9263d6cc977b03 ]
 
-Refer to the databook of DesignWare Cores Ethernet MAC Universal:
-
-6.2.1.5 Register 4 (Transmit Descriptor List Address Register
-
-If this register is not changed when the ST bit is set to 0, then
-the DMA takes the descriptor address where it was stopped earlier.
-
-The stmmac_tx_err() does zero indices to Tx descriptors, but does
-not reset HW current Tx descriptor address. To fix inconsistency,
-the base address of the Tx descriptors should be rewritten before
-restarting Tx.
-
-Signed-off-by: Jongsung Kim <neidhard.kim@lge.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: Macpaul Lin <macpaul.lin@mediatek.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    2 ++
+ fs/ceph/caps.c | 2 ++
  1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1987,6 +1987,8 @@ static void stmmac_tx_err(struct stmmac_
- 	tx_q->cur_tx = 0;
- 	tx_q->mss = 0;
- 	netdev_tx_reset_queue(netdev_get_tx_queue(priv->dev, chan));
-+	stmmac_init_tx_chan(priv, priv->ioaddr, priv->plat->dma_cfg,
-+			    tx_q->dma_tx_phy, chan);
- 	stmmac_start_tx_dma(priv, chan);
- 
- 	priv->dev->stats.tx_errors++;
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index 918781c51f0b..6443ba1e60eb 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -1774,6 +1774,8 @@ static int __mark_caps_flushing(struct inode *inode,
+  * try to invalidate mapping pages without blocking.
+  */
+ static int try_nonblocking_invalidate(struct inode *inode)
++	__releases(ci->i_ceph_lock)
++	__acquires(ci->i_ceph_lock)
+ {
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+ 	u32 invalidating_gen = ci->i_rdcache_gen;
+-- 
+2.33.0
+
 
 
