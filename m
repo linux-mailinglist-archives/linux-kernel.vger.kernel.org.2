@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39909416EC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D5E416ED1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 11:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244903AbhIXJWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 05:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244555AbhIXJWa (ORCPT
+        id S244947AbhIXJ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 05:26:14 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:10724 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S244480AbhIXJ0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:22:30 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC362C061574;
-        Fri, 24 Sep 2021 02:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=9GxW7f1PM4tlFV8GS6ENNCIsOWiZB1CGSgf0VxPfSxU=;
-        t=1632475257; x=1633684857; b=e078anP+jhgULPe4U63PVvoM+GFz5UJ/yXuNrvCEeTgl1ga
-        Ja6lV/8V6UseMEQw4SAG37s+gs3yiLDHjT6bDnliqT1SFEahJww/geeUmymE4OIDExNJ2HZx4Sihr
-        RYrWmN6vbsHJ5WtDd76kEgRXdiS2dudvqnpWDhxq08JkLXd3ogLZU1dgsR5UB69jm3wWuyqP/0nx5
-        iZz4/mP8crhWpX3T1Zr9f+ODm3Sm4p4yXgvlIrNSdz2qlmMcPBTccYQsSB0BRqpCsQRt9Kt2V9HT5
-        p152Wj+qHTckYXwQizwPX3JE59KKGfJ1xV5JCFHNF5hVOxTo/NsGuCUPetNQTAUw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95-RC2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mThNz-00B89x-JN;
-        Fri, 24 Sep 2021 11:20:51 +0200
-Message-ID: <90d3c3c8cedcf5f8baa77b3b6e94b18656fcd0be.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/3] mac80211: Add support to trigger sta disconnect on
- hardware restart
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Youghandhar Chintala <youghand@codeaurora.org>
-Cc:     Abhishek Kumar <kuabhs@chromium.org>, Felix Fietkau <nbd@nbd.name>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Rakesh Pillai <pillair@codeaurora.org>,
-        Manikanta Pubbisetty <mpubbise@codeaurora.org>
-Date:   Fri, 24 Sep 2021 11:20:50 +0200
-In-Reply-To: <30fa98673ad816ec849f34853c9e1257@codeaurora.org>
-References: <20201215172352.5311-1-youghand@codeaurora.org>
-         <f2089f3c-db96-87bc-d678-199b440c05be@nbd.name>
-         <ba0e6a3b783722c22715ae21953b1036@codeaurora.org>
-         <CACTWRwt0F24rkueS9Ydq6gY3M-oouKGpaL3rhWngQ7cTP0xHMA@mail.gmail.com>
-         (sfid-20210205_225202_513086_43C9BBC9) <d5cfad1543f31b3e0d8e7a911d3741f3d5446c57.camel@sipsolutions.net>
-         <66ba0f836dba111b8c7692f78da3f079@codeaurora.org>
-         <5826123db4731bde01594212101ed5dbbea4d54f.camel@sipsolutions.net>
-         <30fa98673ad816ec849f34853c9e1257@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Fri, 24 Sep 2021 05:26:13 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18O7OxP2030465;
+        Fri, 24 Sep 2021 04:24:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=Dtu+AMmyUppUlZKAaDNhyU5E9Qe0t2X5XmtE+DaywZw=;
+ b=UAlNyXwoFqJ5ikBwHx0Uju+oG+akmtAWBw4Us6Dx3oJe9ERSg1M6IIEK7NjFq2oDYuCz
+ H++ApmpgP4VZfAYbgobDJXZiKwzuAzSfY7Acy9DameKvN2WG3BzxzChuaBBT23bOZGbd
+ j5EFkf1rLmSA0YgJ872Ho2maVBDTiW63K/s4j2jWUrkLV2/FimeuEzAJm8Hz10RrwkPO
+ R7lzd+JrYJ7xs1XcVLs+AKX+XH2tHFSrLIgv5Gw/xvoJs1ZuiGzl6YP+Eb16IZVJbyxE
+ 3VrhsZ8FRLmrfqRz+qTBFwJ2rveIPN6Xy/YxEqZLxKleq0tmsYhsxtR8+haQ1cw3kRqN 6w== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3b93f2ge3t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 24 Sep 2021 04:24:39 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 24 Sep
+ 2021 10:24:17 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Fri, 24 Sep 2021 10:24:17 +0100
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.167])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 56C5445D;
+        Fri, 24 Sep 2021 09:24:17 +0000 (UTC)
+Subject: Re: [PATCH v1 2/4] mfd: arizona: Add missing entries SPI to device ID
+ table
+To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+References: <20210923194645.53046-1-broonie@kernel.org>
+ <20210923194645.53046-3-broonie@kernel.org>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <538c0c79-d568-be03-e524-01f5c6429554@opensource.cirrus.com>
+Date:   Fri, 24 Sep 2021 10:24:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+In-Reply-To: <20210923194645.53046-3-broonie@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: KqeZkcd-I4zHlPLs1cCgGoH70Pk2KOpg
+X-Proofpoint-ORIG-GUID: KqeZkcd-I4zHlPLs1cCgGoH70Pk2KOpg
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 23/09/2021 20:46, Mark Brown wrote:
+> Currently autoloading for SPI devices does not use the DT ID table, it uses
+> SPI modalises. Supporting OF modalises is going to be difficult if not
+> impractical, an attempt was made but has been reverted, so ensure that
+> module autoloading works for this driver by adding SPI IDs for parts that
+> only have a compatible listed.
+> 
+> Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Cc: patches@opensource.cirrus.com
+> ---
+>   drivers/mfd/arizona-spi.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+> index aa1d6f94ae53..8b44af297b7c 100644
+> --- a/drivers/mfd/arizona-spi.c
+> +++ b/drivers/mfd/arizona-spi.c
+> @@ -216,9 +216,12 @@ static int arizona_spi_remove(struct spi_device *spi)
+>   }
+>   
+>   static const struct spi_device_id arizona_spi_ids[] = {
+> +	{ "wm1814", WM1814 },
+>   	{ "wm5102", WM5102 },
+>   	{ "wm5110", WM5110 },
+>   	{ "wm8280", WM8280 },
+> +	{ "wm8997", WM8997 },
+> +	{ "wm8998", WM8998 },
 
-
-> We thought sending the delba would solve the problem as earlier thought 
-> but the actual problem is with TX PN in a secure mode.
-> It is not because of delba that the Seq number and TX PN are reset to 
-> zero.
-> It’s because of the HW restart, these parameters are reset to zero.
-> Since FW/HW is the one which decides the TX PN, when it goes through 
-> SSR, all these parameters are reset.
-
-Right, we solved this problem too - in a sense the driver reads the
-database (not just TX PN btw, also RX replay counters) when the firmware
-crashes, and sending it back after the restart. mac80211 has some hooks
-for that.
-
-johannes
-
-
+WM1814, WM8997 and WM8998 do not have a SPI interface, which is why they
+aren't in the table of SPI IDs.
