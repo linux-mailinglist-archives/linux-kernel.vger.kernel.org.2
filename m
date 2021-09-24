@@ -2,57 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069264169E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C276C4169F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243903AbhIXCOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 22:14:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44852 "EHLO mail.kernel.org"
+        id S243852AbhIXCVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 22:21:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243883AbhIXCOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 22:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5AA860F6D;
-        Fri, 24 Sep 2021 02:13:06 +0000 (UTC)
+        id S232911AbhIXCVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Sep 2021 22:21:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C38B61039;
+        Fri, 24 Sep 2021 02:19:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1632449587;
-        bh=B/XHIWMq1gag7dtKsGrmlye8E+xPHZm+e2yAyVV3M6s=;
+        s=korg; t=1632449982;
+        bh=uRvz0xZK8S9AbE7fs1BoHqNalCLn2tKgUWAEoMpjGnw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=imhuc81evtsk2EniQ+zv0t/OEdOmAFrh2AYCPNxmBftH60pEeUTReAi1sUAV08c1G
-         mm7QmfIVliTxodfM5ADhZ7o/6tDNUEjh1Z14XR3sRvqXcI3q6xL1XZzPB1lt3OgmGI
-         R5gv0i/Fgqw/WIeAQ4t0Bof0tHhUTAdYAw2oQk2Q=
-Date:   Thu, 23 Sep 2021 19:13:06 -0700
+        b=zq8uYaKimnFsF1TU3JWW3twnMkGg4r3zJ/aFIjZ4zJWO4yDS4laTM8qle3tmC37e9
+         MEIxkyAq5uKfeU0LsuUXFh+B67oAgh79Vc6yMJYJpZ8Pk5gRq1O1vwwiZ63PrVC7Tk
+         G/gIWDiGdFz1Zz/FeCYIehoqFNqHYynJpjcEzpY4=
+Date:   Thu, 23 Sep 2021 19:19:41 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Michael =?ISO-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
-Message-Id: <20210923191306.664d39866761778a4a6ea56c@linux-foundation.org>
-In-Reply-To: <20210923233105.4045080-1-keescook@chromium.org>
-References: <20210923233105.4045080-1-keescook@chromium.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
+Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with
+ thp enabled
+Message-Id: <20210923191941.da28da4400c11a3241a07acf@linux-foundation.org>
+In-Reply-To: <20210923232512.210092-1-peterx@redhat.com>
+References: <20210923232512.210092-1-peterx@redhat.com>
 X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -61,23 +40,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 16:31:05 -0700 Kees Cook <keescook@chromium.org> wrote:
+On Thu, 23 Sep 2021 19:25:12 -0400 Peter Xu <peterx@redhat.com> wrote:
 
-> The /proc/$pid/wchan file has been broken by default on x86_64 for 4
-> years now[1].
-
-[1] is hard to decrypt.  I think it would be better if this changelog
-were to describe the problem directly, completely and succinctly?
-
-> As this remains a potential leak of either kernel
-> addresses (when symbolization fails) or limited observation of kernel
-> function progress, just remove the contents for good.
+> In RHEL's gating selftests we've encountered memory corruption in the uffd
+> event test even with upstream kernel:
 > 
-> Unconditionally set the contents to "0" and also mark the wchan
-> field in /proc/$pid/stat with 0.
+> ...
+>
 > 
-> This leaves kernel/sched/fair.c as the only user of get_wchan(). But
-> again, since this was broken for 4 years, was this profiling logic
-> actually doing anything useful?
+> We can mark the Fixes tag upon 0db282ba2c12 as it's reported to only happen
+> there, however the real "Fixes" IMHO should be 8ba6e8640844, as before that
+> commit we'll always do explicit release_pages() before registration of uffd,
+> and 8ba6e8640844 changed that logic by adding extra unmap/map and we didn't
+> release the pages at the right place.  Meanwhile I don't have a solid glue
+> anyway on whether posix_memalign() could always avoid triggering this bug,
+> hence it's safer to attach this fix to commit 8ba6e8640844.
+> 
 
-Agree that returning a hard-wired "0\n" is the way to go.
+Thanks.  I added a cc:stable to this.  I don't think we want selftests
+in older kernels to be falsely reporting kernel bugs?
