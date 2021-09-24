@@ -2,87 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88144417173
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1ED4417170
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245668AbhIXMD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:03:29 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34682
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244925AbhIXMDZ (ORCPT
+        id S245652AbhIXMC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244439AbhIXMC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:03:25 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A45DB4019A
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 12:01:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632484911;
-        bh=TKyRV9O1Y/ljz5T9kCOw405tGOgzBL0k1lCSjTA1wYI=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version:Content-Type;
-        b=L9HjsOhFCpjV5nJxzwpdhvyGToD7aFtNO2XR0c5uP3t3dWhCjDpO/cMZoD5mPLMRb
-         kb4J/cQ7OMudK8bk5MeEJ3ZVfNWYhDLuvdlde/fAa2WIjkwF7jEanKpXwlqC5tGUy+
-         TurNDf8oFF0Ssjze/OtyH3iPpm4vnsoimmEM1QW0vuS9diwUv4r2ucGRMspLeupCRl
-         Kxks8MMChTA87dgtNfg9AXXCOf+H76g0ybWFOVk57gKOWIlbCNfu7TayxqwNqqMqVa
-         nFy81nGJ3FF0dkXgHkbfy5Q+0BFcM+Dx9va1AOs2JDuY7AkBiqz1B3J0fTTVh3H11b
-         cPW6T6gngurlA==
-Received: by mail-wr1-f70.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so7844982wrg.17
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:01:51 -0700 (PDT)
+        Fri, 24 Sep 2021 08:02:58 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3A3C061574;
+        Fri, 24 Sep 2021 05:01:25 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id s36-20020a05683043a400b0054d4c88353dso1932311otv.0;
+        Fri, 24 Sep 2021 05:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xe8hbcCe7Il2R3uT9h3I/mQYjYvm30reKshUti4lTYU=;
+        b=HhsXDQ+Enaw+Ox6jaivp+qkBNL3jZBeVYJtkeOBUVX6ZI33Uk7bQlP8JuCKOE8M1cK
+         Zqfqf5H6mofkXgAhhaxtv69r/jBZBXSO9fen+scZLl1euVLoXEZ1z0hQeuR1CeHYPnMa
+         8gyCJyz6U9SpXtdb6BVVC0CknxeBtKroEB2XTgV98OYCP0ymuJYY1NwmgHKllRKVtC9q
+         pQt2RZYD9BLBDE0OXZX3qfwG12DBXxTunRbxFhHAWgFB54+nc4txs6IrzJilYmuPaXlN
+         jdAsLLN4j6F916fXKaFfiKmUdDV3mW2c5IJ4MZwSKhIJinOKlFtM0gcO6vDCMskGRtHq
+         98iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TKyRV9O1Y/ljz5T9kCOw405tGOgzBL0k1lCSjTA1wYI=;
-        b=FM47lEwXZIv3kygWwnizYCyZzP0YnKR+bV68JXeE9mSuDNdD4ToKkPOJwtN+R98fJq
-         4VNj+qREHua7EvWzyJbc9JAM+btHoLzW+1QYpFbMCCcaVhlMyJz4OBrPBes1C7/giTsT
-         2zFczVlgoZjMHzX/tkhSZ1B1ZV+Q97zNMsFHZ2imTIL4WeUgxaSgAZLyMIKB9kIaUrru
-         RXs3kivt/syLTbOuOk2oELBs9b2G+RgzGrLs0wuRQghmdGZ+EhZnVi9LE03hiumG4kHe
-         aMk3j+UilMHXeJ6eGzvHOMXTLWNdAoSX1UDhtLTn/ipK9sRxh1Gs/jc4/beIRpc0VsHT
-         JZlg==
-X-Gm-Message-State: AOAM533IJEArctiipgy2tLRLWT6d1pJyJfAzzavY+Fog3GyqdEek2aSA
-        FHdpBmjcjEqTj5aA8sHvtvjSScMoS5fhPC+OHufpiFru+Oiq2dVCBfmPYshVX/ifJpFbdMWD0kw
-        VOzLYp+I5vJC+xsqUxyiUpsiYwpu5hOUeBuTlTPguRw==
-X-Received: by 2002:a05:6000:14d:: with SMTP id r13mr11212092wrx.420.1632484911240;
-        Fri, 24 Sep 2021 05:01:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzquSMRBcbVZ+YVahWJFTiZdrKlthMmH22osg55fb8riVZxx8aZY78k3Bx0kxcH0Mf93sm1aw==
-X-Received: by 2002:a05:6000:14d:: with SMTP id r13mr11212062wrx.420.1632484911102;
-        Fri, 24 Sep 2021 05:01:51 -0700 (PDT)
-Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id o7sm10100619wro.45.2021.09.24.05.01.50
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=xe8hbcCe7Il2R3uT9h3I/mQYjYvm30reKshUti4lTYU=;
+        b=1PyUR/mz+QTY47KDn2KAQEzUBblZKITdMaOpWWU/aboX8FBfvLSSx9hnNvlR/78aHv
+         enCk+qlNvfu7ZAiUXGyubqJW4aLd+L0FD4cXJD/7/1v2ih6VYSLd4i4uztnCr9C+huRs
+         d744nhpf6ocZO5p5JrZgPG4pG9K4gYXcQlAhx82L6IyQBHTXfkF3hvMAjlgKpYlWM3JP
+         TGVVt76d+lckjOlcDcS+JJ/sm5dnjh6bOaJrB369tZH9Nzce3sdFdaQVZvsqP+9qeBuJ
+         5PQclqkzp1gSTWvG3DiBIzBWW+XNtrZ3zZoYsLfqaNOmVNpvlrimtLlGXNj6Botgl/I4
+         d7uw==
+X-Gm-Message-State: AOAM533cJAmBM6Luwf+V6kLoKDoB/5k15F50yMZawi1WUKbPzMnqWpE0
+        LKarKLjBlBaqwADFrA3ziRb0sj9yvTY=
+X-Google-Smtp-Source: ABdhPJzqemAsZhe3Xlw35FomqbI3ZogJ8e3kDKO7YG67NzCTQWwsGzEbLicdKN+qR12OzZb7sm4H0g==
+X-Received: by 2002:a05:6830:79c:: with SMTP id w28mr3490244ots.332.1632484883173;
+        Fri, 24 Sep 2021 05:01:23 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i25sm2028562oto.26.2021.09.24.05.01.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 05:01:50 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     linux-kernel@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt-bindings: rpc: renesas-rpc-if: Add support for the R8A779A0 RPC-IF
-Date:   Fri, 24 Sep 2021 14:01:12 +0200
-Message-Id: <163248485488.53812.2936557522765718572.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210922085831.5375-1-wsa+renesas@sang-engineering.com>
-References: <20210922085831.5375-1-wsa+renesas@sang-engineering.com>
+        Fri, 24 Sep 2021 05:01:22 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 24 Sep 2021 05:01:20 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Paul Fertser <fercerpav@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] hwmon: tmp421: fix rounding for negative values
+Message-ID: <20210924120120.GA2695828@roeck-us.net>
+References: <20210924022020.GA3032273@roeck-us.net>
+ <20210924093011.26083-1-fercerpav@gmail.com>
+ <20210924093011.26083-3-fercerpav@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924093011.26083-3-fercerpav@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 10:58:31 +0200, Wolfram Sang wrote:
+On Fri, Sep 24, 2021 at 12:30:11PM +0300, Paul Fertser wrote:
+> Old code produces -24999 for 0b1110011100000000 input in standard format due to
+> always rounding up rather than "away from zero".
 > 
+> Use the common macro for division, unify and simplify the conversion code along
+> the way.
+> 
+> Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
+> Signed-off-by: Paul Fertser <fercerpav@gmail.com>
 
+Applied.
 
-Applied with added simple commit msg, thanks!
+Thanks,
+Guenter
 
-[1/1] dt-bindings: rpc: renesas-rpc-if: Add support for the R8A779A0 RPC-IF
-      commit: 797f082738b10ff397c8d3b7804b747d766e62e6
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+> 
+> Changes from v2:
+>  - Add Fixes: tag
+> 
+> Changes from v1:
+>  - Trivial rebase
+> 
+>  drivers/hwmon/tmp421.c | 24 ++++++++----------------
+>  1 file changed, 8 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
+> index 3a789f21188c..85f5f0eb3d2e 100644
+> --- a/drivers/hwmon/tmp421.c
+> +++ b/drivers/hwmon/tmp421.c
+> @@ -100,23 +100,17 @@ struct tmp421_data {
+>  	s16 temp[4];
+>  };
+>  
+> -static int temp_from_s16(s16 reg)
+> +static int temp_from_raw(u16 reg, bool extended)
+>  {
+>  	/* Mask out status bits */
+>  	int temp = reg & ~0xf;
+>  
+> -	return (temp * 1000 + 128) / 256;
+> -}
+> -
+> -static int temp_from_u16(u16 reg)
+> -{
+> -	/* Mask out status bits */
+> -	int temp = reg & ~0xf;
+> -
+> -	/* Add offset for extended temperature range. */
+> -	temp -= 64 * 256;
+> +	if (extended)
+> +		temp = temp - 64 * 256;
+> +	else
+> +		temp = (s16)temp;
+>  
+> -	return (temp * 1000 + 128) / 256;
+> +	return DIV_ROUND_CLOSEST(temp * 1000, 256);
+>  }
+>  
+>  static int tmp421_update_device(struct tmp421_data *data)
+> @@ -175,10 +169,8 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
+>  
+>  	switch (attr) {
+>  	case hwmon_temp_input:
+> -		if (tmp421->config & TMP421_CONFIG_RANGE)
+> -			*val = temp_from_u16(tmp421->temp[channel]);
+> -		else
+> -			*val = temp_from_s16(tmp421->temp[channel]);
+> +		*val = temp_from_raw(tmp421->temp[channel],
+> +				     tmp421->config & TMP421_CONFIG_RANGE);
+>  		return 0;
+>  	case hwmon_temp_fault:
+>  		/*
