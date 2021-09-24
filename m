@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268A54175FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963C7417603
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346756AbhIXNha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:37:30 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37984
+        id S1346199AbhIXNiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:38:23 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:38014
         "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346570AbhIXNhX (ORCPT
+        by vger.kernel.org with ESMTP id S1346705AbhIXNh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:37:23 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
+        Fri, 24 Sep 2021 09:37:59 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E90FE4019A
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:35:49 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 43B584019A
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 13:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632490549;
-        bh=bqjANAhLzTfYF8WKzQgXTtXqvH8y/Gn5SAe1KVujuGM=;
+        s=20210705; t=1632490585;
+        bh=S6Kt/t1TSGyeiJtJgoFpkmvIPh9xU6Dr0xsilHYx1x4=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=uD4HnNysPqiHPHevHXimsEwjQXc6cZgGi0VNs9P5q/xRxjKVP6WyzwbmYTGrfhHUd
-         LYJR+yAreGVdocX+rz3RMdUriQPyGaVuJAlkSW+Xtyv+dkYB7k13FbMcLEKGzozU/T
-         BAI7ulE4k4Jlyhx3QhjBx/vPc/zGAXPFtS3LeJ65V5ly6Ptn13pyt8fjupjFowho+j
-         bXHjrO4g4uvScktdpcHCF8YoXCVW181mNV5Bpfoi4Pv+akn1ShJ95XjHmPro5z0OVB
-         NZlqBcAwPFIz+wCzo6Fx+tg1O2ExIYSeWHXBgBYldEekUzTVvn7r/DBUI/AQsEawA5
-         +scFrlLQkub2g==
-Received: by mail-wr1-f71.google.com with SMTP id h5-20020a5d6885000000b0015e21e37523so8083632wru.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:35:49 -0700 (PDT)
+        b=YVu1wkd3juuiuIsSYlHezkrgIfTumH6d03suWRQzi/Ldjf8fNK6Ys9pQO8QW8cmMi
+         P8tI4YKBIP6m9zZ3UaCg1OFzzV0vJqzN5v7LTIeVs6j6HpwcF5ZRKLs3DlnhrBuvUy
+         BRm0z3vjHV3mS/8lIdklSgzfArHwSri1eYW5z2nr2kFkRQ+cDFOZtYhS3oS7A7GR9L
+         kPJjk60gP1P7cp+wr44lwhqxW2PUUQwq21M4if6Pt4UlfifuW9GpbluP1o9TzEqjMT
+         0kxM/ehz4TYcC7p08L2pJqJnpjoFArPC11DZuvcpOBtspd1f1JVjVAZcuKJyzZ6PzX
+         lFNZB/D2bCeTA==
+Received: by mail-wr1-f70.google.com with SMTP id u10-20020adfae4a000000b0016022cb0d2bso8062527wrd.19
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:36:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bqjANAhLzTfYF8WKzQgXTtXqvH8y/Gn5SAe1KVujuGM=;
-        b=27VOYU5ls+JvhjTGANiAcwXaYGD1hfhYMDrzK7TvAtleFz9qUa+E7doDziycxrg9ni
-         boCI6CuM/JzS/YgxxWeQxnRLDJ6vYAxYtp50jaW2NMyefeTYe8j+KQE/EBaVF3CMnKZg
-         XOOh7WbWp1xGaSE5ihfkkTozuzVcRxntI/XGEjsQHEARoSGn7ro9ihqCEJGkwa3FpWSB
-         KMhyp80OcWislUaCEzAnb10yNKbRTA3zMpXp/cAlqP1g8SVN2mbDAnLkF0WvMOmNT3b7
-         m3YC2AKTQ+KoW0inerJk9NvjZR8WmIz8TYFt1D74xtly6WaVPNNd69Z4zpmfwPFUKOs6
-         x+Xw==
-X-Gm-Message-State: AOAM531jOHKcjuW1Iel1iN4g2rZPdrZ5rYKlX5IPEi6ZWDiYw5wlZY7w
-        9nF6WewSCWMY3MISnSsbpcMbBJKOQUvjgLzEHxbq+KvOY59mOxhM7oYj2bNYdRiT6sIzxlX0/DC
-        8GVHttzDOc4CUxJDUGw1Wwyqf2nyl0x+NTx3003tf6w==
-X-Received: by 2002:a1c:2289:: with SMTP id i131mr2134468wmi.179.1632490549633;
-        Fri, 24 Sep 2021 06:35:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7rmLq5yNcAl0LcoydbosbByRnsKNYZnWMqikQXlR6Bxuv/lGwl1503lvycrJ3IDL2fFdj1Q==
-X-Received: by 2002:a1c:2289:: with SMTP id i131mr2134451wmi.179.1632490549491;
-        Fri, 24 Sep 2021 06:35:49 -0700 (PDT)
+        bh=S6Kt/t1TSGyeiJtJgoFpkmvIPh9xU6Dr0xsilHYx1x4=;
+        b=Rw37fb/qC2RfI3KV6P4kfyD5IC/7zOH6EH5KxlO7dxEVZu/MqwqjOf1dzzMzW7J3A0
+         q8UgDb0zkDSEg2X91HQn5zkG7GaGA798ZqWtleHYAqW/yhWuUT7RS2MjRFY9pt2oibr2
+         kx1raNVCt1HveGvUKXNBIgbSA8/cf7mBIy7w7gt4lH7qnewJ/vbIYEo7qsQoiqq7cXCZ
+         27FM1qKkfxF5V5X/eYRUtJ6u3ixC5yTC5BnUbMZAzVPQTDgRkTKpLrGtANUkfaNynvAD
+         nAT9CwsHr355bRXr6j4G7AA6OA8RBsUFwrRA/HvNq+NbHHAt/M3FbGkyUfVQ3WVI4xhd
+         bW3w==
+X-Gm-Message-State: AOAM5330mkv0+U80ppH+e1UeZS7cEHwxwY2lWp4HZx9f/MeHNkiyCa3z
+        Y7852dTVL7jnTxDmwyf5N591xfkGxaUmujkF+JyRz8pqxS0eO0xiIrUXLGgdbplARSXtm92DEzx
+        +wXciQ2WC0jApekJGVhKoE5JgRsc16Aj2ZY5ndMLYcQ==
+X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr2117095wml.167.1632490584117;
+        Fri, 24 Sep 2021 06:36:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwI1yh/i/veV4CX3x/B+5KadPo5GhYE/87Z36LyePhdH5qhrHtk2EOcRVEL6+fCnuWBNcRmpA==
+X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr2117071wml.167.1632490583780;
+        Fri, 24 Sep 2021 06:36:23 -0700 (PDT)
 Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id 25sm14091675wmo.9.2021.09.24.06.35.48
+        by smtp.gmail.com with ESMTPSA id d70sm8377400wmd.3.2021.09.24.06.36.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 06:35:49 -0700 (PDT)
+        Fri, 24 Sep 2021 06:36:23 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org
-Subject: [PATCH] iio: adc: exynos: describe drivers in KConfig
-Date:   Fri, 24 Sep 2021 15:35:15 +0200
-Message-Id: <20210924133515.112357-1-krzysztof.kozlowski@canonical.com>
+        linux-i2c@vger.kernel.org
+Subject: [PATCH] i2c: exynos: describe drivers in KConfig
+Date:   Fri, 24 Sep 2021 15:35:49 +0200
+Message-Id: <20210924133550.112488-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -74,26 +73,25 @@ kernel for Samsung SoC easier.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/iio/adc/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/i2c/busses/Kconfig | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index af168e1c9fdb..6cc1268da184 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -430,9 +430,9 @@ config EXYNOS_ADC
- 	depends on ARCH_EXYNOS || ARCH_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210 || (OF && COMPILE_TEST)
- 	depends on HAS_IOMEM
+diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+index e17790fe35a7..1df19ccc310b 100644
+--- a/drivers/i2c/busses/Kconfig
++++ b/drivers/i2c/busses/Kconfig
+@@ -615,7 +615,10 @@ config I2C_EXYNOS5
+ 	depends on ARCH_EXYNOS || COMPILE_TEST
+ 	default y if ARCH_EXYNOS
  	help
--	  Core support for the ADC block found in the Samsung EXYNOS series
--	  of SoCs for drivers such as the touchscreen and hwmon to use to share
--	  this resource.
-+	  Driver for the ADC block found in the Samsung S3C (S3C2410, S3C2416,
-+	  S3C2440, S3C2443, S3C6410), S5Pv210 and Exynos SoCs.
+-	  High-speed I2C controller on Exynos5 and newer Samsung SoCs.
++	  High-speed I2C controller on Samsung Exynos5 and newer Samsung SoCs:
++	  Exynos5250, Exynos5260, Exynos5410, Exynos542x, Exynos5800,
++	  Exynos5433 and Exynos7.
 +	  Choose Y here only if you build for such Samsung SoC.
  
- 	  To compile this driver as a module, choose M here: the module will be
- 	  called exynos_adc.
+ config I2C_GPIO
+ 	tristate "GPIO-based bitbanging I2C"
 -- 
 2.30.2
 
