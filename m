@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752454174C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4184541731B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346410AbhIXNKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:10:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35224 "EHLO mail.kernel.org"
+        id S1344753AbhIXMyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:54:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346583AbhIXNHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:07:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB7726138B;
-        Fri, 24 Sep 2021 12:56:47 +0000 (UTC)
+        id S1344594AbhIXMwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:52:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BC26124B;
+        Fri, 24 Sep 2021 12:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488208;
-        bh=0GvFKGbZkmXWcXob+UxUW1n1/KXjvJoMo3LCwMHfQQc=;
+        s=korg; t=1632487773;
+        bh=BkISNqFHSRmUOB9cYBFY3T37xo5rngboc71OMME0GQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cAwbyjWUVnWZ5UUyDj0igc9As1E5yER2PZSyKfOFSirWtmCjSR9ihi5fzRQi9ffN0
-         zqVdKG6Ya+3OJ0gSQeL2XwtsBcVZKEde9EgfIoSOQrp8eH5Z3ZT/pslrBqj2Haqt8l
-         Ebq6gf7eag4WjZ+ol/tgZIOquZRkQ/VDSYYP7hmI=
+        b=RBz2hh56ZwllQPsSLqH2M4Cfq54SbKurEyS/S26JR+7gXRP37HlEADLxyCSWQFOuq
+         Q/pEiteTz2HvBYYBH7MMcpBN8gMsvM14Pywp7z2tU1sIr67uPiMwOBLzP3BjJpTmB1
+         NpOIGc10FwDgKaqY+8q0RcabBFn787ZMBAmPlRQI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sylvain Lemieux <slemieux@tycoint.com>,
+        stable@vger.kernel.org,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: [PATCH 5.10 25/63] pwm: lpc32xx: Dont modify HW state in .probe() after the PWM chip was registered
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 31/34] pwm: rockchip: Dont modify HW state in .remove() callback
 Date:   Fri, 24 Sep 2021 14:44:25 +0200
-Message-Id: <20210924124335.128342669@linuxfoundation.org>
+Message-Id: <20210924124330.982955102@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
+References: <20210924124329.965218583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +44,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-commit 3d2813fb17e5fd0d73c1d1442ca0192bde4af10e upstream.
+[ Upstream commit 9d768cd7fd42bb0be16f36aec48548fca5260759 ]
 
-This fixes a race condition: After pwmchip_add() is called there might
-already be a consumer and then modifying the hardware behind the
-consumer's back is bad. So set the default before.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-(Side-note: I don't know what this register setting actually does, if
-this modifies the polarity there is an inconsistency because the
-inversed polarity isn't considered if the PWM is already running during
-.probe().)
-
-Fixes: acfd92fdfb93 ("pwm: lpc32xx: Set PWM_PIN_LEVEL bit to default value")
-Cc: Sylvain Lemieux <slemieux@tycoint.com>
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-lpc32xx.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/pwm/pwm-rockchip.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
---- a/drivers/pwm/pwm-lpc32xx.c
-+++ b/drivers/pwm/pwm-lpc32xx.c
-@@ -120,17 +120,17 @@ static int lpc32xx_pwm_probe(struct plat
- 	lpc32xx->chip.npwm = 1;
- 	lpc32xx->chip.base = -1;
+diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
+index 48bcc853d57a..cf34fb00c054 100644
+--- a/drivers/pwm/pwm-rockchip.c
++++ b/drivers/pwm/pwm-rockchip.c
+@@ -392,20 +392,6 @@ static int rockchip_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct rockchip_pwm_chip *pc = platform_get_drvdata(pdev);
  
-+	/* If PWM is disabled, configure the output to the default value */
-+	val = readl(lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
-+	val &= ~PWM_PIN_LEVEL;
-+	writel(val, lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
-+
- 	ret = pwmchip_add(&lpc32xx->chip);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to add PWM chip, error %d\n", ret);
- 		return ret;
- 	}
- 
--	/* When PWM is disable, configure the output to the default value */
--	val = readl(lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
--	val &= ~PWM_PIN_LEVEL;
--	writel(val, lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
+-	/*
+-	 * Disable the PWM clk before unpreparing it if the PWM device is still
+-	 * running. This should only happen when the last PWM user left it
+-	 * enabled, or when nobody requested a PWM that was previously enabled
+-	 * by the bootloader.
+-	 *
+-	 * FIXME: Maybe the core should disable all PWM devices in
+-	 * pwmchip_remove(). In this case we'd only have to call
+-	 * clk_unprepare() after pwmchip_remove().
+-	 *
+-	 */
+-	if (pwm_is_enabled(pc->chip.pwms))
+-		clk_disable(pc->clk);
 -
- 	platform_set_drvdata(pdev, lpc32xx);
+ 	clk_unprepare(pc->pclk);
+ 	clk_unprepare(pc->clk);
  
- 	return 0;
+-- 
+2.33.0
+
 
 
