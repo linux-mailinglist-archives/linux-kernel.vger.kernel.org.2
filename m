@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A17A416BA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 08:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2089B416BAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 08:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244218AbhIXGnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 02:43:35 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:33293 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244182AbhIXGnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 02:43:33 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HG2WW501Sz9sTt;
-        Fri, 24 Sep 2021 08:41:59 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id JTviW7YgVGAC; Fri, 24 Sep 2021 08:41:59 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HG2WW2Rssz9sTq;
-        Fri, 24 Sep 2021 08:41:59 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3DF3D8B77B;
-        Fri, 24 Sep 2021 08:41:59 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id QnfXEWwF-9YL; Fri, 24 Sep 2021 08:41:59 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.215])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 92E488B763;
-        Fri, 24 Sep 2021 08:41:58 +0200 (CEST)
-Subject: Re: [PATCH] powerpc: don't select KFENCE on platform PPC_FSL_BOOK3E
-To:     Liu Shixin <liushixin2@huawei.com>, Marco Elver <elver@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210924063927.1341241-1-liushixin2@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <f8d12860-56d7-5697-7cba-3cac95bb0a1c@csgroup.eu>
-Date:   Fri, 24 Sep 2021 08:41:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S244253AbhIXGok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 02:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244182AbhIXGoi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 02:44:38 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EB8C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 23:43:06 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mTevD-0005eP-N3; Fri, 24 Sep 2021 08:42:59 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mTev9-000080-To; Fri, 24 Sep 2021 08:42:55 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mTev9-0007Ge-Sh; Fri, 24 Sep 2021 08:42:55 +0200
+Date:   Fri, 24 Sep 2021 08:42:43 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        michal.simek@xilinx.com, Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alvaro Gamez <alvaro.gamez@hazent.com>
+Subject: Re: [PATCH v7 3/3] pwm: Add support for Xilinx AXI Timer
+Message-ID: <20210924064243.dmgqqqwnwvoq5iyc@pengutronix.de>
+References: <20210916180544.2873770-1-sean.anderson@seco.com>
+ <20210916180544.2873770-3-sean.anderson@seco.com>
+ <8580895f-0503-17ca-c6e4-54d91dd8f26a@seco.com>
 MIME-Version: 1.0
-In-Reply-To: <20210924063927.1341241-1-liushixin2@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="litrs7yfwkz3actg"
+Content-Disposition: inline
+In-Reply-To: <8580895f-0503-17ca-c6e4-54d91dd8f26a@seco.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--litrs7yfwkz3actg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Le 24/09/2021 à 08:39, Liu Shixin a écrit :
-> On platform PPC_FSL_BOOK3E, all lowmem is managed by tlbcam. That means
-> we didn't really map the kfence pool with page granularity. Therefore,
-> if KFENCE is enabled, the system will hit the following panic:
+On Thu, Sep 23, 2021 at 07:36:32PM -0400, Sean Anderson wrote:
+> I see that in patchwork this patch is marked as "Changes Requested" [1].
+> However, I have not received any feedback regarding the changes I need
+> to make. Please let me know if I have missed anything.
 
-Could you please explain a bit more what the problem is ?
+I agree, this must be an error. I marked it as new again.
 
-KFENCE has been implemented with the same logic as DEBUG_PAGEALLOC.
+Best regards
+Uwe
 
-DEBUG_PAGEALLOC is enabled on FSL_BOOK3E.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-In MMU_setup(), __map_without_ltlbs is set to 1 when KFENCE is enabled.
+--litrs7yfwkz3actg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-__map_without_ltlbs should disable the use of tlbcam.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFNc18ACgkQwfwUeK3K
+7AnqqAf/feP0bjX6ZGplI64kvz9SIq5DtZguwZ10jvT8yTxS2YyQRAYhzs68mmoV
+OFO/lHq725pUsqfy/+SDi45fvJ6v4MeWlQ+l6QwNAl4EPVqk6F57MIky8rqADnqd
+JR9iAu/k1yDjW9kO91GfN2k+qGT1AfBupdDNh//amVSmYMfJOYeEnWqvHewI7zR4
+U/4eSE+2nfH2uRy/3dNkuZ9UliTA16yhlRpgLrDhqFj026oFV4yHt8l5Ti/rdMGc
+MhRWouJyIlRPQk6AqM32wedbno0jBMXo0M52K1gAIfLeS8hFkuIR+Km3kCXVuGDd
+VuoSdanNmUhQ8J7Hgn+pvtd+lXI+uA==
+=AUmD
+-----END PGP SIGNATURE-----
 
-So what's wrong really ?
-
-Does DEBUG_PAGEALLOC work on FSL_BOOK3E ?
-
-Thanks
-Christophe
-
-> 
->      BUG: Kernel NULL pointer dereference on read at 0x00000000
->      Faulting instruction address: 0xc01de598
->      Oops: Kernel access of bad area, sig: 11 [#1]
->      BE PAGE_SIZE=4K SMP NR_CPUS=4 MPC8544 DS
->      Dumping ftrace buffer:
->         (ftrace buffer empty)
->      Modules linked in:
->      CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc3+ #298
->      NIP:  c01de598 LR: c08ae9c4 CTR: 00000000
->      REGS: c0b4bea0 TRAP: 0300   Not tainted  (5.12.0-rc3+)
->      MSR:  00021000 <CE,ME>  CR: 24000228  XER: 20000000
->      DEAR: 00000000 ESR: 00000000
->      GPR00: c08ae9c4 c0b4bf60 c0ad64e0 ef720000 00021000 00000000 00000000 00000200
->      GPR08: c0ad5000 00000000 00000000 00000004 00000000 008fbb30 00000000 00000000
->      GPR16: 00000000 00000000 00000000 00000000 c0000000 00000000 00000000 00000000
->      GPR24: c08ca004 c08ca004 c0b6a0e0 c0b60000 c0b58f00 c0850000 c08ca000 ef720000
->      NIP [c01de598] kfence_protect+0x44/0x6c
->      LR [c08ae9c4] kfence_init+0xfc/0x2a4
->      Call Trace:
->      [c0b4bf60] [efffe160] 0xefffe160 (unreliable)
->      [c0b4bf70] [c08ae9c4] kfence_init+0xfc/0x2a4
->      [c0b4bfb0] [c0894d3c] start_kernel+0x3bc/0x574
->      [c0b4bff0] [c0000470] set_ivor+0x14c/0x188
->      Instruction dump:
->      7c0802a6 8109d594 546a653a 90010014 54630026 39200000 7d48502e 2c0a0000
->      41820010 554a0026 5469b53a 7d295214 <81490000> 38831000 554a003c 91490000
->      random: get_random_bytes called from print_oops_end_marker+0x40/0x78 with crng_init=0
->      ---[ end trace 0000000000000000 ]---
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->   arch/powerpc/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index d46db0bfb998..cffd57bcb5e4 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -185,7 +185,7 @@ config PPC
->   	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
->   	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
->   	select HAVE_ARCH_KGDB
-> -	select HAVE_ARCH_KFENCE			if PPC32
-> +	select HAVE_ARCH_KFENCE			if PPC32 && !PPC_FSL_BOOK3E
->   	select HAVE_ARCH_MMAP_RND_BITS
->   	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
->   	select HAVE_ARCH_NVRAM_OPS
-> 
+--litrs7yfwkz3actg--
