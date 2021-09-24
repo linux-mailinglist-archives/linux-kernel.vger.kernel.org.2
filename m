@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB97D417BD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 21:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CDF417BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 21:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346867AbhIXThq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 15:37:46 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3875 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345195AbhIXThp (ORCPT
+        id S1348186AbhIXToJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 15:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231756AbhIXToI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 15:37:45 -0400
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HGMdR5wM2z67bZV;
-        Sat, 25 Sep 2021 03:33:15 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 24 Sep 2021 21:36:09 +0200
-Received: from [10.47.85.198] (10.47.85.198) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 24 Sep
- 2021 20:36:08 +0100
-Subject: Re: [PATCH v3 1/2] perf test: Workload test of metric and
- metricgroups
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <eranian@google.com>
-References: <20210917184240.2181186-1-irogers@google.com>
- <YU4iVcVc6uYAWft4@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <ea23f319-49df-5905-758e-478baf44bdc9@huawei.com>
-Date:   Fri, 24 Sep 2021 20:39:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Fri, 24 Sep 2021 15:44:08 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A960AC061571;
+        Fri, 24 Sep 2021 12:42:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=VrtnSvPm9cXWNZxxVu9pZXziY5YpXzB1Cw0ZCLTkm2Q=; b=JkMxxFbzqMyUGD4ZCTX9IwhZj9
+        wkseDHs4VUVZZwYv8sB2itjO0QGkJJRNnCaqVhPemo9HWpUV2OZNAX4hsUk65J7cggAmrEWOa6iY5
+        q/nT8RJsSiNMujC7rFDxVAKvuqBtLOqARtw86p5nwvvlCqMt9/Haln0Ufv9mhuqWCBXDezAGx9ywW
+        JFebMlcJrP1EQN7m4jT5VqFL1soNG8SBbLyIPwSzo8mnTjVut25OAFMe02iwcn0Yl8B/6wqsj7mc9
+        iWe+FMfoA2ccPfLxIVe6/SHCrl0fWjCvGTo6QHMdx85Fw+OaeO+GlEicLAR2AfVyrz08wuooigBmj
+        E/Gy0kcg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mTr5c-00FP3Z-Rl; Fri, 24 Sep 2021 19:42:32 +0000
+Subject: =?UTF-8?B?UmU6IEJ1aWxkIGVycm9yOiDigJhFTV9SSVNDVuKAmSB1bmRlY2xhcmVk?=
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        miles.chen@mediatek.com, Jisheng Zhang <jszhang@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-tegra@vger.kernel.org
+References: <e8965b25-f15b-c7b4-748c-d207dda9c8e8@i2se.com>
+ <78cf3af71e035a79d021d17c6fd8a09dd1e4984d.camel@mediatek.com>
+ <cf7eea1d-a628-c6c4-270f-fa9895192b24@nvidia.com>
+ <277d1f76-c105-5fc4-6658-058286f503f0@nvidia.com>
+ <e52cfbdc-40cd-9b84-036b-4c9dc8449b72@i2se.com>
+ <bcf57e67-98e2-b4b1-cb62-a2d2829df142@nvidia.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d3c8b3a4-6881-f882-3af8-1aa3a28f60c0@infradead.org>
+Date:   Fri, 24 Sep 2021 12:42:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YU4iVcVc6uYAWft4@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <bcf57e67-98e2-b4b1-cb62-a2d2829df142@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.198]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2021 20:09, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Sep 17, 2021 at 11:42:39AM -0700, Ian Rogers escreveu:
->> Test every metric and metricgroup with 'true' as a workload. For
->> metrics, check that we see the metric printed or get unsupported. If the
->> 'true' workload executes too quickly retry with 'perf bench internals
->> synthesize'.
->>
->> v3. Fix test condition (thanks to Paul A. Clarke<pc@us.ibm.com>). Add a
->>      fallback case of a larger workload so that we don't ignore "<not
->>      counted>".
->> v2. Switched the workload to something faster.
-> Hi John, does your Reviewed-by stands for v3 too?
+On 9/24/21 12:01 PM, Jon Hunter wrote:
 > 
-> - Arnaldo
->   
+> On 24/09/2021 19:05, Stefan Wahren wrote:
+>> Hi,
+>>
+>> Am 24.09.21 um 14:55 schrieb Jon Hunter:
+>>>
+>>>
+>>> On 24/09/2021 13:15, miles.chen@mediatek.com wrote:
+>>>> From: Jon Hunter <jonathanh@nvidia.com>
+>>>>
+>>>>
+>>>>> This is still broken in the mainline. Any plans to get this fix
+>>>>> merged there? I believe it has now been broken for nearly 2 weeks.
+>>>>
+>>>> the fix [1] is in linux-next now, thanks.
 
-Yeah,
+so who merged the patch [1] into linux-next?  Andrew?
 
-Reviewed-by: John Garry <john.garry@huawei.com>
+Seems to me that Andrew should be cc-ed here [added].
 
 
-Thanks
+>>> Yes I know that. However, we need it in the mainline. It has been
+>>> broken for nearly 2 weeks now and all our automation for mainline is
+>>> not running because we cannot build. Please get this fix into mainline
+>>> as soon as possible.
+>>
+>> as stated in [1], you can try to update you build environment.
+> 
+> These are farm build machines so not that easy or quick to update. Given the change that introduced the breakage is in the mainline, the fix also need to be merged into the mainline. Otherwise we need to revert the initial change.
+
+Yes.
+
+-- 
+~Randy
