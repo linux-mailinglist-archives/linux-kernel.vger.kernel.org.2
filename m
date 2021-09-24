@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEE141739E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADB1417471
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345238AbhIXM7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:59:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
+        id S1346094AbhIXNGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:06:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344401AbhIXM4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:56:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB16D61260;
-        Fri, 24 Sep 2021 12:51:24 +0000 (UTC)
+        id S1345385AbhIXNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:03:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC80361458;
+        Fri, 24 Sep 2021 12:55:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487885;
-        bh=ckDzZx/F0M8XMpGOU1duiUOy/wn6eUR0XqvN7lA37a4=;
+        s=korg; t=1632488116;
+        bh=QXobiQ4s6CjdNhvCLGvCgxKAs0zfMe7xBb+MG5QFC3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZG8TxQNwHN8g70DuULg3fTjssw3nvJb3X4xzJPt2Z2rdgDxRrp6LyDc8Ck/Rzd4bU
-         avsJPLvW4DbDXwn8rC/RRnWiQ3o4fD+iKrnL81w+E9EQ7KijBI+xkz52wkHamPYmeS
-         fZDjOAhKspwmBuZU9LcbXiTFKiHEWiDHJPeMiS8k=
+        b=XJYoYlX4uqP3LDLi9lu2qS5qiE/DEkYV8SOz5hoXoLQoZrKL+XPrs3NA+0SSOKCER
+         uxgPisxnuHqKQ9HMnQc5hIQpTnNPdjn26tHQtGW6ySWdTslruZPx6Eh2SY7n72pcQ5
+         DoWJcCLaYbI+L9WXRsyAsCyq4qXD3FOkiyDjyMAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 50/50] drm/nouveau/nvkm: Replace -ENOSYS with -ENODEV
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 090/100] pwm: stm32-lp: Dont modify HW state in .remove() callback
 Date:   Fri, 24 Sep 2021 14:44:39 +0200
-Message-Id: <20210924124333.933167705@linuxfoundation.org>
+Message-Id: <20210924124344.491062227@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-commit e8f71f89236ef82d449991bfbc237e3cb6ea584f upstream.
+[ Upstream commit d44084c93427bb0a9261432db1a8ca76a42d805e ]
 
-nvkm test builds fail with the following error.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-  drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c: In function 'nvkm_control_mthd_pstate_info':
-  drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c:60:35: error: overflow in conversion from 'int' to '__s8' {aka 'signed char'} changes value from '-251' to '5'
-
-The code builds on most architectures, but fails on parisc where ENOSYS
-is defined as 251.
-
-Replace the error code with -ENODEV (-19).  The actual error code does
-not really matter and is not passed to userspace - it just has to be
-negative.
-
-Fixes: 7238eca4cf18 ("drm/nouveau: expose pstate selection per-power source in sysfs")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pwm/pwm-stm32-lp.c | 2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c
-@@ -57,7 +57,7 @@ nvkm_control_mthd_pstate_info(struct nvk
- 		args->v0.count = 0;
- 		args->v0.ustate_ac = NVIF_CONTROL_PSTATE_INFO_V0_USTATE_DISABLE;
- 		args->v0.ustate_dc = NVIF_CONTROL_PSTATE_INFO_V0_USTATE_DISABLE;
--		args->v0.pwrsrc = -ENOSYS;
-+		args->v0.pwrsrc = -ENODEV;
- 		args->v0.pstate = NVIF_CONTROL_PSTATE_INFO_V0_PSTATE_UNKNOWN;
- 	}
+diff --git a/drivers/pwm/pwm-stm32-lp.c b/drivers/pwm/pwm-stm32-lp.c
+index 93dd03618465..e4a10aac354d 100644
+--- a/drivers/pwm/pwm-stm32-lp.c
++++ b/drivers/pwm/pwm-stm32-lp.c
+@@ -222,8 +222,6 @@ static int stm32_pwm_lp_remove(struct platform_device *pdev)
+ {
+ 	struct stm32_pwm_lp *priv = platform_get_drvdata(pdev);
  
+-	pwm_disable(&priv->chip.pwms[0]);
+-
+ 	return pwmchip_remove(&priv->chip);
+ }
+ 
+-- 
+2.33.0
+
 
 
