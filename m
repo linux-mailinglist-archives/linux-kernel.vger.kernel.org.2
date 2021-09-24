@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831E64174E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433A7417464
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345672AbhIXNLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38842 "EHLO mail.kernel.org"
+        id S1346188AbhIXNFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:05:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346847AbhIXNIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:08:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D776461391;
-        Fri, 24 Sep 2021 12:57:08 +0000 (UTC)
+        id S1346177AbhIXNDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:03:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDD8161378;
+        Fri, 24 Sep 2021 12:54:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488229;
-        bh=6euuBzakJbT3+lBxnNivNGGGSBUl0+1EH6ISDNxaWgk=;
+        s=korg; t=1632488096;
+        bh=jVCPuOo7/RvvFyuQRc2h4nEhQuGVZQvPPxT5ZpCDdQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dpvk8UmWEHKSsF5NXCXYaQYmxf53COEL7zsJCiogCum+myjSWFOx5nGZgxmFDYw88
-         /alK+mDu8ULegsFe8WS/YeOWqE14S5huQWmtxb2MO4faohWw/rcnxljHRp00SJH6dx
-         kl6tbQEbWPNKu083FBYFyvRA7FxtJmYClOjZ98a0=
+        b=IL1DebVpppv3EsA4N0clJGnYKPCGXQPHHHjHZJV0QjiMOOQR1qmdXwai56P7glF+r
+         tkcrTLzhZMh8yOG6iWbjSpT9n9HSNNq2vV14CQg4Zxm45jf08ncG9pUnNScss6CgQv
+         tQq1HVcFmyDau4+bEOEpScEA+rj4+JCUQGBQ15Lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Babu Moger <babu.moger@oracle.com>,
-        Don Zickus <dzickus@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Philip Yang <Philip.Yang@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 32/63] Kconfig.debug: drop selecting non-existing HARDLOCKUP_DETECTOR_ARCH
+Subject: [PATCH 5.14 083/100] drm/amdgpu: fix fdinfo race with process exit
 Date:   Fri, 24 Sep 2021 14:44:32 +0200
-Message-Id: <20210924124335.370245849@linuxfoundation.org>
+Message-Id: <20210924124344.247941751@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Philip Yang <Philip.Yang@amd.com>
 
-[ Upstream commit 6fe26259b4884b657cbc233fb9cdade9d704976e ]
+[ Upstream commit d7eff46c214c036606dd3cd305bd5a128aecfe8c ]
 
-Commit 05a4a9527931 ("kernel/watchdog: split up config options") adds a
-new config HARDLOCKUP_DETECTOR, which selects the non-existing config
-HARDLOCKUP_DETECTOR_ARCH.
+Get process vm root BO ref in case process is exiting and root BO is
+freed, to avoid NULL pointer dereference backtrace:
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+BUG: unable to handle kernel NULL pointer dereference at
+0000000000000000
+Call Trace:
+amdgpu_show_fdinfo+0xfe/0x2a0 [amdgpu]
+seq_show+0x12c/0x180
+seq_read+0x153/0x410
+vfs_read+0x91/0x140[ 3427.206183]  ksys_read+0x4f/0xb0
+do_syscall_64+0x5b/0x1a0
+entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-HARDLOCKUP_DETECTOR_ARCH Referencing files: lib/Kconfig.debug
-
-Simply drop selecting the non-existing HARDLOCKUP_DETECTOR_ARCH.
-
-Link: https://lkml.kernel.org/r/20210806115618.22088-1-lukas.bulwahn@gmail.com
-Fixes: 05a4a9527931 ("kernel/watchdog: split up config options")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Babu Moger <babu.moger@oracle.com>
-Cc: Don Zickus <dzickus@redhat.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Philip Yang <Philip.Yang@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/Kconfig.debug | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fdinfo.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index bf174798afcb..95f909540587 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -981,7 +981,6 @@ config HARDLOCKUP_DETECTOR
- 	depends on HAVE_HARDLOCKUP_DETECTOR_PERF || HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	select LOCKUP_DETECTOR
- 	select HARDLOCKUP_DETECTOR_PERF if HAVE_HARDLOCKUP_DETECTOR_PERF
--	select HARDLOCKUP_DETECTOR_ARCH if HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	help
- 	  Say Y here to enable the kernel to act as a watchdog to detect
- 	  hard lockups.
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fdinfo.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fdinfo.c
+index d94c5419ec25..5a6857c44bb6 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fdinfo.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fdinfo.c
+@@ -59,6 +59,7 @@ void amdgpu_show_fdinfo(struct seq_file *m, struct file *f)
+ 	uint64_t vram_mem = 0, gtt_mem = 0, cpu_mem = 0;
+ 	struct drm_file *file = f->private_data;
+ 	struct amdgpu_device *adev = drm_to_adev(file->minor->dev);
++	struct amdgpu_bo *root;
+ 	int ret;
+ 
+ 	ret = amdgpu_file_to_fpriv(f, &fpriv);
+@@ -69,13 +70,19 @@ void amdgpu_show_fdinfo(struct seq_file *m, struct file *f)
+ 	dev = PCI_SLOT(adev->pdev->devfn);
+ 	fn = PCI_FUNC(adev->pdev->devfn);
+ 
+-	ret = amdgpu_bo_reserve(fpriv->vm.root.bo, false);
++	root = amdgpu_bo_ref(fpriv->vm.root.bo);
++	if (!root)
++		return;
++
++	ret = amdgpu_bo_reserve(root, false);
+ 	if (ret) {
+ 		DRM_ERROR("Fail to reserve bo\n");
+ 		return;
+ 	}
+ 	amdgpu_vm_get_memory(&fpriv->vm, &vram_mem, &gtt_mem, &cpu_mem);
+-	amdgpu_bo_unreserve(fpriv->vm.root.bo);
++	amdgpu_bo_unreserve(root);
++	amdgpu_bo_unref(&root);
++
+ 	seq_printf(m, "pdev:\t%04x:%02x:%02x.%d\npasid:\t%u\n", domain, bus,
+ 			dev, fn, fpriv->vm.pasid);
+ 	seq_printf(m, "vram mem:\t%llu kB\n", vram_mem/1024UL);
 -- 
 2.33.0
 
