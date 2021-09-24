@@ -2,88 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB989416D77
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC13A416D7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244641AbhIXIK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:10:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40872 "EHLO mail.kernel.org"
+        id S244628AbhIXILJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:11:09 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55470 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244561AbhIXIKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:10:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2144610F7;
-        Fri, 24 Sep 2021 08:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632470929;
-        bh=h5t3gDZn60MU8ZE7VKIxFCCn1WkNkGwylZ89i2iIZqA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tDyF35wqn6itte2A8LjqHMwsWiAfOHrgz1MbTczWi5oV75Fua4RzaUbv+vGI/Fir0
-         1Kycwo8GU8Rs+zvFZCFCPq1CscH+xfIxo1VxDRjheByva32oaWPN3vgE2/0ReU/BBR
-         SIslzyxzlj8JutqwUG5/EsYd8Gt0WOcG3RhL9xI2PlsaX9F/ynthbxVRscwthszIyJ
-         va27Jnd9Bjv1b/bO0CLWgSNQFcAiajWEYg4OUJJl8ic7JmDa62dp7lsvH/e2VdzGOg
-         xlx8eI8QL4M6D2EjsQYeTNCIHSXRfGh3TMH9RcZbA+Fo1M0SLaecs2BqfGdp67WJio
-         MIP9oPu340MHg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mTgGJ-0005rB-PZ; Fri, 24 Sep 2021 10:08:51 +0200
-Date:   Fri, 24 Sep 2021 10:08:51 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] USB-serial fixes for 5.15-rc3
-Message-ID: <YU2Hk/bryF85iq5G@hovoldconsulting.com>
+        id S235272AbhIXILH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:11:07 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mTgGt-0008A4-Gj; Fri, 24 Sep 2021 16:09:27 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mTgGr-0003T8-Pp; Fri, 24 Sep 2021 16:09:25 +0800
+Date:   Fri, 24 Sep 2021 16:09:25 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] crypto: marvell/cesa: drop unneeded MODULE_ALIAS
+Message-ID: <20210924080925.GD13213@gondor.apana.org.au>
+References: <20210916170523.138155-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210916170523.138155-1-krzysztof.kozlowski@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+On Thu, Sep 16, 2021 at 07:05:22PM +0200, Krzysztof Kozlowski wrote:
+> The MODULE_DEVICE_TABLE already creates proper alias for platform
+> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  drivers/crypto/marvell/cesa/cesa.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-5.15-rc3
-
-for you to fetch changes up to 9e3eed534f8235a4a596a9dae5b8a6425d81ea1a:
-
-  USB: serial: option: add device id for Foxconn T99W265 (2021-09-24 09:32:11 +0200)
-
-----------------------------------------------------------------
-USB-serial fixes for 5.15-rc3
-
-Here's a fix for a regression affecting some CP2102 devices and a host
-of new device ids.
-
-Included are also a couple of cleanups of duplicate device ids, which
-are also tagged for stable to keep the tables in sync, and a trivial
-patch to help debugging cp210x issues.
-
-All have been in linux-next with no reported issues. Note however that
-the last last two device-id commits were rebased to fix up a lore link
-in a commit message (as the patch itself never made it to the list).
-
-----------------------------------------------------------------
-Carlo Lobrano (1):
-      USB: serial: option: add Telit LN920 compositions
-
-Johan Hovold (2):
-      USB: serial: cp210x: fix dropped characters with CP2102
-      USB: serial: cp210x: add part-number debug printk
-
-Krzysztof Kozlowski (2):
-      USB: serial: mos7840: remove duplicated 0xac24 device ID
-      USB: serial: option: remove duplicate USB device ID
-
-Slark Xiao (1):
-      USB: serial: option: add device id for Foxconn T99W265
-
-Uwe Brandt (1):
-      USB: serial: cp210x: add ID for GW Instek GDM-834x Digital Multimeter
-
- drivers/usb/serial/cp210x.c  | 38 ++++++++++++++++++++++++++++++++++++++
- drivers/usb/serial/mos7840.c |  2 --
- drivers/usb/serial/option.c  | 11 ++++++++++-
- 3 files changed, 48 insertions(+), 3 deletions(-)
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
