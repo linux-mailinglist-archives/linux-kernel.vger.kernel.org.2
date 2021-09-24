@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0094172C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707EA4174E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344202AbhIXMvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46134 "EHLO mail.kernel.org"
+        id S1345676AbhIXNLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:11:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343934AbhIXMtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:49:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58D976124C;
-        Fri, 24 Sep 2021 12:47:57 +0000 (UTC)
+        id S1346879AbhIXNIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:08:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D838561526;
+        Fri, 24 Sep 2021 12:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487677;
-        bh=1Yee01YOa6CqWiZK9ouQScFRToVKWvCJRIJUdRJVjAs=;
+        s=korg; t=1632488237;
+        bh=TSqSsrMkMbdLrEEz5dOB9BJmLY/8BtTV45TdyGfhYbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=boGHbZIVq4hoXQdRQCE9MPnVsL/XQi/nNIkw7sj9MaT3GMWjTlo5p6g3D6m+/vQ4u
-         v/qL6qAuuPbzOV7W4ugectxEQz5vFn8zXx9RG0Fc/cgCJc5+EcAWFUI4O5XaOXOksy
-         1V6KKZJRQaniRBVtm+1UPtpn3VcGmoXIniLXgq/k=
+        b=iSnZJUNE3rvd2Gh9NCBhgyJaSnhWDurbGomyuFIaaFdaR5F3d9Xqumi6/Akjov6Rm
+         CvMgxpWEZpgffq4LwSiIfKFd02mp2MU2gLp23qImdO+JoTfoCBaMMk7HViHBwRmzCw
+         fQvpLc1CmggqExh8Btks0MR/rdTq84dK68j7tpkE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 11/27] profiling: fix shift-out-of-bounds bugs
-Date:   Fri, 24 Sep 2021 14:44:05 +0200
-Message-Id: <20210924124329.550326470@linuxfoundation.org>
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 5.10 06/63] ARM: 9077/1: PLT: Move struct plt_entries definition to header
+Date:   Fri, 24 Sep 2021 14:44:06 +0200
+Message-Id: <20210924124334.455264798@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,98 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-commit 2d186afd04d669fe9c48b994c41a7405a3c9f16d upstream.
+commit 4e271701c17dee70c6e1351c4d7d42e70405c6a9 upstream upstream
 
-Syzbot reported shift-out-of-bounds bug in profile_init().
-The problem was in incorrect prof_shift. Since prof_shift value comes from
-userspace we need to clamp this value into [0, BITS_PER_LONG -1]
-boundaries.
+No functional change, later it will be re-used in several files.
 
-Second possible shiht-out-of-bounds was found by Tetsuo:
-sample_step local variable in read_profile() had "unsigned int" type,
-but prof_shift allows to make a BITS_PER_LONG shift. So, to prevent
-possible shiht-out-of-bounds sample_step type was changed to
-"unsigned long".
-
-Also, "unsigned short int" will be sufficient for storing
-[0, BITS_PER_LONG] value, that's why there is no need for
-"unsigned long" prof_shift.
-
-Link: https://lkml.kernel.org/r/20210813140022.5011-1-paskripkin@gmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
-Suggested-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/profile.c |   21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ arch/arm/include/asm/module.h |    9 +++++++++
+ arch/arm/kernel/module-plts.c |    9 ---------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -40,7 +40,8 @@ struct profile_hit {
- #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
+--- a/arch/arm/include/asm/module.h
++++ b/arch/arm/include/asm/module.h
+@@ -19,6 +19,15 @@ enum {
+ };
+ #endif
  
- static atomic_t *prof_buffer;
--static unsigned long prof_len, prof_shift;
-+static unsigned long prof_len;
-+static unsigned short int prof_shift;
++#define PLT_ENT_STRIDE		L1_CACHE_BYTES
++#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
++#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
++
++struct plt_entries {
++	u32	ldr[PLT_ENT_COUNT];
++	u32	lit[PLT_ENT_COUNT];
++};
++
+ struct mod_plt_sec {
+ 	struct elf32_shdr	*plt;
+ 	int			plt_count;
+--- a/arch/arm/kernel/module-plts.c
++++ b/arch/arm/kernel/module-plts.c
+@@ -12,10 +12,6 @@
+ #include <asm/cache.h>
+ #include <asm/opcodes.h>
  
- int prof_on __read_mostly;
- EXPORT_SYMBOL_GPL(prof_on);
-@@ -66,8 +67,8 @@ int profile_setup(char *str)
- 		if (str[strlen(sleepstr)] == ',')
- 			str += strlen(sleepstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel sleep profiling enabled (shift: %u)\n",
- 			prof_shift);
- #else
- 		pr_warn("kernel sleep profiling requires CONFIG_SCHEDSTATS\n");
-@@ -77,21 +78,21 @@ int profile_setup(char *str)
- 		if (str[strlen(schedstr)] == ',')
- 			str += strlen(schedstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel schedule profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
- 		prof_on = KVM_PROFILING;
- 		if (str[strlen(kvmstr)] == ',')
- 			str += strlen(kvmstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
--		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
-+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
-+		pr_info("kernel KVM profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	} else if (get_option(&str, &par)) {
--		prof_shift = par;
-+		prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
- 		prof_on = CPU_PROFILING;
--		pr_info("kernel profiling enabled (shift: %ld)\n",
-+		pr_info("kernel profiling enabled (shift: %u)\n",
- 			prof_shift);
- 	}
- 	return 1;
-@@ -467,7 +468,7 @@ read_profile(struct file *file, char __u
- 	unsigned long p = *ppos;
- 	ssize_t read;
- 	char *pnt;
--	unsigned int sample_step = 1 << prof_shift;
-+	unsigned long sample_step = 1UL << prof_shift;
+-#define PLT_ENT_STRIDE		L1_CACHE_BYTES
+-#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
+-#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
+-
+ #ifdef CONFIG_THUMB2_KERNEL
+ #define PLT_ENT_LDR		__opcode_to_mem_thumb32(0xf8dff000 | \
+ 							(PLT_ENT_STRIDE - 4))
+@@ -24,11 +20,6 @@
+ 						    (PLT_ENT_STRIDE - 8))
+ #endif
  
- 	profile_flip_buffers();
- 	if (p >= (prof_len+1)*sizeof(unsigned int))
+-struct plt_entries {
+-	u32	ldr[PLT_ENT_COUNT];
+-	u32	lit[PLT_ENT_COUNT];
+-};
+-
+ static bool in_init(const struct module *mod, unsigned long loc)
+ {
+ 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
 
 
