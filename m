@@ -2,218 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A154941705E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C62C417063
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245570AbhIXKfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:35:25 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41134 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhIXKfX (ORCPT
+        id S245625AbhIXKhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:37:10 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:36808 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhIXKhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:35:23 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632479629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=3qlwpik2ZScVioRdtjZP8dq5+cHoEHM42Y3IpVn8O9Q=;
-        b=AvrQWPehTUVeCLggZJeZ3UYEa+fnpn39vXJdpbQqIG/r6Rui1EN4hlJBV8UQ3zBeDSB3BQ
-        BKkOHaQ+yVzL/HOgB+9iWi5Lz8GXpxPAUhdUHWPcTQSpFVcCqywiA78Ymd32UcKZNbt9fx
-        +LRZJgrq/4BtoDPDFofUuyLpwpSG2ggTdIRBAQ5joeXEfvlBBs/38u7pJvrCmbtzys8/Nl
-        9ZRYAuD2f7OWTC2rwXKqv47ryeVecQ/PxQqhrpNbghize7ara9fFRGmibIfxomh1lqQUxy
-        Q/Wqpk+OIJuQGgSPMcaw7+fnBIA+HNrXLpVtvtGVAeq9qpFI2qFZNrxGZ2IB4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632479629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=3qlwpik2ZScVioRdtjZP8dq5+cHoEHM42Y3IpVn8O9Q=;
-        b=ne6ljzK1+lXK4uvd1YB/lXPIykpTmY7pn0htgpsCu3j7Zq1g8CpGd2UYATKTaqbfUhth9B
-        EEY3Lsa/5HpuihBQ==
-To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
-Cc:     Sohil Mehta <sohil.mehta@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 09/13] x86/uintr: Introduce vector registration and
- uintr_fd syscall
-In-Reply-To: <20210913200132.3396598-10-sohil.mehta@intel.com>
-Date:   Fri, 24 Sep 2021 12:33:48 +0200
-Message-ID: <87wnn6dzzn.ffs@tglx>
+        Fri, 24 Sep 2021 06:37:08 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 60D5D1C0BA3; Fri, 24 Sep 2021 12:35:34 +0200 (CEST)
+Date:   Fri, 24 Sep 2021 12:35:33 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     akpm@linux-foundation.org, konishi.ryusuke@gmail.com,
+        linux-mm@kvack.org, mm-commits@vger.kernel.org,
+        thunder.leizhen@huawei.com, torvalds@linux-foundation.org
+Subject: Re: [patch 136/147] nilfs2: use refcount_dec_and_lock() to fix
+ potential UAF
+Message-ID: <20210924103533.GA22717@duo.ucw.cz>
+References: <20210907195226.14b1d22a07c085b22968b933@linux-foundation.org>
+ <20210908030026.2dLZCmkE4%akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
+Content-Disposition: inline
+In-Reply-To: <20210908030026.2dLZCmkE4%akpm@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
->  static void free_upid(struct uintr_upid_ctx *upid_ctx)
+
+--AqsLC8rIMeq19msA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> From: Zhen Lei <thunder.leizhen@huawei.com>
+> Subject: nilfs2: use refcount_dec_and_lock() to fix potential UAF
+>=20
+> When the refcount is decreased to 0, the resource reclamation branch is
+> entered.  Before CPU0 reaches the race point (1), CPU1 may obtain the
+> spinlock and traverse the rbtree to find 'root', see nilfs_lookup_root().=
+=20
+> Although CPU1 will call refcount_inc() to increase the refcount, it is
+> obviously too late.  CPU0 will release 'root' directly, CPU1 then accesses
+> 'root' and triggers UAF.
+>=20
+> Use refcount_dec_and_lock() to ensure that both the operations of decrease
+> refcount to 0 and link deletion are lock protected eliminates this risk.
+>=20
+>      CPU0                      CPU1
+> nilfs_put_root():
+> 			    <-------- (1)
+> spin_lock(&nilfs->ns_cptree_lock);
+> rb_erase(&root->rb_node, &nilfs->ns_cptree);
+> spin_unlock(&nilfs->ns_cptree_lock);
+>=20
+> kfree(root);
+> 			    <-------- use-after-free
+
+> There is no reproduction program, and the above is only theoretical
+> analysis.
+
+Ok, so we have a theoretical bug, and fix already on its way to
+stable. But ... is it correct?
+
+> +++ a/fs/nilfs2/the_nilfs.c
+> @@ -792,14 +792,13 @@ nilfs_find_or_create_root(struct the_nil
+> =20
+>  void nilfs_put_root(struct nilfs_root *root)
 >  {
-> +	put_task_struct(upid_ctx->task);
-
-That's current, right?
-
->  	kfree(upid_ctx->upid);
->  	upid_ctx->upid = NULL;
->  	kfree(upid_ctx);
-> @@ -93,6 +93,7 @@ static struct uintr_upid_ctx *alloc_upid(void)
->  
->  	upid_ctx->upid = upid;
->  	refcount_set(&upid_ctx->refs, 1);
-> +	upid_ctx->task = get_task_struct(current);
-
-Current takes a refcount on it's own task struct when allocating upid,
-and releases it at some point when freeing upid, right?
-
-What for? Comments are overrated, except for comments describing
-the obvious in the wrong way.
-
-If this ever comes back in some form, then I pretty please want the life
-time rules of this documented properly. The current state is
-unreviewable.
-
->  	return upid_ctx;
->  }
-> @@ -103,6 +104,77 @@ static void put_upid_ref(struct uintr_upid_ctx *upid_ctx)
->  		free_upid(upid_ctx);
->  }
->  
-> +static struct uintr_upid_ctx *get_upid_ref(struct uintr_upid_ctx *upid_ctx)
-> +{
-> +	refcount_inc(&upid_ctx->refs);
-> +	return upid_ctx;
-> +}
+> -	if (refcount_dec_and_test(&root->count)) {
+> -		struct the_nilfs *nilfs =3D root->nilfs;
+> +	struct the_nilfs *nilfs =3D root->nilfs;
+> =20
+> -		nilfs_sysfs_delete_snapshot_group(root);
+> -
+> -		spin_lock(&nilfs->ns_cptree_lock);
+> +	if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
+>  		rb_erase(&root->rb_node, &nilfs->ns_cptree);
+>  		spin_unlock(&nilfs->ns_cptree_lock);
 > +
-> +static void __clear_vector_from_upid(u64 uvec, struct uintr_upid *upid)
-> +{
-> +	clear_bit(uvec, (unsigned long *)&upid->puir);
-> +}
-> +
-> +static void __clear_vector_from_task(u64 uvec)
-> +{
-> +	struct task_struct *t = current;
-> +
-> +	pr_debug("recv: task=%d free vector %llu\n", t->pid, uvec);
-> +
-> +	if (!(BIT_ULL(uvec) & t->thread.ui_recv->uvec_mask))
-> +		return;
-> +
-> +	clear_bit(uvec, (unsigned long *)&t->thread.ui_recv->uvec_mask);
-> +
-> +	if (!t->thread.ui_recv->uvec_mask)
-> +		pr_debug("recv: task=%d unregistered all user vectors\n", t->pid);
+> +		nilfs_sysfs_delete_snapshot_group(root);
+>  		iput(root->ifile);
+> =20
+>  		kfree(root);
 
-Once you are done debugging this complex function can you please turn it
-into an unconditional clear_bit(...) at the call site?
+spin_lock() is deleted, but spin_unlock() is not affected. This means
+unbalanced locking, right?
 
-> +/* Callback to clear the vector structures when a vector is unregistered. */
-> +static void receiver_clear_uvec(struct callback_head *head)
-> +{
-> +	struct uintr_receiver_info *r_info;
-> +	struct uintr_upid_ctx *upid_ctx;
-> +	struct task_struct *t = current;
-> +	u64 uvec;
-> +
-> +	r_info = container_of(head, struct uintr_receiver_info, twork);
-> +	uvec = r_info->uvec;
-> +	upid_ctx = r_info->upid_ctx;
-> +
-> +	/*
-> +	 * If a task has unregistered the interrupt handler the vector
-> +	 * structures would have already been cleared.
+Best regards,
+								Pavel
+--
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-would ? No. They must have been cleared already, anything else is a bug.
 
-> +	 */
-> +	if (is_uintr_receiver(t)) {
-> +		/*
-> +		 * The UPID context in the callback might differ from the one
-> +		 * on the task if the task unregistered its interrupt handler
-> +		 * and then registered itself again. The vector structures
-> +		 * related to the previous UPID would have already been cleared
-> +		 * in that case.
-> +		 */
-> +		if (t->thread.ui_recv->upid_ctx != upid_ctx) {
-> +			pr_debug("recv: task %d is now using a different UPID\n",
-> +				 t->pid);
-> +			goto out_free;
-> +		}
-> +
-> +		/*
-> +		 * If the vector has been recognized in the UIRR don't modify
-> +		 * it. We need to disable User Interrupts before modifying the
-> +		 * UIRR. It might be better to just let that interrupt get
-> +		 * delivered.
+--AqsLC8rIMeq19msA
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Might be better? Please provide coherent explanations why this is correct.
+-----BEGIN PGP SIGNATURE-----
 
-> +		 */
-> +		__clear_vector_from_upid(uvec, upid_ctx->upid);
-> +		__clear_vector_from_task(uvec);
-> +	}
-> +
-> +out_free:
-> +	put_upid_ref(upid_ctx);
-> +	kfree(r_info);
-> +}
-> +
->  int do_uintr_unregister_handler(void)
->  {
->  	struct task_struct *t = current;
-> @@ -239,6 +311,53 @@ int do_uintr_register_handler(u64 handler)
->  	return 0;
->  }
->  
-> +void do_uintr_unregister_vector(struct uintr_receiver_info *r_info)
-> +{
-> +	int ret;
-> +
-> +	pr_debug("recv: Adding task work to clear vector %llu added for task=%d\n",
-> +		 r_info->uvec, r_info->upid_ctx->task->pid);
-> +
-> +	init_task_work(&r_info->twork, receiver_clear_uvec);
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYU2p9QAKCRAw5/Bqldv6
+8pEQAKDA9jl6m9R1pd/xcPllBCkOXDjUsQCfUaxkmFaw26oeFa3dtCAQPMQfQtg=
+=ui/9
+-----END PGP SIGNATURE-----
 
-How is this safe? Reinitialization has to be serialized against other
-usage. Again: Document the life time and serialization rules. Your
-pr_debugs sprinkled all over the place are not a replacement for that.
-
-> +	ret = task_work_add(r_info->upid_ctx->task, &r_info->twork, true);
-
-Care to look at the type of the third argument of task_work_add()?
-
-> +struct uintrfd_ctx {
-> +	struct uintr_receiver_info *r_info;
-
-Yet another wrapper struct? What for?
-
-> +/*
-> + * sys_uintr_create_fd - Create a uintr_fd for the registered interrupt vector.
-
-So this creates a file descriptor for a vector which is already
-allocated and then it calls do_uintr_register_vector() which allocates
-the vector?
-
-> + */
-> +SYSCALL_DEFINE2(uintr_create_fd, u64, vector, unsigned int, flags)
-> +{
-
-Thanks,
-
-        tglx
+--AqsLC8rIMeq19msA--
