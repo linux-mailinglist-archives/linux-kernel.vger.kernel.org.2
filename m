@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C205B41738B
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD25C41748B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344940AbhIXM53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
+        id S1345524AbhIXNHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:07:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344900AbhIXMzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:55:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBAC46137C;
-        Fri, 24 Sep 2021 12:51:06 +0000 (UTC)
+        id S1345976AbhIXNFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:05:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DFCC61425;
+        Fri, 24 Sep 2021 12:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487867;
-        bh=Jbxau38A3fI6OzG8TEAO1/JO90P9NxznFWXFDb+p74Y=;
+        s=korg; t=1632488153;
+        bh=Sp9F3hUIYAkae3++XJ8TXnq0ktiIcedGcvRsshFrNjU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ISBKXJipxjdyvSzcgXHiaYMdtFeiGeLWsue3OpWr+/t4e2GoZeEmM9XZg0Tv8uS5I
-         +pLeUHIrJSkFj/DQ87f5tlGE1bEkQEGqV9Oumy/5VkHFOjJUbKF6WRX4cUFP9Zmj2U
-         Ievt1UkZYTj7jBuWEenKOVBiTmJNbMXB1jCC2fnY=
+        b=Aw5UjGcK25NACN6C3AaelyW3MqN1vJdxSL2KV9pc51h7Fl5csT4Wn1IzjWlaoS1WE
+         mjhW5uzObW1Hh67U0V2cMCL3AvyEf7ca1Pl1jbQToCAEderp9pRp6fYsdFiQEXMvhS
+         yxuWiwfq9CPg+1XrDebN1WsQWltQ6HY/eVC0WRM4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Harini Katakam <harini.katakam@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 35/50] dmaengine: xilinx_dma: Set DMA mask for coherent APIs
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 075/100] nilfs2: fix memory leak in nilfs_sysfs_delete_##name##_group
 Date:   Fri, 24 Sep 2021 14:44:24 +0200
-Message-Id: <20210924124333.427391902@linuxfoundation.org>
+Message-Id: <20210924124343.961066153@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
-References: <20210924124332.229289734@linuxfoundation.org>
+In-Reply-To: <20210924124341.214446495@linuxfoundation.org>
+References: <20210924124341.214446495@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-[ Upstream commit aac6c0f90799d66b8989be1e056408f33fd99fe6 ]
+[ Upstream commit a3e181259ddd61fd378390977a1e4e2316853afa ]
 
-The xilinx dma driver uses the consistent allocations, so for correct
-operation also set the DMA mask for coherent APIs. It fixes the below
-kernel crash with dmatest client when DMA IP is configured with 64-bit
-address width and linux is booted from high (>4GB) memory.
+The kobject_put() should be used to cleanup the memory associated with the
+kobject instead of kobject_del.  See the section "Kobject removal" of
+"Documentation/core-api/kobject.rst".
 
-Call trace:
-[  489.531257]  dma_alloc_from_pool+0x8c/0x1c0
-[  489.535431]  dma_direct_alloc+0x284/0x330
-[  489.539432]  dma_alloc_attrs+0x80/0xf0
-[  489.543174]  dma_pool_alloc+0x160/0x2c0
-[  489.547003]  xilinx_cdma_prep_memcpy+0xa4/0x180
-[  489.551524]  dmatest_func+0x3cc/0x114c
-[  489.555266]  kthread+0x124/0x130
-[  489.558486]  ret_from_fork+0x10/0x3c
-[  489.562051] ---[ end trace 248625b2d596a90a ]---
-
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Reviewed-by: Harini Katakam <harini.katakam@xilinx.com>
-Link: https://lore.kernel.org/r/1629363528-30347-1-git-send-email-radhey.shyam.pandey@xilinx.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-5-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-5-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/xilinx/xilinx_dma.c | 2 +-
+ fs/nilfs2/sysfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
-index ce18bca45ff2..7729b8d22553 100644
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -2703,7 +2703,7 @@ static int xilinx_dma_probe(struct platform_device *pdev)
- 		xdev->ext_addr = false;
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 6305e4ef7e39..d989e6500bd7 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -84,7 +84,7 @@ static int nilfs_sysfs_create_##name##_group(struct the_nilfs *nilfs) \
+ } \
+ static void nilfs_sysfs_delete_##name##_group(struct the_nilfs *nilfs) \
+ { \
+-	kobject_del(&nilfs->ns_##parent_name##_subgroups->sg_##name##_kobj); \
++	kobject_put(&nilfs->ns_##parent_name##_subgroups->sg_##name##_kobj); \
+ }
  
- 	/* Set the dma mask bits */
--	dma_set_mask(xdev->dev, DMA_BIT_MASK(addr_width));
-+	dma_set_mask_and_coherent(xdev->dev, DMA_BIT_MASK(addr_width));
- 
- 	/* Initialize the DMA engine */
- 	xdev->common.dev = &pdev->dev;
+ /************************************************************************
 -- 
 2.33.0
 
