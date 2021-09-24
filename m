@@ -2,205 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28892416D99
+	by mail.lfdr.de (Postfix) with ESMTP id BB229416D9B
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244699AbhIXIVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244700AbhIXIV0 (ORCPT
+        id S244718AbhIXIVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:21:41 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:54122
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244707AbhIXIVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:21:26 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BAFC061757;
-        Fri, 24 Sep 2021 01:19:53 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id pf3-20020a17090b1d8300b0019e081aa87bso7049510pjb.0;
-        Fri, 24 Sep 2021 01:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=en0BNZepb388y42VwZK97cG6vwTM2RLIEDJf2i2NL/E=;
-        b=ji/y2Fb+TtBS47HMED9yR5byTMhTtdwRGpjAyipNAqBeIZm7SVF2WfeHQQC1DmXC05
-         P81bEEtxFIA2zOY8bv7jU2IYccV3s1AIu9Vi2cOHsLbrRM6SXOni8j5OiqFBwsegSF/W
-         3iAGvD0GAcDlq6UJEeFMZlavqibym96llwmc4i1l8wAkvEGYav48815+mA8LESygPyni
-         tJbPqJXWjPJyi68dgfoRabRM6x/66B4h6fc3Hk79iNoCO9uZdyTgZBBauZ6czCWA8NPA
-         yT8yFbNQZU+z3MvyjPsgLjD8eYSUr46/OjDNX6/tDa9QM7geHvRqD4K1D4XrvTUebVZN
-         LyJA==
+        Fri, 24 Sep 2021 04:21:35 -0400
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C1A32402DA
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632471601;
+        bh=/FpPJ6HUKh570GzSsZQ+WyAXS4zfQoVYPICEt0qHWjE=;
+        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=YJd1yfmuovSX2k/Ro1Cu5/LhLvCugxS10ZBC+yBTMJKi90gH1cXnZam779S1055bw
+         /2M+7m7khj0gXtU5dDHyqq2GRv/W7HKAx6t3PYs9W7SPShoHCKTGlfexrXQuPdhEgl
+         x7DMfs0JP4ArIAkPkcNeYIJl3QVplOCyXtS8gOp2HxRJXwGKJW8xqB/VEcl7DbLGW6
+         kW02gzVJgf/LuRWa4vWDFYntwX98BpN8mneyLx8Mtp/WlgqqSq1M1ri69iZPAB4Y0Z
+         ecV4JypSoFboDRBQvIt77epegKQhnK6I5+y57YhZS3Q0VNR1Ez5cFZDSvJndMcAGYl
+         P+zFcNW2MusqA==
+Received: by mail-wr1-f71.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso7352319wrb.20
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:20:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=en0BNZepb388y42VwZK97cG6vwTM2RLIEDJf2i2NL/E=;
-        b=a8+qvCJF5o/J9SWD34B1qs+5mwK3hHLBYHPDGnap0XirFwj8AJ5qY22Vyjw97x69Lm
-         LipEubPWqKv8DIyYBrMFA462B3xlMYqak+N5H4RNvDVtISfhv0rtlrqJuuR8nFXD0AY8
-         wq+/ubVl6S/2+ng1kFwm83Nk+1RWA8YZyQiUWEpTUzydkcwzUPQLlT/D84lUtsMfzYY/
-         oOZ10AyIOO9s/gQgJNlhagEy3R8MpUkH7GbYAqizTy6DJeIpHRHipiJY7NPLUCWuJiT1
-         TmR1BtbSCuzn+cLLIDstpJz4+7A7s9ik0/3wdH+2oR+5jdw1WHV07F8nkQdNSJTTzTBD
-         1WMA==
-X-Gm-Message-State: AOAM532Ul1eV5VjQdDCEzLoHM4NqO56eP1uqWpwo+SvufSGtfMpstp0f
-        g0q1EUrTmIgRSaWb/k8oanQ=
-X-Google-Smtp-Source: ABdhPJyV+7uiPqiOPRmmxl9oaQZ5fYkO7cqh1WaIOm/f/TDRyI4Jy/6UjjuBVBnpkcqm5WoO4xLq2w==
-X-Received: by 2002:a17:903:230b:b0:13b:a0ec:1136 with SMTP id d11-20020a170903230b00b0013ba0ec1136mr7902396plh.63.1632471592893;
-        Fri, 24 Sep 2021 01:19:52 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id n19sm8083216pfa.60.2021.09.24.01.19.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Sep 2021 01:19:52 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf doc: Fix typos all over the place
-Date:   Fri, 24 Sep 2021 16:19:42 +0800
-Message-Id: <20210924081942.38368-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.32.0
+        bh=/FpPJ6HUKh570GzSsZQ+WyAXS4zfQoVYPICEt0qHWjE=;
+        b=DKs7PhF/EkoHevGwSz085p235K6jShlZdZPzPEPVWjrL/8H+RbJLK+u9EfYyGZz/V/
+         glCysOG2H5EPkHRWc/SohuyHZlLtyAkLsSWTXAGUq6sGYqcMcojEO4t2A1OjZT2lr2qA
+         7NKHB+onGs2SNvuDndPRGXy4Q0lynUqZfQ51L90m1A+F5YQR6eedhMXUuMy7wOSNe3gD
+         JngnUlNMHuDco4f918hvWyyDynhnhwxH1gDFXTKNLs0GbPP4SdkygXzkQyqLdZ7gnZeE
+         c4qFkwxI/bEWXC9m1SuLwXTfcG2Bial08uh7WD53zxHYe2TH9gd7XF3PmT+VV7hSQnGt
+         49AQ==
+X-Gm-Message-State: AOAM533rQCdWzMs+op2dS+AwyJsKWDkp5BuiJF4hoJqgHo6IMcbazYEx
+        n0rCDNcjyX8yGy/oTy2KaEu9+Gda3oRlQ8W7PyNo85vUOYxGiKkbIK3d59qUkHwZJ+XuzP3o6v2
+        DHrhlaccr3jePzUOlW8R1qSVGUroUikiw1vGDYWfxXA==
+X-Received: by 2002:a05:600c:22d4:: with SMTP id 20mr667842wmg.177.1632471601562;
+        Fri, 24 Sep 2021 01:20:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyovs07/NpPqs+7EX8hqtEtUX7GPNasLzXOlMR532keOm9gCjirjHV0aIV/QaKqpQCZ0XtFTQ==
+X-Received: by 2002:a05:600c:22d4:: with SMTP id 20mr667818wmg.177.1632471601360;
+        Fri, 24 Sep 2021 01:20:01 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id c135sm11874595wme.6.2021.09.24.01.20.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 01:20:01 -0700 (PDT)
+Subject: Re: [PATCH 5/5] ARM: dts: imx6sll: fix mmc compatibles
+To:     Andreas Kemnade <andreas@kemnade.info>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210923201238.2516844-1-andreas@kemnade.info>
+ <20210923201238.2516844-6-andreas@kemnade.info>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <c4723e89-a6aa-ab0b-f55a-0d6734a19c34@canonical.com>
+Date:   Fri, 24 Sep 2021 10:20:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210923201238.2516844-6-andreas@kemnade.info>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+On 23/09/2021 22:12, Andreas Kemnade wrote:
+> Binding specification only allows one compatible here.
+> 
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+>  arch/arm/boot/dts/imx6sll.dtsi | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
 
-Considering that perf and its subcommands have so many parameters,
-the documentation is always the first stop for perf beginners. Fixing
-some spelling errors will relax the eyes of some readers a little bit.
 
- s/specicfication/specification/
- s/caheline/cacheline/
- s/tranasaction/transaction/
- s/complan/complain/
- s/sched_wakep/sched_wakeup/
- s/possble/possible/
- s/methology/methodology/
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Signed-off-by: Like Xu <likexu@tencent.com>
----
- tools/perf/Documentation/jitdump-specification.txt | 2 +-
- tools/perf/Documentation/perf-c2c.txt              | 2 +-
- tools/perf/Documentation/perf-intel-pt.txt         | 2 +-
- tools/perf/Documentation/perf-lock.txt             | 2 +-
- tools/perf/Documentation/perf-script-perl.txt      | 2 +-
- tools/perf/Documentation/perf-script-python.txt    | 2 +-
- tools/perf/Documentation/perf-stat.txt             | 2 +-
- tools/perf/Documentation/topdown.txt               | 2 +-
- 8 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/tools/perf/Documentation/jitdump-specification.txt b/tools/perf/Documentation/jitdump-specification.txt
-index 52152d156ad9..79936355d819 100644
---- a/tools/perf/Documentation/jitdump-specification.txt
-+++ b/tools/perf/Documentation/jitdump-specification.txt
-@@ -164,7 +164,7 @@ const char unwinding_data[n]: an array of unwinding data, consisting of the EH F
- The EH Frame header follows the Linux Standard Base (LSB) specification as described in the document at https://refspecs.linuxfoundation.org/LSB_1.3.0/gLSB/gLSB/ehframehdr.html
- 
- 
--The EH Frame follows the LSB specicfication as described in the document at https://refspecs.linuxbase.org/LSB_3.0.0/LSB-PDA/LSB-PDA/ehframechpt.html
-+The EH Frame follows the LSB specification as described in the document at https://refspecs.linuxbase.org/LSB_3.0.0/LSB-PDA/LSB-PDA/ehframechpt.html
- 
- 
- NOTE: The mapped_size is generally either the same as unwind_data_size (if the unwinding data was mapped in memory by the running process) or zero (if the unwinding data is not mapped by the process). If the unwinding data was not mapped, then only the EH Frame Header will be read, which can be used to specify FP based unwinding for a function which does not have unwinding information.
-diff --git a/tools/perf/Documentation/perf-c2c.txt b/tools/perf/Documentation/perf-c2c.txt
-index de6beedb7283..3b6a2c84ea02 100644
---- a/tools/perf/Documentation/perf-c2c.txt
-+++ b/tools/perf/Documentation/perf-c2c.txt
-@@ -261,7 +261,7 @@ COALESCE
- User can specify how to sort offsets for cacheline.
- 
- Following fields are available and governs the final
--output fields set for caheline offsets output:
-+output fields set for cacheline offsets output:
- 
-   tid   - coalesced by process TIDs
-   pid   - coalesced by process PIDs
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 184ba62420f0..db465fa7ee91 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -883,7 +883,7 @@ and "r" can be combined to get calls and returns.
- 
- "Transactions" events correspond to the start or end of transactions. The
- 'flags' field can be used in perf script to determine whether the event is a
--tranasaction start, commit or abort.
-+transaction start, commit or abort.
- 
- Note that "instructions", "branches" and "transactions" events depend on code
- flow packets which can be disabled by using the config term "branch=0".  Refer
-diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
-index 74d774592196..1b4d452923d7 100644
---- a/tools/perf/Documentation/perf-lock.txt
-+++ b/tools/perf/Documentation/perf-lock.txt
-@@ -44,7 +44,7 @@ COMMON OPTIONS
- 
- -f::
- --force::
--	Don't complan, do it.
-+	Don't complain, do it.
- 
- REPORT OPTIONS
- --------------
-diff --git a/tools/perf/Documentation/perf-script-perl.txt b/tools/perf/Documentation/perf-script-perl.txt
-index 5a1f68122f50..fa4f39d305a7 100644
---- a/tools/perf/Documentation/perf-script-perl.txt
-+++ b/tools/perf/Documentation/perf-script-perl.txt
-@@ -54,7 +54,7 @@ all sched_wakeup events in the system:
- Traces meant to be processed using a script should be recorded with
- the above option: -a to enable system-wide collection.
- 
--The format file for the sched_wakep event defines the following fields
-+The format file for the sched_wakeup event defines the following fields
- (see /sys/kernel/debug/tracing/events/sched/sched_wakeup/format):
- 
- ----
-diff --git a/tools/perf/Documentation/perf-script-python.txt b/tools/perf/Documentation/perf-script-python.txt
-index 0250dc61cf98..cf4b7f4b625a 100644
---- a/tools/perf/Documentation/perf-script-python.txt
-+++ b/tools/perf/Documentation/perf-script-python.txt
-@@ -448,7 +448,7 @@ all sched_wakeup events in the system:
- Traces meant to be processed using a script should be recorded with
- the above option: -a to enable system-wide collection.
- 
--The format file for the sched_wakep event defines the following fields
-+The format file for the sched_wakeup event defines the following fields
- (see /sys/kernel/debug/tracing/events/sched/sched_wakeup/format):
- 
- ----
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index 4c9310be6acc..7e6fb7cbc0f4 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -385,7 +385,7 @@ Aggregate counts per physical processor for system-wide mode measurements.
- Print metrics or metricgroups specified in a comma separated list.
- For a group all metrics from the group are added.
- The events from the metrics are automatically measured.
--See perf list output for the possble metrics and metricgroups.
-+See perf list output for the possible metrics and metricgroups.
- 
- -A::
- --no-aggr::
-diff --git a/tools/perf/Documentation/topdown.txt b/tools/perf/Documentation/topdown.txt
-index c6302df4cf29..a15b93fdcf50 100644
---- a/tools/perf/Documentation/topdown.txt
-+++ b/tools/perf/Documentation/topdown.txt
-@@ -2,7 +2,7 @@ Using TopDown metrics in user space
- -----------------------------------
- 
- Intel CPUs (since Sandy Bridge and Silvermont) support a TopDown
--methology to break down CPU pipeline execution into 4 bottlenecks:
-+methodology to break down CPU pipeline execution into 4 bottlenecks:
- frontend bound, backend bound, bad speculation, retiring.
- 
- For more details on Topdown see [1][5]
--- 
-2.32.0
-
+Best regards,
+Krzysztof
