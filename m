@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848AE417540
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB8B417546
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345876AbhIXNSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:18:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44616 "EHLO mail.kernel.org"
+        id S1346440AbhIXNTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:19:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345482AbhIXNQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:16:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0CF060F4C;
-        Fri, 24 Sep 2021 13:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632489291;
-        bh=VSbgQFvXId/bgojPS2ErFjSgYOZUoEfsMFPutOlktNc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EAIk84cpvdk8reOq2pmVxfcgut1ZB6Ck35pFoWppmWzA+O4iP5nFyIY5F1tGoIrGP
-         LeNaGYa5vd54q3aFlVhi/mU9WO2MUGDA5C1+sXyTMtVtIvdsOgKB63zlagZQ/iw5ym
-         I7+ZBEW/RsT68AGwlcJHayYKUiVAjHEAP3NJtQT++qUUtV9wu1/VGS8NSiaKEOkseV
-         29ZesYYU57+3J7gc5mHZIyR6YtVEIiLZN/Chb1tHUXULkXaNVB+l/otRt9sJWP9Hz1
-         4fHeQ5s5CoZkNnNJcPKyHR9NMyqLpB03qbEr28hX6AZUNVne54Z4np04PpeaSDYHsH
-         KT7FfXGoVnYDA==
-From:   Georgi Djakov <djakov@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        djakov@kernel.org
-Subject: [GIT PULL] interconnect fixes for 5.15-rc
-Date:   Fri, 24 Sep 2021 16:14:51 +0300
-Message-Id: <20210924131451.31371-1-djakov@kernel.org>
-X-Mailer: git-send-email 2.29.0
+        id S1347215AbhIXNSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:18:03 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 005B760F4C;
+        Fri, 24 Sep 2021 13:16:28 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 09:16:27 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Eugene Syromyatnikov <evgsyr@gmail.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 0/2] tracing: Have trace_pid_list be a sparse array
+Message-ID: <20210924091627.645a8fd3@gandalf.local.home>
+In-Reply-To: <CACGkJdtsHWBstw_Gzb-Dq4Xs_eAW1jsARr5wbh0yE_=NsPA5bw@mail.gmail.com>
+References: <20210924033547.939554938@goodmis.org>
+        <20210924000717.310b492a@rorschach.local.home>
+        <CACGkJdtsHWBstw_Gzb-Dq4Xs_eAW1jsARr5wbh0yE_=NsPA5bw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+On Fri, 24 Sep 2021 12:51:07 +0200
+Eugene Syromyatnikov <evgsyr@gmail.com> wrote:
 
-This pull request contains interconnect driver fixes for 5.15-rc.
-The details are in the signed tag. Please pull them into char-misc-linus
-when possible. The patches have been in linux-next during the last few
-days.
+Hi Eugene,
 
-Thanks,
-Georgi
+> Note that there is only one top-level chunk (so its size doesn't
+> matter much), (usually) about one middle-tier chunk (except for some
+> heavy cases, since pids are allocated linearly), and quite some
+> lower-tier bitset leaves.  So I'd optimise towards smaller leaves at
+> the expense of middle-tier (and especially top-tier) chunk size
+> (especially considering the fact that in the kernel, buddy allocator
+> is used), like 12-8-12 or something like that, but I have no factual
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+What I really like about my 8 8 14 split I have, it makes everything 2K in
+size on 64 bit machines (1K 1K 2K for 32 bit, but who cares ;-)
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+ 1 << 8 * 8 bytes = 2K   // top tiers are pointers to lower tiers
+ 1 << 14 bits = 2K       // lower tier only cares about bits
 
-are available in the Git repository at:
+This means they will likely all be allocated in the same slab.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.15-rc3
+I'm optimizing the top tiers for size, because they are likely to be empty.
+Why add memory for something that will never be used, and can't be removed.
+Note, the middle and lower tiers can be reused when they go empty, which is
+a likely use case (at least when I test this using hackbench).
 
-for you to fetch changes up to 13404ac8882f5225af07545215f4975a564c3740:
+> basis for arguing about specific split.  Also, I cannot resist from
+> noticing that this reminds me an awful lot of XArray and [1].  Maybe,
+> some wrapper around XArray would do?
+> 
+> [1] https://gitlab.com/strace/strace/-/raw/master/src/trie.h
+> 
 
-  interconnect: qcom: sdm660: Add missing a2noc qos clocks (2021-09-13 15:49:55 +0300)
+I looked into xarray and it appears to be optimized for storing something,
+where as I'm just interested in a sparse bitmask.
 
-----------------------------------------------------------------
-interconnect fixes for v5.15
+Thanks for the review.
 
-This contains a few fixes for the sdm660 driver:
-- sdm660: Fix id of slv_cnoc_mnoc_cfg
-- sdm660: Correct NOC_QOS_PRIORITY shift and mask
-- sdm660: Add missing a2noc qos clocks
+Note, I'll be posting a v3 soon because I found if I echo 1<<30 into
+set_event_pid, it adds 0 (because it only looks at the bottom 30 bits).
+It should really return -EINVAL.
 
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
-
-----------------------------------------------------------------
-Shawn Guo (4):
-      interconnect: qcom: sdm660: Fix id of slv_cnoc_mnoc_cfg
-      interconnect: qcom: sdm660: Correct NOC_QOS_PRIORITY shift and mask
-      dt-bindings: interconnect: sdm660: Add missing a2noc qos clocks
-      interconnect: qcom: sdm660: Add missing a2noc qos clocks
-
- Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml | 46 +++++++-
- drivers/interconnect/qcom/sdm660.c                              | 25 +++-
- 2 files changed, 61 insertions(+), 10 deletions(-)
+-- Steve
