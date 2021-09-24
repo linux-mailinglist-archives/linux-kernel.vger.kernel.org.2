@@ -2,130 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96455416D4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50357416D56
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244536AbhIXIFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:05:38 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16235 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244543AbhIXIEY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:04:24 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HG4G917Dcz1DH3m;
-        Fri, 24 Sep 2021 16:00:33 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 24 Sep 2021 16:01:45 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Fri, 24 Sep
- 2021 16:01:45 +0800
-Subject: Re: [PATCH net-next 1/7] page_pool: disable dma mapping support for
- 32-bit arch with 64-bit DMA
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Jesper Dangaard Brouer" <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Kevin Hao" <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, <memxor@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-References: <20210922094131.15625-1-linyunsheng@huawei.com>
- <20210922094131.15625-2-linyunsheng@huawei.com>
- <0ffa15a1-742d-a05d-3ea6-04ff25be6a29@redhat.com>
- <CAC_iWjJLCQNHxgbQ-mzLC3OC-m2s7qj3YAtw7vPAKGG6WxywpA@mail.gmail.com>
- <adb2687f-b501-9324-52b2-33ede1169007@huawei.com>
- <YUx8KZS5NPdTRkPS@apalos.home>
- <27bc803a-1687-a583-fa6b-3691fef7552e@huawei.com>
- <CAC_iWj+dandMsja0qh4CYG1Wwhgg=MriL2O74T7=1hXeEKcfXA@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <001c1518-b5db-c1e3-0feb-657ecde61cdc@huawei.com>
-Date:   Fri, 24 Sep 2021 16:01:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S244553AbhIXIGA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Sep 2021 04:06:00 -0400
+Received: from mga12.intel.com ([192.55.52.136]:37593 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244471AbhIXIF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:05:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="203519850"
+X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
+   d="scan'208";a="203519850"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 01:04:04 -0700
+X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
+   d="scan'208";a="551488631"
+Received: from avanhout-mobl.ger.corp.intel.com (HELO localhost) ([10.249.37.153])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 01:03:37 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Doug Anderson <dianders@chromium.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "open list\:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Steev Klimaszewski <steev@kali.org>,
+        "open list\:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lionel Debieve <lionel.debieve@st.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Martin =?utf-8?Q?J=C3=BCcker?= <martin.juecker@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Nishanth Menon <nm@ti.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Otavio Salvador <otavio@ossystems.com.br>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Razvan Stefanescu <razvan.stefanescu@microchip.com>,
+        Robert Richter <rric@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Will Deacon <will@kernel.org>,
+        William Cohen <wcohen@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
+Subject: Re: [PATCH v5 00/15] eDP: Support probing eDP panels dynamically instead of hardcoding
+In-Reply-To: <CAD=FV=VPgFRBLgOGvt4a4afDr80aQL64L7=H3kqeRf2ffiusPg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210914202202.1702601-1-dianders@chromium.org> <CACRpkdaTb4_UfFzCqw=fiAnQhHD+1sDDua529KdGQbgMVfjYBw@mail.gmail.com> <CAD=FV=VPgFRBLgOGvt4a4afDr80aQL64L7=H3kqeRf2ffiusPg@mail.gmail.com>
+Date:   Fri, 24 Sep 2021 11:03:34 +0300
+Message-ID: <874kaabdt5.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWj+dandMsja0qh4CYG1Wwhgg=MriL2O74T7=1hXeEKcfXA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/24 15:25, Ilias Apalodimas wrote:
-> On Fri, 24 Sept 2021 at 10:04, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2021/9/23 21:07, Ilias Apalodimas wrote:
->>> On Thu, Sep 23, 2021 at 07:13:11PM +0800, Yunsheng Lin wrote:
->>>> On 2021/9/23 18:02, Ilias Apalodimas wrote:
->>>>> Hi Jesper,
->>>>>
->>>>> On Thu, 23 Sept 2021 at 12:33, Jesper Dangaard Brouer
->>>>> <jbrouer@redhat.com> wrote:
->>>>>>
->>>>>>
->>>>>> On 22/09/2021 11.41, Yunsheng Lin wrote:
->>>>>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->>>>>>> index 1a6978427d6c..a65bd7972e37 100644
->>>>>>> --- a/net/core/page_pool.c
->>>>>>> +++ b/net/core/page_pool.c
->>>>>>> @@ -49,6 +49,12 @@ static int page_pool_init(struct page_pool *pool,
->>>>>>>        * which is the XDP_TX use-case.
->>>>>>>        */
->>>>>>>       if (pool->p.flags & PP_FLAG_DMA_MAP) {
->>>>>>> +             /* DMA-mapping is not supported on 32-bit systems with
->>>>>>> +              * 64-bit DMA mapping.
->>>>>>> +              */
->>>>>>> +             if (sizeof(dma_addr_t) > sizeof(unsigned long))
->>>>>>> +                     return -EINVAL;
->>>>>>
->>>>>> As I said before, can we please use another error than EINVAL.
->>>>>> We should give drivers a chance/ability to detect this error, and e.g.
->>>>>> fallback to doing DMA mappings inside driver instead.
->>>>>>
->>>>>> I suggest using EOPNOTSUPP 95 (Operation not supported).
->>>>
->>>> Will change it to EOPNOTSUPP, thanks.
->>>
->>> Mind sending this one separately (and you can keep my reviewed-by).  It
->>> fits nicely on it's own and since I am not sure about the rest of the
->>> changes yet, it would be nice to get this one in.
->>
->> I am not sure sending this one separately really makes sense, as it is
->> mainly used to make supporting the "keep track of pp page when __skb_frag_ref()
->> is called" in patch 5 easier.
-> 
-> It rips out support for devices that are 32bit and have 64bit dma and
-> make the whole code easier to follow.  I thought we agreed on removing
-> the support for those devices regardless didn't we?
+On Mon, 20 Sep 2021, Doug Anderson <dianders@chromium.org> wrote:
+> Pushed all 15 to drm-misc-next.
+...
+> e8de4d55c259 drm/edid: Use new encoded panel id style for quirks matching
+> d9f91a10c3e8 drm/edid: Allow querying/working with the panel ID from the EDID
 
-I am actually not convinced that the code about PAGE_POOL_DMA_USE_PP_FRAG_COUNT
-(maybe the name is somewhat confusiong) as it it now, but it is after adding patch
-5, and it seems we are not handing the skb_split() case in tso_fragment() for 32bit
-arch with 64bit dma too if we still keep PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro.
+Hi Doug, Stan's reporting "initializer element is not constant" issues
+here that were discussed before [1]. I wonder what gives, you said you'd
+hit them on a draft version, but not with what was merged, and I can't
+reproduce this either. Curious.
+
+BR,
+Jani.
 
 
-> 
-> Regards
-> /Ilias
-> .
-> 
+In file included from drivers/gpu/drm/drm_edid.c:42:0:
+./include/drm/drm_edid.h:525:2: error: initializer element is not constant
+  ((((u32)((vend)[0]) - '@') & 0x1f) << 26 | \
+  ^
+drivers/gpu/drm/drm_edid.c:111:14: note: in expansion of macro ‘drm_edid_encode_panel_id’
+  .panel_id = drm_edid_encode_panel_id(vend, product_id), \
+	      ^~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/drm_edid.c:120:2: note: in expansion of macro ‘EDID_QUIRK’
+  EDID_QUIRK("ACR", 44358, EDID_QUIRK_PREFER_LARGE_60),
+  ^~~~~~~~~~
+./include/drm/drm_edid.h:525:2: note: (near initialization for ‘edid_quirk_list[0].panel_id’)
+  ((((u32)((vend)[0]) - '@') & 0x1f) << 26 | \
+  ^
+drivers/gpu/drm/drm_edid.c:111:14: note: in expansion of macro ‘drm_edid_encode_panel_id’
+  .panel_id = drm_edid_encode_panel_id(vend, product_id), \
+	      ^~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/drm_edid.c:120:2: note: in expansion of macro ‘EDID_QUIRK’
+  EDID_QUIRK("ACR", 44358, EDID_QUIRK_PREFER_LARGE_60),
+  ^~~~~~~~~~
+
+
+[1] https://lore.kernel.org/all/CAD=FV=XHvFq5+Rtax7WNq2-BieQr-BM4UnmOcma_eTzkX2ZtNA@mail.gmail.com/
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
