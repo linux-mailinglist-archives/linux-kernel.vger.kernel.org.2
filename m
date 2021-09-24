@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10B04172C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C227C417258
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343882AbhIXMvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
+        id S1343963AbhIXMrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:47:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344359AbhIXMt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:49:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6A4F61265;
-        Fri, 24 Sep 2021 12:47:54 +0000 (UTC)
+        id S1343945AbhIXMqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:46:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 293A46124D;
+        Fri, 24 Sep 2021 12:45:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487675;
-        bh=OaC9Fi/fYhcmSbviaaRVdOVbVprgcSGROLczIYzAMA8=;
+        s=korg; t=1632487509;
+        bh=gWuvCriZnNI6rdvAYov6xMlC94YfEiVZd2zOseaT18I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N7HrbXMTHefN2lSFr1XvkIsdUobnXLV55EJv0M09QJbMsgsAKcXlj3aFYkNXtBu6h
-         /sjBMJe9eoaJ1QEQwDGcUR/p2QoPncHDn9xqN4dzEhDPznw48j1VuFda5m6Mzm/oQ5
-         pnO2FPnLRz6eLbd5Df0YXF6gT+Lv8WyB4q8DFxfA=
+        b=D6i2kyWAEIsuQ5imgBqkpBmuWVISuNvUb2i/MjSJPzF3Okh6Su5uEkowUOPd30Gti
+         wdq6zFK2RKvPuZbM2CE0A6e0NdnJl5ilo3wZDIgu66lHMlFpJLw8OeJzQd/4Y0fGvy
+         gS7xORkopXvvi3MBBTYDpzjSCLjY0p0DWyjYclW4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cyrill Gorcunov <gorcunov@gmail.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Andrey Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 10/27] prctl: allow to setup brk for et_dyn executables
+        stable@vger.kernel.org,
+        Ilja Van Sprundel <ivansprundel@ioactive.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 23/23] sctp: validate from_addr_param return
 Date:   Fri, 24 Sep 2021 14:44:04 +0200
-Message-Id: <20210924124329.519559472@linuxfoundation.org>
+Message-Id: <20210924124328.572238242@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
+References: <20210924124327.816210800@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,80 +41,222 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cyrill Gorcunov <gorcunov@gmail.com>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-commit e1fbbd073137a9d63279f6bf363151a938347640 upstream.
+commit 0c5dc070ff3d6246d22ddd931f23a6266249e3db upstream.
 
-Keno Fischer reported that when a binray loaded via ld-linux-x the
-prctl(PR_SET_MM_MAP) doesn't allow to setup brk value because it lays
-before mm:end_data.
+Ilja reported that, simply putting it, nothing was validating that
+from_addr_param functions were operating on initialized memory. That is,
+the parameter itself was being validated by sctp_walk_params, but it
+doesn't check for types and their specific sizes and it could be a 0-length
+one, causing from_addr_param to potentially work over the next parameter or
+even uninitialized memory.
 
-For example a test program shows
+The fix here is to, in all calls to from_addr_param, check if enough space
+is there for the wanted IP address type.
 
- | # ~/t
- |
- | start_code      401000
- | end_code        401a15
- | start_stack     7ffce4577dd0
- | start_data	   403e10
- | end_data        40408c
- | start_brk	   b5b000
- | sbrk(0)         b5b000
-
-and when executed via ld-linux
-
- | # /lib64/ld-linux-x86-64.so.2 ~/t
- |
- | start_code      7fc25b0a4000
- | end_code        7fc25b0c4524
- | start_stack     7fffcc6b2400
- | start_data	   7fc25b0ce4c0
- | end_data        7fc25b0cff98
- | start_brk	   55555710c000
- | sbrk(0)         55555710c000
-
-This of course prevent criu from restoring such programs.  Looking into
-how kernel operates with brk/start_brk inside brk() syscall I don't see
-any problem if we allow to setup brk/start_brk without checking for
-end_data.  Even if someone pass some weird address here on a purpose then
-the worst possible result will be an unexpected unmapping of existing vma
-(own vma, since prctl works with the callers memory) but test for
-RLIMIT_DATA is still valid and a user won't be able to gain more memory in
-case of expanding VMAs via new values shipped with prctl call.
-
-Link: https://lkml.kernel.org/r/20210121221207.GB2174@grain
-Fixes: bbdc6076d2e5 ("binfmt_elf: move brk out of mmap when doing direct loader exec")
-Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
-Reported-by: Keno Fischer <keno@juliacomputing.com>
-Acked-by: Andrey Vagin <avagin@gmail.com>
-Tested-by: Andrey Vagin <avagin@gmail.com>
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Cc: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sys.c |    7 -------
- 1 file changed, 7 deletions(-)
+ include/net/sctp/structs.h |    2 +-
+ net/sctp/bind_addr.c       |   20 +++++++++++---------
+ net/sctp/input.c           |    6 ++++--
+ net/sctp/ipv6.c            |    7 ++++++-
+ net/sctp/protocol.c        |    7 ++++++-
+ net/sctp/sm_make_chunk.c   |   29 ++++++++++++++++-------------
+ 6 files changed, 44 insertions(+), 27 deletions(-)
 
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1874,13 +1874,6 @@ static int validate_prctl_map(struct prc
- 	error = -EINVAL;
+--- a/include/net/sctp/structs.h
++++ b/include/net/sctp/structs.h
+@@ -469,7 +469,7 @@ struct sctp_af {
+ 					 int saddr);
+ 	void		(*from_sk)	(union sctp_addr *,
+ 					 struct sock *sk);
+-	void		(*from_addr_param) (union sctp_addr *,
++	bool		(*from_addr_param) (union sctp_addr *,
+ 					    union sctp_addr_param *,
+ 					    __be16 port, int iif);
+ 	int		(*to_addr_param) (const union sctp_addr *,
+--- a/net/sctp/bind_addr.c
++++ b/net/sctp/bind_addr.c
+@@ -284,19 +284,15 @@ int sctp_raw_to_bind_addrs(struct sctp_b
+ 		rawaddr = (union sctp_addr_param *)raw_addr_list;
  
- 	/*
--	 * @brk should be after @end_data in traditional maps.
--	 */
--	if (prctl_map->start_brk <= prctl_map->end_data ||
--	    prctl_map->brk <= prctl_map->end_data)
--		goto out;
--
--	/*
- 	 * Neither we should allow to override limits if they set.
- 	 */
- 	if (check_data_rlimit(rlimit(RLIMIT_DATA), prctl_map->brk,
+ 		af = sctp_get_af_specific(param_type2af(param->type));
+-		if (unlikely(!af)) {
++		if (unlikely(!af) ||
++		    !af->from_addr_param(&addr, rawaddr, htons(port), 0)) {
+ 			retval = -EINVAL;
+-			sctp_bind_addr_clean(bp);
+-			break;
++			goto out_err;
+ 		}
+ 
+-		af->from_addr_param(&addr, rawaddr, htons(port), 0);
+ 		retval = sctp_add_bind_addr(bp, &addr, SCTP_ADDR_SRC, gfp);
+-		if (retval) {
+-			/* Can't finish building the list, clean up. */
+-			sctp_bind_addr_clean(bp);
+-			break;
+-		}
++		if (retval)
++			goto out_err;
+ 
+ 		len = ntohs(param->length);
+ 		addrs_len -= len;
+@@ -304,6 +300,12 @@ int sctp_raw_to_bind_addrs(struct sctp_b
+ 	}
+ 
+ 	return retval;
++
++out_err:
++	if (retval)
++		sctp_bind_addr_clean(bp);
++
++	return retval;
+ }
+ 
+ /********************************************************************
+--- a/net/sctp/input.c
++++ b/net/sctp/input.c
+@@ -972,7 +972,8 @@ static struct sctp_association *__sctp_r
+ 		if (!af)
+ 			continue;
+ 
+-		af->from_addr_param(paddr, params.addr, sh->source, 0);
++		if (!af->from_addr_param(paddr, params.addr, sh->source, 0))
++			continue;
+ 
+ 		asoc = __sctp_lookup_association(net, laddr, paddr, &transport);
+ 		if (asoc)
+@@ -1018,7 +1019,8 @@ static struct sctp_association *__sctp_r
+ 	if (unlikely(!af))
+ 		return NULL;
+ 
+-	af->from_addr_param(&paddr, param, peer_port, 0);
++	if (af->from_addr_param(&paddr, param, peer_port, 0))
++		return NULL;
+ 
+ 	return __sctp_lookup_association(net, laddr, &paddr, transportp);
+ }
+--- a/net/sctp/ipv6.c
++++ b/net/sctp/ipv6.c
+@@ -488,15 +488,20 @@ static void sctp_v6_to_sk_daddr(union sc
+ }
+ 
+ /* Initialize a sctp_addr from an address parameter. */
+-static void sctp_v6_from_addr_param(union sctp_addr *addr,
++static bool sctp_v6_from_addr_param(union sctp_addr *addr,
+ 				    union sctp_addr_param *param,
+ 				    __be16 port, int iif)
+ {
++	if (ntohs(param->v6.param_hdr.length) < sizeof(struct sctp_ipv6addr_param))
++		return false;
++
+ 	addr->v6.sin6_family = AF_INET6;
+ 	addr->v6.sin6_port = port;
+ 	addr->v6.sin6_flowinfo = 0; /* BUG */
+ 	addr->v6.sin6_addr = param->v6.addr;
+ 	addr->v6.sin6_scope_id = iif;
++
++	return true;
+ }
+ 
+ /* Initialize an address parameter from a sctp_addr and return the length
+--- a/net/sctp/protocol.c
++++ b/net/sctp/protocol.c
+@@ -272,14 +272,19 @@ static void sctp_v4_to_sk_daddr(union sc
+ }
+ 
+ /* Initialize a sctp_addr from an address parameter. */
+-static void sctp_v4_from_addr_param(union sctp_addr *addr,
++static bool sctp_v4_from_addr_param(union sctp_addr *addr,
+ 				    union sctp_addr_param *param,
+ 				    __be16 port, int iif)
+ {
++	if (ntohs(param->v4.param_hdr.length) < sizeof(struct sctp_ipv4addr_param))
++		return false;
++
+ 	addr->v4.sin_family = AF_INET;
+ 	addr->v4.sin_port = port;
+ 	addr->v4.sin_addr.s_addr = param->v4.addr.s_addr;
+ 	memset(addr->v4.sin_zero, 0, sizeof(addr->v4.sin_zero));
++
++	return true;
+ }
+ 
+ /* Initialize an address parameter from a sctp_addr and return the length
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -2333,11 +2333,13 @@ int sctp_process_init(struct sctp_associ
+ 
+ 	/* Process the initialization parameters.  */
+ 	sctp_walk_params(param, peer_init, init_hdr.params) {
+-		if (!src_match && (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
+-		    param.p->type == SCTP_PARAM_IPV6_ADDRESS)) {
++		if (!src_match &&
++		    (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
++		     param.p->type == SCTP_PARAM_IPV6_ADDRESS)) {
+ 			af = sctp_get_af_specific(param_type2af(param.p->type));
+-			af->from_addr_param(&addr, param.addr,
+-					    chunk->sctp_hdr->source, 0);
++			if (!af->from_addr_param(&addr, param.addr,
++						 chunk->sctp_hdr->source, 0))
++				continue;
+ 			if (sctp_cmp_addr_exact(sctp_source(chunk), &addr))
+ 				src_match = 1;
+ 		}
+@@ -2531,7 +2533,8 @@ static int sctp_process_param(struct sct
+ 			break;
+ do_addr_param:
+ 		af = sctp_get_af_specific(param_type2af(param.p->type));
+-		af->from_addr_param(&addr, param.addr, htons(asoc->peer.port), 0);
++		if (!af->from_addr_param(&addr, param.addr, htons(asoc->peer.port), 0))
++			break;
+ 		scope = sctp_scope(peer_addr);
+ 		if (sctp_in_scope(net, &addr, scope))
+ 			if (!sctp_assoc_add_peer(asoc, &addr, gfp, SCTP_UNCONFIRMED))
+@@ -2624,15 +2627,13 @@ do_addr_param:
+ 		addr_param = param.v + sizeof(sctp_addip_param_t);
+ 
+ 		af = sctp_get_af_specific(param_type2af(addr_param->p.type));
+-		if (af == NULL)
++		if (!af)
+ 			break;
+ 
+-		af->from_addr_param(&addr, addr_param,
+-				    htons(asoc->peer.port), 0);
++		if (!af->from_addr_param(&addr, addr_param,
++					 htons(asoc->peer.port), 0))
++			break;
+ 
+-		/* if the address is invalid, we can't process it.
+-		 * XXX: see spec for what to do.
+-		 */
+ 		if (!af->addr_valid(&addr, NULL, NULL))
+ 			break;
+ 
+@@ -3042,7 +3043,8 @@ static __be16 sctp_process_asconf_param(
+ 	if (unlikely(!af))
+ 		return SCTP_ERROR_DNS_FAILED;
+ 
+-	af->from_addr_param(&addr, addr_param, htons(asoc->peer.port), 0);
++	if (!af->from_addr_param(&addr, addr_param, htons(asoc->peer.port), 0))
++		return SCTP_ERROR_DNS_FAILED;
+ 
+ 	/* ADDIP 4.2.1  This parameter MUST NOT contain a broadcast
+ 	 * or multicast address.
+@@ -3308,7 +3310,8 @@ static void sctp_asconf_param_success(st
+ 
+ 	/* We have checked the packet before, so we do not check again.	*/
+ 	af = sctp_get_af_specific(param_type2af(addr_param->p.type));
+-	af->from_addr_param(&addr, addr_param, htons(bp->port), 0);
++	if (!af->from_addr_param(&addr, addr_param, htons(bp->port), 0))
++		return;
+ 
+ 	switch (asconf_param->param_hdr.type) {
+ 	case SCTP_PARAM_ADD_IP:
 
 
