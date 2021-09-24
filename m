@@ -2,89 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D6D417751
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EDC417753
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 17:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347032AbhIXPRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 11:17:49 -0400
-Received: from muru.com ([72.249.23.125]:36942 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346962AbhIXPRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:17:46 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id C9FB380EE;
-        Fri, 24 Sep 2021 15:16:40 +0000 (UTC)
-Date:   Fri, 24 Sep 2021 18:16:10 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] serial: 8250: Implement prep_tx for power management
-Message-ID: <YU3ruj32L/iaZS1h@atomide.com>
-References: <20210921103346.64824-1-tony@atomide.com>
- <20210921103346.64824-5-tony@atomide.com>
- <YUx399WBrMiZDhno@hovoldconsulting.com>
- <YUyXwJnmPhm1940B@atomide.com>
- <YU3kPHg2qLr//HEF@hovoldconsulting.com>
+        id S1347035AbhIXPSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 11:18:03 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56618 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347036AbhIXPSB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 11:18:01 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9D117223D7;
+        Fri, 24 Sep 2021 15:16:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632496587;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hLfQh0P3AXcZ2z9Abd54q/4US5yio0Yktkl0bIt6F8s=;
+        b=iglzam/K1jwHtN1TwGxg3w8rgxC6bwQPqPkVLTT4YJNOPSpYP5AS1hFZLDLL9QAxc7Sv2f
+        9S7kvmncB9RvvfiD05kCmfMGrrCzND+KTjWKqVQRfPTwKmb/UJHx4LuNJiMqjoZOhXgqcT
+        YSu09F6KGRytRYYrO4lZrUg5kpSxybc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632496587;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hLfQh0P3AXcZ2z9Abd54q/4US5yio0Yktkl0bIt6F8s=;
+        b=LzmbFoSbiAZFEHdbQkgsmLHvhUipQgW9dox2KtbYbvh0swq+AdhSQqeGcuZdpbky+BH6jv
+        E0HLOWkv9nQuyrCw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay1.suse.de (Postfix) with ESMTP id 710B525D4D;
+        Fri, 24 Sep 2021 15:16:27 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 73803DA799; Fri, 24 Sep 2021 17:16:13 +0200 (CEST)
+Date:   Fri, 24 Sep 2021 17:16:13 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, clm@fb.com, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: kernel BUG in __clear_extent_bit
+Message-ID: <20210924151612.GC9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Hao Sun <sunhao.th@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, clm@fb.com, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CACkBjsYjkubyQBvBy7aaQStk_i1UuCu7oPNYXhZhvhWvBCM3ag@mail.gmail.com>
+ <145029f0-5bc5-73fd-14ee-75b5829a3334@gmx.com>
+ <CACkBjsauCShYkOdNU2snmJyLNSmdMvK7C0HbtMfKhoEXuUOSJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YU3kPHg2qLr//HEF@hovoldconsulting.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACkBjsauCShYkOdNU2snmJyLNSmdMvK7C0HbtMfKhoEXuUOSJg@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Johan Hovold <johan@kernel.org> [210924 14:44]:
-> On Thu, Sep 23, 2021 at 06:05:36PM +0300, Tony Lindgren wrote:
-> > * Johan Hovold <johan@kernel.org> [210923 12:50]:
-> > > On Tue, Sep 21, 2021 at 01:33:44PM +0300, Tony Lindgren wrote:
-> > > > +static int serial8250_prep_tx(struct uart_port *port)
-> > > > +{
-> > > > +	struct uart_8250_port *up = up_to_u8250p(port);
-> > > > +	struct device *dev = up->port.dev;
-> > > > +	int err;
-> > > > +
-> > > > +	if (!(up->capabilities & UART_CAP_RPM))
-> > > > +		return 0;
-> > > > +
-> > > > +	if (!pm_runtime_suspended(dev)) {
-> > > > +		pm_runtime_mark_last_busy(dev);
-> > > > +		return 0;
-> > > > +	}
-> > > > +
-> > > > +	err = pm_request_resume(dev);
-> > > > +	if (err < 0) {
-> > > > +		dev_warn(dev, "prep_tx wakeup failed: %d\n", err);
-> > > > +		return err;
-> > > > +	}
-> > > 
-> > > How is this supposed to work without a runtime PM usage-counter
-> > > increment? What's to prevent the port from suspending again while it's
-> > > transmitting?
-> > 
-> > Hmm yeah we should at pm_runtime_get() and pm_runtime_put() to write()
-> > unless serial8250_rpm_get() and serial8250_rpm_put() are doing it.
+On Thu, Sep 23, 2021 at 10:24:51AM +0800, Hao Sun wrote:
+> Qu Wenruo <quwenruo.btrfs@gmx.com> 于2021年9月15日周三 下午1:33写道：
+> >
+> >
+> >
+> > On 2021/9/15 上午10:20, Hao Sun wrote:
+> > > Hello,
+> > >
+> > > When using Healer to fuzz the latest Linux kernel, the following crash
+> > > was triggered.
+> > >
+> > > HEAD commit: 6880fa6c5660 Linux 5.15-rc1
+> > > git tree: upstream
+> > > console output:
+> > > https://drive.google.com/file/d/1-9wwV6-OmBcJvHGCbMbP5_uCVvrUdTp3/view?usp=sharing
+> > > kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTLJvsUdWcgB/view?usp=sharing
+> > > C reproducer: https://drive.google.com/file/d/1eXePTqMQ5ZA0TWtgpTX50Ez4q9ZKm_HE/view?usp=sharing
+> > > Syzlang reproducer:
+> > > https://drive.google.com/file/d/11s13louoKZ7Uz0mdywM2jmE9B1JEIt8U/view?usp=sharing
+> > >
+> > > If you fix this issue, please add the following tag to the commit:
+> > > Reported-by: Hao Sun <sunhao.th@gmail.com>
+> > >
+> > > loop1: detected capacity change from 0 to 32768
+> > > BTRFS info (device loop1): disk space caching is enabled
+> > > BTRFS info (device loop1): has skinny extents
+> > > BTRFS info (device loop1): enabling ssd optimizations
+> > > FAULT_INJECTION: forcing a failure.
+> > > name failslab, interval 1, probability 0, space 0, times 0
+> > > CPU: 1 PID: 25852 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+> > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> > > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > Call Trace:
+> > >   __dump_stack lib/dump_stack.c:88 [inline]
+> > >   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+> > >   fail_dump lib/fault-inject.c:52 [inline]
+> > >   should_fail+0x13c/0x160 lib/fault-inject.c:146
+> > >   should_failslab+0x5/0x10 mm/slab_common.c:1328
+> > >   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+> > >   slab_alloc_node mm/slub.c:3120 [inline]
+> > >   slab_alloc mm/slub.c:3214 [inline]
+> > >   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
+> > >   alloc_extent_state+0x1e/0x1c0 fs/btrfs/extent_io.c:340
+> >
+> > This is the one of the core systems btrfs uses, and we really don't want
+> > that to fail.
+> >
+> > Thus in fact it does some preallocation to prevent failure.
+> >
+> > But for error injection case, we can still hit BUG_ON() which is used to
+> > catch ENOMEM.
+> >
 > 
-> If you do the put after just buffering the data it doesn't really solve
-> anything.
-
-Right, sounds like we currently rely on the autosuspend_timeout
-there.
-
-> > Or pair prep with finish and deal with the usage count there.
+> Hello,
 > 
-> Problem is where to call it from. How do you tell the device is done
-> transmitting? And how should we deal with flow control? Etc.
+> Fuzzer triggered following crashes repeatedly when the `fault
+> injection` was enabled.
+> 
+> HEAD commit: 92477dd1faa6 Merge tag 's390-5.15-ebpf-jit-fixes'
+> git tree: upstream
+> kernel config: https://drive.google.com/file/d/1KgvcM8i_3hQiOL3fUh3JFpYNQM4itvV4/view?usp=sharing
+> [1] kernel BUG in btrfs_free_tree_block (fs/btrfs/extent-tree.c:3297):
+> https://paste.ubuntu.com/p/ZtzVKWbcGm/
+> [2] kernel BUG in clear_state_bit (fs/btrfs/extent_io.c:658!):
+> https://paste.ubuntu.com/p/hps2wXPG2b/
+> [3] kernel BUG in set_extent_bit (fs/btrfs/extent_io.c:1021):
+> https://paste.ubuntu.com/p/dcptjYYxgd/
+> [4] kernel BUG in set_state_bits (fs/btrfs/extent_io.c:939):
+> https://paste.ubuntu.com/p/NV9qtKB4KZ/
+> 
+> All the above crashes were triggered directly by the `BUG_ON()` macro
+> in the corresponding location.
+> Most `BUG_ON()` was hit due to `ENOMEM` when fault injected.
+> Would it be better for btrfs to handle the `ENOMEM` error, e.g.,
+> gracefully return, rather than panic the kernel?
 
-Maybe if the device driver needs to call uart_start() also from runtime
-PM idle function and if no data allow suspend. Then if there is
-more data, uart_write() calls uart_start() again, device wakes up
-and so on.
-
-Regards,
-
-Tony
+If it would be so easy we would have done it already. Unfortunatelly in
+some deep call chains or under locks or from contexts where the whole
+operation is split accross subsystems or threads it's not always
+possible to roll back. Some tricks like preallocation can bail out early
+but we can't preallocate everything. The allocations are done under
+GFP_NOFS that still has the no-fail semantics. The error you report do
+not normally happen because allocator tries hard to return some memory.
