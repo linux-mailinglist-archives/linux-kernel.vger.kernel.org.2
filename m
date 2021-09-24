@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BE5417D54
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113C0417D48
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344009AbhIXV4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 17:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343996AbhIXV4u (ORCPT
+        id S1343589AbhIXVx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 17:53:58 -0400
+Received: from gateway23.websitewelcome.com ([192.185.50.141]:25968 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245708AbhIXVx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 17:56:50 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD97C061613
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:55:16 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id n71so14613594iod.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:55:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fFLXbjRE3D3sdoECwCJu7JeP9fo/iG2Cnh5R4JfVJZo=;
-        b=BLvGicUlV4MQAxLKbqMb2X2TAFlwBesHJCgng2KIHjDhz6XfpVMiyyI9xAPUQPiaTR
-         HSaPvHFdk/nn3HpdL/hfn6k7flJ5GY2EGgNtil5p9GksH36nxX5f+x8pnRGJHBVYu+km
-         et4gLvQ1QznJ+MEpZc5JwL9GaBbKmNxBta1lk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fFLXbjRE3D3sdoECwCJu7JeP9fo/iG2Cnh5R4JfVJZo=;
-        b=HGcqkDYyOzgbjk03bZ1GwIcKOHo261tlZJzxMk0T91JWoH16qp4YRt/cmlssXmsEL5
-         jvw6MjBqIC9e5Aha/DuVLkWsQaB49+37uY8qNLdEhEdX2E0bdAkKTeajfNdVYgB5D68e
-         BhNkYgzGggs0CufhK10yShBP9W6iDXGai7DBwQoPRg3yRJp22fxvPGAN1Y09VpKZic0y
-         FaxUncsATjusuo9rLGQdKF+fbeK/iwScquJr4nNzGuncZtieR+SaxZxApWQ5Xhqarf4s
-         Sxd2VJ6UTiWwmRafc/iLauoMOJ/E3Ji9SxatwnaksepzJPagoS59MyTwnosUpMyfX8yk
-         YF9A==
-X-Gm-Message-State: AOAM532CYoGQbBYXsFZ3/klen8ihgv81djF1zdLphmjIXa/XejcM21q4
-        rYM5FerLvtIOjKPWHXErXNQh0A==
-X-Google-Smtp-Source: ABdhPJyYs0BNRTDd3ZZFYdm8ZCt+0yGh6eM1tr5l/UuQn5oKZasPaj8ZLrT4CxaUE6+SUASpyeoFRg==
-X-Received: by 2002:a05:6602:2e0c:: with SMTP id o12mr11071201iow.59.1632520516179;
-        Fri, 24 Sep 2021 14:55:16 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id w4sm4452381iox.25.2021.09.24.14.55.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 14:55:15 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/23] 4.4.285-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210924124327.816210800@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <a5ec0d2d-f558-219e-869a-54a32493a48e@linuxfoundation.org>
-Date:   Fri, 24 Sep 2021 15:55:15 -0600
+        Fri, 24 Sep 2021 17:53:57 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id A4C78D8EF
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:52:23 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Tt7HmgAyg6dDyTt7HmH6Pn; Fri, 24 Sep 2021 16:52:23 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2532Yjier0I++q82x31IsHseInNPutEwAc4kd7uXVUo=; b=UUQfkEoBprrs254Pmm+26qeBM+
+        OuOx3/iV9kU1o7C++vXv+X9Ws/pikcZpppTJ6pzj+mV6UWox8JUK/lLayj/X2uK3tGfG2Crq7Dpws
+        5P7R/tHXVBsEdLR5bo/UD/GLoyPbi0NA4jEKsAEfIJNVNT0Y6AW0yFch9cbiBHRuroS672CizzrGQ
+        85lnR95W0DkkTt9zHv99uaiLSRjbu4INWakD1mFnnSrxd+M5AvYUp/86gopeauJTrAPmh6hG70aU8
+        Bimgd6UUuBnFdqGaWf/80D+dpEhcdN1d8/oe2ZbG+oDZUqyDO/KBTavU5oT8Xk41HM7mllyrNvFEl
+        ynkwuaZQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:45244 helo=[192.168.15.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mTt7H-000xLJ-08; Fri, 24 Sep 2021 16:52:23 -0500
+Subject: Re: [PATCH v2 3/3] staging: vt6655: replace camel case port_offset
+ instead of PortOffset.
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Edmundo Carmona Antoranz <eantoranz@gmail.com>,
+        =?UTF-8?B?QWxkYXMgVGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210924210008.106355-1-tomm.merciai@gmail.com>
+ <20210924210008.106355-4-tomm.merciai@gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <58c61a30-c368-8e4f-d9c9-1f39cadda869@embeddedor.com>
+Date:   Fri, 24 Sep 2021 16:56:16 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210924210008.106355-4-tomm.merciai@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mTt7H-000xLJ-08
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.9]) [187.162.31.110]:45244
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 13
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/21 6:43 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.285 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.285-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
 
-Compiled and booted on my test system. No dmesg regressions.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+On 9/24/21 16:00, Tommaso Merciai wrote:
 
-thanks,
--- Shuah
+Where is the changelog text? :/
+
+Sorry but I insist: take a look at this:
+
+https://kernelnewbies.org/Outreachyfirstpatch
+
+Thanks
+--
+Gustavo
+
+> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
