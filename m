@@ -2,873 +2,753 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC71417D08
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C683417D0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347708AbhIXVdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 17:33:38 -0400
-Received: from mga02.intel.com ([134.134.136.20]:15189 "EHLO mga02.intel.com"
+        id S1347792AbhIXVeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 17:34:15 -0400
+Received: from mga09.intel.com ([134.134.136.24]:49288 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347526AbhIXVdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 17:33:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10117"; a="211414791"
+        id S1347526AbhIXVeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 17:34:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10117"; a="224201461"
 X-IronPort-AV: E=Sophos;i="5.85,321,1624345200"; 
-   d="scan'208";a="211414791"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 14:31:58 -0700
+   d="scan'208";a="224201461"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 14:32:34 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,321,1624345200"; 
-   d="scan'208";a="705367220"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Sep 2021 14:31:57 -0700
-Received: from debox1-server.jf.intel.com (debox1-server.jf.intel.com [10.54.39.121])
-        by linux.intel.com (Postfix) with ESMTP id BFCFD580890;
-        Fri, 24 Sep 2021 14:31:57 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     hdegoede@redhat.com, mgross@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, gregkh@linuxfoundation.org,
-        srinivas.pandruvada@intel.com
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH 2/2] platform/x86: Add Intel Software Defined Silicon driver
-Date:   Fri, 24 Sep 2021 14:31:57 -0700
-Message-Id: <20210924213157.3584061-2-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210924213157.3584061-1-david.e.box@linux.intel.com>
-References: <20210924213157.3584061-1-david.e.box@linux.intel.com>
+   d="scan'208";a="516217074"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Sep 2021 14:32:34 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 24 Sep 2021 14:32:34 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 24 Sep 2021 14:32:33 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 24 Sep 2021 14:32:33 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 24 Sep 2021 14:32:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kQ0VZtkAxGR2XUTuVXvJq1W9h+IOVGugjl+e0TIJIwfpr+p3b3qXW4QlMV+ZuiCJPaQrFpN6rI3lfRNJLkBZzIoHGGnlRTucNJ6fQzLk0ym+yGBRd3aEWSiIDQ7zU5JVXs8Rr952SucXoJUQgj3Ihk+kas5S4TGDOFdhBePcKygdsWttA2Cg9DRwgexE2V9P7FMmnJe73JtyZX2mCifpMlv8la1dn4WMkasg+KSG9nBtn1ZSjxskxNspTQ/bPrsm1Oy/2w11195sYgtMu7pKT6Mn1nnGLBTMW2orvGf5onI+RggYKPgqcyppNVNWf72rP7NOqaaAsJzZ8XNpDq+dng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=9sUwXO/TY/D4KEnEfMVcD64AUgPexqSU4HGTeekwaeI=;
+ b=J5My5GF16ePthD1Z0eX4zj9n0mRjuDpJIje5rA5smnuASoKQpBFUOJ7crMSZqr4wiYa+TAZB9RpZQvUhhfmoLqsPptDC22ExkfSMx15le0oltr587SOwLplw8ZyPEQWxBgY1GVi8JtJeA7hFqFs5ZSMaFBSi77QvMLRqL08TMqPczZRVSqAGQpLeAnU+osRPY5SogRo5Fn96tLdsVkttuURkPKc1FHMTGNHiHeNVOHGZzwR28DR8NgpfT4otciltFWrdYrXGJr3gQRnmTGydtF7zKu5wPtoe1bELWYTu+O3nzczgeA4ZXevAQIDaZizzspWJcRDv80AegOTF9856hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9sUwXO/TY/D4KEnEfMVcD64AUgPexqSU4HGTeekwaeI=;
+ b=mhYO31N4gQFr3VqMFwZcdfyztsFBtLRUtHr0rdai49RndTdSptOPGzxfoW0W9UDPwKo1Ef+wTnHeIicLtVNbkkHSrFISYVhKeeoHvWpF2nGgcsOqwD+wrcvzLiM0SHo9k8FYML6lc8oTLYfKqY2mgrVo/6Gb1DzGLjbIBK7JfS8=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+Received: from SA2PR11MB5163.namprd11.prod.outlook.com (2603:10b6:806:113::20)
+ by SN6PR11MB3118.namprd11.prod.outlook.com (2603:10b6:805:dc::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Fri, 24 Sep
+ 2021 21:32:28 +0000
+Received: from SA2PR11MB5163.namprd11.prod.outlook.com
+ ([fe80::90de:46c1:4d23:5c8c]) by SA2PR11MB5163.namprd11.prod.outlook.com
+ ([fe80::90de:46c1:4d23:5c8c%5]) with mapi id 15.20.4544.018; Fri, 24 Sep 2021
+ 21:32:28 +0000
+Subject: Re: [PATCH v16 2/5] fpga: image-load: enable image uploads
+To:     Xu Yilun <yilun.xu@intel.com>
+CC:     <mdf@kernel.org>, <linux-fpga@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <trix@redhat.com>,
+        <lgoncalv@redhat.com>, <hao.wu@intel.com>,
+        <matthew.gerlach@intel.com>
+References: <20210923001056.282790-1-russell.h.weight@intel.com>
+ <20210923001056.282790-3-russell.h.weight@intel.com>
+ <20210924081220.GB806603@yilunxu-OptiPlex-7050>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <6e4a8236-c0c8-d688-d3bd-4ea9cb88fa5b@intel.com>
+Date:   Fri, 24 Sep 2021 14:32:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+In-Reply-To: <20210924081220.GB806603@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: MWHPR08CA0052.namprd08.prod.outlook.com
+ (2603:10b6:300:c0::26) To SA2PR11MB5163.namprd11.prod.outlook.com
+ (2603:10b6:806:113::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [10.0.2.4] (50.43.42.212) by MWHPR08CA0052.namprd08.prod.outlook.com (2603:10b6:300:c0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Fri, 24 Sep 2021 21:32:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cff8bc64-dd0d-461f-50a2-08d97fa2cebf
+X-MS-TrafficTypeDiagnostic: SN6PR11MB3118:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR11MB3118C0A12AFCB4AB8F448297C5A49@SN6PR11MB3118.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AmNaJn9AO+a8DQQVsRk+oNm4lJAhHLcbKgmGLvECDU2gZB0EnCeJDyHAGHPS/YDfjltpNeyno/6haFY0awoN2YEhICkKUVxu2RveHQmqSo2U0JPjNix8L8Q6TWdkcLC9/PHYZEfRQu8jMN6Wqgt7IpbTUQji639kyTBKD3Z8k7DL8Mn2KKR851zxVPR7RUBtx88FIGynvld8WyzXz1pHqgBFnot8oUs7al3C6HvepFUgvj/WQeMCd1tsSZ8NweylGDv0LoKij6TijNTe8hPFbpg7uCYeu63bN3+fFtYj58xq+0U8g2i0bj1ooH1f1+7sgIFoVxjRALIbl8NaWqwAqJQ7OB25FZxjnQtBuzP5kV0xLi5uzL++xajMxfzblv1511A54dIMW/I+FBlMZbnralWW09jObQRMk8/GU+gPC8hh3OD6nxby+4/nEv/KQoYcmRBDpqd+GnurjBRoeNr3eWvF4fDcCLSgRMkPkkJwPSiugrpSNESiiz4ZDkBbmh7QSCQUBMCQ0o+4e2GZUeErkXocIgeNXKX2EafFNTBXaEly4a1OSt1azbhndhD39qZgsfY0rc0XA61zQu3YELXrE3x7bDwHieR/fBLZe5x38iUQ0aX42/sy3IBQv4UpxDvzVXStpPNhnP/f3UuYr+9nmR8Cd92I8Rn8aKl6SKYiCiJryz/Id8PhlvI0ele93XZkYPvvn+1KzMXEVy0/KhsZYFXFrnT+vpM9GCJl2uqC+xI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB5163.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(66946007)(316002)(36756003)(16576012)(37006003)(66556008)(8936002)(53546011)(38100700002)(83380400001)(2906002)(66476007)(4326008)(26005)(31696002)(5660300002)(956004)(31686004)(6636002)(186003)(508600001)(107886003)(30864003)(8676002)(86362001)(2616005)(6862004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?emRYeHpNcE8yVXg2YXF1bmxRYm1WKzRIVXNYSSt5ejZRa3dTQ2JZOXRDTFAr?=
+ =?utf-8?B?RHJ6Tm9UaCtiWGtYT3ZkTHY2TmNmTno3QXEvTHlScU1ES1dJR1FoWU9iVGRF?=
+ =?utf-8?B?bE9SbmluWUNWL3hYNUYvSFNhSHJreDZmdWFBUnVwbkR0enhLMkthUTJUNVdM?=
+ =?utf-8?B?U3J3YUROS2txdmduMFFHQmRUbllnN3FLM0treVA3NW5sa3I1UnlMMHZoSncy?=
+ =?utf-8?B?QmpiU0FzL3dSc3RSdHdmSkl5S1RCZGNiRGttWm52dVl0SXkzeWpmSHBpb0dJ?=
+ =?utf-8?B?dWZjQkczV2pxQ1AzbTJDOU8yYzJMVllHSDQ4SUZ1Ry9BWUE4Tm5sTU9QeGUr?=
+ =?utf-8?B?RXhpNGdLLzFESHVmZTVpQllZQkdxS3Y1cnJ3dmhUQXM1WENHZXREYmpCK0tn?=
+ =?utf-8?B?TG1FU2xXUThPdE52MjRtSHQyRXdZM3JmTGJzUEJZZUNyWmp1eW1DeFlrYmo2?=
+ =?utf-8?B?MFl1b0JpWSt0MWxmd0w1UlJRSktHdUV3Y3hEMTdobGYyejY4Y0hYeXk3eUNF?=
+ =?utf-8?B?L0t0QjZESzN3THE1VzVmWk9DZStEdlZrbUVnRmMwZit3ckwzTW9kRDU4S3pI?=
+ =?utf-8?B?QXpBL0NReFM2RDRGUHFiZDk0RUpQNW5BUXNhYVVmYmU1LzNJUGwyaHpoTWFa?=
+ =?utf-8?B?U1BNbVo5dm90S1hvS2FGYzhXWDhrMkFlUGJZTFNibU8zdk42YnJKdzJleE1J?=
+ =?utf-8?B?bmlMeHRGVm4xSzRKMnYvWCszMUJRZmtmeFp1Rzd6R0NYQVdmYXhtZk13aHZ5?=
+ =?utf-8?B?WWJ6d0Jtc0VQeFVLS3dMVWlrNGptcDdTNzZaY2ZjelMrNm83aU1NY3JhRTRQ?=
+ =?utf-8?B?aGR4emtNL0YzcCs5aWs2OUt3OU1iZnFMVXVibVpYaXRXUHJmNjViYVNtOHFD?=
+ =?utf-8?B?WGI1Zm42d1BrelpublJVOEhrNGtPTU91MTRoN1JyVlR6Q251WkhFRmE3TElW?=
+ =?utf-8?B?UDFCM28rY2ZiUjZVcVMvd1J3RWdVKzZpUmNleTVIMUdVZHNYWU8zaDhJZ3Y0?=
+ =?utf-8?B?cUFPMmVYQlAwS0RPWDFORC8rRnlDUytMdnlLaFluUHlJNjRlbTN1bGFPSkxk?=
+ =?utf-8?B?a0ZRZnJROGtSQXc1NmxNTVcrN25JUTFLeFBveEdqQjdjVU15RHZYcDM1VFRr?=
+ =?utf-8?B?M1lSa1NicFJsOHk5eGJjWUNMVHVTaHU4Mm1NcE9XcC8zeUsvNXJiUElTd1Q1?=
+ =?utf-8?B?WGd3MElRMFUycSthU1hwQmxNQ3BZREU0dUdXZFFGazhzVEZ0VG8zWEpUcFVU?=
+ =?utf-8?B?cmhIQUdVUlhiMWdPbFVFeUZvRFc4blE4Y2dWazl4S0crL2Z1UTBRb0swajdn?=
+ =?utf-8?B?TjhtbGJueVovSnZYOWsxbm5nc21ZZlFJcnBXTHUzNVRGTVJJTmQ1QnFCdW9l?=
+ =?utf-8?B?dWdIaEpHRE5US09MbnVBYkk5VndpMjV0SnVtZ2grSGU3bG8zZUJPUWNhNVpv?=
+ =?utf-8?B?Z0d0ODZ2Q0VVbUR2cFBiSmxHVlRjZ1JhSWdOa3htblNBM2xZYnJuSkZZL0ti?=
+ =?utf-8?B?K2s2UjdkdXVyMjdLNGlCR3Yva3BlUUlrNlM4dnY0N2VKK0NjV09oRGFSTkhl?=
+ =?utf-8?B?YjJMTlJ2eVFXcUU0VmlIb2dTQWtiU3F0U2JtSGh4eGhSam1yS1NaVWhWUXNu?=
+ =?utf-8?B?WFNRblhMb2VqWVB4ZnBtWXZWNEdsRlFMeU5hWnVQV013ajd1WGFoUk9vU2Nx?=
+ =?utf-8?B?RlM5aWx3eENmR2VIaFVPc0dwVXhVY2dWZ3JMMENWcUk2SmdYWG1pQ0lTbmtV?=
+ =?utf-8?Q?WWFYi27V/YzHyV/9J2qSD0aXF2cpaobFZxHBlqz?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cff8bc64-dd0d-461f-50a2-08d97fa2cebf
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB5163.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2021 21:32:28.2935
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fm/csMbFSevgcImwdcoz+rbvr/J05YdbhmAIjs2k4ABwYpICpPTI3+DDf+DhklcfpSXODuoiVU21QsAp9YzJYlYYf5XrNL++HK5ZTD1jHQU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3118
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Software Defined Silicon (SDSi) is a post manufacturing mechanism for
-activating additional silicon features. Features are enabled through a
-license activation process.  The SDSi driver provides a per socket, ioctl
-interface for applications to perform 3 main provisioning functions:
 
-1. Provision an Authentication Key Certificate (AKC), a key written to
-   internal NVRAM that is used to authenticate a capability specific
-   activation payload.
 
-2. Provision a Capability Activation Payload (CAP), a token authenticated
-   using the AKC and applied to the CPU configuration to activate a new
-   feature.
+On 9/24/21 1:12 AM, Xu Yilun wrote:
+> On Wed, Sep 22, 2021 at 05:10:53PM -0700, Russ Weight wrote:
+>> Extend the FPGA Image Load framework to include IOCTL support
+>> (FPGA_IMAGE_LOAD_WRITE) for initiating an upload of an image to a device.
+>> The IOCTL will return immediately, and the update will begin in the
+>> context of a kernel worker thread.
+>>
+>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>> ---
+>> v16:
+>>  - Shift from "Driver" terminology to "Framework" in comments and
+>>    documentation
+>>  - Rename lops to ops for structure member and local variables
+>>  - Change the write_blk() definition to pass in *blk_size (a pointer to
+>>    a default block size of WRITE_BLOCK_SIZE=0x4000) and max_size (the
+>>    the maximum block size to stay within the limit of the data buffer).
+>>    The write_blk() op may use the default *blk_size or modify it to a
+>>    more optimal number for the given device, subject to the max_size limit.
+>>  - All enum values for progress and errors are changed to macros, because
+>>    they are included in the uapi header. This is done to maintain consistency
+>>    amongst the DFL related IOCTL header files. All references to the enum
+>>    types are changed to u32.
+>>  - Bail out early in fpga_image_do_load() if imgld->driver_unload is true.
+>>  - Add a call to cond_resched() in the write_blk() loop to ensure that
+>>    we yield to higher priority tasks during long data transfers.
+>>  - Switch to the system_unbound_wq to enable calls to cond_resched().
+>>  - Switch from test_and_set_bit() to atomic_cmpxchg() to manage
+>>    imgld->opened.
+>>  - Change fpga_image_load_release() to block until the image upload is
+>>    complete.
+>>  - Remove the completion object, imgld->update_done, in favor of calling
+>>    flush_work(&imgld->work);
+>> v15:
+>>  - Compare to previous patch:
+>>      [PATCH v14 2/6] fpga: sec-mgr: enable secure updates
+>>  - Changed file, symbol, and config names to reflect the new driver name
+>>  - Removed update/filename sysfs file and added the FPGA_IMAGE_LOAD_WRITE
+>>    IOCTL for writing the image data to the FPGA card. The driver no longer
+>>    uses the request_firmware framework.
+>>  - Fixed some error return values in fpga_image_load_register()
+>>  - Removed signed-off/reviewed-by tags
+>> v14:
+>>  - Added MAINTAINERS reference for
+>>    Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+>>  - Updated ABI documentation date and kernel version
+>>  - Updated copyright to 2021
+>> v13:
+>>   - Change "if (count == 0 || " to "if (!count || "
+>>   - Improve error message: "Attempt to register without all required ops\n"
+>> v12:
+>>   - Updated Date and KernelVersion fields in ABI documentation
+>>   - Removed size parameter from write_blk() op - it is now up to
+>>     the lower-level driver to determine the appropriate size and
+>>     to update smgr->remaining_size accordingly.
+>> v11:
+>>   - Fixed a spelling error in a comment
+>>   - Initialize smgr->err_code and smgr->progress explicitly in
+>>     fpga_sec_mgr_create() instead of accepting the default 0 value.
+>> v10:
+>>   - Rebased to 5.12-rc2 next
+>>   - Updated Date and KernelVersion in ABI documentation
+>> v9:
+>>   - Updated Date and KernelVersion in ABI documentation
+>> v8:
+>>   - No change
+>> v7:
+>>   - Changed Date in documentation file to December 2020
+>>   - Changed filename_store() to use kmemdup_nul() instead of
+>>     kstrndup() and changed the count to not assume a line-return.
+>> v6:
+>>   - Changed "security update" to "secure update" in commit message
+>> v5:
+>>   - When checking the return values for functions of type enum
+>>     fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
+>> v4:
+>>   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+>>     and removed unnecessary references to "Intel".
+>>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+>> v3:
+>>   - Removed unnecessary "goto done"
+>>   - Added a comment to explain imgr->driver_unload in
+>>     ifpga_sec_mgr_unregister()
+>> v2:
+>>   - Bumped documentation date and version
+>>   - Removed explicit value assignments in enums
+>>   - Other minor code cleanup per review comments
+>> ---
+>>  Documentation/fpga/fpga-image-load.rst |  26 ++-
+>>  MAINTAINERS                            |   1 +
+>>  drivers/fpga/fpga-image-load.c         | 238 ++++++++++++++++++++++++-
+>>  include/linux/fpga/fpga-image-load.h   |  29 +++
+>>  include/uapi/linux/fpga-image-load.h   |  54 ++++++
+>>  5 files changed, 346 insertions(+), 2 deletions(-)
+>>  create mode 100644 include/uapi/linux/fpga-image-load.h
+>>
+>> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
+>> index dda9283ef1c7..ba371c7c0ca0 100644
+>> --- a/Documentation/fpga/fpga-image-load.rst
+>> +++ b/Documentation/fpga/fpga-image-load.rst
+>> @@ -7,4 +7,28 @@ FPGA Image Load Framework
+>>  The FPGA Image Load framework provides a common API for user-space
+>>  tools to manage image uploads to FPGA devices. Device drivers that
+>>  instantiate the FPGA Image Load framework will interact with the
+>> -target device to transfer and authenticate the image data.
+>> +target device to transfer and authenticate the image data. Image uploads
+>> +are processed in the context of a kernel worker thread.
+>> +
+>> +User API
+>> +========
+>> +
+>> +open
+>> +----
+>> +
+>> +An fpga_image_load device is opened exclusively to control an image upload.
+>> +The device must remain open throughout the duration of the image upload.
+>> +An attempt to close the device while an upload is in progress will cause
+>> +the upload to be cancelled. If unable to cancel the image upload, the close
+>> +system call will block until the image upload is complete.
+>> +
+>> +ioctl
+>> +-----
+>> +
+>> +FPGA_IMAGE_LOAD_WRITE:
+>> +
+>> +Start an image upload with the provided image buffer. This IOCTL returns
+>> +immediately after starting a kernel worker thread to process the image
+>> +upload which could take as long a 40 minutes depending on the actual device
+>> +being updated. This is an exclusive operation; an attempt to start
+>> +concurrent image uploads for the same device will fail with EBUSY.
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 6e312d0ddeb6..4e44f62eef33 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -7372,6 +7372,7 @@ S:	Maintained
+>>  F:	Documentation/fpga/fpga-image-load.rst
+>>  F:	drivers/fpga/fpga-image-load.c
+>>  F:	include/linux/fpga/fpga-image-load.h
+>> +F:	include/uapi/linux/fpga-image-load.h
+>>  
+>>  FPU EMULATOR
+>>  M:	Bill Metzenthen <billm@melbpc.org.au>
+>> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
+>> index 799d18444f7c..65f553b59011 100644
+>> --- a/drivers/fpga/fpga-image-load.c
+>> +++ b/drivers/fpga/fpga-image-load.c
+>> @@ -5,18 +5,210 @@
+>>   * Copyright (C) 2019-2021 Intel Corporation, Inc.
+>>   */
+>>  
+>> +#include <linux/delay.h>
+>>  #include <linux/fpga/fpga-image-load.h>
+>> +#include <linux/fs.h>
+>> +#include <linux/kernel.h>
+>>  #include <linux/module.h>
+>>  #include <linux/slab.h>
+>> +#include <linux/uaccess.h>
+>>  #include <linux/vmalloc.h>
+>>  
+>>  #define IMAGE_LOAD_XA_LIMIT	XA_LIMIT(0, INT_MAX)
+>>  static DEFINE_XARRAY_ALLOC(fpga_image_load_xa);
+>>  
+>>  static struct class *fpga_image_load_class;
+>> +static dev_t fpga_image_devt;
+>>  
+>>  #define to_image_load(d) container_of(d, struct fpga_image_load, dev)
+>>  
+>> +#define WRITE_BLOCK_SIZE 0x4000	/* Default write-block size is 0x4000 bytes */
+>> +
+>> +static void fpga_image_dev_error(struct fpga_image_load *imgld, u32 err_code)
+>> +{
+>> +	imgld->err_code = err_code;
+>> +	imgld->ops->cancel(imgld);
+> Do we need the cancel here? Or cleanup is just fine.
+>
+> I see the description below:
+>
+>  * @cancel:              Required: Signal HW to cancel update
+>  * @cleanup:             Optional: Complements the prepare()
+>  *                       function and is called at the completion
+>  *                       of the update, whether success or failure,
+>  *                       if the prepare function succeeded.
+>
+> My understanding is when error happens, the HW is already stopped,
+> and may optionally needs a cleanup to become normal again.
+>
+> And cancel() is like interrupting an ongoing HW progress, which could
+> be called when other callback is running.
+>
+> We can discuss on this.
+Yes - I understand what you are saying I'll experiment with it.
+In this context, cancel() is being called as a cleanup step.
 
-3. Read the SDSi State Certificate, containing the CPU configuration
-   state.
+>> +}
+>> +
+>> +static void fpga_image_prog_complete(struct fpga_image_load *imgld)
+>> +{
+>> +	mutex_lock(&imgld->lock);
+>> +	imgld->progress = FPGA_IMAGE_PROG_IDLE;
+>> +	mutex_unlock(&imgld->lock);
+>> +}
+>> +
+>> +static void fpga_image_do_load(struct work_struct *work)
+>> +{
+>> +	struct fpga_image_load *imgld;
+>> +	u32 ret, blk_size, offset = 0;
+>> +
+>> +	imgld = container_of(work, struct fpga_image_load, work);
+>> +
+>> +	if (imgld->driver_unload) {
+>> +		imgld->err_code = FPGA_IMAGE_ERR_CANCELED;
+>> +		goto idle_exit;
+>> +	}
+>> +
+>> +	get_device(&imgld->dev);
+>> +	if (!try_module_get(imgld->dev.parent->driver->owner)) {
+>> +		imgld->err_code = FPGA_IMAGE_ERR_BUSY;
+>> +		goto putdev_exit;
+>> +	}
+>> +
+>> +	imgld->progress = FPGA_IMAGE_PROG_PREPARING;
+>> +	ret = imgld->ops->prepare(imgld);
+>> +	if (ret != FPGA_IMAGE_ERR_NONE) {
+>> +		fpga_image_dev_error(imgld, ret);
+>> +		goto modput_exit;
+>> +	}
+>> +
+>> +	imgld->progress = FPGA_IMAGE_PROG_WRITING;
+>> +	while (imgld->remaining_size) {
+>> +		/*
+>> +		 * The write_blk() op has the option to use the blk_size
+>> +		 * value provided here, or to modify it to something more
+>> +		 * optimal for the given device.
+>> +		 */
+>> +		blk_size = min_t(u32, WRITE_BLOCK_SIZE, imgld->remaining_size);
+>> +		ret = imgld->ops->write_blk(imgld, offset, &blk_size,
+>> +					    imgld->remaining_size);
+>> +		if (ret != FPGA_IMAGE_ERR_NONE) {
+>> +			fpga_image_dev_error(imgld, ret);
+>> +			goto done;
+>> +		}
+>> +
+>> +		imgld->remaining_size -= blk_size;
+>> +		offset += blk_size;
+>> +
+>> +		/*
+>> +		 * The class driver does not have control of the overall
+>> +		 * size or the actual implementation of the write. Allow
+>> +		 * for scheduling out.
+>> +		 */
+>> +		cond_resched();
+>> +	}
+>> +
+>> +	imgld->progress = FPGA_IMAGE_PROG_PROGRAMMING;
+>> +	ret = imgld->ops->poll_complete(imgld);
+>> +	if (ret != FPGA_IMAGE_ERR_NONE)
+>> +		fpga_image_dev_error(imgld, ret);
+>> +
+>> +done:
+>> +	if (imgld->ops->cleanup)
+>> +		imgld->ops->cleanup(imgld);
+>> +
+>> +modput_exit:
+>> +	module_put(imgld->dev.parent->driver->owner);
+>> +
+>> +putdev_exit:
+>> +	put_device(&imgld->dev);
+>> +
+>> +idle_exit:
+>> +	/*
+>> +	 * Note: imgld->remaining_size is left unmodified here to provide
+>> +	 * additional information on errors. It will be reinitialized when
+>> +	 * the next image load begins.
+>> +	 */
+>> +	vfree(imgld->data);
+>> +	imgld->data = NULL;
+>> +	fpga_image_prog_complete(imgld);
+>> +}
+>> +
+>> +static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
+>> +				       unsigned long arg)
+>> +{
+>> +	struct fpga_image_write wb;
+>> +	unsigned long minsz;
+>> +	u8 *buf;
+>> +
+>> +	if (imgld->driver_unload || imgld->progress != FPGA_IMAGE_PROG_IDLE)
+>> +		return -EBUSY;
+>> +
+>> +	minsz = offsetofend(struct fpga_image_write, buf);
+>> +	if (copy_from_user(&wb, (void __user *)arg, minsz))
+>> +		return -EFAULT;
+>> +
+>> +	if (wb.flags)
+>> +		return -EINVAL;
+>> +
+>> +	/* Enforce 32-bit alignment on the write data */
+>> +	if (wb.size & 0x3)
+>> +		return -EINVAL;
+> Why we enforce the alignment? It seems to be the requirement of the
+> low level driver. We may handle it there.
+Sure - I can move this to the lower level driver.
 
-The ioctl operations perform function specific mailbox commands that
-forward the requests to SDSi hardware to perform authentication of the
-payloads and enable the silicon configuration (to be made available after
-power cycling).
-
-The SDSi device itself is enumerated as a PCIe VSEC capability on the Intel
-Out Of Band Management Services Module (OOBMSM) device. The SDSi device is
-a cell of the intel_pmt MFD driver and as such has a build dependency on
-CONFIG_MFD_INTEL_PMT.
-
-Link: https://github.com/intel/intel-sdsi
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
- MAINTAINERS                         |   6 +
- drivers/platform/x86/intel/Kconfig  |  12 +
- drivers/platform/x86/intel/Makefile |   2 +
- drivers/platform/x86/intel/sdsi.c   | 676 ++++++++++++++++++++++++++++
- include/uapi/linux/sdsi_if.h        |  47 ++
- 5 files changed, 743 insertions(+)
- create mode 100644 drivers/platform/x86/intel/sdsi.c
- create mode 100644 include/uapi/linux/sdsi_if.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ca6d6fde85cf..657431e6c57d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9610,6 +9610,12 @@ S:	Maintained
- F:	arch/x86/include/asm/intel_scu_ipc.h
- F:	drivers/platform/x86/intel_scu_*
- 
-+INTEL SDSI DRIVER
-+M:	David E. Box <david.e.box@linux.intel.com>
-+S:	Supported
-+F:	drivers/platform/x86/intel/sdsi.c
-+F:	include/uapi/linux/sdsi_if.h
-+
- INTEL SKYLAKE INT3472 ACPI DEVICE DRIVER
- M:	Daniel Scally <djrscally@gmail.com>
- S:	Maintained
-diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
-index 0b21468e1bd0..628c68182a55 100644
---- a/drivers/platform/x86/intel/Kconfig
-+++ b/drivers/platform/x86/intel/Kconfig
-@@ -131,6 +131,18 @@ config INTEL_RST
- 	  firmware will copy the memory contents back to RAM and resume the OS
- 	  as usual.
- 
-+config INTEL_SDSI
-+	tristate "Intel Software Defined Silicon Driver"
-+	depends on X86_64
-+	depends on MFD_INTEL_PMT
-+	help
-+	  This driver enables access to the Intel Software Defined Silicon
-+	  interface used to provision silicon features with an authentication
-+	  certificate and capability activation payload.
-+
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called intel_sdsi.
-+
- config INTEL_SMARTCONNECT
- 	tristate "Intel Smart Connect disabling driver"
- 	depends on ACPI
-diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-index 8b3a3f7bab49..9e9c21c83715 100644
---- a/drivers/platform/x86/intel/Makefile
-+++ b/drivers/platform/x86/intel/Makefile
-@@ -25,6 +25,8 @@ intel_int0002_vgpio-y			:= int0002_vgpio.o
- obj-$(CONFIG_INTEL_INT0002_VGPIO)	+= intel_int0002_vgpio.o
- intel_oaktrail-y			:= oaktrail.o
- obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
-+intel_sdsi-y				:= sdsi.o
-+obj-$(CONFIG_INTEL_SDSI)		+= intel_sdsi.o
- 
- # Intel PMIC / PMC / P-Unit drivers
- intel_bxtwc_tmu-y			:= bxtwc_tmu.o
-diff --git a/drivers/platform/x86/intel/sdsi.c b/drivers/platform/x86/intel/sdsi.c
-new file mode 100644
-index 000000000000..c043667debe0
---- /dev/null
-+++ b/drivers/platform/x86/intel/sdsi.c
-@@ -0,0 +1,676 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Intel Software Defined Silicon driver
-+ *
-+ * Copyright (c) 2021, Intel Corporation.
-+ * All Rights Reserved.
-+ *
-+ * Author: "David E. Box" <david.e.box@linux.intel.com>
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/bitfield.h>
-+#include <linux/device.h>
-+#include <linux/iopoll.h>
-+#include <linux/kernel.h>
-+#include <linux/miscdevice.h>
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/sysfs.h>
-+#include <linux/timer.h>
-+#include <linux/types.h>
-+#include <linux/uaccess.h>
-+
-+#include <uapi/linux/sdsi_if.h>
-+
-+#define SDSI_DEV_NAME			"intel_extnd_cap_65"
-+#define SDSI_DEV_NODE_NAME		"intel_sdsi"
-+
-+#define ACCESS_TYPE_BARID		2
-+#define ACCESS_TYPE_LOCAL		3
-+
-+#define SDSI_MIN_SIZE_DWORDS		276
-+#define SDSI_SIZE_CONTROL		8
-+#define SDSI_SIZE_MAILBOX		1024
-+#define SDSI_SIZE_REGS			72
-+#define SDSI_SIZE_CMD			sizeof(u64)
-+
-+/*
-+ * Write messages are currently up to the size of the mailbox
-+ * while read messages are up to 4 times the size of the
-+ * mailbox, sent in packets
-+ */
-+#define SDSI_SIZE_WRITE_MSG		SDSI_SIZE_MAILBOX
-+#define SDSI_SIZE_READ_MSG		(SDSI_SIZE_MAILBOX * 4)
-+
-+#define SDSI_ENABLED_FEATURES_OFFSET	16
-+#define SDSI_ENABLED			BIT(3)
-+#define SDSI_SOCKET_ID_OFFSET		64
-+#define SDSI_SOCKET_ID			GENMASK(3, 0)
-+
-+#define SDSI_MBOX_CMD_SUCCESS		0x40
-+#define SDSI_MBOX_CMD_TIMEOUT		0x80
-+
-+#define MBOX_TIMEOUT_US			2000
-+#define MBOX_TIMEOUT_ACQUIRE_US		1000
-+#define MBOX_POLLING_PERIOD_US		100
-+#define MBOX_MAX_PACKETS		4
-+
-+#define MBOX_OWNER_NONE			0x00
-+#define MBOX_OWNER_INBAND		0x01
-+
-+#define CTRL_RUN_BUSY			BIT(0)
-+#define CTRL_READ_WRITE			BIT(1)
-+#define CTRL_SOM			BIT(2)
-+#define CTRL_EOM			BIT(3)
-+#define CTRL_OWNER			GENMASK(5, 4)
-+#define CTRL_COMPLETE			BIT(6)
-+#define CTRL_READY			BIT(7)
-+#define CTRL_STATUS			GENMASK(15, 8)
-+#define CTRL_PACKET_SIZE		GENMASK(31, 16)
-+#define CTRL_MSG_SIZE			GENMASK(63, 48)
-+
-+#define DISC_TABLE_SIZE			12
-+#define DT_ACCESS_TYPE			GENMASK(3, 0)
-+#define DT_SIZE				GENMASK(19, 12)
-+#define DT_TBIR				GENMASK(2, 0)
-+#define DT_OFFSET(v)			((v) & GENMASK(31, 3))
-+
-+enum sdsi_command {
-+	SDSI_CMD_PROVISION_AKC		= 0x04,
-+	SDSI_CMD_PROVISION_CAP		= 0x08,
-+	SDSI_CMD_READ_STATE		= 0x10,
-+};
-+
-+struct sdsi_mbox_info {
-+	u64	*payload;
-+	u64	*buffer;
-+	int	size;
-+	bool	is_write;
-+};
-+
-+struct disc_table {
-+	u32	access_info;
-+	u32	guid;
-+	u32	offset;
-+};
-+
-+struct sdsi_priv {
-+	struct disc_table	disc_table;
-+	struct mutex		mb_lock;
-+	struct mutex		akc_lock;
-+	struct miscdevice	miscdev;
-+	struct kref		kref;
-+	struct bin_attribute	registers_bin_attr;
-+	struct file		*akc_owner;
-+	struct platform_device	*pdev;
-+	void __iomem		*control_addr;
-+	void __iomem		*mbox_addr;
-+	void __iomem		*regs_addr;
-+	int			socket_id;
-+	bool			sdsi_enabled;
-+	bool			dev_present;
-+};
-+
-+static __always_inline void
-+sdsi_qword_memcpy_toio(u64 __iomem *to, const u64 *from, size_t count_bytes)
-+{
-+	size_t count = count_bytes / sizeof(*to);
-+	int i;
-+
-+	for (i = 0; i < count; i++)
-+		writeq(from[i], &to[i]);
-+}
-+
-+static __always_inline void
-+sdsi_qword_memcpy_fromio(u64 *to, const u64 __iomem *from, size_t count_bytes)
-+{
-+	size_t count = count_bytes / sizeof(*to);
-+	int i;
-+
-+	for (i = 0; i < count; i++)
-+		to[i] = readq(&from[i]);
-+}
-+
-+static inline struct sdsi_priv *to_sdsi_priv(struct miscdevice *miscdev)
-+{
-+	return container_of(miscdev, struct sdsi_priv, miscdev);
-+}
-+
-+static inline void sdsi_complete_transaction(struct sdsi_priv *priv)
-+{
-+	u64 control = FIELD_PREP(CTRL_COMPLETE, 1);
-+
-+	lockdep_assert_held(&priv->mb_lock);
-+	writeq(control, priv->control_addr);
-+}
-+
-+static int sdsi_status_to_errno(u32 status)
-+{
-+	switch (status) {
-+	case SDSI_MBOX_CMD_SUCCESS:
-+		return 0;
-+	case SDSI_MBOX_CMD_TIMEOUT:
-+		return -ETIMEDOUT;
-+	default:
-+		return -EIO;
-+	}
-+}
-+
-+static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *info, int *data_size)
-+{
-+	u32 total, loop, eom, status, message_size;
-+	struct platform_device *pdev = priv->pdev;
-+	u64 control;
-+	int ret;
-+
-+	lockdep_assert_held(&priv->mb_lock);
-+
-+	/* Format and send the read command */
-+	control = FIELD_PREP(CTRL_EOM, 1) |
-+		  FIELD_PREP(CTRL_SOM, 1) |
-+		  FIELD_PREP(CTRL_RUN_BUSY, 1) |
-+		  FIELD_PREP(CTRL_PACKET_SIZE, info->size);
-+	writeq(control, priv->control_addr);
-+
-+	/* For reads, data sizes that are larger than the mailbox size are read in packets. */
-+	total = 0;
-+	loop = 0;
-+	do {
-+		int offset = SDSI_SIZE_MAILBOX * loop;
-+		void __iomem *addr = priv->mbox_addr + offset;
-+		u64 *buf = info->buffer + (offset / SDSI_SIZE_CMD);
-+		u32 packet_size;
-+
-+		/* Poll on ready bit */
-+		ret = readq_poll_timeout(priv->control_addr, control, control & CTRL_READY,
-+					 MBOX_POLLING_PERIOD_US, MBOX_TIMEOUT_US);
-+		if (ret)
-+			break;
-+
-+		eom = FIELD_GET(CTRL_EOM, control);
-+		status = FIELD_GET(CTRL_STATUS, control);
-+		packet_size = FIELD_GET(CTRL_PACKET_SIZE, control);
-+		message_size = FIELD_GET(CTRL_MSG_SIZE, control);
-+
-+		ret = sdsi_status_to_errno(status);
-+		if (ret)
-+			break;
-+
-+		/* Only the last packet can be less than the mailbox size. */
-+		if (!eom && packet_size != SDSI_SIZE_MAILBOX) {
-+			dev_err(&pdev->dev, "Invalid packet size\n");
-+			ret = -EPROTO;
-+			break;
-+		}
-+
-+		if (packet_size > SDSI_SIZE_MAILBOX) {
-+			dev_err(&pdev->dev, "Packet size to large\n");
-+			ret = -EPROTO;
-+			break;
-+		}
-+
-+		sdsi_qword_memcpy_fromio(buf, addr, round_up(packet_size, SDSI_SIZE_CMD));
-+
-+		total += packet_size;
-+
-+		sdsi_complete_transaction(priv);
-+	} while (!eom && ++loop < MBOX_MAX_PACKETS);
-+
-+	if (ret) {
-+		sdsi_complete_transaction(priv);
-+		return ret;
-+	}
-+
-+	if (!eom) {
-+		dev_err(&pdev->dev, "Exceeded read attempts\n");
-+		return -EPROTO;
-+	}
-+
-+	/* Message size check is only valid for multi-packet transfers */
-+	if (loop && total != message_size)
-+		dev_warn(&pdev->dev, "Read count %d differs from expected count %d\n",
-+			 total, message_size);
-+
-+	*data_size = total;
-+
-+	return 0;
-+}
-+
-+static int sdsi_mbox_cmd_write(struct sdsi_priv *priv, struct sdsi_mbox_info *info)
-+{
-+	u64 control;
-+	u32 status;
-+	int ret;
-+
-+	lockdep_assert_held(&priv->mb_lock);
-+
-+	/* Write rest of the payload */
-+	sdsi_qword_memcpy_toio(priv->mbox_addr + SDSI_SIZE_CMD, info->payload + 1,
-+			       info->size - SDSI_SIZE_CMD);
-+
-+	/* Format and send the write command */
-+	control = FIELD_PREP(CTRL_EOM, 1) |
-+		  FIELD_PREP(CTRL_SOM, 1) |
-+		  FIELD_PREP(CTRL_RUN_BUSY, 1) |
-+		  FIELD_PREP(CTRL_READ_WRITE, 1) |
-+		  FIELD_PREP(CTRL_PACKET_SIZE, info->size);
-+	writeq(control, priv->control_addr);
-+
-+	/* Poll on run_busy bit */
-+	ret = readq_poll_timeout(priv->control_addr, control, !(control & CTRL_RUN_BUSY),
-+				 MBOX_POLLING_PERIOD_US, MBOX_TIMEOUT_US);
-+
-+	if (ret)
-+		goto release_mbox;
-+
-+	status = FIELD_GET(CTRL_STATUS, control);
-+	ret = sdsi_status_to_errno(status);
-+
-+release_mbox:
-+	sdsi_complete_transaction(priv);
-+
-+	return ret;
-+}
-+
-+static int sdsi_mbox_cmd(struct sdsi_priv *priv, struct sdsi_mbox_info *info, int *data_size)
-+{
-+	u64 control;
-+	int ret = 0;
-+	u32 owner;
-+
-+	lockdep_assert_held(&priv->mb_lock);
-+
-+	/* Check mailbox is available */
-+	control = readq(priv->control_addr);
-+	owner = FIELD_GET(CTRL_OWNER, control);
-+	if (owner != MBOX_OWNER_NONE)
-+		return -EBUSY;
-+
-+	/* Write first qword of payload */
-+	writeq(info->payload[0], priv->mbox_addr);
-+
-+	/* Check for ownership */
-+	ret = readq_poll_timeout(priv->control_addr, control,
-+				 FIELD_GET(CTRL_OWNER, control) & MBOX_OWNER_INBAND,
-+				 MBOX_POLLING_PERIOD_US, MBOX_TIMEOUT_ACQUIRE_US);
-+	if (ret)
-+		return ret;
-+
-+	if (info->is_write)
-+		ret = sdsi_mbox_cmd_write(priv, info);
-+	else
-+		ret = sdsi_mbox_cmd_read(priv, info, data_size);
-+
-+	return ret;
-+}
-+
-+static long sdsi_if_provision(struct sdsi_priv *priv, void __user *argp, enum sdsi_command cmd)
-+{
-+	struct sdsi_mbox_info info;
-+	u32 __user *datap = argp;
-+	u32 data_size;
-+	int ret;
-+
-+	if (get_user(data_size, datap))
-+		return -EFAULT;
-+
-+	if (data_size > (SDSI_SIZE_WRITE_MSG - SDSI_SIZE_CMD))
-+		return -EOVERFLOW;
-+
-+	/* Qword aligned message + command qword */
-+	info.size = round_up(data_size, SDSI_SIZE_CMD) + SDSI_SIZE_CMD;
-+	info.is_write = true;
-+
-+	info.payload = kzalloc(info.size, GFP_KERNEL);
-+	if (!info.payload)
-+		return -ENOMEM;
-+
-+	/* Copy message to payload buffer */
-+	if (copy_from_user(info.payload, argp + sizeof(data_size), data_size)) {
-+		ret = -EFAULT;
-+		goto free_payload;
-+	}
-+
-+	/* Command is last qword of payload buffer */
-+	info.payload[(info.size - SDSI_SIZE_CMD) / SDSI_SIZE_CMD] = cmd;
-+
-+	ret = mutex_lock_interruptible(&priv->mb_lock);
-+	if (ret)
-+		goto free_payload;
-+	ret = sdsi_mbox_cmd(priv, &info, NULL);
-+	mutex_unlock(&priv->mb_lock);
-+
-+free_payload:
-+	kfree(info.payload);
-+
-+	return (ret < 0) ? ret : 0;
-+}
-+
-+static long sdsi_if_read_cert_state(struct sdsi_priv *priv, void __user *argp)
-+{
-+	u64 command = SDSI_CMD_READ_STATE;
-+	struct sdsi_mbox_info info;
-+	u32 __user *datap = argp;
-+	u32 data_size;
-+	int ret;
-+
-+	/* Buffer for return data */
-+	info.buffer = kmalloc(SDSI_SIZE_READ_MSG, GFP_KERNEL);
-+	if (!info.buffer)
-+		return -ENOMEM;
-+
-+	info.payload = &command;
-+	info.size = sizeof(command);
-+	info.is_write = false;
-+
-+	ret = mutex_lock_interruptible(&priv->mb_lock);
-+	if (ret)
-+		goto free_buffer;
-+	ret = sdsi_mbox_cmd(priv, &info, &data_size);
-+	mutex_unlock(&priv->mb_lock);
-+	if (ret < 0)
-+		goto free_buffer;
-+
-+	/* First field is the size of the data */
-+	if (put_user(data_size, datap)) {
-+		ret = -EFAULT;
-+		goto free_buffer;
-+	}
-+
-+	/* Copy the data */
-+	if (copy_to_user(argp + sizeof(data_size), info.buffer, data_size)) {
-+		ret = -EFAULT;
-+		goto free_buffer;
-+	}
-+
-+free_buffer:
-+	kfree(info.buffer);
-+
-+	return (ret < 0) ? ret : 0;
-+}
-+
-+static long sdsi_device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	struct miscdevice *miscdev = file->private_data;
-+	struct sdsi_priv *priv = to_sdsi_priv(miscdev);
-+	void __user *argp = (void __user *)arg;
-+	long ret = -EINVAL;
-+
-+	if (!priv->dev_present)
-+		return -ENODEV;
-+
-+	if (!priv->sdsi_enabled)
-+		return -EPERM;
-+
-+	if (cmd == SDSI_IF_READ_STATE)
-+		return sdsi_if_read_cert_state(priv, argp);
-+
-+	mutex_lock(&priv->akc_lock);
-+	switch (cmd) {
-+	case SDSI_IF_PROVISION_AKC:
-+		/*
-+		 * While writing an authentication certificate disallow other openers
-+		 * from using AKC or CAP.
-+		 */
-+		if (!priv->akc_owner)
-+			priv->akc_owner = file;
-+
-+		if (priv->akc_owner != file) {
-+			ret = -EUSERS;
-+			goto unlock_akc;
-+		}
-+
-+		ret = sdsi_if_provision(priv, argp, SDSI_CMD_PROVISION_AKC);
-+		break;
-+
-+	case SDSI_IF_PROVISION_CAP:
-+		if (priv->akc_owner && priv->akc_owner != file) {
-+			ret = -EUSERS;
-+			goto unlock_akc;
-+		}
-+
-+		ret = sdsi_if_provision(priv, argp, SDSI_CMD_PROVISION_CAP);
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+unlock_akc:
-+	mutex_unlock(&priv->akc_lock);
-+
-+	return ret;
-+}
-+
-+static ssize_t sdsi_read_registers(struct file *filp, struct kobject *kobj,
-+				   struct bin_attribute *attr, char *buf, loff_t off,
-+				   size_t count)
-+{
-+	struct sdsi_priv *priv = attr->private;
-+	void __iomem *addr = priv->regs_addr;
-+
-+	if (!priv->dev_present)
-+		return -ENODEV;
-+
-+	memcpy_fromio(buf, addr + off, count);
-+
-+	return count;
-+}
-+
-+static int sdsi_add_bin_attrs(struct platform_device *pdev)
-+{
-+	struct sdsi_priv *priv = platform_get_drvdata(pdev);
-+
-+	priv->registers_bin_attr.private = priv;
-+	priv->registers_bin_attr.attr.name = "registers";
-+	priv->registers_bin_attr.attr.mode = 0400;
-+	priv->registers_bin_attr.read = sdsi_read_registers;
-+	priv->registers_bin_attr.size = SDSI_SIZE_REGS;
-+
-+	return sysfs_create_bin_file(&priv->pdev->dev.kobj, &priv->registers_bin_attr);
-+}
-+
-+static ssize_t guid_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct sdsi_priv *priv = dev_get_drvdata(dev);
-+
-+	return sprintf(buf, "0x%x\n", priv->disc_table.guid);
-+}
-+static DEVICE_ATTR_RO(guid);
-+
-+static struct attribute *sdsi_attrs[] = {
-+	&dev_attr_guid.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(sdsi);
-+
-+static void sdsi_priv_release(struct kref *kref)
-+{
-+	struct sdsi_priv *priv = container_of(kref, struct sdsi_priv, kref);
-+
-+	mutex_destroy(&priv->akc_lock);
-+	mutex_destroy(&priv->mb_lock);
-+	kfree(priv->miscdev.name);
-+	kfree(priv);
-+}
-+
-+static int sdsi_device_open(struct inode *inode, struct file *file)
-+{
-+	struct miscdevice *miscdev = file->private_data;
-+	struct sdsi_priv *priv = to_sdsi_priv(miscdev);
-+
-+	kref_get(&priv->kref);
-+
-+	return 0;
-+}
-+
-+static int sdsi_device_release(struct inode *inode, struct file *file)
-+{
-+
-+	struct miscdevice *miscdev = file->private_data;
-+	struct sdsi_priv *priv = to_sdsi_priv(miscdev);
-+
-+	if (priv->akc_owner == file)
-+		priv->akc_owner = NULL;
-+
-+	kref_put(&priv->kref, sdsi_priv_release);
-+
-+	return 0;
-+}
-+
-+static const struct file_operations sdsi_char_device_ops = {
-+	.owner = THIS_MODULE,
-+	.open = sdsi_device_open,
-+	.unlocked_ioctl = sdsi_device_ioctl,
-+	.release = sdsi_device_release,
-+};
-+
-+static int sdsi_create_misc_device(struct platform_device *pdev)
-+{
-+	struct sdsi_priv *priv = platform_get_drvdata(pdev);
-+
-+	priv->miscdev.name = kasprintf(GFP_KERNEL, "isdsi-%d", priv->socket_id);
-+	if (!priv->miscdev.name)
-+		return -ENOMEM;
-+
-+	priv->miscdev.minor = MISC_DYNAMIC_MINOR;
-+	priv->miscdev.fops = &sdsi_char_device_ops;
-+	priv->miscdev.parent = &pdev->dev;
-+
-+	return misc_register(&priv->miscdev);
-+}
-+
-+static int sdsi_map_sdsi_registers(struct platform_device *pdev)
-+{
-+	struct pci_dev *pci_dev = to_pci_dev(pdev->dev.parent);
-+	struct sdsi_priv *priv = platform_get_drvdata(pdev);
-+	u32 access_type = FIELD_GET(DT_ACCESS_TYPE, priv->disc_table.access_info);
-+	u32 size = FIELD_GET(DT_SIZE, priv->disc_table.access_info);
-+	u32 tbir = FIELD_GET(DT_TBIR, priv->disc_table.offset);
-+	u32 offset = DT_OFFSET(priv->disc_table.offset);
-+	struct resource res = {0}, *disc_res;
-+
-+	/* Starting location of SDSi MMIO region based on access type */
-+	switch (access_type) {
-+	case ACCESS_TYPE_LOCAL:
-+		if (tbir) {
-+			dev_err(&pdev->dev,
-+				"Unsupported BAR index %d for access type %d\n",
-+				tbir, access_type);
-+			return -EINVAL;
-+		}
-+
-+		disc_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+		if (!disc_res)
-+			return -ENODEV;
-+
-+		/*
-+		 * For access_type LOCAL, the base address is as follows:
-+		 * base address = end of discovery region + base offset + 1
-+		 */
-+		res.start = disc_res->end + offset + 1;
-+		break;
-+
-+	case ACCESS_TYPE_BARID:
-+		res.start = pci_resource_start(pci_dev, tbir) + offset;
-+		break;
-+
-+	default:
-+		dev_err(&pdev->dev, "Unrecognized access_type %d\n", access_type);
-+		return -EINVAL;
-+	}
-+
-+	res.end = res.start + size * sizeof(u32) - 1;
-+	res.flags = IORESOURCE_MEM;
-+
-+	priv->control_addr = devm_ioremap_resource(&pdev->dev, &res);
-+	if (IS_ERR(priv->control_addr))
-+		return PTR_ERR(priv->control_addr);
-+
-+	priv->mbox_addr = priv->control_addr + SDSI_SIZE_CONTROL;
-+	priv->regs_addr = priv->mbox_addr + SDSI_SIZE_MAILBOX;
-+
-+	priv->socket_id = readl(priv->regs_addr + SDSI_SOCKET_ID_OFFSET) &
-+				SDSI_SOCKET_ID;
-+
-+	priv->sdsi_enabled = !!(readq(priv->regs_addr + SDSI_ENABLED_FEATURES_OFFSET) &
-+				SDSI_ENABLED);
-+	return 0;
-+}
-+
-+static int sdsi_probe(struct platform_device *pdev)
-+{
-+	void __iomem *disc_addr;
-+	struct sdsi_priv *priv;
-+	int ret;
-+
-+	disc_addr = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(disc_addr))
-+		return PTR_ERR(disc_addr);
-+
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	kref_init(&priv->kref);
-+
-+	platform_set_drvdata(pdev, priv);
-+	priv->pdev = pdev;
-+	mutex_init(&priv->mb_lock);
-+	mutex_init(&priv->akc_lock);
-+
-+	memcpy_fromio(&priv->disc_table, disc_addr, DISC_TABLE_SIZE);
-+
-+	ret = sdsi_map_sdsi_registers(pdev);
-+	if (ret)
-+		goto put_kref;
-+
-+	ret = sdsi_create_misc_device(pdev);
-+	if (ret)
-+		goto put_kref;
-+
-+	ret = sdsi_add_bin_attrs(pdev);
-+	if (ret)
-+		goto deregister_misc;
-+
-+	priv->dev_present = true;
-+
-+	return 0;
-+
-+deregister_misc:
-+	misc_deregister(&priv->miscdev);
-+put_kref:
-+	kref_put(&priv->kref, sdsi_priv_release);
-+
-+	return ret;
-+}
-+
-+static int sdsi_remove(struct platform_device *pdev)
-+{
-+	struct sdsi_priv *priv = platform_get_drvdata(pdev);
-+
-+	priv->dev_present = false;
-+	sysfs_remove_bin_file(&priv->pdev->dev.kobj, &priv->registers_bin_attr);
-+	misc_deregister(&priv->miscdev);
-+	kref_put(&priv->kref, sdsi_priv_release);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver sdsi_driver = {
-+	.driver = {
-+		.name		= SDSI_DEV_NAME,
-+		.dev_groups	= sdsi_groups,
-+	},
-+	.probe  = sdsi_probe,
-+	.remove = sdsi_remove,
-+};
-+module_platform_driver(sdsi_driver);
-+
-+MODULE_AUTHOR("David E. Box <david.e.box@linux.intel.com>");
-+MODULE_DESCRIPTION("Intel Software Defined Silicon driver");
-+MODULE_ALIAS("platform:" SDSI_DEV_NAME);
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/uapi/linux/sdsi_if.h b/include/uapi/linux/sdsi_if.h
-new file mode 100644
-index 000000000000..468e548fbdab
---- /dev/null
-+++ b/include/uapi/linux/sdsi_if.h
-@@ -0,0 +1,47 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * Intel Software Defined Silicon: OS to hardware Interface
-+ * Copyright (c) 2021, Intel Corporation.
-+ * All rights reserved.
-+ *
-+ * Author: "David E. Box" <david.e.box@linux.intel.com>
-+ */
-+
-+#ifndef __SDSI_IF_H
-+#define __SDSI_IF_H
-+
-+#include <linux/ioctl.h>
-+#include <linux/types.h>
-+
-+/**
-+ * struct sdsi_if_sdsi_state - Read current SDSi State Certificate
-+ * @size:	size of the certificate
-+ * @data:	SDSi State Certificate
-+ *
-+ * Used to return output of ioctl SDSI_IF_READ_STATE. This command is used to
-+ * read the current CPU configuration state
-+ */
-+struct sdsi_if_sdsi_state {
-+	__u32	size;
-+	__u8	data[4096];
-+};
-+
-+/**
-+ * struct sdsi_if_provision_payload - Provision a certificate or activation payload
-+ * @size:	size of the certificate of activation payload
-+ * @data:	certificate or activation payload
-+ *
-+ * Used with ioctl command SDSI_IF_IOW_PROVISION_AKC and
-+ * SDSI_IF_IOW_PROVISION_CAP to provision a CPU with an Authentication
-+ * Key Certificate or Capability Activation Payload respectively.
-+ */
-+struct sdsi_if_provision_payload {
-+	__u32	size;
-+	__u8	data[4096];
-+};
-+
-+#define SDSI_IF_MAGIC		0xDF
-+#define SDSI_IF_READ_STATE	_IOR(SDSI_IF_MAGIC, 0, struct sdsi_if_sdsi_state *)
-+#define SDSI_IF_PROVISION_AKC	_IOW(SDSI_IF_MAGIC, 1, struct sdsi_if_provision_payload *)
-+#define SDSI_IF_PROVISION_CAP	_IOW(SDSI_IF_MAGIC, 2, struct sdsi_if_provision_payload *)
-+#endif
--- 
-2.25.1
+Thanks,
+- Russ
+>
+> Thanks,
+> Yilun
+>
+>> +
+>> +	buf = vzalloc(wb.size);
+>> +	if (!buf)
+>> +		return -ENOMEM;
+>> +
+>> +	if (copy_from_user(buf, u64_to_user_ptr(wb.buf), wb.size)) {
+>> +		vfree(buf);
+>> +		return -EFAULT;
+>> +	}
+>> +
+>> +	imgld->data = buf;
+>> +	imgld->remaining_size = wb.size;
+>> +	imgld->err_code = FPGA_IMAGE_ERR_NONE;
+>> +	imgld->progress = FPGA_IMAGE_PROG_STARTING;
+>> +	queue_work(system_unbound_wq, &imgld->work);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
+>> +				  unsigned long arg)
+>> +{
+>> +	struct fpga_image_load *imgld = filp->private_data;
+>> +	int ret = -ENOTTY;
+>> +
+>> +	switch (cmd) {
+>> +	case FPGA_IMAGE_LOAD_WRITE:
+>> +		mutex_lock(&imgld->lock);
+>> +		ret = fpga_image_load_ioctl_write(imgld, arg);
+>> +		mutex_unlock(&imgld->lock);
+>> +		break;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int fpga_image_load_open(struct inode *inode, struct file *filp)
+>> +{
+>> +	struct fpga_image_load *imgld = container_of(inode->i_cdev,
+>> +						     struct fpga_image_load, cdev);
+>> +
+>> +	if (atomic_cmpxchg(&imgld->opened, 0, 1))
+>> +		return -EBUSY;
+>> +
+>> +	filp->private_data = imgld;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int fpga_image_load_release(struct inode *inode, struct file *filp)
+>> +{
+>> +	struct fpga_image_load *imgld = filp->private_data;
+>> +
+>> +	mutex_lock(&imgld->lock);
+>> +	if (imgld->progress == FPGA_IMAGE_PROG_IDLE) {
+>> +		mutex_unlock(&imgld->lock);
+>> +		goto close_exit;
+>> +	}
+>> +
+>> +	mutex_unlock(&imgld->lock);
+>> +	flush_work(&imgld->work);
+>> +
+>> +close_exit:
+>> +	atomic_set(&imgld->opened, 0);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct file_operations fpga_image_load_fops = {
+>> +	.owner = THIS_MODULE,
+>> +	.open = fpga_image_load_open,
+>> +	.release = fpga_image_load_release,
+>> +	.unlocked_ioctl = fpga_image_load_ioctl,
+>> +};
+>> +
+>>  /**
+>>   * fpga_image_load_register - create and register an FPGA Image Load Device
+>>   *
+>> @@ -35,6 +227,12 @@ fpga_image_load_register(struct device *parent,
+>>  	struct fpga_image_load *imgld;
+>>  	int ret;
+>>  
+>> +	if (!ops || !ops->cancel || !ops->prepare ||
+>> +	    !ops->write_blk || !ops->poll_complete) {
+>> +		dev_err(parent, "Attempt to register without all required ops\n");
+>> +		return ERR_PTR(-ENOMEM);
+>> +	}
+>> +
+>>  	imgld = kzalloc(sizeof(*imgld), GFP_KERNEL);
+>>  	if (!imgld)
+>>  		return ERR_PTR(-ENOMEM);
+>> @@ -48,9 +246,13 @@ fpga_image_load_register(struct device *parent,
+>>  
+>>  	imgld->priv = priv;
+>>  	imgld->ops = ops;
+>> +	imgld->err_code = FPGA_IMAGE_ERR_NONE;
+>> +	imgld->progress = FPGA_IMAGE_PROG_IDLE;
+>> +	INIT_WORK(&imgld->work, fpga_image_do_load);
+>>  
+>>  	imgld->dev.class = fpga_image_load_class;
+>>  	imgld->dev.parent = parent;
+>> +	imgld->dev.devt = MKDEV(MAJOR(fpga_image_devt), imgld->dev.id);
+>>  
+>>  	ret = dev_set_name(&imgld->dev, "fpga_image_load%d", imgld->dev.id);
+>>  	if (ret) {
+>> @@ -65,6 +267,16 @@ fpga_image_load_register(struct device *parent,
+>>  		return ERR_PTR(ret);
+>>  	}
+>>  
+>> +	cdev_init(&imgld->cdev, &fpga_image_load_fops);
+>> +	imgld->cdev.owner = parent->driver->owner;
+>> +	imgld->cdev.kobj.parent = &imgld->dev.kobj;
+> Could be replaced by cdev_set_parent()
+>
+>> +
+>> +	ret = cdev_add(&imgld->cdev, imgld->dev.devt, 1);
+>> +	if (ret) {
+>> +		put_device(&imgld->dev);
+>> +		return ERR_PTR(ret);
+>> +	}
+>> +
+>>  	return imgld;
+>>  
+>>  error_device:
+>> @@ -83,10 +295,23 @@ EXPORT_SYMBOL_GPL(fpga_image_load_register);
+>>   * @imgld: pointer to struct fpga_image_load
+>>   *
+>>   * This function is intended for use in the parent driver's remove()
+>> - * function.
+>> + * function. The driver_unload flag prevents new updates from starting
+>> + * once the unregister process has begun.
+>>   */
+>>  void fpga_image_load_unregister(struct fpga_image_load *imgld)
+>>  {
+>> +	mutex_lock(&imgld->lock);
+>> +	imgld->driver_unload = true;
+>> +	if (imgld->progress == FPGA_IMAGE_PROG_IDLE) {
+>> +		mutex_unlock(&imgld->lock);
+>> +		goto unregister;
+>> +	}
+>> +
+>> +	mutex_unlock(&imgld->lock);
+>> +	flush_work(&imgld->work);
+>> +
+>> +unregister:
+>> +	cdev_del(&imgld->cdev);
+>>  	device_unregister(&imgld->dev);
+>>  }
+>>  EXPORT_SYMBOL_GPL(fpga_image_load_unregister);
+>> @@ -101,19 +326,30 @@ static void fpga_image_load_dev_release(struct device *dev)
+>>  
+>>  static int __init fpga_image_load_class_init(void)
+>>  {
+>> +	int ret;
+>>  	pr_info("FPGA Image Load Framework\n");
+>>  
+>>  	fpga_image_load_class = class_create(THIS_MODULE, "fpga_image_load");
+>>  	if (IS_ERR(fpga_image_load_class))
+>>  		return PTR_ERR(fpga_image_load_class);
+>>  
+>> +	ret = alloc_chrdev_region(&fpga_image_devt, 0, MINORMASK,
+>> +				  "fpga_image_load");
+>> +	if (ret)
+>> +		goto exit_destroy_class;
+>> +
+>>  	fpga_image_load_class->dev_release = fpga_image_load_dev_release;
+>>  
+>>  	return 0;
+>> +
+>> +exit_destroy_class:
+>> +	class_destroy(fpga_image_load_class);
+>> +	return ret;
+>>  }
+>>  
+>>  static void __exit fpga_image_load_class_exit(void)
+>>  {
+>> +	unregister_chrdev_region(fpga_image_devt, MINORMASK);
+>>  	class_destroy(fpga_image_load_class);
+>>  	WARN_ON(!xa_empty(&fpga_image_load_xa));
+>>  }
+>> diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
+>> index 8b051c82ef5f..41ab63cf7b20 100644
+>> --- a/include/linux/fpga/fpga-image-load.h
+>> +++ b/include/linux/fpga/fpga-image-load.h
+>> @@ -7,22 +7,51 @@
+>>  #ifndef _LINUX_FPGA_IMAGE_LOAD_H
+>>  #define _LINUX_FPGA_IMAGE_LOAD_H
+>>  
+>> +#include <linux/cdev.h>
+>>  #include <linux/device.h>
+>>  #include <linux/mutex.h>
+>>  #include <linux/types.h>
+>> +#include <uapi/linux/fpga-image-load.h>
+>>  
+>>  struct fpga_image_load;
+>>  
+>>  /**
+>>   * struct fpga_image_load_ops - device specific operations
+>> + * @prepare:		    Required: Prepare secure update
+>> + * @write_blk:		    Required: Write a block of data. The class driver
+>> + *			    provides a default block size. The write_blk() op
+>> + *			    may choose to modify *blk_size to something more
+>> + *			    optimal for the given device. *blk_size must be
+>> + *			    less than or equal to max_size.
+>> + * @poll_complete:	    Required: Check for the completion of the
+>> + *			    HW authentication/programming process.
+>> + * @cancel:		    Required: Signal HW to cancel update
+>> + * @cleanup:		    Optional: Complements the prepare()
+>> + *			    function and is called at the completion
+>> + *			    of the update, whether success or failure,
+>> + *			    if the prepare function succeeded.
+>>   */
+>>  struct fpga_image_load_ops {
+>> +	u32 (*prepare)(struct fpga_image_load *imgld);
+>> +	u32 (*write_blk)(struct fpga_image_load *imgld, u32 offset,
+>> +			 u32 *blk_size, u32 max_size);
+>> +	u32 (*poll_complete)(struct fpga_image_load *imgld);
+>> +	u32 (*cancel)(struct fpga_image_load *imgld);
+>> +	void (*cleanup)(struct fpga_image_load *imgld);
+>>  };
+>>  
+>>  struct fpga_image_load {
+>>  	struct device dev;
+>> +	struct cdev cdev;
+>>  	const struct fpga_image_load_ops *ops;
+>>  	struct mutex lock;		/* protect data structure contents */
+>> +	atomic_t opened;
+>> +	struct work_struct work;
+>> +	const u8 *data;			/* pointer to update data */
+>> +	u32 remaining_size;		/* size remaining to transfer */
+>> +	u32 progress;
+>> +	u32 err_code;			/* image load error code */
+>> +	bool driver_unload;
+>>  	void *priv;
+>>  };
+>>  
+>> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
+>> new file mode 100644
+>> index 000000000000..0382078c5a6c
+>> --- /dev/null
+>> +++ b/include/uapi/linux/fpga-image-load.h
+>> @@ -0,0 +1,54 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +/*
+>> + * Header File for FPGA Image Load User API
+>> + *
+>> + * Copyright (C) 2019-2021 Intel Corporation, Inc.
+>> + *
+>> + */
+>> +
+>> +#ifndef _UAPI_LINUX_FPGA_IMAGE_LOAD_H
+>> +#define _UAPI_LINUX_FPGA_IMAGE_LOAD_H
+>> +
+>> +#include <linux/types.h>
+>> +#include <linux/ioctl.h>
+>> +
+>> +#define FPGA_IMAGE_LOAD_MAGIC 0xB9
+>> +
+>> +/* Image load progress codes */
+>> +#define FPGA_IMAGE_PROG_IDLE		0
+>> +#define FPGA_IMAGE_PROG_STARTING	1
+>> +#define FPGA_IMAGE_PROG_PREPARING	2
+>> +#define FPGA_IMAGE_PROG_WRITING		3
+>> +#define FPGA_IMAGE_PROG_PROGRAMMING	4
+>> +#define FPGA_IMAGE_PROG_MAX		5
+>> +
+>> +/* Image error progress codes */
+>> +#define FPGA_IMAGE_ERR_NONE		0
+>> +#define FPGA_IMAGE_ERR_HW_ERROR		1
+>> +#define FPGA_IMAGE_ERR_TIMEOUT		2
+>> +#define FPGA_IMAGE_ERR_CANCELED		3
+>> +#define FPGA_IMAGE_ERR_BUSY		4
+>> +#define FPGA_IMAGE_ERR_INVALID_SIZE	5
+>> +#define FPGA_IMAGE_ERR_RW_ERROR		6
+>> +#define FPGA_IMAGE_ERR_WEAROUT		7
+>> +#define FPGA_IMAGE_ERR_MAX		8
+>> +
+>> +/**
+>> + * FPGA_IMAGE_LOAD_WRITE - _IOW(FPGA_IMAGE_LOAD_MAGIC, 0,
+>> + *				struct fpga_image_write)
+>> + *
+>> + * Upload a data buffer to the target device. The user must provide the
+>> + * data buffer and size.
+>> + *
+>> + * Return: 0 on success, -errno on failure.
+>> + */
+>> +struct fpga_image_write {
+>> +	/* Input */
+>> +	__u32 flags;		/* Zero for now */
+>> +	__u32 size;		/* Data size (in bytes) to be written */
+>> +	__u64 buf;		/* User space address of source data */
+>> +};
+>> +
+>> +#define FPGA_IMAGE_LOAD_WRITE	_IOW(FPGA_IMAGE_LOAD_MAGIC, 0, struct fpga_image_write)
+>> +
+>> +#endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
+>> -- 
+>> 2.25.1
 
