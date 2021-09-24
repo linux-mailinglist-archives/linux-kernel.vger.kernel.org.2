@@ -2,149 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED36416D9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3205416D98
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244703AbhIXIWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244647AbhIXIWP (ORCPT
+        id S244694AbhIXIVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:21:22 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:53998
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244678AbhIXIVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:22:15 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A04DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:20:42 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y28so36811325lfb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2lK4itpWLfIP47gsHiFv57wO+RI/8c66M8TUwLd+fZQ=;
-        b=0p/tiWj+5/28CIwO/D67HDf77KD9XTJredqQcfOXKFifpJZkO1a6w0cZX+WEG1q0aT
-         kKdI254BvEy5JKnqrj9XcuS31PwwGpslxtyRx9gvhiTxPRalevQM4FmWFsKvyPRp5VVK
-         JacToDvTUsm1eRu9RrDHP+ySPP7Q1drN4TxX1+UnUdI5vqn+Hxxf/fTbrAH6MJwsJXLX
-         TwGw0vbSLkI9UcaYfab403lcDpSv9sDfyqpwxsP/JkE0Q6RiP7TdULAk4kdACFTtPdf8
-         YYRNQeecgLwYwJJ8lZ/cvNZzh42JvXOwwqbxWzae8B9JSVvWGIn9odTIXxFCO0Xw3vvE
-         DReA==
+        Fri, 24 Sep 2021 04:21:15 -0400
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 19AC34079D
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 08:19:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632471582;
+        bh=c0wuCPSc0x9xGVIhUquA9CgZ6k+TiKYwRjcwj4ZggoQ=;
+        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=dNb8MphmiCBhUFkGtyvdgckxgkSfRe9vfQGX+8PBRsQeMdtNHT1HQcgBbuv7q3trU
+         8vT9BcAQ2F0XzTy1QGXl67NEw2JlutyYNye0oj2hrCQDas+2gkFlD3o3YhAu3zmZsS
+         P96md0X+BYj7g9Yawl4Md+4KxkuIg+giyr94tQ2W60VzF76P7CYD/xMkn9xqWlNPc0
+         1d8XQURpGpJeuslEfIHKzQMCt3UdGfKRrjNFb777HGo3G9Lo887wSV56bTwswcs05/
+         G6zl5mqTgApPBIYSHz6Yk/NFwF3BBimakFKD62+ypvB4cEBHpPelk5orbE+fVU9nVz
+         G/l3KCZlec/Nw==
+Received: by mail-wr1-f71.google.com with SMTP id j16-20020adfa550000000b0016012acc443so7389123wrb.14
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:19:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=2lK4itpWLfIP47gsHiFv57wO+RI/8c66M8TUwLd+fZQ=;
-        b=FNeaW0pt1+V+HKJuKUvbc0ZKeFmUuDeudqEoG39+p0juu/cR21021HYLlofnElpBk6
-         ru1WrrmcH96GjRojJTGJkRtQETQMow2YSWjdAA4IhIuv4kWVapI3OydsdHAA8zHaZzKY
-         7ilns1Q9sR3ZKJk3ZrRqn1RnCcEPnSBqcTaArKx/AFJ8BIlrIyCuOsJVP73X5QHmlvwg
-         OdWuu/ylpG/pk5l9YxjoOqC7zUrgPyoimRkUbhQ7J+gAVRPI0gwHkYXU0e4Hxd12JaZM
-         LiW63keaQoBq3M2tHHH10DPOsol9DaUlFbsWzEZVPo5uSEpdKK9MRRH6QK+c39cAt/UQ
-         Tyzg==
-X-Gm-Message-State: AOAM533NOlABRLzyfifKIYwCjtbZkO2rGxvaEovtuyL00CLndQ7x10wS
-        SWp0aYsD5zKb5rJ7pTveUUwVYw==
-X-Google-Smtp-Source: ABdhPJwuBjxTqLU5M23xYZwBF39sXMpA4WHImPOj7s4pn3sGY8Ncg6nsho6omLrJI0Fzt7sc/rVv7Q==
-X-Received: by 2002:a05:6512:1102:: with SMTP id l2mr7294591lfg.181.1632471639797;
-        Fri, 24 Sep 2021 01:20:39 -0700 (PDT)
-Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id d16sm679128lfg.138.2021.09.24.01.20.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 01:20:39 -0700 (PDT)
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] media: rcar-vin: add support for GREY format
-Date:   Fri, 24 Sep 2021 11:19:39 +0300
-Message-Id: <20210924081938.30230-1-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.30.2
+        bh=c0wuCPSc0x9xGVIhUquA9CgZ6k+TiKYwRjcwj4ZggoQ=;
+        b=tuRMh3rmTqScPnvJvNbWQafScovu1Ke2t4NrxQfa7vw2hukDDm4USXimWCOBZ7Mxnr
+         498+J9mN6qyggPUmlXadPuq3kqpcmuLDwkKzCHXGZirTAMlPkmNd3yZjejIHz0whnTWn
+         sXmKFnvH6yGAig5Nze7AOtxQZlbSytdyMtMSB1wehRuP0TrrJ+DvQycDDoeFmLAWHVY0
+         z7llsXg6UoDPBO6NbWFw/zBVAMuCoatsxJ34f6zwMMX6FuLMK2T2yJcTdwHltmn2cQnw
+         OchneBYQiBsb5X2jG0ouzvTJM8i9W9A7RZOLJLU4jjmtptkknKN1QVc/ttEi2NYnCoyM
+         IZtw==
+X-Gm-Message-State: AOAM5303/XgJWZzG1w0SurRCcxk+icxrA7sC7anHWkhalAfBUc07y81e
+        yO7PI7h9a8RTX4YCpNKY55uZMXaO7aIO7ffJ0VpFpUIAWNbN3SbuPQMl1UTCKGZQ8VkZKhcxCdZ
+        dLHs6bnM+DHwCK2kzHCK0OEMgi7aG83HDdS5xsCPPIA==
+X-Received: by 2002:a1c:3b54:: with SMTP id i81mr732318wma.120.1632471581518;
+        Fri, 24 Sep 2021 01:19:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1C+cVYdmRZUTlAjomfSJCurRjYJSJ+tIhqYru5qzoX0rLrdEtmb3ME8XHJhD/TSPVPDKbdQ==
+X-Received: by 2002:a1c:3b54:: with SMTP id i81mr732302wma.120.1632471581386;
+        Fri, 24 Sep 2021 01:19:41 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id r5sm7315447wrm.79.2021.09.24.01.19.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 01:19:41 -0700 (PDT)
+Subject: Re: [PATCH 4/5] ARM: dts: imx6sl: fix mmc compatibles
+To:     Andreas Kemnade <andreas@kemnade.info>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210923201238.2516844-1-andreas@kemnade.info>
+ <20210923201238.2516844-5-andreas@kemnade.info>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <d556611b-a1ec-a492-55a8-3704fde2487f@canonical.com>
+Date:   Fri, 24 Sep 2021 10:19:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210923201238.2516844-5-andreas@kemnade.info>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+On 23/09/2021 22:12, Andreas Kemnade wrote:
+> Binding specification only allows one compatible here.
+> 
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+>  arch/arm/boot/dts/imx6sl.dtsi | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
 
-This adds support for MEDIA_BUS_FMT_Y8_1X8 input and V4L2_PIX_FMT_GREY
-output format.
 
-Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- drivers/media/platform/rcar-vin/rcar-dma.c  | 14 ++++++++++++++
- drivers/media/platform/rcar-vin/rcar-v4l2.c |  4 ++++
- 2 files changed, 18 insertions(+)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
-index f5f722ab1d4e..d2bfd3e575fa 100644
---- a/drivers/media/platform/rcar-vin/rcar-dma.c
-+++ b/drivers/media/platform/rcar-vin/rcar-dma.c
-@@ -114,6 +114,7 @@
- /* Video n Data Mode Register bits */
- #define VNDMR_A8BIT(n)		(((n) & 0xff) << 24)
- #define VNDMR_A8BIT_MASK	(0xff << 24)
-+#define VNDMR_YMODE_Y8		(1 << 12)
- #define VNDMR_EXRGB		(1 << 8)
- #define VNDMR_BPSM		(1 << 4)
- #define VNDMR_ABIT		(1 << 2)
-@@ -603,6 +604,7 @@ void rvin_crop_scale_comp(struct rvin_dev *vin)
- 	case V4L2_PIX_FMT_SGBRG8:
- 	case V4L2_PIX_FMT_SGRBG8:
- 	case V4L2_PIX_FMT_SRGGB8:
-+	case V4L2_PIX_FMT_GREY:
- 		stride /= 2;
- 		break;
- 	default:
-@@ -695,6 +697,7 @@ static int rvin_setup(struct rvin_dev *vin)
- 	case MEDIA_BUS_FMT_SGBRG8_1X8:
- 	case MEDIA_BUS_FMT_SGRBG8_1X8:
- 	case MEDIA_BUS_FMT_SRGGB8_1X8:
-+	case MEDIA_BUS_FMT_Y8_1X8:
- 		vnmc |= VNMC_INF_RAW8;
- 		break;
- 	default:
-@@ -774,6 +777,13 @@ static int rvin_setup(struct rvin_dev *vin)
- 	case V4L2_PIX_FMT_SRGGB8:
- 		dmr = 0;
- 		break;
-+	case V4L2_PIX_FMT_GREY:
-+		if (input_is_yuv) {
-+			dmr = VNDMR_DTMD_YCSEP | VNDMR_YMODE_Y8;
-+			output_is_yuv = true;
-+		} else
-+			dmr = 0;
-+		break;
- 	default:
- 		vin_err(vin, "Invalid pixelformat (0x%x)\n",
- 			vin->format.pixelformat);
-@@ -1145,6 +1155,10 @@ static int rvin_mc_validate_format(struct rvin_dev *vin, struct v4l2_subdev *sd,
- 		if (vin->format.pixelformat != V4L2_PIX_FMT_SRGGB8)
- 			return -EPIPE;
- 		break;
-+	case MEDIA_BUS_FMT_Y8_1X8:
-+		if (vin->format.pixelformat != V4L2_PIX_FMT_GREY)
-+			return -EPIPE;
-+		break;
- 	default:
- 		return -EPIPE;
- 	}
-diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-index 0d141155f0e3..bdeff51bf768 100644
---- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
-+++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-@@ -82,6 +82,10 @@ static const struct rvin_video_format rvin_formats[] = {
- 		.fourcc			= V4L2_PIX_FMT_SRGGB8,
- 		.bpp			= 1,
- 	},
-+	{
-+		.fourcc			= V4L2_PIX_FMT_GREY,
-+		.bpp			= 1,
-+	},
- };
- 
- const struct rvin_video_format *rvin_format_from_pixel(struct rvin_dev *vin,
--- 
-2.30.2
 
+Best regards,
+Krzysztof
