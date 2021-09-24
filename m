@@ -2,123 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB249417073
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D7641707E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245646AbhIXKw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
+        id S230219AbhIXK4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244877AbhIXKw6 (ORCPT
+        with ESMTP id S245662AbhIXKzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:52:58 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AC4C061574;
-        Fri, 24 Sep 2021 03:51:25 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id v22so33694913edd.11;
-        Fri, 24 Sep 2021 03:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+twz7xKPCaRunuTxRINFpzWiUTbchcGRYSuBzbIOSmo=;
-        b=HY31ST0y+HiXEYCTwV1rZkRHKeNqguq/BX9aJcwou20huoO3PJyFoPuTgEuMcMgXSM
-         SAE/EpmQSU8BJmEdq6H3M/UC7gWZoWQE9/w5QRjuUJ4S8pyAh3/bMceOLHt3udN3LswF
-         T++X9g8ozweHwA27lNKiHcyRgLBo5FIqvzo7o22ykVO7pq0KgViQ6yYYchTNG02hNRHd
-         6yD/4ET+irP8nOQJLCkz8iER2zRmFbngWfGRCELMOu4x7Rd77lPEh7Q9mu050+cUlkOz
-         u1gvC3QxH9LzvLf9d0cuVOrkmtxPDGmKcX9iCTE2LB/29M28Ky82y+iwLLanii3VGBxI
-         kc1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+twz7xKPCaRunuTxRINFpzWiUTbchcGRYSuBzbIOSmo=;
-        b=jWrmatQZQA8dEAjtiST2Eh4B0Dl0pTndWMvK9+HTZqpzj684qT70JHuTqutE5Y/94F
-         nW9FjfssuPdY50tzY/hf3xOanrBpshwEm5LK2LLr/6DIdMxiERIU5EPfKn/sFGlzTLRD
-         NAmYdFoYktVi7jgy+3RG+iqRiy7fFqMjpws90x/6QW92b77G3vb4eTTRR2p6clZlgW9F
-         rAWveRDcFkzXC1spb5JCRDkRZZgYIA7UyUjN5rJSj1oeMZPgnfkx+u0ApWB7TgTfNFR+
-         C+BjLQppmA2/H5NdX4bEBcwFuMCOMXPyYnGb/F2NGMu513OU7SaL/q1hhIyL8EuO/uiA
-         C97g==
-X-Gm-Message-State: AOAM533NN7gSAkpUHuF3lQG7j0USWBdpcWVPlcqnr30zO8UNl1P+wBOH
-        241mdal/vRUmwbjiItoId/kxWAo4PbV+IW1+ocHVQ2Zf
-X-Google-Smtp-Source: ABdhPJw/XN8LzCFhJbsRtkJPqhNDeBOIWif89XJ+aXSnIudxvRfqx3R2olJRXxcT2tVKTMt0eHRH6doICE3Tvb0fsEg=
-X-Received: by 2002:a17:906:4544:: with SMTP id s4mr10553731ejq.102.1632480683787;
- Fri, 24 Sep 2021 03:51:23 -0700 (PDT)
+        Fri, 24 Sep 2021 06:55:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8023C061756;
+        Fri, 24 Sep 2021 03:54:15 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632480853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/7ACTzCKCJ8fwwf3NKIamkJEmGqQfZ3neuf/bUWLhh4=;
+        b=WxF8rGiwvf1wvxuvzyKyMSchqrD0yZKbzEfkzG0wI6AOaPBxJ/jeiXwxvJ94Eg/E9cYxmf
+        3FgatXPU71L+df75qc2V1eebCNqphQZjW+VTS855o3tzG/ah0wQWrwYxpQ1/ldSqvvcIwm
+        YoN5DPycOsKS/UZ5LtkI4FXY3DhVDUrQSn+uUfEMF2LpfBVeJPgsyw53T9qMi9vUn51Dz4
+        9eOBavCSJ5NDNpLsgy2O2/1kT+oewcOf0EXmCJlb9hOuchF7+BwfM314xtIawEv7XOR/Aj
+        +f4DgFZTTVrf2LrcEEpgykcudT1UhjmHVgzkjW6VL/lbZxJ9wYf8yH2nVFYjFg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632480853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/7ACTzCKCJ8fwwf3NKIamkJEmGqQfZ3neuf/bUWLhh4=;
+        b=F3HUGypPhoXARUuEk506nAxHNIZzPBZIIK5AavJ/nhx9YV+Pe2P8r2P1/l/9fazJhebx0u
+        l4ESm1OK9zEbocDQ==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 10/13] x86/uintr: Introduce user IPI sender syscalls
+In-Reply-To: <20210913200132.3396598-11-sohil.mehta@intel.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-11-sohil.mehta@intel.com>
+Date:   Fri, 24 Sep 2021 12:54:12 +0200
+Message-ID: <87tuiadz1n.ffs@tglx>
 MIME-Version: 1.0
-References: <20210924033547.939554938@goodmis.org> <20210924000717.310b492a@rorschach.local.home>
-In-Reply-To: <20210924000717.310b492a@rorschach.local.home>
-From:   Eugene Syromyatnikov <evgsyr@gmail.com>
-Date:   Fri, 24 Sep 2021 12:51:07 +0200
-Message-ID: <CACGkJdtsHWBstw_Gzb-Dq4Xs_eAW1jsARr5wbh0yE_=NsPA5bw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] tracing: Have trace_pid_list be a sparse array
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 6:07 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 23 Sep 2021 23:35:47 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> > The pid_mask will start out with 1024 entries for the first 10 MSB bits.
-> > This will cost 4K for 32 bit architectures and 8K for 64 bit. Each of
-> > these will have a 1024 array to store the next 10 bits of the pid (another
-> > 4 or 8K). These will hold an 512 byte bitmask (which will cover the LSB 12
-> >   bits or 4096 bits).
->
-> Thinking about this more, I should adjust this split.
->
-> Currently, this is a 10,10,12 split, but since the upper chunks are
-> arrays of pointers, and the lower chunk is a bitmask, and that pids
-> tend to be close together, I should make the lower split bigger.
->
-> As a 4K page is 32768 bits (2^15), the lower split should be 15 bits,
-> not 12. This will probably allocate better.
->
-> Of course 32 - 15 is 17. So maybe to keep it simple, by having the two
-> upper chunks still the same in size, I could have it be 14 bits for the
-> lower (2048 bytes). And since pid_max can only be 2^30, we don't even
-> need to cover the full 32 bits.
->
-> 30 - 14 = 16 = 8 * 2.
->
-> Then I can make the upper chunks cover 8 bits (arrays of 256 pointers)
-> and the lower chunks cove 14 bits. This would coincidentally make all
-> chunks 2K in size (on 64 bit machines).
->
-> Hmm, in that case, I can make the lower and upper chunks use the same
-> memory and not separate them. They are unions after all. But that may
-> be unfair for 32 bit machines, as the upper chunks are only going to be
-> 1K in size for them (256 * 4).
+On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+> +/*
+> + * No lock is needed to read the active flag. Writes only happen from
+> + * r_info->task that owns the UPID. Everyone else would just read this flag.
+> + *
+> + * This only provides a static check. The receiver may become inactive right
+> + * after this check. The primary reason to have this check is to prevent future
+> + * senders from connecting with this UPID, since the receiver task has already
+> + * made this UPID inactive.
 
-Note that there is only one top-level chunk (so its size doesn't
-matter much), (usually) about one middle-tier chunk (except for some
-heavy cases, since pids are allocated linearly), and quite some
-lower-tier bitset leaves.  So I'd optimise towards smaller leaves at
-the expense of middle-tier (and especially top-tier) chunk size
-(especially considering the fact that in the kernel, buddy allocator
-is used), like 12-8-12 or something like that, but I have no factual
-basis for arguing about specific split.  Also, I cannot resist from
-noticing that this reminds me an awful lot of XArray and [1].  Maybe,
-some wrapper around XArray would do?
+How is that not racy?
 
-[1] https://gitlab.com/strace/strace/-/raw/master/src/trie.h
+> +static void free_uitt(struct uintr_uitt_ctx *uitt_ctx)
+> +{
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&uitt_ctx->uitt_lock, flags);
+> +	kfree(uitt_ctx->uitt);
 
->
-> -- Steve
->
+Again. Please move kfree() outside of the lock held region. But aside of
+that what is this lock protecting here?
+
+> +	uitt_ctx->uitt = NULL;
+> +	spin_unlock_irqrestore(&uitt_ctx->uitt_lock, flags);
+
+If there is concurrency then the other task which is blocked on
+uitt_lock will operate on uitt_ctx while the same is freed.
+
+Again, this lacks any life time and serialization rules. Just sprinkling
+locks all over the place does not make it magically correct.
+
+> +	kfree(uitt_ctx);
+> +}
+
+> +static void put_uitt_ref(struct uintr_uitt_ctx *uitt_ctx)
+> +{
+> +	if (refcount_dec_and_test(&uitt_ctx->refs))
+> +		free_uitt(uitt_ctx);
+> +}
 
 
+> +static struct uintr_uitt_ctx *get_uitt_ref(struct uintr_uitt_ctx *uitt_ctx)
+> +{
+> +	refcount_inc(&uitt_ctx->refs);
+> +	return uitt_ctx;
+> +}
+> +
+> +static inline void mark_uitte_invalid(struct uintr_sender_info *s_info)
+> +{
+> +	struct uintr_uitt_entry *uitte;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&s_info->uitt_ctx->uitt_lock, flags);
+> +	uitte = &s_info->uitt_ctx->uitt[s_info->uitt_index];
+> +	uitte->valid = 0;
+> +	spin_unlock_irqrestore(&s_info->uitt_ctx->uitt_lock, flags);
+> +}
+> +
+>  static void __clear_vector_from_upid(u64 uvec, struct uintr_upid *upid)
+>  {
+>  	clear_bit(uvec, (unsigned long *)&upid->puir);
+> @@ -175,6 +290,210 @@ static void receiver_clear_uvec(struct callback_head *head)
+>  	kfree(r_info);
+>  }
+>  
+> +static void teardown_uitt(void)
+> +{
+> +	struct task_struct *t = current;
+> +	struct fpu *fpu = &t->thread.fpu;
+> +	u64 msr64;
+> +
+> +	put_uitt_ref(t->thread.ui_send->uitt_ctx);
+> +	kfree(t->thread.ui_send);
+> +	t->thread.ui_send = NULL;
+> +
+> +	fpregs_lock();
+> +
+> +	if (fpregs_state_valid(fpu, smp_processor_id())) {
+> +		/* Modify only the relevant bits of the MISC MSR */
+> +		rdmsrl(MSR_IA32_UINTR_MISC, msr64);
+> +		msr64 &= GENMASK_ULL(63, 32);
 
---
-Eugene Syromyatnikov
-mailto:evgsyr@gmail.com
-xmpp:esyr@jabber.{ru|org}
+More magic numbers.
+
+> +		wrmsrl(MSR_IA32_UINTR_MISC, msr64);
+> +		wrmsrl(MSR_IA32_UINTR_TT, 0ULL);
+
+> +static void __free_uitt_entry(unsigned int entry)
+> +{
+> +	struct task_struct *t = current;
+> +	unsigned long flags;
+> +
+> +	if (entry >= UINTR_MAX_UITT_NR)
+> +		return;
+> +
+> +	if (!is_uintr_sender(t))
+> +		return;
+> +
+> +	pr_debug("send: Freeing UITTE entry %d for task=%d\n", entry, t->pid);
+> +
+> +	spin_lock_irqsave(&t->thread.ui_send->uitt_ctx->uitt_lock, flags);
+> +	memset(&t->thread.ui_send->uitt_ctx->uitt[entry], 0,
+> +	       sizeof(struct uintr_uitt_entry));
+> +	spin_unlock_irqrestore(&t->thread.ui_send->uitt_ctx->uitt_lock,
+> flags);
+
+What's the spinlock protecting here?
+
+> +	clear_bit(entry, (unsigned long *)t->thread.ui_send->uitt_mask);
+> +
+> +	if (is_uitt_empty(t)) {
+> +		pr_debug("send: UITT mask is empty. Dereference and teardown UITT\n");
+> +		teardown_uitt();
+> +	}
+> +}
+
+> +void do_uintr_unregister_sender(struct uintr_receiver_info *r_info,
+> +				struct uintr_sender_info *s_info)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * To make sure any new senduipi result in a #GP fault.
+> +	 * The task work might take non-zero time to kick the process out.
+
+-ENOPARSE
+
+> +	 */
+> +	mark_uitte_invalid(s_info);
+> +
+> +	pr_debug("send: Adding Free UITTE %d task work for task=%d\n",
+> +		 s_info->uitt_index, s_info->task->pid);
+> +
+> +	init_task_work(&s_info->twork, sender_free_uitte);
+> +	ret = task_work_add(s_info->task, &s_info->twork, true);
+> +	if (ret) {
+> +		/*
+> +		 * Dereferencing the UITT and UPID here since the task has
+> +		 * exited.
+> +		 */
+> +		pr_debug("send: Free UITTE %d task=%d has already exited\n",
+> +			 s_info->uitt_index, s_info->task->pid);
+> +		put_upid_ref(s_info->r_upid_ctx);
+> +		put_uitt_ref(s_info->uitt_ctx);
+> +		put_task_struct(s_info->task);
+> +		kfree(s_info);
+> +		return;
+> +	}
+> +}
+> +
+> +int do_uintr_register_sender(struct uintr_receiver_info *r_info,
+> +			     struct uintr_sender_info *s_info)
+> +{
+> +	struct uintr_uitt_entry *uitte = NULL;
+> +	struct uintr_sender *ui_send;
+> +	struct task_struct *t = current;
+> +	unsigned long flags;
+> +	int entry;
+> +	int ret;
+> +
+> +	/*
+> +	 * Only a static check. Receiver could exit anytime after this check.
+> +	 * This check only prevents connections using uintr_fd after the
+> +	 * receiver has already exited/unregistered.
+> +	 */
+> +	if (!uintr_is_receiver_active(r_info))
+> +		return -ESHUTDOWN;
+
+How is this safe against a concurrent unregister/exit operation?
+
+Thanks,
+
+        tglx
