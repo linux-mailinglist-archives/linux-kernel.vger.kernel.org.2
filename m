@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A691416D1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9963F416D1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 09:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239498AbhIXHuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 03:50:50 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:53761 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235134AbhIXHud (ORCPT
+        id S239742AbhIXHwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 03:52:30 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:58391 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235134AbhIXHwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 03:50:33 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2F7AD5C0216;
-        Fri, 24 Sep 2021 03:49:00 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 24 Sep 2021 03:49:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=CYsnlI2TOREautDzdX9IkAlKDp8
-        cuF8mUK8S35XXosc=; b=D7E6W87CcIHZP9zPUeh5uN4lwWH/PLuEHqa+qSrmiNf
-        g1Yp9m23CsaBQR3ZiFbvTb0VonyW1YTo3ASQFQ3E+H/mJV0ozCex0RebpCsdOxup
-        pRV26VdNXiJghkfG+wYd0lk3w2NqxK91Gx6BYXbC34gj+oxev+o8nFJSo7d8yxGe
-        d0Bv1F7ISGqCQzJVmVzArgO6oWxRELV2T6QROrGVWZrYB7CqSAp1hR+q9vOKSi2o
-        KZnnlUO5WQwZg1h3AJQTQnPFZ3zJ4CGTnDgwp3JND/1iiU/sXVVDX6KCjwhNRA4C
-        eK1hdwV1KIpxXke054HXEDm3dHkfDvKk+UwfG//7ojA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=CYsnlI
-        2TOREautDzdX9IkAlKDp8cuF8mUK8S35XXosc=; b=lZ1d52RM5TM2JXkCsd5JNO
-        7vuSywEA13d7LGwcQKqSuidVA7+r450jjS9ALH6m4eXFyshPH+yFUJ28Is42CbUJ
-        SZ/9B0Q88uVrQP+WBnQOUR8l1Os7OPBBwNzT0A3M2Bb+HpmJ4GqpM38lyfqMAHD3
-        y9RY+kjG62CykO/F9gR7/KiDdykSh+5tz29AsnJLT8AE859zSwsFbNQPc2sGZjNp
-        K8oSv/JS/J/d+XD1rs5pd+NqPYzPF9Vx0V2sA/1evq3ZhEbqpiE5DY3Iqua/cTD8
-        rDWo8GzQXB8t3dDbN0dWQsjpdKQfW/DOmLmbv3CRdfNWfcgbGl0MbNlcgBu/kwqQ
-        ==
-X-ME-Sender: <xms:64JNYRyihrMq5riaS6s-5EMQIdK2I-mT_NT10Qc-jXu7vNfqW8NfPQ>
-    <xme:64JNYRRKvmeuu8cylz6GgHtq-HFFPwqIHxwXKvzr7lOT2tUl4VNWYD1dJS7Bo5hUf
-    fNt-6_kMzPni67Cpmc>
-X-ME-Received: <xmr:64JNYbXaY7y3MkY9QR7-W9FiJX46NnIUPNRu2JA569bnjYKEU-fo3wPp17KCZqMLLlQ407WIAFYXk-Yz73E9huM8SzZ88nqtShjY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejtddguddvudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:64JNYTgpwsZmo9wFR-cE6miLSdENnIy7Lf7G61LOTm3IS0yRmzkcPQ>
-    <xmx:64JNYTChl92mlQVJDvsggDknSolbJyV8V9awcSJy7ORRhzJmtFqV_Q>
-    <xmx:64JNYcJdh02UN7_8FAy5DJR8KEb1UV1tjSCvZ8qHM6G3Q9UCkuhskQ>
-    <xmx:7IJNYaP5YAK9cwLe1BT9P9gU5_lCH3kxQhJADX2xR4fjZwO2F2ikKg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 24 Sep 2021 03:48:59 -0400 (EDT)
-Date:   Fri, 24 Sep 2021 09:48:57 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: linux-next: Tree for Sep 24 (m68k allmodconfig & drm/vc4/)
-Message-ID: <20210924074857.qbwdammzfujk4ozi@gilmour>
-References: <20210924145436.5ff73179@canb.auug.org.au>
- <dfd54a2f-d1db-8897-ae49-5c681a99b281@infradead.org>
+        Fri, 24 Sep 2021 03:52:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632469849; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=6zccmjdrHo+ekRUZS+8j7DEY4Vf+wTOSBKi2rSCaWBE=; b=WEVSNJX8j9VcSojMsF7+sq7b+iRxmz4RN4Zej88oRYWQ+6kuLR13nDxkIoLQM0EiIz/mbJQh
+ DbC/Xmf8ztlGQP0bLnOF0kF2UhAg95WoxFlNTFqRJY0lyLDN1UfuSZN4i+fRLiLD1/8X3Mse
+ zPtU6vhyp1Y5W7s03OUm3J71oZ0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 614d8345096ba46b979ff0e8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Sep 2021 07:50:29
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 499F4C4360C; Fri, 24 Sep 2021 07:50:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17429C4338F;
+        Fri, 24 Sep 2021 07:50:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 17429C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Ramon Fontes <ramonreisfontes@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, davem@davemloft.net
+Subject: Re: [PATCH] mac80211_hwsim: enable 6GHz channels
+References: <20210922142803.192601-1-ramonreisfontes@gmail.com>
+        <167f632eb19944b5711a584218e57b51da85df96.camel@sipsolutions.net>
+Date:   Fri, 24 Sep 2021 10:50:24 +0300
+In-Reply-To: <167f632eb19944b5711a584218e57b51da85df96.camel@sipsolutions.net>
+        (Johannes Berg's message of "Wed, 22 Sep 2021 16:29:37 +0200")
+Message-ID: <87fstutnsv.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3l4qd4pk6eblsdeu"
-Content-Disposition: inline
-In-Reply-To: <dfd54a2f-d1db-8897-ae49-5c681a99b281@infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Johannes Berg <johannes@sipsolutions.net> writes:
 
---3l4qd4pk6eblsdeu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, 2021-09-22 at 11:28 -0300, Ramon Fontes wrote:
+>> This adds 6 GHz capabilities and reject HT/VHT
+>> 
+>
+> It'd be nice to add a version to the subject, with -vN on the git-send-
+> email commandline :)
 
-Hi
+And don't forge the changelog either:
 
-On Thu, Sep 23, 2021 at 10:54:49PM -0700, Randy Dunlap wrote:
-> On 9/23/21 9:54 PM, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > Changes since 20210923:
-> >=20
->=20
-> from commit 36e9bcb8edfc in linux-next:
->=20
->=20
-> m68k allmodconfig:
->=20
-> WARNING: unmet direct dependencies detected for PM
->   Depends on [n]: !MMU [=3Dy]
->   Selected by [m]:
->   - DRM_VC4 [=3Dm] && HAS_IOMEM [=3Dy] && (ARCH_BCM || ARCH_BCM2835 || CO=
-MPILE_TEST [=3Dy]) && DRM [=3Dm] && SND [=3Dm] && SND_SOC [=3Dm] && COMMON_=
-CLK [=3Dy]
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches#changelog_missing
 
-I don't really know how to fix this one, should we move that select to
-the ARCH_* symbol, or something else?
+One day I'll write a bot to send these wiki links :)
 
-Maxime
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
---3l4qd4pk6eblsdeu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYU2C6QAKCRDj7w1vZxhR
-xbhOAP9wqjprtosO+DXBEgOWKMaOSeej4y9X7sgF4o+X0vsbaQD/XwUgtlKemnhY
-btddpc2tWAWIE2P9naqIRXEXY3artQs=
-=ED4l
------END PGP SIGNATURE-----
-
---3l4qd4pk6eblsdeu--
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
