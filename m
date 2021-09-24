@@ -2,104 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5AE417822
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F136417824
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 18:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347291AbhIXQE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 12:04:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30265 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347280AbhIXQE5 (ORCPT
+        id S1347302AbhIXQFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 12:05:06 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:37770
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347267AbhIXQFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 12:04:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632499404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jeGa7zotF4OBKhVPjQPzs576lzN05jpN0HE3AwYSyTE=;
-        b=QyOYGWr5s2Dbs2XFAPfsnTPhwfVFOuobAVW1KqgNfOuRf/aFaH7/OdxtGbs5NGt9Y1q2Qk
-        9p3PIjvSSaOIbJm978EJ36y+55X5jRYL1YRHQm0uROWj4CF2XIVQAnOm6DVKHHKIAqsRqT
-        fX90rI37vxW5wggIDNzX8YX6k2HZoXY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-60yi4tr7PJ6yC653W8wqMw-1; Fri, 24 Sep 2021 12:03:22 -0400
-X-MC-Unique: 60yi4tr7PJ6yC653W8wqMw-1
-Received: by mail-wr1-f69.google.com with SMTP id s13-20020adfeccd000000b00160531902f4so776419wro.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 09:03:22 -0700 (PDT)
+        Fri, 24 Sep 2021 12:05:05 -0400
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 356B540833
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 16:03:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632499411;
+        bh=XSnJxfEBt5YWoJGVTt7uPSu776tBxvxqT4EkYhJhjIo=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=IYNSuk1j1yr+CtfY5Xham51abCzKx7pjG+badrdDeTJd/hpLGsnfGWGT9b3/7AUkO
+         z7xi+r3Kn6oJM9K5msyvau+LjdNJ4LeaJo7k8GAJo93roWwDkEa69sEGN/y4/qTWg+
+         3X34zwLk9xgbFudV77uUKNzrjeFL4wLW/Wvb8Yi+RY6UMHUw29+cOBILFD3acs/Aqg
+         cA1LRCyx3z/PH4pK7kLBKfjc/Casrcjvgbeyb8R/EC8b4EmyNX/NEA/oZhDxedrac8
+         vCLL+jR7maoCweBi8nqu8L+pLuWKETUTRJb42ROVH3KBiu077WyeQa8du1FpHVscho
+         LqCh1mTuRlVQA==
+Received: by mail-pf1-f200.google.com with SMTP id m26-20020a62a21a000000b0041361973ba7so6380364pff.15
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 09:03:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jeGa7zotF4OBKhVPjQPzs576lzN05jpN0HE3AwYSyTE=;
-        b=Iw7oj1gwSmZULDUN2OMEqTSggaVkzxmItPFnbqw9VPGUFnBHUTCUpOfjRzGs3NfYsv
-         dpr07K4loFl+FxfUEqdq4YyBwyl9MZlVATyVcJwY08oad3kpGxAVAimMNdNhYakb1cfF
-         yz5s8kagklTKiJVnl3b02MHkoIEhmxYu+T/OrMWL1YkWxBR06sr8QAM8t3qtoVTREu2n
-         MidIoWB2zMFGDFh8pPTPhQCBcND8FYMc3YXCIKpDMGEraVJxnrueHiVKsHmpeTxJ304G
-         b2FWXuROES8WaUGwiN9/RZbcjWurNbXI8nIq5M3ZZcfRa8t/R9DuZRZoiuM6DBOkpPmr
-         7Fyw==
-X-Gm-Message-State: AOAM530zlVpaGhjq1yO5ShWy/WHckGTwljvyIA7uj/gP9ClrfWW4H/3s
-        hfcBxsh03nM8AKnfYU87aBl2zz54HrpWMm60W8Id0IHVYyC4/v+poZxydtHGcfQMOgVSZyHnvRy
-        NPLPNtohg/QeMbGhvm4Pdddtb
-X-Received: by 2002:a1c:21c3:: with SMTP id h186mr2940280wmh.18.1632499399036;
-        Fri, 24 Sep 2021 09:03:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzkSPlm4nXNmNz4MsL6i3ikKj/hofQJin1xv9Xzc76Hd6wkVSQwj2Rc48aOebkRJV2Rd5NdvQ==
-X-Received: by 2002:a1c:21c3:: with SMTP id h186mr2939823wmh.18.1632499394926;
-        Fri, 24 Sep 2021 09:03:14 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k19sm8546808wmr.21.2021.09.24.09.03.13
+        bh=XSnJxfEBt5YWoJGVTt7uPSu776tBxvxqT4EkYhJhjIo=;
+        b=7jzIB0cN5x3D6thUQyTbtffmIebfryHYZ0jHVDTiKskMCHutLUm8Xdl6ej0ATH3efM
+         6aY9mr7+sK0Z6pxtHJ6HNsKTUmYKBPVjUAauII5yYdaj+9mGl45sef0Abhyk+1OGTNXp
+         fJF1y2pEMGz53VJFihlDUADx3N980z6vFeKYUgqkkh6dyCd5ENwhp1zOyysf2ZhW1kj7
+         xOVMnDUxAVbPmUiUQBCHzotA3X01jRkqot26o72eesfFP5xxRI/7oyP6elSHJxvmZF15
+         AV7KjMgwrWtybdzphX+ieMXQDQD4q4l5xCEiSfXWcYvfeakJbnLHUP1EI2aSYXrb30Sn
+         Hcsg==
+X-Gm-Message-State: AOAM530uS1McJhFiGdlf1G6Ju9YnVxT+MzAJy0K6lNmn5kHUBc7CmVEb
+        feYIvjEwY0p0YaS++Kh1AM2vbUqFBv+qU1yeAvOBqPPUJcM6K3IpsXMCC1G8QA+LOlq8V/mbt4/
+        biao0zkoWU4KLyxKmeF8c65YnocwBQsqlgw5lT604Pg==
+X-Received: by 2002:a17:903:234c:b0:13c:7a6e:4b43 with SMTP id c12-20020a170903234c00b0013c7a6e4b43mr9721655plh.29.1632499409579;
+        Fri, 24 Sep 2021 09:03:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxbq17OedBYOqqvHCiyPf1GcC81qSNLHfVaTfFKuYJaYW2V/CpDG52XQo9+c/uPpJZRP3liTQ==
+X-Received: by 2002:a17:903:234c:b0:13c:7a6e:4b43 with SMTP id c12-20020a170903234c00b0013c7a6e4b43mr9721620plh.29.1632499409308;
+        Fri, 24 Sep 2021 09:03:29 -0700 (PDT)
+Received: from [192.168.1.124] ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id c199sm9747942pfb.152.2021.09.24.09.03.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Sep 2021 09:03:14 -0700 (PDT)
-Message-ID: <bfa9b495-dfe9-df5e-714c-12fd8dbe4fb5@redhat.com>
-Date:   Fri, 24 Sep 2021 18:03:13 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH V2 03/10] KVM: Remove tlbs_dirty
-Content-Language: en-US
-To:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Fri, 24 Sep 2021 09:03:28 -0700 (PDT)
+Subject: Re: [PATCH] drm/bridge: parade-ps8640: check return values in
+ ps8640_aux_transfer()
+To:     dri-devel@lists.freedesktop.org
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-iio@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org
-References: <20210918005636.3675-1-jiangshanlai@gmail.com>
- <20210918005636.3675-4-jiangshanlai@gmail.com>
- <8dfdae11-7c51-530d-5c0d-83f778fa1e14@redhat.com>
- <8833ef9b-3156-7272-4171-66c4749145ab@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <8833ef9b-3156-7272-4171-66c4749145ab@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20210924152607.28580-1-tim.gardner@canonical.com>
+From:   Tim Gardner <tim.gardner@canonical.com>
+Message-ID: <8cdae251-f75e-bde8-a53d-27c77ac624c3@canonical.com>
+Date:   Fri, 24 Sep 2021 10:03:27 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210924152607.28580-1-tim.gardner@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/21 17:40, Lai Jiangshan wrote:
+
+
+On 9/24/21 9:26 AM, Tim Gardner wrote:
+> Coverity complains of an unused return code:
 > 
+> CID 120459 (#1 of 1): Unchecked return value (CHECKED_RETURN)
+> 7. check_return: Calling regmap_bulk_write without checking return value (as is
+> done elsewhere 199 out of 291 times).
+> 204        regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
+> 205                          ARRAY_SIZE(addr_len));
 > 
-> On 2021/9/23 23:23, Paolo Bonzini wrote:
->> On 18/09/21 02:56, Lai Jiangshan wrote:
+> While I was at it I noticed 2 other places where return codes were not being
+> used, or used incorrectly (which is a real bug).
 > 
->>
->> Queued up to here for 5.15, thanks!
->>
->> Paolo
+> Fix these errors by correctly using the returned error codes.
 > 
-> Any comments on other commits?
+> Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
+> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+> Cc: Andrzej Hajda <a.hajda@samsung.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Robert Foss <robert.foss@linaro.org>
+> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> Cc: Jonas Karlman <jonas@kwiboo.se>
+> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> ---
+>   drivers/gpu/drm/bridge/parade-ps8640.c | 14 +++++++++++---
+>   1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+> index 3aaa90913bf8..591da962970a 100644
+> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> @@ -201,8 +201,12 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
+>   	addr_len[PAGE0_SWAUX_LENGTH - base] = (len == 0) ? SWAUX_NO_PAYLOAD :
+>   					      ((len - 1) & SWAUX_LENGTH_MASK);
+>   
+> -	regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
+> +	ret = regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
+>   			  ARRAY_SIZE(addr_len));
+> +	if (ret) {
+> +		DRM_DEV_ERROR(dev, "failed to bulk write ADDR_7_0: %d\n", ret);
+> +		return ret;
+> +	}
+>   
+>   	if (len && (request == DP_AUX_NATIVE_WRITE ||
+>   		    request == DP_AUX_I2C_WRITE)) {
+> @@ -218,13 +222,17 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
+>   		}
+>   	}
+>   
+> -	regmap_write(map, PAGE0_SWAUX_CTRL, SWAUX_SEND);
+> +	ret = regmap_write(map, PAGE0_SWAUX_CTRL, SWAUX_SEND);
+> +	if (ret) {
+> +		DRM_DEV_ERROR(dev, "failed to write SEND: %d\n", ret);
+> +		return ret;
+> +	}
+>   
+>   	/* Zero delay loop because i2c transactions are slow already */
+>   	regmap_read_poll_timeout(map, PAGE0_SWAUX_CTRL, data,
+>   				 !(data & SWAUX_SEND), 0, 50 * 1000);
+>   
+> -	regmap_read(map, PAGE0_SWAUX_STATUS, &data);
+> +	ret = regmap_read(map, PAGE0_SWAUX_STATUS, &data);
+>   	if (ret) {
+>   		DRM_DEV_ERROR(dev, "failed to read PAGE0_SWAUX_STATUS: %d\n",
+>   			      ret);
+> 
 
-Queued now for 5.16. :)
+I forgot to mention this patch is for linux-next next-20210924.
 
-More precisely this is what I have queued from you for 5.16 only:
-
-       KVM: X86: Don't flush current tlb on shadow page modification
-       KVM: X86: Remove kvm_mmu_flush_or_zap()
-       KVM: X86: Change kvm_sync_page() to return true when remote flush is needed
-       KVM: X86: Zap the invalid list after remote tlb flushing
-       KVM: X86: Remove FNAME(update_pte)
-       KVM: X86: Don't unsync pagetables when speculative
-       KVM: X86: Don't check unsync if the original spte is writible
-       KVM: X86: Move PTE present check from loop body to __shadow_walk_next()
-
-Paolo
-
+-----------
+Tim Gardner
+Canonical, Inc
