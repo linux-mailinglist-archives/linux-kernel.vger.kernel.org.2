@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107384175D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A2A4175D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346478AbhIXNdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        id S1346502AbhIXNd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345090AbhIXNdp (ORCPT
+        with ESMTP id S1346457AbhIXNdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:33:45 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115D8C035477;
-        Fri, 24 Sep 2021 06:25:05 -0700 (PDT)
-Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:4cb:a870:60fa:cb2f:7fe1:65a3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 88A751F44B7C;
-        Fri, 24 Sep 2021 14:25:02 +0100 (BST)
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     p.zabel@pengutronix.de, mchehab@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH v2] media: hantro: Auto generate the AXI ID to avoid conflicts
-Date:   Fri, 24 Sep 2021 15:24:47 +0200
-Message-Id: <20210924132447.2288167-1-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 24 Sep 2021 09:33:53 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A379C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:25:21 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id 73so28068858qki.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 06:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=labbott.name; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc:from
+         :subject:content-transfer-encoding;
+        bh=pQvFc08SgO33pAo1wxhZmDdsnyFna10/RsiuhV/c7LI=;
+        b=pti813zI1CLo0h1SJ6O4OjJF322ABZ3RdZjzbYXyktom3egNLbEOnYw18VhrCGm9xl
+         Ey8RAK/KjaYRxWdjvlYa2hRAb3sXf+fvx+ERkDRWfusnD55+FkE2RZ3ZB0aOv8bia+tJ
+         du83ahXwsf1Jjz3CQD0oU/Bm2WcPBzqH1s+Mo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:from:subject:content-transfer-encoding;
+        bh=pQvFc08SgO33pAo1wxhZmDdsnyFna10/RsiuhV/c7LI=;
+        b=LBUq/mFffDlSh858jPHsXmnfZPRH8CvpaIuOd+ogJBW3s3194bEueiPWLU7IBKOYzK
+         dEN2/S9ejco7KZSS+a1S0P0UV6GJLQQJx21Gu99RLIsHC+RnXWSGHxEWXgtLiCDgql+O
+         onXFZ3H7+mgbpM3IOWQH8hL55CWlmPp98vXw1uBaaPu6HKGnSeqy9yVw7IpzPCpWxv6q
+         JRy+NtL6JlzCuFMRvVwXOBBE5Pwrz/+0TBReMlkZqFQAJTWL8Dg7AXyhdMmcEtFIRC9b
+         t2xaIvUR2mQyzkvW8hQ24DWbJ85i00qF69NujO5GNBhYjewR/EHX0ntZr479HTDVVB36
+         l51w==
+X-Gm-Message-State: AOAM5304ZtrYTbo/pnm+S5yiReLuJQRgvmQg+rFfuv4JkJmS57m/aT+D
+        7v+HGPzGwu5+3J9FxoEw7AgiyfbnnE2K4g==
+X-Google-Smtp-Source: ABdhPJy4TyAdVj7FxpEMlr4A3iKLcg48ZTwphH7LY6DCOfqGFRa7tLVZLIU1chHveaPiYqlT6QzQnA==
+X-Received: by 2002:a05:620a:a96:: with SMTP id v22mr10082094qkg.353.1632489920390;
+        Fri, 24 Sep 2021 06:25:20 -0700 (PDT)
+Received: from [192.168.1.168] (pool-74-109-246-95.pitbpa.fios.verizon.net. [74.109.246.95])
+        by smtp.gmail.com with ESMTPSA id g19sm6202887qki.58.2021.09.24.06.25.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Sep 2021 06:25:20 -0700 (PDT)
+Message-ID: <6e307861-3149-a984-cc79-088559caeab2@labbott.name>
+Date:   Fri, 24 Sep 2021 09:25:19 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Content-Language: en-US
+To:     ksummit@lists.linux.dev,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "tab-elections@lists.linuxfoundation.org" 
+        <tab-elections@lists.linuxfoundation.org>
+From:   Laura Abbott <laura@labbott.name>
+Subject: Results from the 2021 Linux Foundation Technical Advisory Board
+ election
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AXI ID is an AXI bus configuration for improve bus performance. 
-If read and write operations use different ID the operations can be paralleled,
-whereas when they have the same ID the operations will be serialized. 
-Right now, the write ID is fixed to 0 but we can set it to 0xff to get auto
-generated ID to avoid possible conflicts.
+This year's election for the Linux Foundation Technical Advisory
+Board had 1012 authorized voters; 237 of them cast ballots.
+The results were:
 
-This change has no functional changes, but seems reasonable to let the
-hardware to autogenerate the ID instead of hardcoding in software.
-
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+1. Greg-KH
+2. Jonathan Corbet
+3. Steven Rostedt
+4. Theodore Ts'o
+5. Sasha Levin
 ---
-changes in version 2:
-- Add a macro with comment about the value.
-- Make VP8 and H264 codecs use the macro.
-- fluster tests on the both codecs show no regressions.
-  ./fluster.py run -ts VP8-TEST-VECTORS -d GStreamer-VP8-V4L2SL-Gst1.0
-  ./fluster.py run -ts JVT-AVC_V1 -d GStreamer-H.264-V4L2SL-Gst1.0
-- The both codec write other bits in the same configuration register
-  so the simplest solution is to use the macro in the both cases.
+6. Dave Hansen
+7. Kent Overstreet
+8. Dave Taht
 
- drivers/staging/media/hantro/hantro_g1_h264_dec.c | 2 +-
- drivers/staging/media/hantro/hantro_g1_regs.h     | 2 ++
- drivers/staging/media/hantro/hantro_g1_vp8_dec.c  | 3 ++-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+The top five will serve two-year terms on the TAB.
 
-diff --git a/drivers/staging/media/hantro/hantro_g1_h264_dec.c b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-index 236ce24ca00c..f49dbfb8a843 100644
---- a/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-@@ -29,7 +29,7 @@ static void set_params(struct hantro_ctx *ctx, struct vb2_v4l2_buffer *src_buf)
- 	u32 reg;
- 
- 	/* Decoder control register 0. */
--	reg = G1_REG_DEC_CTRL0_DEC_AXI_WR_ID(0x0);
-+	reg = G1_REG_DEC_CTRL0_DEC_AXI_AUTO;
- 	if (sps->flags & V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD)
- 		reg |= G1_REG_DEC_CTRL0_SEQ_MBAFF_E;
- 	if (sps->profile_idc > 66) {
-diff --git a/drivers/staging/media/hantro/hantro_g1_regs.h b/drivers/staging/media/hantro/hantro_g1_regs.h
-index c1756e3d5391..c623b3b0be18 100644
---- a/drivers/staging/media/hantro/hantro_g1_regs.h
-+++ b/drivers/staging/media/hantro/hantro_g1_regs.h
-@@ -68,6 +68,8 @@
- #define     G1_REG_DEC_CTRL0_PICORD_COUNT_E		BIT(9)
- #define     G1_REG_DEC_CTRL0_DEC_AHB_HLOCK_E		BIT(8)
- #define     G1_REG_DEC_CTRL0_DEC_AXI_WR_ID(x)		(((x) & 0xff) << 0)
-+/* Setting AXI ID to 0xff to get auto generated ID to avoid possible conflicts */
-+#define     G1_REG_DEC_CTRL0_DEC_AXI_AUTO		G1_REG_DEC_CTRL0_DEC_AXI_WR_ID(0xff)
- #define G1_REG_DEC_CTRL1				0x010
- #define     G1_REG_DEC_CTRL1_PIC_MB_WIDTH(x)		(((x) & 0x1ff) << 23)
- #define     G1_REG_DEC_CTRL1_MB_WIDTH_OFF(x)		(((x) & 0xf) << 19)
-diff --git a/drivers/staging/media/hantro/hantro_g1_vp8_dec.c b/drivers/staging/media/hantro/hantro_g1_vp8_dec.c
-index 6180b23e7d94..851eb67f19f5 100644
---- a/drivers/staging/media/hantro/hantro_g1_vp8_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g1_vp8_dec.c
-@@ -463,7 +463,8 @@ int hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
- 	      G1_REG_CONFIG_DEC_MAX_BURST(16);
- 	vdpu_write_relaxed(vpu, reg, G1_REG_CONFIG);
- 
--	reg = G1_REG_DEC_CTRL0_DEC_MODE(10);
-+	reg = G1_REG_DEC_CTRL0_DEC_MODE(10) |
-+	      G1_REG_DEC_CTRL0_DEC_AXI_AUTO;
- 	if (!V4L2_VP8_FRAME_IS_KEY_FRAME(hdr))
- 		reg |= G1_REG_DEC_CTRL0_PIC_INTER_E;
- 	if (!(hdr->flags & V4L2_VP8_FRAME_FLAG_MB_NO_SKIP_COEFF))
--- 
-2.30.2
+Thank you to all the candidates for their nominations and to everyone
+for voting.
 
+If you have any questions please reach out to
+tab-elections@lists.linuxfoundation.org
+
+Thanks,
+Laura
