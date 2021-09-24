@@ -2,177 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1960A416D5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB33416D60
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244566AbhIXIHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:07:11 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:5931 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244511AbhIXIHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:07:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1632470738; x=1664006738;
-  h=from:to:cc:subject:date:message-id;
-  bh=qJ9EaKrEBGYgsWxnX3MhIVjCcoom979TP/eYeQZJVsI=;
-  b=dJ2+Pp2lMKoiCCHRn1ofzbKR8J4qrCAhjFjyGakW07tBSrKdwrrWC1LG
-   8NLhDtno1o/gpF0xeqeBbxMLbAWf1poG26ByJzs2HMPfr4g17waO+eLGt
-   G89b+i9RkP4iilloT0YI8pLn12hjrdKbxnuHFUeqF0Zxbk254q/pGi45U
-   QLyzTgGYk+427mMNE73NAc3XQyI6URx7OYvWafs9NXneRAftyJ7s0QtON
-   AW5b5yGYFEuRuZn6ZqzzExXh/yJM5FU3XPGxP2mupAbOvo6ouAGy0tN2O
-   f3GIdvXQD2LCJjaqlKOegtX6ECdilzOh4vY6Vrz3ky3zKpyYdtaQhL/Ki
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.85,319,1624312800"; 
-   d="scan'208";a="19688819"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 24 Sep 2021 10:05:36 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 24 Sep 2021 10:05:36 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 24 Sep 2021 10:05:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1632470736; x=1664006736;
-  h=from:to:cc:subject:date:message-id;
-  bh=qJ9EaKrEBGYgsWxnX3MhIVjCcoom979TP/eYeQZJVsI=;
-  b=G+K+9oePcnlrWNSApGGgorKYm/XRgB96idXqguVWevM+PMP/4j5VT+sp
-   wupae+BbV1GttIDMJFizskDq/22u2gqBEHql24nn5xtwq3Btb/9nZR494
-   OZRv9KG0l4mpJiZai0FCPc7HmpJ8k87rJM0eGHf7Lt9WWkoSszw+UduOY
-   GES2xpzhrfOM3mF8GRrcuTw1p8yB64o2gBE9JKbeX9TexfzDuNdgfbB3o
-   gzkI570Rg9pE+kWE5BCN1o//itdZTPhhdvjevbI+ALNIVzjWRFGgqWt7A
-   W/lMzbAnyfpF0c462Cd2GA+sZw3MnNGmCATAnHL8tKCh/y2Ou3/Kgsslh
-   w==;
-X-IronPort-AV: E=Sophos;i="5.85,319,1624312800"; 
-   d="scan'208";a="19688818"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 24 Sep 2021 10:05:36 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 3DC38280070;
-        Fri, 24 Sep 2021 10:05:36 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Markus Niebel <Markus.Niebel@ew.tq-group.com>
-Subject: [RFC] PCI: imx6: add support for internal oscillator on i.MX7D
-Date:   Fri, 24 Sep 2021 10:05:15 +0200
-Message-Id: <81c77a29362433fc5629ada442f0489046ce1051.1632319151.git.matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+        id S244573AbhIXIIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:08:24 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53652 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237965AbhIXIIW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:08:22 -0400
+X-UUID: 2b071b8f61d24529ba1c1b5f85e63a0b-20210924
+X-UUID: 2b071b8f61d24529ba1c1b5f85e63a0b-20210924
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1855317345; Fri, 24 Sep 2021 16:06:45 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 24 Sep 2021 16:06:44 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 24 Sep 2021 16:06:43 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <light.hsieh@mediatek.com>,
+        <biao.huang@mediatek.com>, <hongzhou.yang@mediatek.com>,
+        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH v14 0/5] Mediatek pinctrl patch on mt8195 
+Date:   Fri, 24 Sep 2021 16:06:27 +0800
+Message-ID: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for a DT property fsl,internal-osc to select the internal
-oscillator for the PCIe PHY.
+This series includes 5 patches:
+1.add rsel define.
+2.change pull up/down description
+3.fix coding style
+4.support rsel feature for common ICs
+5.add rsel setting on MT8195
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Markus Niebel <Markus.Niebel@ew.tq-group.com>
----
+Changes in patch v14:
+1)add a schema and new property "mediatek, rsel_resistance_in_si_unit"
+  on patch 2/5.
+2)fix kernel-doc style comment on patch 4/5.
+3)add review-by on patch 3/5 and 5/5.
 
-Okay, so while this patch is nice and short, I'm note sure if it's a good
-solution, hence I submit it as an RFC. It is roughly based on code from
-older linux-imx versions [1] - although it seems this feature was never
-supported on i.MX7D even by linux-imx (possibly because of compliance
-issues with the internal clock, however I haven't found a definitive
-erratum backing this), but only on other SoC like i.MX6QP.
+Changes in patch v13:
+1)change "-EOPNOTSUPP" to "-ENOTSUPP" in patch 4/5.
+2)fix description on 2/5.
 
-The device tree binding docs of the driver are somewhat lacking, but
-looking at [1] it seems that an external reference clock takes the place of
-the "pcie_bus" clock - various pieces of the driver skip enabling/disabling
-this clock when an external clock is configured.
+Changes in patch v12:
+1)add "ack-by" on "rsel define" patch.
+2)add "change reason" in commit message and write a shema
+  on patch document patch 2/5.
+3)separate eint pm_ops fucntion support patch
+4)separate rsel patch, the common parts as patch 4/5 to support
+  common ICs. The mt8195 specific changes as patch 5/5.
+5)add fix coding style patch to fix Camel spelling to avoid checkpatch
+  warning in a following patch.
+6)remove unrelated changes in rsel patch.
+7)change ternary ops in resel patch
+8)add "rsel_is_unit" property on struct mtk_pinctrl, and itendify
+  "mediatek,rsel_resistance_in_si_unit" property in probe function.
+9)add explanation for "MTK_PULL_RSEL_TYPE" and "MTK_PULL_PU_PD_RSEL_TYPE".
+10) fix spell warning in rsel patch.
 
-From this I've come to the conclusion that the clock settings in
-imx7d.dtsi do not really make sense: The pcie_bus clock is configured to
-PLL_ENET_MAIN_100M_CLK, but this seems wrong for both internal and
-external reference clocks:
+Changes in patch v11:
+1)add pm_ops fucntion support
+2)change pull up/down description
+3)add resistance value feature support.
 
-- For the internal clock, the correct clock should be PCIE_PHY_ROOT_CLK
-  according to the reference manual
-- The external clocks, this should refer to an actual external clock, or
-  possibly a fixed-clock node
+Changes in patch v10:
+1)fix PARENTHESIS_ALIGNMENT of mtk_pinconf_bias_set_rsel
+2)fix LONG_LINE warning in 615 in pinctrl-paris.c.
 
-I would be great if someone with more insight into this could chime in
-and tell me if my reasoning here is correct or not.
+Changes in patch v9:
+1)fix "mtk_pinconf_bias_set_rsel" build warning.
 
-Unfortunately I only have our MBa7x at my disposal for further
-experimentation. This board does not have an external reference clock for
-the PCIe PHY, so I cannot test the behaviour for settings that use an
-external clock. Without this patch (and adding the new flag to the MBa7x
-DTS), the boot will hang while waiting for the PCIe link to come up.
+Changes in patch v8:
+1)add rsel define patch
+2)avoid  CamelCase
+3)add pinctrl rsel setting patch which is another resistance selection
+  solution for I2C on MT8195.
 
-So, for the actual question (given that my thoughts above make any sense):
-How do we want to implement this?
+Changes in patch v7:
+1)add version in patch and fix spelling mistakes.
 
-1. A simple boolean flag, like this patch provides
-2. Allow Device Trees not to specify a "pcie_bus" clock at all, meaning
-   it should use the internal clock
-3. Special handling when the "pcie_bus" clock is configured to
-   PCIE_PHY_ROOT_CLK - is such a thing even possible, or is this
-   breaking the clock driver's abstraction too much?
-4. Something more involved, with a proper clock sel as the source for
-   "pcie_bus"
+Changes in patch v6:
+1)add "pintcrl: mediatek" as prefix.
 
-Solution 4. seems difficult to implement nicely, as the PCIe driver
-also fiddles with IMX7D_GPR12_PCIE_PHY_REFCLK_SEL for power management:
-the clock selection is switched back to the internal clock in
-imx6_pcie_clk_disable(), which also disables its source PCIE_PHY_ROOT_CLK,
-effectively gating the clock.
+Changes in patch v5:
+1)document and driver patch are apploed.
+2)change '-EOPNOTSUPP' to '-ENOTSUPP'
 
-Regards,
-Matthias
+Changes in patch v4:
+1)fix pinctrl-mt8195.yaml warning error.
+2)remove pinctrl device node patch which is based on "mt8195.dtsi".
 
+Changes in patch v3:
+1)change '^pins' to '-pins$'.
+2)change 'state_0_node_a' to 'gpio_pin' which is defined in dts.
+3)change 'state_0_node_b' to 'i2c0_pin' which is defined in dts.
+4)reorder this series patches. change pinctrl file and binding document
+together in one patch.
 
-[1] https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/pci/host/pci-imx6.c?h=imx_4.1.15_2.0.0_ga
+There are no changes in v1 & v2.
 
- drivers/pci/controller/dwc/pci-imx6.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Zhiyong Tao (5):
+  dt-bindings: pinctrl: mt8195: add rsel define
+  dt-bindings: pinctrl: mt8195: change pull up/down description
+  pinctrl: mediatek: fix coding style
+  pinctrl: mediatek: support rsel feature
+  pinctrl: mediatek: add rsel setting on MT8195
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 80fc98acf097..021499b9ee7c 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -83,6 +83,7 @@ struct imx6_pcie {
- 	struct regulator	*vpcie;
- 	struct regulator	*vph;
- 	void __iomem		*phy_base;
-+	bool			internal_osc;
- 
- 	/* power domain for pcie */
- 	struct device		*pd_pcie;
-@@ -637,7 +638,9 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
- 		break;
- 	case IMX7D:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
--				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL, 0);
-+				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
-+				   imx6_pcie->internal_osc ?
-+					IMX7D_GPR12_PCIE_PHY_REFCLK_SEL : 0);
- 		break;
- 	case IMX6SX:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-@@ -1130,6 +1133,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 				 &imx6_pcie->tx_swing_low))
- 		imx6_pcie->tx_swing_low = 127;
- 
-+	if (of_property_read_bool(node, "fsl,internal-osc"))
-+		imx6_pcie->internal_osc = true;
-+
- 	/* Limit link speed */
- 	pci->link_gen = 1;
- 	ret = of_property_read_u32(node, "fsl,max-link-speed", &pci->link_gen);
--- 
-2.17.1
+ .../bindings/pinctrl/pinctrl-mt8195.yaml      |  86 ++++++-
+ drivers/pinctrl/mediatek/pinctrl-mt8195.c     | 133 ++++++++++
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  | 231 +++++++++++++++---
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  |  46 ++++
+ drivers/pinctrl/mediatek/pinctrl-paris.c      |  68 ++++--
+ include/dt-bindings/pinctrl/mt65xx.h          |   9 +
+ 6 files changed, 519 insertions(+), 54 deletions(-)
+
+--
+2.18.0
+
 
