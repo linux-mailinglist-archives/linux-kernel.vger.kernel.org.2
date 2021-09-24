@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C26341705A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C5E417044
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242880AbhIXKdZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Sep 2021 06:33:25 -0400
-Received: from pout.email.it ([77.93.251.230]:46064 "EHLO pout.email.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229911AbhIXKdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:33:24 -0400
-X-Greylist: delayed 499 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Sep 2021 06:33:24 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by pout.email.it (Postfix) with ESMTP id 9F8BCCE381;
-        Fri, 24 Sep 2021 12:23:30 +0200 (CEST)
-Received: from pout.email.it ([127.0.0.1])
-        by localhost (ir-mtaout02.email.it [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 9CKuUfwyWPdf; Fri, 24 Sep 2021 12:23:20 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by pout.email.it (Postfix) with ESMTP id 24558CE1CF;
-        Fri, 24 Sep 2021 12:23:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at ir-mtaout02.email.it
-Received: from pout.email.it ([127.0.0.1])
-        by localhost (ir-mtaout02.email.it [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WupZ5Wsvxoei; Fri, 24 Sep 2021 12:23:20 +0200 (CEST)
-Received: from ir-zstore42.email.it (unknown [192.168.25.42])
-        by pout.email.it (Postfix) with ESMTP id 276B9CD180;
-        Fri, 24 Sep 2021 12:23:18 +0200 (CEST)
-Date:   Fri, 24 Sep 2021 12:23:18 +0200 (CEST)
-From:   blinkin@email.it
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org
-Message-ID: <1811728383.1384020.1632478998559.JavaMail.zimbra@email.it>
-In-Reply-To: <87tujwhxl2.ffs@tglx>
-References: <629765464.1655403.1628264743080.JavaMail.zimbra@email.it> <87tujxssp2.ffs@tglx> <217397770.2008922.1628604301644.JavaMail.zimbra@email.it> <877dgtql9v.ffs@tglx> <1437097118.2114098.1628689870926.JavaMail.zimbra@email.it> <87tujwhxl2.ffs@tglx>
-Subject: Re: Bug report for kernel v4.15-rc8+
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [109.118.219.53]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - GC92 (Linux)/8.8.15_GA_4059)
-Thread-Topic: Bug report for kernel v4.15-rc8+
-Thread-Index: Y6D5gTTm9munIF0vbJIxXTKah8PVWg==
+        id S240203AbhIXKZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:25:20 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:4596 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229911AbhIXKZT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 06:25:19 -0400
+X-IronPort-AV: E=Sophos;i="5.85,319,1624287600"; 
+   d="scan'208";a="94920609"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 24 Sep 2021 19:23:44 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id D21AF401070E;
+        Fri, 24 Sep 2021 19:23:42 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2] arm64: dts: renesas: rzg2l-smarc: Enable CANFD
+Date:   Fri, 24 Sep 2021 11:23:38 +0100
+Message-Id: <20210924102338.11595-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello, any news on this?
+Enable CANFD on RZ/G2L SMARC platform.
 
------ Messaggio originale -----
-Da: "Thomas Gleixner" <tglx@linutronix.de>
-A: blinkin@email.it
-Cc: "linux-kernel" <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, "Len Brown" <lenb@kernel.org>, linux-acpi@vger.kernel.org
-Inviato: Mercoledì, 11 agosto 2021 16:20:41
-Oggetto: Re: Bug report for kernel v4.15-rc8+
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+-> Corrected STB pin states
+---
+ arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi | 40 ++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-On Wed, Aug 11 2021 at 15:51, blinkin@email.it wrote:
-> 1) You're booting with an out of tree module
->
->   Uninstalled virtualbox, reproduced same behavior without the module.
->   dmesg outputs attached with and without the workaround
->   (dmesg_novboxdrv_clean.txt and dmesg_novboxdrv_irqaffinity0.txt)
+diff --git a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
+index e895f6e7fa28..a02784fab46a 100644
+--- a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
++++ b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
+@@ -80,6 +80,20 @@
+ 	clock-frequency = <12288000>;
+ };
+ 
++&canfd {
++	pinctrl-0 = <&can0_pins &can1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
++};
++
+ &ehci0 {
+ 	dr_mode = "otg";
+ 	status = "okay";
+@@ -139,6 +153,32 @@
+ 	pinctrl-0 = <&sound_clk_pins>;
+ 	pinctrl-names = "default";
+ 
++	can0_pins: can0 {
++		pinmux = <RZG2L_PORT_PINMUX(10, 1, 2)>, /* TX */
++			 <RZG2L_PORT_PINMUX(11, 0, 2)>; /* RX */
++	};
++
++	/* SW7 should be at position 2->3 so that GPIO8_CAN0_STB line is activated */
++	can0-stb {
++		gpio-hog;
++		gpios = <RZG2L_GPIO(42, 2) GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "can0_stb";
++	};
++
++	can1_pins: can1 {
++		pinmux = <RZG2L_PORT_PINMUX(12, 1, 2)>, /* TX */
++			 <RZG2L_PORT_PINMUX(13, 0, 2)>; /* RX */
++	};
++
++	/* SW8 should be at position 2->3 so that GPIO9_CAN1_STB line is activated */
++	can1-stb {
++		gpio-hog;
++		gpios = <RZG2L_GPIO(42, 3) GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "can1_stb";
++	};
++
+ 	i2c0_pins: i2c0 {
+ 		pins = "RIIC0_SDA", "RIIC0_SCL";
+ 		input-enable;
+-- 
+2.17.1
 
-Ok.
-
-> 2) Please provide information what is consuming 90% of a CPU
->
->   top shows a kworker process consistently at 50% without the
->   workaround, 60% with the workaround. No significant activity amounts
->   from other processes.  Sometimes that 50% is split between two
->   kworker processes for a short time.  CPU core #0 activity is a
->   constant 60% without the workaround, 90% with the workaround
-
-That's broken. /proc/interrupts gives some hint:
-
-1) Stock kernel
-
->             CPU0       CPU1       CPU2       CPU3       
->    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
->    1:          0          0          0          9  IR-IO-APIC    1-edge      i8042
->    8:          0          1          0          0  IR-IO-APIC    8-edge      rtc0
->    9:          0     923411          0          0  IR-IO-APIC    9-fasteoi   acpi
-
-900k ACPI interrupts right after boot
-
->             CPU0       CPU1       CPU2       CPU3       
->    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
->    1:          0          0          0         11  IR-IO-APIC    1-edge      i8042
->    8:          0          1          0          0  IR-IO-APIC    8-edge      rtc0
->    9:          0    4869059          0          0  IR-IO-APIC    9-fasteoi   acpi
-
-One minute later it's 4.8M
-
-With affinity forced to CPU0 it's even more:
-
->             CPU0       CPU1       CPU2       CPU3       
->    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
->    1:          9          0          0          0  IR-IO-APIC    1-edge      i8042
->    8:          1          0          0          0  IR-IO-APIC    8-edge      rtc0
->    9:    7576456          0          0          0  IR-IO-APIC    9-fasteoi   acpi
-
-7.5M right after boot
-
->             CPU0       CPU1       CPU2       CPU3       
->    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
->    1:         11          0          0          0  IR-IO-APIC    1-edge      i8042
->    8:          1          0          0          0  IR-IO-APIC    8-edge      rtc0
->    9:   10992420          0          0          0  IR-IO-APIC    9-fasteoi   acpi
-
-10.9M after one minute. Though the delta between right after boot and 1
-minute later is in the same ballpark.
-
-Cc'ed the ACPI people for clues.
-
-Thanks,
-
-        tglx
