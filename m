@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8DE4170DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F314170E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343490AbhIXLa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 07:30:58 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:41684 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244457AbhIXLax (ORCPT
+        id S1343499AbhIXLcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 07:32:50 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:39666 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244457AbhIXLct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 07:30:53 -0400
-Received: by mail-ua1-f42.google.com with SMTP id f24so6345808uav.8
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 04:29:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xb4E71PLRVwAgc7nxTvHtPqOviEnsfHRocCh1h1TNpU=;
-        b=hNrxuNBmijgAghJDX/nXFVCw2QuR5mu4GOtQZ4IwhuOU2EN16s6HE/qItyel0w7KRE
-         oay5SdmJQ1E23Y/b+vdZzfeXW1ANvSnPhM2Lmty4jZGibdcYEBJeiXENLqe6g8MEF20q
-         0k/RzqLsKZtN9KRjqlwHop8qmbGP2MU2CIR6vjUVcQbVmugVuj2njQaFc3mfSOVVfLjf
-         yPGhc2j4QwRuBkADhp3iZecakY/3J1cSuh8jLr4nE+f7zDhhaQV55luMoTgnHJ8QWUYW
-         GyCODN9zFCeaEbA2YZ/lCQ7dgMA2Gj0B3ABAQn7gQAPwbuSopOfpLUg3+d2WebAsRrhs
-         Brmg==
-X-Gm-Message-State: AOAM5327ygNZrCCEazuq/xStiHXTHNspVZGdfrslrpL0L2UN1F+/rKA6
-        8bNQkAvWdnNagxFaiNIgw92jvKZPXU3mmdC1w8dX0HSG
-X-Google-Smtp-Source: ABdhPJz3tf5Uuih13QoXr/+WiaUJFLErVwra6v83B0+Z+LkdV1BQqgZUmWZw8z25y996cRukWMEezFzll0NRKknW/74=
-X-Received: by 2002:ab0:7d5:: with SMTP id d21mr8830579uaf.78.1632482960571;
- Fri, 24 Sep 2021 04:29:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210906142413.130774-1-wangborong@cdjrlc.com>
-In-Reply-To: <20210906142413.130774-1-wangborong@cdjrlc.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 24 Sep 2021 13:29:09 +0200
-Message-ID: <CAMuHMdUYMabCK7aknqTMSOqZrLkwJ1uRTPPyqn7AXLQ7VXeg2w@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Add a missing SPDX license header
-To:     Jason Wang <wangborong@cdjrlc.com>
+        Fri, 24 Sep 2021 07:32:49 -0400
+Received: from [192.168.1.87] (unknown [223.184.74.135])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 895E620A1FB8;
+        Fri, 24 Sep 2021 04:31:14 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 895E620A1FB8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1632483076;
+        bh=BAgdUqonqhp/HCQpRDWS5729o1E0Cy8wiBVmSwI6sv8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PDjdgFjPaDnVkAHYT53cBPCkggfY1x6fZFWAlnJMbHEEYwjg090ghvDgROlMK3QcG
+         khAq3uo+KnoXdsj9kKm++WNvechbKExEoLjkZEtxoGW+I3LpWTy9V9vUmGacmcP8Dx
+         tEsPvLdnJjVYv1fTfTk/fM38Al6PMUaPi2NB3M5o=
+Subject: Re: [PATCH] media: atomisp: restore missing 'return' statement
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210802143820.1150099-1-arnd@kernel.org>
+From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Message-ID: <a472d0f0-2be4-5f95-7106-5d580b28cac6@linux.microsoft.com>
+Date:   Fri, 24 Sep 2021 17:01:10 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20210802143820.1150099-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
-
-On Mon, Sep 6, 2021 at 4:24 PM Jason Wang <wangborong@cdjrlc.com> wrote:
-> Add the missing SPDX license header to arch/m68k/q40/q40ints.c.
->
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
-
-Thanks for your patch!
-
+On 02-08-2021 20:08, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The input_system_configure_channel_sensor() function lost its final
+> return code in a previous patch:
+> 
+> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function 'input_system_configure_channel_sensor':
+> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+> 
+> Restore what was there originally.
+> 
+> Fixes: 728a5c64ae5f ("media: atomisp: remove dublicate code")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  arch/m68k/q40/q40ints.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  .../media/atomisp/pci/hive_isp_css_common/host/input_system.c   | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> index 8e085dda0c18..712e01c37870 100644
+> --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> @@ -1646,6 +1646,8 @@ static input_system_err_t input_system_configure_channel_sensor(
+>  	default:
+>  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+>  	}
+> +
+> +	return INPUT_SYSTEM_ERR_NO_ERROR;
 
-Is there any specific reason you only updated this file?
-There are 209 other files under arch/m68k/ lacking an SPDX license
-header.
+I would recommend to return "status" instead of INPUT_SYSTEM_ERR_NO_ERROR,
+this will take care of sending correct return code, we encounter in different case statements.
+Something like below would be better. Thanks.
 
-Gr{oetje,eeting}s,
+-               return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
++               status = INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+        }
++       return status;
 
-                        Geert
+Regards,
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+~Praveen.
