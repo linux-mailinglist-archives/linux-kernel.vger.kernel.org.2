@@ -2,608 +2,509 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0B9417A28
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56301417A30
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 19:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345081AbhIXRy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 13:54:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43298 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344909AbhIXRy4 (ORCPT
+        id S1345125AbhIXR4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 13:56:22 -0400
+Received: from sonic309-27.consmr.mail.ne1.yahoo.com ([66.163.184.153]:37888
+        "EHLO sonic309-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344581AbhIXR4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 13:54:56 -0400
-Date:   Fri, 24 Sep 2021 19:53:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632506002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=PxmHsJuyltV4wP6N8LgYNmL4TsHrLx1ulwEY6BjoArc=;
-        b=ZZwHg/DrOCvJixD7jx+RMjsODgB72ODybtD6DLyOEHITFF1WIJiFeHK0+UpRN2H9YW78Ud
-        /QlsGEhxAA1q/p/068pzmEujlE3tArcUjeE5uxQlzAgbfrnzIINkIFfM88Z3Ks0+2+qX9E
-        UHahm9nzcBmszvVixoSrL2zNEvbjvaHyuXMLHSeNY59te5SGKZ8fMaxe96PpnQJ4Wz+mIN
-        +wbAzuSXsaM/COXSP4hux55eZ7tlpW4JmsBpNbssPelKXvrXUKNsykyF5P/H9/m/TtwelM
-        0H5cp8JVKgT/O1PWkraAAdWZ0C/PUW2725KFY8G31y1GuseNqlam+OObd/vIqA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632506002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=PxmHsJuyltV4wP6N8LgYNmL4TsHrLx1ulwEY6BjoArc=;
-        b=9KXNvIm5nqrnx4KlWLc9lo7DllYX17kh5FFHtyEAYL7WfX0q+pdU4/VoqkHaivBEFs9ESW
-        pxzau601SItPGXDw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.15-rc2-rt4
-Message-ID: <20210924175320.qgk26g5jqgjhe55i@linutronix.de>
+        Fri, 24 Sep 2021 13:56:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1632506087; bh=VaniWh/Jml2El/N3D3Sh0p0vwb64ebA0bTz8BeYykRE=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=lQyiqFRs8l5UgLx7Sxq9QGVSKdyvi4sun6Pzx1E/6vntZJaZuHHfeVDBrdfw7KDJotb25e1aw2B2serDgdL14VGoYmmeC9xITAKGIkA+/71gFrGZdNZuMxQyClOf6wGJ3ejqE/PVzJSS56YMxs8fQ8ALoZinWDfzovGQyL3YHxg4rU3wlQGwDAOo97jJCpyroeMcjt7stbmNdVNIvBw2pJE3FnAjwFOPExwdr5QmoTl7yO9jD8XnxDzlQE3rFUK1bTsUDElE+jUHonGRvHXeTIGgRfv0WdeDMyXbP0o9ko9U874MVXtRpBnJw8aylOj0+91oWuHiFZT6D/ctdcMrqg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1632506087; bh=EDczms3/F56kn5LcAI/WS/OiG1oqohx3urp6jnweERj=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=UiuVYTiKLDZ71ltGo26N44q3Hj8EtAq1ayq5ygDv/u/rWTAOXNxOnNIkglTzTwglEFiBlEuXjLMMhkTLjnXbQ0ukRNLUqcv35tmvni0/Hrg0gBoSNN+g7iiCuD4hDJgTboxeX0Y0mZ/kszh8EnY1EaJZgCj0rClBnEVFPZtrMIIopJMYpdVmmpOTIP8bA6OIT3AYU59IXuGWb+KyIYq+NiqJQYwAuaiaJ8UvmYF8RGPy9R5dD+7Xpcre3Ek52e72WOl5IW+Oq4C/B46NfA0e0dqr5sqWOnJ6W1n/27Xp4XRmhm/jdD1cQh95YuOjJHLctiZPWIKWTt8AioF2fh6SZA==
+X-YMail-OSG: VZVFXUkVM1kd89_tatNdDdiWM8UpgktUb8isVnp3XQi.zCnPY_DfT.bZDTlt0AD
+ Dqn02ntDEuSn1GQ6a8mJQKdavFrLLaQkmNq2YTeBPnOdlrU_zf04z30AqhIOWGFoy3WERl_TNZPf
+ PoBNL4gf6CQyj7d5bANXR_28BGV3zeyPA_ok93iCvCkh_o8eDriq1Z9Z3eStdP0XQdN769VqCYUY
+ BD4VucacAmm9CvGfzI.C93IC6meCYjwTqmRCqRlLfrpJizFOEOMwJUyHyYdX0ueEav2DvHP8JXXm
+ wbAwBvrtXfT0X8vwDYH16aDvXk_5dR2v5jbHwxQlX_x.lRiKCfqo.n6SYeVhq.EnPfPwTKnvX18K
+ dBqlX37OMk2oNUurU1tDpxMO3CS33Ez5ONU.K5_TXVrUn4gUc3UxIkkoPzClRZaX53aRT8.rDnaE
+ qzilbBIrK9eK.jvkhJrU8oFUseqzvUaV1Wz3r7BeQJHX7R5b6SCaEXP8qN_2oBInah8tiVr6kPje
+ soBhLjX8B0e_lFvjsqgMAN1bdWg339GRJiqoZ6Ad_ZaaavYGenCtJUgkb2Y719KCBGrLYli_Y6ND
+ kF30YFimn6N6UohVMvH_CDLkAl1fryHHf2LeKbvEANtQsbjcKYtEDBteETJ9BMZqysif5WdHvUsk
+ O9uo3_piJvgHCZ1AL7ns9lxNw08a12anmXnbMtvsL9lUYB8jDqhdmTAaWA1kKG2TQ0xWT5prVo5t
+ Eejlq4fqlZDVjYbDrYslKof1mrgLPLio0FdYA79ic1oF4UtY7CMEO5IKXWnz97cRq7hnjo40VMfQ
+ vtTTLeE0QTiMapO0tfPblw5CTl0GLjCvXDQEhkwJOVNHwyy.jdrmpEHMvSUn0gBmB5Eh5hS6AFUJ
+ cXFSiriKz64WSb7RTOJB4v0ImmKm_NC_e.0qFURXhhf1Y.sOfhfpVU6C7CT2enjIyD3tQrV7LGsu
+ wtQnxHpCFm8TLY68zKIffZm4eYvKjYoaKRNEw9Bm1KqQpQYdRsw_2knG6Ayd1ph7o5TiLR6xul4n
+ r1s4yc2FsHsyi_cgCSCitJAvfFbBz7UchCBN8d699JzNmop63Dn57e_ypN1Xfj8vZCss6CxHPTSO
+ QvgdfN.8WKwToT3gSMIEb3KAAcCXNtOS3_iP_DsdFZCVvnYUlfJl.b3nDfpNqHUDJo1LxoQfByqY
+ mZeZzE9mF.9x5BFXDy90fndjUleGwJr8TyZpm_Bg5wiGgNKTDxnRBmOWgFt..j0lFqxplYnKARP0
+ KWkjiJbgfT5nsBmOrL57hrYQr.zqshIW2wMn4.IdNFpN0s1j2eLunkahqZgv4MuWpmbKRKmv6k9S
+ dJWLz4Tx0WXa2RZjxzlY3l05lWiHiKo04.iakf5rnjKgckM7UUwD3mgcj7rthTFdR46B9J8AvvSh
+ VTArriZOTn2giexHRF9E1BddF98ulPQf0ylaZLab_FvL0feLJZ7ycYqnKi1eNHA7UAJJ0aGJQhsZ
+ TiqLKxefvPEpzLsa3aIT81PtWBtixZ_t4z6IvGfwealUyr88w9Fbi5sffQFnExSp_UNzcDnpsAN2
+ HUTv_8FlEJtLTUiBHnGEPIHpKpPS9RxMx8O.T5wBY_XkPoCKE02B2S84jLHsRRW0PaztABZfrkch
+ bIloLxYl1dwwZaWFvbmX.m3f0zvt4o3P_PWR4uFc9kG4PKR9MFeItwRQnllSs91j3O3jqRB3VLrE
+ 1Lip3MXTU8_ATtdQoAOWkKS291W3gr0Imo1c.aV6ITAGmidkOmNJJDI4l_0i60GSLpUYxEZijxoJ
+ klSw8O4zIbi054jdlQtEyMa.s2.P7twhoSF5abB95RceWikUrhGhqPfFLCzkV8Js4vHficbXQV7w
+ IOXJNY00kIymCGE7Ki4vsmiQE_8HgItmz1NVpvP4YnZsVW5cCEqzVlgDS2EdPycx53WQUwzQOI98
+ xDxDNG3bexkn_gNKkjMHsnlGquUZ9Y0vDrlfgi3Q6v5HdZekLhd8IsDtRBCcxoflcrxoijyP8uuU
+ WIEQtUUEmk6N1_fle3OFtyNPhIrtVJHosImVsz38lKKQFE99KDuwErKUPRuJSfLegdaDvAohThiV
+ 7PLZKR2D.0httWmVzGMiVvzUl_EUJdmy_M2N1NWH5yH0CO1q.gCSJ4lZ1ukUJVgm7VzDNCLN4mrg
+ I1io..zvkrEDapE9dgeIDjvmsvqjxXaKuB8SJmLZEJPCcnVAkR4o5ZOfko5W.0xfJX1TWjUit53_
+ D7HPFFWwn.gGPSUHMJbjCcYtRJEg2Tmb9bIW0zfaNuohPKNOjnOhYEFw4JFkKQ4rgWcJaeORsh4Y
+ hk2daCUS8iCrK7AEZ4lhwcVgqvBgB
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Fri, 24 Sep 2021 17:54:47 +0000
+Received: by kubenode510.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 85bfe0b6bc235f313267a827347e60ae;
+          Fri, 24 Sep 2021 17:54:45 +0000 (UTC)
+From:   Casey Schaufler <casey@schaufler-ca.com>
+To:     casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
+        keescook@chromium.org, john.johansen@canonical.com,
+        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
+        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org
+Subject: [PATCH v29 00/28] LSM: Module stacking for AppArmor
+Date:   Fri, 24 Sep 2021 10:54:13 -0700
+Message-Id: <20210924175441.7943-1-casey@schaufler-ca.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+References: <20210924175441.7943-1-casey.ref@schaufler-ca.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+This patchset provides the changes required for
+the AppArmor security module to stack safely with any other.
 
-I'm pleased to announce the v5.15-rc2-rt4 patch set. 
+v29: Rebase to 5.15-rc1
+     Rework the supplimental audit record generation. Attach
+     a list of supplimental data to the audit_buffer and
+     generate the auxiliary records as needed on event end.
+     This should be usable for other auxiliary data, such as
+     container IDs. There is other ongoing audit work that
+     will require integration with this.
+v28: Rebase to 5.14-rc2
+     Provide IMA rules bounds checking (patch 04)
+     Quote contexts in MAC_TASK_CONTEXTS and MAC_OBJ_CONTEXTS
+     audit records because of AppArmor's use of '=' in context
+     values. (patch 22,23)
+v27: Fixes for landlock (patch 02)
+     Rework the subject audit record generation. This version is
+     simpler and reflects feedback from Paul Moore. (patch 22)
+v26: Rebase to 5.13-rc1
+     Include the landlock security module.
+     Accomodate change from security_task_getsecid() to
+     security_task_getsecid_obj() and security_task_getsecid_subj().
+v25: Rebase to 5.12-rc2
+     Incorporate feedback from v24
+     - The IMA team suggested improvements to the integrity rule
+       processing.
+v24: Rebase to 5.11-rc1
+     Incorporate feedback from v23
+     - Address the IMA team's concerns about "label collisions".
+       A label collision occurs when there is ambiguity about
+       which of multiple LSMs is being targeted in the definition
+       of an integrity check rule.  A system with Smack and
+       AppArmor would be unable to distinguish which LSM is
+       important to an integrity rule referrencing the label
+       "unconfined" as that label is meaningful to both.
+       Provide a boot option to specify which LSM will be used in
+       IMA rules when multiple LSMs are present. (patch 04)
+       Pull LSM "slot" identification from later audit patches in
+       in support of this (patch 03).
+     - Pick up a few audit events that need to include supplimental
+       subject context records that had been missed in the
+       previous version.
+v23: Rebase to 5.10-rc4
+     Incorporate feedback from v22
+     - Change /proc/*/attr/display to /proc/*/attr/interface_lsm to
+       make the purpose clearer. (patch 0012)
+     - Include ABI documentation. (patch 0012, 0022)
+     - Introduce LSM documentation updates with the patches where
+       the interfaces are added rather than at the end. (patch 0012, 0022)
+     Include more maintainers and mail lists in To: and Cc: directives.
+v22: Rebase to 5.10-rc1
+v21: Rebase to 5.9-rc4
+     Incorporate feedback from v20
+     - Further revert UDS SO_PEERSEC to use scaffolding around
+       the interfaces that use lsmblobs and store only a single
+       secid. The possibility of multiple security modules
+       requiring data here is still a future problem.
+     - Incorporate Richard Guy Briggs' non-syscall auxiliary
+       records patch (patch 0019-0021) in place of my "supplimental"
+       records implementation. [I'm not sure I've given proper
+       attestation. I will correct as appropriate]
+v20: Rebase to 5.9-rc1
+     Change the BPF security module to use the lsmblob data. (patch 0002)
+     Repair length logic in subject label processing (patch 0015)
+     Handle -EINVAL from the empty BPF setprocattr hook (patch 0020)
+     Correct length processing in append_ctx() (patch 0022)
+v19: Rebase to 5.8-rc6
+     Incorporate feedback from v18
+     - Revert UDS SO_PEERSEC implementation to use lsmblobs
+       directly, rather than allocating as needed. The correct
+       treatment of out-of-memory conditions in the later case
+       is difficult to define. (patch 0005)
+     - Use a size_t in append_ctx() (patch 0021)
+     - Fix a memory leak when creating compound contexts. (patch 0021)
+     Fix build error when CONFIG_SECURITY isn't set (patch 0013)
+     Fix build error when CONFIG_SECURITY isn't set (patch 0020)
+     Fix build error when CONFIG_SECURITY isn't set (patch 0021)
+v18: Rebase to 5.8-rc3
+     Incorporate feedback from v17
+     - Null pointer checking in UDS (patch 0005)
+     Match changes in IMA code (patch 0012)
+     Fix the behavior of LSM context supplimental audit
+     records so that there's always exactly one when it's
+     appropriate for there to be one. This is a substantial
+     change that requires extention of the audit_context beyond
+     syscall events. (patch 0020)
+v17: Rebase to 5.7-rc4
+v16: Rebase to 5.6
+     Incorporate feedback from v15 - Thanks Stephen, Mimi and Paul
+     - Generally improve commit messages WRT scaffolding
+     - Comment ima_lsm_isset() (patch 0002)
+     - Some question may remain on IMA warning (patch 0002)
+     - Mark lsm_slot as __lsm_ro_after_init not __init_data (patch 0002)
+     - Change name of lsmblob variable in ima_match_rules() (patch 0003)
+     - Instead of putting a struct lsmblob into the unix_skb_parms
+       structure put a pointer to an allocated instance. There is
+       currently only space for 5 u32's in unix_skb_parms and it is
+       likely to get even tighter. Fortunately, the lifecycle
+       management of the allocated lsmblob is simple. (patch 0005)
+     - Dropped Acks due to the above change (patch 0005)
+     - Improved commentary on secmark labeling scaffolding. (patch 0006)
+     - Reduced secmark related labeling scaffolding. (patch 0006)
+     - Replace use of the zeroth entry of an lsmblob in scaffolding
+       with a function lsmblob_value() to hopefully make it less
+       obscure. (patch 0006)
+     - Convert security_secmark_relabel_packet to use lsmblob as
+       this reduces much of the most contentious scaffolding. (patch 0006)
+     - Dropped Acks due to the above change (patch 0006)
+     - Added BUILD_BUG_ON() for CIPSO tag 6. (patch 0018)
+     - Reworked audit subject information. Instead of adding fields in
+       the middle of existing records add a new record to the event. When
+       a separate record is required use subj="?". (patch 0020)
+     - Dropped Acks due to the above change (patch 0020)
+     - Reworked audit object information. Instead of adding fields in
+       the middle of existing records add a new record to the event. When
+       a separate record is required use obj="?". (patch 0021)
+     - Dropped Acks due to the above change (patch 0021)
+     - Enhanced documentation (patch 0022)
+     - Removed unnecessary error code check in security_getprocattr()
+       (patch 0021)
+v15: Rebase to 5.6-rc1
+     - Revise IMA data use (patch 0002)
+     Incorporate feedback from v14
+     - Fix lockdown module registration naming (patch 0002)
+     - Revise how /proc/self/attr/context is gathered. (patch 0022)
+     - Revise access modes on /proc/self/attr/context. (patch 0022)
+     - Revise documentation on LSM external interfaces. (patch 0022)
+v14: Rebase to 5.5-rc5
+     Incorporate feedback from v13
+     - Use an array of audit rules (patch 0002)
+     - Significant change, removed Acks (patch 0002)
+     - Remove unneeded include (patch 0013)
+     - Use context.len correctly (patch 0015)
+     - Reorder code to be more sensible (patch 0016)
+     - Drop SO_PEERCONTEXT as it's not needed yet (patch 0023)
+v13: Rebase to 5.5-rc2
+     Incorporate feedback from v12
+     - Print lsmblob size with %z (Patch 0002)
+     - Convert lockdown LSM initialization. (Patch 0002)
+     - Restore error check in nft_secmark_compute_secid (Patch 0006)
+     - Correct blob scaffolding in ima_must_appraise() (Patch 0009)
+     - Make security_setprocattr() clearer (Patch 0013)
+     - Use lsm_task_display more widely (Patch 0013)
+     - Use passed size in lsmcontext_init() (Patch 0014)
+     - Don't add a smack_release_secctx() hook (Patch 0014)
+     - Don't print warning in security_release_secctx() (Patch 0014)
+     - Don't duplicate the label in nfs4_label_init_security() (Patch 0016)
+     - Remove reviewed-by as code has significant change (Patch 0016)
+     - Send the entire lsmblob for Tag 6 (Patch 0019)
+     - Fix description of socket_getpeersec_stream parameters (Patch 0023)
+     - Retain LSMBLOB_FIRST. What was I thinking? (Patch 0023)
+     - Add compound context to LSM documentation (Patch 0023)
+v12: Rebase to 5.5-rc1
+     Fixed a couple of incorrect contractions in the text.
+v11: Rebase to 5.4-rc6
+     Incorporate feedback from v10
+     - Disambiguate reading /proc/.../attr/display by restricting
+       all use of the interface to the current process.
+     - Fix a merge error in AppArmor's display attribute check
+v10: Ask the security modules if the display can be changed.
+v9: There is no version 9
+v8: Incorporate feedback from v7
+    - Minor clean-up in display value management
+    - refactor "compound" context creation to use a common
+      append_ctx() function.
+v7: Incorporate feedback from v6
+    - Make setting the display a privileged operation. The
+      availability of compound contexts reduces the need for
+      setting the display.
+v6: Incorporate feedback from v5
+    - Add subj_<lsm>= and obj_<lsm>= fields to audit records
+    - Add /proc/.../attr/context to get the full context in
+      lsmname\0value\0... format as suggested by Simon McVittie
+    - Add SO_PEERCONTEXT for getsockopt() to get the full context
+      in the same format, also suggested by Simon McVittie.
+    - Add /sys/kernel/security/lsm_display_default to provide
+      the display default value.
+v5: Incorporate feedback from v4
+    - Initialize the lsmcontext in security_secid_to_secctx()
+    - Clear the lsmcontext in all security_release_secctx() cases
+    - Don't use the "display" on strictly internal context
+      interfaces.
+    - The SELinux binder hooks check for cases where the context
+      "display" isn't compatible with SELinux.
+v4: Incorporate feedback from v3
+    - Mark new lsm_<blob>_alloc functions static
+    - Replace the lsm and slot fields of the security_hook_list
+      with a pointer to a LSM allocated lsm_id structure. The
+      LSM identifies if it needs a slot explicitly. Use the
+      lsm_id rather than make security_add_hooks return the
+      slot value.
+    - Validate slot values used in security.c
+    - Reworked the "display" process attribute handling so that
+      it works right and doesn't use goofy list processing.
+    - fix display value check in dentry_init_security
+    - Replace audit_log of secids with '?' instead of deleting
+      the audit log
+v3: Incorporate feedback from v2
+    - Make lsmblob parameter and variable names more
+      meaningful, changing "le" and "l" to "blob".
+    - Improve consistency of constant naming.
+    - Do more sanity checking during LSM initialization.
+    - Be a bit clearer about what is temporary scaffolding.
+    - Rather than clutter security_getpeersec_dgram with
+      otherwise unnecessary checks remove the apparmor
+      stub, which does nothing useful.
 
-Changes since v5.15-rc2-rt3:
+Patch 01 moves management of the sock security blob
+from the individual modules to the infrastructure.
 
-  - Reformatted a function invocation in SMACK.
+Patches 02-03 introduce a structure "lsmblob" that will gradually
+replace the "secid" as a shorthand for security module information.
+At this point lsmblob contains an array of u32 secids, one "slot"
+for each of the security modules compiled into the kernel that
+used secids. A "slot" is allocated when a security module requests
+one.
 
-  - Wake ksoftirqd from idle again. A logic bug was introduced in around
-    v5.14-rc3-rt1.
+Patch 04 provides mechanism for the IMA subsystem to identify
+explicitly which LSM is subject to IMA policy. This includes
+a boot option for specifying the default and an additional option
+in IMA rules "lsm=".
 
-  - Two explicit atomic.h includes were introduced because ARM failed to
-    compile depending on some options. It appears that this is no longer
-    the case and so the additional includes were dropped again.
+Patches 05-13 change LSM interfaces to use the lsmblob instead
+of secids. It is important that the lsmblob be a fixed size entity
+that does not have to be allocated. Several of the places
+where it is used would have performance and/or locking
+issues with dynamic allocation.
 
-  - Additional might_sleep() improvements. Now it splat should be more
-    readable / provide additional details. Patches by Thomas Gleixner.
+Patch 14 provides a mechanism for a process to identify which
+security module's hooks should be used when displaying or
+converting a security context string.  A new interface
+/proc/self/attr/interface_lsm contains the name of the security
+module to show. Reading from this file will present the name of
+the module, while writing to it will set the value. Only names
+of active security modules are accepted. Internally, the name
+is translated to the appropriate "slot" number for the module
+which is then stored in the task security blob. Setting the
+display requires that all modules using the /proc interfaces
+allow the transition. The interface LSM of other processess
+can be neither read nor written. All suggested cases for
+reading the interface LSM of a different process have race
+conditions.
 
-  - Rework the delayed mm_struct and task stack deallocation. Patches by
-    Thomas Gleixner.
+Patch 15 Starts the process of changing how a security
+context is represented. Since it is possible for a
+security context to have been generated by more than one
+security module it is now necessary to note which module
+created a security context so that the correct "release"
+hook can be called. There are several places where the
+module that created a security context cannot be inferred.
 
-Known issues
-     - netconsole triggers WARN.
+This is achieved by introducing a "lsmcontext" structure
+which contains the context string, its length and the
+"slot" number of the security module that created it.
+The security_release_secctx() interface is changed,
+replacing the (string,len) pointer pair with a lsmcontext
+pointer.
 
-     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
+Patches 16-18 convert the security interfaces from
+(string,len) pointer pairs to a lsmcontext pointer.
+The slot number identifying the creating module is
+added by the infrastructure. Where the security context
+is stored for extended periods the data type is changed.
 
-     - Valentin Schneider reported a few splats on ARM64, see
-          https://https://lkml.kernel.org/r/.kernel.org/lkml/20210810134127.1394269-1-valentin.schneider@arm.com/
+The Netlabel code is converted to save lsmblob structures
+instead of secids in Patch 19. This is not strictly
+necessary as there can only be one security module that
+uses Netlabel at this point. Using a lsmblob is much
+cleaner, as the interfaces that use the data have all
+been converted.
 
-The delta patch against v5.15-rc2-rt3 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/incr/patch-5.15-rc2-rt3-rt4.patch.xz
+Patch 20 adds checks to the binder hooks which verify
+that both ends of a transaction use the same interface LSM.
 
-You can get this release via the git tree at:
+Patch 21 adds a parameter to security_secid_to_secctx()
+that indicates which of the security modules should be used
+to provide the context.
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.15-rc2-rt4
+Patches 22-24 provide mechanism to keeping a list of auxiliary
+record data in an audit_buffer. The list is read when the
+audit record is ended, and supplimental records are created
+as needed.
 
-The RT patch against v5.15-rc2 can be found here:
+Patch 25 adds a supplimental audit record for subject
+LSM data when there are multiple security modules with such data.
+The AUDIT_MAC_TASK_CONTEXTS record is used in conjuction with a
+"subj=?" field to identify the subject data. The
+AUDIT_MAC_TASK_CONTEXTS record identifies the security module
+with the data: subj_selinux="xyz_t" subj_apparmor="abc".
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patch-5.15-rc2-rt4.patch.xz
+An example of the MAC_TASK_CONTEXTS (1420) record is:
 
-The split quilt queue is available at:
+    type=UNKNOWN[1420]
+    msg=audit(1600880931.832:113)
+    subj_apparmor="=unconfined"
+    subj_smack="_"
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patches-5.15-rc2-rt4.tar.xz
+Patch 26 adds a supplimental audit record for object
+LSM data when there are multiple security modules with such data.
+The AUDIT_MAC_OBJ_CONTEXTS record is used in conjuction The
+with a "obj=?" field to identify the object data.
+The AUDIT_MAC_OBJ_CONTEXTS record identifies the security module
+with the data: obj_selinux="xyz_t obj_apparmor="abc".  While
+AUDIT_MAC_TASK_CONTEXTS records will always contain an entry
+for each possible security modules, AUDIT_MAC_OBJ_CONTEXTS
+records will only contain entries for security modules for
+which the object in question has data.
 
-Sebastian
+An example of the MAC_OBJ_CONTEXTS (1421) record is:
 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 2776423a587e4..e8696e4a45aa0 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -111,8 +111,8 @@ static __always_inline void might_resched(void)
- #endif /* CONFIG_PREEMPT_* */
- 
- #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
--extern void ___might_sleep(const char *file, int line, int preempt_offset);
--extern void __might_sleep(const char *file, int line, int preempt_offset);
-+extern void __might_resched(const char *file, int line, unsigned int offsets);
-+extern void __might_sleep(const char *file, int line);
- extern void __cant_sleep(const char *file, int line, int preempt_offset);
- extern void __cant_migrate(const char *file, int line);
- 
-@@ -129,7 +129,7 @@ extern void __cant_migrate(const char *file, int line);
-  * supposed to.
-  */
- # define might_sleep() \
--	do { __might_sleep(__FILE__, __LINE__, 0); might_resched(); } while (0)
-+	do { __might_sleep(__FILE__, __LINE__); might_resched(); } while (0)
- /**
-  * cant_sleep - annotation for functions that cannot sleep
-  *
-@@ -168,10 +168,9 @@ extern void __cant_migrate(const char *file, int line);
-  */
- # define non_block_end() WARN_ON(current->non_block_count-- == 0)
- #else
--  static inline void ___might_sleep(const char *file, int line,
--				   int preempt_offset) { }
--  static inline void __might_sleep(const char *file, int line,
--				   int preempt_offset) { }
-+  static inline void __might_resched(const char *file, int line,
-+				     unsigned int offsets) { }
-+static inline void __might_sleep(const char *file, int line) { }
- # define might_sleep() do { might_resched(); } while (0)
- # define cant_sleep() do { } while (0)
- # define cant_migrate()		do { } while (0)
-diff --git a/include/linux/pid.h b/include/linux/pid.h
-index 33c14785c46b2..af308e15f174c 100644
---- a/include/linux/pid.h
-+++ b/include/linux/pid.h
-@@ -3,7 +3,6 @@
- #define _LINUX_PID_H
- 
- #include <linux/rculist.h>
--#include <linux/atomic.h>
- #include <linux/wait.h>
- #include <linux/refcount.h>
- 
-diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-index cf665d25838cf..dc8158a459859 100644
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -123,16 +123,9 @@
-  */
- #if !defined(CONFIG_PREEMPT_RT)
- #define PREEMPT_LOCK_OFFSET		PREEMPT_DISABLE_OFFSET
--#define PREEMPT_LOCK_RESCHED_OFFSET	PREEMPT_LOCK_OFFSET
- #else
- /* Locks on RT do not disable preemption */
- #define PREEMPT_LOCK_OFFSET		0
--/*
-- * spin/rw_lock() on RT implies rcu_read_lock(). The might_sleep() check in
-- * cond_resched*lock() has to take that into account because it checks for
-- * preempt_count() + rcu_preempt_depth().
-- */
--#define PREEMPT_LOCK_RESCHED_OFFSET	1
- #endif
- 
- /*
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 992a1e07a27e8..79852a2ebe5b4 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2161,7 +2161,7 @@ static inline int _cond_resched(void) { return 0; }
- #endif /* !defined(CONFIG_PREEMPTION) || defined(CONFIG_PREEMPT_DYNAMIC) */
- 
- #define cond_resched() ({			\
--	___might_sleep(__FILE__, __LINE__, 0);	\
-+	__might_resched(__FILE__, __LINE__, 0);	\
- 	_cond_resched();			\
- })
- 
-@@ -2169,19 +2169,38 @@ extern int __cond_resched_lock(spinlock_t *lock);
- extern int __cond_resched_rwlock_read(rwlock_t *lock);
- extern int __cond_resched_rwlock_write(rwlock_t *lock);
- 
--#define cond_resched_lock(lock) ({					\
--	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSET);	\
--	__cond_resched_lock(lock);					\
-+#define MIGHT_RESCHED_RCU_SHIFT		8
-+#define MIGHT_RESCHED_PREEMPT_MASK	((1U << MIGHT_RESCHED_RCU_SHIFT) - 1)
-+
-+#ifndef CONFIG_PREEMPT_RT
-+/*
-+ * Non RT kernels have an elevated preempt count due to the held lock,
-+ * but are not allowed to be inside a RCU read side critical section
-+ */
-+# define PREEMPT_LOCK_RESCHED_OFFSETS	PREEMPT_LOCK_OFFSET
-+#else
-+/*
-+ * spin/rw_lock() on RT implies rcu_read_lock(). The might_sleep() check in
-+ * cond_resched*lock() has to take that into account because it checks for
-+ * preempt_count() and rcu_preempt_depth().
-+ */
-+# define PREEMPT_LOCK_RESCHED_OFFSETS	\
-+	(PREEMPT_LOCK_OFFSET + (1U << MIGHT_RESCHED_RCU_SHIFT))
-+#endif
-+
-+#define cond_resched_lock(lock) ({						\
-+	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSETS);	\
-+	__cond_resched_lock(lock);						\
- })
- 
--#define cond_resched_rwlock_read(lock) ({				\
--	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSET);	\
--	__cond_resched_rwlock_read(lock);				\
-+#define cond_resched_rwlock_read(lock) ({					\
-+	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSETS);	\
-+	__cond_resched_rwlock_read(lock);					\
- })
- 
--#define cond_resched_rwlock_write(lock) (	{			\
--	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSET);	\
--	__cond_resched_rwlock_write(lock);				\
-+#define cond_resched_rwlock_write(lock) ({					\
-+	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_RESCHED_OFFSETS);	\
-+	__cond_resched_rwlock_write(lock);					\
- })
- 
- static inline void cond_resched_rcu(void)
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index 11177c36f640d..8358352428d4d 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -51,13 +51,22 @@ static inline void mmdrop(struct mm_struct *mm)
- 
- #ifdef CONFIG_PREEMPT_RT
- extern void __mmdrop_delayed(struct rcu_head *rhp);
--static inline void mmdrop_delayed(struct mm_struct *mm)
-+
-+/*
-+ * Invoked from finish_task_switch(). Delegates the heavy lifting on RT
-+ * kernels via RCU.
-+ */
-+static inline void mmdrop_sched(struct mm_struct *mm)
- {
-+	/* Provides a full memory barrier. See mmdrop() */
- 	if (atomic_dec_and_test(&mm->mm_count))
- 		call_rcu(&mm->delayed_drop, __mmdrop_delayed);
- }
- #else
--# define mmdrop_delayed(mm)    mmdrop(mm)
-+static inline void mmdrop_sched(struct mm_struct *mm)
-+{
-+	mmdrop(mm);
-+}
- #endif
- 
- /**
-diff --git a/include/linux/wait.h b/include/linux/wait.h
-index e778131e7c4bd..93dab0e9580f8 100644
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -10,7 +10,6 @@
- 
- #include <asm/current.h>
- #include <uapi/linux/wait.h>
--#include <linux/atomic.h>
- 
- typedef struct wait_queue_entry wait_queue_entry_t;
- 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 91a43e57a32eb..acd7aa9700db3 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -60,6 +60,7 @@
- #include <linux/writeback.h>
- #include <linux/shm.h>
- #include <linux/kcov.h>
-+#include <linux/kprobes.h>
- #include <linux/random.h>
- #include <linux/rcuwait.h>
- #include <linux/compat.h>
-@@ -168,8 +169,14 @@ static void delayed_put_task_struct(struct rcu_head *rhp)
- {
- 	struct task_struct *tsk = container_of(rhp, struct task_struct, rcu);
- 
-+	kprobe_flush_task(tsk);
- 	perf_event_delayed_put(tsk);
- 	trace_sched_process_free(tsk);
-+
-+	/* RT enabled kernels delay freeing the VMAP'ed task stack */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		put_task_stack(tsk);
-+
- 	put_task_struct(tsk);
- }
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index a040f0cfe45d1..1dc9ac795d5eb 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -42,7 +42,6 @@
- #include <linux/mmu_notifier.h>
- #include <linux/fs.h>
- #include <linux/mm.h>
--#include <linux/kprobes.h>
- #include <linux/vmacache.h>
- #include <linux/nsproxy.h>
- #include <linux/capability.h>
-@@ -290,7 +289,10 @@ static inline void free_thread_stack(struct task_struct *tsk)
- 			return;
- 		}
- 
--		vfree(tsk->stack);
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+			vfree_atomic(tsk->stack);
-+		else
-+			vfree(tsk->stack);
- 		return;
- 	}
- #endif
-@@ -708,8 +710,8 @@ EXPORT_SYMBOL_GPL(__mmdrop);
- 
- #ifdef CONFIG_PREEMPT_RT
- /*
-- * RCU callback for delayed mm drop. Not strictly rcu, but we don't
-- * want another facility to make this work.
-+ * RCU callback for delayed mm drop. Not strictly RCU, but call_rcu() is
-+ * by far the least expensive way to do that.
-  */
- void __mmdrop_delayed(struct rcu_head *rhp)
- {
-@@ -760,15 +762,6 @@ void __put_task_struct(struct task_struct *tsk)
- 	WARN_ON(refcount_read(&tsk->usage));
- 	WARN_ON(tsk == current);
- 
--	/*
--	 * Remove function-return probe instances associated with this
--	 * task and put them back on the free list.
--	 */
--	kprobe_flush_task(tsk);
--
--	/* Task is done with its stack. */
--	put_task_stack(tsk);
--
- 	io_uring_free(tsk);
- 	cgroup_free(tsk);
- 	task_numa_free(tsk, true);
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 790a573bbe00c..9a38e7581a5ce 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1250,10 +1250,10 @@ void kprobe_busy_end(void)
- }
- 
- /*
-- * This function is called from finish_task_switch when task tk becomes dead,
-- * so that we can recycle any function-return probe instances associated
-- * with this task. These left over instances represent probed functions
-- * that have been called but will never return.
-+ * This function is called from delayed_put_task_struct() when a task is
-+ * dead and cleaned up to recycle any function-return probe instances
-+ * associated with this task. These left over instances represent probed
-+ * functions that have been called but will never return.
-  */
- void kprobe_flush_task(struct task_struct *tk)
- {
-diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
-index 1d1e85e317385..9e396a09fe0fd 100644
---- a/kernel/locking/spinlock_rt.c
-+++ b/kernel/locking/spinlock_rt.c
-@@ -25,12 +25,15 @@
- #include "rtmutex.c"
- 
- /*
-- * Use ___might_sleep() which skips the state check and take RCU nesting
-- * into account as spin/read/write_lock() can legitimately nest into an RCU
-- * read side critical section:
-+ * __might_resched() skips the state check as rtlocks are state
-+ * preserving. Take RCU nesting into account as spin/read/write_lock() can
-+ * legitimately nest into an RCU read side critical section.
-  */
--#define rtlock_might_sleep()					\
--	___might_sleep(__FILE__, __LINE__, rcu_preempt_depth())
-+#define RTLOCK_RESCHED_OFFSETS						\
-+	(rcu_preempt_depth() << MIGHT_RESCHED_RCU_SHIFT)
-+
-+#define rtlock_might_resched()						\
-+	__might_resched(__FILE__, __LINE__, RTLOCK_RESCHED_OFFSETS)
- 
- static __always_inline void rtlock_lock(struct rt_mutex_base *rtm)
- {
-@@ -40,7 +43,7 @@ static __always_inline void rtlock_lock(struct rt_mutex_base *rtm)
- 
- static __always_inline void __rt_spin_lock(spinlock_t *lock)
- {
--	rtlock_might_sleep();
-+	rtlock_might_resched();
- 	rtlock_lock(&lock->lock);
- 	rcu_read_lock();
- 	migrate_disable();
-@@ -218,7 +221,7 @@ EXPORT_SYMBOL(rt_write_trylock);
- 
- void __sched rt_read_lock(rwlock_t *rwlock)
- {
--	rtlock_might_sleep();
-+	rtlock_might_resched();
- 	rwlock_acquire_read(&rwlock->dep_map, 0, 0, _RET_IP_);
- 	rwbase_read_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
- 	rcu_read_lock();
-@@ -228,7 +231,7 @@ EXPORT_SYMBOL(rt_read_lock);
- 
- void __sched rt_write_lock(rwlock_t *rwlock)
- {
--	rtlock_might_sleep();
-+	rtlock_might_resched();
- 	rwlock_acquire(&rwlock->dep_map, 0, 0, _RET_IP_);
- 	rwbase_write_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
- 	rcu_read_lock();
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 261508bac047d..1ddd50f2a3d7f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4884,18 +4884,22 @@ static struct rq *finish_task_switch(struct task_struct *prev)
- 	 *   provided by mmdrop(),
- 	 * - a sync_core for SYNC_CORE.
- 	 */
--	/*
--	 * We use mmdrop_delayed() here so we don't have to do the
--	 * full __mmdrop() when we are the last user.
--	 */
-+
- 	if (mm) {
- 		membarrier_mm_sync_core_before_usermode(mm);
--		mmdrop_delayed(mm);
-+		mmdrop_sched(mm);
- 	}
- 	if (unlikely(prev_state == TASK_DEAD)) {
- 		if (prev->sched_class->task_dead)
- 			prev->sched_class->task_dead(prev);
- 
-+		/*
-+		 * Release VMAP'ed task stack immediate for reuse. On RT
-+		 * enabled kernels this is delayed for latency reasons.
-+		 */
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+			put_task_stack(prev);
-+
- 		put_task_struct_rcu_user(prev);
- 	}
- 
-@@ -8855,7 +8859,6 @@ void sched_setnuma(struct task_struct *p, int nid)
- #endif /* CONFIG_NUMA_BALANCING */
- 
- #ifdef CONFIG_HOTPLUG_CPU
--
- /*
-  * Ensure that the idle task is using init_mm right before its CPU goes
-  * offline.
-@@ -9545,14 +9548,8 @@ void __init sched_init(void)
- }
- 
- #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
--static inline int preempt_count_equals(int preempt_offset)
--{
--	int nested = preempt_count() + rcu_preempt_depth();
- 
--	return (nested == preempt_offset);
--}
--
--void __might_sleep(const char *file, int line, int preempt_offset)
-+void __might_sleep(const char *file, int line)
- {
- 	unsigned int state = get_current_state();
- 	/*
-@@ -9566,11 +9563,32 @@ void __might_sleep(const char *file, int line, int preempt_offset)
- 			(void *)current->task_state_change,
- 			(void *)current->task_state_change);
- 
--	___might_sleep(file, line, preempt_offset);
-+	__might_resched(file, line, 0);
- }
- EXPORT_SYMBOL(__might_sleep);
- 
--void ___might_sleep(const char *file, int line, int preempt_offset)
-+static void print_preempt_disable_ip(int preempt_offset, unsigned long ip)
-+{
-+	if (!IS_ENABLED(CONFIG_DEBUG_PREEMPT))
-+		return;
-+
-+	if (preempt_count() == preempt_offset)
-+		return;
-+
-+	pr_err("Preemption disabled at:");
-+	print_ip_sym(KERN_ERR, ip);
-+}
-+
-+static inline bool resched_offsets_ok(unsigned int offsets)
-+{
-+	unsigned int nested = preempt_count();
-+
-+	nested += rcu_preempt_depth() << MIGHT_RESCHED_RCU_SHIFT;
-+
-+	return nested == offsets;
-+}
-+
-+void __might_resched(const char *file, int line, unsigned int offsets)
- {
- 	/* Ratelimiting timestamp: */
- 	static unsigned long prev_jiffy;
-@@ -9580,7 +9598,7 @@ void ___might_sleep(const char *file, int line, int preempt_offset)
- 	/* WARN_ON_ONCE() by default, no rate limit required: */
- 	rcu_sleep_check();
- 
--	if ((preempt_count_equals(preempt_offset) && !irqs_disabled() &&
-+	if ((resched_offsets_ok(offsets) && !irqs_disabled() &&
- 	     !is_idle_task(current) && !current->non_block_count) ||
- 	    system_state == SYSTEM_BOOTING || system_state > SYSTEM_RUNNING ||
- 	    oops_in_progress)
-@@ -9593,29 +9611,33 @@ void ___might_sleep(const char *file, int line, int preempt_offset)
- 	/* Save this before calling printk(), since that will clobber it: */
- 	preempt_disable_ip = get_preempt_disable_ip(current);
- 
--	printk(KERN_ERR
--		"BUG: sleeping function called from invalid context at %s:%d\n",
--			file, line);
--	printk(KERN_ERR
--		"in_atomic(): %d, irqs_disabled(): %d, non_block: %d, pid: %d, name: %s\n",
--			in_atomic(), irqs_disabled(), current->non_block_count,
--			current->pid, current->comm);
-+	pr_err("BUG: sleeping function called from invalid context at %s:%d\n",
-+	       file, line);
-+	pr_err("in_atomic(): %d, irqs_disabled(): %d, non_block: %d, pid: %d, name: %s\n",
-+	       in_atomic(), irqs_disabled(), current->non_block_count,
-+	       current->pid, current->comm);
-+	pr_err("preempt_count: %x, expected: %x\n", preempt_count(),
-+	       offsets & MIGHT_RESCHED_PREEMPT_MASK);
-+
-+	if (IS_ENABLED(CONFIG_PREEMPT_RCU)) {
-+		pr_err("RCU nest depth: %d, expected: %u\n",
-+		       rcu_preempt_depth(), offsets >> MIGHT_RESCHED_RCU_SHIFT);
-+	}
- 
- 	if (task_stack_end_corrupted(current))
--		printk(KERN_EMERG "Thread overran stack, or stack corrupted\n");
-+		pr_emerg("Thread overran stack, or stack corrupted\n");
- 
- 	debug_show_held_locks(current);
- 	if (irqs_disabled())
- 		print_irqtrace_events(current);
--	if (IS_ENABLED(CONFIG_DEBUG_PREEMPT)
--	    && !preempt_count_equals(preempt_offset)) {
--		pr_err("Preemption disabled at:");
--		print_ip_sym(KERN_ERR, preempt_disable_ip);
--	}
-+
-+	print_preempt_disable_ip(offsets & MIGHT_RESCHED_PREEMPT_MASK,
-+				 preempt_disable_ip);
-+
- 	dump_stack();
- 	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
- }
--EXPORT_SYMBOL(___might_sleep);
-+EXPORT_SYMBOL(__might_resched);
- 
- void __cant_sleep(const char *file, int line, int preempt_offset)
- {
-diff --git a/kernel/smp.c b/kernel/smp.c
-index c37cc3ab3ceb3..2364fd9acb09b 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -701,7 +701,7 @@ void flush_smp_call_function_from_idle(void)
- 		} else {
- 			struct task_struct *ksoftirqd = this_cpu_ksoftirqd();
- 
--			if (ksoftirqd && task_is_running(ksoftirqd))
-+			if (ksoftirqd && !task_is_running(ksoftirqd))
- 				wake_up_process(ksoftirqd);
- 		}
- 	}
-diff --git a/localversion-rt b/localversion-rt
-index 1445cd65885cd..ad3da1bcab7e8 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt3
-+-rt4
-diff --git a/mm/memory.c b/mm/memory.c
-index 25fc46e872142..1cd1792c00f2d 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5255,7 +5255,7 @@ void __might_fault(const char *file, int line)
- 		return;
- 	if (pagefault_disabled())
- 		return;
--	__might_sleep(file, line, 0);
-+	__might_sleep(file, line);
- #if defined(CONFIG_DEBUG_ATOMIC_SLEEP)
- 	if (current->mm)
- 		might_lock_read(&current->mm->mmap_lock);
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index fd9e6b54907ee..95bd604c38199 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -2855,7 +2855,7 @@ static int smack_socket_connect(struct socket *sock, struct sockaddr *sap,
- 					    SMK_CONNECTING);
- 		}
- #ifdef SMACK_IPV6_PORT_LABELING
--			rc = smk_ipv6_port_check(sock->sk, sip, SMK_CONNECTING);
-+		rc = smk_ipv6_port_check(sock->sk, sip, SMK_CONNECTING);
- #endif
- 
- 		return rc;
+    type=UNKNOWN[1421]
+    msg=audit(1601152467.009:1050):
+    obj_selinux="unconfined_u:object_r:user_home_t:s0"
+
+Patch 27 adds a new interface for getting the compound security
+contexts, /proc/self/attr/context.  An example of the content
+of this file is:
+
+    selinux\0one_u:one_r:one_t:s0-s0:c0.c1023\0apparmor\0unconfined\0
+
+Finally, with all interference on the AppArmor hooks removed,
+Patch 28 removes the exclusive bit from AppArmor. An unnecessary
+stub hook was also removed.
+
+The Ubuntu project is using an earlier version of this patchset in
+their distribution to enable stacking for containers.
+
+Performance measurements to date have the change within the "noise".
+The sockperf and dbench results are on the order of 0.2% to 0.8%
+difference, with better performance being as common as worse. The
+benchmarks were run with AppArmor and Smack on Ubuntu.
+
+https://github.com/cschaufler/lsm-stacking.git#stack-5.15-rc1-v29
+
+
+Casey Schaufler (28):
+  LSM: Infrastructure management of the sock security
+  LSM: Add the lsmblob data structure.
+  LSM: provide lsm name and id slot mappings
+  IMA: avoid label collisions with stacked LSMs
+  LSM: Use lsmblob in security_audit_rule_match
+  LSM: Use lsmblob in security_kernel_act_as
+  LSM: Use lsmblob in security_secctx_to_secid
+  LSM: Use lsmblob in security_secid_to_secctx
+  LSM: Use lsmblob in security_ipc_getsecid
+  LSM: Use lsmblob in security_task_getsecid
+  LSM: Use lsmblob in security_inode_getsecid
+  LSM: Use lsmblob in security_cred_getsecid
+  IMA: Change internal interfaces to use lsmblobs
+  LSM: Specify which LSM to display
+  LSM: Ensure the correct LSM context releaser
+  LSM: Use lsmcontext in security_secid_to_secctx
+  LSM: Use lsmcontext in security_inode_getsecctx
+  LSM: security_secid_to_secctx in netlink netfilter
+  NET: Store LSM netlabel data in a lsmblob
+  LSM: Verify LSM display sanity in binder
+  LSM: Extend security_secid_to_secctx to include module selection
+  Audit: Keep multiple LSM data in audit_names
+  Audit: Create audit_stamp structure
+  Audit: Add framework for auxiliary records
+  Audit: Add record for multiple task security contexts
+  Audit: Add record for multiple object security contexts
+  LSM: Add /proc attr entry for full LSM context
+  AppArmor: Remove the exclusive flag
+
+ Documentation/ABI/testing/ima_policy          |   8 +-
+ Documentation/ABI/testing/procfs-attr-context |  14 +
+ .../ABI/testing/procfs-attr-lsm_display       |  22 +
+ Documentation/security/lsm.rst                |  28 +
+ drivers/android/binder.c                      |  26 +-
+ fs/ceph/xattr.c                               |   6 +-
+ fs/nfs/nfs4proc.c                             |   8 +-
+ fs/nfsd/nfs4xdr.c                             |  20 +-
+ fs/proc/base.c                                |   2 +
+ include/linux/audit.h                         |   9 +-
+ include/linux/cred.h                          |   3 +-
+ include/linux/lsm_hooks.h                     |  36 +-
+ include/linux/security.h                      | 192 +++++-
+ include/net/netlabel.h                        |   8 +-
+ include/net/scm.h                             |  15 +-
+ include/uapi/linux/audit.h                    |   2 +
+ kernel/audit.c                                | 253 ++++++--
+ kernel/audit.h                                |  18 +-
+ kernel/auditfilter.c                          |  30 +-
+ kernel/auditsc.c                              | 121 ++--
+ kernel/cred.c                                 |  12 +-
+ net/ipv4/cipso_ipv4.c                         |  26 +-
+ net/ipv4/ip_sockglue.c                        |  12 +-
+ net/netfilter/nf_conntrack_netlink.c          |  24 +-
+ net/netfilter/nf_conntrack_standalone.c       |  11 +-
+ net/netfilter/nfnetlink_queue.c               |  38 +-
+ net/netfilter/nft_meta.c                      |  10 +-
+ net/netfilter/xt_SECMARK.c                    |   7 +-
+ net/netlabel/netlabel_kapi.c                  |   6 +-
+ net/netlabel/netlabel_unlabeled.c             | 101 ++-
+ net/netlabel/netlabel_unlabeled.h             |   2 +-
+ net/netlabel/netlabel_user.c                  |  13 +-
+ net/netlabel/netlabel_user.h                  |   6 +-
+ security/apparmor/include/apparmor.h          |   3 +-
+ security/apparmor/include/net.h               |   6 +-
+ security/apparmor/include/procattr.h          |   2 +-
+ security/apparmor/lsm.c                       | 105 ++--
+ security/apparmor/procattr.c                  |  22 +-
+ security/bpf/hooks.c                          |  12 +-
+ security/commoncap.c                          |   7 +-
+ security/integrity/ima/ima.h                  |  10 +-
+ security/integrity/ima/ima_api.c              |   6 +-
+ security/integrity/ima/ima_appraise.c         |  11 +-
+ security/integrity/ima/ima_main.c             |  57 +-
+ security/integrity/ima/ima_policy.c           |  89 ++-
+ security/landlock/cred.c                      |   2 +-
+ security/landlock/fs.c                        |   2 +-
+ security/landlock/ptrace.c                    |   2 +-
+ security/landlock/setup.c                     |   5 +
+ security/landlock/setup.h                     |   1 +
+ security/loadpin/loadpin.c                    |   8 +-
+ security/lockdown/lockdown.c                  |   7 +-
+ security/safesetid/lsm.c                      |   8 +-
+ security/security.c                           | 577 ++++++++++++++++--
+ security/selinux/hooks.c                      |  99 +--
+ security/selinux/include/classmap.h           |   2 +-
+ security/selinux/include/objsec.h             |   5 +
+ security/selinux/include/security.h           |   1 +
+ security/selinux/netlabel.c                   |  25 +-
+ security/selinux/ss/services.c                |   4 +-
+ security/smack/smack.h                        |   6 +
+ security/smack/smack_access.c                 |   2 +-
+ security/smack/smack_lsm.c                    |  91 +--
+ security/smack/smack_netfilter.c              |   8 +-
+ security/smack/smackfs.c                      |  10 +-
+ security/tomoyo/tomoyo.c                      |   8 +-
+ security/yama/yama_lsm.c                      |   7 +-
+ 67 files changed, 1692 insertions(+), 607 deletions(-)
+ create mode 100644 Documentation/ABI/testing/procfs-attr-context
+ create mode 100644 Documentation/ABI/testing/procfs-attr-lsm_display
+
+-- 
+2.31.1
+
