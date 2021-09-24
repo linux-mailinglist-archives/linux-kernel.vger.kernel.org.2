@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7489F417066
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B35641706E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245642AbhIXKhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:37:53 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3874 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhIXKhw (ORCPT
+        id S245629AbhIXKq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:46:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41190 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhIXKqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:37:52 -0400
-Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HG7g160XVz67NKf;
-        Fri, 24 Sep 2021 18:33:49 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 24 Sep 2021 12:36:17 +0200
-Received: from [10.47.86.252] (10.47.86.252) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Fri, 24 Sep
- 2021 11:36:16 +0100
-Subject: Re: [PATCH v4 12/13] blk-mq: Use shared tags for shared sbitmap
- support
-To:     Hannes Reinecke <hare@suse.de>, <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <ming.lei@redhat.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>
-References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
- <1632472110-244938-13-git-send-email-john.garry@huawei.com>
- <9dd771bb-9e45-ecd2-d8e4-93c6e9cb9b59@suse.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <49947654-591f-c686-5908-7938ab653e6d@huawei.com>
-Date:   Fri, 24 Sep 2021 11:39:28 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Fri, 24 Sep 2021 06:46:53 -0400
+Date:   Fri, 24 Sep 2021 10:45:18 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632480319;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QC1Zmi/OXCL9LTXdUwZ7DHvcDGZgdrX8haxzTkA8RnM=;
+        b=zRbG4TzktzzZuNLhdEbGasFOXx0MSxfWAnlZ9MivNZqIK27Vv3WPyJi10I8jgWtCEiOF8f
+        A7EMSVTKsEk5p3FQuvJwSmBfqRC1gSZ18obzzWOHeDjTropRP3f69cD7kmD8eFRERrG0pr
+        dj6/vi4eocnplYEvQBSS8ULLAhxv6DpaSw2M5QtWf5O0oKOW16CPs99AQChRTXl4k/E3Tu
+        cBKZK6wqnjeNAI9ph7KqZgYgzXIgmZH7rDFG3UiVHQYUCyDU7HnMkEnxhhb5k2twRU97Sa
+        KS0g8mGaoMXeSpL84H7l2To3Xwo64AfRIV7bwpPdrhH01kElZFGZ2vUSNBhT4A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632480319;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QC1Zmi/OXCL9LTXdUwZ7DHvcDGZgdrX8haxzTkA8RnM=;
+        b=GHloRE7zfaNW3c3G4BO+DaW1aGgh7ylNIyjPMwhBPbaTdvKfXn4SUjFz2n/27RBLAsC/72
+        ngBvHFKXmNAXt6AA==
+From:   "tip-bot2 for Numfor Mbiziwo-Tiapo" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/insn, tools/x86: Fix undefined behavior due to
+ potential unaligned accesses
+Cc:     "Numfor Mbiziwo-Tiapo" <nums@google.com>,
+        Ian Rogers <irogers@google.com>, Borislav Petkov <bp@suse.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210923161843.751834-1-irogers@google.com>
+References: <20210923161843.751834-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <9dd771bb-9e45-ecd2-d8e4-93c6e9cb9b59@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.86.252]
-X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Message-ID: <163248031804.25758.7658032205520387028.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Kashyap
+The following commit has been merged into the x86/urgent branch of tip:
 
-On 24/09/2021 11:23, Hannes Reinecke wrote:
-> On 9/24/21 10:28 AM, John Garry wrote:
->> Currently we use separate sbitmap pairs and active_queues atomic_t for
->> shared sbitmap support.
->>
->> However a full sets of static requests are used per HW queue, which is
->> quite wasteful, considering that the total number of requests usable at
->> any given time across all HW queues is limited by the shared sbitmap 
->> depth.
->>
->> As such, it is considerably more memory efficient in the case of shared
->> sbitmap to allocate a set of static rqs per tag set or request queue, and
->> not per HW queue.
->>
->> So replace the sbitmap pairs and active_queues atomic_t with a shared
->> tags per tagset and request queue, which will hold a set of shared static
->> rqs.
->>
->> Since there is now no valid HW queue index to be passed to the blk_mq_ops
->> .init and .exit_request callbacks, pass an invalid index token. This
->> changes the semantics of the APIs, such that the callback would need to
->> validate the HW queue index before using it. Currently no user of shared
->> sbitmap actually uses the HW queue index (as would be expected).
->>
->> Continue to use term "shared sbitmap" for now, as the meaning is known.
->>
->> Signed-off-by: John Garry <john.garry@huawei.com>
->> ---
->>   block/blk-mq-sched.c   | 82 ++++++++++++++++++-------------------
->>   block/blk-mq-tag.c     | 61 ++++++++++------------------
->>   block/blk-mq-tag.h     |  6 +--
->>   block/blk-mq.c         | 91 +++++++++++++++++++++++-------------------
->>   block/blk-mq.h         |  5 ++-
->>   include/linux/blk-mq.h | 15 ++++---
->>   include/linux/blkdev.h |  3 +-
->>   7 files changed, 125 insertions(+), 138 deletions(-)
->>
-> The overall idea to keep the full request allocation per queue was to 
-> ensure memory locality for the requests themselves.
-> When moving to a shared request structure we obviously loose that feature.
-> 
-> But I'm not sure if that matters here; the performance impact might be 
-> too small to be measurable, seeing that we'll be most likely bound by 
-> hardware latencies anyway.
-> 
-> Nevertheless: have you tested for performance regressions with this 
-> patchset?
+Commit-ID:     5ba1071f7554c4027bdbd712a146111de57918de
+Gitweb:        https://git.kernel.org/tip/5ba1071f7554c4027bdbd712a146111de57918de
+Author:        Numfor Mbiziwo-Tiapo <nums@google.com>
+AuthorDate:    Thu, 23 Sep 2021 09:18:43 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 24 Sep 2021 12:37:38 +02:00
 
-I have tested relatively lower rates, like ~450K IOPS, without any 
-noticeable regression.
+x86/insn, tools/x86: Fix undefined behavior due to potential unaligned accesses
 
-> I'm especially thinking of Kashyaps high-IOPS megaraid setup; if there 
-> is a performance impact that'll be likely scenario where we can measure it.
-> 
+Don't perform unaligned loads in __get_next() and __peek_nbyte_next() as
+these are forms of undefined behavior:
 
-I can test higher rates, like 2M IOPS, when I get access to the HW.
+"A pointer to an object or incomplete type may be converted to a pointer
+to a different object or incomplete type. If the resulting pointer
+is not correctly aligned for the pointed-to type, the behavior is
+undefined."
 
-@Kashyap, Any chance you can help test performance here?
+(from http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf)
 
-> But even if there is a performance impact this patchset might be 
-> worthwhile, seeing that it'll reduce the memory footprint massively.
+These problems were identified using the undefined behavior sanitizer
+(ubsan) with the tools version of the code and perf test.
 
-Sure, I don't think that minor performance improvements can justify the 
-excessive memory.
+ [ bp: Massage commit message. ]
 
-Thanks,
-John
+Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Link: https://lkml.kernel.org/r/20210923161843.751834-1-irogers@google.com
+---
+ arch/x86/lib/insn.c       | 4 ++--
+ tools/arch/x86/lib/insn.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+index 058f19b..c565def 100644
+--- a/arch/x86/lib/insn.c
++++ b/arch/x86/lib/insn.c
+@@ -37,10 +37,10 @@
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
++	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
++	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+index c41f958..7976994 100644
+--- a/tools/arch/x86/lib/insn.c
++++ b/tools/arch/x86/lib/insn.c
+@@ -37,10 +37,10 @@
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
++	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
++	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
