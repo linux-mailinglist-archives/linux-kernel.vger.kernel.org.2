@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39D04172B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4EA417249
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344318AbhIXMu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:50:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42502 "EHLO mail.kernel.org"
+        id S1344048AbhIXMr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:47:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344083AbhIXMtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:49:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 053936126A;
-        Fri, 24 Sep 2021 12:47:33 +0000 (UTC)
+        id S1343913AbhIXMqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:46:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A69A61263;
+        Fri, 24 Sep 2021 12:45:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487654;
-        bh=QscHcNFyegjm4aIZztu9AvAgUWGKXCU51yuh5M/VAmY=;
+        s=korg; t=1632487501;
+        bh=vZWHKSv42FCaUR+GqF5uloDitBwgn08r9izr/hJ+XqY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jG/P/y6T3ndLfkGYfC6oBVahaUtnhdCEBIyLW0BHkhd4y2+Bel1ZYBqlTtaJ8fG9b
-         zQVVV7EQwkDyO+aRPEXqsBdnadKCK0LpTUjl7WRuDGy6qWjrOliHncoBVg4iPBW6Xi
-         pUuqLT+R+fVfjXBJxuqV/fFXm+nvrSlq+1RMWfxU=
+        b=goyfwgfj3NB7Eehau/sW9GXHGPtDQIz077YBbIDWjObB1JivJut83i1j52cMeCwUa
+         lj503uPtC/Q+Zd7p4sZW/D3RQc5ZtEOwJPO/95dUW2R1kXEQfg6YXliRGGTCohYOie
+         26aSk5QxOqtXELPmraKQJacfIraMLyW+cWmMya6g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 06/27] sctp: add param size validation for SCTP_PARAM_SET_PRIMARY
-Date:   Fri, 24 Sep 2021 14:44:00 +0200
-Message-Id: <20210924124329.387539276@linuxfoundation.org>
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 20/23] nilfs2: fix memory leak in nilfs_sysfs_delete_snapshot_group
+Date:   Fri, 24 Sep 2021 14:44:01 +0200
+Message-Id: <20210924124328.478548409@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
-References: <20210924124329.173674820@linuxfoundation.org>
+In-Reply-To: <20210924124327.816210800@linuxfoundation.org>
+References: <20210924124327.816210800@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit ef6c8d6ccf0c1dccdda092ebe8782777cd7803c9 upstream.
+[ Upstream commit 17243e1c3072b8417a5ebfc53065d0a87af7ca77 ]
 
-When SCTP handles an INIT chunk, it calls for example:
-sctp_sf_do_5_1B_init
-  sctp_verify_init
-    sctp_verify_param
-  sctp_process_init
-    sctp_process_param
-      handling of SCTP_PARAM_SET_PRIMARY
+kobject_put() should be used to cleanup the memory associated with the
+kobject instead of kobject_del().  See the section "Kobject removal" of
+"Documentation/core-api/kobject.rst".
 
-sctp_verify_init() wasn't doing proper size validation and neither the
-later handling, allowing it to work over the chunk itself, possibly being
-uninitialized memory.
-
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210629022556.3985106-7-sunnanyong@huawei.com
+Link: https://lkml.kernel.org/r/1625651306-10829-7-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/sm_make_chunk.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ fs/nilfs2/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -2161,9 +2161,16 @@ static enum sctp_ierror sctp_verify_para
- 		break;
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 73d872a24a21..49a148ebbcda 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -224,7 +224,7 @@ int nilfs_sysfs_create_snapshot_group(struct nilfs_root *root)
  
- 	case SCTP_PARAM_SET_PRIMARY:
--		if (net->sctp.addip_enable)
--			break;
--		goto fallthrough;
-+		if (!net->sctp.addip_enable)
-+			goto fallthrough;
-+
-+		if (ntohs(param.p->length) < sizeof(struct sctp_addip_param) +
-+					     sizeof(struct sctp_paramhdr)) {
-+			sctp_process_inv_paramlength(asoc, param.p,
-+						     chunk, err_chunk);
-+			retval = SCTP_IERROR_ABORT;
-+		}
-+		break;
+ void nilfs_sysfs_delete_snapshot_group(struct nilfs_root *root)
+ {
+-	kobject_del(&root->snapshot_kobj);
++	kobject_put(&root->snapshot_kobj);
+ }
  
- 	case SCTP_PARAM_HOST_NAME_ADDRESS:
- 		/* Tell the peer, we won't support this param.  */
+ /************************************************************************
+-- 
+2.33.0
+
 
 
