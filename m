@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2093441767C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB9341767E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 16:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346649AbhIXOD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 10:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbhIXODZ (ORCPT
+        id S1346686AbhIXODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 10:03:34 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44418 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346646AbhIXOD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 10:03:25 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577F9C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:01:52 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id r26so14605274oij.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 07:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E866vCrK/nEkvPI6DhB6g/rM4e6hptH7T7fdbGR7E4I=;
-        b=iNEtB0Z49iCbx99BtFJrHoIoKw15gBFS4wIqh4kd+c5iiF9F4hN98ub1Z+7O0NwxmE
-         xIP00cmXOvY2ZsxjlR2DsGC++f5P0Z/XvgEVgT8WWBo4tUQEnHUQrnSPYmeGeKxROcG+
-         333yCNmxtau0uVddhHNVUeTgXHgAt8gMQWx3QatSQeh8FZxo62hGhNHx+/hoVxNMKcr9
-         WdBAOJQKhEZGmu4SF1RVrBhCvgmrqyjSLSl9+3XL4WFnnKXj06+C3rW4eYd9QPXlUjLq
-         HZKGTGA2Kfqm27jmupM5Ue1Jizc9VYgRlOY7ydO479fnJ4mJR9FyDwYeJCNMXf8s5t33
-         1cqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E866vCrK/nEkvPI6DhB6g/rM4e6hptH7T7fdbGR7E4I=;
-        b=t/UzIXpq7r+SvzlewK1UJ1P9HRNblTfHY/2aRlK57zT7dEOeZJE9zr2Yk+3KiqeikZ
-         vuLn8phOrgAiqPzzfjIljN1EZW8lg95oaexkbm1dMfXideBS31WOqBrgzSuLs0nnIir0
-         gAbcigmbdw780nABVPVYIDGIaCJKyGNDR08zDs+w2bIXyRmz3dRW78JTm4D6yjotUF3E
-         ZLiQDjV3rTJi7Q1dHRdOxKyJrFzZPQv3Huann1O6NKM6R8g1dldfjsUVF4kRJyl9QGza
-         RmEmVUtXSHDk4aP5+8SUHDojrtFvTaQ5RS/DTSVtQ9lkHoDB/b6KhI0lar5KxZNXs2yZ
-         339w==
-X-Gm-Message-State: AOAM531cKvhDRSgf4O2QZ4fmIIf9BQ0TGwjAeyCm2l3fSLfUB+p2MdbS
-        /g2vgf1zQhLLQ65t4UAf+CeZTKQexVe3Zg==
-X-Google-Smtp-Source: ABdhPJz2h7rqbrQMZKRNYQRPVUg4givp/hlgmbqKInkuYhVVFpHX2PSZ6IziVaPJasAjUKssdCmnbQ==
-X-Received: by 2002:aca:5f0a:: with SMTP id t10mr1526693oib.38.1632492111724;
-        Fri, 24 Sep 2021 07:01:51 -0700 (PDT)
-Received: from fedora.. ([196.32.91.248])
-        by smtp.gmail.com with ESMTPSA id h25sm1011600otl.1.2021.09.24.07.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 07:01:50 -0700 (PDT)
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        kernel@collabora.com
-Subject: [PATCH] imx: soc: Select REGMAP_MMIO
-Date:   Fri, 24 Sep 2021 11:01:46 -0300
-Message-Id: <20210924140146.29264-1-ezequiel@vanguardiasur.com.ar>
-X-Mailer: git-send-email 2.31.1
+        Fri, 24 Sep 2021 10:03:29 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A70D922441;
+        Fri, 24 Sep 2021 14:01:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632492114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dmtnQno5WAWYAwYyFrab1anhvWM53F0z0kxqT7Xw1k8=;
+        b=nRbMdbYvkFc6B1k0PP9awPeMPmfeeTv3mNv/96g99J9pGTDnAplSR8wAChc7G9xWP98BoD
+        gCteNo/1Cqk0O16O2ECCm4MqbJoI9lTh3LJINeTuulQtUUK0k+fNPQIAcU5EIOz6TGODVL
+        LwxJX5IWJ/ZTtg+XuAvIrWloxnzE3jg=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay1.suse.de (Postfix) with ESMTPS id 9052025DA7;
+        Fri, 24 Sep 2021 14:01:54 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 16:01:51 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/2] mem_cgroup: optimize the atomic count of
+ wb_completion
+Message-ID: <YU3aT7i2vBNxewam@dhcp22.suse.cz>
+References: <1632465983-30525-1-git-send-email-brookxu.cn@gmail.com>
+ <YU2boTZhfbo0h/Xi@dhcp22.suse.cz>
+ <03145735-7764-4cd4-e15b-60402f4b447e@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <03145735-7764-4cd4-e15b-60402f4b447e@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The imx-gpcv2 driver needs Regmap MMIO. Select it, and fix:
+On Fri 24-09-21 21:02:52, brookxu wrote:
+> Thanks for your time.
+> 
+> Michal Hocko wrote on 2021/9/24 17:34:
+> > On Fri 24-09-21 14:46:22, brookxu wrote:
+> >> From: Chunguang Xu <brookxu@tencent.com>
+> >>
+> >> In order to track inflight foreign writeback, we init
+> >> wb_completion.cnt to 1. For normal writeback, this cause
+> >> wb_wait_for_completion() to perform meaningless atomic
+> >> operations. Since foreign writebacks rarely occur in most
+> >> scenarios, we can init wb_completion.cnt to 0 and set
+> >> frn.done.cnt to 1. In this way we can avoid unnecessary
+> >> atomic operations.
+> > 
+> > Does this lead to any measurable differences?
+> 
+> I created multiple cgroups that performed IO on multiple disks, 
+> then flushed the cache with sync command, and no measurable
+> differences have been observed so far.
 
-drivers/soc/imx/gpcv2.c:420:34: error: array type has incomplete element type ‘struct regmap_range’
-  420 | static const struct regmap_range imx7_yes_ranges[] = {
-      |                                  ^~~~~~~~~~~~~~~
-drivers/soc/imx/gpcv2.c:421:17: error: implicit declaration of function ‘regmap_reg_range’; did you mean ‘remap_pfn_range’? [-Werror=implicit-function-declaration]
-  421 |                 regmap_reg_range(GPC_LPCR_A_CORE_BSC,
-      |                 ^~~~~~~~~~~~~~~~
-      |                 remap_pfn_range
-
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
- drivers/soc/imx/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/soc/imx/Kconfig b/drivers/soc/imx/Kconfig
-index 05812f8ae734..a840494e849a 100644
---- a/drivers/soc/imx/Kconfig
-+++ b/drivers/soc/imx/Kconfig
-@@ -6,6 +6,7 @@ config IMX_GPCV2_PM_DOMAINS
- 	depends on ARCH_MXC || (COMPILE_TEST && OF)
- 	depends on PM
- 	select PM_GENERIC_DOMAINS
-+	select REGMAP_MMIO
- 	default y if SOC_IMX7D
- 
- config SOC_IMX8M
+OK, so why do we want to optimize this code?
 -- 
-2.31.1
-
+Michal Hocko
+SUSE Labs
