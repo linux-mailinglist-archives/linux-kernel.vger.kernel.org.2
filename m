@@ -2,118 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702664171A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C68B4171B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245705AbhIXMVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:21:07 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:15766 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245499AbhIXMVD (ORCPT
+        id S244768AbhIXMXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244404AbhIXMXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:21:03 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 24 Sep 2021 05:19:30 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Sep 2021 05:19:29 -0700
-X-QCInternal: smtphost
-Received: from ekangupt-linux.qualcomm.com ([10.204.67.11])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 24 Sep 2021 17:49:15 +0530
-Received: by ekangupt-linux.qualcomm.com (Postfix, from userid 2319895)
-        id 6F3534318; Fri, 24 Sep 2021 17:49:14 +0530 (IST)
-From:   Jeya R <jeyr@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
-Cc:     Jeya R <jeyr@codeaurora.org>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: [PATCH 4/4] misc: fastrpc: reject non-secure node for secure domain
-Date:   Fri, 24 Sep 2021 17:49:11 +0530
-Message-Id: <1632485951-13473-5-git-send-email-jeyr@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1632485951-13473-1-git-send-email-jeyr@codeaurora.org>
-References: <1632485951-13473-1-git-send-email-jeyr@codeaurora.org>
+        Fri, 24 Sep 2021 08:23:17 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172DCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:21:44 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id w17so26838837wrv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 05:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=6katzmw4TujhDC3hIZKt/O7+4p5hxMTeoFZg37I1Vn8=;
+        b=jwEdC495HXwboeXR2FtEtozE6RIq9CnchHonQ07MS9kv2CaUd+RQJPIDv4gz79TChW
+         gir+TCDJysGHos+h/lH4VJLYBFLWxExqXJYku4cCcrjlW2AYzzWWtZdkUwT+s56kmnPz
+         KYnKVVSXZeX39IP0CjWqYI70+dHMm8ijApbyn/+u4lFzrqk7GOvfbzPP3yMoqQbIv1uz
+         xiciAFiGAgjlxSX1HuVXTZcmbdip+dYJ+IOFXtGASkN/g5jWrUrZ/o+aveoSVAGxawzA
+         P2vLBcvfjp4JcjhQsDl3rUvGNEcuMF6yHc7axhmbd1ScTMX/I231pOfQwuUaC92Qy9/I
+         zmkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=6katzmw4TujhDC3hIZKt/O7+4p5hxMTeoFZg37I1Vn8=;
+        b=eNcJ+hg/nFiY89nMub9cHQO63ZM9+0YlfkdoZH80i3ex0XyMG5rkp8eAmB7MM+ol8d
+         1SlqKCPQzvhr0airgBvm4+TpE6UjopsD5T8j3n+kq6uqvTsXv/kAtSpZ8WUAWtWJfd2W
+         cRJxDc7PV8HPRwL9/6atxM0atHUIOF3BQC8GnuQyQcYCDinnspFM3EL7FG/Db9QtGwIV
+         fJp1cPuAvowYjfGppqW9QX1tEDFEws3YSCD9nHA9aL+Ckl2ohBpYBM2h2uGOMCJ/AIkL
+         BdvvQl6o/uWVzx1h+KSLyMApGw86I+h89C+TvPDA5n3z25BlY1bJoudtsLDZJY25T9ga
+         p/QA==
+X-Gm-Message-State: AOAM5331Cy2Faaeo35Lg5/UwHGCkJqE3R+OhkoGvu/ODvPMQrGikCVuG
+        7Um1Q71sBXRFe0NvN4bJSKSCtOE92CrlXJilHYY=
+X-Google-Smtp-Source: ABdhPJx0x9gaDXXHb5jkov1BIh7mQh0LfcmQiQwyum8N80fuI/ro4tdNcvqE5Zm3FPxb01SjrKoidgJ7dQK4MS9cgAY=
+X-Received: by 2002:a5d:58ec:: with SMTP id f12mr10989012wrd.24.1632486102524;
+ Fri, 24 Sep 2021 05:21:42 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6000:2a3:0:0:0:0 with HTTP; Fri, 24 Sep 2021 05:21:41
+ -0700 (PDT)
+Reply-To: sroomf70@gmail.com
+From:   "Prof. Dr Diane" <confianzayrentabilidad@gmail.com>
+Date:   Fri, 24 Sep 2021 05:21:41 -0700
+Message-ID: <CANrrfX5hcrYoxJaBkWbOsOtsp-2=czvBTtBhb4BAs2t7i3JGVQ@mail.gmail.com>
+Subject: Greetings,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reject session if domain is secure and device non-secure. Also check if
-opened device node is proper.
-
-Signed-off-by: Jeya R <jeyr@codeaurora.org>
----
- drivers/misc/fastrpc.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 631713d..adf2700 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -235,6 +235,7 @@ struct fastrpc_user {
- 	spinlock_t lock;
- 	/* lock for allocations */
- 	struct mutex mutex;
-+	int dev_minor;
- };
- 
- static void fastrpc_free_map(struct kref *ref)
-@@ -1013,6 +1014,17 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 	return err;
- }
- 
-+static int is_session_rejected(struct fastrpc_user *fl)
-+{
-+	/* Check if the device node is non-secure and channel is secure*/
-+	if ((fl->dev_minor == fl->cctx->miscdev.minor) && fl->cctx->secure) {
-+		dev_err(&fl->cctx->rpdev->dev, "Cannot use non-secure device"
-+				"node on secure channel\n");
-+		return -EACCES;
-+	}
-+	return 0;
-+}
-+
- static int fastrpc_init_create_process(struct fastrpc_user *fl,
- 					char __user *argp)
- {
-@@ -1033,6 +1045,10 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
- 	} inbuf;
- 	u32 sc;
- 
-+	err = is_session_rejected(fl);
-+	if (err)
-+		return err;
-+
- 	args = kcalloc(FASTRPC_CREATE_PROCESS_NARGS, sizeof(*args), GFP_KERNEL);
- 	if (!args)
- 		return -ENOMEM;
-@@ -1221,6 +1237,7 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
- 	struct fastrpc_user *fl = NULL;
- 	struct miscdevice *currdev = NULL;
- 	unsigned long flags;
-+	int dev_minor = MINOR(inode->i_rdev);
- 
- 	if (!filp)
- 		return -EFAULT;
-@@ -1234,6 +1251,12 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
- 	else
- 		cctx = miscdev_to_cctx(filp->private_data);
- 
-+	if (!((dev_minor == cctx->miscdev.minor) ||
-+	     (dev_minor == cctx->securedev.minor))) {
-+		dev_err(&cctx->rpdev->dev, "Device node is not proper\n");
-+		return -EFAULT;
-+	}
-+
- 	fl = kzalloc(sizeof(*fl), GFP_KERNEL);
- 	if (!fl)
- 		return -ENOMEM;
-@@ -1250,6 +1273,7 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
- 	INIT_LIST_HEAD(&fl->user);
- 	fl->tgid = current->tgid;
- 	fl->cctx = cctx;
-+	fl->dev_minor = dev_minor;
- 
- 	fl->sctx = fastrpc_session_alloc(cctx);
- 	if (!fl->sctx) {
 -- 
-2.7.4
+Good Day,
+I'm Prof. Dr Diane, please a huge amount of payment was made into your
+account. as soon as your respond is noted the payment confirmation
+slip will immediately send to you.  please do not hesitate to reply as
+soon as you receive this message. awaiting your urgent reply please.
 
+Best regards
+Prof. Dr Diane
