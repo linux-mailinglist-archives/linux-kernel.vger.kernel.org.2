@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DA4417270
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87524174E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343898AbhIXMsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
+        id S1345708AbhIXNLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 09:11:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343887AbhIXMrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:47:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3E86124C;
-        Fri, 24 Sep 2021 12:46:11 +0000 (UTC)
+        id S1346850AbhIXNIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 09:08:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB8A561501;
+        Fri, 24 Sep 2021 12:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487572;
-        bh=YT5UNhE0ZTa2wh2kk99kXuUGRghbCAfpUtgUcNBigpo=;
+        s=korg; t=1632488232;
+        bh=sCfloG5AdQTwhFh5cexuHdptoHrPbnwu1TRvesdMNlw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nMsId4a0RK97dfMvyFao2z/eoS/i+Ct+KMwHghbgXjafn3arZBdRRP42BLw3uEp8c
-         250lXJq1lxN8IccEJ/2Rb3mYjblB+JnkDnfIa+FZox7XPgBwvHRi9vmktH/1/sbqXz
-         qew21vfQMElXg5rit2EZdV3gwCz+2k6akggxzZFc=
+        b=mvmgdwkg0LZTyGV5TVk8rybMp6eG4UGcYrUaFkUiVCIfOn2sxgXxoZxxq7Y7Dj/by
+         lYExZ3AiRETYaPdgH45qvnj8+qCJNZhr+UXeDYLFwJFqeFnEbNA176A5uCcVfbmKA1
+         Es0vKKsHTCOeQpIgBhN5eGD6jWfgn7s5Tkv19a/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Harini Katakam <harini.katakam@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 16/26] dmaengine: xilinx_dma: Set DMA mask for coherent APIs
+        stable@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.10 04/63] s390/pci_mmio: fully validate the VMA before calling follow_pte()
 Date:   Fri, 24 Sep 2021 14:44:04 +0200
-Message-Id: <20210924124328.885748749@linuxfoundation.org>
+Message-Id: <20210924124334.381661941@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124328.336953942@linuxfoundation.org>
-References: <20210924124328.336953942@linuxfoundation.org>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+References: <20210924124334.228235870@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+From: David Hildenbrand <david@redhat.com>
 
-[ Upstream commit aac6c0f90799d66b8989be1e056408f33fd99fe6 ]
+commit a8b92b8c1eac8d655a97b1e90f4d83c25d9b9a18 upstream.
 
-The xilinx dma driver uses the consistent allocations, so for correct
-operation also set the DMA mask for coherent APIs. It fixes the below
-kernel crash with dmatest client when DMA IP is configured with 64-bit
-address width and linux is booted from high (>4GB) memory.
+We should not walk/touch page tables outside of VMA boundaries when
+holding only the mmap sem in read mode. Evil user space can modify the
+VMA layout just before this function runs and e.g., trigger races with
+page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
+with read mmap_sem in munmap").
 
-Call trace:
-[  489.531257]  dma_alloc_from_pool+0x8c/0x1c0
-[  489.535431]  dma_direct_alloc+0x284/0x330
-[  489.539432]  dma_alloc_attrs+0x80/0xf0
-[  489.543174]  dma_pool_alloc+0x160/0x2c0
-[  489.547003]  xilinx_cdma_prep_memcpy+0xa4/0x180
-[  489.551524]  dmatest_func+0x3cc/0x114c
-[  489.555266]  kthread+0x124/0x130
-[  489.558486]  ret_from_fork+0x10/0x3c
-[  489.562051] ---[ end trace 248625b2d596a90a ]---
+find_vma() does not check if the address is >= the VMA start address;
+use vma_lookup() instead.
 
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Reviewed-by: Harini Katakam <harini.katakam@xilinx.com>
-Link: https://lore.kernel.org/r/1629363528-30347-1-git-send-email-radhey.shyam.pandey@xilinx.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/xilinx/xilinx_dma.c | 2 +-
+ arch/s390/pci/pci_mmio.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
-index f00652585ee3..d88c53ff7bb6 100644
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -2578,7 +2578,7 @@ static int xilinx_dma_probe(struct platform_device *pdev)
- 		xdev->ext_addr = false;
- 
- 	/* Set the dma mask bits */
--	dma_set_mask(xdev->dev, DMA_BIT_MASK(addr_width));
-+	dma_set_mask_and_coherent(xdev->dev, DMA_BIT_MASK(addr_width));
- 
- 	/* Initialize the DMA engine */
- 	xdev->common.dev = &pdev->dev;
--- 
-2.33.0
-
+--- a/arch/s390/pci/pci_mmio.c
++++ b/arch/s390/pci/pci_mmio.c
+@@ -128,7 +128,7 @@ static long get_pfn(unsigned long user_a
+ 	mmap_read_lock(current->mm);
+ 	ret = -EINVAL;
+ 	vma = find_vma(current->mm, user_addr);
+-	if (!vma)
++	if (!vma || user_addr < vma->vm_start)
+ 		goto out;
+ 	ret = -EACCES;
+ 	if (!(vma->vm_flags & access))
 
 
