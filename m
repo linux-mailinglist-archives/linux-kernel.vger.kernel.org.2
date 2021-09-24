@@ -2,166 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1069416A95
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB44416A9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 05:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244036AbhIXDoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 23:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        id S244035AbhIXDtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 23:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244018AbhIXDoB (ORCPT
+        with ESMTP id S243998AbhIXDtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 23:44:01 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3545DC061574;
-        Thu, 23 Sep 2021 20:42:29 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id h129so10954697iof.1;
-        Thu, 23 Sep 2021 20:42:29 -0700 (PDT)
+        Thu, 23 Sep 2021 23:49:51 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1B2C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 20:48:19 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id g184so8639805pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 20:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3UUDv1+b3n48/wDBnvG4Aoih4TKW41g6MDyvFhmeoig=;
-        b=McLlDxNTsJZ816KR3tXiM5NAeQuVnQDeYJ7t8AMc6luKvjAHdzChdy65DfuGTqV0YR
-         GnI3MUTGESWLbTVk2dh/+6v604Dy0wcqO7eKg5FF1hCAG3RHjvFNbSdDq07+QaL/qBsT
-         94U4YecrMlrKS9cSEt1oYzumzRfZRo8LqztKd6177M+H/6wLPfqP4SAXBesJFKc2oN+B
-         +alT86QA5QNKFLz4D8mkMb7pXdcTemPZm40DDn+MJfM1Q9crSw/lpzO3i6Q25JrJOKlP
-         72vPkHiSw0cEK797IUT7ItzMelDEdTo2a9S761HA7OPgLHy4BF8w7/NWwcv4e09ecIyh
-         7R/w==
+         :cc;
+        bh=55VtlyNz396+JpxRe5XzK9GihMZwj0h8DOxcyBHo9jA=;
+        b=A+HZL0TQw0/JIx2YTueXk53aoSLBZqw7hN/Kr1yTj29DNo8lPj73nMSzTIXAQ3a4pu
+         ZO7v3oRMIOvflYRwLoQPSLBvcz1Bo7qMIjaF3j9Y2mBrb738r97kk3PKLRDx8UEO8oVq
+         dil5WmIKeQgytTnZDwEjuC2Hqn+53NYASfChz3pXZZ7/rVQcvcNfvuAAdpsfqTxj9Hj5
+         1BFd5jlRfoNdFT4yVd2GJpSmMMOyMvwAGltfQXJeJrfEOSAuAuEG9OwNIJDBJpLVEc/G
+         ubIUYIkLBYXAnf9RF+PKqFVGuqcXrBuXKOqYc/kG5zQN/gD9ve/aMREw2VQW10F6gCXR
+         //mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3UUDv1+b3n48/wDBnvG4Aoih4TKW41g6MDyvFhmeoig=;
-        b=X7vYktbvrnMOQ3VoW2VfKzV7rqX5UciLsoKZDoRVnrmULft0yRwUb6gR2+403i5D21
-         xDf0ZQGIdamdnkqpxOi3LKrgPekjqPjFqG0SIkHQJakYtq3GUyj2NJWDIRHZATLhPGiv
-         +y5w4WlgikRoPmLsReLEzFTa1gqoVZCUISHO39+yL8eBihXFxlTnqiSKma+Lm5XFHKhR
-         LQkGO4wrGcqUy6Er3dtXdQ4E0sUZUHBrqWBA6cWFLHLfakjrt9/k7G51Y+AC1I/YdQp5
-         AybOhfRpS70ja8gQ4P9C7x+U0fpXpFWUdHDz39yX9p+CtdAkpID4uP2/IlAVWYUuNHiX
-         ay0Q==
-X-Gm-Message-State: AOAM530SwXgv4sps82DVG3ipEZnpfTeDnjwNChoqs3g+JJX2bMcsZyA7
-        k6onvsD33E72Vt5DKbeFTElYwizbut6hrynLdcs=
-X-Google-Smtp-Source: ABdhPJz3EMRFfj80QcMPD35uzUYzouY3diu0pGNfspwM8KJWJoPVd8GpQnPRtlACy7QhPf5qTOYb2oWNGAH6XgV5QLU=
-X-Received: by 2002:a5e:d80a:: with SMTP id l10mr6834336iok.36.1632454948282;
- Thu, 23 Sep 2021 20:42:28 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=55VtlyNz396+JpxRe5XzK9GihMZwj0h8DOxcyBHo9jA=;
+        b=yqMS2q+2h05+UrV7qMsTwdgHBIekKe4XMSob/ZesgWla0DFaUWg1MB7KECW5BcP1Iz
+         bTB/UW+ACh/tQtYIDRpc6/6qxERxQMWojpl34lBUUVzbtBjml2FCi/O3H8bB0eoqxNIh
+         qNESieMpsAoEBwwuy1119Q5/VKAFy6kftnywSpW54tNCreW6B+t1oEsbl2o9kcKUX+TG
+         a9QkLN/MyvFaS5E05zLT8xxfIGFOBzxiYUCbriQogT/mwjITXJLq+oFhCE64/SnZtf2V
+         dlXGIVV0JcE0IWeh4y6vFqQwieIjveSgNgSM0jbVTjhz6lKnAiIFjFC6HFbhFxP2qaLk
+         LjLg==
+X-Gm-Message-State: AOAM5335ctEUxnh7sxrRyQhA6KUv9h/8PzDgmRVEn5oGvBjoqJsgfIqt
+        vOQJtRY/CJDboHCMN+Bs52j52kpBgGkTBle7Ntz9Jw==
+X-Google-Smtp-Source: ABdhPJzsuvPN4esPZ5R7sb4qNFl6IeD82m5Yb/d/AMvrv/fx9r5w4olVNshH5RQ/pueHQP3Gk1bT5nko+hpNZRRqmjQ=
+X-Received: by 2002:a63:1a64:: with SMTP id a36mr1923133pgm.225.1632455299009;
+ Thu, 23 Sep 2021 20:48:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210923081951.261281-1-yang.yang29@zte.com.cn>
-In-Reply-To: <20210923081951.261281-1-yang.yang29@zte.com.cn>
-From:   Alex Shi <seakeel@gmail.com>
-Date:   Fri, 24 Sep 2021 11:41:52 +0800
-Message-ID: <CAJy-AmnDr-i6E7JPAGpt6EgVDTSxgFtygzriKJeOmuLd061P+Q@mail.gmail.com>
-Subject: Re: [PATCH v3] docs/zh_CN: Add zh_CN/accounting/delay-accounting.rst
-To:     cgel.zte@gmail.com
-Cc:     Alex Shi <alexs@kernel.org>, Yanteng Si <siyanteng@loongson.cn>,
-        Jonathan Corbet <corbet@lwn.net>, yang.yang29@zte.com.cn,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210922102411.34494-1-songmuchun@bytedance.com>
+ <20210922102411.34494-3-songmuchun@bytedance.com> <CAGsJ_4zk8KfsByum89PqwNEkez=QUW9YH0tVy5nce2E0RhQ8dw@mail.gmail.com>
+In-Reply-To: <CAGsJ_4zk8KfsByum89PqwNEkez=QUW9YH0tVy5nce2E0RhQ8dw@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 24 Sep 2021 11:47:39 +0800
+Message-ID: <CAMZfGtXd2-CbbQeHp7qsaL0z-CviLfacoQf5ToQJQ230Lrw58w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] mm: hugetlb: replace hugetlb_free_vmemmap_enabled
+ with a static_key
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCBTZXAgMjMsIDIwMjEgYXQgNDoyMyBQTSA8Y2dlbC56dGVAZ21haWwuY29tPiB3cm90
-ZToNCj4NCj4gRnJvbTogWWFuZyBZYW5nIDx5YW5nLnlhbmcyOUB6dGUuY29tLmNuPg0KPg0KPiBB
-ZGQgdHJhbnNsYXRpb24gemhfQ04vYWNjb3VudGluZy9kZWxheS1hY2NvdW50aW5nLnJzdCBhbmQg
-bGlua3MgaXQNCj4gdG8gemhfQ04vYWNjb3VudGluZy9pbmRleC5yc3Qgd2hpbGUgY2xlYW4gaXRz
-IHRvZG8gZW50cnkuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IFlhbmcgWWFuZyA8eWFuZy55YW5nMjlA
-enRlLmNvbS5jbj4NCg0KSGkgWWFuZ3lhbmcsDQpZb3UgIGNvdWxkIHBpY2sgdXAgdGhlICdyZXZp
-ZXdlZC1ieScgY29udmVuaWVudGx5IHdoZW4geW91IHVwZGF0ZSB0bw0KbmV3IHZlcnNpb24uDQoN
-ClRoYW5rcw0KDQo+IC0tLQ0KPiB2MzoNCj4gLSBhZGQgbWlzc2luZyBwZXJpb2QuDQo+IHYyOg0K
-PiAtIGRlbGV0ZSB1c2VsZXNzIGJsYWNrbGluZS4NCj4gLS0tDQo+ICAuLi4vemhfQ04vYWNjb3Vu
-dGluZy9kZWxheS1hY2NvdW50aW5nLnJzdCAgICAgfCAxMTIgKysrKysrKysrKysrKysrKysrDQo+
-ICAuLi4vdHJhbnNsYXRpb25zL3poX0NOL2FjY291bnRpbmcvaW5kZXgucnN0ICAgfCAgIDIgKy0N
-Cj4gIDIgZmlsZXMgY2hhbmdlZCwgMTEzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4g
-IGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9hY2Nv
-dW50aW5nL2RlbGF5LWFjY291bnRpbmcucnN0DQo+DQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0
-aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9hY2NvdW50aW5nL2RlbGF5LWFjY291bnRpbmcucnN0IGIv
-RG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vYWNjb3VudGluZy9kZWxheS1hY2NvdW50
-aW5nLnJzdA0KPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAwMDAwMDAwMDAwMDAuLjA2
-NWE0MjRkOWIyYQ0KPiAtLS0gL2Rldi9udWxsDQo+ICsrKyBiL0RvY3VtZW50YXRpb24vdHJhbnNs
-YXRpb25zL3poX0NOL2FjY291bnRpbmcvZGVsYXktYWNjb3VudGluZy5yc3QNCj4gQEAgLTAsMCAr
-MSwxMTIgQEANCj4gKy4uIGluY2x1ZGU6OiAuLi9kaXNjbGFpbWVyLXpoX0NOLnJzdA0KPiArDQo+
-ICs6T3JpZ2luYWw6IERvY3VtZW50YXRpb24vYWNjb3VudGluZy9kZWxheS1hY2NvdW50aW5nLnJz
-dA0KPiArOlRyYW5zbGF0b3I6IFlhbmcgWWFuZyA8eWFuZy55YW5nMjlAenRlLmNvbS5jbj4NCj4g
-Kw0KPiArLi4gX2NuX2RlbGF5LWFjY291bnRpbmcucnN0Og0KPiArDQo+ICs9PT09PT09PQ0KPiAr
-5bu26L+f6K6h5pWwDQo+ICs9PT09PT09PQ0KPiArDQo+ICvku7vliqHlnKjnrYnlvoXmn5Dkupvl
-hoXmoLjotYTmupDlj6/nlKjml7bvvIzkvJrpgKDmiJDlu7bov5/jgILkvovlpoLkuIDkuKrlj6/o
-v5DooYznmoTku7vliqHlj6/og73kvJrnrYnlvoUNCj4gK+S4gOS4quepuumXskNQVeadpei/kOih
-jOOAgg0KPiArDQo+ICvln7rkuo7mr4/ku7vliqHnmoTlu7bov5/orqHmlbDlip/og73luqbph4/n
-lLHku6XkuIvmg4XlhrXpgKDmiJDnmoTku7vliqHlu7bov5/vvJoNCj4gKw0KPiArYSkg562J5b6F
-5LiA5LiqQ1BV77yI5Lu75Yqh5Li65Y+v6L+Q6KGM77yJDQo+ICtiKSDlrozmiJDnlLHor6Xku7vl
-iqHlj5HotbfnmoTlnZdJL0/lkIzmraXor7fmsYINCj4gK2MpIOmhtemdouS6pOaNog0KPiArZCkg
-5YaF5a2Y5Zue5pS2DQo+ICsNCj4gK+W5tuWwhui/meS6m+e7n+iuoeS/oeaBr+mAmui/h3Rhc2tz
-dGF0c+aOpeWPo+aPkOS+m+e7meeUqOaIt+epuumXtOOAgg0KPiArDQo+ICvov5nkupvlu7bov5/k
-v6Hmga/kuLrpgILlvZPnmoTosIPmlbTku7vliqFDUFXkvJjlhYjnuqfjgIFpb+S8mOWFiOe6p+OA
-gXJzc+mZkOWItuaPkOS+m+WPjemmiOOAgumHjeimgeS7u+WKoQ0KPiAr6ZW/5pyf5bu26L+f77yM
-6KGo56S65Y+v6IO96ZyA6KaB5o+Q6auY5YW255u45YWz5LyY5YWI57qn44CCDQo+ICsNCj4gK+mA
-mui/h+S9v+eUqHRhc2tzdGF0c+aOpeWPo++8jOacrOWKn+iDvei/mOWPr+aPkOS+m+S4gOS4que6
-v+eoi+e7hO+8iOWvueW6lOS8oOe7n1VuaXjov5vnqIvvvInmiYDmnInku7vliqENCj4gK++8iOaI
-lue6v+eoi++8ieeahOaAu+W7tui/n+e7n+iuoeS/oeaBr+OAguatpOexu+axh+aAu+W+gOW+gOaY
-r+mcgOimgeeahO+8jOeUseWGheaguOadpeWujOaIkOabtOWKoOmrmOaViOOAgg0KPiArDQo+ICvn
-lKjmiLfnqbrpl7TnmoTlrp7kvZPvvIznibnliKvmmK/otYTmupDnrqHnkIbnqIvluo/vvIzlj6/l
-sIblu7bov5/nu5/orqHkv6Hmga/msYfmgLvliLDku7vmhI/nu4TkuK3jgILkuLrlrp7njrANCj4g
-K+i/meS4gOeCue+8jOS7u+WKoeeahOW7tui/n+e7n+iuoeS/oeaBr+WcqOWFtueUn+WRveWRqOac
-n+WGheWSjOmAgOWHuuaXtueahuWPr+iOt+WPlu+8jOS7juiAjOehruS/neWPr+i/m+ihjA0KPiAr
-6L+e57ut44CB5a6M5pW055qE55uR5o6n44CCDQo+ICsNCj4gK+aOpeWPow0KPiArLS0tLQ0KPiAr
-DQo+ICvlu7bov5/orqHmlbDkvb/nlKh0YXNrc3RhdHPmjqXlj6PvvIzor6XmjqXlj6PnlLHmnKzn
-m67lvZXlj6bkuIDkuKrljZXni6znmoTmlofmoaPor6bnu4bmj4/ov7DjgIJUYXNrc3RhdHMNCj4g
-K+WQkeeUqOaIt+aAgei/lOWbnuS4gOS4qumAmueUqOaVsOaNrue7k+aehO+8jOWvueW6lOavj3Bp
-ZOaIluavj3RnaWTnmoTnu5/orqHkv6Hmga/jgILlu7bov5/orqHmlbDlip/og73loavlhpkNCj4g
-K+ivpeaVsOaNrue7k+aehOeahOeJueWumuWtl+auteOAguingQ0KPiArDQo+ICsgICAgIGluY2x1
-ZGUvbGludXgvdGFza3N0YXRzLmgNCj4gKw0KPiAr5YW25o+P6L+w5LqG5bu26L+f6K6h5pWw55u4
-5YWz5a2X5q6144CC57O757uf6YCa5bi45Lul6K6h5pWw5Zmo5b2i5byP6L+U5ZueIENQVeOAgeWQ
-jOatpeWdlyBJL0/jgIHkuqTmjaLjgIHlhoXlrZgNCj4gK+WbnuaUtuetieeahOe0r+enr+W7tui/
-n+OAgg0KPiArDQo+ICvlj5bku7vliqHmn5DorqHmlbDlmajkuKTkuKrov57nu63or7vmlbDnmoTl
-t67lgLzvvIzlsIblvpfliLDku7vliqHlnKjor6Xml7bpl7Tpl7TpmpTlhoXnrYnlvoXlr7nlupTo
-tYTmupDnmoTmgLvlu7bov5/jgIINCj4gKw0KPiAr5b2T5Lu75Yqh6YCA5Ye65pe277yM5YaF5qC4
-5Lya5bCG5YyF5ZCr5q+P5Lu75Yqh55qE57uf6K6h5L+h5oGv5Y+R6YCB57uZ55So5oi356m66Ze0
-77yM6ICM5peg6ZyA6aKd5aSW55qE5ZG95Luk44CCDQo+ICvoi6XlhbbkuLrnur/nqIvnu4TmnIDl
-kI7kuIDkuKrpgIDlh7rnmoTku7vliqHvvIzlhoXmoLjov5jkvJrlj5HpgIHmr490Z2lk55qE57uf
-6K6h5L+h5oGv44CC5pu05aSa6K+m57uG5L+h5oGv6KeBDQo+ICt0YXNrc3RhdHPmjqXlj6PnmoTm
-j4/ov7DjgIINCj4gKw0KPiArdG9vbHMvYWNjb3VudGluZ+ebruW9leS4reeahOeUqOaIt+epuumX
-tOeoi+W6j2dldGRlbGF5cy5j5o+Q5L6b5LqG5LiA5Lqb566A5Y2V55qE5ZG95Luk77yM55So5Lul
-5pi+56S6DQo+ICvlu7bov5/nu5/orqHkv6Hmga/jgILlhbbkuZ/mmK/kvb/nlKh0YXNrc3RhdHPm
-jqXlj6PnmoTnpLrkvovjgIINCj4gKw0KPiAr55So5rOVDQo+ICstLS0tDQo+ICsNCj4gK+S9v+eU
-qOS7peS4i+mFjee9rue8luivkeWGheaguDo6DQo+ICsNCj4gKyAgICAgICBDT05GSUdfVEFTS19E
-RUxBWV9BQ0NUPXkNCj4gKyAgICAgICBDT05GSUdfVEFTS1NUQVRTPXkNCj4gKw0KPiAr5bu26L+f
-6K6h5pWw5Zyo5ZCv5Yqo5pe26buY6K6k5YWz6Zet44CCDQo+ICvoi6XpnIDlvIDlkK/vvIzlnKjl
-kK/liqjlj4LmlbDkuK3lop7liqA6Og0KPiArDQo+ICsgICBkZWxheWFjY3QNCj4gKw0KPiAr5pys
-5paH5ZCO57ut55qE6K+05piO5Z+65LqO5bu26L+f6K6h5pWw5bey5byA5ZCv44CC5Lmf5Y+v5Zyo
-57O757uf6L+Q6KGM5pe277yM5L2/55Soc3lzY3Rs55qEa2VybmVsLnRhc2tfZGVsYXlhY2N0DQo+
-ICvov5vooYzlvIDlhbPjgILms6jmhI/vvIzlj6rmnInlnKjlkK/nlKjlu7bov5/orqHmlbDlkI7l
-kK/liqjnmoTku7vliqHmiY3kvJrmnInnm7jlhbPkv6Hmga/jgIINCj4gKw0KPiAr57O757uf5ZCv
-5Yqo5ZCO77yM5L2/55So57G75Ly8Z2V0ZGVsYXlzLmPnmoTlt6Xlhbfojrflj5bku7vliqHmiJbn
-ur/nqIvnu4TvvIh0Z2lk77yJ55qE5bu26L+f5L+h5oGv44CCDQo+ICsNCj4gK2dldGRlbGF5c+WR
-veS7pOeahOS4gOiIrOagvOW8jzo6DQo+ICsNCj4gKyAgICAgICBnZXRkZWxheXMgWy10IHRnaWRd
-IFstcCBwaWRdIFstYyBjbWQuLi5dDQo+ICsNCj4gK+iOt+WPlnBpZOS4ujEw55qE5Lu75Yqh5LuO
-57O757uf5ZCv5Yqo5ZCO55qE5bu26L+f5L+h5oGvOjoNCj4gKw0KPiArICAgICAgICMgLi9nZXRk
-ZWxheXMgLXAgMTANCj4gKyAgICAgICDvvIjovpPlh7rkv6Hmga/lkozkuIvkvovnm7jkvLzvvIkN
-Cj4gKw0KPiAr6I635Y+W5omA5pyJdGdpZOS4ujXnmoTku7vliqHku47ns7vnu5/lkK/liqjlkI7n
-moTmgLvlu7bov5/kv6Hmga86Og0KPiArDQo+ICsgICAgICAgIyAuL2dldGRlbGF5cyAtdCA1DQo+
-ICsNCj4gKw0KPiArICAgICAgIENQVSAgICAgY291bnQgICByZWFsIHRvdGFsICAgICAgdmlydHVh
-bCB0b3RhbCAgIGRlbGF5IHRvdGFsDQo+ICsgICAgICAgICAgICAgICA3ODc2ICAgIDkyMDA1NzUw
-ICAgICAgICAxMDAwMDAwMDAgICAgICAgMjQwMDE1MDANCj4gKyAgICAgICBJTyAgICAgIGNvdW50
-ICAgZGVsYXkgdG90YWwNCj4gKyAgICAgICAgICAgICAgIDAgICAgICAgMA0KPiArICAgICAgIFNX
-QVAgICAgY291bnQgICBkZWxheSB0b3RhbA0KPiArICAgICAgICAgICAgICAgMCAgICAgICAwDQo+
-ICsgICAgICAgUkVDTEFJTSBjb3VudCAgIGRlbGF5IHRvdGFsDQo+ICsgICAgICAgICAgICAgICAw
-ICAgICAgIDANCj4gKw0KPiAr6I635Y+W5oyH5a6a566A5Y2V5ZG95Luk6L+Q6KGM5pe255qE5bu2
-6L+f5L+h5oGvOjoNCj4gKw0KPiArICAjIC4vZ2V0ZGVsYXlzIC1jIGxzIC8NCj4gKw0KPiArICBi
-aW4gICBkYXRhMSAgZGF0YTMgIGRhdGE1ICBkZXYgIGhvbWUgIG1lZGlhICBvcHQgICByb290ICBz
-cnYgICAgICAgIHN5cyAgdXNyDQo+ICsgIGJvb3QgIGRhdGEyICBkYXRhNCAgZGF0YTYgIGV0YyAg
-bGliICAgbW50ICAgIHByb2MgIHNiaW4gIHN1YmRvbWFpbiAgdG1wICB2YXINCj4gKw0KPiArDQo+
-ICsgIENQVSAgY291bnQgICByZWFsIHRvdGFsICAgICAgdmlydHVhbCB0b3RhbCAgIGRlbGF5IHRv
-dGFsDQo+ICsgICAgICAgNiAgICAgICA0MDAwMjUwICAgICAgICAgNDAwMDAwMCAgICAgICAgIDAN
-Cj4gKyAgSU8gICBjb3VudCAgIGRlbGF5IHRvdGFsDQo+ICsgICAgICAgMCAgICAgICAwDQo+ICsg
-IFNXQVAgY291bnQgICBkZWxheSB0b3RhbA0KPiArICAgICAgIDAgICAgICAgMA0KPiArICBSRUNM
-QUlNICAgICAgY291bnQgICBkZWxheSB0b3RhbA0KPiArICAgICAgIDAgICAgICAgMA0KPiArDQo+
-IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9hY2NvdW50aW5n
-L2luZGV4LnJzdCBiL0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2FjY291bnRpbmcv
-aW5kZXgucnN0DQo+IGluZGV4IDM2MmU5MDdiNDFmOS4uMDkwZjkzNzc2ZmFhIDEwMDY0NA0KPiAt
-LS0gYS9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9hY2NvdW50aW5nL2luZGV4LnJz
-dA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9hY2NvdW50aW5nL2lu
-ZGV4LnJzdA0KPiBAQCAtMTYsMTAgKzE2LDEwIEBADQo+ICAgICA6bWF4ZGVwdGg6IDENCj4NCj4g
-ICAgIHBzaQ0KPiArICAgZGVsYXktYWNjb3VudGluZw0KPg0KPiAgVG9kb2xpc3Q6DQo+DQo+ICAg
-ICBjZ3JvdXBzdGF0cw0KPiAtICAgZGVsYXktYWNjb3VudGluZw0KPiAgICAgdGFza3N0YXRzDQo+
-ICAgICB0YXNrc3RhdHMtc3RydWN0DQo+IC0tDQo+IDIuMjUuMQ0K
+On Fri, Sep 24, 2021 at 6:24 AM Barry Song <21cnbao@gmail.com> wrote:
+>
+> On Wed, Sep 22, 2021 at 10:27 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > The page_head_if_fake() is used throughout memory management and the
+> > conditional check requires checking a global variable, although the
+> > overhead of this check may be small, it increases when the memory
+> > cache comes under pressure. Also, the global variable will not be
+> > modified after system boot, so it is very appropriate to use static
+> > key machanism.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  include/linux/hugetlb.h    | 10 ++++++++--
+> >  include/linux/page-flags.h |  6 ++++--
+> >  mm/hugetlb_vmemmap.c       | 12 ++++++------
+> >  mm/memory_hotplug.c        |  2 +-
+> >  4 files changed, 19 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> > index 1faebe1cd0ed..4cc647a5dbf8 100644
+> > --- a/include/linux/hugetlb.h
+> > +++ b/include/linux/hugetlb.h
+> > @@ -1066,9 +1066,15 @@ static inline void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr
+> >  #endif /* CONFIG_HUGETLB_PAGE */
+> >
+> >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > -extern bool hugetlb_free_vmemmap_enabled;
+> > +static inline bool hugetlb_free_vmemmap_enabled(void)
+> > +{
+> > +       return static_key_enabled(&hugetlb_free_vmemmap_enabled_key);
+>
+> could it be
+>        if (static_branch_maybe(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+>                                 &hugetlb_free_vmemmap_enabled_key))
+>
+> then we are able to remove the duplication in page_fixed_fake_head()?
+
+Definitely. I'll update in the next version.
+
+Thanks.
+
+>
+> > +}
+> >  #else
+> > -#define hugetlb_free_vmemmap_enabled   false
+> > +static inline bool hugetlb_free_vmemmap_enabled(void)
+> > +{
+> > +       return false;
+> > +}
+> >  #endif
+> >
+> >  static inline spinlock_t *huge_pte_lock(struct hstate *h,
+> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > index b47a7f51d2c3..54e119e44496 100644
+> > --- a/include/linux/page-flags.h
+> > +++ b/include/linux/page-flags.h
+> > @@ -185,7 +185,8 @@ enum pageflags {
+> >  #ifndef __GENERATING_BOUNDS_H
+> >
+> >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > -extern bool hugetlb_free_vmemmap_enabled;
+> > +DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+> > +                        hugetlb_free_vmemmap_enabled_key);
+> >
+> >  /*
+> >   * If the feature of freeing some vmemmap pages associated with each HugeTLB
+> > @@ -205,7 +206,8 @@ extern bool hugetlb_free_vmemmap_enabled;
+> >   */
+> >  static __always_inline const struct page *page_fixed_fake_head(const struct page *page)
+> >  {
+> > -       if (!hugetlb_free_vmemmap_enabled)
+> > +       if (!static_branch_maybe(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+> > +                                &hugetlb_free_vmemmap_enabled_key))
+> >                 return page;
+> >         /*
+> >          * Only addresses aligned with PAGE_SIZE of struct page may be fake head
+> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> > index 527bcaa44a48..47517e878ed5 100644
+> > --- a/mm/hugetlb_vmemmap.c
+> > +++ b/mm/hugetlb_vmemmap.c
+> > @@ -188,9 +188,9 @@
+> >  #define RESERVE_VMEMMAP_NR             1U
+> >  #define RESERVE_VMEMMAP_SIZE           (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+> >
+> > -bool hugetlb_free_vmemmap_enabled __read_mostly =
+> > -       IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON);
+> > -EXPORT_SYMBOL(hugetlb_free_vmemmap_enabled);
+> > +DEFINE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+> > +                       hugetlb_free_vmemmap_enabled_key);
+> > +EXPORT_SYMBOL(hugetlb_free_vmemmap_enabled_key);
+> >
+> >  static int __init early_hugetlb_free_vmemmap_param(char *buf)
+> >  {
+> > @@ -204,9 +204,9 @@ static int __init early_hugetlb_free_vmemmap_param(char *buf)
+> >                 return -EINVAL;
+> >
+> >         if (!strcmp(buf, "on"))
+> > -               hugetlb_free_vmemmap_enabled = true;
+> > +               static_branch_enable(&hugetlb_free_vmemmap_enabled_key);
+> >         else if (!strcmp(buf, "off"))
+> > -               hugetlb_free_vmemmap_enabled = false;
+> > +               static_branch_disable(&hugetlb_free_vmemmap_enabled_key);
+> >         else
+> >                 return -EINVAL;
+> >
+> > @@ -284,7 +284,7 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+> >         BUILD_BUG_ON(__NR_USED_SUBPAGE >=
+> >                      RESERVE_VMEMMAP_SIZE / sizeof(struct page));
+> >
+> > -       if (!hugetlb_free_vmemmap_enabled)
+> > +       if (!hugetlb_free_vmemmap_enabled())
+> >                 return;
+> >
+> >         vmemmap_pages = (nr_pages * sizeof(struct page)) >> PAGE_SHIFT;
+> > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> > index 0488eed3327c..89c1fde02162 100644
+> > --- a/mm/memory_hotplug.c
+> > +++ b/mm/memory_hotplug.c
+> > @@ -1341,7 +1341,7 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
+> >          *       populate a single PMD.
+> >          */
+> >         return memmap_on_memory &&
+> > -              !hugetlb_free_vmemmap_enabled &&
+> > +              !hugetlb_free_vmemmap_enabled() &&
+> >                IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
+> >                size == memory_block_size_bytes() &&
+> >                IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
+> > --
+> > 2.11.0
+> >
+>
+> Thanks
+> barry
