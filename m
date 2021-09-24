@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F79417CC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91233417CC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346831AbhIXVKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 17:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
+        id S1346929AbhIXVMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 17:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233217AbhIXVKs (ORCPT
+        with ESMTP id S233217AbhIXVMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 17:10:48 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39887C061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:09:15 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id eg28so41185257edb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:09:15 -0700 (PDT)
+        Fri, 24 Sep 2021 17:12:45 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C115FC061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:11:11 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id y89so30195115ede.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:11:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=9l0vLnZ07LMXxy/IHB8Q/PtOVi8eVZesGOSTgkOJwlA=;
-        b=Ho/3CJvliGeBvjWN5lR83BRCWF8WjNxzn3BWENEZtG322ntHBBn3y6J5SbUupR3T5F
-         6r7IzFRIAOcfbZhhvUKojnai+dqfuxNtXQ9i+pufen4rFVK8rP5rHaeqGFePf/3nxfbf
-         3vFqOex2Digiv6Zj+8DdRUKiLZ6RDXId9JfCSLTOyYja3hL/3ulV7BDiqzD4U7inXITq
-         Y5kW91w5cu+ENUBThE9LjwnvgrmccxK1NqyzxuL6uR24VXg76DRT/KrxnQyd5kftY0kv
-         AN4QXLRDb4mNO+SjgnvwSKFSqzA0uWzdv9Ym6XpyULWmGPlNrfGjY1BCiRt7sF6HSN4+
-         qRkA==
+        bh=SWyL9sRLfKILLLYkOpvWuNZ4UiouYeFP+XTEBgYJz58=;
+        b=PvE/vKEsVzSZiCjcyj2XjpudW1mrvzcYeLM4TwudoTkypf3o6mGCwC/12vVo5j+UMc
+         SZGnP9Vr7AQPzVtWjoCY9YQIrol9RTJYEeu+cs5ehB5/jvn+mPLlqyAgAlU5SvmQTHzZ
+         5WQqK9+/g7Bm1lHC1mU6orp8Leh16wZegj0GbiAd6/XjW3+gx4AldFh8JEo0S6OLnPoM
+         J+5/q+0CT8jprLZ6csW8wDQMCYzTJVZdd8C4zArn2k5jDdFRWneFRRO0h1jpNl5QCtW7
+         CVtS0Rf82i6P7lu7LSfVekW8egIQuaX+8/Rnq9P9LsKB6f6Nto8F6imMi9lc37uM7KqP
+         B03Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9l0vLnZ07LMXxy/IHB8Q/PtOVi8eVZesGOSTgkOJwlA=;
-        b=GohK3dIiwdCzewBeHd2iSc0hzuYItQXAahSmcu/CygUIm0cZ0D+e3xZDBirI16isXw
-         ETvnCVOnSNzRACRv2Ek3riz8R0c12jSpFKfxkz17hHZJwLgLNjKrwwrs5DhZ/dm4UTYd
-         9LJ1bYITwX0jmNdvAUV0oF4fecV4YB/zpnpytDJX9PVXGayj36t6fDbkjYi79UM1C+5T
-         N8TizMI4jz21UoVe3YEDM+I+iJfkBdNJV9pGy1knD8/0CU2ACjYOUG9/N8tsloSu0P6p
-         SyL4mJ4O5AqVgG00Z0eLcrrBzUmO8gtdlgMBawC2uwLY3NoEjAuwriiy/oggWt3Ml3Ku
-         7QVg==
-X-Gm-Message-State: AOAM532aLm0hkOYuWyE01L3M/0hx/eiFbM4lt3zT/vquAXMfaoSSXosC
-        Gs1+8HQheplSlrifu5a6C+o=
-X-Google-Smtp-Source: ABdhPJzPa4o/AIzPwMBAtAiqTMKOhVx6IUQVvjhTdoIjpuk8tM2p0hr7yj2l6zDt27LiZBtysNS0Xg==
-X-Received: by 2002:a50:e1cd:: with SMTP id m13mr7509421edl.93.1632517753771;
-        Fri, 24 Sep 2021 14:09:13 -0700 (PDT)
+        bh=SWyL9sRLfKILLLYkOpvWuNZ4UiouYeFP+XTEBgYJz58=;
+        b=xtcu3KA1tEVxiP34lN0GCQ+MLaqoXseFD+DigUnkapSUwEmxpxaadq6glWFMw8uSb/
+         mH79xGsYvhOmARuMnsvw9fvYLqkyui1JRWrmlmgU2dW8yRl/qW3itMLUU6cQRZMRD76X
+         HAXRbKHQb3EFSV9U6ZPhM2AaWXyjmGHG2OAJm9csyGq2bSrhH7sCcefG1S2fyZWk7IR5
+         cAV1aJ1h17cU3LLFbdEuEwJ1PQ28MuOGYlwRQzHbzXF2fypISmfb7Ju6m20jpCigXAoH
+         bKVyEqXTspBQ8laeIT+GpiELZ8SwoCGRnoc448fNnGu+vkQthdmXj4iDI4Kd+Gcmq8L2
+         Q4+w==
+X-Gm-Message-State: AOAM530EjYVIDajc/9XuDc21VC5L3rvL2JSBjVhgUDxahJg1QjmqTSQ5
+        YiEohp98CvpkPZbbx8W+0VI=
+X-Google-Smtp-Source: ABdhPJzeOUN3lM/Ehrb2uAyM0sgvesnAVvpem7nXgakPmm8/bMWlyC3BbemOBpR3g0CxFd3CU6G/hg==
+X-Received: by 2002:a17:906:158f:: with SMTP id k15mr13923966ejd.241.1632517870456;
+        Fri, 24 Sep 2021 14:11:10 -0700 (PDT)
 Received: from tom-desktop (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
-        by smtp.gmail.com with ESMTPSA id d22sm5541293ejk.5.2021.09.24.14.09.11
+        by smtp.gmail.com with ESMTPSA id ez2sm418027ejc.108.2021.09.24.14.11.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 14:09:12 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 23:09:10 +0200
+        Fri, 24 Sep 2021 14:11:10 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 23:11:07 +0200
 From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
 Cc:     Forest Bond <forest@alittletooquiet.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
         Madhumitha Prabakaran <madhumithabiw@gmail.com>,
         Yujia Qiao <rapiz@foxmail.com>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Edmundo Carmona Antoranz <eantoranz@gmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
         Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Deepak R Varma <mh12gx2825@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] staging: vt6655: Replace camel case variable name
-Message-ID: <20210924210910.GA10906@tom-desktop>
-References: <20210922225138.668520-1-tomm.merciai@gmail.com>
- <6695e45f-4530-ab39-923d-8347649762bb@embeddedor.com>
+Message-ID: <20210924211107.GB10906@tom-desktop>
+References: <20210922225756.694409-1-tomm.merciai@gmail.com>
+ <20210923083018.GB2048@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6695e45f-4530-ab39-923d-8347649762bb@embeddedor.com>
+In-Reply-To: <20210923083018.GB2048@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 06:12:37PM -0500, Gustavo A. R. Silva wrote:
+On Thu, Sep 23, 2021 at 11:30:19AM +0300, Dan Carpenter wrote:
+> You sent about 10 patches with exact same subject.
 > 
-> 
-> On 9/22/21 17:51, Tommaso Merciai wrote:
+> On Thu, Sep 23, 2021 at 12:57:52AM +0200, Tommaso Merciai wrote:
 > > Work in progress: replace camel case variables
-> > 
-> > PortOffset -> port_offset
-> > 
-> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > ---
 > 
-> When someone gives you feedback and you have to respin your
-> patch, you should version the patches that you resend, and
-> mention what changed, here:
-> 
-> Changes in v2:
->  - Variable should be port_offset instead of port_off_set.
+> Leave out the "work in progress".  We're only interested in what this
+> specific patch, not other patches.
   
-  Thanks, you're right. Resend V2.
+  Thanks for the tip. Resend V2.
 
   Tommaso
-
 > 
-> I encourage you to take a look at this:
+> regards,
+> dan carpenter
 > 
-> https://kernelnewbies.org/Outreachyfirstpatch
-> 
-> It will be of great help if you are trying to land
-> your first patches. :)
-> 
-> --
-> Gustavo
