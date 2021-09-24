@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBA94172DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027A5417361
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344668AbhIXMvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:51:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43434 "EHLO mail.kernel.org"
+        id S1344845AbhIXMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:55:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344570AbhIXMua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:50:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B7176128B;
-        Fri, 24 Sep 2021 12:48:27 +0000 (UTC)
+        id S1344557AbhIXMxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:53:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD03961263;
+        Fri, 24 Sep 2021 12:50:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487708;
-        bh=jeB8rICi2PBdXa8FY+3ayij9Dcc/Q25iDNHXwdQ4Y2o=;
+        s=korg; t=1632487815;
+        bh=F7IqFQ9OEez8vq8yMX8hOfI26FzDeId6cldM61bqP5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y+H6v01OmT6cBsTnLMLx+OcS1PIx7AkV7gb2AstDjD4L/+zlRJYD1uLK+XqbcGF64
-         2Un5gkhXdsLnDxmT60C+EtdrcEMuKIRX8hzi5uQXnlsE+LRBhGeJAyebUNcTjUcKhG
-         58aOwRV5dqjwzzj+0VaFEl0wEGtTosL+Eb+Lnw2M=
+        b=XJ9AFHRtP1m0Fv/aj+sJywCF/53mwsd2PgNkdXyKTCXwRrP7akKJAflLZDRpv3yAq
+         QNVpUsvydrQQz/o9Yse+Ob5apwuDbcZ4pM8CV4GnUAgYGdyH5pxhhbWemyKYOEIL+8
+         5uAYHNTOBR52ZCcfGe73lXbDKT2KCX3Ie+W64VwM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Babu Moger <babu.moger@oracle.com>,
-        Don Zickus <dzickus@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org, Cyrill Gorcunov <gorcunov@gmail.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Andrey Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 17/34] Kconfig.debug: drop selecting non-existing HARDLOCKUP_DETECTOR_ARCH
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 22/50] prctl: allow to setup brk for et_dyn executables
 Date:   Fri, 24 Sep 2021 14:44:11 +0200
-Message-Id: <20210924124330.525960013@linuxfoundation.org>
+Message-Id: <20210924124332.989494899@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124332.229289734@linuxfoundation.org>
+References: <20210924124332.229289734@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,49 +47,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Cyrill Gorcunov <gorcunov@gmail.com>
 
-[ Upstream commit 6fe26259b4884b657cbc233fb9cdade9d704976e ]
+commit e1fbbd073137a9d63279f6bf363151a938347640 upstream.
 
-Commit 05a4a9527931 ("kernel/watchdog: split up config options") adds a
-new config HARDLOCKUP_DETECTOR, which selects the non-existing config
-HARDLOCKUP_DETECTOR_ARCH.
+Keno Fischer reported that when a binray loaded via ld-linux-x the
+prctl(PR_SET_MM_MAP) doesn't allow to setup brk value because it lays
+before mm:end_data.
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+For example a test program shows
 
-HARDLOCKUP_DETECTOR_ARCH Referencing files: lib/Kconfig.debug
+ | # ~/t
+ |
+ | start_code      401000
+ | end_code        401a15
+ | start_stack     7ffce4577dd0
+ | start_data	   403e10
+ | end_data        40408c
+ | start_brk	   b5b000
+ | sbrk(0)         b5b000
 
-Simply drop selecting the non-existing HARDLOCKUP_DETECTOR_ARCH.
+and when executed via ld-linux
 
-Link: https://lkml.kernel.org/r/20210806115618.22088-1-lukas.bulwahn@gmail.com
-Fixes: 05a4a9527931 ("kernel/watchdog: split up config options")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Babu Moger <babu.moger@oracle.com>
-Cc: Don Zickus <dzickus@redhat.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
+ | # /lib64/ld-linux-x86-64.so.2 ~/t
+ |
+ | start_code      7fc25b0a4000
+ | end_code        7fc25b0c4524
+ | start_stack     7fffcc6b2400
+ | start_data	   7fc25b0ce4c0
+ | end_data        7fc25b0cff98
+ | start_brk	   55555710c000
+ | sbrk(0)         55555710c000
+
+This of course prevent criu from restoring such programs.  Looking into
+how kernel operates with brk/start_brk inside brk() syscall I don't see
+any problem if we allow to setup brk/start_brk without checking for
+end_data.  Even if someone pass some weird address here on a purpose then
+the worst possible result will be an unexpected unmapping of existing vma
+(own vma, since prctl works with the callers memory) but test for
+RLIMIT_DATA is still valid and a user won't be able to gain more memory in
+case of expanding VMAs via new values shipped with prctl call.
+
+Link: https://lkml.kernel.org/r/20210121221207.GB2174@grain
+Fixes: bbdc6076d2e5 ("binfmt_elf: move brk out of mmap when doing direct loader exec")
+Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
+Reported-by: Keno Fischer <keno@juliacomputing.com>
+Acked-by: Andrey Vagin <avagin@gmail.com>
+Tested-by: Andrey Vagin <avagin@gmail.com>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/Kconfig.debug | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/sys.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 46a910acce3f..6970759f296c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -853,7 +853,6 @@ config HARDLOCKUP_DETECTOR
- 	depends on HAVE_HARDLOCKUP_DETECTOR_PERF || HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	select LOCKUP_DETECTOR
- 	select HARDLOCKUP_DETECTOR_PERF if HAVE_HARDLOCKUP_DETECTOR_PERF
--	select HARDLOCKUP_DETECTOR_ARCH if HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	help
- 	  Say Y here to enable the kernel to act as a watchdog to detect
- 	  hard lockups.
--- 
-2.33.0
-
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1928,13 +1928,6 @@ static int validate_prctl_map_addr(struc
+ 	error = -EINVAL;
+ 
+ 	/*
+-	 * @brk should be after @end_data in traditional maps.
+-	 */
+-	if (prctl_map->start_brk <= prctl_map->end_data ||
+-	    prctl_map->brk <= prctl_map->end_data)
+-		goto out;
+-
+-	/*
+ 	 * Neither we should allow to override limits if they set.
+ 	 */
+ 	if (check_data_rlimit(rlimit(RLIMIT_DATA), prctl_map->brk,
 
 
