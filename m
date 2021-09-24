@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D984F416FEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A680417004
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245497AbhIXKIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:08:21 -0400
-Received: from mga17.intel.com ([192.55.52.151]:29010 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244963AbhIXKIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:08:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10116"; a="204198561"
-X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
-   d="scan'208";a="204198561"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 03:06:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,319,1624345200"; 
-   d="scan'208";a="703468211"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.84]) ([10.237.72.84])
-  by fmsmga006.fm.intel.com with ESMTP; 24 Sep 2021 03:06:35 -0700
-Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
- cannot meet the timeout value required by the device
-To:     Bean Huo <huobean@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210917172727.26834-1-huobean@gmail.com>
- <20210917172727.26834-3-huobean@gmail.com>
- <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
- <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
-Date:   Fri, 24 Sep 2021 13:07:14 +0300
+        id S245580AbhIXKJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 06:09:43 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33614 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245423AbhIXKJm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 06:09:42 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6E18A2239C;
+        Fri, 24 Sep 2021 10:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632478088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Az/gC5KGv43+SgELQ31mu60xbm11p3hDz0QY5xlRQWY=;
+        b=vGEbQQXGMoytgpOtdIQtyEjPHnLSPwh0U+WXXrtU0FaPCwJjzdAAqiToZW1NtF5rveKK6Y
+        cGFuEiy7wqSY2eg9BmcIv2Kt7sV4la5iOgoXNE/R04n/7O0zS0e868+ST7Ws1EwNwBFyNO
+        IHMpVp3mQXnnxu0L4aJqSRX5DrKVa8U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632478088;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Az/gC5KGv43+SgELQ31mu60xbm11p3hDz0QY5xlRQWY=;
+        b=63ipEH6EgjLo1kkIaCFgA5lBc8DN1eQ4OtKRgw6I+2O/19sRhdCZSdyiSvG8CPureuvRoH
+        cTZeMXoKs58hJyDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 20A15139F0;
+        Fri, 24 Sep 2021 10:08:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zZf1BIijTWHDRgAAMHmgww
+        (envelope-from <hare@suse.de>); Fri, 24 Sep 2021 10:08:08 +0000
+Subject: Re: [PATCH v4 05/13] blk-mq-sched: Rename blk_mq_sched_alloc_{tags ->
+ map_and_rqs}()
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, ming.lei@redhat.com
+References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
+ <1632472110-244938-6-git-send-email-john.garry@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <45c9da89-2f69-20dc-9ead-86a8b387a643@suse.de>
+Date:   Fri, 24 Sep 2021 12:08:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1632472110-244938-6-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/21 12:17 pm, Bean Huo wrote:
-> On Fri, 2021-09-24 at 08:29 +0300, Adrian Hunter wrote:
->>> If the data transmission timeout value required by the device
->>> exceeds
->>> the maximum timeout value of the host HW timer, we still use the HW
->>> timer with the maximum timeout value of the HW timer. This setting
->>> is
->>> suitable for most R/W situations. But sometimes, the device will
->>> complete
->>> the R/W task within its required timeout value (greater than the HW
->>> timer).
->>> In this case, the HW timer for data transmission will time out.
->>> Currently, in this condition, we  disable the HW timer and use the
->>> SW
->>> timer only when the SDHCI_QUIRK2_DISABLE_HW_TIMEOUT quirk is set by
->>> the
->>> host driver. The patch is to remove this if statement restriction
->>> and
->>> allow data transmission to use the SW timer when the hardware timer
->>> cannot
->>> meet the required timeout value.
->>
->>
->> The reason it is a quirk is because it does not work for all
->> hardware.
->>
->> For some controllers the timeout cannot really be disabled, only the
->>
->> interrupt is disabled, and then the controller never indicates
->> completion
->>
->> if the timeout is exceeded.
+On 9/24/21 10:28 AM, John Garry wrote:
+> Function blk_mq_sched_alloc_tags() does same as
+> __blk_mq_alloc_map_and_request(), so give a similar name to be consistent.
 > 
-> Hi Adrian,
-> Thanks for your review.
+> Similarly rename label err_free_tags -> err_free_map_and_rqs.
 > 
-> Yes, you are right. But this quirk prevents disabling the hardware timeoutIRQ. The purpose of this patch is to disable the hardware timeout IRQ and
-> select the software timeout.
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> ---
+>   block/blk-mq-sched.c | 14 +++++++-------
+>   1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> void __sdhci_set_timeout(struct sdhci_host *host, struct mmc_command
-> *cmd)
-> {
->         bool too_big = false;
->         u8 count = sdhci_calc_timeout(host, cmd, &too_big);
-> 
->         if (too_big) {
->                 sdhci_calc_sw_timeout(host, cmd);
->                 sdhci_set_data_timeout_irq(host, false); // disable IRQ
->         } else if (!(host->ier & SDHCI_INT_DATA_TIMEOUT)) {
->                 sdhci_set_data_timeout_irq(host, true);
->         }
-> 
->         sdhci_writeb(host, count, SDHCI_TIMEOUT_CONTROL);
-> }
-> 
-> 
-> The driver has detected that the hardware timer cannot meet the timeout
-> requirements of the device, but we still use the hardware timer, which will
-> allow potential timeout issuea . Rather than allowing a potential
-> problem to exist, why can’t software timing be used to avoid this
-> problem?
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Timeouts aren't that accurate.  The maximum is assumed still to work.
-mmc->max_busy_timeout is used to tell the core what the maximum is.
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
