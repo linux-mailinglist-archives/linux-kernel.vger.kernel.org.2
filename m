@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AA54174B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 15:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CB54172B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345457AbhIXNJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 09:09:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37990 "EHLO mail.kernel.org"
+        id S1344081AbhIXMux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346471AbhIXNGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 09:06:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C5786137E;
-        Fri, 24 Sep 2021 12:56:28 +0000 (UTC)
+        id S1343975AbhIXMtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:49:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D71F6124D;
+        Fri, 24 Sep 2021 12:47:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632488189;
-        bh=aEpPoO4xr58C0zDlTmsnK/zzzAOmFJ8YN4chsWJa2bQ=;
+        s=korg; t=1632487660;
+        bh=BkISNqFHSRmUOB9cYBFY3T37xo5rngboc71OMME0GQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G9ZpNfLdGa92XGc3QXtJJsK8QBXWvtAxjtJtZHtI80PN1huuv8kXE2V9D/clgZQLQ
-         DSRq1DA64CaKi9sI1g6Ym5l1XqlNcOvxF066rY6kejzy7WQMq8Nr9VUqlsIlpzxKGg
-         aHmrzLB582ebZSqZ/mEjU5n3Z6OM18FnHvBSGoq8=
+        b=QmKo5VbvX/Zjt/0X0eE8f31xKCJ8GwMhde5jOPA9ogBsmmgqt/ChOWAszX2CKMPPU
+         8/IU046o4LNLEB7WD1QzhfCvmbSETUlPdn0ngHPynEK/sjFMrctAT6yd1uSxgh9m3X
+         XJv4bMS3bJ8+MEuOC0bQK6APMoCIWQshdPUrN11k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 5.10 19/63] thermal/drivers/exynos: Fix an error code in exynos_tmu_probe()
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 25/27] pwm: rockchip: Dont modify HW state in .remove() callback
 Date:   Fri, 24 Sep 2021 14:44:19 +0200
-Message-Id: <20210924124334.913198435@linuxfoundation.org>
+Message-Id: <20210924124330.020177157@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
-References: <20210924124334.228235870@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-commit 02d438f62c05f0d055ceeedf12a2f8796b258c08 upstream.
+[ Upstream commit 9d768cd7fd42bb0be16f36aec48548fca5260759 ]
 
-This error path return success but it should propagate the negative
-error code from devm_clk_get().
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-Fixes: 6c247393cfdd ("thermal: exynos: Add TMU support for Exynos7 SoC")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210810084413.GA23810@kili
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/samsung/exynos_tmu.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/pwm/pwm-rockchip.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
---- a/drivers/thermal/samsung/exynos_tmu.c
-+++ b/drivers/thermal/samsung/exynos_tmu.c
-@@ -1073,6 +1073,7 @@ static int exynos_tmu_probe(struct platf
- 		data->sclk = devm_clk_get(&pdev->dev, "tmu_sclk");
- 		if (IS_ERR(data->sclk)) {
- 			dev_err(&pdev->dev, "Failed to get sclk\n");
-+			ret = PTR_ERR(data->sclk);
- 			goto err_clk;
- 		} else {
- 			ret = clk_prepare_enable(data->sclk);
+diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
+index 48bcc853d57a..cf34fb00c054 100644
+--- a/drivers/pwm/pwm-rockchip.c
++++ b/drivers/pwm/pwm-rockchip.c
+@@ -392,20 +392,6 @@ static int rockchip_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct rockchip_pwm_chip *pc = platform_get_drvdata(pdev);
+ 
+-	/*
+-	 * Disable the PWM clk before unpreparing it if the PWM device is still
+-	 * running. This should only happen when the last PWM user left it
+-	 * enabled, or when nobody requested a PWM that was previously enabled
+-	 * by the bootloader.
+-	 *
+-	 * FIXME: Maybe the core should disable all PWM devices in
+-	 * pwmchip_remove(). In this case we'd only have to call
+-	 * clk_unprepare() after pwmchip_remove().
+-	 *
+-	 */
+-	if (pwm_is_enabled(pc->chip.pwms))
+-		clk_disable(pc->clk);
+-
+ 	clk_unprepare(pc->pclk);
+ 	clk_unprepare(pc->clk);
+ 
+-- 
+2.33.0
+
 
 
