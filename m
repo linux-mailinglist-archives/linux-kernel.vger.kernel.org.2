@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9665C416A20
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA96416A21
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 04:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243943AbhIXCsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Sep 2021 22:48:33 -0400
-Received: from mail-pl1-f177.google.com ([209.85.214.177]:40735 "EHLO
-        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbhIXCsc (ORCPT
+        id S243967AbhIXCst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Sep 2021 22:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243960AbhIXCsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Sep 2021 22:48:32 -0400
-Received: by mail-pl1-f177.google.com with SMTP id j15so4015434plh.7;
-        Thu, 23 Sep 2021 19:47:00 -0700 (PDT)
+        Thu, 23 Sep 2021 22:48:47 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADB8C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:47:15 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id g14so7650638pfm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Sep 2021 19:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=FEVFO1LUZkGAI7jrBtWeyG1oEu1in197SjBUjEFqaBo=;
+        b=bFN4ME187FOK6Ne7xCgrtXgrNL4Arg6ETp1sVuwSuEpwcXDEEw+0nOjsg17lZr/MPg
+         B4vcZT0jqymc9PtGUcIVOSz1YMZ6QJ8M4onZ3ElEVS4OVy3Ph2aCGn9+ix/KWUSfyW/3
+         Xoah4qiEYvixvl5qc3M94eQ57JmIy1pSHYrB/q+OKSPdtuXnXFLxO64QqzoFArPA3+6a
+         D35FDD2PtCO62UNhpvOiFcmMiYd2SE0wLfknkdZKWBLKp8UBELpy1v4rXWRjEnbEn4QD
+         GvBEu5n/kg5wLEKmY6UD0IuJV6JTKywTZ9DWTFZdsw+vtqpUgNDKBj+HSBvpchuZ53yi
+         Y4Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=Ez9AZhmbkqgjmKUjZFTyGc3YPzKzZZ/EAaN5J8pQEd4=;
-        b=3YYEsB1qAGcjW1MPTBAAGE/skn1YVeb1dIIa0c2CpxDgbUiDiP2joudQHF0cxnP2uX
-         dD09QKc8SjBFMEXaGsntzlf7VbNuDiHeIkqzJ5Kpkl3ftK306YJSKrnWt+ntWpvTq5xB
-         YnKXIvLjNm+U0+G+zddzqzqWE/cy8WJZZngClQX84MgwDk3hnPCXim1FZpNLa7Gr1Ey6
-         iMW8dKDGQIxVC8PCNJ8nvD6ahDOcrkt92N9vMtFI1BFgxXmudz6zeVimZ2/XlFwrBg95
-         q2Ks9qXVCL/c8+2bgkEjOyLtmzHjcGr1pNLlyJRSNR59iNeENWu3D8BMueKfU0F99dmv
-         zUQA==
-X-Gm-Message-State: AOAM53378jNE8Ges7cIvUQuzbrUbxHmJ2eo738UgNim9VoWjRVXKillt
-        /4xKXX6M+BYlweKg8tHjVHY=
-X-Google-Smtp-Source: ABdhPJyqURa1kHq2oz+fi/L296+n+h2t3Q/HL1nhe6p81CuXq452zeLFzqpeDpb3um15BwbCwaESeg==
-X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr9233637pjl.150.1632451619389;
-        Thu, 23 Sep 2021 19:46:59 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:cbba:97c1:e6a:66d5? ([2601:647:4000:d7:cbba:97c1:e6a:66d5])
-        by smtp.gmail.com with ESMTPSA id i8sm7009301pfq.22.2021.09.23.19.46.57
+        bh=FEVFO1LUZkGAI7jrBtWeyG1oEu1in197SjBUjEFqaBo=;
+        b=WWErCNg1hIT2mga17gFKNBpktgdr3LsPLQTwSmLS4qJMl5b6N9RCfkk3cPfJYxKiJC
+         M9xtNo27Khx1pMyzLwq7/t3iiFWUuNgKRBWlEhbNYH8WcP5zoAYKWIs9jTXzvH0xDXrS
+         C3zwuAXaCzfrNYtuS+AaVgBsnDRkrPQlOKCE64PrT8iOpzkYXXA5psadf7xnQUlJXHOc
+         5dXH/FHbIwngWwfunx7N8uOzsvnFNw1kXXmPA16NhvcZmanybzM4ZN8adJCa1VBRVc45
+         LSWbNoKljhG5Xj7Xb4UNPZu1qxvuE6PxrJGeqD3PxISjjctPDQZGoWQA2PKwb0UjIJBl
+         KXDw==
+X-Gm-Message-State: AOAM5332bl42UwdvlX2LvYhX8HFHEvtSsNVcrOLnQQo1GciDJfM164E6
+        LlNrN3LpbKtPo0idGAK4/uE=
+X-Google-Smtp-Source: ABdhPJwQ66Az4BtCe3LR9g4AXjL9+g2UZM0qBW7WWQMktkugi/XVVaHm9tEwy67VXdWB6fl5jA+MuA==
+X-Received: by 2002:a63:b147:: with SMTP id g7mr1809053pgp.478.1632451634704;
+        Thu, 23 Sep 2021 19:47:14 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x9sm7247327pfo.172.2021.09.23.19.47.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 19:46:58 -0700 (PDT)
-Message-ID: <9cda0704-0e63-39b2-7874-fd679314eb2b@acm.org>
-Date:   Thu, 23 Sep 2021 19:46:57 -0700
+        Thu, 23 Sep 2021 19:47:14 -0700 (PDT)
+Message-ID: <6eb8319d-acba-b69a-5db3-5dca9ef426e8@gmail.com>
+Date:   Thu, 23 Sep 2021 19:47:06 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [RFC] arm64: mm: update max_pfn after memory hotplug
 Content-Language: en-US
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
- <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
- <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org> <YUwin2cn8X5GGjyY@unreal>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <YUwin2cn8X5GGjyY@unreal>
+To:     Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
+        Doug Berger <opendmb@gmail.com>
+References: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
+ <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 23:45, Leon Romanovsky wrote:
-> Isn't kptr_restrict sysctl is for that?
-
-Hi Leon,
-
-After I sent my email I discovered the following commit: 5ead723a20e0
-("lib/vsprintf: no_hash_pointers prints all addresses as unhashed"; v5.12).
-I think that commit does what we need?
-
-Thanks,
-
-Bart.
 
 
-commit 5ead723a20e0447bc7db33dc3070b420e5f80aa6
-Author: Timur Tabi <timur@kernel.org>
-Date:   Sun Feb 14 10:13:48 2021 -0600
+On 9/23/2021 3:54 PM, Chris Goldsworthy wrote:
+> From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+> 
+> After new memory blocks have been hotplugged, max_pfn and max_low_pfn
+> needs updating to reflect on new PFNs being hot added to system.
+> 
+> Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+> Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+> ---
+>   arch/arm64/mm/mmu.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index cfd9deb..fd85b51 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
+>   	if (ret)
+>   		__remove_pgd_mapping(swapper_pg_dir,
+>   				     __phys_to_virt(start), size);
+> +	else {
+> +		max_pfn = PFN_UP(start + size);
+> +		max_low_pfn = max_pfn;
+> +	}
 
-     lib/vsprintf: no_hash_pointers prints all addresses as unhashed
+This is a drive by review, but it got me thinking about your changes a bit:
 
-     If the no_hash_pointers command line parameter is set, then
-     printk("%p") will print pointers as unhashed, which is useful for
-     debugging purposes.  This change applies to any function that uses
-     vsprintf, such as print_hex_dump() and seq_buf_printf().
+- if you raise max_pfn when you hotplug memory, don't you need to lower 
+it when you hot unplug memory as well?
 
-     A large warning message is displayed if this option is enabled.
-     Unhashed pointers expose kernel addresses, which can be a security
-     risk.
+- suppose that you have a platform which maps physical memory into the 
+CPU's address space at 0x00_4000_0000 (1GB offset) and the kernel boots 
+with 2GB of DRAM plugged by default. At that point we have not 
+registered a swiotlb because we have less than 4GB of addressable 
+physical memory, there is no IOMMU in that system, it's a happy world. 
+Now assume that we plug an additional 2GB of DRAM into that system 
+adjacent to the previous 2GB, from 0x00_C0000_0000 through 
+0x14_0000_0000, now we have physical addresses above 4GB, but we still 
+don't have a swiotlb, some of our DMA_BIT_MASK(32) peripherals are going 
+to be unable to DMA from that hot plugged memory, but they could if we 
+had a swiotlb.
 
-     Also update test_printf to skip the hashed pointer tests if the
-     command-line option is set.
-
-     Signed-off-by: Timur Tabi <timur@kernel.org>
-     Acked-by: Petr Mladek <pmladek@suse.com>
-     Acked-by: Randy Dunlap <rdunlap@infradead.org>
-     Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-     Acked-by: Vlastimil Babka <vbabka@suse.cz>
-     Acked-by: Marco Elver <elver@google.com>
-     Signed-off-by: Petr Mladek <pmladek@suse.com>
-     Link: https://lore.kernel.org/r/20210214161348.369023-4-timur@kernel.org
+- now let's go even further but this is very contrived. Assume that the 
+firmware has somewhat created a reserved memory region with a 'no-map' 
+attribute thus indicating it does not want a struct page to be created 
+for a specific PFN range, is it valid to "blindly" raise max_pfn if that 
+region were to be at the end of the just hot-plugged memory?
+-- 
+Florian
