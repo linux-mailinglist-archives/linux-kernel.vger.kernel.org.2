@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FAA4172F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9262B4172C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 14:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344495AbhIXMxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 08:53:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
+        id S1344650AbhIXMvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 08:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344418AbhIXMvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 08:51:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C19136124F;
-        Fri, 24 Sep 2021 12:48:53 +0000 (UTC)
+        id S1344343AbhIXMtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 08:49:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C76F061251;
+        Fri, 24 Sep 2021 12:47:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632487734;
-        bh=dgxGTPGDtcmyifdM0E9+rHhzvxS4drkVUO2lqvM9bsw=;
+        s=korg; t=1632487667;
+        bh=qJCZf8z0SKfO4BYhVd4fDfO5qs/mt0fSlBiITh6dTkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tB3ES4kdLpSHm45SaYfwzpvNPUZts8bVOCCeYg36WXhJeQ+qNAwn4kRngXOxkL3gD
-         QjE/KIVa1RpBUy/tun36Y0U0izOIhdOgl290x/Fz7xU1sH0jXoNnR2PUA0zG/dh7FS
-         1D/YcOVtn0ZYuWidN92bKdFCsypYB92OJjElLNTY=
+        b=2fU2s2DiLAFb5KEZI0t6rnu2/kSh5w5UCxD1KC1JhKHIn2sfbV1A8nI4G0WZOn8Hu
+         uOFCkDElZb3PRDfhEoNxdnSrk6a9alwoxepSCbw4t6RoDiSgnZT6SZUiEnL5n/Wl5F
+         FpGfj6kZTlKWIYmYP1DYRk5TOe2Se2V+CeCV00Sc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 07/34] sctp: validate chunk size in __rcv_asconf_lookup
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 4.14 07/27] dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
 Date:   Fri, 24 Sep 2021 14:44:01 +0200
-Message-Id: <20210924124330.206328802@linuxfoundation.org>
+Message-Id: <20210924124329.418770180@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210924124329.965218583@linuxfoundation.org>
-References: <20210924124329.965218583@linuxfoundation.org>
+In-Reply-To: <20210924124329.173674820@linuxfoundation.org>
+References: <20210924124329.173674820@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit b6ffe7671b24689c09faa5675dd58f93758a97ae upstream.
+commit 67db87dc8284070adb15b3c02c1c31d5cf51c5d6 upstream.
 
-In one of the fallbacks that SCTP has for identifying an association for an
-incoming packet, it looks for AddIp chunk (from ASCONF) and take a peek.
-Thing is, at this stage nothing was validating that the chunk actually had
-enough content for that, allowing the peek to happen over uninitialized
-memory.
+Currently the CRST parsing relies on the fact that on most of x86 devices
+the IRQ mapping is 1:1 with Linux vIRQ. However, it may be not true for
+some. Fix this by converting GSI to Linux vIRQ before checking it.
 
-Similar check already exists in actual asconf handling in
-sctp_verify_asconf().
-
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: ee8209fd026b ("dma: acpi-dma: parse CSRT to extract additional resources")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210730202715.24375-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/input.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/dma/acpi-dma.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -1125,6 +1125,9 @@ static struct sctp_association *__sctp_r
- 	union sctp_addr_param *param;
- 	union sctp_addr paddr;
+--- a/drivers/dma/acpi-dma.c
++++ b/drivers/dma/acpi-dma.c
+@@ -72,10 +72,14 @@ static int acpi_dma_parse_resource_group
  
-+	if (ntohs(ch->length) < sizeof(*asconf) + sizeof(struct sctp_paramhdr))
-+		return NULL;
+ 	si = (const struct acpi_csrt_shared_info *)&grp[1];
+ 
+-	/* Match device by MMIO and IRQ */
++	/* Match device by MMIO */
+ 	if (si->mmio_base_low != lower_32_bits(mem) ||
+-	    si->mmio_base_high != upper_32_bits(mem) ||
+-	    si->gsi_interrupt != irq)
++	    si->mmio_base_high != upper_32_bits(mem))
++		return 0;
 +
- 	/* Skip over the ADDIP header and find the Address parameter */
- 	param = (union sctp_addr_param *)(asconf + 1);
++	/* Match device by Linux vIRQ */
++	ret = acpi_register_gsi(NULL, si->gsi_interrupt, si->interrupt_mode, si->interrupt_polarity);
++	if (ret != irq)
+ 		return 0;
  
+ 	dev_dbg(&adev->dev, "matches with %.4s%04X (rev %u)\n",
 
 
