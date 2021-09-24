@@ -2,66 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FF7417A6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810C0417A79
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 20:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347745AbhIXSFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 14:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        id S1347854AbhIXSHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 14:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345127AbhIXSFL (ORCPT
+        with ESMTP id S1344425AbhIXSHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 14:05:11 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7787DC061571
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:03:38 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id m21so10531829pgu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 11:03:38 -0700 (PDT)
+        Fri, 24 Sep 2021 14:07:03 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F41C061571;
+        Fri, 24 Sep 2021 11:05:30 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id w19so9528357pfn.12;
+        Fri, 24 Sep 2021 11:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ANhoqFIvutey4Kjwwv4uowGEBiP8Sw6NlRI3E6SZ9JM=;
-        b=VrO1pYEwuwwOF5N05X+WFSQ/1F5sKFxTDenyRsHmEa6FOG0jSFrYhlfRcSker9lkbi
-         MpWm3lIjb/pnVTZ03ZipsTpZjleEHES8AqskkNBdygGVzlidoNlExLxaK7PjR7T0/Kog
-         hIwu4BGMtczZGlrZzgwwrMnX3TwxWv3992nytqrv22ysN67IVRJvzdkXVNnwaEiKl0KB
-         20dgsY0HRVbzcT5+bOBfHFCQDyfWuDycuBOlgHssdDkHSXeYppYE0YVxd7gMLpH57z9V
-         jVaWWp3O/WAGkKN7OABZ8SWWv1dn7Nka+xg+A6dOL3cLESyHw/QuoppR3Z2uX5iTNSAc
-         CeKQ==
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=eo3oiEr1UbKis+cGgoNa81IsW/nMPF7geldrmOwwFuY=;
+        b=YI4unMm2gqhvJzztvsATr7jGtpmsKo3w9K2/2BUWc6AHio9W9YR2yCSjT+lFoBjzxG
+         aXnM0sB6MT6M7xhwGkkfCydrZ/wy2f2MVn7IbY3dzk0lb/+r1BeAfflaWNm5nBiC8ImS
+         jN6NOPvGDzNIb4K0xGFMLl+WOn1D6EVVC7acg6ID2L3aaq5OZTkQKkQ8iUCTZGL3mmlT
+         18vPrvGvJHs+not7eW7eZRWjiUSgVlGD5xb2KZ1x6C9wGRm57+OMVuIx+hCxfWTAnNEp
+         YuFmFlZv83BBsxWPmCZmMgWaShHcyHgktpcrw7fqDwVLI4TQRkHsb27wA9t8EouKAjBi
+         +cEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ANhoqFIvutey4Kjwwv4uowGEBiP8Sw6NlRI3E6SZ9JM=;
-        b=lKrOhqnHjcVB2ymOSklHEz75iw0CjAB9+X5OGROSyWjU5VcWoMX1kqhltuokiup6wc
-         RE7SPLC+/o6kXk6I320YeRKowbUy/MX0EUQNeIh7mUCayhoVtf4FVhUMnYeELhWeZyQP
-         egmnXzZy0B7tnFMslbqABv7xoZlf9iBVO7SRuFPkOZ2DNEhh1D3EC4d/tA/9m8mQiWef
-         R7yXEGQYYNDtEGcwIi8H5IVkENMN+r+gdyiInKboyrx/sC8H90B5yGhV9ZnL+T8tPbOH
-         iNxX+r+q3cXnv4tisuYb3X9thOj1Wowgb9tfa59AikyqKrXU05axBPpIrjfcjwJj32cw
-         OPbw==
-X-Gm-Message-State: AOAM532vAcdyJEphjqCDSMyCsgy1Ak/QX9bw7I366x9c/54c+Vk+JEDY
-        bbILTqFx/6b+ZpqGoUbFpaiNvb+smKm6TWUnMD4=
-X-Google-Smtp-Source: ABdhPJxQhC0uxZHvZhgyYl6Y4E9FOUesWJXtHHyOrPPpu5CC0dxqsx9XcPTmWAlKoSvi9V9gUx291pSgzgsVjEfS3Wc=
-X-Received: by 2002:a05:6a00:1586:b0:447:b30c:4a65 with SMTP id
- u6-20020a056a00158600b00447b30c4a65mr10933212pfk.0.1632506617939; Fri, 24 Sep
- 2021 11:03:37 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6a11:458a:0:0:0:0 with HTTP; Fri, 24 Sep 2021 11:03:37
- -0700 (PDT)
-Reply-To: mrs.chantal166@gmail.com
-From:   mrs chantal <marksinclair537@gmail.com>
-Date:   Fri, 24 Sep 2021 20:03:37 +0200
-Message-ID: <CA+MH-ynjHDjLr5=mKkVrNQZUYrzbN9REQqmR9b694gPG2OOz=Q@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=eo3oiEr1UbKis+cGgoNa81IsW/nMPF7geldrmOwwFuY=;
+        b=2dUapJYZxTup5kDgOWLbHmkZtHKv5b357T/6kE7fhoRZALJkgF/t01ISYYT2VgWFom
+         tlL7KadpveBLr/5ntDiEgUbtLIFO/NyoAoA4BHnGOdWzzOYrF59Tab/9IQk8Og71p0Be
+         wcoKQ4l8St8Tzl9PK0XaJ75VCZayQ+yZrobWBk+1PGAtJE416QEC+rmvsInEPtzqy2mn
+         1w18EeK22q2F4+EUrVJFFNM/qQx4Q7XDPL93Z0y849NNpTdwnaLL5BMao7lbMA8XgFt4
+         wLvdfenP2a4flt9u7IsXWiBQqVD0hjM7Uzy7qQsnkMhC5GxOPNuTmfFNd8PB/jkOsGk3
+         YhwQ==
+X-Gm-Message-State: AOAM533sAWvnrsWZm4+uysipf1FHYmMNV7xHmlCYTImCUMW8DZMLdPfl
+        Ovc0nZSuWezr2ELolLGD7AtPiGferkhV/fFReV8=
+X-Google-Smtp-Source: ABdhPJwibx9xtDy45Z/SVSQah75LYowCfPsSlY/rg7xk15nK/LHJWCJELegKFGc8+tKwVg/nLTt0Mw==
+X-Received: by 2002:a63:9317:: with SMTP id b23mr4832874pge.199.1632506729015;
+        Fri, 24 Sep 2021 11:05:29 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id f16sm9425732pfk.110.2021.09.24.11.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 11:05:28 -0700 (PDT)
+Message-ID: <614e1368.1c69fb81.31e4d.d8f8@mx.google.com>
+Date:   Fri, 24 Sep 2021 11:05:28 -0700 (PDT)
+X-Google-Original-Date: Fri, 24 Sep 2021 18:05:22 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210924124334.228235870@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/63] 5.10.69-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 4.3 million dollars in this
-united nation the payment will be issue into atm visa card and send to
-you from the santander bank we need your address and your whatsapp
-number
-Fill the followings with your details;1. Your Name:2. Country:
-3. Age and Sex:4. Occupation:5. Id Card Identification
+On Fri, 24 Sep 2021 14:44:00 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.69 release.
+> There are 63 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.69-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+5.10.69-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
+
