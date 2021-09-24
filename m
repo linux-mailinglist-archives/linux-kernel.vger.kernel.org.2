@@ -2,112 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F53417077
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 12:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84618417094
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 13:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245658AbhIXKzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 06:55:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244742AbhIXKzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 06:55:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D53B61107;
-        Fri, 24 Sep 2021 10:53:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632480821;
-        bh=X3iFV4UPkFtW/wAMFdMZ6F4j16STunkrtRPHPmEE4hw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DEF/0Z0fl+rhizpmcrV8fQndAuSJVFtWcDBbyz3agsDkUVTpX5mrVOvgIiKtk81QQ
-         5/yz5R8BRCnEqio5PxV537tlhy0QQnbqptdIIfsRia03uPC6xidB0QNBdzdsKHyEwJ
-         ZmQFreX+O3Rg29MKwimIHG7VssqMuc0Aceh7OZ6eFHhGQ5utEagBwSXDTbff3oG3xW
-         lbJNj/dQEOwARNAQu6yvU6tsOBcSuDw5qld+dZJYHvP4mbgz/IhQYoTQH/aq2Aa1G1
-         mouf30CAefETXVu7SypcQ/v3Uj1cqBNXO72HQaj/fg/PHlRbSexOS6HukeT10Yr16u
-         cEvSYJ6SdY45g==
-Date:   Fri, 24 Sep 2021 05:57:33 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc:     linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] firewire: cdev: Fix function cast error
-Message-ID: <20210924105733.GA78013@embeddedor>
+        id S245073AbhIXLGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 07:06:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41368 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244510AbhIXLGA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 07:06:00 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632481466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R0xmbt7Av+GwVclLZhRHdpujH9c0cVpxkWZDFBaxUtM=;
+        b=OsU5VzNgLGtvscowoSnpo57k/J92eaphSGiTNWv8fOkgM9kvbwSbg3BzhDg5z2shi90pF7
+        sx8bFGSIY/PLP/Pm4QOwON/6l9t8NQwzid0k8fbAs4/ZsaOz4MsvpjKkt1u98P7za/S7Dd
+        cVEJbdAtNnSrfv3qVySmTASvY4yKUiqn8Zs49FxlYx/DIc+5tO6tna0q9GqRZ+a5iweaEt
+        ufZHJxBR1M1K3Os9x8r5wSL8xobVsMh8hcUrXwuMoSihqtLPAZie0AXMbe7NgjytJO7ie3
+        MkIbp0v63kSbVe/jxLfqRmDcHh8/2fCDIoMmf2Dy+hbXYVT0fFISwAupCo88RQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632481466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R0xmbt7Av+GwVclLZhRHdpujH9c0cVpxkWZDFBaxUtM=;
+        b=ADW+qoGHk4FKZa85mQXSXh5rJDACF1IJmkDonEbagVzDoaNlHD9Bf0S5UTGdfeByEe4oy1
+        H4oboX/eR8q281Ag==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
+In-Reply-To: <20210913200132.3396598-12-sohil.mehta@intel.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-12-sohil.mehta@intel.com>
+Date:   Fri, 24 Sep 2021 13:04:25 +0200
+Message-ID: <87r1dedykm.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following function cast error when building with
--Wcast-function-type:
+On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+> Add a new system call to allow applications to block in the kernel and
+> wait for user interrupts.
+>
+> <The current implementation doesn't support waking up from other
+> blocking system calls like sleep(), read(), epoll(), etc.
+>
+> uintr_wait() is a placeholder syscall while we decide on that
+> behaviour.>
+>
+> When the application makes this syscall the notification vector is
+> switched to a new kernel vector. Any new SENDUIPI will invoke the kernel
+> interrupt which is then used to wake up the process.
+>
+> Currently, the task wait list is global one. To make the implementation
+> scalable there is a need to move to a distributed per-cpu wait list.
 
-drivers/firewire/core-cdev.c: In function ‘ioctl_create_iso_context’:
-drivers/firewire/core-cdev.c:985:8: error: cast between incompatible function types from ‘void (*)(struct fw_iso_context *, dma_addr_t,  void *)’ {aka ‘void (*)(struct fw_iso_context *, long long unsigned int,  void *)’} to ‘void (*)(struct fw_iso_context *, u32,  size_t,  void *, void *)’ {aka ‘void (*)(struct fw_iso_context *, unsigned int,  long unsigned int,  void *, void *)’} [-Werror=cast-function-type]
-  985 |   cb = (fw_iso_callback_t)iso_mc_callback;
-      |        ^
-cc1: all warnings being treated as errors
+How are per cpu wait lists going to solve the problem?
 
-This helps with the ongoing efforts to globally enable -Wcast-function-type,
-so when Control Flow Integrity checking lands in the kernel, incompatible
-function type casting doesn't interfere with it.
+> +
+> +/*
+> + * Handler for UINTR_KERNEL_VECTOR.
+> + */
+> +DEFINE_IDTENTRY_SYSVEC(sysvec_uintr_kernel_notification)
+> +{
+> +	/* TODO: Add entry-exit tracepoints */
+> +	ack_APIC_irq();
+> +	inc_irq_stat(uintr_kernel_notifications);
+> +
+> +	uintr_wake_up_process();
 
-Link: https://github.com/KSPP/linux/issues/20
-Link: https://github.com/KSPP/linux/issues/102
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/firewire/core-cdev.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+So this interrupt happens for any of those notifications. How are they
+differentiated? 
+>  
+> +int uintr_receiver_wait(void)
+> +{
+> +	struct uintr_upid_ctx *upid_ctx;
+> +	unsigned long flags;
+> +
+> +	if (!is_uintr_receiver(current))
+> +		return -EOPNOTSUPP;
+> +
+> +	upid_ctx = current->thread.ui_recv->upid_ctx;
+> +	upid_ctx->upid->nc.nv = UINTR_KERNEL_VECTOR;
+> +	upid_ctx->waiting = true;
+> +	spin_lock_irqsave(&uintr_wait_lock, flags);
+> +	list_add(&upid_ctx->node, &uintr_wait_list);
+> +	spin_unlock_irqrestore(&uintr_wait_lock, flags);
+> +
+> +	set_current_state(TASK_INTERRUPTIBLE);
 
-diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-index fb6c651214f3..fd2923599667 100644
---- a/drivers/firewire/core-cdev.c
-+++ b/drivers/firewire/core-cdev.c
-@@ -957,7 +957,10 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
- {
- 	struct fw_cdev_create_iso_context *a = &arg->create_iso_context;
- 	struct fw_iso_context *context;
--	fw_iso_callback_t cb;
-+	union callback {
-+		fw_iso_callback_t sc;
-+		fw_iso_mc_callback_t mc;
-+	} cb;
- 	int ret;
- 
- 	BUILD_BUG_ON(FW_CDEV_ISO_CONTEXT_TRANSMIT != FW_ISO_CONTEXT_TRANSMIT ||
-@@ -970,7 +973,7 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
- 		if (a->speed > SCODE_3200 || a->channel > 63)
- 			return -EINVAL;
- 
--		cb = iso_callback;
-+		cb.sc = iso_callback;
- 		break;
- 
- 	case FW_ISO_CONTEXT_RECEIVE:
-@@ -978,11 +981,11 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
- 		    a->channel > 63)
- 			return -EINVAL;
- 
--		cb = iso_callback;
-+		cb.sc = iso_callback;
- 		break;
- 
- 	case FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL:
--		cb = (fw_iso_callback_t)iso_mc_callback;
-+		cb.mc = iso_mc_callback;
- 		break;
- 
- 	default:
-@@ -990,7 +993,7 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
- 	}
- 
- 	context = fw_iso_context_create(client->device->card, a->type,
--			a->channel, a->speed, a->header_size, cb, client);
-+			a->channel, a->speed, a->header_size, cb.sc, client);
- 	if (IS_ERR(context))
- 		return PTR_ERR(context);
- 	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
--- 
-2.27.0
+Because we have not enough properly implemented wait primitives you need
+to open code one which is blantantly wrong vs. a concurrent wake up?
 
+> +	schedule();
+
+How is that correct vs. a spurious wakeup? What takes care that the
+entry is removed from the list?
+
+Again. We have proper wait primitives.
+
+> +	return -EINTR;
+> +}
+> +
+> +/*
+> + * Runs in interrupt context.
+> + * Scan through all UPIDs to check if any interrupt is on going.
+> + */
+> +void uintr_wake_up_process(void)
+> +{
+> +	struct uintr_upid_ctx *upid_ctx, *tmp;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&uintr_wait_lock, flags);
+> +	list_for_each_entry_safe(upid_ctx, tmp, &uintr_wait_list, node) {
+> +		if (test_bit(UPID_ON, (unsigned long*)&upid_ctx->upid->nc.status)) {
+> +			set_bit(UPID_SN, (unsigned long *)&upid_ctx->upid->nc.status);
+> +			upid_ctx->upid->nc.nv = UINTR_NOTIFICATION_VECTOR;
+> +			upid_ctx->waiting = false;
+> +			wake_up_process(upid_ctx->task);
+> +			list_del(&upid_ctx->node);
+
+So any of these notification interrupts does a global mass wake up? How
+does that make sense?
+
+> +		}
+> +	}
+> +	spin_unlock_irqrestore(&uintr_wait_lock, flags);
+> +}
+> +
+> +/* Called when task is unregistering/exiting */
+> +static void uintr_remove_task_wait(struct task_struct *task)
+> +{
+> +	struct uintr_upid_ctx *upid_ctx, *tmp;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&uintr_wait_lock, flags);
+> +	list_for_each_entry_safe(upid_ctx, tmp, &uintr_wait_list, node) {
+> +		if (upid_ctx->task == task) {
+> +			pr_debug("wait: Removing task %d from wait\n",
+> +				 upid_ctx->task->pid);
+> +			upid_ctx->upid->nc.nv = UINTR_NOTIFICATION_VECTOR;
+> +			upid_ctx->waiting = false;
+> +			list_del(&upid_ctx->node);
+> +		}
+
+What? You have to do a global list walk to find the entry which you
+added yourself?
+
+Thanks,
+
+        tglx
+ 
