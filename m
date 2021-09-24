@@ -2,119 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140CD417DED
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C218417DEE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 00:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345558AbhIXWsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 18:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
+        id S233640AbhIXWwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 18:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343936AbhIXWss (ORCPT
+        with ESMTP id S232123AbhIXWwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 18:48:48 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD67C06161E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:47:14 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so15179958otq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:47:14 -0700 (PDT)
+        Fri, 24 Sep 2021 18:52:03 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21FCC061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:50:29 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id x124so16535751oix.9
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 15:50:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I9u2fLn+ZPe8iK9QXUAKNTnuENv/p85Wj7jzDDXa8Ro=;
-        b=fPbsej9cE3BqE1NW/7GZazdBAIpJwyAnhohBgNJHjwEdAHac9NTh6nM6TR4x79S5MK
-         /0PYK9wFKzqykqfyWqrF62XB3kxLqXNEOy5ei0gsdA/aNtq15xzY8Z5EMpPh0Z9U0VQv
-         sZshNrNE0C9/m80SX3l+XU/qg68zpjt+/2cIBbhwukI0kFK9gxMHkm6ZKTLJZyS29Q8b
-         FaKABMPZN66sHRF2SXm4na4tzZF5uYjvghSXAQYoandYhEc7n+XUrhS5r94ITVK+oCgv
-         KKiJ1RSS7+AR6NUy5EO9doo4U7q1A0HoYmdIASbCfA2y766CywAOxNRSoiG8MzQ/YcJA
-         PUvQ==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fFDW7lncbxlfdS6O3az8pUVpsIvToFPs2S/93aYbsYE=;
+        b=DCHhPp3O1tvVWh5nQ86u4yOWXvOhsgEuz0xHF/9ViKXs553UsDP90Ve/x006NTFn1S
+         HD4C3h9oDySg896+tpvl3c3i9tnCoG3h5N/PMUJK7HpwroAMguPmrA9Y2+tYq3qJgip9
+         thb4YclQrm1Cdq+NVM8Zr2lX+oCfYKj9W7Srs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I9u2fLn+ZPe8iK9QXUAKNTnuENv/p85Wj7jzDDXa8Ro=;
-        b=3bqryLCaXqfOW4kgzl0qflBSvhnzF5aQna73VRhiE2X4eai5Osaq0F7pYUMbFLmlDW
-         ctBG4DoR85uww89rBce/cWEn/9Bf+EbYDLiCTyiNyJ+TPprBzVT6zz0oT/xZ7K00wwSr
-         duDwACMYrVj0VvC0PDaE57pfftQ19i2iILAUby/6HfLxDIKBKT2cKSdhg1UPqdYXBhAr
-         cHRFiZ21VgHreWZMiPbEbZS0OfzBA8qMcuCH2gW0KjbZfXINRnlFIhqJHIzQFOHa8Fbc
-         1/giX0lTJ+EqLjDBeXY5i4U7DLak2fz7xPOAixLepNHdZwgey9ySatOoIXghszC5pFo5
-         A7oQ==
-X-Gm-Message-State: AOAM532O1uQz0LgZyS7g0k/Muuty/85ZQkOgzmjmkbRYKd0F3MdVnqRu
-        y+vzwb2vp9gfKpgwBKwrAp/63A==
-X-Google-Smtp-Source: ABdhPJzaanlkMWDf2F1GBLhbn1IwvShqjljYe0iALC2MB/ERVkmZ0/QlCQ/n1F/2VtloHzpVaytvOQ==
-X-Received: by 2002:a05:6830:805:: with SMTP id r5mr6147337ots.209.1632523632492;
-        Fri, 24 Sep 2021 15:47:12 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v16sm2462663oiv.23.2021.09.24.15.47.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 15:47:12 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 17:47:10 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rajesh Patil <rajpat@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, sboyd@kernel.org, mka@chromium.org,
-        dianders@chromium.org
-Subject: Re: [PATCH V10 1/8] dt-bindings: spi: Add sc7280 support
-Message-ID: <YU5VbmVdSuFE9syi@builder.lan>
-References: <1632399378-12229-1-git-send-email-rajpat@codeaurora.org>
- <1632399378-12229-2-git-send-email-rajpat@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fFDW7lncbxlfdS6O3az8pUVpsIvToFPs2S/93aYbsYE=;
+        b=gzCHQt6GL2AJFRa0ZW4CKzRSgUNDm5gxdaURUQMYRFRF1RnQF/k/VCy2pyefOVejoi
+         6matbnaaDUIn7Kozn+GrcBdOifz0gZmbK45yHNOBGFTW4kCm5dFY7n2mWsApcjmIfm/e
+         5WMmthnQhTaXElJCh5rjAllo+gMkptTDcqBkJiLA+vSrXsPeIF1cMt1x34pZ5kMYVsi4
+         Lb2C3zc2pfTC5mqj/gOHWXc4JX+2rlQVDB8hxtBrA0ZEMPWxXA+l/hoPTLLz13g4Xipt
+         uiiqGqyXU51ZRZ5NH0bKvrcXPXIlhmOGs8pTHvgmLxtyM/5xieRyJcw7CYuNFv1XGlA6
+         umAg==
+X-Gm-Message-State: AOAM5317irPsNga90WcyUJOk9xbQ+bR8qPwIKY8nJsYzIHOmShnx6qUJ
+        h3g96uNOdbfQqujktjNssm/ILhpCt4rt7jyZMMW+IQ==
+X-Google-Smtp-Source: ABdhPJwhNF96FPqLktf2AeTdHBfKB4aoz398F+kZSpY/G9t8bSrit9cTUBqsQk6btKhlTkjxJumwvEhMKpCgNF3WI5Y=
+X-Received: by 2002:aca:ebd5:: with SMTP id j204mr3429389oih.14.1632523829045;
+ Fri, 24 Sep 2021 15:50:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1632399378-12229-2-git-send-email-rajpat@codeaurora.org>
+References: <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
+ <20210920171042.oq3ndp3ox4xv5odh@gilmour> <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
+ <20210922095725.dk4vk42zb3kh7y6s@gilmour> <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
+ <CAHk-=wi=8Wp31FSyOH5A8KY+7f3dSuP62zUpvTtyvENm1Hh7xA@mail.gmail.com>
+ <CADVatmNZB6yjS6zXqUcY4xsUTyX3pa6VysB6RmT1CGV5LXer6g@mail.gmail.com>
+ <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com>
+ <CADVatmPDeSxeY3GTZyC6+G0N76su0E6Y3LF_h6BOcBf5QAtjvg@mail.gmail.com>
+ <CAHk-=whASMriPYRdH8kxC_UwObBtwHbPvf7rb58sUEZZyaFxJg@mail.gmail.com> <20210924133022.waqgtr5xjjxigong@gilmour>
+In-Reply-To: <20210924133022.waqgtr5xjjxigong@gilmour>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Sat, 25 Sep 2021 00:50:17 +0200
+Message-ID: <CAKMK7uFxO-ss86k483VJQJiHwcAYxNwD06xSEZStn+fWiRJ6iw@mail.gmail.com>
+Subject: Re: Regression with mainline kernel on rpi4
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 23 Sep 07:16 CDT 2021, Rajesh Patil wrote:
+On Fri, Sep 24, 2021 at 3:30 PM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Wed, Sep 22, 2021 at 01:25:21PM -0700, Linus Torvalds wrote:
+> > On Wed, Sep 22, 2021 at 1:19 PM Sudip Mukherjee
+> > <sudipm.mukherjee@gmail.com> wrote:
+> > >
+> > > I added some debugs to print the addresses, and I am getting:
+> > > [   38.813809] sudip crtc 0000000000000000
+> > >
+> > > This is from struct drm_crtc *crtc = connector->state->crtc;
+> >
+> > Yeah, that was my personal suspicion, because while the line number
+> > implied "crtc->state" being NULL, the drm data structure documentation
+> > and other drivers both imply that "crtc" was the more likely one.
+> >
+> > I suspect a simple
+> >
+> >         if (!crtc)
+> >                 return;
+> >
+> > in vc4_hdmi_set_n_cts() is at least part of the fix for this all, but
+> > I didn't check if there is possibly something else that needs to be
+> > done too.
+>
+> Thanks for the decode_stacktrace.sh and the follow-up
+>
+> Yeah, it looks like we have several things wrong here:
+>
+>   * we only check that connector->state is set, and not
+>     connector->state->crtc indeed.
+>
+>   * We also check only in startup(), so at open() and not later on when
+>     the sound streaming actually start. This has been there for a while,
+>     so I guess it's never really been causing a practical issue before.
 
-> Add compatible for sc7280 SoC.
-> 
-> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
-> Reviewed-by: Doug Anderson <dianders@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+You also have no locking, plus looking at ->state objects outside of
+atomic commit machinery makes no sense because you're not actually in
+sync with the hw state. Relevant bits need to be copied over at commit
+time, protected by some spinlock (and that spinlock also needs to be
+held over whatever other stuff you're setting to make sure we don't
+get a funny out-of-sync state anywhere).
 
-Can you please pick up Rob's review tag and send this patch out again,
-this time including the SPI maintainer (Mark Brown <broonie@kernel.org>)
-among the recipients.
+Liberally sprinkling a few NULL checks here doesn't fix much at all,
+it only papers over design bugs in the code.
+-Daniel
 
-Thanks,
-Bjorn
 
-> ---
-> Change in V10:
->  - As per Stephen's comments,
->    sorted compatible names in alphabet order
-> 
-> Changes in V9:
->  - No changes
-> 
-> Changes in V8:
->  - As per Doug's comments, added "qcom,sc7280-qspi" compatible
-> 
->  Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml b/Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml
-> index ef5698f..09aa955 100644
-> --- a/Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml
-> @@ -21,7 +21,10 @@ allOf:
->  properties:
->    compatible:
->      items:
-> -      - const: qcom,sdm845-qspi
-> +      - enum:
-> +          - qcom,sc7280-qspi
-> +          - qcom,sdm845-qspi
-> +
->        - const: qcom,qspi-v1
->  
->    reg:
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+> I'm still not entirely sure how we can end up in that situation though.
+> The only case I could think of is that:
+>
+>   * The firmware enables the HDMI controller, then boots Linux
+>
+>   * The driver starts, registers its audio card. connector->state is
+>     NULL then, and if the HDMI monitor is actually an HDMI monitor (vs a
+>     DVI monitor), the VC4_HDMI_RAM_PACKET_ENABLE bit that we test in
+>     startup will be set.
+>
+>   * The driver will create the connector->state (through a call to
+>     drm_mode_config_reset in vc4_kms_load), connector->state isn't NULL
+>     anymore, VC4_HDMI_RAM_PACKET_ENABLE is still set.
+>
+>   * The driver then disables the HDMI controller (in
+>     vc4_crtc_disable_at_boot) but never clears the
+>     VC4_HDMI_RAM_PACKET_ENABLE bit.
+>
+>   * Pulseaudio opens the audio device, startup succeeds because both
+>     conditions we test succeed.
+>
+>   * However, since we either never enabled the HDMI connector (or if it
+>     was disabled at some point), connector->state->crtc is NULL and we
+>     get our NULL pointer dereference.
+>
+>     The Ubuntu configuration has the framebuffer emulation and the
+>     framebuffer console enabled, so it's likely to be enabled and
+>     something (X.org?) comes along and disables the connector right when
+>     pulseaudio calls prepare().
+>
+> Maxime
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
