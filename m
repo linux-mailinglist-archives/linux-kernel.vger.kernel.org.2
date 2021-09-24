@@ -2,188 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628B5416DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5D6416DB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 10:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244697AbhIXI0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 04:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244650AbhIXI0G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 04:26:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3FEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 01:24:33 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1mTgV9-0001IK-F1; Fri, 24 Sep 2021 10:24:11 +0200
-Message-ID: <64913eca4ded0803a7e839902ff6d70c924c71c8.camel@pengutronix.de>
-Subject: Re: [RFC] PCI: imx6: add support for internal oscillator on i.MX7D
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Markus Niebel <Markus.Niebel@ew.tq-group.com>
-Date:   Fri, 24 Sep 2021 10:24:09 +0200
-In-Reply-To: <81c77a29362433fc5629ada442f0489046ce1051.1632319151.git.matthias.schiffer@ew.tq-group.com>
-References: <81c77a29362433fc5629ada442f0489046ce1051.1632319151.git.matthias.schiffer@ew.tq-group.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S244730AbhIXI1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 04:27:49 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52462 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244708AbhIXI1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 04:27:48 -0400
+Received: from zn.tnic (p200300ec2f0dd600c2485b7778a62ff5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d600:c248:5b77:78a6:2ff5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CAE201EC0419;
+        Fri, 24 Sep 2021 10:26:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632471970;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=g/1DsUfNrsaU19xQFtLQJwlQ4Uaxt39oFO0ESRLhfiU=;
+        b=hmRf+Exp2Zacicxpd2yCqIJGcjPE7uKThAFdVvRM151B/U9vehxWmX/Rp0Z7ZHiO4iTaai
+        9Njn4QufrRtSjXqAKSDHC1aVBA+JGxEzY/jNnpygLITJCn7j75K/QokKRU8v9SMyJ+ISou
+        zOxi0bAwCgIw4C00b0LJje5AFd7EY3Q=
+Date:   Fri, 24 Sep 2021 10:26:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
+Subject: Re: [PATCH 1/5] x86/mce/inject: Check if a bank is unpopulated
+ before error simulation
+Message-ID: <YU2Lm+11Pqg/RBK3@zn.tnic>
+References: <20210915232739.6367-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20210915232739.6367-2-Smita.KoralahalliChannabasappa@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210915232739.6367-2-Smita.KoralahalliChannabasappa@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
-
-Am Freitag, dem 24.09.2021 um 10:05 +0200 schrieb Matthias Schiffer:
-> Adds support for a DT property fsl,internal-osc to select the internal
-> oscillator for the PCIe PHY.
+On Wed, Sep 15, 2021 at 06:27:35PM -0500, Smita Koralahalli wrote:
+> The MCA_IPID register uniquely identifies a bank's type on Scalable MCA
+> (SMCA) systems. When an MCA bank is not populated, the MCA_IPID register
+> will read as zero and writes to it will be ignored. Check the value of
+> this register before trying to simulate the error.
 > 
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> Cc: Markus Niebel <Markus.Niebel@ew.tq-group.com>
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
 > ---
+>  arch/x86/kernel/cpu/mce/inject.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> Okay, so while this patch is nice and short, I'm note sure if it's a good
-> solution, hence I submit it as an RFC. It is roughly based on code from
-> older linux-imx versions [1] - although it seems this feature was never
-> supported on i.MX7D even by linux-imx (possibly because of compliance
-> issues with the internal clock, however I haven't found a definitive
-> erratum backing this), but only on other SoC like i.MX6QP.
-> 
-> The device tree binding docs of the driver are somewhat lacking, but
-> looking at [1] it seems that an external reference clock takes the place of
-> the "pcie_bus" clock - various pieces of the driver skip enabling/disabling
-> this clock when an external clock is configured.
-> 
-> From this I've come to the conclusion that the clock settings in
-> imx7d.dtsi do not really make sense: The pcie_bus clock is configured to
-> PLL_ENET_MAIN_100M_CLK, but this seems wrong for both internal and
-> external reference clocks:
-> 
-> - For the internal clock, the correct clock should be PCIE_PHY_ROOT_CLK
->   according to the reference manual
-
-The pcie_bus clock should be the reference clock for the peripherals
-and depends on the board design. I don't think it would typically be
-the PCIE_PHY_ROOT_CLK, but a clock derived from the same parent PLL, if
-a SoC clock is used for that purpose.
-
-> - The external clocks, this should refer to an actual external clock, or
->   possibly a fixed-clock node
-> 
-That's correct and the i.MX8MQ board DTs all point to a external clock
-node, as we currently default to external clocking there.
-
-> I would be great if someone with more insight into this could chime in
-> and tell me if my reasoning here is correct or not.
-> 
-> Unfortunately I only have our MBa7x at my disposal for further
-> experimentation. This board does not have an external reference clock for
-> the PCIe PHY, so I cannot test the behaviour for settings that use an
-> external clock. Without this patch (and adding the new flag to the MBa7x
-> DTS), the boot will hang while waiting for the PCIe link to come up.
-> 
-> So, for the actual question (given that my thoughts above make any sense):
-> How do we want to implement this?
-> 
-> 1. A simple boolean flag, like this patch provides
-> 2. Allow Device Trees not to specify a "pcie_bus" clock at all, meaning
->    it should use the internal clock
-
-The internal clock is a bus clock that needs to be enabled as all other
-clocks, so this is not an option.
-
-> 3. Special handling when the "pcie_bus" clock is configured to
->    PCIE_PHY_ROOT_CLK - is such a thing even possible, or is this
->    breaking the clock driver's abstraction too much?
-> 4. Something more involved, with a proper clock sel as the source for
->    "pcie_bus"
-> 
-> Solution 4. seems difficult to implement nicely, as the PCIe driver
-> also fiddles with IMX7D_GPR12_PCIE_PHY_REFCLK_SEL for power management:
-> the clock selection is switched back to the internal clock in
-> imx6_pcie_clk_disable(), which also disables its source PCIE_PHY_ROOT_CLK,
-> effectively gating the clock.
-> 
-There is currently work under way to support this case properly. The
-first step is to actually abstract the PCIe PHY in the right way,
-Richard has already sent some patches for this.
-
-Then we can add support for the different possibilities of using the
-refclock pad, as this isn't a simple choice between using the internal
-clock or a externally supplied one. The options are:
-
-1. Use internal clock to drive the PHY, if there isn't some other path
-to output this clock to the board this is effectively a split clocking
-setup.
-2. Use externally supplied clock provided to the PHY via the refclock
-pad.
-3. Use internal clock to driver the PHY, but output this clock on the
-refclock pad, which is known to be possible with the i.MX8MM PCIe PHY.
-
-Regards,
-Lucas
-
-> Regards,
-> Matthias
-> 
-> 
-> [1] https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/pci/host/pci-imx6.c?h=imx_4.1.15_2.0.0_ga
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 80fc98acf097..021499b9ee7c 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -83,6 +83,7 @@ struct imx6_pcie {
->  	struct regulator	*vpcie;
->  	struct regulator	*vph;
->  	void __iomem		*phy_base;
-> +	bool			internal_osc;
+> diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
+> index 0bfc14041bbb..51ac575c4605 100644
+> --- a/arch/x86/kernel/cpu/mce/inject.c
+> +++ b/arch/x86/kernel/cpu/mce/inject.c
+> @@ -577,6 +577,24 @@ static int inj_bank_set(void *data, u64 val)
+>  	}
 >  
->  	/* power domain for pcie */
->  	struct device		*pd_pcie;
-> @@ -637,7 +638,9 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
->  		break;
->  	case IMX7D:
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-> -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL, 0);
-> +				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
-> +				   imx6_pcie->internal_osc ?
-> +					IMX7D_GPR12_PCIE_PHY_REFCLK_SEL : 0);
->  		break;
->  	case IMX6SX:
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-> @@ -1130,6 +1133,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  				 &imx6_pcie->tx_swing_low))
->  		imx6_pcie->tx_swing_low = 127;
->  
-> +	if (of_property_read_bool(node, "fsl,internal-osc"))
-> +		imx6_pcie->internal_osc = true;
+>  	m->bank = val;
 > +
->  	/* Limit link speed */
->  	pci->link_gen = 1;
->  	ret = of_property_read_u32(node, "fsl,max-link-speed", &pci->link_gen);
+> +	/* Read IPID value to determine if a bank is unpopulated on the target
+> +	 * CPU.
+> +	 */
+
+Kernel comments style format is:
+
+	/*
+	 * A sentence ending with a full-stop.
+	 * Another sentence. ...
+	 * More sentences. ...
+	 */
+
+> +	if (boot_cpu_has(X86_FEATURE_SMCA)) {
+
+This whole thing belongs into inj_ipid_set() where you should verify
+whether the bank is set when you try to set the IPID for that bank.
+
+> +
+> +		/* Check for user provided IPID value. */
+> +		if (!m->ipid) {
+> +			rdmsrl_on_cpu(m->extcpu, MSR_AMD64_SMCA_MCx_IPID(val),
+> +				      &m->ipid);
+
+Oh well, one IPI per ipid write. We're doing injection so we can't be on
+a production machine so who cares about IPIs there.
+
+> +			if (!m->ipid) {
+> +				pr_err("Error simulation not possible: Bank %llu unpopulated\n",
 
 
+"Cannot set IPID for bank... - bank %d unpopulated\n"
+
+Also, in all your text, use "injection" instead of "simulation" so that
+there's no confusion.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
