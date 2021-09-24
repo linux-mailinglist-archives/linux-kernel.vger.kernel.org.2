@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C7B417C90
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 22:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DB5417CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Sep 2021 23:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345134AbhIXUyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 16:54:41 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:36912 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbhIXUyk (ORCPT
+        id S1346301AbhIXVCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 17:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231531AbhIXVCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 16:54:40 -0400
+        Fri, 24 Sep 2021 17:02:02 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35009C061571
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:00:29 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id v18so5591371edc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 14:00:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1632516787; x=1664052787;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NWi+/obJ5SRPKntuFtbOfRlh9MXiWPHJ5Z9qzdR+g9w=;
-  b=pgS08UP88HxYm/8iRmRD5YTagj373aMBuujMqyV6FV89nfkef8pqMPQO
-   a2ERtLzTelTjkNyhnkXezyn7uU/PuN2Gwj8ZdalQxVonqUnUBbkfbnviU
-   oJ+FwYnq62BFHXjTNgi3x4Dv9b6NlmYNdjlNxk1sPkOQ6PgEBicU9iaLa
-   s=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 24 Sep 2021 13:53:06 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2021 13:53:06 -0700
-Received: from hu-cgoldswo-sd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 24 Sep 2021 13:53:05 -0700
-Date:   Fri, 24 Sep 2021 13:52:58 -0700
-From:   Chris Goldsworthy <quic_cgoldswo@quicinc.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     Florian Fainelli <f.fainelli@gmail.com>,
-        Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
-        "Doug Berger" <opendmb@gmail.com>
-Subject: Re: [RFC] arm64: mm: update max_pfn after memory hotplug
-Message-ID: <20210924205258.GA17966@hu-cgoldswo-sd.qualcomm.com>
-References: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
- <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
- <6eb8319d-acba-b69a-5db3-5dca9ef426e8@gmail.com>
- <41789cad-76c6-0ea5-4aa1-3e4a52acff86@redhat.com>
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+RhLarViYwGGbP25CxUD/jDy/s2t/4w9AZqg5EOT7Hw=;
+        b=NagVNupFxjAvxPWCK33utYcdQ0e3WD1NklqnaifczqAPmuXMZ6QTLA2kNFnDRQwjZA
+         jh84b+iNxTu/1UQ3xoeUVOtWIrs8cOrT+f/BSJDjgvffbyaOIp4zrAbaCkHd+nCiF4Q2
+         5i/DCKk4vRPH7WAny2dwIOZNPURQHm4cNelzOceVqjWfnAUnL5vzvTYkZQ/aRDH8Ny5t
+         lJQo3moA8T4fV2m2+a2Mv6yak9t/9Am8/+MdSBV1o6aKMtDAJCfgcAswHVV3JESHA3Da
+         87bdpluMScl6wIiffbME7ubd6vlv2wyQdUxL981CqyxCZZSjIvc52onhnCfsC7Kwfnuz
+         8WcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+RhLarViYwGGbP25CxUD/jDy/s2t/4w9AZqg5EOT7Hw=;
+        b=57G6KK9C3bCzAmGuldk1KDjSUyo2J4sgIRKtw/uZ5Fycu5r15zZVUowfCd1mgXz+su
+         BsLHY55SIpaFtZEKPzzXtnMOkmf5stld+FfFdSItnyzHd2/eBtLaUgDpujhvmVQd+naD
+         S+fVHJ0KozbjaBSxZ6MagxrUU+7rQMGb+N3zerbZBvI4KErUxiXvtCQ/KdXKlbmvcmqi
+         tR78oRSWio9JnGu/iCxskXC5B1r6/3hCmZwBxaAaaxNl0G2OjvLmFX5k6wg7yC5nGUtV
+         tISICZOmSyTvoCfLcdzKZ4m+fPwyNiuvzPXVPalIc4AA7cj4Doy/qwLr3EpSKZXO+CnM
+         8k7g==
+X-Gm-Message-State: AOAM531IQg2KvXUpR3XEke65Rtx97h4JtnMZgEI5J00ocQeuEfyCxfoc
+        xnLLebilk3KiMOcxhhoL6P4=
+X-Google-Smtp-Source: ABdhPJx+cFJl5Z33gdtZEAKeibcSlrJqDnX3STossivb/eeRq5b7EAJVrjCST1fDkS7LxenJ2oYcQQ==
+X-Received: by 2002:a05:6402:c8b:: with SMTP id cm11mr7484866edb.368.1632517227567;
+        Fri, 24 Sep 2021 14:00:27 -0700 (PDT)
+Received: from tom-desktop.station (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
+        by smtp.gmail.com with ESMTPSA id 11sm5456109ejw.50.2021.09.24.14.00.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 14:00:26 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] staging: vt6655: replace camel case variables
+Date:   Fri, 24 Sep 2021 22:59:59 +0200
+Message-Id: <20210924210008.106355-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <41789cad-76c6-0ea5-4aa1-3e4a52acff86@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+bShortSlotTime -> b_short_slot_time
+ldBmThreshold -> ld_bm_threshold
+PortOffset -> port_offset
 
-Thanks for the response David.
+Tommaso Merciai (3):
+  staging: vt6655: replace camel case b_short_slot_time instead of
+    bShortSlotTime.
+  staging: vt6655: replace camel case ld_bm_threshold instead of
+    ldBmThreshold.
+  staging: vt6655: replace camel case port_offset instead of PortOffset.
 
-On Fri, Sep 24, 2021 at 10:17:46AM +0200, David Hildenbrand wrote:
-> no-map means that no direct mapping is to be created, right? We would still
-> have a memmap IIRC, and the pages are PG_reserved.
-> 
-> Again, I think this is very similar to just having no-map regions like
-> random memory holes within the existing memory layout.
+ drivers/staging/vt6655/baseband.c    |  58 +++++------
+ drivers/staging/vt6655/card.c        |  90 ++++++++--------
+ drivers/staging/vt6655/channel.c     |  10 +-
+ drivers/staging/vt6655/device.h      |   6 +-
+ drivers/staging/vt6655/device_main.c | 150 +++++++++++++--------------
+ drivers/staging/vt6655/mac.c         |  46 ++++----
+ drivers/staging/vt6655/power.c       |  24 ++---
+ drivers/staging/vt6655/rf.c          |  12 +--
+ drivers/staging/vt6655/rxtx.c        |  12 +--
+ 9 files changed, 204 insertions(+), 204 deletions(-)
 
-For those curious, see __reserved_mem_alloc_size() >
-early_init_dt_alloc_reserved_memory_arch() > memblock_mark_nomap() - the
-'no-map' attribute is read in __reserved_mem_alloc_size() and the pre-requisite
-steps need to have the relevant struct pages marked as PG_reserved 
-are taken in memblock_mark_nomap().
+-- 
+2.25.1
 
-> What Chris proposes here is very similar to
-> arch/x86/mm/init_64.c:update_end_of_memory_vars() called during
-> arch_add_memory()->add_pages() on x86-64.
-> 
-
-For other's reference, the patch was derived from what x86 is doing with max_pfn
-(such that we also set max_low_pfn as is done in arm64's mm/init.c.
