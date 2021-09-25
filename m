@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8863D4181E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 14:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123D54181CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 14:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244991AbhIYM0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 08:26:08 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:46137 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244901AbhIYM0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 08:26:06 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HGp4D4DHxz9sWB;
-        Sat, 25 Sep 2021 14:24:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1DwdK34FIWs6; Sat, 25 Sep 2021 14:24:28 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HGp4C2Wv2z9sW6;
-        Sat, 25 Sep 2021 14:24:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 439E38B76D;
-        Sat, 25 Sep 2021 14:24:27 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id OcVrmQgfaN-d; Sat, 25 Sep 2021 14:24:27 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.8])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0A00B8B763;
-        Sat, 25 Sep 2021 14:24:26 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18P8VmQ81326004
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sat, 25 Sep 2021 10:31:49 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18P8VmZP1326003;
-        Sat, 25 Sep 2021 10:31:48 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Neuling <mikey@neuling.org>
-Subject: [PATCH v2 3/3] powerpc: Remove init_mem_is_free
-Date:   Sat, 25 Sep 2021 10:31:44 +0200
-Message-Id: <285bdad6b27146a4fc7237eefa7227b14b8366e0.1632558672.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <a7a35416ddab4b42617e2c81fe5816c7f8d0c63f.1632558672.git.christophe.leroy@csgroup.eu>
-References: <a7a35416ddab4b42617e2c81fe5816c7f8d0c63f.1632558672.git.christophe.leroy@csgroup.eu>
+        id S244666AbhIYMKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 08:10:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46738 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236977AbhIYMKT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 08:10:19 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632571723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e2B/DnmBtUTdcjfM1I8ybzwGAyOjG6d7ZfGM/cv0fB8=;
+        b=3xSA4uJrcj05si1FtYNZ2gjHPgD+iZ3ZzFnVsR+SgUx5njX7sbDGiyw+ocIZ4L4EsWmfjU
+        GeoM4tBxBbSdGX6VPKH1EsY7i3KapzZsFJD/izk92L1dba9MaRgYGfSnxuSN3Oi5Ie3NSL
+        vBk0DyeW9hsAY1KhfdnwqE7TXATl3UPBUg69UFlCAcWphH3z1hqrefcDATSz8mxK25BqcG
+        UNod0jc26wnkW0zfKnAhdtpw6RMG6XE2KVyVOHVD+W75zSnB37J1LwlbnjQ1+DBbSil1iV
+        YPUokMNf8pAIjVjOMek6F/dR0Dd+K+MtyjrD2Ua0+B/W3kmZa47D0L1+09LZfg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632571723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e2B/DnmBtUTdcjfM1I8ybzwGAyOjG6d7ZfGM/cv0fB8=;
+        b=GiWhD8eeRtvuZCs7HMXPcrsK+5wD7DWsSVEj54dK3+H3KTnPYjd58ntmrhReVT9hByTGvZ
+        QabEZ4Ka3zSyrFDA==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
+In-Reply-To: <87r1dedykm.ffs@tglx>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-12-sohil.mehta@intel.com> <87r1dedykm.ffs@tglx>
+Date:   Sat, 25 Sep 2021 14:08:42 +0200
+Message-ID: <87czoweu2d.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-init_mem_is_free is not used anymore. Remove it.
+On Fri, Sep 24 2021 at 13:04, Thomas Gleixner wrote:
+> On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+>> +int uintr_receiver_wait(void)
+>> +{
+>> +	struct uintr_upid_ctx *upid_ctx;
+>> +	unsigned long flags;
+>> +
+>> +	if (!is_uintr_receiver(current))
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	upid_ctx = current->thread.ui_recv->upid_ctx;
+>> +	upid_ctx->upid->nc.nv = UINTR_KERNEL_VECTOR;
+>> +	upid_ctx->waiting = true;
+>> +	spin_lock_irqsave(&uintr_wait_lock, flags);
+>> +	list_add(&upid_ctx->node, &uintr_wait_list);
+>> +	spin_unlock_irqrestore(&uintr_wait_lock, flags);
+>> +
+>> +	set_current_state(TASK_INTERRUPTIBLE);
+>
+> Because we have not enough properly implemented wait primitives you need
+> to open code one which is blantantly wrong vs. a concurrent wake up?
+>
+>> +	schedule();
+>
+> How is that correct vs. a spurious wakeup? What takes care that the
+> entry is removed from the list?
+>
+> Again. We have proper wait primitives.
 
-Cc: Michael Neuling <mikey@neuling.org>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/setup.h | 1 -
- arch/powerpc/mm/mem.c            | 2 --
- 2 files changed, 3 deletions(-)
+Aisde of that this is completely broken vs. CPU hotplug.
 
-diff --git a/arch/powerpc/include/asm/setup.h b/arch/powerpc/include/asm/setup.h
-index 6c1a7d217d1a..426a2d8d028f 100644
---- a/arch/powerpc/include/asm/setup.h
-+++ b/arch/powerpc/include/asm/setup.h
-@@ -9,7 +9,6 @@ extern void ppc_printk_progress(char *s, unsigned short hex);
- 
- extern unsigned int rtas_data;
- extern unsigned long long memory_limit;
--extern bool init_mem_is_free;
- extern void *zalloc_maybe_bootmem(size_t size, gfp_t mask);
- 
- struct device_node;
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index c3c4e31462ec..5b1eae6c0356 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -26,7 +26,6 @@
- #include <mm/mmu_decl.h>
- 
- unsigned long long memory_limit;
--bool init_mem_is_free;
- 
- unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
- EXPORT_SYMBOL(empty_zero_page);
-@@ -312,7 +311,6 @@ void free_initmem(void)
- {
- 	ppc_md.progress = ppc_printk_progress;
- 	mark_initmem_nx();
--	init_mem_is_free = true;
- 	free_initmem_default(POISON_FREE_INITMEM);
- }
- 
--- 
-2.31.1
+CPUX
+  switchto(tsk)
+    tsk->upid.ndst = apicid(smp_processor_id();
 
+  ret_to_user()
+  ...
+  sys_uintr_wait()
+    ...
+    schedule()
+
+After that CPU X is unplugged which means the task won't be woken up by
+an user IPI which is issued after CPU X went down.
+
+Thanks,
+
+        tglx
