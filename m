@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED92E4183A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28E04183A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhIYRfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 13:35:30 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:54679 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhIYRf3 (ORCPT
+        id S229695AbhIYRfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 13:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229684AbhIYRfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 13:35:29 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MA844-1maGNO3dJC-00BgBI; Sat, 25 Sep 2021 19:33:52 +0200
-Received: by mail-wr1-f45.google.com with SMTP id w17so37285832wrv.10;
-        Sat, 25 Sep 2021 10:33:52 -0700 (PDT)
-X-Gm-Message-State: AOAM530ZxIXgn+94K8OkUS3qgxpNjXaw1PECyK32l9rK61LMql4g20ss
-        OEvlSJIpdQ0rVJ2CwLaWAyH2do7aDi8DcX+DuzA=
-X-Google-Smtp-Source: ABdhPJxHilNyrhkKldS3YRZ1E4Ye2gk1OmIUNcWp41Uyl1sY+smAmPNinSd9bb4kF6SjiPUsqd5p9aU8s9o12e2ei/c=
-X-Received: by 2002:a5d:6a08:: with SMTP id m8mr17718929wru.336.1632591232505;
- Sat, 25 Sep 2021 10:33:52 -0700 (PDT)
+        Sat, 25 Sep 2021 13:35:32 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782B8C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 10:33:57 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id b26so1060241edt.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 10:33:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gkBWlplztzPYq7xEWUT333cO8AXxvEK462eV+xY6d3Q=;
+        b=CmboLcZVzqLZ65pb77dGE9Tb+zbVPpRadSvxK+GRWbZ0/PMacdJT4C7khWZgMHDu3u
+         SXZaIJ4/TuZJqyc3/nqA4JgSQVT9lmUKDqhh7WmnB2v87/FKi8hFYvL0ZAfKJOXHmcpi
+         FzgRz8SGJEqBXnBylB7zICXbT67RqdjT7Zysr1wDhxzKOaEiKU1mPeFlQf8G59TWhhgB
+         lDcZbS2Ty/cDYSfNEwSK6JS5V/I5lOpmpYnRCSDJSqVlu6qfPaqX5PydiG/gLV7zptvb
+         ihFIpmYUpM7yzg4wIHkx+2IKiqJj25xJW5Illgh0Ad27FraOeJg3NTtMTjH3nV970yvC
+         QNuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gkBWlplztzPYq7xEWUT333cO8AXxvEK462eV+xY6d3Q=;
+        b=7Ob/cgjRu3jjEmsadcaYfiQyWf0ACR984ohKPRQHwjU56Od4CeDXKZsnlqm6ZVfMfO
+         rIN3VpZzbtFMqJLBavVov+g0zGf0ZDTeJ8aI9MZKC1bic0lfBDmGx4jV0IFVuNSsPMa2
+         bZb4nN0NLgYxKChF+C02CQqsXxCoGpn4oExmKbox7PasKGSa1n6YQGjRFiP76YKQfIeW
+         RjFBDQ4ZkgrCsiElKdk7VFvonCRNunePkP8xnSMOXDg6VWoNHwbdOCYMW6viO/YXJa6X
+         nsYrUMmharbU926qv+VhojekUTV7tHcAY/cBwmYPfGZTNY7ect+zt7n+h2yr80WkKi/q
+         kuKA==
+X-Gm-Message-State: AOAM531RsUaOFI4IFragxiQhCrXCUcADX7Gqu6NOQOJKZDAz3hcCyF9q
+        bNa+ylLrTa7L3hLaiyA7FhxUijKPB7UkZS7I56g=
+X-Google-Smtp-Source: ABdhPJwOhEN6jApVHtjpdjUknol4tn6WsTkxJF1T8o4ZP0cQAq1EKvHzYz9l2WQJqByLtAKc5JzZ6q/quRN7eOG9VCc=
+X-Received: by 2002:a17:906:b10d:: with SMTP id u13mr18123747ejy.135.1632591236112;
+ Sat, 25 Sep 2021 10:33:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210924211139.3477-1-sergio.paracuellos@gmail.com> <20210924211139.3477-3-sergio.paracuellos@gmail.com>
-In-Reply-To: <20210924211139.3477-3-sergio.paracuellos@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 25 Sep 2021 19:33:36 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3gHsNoyaNjyn3e8=+4YqnAM6YHNna_yKUxf7k8O_od=Q@mail.gmail.com>
-Message-ID: <CAK8P3a3gHsNoyaNjyn3e8=+4YqnAM6YHNna_yKUxf7k8O_od=Q@mail.gmail.com>
-Subject: Re: [PATCH 2/6] Revert "staging: mt7621-pci: set end limit for 'ioport_resource'"
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-staging@lists.linux.dev, neil@brown.name,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210921212732.1334-1-linux.amoon@gmail.com> <CAFBinCBHDTCkBBxP9u-Qh_k6ZSswJ_5XDL9oq2CSEkWG23dXfw@mail.gmail.com>
+In-Reply-To: <CAFBinCBHDTCkBBxP9u-Qh_k6ZSswJ_5XDL9oq2CSEkWG23dXfw@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Sat, 25 Sep 2021 23:03:43 +0530
+Message-ID: <CANAwSgQaw=1VAwQaW5PnE=5LxK1M9COCPiwTVi+iN=2D_y10fA@mail.gmail.com>
+Subject: Re: [PATCHv3] regulator: pwm-regulator: Make use of the helper
+ function dev_err_probe()
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:qr3SJ2McwjGt/CKAiShOSBztgFfRRYKJbfdyfSItsPnPikDwzvc
- zpWWw2tj7R4dDxv2UfswJ7YvwYk1U6/DL4gNNsZDAEvBBuuNrrrGTtyG2/T9Kn4K28/xBll
- wvUpeuohTOdvkE2+20NwvfQzjPLdlvK3F7/HklpBoaL3ePW22O4JbnDQEwyPR93hdhPa/Uv
- k+V0MipXtYHKOTNPrufYg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2PEUUVajbpg=:BcGZEcdYDoOMjMUT4ApLMI
- OkqVxKKxPHfPZ/XRjng2Tjh2VMt0TEx/P7xU5Bi+gc/45jURFiudicTK2YXetlgTYsHNKyoSx
- 0Sr0U+5paTkl17qe6Ag1Wb5j5+tk4hQQ3KMVObhMCkF9i8S/PCJHk7tQDAI+CkEZyc2YjRtPy
- tsstaehQ7rCuxRuZlJXBQGfwgHM6UvvFDvAqMdsS5ROQU3Ax6dXSz2928/GXiJaIDRpycnz5H
- 841BAZ3Ox3QIFpVfIzIGKvVt31+H8aV8y+VoiK67IrLpD2fR5/sjpFKCHjF+Ge9R6q0fBpcgs
- nOzkCofEEvwSIxYZkUeAlhXt9A+aUPLd6xZA95jLmmqnH37UBKUiDuNp8eh0H2p2w55TxzLng
- qWrZGW2EVXilLeq8k9zmjr+OrLTuYdF+gqKJdwO+x6XiaATllwhL8HBhSW1IM5RI4pyvdB3yV
- jKxk7EHM38szl+hPqX+HXqj2icRGxzaLjaD4NRZKSOj2kb8SXp2uYJzaCs8C1zOQ24ThR+URx
- 9T0LEs99r7j6DQYrsAHH53HY2nh2reVRaAJW9MnPsk8cYozhfwgCt11aIyzFOcmBr+cy/AVgS
- fWcVe6CmHWXz9WZZcJPMbKk4S0OeVfuuRPgA1f98RRpfJN7U04bEsi/3Z/MkJA0nTMTP7kebE
- uHnbYCMml3QKeBRq1IgXB2RoWX9AZ+NlsaZV/59ZRL+7d2DWRjrStFmqvbufOOrJUrUqituj5
- KNANRNOFBTaFkNC25PwDS6T7gHWKFJLNjUzDbhsNeiKT7/OmxZpMTDPvdQXj9DaCqJIj1INIg
- HfEnHUzp8mAAWTlDBv6/3TrvddPe65/D1ht8u0Nq0jYBPl8mbtMvOlWa4DNGdBr0goqZm1SYK
- 86VFg3b0ejVAd2SsMonw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 11:11 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> This reverts commit 50fb34eca2944fd67493717c9fbda125336f1655.
->
-> Since IO_SPACE_LIMIT is not really being changed there is no
-> real need to adjust the ioport_resource end limit.
->
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Hi Martin,
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+On Sat, 25 Sept 2021 at 22:42, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Hi Anand,
+>
+> On Tue, Sep 21, 2021 at 11:27 PM Anand Moon <linux.amoon@gmail.com> wrote:
+> [...]
+> > @@ -353,13 +353,8 @@ static int pwm_regulator_probe(struct platform_device *pdev)
+> >
+> >         drvdata->pwm = devm_pwm_get(&pdev->dev, NULL);
+> >         if (IS_ERR(drvdata->pwm)) {
+> > -               ret = PTR_ERR(drvdata->pwm);
+> > -               if (ret == -EPROBE_DEFER)
+> > -                       dev_dbg(&pdev->dev,
+> > -                               "Failed to get PWM, deferring probe\n");
+> > -               else
+> > -                       dev_err(&pdev->dev, "Failed to get PWM: %d\n", ret);
+> > -               return ret;
+> > +               return dev_err_probe(&pdev->dev, PTR_ERR(drvdata->pwm),
+> > +                                    "Failed to get PWM\n");
+> >         }
+> From functional perspective you're patch is looking good now.
+> I just noticed that the coding-style in the pwm-regulator driver is
+> not not use any curly brackets for the if block when there's only one
+> statement
+>
+> with the curly brackets removed (and if there are no other changes to
+> this patch) then you can add my:
+> Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>
+Thanks, I will update the patch in the next version.
+>
+> Best regards,
+> Martin
+
+Thanks
+-Anand
