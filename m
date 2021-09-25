@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A78D4183C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27D34183DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 20:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhIYRta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 13:49:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhIYRt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 13:49:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 560836044F;
-        Sat, 25 Sep 2021 17:47:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632592074;
-        bh=Ze6vBwvmZ7wdt9L6CTjw5sWkpWB96STO+ZNkkh07R5E=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=PbKZR+00VfR+FL5k9tA3g4t3FDgv5zq7JByPw7oyS7xee8Tr71JqTVrbcfAQd4hbK
-         PVDbYVJuGx/5aCBn8Id9NbfYYU5kfZMf/6VFr4D9VNiTFBMggoO/on/jkVZ53nQ827
-         qlU3MVUiGYjDRXlNSv+u07WVHgU+HZdEj4zOdwbpaXKcb+zOtk3fvnBROtDOGpCBei
-         yoX7w7ro4cQbKnyfAAXa/wfPY+pzSdgfuDmkA+3GZaABH6TvF9lzCfXXC6kuSpJOTZ
-         SBKmpxmue6LZASy1HvLUq4AA0XD1M4mERUs+yf/mlwUOsgDLnCwwvHuSex0a9TvmiW
-         8o8s3QWzWvGwg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4FC2D600E8;
-        Sat, 25 Sep 2021 17:47:54 +0000 (UTC)
-Subject: Re: [GIT PULL] TTY/Serial driver fixes for 5.15-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YU8ue5u+44spJB0v@kroah.com>
-References: <YU8ue5u+44spJB0v@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YU8ue5u+44spJB0v@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.15-rc3
-X-PR-Tracked-Commit-Id: 7049d853cfb928f50b6041cb4a5c6d6c1d8dd201
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f9d4be2507cfec4d4878fac7d3b85ae9a77da2ce
-Message-Id: <163259207432.4008.10429622150977510637.pr-tracker-bot@kernel.org>
-Date:   Sat, 25 Sep 2021 17:47:54 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+        id S229687AbhIYSEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 14:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhIYSE3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 14:04:29 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DD0C061570;
+        Sat, 25 Sep 2021 11:02:54 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mUC0g-007HJ0-Gg; Sat, 25 Sep 2021 18:02:50 +0000
+Date:   Sat, 25 Sep 2021 18:02:50 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        binutils@sourceware.org, gdb-patches@sourceware.org
+Subject: Re: [RFC][PATCH] coredump: save timestamp in ELF core
+Message-ID: <YU9kSgEmojalPybp@zeniv-ca.linux.org.uk>
+References: <20210925171507.1081788-1-rkovhaev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925171507.1081788-1-rkovhaev@gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 25 Sep 2021 16:13:15 +0200:
+On Sat, Sep 25, 2021 at 10:15:07AM -0700, Rustam Kovhaev wrote:
+> Hello Alexander and linux-fsdevel@,
+> 
+> I would like to propose saving a new note with timestamp in core file.
+> I do not know whether this is a good idea or not, and I would appreciate
+> your feedback.
+> 
+> Sometimes (unfortunately) I have to review windows user-space cores in
+> windbg, and there is one feature I would like to have in gdb.
+> In windbg there is a .time command that prints timestamp when core was
+> taken.
+> 
+> This might sound like a fixed problem, kernel's core_pattern can have
+> %t, and there are user-space daemons that write timestamp in the
+> report/journal file (apport/systemd-coredump), and sometimes it is
+> possible to correctly guess timestamp from btime/mtime file attribute,
+> and all of the above does indeed solve the problem most of the time.
+> 
+> But quite often, especially while researching hangs and not crashes,
+> when dump is written by gdb/gcore, I get only core.PID file and some
+> application log for research and there is no way to figure out when
+> exactly the core was taken.
+> 
+> I have posted a RFC patch to gdb-patches too [1] and I am copying
+> gdb-patches@ and binutils@ on this RFC.
+> Thank you!
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.15-rc3
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f9d4be2507cfec4d4878fac7d3b85ae9a77da2ce
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+IDGI.  What's wrong with the usual way of finding the creation date of any
+given file, including the coredump one?
