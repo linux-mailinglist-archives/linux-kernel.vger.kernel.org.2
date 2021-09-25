@@ -2,96 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72415417F61
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 04:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABA3417F78
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 05:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347690AbhIYCnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 22:43:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347630AbhIYCnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 22:43:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5254B60F6D;
-        Sat, 25 Sep 2021 02:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632537725;
-        bh=3qKrafgB+R9aRyaGwO41XzuxrHwCkhqpSPu2zki+01Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=nq/E5Tl8hN26pAjLMZx9l6bt3QGZdvGLZSB3OPXISzKglBhK0/b/vcUcseNhI6L/U
-         t+hdZfH4Pps8t0EA+Litu66sWufsr5aR4u/Oa13MZAbEtf8U/nfukgezUI3MBtnkjm
-         g1JjOvrQkX3SyVrRFsrTej4spU+wYVdRJl5BRoQXx2hKMNWEuT3POFGkB/vbVvMuwM
-         fj4NS20JrdggcqqKe1tF8wrGG3JdDTBqOehwDtevHa/wtUU7Kl3k4Jh/FsNbTnBAvt
-         CiumBeTCgRCF/J40Ur04jLsAvPxIsbFicf7ORh5qVwxBr2H/LimkLTwP6SMTV0gkTL
-         fdqA4wLTjksDQ==
-Date:   Fri, 24 Sep 2021 21:42:04 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     tsbogend@alpha.franken.de, robh@kernel.org, arnd@arndb.de,
-        catalin.marinas@arm.com, Liviu.Dudau@arm.com, bhelgaas@google.com,
-        matthias.bgg@gmail.com, gregkh@linuxfoundation.org,
-        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-staging@lists.linux.dev, neil@brown.name,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] PCI: allow architecture specific implementation of
- pci_remap_iospace()
-Message-ID: <20210925024204.GA459123@bhelgaas>
+        id S1347761AbhIYDME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 23:12:04 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:18257 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347739AbhIYDMD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 23:12:03 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HGYm33mYDz8tFD;
+        Sat, 25 Sep 2021 11:09:39 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 25 Sep 2021 11:10:26 +0800
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 25 Sep 2021 11:10:26 +0800
+Subject: Re: [PATCH] powerpc: don't select KFENCE on platform PPC_FSL_BOOK3E
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Marco Elver <elver@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+References: <20210924063927.1341241-1-liushixin2@huawei.com>
+ <f8d12860-56d7-5697-7cba-3cac95bb0a1c@csgroup.eu>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <63e78249-8878-cbe3-0a22-a094ef53164a@huawei.com>
+Date:   Sat, 25 Sep 2021 11:10:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924211139.3477-5-sergio.paracuellos@gmail.com>
+In-Reply-To: <f8d12860-56d7-5697-7cba-3cac95bb0a1c@csgroup.eu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/PCI: allow architecture specific implementation of/
-  PCI: Allow architecture-specific pci_remap_iospace()/
 
-(in subject)
 
-On Fri, Sep 24, 2021 at 11:11:37PM +0200, Sergio Paracuellos wrote:
-> pci_remap_iospace() was originally meant as an architecture specific helper,
-> but it moved into generic code after all architectures had the same requirements.
-> MIPS has different requirements so it should not be shared. The way for doing
-> this will be using a macro 'pci_remap_iospace' defined for those architectures
-> that need a special treatement. Hence, put core api function inside preprocesor
-> conditional code for 'pci_remap_iospace' definition.
+On 2021/9/24 14:41, Christophe Leroy wrote:
+>
+>
+> Le 24/09/2021 à 08:39, Liu Shixin a écrit :
+>> On platform PPC_FSL_BOOK3E, all lowmem is managed by tlbcam. That means
+>> we didn't really map the kfence pool with page granularity. Therefore,
+>> if KFENCE is enabled, the system will hit the following panic:
+>
+> Could you please explain a bit more what the problem is ?
+>
+> KFENCE has been implemented with the same logic as DEBUG_PAGEALLOC.
+>
+> DEBUG_PAGEALLOC is enabled on FSL_BOOK3E.
+>
+> In MMU_setup(), __map_without_ltlbs is set to 1 when KFENCE is enabled.
+>
+> __map_without_ltlbs should disable the use of tlbcam.
+>
+>
+> So what's wrong really ?
+>
+> Does DEBUG_PAGEALLOC work on FSL_BOOK3E ?
+>
+> Thanks
+> Christophe
+>
+hi Christophe,
 
-Rewrap above to fit in 75 columns so "git log" output doesn't wrap.
-Add blank line between paragraphs.
+The phenomenon is that kernel panic in the kfence_protect_page function because
+__kfence_pool is not mapped with page granularity.
 
-s/treatement/treatment/
-s/api/API/
+The problem is that in the mapin_ram function, the return value(i.e base) of mmu_mapin_ram
+is equal to top. As a result, no level-2 page table is created for [base, top]. It seems that
+__map_without_ltlbs didn't diable the use of tlbcam.
 
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+I have tried to force page table for all lowmem, then this problem will go away
+but the kfence_test failed, which could be explained by the fact that tlbcam is still used.
 
-With above fixed,
+By the way, DEBUG_PAGEALLOC works well on FSL_BOOK3E without level-2 page table.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Thanks,
+>>
+>>      BUG: Kernel NULL pointer dereference on read at 0x00000000
+>>      Faulting instruction address: 0xc01de598
+>>      Oops: Kernel access of bad area, sig: 11 [#1]
+>>      BE PAGE_SIZE=4K SMP NR_CPUS=4 MPC8544 DS
+>>      Dumping ftrace buffer:
+>>         (ftrace buffer empty)
+>>      Modules linked in:
+>>      CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc3+ #298
+>>      NIP:  c01de598 LR: c08ae9c4 CTR: 00000000
+>>      REGS: c0b4bea0 TRAP: 0300   Not tainted  (5.12.0-rc3+)
+>>      MSR:  00021000 <CE,ME>  CR: 24000228  XER: 20000000
+>>      DEAR: 00000000 ESR: 00000000
+>>      GPR00: c08ae9c4 c0b4bf60 c0ad64e0 ef720000 00021000 00000000 00000000 00000200
+>>      GPR08: c0ad5000 00000000 00000000 00000004 00000000 008fbb30 00000000 00000000
+>>      GPR16: 00000000 00000000 00000000 00000000 c0000000 00000000 00000000 00000000
+>>      GPR24: c08ca004 c08ca004 c0b6a0e0 c0b60000 c0b58f00 c0850000 c08ca000 ef720000
+>>      NIP [c01de598] kfence_protect+0x44/0x6c
+>>      LR [c08ae9c4] kfence_init+0xfc/0x2a4
+>>      Call Trace:
+>>      [c0b4bf60] [efffe160] 0xefffe160 (unreliable)
+>>      [c0b4bf70] [c08ae9c4] kfence_init+0xfc/0x2a4
+>>      [c0b4bfb0] [c0894d3c] start_kernel+0x3bc/0x574
+>>      [c0b4bff0] [c0000470] set_ivor+0x14c/0x188
+>>      Instruction dump:
+>>      7c0802a6 8109d594 546a653a 90010014 54630026 39200000 7d48502e 2c0a0000
+>>      41820010 554a0026 5469b53a 7d295214 <81490000> 38831000 554a003c 91490000
+>>      random: get_random_bytes called from print_oops_end_marker+0x40/0x78 with crng_init=0
+>>      ---[ end trace 0000000000000000 ]---
+>>
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> ---
+>>   arch/powerpc/Kconfig | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+>> index d46db0bfb998..cffd57bcb5e4 100644
+>> --- a/arch/powerpc/Kconfig
+>> +++ b/arch/powerpc/Kconfig
+>> @@ -185,7 +185,7 @@ config PPC
+>>       select HAVE_ARCH_KASAN            if PPC32 && PPC_PAGE_SHIFT <= 14
+>>       select HAVE_ARCH_KASAN_VMALLOC        if PPC32 && PPC_PAGE_SHIFT <= 14
+>>       select HAVE_ARCH_KGDB
+>> -    select HAVE_ARCH_KFENCE            if PPC32
+>> +    select HAVE_ARCH_KFENCE            if PPC32 && !PPC_FSL_BOOK3E
+>>       select HAVE_ARCH_MMAP_RND_BITS
+>>       select HAVE_ARCH_MMAP_RND_COMPAT_BITS    if COMPAT
+>>       select HAVE_ARCH_NVRAM_OPS
+>>
+> .
+>
 
-> ---
->  drivers/pci/pci.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index ce2ab62b64cf..0ec57bb01a88 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -4123,6 +4123,7 @@ unsigned long __weak pci_address_to_pio(phys_addr_t address)
->   * architectures that have memory mapped IO functions defined (and the
->   * PCI_IOBASE value defined) should call this function.
->   */
-> +#ifndef pci_remap_iospace
->  int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
->  {
->  #if defined(PCI_IOBASE) && defined(CONFIG_MMU)
-> @@ -4146,6 +4147,7 @@ int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
->  #endif
->  }
->  EXPORT_SYMBOL(pci_remap_iospace);
-> +#endif
->  
->  /**
->   * pci_unmap_iospace - Unmap the memory mapped I/O space
-> -- 
-> 2.25.1
-> 
