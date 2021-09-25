@@ -2,131 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8654181A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0084F4181AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244525AbhIYLcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 07:32:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46636 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbhIYLcu (ORCPT
+        id S244594AbhIYLk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 07:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhIYLk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 07:32:50 -0400
-Date:   Sat, 25 Sep 2021 11:31:12 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632569474;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dkG1RbVWYKVnLnWbroKZY4D6SgQ0oBEKHZi9Yk1Ax5c=;
-        b=oRB9r3hItnZZ01S72Hb26oFeNs60B5JB0vU8dUIlgwPqd2iwG1cUy3xxG1POpUD/GLqc29
-        xjOP94Kkda5z0DxmxNBcAYMS+zEPoUY7Sk5809uukjtupzdqzx2l/z+bTYSBHcq8bbndD8
-        iBMRA5VRo0cddyWiMxapcuMMEiDHjf60q9hz0ojLn+hZtk9qUZU2OFxUf9YVMQ59cf3Lt/
-        eq0XEIEH1g2pJO7tfsiOnUwbF8cIU45diB12ZltpikD+VutpBhTe6GYZyW1EusOcmDp8Q6
-        UxksGFzscFTmgO3el5AVlQgn2CcwJTWy4RGO3OF+5G2mPEizoTZ5jcNkWLTm1w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632569474;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dkG1RbVWYKVnLnWbroKZY4D6SgQ0oBEKHZi9Yk1Ax5c=;
-        b=fyr38wA6QMUC0ZGmNypDI5hnOjVaGcgBSEC3wJWlqM22kxaug0+ZuwElNJGNuKKlvlnQgp
-        dWsqpbHnaKdpGAAw==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/umip: Downgrade warning messages to debug loglevel
-Cc:     mrueckert@suse.com, Borislav Petkov <bp@suse.de>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210907200454.30458-1-bp@alien8.de>
-References: <20210907200454.30458-1-bp@alien8.de>
+        Sat, 25 Sep 2021 07:40:28 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202C1C061570;
+        Sat, 25 Sep 2021 04:38:54 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id i24so19496065wrc.9;
+        Sat, 25 Sep 2021 04:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kxpv1Vy6pYbyF1BOQEj3cs5wBqi8pHepFHdqGdQ/R9M=;
+        b=DPrpEgC0X7aTJh/sIZdIt5MciRnryOGZs90IJdyIGD9COAPJ5XjGHe9Yf0nPXONpGH
+         z9AahC6xjKwrllYvKDocn2ryrkmg8D0YoA3AQqWhoXhlNbEcTK7zfVZ1lDMchUiU40QI
+         eSafJvX3tthIsSieEmno0w1BOplCIF2GrOr4FZzyaXIl1dVI2dttLhANLE3QK8nZX8m2
+         FEn26ERfAnvpS4OdNd82IGJYl+1OJvKq50s8EQbDsiNi/0dWlLU1JUsNp29xDeGgW/ng
+         t/TVu4qurByoIWZjZ/6cb88uCLFTOEDUi5WXfBuQ88h4H1aYOlQFTXRFuN12d4vSK/82
+         hcdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kxpv1Vy6pYbyF1BOQEj3cs5wBqi8pHepFHdqGdQ/R9M=;
+        b=Ne6OTim7OacZyxe+Z6XaCb9HGcd0uQ9zi427UlcbV5FDVt8TLY6ZDPifZGDFuRoXPI
+         m/1a9K/6KIOkq8LP+/ou4mDGVXPN7MvWkX0p6wfskJAu13WDdmSvQFgW4K2advHv1bCy
+         JMrj0wJA4ROd7EsKL1E0Gz9LJS/PQCAnmiXyQ5dRqth4nb+k5sTUmzq5xJZbf6QY3isY
+         FWMoi4bsQqZFdeXX4GQQ/ENaNIPIt1yVzoRiDyd9+w6FmJAUJ7ANKloRwDLiFcuCHcem
+         v3IwiUEj0/cIpHKQ0R13woC/Yi/CCoMTSY/NRg6VUqDPCz6Ls3ziRQtBGtnxO/HhSm+C
+         0k5g==
+X-Gm-Message-State: AOAM532ysLtirinBgc9ZetA/IcHImRg3v51OaN20zSN+t8TNp8PfQOU+
+        pJHsAjNizLpMxbwBnEBYUnViWu3F/EW9cA==
+X-Google-Smtp-Source: ABdhPJx5jxuJqVl7h+NXrefCqjyk/PMZB73LL/GOidROgSIeMPukjqukX7oDQO/z+a3T9T97hl1oxA==
+X-Received: by 2002:a5d:5903:: with SMTP id v3mr16644354wrd.232.1632569932758;
+        Sat, 25 Sep 2021 04:38:52 -0700 (PDT)
+Received: from oci-gb-a1.vcn08061408.oraclevcn.com ([2603:c020:c001:7eff:7c7:9b76:193f:d476])
+        by smtp.googlemail.com with ESMTPSA id c4sm11033157wrt.23.2021.09.25.04.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Sep 2021 04:38:52 -0700 (PDT)
+From:   Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Christian Lamparter <chunkeey@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Matthew Hagan <mnhagan88@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 1/2] net: bgmac-platform: handle mac-address deferral
+Date:   Sat, 25 Sep 2021 11:36:27 +0000
+Message-Id: <20210925113628.1044111-1-mnhagan88@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Message-ID: <163256947294.25758.18286750023731125992.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
+This patch is a replication of Christian Lamparter's "net: bgmac-bcma:
+handle deferred probe error due to mac-address" patch for the
+bgmac-platform driver [1].
 
-Commit-ID:     f3f07ae425bc09039d9e0c73c86b76f95d9d5cd6
-Gitweb:        https://git.kernel.org/tip/f3f07ae425bc09039d9e0c73c86b76f95d9=
-d5cd6
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Wed, 15 Sep 2021 16:39:18 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sat, 25 Sep 2021 13:23:28 +02:00
+As is the case with the bgmac-bcma driver, this change is to cover the
+scenario where the MAC address cannot yet be discovered due to reliance
+on an nvmem provider which is yet to be instantiated, resulting in a
+random address being assigned that has to be manually overridden.
 
-x86/umip: Downgrade warning messages to debug loglevel
+[1] https://lore.kernel.org/netdev/20210919115725.29064-1-chunkeey@gmail.com
 
-After four years in the wild, those have not fullfilled their
-initial purpose of pushing people to fix their software to not use
-UMIP-emulated instructions, and to warn users about the degraded
-emulation performance.
-
-Yet, the only thing that "degrades" performance is overflowing dmesg
-with those:
-
-  [Di Sep  7 00:24:05 2021] umip_printk: 1345 callbacks suppressed
-  [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: =
-SIDT instruction cannot be used by applications.
-  [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: =
-For now, expensive software emulation returns the result.
-  ...
-  [Di Sep  7 00:26:06 2021] umip_printk: 2227 callbacks suppressed
-  [Di Sep  7 00:26:06 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b940: =
-SIDT instruction cannot be used by applications.
-
-and users don't really care about that - they just want to play their
-games in wine.
-
-So convert those to debug loglevel - in case someone is still interested
-in them, someone can boot with "debug" on the kernel cmdline.
-
-Reported-by: Marcus R=C3=BCckert <mrueckert@suse.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Link: https://lkml.kernel.org/r/20210907200454.30458-1-bp@alien8.de
+Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 ---
- arch/x86/kernel/umip.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/broadcom/bgmac-platform.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
-index 576b47e..5a4b213 100644
---- a/arch/x86/kernel/umip.c
-+++ b/arch/x86/kernel/umip.c
-@@ -92,8 +92,8 @@ static const char * const umip_insns[5] =3D {
-=20
- #define umip_pr_err(regs, fmt, ...) \
- 	umip_printk(regs, KERN_ERR, fmt, ##__VA_ARGS__)
--#define umip_pr_warn(regs, fmt, ...) \
--	umip_printk(regs, KERN_WARNING, fmt,  ##__VA_ARGS__)
-+#define umip_pr_debug(regs, fmt, ...) \
-+	umip_printk(regs, KERN_DEBUG, fmt,  ##__VA_ARGS__)
-=20
- /**
-  * umip_printk() - Print a rate-limited message
-@@ -361,10 +361,10 @@ bool fixup_umip_exception(struct pt_regs *regs)
- 	if (umip_inst < 0)
- 		return false;
-=20
--	umip_pr_warn(regs, "%s instruction cannot be used by applications.\n",
-+	umip_pr_debug(regs, "%s instruction cannot be used by applications.\n",
- 			umip_insns[umip_inst]);
-=20
--	umip_pr_warn(regs, "For now, expensive software emulation returns the resul=
-t.\n");
-+	umip_pr_debug(regs, "For now, expensive software emulation returns the resu=
-lt.\n");
-=20
- 	if (emulate_umip_insn(&insn, umip_inst, dummy_data, &dummy_data_size,
- 			      user_64bit_mode(regs)))
+diff --git a/drivers/net/ethernet/broadcom/bgmac-platform.c b/drivers/net/ethernet/broadcom/bgmac-platform.c
+index 4ab5bf64d353..df8ff839cc62 100644
+--- a/drivers/net/ethernet/broadcom/bgmac-platform.c
++++ b/drivers/net/ethernet/broadcom/bgmac-platform.c
+@@ -192,6 +192,9 @@ static int bgmac_probe(struct platform_device *pdev)
+ 	bgmac->dma_dev = &pdev->dev;
+ 
+ 	ret = of_get_mac_address(np, bgmac->net_dev->dev_addr);
++	if (ret == -EPROBE_DEFER)
++		return ret;
++
+ 	if (ret)
+ 		dev_warn(&pdev->dev,
+ 			 "MAC address not present in device tree\n");
+-- 
+2.27.0
+
