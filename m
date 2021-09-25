@@ -2,412 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6463418423
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 21:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3990418425
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 21:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhIYT2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 15:28:34 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:22316 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhIYT2d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 15:28:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632598003;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=5ZfbEkHotO0OwC5RvUv/V+UwqM0dDcOFdOgSfmI5JWE=;
-    b=P0/2JAiGk/1QjzcumzIVg1unBF+2kH8tTT0baWR8vryEXm6UzkvxklzHVuVeO6U/D6
-    jlxjmj6qFw2xuMmADe9lc223QNNjvKYPx98Gfvrexce1XcfNBLqK/nM5/acGLsmepMAq
-    OdbW/LMxn1QFpQTZoVfS8uVUKh5vTdim3gHrdsmB1jxyCXQBMGKprFxQ8sLbyAKlyYpS
-    5RRYpLSKk43tG9tryUBZmczy9uS1SmXazW3EzdDZT/9Ny2641kTva2LOcd948V4wmanQ
-    He54w30pEMyivTL+Q1s3RKue9QR70UViovXlH4l4/3vX6FWcnblIX1DpaoHJGeBbhMJS
-    3pYA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NIGH/jrwDeotg=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x8PJQgSfw
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Sat, 25 Sep 2021 21:26:42 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <HU700R.NAHL5IU3NRE81@crapouillou.net>
-Date:   Sat, 25 Sep 2021 21:26:42 +0200
-Cc:     Paul Boddie <paul@boddie.org.uk>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S229835AbhIYT2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 15:28:48 -0400
+Received: from mail-vi1eur05on2066.outbound.protection.outlook.com ([40.107.21.66]:20416
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229711AbhIYT2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 15:28:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XDMelngmLJsHMCElPmV7eixtK1VLDQuQ+wIYSb+O+jKtJiJOzl/Ix6NMn1fJwFtB/Q6p5dxPhfYlo5A3sPgBrtHEuqyVKuEO4pcenB1chDGI2W0w/+/2wLHLIqb/D8BOzU2CH+4WU2IcSuniQDH9Etwx+XV/phI3NRSQF3xKPJG3PhlzI3K1NE0U9Xg/8mu634uSbgv9kjt72i8L6JDXLcnN0lGXhnP428CEObwh2GSJtxxQq8bJpn00dm9C065qbbju1ufUyob5ZEAoEpdbOxLZSXE94pT6AY+KPZX8XhjHxnmBBxbuwqYvf6cpRMGeLNmdHnfqHT7wV0l3AJtroA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=KJ1vMhSQLCphqvu3AfrZOTeAmOug2seu+xGc5s1iJok=;
+ b=No3z/u91VqkI8SjxGOfXbfYPoJJQcuBm+RfzN9nlpMvz3fGlahtCiKBv6GCKyfax5T5PdCYw/YRky4g34hT9+9ulDrz3i04ZZwu40irW5Aps7H8vEJH1G88Oev63rOmfCmHawZvkui8/E9HCMR5gfgKkoquHrsyrA0B6XpLqbxnl3At+Hoi+Hu3mHIE/X58qya+C4+MaoihAemdEq3zq3rWtXsYkDtX0jEH7LcCOqU/v9/UYqcsTs8W4v4HSUCUDoI+fuisiYbLPCZvwPN9JgsZOxe1SfDd3IIpecvyoUSlHeNbBl0CKRog3Wh0uk6xdkMG/okZ9jHL9bu6wbPDLQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KJ1vMhSQLCphqvu3AfrZOTeAmOug2seu+xGc5s1iJok=;
+ b=Su3dprtl6fo6xMGdb2Wf8zijVPcROxreDpDZ3clzEs4mdDepr7mfJF1ox6s0kLgWCTp+r70XQtNCfJDgLlILXT/K6q8nQNNejcX/Iwhf7lydfFrOEBET97sxxbTlvHQ3BRFYORO/BSET48qOwj7U7fzUu9Vo071dIPk0GYTdWG8=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR0402MB2863.eurprd04.prod.outlook.com (2603:10a6:800:af::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Sat, 25 Sep
+ 2021 19:26:59 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4544.020; Sat, 25 Sep 2021
+ 19:26:59 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH v5 net-next 3/9] net: mscc: ocelot: add MAC table stream
+ learn and lookup operations
+Thread-Topic: [PATCH v5 net-next 3/9] net: mscc: ocelot: add MAC table stream
+ learn and lookup operations
+Thread-Index: AQHXsSiIqyPSbQvi9k+5oHNKLiCyoqu1JEsA
+Date:   Sat, 25 Sep 2021 19:26:59 +0000
+Message-ID: <20210925192658.2wi6egpufqut5hsf@skbuf>
+References: <20210924095226.38079-1-xiaoliang.yang_1@nxp.com>
+ <20210924095226.38079-4-xiaoliang.yang_1@nxp.com>
+In-Reply-To: <20210924095226.38079-4-xiaoliang.yang_1@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1ad77a97-9411-4dd0-c111-08d9805a71e2
+x-ms-traffictypediagnostic: VI1PR0402MB2863:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0402MB286373AD0E486608D7541111E0A59@VI1PR0402MB2863.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oIaGUcwjl3TaMx4dqngSGST0G8CkRTsXs7+b/H5UFun972FKUDzmFBV4lnNj5PjMiz7D10sfKbj+1uq0Af1uJjEScdAilO3c38Fr04xQ6FIq/BeX1FPjNvMcGUbLZz4P1vVFHuT/mm9PSE5u/6Z9iycqpejySU+iM8Yg56aGuwKRtXGye3urH7k+4rOjUgLdbrOTp5VfYEoVlQmCF8CuuUs91hRhM2cIQBTBNal9Zr7vcBhzyN268HqtUulzHsj3yevwhX3sZOXCXYBDOXAQdHvRS8IfQm4TegXkw6P4XvDeM9U8wFyQo+2BglRXBCigG/VdsCciGvk0EWi/4TyTAQ+cHf+WTy1Mklq+ISew3KUBEX24VJSjVJIyBjeMXTAsFOxdnuAxJpINBxUlA0AoUKswkdDasK6jySOpjVkmthtnifYBkPhUU0FHBKll8XLvELh3oLTyd79+JpSuGGjEGix55KMiAwsE6a5f7gGX+z+vkZ2MS3ZSFQZETZMZLr82KSpyKv4nISCtvrjG4x2pcz0zASZw65VleXNq6bmtmbg6gTRDv59OoJ/wH3YYp/XhSM7Z6LZgQ5DWEPabQHexNPACdDw2Cn0VParC7OP+d/aKQb2ZszSz4xNPr3NEV+SEJRlvWIIhhLWMuGk+dCwVRywcsKbxfzSJTHKYCkwcJ9mC7ZmdMJz691rHn81dzgfJwtyUrk98PQ4t6YdD4JIEBA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(44832011)(54906003)(186003)(2906002)(38070700005)(6636002)(122000001)(26005)(86362001)(38100700002)(7416002)(66476007)(66556008)(64756008)(66446008)(91956017)(76116006)(4326008)(66946007)(71200400001)(5660300002)(8936002)(6512007)(6506007)(8676002)(9686003)(316002)(33716001)(508600001)(6486002)(83380400001)(1076003)(6862004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?N8b9dXswWz7QD1ZNACeN1w5jGxQG8Vo8CPyk88MThe1D93E73ktM2yWidakm?=
+ =?us-ascii?Q?98UaVUfT+4hGv+fPKIlqr55H593GivacLrR8JdcVk4kqS1X7/cwZrlzNBN3F?=
+ =?us-ascii?Q?aKI4o5Vf/khfcVWsRUnCRfp0aew40eUK/KAXEcZKZe4KRWfviwWzl7xSWhxx?=
+ =?us-ascii?Q?MlqVhTbs4BHAgV8+L0TzTaOOe415wGBoYt4GekOFZf++lD6c8isS+YqwFV8b?=
+ =?us-ascii?Q?7OtWlWEJ2D7vUJZLJzrGa7prYWMxJsPX3EkmcHEFR4ICjcjBf846COF5Dz3n?=
+ =?us-ascii?Q?l+UNL+2o2DXl6ck+0OdZ6/fwn86hYNJCcSt9slfSFTsYrWJGF1e67SJO8EC9?=
+ =?us-ascii?Q?19LZL0TPcLEuXut6Y55R178jENUJPKLFNncAwiaXyPDMi8qF8dct9VH6p8oH?=
+ =?us-ascii?Q?8pOJxxa0rdp6P6XY2D6R6rdyTjQE6i95KMHs8iG+p0bRHBE2T4LWlUoNMwm1?=
+ =?us-ascii?Q?piipBOyjIiabO/6HnNf+BXc7kSA+i2quwHBZmeALzoeuwLmIX1iK5DRzj+1j?=
+ =?us-ascii?Q?/AO/o4iEkLOBXRBBa0svXsSPAiOHlIFkDLsxfzALsCCCeV8c7dPdvf3cIq+m?=
+ =?us-ascii?Q?PmJ2KQSUdoF1TLDtzHSH/yVt0sv1/fKT4XBSKmN4eiwN/0CmmYQRqedxgrnC?=
+ =?us-ascii?Q?eUl7X6rIbUIo6Vqn/eiKf/pd1SwIqzcVZqLNYTRmCMq7gVQ7DsMBLopnIjvb?=
+ =?us-ascii?Q?otsvOeaJJOqnvmMvuZfemAQkVkbDFvYQqcsIXVSFcYxwg14pEFEASREgpDJG?=
+ =?us-ascii?Q?lw/G8ipYPcL65GVmBOeNBizz0seXXSIqdK0FYl0KR4b5oHXgm20NCPPM4o/y?=
+ =?us-ascii?Q?yHtRgNapsHdsyvMa7SXJ1CU5U/Qn3HzgAa+9VmYRHknHMs/72C7xtfdWXypt?=
+ =?us-ascii?Q?f/6HRta6bZvvrBvKga0a4EuMTUtaieKZFfG884eCDnvwD5ozn2eHj+FJQ8nO?=
+ =?us-ascii?Q?WaeAKJcy1qKbbdFf1YO84jeoUlkVKUFUSBdArp0xeUvcxvvGYjcnb22YhkhC?=
+ =?us-ascii?Q?UpL+KJI3/1+Po6AocWVJ72HSS0M18CiZBByDyOWTVdFcgQaFIM0t3bcQF4XO?=
+ =?us-ascii?Q?k5PnftDeNf1YYbceXS+RBxC1UBe7MTP5GEwGcx1uG0RFJ/B4G1l8yIwp3QSE?=
+ =?us-ascii?Q?zFamiH3ct+0MWqD14NJGZdRqSuENAUEfGCDVpLCh40VkVpq+is7fUFcHK0Yg?=
+ =?us-ascii?Q?iPnVkAyjC698Y2SWpSvll45ZZ4XaqB518VayDcF3ebeE8scEtHzcBUJUsbmu?=
+ =?us-ascii?Q?JXK9qxG21R3kd1dvZPheFto2q2he3yNzg5SoUHqMzT8Z1HI9ilaTOQkLFiJT?=
+ =?us-ascii?Q?O2nWZE4fqAGYy76Y3xfmnhGw?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <F37D92A3A128C94D9A3FB75B25D5FE8A@eurprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <96585ED9-B707-4AF1-8417-E03DE6414965@goldelico.com>
-References: <20210922205555.496871-1-paul@crapouillou.net>
- <4366739.KZ8Jxz7LyS@jason> <EKJXZQ.6VJ0UDHV3T3W@crapouillou.net>
- <2094991.ScV2v2meXk@jason> <HU700R.NAHL5IU3NRE81@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ad77a97-9411-4dd0-c111-08d9805a71e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2021 19:26:59.4944
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zHCGNlCc3hVzTMK/dfkU69+AhY7p27DatjAw7A02BscocurMKLGtr9k2sPY/C/Iq5AafJP+NvEt3lPWlLSU7qA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2863
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-> Am 25.09.2021 um 21:08 schrieb Paul Cercueil <paul@crapouillou.net>:
+On Fri, Sep 24, 2021 at 05:52:20PM +0800, Xiaoliang Yang wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 >=20
-> Hi Paul & Nikolaus,
+> ocelot_mact_learn_streamdata() can be used in VSC9959 to overwrite an
+> FDB entry with stream data. The stream data includes SFID and SSID which
+> can be used for PSFP and FRER set.
 >=20
-> If you spent some time debugging the issue
-
-we did ...
-
-> instead of complaining that my patchset breaks things...
-
-... we did have a working version (without hdmi-connector)
-and bisect pointed at your patch... So we debugged that.
-
-So the lesson is: don't trust bisect.
-
-And failed to make it work with hdmi-connector because the
-ingenic-drm-drv reported errors.
-
+> ocelot_mact_lookup() can be used to check if the given {DMAC, VID} FDB
+> entry is exist, and also can retrieve the DEST_IDX and entry type for
+> the FDB entry.
 >=20
-> The fix is a one-liner in your downstream ingenic-dw-hdmi.c:
-> .output_port =3D 1
-> in the ingenic_dw_hdmi_plat_data struct.
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
 
-Cool. How did you find that?
+This is most certainly not my patch either, so you can drop my name from it=
+.
 
+> ---
+>  drivers/net/ethernet/mscc/ocelot.c | 50 ++++++++++++++++++++++++++++++
+>  include/soc/mscc/ocelot.h          |  5 +++
+>  2 files changed, 55 insertions(+)
 >=20
-> Absolutely nothing else needs to be changed for HDMI to work here.
+> diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/ms=
+cc/ocelot.c
+> index 35006b0fb963..dc65247b91be 100644
+> --- a/drivers/net/ethernet/mscc/ocelot.c
+> +++ b/drivers/net/ethernet/mscc/ocelot.c
+> @@ -114,6 +114,56 @@ int ocelot_mact_forget(struct ocelot *ocelot,
+>  }
+>  EXPORT_SYMBOL(ocelot_mact_forget);
+> =20
+> +int ocelot_mact_lookup(struct ocelot *ocelot, int *dst_idx,
+> +		       struct ocelot_mact_entry *entry)
 
-Great and thanks.
+I think the arguments of this function can be improved.
+Currently, "entry" is an inout argument: entry->mac and entry->vid are
+input, and entry->type is output.
 
-Will test asap and if it works as well, we can clean up a v4 patch set
-for next week review.
+I think it would be better if the argument list looked like this:
 
-BR and thanks,
-Nikolaus
+int ocelot_mact_lookup(struct ocelot *ocelot, const unsigned char *addr,
+		       u16 vid, enum macaccess_entry_type *type, int *dst_idx)
 
->=20
-> Cheers,
-> -Paul
->=20
->=20
-> Le sam., sept. 25 2021 at 17:55:03 +0200, Paul Boddie =
-<paul@boddie.org.uk> a =C3=A9crit :
->> On Friday, 24 September 2021 10:29:02 CEST Paul Cercueil wrote:
->>> Le ven., sept. 24 2021 at 00:51:39 +0200, Paul Boddie
->>> >
->>> > 2. My approach, which just involves changing the Synopsys driver =
-to
->>> > set the bridge type in dw_hdmi_probe like this:
->>> >
->>> >   hdmi->bridge.type =3D DRM_MODE_CONNECTOR_HDMIA;
->>> >
->>> > Otherwise, I don't see how the bridge's (struct drm_bridge) type =
-will
->>> > be set.
->>> The bridge's type is set in hdmi-connector, from DTS. The 'type =3D =
-"a"'
->>> will result in the bridge's .type to be set to =
-DRM_MODE_CONNECTOR_HDMIA.
->> Actually, I found that hdmi-connector might not have been available =
-because
->> CONFIG_DRM_DISPLAY_CONNECTOR was not enabled. Rectifying this, the =
-connector
->> does get detected and enabled. However, the Synopsys driver remains =
-unaware of
->> it, and so the bridge type in the Synopsys driver remains unset.
->> I do see that the connector sets the type on a bridge in its own =
-private
->> structure, so there would be a need to propagate this type to the =
-actual
->> bridge. In other words, what the connector does is distinct from the =
-Synopsys
->> driver which acts as the bridge with regard to the Ingenic driver.
->> Perhaps the Synopsys driver should set the connector's bridge as the =
-next
->> bridge, or maybe something is supposed to discover that the connector =
-may act
->> as (or provide) a bridge after the Synopsys driver in the chain and =
-then back-
->> propagate the bridge type along the chain.
->> [...]
->>> > And I removed any of the above hacks. What I observe, apart from =
-an
->>> > inactive LCD controller (and ingenic-drm driver), is the following =
-in
->>> > /sys/devices/platform/10180000.hdmi/:
->>> >
->>> > consumer:platform:13050000.lcdc0
->>> > consumer:platform:hdmi_connector
->> Interestingly, with the connector driver present, these sysfs entries =
-no
->> longer appear.
->> [...]
->>> > For me, running modetest yields plenty of information about =
-encoders,
->>> > connectors (and the supported modes via the EDID, thanks to my =
-HDMI-A
->>> > hack), CRTCs, and planes. But no framebuffers are reported.
->>> Could you paste the result of "modetest -a -c -p" somewhere maybe?
->> I had to specify -M ingenic-drm as well, but here you go...
->> ----
->> Connectors:
->> id	encoder	status		name		size (mm)	modes	=
-encoders
->> 35	34	connected	HDMI-A-1       	340x270		17	=
-34
->>  modes:
->> 	index name refresh (Hz) hdisp hss hse htot vdisp vss vse vtot)
->>  #0 1280x1024 60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 =
-flags:
->> phsync, pvsync; type: preferred, driver
->>  #1 1280x1024 75.02 1280 1296 1440 1688 1024 1025 1028 1066 135000 =
-flags:
->> phsync, pvsync; type: driver
->>  #2 1280x960 60.00 1280 1376 1488 1800 960 961 964 1000 108000 flags: =
-phsync,
->> pvsync; type: driver
->>  #3 1152x864 75.00 1152 1216 1344 1600 864 865 868 900 108000 flags: =
-phsync,
->> pvsync; type: driver
->>  #4 1024x768 75.03 1024 1040 1136 1312 768 769 772 800 78750 flags: =
-phsync,
->> pvsync; type: driver
->>  #5 1024x768 70.07 1024 1048 1184 1328 768 771 777 806 75000 flags: =
-nhsync,
->> nvsync; type: driver
->>  #6 1024x768 60.00 1024 1048 1184 1344 768 771 777 806 65000 flags: =
-nhsync,
->> nvsync; type: driver
->>  #7 832x624 74.55 832 864 928 1152 624 625 628 667 57284 flags: =
-nhsync,
->> nvsync; type: driver
->>  #8 800x600 75.00 800 816 896 1056 600 601 604 625 49500 flags: =
-phsync,
->> pvsync; type: driver
->>  #9 800x600 72.19 800 856 976 1040 600 637 643 666 50000 flags: =
-phsync,
->> pvsync; type: driver
->>  #10 800x600 60.32 800 840 968 1056 600 601 605 628 40000 flags: =
-phsync,
->> pvsync; type: driver
->>  #11 800x600 56.25 800 824 896 1024 600 601 603 625 36000 flags: =
-phsync,
->> pvsync; type: driver
->>  #12 640x480 75.00 640 656 720 840 480 481 484 500 31500 flags: =
-nhsync,
->> nvsync; type: driver
->>  #13 640x480 72.81 640 664 704 832 480 489 492 520 31500 flags: =
-nhsync,
->> nvsync; type: driver
->>  #14 640x480 66.67 640 704 768 864 480 483 486 525 30240 flags: =
-nhsync,
->> nvsync; type: driver
->>  #15 640x480 59.94 640 656 752 800 480 490 492 525 25175 flags: =
-nhsync,
->> nvsync; type: driver
->>  #16 720x400 70.08 720 738 846 900 400 412 414 449 28320 flags: =
-nhsync,
->> pvsync; type: driver
->>  props:
->> 	1 EDID:
->> 		flags: immutable blob
->> 		blobs:
->> 		value:
->> 			00ffffffffffff00047232ad01010101
->> 			2d0e010380221b782aaea5a6544c9926
->> 			145054bfef0081808140714f01010101
->> 			010101010101302a009851002a403070
->> 			1300520e1100001e000000ff00343435
->> 			3030353444454330300a000000fc0041
->> 			4c313731350a202020202020000000fd
->> 			00384c1e520e000a2020202020200051
->> 	2 DPMS:
->> 		flags: enum
->> 		enums: On=3D0 Standby=3D1 Suspend=3D2 Off=3D3
->> 		value: 0
->> 	5 link-status:
->> 		flags: enum
->> 		enums: Good=3D0 Bad=3D1
->> 		value: 0
->> 	6 non-desktop:
->> 		flags: immutable range
->> 		values: 0 1
->> 		value: 0
->> 	4 TILE:
->> 		flags: immutable blob
->> 		blobs:
->> 		value:
->> 	20 CRTC_ID:
->> 		flags: object
->> 		value: 32
->> CRTCs:
->> id	fb	pos	size
->> 32	39	(0,0)	(1280x1024)
->>  #0  60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 flags: =
-phsync,
->> pvsync; type:
->>  props:
->> 	22 ACTIVE:
->> 		flags: range
->> 		values: 0 1
->> 		value: 1
->> 	23 MODE_ID:
->> 		flags: blob
->> 		blobs:
->> 		value:
->> 			e0a5010000053005a005980600000004
->> 			010404042a0400003c00000005000000
->> 			00000000000000000000000000000000
->> 			00000000000000000000000000000000
->> 			00000000
->> 	19 OUT_FENCE_PTR:
->> 		flags: range
->> 		values: 0 18446744073709551615
->> 		value: 0
->> 	24 VRR_ENABLED:
->> 		flags: range
->> 		values: 0 1
->> 		value: 0
->> 	28 GAMMA_LUT:
->> 		flags: blob
->> 		blobs:
->> 		value:
->> 	29 GAMMA_LUT_SIZE:
->> 		flags: immutable range
->> 		values: 0 4294967295
->> 		value: 256
->> Planes:
->> id	crtc	fb	CRTC x,y	x,y	gamma size	possible =
-crtcs
->> 31	32	39	0,0		0,0	0       	=
-0x00000001
->>  formats: XR15 RG16 RG24 XR24 XR30
->>  props:
->> 	8 type:
->> 		flags: immutable enum
->> 		enums: Overlay=3D0 Primary=3D1 Cursor=3D2
->> 		value: 1
->> 	17 FB_ID:
->> 		flags: object
->> 		value: 39
->> 	18 IN_FENCE_FD:
->> 		flags: signed range
->> 		values: -1 2147483647
->> 		value: -1
->> 	20 CRTC_ID:
->> 		flags: object
->> 		value: 32
->> 	13 CRTC_X:
->> 		flags: signed range
->> 		values: -2147483648 2147483647
->> 		value: 0
->> 	14 CRTC_Y:
->> 		flags: signed range
->> 		values: -2147483648 2147483647
->> 		value: 0
->> 	15 CRTC_W:
->> 		flags: range
->> 		values: 0 2147483647
->> 		value: 1280
->> 	16 CRTC_H:
->> 		flags: range
->> 		values: 0 2147483647
->> 		value: 1024
->> 	9 SRC_X:
->> 		flags: range
->> 		values: 0 4294967295
->> 		value: 0
->> 	10 SRC_Y:
->> 		flags: range
->> 		values: 0 4294967295
->> 		value: 0
->> 	11 SRC_W:
->> 		flags: range
->> 		values: 0 4294967295
->> 		value: 83886080
->> 	12 SRC_H:
->> 		flags: range
->> 		values: 0 4294967295
->> 		value: 67108864
->> 33	0	0	0,0		0,0	0       	=
-0x00000001
->>  formats: C8   XR15 RG16 RG24 XR24 XR30
->>  props:
->> 	8 type:
->> 		flags: immutable enum
->> 		enums: Overlay=3D0 Primary=3D1 Cursor=3D2
->> 		value: 0
->> 	17 FB_ID:
->> 		flags: object
->> 		value: 0
->> 	18 IN_FENCE_FD:
->> 		flags: signed range
->> 		values: -1 2147483647
->> 		value: -1
->> 	20 CRTC_ID:
->> 		flags: object
->> 		value: 0
->> 	13 CRTC_X:
->> 		flags: signed range
->> 		values: -2147483648 2147483647
->> 		value: 0
->> 	14 CRTC_Y:
->> 		flags: signed range
->> 		values: -2147483648 2147483647
->> 		value: 0
->> 	15 CRTC_W:
->> 		flags: range
->> 		values: 0 2147483647
->> 		value: 0
->> 	16 CRTC_H:
->> 		flags: range
->> 		values: 0 2147483647
->> 		value: 0
->> 	9 SRC_X:
->> 		flags: range
->> 		values: 0 4294967295
->> 		value: 0
->> 	10 SRC_Y:
->> 		flags: range
->> 		values: 0 4294967295
->> 		value: 0
->> 	11 SRC_W:
->> 		flags: range
->> 		values: 0 4294967295
->> 		value: 0
->> 	12 SRC_H:
->> 		flags: range
->> 		values: 0 4294967295
->> 		value: 0
->> ----
->>> If you have info about the CRTCs, encoders, connectors and EDID =
-info,
->>> then I would assume it is very close to working fine.
->>> For your "no framebuffer" issue, keep in mind that CONFIG_FB and
->>> CONFIG_FRAMEBUFFER_CONSOLE are now disabled by default.
->> Yes, I discovered that CONFIG_FB was not enabled, so I did so.
->>> If that doesn't fix anything, that probably means that one
->>> .atomic_check() fails, so it would be a good place to start =
-debugging.
->> There will be other things to verify in the Ingenic driver. As noted =
-many
->> months ago, colour depth information has to be set in the DMA =
-descriptors and
->> not the control register, but we are managing to do this =
-successfully, as far
->> as I can tell, although there is always the potential for error.
->> Paul
->=20
->=20
+I think it's clearer this way which arguments are input and which are outpu=
+t.
 
+Additionally, you can stop exporting struct ocelot_mact_entry, if this
+is the only reason you needed it.
+
+> +{
+> +	int val;
+> +
+> +	mutex_lock(&ocelot->mact_lock);
+> +
+> +	ocelot_mact_select(ocelot, entry->mac, entry->vid);
+> +
+> +	/* Issue a read command with MACACCESS_VALID=3D1. */
+> +	ocelot_write(ocelot, ANA_TABLES_MACACCESS_VALID |
+> +		     ANA_TABLES_MACACCESS_MAC_TABLE_CMD(MACACCESS_CMD_READ),
+> +		     ANA_TABLES_MACACCESS);
+> +
+> +	if (ocelot_mact_wait_for_completion(ocelot)) {
+> +		mutex_unlock(&ocelot->mact_lock);
+> +		return -ETIMEDOUT;
+> +	}
+> +
+> +	/* Read back the entry flags */
+> +	val =3D ocelot_read(ocelot, ANA_TABLES_MACACCESS);
+> +
+> +	mutex_unlock(&ocelot->mact_lock);
+> +
+> +	if (!(val & ANA_TABLES_MACACCESS_VALID))
+> +		return -ENOENT;
+> +
+> +	*dst_idx =3D ANA_TABLES_MACACCESS_DEST_IDX_X(val);
+> +	entry->type =3D ANA_TABLES_MACACCESS_ENTRYTYPE_X(val);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(ocelot_mact_lookup);
+> +
+> +int ocelot_mact_learn_streamdata(struct ocelot *ocelot, int dst_idx,
+> +				 struct ocelot_mact_entry *entry, u32 data)
+
+It would be nice if ocelot_mact_learn_streamdata would follow the basic
+prototype of ocelot_mact_learn:
+
+int ocelot_mact_learn(struct ocelot *ocelot, int port,
+		      const unsigned char mac[ETH_ALEN],
+		      unsigned int vid, enum macaccess_entry_type type)
+
+just with the extra STREAMDATA argument at the end.
+Also, could we format the STREAMDATA nicer than a raw u32?
+
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&ocelot->mact_lock);
+> +	ocelot_write(ocelot, data, ANA_TABLES_STREAMDATA);
+> +	mutex_unlock(&ocelot->mact_lock);
+> +
+> +	ret =3D ocelot_mact_learn(ocelot, dst_idx, entry->mac, entry->vid,
+> +				entry->type);
+
+Hm, if you temporarily drop the lock just for ocelot_mact_learn to take
+it again, you allow somebody else to sneak in and learn another MAC
+table entry, and the STREAMDATA will get associated with that other guy
+and not with you, no?
+
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(ocelot_mact_learn_streamdata);
+> +
+>  static void ocelot_mact_init(struct ocelot *ocelot)
+>  {
+>  	/* Configure the learning mode entries attributes:
+> diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
+> index e6773f4d09ce..455293652257 100644
+> --- a/include/soc/mscc/ocelot.h
+> +++ b/include/soc/mscc/ocelot.h
+> @@ -926,6 +926,11 @@ void ocelot_phylink_mac_link_up(struct ocelot *ocelo=
+t, int port,
+>  				bool tx_pause, bool rx_pause,
+>  				unsigned long quirks);
+> =20
+> +int ocelot_mact_lookup(struct ocelot *ocelot, int *dst_idx,
+> +		       struct ocelot_mact_entry *entry);
+> +int ocelot_mact_learn_streamdata(struct ocelot *ocelot, int dst_idx,
+> +				 struct ocelot_mact_entry *entry, u32 data);
+> +
+>  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+>  int ocelot_mrp_add(struct ocelot *ocelot, int port,
+>  		   const struct switchdev_obj_mrp *mrp);
+> --=20
+> 2.17.1
+> =
