@@ -2,129 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8184182C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C924182CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343693AbhIYOjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 10:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234538AbhIYOjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 10:39:42 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6024BC061570;
-        Sat, 25 Sep 2021 07:38:07 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id c21so47661113edj.0;
-        Sat, 25 Sep 2021 07:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xzHbIKUdSOaJuwjfaoRJbrHUYOSVx8ucR0op1libfso=;
-        b=L2nTQl0BWQlTcp2ShOhT195N+sQrqjP7fMcFQWVf5nTQ8bXl5m0/3xFw0aWR/RoNRr
-         GfaggP+H3r6T7SY5YJlIFiuTryKPPsOWKfdcvv2qyMg4maCFC7jv6IAiXWufuiaV8npM
-         fXDEi7n2u9Y6ARDIKwoyXO1YNvI21voRgVe8Ce5ig60GZUZtfqdhwgaHgqUu1YPB//KH
-         oR9Im5qPAffmK7TJjMLInyjb1+WqQ8+1/aeiOJhu+NSQt5U1KAK2TvNdsajtGdwCbWUf
-         wylSnYDHMjPFVpJA23pHI69ReSaPHM+g7lB9sPQlQ4M098mftiqUGp7fzs84S306YirF
-         Nh8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xzHbIKUdSOaJuwjfaoRJbrHUYOSVx8ucR0op1libfso=;
-        b=vvJeLkKTWahy1BaR5hlDC2FHVczRFWzN5IQFDgt5cZJZn3WIqj0I90jaQZNchPUq4j
-         raIn2b4xknD86izx2gel17CRZwyAznO6BqvEw7rY7xpi8goA/5tiZh0jCvODueu8PLSE
-         OFpD0WSuDL9WpM5/h+j33Rzlsv2bVIFjSG/eA4rU9KlR30j0c+5BTTmgrtwVZMDGoncV
-         Lh8diZxWpeuaHHRBa+8HdBHvh9Qq6E63+9vOK/prcJwpaR2cdJ2h8K7qziSyt2PAeJae
-         7ijFPXdj3steE5L/utT6U86tPTP1TgnXRvIL0zOLAxQkdhX4mDDf+CnN/9aK4MlPuNBW
-         dkwA==
-X-Gm-Message-State: AOAM531LcQBqciY0YgyrVhlKNnQ5J5BXHhn8hTOr6gyP+USB3evfMzy4
-        gqjdcUq8ViiOos8jaWvcQHGsK3oACN216UmrHK0=
-X-Google-Smtp-Source: ABdhPJzj1RRjI0yWqPdueFUbJmsHfU9Spjq/ZfBywmKGj0TYFU7/X/Y0oe5pSAwJb/WUYTnGRSjjBw==
-X-Received: by 2002:a05:6402:b51:: with SMTP id bx17mr11655023edb.193.1632580685985;
-        Sat, 25 Sep 2021 07:38:05 -0700 (PDT)
-Received: from ?IPv6:2a04:241e:501:3800:55c:dc9d:9cc1:2c16? ([2a04:241e:501:3800:55c:dc9d:9cc1:2c16])
-        by smtp.gmail.com with ESMTPSA id e28sm7539011edc.93.2021.09.25.07.38.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Sep 2021 07:38:05 -0700 (PDT)
-Subject: Re: [PATCH 17/19] selftests: Add -t tcp_authopt option for
- fcnal-test.sh
-To:     David Ahern <dsahern@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1632240523.git.cdleonard@gmail.com>
- <c52733a1cd9a7bd16aea0b6e056fad9dd1cc5aed.1632240523.git.cdleonard@gmail.com>
- <c72ad0be-9499-dcfb-0faa-be3dd51f4a86@gmail.com>
-From:   Leonard Crestez <cdleonard@gmail.com>
-Message-ID: <5471a640-d2e9-8f92-84ba-bf4fb136abe2@gmail.com>
-Date:   Sat, 25 Sep 2021 17:38:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1343760AbhIYOlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 10:41:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234538AbhIYOk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 10:40:58 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C93F61041;
+        Sat, 25 Sep 2021 14:39:21 +0000 (UTC)
+Date:   Sat, 25 Sep 2021 15:43:10 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com
+Subject: Re: [PATCH 1/1] iio/scmi: Add reading "raw" attribute.
+Message-ID: <20210925154310.2f31c032@jic23-huawei>
+In-Reply-To: <20210922065235.12891-2-andriy.tryshnivskyy@opensynergy.com>
+References: <20210922065235.12891-1-andriy.tryshnivskyy@opensynergy.com>
+        <20210922065235.12891-2-andriy.tryshnivskyy@opensynergy.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <c72ad0be-9499-dcfb-0faa-be3dd51f4a86@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/21 4:52 AM, David Ahern wrote:
-> On 9/21/21 10:15 AM, Leonard Crestez wrote:
->> This script is otherwise very slow to run!
+On Wed, 22 Sep 2021 09:52:35 +0300
+Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
+
+> Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
+> reading "raw" attribute in scmi_iio_read_raw.
 > 
-> there are a lot of permutations to cover.
+> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
 
-I believe that some of the sleeps are not necessary and could be 
-replaced with waits.
+Hi Andriy,
 
->>
->> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
->> ---
->>   tools/testing/selftests/net/fcnal-test.sh | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
->> index 74a7580b6bde..484734db708f 100755
->> --- a/tools/testing/selftests/net/fcnal-test.sh
->> +++ b/tools/testing/selftests/net/fcnal-test.sh
->> @@ -1331,10 +1331,21 @@ ipv4_tcp()
->>   	log_subsection "With VRF"
->>   	setup "yes"
->>   	ipv4_tcp_vrf
->>   }
->>   
->> +
->> +only_tcp_authopt()
->> +{
->> +	log_section "TCP Authentication"
->> +	setup
->> +	set_sysctl net.ipv4.tcp_l3mdev_accept=0
->> +	log_subsection "IPv4 no VRF"
->> +	ipv4_tcp_authopt
+A few comments inline.  I don't haven't looked closely at whether the scmi
+side of things is correct though so will rely on Jyoti for that.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/common/scmi_sensors/scmi_iio.c | 38 +++++++++++++++++++++-
+>  1 file changed, 37 insertions(+), 1 deletion(-)
 > 
-> This feature needs to work with VRF from the beginning. v4, v6, with and
-> without VRF.
+> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> index 7cf2bf282cef..b88780a25796 100644
+> --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
+> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> @@ -286,6 +286,9 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+>  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+>  	s8 scale;
+>  	int ret;
+> +	int err;
+> +	u32 sensor_config;
+> +	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
+>  
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_SCALE:
+> @@ -300,6 +303,38 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+>  		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
+>  		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> +	case IIO_CHAN_INFO_RAW:
+> +		sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +					   SCMI_SENS_CFG_SENSOR_ENABLE);
+> +		err = sensor->handle->sensor_ops->config_set(
+> +			sensor->handle, sensor->sensor_info->id, sensor_config);
+> +		if (err)
+> +			dev_err(&iio_dev->dev,
+> +				"Error in enabling sensor %s err %d",
+> +				sensor->sensor_info->name, err);
 
-I ignored the l3mdev feature because I'm not familiar with it but I'll 
-go through it.
+Don't try to carry on if you got an error. Unless something very odd has gone on
+that should mean the sensor isn't not enabled so nothing else will work.
+If this returns and error just return it here.
 
---
-Regards,
-Leonard
+> +
+> +		err = sensor->handle->sensor_ops->reading_get_timestamped(
+> +			sensor->handle, sensor->sensor_info->id,
+> +			sensor->sensor_info->num_axis,
+> +			(struct scmi_sensor_reading *)&readings);
+
+Why do we need the cast?   Also, this should probably just be readings
+unless I'm missing something rather than the address of readings.
+That will pass the address of the first element which is likely to be what you want.
+
+> +		if (err) {
+> +			dev_err(&iio_dev->dev,
+> +				"Error in reading raw attribute for sensor %s err %d",
+> +				sensor->sensor_info->name, err);
+> +			return err;
+> +		}
+> +
+> +		sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +					   SCMI_SENS_CFG_SENSOR_DISABLE);
+> +		err = sensor->handle->sensor_ops->config_set(
+> +			sensor->handle, sensor->sensor_info->id, sensor_config);
+> +		if (err)
+> +			dev_err(&iio_dev->dev,
+> +				"Error in enabling sensor %s err %d",
+> +				sensor->sensor_info->name, err);
+
+As above, this indicates something has gone wrong and we should tell userspace that
+in preference to trying to get one last value out.
+
+> +		/* Use 32-bit value, since practically there is no need in 64 bits */
+> +		*val = (u32)readings[ch->scan_index].value;
+
+We should check it fits and if doesn't return an error rather than pretending all was fine.
+
+> +		return IIO_VAL_INT;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -381,7 +416,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
+>  	iio_chan->type = type;
+>  	iio_chan->modified = 1;
+>  	iio_chan->channel2 = mod;
+> -	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
+> +	iio_chan->info_mask_separate =
+> +		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
+>  	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+>  	iio_chan->info_mask_shared_by_type_available =
+>  		BIT(IIO_CHAN_INFO_SAMP_FREQ);
+
