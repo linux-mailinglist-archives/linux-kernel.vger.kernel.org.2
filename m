@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F48E417EFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 02:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE443417F02
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 03:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347470AbhIYA7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 20:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        id S1346190AbhIYBHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 21:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347389AbhIYA6Y (ORCPT
+        with ESMTP id S235204AbhIYBHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 20:58:24 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA97CC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 17:56:01 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id e2-20020ad45582000000b0037e7bdc88d4so44331413qvx.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 17:56:01 -0700 (PDT)
+        Fri, 24 Sep 2021 21:07:23 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47351C061571;
+        Fri, 24 Sep 2021 18:05:49 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id bx4so42823530edb.4;
+        Fri, 24 Sep 2021 18:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=tGZGtRLoZzNRBWuDX4atzZ2k0Ip4ycJYdNIYDqARGnc=;
-        b=q8E3mpn27/Pass6ib5GcuNokaZJD0e7qJsR4kNTZjxo9jjWSI+mPtm05xarcRKasl1
-         eiFJZIt6Waa+VtYIE206wV5Amydeo2kxEZobGt+H4Q7ebAG/VEzonmVr8CFk6YXe+jXN
-         W06JSJIyK8g02iwbmqnvaWK7HXlJE0p7Kr92YW24blQoLluhFcvm1UzWcfdHx6Mdh9E3
-         XOOQzUfJHlMrFgWO0gIitekddWDl9aJ5BQBVyiZFtwCnwmzu20R18ovjRC2G+D/w+g99
-         M1FfmCuusJk2YNOkp6OkdVHAMCjUZdoms1MR0veWZuhlJz5kL9fGMpAA8u0K0cmeYPze
-         HHkg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bHrNUxSVHPFay18ykXVu5QYZYlU999IyVEIEXaMIIuk=;
+        b=iTkDYHU1Pdjpw/CJx2+QNmwdCbhonPJpUXIUqnXR9yIkvOjnnex0e5mlt0mtDcju8j
+         oQP4Ji6Gw1OwxXk2i9wlN7vaZ8T0NWTk2rZUTm5wKp1put7D8ZXHQwdOifFffsRFQ56j
+         8VJYvaIhp3XTyzRUBemWf4JSftl1t4MCRYE8wHfpOyJkR3YifdXXmYM4F6mNeJ126DWI
+         CnVhjFAKlE4w66VjnKBwDdczmy+KS3pUku7T0l3t+wTa2ebQQX34YSk/VvTtEMC7OWAU
+         8nPGPI53thP01tGuUwYZGghvfpWvY5NPiytf0akiS/3hUr8EeZpaTCUZIzI+3YC/vi/L
+         TMZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=tGZGtRLoZzNRBWuDX4atzZ2k0Ip4ycJYdNIYDqARGnc=;
-        b=bii8iVPmbx9wrHogojNYnXgqEbRJcQqhe+FekQ8bExGThviFxr3NzyqavhrAPH5b6G
-         7pVTvtKOic1IuvxNYUn89AZi2msdTZaf83/NTlioP5VxStbLPh2XvI3/suBboeUR45MW
-         tzUqn4ViJiXbHZig/rN0S2Lp5rupaX3GcTOjWsaHA43pW6tXHWIyGvuXhgu8Qgd7GHdU
-         2ygp8L+LYzOsYmAOsBd01v/B79lhCjsC9uMkFvCrsDpT0R4BUGWgg5dwtNbjJd5wBx5m
-         W4bEW9+C0vY621kWPTYAiAkAEjAQ3+2uZcUckRR3Pd6Ar2fqwStg5B7J3VFYKNwgWm10
-         UEVQ==
-X-Gm-Message-State: AOAM5317jGquuu6OlWW5SqJX5WWNrBMAsdr40kMKHZmbILbDUAOr3Pjs
-        xs7Z120fCnK0CiX80Hgs46cyD0JFjYI=
-X-Google-Smtp-Source: ABdhPJyQYJ0x7OvSRpcYmAQ5BRWQd9bkmRh9jP0168EXXRbBHlQe+/VA1c8Ui0BDQ2o8LiZTwir9hfGFAMI=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:4c72:89be:dba3:2bcb])
- (user=seanjc job=sendgmr) by 2002:a05:6214:2ec:: with SMTP id
- h12mr13351238qvu.1.1632531361061; Fri, 24 Sep 2021 17:56:01 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 24 Sep 2021 17:55:28 -0700
-In-Reply-To: <20210925005528.1145584-1-seanjc@google.com>
-Message-Id: <20210925005528.1145584-15-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210925005528.1145584-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH 14/14] KVM: x86: Invoke kvm_vcpu_block() directly for
- non-HALTED wait states
-From:   Sean Christopherson <seanjc@google.com>
-To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bHrNUxSVHPFay18ykXVu5QYZYlU999IyVEIEXaMIIuk=;
+        b=0/NVQ0oQ0ubfD7F9SsbBibtxDxB4DNFfvwlg9oPXNud8drWMeZDeQZ7TuFmH62bc2N
+         r//V0HOitjnco3O7ZQ9gxVVyFGfX/6TiMoyCKmnQNk/caSYFCNk6qWZR+Q4ESpup0iNz
+         56idqRyTsoYNmFwKM071Mn5XmMTtrcmqc21nwo/HBWGJKHThOcnjFTG3yJ0z2YJ93fML
+         +nQF1WgaK2KqOc/bo15GYDR/BQKCEwcKFvLCdXgBIjRDgFitJvQ2qfuNm2oJmCEAIIdg
+         2WJ5Mu9rNdyGCvlCcIsl43XfF225L4bfvmFAieJXcWPfMpKANZ8h3MkKNx5jDnoBnkF6
+         Pa+Q==
+X-Gm-Message-State: AOAM5312xY0opHMFUGLPkkOMcZqoNzDW1zOCL0BW1eoomJftXb5bJG2b
+        g1NbOsPrsTCJJ4miE+gBcuiEF9zEafA7d994NBA=
+X-Google-Smtp-Source: ABdhPJxLSJQPETEhpVEg1BU+2BRSL97NdO0tOSj6i2gjP9uqxWyT7cdSbLHXanc2dvA0Ird037wFcY/UjHbhbbLpx7Y=
+X-Received: by 2002:aa7:db17:: with SMTP id t23mr8756289eds.387.1632531947552;
+ Fri, 24 Sep 2021 18:05:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <1632519891-26510-1-git-send-email-justinpopo6@gmail.com>
+ <1632519891-26510-4-git-send-email-justinpopo6@gmail.com> <20210924170505.6e62e32f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210924170505.6e62e32f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Justin Chen <justinpopo6@gmail.com>
+Date:   Fri, 24 Sep 2021 18:05:36 -0700
+Message-ID: <CAJx26kUsAU+Ux3BFfHJFnZqTwCjvp0T698XcDTQQO9gVZZ5C_A@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/5] net: bcmasp: Add support for ASP2.0 Ethernet controller
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Doug Berger <opendmb@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call kvm_vcpu_block() directly for all wait states except HALTED so that
-kvm_vcpu_halt() is no longer a misnomer on x86.
+On Fri, Sep 24, 2021 at 5:05 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Fri, 24 Sep 2021 14:44:49 -0700 Justin Chen wrote:
+> > Add support for the Broadcom ASP 2.0 Ethernet controller which is first
+> > introduced with 72165. This controller features two distinct Ethernet
+> > ports that can be independently operated.
+> >
+> > This patch supports:
+> >
+> > - Wake-on-LAN using magic packets
+> > - basic ethtool operations (link, counters, message level)
+> > - MAC destination address filtering (promiscuous, ALL_MULTI, etc.)
+> >
+> > Signed-off-by: Justin Chen <justinpopo6@gmail.com>
+> > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>
+> Please clean up checkpatch --strict and make W=1 C=1 build
+> of the new driver.
 
-Functionally, this means KVM will never attempt halt-polling or adjust
-vcpu->halt_poll_ns for INIT_RECEIVED (a.k.a. Wait-For-SIPI (WFS)) or
-AP_RESET_HOLD; UNINITIALIZED is handled in kvm_arch_vcpu_ioctl_run(),
-and x86 doesn't use any other "wait" states.
-
-As mentioned above, the motivation of this is purely so that "halt" isn't
-overloaded on x86, e.g. in KVM's stats.  Skipping halt-polling for WFS
-(and RESET_HOLD) has no meaningful effect on guest performance as there
-are typically single-digit numbers of INIT-SIPI sequences per AP vCPU,
-per boot, versus thousands of HLTs just to boot to console.
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/x86.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b444f9315766..a0f313c4bc49 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9893,7 +9893,10 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
- 	if (!kvm_arch_vcpu_runnable(vcpu) &&
- 	    (!kvm_x86_ops.pre_block || static_call(kvm_x86_pre_block)(vcpu) == 0)) {
- 		srcu_read_unlock(&kvm->srcu, vcpu->srcu_idx);
--		kvm_vcpu_halt(vcpu);
-+		if (vcpu->arch.mp_state == KVM_MP_STATE_HALTED)
-+			kvm_vcpu_halt(vcpu);
-+		else
-+			kvm_vcpu_block(vcpu);
- 		vcpu->srcu_idx = srcu_read_lock(&kvm->srcu);
- 
- 		if (kvm_x86_ops.post_block)
--- 
-2.33.0.685.g46640cef36-goog
-
+Apologies, Will fix checkpatch errors in v2
