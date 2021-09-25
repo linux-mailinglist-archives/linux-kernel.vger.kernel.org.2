@@ -2,77 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45B1417F8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 05:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF4C417FC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 06:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344334AbhIYD5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 23:57:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:21968 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233807AbhIYD5H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 23:57:07 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HGZh519RzzbmlD;
-        Sat, 25 Sep 2021 11:51:17 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Sat, 25 Sep 2021 11:55:30 +0800
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Sat, 25 Sep 2021 11:55:30 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>,
-        Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH] regulator: dummy: Use devm_regulator_register()
-Date:   Sat, 25 Sep 2021 11:55:07 +0800
-Message-ID: <20210925035507.1904-1-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+        id S234175AbhIYElZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 00:41:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229516AbhIYElW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 00:41:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C0360F70;
+        Sat, 25 Sep 2021 04:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632544787;
+        bh=zPdgx5ZT+r+BrD+V07Yxv3l9pb88yMRgA9tQRZuqifU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q+iv1oDnkD1W6a+1we9hREN83qPFMaVwkUYlIv1M/mlkTCpm0YV4vIamA61eg+Lsp
+         w+5734SOezlppCF5YOsnM3iTnjeYjxbXUjStIWoViZT/dKOjVdx2EHoQzK5r0Y+m7j
+         giinQj8jfrmXMpTSIAPrfCsLRYEBfjU//MxcguqAUXJCmtEQigFDGS0jNtOQfoIfL3
+         RDN20aJGPTcmNrlNQJjFfVbdiHds9EbN3/c1z0c1S/00OqGmfuADFUuL6oKcdYxHii
+         7U1Qd3orKLB3002Gbhut8tiEYFlEjfcX+WNjyDfBwb9D8ncxORQD4Q4JzxFV76lT21
+         wpnUXkoFYjBYg==
+Date:   Sat, 25 Sep 2021 13:39:44 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        David Laight <David.Laight@aculab.com>,
+        Numfor Mbiziwo-Tiapo <nums@google.com>
+Subject: Re: [PATCH v4] x86/insn, tools/x86: Fix some potential undefined
+ behavior.
+Message-Id: <20210925133944.a0648549c28b047bd9aeaeff@kernel.org>
+In-Reply-To: <YU4gyQg1ntTeTL98@kernel.org>
+References: <20210923161843.751834-1-irogers@google.com>
+        <YU4gyQg1ntTeTL98@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs code complained at boot time that
+On Fri, 24 Sep 2021 16:02:33 -0300
+Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 
-  debugfs: Directory 'reg-dummy-regulator-dummy' with parent 'regulator'
-  already present!
+> Em Thu, Sep 23, 2021 at 09:18:43AM -0700, Ian Rogers escreveu:
+> > From: Numfor Mbiziwo-Tiapo <nums@google.com>
+> > 
+> > Don't perform unaligned loads in __get_next and __peek_nbyte_next as
+> > these are forms of undefined behavior.
+> > 
+> > These problems were identified using the undefined behavior sanitizer
+> > (ubsan) with the tools version of the code and perf test. Part of this
+> > patch was previously posted here:
+> > https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
+> 
+> Masami, if you're ok, just process it including the tools/ bit.
 
-if we compile kernel with DEBUG_TEST_DRIVER_REMOVE. The problem is that we
-don't provide .remove() method for dummy_regulator_driver, which should
-invoke regulator_unregister() on device teardown to properly free things.
+Hi Arnaldo,
 
-Though it's harmless as dummy_pdev never gets unbound in practice, let's
-use devm_regulator_register() to get rid of the inconsistency.
+This version updates the tools/ too, so I think this is OK.
+(do I need re-Ack?)
 
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
- drivers/regulator/dummy.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thank you, 
 
-diff --git a/drivers/regulator/dummy.c b/drivers/regulator/dummy.c
-index d8059f596391..24e586f93855 100644
---- a/drivers/regulator/dummy.c
-+++ b/drivers/regulator/dummy.c
-@@ -45,7 +45,8 @@ static int dummy_regulator_probe(struct platform_device *pdev)
- 	config.dev = &pdev->dev;
- 	config.init_data = &dummy_initdata;
- 
--	dummy_regulator_rdev = regulator_register(&dummy_desc, &config);
-+	dummy_regulator_rdev = devm_regulator_register(&pdev->dev, &dummy_desc,
-+						       &config);
- 	if (IS_ERR(dummy_regulator_rdev)) {
- 		ret = PTR_ERR(dummy_regulator_rdev);
- 		pr_err("Failed to register regulator: %d\n", ret);
+> 
+> - Arnaldo
+>  
+> > v4. Fixes a typo.
+> > 
+> > v3. Is a rebase picking up a fix for big endian architectures.
+> > 
+> > v2. removes the validate_next check and merges the 2 changes into one as
+> > requested by Masami Hiramatsu <mhiramat@kernel.org>
+> > 
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+> > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >  arch/x86/lib/insn.c       | 4 ++--
+> >  tools/arch/x86/lib/insn.c | 4 ++--
+> >  2 files changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> > index 058f19b20465..c565def611e2 100644
+> > --- a/arch/x86/lib/insn.c
+> > +++ b/arch/x86/lib/insn.c
+> > @@ -37,10 +37,10 @@
+> >  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+> >  
+> >  #define __get_next(t, insn)	\
+> > -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> > +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> >  
+> >  #define __peek_nbyte_next(t, insn, n)	\
+> > -	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
+> > +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+> >  
+> >  #define get_next(t, insn)	\
+> >  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+> > diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+> > index c41f95815480..797699462cd8 100644
+> > --- a/tools/arch/x86/lib/insn.c
+> > +++ b/tools/arch/x86/lib/insn.c
+> > @@ -37,10 +37,10 @@
+> >  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+> >  
+> >  #define __get_next(t, insn)	\
+> > -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> > +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> >  
+> >  #define __peek_nbyte_next(t, insn, n)	\
+> > -	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
+> > +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+> >  
+> >  #define get_next(t, insn)	\
+> >  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+> > -- 
+> > 2.33.0.464.g1972c5931b-goog
+> 
+> -- 
+> 
+> - Arnaldo
+
+
 -- 
-2.19.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
