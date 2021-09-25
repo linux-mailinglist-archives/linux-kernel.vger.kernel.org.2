@@ -2,137 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF4C417FC2
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 06:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F89417FD0
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 07:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbhIYElZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 00:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52574 "EHLO mail.kernel.org"
+        id S238139AbhIYFSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 01:18:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229516AbhIYElW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 00:41:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C0360F70;
-        Sat, 25 Sep 2021 04:39:46 +0000 (UTC)
+        id S230453AbhIYFSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 01:18:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 397BA610EA;
+        Sat, 25 Sep 2021 05:17:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632544787;
-        bh=zPdgx5ZT+r+BrD+V07Yxv3l9pb88yMRgA9tQRZuqifU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=q+iv1oDnkD1W6a+1we9hREN83qPFMaVwkUYlIv1M/mlkTCpm0YV4vIamA61eg+Lsp
-         w+5734SOezlppCF5YOsnM3iTnjeYjxbXUjStIWoViZT/dKOjVdx2EHoQzK5r0Y+m7j
-         giinQj8jfrmXMpTSIAPrfCsLRYEBfjU//MxcguqAUXJCmtEQigFDGS0jNtOQfoIfL3
-         RDN20aJGPTcmNrlNQJjFfVbdiHds9EbN3/c1z0c1S/00OqGmfuADFUuL6oKcdYxHii
-         7U1Qd3orKLB3002Gbhut8tiEYFlEjfcX+WNjyDfBwb9D8ncxORQD4Q4JzxFV76lT21
-         wpnUXkoFYjBYg==
-Date:   Sat, 25 Sep 2021 13:39:44 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        David Laight <David.Laight@aculab.com>,
-        Numfor Mbiziwo-Tiapo <nums@google.com>
-Subject: Re: [PATCH v4] x86/insn, tools/x86: Fix some potential undefined
- behavior.
-Message-Id: <20210925133944.a0648549c28b047bd9aeaeff@kernel.org>
-In-Reply-To: <YU4gyQg1ntTeTL98@kernel.org>
-References: <20210923161843.751834-1-irogers@google.com>
-        <YU4gyQg1ntTeTL98@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1632547024;
+        bh=2nPifVqIq6xS4+2b04wivl+7zS28QpMII0hRXZFD2mY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=g4YMFKDHiF+PrrXeO5hAycwq2NaxJTJurEYEuJ8lQhnX0cz2u6l1N9WP5wQjU8AC1
+         VQ3djwfvCaXIXTZ03flbeV2LOUru5CcfjujHyvyf9XqzOb593IVo3Nhp5hMdvPOmKs
+         ngTQPB8BUaHYJWlYcd8e360fKhT3QIVPXAItFgfz6D3lMOe8Q7rYuNBsFzzMguv6TF
+         n7jQttUZIn3iXi34QrQD302sKq/MfAi0ad6ZPykp/xJuyo49ixyNuo0VGcn1h0hXk1
+         zgBdT3tUE9RoUePTJSxC24bU9TF6v2GIdiitCiRMdiqRcH86qzfgmNLifP2qTawN8u
+         bawatllA3YVzQ==
+From:   guoren@kernel.org
+To:     guoren@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
+Subject: [PATCH V2 1/2] csky: don't let sigreturn play with priveleged bits of status register
+Date:   Sat, 25 Sep 2021 13:16:46 +0800
+Message-Id: <20210925051647.1162829-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sep 2021 16:02:33 -0300
-Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-> Em Thu, Sep 23, 2021 at 09:18:43AM -0700, Ian Rogers escreveu:
-> > From: Numfor Mbiziwo-Tiapo <nums@google.com>
-> > 
-> > Don't perform unaligned loads in __get_next and __peek_nbyte_next as
-> > these are forms of undefined behavior.
-> > 
-> > These problems were identified using the undefined behavior sanitizer
-> > (ubsan) with the tools version of the code and perf test. Part of this
-> > patch was previously posted here:
-> > https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
-> 
-> Masami, if you're ok, just process it including the tools/ bit.
+csky restore_sigcontext() blindly overwrites regs->sr with the value
+it finds in sigcontext.  Attacker can store whatever they want in there,
+which includes things like S-bit.  Userland shouldn't be able to set
+that, or anything other than C flag (bit 0).
 
-Hi Arnaldo,
+Do the same thing other architectures with protected bits in flags
+register do - preserve everything that shouldn't be settable in
+user mode, picking the rest from the value saved is sigcontext.
 
-This version updates the tools/ too, so I think this is OK.
-(do I need re-Ack?)
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Guo Ren <guoren@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ arch/csky/kernel/signal.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thank you, 
-
-> 
-> - Arnaldo
->  
-> > v4. Fixes a typo.
-> > 
-> > v3. Is a rebase picking up a fix for big endian architectures.
-> > 
-> > v2. removes the validate_next check and merges the 2 changes into one as
-> > requested by Masami Hiramatsu <mhiramat@kernel.org>
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
-> > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  arch/x86/lib/insn.c       | 4 ++--
-> >  tools/arch/x86/lib/insn.c | 4 ++--
-> >  2 files changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-> > index 058f19b20465..c565def611e2 100644
-> > --- a/arch/x86/lib/insn.c
-> > +++ b/arch/x86/lib/insn.c
-> > @@ -37,10 +37,10 @@
-> >  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
-> >  
-> >  #define __get_next(t, insn)	\
-> > -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-> > +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-> >  
-> >  #define __peek_nbyte_next(t, insn, n)	\
-> > -	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-> > +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
-> >  
-> >  #define get_next(t, insn)	\
-> >  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-> > diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-> > index c41f95815480..797699462cd8 100644
-> > --- a/tools/arch/x86/lib/insn.c
-> > +++ b/tools/arch/x86/lib/insn.c
-> > @@ -37,10 +37,10 @@
-> >  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
-> >  
-> >  #define __get_next(t, insn)	\
-> > -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-> > +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-> >  
-> >  #define __peek_nbyte_next(t, insn, n)	\
-> > -	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
-> > +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
-> >  
-> >  #define get_next(t, insn)	\
-> >  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-> > -- 
-> > 2.33.0.464.g1972c5931b-goog
-> 
-> -- 
-> 
-> - Arnaldo
-
-
+diff --git a/arch/csky/kernel/signal.c b/arch/csky/kernel/signal.c
+index 312f046d452d..6ba3969ec175 100644
+--- a/arch/csky/kernel/signal.c
++++ b/arch/csky/kernel/signal.c
+@@ -52,10 +52,14 @@ static long restore_sigcontext(struct pt_regs *regs,
+ 	struct sigcontext __user *sc)
+ {
+ 	int err = 0;
++	unsigned long sr = regs->sr;
+ 
+ 	/* sc_pt_regs is structured the same as the start of pt_regs */
+ 	err |= __copy_from_user(regs, &sc->sc_pt_regs, sizeof(struct pt_regs));
+ 
++	/* BIT(0) of regs->sr is Condition Code/Carry bit */
++	regs->sr = (sr & ~1) | (regs->sr & 1);
++
+ 	/* Restore the floating-point state. */
+ 	err |= restore_fpu_state(sc);
+ 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.25.1
+
