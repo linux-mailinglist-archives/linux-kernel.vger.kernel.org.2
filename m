@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295A1417FDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 07:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C53D417FDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 07:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345623AbhIYFrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 01:47:12 -0400
-Received: from mail-4319.protonmail.ch ([185.70.43.19]:52549 "EHLO
-        mail-4319.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345421AbhIYFrG (ORCPT
+        id S1347446AbhIYFrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 01:47:25 -0400
+Received: from mail-0301.mail-europe.com ([188.165.51.139]:38685 "EHLO
+        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345793AbhIYFrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 01:47:06 -0400
-Date:   Sat, 25 Sep 2021 05:45:21 +0000
+        Sat, 25 Sep 2021 01:47:24 -0400
+Date:   Sat, 25 Sep 2021 05:45:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1632548730;
-        bh=KlRQxF8ZxBcPhF+cjrKcsDVrFTTHtUEnVvv1HQtO1Nc=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=t4P/vO2MxFBV1N3nH4RfK11dEhWosVHCKhJTRv0zTsr3Lp78wl9W4X6n+HJaYf3cO
-         yzL8sksTvf+sIEkvaDZA2vfp4KhSsQGMxm+s5G8mXFh5+xcunYKG26ZyhrP9yMs9Gi
-         xlxPOcpbBub76Np5mgkMvx5KjMKFlybrHF/HVlhs=
+        s=protonmail; t=1632548746;
+        bh=hca5tP1HuZQJm5tTPKktpkVvNEcLkRepRyjMWYNG3kQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=utmESbpGxV/ty2deqO0wK29SdjllGeljnKK0u+rdkVyLfXHQap8GY6czNES9uvak7
+         qgYDJ4sunkptVLi5oR6xGrr/Txc0OgSetWnjTz5UTJuIGe74oecOOJc8FWe2wqvcyi
+         2P6eJGmIr4cjxCbU5GexLti9rQ9SLcUIom+cQcKU=
 To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>,
         Rob Herring <robh+dt@kernel.org>
@@ -28,8 +28,10 @@ Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
         Michael Auchter <michael.auchter@ni.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH v5 0/3] extcon: usbc-tusb320: Initial TUSB320L support
-Message-ID: <20210925054407.944225-1-y.oudjana@protonmail.com>
+Subject: [PATCH v5 1/3] extcon: usbc-tusb320: Add support for mode setting and reset
+Message-ID: <20210925054407.944225-2-y.oudjana@protonmail.com>
+In-Reply-To: <20210925054407.944225-1-y.oudjana@protonmail.com>
+References: <20210925054407.944225-1-y.oudjana@protonmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -42,43 +44,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TUSB320L is a newer chip with additional features. It is close enough t=
-o TUSB320 so it works
-to some extent out-of-the-box, but for some reason it can start in UFP mode=
- which is not desirable.
+Reset the chip and set its mode to default (maintain mode set by PORT pin)
+during probe to make sure it comes up in the default state.
 
-This series adds support for reset and mode setting for both chips, and doe=
-s that while probing
-to ensure the chip starts with the default mode of following the PORT pin.
-
-Changes since v4:
- - Use ops struct instead of type enum.
+Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+---
 Changes since v3:
  - Remove unused tusb_modes.
- - Remove extra blank line.
 Changes since v2:
  - Read state before setting default mode, then update it again after reset=
 ting.
  - Remove mode tracing from irq handler
  - Add a delay after reset to handle tSOFT_RESET
- - Use a separate mode setting function for each of TUSB320 and TUSB320L.
 Changes since v1:
  - Split first patch into two patches, one adding support for mode setting =
 and reset on TUSB320,
    and the other adding support for TUSB320L.
- - Fix dt_binding_check warning:
-   ../Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml:15:=
-6: [warning] wrong indentation: expected 6 but found 5 (indentation)
 
-Yassine Oudjana (3):
-  extcon: usbc-tusb320: Add support for mode setting and reset
-  extcon: usbc-tusb320: Add support for TUSB320L
-  dt-bindings: extcon: usbc-tusb320: Add TUSB320L compatible string
+ drivers/extcon/extcon-usbc-tusb320.c | 85 ++++++++++++++++++++++++++--
+ 1 file changed, 81 insertions(+), 4 deletions(-)
 
- .../bindings/extcon/extcon-usbc-tusb320.yaml  |   4 +-
- drivers/extcon/extcon-usbc-tusb320.c          | 163 +++++++++++++++++-
- 2 files changed, 161 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/extcon/extcon-usbc-tusb320.c b/drivers/extcon/extcon-u=
+sbc-tusb320.c
+index 805af73b4152..1ed1dfe54206 100644
+--- a/drivers/extcon/extcon-usbc-tusb320.c
++++ b/drivers/extcon/extcon-usbc-tusb320.c
+@@ -19,15 +19,32 @@
+ #define TUSB320_REG9_ATTACHED_STATE_MASK=090x3
+ #define TUSB320_REG9_CABLE_DIRECTION=09=09BIT(5)
+ #define TUSB320_REG9_INTERRUPT_STATUS=09=09BIT(4)
+-#define TUSB320_ATTACHED_STATE_NONE=09=090x0
+-#define TUSB320_ATTACHED_STATE_DFP=09=090x1
+-#define TUSB320_ATTACHED_STATE_UFP=09=090x2
+-#define TUSB320_ATTACHED_STATE_ACC=09=090x3
++
++#define TUSB320_REGA=09=09=09=090xa
++#define TUSB320_REGA_I2C_SOFT_RESET=09=09BIT(3)
++#define TUSB320_REGA_MODE_SELECT_SHIFT=09=094
++#define TUSB320_REGA_MODE_SELECT_MASK=09=090x3
++
++enum tusb320_attached_state {
++=09TUSB320_ATTACHED_STATE_NONE,
++=09TUSB320_ATTACHED_STATE_DFP,
++=09TUSB320_ATTACHED_STATE_UFP,
++=09TUSB320_ATTACHED_STATE_ACC,
++};
++
++enum tusb320_mode {
++=09TUSB320_MODE_PORT,
++=09TUSB320_MODE_UFP,
++=09TUSB320_MODE_DFP,
++=09TUSB320_MODE_DRP,
++};
+=20
+ struct tusb320_priv {
+ =09struct device *dev;
+ =09struct regmap *regmap;
+ =09struct extcon_dev *edev;
++
++=09enum tusb320_attached_state state;
+ };
+=20
+ static const char * const tusb_attached_states[] =3D {
+@@ -62,6 +79,53 @@ static int tusb320_check_signature(struct tusb320_priv *=
+priv)
+ =09return 0;
+ }
+=20
++static int tusb320_set_mode(struct tusb320_priv *priv, enum tusb320_mode m=
+ode)
++{
++=09int ret;
++
++=09/* Mode cannot be changed while cable is attached */
++=09if (priv->state !=3D TUSB320_ATTACHED_STATE_NONE)
++=09=09return -EBUSY;
++
++=09/* Write mode */
++=09ret =3D regmap_write_bits(priv->regmap, TUSB320_REGA,
++=09=09TUSB320_REGA_MODE_SELECT_MASK << TUSB320_REGA_MODE_SELECT_SHIFT,
++=09=09mode << TUSB320_REGA_MODE_SELECT_SHIFT);
++=09if (ret) {
++=09=09dev_err(priv->dev, "failed to write mode: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09return 0;
++}
++
++static int tusb320_reset(struct tusb320_priv *priv)
++{
++=09int ret;
++
++=09/* Set mode to default (follow PORT pin) */
++=09ret =3D tusb320_set_mode(priv, TUSB320_MODE_PORT);
++=09if (ret && ret !=3D -EBUSY) {
++=09=09dev_err(priv->dev,
++=09=09=09"failed to set mode to PORT: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09/* Perform soft reset */
++=09ret =3D regmap_write_bits(priv->regmap, TUSB320_REGA,
++=09=09=09TUSB320_REGA_I2C_SOFT_RESET, 1);
++=09if (ret) {
++=09=09dev_err(priv->dev,
++=09=09=09"failed to write soft reset bit: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09/* Wait for chip to go through reset */
++=09msleep(95);
++
++=09return 0;
++}
++
+ static irqreturn_t tusb320_irq_handler(int irq, void *dev_id)
+ {
+ =09struct tusb320_priv *priv =3D dev_id;
+@@ -96,6 +160,8 @@ static irqreturn_t tusb320_irq_handler(int irq, void *de=
+v_id)
+ =09extcon_sync(priv->edev, EXTCON_USB);
+ =09extcon_sync(priv->edev, EXTCON_USB_HOST);
+=20
++=09priv->state =3D state;
++
+ =09regmap_write(priv->regmap, TUSB320_REG9, reg);
+=20
+ =09return IRQ_HANDLED;
+@@ -145,6 +211,17 @@ static int tusb320_extcon_probe(struct i2c_client *cli=
+ent,
+ =09/* update initial state */
+ =09tusb320_irq_handler(client->irq, priv);
+=20
++=09/* Reset chip to its default state */
++=09ret =3D tusb320_reset(priv);
++=09if (ret)
++=09=09dev_warn(priv->dev, "failed to reset chip: %d\n", ret);
++=09else
++=09=09/*
++=09=09 * State and polarity might change after a reset, so update
++=09=09 * them again and make sure the interrupt status bit is cleared.
++=09=09 */
++=09=09tusb320_irq_handler(client->irq, priv);
++
+ =09ret =3D devm_request_threaded_irq(priv->dev, client->irq, NULL,
+ =09=09=09=09=09tusb320_irq_handler,
+ =09=09=09=09=09IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
 --=20
 2.33.0
 
