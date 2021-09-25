@@ -2,159 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A5A41843A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 21:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6326D418441
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 21:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhIYTno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 15:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhIYTnn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 15:43:43 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253CEC061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 12:42:08 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id a13so12824020qtw.10
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 12:42:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=dWLCl1Ta8aGVxDUUVFw2BPmtno28cmmgizVUy46lVL0=;
-        b=HSJzzwW4BbqnMNk0XmqyowtBHwdMaqSuK8twbntIJu6nIrDNEjSyQzC9TdfMrdVkEY
-         /uvsB1HqSH+UOu1/hYpXbOZdlAvD2bstmbPp/9DbcrVRZLlpyGoc8ccvni4Or4GBmerR
-         YjqgIw9nkaBZ2SXLi8KBbKzoBzx0nxL+2JSGPPPp+VLqlzVZTF1kY/SQtOe5ZAE9P0Us
-         /seoocJ8CUXBj9XOhohFB9rSDYKTQLayMYYVUUeMq/o/03N3gmXAHQvybMEgBT7c1QBV
-         cf8rHsh0MkwdHqOBvihHJbuseq76/4vs486JZ1+IGLd0ewzpzhw2LI4aNuq4ZkpYmfQ6
-         qWhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=dWLCl1Ta8aGVxDUUVFw2BPmtno28cmmgizVUy46lVL0=;
-        b=20hX3rXgO3urHklVMG6ElT1b74BiIWNLDLABw1YlnVDf9uKnLEt9l5La1xQ5d9ubha
-         624148mjQVKjYNkYMdRu78ANjFfjSyp8Cgmkm7JVzaH9UvZh1WWh+BhUZc3xlvn3lML6
-         TLhFEALACAPa+mEMISEb8e6qDrevNmr0TpEP0yDVdqkSXEWtVMn53bUdFdkVx86nPs/J
-         lJ48fXbWZ1kQoh1AKBRFUoRx6CTiQrwQlsMk4kMMTRCbYf/5wLOwiId4It/NWdFcDr9Q
-         kVwKyxwhLGQmf51U3ht6ewg6arX7D6pu7U68Fx2F9/m/Ah2MtaQT1nUoeAgZAFqitwCq
-         T/PA==
-X-Gm-Message-State: AOAM530NNYmiIq2DsUnLpGHNRo24ql3dCYqs5e4IrYVuMwCd54S0seTf
-        QAJUsUjPSlgCd6X9jflwZOI=
-X-Google-Smtp-Source: ABdhPJwlVqco6NS7TuSV6K9+mmUYOg7WWPK3D/E/7dz7JChsO/C7vbX35HP/U7PS8ZBpq0BNXAo/kg==
-X-Received: by 2002:ac8:5c8e:: with SMTP id r14mr10812550qta.37.1632598927305;
-        Sat, 25 Sep 2021 12:42:07 -0700 (PDT)
-Received: from marsc.168.1.7 ([2804:30c:95c:7f00:4a55:391d:16ef:6119])
-        by smtp.gmail.com with ESMTPSA id m11sm8893162qkm.88.2021.09.25.12.42.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 12:42:07 -0700 (PDT)
-Date:   Sat, 25 Sep 2021 16:42:03 -0300
-From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To:     brendanhiggins@google.com
-Cc:     andy.li@unisoc.com, andersonreisrosa@gmail.com,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com
-Subject: [PATCH v2] kunit: mock: add support for function mocks with no
- parameters
-Message-ID: <YU97ixGUTLducy0P@marsc.168.1.7>
+        id S229850AbhIYT4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 15:56:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229711AbhIYT4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 15:56:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D507960F9B;
+        Sat, 25 Sep 2021 19:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632599668;
+        bh=ORMHJqP0QbdEHLECjFT+q180+6f7NyaNHoFvsqbPPnM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r7Ra4GdZAVz0j60pggkrTCtQWwDoi+h7zTWzEAdTodh0ry0ScOTRlxMo5p0n7WG+e
+         ll7kKjAUJDpjE1i9t7VlD13LBBdOXUejkTxv/UGIDYv79lNVALIPp/fLlXSBJ3a9Kz
+         rnhASwGMa1ptOmwai5xDaWl5Vm7IRh6QSi+x0Oq+jQ2qf+dypeLzbc22WyBZM5qznB
+         OJ2ZHzuaCEpiIRsu5wIKO/Hzdt2Pwn5d2owtx7DVVp2JTrqLEN4xphOgKBb04frfhQ
+         z8pTqyD1or2Znykr/tA/LpxSfMKHJldXr59WD7QcbrWeh3bO9bL8y65HYzrm05VYqs
+         gypXFgiwi0fSQ==
+Date:   Sat, 25 Sep 2021 12:54:25 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Aditya Garg <gargaditya08@live.com>, "axboe@fb.com" <axboe@fb.com>,
+        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "james.smart@broadcom.com" <james.smart@broadcom.com>,
+        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trivial@kernel.org" <trivial@kernel.org>
+Subject: Re: [PATCH] Urgent bug fix causing Apple SSDs to not work.
+Message-ID: <20210925195425.GB116968@dhcp-10-100-145-180.wdc.com>
+References: <PNZPR01MB4415600ACD3C8D9944F15058B8A59@PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM>
+ <CAHk-=wgML11x9afCvmg9yhVm9wi5mvnjBvmX+i7OfMA0Vd4FWA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAHk-=wgML11x9afCvmg9yhVm9wi5mvnjBvmX+i7OfMA0Vd4FWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function mocks defined with DEFINE_FUNCTION_MOCK(...) do not support
-empty parameters list due to strict function prototypes enforcement
-(-Werror=strict-prototypes). Add support for function mocks with no
-parameters by adding checks to declare strict function prototypes when
-an empty param list is provided.
-Further, add an expectation to test that the generated code works.
+On Sat, Sep 25, 2021 at 11:47:08AM -0700, Linus Torvalds wrote:
+> On Fri, Sep 24, 2021 at 9:02 PM Aditya Garg <gargaditya08@live.com> wrote:
+> >
+> > From: Aditya Garg <gargaditya08@live.com>
+> > Date: Fri, 24 Sep 2021 15:36:45 +0530
+> > Subject: [PATCH] Revert nvme to 5.14.5 to fix incompatibility arised in Apple SSDs.
+> > Fixes: e7006de6c238 (nvme: code command_id with a genctr for use-after-free validation)
+> 
+> I think we need to hear more about the problem than just revert a
+> commit like this randomly. That commit has already been picked up for
+> -stable,
+> 
+> What are the exact symptoms, and which Apple SSD is this?
+> 
+> I do find this:
+> 
+>   https://lore.kernel.org/all/cjJiSFV77WM51ciS8EuBcdeBcv9T83PUB-Kw3yi8PuC_LwrrUUnQ3w5RC1PbKvSYE72KryXp3wOJhv4Ov_WWIe2gKWOOo5uwuUjbbFA8HDM=@protonmail.com/
+> 
+> which instead of a revert has an actual patch. Can you try that one?
+> 
+> Keith Busch replied to that one, saying that the Apple SSD might not
+> be spec compliant, but hey, what else is new? If we start demanding
+> that hardware comply with specs, we'd have to scrap the whole notion
+> of working in the real world. Plus it would be very hypocritical of
+> us, since we ignore all specs when we deem them too limiting (whether
+> they be language specs, POSIX OS specs, or whatever).
 
-Co-developed-by: Anderson Reis Rosa <andersonreisrosa@gmail.com>
-Signed-off-by: Anderson Reis Rosa <andersonreisrosa@gmail.com>
-Signed-off-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
+Right, we have a lot of quirks for the apple controllers, what's one
+more? :)
+
+Could the following patch be tried? I'm basing this off the 'lspci' from
+Orlando, but I'm assuming the previous model has the same limitation,
+too.
+
 ---
-Not sure if we are allowed to add a Reported-by tag to credit Andy Li, so we didn't.
-
- include/test/mock.h    |  2 +-
- include/test/params.h  | 12 +++++++++++-
- test/mock-macro-test.c |  7 ++++++-
- 3 files changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/include/test/mock.h b/include/test/mock.h
-index 8b8031c13b2a..c46c90abc12a 100644
---- a/include/test/mock.h
-+++ b/include/test/mock.h
-@@ -640,7 +640,7 @@ int mock_in_sequence(struct KUNIT_T *test, struct mock_expectation *first, ...);
- 				  return_type,				       \
- 				  RETURN,				       \
- 				  param_types...)			       \
--		return_type name(PARAM_LIST_FROM_TYPES(param_types))	       \
-+		return_type name(FUNC_PARAM_LIST_FROM_TYPES(param_types))      \
- 		{							       \
- 			struct mock *mock = MOCK_SOURCE(mock_source_ctx,       \
- 							handle_index);	       \
-diff --git a/include/test/params.h b/include/test/params.h
-index 50d54035175d..ca4689dd0576 100644
---- a/include/test/params.h
-+++ b/include/test/params.h
-@@ -264,6 +264,11 @@
- 			       not_used,				       \
- 			       args)
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 7efb31b87f37..f0787233557f 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -979,6 +979,7 @@ EXPORT_SYMBOL_GPL(nvme_cleanup_cmd);
+ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, struct request *req)
+ {
+ 	struct nvme_command *cmd = nvme_req(req)->cmd;
++	struct nvme_ctrl *ctrl = nvme_req(req)->ctrl;
+ 	blk_status_t ret = BLK_STS_OK;
  
-+#define FUNC_PARAM_LIST_FROM_TYPES(args...)				       \
-+		IF(IS_EQUAL(NUM_VA_ARGS(args), 0))(void)		       \
-+		IF(IS_NOT_EQUAL(NUM_VA_ARGS(args), 0))			       \
-+		(PARAM_LIST_FROM_TYPES(args))
+ 	if (!(req->rq_flags & RQF_DONTPREP)) {
+@@ -1027,7 +1028,8 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, struct request *req)
+ 		return BLK_STS_IOERR;
+ 	}
+ 
+-	nvme_req(req)->genctr++;
++	if (!(ctrl->quirks & NVME_QUIRK_SKIP_CID_GEN))
++		nvme_req(req)->genctr++;
+ 	cmd->common.command_id = nvme_cid(req);
+ 	trace_nvme_setup_cmd(req, cmd);
+ 	return ret;
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index 9871c0c9374c..b49761d30df7 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -86,6 +86,12 @@ enum nvme_quirks {
+ 	 */
+ 	NVME_QUIRK_NO_DEEPEST_PS		= (1 << 5),
+ 
++	/*
++	 * The controller requires the command_id value be be limited to the
++	 * queue depth.
++	 */
++	NVME_QUIRK_SKIP_CID_GEN			= (1 << 6),
 +
- #define PRODUCE_TYPE_NAME(context, type, index) #type
- #define TYPE_NAMES_FROM_TYPES(handle_index, args...)			       \
- 		FOR_EACH_PARAM(PRODUCE_TYPE_NAME,			       \
-@@ -282,12 +287,17 @@
- 		IF(IS_EQUAL(index, ctrl_index))(struct mock *arg##ctrl_index)  \
- 		IF(IS_NOT_EQUAL(index, ctrl_index))(			       \
- 				struct mock_param_matcher *arg##index)
--#define MATCHER_PARAM_LIST_FROM_TYPES(ctrl_index, args...)		       \
-+#define MATCHER_PARAM_LIST_FROM_TYPES_INTERNAL(ctrl_index, args...)	       \
- 		FOR_EACH_PARAM(PRODUCE_MATCHER_AND_ARG,			       \
- 			       FILTER_NONE,				       \
- 			       ctrl_index,				       \
- 			       args)
+ 	/*
+ 	 * Set MEDIUM priority on SQ creation
+ 	 */
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index b82492cd7503..d9f22ed68185 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3369,7 +3369,10 @@ static const struct pci_device_id nvme_id_table[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2005),
+ 		.driver_data = NVME_QUIRK_SINGLE_VECTOR |
+ 				NVME_QUIRK_128_BYTES_SQES |
+-				NVME_QUIRK_SHARED_TAGS },
++				NVME_QUIRK_SHARED_TAGS ,
++				NVME_QUIRK_SKIP_CID_GEN },
++	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2006),
++		.driver_data = NVME_QUIRK_SKIP_CID_GEN },
  
-+#define MATCHER_PARAM_LIST_FROM_TYPES(ctrl_index, args...)		       \
-+		IF(IS_EQUAL(NUM_VA_ARGS(args), 0))(void)		       \
-+		IF(IS_NOT_EQUAL(NUM_VA_ARGS(args), 0))			       \
-+		(MATCHER_PARAM_LIST_FROM_TYPES_INTERNAL(ctrl_index, args))
-+
- #define PRODUCE_ARG(context, type, index) arg##index
- #define ARG_NAMES_FROM_TYPES(ctrl_index, args...)			       \
- 		FOR_EACH_PARAM(PRODUCE_ARG,				       \
-diff --git a/test/mock-macro-test.c b/test/mock-macro-test.c
-index 14da7ebe752d..d97cf3642bb3 100644
---- a/test/mock-macro-test.c
-+++ b/test/mock-macro-test.c
-@@ -59,6 +59,8 @@ DEFINE_VOID_CLASS_MOCK_HANDLE_INDEX(METHOD(test_void_ptr_func),
- 
- DEFINE_FUNCTION_MOCK(add, RETURNS(int), PARAMS(int, int));
- 
-+DEFINE_FUNCTION_MOCK(no_param, RETURNS(int), PARAMS());
-+
- struct mock_macro_context {
- 	struct MOCK(test_struct) *mock_test_struct;
- 	struct MOCK(void) *mock_void_ptr;
-@@ -216,8 +218,11 @@ static void mock_macro_test_generated_function_code_works(struct KUNIT_T *test)
- 
- 	handle = EXPECT_CALL(add(int_eq(test, 4), int_eq(test, 3)));
- 	handle->action = int_return(test, 7);
--
- 	EXPECT_EQ(test, 7, add(4, 3));
-+
-+	handle = EXPECT_CALL(no_param());
-+	handle->action = int_return(test, 9);
-+	EXPECT_EQ(test, 9, no_param());
- }
- 
- static int mock_macro_test_init(struct KUNIT_T *test)
--- 
-2.33.0
-
+ 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
+ 	{ 0, }
+--
