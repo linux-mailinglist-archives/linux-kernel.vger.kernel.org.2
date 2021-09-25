@@ -2,383 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70214418416
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 21:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC668418419
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 21:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhIYTKa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 25 Sep 2021 15:10:30 -0400
-Received: from aposti.net ([89.234.176.197]:53210 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229728AbhIYTK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 15:10:27 -0400
-Date:   Sat, 25 Sep 2021 20:08:41 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
-To:     Paul Boddie <paul@boddie.org.uk>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-Id: <HU700R.NAHL5IU3NRE81@crapouillou.net>
-In-Reply-To: <2094991.ScV2v2meXk@jason>
-References: <20210922205555.496871-1-paul@crapouillou.net>
-        <4366739.KZ8Jxz7LyS@jason> <EKJXZQ.6VJ0UDHV3T3W@crapouillou.net>
-        <2094991.ScV2v2meXk@jason>
+        id S229802AbhIYTOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 15:14:53 -0400
+Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:20785
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229711AbhIYTOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 15:14:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZXgXyRoPJRtgMxsETXWBpau3KyFhvCQYdC5x4DhxihV2OvYiYU6fmLVomKp4WevH+yGDgDjVrlfgHZkdGcNFeaKMW94cHUjXE9K+Z+LK8QRHUlMEtA990CipEEWOdSOIPZglKRGN6kGTOfQkUoIGihsZnoFemcL8J643WV1A0J6CMEdbLTslJpu63OsH2UjaupvfD75ALWV0C1GqkMF0L9H1F3RmKQtxjEshf5rz33Efeit5NaJaYN70FsuBc5XTs4LrQBYGRW/1BKNKzOT9NRPQICErYoiLUDNgAGB0GkrtQWYyxD5+wIcRoMmJphMojoFw/pVsgqq2s6epdMUDyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=QQ15CQp7Wq48KxjnGRP/qJKXSl0/TCjjEhUTVl4o3W0=;
+ b=ffIgF9YcvhRZh0irycn76VoT6Rxyc7CMTLTJxM3IMT5OGQoYCZHWwc5RoaIhVMpb11OU31IY4o85oO/GN+h2P2IcIDDxWLIi+nyy4HXKs+Ry+nxKuFiRC9ZiQ6rmc813P0rR/tyr1dfJEDY/BLMW0Ut8pXrfwCuez3D91Y+L+vsHfQkCEwoLMDp3DdiHRRZQQSXyXn99zSeRmJwai/Z4aqeInxsyt24w4WivYv4wvYvSQJP9y7/q+f+5DFcCHWmm7vtdG/C8AGykNOwvFnOVu1/PXp0arGDt4nBMw+l1kZtg1qo1+yhPWX6l5QRh38/09xn4EwP14xiZivDJohIP+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QQ15CQp7Wq48KxjnGRP/qJKXSl0/TCjjEhUTVl4o3W0=;
+ b=UCmxgsnfCi2hbfrRNlXzuST3KHNbgVNow9hqdgdd6WWmS83HxzMvHkC68J9g2fnwnfgAB6wS8u7LPe0Jd3zw8q7l38gBrVHih2z8XL6eEOibF3vSkmRckW/7WiK4NhR0im1PuxR1AitK3EREeOYFUfP/eudjfAvSlvjE/iCjUWs=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB4685.eurprd04.prod.outlook.com (2603:10a6:803:70::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Sat, 25 Sep
+ 2021 19:13:08 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4544.020; Sat, 25 Sep 2021
+ 19:13:08 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH v5 net-next 1/9] net: mscc: ocelot: serialize access to
+ the MAC table
+Thread-Topic: [PATCH v5 net-next 1/9] net: mscc: ocelot: serialize access to
+ the MAC table
+Thread-Index: AQHXsSiNdI/FyYdkjEKxnocevBuSrqu1IG2A
+Date:   Sat, 25 Sep 2021 19:13:08 +0000
+Message-ID: <20210925191307.qoon6iz32gep6st7@skbuf>
+References: <20210924095226.38079-1-xiaoliang.yang_1@nxp.com>
+ <20210924095226.38079-2-xiaoliang.yang_1@nxp.com>
+In-Reply-To: <20210924095226.38079-2-xiaoliang.yang_1@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9bb89d0a-ce2b-41e1-e5f0-08d980588283
+x-ms-traffictypediagnostic: VI1PR04MB4685:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB468552DEF48FFC9D046D5241E0A59@VI1PR04MB4685.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xOMiDJeRGbM/xuWEmBwAGGYzZDrq8yHhgG/Lfs9xXYWLJ4F4IoANUSoBsAMVv6N2YCBzvMmr0Ref/uFO6HVCOpoHRdnyjJvbpse3udcnExGh6K05Q+1jUSxdFcTnYoLk3YV6B8emAaReBfbqNlkQJa3NSs6OG9lT2IVgxhMDpI0ZMxFw8aEYAMu2Mv4XIsL1LA1bYCmSt//OYaXcuUiNJ+XAn+nmHQHoW9o3lCpkKSGQwYcuMrxjIpHzQFRMyRl1fa7GhyrSsPMq4kyZeKG5hh1oljEhHJhh/BRFYeqQceLq6miVUrYtZMxZH3pcaXXtPd7JqAxnW75ws1br4sG8vtaRo5mKh1RSLtRe8QrO9Ko8eeZbPoQSbXVySFEUo0zD9Kv5ErW4Af4WEoTP/Eqm4GvxivBUe8bJFhndJ0lUS6aFgI8hVWMbFNXWm8rn/E4KWenyrrBBcYvERrC8Y1vABJnWlKxsGhJjYSTIhJIThnYQMO4hTfFwXDbALdRFhC11fUSgVioYOnDQmn05X9z6NPQRHkJlRp1+i/csrRR8TvswqyxHfzWByJ2C9ZKvmVPQ9cHwo0hyvVEcbLC70g/JDv4Bp3j6vCD7q+1O6ctNb2EbsSbCyUYQnRIXNHa17jApQDX9gcVL7n/s+/+QH5f0fltwi1uNOoCTQlEZC1nWTvHUCz2eepsmSyN7l/FpZCPihhoYGe6gdrRz1XVjTfaMIQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(86362001)(8936002)(33716001)(1076003)(8676002)(66446008)(64756008)(66556008)(66476007)(44832011)(66946007)(76116006)(91956017)(508600001)(71200400001)(2906002)(38100700002)(54906003)(6506007)(83380400001)(316002)(6512007)(9686003)(122000001)(4744005)(38070700005)(5660300002)(6636002)(6862004)(186003)(4326008)(7416002)(26005)(6486002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qy32qJoBRS8Kzo5kQ0BMQiyS1v7eRZnMSZINEV3Ru+l+JEJG4rxysz4hLm/F?=
+ =?us-ascii?Q?odNpmEyfP0SezrIDhLQQ05P7MHpWCnb+N7U5lb0jKCnLgxUEg16mWGVeEup5?=
+ =?us-ascii?Q?HpgEPHpqYAPZo1F5JX/GVDZmtzfqw1NtmuksJl+9qCV2GkyCj5Jr+kCsFNXS?=
+ =?us-ascii?Q?Q1IAFjl3oH/2PK962hEAYOaPPWAc0NE39nF153oLb1KGW3tUkgKV7Y3OVAVu?=
+ =?us-ascii?Q?NlUX+2jdtVp+Mg+T/JuWsJ33fzbqfBdSQwX1wej2v254TYoP0F8uFykJ3Vd5?=
+ =?us-ascii?Q?JG6A91yYVxr67kvhY29Op5i/rMAxe4PO6NwjL3jgPnVL2fQOxjIfXHgJ+HGn?=
+ =?us-ascii?Q?eClKDRQxY6fUlCdCZZjEZ511eoxtVJeybaayU/EOow1jpKYj4Y+liH3JLEeU?=
+ =?us-ascii?Q?AgS6/BlQgQSgRTB8NuFkoDoA1TdBHXQVsBmiUbgxszAO9FxlTQ3htDTrVlTS?=
+ =?us-ascii?Q?3NAzaGWgbUJC5r33dVIMiEQR4iRqvK8m+i+/VBlnWXXFVyzDDoJ3OnOvRFyO?=
+ =?us-ascii?Q?nFg1FSzZtcAypuwVrfpYVOgIM7cr+VdOrRSCKq6uDp4l56uGJ6gDc3z/5MYM?=
+ =?us-ascii?Q?4tawzArTA713d90TsHShgyyk6bCWMVr1hfJ8DJpILXTBXuyp+kMOBaQXjEzN?=
+ =?us-ascii?Q?/6Q2LrPnYuSkdgb1jUKdQrC7lT3KfVprhbnbAl/qwtqqbzSri5HVcSeRUlui?=
+ =?us-ascii?Q?dWZAO5I7l93E75D/PRNtDHfGN9V7ALeev44OmkfO0RcLz3ojxH5mz6VyLWEu?=
+ =?us-ascii?Q?fYGrmbzhLDd69rTrwAyVJTtTpC/hQSMAtntK6hyenit3xrAxi0wOIga7bnEM?=
+ =?us-ascii?Q?U4PkkBupcrn+kXzwQQeo/U5yTUXJwBpHn3W5qxF88pA9+f46At4It5tsKM6b?=
+ =?us-ascii?Q?9UeN4ONrPbPeTWnh1kKoYf6WBa1b3qXEUsOokRk7b0gYdUgZ1MBPgZR7bFnx?=
+ =?us-ascii?Q?J+ptYiFkASpxYa9RulqIr+FIJoo9lHheTfap9+ucMjv2cGDasXXsAekbMNSe?=
+ =?us-ascii?Q?9dqJBp2O/iYOk8X8p1Jd7zrTCEYwsrCs588WUnne0GA7z4WhRkic7amatxL8?=
+ =?us-ascii?Q?leE7t3y2yAROcZPPOgme3/DQGabfH8BoQ/KnytAbgX2qNTfbWj16Q9fXlBvP?=
+ =?us-ascii?Q?HWm35ip/7VTjbPnpZStIX6phnhV/hjOXji5JLtcX+Ct03JR3+zbKkvWh+viY?=
+ =?us-ascii?Q?Q1167CSpkl+RjvzNK8fTTDy9NtUmF6xNznl2oj1PcY24TekRu+G5Ph7JWhIi?=
+ =?us-ascii?Q?fX78KK3gw96DjfpZef80mmm2WrSzSxu5+Ymt6JuQKa37lOjzMd6iKPW/t2yh?=
+ =?us-ascii?Q?2084kTkSr81Yl57tgMNCXkBd?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3B54424CEF3F0841984A1D574DF49BCE@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bb89d0a-ce2b-41e1-e5f0-08d980588283
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2021 19:13:08.4095
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zITmhjs5LpmfbPtM2tXatZzec1EsEZWwe8Yzga6auCc/zKdNi25HV1FUk+wC0dg3IhEbOrUAK20Bm7ib5mw9+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4685
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul & Nikolaus,
+On Fri, Sep 24, 2021 at 05:52:18PM +0800, Xiaoliang Yang wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+>=20
+> DSA would like to remove the rtnl_lock from its
+> SWITCHDEV_FDB_{ADD,DEL}_TO_DEVICE handlers, and the felix driver uses
+> the same MAC table functions as ocelot.
+>=20
+> This means that the MAC table functions will no longer be implicitly
+> serialized with respect to each other by the rtnl_mutex, we need to add
+> a dedicated lock in ocelot for the non-atomic operations of selecting a
+> MAC table row, reading/writing what we want and polling for completion.
+>=20
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
 
-If you spent some time debugging the issue instead of complaining that 
-my patchset breaks things...
-
-The fix is a one-liner in your downstream ingenic-dw-hdmi.c:
-.output_port = 1
-in the ingenic_dw_hdmi_plat_data struct.
-
-Absolutely nothing else needs to be changed for HDMI to work here.
-
-Cheers,
--Paul
-
-
-Le sam., sept. 25 2021 at 17:55:03 +0200, Paul Boddie 
-<paul@boddie.org.uk> a écrit :
-> On Friday, 24 September 2021 10:29:02 CEST Paul Cercueil wrote:
->> 
->>  Le ven., sept. 24 2021 at 00:51:39 +0200, Paul Boddie
->>  >
->>  > 2. My approach, which just involves changing the Synopsys driver 
->> to
->>  > set the bridge type in dw_hdmi_probe like this:
->>  >
->>  >   hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
->>  >
->>  > Otherwise, I don't see how the bridge's (struct drm_bridge) type 
->> will
->>  > be set.
->> 
->>  The bridge's type is set in hdmi-connector, from DTS. The 'type = 
->> "a"'
->>  will result in the bridge's .type to be set to 
->> DRM_MODE_CONNECTOR_HDMIA.
-> 
-> Actually, I found that hdmi-connector might not have been available 
-> because
-> CONFIG_DRM_DISPLAY_CONNECTOR was not enabled. Rectifying this, the 
-> connector
-> does get detected and enabled. However, the Synopsys driver remains 
-> unaware of
-> it, and so the bridge type in the Synopsys driver remains unset.
-> 
-> I do see that the connector sets the type on a bridge in its own 
-> private
-> structure, so there would be a need to propagate this type to the 
-> actual
-> bridge. In other words, what the connector does is distinct from the 
-> Synopsys
-> driver which acts as the bridge with regard to the Ingenic driver.
-> 
-> Perhaps the Synopsys driver should set the connector's bridge as the 
-> next
-> bridge, or maybe something is supposed to discover that the connector 
-> may act
-> as (or provide) a bridge after the Synopsys driver in the chain and 
-> then back-
-> propagate the bridge type along the chain.
-> 
-> [...]
-> 
->>  > And I removed any of the above hacks. What I observe, apart from 
->> an
->>  > inactive LCD controller (and ingenic-drm driver), is the 
->> following in
->>  > /sys/devices/platform/10180000.hdmi/:
->>  >
->>  > consumer:platform:13050000.lcdc0
->>  > consumer:platform:hdmi_connector
-> 
-> Interestingly, with the connector driver present, these sysfs entries 
-> no
-> longer appear.
-> 
-> [...]
-> 
->>  > For me, running modetest yields plenty of information about 
->> encoders,
->>  > connectors (and the supported modes via the EDID, thanks to my 
->> HDMI-A
->>  > hack), CRTCs, and planes. But no framebuffers are reported.
->> 
->>  Could you paste the result of "modetest -a -c -p" somewhere maybe?
-> 
-> I had to specify -M ingenic-drm as well, but here you go...
-> 
-> ----
-> 
-> Connectors:
-> id	encoder	status		name		size (mm)	modes	encoders
-> 35	34	connected	HDMI-A-1       	340x270		17	34
->   modes:
-> 	index name refresh (Hz) hdisp hss hse htot vdisp vss vse vtot)
->   #0 1280x1024 60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 
-> flags:
-> phsync, pvsync; type: preferred, driver
->   #1 1280x1024 75.02 1280 1296 1440 1688 1024 1025 1028 1066 135000 
-> flags:
-> phsync, pvsync; type: driver
->   #2 1280x960 60.00 1280 1376 1488 1800 960 961 964 1000 108000 
-> flags: phsync,
-> pvsync; type: driver
->   #3 1152x864 75.00 1152 1216 1344 1600 864 865 868 900 108000 flags: 
-> phsync,
-> pvsync; type: driver
->   #4 1024x768 75.03 1024 1040 1136 1312 768 769 772 800 78750 flags: 
-> phsync,
-> pvsync; type: driver
->   #5 1024x768 70.07 1024 1048 1184 1328 768 771 777 806 75000 flags: 
-> nhsync,
-> nvsync; type: driver
->   #6 1024x768 60.00 1024 1048 1184 1344 768 771 777 806 65000 flags: 
-> nhsync,
-> nvsync; type: driver
->   #7 832x624 74.55 832 864 928 1152 624 625 628 667 57284 flags: 
-> nhsync,
-> nvsync; type: driver
->   #8 800x600 75.00 800 816 896 1056 600 601 604 625 49500 flags: 
-> phsync,
-> pvsync; type: driver
->   #9 800x600 72.19 800 856 976 1040 600 637 643 666 50000 flags: 
-> phsync,
-> pvsync; type: driver
->   #10 800x600 60.32 800 840 968 1056 600 601 605 628 40000 flags: 
-> phsync,
-> pvsync; type: driver
->   #11 800x600 56.25 800 824 896 1024 600 601 603 625 36000 flags: 
-> phsync,
-> pvsync; type: driver
->   #12 640x480 75.00 640 656 720 840 480 481 484 500 31500 flags: 
-> nhsync,
-> nvsync; type: driver
->   #13 640x480 72.81 640 664 704 832 480 489 492 520 31500 flags: 
-> nhsync,
-> nvsync; type: driver
->   #14 640x480 66.67 640 704 768 864 480 483 486 525 30240 flags: 
-> nhsync,
-> nvsync; type: driver
->   #15 640x480 59.94 640 656 752 800 480 490 492 525 25175 flags: 
-> nhsync,
-> nvsync; type: driver
->   #16 720x400 70.08 720 738 846 900 400 412 414 449 28320 flags: 
-> nhsync,
-> pvsync; type: driver
->   props:
-> 	1 EDID:
-> 		flags: immutable blob
-> 		blobs:
-> 
-> 		value:
-> 			00ffffffffffff00047232ad01010101
-> 			2d0e010380221b782aaea5a6544c9926
-> 			145054bfef0081808140714f01010101
-> 			010101010101302a009851002a403070
-> 			1300520e1100001e000000ff00343435
-> 			3030353444454330300a000000fc0041
-> 			4c313731350a202020202020000000fd
-> 			00384c1e520e000a2020202020200051
-> 	2 DPMS:
-> 		flags: enum
-> 		enums: On=0 Standby=1 Suspend=2 Off=3
-> 		value: 0
-> 	5 link-status:
-> 		flags: enum
-> 		enums: Good=0 Bad=1
-> 		value: 0
-> 	6 non-desktop:
-> 		flags: immutable range
-> 		values: 0 1
-> 		value: 0
-> 	4 TILE:
-> 		flags: immutable blob
-> 		blobs:
-> 
-> 		value:
-> 	20 CRTC_ID:
-> 		flags: object
-> 		value: 32
-> 
-> CRTCs:
-> id	fb	pos	size
-> 32	39	(0,0)	(1280x1024)
->   #0  60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 flags: 
-> phsync,
-> pvsync; type:
->   props:
-> 	22 ACTIVE:
-> 		flags: range
-> 		values: 0 1
-> 		value: 1
-> 	23 MODE_ID:
-> 		flags: blob
-> 		blobs:
-> 
-> 		value:
-> 			e0a5010000053005a005980600000004
-> 			010404042a0400003c00000005000000
-> 			00000000000000000000000000000000
-> 			00000000000000000000000000000000
-> 			00000000
-> 	19 OUT_FENCE_PTR:
-> 		flags: range
-> 		values: 0 18446744073709551615
-> 		value: 0
-> 	24 VRR_ENABLED:
-> 		flags: range
-> 		values: 0 1
-> 		value: 0
-> 	28 GAMMA_LUT:
-> 		flags: blob
-> 		blobs:
-> 
-> 		value:
-> 	29 GAMMA_LUT_SIZE:
-> 		flags: immutable range
-> 		values: 0 4294967295
-> 		value: 256
-> 
-> Planes:
-> id	crtc	fb	CRTC x,y	x,y	gamma size	possible crtcs
-> 31	32	39	0,0		0,0	0       	0x00000001
->   formats: XR15 RG16 RG24 XR24 XR30
->   props:
-> 	8 type:
-> 		flags: immutable enum
-> 		enums: Overlay=0 Primary=1 Cursor=2
-> 		value: 1
-> 	17 FB_ID:
-> 		flags: object
-> 		value: 39
-> 	18 IN_FENCE_FD:
-> 		flags: signed range
-> 		values: -1 2147483647
-> 		value: -1
-> 	20 CRTC_ID:
-> 		flags: object
-> 		value: 32
-> 	13 CRTC_X:
-> 		flags: signed range
-> 		values: -2147483648 2147483647
-> 		value: 0
-> 	14 CRTC_Y:
-> 		flags: signed range
-> 		values: -2147483648 2147483647
-> 		value: 0
-> 	15 CRTC_W:
-> 		flags: range
-> 		values: 0 2147483647
-> 		value: 1280
-> 	16 CRTC_H:
-> 		flags: range
-> 		values: 0 2147483647
-> 		value: 1024
-> 	9 SRC_X:
-> 		flags: range
-> 		values: 0 4294967295
-> 		value: 0
-> 	10 SRC_Y:
-> 		flags: range
-> 		values: 0 4294967295
-> 		value: 0
-> 	11 SRC_W:
-> 		flags: range
-> 		values: 0 4294967295
-> 		value: 83886080
-> 	12 SRC_H:
-> 		flags: range
-> 		values: 0 4294967295
-> 		value: 67108864
-> 33	0	0	0,0		0,0	0       	0x00000001
->   formats: C8   XR15 RG16 RG24 XR24 XR30
->   props:
-> 	8 type:
-> 		flags: immutable enum
-> 		enums: Overlay=0 Primary=1 Cursor=2
-> 		value: 0
-> 	17 FB_ID:
-> 		flags: object
-> 		value: 0
-> 	18 IN_FENCE_FD:
-> 		flags: signed range
-> 		values: -1 2147483647
-> 		value: -1
-> 	20 CRTC_ID:
-> 		flags: object
-> 		value: 0
-> 	13 CRTC_X:
-> 		flags: signed range
-> 		values: -2147483648 2147483647
-> 		value: 0
-> 	14 CRTC_Y:
-> 		flags: signed range
-> 		values: -2147483648 2147483647
-> 		value: 0
-> 	15 CRTC_W:
-> 		flags: range
-> 		values: 0 2147483647
-> 		value: 0
-> 	16 CRTC_H:
-> 		flags: range
-> 		values: 0 2147483647
-> 		value: 0
-> 	9 SRC_X:
-> 		flags: range
-> 		values: 0 4294967295
-> 		value: 0
-> 	10 SRC_Y:
-> 		flags: range
-> 		values: 0 4294967295
-> 		value: 0
-> 	11 SRC_W:
-> 		flags: range
-> 		values: 0 4294967295
-> 		value: 0
-> 	12 SRC_H:
-> 		flags: range
-> 		values: 0 4294967295
-> 		value: 0
-> 
-> ----
-> 
->>  If you have info about the CRTCs, encoders, connectors and EDID 
->> info,
->>  then I would assume it is very close to working fine.
->> 
->>  For your "no framebuffer" issue, keep in mind that CONFIG_FB and
->>  CONFIG_FRAMEBUFFER_CONSOLE are now disabled by default.
-> 
-> Yes, I discovered that CONFIG_FB was not enabled, so I did so.
-> 
->>  If that doesn't fix anything, that probably means that one
->>  .atomic_check() fails, so it would be a good place to start 
->> debugging.
-> 
-> There will be other things to verify in the Ingenic driver. As noted 
-> many
-> months ago, colour depth information has to be set in the DMA 
-> descriptors and
-> not the control register, but we are managing to do this 
-> successfully, as far
-> as I can tell, although there is always the potential for error.
-> 
-> Paul
-> 
-> 
-
-
+This patch needs your sign-off too.=
