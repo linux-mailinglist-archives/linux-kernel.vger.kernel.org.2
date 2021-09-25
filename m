@@ -2,213 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2986E418350
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 17:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402C8418352
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 17:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238418AbhIYP4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 11:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234075AbhIYP4e (ORCPT
+        id S241107AbhIYP4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 11:56:52 -0400
+Received: from smtp2.de.opalstack.com ([139.162.136.213]:38626 "EHLO
+        smtp2.de.opalstack.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234075AbhIYP4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 11:56:34 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAE3C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 08:54:59 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id j195so12823855ybj.8
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 08:54:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=vVrbd0GlH8nKXHhxxNmtQyrLg1aP+cO+SPkH4BuRaFI=;
-        b=GuiJIXyu4QYZaQIxnbt8gPsRabyXWXfOI5teHq1uH5vHqkxea2yCT28sHXomV9WZ+p
-         ojfmjpiXAD5n3v3bch+uRnMzeD6JjwUEYDToKVFyc7LXnajNGKO49NzfXuUqXw7/Ctlv
-         85HoqAo9P2BhMbjRqMQQsDhBML5uOzDq8GXcFDZyvfDXD03GBXC8cy8Ot0VCPiU1yfW1
-         Kb+SEXzJlSbc49hhCZ8TnFJnd3AJDgQ4u+OX4NhJvIghZ4ysVQtSsRSMYH62k7LtQg/e
-         FUUrsC1e1i+j9XLHYNIfiSPHuqZMqx1Fm5/DxXXkJEAanU6USFLtSQEAkYdXE6LcICgQ
-         37Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=vVrbd0GlH8nKXHhxxNmtQyrLg1aP+cO+SPkH4BuRaFI=;
-        b=bCIpYqj9UIgEEZtey6LgeMmV5KCTypZ+BKHTjWBzdEgC4rOF+www2HUbuhpaYwNjgx
-         3ytfa58scvhVGiUatYoAGI6lysTtMWUCd29of4PDLn1R1q9+PE6piZWMXvtSTuemXZlp
-         2LdffhIdBjKnL09eaoqa3uvj8+x2VzNYxqAHHJTtubMcT0Ts78ZsobfF1Yv1IrkYcKwI
-         MhIg0eNWsrTGO8c5x9LWwZGhLpcqy3BqGAyEH4HrYPS+HHzVH3cxNFiaaHERTZQpP5Dw
-         IrvtGRclfIje3MeJFxHS+fdprLGRursXWPf6wugcy7T/NMPUm1x89lZMUJ73meO1v/+5
-         /JKQ==
-X-Gm-Message-State: AOAM531Kqqad+YOwcnu0v96GCeIckBAx/PNEMDRP9xzdPTbrr88c0CWQ
-        kpoy1hP3Btyq/eb5zhVb7V+0Cq45c6VGwaivwcrmVw==
-X-Google-Smtp-Source: ABdhPJxMyo/HEajKd711jJrRicDZGRLr8VNTveo65pduC6l0IgOfvvLZQ/6jY4z3kA91lOQy7aQ8KkDx9V1UGb5rP9I=
-X-Received: by 2002:a25:7c42:: with SMTP id x63mr7001204ybc.225.1632585298182;
- Sat, 25 Sep 2021 08:54:58 -0700 (PDT)
+        Sat, 25 Sep 2021 11:56:49 -0400
+Received: from jason.localnet (host-37-191-188-128.lynet.no [37.191.188.128])
+        by smtp2.de.opalstack.com (Postfix) with ESMTPSA id B574D12A96C;
+        Sat, 25 Sep 2021 15:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=boddie.org.uk;
+        s=dkim; t=1632585313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bObrE5LGwxfaxuETPQBu2h5+WeEFOlGsokoYQSfsp7Q=;
+        b=GZbA0Fcvem8ErKZ/PmxUgYzkLm/QQ/IAomc6fKgfsMrvkHKRgSCgCviGllz/uN8NGqASN9
+        BRIbIh3QYz9L9MNwOZuIgAjTSu+nOiltS5GONqJfSqgVik/Kixn+okSebZ66d/0eg1dEZX
+        OA8CbBFJ0zoHPhUpipXl6+5DKIoOFNg=
+From:   Paul Boddie <paul@boddie.org.uk>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
+Date:   Sat, 25 Sep 2021 17:55:03 +0200
+Message-ID: <2094991.ScV2v2meXk@jason>
+In-Reply-To: <EKJXZQ.6VJ0UDHV3T3W@crapouillou.net>
+References: <20210922205555.496871-1-paul@crapouillou.net> <4366739.KZ8Jxz7LyS@jason> <EKJXZQ.6VJ0UDHV3T3W@crapouillou.net>
 MIME-Version: 1.0
-References: <CANn89iL6AAyWhfxdHO+jaT075iOa3XcYn9k6JJc7JR2XYn6k_Q@mail.gmail.com>
-In-Reply-To: <CANn89iL6AAyWhfxdHO+jaT075iOa3XcYn9k6JJc7JR2XYn6k_Q@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sat, 25 Sep 2021 08:54:46 -0700
-Message-ID: <CANn89iLofTR=AK-QOZY87RdUZENCZUT4O6a0hvhu3_EwRMerOg@mail.gmail.com>
-Subject: Re: [BUG] numa spreading of large hash tables no longer a thing
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.72
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 12:55 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> Hi Andrew and mm experts
->
-> It seems recent kernels lost the NUMA spreading of large hash tables
-> allocated at boot time.
->
-> Does it ring a bell, was it intentional ?
-> Thanks
+On Friday, 24 September 2021 10:29:02 CEST Paul Cercueil wrote:
+> 
+> Le ven., sept. 24 2021 at 00:51:39 +0200, Paul Boddie
+> >
+> > 2. My approach, which just involves changing the Synopsys driver to
+> > set the bridge type in dw_hdmi_probe like this:
+> >
+> >   hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
+> > 
+> > Otherwise, I don't see how the bridge's (struct drm_bridge) type will
+> > be set.
+> 
+> The bridge's type is set in hdmi-connector, from DTS. The 'type = "a"'
+> will result in the bridge's .type to be set to DRM_MODE_CONNECTOR_HDMIA.
 
-I did a bisection and it went back to the following commit [1]
+Actually, I found that hdmi-connector might not have been available because 
+CONFIG_DRM_DISPLAY_CONNECTOR was not enabled. Rectifying this, the connector 
+does get detected and enabled. However, the Synopsys driver remains unaware of 
+it, and so the bridge type in the Synopsys driver remains unset.
 
-Probably the removal of
+I do see that the connector sets the type on a bridge in its own private 
+structure, so there would be a need to propagate this type to the actual 
+bridge. In other words, what the connector does is distinct from the Synopsys 
+driver which acts as the bridge with regard to the Ingenic driver.
 
--               if (node == NUMA_NO_NODE)
--                       page = alloc_page(gfp_mask);
--               else
--                       page = alloc_pages_node(node, gfp_mask, 0);
+Perhaps the Synopsys driver should set the connector's bridge as the next 
+bridge, or maybe something is supposed to discover that the connector may act 
+as (or provide) a bridge after the Synopsys driver in the chain and then back-
+propagate the bridge type along the chain.
 
-had something to do with the regression.
+[...]
 
-Things got a little bit more complicated after the introduction of
-bulk allocations.
+> > And I removed any of the above hacks. What I observe, apart from an
+> > inactive LCD controller (and ingenic-drm driver), is the following in
+> > /sys/devices/platform/10180000.hdmi/:
+> > 
+> > consumer:platform:13050000.lcdc0
+> > consumer:platform:hdmi_connector
 
-[1]
-commit 121e6f3258fe393e22c36f61a319be8a4f2c05ae
-Author: Nicholas Piggin <npiggin@gmail.com>
-Date:   Thu Apr 29 22:58:49 2021 -0700
+Interestingly, with the connector driver present, these sysfs entries no 
+longer appear.
 
-    mm/vmalloc: hugepage vmalloc mappings
+[...]
 
-    Support huge page vmalloc mappings.  Config option HAVE_ARCH_HUGE_VMALLOC
-    enables support on architectures that define HAVE_ARCH_HUGE_VMAP and
-    supports PMD sized vmap mappings.
+> > For me, running modetest yields plenty of information about encoders,
+> > connectors (and the supported modes via the EDID, thanks to my HDMI-A
+> > hack), CRTCs, and planes. But no framebuffers are reported.
+> 
+> Could you paste the result of "modetest -a -c -p" somewhere maybe?
 
-    vmalloc will attempt to allocate PMD-sized pages if allocating PMD size or
-    larger, and fall back to small pages if that was unsuccessful.
+I had to specify -M ingenic-drm as well, but here you go...
 
-    Architectures must ensure that any arch specific vmalloc allocations that
-    require PAGE_SIZE mappings (e.g., module allocations vs strict module rwx)
-    use the VM_NOHUGE flag to inhibit larger mappings.
+----
 
-    This can result in more internal fragmentation and memory overhead for a
-    given allocation, an option nohugevmalloc is added to disable at boot.
+Connectors:
+id	encoder	status		name		size (mm)	modes	encoders
+35	34	connected	HDMI-A-1       	340x270		17	34
+  modes:
+	index name refresh (Hz) hdisp hss hse htot vdisp vss vse vtot)
+  #0 1280x1024 60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 flags: 
+phsync, pvsync; type: preferred, driver
+  #1 1280x1024 75.02 1280 1296 1440 1688 1024 1025 1028 1066 135000 flags: 
+phsync, pvsync; type: driver
+  #2 1280x960 60.00 1280 1376 1488 1800 960 961 964 1000 108000 flags: phsync, 
+pvsync; type: driver
+  #3 1152x864 75.00 1152 1216 1344 1600 864 865 868 900 108000 flags: phsync, 
+pvsync; type: driver
+  #4 1024x768 75.03 1024 1040 1136 1312 768 769 772 800 78750 flags: phsync, 
+pvsync; type: driver
+  #5 1024x768 70.07 1024 1048 1184 1328 768 771 777 806 75000 flags: nhsync, 
+nvsync; type: driver
+  #6 1024x768 60.00 1024 1048 1184 1344 768 771 777 806 65000 flags: nhsync, 
+nvsync; type: driver
+  #7 832x624 74.55 832 864 928 1152 624 625 628 667 57284 flags: nhsync, 
+nvsync; type: driver
+  #8 800x600 75.00 800 816 896 1056 600 601 604 625 49500 flags: phsync, 
+pvsync; type: driver
+  #9 800x600 72.19 800 856 976 1040 600 637 643 666 50000 flags: phsync, 
+pvsync; type: driver
+  #10 800x600 60.32 800 840 968 1056 600 601 605 628 40000 flags: phsync, 
+pvsync; type: driver
+  #11 800x600 56.25 800 824 896 1024 600 601 603 625 36000 flags: phsync, 
+pvsync; type: driver
+  #12 640x480 75.00 640 656 720 840 480 481 484 500 31500 flags: nhsync, 
+nvsync; type: driver
+  #13 640x480 72.81 640 664 704 832 480 489 492 520 31500 flags: nhsync, 
+nvsync; type: driver
+  #14 640x480 66.67 640 704 768 864 480 483 486 525 30240 flags: nhsync, 
+nvsync; type: driver
+  #15 640x480 59.94 640 656 752 800 480 490 492 525 25175 flags: nhsync, 
+nvsync; type: driver
+  #16 720x400 70.08 720 738 846 900 400 412 414 449 28320 flags: nhsync, 
+pvsync; type: driver
+  props:
+	1 EDID:
+		flags: immutable blob
+		blobs:
 
-    [colin.king@canonical.com: fix read of uninitialized pointer area]
-      Link: https://lkml.kernel.org/r/20210318155955.18220-1-colin.king@canonical.com
+		value:
+			00ffffffffffff00047232ad01010101
+			2d0e010380221b782aaea5a6544c9926
+			145054bfef0081808140714f01010101
+			010101010101302a009851002a403070
+			1300520e1100001e000000ff00343435
+			3030353444454330300a000000fc0041
+			4c313731350a202020202020000000fd
+			00384c1e520e000a2020202020200051
+	2 DPMS:
+		flags: enum
+		enums: On=0 Standby=1 Suspend=2 Off=3
+		value: 0
+	5 link-status:
+		flags: enum
+		enums: Good=0 Bad=1
+		value: 0
+	6 non-desktop:
+		flags: immutable range
+		values: 0 1
+		value: 0
+	4 TILE:
+		flags: immutable blob
+		blobs:
 
-    Link: https://lkml.kernel.org/r/20210317062402.533919-14-npiggin@gmail.com
-    Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-    Cc: Borislav Petkov <bp@alien8.de>
-    Cc: Catalin Marinas <catalin.marinas@arm.com>
-    Cc: Christoph Hellwig <hch@lst.de>
-    Cc: Ding Tianhong <dingtianhong@huawei.com>
-    Cc: "H. Peter Anvin" <hpa@zytor.com>
-    Cc: Ingo Molnar <mingo@redhat.com>
-    Cc: Miaohe Lin <linmiaohe@huawei.com>
-    Cc: Michael Ellerman <mpe@ellerman.id.au>
-    Cc: Russell King <linux@armlinux.org.uk>
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Cc: Will Deacon <will@kernel.org>
-    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+		value:
+	20 CRTC_ID:
+		flags: object
+		value: 32
 
- arch/Kconfig            |  11 +++
- include/linux/vmalloc.h |  21 +++++
- mm/page_alloc.c         |   5 +-
- mm/vmalloc.c            | 220 +++++++++++++++++++++++++++++++++++++-----------
- 4 files changed, 209 insertions(+), 48 deletions(-)
+CRTCs:
+id	fb	pos	size
+32	39	(0,0)	(1280x1024)
+  #0  60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 flags: phsync, 
+pvsync; type: 
+  props:
+	22 ACTIVE:
+		flags: range
+		values: 0 1
+		value: 1
+	23 MODE_ID:
+		flags: blob
+		blobs:
 
->
-> Old behavior
-> otrv5:~# grep alloc_large_system_hash /proc/vmallocinfo
-> 0x000000006381d67a-0x000000009bc8465a   12288
-> alloc_large_system_hash+0xf1/0x290 pages=2 vmalloc N0=1 N1=1
-> 0x000000009bc8465a-0x00000000b70c6dfc   12288
-> alloc_large_system_hash+0xf1/0x290 pages=2 vmalloc N0=1 N1=1
-> 0x00000000b70c6dfc-0x00000000ab13330f   12288
-> alloc_large_system_hash+0xf1/0x290 pages=2 vmalloc N0=1 N1=1
-> 0x000000008685d551-0x000000009ce0c789   12288
-> alloc_large_system_hash+0xf1/0x290 pages=2 vmalloc N0=1 N1=1
-> 0x000000004d87acca-0x00000000781b44e4  266240
-> alloc_large_system_hash+0xf1/0x290 pages=64 vmalloc N0=32 N1=32
-> 0x00000000dea0f2d2-0x00000000909e9fb3 268439552
-> alloc_large_system_hash+0xf1/0x290 pages=65536 vmalloc vpages N0=32768
-> N1=32768
-> 0x00000000909e9fb3-0x00000000d23f4353  528384
-> alloc_large_system_hash+0xf1/0x290 pages=128 vmalloc N0=64 N1=64
-> 0x00000000d23f4353-0x000000003913e8bc 134221824
-> alloc_large_system_hash+0xf1/0x290 pages=32768 vmalloc vpages N0=16384
-> N1=16384
-> 0x000000003913e8bc-0x000000007a60bcd6 4198400
-> alloc_large_system_hash+0xf1/0x290 pages=1024 vmalloc vpages N0=512
-> N1=512
-> 0x000000007a60bcd6-0x0000000001bc8bf9 4198400
-> alloc_large_system_hash+0xf1/0x290 pages=1024 vmalloc vpages N0=512
-> N1=512
-> 0x0000000001bc8bf9-0x0000000022629b89 4198400
-> alloc_large_system_hash+0xf1/0x290 pages=1024 vmalloc vpages N0=512
-> N1=512
-> 0x0000000022629b89-0x0000000027d1b0a7 1052672
-> alloc_large_system_hash+0xf1/0x290 pages=256 vmalloc N0=128 N1=128
-> 0x0000000027d1b0a7-0x0000000027310068 4198400
-> alloc_large_system_hash+0xf1/0x290 pages=1024 vmalloc vpages N0=512
-> N1=512
-> 0x0000000027310068-0x00000000a845050a 1052672
-> alloc_large_system_hash+0xf1/0x290 pages=256 vmalloc N0=128 N1=128
-> 0x00000000a845050a-0x0000000028b8c1bc 2101248
-> alloc_large_system_hash+0xf1/0x290 pages=512 vmalloc N0=256 N1=256
-> 0x0000000028b8c1bc-0x000000002aff2d3d 2101248
-> alloc_large_system_hash+0xf1/0x290 pages=512 vmalloc N0=256 N1=256
->
-> New behavior
-> otrv6:~# grep alloc_large_system_hash /proc/vmallocinfo
-> 0x00000000de22dded-0x000000006574cf88   12288
-> alloc_large_system_hash+0x18c/0x272 pages=2 vmalloc N0=2
-> 0x000000006574cf88-0x00000000bc158a1d   12288
-> alloc_large_system_hash+0x18c/0x272 pages=2 vmalloc N0=2
-> 0x00000000afa304a2-0x0000000009981fb8   12288
-> alloc_large_system_hash+0x18c/0x272 pages=2 vmalloc N0=2
-> 0x00000000e3ab78c1-0x00000000ddbeadf2  528384
-> alloc_large_system_hash+0x18c/0x272 pages=128 vmalloc N0=128
-> 0x0000000000cce551-0x0000000022096e73   12288
-> alloc_large_system_hash+0x18c/0x272 pages=2 vmalloc N0=2
-> 0x0000000072a43217-0x00000000cf0c05f7  266240
-> alloc_large_system_hash+0x18c/0x272 pages=64 vmalloc N0=64
-> 0x000000003f85e695-0x0000000042154f88 268439552
-> alloc_large_system_hash+0x18c/0x272 pages=65536 vmalloc vpages
-> N0=65536
-> 0x0000000042154f88-0x0000000066fcdca2 134221824
-> alloc_large_system_hash+0x18c/0x272 pages=32768 vmalloc vpages
-> N0=32768
-> 0x0000000066fcdca2-0x000000004074129c 4198400
-> alloc_large_system_hash+0x18c/0x272 pages=1024 vmalloc vpages N0=1024
-> 0x000000004074129c-0x00000000ca32b7f9 4198400
-> alloc_large_system_hash+0x18c/0x272 pages=1024 vmalloc vpages N0=1024
-> 0x00000000ca32b7f9-0x00000000a56b8117 4198400
-> alloc_large_system_hash+0x18c/0x272 pages=1024 vmalloc vpages N0=1024
-> 0x00000000a56b8117-0x0000000089e9e39e 2101248
-> alloc_large_system_hash+0x18c/0x272 pages=512 vmalloc N0=512
-> 0x0000000089e9e39e-0x0000000090a80b5a 1052672
-> alloc_large_system_hash+0x18c/0x272 pages=256 vmalloc N0=256
-> 0x0000000090a80b5a-0x00000000e84776cb 4198400
-> alloc_large_system_hash+0x18c/0x272 pages=1024 vmalloc vpages N0=1024
-> 0x00000000e84776cb-0x000000006cfc05bf 1052672
-> alloc_large_system_hash+0x18c/0x272 pages=256 vmalloc N0=256
-> 0x000000006cfc05bf-0x00000000f6ce3623 1576960
-> alloc_large_system_hash+0x18c/0x272 pages=384 vmalloc N0=384
-> 0x00000000f6ce3623-0x0000000002737823 2101248
-> alloc_large_system_hash+0x18c/0x272 pages=512 vmalloc N0=512
-> 0x0000000002737823-0x00000000d4e74269 2101248
-> alloc_large_system_hash+0x18c/0x272 pages=512 vmalloc N0=512
+		value:
+			e0a5010000053005a005980600000004
+			010404042a0400003c00000005000000
+			00000000000000000000000000000000
+			00000000000000000000000000000000
+			00000000
+	19 OUT_FENCE_PTR:
+		flags: range
+		values: 0 18446744073709551615
+		value: 0
+	24 VRR_ENABLED:
+		flags: range
+		values: 0 1
+		value: 0
+	28 GAMMA_LUT:
+		flags: blob
+		blobs:
+
+		value:
+	29 GAMMA_LUT_SIZE:
+		flags: immutable range
+		values: 0 4294967295
+		value: 256
+
+Planes:
+id	crtc	fb	CRTC x,y	x,y	gamma size	possible crtcs
+31	32	39	0,0		0,0	0       	0x00000001
+  formats: XR15 RG16 RG24 XR24 XR30
+  props:
+	8 type:
+		flags: immutable enum
+		enums: Overlay=0 Primary=1 Cursor=2
+		value: 1
+	17 FB_ID:
+		flags: object
+		value: 39
+	18 IN_FENCE_FD:
+		flags: signed range
+		values: -1 2147483647
+		value: -1
+	20 CRTC_ID:
+		flags: object
+		value: 32
+	13 CRTC_X:
+		flags: signed range
+		values: -2147483648 2147483647
+		value: 0
+	14 CRTC_Y:
+		flags: signed range
+		values: -2147483648 2147483647
+		value: 0
+	15 CRTC_W:
+		flags: range
+		values: 0 2147483647
+		value: 1280
+	16 CRTC_H:
+		flags: range
+		values: 0 2147483647
+		value: 1024
+	9 SRC_X:
+		flags: range
+		values: 0 4294967295
+		value: 0
+	10 SRC_Y:
+		flags: range
+		values: 0 4294967295
+		value: 0
+	11 SRC_W:
+		flags: range
+		values: 0 4294967295
+		value: 83886080
+	12 SRC_H:
+		flags: range
+		values: 0 4294967295
+		value: 67108864
+33	0	0	0,0		0,0	0       	0x00000001
+  formats: C8   XR15 RG16 RG24 XR24 XR30
+  props:
+	8 type:
+		flags: immutable enum
+		enums: Overlay=0 Primary=1 Cursor=2
+		value: 0
+	17 FB_ID:
+		flags: object
+		value: 0
+	18 IN_FENCE_FD:
+		flags: signed range
+		values: -1 2147483647
+		value: -1
+	20 CRTC_ID:
+		flags: object
+		value: 0
+	13 CRTC_X:
+		flags: signed range
+		values: -2147483648 2147483647
+		value: 0
+	14 CRTC_Y:
+		flags: signed range
+		values: -2147483648 2147483647
+		value: 0
+	15 CRTC_W:
+		flags: range
+		values: 0 2147483647
+		value: 0
+	16 CRTC_H:
+		flags: range
+		values: 0 2147483647
+		value: 0
+	9 SRC_X:
+		flags: range
+		values: 0 4294967295
+		value: 0
+	10 SRC_Y:
+		flags: range
+		values: 0 4294967295
+		value: 0
+	11 SRC_W:
+		flags: range
+		values: 0 4294967295
+		value: 0
+	12 SRC_H:
+		flags: range
+		values: 0 4294967295
+		value: 0
+
+----
+
+> If you have info about the CRTCs, encoders, connectors and EDID info,
+> then I would assume it is very close to working fine.
+> 
+> For your "no framebuffer" issue, keep in mind that CONFIG_FB and
+> CONFIG_FRAMEBUFFER_CONSOLE are now disabled by default.
+
+Yes, I discovered that CONFIG_FB was not enabled, so I did so.
+
+> If that doesn't fix anything, that probably means that one
+> .atomic_check() fails, so it would be a good place to start debugging.
+
+There will be other things to verify in the Ingenic driver. As noted many 
+months ago, colour depth information has to be set in the DMA descriptors and 
+not the control register, but we are managing to do this successfully, as far 
+as I can tell, although there is always the potential for error.
+
+Paul
+
+
