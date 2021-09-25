@@ -2,114 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653464181B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994EF4181AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244667AbhIYLkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 07:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
+        id S244476AbhIYLkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 07:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244587AbhIYLk3 (ORCPT
+        with ESMTP id S230046AbhIYLkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 07:40:29 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5F9C061570;
-        Sat, 25 Sep 2021 04:38:55 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r23so10102651wra.6;
-        Sat, 25 Sep 2021 04:38:54 -0700 (PDT)
+        Sat, 25 Sep 2021 07:40:14 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223A6C061570;
+        Sat, 25 Sep 2021 04:38:40 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id c21so46359709edj.0;
+        Sat, 25 Sep 2021 04:38:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RWcU2wxdMqhCzxhAoNFRTMb2fbcbT+16RrjB3ao6kCg=;
-        b=i7eLxxAoMqyCe0UyKR4JmAdw+Rsxt4Tiihvqi3MGkFBTSchBi3S1G8UQzDwFKgLLqo
-         nWYfXVfRQUorrpcG4y2eIcolNEp7mLcoNaNSoy5TElpjgOowcUcWtg5l04s3R7ifM7SW
-         KklfNaTBmrP7OOLiheXVtDJLPJYkjiM62QPyWokb4eQE2Z1pMY56DwvsStzendwx0Mth
-         HNzoiF0QWLGr+P1niU29Khn7sr1jJhhXEDJeVUVy102ltrloMrxOlxIq3xCse033uCNS
-         Q9Nnc4V2Tr3YsxvOTmvSofHMn6VeEwcbBJZQvDbLW7BRnyoNJVMiWAath9wHShKWEksv
-         5clg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=roWdXJBSdw9+VuRoLQLUX1eQtYSQ8tE66jDz+31Mfiw=;
+        b=JaBl1QCrry8L/oNAUtR1rnb4mbXgXtEF+LWU6mHBLmllb2DnwXDSsvSMaJuNMPqeNP
+         LeY07lVfv/8z9f73Ng3XIWE79OKKroy0qDmB5DWg/rDdfQZNxUyWAgP3OqBKYM3gb3aB
+         bIsj6imfnZ5yWyRzD8y6+C3cn9JmihxPH/i/D6m2tWEU3S/5Fc/m06+48ue9tuXw+q+r
+         97H+45NylVnBmg5Z1tmMAwdWxVgPOfXtZr7FtXP23nmwDJZjrim7lOyamyGMMDpr23tt
+         o+SL08cPrDrPXai/e5ux+y1EeGGVrfpeVTRshXZvAR3rwXKcRXnOvB1D5aqqbntx8Gun
+         hwAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RWcU2wxdMqhCzxhAoNFRTMb2fbcbT+16RrjB3ao6kCg=;
-        b=mIQYE/xZJLO22vPKXZtWwIFY2OYSQ2AOfGW84RbSAZ+xaoVLCpSYPIU7PU07Ls+tGw
-         xHIZOfybQeG8BxzSpMIb5458YN2OATzoMJNAT+n1XOwTxbrA8d410rL8JMRITDjBeh+L
-         m2c5ky10+3IqMCZqnYRwQTd8E9fwrPTqFwb6SY4ZzxKxLoeu6NNSZhMqsBgmPD6L2ZuI
-         U1RU5tdjpXm1+gKvHAaD9jEhS/Z0/YdiuHjj9j/gNui5S+BVgqHXjjNEATRb8qpQik8N
-         92opFeH8FciqCmGGihjZe96kqvjQGS3hsG07Xh05E9D0uOca6Enh5ENvnufqIhwJeBhu
-         rJmA==
-X-Gm-Message-State: AOAM5319WdhzMSUWaQa6R/Pfp68m7zZRUM9hFr0u07jx1LrKbtqIV+br
-        7Jv/VA0yM1KOx9urSCICRT8=
-X-Google-Smtp-Source: ABdhPJwmz8CY/4ndyNY2z9yrhwa69A/l9cZ4hgWpxf1QrcV/GxW9onVCSAVM4OqysTt6dy1ln1TayA==
-X-Received: by 2002:a5d:4601:: with SMTP id t1mr16374056wrq.298.1632569933732;
-        Sat, 25 Sep 2021 04:38:53 -0700 (PDT)
-Received: from oci-gb-a1.vcn08061408.oraclevcn.com ([2603:c020:c001:7eff:7c7:9b76:193f:d476])
-        by smtp.googlemail.com with ESMTPSA id c4sm11033157wrt.23.2021.09.25.04.38.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=roWdXJBSdw9+VuRoLQLUX1eQtYSQ8tE66jDz+31Mfiw=;
+        b=FwMe1o52VzIJn67ZvloBis4BSxQ7YFMo1ggjoq+QNrDCm4Ve2xiKlFQqJKJnZoAQrO
+         yPEyLNuDk5EnPJVuaMQ/bYpwyUdhHTQY+fLWoBfreh0XOhJMwAK+hkpVG6uy2kHkw7ZS
+         P+7FCIKSTW8bExsIITmaKLYmWAk52X7agw1f2ewD/GJfgPdhyHpih9gA7osPtFXyUuFb
+         6nvSizpeiJUuQK1y+TWlx2R4MGeipnc8mLrsl0oa4ynIWWDORNQYjjONUe4C5kxn/xng
+         npRmlgBCjq+QTsCFaUYOVDqKGgny2rWcXxzntjjRET3FM1NnF+AW3qGolmkk8lcm1T0E
+         Gv0A==
+X-Gm-Message-State: AOAM531m1oTRAMqXRBEsKkkhUE2EWT2DAZZxGuPT+z++Ux628O7jS2yr
+        4dV0yuEU0rPbh7dNXR+Kr6V2JeI/mH5ctChWmEM=
+X-Google-Smtp-Source: ABdhPJxtfaImb1rZz1q8iQAhUycsglBjxCjNlFI8To/wF1yaN8UGDZEcLyBt5G26p6AfbDMtGeJ33Q==
+X-Received: by 2002:a17:906:658:: with SMTP id t24mr15884482ejb.358.1632569918702;
+        Sat, 25 Sep 2021 04:38:38 -0700 (PDT)
+Received: from localhost.localdomain (net-93-144-178-230.cust.dsl.teletu.it. [93.144.178.230])
+        by smtp.googlemail.com with ESMTPSA id c5sm7294283edx.81.2021.09.25.04.38.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 04:38:53 -0700 (PDT)
-From:   Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Christian Lamparter <chunkeey@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Matthew Hagan <mnhagan88@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 2/2] ARM: dts: NSP: MX6X: get mac-address from eeprom
-Date:   Sat, 25 Sep 2021 11:36:28 +0000
-Message-Id: <20210925113628.1044111-2-mnhagan88@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210925113628.1044111-1-mnhagan88@gmail.com>
-References: <20210925113628.1044111-1-mnhagan88@gmail.com>
+        Sat, 25 Sep 2021 04:38:38 -0700 (PDT)
+From:   Raffaele Tranquillini <raffaele.tranquillini@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     y.oudjana@protonmail.com, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org,
+        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: msm8996: xiaomi-gemini: Enable JDI LCD panel
+Date:   Sat, 25 Sep 2021 13:38:08 +0200
+Message-Id: <20210925113808.524749-1-raffaele.tranquillini@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MAC address on the MX64/MX65 series is located on the AT24 EEPROM.
-This is the same as other Meraki devices such as the MR32 [1].
+This enables the JDI FHD_R63452 LCD panel used on Xiaomi Mi 5
 
-[1] https://lore.kernel.org/linux-arm-kernel/fa8271d02ef74a687f365cebe5c55ec846963ab7.1631986106.git.chunkeey@gmail.com/
-
-Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+Signed-off-by: Raffaele Tranquillini <raffaele.tranquillini@gmail.com>
 ---
- arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../boot/dts/qcom/msm8996-xiaomi-gemini.dts   | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi b/arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
-index 6519b7c61af1..5de727de6a4b 100644
---- a/arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
-+++ b/arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
-@@ -39,6 +39,8 @@ led-3 {
+diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
+index fe950be0a722..ab6dcd44e673 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
++++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
+@@ -90,12 +90,45 @@ synaptics@20 {
  
- &amac2 {
- 	status = "okay";
-+	nvmem-cells = <&mac_address>;
-+	nvmem-cell-names = "mac-address";
  };
  
- &ehci0 {
-@@ -53,6 +55,12 @@ eeprom@50 {
- 		reg = <0x50>;
- 		pagesize = <32>;
- 		read-only;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
++&dsi0 {
++	status = "okay";
 +
-+		mac_address: mac-address@66 {
-+			reg = <0x66 0x6>;
++	vdd-supply = <&vreg_l2a_1p25>;
++	vdda-supply = <&vreg_l19a_3p3>;
++	vddio-supply = <&vreg_l14a_1p8>;
++
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&mdss_dsi_default &mdss_te_default>;
++	pinctrl-1 = <&mdss_dsi_sleep &mdss_te_sleep>;
++
++	panel: panel@0 {
++		compatible = "jdi,fhd-r63452";
++		reg = <0>;
++		reset-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
++		backlight = <&pmi8994_wled>;
++
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&dsi0_out>;
++			};
 +		};
++	};
++};
++
++&dsi0_out {
++	remote-endpoint = <&panel_in>;
++};
++
+ &gpu {
+ 	zap-shader {
+ 		firmware-name = "qcom/msm8996/gemini/a530_zap.mbn";
  	};
  };
  
++&pmi8994_wled {
++	status = "okay";
++};
++
+ &q6asmdai {
+ 	dai@0 {
+ 		reg = <0>;
 -- 
-2.27.0
+2.32.0
 
