@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45E64183B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838954183B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhIYRm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 13:42:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhIYRmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 13:42:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3341D60241;
-        Sat, 25 Sep 2021 17:41:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632591677;
-        bh=jTUPvgn+7lWrPPVxHKOZyH1EqRMOCPIGsd4h55JfcE4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=tAlz7+NpKpqNLtWHdEAXo6DHoiUUBVhBcckNBrk+EK8eA1NREarQlyYB8hXpAK+G1
-         yOMAlllPOMkHVxxHsFgEPoGXBdAmzhgJN2v6vEYAtK+ljKksnn3a2WeXvNFlm2Ncaw
-         noLW+i+3Q18f7m9LkPlTeglCwmIjdC2O2cc6fp6E2F89KA6yLHk2oAjfDf4zQ3rRLT
-         c5JaUlSc8aXtPEdnC8U9PfDfWE95KfqFqSiV1MWc8isBGOsB2dUs9qcjKsbgPZIYDq
-         iwaLJfAwRd3BRXuj3YfrI1wD/B85O8ZsbIf3/S6cW103ErvOZvBFmhG6gKQ1yHH1pm
-         CooTrE8rakAGg==
-Date:   Sat, 25 Sep 2021 12:41:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
-Message-ID: <20210925174115.GA511131@bhelgaas>
+        id S229716AbhIYRns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 13:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhIYRnr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 13:43:47 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFDAC061570;
+        Sat, 25 Sep 2021 10:42:12 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id v18so14260034edc.11;
+        Sat, 25 Sep 2021 10:42:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IeR6I78v07QTr7GwuPjqPsC9KmUX8D77z/xH6y8yFI8=;
+        b=IRAqRPzgfb+l3oosTcNuCrp/+4E0gI9cN8XAOxGuWL0Q86mesco1wT35ZtwEjsPg7O
+         mVrG1YDvsUYZw33ZU0BzxOPLenOe+00qlat4v4mAl2f2FD7a3CAar45txxjbowsFXy6n
+         cuG9C1NRRPeu+40lWz/N154oiu18PwHQJqe/xXBOmVFfqrCpkA2qjjehQ1IBDLhQYbXm
+         RLRbbiW7YweqJRdWVgGHYujen/b2CvdlCsQ6hemxWRVWz7/CTkEWaSsji86pMxchJ0jk
+         DoY9/T+PJJUEqfXgfoQk9WRCDeYiBg3zDLg2mIA+Ytwpig5Oxw45in0XnQyMSuHMbKvu
+         WkCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IeR6I78v07QTr7GwuPjqPsC9KmUX8D77z/xH6y8yFI8=;
+        b=QuF9f/Pldni6UO8jXzKOVXTaBgfe/LCp2x2QzX8Kue3HF+DssoqU9EjcHM0UuSTmXa
+         mjMimkgrZx4yQ1BqYI8IoCMgRzxGepU6UizhnXjlmVbzTYhoPWfpSQWyustXi9MYzVjn
+         8lzdGYnghw3BMKrar8mn7acOhv2JHTCM1scfXhYcUqWe3csSKi7u8KojZP15nd6BVykq
+         Y+MsQEOr64l7gL/MOVbDgE4LYtZycLUCuu0PYcmpjy1cTHTtkX8iueeVRfMJ72ScTIvg
+         8OR5uVCrhEGJNBKlQCT2ktp+Iv5rKJEdChICsP9bu0k3JLS+Vlht9URvhPnOItqJCzgW
+         tm8Q==
+X-Gm-Message-State: AOAM531t/pXXGaw0BxGdSSj8UAedd8i6Z6oy6hNvudlvY5oAXxGeMtvY
+        AW//PsBXGVszl8iwf0LegNuTGgJDLcNIJKHbQ+8=
+X-Google-Smtp-Source: ABdhPJw4TvWMdEO0MgDEFaxjkEHiKZXec68E1FwOLvkbn3swXGq+JhkZppepiqKsD9J2+Mhv0mlMjMZvOL7r42tie7U=
+X-Received: by 2002:a05:6402:319a:: with SMTP id di26mr12638279edb.84.1632591730983;
+ Sat, 25 Sep 2021 10:42:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YU71n4WSIztOdpbw@unreal>
+References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-2-linux.amoon@gmail.com>
+ <c7f6213b-5ddc-881c-1aea-9cc7b03e6a4f@baylibre.com> <CAFBinCBeNMET2tvH0h6HF3dR+xBb59hifQyaoXigUs3UGkS+KQ@mail.gmail.com>
+ <2b07b3de-cee5-c570-8fde-6a4c684122d6@baylibre.com> <CANAwSgRNp8UtU+Yy4smwZ5POTWTU+xN1mrf_cH7Pu9yX5HU=VA@mail.gmail.com>
+ <CAFBinCDmNt+aXRE4xFZdegOUs8BqJiTPF3+DQ-buvWWXrQLkdw@mail.gmail.com>
+In-Reply-To: <CAFBinCDmNt+aXRE4xFZdegOUs8BqJiTPF3+DQ-buvWWXrQLkdw@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Sat, 25 Sep 2021 23:11:58 +0530
+Message-ID: <CANAwSgTcTCNWD3QTt4-c8BeAbFxDewbZewaSouggPuK9cpSXog@mail.gmail.com>
+Subject: Re: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Matt Corallo <oc2udbzfd@mattcorallo.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>,
+        Brian Kim <brian.kim@hardkernel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 01:10:39PM +0300, Leon Romanovsky wrote:
-> On Fri, Sep 24, 2021 at 08:08:45AM -0500, Bjorn Helgaas wrote:
-> > On Thu, Sep 23, 2021 at 09:35:32AM +0300, Leon Romanovsky wrote:
-> > > On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
-> > > > On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
-> > > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > 
-> > > > > The PCI core uses the VF index internally, often called the vf_id,
-> > > > > during the setup of the VF, eg pci_iov_add_virtfn().
-> > > > > 
-> > > > > This index is needed for device drivers that implement live migration
-> > > > > for their internal operations that configure/control their VFs.
-> > > > >
-> > > > > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
-> > > > > from this series needs it and not the bus/device/function which is
-> > > > > exposed today.
-> > > > > 
-> > > > > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
-> > > > > was used to create the bus/device/function.
-> > > > > 
-> > > > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> > > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > 
-> > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > > 
-> > > > mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
-> > > > same thing as pci_iov_vf_id() by iterating through VFs until it finds
-> > > > one with a matching devfn (although it *doesn't* check for a matching
-> > > > bus number, which seems like a bug).
-> ...
+Hi Martin,
 
-> > And it still looks like the existing code is buggy.  This is called
-> > via sysfs, so if the PF is on bus X and the user writes to
-> > sriov_vf_msix_count for a VF on bus X+1, it looks like
-> > mlx5_core_sriov_set_msix_vec_count() will set the count for the wrong
-> > VF.
-> 
-> In mlx5_core_sriov_set_msix_vec_count(), we receive VF that is connected
-> to PF which has "struct mlx5_core_dev". My expectation is that they share
-> same bus as that PF was the one who created VFs. The mlx5 devices supports
-> upto 256 VFs and it is far below the bus split mentioned in PCI spec.
-> 
-> How can VF and their respective PF have different bus numbers?
+On Tue, 21 Sept 2021 at 00:56, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Hi Anand,
+>
+> On Tue, Aug 31, 2021 at 10:48 PM Anand Moon <linux.amoon@gmail.com> wrote:
+> [...]
+> > After enabling CONFIG_REGULATOR_DEBUG, with this patch applied
+> > I still not getting the USB regulator to enable.
+> > Do you see different output at your end?
+> I don't have much time for testing and debugging currently but I'll
+> put it on my TODO-list
+> Until either of us has found the issue I suggest not merging this patch.
+>
+Ok no problem.
 
-See PCIe r5.0, sec 9.2.1.2.  For example,
+Basically, I have just roughly gone through the architecture of
+Amlogic's OTG framework.
+Below is the global configuration registers for DWC2 OTG framer work
 
-  PF 0 on bus 20
-    First VF Offset   1
-    VF Stride         1
-    NumVFs          511
-  VF 0,1   through VF 0,255 on bus 20
-  VF 0,256 through VF 0,511 on bus 21
+[0] https://github.com/hardkernel/linux/blob/odroidc-3.10.y/drivers/amlogic/usb/dwc_otg/310/dwc_otg_regs.h#L66-L151
 
-This is implemented in pci_iov_add_virtfn(), which computes the bus
-number and devfn from the VF ID.
+Within some configurations, it helps tune the power for vbus and interrupt
+For example
+[1] https://github.com/hardkernel/linux/blob/odroidc-3.10.y/drivers/amlogic/usb/dwc_otg/310/dwc_otg_attr.c#L666-L717
 
-pci_iov_virtfn_devfn(VF 0,1) == pci_iov_virtfn_devfn(VF 0,256), so if
-the user writes to sriov_vf_msix_count for VF 0,256, it looks like
-we'll call mlx5_set_msix_vec_count() for VF 0,1 instead of VF 0,256.
+Amlogic basically used the mode parameter to external tune the DWC2 driver
+it could help more fine-tuning the driver.
 
-The spec encourages devices that require no more than 256 devices to
-locate them all on the same bus number (PCIe r5.0, sec 9.1), so if you
-only have 255 VFs, you may avoid the problem.
+[2] https://github.com/hardkernel/linux/blob/odroidc-3.10.y/drivers/amlogic/usb/dwc_otg/310/dwc_otg_driver.c#L1461-L1703
 
-But in mlx5_core_sriov_set_msix_vec_count(), it's not obvious that it
-is safe to assume the bus number is the same.
+I feel we need to identify many more PHY tuning parameters to make the
+USB work correctly.
 
-Bjorn
+
+
+
+
+
+Thanks
+-Anand
+
+>
+> Best regards,
+> Martin
