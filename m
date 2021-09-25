@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EEF4182EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D827C418305
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 17:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343783AbhIYO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 10:57:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40922 "EHLO mail.kernel.org"
+        id S1343805AbhIYPFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 11:05:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234173AbhIYO5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 10:57:00 -0400
+        id S234173AbhIYPFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 11:05:16 -0400
 Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A438610CB;
-        Sat, 25 Sep 2021 14:55:23 +0000 (UTC)
-Date:   Sat, 25 Sep 2021 15:59:11 +0100
+        by mail.kernel.org (Postfix) with ESMTPSA id B153660F43;
+        Sat, 25 Sep 2021 15:03:38 +0000 (UTC)
+Date:   Sat, 25 Sep 2021 16:07:27 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
 To:     Rob Herring <robh@kernel.org>
-Cc:     David Heidelberg <david@ixit.cz>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Devajith V S <devajithvs@gmail.com>,
-        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: kionix,kxcjk1013: driver support
- interrupts
-Message-ID: <20210925155911.3860770d@jic23-huawei>
-In-Reply-To: <YUx2DII/y3FVNF04@robh.at.kernel.org>
-References: <20210919203656.119742-1-david@ixit.cz>
-        <YUx2DII/y3FVNF04@robh.at.kernel.org>
+Cc:     David Heidelberg <david@ixit.cz>, Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sre@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] dt-bindings: iio: magnetometer: asahi-kasei,ak8975 add
+ vid reg
+Message-ID: <20210925160727.11abc0f1@jic23-huawei>
+In-Reply-To: <YUo/BzWUBQArrMkS@robh.at.kernel.org>
+References: <20210913181949.83179-1-david@ixit.cz>
+        <YUo/BzWUBQArrMkS@robh.at.kernel.org>
 X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,29 +39,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 07:41:48 -0500
+On Tue, 21 Sep 2021 15:22:31 -0500
 Rob Herring <robh@kernel.org> wrote:
 
-> On Sun, Sep 19, 2021 at 10:36:56PM +0200, David Heidelberg wrote:
-> > Driver has interrupts support, which description was missing in the bindings.  
-> 
-> You mean the h/w has interrupts which was missing?
-Tweaked to
-Device has interrupt support, ...
-
-and applied to the togreg branch of iio.git which is initially pushed out as testing
-for 0-day to see if it can break it.
-
-Thanks,
-
-Jonathan
-
-> 
+> On Mon, 13 Sep 2021 20:19:49 +0200, David Heidelberg wrote:
+> > Driver and device-tree also use vid-supply regulator.
+> > 
+> > Fixes: 7e000fbff7a0 ("dt-bindings: iio: magnetometer: ak8975: convert format to yaml, add maintainer")
 > > 
 > > Signed-off-by: David Heidelberg <david@ixit.cz>
 > > ---
-> >  .../devicetree/bindings/iio/accel/kionix,kxcjk1013.yaml        | 3 +++
-> >  1 file changed, 3 insertions(+)  
+> >  .../bindings/iio/magnetometer/asahi-kasei,ak8975.yaml        | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >   
 > 
 > Acked-by: Rob Herring <robh@kernel.org>
 
+Thanks David, Rob,
+
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day etc
+to take a poke at it an see if we missed anything.
+
+Jonathan
