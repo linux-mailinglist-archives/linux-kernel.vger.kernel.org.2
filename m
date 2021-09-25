@@ -2,32 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3E04184EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 00:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF264184F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 00:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhIYWU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 18:20:57 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:8643 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhIYWU4 (ORCPT
+        id S230131AbhIYWXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 18:23:54 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34398
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230024AbhIYWXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 18:20:56 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E8937240006;
-        Sat, 25 Sep 2021 22:19:19 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Daniel Palmer <daniel@0x0f.com>, Rob Herring <robh+dt@kernel.org>,
-        Romain Perier <romain.perier@gmail.com>,
-        Alessandro Zummo <a.zummo@towertech.it>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v4 1/3] dt-bindings: rtc: Add Mstar MSC313e RTC devicetree bindings documentation
-Date:   Sun, 26 Sep 2021 00:19:19 +0200
-Message-Id: <163260829684.44232.3142105218261149374.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210823171613.18941-2-romain.perier@gmail.com>
-References: <20210823171613.18941-1-romain.perier@gmail.com> <20210823171613.18941-2-romain.perier@gmail.com>
+        Sat, 25 Sep 2021 18:23:53 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id F2D914049E;
+        Sat, 25 Sep 2021 22:22:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632608537;
+        bh=KqfzOAU9rH+MFeq0GoYgMDIMmLolH9PE7uCZ+3pFhB4=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=WBJHDA2COZIgumOa5LcS9hV6S6aafp95dVa/yF2z3vYirsEwGccP3VgwsbRgbFQ+O
+         6i/S8bAW0M65MmcIjNsSc/lxD3INNkWR8qYakDWSvJY9eeS7SMaGlW/QDKkUpZtfQH
+         1FHvy7Bc55we5rBGlnhJXQcJ27le4DrKROejRJe+f4Po6k+pdyTtTL5AB3r6Nxj8b9
+         cZkwgYKEpwK/IbfDn5M5TwhP4kckSHxJGIIutLonci/mddHGV+GDpdmu4RNXq8TvA9
+         GdivW6VZhmyIZnCChMFVo/sTRBUFPNBW23k3mmm6svpQNDPIIG1BIlSzh4Xz4yrbro
+         DweE0YHkSTLvw==
+From:   Colin King <colin.king@canonical.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-input@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: thrustmaster: Initialized pointer twi with NULL rather than 0
+Date:   Sat, 25 Sep 2021 23:22:16 +0100
+Message-Id: <20210925222216.182099-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -35,21 +46,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Aug 2021 19:16:11 +0200, Romain Perier wrote:
-> This adds the documentation for the devicetree bindings of the Mstar
-> MSC313e RTC driver, found from MSC313e SoCs and newer.
-> 
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-Applied, thanks!
+Pointers should be initialized with NULL rather than 0. Fix this.
 
-[1/3] dt-bindings: rtc: Add Mstar MSC313e RTC devicetree bindings documentation
-      commit: dd49cbedde8a0f1e0d09698f9cad791d37a8e03e
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/hid/hid-thrustmaster.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[2/3] rtc: Add support for the MSTAR MSC313 RTC
-      commit: be7d9c9161b9c76edeff15e79edc2f256568fe05
-
-
-Best regards,
+diff --git a/drivers/hid/hid-thrustmaster.c b/drivers/hid/hid-thrustmaster.c
+index d44550aa8805..aa874f075bf9 100644
+--- a/drivers/hid/hid-thrustmaster.c
++++ b/drivers/hid/hid-thrustmaster.c
+@@ -205,7 +205,7 @@ static void thrustmaster_model_handler(struct urb *urb)
+ 	struct tm_wheel *tm_wheel = hid_get_drvdata(hdev);
+ 	uint16_t model = 0;
+ 	int i, ret;
+-	const struct tm_wheel_info *twi = 0;
++	const struct tm_wheel_info *twi = NULL;
+ 
+ 	if (urb->status) {
+ 		hid_err(hdev, "URB to get model id failed with error %d\n", urb->status);
 -- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+2.32.0
+
