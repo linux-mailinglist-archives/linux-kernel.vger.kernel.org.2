@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838954183B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350174183C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhIYRns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 13:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhIYRnr (ORCPT
+        id S229656AbhIYRsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 13:48:00 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:42563 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229513AbhIYRr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 13:43:47 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFDAC061570;
-        Sat, 25 Sep 2021 10:42:12 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id v18so14260034edc.11;
-        Sat, 25 Sep 2021 10:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IeR6I78v07QTr7GwuPjqPsC9KmUX8D77z/xH6y8yFI8=;
-        b=IRAqRPzgfb+l3oosTcNuCrp/+4E0gI9cN8XAOxGuWL0Q86mesco1wT35ZtwEjsPg7O
-         mVrG1YDvsUYZw33ZU0BzxOPLenOe+00qlat4v4mAl2f2FD7a3CAar45txxjbowsFXy6n
-         cuG9C1NRRPeu+40lWz/N154oiu18PwHQJqe/xXBOmVFfqrCpkA2qjjehQ1IBDLhQYbXm
-         RLRbbiW7YweqJRdWVgGHYujen/b2CvdlCsQ6hemxWRVWz7/CTkEWaSsji86pMxchJ0jk
-         DoY9/T+PJJUEqfXgfoQk9WRCDeYiBg3zDLg2mIA+Ytwpig5Oxw45in0XnQyMSuHMbKvu
-         WkCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IeR6I78v07QTr7GwuPjqPsC9KmUX8D77z/xH6y8yFI8=;
-        b=QuF9f/Pldni6UO8jXzKOVXTaBgfe/LCp2x2QzX8Kue3HF+DssoqU9EjcHM0UuSTmXa
-         mjMimkgrZx4yQ1BqYI8IoCMgRzxGepU6UizhnXjlmVbzTYhoPWfpSQWyustXi9MYzVjn
-         8lzdGYnghw3BMKrar8mn7acOhv2JHTCM1scfXhYcUqWe3csSKi7u8KojZP15nd6BVykq
-         Y+MsQEOr64l7gL/MOVbDgE4LYtZycLUCuu0PYcmpjy1cTHTtkX8iueeVRfMJ72ScTIvg
-         8OR5uVCrhEGJNBKlQCT2ktp+Iv5rKJEdChICsP9bu0k3JLS+Vlht9URvhPnOItqJCzgW
-         tm8Q==
-X-Gm-Message-State: AOAM531t/pXXGaw0BxGdSSj8UAedd8i6Z6oy6hNvudlvY5oAXxGeMtvY
-        AW//PsBXGVszl8iwf0LegNuTGgJDLcNIJKHbQ+8=
-X-Google-Smtp-Source: ABdhPJw4TvWMdEO0MgDEFaxjkEHiKZXec68E1FwOLvkbn3swXGq+JhkZppepiqKsD9J2+Mhv0mlMjMZvOL7r42tie7U=
-X-Received: by 2002:a05:6402:319a:: with SMTP id di26mr12638279edb.84.1632591730983;
- Sat, 25 Sep 2021 10:42:10 -0700 (PDT)
+        Sat, 25 Sep 2021 13:47:59 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N2m7O-1mrKnS16K4-0133dE; Sat, 25 Sep 2021 19:46:22 +0200
+Received: by mail-wr1-f51.google.com with SMTP id t8so37583160wri.1;
+        Sat, 25 Sep 2021 10:46:22 -0700 (PDT)
+X-Gm-Message-State: AOAM531LitsS4VfzUFhSsR5JRLxeKSPfuukWBhVIybQI6Jwal8b2JE0q
+        l/PyCNQTAdGFqzLkZnwc70PtPwLkQIvFPaoVhMY=
+X-Google-Smtp-Source: ABdhPJw4AC++CUgGftyBEQQ1PqMHK2UxvHDhOv0IVrP5JJG7i4nuvnhKaRpsibhTISXsdFjvIezzm7yDZOhM7MC91sk=
+X-Received: by 2002:a1c:23cb:: with SMTP id j194mr7846290wmj.1.1632591981794;
+ Sat, 25 Sep 2021 10:46:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-2-linux.amoon@gmail.com>
- <c7f6213b-5ddc-881c-1aea-9cc7b03e6a4f@baylibre.com> <CAFBinCBeNMET2tvH0h6HF3dR+xBb59hifQyaoXigUs3UGkS+KQ@mail.gmail.com>
- <2b07b3de-cee5-c570-8fde-6a4c684122d6@baylibre.com> <CANAwSgRNp8UtU+Yy4smwZ5POTWTU+xN1mrf_cH7Pu9yX5HU=VA@mail.gmail.com>
- <CAFBinCDmNt+aXRE4xFZdegOUs8BqJiTPF3+DQ-buvWWXrQLkdw@mail.gmail.com>
-In-Reply-To: <CAFBinCDmNt+aXRE4xFZdegOUs8BqJiTPF3+DQ-buvWWXrQLkdw@mail.gmail.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Sat, 25 Sep 2021 23:11:58 +0530
-Message-ID: <CANAwSgTcTCNWD3QTt4-c8BeAbFxDewbZewaSouggPuK9cpSXog@mail.gmail.com>
-Subject: Re: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
+References: <20210924170546.805663-1-f.fainelli@gmail.com> <20210924170546.805663-11-f.fainelli@gmail.com>
+ <87sfxsua9l.wl-maz@kernel.org>
+In-Reply-To: <87sfxsua9l.wl-maz@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 25 Sep 2021 19:46:05 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2yJwE3fbG5t41eN+N_vVzWdnDuDEi6vi32aRYX+mXX3g@mail.gmail.com>
+Message-ID: <CAK8P3a2yJwE3fbG5t41eN+N_vVzWdnDuDEi6vi32aRYX+mXX3g@mail.gmail.com>
+Subject: Re: [PATCH 10/11] arm64: broadcom: Removed forced select of interrupt controllers
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>
+        Frank Rowand <frowand.list@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:rWH4hivfycKeWeQsl22K7IKMBeMDH7SwCpqK/AzeiSwpYSsopVz
+ 79satCGijFSVwWBbPjMyCxhXEAd94DMowRiPP0q09AJ/d1WjsBCU/q32QClzKdBuUpwX1w8
+ Ui/NTH2geziacN1RZtsCT+n6LDXzGMsmuW2gI6Yg/3vCgalbeGvyiNKwYByfabzIfaxXCez
+ DtJMlwWUAfX8lH+OIjEYA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YgcIQgk0EWM=:6OmkmHeCeTvSksfKp/8jhs
+ 0lQb7X6tgBdRlunafpzJ6OVOt+LkkDgiWdNiRr5qtH3fQuTgCr9t1YYzIWy8MzKGUJ7V7e2pH
+ S/SbroPOhwwfLq/jyCU79KszPfh7q7MHXltbz3M63DiTHSC4pM9AGj8VfAiYw+ujaZ9M7rVXC
+ H1pYx8xkIpBfXx5oVGRI3+pGENwEpNMw4J+J3ohQotmKPqE9KCYqEH/ANeBHjr9xd050DEYet
+ ChhUz/4h8CI/fIZserY2GDCT3/U4a/bqcQL7oNpn7NktLlBUA7PBq6JMVe9w1okVsOqc29Q3l
+ gH5+vxU978bh90rDHp1MJVvg8zQ4lgp7qPNfq75Ag34SZowHr8dr2dx+c/7r8W8x/VtgtJen4
+ hokoAaqRcQgM0jAoW9Zj4eda/UoCfXaEpKdCu+JxTzl6j1EXtcX/dBDTgkKqg0GSWyMI67zCb
+ 2GLgCA/iSDwZCM//kXPM/KgFDgYi8E2Ras3CyBAnTu65r0fz+1Pz5pNMK1H5WPR9fAM1d79gg
+ dZOEB1BKvrS+pqWm9ugGhzEofqaSPUPwnPvjhxh0ts0ZQVI8P4HA9VTHdVRAUg+06xTFnV96I
+ Fteso6+TDU53NIXvATt5n97UXstmEyGcIWa83/1ogM/xFQPXN/i3IKNh+xZ1ZGSKNkSiEftcN
+ D4YsamW7E1Vc5CvBibPPqdyxHjzlzY4BWZ1HZbs6pJqaLgvtOS0lotoGOTNiRh4tqYmdNOoq/
+ CuTkh8qrGEG9h0rQF5huCQMU1mXaNsrnniKnPaqDk40mi44jT64r3LClwcH5kZzbISSHQd7Gr
+ j9EQ/8pH7MJ9eOljFOlqHovnfWuY7rLU9BASw7+OvAXZ6kEAnCgx+GLySMY76/Z6mbYpgIw7V
+ 087CsAHCLpVcAJb9HYzQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-
-On Tue, 21 Sept 2021 at 00:56, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
+On Sat, Sep 25, 2021 at 2:10 PM Marc Zyngier <maz@kernel.org> wrote:
+> On Fri, 24 Sep 2021 18:05:45 +0100, Florian Fainelli <f.fainelli@gmail.com> wrote:
 >
-> Hi Anand,
->
-> On Tue, Aug 31, 2021 at 10:48 PM Anand Moon <linux.amoon@gmail.com> wrote:
-> [...]
-> > After enabling CONFIG_REGULATOR_DEBUG, with this patch applied
-> > I still not getting the USB regulator to enable.
-> > Do you see different output at your end?
-> I don't have much time for testing and debugging currently but I'll
-> put it on my TODO-list
-> Until either of us has found the issue I suggest not merging this patch.
->
-Ok no problem.
+> How does the user know about that? People will build a kernel
+> selecting their platform, and find out it doesn't work. This seems
+> terribly counter-productive to me.
 
-Basically, I have just roughly gone through the architecture of
-Amlogic's OTG framework.
-Below is the global configuration registers for DWC2 OTG framer work
+It's default-enabled on the platforms that need it, see one of the
+earlier patches.
 
-[0] https://github.com/hardkernel/linux/blob/odroidc-3.10.y/drivers/amlogic/usb/dwc_otg/310/dwc_otg_regs.h#L66-L151
+Having the option to make it a loadable module is a definite benefit as
+far as I'm concerned, and I generally like the idea of having individually
+selectable symbols for consistency as that is what we have in other
+subsystems as well.
 
-Within some configurations, it helps tune the power for vbus and interrupt
-For example
-[1] https://github.com/hardkernel/linux/blob/odroidc-3.10.y/drivers/amlogic/usb/dwc_otg/310/dwc_otg_attr.c#L666-L717
+Ideally I'd do away with all the 'select' statements for the platforms and
+only have them control dependencies as we do for most other subsystems.
+irqchip is one of the few exceptions here, though I understand the reason
+for having the most important drivers tied to the platform more closely.
 
-Amlogic basically used the mode parameter to external tune the DWC2 driver
-it could help more fine-tuning the driver.
-
-[2] https://github.com/hardkernel/linux/blob/odroidc-3.10.y/drivers/amlogic/usb/dwc_otg/310/dwc_otg_driver.c#L1461-L1703
-
-I feel we need to identify many more PHY tuning parameters to make the
-USB work correctly.
-
-
-
-
-
-
-Thanks
--Anand
-
->
-> Best regards,
-> Martin
+       Arnd
