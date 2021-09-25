@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C542418345
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 17:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285AA41834C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 17:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241112AbhIYPia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 11:38:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52310 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238418AbhIYPi3 (ORCPT
+        id S1343902AbhIYPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 11:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238418AbhIYPlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 11:38:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632584214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rLKZok9/4QFXX13m/PZ+MsuZ2LJ/FPI7EhWhls6THyQ=;
-        b=L3afK9FboPCEl88uBnhnM+ByGUr2TQ+t91Dy4h4F4ckWKy9Nwml7lOBP7PKToBNnE8IEuw
-        Ul8V4jenCH4wRjnrWBX5OUpAtX1a/5ZKGIin7il4PDqRqzAaajPrOtlksZ+575ctuNpB4I
-        IfhBu7omh/PhklVih2oqs2WWySNxw40=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-78-dHhCQ_9FN4ypFdInzvUEcA-1; Sat, 25 Sep 2021 11:36:50 -0400
-X-MC-Unique: dHhCQ_9FN4ypFdInzvUEcA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A7CC814270;
-        Sat, 25 Sep 2021 15:36:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A401D1000358;
-        Sat, 25 Sep 2021 15:36:42 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YU84rYOyyXDP3wjp@casper.infradead.org>
-References: <YU84rYOyyXDP3wjp@casper.infradead.org> <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk> <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, hch@lst.de, trond.myklebust@primarydata.com,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, darrick.wong@oracle.com,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        Sat, 25 Sep 2021 11:41:39 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBEBC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 08:40:04 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id n18so12946866pgm.12
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 08:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0gLSxoWjIglR0vF9p3Om4tGlkObXsXDpYB02Tj9xZpQ=;
+        b=kRCpRy/nggUySF4t6vaq30xpKW6nK7qstPC+hNVaRQEr8dWypivH5djyomP60zKZJ9
+         Iaf04yF5JKMMmbY8WW7UNaddL0Kt5YY8LMuOFSx8mCpIbCuamyc7YSlHT4UtruJ0DP2P
+         QMDxpbEZHqpQ3nJacQ/dL3CM8IuoyEjA1fdy+YZR6rk6Jx88fXvlCi6dyf/1QVMSUaJk
+         1TyN7d4Sy1ITlvmj71DhDOuYo52UGEmH35VsZMZsehhCwEMfkhLLxODOXJ+TE0Ia26tG
+         cTFI9cHT9o2vkbeeOkrnEn41+9kVZABFS+aVX2rirIT59JB140cKJwBua6/qOQJ721FL
+         qTXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0gLSxoWjIglR0vF9p3Om4tGlkObXsXDpYB02Tj9xZpQ=;
+        b=S3+76aOnq5UheCkfprLA2IIFwvsFktkiY+X/uRkYcDsbjqSHEHXz8leUEnL1o+4nkQ
+         CUKup+k48Mqi1QhvldTUmgKJfCT2CayIIGWyMGnfDGhnZYY7ZLeRL0raRaWzcYvdDuHL
+         2+wtUR8ZpU9+mScgy0ewZbHB0Z2AvAnd3jn1x2m/Omdn9oRjHLHH+ImxyLN5cP9CXeGp
+         8MRZUZz4s7OmfJpnYoqZruAJV8x6Mb/gtEBQ1/npKkNTg6d/9FN3tRBn80G2HE6HdabU
+         3lJ73uB9LZWBMrKGFCD/UnmXhR7RffQxm0lyd5WfJ2TyGJF4FBKWKj7Y1F30IEu5UThj
+         cxNw==
+X-Gm-Message-State: AOAM533sdWQ033EayprspkJq3iTuuX9WMV6SwuRdQGzoz1RHh0eBd96R
+        BHZLIOWaIgBA+vEiTFu/ag==
+X-Google-Smtp-Source: ABdhPJzC/48g6rDBLAHRPqT6AxXL/xThXY8UV7zkaSTxbdLcEKF7PXUJCKBPZ4hn8SvbsK14bOi+iw==
+X-Received: by 2002:a65:434c:: with SMTP id k12mr8622911pgq.17.1632584404071;
+        Sat, 25 Sep 2021 08:40:04 -0700 (PDT)
+Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id m1sm10633861pfc.183.2021.09.25.08.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Sep 2021 08:40:03 -0700 (PDT)
+Date:   Sat, 25 Sep 2021 23:39:55 +0800
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 9/9] mm: Remove swap BIO paths and only use DIO paths
+Subject: Re: [PATCHv2 1/5] arm64/entry-common: push the judgement of nmi ahead
+Message-ID: <YU9Cy9kTew4ySeGZ@piliu.users.ipa.redhat.com>
+References: <20210924132837.45994-1-kernelfans@gmail.com>
+ <20210924132837.45994-2-kernelfans@gmail.com>
+ <20210924175306.GB42068@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2396105.1632584202.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Sat, 25 Sep 2021 16:36:42 +0100
-Message-ID: <2396106.1632584202@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924175306.GB42068@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, Sep 24, 2021 at 06:53:06PM +0100, Mark Rutland wrote:
+> On Fri, Sep 24, 2021 at 09:28:33PM +0800, Pingfan Liu wrote:
+> > In enter_el1_irq_or_nmi(), it can be the case which NMI interrupts an
+> > irq, which makes the condition !interrupts_enabled(regs) fail to detect
+> > the NMI. This will cause a mistaken account for irq.
+> 
+Sorry about the confusing word "account", it should be "lockdep/rcu/.."
 
-> On Fri, Sep 24, 2021 at 06:19:23PM +0100, David Howells wrote:
-> > Delete the BIO-generating swap read/write paths and always use ->swap_=
-rw().
-> > This puts the mapping layer in the filesystem.
-> =
+> Can you please explain this in more detail? It's not clear which
+> specific case you mean when you say "NMI interrupts an irq", as that
+> could mean a number of distinct scenarios.
+> 
+> AFAICT, if we're in an IRQ handler (with NMIs unmasked), and an NMI
+> causes a new exception we'll do the right thing. So either I'm missing a
+> subtlety or you're describing a different scenario..
+> 
+> Note that the entry code is only trying to distinguish between:
+> 
+> a) This exception is *definitely* an NMI (because regular interrupts
+>    were masked).
+> 
+> b) This exception is *either* and IRQ or an NMI (and this *cannot* be
+>    distinguished until we acknowledge the interrupt), so we treat it as
+>    an IRQ for now.
+> 
+b) is the aim.
 
-> Is SWP_FS_OPS now unused after this patch?
+At the entry, enter_el1_irq_or_nmi() -> enter_from_kernel_mode()->rcu_irq_enter()/rcu_irq_enter_check_tick() etc.
+While at irqchip level, gic_handle_irq()->gic_handle_nmi()->nmi_enter(),
+which does not call rcu_irq_enter_check_tick(). So it is not proper to
+"treat it as an IRQ for now"
 
-Ummm.  Interesting question - it's only used in swap_set_page_dirty():
+> ... and we leave it to the irqchip to handle the gory details. We only
 
-int swap_set_page_dirty(struct page *page)
-{
-	struct swap_info_struct *sis =3D page_swap_info(page);
+The detail should hide in irqchip to decide if an exception is either
+NMI or IRQ. But could irqchip export the interface to entry? (This patch
+export two: handle_arch_nmi() and interrupt_is_nmi() ).
 
-	if (data_race(sis->flags & SWP_FS_OPS)) {
-		struct address_space *mapping =3D sis->swap_file->f_mapping;
+Thanks,
 
-		VM_BUG_ON_PAGE(!PageSwapCache(page), page);
-		return mapping->a_ops->set_page_dirty(page);
-	} else {
-		return __set_page_dirty_no_writeback(page);
-	}
-}
-
-
-> Also, do we still need ->swap_activate and ->swap_deactivate?
-
-f2fs does quite a lot of work in its ->swap_activate(), as does btrfs.  I'=
-m
-not sure how necessary it is.  cifs looks like it intends to use it, but i=
-t's
-not fully implemented yet.  zonefs and nfs do some checking, including hol=
-e
-checking in nfs's case.  nfs also does some setting up for the sunrpc
-transport.
-
-btrfs, cifs, f2fs and nfs all supply ->swap_deactivate() to undo the effec=
-ts
-of the activation.
-
-David
-
+	Pingfan
