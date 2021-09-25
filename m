@@ -2,152 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76D04181A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8654181A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343953AbhIYL01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 07:26:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244756AbhIYLZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 07:25:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1B0761352;
-        Sat, 25 Sep 2021 11:24:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632569058;
-        bh=iRLV6v3e7JYAyZzq3uX24jBWmOHmWur2DvK8Vt/2i+0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pR22exCjUS7YCkjkCvD8Rnb9sosGeBFWlArr/YA3QFWWrtyauBEi7+Tuhqd4afoJR
-         eRUaq5hWn2OMw9LPTV8rZEfeRlENaJNpc2E4GJnYKmRa7zvr8b5JTcEqZmvEYOvhf/
-         2YLSW8fytAdZTjkgmt/8HJ/SHvzIf7/eRAOikZt9Oa1UDm8a+EloI0pZzg2GkXLWp/
-         kbdu3Un5+qwR8prVYLnTt23VXb+LJjt7pgc76zL+oyZsh181Sb/7IqLOeqFUK9InuA
-         voqdYkfrjahsfJjF/DzkF/YIBNWKLGBMyC3/4eZXseBdGBO3ITOoLCyUVllM0CXPr8
-         8zF7KKkx596zg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Manish Chopra <manishc@marvell.com>,
-        M Chetan Kumar <m.chetan.kumar@intel.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: [PATCH net-next v1 21/21] net: dsa: Move devlink registration to be last devlink command
-Date:   Sat, 25 Sep 2021 14:23:01 +0300
-Message-Id: <66dd7979b44ac307711c382054f428f9287666a8.1632565508.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632565508.git.leonro@nvidia.com>
-References: <cover.1632565508.git.leonro@nvidia.com>
+        id S244525AbhIYLcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 07:32:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46636 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhIYLcu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 07:32:50 -0400
+Date:   Sat, 25 Sep 2021 11:31:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632569474;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dkG1RbVWYKVnLnWbroKZY4D6SgQ0oBEKHZi9Yk1Ax5c=;
+        b=oRB9r3hItnZZ01S72Hb26oFeNs60B5JB0vU8dUIlgwPqd2iwG1cUy3xxG1POpUD/GLqc29
+        xjOP94Kkda5z0DxmxNBcAYMS+zEPoUY7Sk5809uukjtupzdqzx2l/z+bTYSBHcq8bbndD8
+        iBMRA5VRo0cddyWiMxapcuMMEiDHjf60q9hz0ojLn+hZtk9qUZU2OFxUf9YVMQ59cf3Lt/
+        eq0XEIEH1g2pJO7tfsiOnUwbF8cIU45diB12ZltpikD+VutpBhTe6GYZyW1EusOcmDp8Q6
+        UxksGFzscFTmgO3el5AVlQgn2CcwJTWy4RGO3OF+5G2mPEizoTZ5jcNkWLTm1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632569474;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dkG1RbVWYKVnLnWbroKZY4D6SgQ0oBEKHZi9Yk1Ax5c=;
+        b=fyr38wA6QMUC0ZGmNypDI5hnOjVaGcgBSEC3wJWlqM22kxaug0+ZuwElNJGNuKKlvlnQgp
+        dWsqpbHnaKdpGAAw==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/umip: Downgrade warning messages to debug loglevel
+Cc:     mrueckert@suse.com, Borislav Petkov <bp@suse.de>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210907200454.30458-1-bp@alien8.de>
+References: <20210907200454.30458-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <163256947294.25758.18286750023731125992.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+The following commit has been merged into the x86/cpu branch of tip:
 
-This change prevents from users to access device before devlink
-is fully configured.
+Commit-ID:     f3f07ae425bc09039d9e0c73c86b76f95d9d5cd6
+Gitweb:        https://git.kernel.org/tip/f3f07ae425bc09039d9e0c73c86b76f95d9=
+d5cd6
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Wed, 15 Sep 2021 16:39:18 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Sat, 25 Sep 2021 13:23:28 +02:00
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+x86/umip: Downgrade warning messages to debug loglevel
+
+After four years in the wild, those have not fullfilled their
+initial purpose of pushing people to fix their software to not use
+UMIP-emulated instructions, and to warn users about the degraded
+emulation performance.
+
+Yet, the only thing that "degrades" performance is overflowing dmesg
+with those:
+
+  [Di Sep  7 00:24:05 2021] umip_printk: 1345 callbacks suppressed
+  [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: =
+SIDT instruction cannot be used by applications.
+  [Di Sep  7 00:24:05 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b7c0: =
+For now, expensive software emulation returns the result.
+  ...
+  [Di Sep  7 00:26:06 2021] umip_printk: 2227 callbacks suppressed
+  [Di Sep  7 00:26:06 2021] umip: someapp.exe[29231] ip:14064cdba sp:11b940: =
+SIDT instruction cannot be used by applications.
+
+and users don't really care about that - they just want to play their
+games in wine.
+
+So convert those to debug loglevel - in case someone is still interested
+in them, someone can boot with "debug" on the kernel cmdline.
+
+Reported-by: Marcus R=C3=BCckert <mrueckert@suse.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210907200454.30458-1-bp@alien8.de
 ---
- net/dsa/dsa2.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ arch/x86/kernel/umip.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
-index a020339e1973..8ca6a1170c9d 100644
---- a/net/dsa/dsa2.c
-+++ b/net/dsa/dsa2.c
-@@ -848,7 +848,6 @@ static int dsa_switch_setup(struct dsa_switch *ds)
- 	dl_priv = devlink_priv(ds->devlink);
- 	dl_priv->ds = ds;
- 
--	devlink_register(ds->devlink);
- 	/* Setup devlink port instances now, so that the switch
- 	 * setup() can register regions etc, against the ports
- 	 */
-@@ -874,8 +873,6 @@ static int dsa_switch_setup(struct dsa_switch *ds)
- 	if (err)
- 		goto teardown;
- 
--	devlink_params_publish(ds->devlink);
--
- 	if (!ds->slave_mii_bus && ds->ops->phy_read) {
- 		ds->slave_mii_bus = mdiobus_alloc();
- 		if (!ds->slave_mii_bus) {
-@@ -891,7 +888,7 @@ static int dsa_switch_setup(struct dsa_switch *ds)
- 	}
- 
- 	ds->setup = true;
--
-+	devlink_register(ds->devlink);
- 	return 0;
- 
- free_slave_mii_bus:
-@@ -906,7 +903,6 @@ static int dsa_switch_setup(struct dsa_switch *ds)
- 	list_for_each_entry(dp, &ds->dst->ports, list)
- 		if (dp->ds == ds)
- 			dsa_port_devlink_teardown(dp);
--	devlink_unregister(ds->devlink);
- 	devlink_free(ds->devlink);
- 	ds->devlink = NULL;
- 	return err;
-@@ -919,6 +915,9 @@ static void dsa_switch_teardown(struct dsa_switch *ds)
- 	if (!ds->setup)
- 		return;
- 
-+	if (ds->devlink)
-+		devlink_unregister(ds->devlink);
-+
- 	if (ds->slave_mii_bus && ds->ops->phy_read) {
- 		mdiobus_unregister(ds->slave_mii_bus);
- 		mdiobus_free(ds->slave_mii_bus);
-@@ -934,7 +933,6 @@ static void dsa_switch_teardown(struct dsa_switch *ds)
- 		list_for_each_entry(dp, &ds->dst->ports, list)
- 			if (dp->ds == ds)
- 				dsa_port_devlink_teardown(dp);
--		devlink_unregister(ds->devlink);
- 		devlink_free(ds->devlink);
- 		ds->devlink = NULL;
- 	}
--- 
-2.31.1
-
+diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+index 576b47e..5a4b213 100644
+--- a/arch/x86/kernel/umip.c
++++ b/arch/x86/kernel/umip.c
+@@ -92,8 +92,8 @@ static const char * const umip_insns[5] =3D {
+=20
+ #define umip_pr_err(regs, fmt, ...) \
+ 	umip_printk(regs, KERN_ERR, fmt, ##__VA_ARGS__)
+-#define umip_pr_warn(regs, fmt, ...) \
+-	umip_printk(regs, KERN_WARNING, fmt,  ##__VA_ARGS__)
++#define umip_pr_debug(regs, fmt, ...) \
++	umip_printk(regs, KERN_DEBUG, fmt,  ##__VA_ARGS__)
+=20
+ /**
+  * umip_printk() - Print a rate-limited message
+@@ -361,10 +361,10 @@ bool fixup_umip_exception(struct pt_regs *regs)
+ 	if (umip_inst < 0)
+ 		return false;
+=20
+-	umip_pr_warn(regs, "%s instruction cannot be used by applications.\n",
++	umip_pr_debug(regs, "%s instruction cannot be used by applications.\n",
+ 			umip_insns[umip_inst]);
+=20
+-	umip_pr_warn(regs, "For now, expensive software emulation returns the resul=
+t.\n");
++	umip_pr_debug(regs, "For now, expensive software emulation returns the resu=
+lt.\n");
+=20
+ 	if (emulate_umip_insn(&insn, umip_inst, dummy_data, &dummy_data_size,
+ 			      user_64bit_mode(regs)))
