@@ -2,175 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5642417F3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 04:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62936417F43
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 04:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347112AbhIYCMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 22:12:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343760AbhIYCMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 22:12:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B56D061279;
-        Sat, 25 Sep 2021 02:11:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632535876;
-        bh=bh2NnvETqZ5gppTlIxdn7adU8NHofIsaMMg5rGECvIs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oyXkVs0M9xuz9X0bXR7/OLdzcXDXj+3NZbVkICK0B6LOn7gsOhWZKos44L9RBL5uD
-         BwIJbHEEidbS9QkrLI2sNoW4Ax3xN9Bmc5DTlxF1VTJibs2mC8MRFn22KYx5dtt3bf
-         cNBDnAA7OuYi1HhmOP4ng/RjMxsnN1vS0WhVzYXGQqyGJS42jWbWlFVa67xx2FAGTY
-         kJXtiagOrPopJiPuMmZGlKivK4QP/7Dd4GFr5B+kfyGAkRHeDkILUYTUItJA48ftFO
-         66LvFyl/hZc3BaTa11PSR2BzR9HgPQGo74IZopZdl10Kmm/a+2T6k3ahghE+dAI/i0
-         /aF+O/fDYvGZQ==
-Received: by mail-ed1-f41.google.com with SMTP id y89so32375392ede.2;
-        Fri, 24 Sep 2021 19:11:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531ffQ3uxm6+Iz9lIfSB61e9vhJkRgXu1raMheagssu+JEXNM4LV
-        XrLPSeF9un/zOuqIXzTOnc6zdtyFySt5u6enNA==
-X-Google-Smtp-Source: ABdhPJxHVfwE5NBLEqjXLuieV73XDg/3aABwa8SyIvmNcOwLifu66viuQEN5dIOmQCviZEg+9kCT9dfv4FoGZK01SQc=
-X-Received: by 2002:a17:906:26c4:: with SMTP id u4mr14435742ejc.511.1632535875178;
- Fri, 24 Sep 2021 19:11:15 -0700 (PDT)
+        id S1347350AbhIYCSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 22:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343760AbhIYCST (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 22:18:19 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BA0C061571;
+        Fri, 24 Sep 2021 19:16:45 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id w19so10407652pfn.12;
+        Fri, 24 Sep 2021 19:16:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KUE5uliHgQSz+W6OoczSy6j/pQcC1fX9twvbX7G/f9A=;
+        b=RzG5JAXjYeb25XGQTSaj998+yrmmkOU8udleo9PeOjjULMZwsV7c3+ev4kIIYNW97R
+         KBweX8EZeU0XeFblZ7Xolw+z3yNqfv1XsHAGBDrCotscfieM431chguBIzTY2axLiDG/
+         GYB5unJeMUwoj5Y+fP65PqVK0qKez0k6Lphy4zgeDjXFSyzfRA9w8jBBW1CviB2FXFpH
+         hRYJBkkzAZs0nmvHNXg+DO1rlR9Ou8NpSG36XugeVupxE9ITaGIpdABlsRQVD+4LkMCE
+         +s79tHe1Hg+JZcAEXgGxnkNqDphiKl17xpnUMyPWV6s1MavImb+3hglLdja6yipQ6OM7
+         T0Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KUE5uliHgQSz+W6OoczSy6j/pQcC1fX9twvbX7G/f9A=;
+        b=RVG58enSJWJkEPLXRKrSo0yW8Wr8Ym3XWtKs5Ry/GqOeydF6nb5hI7hqOxUvgx4AZW
+         6S/DQnLKSnkeDFNXADTQHFwYFAfmncWu3Hyu6W4VgJ8YpfXV3w9Lqrac+zo2Z7jFbMXT
+         ey6QkjsSSs/1zFYWwaBxXmHWQElJcvqM96ZEouLL1aQkGk4ZTqQ1nwpndefzETqGCb3V
+         +EuAZCVXvPaoiKwgDjgVUOD2266CztEhhtlcxo+tgjdRkI0JSrxzblDJsVNxLWgb5pKN
+         IWu41Fnk4LKsULWOBqHdzwpyxIzfy+awh30mh2I9v62CXm5pgvd+aUtF1ItS31i0ZRwc
+         E6tA==
+X-Gm-Message-State: AOAM530x92XVBdGE9x4+t1wKQIvmVyCmxEicLUSmlMttEw6hwshJer8P
+        YCqve4/nx8tyKVAPuOK6uqE=
+X-Google-Smtp-Source: ABdhPJz9qDtI8Rt1jEkDRRLpydnqi3owtC6V2O+F6zBttQNaz/2noMS7iYDEb/f1XgCkSFFzLjDf1w==
+X-Received: by 2002:a63:1f10:: with SMTP id f16mr6284338pgf.423.1632536205017;
+        Fri, 24 Sep 2021 19:16:45 -0700 (PDT)
+Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
+        by smtp.gmail.com with ESMTPSA id x21sm10249866pfa.186.2021.09.24.19.16.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Sep 2021 19:16:44 -0700 (PDT)
+Date:   Fri, 24 Sep 2021 19:16:42 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Eric Sandeen <sandeen@sandeen.net>,
+        Fengfei Xi <xi.fengfei@h3c.com>, darrick.wong@oracle.com,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tian.xianting@h3c.com
+Subject: Re: [PATCH] xfs: fix system crash caused by null bp->b_pages
+Message-ID: <YU6GioPsUlVXbtwQ@nuc10>
+References: <20201224095142.7201-1-xi.fengfei@h3c.com>
+ <63d75865-84c6-0f76-81a2-058f4cad1d84@sandeen.net>
+ <YUphLS+pXoVwPxMz@nuc10>
+ <20210922014804.GQ1756565@dread.disaster.area>
 MIME-Version: 1.0
-References: <20210921155218.10387-1-jason-jh.lin@mediatek.com> <20210921155218.10387-5-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210921155218.10387-5-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 25 Sep 2021 10:11:04 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8uRKQP5AEp6V4Ez1YZAfSYrruo5n-hG=Vp3GUPUE=sGA@mail.gmail.com>
-Message-ID: <CAAOTY_8uRKQP5AEp6V4Ez1YZAfSYrruo5n-hG=Vp3GUPUE=sGA@mail.gmail.com>
-Subject: Re: [PATCH v11 04/16] dt-bindings: display: mediatek: dsc: add yaml
- for mt8195 SoC binding
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
-        Moudy Ho <moudy.ho@mediatek.com>, roy-cw.yeh@mediatek.com,
-        Fabien Parent <fparent@baylibre.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
-        DTML <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210922014804.GQ1756565@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+Hi Dave,
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=882=
-1=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:52=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> 1. Add mediatek,dsc.yaml to describe DSC module in details.
-> 2. Add mt8195 SoC binding to mediatek,dsc.yaml.
+On Wed, Sep 22, 2021 at 11:48:04AM +1000, Dave Chinner wrote:
+> On Tue, Sep 21, 2021 at 03:48:13PM -0700, Rustam Kovhaev wrote:
+> > Hi Fengfei, Eric,
+> > 
+> > On Thu, Dec 24, 2020 at 01:35:32PM -0600, Eric Sandeen wrote:
+> > > On 12/24/20 3:51 AM, Fengfei Xi wrote:
+> > > > We have encountered the following problems several times:
+> > > >     1、A raid slot or hardware problem causes block device loss.
+> > > >     2、Continue to issue IO requests to the problematic block device.
+> > > >     3、The system possibly crash after a few hours.
+> > > 
+> > > What kernel is this on?
+> > > 
+> > 
+> > I have a customer that recently hit this issue on 4.12.14-122.74
+> > SLE12-SP5 kernel.
+> 
+> I think need to engage SuSE support and engineering, then, as this
+> is not a kernel supported by upstream devs. I'd be saying the same
+> thing if this was an RHEL frankenkernel, too.
+> 
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+roger that, should not be a problem, thank you!
 
->
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
->  .../display/mediatek/mediatek,dsc.yaml        | 71 +++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
-diatek,dsc.yaml
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-dsc.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsc.=
-yaml
-> new file mode 100644
-> index 000000000000..1ec083eff824
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsc.yam=
-l
-> @@ -0,0 +1,71 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,dsc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: mediatek display DSC controller
-> +
-> +maintainers:
-> +  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> +  - Philipp Zabel <p.zabel@pengutronix.de>
-> +
-> +description: |
-> +  The DSC standard is a specification of the algorithms used for
-> +  compressing and decompressing image display streams, including
-> +  the specification of the syntax and semantics of the compressed
-> +  video bit stream. DSC is designed for real-time systems with
-> +  real-time compression, transmission, decompression and Display.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: mediatek,mt8195-disp-dsc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: DSC Wrapper Clock
-> +
-> +  power-domains:
-> +    description: A phandle and PM domain specifier as defined by binding=
-s of
-> +      the power controller specified by phandle. See
-> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
-ils.
-> +
-> +  mediatek,gce-client-reg:
-> +    description:
-> +      The register of client driver can be configured by gce with 4 argu=
-ments
-> +      defined in this property, such as phandle of gce, subsys id,
-> +      register offset and size.
-> +      Each subsys id is mapping to a base address of display function bl=
-ocks
-> +      register which is defined in the gce header
-> +      include/dt-bindings/gce/<chip>-gce.h.
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - power-domains
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    dsc0: disp_dsc_wrap@1c009000 {
-> +        compatible =3D "mediatek,mt8195-disp-dsc";
-> +        reg =3D <0 0x1c009000 0 0x1000>;
-> +        interrupts =3D <GIC_SPI 645 IRQ_TYPE_LEVEL_HIGH 0>;
-> +        power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-> +        clocks =3D <&vdosys0 CLK_VDO0_DSC_WRAP0>;
-> +        mediatek,gce-client-reg =3D <&gce1 SUBSYS_1c00XXXX 0x9000 0x1000=
->;
-> +    };
-> --
-> 2.18.0
->
