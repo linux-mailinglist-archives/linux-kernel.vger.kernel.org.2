@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7D941845C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 22:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DF841845F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 22:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhIYUTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 16:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
+        id S229918AbhIYUeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 16:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhIYUTu (ORCPT
+        with ESMTP id S229854AbhIYUeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 16:19:50 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6E4C061570;
-        Sat, 25 Sep 2021 13:18:15 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id m21so13450739pgu.13;
-        Sat, 25 Sep 2021 13:18:15 -0700 (PDT)
+        Sat, 25 Sep 2021 16:34:03 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BC8C061570;
+        Sat, 25 Sep 2021 13:32:28 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id t18so38345889wrb.0;
+        Sat, 25 Sep 2021 13:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cFRX5oL5e2qGvMdyNPty95jtsNRe9TW7d1DbDiCxj1k=;
-        b=X0wbusJsedFo1QDWNmK6wN1BorZqQPIrG96Zppcsje3ck5aWklO1gORETJ6VSpIKsu
-         pgVq6v01S+Ri3Ezxn32RtpGM99jc4v5bSn1PRwcaLPiPy24vtZ2XXQFNMRb21R2a/s+D
-         CzJKMtyBfkiRPm7qKTnigRjhryulYAv3gF6cGRkg6zjZyn1R1sv2oWuKbtwbq3Ghf5Vf
-         F6PA68Xeyjyf58zGJrCv5hxdp056F7KTzjQdnS93+5st/52CleS/5tVI/w+jErsuqs8+
-         I6J+CALfFp+UByrgdB3h8EJwya6agkS8R2WClnW4Q9c37WHWG8WNocO/Hl60Q072p8+g
-         MP3A==
+        bh=RFzfsKuULwjyBf8Wguf5eTyoN/cXjiuq9DakkusHbp8=;
+        b=Sv/TRurLr0Gd3BextmWZ/oa7gZiFeNOpH4BnwN0SloUECMqrAiOWsIK4yMCn8jS+/t
+         yYgTFNWmtdxUALO4P2O8YRT7OPU3dt1XGImXs2QYgFH2+QZOnJnv3909vvOjpn/ii8sW
+         vulSVE9XPdXU3EQxqPhJ3XvqLGZDlRwiXF3YOiFVvZIOqwr9HE6xa+TGBIyfSR1TlfFk
+         jM8SS+srszTo9oo6oe/xBkd6AQCRDycJjEY5BEkZ4xTl7JWdx1FMHCvElagqZYVli8af
+         146Zm+3ytYX91FCZQWwR4YHQh4F5ajscuSw4FtybDdMIX1PwyLwEUxfBLNyVH5QRLcEJ
+         9qlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cFRX5oL5e2qGvMdyNPty95jtsNRe9TW7d1DbDiCxj1k=;
-        b=17q1cINJLA7ZgNjCpn/7woeKCTlbjuzip/J5SbWhLmmXLvyCF3bLNdRO/07IbtaYLx
-         jV95i98xXcvaYsWk9M1nnImwXDeczlbKpPd4QLb1ecer1lgaYVsFurjLMBRZ7fAyiq0F
-         DXWTePmME8HTGPiodCt89yrrRD1O+yEJ0ZMvCDEb1RYDInKWFYpsUoqF3spxl+qri9dp
-         00gyWT/PQbZPQbHzBSF3Pwtm/Jz2sl1MTHkn8e0/6ZOlhutP0yonMKEj4eaaW2384gUL
-         FBxbUVA/JWjh+3/2KudpH44KydkBf6JYfo/IAzpzmEYX15eiUdhqFs7mIAXvxxLrZqO2
-         P3uA==
-X-Gm-Message-State: AOAM533XJlqmeDDjv8qONNESYnrLSlVb/oJFeVbDQONpPUr4TDCXYwQZ
-        LGEOjyyvD58PoPkHdjPHT8iaYj6zu9fjawpSzr8=
-X-Google-Smtp-Source: ABdhPJzUFwQEa9xx9U0N8XthCPNRmf/PRh58ITRSU8CNDBfO+5RgNT5zyKevCwi3WJewo3FYtcHu6A==
-X-Received: by 2002:a05:6a00:2410:b0:40e:7d8:ad7f with SMTP id z16-20020a056a00241000b0040e07d8ad7fmr15837402pfh.25.1632601095146;
-        Sat, 25 Sep 2021 13:18:15 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:6005:10e3:6238:12b8:7d27:c5e3])
-        by smtp.googlemail.com with ESMTPSA id o11sm4811023pjr.17.2021.09.25.13.18.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 13:18:14 -0700 (PDT)
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH] Documentation: checkpatch: Document some more message types
-Date:   Sun, 26 Sep 2021 01:47:46 +0530
-Message-Id: <20210925201746.15917-1-utkarshverma294@gmail.com>
+        bh=RFzfsKuULwjyBf8Wguf5eTyoN/cXjiuq9DakkusHbp8=;
+        b=LNXPUwIM/L8YcM4GMwc/9VjkRESMfVMRVFOQW/7+Cvfjh1gvlzorhvMc0zlq/qEi39
+         EvveCBX+Ls+nqEHbGEP1nuXEKTSIP/Vxg7GyDRLEuSFcBlB1olD0tzUGZ8Onxg6I+3nK
+         W4ZU8j6ee1ekRh1R3GXLFmtvAo+eXJW3ObJET5zwsfanGbFY+KsWoTETQn7N+0xZcBOZ
+         cYT6QM6xWU1uG1IL1M0xFV1Jit3UGpV3bIx7ICR51MNKHst9Fw0MKw/8UFHbzJB0PfTB
+         YkuyXkmUha9/pQ9/7bJR2FdLigXFPYR1P2RxT/WG/Io2ci81Yd37+XvIVkcnVMc6mcrS
+         stoQ==
+X-Gm-Message-State: AOAM530V4/qOOInr/Qfa8cqin+KnmYRNECZ2C98m/7kVG7j8eLc/B+U1
+        abAitWPqmwh5MnYeCQwBBuQGz6ukWPI=
+X-Google-Smtp-Source: ABdhPJwrXlPXbXJ1jtqYEZbgmXPVhywhLYqvgigyRNA6NoR7NyQVy7rRYghFLcH+OuZ5FJG/FgP/0Q==
+X-Received: by 2002:a05:600c:4ba5:: with SMTP id e37mr8328060wmp.65.1632601946228;
+        Sat, 25 Sep 2021 13:32:26 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id a202sm16703279wmd.15.2021.09.25.13.32.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 25 Sep 2021 13:32:25 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     tsbogend@alpha.franken.de
+Cc:     robh@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
+        Liviu.Dudau@arm.com, bhelgaas@google.com, matthias.bgg@gmail.com,
+        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-staging@lists.linux.dev,
+        neil@brown.name, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] MIPS: ralink: fix PCI IO resources
+Date:   Sat, 25 Sep 2021 22:32:18 +0200
+Message-Id: <20210925203224.10419-1-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,78 +65,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added and documented 3 new message types:
-- UNNECESSARY_INT
-- UNSPECIFIED_INT
-- UNNECESSARY_ELSE
+MIPs ralink need a special tratement regarding the way it handles PCI IO
+resources. On MIPS I/O ports are memory mapped, so we access them using normal
+load/store instructions. MIPS 'plat_mem_setup()' function does a call to
+'set_io_port_base(KSEG1)'. There, variable 'mips_io_port_base'
+is set then using this address which is a virtual address to which all
+ports are being mapped. Ralink I/O space has a mapping of bus address
+equal to the window into the mmio space, with an offset of IO start range
+cpu address. This means that to have this working we need:
+- linux port numbers in the range 0-0xffff.
+- pci port numbers in the range 0-0xffff.
+- io_offset being zero.
 
-Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
----
- Documentation/dev-tools/checkpatch.rst | 47 ++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+These means at the end to have bus address 0 mapped to IO range cpu address.
+We need a way of properly set 'mips_io_port_base' with a virtually mapped
+value of the IO cpu address.
 
-diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-index f0956e9ea2d8..2dc74682277f 100644
---- a/Documentation/dev-tools/checkpatch.rst
-+++ b/Documentation/dev-tools/checkpatch.rst
-@@ -929,6 +929,13 @@ Functions and Variables
- 
-       return bar;
- 
-+  **UNNECESSARY_INT**
-+    int used after short, long and long long is unnecessary. So remove it.
-+
-+  **UNSPECIFIED_INT**
-+    Kernel style prefers "unsigned int <foo>" over "unsigned <foo>" and
-+    "signed int <foo>" over "signed <foo>".
-+
- 
- Permissions
- -----------
-@@ -1166,3 +1173,43 @@ Others
- 
-   **TYPO_SPELLING**
-     Some words may have been misspelled.  Consider reviewing them.
-+
-+  **UNNECESSARY_ELSE**
-+    Using an else statement just after a return or a break statement is
-+    unnecassary. For example::
-+
-+      for (i = 0; i < 100; i++) {
-+              int foo = bar();
-+              if (foo < 1)
-+                      break;
-+              else
-+                      usleep(1);
-+      }
-+
-+    is generally better written as::
-+
-+      for (i = 0; i < 100; i++) {
-+              int foo = bar();
-+              if (foo < 1)
-+                      break;
-+              usleep(1);
-+      }
-+
-+    So remove the else statement. But suppose if a if-else statement each
-+    with a single return statement, like::
-+
-+      if (foo)
-+              return bar;
-+      else
-+              return baz;
-+
-+    then by removing the else statement::
-+
-+      if (foo)
-+              return bar;
-+      return baz;
-+
-+    their is no significant increase in the readability and one can argue
-+    that the first form is more readable because of indentation, so for
-+    such cases do not convert the existing code from first form to second
-+    form or vice-versa.
+This series do the following approach:
+1) Revert two bad commit from a previous attempt of make this work [0].
+2) Set PCI_IOBASE to mips 'mips_io_port_base'.
+3) Allow architecture dependent 'pci_remap_iospace'.
+4) Implement 'pci_remap_iospace' for MIPS.
+5) Be sure IOBASE address for IO window is set with correct value.
+
+More context about this series appoach in this mail thread [1].
+
+Patches related with reverts are from this merge cycle so they are only
+added to the staging git tree. So to have all stuff together I'd like to
+get everybody Ack's to get all of this series through staging tree if
+possible :).
+
+Thanks in advance for your time.
+
+Changes in v3:
+ - Collect Arnd's Acked-by for the patches. 
+ - Be sure IO resource start address is zero and WARN_ONCE if it is not
+   on MIPS pci_remap_iospace() patch. Also make use of 'resource_size'
+   instead of do the logic explicitly again.
+
+Changes in v2:
+ - re-do commit messages for PCI patch as Bjorn pointed out in previous series.
+ - Add Bjorn's Acked-by for PCI subsystem patch.
+ - Re-do commit message of MIPS 'pci_remap_iospace()' patch to align with changes
+   in the PCI patch (s/architecture dependent/architecture-specific/)
+ - Add Fixes-by tag for MIPS set PCI_IOBASE patch.
+
+[0]: https://www.spinics.net/lists/kernel/msg4051474.html
+[1]: https://lkml.org/lkml/2021/9/22/6
+Sergio Paracuellos (6):
+  Revert "MIPS: ralink: don't define PC_IOBASE but increase
+    IO_SPACE_LIMIT"
+  Revert "staging: mt7621-pci: set end limit for 'ioport_resource'"
+  MIPS: ralink: set PCI_IOBASE to 'mips_io_port_base'
+  PCI: Allow architecture-specific pci_remap_iospace()
+  MIPS: implement architecture-specific 'pci_remap_iospace()'
+  staging: mt7621-pci: properly adjust base address for the IO window
+
+ arch/mips/include/asm/mach-ralink/spaces.h |  4 +++-
+ arch/mips/include/asm/pci.h                |  2 ++
+ arch/mips/pci/pci-generic.c                | 14 ++++++++++++++
+ drivers/pci/pci.c                          |  2 ++
+ drivers/staging/mt7621-pci/pci-mt7621.c    |  4 +---
+ 5 files changed, 22 insertions(+), 4 deletions(-)
+
 -- 
 2.25.1
 
