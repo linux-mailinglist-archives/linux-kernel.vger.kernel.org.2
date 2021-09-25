@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566534184D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 00:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 238EF4184E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 00:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhIYWOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 18:14:01 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33344
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230024AbhIYWN6 (ORCPT
+        id S230123AbhIYWSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 18:18:10 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:42867 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230024AbhIYWSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 18:13:58 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 2E89C40CE2;
-        Sat, 25 Sep 2021 22:12:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632607942;
-        bh=5GJGeMUE1rwvKSTEVK8obPvzmMX2uPbl+sLWvpxmi/Y=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=o4XySPeeDyWl8UU398FbX6sZORi8Iwe8Z326AxuuHOnrT5Y+Y60FQxN9UjaUo5REF
-         PQB+RALfQQwlBSs9LrS/H816hXRMgqvezkOn7p2JJY7FToR1nPKzukbCvvGXEscnWb
-         37+yBQTol2XTHhpUooVwce+IMzaBU5oetc6tt+7iEC5rYea39xzBcJwF9otwBeeg7d
-         l/bxY6ggW8dA4m9ax3F9hIhXLFHeQoc0z1K0iIxwzr36ENrsTt/IZXLj/OmwrJdyMp
-         t2TAo0Yf03dsAv/X9fn4RCvde3KAS7Wv8z9EdVy/vXsZXzccMe05nLcuLqtUUA66jQ
-         5dolgvk2MnX3w==
-From:   Colin King <colin.king@canonical.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915/gt: return NULL rather than a plain 0 integer
-Date:   Sat, 25 Sep 2021 23:12:21 +0100
-Message-Id: <20210925221221.181630-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Sat, 25 Sep 2021 18:18:09 -0400
+Received: by mail-oi1-f173.google.com with SMTP id x124so19858915oix.9;
+        Sat, 25 Sep 2021 15:16:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=4zZa0pNx5SO7y8XUgl4L6wylE3A2MDP8EXBjRieRoGg=;
+        b=DIL9hY59O6orwZMpvlMeyNSHAA0DVnlYINIBsEJO8VjYmv/xaPluCcg2t5m1GffqPc
+         IZKiqrvJFHvAMdeiueazvnCaTPIKPvcPBjZyui+79oZI4F0m51Ehb/2SMC44s4Rx0saA
+         iRQlrWaar50SqRh9W+3ovNdR3NTk6+d2dZ4wkt9bqcqyifKyxbmwgKLxUXtPl/3/dSfO
+         YulnQArH/tVToZ8Wm2Ldb0wz33tf25DE2bWQHgUmLDLvd3jkTu5a24s/AqKiv9Op0FLf
+         jXHshwvG9wti9VlnI0eYxFaOTAwgRXoB3wMS6wxGcFVO3jU6JsDlp+u6U83JjmLz2748
+         k+dQ==
+X-Gm-Message-State: AOAM532EAGhPkh+Gg6YQ1mL2AVhc4zDuCSNMvMacdRQxbtXHt6mvmo54
+        VWzdSsU4loCKeGURglQPIA==
+X-Google-Smtp-Source: ABdhPJyxrl+MLrGaVMhZlIuZKpsBWIPx8RYrEaa/BgmMRqDJoT3O8C2TV3JX6WZQqreUbBZ5fKjhtQ==
+X-Received: by 2002:a05:6808:1a04:: with SMTP id bk4mr6680603oib.85.1632608193387;
+        Sat, 25 Sep 2021 15:16:33 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id z17sm2305434ooz.38.2021.09.25.15.16.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Sep 2021 15:16:32 -0700 (PDT)
+Received: (nullmailer pid 3839363 invoked by uid 1000);
+        Sat, 25 Sep 2021 22:16:30 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Justin Chen <justinpopo6@gmail.com>
+Cc:     netdev@vger.kernel.org,
+        =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Doug Berger <opendmb@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        dri-devel@lists.freedesktop.org,
+        Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <1632519891-26510-2-git-send-email-justinpopo6@gmail.com>
+References: <1632519891-26510-1-git-send-email-justinpopo6@gmail.com> <1632519891-26510-2-git-send-email-justinpopo6@gmail.com>
+Subject: Re: [PATCH net-next 1/5] dt-bindings: net: Brcm ASP 2.0 Ethernet controller
+Date:   Sat, 25 Sep 2021 17:16:30 -0500
+Message-Id: <1632608190.772021.3839362.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, 24 Sep 2021 14:44:47 -0700, Justin Chen wrote:
+> From: Florian Fainelli <f.fainelli@gmail.com>
+> 
+> Add a binding document for the Broadcom ASP 2.0 Ethernet controller.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: Justin Chen <justinpopo6@gmail.com>
+> ---
+>  .../devicetree/bindings/net/brcm,asp-v2.0.yaml     | 147 +++++++++++++++++++++
+>  1 file changed, 147 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml
+> 
 
-Function gen7_ctx_vma returns a pointer to struct i915_vma, so
-returning a plain 0 integer isn't good practice. Fix this by
-returning a NULL instead.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/i915/gt/intel_ring_submission.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml:79:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_ring_submission.c b/drivers/gpu/drm/i915/gt/intel_ring_submission.c
-index 2958e2fae380..3c65efcb7bed 100644
---- a/drivers/gpu/drm/i915/gt/intel_ring_submission.c
-+++ b/drivers/gpu/drm/i915/gt/intel_ring_submission.c
-@@ -1265,7 +1265,7 @@ static struct i915_vma *gen7_ctx_vma(struct intel_engine_cs *engine)
- 	int size, err;
- 
- 	if (GRAPHICS_VER(engine->i915) != 7 || engine->class != RENDER_CLASS)
--		return 0;
-+		return NULL;
- 
- 	err = gen7_ctx_switch_bb_setup(engine, NULL /* probe size */);
- 	if (err < 0)
--- 
-2.32.0
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/brcm,asp-v2.0.example.dt.yaml: asp@9c00000: 'mdio@c614', 'mdio@ce14' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml
+Documentation/devicetree/bindings/net/brcm,asp-v2.0.example.dt.yaml:0:0: /example-0/asp@9c00000/mdio@c614: failed to match any schema with compatible: ['brcm,asp-v2.0-mdio']
+Documentation/devicetree/bindings/net/brcm,asp-v2.0.example.dt.yaml:0:0: /example-0/asp@9c00000/mdio@ce14: failed to match any schema with compatible: ['brcm,asp-v2.0-mdio']
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1532528
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
