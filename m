@@ -2,58 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463264182F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EEF4182EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343877AbhIYO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 10:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234173AbhIYO7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 10:59:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4659C061570;
-        Sat, 25 Sep 2021 07:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PyFYuyGZybL7cSTK0f665wfGUh8dtwTELe7jzY8FD1U=; b=G8TN7WiaFixroDwBeMBD/BPUaJ
-        qThH/nviuNwMQjvjmzk5nEYoPB0Tesoef21VSwULA6cbYUS760umGbUtQR33MtNHktReSp38Q1Zx3
-        q0g/iUSA0juTjCeCPzefvXHQnY1ZdIXXNZdZg0wemCk7jWS91mlmeCYEq8TkNE69ERMgNaiXZk4tX
-        fIV6QgFBgBxJ67EPz7q4tZdsism+N4M3GXQ2IZc4GhftzXgGiAcG2UxjcVE2XvIk7Fwx/g29V7zkW
-        DtIP+qQjmjVbihZ1+8eMs3KcT9fHmT0W2NkOX6DusUpkqjc1xp5U7AYcs5P85A6CPk7OENlX1tcgY
-        QXREXmGA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mU96b-008BsC-Hu; Sat, 25 Sep 2021 14:56:54 +0000
-Date:   Sat, 25 Sep 2021 15:56:45 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     hch@lst.de, trond.myklebust@primarydata.com,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, darrick.wong@oracle.com,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 9/9] mm: Remove swap BIO paths and only use DIO paths
-Message-ID: <YU84rYOyyXDP3wjp@casper.infradead.org>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
+        id S1343783AbhIYO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 10:57:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234173AbhIYO5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 10:57:00 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A438610CB;
+        Sat, 25 Sep 2021 14:55:23 +0000 (UTC)
+Date:   Sat, 25 Sep 2021 15:59:11 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     David Heidelberg <david@ixit.cz>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Devajith V S <devajithvs@gmail.com>,
+        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: iio: kionix,kxcjk1013: driver support
+ interrupts
+Message-ID: <20210925155911.3860770d@jic23-huawei>
+In-Reply-To: <YUx2DII/y3FVNF04@robh.at.kernel.org>
+References: <20210919203656.119742-1-david@ixit.cz>
+        <YUx2DII/y3FVNF04@robh.at.kernel.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 06:19:23PM +0100, David Howells wrote:
-> Delete the BIO-generating swap read/write paths and always use ->swap_rw().
-> This puts the mapping layer in the filesystem.
+On Thu, 23 Sep 2021 07:41:48 -0500
+Rob Herring <robh@kernel.org> wrote:
 
-Is SWP_FS_OPS now unused after this patch?
+> On Sun, Sep 19, 2021 at 10:36:56PM +0200, David Heidelberg wrote:
+> > Driver has interrupts support, which description was missing in the bindings.  
+> 
+> You mean the h/w has interrupts which was missing?
+Tweaked to
+Device has interrupt support, ...
 
-Also, do we still need ->swap_activate and ->swap_deactivate?
+and applied to the togreg branch of iio.git which is initially pushed out as testing
+for 0-day to see if it can break it.
+
+Thanks,
+
+Jonathan
+
+> 
+> > 
+> > Signed-off-by: David Heidelberg <david@ixit.cz>
+> > ---
+> >  .../devicetree/bindings/iio/accel/kionix,kxcjk1013.yaml        | 3 +++
+> >  1 file changed, 3 insertions(+)  
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+
