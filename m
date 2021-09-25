@@ -2,84 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F781418511
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 00:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9314141851F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 01:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhIYXAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 19:00:19 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36486
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230078AbhIYXAS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 19:00:18 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id CC33D40186;
-        Sat, 25 Sep 2021 22:58:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632610721;
-        bh=yUov5c28I0sE0mYEPq2ZwDrAU1S9Y8zUPwsyk26CH2E=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=q39KU5X/fhlaezBmBn+Gbay2fd5+AoAQ/SikK2/JV+XStyNOG08iYuU8gshZ0L5ex
-         k/BX79gfVZxc0kr6YJipYLWfOXiJ8ghd9rLIu+Sw60oFWoQ+pKUzZ3gkHkXc7U2paE
-         vRL384cMbBH2thLqC6KwJmBH2nOD540XhrX9x/NGU+CrzpVhv+GXxEin9+kuqyAG3f
-         ULp/onRXXuAIkIaPmvWtZXd9nGm9Gn8Ut9be3acLkqoeJMjvfMnMQxrN227XAEcjM/
-         kBtLoEJ0R41WHhfIrrxq7WBmg4gMacsNam2yOqcW/+QyXddWXTHI3hIUhll801gw9H
-         vC4DZ9p8h+C8w==
-From:   Colin King <colin.king@canonical.com>
-To:     "J . Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] NFSD: Initialize pointer ni with NULL and not plain integer 0
-Date:   Sat, 25 Sep 2021 23:58:41 +0100
-Message-Id: <20210925225841.184101-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S230176AbhIYXH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 19:07:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230078AbhIYXH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 19:07:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 581CA60F11;
+        Sat, 25 Sep 2021 23:05:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632611152;
+        bh=94G+dgxkTN8VYNOdcEgfUaAAK9rai2YwwNQVMJVC4Xk=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=INLPHmprrM0E067eeQbYS1k+8ghhqE03Trxuov7V5Fls74L0oFCPmJ5zsNVJ7+Umj
+         PutK6iGMM/dfSvkOvJ/AePjTvVTD31lbr4ZYR2dSM3FrbU5WXuDJO8fSiaHItgWeLa
+         VWK00OdYHRMTCUfpMHUENpoENRE7B/jetRa6bHcmmDLMfU+MVjJS2ul8flOX0l2UmU
+         lHgEXd9/yEwvxO4ZryW96/5suLQGQPVcmooFwrWwefd/09BYTMImMAD2WLhsUtN3xb
+         A5rxPi38CJhWPH2HBy3Pp3NRhOx0X9KQ3iST886jldkdgN9r8emm23QAflAFwxB36v
+         /wIlR7S+NLMrw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 433F960976;
+        Sat, 25 Sep 2021 23:05:52 +0000 (UTC)
+Subject: Re: [GIT PULL] Kselftest fixes update for Linux 5.15-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <61a77c13-1963-1dd5-d9bb-806cc8435326@linuxfoundation.org>
+References: <61a77c13-1963-1dd5-d9bb-806cc8435326@linuxfoundation.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <61a77c13-1963-1dd5-d9bb-806cc8435326@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.15-rc3
+X-PR-Tracked-Commit-Id: f5013d412a43662b63f3d5f3a804d63213acd471
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 90316e6ea0f0d63dab4cc84f71a8e199ee4b9b6c
+Message-Id: <163261115221.2532.8047374408133344042.pr-tracker-bot@kernel.org>
+Date:   Sat, 25 Sep 2021 23:05:52 +0000
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The pull request you sent on Fri, 24 Sep 2021 14:22:59 -0600:
 
-Pointer ni is being initialized with plain integer zero. Fix
-this by initializing with NULL.
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.15-rc3
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/nfsd/nfs4proc.c  | 2 +-
- fs/nfsd/nfs4state.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/90316e6ea0f0d63dab4cc84f71a8e199ee4b9b6c
 
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index 3f7e59ec4e32..3dc40c1d32bc 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -1178,7 +1178,7 @@ extern void nfs_sb_deactive(struct super_block *sb);
- static __be32 nfsd4_ssc_setup_dul(struct nfsd_net *nn, char *ipaddr,
- 		struct nfsd4_ssc_umount_item **retwork, struct vfsmount **ss_mnt)
- {
--	struct nfsd4_ssc_umount_item *ni = 0;
-+	struct nfsd4_ssc_umount_item *ni = NULL;
- 	struct nfsd4_ssc_umount_item *work = NULL;
- 	struct nfsd4_ssc_umount_item *tmp;
- 	DEFINE_WAIT(wait);
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index 8b7e9b28c109..bfad94c70b84 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -5541,7 +5541,7 @@ static void nfsd4_ssc_shutdown_umount(struct nfsd_net *nn)
- static void nfsd4_ssc_expire_umount(struct nfsd_net *nn)
- {
- 	bool do_wakeup = false;
--	struct nfsd4_ssc_umount_item *ni = 0;
-+	struct nfsd4_ssc_umount_item *ni = NULL;
- 	struct nfsd4_ssc_umount_item *tmp;
- 
- 	spin_lock(&nn->nfsd_ssc_lock);
+Thank you!
+
 -- 
-2.32.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
