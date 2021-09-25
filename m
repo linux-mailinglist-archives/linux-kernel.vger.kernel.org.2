@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22FA417FDE
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 07:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3443417FE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 07:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347803AbhIYFrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 01:47:36 -0400
-Received: from mail-4318.protonmail.ch ([185.70.43.18]:15565 "EHLO
-        mail-4318.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345793AbhIYFrf (ORCPT
+        id S1347809AbhIYFrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 01:47:52 -0400
+Received: from mail-4319.protonmail.ch ([185.70.43.19]:49565 "EHLO
+        mail-4319.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345793AbhIYFrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 01:47:35 -0400
-Date:   Sat, 25 Sep 2021 05:45:54 +0000
+        Sat, 25 Sep 2021 01:47:51 -0400
+Date:   Sat, 25 Sep 2021 05:46:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1632548758;
-        bh=AA0RmHGcmh+rJuIngTkHzDtYfGwHN0P6dXr7dLe0nbk=;
+        s=protonmail; t=1632548775;
+        bh=C8bhmTg3LtiGmarjie/fRD57ShMGVEYwAFfFm06O7dE=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=N5j9zGgMxAqRWbFhWH0JxLRF6HQEL9eE7AEXzY2YFZu+p0WXkvp6Xv5vJj95pbFtp
-         RRau/w7XS/cTTnoC4tvVk5Q0bdMEglAo4/PBDZO+JdusaWmCFilgPCe6ySJTTWLMAX
-         Vn+dy+a3ou7mlnYeUdhkuIzmhp75legDiTMUUpZg=
+        b=mtXPFveHZ5tDQXfQEQQZsFR5TFYjMRDU62EOlKGTac6IlaX21Si8+Ys1ijO3PAPgS
+         E7B/KtCUqqfHnlokaCtmRjFWQsXtFc+NW9WfLHt2T2dlpd/+eqooOSHjYoA1lV81DD
+         vy+GtoY9qM4taWkoxeLYUF/VcDidArcGfXDALXHE=
 To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>,
         Rob Herring <robh+dt@kernel.org>
 From:   Yassine Oudjana <y.oudjana@protonmail.com>
 Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
         Michael Auchter <michael.auchter@ni.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
 Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH v5 2/3] extcon: usbc-tusb320: Add support for TUSB320L
-Message-ID: <20210925054407.944225-3-y.oudjana@protonmail.com>
+Subject: [PATCH v5 3/3] dt-bindings: extcon: usbc-tusb320: Add TUSB320L compatible string
+Message-ID: <20210925054407.944225-4-y.oudjana@protonmail.com>
 In-Reply-To: <20210925054407.944225-1-y.oudjana@protonmail.com>
 References: <20210925054407.944225-1-y.oudjana@protonmail.com>
 MIME-Version: 1.0
@@ -44,196 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TUSB320L is a newer chip with additional features, and it has additional st=
-eps
-in its mode changing sequence:
- - Disable CC state machine,
- - Write to mode register,
- - Wait for 5 ms,
- - Re-enable CC state machine.
-It also has an additional register that a revision number can be read from.
-
-Add support for the mode changing sequence, and read the revision number du=
-ring
-probe and print it as info.
+Add a compatible string for TUSB320L.
 
 Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 ---
-Changes since v4:
- - Use ops struct instead of type enum.
-Changes since v3:
- - Remove extra blank line.
-Changes since v2:
- - Use a separate mode setting function for each of TUSB320 and TUSB320L.
 Changes since v1:
- - Split first patch into two patches, one adding support for mode setting =
-and reset on TUSB320,
-   and the other adding support for TUSB320L.
- drivers/extcon/extcon-usbc-tusb320.c | 82 +++++++++++++++++++++++++++-
- 1 file changed, 79 insertions(+), 3 deletions(-)
+ - Fix dt_binding_check warning:
+   ../Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml:15:=
+6: [warning] wrong indentation: expected 6 but found 5 (indentation)
 
-diff --git a/drivers/extcon/extcon-usbc-tusb320.c b/drivers/extcon/extcon-u=
-sbc-tusb320.c
-index 1ed1dfe54206..6ba3d89b106d 100644
---- a/drivers/extcon/extcon-usbc-tusb320.c
-+++ b/drivers/extcon/extcon-usbc-tusb320.c
-@@ -21,10 +21,13 @@
- #define TUSB320_REG9_INTERRUPT_STATUS=09=09BIT(4)
+ .../devicetree/bindings/extcon/extcon-usbc-tusb320.yaml       | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.y=
+aml b/Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml
+index 9875b4d5c356..71a9f2e5d0dc 100644
+--- a/Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml
++++ b/Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml
+@@ -11,7 +11,9 @@ maintainers:
 =20
- #define TUSB320_REGA=09=09=09=090xa
-+#define TUSB320L_REGA_DISABLE_TERM=09=09BIT(0)
- #define TUSB320_REGA_I2C_SOFT_RESET=09=09BIT(3)
- #define TUSB320_REGA_MODE_SELECT_SHIFT=09=094
- #define TUSB320_REGA_MODE_SELECT_MASK=09=090x3
+ properties:
+   compatible:
+-    const: ti,tusb320
++    enum:
++      - ti,tusb320
++      - ti,tusb320l
 =20
-+#define TUSB320L_REGA0_REVISION=09=09=090xa0
-+
- enum tusb320_attached_state {
- =09TUSB320_ATTACHED_STATE_NONE,
- =09TUSB320_ATTACHED_STATE_DFP,
-@@ -39,11 +42,18 @@ enum tusb320_mode {
- =09TUSB320_MODE_DRP,
- };
-=20
-+struct tusb320_priv;
-+
-+struct tusb320_ops {
-+=09int (*set_mode)(struct tusb320_priv *priv, enum tusb320_mode mode);
-+=09int (*get_revision)(struct tusb320_priv *priv, unsigned int *revision);
-+};
-+
- struct tusb320_priv {
- =09struct device *dev;
- =09struct regmap *regmap;
- =09struct extcon_dev *edev;
--
-+=09struct tusb320_ops *ops;
- =09enum tusb320_attached_state state;
- };
-=20
-@@ -99,12 +109,46 @@ static int tusb320_set_mode(struct tusb320_priv *priv,=
- enum tusb320_mode mode)
- =09return 0;
- }
-=20
-+static int tusb320l_set_mode(struct tusb320_priv *priv, enum tusb320_mode =
-mode)
-+{
-+=09int ret;
-+
-+=09/* Disable CC state machine */
-+=09ret =3D regmap_write_bits(priv->regmap, TUSB320_REGA,
-+=09=09TUSB320L_REGA_DISABLE_TERM, 1);
-+=09if (ret) {
-+=09=09dev_err(priv->dev,
-+=09=09=09"failed to disable CC state machine: %d\n", ret);
-+=09=09return ret;
-+=09}
-+
-+=09/* Write mode */
-+=09ret =3D regmap_write_bits(priv->regmap, TUSB320_REGA,
-+=09=09TUSB320_REGA_MODE_SELECT_MASK << TUSB320_REGA_MODE_SELECT_SHIFT,
-+=09=09mode << TUSB320_REGA_MODE_SELECT_SHIFT);
-+=09if (ret) {
-+=09=09dev_err(priv->dev, "failed to write mode: %d\n", ret);
-+=09=09goto err;
-+=09}
-+
-+=09msleep(5);
-+err:
-+=09/* Re-enable CC state machine */
-+=09ret =3D regmap_write_bits(priv->regmap, TUSB320_REGA,
-+=09=09TUSB320L_REGA_DISABLE_TERM, 0);
-+=09if (ret)
-+=09=09dev_err(priv->dev,
-+=09=09=09"failed to re-enable CC state machine: %d\n", ret);
-+
-+=09return ret;
-+}
-+
- static int tusb320_reset(struct tusb320_priv *priv)
- {
- =09int ret;
-=20
- =09/* Set mode to default (follow PORT pin) */
--=09ret =3D tusb320_set_mode(priv, TUSB320_MODE_PORT);
-+=09ret =3D priv->ops->set_mode(priv, TUSB320_MODE_PORT);
- =09if (ret && ret !=3D -EBUSY) {
- =09=09dev_err(priv->dev,
- =09=09=09"failed to set mode to PORT: %d\n", ret);
-@@ -126,6 +170,20 @@ static int tusb320_reset(struct tusb320_priv *priv)
- =09return 0;
- }
-=20
-+static int tusb320l_get_revision(struct tusb320_priv *priv, unsigned int *=
-revision)
-+{
-+=09return regmap_read(priv->regmap, TUSB320L_REGA0_REVISION, revision);
-+}
-+
-+static struct tusb320_ops tusb320_ops =3D {
-+=09.set_mode =3D tusb320_set_mode,
-+};
-+
-+static struct tusb320_ops tusb320l_ops =3D {
-+=09.set_mode =3D tusb320l_set_mode,
-+=09.get_revision =3D tusb320l_get_revision,
-+};
-+
- static irqreturn_t tusb320_irq_handler(int irq, void *dev_id)
- {
- =09struct tusb320_priv *priv =3D dev_id;
-@@ -176,6 +234,8 @@ static int tusb320_extcon_probe(struct i2c_client *clie=
-nt,
- =09=09=09=09const struct i2c_device_id *id)
- {
- =09struct tusb320_priv *priv;
-+=09const void *match_data;
-+=09unsigned int revision;
- =09int ret;
-=20
- =09priv =3D devm_kzalloc(&client->dev, sizeof(*priv), GFP_KERNEL);
-@@ -191,12 +251,27 @@ static int tusb320_extcon_probe(struct i2c_client *cl=
-ient,
- =09if (ret)
- =09=09return ret;
-=20
-+=09match_data =3D device_get_match_data(&client->dev);
-+=09if (!match_data)
-+=09=09return -EINVAL;
-+
-+=09priv->ops =3D (struct tusb320_ops*)match_data;
-+
- =09priv->edev =3D devm_extcon_dev_allocate(priv->dev, tusb320_extcon_cable=
-);
- =09if (IS_ERR(priv->edev)) {
- =09=09dev_err(priv->dev, "failed to allocate extcon device\n");
- =09=09return PTR_ERR(priv->edev);
- =09}
-=20
-+=09if (priv->ops->get_revision) {
-+=09=09ret =3D priv->ops->get_revision(priv, &revision);
-+=09=09if (ret)
-+=09=09=09dev_warn(priv->dev,
-+=09=09=09=09"failed to read revision register: %d\n", ret);
-+=09=09else
-+=09=09=09dev_info(priv->dev, "chip revision %d\n", revision);
-+=09}
-+
- =09ret =3D devm_extcon_dev_register(priv->dev, priv->edev);
- =09if (ret < 0) {
- =09=09dev_err(priv->dev, "failed to register extcon device\n");
-@@ -231,7 +306,8 @@ static int tusb320_extcon_probe(struct i2c_client *clie=
-nt,
- }
-=20
- static const struct of_device_id tusb320_extcon_dt_match[] =3D {
--=09{ .compatible =3D "ti,tusb320", },
-+=09{ .compatible =3D "ti,tusb320", .data =3D &tusb320_ops, },
-+=09{ .compatible =3D "ti,tusb320l", .data =3D &tusb320l_ops, },
- =09{ }
- };
- MODULE_DEVICE_TABLE(of, tusb320_extcon_dt_match);
+   reg:
+     maxItems: 1
 --=20
 2.33.0
 
