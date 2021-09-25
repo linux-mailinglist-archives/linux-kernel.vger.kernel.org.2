@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6974183F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 20:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB05418400
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 20:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhIYSKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 14:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
+        id S229755AbhIYSh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 14:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhIYSKq (ORCPT
+        with ESMTP id S229711AbhIYSh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 14:10:46 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94098C061570;
-        Sat, 25 Sep 2021 11:09:11 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id r8so9016069uap.0;
-        Sat, 25 Sep 2021 11:09:11 -0700 (PDT)
+        Sat, 25 Sep 2021 14:37:27 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DC5C061570;
+        Sat, 25 Sep 2021 11:35:52 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id n18so13276733pgm.12;
+        Sat, 25 Sep 2021 11:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WXQl6xYHyo7VmGkogOZ2uCBbLxqiVuqGmz8mDC3PsVE=;
-        b=RyN3JIcFIRv5HcRDNmaJXs0sPVG3iaG8G4p6T/woxXGgGDJyMVky1Qb/UdpUe30KJp
-         +hwj4SYJX0Tw1JdrdDpGF/QUcAK+lytw0/3KVJ9fUqYtKMmkuOFVTog++LIeIaMjRxS7
-         MZyJiwfHQKgjw8GA1vEN/Hl+oWlY0zowHuq/qzYf3/OFMlDArg8wn5JMV5u42l16ffzp
-         0ABIgaTD7jLtYx9l8N0BMAGl1kORu+SiMXzfANpYHmATBYEk8Um3/gLgPVnsbWycguiI
-         3qNezo/MTSpomvZBgS72bkv5xg9MStyz0oYiGvuAtJn2HxHVPU1uFS29ywB9WDpIQE8z
-         kNzA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MIOL2DZ31awChihosWu8oRBkY3Cg7xqjslUJhnt/4eU=;
+        b=NFyJcty0lELHPak3EDsYJ0A/0gRSFWxPN30xkyQrYgiXKw6nxGJBCIXl0oQtwxXa97
+         RMFxnnprNEWJ9eEB0+oUGSyT73cBJpLVk2kQYXB0sMAMYM17I/abWh87bQUmjFzkCIOV
+         aHnHUALpdkzPFkGnsRwTFbdN/3oTamXCEgVewzrOliti/uGAH6JUd22eQf80eFo/70gS
+         8IVaxU8W0Kb40bL7KMeJ2AISEGx8l+zFFGKmj8n3DoizjUkiPfwBEFUrXPPO1HqO0tiN
+         lDLZchwfQ9bZe9zI6JEnHAPBlKK6cYU4oE1W8A5FPdSwDJqaooFPZRm2m+myuJkYNfQf
+         LoMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WXQl6xYHyo7VmGkogOZ2uCBbLxqiVuqGmz8mDC3PsVE=;
-        b=riK0wT1tPyVChYuQ6rhtX+rgpdfYeG5I+r2C/nRX72xmRLResokX5gKU7T5/YT63uD
-         fASR0huV6CWB/0UXznM7UzAaAMfWabZj37hLHsI+X06wfpo8RkVef/HZzrOWo2CxEphe
-         37ydko7wlJ52YsVyARr4epg1rUv7ji7LCFvQkI+OHWIwqejWB4aYv4iLlZXipRW4lYAN
-         P6tpn3dlzz4qRM70tm0oU5DvRTqsTRHE39jLd6hvQl/C6ndUD60im2V+IW1vkKpsRx+d
-         e0XClttxJMZuDPYjI/PB9iQXGnBhmTbl+FQMz0KTKHKtN7h7Ba+aqyv6PHkXkQvly0Fm
-         G85A==
-X-Gm-Message-State: AOAM532For2f81c2ZytlWFLJ1Bh2dVsnqEdYNGeo5jYSM5Jl7UGG6/Mj
-        hI8LvXgp9Xf3d55VufcqPhz0bPAwGZOOcZYTczzW6dROKmY=
-X-Google-Smtp-Source: ABdhPJxwiExLM3hzBCAfYUgeYdy55lPTeSgDo0znsn0D+vbB/KiyL4ObpmWFiOfukFEJXqJwZjiYBdvVrKix1Is/cIc=
-X-Received: by 2002:ab0:538b:: with SMTP id k11mr11610115uaa.131.1632593350651;
- Sat, 25 Sep 2021 11:09:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MIOL2DZ31awChihosWu8oRBkY3Cg7xqjslUJhnt/4eU=;
+        b=gVJNuufT2kwsCoKLuohKiMnbXMwYB2QtKdtVehrZn0llyg9R2NT72y2eBuKT5dgI+Y
+         q7cVyOP5DoAdp0un41efDm9oIMyujmdnPmrXyfoGC1buD5vrTlDvKnMSqaPMqWS8cTKH
+         HY29/aBgOpW/sLbtXltBw15+cIJYAm698UoAbtQPeg+7QFeoL+0bVhgT1whGA262RLGQ
+         BKUFdPjIxlPJM89ymfVz6B2Q1Xvwb5uGZQzgtWYCNjkZoiMkDVi8RtJAzYFfSNfxOiOU
+         TbdbkwRUCQrP2nKeaDpNWdHQPrKjCEkdmvAAm+RRPLNePlXv/nQJ1yfkJRSx6w8ZBmf3
+         V0ng==
+X-Gm-Message-State: AOAM532wrubi8AicbeqvBo7VA1GnkYJpZANSrMvx+RO/A43WucrQb0Cv
+        X/yZJnPxuA3EvGSVeoXf2LE=
+X-Google-Smtp-Source: ABdhPJy8mn0NcDitGa65lH16AjlnnmqxmP/T1zyetxFFMStFlB4BXGJH3Z0yXuK65ObbhjlBP4fdPw==
+X-Received: by 2002:a63:1352:: with SMTP id 18mr9047429pgt.348.1632594951825;
+        Sat, 25 Sep 2021 11:35:51 -0700 (PDT)
+Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
+        by smtp.gmail.com with ESMTPSA id x8sm12622698pfq.131.2021.09.25.11.35.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Sep 2021 11:35:51 -0700 (PDT)
+Date:   Sat, 25 Sep 2021 11:35:49 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        binutils@sourceware.org, gdb-patches@sourceware.org
+Subject: Re: [RFC][PATCH] coredump: save timestamp in ELF core
+Message-ID: <YU9sBdyMrUsLk0XC@nuc10>
+References: <20210925171507.1081788-1-rkovhaev@gmail.com>
+ <YU9kSgEmojalPybp@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-References: <20210924211139.3477-1-sergio.paracuellos@gmail.com>
- <20210924211139.3477-6-sergio.paracuellos@gmail.com> <CAK8P3a3SpuioCVBfQpHFGuNQoXG7g8w9VL+V8rYd8Q80Od89HA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3SpuioCVBfQpHFGuNQoXG7g8w9VL+V8rYd8Q80Od89HA@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sat, 25 Sep 2021 20:08:58 +0200
-Message-ID: <CAMhs-H8jF10NpTgCP=_FEaBcedTN75b6MoyrEVrrayJEAdufwA@mail.gmail.com>
-Subject: Re: [PATCH 5/6] MIPS: implement architecture dependent 'pci_remap_iospace()'
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YU9kSgEmojalPybp@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Sat, Sep 25, 2021 at 06:02:50PM +0000, Al Viro wrote:
+> On Sat, Sep 25, 2021 at 10:15:07AM -0700, Rustam Kovhaev wrote:
+> > Hello Alexander and linux-fsdevel@,
+> > 
+> > I would like to propose saving a new note with timestamp in core file.
+> > I do not know whether this is a good idea or not, and I would appreciate
+> > your feedback.
+> > 
+> > Sometimes (unfortunately) I have to review windows user-space cores in
+> > windbg, and there is one feature I would like to have in gdb.
+> > In windbg there is a .time command that prints timestamp when core was
+> > taken.
+> > 
+> > This might sound like a fixed problem, kernel's core_pattern can have
+> > %t, and there are user-space daemons that write timestamp in the
+> > report/journal file (apport/systemd-coredump), and sometimes it is
+> > possible to correctly guess timestamp from btime/mtime file attribute,
+> > and all of the above does indeed solve the problem most of the time.
+> > 
+> > But quite often, especially while researching hangs and not crashes,
+> > when dump is written by gdb/gcore, I get only core.PID file and some
+> > application log for research and there is no way to figure out when
+> > exactly the core was taken.
+> > 
+> > I have posted a RFC patch to gdb-patches too [1] and I am copying
+> > gdb-patches@ and binutils@ on this RFC.
+> > Thank you!
+> 
+> IDGI.  What's wrong with the usual way of finding the creation date of any
+> given file, including the coredump one?
 
-On Sat, Sep 25, 2021 at 7:32 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Fri, Sep 24, 2021 at 11:11 PM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> >
-> > To make PCI IO work we need to properly virtually map IO cpu physical address
-> > and set this virtual address as the address of the first PCI IO port which
-> > is set using function 'set_io_port_base()'.
-> >
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
->
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+Sometimes file attributes get reset/modified when the file changes hands.
+Here is what usually happens: 
+We ask customer to take a few cores of some hanging process, customer
+does so, then copies the files out from his Linux servers/machines, then
+creates an archive on his machine (usually windows/mac) and then, emails
+or uploads the archive, and, if we are lucky we get correct creation
+date of the core in the archive, but most of the time creation date gets
+reset/modified somewhere along this process.
 
-Thanks!
-
->
-> > +int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
-> > +{
-> > +       size_t size = (res->end - res->start) + 1;
-> > +       unsigned long vaddr = (unsigned long)ioremap(phys_addr, size);
-> > +
-> > +       set_io_port_base(vaddr);
-> > +       return 0;
-> > +}
->
-> It might be good to check that res->start is zero here, otherwise
-> the io_port_base would be off. That could happen if you ever have more
-> than one bridge.
-
-Do you mean something like the following?
-
-int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
-{
-    unsigned long vaddr;
-    size_t size;
-
-    if (res->start != 0) {
-         // Should I WARN_ONCE or just show an error/warning message??
-         WARN_ONCE(1, "resource start must be zero\n");
-         return -ENODEV;
-   }
-
-     size = (res->end - res->start) + 1;
-     vaddr = (unsigned long)ioremap(phys_addr, size);
-     return 0;
-}
-
-Thanks,
-    Sergio Paracuellos
->
->         Arnd
