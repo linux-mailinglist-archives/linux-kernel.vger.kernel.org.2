@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5EC418456
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 22:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E9041845A
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 22:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhIYURg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 16:17:36 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44468 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhIYURe (ORCPT
+        id S229906AbhIYUSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 16:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhIYUSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 16:17:34 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18PKFurT114280;
-        Sat, 25 Sep 2021 15:15:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632600956;
-        bh=vhOb8Imis7G2/SIzVntcXOVpm7P3QGYOTbJMtvjTyNI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=tC+Q0opVDkQM/zTFTq1emTHxk0AVmsph2u0Pa2S5eDkqPXwOKQqGOVw8P2abH6qBO
-         W9gt7PiJuOb+f6I2ugGjPVtc1/5WHam+T1f43JJv67BVHFAu3KR0VJ8GAWKaNa4qUx
-         cg6cJFXAJjiIW5ng7Wzll52o7zT2lMHkxUr60qj4=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18PKFusv072509
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 25 Sep 2021 15:15:56 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sat, 25
- Sep 2021 15:15:56 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Sat, 25 Sep 2021 15:15:55 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18PKFtWk090044;
-        Sat, 25 Sep 2021 15:15:55 -0500
-Date:   Sat, 25 Sep 2021 15:15:55 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Tero Kristo <kristo@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] MAINTAINERS: Add Vignesh to TI K3 platform maintainership
-Message-ID: <20210925201555.4eht5rn7ylytht4k@unseeing>
-References: <20210915121308.26795-1-nm@ti.com>
+        Sat, 25 Sep 2021 16:18:44 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA25AC061570;
+        Sat, 25 Sep 2021 13:17:09 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id 188so12768664vsv.0;
+        Sat, 25 Sep 2021 13:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4avZOfZm1u+aKpvIhV7cRkLhBytvyCiQq+DzBLIetBs=;
+        b=it6CQquhgjOSghhWHwRoIUwOAD+aRreCPxbDO7PkRMkSIw2NvMDB0+f+JVFeEK5n2m
+         MxuZo13JOYgWlWgcC+nf0cwEk8VSac0XhMuriMMtXvn8WVp3cwpiQ3oGKrKI0c6FeAI8
+         yEdODJgWqqH8vMfnQI879t+Ly2l+kFgqjiEWvhp6dXl6KLb8nQ14ldlzs1G0jw7B1k4x
+         RAeeBpejv7kI6aAsHlojrCNgQYHc5o9doevgM5Eke/mjlypCKRIc+B1XK4j3EcDX19ry
+         frL8BY0p1OKP9WHmMQScvdVdILl/DBVffCG55YTfJyXbsbvfCrCPVQn5fKn5WSiTaORn
+         oRWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4avZOfZm1u+aKpvIhV7cRkLhBytvyCiQq+DzBLIetBs=;
+        b=D/WquGLMI20lYcQuOyMoFNV5+sZt6xiA/Ram99Z2LndbU8FZC15JALcYEYWV8DXY7s
+         Kc17+Z2MIRmrlNRXfg6E/5aaFp6Hz7CzVnH2RitAwyeZuhtqI3gCPex+IrAoFhz0o/iL
+         1pNoosCo7hn+CDi8r6atoJDRvKOkdJWa1epUgd6KfaYsTib8k0nS3LHz9Q0SeNUyuStK
+         40KajGMxPuXqKDZgumiWddeKNYzIs0zvLT1y5pGNcVopKDIJVrb0DPSGH8EsnQbQNK+Z
+         C6rGiskFxYFBJi7dhO2CykPIgqUShL3vp/nO1k2+9pFFj9UJlv+yLLeJtsYXd0A4tfVD
+         34mA==
+X-Gm-Message-State: AOAM533g7GCCPlsqqzkJeYm6KVTNxHEZps7Q8DyPHFQhK+D+HXK3K57b
+        QXMpLCtD0z2LZ9GvOy4srXnOUscta/rNnNEp8RI=
+X-Google-Smtp-Source: ABdhPJzLJuTQR9VhMkKFf0u0aMjQ7yr2pVsPF9Qzym2EufI3G/6e9bCttp19+oR4uzeiAHO37n6qULIgp2/NGVk7qYY=
+X-Received: by 2002:a05:6102:3005:: with SMTP id s5mr15012307vsa.48.1632601028806;
+ Sat, 25 Sep 2021 13:17:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210915121308.26795-1-nm@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210924211139.3477-1-sergio.paracuellos@gmail.com>
+ <20210924211139.3477-6-sergio.paracuellos@gmail.com> <CAK8P3a3SpuioCVBfQpHFGuNQoXG7g8w9VL+V8rYd8Q80Od89HA@mail.gmail.com>
+ <CAMhs-H8jF10NpTgCP=_FEaBcedTN75b6MoyrEVrrayJEAdufwA@mail.gmail.com> <CAK8P3a0p0YwsiG8NgZGPxGp=GwTLXfEO=D=CY3TtmYwiDSuaXg@mail.gmail.com>
+In-Reply-To: <CAK8P3a0p0YwsiG8NgZGPxGp=GwTLXfEO=D=CY3TtmYwiDSuaXg@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sat, 25 Sep 2021 22:16:57 +0200
+Message-ID: <CAMhs-H9aSNF4qP1HUtwNkA9bhMzErN9jXnscNvbiWSY=kyce2Q@mail.gmail.com>
+Subject: Re: [PATCH 5/6] MIPS: implement architecture dependent 'pci_remap_iospace()'
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07:13-20210915, Nishanth Menon wrote:
-> Add Vignesh to TI K3 platform maintainership. We will rotate roles for
-> each kernel version to help spread the work load a little better.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index eeb4c70b3d5b..21d44498674e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2712,6 +2712,7 @@ F:	drivers/power/reset/keystone-reset.c
->  
->  ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE
->  M:	Nishanth Menon <nm@ti.com>
-> +M:	Vignesh Raghavendra <vigneshr@ti.com>
->  M:	Tero Kristo <kristo@kernel.org>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Supported
-> -- 
-> 2.32.0
-> 
+Hi Arnd,
 
+On Sat, Sep 25, 2021 at 9:34 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Sat, Sep 25, 2021 at 8:10 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> > > It might be good to check that res->start is zero here, otherwise
+> > > the io_port_base would be off. That could happen if you ever have more
+> > > than one bridge.
+> >
+> > Do you mean something like the following?
+>
+> Yes, exactly.
+>
+> > int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
+> > {
+> >     unsigned long vaddr;
+> >     size_t size;
+> >
+> >     if (res->start != 0) {
+> >          // Should I WARN_ONCE or just show an error/warning message??
+> >          WARN_ONCE(1, "resource start must be zero\n");
+> >          return -ENODEV;
+> >    }
+>
+> I don't care if it's WARN(), WARN_ONCE() or pr_warn(). If we ever see the
+> message, the system is not working and the person who caused the problem
+> will figure it out.
 
-Tero: Any chance of getting your ack?
+Pretty clear, thanks. I will collect you Acked-by's and make this
+change and send v3.
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Best regards,
+    Sergio Paracuellos
+>
+>         Arnd
