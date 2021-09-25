@@ -2,84 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8134418134
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BB9418139
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244488AbhIYLWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 07:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243920AbhIYLWp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 07:22:45 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C2DC061570;
-        Sat, 25 Sep 2021 04:21:10 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1bac00c299c4b579452b16.dip0.t-ipconnect.de [IPv6:2003:ec:2f1b:ac00:c299:c4b5:7945:2b16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 20A211EC05E2;
-        Sat, 25 Sep 2021 13:21:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632568864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7lwTvw436hmF3Y3GbvXEGF+jEH1nN3GmL3cFs+61EGc=;
-        b=g9rL/9qJwvzkA7ANvscQ39xtPncQb6k05Ih3B8Bh0saxRL9smQ3EWzhHbMMXb5b9tEQcaV
-        9BVufb0EFLlpK+0G3htKz9YgMSO3oVVtB0ChRzHN2H9fiM6E0dasLNARDrXM4mPJrx/ae+
-        RAjBwe5hB/I0PdzlRtcvAgu7hX5HtvU=
-Date:   Sat, 25 Sep 2021 13:20:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     "Joshi, Mukul" <Mukul.Joshi@amd.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: Re: [PATCHv3 2/2] drm/amdgpu: Register MCE notifier for Aldebaran RAS
-Message-ID: <YU8GGSrQSbAZPz4z@zn.tnic>
-References: <20210913021311.12896-2-mukul.joshi@amd.com>
- <20210922193620.15925-1-mukul.joshi@amd.com>
- <YUyPM7VfYFG/PJmu@yaz-ubuntu>
- <DM4PR12MB52639349DF98DB01A3B155EFEEA39@DM4PR12MB5263.namprd12.prod.outlook.com>
- <YUy4CdcUWJzQfM4N@yaz-ubuntu>
- <YUzD9wxtV411S8TC@zn.tnic>
- <YU4rAigWIh8g6iOl@yaz-ubuntu>
+        id S244560AbhIYLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 07:24:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236171AbhIYLYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 07:24:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10A496103B;
+        Sat, 25 Sep 2021 11:23:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632568986;
+        bh=9vQ7Jy6vxv+17KL8sYGHu0D+tMeIG2i6YIeiCDwml2M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hpCTP/IfVfGHBzOHP5/ERVih7Np+6S1CF2jaWxQBoSaPpWxvmWDrfmi7KtqGbIaVj
+         4OMP9F328p7IEKsQzcAUW5dQQZYTXDjoQuwu64EE7m2nYqbjppu/uR38XLj8XZIz7k
+         tRfvIx0CnP2L6dSIHqOzY5bRfwrLvqQDlcJnq1VfFHVYWyTvhdVEHmtM8lyZU08CB5
+         pGGeo0dbRn2QmrPwLTpyFDlqv0X0xbge20cSdYgMMwH28HeTweZHf7K4m97G8m+PMS
+         HvoMMFLiqX8Bo6SQ1BDgqdXOzuUK17iTJZMKO1OupxzLl6OnuXkShCsq0tTaFU/EGp
+         tBeh0G+D96Qhw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manish Chopra <manishc@marvell.com>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: [PATCH net-next v1 00/21] Move devlink_register to be last devlink command
+Date:   Sat, 25 Sep 2021 14:22:40 +0300
+Message-Id: <cover.1632565508.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YU4rAigWIh8g6iOl@yaz-ubuntu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 07:46:10PM +0000, Yazen Ghannam wrote:
-> I agree with you in general. But this device isn't really a GPU. And
-> users of this device seem to want to count *every* error, at least for
-> now.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Aha, so something accelerator-y where they do general purpose computation.
+This is second version of patch series
+https://lore.kernel.org/netdev/cover.1628599239.git.leonro@nvidia.com/
 
-So what's the big picture here: they count all the errors and when they
-reach a certain amount, they decide to replace the GPUs just in case?
+The main change is addition of delayed notification logic that will
+allowed us to delete devlink_params_publish API (future series will
+remove it completely) and conversion of all drivers to have devlink_register
+being last commend.
 
-Or wait until they become uncorrectable? But then it doesn't matter
-because we will handle it properly by excluding the VRAM range from
-further use.
+The series itself is pretty straightforward, except liquidio driver
+which performs initializations in various workqueues without proper
+locks. That driver doesn't hole device_lock and it is clearly broken
+for any parallel driver core flows (modprobe + devlink + PCI reset will
+100% crash it).
 
-Or do they wanna see *when* they had the correctable errors so that they
-can restart the computation, just in case.
+In order to annotate devlink_register() will lockdep of holding
+device_lock, I added workaround in this driver.
 
-Dunno, it would be a lot helpful if we had some RAS strategy for those
-things...
+Thanks
 
-Thx.
+----------------------
+From previous cover letter:
+Hi Dave and Jakub,
+
+This series prepares code to remove devlink_reload_enable/_disable API
+and in order to do, we move all devlink_register() calls to be right
+before devlink_reload_enable().
+
+The best place for such a call should be right before exiting from
+the probe().
+
+This is done because devlink_register() opens devlink netlink to the
+users and gives them a venue to issue commands before initialization
+is finished.
+
+1. Some drivers were aware of such "functionality" and tried to protect
+themselves with extra locks, state machines and devlink_reload_enable().
+Let's assume that it worked for them, but I'm personally skeptical about
+it.
+
+2. Some drivers copied that pattern, but without locks and state
+machines. That protected them from reload flows, but not from any _set_
+routines.
+
+3. And all other drivers simply didn't understand the implications of early
+devlink_register() and can be seen as "broken".
+
+Thanks
+
+Leon Romanovsky (21):
+  devlink: Notify users when objects are accessible
+  bnxt_en: Register devlink instance at the end devlink configuration
+  liquidio: Overcome missing device lock protection in init/remove flows
+  dpaa2-eth: Register devlink instance at the end of probe
+  net: hinic: Open device for the user access when it is ready
+  ice: Open devlink when device is ready
+  octeontx2: Move devlink registration to be last devlink command
+  net/prestera: Split devlink and traps registrations to separate
+    routines
+  net/mlx4: Move devlink_register to be the last initialization command
+  net/mlx5: Accept devlink user input after driver initialization
+    complete
+  mlxsw: core: Register devlink instance last
+  net: mscc: ocelot: delay devlink registration to the end
+  nfp: Move delink_register to be last command
+  ionic: Move devlink registration to be last devlink command
+  qed: Move devlink registration to be last devlink command
+  net: ethernet: ti: Move devlink registration to be last devlink
+    command
+  netdevsim: Move devlink registration to be last devlink command
+  net: wwan: iosm: Move devlink_register to be last devlink command
+  ptp: ocp: Move devlink registration to be last devlink command
+  staging: qlge: Move devlink registration to be last devlink command
+  net: dsa: Move devlink registration to be last devlink command
+
+ .../net/ethernet/broadcom/bnxt/bnxt_devlink.c |  15 +--
+ .../net/ethernet/cavium/liquidio/lio_main.c   |  19 ++--
+ .../freescale/dpaa2/dpaa2-eth-devlink.c       |  14 ++-
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   9 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.h  |   5 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.c  |   7 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     |   6 +-
+ .../marvell/octeontx2/af/rvu_devlink.c        |  10 +-
+ .../marvell/octeontx2/nic/otx2_devlink.c      |  15 +--
+ .../marvell/prestera/prestera_devlink.c       |  29 +----
+ .../marvell/prestera/prestera_devlink.h       |   4 +-
+ .../ethernet/marvell/prestera/prestera_main.c |   8 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   8 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   9 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   2 +
+ .../mellanox/mlx5/core/sf/dev/driver.c        |   2 +
+ drivers/net/ethernet/mellanox/mlxsw/core.c    |  19 +---
+ drivers/net/ethernet/mscc/ocelot_vsc7514.c    |   5 +-
+ .../ethernet/netronome/nfp/devlink_param.c    |   9 +-
+ .../net/ethernet/netronome/nfp/nfp_net_main.c |   5 +-
+ .../ethernet/pensando/ionic/ionic_devlink.c   |   4 +-
+ drivers/net/ethernet/qlogic/qed/qed_devlink.c |   7 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  15 +--
+ drivers/net/ethernet/ti/cpsw_new.c            |   7 +-
+ drivers/net/netdevsim/dev.c                   |   8 +-
+ drivers/net/wwan/iosm/iosm_ipc_devlink.c      |   7 +-
+ drivers/ptp/ptp_ocp.c                         |   6 +-
+ drivers/staging/qlge/qlge_main.c              |   8 +-
+ net/core/devlink.c                            | 107 +++++++++++++++---
+ net/dsa/dsa2.c                                |  10 +-
+ 30 files changed, 202 insertions(+), 177 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
