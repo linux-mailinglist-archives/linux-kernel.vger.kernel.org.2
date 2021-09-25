@@ -2,61 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E72841852C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 01:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8173A418538
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 01:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhIYXWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 19:22:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhIYXWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 19:22:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2C0026108C;
-        Sat, 25 Sep 2021 23:20:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632612049;
-        bh=47NnYeZFjmSkQxOSxLb5cLKg+taEPG7aQKpVNpTrT0c=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=M4Zi5Yu8jjGtCcWw8jvcTtu+ysO9IQ+ET5B+DlFCn9mcYqAiwnjkWRAUR1mXAPSdl
-         jvBESnw8uMatKGzMXedLrx22Htv+IrWV2hYtWWgP8Y8v9/9mirq1INRFvsZVWDnhHT
-         hJnRXjUmv2LKThUUkoA+QvAtsKr+xZkXn7jE40PIneMTp5PPdbdgbXLsxsJoAcVRsX
-         fNpdIlcoepzYJPKf+Mzd7X8OdpJGk3tTuM8TB1q5RZuXMnPk/Hq7r1w34TJAes7AGx
-         13vHkURv7g1idDf0bZAsIhzDKhyE6TpKIiKyDNyi2Wh4GN5SnZ9SguwzPzXQrSs3Rg
-         G4nueFuVd9fuQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 198BC60721;
-        Sat, 25 Sep 2021 23:20:49 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.15-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <790cc5690c18cf5216bc01662cd528004402081b.camel@HansenPartnership.com>
-References: <790cc5690c18cf5216bc01662cd528004402081b.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <790cc5690c18cf5216bc01662cd528004402081b.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: fbdac19e642899455b4e64c63aafe2325df7aafa
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bb19237bf6eb760802bf28d9274e1af1ef1b84e2
-Message-Id: <163261204904.10172.11273672700654579290.pr-tracker-bot@kernel.org>
-Date:   Sat, 25 Sep 2021 23:20:49 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S230216AbhIYXoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 19:44:34 -0400
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:34355 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230078AbhIYXob (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 19:44:31 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 08B668A154;
+        Sun, 26 Sep 2021 09:42:44 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mUHJb-00GjRM-K9; Sun, 26 Sep 2021 09:42:43 +1000
+Date:   Sun, 26 Sep 2021 09:42:43 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
+        Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
+        Bob Liu <bob.liu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+Message-ID: <20210925234243.GA1756565@dread.disaster.area>
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=MUEH3GQPxMcp5Lh2lNUA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 25 Sep 2021 15:00:16 -0700:
+On Fri, Sep 24, 2021 at 06:17:52PM +0100, David Howells wrote:
+> 
+> Hi Willy, Trond, Christoph,
+> 
+> Here's v3 of a change to make reads and writes from the swapfile use async
+> DIO, adding a new ->swap_rw() address_space method, rather than readpage()
+> or direct_IO(), as requested by Willy.  This allows NFS to bypass the write
+> checks that prevent swapfiles from working, plus a bunch of other checks
+> that may or may not be necessary.
+> 
+> Whilst trying to make this work, I found that NFS's support for swapfiles
+> seems to have been non-functional since Aug 2019 (I think), so the first
+> patch fixes that.  Question is: do we actually *want* to keep this
+> functionality, given that it seems that no one's tested it with an upstream
+> kernel in the last couple of years?
+> 
+> There are additional patches to get rid of noop_direct_IO and replace it
+> with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use the
+> new ->swap_rw method and thence remove the direct BIO submission paths from
+> swap.
+> 
+> I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure if
+> that's necessary, but it seems accounting related.
+> 
+> The synchronous DIO I/O code on NFS, raw blockdev, ext4 swapfile and xfs
+> swapfile all seem to work fine.  Btrfs refuses to swapon because the file
+> might be CoW'd.  I've tried doing "chattr +C", but that didn't help.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+Ok, so if the filesystem is doing block mapping in the IO path now,
+why does the swap file still need to map the file into a private
+block mapping now?  i.e all the work that iomap_swapfile_activate()
+does for filesystems like XFS and ext4 - it's this completely
+redundant now that we are doing block mapping during swap file IO
+via iomap_dio_rw()?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bb19237bf6eb760802bf28d9274e1af1ef1b84e2
+Actually, that path does all the "can we use this file as a swap
+file" checking. So the extent iteration can't go away, just the swap
+file mapping part (iomap_swapfile_add_extent()). This is necessary
+to ensure there aren't any holes in the file, and we still need that
+because the DIO write path will allocate into holes, which leads
+me to my main concern here.
 
-Thank you!
+Using the DIO path opens up the possibility that the filesystem
+could want to run transactions are part of the DIO. Right now we
+support unwritten extents for swap files (so they don't have to be
+written to allocate the backing store before activation) and that
+means we'll be doing DIO to unwritten extents. IO completion of a
+DIO write to an unwritten extent will run a transaction to convert
+that extent to written. A similar problem with sparse files exists,
+because allocation of blocks can be done from the DIO path, and that
+requires transactions. File extension is another potential
+transaction path we open up by using DIO writes dor swap.
 
+The problem is that a transaction run in swap IO context will will
+deadlock the filesystem. Either through the unbound memory demand of
+metadata modification, or from needing log space that can't be freed
+up because the metadata IO that will free the log space is waiting
+on memory allocation that is waiting on swap IO...
+
+I think some more thought needs to be put into controlling the
+behaviour/semantics of the DIO path so that it can be safely used
+by swap IO, because it's not a direct 1:1 behavioural mapping with
+existing DIO and there are potential deadlock vectors we need to
+avoid.
+
+Cheers,
+
+Dave.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Dave Chinner
+david@fromorbit.com
