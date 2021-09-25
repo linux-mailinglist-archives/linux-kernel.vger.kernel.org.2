@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B7C41837B
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737CD41837E
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbhIYRMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 13:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
+        id S229574AbhIYROQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 13:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhIYRMY (ORCPT
+        with ESMTP id S229511AbhIYROP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 13:12:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E7DC061570;
-        Sat, 25 Sep 2021 10:10:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6GW8m99cwWwrKJpThjZDb6GAcdSzWmr59+OAVUULh/4=; b=wIJ/z5Pf4qc/NRbdHahqEcKlFh
-        xi7rk3SB+eFCQsAivXx/SZlAI3nZ1B+Gexsbziymg38NFlt+qNOeNhfDFGS7WNpoy9P6lPKzYF3lM
-        QIIMcZWj6sSt6VCo3rctoO1eExcMHzmgXDygsJmbQlPKeaKyb2UzmvXKCjpcWtRhEFCg8pxiaiV5c
-        g3cm7c8o/yMJ2MKP+jYoEaHx/i5AP2faYXraXpMpk9DxZ+VDQj7kYDpdzFLJ41tZdkDFSed6UuGez
-        zxyg/1q8QZPXx5qrAPb5K6iborPgrk3HHDUXxBVim2uGXeZ/jq7QixuVz65AY2QlRgJRB5l0aNark
-        jbWVBjwA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mUBBK-008GPg-Vk; Sat, 25 Sep 2021 17:09:55 +0000
-Date:   Sat, 25 Sep 2021 18:09:46 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     hch@lst.de, trond.myklebust@primarydata.com,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, darrick.wong@oracle.com,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 9/9] mm: Remove swap BIO paths and only use DIO paths
-Message-ID: <YU9X2o74+aZP4iWV@casper.infradead.org>
-References: <YU84rYOyyXDP3wjp@casper.infradead.org>
- <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
- <2396106.1632584202@warthog.procyon.org.uk>
+        Sat, 25 Sep 2021 13:14:15 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A82C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 10:12:40 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id bx4so49444497edb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 10:12:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n2Pi8COsNP5j3xicpNqyAkP38kTOsAGtljrPGwc062o=;
+        b=o+oJT3fF0AEB9OKGo6g5os3TYNi0Fc3o+4CpZLhGnF33Z1DtYwYxPn7bYahdgfs8ib
+         I8VtKUoHrpgBM8iqFwarOeVE753VJV+bUM9/nb8TFUszJRi5Qs3jGkMuT/H1Cu0DBxOX
+         FnzSgzZ53Ui5W0w0fZJZJeG89LTc8AtjYcdfP8jL0DURBGflkrnX5IKp7y69mxaVD9CE
+         mMOcI2wX/L/5XRKMrofhs1rmy0bF2NqHpNxr+f3yl50/Z4qoB92VrTHWguHAxFtwagfS
+         aULgt2tAx74cLTTHLYknm6B6QcRZgu5tT1dC7HhUBJeEiNlGlk8EVqcVR96Y203iYpA4
+         /WJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n2Pi8COsNP5j3xicpNqyAkP38kTOsAGtljrPGwc062o=;
+        b=EieeAJLYuD4ZKWm6Jju8lp3LAACzu3cP/4vww0PnN/xKZhNKUFXcBKt6ujk6jqHZvr
+         fmGBSdkd7egCWI8eW4jR+SCENBrPMeZKeM4VvgRTsQAfaT0XXb1/U+ATx2A1mKtWOrjI
+         eThBwRlHEJQz0cNsNwChEimtzRBrKWQDxUNAob0de30nmVW674Lj2OrSYcWFi7DGs0lL
+         FqZIXb2Q2PKrj4PDVqrRd/6zhcf74/oXBOYydxKD+rXacQik4okSPb5Pycp9zkYdyAzy
+         KsDHMGOYfwWFGdzZhfHu0JcvvRbArSRmUnf7WMA8y+TBn7bYf2vEM87GslPUUlr92HTn
+         6rpw==
+X-Gm-Message-State: AOAM530IBSk72AxTXu7p/uqG/OZzTj83ngXiH6LAvYgthhUkQQ9/RoH7
+        YVt662iYtjFm4IVtegluXhJmF/4pIblknBcQ/NM=
+X-Google-Smtp-Source: ABdhPJzlcsciwb7JqAbDVej57aLkRZB7MjukkQMT/AwahCR/3dvzEfdcqENQONyFJ/Q4Ezv0c5xpwc8+ChZMFPVOMwI=
+X-Received: by 2002:a50:c31c:: with SMTP id a28mr12922973edb.384.1632589959392;
+ Sat, 25 Sep 2021 10:12:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2396106.1632584202@warthog.procyon.org.uk>
+References: <20210921212732.1334-1-linux.amoon@gmail.com>
+In-Reply-To: <20210921212732.1334-1-linux.amoon@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sat, 25 Sep 2021 19:12:28 +0200
+Message-ID: <CAFBinCBHDTCkBBxP9u-Qh_k6ZSswJ_5XDL9oq2CSEkWG23dXfw@mail.gmail.com>
+Subject: Re: [PATCHv3] regulator: pwm-regulator: Make use of the helper
+ function dev_err_probe()
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 04:36:42PM +0100, David Howells wrote:
-> Matthew Wilcox <willy@infradead.org> wrote:
-> 
-> > On Fri, Sep 24, 2021 at 06:19:23PM +0100, David Howells wrote:
-> > > Delete the BIO-generating swap read/write paths and always use ->swap_rw().
-> > > This puts the mapping layer in the filesystem.
-> > 
-> > Is SWP_FS_OPS now unused after this patch?
-> 
-> Ummm.  Interesting question - it's only used in swap_set_page_dirty():
-> 
-> int swap_set_page_dirty(struct page *page)
-> {
-> 	struct swap_info_struct *sis = page_swap_info(page);
-> 
-> 	if (data_race(sis->flags & SWP_FS_OPS)) {
-> 		struct address_space *mapping = sis->swap_file->f_mapping;
-> 
-> 		VM_BUG_ON_PAGE(!PageSwapCache(page), page);
-> 		return mapping->a_ops->set_page_dirty(page);
-> 	} else {
-> 		return __set_page_dirty_no_writeback(page);
-> 	}
-> }
+Hi Anand,
 
-I suspect that's no longer necessary.  NFS was the only filesystem
-using SWP_FS_OPS and ...
+On Tue, Sep 21, 2021 at 11:27 PM Anand Moon <linux.amoon@gmail.com> wrote:
+[...]
+> @@ -353,13 +353,8 @@ static int pwm_regulator_probe(struct platform_device *pdev)
+>
+>         drvdata->pwm = devm_pwm_get(&pdev->dev, NULL);
+>         if (IS_ERR(drvdata->pwm)) {
+> -               ret = PTR_ERR(drvdata->pwm);
+> -               if (ret == -EPROBE_DEFER)
+> -                       dev_dbg(&pdev->dev,
+> -                               "Failed to get PWM, deferring probe\n");
+> -               else
+> -                       dev_err(&pdev->dev, "Failed to get PWM: %d\n", ret);
+> -               return ret;
+> +               return dev_err_probe(&pdev->dev, PTR_ERR(drvdata->pwm),
+> +                                    "Failed to get PWM\n");
+>         }
+From functional perspective you're patch is looking good now.
+I just noticed that the coding-style in the pwm-regulator driver is
+not not use any curly brackets for the if block when there's only one
+statement
 
-fs/nfs/file.c:  .set_page_dirty = __set_page_dirty_nobuffers,
+with the curly brackets removed (and if there are no other changes to
+this patch) then you can add my:
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-so it's not like NFS does anything special to reserve memory to write
-back swap pages.
 
-> > Also, do we still need ->swap_activate and ->swap_deactivate?
-> 
-> f2fs does quite a lot of work in its ->swap_activate(), as does btrfs.  I'm
-> not sure how necessary it is.  cifs looks like it intends to use it, but it's
-> not fully implemented yet.  zonefs and nfs do some checking, including hole
-> checking in nfs's case.  nfs also does some setting up for the sunrpc
-> transport.
-> 
-> btrfs, cifs, f2fs and nfs all supply ->swap_deactivate() to undo the effects
-> of the activation.
-
-Right ... so my question really is, now that we're doing I/O through
-aops->direct_IO (or ->swap_rw), do those magic things need to be done?
-After all, open(O_DIRECT) doesn't do these same magic things.  They're
-really there to allow the direct-to-BIO path to work, and you're removing
-that here.
+Best regards,
+Martin
