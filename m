@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B02B418370
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 18:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1AE418374
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbhIYQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 12:50:26 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60080 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhIYQuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 12:50:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=AO7nZEoX1Ce080rrF77oQrUGzsVqgA/vEiDcOWCs+uw=; b=heAbR6405Blg3IbJTfYTQ+FdsK
-        4odDXE4Fats9E4AfcH/R+YB4QuykT8GYJLub5J7LACpO6hVt3aCSi2LN0FXBl+NqPAPb9DVnr3O4/
-        quSAD+sDVtPgmdfLVF4U9+C4Z6cx05PHr83qhp7s1uXv1l1khLnp2CeoVYPqTDpyWpHQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mUAqu-008Dxc-DW; Sat, 25 Sep 2021 18:48:40 +0200
-Date:   Sat, 25 Sep 2021 18:48:40 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Christian Lamparter <chunkeey@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 1/2] net: bgmac-platform: handle mac-address deferral
-Message-ID: <YU9S6ITeQCRJAAJv@lunn.ch>
-References: <20210925113628.1044111-1-mnhagan88@gmail.com>
+        id S229532AbhIYRIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 13:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhIYRID (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 13:08:03 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1AFC061570;
+        Sat, 25 Sep 2021 10:06:28 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id eg28so49515370edb.1;
+        Sat, 25 Sep 2021 10:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kmui+08NXbFT0nLrvdY1BcuEpj6U8FJtaRHyjNLMkbA=;
+        b=X1vU2O/fMuGWIQr8sO60x4m4WHXkW0GxW5txZsHtd/Zx4KqWWIefwro5FAX5CkHJYm
+         7hdMkOC5kLrAlY1xk8W6Qo7v8w0rjyiq7WGw5Lijh/oM5AnWHsfhfXsBCkov91zV8fIz
+         +MEqh1mqE3iINMKCl6SJwktVYwIh9CQZVRGXO603RrbLr0ygp5RSfgA61CQ1FdmPGNjc
+         8sY6G/mJy/s6J2Dk4jAlsFExUc8cfGXQRnZmZ7rIXpr9L2Z6cTPz5i7z3Gfq1OgyQVH2
+         sWRoGkf/BT7d8dz06/ygAK895NwboYDW02SkHm9b9JQSSSv+Ip+EMja4v8jqR0EVYQCo
+         SBCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kmui+08NXbFT0nLrvdY1BcuEpj6U8FJtaRHyjNLMkbA=;
+        b=Dq5JqO4LnmDpETCd1Vsb4i8C0GW/HJiRvvMyH3OJMbePSgv5rgBDOrwcZQ3dagqj6f
+         nMLKJV39Er2Bo78G8yccHVJDjfNzfAwi23BE6ZEazE31JRooC9Ga1dL/MlhWZxNv8i2L
+         sIL89o4bNXPtQ7spoL8iCHwk0+VzPyh6F7NgTU53A6GrkDeBGE3C2D/eSKBMzDRL3F/l
+         ZbYimL9bCd+3yySPnS1BvWwvRhJ6oSkk+thEETVJUqy9nSGavbn+hcKvcdoQoRrNRbUg
+         H9htD029PFxVgcHgYPMN53UA7qB3FpEVRF4mYtcw5H6/qu6QJZUOAbyuUSfZ6Nn/l/3F
+         Hdmw==
+X-Gm-Message-State: AOAM530E+P7zvnKN4fAPZ1eG9KN+31ja23fwM8KXFs5pHm4UKp1kLYes
+        NRqZ6DZXBIbnjUMXw90P5fYUROfBE0Xbm/uBKeA=
+X-Google-Smtp-Source: ABdhPJzrY8tMFPHNGE75+mTiVvTPrwW84zeV3b5rRuTKD9rGRN+lbs2VxC0jPhBb0dkobrhLqii4p1oNJfeFWWGh+Ig=
+X-Received: by 2002:a05:6402:493:: with SMTP id k19mr12301396edv.386.1632589587538;
+ Sat, 25 Sep 2021 10:06:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210925113628.1044111-1-mnhagan88@gmail.com>
+References: <20210924231242.144692-1-colin.king@canonical.com>
+In-Reply-To: <20210924231242.144692-1-colin.king@canonical.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sat, 25 Sep 2021 19:06:16 +0200
+Message-ID: <CAFBinCB0LOJvCuhtX7EFk55a7-gUJ_P43iuOLB8qeTkZGgEmBQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: meson: aiu: Fix spelling mistake "Unsupport" -> "Unsupported"
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 11:36:27AM +0000, Matthew Hagan wrote:
-> This patch is a replication of Christian Lamparter's "net: bgmac-bcma:
-> handle deferred probe error due to mac-address" patch for the
-> bgmac-platform driver [1].
-> 
-> As is the case with the bgmac-bcma driver, this change is to cover the
-> scenario where the MAC address cannot yet be discovered due to reliance
-> on an nvmem provider which is yet to be instantiated, resulting in a
-> random address being assigned that has to be manually overridden.
-> 
-> [1] https://lore.kernel.org/netdev/20210919115725.29064-1-chunkeey@gmail.com
-> 
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+On Sat, Sep 25, 2021 at 1:12 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is a spelling mistake in a dev_err error message. Fix it.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
