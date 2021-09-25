@@ -2,98 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62936417F43
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 04:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9188C417F46
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 04:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347350AbhIYCSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 22:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343760AbhIYCST (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 22:18:19 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BA0C061571;
-        Fri, 24 Sep 2021 19:16:45 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id w19so10407652pfn.12;
-        Fri, 24 Sep 2021 19:16:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KUE5uliHgQSz+W6OoczSy6j/pQcC1fX9twvbX7G/f9A=;
-        b=RzG5JAXjYeb25XGQTSaj998+yrmmkOU8udleo9PeOjjULMZwsV7c3+ev4kIIYNW97R
-         KBweX8EZeU0XeFblZ7Xolw+z3yNqfv1XsHAGBDrCotscfieM431chguBIzTY2axLiDG/
-         GYB5unJeMUwoj5Y+fP65PqVK0qKez0k6Lphy4zgeDjXFSyzfRA9w8jBBW1CviB2FXFpH
-         hRYJBkkzAZs0nmvHNXg+DO1rlR9Ou8NpSG36XugeVupxE9ITaGIpdABlsRQVD+4LkMCE
-         +s79tHe1Hg+JZcAEXgGxnkNqDphiKl17xpnUMyPWV6s1MavImb+3hglLdja6yipQ6OM7
-         T0Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KUE5uliHgQSz+W6OoczSy6j/pQcC1fX9twvbX7G/f9A=;
-        b=RVG58enSJWJkEPLXRKrSo0yW8Wr8Ym3XWtKs5Ry/GqOeydF6nb5hI7hqOxUvgx4AZW
-         6S/DQnLKSnkeDFNXADTQHFwYFAfmncWu3Hyu6W4VgJ8YpfXV3w9Lqrac+zo2Z7jFbMXT
-         ey6QkjsSSs/1zFYWwaBxXmHWQElJcvqM96ZEouLL1aQkGk4ZTqQ1nwpndefzETqGCb3V
-         +EuAZCVXvPaoiKwgDjgVUOD2266CztEhhtlcxo+tgjdRkI0JSrxzblDJsVNxLWgb5pKN
-         IWu41Fnk4LKsULWOBqHdzwpyxIzfy+awh30mh2I9v62CXm5pgvd+aUtF1ItS31i0ZRwc
-         E6tA==
-X-Gm-Message-State: AOAM530x92XVBdGE9x4+t1wKQIvmVyCmxEicLUSmlMttEw6hwshJer8P
-        YCqve4/nx8tyKVAPuOK6uqE=
-X-Google-Smtp-Source: ABdhPJz9qDtI8Rt1jEkDRRLpydnqi3owtC6V2O+F6zBttQNaz/2noMS7iYDEb/f1XgCkSFFzLjDf1w==
-X-Received: by 2002:a63:1f10:: with SMTP id f16mr6284338pgf.423.1632536205017;
-        Fri, 24 Sep 2021 19:16:45 -0700 (PDT)
-Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
-        by smtp.gmail.com with ESMTPSA id x21sm10249866pfa.186.2021.09.24.19.16.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Sep 2021 19:16:44 -0700 (PDT)
-Date:   Fri, 24 Sep 2021 19:16:42 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Eric Sandeen <sandeen@sandeen.net>,
-        Fengfei Xi <xi.fengfei@h3c.com>, darrick.wong@oracle.com,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tian.xianting@h3c.com
-Subject: Re: [PATCH] xfs: fix system crash caused by null bp->b_pages
-Message-ID: <YU6GioPsUlVXbtwQ@nuc10>
-References: <20201224095142.7201-1-xi.fengfei@h3c.com>
- <63d75865-84c6-0f76-81a2-058f4cad1d84@sandeen.net>
- <YUphLS+pXoVwPxMz@nuc10>
- <20210922014804.GQ1756565@dread.disaster.area>
+        id S1347395AbhIYCTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 22:19:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343760AbhIYCTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 22:19:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DC4461251;
+        Sat, 25 Sep 2021 02:17:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632536253;
+        bh=D6mVq6Ws5LARrt0i89PJK+aDRPrFBg+LXJD8hpN1g/g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CViJisyPwkv5aUHbjwT60mL3x9qr1cZjSx1lpiNW8fc46hl26wDvn3hwTH0s+KQ9c
+         txfOWQkvAjBtURVkGR4ZjryyWIceDcWsucyiUlxMDvl508YHexoHy90OLwRVl8gM8l
+         9GPIChPhvYNDHP00usmTuRefu1vYliyayBzpFmFDhEy6ttTGLo8uUd97PheGMy0Vvt
+         HGIFndGKjusR3hsiAtKoYJQroKz9GiNUEmbYqynCOb77nOjxEEqsmMJh8avv/DRhaU
+         Ja/TMzNE48rwBRoV+oI0+aJdhkQNQlTGgHazEuGxmbUzmgd8kUMzbKCiQmwq0r202s
+         FjTkTPIJLKJSA==
+Received: by mail-ed1-f43.google.com with SMTP id bx4so43316973edb.4;
+        Fri, 24 Sep 2021 19:17:32 -0700 (PDT)
+X-Gm-Message-State: AOAM532RCLuJKfOMwhxVW0fRqFE1g5Av8XcrNRh0qeBXGtQgX2K7ZeJ1
+        D4X+jCENny4fNHpp9QhC8UVLL22LYZnQAHDkEg==
+X-Google-Smtp-Source: ABdhPJy43x5ohkW8Db2PjWu46qMaTH2NqNO+cakkPZW/c2xsys2gf6YB/Ly9CvD7M2qmWakZbvEMWap8f0ltaHgNkUA=
+X-Received: by 2002:aa7:c617:: with SMTP id h23mr8737188edq.357.1632536251531;
+ Fri, 24 Sep 2021 19:17:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210922014804.GQ1756565@dread.disaster.area>
+References: <20210921155218.10387-1-jason-jh.lin@mediatek.com> <20210921155218.10387-6-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210921155218.10387-6-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 25 Sep 2021 10:17:20 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__VZ4Q5RsA4eiSfgLdwxg3HGV1-YEMa0L2LHHRdE73koQ@mail.gmail.com>
+Message-ID: <CAAOTY__VZ4Q5RsA4eiSfgLdwxg3HGV1-YEMa0L2LHHRdE73koQ@mail.gmail.com>
+Subject: Re: [PATCH v11 05/16] dt-bindings: display: mediatek: merge: add
+ additional prop for mt8195
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
+        Moudy Ho <moudy.ho@mediatek.com>, roy-cw.yeh@mediatek.com,
+        Fabien Parent <fparent@baylibre.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+Hi, Jason:
 
-On Wed, Sep 22, 2021 at 11:48:04AM +1000, Dave Chinner wrote:
-> On Tue, Sep 21, 2021 at 03:48:13PM -0700, Rustam Kovhaev wrote:
-> > Hi Fengfei, Eric,
-> > 
-> > On Thu, Dec 24, 2020 at 01:35:32PM -0600, Eric Sandeen wrote:
-> > > On 12/24/20 3:51 AM, Fengfei Xi wrote:
-> > > > We have encountered the following problems several times:
-> > > >     1、A raid slot or hardware problem causes block device loss.
-> > > >     2、Continue to issue IO requests to the problematic block device.
-> > > >     3、The system possibly crash after a few hours.
-> > > 
-> > > What kernel is this on?
-> > > 
-> > 
-> > I have a customer that recently hit this issue on 4.12.14-122.74
-> > SLE12-SP5 kernel.
-> 
-> I think need to engage SuSE support and engineering, then, as this
-> is not a kernel supported by upstream devs. I'd be saying the same
-> thing if this was an RHEL frankenkernel, too.
-> 
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=882=
+1=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:52=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> add MERGE additional properties description for mt8195:
+> 1. async clock
+> 2. fifo setting enable
+> 3. reset controller
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  .../display/mediatek/mediatek,merge.yaml      | 31 +++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+merge.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,me=
+rge.yaml
+> index 75beeb207ceb..542dd7137d3b 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,merge.y=
+aml
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,merge.y=
+aml
+> @@ -38,6 +38,19 @@ properties:
+>    clocks:
+>      items:
+>        - description: MERGE Clock
+> +      - description: MERGE Async Clock
+> +          Controlling the synchronous process between MERGE and other di=
+splay
+> +          function blocks cross clock domain.
+> +
+> +  mediatek,merge-fifo-en:
+> +    description:
+> +      The setting of merge fifo is mainly provided for the display laten=
+cy
+> +      buffer to ensure that the back-end panel display data will not be
+> +      underrun, a little more data is needed in the fifo.
+> +      According to the merge fifo settings, when the water level is dete=
+cted
+> +      to be insufficient, it will trigger RDMA sending ultra and preulra
+> +      command to SMI to speed up the data rate.
+> +    type: boolean
+>
+>    mediatek,gce-client-reg:
+>      description:
+> @@ -50,6 +63,11 @@ properties:
+>      $ref: /schemas/types.yaml#/definitions/phandle-array
+>      maxItems: 1
+>
+> +  resets:
+> +    description: reset controller
+> +      See Documentation/devicetree/bindings/reset/reset.txt for details.
+> +    maxItems: 1
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -67,3 +85,16 @@ examples:
+>          power-domains =3D <&spm MT8173_POWER_DOMAIN_MM>;
+>          clocks =3D <&mmsys CLK_MM_DISP_MERGE>;
+>      };
+> +
+> +    merge5: disp_vpp_merge5@1c110000 {
+> +        compatible =3D "mediatek,mt8195-disp-merge";
+> +        reg =3D <0 0x1c110000 0 0x1000>;
+> +        interrupts =3D <GIC_SPI 507 IRQ_TYPE_LEVEL_HIGH 0>;
+> +        clocks =3D <&vdosys1 CLK_VDO1_VPP_MERGE4>,
+> +                 <&vdosys1 CLK_VDO1_MERGE4_DL_ASYNC>;
+> +        clock-names =3D "merge","merge_async";
 
-roger that, should not be a problem, thank you!
+Define clock-names first.
 
+Regards,
+Chun-Kuang.
+
+> +        power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSYS1>;
+> +        mediatek,gce-client-reg =3D <&gce1 SUBSYS_1c11XXXX 0x0000 0x1000=
+>;
+> +        mediatek,merge-fifo-en =3D <1>;
+> +        resets =3D <&vdosys1 MT8195_VDOSYS1_SW0_RST_B_MERGE4_DL_ASYNC>;
+> +    };
+> --
+> 2.18.0
+>
