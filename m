@@ -2,273 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A374A4180B3
+	by mail.lfdr.de (Postfix) with ESMTP id EE0924180B4
 	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 11:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239842AbhIYJFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 05:05:54 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:51154 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235512AbhIYJFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238015AbhIYJF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 05:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237084AbhIYJFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 25 Sep 2021 05:05:50 -0400
-Received: from dynamic-109-81-211-127.ipv4.broadband.iol.cz ([109.81.211.127] helo=phil.sntech)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mU3bQ-0000YK-JF; Sat, 25 Sep 2021 11:04:12 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     robh+dt@kernel.org, heiko@sntech.de, lee.jones@linaro.org
-Cc:     jbx6244@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64: dts: rockchip: add powerdomains to rk3368
-Date:   Sat, 25 Sep 2021 11:04:05 +0200
-Message-Id: <20210925090405.2601792-3-heiko@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210925090405.2601792-1-heiko@sntech.de>
-References: <20210925090405.2601792-1-heiko@sntech.de>
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E5BC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 02:04:16 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id v18so10537384edc.11
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 02:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kPe7eruAntmWYArF3I0EPN4/ZWlqsPwMhUGBU3D+dvo=;
+        b=jvx1fApsAGsLZMK9vaJVnP9Z7QQ3/Vx/4WCa2bv29M8LSsfp3QVq5+Uc3p2XpLJsqO
+         cKIljeQnvV8JYxGAWBX/QoC6/8IOIPwUIwxJ2C+OBQrIrOW2UqMqpI4gFbNahqQDzIW0
+         J4ioESelWa4/HppAdeGeJCi51YSLUugzEq1NvbvoSg2bxRUYr6PwqEVu/+h5oi0rLo+P
+         C5Y1cnoQlWXHl39DofDLtN0e8C9ZpYT0pGfuClX14K4w5FZe87BxzPptstZF1uTS3APa
+         1gz0d8eSxg3W3GmQaukkyme/qyMItzzkDLmvuXne+xCSr70bcGV9jyUwJzB/FzTWsFG+
+         7PhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kPe7eruAntmWYArF3I0EPN4/ZWlqsPwMhUGBU3D+dvo=;
+        b=qxZ+J+3+TxI+P0UOBTN4+pfBiJzHe6u1stjv5qldkv2xSf6Wx8ptB7R3qa3zVGS8q3
+         iYhTUnWIitCRW202oqlHh5SqG1IcN9AyAmsNn3INtWSUP9bmcL9rrEp6Lm0hGjbHM4j4
+         ze9/OXBz/JcUVhap4PpqV5BsC+LdlkhrxEf2q/ZYWvvGxYVIbImMfMv9rD1CUnEylfE+
+         c4Ww1jj9+HGDDw6MX7mq9N9hO+eKTpifM672zXBejzf0nazxVYzwPuejVSS/wVnkbogc
+         8pBQFGKfnerUiXeEi6EmvLxuzNtnuBXngC8te44V3fae7R+JDwzhixtFRtP5zc6CHh1X
+         uU4A==
+X-Gm-Message-State: AOAM532Iw/ZRumWJgGlmylJwv6bUhbwMYwQw6ivZCBG1KLLHctPWIEGK
+        /mda8nlNfzLAB4mxdUvQRqVUNhVE5Eo=
+X-Google-Smtp-Source: ABdhPJxumk5Lhz7AznMan428nRWghjeaZun1PZxvQP+8m+K8I50tg8kNh2Eihl7c51a1yFs2L4YqSw==
+X-Received: by 2002:a50:da04:: with SMTP id z4mr9923281edj.52.1632560654748;
+        Sat, 25 Sep 2021 02:04:14 -0700 (PDT)
+Received: from tom-desktop (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
+        by smtp.gmail.com with ESMTPSA id z12sm6886201edx.66.2021.09.25.02.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Sep 2021 02:04:14 -0700 (PDT)
+Date:   Sat, 25 Sep 2021 11:04:12 +0200
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] staging: vt6655: replace camel case
+ b_short_slot_time instead of bShortSlotTime.
+Message-ID: <20210925090412.GB4727@tom-desktop>
+References: <20210925074531.10446-1-tomm.merciai@gmail.com>
+ <20210925074531.10446-2-tomm.merciai@gmail.com>
+ <YU7XBPzQAq2s7d4L@kroah.com>
+ <20210925084134.GA4727@tom-desktop>
+ <YU7iHvNQPI81WvsM@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YU7iHvNQPI81WvsM@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the core io-domain node for rk3368.
-
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
----
-changes in v2:
-- add rk3368-qos compatible
-- use power-domain@ node names
-- add #power-domain-cells to individual domains
-
- arch/arm64/boot/dts/rockchip/rk3368.dtsi | 178 +++++++++++++++++++++++
- 1 file changed, 178 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-index 4217897cd454..79ee6878b2f2 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-@@ -8,6 +8,7 @@
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/pinctrl/rockchip.h>
-+#include <dt-bindings/power/rk3368-power.h>
- #include <dt-bindings/soc/rockchip,boot-mode.h>
- #include <dt-bindings/thermal/thermal.h>
- 
-@@ -615,6 +616,115 @@ mbox: mbox@ff6b0000 {
- 		status = "disabled";
- 	};
- 
-+	pmu: power-management@ff730000 {
-+		compatible = "rockchip,rk3368-pmu", "syscon", "simple-mfd";
-+		reg = <0x0 0xff730000 0x0 0x1000>;
-+
-+		power: power-controller {
-+			compatible = "rockchip,rk3368-power-controller";
-+			#power-domain-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			/*
-+			 * Note: Although SCLK_* are the working clocks
-+			 * of device without including on the NOC, needed for
-+			 * synchronous reset.
-+			 *
-+			 * The clocks on the which NOC:
-+			 * ACLK_IEP/ACLK_VIP/ACLK_VOP0 are on ACLK_VIO0_NIU.
-+			 * ACLK_ISP/ACLK_VOP1 are on ACLK_VIO1_NIU.
-+			 * ACLK_RGA is on ACLK_RGA_NIU.
-+			 * The others (HCLK_*,PLCK_*) are on HCLK_VIO_NIU.
-+			 *
-+			 * Which clock are device clocks:
-+			 *	clocks		devices
-+			 *	*_IEP		IEP:Image Enhancement Processor
-+			 *	*_ISP		ISP:Image Signal Processing
-+			 *	*_VIP		VIP:Video Input Processor
-+			 *	*_VOP*		VOP:Visual Output Processor
-+			 *	*_RGA		RGA
-+			 *	*_EDP*		EDP
-+			 *	*_DPHY*		LVDS
-+			 *	*_HDMI		HDMI
-+			 *	*_MIPI_*	MIPI
-+			 */
-+			power-domain@RK3368_PD_VIO {
-+				reg = <RK3368_PD_VIO>;
-+				clocks = <&cru ACLK_IEP>,
-+					 <&cru ACLK_ISP>,
-+					 <&cru ACLK_VIP>,
-+					 <&cru ACLK_RGA>,
-+					 <&cru ACLK_VOP>,
-+					 <&cru ACLK_VOP_IEP>,
-+					 <&cru DCLK_VOP>,
-+					 <&cru HCLK_IEP>,
-+					 <&cru HCLK_ISP>,
-+					 <&cru HCLK_RGA>,
-+					 <&cru HCLK_VIP>,
-+					 <&cru HCLK_VOP>,
-+					 <&cru HCLK_VIO_HDCPMMU>,
-+					 <&cru PCLK_EDP_CTRL>,
-+					 <&cru PCLK_HDMI_CTRL>,
-+					 <&cru PCLK_HDCP>,
-+					 <&cru PCLK_ISP>,
-+					 <&cru PCLK_VIP>,
-+					 <&cru PCLK_DPHYRX>,
-+					 <&cru PCLK_DPHYTX0>,
-+					 <&cru PCLK_MIPI_CSI>,
-+					 <&cru PCLK_MIPI_DSI0>,
-+					 <&cru SCLK_VOP0_PWM>,
-+					 <&cru SCLK_EDP_24M>,
-+					 <&cru SCLK_EDP>,
-+					 <&cru SCLK_HDCP>,
-+					 <&cru SCLK_ISP>,
-+					 <&cru SCLK_RGA>,
-+					 <&cru SCLK_HDMI_CEC>,
-+					 <&cru SCLK_HDMI_HDCP>;
-+				pm_qos = <&qos_iep>,
-+					 <&qos_isp_r0>,
-+					 <&qos_isp_r1>,
-+					 <&qos_isp_w0>,
-+					 <&qos_isp_w1>,
-+					 <&qos_vip>,
-+					 <&qos_vop>,
-+					 <&qos_rga_r>,
-+					 <&qos_rga_w>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			/*
-+			 * Note: ACLK_VCODEC/HCLK_VCODEC are VCODEC
-+			 * (video endecoder & decoder) clocks that on the
-+			 * ACLK_VCODEC_NIU and HCLK_VCODEC_NIU (NOC).
-+			 */
-+			power-domain@RK3368_PD_VIDEO {
-+				reg = <RK3368_PD_VIDEO>;
-+				clocks = <&cru ACLK_VIDEO>,
-+					 <&cru HCLK_VIDEO>,
-+					 <&cru SCLK_HEVC_CABAC>,
-+					 <&cru SCLK_HEVC_CORE>;
-+				pm_qos = <&qos_hevc_r>,
-+					 <&qos_vpu_r>,
-+					 <&qos_vpu_w>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			/*
-+			 * Note: ACLK_GPU is the GPU clock,
-+			 * and on the ACLK_GPU_NIU (NOC).
-+			 */
-+			power-domain@RK3368_PD_GPU_1 {
-+				reg = <RK3368_PD_GPU_1>;
-+				clocks = <&cru ACLK_GPU_CFG>,
-+					 <&cru ACLK_GPU_MEM>,
-+					 <&cru SCLK_GPU_CORE>;
-+				pm_qos = <&qos_gpu>;
-+				#power-domain-cells = <0>;
-+			};
-+		};
-+	};
-+
- 	pmugrf: syscon@ff738000 {
- 		compatible = "rockchip,rk3368-pmugrf", "syscon", "simple-mfd";
- 		reg = <0x0 0xff738000 0x0 0x1000>;
-@@ -711,6 +821,7 @@ iep_mmu: iommu@ff900800 {
- 		interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru ACLK_IEP>, <&cru HCLK_IEP>;
- 		clock-names = "aclk", "iface";
-+		power-domains = <&power RK3368_PD_VIO>;
- 		#iommu-cells = <0>;
- 		status = "disabled";
- 	};
-@@ -723,6 +834,7 @@ isp_mmu: iommu@ff914000 {
- 		clocks = <&cru ACLK_ISP>, <&cru HCLK_ISP>;
- 		clock-names = "aclk", "iface";
- 		#iommu-cells = <0>;
-+		power-domains = <&power RK3368_PD_VIO>;
- 		rockchip,disable-mmu-reset;
- 		status = "disabled";
- 	};
-@@ -733,6 +845,7 @@ vop_mmu: iommu@ff930300 {
- 		interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru ACLK_VOP>, <&cru HCLK_VOP>;
- 		clock-names = "aclk", "iface";
-+		power-domains = <&power RK3368_PD_VIO>;
- 		#iommu-cells = <0>;
- 		status = "disabled";
- 	};
-@@ -759,6 +872,71 @@ vpu_mmu: iommu@ff9a0800 {
- 		status = "disabled";
- 	};
- 
-+	qos_iep: qos@ffad0000 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0000 0x0 0x20>;
-+	};
-+
-+	qos_isp_r0: qos@ffad0080 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0080 0x0 0x20>;
-+	};
-+
-+	qos_isp_r1: qos@ffad0100 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0100 0x0 0x20>;
-+	};
-+
-+	qos_isp_w0: qos@ffad0180 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0180 0x0 0x20>;
-+	};
-+
-+	qos_isp_w1: qos@ffad0200 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0200 0x0 0x20>;
-+	};
-+
-+	qos_vip: qos@ffad0280 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0280 0x0 0x20>;
-+	};
-+
-+	qos_vop: qos@ffad0300 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0300 0x0 0x20>;
-+	};
-+
-+	qos_rga_r: qos@ffad0380 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0380 0x0 0x20>;
-+	};
-+
-+	qos_rga_w: qos@ffad0400 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffad0400 0x0 0x20>;
-+	};
-+
-+	qos_hevc_r: qos@ffae0000 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffae0000 0x0 0x20>;
-+	};
-+
-+	qos_vpu_r: qos@ffae0100 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffae0100 0x0 0x20>;
-+	};
-+
-+	qos_vpu_w: qos@ffae0180 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffae0180 0x0 0x20>;
-+	};
-+
-+	qos_gpu: qos@ffaf0000 {
-+		compatible = "rockchip,rk3368-qos", "syscon";
-+		reg = <0x0 0xffaf0000 0x0 0x20>;
-+	};
-+
- 	efuse256: efuse@ffb00000 {
- 		compatible = "rockchip,rk3368-efuse";
- 		reg = <0x0 0xffb00000 0x0 0x20>;
--- 
-2.29.2
-
+On Sat, Sep 25, 2021 at 10:47:26AM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Sep 25, 2021 at 10:41:34AM +0200, Tommaso Merciai wrote:
+> > On Sat, Sep 25, 2021 at 10:00:04AM +0200, Greg Kroah-Hartman wrote:
+> > > On Sat, Sep 25, 2021 at 09:45:22AM +0200, Tommaso Merciai wrote:
+> > > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > > 
+> > > I can not take patches without any changelog text at all, sorry.
+> > > 
+> > > My bot pointed you at the instructions for how to write a good
+> > > changelog, please read that before resubmitting.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> >   
+> >   Hi,
+> >   Thanks for your time. Sorry but I'm trying to check what I'm missing
+> >   "Versioning one patch revision" as suggested by Gustavo A. R. Silva.
+> > 
+> >   https://kernelnewbies.org/Outreachyfirstpatch
+> > 
+> >   I put Changes since vN after git format-patch "---". Maybe I'm missing
+> >   other stuff?
+> 
+> You are missing other stuff :)
+> 
+> Notably the actual text that goes in the git changelog that explains
+> what this patch is doing and why it is needed.  Again, please read the
+> link that my bot pointed you at.
+> 
+> thanks,
+> 
+> greg k-h
+  
+  Thanks again.
+  Tommaso
