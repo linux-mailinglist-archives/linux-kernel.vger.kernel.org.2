@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A064183A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BA84183AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhIYRgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 13:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhIYRf5 (ORCPT
+        id S229640AbhIYRkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 13:40:16 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:53689 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhIYRkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 13:35:57 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E255C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 10:34:23 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id r2so13210342pgl.10
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 10:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xOGXsR2lrn1dvNa/qlhz6wa9pGiy56aLxSKQi3X0iXU=;
-        b=PCr602QkRq5ChttjxjsGMbOGLlm57bxLWVzHhG9I8KLAMRBFiMXX2mctmlGH0+wpzK
-         +85vmB/dnmriHyyruQ8N2kWj3/x2a+61M0aamLwLNqj5dczTkXpeXS2ymEQHA50K+lBi
-         XrTNd4n+tI1kq483mN0G8pWY1dNBQl+zUU/CLFZR8foGuquw/D68VsBh/gOK/i3rco9R
-         7w7jFS8K9GR86np6LCLeCaJ3ZdOIUcmJHMDF/rguCD4u3TCcyvu4lG0PjBcgQM3iYoug
-         9R8wL4g0V+VEll+NuJsxv2r9Sbb2qxpt/ZqrPHhexlUgPlXnr2jt3Ti5h4WIGGy8jRYe
-         Xegw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xOGXsR2lrn1dvNa/qlhz6wa9pGiy56aLxSKQi3X0iXU=;
-        b=4KRHWUgFs7yOjcVcSw0DhW5Oy3+C8RqQt34a64BifDA8X6qhVwYLQKhvz8HGjjCvd9
-         gDRGiYGcmQjlK6+Rq9XIRegSYtODYPFWbp5E4nMzkI/Av8GkkfcNRnWSM/A084jqydcz
-         5nBRUgvM8st3MeLDtGL1g5r09lJgl8GvSOKVrCZGZbKgM7UORZBJiOd2fu5epsd9UIvv
-         H4Lb6xp7cR52txbkzurjMzcu6xkQFMjxSY2d/A6sutf2cInH5HynqKgyEpQt3GLgVXwi
-         RHVJfIiM5w1u1pbHo50pXwiFeM/YIvu33S0/8HO76qS25LeOnnBpkVHG/pP6tSRvbGWF
-         oomA==
-X-Gm-Message-State: AOAM5335aBgznYm69ZtpugTL0N77Leco6SPmasXmYU99dH228hGL13pO
-        caKP7iO2zzgw5nMNt0m4Hpw=
-X-Google-Smtp-Source: ABdhPJwow57UKHvlSPfIR1Ttemgg4A161D1G2paG/eKWqU5i7Y195BpJgW85Igoabj61Qo65/5L3fw==
-X-Received: by 2002:a63:a70e:: with SMTP id d14mr9093741pgf.431.1632591262567;
-        Sat, 25 Sep 2021 10:34:22 -0700 (PDT)
-Received: from archl-c2lm.. ([103.51.72.30])
-        by smtp.gmail.com with ESMTPSA id j6sm13113980pgq.0.2021.09.25.10.34.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 10:34:22 -0700 (PDT)
-From:   Anand Moon <linux.amoon@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Anand Moon <linux.amoon@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCHv4] regulator: pwm-regulator: Make use of the helper function dev_err_probe()
-Date:   Sat, 25 Sep 2021 17:34:12 +0000
-Message-Id: <20210925173413.1019-1-linux.amoon@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Sat, 25 Sep 2021 13:40:15 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MIMKq-1mgIaR1vUK-00EJlc; Sat, 25 Sep 2021 19:38:39 +0200
+Received: by mail-wr1-f48.google.com with SMTP id t8so37463889wrq.4;
+        Sat, 25 Sep 2021 10:38:39 -0700 (PDT)
+X-Gm-Message-State: AOAM5305o1us1cVdOyw6jwzw/ObA1yPXl+lsbc82ksAWysonURx6SulH
+        5/LAXaKt395O/lC+1dJJlecoaKo8SCAh07avzw0=
+X-Google-Smtp-Source: ABdhPJzy03N7tVhfn6aBkr45ZQOyfoDC04by9fsZmXLOn/y0W1o8uKfR6dX6QCxoxxGwp2bNJq5CkcHyUSMV7fPDOXk=
+X-Received: by 2002:a05:600c:3209:: with SMTP id r9mr7825038wmp.35.1632591519149;
+ Sat, 25 Sep 2021 10:38:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210924211139.3477-1-sergio.paracuellos@gmail.com> <20210924211139.3477-5-sergio.paracuellos@gmail.com>
+In-Reply-To: <20210924211139.3477-5-sergio.paracuellos@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 25 Sep 2021 19:38:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2YiGm=2TSKGotXRR3vJjfv+xhyZuD-Law57UDiagHZxg@mail.gmail.com>
+Message-ID: <CAK8P3a2YiGm=2TSKGotXRR3vJjfv+xhyZuD-Law57UDiagHZxg@mail.gmail.com>
+Subject: Re: [PATCH 4/6] PCI: allow architecture specific implementation of pci_remap_iospace()
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-staging@lists.linux.dev, neil@brown.name,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:N2Km3/CVfpY7kGN0gFj5hrzELBxMHtdH8vi/mAvJmwP2A7o5vVS
+ aZ5qsHDdRCHjSn+su6ITGrjgV0Rswn+ny5RPaZ9p2gZHRoIhR+PxTXIW++osE1bMMg3p/cB
+ i7tfkWDQcipygMb4s754JNYzAv6G82tAQmUwKHutUiHm1xjaE2/c9BLbT36swDv3a5YIhwb
+ y2UbhIb3VHA6Vb2iO4DyQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ukpurn3eWjI=:A7h5tBNzIex7QkhOnuBAqF
+ sdPYQF70XNJ4DkC9CJS7OfKsgkYhd9Ew0gD/BEXEsJkTwmZhy45jB0ZSuIzw64TwfqargXLT7
+ 5kIkOdW4fH6y8Fpd3X73hhw5+Z1zYH6SV+Hx60+o8aNY/vJFQSQPvy+K6382t+B5ACEE5nSfd
+ eIVWtM3Y4LMeSuh8z/V+8/kRypTYXH1lRSKv10VDpzlll/ajQOGi1tAHuxvrvgcqgAtXHVAL+
+ iaEU5AYbPJXgsj9V5w25bThcdsCo4ztT6UvpT4GKM/MkOQ2tV713DWZX2D3+zIG4YSu2NcgOe
+ twRA2gXQLsq8QL5sZmCy25H0JpClzpCnAbnKu4uvDSN3EtH5/KQLWVCXrg8GCA0AJe7srFPPV
+ 02b8FDcdH96+b02EAooOQwl9oA98D29xlsILqgeIw4akFr2lfWdbb9R565QeJsWBi+AnyiBlK
+ fnm4L6pkKXa5X6SBT6e0ecIRh2gVV7pQ8Uwi4+m7M5Deq9mfwHFlB80fZkUPw3fuKLaAwqURy
+ yaXC1fQTfcBDKsXLZD2xiV7gIkZP1KJd8D9Rqxt6T6xzrLTIX0EqPFcINSOjfqpAT3/Ib7zMq
+ d1B/wQaV6mUos9VCN/Z4VL/8dh5AhJu9qKeZxybYIcwmf4T34mYuvXdZ86i7RISSVDId/ZVtR
+ GHm+DQeZabpJe8zF2dxTkHoOuSrXUktap5djdXlVVOwT2VKVTRp7JCG7cfEhnXHaPa8d7mdSC
+ +l7YBCG3OcKJRZjv9P7lgO/D6iZ3jchnspevebPzV8GHgW8EQCoXzpHiMtEj5Ep5CImY+vcnA
+ n3THvd/AGQ+m208C7a3XzS8EjRImMmuZ5qo/62t4JEYq0bQjchKWU+CaYflScWO6/K90rolap
+ LVwZeECtvO1QPg/kmsNQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_pwm_get() can return -EPROBE_DEFER if the pwm regulator is not
-ready yet. Use dev_err_probe() for pwm regulator resources
-to indicate the deferral reason when waiting for the
-resource to come up.
+On Fri, Sep 24, 2021 at 11:11 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> pci_remap_iospace() was originally meant as an architecture specific helper,
+> but it moved into generic code after all architectures had the same requirements.
+> MIPS has different requirements so it should not be shared. The way for doing
+> this will be using a macro 'pci_remap_iospace' defined for those architectures
+> that need a special treatement. Hence, put core api function inside preprocesor
+> conditional code for 'pci_remap_iospace' definition.
+>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
----
-V3 - Fix the coading style issue. dropped { }
-V2 - Fix the return message and drop the FIX tag in commit.
-V1 - Fix the wrong probe defer for devm_regulator_register.
-   - Fix the commit message.
----
- drivers/regulator/pwm-regulator.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regulator.c
-index 7629476d94ae..b9eeaff1c661 100644
---- a/drivers/regulator/pwm-regulator.c
-+++ b/drivers/regulator/pwm-regulator.c
-@@ -352,15 +352,9 @@ static int pwm_regulator_probe(struct platform_device *pdev)
- 	config.init_data = init_data;
- 
- 	drvdata->pwm = devm_pwm_get(&pdev->dev, NULL);
--	if (IS_ERR(drvdata->pwm)) {
--		ret = PTR_ERR(drvdata->pwm);
--		if (ret == -EPROBE_DEFER)
--			dev_dbg(&pdev->dev,
--				"Failed to get PWM, deferring probe\n");
--		else
--			dev_err(&pdev->dev, "Failed to get PWM: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(drvdata->pwm))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(drvdata->pwm),
-+				     "Failed to get PWM\n");
- 
- 	if (init_data->constraints.boot_on || init_data->constraints.always_on)
- 		gpio_flags = GPIOD_OUT_HIGH;
--- 
-2.33.0
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
