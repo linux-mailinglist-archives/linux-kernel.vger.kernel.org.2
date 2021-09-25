@@ -2,144 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF0B41812C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8134418134
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244429AbhIYLJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 07:09:02 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:52337 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231706AbhIYLJA (ORCPT
+        id S244488AbhIYLWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 07:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243920AbhIYLWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 07:09:00 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 504E02B0063E;
-        Sat, 25 Sep 2021 07:07:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sat, 25 Sep 2021 07:07:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=3uQrqEVhHhLU6E1nXr0ckYIdMZ1
-        n/+TcG7HITTU3dkI=; b=Bipe1O7BRRE0DizAoy8TNijIWvKh+TrmfSzetj4DQIQ
-        mf1bKGj6w9dgr0khmgQZTh9ss6UWfIjGsndlAoiWWtgqZAKjthEC5MmqpgZQMp10
-        J59QXnjtfWwyeJ1gUSa8Osty9TWTSMx3MB/9UMJII61IM5OGXHezutgntp0LB/sS
-        8BRiO4AwtynTCZbZcGnnF3LE7UubBZv4b/rieMJJN3wT7ASUJQ0fvwulrvReEekw
-        JVxcFsRrU7uMk0ADJYciik5KrCX8JNclvUfZcDETmiLCF2XAgzyQS/atBQYG4j4B
-        mBGa4McLyh34IAbn3M+nNEnP+ysS3jKpKCpWG7Uilag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=3uQrqE
-        VhHhLU6E1nXr0ckYIdMZ1n/+TcG7HITTU3dkI=; b=h759m/5BigSJkwYVjTOB04
-        rQAMAZjgCrSV3fvVMYcl7k99lyjGMacz9/NO9gI8du2XeXr0QJLwV32/HMsxsIj0
-        zoZggdCj2WkpIPqlJumyihH/sT4hO9O7ZWEfzKfFblq2V/pLY6vP0TuTi2vDGpeA
-        Z6Ab6n/dMUBirjiyQVWXt7eKmapK97on3511kBLHHkposEfKifzFJf2qum/LcYXW
-        QbbSmrAvPPpWhiZMzp6iwPootN9noh1wGQ8jz/vtEX4Z8dQcpdShNgFBe4rHT76s
-        SLsjfgd0+azuTHXbUm6fMNO6p2/lBElosiFZE1mhr0vw4zRSc0GYPGOOaDSmAaYw
-        ==
-X-ME-Sender: <xms:6wJPYTJ-1Vq28NSW3ObfYiNYzstYOY9JSebhJOAVCoxbKRDCcaDSwA>
-    <xme:6wJPYXLDVXar2mKdtwAXbQD34cmhl5uZXRAPnjI1Gc5tGBId6ggVtzo3ULYYFrmBb
-    v_YHXrXayapaA>
-X-ME-Received: <xmr:6wJPYbv7lHB4X6EyiekiXdM6XvCBdSCUY_yoD7UCOVhHNyMufB_C2dLSjAI5eMQzxlUOBiZxdnAoeG3YhWX1G2l5nvf69TZR>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejfedgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevffffte
-    fhleeuhfefieffhfeifefhhefftefhffduvdfhfffgleetgfdvleehtdenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgpdhkrhhorghhrdgtohhmnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:6wJPYcac4EhmEtUn4XmJA2fWY6HGV09Pr_Cj6jSen5LV0yzoKSQnbA>
-    <xmx:6wJPYaZoSEvcqefDMEf-nbE5FFwnMksG6G305hi_yiZa2rBxv4ttCA>
-    <xmx:6wJPYQBPyAmjWjOvYy9Q-tOfnaFr8FqaCycu1RaIFtxT4PI7CK9M3w>
-    <xmx:6wJPYXR8gYW4CmYRCDRPA297DWaRwBYpfuEfdWqBW03hajW92EzXcp0vGSI>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 25 Sep 2021 07:07:22 -0400 (EDT)
-Date:   Sat, 25 Sep 2021 13:07:20 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Prefer struct_size over
- open coded arithmetic
-Message-ID: <YU8C6B5zw5t4vsh7@kroah.com>
-References: <20210918150500.21530-1-len.baker@gmx.com>
- <202109192246.B438B42EF@keescook>
- <ba427967-cb1b-58a8-ec93-bd5ae89f58f8@redhat.com>
- <YUn3F9HtgrpN9sSM@kroah.com>
- <20210925081856.GD1660@titan>
+        Sat, 25 Sep 2021 07:22:45 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C2DC061570;
+        Sat, 25 Sep 2021 04:21:10 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1bac00c299c4b579452b16.dip0.t-ipconnect.de [IPv6:2003:ec:2f1b:ac00:c299:c4b5:7945:2b16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 20A211EC05E2;
+        Sat, 25 Sep 2021 13:21:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632568864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7lwTvw436hmF3Y3GbvXEGF+jEH1nN3GmL3cFs+61EGc=;
+        b=g9rL/9qJwvzkA7ANvscQ39xtPncQb6k05Ih3B8Bh0saxRL9smQ3EWzhHbMMXb5b9tEQcaV
+        9BVufb0EFLlpK+0G3htKz9YgMSO3oVVtB0ChRzHN2H9fiM6E0dasLNARDrXM4mPJrx/ae+
+        RAjBwe5hB/I0PdzlRtcvAgu7hX5HtvU=
+Date:   Sat, 25 Sep 2021 13:20:57 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     "Joshi, Mukul" <Mukul.Joshi@amd.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCHv3 2/2] drm/amdgpu: Register MCE notifier for Aldebaran RAS
+Message-ID: <YU8GGSrQSbAZPz4z@zn.tnic>
+References: <20210913021311.12896-2-mukul.joshi@amd.com>
+ <20210922193620.15925-1-mukul.joshi@amd.com>
+ <YUyPM7VfYFG/PJmu@yaz-ubuntu>
+ <DM4PR12MB52639349DF98DB01A3B155EFEEA39@DM4PR12MB5263.namprd12.prod.outlook.com>
+ <YUy4CdcUWJzQfM4N@yaz-ubuntu>
+ <YUzD9wxtV411S8TC@zn.tnic>
+ <YU4rAigWIh8g6iOl@yaz-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210925081856.GD1660@titan>
+In-Reply-To: <YU4rAigWIh8g6iOl@yaz-ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 12:40:44PM +0200, Len Baker wrote:
-> Hi,
-> 
-> On Tue, Sep 21, 2021 at 05:15:35PM +0200, Greg KH wrote:
-> >
-> > First off, why is a single driver doing so many odd things with
-> > attribute groups?  Why not just use them the way that the rest of the
-> > kernel does?  Why does this driver need this special handling and no one
-> > else does?
-> 
-> Is [1] the correct way to deal with devices attributes? I think so.
-> 
-> [1] https://www.kernel.org/doc/html/latest/driver-api/driver-model/driver.html#attributes
+On Fri, Sep 24, 2021 at 07:46:10PM +0000, Yazen Ghannam wrote:
+> I agree with you in general. But this device isn't really a GPU. And
+> users of this device seem to want to count *every* error, at least for
+> now.
 
-No, do not use driver_create_file(), see:
-	http://kroah.com/log/blog/2013/06/26/how-to-create-a-sysfs-file-correctly/
-as a more up to date thing.
+Aha, so something accelerator-y where they do general purpose computation.
 
-Someone should fix that in-kernel documentation one day :)
+So what's the big picture here: they count all the errors and when they
+reach a certain amount, they decide to replace the GPUs just in case?
 
-> > I think the default way of handling if an attribute is enabled or not,
-> > should suffice here, and make things much simpler overall as all of this
-> > crazy attribute handling can just be removed.
-> 
-> Sorry but what is the default way? Would it be correct to check if the
-> file exists?
+Or wait until they become uncorrectable? But then it doesn't matter
+because we will handle it properly by excluding the VRAM range from
+further use.
 
-Use the is_visable() callback for the attribute group to enable/disable
-the creation of the sysfs file.
+Or do they wanna see *when* they had the correctable errors so that they
+can restart the computation, just in case.
 
-> > Bonus would also be that I think it would fix the race conditions that
-> > happen when trying to create attributes after the device is bound to the
-> > driver that I think the existing driver has today.
-> >
-> > > > (I see the caller uses +2? Why? It seems to be using each of hotkey_attributes,
-> > > > plus 1 more attr, plus a final NULL?)
-> > >
-> > > The +2 is actually for 2 extra attributes (making the total number
-> > > of extra attributes +3 because the sizeof(struct attribute_set_obj)
-> > > already includes 1 extra).
-> > >
-> > > FWIW these 2 extra attributes are for devices with a
-> > > a physical rfkill on/off switch and for the device being
-> > > a convertible capable of reporting laptop- vs tablet-mode.
-> >
-> > Again, using the default way to show (or not show) attributes should
-> > solve this issue.  Why not just use that instead?
-> 
-> What is the default way? Would it be correct to use device_create_file()
-> and device_remove_file()?
+Dunno, it would be a lot helpful if we had some RAS strategy for those
+things...
 
-Put all the attributes into an attribute group and attach it to the
-driver.  The driver core will create/remove the files when needed.  The
-link above should help explain that a bit better, and I can point you at
-examples if needed.
+Thx.
 
-Does that help?
+-- 
+Regards/Gruss,
+    Boris.
 
-thanks,
-
-greg k-h
+https://people.kernel.org/tglx/notes-about-netiquette
