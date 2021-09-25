@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C28F418119
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 12:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1379D41811D
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 12:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237469AbhIYKmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 06:42:45 -0400
-Received: from mout.gmx.net ([212.227.17.22]:39603 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244055AbhIYKmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 06:42:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632566447;
-        bh=+E0Zsq8vQdVnH1eVHRqXyVRKa4tlva4ZQhYIJQrKt+w=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=GZHHpNUJYrx4VaO8KPRbmVdzfttlqYI/J08++RiqNSlCnMS+vSLLiIxT9vxX77AhE
-         DxL9BQ+mORbpYhFl1MzJ13croYE7zfB3QcydtfejFNPozBmAhbT/i+wUKl73BSriuB
-         GuwFAu1p1VAO0/ZkcSysBXM5YwMiUcMrSytBj8tw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5fMY-1mVhwK2n9u-007FqA; Sat, 25
- Sep 2021 12:40:46 +0200
-Date:   Sat, 25 Sep 2021 12:40:44 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg KH <greg@kroah.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Len Baker <len.baker@gmx.com>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Prefer struct_size over
- open coded arithmetic
-Message-ID: <20210925081856.GD1660@titan>
-References: <20210918150500.21530-1-len.baker@gmx.com>
- <202109192246.B438B42EF@keescook>
- <ba427967-cb1b-58a8-ec93-bd5ae89f58f8@redhat.com>
- <YUn3F9HtgrpN9sSM@kroah.com>
+        id S244320AbhIYKvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 06:51:05 -0400
+Received: from esa2.mentor.iphmx.com ([68.232.141.98]:21814 "EHLO
+        esa2.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233380AbhIYKvE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 06:51:04 -0400
+IronPort-SDR: mLI3V6cSwiHi8gja0CvPKJMRz8k/9q0lSDp1+zrSJHE3kGSnnmW6JW4nBmAI4Mu8l5+EtIwfXR
+ +1FebL/aCLofWYk4zjqkQqNHQLBfECR/RBJ09sbFn/ChUV10Go4r1V+I+2QLbLDhN7L105UBBC
+ DlVWj7ieOuxxtYIsqeWpE5YBrs+3geCK7kQWfKhfHCjILfVP0pOplvqnc0MXctpOHaWDgcXVEj
+ Gsrcj2J5EQen68GST4lFrJ9DyJj0ngXZvRQitMbmXblgqUDXtVh7rIvCe0OkQIQ0bINdxNPAmN
+ HeE=
+X-IronPort-AV: E=Sophos;i="5.85,321,1624348800"; 
+   d="scan'208";a="66321087"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa2.mentor.iphmx.com with ESMTP; 25 Sep 2021 02:49:27 -0800
+IronPort-SDR: 7/xLU5DcmWK0K+6/AIcAGRFZkhjeyUdlZhm/58JVwNY9emkiW7JNl1WFy6FkSCKOm7+SHUVglP
+ E/SHyn0Fkg7Nr3W9NJkbTk04Fik/gDmSulmLaYRy8xTUnT5TzxZ20UANFqdL2i0aUHw1WJOXUt
+ 0g0qCn2cfwETknbk/qlzDMnHsAFMHbg8X6eVmo6f4IkYuJ+yyv765HxuedvQDZXMhj/qum1fnu
+ P/cFianEcy6/K1GJ3UGalGkwTpR6BAJtwKns3Q4ICcFkLT2pZoRi2fQNheJN/tH7j0A9bO7fsU
+ v4Y=
+From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To:     'Wolfram Sang' <wsa@kernel.org>
+CC:     <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+References: <20210922184830.29147-1-andrew_gabbasov@mentor.com> <YU7x8cabSsQiUJuE@kunai>
+In-Reply-To: <YU7x8cabSsQiUJuE@kunai>
+Subject: RE: [PATCH] memory: renesas-rpc-if: Avoid unaligned bus access for HyperFlash
+Date:   Sat, 25 Sep 2021 13:49:13 +0300
+Organization: Mentor Graphics Corporation
+Message-ID: <000901d7b1fa$ff9b57f0$fed207d0$@mentor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUn3F9HtgrpN9sSM@kroah.com>
-X-Provags-ID: V03:K1:cMUjCKsXj7H0+OydE/f6KgPKNk/NK2+qEgrewaFjdLCxdnzKEbF
- 82Wiu0vKa3gonbuRiRNxGW+ma563qTWEuZwaNEV4262tEvG5lUf0B1m8KmR30bQM9IOUbQo
- ampAm+CC6bTlFs0iREdmVWx/pHMsrv4j1816diYgSlFVZdnXY40vY3nuyx3gX3vdc/Op3Nq
- kqvmdfVO6GnrPdJ1js75Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jatRWMgvDVU=:0eypWfk3zdwajPsfyFuDOv
- j9MQvf9uHneK75carU4gQf6y+PwuC0DfjjAA1p5zCHpBZWJvAQ7tWQQOWva5qvWiIoXV9oYlj
- veQMMCXZOOJm3nlVB1LM+ZxuoCu7ikfxEx4kXcGtSPKDd8z3SDqpwEUC7LS0hjKpStt3gdZOy
- lb2S9HE/bOTRfYpk+RL0QJS3bLpzA1fZFJCN6dPLyagOl4tysK8wmGkKyQWMHTo+Vch5fYlLH
- KTXHuPKuSX8sY+fFuM2vfhOPEYJ3ZzhStpoDYXyCIQtJAzo2bIpDAm+y8qqH4IFr5WakQ2qZI
- +Zq4kls9/u+z8xN0y0ab70r1q25zJHDgAb8u4aViLJnShMk8VWnawbHubTKV+5hHwXFiGC+J1
- JeDpMLBxgOYeL0JAKdUhfdLpD6u7TuORJGQI5buMZDoA7oNAT85uUZzLLapZlRK93/gg2hokg
- iwAfANY2kVZrD4jB2jsSBmN5pCVjGTdcYtN3YilSSYgfQGWWe2RAzzth84LvZh1rszGkzjDAE
- Msff2fHASOF/1nytU+HHJLqG+9RA3LjGpcplU9TWFnB624X9KzCQR37KCdSv4NN9Jez/e8UlA
- 057NtB13wJuJOkh9ClvhxV1YV2CepW8/meTc6PxRzQeM1IOFz5zDLcA9VB2mpFEip+UI0y2yD
- xSIjHDiURF4AeWY5O4k3antB/iLrt4ebqdGv4efxFpKmKtdONIv+wFxrLNbDW3aK6LX6kYCm5
- MVwtpR1yfzSfKAVazvF5xxWsyWVjBLHsW+DTUkuwwJq3qOjgmYVYZ6OVM+bJR6bFvEUA2xNVy
- 2nTUa2ZGmRJW0a8a0VCcNm9MudDXA1lfo8/CV64jSlAVqyiHbkbpQhQz5xf3ZqBrr6PzNtYP7
- 8FFN4siAOj5i1rr8Z8SVj3iAscRXtjY0liml9xn+hCN1jVifEmroUYc3mNWeCHKaCfJdj3mSB
- 3cINpgVLPQKpeWUF0dK9MNZErx7V50PAkMKm74dXV/9FuurW6e3UotE+Sa7qzA27ai6VoKFMr
- s6zV47YGyYAA7ckjtdpr136wCQgAjZyrdKlGioGIL/ohNEEnwtzNuqKptpWsc6/NsIJpYVL02
- SrAhIcdYa8gE/I=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHXsfNlhFdr88sfGEGUtgyCIuCyuau0iuYw
+Content-Language: en-us
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: svr-ies-mbx-05.mgc.mentorg.com (139.181.222.5) To
+ svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello Wolfram,
 
-On Tue, Sep 21, 2021 at 05:15:35PM +0200, Greg KH wrote:
->
-> First off, why is a single driver doing so many odd things with
-> attribute groups?  Why not just use them the way that the rest of the
-> kernel does?  Why does this driver need this special handling and no one
-> else does?
+Thank you for your comments!
 
-Is [1] the correct way to deal with devices attributes? I think so.
+> -----Original Message-----
+> From: Wolfram Sang <wsa@kernel.org>
+> Sent: Saturday, September 25, 2021 12:55 PM
+> To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
+> Cc: linux-renesas-soc@vger.kernel.org; linux-kernel@vger.kernel.org; Krzysztof Kozlowski <krzk@kernel.org>;
+> Sergei Shtylyov <sergei.shtylyov@gmail.com>; Geert Uytterhoeven <geert+renesas@glider.be>
+> Subject: Re: [PATCH] memory: renesas-rpc-if: Avoid unaligned bus access for HyperFlash
+> 
+> Hi Andrew,
+> 
+> thanks for this patch!
+> 
+> > +	const int maxw = (IS_ENABLED(CONFIG_64BIT)) ? 8 : 4;
+> > +	u8 buf[2];
+> 
+> I could imagine the code becomes more readable if we make use of
+> something like:
+> 
+> 	unsigned long from_ul = from;
+> 
+> and then use it throughout the function?
 
-[1] https://www.kernel.org/doc/html/latest/driver-api/driver-model/driver.=
-html#attributes
+It could make sense if "from" would not change along the function.
+But in case of this function "from" is changed between usages, so
+it would be necessary to synchronize "from_ul" with "from" again
+(make "from_ul++" together with "from++", or re-assign it)
+before we could use it again correctly.
 
->
-> I think the default way of handling if an attribute is enabled or not,
-> should suffice here, and make things much simpler overall as all of this
-> crazy attribute handling can just be removed.
+> > +#ifdef CONFIG_64BIT
+> > +		*(u64 *)to = __raw_readq(from);
+> > +#else
+> > +		*(u32 *)to = __raw_readl(from);
+> > +#endif
+> 
+> To keep the ifdeffery minimal:
+> 
+> 	if (maxw == 8)
+> 		*(u64 *)to = __raw_readq(from);
+> 	else
+>  		*(u32 *)to = __raw_readl(from);
+> 
+> and let the compiler do its job.
 
-Sorry but what is the default way? Would it be correct to check if the
-file exists?
+I don't like #ifdef's inside the function body too, but the problem is that
+"__raw_readq" is defined in arch/arm64/include/asm/io.h unconditionally,
+but in include/asm-generic/io.h under "#ifdef CONFIG_64BIT" only.
+This file drivers/memory/renesas-rpc-if.c can be compiled not only
+for renesas/arm64 architecture, but for CONFIG_COMPILE_TEST case too.
+It means, that the file could be compiled for some other architecture,
+that does not have CONFIG_64BIT, and in this case "__raw_readq" function
+will be undefined. So, we need to hide it under "#ifdef CONFIG_64BIT" here.
 
->
-> Bonus would also be that I think it would fix the race conditions that
-> happen when trying to create attributes after the device is bound to the
-> driver that I think the existing driver has today.
->
-> > > (I see the caller uses +2? Why? It seems to be using each of hotkey_=
-attributes,
-> > > plus 1 more attr, plus a final NULL?)
-> >
-> > The +2 is actually for 2 extra attributes (making the total number
-> > of extra attributes +3 because the sizeof(struct attribute_set_obj)
-> > already includes 1 extra).
-> >
-> > FWIW these 2 extra attributes are for devices with a
-> > a physical rfkill on/off switch and for the device being
-> > a convertible capable of reporting laptop- vs tablet-mode.
->
-> Again, using the default way to show (or not show) attributes should
-> solve this issue.  Why not just use that instead?
+> I wondered if this could be a helper function somewhere instead of open
+> coded in this driver. However, I did not find any similar code in the
+> kernel yet, so it might be too early to make this a helper. Have you
+> looked for similar code? I might have just missed it.
 
-What is the default way? Would it be correct to use device_create_file()
-and device_remove_file()?
+I looked through the whole kernel code too, and unfortunately didn't find
+any similar code that could be re-used or had some parts, extractable as
+a common helper. That's why I ended up with a local custom function,
+at least so far, until it could be found useful by somebody else ;)
 
-Sorry if it is a trivial question but I am a kernel newbie :) I have
-a lot to learn. Any suggestion or a good driver to look at would be
-greatly appreciated.
+Thanks!
 
-Thanks,
-Len
+Best regards,
+Andrew 
+
+
