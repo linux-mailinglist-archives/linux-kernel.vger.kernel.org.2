@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC08A4182C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8184182C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236253AbhIYOhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 10:37:11 -0400
-Received: from mout.gmx.net ([212.227.17.21]:57531 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234315AbhIYOhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 10:37:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632580522;
-        bh=MHVNmpDUt2XZPVZrOM2d7kRTrM7UqM+ZYl72eMrWMME=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=EYFOf0pd80lIeAmrrF9xiwCTop6iHe8MGKnQ7iy9jptY7gK+akqQv73Im3JJPALbc
-         vZEsXQ+WBGeNmGOIGI+GuUI2FTsaqcG7YeQWInTV+lVyYso60dHfUV0x+TDj98aTWd
-         mONpLJuJBiZgxJp2djBvjmowtzEjUJCxHadrxzXo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MUXpQ-1mLNLV3bWa-00QV4r; Sat, 25 Sep 2021 16:35:22 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v3] docs: deprecated.rst: Clarify open-coded arithmetic with literals
-Date:   Sat, 25 Sep 2021 16:34:55 +0200
-Message-Id: <20210925143455.21221-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S1343693AbhIYOjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 10:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234538AbhIYOjm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 10:39:42 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6024BC061570;
+        Sat, 25 Sep 2021 07:38:07 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id c21so47661113edj.0;
+        Sat, 25 Sep 2021 07:38:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xzHbIKUdSOaJuwjfaoRJbrHUYOSVx8ucR0op1libfso=;
+        b=L2nTQl0BWQlTcp2ShOhT195N+sQrqjP7fMcFQWVf5nTQ8bXl5m0/3xFw0aWR/RoNRr
+         GfaggP+H3r6T7SY5YJlIFiuTryKPPsOWKfdcvv2qyMg4maCFC7jv6IAiXWufuiaV8npM
+         fXDEi7n2u9Y6ARDIKwoyXO1YNvI21voRgVe8Ce5ig60GZUZtfqdhwgaHgqUu1YPB//KH
+         oR9Im5qPAffmK7TJjMLInyjb1+WqQ8+1/aeiOJhu+NSQt5U1KAK2TvNdsajtGdwCbWUf
+         wylSnYDHMjPFVpJA23pHI69ReSaPHM+g7lB9sPQlQ4M098mftiqUGp7fzs84S306YirF
+         Nh8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xzHbIKUdSOaJuwjfaoRJbrHUYOSVx8ucR0op1libfso=;
+        b=vvJeLkKTWahy1BaR5hlDC2FHVczRFWzN5IQFDgt5cZJZn3WIqj0I90jaQZNchPUq4j
+         raIn2b4xknD86izx2gel17CRZwyAznO6BqvEw7rY7xpi8goA/5tiZh0jCvODueu8PLSE
+         OFpD0WSuDL9WpM5/h+j33Rzlsv2bVIFjSG/eA4rU9KlR30j0c+5BTTmgrtwVZMDGoncV
+         Lh8diZxWpeuaHHRBa+8HdBHvh9Qq6E63+9vOK/prcJwpaR2cdJ2h8K7qziSyt2PAeJae
+         7ijFPXdj3steE5L/utT6U86tPTP1TgnXRvIL0zOLAxQkdhX4mDDf+CnN/9aK4MlPuNBW
+         dkwA==
+X-Gm-Message-State: AOAM531LcQBqciY0YgyrVhlKNnQ5J5BXHhn8hTOr6gyP+USB3evfMzy4
+        gqjdcUq8ViiOos8jaWvcQHGsK3oACN216UmrHK0=
+X-Google-Smtp-Source: ABdhPJzj1RRjI0yWqPdueFUbJmsHfU9Spjq/ZfBywmKGj0TYFU7/X/Y0oe5pSAwJb/WUYTnGRSjjBw==
+X-Received: by 2002:a05:6402:b51:: with SMTP id bx17mr11655023edb.193.1632580685985;
+        Sat, 25 Sep 2021 07:38:05 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3800:55c:dc9d:9cc1:2c16? ([2a04:241e:501:3800:55c:dc9d:9cc1:2c16])
+        by smtp.gmail.com with ESMTPSA id e28sm7539011edc.93.2021.09.25.07.38.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Sep 2021 07:38:05 -0700 (PDT)
+Subject: Re: [PATCH 17/19] selftests: Add -t tcp_authopt option for
+ fcnal-test.sh
+To:     David Ahern <dsahern@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1632240523.git.cdleonard@gmail.com>
+ <c52733a1cd9a7bd16aea0b6e056fad9dd1cc5aed.1632240523.git.cdleonard@gmail.com>
+ <c72ad0be-9499-dcfb-0faa-be3dd51f4a86@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <5471a640-d2e9-8f92-84ba-bf4fb136abe2@gmail.com>
+Date:   Sat, 25 Sep 2021 17:38:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dKt9E5k2asKF84fAquzb74NHveNdHh+ovMnxXCyH7zLXmdvVEcH
- KByLAuwijWKpIc0AfZtSkzP9Ov6z4Td57DjOOhbUg0kZ6a6RjuwOT7IfswEoNvgW8DAZP+r
- sJ++nx5cGlEctopNDfiBuoVy3lunn3nu/obbkvH/Kleoz5dk9bM7PX0vyVqBGgeVKhf8LPK
- bNExmUWyM7e1Y4w3Zfapg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xbofEEqLQZA=:gGT/o+l4C/rY7flqbEMiCR
- 1PW6/hKA4kSPeGsOpeu2QtyLVEAxX+jVjgn9tJwYxFbkBk8w+4jedLE9w3MryN6poxxTIecED
- jYlSqw8NrBA3aJYNMV1RZHYOuctsGe/ynP4TEP8NxtKIeAl3OEdDFDkErfXOd9plQLkPKdD2t
- bc4r3LNuy6EYCtdNcEGmjsIYOGL42Rp31q7fB7UMHNtTjawWPieC94UdoM2MsnndMUEot9qUk
- mT9edn8lw6AZdfe6BLX6evTm8Yr4qlNGf4PEpCLUnZATkKQYbkZoJWRdo3lVl3V7IiYM/7RvI
- Vk3b/bbTyaEOZh+0Q847sPOP5Y7mgqHAvmz+XsM30kN+xBZ8V080+9BbIGBd5PB6WAiuX8VI9
- 4kAvgGP9f1IPpqId+GEfZiAFzdhBjBjPgLu5NbHPtMzCeKUshjy71XAInVHFIFVISsrt3aWmT
- UnVX30WRx3ZVEbqh7sEGu/cZ8B6QFgBGLLSDQea3GCbyGmaRfytm+TqeVMrseI9EMOH9sfWPv
- snsZFcJk8GCfjbkinpDUAGhOkIcd8bweCV1+jJZKWXOoq61H39DotvBMQRCdrVQmlImZ/UnJB
- 7S2nWrpr4XUIgLN7m1HAN1p7JLiE07psOpvxUHDQB8Pt3TsX0gprWObCFkKf9ZdYtRcJBJwac
- zN08IMfp7y7/v2cVflgiE366N7zOC1byKqzUOR9n6/LpB0qvjoSdAa6oAMLB+EgXN83RQkmBD
- reUJ2XPtdfctizH/g+aeLy5lAA2Ulss3TPh7qVFfdB0+BtjllK6NnUND5nJEMm23AU+CH0WzL
- y9898UhdMnXSAoG+uIUPgPf7YwgFbhfv+0JuCoIvLcjceoXBwqrbNIuWZ4i92+ohPgbWsI1kT
- 2fBJfAERLUhqG1iYIFLidf+djj3T1r3eAo4xA7Xxj+Dx9TTAZQfPOEBfVatHYF7rvW+hZxDHx
- 39rci+NPxPKqbPQVgL4NDF7HGjZCUk7c1+HEsetsbzYZuAJ8/17hVuL4t1W2Z/CPn7yHM1ito
- HU5L9+tH95OybubrRH+cSzcIyqPOFBXNIa5udk+elDTGOxckLVc8t0L7JnF8MWjnbhmCckhDr
- ckYe2safHMU8lg=
+In-Reply-To: <c72ad0be-9499-dcfb-0faa-be3dd51f4a86@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although using literals for size calculation in allocator arguments may
-be harmless due to compiler warnings in case of overflows, it is better
-to refactor the code to avoid the use of open-coded arithmetic.
+On 9/25/21 4:52 AM, David Ahern wrote:
+> On 9/21/21 10:15 AM, Leonard Crestez wrote:
+>> This script is otherwise very slow to run!
+> 
+> there are a lot of permutations to cover.
 
-So, clarify the preferred way in these cases.
+I believe that some of the sleeps are not necessary and could be 
+replaced with waits.
 
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Changelog v1 -> v2
- - Clarify the sentence by changing "keep <foo> out" with "avoid <foo>"
-   (Joe Perches).
+>>
+>> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+>> ---
+>>   tools/testing/selftests/net/fcnal-test.sh | 12 ++++++++++++
+>>   1 file changed, 12 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
+>> index 74a7580b6bde..484734db708f 100755
+>> --- a/tools/testing/selftests/net/fcnal-test.sh
+>> +++ b/tools/testing/selftests/net/fcnal-test.sh
+>> @@ -1331,10 +1331,21 @@ ipv4_tcp()
+>>   	log_subsection "With VRF"
+>>   	setup "yes"
+>>   	ipv4_tcp_vrf
+>>   }
+>>   
+>> +
+>> +only_tcp_authopt()
+>> +{
+>> +	log_section "TCP Authentication"
+>> +	setup
+>> +	set_sysctl net.ipv4.tcp_l3mdev_accept=0
+>> +	log_subsection "IPv4 no VRF"
+>> +	ipv4_tcp_authopt
+> 
+> This feature needs to work with VRF from the beginning. v4, v6, with and
+> without VRF.
 
-Changelog v2 -> v3
- - Reword the sentence to comunicate better (Jonathan Corbet).
+I ignored the l3mdev feature because I'm not familiar with it but I'll 
+go through it.
 
-The previous version can be found here [1].
-
-[1] https://lore.kernel.org/linux-hardening/20210829144716.2931-1-len.bake=
-r@gmx.com/
-
- Documentation/process/deprecated.rst | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/process/deprecated.rst b/Documentation/process/=
-deprecated.rst
-index 8ced754a5a0f..388cb19f5dbb 100644
-=2D-- a/Documentation/process/deprecated.rst
-+++ b/Documentation/process/deprecated.rst
-@@ -59,8 +59,9 @@ risk of them overflowing. This could lead to values wrap=
-ping around and a
- smaller allocation being made than the caller was expecting. Using those
- allocations could lead to linear overflows of heap memory and other
- misbehaviors. (One exception to this is literal values where the compiler
--can warn if they might overflow. Though using literals for arguments as
--suggested below is also harmless.)
-+can warn if they might overflow. However, the preferred way in these
-+cases is to refactor the code as suggested below to avoid the open-coded
-+arithmetic.)
-
- For example, do not use ``count * size`` as an argument, as in::
-
-=2D-
-2.25.1
-
+--
+Regards,
+Leonard
