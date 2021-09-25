@@ -2,146 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B60841828B
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C877641828F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343607AbhIYOPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 10:15:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233738AbhIYOPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 10:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9039C61279;
-        Sat, 25 Sep 2021 14:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632579257;
-        bh=T4Ci+yhSdaRdcLzP1LZldRIG74GFbkSiFhcpo7OQCok=;
-        h=Date:From:To:Cc:Subject:From;
-        b=I85bZTOGYSBNQGPmjOr56AQmNdasAoSMA2cNevUdL5Yvk5hAIefpHvvfuA7ZWNL8t
-         5ifgZPK73ZZjdtsRgLnL2VisBlrVp2Cd4BSu4GHzi+5zmDhb+S8KxAvSmUkM8pymiw
-         FULGrbt69KYJm1dZoc3Ygyw1knYx7I+zBKbu2z10=
-Date:   Sat, 25 Sep 2021 16:14:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fixes for 5.15-rc3
-Message-ID: <YU8utviwFXzSOYKW@kroah.com>
+        id S1343675AbhIYOQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 10:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233738AbhIYOQa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 10:16:30 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D47C061570;
+        Sat, 25 Sep 2021 07:14:55 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id ee50so47968737edb.13;
+        Sat, 25 Sep 2021 07:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hi5r/QTKc0hakYYPxOLmnUQF3xIEtGRWHl7PZ9tsfa4=;
+        b=ikUsUlqEpAEVeeQr8KpV9A0k3XvxLReCSOUdzvuL7OFNhnoMCW0fS/heeVX++tm2Fj
+         brF+FOgZdoHFcuHMCSXyDvtr67eA4uS+dsEschaOGJoxB6B02uXdMuqJdGOLMRGVxJU7
+         TnGK9Qs7FOVNDiU20Iim1oNxuMnj+OXttG3ZqpXXnG7elhu6vGz/Au4DAw9TcOd8Vv1s
+         eFc6w68nXOTpZfkBPAEUT1jot4nJW6OLJo9jAOThhBqHjdAe2uGfi5JBCG8e6f2UToMN
+         CSk3oSOvNIrfks3NLTSLOUSO0qPCQNSDWV6lwWc76oGn3cXpl4uwKjhsdUqzaxdltq7t
+         EWBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hi5r/QTKc0hakYYPxOLmnUQF3xIEtGRWHl7PZ9tsfa4=;
+        b=HyYjx2f5V9FgBh00ZdR78KAtyzuzneYMl/LHH89/seSCaQjgNk5RRKr2WBTYHPF20b
+         YZd/qfRDfrIxrJLQ29MCyRD3ZfVa2tWuTo1gpNFm6ot3qS7UqNTUUgZBeMEcYeaXWwoQ
+         8ZiheWx9uAgj3urW9o/rmLiy0BNihvZ15n17TmP9frXBfYBmcYAglXwEgj123kqftkGa
+         mWFRhkNBPKaq1kBzCXbbdE9NfLbq1+yRd6nbzD38gyNFFKdwv6HwJTaNIowfljuELTNy
+         5iRVilf+eiawGHU9FQDQ+M+c59eHu2AgcMFWQ90+5rMO2ASYWDeFKjMM0oL+wSG9z7PK
+         2QQQ==
+X-Gm-Message-State: AOAM532Eud2LAsk1GzmLE87kjMw3HZPBH0fDmE6xT2jgE+AMVQvO0Yp0
+        ruieUebJweEK0my1f4oskb1XDyXtRS/rhDWLSwk=
+X-Google-Smtp-Source: ABdhPJyw95qtw/Li2PyMyMyWxpjzmlZNuzkRi9jH/UEyb7cWbwy6LipocE7q899bLht3ndlmaN6Npg==
+X-Received: by 2002:a17:906:32c9:: with SMTP id k9mr17484811ejk.218.1632579293736;
+        Sat, 25 Sep 2021 07:14:53 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3800:55c:dc9d:9cc1:2c16? ([2a04:241e:501:3800:55c:dc9d:9cc1:2c16])
+        by smtp.gmail.com with ESMTPSA id e11sm6297928ejm.41.2021.09.25.07.14.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Sep 2021 07:14:53 -0700 (PDT)
+Subject: Re: [PATCH 08/19] tcp: authopt: Disable via sysctl by default
+To:     David Ahern <dsahern@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1632240523.git.cdleonard@gmail.com>
+ <b0abf2b789220708011a862a892c37b0fd76dc25.1632240523.git.cdleonard@gmail.com>
+ <cafecbeb-7d4d-489c-177d-29fff78eb4d1@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <65ed79e3-bef1-19c4-ac1d-9d6833236a1c@gmail.com>
+Date:   Sat, 25 Sep 2021 17:14:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <cafecbeb-7d4d-489c-177d-29fff78eb4d1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
-are available in the Git repository at:
+On 9/25/21 4:57 AM, David Ahern wrote:
+> On 9/21/21 10:14 AM, Leonard Crestez wrote:
+>> This is mainly intended to protect against local privilege escalations
+>> through a rarely used feature so it is deliberately not namespaced.
+>>
+>> Enforcement is only at the setsockopt level, this should be enough to
+>> ensure that the tcp_authopt_needed static key never turns on.
+>>
+>> No effort is made to handle disabling when the feature is already in
+>> use.
+>>
+> 
+> MD5 does not require a sysctl to use it, so why should this auth mechanism?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.15-rc3
+I think it would make sense for both these features to be off by 
+default. They interact with TCP in complex ways and are available to all 
+unprivileged users but their real usecases are actually very limited.
 
-for you to fetch changes up to bb509a6ffed2c8b0950f637ab5779aa818ed1596:
+Having to flip a few sysctls is very reasonable in the context of 
+setting up a router.
 
-  comedi: Fix memory leak in compat_insnlist() (2021-09-21 17:53:54 +0200)
+My concern is that this feature ends up in distro kernels and somebody 
+finds a way to use it for privilege escalation.
 
-----------------------------------------------------------------
-Char/Misc driver fixes for 5.15-rc3
+It also seems reasonable for "experimental" features to be off by default.
 
-Here are some small char and misc driver fixes for 5.15-rc3.
-
-Nothing huge in here, just fixes for a number of small issues that have
-been reported.  These include:
-	- habanalabs race conditions and other bugs fixed
-	- binder driver fixes
-	- fpga driver fixes
-	- coresight build warning fix
-	- nvmem driver fix
-	- comedi memory leak fix
-	- bcm-vk tty race fix
-	- other tiny driver fixes
-
-All of these have been in linux-next for a while with no reported
-issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      misc: genwqe: Fixes DMA mask setting
-
-Colin Ian King (1):
-      habanalabs: Fix spelling mistake "FEADBACK" -> "FEEDBACK"
-
-Dan Carpenter (1):
-      mcb: fix error handling in mcb_alloc_bus()
-
-Douglas Anderson (1):
-      nvmem: core: Add stubs for nvmem_cell_read_variable_le_u32/64 if !CONFIG_NVMEM
-
-Geert Uytterhoeven (1):
-      nvmem: NVMEM_NINTENDO_OTP should depend on WII
-
-Greg Kroah-Hartman (2):
-      Merge tag 'misc-habanalabs-fixes-2021-09-19' of https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux into char-misc-linus
-      Merge tag 'fpga-fixes-5.15' of git://git.kernel.org/pub/scm/linux/kernel/git/mdf/linux-fpga into char-misc-linus
-
-Ian Abbott (1):
-      comedi: Fix memory leak in compat_insnlist()
-
-Jian Cai (1):
-      coresight: syscfg: Fix compiler warning
-
-Jiapeng Chong (1):
-      fpga: machxo2-spi: Fix missing error code in machxo2_write_complete()
-
-Johan Hovold (1):
-      misc: bcm-vk: fix tty registration race
-
-Li Li (1):
-      binder: fix freeze race
-
-Oded Gabbay (1):
-      habanalabs/gaudi: fix LBW RR configuration
-
-Ofir Bitton (4):
-      habanalabs: fix potential race in interrupt wait ioctl
-      habanalabs: fail collective wait when not supported
-      habanalabs: rate limit multi CS completion errors
-      habanalabs: expose a single cs seq in staged submissions
-
-Omer Shpigelman (1):
-      habanalabs/gaudi: use direct MSI in single mode
-
-Russ Weight (1):
-      fpga: dfl: Avoid reads to AFU CSRs during enumeration
-
-Todd Kjos (1):
-      binder: make sure fd closes complete
-
-Tom Rix (1):
-      fpga: machxo2-spi: Return an error on failure
-
-farah kassabri (2):
-      habanalabs: fix kernel OOPs related to staged cs
-      habanalabs: fix wait offset handling
-
- drivers/android/binder.c                           |  58 ++++++++---
- drivers/android/binder_internal.h                  |   2 +
- drivers/comedi/comedi_fops.c                       |   1 +
- drivers/fpga/dfl.c                                 |  14 +--
- drivers/fpga/machxo2-spi.c                         |   6 +-
- drivers/hwtracing/coresight/coresight-syscfg.c     |   1 +
- drivers/mcb/mcb-core.c                             |  12 +--
- drivers/misc/bcm-vk/bcm_vk_tty.c                   |   6 +-
- drivers/misc/genwqe/card_base.c                    |   2 +-
- .../misc/habanalabs/common/command_submission.c    |  71 +++++++++----
- drivers/misc/habanalabs/common/hw_queue.c          |   9 +-
- drivers/misc/habanalabs/gaudi/gaudi.c              |  11 +-
- drivers/misc/habanalabs/gaudi/gaudi_security.c     | 115 ++++++++++++---------
- .../habanalabs/include/gaudi/asic_reg/gaudi_regs.h |   2 +
- drivers/nvmem/Kconfig                              |   1 +
- include/linux/nvmem-consumer.h                     |  14 +++
- include/uapi/linux/android/binder.h                |   7 ++
- 17 files changed, 229 insertions(+), 103 deletions(-)
+--
+Regards,
+Leonard
