@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61B04184C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 23:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC7D4184CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 23:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhIYVw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 17:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbhIYVwz (ORCPT
+        id S230064AbhIYWAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 18:00:48 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:34556
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229997AbhIYWAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 17:52:55 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3E7C061570;
-        Sat, 25 Sep 2021 14:51:20 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id t189so19841460oie.7;
-        Sat, 25 Sep 2021 14:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xXE6tPFHGDsPsH+w+WO5WaNI+v7eeYjQLWzUD9Xd83E=;
-        b=ODZtRkyZQ13i7Vio/IiY1nwAYNaxnbsb6tFCfAV6e6omhF9afdn1V9nESyKw+Tx4nt
-         Wv5fiUVddccSvTaAmYpuR2Rx1Jvi4UYoVWmYCFCZ23gANyZE4VMVauDKTVBfG6kEJfKO
-         qahHUVEEVyzPrRETzDQlsQRKLQMEfL5Ck4Ept9b2wlvRF3yazZsg3jz6kaOrJjmAvYbs
-         EuZCUWjrdXfW40X1vqhznNBMNA2J9xSpiObCmCDwY/ew3cSY9WX8RG6jDsjgA4QKHxXz
-         EJf6G4hR70HI4HhflfwJXWKri2UqUVYMJdZKEZG89iuz10WvB7qJzQi5/j5HyBl7ne6I
-         g4Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=xXE6tPFHGDsPsH+w+WO5WaNI+v7eeYjQLWzUD9Xd83E=;
-        b=2+gz2ysF7aCBuCVuaFt0G7Uy1/JvKyeWlVVLHUYkBQHVjNOfRAP+luMrxx+CZ/zpM2
-         eMv7kgSMAnLvUSWgr5XdzOCb+SPhgTSfjrMwTrVFeT+b0TQRgGdT9+VSsxz1sJwUPtZj
-         zUW7fjgffvDQVRh6FHsQwMj/oFq89s1fjELCzzxAh3Qh6NJCgE/BUyj/bliaqBCLiGJw
-         teYPkmRnYOpF8a8dCODOvrNZFfyxYrBa07XNG0yQ8u8/2IzHFTAqm7W2fXe6/UijDlck
-         8pZG0Hupx8Ki1b2YmCcehTn7zGUKeIXhDHwIMn+1sBT0LMdnTVztnpjpB/JsPwlLQosm
-         RRsg==
-X-Gm-Message-State: AOAM530cMzF/b9flkiKnrJCWBvJtkRx/hltWAYTVOLvwN/rTRowNfp8/
-        FkJo9uxqbTbZkVszHSGCCmg=
-X-Google-Smtp-Source: ABdhPJwi9R/RUixnA7k2JW9rjgPH4knq4380x+ZFzuH1hRfM5qsIdfqQ5BgMNwgnWNOKPcdhkivxqA==
-X-Received: by 2002:aca:2415:: with SMTP id n21mr6417500oic.27.1632606679464;
-        Sat, 25 Sep 2021 14:51:19 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u12sm3085320otq.20.2021.09.25.14.51.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 14:51:19 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 25 Sep 2021 14:51:17 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 00/98] 5.14.8-rc2 review
-Message-ID: <20210925215117.GG563939@roeck-us.net>
-References: <20210925120755.238551529@linuxfoundation.org>
+        Sat, 25 Sep 2021 18:00:47 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 91AA23F070;
+        Sat, 25 Sep 2021 21:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632607148;
+        bh=X8bcr5IsgetMjo+uz2jNmTIyMflSWfgaoOmzS2irH7U=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=eXvfkiyt68V4JBa92l83AG/m0+VHiYqED7qIiVcRX4a+zW74yufVRCqzMVFP/CjyG
+         CSyuwHwLvJbXxN7r0HrWYg8ZYp9vlmysFcgBaBG78LN9pNr+Pmkrqtm7xjYKwUSi0D
+         VlZ7q5vfUUIeIuN4tfCuzKeuEix6JFbeOs2m+4Z6HfJsWO+aksRtp5hlh6MQCM5l09
+         0fvkBhyG/6Vo3wOvUJgPM5UtXk+kLEPR4FlDhVf7bBwDe6SyR81VgkieKzvrVIZqWf
+         8cT50xiIJMMSeLDBwE6zzwgve6OW+bVeGWX1QJRaf8riIVAKmlmwXO/mOuMc5P0pD+
+         GOXMaK9jENseQ==
+From:   Colin King <colin.king@canonical.com>
+To:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/damon/core: nullify pointer ctx->kdamond with a NULL
+Date:   Sat, 25 Sep 2021 22:59:08 +0100
+Message-Id: <20210925215908.181226-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210925120755.238551529@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 02:14:18PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.8 release.
-> There are 98 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Mon, 27 Sep 2021 12:07:36 +0000.
-> Anything received after that time might be too late.
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+Currently a plain integer is being used to nullify the
+pointer ctx->kdamond. Use NULL instead. Cleans up sparse
+warning:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+mm/damon/core.c:317:40: warning: Using plain integer as NULL pointer
 
-Guenter
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ mm/damon/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 874558a790a0..c8665c80577a 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -314,7 +314,7 @@ static int __damon_start(struct damon_ctx *ctx)
+ 				nr_running_ctxs);
+ 		if (IS_ERR(ctx->kdamond)) {
+ 			err = PTR_ERR(ctx->kdamond);
+-			ctx->kdamond = 0;
++			ctx->kdamond = NULL;
+ 		}
+ 	}
+ 	mutex_unlock(&ctx->kdamond_lock);
+-- 
+2.32.0
+
