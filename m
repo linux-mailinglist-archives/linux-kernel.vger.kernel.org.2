@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD494183B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45E64183B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhIYRnB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 25 Sep 2021 13:43:01 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:33803 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhIYRm5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 13:42:57 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MQNAv-1mGcs50Kvp-00MOeI for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021
- 19:41:20 +0200
-Received: by mail-wr1-f42.google.com with SMTP id i24so21471957wrc.9
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 10:41:20 -0700 (PDT)
-X-Gm-Message-State: AOAM531Vuqvl8TEJ7F4thtr0n2btjjlgXTvJZ4H69pvEdMYhArc1m+UV
-        LeFQ0trss2D41t4JilbMlWuBtBtIyO2BsOkXJv0=
-X-Google-Smtp-Source: ABdhPJzD7fF7tq6rLYrEB//7e7yO+zDI+S3dCg1d1r0r2MDWO3yvErGx3x5MkLRhsuk0e3xLvLsqeGf1sDbZc+8mutY=
-X-Received: by 2002:a1c:23cb:: with SMTP id j194mr7831419wmj.1.1632591679710;
- Sat, 25 Sep 2021 10:41:19 -0700 (PDT)
+        id S229691AbhIYRm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 13:42:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229618AbhIYRmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 13:42:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3341D60241;
+        Sat, 25 Sep 2021 17:41:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632591677;
+        bh=jTUPvgn+7lWrPPVxHKOZyH1EqRMOCPIGsd4h55JfcE4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=tAlz7+NpKpqNLtWHdEAXo6DHoiUUBVhBcckNBrk+EK8eA1NREarQlyYB8hXpAK+G1
+         yOMAlllPOMkHVxxHsFgEPoGXBdAmzhgJN2v6vEYAtK+ljKksnn3a2WeXvNFlm2Ncaw
+         noLW+i+3Q18f7m9LkPlTeglCwmIjdC2O2cc6fp6E2F89KA6yLHk2oAjfDf4zQ3rRLT
+         c5JaUlSc8aXtPEdnC8U9PfDfWE95KfqFqSiV1MWc8isBGOsB2dUs9qcjKsbgPZIYDq
+         iwaLJfAwRd3BRXuj3YfrI1wD/B85O8ZsbIf3/S6cW103ErvOZvBFmhG6gKQ1yHH1pm
+         CooTrE8rakAGg==
+Date:   Sat, 25 Sep 2021 12:41:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
+Message-ID: <20210925174115.GA511131@bhelgaas>
 MIME-Version: 1.0
-References: <YU8oVDFoeD5YYeDT@kroah.com>
-In-Reply-To: <YU8oVDFoeD5YYeDT@kroah.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 25 Sep 2021 19:41:03 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3pdVhjv4J4HSB1cvHU7U_P7TV7HCOYmrK==V_MAnT2BQ@mail.gmail.com>
-Message-ID: <CAK8P3a3pdVhjv4J4HSB1cvHU7U_P7TV7HCOYmrK==V_MAnT2BQ@mail.gmail.com>
-Subject: Re: [PATCH] dma-buf: move dma-buf symbols into the DMA_BUF module namespace
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:RiAXDwcUwX1xFbrt+c+a6omTPhtbhF3lrrnIyveq+fwC7Lcclpp
- BEixva4cUshApwejf5OnVBG7P7NgP0nOTJx9JGCrEmjqismz31kzu5K0jnTZQolBiZnzDlX
- 8JfzXnkvnjmmw6keBTgL5iPGP3vhjMFuuBz8BpS2yOkXi2ArL5Y2V67IEWsAiC3eKdKblFP
- tDFPVavEARpN+I9ZsYgsQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OivLiqXJTYU=:83Q3K4MB3YQXC6lObExs18
- qXY3dfIL9/PsX9m6KpR+MGCqpvhguZz9aPUkb/M6Fa+w6OQfP7DuevPlPIEz6fF8GEZigxmgu
- Mrueq39LFWXJbE/H7fmOTJCtb67Yb4etGqDUyLnc3S0o4CYTV2iRd+6FOq+hHmY+hxCYazU8x
- iWYeu6AyfdDfZq88zRRi8eKHX9jZbR7brVINbB+RqfGvgS31nKYhDE0D3pwntOAENjT+U8B8d
- sjpD9y/q59YSzgcz3vafL63JW5tw11HJhgVcsYrf2nn1XGk/hOyk7jGDcvlbM+a3b9c+TwWBO
- WI6rL8cFVSTCOmy86Mj7DF8xPrDKDP7yc6q2eZkCdHi46xQufYb897B8/nqrS5nDLLXVYtO/6
- kVsvyny8vhB74Z95mn05clmqTlTdtjSaDwwcUEL1fYt+5G+4ET1EGGeLPQPmf9QsHav1Q5oQ8
- zckbSIZ6uMAsOJEwTI9x8t0kK0Px43j9fxfXAYwHw9D+oCAAQU9OHuHv2C4N14RnM1bx0R+vn
- jagIEKD85BrO3G+R/jSn0g+CyRn9zoby0958OLsckwsu+mciQ2UD/WJ3JwWXzQ42SiUyEV7bc
- V7eB1cLxw4rIF4hmCzKLYyPZJQ8wMZggobcZWXyjq9aA0mR+mHVFZg4igB/tG9wYvOtfma8jh
- 1Oz1pCIylKwQayLWGhnB5G3/UR0XWa3A4FYgvMZ/PprapHn/fAEi540+2Rnzpq01Mthb0xZj6
- 6bNQsV5jBOxhSLvvQO+HUsuu5jAyY6r15NrrOF7Fja51HJh4jeu0ouHQ38z+ntDbA8bBjhAj8
- Ld9Xr2QoSOSfT342sKAX4athbb2Vmxvpjh0oT9ys7QyN0GlW5b0opEnVGfu/zC68dKYuACAI+
- 3USpQPqdaSskljB7so9Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YU71n4WSIztOdpbw@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 3:47 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> In order to better track where in the kernel the dma-buf code is used,
-> put the symbols in the namespace DMA_BUF and modify all users of the
-> symbols to properly import the namespace to not break the build at the
-> same time.
->
-> Now the output of modinfo shows the use of these symbols, making it
-> easier to watch for users over time:
->
-> $ modinfo drivers/misc/fastrpc.ko | grep import
-> import_ns:      DMA_BUF
->
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian König" <christian.koenig@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Sat, Sep 25, 2021 at 01:10:39PM +0300, Leon Romanovsky wrote:
+> On Fri, Sep 24, 2021 at 08:08:45AM -0500, Bjorn Helgaas wrote:
+> > On Thu, Sep 23, 2021 at 09:35:32AM +0300, Leon Romanovsky wrote:
+> > > On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
+> > > > On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
+> > > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > 
+> > > > > The PCI core uses the VF index internally, often called the vf_id,
+> > > > > during the setup of the VF, eg pci_iov_add_virtfn().
+> > > > > 
+> > > > > This index is needed for device drivers that implement live migration
+> > > > > for their internal operations that configure/control their VFs.
+> > > > >
+> > > > > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
+> > > > > from this series needs it and not the bus/device/function which is
+> > > > > exposed today.
+> > > > > 
+> > > > > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
+> > > > > was used to create the bus/device/function.
+> > > > > 
+> > > > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+> > > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > > 
+> > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > 
+> > > > mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
+> > > > same thing as pci_iov_vf_id() by iterating through VFs until it finds
+> > > > one with a matching devfn (although it *doesn't* check for a matching
+> > > > bus number, which seems like a bug).
+> ...
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > And it still looks like the existing code is buggy.  This is called
+> > via sysfs, so if the PF is on bus X and the user writes to
+> > sriov_vf_msix_count for a VF on bus X+1, it looks like
+> > mlx5_core_sriov_set_msix_vec_count() will set the count for the wrong
+> > VF.
+> 
+> In mlx5_core_sriov_set_msix_vec_count(), we receive VF that is connected
+> to PF which has "struct mlx5_core_dev". My expectation is that they share
+> same bus as that PF was the one who created VFs. The mlx5 devices supports
+> upto 256 VFs and it is far below the bus split mentioned in PCI spec.
+> 
+> How can VF and their respective PF have different bus numbers?
 
-> The topic of dma-buf came up in the Maintainer's summit yesterday, and
-> one comment was to put the symbols in their own module namespace, to
-> make it easier to notice and track who was using them.  This patch does
-> so, and finds some "interesting" users of the api already in the tree.
->
-> Only test-built on x86 allmodconfig, don't know what other arches will
-> pick up, will let 0-day run on it for a bit...
+See PCIe r5.0, sec 9.2.1.2.  For example,
 
-I've added it to my build box doing arm32/arm64/x86 randconfig tests,
-if it doesn't report anything by Monday, it's probably good in that regard.
+  PF 0 on bus 20
+    First VF Offset   1
+    VF Stride         1
+    NumVFs          511
+  VF 0,1   through VF 0,255 on bus 20
+  VF 0,256 through VF 0,511 on bus 21
 
-      Arnd
+This is implemented in pci_iov_add_virtfn(), which computes the bus
+number and devfn from the VF ID.
+
+pci_iov_virtfn_devfn(VF 0,1) == pci_iov_virtfn_devfn(VF 0,256), so if
+the user writes to sriov_vf_msix_count for VF 0,256, it looks like
+we'll call mlx5_set_msix_vec_count() for VF 0,1 instead of VF 0,256.
+
+The spec encourages devices that require no more than 256 devices to
+locate them all on the same bus number (PCIe r5.0, sec 9.1), so if you
+only have 255 VFs, you may avoid the problem.
+
+But in mlx5_core_sriov_set_msix_vec_count(), it's not obvious that it
+is safe to assume the bus number is the same.
+
+Bjorn
