@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED51741850C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 00:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F781418511
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 00:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhIYW4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 18:56:14 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37690
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230078AbhIYW4N (ORCPT
+        id S230179AbhIYXAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 19:00:19 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36486
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230078AbhIYXAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 18:56:13 -0400
+        Sat, 25 Sep 2021 19:00:18 -0400
 Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 39DA94017D;
-        Sat, 25 Sep 2021 22:54:37 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id CC33D40186;
+        Sat, 25 Sep 2021 22:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632610477;
-        bh=AG12UD5GriQyZRsgo14qtdKvfNVSCkgR37Dg0qaOmc0=;
+        s=20210705; t=1632610721;
+        bh=yUov5c28I0sE0mYEPq2ZwDrAU1S9Y8zUPwsyk26CH2E=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=dKN4sJPMlwObnLl1dEaMjayZxqCCMu2zWiEm8cJ/792OMYftatnp+AoUvWClN6Ggp
-         bmUxT/VYf/yC5j+bCdZLdxguIopdu/TY3wcxXcTb5ZdI3KHoapL8cUZgR4PGK+7VlG
-         F5/o1bP024knrFoI3l+0POYNHPlPZkqvvLmhKlDai94HbMPI57iEvIVfKFZPm5zXIu
-         grtwq8V9nmPkCHDNdH5gM7znZJr3iVls59zGUZfBZmWPkIq9JpTHlKagnwo8MgKe4a
-         ZPS30SUBxiojnD1cTXLv2hsk3sPNqyHOQgQkgB/zfA4tAaUeNIGMAPgqZlkitt+5J5
-         PHXUpLh0mp0ZQ==
+        b=q39KU5X/fhlaezBmBn+Gbay2fd5+AoAQ/SikK2/JV+XStyNOG08iYuU8gshZ0L5ex
+         k/BX79gfVZxc0kr6YJipYLWfOXiJ8ghd9rLIu+Sw60oFWoQ+pKUzZ3gkHkXc7U2paE
+         vRL384cMbBH2thLqC6KwJmBH2nOD540XhrX9x/NGU+CrzpVhv+GXxEin9+kuqyAG3f
+         ULp/onRXXuAIkIaPmvWtZXd9nGm9Gn8Ut9be3acLkqoeJMjvfMnMQxrN227XAEcjM/
+         kBtLoEJ0R41WHhfIrrxq7WBmg4gMacsNam2yOqcW/+QyXddWXTHI3hIUhll801gw9H
+         vC4DZ9p8h+C8w==
 From:   Colin King <colin.king@canonical.com>
-To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+To:     "J . Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] video: fbdev: pxa168fb: Initialize pointers with NULL and not plain integer 0
-Date:   Sat, 25 Sep 2021 23:54:36 +0100
-Message-Id: <20210925225436.183770-1-colin.king@canonical.com>
+Subject: [PATCH] NFSD: Initialize pointer ni with NULL and not plain integer 0
+Date:   Sat, 25 Sep 2021 23:58:41 +0100
+Message-Id: <20210925225841.184101-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -44,29 +45,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-Pointers info and fbi are being initialized with plain integer zeros. Fix
-this by initializing them with NULLs.
+Pointer ni is being initialized with plain integer zero. Fix
+this by initializing with NULL.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/video/fbdev/pxa168fb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nfsd/nfs4proc.c  | 2 +-
+ fs/nfsd/nfs4state.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/fbdev/pxa168fb.c b/drivers/video/fbdev/pxa168fb.c
-index 47e6a1d0d229..461fedf9bf24 100644
---- a/drivers/video/fbdev/pxa168fb.c
-+++ b/drivers/video/fbdev/pxa168fb.c
-@@ -593,8 +593,8 @@ static void pxa168fb_init_mode(struct fb_info *info,
- static int pxa168fb_probe(struct platform_device *pdev)
+diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+index 3f7e59ec4e32..3dc40c1d32bc 100644
+--- a/fs/nfsd/nfs4proc.c
++++ b/fs/nfsd/nfs4proc.c
+@@ -1178,7 +1178,7 @@ extern void nfs_sb_deactive(struct super_block *sb);
+ static __be32 nfsd4_ssc_setup_dul(struct nfsd_net *nn, char *ipaddr,
+ 		struct nfsd4_ssc_umount_item **retwork, struct vfsmount **ss_mnt)
  {
- 	struct pxa168fb_mach_info *mi;
--	struct fb_info *info = 0;
--	struct pxa168fb_info *fbi = 0;
-+	struct fb_info *info = NULL;
-+	struct pxa168fb_info *fbi = NULL;
- 	struct resource *res;
- 	struct clk *clk;
- 	int irq, ret;
+-	struct nfsd4_ssc_umount_item *ni = 0;
++	struct nfsd4_ssc_umount_item *ni = NULL;
+ 	struct nfsd4_ssc_umount_item *work = NULL;
+ 	struct nfsd4_ssc_umount_item *tmp;
+ 	DEFINE_WAIT(wait);
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index 8b7e9b28c109..bfad94c70b84 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -5541,7 +5541,7 @@ static void nfsd4_ssc_shutdown_umount(struct nfsd_net *nn)
+ static void nfsd4_ssc_expire_umount(struct nfsd_net *nn)
+ {
+ 	bool do_wakeup = false;
+-	struct nfsd4_ssc_umount_item *ni = 0;
++	struct nfsd4_ssc_umount_item *ni = NULL;
+ 	struct nfsd4_ssc_umount_item *tmp;
+ 
+ 	spin_lock(&nn->nfsd_ssc_lock);
 -- 
 2.32.0
 
