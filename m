@@ -2,203 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E43A41835F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 18:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6B7418364
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 18:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbhIYQVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 12:21:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229454AbhIYQU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 12:20:56 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C89561076;
-        Sat, 25 Sep 2021 16:19:19 +0000 (UTC)
-Date:   Sat, 25 Sep 2021 17:23:07 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Roan van Dijk <roan@protonic.nl>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3 3/4] drivers: iio: chemical: Add support for
- Sensirion SCD4x CO2 sensor
-Message-ID: <20210925172307.305be961@jic23-huawei>
-In-Reply-To: <20210922103925.2742362-4-roan@protonic.nl>
-References: <20210922103925.2742362-1-roan@protonic.nl>
-        <20210922103925.2742362-4-roan@protonic.nl>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229506AbhIYQlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 12:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhIYQlG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 12:41:06 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180BCC061570;
+        Sat, 25 Sep 2021 09:39:32 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t4so8737711plo.0;
+        Sat, 25 Sep 2021 09:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AHBJp+MjeLCe3b43/RSU7R6aEcfBrxWE3oKFx9hyVok=;
+        b=oT7FcjHWUH+wtdkvL69Y7Uyd+3Cboq+KDSIAG/J64L0XK61PMYzeWetNaifsSjmk5H
+         SuGvjlCHhwp7sDUkExGO5i4YnECa7/JR5FN6o8E6bxw2vPMWX2i79/cJYbzsQPDZCRsc
+         /JJcN5/I7X8cAdjMI4n9MOTB7SfBXhrHhGmABmXuAjO+8oqGoJA1EbIOvWxRG5TJQFpK
+         qQuC+/3Chd+p9oPr38jaUvzs9bDJocyhrZOmCzfGwPQTlEfuWEqwP4gD3bvJGihEOZ9y
+         3yYyfHSQ0bU7SsXZOLwpi02luf5AD1BWwDt4PqTpZeXG6OeImxuBQc7Da8YRDoApPPt7
+         Z4sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AHBJp+MjeLCe3b43/RSU7R6aEcfBrxWE3oKFx9hyVok=;
+        b=0e1i82AcK7yleQHZO/lh8s0YgW0honVwBKNfd6sMVfDHsl1vzPsheFjhHcBx4l0iN+
+         UJgkM1DZPAu2FO8QjT+HIQuqDjULKC/yqE7lqLhm90LDL+G0VLMKm6CBI8eS+bVhrWO9
+         mWeWGP2cRhzam4FrFpRfINkKgItXEea3/ITsji+QfNySexb6imFGNlM+z/RAm0P4hQNK
+         CS1QOq3GfE03e3Q7XejmvUaWSSdQ1kGMaDsSlgOQcE4994FpaoA9q8g7zEwjF3xwlS34
+         t/x566gOpPqwoHDlghCU42jJMO14anfDelV8vW+sCJZmmeBMcSasGXX5MWI4HYLYubGU
+         D2xA==
+X-Gm-Message-State: AOAM530PFy6SMj8gSFwZgwtHjDPbud5g4ymAxtWS22gWIoSl3vOoc2kg
+        25Txo/iIOe7fk3DEIRC0xPs=
+X-Google-Smtp-Source: ABdhPJyuy5tKNOoKz7FdMPE3OZdYtEyXHupzN0azbvGowMiT6RWmEXaRzaQf0pQ5MtxqE9kS1rr+0Q==
+X-Received: by 2002:a17:90b:17d0:: with SMTP id me16mr9062267pjb.49.1632587971281;
+        Sat, 25 Sep 2021 09:39:31 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:6005:10e3:6238:12b8:7d27:c5e3])
+        by smtp.googlemail.com with ESMTPSA id n9sm13609961pjk.3.2021.09.25.09.39.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Sep 2021 09:39:30 -0700 (PDT)
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: [PATCH] Documentation: checkpatch: Document some more message types
+Date:   Sat, 25 Sep 2021 22:08:52 +0530
+Message-Id: <20210925163852.12096-1-utkarshverma294@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 12:39:24 +0200
-Roan van Dijk <roan@protonic.nl> wrote:
+Added and documented 3 new message types:
+- MULTILINE_DEREFERENCE
+- SINGLE_STATEMENT_DO_WHILE_MACRO
+- MULTIPLE_ASSIGNMENTS
 
-> This is a driver for the SCD4x CO2 sensor from Sensirion. The sensor is
-> able to measure CO2 concentration, temperature and relative humdity.
-> The sensor uses a photoacoustic principle for measuring CO2 concentration.
-> An I2C interface is supported by this driver in order to communicate with
-> the sensor.
-> 
-> Signed-off-by: Roan van Dijk <roan@protonic.nl>
+Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+---
+ Documentation/dev-tools/checkpatch.rst | 43 ++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-Hi Roan,
+diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+index f0956e9ea2d8..dac5b89a3082 100644
+--- a/Documentation/dev-tools/checkpatch.rst
++++ b/Documentation/dev-tools/checkpatch.rst
+@@ -710,6 +710,33 @@ Indentation and Line Breaks
+ 
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
+ 
++  **MULTILINE_DEREFERENCE**
++    A single dereferencing identifier spanned on multiple lines like::
++
++      struct_identifier->member[index].
++      member = <foo>;
++
++    is generally hard to follow. It can easily lead to typos and so makes
++    the code vulnerable to bugs.
++
++    If fixing the multiple line dereferencing leads to an 80 column
++    violation, then either rewrite the code in a more simple way or if the
++    starting part of the dereferencing identifier is the same and used at
++    multiple places then store it in a temporary variable, and use that
++    temporary variable only at all the places. For example, if there are
++    two dereferencing identifiers::
++
++      member1->member2->member3.foo1;
++      member1->member2->member3.foo2;
++
++    then store the member1->member2->member3 part in a temporary variable.
++    It not only helps to avoid the 80 column violation but also reduces
++    the program size by removing the unnecessary dereferences.
++
++    But if none of the above methods work then ignore the 80 column
++    violation because it is much easier to read a dereferencing identifier
++    on a single line.
++
+   **TRAILING_STATEMENTS**
+     Trailing statements (for example after any conditional) should be
+     on the next line.
+@@ -845,6 +872,17 @@ Macros, Attributes and Symbols
+     Use the `fallthrough;` pseudo keyword instead of
+     `/* fallthrough */` like comments.
+ 
++  **SINGLE_STATEMENT_DO_WHILE_MACRO**
++    For the multi-statement macros, it is necessary to use the do-while
++    loop to avoid unpredictable code paths. The do-while loop helps to
++    group the multiple statements into a single one so that a
++    function-like macro can be used as a function only.
++
++    But for the single statement macros, it is unnecessary to use the
++    do-while loop. Although the code is syntactically correct but using
++    the do-while loop is redundant. So remove the do-while loop for single
++    statement macros.
++
+   **WEAK_DECLARATION**
+     Using weak declarations like __attribute__((weak)) or __weak
+     can have unintended link defects.  Avoid using them.
+@@ -920,6 +958,11 @@ Functions and Variables
+     Your compiler (or rather your loader) automatically does
+     it for you.
+ 
++  **MULTIPLE_ASSIGNMENTS**
++    Multiple assignments on a single line makes the code unnecessarily
++    complicated. So on a single line assign value to a single variable
++    only, this makes the code more readable and helps avoid typos.
++
+   **RETURN_PARENTHESES**
+     return is not a function and as such doesn't need parentheses::
+ 
+-- 
+2.25.1
 
-Only thing in here of significance is that the format for available attribute
-is wrong + it needs adding to the ABI docs.
-
-Given we are going to have a v4, I noted a few other minor things to tidy up.
-
-Thanks,
-
-Jonathan
-
-
-> +static int scd4x_read(struct scd4x_state *state, enum scd4x_cmd cmd,
-> +			void *response, int response_sz)
-> +{
-> +	struct i2c_client *client = state->client;
-> +	char buf[SCD4X_READ_BUF_SIZE];
-> +	char *rsp = response;
-> +	int i, ret;
-> +	char crc;
-> +
-> +	/*
-> +	 * Measurement needs to be stopped before sending commands.
-> +	 * Except for reading measurement and data ready command.
-> +	 */
-> +	if ((cmd != CMD_GET_DATA_READY) && (cmd != CMD_READ_MEAS)) {
-> +		ret = scd4x_send_command(state, CMD_STOP_MEAS);
-> +		if (ret)
-> +			return ret;
-> +
-> +		/* execution time for stopping measurement */
-> +		msleep_interruptible(500);
-> +	}
-> +
-> +	/*CRC byte for every 2 bytes of data */
-
-/* CRC..
-
-Please check for similar as otherwise we'll get 'cleanup' patches the moment various
-scripts hit this new code and it'll waste our time!
-
-> +	response_sz += response_sz / 2;
-> +
-> +	put_unaligned_be16(cmd, buf);
-> +	ret = scd4x_i2c_xfer(state, buf, 2, buf, response_sz);
-> +	if (ret)
-> +		return ret;
-> +
-> +	for (i = 0; i < response_sz; i += 3) {
-> +		crc = crc8(scd4x_crc8_table, buf + i, 2, CRC8_INIT_VALUE);
-> +		if (crc != buf[i + 2]) {
-> +			dev_err(&client->dev, "CRC error\n");
-> +			return -EIO;
-> +		}
-> +
-> +		*rsp++ = buf[i];
-> +		*rsp++ = buf[i + 1];
-> +	}
-> +
-> +	/* start measurement */
-> +	if ((cmd != CMD_GET_DATA_READY) && (cmd != CMD_READ_MEAS)) {
-> +		ret = scd4x_send_command(state, CMD_START_MEAS);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-
-...
-
-> +
-> +static IIO_DEVICE_ATTR_RW(calibration_auto_enable, 0);
-> +static IIO_DEVICE_ATTR_WO(calibration_forced_value, 0);
-> +
-> +static IIO_CONST_ATTR(calibration_forced_value_available,
-> +	       __stringify(SCD4X_FRC_MIN_PPM 1 SCD4X_FRC_MAX_PPM));
-
-Ah, I wasn't completely clear on this.  See the main ABI doc for
-_available
-
-Format for this needs to include brackets to indicate it's a range
-rather than 3 numbers 
-"[MIN 1  MAX]"
-
-
-Having added this it also needs to be in the ABI documentation.
-Whilst somewhat trivial, all ABI should be documented there.
-
-> +
-> +static struct attribute *scd4x_attrs[] = {
-> +	&iio_dev_attr_calibration_auto_enable.dev_attr.attr,
-> +	&iio_dev_attr_calibration_forced_value.dev_attr.attr,
-> +	&iio_const_attr_calibration_forced_value_available.dev_attr.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group scd4x_attr_group = {
-> +	.attrs = scd4x_attrs,
-> +};
-> +
-> +static const struct iio_info scd4x_info = {
-> +	.attrs = &scd4x_attr_group,
-> +	.read_raw = scd4x_read_raw,
-> +	.write_raw = scd4x_write_raw,
-> +};
-> +
-
-...
-
-> +
-> +static irqreturn_t scd4x_trigger_handler(int irq, void *p)
-> +{
-> +	struct iio_poll_func *pf = p;
-> +	struct iio_dev *indio_dev = pf->indio_dev;
-> +	struct scd4x_state *state = iio_priv(indio_dev);
-> +	struct {
-> +		uint16_t data[3];
-> +		int64_t ts __aligned(8);
-> +	} scan;
-> +	int ret;
-> +	uint16_t buf[3];
-> +
-> +	mutex_lock(&state->lock);
-> +	ret = scd4x_read_poll(state, buf);
-> +	mutex_unlock(&state->lock);
-> +	if (ret)
-> +		goto out;
-> +
-> +	memset(&scan, 0, sizeof(scan));
-> +	memcpy(scan.data, buf, sizeof(buf));
-
-I missed this before, but why not do the scd4x_read_poll() directly into scan->data after
-you've done the memset?  That way you avoid the need for a memcpy.
-
-i.e.
-
-	memset(&scan, 0, sizeof(scan));
-	mutex_lock(&state->lock)
-	ret = scd4x_read_poll(state, scan->data);
-	mutex_unlock(&state->lock);
-	if (ret)
-	...
-
-
-> +
-> +	iio_push_to_buffers_with_timestamp(indio_dev, &scan, iio_get_time_ns(indio_dev));
-> +out:
-> +	iio_trigger_notify_done(indio_dev->trig);
-> +	return IRQ_HANDLED;
-> +}
-> +
