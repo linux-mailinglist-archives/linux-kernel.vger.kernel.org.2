@@ -2,210 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8633F417F4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 04:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6F2417F53
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 04:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347531AbhIYCTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Sep 2021 22:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347469AbhIYCTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Sep 2021 22:19:42 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B59C06173F
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 19:18:08 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id z5so9799562ybj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Sep 2021 19:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Di1Rj4i8NNjxp2cBpfWHuge/r4aFHPc9tdM1Aqn2uaQ=;
-        b=RULTTSYMpzcMqu/lH9m6RVVkMZSgo7xVxk3vvJHNciAYlpw3OcPwxtQgIXTjpe38RX
-         7l8F3CYKnC/ZqznIXnYleT84WVwUYxQWbpL/QRwl1zVAnxB1+6i6CfmJ+l6HWo5ZzwVI
-         egpZWT1Cxk4+oj2abOTPYGu5ux4vFsUGgBrbXySios1hXai0Z5G88cVwzn8M92umkF6W
-         q7jlU9+lrFzukDQxNIqE5/k2NjtLs0l6gj6Lvvc6BVOn3FH2Mg1nCkXQuYbnmG+mI4N6
-         AZoG5Ip7TZZ+8R8kTqhCmei83qs1dDLiIBtw80jdRQAsDoL3gz22daS5g7ihzFvsVaNK
-         ASdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Di1Rj4i8NNjxp2cBpfWHuge/r4aFHPc9tdM1Aqn2uaQ=;
-        b=hQGt8VAsNc3Ew0uyNZtT5l2k5ZlQqs4SXoDedlAAyCD4m/irWeiF2I0soy51eRHZKM
-         40hLikSkD5mjYRJeiiZUw2EZ+8BRJZcTufs5+Y7tvvJh10xYJ9kbpj+r1dxh/mSfatS/
-         DWS5d/gbg5QRg0vyQDmo26hvL8djoWtDMxbRDi/Xur8JY3s1kEi+0sRs8Tv1ZPS4AOIP
-         4jcH7uSzyRiXBws/OydTo0fGxLJWk2DJigVIxfyErw01RbCPusEYALU+GTHWeEIT+/bt
-         +PnSsiiuW6xuB5/a6LuUsti/dsP2iOfLXvNDbEXJFIesX2o85r6ljQacPykS0fVheN10
-         d+Og==
-X-Gm-Message-State: AOAM532f895aofnYHlbn4pYMUL7cTqPy+sXNJaqdpnphDkiFP6aHJcG0
-        BtaNtpQO9e5Esjk2ZcVp8sApeujRPruq/WosGq7XJg==
-X-Google-Smtp-Source: ABdhPJwpkpI/4ynNoGZO3Tt2LHq14lHoq8y03inXj18wPF7a5sbJjd+FrJ61pEThOJCudT8JzVygtlCV8utFiPdOG1E=
-X-Received: by 2002:a25:5606:: with SMTP id k6mr15946697ybb.476.1632536287181;
- Fri, 24 Sep 2021 19:18:07 -0700 (PDT)
+        id S1347552AbhIYCY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Sep 2021 22:24:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343687AbhIYCYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Sep 2021 22:24:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D976105A;
+        Sat, 25 Sep 2021 02:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632536571;
+        bh=iC6T0DpgPQkNthlfRd9HIITiQDWjQJziefXuN46+sU4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kmg+frBhpG5jEZ6Npg8a8kvwXfwUYmxqBBEgsZFJgH/c8fHmw68iPKapvO0k0V9wu
+         vDxlj2+qwDeONU2yJ4CuhUFrShYzEO8lcIegPwWJl2uKEr5pVMYDchE4n3ovVTpZFM
+         W5HBgSbTp+JDqisd7CPf/apRTY7yokuFB+w92+gxVYo27jPCWnb7+PL6DD5KvGYjXm
+         xKvrSrxmKbMnztSX25lh8UVx+n5tHjU8jkKi3DBNhOQBVQbQ1w05c0jRMIPpwpAEAR
+         96DgnKfSFmsg+9Brwhs3iMg7pLttZf9OycH6Alb11g2VM5N5JIM3ibT/+cs20VHpAQ
+         x19EbFJGRrifQ==
+Received: by mail-ed1-f53.google.com with SMTP id y89so32450876ede.2;
+        Fri, 24 Sep 2021 19:22:51 -0700 (PDT)
+X-Gm-Message-State: AOAM533Jj12cU1dw8r8KsciRbbPsMBCBZwwPoi0rXfGo6CMzX2XhBCCG
+        yHhFVAp6ISxv37iaJbYn17oAPVcp8tIPrYjmYw==
+X-Google-Smtp-Source: ABdhPJxS1P+giv9UtV7KMyZeRiSNnMTZ5XzQt2hoMoEP1zCq6SArgoS8BxyStv1KptPUUbvLjJOus6Ot6M1cAGAERys=
+X-Received: by 2002:a17:907:995a:: with SMTP id kl26mr15504212ejc.6.1632536569784;
+ Fri, 24 Sep 2021 19:22:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <7735b09c-cf1c-5e37-a737-9a330fbacf1e@canonical.com> <YUmTwZPqrCfRMekd@google.com>
- <d6212801-f2a0-a6a7-6154-0f99b57f1c4d@canonical.com>
-In-Reply-To: <d6212801-f2a0-a6a7-6154-0f99b57f1c4d@canonical.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 24 Sep 2021 19:17:30 -0700
-Message-ID: <CAGETcx9wp3cbsehODj=oAd658hF6KNL5Qiy2nVc=7Bxqxxwimw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Will McVicker <willmcvicker@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rtc@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kevin Hilman <khilman@baylibre.com>
+References: <20210921155218.10387-1-jason-jh.lin@mediatek.com> <20210921155218.10387-8-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210921155218.10387-8-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 25 Sep 2021 10:22:38 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_86H0KPdsmdeZL3gSW-7GFrtpe3akG4O_1Z-EnsoAjiAg@mail.gmail.com>
+Message-ID: <CAAOTY_86H0KPdsmdeZL3gSW-7GFrtpe3akG4O_1Z-EnsoAjiAg@mail.gmail.com>
+Subject: Re: [PATCH v11 07/16] dt-bindings: arm: mediatek: move common module
+ from display folder
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
+        Moudy Ho <moudy.ho@mediatek.com>, roy-cw.yeh@mediatek.com,
+        Fabien Parent <fparent@baylibre.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 1:25 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 21/09/2021 10:11, Lee Jones wrote:
-> > On Tue, 21 Sep 2021, Krzysztof Kozlowski wrote:
-> >
-> >> On 20/09/2021 21:03, Will McVicker wrote:
-> >>> This patch series tries to address the issue of ARCH_EXYNOS force selecting
-> >>> a handful of drivers without allowing the vendor to override any of the
-> >>> default configs. This takes away from the flexibilty of compiling a generic
-> >>> kernel with exynos kernel modules. For example, it doesn't allow vendors to
-> >>> modularize these drivers out of the core kernel in order to share a generic
-> >>> kernel image across multiple devices that require device-specific kernel
-> >>> modules.
-> >>
-> >> You do not address the issue in these patches. The problem you describe
-> >> is that drivers are not modules and you are not changing them into modules.
-> >
-> > The wording is unfortunate.  The reason for this change doesn't have
-> > much to do with kernel modules.
-> >
-> > Let's go back in time 18 months or so when Greg KH submitted this [0]
-> > patch, which you Acked.  Greg was trying to solve the problem of not
-> > having to enable ARCH_EXYNOS on kernels which are designed to be
-> > platform agnostic (sometimes called Generic Kernels).  For some reason
-> > SERIAL_SAMSUNG is the only symbol with these dependencies, so the
-> > solution seemed simple and straight forward at the time.
-> >
-> > However, For sound reasons Geert NACKed the patch.
-> >
-> > Quoting from [1] he says:
-> >
-> >   "A generic kernel will include Samsung SoC support, hence
-> >   PLAT_SAMSUNG or ARCH_EXYNOS will be enabled."
->
-> Yes, it's correct reasoning. There is also one more use-case -
-> non-upstreamed (out of tree) platform which wants to use Exynos-specific
-> drivers. Something like was happening with Apple M1 except that it got
-> upstreamed and we do not care much about out-of-tree.
->
-> >
-> > However, since the entry for ARCH_EXYNOS *insists* on building-in a
-> > bunch of other symbols (via 'select') which will be unused in most
-> > cases, this is not a currently acceptable approach for many Generic
-> > Kernels due to size constraints.
->
-> In the mainline kernel there is no such use case. If you want to have
-> Exynos-whatever-driver (e.g. SERIAL_SAMSUNG or S3C RTC), you should
-> select ARCH_EXYNOS because otherwise it does not make any sense. Zero
-> sense. Such kernel won't work.
->
-> It makes sense only if there is some other work, hidden here, where
-> someone might want to have SERIAL_SAMSUNG or S3C RTC without
-> ARCH_EXYNOS. Although GKI is not that work because GKI kernel will
-> select ARCH_EXYNOS. It must select ARCH_EXYNOS if it wants to support
-> Exynos platforms.
->
-> Therefore I expect first to bring this "some other work, hidden here" to
-> broader audience, so we can review its use case.
->
-> >
-> > What this patch does is migrates those symbols from being 'select'ed
-> > (always built-in with no recourse) to 'default y'.  Where the former
-> > cannot be over-ridden, but the latter can be via a vendor's
-> > defconfig/fragment.
->
-> It cannot be overridden by vendor fragment because options are not
-> visible. You cannot change them.
->
-> The patch does nothing in this regard (making them selectable/possible
-> to disable), which is why I complained.
->
-> >
-> > I doubt many (any?) of these symbols can be converted to kernel
-> > modules anyway, as they are required very early on in the boot
-> > sequence.
->
-> True, some could, some not. Also some platforms are set up via
-> bootloader, so actually could "survive" till module is loaded from some
-> initrd.
+Hi, Jason:
 
-Hi Krzysztof,
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=882=
+1=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:52=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> AAL, COLOR, CCORR, MUTEX, WDMA could be used by other modules,
+> such as MDP, so move their binding document into the common folder.
 
-I was trying to chime in, but the discussion got spread out across all
-the patches. Since the cover letter seems to have everyone, I thought
-I'd reply here. Hope you don't mind. I'll try to respond/chime in on
-the various topics that were raised across the patches.
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-Yes, the next patch series would To/Cc folks correctly. William simply
-forgot to use the --to-cover and --cc-cover options when using git
-send-email.
-
-I agree with you that it doesn't make sense to have ARCH_EXYNOS
-enabled but to have all the clock drivers exynos compiled out. Then
-one obviously can't boot an exynos platform using that kernel. I think
-William is going to send out a new patch series with a few drivers
-modularized. That'll ensure all the common exynos clock code is
-modularized and we have a few examples of exynos clock modules.
-
-Speaking of modules, a fully modularized generic ARM64 kernel where
-everything is modularized out and we only load the necessary modules
-is a great goal. And this is where I can chime in the most since I
-wrote fw_devlink and tested this out. Such a kernel is not
-hypothetical. IIRC hikey960 can already do this. There's an upstream
-amlogic(?) board that can do this (Kevin Hilman has done that). A more
-complex/recent/powerful, but downstream example is the Pixel 5 -- it
-has a fully modular kernel. 320+ modules! Including interrupt
-controllers, timers, pinctrl and clocks.
-
-I can assure you any of the framework code related to pulling off
-booting a fully modular ARM64 kernel is already upstreamed
-(fw_devlink, irq framework changes, etc) or sent upstream (timer -- by
-a SoC vendor, etc) and being worked on. As for fw_devlink, I've
-extended it way past what GKI or Android would need. It would have
-been super trivial if all I wanted to do was support Android devices.
-I've also upstreamed changes that improve module loading time for all
-ARM64 modules. All of this and more upstream work came out of GKI and
-our push to be upstream first -- so I think it's reasonable to say the
-GKI effort helps and cares to get more work upstreamed.
-
-Speaking of GKI, let's not speak of it. It really doesn't matter.
-Android is just yet another distribution (albeit a very popular one).
-The part that's relevant to upstream/all the other distributions is
-the fully modular generic ARM64 kernel and that's what we should focus
-on.
-
-In that context, I think William's attempts are reasonable and I think
-he'll be glad to fix up any technical issues that people point out. So
-hopefully we can focus on that?
-
-Cheers,
-Saravana
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  .../{display =3D> arm}/mediatek/mediatek,aal.yaml      |  9 ++++-----
+>  .../{display =3D> arm}/mediatek/mediatek,ccorr.yaml    |  9 ++++-----
+>  .../{display =3D> arm}/mediatek/mediatek,color.yaml    | 11 +++++------
+>  .../{display =3D> arm}/mediatek/mediatek,mutex.yaml    | 12 +++++-------
+>  .../{display =3D> arm}/mediatek/mediatek,wdma.yaml     |  9 ++++-----
+>  5 files changed, 22 insertions(+), 28 deletions(-)
+>  rename Documentation/devicetree/bindings/{display =3D> arm}/mediatek/med=
+iatek,aal.yaml (88%)
+>  rename Documentation/devicetree/bindings/{display =3D> arm}/mediatek/med=
+iatek,ccorr.yaml (87%)
+>  rename Documentation/devicetree/bindings/{display =3D> arm}/mediatek/med=
+iatek,color.yaml (86%)
+>  rename Documentation/devicetree/bindings/{display =3D> arm}/mediatek/med=
+iatek,mutex.yaml (85%)
+>  rename Documentation/devicetree/bindings/{display =3D> arm}/mediatek/med=
+iatek,wdma.yaml (90%)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+aal.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,aal.yaml
+> similarity index 88%
+> rename from Documentation/devicetree/bindings/display/mediatek/mediatek,a=
+al.yaml
+> rename to Documentation/devicetree/bindings/arm/mediatek/mediatek,aal.yam=
+l
+> index 311bbf05a967..ab6eb9b550a4 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,aal.yam=
+l
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,aal.yaml
+> @@ -1,17 +1,16 @@
+>  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/display/mediatek/mediatek,aal.yaml#
+> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,aal.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>
+> -title: Mediatek display adaptive ambient light processor
+> +title: MediaTek adaptive ambient light processor
+>
+>  maintainers:
+> -  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> -  - Philipp Zabel <p.zabel@pengutronix.de>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+>
+>  description: |
+> -  Mediatek display adaptive ambient light processor, namely AAL,
+> +  MediaTek adaptive ambient light processor, namely AAL,
+>    is responsible for backlight power saving and sunlight visibility impr=
+oving.
+>    AAL device node must be siblings to the central MMSYS_CONFIG node.
+>    For a description of the MMSYS_CONFIG binding, see
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+ccorr.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.=
+yaml
+> similarity index 87%
+> rename from Documentation/devicetree/bindings/display/mediatek/mediatek,c=
+corr.yaml
+> rename to Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.y=
+aml
+> index 60752ce45d49..de86e9ae35f3 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr.y=
+aml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml
+> @@ -1,17 +1,16 @@
+>  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/display/mediatek/mediatek,ccorr.yaml#
+> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,ccorr.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>
+> -title: Mediatek display color correction
+> +title: MediaTek color correction
+>
+>  maintainers:
+> -  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> -  - Philipp Zabel <p.zabel@pengutronix.de>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+>
+>  description: |
+> -  Mediatek display color correction, namely CCORR, reproduces correct co=
+lor
+> +  MediaTek color correction, namely CCORR, reproduces correct color
+>    on panels with different color gamut.
+>    CCORR device node must be siblings to the central MMSYS_CONFIG node.
+>    For a description of the MMSYS_CONFIG binding, see
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+color.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,color.=
+yaml
+> similarity index 86%
+> rename from Documentation/devicetree/bindings/display/mediatek/mediatek,c=
+olor.yaml
+> rename to Documentation/devicetree/bindings/arm/mediatek/mediatek,color.y=
+aml
+> index f6636869909c..73be301b50d2 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,color.y=
+aml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,color.yaml
+> @@ -1,18 +1,17 @@
+>  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/display/mediatek/mediatek,color.yaml#
+> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,color.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>
+> -title: Mediatek display color processor
+> +title: MediaTek color processor
+>
+>  maintainers:
+> -  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> -  - Philipp Zabel <p.zabel@pengutronix.de>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+>
+>  description: |
+> -  Mediatek display color processor, namely COLOR, provides hue, luma and
+> -  saturation adjustments to get better picture quality and to have one p=
+anel
+> +  MediaTek color processor, namely COLOR, provides hue, luma and saturat=
+ion
+> +  adjustments to get better picture quality and to have one panel
+>    resemble the other in their output characteristics.
+>    COLOR device node must be siblings to the central MMSYS_CONFIG node.
+>    For a description of the MMSYS_CONFIG binding, see
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+mutex.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mutex.=
+yaml
+> similarity index 85%
+> rename from Documentation/devicetree/bindings/display/mediatek/mediatek,m=
+utex.yaml
+> rename to Documentation/devicetree/bindings/arm/mediatek/mediatek,mutex.y=
+aml
+> index 6eca525eced0..713c7485e11a 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,mutex.y=
+aml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mutex.yaml
+> @@ -1,19 +1,17 @@
+>  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/display/mediatek/mediatek,mutex.yaml#
+> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,mutex.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>
+> -title: Mediatek mutex
+> +title: MediaTek mutex
+>
+>  maintainers:
+> -  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> -  - Philipp Zabel <p.zabel@pengutronix.de>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+>
+>  description: |
+> -  Mediatek mutex, namely MUTEX, is used to send the triggers signals cal=
+led
+> -  Start Of Frame (SOF) / End Of Frame (EOF) to each sub-modules on the d=
+isplay
+> -  data path or MDP data path.
+> +  MediaTek mutex, namely MUTEX, is used to send the triggers signals cal=
+led
+> +  Start Of Frame(SOF) / End Of Frame(EOF) to each sub-modules on the dat=
+a path.
+>    In some SoC, such as mt2701, MUTEX could be a hardware mutex which pro=
+tects
+>    the shadow register.
+>    MUTEX device node must be siblings to the central MMSYS_CONFIG node.
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+wdma.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,wdma.ya=
+ml
+> similarity index 90%
+> rename from Documentation/devicetree/bindings/display/mediatek/mediatek,w=
+dma.yaml
+> rename to Documentation/devicetree/bindings/arm/mediatek/mediatek,wdma.ya=
+ml
+> index 25f9a63fe7af..5222535d98c6 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,wdma.ya=
+ml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,wdma.yaml
+> @@ -1,17 +1,16 @@
+>  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/display/mediatek/mediatek,wdma.yaml#
+> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,wdma.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>
+> -title: Mediatek display WDMA
+> +title: MediaTek WDMA
+>
+>  maintainers:
+> -  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> -  - Philipp Zabel <p.zabel@pengutronix.de>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+>
+>  description: |
+> -  Mediatek display WDMA stands for Write Direct Memory Access.
+> +  MediaTek WDMA stands for Write Direct Memory Access.
+>    It can write the data in display pipeline into DRAM.
+>    WDMA device node must be siblings to the central MMSYS_CONFIG node.
+>    For a description of the MMSYS_CONFIG binding, see
+> --
+> 2.18.0
+>
