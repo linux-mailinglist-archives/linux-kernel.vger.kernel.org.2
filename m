@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCAE418288
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A5C418289
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343548AbhIYOPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 10:15:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55156 "EHLO mail.kernel.org"
+        id S1343556AbhIYOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 10:15:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233738AbhIYOOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 10:14:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29CAA60F51;
-        Sat, 25 Sep 2021 14:13:17 +0000 (UTC)
+        id S233738AbhIYOPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 10:15:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DDA360F51;
+        Sat, 25 Sep 2021 14:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632579197;
-        bh=5z3H+QaxnFsBPyB7eVlx/so+FcR535RNkuZdYokQgO4=;
+        s=korg; t=1632579228;
+        bh=zIqpgd92wmYxXIA+UuR083vNmruz8CUBkaWE3vELJRE=;
         h=Date:From:To:Cc:Subject:From;
-        b=TMDmux9tS5IvW292jeiR5D3RWbSa2BJ/YAuYOdhE91tfgbuClI0eyNWSGH2lmBfmU
-         oK9qS3T4FZQKn5lKc5eF/jjjLvZ6KyYOwiqVW9H05IA4d57zhJoPsA+CpbmXs9W3t5
-         mN2Phoyc/A62XhR5hTBHyW14CAaoU0+N0fk7A0/Q=
-Date:   Sat, 25 Sep 2021 16:13:15 +0200
+        b=WL9mdJtIYSDKvopTFbob3u+mZqjVN7V/Y1x6uZKYZYJYAOvkXUI9DRwzC48eM9Gz7
+         dmiZm2ArLF+yc89Ic8hNScT+J2rXwtT0zm+tLkZPYVQj1O9OaOMpQN8bD1iw3zaJx7
+         PPjnLQCzt/o4fpu0f+ccwlSgqKXdvP50B9AKieZo=
+Date:   Sat, 25 Sep 2021 16:13:45 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [GIT PULL] TTY/Serial driver fixes for 5.15-rc3
-Message-ID: <YU8ue5u+44spJB0v@kroah.com>
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [GIT PULL] Staging driver fixes for 5.15-rc3
+Message-ID: <YU8umcrWhi65i8PU@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -43,41 +41,34 @@ The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.15-rc3
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.15-rc3
 
-for you to fetch changes up to 7049d853cfb928f50b6041cb4a5c6d6c1d8dd201:
+for you to fetch changes up to aa3233ea7bdb6c4004f5032a3a07417ea51dc409:
 
-  tty: unexport tty_ldisc_release (2021-09-14 11:18:47 +0200)
+  staging: r8188eu: fix -Wrestrict warnings (2021-09-20 12:33:22 +0200)
 
 ----------------------------------------------------------------
-TTY/Serial fixes for 5.15-rc3
+Staging driver fixes for 5.15-rc3
 
-Here are 4 small tty/serial driver fixes for 5.15-rc3.  They include:
-	- remove an export now that no one is using it anymore
-	- mvebu-uart tx_empty callback fix
-	- 8250_omap bugfix
-	- synclink_gt build fix
+Here are 2 small staging driver fixes for 5.15-rc3:
+	- greybus tty use-after-free bugfix
+	- r8188eu ioctl overlap build warning fix
 
-All of these have been in linux-next for a while with no reported
+Note, the r8188eu ioctl has been entirely removed for 5.16-rc1, but it's
+good to get this fixed now for people using this in 5.15.
+
+Both of these have been in linux-next for a while with no reported
 issues.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Jiri Slaby (1):
-      tty: unexport tty_ldisc_release
+Arnd Bergmann (1):
+      staging: r8188eu: fix -Wrestrict warnings
 
-Nishanth Menon (1):
-      serial: 8250: 8250_omap: Fix RX_LVL register offset
+Johan Hovold (1):
+      staging: greybus: uart: fix tty use after free
 
-Pali Rohár (1):
-      serial: mvebu-uart: fix driver's tx_empty callback
-
-Randy Dunlap (1):
-      tty: synclink_gt: rename a conflicting function name
-
- drivers/tty/serial/8250/8250_omap.c |  2 +-
- drivers/tty/serial/mvebu-uart.c     |  2 +-
- drivers/tty/synclink_gt.c           | 44 ++++++++++++++++++-------------------
- drivers/tty/tty_ldisc.c             |  1 -
- 4 files changed, 24 insertions(+), 25 deletions(-)
+ drivers/staging/greybus/uart.c               | 62 ++++++++++++++--------------
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c |  8 ++--
+ 2 files changed, 36 insertions(+), 34 deletions(-)
