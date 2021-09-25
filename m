@@ -2,101 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AB641848F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 23:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A923C418497
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 23:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhIYVBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 17:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhIYVBk (ORCPT
+        id S229988AbhIYVSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 17:18:36 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35064 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhIYVSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 17:01:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987BAC061570;
-        Sat, 25 Sep 2021 14:00:05 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632603603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OqJbVc4PIkymdexYtCAgR5HPDd/Rii+ka465iyNfbT8=;
-        b=17gAUXwaAhZ2CO+nNGbNkCTPFMKm+VW1yCZuwdbvIQ2oukZjdFGnJwRYdxyYHh2YPixMzo
-        SAwQlb94yQKH+ydYtnfFtXHi1sf6FFgtr/Lx62zBgE3R3hj9agl8rmBpM7lmdLZ/BxuCvi
-        sE5Aht6E3ZS/pFaVVnWAbsH9thQxn1bZ0YYWF0D3zDUSDpdrvZncWPK8cr1nc9SuHz2Cg1
-        ToQQuEz7eA2JgkMb8DD6jubGmUN7zea4a7gs5lLHGGW2qdsXls6ySJAh3GohuyG6yqEb8m
-        /3AMGdvdU6ckvZOOdOQdEaAUQFDLXY9x0ewhndhQbLOqlvM+I5YjLR47igA+EQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632603603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OqJbVc4PIkymdexYtCAgR5HPDd/Rii+ka465iyNfbT8=;
-        b=/0Gpe0hIKdMNR/SsUg0H+azUWSxbSDChe7GSX5Xpfgqab86WMqTQ0i0YSmYRl5ZpcgLVP1
-        fNrzWdOWqpSyxIAg==
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <linux-mips@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 02/11] genirq: Export irq_to_desc() again to modules
-In-Reply-To: <20210924170546.805663-3-f.fainelli@gmail.com>
-References: <20210924170546.805663-1-f.fainelli@gmail.com>
- <20210924170546.805663-3-f.fainelli@gmail.com>
-Date:   Sat, 25 Sep 2021 23:00:02 +0200
-Message-ID: <87wnn4cqwd.ffs@tglx>
+        Sat, 25 Sep 2021 17:18:33 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7BF3C1C0BFC; Sat, 25 Sep 2021 23:16:56 +0200 (CEST)
+Date:   Sat, 25 Sep 2021 23:16:56 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/64] 5.10.69-rc2 review
+Message-ID: <20210925211656.GA19572@duo.ucw.cz>
+References: <20210925120750.056868347@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="IS0zKkzwUGydFO0o"
+Content-Disposition: inline
+In-Reply-To: <20210925120750.056868347@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24 2021 at 10:05, Florian Fainelli wrote:
-> In order to build drivers/irqchip/irq-bcm7038-l1.c as a module (for use
-> in GKI), we need to export_to_desc() which is used in this snippet of
-> code:
->
-> 	irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(virq)));
->
-> This effectively reverts 64a1b95bb9fe ("genirq: Restrict export of
-> irq_to_desc()").
 
-No. I'm not reexporting this. We've spent quite some time to prevent all
-kind of drivers for fiddle with irq descriptors and I'm not going
-to reopen that can of worms.
+--IS0zKkzwUGydFO0o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-irq_get_irq_data() is exported and provides you what you need.
+Hi!
 
-Thanks,
+> This is the start of the stable review cycle for the 5.10.69 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-        tglx
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--IS0zKkzwUGydFO0o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYU+RyAAKCRAw5/Bqldv6
+8tdaAKCLN8Rgx45QMGmsBHh3fHjB8Tn0qQCghIhn2yo94vHFrNfRHRdaUVBvOSk=
+=cMc8
+-----END PGP SIGNATURE-----
+
+--IS0zKkzwUGydFO0o--
