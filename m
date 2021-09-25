@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994EF4181AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17C14181B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244476AbhIYLkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 07:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbhIYLkO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 07:40:14 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223A6C061570;
-        Sat, 25 Sep 2021 04:38:40 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id c21so46359709edj.0;
-        Sat, 25 Sep 2021 04:38:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=roWdXJBSdw9+VuRoLQLUX1eQtYSQ8tE66jDz+31Mfiw=;
-        b=JaBl1QCrry8L/oNAUtR1rnb4mbXgXtEF+LWU6mHBLmllb2DnwXDSsvSMaJuNMPqeNP
-         LeY07lVfv/8z9f73Ng3XIWE79OKKroy0qDmB5DWg/rDdfQZNxUyWAgP3OqBKYM3gb3aB
-         bIsj6imfnZ5yWyRzD8y6+C3cn9JmihxPH/i/D6m2tWEU3S/5Fc/m06+48ue9tuXw+q+r
-         97H+45NylVnBmg5Z1tmMAwdWxVgPOfXtZr7FtXP23nmwDJZjrim7lOyamyGMMDpr23tt
-         o+SL08cPrDrPXai/e5ux+y1EeGGVrfpeVTRshXZvAR3rwXKcRXnOvB1D5aqqbntx8Gun
-         hwAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=roWdXJBSdw9+VuRoLQLUX1eQtYSQ8tE66jDz+31Mfiw=;
-        b=FwMe1o52VzIJn67ZvloBis4BSxQ7YFMo1ggjoq+QNrDCm4Ve2xiKlFQqJKJnZoAQrO
-         yPEyLNuDk5EnPJVuaMQ/bYpwyUdhHTQY+fLWoBfreh0XOhJMwAK+hkpVG6uy2kHkw7ZS
-         P+7FCIKSTW8bExsIITmaKLYmWAk52X7agw1f2ewD/GJfgPdhyHpih9gA7osPtFXyUuFb
-         6nvSizpeiJUuQK1y+TWlx2R4MGeipnc8mLrsl0oa4ynIWWDORNQYjjONUe4C5kxn/xng
-         npRmlgBCjq+QTsCFaUYOVDqKGgny2rWcXxzntjjRET3FM1NnF+AW3qGolmkk8lcm1T0E
-         Gv0A==
-X-Gm-Message-State: AOAM531m1oTRAMqXRBEsKkkhUE2EWT2DAZZxGuPT+z++Ux628O7jS2yr
-        4dV0yuEU0rPbh7dNXR+Kr6V2JeI/mH5ctChWmEM=
-X-Google-Smtp-Source: ABdhPJxtfaImb1rZz1q8iQAhUycsglBjxCjNlFI8To/wF1yaN8UGDZEcLyBt5G26p6AfbDMtGeJ33Q==
-X-Received: by 2002:a17:906:658:: with SMTP id t24mr15884482ejb.358.1632569918702;
-        Sat, 25 Sep 2021 04:38:38 -0700 (PDT)
-Received: from localhost.localdomain (net-93-144-178-230.cust.dsl.teletu.it. [93.144.178.230])
-        by smtp.googlemail.com with ESMTPSA id c5sm7294283edx.81.2021.09.25.04.38.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 04:38:38 -0700 (PDT)
-From:   Raffaele Tranquillini <raffaele.tranquillini@gmail.com>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     y.oudjana@protonmail.com, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org,
-        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        id S244623AbhIYLo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 07:44:28 -0400
+Received: from mout.gmx.net ([212.227.17.22]:51637 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241912AbhIYLo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 07:44:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632570146;
+        bh=tj1T55xR/yg8xao0p750/JK6a19FeyQYkhFZlEM80pc=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=jIsIs4oIra5zoQsfYzRy6F4QZD2C/6eAFwaShOZRpXADzua2xqwm1Q56zv0WB1Uym
+         5dEotaWyrd1Uab2clsKVMZU1jkkkZraGmXlkHMS3eaSAYY562PuIEbMndcTC+fxylz
+         p4l2fYSChrer/N7RUKzVDj+0jCLPRufho5OjnZa8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MCsQ4-1mcvlB2qMC-008u6J; Sat, 25 Sep 2021 13:42:25 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: msm8996: xiaomi-gemini: Enable JDI LCD panel
-Date:   Sat, 25 Sep 2021 13:38:08 +0200
-Message-Id: <20210925113808.524749-1-raffaele.tranquillini@gmail.com>
-X-Mailer: git-send-email 2.32.0
+Subject: [PATCH v2] scsi: advansys: Prefer struct_size over open coded arithmetic
+Date:   Sat, 25 Sep 2021 13:42:05 +0200
+Message-Id: <20210925114205.11377-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Yb/8SLe1hPGKDCy+r65BkW/b2XavDwCthM5r9hAymGEg6Eu+aie
+ jPVkV1i/8Y6ZmFNZLQkqcBxXbVpLcj/LYe2co6AXVVasKNNkAlV8ldtLZViASleG56l8LCI
+ 89Fz7/VPH19/yh6fkE1NDzthFHk5I1O8iPZE4nwlwqK9YHZ7yT9JnctzOBhygvtz1ggaVpV
+ ymoL0jaaPUHtgT9PzWksQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5tAKL7LSGAs=:1wCDbTUk7QZJvHUHguclsK
+ ACuTwHKdKWLk7LDNSR6EjSGYVkA6ob/yH3hrzcfGOoIOfWLKhjeP/bYoHchd3z6SlphAx2cZW
+ q+i347/DnlnkE9CFJ4nvP4K1HtOBN8Nc0jMcsNlf/sJDR8Rij4V1mRUhPUQlBHphh2n9q5snQ
+ kpXECmbDDC8JvHkJUiavkA/oxIc7nR0cDTVLgYiEyhE0SsfxS43pPo495g4WLrrPqSIUktokO
+ FeVS+9djC9VT/7GzRKhSYXkylq//eKw2oxsrJAoMpZq1MpiYXRxD2GDeCoyxm6cN1wQTIXF4A
+ bbr8mafOXyaXgrRmHOMVTYZzANizzlByx3RBAgVo+aOVH0m9C0mlbeRpUJ15QWzcqyKRwpYst
+ ohjJL4DkUwpuFHfw7OO+1nEPRlqN0uOHfqSjbp74siDnnhWqGkiMr1eaz4S0prOBCZpPLv/vM
+ 4gREzbgJs60iCweaQyQYeF0nffGj/Atle8/QR/dmy/xJVZrpeqNPBynMA+SM37FfTC9tbqH8o
+ jhpvGaQqAw0/0kInDEfDoRZvwa2ybVlwPDAXfgsxqgKlSqhcFy6ZoAULPw/hoNIVP2g1mvghB
+ ehtyKH6I2jFiIek1lMvmuZrD9RUDM5iAV8nX69bDSyvLpINQmVYGBmavTz5rzFQhYLYEaU+Ht
+ f6O/ACuLliqJiH4oHSaFkV55w/HFWufJfxxXdq5yI/Fa1x9zHWQStRoT9kjYqFDwmwDyz6W1E
+ jDg2p658wbcG9Ng1L16FgmdBG2GPWlPYSi8ttZmqv++Yw3jFf6ZbrWv6jilFaS94ZNZ9GYFtS
+ yWkBveataHXMHnLGnr1UMV5M/YviZp61KLEZfct0s6xN2oitBh541T3vhY2j/pcoqcknrsS2n
+ VyVDh6KfHsuzy1Cwf+E2YXBso3TSl5rl0e0nQLjYuwBMm8XSNHzi57fk+OpEs28iS/1Zkavud
+ i1er6cgTSMqQ137l16lt660+op55613Xq+Q09jCkIS4fiyXOyMaMWprFOZ5cYb4Mt0o6s8cP/
+ o7P3UVtunpvz/Ymo/JAcIVMoDXfMwmQsh+4g+g8OK1psCB+7WL8tvvHb5Xu0WL95ITHaA4s1q
+ H7dnSXB4KwGEjs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables the JDI FHD_R63452 LCD panel used on Xiaomi Mi 5
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Signed-off-by: Raffaele Tranquillini <raffaele.tranquillini@gmail.com>
----
- .../boot/dts/qcom/msm8996-xiaomi-gemini.dts   | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + count * size" in the kzalloc() function.
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
-index fe950be0a722..ab6dcd44e673 100644
---- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
-@@ -90,12 +90,45 @@ synaptics@20 {
- 
- };
- 
-+&dsi0 {
-+	status = "okay";
-+
-+	vdd-supply = <&vreg_l2a_1p25>;
-+	vdda-supply = <&vreg_l19a_3p3>;
-+	vddio-supply = <&vreg_l14a_1p8>;
-+
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&mdss_dsi_default &mdss_te_default>;
-+	pinctrl-1 = <&mdss_dsi_sleep &mdss_te_sleep>;
-+
-+	panel: panel@0 {
-+		compatible = "jdi,fhd-r63452";
-+		reg = <0>;
-+		reset-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
-+		backlight = <&pmi8994_wled>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&dsi0_out>;
-+			};
-+		};
-+	};
-+};
-+
-+&dsi0_out {
-+	remote-endpoint = <&panel_in>;
-+};
-+
- &gpu {
- 	zap-shader {
- 		firmware-name = "qcom/msm8996/gemini/a530_zap.mbn";
- 	};
- };
- 
-+&pmi8994_wled {
-+	status = "okay";
-+};
-+
- &q6asmdai {
- 	dai@0 {
- 		reg = <0>;
--- 
-2.32.0
+This code was detected with the help of Coccinelle and audited and fixed
+manually.
+
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
+
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Changelog v1 -> v2
+- Rebase against v5.15-rc2
+- Remove the unnecessary "size" variable (Gustavo A. R. Silva).
+- Update the commit changelog to inform that this code was detected
+  using a Coccinelle script (Gustavo A. R. Silva).
+
+ drivers/scsi/advansys.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/advansys.c b/drivers/scsi/advansys.c
+index ffb391967573..e341b3372482 100644
+=2D-- a/drivers/scsi/advansys.c
++++ b/drivers/scsi/advansys.c
+@@ -7477,8 +7477,8 @@ static int asc_build_req(struct asc_board *boardp, s=
+truct scsi_cmnd *scp,
+ 			return ASC_ERROR;
+ 		}
+
+-		asc_sg_head =3D kzalloc(sizeof(asc_scsi_q->sg_head) +
+-			use_sg * sizeof(struct asc_sg_list), GFP_ATOMIC);
++		asc_sg_head =3D kzalloc(struct_size(asc_sg_head, sg_list, use_sg),
++				      GFP_ATOMIC);
+ 		if (!asc_sg_head) {
+ 			scsi_dma_unmap(scp);
+ 			set_host_byte(scp, DID_SOFT_ERROR);
+=2D-
+2.25.1
 
