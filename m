@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFEF4183C9
+	by mail.lfdr.de (Postfix) with ESMTP id 3A78D4183C8
 	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 19:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhIYRtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 13:49:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50294 "EHLO mail.kernel.org"
+        id S229730AbhIYRta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 13:49:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229712AbhIYRt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229711AbhIYRt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 25 Sep 2021 13:49:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 75B6A60F12;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 560836044F;
         Sat, 25 Sep 2021 17:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632592074;
-        bh=VAX77BlH7ICI8i/lwCgmqT3rCyCNayhz8cvZr9umYQY=;
+        bh=Ze6vBwvmZ7wdt9L6CTjw5sWkpWB96STO+ZNkkh07R5E=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=E/+qkWM2P7hngRhOkOWBXrbiz6nYilvTsj1LyQ12cpbiFyKOYFvkTWTglJQxFMXjd
-         ISmYXoQIeI7H1XQscWxGv+yMzcUcMxaWXFm4ROPLXB4k2jvQRQu/zkCJEvPR6IrzMG
-         EzsfmQsI5TOn7YIqXOUEM44LknNWvSJwRYGIANq8kOO9EtLRL8HI+J4V+w6DGZSNp3
-         Hf1yxfetDNsKhlT2IePg/yM0l5YRFWBLSfujPvZjENmZf8vfzZEspdnf8uElZUxpCy
-         aZsCYnR2uuGw1Iz75iP+CuApUeGuAO2LriZ0912Z/rDpJuVPI9IxR+eB0LExuwz/+q
-         kHxSvrYDFmHPQ==
+        b=PbKZR+00VfR+FL5k9tA3g4t3FDgv5zq7JByPw7oyS7xee8Tr71JqTVrbcfAQd4hbK
+         PVDbYVJuGx/5aCBn8Id9NbfYYU5kfZMf/6VFr4D9VNiTFBMggoO/on/jkVZ53nQ827
+         qlU3MVUiGYjDRXlNSv+u07WVHgU+HZdEj4zOdwbpaXKcb+zOtk3fvnBROtDOGpCBei
+         yoX7w7ro4cQbKnyfAAXa/wfPY+pzSdgfuDmkA+3GZaABH6TvF9lzCfXXC6kuSpJOTZ
+         SBKmpxmue6LZASy1HvLUq4AA0XD1M4mERUs+yf/mlwUOsgDLnCwwvHuSex0a9TvmiW
+         8o8s3QWzWvGwg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6C61260976;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4FC2D600E8;
         Sat, 25 Sep 2021 17:47:54 +0000 (UTC)
-Subject: Re: [GIT PULL] Char/Misc driver fixes for 5.15-rc3
+Subject: Re: [GIT PULL] TTY/Serial driver fixes for 5.15-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YU8utviwFXzSOYKW@kroah.com>
-References: <YU8utviwFXzSOYKW@kroah.com>
+In-Reply-To: <YU8ue5u+44spJB0v@kroah.com>
+References: <YU8ue5u+44spJB0v@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YU8utviwFXzSOYKW@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.15-rc3
-X-PR-Tracked-Commit-Id: bb509a6ffed2c8b0950f637ab5779aa818ed1596
+X-PR-Tracked-Message-Id: <YU8ue5u+44spJB0v@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.15-rc3
+X-PR-Tracked-Commit-Id: 7049d853cfb928f50b6041cb4a5c6d6c1d8dd201
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 85736168463db124e1c4f382c7c2fca64c3acb80
-Message-Id: <163259207443.4008.17101794872124813142.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: f9d4be2507cfec4d4878fac7d3b85ae9a77da2ce
+Message-Id: <163259207432.4008.10429622150977510637.pr-tracker-bot@kernel.org>
 Date:   Sat, 25 Sep 2021 17:47:54 +0000
 To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 25 Sep 2021 16:14:14 +0200:
+The pull request you sent on Sat, 25 Sep 2021 16:13:15 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.15-rc3
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.15-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/85736168463db124e1c4f382c7c2fca64c3acb80
+https://git.kernel.org/torvalds/c/f9d4be2507cfec4d4878fac7d3b85ae9a77da2ce
 
 Thank you!
 
