@@ -2,139 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997D2418030
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 09:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8325418032
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 09:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbhIYHak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 03:30:40 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:36603 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhIYHah (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 03:30:37 -0400
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 18P7Sp0O003510;
-        Sat, 25 Sep 2021 16:28:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 18P7Sp0O003510
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1632554931;
-        bh=QizMDLoweQqG/MXgzlf4Mhojf4ocNeNgXCew0MMpp78=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=K7ElZxtEbuBB6IsxDPsiaBC5JCW2HJ4p+EIgFCsupAUuOhmcI0SHtxh7xhy/aD+87
-         g4EoMQdqC3OlkywYokI/vbGdu0z2z5hx2Si7gK5tS8m7QJjMBBZfNsOF8Dwvhu3tWt
-         6vHAxZdcrQHF9vg5ZlY86GbB8w8YdwGo5uUaQvQz4c952X6xwY4So4lTIkPWg9simE
-         EP/nHV3qI3QHH/7ztV/XvmFpiitGERSmFng96bDZ7HpDCWj5DFLdVVFTmiK0qDXyVY
-         Ysi89g1SqgEiUkapyHjFQTkXFdzEbVSBMlKHMtJSq/BrbZdJtuJTcMa+57luLtIrtN
-         yB2oVE9wfFRew==
-X-Nifty-SrcIP: [209.85.216.41]
-Received: by mail-pj1-f41.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so9255675pjb.4;
-        Sat, 25 Sep 2021 00:28:51 -0700 (PDT)
-X-Gm-Message-State: AOAM530voZNBt76DiHVL+pYOTpkrA/w1PADZ0+cVMx8liPSC/8C/MFc+
-        d8ONiHydTBkQ9bJSJdnMkv74WjG09B08+vaNZIM=
-X-Google-Smtp-Source: ABdhPJzlBSK2PJQNVujmzqxa5ODztHbWPefbqvfDEBHV27ueF2HjtiIJtUm2UWSZhgGpkmSJ48oML5isOpAQDqsflZs=
-X-Received: by 2002:a17:90a:55c8:: with SMTP id o8mr411334pjm.144.1632554930461;
- Sat, 25 Sep 2021 00:28:50 -0700 (PDT)
+        id S232741AbhIYHaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 03:30:55 -0400
+Received: from mout.gmx.net ([212.227.15.15]:32783 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230029AbhIYHay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 03:30:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632554949;
+        bh=yFDb4A4/GKbkjkwFKbZYWrHFDEh/iWmCyJIjxuX4JRg=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=lQyskH9jAMoAMLP8KqTdBeTKpV2iLZwv9fcEazU1jz5jWCygaADc7xZwfFAZEjnLo
+         1jJYQTYic+gVR9HzrtX8ZkdhujDOT5frDs2ZcM2w4DjwxOVD2CffTpNRbLQ1XY2VX5
+         BhGKBvloCZNnLPiwdQ1srgr/fbFocg/0tWEFRWg8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPog5-1mGVJX2PCN-00Mpcl; Sat, 25
+ Sep 2021 09:29:08 +0200
+Date:   Sat, 25 Sep 2021 09:28:56 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Len Baker <len.baker@gmx.com>, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
+        Erez Shitrit <erezsh@nvidia.com>,
+        Jianbo Liu <jianbol@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: DR, Prefer kcalloc over open coded arithmetic
+Message-ID: <20210925072856.GA1660@titan>
+References: <20210905074936.15723-1-len.baker@gmx.com>
+ <202109202105.9E901893@keescook>
 MIME-Version: 1.0
-References: <20210913164514.437972-1-arielmarcovitch@gmail.com> <be481cb5-cfe0-6e23-2c27-c2e0aed69c6c@gmail.com>
-In-Reply-To: <be481cb5-cfe0-6e23-2c27-c2e0aed69c6c@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 25 Sep 2021 16:28:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQy-Mm75FrxxCuTibBKVUBB3is26ZpP6KQ1BNHSLstbhw@mail.gmail.com>
-Message-ID: <CAK7LNAQy-Mm75FrxxCuTibBKVUBB3is26ZpP6KQ1BNHSLstbhw@mail.gmail.com>
-Subject: Re: [PATCH v2] kconfig: Create links to main menu items in search
-To:     Ariel Marcovitch <arielmarcovitch@gmail.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202109202105.9E901893@keescook>
+X-Provags-ID: V03:K1:klFNjD6m3a+ozEsOsMiNydZCSb43iYDcQ8ER9QidygMym4OfgPs
+ D9DtkkRLi3ZZLQzUoPdPvUueBxaFGJ09EFhSOAnovKo0oykH/2m9ht2LYjSVkBHikPUR/NO
+ nwHLaiuNX4XKvYtw+U9zh58/aH0ruKUtDK/R+ySTuwYChsrS/OdTQn5vGO1WTIx1QZNEL9S
+ hrGDj9gq/rqkARZauO9VA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Mtn6d7yNuYc=:QIJZrerQqy1JFr3BD4QVi1
+ 8Hs+Gy7pD5ODJrHge8xFCB0aTtWpuEGp2Rm3LDZMAQOODunpOKMG4goWxz1pWF1dTJ5jjUR6T
+ iljjCjAmHCYgAbsVBtBuu5us00hz7bKnuimm4yAbuncpeS/IDHIJAKTfBBIkLPo0cIPQ81Z9p
+ IMCpUvtBaHVtNwIhHZuZQb1OOPt4/G9ExyJp+kj6+7Epg5Y5himx4sJkWaQuQpr2lHQeK81oD
+ gZ7r+JYhbfsl2m1HV0FXiMX6boItp5EEM+OWSo2JhYPNb4TP+WtbjsEf3gaciIPwWMGoOxTTi
+ pNBU8houNdiwCmqvUpLcM0I9aAAOSX8jzVfTIKrga3qiRNZpyTsKVy+Omg44DSSKr82kyIYHB
+ RjmUm5jhQxJ/rkJVRQ8Ug2ytlz71BF1pogB8+Xf9BiChyG4gWj6fkrQEXQ8GyrmASry+yXnSk
+ gpSFN9eHBC6rAfpDzpt5CGBdVbBUjkagDmjjJpDtYADRKxEhzU0OILeL/NgqrfeyLzU8400vk
+ 9WngvC8jeNhhzX00Xw7uq1QC50Og/z2n482Tm567np0uqPI0bCCplXWeZVNxe5q1yAIqyNUbb
+ 16BkZFRT49ejfWLW0+g94xe0jSYyKHjIPjl1Z6EZ+i0C9c4a+H49BtYw6pccvQziFbvTrcKmM
+ mndA//4qjzFP77acRB80LcuVyXGRrdQZNNCJj8bTDwrKbG/ZgM7mhrfg48C+inV116saPeWwk
+ gFVZObGd03nmRqC/9r5fPOPeH5OP4HjHhYi0K1CZawZlcfTXRUkh0QVwQCch0YPyj/3v/aT6m
+ 71kULj2Qy/IIm9HqDOsUA6eIIZfu4t6+xuV/JFiLro1uuW/K4upm2SjAJeW3hMy1gOaWket3V
+ dssrnEbJ855YZQ9RWyhJozq8mRrCbTzmDBXmWHjHEArDT3NbEa/EIUNf5yXcIgLpUGUui7pNv
+ 2L7FPM6s3cTdvMurH5cUUI4OQitLhtjrF5dlWDLB5qhbZoH2lxYws3UIiEoTdIMio3TOKpRhE
+ 6sQ2UP3LF0MBMTzowXUY7UPsJGF5cUxhvoj84DciCxH4fynRAC2bqqGMKBrg+KD1C34M5NS2R
+ bMIaeMkGzVJil0=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 3:00 AM Ariel Marcovitch
-<arielmarcovitch@gmail.com> wrote:
+Hi,
+
+On Mon, Sep 20, 2021 at 09:06:35PM -0700, Kees Cook wrote:
+> >
+> > -	ref_actions =3D kzalloc(sizeof(*ref_actions) * num_of_dests * 2, GFP=
+_KERNEL);
+> > +	if (unlikely(check_mul_overflow(num_of_dests, 2u, &ref_act_cnt)))
+> > +		goto free_hw_dests;
+> > +
+> > +	ref_actions =3D kcalloc(ref_act_cnt, sizeof(*ref_actions), GFP_KERNE=
+L);
 >
-> On 13/09/2021 19:45, Ariel Marcovitch wrote:
-> > When one searches for a main menu item, links aren't created for it like
-> > with the rest of the symbols.
-> >
-> > This happens because we trace the item until we get to the rootmenu, but
-> > we don't include it in the path of the item. The rationale was probably
-> > that we don't want to show the main menu in the path of all items,
-> > because it is redundant.
-> >
-> > However, when an item has only the rootmenu in its path it should be
-> > included, because this way the user can jump to its location.
-> >
-> > Add a 'Main menu' entry in the 'Location:' section for the kconfig
-> > items.
-> >
-> > This makes the 'if (i > 0)' superfluous because each item with prompt
-> > will have at least one menu in its path.
-> >
-> > Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
-> > ---
-> >   scripts/kconfig/menu.c | 33 ++++++++++++++++++---------------
-> >   1 file changed, 18 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
-> > index 606ba8a63c24..3d6f7cba8846 100644
-> > --- a/scripts/kconfig/menu.c
-> > +++ b/scripts/kconfig/menu.c
-> > @@ -728,7 +728,7 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
-> >               get_dep_str(r, prop->visible.expr, "  Visible if: ");
-> >
-> >       menu = prop->menu->parent;
-> > -     for (i = 0; menu != &rootmenu && i < 8; menu = menu->parent) {
-> > +     for (i = 0; menu && i < 8; menu = menu->parent) {
-> >               bool accessible = menu_is_visible(menu);
-> >
-> >               submenu[i++] = menu;
-> > @@ -758,21 +758,24 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
-> >               list_add_tail(&jump->entries, head);
-> >       }
-> >
-> > -     if (i > 0) {
-> > -             str_printf(r, "  Location:\n");
-> > -             for (j = 4; --i >= 0; j += 2) {
-> > -                     menu = submenu[i];
-> > -                     if (jump && menu == location)
-> > -                             jump->offset = strlen(r->s);
-> > -                     str_printf(r, "%*c-> %s", j, ' ',
-> > -                                menu_get_prompt(menu));
-> > -                     if (menu->sym) {
-> > -                             str_printf(r, " (%s [=%s])", menu->sym->name ?
-> > -                                     menu->sym->name : "<choice>",
-> > -                                     sym_get_string_value(menu->sym));
-> > -                     }
-> > -                     str_append(r, "\n");
-> > +     str_printf(r, "  Location:\n");
-> > +     for (j = 4; --i >= 0; j += 2) {
-> > +             menu = submenu[i];
-> > +             if (jump && menu == location)
-> > +                     jump->offset = strlen(r->s);
-> > +
-> > +             if (menu == &rootmenu)
-> > +                     /* The real rootmenu prompt is ugly */
-> > +                     str_printf(r, "%*cMain menu", j, ' ');
-> > +             else
-> > +                     str_printf(r, "%*c-> %s", j, ' ', menu_get_prompt(menu));
-> > +
-> > +             if (menu->sym) {
-> > +                     str_printf(r, " (%s [=%s])", menu->sym->name ?
-> > +                             menu->sym->name : "<choice>",
-> > +                             sym_get_string_value(menu->sym));
-> >               }
-> > +             str_append(r, "\n");
-> >       }
-> >   }
-> >
-> >
-> > base-commit: a9086b878b7fd65894eb8cb1fa395dd469970566
-> A friendly ping :)
+> In the future, consider array3_size(), but this is fine too. :)
 
+Ok, thanks for the advise.
 
-Applied to linux-kbuild. Thanks.
-
--- 
-Best Regards
-Masahiro Yamada
+Regards,
+Len
