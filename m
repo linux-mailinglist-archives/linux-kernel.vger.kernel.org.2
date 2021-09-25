@@ -2,165 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DDE418325
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 17:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C542418345
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 17:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344022AbhIYPRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 11:17:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240972AbhIYPQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 11:16:56 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S241112AbhIYPia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 11:38:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52310 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238418AbhIYPi3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 11:38:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632584214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rLKZok9/4QFXX13m/PZ+MsuZ2LJ/FPI7EhWhls6THyQ=;
+        b=L3afK9FboPCEl88uBnhnM+ByGUr2TQ+t91Dy4h4F4ckWKy9Nwml7lOBP7PKToBNnE8IEuw
+        Ul8V4jenCH4wRjnrWBX5OUpAtX1a/5ZKGIin7il4PDqRqzAaajPrOtlksZ+575ctuNpB4I
+        IfhBu7omh/PhklVih2oqs2WWySNxw40=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-78-dHhCQ_9FN4ypFdInzvUEcA-1; Sat, 25 Sep 2021 11:36:50 -0400
+X-MC-Unique: dHhCQ_9FN4ypFdInzvUEcA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44ACD610F7;
-        Sat, 25 Sep 2021 15:15:18 +0000 (UTC)
-Date:   Sat, 25 Sep 2021 16:19:07 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "hui.liu" <hui.liu@mediatek.com>
-Cc:     <robh+dt@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
-        <chun-hung.wu@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <seiya.wang@mediatek.com>, <ben.tseng@mediatek.com>,
-        <matthias.bgg@gmail.com>, <s.hauer@pengutronix.de>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH] iio: mtk-auxadc: update case IIO_CHAN_INFO_PROCESSED
-Message-ID: <20210925161907.29a58288@jic23-huawei>
-In-Reply-To: <87915f14d20aa780566338e83e2bc0c49c202a22.camel@mediatek.com>
-References: <20210914130901.1716-1-hui.liu@mediatek.com>
-        <20210914130901.1716-2-hui.liu@mediatek.com>
-        <20210918192059.4c13d157@jic23-huawei>
-        <87915f14d20aa780566338e83e2bc0c49c202a22.camel@mediatek.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A7CC814270;
+        Sat, 25 Sep 2021 15:36:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A401D1000358;
+        Sat, 25 Sep 2021 15:36:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YU84rYOyyXDP3wjp@casper.infradead.org>
+References: <YU84rYOyyXDP3wjp@casper.infradead.org> <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk> <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, hch@lst.de, trond.myklebust@primarydata.com,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, darrick.wong@oracle.com,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 9/9] mm: Remove swap BIO paths and only use DIO paths
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2396105.1632584202.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Sat, 25 Sep 2021 16:36:42 +0100
+Message-ID: <2396106.1632584202@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sep 2021 16:30:09 +0800
-hui.liu <hui.liu@mediatek.com> wrote:
+Matthew Wilcox <willy@infradead.org> wrote:
 
-> Hi Jonathan,
-> 
-> In the previous mail(maybe 2021/08/15), we want to support two case in
-> our driver: _RAW and _SCALE. In _SCALE case:
+> On Fri, Sep 24, 2021 at 06:19:23PM +0100, David Howells wrote:
+> > Delete the BIO-generating swap read/write paths and always use ->swap_=
+rw().
+> > This puts the mapping layer in the filesystem.
+> =
 
-_RAW and _PROCESSED I think?  (scale is something else entirely)
+> Is SWP_FS_OPS now unused after this patch?
 
-> 	*val = *val * VOLTAGE_FULL_RANGE;
-> 	*val2 = AUXADC_PRECISE;
-> 	return IIO_VAL_FRACTIONAL_LOG2;
-> 
-> If user call read_raw, will get raw data; If user call read_processed,
-> will get processed voltage.
-> 
-> What's your opinion?
+Ummm.  Interesting question - it's only used in swap_set_page_dirty():
 
-I'm sorry, but I don't understand the question.
+int swap_set_page_dirty(struct page *page)
+{
+	struct swap_info_struct *sis =3D page_swap_info(page);
 
-I looked back at that earlier discussion and the discussion was about also
-adding _RAW.  I think we concluded that, as we already had _PROCESSED and
-generally do not support both, we would just continue to have processed.
+	if (data_race(sis->flags & SWP_FS_OPS)) {
+		struct address_space *mapping =3D sis->swap_file->f_mapping;
 
-The suggestion in this review is to use a different choice from the various
-ways that IIO can represent values in order to potentially maintain slightly
-higher precision.  Whether that actually helps depends a bit of how the
-value is being used in your out of tree driver.  If that driver wants
-a different scaling (perhaps micro volts rather than millivolts) then,
-if I recall correctly slightly higher precision is maintained
-https://elixir.bootlin.com/linux/latest/source/drivers/iio/inkern.c#L625
-
-If you prefer to keep the code as is, just address the request for a little
-more information in the patch description.
-
-Thanks,
-
-Jonathan
- 
+		VM_BUG_ON_PAGE(!PageSwapCache(page), page);
+		return mapping->a_ops->set_page_dirty(page);
+	} else {
+		return __set_page_dirty_no_writeback(page);
+	}
+}
 
 
-> 
-> Thanks.
-> 
-> 
-> On Sat, 2021-09-18 at 19:20 +0100, Jonathan Cameron wrote:
-> > On Tue, 14 Sep 2021 21:09:01 +0800
-> > Hui Liu <hui.liu@mediatek.com> wrote:
-> >   
-> > > Convert raw data to processed data.
-> > > 
-> > > Fixes: ace4cdfe67be ("iio: adc: mt2701: Add Mediatek auxadc driver
-> > > for
-> > > mt2701.")
-> > > Signed-off-by: Hui Liu <hui.liu@mediatek.com>  
-> > 
-> > Hi Hui Liu
-> > 
-> > This fix is obviously correct but I think we can improve it a little.
-> > 
-> > 1) Add a bit more detail to the patch description.  Perhaps change it
-> > to something like
-> > Previously the driver did not apply the scaling necessary to take the
-> > voltage range of this ADC into account. 
-> > 
-> > 2) If you change to
-> > 
-> > 	*val = *val * VOLTAGE_FULL_RANGE;
-> > 	*val2 = 12;
-> > 	return IIO_VAL_FRACTIONAL_LOG2;
-> > 
-> > then you should get a more precise answer.  (Please check that
-> > though!)
-> > This might be an issue if you have consumers drivers though that can
-> > not
-> > cope with this particular type.  If so please state that in the patch
-> > description
-> > and add a comment to the code to say that so we don't end up
-> > 'improving' this
-> > in future without taking those consumers into account.
-> > 
-> > Thanks,
-> > 
-> > Jonathan
-> >   
-> > > ---
-> > >  drivers/iio/adc/mt6577_auxadc.c | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > > 
-> > > diff --git a/drivers/iio/adc/mt6577_auxadc.c
-> > > b/drivers/iio/adc/mt6577_auxadc.c
-> > > index 79c1dd68b909..d4fccd52ef08 100644
-> > > --- a/drivers/iio/adc/mt6577_auxadc.c
-> > > +++ b/drivers/iio/adc/mt6577_auxadc.c
-> > > @@ -82,6 +82,10 @@ static const struct iio_chan_spec
-> > > mt6577_auxadc_iio_channels[] = {
-> > >  	MT6577_AUXADC_CHANNEL(15),
-> > >  };
-> > >  
-> > > +/* For Voltage calculation */
-> > > +#define VOLTAGE_FULL_RANGE  1500	/* VA voltage */
-> > > +#define AUXADC_PRECISE      4096	/* 12 bits */
-> > > +
-> > >  static int mt_auxadc_get_cali_data(int rawdata, bool enable_cali)
-> > >  {
-> > >  	return rawdata;
-> > > @@ -191,6 +195,10 @@ static int mt6577_auxadc_read_raw(struct
-> > > iio_dev *indio_dev,
-> > >  		}
-> > >  		if (adc_dev->dev_comp->sample_data_cali)
-> > >  			*val = mt_auxadc_get_cali_data(*val, true);
-> > > +
-> > > +		/* Convert adc raw data to voltage: 0 - 1500 mV */
-> > > +		*val = *val * VOLTAGE_FULL_RANGE / AUXADC_PRECISE;
-> > > +
-> > >  		return IIO_VAL_INT;
-> > >  
-> > >  	default:  
-> > 
-> >   
+> Also, do we still need ->swap_activate and ->swap_deactivate?
+
+f2fs does quite a lot of work in its ->swap_activate(), as does btrfs.  I'=
+m
+not sure how necessary it is.  cifs looks like it intends to use it, but i=
+t's
+not fully implemented yet.  zonefs and nfs do some checking, including hol=
+e
+checking in nfs's case.  nfs also does some setting up for the sunrpc
+transport.
+
+btrfs, cifs, f2fs and nfs all supply ->swap_deactivate() to undo the effec=
+ts
+of the activation.
+
+David
 
