@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4148418647
+	by mail.lfdr.de (Postfix) with ESMTP id EC1D9418648
 	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 06:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhIZE1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 00:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
+        id S230509AbhIZE1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 00:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhIZE1V (ORCPT
+        with ESMTP id S230481AbhIZE1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 00:27:21 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4A2C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 21:25:45 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id n2so9327160plk.12
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 21:25:45 -0700 (PDT)
+        Sun, 26 Sep 2021 00:27:23 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9BCC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 21:25:47 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id v19so9882165pjh.2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 21:25:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vPTWY6ZhEwxKm2bRo4H/RgEPre3036ELut4KiHyBxNs=;
-        b=j93tBAwKR6PU+Tf2RAq5LpM+xsVlcTolYB+z48FLtTHG1Qaae5hnNp28s8O2AIo/fH
-         f5h53AFXFLlBUK7HJsu0br/zkYEPcmLLFx0HXImh6rG6a82RYAPzOpyq26uaISQZovlS
-         Y/w37pgqobsu0P7FNbP2L5cDVAfAgLSDjiW8sw1uoGtkrU09Zmw0kI0UpqvbAilqJjzR
-         YYqhYkAaZJSE0qi21YUu1Lwy4kFkhCoJ41quaBQ1fKa99nbshybzo6aEnuTPMwWh6TQX
-         LH/WLZWuFSzZgO0Rx7mwZrqu3ED/z0dccLkco7MnXk89h5iCunIpo/pq5debKqCWrk/Y
-         f+oQ==
+        bh=38X15zXo+/Y1pmE94+biXA74I0XZ/m9EP9lkXOHRlBI=;
+        b=B217FJUV7D0NkEiadrzSyMA9XRT/EK7NqAYZYYhlQpfEqpnzbOA4K1gd8qMEiZBbxv
+         JJANulJyWob1QHSStd6EY0YY2iKA61nKRVvdE6D/gw5/jj4XWa4W+EPOsrfViRpB1vev
+         Ckzh98tfj1x1enZcLqRAZkbDUmz7zv+kHgHfsVwyAfSKy21qvx/bOmblN0yuUq5mOrhA
+         4qRT+wjUlhQkcbG9fYJzLwx8BNOG1s9pXu7EoSIKicAb+Q2cIDBk+XemIWUYgq+k6YrO
+         Bdi6QHVxHCiI9T27FUfqjiZSjCC27b/etvSGsyGTAChMiaDGVogCEm3035fdUimeEP2V
+         /IXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vPTWY6ZhEwxKm2bRo4H/RgEPre3036ELut4KiHyBxNs=;
-        b=rGLfIam7pSex4ni0BF9H9acvdbw8WuH2x94MaZfC3dLcZUNLSt9K5NPGQdNJ5I4fnY
-         5Wnu6v1Q1ntnqnXl9yEQrfRFRhYq+3mDQgdYdf9xCf/7FficJvCAQT2GX2ZzNKg9SA5N
-         WZD6BiBBRUI+fqwcVWqB4Tw1SRMVRQjFhxjmlzGjkR+hScztlyA62wFjtzNBgmsWX4l2
-         a2p0bBP/lknO4dlYUJ8njI0W7C2+GgRLabUIwFKekx1d9LZZInXOl6ifDIE0O4o00et0
-         F7omDOt8KWxr/v2YTz4Zxh+ox7BPRUINZ/iQ0yxrirDp7JsTUEAXixAcUjDhctLqEARg
-         t+tw==
-X-Gm-Message-State: AOAM531ub+7XKUpN6jll1uVVZn3eQmzaQUp4F4RoDeH00GHY630Zdeuu
-        ef+ZSdkDNS9jhOm87ZtlhzLqg3oeoVs=
-X-Google-Smtp-Source: ABdhPJza7Jkvcd4LMXrUFhOx0lek5OgkoePvKdQ+XxiNS+0296z+pucET+h/3L++oB+zNdy2RX5vYw==
-X-Received: by 2002:a17:90a:1d6:: with SMTP id 22mr11541249pjd.39.1632630345392;
-        Sat, 25 Sep 2021 21:25:45 -0700 (PDT)
+        bh=38X15zXo+/Y1pmE94+biXA74I0XZ/m9EP9lkXOHRlBI=;
+        b=3PCtWvaotNGY864/JOQQKO3pVHcq6ZkJfTIJwb3z+7mvu0TMg1duYrUhK+QHZZ8mou
+         RPbBQchH04c1s75L3D8MXn9s9Rp08yD4bebMLgw4FYhfWpQYIQg7eOCYDNIS1wvlUnyK
+         5voUzpjmng/srIqV/nVimThtop3bI2uilyBMyzd929ZQjOFHo+KPARyVqYb51iNqOY25
+         GgueWc+Ect/wpYvZTzsP1mlLdSSQCQ2Ns7MHFQDBN224mGOv0zQ6M/82kPzWvR+ajJ10
+         zVAx+TbYPYIoBiCcizyI2jPimk3euFqowGl94gM/OqAOtO06TLlNAaegB6Cmlxye6Ph0
+         kAjQ==
+X-Gm-Message-State: AOAM531dpRkUxeXE1b0NouiTvZyHzi0BwCV1GB64SPW7/5vzy6We2if4
+        Trrt16VxwqvvwCuJ1DXBLxQ=
+X-Google-Smtp-Source: ABdhPJyowsR26GW3IybxXUytPWUnH8GvlF0Qxvy1Y52O08GFhCfT6DO6GA1K4z8Qt2T0oAyx63Eyag==
+X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr11731048pjl.19.1632630347189;
+        Sat, 25 Sep 2021 21:25:47 -0700 (PDT)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id q11sm12406154pjf.14.2021.09.25.21.25.43
+        by smtp.gmail.com with ESMTPSA id q11sm12406154pjf.14.2021.09.25.21.25.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 21:25:44 -0700 (PDT)
+        Sat, 25 Sep 2021 21:25:46 -0700 (PDT)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     Andrew Morton <akpm@linux-foundation.org>
@@ -61,9 +61,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
         Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: [PATCH 1/2] mm/mprotect: use mmu_gather
-Date:   Sat, 25 Sep 2021 13:54:22 -0700
-Message-Id: <20210925205423.168858-2-namit@vmware.com>
+Subject: [PATCH 2/2] mm/mprotect: do not flush on permission promotion
+Date:   Sat, 25 Sep 2021 13:54:23 -0700
+Message-Id: <20210925205423.168858-3-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210925205423.168858-1-namit@vmware.com>
 References: <20210925205423.168858-1-namit@vmware.com>
@@ -75,14 +75,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-change_pXX_range() currently does not use mmu_gather, but instead
-implements its own deferred TLB flushes scheme. This both complicates
-the code, as developers need to be aware of different invalidation
-schemes, and prevents opportunities to avoid TLB flushes or perform them
-in finer granularity.
+Currently, using mprotect() to unprotect a memory region or uffd to
+unprotect a memory region causes a TLB flush. At least on x86, as
+protection is promoted, no TLB flush is needed.
 
-Use mmu_gather in change_pXX_range(). As the pages are not released,
-only record the flushed range using tlb_flush_pXX_range().
+Add an arch-specific pte_may_need_flush() which tells whether a TLB
+flush is needed based on the old PTE and the new one. Implement an x86
+pte_may_need_flush().
+
+For x86, PTE protection promotion or changes of software bits does
+require a flush, also add logic that considers the dirty-bit. Changes to
+the access-bit do not trigger a TLB flush, although architecturally they
+should, as Linux considers the access-bit as a hint.
 
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Andrew Cooper <andrew.cooper3@citrix.com>
@@ -97,148 +101,91 @@ Cc: Nick Piggin <npiggin@gmail.com>
 Cc: x86@kernel.org
 Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
- mm/mprotect.c | 50 ++++++++++++++++++++++++++++----------------------
- 1 file changed, 28 insertions(+), 22 deletions(-)
+ arch/x86/include/asm/tlbflush.h | 40 +++++++++++++++++++++++++++++++++
+ include/asm-generic/tlb.h       |  4 ++++
+ mm/mprotect.c                   |  3 ++-
+ 3 files changed, 46 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+index b587a9ee9cb2..e74d13d174d1 100644
+--- a/arch/x86/include/asm/tlbflush.h
++++ b/arch/x86/include/asm/tlbflush.h
+@@ -259,6 +259,46 @@ static inline void arch_tlbbatch_add_mm(struct arch_tlbflush_unmap_batch *batch,
+ 
+ extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
+ 
++/*
++ * pte_may_need_flush() checks whether a TLB flush is necessary according to x86
++ * architectural definition. Mere promotion of permissions does not require a
++ * TLB flush. Changes of software bits does not require a TLB flush. Demotion
++ * of the access-bit also does not trigger a TLB flush (although it is required
++ * architecturally) - see the comment in ptep_clear_flush_young().
++ *
++ * Further optimizations may be possible, such as avoiding a flush when clearing
++ * the write-bit on non-dirty entries. As those do not explicitly follow the
++ * specifications, they are not implemented (at least for now).
++ */
++static inline bool pte_may_need_flush(pte_t oldpte, pte_t newpte)
++{
++	const pteval_t ignore_mask = _PAGE_SOFTW1 | _PAGE_SOFTW2 |
++				     _PAGE_SOFTW3 | _PAGE_ACCESSED;
++	const pteval_t enable_mask = _PAGE_RW | _PAGE_DIRTY | _PAGE_GLOBAL;
++	pteval_t oldval = pte_val(oldpte);
++	pteval_t newval = pte_val(newpte);
++	pteval_t diff = oldval ^ newval;
++	pteval_t disable_mask = 0;
++
++	if (IS_ENABLED(CONFIG_X86_64) || IS_ENABLED(CONFIG_X86_PAE))
++		disable_mask = _PAGE_NX;
++
++	/* new is non-present: need only if old is present */
++	if (pte_none(newpte))
++		return !pte_none(oldpte);
++
++	/*
++	 * Any change of PFN and any flag other than those that we consider
++	 * requires a flush (e.g., PAT, protection keys). To save flushes we do
++	 * not consider the access bit as it is considered by the kernel as
++	 * best-effort.
++	 */
++	return diff & ((oldval & enable_mask) |
++		       (newval & disable_mask) |
++		       ~(enable_mask | disable_mask | ignore_mask));
++}
++#define pte_may_need_flush pte_may_need_flush
++
+ #endif /* !MODULE */
+ 
+ #endif /* _ASM_X86_TLBFLUSH_H */
+diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+index 2c68a545ffa7..5ca49f44bc38 100644
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -654,6 +654,10 @@ static inline void tlb_flush_p4d_range(struct mmu_gather *tlb,
+ 	} while (0)
+ #endif
+ 
++#ifndef pte_may_need_flush
++static inline bool pte_may_need_flush(pte_t oldpte, pte_t newpte) { return true; }
++#endif
++
+ #endif /* CONFIG_MMU */
+ 
+ #endif /* _ASM_GENERIC__TLB_H */
 diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 883e2cc85cad..075ff94aa51c 100644
+index 075ff94aa51c..ae79df59a7a8 100644
 --- a/mm/mprotect.c
 +++ b/mm/mprotect.c
-@@ -32,12 +32,13 @@
- #include <asm/cacheflush.h>
- #include <asm/mmu_context.h>
- #include <asm/tlbflush.h>
-+#include <asm/tlb.h>
- 
- #include "internal.h"
- 
--static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
--		unsigned long addr, unsigned long end, pgprot_t newprot,
--		unsigned long cp_flags)
-+static unsigned long change_pte_range(struct mmu_gather *tlb,
-+		struct vm_area_struct *vma, pmd_t *pmd, unsigned long addr,
-+		unsigned long end, pgprot_t newprot, unsigned long cp_flags)
- {
- 	pte_t *pte, oldpte;
- 	spinlock_t *ptl;
-@@ -138,6 +139,7 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+@@ -139,7 +139,8 @@ static unsigned long change_pte_range(struct mmu_gather *tlb,
  				ptent = pte_mkwrite(ptent);
  			}
  			ptep_modify_prot_commit(vma, addr, pte, oldpte, ptent);
-+			tlb_flush_pte_range(tlb, addr, PAGE_SIZE);
+-			tlb_flush_pte_range(tlb, addr, PAGE_SIZE);
++			if (pte_may_need_flush(oldpte, ptent))
++				tlb_flush_pte_range(tlb, addr, PAGE_SIZE);
  			pages++;
  		} else if (is_swap_pte(oldpte)) {
  			swp_entry_t entry = pte_to_swp_entry(oldpte);
-@@ -219,9 +221,9 @@ static inline int pmd_none_or_clear_bad_unless_trans_huge(pmd_t *pmd)
- 	return 0;
- }
- 
--static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
--		pud_t *pud, unsigned long addr, unsigned long end,
--		pgprot_t newprot, unsigned long cp_flags)
-+static inline unsigned long change_pmd_range(struct mmu_gather *tlb,
-+		struct vm_area_struct *vma, pud_t *pud, unsigned long addr,
-+		unsigned long end, pgprot_t newprot, unsigned long cp_flags)
- {
- 	pmd_t *pmd;
- 	unsigned long next;
-@@ -261,6 +263,10 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
- 			if (next - addr != HPAGE_PMD_SIZE) {
- 				__split_huge_pmd(vma, pmd, addr, false, NULL);
- 			} else {
-+				/*
-+				 * change_huge_pmd() does not defer TLB flushes,
-+				 * so no need to propagate the tlb argument.
-+				 */
- 				int nr_ptes = change_huge_pmd(vma, pmd, addr,
- 							      newprot, cp_flags);
- 
-@@ -276,8 +282,8 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
- 			}
- 			/* fall through, the trans huge pmd just split */
- 		}
--		this_pages = change_pte_range(vma, pmd, addr, next, newprot,
--					      cp_flags);
-+		this_pages = change_pte_range(tlb, vma, pmd, addr, next,
-+					      newprot, cp_flags);
- 		pages += this_pages;
- next:
- 		cond_resched();
-@@ -291,9 +297,9 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
- 	return pages;
- }
- 
--static inline unsigned long change_pud_range(struct vm_area_struct *vma,
--		p4d_t *p4d, unsigned long addr, unsigned long end,
--		pgprot_t newprot, unsigned long cp_flags)
-+static inline unsigned long change_pud_range(struct mmu_gather *tlb,
-+		struct vm_area_struct *vma, p4d_t *p4d, unsigned long addr,
-+		unsigned long end, pgprot_t newprot, unsigned long cp_flags)
- {
- 	pud_t *pud;
- 	unsigned long next;
-@@ -304,16 +310,16 @@ static inline unsigned long change_pud_range(struct vm_area_struct *vma,
- 		next = pud_addr_end(addr, end);
- 		if (pud_none_or_clear_bad(pud))
- 			continue;
--		pages += change_pmd_range(vma, pud, addr, next, newprot,
-+		pages += change_pmd_range(tlb, vma, pud, addr, next, newprot,
- 					  cp_flags);
- 	} while (pud++, addr = next, addr != end);
- 
- 	return pages;
- }
- 
--static inline unsigned long change_p4d_range(struct vm_area_struct *vma,
--		pgd_t *pgd, unsigned long addr, unsigned long end,
--		pgprot_t newprot, unsigned long cp_flags)
-+static inline unsigned long change_p4d_range(struct mmu_gather *tlb,
-+		struct vm_area_struct *vma, pgd_t *pgd, unsigned long addr,
-+		unsigned long end, pgprot_t newprot, unsigned long cp_flags)
- {
- 	p4d_t *p4d;
- 	unsigned long next;
-@@ -324,7 +330,7 @@ static inline unsigned long change_p4d_range(struct vm_area_struct *vma,
- 		next = p4d_addr_end(addr, end);
- 		if (p4d_none_or_clear_bad(p4d))
- 			continue;
--		pages += change_pud_range(vma, p4d, addr, next, newprot,
-+		pages += change_pud_range(tlb, vma, p4d, addr, next, newprot,
- 					  cp_flags);
- 	} while (p4d++, addr = next, addr != end);
- 
-@@ -338,25 +344,25 @@ static unsigned long change_protection_range(struct vm_area_struct *vma,
- 	struct mm_struct *mm = vma->vm_mm;
- 	pgd_t *pgd;
- 	unsigned long next;
--	unsigned long start = addr;
- 	unsigned long pages = 0;
-+	struct mmu_gather tlb;
- 
- 	BUG_ON(addr >= end);
- 	pgd = pgd_offset(mm, addr);
- 	flush_cache_range(vma, addr, end);
- 	inc_tlb_flush_pending(mm);
-+	tlb_gather_mmu(&tlb, mm);
-+	tlb_start_vma(&tlb, vma);
- 	do {
- 		next = pgd_addr_end(addr, end);
- 		if (pgd_none_or_clear_bad(pgd))
- 			continue;
--		pages += change_p4d_range(vma, pgd, addr, next, newprot,
-+		pages += change_p4d_range(&tlb, vma, pgd, addr, next, newprot,
- 					  cp_flags);
- 	} while (pgd++, addr = next, addr != end);
- 
--	/* Only flush the TLB if we actually modified any entries: */
--	if (pages)
--		flush_tlb_range(vma, start, end);
--	dec_tlb_flush_pending(mm);
-+	tlb_end_vma(&tlb, vma);
-+	tlb_finish_mmu(&tlb);
- 
- 	return pages;
- }
 -- 
 2.25.1
 
