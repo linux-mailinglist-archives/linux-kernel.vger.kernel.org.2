@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6034181FF
+	by mail.lfdr.de (Postfix) with ESMTP id F1543418201
 	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 14:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244871AbhIYMsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 08:48:06 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:40026 "EHLO baidu.com"
+        id S245020AbhIYMsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 08:48:07 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:40114 "EHLO baidu.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234877AbhIYMsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 08:48:02 -0400
-Received: from BC-Mail-Ex12.internal.baidu.com (unknown [172.31.51.52])
-        by Forcepoint Email with ESMTPS id 2ECBE2642B6E4D6F05C4;
-        Sat, 25 Sep 2021 20:46:20 +0800 (CST)
+        id S237995AbhIYMsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 08:48:05 -0400
+Received: from BC-Mail-Ex11.internal.baidu.com (unknown [172.31.51.51])
+        by Forcepoint Email with ESMTPS id C0EEAAC7BC08A2D65228;
+        Sat, 25 Sep 2021 20:46:27 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex12.internal.baidu.com (172.31.51.52) with Microsoft SMTP Server
+ BC-Mail-Ex11.internal.baidu.com (172.31.51.51) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sat, 25 Sep 2021 20:46:20 +0800
+ 15.1.2242.12; Sat, 25 Sep 2021 20:46:27 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sat, 25 Sep 2021 20:46:19 +0800
+ 15.1.2308.14; Sat, 25 Sep 2021 20:46:26 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
-CC:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <intel-gvt-dev@lists.freedesktop.org>
-Subject: [PATCH] drm/i915: Use direction definition DMA_BIDIRECTIONAL instead of PCI_DMA_BIDIRECTIONAL
-Date:   Sat, 25 Sep 2021 20:46:12 +0800
-Message-ID: <20210925124613.144-1-caihuoqing@baidu.com>
+CC:     Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ipw2200: Fix a function name in print messages
+Date:   Sat, 25 Sep 2021 20:46:20 +0800
+Message-ID: <20210925124621.197-1-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -47,161 +43,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace direction definition PCI_DMA_BIDIRECTIONAL
-with DMA_BIDIRECTIONAL, because it helps to enhance readability
-and avoid possible inconsistency.
+Use dma_alloc_coherent() instead of pci_alloc_consistent(),
+because only dma_alloc_coherent() is called here.
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/gpu/drm/i915/gt/intel_region_lmem.c |  4 ++--
- drivers/gpu/drm/i915/gvt/gtt.c              | 17 ++++++++---------
- drivers/gpu/drm/i915/gvt/kvmgt.c            |  4 ++--
- drivers/gpu/drm/i915/i915_gem_gtt.c         |  4 ++--
- 4 files changed, 14 insertions(+), 15 deletions(-)
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_region_lmem.c b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-index a74b72f50cc9..afb35d2e5c73 100644
---- a/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-+++ b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-@@ -32,7 +32,7 @@ static int init_fake_lmem_bar(struct intel_memory_region *mem)
- 	mem->remap_addr = dma_map_resource(i915->drm.dev,
- 					   mem->region.start,
- 					   mem->fake_mappable.size,
--					   PCI_DMA_BIDIRECTIONAL,
-+					   DMA_BIDIRECTIONAL,
- 					   DMA_ATTR_FORCE_CONTIGUOUS);
- 	if (dma_mapping_error(i915->drm.dev, mem->remap_addr)) {
- 		drm_mm_remove_node(&mem->fake_mappable);
-@@ -62,7 +62,7 @@ static void release_fake_lmem_bar(struct intel_memory_region *mem)
- 	dma_unmap_resource(mem->i915->drm.dev,
- 			   mem->remap_addr,
- 			   mem->fake_mappable.size,
--			   PCI_DMA_BIDIRECTIONAL,
-+			   DMA_BIDIRECTIONAL,
- 			   DMA_ATTR_FORCE_CONTIGUOUS);
- }
- 
-diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
-index e5c2fdfc20e3..53d0cb327539 100644
---- a/drivers/gpu/drm/i915/gvt/gtt.c
-+++ b/drivers/gpu/drm/i915/gvt/gtt.c
-@@ -745,7 +745,7 @@ static void ppgtt_free_spt(struct intel_vgpu_ppgtt_spt *spt)
- 	trace_spt_free(spt->vgpu->id, spt, spt->guest_page.type);
- 
- 	dma_unmap_page(kdev, spt->shadow_page.mfn << I915_GTT_PAGE_SHIFT, 4096,
--		       PCI_DMA_BIDIRECTIONAL);
-+		       DMA_BIDIRECTIONAL);
- 
- 	radix_tree_delete(&spt->vgpu->gtt.spt_tree, spt->shadow_page.mfn);
- 
-@@ -849,7 +849,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
- 	 */
- 	spt->shadow_page.type = type;
- 	daddr = dma_map_page(kdev, spt->shadow_page.page,
--			     0, 4096, PCI_DMA_BIDIRECTIONAL);
-+			     0, 4096, DMA_BIDIRECTIONAL);
- 	if (dma_mapping_error(kdev, daddr)) {
- 		gvt_vgpu_err("fail to map dma addr\n");
- 		ret = -EINVAL;
-@@ -865,7 +865,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
- 	return spt;
- 
- err_unmap_dma:
--	dma_unmap_page(kdev, daddr, PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
-+	dma_unmap_page(kdev, daddr, PAGE_SIZE, DMA_BIDIRECTIONAL);
- err_free_spt:
- 	free_spt(spt);
- 	return ERR_PTR(ret);
-@@ -2409,8 +2409,7 @@ static int alloc_scratch_pages(struct intel_vgpu *vgpu,
- 		return -ENOMEM;
- 	}
- 
--	daddr = dma_map_page(dev, virt_to_page(scratch_pt), 0,
--			4096, PCI_DMA_BIDIRECTIONAL);
-+	daddr = dma_map_page(dev, virt_to_page(scratch_pt), 0, 4096, DMA_BIDIRECTIONAL);
- 	if (dma_mapping_error(dev, daddr)) {
- 		gvt_vgpu_err("fail to dmamap scratch_pt\n");
- 		__free_page(virt_to_page(scratch_pt));
-@@ -2461,7 +2460,7 @@ static int release_scratch_page_tree(struct intel_vgpu *vgpu)
- 		if (vgpu->gtt.scratch_pt[i].page != NULL) {
- 			daddr = (dma_addr_t)(vgpu->gtt.scratch_pt[i].page_mfn <<
- 					I915_GTT_PAGE_SHIFT);
--			dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
-+			dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
- 			__free_page(vgpu->gtt.scratch_pt[i].page);
- 			vgpu->gtt.scratch_pt[i].page = NULL;
- 			vgpu->gtt.scratch_pt[i].page_mfn = 0;
-@@ -2741,7 +2740,7 @@ int intel_gvt_init_gtt(struct intel_gvt *gvt)
- 	}
- 
- 	daddr = dma_map_page(dev, virt_to_page(page), 0,
--			4096, PCI_DMA_BIDIRECTIONAL);
-+			4096, DMA_BIDIRECTIONAL);
- 	if (dma_mapping_error(dev, daddr)) {
- 		gvt_err("fail to dmamap scratch ggtt page\n");
- 		__free_page(virt_to_page(page));
-@@ -2755,7 +2754,7 @@ int intel_gvt_init_gtt(struct intel_gvt *gvt)
- 		ret = setup_spt_oos(gvt);
- 		if (ret) {
- 			gvt_err("fail to initialize SPT oos\n");
--			dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
-+			dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
- 			__free_page(gvt->gtt.scratch_page);
- 			return ret;
- 		}
-@@ -2779,7 +2778,7 @@ void intel_gvt_clean_gtt(struct intel_gvt *gvt)
- 	dma_addr_t daddr = (dma_addr_t)(gvt->gtt.scratch_mfn <<
- 					I915_GTT_PAGE_SHIFT);
- 
--	dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
-+	dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
- 
- 	__free_page(gvt->gtt.scratch_page);
- 
-diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-index 7efa386449d1..20b82fb036f8 100644
---- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-+++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-@@ -328,7 +328,7 @@ static int gvt_dma_map_page(struct intel_vgpu *vgpu, unsigned long gfn,
- 		return ret;
- 
- 	/* Setup DMA mapping. */
--	*dma_addr = dma_map_page(dev, page, 0, size, PCI_DMA_BIDIRECTIONAL);
-+	*dma_addr = dma_map_page(dev, page, 0, size, DMA_BIDIRECTIONAL);
- 	if (dma_mapping_error(dev, *dma_addr)) {
- 		gvt_vgpu_err("DMA mapping failed for pfn 0x%lx, ret %d\n",
- 			     page_to_pfn(page), ret);
-@@ -344,7 +344,7 @@ static void gvt_dma_unmap_page(struct intel_vgpu *vgpu, unsigned long gfn,
- {
- 	struct device *dev = vgpu->gvt->gt->i915->drm.dev;
- 
--	dma_unmap_page(dev, dma_addr, size, PCI_DMA_BIDIRECTIONAL);
-+	dma_unmap_page(dev, dma_addr, size, DMA_BIDIRECTIONAL);
- 	gvt_unpin_guest_page(vgpu, gfn, size);
- }
- 
-diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-index 36489be4896b..cd5f2348a187 100644
---- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-+++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-@@ -30,7 +30,7 @@ int i915_gem_gtt_prepare_pages(struct drm_i915_gem_object *obj,
- 	do {
- 		if (dma_map_sg_attrs(obj->base.dev->dev,
- 				     pages->sgl, pages->nents,
--				     PCI_DMA_BIDIRECTIONAL,
-+				     DMA_BIDIRECTIONAL,
- 				     DMA_ATTR_SKIP_CPU_SYNC |
- 				     DMA_ATTR_NO_KERNEL_MAPPING |
- 				     DMA_ATTR_NO_WARN))
-@@ -64,7 +64,7 @@ void i915_gem_gtt_finish_pages(struct drm_i915_gem_object *obj,
- 		usleep_range(100, 250);
- 
- 	dma_unmap_sg(i915->drm.dev, pages->sgl, pages->nents,
--		     PCI_DMA_BIDIRECTIONAL);
-+		     DMA_BIDIRECTIONAL);
- }
- 
- /**
+diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2200.c b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+index ada6ce32c1f1..9a99f482c84a 100644
+--- a/drivers/net/wireless/intel/ipw2x00/ipw2200.c
++++ b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+@@ -3777,7 +3777,7 @@ static int ipw_queue_tx_init(struct ipw_priv *priv,
+ 	    dma_alloc_coherent(&dev->dev, sizeof(q->bd[0]) * count,
+ 			       &q->q.dma_addr, GFP_KERNEL);
+ 	if (!q->bd) {
+-		IPW_ERROR("pci_alloc_consistent(%zd) failed\n",
++		IPW_ERROR("dma_alloc_coherent(%zd) failed\n",
+ 			  sizeof(q->bd[0]) * count);
+ 		kfree(q->txb);
+ 		q->txb = NULL;
 -- 
 2.25.1
 
