@@ -2,107 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6FC4182DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463264182F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 16:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343755AbhIYOwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 10:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234173AbhIYOwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 10:52:33 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4030610CF;
-        Sat, 25 Sep 2021 14:50:56 +0000 (UTC)
-Date:   Sat, 25 Sep 2021 15:54:45 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>, linux-iio@vger.kernel.org
-Subject: Re: [PATCH 6/9] iio: common: cros_ec_sensors: simplify getting
- .driver_data
-Message-ID: <20210925155445.1edf4752@jic23-huawei>
-In-Reply-To: <716533b5-380d-be72-b45e-d9909f09286b@collabora.com>
-References: <20210920090522.23784-1-wsa+renesas@sang-engineering.com>
-        <20210920090522.23784-7-wsa+renesas@sang-engineering.com>
-        <716533b5-380d-be72-b45e-d9909f09286b@collabora.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1343877AbhIYO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 10:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234173AbhIYO7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 10:59:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4659C061570;
+        Sat, 25 Sep 2021 07:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PyFYuyGZybL7cSTK0f665wfGUh8dtwTELe7jzY8FD1U=; b=G8TN7WiaFixroDwBeMBD/BPUaJ
+        qThH/nviuNwMQjvjmzk5nEYoPB0Tesoef21VSwULA6cbYUS760umGbUtQR33MtNHktReSp38Q1Zx3
+        q0g/iUSA0juTjCeCPzefvXHQnY1ZdIXXNZdZg0wemCk7jWS91mlmeCYEq8TkNE69ERMgNaiXZk4tX
+        fIV6QgFBgBxJ67EPz7q4tZdsism+N4M3GXQ2IZc4GhftzXgGiAcG2UxjcVE2XvIk7Fwx/g29V7zkW
+        DtIP+qQjmjVbihZ1+8eMs3KcT9fHmT0W2NkOX6DusUpkqjc1xp5U7AYcs5P85A6CPk7OENlX1tcgY
+        QXREXmGA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mU96b-008BsC-Hu; Sat, 25 Sep 2021 14:56:54 +0000
+Date:   Sat, 25 Sep 2021 15:56:45 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     hch@lst.de, trond.myklebust@primarydata.com,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, darrick.wong@oracle.com,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 9/9] mm: Remove swap BIO paths and only use DIO paths
+Message-ID: <YU84rYOyyXDP3wjp@casper.infradead.org>
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+ <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 11:16:47 +0200
-Enric Balletbo i Serra <enric.balletbo@collabora.com> wrote:
+On Fri, Sep 24, 2021 at 06:19:23PM +0100, David Howells wrote:
+> Delete the BIO-generating swap read/write paths and always use ->swap_rw().
+> This puts the mapping layer in the filesystem.
 
-> Hi Wolfram,
-> 
-> On 20/9/21 11:05, Wolfram Sang wrote:
-> > We should get 'driver_data' from 'struct device' directly. Going via
-> > platform_device is an unneeded step back and forth.
-> > 
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>  
-> 
-> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> 
-> I'm fine to pick this patch through chrome-platform tree if Jonathan is fine, or
-> can go through his tree.
+Is SWP_FS_OPS now unused after this patch?
 
-Fine by me, though a suggestion follows to take this a little further than done here.
-
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-It's not something that ever bothered me that much, but we have had debates in
-the past about whether there are semantic issues around this sort of cleanup
-as it mixes
-
-platform_set_drvdata() with device_get_drvdata()
-
-Whilst they access the same pointer today, in theory that isn't necessarily
-always going to be the case in future and it isn't necessarily apparent
-to the casual reader of the code.
-
-In this particular case you could tidy that up by using device_set_drvdata() in
-the first place, but then to keep things consistent there is one other place
-where platform_get_drvdata is used in a devm_add_action_or_reset() callback.
-That one is also easily fixed though if we want to be consistent throughout.
-
-Jonathan
-
-> 
-> I plan also to pick patch  "[PATCH 8/9] platform: chrome: cros_ec_sensorhub:
-> simplify getting .driver_data"
-> 
-> Thanks,
->   Enric
-> 
-> > ---
-> > 
-> > Build tested only. buildbot is happy.
-> > 
-> >  drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > index 28bde13003b7..b2725c6adc7f 100644
-> > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > @@ -831,8 +831,7 @@ EXPORT_SYMBOL_GPL(cros_ec_sensors_core_write);
-> >  
-> >  static int __maybe_unused cros_ec_sensors_resume(struct device *dev)
-> >  {
-> > -	struct platform_device *pdev = to_platform_device(dev);
-> > -	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
-> > +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> >  	struct cros_ec_sensors_core_state *st = iio_priv(indio_dev);
-> >  	int ret = 0;
-> >  
-> >   
-
+Also, do we still need ->swap_activate and ->swap_deactivate?
