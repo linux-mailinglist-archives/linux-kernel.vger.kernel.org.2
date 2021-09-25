@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7A14184A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 23:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0284184AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 23:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhIYV1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 17:27:31 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:56341 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhIYV1a (ORCPT
+        id S230032AbhIYV23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 17:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229977AbhIYV21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 17:27:30 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 40AD3E0002;
-        Sat, 25 Sep 2021 21:25:54 +0000 (UTC)
-Date:   Sat, 25 Sep 2021 23:25:53 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Ramona Alexandra Nechita <ramona.nechita@analog.com>
-Cc:     linux-rtc@vger.kernel.org, a.zummo@towertech.it,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: Specified all the parts for DS1216
-Message-ID: <YU+T4acHxHrbIcNQ@piout.net>
-References: <20210915105309.17225-1-ramona.nechita@analog.com>
+        Sat, 25 Sep 2021 17:28:27 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B0DC061604
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 14:26:52 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id f24so9178712uav.8
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 14:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=hgT4oAwZMFFUQ1NzxnMVr2NDnKHzggnz3wBCr/9NkaQ=;
+        b=q0muMKyEPuYyhk48k7bR5OZUTr3wfFw+T40Fruw//sGUBFAbTxFlXqzyrwNpgberv5
+         Egd5/OPh5FhBiCWuecc2s3qgBcGjKhYclnlJhSMGCFMurhIjtX89O8DpV8A97l8avIvC
+         7rE2R2Mk2PyMGzXOjdfyFGoS6tIa76l9b2noK2GsN46c11+ByRtZWZOttuEh5uCpdpdw
+         OkHklJaaW/ZYgiDSvpIGls69SL3uThFFDAMLR5d30xaq08Fs4wV/rSlwa7S/+LoDn4G4
+         sCxy76BUfuAdb8dBaCaHTv+qkStoUpAO08KquE4mkH2gMjuWFN9ceMgQFy45/PM0bsRP
+         8rRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=hgT4oAwZMFFUQ1NzxnMVr2NDnKHzggnz3wBCr/9NkaQ=;
+        b=QAx23fvTnMQ6aEXkvykKXXVyuBAdbz+whySi+TIaLtDFQn7V55XkkXY+q/rNanHQAO
+         EtNgKho8IJqjl3pIMT+3xXTvHm2sSrtRiU/RZRR5F1FCEjJEMiULovQuHLPn+wJy78Zq
+         myynhWlbTiyLJ3QVHehDE1WbGHkKx++2ZcMfaZJvqQuMCYjRRRVc0iiBwhZfcqkTGle+
+         GDloYnrHaimApFoa3fwt2cL9p7l5ywc4BZAHRsKoqXtBlC7CedtKm2COj4VWl9CMQIsO
+         Tg25gacekLa+VTd2+iRjb6j1sjXMzhWdh1WPpOmMA7OHShaaaBfWWSOeAbV6W6h3mqpG
+         vdDQ==
+X-Gm-Message-State: AOAM5338xDhsDRJsvzzhOnfMJYoDfM5QZ+u7JwkVkjBLSlRQReGSUnC5
+        K+RV4SyHaxXm9O+IYqi8G8k1IseG5R3nM+6p79U=
+X-Google-Smtp-Source: ABdhPJxNELOZ7dUHGFByQjnPg1sxDXaNtoNEc3HaI8o6eC/7/yvxIdDDgdnevOjkYn/EqT4KceEi9MUDkHDrmCnc9FU=
+X-Received: by 2002:ab0:789:: with SMTP id c9mr8164316uaf.38.1632605211167;
+ Sat, 25 Sep 2021 14:26:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915105309.17225-1-ramona.nechita@analog.com>
+Sender: sakponouedwige1@gmail.com
+Received: by 2002:a67:cc1b:0:0:0:0:0 with HTTP; Sat, 25 Sep 2021 14:26:50
+ -0700 (PDT)
+From:   Kayla Manthey <sgtkayla2001@gmail.com>
+Date:   Sat, 25 Sep 2021 21:26:50 +0000
+X-Google-Sender-Auth: rAaenNtxYpQy9iHGPh9fKCqvQnc
+Message-ID: <CAPhVR5XhQGW2Dq4tgyDB2sbczdYmE4bTGrxnJA=NmYEzA3UXkA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 15/09/2021 13:53:09+0300, Ramona Alexandra Nechita wrote:
-> Included the parts supported in the description (B/C/D/E/F/H).
-> 
-
-I'm sorry, I don't get the point, those are all the ds1216 as seen on
-https://www.maximintegrated.com/en/products/analog/real-time-clocks/DS1216.html
-so DS1216 is probably enough anywere.
-
-> Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
-> ---
->  drivers/rtc/Kconfig      | 2 +-
->  drivers/rtc/rtc-ds1216.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-> index 1adf9f815652..0be9a34e75c8 100644
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -966,7 +966,7 @@ config RTC_DRV_VRTC
->  	updates are done via IPC calls to the system controller FW.
->  
->  config RTC_DRV_DS1216
-> -	tristate "Dallas DS1216"
-> +	tristate "Dallas DS1216B/C/D/E/F/H"
->  	depends on SNI_RM
->  	help
->  	  If you say yes here you get support for the Dallas DS1216 RTC chips.
-> diff --git a/drivers/rtc/rtc-ds1216.c b/drivers/rtc/rtc-ds1216.c
-> index b225bcfef50b..ea276260d962 100644
-> --- a/drivers/rtc/rtc-ds1216.c
-> +++ b/drivers/rtc/rtc-ds1216.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
-> - * Dallas DS1216 RTC driver
-> + * Dallas DS1216B/C/D/E/F/H RTC driver
->   *
->   * Copyright (c) 2007 Thomas Bogendoerfer
->   *
-> -- 
-> 2.25.1
-> 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Please,I would like to know if you received my previous message, thanks.
