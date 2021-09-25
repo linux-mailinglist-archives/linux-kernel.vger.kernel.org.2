@@ -2,122 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E554181B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41664181B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 13:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244657AbhIYLpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 07:45:10 -0400
-Received: from mout.gmx.net ([212.227.17.21]:59933 "EHLO mout.gmx.net"
+        id S244602AbhIYLrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 07:47:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232363AbhIYLpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 07:45:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632570210;
-        bh=/zVNgQmryVA4k3e45CiCaw6IxcHSDeffj98fMqgaE6A=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=bAWI5mFiHaXY8FMRckvJtbeD/t4hKQBNsSI0ng2+mv5DITKHzOGobD1F10x5iEoj6
-         J5fuBM8VQbaNOX9ftNwPKBQFXt7IJ0DcfaGSjKb/XxVttiY2nS1614Lk8L+JXL8lHt
-         xpQ/uaUWmGqxBzzP2fhMXRx5Bqi4k90Rvj4FUm9g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1N79yG-1mvqiD3jQK-017SQE; Sat, 25 Sep 2021 13:43:30 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] writeback: prefer struct_size over open coded arithmetic
-Date:   Sat, 25 Sep 2021 13:43:08 +0200
-Message-Id: <20210925114308.11455-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S232363AbhIYLq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 07:46:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06A2F6124B;
+        Sat, 25 Sep 2021 11:45:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632570324;
+        bh=lK1CIJn/awmHTElf/vL2G+f6q5CDRXPrzTyaVPBPT48=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xx/318jwxiMjor+ABfHnMZNS6v+ZTDg/yXSt/qGatay99U+ipGTHzblC/dnM2JCb9
+         Op5CEEzXYZG3Qdbtvb88+rMOEKoRwGgLX50QzmyCqb2q2SetrMiqE5XyR9Fa5MvqSn
+         8ADzophhUny7TV4llR9cWlT1n0WHbiIPZB0KVOVk=
+Date:   Sat, 25 Sep 2021 13:45:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/23] 4.4.285-rc1 review
+Message-ID: <YU8L0dPBq1br51Ip@kroah.com>
+References: <20210924124327.816210800@linuxfoundation.org>
+ <eab2f99b-8be2-2ca3-27de-d98cb36b327c@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UgePny2MsPa0UaX6WMhndso+fvJ4dp1sHEVaBNCXxtmvCRKpZMJ
- /8NJZk16YV7cFI3tVYkMOyGRBLF5Se1TCudVnP6WHW/j3LyMxDY3mUFdGNEa1YemeUTfsg5
- JfIauXX6YbI2A3xKkIx68RV5IUvvs5YtFet0jQEoNzLmNNlf1lzg69qBu18WQWJ3Xz4YOBS
- ITalQTrRowDwolyNuBn3A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yBHF46CKjB8=:bVIKrlHJ3G7BlOYhcfFjqq
- pKEP1pkMHiXCUjYqgc2UTGighUmZfJ31xCho1Ntft6+7Xm03Ktbj4tjmWj2YqaBvJNQbERgHm
- Fw++sfk9D5CzTsChvDj5lmOo0EptkYQSKNU6FYnosetszltdgWWb//aBmph1FxfHuYn8VkgFf
- XBE9M5y6VO8+Z+5ulQl5J01NjIbjPEMYzr72e7Bk0g6mlOJB970qSdq0r3i7rIKjSRQu1gtdK
- sgdqcIzf5b2HWH098x++F2y9tABS9KUl8998vNrs6PVe9lMuxT5B6k1DGVCKc3nFU9xDYi8XE
- fKgocq32w0nSwieeAU9RWdNJNLoXQyLGXgb1346lNO5ZCJMXzkkHeMxAvvR765aGBnutgDInp
- 36OoiPTACd5kFw5IqUmixJwnrxUkaoclYLpHqo7s2vyw3PMF5x3rUi7rf9AhGSTjif73ja3Bk
- sTH/kCBA3u/fz6pEsi3Mcy3TZZQPj2vr9Vxt6FGGyyxngi+ikef2i5lkrID+54WZWodhVUVr+
- xYLRqR/2KCscSSF8vxP/3FgDP+fV+Aof5DRzJiI+FiPL/ei3QKjjJNyrQnmUHDaVZbMCHRra4
- /VGMX5lFm17+NUuSD7K2zai3ZllP2hKunw4Kh13QtmxQZp/3WLuJQ36boyMF7ycTArw0PQljI
- SZpUr4q3W//fSrj17UmLT695BXcpWMscQGzGu9iWem86rmLIxx+7z+wpro751cQyLfn50ZmVF
- 1FNlePLmdkBCAqO3+xVZClTt4v5Y+t5Rr995obXKMw6uHd0KeOBOVBFki1cTgEjlnmvff5x/6
- X6RAN8k7dTczYaMwwGVV9+Fsa2NX/EHo5hRl5tAxg4I8YtJdZAWnDz9VWrl/l1meZlXdCGnOH
- n2JbT3vnGiaP4syVY1mB76TzXWCOu2gPhj0ubranoYidvBCe34h0yoN58UVOnvG2GpRGrG+rg
- 0snraO+ILTkG8b7sOAxVoLgHHwaHu49ih1ULoYwiTiZVoXOBRXRRfXvQfv8Z6l8OKR/f4TBxd
- 5j2VojiPHUAa8ANEXk3PBFlA6Q8SccA6M+X8+XooH8skVSD8mRD8w3BxOpJzgKIpuIibxD4io
- 3MjIRILnmlCfOA=
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eab2f99b-8be2-2ca3-27de-d98cb36b327c@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+On Fri, Sep 24, 2021 at 08:50:21AM -0500, Daniel Díaz wrote:
+> Hello!
+> 
+> On 9/24/21 7:43 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.4.285 release.
+> > There are 23 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sun, 26 Sep 2021 12:43:20 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.285-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Regressions detected.
+> 
+> While building mxs_defconfig for arm, the following error was encountered:
+> 
+>   /builds/linux/arch/arm/mach-mxs/mach-mxs.c:285:26: warning: duplicate 'const' declaration specifier [-Wduplicate-decl-specifier]
+>     285 | static const struct gpio const tx28_gpios[] __initconst = {
+>         |                          ^~~~~
+>   /builds/linux/drivers/pwm/pwm-mxs.c: In function 'mxs_pwm_probe':
+>   /builds/linux/drivers/pwm/pwm-mxs.c:164:24: error: implicit declaration of function 'dev_err_probe'; did you mean 'device_reprobe'? [-Werror=implicit-function-declaration]
+>     164 |                 return dev_err_probe(&pdev->dev, ret, "failed to reset PWM\n");
+>         |                        ^~~~~~~~~~~~~
+>         |                        device_reprobe
+>   cc1: some warnings being treated as errors
+>   make[3]: *** [/builds/linux/scripts/Makefile.build:280: drivers/pwm/pwm-mxs.o] Error 1
+> 
+> This is also seen in other branches (from 4.4 to 5.4). To reproduce this build locally:
+> 
+>   tuxmake \
+>     --target-arch=arm \
+>     --kconfig=mxs_defconfig \
+>     --toolchain=gcc-11 \
+>     --runtime=podman \
+>     config default kernel xipkernel modules dtbs dtbs-legacy debugkernel headers
 
-In this case these are not actually dynamic sizes: all the operands
-involved in the calculation are constant values. However it is better to
-refactor them anyway, just to keep the open-coded math idiom out of
-code.
+Now dropped from all 4.4 - 5.4 kernels, thanks!  I'll push out a -rc2
+soon with all of these fixed up...
 
-So, use the struct_size() helper to do the arithmetic instead of the
-argument "size + count * size" in the kzalloc() functions.
-
-This code was detected with the help of Coccinelle and audited and fixed
-manually.
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments
-
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Changelog v1 -> v2
-- Rebase against v5.15-rc2
-- Refactor another instance in the same file (Gustavo A. R. Silva).
-- Update the commit changelog to inform that this code was detected
-  using a Coccinelle script (Gustavo A. R. Silva).
-
- fs/fs-writeback.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 81ec192ce067..5eb0ada7468c 100644
-=2D-- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -566,7 +566,7 @@ static void inode_switch_wbs(struct inode *inode, int =
-new_wb_id)
- 	if (atomic_read(&isw_nr_in_flight) > WB_FRN_MAX_IN_FLIGHT)
- 		return;
-
--	isw =3D kzalloc(sizeof(*isw) + 2 * sizeof(struct inode *), GFP_ATOMIC);
-+	isw =3D kzalloc(struct_size(isw, inodes, 2), GFP_ATOMIC);
- 	if (!isw)
- 		return;
-
-@@ -624,8 +624,8 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
- 	int nr;
- 	bool restart =3D false;
-
--	isw =3D kzalloc(sizeof(*isw) + WB_MAX_INODES_PER_ISW *
--		      sizeof(struct inode *), GFP_KERNEL);
-+	isw =3D kzalloc(struct_size(isw, inodes, WB_MAX_INODES_PER_ISW),
-+		      GFP_KERNEL);
- 	if (!isw)
- 		return restart;
-
-=2D-
-2.25.1
-
+greg k-h
