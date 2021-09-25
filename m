@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD95F418354
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 17:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB4D41835B
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 18:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240531AbhIYQB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 12:01:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234075AbhIYQB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 12:01:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0274610FD;
-        Sat, 25 Sep 2021 15:58:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632585592;
-        bh=WAwJ0O+4kCyValty29Ksr2SWwdodXAMeTHDUEnDGDYM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DcLigCXJtlu1DMG1XJ29mzkug5nIR1ZZX85k6kuviG43w9fQEMEvp6rf1bNC0Tena
-         grawWtx1nCTh7lXawApXm2pWK9i66jt5KLNeLBkl/KaGCCfbGnORC+yZCKbnqHkjsn
-         oB87mt1DUbOBgOnSl+TC8qo6cEAD0uKDxfeYwcTPXYbcPD+EhGgr2v7miImeBJPv5D
-         RIb0dWprARJcN3KiCLB4uciY+97T8pYe9jBX4jLQmjjcchdv2IY17wUAkbv4TLijk4
-         1ktHPkzx/S5DBoXbNBcClHGdlGYZAMxrFkqeX8vVyNgkD2wmO4lBasCI2zQMax8AnR
-         i/nOSe5YYQ/1w==
-Date:   Sat, 25 Sep 2021 23:57:58 +0800
-From:   Gao Xiang <xiang@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Chao Yu <chao@kernel.org>, Miao Xie <miaoxie@huawei.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Yue Hu <huyue2@yulong.com>, Liu Bo <bo.liu@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-Subject: [GIT PULL] erofs fixes for 5.15-rc3
-Message-ID: <20210925155757.GA22083@hsiangkao-HP-ZHAN-66-Pro-G1>
-Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Chao Yu <chao@kernel.org>, Miao Xie <miaoxie@huawei.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>, Yue Hu <huyue2@yulong.com>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
+        id S237852AbhIYQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 12:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231248AbhIYQOW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 12:14:22 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23E9C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 09:12:47 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id s16so12872184ybe.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 09:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0crdlBe2JFxj7vLeLWC6SazKmqX6D7h0wPvd1YoWPhc=;
+        b=r3STl/EiBhjcGJAGxvBGIMaNrasQNOdY/xVtRaHvAhQZbIMdJXsQjx/pPZjU6xU17R
+         dZ/FukG0qiUMnckvTSocZ6Wg+54ENNYoPmikaBCvyiB5Jy3XtsIUYan+1yxllyCO60yP
+         bV8zzlgXOewTi8q/qFOg1RogQEuQR8ep610K4+HNg3YSSy/VpZWuN0f0TVO8+WMaoa9v
+         ooOeL57U2EzTBWEhJoAoJ24GAqUE4z4nGueGqLaYadnn4VuQeFTiU2MElx3vnd2NlYsT
+         FFK8sBNX0n7P8a0MoYA7E0e0pNvSTzvXri3L5WrDWPb2od9lrLthTTAOf+/hRhrplhNg
+         4yhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0crdlBe2JFxj7vLeLWC6SazKmqX6D7h0wPvd1YoWPhc=;
+        b=aaLf2qaQ8uc7Zc1gOwfEOIxQ9XIFlXHVJZkx/EcTYHdsWS1k6ST/V7vnzRbPOjg6mo
+         4pdw8i2TPcFB5Wq75SLof1+K4NqZDo0jLJMZHrqtW3hzlkAyjbBoNu3GVzxDmtkfwae1
+         zCQ4I/b9yusxUCpD6CbkHIHi2OOJqXFed1jYD85xHunvQwVgUh95NgU/gIji/JrxgmMt
+         muRA3Lmd7Hj1uklGifFJttgeQIqRimTIfnZz3eRkRCmQX07DRGHQLjEaw7W7QA1gu6/U
+         3WuwJ9Pp59xGSxPacnrW1Te2dUV7TcP/CHd8EDletza503GOIPIPMOvIWx4bDQsY38EC
+         fScA==
+X-Gm-Message-State: AOAM532T4yyTJBS7gMH36hc5IUC0skGooVz9G6/F+mMzwZGAyaeOuR3A
+        1hcXxyQl6OxYjcKq91PYccqOi3fKC7VvBw7KfvugsA==
+X-Google-Smtp-Source: ABdhPJzgp7GyFbz86FYBHCTkAjVtj0qur4YgbYnxykYReL1Q5+FA29T2xUxChkjhyxGDxuG9LwOMVN/PCpiXxalUCWI=
+X-Received: by 2002:a25:c011:: with SMTP id c17mr18572046ybf.291.1632586366402;
+ Sat, 25 Sep 2021 09:12:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210925142733.24293-1-liumh1@shanghaitech.edu.cn>
+In-Reply-To: <20210925142733.24293-1-liumh1@shanghaitech.edu.cn>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Sat, 25 Sep 2021 09:12:35 -0700
+Message-ID: <CANn89iKcMRNnuN4Vq-En_wjc19Qj8Ufv3kQ7DpCSqAg9T1ud4w@mail.gmail.com>
+Subject: Re: [PATCH -next] net/ipv4/tcp_metrics.c: remove superfluous header
+ files from tcp_metrics.c
+To:     Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sat, Sep 25, 2021 at 7:27 AM Mianhan Liu <liumh1@shanghaitech.edu.cn> wrote:
+>
+> tcp_metrics.c hasn't use any macro or function declared in rcupdate.h
+> spinlock.h, module.h, cache.h, hash.h and vmalloc.h. Thus, these files
+> can be removed from tcp_metrics.c safely without affecting the compilation
+> of the net module.
 
-Could you consider this pull request for 5.15-rc3?
+This seems pretty much relying on other includes.
+(eg #include <linux/tcp.h> brings many things already)
 
-2 bugfixes are included in order to fix the 4KiB blockmap chunk format
-availability and a dangling pointer usage. There is also a trivial
-cleanup to clarify compacted_2b if compacted_4b_initial > totalidx.
+We do not generally do this.
 
-All commits have been in -next. This merges cleanly with master.
 
-Thanks,
-Gao Xiang
+>
+> Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+>
+> ---
+>  net/ipv4/tcp_metrics.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_metrics.c b/net/ipv4/tcp_metrics.c
+> index 0588b004d..7b819530d 100644
+> --- a/net/ipv4/tcp_metrics.c
+> +++ b/net/ipv4/tcp_metrics.c
+> @@ -1,15 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -#include <linux/rcupdate.h>
 
-The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
+We do use rcu stuff in this file.
 
-  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+> -#include <linux/spinlock.h>
 
-are available in the Git repository at:
+We do use spinlocks in tcp_metrics.c
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.15-rc3-fixes
+>  #include <linux/jiffies.h>
+> -#include <linux/module.h>
+> -#include <linux/cache.h>
+>  #include <linux/slab.h>
+>  #include <linux/init.h>
+>  #include <linux/tcp.h>
+> -#include <linux/hash.h>
+>  #include <linux/tcp_metrics.h>
+> -#include <linux/vmalloc.h>
 
-for you to fetch changes up to c40dd3ca2a45d5bd6e8b3f4ace5cb81493096263:
+Not sure why kvzalloc() is not in linux/vmalloc.h
 
-  erofs: clear compacted_2b if compacted_4b_initial > totalidx (2021-09-23 23:23:04 +0800)
-
-----------------------------------------------------------------
-Changes since last update:
-
- - fix the dangling pointer use in erofs_lookup tracepoint;
- - fix unsupported chunk format check;
- - zero out compacted_2b if compacted_4b_initial > totalidx.
-
-----------------------------------------------------------------
-Gao Xiang (2):
-      erofs: fix up erofs_lookup tracepoint
-      erofs: fix misbehavior of unsupported chunk format check
-
-Yue Hu (1):
-      erofs: clear compacted_2b if compacted_4b_initial > totalidx
-
- fs/erofs/inode.c             | 2 +-
- fs/erofs/zmap.c              | 3 ++-
- include/trace/events/erofs.h | 6 +++---
- 3 files changed, 6 insertions(+), 5 deletions(-)
+Honestly I do not even know why we spend time trying to reduce list of includes.
