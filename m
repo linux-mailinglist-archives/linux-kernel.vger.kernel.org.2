@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8177E418083
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 10:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24D5418085
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Sep 2021 10:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242259AbhIYItC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 04:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237067AbhIYIsg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 04:48:36 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF198C061604;
-        Sat, 25 Sep 2021 01:46:51 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id w29so34480134wra.8;
-        Sat, 25 Sep 2021 01:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iEHoU21DH841tx0qtRTz5FbDxLZko2mQ4Z33po9e6hg=;
-        b=PIJxllT69paC9PSPnGweRS7+dl4W6XwBhxX3NJEfjhKXs2OgetHWGsVMM+/xlYnpkJ
-         yE067R/ulXFWu0+Nb22zbtRi8id5cEPSI4UwX4hUP/vr8+fIKm0RSc1dshmlkRiEEO4e
-         a8Ev6kbxZ7iEMMiCbQvYroehkiSsHhWWckVb729l7AVvPOvm2uRGq7JtMYujgGJyM8xw
-         0JeGRmnCEqhmtxTCWUhlCgG3Qp4q4kP9jJT2zWwu/jNuV22dva3L3R04ETxhI8U4+Tzr
-         jurnDvW9kIcg4JM/zHGJQKU+WHZQcULwW9HWmexNR7JaaNFn+8vixbUKHUTkeYPeLUL1
-         7gVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iEHoU21DH841tx0qtRTz5FbDxLZko2mQ4Z33po9e6hg=;
-        b=u+83xcNnXrp8acai9DlI4z4py/ZFyDTC+b35STZYir4QapJJ9QLcbA0vPHRA3StBea
-         yYJv4/y+E9GtJm0L7be3VHMEQVHdzgfRaEg2L3laHCm6bHeP4ArBh9BXrm2BqmmOa3aA
-         hVuPHF/PI+CcTCYfHMP1RdeUinfUv8SqHeHbO9N+s46OPVTnsDNNmS+FJuFEnKUMq5HS
-         adsJk21DrV7ZqZkUygBmVe96dXTEoAkA61R1L49ISTEeA0Yt+LF5+0CuHPAvhWeznXyP
-         kDIC2p1q1dqfOQ94KM8slVVLC/aydcnAAgKqcynFHolGILU/+EhE5EYuBLzNfehwv6ov
-         T9Pw==
-X-Gm-Message-State: AOAM533g+ry+INIzLhtZXtKXQq6TchWmQ23GMK0LpOc3ltT1QH5o7uqC
-        U+Ve6eedn3/gd13QunONw68=
-X-Google-Smtp-Source: ABdhPJwbFGgQ4QqaYZwkc1R+U45nYpniQk1gbE3hEL7mfMPfDk8HqaaEUp/5WE47sL6izCrEYT8uVg==
-X-Received: by 2002:adf:eec3:: with SMTP id a3mr16448514wrp.276.1632559610460;
-        Sat, 25 Sep 2021 01:46:50 -0700 (PDT)
-Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
-        by smtp.gmail.com with ESMTPSA id y9sm17222997wmj.36.2021.09.25.01.46.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 25 Sep 2021 01:46:50 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     tsbogend@alpha.franken.de
-Cc:     robh@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        Liviu.Dudau@arm.com, bhelgaas@google.com, matthias.bgg@gmail.com,
-        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-staging@lists.linux.dev,
-        neil@brown.name, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] staging: mt7621-pci: properly adjust base address for the IO window
-Date:   Sat, 25 Sep 2021 10:46:41 +0200
-Message-Id: <20210925084642.5642-7-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210925084642.5642-1-sergio.paracuellos@gmail.com>
-References: <20210925084642.5642-1-sergio.paracuellos@gmail.com>
+        id S241218AbhIYItO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 04:49:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243259AbhIYItE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 04:49:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25FBB6108B;
+        Sat, 25 Sep 2021 08:47:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632559650;
+        bh=jljm/gq2Uo3CFBJYUG9QFQdu6pwhLsRTik+sAfGux90=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IpEehK1WCcq92jJYny4m2TX1ZNFMIm+qW3leSOGo+gF6pwjuOyi96HeqEVoNQkkm6
+         sMHj0fU3UcixtGiDhLpPqFDJ4hGiS7u4FUvoN1yF1cJHS0xnJ/Raz5wL2e1MGtWcAG
+         bv1ADhAzR4K70vm7CZV91znkQ0C8nSaGPDUq4dZ4=
+Date:   Sat, 25 Sep 2021 10:47:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] staging: vt6655: replace camel case
+ b_short_slot_time instead of bShortSlotTime.
+Message-ID: <YU7iHvNQPI81WvsM@kroah.com>
+References: <20210925074531.10446-1-tomm.merciai@gmail.com>
+ <20210925074531.10446-2-tomm.merciai@gmail.com>
+ <YU7XBPzQAq2s7d4L@kroah.com>
+ <20210925084134.GA4727@tom-desktop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925084134.GA4727@tom-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value to adjust in the bridge register RALINK_PCI_IOBASE must take into
-account the raw value from DT, not only the translated linux port number.
-As long as io_offset is zero, the two are the same, but if you were to use
-multiple host bridge in the system, or pick a different bus address in DT,
-you can have a nonzero io_offset. At this means to take into account the
-bus address which is used to calculate this offset, substracting it from
-the IO resource start address.
+On Sat, Sep 25, 2021 at 10:41:34AM +0200, Tommaso Merciai wrote:
+> On Sat, Sep 25, 2021 at 10:00:04AM +0200, Greg Kroah-Hartman wrote:
+> > On Sat, Sep 25, 2021 at 09:45:22AM +0200, Tommaso Merciai wrote:
+> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > 
+> > I can not take patches without any changelog text at all, sorry.
+> > 
+> > My bot pointed you at the instructions for how to write a good
+> > changelog, please read that before resubmitting.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+>   
+>   Hi,
+>   Thanks for your time. Sorry but I'm trying to check what I'm missing
+>   "Versioning one patch revision" as suggested by Gustavo A. R. Silva.
+> 
+>   https://kernelnewbies.org/Outreachyfirstpatch
+> 
+>   I put Changes since vN after git format-patch "---". Maybe I'm missing
+>   other stuff?
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- drivers/staging/mt7621-pci/pci-mt7621.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You are missing other stuff :)
 
-diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
-index 6acfc94a16e7..503cb1fca2e0 100644
---- a/drivers/staging/mt7621-pci/pci-mt7621.c
-+++ b/drivers/staging/mt7621-pci/pci-mt7621.c
-@@ -482,7 +482,7 @@ static int mt7621_pcie_enable_ports(struct pci_host_bridge *host)
- 
- 	/* Setup MEMWIN and IOWIN */
- 	pcie_write(pcie, 0xffffffff, RALINK_PCI_MEMBASE);
--	pcie_write(pcie, entry->res->start, RALINK_PCI_IOBASE);
-+	pcie_write(pcie, entry->res->start - entry->offset, RALINK_PCI_IOBASE);
- 
- 	list_for_each_entry(port, &pcie->ports, list) {
- 		if (port->enabled) {
--- 
-2.25.1
+Notably the actual text that goes in the git changelog that explains
+what this patch is doing and why it is needed.  Again, please read the
+link that my bot pointed you at.
 
+thanks,
+
+greg k-h
