@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE1541870F
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CB84186F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhIZHUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 03:20:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:22997 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbhIZHUY (ORCPT
+        id S231262AbhIZHTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 03:19:54 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:19364 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231124AbhIZHTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 03:20:24 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HHH873kgDzbmpQ;
-        Sun, 26 Sep 2021 15:14:31 +0800 (CST)
-Received: from dggpeml500002.china.huawei.com (7.185.36.158) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+        Sun, 26 Sep 2021 03:19:46 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HHH7N57H2zRSQg;
+        Sun, 26 Sep 2021 15:13:52 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sun, 26 Sep 2021 15:18:46 +0800
-Received: from huawei.com (10.136.117.208) by dggpeml500002.china.huawei.com
- (7.185.36.158) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sun, 26 Sep
- 2021 15:18:45 +0800
-From:   Qiumiao Zhang <zhangqiumiao1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sasha.levin@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        <netdev@vger.kernel.org>, <yanan@huawei.com>,
-        <rose.chen@huawei.com>
-Subject: [PATCH stable 4.19 4/4] tcp: adjust rto_base in retransmits_timed_out()
-Date:   Sun, 26 Sep 2021 15:18:42 +0800
-Message-ID: <20210926071842.1429-5-zhangqiumiao1@huawei.com>
-X-Mailer: git-send-email 2.28.0.windows.1
-In-Reply-To: <20210926071842.1429-1-zhangqiumiao1@huawei.com>
-References: <20210926071842.1429-1-zhangqiumiao1@huawei.com>
+ 15.1.2308.8; Sun, 26 Sep 2021 15:18:07 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sun, 26 Sep 2021 15:18:06 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>, <davem@davemloft.net>,
+        <ast@kernel.org>, <ryabinin.a.a@gmail.com>,
+        <akpm@linux-foundation.org>
+CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <bpf@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 0/9] sections: Unify kernel sections range check and use
+Date:   Sun, 26 Sep 2021 15:20:39 +0800
+Message-ID: <20210926072048.190336-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.136.117.208]
+X-Originating-IP: [10.175.113.25]
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500002.china.huawei.com (7.185.36.158)
+ dggpemm500001.china.huawei.com (7.185.36.107)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+There are three head files(kallsyms.h, kernel.h and sections.h) which
+include the kernel sections range check, let's make some cleanup and
+unify them.
 
-commit 3256a2d6ab1f71f9a1bd2d7f6f18eb8108c48d17 upstream
+1. cleanup arch specific text/data check and fix address boundary check
+   in kallsyms.h
+2. make all the basic/core kernel range check function into sections.h
+3. update all the callers, and use the helper in sections.h to simplify
+   the code
 
-The cited commit exposed an old retransmits_timed_out() bug
-which assumed it could call tcp_model_timeout() with
-TCP_RTO_MIN as rto_base for all states.
+After this series, we have 5 APIs about kernel sections range check in
+sections.h
 
-But flows in SYN_SENT or SYN_RECV state uses a different
-RTO base (1 sec instead of 200 ms, unless BPF choses
-another value)
+ * is_kernel_rodata()		--- already in sections.h
+ * is_kernel_core_data()	--- come from core_kernel_data() in kernel.h
+ * is_kernel_inittext()		--- come from kernel.h and kallsyms.h
+ * __is_kernel_text()		--- add new internal helper
+ * __is_kernel()		--- add new internal helper
 
-This caused a reduction of SYN retransmits from 6 to 4 with
-the default /proc/sys/net/ipv4/tcp_syn_retries value.
+Note: For the last two helpers, people should not use directly, consider to
+      use corresponding function in kallsyms.h.
 
-Fixes: a41e8a88b06e ("tcp: better handle TCP_USER_TIMEOUT in SYN_SENT state")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Yuchung Cheng <ycheng@google.com>
-Cc: Marek Majkowski <marek@cloudflare.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
----
- net/ipv4/tcp_timer.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+v3:
+- Add Steven's RB to patch2
+- Introduce two internal helper, then use is_kernel_text() in core_kernel_text()
+  and is_kernel() in kernel_or_module_addr() suggested by Steven
 
-diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-index 9e9507f125a2..d071ed6b8b9a 100644
---- a/net/ipv4/tcp_timer.c
-+++ b/net/ipv4/tcp_timer.c
-@@ -197,8 +197,13 @@ static bool retransmits_timed_out(struct sock *sk,
- 		return false;
- 
- 	start_ts = tcp_sk(sk)->retrans_stamp;
--	if (likely(timeout == 0))
--		timeout = tcp_model_timeout(sk, boundary, TCP_RTO_MIN);
-+	if (likely(timeout == 0)) {
-+		unsigned int rto_base = TCP_RTO_MIN;
-+
-+		if ((1 << sk->sk_state) & (TCPF_SYN_SENT | TCPF_SYN_RECV))
-+			rto_base = tcp_timeout_init(sk);
-+		timeout = tcp_model_timeout(sk, boundary, rto_base);
-+	}
- 
- 	return (s32)(tcp_time_stamp(tcp_sk(sk)) - start_ts - timeout) >= 0;
- }
+v2:
+https://lore.kernel.org/linux-arch/20210728081320.20394-1-wangkefeng.wang@huawei.com/
+- add ACK/RW to patch2, and drop inappropriate fix tag
+- keep 'core' to check kernel data, suggestted by Steven Rostedt
+  <rostedt@goodmis.org>, rename is_kernel_data() to is_kernel_core_data()
+- drop patch8 which is merged
+- drop patch9 which is resend independently
+
+v1:
+https://lore.kernel.org/linux-arch/20210626073439.150586-1-wangkefeng.wang@huawei.com
+
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-arch@vger.kernel.org 
+Cc: bpf@vger.kernel.org 
+
+Kefeng Wang (9):
+  kallsyms: Remove arch specific text and data check
+  kallsyms: Fix address-checks for kernel related range
+  sections: Move and rename core_kernel_data() to is_kernel_core_data()
+  sections: Move is_kernel_inittext() into sections.h
+  x86: mm: Rename __is_kernel_text() to is_x86_32_kernel_text()
+  sections: Provide internal __is_kernel() and __is_kernel_text() helper
+  mm: kasan: Use is_kernel() helper
+  extable: Use is_kernel_text() helper
+  powerpc/mm: Use is_kernel_text() and is_kernel_inittext() helper
+
+ arch/powerpc/mm/pgtable_32.c   |  7 +---
+ arch/x86/kernel/unwind_orc.c   |  2 +-
+ arch/x86/mm/init_32.c          | 14 +++----
+ include/asm-generic/sections.h | 75 ++++++++++++++++++++++++++--------
+ include/linux/kallsyms.h       | 13 +-----
+ include/linux/kernel.h         |  2 -
+ kernel/extable.c               | 33 ++-------------
+ kernel/locking/lockdep.c       |  3 --
+ kernel/trace/ftrace.c          |  2 +-
+ mm/kasan/report.c              |  2 +-
+ net/sysctl_net.c               |  2 +-
+ 11 files changed, 75 insertions(+), 80 deletions(-)
+
 -- 
-2.19.1
+2.26.2
 
