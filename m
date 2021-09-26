@@ -2,179 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3EF4188AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670114188B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhIZMlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 08:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhIZMlD (ORCPT
+        id S231450AbhIZMtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 08:49:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24675 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230160AbhIZMtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 08:41:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31518C061570;
-        Sun, 26 Sep 2021 05:39:27 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632659964;
+        Sun, 26 Sep 2021 08:49:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632660465;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=U74WvCkkjAYn1Lqyj3MdmStl8ZJ3w7VQiPNn2eEwgCk=;
-        b=B6ENbnHHrOGNDqrUqttxTvR1RRnxMj2PdTWBp+UJLYr0KZZlp77MPoTznUWkW4psQ/vrRV
-        HlDl3CJ+wv5aAAktUatkPjANE90bM52uVmAON/9XeW9G439W9zKONtaazZaDkJmnL0TiR6
-        1NY4/Ej1ty4Q/gnj8w+LS/Cvtokir5i7Znk66DTD+1ev7KvHDISbFxUnAcjYrBgbQfvpV4
-        MuhRbvmrr3rvoovhOtLAucfhac/3eHkHiILz6Qr1F6e86BgdFJ799qaRYWjZ5TNh69LqWd
-        uGIwI0OwGGT9YnK+vcQ/EPQ0HZixT2W23z/WBuVQVHs+g08TsyopY7J9RrHDwQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632659964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U74WvCkkjAYn1Lqyj3MdmStl8ZJ3w7VQiPNn2eEwgCk=;
-        b=B0bQ8F0X/Ip7qIjEtWtHReu+oqcMgcYeyrBg51UpkYOdX3QWD2erAKcAxtizTbXi6+z33o
-        gT5mbiMFxfK0C9AQ==
-To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
-Cc:     Sohil Mehta <sohil.mehta@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 05/13] x86/irq: Reserve a user IPI notification vector
-In-Reply-To: <878rzkeq9f.ffs@tglx>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-6-sohil.mehta@intel.com> <87fstugabg.ffs@tglx>
- <878rzkeq9f.ffs@tglx>
-Date:   Sun, 26 Sep 2021 14:39:23 +0200
-Message-ID: <87bl4fcxz8.ffs@tglx>
+        bh=TIU1SliLHR0gPG253uhvPBnlkJkKd7zvq1PnYr5EWUg=;
+        b=KqMbSuLZtpd4EMUZqn3krJZ1ZVV7WInqAv3widCmxOaNNv0PffAOZttRAsqwvkLndp7soj
+        Z+P/uKug/FctFDlCqsIug9o7wHgzuznn8bipYQui0CAZ1v5V9ypJMAhssXJUBR0bzk31Db
+        0HtG0fS0OGuqpc8KEvYHuMqI+tBMRCE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-lrhylb9gPjypIXuBOSCoEw-1; Sun, 26 Sep 2021 08:47:43 -0400
+X-MC-Unique: lrhylb9gPjypIXuBOSCoEw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0D1A1006AA2;
+        Sun, 26 Sep 2021 12:47:41 +0000 (UTC)
+Received: from T590 (ovpn-8-24.pek2.redhat.com [10.72.8.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 57D2F60C04;
+        Sun, 26 Sep 2021 12:47:32 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 20:47:48 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Laibin Qiu <qiulaibin@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        hare@suse.de, asml.silence@gmail.com, bvanassche@acm.org
+Subject: Re: [PATCH -next] blk-mq: fix tag_get wait task can't be awakened
+Message-ID: <YVBr9Km1p7+uDioG@T590>
+References: <20210913081248.3201596-1-qiulaibin@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913081248.3201596-1-qiulaibin@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25 2021 at 15:30, Thomas Gleixner wrote:
-> On Fri, Sep 24 2021 at 01:07, Thomas Gleixner wrote:
-> The obvious question is: What is the value of clearing UINV?
->
-> Absolutely none. That notification vector cannot be used for anything
-> else, so why would the OS be interested to see it ever? This is about
-> user space interupts, right?
->
-> UINV should be set _ONCE_ when CR4.UINTR is enabled and not be touched
-> by XSAVES/XRSTORS at all. Any delivery of this vector to the OS should
-> be considered a hardware bug.
+Hi Laibin,
 
-After decoding the documentation (sigh) and staring at the implications of
-keeping UINV armed, I can see the point vs. the UPID lifetime issue when
-a task gets scheduled out and migrated to a different CPU.
+On Mon, Sep 13, 2021 at 04:12:48PM +0800, Laibin Qiu wrote:
+> When multiple hctx share one tagset. The wake_batch is calculated
+> during initialization by queue_depth. But when multiple hctx share one
+> tagset. The queue depth assigned to each user may be smaller than
+> wakup_batch. This may cause the waiting queue to fail to wakup and leads
+> to Hang.
 
-Not the most pretty solution, but as there needs to be some invalidation
-which needs to be undone on return to user space it probably does not
-matter much. 
+In case of shared tags, there might be more than one hctx which
+allocates tag from single tags, and each hctx is limited to allocate
+at most:
 
-As the whole thing is tightly coupled to XSAVES/RSTORS we need to
-integrate it into that machinery and not pretend that it's something
-half independent.
+ 	hctx_max_depth = max((bt->sb.depth + users - 1) / users, 4U);
 
-That means we have to handle the setting of the SN bit in UPID whenever
-XSTATE is saved either during context switch, when the kernel uses the
-FPU or in other places (signals, fpu_clone ...). They all end up in
-save_fpregs_to_fpstate() so that might be the place to look at.
+	and
 
-While talking about that: fpu_clone() has to invalidate the UINTR state
-in the clone's xstate after the memcpy() or xsaves() operation.
+	users = atomic_read(&hctx->tags->active_queues)
 
-Also the restore portion on the way back to user space has to be coupled
-more tightly:
+See hctx_may_queue().
 
-arch_exit_to_user_mode_prepare()
-{
-        ...
-        if (unlikely(ti_work & _TIF_UPID))
-        	uintr_restore_upid(ti_work & _TIF_NEED_FPU_LOAD);
-        if (unlikely(ti_work & _TIF_NEED_FPU_LOAD))
-        	switch_fpu_return();
-}
+tag idle detection is lazy, and may be delayed for 30sec, so
+there could be just one real active hctx(queue) but all others are
+actually idle and still accounted as active because of the lazy
+idle detection. Then if wake_batch is > hctx_max_depth, driver
+tag allocation may wait forever on this real active hctx.
 
-upid_set_ndst(upid)
-{
-	apicid = __this_cpu_read(x86_cpu_to_apicid);
+Correct me if my understanding is wrong.
 
-        if (x2apic_enabled())
-            upid->ndst.x2apic = apicid;
-        else
-            upid->ndst.apic = apicid;
-}
+> 
+> Fix this by recalculating wake_batch when inc or dec active_queues.
+> 
+> Fixes: 0d2602ca30e41 ("blk-mq: improve support for shared tags maps")
+> Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
+> ---
+>  block/blk-mq-tag.c      | 44 +++++++++++++++++++++++++++++++++++++++--
+>  include/linux/sbitmap.h |  8 ++++++++
+>  lib/sbitmap.c           |  3 ++-
+>  3 files changed, 52 insertions(+), 3 deletions(-)
+> 
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 86f87346232a..d02f5ac0004c 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -16,6 +16,27 @@
+>  #include "blk-mq-sched.h"
+>  #include "blk-mq-tag.h"
+>  
+> +static void bt_update_wake_batch(struct sbitmap_queue *bt, unsigned int users)
+> +{
+> +	unsigned int depth;
+> +
+> +	depth = max((bt->sb.depth + users - 1) / users, 4U);
+> +	sbitmap_queue_update_wake_batch(bt, depth);
+> +}
 
-uintr_restore_upid(bool xrstors_pending)
-{
-        clear_thread_flag(TIF_UPID);
-        
-	// Update destination
-        upid_set_ndst(upid);
+Use the hctx's max queue depth could reduce wake_batch a lot, then
+performance may be degraded.
 
-        // Do we need something stronger here?
-        barrier();
+Just wondering why not set sbq->wake_batch as hctx_max_depth if
+sbq->wake_batch is < hctx_max_depth?
 
-        clear_bit(SN, upid->status);
 
-        // Any SENDUIPI after this point sends to this CPU
-           
-        // Any bit which was set in upid->pir after SN was set
-        // and/or UINV was cleared by XSAVES up to the point
-        // where SN was cleared above is not reflected in UIRR.
-
-	// As this runs with interrupts disabled the current state
-        // of upid->pir can be read and used for restore. A SENDUIPI
-        // which sets a bit in upid->pir after that read will send
-        // the notification vector which is going to be handled once
-        // the task reenables interrupts on return to user space.
-        // If the SENDUIPI set the bit before the read then the
-        // notification vector handling will just observe the same
-        // PIR state.
-
-        // Needs to be a locked access as there might be a
-        // concurrent SENDUIPI modiying it.
-        pir = read_locked(upid->pir);
-
-        if (xrstors_pending)) {
-        	// Update the saved xstate for xrstors
-           	current->xstate.uintr.uinv = UINTR_NOTIFICATION_VECTOR;
-                current->xstate.uintr.uirr = pir;
-        } else {
-                // Manually restore UIRR and UINV
-                wrmsrl(IA32_UINTR_RR, pir);
-
-	        misc.val64 = 0;
-                misc.uittsz = current->uintr->uittsz;
-                misc.uinv = UINTR_NOTIFICATION_VECTOR;
-                wrmsrl(IA32_UINTR_MISC, misc.val64);
-        }
-}
-
-That's how I deciphered the documentation and I don't think this is far
-from reality, but I might be wrong as usual.
-
-Hmm?
 
 Thanks,
+Ming
 
-        tglx
