@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BA5418572
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 03:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E11C418577
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhIZB4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 21:56:33 -0400
-Received: from mga17.intel.com ([192.55.52.151]:54551 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230211AbhIZB4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 21:56:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10118"; a="204461314"
-X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
-   d="scan'208";a="204461314"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2021 18:54:57 -0700
-X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
-   d="scan'208";a="552321174"
-Received: from duan-client-optiplex-7080.bj.intel.com ([10.238.156.101])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2021 18:54:55 -0700
-From:   Zhenzhong Duan <zhenzhong.duan@intel.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, Zhenzhong Duan <zhenzhong.duan@intel.com>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>
-Subject: [PATCH v2] KVM: VMX: Fix a TSX_CTRL_CPUID_CLEAR field mask issue
-Date:   Sun, 26 Sep 2021 09:55:45 +0800
-Message-Id: <20210926015545.281083-1-zhenzhong.duan@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S230300AbhIZCCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 22:02:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45336 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230205AbhIZCCK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 22:02:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632621635;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=040oIl6zBrwYwN4KEUOPnof9/L/lrCQC7B42b76Xk3I=;
+        b=R5zTx5KKM1RsrIIwl40pLnlObR53I142dDPg5pj+BDH8rbbbxgooZCF/HEEWMkrabUyOHd
+        TJbyhVjtTq5Y+flWW8VOOrO4SvUY0Xfpvlrdi362OOtIxsz1uzBOdszQkpMLz/2xikKdWw
+        DO2f5C32xU3FlcmqXnQiLujVXu583Z0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-SWEqkh6fNmSskSxBhcVQ9A-1; Sat, 25 Sep 2021 22:00:31 -0400
+X-MC-Unique: SWEqkh6fNmSskSxBhcVQ9A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4912B824FA6;
+        Sun, 26 Sep 2021 02:00:30 +0000 (UTC)
+Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7B2BB60C05;
+        Sun, 26 Sep 2021 02:00:14 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 10:00:29 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        hare@suse.de
+Subject: Re: [PATCH v4 10/13] blk-mq: Add blk_mq_alloc_map_and_rqs()
+Message-ID: <YU/UPeIm3a1KjRHk@T590>
+References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
+ <1632472110-244938-11-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1632472110-244938-11-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When updating the host's mask for its MSR_IA32_TSX_CTRL user return entry,
-clear the mask in the found uret MSR instead of vmx->guest_uret_msrs[i].
-Modifying guest_uret_msrs directly is completely broken as 'i' does not
-point at the MSR_IA32_TSX_CTRL entry.  In fact, it's guaranteed to be an
-out-of-bounds accesses as is always set to kvm_nr_uret_msrs in a prior
-loop. By sheer dumb luck, the fallout is limited to "only" failing to
-preserve the host's TSX_CTRL_CPUID_CLEAR.  The out-of-bounds access is
-benign as it's guaranteed to clear a bit in a guest MSR value, which are
-always zero at vCPU creation on both x86-64 and i386.
+On Fri, Sep 24, 2021 at 04:28:27PM +0800, John Garry wrote:
+> Add a function to combine allocating tags and the associated requests,
+> and factor out common patterns to use this new function.
+> 
+> Some function only call blk_mq_alloc_map_and_rqs() now, but more
+> functionality will be added later.
+> 
+> Also make blk_mq_alloc_rq_map() and blk_mq_alloc_rqs() static since they
+> are only used in blk-mq.c, and finally rename some functions for
+> conciseness and consistency with other function names:
+> - __blk_mq_alloc_map_and_{request -> rqs}()
+> - blk_mq_alloc_{map_and_requests -> set_map_and_rqs}()
+> 
+> Suggested-by: Ming Lei <ming.lei@redhat.com>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Cc: stable@vger.kernel.org
-Fixes: 8ea8b8d6f869 ("KVM: VMX: Use common x86's uret MSR list as the one true list")
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@intel.com>
-Reviewed-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/vmx/vmx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 0c2c0d5ae873..cbf3d33432b9 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6833,7 +6833,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
- 		 */
- 		tsx_ctrl = vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
- 		if (tsx_ctrl)
--			vmx->guest_uret_msrs[i].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
-+			tsx_ctrl->mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
- 	}
- 
- 	err = alloc_loaded_vmcs(&vmx->vmcs01);
 -- 
-2.25.1
+Ming
 
