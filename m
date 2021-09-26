@@ -2,172 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B942C418809
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 12:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3E841880E
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 12:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhIZKBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 06:01:50 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:58339 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230514AbhIZKBh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 06:01:37 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 547A3580FDE;
-        Sun, 26 Sep 2021 06:00:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sun, 26 Sep 2021 06:00:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=LP/8lz47saqkf
-        hCVmeWif4VdrSPwoBp2uj9OD6MO2sI=; b=TboQyJyt4MGPZJh/xJ6qiczrTbGWj
-        r5ApKe/VulYN+FhoEFA2Qa93FiZAbXkU1ZtaUwNCSiCTkM7hl0FX9DLDf+jafm3f
-        ML33GGGZnp8Er/R2btTDv2FpAhfpz1+x/vLcShzcqnDh5KMv3csTx1pKg2qt2Hm0
-        /UFXYA5NG4/gVSYBx6fUSeS8sBt2nV/Zy+VCZk/ZO/7i3diRgpap5XTrSuCsTbnH
-        74QM1QWjmIdItbseJZ8MYjXn7Ex9BL3qaTpC+6dmHWTAA8ULeCMj5bZU1vXr4oPz
-        ZtXKW6NHxB50qxOiEEKfzobdWl9ffVpkMaDSh5P9e1riYsA8inkxZo8TQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=LP/8lz47saqkfhCVmeWif4VdrSPwoBp2uj9OD6MO2sI=; b=NxAyPacu
-        lGio5pH75/BsAtFRtcWvrptpUnUxDJJjbRfdGf6+/V3X61T4rm7z+D4m3S/dKNN/
-        UugMrelKaJ8AdH0p7lN0QCwSvJrLWpKPgwAlAYm17h5Uo5t0ZIZTGiHo09ud4K63
-        N6U+7iP8DbcxjQnJ7oz1rC39WRsuofgUdAzRWJTExpc1N62l+C2Sb445bhMsmugi
-        dO1hhWz6UaaRf6TZqEKim+KP9vk+8RcQ4u/RW6jlbdOBNsCDlX65pW74QeXdyrj0
-        gYYZAfRWYnOPpqgaQnbcr6CAhyuMDhvcEmVLyLTIMPyee6M3eUKaXI54eriFTDtY
-        Xnk91yd1fBBC5w==
-X-ME-Sender: <xms:oURQYW6lSjhpfTKbyCfHTwZMKa2urpOLUYQn5zBhmDMUDNiOwSMNFg>
-    <xme:oURQYf5fxzX5na2HVZRUfewcI1zj0D7QVIYBWh3j-tcHzaGV_4EDX4YcGqeJP5DU6
-    UCEwFgVPR2o3jES5k4>
-X-ME-Received: <xmr:oURQYVdrqr8DLl27asJv6excVrQEXxW1sHHlD8UQmgX-P-gA22DoGN4Y_MOd92rfV4EPvKHNgb4VKDl__dKjlZdVSW_IudK_dnfua0Ee5wkthPJA0kVKrQc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejiedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcu
-    rfgvthgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvg
-    hrnheptedvkeetleeuffffhfekteetffeggffgveehieelueefvddtueffveevlefhfeej
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
-    hnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:oURQYTJKF2PL7JbAJxAMlBB0SbikpwIlZocBMD86dnoGhzw9pMjYog>
-    <xmx:oURQYaJH7xtoAqBQUbEcEFUgsah3qTIKr7g8QPpq6-LnbUiybMQz0w>
-    <xmx:oURQYUyoe-VxOkdI5BK3V_Gi6acHpUpniaDbfJIF6j-JQhXxKEE2aA>
-    <xmx:oURQYVYz0wefuikiDeuRSykuuZ95ZGcm6SDQJ5chrpMvtAIqiEIuKg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 26 Sep 2021 05:59:59 -0400 (EDT)
-From:   Sven Peter <sven@svenpeter.dev>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>
-Cc:     Sven Peter <sven@svenpeter.dev>, Arnd Bergmann <arnd@arndb.de>,
-        Hector Martin <marcan@marcan.st>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] i2c: pasemi: Set enable bit for Apple variant
-Date:   Sun, 26 Sep 2021 11:58:47 +0200
-Message-Id: <20210926095847.38261-11-sven@svenpeter.dev>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20210926095847.38261-1-sven@svenpeter.dev>
-References: <20210926095847.38261-1-sven@svenpeter.dev>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229998AbhIZKPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 06:15:08 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:60648 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhIZKPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 06:15:08 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E1D58200FF0;
+        Sun, 26 Sep 2021 12:13:30 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7E670200FCD;
+        Sun, 26 Sep 2021 12:13:30 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 1B877183AD07;
+        Sun, 26 Sep 2021 18:13:29 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_spdif: implement bypass mode from in to out
+Date:   Sun, 26 Sep 2021 17:49:20 +0800
+Message-Id: <1632649760-1651-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some later revisions after the original PASemi I2C controller introduce
-what likely is an enable bit to the CTL register. Without setting it the
-actual i2c transmission is never started.
+From: Viorel Suman <viorel.suman@nxp.com>
 
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
+Implement SPDIF bypass mode. It implies internal SoC
+routing of SPDIF input signal to SPDIF output signal. The
+test bed requires two boards: B1 configured in bypass mode,
+and B2 to feed B1 SPDIF RX port and read B1 SPDIF TX port:
+   B2 TX -> B1 RX,
+   B2 RX <- B1 TX.
+The test procedure:
+ a) Boot both boards
+ b) B2: start "arecord <spdifcard> -r 48kHz | aplay <local DAC>"
+ c) B2: start "aplay <spdifcard> -r 48kHz <2ch 48kHz audio file>"
+ d) B1: enable bypass mode:
+	amixer -cimxspdif cset numid=8,iface=PCM,name='Bypass Mode' on
+ e) B2: check DAC audio, make sure the same sample rate is used at
+	steps b) and c), in example above the rate is 48kHz.
+ f) B1: try to run "aplay" or "arecord" on imxspdif card while in
+	bypass mode - both must fail until bypass mode is disabled
+ g) B1: disable bypass mode:
+	amixer -cimxspdif cset numid=8,iface=PCM,name='Bypass Mode' off
+ h) B1: check the usual playback and capture on imxspdif card.
+	During this test try to set bypass mode - must not be allowed
+	while playback or capture is running.
+
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- drivers/i2c/busses/i2c-pasemi-core.c | 8 ++++++++
- drivers/i2c/busses/i2c-pasemi-core.h | 3 +++
- drivers/i2c/busses/i2c-pasemi-pci.c  | 6 ++++++
- 3 files changed, 17 insertions(+)
+ sound/soc/fsl/fsl_spdif.c | 74 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
-diff --git a/drivers/i2c/busses/i2c-pasemi-core.c b/drivers/i2c/busses/i2c-pasemi-core.c
-index 0ec65263fd08..b52a65beda99 100644
---- a/drivers/i2c/busses/i2c-pasemi-core.c
-+++ b/drivers/i2c/busses/i2c-pasemi-core.c
-@@ -22,6 +22,7 @@
- #define REG_MRXFIFO	0x04
- #define REG_SMSTA	0x14
- #define REG_CTL		0x1c
-+#define REG_REV		0x28
- 
- /* Register defs */
- #define MTXFIFO_READ	0x00000400
-@@ -37,6 +38,7 @@
- 
- #define CTL_MRR		0x00000400
- #define CTL_MTR		0x00000200
-+#define CTL_EN		0x00000800
- #define CTL_CLK_M	0x000000ff
- 
- static inline void reg_write(struct pasemi_smbus *smbus, int reg, int val)
-@@ -60,6 +62,9 @@ static void pasemi_reset(struct pasemi_smbus *smbus)
- {
- 	u32 val = (CTL_MTR | CTL_MRR | (smbus->clk_div & CTL_CLK_M));
- 
-+	if (smbus->hw_rev >= 6)
-+		val |= CTL_EN;
-+
- 	reg_write(smbus, REG_CTL, val);
- }
- 
-@@ -335,6 +340,9 @@ int pasemi_i2c_common_probe(struct pasemi_smbus *smbus)
- 	/* set up the sysfs linkage to our parent device */
- 	smbus->adapter.dev.parent = smbus->dev;
- 
-+	if (smbus->hw_rev != PASEMI_HW_REV_PCI)
-+		smbus->hw_rev = reg_read(smbus, REG_REV);
-+
- 	pasemi_reset(smbus);
- 
- 	error = devm_i2c_add_adapter(smbus->dev, &smbus->adapter);
-diff --git a/drivers/i2c/busses/i2c-pasemi-core.h b/drivers/i2c/busses/i2c-pasemi-core.h
-index aca4e2da9089..4655124a37f3 100644
---- a/drivers/i2c/busses/i2c-pasemi-core.h
-+++ b/drivers/i2c/busses/i2c-pasemi-core.h
-@@ -8,11 +8,14 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- 
-+#define PASEMI_HW_REV_PCI -1
-+
- struct pasemi_smbus {
- 	struct device		*dev;
- 	struct i2c_adapter	 adapter;
- 	void __iomem		*ioaddr;
- 	unsigned int		 clk_div;
-+	int			 hw_rev;
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 928b59069283..d178b479c8bd 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -111,6 +111,7 @@ struct spdif_mixer_control {
+  * @dma_params_tx: DMA parameters for transmit channel
+  * @dma_params_rx: DMA parameters for receive channel
+  * @regcache_srpc: regcache for SRPC
++ * @bypass: status of bypass input to output
+  */
+ struct fsl_spdif_priv {
+ 	const struct fsl_spdif_soc_data *soc;
+@@ -133,6 +134,7 @@ struct fsl_spdif_priv {
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+ 	/* regcache for SRPC */
+ 	u32 regcache_srpc;
++	bool bypass;
  };
  
- int pasemi_i2c_common_probe(struct pasemi_smbus *smbus);
-diff --git a/drivers/i2c/busses/i2c-pasemi-pci.c b/drivers/i2c/busses/i2c-pasemi-pci.c
-index c1b8901110c0..2b7be35421bc 100644
---- a/drivers/i2c/busses/i2c-pasemi-pci.c
-+++ b/drivers/i2c/busses/i2c-pasemi-pci.c
-@@ -42,6 +42,12 @@ static int pasemi_smb_pci_probe(struct pci_dev *dev,
- 	size = pci_resource_len(dev, 0);
- 	smbus->clk_div = CLK_100K_DIV;
+ static struct fsl_spdif_soc_data fsl_spdif_vf610 = {
+@@ -905,6 +907,69 @@ static int fsl_spdif_rx_rcm_put(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
  
-+	/*
-+	 * The original PASemi PCI controllers don't have a register for
-+	 * their HW revision.
-+	 */
-+	smbus->hw_rev = PASEMI_HW_REV_PCI;
++static int fsl_spdif_bypass_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
++	struct fsl_spdif_priv *priv = snd_soc_dai_get_drvdata(dai);
 +
- 	if (!devm_request_region(&dev->dev, base, size,
- 			    pasemi_smb_pci_driver.name))
- 		return -EBUSY;
++	ucontrol->value.integer.value[0] = priv->bypass ? 1 : 0;
++
++	return 0;
++}
++
++static int fsl_spdif_bypass_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
++	struct fsl_spdif_priv *priv = snd_soc_dai_get_drvdata(dai);
++	struct snd_soc_card *card = dai->component->card;
++	bool set = (ucontrol->value.integer.value[0] != 0);
++	struct regmap *regmap = priv->regmap;
++	struct snd_soc_pcm_runtime *rtd;
++	u32 scr, mask;
++	int stream;
++
++	rtd = snd_soc_get_pcm_runtime(card, card->dai_link);
++
++	if (priv->bypass == set)
++		return 0; /* nothing to do */
++
++	if (snd_soc_dai_active(dai)) {
++		dev_err(dai->dev, "Cannot change BYPASS mode while stream is running.\n");
++		return -EBUSY;
++	}
++
++	pm_runtime_get_sync(dai->dev);
++
++	if (set) {
++		/* Disable interrupts */
++		regmap_update_bits(regmap, REG_SPDIF_SIE, 0xffffff, 0);
++
++		/* Configure BYPASS mode */
++		scr = SCR_TXSEL_RX | SCR_RXFIFO_OFF;
++		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK |
++			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK | SCR_TXSEL_MASK;
++		/* Power up SPDIF module */
++		mask |= SCR_LOW_POWER;
++	} else {
++		/* Power down SPDIF module, disable TX */
++		scr = SCR_LOW_POWER | SCR_TXSEL_OFF;
++		mask = SCR_LOW_POWER | SCR_TXSEL_MASK;
++	}
++
++	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
++
++	/* Disable playback & capture if BYPASS mode is enabled, enable otherwise */
++	for_each_pcm_streams(stream)
++		rtd->pcm->streams[stream].substream_count = (set ? 0 : 1);
++
++	priv->bypass = set;
++	pm_runtime_put_sync(dai->dev);
++
++	return 0;
++}
++
+ /* DPLL lock information */
+ static int fsl_spdif_rxrate_info(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_info *uinfo)
+@@ -1075,6 +1140,15 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
+ 		.info = fsl_spdif_rxrate_info,
+ 		.get = fsl_spdif_rxrate_get,
+ 	},
++	/* RX bypass controller */
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = "Bypass Mode",
++		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
++		.info = snd_ctl_boolean_mono_info,
++		.get = fsl_spdif_bypass_get,
++		.put = fsl_spdif_bypass_put,
++	},
+ 	/* User bit sync mode set/get controller */
+ 	{
+ 		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
 -- 
-2.25.1
+2.17.1
 
