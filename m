@@ -2,146 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FA8418589
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845D141858C
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhIZCSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 22:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
+        id S230285AbhIZCVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 22:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhIZCSd (ORCPT
+        with ESMTP id S230231AbhIZCVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 22:18:33 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FD8C061570;
-        Sat, 25 Sep 2021 19:16:57 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id k17so12375639pff.8;
-        Sat, 25 Sep 2021 19:16:57 -0700 (PDT)
+        Sat, 25 Sep 2021 22:21:13 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEB4C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 19:19:35 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id w11so9213620plz.13
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 19:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GDTDNI4hUP1MqVt0nccZ7JttotmBsczDXF+BDCFJhk8=;
-        b=obidVrG9+JqOCl/vfnoHCNS8400ftOh8dYnnHHDyJ25txVnP4T5xTFUmKsx/0N8MZ5
-         vGqBu6eo1q98LGVTt5OOTlUiBbQ4v3vkiFEUQ+mhKz0QyPfxdbXWYEE/8uG9hdh4asBk
-         eSrCdCkL+0sj3XwLT/LglguGipjW4htjw6FfNgTFo9ZCn4RBxltQ/ABKWRrxwnjXOF9X
-         U47z+pEd6klbBaiIyWSxGLsYQFbRFBLYPfoy1jiY+XrYU8GvvG6MNgla23FVXakIWTkO
-         P5X1p47IGwvnTTVk2RZrvUw0b3GHqtoC/Xdj+FclQ7RJCkVZuBJ4G/OPaKr5FjMmVCro
-         /8QA==
+        d=heitbaum.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ilIm1jM+ouXaVYUrUiQ6VhJR8B0MRPYV8/JE0W3RqsI=;
+        b=iIyAuuLl07xkYz0eqRXk1hTSYyBvLlQV8BxQtdTrpbcAWwxC3baLhQE71Bjw5VGcIu
+         X3I+pV621c1Z5/UiDX2WWkN1arun7C0IMxwAOj6abP17u6Dl6fcQTX0wXTZrYPDW/Tcy
+         nYeEhV8/4sFG2LZa62ncLt1aujP+cq2zS/7GA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GDTDNI4hUP1MqVt0nccZ7JttotmBsczDXF+BDCFJhk8=;
-        b=BF77S9/moFuYFOU5FwzLpFmj7d6ogI4MW8n9oirMhN2x5uES5YzBuunFaeGIserLWc
-         kKDJEEkItM+l+cRAJ6oB8do448NNWNKnaGE+SEcMXjq0xAiR4/pFibdoW22MAP/hcMRc
-         1cPPZrN5miTwtJGcxoN53ubr2fjO9gHgX0iv16tSZ0s9kBcF+vkbv+soscbf1xvT5eoE
-         ruKSwqIGPrZbrLvcrMpHS9jCG0qxgsgXw3Ge3GMZ2Ie/Z+q5rEf9u1ar/z+lHkodTWkv
-         CVFvgGxkNHTv6BcCZLDA656FyOtHd4KTBDk2iE1PCunbyZVdX8fSlr0yoC6Ws7gsFb8H
-         hXvA==
-X-Gm-Message-State: AOAM532Fv8fBIC0dtoMTav/vxJaZxXwjoaua8xq3ljq3lNHgGhGdjUpU
-        1YMwYW3ZycFOXB64lac0qFE=
-X-Google-Smtp-Source: ABdhPJwC+kphnXVUMRQ5QDZemn3M8PaLKgPxvRx2pws2HDiYSCJs5uIf6hczNjQlndELZnY5KAEfKw==
-X-Received: by 2002:a05:6a00:234f:b0:3eb:3ffd:6da2 with SMTP id j15-20020a056a00234f00b003eb3ffd6da2mr16641892pfj.15.1632622617299;
-        Sat, 25 Sep 2021 19:16:57 -0700 (PDT)
-Received: from titan.. ([2601:644:8300:136:a6bb:6dff:feb6:3500])
-        by smtp.gmail.com with ESMTPSA id w8sm13166829pfc.93.2021.09.25.19.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 19:16:56 -0700 (PDT)
-From:   Jinshan Xiong <jinshan.xiong@gmail.com>
-To:     jolsa@redhat.com
-Cc:     Jinshan Xiong <jinshan.xiong@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tools/lib/perf: add a flag to specify cgroup fd
-Date:   Sat, 25 Sep 2021 19:15:25 -0700
-Message-Id: <20210926021611.2312331-1-jinshan.xiong@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ilIm1jM+ouXaVYUrUiQ6VhJR8B0MRPYV8/JE0W3RqsI=;
+        b=xA5MQrSRRrcT1TRbu8zEUYeZl43PPCNFhmhqJ6k8dJ9uydJMy1cpZ7nvXj9QUtNNWS
+         OGDno3841GmciE/DhvM5lqM39hfMG8fFCun2lypcVN5Htj/d7w0ZzbBnriFI/r7EEoaF
+         8qL3o4FMRDx+/XIOdcj+oG0QZoTA9YoCbxFn1bhjaE9hxlYDBDJwtgj8ywrwio12Rbt8
+         A6gUV5IOOqc6QqPY5okAJ5rn/9icLJGhiHcvP3oJx09jzi6sJqsyrvXBD1kvwf9VDWfT
+         1iCXbAf/TT+FC3krWpbq+uXNQGSXLaho4GpogGk6sGi4V6EfVJjrETcpHj2OyEfhHBlk
+         IYFg==
+X-Gm-Message-State: AOAM531HWS2yqf7RLlDDxM+KtgjxbEgg0teuy2sAbGHBmuxbHcZwI23a
+        UOux9fjDdqduVPaMufjDyjbnjA==
+X-Google-Smtp-Source: ABdhPJzue0jjwas/CMV21BhDClncKTYZ8qqGLRFryx/3/LgMzuOLPo9l8kHf84PznW/qKdTj3CPEag==
+X-Received: by 2002:a17:90b:8ca:: with SMTP id ds10mr11287341pjb.68.1632622775033;
+        Sat, 25 Sep 2021 19:19:35 -0700 (PDT)
+Received: from 640de500d870 (194-193-55-226.tpgi.com.au. [194.193.55.226])
+        by smtp.gmail.com with ESMTPSA id g9sm12762478pfh.13.2021.09.25.19.19.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 25 Sep 2021 19:19:34 -0700 (PDT)
+Date:   Sun, 26 Sep 2021 12:19:27 +1000
+From:   Rudi Heitbaum <rudi@heitbaum.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.14 00/98] 5.14.8-rc2 review
+Message-ID: <20210926021922.GA1095770@640de500d870>
+References: <20210925120755.238551529@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925120755.238551529@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds an API perf_thread_map__set_flags() so that we can use
-it to pass down a flag to specific cgroup fd in sys_perf_event_open().
+On Sat, Sep 25, 2021 at 02:14:18PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.8 release.
+> There are 98 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Mon, 27 Sep 2021 12:07:36 +0000.
+> Anything received after that time might be too late.
 
-This API can be used in the following way:
-    int cgroup_fd = open("/sys/fs/cgroup/perf_event", O_RDONLY);
-    struct thread_map *threadmap = perf_thread_map__new_dummy();
-    perf_thread_map__set_pid(threadmap, 0, cgroup_fd);
-    perf_thread_map__set_flags(threadmap, 0, PERF_FLAG_PID_CGROUP);
+Run tested on:
+- Tiger Lake x86_64
+- Radxa ROCK Pi N10 (rk3399pro)
 
-Therefore, we can only collect perf events in a specific docker
-container.
+In addition build tested on:
+- Allwinner H3
+- Allwinner H6
+- NXP iMX6
+- NXP iMX8
+- Qualcomm Dragonboard
+- Rockchip RK3288
+- Rockchip RK3328
+- Samsung Exynos
 
-Signed-off-by: Jinshan Xiong <jinshan.xiong@gmail.com>
----
- tools/lib/perf/evsel.c                      | 3 ++-
- tools/lib/perf/include/internal/threadmap.h | 1 +
- tools/lib/perf/include/perf/threadmap.h     | 1 +
- tools/lib/perf/threadmap.c                  | 5 +++++
- 4 files changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
-index 8441e3e1aaac..67f86513a816 100644
---- a/tools/lib/perf/evsel.c
-+++ b/tools/lib/perf/evsel.c
-@@ -153,7 +153,8 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
- 
- 			fd = sys_perf_event_open(&evsel->attr,
- 						 threads->map[thread].pid,
--						 cpus->map[cpu], group_fd, 0);
-+						 cpus->map[cpu], group_fd,
-+						 threads->map[thread].flags);
- 
- 			if (fd < 0)
- 				return -errno;
-diff --git a/tools/lib/perf/include/internal/threadmap.h b/tools/lib/perf/include/internal/threadmap.h
-index df748baf9eda..5d7bd6968563 100644
---- a/tools/lib/perf/include/internal/threadmap.h
-+++ b/tools/lib/perf/include/internal/threadmap.h
-@@ -8,6 +8,7 @@
- 
- struct thread_map_data {
- 	pid_t	 pid;
-+	int	 flags;
- 	char	*comm;
- };
- 
-diff --git a/tools/lib/perf/include/perf/threadmap.h b/tools/lib/perf/include/perf/threadmap.h
-index a7c50de8d010..5fea1a403e28 100644
---- a/tools/lib/perf/include/perf/threadmap.h
-+++ b/tools/lib/perf/include/perf/threadmap.h
-@@ -10,6 +10,7 @@ struct perf_thread_map;
- LIBPERF_API struct perf_thread_map *perf_thread_map__new_dummy(void);
- 
- LIBPERF_API void perf_thread_map__set_pid(struct perf_thread_map *map, int thread, pid_t pid);
-+LIBPERF_API void perf_thread_map__set_flags(struct perf_thread_map *map, int thread, int flags);
- LIBPERF_API char *perf_thread_map__comm(struct perf_thread_map *map, int thread);
- LIBPERF_API int perf_thread_map__nr(struct perf_thread_map *threads);
- LIBPERF_API pid_t perf_thread_map__pid(struct perf_thread_map *map, int thread);
-diff --git a/tools/lib/perf/threadmap.c b/tools/lib/perf/threadmap.c
-index e92c368b0a6c..3b8ec4f944b9 100644
---- a/tools/lib/perf/threadmap.c
-+++ b/tools/lib/perf/threadmap.c
-@@ -37,6 +37,11 @@ void perf_thread_map__set_pid(struct perf_thread_map *map, int thread, pid_t pid
- 	map->map[thread].pid = pid;
- }
- 
-+void perf_thread_map__set_flags(struct perf_thread_map *map, int thread, int flags)
-+{
-+	map->map[thread].flags = flags;
-+}
-+
- char *perf_thread_map__comm(struct perf_thread_map *map, int thread)
- {
- 	return map->map[thread].comm;
+Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
 -- 
-2.30.2
-
+Rudi
