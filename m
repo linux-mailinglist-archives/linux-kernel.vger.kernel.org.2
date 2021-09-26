@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56967418ACC
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E49418AD0
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhIZTf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 15:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
+        id S229994AbhIZThm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 15:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhIZTfx (ORCPT
+        with ESMTP id S229741AbhIZThl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 15:35:53 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E03C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:34:16 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id n64so3364538oih.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:34:16 -0700 (PDT)
+        Sun, 26 Sep 2021 15:37:41 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E9AC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:36:04 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id c20so14815996qtb.2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:36:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=uIERk105rjOXZD5aEzEh93KdjBwmVeqw64MCasbg/XU=;
-        b=cuh8lOR/LuOoewWle2BBV/pZBy5es4jYwmsVxwqCZhu5lv1H6K0d1DeCLSDzTzeALP
-         UpBAqC2yD4ASfFCp70rf+x7k8Cpmr/NPtcElK9j/ANKwmN1CQdW5RdmAJDnEdzQSecAD
-         rAfcUpJbasNJ9+JA6LHuSUG6sP0Xw6Vk7SmA/9n4hV5CY+nLCxAnx4fZ0XVwd+2hL7S5
-         mZeB/dQ3xWcQYZoCSS6/L6Ou8/DKCiYDS1d2i55BGwQNm0lm+oNVoG+3hs2AbPs62LD4
-         kpESrzzKXeoOKtQjw/+K7ln2nzIVorqAM9lD3iY3QIyjbDO7JVmIX0QdegY4inToI1ku
-         6YsQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QNLo+BDeRzswu8OVj0ImwhuxytbjRMbnLrd3OSd+ezM=;
+        b=mxWrjX5he+m1gtrMynC7sxL4bJR4TEb7Z5+iKgZ4UA7fEs/FUwqkXf7ngwMGFT5/Db
+         Sots6y/e+AyMpHYfxPDxM15ivMQ64EpVso917AW6iutqoaIgnIiLC2RLz/tbjphMwui+
+         C1CXEh4rnk6MQrQPluTDU4Rca24IDOzB3v16c3kKmckfaJIh27/vZA/i5Sz7lVZvwCqb
+         LlUhCs9WKOWYVi7HnehJ3DVAYTgpYVNqn0trmnNzNMXpCv4YUbHsTqStwvLxgoYKJewK
+         dVKr8Qb8Zd7oMYKxEVmA1jHxSPWrG3vgP9Hl7auD98qbty89k6QYFMeb1AY/eUfS+3IG
+         /DYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=uIERk105rjOXZD5aEzEh93KdjBwmVeqw64MCasbg/XU=;
-        b=gzsF5kz9Os90gV46V7aFFBPtkfFHoV1iZaA+UZRqhulU6NGAw09LHCSWuFrj+KwTpG
-         QQlwuE9jtpk6zc9BcEuXcuprXWYSfLJBPqVQ2TrclkyhFF/YbFRnWgfyw2l/emqSbmr7
-         WYSUH5udDRdvfh7ohZFV8WL4VyBzGENTMsSJHKX4YyqwRNYgd286s9eNTVTJD8dHzT0u
-         ysx2/QlWsfMfHAg/SEzZyXxkn29zMhP94gWZ8Q+Ql1KMZh7LqPQCrsYVF0GSYl+uu2rL
-         ezTHdFYEJZYZxkkXhOvTYyqj63uWZxpxkeznipkqDz/XJ9Zk++o3zlO+GOHeRuknv3Hs
-         X0cw==
-X-Gm-Message-State: AOAM5323kfJa/VJvIGxZkS+iFlnF1CavW+TrKwMYDAkt9Am62mK2dmvV
-        Sq3cLGIzHIh811lNuOPR2F6kyU7d10I53+oZ
-X-Google-Smtp-Source: ABdhPJzr5zY9+jZyJyjKGzeb8XHW1/YHEy6UbOVkL5duxiE/6fISBcVLP8Fm5UmzrI/z/osWVpCv+Q==
-X-Received: by 2002:a05:6808:198b:: with SMTP id bj11mr6343362oib.105.1632684855854;
-        Sun, 26 Sep 2021 12:34:15 -0700 (PDT)
-Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id bh25sm3456033oib.40.2021.09.26.12.34.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Sep 2021 12:34:15 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QNLo+BDeRzswu8OVj0ImwhuxytbjRMbnLrd3OSd+ezM=;
+        b=Mw/Sqi3rb4BXCZC4dlDi5XeTBcox0K/LBRc6L/vqLfKq17dr6OZM5tfvPQGqciMhYm
+         ClBcegw/Rv58wAlVhjw+N6Odx/ZzLyaKlnwYuLMPfV9MJrW7rc039s1BympRNUbVtufH
+         SqxIDiJE1We/2rVFIFlVwterFPM2OBkNk6HwRvv4kELAanSIQLZyFVSJs+FDgECbOLZ0
+         0CZ7Bd/rlxKxcMZAt955CnhQD7Px9OmMBggNcf8Iv/P3ZEGclVkFUp4mO57zn4X0LYnv
+         gGaOL2UnMFOEZDJnjHwGcwWD5neAJWJr8BIQuslJqaIdJ37hiKtqmDPtdx+yFzZC0Hy/
+         uDGA==
+X-Gm-Message-State: AOAM532sbByYBJKPpjZ7JNvd8NaSOcqPbvOD+ojXJ3LRIOUFHFsAbmMZ
+        ytzbPsM3Llpj7wSloMJKE1PPAbXmpt+iSwvmEwsykpxxeP8=
+X-Google-Smtp-Source: ABdhPJwPrdFOmtZSNs2/CV2JSD0Gdn8+7TSgw7cBpjnVt5rPCDBdy/Kp5IW7mXOuEB6cBPz3cI2vO9xpI/n4gVj8suo=
+X-Received: by 2002:ac8:5685:: with SMTP id h5mr15207682qta.153.1632684964087;
+ Sun, 26 Sep 2021 12:36:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210926190554.761482-1-robdclark@gmail.com>
+In-Reply-To: <20210926190554.761482-1-robdclark@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sun, 26 Sep 2021 22:35:53 +0300
+Message-ID: <CAA8EJpozNAfQpy4w-Edx_8wyQ_X+sDzAgqk6Z6EHj0ZJ5r0HBg@mail.gmail.com>
 Subject: Re: [PATCH] drm/msm: Fix crash on dev file close
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
         Rob Clark <robdclark@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
         Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         open list <linux-kernel@vger.kernel.org>
-References: <20210926190554.761482-1-robdclark@gmail.com>
-From:   Steev Klimaszewski <steev@kali.org>
-Message-ID: <cbbf1be7-89d4-5194-3aec-fc0970e86888@kali.org>
-Date:   Sun, 26 Sep 2021 14:34:14 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210926190554.761482-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/26/21 2:05 PM, Rob Clark wrote:
+On Sun, 26 Sept 2021 at 22:01, Rob Clark <robdclark@gmail.com> wrote:
+>
 > From: Rob Clark <robdclark@chromium.org>
 >
 > If the device file was opened prior to fw being available (such as from
 > initrd before rootfs is mounted, when the initrd does not contain GPU
 > fw), that would cause a later crash when the dev file is closed due to
 > unitialized submitqueues list:
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+I've sent a close version of this patch a day or so ago, but yours is
+better, as I did not touch rwlock init.
+
 >
 >    CPU: 4 PID: 263 Comm: plymouthd Tainted: G        W         5.15.0-rc2-next-20210924 #2
 >    Hardware name: LENOVO 81JL/LNVNB161216, BIOS 9UCN33WW(V2.06) 06/ 4/2019
@@ -132,32 +134,35 @@ On 9/26/21 2:05 PM, Rob Clark wrote:
 > --- a/drivers/gpu/drm/msm/msm_drv.c
 > +++ b/drivers/gpu/drm/msm/msm_drv.c
 > @@ -689,6 +689,9 @@ static int context_init(struct drm_device *dev, struct drm_file *file)
->  	if (!ctx)
->  		return -ENOMEM;
->  
-> +	INIT_LIST_HEAD(&ctx->submitqueues);
-> +	rwlock_init(&ctx->queuelock);
+>         if (!ctx)
+>                 return -ENOMEM;
+>
+> +       INIT_LIST_HEAD(&ctx->submitqueues);
+> +       rwlock_init(&ctx->queuelock);
 > +
->  	kref_init(&ctx->ref);
->  	msm_submitqueue_init(dev, ctx);
->  
+>         kref_init(&ctx->ref);
+>         msm_submitqueue_init(dev, ctx);
+>
 > diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/msm/msm_submitqueue.c
 > index 32a55d81b58b..7ce0771b5582 100644
 > --- a/drivers/gpu/drm/msm/msm_submitqueue.c
 > +++ b/drivers/gpu/drm/msm/msm_submitqueue.c
 > @@ -140,10 +140,6 @@ int msm_submitqueue_init(struct drm_device *drm, struct msm_file_private *ctx)
->  	 */
->  	default_prio = DIV_ROUND_UP(max_priority, 2);
->  
-> -	INIT_LIST_HEAD(&ctx->submitqueues);
+>          */
+>         default_prio = DIV_ROUND_UP(max_priority, 2);
+>
+> -       INIT_LIST_HEAD(&ctx->submitqueues);
 > -
-> -	rwlock_init(&ctx->queuelock);
+> -       rwlock_init(&ctx->queuelock);
 > -
->  	return msm_submitqueue_create(drm, ctx, default_prio, 0, NULL);
+>         return msm_submitqueue_create(drm, ctx, default_prio, 0, NULL);
 >  }
->  
+>
+> --
+> 2.31.1
+>
 
-Have not seen the crash since applying the patch.
 
-Tested-By: Steev Klimaszewski <steev@kali.org>
-
+-- 
+With best wishes
+Dmitry
