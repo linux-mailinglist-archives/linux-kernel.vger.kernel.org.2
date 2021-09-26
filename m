@@ -2,99 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A174186E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42644186E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhIZHR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 03:17:29 -0400
-Received: from mailgw.kylinos.cn ([123.150.8.42]:58471 "EHLO nksmu.kylinos.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230035AbhIZHR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 03:17:28 -0400
-X-UUID: 9b0812a5c71b4ad6bae7ac3a6100c2eb-20210926
-X-CPASD-INFO: c744725bb5a6427f8a56ed2deac424f9@rIduVGRkY5KOVaOCg3WCoFiSZWaVkFK
-        zp5uDZGBkklmVhH5xTWJsXVKBfG5QZWNdYVN_eGpQYl9gZFB5i3-XblBgXoZgUZB3snluVGdgZQ==
-X-CPASD-FEATURE: 0.0
-X-CLOUD-ID: c744725bb5a6427f8a56ed2deac424f9
-X-CPASD-SUMMARY: SIP:-1,APTIP:-2.0,KEY:0.0,FROMBLOCK:1,EXT:0.0,OB:0.0,URL:-5,T
-        VAL:196.0,ESV:0.0,ECOM:-5.0,ML:0.0,FD:0.0,CUTS:174.0,IP:-2.0,MAL:0.0,ATTNUM:0
-        .0,PHF:-5.0,PHC:-5.0,SPF:4.0,EDMS:-3,IPLABEL:4480.0,FROMTO:0,AD:0,FFOB:0.0,CF
-        OB:0.0,SPC:0.0,SIG:-5,AUF:3,DUF:14612,ACD:53,DCD:155,SL:0,AG:0,CFC:0.644,CFSR
-        :0.029,UAT:0,RAF:0,VERSION:2.3.4
-X-CPASD-ID: 9b0812a5c71b4ad6bae7ac3a6100c2eb-20210926
-X-CPASD-BLOCK: 1000
-X-CPASD-STAGE: 1, 1
-X-UUID: 9b0812a5c71b4ad6bae7ac3a6100c2eb-20210926
-X-User: lizhenneng@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by nksmu.kylinos.cn
-        (envelope-from <lizhenneng@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1290208314; Sun, 26 Sep 2021 15:12:58 +0800
-From:   Zhenneng Li <lizhenneng@kylinos.cn>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenneng Li <lizhenneng@kylinos.cn>
-Subject: [PATCH] PCI/sysfs: add write attribute for boot_vga
-Date:   Sun, 26 Sep 2021 15:15:39 +0800
-Message-Id: <20210926071539.636644-1-lizhenneng@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231208AbhIZHSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 03:18:07 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:44605 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230035AbhIZHSF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 03:18:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UpaywW-_1632640586;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UpaywW-_1632640586)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 26 Sep 2021 15:16:28 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     airlied@linux.ie
+Cc:     daniel@ffwll.ch, Felix.Kuehling@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] drm/amdkfd: fix resource_size.cocci warnings
+Date:   Sun, 26 Sep 2021 15:16:20 +0800
+Message-Id: <1632640580-61609-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add writing attribute for boot_vga sys node,
-so we can config default video display
-output dynamically when there are two video
-cards on a machine.
+Use resource_size function on resource object
+instead of explicit computation.
 
-Xorg server will determine running on which
-video card based on boot_vga node's value.
+Clean up coccicheck warning:
+./drivers/gpu/drm/amd/amdkfd/kfd_migrate.c:905:10-13: ERROR: Missing
+resource_size with res
 
-Signed-off-by: Zhenneng Li <lizhenneng@kylinos.cn>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- drivers/pci/pci-sysfs.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_migrate.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 7bbf2673c7f2..a6ba19ce7adb 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -664,7 +664,29 @@ static ssize_t boot_vga_show(struct device *dev, struct device_attribute *attr,
- 			  !!(pdev->resource[PCI_ROM_RESOURCE].flags &
- 			     IORESOURCE_ROM_SHADOW));
- }
--static DEVICE_ATTR_RO(boot_vga);
-+
-+static ssize_t boot_vga_store(struct device *dev, struct device_attribute *attr,
-+			      const char *buf, size_t count)
-+{
-+	unsigned long val;
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	struct pci_dev *vga_dev = vga_default_device();
-+
-+	if (kstrtoul(buf, 0, &val) < 0)
-+		return -EINVAL;
-+
-+	if (val != 1)
-+		return -EINVAL;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if (pdev != vga_dev)
-+		vga_set_default_device(pdev);
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(boot_vga);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+index 4a16e3c..f53e17a 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+@@ -901,8 +901,7 @@ int svm_migrate_init(struct amdgpu_device *adev)
  
- static ssize_t pci_read_config(struct file *filp, struct kobject *kobj,
- 			       struct bin_attribute *bin_attr, char *buf,
+ 		/* Disable SVM support capability */
+ 		pgmap->type = 0;
+-		devm_release_mem_region(adev->dev, res->start,
+-					res->end - res->start + 1);
++		devm_release_mem_region(adev->dev, res->start, resource_size(res));
+ 		return PTR_ERR(r);
+ 	}
+ 
 -- 
-2.25.1
+1.8.3.1
 
-
-No virus found
-		Checked by Hillstone Network AntiVirus
