@@ -2,190 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3498C418ABD
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB385418ABF
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhIZTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 15:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhIZTXO (ORCPT
+        id S229902AbhIZTYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 15:24:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50074 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229892AbhIZTYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 15:23:14 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DFAC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:21:38 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id bb10so10274681plb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:21:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8VoC22VdCllOXZFZ1LpEuBes/M4AcpmZRe4ChismgTw=;
-        b=FB+sD0lH8m3BwjrgcAS4fuDSbMgqQA8XKScYogSP2U9uTMifHqFqUc4+8Z59GBAZSt
-         FOIUXHF5HQaaXgjkAjl7oUmw1jA2RXW0Leb2Vhe+Yyw6Ipy4J+zx5VhfHB8v6XpLYZm+
-         43L1CIF1yb4YeSfklNS2gBUHAj8arIlU+ZVhywtNDgTIGlGN/GBA7WfDZ7U/UL0wwz4m
-         KW7pLiut9pLXNBcF4YTXSQPa7ABQRBtcuDM+6lUlPYGu6WuLGctFnwED8ai1JYaBJtT4
-         k9bfMvs15P0MXgxywYwBCAO0VNMCB+U5JqpAwuqRsOS0kw7VN+TPBZZKjpTlu2K+MOD6
-         LEaw==
+        Sun, 26 Sep 2021 15:24:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632684143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WoSf6PAqNKKVmkj88GYlQ6NXSkJYepwgfoHiCcAkFaI=;
+        b=UGx5Hjw798eUWOegHdTdA1pUl6YLEcPihXx+PyQz08IUBVEiRQ8fKJKg0q0Y2e9hh5+tm/
+        ZyjCnfvRVMSaYZkHbuGOPG/Pktcbf2XLjARTAeFlP9R2fUfL9OFt5u7PkPG2NbZPDXwURO
+        yDHfkPQrtaM53bSN7B+1gfbPODDzwOs=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-HXlg6LrJPRy2ZwiRzQek1Q-1; Sun, 26 Sep 2021 15:22:22 -0400
+X-MC-Unique: HXlg6LrJPRy2ZwiRzQek1Q-1
+Received: by mail-qk1-f197.google.com with SMTP id h10-20020a05620a284a00b003d30e8c8cb5so58428417qkp.11
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:22:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8VoC22VdCllOXZFZ1LpEuBes/M4AcpmZRe4ChismgTw=;
-        b=7UgQFoZdDP+Ze2K/OZYM5t0y4lBk1Eg3dLMCcXNJJY8aw6oDTtj89qa+nRGK6emUdd
-         KgzpLk/gFlMMABjLwRs4BXA7ynJZswuu+2iCyQgckB33tiWGlCIxtieT/MxI6yHhVqad
-         4AmTY6M1+Mxn1Q3+ovaf0e/1doDTPj/kW0ZFSmSE62HytYOSsKbGrV6eIWYaNLXEdMqU
-         T7hTSvZNJz+20WmggIcBo3i/2tMqpqLI4tqZcWzj1U1bow5Gds9c8NdyPy/Tbi4RnDwA
-         tW7gRj3aEU/66uGWnUNw9D3fJX+8VUOgS5d0SjVDccklzwJC6vUOK0mhds/LLJ/WRaPF
-         B8Vg==
-X-Gm-Message-State: AOAM531m3QWAGmbjraKDM8Bn4lL5wG1PtZz9Nz4wEX3CgSExm+a3EfqR
-        wKWx7tjkjLMlleuhw/aBiag=
-X-Google-Smtp-Source: ABdhPJwnpi0+fpKK+6zgN8PmF3urOWPgkwWq+//M4cZNC4qQJXNUuOudHq5kOWgAJaRlLfPgGuOQEw==
-X-Received: by 2002:a17:90a:1a58:: with SMTP id 24mr15472973pjl.45.1632684097413;
-        Sun, 26 Sep 2021 12:21:37 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:641:401:1d20:794c:d573:9874:654d])
-        by smtp.gmail.com with ESMTPSA id e14sm15862802pga.23.2021.09.26.12.21.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 12:21:36 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     linux-xtensa@linux-xtensa.org
-Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH] xtensa: use CONFIG_USE_OF instead of CONFIG_OF
-Date:   Sun, 26 Sep 2021 12:21:06 -0700
-Message-Id: <20210926192106.1943-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=WoSf6PAqNKKVmkj88GYlQ6NXSkJYepwgfoHiCcAkFaI=;
+        b=Rg3W9rPmidLsS5C4KfDNbmbM1ulp1Ia9pXe+oxunnyVJEnk0lU2X0+R8kcpW4JL+lG
+         AiC3CbPMN7/1qGzvIfY1zWF0WbEzNncZR7JK7LorrbkBqK1PmaKPvZI+sYQKrf9HDAZM
+         2fO0fVpujGx5XSFzc01LRJuME9rXoZUOdndD/9GhFWpvOxN+qlaY//kSdhPWr5NM4ti2
+         9LSkF6sW/p8uFuQev0rlLMraRlgEirPZiU7YSIUPQMRb0hXMRALATwshYuNsaKRknJX/
+         TAmDoa9yJ3w4M+aOVYkaKsYSZVZib55ViSeEt95N+h1B3C+l7fV2w0gQY3lDGjoO/tZE
+         hCZg==
+X-Gm-Message-State: AOAM531onE3c1bCJOCazy05mgf+aRJNzCmPfM2zpb6fqtom5Up2DNr+Y
+        chxtyfEL5SqDuuLDhOKtUwRd2aR020uzdQvdNRasC7dS21VQTpTPVkShXBV2Xnx8kWTXHafhLZf
+        I6Ugj8Jyp7/AQ6Gl6iuSUsn2Oo1ZKBlNZK20D1faBjCieDjx/unTHoK+ZFGOZjiT/p8nit8pF
+X-Received: by 2002:ac8:560b:: with SMTP id 11mr15712996qtr.319.1632684141540;
+        Sun, 26 Sep 2021 12:22:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJynGYKcWp1w5/0xfsYdxi0HQg7qRVNrkZVBiGh2IGGk6aXA9gw0jZO3byL7M1lq8YFgkB80Iw==
+X-Received: by 2002:ac8:560b:: with SMTP id 11mr15712982qtr.319.1632684141324;
+        Sun, 26 Sep 2021 12:22:21 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id l13sm11018861qkj.130.2021.09.26.12.22.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Sep 2021 12:22:20 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 2/2] locking/rwsem: Use rcu_read_lock_sched to simplify
+ codes
+To:     Yanfei Xu <yanfei.xu@windriver.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20210926101624.2460704-1-yanfei.xu@windriver.com>
+ <20210926101624.2460704-2-yanfei.xu@windriver.com>
+Message-ID: <4e4c9adf-5444-e331-fefa-0d72aea8ba57@redhat.com>
+Date:   Sun, 26 Sep 2021 15:22:19 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210926101624.2460704-2-yanfei.xu@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On 9/26/21 6:16 AM, Yanfei Xu wrote:
+> Use rcu_read_lock_sched to simplify the codes, and it also saves
+> some cycles of handling rcu nesting counter.
+>
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> ---
+>   kernel/locking/rwsem.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+> index 000e8d5a2884..7afadfe02286 100644
+> --- a/kernel/locking/rwsem.c
+> +++ b/kernel/locking/rwsem.c
+> @@ -616,8 +616,7 @@ static inline bool rwsem_can_spin_on_owner(struct rw_semaphore *sem)
+>   		return false;
+>   	}
+>   
+> -	preempt_disable();
+> -	rcu_read_lock();
+> +	rcu_read_lock_sched();
+>   	owner = rwsem_owner_flags(sem, &flags);
+>   	/*
+>   	 * Don't check the read-owner as the entry may be stale.
+> @@ -625,8 +624,7 @@ static inline bool rwsem_can_spin_on_owner(struct rw_semaphore *sem)
+>   	if ((flags & RWSEM_NONSPINNABLE) ||
+>   	    (owner && !(flags & RWSEM_READER_OWNED) && !owner_on_cpu(owner)))
+>   		ret = false;
+> -	rcu_read_unlock();
+> -	preempt_enable();
+> +	rcu_read_unlock_sched();
+>   
+>   	lockevent_cond_inc(rwsem_opt_fail, !ret);
+>   	return ret;
 
-CONFIG_OF can be set by a randconfig or by a user -- without setting the
-early flattree option (OF_EARLY_FLATTREE).  This causes build errors.
-However, if randconfig or a user sets USE_OF in the Xtensa config,
-the right kconfig symbols are set to fix the build.
+I don't think there is any performance gain with this change. I would 
+prefer the original code that is more readable as some people may not 
+know rcu_read_lock_sched() will disable preemption if they don't look 
+into it.
 
-Fixes these build errors:
-
-../arch/xtensa/kernel/setup.c:67:19: error: ‘__dtb_start’ undeclared here (not in a function); did you mean ‘dtb_start’?
-   67 | void *dtb_start = __dtb_start;
-      |                   ^~~~~~~~~~~
-../arch/xtensa/kernel/setup.c: In function 'xtensa_dt_io_area':
-../arch/xtensa/kernel/setup.c:201:14: error: implicit declaration of function 'of_flat_dt_is_compatible'; did you mean 'of_machine_is_compatible'? [-Werror=implicit-function-declaration]
-  201 |         if (!of_flat_dt_is_compatible(node, "simple-bus"))
-../arch/xtensa/kernel/setup.c:204:18: error: implicit declaration of function 'of_get_flat_dt_prop' [-Werror=implicit-function-declaration]
-  204 |         ranges = of_get_flat_dt_prop(node, "ranges", &len);
-../arch/xtensa/kernel/setup.c:204:16: error: assignment to 'const __be32 *' {aka 'const unsigned int *'} from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
-  204 |         ranges = of_get_flat_dt_prop(node, "ranges", &len);
-      |                ^
-../arch/xtensa/kernel/setup.c: In function 'early_init_devtree':
-../arch/xtensa/kernel/setup.c:228:9: error: implicit declaration of function 'early_init_dt_scan'; did you mean 'early_init_devtree'? [-Werror=implicit-function-declaration]
-  228 |         early_init_dt_scan(params);
-../arch/xtensa/kernel/setup.c:229:9: error: implicit declaration of function 'of_scan_flat_dt' [-Werror=implicit-function-declaration]
-  229 |         of_scan_flat_dt(xtensa_dt_io_area, NULL);
-
-xtensa-elf-ld: arch/xtensa/mm/mmu.o:(.text+0x0): undefined reference to `xtensa_kio_paddr'
-
-Fixes: da844a81779e ("xtensa: add device trees support")
-Fixes: 6cb971114f63 ("xtensa: remap io area defined in device tree")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
----
- arch/xtensa/include/asm/kmem_layout.h |  2 +-
- arch/xtensa/kernel/setup.c            | 12 ++++++------
- arch/xtensa/mm/mmu.c                  |  2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/arch/xtensa/include/asm/kmem_layout.h b/arch/xtensa/include/asm/kmem_layout.h
-index 7cbf68ca7106..6fc05cba61a2 100644
---- a/arch/xtensa/include/asm/kmem_layout.h
-+++ b/arch/xtensa/include/asm/kmem_layout.h
-@@ -78,7 +78,7 @@
- #endif
- #define XCHAL_KIO_SIZE			0x10000000
- 
--#if (!XCHAL_HAVE_PTP_MMU || XCHAL_HAVE_SPANNING_WAY) && defined(CONFIG_OF)
-+#if (!XCHAL_HAVE_PTP_MMU || XCHAL_HAVE_SPANNING_WAY) && defined(CONFIG_USE_OF)
- #define XCHAL_KIO_PADDR			xtensa_get_kio_paddr()
- #ifndef __ASSEMBLY__
- extern unsigned long xtensa_kio_paddr;
-diff --git a/arch/xtensa/kernel/setup.c b/arch/xtensa/kernel/setup.c
-index ed184106e4cf..ee9082a142fe 100644
---- a/arch/xtensa/kernel/setup.c
-+++ b/arch/xtensa/kernel/setup.c
-@@ -63,7 +63,7 @@ extern unsigned long initrd_end;
- extern int initrd_below_start_ok;
- #endif
- 
--#ifdef CONFIG_OF
-+#ifdef CONFIG_USE_OF
- void *dtb_start = __dtb_start;
- #endif
- 
-@@ -125,7 +125,7 @@ __tagtable(BP_TAG_INITRD, parse_tag_initrd);
- 
- #endif /* CONFIG_BLK_DEV_INITRD */
- 
--#ifdef CONFIG_OF
-+#ifdef CONFIG_USE_OF
- 
- static int __init parse_tag_fdt(const bp_tag_t *tag)
- {
-@@ -135,7 +135,7 @@ static int __init parse_tag_fdt(const bp_tag_t *tag)
- 
- __tagtable(BP_TAG_FDT, parse_tag_fdt);
- 
--#endif /* CONFIG_OF */
-+#endif /* CONFIG_USE_OF */
- 
- static int __init parse_tag_cmdline(const bp_tag_t* tag)
- {
-@@ -183,7 +183,7 @@ static int __init parse_bootparam(const bp_tag_t *tag)
- }
- #endif
- 
--#ifdef CONFIG_OF
-+#ifdef CONFIG_USE_OF
- 
- #if !XCHAL_HAVE_PTP_MMU || XCHAL_HAVE_SPANNING_WAY
- unsigned long xtensa_kio_paddr = XCHAL_KIO_DEFAULT_PADDR;
-@@ -232,7 +232,7 @@ void __init early_init_devtree(void *params)
- 		strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
- }
- 
--#endif /* CONFIG_OF */
-+#endif /* CONFIG_USE_OF */
- 
- /*
-  * Initialize architecture. (Early stage)
-@@ -253,7 +253,7 @@ void __init init_arch(bp_tag_t *bp_start)
- 	if (bp_start)
- 		parse_bootparam(bp_start);
- 
--#ifdef CONFIG_OF
-+#ifdef CONFIG_USE_OF
- 	early_init_devtree(dtb_start);
- #endif
- 
-diff --git a/arch/xtensa/mm/mmu.c b/arch/xtensa/mm/mmu.c
-index 7e4d97dc8bd8..38acda4f04e8 100644
---- a/arch/xtensa/mm/mmu.c
-+++ b/arch/xtensa/mm/mmu.c
-@@ -101,7 +101,7 @@ void init_mmu(void)
- 
- void init_kio(void)
- {
--#if XCHAL_HAVE_PTP_MMU && XCHAL_HAVE_SPANNING_WAY && defined(CONFIG_OF)
-+#if XCHAL_HAVE_PTP_MMU && XCHAL_HAVE_SPANNING_WAY && defined(CONFIG_USE_OF)
- 	/*
- 	 * Update the IO area mapping in case xtensa_kio_paddr has changed
- 	 */
--- 
-2.20.1
+Cheers,
+Longman
 
