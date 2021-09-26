@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA42418B73
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181E1418B75
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhIZWe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 18:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        id S230423AbhIZWfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 18:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhIZWe4 (ORCPT
+        with ESMTP id S230392AbhIZWfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 18:34:56 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1760C061570;
-        Sun, 26 Sep 2021 15:33:19 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id v18so25851343edc.11;
-        Sun, 26 Sep 2021 15:33:19 -0700 (PDT)
+        Sun, 26 Sep 2021 18:35:06 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A3EC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 15:33:29 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d8so15043136qtd.5
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 15:33:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wk/Y/R5VR5GDX1mBfmj5o+efAe8gDibSjLgM5RqrMNk=;
-        b=KCm9fD3ZbVm4AXFVJQ5IgVVriJbzc+9nNnE/JGhHoBMu3wmmP1c4E4RngZS3iNvygi
-         zfR7T4vbrm5bKez/OfYKGzDj1HjsfvB6+TlXbsJtGLXgfp9izgyACRZlvq3YhKxFfHhm
-         AaVkKTkKkipaJKk0C7qRllsc3oLmkekVyXMc3GXSqkRrKsHLUsBxoO+bBMT0gZ+GhrHV
-         BWJHjM+Ga0umsazS2Tbb/dmeUPfpnwjMGrQrPatcH2oNHnScSoRfKtfXq7ap67bQHoi5
-         ouS9k94ty8SLnmxEo/riO0Darm2uaKbWs9YqnYO/6se1FpK4g6DAoXN0Orc7vqBRXyzW
-         hSKw==
+        d=usp.br; s=usp-google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ihFPTFKKKq4JF63fFgU4S70k8fEeFkVZwaLA0o+0S1w=;
+        b=dt6kBKPfhesz6dYT4wmTDIEwXlzaggBWLdWaQcYWSpLTvcbCrGkjSfZjOqBbK+rH5b
+         arzqWzA7d9m89grrzH7dspeb5/5cfnQi+HzHvZNH0ejZmDYZ+FqlrKVJlrhONuFQ9mqD
+         sTUpopnfFaYU7kVlQ4qVk0apIdL0cFL5m2msYcQXRaB/49F4hU9L0jJkko32yCEuDWDN
+         GAk6Y5pgq9bQQheIQCFrPqIGkyFURYc+Kxr2qp7DydpaokM7l0yqPAPDMkXAclKz/MMa
+         77QkLn2bSDCGG6XC51arCYAUw5uPGCWijIKT7SXsQIfAsZTyXerBMqEXMQJFGSlEBL+C
+         9kJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wk/Y/R5VR5GDX1mBfmj5o+efAe8gDibSjLgM5RqrMNk=;
-        b=q+T+lWJNs1ZnqR2hUVmbiwPjcOyrdamStTaasZQTjEuj8eFCyqdl6yMaK+We+QGpNL
-         8s5PzxoBLv0hEctYYahJzxbgL8alB7aQ1WErC7NyW0PHZPLG0MDdTyE1MAQHkaFPH01t
-         OmOkgWwpPD+4Hn9xACeAy/juxNjE//jz8I7PcfVJ+7Q8swWSILU9PiLjsKtJlHJ2qNtM
-         sxm0UPS+ugomJ3baUsdccVM8+DQjPIj6JtncPwxh7nwW+0/tWOx5ZUwZcGanpf1NoXq5
-         P8lJTUAAPMUdreszxw9pjL7oRxcdM9zf3qDxsZL6HcRpAU8JCKaTtlxWuOO7bH4OpIa1
-         a5Fw==
-X-Gm-Message-State: AOAM531OLmcfhnHF8y21G0/w+RHdbQgJLbOG6KXz7P1yYR2fA0U9hJDh
-        HA35tg+6WpWwtjWVtvEeWlk=
-X-Google-Smtp-Source: ABdhPJwPuYe57o4R2vwPquxA9kJ9P7bMaowKjZvNpGHgJsYh874p5HBTAhpWAQE/PFBALYYKYLM2xw==
-X-Received: by 2002:a17:906:7754:: with SMTP id o20mr24629870ejn.475.1632695598513;
-        Sun, 26 Sep 2021 15:33:18 -0700 (PDT)
-Received: from tom-desktop (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
-        by smtp.gmail.com with ESMTPSA id l23sm204684ejn.15.2021.09.26.15.33.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ihFPTFKKKq4JF63fFgU4S70k8fEeFkVZwaLA0o+0S1w=;
+        b=jHEaKBEx1puu9I1PZG7yd7OmPTy78qOSjyiwilSPRPysJaMSTjh+5GEErfVu/JKJIb
+         YF0sbLJUQ00+SsXkj0egKS0Ae4IvTRaYucva5i9m5Mz3rg0nUosARVn9nZVmn56VAEfd
+         h/Y1GRbSWSpYwe9gshA+ifgx5NHJ8fslDkyeg+cgEkx7+xbHFHbHwSEkPOCkCwfZAsg1
+         NALyYc2kEHDAChUN/+MhpO7tyUA1sMMjq0ERuDxGxW3PpSmR9LcEZMvWLg8d+E8HgxB1
+         vy2wvKyF0N9dds80oMxmnwzD34/9aIf7WZvX/ep82FM6kyPidFTqq0zi9KDHR1n1Yfkr
+         L4fg==
+X-Gm-Message-State: AOAM5322G/UoxXYZPOz6VhXdBj6tt20rGNMy1NQ6DouOvcdr4QEICGUi
+        LyoGFkTbS+WflS3LQef8X3LWjA==
+X-Google-Smtp-Source: ABdhPJxe0bzrgVx21M0zs7TeiFoD4MQoDNbqqKqxUqdQ/rM3rf0ncylbP00xYCNDejGIO+FJWz8xNg==
+X-Received: by 2002:ac8:d3:: with SMTP id d19mr13696347qtg.409.1632695608592;
+        Sun, 26 Sep 2021 15:33:28 -0700 (PDT)
+Received: from aehse.localdomain ([2804:d41:bd1c:9100:f2e1:f671:7a83:1eb8])
+        by smtp.gmail.com with ESMTPSA id x6sm7244151qts.79.2021.09.26.15.33.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 15:33:17 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 00:33:15 +0200
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     nicolas saenz julienne <nsaenz@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: bcm2711-rpi-4-b: Fix pcie0, pci warning.
-Message-ID: <20210926223315.GA39851@tom-desktop>
-References: <20210918143542.146060-1-tomm.merciai@gmail.com>
- <408e5e27fae24f22a408afdaf538702858cc324c.camel@kernel.org>
+        Sun, 26 Sep 2021 15:33:28 -0700 (PDT)
+From:   Isabella Basso <isabellabdoamaral@usp.br>
+To:     geert@linux-m68k.org
+Cc:     ferreiraenzoa@gmail.com, augusto.duraes33@gmail.com,
+        brendanhiggins@google.com, dlatypov@google.com,
+        davidgow@google.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com,
+        Isabella Basso <isabellabdoamaral@usp.br>
+Subject: [PATCH v2 0/5] test_hash.c: refactor into KUnit
+Date:   Sun, 26 Sep 2021 19:33:17 -0300
+Message-Id: <20210926223322.848641-1-isabellabdoamaral@usp.br>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <408e5e27fae24f22a408afdaf538702858cc324c.camel@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 10:21:46AM +0200, nicolas saenz julienne wrote:
-> Hi Tommaso,
-> 
-> On Sat, 2021-09-18 at 16:35 +0200, Tommaso Merciai wrote:
-> > Fix the following warning:
-> > 
-> > ./scripts/dtc/include-prefixes/arm/bcm2711-rpi-4-b.dts:220.10-231.4:
-> > Warning (pci_device_reg):
-> > /scb/pcie@7d500000/pci@1,0: PCI unit address format error, expected "0,0"
-> > 
-> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > ---
-> 
-> This issue was already addressed here:
-> https://lore.kernel.org/all/20210831125843.1233488-2-nsaenzju@redhat.com/
-> 
-> It's available in linux-next and will eventually show up upstream.
-> 
-> Regards,
-> Nicolas
->
-  Hi Nicolas,
-  Thanks for your feedback.
+We refactored the lib/test_hash.c file into KUnit as part of the student
+group LKCAMP [1] introductory hackathon for kernel development.
 
-  Tommaso
+This test was pointed to our group by Daniel Latypov [2], so its full
+conversion into a pure KUnit test was our goal in this patch series, but
+we ran into many problems relating to it not being split as unit tests,
+which complicated matters a bit, as the reasoning behind the original
+tests is quite cryptic for those unfamiliar with hash implementations.
+
+Some interesting developments we'd like to highlight are:
+
+- In patch 1/5 we noticed that there was an unused define directive that
+  could be removed.
+- In patch 4/5 we noticed how stringhash and hash tests are all under
+  the lib/test_hash.c file, which might cause some confusion, and we
+  also broke those kernel config entries up.
+
+Overall KUnit developments have been made in the other patches in this
+series:
+
+In patches 2/5, 3/5 and 5/5 we refactored the lib/test_hash.c
+file so as to make it more compatible with the KUnit style, whilst
+preserving the original idea of the maintainer who designed it (i.e.
+George Spelvin), which might be undesirable for unit tests, but we
+assume it is enough for a first patch.
+
+This is our first patch series so we hope our contributions are
+interesting and also hope to get some useful criticism from the
+community. :)
+
+Changes since V1:
+- Fixed compilation on parisc and m68k.
+- Fixed whitespace mistakes.
+- Renamed a few functions.
+- Refactored globals into struct for test function params, thus removing
+  a patch. 
+- Reworded some commit messages.
+
+[1] - https://lkcamp.dev/
+[2] - https://lore.kernel.org/linux-kselftest/CAGS_qxojszgM19u=3HLwFgKX5bm5KhywvsSunuBAt5RtR+GyxQ@mail.gmail.com/
+
+Isabella Basso (5):
+  hash.h: remove unused define directive
+  test_hash.c: split test_int_hash into arch-specific functions
+  test_hash.c: split test_hash_init
+  lib/Kconfig.debug: properly split hash test kernel entries
+  test_hash.c: refactor into kunit
+
+ include/linux/hash.h       |   5 +-
+ lib/Kconfig.debug          |  28 ++++-
+ lib/Makefile               |   3 +-
+ lib/test_hash.c            | 247 +++++++++++++++++--------------------
+ tools/include/linux/hash.h |   5 +-
+ 5 files changed, 139 insertions(+), 149 deletions(-)
+
+-- 
+2.33.0
+
