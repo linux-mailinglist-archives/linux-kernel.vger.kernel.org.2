@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D864189E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315714189EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhIZPRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 11:17:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51916 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhIZPRn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 11:17:43 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632669366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FsRaf8OAGX6covgXxnOnhA3KsoPYPNANd+4zdArtQfA=;
-        b=gKcxH/2XXCvwbBpNOEkpn9NfnUs0BmAF9ue7/jVD5dK6Zs2MeGaM/noQKxzUZ+Frhn1R5L
-        Fs2O42JSwamCSolzxJdObX9PhpMSnbf0FpYYzRzLF/4y5FZdiBiQ9YOqjM+HBclas0U2nU
-        v7hYuaJYrzSGfAIakpTsbOiIzNktqzz5VNEDQwAT4awTq3PXJXQob02128N8b7gFbWwwlA
-        8WU+siPeCqG0UZU9zbr5PCDkbXSjGaYlVOwFqSvzOR2vtaKHoS7a07ZYSdJTLaXvCsBZSP
-        tMgP//+3TJ8RvVF/SsiXzDoEV4yJJTAdQOl3lBmXQYtQV1qHlhQwIzr9d5RxPw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632669366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FsRaf8OAGX6covgXxnOnhA3KsoPYPNANd+4zdArtQfA=;
-        b=habO0+wo1GRHZggq5rQ4wh+s900MFGaNY+j6d5yI8v7BKVc+PKt0TJ8n+H+LgZvhlQI6Cr
-        qW5EOtFe1uxgbhDA==
-To:     Christoph Hellwig <hch@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] smp: Wake ksoftirqd on PREEMPT_RT instead do_softirq().
-In-Reply-To: <YU76mB5hzvw3xZRB@infradead.org>
-References: <20210924094755.2m32pgqwrqw2cg2s@linutronix.de>
- <YU76mB5hzvw3xZRB@infradead.org>
-Date:   Sun, 26 Sep 2021 17:16:05 +0200
-Message-ID: <87tui7bc5m.ffs@tglx>
+        id S232054AbhIZPSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 11:18:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232081AbhIZPSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 11:18:15 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB74B60F21;
+        Sun, 26 Sep 2021 15:16:37 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 16:20:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, hdegoede@redhat.com, wens@csie.org,
+        andriy.shevchenko@linux.intel.com
+Subject: Re: [PATCH 0/5] iio: device-managed conversions with
+ devm_iio_map_array_register()
+Message-ID: <20210926162026.3447e0bd@jic23-huawei>
+In-Reply-To: <20210903072917.45769-1-aardelean@deviqon.com>
+References: <20210903072917.45769-1-aardelean@deviqon.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25 2021 at 11:31, Christoph Hellwig wrote:
+On Fri,  3 Sep 2021 10:29:12 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-> On Fri, Sep 24, 2021 at 11:47:55AM +0200, Sebastian Andrzej Siewior wrote:
->> +	if (local_softirq_pending()) {
->> +
->> +		if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
->> +			do_softirq();
->> +		} else {
->> +			struct task_struct *ksoftirqd = this_cpu_ksoftirqd();
->> +
->> +			if (ksoftirqd && !task_is_running(ksoftirqd))
->> +				wake_up_process(ksoftirqd);
->> +		}
->> +	}
->
-> At a cosmetic level this looks pretty weird.  Why the empty line inside
-> the indented block?  Why the pointless negation instead of the obvious
-> more straightforward order?
+> This change introduces a devm_iio_map_array_register() variant for the
+> iio_map_array_register() function.
+> 
+> And converts 4 drivers to full device-managed.
+> These 4 drivers only call iio_map_array_unregister() and
+> iio_device_unregister() in their remove hooks.
+> 
+> These 4 drivers should make a reasonably good case for introducing this
+> devm_iio_map_array_register() function.
+> 
+> There are 7 more drivers that would use the devm_iio_map_array_register()
+> function, but they require a bit more handling in the remove/unwinding
+> part.
+> So, those 7 are left for later.
 
-Yeah, the empty line is stray.
-
-The negation is because quite some people complained in the past about
-doing it the other way round as they want to see the !RT case first.
-
-De gustibus non est disputandum :)
+Series applied to the togreg branch of iio.git and pushed out as testing
+so 0-day can work it's magic.
 
 Thanks,
 
-        tglx
+Jonathan
+
+> 
+> Alexandru Ardelean (5):
+>   iio: inkern: introduce devm_iio_map_array_register() short-hand
+>     function
+>   iio: adc: intel_mrfld_adc: convert probe to full device-managed
+>   iio: adc: axp288_adc: convert probe to full device-managed
+>   iio: adc: lp8788_adc: convert probe to full-device managed
+>   iio: adc: da9150-gpadc: convert probe to full-device managed
+> 
+>  .../driver-api/driver-model/devres.rst        |  1 +
+>  drivers/iio/adc/axp288_adc.c                  | 28 +++--------------
+>  drivers/iio/adc/da9150-gpadc.c                | 27 ++--------------
+>  drivers/iio/adc/intel_mrfld_adc.c             | 24 ++------------
+>  drivers/iio/adc/lp8788_adc.c                  | 31 +++----------------
+>  drivers/iio/inkern.c                          | 17 ++++++++++
+>  include/linux/iio/driver.h                    | 14 +++++++++
+>  7 files changed, 45 insertions(+), 97 deletions(-)
+> 
+
