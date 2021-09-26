@@ -2,177 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEA1418CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FF3418CED
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbhIZWra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 18:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S230507AbhIZW7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 18:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232791AbhIZWqX (ORCPT
+        with ESMTP id S230075AbhIZW7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 18:46:23 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363BFC06120A;
-        Sun, 26 Sep 2021 15:43:09 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id u18so67079931lfd.12;
-        Sun, 26 Sep 2021 15:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GkvxncHOY8DvHcvIZZ5ALhHomt+6uxaaFq6TQ6h+fMg=;
-        b=jVXoHlkHdIjsVQbhBj5b7uMh0ngrZd3PCHAddv4luagdEL6TKWeTpMQ+IO9TpBGwmy
-         OqQvnHuhgLV8SPGruk2d2EWD2vLnFE6Msgsn8BnapdN1stWZsEp4K6n+wsNoGJuD0IER
-         eY1LWvYENJqu2w8Z1eaDg5FloKTQR23sqI/yIxiBXAEfWx6ht/gAsrwPGcMdDDIih4IR
-         53Ke9Er+8K9h9BnEbwMKEj5fUz2VmOPrLqNBce5GdSlqhm/mW++3r8QPVHLtgOE4u7BK
-         mJd/qvmMNcdv6sNu8qxdNxkVxRx3ckDmC/TAeTmeShn6ADPvWSzoAPgxv8bX54iOtcSJ
-         NYfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GkvxncHOY8DvHcvIZZ5ALhHomt+6uxaaFq6TQ6h+fMg=;
-        b=EZQTT6XuLc+0BwNaiY6QpCivzcWSsn1YcgyyjjpzhaNCCLcycCwvfHEsbS21MlAw+/
-         n9ygQzKcA349ExRBddmAcJvBV78JR+qs9NHj1grldMXDnCEFHyh0VWvq2abF01tsNzoo
-         iwYAh3oLwbqeCsxcpFqFgJR4uX798r20dzYWOE6Ol97RX68R297q5tnuUNEoUFUNqRV9
-         wB5398yoJaGsWm7SY/FqnayzrJ6330DIDhfX3HMxuyhfAY9f07QVeRJus16wnjp3t+BB
-         bqLGLxAQJXYZs+gmlny3zv0hoJGdsII9CbNiIbB8YRyh95Pxgn0G/UE7gTYkN/9D8hus
-         cCNQ==
-X-Gm-Message-State: AOAM533fUD4iL6mdGTLt2MolEd4i4sGKECgV6Jh9ApC0zQdoIb/AU6oa
-        0KLrnX5Mi19G5+ZHIntESD8=
-X-Google-Smtp-Source: ABdhPJzzD+Lqvq/0PXVYaK4xhRvgqBKhRcQUDKM/Bv8HOzifMLktWJTzFJ714BHPdsdFrCQQ0Hod7g==
-X-Received: by 2002:a05:651c:1549:: with SMTP id y9mr10261640ljp.105.1632696187659;
-        Sun, 26 Sep 2021 15:43:07 -0700 (PDT)
-Received: from localhost.localdomain (46-138-80-108.dynamic.spd-mgts.ru. [46.138.80.108])
-        by smtp.gmail.com with ESMTPSA id m10sm1408899lfr.272.2021.09.26.15.43.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 15:43:07 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH v13 35/35] ARM: tegra20/30: Disable unused host1x hardware
-Date:   Mon, 27 Sep 2021 01:40:58 +0300
-Message-Id: <20210926224058.1252-36-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210926224058.1252-1-digetx@gmail.com>
-References: <20210926224058.1252-1-digetx@gmail.com>
+        Sun, 26 Sep 2021 18:59:04 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C25C061570;
+        Sun, 26 Sep 2021 15:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=BQc1AGKyGp6O8sK4Oijci/bl6DWo+e/7Ej7o6TskIdc=; b=HbipvuqyXma60Nm+c9Qr9vxZpk
+        Ya0cyfHlboAYE+Go8QlKwYpY/G08VA4TQPF1CH6OI4O5bCIHe6ijdTnXFtx8D09T/BDxjPh3SXNSs
+        9P9KSa0cvQL3FmKWEib3GjdKFm+QFOKhw059joSWY3p/sHalhdGJ8DuWKZWAMUb1FrHeR3+9nKkJU
+        Pkh3NiaDsCUdGCXZP51S7TDx4NlFAN+araqQy5RAYJ3qNb+KQRzb4qFEXXcHqmHxOpCAZdAOTmw4V
+        M8K8kPkKm628Fd6OJgUb7XTRm0GrFT/9v34Cvkd/eCgY+7yz+p1W7cxaNAX0tXC35iPlKiX5FNieV
+        UIcnqeXw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mUd5G-001D1U-Hv; Sun, 26 Sep 2021 22:57:22 +0000
+Subject: Re: [PATCH v7 1/5] d_path: fix Kernel doc validator complaints
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jia He <justin.he@arm.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com
+References: <20210715011407.7449-1-justin.he@arm.com>
+ <20210715011407.7449-2-justin.he@arm.com>
+ <YPAPIsGkom68R1WR@smile.fi.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <92c8b22e-613e-7e8d-8cf9-b995494cf3f3@infradead.org>
+Date:   Sun, 26 Sep 2021 15:57:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YPAPIsGkom68R1WR@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MPE, VI, EPP and ISP were never used and we don't have drivers for them.
-Since these modules are enabled by default in a device-tree, a device is
-created for them, blocking voltage scaling because there is no driver to
-bind, and thus, state of PMC driver is never synced. Disable them.
+On 7/15/21 3:34 AM, Andy Shevchenko wrote:
+> On Thu, Jul 15, 2021 at 09:14:03AM +0800, Jia He wrote:
+>> Kernel doc validator complains:
+>>    Function parameter or member 'p' not described in 'prepend_name'
+>>    Excess function parameter 'buffer' description in 'prepend_name'
+> 
+> Yup!
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra20.dtsi | 4 ++++
- arch/arm/boot/dts/tegra30.dtsi | 8 ++++++++
- 2 files changed, 12 insertions(+)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
-index eb6e5518fb5f..05788c9cddc1 100644
---- a/arch/arm/boot/dts/tegra20.dtsi
-+++ b/arch/arm/boot/dts/tegra20.dtsi
-@@ -59,6 +59,7 @@ mpe@54040000 {
- 			reset-names = "mpe";
- 			operating-points-v2 = <&mpe_dvfs_opp_table>;
- 			power-domains = <&pd_mpe>;
-+			status = "disabled";
- 		};
- 
- 		vi@54080000 {
-@@ -70,6 +71,7 @@ vi@54080000 {
- 			reset-names = "vi";
- 			operating-points-v2 = <&vi_dvfs_opp_table>;
- 			power-domains = <&pd_venc>;
-+			status = "disabled";
- 		};
- 
- 		epp@540c0000 {
-@@ -81,6 +83,7 @@ epp@540c0000 {
- 			reset-names = "epp";
- 			operating-points-v2 = <&epp_dvfs_opp_table>;
- 			power-domains = <&pd_core>;
-+			status = "disabled";
- 		};
- 
- 		isp@54100000 {
-@@ -91,6 +94,7 @@ isp@54100000 {
- 			resets = <&tegra_car 23>;
- 			reset-names = "isp";
- 			power-domains = <&pd_venc>;
-+			status = "disabled";
- 		};
- 
- 		gr2d@54140000 {
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index 09cb1ab75312..f9613384a487 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -145,6 +145,8 @@ mpe@54040000 {
- 			power-domains = <&pd_mpe>;
- 
- 			iommus = <&mc TEGRA_SWGROUP_MPE>;
-+
-+			status = "disabled";
- 		};
- 
- 		vi@54080000 {
-@@ -158,6 +160,8 @@ vi@54080000 {
- 			power-domains = <&pd_venc>;
- 
- 			iommus = <&mc TEGRA_SWGROUP_VI>;
-+
-+			status = "disabled";
- 		};
- 
- 		epp@540c0000 {
-@@ -171,6 +175,8 @@ epp@540c0000 {
- 			power-domains = <&pd_heg>;
- 
- 			iommus = <&mc TEGRA_SWGROUP_EPP>;
-+
-+			status = "disabled";
- 		};
- 
- 		isp@54100000 {
-@@ -183,6 +189,8 @@ isp@54100000 {
- 			power-domains = <&pd_venc>;
- 
- 			iommus = <&mc TEGRA_SWGROUP_ISP>;
-+
-+			status = "disabled";
- 		};
- 
- 		gr2d@54140000 {
+Can we get someone to merge this, please?
+
+>> Fixes: ad08ae586586 ("d_path: introduce struct prepend_buffer")
+>> Cc: Al Viro <viro@zeniv.linux.org.uk>
+>> Signed-off-by: Jia He <justin.he@arm.com>
+>> ---
+>>   fs/d_path.c | 8 +++-----
+>>   1 file changed, 3 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/d_path.c b/fs/d_path.c
+>> index 23a53f7b5c71..4eb31f86ca88 100644
+>> --- a/fs/d_path.c
+>> +++ b/fs/d_path.c
+>> @@ -33,9 +33,8 @@ static void prepend(struct prepend_buffer *p, const char *str, int namelen)
+>>   
+>>   /**
+>>    * prepend_name - prepend a pathname in front of current buffer pointer
+>> - * @buffer: buffer pointer
+>> - * @buflen: allocated length of the buffer
+>> - * @name:   name string and length qstr structure
+>> + * @p: prepend buffer which contains buffer pointer and allocated length
+>> + * @name: name string and length qstr structure
+>>    *
+>>    * With RCU path tracing, it may race with d_move(). Use READ_ONCE() to
+>>    * make sure that either the old or the new name pointer and length are
+>> @@ -108,8 +107,7 @@ static int __prepend_path(const struct dentry *dentry, const struct mount *mnt,
+>>    * prepend_path - Prepend path string to a buffer
+>>    * @path: the dentry/vfsmount to report
+>>    * @root: root vfsmnt/dentry
+>> - * @buffer: pointer to the end of the buffer
+>> - * @buflen: pointer to buffer length
+>> + * @p: prepend buffer which contains buffer pointer and allocated length
+>>    *
+>>    * The function will first try to write out the pathname without taking any
+>>    * lock other than the RCU read lock to make sure that dentries won't go away.
+>> -- 
+
+
 -- 
-2.32.0
-
+~Randy
