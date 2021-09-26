@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C939B418D23
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 01:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E21418D24
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 01:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhIZXpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 19:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        id S232384AbhIZXpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 19:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232373AbhIZXpn (ORCPT
+        with ESMTP id S232377AbhIZXpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 26 Sep 2021 19:45:43 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8FFC061575
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 16:44:04 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id r7so10552204pjo.3
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 16:44:04 -0700 (PDT)
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B533C06176E
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 16:44:05 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id k26so9543072pfi.5
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 16:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nT513pHzGiMpZgaNWaHuaQRUoarxEdG+vAAtn4ZSI3I=;
-        b=VGC5hFjSViPa8UHidrJ+zGmm4I8RPo6B7NhutVuOVsVcLYUwKbN/PoKdD3xiLZf+aJ
-         2IOUexZRK1VfbIoDyIRMQgknoPmXlBigfdQqKZlIDe4zqGJhVLh4ZnGIge5Fcqt3qWfE
-         G+qfmVSSKT9ury1J76cbONnaDrXRyELY35rDHMDgMpo1/5ImYxUyf6WtF2Egyp824oiG
-         5HgNQH3Mi7HDBi4WcV5y8UwFDosNb7948/+VIxJAg9Vt9xZore2YBCJe/tyC2qxM/znX
-         VAKeIIgY2ri6qy2XDBtI8D9wIPbEtQMGtia55vazq3FxpZ6D5erBdureiFmy6KdsgN5y
-         sOog==
+        bh=8K0wNqs/UoQMVWcbLzg7zpAq9uT/7eob5sdcWrFFCjE=;
+        b=kFD/Z5J2xj2ugTXgq4UIoOmypwygBjvLHOo6K1Tc2eigh5LmmXmw4Zso7FtsJioTot
+         NCveaxdSuE0wWDPtgXUB105caBHoki1Ykx3c6yGx1jzhRfbO6iVmun2NDokYZuBown1b
+         jrDg1MmxL3N3x8JfVYUi5c5Bn9vT7lxFTM0DMbhZtblAQGV73y2w/ClWXvz/ykQVfJ/3
+         rp8weZtfpGoRSnQOOH2wRKK3bliUnB8OUuU/rYZR5mwQyzNYblNCGOLbyOlq1gl9Q6hB
+         ApCFinCHC7VktDousGIAl5ap9EPULJ2GijlEFQ6okPzKb+v3evU1HXqnoQiYwu9pZqzA
+         wLlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nT513pHzGiMpZgaNWaHuaQRUoarxEdG+vAAtn4ZSI3I=;
-        b=5cHgqE9bXr8Ssq9moZixVwKZjc9QpLgn7bi667n4TuDV61BeX0NE1Y4n7N8jxZfdJk
-         fzz393EZCmThWF2vxkhyrLHMfTxUQupASpVQYJtosF1D2gaFHVEDQst97nthIq74q4ox
-         HKpMvY8hpBhBqhGXC0ICinYYmguAc14HMjKsLR1XkEobIm3W76SYAvf9rSnnFXVbSNc6
-         qD9ilbMquijbz5DH1expwyFVO3UqmZ4ftxemUQk8eTwLm0RzDZ7/5PkKr8L5YDLURpvg
-         AJqx3pqIVv0iTjz+Y3fq73OvlGJC4IKsMAmysjYZI1FqqP0V4AZnIvCP0MSYagrcDFXt
-         Lhcw==
-X-Gm-Message-State: AOAM532s1jL/if6YTHvXpt/DjbhJ5oG8pifCdif3SrPyry6dL19qpnsa
-        BxsUQFoe3ljjBOF7yG7NA3Uw1z0/9Q4=
-X-Google-Smtp-Source: ABdhPJzAfS8fiN3mGvz5Edu6ZGWMLuREZwgR5MIc7fZhEaI1QNeFZ6PR8DwlKpq2jWtYM1A1vIEMBA==
-X-Received: by 2002:a17:90b:33c8:: with SMTP id lk8mr16244064pjb.241.1632699843558;
-        Sun, 26 Sep 2021 16:44:03 -0700 (PDT)
+        bh=8K0wNqs/UoQMVWcbLzg7zpAq9uT/7eob5sdcWrFFCjE=;
+        b=3gPplkMFfDbFqOYgLpiTOHuUBKZTZwdUK9Knjg49YBultMfZGdd+uJ3/zS3HzUvg6u
+         SVSbk7RK7fs5+aQg9I7VccCZMswXC/5k7EGWtL4CoexmioLKoynCn4+O5Jjr0/5ugNlh
+         ls523VfptPFc1J6inf4WxoZAP9ZiSt0h4D1H/60lZ7ivrA+U0bIpoXg+nSwIUCUgg18J
+         KSm6ddaa7GewZawc6JuN02KxYZWBCk4ymp1QlBgSrbajg+pj7DokbxS1L7M2c6hl8/zL
+         vaIjOwRshYM7hvS2ZNqv4MAj4J3kg0s5ncYoBy1P7gJ3yQuzZG0tZZaMBfKWhlBbmq0/
+         YNbw==
+X-Gm-Message-State: AOAM533R0YoRLrADcskL0F1pL/5pKPM/JI6bjFQ70f+X56jA1BFxorgH
+        2LjKMA0YqjCZ82qlVqWh4Pk=
+X-Google-Smtp-Source: ABdhPJzac/DPGQPxntJXg+GNkdPOEat1QboVk7R+cPMmUqJpSRSm0/fyONTMqEx0qTMlguk/EPtXmQ==
+X-Received: by 2002:a65:6a4b:: with SMTP id o11mr13448662pgu.278.1632699844886;
+        Sun, 26 Sep 2021 16:44:04 -0700 (PDT)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id n22sm16783686pgc.55.2021.09.26.16.44.02
+        by smtp.gmail.com with ESMTPSA id n22sm16783686pgc.55.2021.09.26.16.44.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 16:44:03 -0700 (PDT)
+        Sun, 26 Sep 2021 16:44:04 -0700 (PDT)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     Andrew Morton <akpm@linux-foundation.org>
@@ -58,9 +58,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Colin Cross <ccross@google.com>,
         Suren Baghdasarya <surenb@google.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [RFC PATCH 7/8] mm/madvise: deduplicate code in madvise_dontneed_free()
-Date:   Sun, 26 Sep 2021 09:12:58 -0700
-Message-Id: <20210926161259.238054-8-namit@vmware.com>
+Subject: [RFC PATCH 8/8] mm/madvise: process_madvise(MADV_DONTNEED)
+Date:   Sun, 26 Sep 2021 09:12:59 -0700
+Message-Id: <20210926161259.238054-9-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210926161259.238054-1-namit@vmware.com>
 References: <20210926161259.238054-1-namit@vmware.com>
@@ -72,9 +72,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-Following the previous patches, madvise_dontneed_single_vma() and
-madvise_free_single_vma() have redundant code. Consolidate it together
-into madvise_dontneed_free().
+Userfaultfd users, for the sake of memory management, debugging or other
+types of monitoring may wish to use process_madvise(MADV_DONTNEED).
+
+Moreover, since process_madvise() supports vectored operations, and now
+supports efficient TLB flushes, existing users of madvise(MADV_DONTNEED)
+that wish to perform advices on non-contiguous memory may prefer
+the vectored process_madvise() flavor for performance reasons.
 
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -84,92 +88,21 @@ Cc: Suren Baghdasarya <surenb@google.com>
 Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
 Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
- mm/madvise.c | 40 +++++++++++++++-------------------------
- 1 file changed, 15 insertions(+), 25 deletions(-)
+ mm/madvise.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/mm/madvise.c b/mm/madvise.c
-index e679cfa94655..9528c38fb6a4 100644
+index 9528c38fb6a4..d8f70960680e 100644
 --- a/mm/madvise.c
 +++ b/mm/madvise.c
-@@ -786,25 +786,14 @@ static int madvise_free_single_vma(struct mmu_gather *tlb,
- 			struct vm_area_struct *vma,
- 			unsigned long start_addr, unsigned long end_addr)
- {
--	struct mm_struct *mm = vma->vm_mm;
--	struct mmu_notifier_range range;
--
- 	/* MADV_FREE works for only anon vma at the moment */
- 	if (!vma_is_anonymous(vma))
- 		return -EINVAL;
- 
--	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm,
--				start_addr, end_addr);
--
--	lru_add_drain();
--	update_hiwater_rss(mm);
--
--	mmu_notifier_invalidate_range_start(&range);
- 	tlb_start_vma(&tlb, vma);
--	walk_page_range(vma->vm_mm, range.start, range.end,
-+	walk_page_range(vma->vm_mm, start_addr, end_addr,
- 			&madvise_free_walk_ops, tlb);
- 	tlb_end_vma(tlb, vma);
--	mmu_notifier_invalidate_range_end(&range);
- 
- 	return 0;
- }
-@@ -832,18 +821,7 @@ static long madvise_dontneed_single_vma(struct mmu_gather *tlb,
- 					struct vm_area_struct *vma,
- 					unsigned long start, unsigned long end)
- {
--	struct mm_struct *mm = vma->vm_mm;
--	struct mmu_notifier_range range;
--
--	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm, start,
--				end);
--
--	lru_add_drain();
--	update_hiwater_rss(mm);
--
--	mmu_notifier_invalidate_range_start(&range);
- 	unmap_single_vma(tlb, vma, start, end, NULL);
--	mmu_notifier_invalidate_range_end(&range);
- 
- 	return 0;
- }
-@@ -855,7 +833,9 @@ static long madvise_dontneed_free(struct mmu_gather *tlb,
- 				  int behavior)
- {
- 	struct mm_struct *mm = vma->vm_mm;
-+	struct mmu_notifier_range range;
- 	unsigned long end = *pend;
-+	long ret;
- 
- 	*prev = vma;
- 	if (!can_madv_lru_vma(vma))
-@@ -901,10 +881,20 @@ static long madvise_dontneed_free(struct mmu_gather *tlb,
- 		VM_WARN_ON(start >= end);
- 	}
- 
-+	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm, start,
-+				end);
-+
-+	lru_add_drain();
-+	update_hiwater_rss(mm);
-+	mmu_notifier_invalidate_range_start(&range);
-+
- 	if (behavior == MADV_DONTNEED)
--		return madvise_dontneed_single_vma(tlb, vma, start, end);
-+		ret = madvise_dontneed_single_vma(tlb, vma, start, end);
- 	else /* behavior == MADV_FREE */
--		return madvise_free_single_vma(tlb, vma, start, end);
-+		ret = madvise_free_single_vma(tlb, vma, start, end);
-+
-+	mmu_notifier_invalidate_range_end(&range);
-+	return ret;
- }
- 
- static long madvise_populate(struct vm_area_struct *vma,
+@@ -81,6 +81,7 @@ static const struct madvise_info madvise_info[MADV_SOFT_OFFLINE+1] = {
+ 	},
+ 	[MADV_DONTNEED] = {
+ 		.behavior_valid = 1,
++		.process_behavior_valid = 1,
+ 		.need_mmap_read_only = 1,
+ 		.tlb_batching = 1,
+ 	},
 -- 
 2.25.1
 
