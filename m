@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12091418B07
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 22:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825AF418B0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 22:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhIZUpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 16:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
+        id S230149AbhIZUvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 16:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhIZUpR (ORCPT
+        with ESMTP id S230052AbhIZUvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 16:45:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2D1C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 13:43:40 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632689017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PJ30AYB5dQYASQQ807+byPlQXDuR+aVd2Y6AuvkeBsk=;
-        b=c7DZw2UARw7rviOfPwcG4Rn7hDtw091Q2dmLGp7U39YzC/pdhfE+RRbd8i9pwT2G0zqaUT
-        CRQA70dL5bp0McEY+HZQg8za09pBInbrbVp8lFt28Lvz9ZpJMtkcBKGsGgdWcZqaO8L82j
-        qTXFleJVeokh+58qBbOHC/nOS/3mD98c+vlR81XiLhETUj3X7DWbwyrJWfD1watJDyn/ec
-        xYLR51aEFmI5ok1Wy/dYQKI4kx2NGzMoEwmov1hKxcnjHpnhV1M0QWRlkpgxLCPse0bf+M
-        f/2/oGITlgXZzT42Cevf/XZOtb5ro/0ip1DBCB/5XLxrNBE85LHCI1cy0aPSRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632689017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PJ30AYB5dQYASQQ807+byPlQXDuR+aVd2Y6AuvkeBsk=;
-        b=CWV8pLQoXg4kgNQ2jnmRurpE1vPQpH6rfEbcLpw3FDP6D/qds7EajlcMZmVbSJF0ypWOCY
-        QAgiIGSNaVGMOrCw==
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Chang S . Bae" <chang.seok.bae@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH V2 01/41] x86/entry: Fix swapgs fence
-In-Reply-To: <20210926150838.197719-2-jiangshanlai@gmail.com>
-References: <20210926150838.197719-1-jiangshanlai@gmail.com>
- <20210926150838.197719-2-jiangshanlai@gmail.com>
-Date:   Sun, 26 Sep 2021 22:43:37 +0200
-Message-ID: <87r1dbawzq.ffs@tglx>
+        Sun, 26 Sep 2021 16:51:08 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9676DC061570;
+        Sun, 26 Sep 2021 13:49:31 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHdDM2grvz4xbL;
+        Mon, 27 Sep 2021 06:49:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632689363;
+        bh=GezQ6tCNCXjCzk5x/bkYmJRey+iN3jeDsaVZPzlnOtY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eg1OnH92zakS9Or0SKiZ2TcPnGtv67UpxVi5GFoyAqXrisqgJp0+jXtc6VKFjkvGn
+         HxC47KgYYhwCNOwqAPG9BWphDaC+nI1l71Wm5Vz4rRoxBq78yNiMskLATKojdvNBiY
+         at8ZuXmRd29QUTBTOKZtNjHgMH0XYhvwtlYCdxsUdYjxaJM9gBdoqH9vg2dgtKxyw4
+         kqwIWMs+Y+UWnVr6RgOYWkEyeqKZ2Pdq9HSsFjeRc9naSJ4x3Jl8qRSAokxf32JFZY
+         YAub6eiGdmx0DcbkpscPMRqb54ZcuajtNS8MNj6URyxX7uCrg+YNsGE0pOh1bVNUGs
+         Rqb/uHtxEn8ow==
+Date:   Mon, 27 Sep 2021 06:49:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the ipsec tree
+Message-ID: <20210927064921.06973f44@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/L/G6gqShS+ZdQDnBXvUN7h/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lai,
+--Sig_/L/G6gqShS+ZdQDnBXvUN7h/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 26 2021 at 23:07, Lai Jiangshan wrote:
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -898,17 +898,12 @@ SYM_CODE_START_LOCAL(paranoid_entry)
->  	rdmsr
->  	testl	%edx, %edx
->  	jns	.Lparanoid_entry_swapgs
-> +	FENCE_SWAPGS_KERNEL_ENTRY
+Hi all,
 
-Good catch.
+In commit
 
->  	ret
->  
->  .Lparanoid_entry_swapgs:
->  	swapgs
-> -
-> -	/*
-> -	 * The above SAVE_AND_SWITCH_TO_KERNEL_CR3 macro doesn't do an
-> -	 * unconditional CR3 write, even in the PTI case.  So do an lfence
-> -	 * to prevent GS speculation, regardless of whether PTI is enabled.
-> -	 */
-> -	FENCE_SWAPGS_KERNEL_ENTRY
-> +	FENCE_SWAPGS_USER_ENTRY
+  93ec1320b017 ("xfrm: fix rcu lock in xfrm_notify_userpolicy()")
 
-This change is wrong.
+Fixes tag
 
-In the paranoid entry path even if user GS base is set then the entry
-does not necessarily come from user space so there is no guarantee that
-there was a CR3 write on PTI enabled systems before the SWAPGS.
+  Fixes: 703b94b93c19 ("xfrm: notify default policy on update")
 
-FENCE_SWAPGS_USER_ENTRY does not emit a LFENCE when PTI is enabled, so
-both the comment and FENCE_SWAPGS_KERNEL_ENTRY which emits LFENCE on
-affected CPUs unconditionaly are correct. Though the comment could do
-with some polishing to make this entirely clear.
+has these problem(s):
 
-Before adding support for FSGSBASE both the swapgs and non swapgs case
-issued the LFENCE unconditionally with FENCE_SWAPGS_KERNEL_ENTRY. The
-commit you identified splitted the code pathes and failed to add the
-FENCE_SWAPGS_KERNEL_ENTRY into the non-swapgs path.
+  - Target SHA1 does not exist
 
-Thanks,
+Maybe you meant
 
-        tglx
+Fixes: 88d0adb5f13b ("xfrm: notify default policy on update")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/L/G6gqShS+ZdQDnBXvUN7h/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFQ3NEACgkQAVBC80lX
+0Gy/4gf+P1z40KYkNYZq14SAISNR3B7D4cetGw7nItHyXCsl//6r4ayq39zgYbF1
+MIBlYxwb/7fdeYlYwaXt4p4H9UNhPOOOORB2UGKvEX354afrNIH5yKGlUtsdZhgJ
+WiiCaISDDnL8CT2vOAx0oAxzymyjBxJ9OHTbp9I7C//wLLJOApeaE4J2u/7nQItU
+bL8nwU0Cm4SfU1SjBr1hv90DXO7GLK/ihtqr5pwikvW6YSa/Ym1AkVGSX/U9j0fr
+oeoCrE2f+1uLoUFzh4Im/nZFtRNh7GDhF4ALEsRlOlvobls7h6pkV3wV6uL3saXl
+XD+9UV2Vw79FBLZ7vU84zHzjry9vxg==
+=8mJ+
+-----END PGP SIGNATURE-----
+
+--Sig_/L/G6gqShS+ZdQDnBXvUN7h/--
