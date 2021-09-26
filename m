@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1E1418789
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FAC41878C
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhIZIrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 04:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        id S229874AbhIZIrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 04:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhIZIrf (ORCPT
+        with ESMTP id S229814AbhIZIri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 04:47:35 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A4CC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:45:59 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id il14-20020a17090b164e00b0019c7a7c362dso9811129pjb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:45:59 -0700 (PDT)
+        Sun, 26 Sep 2021 04:47:38 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F4EC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:46:02 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id a7so9629663plm.1
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:46:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QlTGzxKBukKaEhh3Mo3v5AdCgAwPnT3D7ocNVWJAYkk=;
-        b=qkFWpjue2+KPPMXsrqPthuBsIOtr6oe1XcU1t0Ac2pz8uZpGVZShEqjqLkpZ+vR/cW
-         U9bkb/YhGoNsPKQ2ZviADp9Hi59vsddw/7wG5nxo9LebcrYI/uR2M1lp8MlvlRhctTvu
-         B+j7ULNEVyG3ZGw8cKggGzm3NvQOUVf6hjvH0b+V+j5hTy7Jl3XmJoig9QWOMP1uNSJg
-         aqnQq+R+4oZLFkZQxMrWiAJII6NLeq0buVia/CC1H9csiOyeCp9OM9xRcetnlLI7zEq1
-         abrfXU8DvrzLC/oULk85PGcSb7v7r6wfrg1i8XuOvEfrRiLM9/GRGtJfgbr3RdRMOCN1
-         SxoQ==
+        bh=ad+SGXOr75O4oi8AW9D35FvdvCg+d9KXZUgQG27xE7g=;
+        b=Bjge5gm67WqADWQkGpgueTkutmwJdorUZ7HVPtzUFd8+zA95cFGf6cM/jXZLRQ/HCs
+         8Ld3gqSIsw6d3z6LCUjrL3rbaYCn9Sj7m7ZG0XXCKcjO9lzdWrJ9tfIfA5/tnLOrhZVc
+         6yRmdqnDwI8mdoBckQVIjNcd+nO9mMa1rsL+5QdpSkogaiL6bO2ejTGPSWtmn8/9vX9h
+         +LfyTJNlyCFeLKVrtTg8PcfBkckX3XcGqjhaUYld0QnuTxC4pHmkhNmFvVGnmzcbPQRX
+         do7pt/gW/mOWAeFOUiZL3nACKF89jzhHau9PWfWW6s4sZ+vAQKZzEjyZcsIuWh1WUgLS
+         P95A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=QlTGzxKBukKaEhh3Mo3v5AdCgAwPnT3D7ocNVWJAYkk=;
-        b=heILIyWPtBJXNXFrI24tZux6u3d+fdTSidiPtZNdsb2Sh59p7mU1TO473rTS9fdpJA
-         uvh6TL/hI+3zHubAhEXz37STv4inAc/udYzLbYuDK1PSAGCjZ3Ey2fK8mnKSGJJVPMrT
-         znuaBFUuzfkxe6C/RLFJn+BV3Z1tiXz4nk2AgWjIgV8ZFnTW5DF8HqMvU/X+pOdWSlJk
-         Dtaeuj9Yrd/ks2SLW87y//VerQlIoxHxt+7+lSel8XEHhnA6Q50SP/OWB7yFTYNni82M
-         zTDWpQJ64LOxb+6bZgyFox+INq5Rc0WqCMUOvqra/nhbsKTfUNWpXA2CEqQag8IpLpWi
-         GnEA==
-X-Gm-Message-State: AOAM531kvHsQRdQluz7jQJO8CHOSKtsY05s3hQheZq+bXRpkkRhtFH6L
-        5nbEDFFRsqtP9fcG++/d0NConmsEJBjQZQ==
-X-Google-Smtp-Source: ABdhPJwAX9k3BtfR7VGvCfSAjC8sm4WVfz9zbmvkwo43fhYxRQ1PQatRUIeBuufZqhQoDbo1/I5IdQ==
-X-Received: by 2002:a17:902:b789:b0:13b:90bc:f184 with SMTP id e9-20020a170902b78900b0013b90bcf184mr17348375pls.31.1632645959352;
-        Sun, 26 Sep 2021 01:45:59 -0700 (PDT)
+        bh=ad+SGXOr75O4oi8AW9D35FvdvCg+d9KXZUgQG27xE7g=;
+        b=CKZbmIncBGhLfpFXtxrQjNqCZUPND/EZ/USXdQJeDEcZIPuyBRdUGQAOMLP5QCYipD
+         nJuiJN1n6qDfboQ3jgNVO4jZbACC4ImrAcHKtSFEdPBgIXopustyTBd/NQ9hyauEz8x8
+         CbkEhpmTCWfwULRLhLeuOQmBatGKk25ffr2AxAc3SfJO8CEWxVKd1G0OZVGc6YNv4ytf
+         v7Ww75c87BXoDpu4huzX5XwcVGj2+eBR0bxSzqaORfn7R1R9U+67TFzmMYY9DiAEZWwr
+         HoGm22a5KhsbLUCIwCdUFRstpGxPG7wQw9zZvPLPjprhW2Ri3X83qhe8jnLtvDeJI6aE
+         hhSA==
+X-Gm-Message-State: AOAM5316FmdSVluyQ7xRLhoD9Fea6KnBMCzbIeU25F0kmTRSOWrfXo5I
+        Gi6Oy3Nj4hT1L4oWtf5qgMNlgQ==
+X-Google-Smtp-Source: ABdhPJypYGuB0ypNrY7ewkowmmyTnaj/YBcgt0lcMSlNga+Pbx5C6PYw6nrsJfl4tnSZqwMpTSRF4Q==
+X-Received: by 2002:a17:90a:1a4c:: with SMTP id 12mr12594574pjl.89.1632645962102;
+        Sun, 26 Sep 2021 01:46:02 -0700 (PDT)
 Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id c7sm8940402pfc.104.2021.09.26.01.45.56
+        by smtp.gmail.com with ESMTPSA id c7sm8940402pfc.104.2021.09.26.01.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 01:45:59 -0700 (PDT)
+        Sun, 26 Sep 2021 01:46:01 -0700 (PDT)
 From:   Shawn Guo <shawn.guo@linaro.org>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -55,9 +55,9 @@ Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Kathiravan T <kathirav@codeaurora.org>,
         devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 1/2] dt-bindings: regulator: Document PM2250 smd-rpm regulators
-Date:   Sun, 26 Sep 2021 16:45:48 +0800
-Message-Id: <20210926084549.29880-2-shawn.guo@linaro.org>
+Subject: [PATCH 2/2] regulator: qcom_smd: Add PM2250 regulators
+Date:   Sun, 26 Sep 2021 16:45:49 +0800
+Message-Id: <20210926084549.29880-3-shawn.guo@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210926084549.29880-1-shawn.guo@linaro.org>
 References: <20210926084549.29880-1-shawn.guo@linaro.org>
@@ -65,35 +65,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document compatible for PM2250 smd-rpm regulators and list all of them.
+PM2250 is commonly used with QCM2290/QCS2290 SoCs, and provides 4 SMPS
+and 22 LDO regulators.  The LDO regulators are the same types found on
+PM660.
 
 Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- .../devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/regulator/qcom_smd-regulator.c | 49 ++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-index 83b53579f463..f052e03be402 100644
---- a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-@@ -65,6 +65,9 @@ description:
-   For pms405, s1, s2, s3, s4, s5, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
-   l12, l13
+diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
+index 198fcc6551f6..8bac024dde8b 100644
+--- a/drivers/regulator/qcom_smd-regulator.c
++++ b/drivers/regulator/qcom_smd-regulator.c
+@@ -738,6 +738,24 @@ static const struct regulator_desc mp5496_ldoa2 = {
+ 	.ops = &rpm_mp5496_ops,
+ };
  
-+  For pm2250, s1, s2, s3, s4, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
-+  l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22
++static const struct regulator_desc pm2250_lvftsmps = {
++	.linear_ranges = (struct linear_range[]) {
++		REGULATOR_LINEAR_RANGE(320000, 0, 269, 4000),
++	},
++	.n_linear_ranges = 1,
++	.n_voltages = 270,
++	.ops = &rpm_smps_ldo_ops,
++};
 +
- maintainers:
-   - Kathiravan T <kathirav@codeaurora.org>
++static const struct regulator_desc pm2250_ftsmps = {
++	.linear_ranges = (struct linear_range[]) {
++		REGULATOR_LINEAR_RANGE(640000, 0, 269, 8000),
++	},
++	.n_linear_ranges = 1,
++	.n_voltages = 270,
++	.ops = &rpm_smps_ldo_ops,
++};
++
+ struct rpm_regulator_data {
+ 	const char *name;
+ 	u32 type;
+@@ -1170,6 +1188,36 @@ static const struct rpm_regulator_data rpm_pms405_regulators[] = {
+ 	{}
+ };
  
-@@ -86,6 +89,7 @@ properties:
-       - qcom,rpm-pmi8994-regulators
-       - qcom,rpm-pmi8998-regulators
-       - qcom,rpm-pms405-regulators
-+      - qcom,rpm-pm2250-regulators
- 
- patternProperties:
-   ".*-supply$":
++static const struct rpm_regulator_data rpm_pm2250_regulators[] = {
++	{ "s1", QCOM_SMD_RPM_SMPA, 1, &pm2250_lvftsmps, "vdd_s1" },
++	{ "s2", QCOM_SMD_RPM_SMPA, 2, &pm2250_lvftsmps, "vdd_s2" },
++	{ "s3", QCOM_SMD_RPM_SMPA, 3, &pm2250_lvftsmps, "vdd_s3" },
++	{ "s4", QCOM_SMD_RPM_SMPA, 4, &pm2250_ftsmps, "vdd_s4" },
++	{ "l1", QCOM_SMD_RPM_LDOA, 1, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l2", QCOM_SMD_RPM_LDOA, 2, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l3", QCOM_SMD_RPM_LDOA, 3, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l4", QCOM_SMD_RPM_LDOA, 4, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
++	{ "l5", QCOM_SMD_RPM_LDOA, 5, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l6", QCOM_SMD_RPM_LDOA, 6, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l7", QCOM_SMD_RPM_LDOA, 7, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l8", QCOM_SMD_RPM_LDOA, 8, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l9", QCOM_SMD_RPM_LDOA, 9, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l10", QCOM_SMD_RPM_LDOA, 10, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l11", QCOM_SMD_RPM_LDOA, 11, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l12", QCOM_SMD_RPM_LDOA, 12, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
++	{ "l13", QCOM_SMD_RPM_LDOA, 13, &pm660_ht_lvpldo, "vdd_l13_l14_l15_l16" },
++	{ "l14", QCOM_SMD_RPM_LDOA, 14, &pm660_ht_lvpldo, "vdd_l13_l14_l15_l16" },
++	{ "l15", QCOM_SMD_RPM_LDOA, 15, &pm660_ht_lvpldo, "vdd_l13_l14_l15_l16" },
++	{ "l16", QCOM_SMD_RPM_LDOA, 16, &pm660_ht_lvpldo, "vdd_l13_l14_l15_l16" },
++	{ "l17", QCOM_SMD_RPM_LDOA, 17, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
++	{ "l18", QCOM_SMD_RPM_LDOA, 18, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
++	{ "l19", QCOM_SMD_RPM_LDOA, 19, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
++	{ "l20", QCOM_SMD_RPM_LDOA, 20, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
++	{ "l21", QCOM_SMD_RPM_LDOA, 21, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
++	{ "l22", QCOM_SMD_RPM_LDOA, 22, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
++	{}
++};
++
+ static const struct of_device_id rpm_of_match[] = {
+ 	{ .compatible = "qcom,rpm-mp5496-regulators", .data = &rpm_mp5496_regulators },
+ 	{ .compatible = "qcom,rpm-pm8841-regulators", .data = &rpm_pm8841_regulators },
+@@ -1186,6 +1234,7 @@ static const struct of_device_id rpm_of_match[] = {
+ 	{ .compatible = "qcom,rpm-pmi8994-regulators", .data = &rpm_pmi8994_regulators },
+ 	{ .compatible = "qcom,rpm-pmi8998-regulators", .data = &rpm_pmi8998_regulators },
+ 	{ .compatible = "qcom,rpm-pms405-regulators", .data = &rpm_pms405_regulators },
++	{ .compatible = "qcom,rpm-pm2250-regulators", .data = &rpm_pm2250_regulators },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, rpm_of_match);
 -- 
 2.17.1
 
