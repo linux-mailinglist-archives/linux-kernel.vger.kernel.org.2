@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAB6418890
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541CE418892
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhIZMPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 08:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
+        id S231317AbhIZMPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 08:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhIZMP2 (ORCPT
+        with ESMTP id S230160AbhIZMPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 08:15:28 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A66C061570;
-        Sun, 26 Sep 2021 05:13:52 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id z11so21633358oih.1;
-        Sun, 26 Sep 2021 05:13:52 -0700 (PDT)
+        Sun, 26 Sep 2021 08:15:42 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2DBC061570;
+        Sun, 26 Sep 2021 05:14:06 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id u8so62379760lff.9;
+        Sun, 26 Sep 2021 05:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3Pf5rU/TB/BW2ajTVjYWCJhuzdNpYKVst0ZSbg4WjX0=;
-        b=Kev7foseiXhcccruFzCzWbqnt/nsv0uHCpvE0dQDu7iJzyBuIV1iYpanAaJT22iWNB
-         4Q+z4EDr11ihcgv4MSTnxm2Vis4dIG8ub79lA7s4z6rZQUbaQMl8dp3Sbr5+6EaL28+E
-         LNkPgWOID13CjiFB34mcXjIZ8efFKUbqTJoOHW1tW5Enk+qGh0MKp85ErS6sqAzi1XfB
-         vvV9xOv64F5hx0LMdXYrZkkLaYsb1QDIsDZw7VvxvWizX+23NlChmAW92+jJPbXr1ZSc
-         gKoy3NldeJKwGloeIJ7OV4MRRnWqyI4V6cU3kAcGRvK50i6qvTZiV+FE429uTLgUpFpp
-         hcHw==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=aQFF7GpJjgpTZIGLB6wnrouO52iU2WbiUygOC1gWxac=;
+        b=X5FGCgMN75181qZvAGYAsok0AG03K9/dZejszCm59FHSSBZn7py46+Yk/EuFHt1Yl1
+         Cu7g47/CD7YzI8SCFtjtDefItLkGkMqUCxBmlu4xYGly9sjHIAkzHpngwRGd5hxG2KJw
+         9oTZs8j4+Z2GhwDoEGCi8UV+oRT1mHmI2S9hSLDHN7pfU6d8zUXjk9nn8WvmT6r5fdUm
+         3X2bz/JSE6xFB0GKMxpuVXjGFdyvoYjyYpbk5e27ujp+RAG0t7x8Jtj46ph5fwKMxt49
+         oOQNqahAvEQvXZR/wsRAGYVZU3mIzicnVhOABzUAMpCVSPtMLFE3jfN6eZIkCdZBwUTj
+         huCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3Pf5rU/TB/BW2ajTVjYWCJhuzdNpYKVst0ZSbg4WjX0=;
-        b=ncKWSZ5L4uax6F7ylpzLfhxpmeUeqryHh5lYT1NB5qDVFnv3MhXIAO9KsbQI8rLnY5
-         5KXBT4+AoUldONDyPp8KR7TC3EoUTJNF/VW5GxjAqqQcwJHXFgWP2BWCNthgDnBrpMgB
-         pfj+ftMOPqhR2VfMvqMaYrZol4pmBUBclRAW4WBzHqYLXL3tnPxjZtNpiATzPdlCHOj4
-         jZk1wXZglE/2wjWGQbGXDDtD7ImNspSBvcSlK4siImojwfgfx09tOGFryt6LEFb8Xs43
-         NXwoFc08YE0l8DNNP8s0x+DbAajjZnH+yrv9iuj0v7zSp0EXYSqi3LE7JdKLzAESw7AG
-         nYEA==
-X-Gm-Message-State: AOAM533/PjgU4ot96O3swyCiqGyOcLGYNR4k0wuiXu/WsKuFE9JshCI6
-        7jRbdWyFhk8B6Vzy0ObTJoovbR+Lr+k=
-X-Google-Smtp-Source: ABdhPJwAa//K6Y7U71YSn4FZ+9A9LY11mS6IHLh9n+yS2sdRbI3E6yBmIp4Z4k4xHnPoGv3cZZGVRA==
-X-Received: by 2002:a05:6808:2016:: with SMTP id q22mr8231106oiw.19.1632658432046;
-        Sun, 26 Sep 2021 05:13:52 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i23sm3229040oof.4.2021.09.26.05.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 05:13:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 26 Sep 2021 05:13:50 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH] watchdog: s3c2410: describe driver in KConfig
-Message-ID: <20210926121350.GA3174183@roeck-us.net>
-References: <20210924132930.111443-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=aQFF7GpJjgpTZIGLB6wnrouO52iU2WbiUygOC1gWxac=;
+        b=3bwIEmW8POTj/6gEGd/Y6vL4JXFeBg+NjWDXfuBYXsb7qZ4YOuu6ssn5l+mmGikWO/
+         iFO8lmy4NT66JFul2F6zswdb/yBHmpRz3f0udH4mUM3DoLqlQXnsBXk4kerZJxzvLyDX
+         4mjMjIQ41wBfQmXo/KgyEgyKwx5EWAWiOV/tRB2xuNj8LhMhGX/BRcKLbsvFoI/GVr4Y
+         nx5xCRNqrlMQNSobLyCq5QrH3ZeaNGkZPasHTTji1qAqds+VCoZ7DHDwNn/AmgF4wG3y
+         TiDfGkAthW+WOgL/wQYA5OexuTg8djUXrKnEVCYlIt1DlCkvu1WFKNGT0HWweVqpHaIM
+         u8xw==
+X-Gm-Message-State: AOAM531TT9OF25CuzAPK5R4uu+ujBJNcT3b/DOMZNALmGjkjNcluJrxZ
+        QN6uUFapkw3Q43tM+QGZcTty+QfDBWeqWwo2LM5uNRXl
+X-Google-Smtp-Source: ABdhPJwcbjOzkCSNchGwTCrzPLVzHjVcR3xw/B71teJDyztlYuelZd3drq1slvAUFVlTNcaApw0+Td+Xc6P3yWhbyws=
+X-Received: by 2002:a2e:4619:: with SMTP id t25mr22253666lja.398.1632658444629;
+ Sun, 26 Sep 2021 05:14:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924132930.111443-1-krzysztof.kozlowski@canonical.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sun, 26 Sep 2021 07:13:53 -0500
+Message-ID: <CAH2r5mv2fC4ugsUzB5T1ozvPnxeatwMsPrukiPF53WOREFxJXA@mail.gmail.com>
+Subject: [GIT PULL] ksmbd server fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 03:29:30PM +0200, Krzysztof Kozlowski wrote:
-> Describe better which driver applies to which SoC, to make configuring
-> kernel for Samsung SoC easier.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Please pull the following changes since commit
+707a63e9a9dd55432d47bf40457d4a3413888dcc:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+  Merge tag '5.15-rc1-ksmbd' of git://git.samba.org/ksmbd (2021-09-20
+15:35:17 -0700)
 
-> ---
->  drivers/watchdog/Kconfig | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index b81fe4f7d434..75591ba261e2 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -496,16 +496,18 @@ config S3C2410_WATCHDOG
->  	select WATCHDOG_CORE
->  	select MFD_SYSCON if ARCH_EXYNOS
->  	help
-> -	  Watchdog timer block in the Samsung SoCs. This will reboot
-> -	  the system when the timer expires with the watchdog enabled.
-> +	  Watchdog timer block in the Samsung S3C24xx, S3C64xx, S5Pv210 and
-> +	  Exynos SoCs. This will reboot the system when the timer expires with
-> +	  the watchdog enabled.
->  
->  	  The driver is limited by the speed of the system's PCLK
->  	  signal, so with reasonably fast systems (PCLK around 50-66MHz)
->  	  then watchdog intervals of over approximately 20seconds are
->  	  unavailable.
->  
-> +	  Choose Y/M here only if you build for such Samsung SoC.
->  	  The driver can be built as a module by choosing M, and will
-> -	  be called s3c2410_wdt
-> +	  be called s3c2410_wdt.
->  
->  config SA1100_WATCHDOG
->  	tristate "SA1100/PXA2xx watchdog"
-> -- 
-> 2.30.2
-> 
+are available in the Git repository at:
+
+  git://git.samba.org/ksmbd.git tags/5.15-rc2-ksmbd-fixes
+
+for you to fetch changes up to 265fd1991c1db85fbabaad4946ca0e63e2ae688d:
+
+  ksmbd: use LOOKUP_BENEATH to prevent the out of share access
+(2021-09-24 21:25:23 -0500)
+
+----------------------------------------------------------------
+Five fixes for the ksmbd kernel server, including three security fixes:
+- removing follow symlinks support
+- converting to use LOOKUP_BENEATH to prevent out of share access
+- SMB3 compounding security fix
+-fix for returning the default streams correctly, fixing a bug when
+writing ppt or doc files from some clients
+- logging more clearly that ksmbd is experimental (at module load time)
+
+Functional testing passed (e.g.
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/73).
+Additional patches are being reviewed, addressing the remaining
+potential overflows found in the security reviews.
+----------------------------------------------------------------
+Hyunchul Lee (1):
+      ksmbd: use LOOKUP_BENEATH to prevent the out of share access
+
+Namjae Jeon (3):
+      ksmbd: add default data stream name in FILE_STREAM_INFORMATION
+      ksmbd: check protocol id in ksmbd_verify_smb_message()
+      ksmbd: remove follow symlinks support
+
+Steve French (1):
+      ksmbd: log that server is experimental at module load
+
+ fs/ksmbd/misc.c       | 100 ++++++++---------------------------------
+ fs/ksmbd/misc.h       |   7 +--
+ fs/ksmbd/server.c     |   3 ++
+ fs/ksmbd/smb2pdu.c    | 119 ++++++++++++++++--------------------------------
+ fs/ksmbd/smb_common.c |  13 ++++--
+ fs/ksmbd/smb_common.h |   1 +
+ fs/ksmbd/vfs.c        | 172
+++++++++++++++++++++++++++++++++++------------------------------------
+ fs/ksmbd/vfs.h        |   9 +++-
+ 8 files changed, 164 insertions(+), 260 deletions(-)
+
+
+--
+Thanks,
+
+Steve
