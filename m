@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9D2418949
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 16:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB5941894D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 16:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhIZOGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 10:06:54 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60882 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231743AbhIZOGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 10:06:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=hHw9ornvJo+NmAmHhiHeeLnJbnW45go7bH67xEYr7kM=; b=QgNq4QVEvmgXZ63hXdbKVvpuVJ
-        GqBPAG8rZmkz1lEb5kav+tzypaoy7DkUAi3Kpuj87tBRkJh/z84cWkRjty7M+6R4t9LwKwq4Dh2r+
-        Lch+5UH28S47s4WXTH/IPIcT2005YLc0/dZvILpmi5qY+m9vlG5Mqv31/sn1+mFDqmB4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mUUmF-008K0V-94; Sun, 26 Sep 2021 16:05:11 +0200
-Date:   Sun, 26 Sep 2021 16:05:11 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:BROADCOM GENET ETHERNET DRIVER" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 3/4] net: bcmgenet: pull mac_config from
- adjust_link
-Message-ID: <YVB+F9oqJ0KIH91m@lunn.ch>
-References: <20210926032114.1785872-1-f.fainelli@gmail.com>
- <20210926032114.1785872-4-f.fainelli@gmail.com>
+        id S231827AbhIZOHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 10:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231743AbhIZOHl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 10:07:41 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D607C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 07:06:05 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id a13so14271187qtw.10
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 07:06:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=ainbBDsZyNM2KlhcmziZNUxGlsNd0TV3lP6dRXvfw3W/kQsE7MSlSHrXMySesZaWQ4
+         B7RxkxG1v8WcBlXSe+gwj5IPpHcmrB5uIlyGQJR8xlrR0WYOmKgn5I81TtVf7IJt4ngW
+         FhkBOoViG6LTmmmjAirNfq3rWkXv7cCAC644ntU8n3swwab7QZTWQdcTg1Bq/KyNmiTd
+         QOAmCxuih3ZHBKnAZvX/JH+nbinx310YmRzf5/8lDG5Z1CO0eRyTk146yDf+7a+oJjM5
+         /akGmahRl84y067fwJol6iTANPq9mACxKekKAJ2MiEPzSylE1qLCaQi3PAaqEPGmFZB0
+         F2Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=2STHbjdZwk9xaBVB/knDwrYWZQw5pBp2/rEztObYHZABormRUZnuoN5W+W2UMl/UMY
+         tJu/R6K8S4Uq39i5mtjiKfzL6zPfbHuSaPU2Pa6dCWInOvvIUoIVyQc0ICSz7sNdyuPn
+         m0/TyV+UmbPAdBDSRhw2lcq+pjwtCSgPd48MDnnaTMTnVmUOwlP+y5K+ImTeV+rB65lY
+         5y8NvCy6t4no7lJgPv7D4C7510An3jIKbxeu6KFEpZTC8aJBo3ORkcXbhkWfsX6M5q8v
+         79yvwVc2Vp0N5bg9OoNrEwOjoJNv7eNtp54fFHxaej5E0tuo5uI4vmjCpt9X9xcOVgNe
+         xnZQ==
+X-Gm-Message-State: AOAM532Y7djv/Ist5Nft7Qfe+bU0T4c31eamomspmpa9gH69/vTl0AI5
+        IcRToNbgY8BnqOsytr+ubw+92PRG/oGGgIksbaI=
+X-Google-Smtp-Source: ABdhPJxHEAGH4rwvmjZFum5iBkMj9pMoS4e6HkQFkiTWDTF8g1uhswGg3bfhUTAhew/E/Vnfzs0A3SHn2YzaxZFaozs=
+X-Received: by 2002:a05:622a:1d3:: with SMTP id t19mr14545316qtw.128.1632665164577;
+ Sun, 26 Sep 2021 07:06:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210926032114.1785872-4-f.fainelli@gmail.com>
+Received: by 2002:ac8:6b55:0:0:0:0:0 with HTTP; Sun, 26 Sep 2021 07:06:04
+ -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi960@gmail.com>
+Date:   Sun, 26 Sep 2021 07:06:04 -0700
+Message-ID: <CABELTfBbGxFEACfxdmkSZF6FQf0mnroc=jv5jp=WxHEjwWkCUQ@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 08:21:13PM -0700, Florian Fainelli wrote:
-> From: Doug Berger <opendmb@gmail.com>
-> 
-> This commit separates out the MAC configuration that occurs on a
-> PHY state change into a function named bcmgenet_mac_config().
-> 
-> This allows the function to be called directly elsewhere.
-> 
-> Signed-off-by: Doug Berger <opendmb@gmail.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Dear Friend,
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-    Andrew
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
+
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
+
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
+
+Your Urgent Reply Will Be Appreciated
+
+Best Regards
+Mrs Aisha Al-Qaddafi
