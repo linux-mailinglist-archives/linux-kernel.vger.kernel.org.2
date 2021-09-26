@@ -2,66 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05BC418861
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CF241885F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhIZLlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 07:41:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37312 "EHLO mail.kernel.org"
+        id S230510AbhIZLj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 07:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230200AbhIZLlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 07:41:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A32361038;
-        Sun, 26 Sep 2021 11:39:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632656376;
-        bh=yXCtLx7Fu34z0Ajr2RdaJF2XJr65hF634x6wb/qoKH0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ELdMAutrwqX0USx69XeLJYFnNqyCITvjXYHKLR74jE8ULOlUUcC2zHQHsUDz3ZMue
-         klWgGgrtdxh5n8hGaChka8cUrAENAovp/Dxwr7ajiXAvgqj8OI0FpIZOCyq8Kz9+ky
-         5Z1hCthcrXEaaUuKr4fUdXCs7Ap8d5Rb41wNVjqk=
-Date:   Sun, 26 Sep 2021 13:39:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jari Ruusu <jariruusu@protonmail.com>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aurelien Jarno <aurelien@aurel32.net>
-Subject: Re: glibc VETO for kernel version SUBLEVEL >= 255
-Message-ID: <YVBb9ZoDGgV4cbXb@kroah.com>
-References: <qscod31lyVG7t-CW63o_pnsara-v9Wf6qXz9eSfUZnxtHk2AkeJ73yvER1XYO_311Wxo2wC8L2JuTdLJm8vgvhVVaGa5fdumXx5iHWarqwA=@protonmail.com>
- <YVAhOlTsb0NK0BVi@kroah.com>
- <YVArDZSq9oaTFakz@eldamar.lan>
- <YVA9l9svFyDgLPJy@kroah.com>
- <xxvm9EznCQoQ_-YYhxhEknGTxHEnVW584ypJShT__L09eV-JOfFtr-K4M33xRa3VTL5tNgOGvJSUqWthW-El4IwTi6Vt4B_XZA-xMB6vOEY=@protonmail.com>
- <YVBYfQY94j7K39qc@kroah.com>
- <gjSfoj7RAJMOeVL1pzzsZl5SjMGR_BXqigZqgkJe4G_8PPfm3EhxRlrRi-I7-Z0guYL0DAFOWeSWmrt_R8RcgzNq6Bcnk7BlQ9g3_G9aT2w=@protonmail.com>
+        id S230200AbhIZLj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 07:39:26 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1ED061038;
+        Sun, 26 Sep 2021 11:37:47 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 12:41:37 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/3] iio: imx8qxp-adc: Add driver support for NXP
+ IMX8QXP ADC
+Message-ID: <20210926124137.0121a68d@jic23-huawei>
+In-Reply-To: <20210925020555.129-2-caihuoqing@baidu.com>
+References: <20210925020555.129-1-caihuoqing@baidu.com>
+        <20210925020555.129-2-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <gjSfoj7RAJMOeVL1pzzsZl5SjMGR_BXqigZqgkJe4G_8PPfm3EhxRlrRi-I7-Z0guYL0DAFOWeSWmrt_R8RcgzNq6Bcnk7BlQ9g3_G9aT2w=@protonmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 11:31:20AM +0000, Jari Ruusu wrote:
-> On Sunday, September 26th, 2021 at 14:24, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > Why use an older kernel tree on this device? Rasbian seems to be on
-> > 4.19.y at the least right now, is there something in those older kernel
-> > trees that you need?
+On Sat, 25 Sep 2021 10:05:45 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
+
+> The NXP i.MX 8QuadXPlus SOC has a new ADC IP, so add
+> driver support for this ADC.
 > 
-> Due to circumstances, I need "smallest possible" kernel with all extra
-> stripped out. 4.9.y kernels are smaller than newer ones.
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Hi Cai Huoqing,
 
-Smaller by how much, and what portion grew?  Are we building things into
-the kernel that previously was able to be compiled out?  Or is there
-something new added after 4.9 that adds a huge memory increase?
+Having had a 'final' read through of the driver, I am basically happy
+to merge this after Fabio has had time for another look (plus anyone else
+who wishes to of course!) 
 
-Figuring that out would be good as you only have 1 more year for 4.9.y
-to be alive, that's not going to last for forever...
+There were a few minor things inline though that I'll tidy up whilst applying.
+If you do a v7 for some other reason please sort these out as well.
 
-thanks,
+Thanks,
 
-greg k-h
+Jonathan
+
+...
+
+> +#define IMX8QXP_ADR_ADC_TCTRL(tid)	(0xc0 + tid * 4)
+> +#define IMX8QXP_ADR_ADC_CMDH(cid)	(0x100 + cid * 8)
+> +#define IMX8QXP_ADR_ADC_CMDL(cid)	(0x104 + cid * 8)
+
+In macros, it is always a good idea to put brackets around
+any use of parameters so as to avoid potential odd issues
+due to operator precedence.
+
+(0xc0 + (tid) * 4)
+
+> +#define IMX8QXP_ADR_ADC_RESFIFO		0x300
+> +#define IMX8QXP_ADR_ADC_TST		0xffc
+
+...
+
+> +
+> +struct imx8qxp_adc {
+> +	struct device *dev;
+> +	void __iomem *regs;
+> +	struct clk *clk;
+> +	struct clk *ipg_clk;
+> +	struct regulator *vref;
+> +	struct mutex lock;
+
+A lock should have documentation to identify what it's precise scope is.
+I can add
+
+/* Serialise ADC channel reads */
+above the lock definition whilst applying if you aren't doing a v7 for
+other reasons.
+
+> +	struct completion completion;
+> +};
+...
+
+
+> +
+> +static irqreturn_t imx8qxp_adc_isr(int irq, void *dev_id)
+> +{
+> +	struct imx8qxp_adc *adc = dev_id;
+> +
+
+Really minor, but the blank line here doesn't help readability much and
+is inconsistent with the rest of the driver.  I might remove this whilst
+applying if nothing else comes up.
+
+> +	u32 fifo_count;
+> +
+> +	fifo_count = FIELD_GET(IMX8QXP_ADC_FCTRL_FCOUNT_MASK,
+> +			       readl(adc->regs + IMX8QXP_ADR_ADC_FCTRL));
+> +
+> +	if (fifo_count)
+> +		complete(&adc->completion);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+...
