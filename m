@@ -2,132 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30234186A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B64F4186AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhIZGJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 02:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhIZGJc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 02:09:32 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C42AC061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 23:07:57 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id x191so7529263pgd.9
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 23:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IrGPEPvgg2pFaS7mVTGLV712LfHqQe0Dx83upuAH6t0=;
-        b=FPjeG/D8k9+REWHk/Zwo9XGB2U/jge6yQmGbhrQAS0/nVvGBLNqKxuHb5Sumzg30i2
-         adqep7nejSNhKo+ojcAi5YyEClU1Yd3S1JLImeIhSHVfMPOwzm9PEc1Kx2i1QK5U3Wix
-         gciCB0xTNmyvV7Avb6XNQQDOAmV7nvHkjN6vEVW0qKdOki//gvLcqkY2yAt2TRpbcFXl
-         JOilGfXHvjq1pvtWMDV2DAR6mEApkprXafgpNImE9FJwzdEvE3+Lro5arBYaAo9tHGDM
-         qHKoVFwoMz88x7hMxZTreEoAJZB6PaNEXoub0RCSQ55qWsTt4kBjc+fJqYdsKTas7J/0
-         cVIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IrGPEPvgg2pFaS7mVTGLV712LfHqQe0Dx83upuAH6t0=;
-        b=pegKwP5PXCCtd3u7VetkhOR8P/V5DqgJMtboogRZ2dZpd0blw3Sn4tqeCFPIQfxVNS
-         FBfHKq2cXVIpGvWJ5zhB4oP4SkHk9e8Ak5I9Sou/Sn6Ao/kxiyaOmZ0LcTq0QQdjuYe/
-         8vLllUsL+LxmfEZhHtOwB6pzkMsVsM1gSju3vOsLjSIeCpt+3NqNfP6frP7trZCk03Md
-         PJAdpeLFA2LTTDuxy7RZxlXy0LhVLb95PZ7OcXksKlQN/H7aUPq8/6Glp9K19lZigvN9
-         GSbm1CV1jG4DUQo7aSZ2B4b/DJlsnVd6ZZRsCMrhosADdWBQF1cUreYtV/kUaq737uTH
-         jnzA==
-X-Gm-Message-State: AOAM533eDSrddIKofmTnoCwKuEgMs1Y9T0+n0FEVy/p+OVOpxv5HigdQ
-        Z6AMxqiaqECzE6LEUjZYZ4WdsQ==
-X-Google-Smtp-Source: ABdhPJxh/GCvWcE/Jii9pN0giTvX0nn9T38e9MKiHbsDD1dw7VkLMUEwyPO/vIAlhy0vFZggBdP+Gw==
-X-Received: by 2002:a65:4007:: with SMTP id f7mr10960730pgp.251.1632636476816;
-        Sat, 25 Sep 2021 23:07:56 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id d19sm13263947pfn.102.2021.09.25.23.07.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 Sep 2021 23:07:56 -0700 (PDT)
-Date:   Sun, 26 Sep 2021 14:07:50 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: c630: Move panel to aux-bus
-Message-ID: <20210926060749.GB9901@dragon>
-References: <20210924025255.853906-1-bjorn.andersson@linaro.org>
+        id S231143AbhIZGNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 02:13:04 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:48010 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230453AbhIZGNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 02:13:02 -0400
+Received: from BC-Mail-Ex14.internal.baidu.com (unknown [172.31.51.54])
+        by Forcepoint Email with ESMTPS id 087A09B7E3555FBF0B76;
+        Sun, 26 Sep 2021 14:11:16 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex14.internal.baidu.com (172.31.51.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Sun, 26 Sep 2021 14:11:15 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Sun, 26 Sep 2021 14:11:15 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Cristobal Forno <cforno12@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "Paul Mackerras" <paulus@samba.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
+Subject: [PATCH] ibmveth: Use dma_alloc_coherent() instead of kmalloc/dma_map_single()
+Date:   Sun, 26 Sep 2021 14:11:07 +0800
+Message-ID: <20210926061108.229-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924025255.853906-1-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex22.internal.baidu.com (172.31.51.16) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 09:52:55PM -0500, Bjorn Andersson wrote:
-> With the newly introduced aux-bus under the TI SN65DSI86 the panel
-> node should be described as a child instead of a standalone node, move
-> it there.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 27 +++++++++----------
->  1 file changed, 13 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> index bd22352b6c7a..4818ca6d820d 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> @@ -56,20 +56,6 @@ mode {
->  		};
->  	};
->  
-> -	panel {
-> -		compatible = "boe,nv133fhm-n61";
-> -		no-hpd;
-> -		backlight = <&backlight>;
+Replacing kmalloc/kfree/dma_map_single/dma_unmap_single()
+with dma_alloc_coherent/dma_free_coherent() helps to reduce
+code size, and simplify the code, and coherent DMA will not
+clear the cache every time.
 
-There is some prerequisite change for this patch?  I do not find this
-backlight node on v5.15-rc, neither linux-next.
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/net/ethernet/ibm/Kconfig   |  4 ++--
+ drivers/net/ethernet/ibm/ibmveth.c | 25 +++++++++----------------
+ 2 files changed, 11 insertions(+), 18 deletions(-)
 
-Shawn
+diff --git a/drivers/net/ethernet/ibm/Kconfig b/drivers/net/ethernet/ibm/Kconfig
+index c0c112d95b89..926c0642784d 100644
+--- a/drivers/net/ethernet/ibm/Kconfig
++++ b/drivers/net/ethernet/ibm/Kconfig
+@@ -19,7 +19,7 @@ if NET_VENDOR_IBM
+ 
+ config IBMVETH
+ 	tristate "IBM LAN Virtual Ethernet support"
+-	depends on PPC_PSERIES
++	depends on PPC_PSERIES || COMPILE_TEST
+ 	help
+ 	  This driver supports virtual ethernet adapters on newer IBM iSeries
+ 	  and pSeries systems.
+@@ -40,7 +40,7 @@ config EHEA
+ 
+ config IBMVNIC
+ 	tristate "IBM Virtual NIC support"
+-	depends on PPC_PSERIES
++	depends on PPC_PSERIES || COMPILE_TEST
+ 	help
+ 	  This driver supports Virtual NIC adapters on IBM i and IBM System p
+ 	  systems.
+diff --git a/drivers/net/ethernet/ibm/ibmveth.c b/drivers/net/ethernet/ibm/ibmveth.c
+index 3d9b4f99d357..3aedb680adb8 100644
+--- a/drivers/net/ethernet/ibm/ibmveth.c
++++ b/drivers/net/ethernet/ibm/ibmveth.c
+@@ -605,17 +605,13 @@ static int ibmveth_open(struct net_device *netdev)
+ 	}
+ 
+ 	rc = -ENOMEM;
+-	adapter->bounce_buffer =
+-	    kmalloc(netdev->mtu + IBMVETH_BUFF_OH, GFP_KERNEL);
+-	if (!adapter->bounce_buffer)
+-		goto out_free_irq;
+ 
+-	adapter->bounce_buffer_dma =
+-	    dma_map_single(&adapter->vdev->dev, adapter->bounce_buffer,
+-			   netdev->mtu + IBMVETH_BUFF_OH, DMA_BIDIRECTIONAL);
+-	if (dma_mapping_error(dev, adapter->bounce_buffer_dma)) {
+-		netdev_err(netdev, "unable to map bounce buffer\n");
+-		goto out_free_bounce_buffer;
++	adapter->bounce_buffer = dma_alloc_coherent(&adapter->vdev->dev,
++						    netdev->mtu + IBMVETH_BUFF_OH,
++						    &adapter->bounce_buffer_dma, GFP_KERNEL);
++	if (!adapter->bounce_buffer) {
++		netdev_err(netdev, "unable to alloc bounce buffer\n");
++		goto out_free_irq;
+ 	}
+ 
+ 	netdev_dbg(netdev, "initial replenish cycle\n");
+@@ -627,8 +623,6 @@ static int ibmveth_open(struct net_device *netdev)
+ 
+ 	return 0;
+ 
+-out_free_bounce_buffer:
+-	kfree(adapter->bounce_buffer);
+ out_free_irq:
+ 	free_irq(netdev->irq, netdev);
+ out_free_buffer_pools:
+@@ -702,10 +696,9 @@ static int ibmveth_close(struct net_device *netdev)
+ 			ibmveth_free_buffer_pool(adapter,
+ 						 &adapter->rx_buff_pool[i]);
+ 
+-	dma_unmap_single(&adapter->vdev->dev, adapter->bounce_buffer_dma,
+-			 adapter->netdev->mtu + IBMVETH_BUFF_OH,
+-			 DMA_BIDIRECTIONAL);
+-	kfree(adapter->bounce_buffer);
++	dma_free_coherent(&adapter->vdev->dev,
++			  adapter->netdev->mtu + IBMVETH_BUFF_OH,
++			  adapter->bounce_buffer, adapter->bounce_buffer_dma);
+ 
+ 	netdev_dbg(netdev, "close complete\n");
+ 
+-- 
+2.25.1
 
-> -
-> -		ports {
-> -			port {
-> -				panel_in_edp: endpoint {
-> -					remote-endpoint = <&sn65dsi86_out>;
-> -				};
-> -			};
-> -		};
-> -	};
-> -
->  	/* Reserved memory changes for IPA */
->  	reserved-memory {
->  		wlan_msa_mem: memory@8c400000 {
-> @@ -441,6 +427,19 @@ sn65dsi86_out: endpoint {
->  				};
->  			};
->  		};
-> +
-> +		aux-bus {
-> +			panel: panel {
-> +				compatible = "boe,nv133fhm-n61";
-> +				backlight = <&backlight>;
-> +
-> +				port {
-> +					panel_in_edp: endpoint {
-> +						remote-endpoint = <&sn65dsi86_out>;
-> +					};
-> +				};
-> +			};
-> +		};
->  	};
->  };
->  
-> -- 
-> 2.32.0
-> 
