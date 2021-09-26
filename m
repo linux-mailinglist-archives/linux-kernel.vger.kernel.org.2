@@ -2,104 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F60418B3E
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 23:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399E1418B3F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 23:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhIZVae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 17:30:34 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:52279 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhIZVad (ORCPT
+        id S230223AbhIZVeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 17:34:46 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46786 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhIZVeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 17:30:33 -0400
-X-Greylist: delayed 2372 seconds by postgrey-1.27 at vger.kernel.org; Sun, 26 Sep 2021 17:30:33 EDT
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHf5z1L1Lz4xbL;
-        Mon, 27 Sep 2021 07:28:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632691735;
-        bh=+XN1ww0mHHW1+JZBjV/8qXo3Inu+Yv/12u2egqNhMHQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eUgpL0ALqwFbR6RiXqIxT7AkGqfpkBOftyQlX3TW6T0s0buHUsHM+dlluqEWmQgjn
-         7U0xRg7Zc6F0w32QAaV87xHgoKlfZsQXBO0F59Dx42+MNBPO0ZCBTDjlHWY96XB8SD
-         MhdY1AvLUiLKNtXPaJoU+TlOZLCU9un68sV9nZYFnv9Q79jK1UfH4v91eU3iOSjKgh
-         FdX5AXtJJcHoWTPG6B4d5gj1+Sff2La9+BSFosAVO52ffA8ITvMtxlExYkTQgWtuU+
-         cWG/ughq7kG97FS8zRfxnWApshQiHQRNMvLxKCqb3/0d0BFApx4SmHwAP/QnINYp8W
-         dyxfKObE7qXBA==
-Date:   Mon, 27 Sep 2021 07:28:54 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Peter Gonda <pgonda@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the kvm-fixes tree
-Message-ID: <20210927072854.6bf14f5c@canb.auug.org.au>
+        Sun, 26 Sep 2021 17:34:44 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 8B0D01F4239D
+Message-ID: <a65dfe31-a355-8cf8-99d8-70ddf23c5384@collabora.com>
+Date:   Sun, 26 Sep 2021 18:32:57 -0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FS=lTeigZaKhWPq37.Bn1xi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
+ 64-bit time_t
+Content-Language: en-US
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alistair Francis <alistair.francis@wdc.com>
+References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
+ <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
+ <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com>
+ <CAKmqyKM+VN-KST9-VMULZMC=2sNbjH2wiE-CZ1WRfVFj3WmpdQ@mail.gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+In-Reply-To: <CAKmqyKM+VN-KST9-VMULZMC=2sNbjH2wiE-CZ1WRfVFj3WmpdQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/FS=lTeigZaKhWPq37.Bn1xi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Às 01:34 de 24/09/21, Alistair Francis escreveu:
+> On Tue, Sep 21, 2021 at 8:47 AM André Almeida <andrealmeid@collabora.com> wrote:
+>>
+>> Hi Alistair,
+>>
+>> Às 03:10 de 17/09/21, Alistair Francis escreveu:
+>>> From: Alistair Francis <alistair.francis@wdc.com>
+>>>
+>>> Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
+>>> time_t and as such don't have the SYS_futex syscall. This patch will
+>>> allow us to use the SYS_futex_time64 syscall on those platforms.
+>>>
+>>
+>> Thanks for your patch! However, I don't think that any futex operation
+>> at perf has timeout. Do you plan to implement a test that use it? Or the
+>> idea is to get this ready for it in case someone want to do so in the
+>> future?
+> 
+> I don't have plans to implement any new tests (although I'm happy to
+> add one if need be).
+> 
+> My goal was just to get this to build for RISC-V 32-bit. The timeout
+> was already exposed by the old futex macro, so I was just following
+> that.
+> 
 
-Hi all,
+I see, thanks for working on that.
 
-In commit
+>>
+>>
+>> Also, I faced a similar problem with the new futex2 syscalls, that
+>> supports exclusively 64bit timespec. But I took a different approach: I
+>> called __NR_clock_gettime64 for 32bit architectures so it wouldn't
+>> require to convert the struct:
+>>
+>> #if defined(__i386__) || __TIMESIZE == 32
+>> # define NR_gettime64 __NR_clock_gettime64
+>> #else
+>> # define NR_gettime64 __NR_clock_gettime
+>> #endif
+>>
+>> struct timespec64 {
+>>         long long tv_sec;       /* seconds */
+>>         long long tv_nsec;      /* nanoseconds */
+>> };
+>>
+>> int gettime64(clock_t clockid, struct timespec64 *tv)
+>> {
+>>         return syscall(NR_gettime64, clockid, tv);
+>> }
+>>
+>> Then we can just use &timeout at __NR_futex_time64 for 32bit arch and at
+>> __NR_futex for 64bit arch.
+> 
+> So the idea is to use 64-bit time_t everywhere and only work on 5.1+ kernels.
+> 
+> If that's the favoured approach I can convert this series to your idea.
+> 
 
-  5b92b6ca92b6 ("KVM: SEV: Allow some commands for mirror VM")
+Yes, this is what I think it will be the best approach. I believe the
+code will be less complex, it's more future proof (it's ready for y2038)
+and when glibc supports time64, we can make this code even simpler using
+`-D__USE_TIME_BITS64` to compile it. Thanks again for working on that!
 
-Fixes tag
-
-  Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context", 202=
-1-04-21)
-
-has these problem(s):
-
-  - Subject has leading but no trailing quotes
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
-In commit
-
-  f43c887cb7cb ("KVM: SEV: Update svm_vm_copy_asid_from for SEV-ES")
-
-Fixes tag
-
-  Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context", 202=
-1-04-21)
-
-has these problem(s):
-
-  - Subject has leading but no trailing quotes
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
-Do not include the date part in a fixes tag.  It adds nothing.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/FS=lTeigZaKhWPq37.Bn1xi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFQ5hYACgkQAVBC80lX
-0GzS7gf/bRsGUjI1PGPog1L0jDga+zpmeWVZYOn3z9zgZSDLqD5Z1M9KcmZz42gR
-5zx5lfjutnbf2PPX7RfTlUrXBPEexQXYSJvMqXVx6HGI7yXmy5InU4fu9IWefnuJ
-z2JMsdbhy/ffgRt1GNSg5edkfzx1bcbd/F+M65hjxPon1FN3ivDBQn7evea9e/lI
-9DXKBBnkRlm3QdtQca35wvPHJJDIQtEuy5uAts7o6HFV7BF/PJ2Fd1h+OdGwXERx
-x4WNw1xMqAEYKa6DwrlurmoeH2xkDDsEgwRXwXcUVOt6+TjoX2z9Ky7kH0gEJ0mO
-YLtsgy7RT3/m1RkH2NB+JnKJJ1XpaA==
-=ggg+
------END PGP SIGNATURE-----
-
---Sig_/FS=lTeigZaKhWPq37.Bn1xi--
+> Alistair
+> 
+>>
+>> This might be a simpler solution to the problem that you are facing but
+>> I'm not entirely sure. Also, futex's selftests do use the timeout
+>> argument and I think that they also won't compile in 32-bit RISC-V, so
+>> maybe we can start from there so we can actually test the timeout
+>> argument and check if it's working.
+>>
+>> Thanks,
+>>         André
