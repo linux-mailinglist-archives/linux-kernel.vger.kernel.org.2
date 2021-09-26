@@ -2,167 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E49418AD0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8A5418AD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhIZThm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 15:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59440 "EHLO
+        id S229967AbhIZTo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 15:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhIZThl (ORCPT
+        with ESMTP id S229894AbhIZTo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 15:37:41 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E9AC061575
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:36:04 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id c20so14815996qtb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:36:04 -0700 (PDT)
+        Sun, 26 Sep 2021 15:44:57 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48910C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:43:20 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id g7so454275edv.1
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:43:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QNLo+BDeRzswu8OVj0ImwhuxytbjRMbnLrd3OSd+ezM=;
-        b=mxWrjX5he+m1gtrMynC7sxL4bJR4TEb7Z5+iKgZ4UA7fEs/FUwqkXf7ngwMGFT5/Db
-         Sots6y/e+AyMpHYfxPDxM15ivMQ64EpVso917AW6iutqoaIgnIiLC2RLz/tbjphMwui+
-         C1CXEh4rnk6MQrQPluTDU4Rca24IDOzB3v16c3kKmckfaJIh27/vZA/i5Sz7lVZvwCqb
-         LlUhCs9WKOWYVi7HnehJ3DVAYTgpYVNqn0trmnNzNMXpCv4YUbHsTqStwvLxgoYKJewK
-         dVKr8Qb8Zd7oMYKxEVmA1jHxSPWrG3vgP9Hl7auD98qbty89k6QYFMeb1AY/eUfS+3IG
-         /DYg==
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+FqvCf5osAEwUJvV00eWIuuRwW5rXLzyPiLGVp8SKng=;
+        b=Kanj6in+B0Fx4dH3EbYTaDVlFJEkWXI9oRKfdTyxjT+G3+wnkaB3BYqts832OVWmxq
+         CS2GhnE91NBJYFNloXrDmvZcVwgTyKKFyYqaQDAtJ/fozrn2PJdwy9qJgoEm0eMAUYBL
+         qNyQOYJ2t0yrF2lt6wCi9aFkSd24gHaTH80A/nUizYD0pkOlOQtix2xSNZMS/ciuaePH
+         /0AW7uofgqydthYM94ISTZm/avcEDI7vWp4IHKOAiABW/wxXNP8KJAu3PPkRtDT+MGaK
+         EczlOWeLMss8vpAHXiCrmsJwW2ZTB/02D/9u2gmZxb6v0DQ4xsGSAjBD444f3jpw+Ykt
+         6Q1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QNLo+BDeRzswu8OVj0ImwhuxytbjRMbnLrd3OSd+ezM=;
-        b=Mw/Sqi3rb4BXCZC4dlDi5XeTBcox0K/LBRc6L/vqLfKq17dr6OZM5tfvPQGqciMhYm
-         ClBcegw/Rv58wAlVhjw+N6Odx/ZzLyaKlnwYuLMPfV9MJrW7rc039s1BympRNUbVtufH
-         SqxIDiJE1We/2rVFIFlVwterFPM2OBkNk6HwRvv4kELAanSIQLZyFVSJs+FDgECbOLZ0
-         0CZ7Bd/rlxKxcMZAt955CnhQD7Px9OmMBggNcf8Iv/P3ZEGclVkFUp4mO57zn4X0LYnv
-         gGaOL2UnMFOEZDJnjHwGcwWD5neAJWJr8BIQuslJqaIdJ37hiKtqmDPtdx+yFzZC0Hy/
-         uDGA==
-X-Gm-Message-State: AOAM532sbByYBJKPpjZ7JNvd8NaSOcqPbvOD+ojXJ3LRIOUFHFsAbmMZ
-        ytzbPsM3Llpj7wSloMJKE1PPAbXmpt+iSwvmEwsykpxxeP8=
-X-Google-Smtp-Source: ABdhPJwPrdFOmtZSNs2/CV2JSD0Gdn8+7TSgw7cBpjnVt5rPCDBdy/Kp5IW7mXOuEB6cBPz3cI2vO9xpI/n4gVj8suo=
-X-Received: by 2002:ac8:5685:: with SMTP id h5mr15207682qta.153.1632684964087;
- Sun, 26 Sep 2021 12:36:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+FqvCf5osAEwUJvV00eWIuuRwW5rXLzyPiLGVp8SKng=;
+        b=BEs+VqDin7jXqr5yA2ckoQqC21CJ6wl79+FX4jkLttr845cOxz27w0CAdKSSHCUumw
+         q4aN/0yhwY7ZQOgEq7o1UdVvnlm7Nb8huFID1LleB3MzJ/WYuQkvgju0+33PHBMDyQ0G
+         n5gFrz4C7XGOqcPsoC5Kvg7JX1Hz0wRf14+a0p/5KKk1xAq0B2P6TY7RXssNkQPjGBjC
+         SHnvFTeWp2nYgNa2ElS8evQH01x/S53jAobsgo9Nb7sMrE5E6pjHMyu5WS5E+q+kGOSq
+         F2comhnMp315bUfsJGZV9GMjND5V2G9bL/XV+w9sND7DMHuOsLrsurvGPkYaHNtp+zsr
+         Bxtw==
+X-Gm-Message-State: AOAM532BIKd5Ly4+NfZOJudSfmYy7mAHk2iuTBSRky8mnL71+IFRJpgD
+        BmxAwougN5CRatae7LTMwpexNK/QKODZ6C/A
+X-Google-Smtp-Source: ABdhPJwMOlCNHt8sfNlt04grZFgJ/qzr8FZQLGjpR+8zw7t9SX1zLCxw1tKYmtlUcw5fSkpJHvAvfA==
+X-Received: by 2002:a05:6402:1808:: with SMTP id g8mr19068079edy.188.1632685398682;
+        Sun, 26 Sep 2021 12:43:18 -0700 (PDT)
+Received: from neptune.. ([188.27.128.17])
+        by smtp.gmail.com with ESMTPSA id a23sm1872347edx.69.2021.09.26.12.43.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 12:43:18 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] iio: adc: ad7291: convert probe to device-managed only
+Date:   Sun, 26 Sep 2021 22:43:15 +0300
+Message-Id: <20210926194315.7742-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210926190554.761482-1-robdclark@gmail.com>
-In-Reply-To: <20210926190554.761482-1-robdclark@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sun, 26 Sep 2021 22:35:53 +0300
-Message-ID: <CAA8EJpozNAfQpy4w-Edx_8wyQ_X+sDzAgqk6Z6EHj0ZJ5r0HBg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Fix crash on dev file close
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Sept 2021 at 22:01, Rob Clark <robdclark@gmail.com> wrote:
->
-> From: Rob Clark <robdclark@chromium.org>
->
-> If the device file was opened prior to fw being available (such as from
-> initrd before rootfs is mounted, when the initrd does not contain GPU
-> fw), that would cause a later crash when the dev file is closed due to
-> unitialized submitqueues list:
+This is a simple conversion for to device-managed with using
+devm_request_threaded_irq(), disabling the regulator via a
+devm_add_action_or_reset() hook and finally using
+devm_iio_device_register().
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+The i2c_set_clientdata() call is removed as it becomes redundant after this
+change.
 
-I've sent a close version of this patch a day or so ago, but yours is
-better, as I did not touch rwlock init.
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/adc/ad7291.c | 70 +++++++++++++---------------------------
+ 1 file changed, 22 insertions(+), 48 deletions(-)
 
->
->    CPU: 4 PID: 263 Comm: plymouthd Tainted: G        W         5.15.0-rc2-next-20210924 #2
->    Hardware name: LENOVO 81JL/LNVNB161216, BIOS 9UCN33WW(V2.06) 06/ 4/2019
->    pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->    pc : msm_submitqueue_close+0x30/0x190 [msm]
->    lr : msm_postclose+0x54/0xf0 [msm]
->    sp : ffff80001074bb80
->    x29: ffff80001074bb80 x28: ffff03ad80c4db80 x27: ffff03ad80dc5ab0
->    x26: 0000000000000000 x25: ffff03ad80dc5af8 x24: ffff03ad81e90800
->    x23: 0000000000000000 x22: ffff03ad81e90800 x21: ffff03ad8b35e788
->    x20: ffff03ad81e90878 x19: 0000000000000000 x18: 0000000000000000
->    x17: 0000000000000000 x16: ffffda15f14f7940 x15: 0000000000000000
->    x14: 0000000000000000 x13: 0000000000000001 x12: 0000000000000040
->    x11: 0000000000000000 x10: 0000000000000000 x9 : ffffda15cd18ff88
->    x8 : ffff03ad80c4db80 x7 : 0000000000000228 x6 : 0000000000000000
->    x5 : 1793a4e807e636bd x4 : ffff03ad80c4db80 x3 : ffff03ad81e90878
->    x2 : 0000000000000000 x1 : ffff03ad80c4db80 x0 : 0000000000000000
->    Call trace:
->     msm_submitqueue_close+0x30/0x190 [msm]
->     msm_postclose+0x54/0xf0 [msm]
->     drm_file_free.part.0+0x1cc/0x2e0 [drm]
->     drm_close_helper.isra.0+0x74/0x84 [drm]
->     drm_release+0x78/0x120 [drm]
->     __fput+0x78/0x23c
->     ____fput+0x1c/0x30
->     task_work_run+0xcc/0x22c
->     do_exit+0x304/0x9f4
->     do_group_exit+0x44/0xb0
->     __wake_up_parent+0x0/0x3c
->     invoke_syscall+0x50/0x120
->     el0_svc_common.constprop.0+0x4c/0xf4
->     do_el0_svc+0x30/0x9c
->     el0_svc+0x20/0x60
->     el0t_64_sync_handler+0xe8/0xf0
->     el0t_64_sync+0x1a0/0x1a4
->    Code: aa0003f5 a90153f3 f8408eb3 aa1303e0 (f85e8674)
->    ---[ end trace 39b2fa37509a2be2 ]---
->    Fixing recursive fault but reboot is needed!
->
-> Fixes: 86c2a0f000c1 drm/msm: ("Small submitqueue creation cleanup")
-> Reported-by: Steev Klimaszewski <steev@kali.org>
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/msm/msm_drv.c         | 3 +++
->  drivers/gpu/drm/msm/msm_submitqueue.c | 4 ----
->  2 files changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> index f350de754f84..938765ad7109 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -689,6 +689,9 @@ static int context_init(struct drm_device *dev, struct drm_file *file)
->         if (!ctx)
->                 return -ENOMEM;
->
-> +       INIT_LIST_HEAD(&ctx->submitqueues);
-> +       rwlock_init(&ctx->queuelock);
-> +
->         kref_init(&ctx->ref);
->         msm_submitqueue_init(dev, ctx);
->
-> diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/msm/msm_submitqueue.c
-> index 32a55d81b58b..7ce0771b5582 100644
-> --- a/drivers/gpu/drm/msm/msm_submitqueue.c
-> +++ b/drivers/gpu/drm/msm/msm_submitqueue.c
-> @@ -140,10 +140,6 @@ int msm_submitqueue_init(struct drm_device *drm, struct msm_file_private *ctx)
->          */
->         default_prio = DIV_ROUND_UP(max_priority, 2);
->
-> -       INIT_LIST_HEAD(&ctx->submitqueues);
-> -
-> -       rwlock_init(&ctx->queuelock);
-> -
->         return msm_submitqueue_create(drm, ctx, default_prio, 0, NULL);
->  }
->
-> --
-> 2.31.1
->
-
-
+diff --git a/drivers/iio/adc/ad7291.c b/drivers/iio/adc/ad7291.c
+index 2301a0e27f23..e9129dac762f 100644
+--- a/drivers/iio/adc/ad7291.c
++++ b/drivers/iio/adc/ad7291.c
+@@ -460,6 +460,11 @@ static const struct iio_info ad7291_info = {
+ 	.write_event_value = &ad7291_write_event_value,
+ };
+ 
++static void ad7291_reg_disable(void *reg)
++{
++	regulator_disable(reg);
++}
++
+ static int ad7291_probe(struct i2c_client *client,
+ 			const struct i2c_device_id *id)
+ {
+@@ -473,8 +478,6 @@ static int ad7291_probe(struct i2c_client *client,
+ 	chip = iio_priv(indio_dev);
+ 
+ 	mutex_init(&chip->state_lock);
+-	/* this is only used for device removal purposes */
+-	i2c_set_clientdata(client, indio_dev);
+ 
+ 	chip->client = client;
+ 
+@@ -495,6 +498,11 @@ static int ad7291_probe(struct i2c_client *client,
+ 		if (ret)
+ 			return ret;
+ 
++		ret = devm_add_action_or_reset(&client->dev, ad7291_reg_disable,
++					       chip->reg);
++		if (ret)
++			return ret;
++
+ 		chip->command |= AD7291_EXT_REF;
+ 	}
+ 
+@@ -506,58 +514,25 @@ static int ad7291_probe(struct i2c_client *client,
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 
+ 	ret = ad7291_i2c_write(chip, AD7291_COMMAND, AD7291_RESET);
+-	if (ret) {
+-		ret = -EIO;
+-		goto error_disable_reg;
+-	}
++	if (ret)
++		return -EIO;
+ 
+ 	ret = ad7291_i2c_write(chip, AD7291_COMMAND, chip->command);
+-	if (ret) {
+-		ret = -EIO;
+-		goto error_disable_reg;
+-	}
++	if (ret)
++		return -EIO;
+ 
+ 	if (client->irq > 0) {
+-		ret = request_threaded_irq(client->irq,
+-					   NULL,
+-					   &ad7291_event_handler,
+-					   IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+-					   id->name,
+-					   indio_dev);
++		ret = devm_request_threaded_irq(&client->dev, client->irq,
++						NULL,
++						&ad7291_event_handler,
++						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
++						id->name,
++						indio_dev);
+ 		if (ret)
+-			goto error_disable_reg;
++			return ret;
+ 	}
+ 
+-	ret = iio_device_register(indio_dev);
+-	if (ret)
+-		goto error_unreg_irq;
+-
+-	return 0;
+-
+-error_unreg_irq:
+-	if (client->irq)
+-		free_irq(client->irq, indio_dev);
+-error_disable_reg:
+-	if (chip->reg)
+-		regulator_disable(chip->reg);
+-
+-	return ret;
+-}
+-
+-static int ad7291_remove(struct i2c_client *client)
+-{
+-	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+-	struct ad7291_chip_info *chip = iio_priv(indio_dev);
+-
+-	iio_device_unregister(indio_dev);
+-
+-	if (client->irq)
+-		free_irq(client->irq, indio_dev);
+-
+-	if (chip->reg)
+-		regulator_disable(chip->reg);
+-
+-	return 0;
++	return devm_iio_device_register(&client->dev, indio_dev);
+ }
+ 
+ static const struct i2c_device_id ad7291_id[] = {
+@@ -579,7 +554,6 @@ static struct i2c_driver ad7291_driver = {
+ 		.of_match_table = ad7291_of_match,
+ 	},
+ 	.probe = ad7291_probe,
+-	.remove = ad7291_remove,
+ 	.id_table = ad7291_id,
+ };
+ module_i2c_driver(ad7291_driver);
 -- 
-With best wishes
-Dmitry
+2.31.1
+
