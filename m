@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849634187E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 11:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6070A4187E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 11:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhIZJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 05:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhIZJaW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 05:30:22 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7886FC061570;
-        Sun, 26 Sep 2021 02:28:46 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id c1so12903890pfp.10;
-        Sun, 26 Sep 2021 02:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sogTVPrg0xxbas/RQ1KzZKqbAN+Sr35NAFihXcVk5gA=;
-        b=VPqJpdtV+f8dyVaN244AnekcAr7Fv8zFZfj8x4RPR7Z8K18flc2bMjY8eTUPZ8b7Zj
-         MpOwjGCcGfBctJvOBj2ICI+2GJbjGWma2anQcI95UC/blFQDNdRznFHvzIxey/IBgPBV
-         4+Y6+hiBhTDsSfSqOCD4eoSTCDLV5JW5Omf2KOykOyRUvYuW8SG1JQjIRayD8PkLAT3U
-         8+YByakhzJvs1xH1QcrEUTOQQZA5C50ty5P50r9cZoIFDOgoO23HJj+KY0WG2+mnRSzX
-         gQPlyaPSmcxbzu0R2s3i/pr4KoAfGdzHkZj9reW4pt1XmpM0NVD0PT8aa8HxJRJDCaRD
-         1dUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sogTVPrg0xxbas/RQ1KzZKqbAN+Sr35NAFihXcVk5gA=;
-        b=u7FWfvc7Gd7JYSRH2YIyIFwq3IikaLXzRnMBrsfwvNKJX0q6GACutTCckZKg3Pq56C
-         CqQ+72gkHlx9c0KEBefS8liOv+3tRXxpdwab2kMIqatNHqbBz4q3ma9rgQM4iZuL4aeR
-         T59zCHDQEhD14yGcwxse5eIvP29WRDOSsD+KE91ODaScVOojNejX80JTfHms6j0MnSqY
-         Czk9IVUDAduDw2uaxa6nTy/zadPLWvd0DWWfrdNWSh2kbPIoWRxpqCLhRozbHK1YXGqd
-         921dzHCdVNC7nZfpe7eVKXvOzJbBMpzxUfhskliOlm1b0LVjUqXO6L7AsCeiLcdxJTrV
-         6G+A==
-X-Gm-Message-State: AOAM532YjKyPID2YNXmTvuKXOTfH6CYkCHskoJJNtvduzHM7jQpmnMF+
-        2tIv/z6ydEnOdENDLm0yqvD9CWTotsg=
-X-Google-Smtp-Source: ABdhPJxeO+z/buaSfnel8difWKijnp2RI2B8rwhFFBPaMKn5x7arAZobLS6aVnrCSwIrj8D+oHjnag==
-X-Received: by 2002:a62:641:0:b0:44b:74bb:294c with SMTP id 62-20020a620641000000b0044b74bb294cmr5499951pfg.12.1632648525886;
-        Sun, 26 Sep 2021 02:28:45 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id q11sm14372509pfn.91.2021.09.26.02.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 02:28:45 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-mmc@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        zhenxiong.lai@unisoc.com, yuelin.tang@unisoc.com,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] mmc: sdhci-sprd: Wait until DLL locked after being configured
-Date:   Sun, 26 Sep 2021 17:28:35 +0800
-Message-Id: <20210926092835.146449-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S229936AbhIZJbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 05:31:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229584AbhIZJbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 05:31:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C4C3600CC;
+        Sun, 26 Sep 2021 09:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632648601;
+        bh=pPudxk3CsgGXPqe6PiLOqvYkDNYOXngQaJfkKoq8SEc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HgHRn/t9XvYwEP1PZhtjN85StzUNw2GkxQTHSLlqY6CzSMFRMILstlio5qNfs/591
+         HWBi/5QElaimM++2tZP/gwfNjMLf8fomcU8sFAUWCKVyrzcUWN9BGvDaUe30AC8p6j
+         +wlrghgIsDDOyUmiUY3S09RquXVpfNiDKHQzkI9o=
+Date:   Sun, 26 Sep 2021 11:29:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Salvatore Bonaccorso <carnil@debian.org>
+Cc:     Jari Ruusu <jariruusu@protonmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aurelien Jarno <aurelien@aurel32.net>
+Subject: Re: glibc VETO for kernel version SUBLEVEL >= 255
+Message-ID: <YVA9l9svFyDgLPJy@kroah.com>
+References: <qscod31lyVG7t-CW63o_pnsara-v9Wf6qXz9eSfUZnxtHk2AkeJ73yvER1XYO_311Wxo2wC8L2JuTdLJm8vgvhVVaGa5fdumXx5iHWarqwA=@protonmail.com>
+ <YVAhOlTsb0NK0BVi@kroah.com>
+ <YVArDZSq9oaTFakz@eldamar.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVArDZSq9oaTFakz@eldamar.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
+On Sun, Sep 26, 2021 at 10:10:53AM +0200, Salvatore Bonaccorso wrote:
+> Hi,
+> 
+> On Sun, Sep 26, 2021 at 09:28:58AM +0200, Greg Kroah-Hartman wrote:
+> > On Sun, Sep 26, 2021 at 07:23:33AM +0000, Jari Ruusu wrote:
+> > > Earlier this year there was some discussion about kernel version numbers
+> > > after 4.9.255 and 4.4.255. Problem was 8-bit limitation for SUBLEVEL
+> > > number in stable kernel versions. The fix was to freeze LINUX_VERSION_CODE
+> > > number at x.x.255 and to continue incrementing SUBLEVEL number. Seems
+> > > there are more more fallout from that decision. At least some versions of
+> > > glibc do not play well with larger SUBLEVEL numbers.
+> > > 
+> > > 
+> > > # uname -s -r -m
+> > > Linux 4.9.283-QEMU armv6l
+> > > # apt upgrade
+> > > Reading package lists... Done
+> > > Building dependency tree
+> > > Reading state information... Done
+> > > Calculating upgrade... Done
+> > > The following packages will be upgraded:
+> > >  [SNIP]
+> > > Fetched 145 MB in 1min 57s (1244 kB/s)
+> > > Reading changelogs... Done
+> > > Preconfiguring packages ...
+> > > (Reading database ... 39028 files and directories currently installed.)
+> > > Preparing to unpack .../libc6-dbg_2.28-10+rpt2+rpi1_armhf.deb ...
+> > > Unpacking libc6-dbg:armhf (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+> > > Preparing to unpack .../libc6-dev_2.28-10+rpt2+rpi1_armhf.deb ...
+> > > Unpacking libc6-dev:armhf (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+> > > Preparing to unpack .../libc-dev-bin_2.28-10+rpt2+rpi1_armhf.deb ...
+> > > Unpacking libc-dev-bin (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+> > > Preparing to unpack .../linux-libc-dev_1%3a1.20210831-3~buster_armhf.deb ...
+> > > Unpacking linux-libc-dev:armhf (1:1.20210831-3~buster) over (1:1.20210527-1) ...
+> > > Preparing to unpack .../libc6_2.28-10+rpt2+rpi1_armhf.deb ...
+> > > ERROR: Your kernel version indicates a revision number
+> > > of 255 or greater.  Glibc has a number of built in
+> > > assumptions that this revision number is less than 255.
+> > > If you\'ve built your own kernel, please make sure that any
+> > > custom version numbers are appended to the upstream
+> > > kernel number with a dash or some other delimiter.
+> > > 
+> > > dpkg: error processing archive /var/cache/apt/archives/libc6_2.28-10+rpt2+rpi1_armhf.deb (--unpack):
+> > >  new libc6:armhf package pre-installation script subprocess returned error exit status 1
+> > > Errors were encountered while processing:
+> > >  /var/cache/apt/archives/libc6_2.28-10+rpt2+rpi1_armhf.deb
+> > > E: Sub-process /usr/bin/dpkg returned an error code (1)
+> > > 
+> > > 
+> > > 
+> > > Above upgrade works normally if I edit top level Linux source Makefile to
+> > > say "SUBLEVEL = 0" and re-compile new kernel.
+> > > 
+> > > I am not pointing any fingers here, but it seems that either glibc code or
+> > > stable kernel versioning is messed up.
+> > 
+> > Are you sure this isn't just a warning coming from a script that apt is
+> > running when trying to install glibc?  Or is this from the glibc package
+> > itself?
+> > 
+> > And what exactly is it testing?  We fixed the build time detection of
+> > the kernel version here, so you should be able to build glibc properly.
+> > 
+> > This is the first time we've seen this reported, are people using the
+> > newer kernels on systems that are not using glibc?
+> 
+> They are probably not using a problematic combination or a
+> distribution kernel on those systems. Looking from the mentioned
+> versions above this looks like a version derived from Debian buster.
+> 
+> Recently prompted due to https://bugs.debian.org/987266 the check was
+> removed in the postinst script of libc in Debian:
+> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=987266 .
 
-According to the specification, DLL status has to be locked before using it.
+Wonderful, thanks for pointing this out!
 
-Signed-off-by: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
-Changes since v1:
-* Use read_poll_timeout() instead of while loop.
----
- drivers/mmc/host/sdhci-sprd.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Jari, try asking whatever distro you are getting these rebuilt packages
+from to update their scripts and all should be good.
 
-diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-index 11e375579cfb..f33e9349e4e6 100644
---- a/drivers/mmc/host/sdhci-sprd.c
-+++ b/drivers/mmc/host/sdhci-sprd.c
-@@ -8,6 +8,7 @@
- #include <linux/delay.h>
- #include <linux/dma-mapping.h>
- #include <linux/highmem.h>
-+#include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-@@ -39,6 +40,9 @@
- #define  SDHCI_SPRD_BIT_POSRD_DLY_INV		BIT(21)
- #define  SDHCI_SPRD_BIT_NEGRD_DLY_INV		BIT(29)
- 
-+#define SDHCI_SPRD_REG_32_DLL_STS0	0x210
-+#define SDHCI_SPRD_DLL_LOCKED		BIT(18)
-+
- #define SDHCI_SPRD_REG_32_BUSY_POSI		0x250
- #define  SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN	BIT(25)
- #define  SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN	BIT(24)
-@@ -256,6 +260,15 @@ static void sdhci_sprd_enable_phy_dll(struct sdhci_host *host)
- 	sdhci_writel(host, tmp, SDHCI_SPRD_REG_32_DLL_CFG);
- 	/* wait 1ms */
- 	usleep_range(1000, 1250);
-+
-+	if (read_poll_timeout(sdhci_readl, tmp, (tmp & SDHCI_SPRD_DLL_LOCKED),
-+		2000, USEC_PER_SEC, false, host, SDHCI_SPRD_REG_32_DLL_STS0)) {
-+		pr_err("%s: DLL locked fail!\n", mmc_hostname(host->mmc));
-+		pr_info("%s: DLL_STS0 : 0x%x, DLL_CFG : 0x%x\n",
-+			 mmc_hostname(host->mmc),
-+			 sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_STS0),
-+			 sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG));
-+	}
- }
- 
- static void sdhci_sprd_set_clock(struct sdhci_host *host, unsigned int clock)
--- 
-2.25.1
+thanks,
 
+greg k-h
