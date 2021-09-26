@@ -2,126 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8754241884D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 046C7418853
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhIZLZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 07:25:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230128AbhIZLZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 07:25:26 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56EA360F9B;
-        Sun, 26 Sep 2021 11:23:46 +0000 (UTC)
-Date:   Sun, 26 Sep 2021 12:27:34 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [v7 00/11] Add support for ast2600 ADC
-Message-ID: <20210926122734.2fccf55a@jic23-huawei>
-In-Reply-To: <20210922081520.30580-1-billy_tsai@aspeedtech.com>
-References: <20210922081520.30580-1-billy_tsai@aspeedtech.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230427AbhIZLcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 07:32:13 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:20188 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230150AbhIZLcM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 07:32:12 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HHNp76bJkz1DHD8;
+        Sun, 26 Sep 2021 19:29:19 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sun, 26 Sep 2021 19:30:34 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sun, 26 Sep 2021 19:30:33 +0800
+Subject: Re: [PATCH 5.10 00/64] 5.10.69-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210925120750.056868347@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <c1d20714-b36b-2256-2f34-d75a080caa8a@huawei.com>
+Date:   Sun, 26 Sep 2021 19:30:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210925120750.056868347@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 16:15:09 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 
-> This patch serials make aspeed_adc.c can support ast2600 and backward
-> compatible.
 
-Hi Billy,
-
-Series applied to the togreg branch of iio.git and pushed out as testing for
-0-day to poke at it.
-
-Note the fix for platform_set_drvdata() is in the fixes branch so there will
-be a bit of mess around context for patch 1 but that should all resolve in
-a trivial fashion.
-
-Thanks,
-
-Jonathan
-
+On 2021/9/25 20:14, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.69 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Change since v6:
-> aspeed_adc.c:
->  - Fix the parameter error for aspeed_adc_unregister_fixed_divider.
+> Responses should be made by Mon, 27 Sep 2021 12:07:36 +0000.
+> Anything received after that time might be too late.
 > 
-> Change since v5:
-> aspeed_adc.c:
->   - Use devm_clk_hw_register_divider()
->   - Enabling and setting the ADC to normal mode is a necessary flow, so
->   take it out of the condition.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.69-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> Change since v4:
-> dt-bindings:
->   - Add clocks maxItems.
->   - Rename the property to meet the property-units.yaml.
->   - Add the description for the difference between adc0 and adc1.
-> aspeed_adc.c:
->   - Use new property name to get internal reference voltage: units from mv
->   to uv.
->   - Fix -Wnonnull warning caused by snprintf parameters.
->   - Add suffix mv to the vref parameters.
->   - Use ARRAY_SIZE instead of 32.
->   - Add a reset action for ADC power down and Use devm_iio_device_register.
->   - Fix typo error.
->   - Separate the offset interface of ch7 when battery sensing enable
+> thanks,
 > 
-> Change since v3:
-> dt-bindings:
->   - Fix properties:aspeed,int_vref_mv type error.
-> 
-> Change since v2:
-> dt-bindings:
->   - Create a new dt-bindings for ast2600 adc
-> aspeed_adc.c:
->   - Splits the patch for more details
->   - Remove version enum and use the flags in model data to distinguish
->   hardware feature
->   - Support trimming data get and set.
->   - Use devm_add_action_or_reset to simplify probe error handling.
-> 
-> Changes since v1:
-> dt-bindings:
->   - Fix the aspeed,adc.yaml check error.
->   - Add battery-sensing property.
-> aspeed_adc.c:
->   - Change the init flow:
->     Clock and reference voltage setting should be completed before adc
->     engine enable.
->   - Change the default sampling rate to meet most user case.
->   - Add patch #8 to suppoert battery sensing mode.
-> 
-> Billy Tsai (11):
->   iio: adc: aspeed: Keep model data to driver data.
->   iio: adc: aspeed: Restructure the model data
->   iio: adc: aspeed: Add vref config function
->   iio: adc: aspeed: Use model_data to set clk scaler.
->   iio: adc: aspeed: Use devm_add_action_or_reset.
->   iio: adc: aspeed: Support ast2600 adc.
->   iio: adc: aspeed: Fix the calculate error of clock.
->   iio: adc: aspeed: Add func to set sampling rate.
->   iio: adc: aspeed: Add compensation phase.
->   iio: adc: aspeed: Support battery sensing.
->   iio: adc: aspeed: Get and set trimming data.
-> 
->  drivers/iio/adc/aspeed_adc.c | 554 +++++++++++++++++++++++++++++------
->  1 file changed, 459 insertions(+), 95 deletions(-)
+> greg k-h
 > 
 
+Tested on arm64 and x86 for 5.10.69-rc2,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.69-rc2
+Commit: ab0c89ed74e1e05eac9f5d704db32feee0ab1fd8
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8907
+passed: 8907
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8907
+passed: 8907
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
