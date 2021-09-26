@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399E1418B3F
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 23:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E84D418B43
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 23:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhIZVeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 17:34:46 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46786 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhIZVeo (ORCPT
+        id S230255AbhIZVi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 17:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230176AbhIZViz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 17:34:44 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 8B0D01F4239D
-Message-ID: <a65dfe31-a355-8cf8-99d8-70ddf23c5384@collabora.com>
-Date:   Sun, 26 Sep 2021 18:32:57 -0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
- 64-bit time_t
-Content-Language: en-US
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
+        Sun, 26 Sep 2021 17:38:55 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A39C061570;
+        Sun, 26 Sep 2021 14:37:18 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHfHb6Rk6z4xZx;
+        Mon, 27 Sep 2021 07:37:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632692237;
+        bh=n9YlnZFBhU2JLojFhUOraML2j9kRQQ0QlKAVMx4YlVA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=phAEsfDshGwmHWmruTXnjwLlqGT37wiCLZX7TQ6YJ+GPYJDFS7KANuQsqcwdMNdWe
+         EgowF7Ah27agPLxajmnmrbfski18bV1YvfMn/tO4JieJoFiWFC7DKxkc9HZDMo2emc
+         rML4vdi0UD7HNJNaRa1V6aHcZdYiyxJumtj2I8osXVWXzoJX1zsKCFb7CRd6UrfmAA
+         17whGLLxe9OD+N2MspP4jpcK69lpZ0LSn9eoW6UYfY5mWli1H/8WZPxAnStKNyMyz1
+         RnzjvBfc8kolMkBYCcwX8+NNKLzrhvjY+XED85cqO9VDJmsgC/X3GLBoGg4XXgYXwQ
+         MmuFNu2Z8l51g==
+Date:   Mon, 27 Sep 2021 07:37:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Jiasheng Jiang <jiasheng@iscas.ac.cn>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@wdc.com>
-References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
- <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
- <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com>
- <CAKmqyKM+VN-KST9-VMULZMC=2sNbjH2wiE-CZ1WRfVFj3WmpdQ@mail.gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-In-Reply-To: <CAKmqyKM+VN-KST9-VMULZMC=2sNbjH2wiE-CZ1WRfVFj3WmpdQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the net-next tree
+Message-ID: <20210927073714.593e9fe0@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/1bZHdKK=hGo/SSXMzf8+PTm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 01:34 de 24/09/21, Alistair Francis escreveu:
-> On Tue, Sep 21, 2021 at 8:47 AM André Almeida <andrealmeid@collabora.com> wrote:
->>
->> Hi Alistair,
->>
->> Às 03:10 de 17/09/21, Alistair Francis escreveu:
->>> From: Alistair Francis <alistair.francis@wdc.com>
->>>
->>> Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
->>> time_t and as such don't have the SYS_futex syscall. This patch will
->>> allow us to use the SYS_futex_time64 syscall on those platforms.
->>>
->>
->> Thanks for your patch! However, I don't think that any futex operation
->> at perf has timeout. Do you plan to implement a test that use it? Or the
->> idea is to get this ready for it in case someone want to do so in the
->> future?
-> 
-> I don't have plans to implement any new tests (although I'm happy to
-> add one if need be).
-> 
-> My goal was just to get this to build for RISC-V 32-bit. The timeout
-> was already exposed by the old futex macro, so I was just following
-> that.
-> 
+--Sig_/1bZHdKK=hGo/SSXMzf8+PTm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I see, thanks for working on that.
+Hi all,
 
->>
->>
->> Also, I faced a similar problem with the new futex2 syscalls, that
->> supports exclusively 64bit timespec. But I took a different approach: I
->> called __NR_clock_gettime64 for 32bit architectures so it wouldn't
->> require to convert the struct:
->>
->> #if defined(__i386__) || __TIMESIZE == 32
->> # define NR_gettime64 __NR_clock_gettime64
->> #else
->> # define NR_gettime64 __NR_clock_gettime
->> #endif
->>
->> struct timespec64 {
->>         long long tv_sec;       /* seconds */
->>         long long tv_nsec;      /* nanoseconds */
->> };
->>
->> int gettime64(clock_t clockid, struct timespec64 *tv)
->> {
->>         return syscall(NR_gettime64, clockid, tv);
->> }
->>
->> Then we can just use &timeout at __NR_futex_time64 for 32bit arch and at
->> __NR_futex for 64bit arch.
-> 
-> So the idea is to use 64-bit time_t everywhere and only work on 5.1+ kernels.
-> 
-> If that's the favoured approach I can convert this series to your idea.
-> 
+In commit
 
-Yes, this is what I think it will be the best approach. I believe the
-code will be less complex, it's more future proof (it's ready for y2038)
-and when glibc supports time64, we can make this code even simpler using
-`-D__USE_TIME_BITS64` to compile it. Thanks again for working on that!
+  acde891c243c ("rxrpc: Fix _usecs_to_jiffies() by using usecs_to_jiffies()=
+")
 
-> Alistair
-> 
->>
->> This might be a simpler solution to the problem that you are facing but
->> I'm not entirely sure. Also, futex's selftests do use the timeout
->> argument and I think that they also won't compile in 32-bit RISC-V, so
->> maybe we can start from there so we can actually test the timeout
->> argument and check if it's working.
->>
->> Thanks,
->>         André
+Fixes tag
+
+  Fixes: c410bf01933e ("Fix the excessive initial retransmission timeout")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+So
+
+Fixes: c410bf01933e ("rxrpc: Fix the excessive initial retransmission timeo=
+ut")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/1bZHdKK=hGo/SSXMzf8+PTm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFQ6AoACgkQAVBC80lX
+0GywxQgAiBWga4pO2yZZJc6oUxsx2AVDX1tJ1LnSK6QeuVFgTnJxWdT/hnxqZElB
+36qU4PRnbIDsdgkS1xB00UJ2LiM7nduRkTjlSMjJ06x+cA6NrR7kFeN7AIlHnI2p
+De0JkWwz7joMB9Qq6cn1xYvyUdWEja17fMySYqOr/qKZZO0yX11vPRGElsC2j3Sm
+vF6etGBfzTAvzVbHrnf7x/Ib6Xp0ZmYUunaiE/oiIkLBR9CAAZWHH9f7BhjbHrJG
+Ic41T8wjz/TN1qwoLA19s51vO6A9p18H8Kx2kgr3W/ez1AKWbXYUC8cwpNqgdNAj
+1mVCjCdIYNRi8qr36/i7rg50cLvN0g==
+=U0Lu
+-----END PGP SIGNATURE-----
+
+--Sig_/1bZHdKK=hGo/SSXMzf8+PTm--
