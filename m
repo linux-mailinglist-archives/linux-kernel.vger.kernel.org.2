@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A95241872B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA26C418736
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhIZHcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 03:32:10 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34440 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231265AbhIZHcJ (ORCPT
+        id S231267AbhIZHn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 03:43:59 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:40217 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230340AbhIZHn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 03:32:09 -0400
-X-UUID: 132bbaeeec934037aae179d61cf52338-20210926
-X-UUID: 132bbaeeec934037aae179d61cf52338-20210926
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <hui.liu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 430786350; Sun, 26 Sep 2021 15:30:31 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 26 Sep 2021 15:30:29 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 26 Sep 2021 15:30:29 +0800
-From:   Hui-Liu Liu <hui.liu@mediatek.com>
-To:     <robh+dt@kernel.org>, <jic23@kernel.org>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>
-CC:     <srv_heupstream@mediatek.com>, <hui.liu@mediatek.com>,
-        <zhiyong.tao@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <yingjoe.chen@mediatek.com>, <seiya.wang@mediatek.com>,
-        <ben.tseng@mediatek.com>, <matthias.bgg@gmail.com>,
-        <s.hauer@pengutronix.de>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v4 1/1] iio: mtk-auxadc: fix case IIO_CHAN_INFO_PROCESSED
-Date:   Sun, 26 Sep 2021 15:30:28 +0800
-Message-ID: <20210926073028.11045-2-hui.liu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210926073028.11045-1-hui.liu@mediatek.com>
-References: <20210926073028.11045-1-hui.liu@mediatek.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+        Sun, 26 Sep 2021 03:43:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Upb0.bA_1632642138;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Upb0.bA_1632642138)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 26 Sep 2021 15:42:19 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, lars.povlsen@microchip.com,
+        Steen.Hegelund@microchip.com, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] net: sparx5: fix resource_size.cocci warnings
+Date:   Sun, 26 Sep 2021 15:42:12 +0800
+Message-Id: <1632642132-79551-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Liu <hui.liu@mediatek.com>
+Use resource_size function on resource object
+instead of explicit computation.
 
-The previous driver does't apply the necessary scaling to take the
-voltage range into account.
-We change readback value from raw data to input voltage to fix case
-IIO_CHAN_INFO_PROCESSED.
+Clean up coccicheck warning:
+./drivers/net/ethernet/microchip/sparx5/sparx5_main.c:237:19-22: ERROR:
+Missing resource_size with iores [ idx ]
 
-Fixes: ace4cdfe67be ("iio: adc: mt2701: Add Mediatek auxadc driver for mt2701.")
-Signed-off-by: Hui Liu <hui.liu@mediatek.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- drivers/iio/adc/mt6577_auxadc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/ethernet/microchip/sparx5/sparx5_main.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/mt6577_auxadc.c b/drivers/iio/adc/mt6577_auxadc.c
-index 79c1dd68b909..d4fccd52ef08 100644
---- a/drivers/iio/adc/mt6577_auxadc.c
-+++ b/drivers/iio/adc/mt6577_auxadc.c
-@@ -82,6 +82,10 @@ static const struct iio_chan_spec mt6577_auxadc_iio_channels[] = {
- 	MT6577_AUXADC_CHANNEL(15),
- };
- 
-+/* For Voltage calculation */
-+#define VOLTAGE_FULL_RANGE  1500	/* VA voltage */
-+#define AUXADC_PRECISE      4096	/* 12 bits */
-+
- static int mt_auxadc_get_cali_data(int rawdata, bool enable_cali)
- {
- 	return rawdata;
-@@ -191,6 +195,10 @@ static int mt6577_auxadc_read_raw(struct iio_dev *indio_dev,
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+index cbece6e..c6eb0b7 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+@@ -234,8 +234,7 @@ static int sparx5_create_targets(struct sparx5 *sparx5)
  		}
- 		if (adc_dev->dev_comp->sample_data_cali)
- 			*val = mt_auxadc_get_cali_data(*val, true);
-+
-+		/* Convert adc raw data to voltage: 0 - 1500 mV */
-+		*val = *val * VOLTAGE_FULL_RANGE / AUXADC_PRECISE;
-+
- 		return IIO_VAL_INT;
- 
- 	default:
+ 		iomem[idx] = devm_ioremap(sparx5->dev,
+ 					  iores[idx]->start,
+-					  iores[idx]->end - iores[idx]->start
+-					  + 1);
++					  resource_size(iores[idx]));
+ 		if (!iomem[idx]) {
+ 			dev_err(sparx5->dev, "Unable to get switch registers: %s\n",
+ 				iores[idx]->name);
 -- 
-2.25.1
+1.8.3.1
 
