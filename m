@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25EC418820
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 12:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13816418825
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 12:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhIZKh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 06:37:56 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:54518 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbhIZKhy (ORCPT
+        id S230236AbhIZKun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 06:50:43 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:23953 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhIZKuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 06:37:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1632652578; x=1664188578;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=xjIlH6huUBUtPHOqwVDeMhWoi9SPzuIyzYgqU2usCVw=;
-  b=ZR9azYZcnkxa1FZTR77g4gvZEkuKzkic/iZV+IqBzAPXJl7tvt74anyF
-   52hKsengHn58YAitx3tk13MSx1HOOlOOlSWOMWE7VGD4YGJjfZQMfouI0
-   8w71GzwvIgJ8EvQ2+0m8U4gTmc6wbpIEDyqxBu+U1m01wQjWZg+nRV4K9
-   U=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 26 Sep 2021 03:36:18 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 03:36:17 -0700
-Received: from taozha-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Sun, 26 Sep 2021 03:36:13 -0700
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-CC:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
-Subject: [PATCH] coresight: etm4x: avoid build failure with unrolled loops
-Date:   Sun, 26 Sep 2021 18:35:50 +0800
-Message-ID: <1632652550-26048-1-git-send-email-quic_taozha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Sun, 26 Sep 2021 06:50:35 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HHMpf11mPzbmp8;
+        Sun, 26 Sep 2021 18:44:42 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Sun, 26 Sep 2021 18:48:56 +0800
+From:   Ziyang Xuan <william.xuanziyang@huawei.com>
+To:     <robin@protonic.nl>
+CC:     <linux@rempel-privat.de>, <socketcan@hartkopp.net>,
+        <mkl@pengutronix.de>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] can: j1939: fix UAF for rx_kref of j1939_priv
+Date:   Sun, 26 Sep 2021 18:47:57 +0800
+Message-ID: <20210926104757.2021540-1-william.xuanziyang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang-12 fails to build the etm4x driver with -fsanitize=array-bounds,
-where it decides to unroll certain loops in a way that result in a
-C variable getting put into an inline assembly.
+It will trigger UAF for rx_kref of j1939_priv as following.
 
-Search this build failure and find this is a known issue and there
-has been a mail thread discussing it.
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210429145752.3218324-1-arnd@kernel.org/
-According to the modification suggestions of this mail thread,
-coresight infrastucture has already provided another API that
-can replace the function that caused the error.
+        cpu0                                    cpu1
+j1939_sk_bind(socket0, ndev0, ...)
+j1939_netdev_start
+                                        j1939_sk_bind(socket1, ndev0, ...)
+                                        j1939_netdev_start
+j1939_priv_set
+                                        j1939_priv_get_by_ndev_locked
+j1939_jsk_add
+.....
+j1939_netdev_stop
+kref_put_lock(&priv->rx_kref, ...)
+                                        kref_get(&priv->rx_kref, ...)
+                                        REFCOUNT_WARN("addition on 0;...")
 
-Used here "csdev_access_read32" to replace the original API
-"etm4x_relaxed_read32".
+====================================================
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 1 PID: 20874 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0
+RIP: 0010:refcount_warn_saturate+0x169/0x1e0
+Call Trace:
+ j1939_netdev_start+0x68b/0x920
+ j1939_sk_bind+0x426/0xeb0
+ ? security_socket_bind+0x83/0xb0
 
-This patch applies to coresight/next
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+The rx_kref's kref_get() and kref_put() should use j1939_netdev_lock to
+protect.
 
-Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
+Reported-by: syzbot+85d9878b19c94f9019ad@syzkaller.appspotmail.com
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/can/j1939/main.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index f58afbab6e6d..0bca8e2be070 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -797,7 +797,7 @@ static void etm4_disable_hw(void *info)
- 	/* read back the current counter values */
- 	for (i = 0; i < drvdata->nr_cntr; i++) {
- 		config->cntr_val[i] =
--			etm4x_relaxed_read32(csa, TRCCNTVRn(i));
-+			csdev_access_read32(csa, TRCCNTVRn(i));
- 	}
+diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+index 08c8606cfd9c..9bc55ecb37f9 100644
+--- a/net/can/j1939/main.c
++++ b/net/can/j1939/main.c
+@@ -249,11 +249,14 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
+ 	struct j1939_priv *priv, *priv_new;
+ 	int ret;
  
- 	coresight_disclaim_device_unlocked(csdev);
+-	priv = j1939_priv_get_by_ndev(ndev);
++	spin_lock(&j1939_netdev_lock);
++	priv = j1939_priv_get_by_ndev_locked(ndev);
+ 	if (priv) {
+ 		kref_get(&priv->rx_kref);
++		spin_unlock(&j1939_netdev_lock);
+ 		return priv;
+ 	}
++	spin_unlock(&j1939_netdev_lock);
+ 
+ 	priv = j1939_priv_create(ndev);
+ 	if (!priv)
+@@ -269,10 +272,10 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
+ 		/* Someone was faster than us, use their priv and roll
+ 		 * back our's.
+ 		 */
++		kref_get(&priv_new->rx_kref);
+ 		spin_unlock(&j1939_netdev_lock);
+ 		dev_put(ndev);
+ 		kfree(priv);
+-		kref_get(&priv_new->rx_kref);
+ 		return priv_new;
+ 	}
+ 	j1939_priv_set(ndev, priv);
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.25.1
 
