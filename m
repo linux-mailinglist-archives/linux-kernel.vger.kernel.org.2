@@ -2,139 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9DC4185BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4B74185BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhIZCmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 22:42:53 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:50224 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230302AbhIZCmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 22:42:52 -0400
-Received: from BC-Mail-Ex12.internal.baidu.com (unknown [172.31.51.52])
-        by Forcepoint Email with ESMTPS id BE390249169A788A4135;
-        Sun, 26 Sep 2021 10:41:07 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex12.internal.baidu.com (172.31.51.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sun, 26 Sep 2021 10:41:07 +0800
-Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
- (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sun, 26
- Sep 2021 10:41:07 +0800
-Date:   Sun, 26 Sep 2021 10:41:06 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-CC:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PCI: Remove the unused pci wrappers
-Message-ID: <20210926024106.GA88@LAPTOP-UKSR4ENP.internal.baidu.com>
-References: <20210925135255.328-1-caihuoqing@baidu.com>
- <3bf6cee5-a55b-5a6e-26d5-35002b36a2d2@wanadoo.fr>
+        id S230345AbhIZCsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 22:48:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:22443 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230314AbhIZCsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 22:48:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10118"; a="224340660"
+X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
+   d="scan'208";a="224340660"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2021 19:46:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
+   d="scan'208";a="475573998"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by orsmga007.jf.intel.com with ESMTP; 25 Sep 2021 19:46:39 -0700
+Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] iommu/vt-d: Use second level for GPA->HPA translation
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20210924022931.780963-1-baolu.lu@linux.intel.com>
+ <BN9PR11MB54338F4F946F5E9BD3D4D5388CA49@BN9PR11MB5433.namprd11.prod.outlook.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <047dec82-4530-ab93-d8f1-a21405a1d955@linux.intel.com>
+Date:   Sun, 26 Sep 2021 10:43:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3bf6cee5-a55b-5a6e-26d5-35002b36a2d2@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+In-Reply-To: <BN9PR11MB54338F4F946F5E9BD3D4D5388CA49@BN9PR11MB5433.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25 9月 21 17:14:05, Christophe JAILLET wrote:
-> Le 25/09/2021 à 15:52, Cai Huoqing a écrit :
-> > The wrappers in include/linux/pci-dma-compat.h should go away,
-> > so remove the unused pci wrappers.
-> > Prefer using dma_xxx() instead of the pci wrappers pci_xxx().
-> > 
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> > ---
-> >   include/linux/pci-dma-compat.h | 27 ---------------------------
-> >   1 file changed, 27 deletions(-)
-> > 
-> > diff --git a/include/linux/pci-dma-compat.h b/include/linux/pci-dma-compat.h
-> > index 249d4d7fbf18..33b316f38e1d 100644
-> > --- a/include/linux/pci-dma-compat.h
-> > +++ b/include/linux/pci-dma-compat.h
-> > @@ -20,13 +20,6 @@ pci_alloc_consistent(struct pci_dev *hwdev, size_t size,
-> >   	return dma_alloc_coherent(&hwdev->dev, size, dma_handle, GFP_ATOMIC);
-> >   }
-> > -static inline void *
-> > -pci_zalloc_consistent(struct pci_dev *hwdev, size_t size,
-> > -		      dma_addr_t *dma_handle)
-> > -{
-> > -	return dma_alloc_coherent(&hwdev->dev, size, dma_handle, GFP_ATOMIC);
-> > -}
-> > -
-> >   static inline void
-> >   pci_free_consistent(struct pci_dev *hwdev, size_t size,
-> >   		    void *vaddr, dma_addr_t dma_handle)
-> > @@ -89,26 +82,6 @@ pci_dma_sync_single_for_device(struct pci_dev *hwdev, dma_addr_t dma_handle,
-> >   	dma_sync_single_for_device(&hwdev->dev, dma_handle, size, (enum dma_data_direction)direction);
-> >   }
-> > -static inline void
-> > -pci_dma_sync_sg_for_cpu(struct pci_dev *hwdev, struct scatterlist *sg,
-> > -		int nelems, int direction)
-> > -{
-> > -	dma_sync_sg_for_cpu(&hwdev->dev, sg, nelems, (enum dma_data_direction)direction);
-> > -}
-> > -
-> > -static inline void
-> > -pci_dma_sync_sg_for_device(struct pci_dev *hwdev, struct scatterlist *sg,
-> > -		int nelems, int direction)
-> > -{
-> > -	dma_sync_sg_for_device(&hwdev->dev, sg, nelems, (enum dma_data_direction)direction);
-> > -}
-> > -
-> > -static inline int
-> > -pci_dma_mapping_error(struct pci_dev *pdev, dma_addr_t dma_addr)
-> > -{
-> > -	return dma_mapping_error(&pdev->dev, dma_addr);
-> > -}
-> > -
-> >   #ifdef CONFIG_PCI
-> >   static inline int pci_set_dma_mask(struct pci_dev *dev, u64 mask)
-> >   {
-> > 
+Hi Kevin,
+
+Thanks for reviewing my patch.
+
+On 9/24/21 11:16 AM, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Friday, September 24, 2021 10:30 AM
+>>
+>> The IOMMU VT-d implementation uses the first level for GPA->HPA
+>> translation
+>> by default. Although both the first level and the second level could handle
+>> the DMA translation, they are different in some way. For example, the
+>> second
+>> level translation has separate controls for the Access/Dirty page tracking
+>> and the page-level forcing snoop. With first level translation, there're
+>> no such controls. This uses the second level for GPA->HPA translation so
 > 
-> Hi,
-> 
-> I'm not sure that this step is needed.
-> The whole pci-dma-compat.h is close to be obsolete. So axing just a part of
-> it now is not that really useful.
-Thanks for your feedback.
+> first-level has no page-granular snoop control, but has a global control
+> in pasid entry.
 
-If someone reuse these wrappers, that will not be checked by checkpatch.pl.
-And I also will not add check condition to checkpatch.pl, because the wrappers
-in include/linux/pci-dma-compat.h will go away soon.
-
-Removing these API helps driver owner to avoid reusing these obsolete wrappers
-without reviwing it manually, only works before pci-dma-compat.h is droped.
-
-Thanks
-Cai
+Agreed. Will add this.
 
 > 
-> After many patches, there is now just a few users of this deprecated API.
-> All steps to finalize the job have already been posted [1] and a plan has
-> been proposed by Arnd Bergmann to have the remaining ones merged in the tree
-> [2]
-it maybe cost serval weeks before all subtrees merge to linux-next.
+>> that it could provide a consistent hardware interface for use cases like
+>> dirty page tracking during the VM live migration.
+>>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   include/linux/intel-iommu.h |  7 ++-----
+>>   drivers/iommu/intel/iommu.c | 21 +++++++++++++--------
+>>   2 files changed, 15 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+>> index 05a65eb155f7..a5fb20702201 100644
+>> --- a/include/linux/intel-iommu.h
+>> +++ b/include/linux/intel-iommu.h
+>> @@ -517,22 +517,19 @@ struct context_entry {
+>>   	u64 hi;
+>>   };
+>>
+>> -/* si_domain contains mulitple devices */
+>> -#define DOMAIN_FLAG_STATIC_IDENTITY		BIT(0)
 > 
-> Some of the message/fusion patches have been re-sent yesterday and today to
-> the scsi maintainer in order to have them merged.
+> this is a separate cleanup. better mention it in the commit msg or
+> put in another patch.
+
+Sure.
+
 > 
-> BTW, Cai Huoqing, thanks a lot for taking care and proposing the needed
-> clean-ups in comments and log messages.
-> Looking at it was the next item of my to-do list, but I'm really pleased to
-> get some help here to finalize the job once and for all.
+>> -
+>>   /*
+>>    * When VT-d works in the scalable mode, it allows DMA translation to
+>>    * happen through either first level or second level page table. This
+>>    * bit marks that the DMA translation for the domain goes through the
+>>    * first level page table, otherwise, it goes through the second level.
+>>    */
+>> -#define DOMAIN_FLAG_USE_FIRST_LEVEL		BIT(1)
+>> +#define DOMAIN_FLAG_USE_FIRST_LEVEL		BIT(0)
+>>
+>>   /*
+>>    * Domain represents a virtual machine which demands iommu nested
+>>    * translation mode support.
+>>    */
+>> -#define DOMAIN_FLAG_NESTING_MODE		BIT(2)
+>> +#define DOMAIN_FLAG_NESTING_MODE		BIT(1)
+>>
+>>   struct dmar_domain {
+>>   	int	nid;			/* node id */
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index d75f59ae28e6..c814fea0522e 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -522,7 +522,7 @@ static inline void free_devinfo_mem(void *vaddr)
+>>
+>>   static inline int domain_type_is_si(struct dmar_domain *domain)
+>>   {
+>> -	return domain->flags & DOMAIN_FLAG_STATIC_IDENTITY;
+>> +	return domain->domain.type == IOMMU_DOMAIN_IDENTITY;
+>>   }
+>>
+>>   static inline bool domain_use_first_level(struct dmar_domain *domain)
+>> @@ -1874,12 +1874,18 @@ static void free_dmar_iommu(struct
+>> intel_iommu *iommu)
+>>    * Check and return whether first level is used by default for
+>>    * DMA translation.
+>>    */
+>> -static bool first_level_by_default(void)
+>> +static bool first_level_by_default(unsigned int type)
+>>   {
+>> -	return scalable_mode_support() && intel_cap_flts_sanity();
+>> +	if (type == IOMMU_DOMAIN_UNMANAGED)
+>> +		return false;
+>> +
 > 
-> CJ
+> I think the order is not correct. what about 2nd level is even not
+> present?
+
+Fair enough. How about
+
+#1) hardware only capable of first level, return true
+#2) hardware only capable of second level, return false
+
+(we fail iommu initialization if neither FL nor SL)
+Then, both FL and SL are supported.
+
+#3) domain is type of UNMANAGED, return false
+#4) otherwise, return true.
+
+Does this make sense?
+
 > 
-> [1]: https://lore.kernel.org/kernel-janitors/4cb6f731-7f4d-21d0-c88d-37664ea35002@wanadoo.fr/
 > 
-> [2]: https://lore.kernel.org/kernel-janitors/CAK8P3a2CBvw_GP372R+p8f4_pa82sMuQ5iHk4Nb2dJCzm_Fivw@mail.gmail.com/
+>> +	if (!scalable_mode_support() || !intel_cap_flts_sanity())
+>> +		return false;
+>> +
+>> +	return true;
+>>   }
+>>
+>> -static struct dmar_domain *alloc_domain(int flags)
+>> +static struct dmar_domain *alloc_domain(unsigned int type)
+>>   {
+>>   	struct dmar_domain *domain;
+>>
+>> @@ -1889,8 +1895,7 @@ static struct dmar_domain *alloc_domain(int flags)
+>>
+>>   	memset(domain, 0, sizeof(*domain));
+>>   	domain->nid = NUMA_NO_NODE;
+>> -	domain->flags = flags;
+>> -	if (first_level_by_default())
+>> +	if (first_level_by_default(type))
+>>   		domain->flags |= DOMAIN_FLAG_USE_FIRST_LEVEL;
+>>   	domain->has_iotlb_device = false;
+>>   	INIT_LIST_HEAD(&domain->devices);
+>> @@ -2708,7 +2713,7 @@ static int __init si_domain_init(int hw)
+>>   	struct device *dev;
+>>   	int i, nid, ret;
+>>
+>> -	si_domain = alloc_domain(DOMAIN_FLAG_STATIC_IDENTITY);
+>> +	si_domain = alloc_domain(IOMMU_DOMAIN_IDENTITY);
+>>   	if (!si_domain)
+>>   		return -EFAULT;
+>>
+>> @@ -4517,7 +4522,7 @@ static struct iommu_domain
+>> *intel_iommu_domain_alloc(unsigned type)
+>>   	case IOMMU_DOMAIN_DMA:
+>>   	case IOMMU_DOMAIN_DMA_FQ:
+>>   	case IOMMU_DOMAIN_UNMANAGED:
+>> -		dmar_domain = alloc_domain(0);
+>> +		dmar_domain = alloc_domain(type);
+>>   		if (!dmar_domain) {
+>>   			pr_err("Can't allocate dmar_domain\n");
+>>   			return NULL;
+>> --
+>> 2.25.1
 > 
+
+Best regards,
+baolu
