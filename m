@@ -2,194 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8A5418AD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FCE418ADE
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 22:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhIZTo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 15:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhIZTo5 (ORCPT
+        id S230003AbhIZUC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 16:02:26 -0400
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:36811 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229894AbhIZUCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 15:44:57 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48910C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:43:20 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g7so454275edv.1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+FqvCf5osAEwUJvV00eWIuuRwW5rXLzyPiLGVp8SKng=;
-        b=Kanj6in+B0Fx4dH3EbYTaDVlFJEkWXI9oRKfdTyxjT+G3+wnkaB3BYqts832OVWmxq
-         CS2GhnE91NBJYFNloXrDmvZcVwgTyKKFyYqaQDAtJ/fozrn2PJdwy9qJgoEm0eMAUYBL
-         qNyQOYJ2t0yrF2lt6wCi9aFkSd24gHaTH80A/nUizYD0pkOlOQtix2xSNZMS/ciuaePH
-         /0AW7uofgqydthYM94ISTZm/avcEDI7vWp4IHKOAiABW/wxXNP8KJAu3PPkRtDT+MGaK
-         EczlOWeLMss8vpAHXiCrmsJwW2ZTB/02D/9u2gmZxb6v0DQ4xsGSAjBD444f3jpw+Ykt
-         6Q1w==
+        Sun, 26 Sep 2021 16:02:25 -0400
+Received: by mail-lf1-f50.google.com with SMTP id b20so67527815lfv.3;
+        Sun, 26 Sep 2021 13:00:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+FqvCf5osAEwUJvV00eWIuuRwW5rXLzyPiLGVp8SKng=;
-        b=BEs+VqDin7jXqr5yA2ckoQqC21CJ6wl79+FX4jkLttr845cOxz27w0CAdKSSHCUumw
-         q4aN/0yhwY7ZQOgEq7o1UdVvnlm7Nb8huFID1LleB3MzJ/WYuQkvgju0+33PHBMDyQ0G
-         n5gFrz4C7XGOqcPsoC5Kvg7JX1Hz0wRf14+a0p/5KKk1xAq0B2P6TY7RXssNkQPjGBjC
-         SHnvFTeWp2nYgNa2ElS8evQH01x/S53jAobsgo9Nb7sMrE5E6pjHMyu5WS5E+q+kGOSq
-         F2comhnMp315bUfsJGZV9GMjND5V2G9bL/XV+w9sND7DMHuOsLrsurvGPkYaHNtp+zsr
-         Bxtw==
-X-Gm-Message-State: AOAM532BIKd5Ly4+NfZOJudSfmYy7mAHk2iuTBSRky8mnL71+IFRJpgD
-        BmxAwougN5CRatae7LTMwpexNK/QKODZ6C/A
-X-Google-Smtp-Source: ABdhPJwMOlCNHt8sfNlt04grZFgJ/qzr8FZQLGjpR+8zw7t9SX1zLCxw1tKYmtlUcw5fSkpJHvAvfA==
-X-Received: by 2002:a05:6402:1808:: with SMTP id g8mr19068079edy.188.1632685398682;
-        Sun, 26 Sep 2021 12:43:18 -0700 (PDT)
-Received: from neptune.. ([188.27.128.17])
-        by smtp.gmail.com with ESMTPSA id a23sm1872347edx.69.2021.09.26.12.43.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l3obkGQ+XpY0Vr97E+TyMlZ4RsCgsk4oyb1ai412+Ag=;
+        b=8H2qK8f9ZNk8XEdBKeMUt/UfTtoGJ5y0YYE5jav6dQUqJoeSIEpzl2clcEzJXZjzyR
+         bLbKCYLqI2j7ughnhBtcXnFOqeYBt0KcbTfH0vIaTGUlGY4loqJWlW/eci3pLWFhHZv6
+         4hhWJDiWgCAuH9WDrJnl5TZis7fPHHmBr8izuZWdZ2yUwGXJ6LBSFZxrtjLvdw0pPhok
+         FNFTzHHON/ED4rjDduwL9tSo5hzhNFgIUmdB8KnIGeFjrCdq+rJ5/bt7zL21X4o0dJB6
+         vSVrMHE5CLdVSFyKWHrhqaIrLY/cabqfEwFAOcBB3EJBXQKVoO9ILj5JaiNAXNWb8MJq
+         inlQ==
+X-Gm-Message-State: AOAM530RjHA9vkJ/ANWmotWQxh6qRPlAyWPYU++1R5T3lFgqjhGNM/7j
+        89IHtgPwY0QWHLCnvbyL0eo=
+X-Google-Smtp-Source: ABdhPJxcm3fL6YxDm0G2Ib4EFFXmfP0Dzirpyzk6SLisVl/uyN1ODO7vehPfeTEzaJt11+BWGOY99w==
+X-Received: by 2002:a2e:70a:: with SMTP id 10mr24301038ljh.187.1632686447374;
+        Sun, 26 Sep 2021 13:00:47 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id y14sm1373236lfk.237.2021.09.26.13.00.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 12:43:18 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] iio: adc: ad7291: convert probe to device-managed only
-Date:   Sun, 26 Sep 2021 22:43:15 +0300
-Message-Id: <20210926194315.7742-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 26 Sep 2021 13:00:46 -0700 (PDT)
+Date:   Sun, 26 Sep 2021 22:00:45 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Zhenneng Li <lizhenneng@kylinos.cn>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI/sysfs: add write attribute for boot_vga
+Message-ID: <YVDRbRF5wbcJmTtb@rocinante>
+References: <20210926071539.636644-1-lizhenneng@kylinos.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210926071539.636644-1-lizhenneng@kylinos.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a simple conversion for to device-managed with using
-devm_request_threaded_irq(), disabling the regulator via a
-devm_add_action_or_reset() hook and finally using
-devm_iio_device_register().
+[+cc Huacai and Kai-Heng as they are working in this area] 
 
-The i2c_set_clientdata() call is removed as it becomes redundant after this
-change.
+Hi,
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/adc/ad7291.c | 70 +++++++++++++---------------------------
- 1 file changed, 22 insertions(+), 48 deletions(-)
+Thank you for sending the patch over.
 
-diff --git a/drivers/iio/adc/ad7291.c b/drivers/iio/adc/ad7291.c
-index 2301a0e27f23..e9129dac762f 100644
---- a/drivers/iio/adc/ad7291.c
-+++ b/drivers/iio/adc/ad7291.c
-@@ -460,6 +460,11 @@ static const struct iio_info ad7291_info = {
- 	.write_event_value = &ad7291_write_event_value,
- };
- 
-+static void ad7291_reg_disable(void *reg)
-+{
-+	regulator_disable(reg);
-+}
-+
- static int ad7291_probe(struct i2c_client *client,
- 			const struct i2c_device_id *id)
- {
-@@ -473,8 +478,6 @@ static int ad7291_probe(struct i2c_client *client,
- 	chip = iio_priv(indio_dev);
- 
- 	mutex_init(&chip->state_lock);
--	/* this is only used for device removal purposes */
--	i2c_set_clientdata(client, indio_dev);
- 
- 	chip->client = client;
- 
-@@ -495,6 +498,11 @@ static int ad7291_probe(struct i2c_client *client,
- 		if (ret)
- 			return ret;
- 
-+		ret = devm_add_action_or_reset(&client->dev, ad7291_reg_disable,
-+					       chip->reg);
-+		if (ret)
-+			return ret;
-+
- 		chip->command |= AD7291_EXT_REF;
- 	}
- 
-@@ -506,58 +514,25 @@ static int ad7291_probe(struct i2c_client *client,
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 
- 	ret = ad7291_i2c_write(chip, AD7291_COMMAND, AD7291_RESET);
--	if (ret) {
--		ret = -EIO;
--		goto error_disable_reg;
--	}
-+	if (ret)
-+		return -EIO;
- 
- 	ret = ad7291_i2c_write(chip, AD7291_COMMAND, chip->command);
--	if (ret) {
--		ret = -EIO;
--		goto error_disable_reg;
--	}
-+	if (ret)
-+		return -EIO;
- 
- 	if (client->irq > 0) {
--		ret = request_threaded_irq(client->irq,
--					   NULL,
--					   &ad7291_event_handler,
--					   IRQF_TRIGGER_LOW | IRQF_ONESHOT,
--					   id->name,
--					   indio_dev);
-+		ret = devm_request_threaded_irq(&client->dev, client->irq,
-+						NULL,
-+						&ad7291_event_handler,
-+						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-+						id->name,
-+						indio_dev);
- 		if (ret)
--			goto error_disable_reg;
-+			return ret;
- 	}
- 
--	ret = iio_device_register(indio_dev);
--	if (ret)
--		goto error_unreg_irq;
--
--	return 0;
--
--error_unreg_irq:
--	if (client->irq)
--		free_irq(client->irq, indio_dev);
--error_disable_reg:
--	if (chip->reg)
--		regulator_disable(chip->reg);
--
--	return ret;
--}
--
--static int ad7291_remove(struct i2c_client *client)
--{
--	struct iio_dev *indio_dev = i2c_get_clientdata(client);
--	struct ad7291_chip_info *chip = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--
--	if (client->irq)
--		free_irq(client->irq, indio_dev);
--
--	if (chip->reg)
--		regulator_disable(chip->reg);
--
--	return 0;
-+	return devm_iio_device_register(&client->dev, indio_dev);
- }
- 
- static const struct i2c_device_id ad7291_id[] = {
-@@ -579,7 +554,6 @@ static struct i2c_driver ad7291_driver = {
- 		.of_match_table = ad7291_of_match,
- 	},
- 	.probe = ad7291_probe,
--	.remove = ad7291_remove,
- 	.id_table = ad7291_id,
- };
- module_i2c_driver(ad7291_driver);
--- 
-2.31.1
+I assume this is simply a resend (rather than a v2), as I see no code
+changes from the previous version you sent some time ago.
 
+> Add writing attribute for boot_vga sys node,
+> so we can config default video display
+> output dynamically when there are two video
+> cards on a machine.
+
+That's OK, but why are you adding this?  What problem does it solve and
+what is the intended user here?  Might be worth adding a little bit more
+details about why this new sysfs attribute is needed.
+
+I also need to ask, as I am not sure myself, whether this is OK to do after
+booting during runtime?  What do you think Bjorn, Huacai and Kai-Heng?
+
+Also, please correctly capitalise the subject - have a look at previous
+commit messages to see how it should look like.
+
+> +static ssize_t boot_vga_store(struct device *dev, struct device_attribute *attr,
+> +			      const char *buf, size_t count)
+> +{
+> +	unsigned long val;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct pci_dev *vga_dev = vga_default_device();
+> +
+> +	if (kstrtoul(buf, 0, &val) < 0)
+> +		return -EINVAL;
+> +
+> +	if (val != 1)
+> +		return -EINVAL;
+
+Since this is a completely new API have a look at kstrtobool() over
+kstrtoul() as the former was created to handle user input more
+consistently.
+
+> +	if (!capable(CAP_SYS_ADMIN))
+> +		return -EPERM;
+> +
+
+Check for CAP_SYS_ADMIN is a good idea, but it has to take place before you
+attempt to accept and parse a input from the user.
+
+	Krzysztof
