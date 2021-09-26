@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E84D418B43
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 23:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D12418B49
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 23:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhIZVi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 17:38:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhIZViz (ORCPT
+        id S230268AbhIZVnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 17:43:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53182 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230200AbhIZVm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 17:38:55 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A39C061570;
-        Sun, 26 Sep 2021 14:37:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHfHb6Rk6z4xZx;
-        Mon, 27 Sep 2021 07:37:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632692237;
-        bh=n9YlnZFBhU2JLojFhUOraML2j9kRQQ0QlKAVMx4YlVA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=phAEsfDshGwmHWmruTXnjwLlqGT37wiCLZX7TQ6YJ+GPYJDFS7KANuQsqcwdMNdWe
-         EgowF7Ah27agPLxajmnmrbfski18bV1YvfMn/tO4JieJoFiWFC7DKxkc9HZDMo2emc
-         rML4vdi0UD7HNJNaRa1V6aHcZdYiyxJumtj2I8osXVWXzoJX1zsKCFb7CRd6UrfmAA
-         17whGLLxe9OD+N2MspP4jpcK69lpZ0LSn9eoW6UYfY5mWli1H/8WZPxAnStKNyMyz1
-         RnzjvBfc8kolMkBYCcwX8+NNKLzrhvjY+XED85cqO9VDJmsgC/X3GLBoGg4XXgYXwQ
-         MmuFNu2Z8l51g==
-Date:   Mon, 27 Sep 2021 07:37:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the net-next tree
-Message-ID: <20210927073714.593e9fe0@canb.auug.org.au>
+        Sun, 26 Sep 2021 17:42:58 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632692480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=McPaBmx0MlHP0vrqs5ivo0lVfd3a5w6d950MyZytiPI=;
+        b=xDc+/QBGaVeUhXi+I0llsdxnSGLrKcdRYkutef68E1XjgoSibk5Hx/JYcJc/6s5vRzNDQY
+        L+OQyOx50jEnT7LKQlDtn4uofYo/PgJHT+85m8uf/0VKD7qi7C3m/lcxbYzP1O6o/Hd5tn
+        gYwp/Cz4zzicS6sI0a9swmM22Q5CFtLZoowl0e+C+pxg/Cy6xzsOQkSTpZSgljU9+2h5Si
+        7099nccYpVojjuxUNa96+RgrA192pPHIbdlPwFyBcwOfwOZqmJ6WxgKw0NRUjJGnaoUdUe
+        MoGEGZ6/A7TCX8N4XRE1IP4RBmvR9Pvu0hokPGl41R6X4+y2EVB3WaGYXuFyBQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632692480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=McPaBmx0MlHP0vrqs5ivo0lVfd3a5w6d950MyZytiPI=;
+        b=24HCp5V6NALHAxeQGbOYfIhtmgxwwE/FFtNkKeDWwPyDH0jb7bz7DdayfOW23bPh/opZ3D
+        E29+lWlY1DhvThBw==
+To:     shruthi.sanil@intel.com, daniel.lezcano@linaro.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com, shruthi.sanil@intel.com
+Subject: Re: [PATCH v6 2/2] clocksource: Add Intel Keem Bay timer support
+In-Reply-To: <20210906183621.21075-3-shruthi.sanil@intel.com>
+References: <20210906183621.21075-1-shruthi.sanil@intel.com>
+ <20210906183621.21075-3-shruthi.sanil@intel.com>
+Date:   Sun, 26 Sep 2021 23:41:20 +0200
+Message-ID: <87lf3jaubj.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1bZHdKK=hGo/SSXMzf8+PTm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1bZHdKK=hGo/SSXMzf8+PTm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Sep 07 2021 at 00:06, shruthi sanil wrote:
+> +
+> +/* Provides a unique ID for each timer */
+> +static DEFINE_IDA(keembay_timer_ida);
 
-Hi all,
+> +
+> +	timer_id = ida_alloc(&keembay_timer_ida, GFP_KERNEL);
+> +	if (timer_id < 0) {
+> +		ret = timer_id;
+> +		goto err_keembay_ce_to_free;
+> +	}
 
-In commit
+May I ask what the purpose of the IDA, which is backed by a full blown
+xarray, is here?
 
-  acde891c243c ("rxrpc: Fix _usecs_to_jiffies() by using usecs_to_jiffies()=
-")
+AFAICT all you want is a unique number for the timer name for up to 8
+timers.
 
-Fixes tag
+> +	timer_name = kasprintf(GFP_KERNEL, "keembay_timer%d", timer_id);
 
-  Fixes: c410bf01933e ("Fix the excessive initial retransmission timeout")
+So what's wrong about:
 
-has these problem(s):
+static unsigned int keembay_timer_id;
 
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
+	timer_name = kasprintf(GFP_KERNEL, "keembay_timer%d", keembay_timer_id++);
 
-So
+Hmm?
 
-Fixes: c410bf01933e ("rxrpc: Fix the excessive initial retransmission timeo=
-ut")
+> +
+> +	clockevents_config_and_register(&keembay_ce_to->clkevt,
+> +					timer_of_rate(keembay_ce_to),
+> +					1,
+> +					U32_MAX);
 
---=20
-Cheers,
-Stephen Rothwell
+Aside of that what's the point of registering more than one of those
+timers as clock event? The core will only use one and the rest is just
+going to use memory for no value.
 
---Sig_/1bZHdKK=hGo/SSXMzf8+PTm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks,
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFQ6AoACgkQAVBC80lX
-0GywxQgAiBWga4pO2yZZJc6oUxsx2AVDX1tJ1LnSK6QeuVFgTnJxWdT/hnxqZElB
-36qU4PRnbIDsdgkS1xB00UJ2LiM7nduRkTjlSMjJ06x+cA6NrR7kFeN7AIlHnI2p
-De0JkWwz7joMB9Qq6cn1xYvyUdWEja17fMySYqOr/qKZZO0yX11vPRGElsC2j3Sm
-vF6etGBfzTAvzVbHrnf7x/Ib6Xp0ZmYUunaiE/oiIkLBR9CAAZWHH9f7BhjbHrJG
-Ic41T8wjz/TN1qwoLA19s51vO6A9p18H8Kx2kgr3W/ez1AKWbXYUC8cwpNqgdNAj
-1mVCjCdIYNRi8qr36/i7rg50cLvN0g==
-=U0Lu
------END PGP SIGNATURE-----
-
---Sig_/1bZHdKK=hGo/SSXMzf8+PTm--
+        tglx
