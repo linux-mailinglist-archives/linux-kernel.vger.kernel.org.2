@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02084186AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4FF4186B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhIZGNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 02:13:16 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:49068 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231146AbhIZGNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 02:13:09 -0400
-Received: from BC-Mail-Ex09.internal.baidu.com (unknown [172.31.51.49])
-        by Forcepoint Email with ESMTPS id 23073A7C24971CC6AF0C;
-        Sun, 26 Sep 2021 14:11:31 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex09.internal.baidu.com (172.31.51.49) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sun, 26 Sep 2021 14:11:31 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sun, 26 Sep 2021 14:11:30 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] RDMA/irdma: Use dma_alloc_coherent() instead of kmalloc/dma_map_single()
-Date:   Sun, 26 Sep 2021 14:11:23 +0800
-Message-ID: <20210926061124.335-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S230522AbhIZG3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 02:29:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46008 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhIZG3L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 02:29:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632637655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1TiBTpYstMaABQ/rAwh18m9vsSq3OqvaFEu629LcCL8=;
+        b=AT5/PG0z3EzdeorlWOjcalMkMIuqdx/kSJlyedxA9a0Z5HaOAWh19SuOyQfVfP1hscnXDo
+        ndrzwXzzRB5LVNi85EvMVI55Hx7Hnns/fgrq4gRTKomf4x5KJinVbPpTd/gfSLSyo8Vl98
+        RL+yotYrs93Q304RJn+4O16zB8UkSk4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-_FUZm6mAO9q_KslOyXsh_A-1; Sun, 26 Sep 2021 02:27:33 -0400
+X-MC-Unique: _FUZm6mAO9q_KslOyXsh_A-1
+Received: by mail-ed1-f69.google.com with SMTP id 14-20020a508e4e000000b003d84544f33eso14578377edx.2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 23:27:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1TiBTpYstMaABQ/rAwh18m9vsSq3OqvaFEu629LcCL8=;
+        b=29kJeY1D21v7C5mOrhpoxtgXcGdlsynafGvxJqp0rMr9NsLHu3RabO/rDFtx/MSBi2
+         5DP0upaZxaqN2HtOLcREPOOkuhgOG2dZuWd5wDUKU62jsXUOxJh4KD5JadU09fuCU5sB
+         +OYLuBhTH/oNlqSxV7ZW80swWAYSYVPyAkRmheMY2R5XKxvuhhfhUTmTw/z6FgUzKbe3
+         oksPDtx3JrPlOhvo6SayMNZys8JgPfkCPSP1V0fY1JQC6IZHVMZ4jLBLfFOpVPfCGLxA
+         Od4UZdIKaeNcrzkKcP/O1mVT3K1tWVCyIHiUagDUvUU1/qlW+U80ZkgbQXKa7DHpXlM8
+         OFLA==
+X-Gm-Message-State: AOAM532DNGn2f/VgC9oV/GClY6Fjc6kphajeaSbATnEBvEkjFI5jukr3
+        UT5SgBgHQf6lkIZA8U2BmpzzV3kfXo2dJR7Y+/KyH6U7aOUh8mogofm7HZ455xOpKK0gZIA0bnJ
+        GYwnnpivMNp1K64BrFdUHogN9
+X-Received: by 2002:a17:906:bcf5:: with SMTP id op21mr21248195ejb.114.1632637652475;
+        Sat, 25 Sep 2021 23:27:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKIxMWhBoRL018xLqTu0jQnou9ZPZ7BoXp91FbgfoN587mWDIRzysD7Ruz1/cm6u5Gy8RhTw==
+X-Received: by 2002:a17:906:bcf5:: with SMTP id op21mr21248168ejb.114.1632637652217;
+        Sat, 25 Sep 2021 23:27:32 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id dk27sm8333826edb.19.2021.09.25.23.27.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Sep 2021 23:27:31 -0700 (PDT)
+Message-ID: <80d90ee6-0d43-3735-5c26-be8c3d72d493@redhat.com>
+Date:   Sun, 26 Sep 2021 08:27:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex15.internal.baidu.com (172.31.51.55) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 07/14] KVM: Don't block+unblock when halt-polling is
+ successful
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <20210925005528.1145584-8-seanjc@google.com> <878rzlass2.wl-maz@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <878rzlass2.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replacing kmalloc/kfree/dma_map_single/dma_unmap_single()
-with dma_alloc_coherent/dma_free_coherent() helps to reduce
-code size, and simplify the code, and coherent DMA will not
-clear the cache every time.
+On 25/09/21 11:50, Marc Zyngier wrote:
+>> there is no need for arm64 to put/load
+>> the vGIC as KVM hasn't relinquished control of the vCPU in any way.
+> 
+> This doesn't mean that there is no requirement for any state
+> change. The put/load on GICv4 is crucial for performance, and the VMCR
+> resync is a correctness requirement.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/infiniband/hw/irdma/puda.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+I wouldn't even say it's crucial for performance: halt polling cannot 
+work and is a waste of time without (the current implementation of) 
+put/load.
 
-diff --git a/drivers/infiniband/hw/irdma/puda.c b/drivers/infiniband/hw/irdma/puda.c
-index 58e7d875643b..feafe21b12c6 100644
---- a/drivers/infiniband/hw/irdma/puda.c
-+++ b/drivers/infiniband/hw/irdma/puda.c
-@@ -151,24 +151,15 @@ static struct irdma_puda_buf *irdma_puda_alloc_buf(struct irdma_sc_dev *dev,
- 
- 	buf = buf_mem.va;
- 	buf->mem.size = len;
--	buf->mem.va = kzalloc(buf->mem.size, GFP_KERNEL);
-+	buf->mem.va = dma_alloc_coherent(dev->hw->device, len,
-+					 &buf->mem.pa, GFP_KERNEL);
- 	if (!buf->mem.va)
--		goto free_virt;
--	buf->mem.pa = dma_map_single(dev->hw->device, buf->mem.va,
--				     buf->mem.size, DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(dev->hw->device, buf->mem.pa)) {
--		kfree(buf->mem.va);
--		goto free_virt;
--	}
-+		return NULL;
- 
- 	buf->buf_mem.va = buf_mem.va;
- 	buf->buf_mem.size = buf_mem.size;
- 
- 	return buf;
--
--free_virt:
--	kfree(buf_mem.va);
--	return NULL;
- }
- 
- /**
-@@ -179,9 +170,7 @@ static struct irdma_puda_buf *irdma_puda_alloc_buf(struct irdma_sc_dev *dev,
- static void irdma_puda_dele_buf(struct irdma_sc_dev *dev,
- 				struct irdma_puda_buf *buf)
- {
--	dma_unmap_single(dev->hw->device, buf->mem.pa, buf->mem.size,
--			 DMA_BIDIRECTIONAL);
--	kfree(buf->mem.va);
-+	dma_free_coherent(dev->hw->device, buf->mem.size, buf->mem.va, buf->mem.pa);
- 	kfree(buf->buf_mem.va);
- }
- 
--- 
-2.25.1
+However, is activating the doorbell necessary?  If possible, polling the 
+VGIC directly for pending VLPIs without touching the ITS (for example by 
+emulating IAR reads) may make sense.  IIUC that must be done at EL2 
+though, so maybe it would even make sense to move all of halt polling to 
+EL2 for the nVHE case.  It all depends on benchmark results, of course.
+
+Sorry for the many stupid questions I'm asking lately, but I'm trying to 
+pay more attention to ARM and understand the VGIC and EL1/EL2 split better.
+
+Paolo
 
