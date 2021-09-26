@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC3A4187DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 11:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849634187E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 11:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhIZJM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 05:12:27 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:57461 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229687AbhIZJM0 (ORCPT
+        id S229802AbhIZJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 05:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhIZJaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 05:12:26 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1mUQBL-001bVp-ID; Sun, 26 Sep 2021 11:10:47 +0200
-Received: from p57bd97e9.dip0.t-ipconnect.de ([87.189.151.233] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1mUQBL-0041Cw-BF; Sun, 26 Sep 2021 11:10:47 +0200
-Message-ID: <6ee982ca-6b99-da23-ec60-97ca2c317bd5@physik.fu-berlin.de>
-Date:   Sun, 26 Sep 2021 11:10:46 +0200
+        Sun, 26 Sep 2021 05:30:22 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7886FC061570;
+        Sun, 26 Sep 2021 02:28:46 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id c1so12903890pfp.10;
+        Sun, 26 Sep 2021 02:28:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sogTVPrg0xxbas/RQ1KzZKqbAN+Sr35NAFihXcVk5gA=;
+        b=VPqJpdtV+f8dyVaN244AnekcAr7Fv8zFZfj8x4RPR7Z8K18flc2bMjY8eTUPZ8b7Zj
+         MpOwjGCcGfBctJvOBj2ICI+2GJbjGWma2anQcI95UC/blFQDNdRznFHvzIxey/IBgPBV
+         4+Y6+hiBhTDsSfSqOCD4eoSTCDLV5JW5Omf2KOykOyRUvYuW8SG1JQjIRayD8PkLAT3U
+         8+YByakhzJvs1xH1QcrEUTOQQZA5C50ty5P50r9cZoIFDOgoO23HJj+KY0WG2+mnRSzX
+         gQPlyaPSmcxbzu0R2s3i/pr4KoAfGdzHkZj9reW4pt1XmpM0NVD0PT8aa8HxJRJDCaRD
+         1dUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sogTVPrg0xxbas/RQ1KzZKqbAN+Sr35NAFihXcVk5gA=;
+        b=u7FWfvc7Gd7JYSRH2YIyIFwq3IikaLXzRnMBrsfwvNKJX0q6GACutTCckZKg3Pq56C
+         CqQ+72gkHlx9c0KEBefS8liOv+3tRXxpdwab2kMIqatNHqbBz4q3ma9rgQM4iZuL4aeR
+         T59zCHDQEhD14yGcwxse5eIvP29WRDOSsD+KE91ODaScVOojNejX80JTfHms6j0MnSqY
+         Czk9IVUDAduDw2uaxa6nTy/zadPLWvd0DWWfrdNWSh2kbPIoWRxpqCLhRozbHK1YXGqd
+         921dzHCdVNC7nZfpe7eVKXvOzJbBMpzxUfhskliOlm1b0LVjUqXO6L7AsCeiLcdxJTrV
+         6G+A==
+X-Gm-Message-State: AOAM532YjKyPID2YNXmTvuKXOTfH6CYkCHskoJJNtvduzHM7jQpmnMF+
+        2tIv/z6ydEnOdENDLm0yqvD9CWTotsg=
+X-Google-Smtp-Source: ABdhPJxeO+z/buaSfnel8difWKijnp2RI2B8rwhFFBPaMKn5x7arAZobLS6aVnrCSwIrj8D+oHjnag==
+X-Received: by 2002:a62:641:0:b0:44b:74bb:294c with SMTP id 62-20020a620641000000b0044b74bb294cmr5499951pfg.12.1632648525886;
+        Sun, 26 Sep 2021 02:28:45 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id q11sm14372509pfn.91.2021.09.26.02.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 02:28:45 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-mmc@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        zhenxiong.lai@unisoc.com, yuelin.tang@unisoc.com,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] mmc: sdhci-sprd: Wait until DLL locked after being configured
+Date:   Sun, 26 Sep 2021 17:28:35 +0800
+Message-Id: <20210926092835.146449-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] ia64: don't do IA64_CMPXCHG_DEBUG without CONFIG_PRINTK
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     linux-ia64@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Chris Down <chris@chrisdown.name>
-References: <20210926063325.13581-1-rdunlap@infradead.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <20210926063325.13581-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.151.233
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy!
+From: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
 
-On 9/26/21 08:33, Randy Dunlap wrote:
-> When CONFIG_PRINTK is not set, the CMPXCHG_BUGCHECK() macro calls
-> _printk(), but _printk() is a static inline function, not available
-> as an extern.
-> Since the purpose of the macro is to print the BUGCHECK info,
-> make this config option depend on PRINTK.
-> 
-> Fixes multiple occurrences of this build error:
-> 
-> ../include/linux/printk.h:208:5: error: static declaration of '_printk' follows non-static declaration
->   208 | int _printk(const char *s, ...)
->       |     ^~~~~~~
-> In file included from ../arch/ia64/include/asm/cmpxchg.h:5,
-> ../arch/ia64/include/uapi/asm/cmpxchg.h:146:28: note: previous declaration of '_printk' with type 'int(const char *, ...)'
->   146 |                 extern int _printk(const char *fmt, ...);
-> 
-> Fixes: 337015573718 ("printk: Userspace format indexing support")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: linux-ia64@vger.kernel.org
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Chris Down <chris@chrisdown.name>
-> ---
->  arch/ia64/Kconfig.debug |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20210917.orig/arch/ia64/Kconfig.debug
-> +++ linux-next-20210917/arch/ia64/Kconfig.debug
-> @@ -39,7 +39,7 @@ config DISABLE_VHPT
->  
->  config IA64_DEBUG_CMPXCHG
->  	bool "Turn on compare-and-exchange bug checking (slow!)"
-> -	depends on DEBUG_KERNEL
-> +	depends on DEBUG_KERNEL && PRINTK
->  	help
->  	  Selecting this option turns on bug checking for the IA-64
->  	  compare-and-exchange instructions.  This is slow!  Itaniums
+According to the specification, DLL status has to be locked before using it.
 
-We currently don't have a maintainer for ia64 - although I would be willing to pick
-up the job - so your patch would have to go through someone else's tree.
+Signed-off-by: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+---
+Changes since v1:
+* Use read_poll_timeout() instead of while loop.
+---
+ drivers/mmc/host/sdhci-sprd.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-I can boot test the patch on my RX2660 in the mean time.
-
-Adrian
-
+diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+index 11e375579cfb..f33e9349e4e6 100644
+--- a/drivers/mmc/host/sdhci-sprd.c
++++ b/drivers/mmc/host/sdhci-sprd.c
+@@ -8,6 +8,7 @@
+ #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/highmem.h>
++#include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -39,6 +40,9 @@
+ #define  SDHCI_SPRD_BIT_POSRD_DLY_INV		BIT(21)
+ #define  SDHCI_SPRD_BIT_NEGRD_DLY_INV		BIT(29)
+ 
++#define SDHCI_SPRD_REG_32_DLL_STS0	0x210
++#define SDHCI_SPRD_DLL_LOCKED		BIT(18)
++
+ #define SDHCI_SPRD_REG_32_BUSY_POSI		0x250
+ #define  SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN	BIT(25)
+ #define  SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN	BIT(24)
+@@ -256,6 +260,15 @@ static void sdhci_sprd_enable_phy_dll(struct sdhci_host *host)
+ 	sdhci_writel(host, tmp, SDHCI_SPRD_REG_32_DLL_CFG);
+ 	/* wait 1ms */
+ 	usleep_range(1000, 1250);
++
++	if (read_poll_timeout(sdhci_readl, tmp, (tmp & SDHCI_SPRD_DLL_LOCKED),
++		2000, USEC_PER_SEC, false, host, SDHCI_SPRD_REG_32_DLL_STS0)) {
++		pr_err("%s: DLL locked fail!\n", mmc_hostname(host->mmc));
++		pr_info("%s: DLL_STS0 : 0x%x, DLL_CFG : 0x%x\n",
++			 mmc_hostname(host->mmc),
++			 sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_STS0),
++			 sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG));
++	}
+ }
+ 
+ static void sdhci_sprd_set_clock(struct sdhci_host *host, unsigned int clock)
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.25.1
 
