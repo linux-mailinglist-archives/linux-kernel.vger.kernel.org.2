@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782A54186E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02A641870C
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhIZHTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 03:19:02 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:26338 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231176AbhIZHTA (ORCPT
+        id S231438AbhIZHUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 03:20:46 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:19373 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231423AbhIZHUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 03:19:00 -0400
-Received: from pop-os.home ([90.126.248.220])
-        by mwinf5d82 with ME
-        id yXHM2500F4m3Hzu03XHM0b; Sun, 26 Sep 2021 09:17:23 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 26 Sep 2021 09:17:23 +0200
-X-ME-IP: 90.126.248.220
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] thermal: intel_powerclamp: Use bitmap_zalloc/bitmap_free when applicable
-Date:   Sun, 26 Sep 2021 09:17:20 +0200
-Message-Id: <f7513027ae9242643b5ddb6ed48a3aeca1b0f2a8.1632640557.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 26 Sep 2021 03:20:21 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HHH8510l3zRS1h;
+        Sun, 26 Sep 2021 15:14:29 +0800 (CST)
+Received: from dggpeml500002.china.huawei.com (7.185.36.158) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sun, 26 Sep 2021 15:18:43 +0800
+Received: from huawei.com (10.136.117.208) by dggpeml500002.china.huawei.com
+ (7.185.36.158) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sun, 26 Sep
+ 2021 15:18:43 +0800
+From:   Qiumiao Zhang <zhangqiumiao1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sasha.levin@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        <netdev@vger.kernel.org>, <yanan@huawei.com>,
+        <rose.chen@huawei.com>
+Subject: [PATCH stable 4.19 0/4] tcp: fix the timeout value calculated by tcp_model_timeout() is not accurate
+Date:   Sun, 26 Sep 2021 15:18:38 +0800
+Message-ID: <20210926071842.1429-1-zhangqiumiao1@huawei.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.136.117.208]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500002.china.huawei.com (7.185.36.158)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'cpu_clamping_mask' is a bitmap. So use 'bitmap_zalloc()' and
-'bitmap_free()' to simplify code, improve the semantic of the code and
-avoid some open-coded arithmetic in allocator arguments.
+This patch series is present in v5.15 and fixes the problem that the
+timeout value calculated by tcp_model_timeout() is not accurate.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/thermal/intel/intel_powerclamp.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Pseudo-Shortlog of commits:
 
-diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
-index a5b58ea89cc6..9b68489a2356 100644
---- a/drivers/thermal/intel/intel_powerclamp.c
-+++ b/drivers/thermal/intel/intel_powerclamp.c
-@@ -705,10 +705,8 @@ static enum cpuhp_state hp_state;
- static int __init powerclamp_init(void)
- {
- 	int retval;
--	int bitmap_size;
- 
--	bitmap_size = BITS_TO_LONGS(num_possible_cpus()) * sizeof(long);
--	cpu_clamping_mask = kzalloc(bitmap_size, GFP_KERNEL);
-+	cpu_clamping_mask = bitmap_zalloc(num_possible_cpus(), GFP_KERNEL);
- 	if (!cpu_clamping_mask)
- 		return -ENOMEM;
- 
-@@ -753,7 +751,7 @@ static int __init powerclamp_init(void)
- exit_unregister:
- 	cpuhp_remove_state_nocalls(hp_state);
- exit_free:
--	kfree(cpu_clamping_mask);
-+	bitmap_free(cpu_clamping_mask);
- 	return retval;
- }
- module_init(powerclamp_init);
-@@ -764,7 +762,7 @@ static void __exit powerclamp_exit(void)
- 	cpuhp_remove_state_nocalls(hp_state);
- 	free_percpu(worker_data);
- 	thermal_cooling_device_unregister(cooling_dev);
--	kfree(cpu_clamping_mask);
-+	bitmap_free(cpu_clamping_mask);
- 
- 	cancel_delayed_work_sync(&poll_pkg_cstate_work);
- 	debugfs_remove_recursive(debug_dir);
+Eric Dumazet <edumazet@google.com>
+    tcp: address problems caused by EDT misshaps
+
+Yuchung Cheng <ycheng@google.com>
+    tcp: always set retrans_stamp on recovery
+
+Yuchung Cheng <ycheng@google.com>
+    tcp: create a helper to model exponential backoff
+
+Eric Dumazet <edumazet@google.com>
+    tcp: adjust rto_base in retransmits_timed_out()
+
+ net/ipv4/tcp_input.c  | 16 ++++++-----
+ net/ipv4/tcp_output.c |  9 +++----
+ net/ipv4/tcp_timer.c  | 63 ++++++++++++++++++++-----------------------
+ 3 files changed, 43 insertions(+), 45 deletions(-)
+
 -- 
-2.30.2
+2.19.1
 
