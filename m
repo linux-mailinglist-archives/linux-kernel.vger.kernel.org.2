@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C157E41886B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BFE41886D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbhIZLvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 07:51:47 -0400
-Received: from mout.gmx.net ([212.227.15.18]:45869 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231206AbhIZLvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 07:51:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-        s=badeba3b8450; t=1632656985;
-        bh=0rIwgn2+oCBKdiYEGxebf4tyq7xKWUvrjdTls2w8bTQ=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=lTrRQS9XaD6F1ONfw8099VGdThd5PAgQwBday0keXJxgtR0a6GC329uCQAWKjHzUy
-         N1xTUyKJqvj3erwLL3Ml6csLeaL9znZUcFzyMsfXirCqEZKkclP9mBUAo1WY6x9/xM
-         ghvLD1yminXNnsbNkp33uiA2vDBBB9sSGmHSEfhA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MnakR-1nE0EO1gbF-00jaCp; Sun, 26
- Sep 2021 13:49:45 +0200
-Date:   Sun, 26 Sep 2021 13:49:34 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] platform/x86: thinkpad_acpi: Switch to common use of
- attributes
-Message-ID: <20210926114934.GA7286@titan>
-References: <20210926111908.6950-1-len.baker@gmx.com>
- <YVBaQAFVX1CeQUPE@kroah.com>
+        id S231244AbhIZLyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 07:54:04 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35460
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230200AbhIZLyD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 07:54:03 -0400
+Received: from [192.168.0.210] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net [80.193.200.194])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 3826341303;
+        Sun, 26 Sep 2021 11:52:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632657145;
+        bh=IMS6p4w3HfwwfUyNxMcrk3j+8VMR0AkFPHuC20oOeFU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=kEpgFoYDcpUsOMQPw2nct9Bzso2RY2yB9XFghuWvdxTwd2MPB9pvVmEkioR1a0UNz
+         GApzRIuqTe0CjJCaqH7K5E28Dfebn8bcFC/C18cwGrElZ48RElbXdqCnXLbqgGaE6y
+         2WOCPYQxDoFPAAKXNGi2XdUNF6CvvER5wpEi6VfjhRYMkDWVDBfaeQB5IKXLHwzhYE
+         Ph2JCVva6l0O5v/rbzRcRYdS2p+VdWfMcU+bISgMnsIN1c+W3cgSt/oNdQI38hLlNu
+         zp2Cg+ottFZSLe9WIzMvmTV+NGUJPIJJaIpMKLgLlywO3S3vDydkXl32EeTTbFOy6b
+         s7Sj1GkkfC2zA==
+Subject: Re: scripts/spelling.txt: Fix "mistake" version of "synchronization"
+To:     Sven Eckelmann <sven@narfation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210926065529.6880-1-sven@narfation.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <a2639281-e8ec-92eb-13af-02a1925c25cd@canonical.com>
+Date:   Sun, 26 Sep 2021 12:52:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVBaQAFVX1CeQUPE@kroah.com>
-X-Provags-ID: V03:K1:HkWiYA0Jt5HBdYP/LidFZOnItr02xlDFohMZktYouwwlV4AxKeo
- EApb4Ji3/iX5l/aJIojCmNDEjuqi2GOvjW5v2qLFlvH+4TUEtMkZvvULXTCxJ1a8pMUdJip
- YsBrzKTBateYYU07GQPsBSiF8o8KSShzd7fDUw7WKBGGgod8wHB+fY/2Y3Aa6OZ9c5xdapx
- 8nGRB1GDgHzeOmpkGeqQg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aUuzZ2iWYWg=:NsMNqTlri2SdA3cPh4zGLb
- yLHgGUr39uAWpMqs2PYOXmr0M1EEH7VzAcV2EG74g/4BSD51m4p1ziooEVIAiCl/s/q+rGkIK
- c2+3Qqsf1yPSGn2bF9kPOOitg2sZLQb/Yz2UpQfosTTccCyCR7CFHzTOOh6cLiFswTSvWOeFl
- 3D1tc/9kQ2urkZFTjQmK6dzGzEcUrZ/UVWx98z0/6BIrJ4TlNWGhsAUMPj6VapZvWEkjbw3+P
- 0Rg0p2L+/JKjuW1U7vQ2EO2jq/5UBrpkKnKqLZaFQ4tsKadupAxvNklBMDNcZG31ea0Lwu5cY
- no5wqqmx3gLj3wLK84Rv9LI96pLm8zatn6sAy6wMog26YfGU8qxgpvOfD4Om0M172ZERWNd1W
- 2A6tGl72a7G5CjVMQwSaPP/QlhOUOPMxJolXQkZh71dkEVSSfo0hOQRQSlJGs/wAjXFjLU01i
- 4B6lb2jjmP7P8vNWbtCwuLQnnoc/JlQdnaZpC1VNuicr4J1hHCy19TmADmXb1LE1B4/8PBAZC
- 7tc2KrV9ebz/SqOY0CpO6saA2ykCYgGDxyovTot2CTPVan9JwF3zcCbWz3FIKqvHGuLhnPBKm
- I1j8m3ueKKmUGIwyLNAtnOSsf2AACO0hdNNoT6bmkmGOqo3aqzJNXuHWTNwMFwr3E1ECMivxe
- DkOTebD027Ezc6YCO5yCdniaPoqfpQHy33lCNMg8P1mFLuCdtm9g32n/X67aALjvUOr7fGktV
- f16xN6+Q69vvh3mm1QyxyQvLHnYBPlIc5SnvkcU6uLqYuF6zlL6lGSbDaIyBh1vV8AcpWZJXK
- x6EzZCybXkyzSUg0d+xCITUz5P6bSSFn/35QKTbqCexJvKuFFXYBOOdu9FFUlKeG9j59+fm9c
- /U2DgnjhBNtmBybRoThS/m+B7sqL2RPV8SdddrEGMj0AwpUxwR0XDibjqXFkcWm+AqkQfd/W6
- lNAUue60wcU9ckN1vxemRhgeoHI63WeMp9FuG2xhwMB1mPG55FaV9FkmDFFuE7MMb7SjaMa/a
- I/dP/zVNpDiIzGxjdhXJvRDgWG45CMzF6r7iRbhRkfUlc+5Z3rJvVI+uVCfxvz0ZejEeTWX4z
- lQxR4d4+pxSIZ8=
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210926065529.6880-1-sven@narfation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On Sun, Sep 26, 2021 at 01:32:16PM +0200, Greg Kroah-Hartman wrote:
-> On Sun, Sep 26, 2021 at 01:19:08PM +0200, Len Baker wrote:
->
-> > @@ -3161,9 +3106,7 @@ static void hotkey_exit(void)
-> >  	hotkey_poll_stop_sync();
-> >  	mutex_unlock(&hotkey_mutex);
-> >  #endif
-> > -
-> > -	if (hotkey_dev_attributes)
-> > -		delete_attr_set(hotkey_dev_attributes, &tpacpi_pdev->dev.kobj);
-> > +	sysfs_remove_group(&tpacpi_pdev->dev.kobj, &hotkey_attr_group);
->
-> Why do you have to manually add/remove these groups still?
->
-> A huge hint that something is going wrong is when you have to call a
-> sysfs_*() call from within a driver.  There should be proper driver_*()
-> calls for you instead to get the job done.
->
-> As this is a platform device, why not set the dev_groups variable in the
-> platform_driver field so that these attribute groups get added and
-> removed automatically?
->
-> An example commit to look at that shows how this was converted for one
-> driver is 5bd08a4ae3d0 ("platform: x86: hp-wmi: convert platform driver
-> to use dev_groups").  See if that helps here as well.
 
-Ok, I will look at this and I will try to improve the patch. Anyway thanks
-for the guidance and advices.
+On 26/09/2021 07:55, Sven Eckelmann wrote:
+> If both "mistake" version and "correction" version are the same, a warning
+> message is created by checkpatch which is impossible to fix. But it was
+> noticed that Colan Ian King created a commit e6c0a0889b80 ("ALSA: aloop:
+> Fix spelling mistake "synchronization" -> "synchronization"") which
+> suggests that this spelling mistake was fixed by replacing the word
+> "synchronization" with itself. But the actual diff shows that the mistake
+> in the code was "sychronization". It is rather likely that the "mistake"
+> in spelling.txt should have been the latter.
+> 
+> Fixes: 2e74c9433ba8 ("scripts/spelling.txt: add more spellings to spelling.txt")
+> Signed-off-by: Sven Eckelmann <sven@narfation.org>
 
-Again, thanks for your time.
+Good catch. My bad.
 
-Regards,
-Len
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
+
+> ---
+> This was already reported last week in https://lore.kernel.org/all/1930750.yhyOXdeGKK@sven-l14/
+> 
+> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+> index fd8f07317b8e1c572e1e0f6bb4f9e01dff96c17c..acf6ea71129921ad77a201d13761382ee032483e 100644
+> --- a/scripts/spelling.txt
+> +++ b/scripts/spelling.txt
+> @@ -1450,7 +1450,7 @@ syfs||sysfs
+>  symetric||symmetric
+>  synax||syntax
+>  synchonized||synchronized
+> -synchronization||synchronization
+> +sychronization||synchronization
+>  synchronuously||synchronously
+>  syncronize||synchronize
+>  syncronized||synchronized
+> 
+
