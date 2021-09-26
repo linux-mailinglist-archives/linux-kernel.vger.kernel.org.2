@@ -2,282 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB39418563
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 03:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE57418564
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 03:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhIZBZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 21:25:21 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33791 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhIZBZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 21:25:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10118"; a="224336229"
-X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
-   d="scan'208";a="224336229"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2021 18:23:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
-   d="scan'208";a="475562606"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by orsmga007.jf.intel.com with ESMTP; 25 Sep 2021 18:23:42 -0700
-Date:   Sun, 26 Sep 2021 09:16:55 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v16 5/5] fpga: image-load: enable cancel of image upload
-Message-ID: <20210926011655.GC1339205@yilunxu-OptiPlex-7050>
-References: <20210923001056.282790-1-russell.h.weight@intel.com>
- <20210923001056.282790-6-russell.h.weight@intel.com>
- <20210924145338.GA1342075@yilunxu-OptiPlex-7050>
- <d03bc8f3-5afc-207c-62db-68bb4d533e36@intel.com>
+        id S230223AbhIZB37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 21:29:59 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:47965 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhIZB36 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 21:29:58 -0400
+Received: by mail-io1-f69.google.com with SMTP id t4-20020a056602140400b005d60162d0c4so15412975iov.14
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 18:28:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HNCIZF7mMlfTzdEwJGaHpKL1MIacRllG7TXjajL083s=;
+        b=cXcrmnEmC8XdfS2yf7bfUDwGAhJa9lN/sBqq+v6dafT55eE3KPFxtXrezqdBo4xPOV
+         ILeqUAsVyzVpmf/vzJZxZjLTCWiUFGnC0GZYLNX2uvSOrG9tQcsR2B718KBNJBdrkjz/
+         OO/7dMF8/OhH9PT0MrYNSyTMHCQ7RnX7b7D7yCLTQx2JvwIeSKryUNtZK90Kb0JBUJ8u
+         Ve1gJczsg83+DPPLoSQCertQKFQqzD3AWG+mfOBHClpvVKXuyo+Q2q4NHjr4wTwCHNNi
+         SjgWIqoSl+Hbd6byPBHBe+/6U0UhESkg7B5wlYo9OcqDvqzjMBFWTKbaLM4ufOJHHCCX
+         7t+A==
+X-Gm-Message-State: AOAM531LrV8Va9NXENQTTonggiB23UrOPhBIHStVXkR11PcayLWWs0Xs
+        swk9o7NKYKYU8ahfa/vgMZkxzijKyEkxsS1YHv0+pBKSg8UV
+X-Google-Smtp-Source: ABdhPJw5wPMMCNyGOHzL/mAmzeRqxUeX0tr68es6eY99cKPWWPFdDF73yOMIGvljAXTcl2knYwIN6GywOjuTG97447CqxtLBb6Nu
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d03bc8f3-5afc-207c-62db-68bb4d533e36@intel.com>
+X-Received: by 2002:a5d:8183:: with SMTP id u3mr14715404ion.67.1632619702363;
+ Sat, 25 Sep 2021 18:28:22 -0700 (PDT)
+Date:   Sat, 25 Sep 2021 18:28:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000069acee05ccdbe5a7@google.com>
+Subject: [syzbot] memory leak in __mdiobus_register
+From:   syzbot <syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 05:29:28PM -0700, Russ Weight wrote:
-> 
-> 
-> On 9/24/21 7:53 AM, Xu Yilun wrote:
-> > On Wed, Sep 22, 2021 at 05:10:56PM -0700, Russ Weight wrote:
-> >> Extend the FPGA Image Load framework to include a cancel IOCTL that can be
-> >> used to request that an image upload be canceled. The IOCTL may return
-> >> EBUSY if it cannot be canceled by software or ENODEV if there is no update
-> >> in progress.
-> >>
-> >> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> >> ---
-> >> v16:
-> >>  - This was previously patch 6/6
-> >>  - Amend fpga_image_load_release() to request cancellation of an ongoing
-> >>    update when possible.
-> >> v15:
-> >>  - Compare to previous patch:
-> >>      [PATCH v14 6/6] fpga: sec-mgr: enable cancel of secure update
-> >>  - Changed file, symbol, and config names to reflect the new driver name
-> >>  - Cancel is now initiated by IOCT instead of sysfs
-> >>  - Removed signed-off/reviewed-by tags
-> >> v14:
-> >>  - Updated ABI documentation date and kernel version
-> >> v13:
-> >>   - No change
-> >> v12:
-> >>   - Updated Date and KernelVersion fields in ABI documentation
-> >> v11:
-> >>   - No change
-> >> v10:
-> >>   - Rebased to 5.12-rc2 next
-> >>   - Updated Date and KernelVersion in ABI documentation
-> >> v9:
-> >>   - Updated Date and KernelVersion in ABI documentation
-> >> v8:
-> >>   - No change
-> >> v7:
-> >>   - Changed Date in documentation file to December 2020
-> >> v6:
-> >>   - No change
-> >> v5:
-> >>   - No change
-> >> v4:
-> >>   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
-> >>     and removed unnecessary references to "Intel".
-> >>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-> >> v3:
-> >>   - No change
-> >> v2:
-> >>   - Bumped documentation date and version
-> >>   - Minor code cleanup per review comments
-> >> ---
-> >>  Documentation/fpga/fpga-image-load.rst |  6 ++++
-> >>  drivers/fpga/fpga-image-load.c         | 49 +++++++++++++++++++++++---
-> >>  include/linux/fpga/fpga-image-load.h   |  1 +
-> >>  include/uapi/linux/fpga-image-load.h   |  2 ++
-> >>  4 files changed, 53 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
-> >> index 572e18afebb9..21fa85f18680 100644
-> >> --- a/Documentation/fpga/fpga-image-load.rst
-> >> +++ b/Documentation/fpga/fpga-image-load.rst
-> >> @@ -40,3 +40,9 @@ FPGA_IMAGE_LOAD_STATUS:
-> >>  Collect status for an on-going image upload. The status returned includes
-> >>  how much data remains to be transferred, the progress of the image load,
-> >>  and error information in the case of a failure.
-> >> +
-> >> +FPGA_IMAGE_LOAD_CANCEL:
-> >> +
-> >> +Request that a on-going image upload be cancelled. This IOCTL may return
-> > 		an
-> I'll fix it
-> >> +EBUSY if it cannot be cancelled by software or ENODEV if there is no update
-> >    -EBUSY					 -ENODEV
-> 
-> >From the userspace perspective, these are seen as positive errno numbers.
-> I think this is OK as is? If not, I need to change it in other places as well.
+Hello,
 
-I agree, just keep it.
+syzbot found the following issue on:
 
-> >
-> >> +in progress.
-> >> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
-> >> index 2e9a5a041535..a95d18077d58 100644
-> >> --- a/drivers/fpga/fpga-image-load.c
-> >> +++ b/drivers/fpga/fpga-image-load.c
-> >> @@ -46,6 +46,24 @@ static void fpga_image_dev_error(struct fpga_image_load *imgld, u32 err_code)
-> >>  	imgld->ops->cancel(imgld);
-> >>  }
-> >>  
-> >> +static int fpga_image_prog_transition(struct fpga_image_load *imgld,
-> >> +				      u32 new_progress)
-> >> +{
-> >> +	int ret = 0;
-> >> +
-> >> +	mutex_lock(&imgld->lock);
-> >> +	if (imgld->request_cancel) {
-> >> +		imgld->err_progress = imgld->progress;
-> >> +		imgld->err_code = FPGA_IMAGE_ERR_CANCELED;
-> >> +		imgld->ops->cancel(imgld);
-> > We could only cancel in 2 conditions.
-> > This is the first one: on progress transition.
-> >
-> >> +		ret = -ECANCELED;
-> >> +	} else {
-> >> +		imgld->progress = new_progress;
-> >> +	}
-> >> +	mutex_unlock(&imgld->lock);
-> >> +	return ret;
-> >> +}
-> >> +
-> >>  static void fpga_image_prog_complete(struct fpga_image_load *imgld)
-> >>  {
-> >>  	mutex_lock(&imgld->lock);
-> >> @@ -79,8 +97,10 @@ static void fpga_image_do_load(struct work_struct *work)
-> >>  		goto modput_exit;
-> >>  	}
-> >>  
-> >> -	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_WRITING);
-> >> -	while (imgld->remaining_size) {
-> >> +	if (fpga_image_prog_transition(imgld, FPGA_IMAGE_PROG_WRITING))
-> >> +		goto done;
-> >> +
-> >> +	while (imgld->remaining_size && !imgld->request_cancel) {
-> > This is the second condition: when we finished a block write. But if the
-> > low level driver accepts the whole block size, we cannot cancel in
-> > between.
-> >
-> > Actually the framework doesn't know when to successfully cancel an
-> > update. It depends on the hardware.
-> >
-> > So maybe the framework just calls cancel() immediately in IOCTL,
-> > let the low level driver decides if it is feasible and how to cancel.
-> 
-> Yes - I agree. This current implementation assumes too much about
-> the low-level driver. I have some ideas to try in the next patchset.
-> 
-> Thanks,
-> - Russ
-> >
-> > Thanks,
-> > Yilun
-> >
-> >>  		/*
-> >>  		 * The write_blk() op has the option to use the blk_size
-> >>  		 * value provided here, or to modify it to something more
-> >> @@ -105,7 +125,9 @@ static void fpga_image_do_load(struct work_struct *work)
-> >>  		cond_resched();
-> >>  	}
-> >>  
-> >> -	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_PROGRAMMING);
-> >> +	if (fpga_image_prog_transition(imgld, FPGA_IMAGE_PROG_PROGRAMMING))
-> >> +		goto done;
-> >> +
-> >>  	ret = imgld->ops->poll_complete(imgld);
-> >>  	if (ret != FPGA_IMAGE_ERR_NONE)
-> >>  		fpga_image_dev_error(imgld, ret);
-> >> @@ -178,8 +200,8 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
-> >>  	imgld->remaining_size = wb.size;
-> >>  	imgld->err_code = FPGA_IMAGE_ERR_NONE;
-> >>  	imgld->progress = FPGA_IMAGE_PROG_STARTING;
-> >> +	imgld->request_cancel = false;
-> >>  	queue_work(system_unbound_wq, &imgld->work);
-> >> -
-> >>  	return 0;
-> >>  
-> >>  exit_free:
-> >> @@ -208,7 +230,7 @@ static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
-> >>  				  unsigned long arg)
-> >>  {
-> >>  	struct fpga_image_load *imgld = filp->private_data;
-> >> -	int ret = -ENOTTY;
-> >> +	int ret = 0;
-> >>  
-> >>  	mutex_lock(&imgld->lock);
-> >>  
-> >> @@ -219,6 +241,17 @@ static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
-> >>  	case FPGA_IMAGE_LOAD_STATUS:
-> >>  		ret = fpga_image_load_ioctl_status(imgld, arg);
-> >>  		break;
-> >> +	case FPGA_IMAGE_LOAD_CANCEL:
-> >> +		if (imgld->progress == FPGA_IMAGE_PROG_PROGRAMMING)
-> >> +			ret = -EBUSY;
-> >> +		else if (imgld->progress == FPGA_IMAGE_PROG_IDLE)
-> >> +			ret = -ENODEV;
-> >> +		else
-> >> +			imgld->request_cancel = true;
-> >> +		break;
-> >> +	default:
-> >> +		ret = -ENOTTY;
-> >> +		break;
-> >>  	}
-> >>  
-> >>  	mutex_unlock(&imgld->lock);
-> >> @@ -249,6 +282,9 @@ static int fpga_image_load_release(struct inode *inode, struct file *filp)
-> >>  		goto close_exit;
-> >>  	}
-> >>  
-> >> +	if (imgld->progress != FPGA_IMAGE_PROG_PROGRAMMING)
-> >> +		imgld->request_cancel = true;
-> >> +
-> >>  	mutex_unlock(&imgld->lock);
-> >>  	flush_work(&imgld->work);
-> >>  
-> >> @@ -363,6 +399,9 @@ void fpga_image_load_unregister(struct fpga_image_load *imgld)
-> >>  		goto unregister;
-> >>  	}
-> >>  
-> >> +	if (imgld->progress != FPGA_IMAGE_PROG_PROGRAMMING)
-> >> +		imgld->request_cancel = true;
-> >> +
-> >>  	mutex_unlock(&imgld->lock);
-> >>  	flush_work(&imgld->work);
-> >>  
-> >> diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
-> >> index 8b58365893fc..8ba39d3299d9 100644
-> >> --- a/include/linux/fpga/fpga-image-load.h
-> >> +++ b/include/linux/fpga/fpga-image-load.h
-> >> @@ -53,6 +53,7 @@ struct fpga_image_load {
-> >>  	u32 progress;
-> >>  	u32 err_progress;		/* progress at time of error */
-> >>  	u32 err_code;			/* image load error code */
-> >> +	bool request_cancel;
-> >>  	bool driver_unload;
-> >>  	struct eventfd_ctx *finished;
-> >>  	void *priv;
-> >> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
-> >> index dc0c9f1d78b1..da8a7452c29a 100644
-> >> --- a/include/uapi/linux/fpga-image-load.h
-> >> +++ b/include/uapi/linux/fpga-image-load.h
-> >> @@ -70,4 +70,6 @@ struct fpga_image_status {
-> >>  
-> >>  #define FPGA_IMAGE_LOAD_STATUS	_IOR(FPGA_IMAGE_LOAD_MAGIC, 1, struct fpga_image_status)
-> >>  
-> >> +#define FPGA_IMAGE_LOAD_CANCEL	_IO(FPGA_IMAGE_LOAD_MAGIC, 2)
-> >> +
-> >>  #endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
-> >> -- 
-> >> 2.25.1
+HEAD commit:    d9fb678414c0 Merge tag 'afs-fixes-20210913' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=131c754b300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f0de362a1f17687e
+dashboard link: https://syzkaller.appspot.com/bug?extid=398e7dc692ddbbb4cfec
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145650d1300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105ccde7300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888114032e00 (size 256):
+  comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
+    08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
+  backtrace:
+    [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
+    [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
+    [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
+    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+    [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
+    [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
+    [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
+    [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+
+BUG: memory leak
+unreferenced object 0xffff888116f06900 (size 32):
+  comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
+  hex dump (first 32 bytes):
+    75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
+    [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
+    [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
+    [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
+    [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
+    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
