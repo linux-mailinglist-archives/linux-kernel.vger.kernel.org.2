@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397B6418786
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1E1418789
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhIZIre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 04:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
+        id S229872AbhIZIrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 04:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhIZIrd (ORCPT
+        with ESMTP id S229551AbhIZIrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 04:47:33 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36477C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:45:57 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id w8so14728209pgf.5
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:45:57 -0700 (PDT)
+        Sun, 26 Sep 2021 04:47:35 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A4CC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:45:59 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id il14-20020a17090b164e00b0019c7a7c362dso9811129pjb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:45:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=ixyywPIV+6DgQgfwZcIjPL8CPcYQ0h4CiC/Eg8U6OBY=;
-        b=qvnS8pJrMesReK/0WbnpWCOzMI1DNOHZo9ogd00NHpLisWWmCpesAzSbUk86C3ue6V
-         tzNboRcENaOoSHUPM6zlpxJAsVCAA4XNBa3RZeaxm+T7pJJ63NmqOfz4cw1FjUoXJnei
-         YSCSo+X6KZKvjkZB7f/36sWqi9jTsP8bgMJ9uibuupjjn15gR8NE6GUpyONAC18HJO+2
-         9yRWomftLulBu5Fa2ASGdd959WJpXwfyuJ7TpDcaKWOb6rigGFfnp0pWHM9rk4lagClO
-         3bToe6KnfO+aKEjHzVY3Y4t6oYjLRRhRs/gt7y/P6ANkQqQEibrBd06krY6FCRwoSN9P
-         83+A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=QlTGzxKBukKaEhh3Mo3v5AdCgAwPnT3D7ocNVWJAYkk=;
+        b=qkFWpjue2+KPPMXsrqPthuBsIOtr6oe1XcU1t0Ac2pz8uZpGVZShEqjqLkpZ+vR/cW
+         U9bkb/YhGoNsPKQ2ZviADp9Hi59vsddw/7wG5nxo9LebcrYI/uR2M1lp8MlvlRhctTvu
+         B+j7ULNEVyG3ZGw8cKggGzm3NvQOUVf6hjvH0b+V+j5hTy7Jl3XmJoig9QWOMP1uNSJg
+         aqnQq+R+4oZLFkZQxMrWiAJII6NLeq0buVia/CC1H9csiOyeCp9OM9xRcetnlLI7zEq1
+         abrfXU8DvrzLC/oULk85PGcSb7v7r6wfrg1i8XuOvEfrRiLM9/GRGtJfgbr3RdRMOCN1
+         SxoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ixyywPIV+6DgQgfwZcIjPL8CPcYQ0h4CiC/Eg8U6OBY=;
-        b=7KZUu5izOkA9qSFUOS2Nzh2Rf2WiHZu4Mi8SzBC9x8rwXcWJdcGaY0xYj865eTDOcY
-         8zTrYrDcja53RbFSn7zT3OcZAFNPuc8dANbs/be4LhIXyjeIW1nt9bhuABGgF0sJgOrz
-         uqYoPTm/9DuXLnoYP5iQ7zn5IpWt3vcYFXZbAr4piYXlygtSmBpE5kTALRto9HWubbKI
-         pxoxCSvoNjg6aZN8UakP5Ur0ov5TGKKAArubwJNHNHN807K/5GVrryluXK7NosJdRLZk
-         UKK8/DCuwXQeKfAIcxo5D/DPzoME+M/2bzwQh8vVuVBbo2KXbUV15mJaJpEhvMP9FjuU
-         KDwg==
-X-Gm-Message-State: AOAM533ZTJKCqaSO192GiDlPOJm9qZz12ne3aO/PCTBJK3ZVBctTBSv2
-        d+7K5UNv+sG8bcxozgPZtb/VvA==
-X-Google-Smtp-Source: ABdhPJwqjEj0iNDPPyoZeOaSvKoByGRgIuZxkPWmOqsAc4GCZu9Cx+5Q42ztZcBaqN85LlbjiDBmlw==
-X-Received: by 2002:a62:19d4:0:b0:43d:1bb7:13ae with SMTP id 203-20020a6219d4000000b0043d1bb713aemr17778982pfz.63.1632645956699;
-        Sun, 26 Sep 2021 01:45:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=QlTGzxKBukKaEhh3Mo3v5AdCgAwPnT3D7ocNVWJAYkk=;
+        b=heILIyWPtBJXNXFrI24tZux6u3d+fdTSidiPtZNdsb2Sh59p7mU1TO473rTS9fdpJA
+         uvh6TL/hI+3zHubAhEXz37STv4inAc/udYzLbYuDK1PSAGCjZ3Ey2fK8mnKSGJJVPMrT
+         znuaBFUuzfkxe6C/RLFJn+BV3Z1tiXz4nk2AgWjIgV8ZFnTW5DF8HqMvU/X+pOdWSlJk
+         Dtaeuj9Yrd/ks2SLW87y//VerQlIoxHxt+7+lSel8XEHhnA6Q50SP/OWB7yFTYNni82M
+         zTDWpQJ64LOxb+6bZgyFox+INq5Rc0WqCMUOvqra/nhbsKTfUNWpXA2CEqQag8IpLpWi
+         GnEA==
+X-Gm-Message-State: AOAM531kvHsQRdQluz7jQJO8CHOSKtsY05s3hQheZq+bXRpkkRhtFH6L
+        5nbEDFFRsqtP9fcG++/d0NConmsEJBjQZQ==
+X-Google-Smtp-Source: ABdhPJwAX9k3BtfR7VGvCfSAjC8sm4WVfz9zbmvkwo43fhYxRQ1PQatRUIeBuufZqhQoDbo1/I5IdQ==
+X-Received: by 2002:a17:902:b789:b0:13b:90bc:f184 with SMTP id e9-20020a170902b78900b0013b90bcf184mr17348375pls.31.1632645959352;
+        Sun, 26 Sep 2021 01:45:59 -0700 (PDT)
 Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id c7sm8940402pfc.104.2021.09.26.01.45.54
+        by smtp.gmail.com with ESMTPSA id c7sm8940402pfc.104.2021.09.26.01.45.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 01:45:56 -0700 (PDT)
+        Sun, 26 Sep 2021 01:45:59 -0700 (PDT)
 From:   Shawn Guo <shawn.guo@linaro.org>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -54,24 +55,45 @@ Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Kathiravan T <kathirav@codeaurora.org>,
         devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 0/2] Add PM2250 qcom_smd regulators 
-Date:   Sun, 26 Sep 2021 16:45:47 +0800
-Message-Id: <20210926084549.29880-1-shawn.guo@linaro.org>
+Subject: [PATCH 1/2] dt-bindings: regulator: Document PM2250 smd-rpm regulators
+Date:   Sun, 26 Sep 2021 16:45:48 +0800
+Message-Id: <20210926084549.29880-2-shawn.guo@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210926084549.29880-1-shawn.guo@linaro.org>
+References: <20210926084549.29880-1-shawn.guo@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The series adds Qualcomm PM2250 smd-rpm regulators support.
+Document compatible for PM2250 smd-rpm regulators and list all of them.
 
-Shawn Guo (2):
-  dt-bindings: regulator: Document PM2250 smd-rpm regulators
-  regulator: qcom_smd: Add PM2250 regulators
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+ .../devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- .../regulator/qcom,smd-rpm-regulator.yaml     |  4 ++
- drivers/regulator/qcom_smd-regulator.c        | 49 +++++++++++++++++++
- 2 files changed, 53 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
+index 83b53579f463..f052e03be402 100644
+--- a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
+@@ -65,6 +65,9 @@ description:
+   For pms405, s1, s2, s3, s4, s5, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
+   l12, l13
+ 
++  For pm2250, s1, s2, s3, s4, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
++  l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22
++
+ maintainers:
+   - Kathiravan T <kathirav@codeaurora.org>
+ 
+@@ -86,6 +89,7 @@ properties:
+       - qcom,rpm-pmi8994-regulators
+       - qcom,rpm-pmi8998-regulators
+       - qcom,rpm-pms405-regulators
++      - qcom,rpm-pm2250-regulators
+ 
+ patternProperties:
+   ".*-supply$":
 -- 
 2.17.1
 
