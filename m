@@ -2,165 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E7741897C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 16:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F69C418985
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 16:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhIZOgb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 26 Sep 2021 10:36:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231743AbhIZOga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 10:36:30 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 679D560EE0;
-        Sun, 26 Sep 2021 14:34:52 +0000 (UTC)
-Date:   Sun, 26 Sep 2021 15:38:41 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Nuno Sa <Nuno.Sa@analog.com>
-Subject: Re: [PATCH v4 00/16] Bring external triggers support to
- MAX1027-like ADCs
-Message-ID: <20210926153841.48b60e5b@jic23-huawei>
-In-Reply-To: <20210921115408.66711-1-miquel.raynal@bootlin.com>
-References: <20210921115408.66711-1-miquel.raynal@bootlin.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231874AbhIZOmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 10:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231849AbhIZOmq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 10:42:46 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF5BC061570;
+        Sun, 26 Sep 2021 07:41:10 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632667266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hvxujl/WR9NE4z9yR3CG2NsuD0b1CscqQ9FonpyX/t8=;
+        b=tO78wZ3Oimkqfmo32SdwkVOF2u/4YvsMWW2EXJfAPODt9bSIgiRTcNErsZUgyFLIGVv/Cg
+        Di1LV7baxeht89PKwwHXAbFVgWi5S4IPzVbrk5Z2i7HfxZJlm2ell/1R1y06Q+zSHs1T6m
+        uE4gD1ECNgKECGHjZCQ8ip1ZtAnJLeEvg2bxcTIYTlgBMfjTQDg9fdZ49GPfsbCYaYUlOW
+        xAs6yJth3Jvgt6Sqbfoap6j5qnvc1nHDaQmYbuUemVtsSqNsEXWUW8RoB0kRC4VAPNZJmp
+        C4F+dcTMCSSeijZMlO4+mBM7HnIxNocVovtnxQAQByV9gLl7DVH+0x4Jc/NpDg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632667266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hvxujl/WR9NE4z9yR3CG2NsuD0b1CscqQ9FonpyX/t8=;
+        b=tdgMfNN+QcT4fi/5uor+BX9eFf6MqMfFfSFACxG9tQhS5/lYAY9zYIxJTeRg9vtexB8PPb
+        F2lwNbzM65TLgfDQ==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
+In-Reply-To: <20210913200132.3396598-12-sohil.mehta@intel.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-12-sohil.mehta@intel.com>
+Date:   Sun, 26 Sep 2021 16:41:05 +0200
+Message-ID: <874ka7csce.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021 13:53:52 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
+> Add a new system call to allow applications to block in the kernel and
+> wait for user interrupts.
+>
+> <The current implementation doesn't support waking up from other
+> blocking system calls like sleep(), read(), epoll(), etc.
+>
+> uintr_wait() is a placeholder syscall while we decide on that
+> behaviour.>
 
-> Until now the max1027.c driver, which handles 10-bit devices (max10xx)
-> and 12-bit devices (max12xx), only supported internal triggers. When the
-> hardware trigger is not wired it is very convenient to use external
-> triggers. Overall, when several values are needed at the same time,
-> using triggers and buffers improves quite a lot the performances.
-> 
-> This series does a bit of cleaning/code reorganization before actually
-> bringing more flexibility to the driver, up to the point where it is
-> possible to use an external trigger, even without the IRQ line wired.
-> 
-> This series is currently based on a v5.15-rc1 kernel and the external
-> triggering mechanism has been tested on a custom board where the IRQ and
-> the EOC lines have not been populated.
-> 
-> How to test sysfs triggers:
->     echo 0 > /sys/bus/iio/devices/iio_sysfs_trigger/add_trigger
->     cat /sys/bus/iio/devices/iio_sysfs_trigger/trigger0/name > \
->         /sys/bus/iio/devices/iio:device0/trigger/current_trigger
->     echo 1 > /sys/bus/iio/devices/iio:device0/scan_elements/in_voltageX_en
->     echo 1 > /sys/bus/iio/devices/iio:device0/scan_elements/in_voltageY_en
->     echo 1 > /sys/bus/iio/devices/iio:device0/buffer/enable
->     cat /dev/iio\:device0 > /tmp/data &
->     echo 1 > /sys/bus/iio/devices/trigger0/trigger_now
->     od -t x1 /tmp/data
-> 
+Which behaviour? You cannot integrate this into [clock_]nanosleep() by
+any means or wakeup something which is blocked in read(somefd) via
+SENDUIPI.
 
-Series applied to the togreg branch of iio.git and pushed out as testing
-to see if 0-day can find anything we missed.
+What you can do is implement read() and poll() support for the
+uintrfd. Anything else is just not going to fly.
 
-Thanks for persisting on this one.
+Adding support for read/poll is pretty much a straight forward variant
+of a correctly implemented wait()/wakeup() mechanism.
 
-Jonathan
+While poll()/read() support might be useful and poll() also provides a
+timeout, having an explicit (timed) wait mechanism might be interesting.
 
-> Cheers,
-> Miquèl
-> 
-> Changes in v4:
-> * Full rework again of the last few patches bringing external triggers
->   support according to Jonathan's reviews: trigger handling (internal
->   or external) should be in a dedicated helper to keep the exchanges
->   between the IIO core and the drivers standards. This also improves
->   reusability and now the max1027 trigger can also be used to trigger
->   other IIO devices.
-> 
-> Changes in v3:
-> * Rebased on top of v5.15-rc1.
-> * Dropped the useless change from devm_kmalloc to kmalloc because I
->   thought devm_kmalloc allocations were still not suitable for DMA
->   purposes.
-> * Added a comment explaining the use of the available and active masks
->   in the code as suggested by Jonathan.
-> * Released the lock used in iio_device_claim_direct_mode() in the two
->   error paths.
-> * Did not move the call to reinit_completion before
->   wait_for_completion_timeout() as advised by Nuno because the
->   triggering is done before entering the waiting thread, so there is a
->   world were we reinit a completion object right before waiting for it
->   (which would lead to a timeout).
-> * Deeply rewored the various handlers (see my answer to
->   "[PATCH v2 15/16] iio: adc: max1027: Add support for external  triggers"
-> 
-> Changes in v2:
-> [All]
-> * Overall quite a few changes, I'll try to list them here but I made
->   significant changes on the last few commits so it's hard to have an
->   exhaustive and detailed list.
-> * Simplified the return statements as advised by Nuno.
-> * Dropped useless debug messages.
-> * Used iio_trigger_validate_own_device() instead of an internal
->   variable when possible.
-> * Added Nuno's Reviewed-by's when relevant.
-> [Created a new patch to fix the style]
-> [Created a new patch to ensure st->buffer is DMA-safe]
-> [Push only the requested samples]
-> * Dropped a useless check over active_scan_mask mask in
->   ->set_trigger_state().  
-> * Dropped the st->buffer indirection with a missing __be16 type.
-> * Do not push only the requested samples in the IIO buffers, rely on the
->   core to handle this by providing additional 'available_scan_masks'
->   instead of dropping this entry from the initial setup.
-> [Create a helper to configure the trigger]
-> * Avoided messing with new lines.
-> * Dropped cnvst_trigger, used a function parameter instead.
-> [Prevent single channel accesses during buffer reads]
-> * Used iio_device_claim_direct_mode() when relevant.
-> * Dropped the extra iio_buffer_enabled() call.
-> * Prevented returning with a mutex held.
-> [Introduce an end of conversion helper]
-> * Moved the check against active scan mask to the very end of the series
->   where we actually make use of it.
-> * Moved the Queue declaration to another patch.
-> [Dropped the patch: Prepare re-using the EOC interrupt]
-> [Consolidate the end of conversion helper]
-> * Used a dynamic completion object instead of a static queue.
-> * Reworded the commit message to actually describe what this commit
->   does.
-> [Support software triggers]
-> * Dropped the patch and replaced it with something hopefully close to
->   what Jonathan and Nuno described in their reviews.
-> [Enable software triggers to be  used without IRQ]
-> * Wrote a more generic commit message, not focusing on software
->   triggers.
-> 
-> Miquel Raynal (16):
->   iio: adc: max1027: Fix style
->   iio: adc: max1027: Drop extra warning message
->   iio: adc: max1027: Drop useless debug messages
->   iio: adc: max1027: Minimize the number of converted channels
->   iio: adc: max1027: Rename a helper
->   iio: adc: max1027: Create a helper to enable/disable the cnvst trigger
->   iio: adc: max1027: Simplify the _set_trigger_state() helper
->   iio: adc: max1027: Ensure a default cnvst trigger configuration
->   iio: adc: max1027: Create a helper to configure the channels to scan
->   iio: adc: max1027: Prevent single channel accesses during buffer reads
->   iio: adc: max1027: Separate the IRQ handler from the read logic
->   iio: adc: max1027: Introduce an end of conversion helper
->   iio: adc: max1027: Stop requesting a threaded IRQ
->   iio: adc: max1027: Use the EOC IRQ when populated for single reads
->   iio: adc: max1027: Allow all kind of triggers to be used
->   iio: adc: max1027: Don't reject external triggers when there is no IRQ
-> 
->  drivers/iio/adc/max1027.c | 286 +++++++++++++++++++++++++++-----------
->  1 file changed, 205 insertions(+), 81 deletions(-)
-> 
+But that brings me to an interesting question. There are two cases:
 
+ 1) The task installed a user space interrupt handler. Now it
+    want's to play nice and yield the CPU while waiting.
+
+    So it needs to reinstall the UINV vector on return to user and
+    update UIRR, but that'd be covered by the existing mechanism. Fine.
+
+ 2) Task has no user space interrupt handler installed and just want's
+    to use that wait mechanism.
+
+    What is consuming the pending bit(s)? 
+
+    If that's not a valid use case, then the wait has to check for that
+    and reject the syscall with EINVAL.
+
+    If it is valid, then how are the pending bits consumed and relayed to
+    user space?
+
+The same questions arise when you think about implementing poll/read
+support simply because the regular poll/read semantics are:
+
+  poll waits for the event and read consumes the event
+
+which would be similar to #2 above, but with an installed user space
+interrupt handler the return from the poll system call would consume the
+event immediately (assumed that UIF is set).
+
+Thanks,
+
+        tglx
