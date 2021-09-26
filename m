@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9DF4186C5
+	by mail.lfdr.de (Postfix) with ESMTP id A05F44186C7
 	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhIZGxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 02:53:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229879AbhIZGxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 02:53:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10DCB60EFF;
-        Sun, 26 Sep 2021 06:51:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632639114;
-        bh=gVidkyb0TWHeyFaqlS+HQ7fVRPERCbmqPvMjmlYgrI8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U3FbnnrgrbkQnoP7Czee/vvG5Y0NdqEJza6p8WFDSPIgDNdO6FvCOncS9qtts1eTx
-         JcaclcQpOtbZcHMskroBP564psTjCc+EmjDuf6eGgMJxBN6ejsUFPFkOyP/eO2q1zG
-         tP0lLHaAqQAoEf5jDmj2jy6k0HcBYbyS8AFAinZ8=
-Date:   Sun, 26 Sep 2021 08:51:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Michael Estner <michaelestner@web.de>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] avoid crashing the kernel
-Message-ID: <YVAYgp+XnCkjPigd@kroah.com>
-References: <20210925200433.8329-1-michaelestner@web.de>
+        id S231167AbhIZGyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 02:54:04 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:34918 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229879AbhIZGyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 02:54:00 -0400
+Received: from BC-Mail-Ex11.internal.baidu.com (unknown [172.31.51.51])
+        by Forcepoint Email with ESMTPS id C07ABCB2A5B8EE19BD12;
+        Sun, 26 Sep 2021 14:52:22 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex11.internal.baidu.com (172.31.51.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Sun, 26 Sep 2021 14:52:22 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Sun, 26 Sep 2021 14:52:21 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Cristobal Forno <cforno12@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "Paul Mackerras" <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] ibmveth: Use dma_alloc_coherent() instead of kmalloc/dma_map_single()
+Date:   Sun, 26 Sep 2021 14:52:14 +0800
+Message-ID: <20210926065214.495-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210925200433.8329-1-michaelestner@web.de>
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex13.internal.baidu.com (172.31.51.53) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 10:04:30PM +0200, Michael Estner wrote:
-> To avoid chrashing the kernel I use WARN_ON instead.
-> 
-> Signed-off-by: Michael Estner <michaelestner@web.de>
-> ---
->  drivers/staging/most/i2c/i2c.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+Replacing kmalloc/kfree/dma_map_single/dma_unmap_single()
+with dma_alloc_coherent/dma_free_coherent() helps to reduce
+code size, and simplify the code, and coherent DMA will not
+clear the cache every time.
 
-Hi,
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+v1->v2: Remove extra change in Kconfig
 
-First off, thanks for the changes, but they need a bit more work.
+ drivers/net/ethernet/ibm/ibmveth.c | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
 
-Your subject line should match the others done for this file, so you
-need a "staging: most:" prefix like others.  To see this better, do:
-	git log --oneline the_file_i_am_touching.c
+diff --git a/drivers/net/ethernet/ibm/ibmveth.c b/drivers/net/ethernet/ibm/ibmveth.c
+index 3d9b4f99d357..3aedb680adb8 100644
+--- a/drivers/net/ethernet/ibm/ibmveth.c
++++ b/drivers/net/ethernet/ibm/ibmveth.c
+@@ -605,17 +605,13 @@ static int ibmveth_open(struct net_device *netdev)
+ 	}
+ 
+ 	rc = -ENOMEM;
+-	adapter->bounce_buffer =
+-	    kmalloc(netdev->mtu + IBMVETH_BUFF_OH, GFP_KERNEL);
+-	if (!adapter->bounce_buffer)
+-		goto out_free_irq;
+ 
+-	adapter->bounce_buffer_dma =
+-	    dma_map_single(&adapter->vdev->dev, adapter->bounce_buffer,
+-			   netdev->mtu + IBMVETH_BUFF_OH, DMA_BIDIRECTIONAL);
+-	if (dma_mapping_error(dev, adapter->bounce_buffer_dma)) {
+-		netdev_err(netdev, "unable to map bounce buffer\n");
+-		goto out_free_bounce_buffer;
++	adapter->bounce_buffer = dma_alloc_coherent(&adapter->vdev->dev,
++						    netdev->mtu + IBMVETH_BUFF_OH,
++						    &adapter->bounce_buffer_dma, GFP_KERNEL);
++	if (!adapter->bounce_buffer) {
++		netdev_err(netdev, "unable to alloc bounce buffer\n");
++		goto out_free_irq;
+ 	}
+ 
+ 	netdev_dbg(netdev, "initial replenish cycle\n");
+@@ -627,8 +623,6 @@ static int ibmveth_open(struct net_device *netdev)
+ 
+ 	return 0;
+ 
+-out_free_bounce_buffer:
+-	kfree(adapter->bounce_buffer);
+ out_free_irq:
+ 	free_irq(netdev->irq, netdev);
+ out_free_buffer_pools:
+@@ -702,10 +696,9 @@ static int ibmveth_close(struct net_device *netdev)
+ 			ibmveth_free_buffer_pool(adapter,
+ 						 &adapter->rx_buff_pool[i]);
+ 
+-	dma_unmap_single(&adapter->vdev->dev, adapter->bounce_buffer_dma,
+-			 adapter->netdev->mtu + IBMVETH_BUFF_OH,
+-			 DMA_BIDIRECTIONAL);
+-	kfree(adapter->bounce_buffer);
++	dma_free_coherent(&adapter->vdev->dev,
++			  adapter->netdev->mtu + IBMVETH_BUFF_OH,
++			  adapter->bounce_buffer, adapter->bounce_buffer_dma);
+ 
+ 	netdev_dbg(netdev, "close complete\n");
+ 
+-- 
+2.25.1
 
-
-Also take a look at the kernel documentation for how to write a good
-changelog text.  Your wording above needs some work...
-
-> diff --git a/drivers/staging/most/i2c/i2c.c b/drivers/staging/most/i2c/i2c.c
-> index 7042f10887bb..e1edd892f9fd 100644
-> --- a/drivers/staging/most/i2c/i2c.c
-> +++ b/drivers/staging/most/i2c/i2c.c
-> @@ -68,7 +68,7 @@ static int configure_channel(struct most_interface *most_iface,
->  	struct hdm_i2c *dev = to_hdm(most_iface);
->  	unsigned int delay, pr;
-> 
-> -	BUG_ON(ch_idx < 0 || ch_idx >= NUM_CHANNELS);
-> +	WARN_ON(ch_idx < 0 || ch_idx >= NUM_CHANNELS);
-
-You really aren't changing much here, for systems running with "panic on
-warn", right?
-
-To solve this correctly you should either:
-	- determine that these are impossible to hit and remove the test
-	  entirely
-	- determine that these are possible to hit, and turn them into a
-	  real test and handle the error properly.
-
-thanks,
-
-greg k-h
