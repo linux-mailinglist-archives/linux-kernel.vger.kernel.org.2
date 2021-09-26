@@ -2,101 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A873A4188D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79654188EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhIZMwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 08:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
+        id S231531AbhIZNAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 09:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhIZMvy (ORCPT
+        with ESMTP id S231450AbhIZNAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 08:51:54 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7AFC061772
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 05:50:11 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id g15so5835126vke.5
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 05:50:11 -0700 (PDT)
+        Sun, 26 Sep 2021 09:00:15 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E094C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 05:58:39 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id bj3-20020a17090b088300b0019e6603fe89so9679632pjb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 05:58:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=2We0R3YOEtfGO0N4TonRJQPc5H4OgkDk0mTHRTD6OTM=;
-        b=n9A41ZstqXgg8PDTZSriMLe8Ga9ziTQuX8m7MzvMokLezhbHMRV2vQoXL3VznnU4o9
-         RjxONXBXnf/Mv9wARewhAxlD15j/hZPTxiKdY/+0IdLqk8y/Mm8wQdkujfcWR7SgEsTn
-         wF+WPU7DfkJG6e9BGjD/ZV7eEdBqYkWPGrkCWK9/edrrWp7kn6AChKyuFEQwowYQlVSw
-         Hw4zWQLU7L3E738axntMMsLhtXsa1sAcOpm5/t1eaPHfLUYs1BaogCm3FPC8MIGg2YeH
-         ooENn95mPop0JQExhUN9BvZ0d/Dx/IWiwSbLHlDJ4E0M3YPOlIw7NHyuaFn3/EXWRyIc
-         GDYQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V+3JPP/qEjst6P3kdqUslUZDsJtrB7rfM+MHK2FemcU=;
+        b=mxZHKoBBbrBiaoQtw/wBSVbdCemxd3N1m0sT/3/tmW4YnLhsA/uUXnj8Aqaj0MUk+Q
+         Q9J2cWloxM/Vp4iJQJaRufXwPdEyV1Liex1kherOMXSBnPvOmf23qdINO+qIVH08+JR5
+         2DqaiaVi8+HYbAXzHCUlw8DZgTJtYTzUGUya8AuzD2aQhChHRCK8kdH575SDU4LHGxZc
+         2C0Hzg4xwjsInN6aGqba8eoeKvAKK51YIAIzSW3r+oBcUeV10yNOLn+d1SwKzDQ+T1Yd
+         MyvQfv2t/ECo/hoCXAj6GUFT7f28GSSU0YH9mQ10wc111bQ2kvnm6Wc8miwQqvVtAfJM
+         Aq6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=2We0R3YOEtfGO0N4TonRJQPc5H4OgkDk0mTHRTD6OTM=;
-        b=qDfLD9uTJW/ts+5EStRZC0l0Qvgkuv36uDAqGnpxWNwtkSpbEW6431NIWO634X/8D3
-         ENbeKnRbXibrI4IlFFJQ6egRW/yTVbitxCDL0+x7aNG+iOOxfH1NKsm1cBYkhUJzcjeP
-         J4gfWaBTRoellgDy/0CrZzCTQYutOUAvEvsNl+1lYIHpGTDqN/Bn4oRmd45P7NoW+mb6
-         OIrs4y8QA99L2g71fG8/u7plDF0l8kVVr8kfLMXPRlXzbChxV8RT5s2cBwdeAeTm0iCz
-         YXhGXayZGcjKRiW9FoevXV5unWwnEUA+eByIV1Md4dTIUOD5sH5llUhuhdU8i9Loied5
-         t6hA==
-X-Gm-Message-State: AOAM531/eZP8eB4Bdxw2vlTdyeGfQyCsT0YitJgsXNmG/auW9Fpx4M1A
-        pTWv98creIM2kmGdU+jr2dvWSmo6QXoCtzUKp6Y=
-X-Google-Smtp-Source: ABdhPJyLswJJ2oT5mx2j4/VaVCv1nnQC7bxoLzt8LFD/pStBUDHO41E4+NVlNp0yKvaXORqeT1K00bTnGB9ddAJk124=
-X-Received: by 2002:ac5:cbcf:: with SMTP id h15mr11188167vkn.0.1632660610000;
- Sun, 26 Sep 2021 05:50:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V+3JPP/qEjst6P3kdqUslUZDsJtrB7rfM+MHK2FemcU=;
+        b=MI45GTRtYlK2F/3q4T5KFQbK2I79p+b+3Ti96PGqNVAJyckr6iX1HOgvau+WuqOS7v
+         sDGQTC0U6epyJ2r5gyItCXxAstai/sWZapt0sld0gRUgpuBKk8FpIAnNdxOZyYMnyl+U
+         mMpatIpdJSl0kaMf2p2k5bYE5yFGXVOC9nIvP5WVSZX1we+KrJQGIAny2vG16qY/uaBn
+         2wf13tXw6JfCeMo1cbGiUs4WWvmr6cwclZ9pwDwKbtp9p6pNXWTbj38OZn1PcqcqNOao
+         9Xi0r2/ReBJPnhVXn0jNsb7yk+GaG3oWjQGPw6BtzWrJhqzrbdk6fEEgJCkioYwntHcQ
+         /zBg==
+X-Gm-Message-State: AOAM5332dCU3ZJ3RQ9ja5aL9KtKK5r4IPtHgQTyvAcTw6XfJJVuwzBAY
+        jXvNPh5kAxY686n/Zf9DdL8=
+X-Google-Smtp-Source: ABdhPJxJrrnR22arYrelpjajNT/NjOocjOeBm3+FEWwt3VRgsKtj5PGm5MrqT3+v/A7XhRPnh4mUKw==
+X-Received: by 2002:a17:902:b70d:b0:13d:f6c9:2066 with SMTP id d13-20020a170902b70d00b0013df6c92066mr9654270pls.2.1632661118473;
+        Sun, 26 Sep 2021 05:58:38 -0700 (PDT)
+Received: from localhost (g22.61-45-46.ppp.wakwak.ne.jp. [61.45.46.22])
+        by smtp.gmail.com with ESMTPSA id u12sm13971671pjr.2.2021.09.26.05.58.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 05:58:37 -0700 (PDT)
+Date:   Sun, 26 Sep 2021 21:58:35 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Victor Stinner <vstinner@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        GLIBC patches <libc-alpha@sourceware.org>
+Subject: Re: [PATCH] posix-cpu-timers: Fix spuriously armed 0-value itimer
+Message-ID: <YVBue6owgaW31Kdz@antec>
+References: <20210913145332.232023-1-frederic@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a59:b924:0:b0:234:90a1:e01a with HTTP; Sun, 26 Sep 2021
- 05:50:09 -0700 (PDT)
-Reply-To: mallyson2021@gmail.com
-From:   Mohamed Allyson <mohamed.allyson2015@gmail.com>
-Date:   Sun, 26 Sep 2021 13:50:09 +0100
-Message-ID: <CAHu39-R5cj_g6L7926v0sa4p27KWFjgGYApBwsH-XZHoZSSZAg@mail.gmail.com>
-Subject: I NEED YOUR URGENT RESPOND PLEASE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913145332.232023-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear Friend,
+Hello,
 
-My name is Mr.Mohamed Allyson. I have decided to seek a confidential
-co-operation  with you in the execution of the deal described
-here-under for our both  mutual benefit and I hope you will keep it a
-top secret because of the nature  of the transaction, During the
-course of our bank year auditing, I discovered  an unclaimed/abandoned
-fund, sum total of {US$19.3 Million United State  Dollars} in the bank
-account that belongs to a Saudi Arabia businessman Who unfortunately
-lost his life and entire family in a Motor Accident.
+Ccing libc-alpha,
 
-Now our bank has been waiting for any of the relatives to come-up for
-the claim but nobody has done that. I personally has been unsuccessful
-in locating any of the relatives, now, I sincerely seek your consent
-to present you as the next of kin / Will Beneficiary to the deceased
-so that the proceeds of this account valued at {US$19.3 Million United
-State Dollars} can be paid to you, which we will share in these
-percentages ratio, 60% to me and 40% to you. All I request is your
-utmost sincere co-operation; trust and maximum confidentiality to
-achieve this project successfully. I have carefully mapped out the
-moralities for execution of this transaction under a legitimate
-arrangement to protect you from any breach of the law both in your
-country and here in Burkina Faso when the fund is being transferred to
-your bank account.
+On Mon, Sep 13, 2021 at 04:53:32PM +0200, Frederic Weisbecker wrote:
+> Resetting/stopping an itimer eventually leads to it being reprogrammed
+> with an actual "0" value. As a result the itimer expires on the next
+> tick, triggering an unexpected signal.
 
-I will have to provide all the relevant document that will be
-requested to indicate that you are the rightful beneficiary of this
-legacy and our bank will release the fund to you without any further
-delay, upon your consideration and acceptance of this offer, please
-send me the following information as stated below so we can proceed
-and get this fund transferred to your designated bank account
-immediately.
+Thanks for this I just tracked down the same issue.
 
--Your Full Name:
--Your Contact Address:
--Your direct Mobile telephone Number:
--Your Date of Birth:
--Your occupation:
+I just wanted to give an FYI in case anyone else notices this.
 
-I await your swift response and re-assurance.
+This was causing gprof (gcc -pg) to fail.  I noticed this when running the glibc
+test suite, tests: gmon/tst-gmon-static, gmon/tst-gmon
 
-Best regards,
-Mr.Mohamed Allyson.
+Gprof uses ITIMER_PROF, as per:
+
+ - https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/posix/profil.c;h=fbf1184df1ccc6e1d2098f92c7d87fc28f5a8f09;hb=HEAD
+
+I was seeing the extra SIGPROF signal after profil de-registered the timer and
+signal handler.  The spurious signal causes all profiled programs to be killed
+and collect no gprof data.
+
+-Stafford
+
+> To fix this, make sure that
+> struct signal_struct::it[CPUCLOCK_PROF/VIRT]::expires is set to 0 when
+> setitimer() passes a 0 it_value, indicating that the timer must stop.
+> 
+> Reported-by: Victor Stinner <vstinner@redhat.com>
+> Fixes: 406dd42bd1ba ("posix-cpu-timers: Force next expiration recalc after itimer reset")
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/time/posix-cpu-timers.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
+> index ee736861b18f..643d412ac623 100644
+> --- a/kernel/time/posix-cpu-timers.c
+> +++ b/kernel/time/posix-cpu-timers.c
+> @@ -1404,7 +1404,8 @@ void set_process_cpu_timer(struct task_struct *tsk, unsigned int clkid,
+>  			}
+>  		}
+>  
+> -		*newval += now;
+> +		if (*newval)
+> +			*newval += now;
+>  	}
+>  
+>  	/*
+> -- 
+> 2.25.1
+> 
