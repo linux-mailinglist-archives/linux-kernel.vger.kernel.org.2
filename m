@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301044189BE
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB954189BF
 	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbhIZPLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 11:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        id S232089AbhIZPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 11:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbhIZPLj (ORCPT
+        with ESMTP id S232086AbhIZPLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 11:11:39 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3423C061604
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:10:02 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so1713909pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:10:02 -0700 (PDT)
+        Sun, 26 Sep 2021 11:11:45 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96740C06176A
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:10:08 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id w19so13367507pfn.12
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:10:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=POV4dFplbw6ELJOl+41DrdMsw0y9hP8afh20IruESsQ=;
-        b=DZ33ufHHvkvwef2Wf9KZOHEBYBDzUmajwq2xjDGdXQnIy358TrtirHA0DqhpV+wonG
-         BieR6M3POemWYPFyS8Wa+qO7uUF3cPXLrttjKYEfJ2JVUT1pax15GU8O/Gpl7TnGiJZX
-         V2DX++yBaBTIxkDbWqbsQxweL2tXGwd0tFX13yvgHBPTS9m72sBJs6MOkMv1/iGhP3tK
-         roKWAtM/LOQ7bk9o9KOc9y5Kum/9e/DYFrSCIUq6DKJQjwOFfJOI0xKw+yTY5ydXfkg6
-         PaacLpabA843V+p5XJU8VanD6nPhQdcc8K16lFa4JrZcDKlIK07EOPSQ2ftNdlVSKZvY
-         Y0FQ==
+        bh=pU/rHJIbAjH0/Ru2mlnqoPCdE3prShAHRDg+WW/jhCs=;
+        b=l2BS5emtxKn1mPwXVRZ+BTlqNIwczqCrBRwO7eXeadaGFF4/JIHJ/DZBUBfFrKWI18
+         4tt27NbughPvXr7bWpxlRwgjPua7exnKmX03zYBtol+K9hWLb1zMwCq4GOfznhd3DzDk
+         EzGusoJ17Vq308kgXesL0xTP0eF3bsk16mCFL9Z+tqsLhD0+qW0ZgurNimtLmkezTovJ
+         rHbpmJ30mi1SObG9/bOVKQ0VIqgryRNFUPGM2/1pixbv68Ic5DWodCcRLtWo9yoZYJjx
+         FLunRNBiXGsnHEQ11/hV5usQ/K3j7u+HOQxeNexMUOnvS9uxnvku+LGcsGSoKcJJGxZl
+         mp4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=POV4dFplbw6ELJOl+41DrdMsw0y9hP8afh20IruESsQ=;
-        b=zmQQnHLVFGHZBN/iFPbrEJKXSqdz6il4PBXLXagnws66dadzc8oxxP+PYxXC5gWNO0
-         2z+F3+V9VsbLpxxdg4a/F7SziHEmxlfJJCO4+EuMiZ+/WfgxB14TdHcC7MYv9sLxBctM
-         QOB6ouCo+EVYGlGSuA1hlIqvRfUKviW+UHtTH5zvzOw/z820nzpf3oFw8qg43u0lzn5T
-         8UJCoDCwB/yS735EGwVtD4luocytRirr9SsreDrFz8CHJ/w8rahf6SZOoPks3/cPztE4
-         SETikfyzhEAI+GqLX9aQ/pz8x095PXDe+86Dz/7RxsRf6qhbTiYtN+2EUZjFotmN8Q+T
-         dfSQ==
-X-Gm-Message-State: AOAM531wSXSXLLjiMZpJW3xyHMlce3CxzmR5jq7XmQEK5rjOzdm7972d
-        rP2cGJfj5NZ1nA9Ae/IKjDR7nDKAJ5KoQw==
-X-Google-Smtp-Source: ABdhPJyIIOD3gKj9VnwMpLHTRUSTMr3oM9DBxO1UjAi3K0BsMoX7bCCK2Vymkutpc4EnHW7h9ZYUqg==
-X-Received: by 2002:a17:902:e54f:b0:13c:a004:bc86 with SMTP id n15-20020a170902e54f00b0013ca004bc86mr18119331plf.78.1632669002106;
-        Sun, 26 Sep 2021 08:10:02 -0700 (PDT)
+        bh=pU/rHJIbAjH0/Ru2mlnqoPCdE3prShAHRDg+WW/jhCs=;
+        b=d0X7LaDxkDuCFYe/qWpJuxQwrWXIgYFPq/5SHRO3BiWc4a5hWLgxWNKl2aHlKvmioe
+         24Mw4Mp/joBoH7yuJ6a5+GfDgjBMRpiTq7pRp4Zc1ic9vUdAxPs5ftyPuAGqLyrp0/T+
+         5aAunKAsmX2JRuDL3LZgJzDEh2wfJWJ2ZbWsYzAXc8Mkb+YeaVaS7/ISUEN1lbrNDJDe
+         /Yrr/RXPRpMHImojYnOZtTyx4jExZzz2NBc1XeAhX32pJyB7VFSj+rfx0bRnx/jyOCPw
+         FWVkIvmJFuN6TofMwuDxyjlH3/fiEHIANwmqvTzkKz/4LPcAVL7PkG0PWrGNkjctylLs
+         MbOQ==
+X-Gm-Message-State: AOAM533Bn31cGPVAeQ6Vga2eXqyis9OyPalFPuR7FQ2oaCY1dvZTjssQ
+        3G9Qfqo+/kQuNYEopacaFRSPx/JCMr7Yyg==
+X-Google-Smtp-Source: ABdhPJyMZApaykyV7vmScJ2Wo7yWYepR6xzzK8Eh5PE/B4z9jhZl0OPV4aU1tCCSpoWd+2RAaQ/czg==
+X-Received: by 2002:a63:1d10:: with SMTP id d16mr12527613pgd.13.1632669008014;
+        Sun, 26 Sep 2021 08:10:08 -0700 (PDT)
 Received: from localhost ([47.88.60.64])
-        by smtp.gmail.com with ESMTPSA id i19sm14254954pfo.101.2021.09.26.08.10.00
+        by smtp.gmail.com with ESMTPSA id m186sm12587363pfb.165.2021.09.26.08.10.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Sep 2021 08:10:01 -0700 (PDT)
+        Sun, 26 Sep 2021 08:10:07 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [PATCH V2 12/41] x86/traps: Move pt_regs only in fixup_bad_iret()
-Date:   Sun, 26 Sep 2021 23:08:09 +0800
-Message-Id: <20210926150838.197719-13-jiangshanlai@gmail.com>
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH V2 13/41] x86/entry: Switch the stack after error_entry() returns
+Date:   Sun, 26 Sep 2021 23:08:10 +0800
+Message-Id: <20210926150838.197719-14-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20210926150838.197719-1-jiangshanlai@gmail.com>
 References: <20210926150838.197719-1-jiangshanlai@gmail.com>
@@ -73,95 +69,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Make fixup_bad_iret() works like sync_regs() which doesn't
-move the return address of error_entry().
+error_entry() calls sync_regs() to settle/copy the pt_regs and switches
+the stack directly after sync_regs().  But because error_entry() is also
+called from entry, the switching has to handle the return address together,
+which causes the behavior tangly.
 
-It is prepared later patch which implements the body of error_entry()
-in C code.  The fixup_bad_iret() can't handle return address when it
-is called from C code.
+Switching to the stack after error_entry() makes the code simpler and
+intuitive.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S    |  5 ++++-
- arch/x86/include/asm/traps.h |  2 +-
- arch/x86/kernel/traps.c      | 17 ++++++-----------
- 3 files changed, 11 insertions(+), 13 deletions(-)
+ arch/x86/entry/entry_64.S | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 291732f571a7..9921a823b2c6 100644
+index 9921a823b2c6..dd453a8e7317 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -1037,9 +1037,12 @@ SYM_CODE_START_LOCAL(error_entry)
+@@ -323,6 +323,8 @@ SYM_CODE_END(ret_from_fork)
+ .macro idtentry_body cfunc has_error_code:req
+ 
+ 	call	error_entry
++	movq	%rax, %rsp			/* switch stack settled by sync_regs() */
++	ENCODE_FRAME_POINTER
+ 	UNWIND_HINT_REGS
+ 
+ 	movq	%rsp, %rdi			/* pt_regs pointer into 1st argument*/
+@@ -979,19 +981,16 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	/* We have user CR3.  Change to kernel CR3. */
+ 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+ 
++	leaq	8(%rsp), %rdi			/* arg0 = pt_regs pointer */
+ .Lerror_entry_from_usermode_after_swapgs:
+ 	/* Put us onto the real thread stack. */
+-	popq	%r12				/* save return addr in %12 */
+-	movq	%rsp, %rdi			/* arg0 = pt_regs pointer */
+ 	call	sync_regs
+-	movq	%rax, %rsp			/* switch stack */
+-	ENCODE_FRAME_POINTER
+-	pushq	%r12
+ 	ret
+ 
+ .Lerror_entry_done_lfence:
+ 	FENCE_SWAPGS_KERNEL_ENTRY
+ .Lerror_entry_done:
++	leaq	8(%rsp), %rax			/* return pt_regs pointer */
+ 	ret
+ 
+ 	/*
+@@ -1037,12 +1036,9 @@ SYM_CODE_START_LOCAL(error_entry)
  	 * Pretend that the exception came from user mode: set up pt_regs
  	 * as if we faulted immediately after IRET.
  	 */
--	mov	%rsp, %rdi
-+	popq	%r12				/* save return addr in %12 */
-+	movq	%rsp, %rdi			/* arg0 = pt_regs pointer */
+-	popq	%r12				/* save return addr in %12 */
+-	movq	%rsp, %rdi			/* arg0 = pt_regs pointer */
++	leaq	8(%rsp), %rdi			/* arg0 = pt_regs pointer */
  	call	fixup_bad_iret
- 	mov	%rax, %rsp
-+	ENCODE_FRAME_POINTER
-+	pushq	%r12
+-	mov	%rax, %rsp
+-	ENCODE_FRAME_POINTER
+-	pushq	%r12
++	mov	%rax, %rdi
  	jmp	.Lerror_entry_from_usermode_after_swapgs
  SYM_CODE_END(error_entry)
  
-diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-index 6221be7cafc3..1cdd7e8bcba7 100644
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -13,7 +13,7 @@
- #ifdef CONFIG_X86_64
- asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs);
- asmlinkage __visible notrace
--struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s);
-+struct pt_regs *fixup_bad_iret(struct pt_regs *bad_regs);
- void __init trap_init(void);
- asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *eregs);
- #endif
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index cf852b5e347f..0afa16ea3702 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -759,13 +759,8 @@ asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *r
- }
- #endif
- 
--struct bad_iret_stack {
--	void *error_entry_ret;
--	struct pt_regs regs;
--};
--
- asmlinkage __visible noinstr
--struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s)
-+struct pt_regs *fixup_bad_iret(struct pt_regs *bad_regs)
- {
- 	/*
- 	 * This is called from entry_64.S early in handling a fault
-@@ -775,19 +770,19 @@ struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s)
- 	 * just below the IRET frame) and we want to pretend that the
- 	 * exception came from the IRET target.
- 	 */
--	struct bad_iret_stack tmp, *new_stack =
--		(struct bad_iret_stack *)__this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
-+	struct pt_regs tmp, *new_stack =
-+		(struct pt_regs *)__this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
- 
- 	/* Copy the IRET target to the temporary storage. */
--	__memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
-+	__memcpy(&tmp.ip, (void *)bad_regs->sp, 5*8);
- 
- 	/* Copy the remainder of the stack from the current stack. */
--	__memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
-+	__memcpy(&tmp, bad_regs, offsetof(struct pt_regs, ip));
- 
- 	/* Update the entry stack */
- 	__memcpy(new_stack, &tmp, sizeof(tmp));
- 
--	BUG_ON(!user_mode(&new_stack->regs));
-+	BUG_ON(!user_mode(new_stack));
- 	return new_stack;
- }
- #endif
 -- 
 2.19.1.6.gb485710b
 
