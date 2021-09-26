@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315714189EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CE54189F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbhIZPSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 11:18:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232081AbhIZPSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 11:18:15 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        id S231995AbhIZP1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 11:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231913AbhIZP1c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 11:27:32 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F70C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:25:56 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f244100fb10325199271b24.dip0.t-ipconnect.de [IPv6:2003:ec:2f24:4100:fb10:3251:9927:1b24])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB74B60F21;
-        Sun, 26 Sep 2021 15:16:37 +0000 (UTC)
-Date:   Sun, 26 Sep 2021 16:20:26 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, hdegoede@redhat.com, wens@csie.org,
-        andriy.shevchenko@linux.intel.com
-Subject: Re: [PATCH 0/5] iio: device-managed conversions with
- devm_iio_map_array_register()
-Message-ID: <20210926162026.3447e0bd@jic23-huawei>
-In-Reply-To: <20210903072917.45769-1-aardelean@deviqon.com>
-References: <20210903072917.45769-1-aardelean@deviqon.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CDC4F1EC065A;
+        Sun, 26 Sep 2021 17:25:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632669950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=BVzZ9QNfM/FF2wSmCvF517e0J/3++zPtXkU9aKuPgk8=;
+        b=bkhwCs7g1z3QHsUeDsR0vsC20FEYwA+4QN6y2FensmJ7GiR3Aw4K1hD31aerZM+ju/9Fam
+        nthNZLPfY2K+CaW0EBtEbIykTlKLkX5Vj2jiSBuOvaOYmF4pk1shgW7RhDxKQ2wX2c7hNq
+        bCNTAQOymJOtUCL8PIalaVcwFFvJ8sY=
+Date:   Sun, 26 Sep 2021 17:25:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        David Laight <David.Laight@aculab.com>,
+        Numfor Mbiziwo-Tiapo <nums@google.com>
+Subject: Re: [PATCH v4] x86/insn, tools/x86: Fix some potential undefined
+ behavior.
+Message-ID: <YVCQ+GGaPrLBMGRf@zn.tnic>
+References: <20210923161843.751834-1-irogers@google.com>
+ <YU4gyQg1ntTeTL98@kernel.org>
+ <20210925133944.a0648549c28b047bd9aeaeff@kernel.org>
+ <YVBgp57askJVro9S@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YVBgp57askJVro9S@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  3 Sep 2021 10:29:12 +0300
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
+On Sun, Sep 26, 2021 at 08:59:35AM -0300, Arnaldo Carvalho de Melo wrote:
+> So you want me to process it?
 
-> This change introduces a devm_iio_map_array_register() variant for the
-> iio_map_array_register() function.
-> 
-> And converts 4 drivers to full device-managed.
-> These 4 drivers only call iio_map_array_unregister() and
-> iio_device_unregister() in their remove hooks.
-> 
-> These 4 drivers should make a reasonably good case for introducing this
-> devm_iio_map_array_register() function.
-> 
-> There are 7 more drivers that would use the devm_iio_map_array_register()
-> function, but they require a bit more handling in the remove/unwinding
-> part.
-> So, those 7 are left for later.
+https://git.kernel.org/tip/5ba1071f7554c4027bdbd712a146111de57918de
 
-Series applied to the togreg branch of iio.git and pushed out as testing
-so 0-day can work it's magic.
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-
-Jonathan
-
-> 
-> Alexandru Ardelean (5):
->   iio: inkern: introduce devm_iio_map_array_register() short-hand
->     function
->   iio: adc: intel_mrfld_adc: convert probe to full device-managed
->   iio: adc: axp288_adc: convert probe to full device-managed
->   iio: adc: lp8788_adc: convert probe to full-device managed
->   iio: adc: da9150-gpadc: convert probe to full-device managed
-> 
->  .../driver-api/driver-model/devres.rst        |  1 +
->  drivers/iio/adc/axp288_adc.c                  | 28 +++--------------
->  drivers/iio/adc/da9150-gpadc.c                | 27 ++--------------
->  drivers/iio/adc/intel_mrfld_adc.c             | 24 ++------------
->  drivers/iio/adc/lp8788_adc.c                  | 31 +++----------------
->  drivers/iio/inkern.c                          | 17 ++++++++++
->  include/linux/iio/driver.h                    | 14 +++++++++
->  7 files changed, 45 insertions(+), 97 deletions(-)
-> 
-
+https://people.kernel.org/tglx/notes-about-netiquette
