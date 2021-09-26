@@ -2,61 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42644186E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782A54186E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhIZHSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 03:18:07 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:44605 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230035AbhIZHSF (ORCPT
+        id S231216AbhIZHTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 03:19:02 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:26338 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231176AbhIZHTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 03:18:05 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UpaywW-_1632640586;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UpaywW-_1632640586)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 26 Sep 2021 15:16:28 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     airlied@linux.ie
-Cc:     daniel@ffwll.ch, Felix.Kuehling@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] drm/amdkfd: fix resource_size.cocci warnings
-Date:   Sun, 26 Sep 2021 15:16:20 +0800
-Message-Id: <1632640580-61609-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sun, 26 Sep 2021 03:19:00 -0400
+Received: from pop-os.home ([90.126.248.220])
+        by mwinf5d82 with ME
+        id yXHM2500F4m3Hzu03XHM0b; Sun, 26 Sep 2021 09:17:23 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 26 Sep 2021 09:17:23 +0200
+X-ME-IP: 90.126.248.220
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] thermal: intel_powerclamp: Use bitmap_zalloc/bitmap_free when applicable
+Date:   Sun, 26 Sep 2021 09:17:20 +0200
+Message-Id: <f7513027ae9242643b5ddb6ed48a3aeca1b0f2a8.1632640557.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use resource_size function on resource object
-instead of explicit computation.
+'cpu_clamping_mask' is a bitmap. So use 'bitmap_zalloc()' and
+'bitmap_free()' to simplify code, improve the semantic of the code and
+avoid some open-coded arithmetic in allocator arguments.
 
-Clean up coccicheck warning:
-./drivers/gpu/drm/amd/amdkfd/kfd_migrate.c:905:10-13: ERROR: Missing
-resource_size with res
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_migrate.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/thermal/intel/intel_powerclamp.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
-index 4a16e3c..f53e17a 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
-@@ -901,8 +901,7 @@ int svm_migrate_init(struct amdgpu_device *adev)
+diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
+index a5b58ea89cc6..9b68489a2356 100644
+--- a/drivers/thermal/intel/intel_powerclamp.c
++++ b/drivers/thermal/intel/intel_powerclamp.c
+@@ -705,10 +705,8 @@ static enum cpuhp_state hp_state;
+ static int __init powerclamp_init(void)
+ {
+ 	int retval;
+-	int bitmap_size;
  
- 		/* Disable SVM support capability */
- 		pgmap->type = 0;
--		devm_release_mem_region(adev->dev, res->start,
--					res->end - res->start + 1);
-+		devm_release_mem_region(adev->dev, res->start, resource_size(res));
- 		return PTR_ERR(r);
- 	}
+-	bitmap_size = BITS_TO_LONGS(num_possible_cpus()) * sizeof(long);
+-	cpu_clamping_mask = kzalloc(bitmap_size, GFP_KERNEL);
++	cpu_clamping_mask = bitmap_zalloc(num_possible_cpus(), GFP_KERNEL);
+ 	if (!cpu_clamping_mask)
+ 		return -ENOMEM;
  
+@@ -753,7 +751,7 @@ static int __init powerclamp_init(void)
+ exit_unregister:
+ 	cpuhp_remove_state_nocalls(hp_state);
+ exit_free:
+-	kfree(cpu_clamping_mask);
++	bitmap_free(cpu_clamping_mask);
+ 	return retval;
+ }
+ module_init(powerclamp_init);
+@@ -764,7 +762,7 @@ static void __exit powerclamp_exit(void)
+ 	cpuhp_remove_state_nocalls(hp_state);
+ 	free_percpu(worker_data);
+ 	thermal_cooling_device_unregister(cooling_dev);
+-	kfree(cpu_clamping_mask);
++	bitmap_free(cpu_clamping_mask);
+ 
+ 	cancel_delayed_work_sync(&poll_pkg_cstate_work);
+ 	debugfs_remove_recursive(debug_dir);
 -- 
-1.8.3.1
+2.30.2
 
