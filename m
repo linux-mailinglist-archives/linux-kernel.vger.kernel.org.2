@@ -2,152 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FAC41878C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF5C4187A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 11:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhIZIrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 04:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhIZIri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 04:47:38 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F4EC061575
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:46:02 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id a7so9629663plm.1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 01:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ad+SGXOr75O4oi8AW9D35FvdvCg+d9KXZUgQG27xE7g=;
-        b=Bjge5gm67WqADWQkGpgueTkutmwJdorUZ7HVPtzUFd8+zA95cFGf6cM/jXZLRQ/HCs
-         8Ld3gqSIsw6d3z6LCUjrL3rbaYCn9Sj7m7ZG0XXCKcjO9lzdWrJ9tfIfA5/tnLOrhZVc
-         6yRmdqnDwI8mdoBckQVIjNcd+nO9mMa1rsL+5QdpSkogaiL6bO2ejTGPSWtmn8/9vX9h
-         +LfyTJNlyCFeLKVrtTg8PcfBkckX3XcGqjhaUYld0QnuTxC4pHmkhNmFvVGnmzcbPQRX
-         do7pt/gW/mOWAeFOUiZL3nACKF89jzhHau9PWfWW6s4sZ+vAQKZzEjyZcsIuWh1WUgLS
-         P95A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ad+SGXOr75O4oi8AW9D35FvdvCg+d9KXZUgQG27xE7g=;
-        b=CKZbmIncBGhLfpFXtxrQjNqCZUPND/EZ/USXdQJeDEcZIPuyBRdUGQAOMLP5QCYipD
-         nJuiJN1n6qDfboQ3jgNVO4jZbACC4ImrAcHKtSFEdPBgIXopustyTBd/NQ9hyauEz8x8
-         CbkEhpmTCWfwULRLhLeuOQmBatGKk25ffr2AxAc3SfJO8CEWxVKd1G0OZVGc6YNv4ytf
-         v7Ww75c87BXoDpu4huzX5XwcVGj2+eBR0bxSzqaORfn7R1R9U+67TFzmMYY9DiAEZWwr
-         HoGm22a5KhsbLUCIwCdUFRstpGxPG7wQw9zZvPLPjprhW2Ri3X83qhe8jnLtvDeJI6aE
-         hhSA==
-X-Gm-Message-State: AOAM5316FmdSVluyQ7xRLhoD9Fea6KnBMCzbIeU25F0kmTRSOWrfXo5I
-        Gi6Oy3Nj4hT1L4oWtf5qgMNlgQ==
-X-Google-Smtp-Source: ABdhPJypYGuB0ypNrY7ewkowmmyTnaj/YBcgt0lcMSlNga+Pbx5C6PYw6nrsJfl4tnSZqwMpTSRF4Q==
-X-Received: by 2002:a17:90a:1a4c:: with SMTP id 12mr12594574pjl.89.1632645962102;
-        Sun, 26 Sep 2021 01:46:02 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id c7sm8940402pfc.104.2021.09.26.01.45.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 01:46:01 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Kathiravan T <kathirav@codeaurora.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 2/2] regulator: qcom_smd: Add PM2250 regulators
-Date:   Sun, 26 Sep 2021 16:45:49 +0800
-Message-Id: <20210926084549.29880-3-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210926084549.29880-1-shawn.guo@linaro.org>
-References: <20210926084549.29880-1-shawn.guo@linaro.org>
+        id S229755AbhIZJEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 05:04:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229551AbhIZJEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 05:04:07 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F4DC60FC1;
+        Sun, 26 Sep 2021 09:02:31 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mUQ3J-00D1iV-6U; Sun, 26 Sep 2021 10:02:29 +0100
+Date:   Sun, 26 Sep 2021 10:02:28 +0100
+Message-ID: <877df3btgb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 07/14] KVM: Don't block+unblock when halt-polling is successful
+In-Reply-To: <80d90ee6-0d43-3735-5c26-be8c3d72d493@redhat.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+        <20210925005528.1145584-8-seanjc@google.com>
+        <878rzlass2.wl-maz@kernel.org>
+        <80d90ee6-0d43-3735-5c26-be8c3d72d493@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, paulus@ozlabs.org, borntraeger@de.ibm.com, frankja@linux.ibm.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, david@redhat.com, cohuck@redhat.com, imbrenda@linux.ibm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org, dmatlack@google.com, jingzhangos@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PM2250 is commonly used with QCM2290/QCS2290 SoCs, and provides 4 SMPS
-and 22 LDO regulators.  The LDO regulators are the same types found on
-PM660.
+On Sun, 26 Sep 2021 07:27:28 +0100,
+Paolo Bonzini <pbonzini@redhat.com> wrote:
+> 
+> On 25/09/21 11:50, Marc Zyngier wrote:
+> >> there is no need for arm64 to put/load
+> >> the vGIC as KVM hasn't relinquished control of the vCPU in any way.
+> > 
+> > This doesn't mean that there is no requirement for any state
+> > change. The put/load on GICv4 is crucial for performance, and the VMCR
+> > resync is a correctness requirement.
+> 
+> I wouldn't even say it's crucial for performance: halt polling cannot
+> work and is a waste of time without (the current implementation of)
+> put/load.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- drivers/regulator/qcom_smd-regulator.c | 49 ++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+Not quite. A non-V{LPI,SGI} could still be used as the a wake-up from
+WFI (which is the only reason we end-up on this path). Only LPIs (and
+SGIs on GICv4.1) can be directly injected, meaning that SPIs and PPIs
+still follow the standard SW injection model.
 
-diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
-index 198fcc6551f6..8bac024dde8b 100644
---- a/drivers/regulator/qcom_smd-regulator.c
-+++ b/drivers/regulator/qcom_smd-regulator.c
-@@ -738,6 +738,24 @@ static const struct regulator_desc mp5496_ldoa2 = {
- 	.ops = &rpm_mp5496_ops,
- };
- 
-+static const struct regulator_desc pm2250_lvftsmps = {
-+	.linear_ranges = (struct linear_range[]) {
-+		REGULATOR_LINEAR_RANGE(320000, 0, 269, 4000),
-+	},
-+	.n_linear_ranges = 1,
-+	.n_voltages = 270,
-+	.ops = &rpm_smps_ldo_ops,
-+};
-+
-+static const struct regulator_desc pm2250_ftsmps = {
-+	.linear_ranges = (struct linear_range[]) {
-+		REGULATOR_LINEAR_RANGE(640000, 0, 269, 8000),
-+	},
-+	.n_linear_ranges = 1,
-+	.n_voltages = 270,
-+	.ops = &rpm_smps_ldo_ops,
-+};
-+
- struct rpm_regulator_data {
- 	const char *name;
- 	u32 type;
-@@ -1170,6 +1188,36 @@ static const struct rpm_regulator_data rpm_pms405_regulators[] = {
- 	{}
- };
- 
-+static const struct rpm_regulator_data rpm_pm2250_regulators[] = {
-+	{ "s1", QCOM_SMD_RPM_SMPA, 1, &pm2250_lvftsmps, "vdd_s1" },
-+	{ "s2", QCOM_SMD_RPM_SMPA, 2, &pm2250_lvftsmps, "vdd_s2" },
-+	{ "s3", QCOM_SMD_RPM_SMPA, 3, &pm2250_lvftsmps, "vdd_s3" },
-+	{ "s4", QCOM_SMD_RPM_SMPA, 4, &pm2250_ftsmps, "vdd_s4" },
-+	{ "l1", QCOM_SMD_RPM_LDOA, 1, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l2", QCOM_SMD_RPM_LDOA, 2, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l3", QCOM_SMD_RPM_LDOA, 3, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l4", QCOM_SMD_RPM_LDOA, 4, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
-+	{ "l5", QCOM_SMD_RPM_LDOA, 5, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l6", QCOM_SMD_RPM_LDOA, 6, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l7", QCOM_SMD_RPM_LDOA, 7, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l8", QCOM_SMD_RPM_LDOA, 8, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l9", QCOM_SMD_RPM_LDOA, 9, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l10", QCOM_SMD_RPM_LDOA, 10, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l11", QCOM_SMD_RPM_LDOA, 11, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l12", QCOM_SMD_RPM_LDOA, 12, &pm660_nldo660, "vdd_l1_l2_l3_l5_l6_l7_l8_l9_l10_l11_l12" },
-+	{ "l13", QCOM_SMD_RPM_LDOA, 13, &pm660_ht_lvpldo, "vdd_l13_l14_l15_l16" },
-+	{ "l14", QCOM_SMD_RPM_LDOA, 14, &pm660_ht_lvpldo, "vdd_l13_l14_l15_l16" },
-+	{ "l15", QCOM_SMD_RPM_LDOA, 15, &pm660_ht_lvpldo, "vdd_l13_l14_l15_l16" },
-+	{ "l16", QCOM_SMD_RPM_LDOA, 16, &pm660_ht_lvpldo, "vdd_l13_l14_l15_l16" },
-+	{ "l17", QCOM_SMD_RPM_LDOA, 17, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
-+	{ "l18", QCOM_SMD_RPM_LDOA, 18, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
-+	{ "l19", QCOM_SMD_RPM_LDOA, 19, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
-+	{ "l20", QCOM_SMD_RPM_LDOA, 20, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
-+	{ "l21", QCOM_SMD_RPM_LDOA, 21, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
-+	{ "l22", QCOM_SMD_RPM_LDOA, 22, &pm660_pldo660, "vdd_l4_l17_l18_l19_l20_l21_l22" },
-+	{}
-+};
-+
- static const struct of_device_id rpm_of_match[] = {
- 	{ .compatible = "qcom,rpm-mp5496-regulators", .data = &rpm_mp5496_regulators },
- 	{ .compatible = "qcom,rpm-pm8841-regulators", .data = &rpm_pm8841_regulators },
-@@ -1186,6 +1234,7 @@ static const struct of_device_id rpm_of_match[] = {
- 	{ .compatible = "qcom,rpm-pmi8994-regulators", .data = &rpm_pmi8994_regulators },
- 	{ .compatible = "qcom,rpm-pmi8998-regulators", .data = &rpm_pmi8998_regulators },
- 	{ .compatible = "qcom,rpm-pms405-regulators", .data = &rpm_pms405_regulators },
-+	{ .compatible = "qcom,rpm-pm2250-regulators", .data = &rpm_pm2250_regulators },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, rpm_of_match);
+However, there is still the ICH_VMCR_EL2 requirement (to get the
+up-to-date priority mask and group enable bits) for SW-injected
+interrupt wake-up to work correctly, and I really don't want to save
+that one eagerly on each shallow exit.
+
+> However, is activating the doorbell necessary?  If possible, polling
+> the VGIC directly for pending VLPIs without touching the ITS (for
+> example by emulating IAR reads) may make sense.  IIUC that must be
+> done at EL2 though, so maybe it would even make sense to move all of
+> halt polling to EL2 for the nVHE case.  It all depends on benchmark
+> results, of course.
+
+No, there is no architectural way to observe the VLPI state. EL2
+cannot impersonate the guest an read ICV_IAR1_EL1 (because it
+conveniently has the same encoding as ICC_IAR1_EL1), and if it could,
+it would be *destructive* (not what you want). The equivalent of the
+LR that is used to hold the highest priority VLPI presented to the
+virtual CPU interface is not visible to SW at all.
+
+There are exactly two ways for the hypervisor to get a hint about the
+VLPI state (and that's only a hint, as everything can be spurious):
+
+- Make the vPE non resident and use GICR_VPENDBASER.PendingLast bit to
+  find out whether there are pending VLPIs
+
+- Make the vPE non resident and get a doorbell interrupt
+
+See the common pattern?
+
+There is no polling mechanism, and the only way to flush the VLPI
+state to memory is to destroy the GIC view of the vPE, which is a bit
+counter-productive. It also only work on GICv4.1, and not GICv4 (which
+is why we don't support live migration on GICv4).
+
+> Sorry for the many stupid questions I'm asking lately, but I'm trying
+> to pay more attention to ARM and understand the VGIC and EL1/EL2 split
+> better.
+
+Feel free to ask any question. The more people understand how the
+architecture works, the better.
+
+	M.
+
 -- 
-2.17.1
-
+Without deviation from the norm, progress is not possible.
