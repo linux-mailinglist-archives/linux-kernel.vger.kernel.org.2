@@ -2,101 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9444188F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 15:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346424188F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 15:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhIZNCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 09:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231528AbhIZNCI (ORCPT
+        id S231687AbhIZNJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 09:09:01 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:53325 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231671AbhIZNJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 09:02:08 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8725C061570;
-        Sun, 26 Sep 2021 06:00:31 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id c1so13159844pfp.10;
-        Sun, 26 Sep 2021 06:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JSFOayOTE4Uyc1hI32Lkwa+XwwdJucxTM76xvaMDZA4=;
-        b=JNkA9kuYGc5wEyRaiHYqPTiAIG6jyk5XPUK3MKP1K/sDskwtbOKmKzs06bjJsKJxHc
-         161P/abz6GuhalZHibwpWUCkMEP/QHd3PO7cl+F3S4e2YIXt4FFrU35Oq3vZkSgzupXD
-         HsyuMjculPbeeAEtkju8dTaMZ6eGIWXdT9DSBSCh1Lvg/mSkyc6GSneTnkyWi72D8rTe
-         +jv8hoBuUTECdH6JcV/EQwA1BRKowo+bji/pz+2Kd1ssUR2KQyozVcE6mYgByIoBcdLa
-         b/rPhL6uMnTzYzQCeJgRQkGCEuQhXzdHvjy2SiGARKb8eMM80vzRqjBR4Ubgdv9l1jL5
-         SpFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JSFOayOTE4Uyc1hI32Lkwa+XwwdJucxTM76xvaMDZA4=;
-        b=kGPBfhR9ZaXQp01rEXtNeu562UEakIc3np5nuYMjg3hUYfcLGEtYBBfxk6zRvhI1FC
-         AivG+QgVoPjtUTS1gPDRKdq6SzYFeqwLd65tiJkTzDC3zuskgFmRKMJY59pItNedpeFv
-         sgWyc+CCKh1IgTRsOJiw5RwFhtnpmP5hIdCXcT1sJYcvKxGCDFh/PbU8wxRQRfj7Y+mc
-         HWtugvkCoQFamvHwMPdOcEjIiRmB/nKke6DJGydq0M9/U7MAYkvbGgUnQjF90vPbPZ5z
-         byonanYcLbHI4gRt3m4QGcl8+TNrxuSZR9z/qU824z0Tc/iLU2j7tBNQHhNi4tbX0wZ1
-         ljwA==
-X-Gm-Message-State: AOAM530K1rRG6IFPJHLtkGoU0Uwqu94y+3Ixjn4fLjRp2BM4IkxJkvLD
-        sPpb4/trMoCsURhAYgrchQnQFfaTWoILTRvEIqE=
-X-Google-Smtp-Source: ABdhPJwL5Ay/Ji5j2V/XIM9VJK1N3hblgjJzqq5FFyfyJgS5AtC9pn8zDBTWDONA76Z5+4TS8TZunN0wfOL6fTYsyXk=
-X-Received: by 2002:aa7:9e9a:0:b0:43e:d9b:cd93 with SMTP id
- p26-20020aa79e9a000000b0043e0d9bcd93mr18844437pfq.50.1632661231439; Sun, 26
- Sep 2021 06:00:31 -0700 (PDT)
+        Sun, 26 Sep 2021 09:09:00 -0400
+Received: from pop-os.home ([90.126.248.220])
+        by mwinf5d33 with ME
+        id yd7K2500H4m3Hzu03d7Lw8; Sun, 26 Sep 2021 15:07:22 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 26 Sep 2021 15:07:22 +0200
+X-ME-IP: 90.126.248.220
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     thierry.reding@gmail.com, vdumpa@nvidia.com, joro@8bytes.org,
+        will@kernel.org, jonathanh@nvidia.com
+Cc:     linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] iommu/tegra-smmu: Use devm_bitmap_zalloc when applicable
+Date:   Sun, 26 Sep 2021 15:07:18 +0200
+Message-Id: <2c0f4da80c3b5ef83299c651f69a563034c1c6cb.1632661557.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210801203122.3515-1-himadrispandya@gmail.com>
- <20210801203122.3515-7-himadrispandya@gmail.com> <YUnS/Chgat7vNHO7@hovoldconsulting.com>
-In-Reply-To: <YUnS/Chgat7vNHO7@hovoldconsulting.com>
-From:   Himadri Pandya <himadrispandya@gmail.com>
-Date:   Sun, 26 Sep 2021 15:00:20 +0200
-Message-ID: <CAOY-YVk9_8zEXpW8XwTuEPVMxCUwpXemWmNzt2by90bnTv66YA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] USB: serial: kl5kusb105: use usb_control_msg_recv()
- and usb_control_msg_send()
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 2:41 PM Johan Hovold <johan@kernel.org> wrote:
->
-> On Mon, Aug 02, 2021 at 02:01:22AM +0530, Himadri Pandya wrote:
-> > The wrappers usb_control_msg_send/recv eliminate the need of allocating
-> > dma buffers for usb message. They also impose proper error checks on the
-> > return value of usb_control_msg() to handle short read/write. Hence use
-> > the wrappers and remove dma allocations.
-> >
-> > Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> > ---
-> > Changes in v2:
-> >  - Fix the caller of klsi_105_chg_port_settings()
-> >  - Drop unnecessary use of the wrappers
->
-> Now applied with an amended commit message:
->
->     USB: serial: kl5kusb105: use usb_control_msg_recv() and usb_control_msg_send()
->
->     The wrappers usb_control_msg_send/recv eliminate the need of
->     manually allocating DMA buffers for USB messages. They also treat
->     short reads as an error. Hence use the wrappers and remove DMA
->     allocations.
->
->     Note that short reads are now logged as -EREMOTEIO instead of the amount
->     of data read.
->
-> I've applied all but the first two patches in the series now. Would you
-> mind respinning those two?
->
-> Thanks,
-> Johan
+'smmu->asids' is a bitmap. So use 'devm_kzalloc()' to simplify code,
+improve the semantic of the code and avoid some open-coded arithmetic in
+allocator arguments.
 
-Thanks for reviewing and applying these patches. And yes, I'm sending
-the revised version for the first two.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/iommu/tegra-smmu.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Regards,
-Himadri
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index 0a281833f611..e900e3c46903 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -1079,7 +1079,6 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
+ 				    struct tegra_mc *mc)
+ {
+ 	struct tegra_smmu *smmu;
+-	size_t size;
+ 	u32 value;
+ 	int err;
+ 
+@@ -1097,9 +1096,7 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
+ 	 */
+ 	mc->smmu = smmu;
+ 
+-	size = BITS_TO_LONGS(soc->num_asids) * sizeof(long);
+-
+-	smmu->asids = devm_kzalloc(dev, size, GFP_KERNEL);
++	smmu->asids = devm_bitmap_zalloc(dev, soc->num_asids, GFP_KERNEL);
+ 	if (!smmu->asids)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-- 
+2.30.2
+
