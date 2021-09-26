@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B64F4186AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B290C4186A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhIZGNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 02:13:04 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:48010 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230453AbhIZGNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231129AbhIZGNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 26 Sep 2021 02:13:02 -0400
-Received: from BC-Mail-Ex14.internal.baidu.com (unknown [172.31.51.54])
-        by Forcepoint Email with ESMTPS id 087A09B7E3555FBF0B76;
-        Sun, 26 Sep 2021 14:11:16 +0800 (CST)
+Received: from mx22.baidu.com ([220.181.50.185]:48924 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229485AbhIZGNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 02:13:02 -0400
+Received: from BC-Mail-Ex11.internal.baidu.com (unknown [172.31.51.51])
+        by Forcepoint Email with ESMTPS id 8FCD1700013123366D75;
+        Sun, 26 Sep 2021 14:11:23 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex14.internal.baidu.com (172.31.51.54) with Microsoft SMTP Server
+ BC-Mail-Ex11.internal.baidu.com (172.31.51.51) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sun, 26 Sep 2021 14:11:15 +0800
+ 15.1.2242.12; Sun, 26 Sep 2021 14:11:23 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sun, 26 Sep 2021 14:11:15 +0800
+ 15.1.2308.14; Sun, 26 Sep 2021 14:11:22 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Cristobal Forno <cforno12@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Paul Mackerras" <paulus@samba.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
-Subject: [PATCH] ibmveth: Use dma_alloc_coherent() instead of kmalloc/dma_map_single()
-Date:   Sun, 26 Sep 2021 14:11:07 +0800
-Message-ID: <20210926061108.229-1-caihuoqing@baidu.com>
+CC:     Lijun Ou <oulijun@huawei.com>, Weihang Li <liweihang@huawei.com>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] RDMA/hns: Use dma_alloc_coherent() instead of kmalloc/dma_map_single()
+Date:   Sun, 26 Sep 2021 14:11:15 +0800
+Message-ID: <20210926061116.282-1-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -51,83 +48,51 @@ clear the cache every time.
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/net/ethernet/ibm/Kconfig   |  4 ++--
- drivers/net/ethernet/ibm/ibmveth.c | 25 +++++++++----------------
- 2 files changed, 11 insertions(+), 18 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/Kconfig b/drivers/net/ethernet/ibm/Kconfig
-index c0c112d95b89..926c0642784d 100644
---- a/drivers/net/ethernet/ibm/Kconfig
-+++ b/drivers/net/ethernet/ibm/Kconfig
-@@ -19,7 +19,7 @@ if NET_VENDOR_IBM
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 5b9953105752..380445f98a49 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -1165,32 +1165,22 @@ static int hns_roce_alloc_cmq_desc(struct hns_roce_dev *hr_dev,
+ {
+ 	int size = ring->desc_num * sizeof(struct hns_roce_cmq_desc);
  
- config IBMVETH
- 	tristate "IBM LAN Virtual Ethernet support"
--	depends on PPC_PSERIES
-+	depends on PPC_PSERIES || COMPILE_TEST
- 	help
- 	  This driver supports virtual ethernet adapters on newer IBM iSeries
- 	  and pSeries systems.
-@@ -40,7 +40,7 @@ config EHEA
+-	ring->desc = kzalloc(size, GFP_KERNEL);
++	ring->desc = dma_alloc_coherent(hr_dev->dev, size,
++					&ring->desc_dma_addr, GFP_KERNEL);
+ 	if (!ring->desc)
+ 		return -ENOMEM;
  
- config IBMVNIC
- 	tristate "IBM Virtual NIC support"
--	depends on PPC_PSERIES
-+	depends on PPC_PSERIES || COMPILE_TEST
- 	help
- 	  This driver supports Virtual NIC adapters on IBM i and IBM System p
- 	  systems.
-diff --git a/drivers/net/ethernet/ibm/ibmveth.c b/drivers/net/ethernet/ibm/ibmveth.c
-index 3d9b4f99d357..3aedb680adb8 100644
---- a/drivers/net/ethernet/ibm/ibmveth.c
-+++ b/drivers/net/ethernet/ibm/ibmveth.c
-@@ -605,17 +605,13 @@ static int ibmveth_open(struct net_device *netdev)
- 	}
- 
- 	rc = -ENOMEM;
--	adapter->bounce_buffer =
--	    kmalloc(netdev->mtu + IBMVETH_BUFF_OH, GFP_KERNEL);
--	if (!adapter->bounce_buffer)
--		goto out_free_irq;
- 
--	adapter->bounce_buffer_dma =
--	    dma_map_single(&adapter->vdev->dev, adapter->bounce_buffer,
--			   netdev->mtu + IBMVETH_BUFF_OH, DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(dev, adapter->bounce_buffer_dma)) {
--		netdev_err(netdev, "unable to map bounce buffer\n");
--		goto out_free_bounce_buffer;
-+	adapter->bounce_buffer = dma_alloc_coherent(&adapter->vdev->dev,
-+						    netdev->mtu + IBMVETH_BUFF_OH,
-+						    &adapter->bounce_buffer_dma, GFP_KERNEL);
-+	if (!adapter->bounce_buffer) {
-+		netdev_err(netdev, "unable to alloc bounce buffer\n");
-+		goto out_free_irq;
- 	}
- 
- 	netdev_dbg(netdev, "initial replenish cycle\n");
-@@ -627,8 +623,6 @@ static int ibmveth_open(struct net_device *netdev)
- 
+-	ring->desc_dma_addr = dma_map_single(hr_dev->dev, ring->desc, size,
+-					     DMA_BIDIRECTIONAL);
+-	if (dma_mapping_error(hr_dev->dev, ring->desc_dma_addr)) {
+-		ring->desc_dma_addr = 0;
+-		kfree(ring->desc);
+-		ring->desc = NULL;
+-
+-		return -ENOMEM;
+-	}
+-
  	return 0;
+ }
  
--out_free_bounce_buffer:
--	kfree(adapter->bounce_buffer);
- out_free_irq:
- 	free_irq(netdev->irq, netdev);
- out_free_buffer_pools:
-@@ -702,10 +696,9 @@ static int ibmveth_close(struct net_device *netdev)
- 			ibmveth_free_buffer_pool(adapter,
- 						 &adapter->rx_buff_pool[i]);
- 
--	dma_unmap_single(&adapter->vdev->dev, adapter->bounce_buffer_dma,
--			 adapter->netdev->mtu + IBMVETH_BUFF_OH,
+ static void hns_roce_free_cmq_desc(struct hns_roce_dev *hr_dev,
+ 				   struct hns_roce_v2_cmq_ring *ring)
+ {
+-	dma_unmap_single(hr_dev->dev, ring->desc_dma_addr,
+-			 ring->desc_num * sizeof(struct hns_roce_cmq_desc),
 -			 DMA_BIDIRECTIONAL);
--	kfree(adapter->bounce_buffer);
-+	dma_free_coherent(&adapter->vdev->dev,
-+			  adapter->netdev->mtu + IBMVETH_BUFF_OH,
-+			  adapter->bounce_buffer, adapter->bounce_buffer_dma);
++	dma_free_coherent(hr_dev->dev,
++			  ring->desc_num * sizeof(struct hns_roce_cmq_desc),
++			  ring->desc, ring->desc_dma_addr);
  
- 	netdev_dbg(netdev, "close complete\n");
+ 	ring->desc_dma_addr = 0;
+-	kfree(ring->desc);
+ }
  
+ static int init_csq(struct hns_roce_dev *hr_dev,
 -- 
 2.25.1
 
