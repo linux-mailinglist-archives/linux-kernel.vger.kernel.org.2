@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30539418A7C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 20:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C357418A82
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 20:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbhIZSYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 14:24:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51696 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbhIZSYH (ORCPT
+        id S229712AbhIZSfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 14:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhIZSe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 14:24:07 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9C6CE21EE5;
-        Sun, 26 Sep 2021 18:22:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632680549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8EjSpVVo/VrxM4pnh6TTso6DrAIAimhE0iGOe6MEwWo=;
-        b=VzCKcbyfOLRvJDIKQRDxnmj4vU5CXAP1r25qmF+arsKu5xyzc/6PXi8DXmcHHG0gFn7/U/
-        dGNU6iueRa4fKloedBbktsWMC/oKyQo5zVjIVpyrCELKDRZkKkzGqZQK7A6xnvzNxeCpXP
-        MjyJbfKCzMCNtcUFyNE6mPsGsefAceg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632680549;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8EjSpVVo/VrxM4pnh6TTso6DrAIAimhE0iGOe6MEwWo=;
-        b=4zpkcCbtdQCcFSGfJie2tNUO3a03KRs61qpsGGK/zXMI5/0+8PwV95oyBCqVWwL1xevnlh
-        9u/KHg/tV3M4cVBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 83ADC13A1C;
-        Sun, 26 Sep 2021 18:22:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gtzCH2W6UGHXTwAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 26 Sep 2021 18:22:29 +0000
-Date:   Sun, 26 Sep 2021 20:22:29 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-edac <linux-edac@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] EDAC fixes for v5.15-rc3
-Message-ID: <YVC6ZS+Z3T0Ky87i@zn.tnic>
+        Sun, 26 Sep 2021 14:34:57 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B1BC061570;
+        Sun, 26 Sep 2021 11:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9bGbTuhVgxASz0/GIsR8R81vyn3IulwgDbWd3Va3slM=; b=Z4A+TlrOwNgoKNaj29JbqyhIp0
+        8KAHQbPhku6hGzPv7ge1MWOtSJy1aNXK3juYO4lPzmO/WpHo7Fn5KB30cgpsCWNWj+C2OS9g5on8h
+        r8gxGLFOLFhk174HEaB20LyuXQUub81k2jn4rxOqFm+nbfE7s6b6k/Y6d9UEow37/Vws=;
+Received: from p200300ccff49cf001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff49:cf00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mUYxf-0006FJ-FI; Sun, 26 Sep 2021 20:33:15 +0200
+Date:   Sun, 26 Sep 2021 20:33:14 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lucas Stach <lst@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v2 4/5] ARM: dts: imx6sl: fix mmc compatibles
+Message-ID: <20210926203314.7c187191@aktux>
+In-Reply-To: <a5ec87f2-7e72-9c23-e13a-75498287b451@pengutronix.de>
+References: <20210924091439.2561931-1-andreas@kemnade.info>
+        <20210924091439.2561931-5-andreas@kemnade.info>
+        <a5ec87f2-7e72-9c23-e13a-75498287b451@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Ahmad,
 
-please pull two EDAC fixes for v5.15-rc3.
+On Sun, 26 Sep 2021 08:54:35 +0200
+Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-Thx.
+> Hello Andreas,
+> 
+> On 24.09.21 11:14, Andreas Kemnade wrote:
+> > Binding specification only allows one compatible here.  
+> 
+> This same change was NACKed by Lucas here:
+> https://lore.kernel.org/linux-devicetree/72e1194e10ccb4f87aed96265114f0963e805092.camel@pengutronix.de/
+> 
+> I also think the schema should be fixed instead.
+> 
+well, that argumentation makes sense. Feel free to drop this patch. I
+will not repost the series if it is just about dropping patches.
 
----
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.15_rc3
-
-for you to fetch changes up to 54607282fae6148641a08d81a6e0953b541249c7:
-
-  EDAC/dmc520: Assign the proper type to dimm->edac_mode (2021-09-16 11:00:12 +0200)
-
-----------------------------------------------------------------
-Fix two EDAC drivers using the wrong value type for the DIMM mode.
-
-----------------------------------------------------------------
-Borislav Petkov (1):
-      EDAC/dmc520: Assign the proper type to dimm->edac_mode
-
-Sai Krishna Potthuri (1):
-      EDAC/synopsys: Fix wrong value type assignment for edac_mode
-
- drivers/edac/dmc520_edac.c   | 2 +-
- drivers/edac/synopsys_edac.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Regards,
+Andreas
