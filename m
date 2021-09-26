@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5872A418B4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 23:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D1F418B54
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 23:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbhIZVuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 17:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbhIZVuK (ORCPT
+        id S230075AbhIZV6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 17:58:16 -0400
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:35015 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229827AbhIZV6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 17:50:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E184EC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 14:48:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Tw65aNmxnM9/K7u2U3QRi6kOxX3UaX2u6AJJK6c0E24=; b=ohoD6AHId6glTizVzppyXfnFgM
-        bFU3tUVrGUgruilqmGNvDMu0bIZ3tZCWfC8UbzH7CYDqLCpSQVKz/CA7qjpCEHj5bBE5POarlYmH7
-        7LZAT/neG7J2xSXR2s+/u5IEV8VYn4D2iNzHD8Wj9w1k3M2xFMyMEsyxrSoeW7cQAdXlX2o8L5ztp
-        HUAQxbNFe5UmCM78QhIFTMinNqwZLATXCQX4NnWDbOR9agfXxw4txm0EVdyN2eGN1BV9mwXcEBO5n
-        raMAm6ILMYkmllukbi9lQQRCOblssaHYPjgmOUow++oM0eCajsP3WL6teNuUKOmo4fG5wt8fVA4+S
-        f86Gd5SQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mUc0e-0017NX-Bj; Sun, 26 Sep 2021 21:48:32 +0000
-Subject: Re: [RFC PATCH] xtensa: setup: use CONFIG_USE_OF instead of CONFIG_OF
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>
-References: <20210925032951.6767-1-rdunlap@infradead.org>
- <CAMo8Bf+TE4PX5PBD8bSsF6Cx+LGunExjuB3xXyyRvwzC0iHMDA@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2cc9c34f-e166-51bc-eedc-e4086753c011@infradead.org>
-Date:   Sun, 26 Sep 2021 14:48:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 26 Sep 2021 17:58:15 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id C1B96A7FB;
+        Mon, 27 Sep 2021 07:56:34 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mUc8P-00H5Dz-7k; Mon, 27 Sep 2021 07:56:33 +1000
+Date:   Mon, 27 Sep 2021 07:56:33 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, darrick.wong@oracle.com,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/9] Introduce IOCB_SWAP kiocb flag to trigger REQ_SWAP
+Message-ID: <20210926215633.GG2361455@dread.disaster.area>
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+ <163250391274.2330363.16176856646027970865.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <CAMo8Bf+TE4PX5PBD8bSsF6Cx+LGunExjuB3xXyyRvwzC0iHMDA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163250391274.2330363.16176856646027970865.stgit@warthog.procyon.org.uk>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=20KFwNOVAAAA:8 a=JfrnYn6hAAAA:8
+        a=VwQbUJbxAAAA:8 a=37rDS-QxAAAA:8 a=7-415B0cAAAA:8 a=4LiqF8mHRpqmJXjidzwA:9
+        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=AjGcO6oz07-iQ99wixmX:22
+        a=k1Nq6YrhK2t884LQW06G:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/21 11:55 AM, Max Filippov wrote:
-> Hi Randy,
+On Fri, Sep 24, 2021 at 06:18:32PM +0100, David Howells wrote:
+> Introduce an IOCB_SWAP flag for the kiocb struct such that the REQ_SWAP
+> will get set on lower level operation structures in generic code.
 > 
-> On Fri, Sep 24, 2021 at 8:29 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> CONFIG_OF can be set by a randconfig or by a user -- without setting the
->> early flattree option (OF_EARLY_FLATTREE).  This causes build errors.
->> However, if randconfig or a user sets USE_OF in the Xtensa config,
->> the right kconfig symbols are set to enable xtensa/kernel/setup.c to
->> build.
->>
->> Fixes these build errors:
->>
->> ../arch/xtensa/kernel/setup.c: In function 'xtensa_dt_io_area':
->> ../arch/xtensa/kernel/setup.c:201:14: error: implicit declaration of function 'of_flat_dt_is_compatible'; did you mean 'of_machine_is_compatible'? [-Werror=implicit-function-declaration]
->>    201 |         if (!of_flat_dt_is_compatible(node, "simple-bus"))
->> ../arch/xtensa/kernel/setup.c:204:18: error: implicit declaration of function 'of_get_flat_dt_prop' [-Werror=implicit-function-declaration]
->>    204 |         ranges = of_get_flat_dt_prop(node, "ranges", &len);
->> ../arch/xtensa/kernel/setup.c:204:16: error: assignment to 'const __be32 *' {aka 'const unsigned int *'} from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
->>    204 |         ranges = of_get_flat_dt_prop(node, "ranges", &len);
->>        |                ^
->> ../arch/xtensa/kernel/setup.c: In function 'early_init_devtree':
->> ../arch/xtensa/kernel/setup.c:228:9: error: implicit declaration of function 'early_init_dt_scan'; did you mean 'early_init_devtree'? [-Werror=implicit-function-declaration]
->>    228 |         early_init_dt_scan(params);
->> ../arch/xtensa/kernel/setup.c:229:9: error: implicit declaration of function 'of_scan_flat_dt' [-Werror=implicit-function-declaration]
->>    229 |         of_scan_flat_dt(xtensa_dt_io_area, NULL);
->>
->> Fixes: da844a81779e ("xtensa: add device trees support")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Max Filippov <jcmvbkbc@gmail.com>
->> Cc: Chris Zankel <chris@zankel.net>
->> Cc: linux-xtensa@linux-xtensa.org
->> ---
->>   arch/xtensa/kernel/setup.c |    6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Matthew Wilcox <willy@infradead.org>
+> cc: Christoph Hellwig <hch@lst.de>
+> cc: Darrick J. Wong <djwong@kernel.org>
+> cc: linux-xfs@vger.kernel.org
+> cc: linux-block@vger.kernel.org
+> cc: linux-fsdevel@vger.kernel.org
+> cc: linux-mm@kvack.org
+> ---
 > 
-> Thanks for your RFC. I've tested it and found a couple more places
-> where CONFIG_USE_OF should be used instead of CONFIG_OF.
-> I'll post the revised version.
+>  fs/direct-io.c      |    2 ++
+>  include/linux/bio.h |    2 ++
+>  include/linux/fs.h  |    1 +
+>  3 files changed, 5 insertions(+)
 > 
+> diff --git a/fs/direct-io.c b/fs/direct-io.c
+> index b2e86e739d7a..76eec0a68fa4 100644
+> --- a/fs/direct-io.c
+> +++ b/fs/direct-io.c
+> @@ -1216,6 +1216,8 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+>  	}
+>  	if (iocb->ki_flags & IOCB_HIPRI)
+>  		dio->op_flags |= REQ_HIPRI;
+> +	if (iocb->ki_flags & IOCB_SWAP)
+> +		dio->op_flags |= REQ_SWAP;
+>  
+>  	/*
+>  	 * For AIO O_(D)SYNC writes we need to defer completions to a workqueue
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index 00952e92eae1..b01133727494 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -787,6 +787,8 @@ static inline void bio_set_polled(struct bio *bio, struct kiocb *kiocb)
+>  	bio->bi_opf |= REQ_HIPRI;
+>  	if (!is_sync_kiocb(kiocb))
+>  		bio->bi_opf |= REQ_NOWAIT;
+> +	if (kiocb->ki_flags & IOCB_SWAP)
+> +		bio->bi_opf |= REQ_SWAP;
+>  }
+>  
+>  struct bio *blk_next_bio(struct bio *bio, unsigned int nr_pages, gfp_t gfp);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index c909ca6c0eb6..c20f4423e2f1 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -321,6 +321,7 @@ enum rw_hint {
+>  #define IOCB_NOIO		(1 << 20)
+>  /* can use bio alloc cache */
+>  #define IOCB_ALLOC_CACHE	(1 << 21)
+> +#define IOCB_SWAP		(1 << 22)	/* Operation on a swapfile */
+>  
+>  struct kiocb {
+>  	struct file		*ki_filp;
 
-Hi Max,
-Thanks for checking and for the extra fixes.
-Looks good.
+This doesn't set REQ_SWAP for the iomap based DIO path.
+bio_set_polled() is only called from iomap for IOCB_HIPRI IO.
 
+Cheers,
+
+Dave.
 -- 
-~Randy
+Dave Chinner
+david@fromorbit.com
