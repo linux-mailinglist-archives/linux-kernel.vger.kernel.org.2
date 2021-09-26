@@ -2,255 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543F141874C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6337441874E
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhIZIFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 04:05:24 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:50666 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231345AbhIZIFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 04:05:18 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A3893201A0B;
-        Sun, 26 Sep 2021 10:03:41 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3D1E8201A03;
-        Sun, 26 Sep 2021 10:03:41 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id F379F183AD14;
-        Sun, 26 Sep 2021 16:03:39 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, kishon@ti.com, vkoul@kernel.org,
-        robh@kernel.org, galak@kernel.crashing.org, shawnguo@kernel.org
-Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com,
-        Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH v2 4/4] phy: freescale: pcie: initialize the imx8 pcie standalone phy driver
-Date:   Sun, 26 Sep 2021 15:39:43 +0800
-Message-Id: <1632641983-1455-5-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1632641983-1455-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1632641983-1455-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231313AbhIZIMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 04:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231236AbhIZIMd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 04:12:33 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7EDC061570;
+        Sun, 26 Sep 2021 01:10:56 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id bx4so55172630edb.4;
+        Sun, 26 Sep 2021 01:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SLdov9PG/6476MQBl4zOLliPuTRrEl5E7EqXQ4oiFXY=;
+        b=XUYZKA4ydEfj9kmRhlF0xxxuHABVP75cLPUWDryf3FSpJV5RH99E+FQZYLjrE/uLjK
+         5gYXaxiq/1CnC4Ay6SQbm7ltARLntPuOH4WCdn+QMMwQqitho6AxqxMU7iZ2ClqAi2zI
+         baAJU46T6PUq73u8PMVVWUWlAeRX91R+W9+y7h5SC9pctHX4wSK1VUvehDX6ipx+fKZc
+         3aum3b+5GErZlVq3jiQ6+feEP+3yIL70EsRrBEIXrg+8o79pec+vIJbSn2L6T5G18EDY
+         WHHzalKNlUf3ynxD8tO21DfuLKM0SOEJROrkJcP9TDozHSFChhWwMxgG4t64d5IOjfCL
+         HDVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=SLdov9PG/6476MQBl4zOLliPuTRrEl5E7EqXQ4oiFXY=;
+        b=40AVkIe229EZC7t49mOdeZcIe1K7llWVF3ljUV+GSHk5yCGo0pSvWvYGhwI5udGpgd
+         gKzyq/0hbYmlECxgtXMWgMuLdKCbPXUm3KTilp5a/XjPaGCBIqoFmAem50fwtGH+l3gr
+         vxfaTZaBcjcOQNHPWN8Ns07rvG1QRQlnFgKRiQwH484ItZ6+RrukjpPq+oZPsWmUsjM4
+         nwwXjYLpr8Nyk+GclxvGzBBFO0iPeeNU/LHpCpoEe5HwH6sEo2RCb8bk5aU/Jfw3gRyB
+         XnyXPwfs3jGGN0FZ+pGkJHG2MBGGU0VDB4p23abEa5X84HU27IX+6pZk2NsND1sc+T3z
+         mLjw==
+X-Gm-Message-State: AOAM530rEHeKnpxkZm8Jluegq7zGQ/EOulWaadfTI5zxkj3HXlfh45W3
+        K6fyCxckQG1vwGwTkv91E70=
+X-Google-Smtp-Source: ABdhPJz1iPtbHF31tHNG6wnEe2ibF/pgCDaaHF2tqfwbwiTKpjElYhkyRuHzYxAtVDNrtyvdNB19hg==
+X-Received: by 2002:aa7:ca19:: with SMTP id y25mr16139810eds.197.1632643854896;
+        Sun, 26 Sep 2021 01:10:54 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id d15sm7002827ejo.4.2021.09.26.01.10.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 01:10:54 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Sun, 26 Sep 2021 10:10:53 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jari Ruusu <jariruusu@protonmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aurelien Jarno <aurelien@aurel32.net>
+Subject: Re: glibc VETO for kernel version SUBLEVEL >= 255
+Message-ID: <YVArDZSq9oaTFakz@eldamar.lan>
+References: <qscod31lyVG7t-CW63o_pnsara-v9Wf6qXz9eSfUZnxtHk2AkeJ73yvER1XYO_311Wxo2wC8L2JuTdLJm8vgvhVVaGa5fdumXx5iHWarqwA=@protonmail.com>
+ <YVAhOlTsb0NK0BVi@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVAhOlTsb0NK0BVi@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the standalone i.MX8 PCIe PHY driver.
-Some reset bits should be manipulated between PHY configurations and
-status check(internal PLL is locked or not).
-So, do the PHY configuration in the phy_calibrate().
-And check the PHY is ready or not in the phy_init().
+Hi,
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/phy/freescale/Kconfig             |   9 ++
- drivers/phy/freescale/Makefile            |   1 +
- drivers/phy/freescale/phy-fsl-imx8-pcie.c | 167 ++++++++++++++++++++++
- 3 files changed, 177 insertions(+)
- create mode 100644 drivers/phy/freescale/phy-fsl-imx8-pcie.c
+On Sun, Sep 26, 2021 at 09:28:58AM +0200, Greg Kroah-Hartman wrote:
+> On Sun, Sep 26, 2021 at 07:23:33AM +0000, Jari Ruusu wrote:
+> > Earlier this year there was some discussion about kernel version numbers
+> > after 4.9.255 and 4.4.255. Problem was 8-bit limitation for SUBLEVEL
+> > number in stable kernel versions. The fix was to freeze LINUX_VERSION_CODE
+> > number at x.x.255 and to continue incrementing SUBLEVEL number. Seems
+> > there are more more fallout from that decision. At least some versions of
+> > glibc do not play well with larger SUBLEVEL numbers.
+> > 
+> > 
+> > # uname -s -r -m
+> > Linux 4.9.283-QEMU armv6l
+> > # apt upgrade
+> > Reading package lists... Done
+> > Building dependency tree
+> > Reading state information... Done
+> > Calculating upgrade... Done
+> > The following packages will be upgraded:
+> >  [SNIP]
+> > Fetched 145 MB in 1min 57s (1244 kB/s)
+> > Reading changelogs... Done
+> > Preconfiguring packages ...
+> > (Reading database ... 39028 files and directories currently installed.)
+> > Preparing to unpack .../libc6-dbg_2.28-10+rpt2+rpi1_armhf.deb ...
+> > Unpacking libc6-dbg:armhf (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+> > Preparing to unpack .../libc6-dev_2.28-10+rpt2+rpi1_armhf.deb ...
+> > Unpacking libc6-dev:armhf (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+> > Preparing to unpack .../libc-dev-bin_2.28-10+rpt2+rpi1_armhf.deb ...
+> > Unpacking libc-dev-bin (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+> > Preparing to unpack .../linux-libc-dev_1%3a1.20210831-3~buster_armhf.deb ...
+> > Unpacking linux-libc-dev:armhf (1:1.20210831-3~buster) over (1:1.20210527-1) ...
+> > Preparing to unpack .../libc6_2.28-10+rpt2+rpi1_armhf.deb ...
+> > ERROR: Your kernel version indicates a revision number
+> > of 255 or greater.  Glibc has a number of built in
+> > assumptions that this revision number is less than 255.
+> > If you\'ve built your own kernel, please make sure that any
+> > custom version numbers are appended to the upstream
+> > kernel number with a dash or some other delimiter.
+> > 
+> > dpkg: error processing archive /var/cache/apt/archives/libc6_2.28-10+rpt2+rpi1_armhf.deb (--unpack):
+> >  new libc6:armhf package pre-installation script subprocess returned error exit status 1
+> > Errors were encountered while processing:
+> >  /var/cache/apt/archives/libc6_2.28-10+rpt2+rpi1_armhf.deb
+> > E: Sub-process /usr/bin/dpkg returned an error code (1)
+> > 
+> > 
+> > 
+> > Above upgrade works normally if I edit top level Linux source Makefile to
+> > say "SUBLEVEL = 0" and re-compile new kernel.
+> > 
+> > I am not pointing any fingers here, but it seems that either glibc code or
+> > stable kernel versioning is messed up.
+> 
+> Are you sure this isn't just a warning coming from a script that apt is
+> running when trying to install glibc?  Or is this from the glibc package
+> itself?
+> 
+> And what exactly is it testing?  We fixed the build time detection of
+> the kernel version here, so you should be able to build glibc properly.
+> 
+> This is the first time we've seen this reported, are people using the
+> newer kernels on systems that are not using glibc?
 
-diff --git a/drivers/phy/freescale/Kconfig b/drivers/phy/freescale/Kconfig
-index 320630ffe3cd..da078a676fbc 100644
---- a/drivers/phy/freescale/Kconfig
-+++ b/drivers/phy/freescale/Kconfig
-@@ -14,3 +14,12 @@ config PHY_MIXEL_MIPI_DPHY
- 	help
- 	  Enable this to add support for the Mixel DSI PHY as found
- 	  on NXP's i.MX8 family of SOCs.
-+
-+config PHY_FSL_IMX8_PCIE
-+	tristate "Freescale i.MX8 PCIE PHY"
-+	depends on OF && HAS_IOMEM
-+	select GENERIC_PHY
-+	default ARCH_MXC
-+	help
-+	  Enable this to add support for the PCIE PHY as found on i.MX8
-+	  family of SOCs.
-diff --git a/drivers/phy/freescale/Makefile b/drivers/phy/freescale/Makefile
-index 1d02e3869b45..9fd467b58621 100644
---- a/drivers/phy/freescale/Makefile
-+++ b/drivers/phy/freescale/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_PHY_FSL_IMX8MQ_USB)	+= phy-fsl-imx8mq-usb.o
- obj-$(CONFIG_PHY_MIXEL_MIPI_DPHY)	+= phy-fsl-imx8-mipi-dphy.o
-+obj-$(CONFIG_PHY_FSL_IMX8_PCIE)		+= phy-fsl-imx8-pcie.o
-diff --git a/drivers/phy/freescale/phy-fsl-imx8-pcie.c b/drivers/phy/freescale/phy-fsl-imx8-pcie.c
-new file mode 100644
-index 000000000000..ff47d6b83686
---- /dev/null
-+++ b/drivers/phy/freescale/phy-fsl-imx8-pcie.c
-@@ -0,0 +1,167 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2021 NXP
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/delay.h>
-+#include <linux/module.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <dt-binding/phy/phy-fsl-imx8-pcie.h>
-+
-+#define IMX8MM_PCIE_PHY_CMN_REG061	0x184
-+#define  ANA_PLL_CLK_OUT_TO_EXT_IO_EN	BIT(0)
-+#define IMX8MM_PCIE_PHY_CMN_REG062	0x188
-+#define  ANA_PLL_CLK_OUT_TO_EXT_IO_SEL	BIT(3)
-+#define IMX8MM_PCIE_PHY_CMN_REG063	0x18C
-+#define  AUX_PLL_REFCLK_SEL_SYS_PLL	GENMASK(7, 6)
-+#define IMX8MM_PCIE_PHY_CMN_REG064	0x190
-+#define  ANA_AUX_RX_TX_SEL_TX		BIT(7)
-+#define  ANA_AUX_RX_TERM_GND_EN		BIT(3)
-+#define  ANA_AUX_TX_TERM		BIT(2)
-+#define IMX8MM_PCIE_PHY_CMN_REG065	0x194
-+#define  ANA_AUX_RX_TERM		(BIT(7) | BIT(4))
-+#define  ANA_AUX_TX_LVL			GENMASK(3, 0)
-+#define IMX8MM_PCIE_PHY_CMN_REG75	0x1D4
-+#define  PCIE_PHY_CMN_REG75_PLL_DONE	0x3
-+#define PCIE_PHY_TRSV_REG5		0x414
-+#define  PCIE_PHY_TRSV_REG5_GEN1_DEEMP	0x2D
-+#define PCIE_PHY_TRSV_REG6		0x418
-+#define  PCIE_PHY_TRSV_REG6_GEN2_DEEMP	0xF
-+
-+struct imx8_pcie_phy {
-+	u32		refclk_pad_mode;
-+	void __iomem	*base;
-+	struct clk	*clk;
-+	struct phy	*phy;
-+};
-+
-+static int imx8_pcie_phy_init(struct phy *phy)
-+{
-+	int ret;
-+	u32 val;
-+	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-+
-+	ret = readl_poll_timeout(imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG75,
-+				 val, val == PCIE_PHY_CMN_REG75_PLL_DONE,
-+				 10, 20000);
-+	return ret;
-+}
-+
-+static int imx8_pcie_phy_cal(struct phy *phy)
-+{
-+	u32 value, pad_mode;
-+	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-+
-+	pad_mode = imx8_phy->refclk_pad_mode;
-+	if (pad_mode == IMX8_PCIE_REFCLK_PAD_INPUT) {
-+		/* Configure the pad as input */
-+		value = readl(imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-+		writel(value & ~ANA_PLL_CLK_OUT_TO_EXT_IO_EN,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-+	} else if (pad_mode == IMX8_PCIE_REFCLK_PAD_OUTPUT) {
-+		/* Configure the PHY to output the refclock via pad */
-+		writel(ANA_PLL_CLK_OUT_TO_EXT_IO_EN,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
-+		writel(ANA_PLL_CLK_OUT_TO_EXT_IO_SEL,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG062);
-+		writel(AUX_PLL_REFCLK_SEL_SYS_PLL,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG063);
-+		value = ANA_AUX_RX_TX_SEL_TX | ANA_AUX_TX_TERM;
-+		writel(value | ANA_AUX_RX_TERM_GND_EN,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG064);
-+		writel(ANA_AUX_RX_TERM | ANA_AUX_TX_LVL,
-+		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG065);
-+	}
-+
-+	/* Tune PHY de-emphasis setting to pass PCIe compliance. */
-+	writel(PCIE_PHY_TRSV_REG5_GEN1_DEEMP,
-+	       imx8_phy->base + PCIE_PHY_TRSV_REG5);
-+	writel(PCIE_PHY_TRSV_REG6_GEN2_DEEMP,
-+	       imx8_phy->base + PCIE_PHY_TRSV_REG6);
-+
-+	return 0;
-+}
-+
-+static int imx8_pcie_phy_power_on(struct phy *phy)
-+{
-+	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-+
-+	return clk_prepare_enable(imx8_phy->clk);
-+}
-+
-+static int imx8_pcie_phy_power_off(struct phy *phy)
-+{
-+	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
-+
-+	clk_disable_unprepare(imx8_phy->clk);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops imx8_pcie_phy_ops = {
-+	.init		= imx8_pcie_phy_init,
-+	.calibrate	= imx8_pcie_phy_cal,
-+	.power_on	= imx8_pcie_phy_power_on,
-+	.power_off	= imx8_pcie_phy_power_off,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int imx8_pcie_phy_probe(struct platform_device *pdev)
-+{
-+	struct phy_provider *phy_provider;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	struct imx8_pcie_phy *imx8_phy;
-+	struct resource *res;
-+
-+	imx8_phy = devm_kzalloc(dev, sizeof(*imx8_phy), GFP_KERNEL);
-+	if (!imx8_phy)
-+		return -ENOMEM;
-+
-+	/* get PHY refclk pad mode */
-+	of_property_read_u32(np, "fsl,refclk-pad-mode",
-+			     &imx8_phy->refclk_pad_mode);
-+
-+	imx8_phy->clk = devm_clk_get(dev, "phy");
-+	if (IS_ERR(imx8_phy->clk)) {
-+		dev_err(dev, "failed to get imx pcie phy clock\n");
-+		return PTR_ERR(imx8_phy->clk);
-+	}
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	imx8_phy->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(imx8_phy->base))
-+		return PTR_ERR(imx8_phy->base);
-+
-+	imx8_phy->phy = devm_phy_create(dev, NULL, &imx8_pcie_phy_ops);
-+	if (IS_ERR(imx8_phy->phy))
-+		return PTR_ERR(imx8_phy->phy);
-+
-+	phy_set_drvdata(imx8_phy->phy, imx8_phy);
-+
-+	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+
-+	return PTR_ERR_OR_ZERO(phy_provider);
-+}
-+
-+static const struct of_device_id imx8_pcie_phy_of_match[] = {
-+	{.compatible = "fsl,imx8mm-pcie-phy",},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, imx8_pcie_phy_of_match);
-+
-+static struct platform_driver imx8_pcie_phy_driver = {
-+	.probe	= imx8_pcie_phy_probe,
-+	.driver = {
-+		.name	= "imx8-pcie-phy",
-+		.of_match_table	= imx8_pcie_phy_of_match,
-+	}
-+};
-+module_platform_driver(imx8_pcie_phy_driver);
-+
-+MODULE_DESCRIPTION("FSL IMX8 PCIE PHY driver");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+They are probably not using a problematic combination or a
+distribution kernel on those systems. Looking from the mentioned
+versions above this looks like a version derived from Debian buster.
 
+Recently prompted due to https://bugs.debian.org/987266 the check was
+removed in the postinst script of libc in Debian:
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=987266 .
+
+Regards,
+Salvatore
