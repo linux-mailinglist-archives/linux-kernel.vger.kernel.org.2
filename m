@@ -2,122 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D654186C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9DF4186C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 08:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhIZGpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 02:45:50 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:19361 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhIZGpt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 02:45:49 -0400
-Received: from dggeml765-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HHGND5MX3zQk7q;
-        Sun, 26 Sep 2021 14:39:56 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggeml765-chm.china.huawei.com
- (10.1.199.175) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Sun, 26
- Sep 2021 14:44:10 +0800
-From:   liuyuntao <liuyuntao10@huawei.com>
-To:     <hughd@google.com>
-CC:     <akpm@linux-foundation.org>, <kirill.shutemov@linux.intel.com>,
-        <kirill@shutemov.name>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <liusirui@huawei.com>,
-        <liuyuntao10@huawei.com>, <windspectator@gmail.com>,
-        <wuxu.wu@huawei.com>
-Subject: Re: [PATCH v2] fix judgment error in shmem_is_huge()
-Date:   Sun, 26 Sep 2021 14:42:01 +0800
-Message-ID: <20210926064201.3416154-1-liuyuntao10@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <614538e2-16bb-2657-f374-64195c5c7c2@google.com>
-References: <614538e2-16bb-2657-f374-64195c5c7c2@google.com>
+        id S231138AbhIZGxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 02:53:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229879AbhIZGxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 02:53:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10DCB60EFF;
+        Sun, 26 Sep 2021 06:51:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632639114;
+        bh=gVidkyb0TWHeyFaqlS+HQ7fVRPERCbmqPvMjmlYgrI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U3FbnnrgrbkQnoP7Czee/vvG5Y0NdqEJza6p8WFDSPIgDNdO6FvCOncS9qtts1eTx
+         JcaclcQpOtbZcHMskroBP564psTjCc+EmjDuf6eGgMJxBN6ejsUFPFkOyP/eO2q1zG
+         tP0lLHaAqQAoEf5jDmj2jy6k0HcBYbyS8AFAinZ8=
+Date:   Sun, 26 Sep 2021 08:51:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michael Estner <michaelestner@web.de>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] avoid crashing the kernel
+Message-ID: <YVAYgp+XnCkjPigd@kroah.com>
+References: <20210925200433.8329-1-michaelestner@web.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeml765-chm.china.huawei.com (10.1.199.175)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925200433.8329-1-michaelestner@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Sep 2021, Hugh Dickins wrote:
-> On Fri, 24 Sep 2021, Hugh Dickins wrote:
-> > On Thu, 9 Sep 2021, Liu Yuntao wrote:
-> > 
-> > > In the case of SHMEM_HUGE_WITHIN_SIZE, the page index is not rounded
-> > > up correctly. When the page index points to the first page in a huge
-> > > page, round_up() cannot bring it to the end of the huge page, but
-> > > to the end of the previous one.
-> > > 
-> > > an example:
-> > > HPAGE_PMD_NR on my machine is 512(2 MB huge page size).
-> > > After allcoating a 3000 KB buffer, I access it at location 2050 KB.
-> > 
-> > Your example is certainly helpful, but weird!  It's not impossible,
-> > but wouldn't it be easier to understand if you said "2048 KB" there?
+On Sat, Sep 25, 2021 at 10:04:30PM +0200, Michael Estner wrote:
+> To avoid chrashing the kernel I use WARN_ON instead.
+> 
+> Signed-off-by: Michael Estner <michaelestner@web.de>
+> ---
+>  drivers/staging/most/i2c/i2c.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-I wanted to emphasize that access to any bit in the first page will
-trigger this problem, so I didn't use "2048 KB".
+Hi,
 
-> > 
-> > > In shmem_is_huge(), the corresponding index happens to be 512.
-> > > After rounded up by HPAGE_PMD_NR, it will still be 512 which is
-> > > smaller than i_size, and shmem_is_huge() will return true.
-> > > As a result, my buffer takes an additional huge page, and that
-> > > shouldn't happen when shmem_enabled is set to within_size.
-> > 
-> > A colleague very recently opened my eyes to within_size on shmem_enabled:
-> > I've always been dubious of both, but they can work quite well together.
-> > 
-> > > 
-> > > Fixes: f3f0e1d2150b2b ("khugepaged: add support of collapse for tmpfs/shmem pages")
-> > > Signed-off-by: Liu Yuntao <liuyuntao10@huawei.com>
-> > 
-> > Thanks, with a nice simplification from Kirill.
-> > 
-> > Acked-by: Hugh Dickins <hughd@google.com>
-> 
-> Andrew has just sent this on to Linus - thanks - and that's fine:
-> no need to get in the way of that.
-> 
-> But since replying, I have remembered more history, and there is
-> something that we need to be aware of.
-> 
-> Whereas to you this is a straightforward off-by-one (or off-by-page)
-> fix, it also results in a significant change in behaviour - I'd say
-> usually for the better, but some might be surprised.  This patch has
-> Kirill's Ack and my Ack, and I hope and believe that we can get away
-> with the change in behaviour: but let's be aware of it.
-> 
-> The change that concerns me is when, for example, copying a large
-> file into a huge=within_size tmpfs (or more generally, just writing
-> to the file by appending at EOF in the usual way).
-> 
-> With the old WITHIN_SIZE code, the first 2MB was allocated in small
-> pages, then subsequent 2MB extents were allocated with huge pages;
-> including the final extent, even if it only needed a single byte.
-> 
-> I always thought that was very clunky behaviour, the small pages
-> coming at the wrong end of the file; and that's why I was dubious
-> about it as a sensible filesystem mount option.  But I was under
-> the impression that it was the intended behaviour.
-> 
-> With your new WITHIN_SIZE code, all those appending allocations
-> are outside i_size, and the whole file is allocated in small pages.
-> (Then maybe later on khugepaged can assemble huge pages for it.)
-> 
-> Your patch makes within_size more sensible than it was for pre-sized
-> files (and I think it's fair to say that the majority of files in
-> shmem's internal mount, subject to thp/shmem_enabled, are likely to
-> be fixed-size files); and better-defined than it used to be on
-> growing files, but they won't get the huge pages they used to.
+First off, thanks for the changes, but they need a bit more work.
 
-Although my patch changes shmem's behaviour, it makes shmem consistent
-with the documentation. I think with the new code, it will be easier
-for our users to understand.
+Your subject line should match the others done for this file, so you
+need a "staging: most:" prefix like others.  To see this better, do:
+	git log --oneline the_file_i_am_touching.c
 
+
+Also take a look at the kernel documentation for how to write a good
+changelog text.  Your wording above needs some work...
+
+> diff --git a/drivers/staging/most/i2c/i2c.c b/drivers/staging/most/i2c/i2c.c
+> index 7042f10887bb..e1edd892f9fd 100644
+> --- a/drivers/staging/most/i2c/i2c.c
+> +++ b/drivers/staging/most/i2c/i2c.c
+> @@ -68,7 +68,7 @@ static int configure_channel(struct most_interface *most_iface,
+>  	struct hdm_i2c *dev = to_hdm(most_iface);
+>  	unsigned int delay, pr;
 > 
-> Hugh
+> -	BUG_ON(ch_idx < 0 || ch_idx >= NUM_CHANNELS);
+> +	WARN_ON(ch_idx < 0 || ch_idx >= NUM_CHANNELS);
+
+You really aren't changing much here, for systems running with "panic on
+warn", right?
+
+To solve this correctly you should either:
+	- determine that these are impossible to hit and remove the test
+	  entirely
+	- determine that these are possible to hit, and turn them into a
+	  real test and handle the error properly.
+
+thanks,
+
+greg k-h
