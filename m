@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4C141869E
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 07:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241754186A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 07:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhIZFrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 01:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhIZFrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 01:47:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8848361038;
-        Sun, 26 Sep 2021 05:45:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632635142;
-        bh=hFg5IwklbfMfqsMt3D1a9kK21QQ20aDYL7Nh2srwfkg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=lY1It5jlU+2Cm2iaURXs5QIt1x3ioZ6wiS5VskQXaNMTUz/siaiI2nmvJk6WFeUn7
-         VcNDRZKRHbGnLQ59ahIlP5WYLEJI8bTIyILAOEW7R+F7ps6q7KwNjC/TMVvlBHhTq6
-         ByBPCWzscnFYajnradqBjOuBPzBuTcYdAphusD+V6FBLMysmU8r/6UVHfLMxi/Jtsq
-         /HSUTHUm/10P17SFzZNAUEzTtkfnozLF5z1AUGaUcdInkLCxjvQ855Fy4C5eOO9qUJ
-         5vtK6/BCj6h5qXBeFTNN6V5q/x6HR6yvfanp6W55GVNJBumFGHhLSY+m42rQXfhXPv
-         +Di5EPq/YSwqg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/damon/core: nullify pointer ctx->kdamond with a NULL
-Date:   Sun, 26 Sep 2021 05:45:39 +0000
-Message-Id: <20210926054539.11630-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210925215908.181226-1-colin.king@canonical.com>
+        id S230472AbhIZGAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 02:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhIZF77 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 01:59:59 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09651C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 22:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=NesuuJY3vozxbCQASUdwIUQuhXe+PrX0BhoDdriym0Q=; b=tPC96cXqNSgFvj1cvcFOq7H+6U
+        J97M7rXnVxNhBVbv5tTuP5LRduDKmsYW0PgXHBZNQDdq2HT+IxBhYbzGa/YKTHyDdeFnWcgNpHJbH
+        IyZq/wpZj5O6rag5q/pBUtvJ5v+AG2k9MkoYFZNaXLl19uPfMxvz+UUVrcSCRLfjgXsjm00uVeTJD
+        LFtgC7J7Y2s1Hez14IHF3HVgQmaZmBmRiri4FT8XZtplhWTGVurFLRB7XLUas2S1j1/6l8h8d+Qz0
+        4tyNJWxdgFr+JgSyI8acVh37M3DvKJ4wiiEKmgtXFRjIJw4Ct0cT7VTdMr1mjZ7FZ8vIhO26NMe3x
+        xbsmgfbA==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mUNB4-0003XG-Ga; Sun, 26 Sep 2021 05:58:18 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Nickhu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>
+Subject: [PATCH] NDS32: perf_event_cpu: fix 2 build errors
+Date:   Sat, 25 Sep 2021 22:58:17 -0700
+Message-Id: <20210926055817.24352-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Colin, thank you for the patch!
+../arch/nds32/kernel/perf_event_cpu.c: In function 'unwind_frame_kernel':
+../arch/nds32/include/asm/current.h:10:13: error: '$r25' undeclared (first use in this function)
+   10 | #define tsk $r25
+../arch/nds32/kernel/perf_event_cpu.c:1255:50: note: in expansion of macro 'tsk'
+ 1255 |                                                 (tsk, &graph, frame->lp, NULL);
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently a plain integer is being used to nullify the
-> pointer ctx->kdamond. Use NULL instead. Cleans up sparse
-> warning:
-> 
-> mm/damon/core.c:317:40: warning: Using plain integer as NULL pointer
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+../arch/nds32/kernel/perf_event_cpu.c:1257:27: error: assignment to 'long unsigned int' from 'long unsigned int *' makes integer from pointer without a cast [-Werror=int-conversion]
+ 1257 |                 frame->sp = ((unsigned long *)frame->sp) + 1;
 
-Reviewed-by: SeongJae Park <sj@kernel.org>
+For $r25, use the register function for current() instead.
 
-Thanks,
-SJ
+Fixes: c8b34461705e ("nds32: Add perf call-graph support.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Nickhu <nickhu@andestech.com>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Vincent Chen <deanbo422@gmail.com>
+---
+Please check the frame->sp cast/arithmetic.
 
-> ---
->  mm/damon/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/damon/core.c b/mm/damon/core.c
-> index 874558a790a0..c8665c80577a 100644
-> --- a/mm/damon/core.c
-> +++ b/mm/damon/core.c
-> @@ -314,7 +314,7 @@ static int __damon_start(struct damon_ctx *ctx)
->  				nr_running_ctxs);
->  		if (IS_ERR(ctx->kdamond)) {
->  			err = PTR_ERR(ctx->kdamond);
-> -			ctx->kdamond = 0;
-> +			ctx->kdamond = NULL;
->  		}
->  	}
->  	mutex_unlock(&ctx->kdamond_lock);
-> -- 
-> 2.32.0
+ arch/nds32/kernel/perf_event_cpu.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- linux-next-20210917.orig/arch/nds32/kernel/perf_event_cpu.c
++++ linux-next-20210917/arch/nds32/kernel/perf_event_cpu.c
+@@ -1252,9 +1252,9 @@ static int unwind_frame_kernel(struct st
+ 		 */
+ 		if (__kernel_text_address(frame->lp))
+ 			frame->lp = ftrace_graph_ret_addr
+-						(tsk, &graph, frame->lp, NULL);
++					(current, &graph, frame->lp, NULL);
+ 
+-		frame->sp = ((unsigned long *)frame->sp) + 1;
++		frame->sp = (unsigned long)(((unsigned long *)frame->sp)) + 1;
+ 
+ 		return 0;
+ 	} else {
