@@ -2,80 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0FF41855C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 03:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB39418563
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 03:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhIZBRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 21:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhIZBRH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 21:17:07 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E38BC061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 18:15:32 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id a13so13307235qtw.10
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 18:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A5GR1cfMpuWQbSaXT73937ELZ/sCiVavLQIUW7HngfM=;
-        b=dluCVlL5cvwzJcvAB3nBshLLzL3Ac9WzKg5H7+/uFJmxtYTQScRYyt0WrCc8ef5xnx
-         VdDae+eJVVNRZSndQMkX9KpiAQR5IagrSzdSKkd6T0q4p4B3rx/Jq9nLDK5oJIhIPHfb
-         SoUKfqTrHuCAM8WGR6XtzEUUxf2JQUzvH9AhprQEXpL0S8yd/fC4K66QPpwtmJ7udc1m
-         lOIFy+/trTPeJI4mv6Jai1dj6x4BdoCzOg+Mm5ckCMk+0ouHIbsvjlAVCEQ5pZrSoE6U
-         JTVJ7t4sc4UJCMlY+ub50wkMkoDgHcVUwCI08c+i2v5HV+meQgs+YZH5mgQAUpzKoniV
-         fV9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A5GR1cfMpuWQbSaXT73937ELZ/sCiVavLQIUW7HngfM=;
-        b=Z0O0yyYdRg2Iujoz5g2XbEtqUy3amyWwXIm2RtaFN9xZ9Kxdqnye5qpON/YUqo+fGM
-         I5Vym4brz1U6A8eOS+Lu7ZRY8ERi8kIxp44ClK9r7wOqd9WbOjrH1ezMGyzpCCQHp8+e
-         LuzNQ2PHp6xC8gkrVP37iPAcFCuaBvTREw44AdAvQSfBm9z2C1j2LqUrcP+72a2FrOHM
-         m0Xs1aIoOVaQewPWZ+nOso2Ago7SR453hZyog/jmFBMqLxBbA6/r+CpJzTO0FJl2MKlg
-         xnZaVUI/huivl9hbSSAQU4HSC3giR5yprkfxqZL2/wSGhvjfIg0M1hxuz03TPU2b7h3F
-         5L7g==
-X-Gm-Message-State: AOAM533RMvm+E0LZvj7fnnHDt1MJw3rBy1BBpy8dGV2tNBui0rk+drId
-        LtIZBXngGN1Ic/mzv/h8IePX0thtoXW6WOpU5C0=
-X-Google-Smtp-Source: ABdhPJyr22+5Em7KnSu/Bt2MF9WfPtSAvejffbjajPVVOKJqqmSzkhHS6UWI8c4awxFAPd/MPQpVDsNCYYebPqBNtBY=
-X-Received: by 2002:ac8:530c:: with SMTP id t12mr12247750qtn.111.1632618931445;
- Sat, 25 Sep 2021 18:15:31 -0700 (PDT)
+        id S230213AbhIZBZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 21:25:21 -0400
+Received: from mga09.intel.com ([134.134.136.24]:33791 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhIZBZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 21:25:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10118"; a="224336229"
+X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
+   d="scan'208";a="224336229"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2021 18:23:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
+   d="scan'208";a="475562606"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by orsmga007.jf.intel.com with ESMTP; 25 Sep 2021 18:23:42 -0700
+Date:   Sun, 26 Sep 2021 09:16:55 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v16 5/5] fpga: image-load: enable cancel of image upload
+Message-ID: <20210926011655.GC1339205@yilunxu-OptiPlex-7050>
+References: <20210923001056.282790-1-russell.h.weight@intel.com>
+ <20210923001056.282790-6-russell.h.weight@intel.com>
+ <20210924145338.GA1342075@yilunxu-OptiPlex-7050>
+ <d03bc8f3-5afc-207c-62db-68bb4d533e36@intel.com>
 MIME-Version: 1.0
-References: <20210924143347.14721-1-broonie@kernel.org> <20210924143347.14721-4-broonie@kernel.org>
-In-Reply-To: <20210924143347.14721-4-broonie@kernel.org>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Sun, 26 Sep 2021 09:15:58 +0800
-Message-ID: <CADBw62rxg4ZfCLj9CZvXPdtX-qu_tMJbe87mpABit+ifVuh6jw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mfd: sprd: Add SPI device ID table
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d03bc8f3-5afc-207c-62db-68bb4d533e36@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 10:34 PM Mark Brown <broonie@kernel.org> wrote:
->
-> Currently autoloading for SPI devices does not use the DT ID table, it uses
-> SPI modalises. Supporting OF modalises is going to be difficult if not
-> impractical, an attempt was made but has been reverted, so ensure that
-> module autoloading works for this driver by adding a SPI device ID table.
->
-> Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+On Fri, Sep 24, 2021 at 05:29:28PM -0700, Russ Weight wrote:
+> 
+> 
+> On 9/24/21 7:53 AM, Xu Yilun wrote:
+> > On Wed, Sep 22, 2021 at 05:10:56PM -0700, Russ Weight wrote:
+> >> Extend the FPGA Image Load framework to include a cancel IOCTL that can be
+> >> used to request that an image upload be canceled. The IOCTL may return
+> >> EBUSY if it cannot be canceled by software or ENODEV if there is no update
+> >> in progress.
+> >>
+> >> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> >> ---
+> >> v16:
+> >>  - This was previously patch 6/6
+> >>  - Amend fpga_image_load_release() to request cancellation of an ongoing
+> >>    update when possible.
+> >> v15:
+> >>  - Compare to previous patch:
+> >>      [PATCH v14 6/6] fpga: sec-mgr: enable cancel of secure update
+> >>  - Changed file, symbol, and config names to reflect the new driver name
+> >>  - Cancel is now initiated by IOCT instead of sysfs
+> >>  - Removed signed-off/reviewed-by tags
+> >> v14:
+> >>  - Updated ABI documentation date and kernel version
+> >> v13:
+> >>   - No change
+> >> v12:
+> >>   - Updated Date and KernelVersion fields in ABI documentation
+> >> v11:
+> >>   - No change
+> >> v10:
+> >>   - Rebased to 5.12-rc2 next
+> >>   - Updated Date and KernelVersion in ABI documentation
+> >> v9:
+> >>   - Updated Date and KernelVersion in ABI documentation
+> >> v8:
+> >>   - No change
+> >> v7:
+> >>   - Changed Date in documentation file to December 2020
+> >> v6:
+> >>   - No change
+> >> v5:
+> >>   - No change
+> >> v4:
+> >>   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+> >>     and removed unnecessary references to "Intel".
+> >>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+> >> v3:
+> >>   - No change
+> >> v2:
+> >>   - Bumped documentation date and version
+> >>   - Minor code cleanup per review comments
+> >> ---
+> >>  Documentation/fpga/fpga-image-load.rst |  6 ++++
+> >>  drivers/fpga/fpga-image-load.c         | 49 +++++++++++++++++++++++---
+> >>  include/linux/fpga/fpga-image-load.h   |  1 +
+> >>  include/uapi/linux/fpga-image-load.h   |  2 ++
+> >>  4 files changed, 53 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
+> >> index 572e18afebb9..21fa85f18680 100644
+> >> --- a/Documentation/fpga/fpga-image-load.rst
+> >> +++ b/Documentation/fpga/fpga-image-load.rst
+> >> @@ -40,3 +40,9 @@ FPGA_IMAGE_LOAD_STATUS:
+> >>  Collect status for an on-going image upload. The status returned includes
+> >>  how much data remains to be transferred, the progress of the image load,
+> >>  and error information in the case of a failure.
+> >> +
+> >> +FPGA_IMAGE_LOAD_CANCEL:
+> >> +
+> >> +Request that a on-going image upload be cancelled. This IOCTL may return
+> > 		an
+> I'll fix it
+> >> +EBUSY if it cannot be cancelled by software or ENODEV if there is no update
+> >    -EBUSY					 -ENODEV
+> 
+> >From the userspace perspective, these are seen as positive errno numbers.
+> I think this is OK as is? If not, I need to change it in other places as well.
 
-Thanks Mark.
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+I agree, just keep it.
 
--- 
-Baolin Wang
+> >
+> >> +in progress.
+> >> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
+> >> index 2e9a5a041535..a95d18077d58 100644
+> >> --- a/drivers/fpga/fpga-image-load.c
+> >> +++ b/drivers/fpga/fpga-image-load.c
+> >> @@ -46,6 +46,24 @@ static void fpga_image_dev_error(struct fpga_image_load *imgld, u32 err_code)
+> >>  	imgld->ops->cancel(imgld);
+> >>  }
+> >>  
+> >> +static int fpga_image_prog_transition(struct fpga_image_load *imgld,
+> >> +				      u32 new_progress)
+> >> +{
+> >> +	int ret = 0;
+> >> +
+> >> +	mutex_lock(&imgld->lock);
+> >> +	if (imgld->request_cancel) {
+> >> +		imgld->err_progress = imgld->progress;
+> >> +		imgld->err_code = FPGA_IMAGE_ERR_CANCELED;
+> >> +		imgld->ops->cancel(imgld);
+> > We could only cancel in 2 conditions.
+> > This is the first one: on progress transition.
+> >
+> >> +		ret = -ECANCELED;
+> >> +	} else {
+> >> +		imgld->progress = new_progress;
+> >> +	}
+> >> +	mutex_unlock(&imgld->lock);
+> >> +	return ret;
+> >> +}
+> >> +
+> >>  static void fpga_image_prog_complete(struct fpga_image_load *imgld)
+> >>  {
+> >>  	mutex_lock(&imgld->lock);
+> >> @@ -79,8 +97,10 @@ static void fpga_image_do_load(struct work_struct *work)
+> >>  		goto modput_exit;
+> >>  	}
+> >>  
+> >> -	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_WRITING);
+> >> -	while (imgld->remaining_size) {
+> >> +	if (fpga_image_prog_transition(imgld, FPGA_IMAGE_PROG_WRITING))
+> >> +		goto done;
+> >> +
+> >> +	while (imgld->remaining_size && !imgld->request_cancel) {
+> > This is the second condition: when we finished a block write. But if the
+> > low level driver accepts the whole block size, we cannot cancel in
+> > between.
+> >
+> > Actually the framework doesn't know when to successfully cancel an
+> > update. It depends on the hardware.
+> >
+> > So maybe the framework just calls cancel() immediately in IOCTL,
+> > let the low level driver decides if it is feasible and how to cancel.
+> 
+> Yes - I agree. This current implementation assumes too much about
+> the low-level driver. I have some ideas to try in the next patchset.
+> 
+> Thanks,
+> - Russ
+> >
+> > Thanks,
+> > Yilun
+> >
+> >>  		/*
+> >>  		 * The write_blk() op has the option to use the blk_size
+> >>  		 * value provided here, or to modify it to something more
+> >> @@ -105,7 +125,9 @@ static void fpga_image_do_load(struct work_struct *work)
+> >>  		cond_resched();
+> >>  	}
+> >>  
+> >> -	fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_PROGRAMMING);
+> >> +	if (fpga_image_prog_transition(imgld, FPGA_IMAGE_PROG_PROGRAMMING))
+> >> +		goto done;
+> >> +
+> >>  	ret = imgld->ops->poll_complete(imgld);
+> >>  	if (ret != FPGA_IMAGE_ERR_NONE)
+> >>  		fpga_image_dev_error(imgld, ret);
+> >> @@ -178,8 +200,8 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
+> >>  	imgld->remaining_size = wb.size;
+> >>  	imgld->err_code = FPGA_IMAGE_ERR_NONE;
+> >>  	imgld->progress = FPGA_IMAGE_PROG_STARTING;
+> >> +	imgld->request_cancel = false;
+> >>  	queue_work(system_unbound_wq, &imgld->work);
+> >> -
+> >>  	return 0;
+> >>  
+> >>  exit_free:
+> >> @@ -208,7 +230,7 @@ static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
+> >>  				  unsigned long arg)
+> >>  {
+> >>  	struct fpga_image_load *imgld = filp->private_data;
+> >> -	int ret = -ENOTTY;
+> >> +	int ret = 0;
+> >>  
+> >>  	mutex_lock(&imgld->lock);
+> >>  
+> >> @@ -219,6 +241,17 @@ static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
+> >>  	case FPGA_IMAGE_LOAD_STATUS:
+> >>  		ret = fpga_image_load_ioctl_status(imgld, arg);
+> >>  		break;
+> >> +	case FPGA_IMAGE_LOAD_CANCEL:
+> >> +		if (imgld->progress == FPGA_IMAGE_PROG_PROGRAMMING)
+> >> +			ret = -EBUSY;
+> >> +		else if (imgld->progress == FPGA_IMAGE_PROG_IDLE)
+> >> +			ret = -ENODEV;
+> >> +		else
+> >> +			imgld->request_cancel = true;
+> >> +		break;
+> >> +	default:
+> >> +		ret = -ENOTTY;
+> >> +		break;
+> >>  	}
+> >>  
+> >>  	mutex_unlock(&imgld->lock);
+> >> @@ -249,6 +282,9 @@ static int fpga_image_load_release(struct inode *inode, struct file *filp)
+> >>  		goto close_exit;
+> >>  	}
+> >>  
+> >> +	if (imgld->progress != FPGA_IMAGE_PROG_PROGRAMMING)
+> >> +		imgld->request_cancel = true;
+> >> +
+> >>  	mutex_unlock(&imgld->lock);
+> >>  	flush_work(&imgld->work);
+> >>  
+> >> @@ -363,6 +399,9 @@ void fpga_image_load_unregister(struct fpga_image_load *imgld)
+> >>  		goto unregister;
+> >>  	}
+> >>  
+> >> +	if (imgld->progress != FPGA_IMAGE_PROG_PROGRAMMING)
+> >> +		imgld->request_cancel = true;
+> >> +
+> >>  	mutex_unlock(&imgld->lock);
+> >>  	flush_work(&imgld->work);
+> >>  
+> >> diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
+> >> index 8b58365893fc..8ba39d3299d9 100644
+> >> --- a/include/linux/fpga/fpga-image-load.h
+> >> +++ b/include/linux/fpga/fpga-image-load.h
+> >> @@ -53,6 +53,7 @@ struct fpga_image_load {
+> >>  	u32 progress;
+> >>  	u32 err_progress;		/* progress at time of error */
+> >>  	u32 err_code;			/* image load error code */
+> >> +	bool request_cancel;
+> >>  	bool driver_unload;
+> >>  	struct eventfd_ctx *finished;
+> >>  	void *priv;
+> >> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
+> >> index dc0c9f1d78b1..da8a7452c29a 100644
+> >> --- a/include/uapi/linux/fpga-image-load.h
+> >> +++ b/include/uapi/linux/fpga-image-load.h
+> >> @@ -70,4 +70,6 @@ struct fpga_image_status {
+> >>  
+> >>  #define FPGA_IMAGE_LOAD_STATUS	_IOR(FPGA_IMAGE_LOAD_MAGIC, 1, struct fpga_image_status)
+> >>  
+> >> +#define FPGA_IMAGE_LOAD_CANCEL	_IO(FPGA_IMAGE_LOAD_MAGIC, 2)
+> >> +
+> >>  #endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
+> >> -- 
+> >> 2.25.1
