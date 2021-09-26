@@ -2,104 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEDE4189B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD474189AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbhIZPKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 11:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231972AbhIZPKc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 11:10:32 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C76C061604
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:08:55 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so11310964pjb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ADz7NrPOTpj5cH5eFLTAbuzyUTNwCvRtncteUJ2axN0=;
-        b=mRGrmQKCeyfZO1vkUkxfxWtIH5ebNTFnu0VuQU7fqGHVVXfc/LkeAbpYqCi57oBpkJ
-         aC9H5Yq7DspxeQqkR9C33pDl6JjCJYb8Yyi/WcuqjMgYuxzzZT6B6HXBhJXDRYfh6bMz
-         WCHNYuXGepTogHGihoDBqbx4T7xwSRiTaRYqdZVz44JLxG36XTwYJkPjhQpXbkWI/K73
-         LELs4VjM773hOVYRnvcJni5PFG+4yMYB6usBVzsK0+n1z2swrmb4IgaklhGVdu1VqhJs
-         8a/3yqe9oRjgYMq3wdbLnupHtnr903d8a9b7js7o4/s4gL4TPMWwRnbC2mw1GV7jdbZz
-         0EUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ADz7NrPOTpj5cH5eFLTAbuzyUTNwCvRtncteUJ2axN0=;
-        b=O6hEgEDRcArpEpEBSZ3SR/bXwZ5MLEwjpNp0n9XTNJcvsZCPGGUEpm4gkxiUTMSmqn
-         gqKA3l/h7Q1h3a5onPrXJUirQkFO6nVdhlxlHOxZZr8k7r1Vof8rUJMOzexSPqRNTcZ4
-         VOyAP5+GmQhPLvUX8o8f39B1vZ2MfL03sb5zcRDpPtMZVO8op2CbD86q/5XHeR1uFQWH
-         C0LNYF+10tUgtCE5qaEdZB/lIvfEbTiPxZHWYx1sfR8OiDY9cD7lYRa5bBLx5hyJZZ72
-         9D59KZHT5H1++hx2ntxczBhcRg4opDhfnhJq4PAPdIkhRs22EVq4gu3Sk5+nZMGRI885
-         4Kkw==
-X-Gm-Message-State: AOAM5321j1hAlAQrytcegqzZdl5vH/LAqeExWFLFVaPbc8gJI0ujOJg3
-        TWiCDf89yahieIaWjA7JDF+Ow4Ikg6XOWQ==
-X-Google-Smtp-Source: ABdhPJyrVdyVaWbSP+/EYYw2dscbXau/JotzcwJK5Vq4ULXJLbyu8HUqhsmz+gQjOIyndZ3TW7IQiA==
-X-Received: by 2002:a17:902:a710:b029:12b:9b9f:c461 with SMTP id w16-20020a170902a710b029012b9b9fc461mr18126885plq.59.1632668935277;
-        Sun, 26 Sep 2021 08:08:55 -0700 (PDT)
-Received: from localhost ([47.88.60.64])
-        by smtp.gmail.com with ESMTPSA id a10sm14160271pfn.48.2021.09.26.08.08.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Sep 2021 08:08:54 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH V2 03/41] compiler_types.h: Add __noinstr_section() for noinstr
-Date:   Sun, 26 Sep 2021 23:08:00 +0800
-Message-Id: <20210926150838.197719-4-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20210926150838.197719-1-jiangshanlai@gmail.com>
-References: <20210926150838.197719-1-jiangshanlai@gmail.com>
+        id S231921AbhIZPFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 11:05:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231888AbhIZPFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 11:05:50 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0096761041;
+        Sun, 26 Sep 2021 15:04:11 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 16:08:00 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Subject: Re: [PATCH] iio: adc: fsl-imx25-gcq: initialize regulators as
+ needed
+Message-ID: <20210926160800.760a8c23@jic23-huawei>
+In-Reply-To: <CAASAkob02JJA0WGyfXMAWQrwrvJr_uKqVSkeK6O8QR4tZo-KiQ@mail.gmail.com>
+References: <20210625074325.9237-1-aardelean@deviqon.com>
+        <20210704190158.6676ab99@jic23-huawei>
+        <CAASAkob02JJA0WGyfXMAWQrwrvJr_uKqVSkeK6O8QR4tZo-KiQ@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Thu, 9 Sep 2021 15:33:31 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-And it will be extended for C entry code.
+> On Sun, 4 Jul 2021 at 20:59, Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Fri, 25 Jun 2021 10:43:25 +0300
+> > Alexandru Ardelean <aardelean@deviqon.com> wrote:
+> >  
+> > > The driver tries to initialize all possible regulators from the DT, then
+> > > match the external regulators with each channel and then release all unused
+> > > regulators.
+> > >
+> > > We can change the logic a bit to initialize regulators only when at least
+> > > one channel needs them.
+> > >
+> > > This change creates a mx25_gcq_ext_regulator_setup() function that is
+> > > called only for the external regulators. If there's already a reference to
+> > > an external regulator, the function will just exit early with no error.
+> > >
+> > > This way, the driver doesn't need to keep any track of these regulators
+> > > during init.
+> > >
+> > > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>  
+> >
+> > whilst I agree this is a bit cleaner, I definitely want to see review from
+> > those more familiar with the device before I take it!  
+> 
+> ping on this
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- include/linux/compiler_types.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+I'm not keen to have this fall through the cracks as it is a nice cleanup.
 
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index b6ff83a714ca..3c77631c68bd 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -208,10 +208,12 @@ struct ftrace_likely_data {
- #endif
- 
- /* Section for code which can't be instrumented at all */
--#define noinstr								\
--	noinline notrace __attribute((__section__(".noinstr.text")))	\
-+#define __noinstr_section(section)				\
-+	noinline notrace __attribute((__section__(section)))	\
- 	__no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage
- 
-+#define noinstr __noinstr_section(".noinstr.text")
-+
- #endif /* __KERNEL__ */
- 
- #endif /* __ASSEMBLY__ */
--- 
-2.19.1.6.gb485710b
+So I've applied it.  Note minor change as mentioned below.
+
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to see if it can find anything we missed.
+
+Thanks,
+
+Jonathan
+
+> 
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >  
+> > > ---
+> > >  drivers/iio/adc/fsl-imx25-gcq.c | 57 ++++++++++++++++-----------------
+> > >  1 file changed, 28 insertions(+), 29 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
+> > > index ab5139e911c3..31776f80f847 100644
+> > > --- a/drivers/iio/adc/fsl-imx25-gcq.c
+> > > +++ b/drivers/iio/adc/fsl-imx25-gcq.c
+> > > @@ -172,13 +172,37 @@ static const struct regmap_config mx25_gcq_regconfig = {
+> > >       .reg_stride = 4,
+> > >  };
+> > >
+> > > +static int mx25_gcq_ext_regulator_setup(struct device *dev,
+> > > +                                     struct mx25_gcq_priv *priv, u32 refp)
+> > > +{
+> > > +     char reg_name[12];
+> > > +     int ret;
+> > > +
+> > > +     if (priv->vref[refp])
+> > > +             return 0;
+> > > +
+> > > +     ret = snprintf(reg_name, sizeof(reg_name), "vref-%s",
+> > > +                    mx25_gcq_refp_names[refp]);
+> > > +     if (ret < 0)
+> > > +             return ret;
+> > > +
+> > > +     priv->vref[refp] = devm_regulator_get_optional(dev, reg_name);
+> > > +     if (IS_ERR(priv->vref[refp])) {
+Could be a deferred probe response so to avoid polluting log
+
+return dev_err_probe(dev, PTR_ERR(priv->vref[refp]), ...)
+
+> > > +             dev_err(dev,
+> > > +                     "Error, trying to use external voltage reference without a %s regulator.",
+> > > +                     reg_name);
+> > > +             return PTR_ERR(priv->vref[refp]);
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > >  static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+> > >                              struct mx25_gcq_priv *priv)
+> > >  {
+> > >       struct device_node *np = pdev->dev.of_node;
+> > >       struct device_node *child;
+> > >       struct device *dev = &pdev->dev;
+> > > -     unsigned int refp_used[4] = {};
+> > >       int ret, i;
+> > >
+> > >       /*
+> > > @@ -194,19 +218,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+> > >                            MX25_ADCQ_CFG_IN(i) |
+> > >                            MX25_ADCQ_CFG_REFN_NGND2);
+> > >
+> > > -     /*
+> > > -      * First get all regulators to store them in channel_vref_mv if
+> > > -      * necessary. Later we use that information for proper IIO scale
+> > > -      * information.
+> > > -      */
+> > > -     priv->vref[MX25_ADC_REFP_INT] = NULL;
+> > > -     priv->vref[MX25_ADC_REFP_EXT] =
+> > > -             devm_regulator_get_optional(&pdev->dev, "vref-ext");
+> > > -     priv->vref[MX25_ADC_REFP_XP] =
+> > > -             devm_regulator_get_optional(&pdev->dev, "vref-xp");
+> > > -     priv->vref[MX25_ADC_REFP_YP] =
+> > > -             devm_regulator_get_optional(&pdev->dev, "vref-yp");
+> > > -
+> > >       for_each_child_of_node(np, child) {
+> > >               u32 reg;
+> > >               u32 refp = MX25_ADCQ_CFG_REFP_INT;
+> > > @@ -233,11 +244,10 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+> > >               case MX25_ADC_REFP_EXT:
+> > >               case MX25_ADC_REFP_XP:
+> > >               case MX25_ADC_REFP_YP:
+> > > -                     if (IS_ERR(priv->vref[refp])) {
+> > > -                             dev_err(dev, "Error, trying to use external voltage reference without a vref-%s regulator.",
+> > > -                                     mx25_gcq_refp_names[refp]);
+> > > +                     ret = mx25_gcq_ext_regulator_setup(&pdev->dev, priv, refp);
+> > > +                     if (ret) {
+> > >                               of_node_put(child);
+> > > -                             return PTR_ERR(priv->vref[refp]);
+> > > +                             return ret;
+> > >                       }
+> > >                       priv->channel_vref_mv[reg] =
+> > >                               regulator_get_voltage(priv->vref[refp]);
+> > > @@ -253,8 +263,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+> > >                       return -EINVAL;
+> > >               }
+> > >
+> > > -             ++refp_used[refp];
+> > > -
+> > >               /*
+> > >                * Shift the read values to the correct positions within the
+> > >                * register.
+> > > @@ -285,15 +293,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+> > >       regmap_write(priv->regs, MX25_ADCQ_CR,
+> > >                    MX25_ADCQ_CR_PDMSK | MX25_ADCQ_CR_QSM_FQS);
+> > >
+> > > -     /* Remove unused regulators */
+> > > -     for (i = 0; i != 4; ++i) {
+> > > -             if (!refp_used[i]) {
+> > > -                     if (!IS_ERR_OR_NULL(priv->vref[i]))
+> > > -                             devm_regulator_put(priv->vref[i]);
+> > > -                     priv->vref[i] = NULL;
+> > > -             }
+> > > -     }
+> > > -
+> > >       return 0;
+> > >  }
+> > >  
+> >  
 
