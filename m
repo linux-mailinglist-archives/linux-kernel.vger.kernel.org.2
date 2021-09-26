@@ -2,211 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02B441858E
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3963418590
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhIZCWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 22:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        id S230309AbhIZCWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 22:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhIZCWB (ORCPT
+        with ESMTP id S230205AbhIZCWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 22:22:01 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A63C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 19:20:25 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id n2so9219172plk.12
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 19:20:25 -0700 (PDT)
+        Sat, 25 Sep 2021 22:22:52 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E60AC061570;
+        Sat, 25 Sep 2021 19:21:16 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 11so8899766qvd.11;
+        Sat, 25 Sep 2021 19:21:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VomPzUlQwzo0EgTLQkSEq5bVZTa+IXXefvRwX88V1gQ=;
-        b=DD/Qap+I8sMuX+7b4FQFPC9MQvbDFA136Lnhljj3aeWmC4Nv3S27lwU9HHW62H9CTK
-         LdIG4kGLZm46WGBXS9fhfycQjzWBlGzQjzWAJQ84HiqwlixsUTJ/yqJjk34dcmSyMddM
-         pGIXTn1h7ccsBHLMaOeITTlFbq++tBQs+3NH4=
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=GIx+rSjxW/q6WpBhwC+tPZq1+myuly18nCZ9De5udkw=;
+        b=VOVxynHNZM9TAKcgH7Kr1qWH7M/LZZzUAhyQwgkZUn5BhYAkqpXbREgMimJy345ouJ
+         xvsIkI/CR+KRLvJN+nkjaT4xuXTb7lt6pQ3awRP3Dy/eR/i8w1DSVwQSaaxkD8NezEl5
+         80Sk+go1id7FmEP7L0vzlN8Sk2aPEThV77Uvji/gINo8ra/pXw7BYgCB1nHJu6SxglPO
+         QIRtalXAe/J9mX8KrwWizuczMN9zJRqXjtnmcL/FeL2eyvYgGhZoGL/7PEZRxKblavBT
+         QRAaq5hW4V8g7kHxtSQS6X5F8FS18o4q1A5zkKheOpso3jiUZrsNf9euFcIggfdi4c8p
+         WRWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VomPzUlQwzo0EgTLQkSEq5bVZTa+IXXefvRwX88V1gQ=;
-        b=5CSj1sN60Cv5D6opC3scnoJvfS7IdvaeMQKGY74NU2y6tUBkjv+tKzbjsdqbN1vfPQ
-         OHyTOwv39MF8oCb3R7AH9nU1KadjjuKDeh2sV1GVB2XVxvK5ibl2orULwmfsyqLagl3f
-         MlNpGKBQRJPa8luehCn/MpMJXjKcrvfE8bc0EustPHxAkCr7HmZ44thhimirqAY1HOJd
-         BlS2w8Xe8tumvBCtcNJGwsHnqMj+GbcSphHBJbfHELf4k97zUrhNTf12lnfLe965BmJf
-         9oBQ20w4ypRxOfzE5vyQ4+eStll0L8kocNyDapqyZoGeZwECBuNVzLZ35xg4YLjEakNI
-         NroQ==
-X-Gm-Message-State: AOAM533EsNuRibiJG/sN5qRzla8iN/fjcsIOxm7sNLSCfhPgzkG0hb/8
-        nrb6Vqcwk7krewp8b/cvkQsOfg==
-X-Google-Smtp-Source: ABdhPJx4DbNoXjDKV8tGIkCNeOkOw+/+RkeSoNjIuxDTnG9nABYHQZz/yRrYfH/G6F536AdFP7Djbw==
-X-Received: by 2002:a17:90a:1b67:: with SMTP id q94mr11591314pjq.246.1632622824479;
-        Sat, 25 Sep 2021 19:20:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p48sm12941527pfw.160.2021.09.25.19.20.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Sep 2021 19:20:23 -0700 (PDT)
-Date:   Sat, 25 Sep 2021 19:20:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     Jann Horn <jannh@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Colin Ian King <colin.king@canonical.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        David Hildenbrand <david@redhat.com>,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Evgenii Stepanov <eugenis@google.com>
-Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
-Message-ID: <202109251909.B7BB577BA@keescook>
-References: <20210922061809.736124-1-pcc@google.com>
- <87k0j8zo35.fsf@disp2133>
- <202109220755.B0CFED9F5@keescook>
- <CAG48ez1wQZ2Jte_JRS92Njw89abpU5kGCk8KPyEdC93XX33NRA@mail.gmail.com>
- <CAMn1gO5_L-+Gjm2GGGPAa8JhZj+Xf-zZ4MDzHjb7xtANFG8c5A@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=GIx+rSjxW/q6WpBhwC+tPZq1+myuly18nCZ9De5udkw=;
+        b=y7ymFLJbixtgT8bDzGbweJNnRQ2IIN2rJ9aqQ0j9ZCdcygJxIw9kIPVg5M6Xps+svF
+         L4FYs1+rmFNOWRgni8h0paIzgz4LgL1RSeqli0CMY8PASQ8EemopYO7bwa+aRsKrdBmx
+         DpfCbdKODkIkvTVUFs9OAo8uUuArgQUotHq2rOu0ZASArXWgRuogpP5+eYh5rNn1Pily
+         UWz30GXPz9z5VY+Zw+BM+wI3Ssk3ajknC6h0pizhvtnKXZ13oqhbEbdWxuqSQOWmckC6
+         S0ZemIkwPCsAJFtaKF8qKZc5S0IpTvSVfq5H7miZV+U7rbZnkPLDCyurkQMgsOJWSA1U
+         ie0Q==
+X-Gm-Message-State: AOAM532mrqrLhLi4I+593R7ZPDtBvs+Z4rTXyt+f4dN6ziAv1yVnv2cW
+        03M4wdkKUwz/f2IJiHdO09k=
+X-Google-Smtp-Source: ABdhPJxE3HUPH44ibMZCt4AsnUMO2FTSWl3D0M1gK68DrjOEvF+0Bi4RxBMz9jj0vkMdIBeaUGmycA==
+X-Received: by 2002:a05:6214:3ac:: with SMTP id m12mr17851616qvy.9.1632622875721;
+        Sat, 25 Sep 2021 19:21:15 -0700 (PDT)
+Received: from ?IPV6:2600:1700:dfe0:49f0:a90f:da5:ff6e:aa3e? ([2600:1700:dfe0:49f0:a90f:da5:ff6e:aa3e])
+        by smtp.gmail.com with ESMTPSA id g19sm9315384qki.58.2021.09.25.19.21.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Sep 2021 19:21:15 -0700 (PDT)
+Message-ID: <05f4baaf-24cc-da1a-a23d-7f033ba528f1@gmail.com>
+Date:   Sat, 25 Sep 2021 19:21:12 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMn1gO5_L-+Gjm2GGGPAa8JhZj+Xf-zZ4MDzHjb7xtANFG8c5A@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 1/2] net: bgmac-platform: handle mac-address deferral
+Content-Language: en-US
+To:     Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Christian Lamparter <chunkeey@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210925113628.1044111-1-mnhagan88@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210925113628.1044111-1-mnhagan88@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 02:50:04PM -0700, Peter Collingbourne wrote:
-> On Wed, Sep 22, 2021 at 8:59 AM Jann Horn <jannh@google.com> wrote:
-> >
-> > On Wed, Sep 22, 2021 at 5:30 PM Kees Cook <keescook@chromium.org> wrote:
-> > > On Wed, Sep 22, 2021 at 09:23:10AM -0500, Eric W. Biederman wrote:
-> > > > Peter Collingbourne <pcc@google.com> writes:
-> > > > > This patch introduces a kernel feature known as uaccess logging.
-> > > > > [...]
-> > > > [...]
-> > > > How is logging the kernel's activity like this not a significant
-> > > > information leak?  How is this safe for unprivileged users?
-> > > [...]
-> > > Regardless, this is a pretty useful tool for this kind of fuzzing.
-> > > Perhaps the timing exposure could be mitigated by having the kernel
-> > > collect the record in a separate kernel-allocated buffer and flush the
-> > > results to userspace at syscall exit? (This would solve the
-> > > copy_to_user() recursion issue too.)
+
+
+On 9/25/2021 4:36 AM, Matthew Hagan wrote:
+> This patch is a replication of Christian Lamparter's "net: bgmac-bcma:
+> handle deferred probe error due to mac-address" patch for the
+> bgmac-platform driver [1].
 > 
-> Seems reasonable. I suppose that in terms of timing information we're
-> already (unavoidably) exposing how long the syscall took overall, and
-> we probably shouldn't deliberately expose more than that.
-
-Right -- I can't think of anything that can really use this today,
-but it very much feels like the kind of information that could aid in
-a timing race.
-
-> That being said, I'm wondering if that has security implications on
-> its own if it's then possible for userspace to manipulate the kernel
-> into allocating a large buffer (either at prctl() time or as a result
-> of getting the kernel to do a large number of uaccesses). Perhaps it
-> can be mitigated by limiting the size of the uaccess buffer provided
-> at prctl() time.
-
-There are a lot of exact-size allocation controls already (which I think
-is an unavoidable but separate issue[1]), but perhaps this could be
-mitigated by making the reserved buffer be PAGE_SIZE granular?
-
-> > One aspect that might benefit from some clarification on intended
-> > behavior is: what should happen if there are BPF tracing programs
-> > running (possibly as part of some kind of system-wide profiling or
-> > such) that poke around in userspace memory with BPF's uaccess helpers
-> > (especially "bpf_copy_from_user")?
+> As is the case with the bgmac-bcma driver, this change is to cover the
+> scenario where the MAC address cannot yet be discovered due to reliance
+> on an nvmem provider which is yet to be instantiated, resulting in a
+> random address being assigned that has to be manually overridden.
 > 
-> I think we should probably be ignoring those accesses, since we cannot
-> know a priori whether the accesses are directly associated with the
-> syscall or not, and this is after all a best-effort mechanism.
-
-Perhaps the "don't log this uaccess" flag I suggested could be
-repurposed by BPF too, as a general "make this access invisible to
-PR_LOG_UACCESS" flag? i.e. this bit:
-
-> > > Instead of reimplementing copy_*_user() with a new wrapper that
-> > > bypasses some checks and adds others and has to stay in sync, etc,
-> > > how about just adding a "recursion" flag? Something like:
-> > >
-> > >     copy_from_user(...)
-> > >         instrument_copy_from_user(...)
-> > >             uaccess_buffer_log_read(...)
-> > >                 if (current->uaccess_buffer.writing)
-> > >                     return;
-> > >                 uaccess_buffer_log(...)
-> > >                     current->uaccess_buffer.writing = true;
-> > >                     copy_to_user(...)
-> > >                     current->uaccess_buffer.writing = false;
-
-
-
-> > > This would likely only make sense for SECCOMP_RET_TRACE or _TRAP if the
-> > > program wants to collect the results after every syscall. And maybe this
-> > > won't make any sense across exec (losing the mm that was used during
-> > > SECCOMP_SET_UACCESS_TRACE_BUFFER). Hmmm.
-> >
-> > And then I guess your plan would be that userspace would be expected
-> > to use the userspace instruction pointer
-> > (seccomp_data::instruction_pointer) to indicate instructions that
-> > should be traced?
-
-That could be one way -- but seccomp filters would allow a bunch of
-ways.
-
-> >
-> > Or instead of seccomp, you could do it kinda like
-> > https://www.kernel.org/doc/html/latest/admin-guide/syscall-user-dispatch.html
-> > , with a prctl that specifies a specific instruction pointer?
+> [1] https://lore.kernel.org/netdev/20210919115725.29064-1-chunkeey@gmail.com
 > 
-> Given a choice between these two options, I would prefer the prctl()
-> because userspace programs may already be using seccomp filters and
-> sanitizers shouldn't interfere with it.
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 
-That's fair -- the "I wish we could make complex decisions about which
-syscalls to act on" sounds like seccomp.
-
-> However, in either the seccomp filter or prctl() case, you still have
-> the problem of deciding where to log to. Keep in mind that you would
-> need to prevent intervening async signals (that occur between when the
-> syscall happens and when we read the log) from triggering additional
-
-Could the sig handler also set the "make the uaccess invisible" flag?
-(It would need to be a "depth" flag, most likely.)
-
--Kees
-
-[1] https://github.com/KSPP/linux/issues/9
-
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Kees Cook
+Florian
